@@ -1,0 +1,20 @@
+.layoutContainer
+{
+    position: absolute; 
+	padding: 5px;
+	border: 1px dashed gray;
+}
+
+#layoutCanvas
+{
+	min-height: 400px;
+	border: 2px solid gray;
+	padding: 0px;
+	overflow: auto; // if the content overflows, show a scrollbar
+}
+
+.layoutPageDiv
+{
+	height: 400px;
+	min-height: 400px;
+}

@@ -2,6 +2,21 @@
   <head>
     <title>{{.Title}}</title>
 	
+	<!-- Include CSS before Javascript -->
+	<link rel="stylesheet" type="text/css" class="ui" 		href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
+	<link rel="stylesheet" type="text/css" class="ui"
+		href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
+	
+	<link rel="stylesheet" type="text/css" class="ui" 
+		href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css">
+		
+	<link rel="stylesheet" type="text/css" class="ui" 
+		href="https://cdnjs.cloudflare.com/ajax/libs/jquery-layout/1.4.3/layout-default.min.css">
+
+
+	<link rel="stylesheet" type="text/css" class="ui" href="css/layout.css">
+
+		
 	<!-- TBD - the following are 3 common include files needed throughout the project
 		It is clumsy to include them in every single HTML file and manage the 
 		dependencies for local js files this way. Can this be handled better
@@ -10,132 +25,39 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
 	<script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-layout/1.4.3/jquery.layout.min.js"></script>
+	<script src="js/layout.js"></script>
 	
-	
-	<link rel="stylesheet" type="text/css" class="ui" 		href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
-	<link rel="stylesheet" type="text/css" class="ui" 		href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
-	
-	<link rel="stylesheet" type="text/css" class="ui" 
-		href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css">
-	
-	<script>
-
-
-	$(document).ready(function() {
-
-		$(".layoutContainer").draggable({
 			
-			grid: [20, 20], // snap to a grid
-			cursor: "move",
-			containment: "parent", // don't allow the draggable item to move outsize its parent
-			
-			stop: function(event, ui) {
-					  var layoutPos = {
-						  x: ui.position.left,
-						  y: ui.position.top,
-					  };
-					  
-					  console.log("drag stop: id: " + event.target.id);
- 					  console.log("drag stop: new position: " + JSON.stringify(layoutPos));
-          
-		  			/* TODO - Update on server via something like the following:
-			          // Save the new position via an AJAX call to the server
-			          $.ajax({
-			              type: "POST",
-			              url: "/",
-			              data: JSON.stringify(layoutPos)
-			            }).done(function( msg ) {
-			              alert( "Data Saved: " + msg );
-			            }); 
-					  */
-		  
-			      } // stop function
-					  
-			
-		});
-
-		$(".layoutContainer").resizable({
-			aspectRatio: false,
-			handles: 'e, w', // Only allow resizing horizontally
-			maxWidth: 600,
-			minWidth: 100,
-			grid: 20, // snap to grid during resize
-			
-			stop: function(event, ui) {
-					  
-					  var layoutDim = {
-						  width: ui.size.width,
-						  height: ui.size.height
-					  };
-         
-					  console.log("resize stop: id: " + event.target.id);
- 			          console.log("resize stop: new dimensions:" + JSON.stringify(layoutDim));
-				  } // 
-		});
-
-		// While in layout mode, disable entry into the fields
-		$('input[type=text]').prop('disabled', true);
-		
-		// Set the initial positions of the page elements. 
-		// TODO - The list of layout objects and their positions
-		// needs to come from the server.
-		$("#layoutCanvas").css({position: 'relative'});
-		$("#widget01").css({top: 100, left: 100, width: 160, height: 75, position:'absolute'});
-		$("#widget02").css({top: 200, left: 100, width: 160, height: 75, position:'absolute'});
-		$("#widget03").css({top: 300, left: 100, width: 160, height: 75, position:'absolute'});
-	
-	});
-
-	</script>
-	
-	<style>
-		.layoutContainer
-		{
-		    position: absolute; 
-			padding: 5px;
-			border: 1px dashed gray;
-		}
-		
-		#layoutCanvas
-		{
-			margin-left: 20px;
-			margin-right: 20px;
-			min-height: 400px;
-			border: 2px solid gray;
-			padding: 0px;
-			overflow: auto; // if the content overflows, show a scrollbar
-		}
-
-	</style>
-	
   </head>
   <body>
 	  <h1>{{.Title}}</h1>
-	 
-	  <form class="ui form" id="editLayoutForm">
-		  
-		  <div id="layoutCanvas">
-		  
-		<div class="ui-widget-content layoutContainer draggable resizable" id="widget01">
-			<div class="field">
-				<label>Symbol Name</label> <input type="text" name="symbol" placeholder="Symbol">
-			</div>
-		</div>
-		<div class="ui-widget-content layoutContainer draggable resizable" id="widget02">
-			<div class="field">
-				<label>Quantity</label> <input type="text" name="qty" placeholder="Qty">
-			</div>
-		</div>
-		<div class="ui-widget-content layoutContainer draggable resizable" id="widget03">
-			<div class="field">
-				<label>Entry Price</label> <input type="text" name="price" placeholder="Price">
-			</div>
-		</div>
-		   		  
-	  </div>
-		  
-	  </form>
 	  
+	<form class="ui form" id="editLayoutForm" name="editLayoutForm">
+		<div class="layoutPageDiv">
+			<div id="layoutCanvas">
+				<div class="ui-widget-content layoutContainer draggable resizable" id="widget01">
+					<div class="field">
+						<label>Symbol Name</label> <input type="text" name="symbol" placeholder="Symbol">
+					</div>
+				</div>
+				<div class="ui-widget-content layoutContainer draggable resizable" id="widget02">
+					<div class="field">
+						<label>Quantity</label> <input type="text" name="qty" placeholder="Qty">
+					</div>
+				</div>
+				<div class="ui-widget-content layoutContainer draggable resizable" id="widget03">
+					<div class="field">
+						<label>Entry Price</label> <input type="text" name="price" placeholder="Price">
+					</div>
+				</div>
+			</div>
+			<div id="propertiesSidebar">
+				Properties
+			</div>
+		</div>
+	</form>
+	   
   </body>
   
 </html>
