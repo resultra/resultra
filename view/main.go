@@ -15,11 +15,13 @@ func init() {
 	http.HandleFunc("/pageinfo", pageinfo)
 	http.HandleFunc("/dataTable", dataTable)
 	http.HandleFunc("/addRow", addRow)
+	http.HandleFunc("/editLayout", editLayout)
 }
 
 // Parse the templates once
-var templates = template.Must(template.ParseFiles("root.html"))
-var addRowTemplates = template.Must(template.ParseFiles("addRow.html"))
+var templates = template.Must(template.ParseFiles("view/template/main.html"))
+var addRowTemplates = template.Must(template.ParseFiles("view/template/addRow.html"))
+var editLayoutTemplates = template.Must(template.ParseFiles("view/template/editLayout.html"))
 
 type PageInfo struct {
 	Title string `json:"title"`
@@ -99,6 +101,17 @@ func root(w http.ResponseWriter, r *http.Request) {
 
 	p := PageInfo{"Main Page"}
 	err := templates.Execute(w, p)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+}
+
+func editLayout(w http.ResponseWriter, r *http.Request) {
+	//	c := appengine.NewContext(r)
+
+	p := PageInfo{"Edit Layout"}
+	err := editLayoutTemplates.Execute(w, p)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
