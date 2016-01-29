@@ -19,9 +19,9 @@ func init() {
 }
 
 // Parse the templates once
-var templates = template.Must(template.ParseFiles("view/template/main.html"))
-var addRowTemplates = template.Must(template.ParseFiles("view/template/addRow.html"))
-var editLayoutTemplates = template.Must(template.ParseFiles("view/template/editLayout.html"))
+var templates = template.Must(template.ParseFiles("template/main.html"))
+var addRowTemplates = template.Must(template.ParseFiles("template/addRow.html"))
+var editLayoutTemplates = template.Must(template.ParseFiles("template/editLayout.html"))
 
 type PageInfo struct {
 	Title string `json:"title"`
