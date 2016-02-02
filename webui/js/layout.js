@@ -1,6 +1,8 @@
 $(document).ready(function() {
+	
 
 	$(".layoutContainer").draggable({
+		
 		
 		grid: [20, 20], // snap to a grid
 		cursor: "move",
@@ -65,5 +67,8 @@ $(document).ready(function() {
 	    center__paneSelector: "#layoutCanvas",
 	    east__paneSelector:   "#propertiesSidebar"
 	  });
+
+		alert("Document Ready: layout ID=" + layoutID)
+
 
 });

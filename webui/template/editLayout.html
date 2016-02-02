@@ -14,7 +14,8 @@
 		href="https://cdnjs.cloudflare.com/ajax/libs/jquery-layout/1.4.3/layout-default.min.css">
 
 
-	<link rel="stylesheet" type="text/css" class="ui" href="css/layout.css">
+		<script>var layoutID={{.LayoutID}};</script>
+	<link rel="stylesheet" type="text/css" class="ui" href="/css/layout.css">
 
 		
 	<!-- TBD - the following are 3 common include files needed throughout the project
@@ -26,12 +27,12 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
 	<script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-layout/1.4.3/jquery.layout.min.js"></script>
-	<script src="js/layout.js"></script>
+	<script src="/js/layout.js"></script>
 	
 			
   </head>
   <body>
-	  <h1>{{.Title}}</h1>
+	  <h1>{{.Title}} ID={{.LayoutID}}</h1>
 	  
 	<form class="ui form" id="editLayoutForm" name="editLayoutForm">
 		<div class="layoutPageDiv">
