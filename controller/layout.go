@@ -8,10 +8,6 @@ import (
 	"resultra/datasheet/datamodel"
 )
 
-func init() {
-	http.HandleFunc("/api/newLayout", newLayout)
-}
-
 func newLayout(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("newLayout method:", r.Method) //get request method
@@ -27,5 +23,7 @@ func newLayout(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"layoutID": layoutID})
 }
