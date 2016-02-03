@@ -5,6 +5,19 @@
 	border: 1px dashed gray;
 }
 
+
+/* Set the default and minimum width for fields added
+   to the layout. This is important for when the field
+   is initially dragged onto the canvas. Otherwise it
+   can shrink as the field is dragged. */
+.layoutField
+{
+	min-width:160px;
+	min-height:75px;
+	width: 160px;
+	height: 75px;
+}
+
 #layoutCanvas
 {
 	min-height: 400px;
@@ -13,8 +26,42 @@
 	overflow: auto; // if the content overflows, show a scrollbar
 }
 
+#gallerySidebar
+{
+	min-height: 100px;
+	border: 2px solid gray;
+	padding: 0px;
+	overflow: visible; // don't overflow the content
+}
+
+
 .layoutPageDiv
 {
 	height: 400px;
 	min-height: 400px;
+}
+
+.newField
+{
+	height: 30px;
+	min-height 30px;
+	width: 100px;
+	min-width: 100px;
+    position: absolute; 
+	padding: 5px;
+	border: 1px dashed gray;
+	
+}
+
+/* Use to prevent text selection. This is applicable to elements in the layout
+   which are there for resizing and moving around, not text selection. */
+.noselect {
+	cursor: default;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* IE/Edge */
+  user-select: none;           /* non-prefixed version, currently
+                                  not supported by any browser */
 }

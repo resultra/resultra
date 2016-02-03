@@ -35,8 +35,14 @@
 	  <h1>{{.Title}} ID={{.LayoutID}}</h1>
 	  
 	<form class="ui form" id="editLayoutForm" name="editLayoutForm">
-		<div class="layoutPageDiv">
-			<div id="layoutCanvas">
+		<div class="layoutPageDiv" id="layoutPage">
+			<div id="gallerySidebar">
+				Gallery
+				<div class="draggable newField">
+					<p class="noselect">New Field</p>
+				</div>
+			</div>
+			<div id="layoutCanvas" class="droppable">
 				<div class="ui-widget-content layoutContainer draggable resizable" id="widget01">
 					<div class="field">
 						<label>Symbol Name</label> <input type="text" name="symbol" placeholder="Symbol">
@@ -49,7 +55,7 @@
 				</div>
 				<div class="ui-widget-content layoutContainer draggable resizable" id="widget03">
 					<div class="field">
-						<label>Entry Price</label> <input type="text" name="price" placeholder="Price">
+						<label class="noselect">Entry Price</label> <input type="text" name="price" placeholder="Price">
 					</div>
 				</div>
 			</div>
@@ -57,6 +63,7 @@
 				Properties
 			</div>
 		</div>
+		
 	</form>
 	   
   </body>
