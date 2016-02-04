@@ -33,7 +33,7 @@ $(document).ready(function() {
 		
 	});
 	
-	var placeholderID = "placeholderFieldID"
+	var placeholderID = "dummyPlaceholderFieldID"
 	var newFieldDraggablePlaceholderHTML = ''+
 		'<div class="ui-widget-content layoutContainer layoutField draggable resizable" id="'+placeholderID+'">' +
 			'<div class="field">'+
@@ -54,6 +54,9 @@ $(document).ready(function() {
 			 // While in layout mode, disable entry into the fields
 			 // Interestingly, there's not CSS for this.
 			 placeholder.find('input').prop('disabled',true);
+			 
+	//		 console.log("Start drag and drop: placeholder: ID=" + placeholder.attr("id"))
+			 
 			 return placeholder
 		 },
 		stack: "div", // important to keep the draggable above the other elements
@@ -120,7 +123,32 @@ $(document).ready(function() {
 			var canvasRelLeft = ui.offset.left-$(this).offset().left
 			theClone.css({top: canvasRelTop, left: canvasRelLeft, position:"absolute"});
 			$(this).append(theClone);
-		    console.log("drag stop: relTop=" + canvasRelTop + " relLeft=" + canvasRelLeft);
+			var placeholderID = $(theClone).attr("id");
+		    console.log("End Drag and drop: placeholder ID=" + placeholderID + " relTop=" + canvasRelTop + " relLeft=" + canvasRelLeft);
+			
+			var layoutContainerParams = JSON.stringify({
+				placeholderID: placeholderID,
+			//	positionTop: canvasRelTop,
+				positionLeft: canvasRelLeft,
+				parentLayoutID: layoutID
+			});
+			
+			console.log("Sending params for layout:" + layoutContainerParams)
+			
+	        $.ajax({
+	           url: '/api/newLayoutContainer',
+				contentType : 'application/json',
+	           data: layoutContainerParams,
+	           error: function() {
+	              alert("Error occurred getting new ID for layout field")
+	           },
+	           dataType: 'json',
+	           success: function(data) {
+	              console.log("Done getting new ID for layout field: TBD");
+	           },
+	           type: 'POST'
+	        });
+			
         }
     });
 	

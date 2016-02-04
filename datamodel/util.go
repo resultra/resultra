@@ -27,6 +27,10 @@ func encodeUniqueEntityIDToStr(key *datastore.Key) (string, error) {
 	return encodedID, nil
 }
 
+func decodeUniqueEntityIDStrToInt(encodedID string) (int64, error) {
+	return strconv.ParseInt(encodedID, 36, 64)
+}
+
 func sanitizeName(unsanitizedName string) (string, error) {
 
 	stripWhite := strings.TrimSpace(unsanitizedName) // strip leading & trailing whitespace
