@@ -33,14 +33,8 @@ $(document).ready(function() {
 		
 	});
 	
-	var placeholderID = "dummyPlaceholderFieldID"
-	var newFieldDraggablePlaceholderHTML = ''+
-		'<div class="ui-widget-content layoutContainer layoutField draggable resizable" id="'+placeholderID+'">' +
-			'<div class="field">'+
-				'<label>New Field</label>'+
-				'<input type="text" name="symbol" class="layoutInput" placeholder="Enter">'+
-			'</div>'+
-		'</div>`';
+	var placeholderID = "placeholderContainerID"
+	var placeholderNum = 1
 	
 	$(".newField").draggable({
 		
@@ -50,6 +44,18 @@ $(document).ready(function() {
 			 // Instead of dragging the icon in the gallery, drag a "placeholder image" of the
 			 // field itself. This allows the user to see the proporitions of the field relative
 			 // to the other elements already on the canvas.
+			//
+			// The placeholderID is a temporary ID to assign to the div. After saving the 
+			// new object via JSON call, it is replaced with a unique ID created by the server.
+			placeholderID = "placeholderContainerID" + placeholderNum.toString()
+			placeholderNum = placeholderNum + 1
+			var newFieldDraggablePlaceholderHTML = ''+
+				'<div class="ui-widget-content layoutContainer layoutField draggable resizable" id="'+placeholderID+'">' +
+					'<div class="field">'+
+						'<label>New Field</label>'+
+						'<input type="text" name="symbol" class="layoutInput" placeholder="Enter">'+
+					'</div>'+
+				'</div>`';
 			 var placeholder = $(newFieldDraggablePlaceholderHTML); 
 			 // While in layout mode, disable entry into the fields
 			 // Interestingly, there's not CSS for this.
@@ -128,12 +134,12 @@ $(document).ready(function() {
 			
 			var layoutContainerParams = JSON.stringify({
 				placeholderID: placeholderID,
-			//	positionTop: canvasRelTop,
+				positionTop: canvasRelTop,
 				positionLeft: canvasRelLeft,
 				parentLayoutID: layoutID
 			});
 			
-			console.log("Sending params for layout:" + layoutContainerParams)
+			console.log("Sending params for new layout container:" + layoutContainerParams)
 			
 	        $.ajax({
 	           url: '/api/newLayoutContainer',
@@ -144,7 +150,20 @@ $(document).ready(function() {
 	           },
 	           dataType: 'json',
 	           success: function(data) {
-	              console.log("Done getting new ID for layout field: TBD");
+	              console.log("Done getting new ID:response=" + JSON.stringify(data));
+				  if(data.hasOwnProperty("layoutContainerID") && 
+					  data.hasOwnProperty("placeholderID")) {
+						  // 
+			              console.log("New ID for layout field:" + data.layoutContainerID);
+						  // Replace the placeholder ID with the permanent one generated via
+						  // the API call.
+						  var placeholderContainerDiv = document.getElementById(data.placeholderID);
+						  placeholderContainerDiv.id = data.layoutContainerID;
+					  	
+					  }
+					  else {
+			              console.log("Missing properties in newLayoutContainer response:response=" + JSON.stringify(data));
+					  }
 	           },
 	           type: 'POST'
 	        });

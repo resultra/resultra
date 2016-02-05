@@ -2,6 +2,7 @@ package datamodel
 
 import (
 	"appengine"
+	"fmt"
 	"log"
 )
 
@@ -20,7 +21,7 @@ func NewLayout(appEngContext appengine.Context, layoutName string) (string, erro
 	}
 
 	var newLayout = Layout{sanitizedLayoutName}
-	layoutID, insertErr := insertNewEntity(appEngContext, layoutEntityKind, &newLayout)
+	layoutID, insertErr := insertNewEntity(appEngContext, layoutEntityKind, nil, &newLayout)
 	if insertErr != nil {
 		return "", insertErr
 	}
@@ -33,6 +34,10 @@ func NewLayout(appEngContext appengine.Context, layoutName string) (string, erro
 }
 
 type LayoutContainerParams struct {
+	// PlaceholderID is a temporary ID assigned by the client. It is passed back
+	// to the client after the real datastore ID is assigned, allowing the client
+	// to swizzle/replace the placeholder ID with the real one.
+	PlaceholderID  string `json:"placeholderID" datastore:"-"`  // don't save to datastore
 	ParentLayoutID string `json:"parentLayoutID" datastore:"-"` // don't save to datastore
 	PositionTop    int    `json:"positionTop"`
 	PositionLeft   int    `json:"positionLeft"`
@@ -41,18 +46,24 @@ type LayoutContainerParams struct {
 func NewUninitializedLayoutContainerParams() LayoutContainerParams {
 	// Use -1 for top and left, so a failure of a client to initialize
 	// can be detected.
-	return LayoutContainerParams{"", -1, -1}
+	return LayoutContainerParams{"", "", -1, -1}
 }
 
 func NewLayoutContainer(appEngContext appengine.Context, containerParams LayoutContainerParams) (string, error) {
 
-	var parentLayout = Layout{}
-	if err := getEntityByID(containerParams.ParentLayoutID, appEngContext,
-		layoutEntityKind, &parentLayout); err != nil {
+	if containerParams.PositionTop < 0 || containerParams.PositionLeft < 0 {
+		return "", fmt.Errorf("Invalid layout container position: top=%v, left=%v",
+			containerParams.PositionTop, containerParams.PositionLeft)
+	}
+
+	parentLayoutKey, err := getExistingRootEntityKey(appEngContext, layoutEntityKind,
+		containerParams.ParentLayoutID)
+	if err != nil {
 		return "", err
 	}
 
-	containerID, insertErr := insertNewEntity(appEngContext, layoutContainerEntityKind, &containerParams)
+	containerID, insertErr := insertNewEntity(appEngContext, layoutContainerEntityKind,
+		parentLayoutKey, &containerParams)
 	if insertErr != nil {
 		return "", insertErr
 	}
