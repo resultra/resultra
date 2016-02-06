@@ -1,4 +1,31 @@
 
+function jsonAPIRequest(apiName,requestData, successFunc)
+{
+	var jsonReqData = JSON.stringify(requestData)
+			
+	// TODO - In debug builds, the API logging could be enabled, but disabled in production
+	console.log("JSON API Request: api name = " + apiName + " requestData =" + jsonReqData)
+	
+    $.ajax({
+       url: '/api/'+ apiName,
+		contentType : 'application/json',
+       data: jsonReqData,
+       error: function() {
+		  var errMsg = "ERROR: API Request failed: api name = " + apiName + " requestData =" + jsonReqData
+		  console.log(errMsg)
+          alert(errMsg)
+       },
+       dataType: 'json',
+       success: function(replyData) {
+		  console.log("JSON API Request succeeded: api name = " + apiName + " replyData =" + JSON.stringify(replyData))
+		  successFunc(replyData)
+       },
+       type: 'POST'
+    });
+	
+}
+
+
 
 // A placeholderID is a temporary ID to assign to the div. After saving the 
 // new object via JSON call, it is replaced with a unique ID created by the server.
@@ -54,32 +81,15 @@ function initContainerEditBehavior(container)
 
 		stop: function(event, ui) {  
 				  
-	  			var layoutContainerParams = JSON.stringify({
-	  				parentLayoutID: layoutID,
-	  				containerID: event.target.id,
-	  				positionTop: ui.position.top,
-	  				positionLeft: ui.position.left,
-	  				sizeWidth: ui.size.width,
-	  				sizeHeight: ui.size.height
-	  			});
-			  console.log("resize stop: id: " + event.target.id);
-			console.log("Sending params to resize layout container:" + layoutContainerParams)
-	
-		        $.ajax({
-		           url: '/api/resizeLayoutContainer',
-					contentType : 'application/json',
-		           data: layoutContainerParams,
-		           error: function() {
-		              alert("ERROR: Couldn't resizelayout field")
-		           },
-		           dataType: 'json',
-		           success: function(data) {
-		              console.log("Done resizing new ID: AJAX response=" + JSON.stringify(data));
-		           },
-		           type: 'POST'
-		        });
+	  			var layoutContainerParams = {
+	  				parentLayoutID: layoutID,containerID: event.target.id,
+	  				positionTop: ui.position.top,positionLeft: ui.position.left,
+	  				sizeWidth: ui.size.width, sizeHeight: ui.size.height
+	  			};
+		
+			 	jsonAPIRequest("resizeLayoutContainer",layoutContainerParams,function(replyData) {})	
 				  
-			  } // 
+			  } // stop function
 	});
 	
 }
@@ -91,33 +101,23 @@ function newLayoutContainer(containerParams)
 			
 	console.log("newLayoutContainer: params for new layout container:" + jsonReqData)
 	
-    $.ajax({
-       url: '/api/newLayoutContainer',
-		contentType : 'application/json',
-       data: jsonReqData,
-       error: function() {
-          alert("ERROR: Couldn't get new ID for layout field")
-       },
-       dataType: 'json',
-       success: function(data) {
-          console.log("Done getting new ID:response=" + JSON.stringify(data));
+	jsonAPIRequest("newLayoutContainer",containerParams,function(replyData) {
+          console.log("Done getting new ID:response=" + JSON.stringify(replyData));
 		  // TODO - Define some kind of common "validateJSONResponse" function
 		  // and possibly write errors back to a server log.
-		  if(data.hasOwnProperty("layoutContainerID") && 
-			  data.hasOwnProperty("placeholderID")) {
+		  if(replyData.hasOwnProperty("layoutContainerID") && 
+			  replyData.hasOwnProperty("placeholderID")) {
 				  // Replace the placeholder ID with the permanent one generated via
 				  // the API call.
-				  var placeholderContainerDiv = document.getElementById(data.placeholderID);
-				  placeholderContainerDiv.id = data.layoutContainerID;
+				  var placeholderContainerDiv = document.getElementById(replyData.placeholderID);
+				  placeholderContainerDiv.id = replyData.layoutContainerID;
 			  	
 			  }
 			  else {
-	              console.log("ERROR: Missing properties in newLayoutContainer response:response=" + JSON.stringify(data));
+	              console.log("ERROR: Missing properties in newLayoutContainer response:response=" + JSON.stringify(replyData));
 			  }
-       },
-       type: 'POST'
-    });
-	
+       })
+		
 }
 
 function droppedObjGeometry(dropDest,droppedObj,ui)
@@ -131,39 +131,25 @@ function droppedObjGeometry(dropDest,droppedObj,ui)
 	return { top: relTop, left: relLeft, width: objWidth, height: objHeight }
 }
 
+
 function initCanvas()
 {
-	var jsonReqData = JSON.stringify({layoutID: layoutID})
-			
-	console.log("getLayoutContainers: params for new layout container:" + jsonReqData)
-	
-    $.ajax({
-       url: '/api/getLayoutContainers',
-		contentType : 'application/json',
-       data: jsonReqData,
-       error: function() {
-          alert("ERROR: Couldn't get new ID for layout field")
-       },
-       dataType: 'json',
-       success: function(data) {
-          console.log("Done getting getLayoutContainers:response=" + JSON.stringify(data));
-		  for(containerIter in data)
-		  {
-			container = data[containerIter]
-		  	console.log("initializing container: id=" + JSON.stringify(container))
-			var containerHTML = fieldContainerHTML(container.containerID);
-			var containerObj = $(containerHTML)
-			containerObj.find('input').prop('disabled',true);
-			initContainerEditBehavior(containerObj)
-			$("#layoutCanvas").append(containerObj)
-			containerObj.css({top: container.positionTop, left: container.positionLeft, 
-					width: container.sizeWidth, height: container.sizeHeight,
-				position:"absolute"});
-		  }
-       },
-       type: 'POST'
-    });
-	
+	var jsonReqData = jsonAPIRequest("getLayoutContainers",{layoutID: layoutID},
+		function(replyData) {
+			  for(containerIter in replyData)
+			  {
+				container = replyData[containerIter]
+			  	console.log("initializing container: id=" + JSON.stringify(container))
+				var containerHTML = fieldContainerHTML(container.containerID);
+				var containerObj = $(containerHTML)
+				containerObj.find('input').prop('disabled',true);
+				initContainerEditBehavior(containerObj)
+				$("#layoutCanvas").append(containerObj)
+				containerObj.css({top: container.positionTop, left: container.positionLeft, 
+						width: container.sizeWidth, height: container.sizeHeight,
+					position:"absolute"});
+				} // for each container
+		 })	
 }
 
 $(document).ready(function() {
