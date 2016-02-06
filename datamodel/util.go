@@ -3,6 +3,7 @@ package datamodel
 import (
 	"appengine/datastore"
 	"errors"
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -28,7 +29,13 @@ func encodeUniqueEntityIDToStr(key *datastore.Key) (string, error) {
 }
 
 func decodeUniqueEntityIDStrToInt(encodedID string) (int64, error) {
-	return strconv.ParseInt(encodedID, 36, 64)
+
+	decodeVal, err := strconv.ParseInt(encodedID, 36, 64)
+	if err != nil {
+		return 0, fmt.Errorf("Can't decode datastore id: expecting base36 integer string, got %v", encodedID)
+	}
+
+	return decodeVal, nil
 }
 
 func sanitizeName(unsanitizedName string) (string, error) {

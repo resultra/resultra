@@ -34,26 +34,28 @@ func NewLayout(appEngContext appengine.Context, layoutName string) (string, erro
 }
 
 type LayoutContainerParams struct {
-	// PlaceholderID is a temporary ID assigned by the client. It is passed back
+	// ContainerID is initially assigned a temporary ID assigned by the client. It is passed back
 	// to the client after the real datastore ID is assigned, allowing the client
 	// to swizzle/replace the placeholder ID with the real one.
-	PlaceholderID  string `json:"placeholderID" datastore:"-"`  // don't save to datastore
+	ContainerID    string `json:"containerID" datastore:"-"`    // don't save to datastore
 	ParentLayoutID string `json:"parentLayoutID" datastore:"-"` // don't save to datastore
 	PositionTop    int    `json:"positionTop"`
 	PositionLeft   int    `json:"positionLeft"`
+	SizeWidth      int    `json:"sizeWidth"`
+	SizeHeight     int    `json:"sizeHeight"`
 }
 
 func NewUninitializedLayoutContainerParams() LayoutContainerParams {
 	// Use -1 for top and left, so a failure of a client to initialize
 	// can be detected.
-	return LayoutContainerParams{"", "", -1, -1}
+	return LayoutContainerParams{"", "", -1, -1, -1, -1}
 }
 
 func NewLayoutContainer(appEngContext appengine.Context, containerParams LayoutContainerParams) (string, error) {
 
-	if containerParams.PositionTop < 0 || containerParams.PositionLeft < 0 {
-		return "", fmt.Errorf("Invalid layout container position: top=%v, left=%v",
-			containerParams.PositionTop, containerParams.PositionLeft)
+	if containerParams.PositionTop < 0 || containerParams.PositionLeft < 0 ||
+		containerParams.SizeWidth <= 0 || containerParams.SizeHeight <= 0 {
+		return "", fmt.Errorf("Invalid layout container parameters: %+v", containerParams)
 	}
 
 	parentLayoutKey, err := getExistingRootEntityKey(appEngContext, layoutEntityKind,
@@ -68,8 +70,32 @@ func NewLayoutContainer(appEngContext appengine.Context, containerParams LayoutC
 		return "", insertErr
 	}
 
-	log.Printf("NewLayout: Created new Layout container: id=%v", containerID)
+	log.Printf("INFO: API: NewLayout: Created new Layout container: id=%v params=%+v",
+		containerID, containerParams)
 
 	return containerID, nil
+
+}
+
+func ResizeLayoutContainer(appEngContext appengine.Context, resizeParams LayoutContainerParams) error {
+
+	if resizeParams.PositionTop < 0 || resizeParams.PositionLeft < 0 ||
+		resizeParams.SizeWidth <= 0 || resizeParams.SizeHeight <= 0 {
+		return fmt.Errorf("Invalid layout container resize parameters: %+v", resizeParams)
+	}
+
+	parentLayoutKey, err := getExistingRootEntityKey(appEngContext, layoutEntityKind,
+		resizeParams.ParentLayoutID)
+	if err != nil {
+		return err
+	}
+
+	if updateErr := updateExistingEntity(appEngContext,
+		resizeParams.ContainerID, layoutContainerEntityKind,
+		parentLayoutKey, &resizeParams); updateErr != nil {
+		return updateErr
+	}
+
+	return nil
 
 }

@@ -19,7 +19,7 @@ func newLayout(w http.ResponseWriter, r *http.Request) {
 	if layoutID, err := datamodel.NewLayout(appEngCntxt, layoutParam["name"]); err != nil {
 		writeErrorResponse(w, err)
 	} else {
-		writeJSONResponse(w, map[string]string{"layoutID": layoutID})
+		writeJSONResponse(w, JSONParams{"layoutID": layoutID})
 	}
 
 }
@@ -32,7 +32,7 @@ func newLayoutContainer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(containerParams.PlaceholderID) == 0 {
+	if len(containerParams.ContainerID) == 0 {
 		writeErrorResponse(w, errors.New("ERROR: API: newLayoutContainer: Missing placeholder ID in request"))
 		return
 	}
@@ -43,7 +43,30 @@ func newLayoutContainer(w http.ResponseWriter, r *http.Request) {
 	} else {
 		writeJSONResponse(w, JSONParams{
 			"layoutContainerID": containerID,
-			"placeholderID":     containerParams.PlaceholderID})
+			"placeholderID":     containerParams.ContainerID})
+	}
+
+}
+
+func resizeLayoutContainer(w http.ResponseWriter, r *http.Request) {
+
+	resizeParams := datamodel.NewUninitializedLayoutContainerParams()
+	if err := decodeJSONRequest(r, &resizeParams); err != nil {
+		writeErrorResponse(w, err)
+		return
+	}
+
+	if len(resizeParams.ContainerID) == 0 {
+		writeErrorResponse(w, errors.New("ERROR: API: newLayoutContainer: Missing placeholder ID in request"))
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+
+	if err := datamodel.ResizeLayoutContainer(appEngCntxt, resizeParams); err != nil {
+		writeErrorResponse(w, err)
+	} else {
+		writeJSONResponse(w, JSONParams{})
 	}
 
 }

@@ -96,9 +96,9 @@ $(document).ready(function() {
 				clone: "original",				
 				stop: function(event, ui) {
 						  var layoutPos = {
-							  x: ui.position.left,
-							  y: ui.position.top,
-						  };
+							  positionLeft: ui.position.left,
+							  positionTop: ui.position.top,
+						   };
 				  
 						  console.log("drag stop: id: " + event.target.id);
 						  console.log("drag stop: new position: " + JSON.stringify(layoutPos));
@@ -112,15 +112,34 @@ $(document).ready(function() {
 				minWidth: 100,
 				grid: 20, // snap to grid during resize
 		
-				stop: function(event, ui) {
-				  
-						  var layoutDim = {
-							  width: ui.size.width,
-							  height: ui.size.height
-						  };
-     
-						  console.log("resize stop: id: " + event.target.id);
-				          console.log("resize stop: new dimensions:" + JSON.stringify(layoutDim));
+				stop: function(event, ui) {  
+						  
+			  			var layoutContainerParams = JSON.stringify({
+			  				parentLayoutID: layoutID,
+			  				containerID: event.target.id,
+			  				positionTop: ui.position.top,
+			  				positionLeft: ui.position.left,
+			  				sizeWidth: ui.size.width,
+			  				sizeHeight: ui.size.height
+			  			});
+					  console.log("resize stop: id: " + event.target.id);
+			          console.log("resize stop: new dimensions:" + JSON.stringify(layoutContainerParams));
+						console.log("Sending params to resize layout container:" + layoutContainerParams)
+			
+				        $.ajax({
+				           url: '/api/resizeLayoutContainer',
+							contentType : 'application/json',
+				           data: layoutContainerParams,
+				           error: function() {
+				              alert("ERROR: Couldn't resizelayout field")
+				           },
+				           dataType: 'json',
+				           success: function(data) {
+				              console.log("Done resizing new ID: AJAX response=" + JSON.stringify(data));
+				           },
+				           type: 'POST'
+				        });
+						  
 					  } // 
 			});
 			// Get the relative position of the field being dragged
@@ -133,10 +152,12 @@ $(document).ready(function() {
 		    console.log("End Drag and drop: placeholder ID=" + placeholderID + " relTop=" + canvasRelTop + " relLeft=" + canvasRelLeft);
 			
 			var layoutContainerParams = JSON.stringify({
-				placeholderID: placeholderID,
+				parentLayoutID: layoutID,
+				containerID: placeholderID,
 				positionTop: canvasRelTop,
 				positionLeft: canvasRelLeft,
-				parentLayoutID: layoutID
+				sizeWidth: $(theClone).width(),
+				sizeHeight: $(theClone).height()
 			});
 			
 			console.log("Sending params for new layout container:" + layoutContainerParams)
@@ -146,11 +167,13 @@ $(document).ready(function() {
 				contentType : 'application/json',
 	           data: layoutContainerParams,
 	           error: function() {
-	              alert("Error occurred getting new ID for layout field")
+	              alert("ERROR: Couldn't get new ID for layout field")
 	           },
 	           dataType: 'json',
 	           success: function(data) {
 	              console.log("Done getting new ID:response=" + JSON.stringify(data));
+				  // TODO - Define some kind of common "validateJSONResponse" function
+				  // and possibly write errors back to a server log.
 				  if(data.hasOwnProperty("layoutContainerID") && 
 					  data.hasOwnProperty("placeholderID")) {
 						  // 
@@ -162,7 +185,7 @@ $(document).ready(function() {
 					  	
 					  }
 					  else {
-			              console.log("Missing properties in newLayoutContainer response:response=" + JSON.stringify(data));
+			              console.log("ERROR: Missing properties in newLayoutContainer response:response=" + JSON.stringify(data));
 					  }
 	           },
 	           type: 'POST'
@@ -191,17 +214,11 @@ $(document).ready(function() {
 		          console.log("resize stop: new dimensions:" + JSON.stringify(layoutDim));
 			  } // 
 	});
-
-	// While in layout mode, disable entry into the fields
-	$('input[type=text]').prop('disabled', true);
 	
 	// Set the initial positions of the page elements. 
 	// TODO - The list of layout objects and their positions
 	// needs to come from the server.
 	$("#layoutCanvas").css({position: 'relative'});
-	$("#widget01").css({top: 100, left: 100, width: 160, height: 75, position:'absolute'});
-	$("#widget02").css({top: 200, left: 100, width: 160, height: 75, position:'absolute'});
-	$("#widget03").css({top: 300, left: 100, width: 160, height: 75, position:'absolute'});
 	
 	$('.layoutPageDiv').layout({
 	    center__paneSelector: "#layoutCanvas",
