@@ -131,6 +131,41 @@ function droppedObjGeometry(dropDest,droppedObj,ui)
 	return { top: relTop, left: relLeft, width: objWidth, height: objHeight }
 }
 
+function initCanvas()
+{
+	var jsonReqData = JSON.stringify({layoutID: layoutID})
+			
+	console.log("getLayoutContainers: params for new layout container:" + jsonReqData)
+	
+    $.ajax({
+       url: '/api/getLayoutContainers',
+		contentType : 'application/json',
+       data: jsonReqData,
+       error: function() {
+          alert("ERROR: Couldn't get new ID for layout field")
+       },
+       dataType: 'json',
+       success: function(data) {
+          console.log("Done getting getLayoutContainers:response=" + JSON.stringify(data));
+		  for(containerIter in data)
+		  {
+			container = data[containerIter]
+		  	console.log("initializing container: id=" + JSON.stringify(container))
+			var containerHTML = fieldContainerHTML(container.containerID);
+			var containerObj = $(containerHTML)
+			containerObj.find('input').prop('disabled',true);
+			initContainerEditBehavior(containerObj)
+			$("#layoutCanvas").append(containerObj)
+			containerObj.css({top: container.positionTop, left: container.positionLeft, 
+					width: container.sizeWidth, height: container.sizeHeight,
+				position:"absolute"});
+		  }
+       },
+       type: 'POST'
+    });
+	
+}
+
 $(document).ready(function() {
 		
 	
@@ -197,6 +232,8 @@ $(document).ready(function() {
 	    east__paneSelector:   "#propertiesSidebar",
 		west__paneSelector: "#gallerySidebar"
 	  });
+	  
+	initCanvas()
 
 
 });
