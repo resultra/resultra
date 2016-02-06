@@ -2,6 +2,7 @@ package datamodel
 
 import (
 	"appengine"
+	"appengine/datastore"
 	"fmt"
 	"log"
 )
@@ -97,5 +98,35 @@ func ResizeLayoutContainer(appEngContext appengine.Context, resizeParams LayoutC
 	}
 
 	return nil
+
+}
+
+func GetLayoutContainers(appEngContext appengine.Context, parentLayoutID string) ([]LayoutContainerParams, error) {
+
+	parentLayoutKey, err := getExistingRootEntityKey(appEngContext, layoutEntityKind,
+		parentLayoutID)
+	if err != nil {
+		return nil, err
+	}
+
+	containerQuery := datastore.NewQuery(layoutContainerEntityKind).Ancestor(parentLayoutKey)
+	var layoutContainers []LayoutContainerParams
+	keys, err := containerQuery.GetAll(appEngContext, &layoutContainers)
+	if err != nil {
+		return nil, fmt.Errorf("Unable to retrieve layout containers: layout id=%v key=%+v", parentLayoutID, parentLayoutKey)
+	} else {
+		layoutContainersWithIDs := make([]LayoutContainerParams, len(layoutContainers))
+		for i, c := range layoutContainers {
+			containerKey := keys[i]
+			containerID, encodeErr := encodeUniqueEntityIDToStr(containerKey)
+			if encodeErr != nil {
+				return nil, fmt.Errorf("Failed to encode unique ID for layout container: key=%+v, encode err=%v", containerKey, encodeErr)
+			}
+			c.ParentLayoutID = parentLayoutID
+			c.ContainerID = containerID
+			layoutContainersWithIDs[i] = c
+		}
+		return layoutContainersWithIDs, nil
+	}
 
 }

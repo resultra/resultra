@@ -3,6 +3,7 @@ package controller
 import (
 	"appengine"
 	"errors"
+	"fmt"
 	"net/http"
 	"resultra/datasheet/datamodel"
 )
@@ -67,6 +68,30 @@ func resizeLayoutContainer(w http.ResponseWriter, r *http.Request) {
 		writeErrorResponse(w, err)
 	} else {
 		writeJSONResponse(w, JSONParams{})
+	}
+
+}
+
+func getLayoutContainers(w http.ResponseWriter, r *http.Request) {
+
+	var jsonParams JSONParams
+	if err := decodeJSONRequest(r, &jsonParams); err != nil {
+		writeErrorResponse(w, err)
+		return
+	}
+
+	layoutID, found := jsonParams["layoutID"]
+	if found != true || len(layoutID) == 0 {
+		writeErrorResponse(w, fmt.Errorf("Missing layoutID parameter in request"))
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+
+	if layoutContainers, err := datamodel.GetLayoutContainers(appEngCntxt, layoutID); err != nil {
+		writeErrorResponse(w, err)
+	} else {
+		writeJSONResponse(w, layoutContainers)
 	}
 
 }
