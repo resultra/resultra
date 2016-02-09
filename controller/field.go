@@ -22,3 +22,14 @@ func newField(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func getFieldsByType(w http.ResponseWriter, r *http.Request) {
+
+	appEngCntxt := appengine.NewContext(r)
+	if fieldsByType, err := datamodel.GetFieldsByType(appEngCntxt); err != nil {
+		writeErrorResponse(w, err)
+	} else {
+		writeJSONResponse(w, fieldsByType)
+	}
+
+}
