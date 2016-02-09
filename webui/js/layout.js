@@ -97,27 +97,85 @@ function initContainerEditBehavior(container)
 
 function newLayoutContainer(containerParams)
 {
-	var jsonReqData = JSON.stringify(containerParams)
-			
-	console.log("newLayoutContainer: params for new layout container:" + jsonReqData)
+	var placeholderID = containerParams.containerID
+	var containerCreated = false
 	
-	jsonAPIRequest("newLayoutContainer",containerParams,function(replyData) {
-          console.log("Done getting new ID:response=" + JSON.stringify(replyData));
-		  // TODO - Define some kind of common "validateJSONResponse" function
-		  // and possibly write errors back to a server log.
-		  if(replyData.hasOwnProperty("layoutContainerID") && 
-			  replyData.hasOwnProperty("placeholderID")) {
-				  // Replace the placeholder ID with the permanent one generated via
-				  // the API call.
-				  var placeholderContainerDiv = document.getElementById(replyData.placeholderID);
-				  placeholderContainerDiv.id = replyData.layoutContainerID;
-			  	
-			  }
-			  else {
-	              console.log("ERROR: Missing properties in newLayoutContainer response:response=" + JSON.stringify(replyData));
-			  }
-       })
+	$( "#newTextBox" ).form({
+    	fields: {
+	        textBoxFieldSelection: {
+	          identifier: 'textBoxFieldSelection',
+	          rules: [
+	            {
+	              type   : 'empty',
+	              prompt : 'Please select a field'
+	            }
+	          ]
+	        }
+     	},
+		inline : true,
+  	})
+	
+	function saveNewTextBox()
+	{
+		jsonAPIRequest("newLayoutContainer",containerParams,function(replyData) {
+	          console.log("Done getting new ID:response=" + JSON.stringify(replyData));
+			  // TODO - Define some kind of common "validateJSONResponse" function
+			  // and possibly write errors back to a server log.
+  
+			  if(replyData.hasOwnProperty("layoutContainerID") && 
+				  replyData.hasOwnProperty("placeholderID")) {
+					  // Replace the placeholder ID with the permanent one generated via
+					  // the API call.
+					  $('#'+placeholderID).attr("id",replyData.layoutContainerID)
+	 				  
+					  containerCreated = true
+					  dialog.dialog("close")
+				  }
+				  else {
+		              console.log("ERROR: Missing properties in newLayoutContainer response:response=" + JSON.stringify(replyData));
+					  dialog.dialog("close")
+				  }
+	       }) // newLayoutContainer API request
 		
+	}
+	
+    dialog = $( "#newTextBox" ).dialog({
+      autoOpen: false,
+      height: 325, width: 300,
+      modal: true,
+      buttons: {
+        "Create Text Box": function() {
+			
+			if($( "#newTextBox" ).form('validate form')) {
+				saveNewTextBox()
+				
+			} // if validate form
+         }, // Create Text Box function
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+		  console.log("Close dialog")
+		  if(!containerCreated)
+		  {
+			  // If the the text box creation is not complete, remove the placeholder
+			  // from the canvas.
+			  $('#'+placeholderID).remove()
+		  }
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit", function( event ) {
+      	event.preventDefault();
+		if($( "#newTextBox" ).form('validate form')) {
+			saveNewTextBox()
+		}
+    });
+	
+	
+	$( "#newTextBox" ).dialog("open")
+	
 }
 
 function droppedObjGeometry(dropDest,droppedObj,ui)
@@ -206,7 +264,14 @@ $(document).ready(function() {
 			newLayoutContainer(layoutContainerParams)
 						
         }
-    });
+    }); // #layoutCanvas droppable
+	
+	
+	// Initialize the newTextBox dialog with the minimum parameters. This is necessary
+	// to hide the dialog from view when the document is initially loaded. The
+	// dialog is fully re-initialized just prior to it being opened.
+    $( "#newTextBox" ).dialog({ autoOpen: false })
+ 
 		
 	// Set the initial positions of the page elements. 
 	// TODO - The list of layout objects and their positions
