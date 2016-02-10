@@ -19,6 +19,10 @@ var validNameRegexp = regexp.MustCompile("^[^\t\n\f\r ][^\t\n\f\r]*$")
 // encoding is also more compact than an base 10 format.
 func encodeUniqueEntityIDToStr(key *datastore.Key) (string, error) {
 
+	if key == nil {
+		return "", errors.New("Error decoding datastore ID: cannot decode nil key")
+	}
+
 	id := key.IntID()
 	if id == 0 {
 		return "", errors.New("Error encoding datastore ID: cannot encode 0")

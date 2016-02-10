@@ -81,8 +81,8 @@ function initContainerEditBehavior(container)
 				  
 	  			var layoutContainerParams = {
 	  				parentLayoutID: layoutID,containerID: event.target.id,
-	  				positionTop: ui.position.top,positionLeft: ui.position.left,
-	  				sizeWidth: ui.size.width, sizeHeight: ui.size.height
+	  				geometry: { positionTop: ui.position.top,positionLeft: ui.position.left,
+						sizeWidth: ui.size.width, sizeHeight: ui.size.height }
 	  			};
 		
 			 	jsonAPIRequest("resizeLayoutContainer",layoutContainerParams,function(replyData) {})	
@@ -115,9 +115,12 @@ function newLayoutContainer(containerParams)
 	
 	function saveNewTextBox()
 	{
-	  var fieldID = $( "#newTextBox" ).form('get value','textBoxFieldSelection')
-	  console.log("saveNewTextBox: Selected field ID: " + fieldID)
-
+		
+		// Complete the parameters to create the new layout container by including the 
+		// fieldID selected in the dialog box.
+		var fieldID = $( "#newTextBox" ).form('get value','textBoxFieldSelection')
+		console.log("saveNewTextBox: Selected field ID: " + fieldID)
+		containerParams["fieldID"] = fieldID
 
 		jsonAPIRequest("newLayoutContainer",containerParams,function(replyData) {
 	          console.log("Done getting new ID:response=" + JSON.stringify(replyData));
@@ -196,6 +199,24 @@ function initCanvas()
 {
 	var jsonReqData = jsonAPIRequest("getLayoutEditInfo",{layoutID: layoutID},
 		function(replyData) {
+			// Populate the selection boxes used in the dialogs to create new
+			// text boxes.
+			 var textFields = replyData.fieldsByType.textFields
+			 for (textFieldIter in textFields) {
+			 	console.log("Text field: " + textFields[textFieldIter].fieldInfo.name)
+
+			 	// Populate a map/dictionary of field IDs to the field information.
+			 	// This is needed when creating new layout elements (text boxes, etc.),
+			 	// so the fields information can be used after creation of the layout
+			 	// element.
+			 	fieldsByID[textFields[textFieldIter].fieldID] = textFields[textFieldIter].fieldInfo
+
+			 	var selectFieldOptionHTML = '<option value="' +
+			 		textFields[textFieldIter].fieldID + '">' +
+			 		textFields[textFieldIter].fieldInfo.name + '</option>'
+			 	$("#textBoxFieldSelection").append(selectFieldOptionHTML)
+			 }
+
 			  for(containerIter in replyData.layoutContainers)
 			  {
 				container = replyData.layoutContainers[containerIter]
@@ -203,31 +224,15 @@ function initCanvas()
 				var containerHTML = fieldContainerHTML(container.containerID);
 				var containerObj = $(containerHTML)
 				containerObj.find('input').prop('disabled',true);
+				containerObj.find('label').text(fieldsByID[container.fieldID].name)
 				initContainerEditBehavior(containerObj)
 				$("#layoutCanvas").append(containerObj)
-				containerObj.css({top: container.positionTop, left: container.positionLeft, 
-						width: container.sizeWidth, height: container.sizeHeight,
+				var geometry = container.geometry
+				containerObj.css({top: geometry.positionTop, left: geometry.positionLeft, 
+						width: geometry.sizeWidth, height: geometry.sizeHeight,
 					position:"absolute"});
 				} // for each container
 				
-				// Populate the selection boxes used in the dialogs to create new
-				// text boxes.
-			 var textFields = replyData.fieldsByType.textFields
-				for(textFieldIter in textFields)
-				{
-					console.log("Text field: " + textFields[textFieldIter].fieldInfo.name)
-					
-					// Populate a map/dictionary of field IDs to the field information.
-					// This is needed when creating new layout elements (text boxes, etc.),
-					// so the fields information can be used after creation of the layout
-					// element.
-					fieldsByID[textFields[textFieldIter].fieldID] = textFields[textFieldIter].fieldInfo
-					
-					var selectFieldOptionHTML = '<option value="' + 
-						textFields[textFieldIter].fieldID + '">' +
-						textFields[textFieldIter].fieldInfo.name + '</option>'
-					$("#textBoxFieldSelection").append(selectFieldOptionHTML)
-				}
 		 })	
 }
 
@@ -279,8 +284,9 @@ $(document).ready(function() {
 			
 			var layoutContainerParams = {
 				parentLayoutID: layoutID, containerID: placeholderID,
-				positionTop: droppedObjGeom.top, positionLeft: droppedObjGeom.left,
-				sizeWidth: droppedObjGeom.width,sizeHeight: droppedObjGeom.height};
+				geometry: {positionTop: droppedObjGeom.top, positionLeft: droppedObjGeom.left,
+				sizeWidth: droppedObjGeom.width,sizeHeight: droppedObjGeom.height}
+				};
 			
 			newLayoutContainer(layoutContainerParams)
 						

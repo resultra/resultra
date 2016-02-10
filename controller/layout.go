@@ -51,14 +51,14 @@ func newLayoutContainer(w http.ResponseWriter, r *http.Request) {
 
 func resizeLayoutContainer(w http.ResponseWriter, r *http.Request) {
 
-	resizeParams := datamodel.NewUninitializedLayoutContainerParams()
+	resizeParams := datamodel.NewUninitializedResizeLayoutContainerParams()
 	if err := decodeJSONRequest(r, &resizeParams); err != nil {
 		writeErrorResponse(w, err)
 		return
 	}
 
 	if len(resizeParams.ContainerID) == 0 {
-		writeErrorResponse(w, errors.New("ERROR: API: newLayoutContainer: Missing placeholder ID in request"))
+		writeErrorResponse(w, errors.New("ERROR: API: newLayoutContainer: Missing container ID in request"))
 		return
 	}
 
@@ -123,12 +123,14 @@ func getLayoutEditInfo(w http.ResponseWriter, r *http.Request) {
 	layoutContainers, err := getLayoutContainersFromRequest(r)
 	if err != nil {
 		writeErrorResponse(w, err)
+		return
 	}
 
 	appEngCntxt := appengine.NewContext(r)
 	fieldsByType, err := datamodel.GetFieldsByType(appEngCntxt)
 	if err != nil {
 		writeErrorResponse(w, err)
+		return
 	}
 
 	layoutEditInfo := LayoutEditInfo{layoutContainers, fieldsByType}
