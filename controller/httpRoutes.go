@@ -15,6 +15,7 @@ func RegisterAPIHTTPHandlers() {
 	apiRouter.HandleFunc("/api/getLayoutContainers", getLayoutContainers)
 	apiRouter.HandleFunc("/api/newField", newField)
 	apiRouter.HandleFunc("/api/getFieldsByType", getFieldsByType)
+	apiRouter.HandleFunc("/api/getLayoutEditInfo", getLayoutEditInfo)
 
 	http.Handle("/api/", apiRouter)
 }

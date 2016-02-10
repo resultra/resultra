@@ -72,26 +72,67 @@ func resizeLayoutContainer(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func getLayoutContainers(w http.ResponseWriter, r *http.Request) {
-
+func getLayoutIDFromRequestParams(r *http.Request) (string, error) {
 	var jsonParams JSONParams
 	if err := decodeJSONRequest(r, &jsonParams); err != nil {
-		writeErrorResponse(w, err)
-		return
+		return "", err
 	}
 
 	layoutID, found := jsonParams["layoutID"]
 	if found != true || len(layoutID) == 0 {
-		writeErrorResponse(w, fmt.Errorf("Missing layoutID parameter in request"))
-		return
+		return "", fmt.Errorf("Missing layoutID parameter in request")
+	}
+
+	return layoutID, nil
+}
+
+func getLayoutContainersFromRequest(r *http.Request) ([]datamodel.LayoutContainerParams, error) {
+
+	layoutID, err := getLayoutIDFromRequestParams(r)
+	if err != nil {
+		return nil, err
 	}
 
 	appEngCntxt := appengine.NewContext(r)
 
 	if layoutContainers, err := datamodel.GetLayoutContainers(appEngCntxt, layoutID); err != nil {
+		return nil, err
+	} else {
+		return layoutContainers, nil
+	}
+
+}
+
+func getLayoutContainers(w http.ResponseWriter, r *http.Request) {
+
+	if layoutContainers, err := getLayoutContainersFromRequest(r); err != nil {
 		writeErrorResponse(w, err)
 	} else {
 		writeJSONResponse(w, layoutContainers)
 	}
+
+}
+
+type LayoutEditInfo struct {
+	LayoutContainers []datamodel.LayoutContainerParams `json:"layoutContainers"`
+	FieldsByType     datamodel.FieldsByType            `json:"fieldsByType"`
+}
+
+func getLayoutEditInfo(w http.ResponseWriter, r *http.Request) {
+
+	layoutContainers, err := getLayoutContainersFromRequest(r)
+	if err != nil {
+		writeErrorResponse(w, err)
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+	fieldsByType, err := datamodel.GetFieldsByType(appEngCntxt)
+	if err != nil {
+		writeErrorResponse(w, err)
+	}
+
+	layoutEditInfo := LayoutEditInfo{layoutContainers, fieldsByType}
+
+	writeJSONResponse(w, layoutEditInfo)
 
 }

@@ -25,8 +25,6 @@ function jsonAPIRequest(apiName,requestData, successFunc)
 	
 }
 
-
-
 // A placeholderID is a temporary ID to assign to the div. After saving the 
 // new object via JSON call, it is replaced with a unique ID created by the server.
 var placeholderNum = 1
@@ -45,7 +43,7 @@ function fieldContainerHTML(id)
 				'<label>New Field</label>'+
 				'<input type="text" name="symbol" class="layoutInput" placeholder="Enter">'+
 			'</div>'+
-		'</div>`';
+		'</div>';
 	return containerHTML
 }
 
@@ -117,6 +115,10 @@ function newLayoutContainer(containerParams)
 	
 	function saveNewTextBox()
 	{
+	  var fieldID = $( "#newTextBox" ).form('get value','textBoxFieldSelection')
+	  console.log("saveNewTextBox: Selected field ID: " + fieldID)
+
+
 		jsonAPIRequest("newLayoutContainer",containerParams,function(replyData) {
 	          console.log("Done getting new ID:response=" + JSON.stringify(replyData));
 			  // TODO - Define some kind of common "validateJSONResponse" function
@@ -126,6 +128,7 @@ function newLayoutContainer(containerParams)
 				  replyData.hasOwnProperty("placeholderID")) {
 					  // Replace the placeholder ID with the permanent one generated via
 					  // the API call.
+					  $('#'+placeholderID).find('label').text(fieldsByID[fieldID].name)
 					  $('#'+placeholderID).attr("id",replyData.layoutContainerID)
 	 				  
 					  containerCreated = true
@@ -145,10 +148,8 @@ function newLayoutContainer(containerParams)
       modal: true,
       buttons: {
         "Create Text Box": function() {
-			
 			if($( "#newTextBox" ).form('validate form')) {
 				saveNewTextBox()
-				
 			} // if validate form
          }, // Create Text Box function
         Cancel: function() {
@@ -173,7 +174,7 @@ function newLayoutContainer(containerParams)
 		}
     });
 	
-	
+	$('#newTextBox').form('clear') // clear any previous entries
 	$( "#newTextBox" ).dialog("open")
 	
 }
@@ -189,14 +190,15 @@ function droppedObjGeometry(dropDest,droppedObj,ui)
 	return { top: relTop, left: relLeft, width: objWidth, height: objHeight }
 }
 
+var fieldsByID = {}
 
 function initCanvas()
 {
-	var jsonReqData = jsonAPIRequest("getLayoutContainers",{layoutID: layoutID},
+	var jsonReqData = jsonAPIRequest("getLayoutEditInfo",{layoutID: layoutID},
 		function(replyData) {
-			  for(containerIter in replyData)
+			  for(containerIter in replyData.layoutContainers)
 			  {
-				container = replyData[containerIter]
+				container = replyData.layoutContainers[containerIter]
 			  	console.log("initializing container: id=" + JSON.stringify(container))
 				var containerHTML = fieldContainerHTML(container.containerID);
 				var containerObj = $(containerHTML)
@@ -207,6 +209,25 @@ function initCanvas()
 						width: container.sizeWidth, height: container.sizeHeight,
 					position:"absolute"});
 				} // for each container
+				
+				// Populate the selection boxes used in the dialogs to create new
+				// text boxes.
+			 var textFields = replyData.fieldsByType.textFields
+				for(textFieldIter in textFields)
+				{
+					console.log("Text field: " + textFields[textFieldIter].fieldInfo.name)
+					
+					// Populate a map/dictionary of field IDs to the field information.
+					// This is needed when creating new layout elements (text boxes, etc.),
+					// so the fields information can be used after creation of the layout
+					// element.
+					fieldsByID[textFields[textFieldIter].fieldID] = textFields[textFieldIter].fieldInfo
+					
+					var selectFieldOptionHTML = '<option value="' + 
+						textFields[textFieldIter].fieldID + '">' +
+						textFields[textFieldIter].fieldInfo.name + '</option>'
+					$("#textBoxFieldSelection").append(selectFieldOptionHTML)
+				}
 		 })	
 }
 

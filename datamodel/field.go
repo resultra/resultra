@@ -24,7 +24,7 @@ type FieldRef struct {
 }
 
 type FieldsByType struct {
-	StringFields []FieldRef `json:"stringFields"`
+	TextFields   []FieldRef `json:"textFields"`
 	DateFields   []FieldRef `json:"dateFields"`
 	NumberFields []FieldRef `json:"numberFields"`
 }
@@ -86,7 +86,7 @@ func GetFieldsByType(appEngContext appengine.Context) (FieldsByType, error) {
 			fieldRef := FieldRef{fieldID, Field{currField.Name, currField.Type}}
 			switch fieldRef.FieldInfo.Type {
 			case fieldTypeText:
-				fieldsByType.StringFields = append(fieldsByType.StringFields, fieldRef)
+				fieldsByType.TextFields = append(fieldsByType.TextFields, fieldRef)
 			case fieldTypeDate:
 				fieldsByType.DateFields = append(fieldsByType.DateFields, fieldRef)
 			case fieldTypeNumber:
