@@ -88,7 +88,7 @@ func getExistingRootEntityKey(appEngContext appengine.Context,
 func insertNewEntity(appEngContext appengine.Context, entityKind string,
 	parentKey *datastore.Key, src interface{}) (string, error) {
 
-	// nil argument for parentKey (no parent in this case)
+	// nil argument OK for parentKey (meaning no parent)
 	newKey := datastore.NewIncompleteKey(appEngContext, entityKind, parentKey)
 
 	putKey, err := datastore.Put(appEngContext, newKey, src)
