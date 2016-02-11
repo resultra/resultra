@@ -16,6 +16,7 @@ func init() {
 	router.HandleFunc("/dataTable", dataTable)
 	router.HandleFunc("/addRow", addRow)
 	router.HandleFunc("/editLayout/{layoutID}", editLayout)
+	router.HandleFunc("/editRecord/{layoutID}/{recordID}", editRecord)
 
 	http.Handle("/", router)
 }

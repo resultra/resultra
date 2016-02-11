@@ -1,0 +1,41 @@
+{{define "editRecord"}}
+
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "commonCSS"}}
+	<link rel="stylesheet" type="text/css" class="ui" href="/css/layout.css">
+
+	{{template "commonJS"}}
+	<script>var layoutID={{.LayoutID}};</script>
+	<script>var recordID={{.RecordID}};</script>
+	
+	<script src="/js/layoutCommon.js"></script>
+	<script src="/js/editRecord.js"></script>
+			
+  </head>
+  <body>
+	  <h1>{{.Title}} -- Layout ID={{.LayoutID}}  Record ID={{.RecordID}}</h1>
+	  
+	<form class="ui form" id="editLayoutForm" name="editLayoutForm">
+		<div class="layoutPageDiv" id="layoutPage">
+			<div id="gallerySidebar">
+				Gallery
+			</div>
+			<div id="layoutCanvas" class="droppable">
+			</div>
+			<div id="propertiesSidebar">
+				Properties
+			</div>
+		</div>
+		
+	</form>
+	
+  </form>
+	
+  </body>
+  
+</html>
+
+{{end}}
