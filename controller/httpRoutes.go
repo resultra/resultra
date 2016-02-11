@@ -13,9 +13,12 @@ func RegisterAPIHTTPHandlers() {
 	apiRouter.HandleFunc("/api/newLayoutContainer", newLayoutContainer)
 	apiRouter.HandleFunc("/api/resizeLayoutContainer", resizeLayoutContainer)
 	apiRouter.HandleFunc("/api/getLayoutContainers", getLayoutContainers)
+
 	apiRouter.HandleFunc("/api/newField", newField)
 	apiRouter.HandleFunc("/api/getFieldsByType", getFieldsByType)
 	apiRouter.HandleFunc("/api/getLayoutEditInfo", getLayoutEditInfo)
+
+	apiRouter.HandleFunc("/api/newRecord", newRecord)
 
 	http.Handle("/api/", apiRouter)
 }

@@ -9,6 +9,8 @@ import (
 
 const recordEntityKind string = "Record"
 
+//const recordCreateDateReservedPropName = "__CreateDate__"
+
 type Record map[string]interface{}
 
 func (rec *Record) Load(ch <-chan datastore.Property) error {
