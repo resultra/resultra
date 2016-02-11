@@ -1,35 +1,16 @@
+{{define "editLayout"}}
+
 <html>
   <head>
     <title>{{.Title}}</title>
 	
-	<!-- Include CSS before Javascript -->
-	<link rel="stylesheet" type="text/css" class="ui" 		href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
-	<link rel="stylesheet" type="text/css" class="ui"
-		href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
-	
-	<link rel="stylesheet" type="text/css" class="ui" 
-		href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css">
-		
-	<link rel="stylesheet" type="text/css" class="ui" 
-		href="https://cdnjs.cloudflare.com/ajax/libs/jquery-layout/1.4.3/layout-default.min.css">
-
-
-		<script>var layoutID={{.LayoutID}};</script>
+	{{template "commonCSS"}}
 	<link rel="stylesheet" type="text/css" class="ui" href="/css/layout.css">
 
-		
-	<!-- TBD - the following are 3 common include files needed throughout the project
-		It is clumsy to include them in every single HTML file and manage the 
-		dependencies for local js files this way. Can this be handled better
-		through golang's template system? -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-layout/1.4.3/jquery.layout.min.js"></script>
+	{{template "commonJS"}}
+	<script>var layoutID={{.LayoutID}};</script>
 	<script src="/js/layout.js"></script>
 	
-			
   </head>
   <body>
 	  <h1>{{.Title}} ID={{.LayoutID}}</h1>
@@ -66,11 +47,9 @@
 				  <option value="">Field to edit</option>
 				</select> 
 		    </div>
-			
-						
-	        <!-- Allow form submission with keyboard without duplicating the dialog button -->
-	         <!-- <input type="submit" tabindex="-1" style="position:absolute; top:-1000px"> -->
+
 		</form>
+		
 	</div>
 	  
   </form>
@@ -79,3 +58,5 @@
   </body>
   
 </html>
+
+{{end}}
