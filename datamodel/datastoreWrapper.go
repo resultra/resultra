@@ -114,13 +114,31 @@ func updateExistingEntity(appEngContext appengine.Context,
 
 	childKey, keyErr := newChildEntityKey(appEngContext, entityKind, encodedID, parentKey)
 	if keyErr != nil {
-		return keyErr
+		return fmt.Errorf("updateExistingEntity failed: err = %v", keyErr)
 	}
 
 	_, putErr := datastore.Put(appEngContext, childKey, src)
 	if putErr != nil {
 		return fmt.Errorf("updateExistingEntity failed: entity kind=%v,child key=%+v, parent key=%+v, datastore error=%v",
 			entityKind, childKey, parentKey, putErr)
+	}
+
+	return nil
+
+}
+
+func updateExistingRootEntity(appEngContext appengine.Context, entityKind string,
+	encodedID string, src interface{}) error {
+
+	rootKey, keyErr := newRootEntityKey(appEngContext, entityKind, encodedID)
+	if keyErr != nil {
+		return fmt.Errorf("updateExistingRootEntity failed: err = %v", keyErr)
+	}
+
+	_, putErr := datastore.Put(appEngContext, rootKey, src)
+	if putErr != nil {
+		return fmt.Errorf("updateExistingRootEntity Put() failed: entity kind=%v,root key=%+v, datastore error=%v",
+			entityKind, rootKey, putErr)
 	}
 
 	return nil
@@ -145,7 +163,7 @@ func getChildEntityByID(encodedID string, appEngContext appengine.Context, entit
 	return nil
 }
 
-func getEntityByID(encodedID string, appEngContext appengine.Context, entityKind string, dest interface{}) error {
+func getRootEntityByID(appEngContext appengine.Context, entityKind string, encodedID string, dest interface{}) error {
 
 	decodedID, err := decodeUniqueEntityIDStrToInt(encodedID)
 	if err != nil {
@@ -153,7 +171,8 @@ func getEntityByID(encodedID string, appEngContext appengine.Context, entityKind
 	}
 
 	// nil argument for parentKey (no parent in this case)
-	getKey := datastore.NewKey(appEngContext, entityKind, "", decodedID, nil)
+	getKey := datastore.NewKey(appEngContext, entityKind, "", decodedID, nil) // nil for parent key
+	log.Printf("GET root entity: kind=%v, id (base36)=%v key=%+v", entityKind, encodedID, getKey)
 
 	getErr := datastore.Get(appEngContext, getKey, dest)
 	if getErr != nil {

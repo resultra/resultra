@@ -66,6 +66,22 @@ func NewField(appEngContext appengine.Context, newField Field) (string, error) {
 
 }
 
+type GetFieldParams struct {
+	// TODO - There will be more parameters once a field is
+	// tied to a database table (i.e. TableID)
+	FieldID string `json:"fieldID"`
+}
+
+func GetField(appEngContext appengine.Context, fieldParams GetFieldParams) (*FieldRef, error) {
+
+	fieldGetDest := Field{}
+	if getErr := getRootEntityByID(appEngContext, fieldEntityKind, fieldParams.FieldID, &fieldGetDest); getErr != nil {
+		return nil, fmt.Errorf("Unabled to get field: params = %+v: datastore err=%v", fieldParams, getErr)
+	} else {
+		return &FieldRef{fieldParams.FieldID, fieldGetDest}, nil
+	}
+}
+
 func GetFieldsByType(appEngContext appengine.Context) (FieldsByType, error) {
 
 	fieldQuery := datastore.NewQuery(fieldEntityKind)

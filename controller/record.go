@@ -23,3 +23,40 @@ func newRecord(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func setRecordFieldValue(w http.ResponseWriter, r *http.Request) {
+
+	setValParams := datamodel.SetRecordValueParams{}
+	if err := decodeJSONRequest(r, &setValParams); err != nil {
+		writeErrorResponse(w, err)
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+	if setErr := datamodel.SetRecordValue(appEngCntxt, setValParams); setErr != nil {
+		writeErrorResponse(w, setErr)
+		return
+	} else {
+		writeJSONResponse(w, JSONParams{})
+	}
+
+}
+
+func getRecord(w http.ResponseWriter, r *http.Request) {
+
+	params := datamodel.GetRecordParams{}
+	if err := decodeJSONRequest(r, &params); err != nil {
+		writeErrorResponse(w, err)
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+
+	if recordRef, getErr := datamodel.GetRecord(appEngCntxt, params); getErr != nil {
+		writeErrorResponse(w, getErr)
+		return
+	} else {
+		writeJSONResponse(w, recordRef)
+	}
+
+}

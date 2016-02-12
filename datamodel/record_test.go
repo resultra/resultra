@@ -26,21 +26,36 @@ func TestNewRecord(t *testing.T) {
 	testRecord = Record{fieldID: testVal}
 	t.Logf("Saving new record: rec = %+v", testRecord)
 
-	recordID, insertErr := insertNewEntity(appEngCntxt, recordEntityKind, nil, &testRecord)
+	recordID, insertErr := SaveNewRecord(appEngCntxt, testRecord)
 	if insertErr != nil {
 		t.Fatal(insertErr)
 	} else {
 		t.Logf("Successfully created new record: id = %v", recordID)
 	}
 
-	getRecord := Record{}
-	if getErr := getEntityByID(recordID, appEngCntxt, recordEntityKind, &getRecord); getErr != nil {
-		t.Fatal(insertErr)
+	if recordRef, getErr := GetRecord(appEngCntxt, GetRecordParams{recordID}); getErr != nil {
+		t.Fatal(getErr)
 	} else {
-		t.Logf("Successfully retrieved new record: rec = %+v", getRecord)
-		getVal := getRecord[fieldID]
+		t.Logf("Successfully retrieved new record: rec = %+v", recordRef)
+		getVal := recordRef.FieldValues[fieldID]
 		if getVal != testVal {
 			t.Errorf("Value mismatch/missing in retrieved result: expecting '%v', got '%v'", testVal, getVal)
+		}
+	}
+
+	setVal := "Another value for SetRecordValue()"
+	setValParams := SetRecordValueParams{RecordID: recordID, FieldID: fieldID, Value: setVal}
+	if setErr := SetRecordValue(appEngCntxt, setValParams); setErr != nil {
+		t.Errorf("Error setting value: %v", setErr)
+	}
+
+	if recordRef2, getErr2 := GetRecord(appEngCntxt, GetRecordParams{recordID}); getErr2 != nil {
+		t.Fatal(getErr2)
+	} else {
+		t.Logf("Successfully retrieved new record (2nd time): rec = %+v", recordRef2)
+		getVal := recordRef2.FieldValues[fieldID]
+		if getVal != setVal {
+			t.Errorf("Value mismatch/missing in retrieved result: expecting '%v', got '%v'", setVal, getVal)
 		}
 	}
 

@@ -36,7 +36,7 @@ func decodeUniqueEntityIDStrToInt(encodedID string) (int64, error) {
 
 	decodeVal, err := strconv.ParseInt(encodedID, 36, 64)
 	if err != nil {
-		return 0, fmt.Errorf("Can't decode datastore id: expecting base36 integer string, got %v", encodedID)
+		return 0, fmt.Errorf("Can't decode datastore id: expecting base36 integer string, got '%v'", encodedID)
 	}
 
 	return decodeVal, nil

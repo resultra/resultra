@@ -15,7 +15,7 @@ function fieldContainerHTML(id)
 // Map of field ID's to the fieldRef object: see initialization below
 var fieldsByID = {}
 
-function initCanvas(containerInitCallback, fieldInitCallback) {
+function initCanvas(containerInitCallback, fieldInitCallback, initCompleteCallback) {
 	var jsonReqData = jsonAPIRequest("getLayoutEditInfo", {
 			layoutID: layoutID
 		},
@@ -54,6 +54,10 @@ function initCanvas(containerInitCallback, fieldInitCallback) {
 				// TODO - 'fieldsByID' should be refactored into a more robust object
 				// which supports queries for fieldID and does error checking.
 				containerObj.find('label').text(fieldsByID[container.fieldID].name)
+				
+				// Store the field IDs for the container in the associated jQuery
+				// object itself
+				containerObj.data("fieldID",container.fieldID)
 
 				// Position the object withing the #layoutCanvas div
 				$("#layoutCanvas").append(containerObj)
@@ -71,6 +75,8 @@ function initCanvas(containerInitCallback, fieldInitCallback) {
 				containerInitCallback(containerObj)
 
 			} // for each container
+			
+			initCompleteCallback();
 
 		})
 }

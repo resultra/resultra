@@ -238,7 +238,9 @@ $(document).ready(function() {
 		west__paneSelector: "#gallerySidebar"
 	  });
 	  
-	initCanvas(initContainerEditBehavior,initLayoutEditFieldInfo)
+	  
+	  function initCanvasComplete() {} // noop
+	initCanvas(initContainerEditBehavior,initLayoutEditFieldInfo,initCanvasComplete)
 
 
 });
