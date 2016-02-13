@@ -21,28 +21,61 @@
 			Page for viewing and setting database table properties.
 
 			<h2>Fields</h2>
+			
+			
+			<table class="ui celled table">
+			  <thead>
+			    <tr>
+			      <th>Field Name</th>
+			      <th>Type of Values</th>
+			      <th>ID</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+	
+				{{range $fieldRef := .FieldRefs}}
+				
+   			 	<tr>
+					<td>{{$fieldRef.FieldInfo.Name}} </td>
+					<td>{{$fieldRef.FieldInfo.Type}} </td>
+					<td>field ID:{{$fieldRef.FieldID}}</td>
+			    </tr>
+				
+				{{end}}	
+				  				
+			  </tbody>
+			</table>
 
-			{{range $fieldRef := .FieldRefs}}
-					{{$fieldRef.FieldInfo.Name}} 
-					{{$fieldRef.FieldInfo.Type}} 
-					field ID:{{$fieldRef.FieldID}}
-			        <br><br>
-			{{end}}	
 			
 			<h2>Layouts (Forms)</h2>
 			
+			<table class="ui celled table">
+			  <thead>
+			    <tr>
+			      <th>Layout Name</th>
+				  <th class="right aligned"></th>
+			    </tr>
+			  </thead>
+			  <tbody>
+
 			{{range $layoutRef := .LayoutRefs}}
 			
-					{{$layoutRef.Layout.Name}} 
+				<tr>
+			
+					<td>{{$layoutRef.Layout.Name}}</td>
 					
-					<a href="/editLayout/{{$layoutRef.LayoutID}}">
+					<td>
+						<a href="/editLayout/{{$layoutRef.LayoutID}}">
 						<button class="small ui button">
  						   	<i class="icon edit"></i>Edit 
-						</button>
-					</a>
-			        <br><br>
+						</button></a>
+					</td>
+					
+			      </tr>
 					
 			{{end}}	
+			</tbody>
+			</table>
 			
 			
   </body>
