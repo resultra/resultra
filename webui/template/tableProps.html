@@ -1,0 +1,52 @@
+{{define "tableProps"}}
+
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "commonCSS"}}
+
+	{{template "commonJS"}}
+	
+	<!-- TODO: 
+		<script>var databaseID={{.DatabaseID}}; </script>
+		<script src="/js/dbProps.js"></script>
+	-->
+				
+  </head>
+  
+  <body>
+	  <h1>{{.Title}}</h1>
+	  
+			Page for viewing and setting database table properties.
+
+			<h2>Fields</h2>
+
+			{{range $fieldRef := .FieldRefs}}
+					{{$fieldRef.FieldInfo.Name}} 
+					{{$fieldRef.FieldInfo.Type}} 
+					field ID:{{$fieldRef.FieldID}}
+			        <br><br>
+			{{end}}	
+			
+			<h2>Layouts (Forms)</h2>
+			
+			{{range $layoutRef := .LayoutRefs}}
+			
+					{{$layoutRef.Layout.Name}} 
+					
+					<a href="/editLayout/{{$layoutRef.LayoutID}}">
+						<button class="small ui button">
+ 						   	<i class="icon edit"></i>Edit 
+						</button>
+					</a>
+			        <br><br>
+					
+			{{end}}	
+			
+			
+  </body>
+  
+</html>
+
+{{end}}

@@ -12,13 +12,13 @@ func newLayout(w http.ResponseWriter, r *http.Request) {
 
 	var layoutParam map[string]string
 	if err := decodeJSONRequest(r, &layoutParam); err != nil {
-		writeErrorResponse(w, err)
+		WriteErrorResponse(w, err)
 		return
 	}
 
 	appEngCntxt := appengine.NewContext(r)
 	if layoutID, err := datamodel.NewLayout(appEngCntxt, layoutParam["name"]); err != nil {
-		writeErrorResponse(w, err)
+		WriteErrorResponse(w, err)
 	} else {
 		writeJSONResponse(w, JSONParams{"layoutID": layoutID})
 	}
@@ -29,18 +29,18 @@ func newLayoutContainer(w http.ResponseWriter, r *http.Request) {
 
 	containerParams := datamodel.NewUninitializedLayoutContainerParams()
 	if err := decodeJSONRequest(r, &containerParams); err != nil {
-		writeErrorResponse(w, err)
+		WriteErrorResponse(w, err)
 		return
 	}
 
 	if len(containerParams.ContainerID) == 0 {
-		writeErrorResponse(w, errors.New("ERROR: API: newLayoutContainer: Missing placeholder ID in request"))
+		WriteErrorResponse(w, errors.New("ERROR: API: newLayoutContainer: Missing placeholder ID in request"))
 		return
 	}
 
 	appEngCntxt := appengine.NewContext(r)
 	if containerID, err := datamodel.NewLayoutContainer(appEngCntxt, containerParams); err != nil {
-		writeErrorResponse(w, err)
+		WriteErrorResponse(w, err)
 	} else {
 		writeJSONResponse(w, JSONParams{
 			"layoutContainerID": containerID,
@@ -53,19 +53,19 @@ func resizeLayoutContainer(w http.ResponseWriter, r *http.Request) {
 
 	resizeParams := datamodel.NewUninitializedResizeLayoutContainerParams()
 	if err := decodeJSONRequest(r, &resizeParams); err != nil {
-		writeErrorResponse(w, err)
+		WriteErrorResponse(w, err)
 		return
 	}
 
 	if len(resizeParams.ContainerID) == 0 {
-		writeErrorResponse(w, errors.New("ERROR: API: newLayoutContainer: Missing container ID in request"))
+		WriteErrorResponse(w, errors.New("ERROR: API: newLayoutContainer: Missing container ID in request"))
 		return
 	}
 
 	appEngCntxt := appengine.NewContext(r)
 
 	if err := datamodel.ResizeLayoutContainer(appEngCntxt, resizeParams); err != nil {
-		writeErrorResponse(w, err)
+		WriteErrorResponse(w, err)
 	} else {
 		writeJSONResponse(w, JSONParams{})
 	}
@@ -106,7 +106,7 @@ func getLayoutContainersFromRequest(r *http.Request) ([]datamodel.LayoutContaine
 func getLayoutContainers(w http.ResponseWriter, r *http.Request) {
 
 	if layoutContainers, err := getLayoutContainersFromRequest(r); err != nil {
-		writeErrorResponse(w, err)
+		WriteErrorResponse(w, err)
 	} else {
 		writeJSONResponse(w, layoutContainers)
 	}
@@ -122,18 +122,18 @@ func getLayoutEditInfo(w http.ResponseWriter, r *http.Request) {
 
 	layoutContainers, err := getLayoutContainersFromRequest(r)
 	if err != nil {
-		writeErrorResponse(w, err)
+		WriteErrorResponse(w, err)
 		return
 	}
 
 	appEngCntxt := appengine.NewContext(r)
 	fieldsByType, err := datamodel.GetFieldsByType(appEngCntxt)
 	if err != nil {
-		writeErrorResponse(w, err)
+		WriteErrorResponse(w, err)
 		return
 	}
 
-	layoutEditInfo := LayoutEditInfo{layoutContainers, fieldsByType}
+	layoutEditInfo := LayoutEditInfo{layoutContainers, *fieldsByType}
 
 	writeJSONResponse(w, layoutEditInfo)
 

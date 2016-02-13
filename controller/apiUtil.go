@@ -23,12 +23,6 @@ func writeJSONResponse(w http.ResponseWriter, responseVals interface{}) {
 	w.WriteHeader(http.StatusOK)
 	encodeErr := json.NewEncoder(w).Encode(responseVals)
 	if encodeErr != nil {
-		writeErrorResponse(w, encodeErr)
+		WriteErrorResponse(w, encodeErr)
 	}
-}
-
-func writeErrorResponse(w http.ResponseWriter, err error) {
-	// TBD - Also log the error somewhere
-	log.Printf("ERROR: Couldn't process API request: %v", err)
-	http.Error(w, err.Error(), http.StatusInternalServerError)
 }

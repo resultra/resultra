@@ -82,38 +82,51 @@ func GetField(appEngContext appengine.Context, fieldParams GetFieldParams) (*Fie
 	}
 }
 
-func GetFieldsByType(appEngContext appengine.Context) (FieldsByType, error) {
+func GetAllFieldRefs(appEngContext appengine.Context) ([]FieldRef, error) {
 
-	fieldQuery := datastore.NewQuery(fieldEntityKind)
 	var allFields []Field
+	fieldQuery := datastore.NewQuery(fieldEntityKind)
 	keys, err := fieldQuery.GetAll(appEngContext, &allFields)
 
-	fieldsByType := FieldsByType{}
 	if err != nil {
-		return fieldsByType, fmt.Errorf("GetFieldsByType: Unable to retrieve fields from datastore: datastore error =%v", err)
-	} else {
-		//		layoutContainersWithIDs := make([]LayoutContainerParams, len(layoutContainers))
-		for i, currField := range allFields {
-			fieldKey := keys[i]
-			fieldID, encodeErr := encodeUniqueEntityIDToStr(fieldKey)
-			if encodeErr != nil {
-				return fieldsByType, fmt.Errorf("Failed to encode unique ID for field: key=%+v, encode err=%v", fieldKey, encodeErr)
-			}
-			fieldRef := FieldRef{fieldID, Field{currField.Name, currField.Type}}
-			switch fieldRef.FieldInfo.Type {
-			case fieldTypeText:
-				fieldsByType.TextFields = append(fieldsByType.TextFields, fieldRef)
-			case fieldTypeDate:
-				fieldsByType.DateFields = append(fieldsByType.DateFields, fieldRef)
-			case fieldTypeNumber:
-				fieldsByType.NumberFields = append(fieldsByType.NumberFields, fieldRef)
-			default:
-				return fieldsByType, fmt.Errorf(
-					"GetFieldsByType: Unable to retrieve fields from datastore: Invalid field type %v, key=%+v",
-					fieldRef.FieldInfo.Type, fieldKey)
-			}
-		}
-		return fieldsByType, nil
+		return nil, fmt.Errorf("GetFieldsByType: Unable to retrieve fields from datastore: datastore error =%v", err)
 	}
+
+	fieldRefs := make([]FieldRef, len(allFields))
+	for i, currField := range allFields {
+		fieldKey := keys[i]
+		fieldID, encodeErr := encodeUniqueEntityIDToStr(fieldKey)
+		if encodeErr != nil {
+			return nil, fmt.Errorf("Failed to encode unique ID for field: key=%+v, encode err=%v", fieldKey, encodeErr)
+		}
+		fieldRefs[i] = FieldRef{fieldID, Field{currField.Name, currField.Type}}
+	}
+	return fieldRefs, nil
+}
+
+func GetFieldsByType(appEngContext appengine.Context) (*FieldsByType, error) {
+
+	fieldRefs, getErr := GetAllFieldRefs(appEngContext)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetFieldsByType: Unable to retrieve fields from datastore: datastore error =%v", getErr)
+	}
+
+	fieldsByType := FieldsByType{}
+	for fieldRefIndex := range fieldRefs {
+		fieldRef := fieldRefs[fieldRefIndex]
+		switch fieldRef.FieldInfo.Type {
+		case fieldTypeText:
+			fieldsByType.TextFields = append(fieldsByType.TextFields, fieldRef)
+		case fieldTypeDate:
+			fieldsByType.DateFields = append(fieldsByType.DateFields, fieldRef)
+		case fieldTypeNumber:
+			fieldsByType.NumberFields = append(fieldsByType.NumberFields, fieldRef)
+		default:
+			return nil, fmt.Errorf(
+				"GetFieldsByType: Unable to retrieve fields from datastore: Invalid field type %v",
+				fieldRef.FieldInfo.Type)
+		}
+	}
+	return &fieldsByType, nil
 
 }

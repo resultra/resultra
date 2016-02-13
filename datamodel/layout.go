@@ -14,6 +14,11 @@ type Layout struct {
 	Name string `json:"name"`
 }
 
+type LayoutRef struct {
+	LayoutID string `json"layoutID"`
+	Layout   Layout `json"layout"`
+}
+
 func NewLayout(appEngContext appengine.Context, layoutName string) (string, error) {
 
 	sanitizedLayoutName, sanitizeErr := sanitizeName(layoutName)
@@ -31,6 +36,28 @@ func NewLayout(appEngContext appengine.Context, layoutName string) (string, erro
 	log.Printf("NewLayout: Created new Layout: id= %v, name='%v'", layoutID, sanitizedLayoutName)
 
 	return layoutID, nil
+
+}
+
+func GetAllLayoutRefs(appEngContext appengine.Context) ([]LayoutRef, error) {
+	var allLayouts []Layout
+	layoutQuery := datastore.NewQuery(layoutEntityKind)
+	keys, err := layoutQuery.GetAll(appEngContext, &allLayouts)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetAllLayouts: Unable to retrieve layouts from datastore: datastore error =%v", err)
+	}
+
+	layoutRefs := make([]LayoutRef, len(allLayouts))
+	for i, currLayout := range allLayouts {
+		layoutKey := keys[i]
+		layoutID, encodeErr := encodeUniqueEntityIDToStr(layoutKey)
+		if encodeErr != nil {
+			return nil, fmt.Errorf("Failed to encode unique ID for layout: key=%+v, encode err=%v", layoutKey, encodeErr)
+		}
+		layoutRefs[i] = LayoutRef{layoutID, currLayout}
+	}
+	return layoutRefs, nil
 
 }
 
