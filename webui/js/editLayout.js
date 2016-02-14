@@ -227,17 +227,13 @@ $(document).ready(function() {
     $( "#newTextBox" ).dialog({ autoOpen: false })
  
 		
-	// Set the initial positions of the page elements. 
-	// TODO - The list of layout objects and their positions
-	// needs to come from the server.
-	$("#layoutCanvas").css({position: 'relative'});
-	
-	$('.layoutPageDiv').layout({
-	    center__paneSelector: "#layoutCanvas",
-	    east__paneSelector:   "#propertiesSidebar",
-		west__paneSelector: "#gallerySidebar"
-	  });
-	  
+	// Initialize the page layout
+	$('#layoutPage').layout({
+		north: fixedUILayoutPaneParams(60),
+		south: fixedUILayoutPaneParams(60),
+		east: fixedUILayoutPaneParams(200),
+		west: fixedUILayoutPaneParams(200)
+	})	  
 	  
 	  function initCanvasComplete() {} // noop
 	initCanvas(initContainerEditBehavior,initLayoutEditFieldInfo,initCanvasComplete)

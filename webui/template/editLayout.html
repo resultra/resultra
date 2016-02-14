@@ -14,24 +14,29 @@
 	
   </head>
   <body>
-	  <h1>{{.Title}} ID={{.LayoutID}}</h1>
-	  
 	<form class="ui form" id="editLayoutForm" name="editLayoutForm">
-		<div class="layoutPageDiv" id="layoutPage">
-			<div id="gallerySidebar">
+		<div id="layoutPage" class="layoutPageDiv">
+		
+			<div class="pane ui-layout-north">
+		 	   Header {{.Title}} -- Layout ID={{.LayoutID}}
+			</div>
+			
+			<div id="gallerySidebar" class="pane ui-layout-west">
 				Gallery
 				<div class="draggable newField">
 					<p class="noselect">New Field</p>
-				</div>
+				</div>			
 			</div>
-			<div id="layoutCanvas" class="droppable">
-			</div>
-			<div id="propertiesSidebar">
-				Properties
-			</div>
-		</div>
 		
+			<div id="layoutCanvas" class="pane ui-layout-center droppable">
+			</div>
+		
+		
+			<div class="pane ui-layout-east">Properties</div>
+			<div class="pane ui-layout-south">Footer</div>
+		</div>
 	</form>
+	  	  
 	
 	<div id="newTextBox" title="New Text Box">
 		<form class="ui form">

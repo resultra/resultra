@@ -16,24 +16,21 @@
 			
   </head>
   <body>
-	  <h1>{{.Title}} -- Layout ID={{.LayoutID}}  Record ID={{.RecordID}}</h1>
-	  
-	<form class="ui form" id="editLayoutForm" name="editLayoutForm">
-		<div class="layoutPageDiv" id="layoutPage">
-			<div id="gallerySidebar">
-				Gallery
-			</div>
-			<div id="layoutCanvas" class="droppable">
-			</div>
-			<div id="propertiesSidebar">
-				Properties
-			</div>
+	<div id="layoutPage" class="layoutPageDiv">
+		<div class="pane ui-layout-north">
+	 	   Header {{.Title}} -- Layout ID={{.LayoutID}}  Record ID={{.RecordID}}
 		</div>
-		
-	</form>
-	
-  </form>
-	
+		<div class="pane ui-layout-center">
+			<form class="ui form" id="editLayoutForm" name="editLayoutForm">
+				<div class="layoutPageDiv" id="layoutPage">
+					<div id="layoutCanvas"></div>
+				</div>	
+			</form>
+		</div>
+		<div class="pane ui-layout-east">Filter</div>
+		<div class="pane ui-layout-south">Footer</div>
+	</div>
+	  	
   </body>
   
 </html>

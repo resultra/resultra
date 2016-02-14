@@ -21,7 +21,6 @@
 #layoutCanvas
 {
 	min-height: 400px;
-	border: 2px solid gray;
 	padding: 0px;
 	overflow: auto; // if the content overflows, show a scrollbar
 }
@@ -29,7 +28,6 @@
 #gallerySidebar
 {
 	min-height: 100px;
-	border: 2px solid gray;
 	padding: 0px;
 	overflow: visible; // don't overflow the content
 }
@@ -37,7 +35,7 @@
 
 .layoutPageDiv
 {
-	height: 400px;
+	height:100%;
 	min-height: 400px;
 }
 

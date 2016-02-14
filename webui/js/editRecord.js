@@ -63,14 +63,13 @@ function loadRecordIntoLayout()
 
 $(document).ready(function() {	
 	 
-	// Set the initial positions of the page elements. 
-	$("#layoutCanvas").css({position: 'relative'});
-	
-	$('.layoutPageDiv').layout({
-	    center__paneSelector: "#layoutCanvas",
-	    east__paneSelector:   "#propertiesSidebar",
-		west__paneSelector: "#gallerySidebar"
-	  });
+	// Initialize the page layout
+	$('#layoutPage').layout({
+		north: fixedUILayoutPaneParams(60),
+		south: fixedUILayoutPaneParams(60),
+		east: fixedUILayoutPaneParams(200)
+	})
+	  
 	  
 	initCanvas(initContainerRecordEntryBehavior,initRecordEntryFieldInfo, loadRecordIntoLayout)
 
