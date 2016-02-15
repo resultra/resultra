@@ -38,7 +38,17 @@ function allocNextPlaceholderID()
 // Parameters to setup a jQuery UI Layout pane without a resize bar and of a fixed size.
 function fixedUILayoutPaneParams(paneSize) {
 	return { 
-		size: paneSize, 
+		size: paneSize,
+		resizable:false,
+		spacing_open:0,
+		spacing_closed:0
+	}
+}
+
+function fixedUILayoutPaneAutoSizeToFitContentsParams() {
+	return { 
+		//Note the size for fixed size panes defaults to "auto", which causes
+		// the pane to fit the content
 		resizable:false,
 		spacing_open:0,
 		spacing_closed:0

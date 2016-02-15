@@ -60,16 +60,29 @@ function loadRecordIntoLayout()
 	
 }
 
+// To ensure the popup menus in the header aren't hidden below the center pane, some
+// onmouseover behavior is configured for the header/north pane. For this purpose, this 
+// global is initialized below then referenced directly within the div tag of the 
+// header. 
+var recordLayout;
 
 $(document).ready(function() {	
 	 
 	// Initialize the page layout
 	$('#layoutPage').layout({
-		north: fixedUILayoutPaneParams(60),
-		south: fixedUILayoutPaneParams(60),
+		north: fixedUILayoutPaneParams(50),
 		east: fixedUILayoutPaneParams(200)
 	})
-	  
+	
+	recordLayout = $('#recordsPane').layout({
+		north: fixedUILayoutPaneAutoSizeToFitContentsParams(),
+		south: fixedUILayoutPaneAutoSizeToFitContentsParams(),
+		north__showOverflowOnHover:	true,
+		center_showOverflowOnHover:false
+	})
+	
+	// Initialize the semantic ui dropdown menus
+	$('.ui.dropdown').dropdown(); 
 	  
 	initCanvas(initContainerRecordEntryBehavior,initRecordEntryFieldInfo, loadRecordIntoLayout)
 

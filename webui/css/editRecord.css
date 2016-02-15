@@ -1,0 +1,18 @@
+
+
+#recordHeaderUILayout,#recordFooterUILayout
+{
+	padding: 0px; // override jQuery UI Layout padding
+	overflow: visible; // don't overflow the content
+	z-index:999;
+}
+
+#recordHeaderGrid,#recordFooterGrid
+{
+	padding: 0px; // override the Semantic UI padding
+}
+
+#recordsPane
+{
+	padding: 0px;
+}

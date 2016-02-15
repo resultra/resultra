@@ -6,6 +6,7 @@
 	
 	{{template "commonCSS"}}
 	<link rel="stylesheet" type="text/css" class="ui" href="/css/layout.css">
+	<link rel="stylesheet" type="text/css" class="ui" href="/css/editRecord.css">
 
 	{{template "commonJS"}}
 	<script>var layoutID={{.LayoutID}};</script>
@@ -20,16 +21,93 @@
 		<div class="pane ui-layout-north">
 	 	   Header {{.Title}} -- Layout ID={{.LayoutID}}  Record ID={{.RecordID}}
 		</div>
-		<div class="pane ui-layout-center">
-			<form class="ui form" id="editLayoutForm" name="editLayoutForm">
-				<div class="layoutPageDiv" id="layoutPage">
-					<div id="layoutCanvas"></div>
-				</div>	
-			</form>
-		</div>
-		<div class="pane ui-layout-east">Filter</div>
-		<div class="pane ui-layout-south">Footer</div>
-	</div>
+
+		<div class="pane ui-layout-east">Filter</div> <!-- east/filter pane for entire page -->
+
+
+		<div class="pane ui-layout-center" id="recordsPane">
+			
+			<div class="ui-layout-center">
+				<form class="ui form" id="editLayoutForm" name="editLayoutForm">
+					<div class="layoutPageDiv" id="layoutPage">
+						<div id="layoutCanvas"></div>
+					</div>	
+				</form>
+			</div> <!-- ui-layout-center #recordHeader -->
+	
+			<div class=" ui-layout-south" id="recordFooterUILayout" >
+				<div ui class="grey ui padded grid" id="recordFooterGrid">
+
+					<div class="ui eight wide grey column" style="padding:3px">
+						<button class="ui left labeled icon button">
+						  <i class="left arrow icon"></i>
+						  Previous
+						</button>
+						<button class="ui right labeled icon button">
+						  <i class="right arrow icon"></i>
+						  Next
+						</button>
+					</div> <!-- column -->
+
+					<div class="ui eight wide grey column" style="padding:3px">
+						<button class="ui left labeled right floated icon button">
+						  <i class="add icon"></i>
+						  New Record
+						</button>
+					</div> <!-- column -->
+
+				</div> <!-- record footer grid -->
+			</div>  <!-- #recordFooterUILayout ui-layout-south -->
+			
+			<!-- The style is overridden on the #recordHeader and semantic UI
+			     grid divs to minimize the padding, so the buttons and selection
+				 will be relatively compact within the header.
+				
+				It's also important for the ui-layout-north pane to come *last*
+				in the HTML. This ensures the Z-order is setup so the menues in 
+				the header can overflow the panes below it. See the jQuery UI
+				layout documentation for more discussion on this.
+				
+				http://layout.jquery-dev.com/documentation.cfm#Drop-Downs	
+			-->
+			<div class="ui-layout-north" id="recordHeaderUILayout" onmouseover="recordLayout.allowOverflow(this)">
+				
+				<div ui class="ui padded grid" id="recordHeaderGrid">
+					
+					<div class="ui four wide grey column" style="padding:3px">
+						<div class="compact ui buttons">
+						    <button class="ui button">Single</button>
+							<div class="or"></div>
+						    <button class="ui button">List</button>
+						</div>
+					</div> <!-- column -->
+					
+					<div class="ui eight wide grey column" style="padding:3px">
+						View with:
+						<select class="ui selection dropdown">
+						  	<option value="">Form</option>
+						    <option value="form1">Entry</option>
+						    <option value="form2">Exit</option>
+						    <option value="form3">Post-mortem</option>
+						</select>
+					</div> <!-- column -->
+					
+					<div class="ui four wide grey column" style="padding:3px">
+						<div class="ui icon right floated pointing dropdown button" id="moreDropdown">
+							 <i class="dropdown icon"></i>
+							<div class="left menu">
+								<div class="item">Print</div>
+								<div class="item">Export CSV</div>
+							</div> <!-- menu -->
+						</div> <!-- ui dropdown -->
+					</div> <!-- column -->
+					
+				</div> <!-- #recordHeaderGrid  -->
+			</div> <!-- ui-layout-north #recordHeaderUILayout -->
+				
+		</div> <!-- center pane for entire page -->
+		
+	</div> <!-- layout page -->
 	  	
   </body>
   
