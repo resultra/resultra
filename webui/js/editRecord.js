@@ -68,10 +68,12 @@ var recordLayout;
 
 $(document).ready(function() {	
 	 
+	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
+
 	// Initialize the page layout
 	$('#layoutPage').layout({
 		north: fixedUILayoutPaneParams(50),
-		east: fixedUILayoutPaneParams(200)
+		east: fixedUILayoutPaneParams(250)
 	})
 	
 	recordLayout = $('#recordsPane').layout({
@@ -79,6 +81,13 @@ $(document).ready(function() {
 		south: fixedUILayoutPaneAutoSizeToFitContentsParams(),
 		north__showOverflowOnHover:	true,
 		center_showOverflowOnHover:false
+	})
+	
+	
+	$('#eastFilterSortPane').layout({
+		inset: zeroPaddingInset,
+		center__size:.6,
+		south__size:.4,
 	})
 	
 	// Initialize the semantic ui dropdown menus

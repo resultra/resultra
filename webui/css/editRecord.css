@@ -7,12 +7,26 @@
 	z-index:999;
 }
 
+#filterPaneUILayout,#sortPaneUILayout
+{
+	padding: 0px; // override jQuery UI Layout padding	
+}
+
+
 #recordHeaderGrid,#recordFooterGrid
 {
-	padding: 0px; // override the Semantic UI padding
+	padding: 0px; // override Semantic UI padding
 }
+
 
 #recordsPane
 {
 	padding: 0px;
+}
+
+#sortHeader,#filterHeader
+{
+	padding: 8px;
+	margin: 0px;
+	background-color: lightGrey;
 }
