@@ -3,8 +3,6 @@
 #recordHeaderUILayout,#recordFooterUILayout
 {
 	padding: 0px; // override jQuery UI Layout padding
-	overflow: visible; // don't overflow the content
-	z-index:999;
 }
 
 #filterPaneUILayout,#sortPaneUILayout
@@ -29,4 +27,14 @@
 	padding: 8px;
 	margin: 0px;
 	background-color: lightGrey;
+}
+
+/* Override jQuery UI Layout div z indices. This is the only CSS or Javascript 
+ override which fully fixes Semantic UI menus "under lapping" the center pane
+ when they are opened from the north pane. With the north__showOverflowOnHover
+ option set in the Javascript file, the menu will open and doesnt under-lap, 
+ but it will then be hidden again when mousing over the center pane. 	*/
+.ui-layout-north{
+   z-index: 50 !important;
+   overflow: visible !important;
 }

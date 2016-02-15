@@ -60,11 +60,6 @@ function loadRecordIntoLayout()
 	
 }
 
-// To ensure the popup menus in the header aren't hidden below the center pane, some
-// onmouseover behavior is configured for the header/north pane. For this purpose, this 
-// global is initialized below then referenced directly within the div tag of the 
-// header. 
-var recordLayout;
 
 $(document).ready(function() {	
 	 
@@ -76,11 +71,10 @@ $(document).ready(function() {
 		east: fixedUILayoutPaneParams(250)
 	})
 	
-	recordLayout = $('#recordsPane').layout({
+	$('#recordsPane').layout({
 		north: fixedUILayoutPaneAutoSizeToFitContentsParams(),
 		south: fixedUILayoutPaneAutoSizeToFitContentsParams(),
-		north__showOverflowOnHover:	true,
-		center_showOverflowOnHover:false
+		north__showOverflowOnHover:	true
 	})
 	
 	
