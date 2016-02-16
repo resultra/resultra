@@ -67,9 +67,23 @@ $(document).ready(function() {
 
 	// Initialize the page layout
 	$('#layoutPage').layout({
+		inset: zeroPaddingInset,
 		north: fixedUILayoutPaneParams(50),
-		east: fixedUILayoutPaneParams(250)
+		east: {
+			size: 250,
+			resizable:false,
+			slidable: false,
+			spacing_open:16,
+			spacing_closed:16,
+			togglerClass:			"toggler",
+			togglerLength_open:	128,
+			togglerLength_closed: 128,
+			togglerAlign_closed: "middle",	// align to top of resizer
+			togglerAlign_open: "middle"		// align to top of resizer
+			
+		}
 	})
+	
 	
 	$('#recordsPane').layout({
 		north: fixedUILayoutPaneAutoSizeToFitContentsParams(),
@@ -83,7 +97,7 @@ $(document).ready(function() {
 		center__size:.6,
 		south__size:.4,
 	})
-	
+		
 	// Initialize the semantic ui dropdown menus
 	$('.ui.dropdown').dropdown(); 
 	  

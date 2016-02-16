@@ -38,3 +38,18 @@
    z-index: 50 !important;
    overflow: visible !important;
 }
+
+/* Set the toggle buttons used for toggling the filter & sort pane on and off */
+
+.toggler-east-closed { 
+		 background-image:url(/image/fa-chevron-left_12_0_000000_none.png);
+		 background-repeat: no-repeat;
+		 background-position: center center;
+ } 
+	
+.toggler-east-open {
+		 background-image:url(/image/fa-chevron-right_12_0_000000_none.png);
+		 background-repeat: no-repeat;
+		 background-position: center center;
+ 	}
+	
