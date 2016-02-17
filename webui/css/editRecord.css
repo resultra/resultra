@@ -29,6 +29,16 @@
 	background-color: lightGrey;
 }
 
+/* Configure the label in the footer to display the current record number */
+#recordNumLabel
+{
+	width: 80px;
+	height 20px;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 20px;
+}
+
 /* Override jQuery UI Layout div z indices. This is the only CSS or Javascript 
  override which fully fixes Semantic UI menus "under lapping" the center pane
  when they are opened from the north pane. With the north__showOverflowOnHover

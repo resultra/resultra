@@ -63,6 +63,33 @@ func GetRecord(appEngContext appengine.Context, recordParams GetRecordParams) (*
 
 }
 
+// TODO - The GetRecord function initially returns all records. However, more fields will be included for:
+// - maximum record to retrieve, along with
+// - sort and filter criteria.
+// - parent table ID (once tables are implemented)
+// - cursor indicating where to start the query (for retrieving results in batches)
+
+func GetRecords(appEngContext appengine.Context) ([]RecordRef, error) {
+
+	var records []Record
+	recordQuery := datastore.NewQuery(recordEntityKind)
+	keys, err := recordQuery.GetAll(appEngContext, &records)
+	if err != nil {
+		return nil, fmt.Errorf("GetRecords: Unable to retrieve records from datastore: datastore error = %v", err)
+	}
+
+	recordRefs := make([]RecordRef, len(records))
+	for recIter, currRec := range records {
+		recKey := keys[recIter]
+		recordID, encodeErr := encodeUniqueEntityIDToStr(recKey)
+		if encodeErr != nil {
+			return nil, fmt.Errorf("Failed to encode unique ID for record: key=%+v, encode err=%v", recKey, encodeErr)
+		}
+		recordRefs[recIter] = RecordRef{recordID, currRec}
+	}
+	return recordRefs, nil
+}
+
 type SetRecordValueParams struct {
 	RecordID string `json:"recordID"`
 	FieldID  string `json:"fieldID"`

@@ -10,7 +10,6 @@
 
 	{{template "commonJS"}}
 	<script>var layoutID={{.LayoutID}};</script>
-	<script>var recordID={{.RecordID}};</script>
 	
 	<script src="/js/layoutCommon.js"></script>
 	<script src="/js/editRecord.js"></script>
@@ -19,7 +18,7 @@
   <body>
 	<div id="layoutPage" class="layoutPageDiv">
 		<div class="pane ui-layout-north">
-	 	   Header {{.Title}} -- Layout ID={{.LayoutID}}  Record ID={{.RecordID}}
+	 	   Header {{.Title}} -- Layout ID={{.LayoutID}}
 		</div>
 
 		<div class="pane ui-layout-east" id="eastFilterSortPane">
@@ -99,11 +98,12 @@
 				<div ui class="grey ui padded grid" id="recordFooterGrid">
 
 					<div class="ui eight wide grey column" style="padding:3px">
-						<button class="ui left labeled icon button">
+						<button class="ui left labeled icon button" id="prevRecordButton">
 						  <i class="left arrow icon"></i>
 						  Previous
 						</button>
-						<button class="ui right labeled icon button">
+						<div class="ui label" id="recordNumLabel">&nbsp;</div>
+						<button class="ui right labeled icon button" id="nextRecordButton">
 						  <i class="right arrow icon"></i>
 						  Next
 						</button>

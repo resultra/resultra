@@ -60,3 +60,17 @@ func getRecord(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func getRecords(w http.ResponseWriter, r *http.Request) {
+
+	// TODO - Once sorting and filtering is implemented, the request
+	// will need to include parameters for the sort and filter parameters to use.
+
+	appEngCntxt := appengine.NewContext(r)
+	if recordRefs, err := datamodel.GetRecords(appEngCntxt); err != nil {
+		WriteErrorResponse(w, err)
+	} else {
+		writeJSONResponse(w, recordRefs)
+	}
+
+}
