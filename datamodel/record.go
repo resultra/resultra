@@ -12,6 +12,11 @@ const recordEntityKind string = "Record"
 
 type Record map[string]interface{}
 
+type RecordRef struct {
+	RecordID    string `json:"recordID"`
+	FieldValues Record `json:"fieldValues"`
+}
+
 func (rec *Record) Load(ch <-chan datastore.Property) error {
 	// Note: you might want to clear current values from the map or create a new map
 	for p := range ch { // Read until channel is closed
@@ -28,21 +33,18 @@ func (rec *Record) Save(ch chan<- datastore.Property) error {
 	return nil
 }
 
-func SaveNewRecord(appEngContext appengine.Context, newRecord Record) (string, error) {
+func NewRecord(appEngContext appengine.Context) (*RecordRef, error) {
+
+	newRecord := Record{}
 
 	// TODO - Replace nil with database parent
 	recordID, insertErr := insertNewEntity(appEngContext, recordEntityKind, nil, &newRecord)
 	if insertErr != nil {
-		return "", fmt.Errorf("Can't create new field: error inserting into datastore: %v", insertErr)
+		return nil, fmt.Errorf("Can't create new field: error inserting into datastore: %v", insertErr)
 	}
 
-	return recordID, nil
+	return &RecordRef{recordID, newRecord}, nil
 
-}
-
-type RecordRef struct {
-	RecordID    string `json:"recordID"`
-	FieldValues Record `json:"fieldValues"`
 }
 
 type GetRecordParams struct {

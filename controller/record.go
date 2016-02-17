@@ -8,18 +8,12 @@ import (
 
 func newRecord(w http.ResponseWriter, r *http.Request) {
 
-	var newField datamodel.Field
-	if err := decodeJSONRequest(r, &newField); err != nil {
-		WriteErrorResponse(w, err)
-		return
-	}
-
-	emptyRecord := datamodel.Record{}
 	appEngCntxt := appengine.NewContext(r)
-	if fieldID, err := datamodel.SaveNewRecord(appEngCntxt, emptyRecord); err != nil {
+	newRecordRef, err := datamodel.NewRecord(appEngCntxt)
+	if err != nil {
 		WriteErrorResponse(w, err)
 	} else {
-		writeJSONResponse(w, JSONParams{"recordID": fieldID})
+		writeJSONResponse(w, *newRecordRef)
 	}
 
 }

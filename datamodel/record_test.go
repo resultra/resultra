@@ -13,8 +13,6 @@ func TestNewRecord(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var testRecord Record
-
 	testField := Field{Name: "Test Field", Type: "text"}
 
 	fieldID, err := NewField(appEngCntxt, testField)
@@ -22,16 +20,21 @@ func TestNewRecord(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testVal := "Dummy Test Val"
-	testRecord = Record{fieldID: testVal}
-	t.Logf("Saving new record: rec = %+v", testRecord)
-
-	recordID, insertErr := SaveNewRecord(appEngCntxt, testRecord)
+	newRecordRef, insertErr := NewRecord(appEngCntxt)
 	if insertErr != nil {
 		t.Fatal(insertErr)
 	} else {
-		t.Logf("Successfully created new record: id = %v", recordID)
+		t.Logf("Successfully created new record: id = %v", newRecordRef.RecordID)
 	}
+
+	testVal := "Dummy Test Val"
+	// Set the record value, the updated record is returned, but is not needed for this testing
+	setInitialValParams := SetRecordValueParams{RecordID: newRecordRef.RecordID, FieldID: fieldID, Value: testVal}
+	if _, setErr := SetRecordValue(appEngCntxt, setInitialValParams); setErr != nil {
+		t.Errorf("Error setting value: %v", setErr)
+	}
+
+	recordID := newRecordRef.RecordID
 
 	if recordRef, getErr := GetRecord(appEngCntxt, GetRecordParams{recordID}); getErr != nil {
 		t.Fatal(getErr)

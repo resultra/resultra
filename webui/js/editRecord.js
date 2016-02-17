@@ -43,6 +43,19 @@ function RecordSet(recordRefData) {
 		}
 	}
 	
+	this.jumpToRecord = function(recordID) {
+		// Use an integer iterator, since the value of the matching record
+		// will be used to update this.currRecordIter. Otherwise, a string
+		// will be assigned to this.currRecordIter.
+		for (recIter = 0; recIter < this.recordRefs.length; recIter++) {
+			if(this.recordRefs[recIter].recordID == recordID) {
+				this.currRecordIter = recIter
+				return true
+			}
+		}
+		return false // TODO - some type of better error handling/assertion checking needed here
+	}
+	
 	this.updateRecordRef = function(updatedRecordRef) {
 		for (recIter in this.recordRefs) {
 			if(this.recordRefs[recIter].recordID == updatedRecordRef.recordID) {
@@ -52,23 +65,36 @@ function RecordSet(recordRefData) {
 		}
 	}
 	
+	this.appendNewRecord = function(recordRef) {
+		this.recordRefs.push(recordRef)
+	}
+	
 	this.currRecordNum = function() {
 		return this.currRecordIter + 1 // iterator is 0 based
 	}
-	
+		
 	this.recPageLabel = function () {
-		return this.currRecordNum() + " of " + this.numRecords()
+		var recNumLabel = (this.currRecordIter + 1).toString()
+		var totalRecsLabel = this.numRecords().toString()		
+		var recLabel = recNumLabel + " of " + totalRecsLabel
+		return recLabel
 	}
 	
 }
 
-function enableRecordPagingButtons(isEnabled)
+function enableRecordButtons(isEnabled)
 {
 	
 	var isDisabled = true;
 	if(isEnabled) { isDisabled=false }
 	$('#prevRecordButton').prop("disabled",isDisabled)
 	$('#nextRecordButton').prop("disabled",isDisabled)
+	$('#newRecordButton').prop("disabled",isDisabled)
+}
+
+function enableNewRecordButton()
+{
+	$('#newRecordButton').prop("disabled",false)
 }
 
 function initRecordEntryFieldInfo(fieldRef)
@@ -177,21 +203,56 @@ function loadRecords()
 		
 		// Enable the buttons to page through the records
 		if(currRecordSet.numRecords() > 0) {
-			enableRecordPagingButtons(true)
+			enableRecordButtons(true)
+		}
+		else {
+			enableNewRecordButton() // just enable the "New Record" button
 		}
 				
 	}) // getRecord
 	
 }
 
-
-$(document).ready(function() {	
-	 
-	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
+function createNewRecord() {
+	var newRecordsParams = {}
+	jsonAPIRequest("newRecord",newRecordsParams,function(newRecordRef) {
+		currRecordSet.appendNewRecord(newRecordRef);
+		currRecordSet.jumpToRecord(newRecordRef.recordID)
+		loadCurrRecordIntoLayout()
+	}) // getRecord
 	
+}
+
+function initRecordButtonsBehavior()
+{
 	// Initially disabled the buttons for paging through the records. They'll be 
 	// enabled once the records are loaded.
-	enableRecordPagingButtons(false)
+	enableRecordButtons(false)
+	
+	
+	$('#nextRecordButton').click(function(e){
+	         e.preventDefault();
+			 if(currRecordSet.advanceToNextRecord()) {
+			 	loadCurrRecordIntoLayout()
+			 }
+	});
+	
+	$('#prevRecordButton').click(function(e){
+	         e.preventDefault();
+			 if(currRecordSet.advanceToPrevRecord()) {
+				 console.log("Advance to next record")
+			 	loadCurrRecordIntoLayout()
+			 } 
+	});
+	
+	$('#newRecordButton').click(function(e){ createNewRecord() });
+	
+}
+
+function initUILayoutPanes()
+{
+	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
+	
 
 	// Initialize the page layout
 	$('#layoutPage').layout({
@@ -226,24 +287,17 @@ $(document).ready(function() {
 		south__size:.4,
 	})
 	
-	$('#nextRecordButton').click(function(e){
-	         e.preventDefault();
-			 if(currRecordSet.advanceToNextRecord()) {
-			 	loadCurrRecordIntoLayout()
-			 }
-	});
-	
-	$('#prevRecordButton').click(function(e){
-	         e.preventDefault();
-			 if(currRecordSet.advanceToPrevRecord()) {
-				 console.log("Advance to next record")
-			 	loadCurrRecordIntoLayout()
-			 }
-			 
-	});
+}
+
+
+$(document).ready(function() {	
+	 
+	initUILayoutPanes()
 		
 	// Initialize the semantic ui dropdown menus
-	$('.ui.dropdown').dropdown(); 
+	$('.ui.dropdown').dropdown()
+	
+	initRecordButtonsBehavior()
 	  
 	initCanvas(initContainerRecordEntryBehavior,initRecordEntryFieldInfo, loadRecords)
 
