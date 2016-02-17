@@ -100,15 +100,22 @@ function initContainerRecordEntryBehavior(container)
 		
 		currRecordRef = currRecordSet.currRecordRef()
 		if(currRecordRef != null) {
-			var setRecordValParams = { recordID:currRecordRef.recordID, fieldID:fieldID, value:inputVal }
-			jsonAPIRequest("setRecordFieldValue",setRecordValParams,function(replyData) {
-				console.log("Set record value complete")
-				
-				// After updating the record, the local cache of records in currentRecordSet will
-				// be out of date. So after updating the record on the server, the locally cached
-				// version of the record also needs to be updated.
-				currRecordSet.updateRecordRef(replyData)
-			}) // set record value
+			
+			// Only update the value if it has changed. Sometimes a user may focus on or tab
+			// through a field but not change it. In this case we don't need to update the record.
+			if(currRecordRef.fieldValues[fieldID] != inputVal) {
+				currRecordRef.fieldValues[fieldID] = inputVal
+				var setRecordValParams = { recordID:currRecordRef.recordID, fieldID:fieldID, value:inputVal }
+			
+				jsonAPIRequest("setRecordFieldValue",setRecordValParams,function(replyData) {
+					// After updating the record, the local cache of records in currentRecordSet will
+					// be out of date. So after updating the record on the server, the locally cached
+					// version of the record also needs to be updated.
+					currRecordSet.updateRecordRef(replyData)
+				}) // set record value
+			} // if input value is different than currently cached value
+			
+			
 		}
 		
 		
