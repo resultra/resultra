@@ -96,18 +96,18 @@ type SetRecordValueParams struct {
 	Value    string `json:"value"`
 }
 
-func SetRecordValue(appEngContext appengine.Context, setValParams SetRecordValueParams) error {
+func SetRecordValue(appEngContext appengine.Context, setValParams SetRecordValueParams) (*RecordRef, error) {
 
 	_, fieldGetErr := GetField(appEngContext, GetFieldParams{setValParams.FieldID})
 	if fieldGetErr != nil {
-		return fmt.Errorf("Can't set value in SetRecordValue(params=%+v):"+
+		return nil, fmt.Errorf("Can't set value in SetRecordValue(params=%+v):"+
 			" Error retrieving value's field for update: err = %v", setValParams, fieldGetErr)
 	}
 
 	recordForUpdate := Record{}
 	getErr := getRootEntityByID(appEngContext, recordEntityKind, setValParams.RecordID, &recordForUpdate)
 	if getErr != nil {
-		return fmt.Errorf("Can't set value in SetRecordValue(params=%+v):"+
+		return nil, fmt.Errorf("Can't set value in SetRecordValue(params=%+v):"+
 			" Error retrieving existing record for update: err = %v", setValParams, getErr)
 	}
 
@@ -116,9 +116,12 @@ func SetRecordValue(appEngContext appengine.Context, setValParams SetRecordValue
 
 	if updateErr := updateExistingRootEntity(appEngContext, recordEntityKind,
 		setValParams.RecordID, &recordForUpdate); updateErr != nil {
-		return fmt.Errorf("Can't set value: Error retrieving existing record for update: params=%+v, err = %v", setValParams, updateErr)
+		return nil, fmt.Errorf("Can't set value: Error retrieving existing record for update: params=%+v, err = %v", setValParams, updateErr)
 	}
 
-	return nil
+	// Return the updated record
+	// TODO - Depending upon how calculated values are implemented,
+	// this is where calculated field values may also be updated.
+	return &RecordRef{setValParams.RecordID, recordForUpdate}, nil
 
 }

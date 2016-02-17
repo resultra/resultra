@@ -33,11 +33,12 @@ func setRecordFieldValue(w http.ResponseWriter, r *http.Request) {
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	if setErr := datamodel.SetRecordValue(appEngCntxt, setValParams); setErr != nil {
+	updatedRecordRef, setErr := datamodel.SetRecordValue(appEngCntxt, setValParams)
+	if setErr != nil {
 		WriteErrorResponse(w, setErr)
 		return
 	} else {
-		writeJSONResponse(w, JSONParams{})
+		writeJSONResponse(w, updatedRecordRef)
 	}
 
 }

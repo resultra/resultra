@@ -43,6 +43,15 @@ function RecordSet(recordRefData) {
 		}
 	}
 	
+	this.updateRecordRef = function(updatedRecordRef) {
+		for (recIter in this.recordRefs) {
+			if(this.recordRefs[recIter].recordID == updatedRecordRef.recordID) {
+				this.recordRefs[recIter] = updatedRecordRef
+				return
+			}
+		}
+	}
+	
 	this.currRecordNum = function() {
 		return this.currRecordIter + 1 // iterator is 0 based
 	}
@@ -94,6 +103,11 @@ function initContainerRecordEntryBehavior(container)
 			var setRecordValParams = { recordID:currRecordRef.recordID, fieldID:fieldID, value:inputVal }
 			jsonAPIRequest("setRecordFieldValue",setRecordValParams,function(replyData) {
 				console.log("Set record value complete")
+				
+				// After updating the record, the local cache of records in currentRecordSet will
+				// be out of date. So after updating the record on the server, the locally cached
+				// version of the record also needs to be updated.
+				currRecordSet.updateRecordRef(replyData)
 			}) // set record value
 		}
 		

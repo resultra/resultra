@@ -44,8 +44,9 @@ func TestNewRecord(t *testing.T) {
 	}
 
 	setVal := "Another value for SetRecordValue()"
+	// Set the record value, the updated record is returned, but is not needed for this testing
 	setValParams := SetRecordValueParams{RecordID: recordID, FieldID: fieldID, Value: setVal}
-	if setErr := SetRecordValue(appEngCntxt, setValParams); setErr != nil {
+	if _, setErr := SetRecordValue(appEngCntxt, setValParams); setErr != nil {
 		t.Errorf("Error setting value: %v", setErr)
 	}
 
