@@ -11,10 +11,9 @@ func init() {
 	controller.RegisterAPIHTTPHandlers()
 
 	router := mux.NewRouter()
+
 	router.HandleFunc("/", root)
-	router.HandleFunc("/pageinfo", pageinfo)
-	router.HandleFunc("/dataTable", dataTable)
-	router.HandleFunc("/addRow", addRow)
+
 	router.HandleFunc("/editRecord/{layoutID}", editRecord)
 
 	router.HandleFunc("/tableProps", tableProps)
