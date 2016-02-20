@@ -11,7 +11,7 @@ type EditRecordTemplateParams struct {
 	LayoutID string
 }
 
-func editRecord(w http.ResponseWriter, r *http.Request) {
+func viewForm(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	// TODO - Verify layoutID and recordID are valid and have
@@ -19,8 +19,8 @@ func editRecord(w http.ResponseWriter, r *http.Request) {
 	layoutID := vars["layoutID"]
 	log.Println("editRecord: editing record: layout ID = %v", layoutID)
 
-	templParams := EditRecordTemplateParams{"Edit Record", layoutID}
-	err := htmlTemplates.ExecuteTemplate(w, "editRecord", templParams)
+	templParams := EditRecordTemplateParams{"View Form", layoutID}
+	err := htmlTemplates.ExecuteTemplate(w, "viewForm", templParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
