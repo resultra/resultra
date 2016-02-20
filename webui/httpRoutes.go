@@ -17,7 +17,7 @@ func init() {
 	router.HandleFunc("/editRecord/{layoutID}", editRecord)
 
 	router.HandleFunc("/tableProps", tableProps)
-	router.HandleFunc("/editLayout/{layoutID}", editLayout)
+	router.HandleFunc("/designForm/{layoutID}", designForm)
 
 	http.Handle("/", router)
 }

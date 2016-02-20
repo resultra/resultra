@@ -1,4 +1,4 @@
-{{define "editLayout"}}
+{{define "designForm"}}
 
 <html>
   <head>
@@ -10,7 +10,7 @@
 	{{template "commonJS"}}
 	<script>var layoutID={{.LayoutID}};</script>
 	<script src="/js/layoutCommon.js"></script>
-	<script src="/js/editLayout.js"></script>
+	<script src="/js/designForm.js"></script>
 	
   </head>
   <body>
@@ -23,7 +23,9 @@
 				  <i class="right chevron icon divider"></i>
 				  <a class="section"><i class="database icon"></i>Database Name</a>
 				  <i class="right chevron icon divider"></i>
-				  <div class="active section">Form Name</div>
+				  <a class="section">Form Name</a>
+				  <i class="right chevron icon divider"></i>
+				  <div class="active section">Design Form</div>
 				</div> <!-- breadcrumb header -->
 			</div> <!-- north ui layout -->
 			
