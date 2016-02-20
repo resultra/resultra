@@ -12,7 +12,7 @@ func init() {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", root)
+	router.HandleFunc("/", home)
 
 	router.HandleFunc("/editRecord/{layoutID}", editRecord)
 

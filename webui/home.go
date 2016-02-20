@@ -6,13 +6,13 @@ import (
 )
 
 // Parse the templates once
-var templates = template.Must(template.ParseFiles("template/main.html"))
+var templates = template.Must(template.ParseFiles("template/home.html"))
 
 type PageInfo struct {
 	Title string `json:"title"`
 }
 
-func root(w http.ResponseWriter, r *http.Request) {
+func home(w http.ResponseWriter, r *http.Request) {
 	//	c := appengine.NewContext(r)
 
 	p := PageInfo{"Home Page"}
