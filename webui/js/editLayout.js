@@ -176,14 +176,30 @@ $(document).ready(function() {
 			 // to the other elements already on the canvas.
 			var newFieldDraggablePlaceholderHTML = fieldContainerHTML(allocNextPlaceholderID());
 			var placeholder = $(newFieldDraggablePlaceholderHTML);
-			
+						
 			 // While in layout mode, disable entry into the fields
 			 // Interestingly, there's not CSS for this.
 			placeholder.find('input').prop('disabled',true);
 			 			 
 			 return placeholder
 		 },
-		stack: "div" // important to keep the draggable above the other elements
+		// The following are needed to keep the draggable above the other elements. Getting Semantic UI,
+		// jQuery UI Layout and jQuery UI drag-and-drop working together is really tricky. Some issues:
+		//
+		// 1. jQuery UI layout has difficulty with the z-index for items which are opened in one pane,
+		//    but overlap another. The recommended solution is to attach items which need to overlap all
+		//    the panes to <body>. If this isn't possible, the west__showOverflowOnHover option is provided
+		//    for initializing the panes.
+		// 2. The Semantic UI form elements inherit some of their styling from the <form> styling. So,
+		//    if a form element is not embeded in a <form> tag, the styling isn't correct. To work around this,
+		//    the entire page is embedded in a <form> tag. However, it wasn't possible to attach the item to
+		//    <body> and still have it inherit Semantic UI's <form> styling.
+		//
+		// So, the following solution is the only solution which could be found to address both issues.
+		// described above.
+		stack: "div",
+		appendTo: "#gallerySidebar",
+		zIndex: 999
 		
 	});
 	
@@ -232,7 +248,8 @@ $(document).ready(function() {
 		north: fixedUILayoutPaneParams(60),
 		south: fixedUILayoutPaneParams(60),
 		east: fixedUILayoutPaneParams(200),
-		west: fixedUILayoutPaneParams(200)
+		west: fixedUILayoutPaneParams(200),
+		west__showOverflowOnHover:	true
 	})	  
 	  
 	  function initCanvasComplete() {} // noop

@@ -39,17 +39,58 @@
 	min-height: 400px;
 }
 
-.newField
-{
-	height: 30px;
-	min-height 30px;
-	width: 100px;
-	min-width: 100px;
-    position: absolute; 
-	padding: 5px;
+/* The .newField is specific within the div element to ensure it is more "specific"
+   than the noselect style which is also applied to many of these elements. This is
+   needed so the cursor and other properties will take precedence */
+ div .newField {
+	min-height: 80px;
+    position: relative; 
+	padding: 6px;
 	border: 1px dashed gray;
-	
+	text-align:center;
+	margin:2px; /* margin gives some space within the Semantic UI column */
+	background-color: lightGrey;
+	cursor:move; /* match the default cursor used by the jQuery UI for drag and drop */
 }
+
+#galleryHeader
+{
+	padding: 8px;
+	margin: 0px;
+	background-color: lightGrey;
+}
+
+/* Gallery items with short labels - vertically align the text below the icon */
+.shortGalleryItemLabel
+{
+	vertical-align:middle;
+	line-height:25px;
+	padding:4px
+}
+
+/* Space between the icon and text description.
+   Arguably should have used margins around the icon and text */
+.galleryItemSpacer
+{
+	min-height:8px;
+	height:8px;
+}
+
+/* Override jQuery UI Layout div z indices. This is the only CSS or Javascript 
+ override which fully fixes Semantic UI menus "under lapping" the center pane
+ when they are opened from the north pane. With the north__showOverflowOnHover
+ option set in the Javascript file, the menu will open and doesnt under-lap, 
+ but it will then be hidden again when mousing over the center pane. 	*/
+.ui-layout-west .ui-layout-content {
+   z-index: 50 !important;
+   overflow: visible !important;
+}
+
+/* Override the Semantic UI Grid's "gutter size" from 14px to 5 */
+.ui.grid > .column {
+	padding: 5px !important;
+}
+
 
 /* Use to prevent text selection. This is applicable to elements in the layout
    which are there for resizing and moving around, not text selection. */
