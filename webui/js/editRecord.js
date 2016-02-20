@@ -257,7 +257,7 @@ function initUILayoutPanes()
 	// Initialize the page layout
 	$('#layoutPage').layout({
 		inset: zeroPaddingInset,
-		north: fixedUILayoutPaneParams(50),
+		north: fixedUILayoutPaneParams(40),
 		east: {
 			size: 250,
 			resizable:false,

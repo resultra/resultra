@@ -18,15 +18,21 @@
   <body>
 	<div id="layoutPage" class="layoutPageDiv">
 		<div class="pane ui-layout-north">
-	 	   Header {{.Title}} -- Layout ID={{.LayoutID}}
-		</div>
+				<div class="ui large breadcrumb">
+				  <a class="section"><i class="home icon"></i>Home</a>
+				  <i class="right chevron icon divider"></i>
+				  <a class="section"><i class="database icon"></i>Database Name</a>
+				  <i class="right chevron icon divider"></i>
+				  <div class="active section">Form Name</div>
+				</div> <!-- breadcrumb header -->
+		</div> <!-- ui layout north -->
 
 		<div class="pane ui-layout-east" id="eastFilterSortPane">
 			
 			<div class="ui-layout-center" id="filterPaneUILayout">
-				<div class="ui small header" id="filterHeader">
-		  			 <i class="filter icon"></i>
+				<div class="ui small center aligned header" id="filterHeader">
 		  			<div class="content">
+		  			 <i class="filter icon"></i>
 		    			Filter
 		  		  	</div>
 				</div>
@@ -52,9 +58,9 @@
 			</div> <!-- ui-layout-center #filterPane -->
 	
 			<div class=" ui-layout-south" id="sortPaneUILayout">
-				<div class="ui small header" id="sortHeader">
-		  			 <i class="sort icon"></i>
+				<div class="ui small center aligned header" id="sortHeader">
 		  			<div class="content">
+		  			 <i class="sort icon"></i>
 		    			Sort
 		  		  	</div>
 		  		</div>

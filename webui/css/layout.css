@@ -53,11 +53,16 @@
 	cursor:move; /* match the default cursor used by the jQuery UI for drag and drop */
 }
 
-#galleryHeader
+#galleryHeader,#propertiesHeader
 {
 	padding: 8px;
 	margin: 0px;
 	background-color: lightGrey;
+}
+
+#propertiesPanelUILayout 
+{
+	padding: 0px; /* Override jQuery UI padding */
 }
 
 /* Gallery items with short labels - vertically align the text below the icon */
