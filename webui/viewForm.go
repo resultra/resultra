@@ -1,14 +1,18 @@
 package webui
 
 import (
+	"appengine"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"resultra/datasheet/controller"
+	"resultra/datasheet/datamodel"
 )
 
-type EditRecordTemplateParams struct {
-	Title    string
-	LayoutID string
+type ViewFormTemplateParams struct {
+	Title      string
+	LayoutID   string
+	LayoutName string
 }
 
 func viewForm(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +23,14 @@ func viewForm(w http.ResponseWriter, r *http.Request) {
 	layoutID := vars["layoutID"]
 	log.Println("editRecord: editing record: layout ID = %v", layoutID)
 
-	templParams := EditRecordTemplateParams{"View Form", layoutID}
+	appEngContext := appengine.NewContext(r)
+	layoutRef, getErr := datamodel.GetLayoutRef(appEngContext, datamodel.GetLayoutParams{layoutID})
+	if getErr != nil {
+		controller.WriteErrorResponse(w, getErr)
+		return
+	}
+
+	templParams := ViewFormTemplateParams{"View Form", layoutID, layoutRef.Layout.Name}
 	err := htmlTemplates.ExecuteTemplate(w, "viewForm", templParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

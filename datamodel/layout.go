@@ -61,6 +61,24 @@ func GetAllLayoutRefs(appEngContext appengine.Context) ([]LayoutRef, error) {
 
 }
 
+type GetLayoutParams struct {
+	// TODO - More fields will go here once a layout is
+	// tied to a database table
+	LayoutID string `json:"layoutID"`
+}
+
+func GetLayoutRef(appEngContext appengine.Context, layoutParams GetLayoutParams) (*LayoutRef, error) {
+
+	getLayout := Layout{}
+	getErr := getRootEntityByID(appEngContext, layoutEntityKind, layoutParams.LayoutID, &getLayout)
+	if getErr != nil {
+		return nil, fmt.Errorf("Can't get layout: Error retrieving existing layout: params=%+v, err = %v", layoutParams, getErr)
+	}
+
+	return &LayoutRef{layoutParams.LayoutID, getLayout}, nil
+
+}
+
 type LayoutGeometry struct {
 	PositionTop  int `json:"positionTop"`
 	PositionLeft int `json:"positionLeft"`

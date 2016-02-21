@@ -23,7 +23,7 @@
 				  <i class="right chevron icon divider"></i>
 				  <a class="section"><i class="database icon"></i>Database Name</a>
 				  <i class="right chevron icon divider"></i>
-				  <div class="active section">Form Name</div>
+				  <div class="active section">{{.LayoutName}}</div>
 				</div> <!-- breadcrumb header -->
 		</div> <!-- ui layout north -->
 
@@ -164,6 +164,7 @@
 							<div class="left menu">
 								<div class="item">Print</div>
 								<div class="item">Export CSV</div>
+								<a href="/designForm/{{.LayoutID}}" class="item">Edit Form Design</a>
 							</div> <!-- menu -->
 						</div> <!-- ui dropdown -->
 					</div> <!-- column -->
