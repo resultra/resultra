@@ -13,8 +13,7 @@ func TestNewRecord(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testField := Field{Name: "Test Field", Type: "text"}
-
+	testField := Field{Name: "Test Field", Type: "text", RefName: "TestRef1"}
 	fieldID, err := NewField(appEngCntxt, testField)
 	if err != nil {
 		t.Fatal(err)

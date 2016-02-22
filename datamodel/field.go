@@ -5,9 +5,15 @@ import (
 	"appengine/datastore"
 	"fmt"
 	"log"
+	"regexp"
+	"strings"
 )
 
 const fieldEntityKind string = "Field"
+
+// A "reference name" for a field can only contain
+// TODO - Can't start with "true or false" - add this when supporting boolean values
+var validRefNameRegexp = regexp.MustCompile("^[a-zA-Z_][a-zA-Z0-9_]*$")
 
 const fieldTypeText = "text"
 const fieldTypeNumber = "number"
@@ -16,6 +22,9 @@ const fieldTypeDate = "date"
 type Field struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
+
+	// Short name for referencing the field in a calculated fields
+	RefName string `json:"refName"`
 }
 
 type FieldRef struct {
@@ -53,6 +62,14 @@ func NewField(appEngContext appengine.Context, newField Field) (string, error) {
 	if !validFieldType(newField.Type) {
 		return "", fmt.Errorf("Can't create new field: invalid field type: '%v'", newField.Type)
 	}
+
+	newField.RefName = strings.TrimSpace(newField.RefName) // strip leading & trailing whitespace
+	if !validRefNameRegexp.MatchString(newField.RefName) {
+		return "", fmt.Errorf("Invalid reference name: '%v' Cannot be empty and must only contain letters, numbers and underscores",
+			newField.RefName)
+	}
+
+	// TODO: Validate the reference name is unique versus the other names field names already in use.
 
 	fieldID, insertErr := insertNewEntity(appEngContext, fieldEntityKind, nil, &newField)
 	if insertErr != nil {
@@ -99,7 +116,7 @@ func GetAllFieldRefs(appEngContext appengine.Context) ([]FieldRef, error) {
 		if encodeErr != nil {
 			return nil, fmt.Errorf("Failed to encode unique ID for field: key=%+v, encode err=%v", fieldKey, encodeErr)
 		}
-		fieldRefs[i] = FieldRef{fieldID, Field{currField.Name, currField.Type}}
+		fieldRefs[i] = FieldRef{fieldID, currField}
 	}
 	return fieldRefs, nil
 }
@@ -128,5 +145,55 @@ func GetFieldsByType(appEngContext appengine.Context) (*FieldsByType, error) {
 		}
 	}
 	return &fieldsByType, nil
+
+}
+
+type StringFieldRefMap map[string]FieldRef
+
+type FieldRefIDIndex struct {
+	fieldRefsByID      StringFieldRefMap
+	fieldRefsByRefName StringFieldRefMap
+}
+
+func (fieldRefIDIndex FieldRefIDIndex) getFieldRefByID(fieldID string) (*FieldRef, error) {
+	fieldRef, fieldRefFound := fieldRefIDIndex.fieldRefsByID[fieldID]
+	if fieldRefFound != true {
+		return nil, fmt.Errorf("getFieldRefByID: Unable to retrieve field for field with ID = %v ", fieldID)
+	}
+	return &fieldRef, nil
+
+}
+
+func GetFieldRefIDIndex(appEngContext appengine.Context) (*FieldRefIDIndex, error) {
+
+	fieldRefs, getErr := GetAllFieldRefs(appEngContext)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetFieldsByRefName: Unable to retrieve fields from datastore: datastore error =%v", getErr)
+	}
+
+	log.Printf("GetFieldRefIDIndex: Indexing %v fields", len(fieldRefs))
+
+	fieldRefsByRefName := StringFieldRefMap{}
+	fieldRefsByID := StringFieldRefMap{}
+	for _, fieldRef := range fieldRefs {
+
+		if _, keyExists := fieldRefsByRefName[fieldRef.FieldInfo.RefName]; keyExists == true {
+			return nil, fmt.Errorf("GetFieldsByRefName: Unable to retrieve fields from datastore: "+
+				" found duplicate reference name for field = %+v", fieldRef)
+		}
+
+		if _, keyExists := fieldRefsByID[fieldRef.FieldID]; keyExists == true {
+			return nil, fmt.Errorf("GetFieldsByRefName: Unable to retrieve fields from datastore: "+
+				" found duplicate key for field = %+v", fieldRef)
+		}
+
+		log.Printf("GetFieldRefIDIndex: Indexed field: %+v", fieldRef)
+
+		fieldRefsByRefName[fieldRef.FieldInfo.RefName] = fieldRef
+		fieldRefsByID[fieldRef.FieldID] = fieldRef
+
+	}
+
+	return &FieldRefIDIndex{fieldRefsByID, fieldRefsByRefName}, nil
 
 }
