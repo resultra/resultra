@@ -59,7 +59,10 @@ func validFieldType(fieldType string) bool {
 	}
 }
 
-func (field Field) evalEqn(evalContext *EqnEvalContext) (*EquationResult, error) {
+func (fieldRef FieldRef) evalEqn(evalContext *EqnEvalContext) (*EquationResult, error) {
+
+	field := fieldRef.FieldInfo
+
 	if field.IsCalcField {
 		// Calculated field - return the result of the calculation
 		decodedEqn, decodeErr := decodeEquation(field.CalcFieldEqn)
@@ -79,8 +82,11 @@ func (field Field) evalEqn(evalContext *EqnEvalContext) (*EquationResult, error)
 	} else { // literal field value
 		switch field.Type {
 		case fieldTypeText:
-			textResult := "Foo" // dummied up - TODO: get from record
-			return textEqnResult(textResult), nil
+			if textResult, err := evalContext.resultRecord.GetTextRecordValue(fieldRef.FieldID); err != nil {
+				return nil, err
+			} else {
+				return textEqnResult(textResult), nil
+			}
 		case fieldTypeNumber:
 			numberResult := 2.0 // dummied up - TODO: get from record
 			return numberEqnResult(numberResult), nil

@@ -98,6 +98,23 @@ type SetRecordValueParams struct {
 	Value    string `json:"value"`
 }
 
+func (recordRef RecordRef) GetTextRecordValue(fieldID string) (string, error) {
+	val, foundVal := recordRef.FieldValues[fieldID]
+	if !foundVal {
+		return "", fmt.Errorf("Can't find value for record with ID = %v, field = %v",
+			recordRef.RecordID, fieldID)
+	} else {
+		switch val.(type) {
+		case string:
+			return val.(string), nil
+		default:
+			return "", fmt.Errorf("Type mismatch retrieving value from record with ID = %v, field = %v:"+
+				" expecting string, got %v", recordRef.RecordID, fieldID, val,
+				recordRef.RecordID, fieldID)
+		}
+	} // else (if found a value for the given field ID)
+}
+
 func SetRecordValue(appEngContext appengine.Context, setValParams SetRecordValueParams) (*RecordRef, error) {
 
 	_, fieldGetErr := GetField(appEngContext, GetFieldParams{setValParams.FieldID})

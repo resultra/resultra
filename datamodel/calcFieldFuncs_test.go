@@ -18,7 +18,9 @@ func TestSumFunc(t *testing.T) {
 	val2 := 30.0
 	eqn2 := EquationNode{NumberVal: &val2}
 
-	evalContext := EqnEvalContext{appEngCntxt, calcFieldDefinedFuncs}
+	// This test doesn't retrieve record values, so a dummy record will suffice
+	dummyRecordRef := RecordRef{"dummyFieldID", Record{}}
+	evalContext := EqnEvalContext{appEngCntxt, calcFieldDefinedFuncs, dummyRecordRef}
 
 	if funcResult, err := sumEvalFunc(&evalContext, []EquationNode{eqn1, eqn2}); err != nil {
 		t.Error(err)

@@ -89,7 +89,10 @@ func TestEquation(t *testing.T) {
 		t.Logf(userText)
 	}
 
-	if evalEqnResult, evalErr := funcEqn.evalEqn(&EqnEvalContext{appEngCntxt, calcFieldDefinedFuncs}); evalErr != nil {
+	// This test doesn't retrieve record values, so a dummy record will suffice
+	dummyRecordRef := RecordRef{"dummyFieldID", Record{}}
+
+	if evalEqnResult, evalErr := funcEqn.evalEqn(&EqnEvalContext{appEngCntxt, calcFieldDefinedFuncs, dummyRecordRef}); evalErr != nil {
 		t.Errorf("Unexpected error evaluating equation: %+v, eqn=%v", evalErr, userText)
 	} else {
 		textRes, validateErr := evalEqnResult.getTextResult()
@@ -122,6 +125,65 @@ func TestEquation(t *testing.T) {
 				expected, userText)
 		}
 		t.Logf(userText)
+	}
+
+}
+
+func TestTextFieldReference(t *testing.T) {
+
+	appEngCntxt, err := aetest.NewContext(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testField1 := Field{Name: "Test Field 1", Type: "text", RefName: "FieldRef1"}
+	fieldID1, field1Err := NewField(appEngCntxt, testField1)
+	if field1Err != nil {
+		t.Fatal(field1Err)
+	}
+
+	testField2 := Field{Name: "Test Field 2", Type: "text", RefName: "FieldRef2"}
+	fieldID2, field2Err := NewField(appEngCntxt, testField2)
+	if field2Err != nil {
+		t.Fatal(field2Err)
+	}
+
+	testRecordRef, recordErr := NewRecord(appEngCntxt)
+	if recordErr != nil {
+		t.Fatal(recordErr)
+	}
+
+	funcName := funcNameConcat
+	arg1 := fieldRefEqnNode(fieldID1)
+	arg2 := fieldRefEqnNode(fieldID2)
+	funcEqn := funcEqnNode(funcName, []EquationNode{*arg1, *arg2})
+
+	var updatedRecordRef *RecordRef
+	var updateErr error
+	if updatedRecordRef, updateErr = SetRecordValue(appEngCntxt,
+		SetRecordValueParams{testRecordRef.RecordID, fieldID1, "fieldOneVal"}); updateErr != nil {
+		t.Fatal(updateErr)
+	}
+	if updatedRecordRef, updateErr = SetRecordValue(appEngCntxt,
+		SetRecordValueParams{testRecordRef.RecordID, fieldID2, "fieldTwoVal"}); updateErr != nil {
+		t.Fatal(updateErr)
+	}
+
+	if evalEqnResult, evalErr := funcEqn.evalEqn(&EqnEvalContext{appEngCntxt,
+		calcFieldDefinedFuncs, *updatedRecordRef}); evalErr != nil {
+		t.Errorf("Unexpected error evaluating equation: %+v, eqn=%+v", evalErr, funcEqn)
+	} else {
+		catResult, catErr := evalEqnResult.getTextResult()
+		if catErr != nil {
+			t.Errorf("Unexpected error from CONCATENATE with field references: %v", catErr)
+		} else {
+			t.Logf("TestFieldReference: concatenate results: %v", catResult)
+			expected := "fieldOneValfieldTwoVal"
+			if catResult != expected {
+				t.Errorf("Unexpected result from CONCATENATE with field references: expecting %v, got %v",
+					expected, catResult)
+			}
+		}
 	}
 
 }

@@ -3,40 +3,9 @@ package datamodel
 import (
 	"appengine"
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"strconv"
 )
-
-type EquationNode struct {
-
-	// Internal/root nodes - functions which point to arguments of
-	// other functions and/or leaf nodes.
-	FuncName string         `json:"funcName,omitempty"`
-	FuncArgs []EquationNode `json:"funcArgs,omitempty"`
-
-	// Leaf nodes - values
-	FieldID string `json:"fieldID,omitempty"`
-
-	// Literal values -  Use pointers to the values, which allows the use of
-	// empty strings or zero numbers in the values.
-	// If not using a string pointer, an empty string won't be
-	// omitted from JSON encoding output.
-	TextVal   *string  `json:"textVal,omitempty"`
-	NumberVal *float64 `json:"numberVal,omitempty"`
-}
-
-func decodeEquation(encodedEqn string) (*EquationNode, error) {
-
-	decodedEqnNode := EquationNode{}
-	encodedBytes := []byte(encodedEqn)
-	if err := json.Unmarshal(encodedBytes, &decodedEqnNode); err != nil {
-		return nil, fmt.Errorf("Failure decoding equation: encoded eqn = %v, decode error=%v",
-			encodedEqn, err)
-	} else {
-		return &decodedEqnNode, nil
-	}
-}
 
 type EqnEvalFunc func(evalContext *EqnEvalContext, funcArgs []EquationNode) (*EquationResult, error)
 
@@ -51,6 +20,11 @@ type FuncNameFuncInfoMap map[string]FunctionInfo
 type EqnEvalContext struct {
 	appEngContext appengine.Context
 	definedFuncs  FuncNameFuncInfoMap
+
+	// Record into which the results will be calculated. This is also the record
+	// which is referenced for field values, in the case a calculated field references
+	// other fields.
+	resultRecord RecordRef
 }
 
 // This function needs to use a FieldRefIDIndex instead of get for every field. However,
@@ -130,7 +104,7 @@ func (equation EquationNode) evalEqn(evalContext *EqnEvalContext) (*EquationResu
 		if err != nil {
 			return nil, fmt.Errorf("evalEqn: failure retrieving referenced field: %+v", err)
 		} else {
-			return fieldRef.FieldInfo.evalEqn(evalContext)
+			return fieldRef.evalEqn(evalContext)
 		}
 
 	} else if equation.TextVal != nil {
