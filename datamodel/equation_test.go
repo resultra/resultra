@@ -89,6 +89,24 @@ func TestEquation(t *testing.T) {
 		t.Logf(userText)
 	}
 
+	if evalEqnResult, evalErr := funcEqn.evalEqn(&EqnEvalContext{appEngCntxt, calcFieldDefinedFuncs}); evalErr != nil {
+		t.Errorf("Unexpected error evaluating equation: %+v, eqn=%v", evalErr, userText)
+	} else {
+		textRes, validateErr := evalEqnResult.getTextResult()
+		if validateErr != nil {
+			t.Errorf("Unexpected error evaluating equation: got unexpected result=%+v: err = %v",
+				evalEqnResult, validateErr)
+		} else {
+			t.Logf("Concatenate results: %v", textRes)
+			expected := "arg1arg2"
+			if textRes != expected {
+				t.Errorf("Conversion to user equation string failed: expected = %v, got %v",
+					expected, textRes)
+			}
+
+		}
+	}
+
 	// The permanent fieldID is stored in the EquationNode, but the reference
 	// name is used by the user.
 	fieldRefEqn := EquationNode{FieldID: fieldID}

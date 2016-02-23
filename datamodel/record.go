@@ -113,6 +113,7 @@ func SetRecordValue(appEngContext appengine.Context, setValParams SetRecordValue
 			" Error retrieving existing record for update: err = %v", setValParams, getErr)
 	}
 
+	// TODO - Consider putting a prefix on the field ID before saving it to the datastore.
 	//	recordForUpdate.FieldValues[setValParams.FieldID] = setValParams.Value
 	recordForUpdate[setValParams.FieldID] = setValParams.Value
 

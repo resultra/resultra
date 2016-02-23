@@ -25,6 +25,14 @@ type Field struct {
 
 	// Short name for referencing the field in a calculated fields
 	RefName string `json:"refName"`
+
+	// If IsCalcField is true, then the field is a calculated field. The
+	// equation will be used to determine the values for this field.
+	// The datastore can't store recursively nested structs, so
+	// if field is a calculated field, then store a JSON representation
+	// of the equation.
+	CalcFieldEqn string `json:"calcFieldEqn"`
+	IsCalcField  bool   `json:"isCalcField"` // defaults to false
 }
 
 type FieldRef struct {
@@ -49,6 +57,40 @@ func validFieldType(fieldType string) bool {
 	default:
 		return false
 	}
+}
+
+func (field Field) evalEqn(evalContext *EqnEvalContext) (*EquationResult, error) {
+	if field.IsCalcField {
+		// Calculated field - return the result of the calculation
+		decodedEqn, decodeErr := decodeEquation(field.CalcFieldEqn)
+		if decodeErr != nil {
+			return nil, fmt.Errorf("Failure decoding equation for evaluation: %v", decodeErr)
+		} else {
+			calcFieldResult, calcFieldErr := decodedEqn.evalEqn(evalContext)
+			if calcFieldErr != nil {
+				return calcFieldResult, calcFieldErr
+			} else if calcFieldResult.ResultType != field.Type {
+				return nil, fmt.Errorf("evalEqn: type mismatch in result calculated for field: "+
+					" expecting %v, got %v: field = %+v", field.Type, calcFieldResult.ResultType, field)
+			} else {
+				return calcFieldResult, nil
+			}
+		}
+	} else { // literal field value
+		switch field.Type {
+		case fieldTypeText:
+			textResult := "Foo" // dummied up - TODO: get from record
+			return textEqnResult(textResult), nil
+		case fieldTypeNumber:
+			numberResult := 2.0 // dummied up - TODO: get from record
+			return numberEqnResult(numberResult), nil
+			//		case fieldTypeDate:
+		default:
+			return nil, fmt.Errorf("Unknown field result type: %v", field.Type)
+
+		} // switch
+
+	} // field value is a literal, just return it
 }
 
 func NewField(appEngContext appengine.Context, newField Field) (string, error) {
