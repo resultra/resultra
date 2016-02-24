@@ -3,7 +3,9 @@
 function initLayoutEditFieldInfo(fieldRef)
 {
 	// Add the ability to select the field from the new layout container
-	// dialog.
+	// dialog. This callback function is called for both number and 
+	// text fields; so, text boxes can be used for both numbers and 
+	// regular text.
  	var selectFieldOptionHTML = '<option value="' +
  		fieldRef.fieldID + '">' +
  		fieldRef.fieldInfo.name + '</option>'

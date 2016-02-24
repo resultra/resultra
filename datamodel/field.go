@@ -82,14 +82,19 @@ func (fieldRef FieldRef) evalEqn(evalContext *EqnEvalContext) (*EquationResult, 
 	} else { // literal field value
 		switch field.Type {
 		case fieldTypeText:
-			if textResult, err := evalContext.resultRecord.GetTextRecordValue(fieldRef.FieldID); err != nil {
+			if textResult, err := evalContext.resultRecord.GetTextRecordValue(
+				evalContext.appEngContext, fieldRef.FieldID); err != nil {
 				return nil, err
 			} else {
 				return textEqnResult(textResult), nil
 			}
 		case fieldTypeNumber:
-			numberResult := 2.0 // dummied up - TODO: get from record
-			return numberEqnResult(numberResult), nil
+			if numberResult, err := evalContext.resultRecord.GetNumberRecordValue(
+				evalContext.appEngContext, fieldRef.FieldID); err != nil {
+				return nil, err
+			} else {
+				return numberEqnResult(numberResult), nil
+			}
 			//		case fieldTypeDate:
 		default:
 			return nil, fmt.Errorf("Unknown field result type: %v", field.Type)

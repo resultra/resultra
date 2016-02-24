@@ -18,16 +18,35 @@ func newRecord(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func setRecordFieldValue(w http.ResponseWriter, r *http.Request) {
+func setTextFieldValue(w http.ResponseWriter, r *http.Request) {
 
-	setValParams := datamodel.SetRecordValueParams{}
+	setValParams := datamodel.SetRecordTextValueParams{}
 	if err := decodeJSONRequest(r, &setValParams); err != nil {
 		WriteErrorResponse(w, err)
 		return
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	updatedRecordRef, setErr := datamodel.SetRecordValue(appEngCntxt, setValParams)
+	updatedRecordRef, setErr := datamodel.SetRecordTextValue(appEngCntxt, setValParams)
+	if setErr != nil {
+		WriteErrorResponse(w, setErr)
+		return
+	} else {
+		writeJSONResponse(w, updatedRecordRef)
+	}
+
+}
+
+func setNumberFieldValue(w http.ResponseWriter, r *http.Request) {
+
+	setValParams := datamodel.SetRecordNumberValueParams{}
+	if err := decodeJSONRequest(r, &setValParams); err != nil {
+		WriteErrorResponse(w, err)
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+	updatedRecordRef, setErr := datamodel.SetRecordNumberValue(appEngCntxt, setValParams)
 	if setErr != nil {
 		WriteErrorResponse(w, setErr)
 		return

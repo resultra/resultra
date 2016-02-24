@@ -160,12 +160,12 @@ func TestTextFieldReference(t *testing.T) {
 
 	var updatedRecordRef *RecordRef
 	var updateErr error
-	if updatedRecordRef, updateErr = SetRecordValue(appEngCntxt,
-		SetRecordValueParams{testRecordRef.RecordID, fieldID1, "fieldOneVal"}); updateErr != nil {
+	if updatedRecordRef, updateErr = SetRecordTextValue(appEngCntxt,
+		SetRecordTextValueParams{testRecordRef.RecordID, fieldID1, "fieldOneVal"}); updateErr != nil {
 		t.Fatal(updateErr)
 	}
-	if updatedRecordRef, updateErr = SetRecordValue(appEngCntxt,
-		SetRecordValueParams{testRecordRef.RecordID, fieldID2, "fieldTwoVal"}); updateErr != nil {
+	if updatedRecordRef, updateErr = SetRecordTextValue(appEngCntxt,
+		SetRecordTextValueParams{testRecordRef.RecordID, fieldID2, "fieldTwoVal"}); updateErr != nil {
 		t.Fatal(updateErr)
 	}
 
@@ -182,6 +182,65 @@ func TestTextFieldReference(t *testing.T) {
 			if catResult != expected {
 				t.Errorf("Unexpected result from CONCATENATE with field references: expecting %v, got %v",
 					expected, catResult)
+			}
+		}
+	}
+
+}
+
+func TestNumberFieldReference(t *testing.T) {
+
+	appEngCntxt, err := aetest.NewContext(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testField1 := Field{Name: "Test Field 1", Type: "number", RefName: "FieldRef1"}
+	fieldID1, field1Err := NewField(appEngCntxt, testField1)
+	if field1Err != nil {
+		t.Fatal(field1Err)
+	}
+
+	testField2 := Field{Name: "Test Field 2", Type: "number", RefName: "FieldRef2"}
+	fieldID2, field2Err := NewField(appEngCntxt, testField2)
+	if field2Err != nil {
+		t.Fatal(field2Err)
+	}
+
+	testRecordRef, recordErr := NewRecord(appEngCntxt)
+	if recordErr != nil {
+		t.Fatal(recordErr)
+	}
+
+	funcName := funcNameSum
+	arg1 := fieldRefEqnNode(fieldID1)
+	arg2 := fieldRefEqnNode(fieldID2)
+	funcEqn := funcEqnNode(funcName, []EquationNode{*arg1, *arg2})
+
+	var updatedRecordRef *RecordRef
+	var updateErr error
+	if updatedRecordRef, updateErr = SetRecordNumberValue(appEngCntxt,
+		SetRecordNumberValueParams{testRecordRef.RecordID, fieldID1, 32.2}); updateErr != nil {
+		t.Fatal(updateErr)
+	}
+	if updatedRecordRef, updateErr = SetRecordNumberValue(appEngCntxt,
+		SetRecordNumberValueParams{testRecordRef.RecordID, fieldID2, 42.4}); updateErr != nil {
+		t.Fatal(updateErr)
+	}
+
+	if evalEqnResult, evalErr := funcEqn.evalEqn(&EqnEvalContext{appEngCntxt,
+		calcFieldDefinedFuncs, *updatedRecordRef}); evalErr != nil {
+		t.Errorf("Unexpected error evaluating equation: %+v, eqn=%+v", evalErr, funcEqn)
+	} else {
+		sumResult, sumErr := evalEqnResult.getNumberResult()
+		if sumErr != nil {
+			t.Errorf("Unexpected error from SUM with field references: %v", sumErr)
+		} else {
+			t.Logf("TestFieldReference: sum results: %v", sumResult)
+			expected := 74.6
+			if sumResult != expected {
+				t.Errorf("Unexpected result from SUM with field references: expecting %v, got %v",
+					expected, sumResult)
 			}
 		}
 	}

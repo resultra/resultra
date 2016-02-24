@@ -4,6 +4,7 @@ import (
 	"appengine"
 	"appengine/datastore"
 	"fmt"
+	"math"
 )
 
 const recordEntityKind string = "Record"
@@ -92,35 +93,110 @@ func GetRecords(appEngContext appengine.Context) ([]RecordRef, error) {
 	return recordRefs, nil
 }
 
-type SetRecordValueParams struct {
+type SetRecordTextValueParams struct {
 	RecordID string `json:"recordID"`
 	FieldID  string `json:"fieldID"`
 	Value    string `json:"value"`
 }
 
-func (recordRef RecordRef) GetTextRecordValue(fieldID string) (string, error) {
+func validateFieldForRecordValue(appEngContext appengine.Context, fieldID string, expectedFieldType string) error {
+	fieldRef, fieldGetErr := GetField(appEngContext, GetFieldParams{fieldID})
+	if fieldGetErr != nil {
+		return fmt.Errorf(" Error retrieving field for updating/setting value: err = %v", fieldGetErr)
+	}
+	if fieldRef.FieldInfo.Type != expectedFieldType {
+		return fmt.Errorf("Can't update/set value:"+
+			" Type mismatch with field: expecting %v: got %v", expectedFieldType, fieldRef.FieldInfo.Type)
+
+	}
+	return nil
+}
+
+func (recordRef RecordRef) GetTextRecordValue(appEngContext appengine.Context, fieldID string) (string, error) {
+
+	if fieldValidateErr := validateFieldForRecordValue(appEngContext, fieldID, fieldTypeText); fieldValidateErr != nil {
+		return "", fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
+			"Can't validate field with value type: validation error = %v", recordRef, fieldID, fieldValidateErr)
+	}
+
 	val, foundVal := recordRef.FieldValues[fieldID]
 	if !foundVal {
-		return "", fmt.Errorf("Can't find value for record with ID = %v, field = %v",
+		return "", fmt.Errorf("Undefined value for record with ID = %v, field = %v",
 			recordRef.RecordID, fieldID)
 	} else {
-		switch val.(type) {
-		case string:
-			return val.(string), nil
-		default:
+		if textVal, foundText := val.(string); !foundText {
 			return "", fmt.Errorf("Type mismatch retrieving value from record with ID = %v, field = %v:"+
-				" expecting string, got %v", recordRef.RecordID, fieldID, val,
-				recordRef.RecordID, fieldID)
+				" expecting string, got %v", recordRef.RecordID, fieldID, val)
+
+		} else {
+			return textVal, nil
 		}
 	} // else (if found a value for the given field ID)
 }
 
-func SetRecordValue(appEngContext appengine.Context, setValParams SetRecordValueParams) (*RecordRef, error) {
+func (recordRef RecordRef) GetNumberRecordValue(appEngContext appengine.Context, fieldID string) (float64, error) {
 
-	_, fieldGetErr := GetField(appEngContext, GetFieldParams{setValParams.FieldID})
-	if fieldGetErr != nil {
+	if fieldValidateErr := validateFieldForRecordValue(appEngContext, fieldID, fieldTypeNumber); fieldValidateErr != nil {
+		return math.NaN(), fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
+			"Can't validate field with value type: validation error = %v", recordRef, fieldID, fieldValidateErr)
+	}
+
+	val, foundVal := recordRef.FieldValues[fieldID]
+	if !foundVal {
+		return math.NaN(), fmt.Errorf("Undefined value for record with ID = %v, field = %v",
+			recordRef.RecordID, fieldID)
+	} else {
+		if numberVal, foundNumber := val.(float64); !foundNumber {
+			return math.NaN(), fmt.Errorf("Type mismatch retrieving value from record with ID = %v, field = %v:"+
+				" expecting number, got %v", recordRef.RecordID, fieldID, val)
+		} else {
+			return numberVal, nil
+		}
+	} // else (if found a value for the given field ID)
+}
+
+func SetRecordTextValue(appEngContext appengine.Context, setValParams SetRecordTextValueParams) (*RecordRef, error) {
+
+	if fieldValidateErr := validateFieldForRecordValue(appEngContext, setValParams.FieldID, fieldTypeText); fieldValidateErr != nil {
+		return nil, fmt.Errorf("Can't set value in SetRecordTextValue(params=%+v):"+
+			" Error validating record's field for update: %v", setValParams, fieldValidateErr)
+	}
+
+	recordForUpdate := Record{}
+	getErr := getRootEntityByID(appEngContext, recordEntityKind, setValParams.RecordID, &recordForUpdate)
+	if getErr != nil {
 		return nil, fmt.Errorf("Can't set value in SetRecordValue(params=%+v):"+
-			" Error retrieving value's field for update: err = %v", setValParams, fieldGetErr)
+			" Error retrieving existing record for update: err = %v", setValParams, getErr)
+	}
+
+	// TODO - Consider putting a prefix on the field ID before saving it to the datastore.
+	//	recordForUpdate.FieldValues[setValParams.FieldID] = setValParams.Value
+	recordForUpdate[setValParams.FieldID] = setValParams.Value
+
+	if updateErr := updateExistingRootEntity(appEngContext, recordEntityKind,
+		setValParams.RecordID, &recordForUpdate); updateErr != nil {
+		return nil, fmt.Errorf("Can't set value: Error retrieving existing record for update: params=%+v, err = %v",
+			setValParams, updateErr)
+	}
+
+	// Return the updated record
+	// TODO - Depending upon how calculated values are implemented,
+	// this is where calculated field values may also be updated.
+	return &RecordRef{setValParams.RecordID, recordForUpdate}, nil
+
+}
+
+type SetRecordNumberValueParams struct {
+	RecordID string  `json:"recordID"`
+	FieldID  string  `json:"fieldID"`
+	Value    float64 `json:"value"`
+}
+
+func SetRecordNumberValue(appEngContext appengine.Context, setValParams SetRecordNumberValueParams) (*RecordRef, error) {
+
+	if fieldValidateErr := validateFieldForRecordValue(appEngContext, setValParams.FieldID, fieldTypeNumber); fieldValidateErr != nil {
+		return nil, fmt.Errorf("Can't set value in SetRecordTextValue(params=%+v):"+
+			" Error validating record's field for update: %v", setValParams, fieldValidateErr)
 	}
 
 	recordForUpdate := Record{}

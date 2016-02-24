@@ -36,7 +36,24 @@ function initCanvas(containerInitCallback, fieldInitCallback, initCompleteCallba
 				// specialized initialization for the client of this function.
 				fieldInitCallback(textFields[textFieldIter])
 
-			} // for each field
+			} // for each text field
+			
+			var numberFields = replyData.fieldsByType.numberFields
+			for (numberFieldIter in numberFields) {
+				console.log("Number field: " + numberFields[numberFieldIter].fieldInfo.name)
+
+				var numberField = numberFields[numberFieldIter]
+				// Populate a map/dictionary of field IDs to the field information.
+				// This is needed when creating new layout elements (text boxes, etc.),
+				// so the fields information can be used after creation of the layout
+				// element.
+				fieldsByID[numberField.fieldID] = numberField.fieldInfo
+
+				// Done with base initialization. Invoke the callback to finish any
+				// specialized initialization for the client of this function.
+				fieldInitCallback(numberField)
+
+			} // for each number field
 
 			for (containerIter in replyData.layoutContainers) {
 				
@@ -55,9 +72,11 @@ function initCanvas(containerInitCallback, fieldInitCallback, initCompleteCallba
 				// which supports queries for fieldID and does error checking.
 				containerObj.find('label').text(fieldsByID[container.fieldID].name)
 				
-				// Store the field IDs for the container in the associated jQuery
-				// object itself
+				// Store the field IDs and types for the container in the associated jQuery
+				// object itself. This is needed for validation and to make the right API 
+				// call when setting values.
 				containerObj.data("fieldID",container.fieldID)
+				containerObj.data("fieldType",fieldsByID[container.fieldID].type)
 
 				// Position the object withing the #layoutCanvas div
 				$("#layoutCanvas").append(containerObj)
