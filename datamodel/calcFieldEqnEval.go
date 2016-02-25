@@ -164,76 +164,103 @@ func (equation EquationNode) evalEqn(evalContext *EqnEvalContext) (*EquationResu
 
 }
 
+// Update the calculated value for one calculated field
+func updateOneCalcFieldValue(appEngContext appengine.Context, recordRef *RecordRef, fieldRef FieldRef) error {
+
+	if !fieldRef.FieldInfo.IsCalcField {
+		return fmt.Errorf("updateOneCalcFieldValue: Calculated field expected: got non-calculated field = %v", fieldRef.FieldInfo.RefName)
+	}
+
+	log.Printf("updateCalcFieldValues: Updating calculated field %v", fieldRef.FieldInfo.RefName)
+
+	// The calculated field's equation is stored as regular JSON (since the datastore doesn't support
+	// recursive structures). So, before evaluating the equation, the equation must first be decoded
+	// into a (root) equation node.
+	rootFieldEqnNode, decodeErr := decodeEquation(fieldRef.FieldInfo.CalcFieldEqn)
+	if decodeErr != nil {
+		return fmt.Errorf("Can't decode equation for field = %+v: decode error = %v", fieldRef, decodeErr)
+	}
+
+	// Perform the actual evaluation/calculation.
+	fieldEqnResult, evalErr := rootFieldEqnNode.evalEqn(
+		&EqnEvalContext{appEngContext, calcFieldDefinedFuncs, *recordRef})
+	if evalErr != nil {
+		return fmt.Errorf("Unexpected error evaluating equation for field=%v: error=%+v",
+			fieldRef.FieldInfo.RefName, evalErr)
+	} else if fieldEqnResult.isUndefined() {
+		log.Printf("Undefined field eqn result for calculated field = %v", fieldRef.FieldInfo.RefName)
+		// If the evaluation result is undefined, don't proceed to actually set the value for the
+		// calculated field (i.e., it will remain blank/undefined). An undefined value is a valid
+		// condition when not all the depended upon field's values are defined.
+		return nil
+	}
+
+	// Validate the result type matches the calculated field's expected result type.
+	if fieldEqnResult.ResultType != fieldRef.FieldInfo.Type {
+		return fmt.Errorf("Error evaluating equation for field=%+v: eqn=%+v: type mismatch on equation result:"+
+			"expected=%v, got=%v", fieldRef, rootFieldEqnNode,
+			fieldRef.FieldInfo.Type, fieldEqnResult.ResultType)
+	} // if type mismatch between calculated equation result and calculated field's type
+
+	// Set the calculated value in the record, depending on the type of value.
+	switch fieldRef.FieldInfo.Type {
+
+	case fieldTypeText:
+		textResult, textResultErr := fieldEqnResult.getTextResult()
+		if textResultErr != nil {
+			return fmt.Errorf("Unexpected error evaluating equation for field=%v: eqn=%+v: error=%v "+
+				"unexpected error getting number result: raw result=%+v",
+				fieldRef.FieldID, rootFieldEqnNode, textResultErr, fieldEqnResult)
+
+		}
+		log.Printf("updateCalcFieldValues: Setting calculated field value: field=%v, value=%v", fieldRef.FieldInfo.RefName, textResult)
+		// TODO - encapsulate the actual setting of raw values into record.go
+		recordRef.FieldValues[fieldRef.FieldID] = textResult
+		return nil
+
+	case fieldTypeNumber:
+		numberResult, numberResultErr := fieldEqnResult.getNumberResult()
+		if numberResultErr != nil {
+			return fmt.Errorf("Unexpected error evaluating equation for field=%v: eqn=%+v: error=%v "+
+				"unexpected error getting number result: raw result=%+v",
+				fieldRef.FieldID, rootFieldEqnNode, numberResultErr, fieldEqnResult)
+
+		}
+		log.Printf("updateCalcFieldValues: Setting calculated field value: field=%v, value=%v", fieldRef.FieldInfo.RefName, numberResult)
+		// TODO - encapsulate the actual setting of raw values into record.go
+		recordRef.FieldValues[fieldRef.FieldID] = numberResult
+		return nil
+		// TODO case fieldTypeDate
+
+	default:
+		return fmt.Errorf("Unexpected error evaluating equation for field=%+v: eqn=%+v: unsupported field type %v",
+			fieldRef, rootFieldEqnNode, evalErr, fieldRef.FieldInfo.Type)
+	} // switch field type
+
+	return nil
+}
+
 // updateCalcFieldValues is (currently) the top-most entry point into the calculated field
 // equation evaluation functionality.
 func updateCalcFieldValues(appEngContext appengine.Context, recordRef *RecordRef) error {
+
 	fieldRefs, getFieldErr := GetAllFieldRefs(appEngContext)
 	if getFieldErr != nil {
 		return fmt.Errorf("Error updating field values - can't get fields: %v", getFieldErr)
 	}
 
 	for _, fieldRef := range fieldRefs {
+
 		if fieldRef.FieldInfo.IsCalcField {
-
-			log.Printf("updateCalcFieldValues: Updating calculated field %v", fieldRef.FieldInfo.RefName)
-
-			rootFieldEqnNode, decodeErr := decodeEquation(fieldRef.FieldInfo.CalcFieldEqn)
-			if decodeErr != nil {
-				return fmt.Errorf("Can't decode equation for field = %+v: decode error = %v", fieldRef, decodeErr)
+			if calcErr := updateOneCalcFieldValue(appEngContext, recordRef, fieldRef); calcErr != nil {
+				// Some of the calculated fields may evaluate to an undefined values, in which case
+				// an error won't be returned, but we can continue evaluating the other calculated
+				// fields. However, if there is an actual error calculating the field values, processing
+				// needs to stop and the error propagated.
+				return fmt.Errorf("Error updating calculated field values - error for field = %v: %v",
+					fieldRef.FieldInfo.RefName, calcErr)
 			}
-
-			fieldEqnResult, evalErr := rootFieldEqnNode.evalEqn(
-				&EqnEvalContext{appEngContext, calcFieldDefinedFuncs, *recordRef})
-			if evalErr != nil {
-				return fmt.Errorf("Unexpected error evaluating equation for field=%v: error=%+v",
-					fieldRef.FieldID, evalErr)
-			} else if fieldEqnResult.isUndefined() {
-				// If the evaluation result is undefined, don't proceed to actually set the value for the
-				// calculated field (i.e., it will remain blank/undefined). An undefined value is a valid
-				// condition when not all the depended upon field's values are defined.
-				log.Printf("Undefined field eqn result for field = %v", fieldRef.FieldInfo.RefName)
-				// TODO - Don't return nil - need to continue processing other calculated fields even
-				// if one field happens to be undefined.
-				return nil
-			}
-
-			if fieldEqnResult.ResultType != fieldRef.FieldInfo.Type {
-				return fmt.Errorf("Error evaluating equation for field=%+v: eqn=%+v: type mismatch on equation result:"+
-					"expected=%v, got=%v", fieldRef, rootFieldEqnNode,
-					fieldRef.FieldInfo.Type, fieldEqnResult.ResultType)
-			} // if type mismatch between calculated equation result and calculated field's type
-
-			switch fieldRef.FieldInfo.Type {
-
-			case fieldTypeText:
-				textResult, textResultErr := fieldEqnResult.getTextResult()
-				if textResultErr != nil {
-					return fmt.Errorf("Unexpected error evaluating equation for field=%v: eqn=%+v: error=%v "+
-						"unexpected error getting number result: raw result=%+v",
-						fieldRef.FieldID, rootFieldEqnNode, textResultErr, fieldEqnResult)
-
-				}
-				log.Printf("updateCalcFieldValues: Setting calculated field value: field=%v, value=%v", fieldRef.FieldInfo.RefName, textResult)
-				recordRef.FieldValues[fieldRef.FieldID] = textResult
-
-			case fieldTypeNumber:
-				numberResult, numberResultErr := fieldEqnResult.getNumberResult()
-				if numberResultErr != nil {
-					return fmt.Errorf("Unexpected error evaluating equation for field=%v: eqn=%+v: error=%v "+
-						"unexpected error getting number result: raw result=%+v",
-						fieldRef.FieldID, rootFieldEqnNode, numberResultErr, fieldEqnResult)
-
-				}
-				log.Printf("updateCalcFieldValues: Setting calculated field value: field=%v, value=%v", fieldRef.FieldInfo.RefName, numberResult)
-				recordRef.FieldValues[fieldRef.FieldID] = numberResult
-				// TODO case fieldTypeDate
-
-			default:
-				return fmt.Errorf("Unexpected error evaluating equation for field=%+v: eqn=%+v: unsupported field type %v",
-					fieldRef, rootFieldEqnNode, evalErr, fieldRef.FieldInfo.Type)
-			} // switch field type
-
-		} // If calculated field
+		} // If calculated field, proceed to update its calculation
 	} // for each fieldRef
 	return nil
 }
