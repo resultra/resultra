@@ -99,7 +99,7 @@ function enableNewRecordButton()
 
 function initRecordEntryFieldInfo(fieldRef)
 {
-	// TBD - While entering records, is there any initialization to do for the fields?
+	// TODO - If the field is a calculated field, disable editing on the field.
 }
 
 
