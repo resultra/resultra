@@ -1,8 +1,11 @@
 package datamodel
 
 import (
+	"appengine"
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"strconv"
 )
 
 type EquationNode struct {
@@ -43,4 +46,55 @@ func decodeEquation(encodedEqn string) (*EquationNode, error) {
 	} else {
 		return &decodedEqnNode, nil
 	}
+}
+
+// This function needs to use a FieldRefIDIndex instead of get for every field. However,
+// since the Fields are currently stored without an ancestore, they are not consistent.
+// TODO - migrate this function back to using FieldRefIDIndex once Fields are setup
+// with an ancestore.
+func (equation EquationNode) UserText(appEngContext appengine.Context) (string, error) {
+
+	var resultBuf bytes.Buffer
+
+	if len(equation.FuncName) > 0 {
+
+		resultBuf.WriteString(equation.FuncName)
+		resultBuf.WriteString("(")
+
+		handledFirstArg := false
+		for _, arg := range equation.FuncArgs {
+			if handledFirstArg {
+				// After the first argument has been processed, prefix
+				// the next argument with a comma.
+				resultBuf.WriteString(",")
+			}
+			handledFirstArg = true
+
+			argEquationText, err := arg.UserText(appEngContext)
+			if err != nil {
+				return "", err
+			} else {
+				resultBuf.WriteString(argEquationText)
+			}
+
+		} // for each argument
+
+		resultBuf.WriteString(")")
+	} else if len(equation.FieldID) > 0 {
+
+		fieldRef, err := GetField(appEngContext, GetFieldParams{equation.FieldID})
+		if err != nil {
+			return "", err
+		} else {
+			resultBuf.WriteString(fieldRef.FieldInfo.RefName)
+		}
+
+	} else if equation.TextVal != nil {
+		resultBuf.WriteString("\"")
+		resultBuf.WriteString(*equation.TextVal)
+		resultBuf.WriteString("\"")
+	} else if equation.NumberVal != nil {
+		resultBuf.WriteString(strconv.FormatFloat(*equation.NumberVal, 'f', 6, 64))
+	}
+	return resultBuf.String(), nil
 }

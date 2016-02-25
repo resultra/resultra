@@ -59,45 +59,6 @@ func validFieldType(fieldType string) bool {
 	}
 }
 
-func (fieldRef FieldRef) evalEqn(evalContext *EqnEvalContext) (*EquationResult, error) {
-
-	field := fieldRef.FieldInfo
-
-	if field.IsCalcField {
-		// Calculated field - return the result of the calculation
-		decodedEqn, decodeErr := decodeEquation(field.CalcFieldEqn)
-		if decodeErr != nil {
-			return nil, fmt.Errorf("Failure decoding equation for evaluation: %v", decodeErr)
-		} else {
-			calcFieldResult, calcFieldErr := decodedEqn.evalEqn(evalContext)
-			if calcFieldErr != nil {
-				return calcFieldResult, calcFieldErr
-			} else if calcFieldResult.ResultType != field.Type {
-				return nil, fmt.Errorf("evalEqn: type mismatch in result calculated for field: "+
-					" expecting %v, got %v: field = %+v", field.Type, calcFieldResult.ResultType, field)
-			} else {
-				return calcFieldResult, nil
-			}
-		}
-	} else { // literal field value
-		switch field.Type {
-		case fieldTypeText:
-			// TODO - Return an "undefined" result type if there isn't a value defined yet.
-			return evalContext.resultRecord.GetTextRecordEqnResult(
-				evalContext.appEngContext, fieldRef.FieldID)
-		case fieldTypeNumber:
-			// TODO - Return an "undefined" result type if there isn't a value defined yet.
-			return evalContext.resultRecord.GetNumberRecordEqnResult(
-				evalContext.appEngContext, fieldRef.FieldID)
-			//		case fieldTypeDate:
-		default:
-			return nil, fmt.Errorf("Unknown field result type: %v", field.Type)
-
-		} // switch
-
-	} // field value is a literal, just return it
-}
-
 func NewField(appEngContext appengine.Context, newField Field) (string, error) {
 
 	sanitizedName, sanitizeErr := sanitizeName(newField.Name)

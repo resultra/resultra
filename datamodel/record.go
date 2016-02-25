@@ -93,76 +93,6 @@ func GetRecords(appEngContext appengine.Context) ([]RecordRef, error) {
 	return recordRefs, nil
 }
 
-func updateCalcFieldValues(appEngContext appengine.Context, recordRef *RecordRef) error {
-	fieldRefs, getFieldErr := GetAllFieldRefs(appEngContext)
-	if getFieldErr != nil {
-		return fmt.Errorf("Error updating field values - can't get fields: %v", getFieldErr)
-	}
-
-	for _, fieldRef := range fieldRefs {
-		if fieldRef.FieldInfo.IsCalcField {
-
-			log.Printf("updateCalcFieldValues: Updating calculated field %v", fieldRef.FieldInfo.RefName)
-
-			rootFieldEqnNode, decodeErr := decodeEquation(fieldRef.FieldInfo.CalcFieldEqn)
-			if decodeErr != nil {
-				return fmt.Errorf("Can't decode equation for field = %+v: decode error = %v", fieldRef, decodeErr)
-			}
-
-			fieldEqnResult, evalErr := rootFieldEqnNode.evalEqn(
-				&EqnEvalContext{appEngContext, calcFieldDefinedFuncs, *recordRef})
-			if evalErr != nil {
-				return fmt.Errorf("Unexpected error evaluating equation for field=%v: error=%+v",
-					fieldRef.FieldID, evalErr)
-			} else if fieldEqnResult.isUndefined() {
-				// If the evaluation result is undefined, don't proceed to actually set the value for the
-				// calculated field (i.e., it will remain blank/undefined). An undefined value is a valid
-				// condition when not all the depended upon field's values are defined.
-				log.Printf("Undefined field eqn result for field = %v", fieldRef.FieldInfo.RefName)
-				return nil
-			}
-
-			if fieldEqnResult.ResultType != fieldRef.FieldInfo.Type {
-				return fmt.Errorf("Error evaluating equation for field=%+v: eqn=%+v: type mismatch on equation result:"+
-					"expected=%v, got=%v", fieldRef, rootFieldEqnNode,
-					fieldRef.FieldInfo.Type, fieldEqnResult.ResultType)
-			} // if type mismatch between calculated equation result and calculated field's type
-
-			switch fieldRef.FieldInfo.Type {
-
-			case fieldTypeText:
-				textResult, textResultErr := fieldEqnResult.getTextResult()
-				if textResultErr != nil {
-					return fmt.Errorf("Unexpected error evaluating equation for field=%v: eqn=%+v: error=%v "+
-						"unexpected error getting number result: raw result=%+v",
-						fieldRef.FieldID, rootFieldEqnNode, textResultErr, fieldEqnResult)
-
-				}
-				log.Printf("updateCalcFieldValues: Setting calculated field value: field=%v, value=%v", fieldRef.FieldInfo.RefName, textResult)
-				recordRef.FieldValues[fieldRef.FieldID] = textResult
-
-			case fieldTypeNumber:
-				numberResult, numberResultErr := fieldEqnResult.getNumberResult()
-				if numberResultErr != nil {
-					return fmt.Errorf("Unexpected error evaluating equation for field=%v: eqn=%+v: error=%v "+
-						"unexpected error getting number result: raw result=%+v",
-						fieldRef.FieldID, rootFieldEqnNode, numberResultErr, fieldEqnResult)
-
-				}
-				log.Printf("updateCalcFieldValues: Setting calculated field value: field=%v, value=%v", fieldRef.FieldInfo.RefName, numberResult)
-				recordRef.FieldValues[fieldRef.FieldID] = numberResult
-				// TODO case fieldTypeDate
-
-			default:
-				return fmt.Errorf("Unexpected error evaluating equation for field=%+v: eqn=%+v: unsupported field type %v",
-					fieldRef, rootFieldEqnNode, evalErr, fieldRef.FieldInfo.Type)
-			} // switch field type
-
-		} // If calculated field
-	} // for each fieldRef
-	return nil
-}
-
 func validateFieldForRecordValue(appEngContext appengine.Context, fieldID string, expectedFieldType string) error {
 	fieldRef, fieldGetErr := GetField(appEngContext, GetFieldParams{fieldID})
 	if fieldGetErr != nil {
@@ -174,57 +104,6 @@ func validateFieldForRecordValue(appEngContext appengine.Context, fieldID string
 
 	}
 	return nil
-}
-
-func (recordRef RecordRef) GetTextRecordEqnResult(appEngContext appengine.Context, fieldID string) (*EquationResult, error) {
-
-	if fieldValidateErr := validateFieldForRecordValue(appEngContext, fieldID, fieldTypeText); fieldValidateErr != nil {
-		return nil, fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
-			"Can't validate field with value type: validation error = %v", recordRef, fieldID, fieldValidateErr)
-	}
-
-	val, foundVal := recordRef.FieldValues[fieldID]
-	if !foundVal {
-		// Note this is the only place which will return an undefined equation result (along with the
-		// the similar function for other value types). This is because record values for non-calculated
-		// fields is the only place where an undefined (or blank) value could originate, because a
-		// user hasn't entered a value yet for the field.
-		log.Printf("GetTextRecordEqnResult: Undefined equation result for field: %v", fieldID)
-		return undefinedEqnResult(), nil
-	} else {
-		if textVal, foundText := val.(string); !foundText {
-			return nil, fmt.Errorf("Type mismatch retrieving value from record with ID = %v, field = %v:"+
-				" expecting string, got %v", recordRef.RecordID, fieldID, val)
-
-		} else {
-			return textEqnResult(textVal), nil
-		}
-	} // else (if found a value for the given field ID)
-}
-
-func (recordRef RecordRef) GetNumberRecordEqnResult(appEngContext appengine.Context, fieldID string) (*EquationResult, error) {
-
-	if fieldValidateErr := validateFieldForRecordValue(appEngContext, fieldID, fieldTypeNumber); fieldValidateErr != nil {
-		return nil, fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
-			"Can't validate field with value type: validation error = %v", recordRef, fieldID, fieldValidateErr)
-	}
-
-	val, foundVal := recordRef.FieldValues[fieldID]
-	if !foundVal {
-		// Note this is the only place which will return an undefined equation result (along with the
-		// the similar function for other value types). This is because record values for non-calculated
-		// fields is the only place where an undefined (or blank) value could originate, because a
-		// user hasn't entered a value yet for the field.
-		log.Printf("GetNumberRecordEqnResult: Undefined equation result for field: %v", fieldID)
-		return undefinedEqnResult(), nil
-	} else {
-		if numberVal, foundNumber := val.(float64); !foundNumber {
-			return nil, fmt.Errorf("Type mismatch retrieving value from record with ID = %v, field = %v:"+
-				" expecting number, got %v", recordRef.RecordID, fieldID, val)
-		} else {
-			return numberEqnResult(numberVal), nil
-		}
-	} // else (if found a value for the given field ID)
 }
 
 type SetRecordTextValueParams struct {
