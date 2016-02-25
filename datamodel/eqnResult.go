@@ -5,11 +5,21 @@ import (
 	"math"
 )
 
+const eqnResultTypeUndefined string = "undefined"
+
 type EquationResult struct {
 	ResultType string
 
 	TextVal   *string
 	NumberVal *float64
+}
+
+func (eqnResult EquationResult) isUndefined() bool {
+	if eqnResult.ResultType == eqnResultTypeUndefined {
+		return true
+	} else {
+		return false
+	}
 }
 
 func (eqnResult EquationResult) validateTextResult() error {
@@ -48,6 +58,10 @@ func (eqnResult EquationResult) getNumberResult() (float64, error) {
 		numberVal := *eqnResult.NumberVal
 		return numberVal, nil
 	}
+}
+
+func undefinedEqnResult() *EquationResult {
+	return &EquationResult{ResultType: eqnResultTypeUndefined}
 }
 
 func numberEqnResult(val float64) *EquationResult {

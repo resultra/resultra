@@ -5,7 +5,6 @@ import (
 	"appengine/datastore"
 	"fmt"
 	"log"
-	"math"
 )
 
 const recordEntityKind string = "Record"
@@ -115,6 +114,12 @@ func updateCalcFieldValues(appEngContext appengine.Context, recordRef *RecordRef
 			if evalErr != nil {
 				return fmt.Errorf("Unexpected error evaluating equation for field=%v: error=%+v",
 					fieldRef.FieldID, evalErr)
+			} else if fieldEqnResult.isUndefined() {
+				// If the evaluation result is undefined, don't proceed to actually set the value for the
+				// calculated field (i.e., it will remain blank/undefined). An undefined value is a valid
+				// condition when not all the depended upon field's values are defined.
+				log.Printf("Undefined field eqn result for field = %v", fieldRef.FieldInfo.RefName)
+				return nil
 			}
 
 			if fieldEqnResult.ResultType != fieldRef.FieldInfo.Type {
@@ -124,6 +129,7 @@ func updateCalcFieldValues(appEngContext appengine.Context, recordRef *RecordRef
 			} // if type mismatch between calculated equation result and calculated field's type
 
 			switch fieldRef.FieldInfo.Type {
+
 			case fieldTypeText:
 				textResult, textResultErr := fieldEqnResult.getTextResult()
 				if textResultErr != nil {
@@ -134,6 +140,7 @@ func updateCalcFieldValues(appEngContext appengine.Context, recordRef *RecordRef
 				}
 				log.Printf("updateCalcFieldValues: Setting calculated field value: field=%v, value=%v", fieldRef.FieldInfo.RefName, textResult)
 				recordRef.FieldValues[fieldRef.FieldID] = textResult
+
 			case fieldTypeNumber:
 				numberResult, numberResultErr := fieldEqnResult.getNumberResult()
 				if numberResultErr != nil {
@@ -145,6 +152,7 @@ func updateCalcFieldValues(appEngContext appengine.Context, recordRef *RecordRef
 				log.Printf("updateCalcFieldValues: Setting calculated field value: field=%v, value=%v", fieldRef.FieldInfo.RefName, numberResult)
 				recordRef.FieldValues[fieldRef.FieldID] = numberResult
 				// TODO case fieldTypeDate
+
 			default:
 				return fmt.Errorf("Unexpected error evaluating equation for field=%+v: eqn=%+v: unsupported field type %v",
 					fieldRef, rootFieldEqnNode, evalErr, fieldRef.FieldInfo.Type)
@@ -168,45 +176,53 @@ func validateFieldForRecordValue(appEngContext appengine.Context, fieldID string
 	return nil
 }
 
-func (recordRef RecordRef) GetTextRecordValue(appEngContext appengine.Context, fieldID string) (string, error) {
+func (recordRef RecordRef) GetTextRecordEqnResult(appEngContext appengine.Context, fieldID string) (*EquationResult, error) {
 
 	if fieldValidateErr := validateFieldForRecordValue(appEngContext, fieldID, fieldTypeText); fieldValidateErr != nil {
-		return "", fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
+		return nil, fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
 			"Can't validate field with value type: validation error = %v", recordRef, fieldID, fieldValidateErr)
 	}
 
 	val, foundVal := recordRef.FieldValues[fieldID]
 	if !foundVal {
-		return "", fmt.Errorf("Undefined value for record with ID = %v, field = %v: values in record=%+v",
-			recordRef.RecordID, fieldID, recordRef.FieldValues)
+		// Note this is the only place which will return an undefined equation result (along with the
+		// the similar function for other value types). This is because record values for non-calculated
+		// fields is the only place where an undefined (or blank) value could originate, because a
+		// user hasn't entered a value yet for the field.
+		log.Printf("GetTextRecordEqnResult: Undefined equation result for field: %v", fieldID)
+		return undefinedEqnResult(), nil
 	} else {
 		if textVal, foundText := val.(string); !foundText {
-			return "", fmt.Errorf("Type mismatch retrieving value from record with ID = %v, field = %v:"+
+			return nil, fmt.Errorf("Type mismatch retrieving value from record with ID = %v, field = %v:"+
 				" expecting string, got %v", recordRef.RecordID, fieldID, val)
 
 		} else {
-			return textVal, nil
+			return textEqnResult(textVal), nil
 		}
 	} // else (if found a value for the given field ID)
 }
 
-func (recordRef RecordRef) GetNumberRecordValue(appEngContext appengine.Context, fieldID string) (float64, error) {
+func (recordRef RecordRef) GetNumberRecordEqnResult(appEngContext appengine.Context, fieldID string) (*EquationResult, error) {
 
 	if fieldValidateErr := validateFieldForRecordValue(appEngContext, fieldID, fieldTypeNumber); fieldValidateErr != nil {
-		return math.NaN(), fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
+		return nil, fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
 			"Can't validate field with value type: validation error = %v", recordRef, fieldID, fieldValidateErr)
 	}
 
 	val, foundVal := recordRef.FieldValues[fieldID]
 	if !foundVal {
-		return math.NaN(), fmt.Errorf("Undefined value for record with ID = %v, field = %v, values defined in record = %+v",
-			recordRef.RecordID, fieldID, recordRef.FieldValues)
+		// Note this is the only place which will return an undefined equation result (along with the
+		// the similar function for other value types). This is because record values for non-calculated
+		// fields is the only place where an undefined (or blank) value could originate, because a
+		// user hasn't entered a value yet for the field.
+		log.Printf("GetNumberRecordEqnResult: Undefined equation result for field: %v", fieldID)
+		return undefinedEqnResult(), nil
 	} else {
 		if numberVal, foundNumber := val.(float64); !foundNumber {
-			return math.NaN(), fmt.Errorf("Type mismatch retrieving value from record with ID = %v, field = %v:"+
+			return nil, fmt.Errorf("Type mismatch retrieving value from record with ID = %v, field = %v:"+
 				" expecting number, got %v", recordRef.RecordID, fieldID, val)
 		} else {
-			return numberVal, nil
+			return numberEqnResult(numberVal), nil
 		}
 	} // else (if found a value for the given field ID)
 }
@@ -234,19 +250,16 @@ func SetRecordTextValue(appEngContext appengine.Context, setValParams SetRecordT
 	updatedRecordRef := RecordRef{setValParams.RecordID, recordForUpdate}
 	// TODO - Consider putting a prefix on the field ID before saving it to the datastore.
 	//	recordForUpdate.FieldValues[setValParams.FieldID] = setValParams.Value
+	log.Printf("SetRecordTextValue: Setting value for field = %v, val = %v", setValParams.FieldID, setValParams.Value)
 	updatedRecordRef.FieldValues[setValParams.FieldID] = setValParams.Value
 
 	// Changing this value may have caused the values for calculated fields to also change.
 	// Clients of this function need a fully up to date record reference, so the calculated
 	// field's values must also be recalculated when a value changes.
-	/* TODO - The evaluation of calculated field equations is currently returning an error for undefined fields.
-		 Instead, there needs to be support for an undefined results, which will cascade up through the
-	     recursion. The lack of support for undefined values is preventing the code below from
-	     working.
-		if calcErr := updateCalcFieldValues(appEngContext, &updatedRecordRef); calcErr != nil {
-			return nil, fmt.Errorf("Can't set value: Error calculating fields to reflect update: params=%+v, err = %v",
-				setValParams, calcErr)
-		}*/
+	if calcErr := updateCalcFieldValues(appEngContext, &updatedRecordRef); calcErr != nil {
+		return nil, fmt.Errorf("Can't set value: Error calculating fields to reflect update: params=%+v, err = %v",
+			setValParams, calcErr)
+	}
 
 	// Write the record back to the datastore (including the calculated values)
 	if updateErr := updateExistingRootEntity(appEngContext, recordEntityKind,
@@ -285,22 +298,23 @@ func SetRecordNumberValue(appEngContext appengine.Context, setValParams SetRecor
 	}
 
 	updatedRecordRef := RecordRef{setValParams.RecordID, recordForUpdate}
-	// Changing this value may have caused the values for calculated fields to also change.
-	// Clients of this function need a fully up to date record reference, so the calculated
-	// field's values must also be recalculated when a value changes.
 	/* TODO - The evaluation of calculated field equations is currently returning an error for undefined fields.
 		 Instead, there needs to be support for an undefined results, which will cascade up through the
 	     recursion. The lack of support for undefined values is preventing the code below from
-	     working.
+	     working.*/
 
+	// TODO - Consider putting a prefix on the field ID before saving it to the datastore.
+	log.Printf("SetRecordNumberValue: Setting value for field = %v, val = %v", setValParams.FieldID, setValParams.Value)
+	updatedRecordRef.FieldValues[setValParams.FieldID] = setValParams.Value
+
+	// Now that the value has been set, update the calculated field values to reflect changes made to the
+	// field: Changing this value may have caused the values for calculated fields to also change.
+	// Clients of this function need a fully up to date record reference, so the calculated
+	// field's values must also be recalculated when a value changes.
 	if calcErr := updateCalcFieldValues(appEngContext, &updatedRecordRef); calcErr != nil {
 		return nil, fmt.Errorf("Can't set value: Error calculating fields to reflect update: params=%+v, err = %v",
 			setValParams, calcErr)
-	} */
-
-	// TODO - Consider putting a prefix on the field ID before saving it to the datastore.
-	//	recordForUpdate.FieldValues[setValParams.FieldID] = setValParams.Value
-	updatedRecordRef.FieldValues[setValParams.FieldID] = setValParams.Value
+	}
 
 	// TODO - Since a value has changed, update any calculated field values. Should this happen before saving the record?
 

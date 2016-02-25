@@ -300,20 +300,24 @@ func TestCalculatedFieldSum(t *testing.T) {
 		t.Fatal(updateErr)
 	}
 
-	if calcErr := updateCalcFieldValues(appEngCntxt, updatedRecordRef); calcErr != nil {
-		t.Fatalf("Error updating calculated fields to reflect update: err = %v", calcErr)
-	}
-
 	// After setting 2 values summed for the equation, get the value for the calculated field
 
-	/* The evaluation of calculated field equations is currently returning an error for undefined fields.
-	   		 Instead, there needs to be support for an undefined results, which will cascade up through the
-	   	     recursion. The code below only works becuase there is a call to updateCalcFieldValues *after*
-		    we know all the depended upon fields are defined. */
-	calcResult, calcErr := updatedRecordRef.GetNumberRecordValue(appEngCntxt, calcFieldID)
+	calcResult, calcErr := updatedRecordRef.GetNumberRecordEqnResult(appEngCntxt, calcFieldID)
 	if calcErr != nil {
 		t.Fatal(calcErr)
+	} else if calcResult.isUndefined() {
+		t.Fatalf("Error getting calculated field result - result shouldn't be undefined")
+	} else {
+		calcVal, resultErr := calcResult.getNumberResult()
+		if resultErr != nil {
+			t.Fatalf("Error getting calculated field result - can't get numberical result from equation evaluation result: %v", resultErr)
+		} else {
+			expectedVal := 74.6
+			t.Logf("Result for calculated field: %v", calcVal)
+			if calcVal != expectedVal {
+				t.Errorf("Calculated field doesn't match expected value: expected = %v, got %v", expectedVal, calcVal)
+			}
+		}
 	}
-	t.Logf("Result for calculated field: %v", calcResult)
 
 }

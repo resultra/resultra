@@ -15,6 +15,10 @@ func sumEvalFunc(evalContext *EqnEvalContext, funcArgs []EquationNode) (*Equatio
 		if argErr != nil {
 			return nil, fmt.Errorf("SUM(): Error evaluating argument # %v: arg=%+v, error %v",
 				argIndex, argEqn, argErr)
+		} else if argResult.isUndefined() {
+			// If an undefined result is returned, return immediately and propogate the undefined
+			// result value up through the equation evaluation.
+			return argResult, nil
 		} else if numberResult, validateErr := argResult.getNumberResult(); validateErr != nil {
 			return nil, fmt.Errorf("SUM(): Invalid result found while evaluating argument # %v: arg=%+v, error = %v",
 				argIndex, argEqn, validateErr)
@@ -38,6 +42,10 @@ func concatEvalFunc(evalContext *EqnEvalContext, funcArgs []EquationNode) (*Equa
 		if argErr != nil {
 			return nil, fmt.Errorf("CONCATENATE: Error evaluating argument # %v: arg=%+v, error %v",
 				argIndex, argEqn, argErr)
+		} else if argResult.isUndefined() {
+			// If an undefined result is returned, return immediately and propogate the undefined
+			// result value up through the equation evaluation.
+			return argResult, nil
 		} else if validateErr := argResult.validateTextResult(); validateErr != nil {
 			return nil, fmt.Errorf("CONCATENATE: Invalid result found while evaluating argument # %v: arg=%+v, error = %v",
 				argIndex, argEqn, validateErr)
