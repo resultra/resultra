@@ -36,6 +36,16 @@ func funcEqnNode(funcName string, funcArgs []EquationNode) *EquationNode {
 	return &EquationNode{FuncName: funcName, FuncArgs: funcArgs}
 }
 
+func numberEqnNode(numberVal float64) *EquationNode {
+	theVal := numberVal
+	return &EquationNode{NumberVal: &theVal}
+}
+
+func textEqnNode(textVal string) *EquationNode {
+	theVal := textVal
+	return &EquationNode{TextVal: &theVal}
+}
+
 func decodeEquation(encodedEqn string) (*EquationNode, error) {
 
 	decodedEqnNode := EquationNode{}
