@@ -102,18 +102,8 @@ function initRecordEntryFieldInfo(fieldRef)
 	// TODO - If the field is a calculated field, disable editing on the field.
 }
 
-
-function initContainerRecordEntryBehavior(container)
-{
-
-	// TODOS:
-	// - Setup the ability for events to be triggered when value changes
-	// - Set tab order of the container vs the others
-	// - Disable editing if the field is calculated
-	// - Setup validation
-	// - Set the default value
+function initEditableFieldBehavior(container) {
 	
-	// While in edit mode, disable input on the container
 	container.focusout(function () {
 		var inputVal = container.find("input").val()
 		
@@ -141,6 +131,10 @@ function initContainerRecordEntryBehavior(container)
 						// be out of date. So after updating the record on the server, the locally cached
 						// version of the record also needs to be updated.
 						currRecordSet.updateRecordRef(replyData)
+						// After changing the value, some of the calculated fields may have changed. For this
+						// reason, it is necessary to reload the record into the layout/form, so the most
+						// up to date values will be displayed.
+						loadCurrRecordIntoLayout()
 					}) // set record's text field value
 					
 				} else if (fieldType == "number") {
@@ -156,6 +150,11 @@ function initContainerRecordEntryBehavior(container)
 							// be out of date. So after updating the record on the server, the locally cached
 							// version of the record also needs to be updated.
 							currRecordSet.updateRecordRef(replyData)
+							
+							// After changing the value, some of the calculated fields may have changed. For this
+							// reason, it is necessary to reload the record into the layout/form, so the most
+							// up to date values will be displayed.
+							loadCurrRecordIntoLayout()
 						}) // set record's number field value
 					}
 					
@@ -169,6 +168,31 @@ function initContainerRecordEntryBehavior(container)
 		
 		
 	}) // focus out
+	
+}
+
+
+function initContainerRecordEntryBehavior(container)
+{
+
+	// TODOS:
+	// - Setup the ability for events to be triggered when value changes
+	// - Set tab order of the container vs the others
+	// - Disable editing if the field is calculated
+	// - Setup validation
+	// - Set the default value
+	
+	// While in edit mode, disable input on the container
+	
+	// If the field is a calculated field, disable it for entry.
+	// Otherwise, initialize the event handling for editing values in the field.
+	if(container.data('isCalcField')) {
+		container.find('input').prop('disabled',true);
+	} else {
+		initEditableFieldBehavior(container)
+	}
+	
+	
 } // initContainerRecordEntryBehavior
 
 function loadCurrRecordIntoLayout()

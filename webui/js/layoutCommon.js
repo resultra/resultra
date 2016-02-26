@@ -77,6 +77,7 @@ function initCanvas(containerInitCallback, fieldInitCallback, initCompleteCallba
 				// call when setting values.
 				containerObj.data("fieldID",container.fieldID)
 				containerObj.data("fieldType",fieldsByID[container.fieldID].type)
+				containerObj.data("isCalcField",fieldsByID[container.fieldID].isCalcField)
 
 				// Position the object withing the #layoutCanvas div
 				$("#layoutCanvas").append(containerObj)

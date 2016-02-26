@@ -93,7 +93,11 @@ func GetRecords(appEngContext appengine.Context) ([]RecordRef, error) {
 	return recordRefs, nil
 }
 
-func validateFieldForRecordValue(appEngContext appengine.Context, fieldID string, expectedFieldType string) error {
+// Validate the field is of the correct type and not a calculated field (if allowCalcField not true). This is for validating
+// the field when setting/getting values from regular "literal" fields which store values entered by end-users (as opposed to
+// calculated fields)
+func validateFieldForRecordValue(appEngContext appengine.Context, fieldID string, expectedFieldType string,
+	allowCalcField bool) error {
 	fieldRef, fieldGetErr := GetField(appEngContext, GetFieldParams{fieldID})
 	if fieldGetErr != nil {
 		return fmt.Errorf(" Error retrieving field for updating/setting value: err = %v", fieldGetErr)
@@ -102,6 +106,9 @@ func validateFieldForRecordValue(appEngContext appengine.Context, fieldID string
 		return fmt.Errorf("Can't update/set value:"+
 			" Type mismatch with field: expecting %v: got %v", expectedFieldType, fieldRef.FieldInfo.Type)
 
+	} else if (!allowCalcField) && fieldRef.FieldInfo.IsCalcField {
+		return fmt.Errorf("Field is a calculated field, setting values directly not supported: field=%v",
+			fieldRef.FieldInfo.RefName)
 	}
 	return nil
 }
@@ -114,7 +121,7 @@ type SetRecordTextValueParams struct {
 
 func SetRecordTextValue(appEngContext appengine.Context, setValParams SetRecordTextValueParams) (*RecordRef, error) {
 
-	if fieldValidateErr := validateFieldForRecordValue(appEngContext, setValParams.FieldID, fieldTypeText); fieldValidateErr != nil {
+	if fieldValidateErr := validateFieldForRecordValue(appEngContext, setValParams.FieldID, fieldTypeText, false); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't set value in SetRecordTextValue(params=%+v):"+
 			" Error validating record's field for update: %v", setValParams, fieldValidateErr)
 	}
@@ -162,7 +169,7 @@ type SetRecordNumberValueParams struct {
 
 func SetRecordNumberValue(appEngContext appengine.Context, setValParams SetRecordNumberValueParams) (*RecordRef, error) {
 
-	if fieldValidateErr := validateFieldForRecordValue(appEngContext, setValParams.FieldID, fieldTypeNumber); fieldValidateErr != nil {
+	if fieldValidateErr := validateFieldForRecordValue(appEngContext, setValParams.FieldID, fieldTypeNumber, false); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't set value in SetRecordTextValue(params=%+v):"+
 			" Error validating record's field for update: %v", setValParams, fieldValidateErr)
 	}

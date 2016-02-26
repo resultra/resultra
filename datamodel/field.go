@@ -3,6 +3,7 @@ package datamodel
 import (
 	"appengine"
 	"appengine/datastore"
+	"encoding/json"
 	"fmt"
 	"log"
 	"regexp"
@@ -59,7 +60,10 @@ func validFieldType(fieldType string) bool {
 	}
 }
 
-func NewField(appEngContext appengine.Context, newField Field) (string, error) {
+// Internal function for creating new fields given raw inputs. Should only be called by
+// other "NewField" functions with well-formed parameters for either a regular (non-calculated)
+// or calculated field.
+func createNewFieldFromRawInputs(appEngContext appengine.Context, newField Field) (string, error) {
 
 	sanitizedName, sanitizeErr := sanitizeName(newField.Name)
 	if sanitizeErr != nil {
@@ -89,6 +93,61 @@ func NewField(appEngContext appengine.Context, newField Field) (string, error) {
 
 	return fieldID, nil
 
+}
+
+type NewFieldParams struct {
+	Name    string `json:"name"`
+	Type    string `json:"type"`
+	RefName string `json:"refName"`
+}
+
+func NewField(appEngContext appengine.Context, fieldParams NewFieldParams) (string, error) {
+	newField := Field{
+		Name:         fieldParams.Name,
+		Type:         fieldParams.Type,
+		RefName:      fieldParams.RefName,
+		CalcFieldEqn: "",
+		IsCalcField:  false}
+
+	return createNewFieldFromRawInputs(appEngContext, newField)
+}
+
+// Parameters for creating a new calculated field. FieldEqn needs to be converted to
+// JSON before being saved. TBD - Should the parameters instead be an equation in
+// end-user format? If so, this code will need an update once equation parsing is
+// done.
+type NewCalcFieldParams struct {
+	Name     string       `json:"name"`
+	Type     string       `json:"type"`
+	RefName  string       `json:"refName"`
+	FieldEqn EquationNode `json:"fieldEqn"`
+}
+
+func encodeEqnJSONString(val interface{}) (string, error) {
+	b, err := json.Marshal(val)
+	if err != nil {
+		return "", fmt.Errorf("Error encoding calculated field equaton: %v", err)
+	}
+	return string(b), nil
+}
+
+func NewCalcField(appEngContext appengine.Context, calcFieldParams NewCalcFieldParams) (string, error) {
+
+	jsonEncodeEqn, encodeErr := encodeEqnJSONString(calcFieldParams.FieldEqn)
+	if encodeErr != nil {
+		return "", encodeErr
+	}
+
+	// Create the actual field. All the parameters are the same as calcFieldParams, except
+	// the equation which is encoded in JSON.
+	newField := Field{
+		Name:         calcFieldParams.Name,
+		Type:         calcFieldParams.Type,
+		RefName:      calcFieldParams.RefName,
+		CalcFieldEqn: jsonEncodeEqn,
+		IsCalcField:  true}
+
+	return createNewFieldFromRawInputs(appEngContext, newField)
 }
 
 type GetFieldParams struct {
