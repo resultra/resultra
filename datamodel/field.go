@@ -107,7 +107,7 @@ func NewField(appEngContext appengine.Context, fieldParams NewFieldParams) (stri
 		Type:         fieldParams.Type,
 		RefName:      fieldParams.RefName,
 		CalcFieldEqn: "",
-		IsCalcField:  false}
+		IsCalcField:  false} // always set calculated field to false
 
 	return createNewFieldFromRawInputs(appEngContext, newField)
 }

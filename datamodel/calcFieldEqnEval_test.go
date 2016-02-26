@@ -21,7 +21,7 @@ func TestEquation(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testField1 := Field{Name: "Test Field 1", Type: "text", RefName: "FieldRef1"}
+	testField1 := NewFieldParams{Name: "Test Field 1", Type: "text", RefName: "FieldRef1"}
 	fieldID, err := NewField(appEngCntxt, testField1)
 	if err != nil {
 		t.Fatal(err)
@@ -136,13 +136,13 @@ func TestTextFieldReference(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testField1 := Field{Name: "Test Field 1", Type: "text", RefName: "FieldRef1"}
+	testField1 := NewFieldParams{Name: "Test Field 1", Type: "text", RefName: "FieldRef1"}
 	fieldID1, field1Err := NewField(appEngCntxt, testField1)
 	if field1Err != nil {
 		t.Fatal(field1Err)
 	}
 
-	testField2 := Field{Name: "Test Field 2", Type: "text", RefName: "FieldRef2"}
+	testField2 := NewFieldParams{Name: "Test Field 2", Type: "text", RefName: "FieldRef2"}
 	fieldID2, field2Err := NewField(appEngCntxt, testField2)
 	if field2Err != nil {
 		t.Fatal(field2Err)
@@ -195,13 +195,13 @@ func TestNumberFieldReference(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testField1 := Field{Name: "Test Field 1", Type: "number", RefName: "FieldRef1"}
+	testField1 := NewFieldParams{Name: "Test Field 1", Type: "number", RefName: "FieldRef1"}
 	fieldID1, field1Err := NewField(appEngCntxt, testField1)
 	if field1Err != nil {
 		t.Fatal(field1Err)
 	}
 
-	testField2 := Field{Name: "Test Field 2", Type: "number", RefName: "FieldRef2"}
+	testField2 := NewFieldParams{Name: "Test Field 2", Type: "number", RefName: "FieldRef2"}
 	fieldID2, field2Err := NewField(appEngCntxt, testField2)
 	if field2Err != nil {
 		t.Fatal(field2Err)
@@ -260,13 +260,13 @@ func TestCalculatedFieldSum(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testField1 := Field{Name: "Test Field 1", Type: "number", RefName: "FieldRef1"}
+	testField1 := NewFieldParams{Name: "Test Field 1", Type: "number", RefName: "FieldRef1"}
 	fieldID1, field1Err := NewField(appEngCntxt, testField1)
 	if field1Err != nil {
 		t.Fatal(field1Err)
 	}
 
-	testField2 := Field{Name: "Test Field 2", Type: "number", RefName: "FieldRef2"}
+	testField2 := NewFieldParams{Name: "Test Field 2", Type: "number", RefName: "FieldRef2"}
 	fieldID2, field2Err := NewField(appEngCntxt, testField2)
 	if field2Err != nil {
 		t.Fatal(field2Err)
@@ -282,9 +282,8 @@ func TestCalculatedFieldSum(t *testing.T) {
 	arg2 := fieldRefEqnNode(fieldID2)
 	funcEqn := funcEqnNode(funcName, []EquationNode{*arg1, *arg2})
 
-	jsonEncodeEqn := encodeJSONString(t, funcEqn)
-	calcField := Field{Name: "Test Field 2", Type: "number", RefName: "CalcField", IsCalcField: true, CalcFieldEqn: jsonEncodeEqn}
-	calcFieldID, calcFieldErr := NewField(appEngCntxt, calcField)
+	calcField := NewCalcFieldParams{Name: "Test Field 2", Type: "number", RefName: "CalcField", FieldEqn: *funcEqn}
+	calcFieldID, calcFieldErr := NewCalcField(appEngCntxt, calcField)
 	if calcFieldErr != nil {
 		t.Fatal(calcFieldErr)
 	}
