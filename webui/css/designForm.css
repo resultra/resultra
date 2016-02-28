@@ -1,0 +1,7 @@
+
+
+/* Wizard panels are initially hidden. The first panel is shown when a dialog is first opened,
+  then they're all hidden again after the dialog is closed. */
+.wizardPanel {
+	display:none;
+}

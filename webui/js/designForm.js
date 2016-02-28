@@ -12,6 +12,11 @@ function initLayoutEditFieldInfo(fieldRef)
  	$("#textBoxFieldSelection").append(selectFieldOptionHTML)	
 }
 
+function initCanvasComplete() {	
+	
+} // noop
+
+
 
 function initContainerEditBehavior(container)
 {
@@ -69,28 +74,61 @@ function newLayoutContainer(containerParams)
 	var placeholderID = containerParams.containerID
 	var containerCreated = false
 	
-	$( "#newTextBox" ).form({
+	$( "#newTextBoxDlgSelectOrNewFieldPanel" ).form({
     	fields: {
 	        textBoxFieldSelection: {
-	          identifier: 'textBoxFieldSelection',
 	          rules: [
 	            {
 	              type   : 'empty',
 	              prompt : 'Please select a field'
 	            }
 	          ]
-	        }
+	        }, // textBoxFieldSelection validation
      	},
 		inline : true,
   	})
+
+
+	$( "#newTextBoxDlgNewFieldPanel" ).form({
+    	fields: {
+	        newFieldName: {
+	          rules: [
+	            {
+	              type   : 'empty',
+	              prompt : 'Please enter a field name'
+	            }
+	          ]
+	        }, // newFieldName validation
+	        newFieldValTypeSelection: {
+	          rules: [
+	            {
+	              type   : 'empty',
+	              prompt : 'Please select a type'
+	            }
+	          ]
+	        }, // newFieldValTypeSelection validation
+			newFieldRefName: {
+	          rules: [
+	            {
+	              type   : 'empty',
+	              prompt : 'Please enter a reference name'
+	            }
+	          ]
+	        }, // newFieldRefName validation
+     	},
+  	})
+	
+	// Enable Semantic UI checkboxes and popups
+	$('#newRefNameHelp').popup({on: 'hover'});
+	$('.ui.checkbox').checkbox();
 	
 	function saveNewTextBox()
 	{
-		
 		// Complete the parameters to create the new layout container by including the 
 		// fieldID selected in the dialog box.
-		var fieldID = $( "#newTextBox" ).form('get value','textBoxFieldSelection')
+		var fieldID = $( "#newTextBoxDlgSelectOrNewFieldPanel" ).form('get value','textBoxFieldSelection')
 		console.log("saveNewTextBox: Selected field ID: " + fieldID)
+				
 		containerParams["fieldID"] = fieldID
 
 		jsonAPIRequest("newLayoutContainer",containerParams,function(replyData) {
@@ -113,23 +151,104 @@ function newLayoutContainer(containerParams)
 					  dialog.dialog("close")
 				  }
 	       }) // newLayoutContainer API request
+	} // save new text box
+	
+	function transitionToNextDlgPanel(dialog, currPanelConfig, nextPanelConfig) {
+		function showNextPanel() {
+			$('#'+ nextPanelConfig.divID).show("slide",{direction:"right"},200);
+		}
+		$("#" + currPanelConfig.divID).hide("slide",{direction:"left"},200,showNextPanel);
 		
+		$(dialog).dialog("option","buttons",nextPanelConfig.dlgButtons)
+	}
+
+	function transitionToPrevDlgPanel(dialog, currPanelConfig, prevPanelConfig) {
+		function showPrevPanel() {
+			$('#'+ prevPanelConfig.divID).show("slide",{direction:"left"},200);
+		}
+		$("#" + currPanelConfig.divID).hide("slide",{direction:"right"},200,showPrevPanel);
+		
+		$(dialog).dialog("option","buttons",prevPanelConfig.dlgButtons)
+	}
+
+	function newFieldIsCalcField() {
+		return $('#'+newFieldPanelConfig.divID).form('get field','isCalcField').prop('checked')
 	}
 	
+	var newTextBoxValidateFormatEntriesPanel = {
+		divID: "newTextBoxValidateFormatEntriesPanel",
+		dlgButtons: { 
+			"Previous": function() { 
+				if(newFieldIsCalcField()){
+					transitionToPrevDlgPanel(this,newTextBoxValidateFormatEntriesPanel,calcFieldFormulaPanelConfig)	
+				} else {
+					transitionToPrevDlgPanel(this,newTextBoxValidateFormatEntriesPanel,newFieldPanelConfig)				
+				}
+			 },
+			"Done" : function() { 
+				if($( "#newTextBoxDlgCalcFieldFormulaPanel" ).form('validate form')) {
+					saveNewTextBox()
+				} // if validate panel's form
+			},		
+			"Cancel" : function() { $(this).dialog('close'); },
+     	}, // dialog buttons		
+	}
+
+	var calcFieldFormulaPanelConfig = {
+		divID: "newTextBoxDlgCalcFieldFormulaPanel",
+		dlgButtons: { 
+			"Previous": function() { 
+				transitionToPrevDlgPanel(this,calcFieldFormulaPanelConfig,newFieldPanelConfig)
+			 },	
+			"Next" : function() { 
+				if($( "#newTextBoxDlgCalcFieldFormulaPanel" ).form('validate form')) {
+					transitionToNextDlgPanel(this,calcFieldFormulaPanelConfig,newTextBoxValidateFormatEntriesPanel)
+				} // if validate panel's form
+			},
+			"Cancel" : function() { $(this).dialog('close'); },
+     	}, // dialog buttons
+	} // wizard dialog configuration for panel to create new field
+	
+	
+	var newFieldPanelConfig = {
+		divID: "newTextBoxDlgNewFieldPanel",
+		dlgButtons: { 
+			"Previous": function() { 
+				transitionToPrevDlgPanel(this,newFieldPanelConfig,newOrExistingFieldPanelConfig)	
+			 },
+			"Next" : function() { 
+				
+				if($( "#newTextBoxDlgNewFieldPanel" ).form('validate form')) {
+					if(newFieldIsCalcField()){
+						transitionToNextDlgPanel(this,newFieldPanelConfig,calcFieldFormulaPanelConfig)
+					}
+					else {
+						transitionToNextDlgPanel(this,newFieldPanelConfig,newTextBoxValidateFormatEntriesPanel)
+					}	
+				} // if validate panel's form	
+			},
+			"Cancel" : function() { $(this).dialog('close'); },
+     	}, // dialog buttons
+	} // wizard dialog configuration for panel to create new field
+
+
+	var newOrExistingFieldPanelConfig = {
+		divID: "newTextBoxDlgSelectOrNewFieldPanel",
+		dlgButtons: { 
+			"Next": function() {
+				if($( "#newTextBoxDlgSelectOrNewFieldPanel" ).form('validate form')) {			
+					transitionToNextDlgPanel(this,newOrExistingFieldPanelConfig,newFieldPanelConfig)
+				} // if validate form
+			 },		
+			"Cancel" : function() { $(this).dialog('close'); },
+     	}, // dialog buttons
+	} // wizard dialog configuration for panel to create new field
+			
     dialog = $( "#newTextBox" ).dialog({
       autoOpen: false,
-      height: 325, width: 300,
+      height: 500, width: 550,
       modal: true,
-      buttons: {
-        "Create Text Box": function() {
-			if($( "#newTextBox" ).form('validate form')) {
-				saveNewTextBox()
-			} // if validate form
-         }, // Create Text Box function
-        Cancel: function() {
-          dialog.dialog( "close" );
-        }
-      },
+      buttons: newOrExistingFieldPanelConfig.dlgButtons,
       close: function() {
 		  console.log("Close dialog")
 		  if(!containerCreated)
@@ -148,10 +267,19 @@ function newLayoutContainer(containerParams)
 		}
     });
 	
-	$('#newTextBox').form('clear') // clear any previous entries
+	$( ".wizardPanel" ).hide() // hide all the panels
+	$( "#newTextBoxDlgSelectOrNewFieldPanel").show() // show the first panel
+	$(dialog).dialog("option","buttons",newOrExistingFieldPanelConfig.dlgButtons)
+	
+	// Clear any previous entries validation errors. The message blocks by 
+	// default don't clear their values with 'clear', so any remaining error
+	// messages need to be removed from the message blocks within the panels.
+	$('.wizardPanel').form('clear') // clear any previous entries
+	$('.wizardErrorMsgBlock').empty()
+
 	$( "#newTextBox" ).dialog("open")
 	
-}
+} // newLayoutContainer
 
 function droppedObjGeometry(dropDest,droppedObj,ui)
 {
@@ -166,7 +294,7 @@ function droppedObjGeometry(dropDest,droppedObj,ui)
 
 
 $(document).ready(function() {
-		
+				
 	
 	$(".newField").draggable({
 		
@@ -253,8 +381,10 @@ $(document).ready(function() {
 		west__showOverflowOnHover:	true
 	})	  
 	  
-	  function initCanvasComplete() {} // noop
+	
 	initCanvas(initContainerEditBehavior,initLayoutEditFieldInfo,initCanvasComplete)
+	  
+	  
 
 
 });
