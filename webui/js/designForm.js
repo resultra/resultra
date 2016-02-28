@@ -87,6 +87,35 @@ function newLayoutContainer(containerParams)
      	},
 		inline : true,
   	})
+	
+	function enableSelectExistingField() {
+		$('#selectExistingFieldField').removeClass("disabled")
+		$( "#newTextBoxDlgSelectOrNewFieldPanel" ).form({
+	    	fields: {
+		        textBoxFieldSelection: {
+		          rules: [
+		            {
+		              type   : 'empty',
+		              prompt : 'Please select a field'
+		            }
+		          ]
+		        }, // textBoxFieldSelection validation
+	     	},
+			inline : true,
+	  	})
+	}
+
+	function disableSelectExistingField() {
+		$('#selectExistingFieldField').addClass("disabled")
+		$( "#newTextBoxDlgSelectOrNewFieldPanel" ).form({
+	    	fields: {},
+			inline : true,
+	  	})
+		// After changing the validation rules, re-validate the form.
+		// This will remove any outstanding errors, which no longer apply
+		// since selection of an existing field is no longer required.
+		$( "#newTextBoxDlgSelectOrNewFieldPanel" ).form('validate form')
+	}
 
 
 	$( "#newTextBoxDlgNewFieldPanel" ).form({
@@ -121,6 +150,7 @@ function newLayoutContainer(containerParams)
 	// Enable Semantic UI checkboxes and popups
 	$('#newRefNameHelp').popup({on: 'hover'});
 	$('.ui.checkbox').checkbox();
+	$('.ui.radio.checkbox').checkbox();
 	
 	function saveNewTextBox()
 	{
@@ -180,15 +210,26 @@ function newLayoutContainer(containerParams)
 		return $('#'+newFieldPanelConfig.divID).form('get field','isCalcField').prop('checked')
 	}
 	
+	function doCreateNewFieldWithTextBox() {
+		
+		return $('#'+newOrExistingFieldPanelConfig.divID).form('get field','createNewFieldRadio').prop('checked')
+	}
+	
 	var newTextBoxValidateFormatEntriesPanel = {
 		divID: "newTextBoxValidateFormatEntriesPanel",
 		progressPerc:90,
 		dlgButtons: { 
-			"Previous": function() { 
-				if(newFieldIsCalcField()){
-					transitionToPrevDlgPanel(this,newTextBoxValidateFormatEntriesPanel,calcFieldFormulaPanelConfig)	
-				} else {
-					transitionToPrevDlgPanel(this,newTextBoxValidateFormatEntriesPanel,newFieldPanelConfig)				
+			"Previous": function() {
+				if(doCreateNewFieldWithTextBox()) {
+					if(newFieldIsCalcField()){
+						transitionToPrevDlgPanel(this,newTextBoxValidateFormatEntriesPanel,calcFieldFormulaPanelConfig)	
+					} else {
+						// Not a calculated field, skip over panel to enter calculated field formula
+						transitionToPrevDlgPanel(this,newTextBoxValidateFormatEntriesPanel,newFieldPanelConfig)				
+					}
+				}  else {
+					// Not creating a new field - skip over new field panels
+					transitionToPrevDlgPanel(this,newTextBoxValidateFormatEntriesPanel,newOrExistingFieldPanelConfig)				
 				}
 			 },
 			"Done" : function() { 
@@ -246,8 +287,13 @@ function newLayoutContainer(containerParams)
 		dlgButtons: { 
 			"Next": function() {
 				if($( "#newTextBoxDlgSelectOrNewFieldPanel" ).form('validate form')) {			
-					transitionToNextDlgPanel(this,newOrExistingFieldPanelConfig,newFieldPanelConfig)
-					$('#newTextBoxProgress').progress({percent:20})
+					console.log("New Field checked: " + doCreateNewFieldWithTextBox())
+					if(doCreateNewFieldWithTextBox()) {
+						transitionToNextDlgPanel(this,newOrExistingFieldPanelConfig,newFieldPanelConfig)
+					}
+					else {
+						transitionToNextDlgPanel(this,newOrExistingFieldPanelConfig,newTextBoxValidateFormatEntriesPanel)						
+					}
 				} // if validate form
 			 },		
 			"Cancel" : function() { $(this).dialog('close'); },
@@ -286,6 +332,18 @@ function newLayoutContainer(containerParams)
 	// messages need to be removed from the message blocks within the panels.
 	$('.wizardPanel').form('clear') // clear any previous entries
 	$('.wizardErrorMsgBlock').empty()
+	
+	disableSelectExistingField();
+	$( "#createNewFieldRadio" ).prop( "checked", true );
+	$("input[name='newOrExistingRadio']").change(function(){
+        console.log("new or existing radio value:",this.value);
+		if(this.value == "new") {
+			disableSelectExistingField()
+		} else {
+			enableSelectExistingField()
+		}
+    });
+	
 	
 	$('#newTextBoxProgress').progress({percent:0});
 
