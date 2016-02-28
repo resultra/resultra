@@ -159,6 +159,9 @@ function newLayoutContainer(containerParams)
 		}
 		$("#" + currPanelConfig.divID).hide("slide",{direction:"left"},200,showNextPanel);
 		
+		$('#newTextBoxProgress').progress({percent:nextPanelConfig.progressPerc});
+		
+		
 		$(dialog).dialog("option","buttons",nextPanelConfig.dlgButtons)
 	}
 
@@ -167,6 +170,8 @@ function newLayoutContainer(containerParams)
 			$('#'+ prevPanelConfig.divID).show("slide",{direction:"left"},200);
 		}
 		$("#" + currPanelConfig.divID).hide("slide",{direction:"right"},200,showPrevPanel);
+		
+		$('#newTextBoxProgress').progress({percent:prevPanelConfig.progressPerc});
 		
 		$(dialog).dialog("option","buttons",prevPanelConfig.dlgButtons)
 	}
@@ -177,6 +182,7 @@ function newLayoutContainer(containerParams)
 	
 	var newTextBoxValidateFormatEntriesPanel = {
 		divID: "newTextBoxValidateFormatEntriesPanel",
+		progressPerc:90,
 		dlgButtons: { 
 			"Previous": function() { 
 				if(newFieldIsCalcField()){
@@ -196,6 +202,7 @@ function newLayoutContainer(containerParams)
 
 	var calcFieldFormulaPanelConfig = {
 		divID: "newTextBoxDlgCalcFieldFormulaPanel",
+		progressPerc:60,
 		dlgButtons: { 
 			"Previous": function() { 
 				transitionToPrevDlgPanel(this,calcFieldFormulaPanelConfig,newFieldPanelConfig)
@@ -212,6 +219,7 @@ function newLayoutContainer(containerParams)
 	
 	var newFieldPanelConfig = {
 		divID: "newTextBoxDlgNewFieldPanel",
+		progressPerc:40,
 		dlgButtons: { 
 			"Previous": function() { 
 				transitionToPrevDlgPanel(this,newFieldPanelConfig,newOrExistingFieldPanelConfig)	
@@ -234,10 +242,12 @@ function newLayoutContainer(containerParams)
 
 	var newOrExistingFieldPanelConfig = {
 		divID: "newTextBoxDlgSelectOrNewFieldPanel",
+		progressPerc:0,
 		dlgButtons: { 
 			"Next": function() {
 				if($( "#newTextBoxDlgSelectOrNewFieldPanel" ).form('validate form')) {			
 					transitionToNextDlgPanel(this,newOrExistingFieldPanelConfig,newFieldPanelConfig)
+					$('#newTextBoxProgress').progress({percent:20})
 				} // if validate form
 			 },		
 			"Cancel" : function() { $(this).dialog('close'); },
@@ -276,6 +286,8 @@ function newLayoutContainer(containerParams)
 	// messages need to be removed from the message blocks within the panels.
 	$('.wizardPanel').form('clear') // clear any previous entries
 	$('.wizardErrorMsgBlock').empty()
+	
+	$('#newTextBoxProgress').progress({percent:0});
 
 	$( "#newTextBox" ).dialog("open")
 	
