@@ -1,6 +1,7 @@
 package datamodel
 
 import (
+	"appengine"
 	"fmt"
 	"log"
 	"regexp"
@@ -99,6 +100,8 @@ func tokenizeInput(inputStr string) (TokenMatchSequence, error) {
 		}
 		remaining = skipLeadingWhite(remaining)
 	}
+	log.Printf("tokenizeInput: done tokenizing input: found  %v tokens", len(matches))
+
 	return matches, nil
 
 }
@@ -258,4 +261,20 @@ func parseCalcFieldEqn(inputStr string) (*EquationNode, error) {
 
 	return eqnRoot, nil
 
+}
+
+func ValidateCalcFieldEqn(appEngContext appengine.Context, eqnStr string) error {
+
+	_, fieldRefErr := GetFieldRefIDIndex(appEngContext)
+	if fieldRefErr != nil {
+		return fmt.Errorf("ValidateCalcFieldEqn: Error getting field references to validate calculated field equation: %v", fieldRefErr)
+	}
+
+	log.Printf("ValidateCalcFieldEqn: validating calc field eqn: %v", eqnStr)
+	_, parseErr := parseCalcFieldEqn(eqnStr)
+	if parseErr != nil {
+		return fmt.Errorf("ValidateCalcFieldEqn: Error validating calculated field equation: parse error = %v", parseErr)
+	}
+
+	return nil
 }

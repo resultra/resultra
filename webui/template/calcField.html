@@ -2,7 +2,7 @@
 	<div class="ui search selection dropdown" id="calcFieldFuncSelectionDropdown">
 		<input type="hidden" name="caldFieldFuncSelection">
 		<div class="default text">
-			Select a Function
+			Insert a Function
 		</div>
 		<div class="menu" id="calcFieldFuncSelectionMenu">
 			<div class="item" data-value="dummy1">
@@ -27,7 +27,7 @@
 	<div class="ui search selection dropdown" id="calcFieldFieldRefDropdown">
 		<input type="hidden" name="calcFieldFieldRef">
 		<div class="default text">
-			Select a Field
+			Insert a Field Reference
 		</div>
 		<div class="menu" id="calcFieldFieldRefDropdownMenu">
 			<div class="item" data-value="dummy1">
@@ -43,6 +43,17 @@
 			<i class="angle double down icon"></i>
 		</button>
 {{end}}
+
+{{define "calcFieldValidationMsgBoxes"}}
+		<div class="ui error message" id="calcFieldErrorMsgBox">
+			<p>
+				Enter the information for the new field to store the values for this text box.
+			</p>
+		</div>
+		<div class="ui success message" id="calcFieldSuccessMsgBox">
+		</div>
+{{end}}
+
 
 
 {{define "calcFieldFieldRefSelection"}}
@@ -60,7 +71,7 @@
 
 {{define "calcFieldFormulaTextArea"}}
 		<div class="sixteen wide field">
-			<textarea id="calcFieldFormulaTextArea" rows="4"></textarea>
 			<label>Calculated Field Formula</label> 
+			<textarea id="calcFieldFormulaTextArea" rows="2"></textarea>
 		</div>
 {{end}}

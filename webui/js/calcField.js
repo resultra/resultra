@@ -1,6 +1,9 @@
 
 
 function insertTextAreaAtCursor(elem, newText) {
+	
+  console.log("appending text to formula box: " + newText)
+	
   var selStart = elem.prop("selectionStart")
   var selEnd = elem.prop("selectionEnd")
   var allText = elem.val()
@@ -61,7 +64,7 @@ function initCalcFieldFieldRefSelector(fieldsByID)
 	
 }
 
-function initCalcFieldFuncSelector()
+function initCalcFieldFuncSelector() 
 {
 	$("#calcFieldFuncSelectionDropdown").dropdown()
 	$("#calcFieldFuncSelectionMenu").empty()
@@ -81,9 +84,50 @@ function initCalcFieldFuncSelector()
 	});
 }
 
+function clearCalcFieldValidationMsgs() {
+	$('#calcFieldErrorMsgBox').empty()
+	$('#calcFieldSuccessMsgBox').empty()
+}
+
+function calcFieldSetValidationErrorMsg(errorMsg) {
+	clearCalcFieldValidationMsgs()
+	$('#calcFieldErrorMsgBox').append('<p><i class="warning sign icon"></i>' + errorMsg + "</p>")	
+}
+
+function calcFieldSetValidationSuccessMsg() {
+	clearCalcFieldValidationMsgs()
+	$('#calcFieldSuccessMsgBox').append('<p><i class="checkmark icon"></i>Formula is valid</p>')
+}
+
+function initCalcFieldFormulaTextBox() {
+		
+	$('#calcFieldFormulaTextArea').focusout(function () {
+		
+		console.log("Calculated field formula box losing focus: re-validating formula")
+		
+		var validationParams = {
+			eqnText: $('#calcFieldFormulaTextArea').val(),
+			isNewField: true
+		}
+		jsonAPIRequest("validateCalcFieldEqn",validationParams,function(validationResponse) {
+			if(validationResponse.isValidEqn) {
+				calcFieldSetValidationSuccessMsg()
+			} else {
+				calcFieldSetValidationErrorMsg(validationResponse.errorMsg)
+			}
+		})
+		
+	})
+	
+}
+
 
 function initCalcFieldEditBehavior(fieldsByID) {
 	
+	clearCalcFieldValidationMsgs()
+	initCalcFieldFormulaTextBox()
+	
 	initCalcFieldFieldRefSelector(fieldsByID)
 	initCalcFieldFuncSelector()
+	
 }
