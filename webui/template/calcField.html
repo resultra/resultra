@@ -1,0 +1,66 @@
+{{define "calcFieldFuncDropdown"}}
+	<div class="ui search selection dropdown" id="calcFieldFuncSelectionDropdown">
+		<input type="hidden" name="caldFieldFuncSelection">
+		<div class="default text">
+			Select a Function
+		</div>
+		<div class="menu" id="calcFieldFuncSelectionMenu">
+			<div class="item" data-value="dummy1">
+				<b>Dummy</b> - Dummy Item - populated using calcField.js
+			</div>
+		</div><!-- menu -->
+	</div><!-- dropdown -->
+{{end}}
+
+{{define "calcFieldFuncSelectionButton"}}
+	<button id="calcFieldInsertSelectedFuncButton">
+			<i class="angle double down icon"></i>
+	</button>
+{{end}}
+
+{{define "calcFieldFuncSelection"}}
+		{{template "calcFieldFuncDropdown"}}
+		{{template "calcFieldFuncSelectionButton"}}
+{{end}}
+
+{{define "calcFieldFieldRefDropdown"}}
+	<div class="ui search selection dropdown" id="calcFieldFieldRefDropdown">
+		<input type="hidden" name="calcFieldFieldRef">
+		<div class="default text">
+			Select a Field
+		</div>
+		<div class="menu" id="calcFieldFieldRefDropdownMenu">
+			<div class="item" data-value="dummy1">
+				<b>Dummy</b> - Dummy Item - populated using calcField.js
+			</div>
+		</div><!-- menu -->
+	</div><!-- dropdown -->
+{{end}}
+
+
+{{define "calcFieldRefSelectionButton"}}
+		<button id="calcFieldInsertSelectedFieldRefButton">
+			<i class="angle double down icon"></i>
+		</button>
+{{end}}
+
+
+{{define "calcFieldFieldRefSelection"}}
+		{{template "calcFieldFieldRefDropdown"}}
+		{{template "calcFieldRefSelectionButton"}}
+{{end}}
+
+
+{{define "calcFieldFormulaSelections"}}
+		{{template "calcFieldFuncSelection"}}
+		 &nbsp;&nbsp; &nbsp;&nbsp;
+		{{template "calcFieldFieldRefSelection"}}
+{{end}}
+
+
+{{define "calcFieldFormulaTextArea"}}
+		<div class="sixteen wide field">
+			<textarea id="calcFieldFormulaTextArea" rows="4"></textarea>
+			<label>Calculated Field Formula</label> 
+		</div>
+{{end}}

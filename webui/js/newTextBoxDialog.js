@@ -121,7 +121,11 @@ var calcFieldFormulaPanelConfig = {
 		},
 		"Cancel" : function() { $(this).dialog('close'); },
  	}, // dialog buttons
-	initPanel: function () {},
+	initPanel: function () {
+		// Initialize the semantic ui dropdown menus
+		$('.ui.dropdown').dropdown()
+		initCalcFieldEditBehavior(newTextBoxParams.fieldsByID)
+	},
 } // wizard dialog configuration for panel to create new field
 
 
