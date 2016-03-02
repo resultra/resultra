@@ -57,7 +57,7 @@ function openAddFilterDialog()
 		modal: false,
 		position: { my: "right top", at: "left-10 top", of: filterButton },
 		buttons: { 
-			"Add Filter": function() { $(this).dialog('close'); },
+			"Add Filtering Rule": function() { $(this).dialog('close'); },
   			"Cancel" : function() { $(this).dialog('close'); },
  		 },	
 	 });

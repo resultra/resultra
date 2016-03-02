@@ -3,7 +3,7 @@ function jsonAPIRequest(apiName,requestData, successFunc)
 	var jsonReqData = JSON.stringify(requestData)
 			
 	// TODO - In debug builds, the API logging could be enabled, but disabled in production
-	console.log("JSON API Request: api name = " + apiName + " requestData =" + jsonReqData)
+	console.log("JSON API: Sending Request: api name = " + apiName + " requestData =" + jsonReqData)
 	
     $.ajax({
        url: '/api/'+ apiName,
@@ -16,7 +16,7 @@ function jsonAPIRequest(apiName,requestData, successFunc)
        },
        dataType: 'json',
        success: function(replyData) {
-		  console.log("JSON API Request succeeded: api name = " + apiName + " replyData =" + JSON.stringify(replyData))
+		  console.log("JSON API: Received Reply: api name = " + apiName + " replyData =" + JSON.stringify(replyData))
 		  successFunc(replyData)
        },
        type: 'POST'
