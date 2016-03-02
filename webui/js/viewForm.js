@@ -258,6 +258,7 @@ function loadRecords()
 				
 	}) // getRecord
 	
+	initFilterRecordsElems(fieldsByID);
 }
 
 function createNewRecord() {
@@ -347,5 +348,7 @@ $(document).ready(function() {
 	initRecordButtonsBehavior()
 	  
 	initCanvas(initContainerRecordEntryBehavior,initRecordEntryFieldInfo, loadRecords)
+	
+	
 
 }); // document ready

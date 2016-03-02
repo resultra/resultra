@@ -5,3 +5,11 @@
 .wizardPanel {
 	display:none;
 }
+
+
+/* Use with jQuery UI modal dialogs - this style will keep the dialog initially hidden from view and 
+   allow menus and other elements to overflow the edge as appropriate */
+.modalDialog {
+	overflow: visible !important;
+	display:none;
+}

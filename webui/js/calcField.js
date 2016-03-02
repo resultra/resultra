@@ -1,29 +1,9 @@
 
 
-function insertTextAreaAtCursor(elem, newText) {
-	
-  console.log("appending text to formula box: " + newText)
-	
-  var selStart = elem.prop("selectionStart")
-  var selEnd = elem.prop("selectionEnd")
-  var allText = elem.val()
-  var beforeSel = allText.substring(0, selStart)
-  var afterSel  = allText.substring(selEnd, allText.length)
-  elem.val(beforeSel + newText + afterSel)
-  elem[0].selectionStart = elem[0].selectionEnd = selStart + newText.length
-  elem.focus()
-}
+
 
 function calcFieldAppendFormulaText(newText) {
 	insertTextAreaAtCursor($('#calcFieldFormulaTextArea'), newText)
-}
-
-function calcFieldInsertDropdownSelectItemHTML(selItemVal, selItemText)
-{
-	var selectFieldRefHTML = '<div class="item" data-value="' +
-	 		selItemVal + '">' +
-	 		selItemText + '</div>'
-	return selectFieldRefHTML
 }
 
 function initCalcFieldFieldRefSelector(fieldsByID)
@@ -43,7 +23,7 @@ function initCalcFieldFieldRefSelector(fieldsByID)
 			" name = " + fieldInfo.name
 		)
 
-	 	var selectFieldRefHTML = calcFieldInsertDropdownSelectItemHTML(
+	 	var selectFieldRefHTML = dropdownSelectItemHTML(
 						fieldInfo.refName,
 						fieldInfo.refName + ' - ' + fieldInfo.name)
 		
@@ -71,7 +51,7 @@ function initCalcFieldFuncSelector()
 	
 	// Populate the menu to insert function names into the formula editing area
 	
-	$("#calcFieldFuncSelectionMenu").append(calcFieldInsertDropdownSelectItemHTML("SUM()","SUM(value1,value2,...)"))
+	$("#calcFieldFuncSelectionMenu").append(dropdownSelectItemHTML("SUM","SUM(value1,value2,...)"))
 		
 	$('#calcFieldInsertSelectedFuncButton').click(function(e){
 		e.preventDefault();

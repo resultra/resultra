@@ -1,3 +1,128 @@
+
+
+{{define "viewFormFilterPane"}}
+
+<div class="ui small center aligned header" id="filterHeader">
+	<div class="content">
+	 	<i class="filter icon"></i>
+		Filter &nbsp;&nbsp;
+		{{template "filterRecordsAddFilterButton"}}
+	</div>
+	
+</div>
+<div class="ui-layout-content">
+	<p>Filter options will go here - header shouldn't scroll'</p>
+	<p>Filter options go here</p>
+	<p>Filter options go here</p>
+	<p>Filter options go here</p>
+	<p>Filter options go here</p>
+	<p>Filter options go here</p>
+	<p>Filter options go here</p>
+	<p>Filter options go here</p>
+	<p>Filter options go here</p>
+</div>
+
+{{end}}
+
+{{define "viewFormSortPane"}}
+<div class="ui small center aligned header" id="sortHeader">
+	<div class="content">
+	 <i class="sort icon"></i>
+		Sort
+  	</div>
+</div>
+<div class="ui-layout-content">
+	<p>Sort options will go here - header shouldn't scroll'</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+	<p>Sort options go here</p>
+</div>
+{{end}}
+
+{{define "viewFormPageHeader"}}
+	<div class="ui large breadcrumb">
+	  {{template "homePageBreadcrumb"}}
+	  <i class="right chevron icon divider"></i>
+	  <a class="section"><i class="database icon"></i>Database Name</a>
+	  <i class="right chevron icon divider"></i>
+	  <div class="active section">{{.LayoutName}}</div>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "viewFormHeaderControls"}}
+<div ui class="ui padded grid" id="recordHeaderGrid">
+	
+	<div class="ui four wide grey column" style="padding:3px">
+		<div class="compact ui buttons">
+		    <button class="ui button">Single</button>
+			<div class="or"></div>
+		    <button class="ui button">List</button>
+		</div>
+	</div> <!-- column -->
+	
+	<div class="ui eight wide grey column" style="padding:3px">
+		View with:
+		<select class="ui selection dropdown">
+		  	<option value="">Form</option>
+		    <option value="form1">Entry</option>
+		    <option value="form2">Exit</option>
+		    <option value="form3">Post-mortem</option>
+		</select>
+	</div> <!-- column -->
+	
+	<div class="ui four wide grey column" style="padding:3px">
+		<div class="ui icon right floated pointing dropdown button" id="moreDropdown">
+			 <i class="dropdown icon"></i>
+			<div class="left menu">
+				<div class="item">Print</div>
+				<div class="item">Export CSV</div>
+				<div class="divider"></div>
+				<a href="/designForm/{{.LayoutID}}" class="item">Edit Form Design</a>
+			</div> <!-- menu -->
+		</div> <!-- ui dropdown -->
+	</div> <!-- column -->
+	
+</div> <!-- #recordHeaderGrid  -->
+{{end}}
+
+{{define "viewFormFooterControls"}}
+<div ui class="grey ui padded grid" id="recordFooterGrid">
+
+	<div class="ui eight wide grey column" style="padding:3px">
+		<button class="ui left labeled icon button" id="prevRecordButton">
+		  <i class="left arrow icon"></i>
+		  Previous
+		</button>
+		<div class="ui label" id="recordNumLabel">&nbsp;</div>
+		<button class="ui right labeled icon button" id="nextRecordButton">
+		  <i class="right arrow icon"></i>
+		  Next
+		</button>
+	</div> <!-- column -->
+
+	<div class="ui eight wide grey column" style="padding:3px">
+		<button class="ui left labeled right floated icon button" id="newRecordButton">
+		  <i class="add icon"></i>
+		  New Record
+		</button>
+	</div> <!-- column -->
+
+</div> <!-- record footer grid -->
+{{end}}
+
 {{define "viewForm"}}
 
 <html>
@@ -12,80 +137,32 @@
 	<script>var layoutID={{.LayoutID}};</script>
 	
 	<script src="/js/layoutCommon.js"></script>
+	<script src="/js/filterRecords.js"></script>
 	<script src="/js/viewForm.js"></script>
 			
   </head>
+	
+ 	
+	
   <body>
+
 	<div id="layoutPage" class="layoutPageDiv">
+		
 		<div class="pane ui-layout-north">
-				<div class="ui large breadcrumb">
-				  {{template "homePageBreadcrumb"}}
-				  <i class="right chevron icon divider"></i>
-				  <a class="section"><i class="database icon"></i>Database Name</a>
-				  <i class="right chevron icon divider"></i>
-				  <div class="active section">{{.LayoutName}}</div>
-				</div> <!-- breadcrumb header -->
+			{{template "viewFormPageHeader" .}}
 		</div> <!-- ui layout north -->
 
 		<div class="pane ui-layout-east" id="eastFilterSortPane">
 			
 			<div class="ui-layout-center" id="filterPaneUILayout">
-				<div class="ui small center aligned header" id="filterHeader">
-		  			<div class="content">
-		  			 <i class="filter icon"></i>
-		    			Filter
-		  		  	</div>
-				</div>
-				<div class="ui-layout-content">
-					<p>Filter options will go here - header shouldn't scroll'</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-					<p>Filter options go here</p>
-				</div>
+				{{template "viewFormFilterPane"}}
 			</div> <!-- ui-layout-center #filterPane -->
 	
 			<div class=" ui-layout-south" id="sortPaneUILayout">
-				<div class="ui small center aligned header" id="sortHeader">
-		  			<div class="content">
-		  			 <i class="sort icon"></i>
-		    			Sort
-		  		  	</div>
-		  		</div>
-				<div class="ui-layout-content">
-					<p>Sort options will go here - header shouldn't scroll'</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-					<p>Sort options go here</p>
-				</div>
+				{{template "viewFormSortPane"}}
+				
+			    
 			</div> <!-- ui-layout-south #sortPane -->
-			
-			
 		
 		</div> <!-- east filter & sort pane for entire page -->
 
@@ -93,36 +170,17 @@
 		<div class="pane ui-layout-center" id="recordsPane">
 			
 			<div class="ui-layout-center" id="recordViewPane">
+				
 				<form class="ui form" id="editLayoutForm" name="editLayoutForm">
 					<div class="layoutPageDiv" id="layoutPage">
 						<div id="layoutCanvas"></div>
 					</div>	
 				</form>
+				
 			</div> <!-- ui-layout-center #recordHeader -->
 	
 			<div class=" ui-layout-south" id="recordFooterUILayout" >
-				<div ui class="grey ui padded grid" id="recordFooterGrid">
-
-					<div class="ui eight wide grey column" style="padding:3px">
-						<button class="ui left labeled icon button" id="prevRecordButton">
-						  <i class="left arrow icon"></i>
-						  Previous
-						</button>
-						<div class="ui label" id="recordNumLabel">&nbsp;</div>
-						<button class="ui right labeled icon button" id="nextRecordButton">
-						  <i class="right arrow icon"></i>
-						  Next
-						</button>
-					</div> <!-- column -->
-
-					<div class="ui eight wide grey column" style="padding:3px">
-						<button class="ui left labeled right floated icon button" id="newRecordButton">
-						  <i class="add icon"></i>
-						  New Record
-						</button>
-					</div> <!-- column -->
-
-				</div> <!-- record footer grid -->
+				{{ template "viewFormFooterControls"}}
 			</div>  <!-- #recordFooterUILayout ui-layout-south -->
 			
 			<!-- The style is overridden on the #recordHeader and semantic UI
@@ -137,48 +195,14 @@
 				http://layout.jquery-dev.com/documentation.cfm#Drop-Downs	
 			-->
 			<div class="ui-layout-north" id="recordHeaderUILayout">
-				
-				<div ui class="ui padded grid" id="recordHeaderGrid">
-					
-					<div class="ui four wide grey column" style="padding:3px">
-						<div class="compact ui buttons">
-						    <button class="ui button">Single</button>
-							<div class="or"></div>
-						    <button class="ui button">List</button>
-						</div>
-					</div> <!-- column -->
-					
-					<div class="ui eight wide grey column" style="padding:3px">
-						View with:
-						<select class="ui selection dropdown">
-						  	<option value="">Form</option>
-						    <option value="form1">Entry</option>
-						    <option value="form2">Exit</option>
-						    <option value="form3">Post-mortem</option>
-						</select>
-					</div> <!-- column -->
-					
-					<div class="ui four wide grey column" style="padding:3px">
-						<div class="ui icon right floated pointing dropdown button" id="moreDropdown">
-							 <i class="dropdown icon"></i>
-							<div class="left menu">
-								<div class="item">Print</div>
-								<div class="item">Export CSV</div>
-								<div class="divider"></div>
-								<a href="/designForm/{{.LayoutID}}" class="item">Edit Form Design</a>
-							</div> <!-- menu -->
-						</div> <!-- ui dropdown -->
-					</div> <!-- column -->
-					
-				</div> <!-- #recordHeaderGrid  -->
+				{{template "viewFormHeaderControls" .}}
 			</div> <!-- ui-layout-north #recordHeaderUILayout -->
 				
-		</div> <!-- center pane for entire page -->
-		
+		</div> <!-- center pane for entire page -->	
 	</div> <!-- layout page -->
-	  	
+	
   </body>
-  
+  	
 </html>
 
 {{end}}
