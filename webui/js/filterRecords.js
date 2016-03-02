@@ -54,6 +54,7 @@ function openAddFilterDialog()
 	$("#filterRecordsAddFilterDialog").dialog({
 		autoOpen: false,
 		height: 450, width: 300,
+		resizable: false,
 		modal: false,
 		position: { my: "right top", at: "left-10 top", of: filterButton },
 		buttons: { 

@@ -9,7 +9,11 @@
 
 /* Use with jQuery UI modal dialogs - this style will keep the dialog initially hidden from view and 
    allow menus and other elements to overflow the edge as appropriate */
-.initiallyHiddenAllowOverflowDialog {
-	overflow: visible !important;
+.initiallyHiddenDialog {
 	display:none;
 }
+
+/* TODO - Need to look at putting the following style back into dialogs:
+    	overflow: visible !important;
+	There was a conflict if the content of the dialogs expanded with error messages. In this case we want
+	the contents to overflow, but we also want any dropdowns to show all their contents. */

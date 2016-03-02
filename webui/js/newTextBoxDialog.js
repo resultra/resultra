@@ -266,6 +266,7 @@ function newLayoutContainer(containerParams,fieldsByID)
     newTextBoxParams.dialogBox.dialog({
       autoOpen: false,
       height: 500, width: 550,
+	  resizable: false,
       modal: true,
       buttons: newOrExistingFieldPanelConfig.dlgButtons,
       close: function() {
