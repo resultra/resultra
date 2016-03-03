@@ -8,6 +8,13 @@ function dropdownSelectItemHTML(selItemVal, selItemText)
 	return selectFieldRefHTML
 }
 
+function selectOptionHTML(selItemVal, selItemText) {
+	
+	var selOptionHTML = '<option value="' + selItemVal + '">' + selItemText + '</option>'
+	return selOptionHTML
+	
+}
+
 function insertTextAreaAtCursor(elem, newText) {
 	
   console.log("appending text to formula box: " + newText)
