@@ -16,4 +16,8 @@
 /* TODO - Need to look at putting the following style back into dialogs:
     	overflow: visible !important;
 	There was a conflict if the content of the dialogs expanded with error messages. In this case we want
-	the contents to overflow, but we also want any dropdowns to show all their contents. */
+	the contents to overflow, but we also want any dropdowns to show all their contents. 
+
+	Note- Using a regular select HTML element doesn't have the same issues as Semantic UI dropdowns
+
+*/
