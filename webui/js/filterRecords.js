@@ -2,20 +2,20 @@
 
 var filterRulesText = {
 	"isBlank": {
-		label: "Value not set (blank)",
+		label: "Text not set (blank)",
 		hasParam: false,
 	},
 	"notBlank": {
-		label: "Value is set (not blank)",
+		label: "Text is set (not blank)",
 		hasParam: false,
 	},
 	"contains": {
-		label: "Value contains",
+		label: "Text contains",
 		hasParam: true,
 		paramLabel: "Filter if contains"
 	},
 	"startsWith": {
-		label: "Starts with",
+		label: "Text starts with",
 		hasParam: true,
 		paramLabel: "Filter if starts with"
 	},
@@ -31,12 +31,12 @@ var filterRulesNumber = {
 		hasParam: false,
 	},
 	"greater": {
-		label: "Greater than",
+		label: "Value greater than",
 		hasParam: true,
 		paramLabel: "Filter if greater than"
 	},
 	"less": {
-		label: "Less than",
+		label: "Value less than",
 		hasParam: true,
 		paramLabel: "Filter if less than"
 	}
@@ -47,9 +47,84 @@ var filterRulesByType = {
 	"number":filterRulesNumber,
 }
 
+var filterRuleFormValidationNoParam = {
+    filterRecordsSelectRule: {
+      rules: [
+        {
+          type   : 'empty',
+          prompt : 'Please enter a filtering rule'
+        }
+      ]
+    }, // newFieldName validation
+    filterRecordsSelectField: {
+      rules: [
+        {
+          type   : 'empty',
+          prompt : 'Please select a field'
+        }
+      ]
+    }, // newFieldValTypeSelection validation
+}
+
+function filterRuleFormValidationTextParam() {
+	var textValidation = filterRuleFormValidationNoParam
+	
+	textValidation.filterRecordsFilterRuleParamInput = {
+        rules: [
+          {
+            type   : 'empty',
+            prompt : 'Enter text to match'
+          }
+        ]		
+	}
+	
+	return textValidation
+}
+
+function filterRuleFormValidationNumberParam() {
+	var numValidation = filterRuleFormValidationNoParam
+	
+	numValidation.filterRecordsFilterRuleParamInput = {
+        rules: [
+          {
+            type   : 'number',
+            prompt : 'Enter a number'
+          },
+          {
+            type   : 'empty',
+            prompt : 'Enter a number'
+          }
+        ]		
+	}
+	
+	return numValidation
+}
+
+
+function setFilterRuleFormValidationRules(validationRules) {
+	$( "#filterRecordsAddFilterDialog" ).form({
+		fields:validationRules,
+		inline:true,
+	});
+	
+}
+
+function validateThenAddFilterRule() {
+	if($('#filterRecordsAddFilterDialog').form('validate form')) {
+		console.log("filtering rule validated")
+		$( "#filterRecordsAddFilterDialog" ).dialog("close")
+	} else {
+		console.log("filtering rule not validated")
+	}
+}
+
 function openAddFilterDialog()
 {
 	var filterButton = $('#filterRecordsAddFilterButton')
+		
+	resetValidationRulesNoParam()	
+	
+	$( "#filterRecordsAddFilterDialog" ).form('clear');
 	
 	$("#filterRecordsAddFilterDialog").dialog({
 		autoOpen: false,
@@ -58,12 +133,19 @@ function openAddFilterDialog()
 		modal: false,
 		position: { my: "right top", at: "left-10 top", of: filterButton },
 		buttons: { 
-			"Add Filtering Rule": function() { $(this).dialog('close'); },
+			"Add Filtering Rule": function() { validateThenAddFilterRule() },
   			"Cancel" : function() { $(this).dialog('close'); },
  		 },	
 	 });
 	  
 	 $("#filterRecordsAddFilterDialog").dialog("open")
+}
+
+function resetValidationRulesNoParam()
+{
+	setFilterRuleFormValidationRules(filterRuleFormValidationNoParam)
+	$("#filterRecordsFilterRuleParamInputField").form('clear')
+	$("#filterRecordsFilterRuleParamInputField").hide()
 }
 
 function addRecordFilterChangeField(fieldID, fieldsByID)
@@ -72,37 +154,57 @@ function addRecordFilterChangeField(fieldID, fieldsByID)
 	console.log("filterRecords: selection changed: fieldID=" + fieldID + " type=" + fieldInfo.type)
 
 	// Change the list of selectable rules to match the type of field
-	$("#filterRecordsSelectFilterRuleDropdownMenu").empty()	
+	$("#filterRecordsSelectFilterRuleDropdownMenu").empty()
 	var rulesByType = filterRulesByType[fieldInfo.type]
 	for(var ruleID in rulesByType) {
 	 	var selectRuleHTML = dropdownSelectItemHTML(ruleID, rulesByType[ruleID].label)
 	 	$("#filterRecordsSelectFilterRuleDropdownMenu").append(selectRuleHTML)				
 	}
+	
 	$('#filterRecordsSelectFilterRuleDropdown').dropdown("clear")
+	
+	resetValidationRulesNoParam()
+	
 }
 
 function initFilterRuleSelection(fieldsByID) {
 	
-	$('#filterRecordsSelectFilterRuleDropdown').dropdown();
+//	$('#filterRecordsSelectFilterRuleDropdown').dropdown({placeholder: "Select a rule::"});
 	$("#filterRecordsSelectFilterRuleDropdownMenu").empty()
 	
 	$('#filterRecordsSelectFilterRuleDropdown').dropdown({
 	 	onChange: function() {
 			var fieldID = $("#filterRecordsSelectFieldDropdown").dropdown("get value")
-			var ruleID = $("#filterRecordsSelectFilterRuleDropdown").dropdown("get value")
+			if(fieldID.length > 0) {
+				var ruleID = $("#filterRecordsSelectFilterRuleDropdown").dropdown("get value")
+				if(ruleID.length > 0) {
+					var fieldInfo = fieldsByID[fieldID]
+					var typeRules = filterRulesByType[fieldInfo.type]
+					var ruleDef = typeRules[ruleID]
 			
-			var fieldInfo = fieldsByID[fieldID]
-			var typeRules = filterRulesByType[fieldInfo.type]
-			var ruleDef = typeRules[ruleID]
+					console.log("filterRecords: rule selection changed: ruleID=" + ruleID)
+					console.log("Select filter rule: rule selection changed: filtering rule =" + JSON.stringify(ruleDef))
 			
-			console.log("filterRecords: rule selection changed: ruleID=" + ruleID)
-			console.log("Select filter rule: rule selection changed: filtering rule =" + JSON.stringify(ruleDef))
+					if(ruleDef.hasParam) {
+						if(fieldInfo.type == "text") {
+							setFilterRuleFormValidationRules(filterRuleFormValidationTextParam())
+						} else {
+							console.log("setting number rules for filter param validation")
+							setFilterRuleFormValidationRules(filterRuleFormValidationNumberParam())
+						}
+						$("#filterRecordsFilterRuleParamInputField").show()
+					} else {
+						console.log("setting no filter param rules for filter param validation")
+						resetValidationRulesNoParam()
+					}
+					
+				} // if ruleID length > 0
+				else {
+					resetValidationRulesNoParam()
+				} // ruleID is reset to empty item => also reset the validation rules and hide the parameter input box
 			
-			if(ruleDef.hasParam) {
-				$("#filterRecordsFilterRuleParamInputField").show()
-			} else {
-				$("#filterRecordsFilterRuleParamInputField").hide()
-			}
+				
+			} // if fieldID length > 0
 				
 		}
 	});
@@ -129,8 +231,13 @@ function initFilterRecordsFieldSelectionMenu(fieldsByID) {
 	$('#filterRecordsSelectFieldDropdown').dropdown({
 	 	onChange: function() {
 			var fieldID = $("#filterRecordsSelectFieldDropdown").dropdown("get value")
-			console.log("filterRecords: selection changed: fieldID=" + fieldID)
-			addRecordFilterChangeField(fieldID,fieldsByID)
+			if(fieldID.length > 0) {
+				console.log("filterRecords: selection changed: fieldID=" + fieldID)
+				addRecordFilterChangeField(fieldID,fieldsByID)				
+			}
+			else {
+				resetValidationRulesNoParam()
+			}
 		}
 	});
 	
@@ -138,7 +245,6 @@ function initFilterRecordsFieldSelectionMenu(fieldsByID) {
 }
 
 function initFilterRecordsElems(fieldsByID) {
-	
 	
 	$('#filterRecordsAddFilterButton').click(function(e){
 		e.preventDefault();
@@ -150,4 +256,6 @@ function initFilterRecordsElems(fieldsByID) {
 	
 	initFilterRecordsFieldSelectionMenu(fieldsByID)
 	initFilterRuleSelection(fieldsByID)
+	
+
 }

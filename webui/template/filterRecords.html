@@ -1,28 +1,9 @@
 
-
-
-{{define "filterRecordsSelectFilterRuleDropdown"}}
-<div class="field">
-	<label>Filtering rule</label>
-	<div class="ui search selection dropdown" id="filterRecordsSelectFilterRuleDropdown">
-		<input type="hidden" name="calcFieldID">
-		<div class="default text">
-			Select a rule
-		</div>
-		<div class="menu" id="filterRecordsSelectFilterRuleDropdownMenu">
-			<div class="item" data-value="dummy1">
-				<b>Dummy</b> - Dummy Item - populated using filterRecords.js
-			</div>
-		</div><!-- menu -->
-	</div><!-- dropdown -->
-</div>
-{{end}}
-
 {{define "filterRecordsSelectFieldDropdown"}}
 <div class="field">
 	<label>Field</label>
 	<div class="ui search selection dropdown" id="filterRecordsSelectFieldDropdown">
-		<input type="hidden" name="calcFieldID">
+		<input type="hidden" name="filterRecordsSelectField">
 		<div class="default text">
 			Select a field
 		</div>
@@ -34,6 +15,24 @@
 	</div><!-- dropdown -->
 </div>
 {{end}}
+
+{{define "filterRecordsSelectFilterRuleDropdown"}}
+<div class="field">
+	<label>Filtering rule</label>
+	<div class="ui search selection dropdown" id="filterRecordsSelectFilterRuleDropdown">
+		<input type="hidden" name="filterRecordsSelectRule">
+	 	<div class="default text">
+			Select a rule
+		</div>
+		<div class="menu" id="filterRecordsSelectFilterRuleDropdownMenu">
+			<div class="item" data-value="dummy1">
+				<b>Dummy</b> - Dummy Item - populated using filterRecords.js
+			</div>
+		</div><!-- menu -->
+	</div><!-- dropdown -->
+</div>
+{{end}}
+
 
 {{define "filterRecordsFilterRuleParamInput"}}
 
