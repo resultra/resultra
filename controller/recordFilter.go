@@ -24,3 +24,14 @@ func newRecordFilterRule(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func getRecordFilterRules(w http.ResponseWriter, r *http.Request) {
+
+	appEngCntxt := appengine.NewContext(r)
+	if filterRefs, err := datamodel.GetRecordFilterRefs(appEngCntxt); err != nil {
+		WriteErrorResponse(w, err)
+	} else {
+		writeJSONResponse(w, filterRefs)
+	}
+
+}

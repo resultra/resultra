@@ -26,6 +26,7 @@ func RegisterAPIHTTPHandlers() {
 	apiRouter.HandleFunc("/api/getRecords", getRecords)
 
 	apiRouter.HandleFunc("/api/newRecordFilterRule", newRecordFilterRule)
+	apiRouter.HandleFunc("/api/getRecordFilterRules", getRecordFilterRules)
 
 	apiRouter.HandleFunc("/api/validateCalcFieldEqn", validateCalcFieldEqn)
 

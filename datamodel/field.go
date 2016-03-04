@@ -166,6 +166,24 @@ func GetField(appEngContext appengine.Context, fieldParams GetFieldParams) (*Fie
 	}
 }
 
+func GetFieldFromKey(appEngContext appengine.Context, fieldKey *datastore.Key) (*FieldRef, error) {
+
+	fieldGetDest := Field{}
+	getErr := datastore.Get(appEngContext, fieldKey, &fieldGetDest)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetFieldFromKey: Failed to retrieve field from datastore: key=%+v, datastore err=%v",
+			fieldKey, getErr)
+	}
+
+	fieldID, encodeErr := encodeUniqueEntityIDToStr(fieldKey)
+	if encodeErr != nil {
+		return nil, fmt.Errorf("GetFieldFromKey: Failed to encode unique ID for field: key=%+v, encode err=%v",
+			fieldKey, encodeErr)
+	}
+
+	return &FieldRef{fieldID, fieldGetDest}, nil
+}
+
 func GetExistingFieldKey(appEngContext appengine.Context, fieldID string) (*datastore.Key, error) {
 	if len(fieldID) == 0 {
 		return nil, fmt.Errorf("GetExistingFieldKey: Can't get field's key: missing field ID ")

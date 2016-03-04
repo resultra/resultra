@@ -118,17 +118,130 @@ func NewFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleP
 
 	// Set the parameter value in returned filter rule reference. What is set in the structure
 	// depends on what type of data the filter rule works with and if the filtering rule has a parameter.
-	var textParam *string = nil
-	var numberParam *float64 = nil
 
-	if newRuleDef.HasParam {
-		if newRuleDef.DataType == fieldTypeText {
-			textParam = &newFilter.TextRuleParam
-		} else {
-			numberParam = &newFilter.NumberRuleParam
-		}
+	optParamVal, paramValErr := getOptionalParamValueByRuleDef(newRuleDef, newFilter)
+	if paramValErr != nil {
+		return nil, fmt.Errorf("NewFilterRule: Failed to retrieve filter rule parameter values: err=%v", paramValErr)
 	}
 
-	return &FilterRuleRef{filterRuleID, *fieldRef, newRuleDef, textParam, numberParam}, nil
+	return &FilterRuleRef{filterRuleID, *fieldRef, newRuleDef, optParamVal.textParam, optParamVal.numberParam}, nil
 
+}
+
+type OptonalFilterRuleParamVal struct {
+	textParam   *string
+	numberParam *float64
+}
+
+// Convert the optional paramater values as stored in the datastore (via filterRule),
+// and convert them to pointer values which can be ommitted from output when
+// converting to JSON.
+func getOptionalParamValueByRuleDef(filterRuleDef FilterRuleDef,
+	filterRule RecordFilterRule) (*OptonalFilterRuleParamVal, error) {
+
+	optParamVal := OptonalFilterRuleParamVal{}
+
+	if filterRuleDef.HasParam {
+		switch filterRuleDef.DataType {
+		case fieldTypeText:
+			optParamVal.textParam = &filterRule.TextRuleParam
+		case fieldTypeNumber:
+			optParamVal.numberParam = &filterRule.NumberRuleParam
+		default:
+			return nil, fmt.Errorf("getOptionalParamValueByRuleDef: unknown rule definition data type = %v",
+				filterRuleDef.DataType)
+		} // switch
+	} // if has param
+
+	return &optParamVal, nil
+}
+
+// Get the rule definition based upon the field type
+func getRuleDefByFieldType(fieldType string, ruleID string) (*FilterRuleDef, error) {
+	switch fieldType {
+	case fieldTypeText:
+		ruleDef, ruleDefFound := textFieldFilterRuleDefs[ruleID]
+		if !ruleDefFound {
+			return nil, fmt.Errorf(
+				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, rule ID = %v",
+				fieldType, ruleID)
+		} else {
+			return &ruleDef, nil
+		}
+	case fieldTypeNumber:
+		ruleDef, ruleDefFound := numberFieldFilterRuleDefs[ruleID]
+		if !ruleDefFound {
+			return nil, fmt.Errorf(
+				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, rule ID = %v",
+				fieldType, ruleID)
+		} else {
+			return &ruleDef, nil
+		}
+	default:
+		return nil, fmt.Errorf(
+			"getRuleDefByFieldType: Failed to retrieve filter rule definition: unknown field type = %v",
+			fieldType)
+	}
+}
+
+// Convert one filter rule from the datastore into a reference which is usable by
+// API clients
+func createOneFilterRef(appEngContext appengine.Context,
+	filterRuleKey *datastore.Key, filterRule RecordFilterRule) (*FilterRuleRef, error) {
+
+	filterRuleID, encodeErr := encodeUniqueEntityIDToStr(filterRuleKey)
+	if encodeErr != nil {
+		return nil, fmt.Errorf("createOneFilterRef: Failed to encode unique ID for filter rule: key=%+v, encode err=%v",
+			filterRuleKey, encodeErr)
+	}
+
+	fieldRef, fieldErr := GetFieldFromKey(appEngContext, filterRule.Field)
+	if fieldErr != nil {
+		return nil, fmt.Errorf("createOneFilterRef: Failed to retrieve field for filter rule: field key=%+v, encode err=%v",
+			filterRule.Field, fieldErr)
+	}
+
+	filterRuleDef, ruleDefErr := getRuleDefByFieldType(fieldRef.FieldInfo.Type, filterRule.RuleID)
+	if ruleDefErr != nil {
+		return nil, fmt.Errorf("createOneFilterRef: Failed to retrieve filter rule definition: err=%v", ruleDefErr)
+	}
+
+	optParamVal, paramValErr := getOptionalParamValueByRuleDef(*filterRuleDef, filterRule)
+	if paramValErr != nil {
+		return nil, fmt.Errorf("createOneFilterRef: Failed to retrieve filter rule parameter values: err=%v", paramValErr)
+	}
+
+	filterRuleRef := FilterRuleRef{
+		FilterRuleID:    filterRuleID,
+		FieldRef:        *fieldRef,
+		FilterRuleDef:   *filterRuleDef,
+		TextRuleParam:   optParamVal.textParam,
+		NumberRuleParam: optParamVal.numberParam}
+
+	return &filterRuleRef, nil
+
+}
+
+func GetRecordFilterRefs(appEngContext appengine.Context) ([]FilterRuleRef, error) {
+
+	var allFilterRules []RecordFilterRule
+	ruleQuery := datastore.NewQuery(recordFilterRuleEntityKind)
+	keys, err := ruleQuery.GetAll(appEngContext, &allFilterRules)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetRecordFilterRefs: Unable to retrieve record filters from datastore: datastore error =%v", err)
+	}
+
+	filterRefs := make([]FilterRuleRef, len(allFilterRules))
+	for i, currFilterRule := range allFilterRules {
+		filterRuleKey := keys[i]
+
+		filterRuleRef, refErr := createOneFilterRef(appEngContext, filterRuleKey, currFilterRule)
+		if refErr != nil {
+			return nil, fmt.Errorf("GetRecordFilterRefs: Unable to create reference to filter rule: error =%v", refErr)
+		}
+
+		filterRefs[i] = *filterRuleRef
+	}
+	return filterRefs, nil
 }
