@@ -152,12 +152,9 @@ func NewLayoutContainer(appEngContext appengine.Context, containerParams LayoutC
 		return "", err
 	}
 
-	if len(containerParams.FieldID) == 0 {
-		return "", fmt.Errorf("Can't create layout container: missing field ID ")
-	}
-	fieldKey, fieldErr := getExistingRootEntityKey(appEngContext, fieldEntityKind, containerParams.FieldID)
+	fieldKey, fieldErr := GetExistingFieldKey(appEngContext, containerParams.FieldID)
 	if fieldErr != nil {
-		return "", fmt.Errorf("Can't create layout container: invalid field ID '%v': datastore error=%v",
+		return "", fmt.Errorf("NewLayoutContainer: Can't create layout container with field ID = '%v': datastore error=%v",
 			containerParams.FieldID, fieldErr)
 	}
 

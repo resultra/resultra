@@ -109,16 +109,73 @@ function setFilterRuleFormValidationRules(validationRules) {
 	
 }
 
-function validateThenAddFilterRule() {
+function getFilterRecordsRuleDef(fieldsByID, fieldID, ruleID) {
+	var fieldInfo = fieldsByID[fieldID]
+	var typeRules = filterRulesByType[fieldInfo.type]
+	var ruleDef = typeRules[ruleID]
+	return ruleDef
+}
+
+function addFilterRule(newFilterRuleParams)
+{
+	console.log("Adding new filter rule: params = " + JSON.stringify(newFilterRuleParams))
+	
+	jsonAPIRequest("newRecordFilterRule",newFilterRuleParams,function(newFilterRuleRef) {
+		// TODO - Add to layout
+		
+		var fieldName = newFilterRuleRef.fieldRef.fieldInfo.name
+		var ruleLabel = newFilterRuleRef.filterRuleDef.label
+		
+		// TODO - Filter rule items need better formatting & CSS style
+		var filterRecordRuleItem = itemDivHTML(
+			contentHTML(headerWithBodyHTML(fieldName,ruleLabel)) +
+			contentHTML('<button class="ui compact icon button" style="padding:3px"><i class="remove icon"></i></button>')
+		)
+				
+		$('#filterRecordsRuleList').append(filterRecordRuleItem)
+	}) // set record's number field value
+}
+
+
+function validateThenAddFilterRule(fieldsByID) {
 	if($('#filterRecordsAddFilterDialog').form('validate form')) {
 		console.log("filtering rule validated")
+		
+		var fieldID = $("#filterRecordsSelectFieldDropdown").dropdown("get value")
+		var ruleID = $("#filterRecordsSelectFilterRuleDropdown").dropdown("get value")
+		var ruleDef = getFilterRecordsRuleDef(fieldsByID,fieldID,ruleID)
+		var fieldInfo = fieldsByID[fieldID]
+		
+		var newFilterRuleParams = {
+			fieldID: fieldID,
+			ruleID: ruleID,
+		}
+		
+		if(ruleDef.hasParam) {
+			
+			var paramInput = $("#filterRecordsFilterRuleParamInput").dropdown("get value")
+			
+			if(fieldInfo.type == "text") {
+				newFilterRuleParams.textRuleParam = paramInput
+			} else {
+				var numberParam = Number(paramInput)
+				if(isNaN(numberParam)) {
+					console.log("Unexpected value in filter paramter field: expecting a number, but got: " + paramInput)
+					return;
+				}
+				newFilterRuleParams.numberRuleParam = numberParam
+			}
+		}
+		
+		addFilterRule(newFilterRuleParams)
+		
 		$( "#filterRecordsAddFilterDialog" ).dialog("close")
 	} else {
 		console.log("filtering rule not validated")
 	}
 }
 
-function openAddFilterDialog()
+function openAddFilterDialog(fieldsByID)
 {
 	var filterButton = $('#filterRecordsAddFilterButton')
 		
@@ -133,7 +190,7 @@ function openAddFilterDialog()
 		modal: false,
 		position: { my: "right top", at: "left-10 top", of: filterButton },
 		buttons: { 
-			"Add Filtering Rule": function() { validateThenAddFilterRule() },
+			"Add Filtering Rule": function() { validateThenAddFilterRule(fieldsByID) },
   			"Cancel" : function() { $(this).dialog('close'); },
  		 },	
 	 });
@@ -167,6 +224,7 @@ function addRecordFilterChangeField(fieldID, fieldsByID)
 	
 }
 
+
 function initFilterRuleSelection(fieldsByID) {
 	
 //	$('#filterRecordsSelectFilterRuleDropdown').dropdown({placeholder: "Select a rule::"});
@@ -178,9 +236,8 @@ function initFilterRuleSelection(fieldsByID) {
 			if(fieldID.length > 0) {
 				var ruleID = $("#filterRecordsSelectFilterRuleDropdown").dropdown("get value")
 				if(ruleID.length > 0) {
+					var ruleDef = getFilterRecordsRuleDef(fieldsByID,fieldID,ruleID)
 					var fieldInfo = fieldsByID[fieldID]
-					var typeRules = filterRulesByType[fieldInfo.type]
-					var ruleDef = typeRules[ruleID]
 			
 					console.log("filterRecords: rule selection changed: ruleID=" + ruleID)
 					console.log("Select filter rule: rule selection changed: filtering rule =" + JSON.stringify(ruleDef))
@@ -249,7 +306,7 @@ function initFilterRecordsElems(fieldsByID) {
 	$('#filterRecordsAddFilterButton').click(function(e){
 		e.preventDefault();
 		console.log("add filter button clicked")
-		openAddFilterDialog()
+		openAddFilterDialog(fieldsByID)
 	})
 	
 	$( "#filterRecordsAddFilterDialog" ).dialog({ autoOpen: false })

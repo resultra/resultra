@@ -15,6 +15,20 @@ function selectOptionHTML(selItemVal, selItemText) {
 	
 }
 
+function itemDivHTML(itemBody) {
+	return '<div class="item">' + itemBody + '</div>'
+}
+
+function contentHTML(contentBody) {
+	return	'<div class="left floated content">' + contentBody +
+			'</div>'
+	
+}
+
+function headerWithBodyHTML(header, body) {
+	return '<div class="header">' + header  + '</div>' + body
+}
+
 function insertTextAreaAtCursor(elem, newText) {
 	
   console.log("appending text to formula box: " + newText)

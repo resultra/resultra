@@ -166,6 +166,33 @@ func GetField(appEngContext appengine.Context, fieldParams GetFieldParams) (*Fie
 	}
 }
 
+func GetExistingFieldKey(appEngContext appengine.Context, fieldID string) (*datastore.Key, error) {
+	if len(fieldID) == 0 {
+		return nil, fmt.Errorf("GetExistingFieldKey: Can't get field's key: missing field ID ")
+	}
+	fieldKey, fieldErr := getExistingRootEntityKey(appEngContext, fieldEntityKind, fieldID)
+	if fieldErr != nil {
+		return nil, fmt.Errorf("GetExistingFieldKey: invalid field ID '%v': datastore error=%v",
+			fieldID, fieldErr)
+	}
+	return fieldKey, nil
+}
+
+func GetExistingFieldRefAndKey(appEngContext appengine.Context, fieldParams GetFieldParams) (*datastore.Key, *FieldRef, error) {
+	// TODO - combine key retrieval and field retrieval
+	fieldRef, fieldErr := GetField(appEngContext, GetFieldParams{fieldParams.FieldID})
+	if fieldErr != nil {
+		return nil, nil, fmt.Errorf("GetFieldRefAndKey: Can't get field for filter: datastore error = %v", fieldErr)
+	}
+	fieldKey, fieldKeyErr := GetExistingFieldKey(appEngContext, fieldParams.FieldID)
+	if fieldKeyErr != nil {
+		return nil, nil, fmt.Errorf("GetFieldRefAndKey: Can't create filtering rule with field ID = '%v': datastore error=%v",
+			fieldParams.FieldID, fieldKeyErr)
+	}
+
+	return fieldKey, fieldRef, nil
+}
+
 func GetAllFieldRefs(appEngContext appengine.Context) ([]FieldRef, error) {
 
 	var allFields []Field
