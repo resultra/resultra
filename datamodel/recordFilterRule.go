@@ -22,16 +22,19 @@ type FilterRuleDef struct {
 	Label    string `json:"label"`
 }
 
+const filterRuleIDNotBlank string = "notBlank"
+const filterRuleIDBlank string = "isBlank"
+
 type RuleIDRuleDefMap map[string]FilterRuleDef
 
 var textFieldFilterRuleDefs = RuleIDRuleDefMap{
-	"notBlank": FilterRuleDef{"notBlank", false, fieldTypeText, "Text is set (not blank)"},
-	"isBlank":  FilterRuleDef{"isBlank", false, fieldTypeText, "Text is not set (blank)"},
+	filterRuleIDNotBlank: FilterRuleDef{filterRuleIDNotBlank, false, fieldTypeText, "Text is set (not blank)"},
+	filterRuleIDBlank:    FilterRuleDef{filterRuleIDBlank, false, fieldTypeText, "Text is not set (blank)"},
 }
 
 var numberFieldFilterRuleDefs = RuleIDRuleDefMap{
-	"notBlank": FilterRuleDef{"notBlank", false, fieldTypeNumber, "Value is set (not blank)"},
-	"isBlank":  FilterRuleDef{"isBlank", false, fieldTypeNumber, "Value is not set (blank)"},
+	filterRuleIDNotBlank: FilterRuleDef{filterRuleIDNotBlank, false, fieldTypeNumber, "Value is set (not blank)"},
+	filterRuleIDBlank:    FilterRuleDef{filterRuleIDBlank, false, fieldTypeNumber, "Value is not set (blank)"},
 }
 
 var FilterRuleDefs struct {
