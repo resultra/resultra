@@ -167,19 +167,28 @@ func createOneFilterRef(appEngContext appengine.Context,
 
 }
 
-func GetRecordFilterRefs(appEngContext appengine.Context) ([]FilterRuleRef, error) {
-
+func GetRecordFilters(appEngContext appengine.Context) ([]*datastore.Key, []RecordFilterRule, error) {
 	var allFilterRules []RecordFilterRule
 	ruleQuery := datastore.NewQuery(recordFilterRuleEntityKind)
 	keys, err := ruleQuery.GetAll(appEngContext, &allFilterRules)
 
+	if err != nil {
+		return nil, nil, fmt.Errorf("GetRecordFilters: Unable to retrieve record filters from datastore: datastore error =%v", err)
+	}
+
+	return keys, allFilterRules, nil
+}
+
+func GetRecordFilterRefs(appEngContext appengine.Context) ([]FilterRuleRef, error) {
+
+	filterRuleKeys, allFilterRules, err := GetRecordFilters(appEngContext)
 	if err != nil {
 		return nil, fmt.Errorf("GetRecordFilterRefs: Unable to retrieve record filters from datastore: datastore error =%v", err)
 	}
 
 	filterRefs := make([]FilterRuleRef, len(allFilterRules))
 	for i, currFilterRule := range allFilterRules {
-		filterRuleKey := keys[i]
+		filterRuleKey := filterRuleKeys[i]
 
 		filterRuleRef, refErr := createOneFilterRef(appEngContext, filterRuleKey, currFilterRule)
 		if refErr != nil {

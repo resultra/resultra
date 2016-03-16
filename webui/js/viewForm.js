@@ -241,7 +241,7 @@ function loadRecords()
 {
 	
 	var getRecordsParams = {} // TODO - will include sort & filter options
-	jsonAPIRequest("getRecords",getRecordsParams,function(replyData) {
+	jsonAPIRequest("getFilteredRecords",getRecordsParams,function(replyData) {
 		
 		currRecordSet = new RecordSet(replyData);
 		if(currRecordSet.numRecords() > 0) {

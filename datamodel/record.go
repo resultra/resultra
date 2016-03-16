@@ -13,6 +13,15 @@ const recordEntityKind string = "Record"
 
 type Record map[string]interface{}
 
+func (rec Record) valueIsSet(fieldID string) bool {
+	_, valueExists := rec[fieldID]
+	if valueExists {
+		return true
+	} else {
+		return false
+	}
+}
+
 type RecordRef struct {
 	RecordID    string `json:"recordID"`
 	FieldValues Record `json:"fieldValues"`

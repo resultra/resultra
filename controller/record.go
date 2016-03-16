@@ -88,3 +88,17 @@ func getRecords(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func getFilteredRecords(w http.ResponseWriter, r *http.Request) {
+
+	// TODO - Once filtering is implemented on a per form/dashboard basis,
+	// pass in the parent filter.
+
+	appEngCntxt := appengine.NewContext(r)
+	if recordRefs, err := datamodel.GetFilteredRecords(appEngCntxt); err != nil {
+		WriteErrorResponse(w, err)
+	} else {
+		writeJSONResponse(w, recordRefs)
+	}
+
+}

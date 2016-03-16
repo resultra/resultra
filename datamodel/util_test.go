@@ -1,10 +1,29 @@
 package datamodel
 
 import (
+	"appengine"
 	"appengine/aetest"
 	"appengine/datastore"
 	"testing"
 )
+
+func newTestAppEngContext(t *testing.T) appengine.Context {
+	appEngCntxt, err := aetest.NewContext(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return appEngCntxt
+}
+
+func newTestStronglyConsistentAppEngContext(t *testing.T) appengine.Context {
+	// Many of the entities don't currently have a parent in the datastore. Using the strongly
+	// consistent option ensures the datastore remains consistent for testing.
+	appEngCntxt, err := aetest.NewContext(&aetest.Options{StronglyConsistentDatastore: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return appEngCntxt
+}
 
 func TestNameSanitize(t *testing.T) {
 

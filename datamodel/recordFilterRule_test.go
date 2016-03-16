@@ -6,6 +6,15 @@ import (
 	"testing"
 )
 
+func newTestFilterRuleNoParams(appEngContext appengine.Context, t *testing.T, ruleID string, fieldID string) *FilterRuleRef {
+	newRuleParams := NewFilterRuleParams{fieldID, ruleID, nil, nil}
+	filterRule, err := NewFilterRule(appEngContext, newRuleParams)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return filterRule
+}
+
 func verifyNewFilterRuleCreation(testSummary string, t *testing.T, appEngContext appengine.Context,
 	newRuleParams NewFilterRuleParams) {
 

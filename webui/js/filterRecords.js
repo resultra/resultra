@@ -137,6 +137,9 @@ function addFilterRule(newFilterRuleParams)
 	
 	jsonAPIRequest("newRecordFilterRule",newFilterRuleParams,function(newFilterRuleRef) {
 		populateFilterPanelWithOneFilterRule(newFilterRuleRef)
+		// TODO - Also need to invoke a callback function to trigger an update to the view
+		// (dashboard or form) which has a filter. The records shown in these views will 
+		// change.
 	}) // set record's number field value
 }
 

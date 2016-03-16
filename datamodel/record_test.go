@@ -1,10 +1,32 @@
 package datamodel
 
 import (
-	"testing"
-
+	"appengine"
 	"appengine/aetest"
+	"testing"
 )
+
+// Helper functions for testing records
+
+func newTestRecord(appEngContext appengine.Context, t *testing.T) *RecordRef {
+	newRecordRef, insertErr := NewRecord(appEngContext)
+	if insertErr != nil {
+		t.Fatal(insertErr)
+	} else {
+		t.Logf("Successfully created new record: id = %v", newRecordRef.RecordID)
+	}
+
+	return newRecordRef
+}
+
+func setTestTextFieldVal(appEngContext appengine.Context, t *testing.T, recordRef *RecordRef, fieldID string, val string) {
+	// Set the record value, the updated record is returned, but is not needed for this testing
+	setParams := SetRecordTextValueParams{RecordID: recordRef.RecordID, FieldID: fieldID, Value: val}
+	if _, setErr := SetRecordTextValue(appEngContext, setParams); setErr != nil {
+		t.Fatal(setErr)
+	}
+
+}
 
 func TestNewRecord(t *testing.T) {
 
