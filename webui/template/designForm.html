@@ -1,6 +1,107 @@
+
+{{define "designFormHeader"}}
+	<div class="ui large breadcrumb">
+	  {{template "homePageBreadcrumb"}}
+	  <i class="right chevron icon divider"></i>
+	  <a class="section"><i class="database icon"></i>Database Name</a>
+	  <i class="right chevron icon divider"></i>
+	  <a class="section" href="/viewForm/{{.LayoutID}}">{{.LayoutName}}</a>
+	  <i class="right chevron icon divider"></i>
+	  <div class="active section">Design Form</div>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "formDesignPalette"}}
+
+	<div class="ui small center aligned header" id="galleryHeader">
+		<div class="content">
+			Form Design Palette
+	  	</div> 
+	</div>   <!-- Header for Gallery Sidebar -->
+	
+	<div class="ui-layout-content">
+		<div class="ui padded two column grid">
+		
+			<div class= "column">
+				<div class="draggable noselect newField">
+						<i class="large font icon"></i>
+						<div class="galleryItemSpacer"></div>
+						<div>Text Box</div>
+				</div>			
+			</div> <!-- column -->
+			<div class= "column">
+				<div class="draggable noselect newField">
+						<i class="large checkmark icon"></i>
+						<div class="galleryItemSpacer"></div>
+						<div>Check Box</div>
+				</div>			
+			</div> <!-- column -->
+			<div class= "column">
+				<div class="draggable noselect newField ">
+						<i class="large calendar icon"></i>
+						<div class="galleryItemSpacer"></div>
+						<div>Date Picker</div>
+				</div>			
+			</div> <!-- column -->
+			<div class= "column">
+				<div class="draggable noselect newField">
+						<i class="large file image outline icon"></i>
+						<div class="galleryItemSpacer"></div>
+						<div class="shortGalleryItemLabel">Image</div>
+				</div>			
+			</div> <!-- column -->
+			<div class= "column">
+				<div class="draggable noselect newField">
+						<i class="large align justify icon"></i>
+						<div>Multi-line Text</div>
+				</div>			
+			</div> <!-- column -->
+		
+		</div> <!-- Grid -->
+	</div> <!-- UI Layout Content for Gallery Sidebar -->
+
+{{end}}
+
+{{define "formDesignPropertiesSidebar"}}
+	<div class="ui small center aligned header" id="propertiesHeader">
+		<div class="content">
+			 <i class="options icon"></i>
+			Properties
+	  	</div>
+	</div>
+	<div class="ui-layout-content">
+		<p>Properties options will go here - header shouldn't scroll'</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+	</div>
+{{end}}
+
 {{define "designForm"}}
 
 <html>
+
   <head>
     <title>{{.Title}}</title>
 	
@@ -15,113 +116,26 @@
 	<script src="/js/designForm.js"></script>
 	
   </head>
+  
   <body>
 	<form class="ui form" id="editLayoutForm" name="editLayoutForm">
 		<div id="layoutPage" class="layoutPageDiv">
-		
+			
 			<div class="pane ui-layout-north">
-				<div class="ui large breadcrumb">
-				  {{template "homePageBreadcrumb"}}
-				  <i class="right chevron icon divider"></i>
-				  <a class="section"><i class="database icon"></i>Database Name</a>
-				  <i class="right chevron icon divider"></i>
-				  <a class="section" href="/viewForm/{{.LayoutID}}">{{.LayoutName}}</a>
-				  <i class="right chevron icon divider"></i>
-				  <div class="active section">Design Form</div>
-				</div> <!-- breadcrumb header -->
+				{{template "designFormHeader"}}
 			</div> <!-- north ui layout -->
 			
 			<div id="gallerySidebar" class="pane ui-layout-west">
-				
-				
-				<div class="ui small center aligned header" id="galleryHeader">
-		  			<div class="content">
-		    			Form Design Palette
-		  		  	</div> 
-		  		</div>   <!-- Header for Gallery Sidebar -->
-				<div class="ui-layout-content">
-					<div class="ui padded two column grid">
-					
-						<div class= "column">
-							<div class="draggable noselect newField">
-									<i class="large font icon"></i>
-									<div class="galleryItemSpacer"></div>
-									<div>Text Box</div>
-							</div>			
-						</div> <!-- column -->
-						<div class= "column">
-							<div class="draggable noselect newField">
-									<i class="large checkmark icon"></i>
-									<div class="galleryItemSpacer"></div>
-									<div>Check Box</div>
-							</div>			
-						</div> <!-- column -->
-						<div class= "column">
-							<div class="draggable noselect newField ">
-									<i class="large calendar icon"></i>
-									<div class="galleryItemSpacer"></div>
-									<div>Date Picker</div>
-							</div>			
-						</div> <!-- column -->
-						<div class= "column">
-							<div class="draggable noselect newField">
-									<i class="large file image outline icon"></i>
-									<div class="galleryItemSpacer"></div>
-									<div class="shortGalleryItemLabel">Image</div>
-							</div>			
-						</div> <!-- column -->
-						<div class= "column">
-							<div class="draggable noselect newField">
-									<i class="large align justify icon"></i>
-									<div>Multi-line Text</div>
-							</div>			
-						</div> <!-- column -->
-					
-					</div> <!-- Grid -->
-				</div> <!-- UI Layout Content for Gallery Sidebar -->
-				
+				{{template "formDesignPalette"}}
 			</div>
 		
 			<div id="layoutCanvas" class="pane ui-layout-center droppable">
 			</div> 
 		
-		
 			<div class="pane ui-layout-east" id="propertiesPanelUILayout">
-				<div class="ui small center aligned header" id="propertiesHeader">
-		  			<div class="content">
-		  				 <i class="options icon"></i>
-		    			Properties
-		  		  	</div>
-		  		</div>
-				<div class="ui-layout-content">
-					<p>Properties options will go here - header shouldn't scroll'</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-					<p>Properties options go here</p>
-				</div>
-			
+				{{template "formDesignPropertiesSidebar"}}
 			</div>
+			
 		</div>
 	</form>	
 	   
