@@ -1,0 +1,133 @@
+{{define "designDashboardHeader"}}
+	<div class="ui large breadcrumb">
+	  {{template "homePageBreadcrumb"}}
+	  <i class="right chevron icon divider"></i>
+	  <a class="section"><i class="database icon"></i>Database Name</a>
+	  <i class="right chevron icon divider"></i>
+	  <a class="section" href="/viewDashboard/{{.DashboardID}}">{{.DashboardName}}</a>
+	  <i class="right chevron icon divider"></i>
+	  <div class="active section">Design Dashboard</div>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "dashboardDesignPalette"}}
+
+	<div class="ui small center aligned header" id="galleryHeader">
+		<div class="content">
+			Dashboard Palette
+	  	</div> 
+	</div>   <!-- Header for Gallery Sidebar -->
+	
+	<div class="ui-layout-content">
+		<div class="ui padded two column grid">
+		
+			<div class= "column">
+				<div class="draggable noselect newField">
+						<i class="large bar chart icon"></i>
+						<div class="galleryItemSpacer"></div>
+						<div>Bar Chart</div>
+				</div>			
+			</div> <!-- column -->
+			
+			<div class= "column">
+				<div class="draggable noselect newField">
+						<i class="large pie chart icon"></i>
+						<div class="galleryItemSpacer"></div>
+						<div>Pie Chart</div>
+				</div>			
+			</div> <!-- column -->
+
+			<div class= "column">
+				<div class="draggable noselect newField">
+						<i class="large line chart icon"></i>
+						<div class="galleryItemSpacer"></div>
+						<div>Line Chart</div>
+				</div>			
+			</div> <!-- column -->
+			
+			<div class= "column">
+				<div class="draggable noselect newField">
+						<i class="large table icon"></i>
+						<div class="galleryItemSpacer"></div>
+						<div>Summary Table</div>
+				</div>			
+			</div> <!-- column -->
+
+			<div class= "column">
+				<div class="draggable noselect newField">
+						<i class="large font icon"></i>
+						<div class="galleryItemSpacer"></div>
+						<div>Label</div>
+				</div>			
+			</div> <!-- column -->
+
+		
+		</div> <!-- Grid -->
+	</div> <!-- UI Layout Content for Gallery Sidebar -->
+
+{{end}}
+
+{{define "dashboardDesignPropertiesSidebar"}}
+	<div class="ui small center aligned header" id="propertiesHeader">
+		<div class="content">
+			 <i class="options icon"></i>
+			Properties
+	  	</div>
+	</div>
+	<div class="ui-layout-content">
+		<p>Properties options will go here - header shouldn't scroll'</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+		<p>Properties options go here</p>
+	</div>
+{{end}}
+
+{{define "designDashboard"}}
+
+<html>
+
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "commonCSS"}}
+	<link rel="stylesheet" type="text/css" class="ui" href="/css/layout.css">
+
+	{{template "commonJS"}}
+	<script>var dashboardID={{.DashboardID}};</script>
+	<script src="/js/designDashboard.js"></script>
+	
+  </head>
+  
+  <body>
+	<form class="ui form" id="editLayoutForm" name="editLayoutForm">
+		<div id="layoutPage" class="layoutPageDiv">
+			
+			<div class="pane ui-layout-north">
+				{{template "designDashboardHeader" .}}
+			</div> <!-- north ui layout -->
+			
+			<div class="pane ui-layout-west paletteSidebar">
+				{{template "dashboardDesignPalette"}}
+			</div>
+		
+			<div id="layoutCanvas" class="pane ui-layout-center droppable">
+			</div> 
+		
+			<div class="pane ui-layout-east noPadding">
+				{{template "dashboardDesignPropertiesSidebar"}}
+			</div>
+			
+		</div>
+	</form>	
+	   
+  </body>
+  
+</html>
+
+{{end}}

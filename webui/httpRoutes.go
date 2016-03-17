@@ -19,5 +19,7 @@ func init() {
 	router.HandleFunc("/tableProps", tableProps)
 	router.HandleFunc("/designForm/{layoutID}", designForm)
 
+	router.HandleFunc("/designDashboard/{dashboardID}", designDashboard)
+
 	http.Handle("/", router)
 }
