@@ -44,10 +44,10 @@
 	min-height: 400px;
 }
 
-/* The .newField is specific within the div element to ensure it is more "specific"
+/* The .paletteItem is specific within the div element to ensure it is more "specific"
    than the noselect style which is also applied to many of these elements. This is
    needed so the cursor and other properties will take precedence */
- div .newField {
+ div .paletteItem {
 	min-height: 80px;
     position: relative; 
 	padding: 6px;

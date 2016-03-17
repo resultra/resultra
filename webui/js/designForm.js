@@ -84,7 +84,7 @@ function droppedObjGeometry(dropDest,droppedObj,ui)
 $(document).ready(function() {
 				
 	
-	$(".newField").draggable({
+	$(".paletteItem").draggable({
 		
 		revert: 'invalid',
 		cursor: "move",
@@ -122,7 +122,7 @@ $(document).ready(function() {
 	});
 	
     $("#layoutCanvas").droppable({
-        accept: ".newField",
+        accept: ".paletteItem",
         activeClass: "ui-state-highlight",
         drop: function( event, ui ) {
  			var theClone = $(ui.helper).clone()
