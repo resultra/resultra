@@ -1,0 +1,35 @@
+/* The .paletteItem is specific within the div element to ensure it is more "specific"
+   than the noselect style which is also applied to many of these elements. This is
+   needed so the cursor and other properties will take precedence */
+ div .paletteItem {
+	min-height: 80px;
+    position: relative; 
+	padding: 6px;
+	border: 1px dashed gray;
+	text-align:center;
+	margin:2px; /* margin gives some space within the Semantic UI column */
+	background-color: lightGrey;
+	cursor:move; /* match the default cursor used by the jQuery UI for drag and drop */
+}
+
+/* Palette items with short labels - vertically align the text below the icon */
+.shortPaletteItemLabel
+{
+	vertical-align:middle;
+	line-height:25px;
+	padding:4px
+}
+
+/* Space between the icon and text description.
+   Arguably should have used margins around the icon and text */
+.paletteItemSpacer
+{
+	min-height:8px;
+	height:8px;
+}
+
+.paletteSidebar {
+	min-height: 100px;
+	padding: 0px;
+	overflow: visible; // don't overflow the content
+}

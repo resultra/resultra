@@ -25,21 +25,21 @@
 			<div class= "column">
 				<div class="draggable noselect paletteItem">
 						<i class="large font icon"></i>
-						<div class="galleryItemSpacer"></div>
+						<div class="paletteItemSpacer"></div>
 						<div>Text Box</div>
 				</div>			
 			</div> <!-- column -->
 			<div class= "column">
 				<div class="draggable noselect paletteItem">
 						<i class="large checkmark icon"></i>
-						<div class="galleryItemSpacer"></div>
+						<div class="paletteItemSpacer"></div>
 						<div>Check Box</div>
 				</div>			
 			</div> <!-- column -->
 			<div class= "column">
 				<div class="draggable noselect paletteItem ">
 						<i class="large calendar icon"></i>
-						<div class="galleryItemSpacer"></div>
+						<div class="paletteItemSpacer"></div>
 						<div>Date Picker</div>
 				</div>			
 			</div> <!-- column -->
@@ -47,7 +47,7 @@
 				<div class="draggable noselect paletteItem">
 						<i class="large file image outline icon"></i>
 						<div class="galleryItemSpacer"></div>
-						<div class="shortGalleryItemLabel">Image</div>
+						<div class="shortPaletteItemLabel">Image</div>
 				</div>			
 			</div> <!-- column -->
 			<div class= "column">
@@ -106,6 +106,7 @@
     <title>{{.Title}}</title>
 	
 	{{template "commonCSS"}}
+	<link rel="stylesheet" type="text/css" class="ui" href="/css/designPalette.css">
 	<link rel="stylesheet" type="text/css" class="ui" href="/css/layout.css">
 
 	{{template "commonJS"}}
@@ -113,6 +114,7 @@
 	<script src="/js/layoutCommon.js"></script>
 	<script src="/js/calcField.js"></script>
 	<script src="/js/newTextBoxDialog.js"></script>
+	<script src="/js/designPalette.js"></script>
 	<script src="/js/designForm.js"></script>
 	
   </head>

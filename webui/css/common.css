@@ -14,3 +14,10 @@
 .noPadding {
 	padding: 0px; /* Override jQuery UI padding */
 }
+
+
+div .sidebarHeader {
+	padding: 8px !important;
+	margin: 0px !important;
+	background-color: lightGrey;
+}

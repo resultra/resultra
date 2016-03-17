@@ -69,90 +69,33 @@ function initContainerEditBehavior(container)
 }
 
 
-function droppedObjGeometry(dropDest,droppedObj,ui)
-{
-	// TODO - Support snapping of the top and left
-	var relTop = ui.offset.top-$(dropDest).offset().top
-	var relLeft = ui.offset.left-$(dropDest).offset().left
-	var objWidth = droppedObj.width()
-	var objHeight = droppedObj.height()
-		
-	return { top: relTop, left: relLeft, width: objWidth, height: objHeight }
-}
-
-
 $(document).ready(function() {
 				
 	
-	$(".paletteItem").draggable({
+	var paletteConfig = {
+		draggableItemHTML: fieldContainerHTML,
 		
-		revert: 'invalid',
-		cursor: "move",
-		helper: function() { 
-			 // Instead of dragging the icon in the gallery, drag a "placeholder image" of the
-			 // field itself. This allows the user to see the proporitions of the field relative
-			 // to the other elements already on the canvas.
-			var newFieldDraggablePlaceholderHTML = fieldContainerHTML(allocNextPlaceholderID());
-			var placeholder = $(newFieldDraggablePlaceholderHTML);
-						
-			 // While in layout mode, disable entry into the fields
-			 // Interestingly, there's not CSS for this.
-			placeholder.find('input').prop('disabled',true);
-			 			 
-			 return placeholder
-		 },
-		// The following are needed to keep the draggable above the other elements. Getting Semantic UI,
-		// jQuery UI Layout and jQuery UI drag-and-drop working together is really tricky. Some issues:
-		//
-		// 1. jQuery UI layout has difficulty with the z-index for items which are opened in one pane,
-		//    but overlap another. The recommended solution is to attach items which need to overlap all
-		//    the panes to <body>. If this isn't possible, the west__showOverflowOnHover option is provided
-		//    for initializing the panes.
-		// 2. The Semantic UI form elements inherit some of their styling from the <form> styling. So,
-		//    if a form element is not embeded in a <form> tag, the styling isn't correct. To work around this,
-		//    the entire page is embedded in a <form> tag. However, it wasn't possible to attach the item to
-		//    <body> and still have it inherit Semantic UI's <form> styling.
-		//
-		// So, the following solution is the only solution which could be found to address both issues.
-		// described above.
-		stack: "div",
-		appendTo: "#gallerySidebar",
-		zIndex: 999
-		
-	});
-	
-    $("#layoutCanvas").droppable({
-        accept: ".paletteItem",
-        activeClass: "ui-state-highlight",
-        drop: function( event, ui ) {
- 			var theClone = $(ui.helper).clone()
+		dropComplete: function(droppedItemInfo) {
+			console.log("designForm: Dashboard design pallete: drop item: " + JSON.stringify(droppedItemInfo))			
 			
 			// After the drag operation is complete, the draggable and resizable
 			// properties need to be initialized.
-			initContainerEditBehavior(theClone)
-					
-			$(this).append(theClone);
-
-			// IMPORTANT - Don't call droppedObjGeometry until after theClone has been appended
-			// Otherwise the width and height will be returned as 0.
-			var placeholderID = $(theClone).attr("id");
-			var droppedObjGeom = droppedObjGeometry(this,theClone,ui)
+			initContainerEditBehavior(droppedItemInfo.droppedElem)
 			
-			theClone.css({top: droppedObjGeom.top, left: droppedObjGeom.left, position:"absolute"});
-			
-		    console.log("End Drag and drop: placeholder ID=" + placeholderID + 
-				" drop loc =" + JSON.stringify(droppedObjGeom));
-			
+			// "repackage" the dropped item paramaters for creating a new layout element. Also add the layoutID
+			// to the parameters.
 			var layoutContainerParams = {
-				parentLayoutID: layoutID, containerID: placeholderID,
-				geometry: {positionTop: droppedObjGeom.top, positionLeft: droppedObjGeom.left,
-				sizeWidth: droppedObjGeom.width,sizeHeight: droppedObjGeom.height}
+				parentLayoutID: layoutID,
+				geometry: droppedItemInfo.geometry,
+				containerID: droppedItemInfo.placeholderID,
 				};
-			
 			newLayoutContainer(layoutContainerParams,fieldsByID)
-						
-        }
-    }); // #layoutCanvas droppable
+		},
+		
+		dropDestSelector: "#layoutCanvas",
+		paletteSelector: "#gallerySidebar",
+	}
+	initDesignPalette(paletteConfig)			
 	
 	
 	initNewTextBoxDialog() 
