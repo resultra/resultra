@@ -1,7 +1,7 @@
 $(document).ready(function() {
 				
 	var paletteConfig = {
-		draggableItemHTML: function(placeholderID) {
+		draggableItemHTML: function(placeholderID,paletteItemID) {
 			var containerHTML = ''+
 				'<div class="ui-widget-content layoutContainer layoutField draggable resizable" id="'+placeholderID+'">' +
 					'<div class="field">'+

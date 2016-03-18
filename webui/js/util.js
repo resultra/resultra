@@ -54,3 +54,10 @@ function fixedUILayoutPaneAutoSizeToFitContentsParams() {
 		spacing_closed:0
 	}
 }
+
+
+function assert(condition,message) {
+	if(!condition) {
+		throw message || "Assertion failed"
+	}
+}

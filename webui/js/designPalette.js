@@ -28,10 +28,15 @@ function initDesignPalette(paletteConfig) {
 		revert: 'invalid',
 		cursor: "move",
 		helper: function() { 
+			
+			var paletteItemID = $(this).attr('id')
+			assert(paletteItemID !== undefined, "designPalette: palette item missing element id")
+			console.log("designPallete: helper: ID of palette item: " + paletteItemID)
+			
 			 // Instead of dragging the icon in the palette, drag a "placeholder image" of the
 			 // item itself. This allows the user to see the proporitions of the field relative
 			 // to the other elements already on the canvas.
-			var newItemDraggablePlaceholderHTML = paletteConfig.draggableItemHTML(allocNextPaletteItemPlaceholderID());
+			var newItemDraggablePlaceholderHTML = paletteConfig.draggableItemHTML(allocNextPaletteItemPlaceholderID(),paletteItemID);
 			var placeholder = $(newItemDraggablePlaceholderHTML);
 					
 			 // While in layout mode, disable entry into the fields
@@ -65,6 +70,10 @@ function initDesignPalette(paletteConfig) {
 	    activeClass: "ui-state-highlight",
 	    drop: function( event, ui ) {
 			var theClone = $(ui.helper).clone()
+			
+			var paletteItemID = ui.draggable.attr('id')
+			assert(paletteItemID !== undefined, "designPalette: palette item missing element id")
+			console.log("designPallete: drop: ID of palette item: " + paletteItemID)
 						
 			$(this).append(theClone);
 
@@ -80,7 +89,8 @@ function initDesignPalette(paletteConfig) {
 		
 			var droppedObjInfo = {
 				droppedElem: theClone,
-				/* parentLayoutID: layoutID, */ placeholderID: placeholderID,
+				paletteItemID: paletteItemID,
+				placeholderID: placeholderID,
 				geometry: {positionTop: droppedObjGeom.top, positionLeft: droppedObjGeom.left,
 				sizeWidth: droppedObjGeom.width,sizeHeight: droppedObjGeom.height}
 				};

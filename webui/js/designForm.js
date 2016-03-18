@@ -73,7 +73,9 @@ $(document).ready(function() {
 				
 	
 	var paletteConfig = {
-		draggableItemHTML: fieldContainerHTML,
+		draggableItemHTML: function(placeholderID,paletteItemID) { 
+			return fieldContainerHTML(placeholderID)
+		},
 		
 		dropComplete: function(droppedItemInfo) {
 			console.log("designForm: Dashboard design pallete: drop item: " + JSON.stringify(droppedItemInfo))			
