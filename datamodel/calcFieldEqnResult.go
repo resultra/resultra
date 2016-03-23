@@ -23,8 +23,8 @@ func (eqnResult EquationResult) isUndefined() bool {
 }
 
 func (eqnResult EquationResult) validateTextResult() error {
-	if eqnResult.ResultType != fieldTypeText {
-		return fmt.Errorf("EquationResult: Invalid result - expecting %v, got %v", fieldTypeText, eqnResult.ResultType)
+	if eqnResult.ResultType != FieldTypeText {
+		return fmt.Errorf("EquationResult: Invalid result - expecting %v, got %v", FieldTypeText, eqnResult.ResultType)
 	} else if eqnResult.TextVal == nil {
 		return fmt.Errorf("EquationResult: Malformed result - missing text value (value == nil)")
 	} else {
@@ -42,8 +42,8 @@ func (eqnResult EquationResult) getTextResult() (string, error) {
 }
 
 func (eqnResult EquationResult) validateNumberResult() error {
-	if eqnResult.ResultType != fieldTypeNumber {
-		return fmt.Errorf("EquationResult: Invalid result - expecting %v, got %v", fieldTypeNumber, eqnResult.ResultType)
+	if eqnResult.ResultType != FieldTypeNumber {
+		return fmt.Errorf("EquationResult: Invalid result - expecting %v, got %v", FieldTypeNumber, eqnResult.ResultType)
 	} else if eqnResult.NumberVal == nil {
 		return fmt.Errorf("EquationResult: Malformed result - missing numeric value (value == nil)")
 	} else {
@@ -66,10 +66,10 @@ func undefinedEqnResult() *EquationResult {
 
 func numberEqnResult(val float64) *EquationResult {
 	theVal := val
-	return &EquationResult{ResultType: fieldTypeNumber, NumberVal: &theVal}
+	return &EquationResult{ResultType: FieldTypeNumber, NumberVal: &theVal}
 }
 
 func textEqnResult(val string) *EquationResult {
 	theVal := val
-	return &EquationResult{ResultType: fieldTypeText, TextVal: &theVal}
+	return &EquationResult{ResultType: FieldTypeText, TextVal: &theVal}
 }

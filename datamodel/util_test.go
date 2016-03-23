@@ -28,23 +28,23 @@ func newTestStronglyConsistentAppEngContext(t *testing.T) appengine.Context {
 func TestNameSanitize(t *testing.T) {
 
 	// Leading or trailing whitespace will be stripped
-	_, err := sanitizeName("ABC 123")
+	_, err := SanitizeName("ABC 123")
 	if err != nil {
 		t.Error(err)
 	}
 
 	// Empty names or names with newlines, tabs, or formfeeds are not OK
-	_, err = sanitizeName("")
+	_, err = SanitizeName("")
 	if err == nil {
 		t.Error(err)
 	}
 
-	_, err = sanitizeName("N\r\nF")
+	_, err = SanitizeName("N\r\nF")
 	if err == nil {
 		t.Error(err)
 	}
 
-	_, err = sanitizeName("N\t\fF")
+	_, err = SanitizeName("N\t\fF")
 	if err == nil {
 		t.Error(err)
 	}

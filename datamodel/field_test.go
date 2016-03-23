@@ -9,7 +9,7 @@ import (
 
 func newTestNumField(appEngContext appengine.Context, t *testing.T, refName string) string {
 
-	testNumField := NewFieldParams{Name: refName, Type: fieldTypeNumber, RefName: refName}
+	testNumField := NewFieldParams{Name: refName, Type: FieldTypeNumber, RefName: refName}
 	testNumFieldID, numFieldErr := NewField(appEngContext, testNumField)
 	if numFieldErr != nil {
 		t.Fatal(numFieldErr)
@@ -20,7 +20,7 @@ func newTestNumField(appEngContext appengine.Context, t *testing.T, refName stri
 
 func newTestTextField(appEngContext appengine.Context, t *testing.T, refName string) string {
 
-	testField := NewFieldParams{Name: "Test Text Field", Type: fieldTypeText, RefName: "TestRef1"}
+	testField := NewFieldParams{Name: "Test Text Field", Type: FieldTypeText, RefName: "TestRef1"}
 	testFieldID, err := NewField(appEngContext, testField)
 	if err != nil {
 		t.Fatal(err)

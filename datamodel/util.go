@@ -42,7 +42,7 @@ func decodeUniqueEntityIDStrToInt(encodedID string) (int64, error) {
 	return decodeVal, nil
 }
 
-func sanitizeName(unsanitizedName string) (string, error) {
+func SanitizeName(unsanitizedName string) (string, error) {
 
 	stripWhite := strings.TrimSpace(unsanitizedName) // strip leading & trailing whitespace
 

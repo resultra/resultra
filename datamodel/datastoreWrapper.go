@@ -69,7 +69,7 @@ func verifyEntityExists(appEngContext appengine.Context, entityKind string, exis
 }
 
 // Get an entity key for an existing entity - verify the entity exits
-func getExistingRootEntityKey(appEngContext appengine.Context,
+func GetExistingRootEntityKey(appEngContext appengine.Context,
 	entityKind string, encodedID string) (*datastore.Key, error) {
 
 	rootKey, keyErr := newRootEntityKey(appEngContext, entityKind, encodedID)
@@ -85,7 +85,7 @@ func getExistingRootEntityKey(appEngContext appengine.Context,
 
 }
 
-func insertNewEntity(appEngContext appengine.Context, entityKind string,
+func InsertNewEntity(appEngContext appengine.Context, entityKind string,
 	parentKey *datastore.Key, src interface{}) (string, error) {
 
 	// nil argument OK for parentKey (meaning no parent)

@@ -90,7 +90,7 @@ func concatEvalFunc(evalContext *EqnEvalContext, funcArgs []EquationNode) (*Equa
 }
 
 var calcFieldDefinedFuncs = FuncNameFuncInfoMap{
-	funcNameSum:     FunctionInfo{funcNameSum, fieldTypeNumber, sumEvalFunc},
-	funcNameProduct: FunctionInfo{funcNameProduct, fieldTypeNumber, productEvalFunc},
-	funcNameConcat:  FunctionInfo{funcNameConcat, fieldTypeText, concatEvalFunc},
+	funcNameSum:     FunctionInfo{funcNameSum, FieldTypeNumber, sumEvalFunc},
+	funcNameProduct: FunctionInfo{funcNameProduct, FieldTypeNumber, productEvalFunc},
+	funcNameConcat:  FunctionInfo{funcNameConcat, FieldTypeText, concatEvalFunc},
 }

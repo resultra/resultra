@@ -46,7 +46,7 @@ func TestNewFilterRule(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testField := NewFieldParams{Name: "Test Text Field", Type: fieldTypeText, RefName: "TestRef1"}
+	testField := NewFieldParams{Name: "Test Text Field", Type: FieldTypeText, RefName: "TestRef1"}
 	testFieldID, err := NewField(appEngCntxt, testField)
 	if err != nil {
 		t.Fatal(err)
@@ -61,7 +61,7 @@ func TestNewFilterRule(t *testing.T) {
 	verifyNewFilterRuleCreationFailure("Text field with invalid filtering rule ID", t, appEngCntxt,
 		NewFilterRuleParams{testFieldID, "invalidRuleID", nil, nil})
 
-	testNumField := NewFieldParams{Name: "Test Number Field", Type: fieldTypeNumber, RefName: "TestRef1"}
+	testNumField := NewFieldParams{Name: "Test Number Field", Type: FieldTypeNumber, RefName: "TestRef1"}
 	testNumFieldID, numFieldErr := NewField(appEngCntxt, testNumField)
 	if numFieldErr != nil {
 		t.Fatal(numFieldErr)

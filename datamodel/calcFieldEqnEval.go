@@ -32,7 +32,7 @@ func (recordRef RecordRef) GetNumberRecordEqnResult(appEngContext appengine.Cont
 	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
 	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
 	allowCalcField := true
-	if fieldValidateErr := validateFieldForRecordValue(appEngContext, fieldID, fieldTypeNumber, allowCalcField); fieldValidateErr != nil {
+	if fieldValidateErr := validateFieldForRecordValue(appEngContext, fieldID, FieldTypeNumber, allowCalcField); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
 			"Can't validate field with value type: validation error = %v", recordRef, fieldID, fieldValidateErr)
 	}
@@ -61,7 +61,7 @@ func (recordRef RecordRef) GetTextRecordEqnResult(appEngContext appengine.Contex
 	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
 	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
 	allowCalcField := true
-	if fieldValidateErr := validateFieldForRecordValue(appEngContext, fieldID, fieldTypeText, allowCalcField); fieldValidateErr != nil {
+	if fieldValidateErr := validateFieldForRecordValue(appEngContext, fieldID, FieldTypeText, allowCalcField); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
 			"Can't validate field with value type: validation error = %v", recordRef, fieldID, fieldValidateErr)
 	}
@@ -111,13 +111,13 @@ func (fieldRef FieldRef) evalEqn(evalContext *EqnEvalContext) (*EquationResult, 
 		}
 	} else { // literal field values
 		switch field.Type {
-		case fieldTypeText:
+		case FieldTypeText:
 			return evalContext.resultRecord.GetTextRecordEqnResult(
 				evalContext.appEngContext, fieldRef.FieldID)
-		case fieldTypeNumber:
+		case FieldTypeNumber:
 			return evalContext.resultRecord.GetNumberRecordEqnResult(
 				evalContext.appEngContext, fieldRef.FieldID)
-			//		case fieldTypeDate:
+			//		case FieldTypeDate:
 		default:
 			return nil, fmt.Errorf("Unknown field result type: %v", field.Type)
 
@@ -211,7 +211,7 @@ func updateOneCalcFieldValue(appEngContext appengine.Context, recordRef *RecordR
 	// Set the calculated value in the record, depending on the type of value.
 	switch fieldRef.FieldInfo.Type {
 
-	case fieldTypeText:
+	case FieldTypeText:
 		textResult, textResultErr := fieldEqnResult.getTextResult()
 		if textResultErr != nil {
 			return fmt.Errorf("Unexpected error evaluating equation for field=%v: eqn=%+v: error=%v "+
@@ -224,7 +224,7 @@ func updateOneCalcFieldValue(appEngContext appengine.Context, recordRef *RecordR
 		recordRef.FieldValues[fieldRef.FieldID] = textResult
 		return nil
 
-	case fieldTypeNumber:
+	case FieldTypeNumber:
 		numberResult, numberResultErr := fieldEqnResult.getNumberResult()
 		if numberResultErr != nil {
 			return fmt.Errorf("Unexpected error evaluating equation for field=%v: eqn=%+v: error=%v "+
@@ -236,7 +236,7 @@ func updateOneCalcFieldValue(appEngContext appengine.Context, recordRef *RecordR
 		// TODO - encapsulate the actual setting of raw values into record.go
 		recordRef.FieldValues[fieldRef.FieldID] = numberResult
 		return nil
-		// TODO case fieldTypeDate
+		// TODO case FieldTypeDate
 
 	default:
 		return fmt.Errorf("Unexpected error evaluating equation for field=%+v: eqn=%+v: unsupported field type %v",

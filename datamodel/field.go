@@ -16,9 +16,9 @@ const fieldEntityKind string = "Field"
 // TODO - Can't start with "true or false" - add this when supporting boolean values
 var validRefNameRegexp = regexp.MustCompile("^[a-zA-Z_][a-zA-Z0-9_]*$")
 
-const fieldTypeText = "text"
-const fieldTypeNumber = "number"
-const fieldTypeDate = "date"
+const FieldTypeText string = "text"
+const FieldTypeNumber string = "number"
+const FieldTypeDate string = "date"
 
 type Field struct {
 	Name string `json:"name"`
@@ -49,11 +49,11 @@ type FieldsByType struct {
 
 func validFieldType(fieldType string) bool {
 	switch fieldType {
-	case fieldTypeText:
+	case FieldTypeText:
 		return true
-	case fieldTypeNumber:
+	case FieldTypeNumber:
 		return true
-	case fieldTypeDate:
+	case FieldTypeDate:
 		return true
 	default:
 		return false
@@ -65,7 +65,7 @@ func validFieldType(fieldType string) bool {
 // or calculated field.
 func createNewFieldFromRawInputs(appEngContext appengine.Context, newField Field) (string, error) {
 
-	sanitizedName, sanitizeErr := sanitizeName(newField.Name)
+	sanitizedName, sanitizeErr := SanitizeName(newField.Name)
 	if sanitizeErr != nil {
 		return "", fmt.Errorf("Can't create new field: invalid name: '%v'", sanitizeErr)
 	}
@@ -83,7 +83,7 @@ func createNewFieldFromRawInputs(appEngContext appengine.Context, newField Field
 
 	// TODO: Validate the reference name is unique versus the other names field names already in use.
 
-	fieldID, insertErr := insertNewEntity(appEngContext, fieldEntityKind, nil, &newField)
+	fieldID, insertErr := InsertNewEntity(appEngContext, fieldEntityKind, nil, &newField)
 	if insertErr != nil {
 		return "", fmt.Errorf("Can't create new field: error inserting into datastore: %v", insertErr)
 	}
@@ -188,7 +188,7 @@ func GetExistingFieldKey(appEngContext appengine.Context, fieldID string) (*data
 	if len(fieldID) == 0 {
 		return nil, fmt.Errorf("GetExistingFieldKey: Can't get field's key: missing field ID ")
 	}
-	fieldKey, fieldErr := getExistingRootEntityKey(appEngContext, fieldEntityKind, fieldID)
+	fieldKey, fieldErr := GetExistingRootEntityKey(appEngContext, fieldEntityKind, fieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("GetExistingFieldKey: invalid field ID '%v': datastore error=%v",
 			fieldID, fieldErr)
@@ -244,11 +244,11 @@ func GetFieldsByType(appEngContext appengine.Context) (*FieldsByType, error) {
 	for fieldRefIndex := range fieldRefs {
 		fieldRef := fieldRefs[fieldRefIndex]
 		switch fieldRef.FieldInfo.Type {
-		case fieldTypeText:
+		case FieldTypeText:
 			fieldsByType.TextFields = append(fieldsByType.TextFields, fieldRef)
-		case fieldTypeDate:
+		case FieldTypeDate:
 			fieldsByType.DateFields = append(fieldsByType.DateFields, fieldRef)
-		case fieldTypeNumber:
+		case FieldTypeNumber:
 			fieldsByType.NumberFields = append(fieldsByType.NumberFields, fieldRef)
 		default:
 			return nil, fmt.Errorf(

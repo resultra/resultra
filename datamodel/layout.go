@@ -21,13 +21,13 @@ type LayoutRef struct {
 
 func NewLayout(appEngContext appengine.Context, layoutName string) (string, error) {
 
-	sanitizedLayoutName, sanitizeErr := sanitizeName(layoutName)
+	sanitizedLayoutName, sanitizeErr := SanitizeName(layoutName)
 	if sanitizeErr != nil {
 		return "", sanitizeErr
 	}
 
 	var newLayout = Layout{sanitizedLayoutName}
-	layoutID, insertErr := insertNewEntity(appEngContext, layoutEntityKind, nil, &newLayout)
+	layoutID, insertErr := InsertNewEntity(appEngContext, layoutEntityKind, nil, &newLayout)
 	if insertErr != nil {
 		return "", insertErr
 	}
@@ -79,26 +79,6 @@ func GetLayoutRef(appEngContext appengine.Context, layoutParams GetLayoutParams)
 
 }
 
-type LayoutGeometry struct {
-	PositionTop  int `json:"positionTop"`
-	PositionLeft int `json:"positionLeft"`
-	SizeWidth    int `json:"sizeWidth"`
-	SizeHeight   int `json:"sizeHeight"`
-}
-
-func NewUnitializedLayoutGeometry() LayoutGeometry {
-	return LayoutGeometry{-1, -1, -1, -1}
-}
-
-func validGeometry(geom LayoutGeometry) bool {
-	if (geom.PositionTop >= 0) && (geom.PositionLeft >= 0) &&
-		(geom.SizeWidth > 0) && (geom.SizeHeight > 0) {
-		return true
-	} else {
-		return false
-	}
-}
-
 // A LayoutContainer represents what is actually stored in the datastore
 // for each layout container.
 type LayoutContainer struct {
@@ -142,11 +122,11 @@ func NewUninitializedResizeLayoutContainerParams() ResizeContainerParams {
 
 func NewLayoutContainer(appEngContext appengine.Context, containerParams LayoutContainerParams) (string, error) {
 
-	if !validGeometry(containerParams.Geometry) {
+	if !ValidGeometry(containerParams.Geometry) {
 		return "", fmt.Errorf("Invalid layout container parameters: %+v", containerParams)
 	}
 
-	parentLayoutKey, err := getExistingRootEntityKey(appEngContext, layoutEntityKind,
+	parentLayoutKey, err := GetExistingRootEntityKey(appEngContext, layoutEntityKind,
 		containerParams.ParentLayoutID)
 	if err != nil {
 		return "", err
@@ -160,7 +140,7 @@ func NewLayoutContainer(appEngContext appengine.Context, containerParams LayoutC
 
 	newLayoutContainer := LayoutContainer{fieldKey, containerParams.Geometry}
 
-	containerID, insertErr := insertNewEntity(appEngContext, layoutContainerEntityKind,
+	containerID, insertErr := InsertNewEntity(appEngContext, layoutContainerEntityKind,
 		parentLayoutKey, &newLayoutContainer)
 	if insertErr != nil {
 		return "", insertErr
@@ -175,11 +155,11 @@ func NewLayoutContainer(appEngContext appengine.Context, containerParams LayoutC
 
 func ResizeLayoutContainer(appEngContext appengine.Context, resizeParams ResizeContainerParams) error {
 
-	if !validGeometry(resizeParams.Geometry) {
+	if !ValidGeometry(resizeParams.Geometry) {
 		return fmt.Errorf("Invalid layout container resize parameters: %+v", resizeParams)
 	}
 
-	parentLayoutKey, err := getExistingRootEntityKey(appEngContext, layoutEntityKind,
+	parentLayoutKey, err := GetExistingRootEntityKey(appEngContext, layoutEntityKind,
 		resizeParams.ParentLayoutID)
 	if err != nil {
 		return err
@@ -209,7 +189,7 @@ func ResizeLayoutContainer(appEngContext appengine.Context, resizeParams ResizeC
 
 func GetLayoutContainers(appEngContext appengine.Context, parentLayoutID string) ([]LayoutContainerParams, error) {
 
-	parentLayoutKey, err := getExistingRootEntityKey(appEngContext, layoutEntityKind,
+	parentLayoutKey, err := GetExistingRootEntityKey(appEngContext, layoutEntityKind,
 		parentLayoutID)
 	if err != nil {
 		return nil, err

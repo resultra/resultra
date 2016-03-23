@@ -48,13 +48,13 @@ func filterNonBlankField(filterParams FilterFuncParams, record Record) (bool, er
 type RuleIDRuleDefMap map[string]FilterRuleDef
 
 var textFieldFilterRuleDefs = RuleIDRuleDefMap{
-	filterRuleIDNotBlank: FilterRuleDef{filterRuleIDNotBlank, false, fieldTypeText, "Text is set (not blank)", filterNonBlankField},
-	filterRuleIDBlank:    FilterRuleDef{filterRuleIDBlank, false, fieldTypeText, "Text is not set (blank)", filterBlankField},
+	filterRuleIDNotBlank: FilterRuleDef{filterRuleIDNotBlank, false, FieldTypeText, "Text is set (not blank)", filterNonBlankField},
+	filterRuleIDBlank:    FilterRuleDef{filterRuleIDBlank, false, FieldTypeText, "Text is not set (blank)", filterBlankField},
 }
 
 var numberFieldFilterRuleDefs = RuleIDRuleDefMap{
-	filterRuleIDNotBlank: FilterRuleDef{filterRuleIDNotBlank, false, fieldTypeNumber, "Value is set (not blank)", filterNonBlankField},
-	filterRuleIDBlank:    FilterRuleDef{filterRuleIDBlank, false, fieldTypeNumber, "Value is not set (blank)", filterBlankField},
+	filterRuleIDNotBlank: FilterRuleDef{filterRuleIDNotBlank, false, FieldTypeNumber, "Value is set (not blank)", filterNonBlankField},
+	filterRuleIDBlank:    FilterRuleDef{filterRuleIDBlank, false, FieldTypeNumber, "Value is not set (blank)", filterBlankField},
 }
 
 var FilterRuleDefs struct {
@@ -65,7 +65,7 @@ var FilterRuleDefs struct {
 // Get the rule definition based upon the field type
 func getRuleDefByFieldType(fieldType string, ruleID string) (*FilterRuleDef, error) {
 	switch fieldType {
-	case fieldTypeText:
+	case FieldTypeText:
 		ruleDef, ruleDefFound := textFieldFilterRuleDefs[ruleID]
 		if !ruleDefFound {
 			return nil, fmt.Errorf(
@@ -74,7 +74,7 @@ func getRuleDefByFieldType(fieldType string, ruleID string) (*FilterRuleDef, err
 		} else {
 			return &ruleDef, nil
 		}
-	case fieldTypeNumber:
+	case FieldTypeNumber:
 		ruleDef, ruleDefFound := numberFieldFilterRuleDefs[ruleID]
 		if !ruleDefFound {
 			return nil, fmt.Errorf(

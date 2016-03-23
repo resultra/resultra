@@ -48,7 +48,7 @@ func NewRecord(appEngContext appengine.Context) (*RecordRef, error) {
 	newRecord := Record{}
 
 	// TODO - Replace nil with database parent
-	recordID, insertErr := insertNewEntity(appEngContext, recordEntityKind, nil, &newRecord)
+	recordID, insertErr := InsertNewEntity(appEngContext, recordEntityKind, nil, &newRecord)
 	if insertErr != nil {
 		return nil, fmt.Errorf("Can't create new field: error inserting into datastore: %v", insertErr)
 	}
@@ -130,7 +130,7 @@ type SetRecordTextValueParams struct {
 
 func SetRecordTextValue(appEngContext appengine.Context, setValParams SetRecordTextValueParams) (*RecordRef, error) {
 
-	if fieldValidateErr := validateFieldForRecordValue(appEngContext, setValParams.FieldID, fieldTypeText, false); fieldValidateErr != nil {
+	if fieldValidateErr := validateFieldForRecordValue(appEngContext, setValParams.FieldID, FieldTypeText, false); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't set value in SetRecordTextValue(params=%+v):"+
 			" Error validating record's field for update: %v", setValParams, fieldValidateErr)
 	}
@@ -178,7 +178,7 @@ type SetRecordNumberValueParams struct {
 
 func SetRecordNumberValue(appEngContext appengine.Context, setValParams SetRecordNumberValueParams) (*RecordRef, error) {
 
-	if fieldValidateErr := validateFieldForRecordValue(appEngContext, setValParams.FieldID, fieldTypeNumber, false); fieldValidateErr != nil {
+	if fieldValidateErr := validateFieldForRecordValue(appEngContext, setValParams.FieldID, FieldTypeNumber, false); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't set value in SetRecordTextValue(params=%+v):"+
 			" Error validating record's field for update: %v", setValParams, fieldValidateErr)
 	}

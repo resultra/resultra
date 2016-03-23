@@ -44,7 +44,7 @@ func NewFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleP
 
 	switch fieldRef.FieldInfo.Type {
 
-	case fieldTypeText:
+	case FieldTypeText:
 		ruleDef, ruleDefFound := textFieldFilterRuleDefs[newRuleParams.RuleID]
 		newRuleDef = ruleDef
 		if !ruleDefFound {
@@ -61,7 +61,7 @@ func NewFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleP
 			}
 		}
 
-	case fieldTypeNumber:
+	case FieldTypeNumber:
 		ruleDef, ruleDefFound := numberFieldFilterRuleDefs[newRuleParams.RuleID]
 		newRuleDef = ruleDef
 		if !ruleDefFound {
@@ -84,7 +84,7 @@ func NewFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleP
 
 	// TODO - Replace nil with database parent
 
-	filterRuleID, insertErr := insertNewEntity(appEngContext, recordFilterRuleEntityKind, nil, &newFilter)
+	filterRuleID, insertErr := InsertNewEntity(appEngContext, recordFilterRuleEntityKind, nil, &newFilter)
 	if insertErr != nil {
 		return nil, fmt.Errorf("NewFilterRule: Can't create new filter: error inserting into datastore: %v", insertErr)
 	}
@@ -116,9 +116,9 @@ func getOptionalParamValueByRuleDef(filterRuleDef FilterRuleDef,
 
 	if filterRuleDef.HasParam {
 		switch filterRuleDef.DataType {
-		case fieldTypeText:
+		case FieldTypeText:
 			optParamVal.textParam = &filterRule.TextRuleParam
-		case fieldTypeNumber:
+		case FieldTypeNumber:
 			optParamVal.numberParam = &filterRule.NumberRuleParam
 		default:
 			return nil, fmt.Errorf("getOptionalParamValueByRuleDef: unknown rule definition data type = %v",

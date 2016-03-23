@@ -14,6 +14,9 @@ func RegisterAPIHTTPHandlers() {
 	apiRouter.HandleFunc("/api/resizeLayoutContainer", resizeLayoutContainer)
 	apiRouter.HandleFunc("/api/getLayoutContainers", getLayoutContainers)
 
+	apiRouter.HandleFunc("/api/newDashboard", newDashboard)
+	apiRouter.HandleFunc("/api/newBarChart", newBarChart)
+
 	apiRouter.HandleFunc("/api/newField", newField)
 	apiRouter.HandleFunc("/api/newCalcField", newCalcField)
 	apiRouter.HandleFunc("/api/getFieldsByType", getFieldsByType)
