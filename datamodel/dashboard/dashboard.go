@@ -2,6 +2,7 @@ package dashboard
 
 import (
 	"appengine"
+	"fmt"
 	"log"
 	"resultra/datasheet/datamodel"
 )
@@ -34,5 +35,17 @@ func NewDashboard(appEngContext appengine.Context, dashboardName string) (*Dashb
 	dashboardRef := DashboardRef{dashboardID, sanitizedName}
 
 	return &dashboardRef, nil
+
+}
+
+func GetDashboardRef(appEngContext appengine.Context, dashboardID string) (*DashboardRef, error) {
+
+	var dashboard DashboardRef
+	getErr := datamodel.GetRootEntityByID(appEngContext, dashboardEntityKind, dashboardID, &dashboard)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetDashboardRef: Can't get dashboard: Error retrieving existing dashboard: dashboard ID=%v, err = %v", dashboardID, getErr)
+	}
+
+	return &DashboardRef{dashboardID, dashboard.Name}, nil
 
 }

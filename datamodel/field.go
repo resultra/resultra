@@ -159,7 +159,7 @@ type GetFieldParams struct {
 func GetField(appEngContext appengine.Context, fieldParams GetFieldParams) (*FieldRef, error) {
 
 	fieldGetDest := Field{}
-	if getErr := getRootEntityByID(appEngContext, fieldEntityKind, fieldParams.FieldID, &fieldGetDest); getErr != nil {
+	if getErr := GetRootEntityByID(appEngContext, fieldEntityKind, fieldParams.FieldID, &fieldGetDest); getErr != nil {
 		return nil, fmt.Errorf("Unabled to get field: params = %+v: datastore err=%v", fieldParams, getErr)
 	} else {
 		return &FieldRef{fieldParams.FieldID, fieldGetDest}, nil

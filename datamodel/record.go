@@ -66,7 +66,7 @@ type GetRecordParams struct {
 func GetRecord(appEngContext appengine.Context, recordParams GetRecordParams) (*RecordRef, error) {
 
 	getRecord := Record{}
-	getErr := getRootEntityByID(appEngContext, recordEntityKind, recordParams.RecordID, &getRecord)
+	getErr := GetRootEntityByID(appEngContext, recordEntityKind, recordParams.RecordID, &getRecord)
 	if getErr != nil {
 		return nil, fmt.Errorf("Can't get record: Error retrieving existing record: record params=%+v, err = %v", recordParams, getErr)
 	}
@@ -136,7 +136,7 @@ func SetRecordTextValue(appEngContext appengine.Context, setValParams SetRecordT
 	}
 
 	recordForUpdate := Record{}
-	getErr := getRootEntityByID(appEngContext, recordEntityKind, setValParams.RecordID, &recordForUpdate)
+	getErr := GetRootEntityByID(appEngContext, recordEntityKind, setValParams.RecordID, &recordForUpdate)
 	if getErr != nil {
 		return nil, fmt.Errorf("Can't set value in SetRecordValue(params=%+v):"+
 			" Error retrieving existing record for update: err = %v", setValParams, getErr)
@@ -186,7 +186,7 @@ func SetRecordNumberValue(appEngContext appengine.Context, setValParams SetRecor
 	// TODO - Check field is not a calculated field.
 
 	recordForUpdate := Record{}
-	getErr := getRootEntityByID(appEngContext, recordEntityKind, setValParams.RecordID, &recordForUpdate)
+	getErr := GetRootEntityByID(appEngContext, recordEntityKind, setValParams.RecordID, &recordForUpdate)
 	if getErr != nil {
 		return nil, fmt.Errorf("Can't set value in SetRecordValue(params=%+v):"+
 			" Error retrieving existing record for update: err = %v", setValParams, getErr)

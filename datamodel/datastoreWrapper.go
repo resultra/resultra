@@ -163,7 +163,7 @@ func getChildEntityByID(encodedID string, appEngContext appengine.Context, entit
 	return nil
 }
 
-func getRootEntityByID(appEngContext appengine.Context, entityKind string, encodedID string, dest interface{}) error {
+func GetRootEntityByID(appEngContext appengine.Context, entityKind string, encodedID string, dest interface{}) error {
 
 	decodedID, err := decodeUniqueEntityIDStrToInt(encodedID)
 	if err != nil {
