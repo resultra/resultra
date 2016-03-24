@@ -14,6 +14,16 @@ $(document).ready(function() {
 		
 		dropComplete: function(droppedItemInfo) {
 			console.log("Dashboard design pallete: drop item: " + JSON.stringify(droppedItemInfo))
+			
+			// "repackage" the dropped item paramaters for creating a new layout element. Also add the layoutID
+			// to the parameters.
+			var barChartParams = {
+				parentDashboardID: dashboardID,
+				geometry: droppedItemInfo.geometry,
+				containerID: droppedItemInfo.placeholderID,
+				};
+			newBarChart(barChartParams)
+			
 		},
 		
 		dropDestSelector: "#dashboardCanvas",

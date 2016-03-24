@@ -1,0 +1,79 @@
+
+{{define "newBarChartXAxisPanel"}}
+	<div id="newBarChartDlgXAxisPanel" class="wizardPanel">
+		<form class="ui form">
+			<div class="ui info message" >
+				<p>
+					Choose a field whose values will be displayed along the X axis.
+				</p>
+			</div>
+			<div class="field" id="selectXAxisField">
+				<label>X Axis Field</label> 
+				<select class="ui dropdown" id="xAxisFieldSelection" name="xAxisFieldSelection">
+					<option value="">
+						Select a field
+					</option>
+				</select>
+			</div>
+			<div class="field" id="selectXAxisGrouping">
+				<label>Group X Axis Values</label>
+				<select class="ui dropdown" id="xAxisGroupBySelection" name="xAxisGroupBySelection">
+					<option value="">
+						Select a grouping
+					</option>
+				</select>
+			</div>
+			<div class="field" id="selectXAxisSort">
+				<label>Sort Values</label>
+				<select class="ui dropdown" id="xAxisSortSelection" name="xAxisSortSelection">
+					<option value="" selected>Sort Order</option>
+					<option value="asc" selected>Ascending</option>
+					<option value="desc">Descending</option>
+				</select>
+			</div>
+		</form> <!-- form for panel -->
+	</div> <!-- panel for selecting new field or choosing to create a new one -->
+{{end}}
+
+{{define "newBarChartYAxisPanel"}}
+	<div id="newBarChartDlgYAxisPanel" class="wizardPanel">
+		<form class="ui form">
+			<div class="ui info message" >
+				<p>
+					Choose which field's values will be summarized along the Y axis.
+				</p>
+			</div>
+			<div class="field" id="selectYAxisField">
+				<label>Y Axis Field</label> 
+				<select class="ui dropdown" id="yAxisFieldSelection" name="yAxisFieldSelection">
+					<option value="">
+						Y Axis Field
+					</option>
+				</select>
+			</div>
+			<div class="field" id="selectYAxisSummary">
+				<label>Summarize Values By</label>
+				<select class="ui dropdown" id="yAxisSummarySelection" name="yAxisSummarySelection">
+					<option value="">
+						Summarize Values By
+					</option>
+				</select>
+			</div>
+		</form> <!-- form for panel -->
+	</div> <!-- panel for selecting new field or choosing to create a new one -->
+{{end}}
+
+
+{{define "newBarChartDialog"}}
+
+<div id="newBarchartDialog" title="New Bar Chart" class="initiallyHiddenDialog">
+	<div class="ui tiny progress" id="newBarChartProgress">
+	  <div class="bar"></div>
+	</div>
+	
+	{{template "newBarChartXAxisPanel"}}
+	{{template "newBarChartYAxisPanel"}}
+	
+</div> <!-- new bar chart dialog -->
+
+{{end}}
