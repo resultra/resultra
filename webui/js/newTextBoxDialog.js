@@ -3,36 +3,16 @@
 // Initialized below in newLayoutContainer
 var newTextBoxParams;
 
-function transitionToNextDlgPanel(dialog, currPanelConfig, nextPanelConfig) {
-	function showNextPanel() {
-		$('#'+ nextPanelConfig.divID).show("slide",{direction:"right"},200);
-	}
-	$("#" + currPanelConfig.divID).hide("slide",{direction:"left"},200,showNextPanel);
-	
-	$('#newTextBoxProgress').progress({percent:nextPanelConfig.progressPerc});
-	
-	
-	$(dialog).dialog("option","buttons",nextPanelConfig.dlgButtons)
-}
+var textBoxProgressDivID = '#newTextBoxProgress'
 
-function transitionToPrevDlgPanel(dialog, currPanelConfig, prevPanelConfig) {
-	function showPrevPanel() {
-		$('#'+ prevPanelConfig.divID).show("slide",{direction:"left"},200);
-	}
-	$("#" + currPanelConfig.divID).hide("slide",{direction:"right"},200,showPrevPanel);
-	
-	$('#newTextBoxProgress').progress({percent:prevPanelConfig.progressPerc});
-	
-	$(dialog).dialog("option","buttons",prevPanelConfig.dlgButtons)
-}
 
 function newFieldIsCalcField() {
-	return $('#'+newFieldPanelConfig.divID).form('get field','isCalcField').prop('checked')
+	return $(newFieldPanelConfig.divID).form('get field','isCalcField').prop('checked')
 }
 
 function doCreateNewFieldWithTextBox() {
 	
-	return $('#'+newOrExistingFieldPanelConfig.divID).form('get field','createNewFieldRadio').prop('checked')
+	return $(newOrExistingFieldPanelConfig.divID).form('get field','createNewFieldRadio').prop('checked')
 }
 
 
@@ -81,20 +61,23 @@ function saveNewTextBox()
 
 
 var newTextBoxValidateFormatEntriesPanel = {
-	divID: "newTextBoxValidateFormatEntriesPanel",
+	divID: "#newTextBoxValidateFormatEntriesPanel",
 	progressPerc:90,
 	dlgButtons: { 
 		"Previous": function() {
 			if(doCreateNewFieldWithTextBox()) {
 				if(newFieldIsCalcField()){
-					transitionToPrevDlgPanel(this,newTextBoxValidateFormatEntriesPanel,calcFieldFormulaPanelConfig)	
+					transitionToPrevWizardDlgPanel(this,textBoxProgressDivID,
+						newTextBoxValidateFormatEntriesPanel,calcFieldFormulaPanelConfig)	
 				} else {
 					// Not a calculated field, skip over panel to enter calculated field formula
-					transitionToPrevDlgPanel(this,newTextBoxValidateFormatEntriesPanel,newFieldPanelConfig)				
+					transitionToPrevWizardDlgPanel(this,textBoxProgressDivID,
+						newTextBoxValidateFormatEntriesPanel,newFieldPanelConfig)				
 				}
 			}  else {
 				// Not creating a new field - skip over new field panels
-				transitionToPrevDlgPanel(this,newTextBoxValidateFormatEntriesPanel,newOrExistingFieldPanelConfig)				
+				transitionToPrevWizardDlgPanel(this,textBoxProgressDivID,
+						newTextBoxValidateFormatEntriesPanel,newOrExistingFieldPanelConfig)				
 			}
 		 },
 		"Done" : function() { 
@@ -108,15 +91,17 @@ var newTextBoxValidateFormatEntriesPanel = {
 }
 
 var calcFieldFormulaPanelConfig = {
-	divID: "newTextBoxDlgCalcFieldFormulaPanel",
+	divID: "#newTextBoxDlgCalcFieldFormulaPanel",
 	progressPerc:60,
 	dlgButtons: { 
 		"Previous": function() { 
-			transitionToPrevDlgPanel(this,calcFieldFormulaPanelConfig,newFieldPanelConfig)
+			transitionToPrevWizardDlgPanel(this,textBoxProgressDivID,
+						calcFieldFormulaPanelConfig,newFieldPanelConfig)
 		 },	
 		"Next" : function() { 
 			if($( "#newTextBoxDlgCalcFieldFormulaPanel" ).form('validate form')) {
-				transitionToNextDlgPanel(this,calcFieldFormulaPanelConfig,newTextBoxValidateFormatEntriesPanel)
+				transitionToNextWizardDlgPanel(this,textBoxProgressDivID,
+						calcFieldFormulaPanelConfig,newTextBoxValidateFormatEntriesPanel)
 			} // if validate panel's form
 		},
 		"Cancel" : function() { $(this).dialog('close'); },
@@ -130,20 +115,23 @@ var calcFieldFormulaPanelConfig = {
 
 
 var newFieldPanelConfig = {
-	divID: "newTextBoxDlgNewFieldPanel",
+	divID: "#newTextBoxDlgNewFieldPanel",
 	progressPerc:40,
 	dlgButtons: { 
 		"Previous": function() { 
-			transitionToPrevDlgPanel(this,newFieldPanelConfig,newOrExistingFieldPanelConfig)	
+			transitionToPrevWizardDlgPanel(this,textBoxProgressDivID,
+						newFieldPanelConfig,newOrExistingFieldPanelConfig)	
 		 },
 		"Next" : function() { 
 			
 			if($( "#newTextBoxDlgNewFieldPanel" ).form('validate form')) {
 				if(newFieldIsCalcField()){
-					transitionToNextDlgPanel(this,newFieldPanelConfig,calcFieldFormulaPanelConfig)
+					transitionToNextWizardDlgPanel(this,textBoxProgressDivID,
+						newFieldPanelConfig,calcFieldFormulaPanelConfig)
 				}
 				else {
-					transitionToNextDlgPanel(this,newFieldPanelConfig,newTextBoxValidateFormatEntriesPanel)
+					transitionToNextWizardDlgPanel(this,textBoxProgressDivID,
+						newFieldPanelConfig,newTextBoxValidateFormatEntriesPanel)
 				}	
 			} // if validate panel's form	
 		},
@@ -185,17 +173,19 @@ var newFieldPanelConfig = {
 
 
 var newOrExistingFieldPanelConfig = {
-	divID: "newTextBoxDlgSelectOrNewFieldPanel",
+	divID: "#newTextBoxDlgSelectOrNewFieldPanel",
 	progressPerc:0,
 	dlgButtons: { 
 		"Next": function() {
 			if($( "#newTextBoxDlgSelectOrNewFieldPanel" ).form('validate form')) {			
 				console.log("New Field checked: " + doCreateNewFieldWithTextBox())
 				if(doCreateNewFieldWithTextBox()) {
-					transitionToNextDlgPanel(this,newOrExistingFieldPanelConfig,newFieldPanelConfig)
+					transitionToNextWizardDlgPanel(this,textBoxProgressDivID,
+						newOrExistingFieldPanelConfig,newFieldPanelConfig)
 				}
 				else {
-					transitionToNextDlgPanel(this,newOrExistingFieldPanelConfig,newTextBoxValidateFormatEntriesPanel)						
+					transitionToNextWizardDlgPanel(this,textBoxProgressDivID,
+						newOrExistingFieldPanelConfig,newTextBoxValidateFormatEntriesPanel)						
 				}
 			} // if validate form
 		 },		
@@ -262,61 +252,32 @@ function newLayoutContainer(containerParams,fieldsByID)
 	// Enable Semantic UI checkboxes and popups
 	$('.ui.checkbox').checkbox();
 	$('.ui.radio.checkbox').checkbox();	
-			
-    newTextBoxParams.dialogBox.dialog({
-      autoOpen: false,
-      height: 500, width: 550,
-	  resizable: false,
-      modal: true,
-      buttons: newOrExistingFieldPanelConfig.dlgButtons,
-      close: function() {
-		  console.log("Close dialog")
-		  if(!newTextBoxParams.containerCreated)
-		  {
+	
+	
+	openWizardDialog({
+		closeFunc: function() {
+			console.log("Close dialog")
+			if(!newTextBoxParams.containerCreated)
+			{
 			  // If the the text box creation is not complete, remove the placeholder
 			  // from the canvas.
-			  $('#'+newTextBoxParams.placeholderID).remove()
-		  }
-      }
-    });
- 
-    newTextBoxParams.dialogBox.find( "form" ).on( "submit", function( event ) {
-      	event.preventDefault();
-		//saveNewTextBox()
-		// TODO - reimplement save with enter key
-		console.log("Save not implemented with enter key")
-    });
-	
-	$( ".wizardPanel" ).hide() // hide all the panels
-	$( "#newTextBoxDlgSelectOrNewFieldPanel").show() // show the first panel
-	newTextBoxParams.dialogBox.dialog("option","buttons",newOrExistingFieldPanelConfig.dlgButtons)
-	
-	// Clear any previous entries validation errors. The message blocks by 
-	// default don't clear their values with 'clear', so any remaining error
-	// messages need to be removed from the message blocks within the panels.
-	$('.wizardPanel').form('clear') // clear any previous entries
-	$('.wizardErrorMsgBlock').empty()
-	
-	
-	$('#newTextBoxProgress').progress({percent:0});
-
-	newOrExistingFieldPanelConfig.initPanel()
-	newFieldPanelConfig.initPanel()
-	calcFieldFormulaPanelConfig.initPanel()
-	newTextBoxValidateFormatEntriesPanel.initPanel()
-
-
-	newTextBoxParams.dialogBox.dialog("open")
-	
+				$('#'+newTextBoxParams.placeholderID).remove()
+			}
+      	},
+		width: 500, height: 500,
+		dialogDivID: '#newTextBox',
+		panels: [newOrExistingFieldPanelConfig, newFieldPanelConfig,
+				calcFieldFormulaPanelConfig, newTextBoxValidateFormatEntriesPanel],
+		progressDivID: '#newTextBoxProgress',
+	})
+		
 } // newLayoutContainer
 
 function initNewTextBoxDialog() {
 	// Initialize the newTextBox dialog with the minimum parameters. This is necessary
 	// to hide the dialog from view when the document is initially loaded. The
 	// dialog is fully re-initialized just prior to it being opened.
-    $( "#newTextBox" ).dialog({ autoOpen: false })
-
-	
+	initWizardDialog('#newTextBox')
 }
 
 
