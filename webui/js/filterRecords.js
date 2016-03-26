@@ -289,7 +289,7 @@ function initFilterRuleSelection(fieldsByID) {
 
 function initFilterRecordsFieldSelectionMenu(fieldsByID) {
 	
-	$('#filterRecordsSelectFieldDropdown').dropdown();
+	$('#filterRecordsSelectFieldDropdown').dropdown({showOnFocus:false});
 	
 	$("#filterRecordsSelectFieldDropdownMenu").empty()
 	
@@ -314,7 +314,8 @@ function initFilterRecordsFieldSelectionMenu(fieldsByID) {
 			else {
 				resetValidationRulesNoParam()
 			}
-		}
+		},
+		showOnFocus:false
 	});
 	
 	
