@@ -100,6 +100,6 @@ func NewBarChart(appEngContext appengine.Context, params NewBarChartParams) (*Ba
 		YAxisValRef:     *valSummaryRef,
 	}
 
-	return &barChartRef, fmt.Errorf("NewBarChart: Not implemented yet")
+	return &barChartRef, nil
 
 }

@@ -31,7 +31,7 @@ $(document).ready(function() {
 	}
 	initDesignPalette(paletteConfig)	
 	
-	initNewBarChartDialog()		
+	initNewBarChartDialog(dashboardID)		
 						
 	// Initialize the page layout
 	$('#designDashboardPage').layout({

@@ -1,17 +1,56 @@
 
-var barChartProgressDivID = '#newBarChartProgress'
+var newBarChartParams = {}
 
-var xAxisPanelDivID = "#newBarChartDlgXAxisPanel"
+function initNewBarChartDialog(dashboardID) {
 
-var newBarChartFieldsByID;
+	newBarChartParams.dashboardID = dashboardID
+	newBarChartParams.progressDivID = '#newBarChartProgress'	
+	
+	initWizardDialog('#newBarchartDialog')
+	
+	loadFieldInfo(function(fieldsByID) {
+		populateFieldSelectionMenu(fieldsByID,'#xAxisFieldSelection')
+		populateFieldSelectionMenu(fieldsByID,'#yAxisFieldSelection')
+		newBarChartParams.fieldsByID = fieldsByID
+	})
+}
+
+function saveNewBarChart() {
+	console.log("Saving new bar chart: dashboard ID = " + newBarChartParams.dashboardID )
+	
+
+	
+	var formID = '#newBarchartDialog'
+		
+	var saveNewDashboardParams = {
+		parentDashboardID: newBarChartParams.dashboardID,
+		xAxisVals: {
+			fieldID: getFormStringValue(formID,'xAxisFieldSelection'),
+			groupValsBy: getFormStringValue(formID,'xAxisGroupBySelection'),
+			groupByValBucketWidth: getFormFloatValue(formID,'xAxisBucketSizeInput'),		
+		}, // xAxisVals
+		xAxisSortValues: getFormStringValue(formID,'xAxisSortSelection'),
+		yAxisVals: {
+			fieldID: getFormStringValue(formID,'yAxisFieldSelection'),
+			summarizeValsWith: getFormStringValue(formID,'yAxisSummarySelection')
+		}, // yAxisVals
+		geometry: newBarChartParams.geometry
+	}
+	
+	
+	console.log("saveNewBarChart: new bar chart params:  " + JSON.stringify(saveNewDashboardParams) )
+	jsonAPIRequest("newBarChart",saveNewDashboardParams,function(barChartRef) {
+		console.log("saveNewBarChart: bar chart saved: new bar chart ID = " + barChartRef.barChartID)
+	})
+}
 
 var barChartXAxisPanelConfig = {
-	divID: xAxisPanelDivID,
+	divID: "#newBarChartDlgXAxisPanel",
 	progressPerc:80,
 	dlgButtons: { 
 		"Next" : function() { 
-			if($( xAxisPanelDivID ).form('validate form')) {
-				transitionToNextWizardDlgPanel(this,barChartProgressDivID,
+			if($( "#newBarChartDlgXAxisPanel" ).form('validate form')) {
+				transitionToNextWizardDlgPanel(this,newBarChartParams.progressDivID,
 						barChartXAxisPanelConfig,barChartYAxisPanelConfig)
 			} // if validate panel's form
 		},
@@ -20,18 +59,17 @@ var barChartXAxisPanelConfig = {
 	initPanel: function() {
 		
 		function setValidationRulesWithoutBucketSize() {
-			$( xAxisPanelDivID ).form({
+			$( "#newBarChartDlgXAxisPanel" ).form({
 		    	fields: {
 			        xAxisFieldSelection: nonEmptyFieldValidation('Please enter a field name'),
 			        xAxisGroupBySelection: nonEmptyFieldValidation('Select a grouping'),
 			        xAxisSortSelection: nonEmptyFieldValidation('Choose a sort order')
 		     	},
-		  	})
-			
+		  	})		
 		}
 		
 		function setValidationRulesWithBucketSize() {
-			$( xAxisPanelDivID ).form({
+			$( "#newBarChartDlgXAxisPanel" ).form({
 		    	fields: {
 			        xAxisFieldSelection: nonEmptyFieldValidation('Please enter a field name'),
 			        xAxisGroupBySelection: nonEmptyFieldValidation('Select a grouping'),
@@ -67,10 +105,10 @@ var barChartXAxisPanelConfig = {
 		}
 		
 		$(xAxisFieldSelectionID).change(function(){
-			var fieldID = $(xAxisPanelDivID).form('get value','xAxisFieldSelection')
+			var fieldID = $("#newBarChartDlgXAxisPanel").form('get value','xAxisFieldSelection')
 	        console.log("select field: " + fieldID )
-			if(fieldID in newBarChartFieldsByID) {
-				fieldInfo = newBarChartFieldsByID[fieldID]			
+			if(fieldID in newBarChartParams.fieldsByID) {
+				fieldInfo = newBarChartParams.fieldsByID[fieldID]			
 	        	console.log("select field: field ID = " + fieldID  + " name = " + fieldInfo.name + " type = " + fieldInfo.type)
 				populateXAxisGroupSelection(fieldInfo.type)
 				$(xAxisSelectGroupByID).removeClass("disabled")
@@ -78,7 +116,7 @@ var barChartXAxisPanelConfig = {
 	    });
 		
 		$(xAxisSelectGroupByID).change(function() {
-			groupBy = $(xAxisPanelDivID).form('get value','xAxisGroupBySelection')
+			groupBy = $("#newBarChartDlgXAxisPanel").form('get value','xAxisGroupBySelection')
 			if(groupBy == "bucket") {
 				$("#xAxisBucketSize").show()
 				setValidationRulesWithBucketSize()
@@ -101,17 +139,17 @@ var barChartXAxisPanelConfig = {
 }
 
 
-var yAxisPanelDivID = "#newBarChartDlgYAxisPanel"
 var barChartYAxisPanelConfig = {
-	divID: yAxisPanelDivID,
+	divID: "#newBarChartDlgYAxisPanel",
 	progressPerc:80,
 	dlgButtons: { 
 		"Previous": function() {
-			transitionToPrevWizardDlgPanel(this,barChartProgressDivID,
+			transitionToPrevWizardDlgPanel(this,newBarChartParams.progressDivID,
 				barChartYAxisPanelConfig,barChartXAxisPanelConfig)	
 		 },
 		"Done" : function() { 
-			if($( yAxisPanelDivID ).form('validate form')) {
+			if($( "#newBarChartDlgYAxisPanel" ).form('validate form')) {
+				saveNewBarChart()
 				$(this).dialog('close');
 			} // if validate panel's form
 		},
@@ -120,7 +158,7 @@ var barChartYAxisPanelConfig = {
 	
 	
 	initPanel: function() {
-		$( yAxisPanelDivID ).form({
+		$( "#newBarChartDlgYAxisPanel" ).form({
 	    	fields: {
 		        yAxisFieldSelection: nonEmptyFieldValidation('Select a field'),
 		        yAxisSummarySelection: nonEmptyFieldValidation('Choose how to summarize values'),
@@ -151,10 +189,10 @@ var barChartYAxisPanelConfig = {
 		
 		
 		$(yAxisFieldSelectionID).change(function(){
-			var fieldID = $(yAxisPanelDivID).form('get value','yAxisFieldSelection')
+			var fieldID = $("#newBarChartDlgYAxisPanel").form('get value','yAxisFieldSelection')
 	        console.log("select field: " + fieldID )
-			if(fieldID in newBarChartFieldsByID) {
-				fieldInfo = newBarChartFieldsByID[fieldID]			
+			if(fieldID in newBarChartParams.fieldsByID) {
+				fieldInfo = newBarChartParams.fieldsByID[fieldID]			
 	        	console.log("select field: field ID = " + fieldID  + " name = " + fieldInfo.name + " type = " + fieldInfo.type)
 				
 				populateYAxisSummarySelection(fieldInfo.type)
@@ -164,8 +202,6 @@ var barChartYAxisPanelConfig = {
 		
 		$(yAxisSummarySelectionID).empty()
 		$(yAxisSummarySelectionID).addClass("disabled")
-		
-		
 	},	
 }
 
@@ -175,7 +211,8 @@ function newBarChart(barChartParams) {
 	var barChartCreated = false
 	var placholderID = barChartParams.containerID
 	
-	
+	newBarChartParams.geometry = barChartParams.geometry
+
 	openWizardDialog({
 		closeFunc: function () {
   		  console.log("Close dialog")
@@ -192,19 +229,6 @@ function newBarChart(barChartParams) {
 		progressDivID: '#newBarChartProgress',
 	})
 		
-					
-	
 } // newBarChart
 
 
-function initNewBarChartDialog() {
-	initWizardDialog('#newBarchartDialog')
-	
-	loadFieldInfo(function(fieldsByID) {
-		populateFieldSelectionMenu(fieldsByID,'#xAxisFieldSelection')
-		populateFieldSelectionMenu(fieldsByID,'#yAxisFieldSelection')
-		newBarChartFieldsByID = fieldsByID
-	})
-	
-
-}

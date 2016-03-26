@@ -73,6 +73,19 @@ function validPositiveNumberFieldValidation() {
 	}
 }
 
+function getFormStringValue(formID,fieldID) {
+	console.log("getFormStringValue: " + formID + " - " + fieldID + ": val= " + 
+			$(formID).form('get value',fieldID))
+	return $(formID).form('get value',fieldID).toString()
+}
+
+function getFormFloatValue(formID,fieldID) {
+	console.log("getFormFloatValue: "  + formID + " - " + fieldID + ": val= " + 
+		$(formID).form('get value',fieldID))
+	return parseFloat($(formID).form('get value',fieldID))
+}
+
+
 function insertTextAreaAtCursor(elem, newText) {
 	
   console.log("appending text to formula box: " + newText)
