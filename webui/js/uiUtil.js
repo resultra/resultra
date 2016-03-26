@@ -25,8 +25,52 @@ function contentHTML(contentBody) {
 	
 }
 
+function emptyOptionHTML(prompt) {
+	return '<option value="">' + prompt + '</option>'	
+}
+
 function headerWithBodyHTML(header, body) {
 	return '<div class="header">' + header  + '</div>' + body
+}
+
+function nonEmptyFieldValidation(prompt) {
+	return { rules: [
+		            {
+		              type   : 'empty',
+		              prompt : prompt
+		            }
+		          ]
+		      }
+}
+
+function validNumberFieldValidation() {
+	return { 
+		rules: [
+			{
+				type   : 'number',
+				prompt : 'Enter a number'
+			},
+			{
+				type   : 'empty',
+				prompt : 'Enter a number'
+			}
+		]
+	}
+}
+
+function validPositiveNumberFieldValidation() {
+	return { 
+		rules: [
+			{
+				type   : 'empty',
+				prompt : 'Enter a number'
+			},
+			{
+				type : 'regExp[/(^[0][.]{1}[0-9]{0,}[1-9]+[0-9]{0,}$)|(^[1-9]+[0-9]{0,}[.]?[0-9]{0,}$)/]',
+				prompt : 'Enter a positive number'
+			}
+		]
+	}
 }
 
 function insertTextAreaAtCursor(elem, newText) {

@@ -29,7 +29,9 @@ $(document).ready(function() {
 		dropDestSelector: "#dashboardCanvas",
 		paletteSelector: "#dashboardPaletteSidebar",
 	}
-	initDesignPalette(paletteConfig)			
+	initDesignPalette(paletteConfig)	
+	
+	initNewBarChartDialog()		
 						
 	// Initialize the page layout
 	$('#designDashboardPage').layout({
