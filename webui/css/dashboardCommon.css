@@ -1,0 +1,13 @@
+
+/* Styling when the item is displayed in the dashboard designer */
+.dashboardItemDesignContainer {
+    position: absolute; 
+	border: 1px dashed gray; 
+}
+
+.dashboardBarChartContainer {
+	min-width:300px;
+	min-height:300px;
+	width: 400px;
+	height: 400px; 
+}

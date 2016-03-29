@@ -22,7 +22,7 @@ function saveNewBarChart() {
 	
 	var formID = '#newBarchartDialog'
 		
-	var saveNewDashboardParams = {
+	var saveNewBarChartParams = {
 		parentDashboardID: newBarChartParams.dashboardID,
 		xAxisVals: {
 			fieldID: getFormStringValue(formID,'xAxisFieldSelection'),
@@ -38,9 +38,15 @@ function saveNewBarChart() {
 	}
 	
 	
-	console.log("saveNewBarChart: new bar chart params:  " + JSON.stringify(saveNewDashboardParams) )
-	jsonAPIRequest("newBarChart",saveNewDashboardParams,function(barChartRef) {
+	console.log("saveNewBarChart: new bar chart params:  " + JSON.stringify(saveNewBarChartParams) )
+	jsonAPIRequest("newBarChart",saveNewBarChartParams,function(barChartRef) {
 		console.log("saveNewBarChart: bar chart saved: new bar chart ID = " + barChartRef.barChartID)
+		
+		// Replace the placholder ID with the instantiated bar chart's unique ID.
+		 $('#'+newBarChartParams.placeholderID).attr("id",barChartRef.barChartID)
+
+		newBarChartParams.barChartCreated = true;		
+		newBarChartParams.dialog.dialog("close")
 	})
 }
 
@@ -150,7 +156,6 @@ var barChartYAxisPanelConfig = {
 		"Done" : function() { 
 			if($( "#newBarChartDlgYAxisPanel" ).form('validate form')) {
 				saveNewBarChart()
-				$(this).dialog('close');
 			} // if validate panel's form
 		},
 		"Cancel" : function() { $(this).dialog('close'); },
@@ -208,19 +213,19 @@ var barChartYAxisPanelConfig = {
 
 function newBarChart(barChartParams) {
 		
-	var barChartCreated = false
-	var placholderID = barChartParams.containerID
-	
+	newBarChartParams.placeholderID = barChartParams.containerID
 	newBarChartParams.geometry = barChartParams.geometry
+	newBarChartParams.barChartCreated = false
+	newBarChartParams.dialog = $('#newBarchartDialog')
 
 	openWizardDialog({
 		closeFunc: function () {
   		  console.log("Close dialog")
-  		  if(!barChartCreated)
+  		  if(!newBarChartParams.barChartCreated)
   		  {
   			  // If the the bar chart creation is not complete, remove the placeholder
   			  // from the canvas.
-  			  $('#'+placeholderID).remove()
+  			  $('#'+newBarChartParams.placeholderID).remove()
   		  }	
 		},
 		width: 550, height: 500,
@@ -230,5 +235,34 @@ function newBarChart(barChartParams) {
 	})
 		
 } // newBarChart
+
+
+// Helper method for drawing the placholder bar chart when designing the dashboard.
+function drawDesignModeDummyBarChart(placeholderID) {
+	
+	console.log("Drawing dummy bar chart: " + placeholderID)
+
+	 var dummyData = google.visualization.arrayToDataTable([
+		['Grouped Values', 'Summarized Values', ],
+		['A', 1],
+		['B', 2.5],
+	]);
+
+	var barChartOptions = {
+		title: 'Chart Title',
+		hAxis: {
+			title: 'Grouped Values',
+			minValue: 0
+		},
+		vAxis: {
+			title: 'Summarized Values'
+		}
+	};
+
+   	var chartContainerElem = document.getElementById(placeholderID)
+	var barChart = new google.visualization.ColumnChart(chartContainerElem);
+	  
+	barChart.draw(dummyData, barChartOptions);
+}
 
 
