@@ -39,3 +39,20 @@ func newBarChart(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func getBarChartData(w http.ResponseWriter, r *http.Request) {
+
+	var barChartParams dashboard.GetBarChartParams
+	if err := decodeJSONRequest(r, &barChartParams); err != nil {
+		WriteErrorResponse(w, err)
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+	if barChartData, err := dashboard.GetBarChartData(appEngCntxt, barChartParams); err != nil {
+		WriteErrorResponse(w, err)
+	} else {
+		writeJSONResponse(w, barChartData)
+	}
+
+}

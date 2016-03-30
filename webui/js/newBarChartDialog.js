@@ -1,6 +1,7 @@
 
 var newBarChartParams = {}
 
+
 function initNewBarChartDialog(dashboardID) {
 
 	newBarChartParams.dashboardID = dashboardID
@@ -47,6 +48,14 @@ function saveNewBarChart() {
 
 		newBarChartParams.barChartCreated = true;		
 		newBarChartParams.dialog.dialog("close")
+		
+		barChartDataParams = { 
+			parentDashboardID: newBarChartParams.dashboardID,
+			barChartID: barChartRef.barChartID
+		}
+		jsonAPIRequest("getBarChartData",barChartDataParams,function(barChartData) {
+			drawBarChart(barChartRef.barChartID,barChartData)
+		})
 	})
 }
 
@@ -237,32 +246,5 @@ function newBarChart(barChartParams) {
 } // newBarChart
 
 
-// Helper method for drawing the placholder bar chart when designing the dashboard.
-function drawDesignModeDummyBarChart(placeholderID) {
-	
-	console.log("Drawing dummy bar chart: " + placeholderID)
-
-	 var dummyData = google.visualization.arrayToDataTable([
-		['Grouped Values', 'Summarized Values', ],
-		['A', 1],
-		['B', 2.5],
-	]);
-
-	var barChartOptions = {
-		title: 'Chart Title',
-		hAxis: {
-			title: 'Grouped Values',
-			minValue: 0
-		},
-		vAxis: {
-			title: 'Summarized Values'
-		}
-	};
-
-   	var chartContainerElem = document.getElementById(placeholderID)
-	var barChart = new google.visualization.ColumnChart(chartContainerElem);
-	  
-	barChart.draw(dummyData, barChartOptions);
-}
 
 

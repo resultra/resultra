@@ -167,7 +167,7 @@ func ResizeLayoutContainer(appEngContext appengine.Context, resizeParams ResizeC
 
 	// Retrieve the entire LayoutContainer, but overwrite just the Geometry property.
 	var layoutContainerForUpdate LayoutContainer
-	getErr := getChildEntityByID(resizeParams.ContainerID, appEngContext,
+	getErr := GetChildEntityByID(resizeParams.ContainerID, appEngContext,
 		layoutContainerEntityKind,
 		parentLayoutKey, &layoutContainerForUpdate)
 	if getErr != nil {

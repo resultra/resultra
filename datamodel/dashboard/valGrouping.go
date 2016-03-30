@@ -88,3 +88,64 @@ func NewValGrouping(appEngContext appengine.Context, params NewValGroupingParams
 	return &valGrouping, &valGroupingRef, nil
 
 }
+
+type ValGroup struct {
+	groupLabel     string
+	recordsInGroup []datamodel.RecordRef
+}
+
+type ValGroupingRecordVal struct {
+	groupLabel string
+}
+
+func recordGroupLabel(fieldGroupRef datamodel.FieldRef, recordRef datamodel.RecordRef) (string, error) {
+	switch fieldGroupRef.FieldInfo.Type {
+	case datamodel.FieldTypeText:
+		if recordRef.FieldValues.ValueIsSet(fieldGroupRef.FieldID) {
+			textVal, valErr := recordRef.FieldValues.GetTextFieldValue(fieldGroupRef.FieldID)
+			if valErr != nil {
+				return "", fmt.Errorf("recordGroupLabel: Unabled to retrieve value for grouping label: error = %v", valErr)
+			} else {
+				return textVal, nil
+			}
+		} else {
+			return "BLANK", nil
+		}
+	case datamodel.FieldTypeNumber:
+		return "All Numbers", nil // TODO - Group by number and/or bucket the values
+	case datamodel.FieldTypeDate:
+		return "All Dates", nil // TODO - Group by date and/or bucket the values by day, month, etc.
+	}
+	return "", fmt.Errorf("recordGroupLabel: unsupported grouping: fieldRef = %+v", fieldGroupRef)
+}
+
+func (valGrouping ValGrouping) groupRecords(appEngContext appengine.Context, recordRefs []datamodel.RecordRef) ([]ValGroup, error) {
+	fieldRef, fieldErr := datamodel.GetFieldFromKey(appEngContext, valGrouping.GroupValsByField)
+	if fieldErr != nil {
+		return nil, fmt.Errorf("groupRecords: Can't get field to group records: error = %v", fieldErr)
+	}
+
+	// Use a map to group the values. Values are added to the same GroupVal if they have the same
+	// group label.
+	groupLabelValGroupMap := map[string]*ValGroup{}
+	for _, currRecordRef := range recordRefs {
+		groupLabel, lblErr := recordGroupLabel(*fieldRef, currRecordRef)
+		if lblErr != nil {
+			return nil, fmt.Errorf("groupRecords: Error getting label to group records: error = %v", lblErr)
+		}
+		_, groupExists := groupLabelValGroupMap[groupLabel]
+		if !groupExists {
+			groupLabelValGroupMap[groupLabel] = &ValGroup{groupLabel, []datamodel.RecordRef{}}
+		}
+		valGroup := groupLabelValGroupMap[groupLabel]
+		valGroup.recordsInGroup = append(valGroup.recordsInGroup, currRecordRef)
+	}
+
+	// Flatten the group values into an array
+	var valGroups []ValGroup
+	for _, currValGroup := range groupLabelValGroupMap {
+		valGroups = append(valGroups, *currValGroup)
+	}
+
+	return valGroups, nil
+}

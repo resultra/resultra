@@ -13,12 +13,21 @@ const recordEntityKind string = "Record"
 
 type Record map[string]interface{}
 
-func (rec Record) valueIsSet(fieldID string) bool {
+func (rec Record) ValueIsSet(fieldID string) bool {
 	_, valueExists := rec[fieldID]
 	if valueExists {
 		return true
 	} else {
 		return false
+	}
+}
+
+func (rec Record) GetTextFieldValue(fieldID string) (string, error) {
+	rawVal := rec[fieldID]
+	if theStr, validType := rawVal.(string); validType {
+		return theStr, nil
+	} else {
+		return "", fmt.Errorf("Type mismatch retrieving text field value from record: field ID = %v, raw value = %v", fieldID, rawVal)
 	}
 }
 

@@ -12,7 +12,7 @@ type DummyGetDest struct {
 	dummy string
 }
 
-func newRootEntityKey(appEngContext appengine.Context,
+func NewRootEntityKey(appEngContext appengine.Context,
 	entityKind string, encodedID string) (*datastore.Key, error) {
 
 	decodedID, err := decodeUniqueEntityIDStrToInt(encodedID)
@@ -72,7 +72,7 @@ func verifyEntityExists(appEngContext appengine.Context, entityKind string, exis
 func GetExistingRootEntityKey(appEngContext appengine.Context,
 	entityKind string, encodedID string) (*datastore.Key, error) {
 
-	rootKey, keyErr := newRootEntityKey(appEngContext, entityKind, encodedID)
+	rootKey, keyErr := NewRootEntityKey(appEngContext, entityKind, encodedID)
 	if keyErr != nil {
 		return nil, keyErr
 	}
@@ -130,7 +130,7 @@ func updateExistingEntity(appEngContext appengine.Context,
 func updateExistingRootEntity(appEngContext appengine.Context, entityKind string,
 	encodedID string, src interface{}) error {
 
-	rootKey, keyErr := newRootEntityKey(appEngContext, entityKind, encodedID)
+	rootKey, keyErr := NewRootEntityKey(appEngContext, entityKind, encodedID)
 	if keyErr != nil {
 		return fmt.Errorf("updateExistingRootEntity failed: err = %v", keyErr)
 	}
@@ -145,7 +145,7 @@ func updateExistingRootEntity(appEngContext appengine.Context, entityKind string
 
 }
 
-func getChildEntityByID(encodedID string, appEngContext appengine.Context, entityKind string,
+func GetChildEntityByID(encodedID string, appEngContext appengine.Context, entityKind string,
 	parentKey *datastore.Key, dest interface{}) error {
 
 	decodedID, err := decodeUniqueEntityIDStrToInt(encodedID)

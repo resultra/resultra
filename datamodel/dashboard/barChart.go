@@ -103,3 +103,63 @@ func NewBarChart(appEngContext appengine.Context, params NewBarChartParams) (*Ba
 	return &barChartRef, nil
 
 }
+
+type GetBarChartParams struct {
+	ParentDashboardID string `json:"parentDashboardID"`
+	BarChartID        string `json:"barChartID"`
+}
+
+func getBarChart(appEngContext appengine.Context, params GetBarChartParams) (*BarChart, error) {
+
+	parentDashboardKey, dashboardKeyErr := datamodel.NewRootEntityKey(appEngContext,
+		dashboardEntityKind, params.ParentDashboardID)
+	if dashboardKeyErr != nil {
+		return nil, fmt.Errorf("getBarChart: unable to retrieve parent dashboard key for dashboard = %v", params.ParentDashboardID)
+	}
+
+	var barChart BarChart
+	getErr := datamodel.GetChildEntityByID(params.BarChartID, appEngContext, barChartEntityKind,
+		parentDashboardKey, &barChart)
+	if getErr != nil {
+		return nil, fmt.Errorf("getBarChart: Unable to get bar chart from datastore: error = %v", getErr)
+	}
+
+	return &barChart, nil
+
+}
+
+type BarChartDataRow struct {
+	Label string  `json:"label"`
+	Value float64 `json:"value"`
+}
+
+type BarChartData struct {
+	DataRows []BarChartDataRow `json:"dataRows"`
+}
+
+func GetBarChartData(appEngContext appengine.Context, params GetBarChartParams) (*BarChartData, error) {
+
+	barChart, getBarChartErr := getBarChart(appEngContext, params)
+	if getBarChartErr != nil {
+		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart: %v", getBarChartErr)
+	}
+
+	recordRefs, getRecErr := datamodel.GetFilteredRecords(appEngContext)
+	if getRecErr != nil {
+		return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
+	}
+
+	valGroups, groupingErr := barChart.XAxisVals.groupRecords(appEngContext, recordRefs)
+	if groupingErr != nil {
+		return nil, fmt.Errorf("GetBarChartData: Error grouping records for bar chart: %v", groupingErr)
+	}
+
+	var barChartData BarChartData
+	for _, valGroup := range valGroups {
+		barChartData.DataRows = append(barChartData.DataRows,
+			BarChartDataRow{valGroup.groupLabel, float64(len(valGroup.recordsInGroup))})
+	}
+
+	return &barChartData, nil
+
+}
