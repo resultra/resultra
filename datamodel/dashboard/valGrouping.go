@@ -119,7 +119,12 @@ func recordGroupLabel(fieldGroupRef datamodel.FieldRef, recordRef datamodel.Reco
 	return "", fmt.Errorf("recordGroupLabel: unsupported grouping: fieldRef = %+v", fieldGroupRef)
 }
 
-func (valGrouping ValGrouping) groupRecords(appEngContext appengine.Context, recordRefs []datamodel.RecordRef) ([]ValGroup, error) {
+type ValGroupingResult struct {
+	valGroups     []ValGroup
+	groupingLabel string
+}
+
+func (valGrouping ValGrouping) groupRecords(appEngContext appengine.Context, recordRefs []datamodel.RecordRef) (*ValGroupingResult, error) {
 	fieldRef, fieldErr := datamodel.GetFieldFromKey(appEngContext, valGrouping.GroupValsByField)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("groupRecords: Can't get field to group records: error = %v", fieldErr)
@@ -147,5 +152,5 @@ func (valGrouping ValGrouping) groupRecords(appEngContext appengine.Context, rec
 		valGroups = append(valGroups, *currValGroup)
 	}
 
-	return valGroups, nil
+	return &ValGroupingResult{valGroups, fieldRef.FieldInfo.Name}, nil
 }

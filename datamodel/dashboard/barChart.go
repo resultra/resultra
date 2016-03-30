@@ -134,7 +134,11 @@ type BarChartDataRow struct {
 }
 
 type BarChartData struct {
-	DataRows []BarChartDataRow `json:"dataRows"`
+	BarChartID string            `json:"barChartID"`
+	Title      string            `json:"title"`
+	XAxisTitle string            `json:"xAxisTitle"`
+	YAxisTitle string            `json:"yAxisTitle"`
+	DataRows   []BarChartDataRow `json:"dataRows"`
 }
 
 func GetBarChartData(appEngContext appengine.Context, params GetBarChartParams) (*BarChartData, error) {
@@ -149,16 +153,21 @@ func GetBarChartData(appEngContext appengine.Context, params GetBarChartParams) 
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
 	}
 
-	valGroups, groupingErr := barChart.XAxisVals.groupRecords(appEngContext, recordRefs)
+	valGroupingResult, groupingErr := barChart.XAxisVals.groupRecords(appEngContext, recordRefs)
 	if groupingErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error grouping records for bar chart: %v", groupingErr)
 	}
 
 	var barChartData BarChartData
-	for _, valGroup := range valGroups {
+	for _, valGroup := range valGroupingResult.valGroups {
 		barChartData.DataRows = append(barChartData.DataRows,
 			BarChartDataRow{valGroup.groupLabel, float64(len(valGroup.recordsInGroup))})
 	}
+
+	barChartData.BarChartID = params.BarChartID
+	barChartData.Title = "Chart Title TBD" // not implemented yet
+	barChartData.XAxisTitle = valGroupingResult.groupingLabel
+	barChartData.YAxisTitle = "Count"
 
 	return &barChartData, nil
 
