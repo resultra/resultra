@@ -108,7 +108,7 @@ func InsertNewEntity(appEngContext appengine.Context, entityKind string,
 
 }
 
-func updateExistingEntity(appEngContext appengine.Context,
+func UpdateExistingEntity(appEngContext appengine.Context,
 	encodedID string, entityKind string,
 	parentKey *datastore.Key, src interface{}) error {
 

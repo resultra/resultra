@@ -177,7 +177,7 @@ func ResizeLayoutContainer(appEngContext appengine.Context, resizeParams ResizeC
 	// Update the geometry properties
 	layoutContainerForUpdate.Geometry = resizeParams.Geometry
 
-	if updateErr := updateExistingEntity(appEngContext,
+	if updateErr := UpdateExistingEntity(appEngContext,
 		resizeParams.ContainerID, layoutContainerEntityKind,
 		parentLayoutKey, &layoutContainerForUpdate); updateErr != nil {
 		return updateErr

@@ -41,6 +41,12 @@ type NewValSummaryParams struct {
 	SummarizeValsWith string `json:"summarizeValsWith"`
 }
 
+func (valSummaryRef ValSummaryRef) toNewValSummaryParams() NewValSummaryParams {
+	return NewValSummaryParams{
+		FieldID:           valSummaryRef.SummarizeByFieldRef.FieldID,
+		SummarizeValsWith: valSummaryRef.SummarizeValsWith}
+}
+
 func validateFieldTypeWithSummary(fieldType string, summarizeValsWith string) error {
 	switch summarizeValsWith {
 	case valSummaryCount:
@@ -75,5 +81,21 @@ func NewValSummary(appEngContext appengine.Context, params NewValSummaryParams) 
 	valSummary := ValSummary{fieldKey, params.SummarizeValsWith}
 
 	return &valSummary, &valSummaryRef, nil
+
+}
+
+func NewValSummaryFromRef(appEngContext appengine.Context, valSummaryRef ValSummaryRef) (*ValSummary, *ValSummaryRef, error) {
+	return NewValSummary(appEngContext, valSummaryRef.toNewValSummaryParams())
+}
+
+func (valSummary ValSummary) GetValSummaryRef(appEngContext appengine.Context) (*ValSummaryRef, error) {
+
+	fieldRef, fieldErr := datamodel.GetFieldFromKey(appEngContext, valSummary.SummarizeByField)
+	if fieldErr != nil {
+		return nil, fmt.Errorf("GetValGroupingRef: Can't get field  for value grouping: datastore error = %v", fieldErr)
+	}
+	valSummaryRef := ValSummaryRef{*fieldRef, valSummary.SummarizeValsWith}
+
+	return &valSummaryRef, nil
 
 }

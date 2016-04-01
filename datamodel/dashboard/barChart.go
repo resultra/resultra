@@ -29,8 +29,9 @@ type BarChart struct {
 
 // BarChartRef is the opaque API reference object for dashboard bar charts.
 type BarChartRef struct {
-	BarChartID string                   `json:"barChartID"`
-	Geometry   datamodel.LayoutGeometry `json:"geometry"`
+	ParentDashboardID string                   `json:"parentDashboardID"`
+	BarChartID        string                   `json:"barChartID"`
+	Geometry          datamodel.LayoutGeometry `json:"geometry"`
 
 	XAxisValsRef    ValGroupingRef `json:"xAxisValsRef"`
 	XAxisSortValues string         `json:"xAxisSortValues"`
@@ -54,6 +55,65 @@ type NewBarChartParams struct {
 	Geometry datamodel.LayoutGeometry `json:"geometry"`
 }
 
+// Update the properties to match those found in updatedProps
+func UpdateBarChartProps(appEngContext appengine.Context, updatedProps BarChartRef) (*BarChartRef, error) {
+
+	valGrouping, valGroupingRef, valGroupingErr := NewValGroupingFromRef(appEngContext, updatedProps.XAxisValsRef)
+	if valGroupingErr != nil {
+		return nil, fmt.Errorf("UpdateBarChartProperties: Error creating new value grouping for bar chart: error = %v", valGroupingErr)
+	}
+
+	valSummary, valSummaryRef, valSummaryErr := NewValSummaryFromRef(appEngContext, updatedProps.YAxisValRef)
+	if valSummaryErr != nil {
+		return nil, fmt.Errorf("UpdateBarChartProperties: Error creating summary values for bar chart: error = %v", valSummaryErr)
+	}
+
+	if !datamodel.ValidGeometry(updatedProps.Geometry) {
+		return nil, fmt.Errorf("UpdateBarChartProperties: Invalid geometry for bar chart: %+v", updatedProps.Geometry)
+	}
+
+	if !validBarChartSortXAxisProp(updatedProps.XAxisSortValues) {
+		return nil, fmt.Errorf("UpdateBarChartProperties: Invalid X axis sort order: %v", updatedProps.XAxisSortValues)
+	}
+
+	updatedBarChart := BarChart{
+		XAxisVals:       *valGrouping,
+		XAxisSortValues: updatedProps.XAxisSortValues,
+		YAxisVals:       *valSummary,
+		Geometry:        updatedProps.Geometry}
+
+	parentDashboardKey, getDashboardErr := datamodel.GetExistingRootEntityKey(appEngContext, dashboardEntityKind,
+		updatedProps.ParentDashboardID)
+	if getDashboardErr != nil {
+		return nil, fmt.Errorf("UpdateBarChartProperties: Invalid dashboard for bar chart: %v", getDashboardErr)
+	}
+
+	if updateErr := datamodel.UpdateExistingEntity(appEngContext,
+		updatedProps.BarChartID, barChartEntityKind,
+		parentDashboardKey, &updatedBarChart); updateErr != nil {
+		return nil, updateErr
+	}
+
+	barChartRef := BarChartRef{
+		ParentDashboardID: updatedProps.ParentDashboardID,
+		BarChartID:        updatedProps.BarChartID,
+		Geometry:          updatedBarChart.Geometry,
+		XAxisValsRef:      *valGroupingRef,
+		XAxisSortValues:   updatedBarChart.XAxisSortValues,
+		YAxisValRef:       *valSummaryRef,
+	}
+
+	return &barChartRef, nil
+}
+
+func validBarChartSortXAxisProp(xAxisSortVal string) bool {
+	if (xAxisSortVal == xAxisSortAsc) || (xAxisSortVal == xAxisSortDesc) {
+		return true
+	} else {
+		return false
+	}
+}
+
 func NewBarChart(appEngContext appengine.Context, params NewBarChartParams) (*BarChartRef, error) {
 
 	valGrouping, valGroupingRef, valGroupingErr := NewValGrouping(appEngContext, params.XAxisVals)
@@ -70,7 +130,7 @@ func NewBarChart(appEngContext appengine.Context, params NewBarChartParams) (*Ba
 		return nil, fmt.Errorf("NewBarChart: Invalid geometry for bar chart: %+v", params.Geometry)
 	}
 
-	if !((params.XAxisSortValues == xAxisSortAsc) || (params.XAxisSortValues == xAxisSortDesc)) {
+	if !validBarChartSortXAxisProp(params.XAxisSortValues) {
 		return nil, fmt.Errorf("NewBarChart: Invalid X axis sort order: %v", params.XAxisSortValues)
 	}
 
@@ -93,11 +153,12 @@ func NewBarChart(appEngContext appengine.Context, params NewBarChartParams) (*Ba
 	}
 
 	barChartRef := BarChartRef{
-		BarChartID:      barChartID,
-		Geometry:        params.Geometry,
-		XAxisValsRef:    *valGroupingRef,
-		XAxisSortValues: params.XAxisSortValues,
-		YAxisValRef:     *valSummaryRef,
+		ParentDashboardID: params.ParentDashboardID,
+		BarChartID:        barChartID,
+		Geometry:          params.Geometry,
+		XAxisValsRef:      *valGroupingRef,
+		XAxisSortValues:   params.XAxisSortValues,
+		YAxisValRef:       *valSummaryRef,
 	}
 
 	return &barChartRef, nil
@@ -128,22 +189,51 @@ func getBarChart(appEngContext appengine.Context, params GetBarChartParams) (*Ba
 
 }
 
+func getBarChartAndRef(appEngContext appengine.Context, params GetBarChartParams) (*BarChart, *BarChartRef, error) {
+
+	barChart, getBarChartErr := getBarChart(appEngContext, params)
+	if getBarChartErr != nil {
+		return nil, nil, fmt.Errorf("GetBarChartRef: Error getting bar chart reference: %v", getBarChartErr)
+	}
+
+	xAxisValsRef, groupingErr := barChart.XAxisVals.GetValGroupingRef(appEngContext)
+	if groupingErr != nil {
+		return nil, nil, fmt.Errorf("GetBarChartRef: Error getting bar chart reference: %v", groupingErr)
+	}
+
+	yAxisValsRef, summaryRef := barChart.YAxisVals.GetValSummaryRef(appEngContext)
+	if summaryRef != nil {
+		return nil, nil, fmt.Errorf("GetBarChartRef: Error getting bar chart reference: %v", summaryRef)
+	}
+
+	barChartRef := BarChartRef{
+		ParentDashboardID: params.ParentDashboardID,
+		BarChartID:        params.BarChartID,
+		Geometry:          barChart.Geometry,
+		XAxisValsRef:      *xAxisValsRef,
+		XAxisSortValues:   barChart.XAxisSortValues,
+		YAxisValRef:       *yAxisValsRef}
+
+	return barChart, &barChartRef, nil
+}
+
 type BarChartDataRow struct {
 	Label string  `json:"label"`
 	Value float64 `json:"value"`
 }
 
 type BarChartData struct {
-	BarChartID string            `json:"barChartID"`
-	Title      string            `json:"title"`
-	XAxisTitle string            `json:"xAxisTitle"`
-	YAxisTitle string            `json:"yAxisTitle"`
-	DataRows   []BarChartDataRow `json:"dataRows"`
+	BarChartID  string            `json:"barChartID"`
+	BarChartRef BarChartRef       `json:"barChartRef"`
+	Title       string            `json:"title"`
+	XAxisTitle  string            `json:"xAxisTitle"`
+	YAxisTitle  string            `json:"yAxisTitle"`
+	DataRows    []BarChartDataRow `json:"dataRows"`
 }
 
 func GetBarChartData(appEngContext appengine.Context, params GetBarChartParams) (*BarChartData, error) {
 
-	barChart, getBarChartErr := getBarChart(appEngContext, params)
+	barChart, barChartRef, getBarChartErr := getBarChartAndRef(appEngContext, params)
 	if getBarChartErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart: %v", getBarChartErr)
 	}
@@ -158,16 +248,19 @@ func GetBarChartData(appEngContext appengine.Context, params GetBarChartParams) 
 		return nil, fmt.Errorf("GetBarChartData: Error grouping records for bar chart: %v", groupingErr)
 	}
 
-	var barChartData BarChartData
+	dataRows := []BarChartDataRow{}
 	for _, valGroup := range valGroupingResult.valGroups {
-		barChartData.DataRows = append(barChartData.DataRows,
+		dataRows = append(dataRows,
 			BarChartDataRow{valGroup.groupLabel, float64(len(valGroup.recordsInGroup))})
 	}
 
-	barChartData.BarChartID = params.BarChartID
-	barChartData.Title = "Chart Title TBD" // not implemented yet
-	barChartData.XAxisTitle = valGroupingResult.groupingLabel
-	barChartData.YAxisTitle = "Count"
+	barChartData := BarChartData{
+		BarChartID:  params.BarChartID,
+		BarChartRef: *barChartRef,
+		Title:       "Chart Title TBD", // not implemented yet
+		XAxisTitle:  valGroupingResult.groupingLabel,
+		YAxisTitle:  "Count",
+		DataRows:    dataRows}
 
 	return &barChartData, nil
 

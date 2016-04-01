@@ -49,6 +49,13 @@ type NewValGroupingParams struct {
 	GroupByValBucketWidth float64 `json:"groupByValBucketWidth"`
 }
 
+func (valGroupingRef ValGroupingRef) toNewValGroupingParams() NewValGroupingParams {
+	return NewValGroupingParams{
+		FieldID:               valGroupingRef.GroupValsByFieldRef.FieldID,
+		GroupValsBy:           valGroupingRef.GroupValsBy,
+		GroupByValBucketWidth: valGroupingRef.GroupByValBucketWidth}
+}
+
 func validateFieldTypeWithGrouping(fieldType string, groupValsBy string, bucketWidth float64) error {
 	switch groupValsBy {
 	case valGroupByNone:
@@ -86,6 +93,24 @@ func NewValGrouping(appEngContext appengine.Context, params NewValGroupingParams
 	valGrouping := ValGrouping{fieldKey, params.GroupValsBy, params.GroupByValBucketWidth}
 
 	return &valGrouping, &valGroupingRef, nil
+
+}
+
+func NewValGroupingFromRef(appEngContext appengine.Context, groupingRef ValGroupingRef) (*ValGrouping, *ValGroupingRef, error) {
+	newValGroupingParams := groupingRef.toNewValGroupingParams()
+	return NewValGrouping(appEngContext, newValGroupingParams)
+}
+
+func (valGrouping ValGrouping) GetValGroupingRef(appEngContext appengine.Context) (*ValGroupingRef, error) {
+
+	fieldRef, fieldErr := datamodel.GetFieldFromKey(appEngContext, valGrouping.GroupValsByField)
+	if fieldErr != nil {
+		return nil, fmt.Errorf("GetValGroupingRef: Can't get field  for value grouping: datastore error = %v", fieldErr)
+	}
+
+	valGroupingRef := ValGroupingRef{*fieldRef, valGrouping.GroupValsBy, valGrouping.GroupByValBucketWidth}
+
+	return &valGroupingRef, nil
 
 }
 

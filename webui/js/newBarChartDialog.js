@@ -54,7 +54,7 @@ function saveNewBarChart() {
 			barChartID: barChartRef.barChartID
 		}
 		jsonAPIRequest("getBarChartData",barChartDataParams,function(barChartData) {
-			drawBarChart(barChartData)
+			initBarChart(barChartRef,barChartData)
 		})
 	})
 }
