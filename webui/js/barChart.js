@@ -5,7 +5,7 @@ function drawBarChart(barChartData) {
 	var dataRows = [];
 	for(var dataIndex in barChartData.dataRows) {
 		var rowData = barChartData.dataRows[dataIndex]
-		console.log("Adding row: " + rowData.label + " " + rowData.value)
+		console.log("Adding row: label=" + rowData.label + " val=" + rowData.value)
 		dataRows.push([rowData.label,rowData.value])
 	}
 	
@@ -14,8 +14,6 @@ function drawBarChart(barChartData) {
 	dataTable.addColumn('number',barChartData.yAxisTitle)
 	dataTable.addRows(dataRows)
 	
-	console.log("Drawing dummy bar chart: " + placeholderID)
-
 	var barChartOptions = {
 		title: barChartData.title,
 		hAxis: {
@@ -112,14 +110,18 @@ function initBarChartEditBehavior(barChartID)
 	
 }
 
-function initBarChart(barChartRef,barChartData) {
-	
-	drawBarChart(barChartData)
-	initBarChartEditBehavior(barChartRef.barChartID)
+function barChartContainerHTML(barChartID) {
+	var containerHTML = ''+
+	'<div class="dashboardItemDesignContainer dashboardBarChartContainer draggable resizable" id="'+ barChartID+'">' +
+	'</div>';
+	return containerHTML
+}
 
-	var barChartContainer = $('#'+barChartRef.barChartID)
-	barChartContainer.data("barChartRef",barChartRef)
-	
+function initBarChartData(barChartData) {
+	drawBarChart(barChartData)
+	initBarChartEditBehavior(barChartData.barChartRef.barChartID)
+	var barChartContainer = $('#'+barChartData.barChartRef.barChartID)
+	barChartContainer.data("barChartRef",barChartData.barChartRef)
 }
 
 

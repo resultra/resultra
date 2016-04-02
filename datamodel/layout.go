@@ -51,7 +51,7 @@ func GetAllLayoutRefs(appEngContext appengine.Context) ([]LayoutRef, error) {
 	layoutRefs := make([]LayoutRef, len(allLayouts))
 	for i, currLayout := range allLayouts {
 		layoutKey := keys[i]
-		layoutID, encodeErr := encodeUniqueEntityIDToStr(layoutKey)
+		layoutID, encodeErr := EncodeUniqueEntityIDToStr(layoutKey)
 		if encodeErr != nil {
 			return nil, fmt.Errorf("Failed to encode unique ID for layout: key=%+v, encode err=%v", layoutKey, encodeErr)
 		}
@@ -210,13 +210,13 @@ func GetLayoutContainers(appEngContext appengine.Context, parentLayoutID string)
 		for i, c := range layoutContainers {
 
 			containerKey := keys[i]
-			containerID, encodeErr := encodeUniqueEntityIDToStr(containerKey)
+			containerID, encodeErr := EncodeUniqueEntityIDToStr(containerKey)
 			if encodeErr != nil {
 				return nil, fmt.Errorf("Failed to encode unique ID for layout container: key=%+v, encode err=%v",
 					containerKey, encodeErr)
 			}
 
-			fieldID, fieldIDEncodeErr := encodeUniqueEntityIDToStr(c.Field)
+			fieldID, fieldIDEncodeErr := EncodeUniqueEntityIDToStr(c.Field)
 			if fieldIDEncodeErr != nil {
 				return nil, fmt.Errorf("Failed to encode unique ID for layout container's field:  key=%+v, encode err=%v",
 					c.Field, fieldIDEncodeErr)

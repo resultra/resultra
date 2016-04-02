@@ -96,7 +96,7 @@ func InsertNewEntity(appEngContext appengine.Context, entityKind string,
 		return "", err
 	}
 
-	encodedID, encodeErr := encodeUniqueEntityIDToStr(putKey)
+	encodedID, encodeErr := EncodeUniqueEntityIDToStr(putKey)
 	if encodeErr != nil {
 		return "", encodeErr
 	}

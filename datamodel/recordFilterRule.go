@@ -134,7 +134,7 @@ func getOptionalParamValueByRuleDef(filterRuleDef FilterRuleDef,
 func createOneFilterRef(appEngContext appengine.Context,
 	filterRuleKey *datastore.Key, filterRule RecordFilterRule) (*FilterRuleRef, error) {
 
-	filterRuleID, encodeErr := encodeUniqueEntityIDToStr(filterRuleKey)
+	filterRuleID, encodeErr := EncodeUniqueEntityIDToStr(filterRuleKey)
 	if encodeErr != nil {
 		return nil, fmt.Errorf("createOneFilterRef: Failed to encode unique ID for filter rule: key=%+v, encode err=%v",
 			filterRuleKey, encodeErr)

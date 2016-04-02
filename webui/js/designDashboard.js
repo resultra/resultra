@@ -1,11 +1,31 @@
+function loadDashboardData()
+{
+	// Load the dashboard data
+	var loadBarChartDataParams = { dashboardID: dashboardID }
+	jsonAPIRequest("getDashboardData",loadBarChartDataParams,function(dashboardData) {
+		
+		for (var barChartDataIndex in dashboardData.barChartsData) {
+			var barChartData = dashboardData.barChartsData[barChartDataIndex]
+			console.log ("Loading bar chart: id = " + barChartData.barChartID)
+			
+			var barChartHTML = barChartContainerHTML(barChartData.barChartID);
+			var barChartElem = $(barChartHTML)
+			
+			$("#dashboardCanvas").append(barChartElem)
+			setElemGeometry(barChartElem,barChartData.barChartRef.geometry)
+			
+			initBarChartData(barChartData);			
+			
+		}
+	})
+	
+}
+
 $(document).ready(function() {
 							
 	var paletteConfig = {
 		draggableItemHTML: function(placeholderID,paletteItemID) {
-			var containerHTML = ''+
-				'<div class="dashboardItemDesignContainer dashboardBarChartContainer draggable resizable" id="'+ placeholderID+'">' +
-				'</div>';
-				console.log("Container HTML: " + containerHTML)
+			var containerHTML = barChartContainerHTML(placeholderID);
 			return containerHTML
 		},
 		
@@ -31,6 +51,7 @@ $(document).ready(function() {
 		dropDestSelector: "#dashboardCanvas",
 		paletteSelector: "#dashboardPaletteSidebar",
 	}
+	
 	initDesignPalette(paletteConfig)	
 	
 	initNewBarChartDialog(dashboardID)		
@@ -42,5 +63,7 @@ $(document).ready(function() {
 		west: fixedUILayoutPaneParams(200),
 		west__showOverflowOnHover:	true
 	})	  
+	
+	google.charts.setOnLoadCallback(loadDashboardData);
 	  
 });

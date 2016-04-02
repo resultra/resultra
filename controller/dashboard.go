@@ -57,6 +57,23 @@ func getBarChartData(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func getDashboardData(w http.ResponseWriter, r *http.Request) {
+
+	var dashboardParams dashboard.GetDashboardDataParams
+	if err := decodeJSONRequest(r, &dashboardParams); err != nil {
+		WriteErrorResponse(w, err)
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+	if dashboardData, err := dashboard.GetDashboardData(appEngCntxt, dashboardParams); err != nil {
+		WriteErrorResponse(w, err)
+	} else {
+		writeJSONResponse(w, *dashboardData)
+	}
+
+}
+
 func updateBarChartProps(w http.ResponseWriter, r *http.Request) {
 
 	var barChartRef dashboard.BarChartRef

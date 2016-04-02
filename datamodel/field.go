@@ -175,7 +175,7 @@ func GetFieldFromKey(appEngContext appengine.Context, fieldKey *datastore.Key) (
 			fieldKey, getErr)
 	}
 
-	fieldID, encodeErr := encodeUniqueEntityIDToStr(fieldKey)
+	fieldID, encodeErr := EncodeUniqueEntityIDToStr(fieldKey)
 	if encodeErr != nil {
 		return nil, fmt.Errorf("GetFieldFromKey: Failed to encode unique ID for field: key=%+v, encode err=%v",
 			fieldKey, encodeErr)
@@ -224,7 +224,7 @@ func GetAllFieldRefs(appEngContext appengine.Context) ([]FieldRef, error) {
 	fieldRefs := make([]FieldRef, len(allFields))
 	for i, currField := range allFields {
 		fieldKey := keys[i]
-		fieldID, encodeErr := encodeUniqueEntityIDToStr(fieldKey)
+		fieldID, encodeErr := EncodeUniqueEntityIDToStr(fieldKey)
 		if encodeErr != nil {
 			return nil, fmt.Errorf("Failed to encode unique ID for field: key=%+v, encode err=%v", fieldKey, encodeErr)
 		}

@@ -102,7 +102,7 @@ func GetRecords(appEngContext appengine.Context) ([]RecordRef, error) {
 	recordRefs := make([]RecordRef, len(records))
 	for recIter, currRec := range records {
 		recKey := keys[recIter]
-		recordID, encodeErr := encodeUniqueEntityIDToStr(recKey)
+		recordID, encodeErr := EncodeUniqueEntityIDToStr(recKey)
 		if encodeErr != nil {
 			return nil, fmt.Errorf("Failed to encode unique ID for record: key=%+v, encode err=%v", recKey, encodeErr)
 		}

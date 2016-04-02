@@ -2,6 +2,7 @@ package dashboard
 
 import (
 	"appengine"
+	"appengine/datastore"
 	"fmt"
 	"resultra/datasheet/datamodel"
 )
@@ -189,21 +190,15 @@ func getBarChart(appEngContext appengine.Context, params GetBarChartParams) (*Ba
 
 }
 
-func getBarChartAndRef(appEngContext appengine.Context, params GetBarChartParams) (*BarChart, *BarChartRef, error) {
-
-	barChart, getBarChartErr := getBarChart(appEngContext, params)
-	if getBarChartErr != nil {
-		return nil, nil, fmt.Errorf("GetBarChartRef: Error getting bar chart reference: %v", getBarChartErr)
-	}
-
+func getBarChartRef(appEngContext appengine.Context, params GetBarChartParams, barChart BarChart) (*BarChartRef, error) {
 	xAxisValsRef, groupingErr := barChart.XAxisVals.GetValGroupingRef(appEngContext)
 	if groupingErr != nil {
-		return nil, nil, fmt.Errorf("GetBarChartRef: Error getting bar chart reference: %v", groupingErr)
+		return nil, fmt.Errorf("GetBarChartRef: Error getting bar chart reference: %v", groupingErr)
 	}
 
 	yAxisValsRef, summaryRef := barChart.YAxisVals.GetValSummaryRef(appEngContext)
 	if summaryRef != nil {
-		return nil, nil, fmt.Errorf("GetBarChartRef: Error getting bar chart reference: %v", summaryRef)
+		return nil, fmt.Errorf("GetBarChartRef: Error getting bar chart reference: %v", summaryRef)
 	}
 
 	barChartRef := BarChartRef{
@@ -214,7 +209,7 @@ func getBarChartAndRef(appEngContext appengine.Context, params GetBarChartParams
 		XAxisSortValues:   barChart.XAxisSortValues,
 		YAxisValRef:       *yAxisValsRef}
 
-	return barChart, &barChartRef, nil
+	return &barChartRef, nil
 }
 
 type BarChartDataRow struct {
@@ -231,11 +226,12 @@ type BarChartData struct {
 	DataRows    []BarChartDataRow `json:"dataRows"`
 }
 
-func GetBarChartData(appEngContext appengine.Context, params GetBarChartParams) (*BarChartData, error) {
+func getOneBarChartData(appEngContext appengine.Context, params GetBarChartParams, barChart BarChart) (*BarChartData, error) {
 
-	barChart, barChartRef, getBarChartErr := getBarChartAndRef(appEngContext, params)
-	if getBarChartErr != nil {
-		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart: %v", getBarChartErr)
+	barChartRef, refErr := getBarChartRef(appEngContext, params, barChart)
+	if refErr != nil {
+		return nil, fmt.Errorf("getDashboardBarChartsData: Error getting bar chart reference: %v", refErr)
+
 	}
 
 	recordRefs, getRecErr := datamodel.GetFilteredRecords(appEngContext)
@@ -255,7 +251,7 @@ func GetBarChartData(appEngContext appengine.Context, params GetBarChartParams) 
 	}
 
 	barChartData := BarChartData{
-		BarChartID:  params.BarChartID,
+		BarChartID:  barChartRef.BarChartID,
 		BarChartRef: *barChartRef,
 		Title:       "Chart Title TBD", // not implemented yet
 		XAxisTitle:  valGroupingResult.groupingLabel,
@@ -264,4 +260,53 @@ func GetBarChartData(appEngContext appengine.Context, params GetBarChartParams) 
 
 	return &barChartData, nil
 
+}
+
+func GetBarChartData(appEngContext appengine.Context, params GetBarChartParams) (*BarChartData, error) {
+
+	barChart, getBarChartErr := getBarChart(appEngContext, params)
+	if getBarChartErr != nil {
+		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart: %v", getBarChartErr)
+	}
+
+	barChartData, dataErr := getOneBarChartData(appEngContext, params, *barChart)
+	if dataErr != nil {
+		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart data: %v", dataErr)
+	}
+
+	return barChartData, nil
+
+}
+
+func getDashboardBarChartsData(appEngContext appengine.Context, parentDashboardID string,
+	parentDashboardKey *datastore.Key) ([]BarChartData, error) {
+
+	barChartQuery := datastore.NewQuery(barChartEntityKind).Ancestor(parentDashboardKey)
+	var barCharts []BarChart
+	barChartKeys, getBarChartsErr := barChartQuery.GetAll(appEngContext, &barCharts)
+
+	if getBarChartsErr != nil {
+		return nil, fmt.Errorf("getDashboardBarChartsData: unable to retrieve bar charts: %v", getBarChartsErr)
+	}
+
+	var barChartsData []BarChartData
+	for barChartIndex, barChart := range barCharts {
+
+		barChartID, idErr := datamodel.EncodeUniqueEntityIDToStr(barChartKeys[barChartIndex])
+		if idErr != nil {
+			return nil, fmt.Errorf("GetBarChartData: Error encoding bar chart ID: %v", idErr)
+		}
+
+		params := GetBarChartParams{
+			ParentDashboardID: parentDashboardID,
+			BarChartID:        barChartID}
+
+		barChartData, dataErr := getOneBarChartData(appEngContext, params, barChart)
+		if dataErr != nil {
+			return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart data: %v", dataErr)
+		}
+		barChartsData = append(barChartsData, *barChartData)
+	}
+
+	return barChartsData, nil
 }

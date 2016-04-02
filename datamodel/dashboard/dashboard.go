@@ -49,3 +49,30 @@ func GetDashboardRef(appEngContext appengine.Context, dashboardID string) (*Dash
 	return &DashboardRef{dashboardID, dashboard.Name}, nil
 
 }
+
+type GetDashboardDataParams struct {
+	DashboardID string `json:"dashboardID"`
+}
+
+type DashboardDataRef struct {
+	BarChartsData []BarChartData `json:"barChartsData"`
+}
+
+func GetDashboardData(appEngContext appengine.Context, params GetDashboardDataParams) (*DashboardDataRef, error) {
+
+	parentDashboardKey, err := datamodel.GetExistingRootEntityKey(appEngContext, dashboardEntityKind,
+		params.DashboardID)
+	if err != nil {
+		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard: error = %v", err)
+	}
+
+	barChartData, getBarChartsErr := getDashboardBarChartsData(appEngContext, params.DashboardID, parentDashboardKey)
+	if getBarChartsErr != nil {
+		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard barchart data: error = %v", getBarChartsErr)
+	}
+
+	dashboardDataRef := DashboardDataRef{
+		BarChartsData: barChartData}
+
+	return &dashboardDataRef, nil
+}

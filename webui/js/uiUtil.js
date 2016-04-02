@@ -85,6 +85,17 @@ function getFormFloatValue(formID,fieldID) {
 	return parseFloat($(formID).form('get value',fieldID))
 }
 
+function setElemGeometry(elem, geometry) {
+	elem.css({
+		top: geometry.positionTop,
+		left: geometry.positionLeft,
+		width: geometry.sizeWidth,
+		height: geometry.sizeHeight,
+		position: "absolute"
+	});
+	
+}
+
 
 function insertTextAreaAtCursor(elem, newText) {
 	
