@@ -50,7 +50,7 @@ function loadBarChartProperties(barChartPropsArgs) {
 	
 	$("#barChartProps").form('set value','barChartTitleProp',barChartRef.title)
 	
-	// Toggle to the bar chart properties
+	// Toggle to the bar chart properties, hiding the other property panels
 	hideSiblingsShowOne('#barChartProps')
 			
 	initBarChartPropsEditHandling(barChartPropsArgs)

@@ -114,10 +114,17 @@ function initBarChartEditBehavior(barChartID)
 				barChartContainer.data("redrawFunc")()
 				
 				var barChartRef = barChartContainer.data("barChartRef")
-				barChartRef.geometry = resizedGeometry
-		
-			 	jsonAPIRequest("updateBarChartProps",barChartRef,function(updatedBarChartRef) {
-			 		
+					
+				var resizeParams = {
+					uniqueID: {
+						parentDashboardID: barChartRef.parentDashboardID,
+						barChartID: barChartRef.barChartID
+					},
+					geometry: resizedGeometry
+				}	
+						
+			 	jsonAPIRequest("setBarChartDimensions",resizeParams,function(updatedBarChartRef) {
+			 		console.log("bar chart dimensions updated")
 			 	})	
 				  
 			  } // stop function
