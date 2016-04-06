@@ -16,6 +16,10 @@
 }
 
 
+.initiallyHidden {
+	display:none;
+}
+
 div .sidebarHeader {
 	padding: 8px !important;
 	margin: 0px !important;

@@ -1,5 +1,18 @@
 
 
+function barChartContainerHTML(barChartID) {
+	
+	// The actual chart is placed inside a "chartWrapper" div. The outer div is used by draggable and resizable to position 
+	// and resize the bar chart within the dashboard canvas. If the chart is placed directly within the out div, there
+	// is a conflict with the Google chart code disabling the resize behavor after the chart is refreshed.
+	var containerHTML = ''+
+	'<div class="dashboardItemDesignContainer dashboardBarChartContainer draggable resizable selectable" id="'+ barChartID+'">' +
+		'<div id="' + barChartID+'_chart" class="dashboardChartWrapper"</div>'+
+	'</div>';
+	return containerHTML
+}
+
+
 function drawBarChart(barChartData) {
 	
 	var dataRows = [];
@@ -27,7 +40,8 @@ function drawBarChart(barChartData) {
 		chartArea:{left:40,top:30,width:'85%',height:'75%'}
 	};
 	
-  	var chartContainerElem = document.getElementById(barChartData.barChartID)
+	// Place the chart in an inner div - see the comment in barChartContainerHTML()
+  	var chartContainerElem = document.getElementById(barChartData.barChartID+'_chart')
 	var barChart = new google.visualization.ColumnChart(chartContainerElem);
 	
 	// Whenever new data is loaded into the bar chart and it is redrawn,
@@ -70,7 +84,7 @@ function initBarChartEditBehavior(barChartID)
 		grid: [20, 20], // snap to a grid
 		cursor: "move",
 		containment: "parent",
-		clone: "original",				
+		clone: "original",						
 		stop: function(event, ui) {
 				  var layoutPos = {
 					  positionLeft: ui.position.left,
@@ -84,6 +98,7 @@ function initBarChartEditBehavior(barChartID)
   
 		      } // stop function
 	})
+	  
 	barChartContainer.resizable({
 		aspectRatio: false,
 		handles: 'e, w, n, s', // Only allow resizing horizontally
@@ -108,20 +123,56 @@ function initBarChartEditBehavior(barChartID)
 			  } // stop function
 	});
 	
+	// jQuery UI draggable and selectable functionality conflict with one another (using draggable masks
+	// the click behavior for selectable). So, the click handling to select a dashboard item needs to 
+	// be done directly.
+	barChartContainer.click(function(e) {
+		
+		// This is important - if a click hits the bar chart, then stop the propagation of the click
+		// to the parent div(s), including the dashboard canvas itself. If the parent dashboard canvas
+		// gets a click, it will deselect all the items.
+		e.stopPropagation();
+		
+		var barChartID = $(this).attr("id")
+		console.log("barchart selection click: " + $(this).attr("id"))
+        $( "#dashboardCanvas > div" ).removeClass("ui-selected");
+        $(this).addClass("ui-selected");
+		
+		var barChartPropsArgs = {
+			dashboardID: dashboardID,
+			barChartID: barChartID,
+			
+			propertyUpdateComplete: function (updatedBarChartRef) {
+				
+				var updateContainer = $('#'+updatedBarChartRef.barChartID)
+				updateContainer.data("barChartRef",updatedBarChartRef)
+				
+				var getDataParams = {
+					parentDashboardID:updatedBarChartRef.parentDashboardID,
+					barChartID:updatedBarChartRef.barChartID
+				}
+				jsonAPIRequest("getBarChartData",getDataParams,function(updatedBarChartData) {
+					console.log("Redrawing barchart after properties update")
+					drawBarChart(updatedBarChartData) // redraw the chart
+				})
+			}
+		}
+		
+		loadBarChartProperties(barChartPropsArgs)
+	})
 }
 
-function barChartContainerHTML(barChartID) {
-	var containerHTML = ''+
-	'<div class="dashboardItemDesignContainer dashboardBarChartContainer draggable resizable" id="'+ barChartID+'">' +
-	'</div>';
-	return containerHTML
-}
 
-function initBarChartData(barChartData) {
+
+function initBarChartData(dashboardID,barChartData) {
+	
 	drawBarChart(barChartData)
 	initBarChartEditBehavior(barChartData.barChartRef.barChartID)
+	
 	var barChartContainer = $('#'+barChartData.barChartRef.barChartID)
+	
 	barChartContainer.data("barChartRef",barChartData.barChartRef)
+	
 }
 
 

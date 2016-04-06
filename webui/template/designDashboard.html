@@ -75,16 +75,9 @@
 	  	</div>
 	</div>
 	<div class="ui-layout-content">
-		<p>Properties options will go here - header shouldn't scroll'</p>
-		<p>Properties options go here</p>
-		<p>Properties options go here</p>
-		<p>Properties options go here</p>
-		<p>Properties options go here</p>
-		<p>Properties options go here</p>
-		<p>Properties options go here</p>
-		<p>Properties options go here</p>
-		<p>Properties options go here</p>
-		<p>Properties options go here</p>
+		{{template "barChartProps"}}
+		{{template "dashboardProps"}}
+		
 	</div>
 {{end}}
 
@@ -109,6 +102,7 @@
 	<script src="/js/wizardDialog.js"></script>
 	<script src="/js/fieldInfo.js"></script>
 	<script src="/js/barChart.js"></script>
+	<script src="/js/barChartProps.js"></script>
 	<script src="/js/newBarChartDialog.js"></script>
 	
   </head>
@@ -125,9 +119,8 @@
 				{{template "dashboardDesignPalette"}}
 			</div>
 		
-			<div id="dashboardCanvas" class="pane ui-layout-center droppable">
-			</div> 
-		
+			<div id="dashboardCanvas" class="pane ui-layout-center droppable"></div>
+					
 			<div class="pane ui-layout-east noPadding">
 				{{template "dashboardDesignPropertiesSidebar"}}
 			</div>

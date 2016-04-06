@@ -79,6 +79,11 @@ function getFormStringValue(formID,fieldID) {
 	return $(formID).form('get value',fieldID).toString()
 }
 
+function hideSiblingsShowOne(elemID) {
+	$(elemID).siblings().hide()
+	$(elemID).show()
+}
+
 function getFormFloatValue(formID,fieldID) {
 	console.log("getFormFloatValue: "  + formID + " - " + fieldID + ": val= " + 
 		$(formID).form('get value',fieldID))

@@ -1,0 +1,36 @@
+{{define "dashboardNameProps"}}
+	<div class="active title">
+		<i class="dropdown icon"></i>
+		Dashboard Name
+	</div>
+	<div class="active content">
+		<div class="field">
+			<input type="text" id="dashboardNameProp" name="dashboardNameProp" placeholder="Enter a name">
+		</div><!-- Field name field -->
+	</div>
+{{end}}
+
+{{define "dashboardStyleProps"}}
+	<div class="title">
+		<i class="dropdown icon"></i>
+		Style
+	</div>
+	<div class="content">
+		<p>
+			Dashboard style properties go here (e.g. background color)
+		</p>
+	</div>
+{{end}}
+
+{{define "dashboardProps"}}
+
+	<div id="dashboardProps" class="ui accordion initiallyHidden">
+		<form class="ui form">
+		
+		{{template "dashboardNameProps"}}
+		{{template "dashboardStyleProps"}}
+
+		</form>
+	</div>
+
+{{end}}

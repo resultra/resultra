@@ -2,6 +2,7 @@ package dashboard
 
 import (
 	"appengine"
+	"appengine/datastore"
 	"fmt"
 	"log"
 	"resultra/datasheet/datamodel"
@@ -48,6 +49,15 @@ func GetDashboardRef(appEngContext appengine.Context, dashboardID string) (*Dash
 
 	return &DashboardRef{dashboardID, dashboard.Name}, nil
 
+}
+
+func getDashboardKey(appEngContext appengine.Context, dashboardID string) (*datastore.Key, error) {
+	dashboardKey, getDashboardErr := datamodel.GetExistingRootEntityKey(appEngContext, dashboardEntityKind,
+		dashboardID)
+	if getDashboardErr != nil {
+		return nil, fmt.Errorf("getDashboardKey: Invalid dashboard: %v", getDashboardErr)
+	}
+	return dashboardKey, nil
 }
 
 type GetDashboardDataParams struct {

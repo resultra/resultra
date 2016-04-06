@@ -18,6 +18,7 @@ func RegisterAPIHTTPHandlers() {
 	apiRouter.HandleFunc("/api/newBarChart", newBarChart)
 	apiRouter.HandleFunc("/api/getBarChartData", getBarChartData)
 	apiRouter.HandleFunc("/api/updateBarChartProps", updateBarChartProps)
+	apiRouter.HandleFunc("/api/setBarChartTitle", setBarChartTitle)
 	apiRouter.HandleFunc("/api/getDashboardData", getDashboardData)
 
 	apiRouter.HandleFunc("/api/newField", newField)

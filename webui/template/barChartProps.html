@@ -1,0 +1,38 @@
+
+
+{{define "barChartTitleProps"}}
+	<div class="active title">
+		<i class="dropdown icon"></i>
+		Title
+	</div>
+	<div class="active content">
+		<div class="field">
+			<input type="text" id="barChartTitleProp" name="barChartTitleProp" placeholder="Enter a Title">
+		</div><!-- Field name field -->
+	</div>
+{{end}}
+
+{{define "barChartXAxisProps"}}
+	<div class="title">
+		<i class="dropdown icon"></i>
+		X Axis
+	</div>
+	<div class="content">
+		<p>
+			X Axis properties go here
+		</p>
+	</div>
+{{end}}
+
+{{define "barChartProps"}}
+
+	<div id="barChartProps" class="ui accordion initiallyHidden">
+		<form class="ui form">
+		
+		{{template "barChartTitleProps"}}
+		{{template "barChartXAxisProps"}}
+
+		</form>
+	</div>
+
+{{end}}

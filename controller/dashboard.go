@@ -42,7 +42,7 @@ func newBarChart(w http.ResponseWriter, r *http.Request) {
 
 func getBarChartData(w http.ResponseWriter, r *http.Request) {
 
-	var barChartParams dashboard.GetBarChartParams
+	var barChartParams dashboard.BarChartUniqueID
 	if err := decodeJSONRequest(r, &barChartParams); err != nil {
 		WriteErrorResponse(w, err)
 		return
@@ -84,6 +84,22 @@ func updateBarChartProps(w http.ResponseWriter, r *http.Request) {
 
 	appEngCntxt := appengine.NewContext(r)
 	if barChartRef, err := dashboard.UpdateBarChartProps(appEngCntxt, barChartRef); err != nil {
+		WriteErrorResponse(w, err)
+	} else {
+		writeJSONResponse(w, barChartRef)
+	}
+
+}
+
+func setBarChartTitle(w http.ResponseWriter, r *http.Request) {
+	var titleParams dashboard.SetBarChartTitleParams
+	if err := decodeJSONRequest(r, &titleParams); err != nil {
+		WriteErrorResponse(w, err)
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+	if barChartRef, err := dashboard.SetBarChartTitle(appEngCntxt, titleParams); err != nil {
 		WriteErrorResponse(w, err)
 	} else {
 		writeJSONResponse(w, barChartRef)
