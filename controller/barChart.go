@@ -40,22 +40,25 @@ func getBarChartData(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func setBarChartTitle(w http.ResponseWriter, r *http.Request) {
+// processBarChartPropUpdate is a helper function to process the property updates in a generic way, reducing
+// duplicated code in the individual property updates. There doesn't seem to be a way to generically
+// read/decode the parameters, so this is still done explicitely.
+func processBarChartPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater dashboard.BarChartPropertyUpdater) {
+	appEngCntxt := appengine.NewContext(r)
+	if barChartRef, err := dashboard.UpdateBarChartProps(appEngCntxt, propUpdater); err != nil {
+		WriteErrorResponse(w, err)
+	} else {
+		writeJSONResponse(w, barChartRef)
+	}
+}
 
+func setBarChartTitle(w http.ResponseWriter, r *http.Request) {
 	var titleParams dashboard.SetBarChartTitleParams
 	if err := decodeJSONRequest(r, &titleParams); err != nil {
 		WriteErrorResponse(w, err)
 		return
 	}
-
-	appEngCntxt := appengine.NewContext(r)
-	if barChartRef, err := dashboard.UpdateBarChartProps(
-		appEngCntxt, titleParams.UniqueID, titleParams); err != nil {
-		WriteErrorResponse(w, err)
-	} else {
-		writeJSONResponse(w, barChartRef)
-	}
-
+	processBarChartPropUpdate(w, r, titleParams)
 }
 
 func setBarChartDimensions(w http.ResponseWriter, r *http.Request) {
@@ -65,13 +68,5 @@ func setBarChartDimensions(w http.ResponseWriter, r *http.Request) {
 		WriteErrorResponse(w, err)
 		return
 	}
-
-	appEngCntxt := appengine.NewContext(r)
-	if barChartRef, err := dashboard.UpdateBarChartProps(
-		appEngCntxt, params.UniqueID, params); err != nil {
-		WriteErrorResponse(w, err)
-	} else {
-		writeJSONResponse(w, barChartRef)
-	}
-
+	processBarChartPropUpdate(w, r, params)
 }

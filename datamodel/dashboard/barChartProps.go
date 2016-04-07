@@ -13,14 +13,14 @@ import (
 // be defined for each different property update. The goal is to minimize code bloat of property
 // setting code and also make property updating code more uniform and less error prone.
 type BarChartPropertyUpdater interface {
+	uniqueBarChartID() BarChartUniqueID
 	updateBarChartProps(barChart *BarChart) error
 }
 
-func UpdateBarChartProps(appEngContext appengine.Context, uniqueID BarChartUniqueID,
-	propUpdater BarChartPropertyUpdater) (*BarChartRef, error) {
+func UpdateBarChartProps(appEngContext appengine.Context, propUpdater BarChartPropertyUpdater) (*BarChartRef, error) {
 
 	// Retrieve the bar chart from the data store
-	barChartForUpdate, getBarChartErr := getBarChart(appEngContext, uniqueID)
+	barChartForUpdate, getBarChartErr := getBarChart(appEngContext, propUpdater.uniqueBarChartID())
 	if getBarChartErr != nil {
 		return nil, fmt.Errorf("updateBarChartProps: Unable to get existing bar chart: %v", getBarChartErr)
 	}
@@ -32,7 +32,7 @@ func UpdateBarChartProps(appEngContext appengine.Context, uniqueID BarChartUniqu
 	}
 
 	// Save the updated bar chart back to the data store
-	barChartRef, updateErr := updateExistingBarChart(appEngContext, uniqueID, barChartForUpdate)
+	barChartRef, updateErr := updateExistingBarChart(appEngContext, propUpdater.uniqueBarChartID(), barChartForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateBarChartProps: Unable to update existing bar chart: %v", updateErr)
 	}
@@ -44,8 +44,11 @@ func UpdateBarChartProps(appEngContext appengine.Context, uniqueID BarChartUniqu
 // Title Property
 
 type SetBarChartTitleParams struct {
-	UniqueID BarChartUniqueID `json:"uniqueID"`
-	Title    string           `json:"title"`
+	// Embed a common header to reference the BarChart in the datastore. This header also supports
+	// the niqueBarChartID() method to retrieve the unique ID. So, once decoded, the struct can be passed as an
+	// BarChartPropertyUpdater interface to a generic/reusable function to process the property update.
+	BarChartUniqueIDHeader
+	Title string `json:"title"`
 }
 
 func (titleParam SetBarChartTitleParams) updateBarChartProps(barChart *BarChart) error {
@@ -58,7 +61,7 @@ func (titleParam SetBarChartTitleParams) updateBarChartProps(barChart *BarChart)
 // Dimensions Property
 
 type SetBarChartDimensionsParams struct {
-	UniqueID BarChartUniqueID         `json:"uniqueID"`
+	BarChartUniqueIDHeader
 	Geometry datamodel.LayoutGeometry `json:"geometry"`
 }
 

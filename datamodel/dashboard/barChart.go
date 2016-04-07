@@ -2,7 +2,6 @@ package dashboard
 
 import (
 	"appengine"
-	"appengine/datastore"
 	"fmt"
 	"resultra/datasheet/datamodel"
 )
@@ -11,6 +10,23 @@ const barChartEntityKind string = "DashboardBarChart"
 
 const xAxisSortAsc string = "asc"
 const xAxisSortDesc string = "desc"
+
+type BarChartUniqueID struct {
+	ParentDashboardID string `json:"parentDashboardID"`
+	BarChartID        string `json:"barChartID"`
+}
+
+// This BarChartUniqueIDHeader and its uniqueBarChartID() method are intended to
+// be embedded in other structs for purposes of having a standard header on structs
+// which are received as parameters to update properties or to return information or
+// data related to the bar chart.
+type BarChartUniqueIDHeader struct {
+	UniqueID BarChartUniqueID `json:"uniqueID"`
+}
+
+func (idHeader BarChartUniqueIDHeader) uniqueBarChartID() BarChartUniqueID {
+	return idHeader.UniqueID
+}
 
 // DashboardBarChart is the datastore object for dashboard bar charts.
 type BarChart struct {
@@ -57,11 +73,6 @@ type NewBarChartParams struct {
 	YAxisVals NewValSummaryParams `json:"yAxisVals"`
 
 	Geometry datamodel.LayoutGeometry `json:"geometry"`
-}
-
-type BarChartUniqueID struct {
-	ParentDashboardID string `json:"parentDashboardID"`
-	BarChartID        string `json:"barChartID"`
 }
 
 func updateExistingBarChart(appEngContext appengine.Context, uniqueID BarChartUniqueID, updatedBarChart *BarChart) (*BarChartRef, error) {
@@ -126,7 +137,7 @@ func NewBarChart(appEngContext appengine.Context, params NewBarChartParams) (*Ba
 		XAxisSortValues: params.XAxisSortValues,
 		YAxisVals:       *valSummary,
 		Geometry:        params.Geometry,
-		Title:           ""}
+		Title:           ""} // default to empty title
 
 	barChartID, insertErr := datamodel.InsertNewEntity(appEngContext, barChartEntityKind,
 		parentDashboardKey, &newBarChart)
@@ -188,103 +199,4 @@ func getBarChartRef(appEngContext appengine.Context, params BarChartUniqueID, ba
 		Title:             barChart.Title}
 
 	return &barChartRef, nil
-}
-
-type BarChartDataRow struct {
-	Label string  `json:"label"`
-	Value float64 `json:"value"`
-}
-
-type BarChartData struct {
-	BarChartID  string            `json:"barChartID"`
-	BarChartRef BarChartRef       `json:"barChartRef"`
-	Title       string            `json:"title"`
-	XAxisTitle  string            `json:"xAxisTitle"`
-	YAxisTitle  string            `json:"yAxisTitle"`
-	DataRows    []BarChartDataRow `json:"dataRows"`
-}
-
-func getOneBarChartData(appEngContext appengine.Context, params BarChartUniqueID, barChart *BarChart) (*BarChartData, error) {
-
-	barChartRef, refErr := getBarChartRef(appEngContext, params, barChart)
-	if refErr != nil {
-		return nil, fmt.Errorf("getDashboardBarChartsData: Error getting bar chart reference: %v", refErr)
-
-	}
-
-	recordRefs, getRecErr := datamodel.GetFilteredRecords(appEngContext)
-	if getRecErr != nil {
-		return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
-	}
-
-	valGroupingResult, groupingErr := barChart.XAxisVals.groupRecords(appEngContext, recordRefs)
-	if groupingErr != nil {
-		return nil, fmt.Errorf("GetBarChartData: Error grouping records for bar chart: %v", groupingErr)
-	}
-
-	dataRows := []BarChartDataRow{}
-	for _, valGroup := range valGroupingResult.valGroups {
-		dataRows = append(dataRows,
-			BarChartDataRow{valGroup.groupLabel, float64(len(valGroup.recordsInGroup))})
-	}
-
-	barChartData := BarChartData{
-		BarChartID:  barChartRef.BarChartID,
-		BarChartRef: *barChartRef,
-		Title:       barChartRef.Title,
-		XAxisTitle:  valGroupingResult.groupingLabel,
-		YAxisTitle:  "Count",
-		DataRows:    dataRows}
-
-	return &barChartData, nil
-
-}
-
-func GetBarChartData(appEngContext appengine.Context, params BarChartUniqueID) (*BarChartData, error) {
-
-	barChart, getBarChartErr := getBarChart(appEngContext, params)
-	if getBarChartErr != nil {
-		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart: %v", getBarChartErr)
-	}
-
-	barChartData, dataErr := getOneBarChartData(appEngContext, params, barChart)
-	if dataErr != nil {
-		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart data: %v", dataErr)
-	}
-
-	return barChartData, nil
-
-}
-
-func getDashboardBarChartsData(appEngContext appengine.Context, parentDashboardID string,
-	parentDashboardKey *datastore.Key) ([]BarChartData, error) {
-
-	barChartQuery := datastore.NewQuery(barChartEntityKind).Ancestor(parentDashboardKey)
-	var barCharts []BarChart
-	barChartKeys, getBarChartsErr := barChartQuery.GetAll(appEngContext, &barCharts)
-
-	if getBarChartsErr != nil {
-		return nil, fmt.Errorf("getDashboardBarChartsData: unable to retrieve bar charts: %v", getBarChartsErr)
-	}
-
-	var barChartsData []BarChartData
-	for barChartIndex, barChart := range barCharts {
-
-		barChartID, idErr := datamodel.EncodeUniqueEntityIDToStr(barChartKeys[barChartIndex])
-		if idErr != nil {
-			return nil, fmt.Errorf("GetBarChartData: Error encoding bar chart ID: %v", idErr)
-		}
-
-		params := BarChartUniqueID{
-			ParentDashboardID: parentDashboardID,
-			BarChartID:        barChartID}
-
-		barChartData, dataErr := getOneBarChartData(appEngContext, params, &barChart)
-		if dataErr != nil {
-			return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart data: %v", dataErr)
-		}
-		barChartsData = append(barChartsData, *barChartData)
-	}
-
-	return barChartsData, nil
 }
