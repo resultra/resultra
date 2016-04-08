@@ -114,9 +114,11 @@
 	<script src="/js/layoutCommon.js"></script>
 	<script src="/js/calcField.js"></script>
 	<script src="/js/wizardDialog.js"></script>
-	<script src="/js/newTextBoxDialog.js"></script>
+	<script src="/form/common/newFormElemDialog.js"></script>
+	<script src="/form/checkBox/newCheckBoxDialog.js"></script>
+	<script src="/form/textBox/newTextBoxDialog.js"></script>
 	<script src="/js/designPalette.js"></script>
-	<script src="/js/designForm.js"></script>
+	<script src="/form/designForm.js"></script>
 	
   </head>
   
@@ -142,7 +144,8 @@
 		</div>
 	</form>	
 	   
-	{{template "newTextBoxDialog"}}   
+	{{template "newTextBoxDialog"}}
+	{{template "newCheckboxDialog" .CheckboxParams}}
 	   
   </body>
   

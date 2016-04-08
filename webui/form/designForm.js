@@ -91,7 +91,8 @@ $(document).ready(function() {
 				geometry: droppedItemInfo.geometry,
 				containerID: droppedItemInfo.placeholderID,
 				};
-			newLayoutContainer(layoutContainerParams,fieldsByID)
+			//newLayoutContainer(layoutContainerParams,fieldsByID)
+				openNewCheckboxDialog(layoutContainerParams,fieldsByID)
 		},
 		
 		dropDestSelector: "#layoutCanvas",
@@ -100,7 +101,8 @@ $(document).ready(function() {
 	initDesignPalette(paletteConfig)			
 	
 	
-	initNewTextBoxDialog() 
+	initNewTextBoxDialog()
+	initNewCheckBoxDialog()
 		
 	// Initialize the page layout
 	$('#layoutPage').layout({

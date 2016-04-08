@@ -1,0 +1,48 @@
+
+{{define "newFormElemDialogProgress"}}
+	<div class="ui tiny progress" id="{{.ElemPrefix}}NewFormElemDialogProgress">
+	  <div class="bar"></div>
+	</div>
+{{end}}
+
+
+{{define "newFormElemDialogSelectFieldPanel"}}
+
+	<div id="{{.ElemPrefix}}SelectExistingOrNewFieldPanel" class="wizardPanel">
+		<form class="ui form">
+			<div class="ui info message" >
+				<p>
+					Values from check boxes are stored in fields. Either a new field can be created for this
+					check box, or an existing field can be used.
+				</p>
+			</div>
+			<div class="grouped field">
+				<label>Where should values from this check box be stored?</label>
+				
+				<div class="field">
+					<div class="ui radio checkbox">
+					  <input type="radio" id="{{.ElemPrefix}}CreateNewFieldRadio" name="{{.ElemPrefix}}NewOrExistingRadio" checked="checked" value="new">
+					  <label>Create a new field</label>
+					</div>
+				</div>
+				
+				<div class="field">
+					<div class="ui radio checkbox">
+				 	   <input type="radio" id="{{.ElemPrefix}}UseExistingFieldRadio" name="{{.ElemPrefix}}NewOrExistingRadio" value="existing">
+				  	 <label>Use an existing field</label>
+					</div>
+				</div>
+				
+			</div>
+			
+			<div class="inline field" id="{{.ElemPrefix}}SelectExistingFieldField">
+				<label>Existing fields:</label> <select class="ui dropdown" id="{{.ElemPrefix}}FieldSelection" name="{{.ElemPrefix}}FieldSelection">
+					<option value="">
+						Select a field
+					</option>
+				</select>
+			</div>
+			
+		</form> <!-- form for panel -->
+	</div> <!-- panel for selecting new field or choosing to create a new one -->
+{{end}}

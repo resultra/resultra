@@ -9,10 +9,15 @@ import (
 	"resultra/datasheet/datamodel"
 )
 
-type LayoutPageInfo struct {
-	Title      string
-	LayoutID   string
-	LayoutName string
+type FormElemTemplateParams struct {
+	ElemPrefix string
+}
+
+type DesignFormTemplateParams struct {
+	Title          string
+	LayoutID       string
+	LayoutName     string
+	CheckboxParams FormElemTemplateParams
 }
 
 func designForm(w http.ResponseWriter, r *http.Request) {
@@ -28,8 +33,13 @@ func designForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p := LayoutPageInfo{"Edit Layout", layoutID, layoutRef.Layout.Name}
-	err := htmlTemplates.ExecuteTemplate(w, "designForm", p)
+	templParams := DesignFormTemplateParams{
+		Title:          "Edit Layout",
+		LayoutID:       layoutID,
+		LayoutName:     layoutRef.Layout.Name,
+		CheckboxParams: FormElemTemplateParams{ElemPrefix: "checkbox_"}}
+
+	err := htmlTemplates.ExecuteTemplate(w, "designForm", templParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

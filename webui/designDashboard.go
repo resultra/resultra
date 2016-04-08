@@ -28,7 +28,10 @@ func designDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p := DesignDashboardPageInfo{"Design Dashboard", dashboardID, dashboardRef.Name}
+	p := DesignDashboardPageInfo{
+		Title:         "Design Dashboard",
+		DashboardID:   dashboardID,
+		DashboardName: dashboardRef.Name}
 	err := htmlTemplates.ExecuteTemplate(w, "designDashboard", p)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

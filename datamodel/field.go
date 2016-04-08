@@ -19,6 +19,7 @@ var validRefNameRegexp = regexp.MustCompile("^[a-zA-Z_][a-zA-Z0-9_]*$")
 const FieldTypeText string = "text"
 const FieldTypeNumber string = "number"
 const FieldTypeDate string = "date"
+const FieldTypeBool string = "bool"
 
 type Field struct {
 	Name string `json:"name"`
@@ -45,6 +46,7 @@ type FieldsByType struct {
 	TextFields   []FieldRef `json:"textFields"`
 	DateFields   []FieldRef `json:"dateFields"`
 	NumberFields []FieldRef `json:"numberFields"`
+	BoolFields   []FieldRef `json:"boolFields"`
 }
 
 func validFieldType(fieldType string) bool {
@@ -54,6 +56,8 @@ func validFieldType(fieldType string) bool {
 	case FieldTypeNumber:
 		return true
 	case FieldTypeDate:
+		return true
+	case FieldTypeBool:
 		return true
 	default:
 		return false
