@@ -4,10 +4,12 @@ function createNewOrExistingFieldPanelConfig(elemPrefix) {
 	// Build up a set of selectors based upon the prefix. The suffixes must match
 	// those given in the template newFormElemDialogCommon.html
 	var panelSelector = "#" + elemPrefix + "SelectExistingOrNewFieldPanel"
-	var selectExistingFieldSelector = "#" + elemPrefix + "SelectExistingFieldField"
+	var selectExistingFieldName = elemPrefix + "SelectExistingFieldField"
+	var selectExistingFieldSelector = "#" + selectExistingFieldName
 	var createNewFieldRadioSelector = "#" + elemPrefix + "CreateNewFieldRadio"
 	var newOrExistingRadioInputSelector = "input[name='" + elemPrefix + "NewOrExistingRadio']"
 	var dialogProgressDivID = elemPrefix + "NewFormElemDialogProgress"
+	var selectFieldDropdown = "#" + elemPrefix + "FieldSelection"
 	
 	var fieldSelectionPropertyName = elemPrefix + "FieldSelection"
 
@@ -38,15 +40,17 @@ function createNewOrExistingFieldPanelConfig(elemPrefix) {
 
 			function enableSelectExistingField() {
 				$(selectExistingFieldSelector).removeClass("disabled")
+				
+				var fieldValidation = {}
+				fieldValidation[selectExistingFieldName] = {
+					rules: [{
+						type: 'empty',
+						prompt: 'Please select a field'
+					}]
+				}
+				
 				$(panelSelector).form({
-	/* Not implemented yet			fields: {
-						fieldSelectionPropertyName: {
-							rules: [{
-								type: 'empty',
-								prompt: 'Please select a field'
-							}]
-						}, // textBoxFieldSelection validation
-					}, */
+					fields: fieldValidation,
 					inline: true,
 				})
 			}
@@ -63,6 +67,12 @@ function createNewOrExistingFieldPanelConfig(elemPrefix) {
 				$(panelSelector).form('validate form')
 			}
 
+			// Populate the select field dialog box with a list of possible fields to
+			// connect the new form element to.
+			$(selectFieldDropdown).dropdown()
+			loadFieldInfo(function(fieldInfo) {
+				populateFieldSelectionMenu(fieldsByID,selectFieldDropdown)
+			})
 
 			disableSelectExistingField();
 			$(createNewFieldRadioSelector).prop("checked", true);

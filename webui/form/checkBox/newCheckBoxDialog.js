@@ -1,9 +1,13 @@
 
+var checkboxDialogSelector = "#newCheckbox"
 
 function openNewCheckboxDialog(containerParams,fieldsByID)
 {
 	
-	var checkboxDialogSelector = "#newCheckbox"
+	// Must be the same as designForm.go - this is the common prefix on all DOM element IDs to distinguish
+	// checkbox related elements from other form elements.
+	var checkboxElemPrefix = "checkbox_"
+	var dialogProgressSelector = '#' + checkboxElemPrefix + 'NewFormElemDialogProgress'
 	
 	newCheckBoxParams = {
 		containerParams: containerParams,
@@ -17,9 +21,6 @@ function openNewCheckboxDialog(containerParams,fieldsByID)
 	$('.ui.checkbox').checkbox();
 	$('.ui.radio.checkbox').checkbox();	
 	
-	// Must be the same as designForm.go - this is the common prefix on all DOM element IDs to distinguish
-	// checkbox related elements from other form elements.
-	var checkboxElemPrefix = "checkbox_"
 	
 	var newOrExistingFieldPanel = createNewOrExistingFieldPanelConfig(checkboxElemPrefix)
 	
@@ -36,7 +37,7 @@ function openNewCheckboxDialog(containerParams,fieldsByID)
 		width: 500, height: 500,
 		dialogDivID: checkboxDialogSelector,
 		panels: [newOrExistingFieldPanel],
-		progressDivID: '#' + checkboxElemPrefix + 'NewFormElemDialogProgress',
+		progressDivID: dialogProgressSelector,
 	})
 		
 } // newLayoutContainer
@@ -45,5 +46,5 @@ function initNewCheckBoxDialog() {
 	// Initialize the newTextBox dialog with the minimum parameters. This is necessary
 	// to hide the dialog from view when the document is initially loaded. The
 	// dialog is fully re-initialized just prior to it being opened.
-	initWizardDialog('#newCheckbox')
+	initWizardDialog(checkboxDialogSelector)
 }
