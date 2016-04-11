@@ -1,7 +1,11 @@
 package webui
 
 import (
+	"admin"
+	"dashboard"
+	"form"
 	"github.com/gorilla/mux"
+	"home"
 	"net/http"
 	"resultra/datasheet/controller"
 )
@@ -12,14 +16,10 @@ func init() {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", home)
-
-	router.HandleFunc("/viewForm/{layoutID}", viewForm)
-
-	router.HandleFunc("/tableProps", tableProps)
-	router.HandleFunc("/designForm/{layoutID}", designForm)
-
-	router.HandleFunc("/designDashboard/{dashboardID}", designDashboard)
+	form.RegisterHTTPHandlers(router)
+	dashboard.RegisterHTTPHandlers(router)
+	home.RegisterHTTPHandlers(router)
+	admin.RegisterHTTPHandlers(router)
 
 	http.Handle("/", router)
 }

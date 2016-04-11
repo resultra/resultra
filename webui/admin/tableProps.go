@@ -1,8 +1,8 @@
-package webui
+package admin
 
 import (
-	// TODO:	"github.com/gorilla/mux"
 	"appengine"
+	"html/template"
 	"net/http"
 	"resultra/datasheet/controller"
 	"resultra/datasheet/datamodel"
@@ -14,6 +14,8 @@ type TablePropsPageInfo struct {
 	FieldRefs  []datamodel.FieldRef
 	LayoutRefs []datamodel.LayoutRef
 }
+
+var tablePropsTemplates = template.Must(template.ParseFiles("admin/tableProps.html"))
 
 func tableProps(w http.ResponseWriter, r *http.Request) {
 	// TODO:
@@ -33,7 +35,7 @@ func tableProps(w http.ResponseWriter, r *http.Request) {
 	}
 
 	p := TablePropsPageInfo{"Database Table Properties", "dummyDatabaseID", fieldRefs, layoutRefs}
-	templErr := htmlTemplates.ExecuteTemplate(w, "tableProps", p)
+	templErr := tablePropsTemplates.ExecuteTemplate(w, "tableProps", p)
 	if templErr != nil {
 		controller.WriteErrorResponse(w, templErr)
 	}

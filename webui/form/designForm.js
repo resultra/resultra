@@ -91,8 +91,8 @@ $(document).ready(function() {
 				geometry: droppedItemInfo.geometry,
 				containerID: droppedItemInfo.placeholderID,
 				};
-			//newLayoutContainer(layoutContainerParams,fieldsByID)
-				openNewCheckboxDialog(layoutContainerParams,fieldsByID)
+			newLayoutContainer(layoutContainerParams,fieldsByID)
+			//	openNewCheckboxDialog(layoutContainerParams,fieldsByID)
 		},
 		
 		dropDestSelector: "#layoutCanvas",

@@ -1,13 +1,19 @@
-package webui
+package form
 
 import (
 	"appengine"
 	"github.com/gorilla/mux"
+	"html/template"
 	"log"
 	"net/http"
 	"resultra/datasheet/controller"
 	"resultra/datasheet/datamodel"
 )
+
+var viewFormTemplates = template.Must(template.ParseFiles(
+	"common/common.html",
+	"filter/filterRecords.html",
+	"form/viewForm.html"))
 
 type ViewFormTemplateParams struct {
 	Title      string
@@ -31,7 +37,7 @@ func viewForm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	templParams := ViewFormTemplateParams{"View Form", layoutID, layoutRef.Layout.Name}
-	err := htmlTemplates.ExecuteTemplate(w, "viewForm", templParams)
+	err := viewFormTemplates.ExecuteTemplate(w, "viewForm", templParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

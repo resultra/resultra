@@ -1,13 +1,22 @@
-package webui
+package dashboard
 
 import (
 	"appengine"
 	"github.com/gorilla/mux"
+	"html/template"
 	"log"
 	"net/http"
 	"resultra/datasheet/controller"
 	"resultra/datasheet/datamodel/dashboard"
 )
+
+var designDashboardTemplates = template.Must(template.ParseFiles(
+	"common/common.html",
+	"dashboard/barChart/barChartProps.html",
+	"dashboard/barChart/newBarChartDialog.html",
+	"dashboard/dashboardCommon.html",
+	"dashboard/dashboardProps.html",
+	"dashboard/designDashboard.html"))
 
 type DesignDashboardPageInfo struct {
 	Title         string
@@ -32,7 +41,7 @@ func designDashboard(w http.ResponseWriter, r *http.Request) {
 		Title:         "Design Dashboard",
 		DashboardID:   dashboardID,
 		DashboardName: dashboardRef.Name}
-	err := htmlTemplates.ExecuteTemplate(w, "designDashboard", p)
+	err := designDashboardTemplates.ExecuteTemplate(w, "designDashboard", p)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
