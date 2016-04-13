@@ -1,9 +1,12 @@
 
 
-function fieldContainerHTML(id)
+// Map of field ID's to the fieldRef object: see initialization below
+var fieldsByID = {}
+
+function fieldContainerHTML(elementID)
 {
 	var containerHTML = ''+
-		'<div class="ui-widget-content layoutContainer layoutField draggable resizable" id="'+id+'">' +
+		'<div class="ui-widget-content layoutContainer layoutField draggable resizable" id="'+elementID+'">' +
 			'<div class="field">'+
 				'<label>New Field</label>'+
 				'<input type="text" name="symbol" class="layoutInput" placeholder="Enter">'+
@@ -12,8 +15,6 @@ function fieldContainerHTML(id)
 	return containerHTML
 }
 
-// Map of field ID's to the fieldRef object: see initialization below
-var fieldsByID = {}
 
 function initCanvas(containerInitCallback, fieldInitCallback, initCompleteCallback) {
 	var jsonReqData = jsonAPIRequest("getLayoutEditInfo", {
@@ -60,6 +61,8 @@ function initCanvas(containerInitCallback, fieldInitCallback, initCompleteCallba
 				// Create an HTML block for the container
 				container = replyData.layoutContainers[containerIter]
 				console.log("initializing container: id=" + JSON.stringify(container))
+				// TODO - textBoxContainerHTMl is specific to text boxes only. Need to use a callback
+				// to create the right HTML for the containers.
 				var containerHTML = fieldContainerHTML(container.containerID);
 				var containerObj = $(containerHTML)
 

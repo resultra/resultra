@@ -7,12 +7,12 @@ import (
 	"github.com/gorilla/mux"
 	"home"
 	"net/http"
-	"resultra/datasheet/controller"
+	"resultra/datasheet/server"
 )
 
 func init() {
 
-	controller.RegisterAPIHTTPHandlers()
+	server.RegisterAPIHTTPHandlers()
 
 	router := mux.NewRouter()
 

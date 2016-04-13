@@ -6,8 +6,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"resultra/datasheet/controller"
-	"resultra/datasheet/datamodel"
+	"resultra/datasheet/server/common/api"
+	"resultra/datasheet/server/form"
 )
 
 var viewFormTemplates = template.Must(template.ParseFiles(
@@ -30,9 +30,9 @@ func viewForm(w http.ResponseWriter, r *http.Request) {
 	log.Println("editRecord: editing record: layout ID = %v", layoutID)
 
 	appEngContext := appengine.NewContext(r)
-	layoutRef, getErr := datamodel.GetLayoutRef(appEngContext, datamodel.GetLayoutParams{layoutID})
+	layoutRef, getErr := form.GetLayoutRef(appEngContext, form.GetLayoutParams{layoutID})
 	if getErr != nil {
-		controller.WriteErrorResponse(w, getErr)
+		api.WriteErrorResponse(w, getErr)
 		return
 	}
 

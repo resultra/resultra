@@ -68,13 +68,23 @@ function initContainerEditBehavior(container)
 	
 }
 
+var paletteItemActions = {
+	paletteItemTextBox: {
+		draggableHTMLFunc:	textBoxContainerHTML,
+		createNewItemAfterDropFunc: newLayoutContainer
+	},
+	paletteItemCheckBox: {
+		draggableHTMLFunc:	checkBoxContainerHTML,
+		createNewItemAfterDropFunc: openNewCheckboxDialog
+	}
+	
+}
 
 $(document).ready(function() {
-				
-	
+					
 	var paletteConfig = {
-		draggableItemHTML: function(placeholderID,paletteItemID) { 
-			return fieldContainerHTML(placeholderID)
+		draggableItemHTML: function(placeholderID,paletteItemID) {
+			return paletteItemActions[paletteItemID].draggableHTMLFunc(placeholderID)
 		},
 		
 		dropComplete: function(droppedItemInfo) {
@@ -91,8 +101,8 @@ $(document).ready(function() {
 				geometry: droppedItemInfo.geometry,
 				containerID: droppedItemInfo.placeholderID,
 				};
-			newLayoutContainer(layoutContainerParams,fieldsByID)
-			//	openNewCheckboxDialog(layoutContainerParams,fieldsByID)
+			
+			paletteItemActions[droppedItemInfo.paletteItemID].createNewItemAfterDropFunc(layoutContainerParams,fieldsByID)
 		},
 		
 		dropDestSelector: "#layoutCanvas",

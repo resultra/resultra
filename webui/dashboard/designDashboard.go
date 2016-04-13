@@ -6,8 +6,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"resultra/datasheet/controller"
-	"resultra/datasheet/datamodel/dashboard"
+	"resultra/datasheet/server/common/api"
+	"resultra/datasheet/server/dashboard"
 )
 
 var designDashboardTemplates = template.Must(template.ParseFiles(
@@ -33,7 +33,7 @@ func designDashboard(w http.ResponseWriter, r *http.Request) {
 	appEngContext := appengine.NewContext(r)
 	dashboardRef, getErr := dashboard.GetDashboardRef(appEngContext, dashboardID)
 	if getErr != nil {
-		controller.WriteErrorResponse(w, getErr)
+		api.WriteErrorResponse(w, getErr)
 		return
 	}
 
