@@ -48,6 +48,12 @@ function saveNewTextBox()
 					  $('#'+newTextBoxParams.placeholderID).attr("id",replyData.layoutContainerID)
  				  
 					  newTextBoxParams.containerCreated = true
+					  
+					  // After confirmation the text box has been successfully created, make the newly craeted
+					  // text box editable.
+				//	  initObjectEditBehavior(containerParams.parentID, replyData.layoutContainerID, editConfig,container) 
+					  
+					  
 					  newTextBoxParams.dialogBox.dialog("close")
 				  }
 				  else {
@@ -244,6 +250,7 @@ function newLayoutContainer(containerParams,fieldsByID)
 	newTextBoxParams = {
 		containerParams: containerParams,
 		containerCreated: false,
+		parentID: containerParams.parentID,
 		placeholderID: containerParams.containerID,
 		fieldsByID: fieldsByID,
 		dialogBox: $( "#newTextBox" )

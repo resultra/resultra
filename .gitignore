@@ -1,0 +1,6 @@
+# Ignore the static files in google app engine project folder. These
+# files are copied/mirrored from the main src repository, where they are
+# edited alongside related HTML, golang, javascript, etc. However,
+# for reference in the running google appe engine, they need to be 
+# beneath the project folder with the app.yaml.
+googleAppEng/static/*

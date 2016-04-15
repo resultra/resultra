@@ -13,14 +13,14 @@ import (
 // Parse all the HTML templates at once. Individual templates can then
 // be referenced throughout this package using htmlTemplates.ExecuteTemplate(...)
 var designFormTemplates = template.Must(template.ParseFiles(
-	"common/common.html",
-	"field/calcField.html",
-	"form/designForm.html",
-	"form/checkBox/newCheckBoxDialog.html",
-	"form/textBox/newTextBoxDialog.html",
-	"form/viewForm.html",
-	"form/common/newFormElemDialog.html",
-	"form/checkBox/checkboxProp.html"))
+	"static/common/common.html",
+	"static/field/calcField.html",
+	"static/form/designForm.html",
+	"static/form/checkBox/newCheckBoxDialog.html",
+	"static/form/textBox/newTextBoxDialog.html",
+	"static/form/viewForm.html",
+	"static/form/common/newFormElemDialog.html",
+	"static/form/checkBox/checkboxProp.html"))
 
 type FormElemTemplateParams struct {
 	ElemPrefix string

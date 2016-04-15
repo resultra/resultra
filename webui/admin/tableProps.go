@@ -16,7 +16,7 @@ type TablePropsPageInfo struct {
 	LayoutRefs []form.LayoutRef
 }
 
-var tablePropsTemplates = template.Must(template.ParseFiles("admin/tableProps.html"))
+var tablePropsTemplates = template.Must(template.ParseFiles("static/admin/tableProps.html"))
 
 func tableProps(w http.ResponseWriter, r *http.Request) {
 	// TODO:

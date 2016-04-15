@@ -11,12 +11,12 @@ import (
 )
 
 var designDashboardTemplates = template.Must(template.ParseFiles(
-	"common/common.html",
-	"dashboard/barChart/barChartProps.html",
-	"dashboard/barChart/newBarChartDialog.html",
-	"dashboard/dashboardCommon.html",
-	"dashboard/dashboardProps.html",
-	"dashboard/designDashboard.html"))
+	"static/common/common.html",
+	"static/dashboard/barChart/barChartProps.html",
+	"static/dashboard/barChart/newBarChartDialog.html",
+	"static/dashboard/dashboardCommon.html",
+	"static/dashboard/dashboardProps.html",
+	"static/dashboard/designDashboard.html"))
 
 type DesignDashboardPageInfo struct {
 	Title         string

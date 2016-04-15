@@ -1,13 +1,13 @@
 package webui
 
 import (
-	"admin"
-	"dashboard"
-	"form"
 	"github.com/gorilla/mux"
-	"home"
 	"net/http"
 	"resultra/datasheet/server"
+	"resultra/datasheet/webui/admin"
+	"resultra/datasheet/webui/dashboard"
+	"resultra/datasheet/webui/form"
+	"resultra/datasheet/webui/homePage"
 )
 
 func init() {
@@ -18,8 +18,12 @@ func init() {
 
 	form.RegisterHTTPHandlers(router)
 	dashboard.RegisterHTTPHandlers(router)
-	home.RegisterHTTPHandlers(router)
+	homePage.RegisterHTTPHandlers(router)
 	admin.RegisterHTTPHandlers(router)
 
 	http.Handle("/", router)
+}
+
+func DummyFunctionForImportFromGoogleAppEngineProjectFolder() {
+
 }

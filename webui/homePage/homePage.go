@@ -1,4 +1,4 @@
-package home
+package homePage
 
 import (
 	"github.com/gorilla/mux"
@@ -11,7 +11,7 @@ func RegisterHTTPHandlers(mainRouter *mux.Router) {
 }
 
 // Parse the templates once
-var homePageTemplates = template.Must(template.ParseFiles("home/home.html"))
+var homePageTemplates = template.Must(template.ParseFiles("static/homePage/homePage.html"))
 
 type PageInfo struct {
 	Title string `json:"title"`

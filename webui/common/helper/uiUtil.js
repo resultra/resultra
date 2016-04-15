@@ -101,7 +101,6 @@ function setElemGeometry(elem, geometry) {
 	
 }
 
-
 function insertTextAreaAtCursor(elem, newText) {
 	
   console.log("appending text to formula box: " + newText)

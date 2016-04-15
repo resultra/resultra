@@ -95,3 +95,20 @@ func getLayoutContainers(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func newTextBox(w http.ResponseWriter, r *http.Request) {
+
+	textBoxParams := NewTextBoxParams{}
+	if err := api.DecodeJSONRequest(r, &textBoxParams); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+	if textBoxRef, err := NewTextBox(appEngCntxt, textBoxParams); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, *textBoxRef)
+	}
+
+}

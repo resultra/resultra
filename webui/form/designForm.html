@@ -106,22 +106,35 @@
     <title>{{.Title}}</title>
 	
 	{{template "commonCSS"}}
-	<link rel="stylesheet" type="text/css" class="ui" href="/common/designPalette/designPalette.css">
-	<link rel="stylesheet" type="text/css" class="ui" href="/common/layout.css">
+	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/designPalette/designPalette.css">
+	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/layout.css">
 
 	{{template "commonJS"}}
 	<script>var layoutID={{.LayoutID}};</script>
-	<script src="/common/dialog/wizardDialog.js"></script>
-	<script src="/field/calcField.js"></script>
-	<script src="/field/fieldInfo.js"></script>
-	<script src="/form/pageLayout/layoutCommon.js"></script>
-	<script src="/form/common/newFormElemDialog.js"></script>
-	<script src="/form/checkBox/checkBox.js"></script>
-	<script src="/form/checkBox/newCheckBoxDialog.js"></script>
-	<script src="/form/textBox/textBox.js"></script>
-	<script src="/form/textBox/newTextBoxDialog.js"></script>
-	<script src="/common/designPalette/designPalette.js"></script>
-	<script src="/form/designForm.js"></script>
+	<script src="/static/common/dialog/wizardDialog.js"></script>
+	
+	<script src="/static/common/objectEdit/objectEditHelper.js"></script>
+	<script src="/static/common/objectEdit/objectEdit.js"></script>
+	
+	
+	<script src="/static/field/calcField.js"></script>
+	<script src="/static/field/fieldInfo.js"></script>
+	
+	<script src="/static/form/pageLayout/layoutCommon.js"></script>
+	
+	<script src="/static/form/common/newFormElemDialog.js"></script>
+	
+	<script src="/static/form/checkBox/checkBox.js"></script>
+	<script src="/static/form/checkBox/newCheckBoxDialog.js"></script>
+	<script src="/static/form/checkBox/checkBoxEditConfig.js"></script>
+	
+	<script src="/static/form/textBox/textBox.js"></script>
+	<script src="/static/form/textBox/newTextBoxDialog.js"></script>
+	<script src="/static/form/textBox/textBoxProps.js"></script>
+	<script src="/static/form/textBox/textBoxEditConfig.js"></script>
+	
+	<script src="/static/common/designPalette/designPalette.js"></script>
+	<script src="/static/form/designForm.js"></script>
 	
   </head>
   

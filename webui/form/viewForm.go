@@ -11,9 +11,9 @@ import (
 )
 
 var viewFormTemplates = template.Must(template.ParseFiles(
-	"common/common.html",
-	"filter/filterRecords.html",
-	"form/viewForm.html"))
+	"static/common/common.html",
+	"static/filter/filterRecords.html",
+	"static/form/viewForm.html"))
 
 type ViewFormTemplateParams struct {
 	Title      string

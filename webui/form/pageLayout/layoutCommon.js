@@ -84,14 +84,7 @@ function initCanvas(containerInitCallback, fieldInitCallback, initCompleteCallba
 
 				// Position the object withing the #layoutCanvas div
 				$("#layoutCanvas").append(containerObj)
-				var geometry = container.geometry
-				containerObj.css({
-					top: geometry.positionTop,
-					left: geometry.positionLeft,
-					width: geometry.sizeWidth,
-					height: geometry.sizeHeight,
-					position: "absolute"
-				});
+				setElemGeometry(containerObj,container.geometry)
 
 				// Done with base initialization. Invoke the callback to finish any
 				// specialized initialization for the client of this function.

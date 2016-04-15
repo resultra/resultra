@@ -12,11 +12,33 @@ import (
 )
 
 const layoutContainerEntityKind string = "LayoutContainer"
+const textBoxEntityKind string = "TextBox"
 
 // A LayoutContainer represents what is actually stored in the datastore
 // for each layout container.
 type LayoutContainer struct {
 	Field    *datastore.Key
+	Geometry common.LayoutGeometry
+}
+
+// NEW CODE for TEXT BOX
+type UniqueID struct {
+	ParentID string `json:"uniqueID"`
+	ObjectID string `json:"objectID"`
+}
+
+type UniqueIDHeader struct {
+	UniqueID UniqueID `json:"uniqueID"`
+}
+
+type TextBox struct {
+	Field    *datastore.Key
+	Geometry common.LayoutGeometry
+}
+
+type TextBoxRef struct {
+	UniqueIDHeader
+	FieldRef field.FieldRef
 	Geometry common.LayoutGeometry
 }
 
@@ -84,6 +106,55 @@ func NewLayoutContainer(appEngContext appengine.Context, containerParams LayoutC
 		containerID, containerParams)
 
 	return containerID, nil
+
+}
+
+// NEW CODE for TEXT BOX
+
+type NewTextBoxParams struct {
+	// ContainerID is initially assigned a temporary ID assigned by the client. It is passed back
+	// to the client after the real datastore ID is assigned, allowing the client
+	// to swizzle/replace the placeholder ID with the real one.
+	ParentID string                `json:"parentID"`
+	FieldID  string                `json:"fieldID"`
+	Geometry common.LayoutGeometry `json:"geometry"`
+}
+
+func NewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*TextBoxRef, error) {
+	if !common.ValidGeometry(params.Geometry) {
+		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
+	}
+
+	parentKey, err := datastoreWrapper.GetExistingRootEntityKey(appEngContext, dataModel.LayoutEntityKind,
+		params.ParentID)
+	if err != nil {
+		return nil, err
+	}
+
+	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, field.GetFieldParams{params.FieldID})
+	if fieldErr != nil {
+		return nil, fmt.Errorf("NewTextBox: Can't text box with field ID = '%v': datastore error=%v",
+			params.FieldID, fieldErr)
+	}
+
+	/*		if (fieldRef.FieldInfo.type == field.FieldTypeText) || (fieldRef.FieldInfo.type == field.FieldTypeNumber) {
+				return "", fmt.Errorf("NewTextBox: Can't create text box - incompatible field type")
+			}
+	*/
+	newTextBox := TextBox{Field: fieldKey, Geometry: params.Geometry}
+
+	textBoxID, insertErr := datastoreWrapper.InsertNewEntity(appEngContext, textBoxEntityKind,
+		parentKey, &newTextBox)
+	if insertErr != nil {
+		return nil, insertErr
+	}
+
+	textBoxUniqueID := UniqueID{params.ParentID, textBoxID}
+	textBoxRef := TextBoxRef{UniqueIDHeader{UniqueID: textBoxUniqueID}, *fieldRef, params.Geometry}
+
+	log.Printf("INFO: API: NewLayout: Created new Layout container: id=%v params=%+v", textBoxID, params)
+
+	return &textBoxRef, nil
 
 }
 
