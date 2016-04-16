@@ -19,8 +19,8 @@ function initObjectEditBehavior(parentID, objID, editConfig) {
 					objectID: objectID
 				},
 				position: {
-				  positionTop: ui.position.top,			
-				  positionLeft: ui.position.left
+				  top: ui.position.top,			
+				  left: ui.position.left
 				}
 			}
 			console.log("Object reposition: params = " + JSON.stringify(reposParams))

@@ -44,3 +44,14 @@ func (updateParams TextBoxResizeParams) updateProps(textBox *TextBox) error {
 
 	return nil
 }
+
+type TextBoxRepositionParams common.ObjectRepositionParams
+
+func (updateParams TextBoxRepositionParams) updateProps(textBox *TextBox) error {
+
+	if err := textBox.Geometry.SetPosition(updateParams.Position); err != nil {
+		return fmt.Errorf("Error setting position for text box: Invalid geometry: %v", err)
+	}
+
+	return nil
+}

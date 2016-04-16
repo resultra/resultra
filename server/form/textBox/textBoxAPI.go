@@ -55,3 +55,12 @@ func resizeTextBox(w http.ResponseWriter, r *http.Request) {
 	}
 	processTextBoxPropUpdate(w, r, resizeParams)
 }
+
+func repositionTextBox(w http.ResponseWriter, r *http.Request) {
+	var reposParams TextBoxRepositionParams
+	if err := api.DecodeJSONRequest(r, &reposParams); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processTextBoxPropUpdate(w, r, reposParams)
+}

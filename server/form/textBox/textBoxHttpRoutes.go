@@ -18,6 +18,7 @@ func init() {
 
 	textBoxRouter.HandleFunc("/api/frm/textBox/new", newTextBox)
 	textBoxRouter.HandleFunc("/api/frm/textBox/resize", resizeTextBox)
+	textBoxRouter.HandleFunc("/api/frm/textBox/reposition", repositionTextBox)
 
 	http.Handle("/api/frm/textBox/", textBoxRouter)
 }
