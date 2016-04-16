@@ -20,7 +20,9 @@ case of golang source files which render html pages from templates:
   within the html templates. 
 
 This project file organization emphasizes packages and their dependencies, for purposes of 
-maintaining the source code, over the directory structure for the running web app. 
+maintaining the source code, over the directory structure for the running web app. The intent
+is also to keep code for packages as autonomous & modular as possible, especially the multitude of 
+packages for dashboard and form components such as check boxes, bar charts, etc.
 
 The simple script mirrorStaticFilesToGoogleAppEngProjFolder (sorry for the long name) copies
 all the static files under the GAE project folder in one step. The only downside is that 

@@ -321,23 +321,27 @@ function initFilterRecordsFieldSelectionMenu(fieldsByID) {
 	
 }
 
-function initFilterRecordsElems(fieldsByID) {
+function initFilterRecordsElems() {
 	
-	$('#filterRecordsAddFilterButton').click(function(e){
-		e.preventDefault();
-		console.log("add filter button clicked")
-		openAddFilterDialog(fieldsByID)
+	
+	loadFieldInfo(function(fieldsByID) {
+		$('#filterRecordsAddFilterButton').click(function(e){
+			e.preventDefault();
+			console.log("add filter button clicked")
+			openAddFilterDialog(fieldsByID)
+		})
+	
+		$( "#filterRecordsAddFilterDialog" ).dialog({ autoOpen: false })
+	
+		initFilterRecordsFieldSelectionMenu(fieldsByID)
+		initFilterRuleSelection(fieldsByID)
+	
+		// Populate the filter panel using a JSON call to retrieve the list of filtering rules. This will
+		// get more elaborate once record filtering is actually implemented, but this suffices for 
+		// prototyping.
+		populateFilterPanel()
+		
 	})
-	
-	$( "#filterRecordsAddFilterDialog" ).dialog({ autoOpen: false })
-	
-	initFilterRecordsFieldSelectionMenu(fieldsByID)
-	initFilterRuleSelection(fieldsByID)
-	
-	// Populate the filter panel using a JSON call to retrieve the list of filtering rules. This will
-	// get more elaborate once record filtering is actually implemented, but this suffices for 
-	// prototyping.
-	populateFilterPanel()
 	
 
 }

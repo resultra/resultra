@@ -10,3 +10,11 @@ function elemResizeConstraints(minWidth, maxWidth, minHeight, maxHeight) {
 		maxHeight: maxHeight,
 	}
 }
+
+function setElemObjectRef(objectID, objectRef) {
+	$('#'+objectID).data("objectRef",objectRef)
+}
+
+function getElemObjectRef(objectID) {
+	return $('#'+objectID).data("objectRef")
+}

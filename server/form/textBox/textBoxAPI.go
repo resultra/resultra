@@ -2,58 +2,10 @@ package textBox
 
 import (
 	"appengine"
-	"errors"
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/common/api"
 )
-
-func newLayoutContainer(w http.ResponseWriter, r *http.Request) {
-
-	containerParams := NewUninitializedLayoutContainerParams()
-	if err := api.DecodeJSONRequest(r, &containerParams); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-
-	if len(containerParams.ContainerID) == 0 {
-		api.WriteErrorResponse(w, errors.New("ERROR: API: newLayoutContainer: Missing placeholder ID in request"))
-		return
-	}
-
-	appEngCntxt := appengine.NewContext(r)
-	if containerID, err := NewLayoutContainer(appEngCntxt, containerParams); err != nil {
-		api.WriteErrorResponse(w, err)
-	} else {
-		api.WriteJSONResponse(w, api.JSONParams{
-			"layoutContainerID": containerID,
-			"placeholderID":     containerParams.ContainerID})
-	}
-
-}
-
-func resizeLayoutContainer(w http.ResponseWriter, r *http.Request) {
-
-	resizeParams := NewUninitializedResizeLayoutContainerParams()
-	if err := api.DecodeJSONRequest(r, &resizeParams); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-
-	if len(resizeParams.ContainerID) == 0 {
-		api.WriteErrorResponse(w, errors.New("ERROR: API: newLayoutContainer: Missing container ID in request"))
-		return
-	}
-
-	appEngCntxt := appengine.NewContext(r)
-
-	if err := ResizeLayoutContainer(appEngCntxt, resizeParams); err != nil {
-		api.WriteErrorResponse(w, err)
-	} else {
-		api.WriteJSONResponse(w, api.JSONParams{})
-	}
-
-}
 
 func getLayoutIDFromRequestParams(r *http.Request) (string, error) {
 	var jsonParams api.JSONParams
@@ -67,33 +19,6 @@ func getLayoutIDFromRequestParams(r *http.Request) (string, error) {
 	}
 
 	return layoutID, nil
-}
-
-func GetLayoutContainersFromRequest(r *http.Request) ([]LayoutContainerParams, error) {
-
-	layoutID, err := getLayoutIDFromRequestParams(r)
-	if err != nil {
-		return nil, err
-	}
-
-	appEngCntxt := appengine.NewContext(r)
-
-	if layoutContainers, err := GetLayoutContainers(appEngCntxt, layoutID); err != nil {
-		return nil, err
-	} else {
-		return layoutContainers, nil
-	}
-
-}
-
-func getLayoutContainers(w http.ResponseWriter, r *http.Request) {
-
-	if layoutContainers, err := GetLayoutContainersFromRequest(r); err != nil {
-		api.WriteErrorResponse(w, err)
-	} else {
-		api.WriteJSONResponse(w, layoutContainers)
-	}
-
 }
 
 func newTextBox(w http.ResponseWriter, r *http.Request) {
@@ -111,4 +36,22 @@ func newTextBox(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, *textBoxRef)
 	}
 
+}
+
+func processTextBoxPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater TextBoxPropUpdater) {
+	appEngCntxt := appengine.NewContext(r)
+	if textBoxRef, err := updateTextBoxProps(appEngCntxt, propUpdater); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, textBoxRef)
+	}
+}
+
+func resizeTextBox(w http.ResponseWriter, r *http.Request) {
+	var resizeParams TextBoxResizeParams
+	if err := api.DecodeJSONRequest(r, &resizeParams); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processTextBoxPropUpdate(w, r, resizeParams)
 }

@@ -1,5 +1,9 @@
 package common
 
+import (
+	"resultra/datasheet/server/common/datastoreWrapper"
+)
+
 // A LayoutGeometry stores the size and position information for dashboard and form objects.
 // It is intended to be a member of other structs which are specific to the given
 // dashboard or form object.
@@ -21,4 +25,9 @@ func ValidGeometry(geom LayoutGeometry) bool {
 	} else {
 		return false
 	}
+}
+
+type ObjectDimensionsParams struct {
+	datastoreWrapper.UniqueIDHeader
+	Geometry LayoutGeometry `json:"geometry"`
 }

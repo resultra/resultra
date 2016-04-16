@@ -11,25 +11,7 @@ import (
 	"resultra/datasheet/server/field"
 )
 
-const layoutContainerEntityKind string = "LayoutContainer"
 const textBoxEntityKind string = "TextBox"
-
-// A LayoutContainer represents what is actually stored in the datastore
-// for each layout container.
-type LayoutContainer struct {
-	Field    *datastore.Key
-	Geometry common.LayoutGeometry
-}
-
-// NEW CODE for TEXT BOX
-type UniqueID struct {
-	ParentID string `json:"uniqueID"`
-	ObjectID string `json:"objectID"`
-}
-
-type UniqueIDHeader struct {
-	UniqueID UniqueID `json:"uniqueID"`
-}
 
 type TextBox struct {
 	Field    *datastore.Key
@@ -37,79 +19,10 @@ type TextBox struct {
 }
 
 type TextBoxRef struct {
-	UniqueIDHeader
-	FieldRef field.FieldRef
-	Geometry common.LayoutGeometry
+	datastoreWrapper.UniqueIDHeader
+	FieldRef field.FieldRef        `json:"fieldRef"`
+	Geometry common.LayoutGeometry `json:"geometry"`
 }
-
-// LayoutContainerParams is a parameter block used to create new and complete
-// LayoutContainers, or to retrieve them from the datastore. The ID's
-// are the encoded/stringified datastore keys, suitable for passing back
-// and forth to clients of this package.
-type LayoutContainerParams struct {
-	// ContainerID is initially assigned a temporary ID assigned by the client. It is passed back
-	// to the client after the real datastore ID is assigned, allowing the client
-	// to swizzle/replace the placeholder ID with the real one.
-	ParentLayoutID string                `json:"parentLayoutID" datastore:"-"` // don't save to datastore
-	ContainerID    string                `json:"containerID" datastore:"-"`    // don't save to datastore
-	FieldID        string                `json:"fieldID" datastore:"-"`
-	Geometry       common.LayoutGeometry `json:"geometry"`
-}
-
-func NewUninitializedLayoutContainerParams() LayoutContainerParams {
-	// Use -1 for top and left, so a failure of a client to initialize
-	// can be detected.
-	return LayoutContainerParams{"", "", "", common.NewUnitializedLayoutGeometry()}
-}
-
-// ResizeContainerParams has a subset of LayoutContainer properties
-// which are modified when resizing the container (fieldID is absent)
-type ResizeContainerParams struct {
-	ParentLayoutID string `json:"parentLayoutID" datastore:"-"`
-	ContainerID    string `json:"containerID" datastore:"-"`
-	Geometry       common.LayoutGeometry
-}
-
-func NewUninitializedResizeLayoutContainerParams() ResizeContainerParams {
-	// Use -1 for top and left, so a failure of a client to initialize
-	// can be detected.
-	return ResizeContainerParams{"", "", common.NewUnitializedLayoutGeometry()}
-}
-
-func NewLayoutContainer(appEngContext appengine.Context, containerParams LayoutContainerParams) (string, error) {
-
-	if !common.ValidGeometry(containerParams.Geometry) {
-		return "", fmt.Errorf("Invalid layout container parameters: %+v", containerParams)
-	}
-
-	parentLayoutKey, err := datastoreWrapper.GetExistingRootEntityKey(appEngContext, dataModel.LayoutEntityKind,
-		containerParams.ParentLayoutID)
-	if err != nil {
-		return "", err
-	}
-
-	fieldKey, fieldErr := field.GetExistingFieldKey(appEngContext, containerParams.FieldID)
-	if fieldErr != nil {
-		return "", fmt.Errorf("NewLayoutContainer: Can't create layout container with field ID = '%v': datastore error=%v",
-			containerParams.FieldID, fieldErr)
-	}
-
-	newLayoutContainer := LayoutContainer{fieldKey, containerParams.Geometry}
-
-	containerID, insertErr := datastoreWrapper.InsertNewEntity(appEngContext, layoutContainerEntityKind,
-		parentLayoutKey, &newLayoutContainer)
-	if insertErr != nil {
-		return "", insertErr
-	}
-
-	log.Printf("INFO: API: NewLayout: Created new Layout container: id=%v params=%+v",
-		containerID, containerParams)
-
-	return containerID, nil
-
-}
-
-// NEW CODE for TEXT BOX
 
 type NewTextBoxParams struct {
 	// ContainerID is initially assigned a temporary ID assigned by the client. It is passed back
@@ -118,6 +31,16 @@ type NewTextBoxParams struct {
 	ParentID string                `json:"parentID"`
 	FieldID  string                `json:"fieldID"`
 	Geometry common.LayoutGeometry `json:"geometry"`
+}
+
+func validTextBoxFieldType(fieldType string) bool {
+	if fieldType == field.FieldTypeText {
+		return true
+	} else if fieldType == field.FieldTypeNumber {
+		return true
+	} else {
+		return false
+	}
 }
 
 func NewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*TextBoxRef, error) {
@@ -137,10 +60,10 @@ func NewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*Text
 			params.FieldID, fieldErr)
 	}
 
-	/*		if (fieldRef.FieldInfo.type == field.FieldTypeText) || (fieldRef.FieldInfo.type == field.FieldTypeNumber) {
-				return "", fmt.Errorf("NewTextBox: Can't create text box - incompatible field type")
-			}
-	*/
+	if !validTextBoxFieldType(fieldRef.FieldInfo.Type) {
+		return nil, fmt.Errorf("NewTextBox: Invalid field type: expecting text or number field, got %v", fieldRef.FieldInfo.Type)
+	}
+
 	newTextBox := TextBox{Field: fieldKey, Geometry: params.Geometry}
 
 	textBoxID, insertErr := datastoreWrapper.InsertNewEntity(appEngContext, textBoxEntityKind,
@@ -149,8 +72,10 @@ func NewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*Text
 		return nil, insertErr
 	}
 
-	textBoxUniqueID := UniqueID{params.ParentID, textBoxID}
-	textBoxRef := TextBoxRef{UniqueIDHeader{UniqueID: textBoxUniqueID}, *fieldRef, params.Geometry}
+	textBoxRef := TextBoxRef{
+		UniqueIDHeader: datastoreWrapper.NewUniqueIDHeader(params.ParentID, textBoxID),
+		FieldRef:       *fieldRef,
+		Geometry:       params.Geometry}
 
 	log.Printf("INFO: API: NewLayout: Created new Layout container: id=%v params=%+v", textBoxID, params)
 
@@ -158,84 +83,83 @@ func NewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*Text
 
 }
 
-func ResizeLayoutContainer(appEngContext appengine.Context, resizeParams ResizeContainerParams) error {
+func getTextBox(appEngContext appengine.Context, textBoxID datastoreWrapper.UniqueID) (*TextBox, error) {
 
-	if !common.ValidGeometry(resizeParams.Geometry) {
-		return fmt.Errorf("Invalid layout container resize parameters: %+v", resizeParams)
+	parentKey, parentKeyErr := datastoreWrapper.NewRootEntityKey(appEngContext, dataModel.LayoutEntityKind, textBoxID.ParentID)
+	if parentKeyErr != nil {
+		return nil, fmt.Errorf("getTextBox: unable to retrieve parent key for dashboard = %v", textBoxID.ParentID)
 	}
 
-	parentLayoutKey, err := datastoreWrapper.GetExistingRootEntityKey(appEngContext, dataModel.LayoutEntityKind,
-		resizeParams.ParentLayoutID)
-	if err != nil {
-		return err
+	var textBox TextBox
+	if getErr := datastoreWrapper.GetChildEntityByID(textBoxID.ObjectID, appEngContext, textBoxEntityKind, parentKey, &textBox); getErr != nil {
+		return nil, fmt.Errorf("getBarChart: Unable to get bar chart from datastore: error = %v", getErr)
 	}
 
-	// Retrieve the entire LayoutContainer, but overwrite just the Geometry property.
-	var layoutContainerForUpdate LayoutContainer
-	getErr := datastoreWrapper.GetChildEntityByID(resizeParams.ContainerID, appEngContext,
-		layoutContainerEntityKind,
-		parentLayoutKey, &layoutContainerForUpdate)
+	return &textBox, nil
+}
+
+func GetTextBoxes(appEngContext appengine.Context, parentFormID datastoreWrapper.UniqueRootID) ([]TextBoxRef, error) {
+
+	parentKey, parentErr := datastoreWrapper.GetExistingRootEntityKey(appEngContext, dataModel.LayoutEntityKind, parentFormID.ObjectID)
+	if parentErr != nil {
+		return nil, fmt.Errorf("GetTextBoxes: Unable to retrieve text boxes: Unable to retrieve parent form: error = %v", parentErr)
+	}
+
+	textBoxQuery := datastore.NewQuery(textBoxEntityKind).Ancestor(parentKey)
+	var textBoxes []TextBox
+	keys, getErr := textBoxQuery.GetAll(appEngContext, &textBoxes)
+
 	if getErr != nil {
-		return fmt.Errorf("Can't resize container: Error retrieving existing container for update: %v", getErr)
+		return nil, fmt.Errorf("Unable to retrieve layout containers: form id=%v", parentFormID.ObjectID)
+	} else {
+
+		textBoxRefs := make([]TextBoxRef, len(textBoxes))
+		for textBoxIter, currTextBox := range textBoxes {
+
+			textBoxKey := keys[textBoxIter]
+			textBoxID, encodeErr := datastoreWrapper.EncodeUniqueEntityIDToStr(textBoxKey)
+			if encodeErr != nil {
+				return nil, fmt.Errorf("Failed to encode unique ID for record: key=%+v, encode err=%v", textBoxKey, encodeErr)
+			}
+
+			fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, currTextBox.Field)
+			if fieldErr != nil {
+				return nil, fmt.Errorf("GetTextBoxes: Error retrieving field for text box: error = %v", fieldErr)
+			}
+
+			textBoxRefs[textBoxIter] = TextBoxRef{
+				UniqueIDHeader: datastoreWrapper.NewUniqueIDHeader(parentFormID.ObjectID, textBoxID),
+				FieldRef:       *fieldRef,
+				Geometry:       currTextBox.Geometry}
+
+		} // for each text box
+		return textBoxRefs, nil
 	}
-
-	// Update the geometry properties
-	layoutContainerForUpdate.Geometry = resizeParams.Geometry
-
-	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext,
-		resizeParams.ContainerID, layoutContainerEntityKind,
-		parentLayoutKey, &layoutContainerForUpdate); updateErr != nil {
-		return updateErr
-	}
-
-	return nil
 
 }
 
-func GetLayoutContainers(appEngContext appengine.Context, parentLayoutID string) ([]LayoutContainerParams, error) {
+func updateExistingTextBox(appEngContext appengine.Context, uniqueID datastoreWrapper.UniqueID, updatedTextBox *TextBox) (*TextBoxRef, error) {
 
-	parentLayoutKey, err := datastoreWrapper.GetExistingRootEntityKey(appEngContext, dataModel.LayoutEntityKind,
-		parentLayoutID)
-	if err != nil {
-		return nil, err
+	parentKey, getErr := datastoreWrapper.GetExistingRootEntityKey(appEngContext, dataModel.LayoutEntityKind, uniqueID.ParentID)
+	if getErr != nil {
+		return nil, fmt.Errorf("updateExistingTextBox: Invalid parent for text box: %v", getErr)
 	}
 
-	// Retrieve the raw/datastore representation into LayoutContainer's then
-	// build up corresponding LayoutContainerParams including the encoded/stringified
-	// IDs (from the datastore keys), so clients of this package can make reference to
-	// the layout container and it's references without exposing the datastore internals.
-	containerQuery := datastore.NewQuery(layoutContainerEntityKind).Ancestor(parentLayoutKey)
-	var layoutContainers []LayoutContainer
-	keys, err := containerQuery.GetAll(appEngContext, &layoutContainers)
-
-	if err != nil {
-		return nil, fmt.Errorf("Unable to retrieve layout containers: layout id=%v key=%+v", parentLayoutID, parentLayoutKey)
-	} else {
-		layoutContainersWithIDs := make([]LayoutContainerParams, len(layoutContainers))
-		for i, c := range layoutContainers {
-
-			containerKey := keys[i]
-			containerID, encodeErr := datastoreWrapper.EncodeUniqueEntityIDToStr(containerKey)
-			if encodeErr != nil {
-				return nil, fmt.Errorf("Failed to encode unique ID for layout container: key=%+v, encode err=%v",
-					containerKey, encodeErr)
-			}
-
-			fieldID, fieldIDEncodeErr := datastoreWrapper.EncodeUniqueEntityIDToStr(c.Field)
-			if fieldIDEncodeErr != nil {
-				return nil, fmt.Errorf("Failed to encode unique ID for layout container's field:  key=%+v, encode err=%v",
-					c.Field, fieldIDEncodeErr)
-			}
-
-			containerParams := LayoutContainerParams{
-				ParentLayoutID: parentLayoutID,
-				ContainerID:    containerID,
-				FieldID:        fieldID,
-				Geometry:       c.Geometry}
-
-			layoutContainersWithIDs[i] = containerParams
-		}
-		return layoutContainersWithIDs, nil
+	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext,
+		uniqueID.ObjectID, textBoxEntityKind, parentKey, updatedTextBox); updateErr != nil {
+		return nil, updateErr
 	}
+
+	fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, updatedTextBox.Field)
+	if fieldErr != nil {
+		return nil, fmt.Errorf("updateExistingTextBox: Error retrieving field for text box: error = %v", fieldErr)
+	}
+
+	textBoxRef := TextBoxRef{
+		UniqueIDHeader: datastoreWrapper.UniqueIDHeader{uniqueID},
+		FieldRef:       *fieldRef,
+		Geometry:       updatedTextBox.Geometry}
+
+	return &textBoxRef, nil
 
 }

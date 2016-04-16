@@ -12,16 +12,21 @@ function initObjectEditBehavior(parentID, objID, editConfig) {
 		containment: "parent",
 		clone: "original",				
 		stop: function(event, ui) {
+			var objectID = event.target.id
 			var reposParams = {
-				parentID: parentID,
-				objectID: event.target.id,
+				uniqueID: {
+					parentID: parentID,
+					objectID: objectID
+				},
 				position: {
 				  positionTop: ui.position.top,			
 				  positionLeft: ui.position.left
 				}
 			}
 			console.log("Object reposition: params = " + JSON.stringify(reposParams))
-			editConfig.reposFunc(reposParams)
+			jsonAPIRequest(editConfig.reposAPIName, reposParams, function(updatedObjRef) {
+				setElemObjectRef(objectID,updatedObjRef)
+			})
 		} // stop function
 	})
 	
@@ -31,10 +36,13 @@ function initObjectEditBehavior(parentID, objID, editConfig) {
 		maxWidth: editConfig.resizeConstraints.maxWidth,
 		minWidth: editConfig.resizeConstraints.minWidth,
 		grid: 20, // snap to grid during resize
-		stop: function(event, ui) {  
+		stop: function(event, ui) {
+			var objectID = event.target.id  
 			var resizeParams = {
-				parentID: parentID,
-				objectID: event.target.id,
+				uniqueID: {
+					parentID: parentID,
+					objectID: objectID	
+				},
 				geometry: { 
 					positionTop: ui.position.top,
 					positionLeft: ui.position.left,
@@ -42,7 +50,9 @@ function initObjectEditBehavior(parentID, objID, editConfig) {
 					sizeHeight: ui.size.height }
 			} 
 			console.log("Object resize: params = " + JSON.stringify(resizeParams))
-			editConfig.resizeFunc(resizeParams)
+			jsonAPIRequest(editConfig.resizeAPIName, resizeParams, function(updatedObjRef) {
+				setElemObjectRef(objectID,updatedObjRef)
+			})
 		} // stop function
 	})
 	

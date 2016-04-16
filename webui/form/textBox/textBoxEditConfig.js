@@ -7,10 +7,6 @@ var textBoxEditConfig = {
 	draggableHTMLFunc:	textBoxContainerHTML,
 	createNewItemAfterDropFunc: newLayoutContainer,
 	resizeConstraints: elemResizeConstraints(100,600,400,400),
-	resizeFunc:  function (resizeParams) {
-		console.log("resizing textBox: " + JSON.stringify(resizeParams))
-	},
-	reposFunc:  function (reposParams) {
-		console.log("reposition textBox: " + JSON.stringify(reposParams))
-	}	
+	resizeAPIName: "frm/textBox/resize",
+	reposAPIName: "frm/textBox/reposition"
 }

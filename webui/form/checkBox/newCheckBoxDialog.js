@@ -1,7 +1,7 @@
 
 var checkboxDialogSelector = "#newCheckbox"
 
-function openNewCheckboxDialog(containerParams,fieldsByID)
+function openNewCheckboxDialog(containerParams)
 {
 	
 	// Must be the same as designForm.go - this is the common prefix on all DOM element IDs to distinguish
@@ -13,7 +13,6 @@ function openNewCheckboxDialog(containerParams,fieldsByID)
 		containerParams: containerParams,
 		containerCreated: false,
 		placeholderID: containerParams.containerID,
-		fieldsByID: fieldsByID,
 		dialogBox: $( checkboxDialogSelector )
 	}
 	

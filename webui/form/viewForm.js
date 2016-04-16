@@ -97,20 +97,24 @@ function enableNewRecordButton()
 	$('#newRecordButton').prop("disabled",false)
 }
 
-function initRecordEntryFieldInfo(fieldRef)
-{
-	// TODO - If the field is a calculated field, disable editing on the field.
-}
 
-function initEditableFieldBehavior(container) {
+function initTextBoxRecordEditBehavior(textFieldObjectRef) {
+	
+	
+	var container = $('#'+textFieldObjectRef.uniqueID.objectID)
 	
 	container.focusout(function () {
 		var inputVal = container.find("input").val()
 		
+		// TODO - get edit information from single "objectRef", rather
+		// than a scattering of different data values.
 		var containerID = container.attr("id")
-		var fieldID = container.data("fieldID")
-		var fieldType = container.data("fieldType")
-		console.log("container focus out:" 
+		
+		var currTextObjRef = getElemObjectRef(containerID)
+		
+		var fieldID = currTextObjRef.fieldRef.fieldID
+		var fieldType = currTextObjRef.fieldRef.fieldInfo.type
+		console.log("Text Box focus out:" 
 		    + " containerID: " + containerID
 			+ " ,fieldID: " + fieldID
 		    + " ,fieldType: " + fieldType
@@ -166,7 +170,6 @@ function initEditableFieldBehavior(container) {
 			
 		}
 		
-		
 	}) // focus out
 	
 }
@@ -186,6 +189,7 @@ function initContainerRecordEntryBehavior(container)
 	
 	// If the field is a calculated field, disable it for entry.
 	// Otherwise, initialize the event handling for editing values in the field.
+	// TODO - Get the object reference "objectRef" instead of specific "isCalcField"
 	if(container.data('isCalcField')) {
 		container.find('input').prop('disabled',true);
 	} else {
@@ -207,19 +211,22 @@ function loadCurrRecordIntoLayout()
 		// and populate the container's value with the field's value from the record.
 		$(".layoutContainer").each(function() {
 	
-			var containerFieldID = $(this).data("fieldID")
+			var textBoxObjectRef = $(this).data("objectRef")
+			var textBoxFieldID = textBoxObjectRef.fieldRef.fieldID
+			
+			console.log("Field ID to load data:" + textBoxFieldID)
 	
 			// If the value is not set for the current container, then don't try to 
 			// retrieve the value from the record data.
 			//
 			// In other words, we are populating the "intersection" of field values in the record
 			// with the fields shown by the layout's containers.
-			if(recordRef.fieldValues.hasOwnProperty(containerFieldID)) {
+			if(recordRef.fieldValues.hasOwnProperty(textBoxFieldID)) {
 		
-				var fieldVal = recordRef.fieldValues[containerFieldID]
+				var fieldVal = recordRef.fieldValues[textBoxFieldID]
 
 				console.log("Load value into container: " + $(this).attr("id") + " field ID:" + 
-							containerFieldID + "  value:" + fieldVal)
+							textBoxFieldID + "  value:" + fieldVal)
 		
 				$(this).find('input').val(fieldVal)
 			} // If record has a value for the current container's associated field ID.
@@ -258,7 +265,7 @@ function loadRecords()
 				
 	}) // getRecord
 	
-	initFilterRecordsElems(fieldsByID);
+	initFilterRecordsElems();
 }
 
 function createNewRecord() {
@@ -346,9 +353,15 @@ $(document).ready(function() {
 	$('.ui.dropdown').dropdown()
 	
 	initRecordButtonsBehavior()
-	  
-	initCanvas(initContainerRecordEntryBehavior,initRecordEntryFieldInfo, loadRecords)
 	
+	loadFormObjects({
+		formParentElemID: "#layoutCanvas",
+		initTextBoxFunc: function(textBoxObjectRef) {			
+			initTextBoxRecordEditBehavior(textBoxObjectRef)
+		},
+		doneLoadingFormDataFunc: loadRecords // no-op	
+	}); 
+		
 	
 
 }); // document ready

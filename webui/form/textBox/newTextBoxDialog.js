@@ -19,7 +19,7 @@ function doCreateNewFieldWithTextBox() {
 
 function saveNewTextBox()
 {
-	// Complete the parameters to create the new layout container by including the 
+	// Complete the parameters to create the new textBox by including the 
 	// fieldID selected in the dialog box.
 	
 	if(doCreateNewFieldWithTextBox()) {
@@ -28,38 +28,28 @@ function saveNewTextBox()
 	} else {
 		var fieldID = $( "#newTextBoxDlgSelectOrNewFieldPanel" ).form('get value','textBoxFieldSelection')
 		console.log("saveNewTextBox: Selected field ID: " + fieldID)
-			
-		newTextBoxParams.containerParams["fieldID"] = fieldID
+					
+		var newTextBoxAPIParams = {
+			parentID: newTextBoxParams.containerParams.parentLayoutID,
+			geometry: newTextBoxParams.containerParams.geometry,
+			fieldID: fieldID
+		}
 
 		// TODO - saveNewTextBox() depends on containerParams - need to pass in somehow
-		jsonAPIRequest("newLayoutContainer",newTextBoxParams.containerParams,function(replyData) {
-	          console.log("Done getting new ID:response=" + JSON.stringify(replyData));
-			  // TODO - Define some kind of common "validateJSONResponse" function
-			  // and possibly write errors back to a server log.
+		jsonAPIRequest("frm/textBox/new",newTextBoxAPIParams,function(newTextBoxObjectRef) {
+	          console.log("Done getting new ID:response=" + JSON.stringify(newTextBoxObjectRef));
+			  
+			  $('#'+newTextBoxParams.placeholderID).find('label').text(newTextBoxObjectRef.fieldRef.fieldInfo.name)
+			  $('#'+newTextBoxParams.placeholderID).attr("id",newTextBoxObjectRef.uniqueID.objectID)
+			  
+			  // Store the newly created object reference in the DOM element. This is needed for follow-on
+			  // property setting, resizing, etc.
+			  setElemObjectRef(newTextBoxObjectRef.uniqueID.objectID,newTextBoxObjectRef)
+			
+			  newTextBoxParams.containerCreated = true				  
+					  
+			  newTextBoxParams.dialogBox.dialog("close")
 
-			  if(replyData.hasOwnProperty("layoutContainerID") && 
-				  replyData.hasOwnProperty("placeholderID")) {
-					  // Replace the placeholder ID with the permanent one generated via
-					  // the API call.
-				  
-					  console.log("fields by ID: " + JSON.stringify(newTextBoxParams.fieldsByID))
-				  
-					  $('#'+newTextBoxParams.placeholderID).find('label').text(newTextBoxParams.fieldsByID[fieldID].name)
-					  $('#'+newTextBoxParams.placeholderID).attr("id",replyData.layoutContainerID)
- 				  
-					  newTextBoxParams.containerCreated = true
-					  
-					  // After confirmation the text box has been successfully created, make the newly craeted
-					  // text box editable.
-				//	  initObjectEditBehavior(containerParams.parentID, replyData.layoutContainerID, editConfig,container) 
-					  
-					  
-					  newTextBoxParams.dialogBox.dialog("close")
-				  }
-				  else {
-		              console.log("ERROR: Missing properties in newLayoutContainer response:response=" + JSON.stringify(replyData));
-					  newTextBoxParams.dialogBox.dialog("close")
-				  }
 	       }) // newLayoutContainer API request
 		
 	} // An existing field was selected
@@ -245,38 +235,44 @@ var newOrExistingFieldPanelConfig = {
 } // wizard dialog configuration for panel to create new field
 
 
-function newLayoutContainer(containerParams,fieldsByID)
+function newLayoutContainer(containerParams)
 {
-	newTextBoxParams = {
-		containerParams: containerParams,
-		containerCreated: false,
-		parentID: containerParams.parentID,
-		placeholderID: containerParams.containerID,
-		fieldsByID: fieldsByID,
-		dialogBox: $( "#newTextBox" )
-	}
+	// Many of the dialog panels depends on field information, so this needs to be loaded before opening the actual dialog
+	loadFieldInfo(function(fieldsByID) { 
+		
+		newTextBoxParams = {
+			containerParams: containerParams,
+			containerCreated: false,
+			parentID: containerParams.parentID,
+			placeholderID: containerParams.containerID,
+			fieldsByID: fieldsByID,
+			dialogBox: $( "#newTextBox" )
+		}
 	
-	// Enable Semantic UI checkboxes and popups
-	$('.ui.checkbox').checkbox();
-	$('.ui.radio.checkbox').checkbox();	
+		// Enable Semantic UI checkboxes and popups
+		$('.ui.checkbox').checkbox();
+		$('.ui.radio.checkbox').checkbox();	
 	
+		populateFieldSelectionMenu(fieldsByID, "#textBoxFieldSelection")
 	
-	openWizardDialog({
-		closeFunc: function() {
-			console.log("Close dialog")
-			if(!newTextBoxParams.containerCreated)
-			{
-			  // If the the text box creation is not complete, remove the placeholder
-			  // from the canvas.
-				$('#'+newTextBoxParams.placeholderID).remove()
-			}
-      	},
-		width: 500, height: 500,
-		dialogDivID: '#newTextBox',
-		panels: [newOrExistingFieldPanelConfig, newFieldPanelConfig,
-				calcFieldFormulaPanelConfig, newTextBoxValidateFormatEntriesPanel],
-		progressDivID: '#newTextBoxProgress',
-	})
+		openWizardDialog({
+			closeFunc: function() {
+				console.log("Close dialog")
+				if(!newTextBoxParams.containerCreated)
+				{
+				  // If the the text box creation is not complete, remove the placeholder
+				  // from the canvas.
+					$('#'+newTextBoxParams.placeholderID).remove()
+				}
+	      	},
+			width: 500, height: 500,
+			dialogDivID: '#newTextBox',
+			panels: [newOrExistingFieldPanelConfig, newFieldPanelConfig,
+					calcFieldFormulaPanelConfig, newTextBoxValidateFormatEntriesPanel],
+			progressDivID: '#newTextBoxProgress',
+		})
+		
+	}) // loadFieldInfo
 		
 } // newLayoutContainer
 

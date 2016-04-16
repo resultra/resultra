@@ -4,7 +4,7 @@ import (
 	"appengine"
 	"net/http"
 	"resultra/datasheet/server/common/api"
-	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/common/datastoreWrapper"
 	"resultra/datasheet/server/form/textBox"
 )
 
@@ -25,28 +25,29 @@ func newLayout(w http.ResponseWriter, r *http.Request) {
 
 }
 
-type LayoutEditInfo struct {
-	LayoutContainers []textBox.LayoutContainerParams `json:"layoutContainers"`
-	FieldsByType     field.FieldsByType              `json:"fieldsByType"`
+type FormInfo struct {
+	TextBoxes []textBox.TextBoxRef `json:"textBoxes"`
 }
 
-func getLayoutEditInfo(w http.ResponseWriter, r *http.Request) {
+func getFormInfo(w http.ResponseWriter, r *http.Request) {
 
-	layoutContainers, err := textBox.GetLayoutContainersFromRequest(r)
-	if err != nil {
+	var parentFormID datastoreWrapper.UniqueRootIDHeader
+	if err := api.DecodeJSONRequest(r, &parentFormID); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	fieldsByType, err := field.GetFieldsByType(appEngCntxt)
+
+	textBoxRefs, err := textBox.GetTextBoxes(appEngCntxt, parentFormID.UniqueID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	layoutEditInfo := LayoutEditInfo{layoutContainers, *fieldsByType}
+	formInfoInfo := FormInfo{
+		TextBoxes: textBoxRefs}
 
-	api.WriteJSONResponse(w, layoutEditInfo)
+	api.WriteJSONResponse(w, formInfoInfo)
 
 }
