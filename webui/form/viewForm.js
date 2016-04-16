@@ -2,89 +2,9 @@
 
 var currRecordSet;
 
-function RecordSet(recordRefData) {
-	
-	this.currRecordIter = 0
-	this.recordRefs = recordRefData
-
-	this.numRecords = function() {
-		return this.recordRefs.length
-	}
-	
-	this.currRecordRef = function() {
-		if(this.numRecords() > 0) {
-			return this.recordRefs[this.currRecordIter]
-		}
-		else {
-			return null
-		}
-	}
-	
-	this.advanceToNextRecord = function() {
-		var nextRecordIter = this.currRecordIter + 1
-		if(nextRecordIter < this.recordRefs.length)
-		{
-			this.currRecordIter = nextRecordIter
-			return true
-		}
-		else {
-			return false
-		}
-	}
-
-	this.advanceToPrevRecord = function() {
-		var prevRecordIter = this.currRecordIter - 1
-		if((prevRecordIter >= 0) && (prevRecordIter < this.recordRefs.length)) {
-			this.currRecordIter = prevRecordIter
-			return true
-		}
-		else {
-			return false
-		}
-	}
-	
-	this.jumpToRecord = function(recordID) {
-		// Use an integer iterator, since the value of the matching record
-		// will be used to update this.currRecordIter. Otherwise, a string
-		// will be assigned to this.currRecordIter.
-		for (recIter = 0; recIter < this.recordRefs.length; recIter++) {
-			if(this.recordRefs[recIter].recordID == recordID) {
-				this.currRecordIter = recIter
-				return true
-			}
-		}
-		return false // TODO - some type of better error handling/assertion checking needed here
-	}
-	
-	this.updateRecordRef = function(updatedRecordRef) {
-		for (recIter in this.recordRefs) {
-			if(this.recordRefs[recIter].recordID == updatedRecordRef.recordID) {
-				this.recordRefs[recIter] = updatedRecordRef
-				return
-			}
-		}
-	}
-	
-	this.appendNewRecord = function(recordRef) {
-		this.recordRefs.push(recordRef)
-	}
-	
-	this.currRecordNum = function() {
-		return this.currRecordIter + 1 // iterator is 0 based
-	}
-		
-	this.recPageLabel = function () {
-		var recNumLabel = (this.currRecordIter + 1).toString()
-		var totalRecsLabel = this.numRecords().toString()		
-		var recLabel = recNumLabel + " of " + totalRecsLabel
-		return recLabel
-	}
-	
-}
 
 function enableRecordButtons(isEnabled)
 {
-	
 	var isDisabled = true;
 	if(isEnabled) { isDisabled=false }
 	$('#prevRecordButton').prop("disabled",isDisabled)
@@ -98,137 +18,33 @@ function enableNewRecordButton()
 }
 
 
-function initTextBoxRecordEditBehavior(textFieldObjectRef) {
-	
-	
-	var container = $('#'+textFieldObjectRef.uniqueID.objectID)
-	
-	if(textFieldObjectRef.fieldRef.fieldInfo.isCalcField) {
-		container.find('input').prop('disabled',true);
-	} else {
-		return; // stop initialization, the text box is read only.
-	}
-	
-	
-	container.focusout(function () {
-		var inputVal = container.find("input").val()
-		
-		// TODO - get edit information from single "objectRef", rather
-		// than a scattering of different data values.
-		var containerID = container.attr("id")
-		
-		var currTextObjRef = getElemObjectRef(containerID)
-		
-		var fieldID = currTextObjRef.fieldRef.fieldID
-		var fieldType = currTextObjRef.fieldRef.fieldInfo.type
-		console.log("Text Box focus out:" 
-		    + " containerID: " + containerID
-			+ " ,fieldID: " + fieldID
-		    + " ,fieldType: " + fieldType
-			+ " , inputval:" + inputVal)
-		
-		currRecordRef = currRecordSet.currRecordRef()
-		if(currRecordRef != null) {
-			
-			// Only update the value if it has changed. Sometimes a user may focus on or tab
-			// through a field but not change it. In this case we don't need to update the record.
-			if(currRecordRef.fieldValues[fieldID] != inputVal) {
-				
-				if(fieldType == "text") {
-					currRecordRef.fieldValues[fieldID] = inputVal
-					var setRecordValParams = { recordID:currRecordRef.recordID, fieldID:fieldID, value:inputVal }
-					jsonAPIRequest("setTextFieldValue",setRecordValParams,function(replyData) {
-						// After updating the record, the local cache of records in currentRecordSet will
-						// be out of date. So after updating the record on the server, the locally cached
-						// version of the record also needs to be updated.
-						currRecordSet.updateRecordRef(replyData)
-						// After changing the value, some of the calculated fields may have changed. For this
-						// reason, it is necessary to reload the record into the layout/form, so the most
-						// up to date values will be displayed.
-						loadCurrRecordIntoLayout()
-					}) // set record's text field value
-					
-				} else if (fieldType == "number") {
-					var numberVal = Number(inputVal)
-					if(!isNaN(numberVal)) {
-						console.log("Change number val: "
-							+ "fieldID: " + fieldID
-						    + " ,number = " + numberVal)
-						currRecordRef.fieldValues[fieldID] = numberVal
-						var setRecordValParams = { recordID:currRecordRef.recordID, fieldID:fieldID, value:numberVal }
-						jsonAPIRequest("setNumberFieldValue",setRecordValParams,function(replyData) {
-							// After updating the record, the local cache of records in currentRecordSet will
-							// be out of date. So after updating the record on the server, the locally cached
-							// version of the record also needs to be updated.
-							currRecordSet.updateRecordRef(replyData)
-							
-							// After changing the value, some of the calculated fields may have changed. For this
-							// reason, it is necessary to reload the record into the layout/form, so the most
-							// up to date values will be displayed.
-							loadCurrRecordIntoLayout()
-						}) // set record's number field value
-					}
-					
-				}
-				
-			
-			} // if input value is different than currently cached value
-			
-			
-		}
-		
-	}) // focus out
-	
-}
-
 function loadCurrRecordIntoLayout()
 {
-	
 	recordRef = currRecordSet.currRecordRef()
 	if(recordRef != null)
 	{
-		console.log("Loading record into layout: fieldValues: " + JSON.stringify(recordRef.fieldValues))
+		console.log("Loading record into layout: record field values: " + JSON.stringify(recordRef.fieldValues))
 
 		// Iterate through all the containers in the current layout (which may be a subset of the record's fields),
 		// and populate the container's value with the field's value from the record.
 		$(".layoutContainer").each(function() {
-	
-			var textBoxObjectRef = $(this).data("objectRef")
-			var textBoxFieldID = textBoxObjectRef.fieldRef.fieldID
 			
-			console.log("Field ID to load data:" + textBoxFieldID)
+			// Each type of form object needs to set a "viewFormConfig" object on it's DOM element. The loadRecord()
+			// function is called on each of these objects to perform per form object record initialization.
+			var viewFormConfig = $(this).data("viewFormConfig")
+			viewFormConfig.loadRecord($(this),recordRef)
 	
-			// If the value is not set for the current container, then don't try to 
-			// retrieve the value from the record data.
-			//
-			// In other words, we are populating the "intersection" of field values in the record
-			// with the fields shown by the layout's containers.
-			if(recordRef.fieldValues.hasOwnProperty(textBoxFieldID)) {
-		
-				var fieldVal = recordRef.fieldValues[textBoxFieldID]
-
-				console.log("Load value into container: " + $(this).attr("id") + " field ID:" + 
-							textBoxFieldID + "  value:" + fieldVal)
-		
-				$(this).find('input').val(fieldVal)
-			} // If record has a value for the current container's associated field ID.
-			else
-			{
-				$(this).find('input').val("") // clear the value in the container
-			}
 		}) // for each container in the layout
 	
 		// Update footer to reflect where the current record is in list of currently loaded records
 		$('#recordNumLabel').text(currRecordSet.recPageLabel())
 		
 	} // if current record != null
-		
 }
 
 
 function loadRecords()
 {
-	
 	var getRecordsParams = {} // TODO - will include sort & filter options
 	jsonAPIRequest("getFilteredRecords",getRecordsParams,function(replyData) {
 		
@@ -243,8 +59,7 @@ function loadRecords()
 		}
 		else {
 			enableNewRecordButton() // just enable the "New Record" button
-		}
-				
+		}		
 	}) // getRecord
 	
 	initFilterRecordsElems();
@@ -265,7 +80,6 @@ function initRecordButtonsBehavior()
 	// Initially disabled the buttons for paging through the records. They'll be 
 	// enabled once the records are loaded.
 	enableRecordButtons(false)
-	
 	
 	$('#nextRecordButton').click(function(e){
 	         e.preventDefault();
@@ -290,7 +104,6 @@ function initUILayoutPanes()
 {
 	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
 	
-
 	// Initialize the page layout
 	$('#layoutPage').layout({
 		inset: zeroPaddingInset,
@@ -310,13 +123,11 @@ function initUILayoutPanes()
 		}
 	})
 	
-	
 	$('#recordsPane').layout({
 		north: fixedUILayoutPaneAutoSizeToFitContentsParams(),
 		south: fixedUILayoutPaneAutoSizeToFitContentsParams(),
 		north__showOverflowOnHover:	true
 	})
-	
 	
 	$('#eastFilterSortPane').layout({
 		inset: zeroPaddingInset,
@@ -341,9 +152,7 @@ $(document).ready(function() {
 		initTextBoxFunc: function(textBoxObjectRef) {			
 			initTextBoxRecordEditBehavior(textBoxObjectRef)
 		},
-		doneLoadingFormDataFunc: loadRecords // no-op	
+		doneLoadingFormDataFunc: loadRecords	
 	}); 
-		
-	
 
 }); // document ready
