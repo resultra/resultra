@@ -103,6 +103,13 @@ function initTextBoxRecordEditBehavior(textFieldObjectRef) {
 	
 	var container = $('#'+textFieldObjectRef.uniqueID.objectID)
 	
+	if(textFieldObjectRef.fieldRef.fieldInfo.isCalcField) {
+		container.find('input').prop('disabled',true);
+	} else {
+		return; // stop initialization, the text box is read only.
+	}
+	
+	
 	container.focusout(function () {
 		var inputVal = container.find("input").val()
 		
@@ -173,31 +180,6 @@ function initTextBoxRecordEditBehavior(textFieldObjectRef) {
 	}) // focus out
 	
 }
-
-
-function initContainerRecordEntryBehavior(container)
-{
-
-	// TODOS:
-	// - Setup the ability for events to be triggered when value changes
-	// - Set tab order of the container vs the others
-	// - Disable editing if the field is calculated
-	// - Setup validation
-	// - Set the default value
-	
-	// While in edit mode, disable input on the container
-	
-	// If the field is a calculated field, disable it for entry.
-	// Otherwise, initialize the event handling for editing values in the field.
-	// TODO - Get the object reference "objectRef" instead of specific "isCalcField"
-	if(container.data('isCalcField')) {
-		container.find('input').prop('disabled',true);
-	} else {
-		initEditableFieldBehavior(container)
-	}
-	
-	
-} // initContainerRecordEntryBehavior
 
 function loadCurrRecordIntoLayout()
 {
