@@ -113,8 +113,3 @@ function initTextBoxRecordEditBehavior(textFieldObjectRef) {
 	}) // focus out
 	
 }
-
-
-var textBoxViewFormConfig = {
-	loadRecord: loadRecordIntoTextBox
-}

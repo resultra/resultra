@@ -3,7 +3,7 @@
 // this javascript file needs to included after the other check box related files, so all the functions
 // are already defined.
 
-var checkBoxEditConfig = {
+var checkBoxDesignFormConfig = {
 	draggableHTMLFunc:	checkBoxContainerHTML,
 	createNewItemAfterDropFunc: openNewCheckboxDialog,
 	resizeConstraints: elemResizeConstraints(100,600,400,400),

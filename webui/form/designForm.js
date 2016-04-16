@@ -1,7 +1,7 @@
 
 var paletteItemsEditConfig = {
-	paletteItemTextBox: textBoxEditConfig,
-	paletteItemCheckBox: checkBoxEditConfig
+	paletteItemTextBox: textBoxDesignFormConfig,
+	paletteItemCheckBox: checkBoxDesignFormConfig
 }
 
 $(document).ready(function() {
@@ -43,7 +43,6 @@ $(document).ready(function() {
 	}
 	initDesignPalette(paletteConfig)			
 	
-	
 	initNewTextBoxDialog()
 	initNewCheckBoxDialog()
 		
@@ -59,7 +58,7 @@ $(document).ready(function() {
 	loadFormObjects({
 		formParentElemID: "#layoutCanvas",
 		initTextBoxFunc: function(textBoxObjectRef) {
-			initObjectEditBehavior(textBoxObjectRef.uniqueID.parentID,textBox.uniqueID.objectID,textBoxEditConfig)
+			initObjectEditBehavior(textBoxObjectRef.uniqueID.parentID,textBox.uniqueID.objectID,textBoxDesignFormConfig)
 		},
 		doneLoadingFormDataFunc: function() {} // no-op	
 	}); 

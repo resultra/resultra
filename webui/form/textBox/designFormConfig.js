@@ -3,7 +3,7 @@
 // this javascript file needs to included after the other text box related files, so all the functions
 // are already defined.
 
-var textBoxEditConfig = {
+var textBoxDesignFormConfig = {
 	draggableHTMLFunc:	textBoxContainerHTML,
 	createNewItemAfterDropFunc: newLayoutContainer,
 	resizeConstraints: elemResizeConstraints(100,600,400,400),
