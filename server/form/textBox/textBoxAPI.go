@@ -30,7 +30,7 @@ func newTextBox(w http.ResponseWriter, r *http.Request) {
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	if textBoxRef, err := NewTextBox(appEngCntxt, textBoxParams); err != nil {
+	if textBoxRef, err := saveNewTextBox(appEngCntxt, textBoxParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *textBoxRef)

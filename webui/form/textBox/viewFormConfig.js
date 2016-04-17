@@ -37,8 +37,7 @@ function initTextBoxRecordEditBehavior(textFieldObjectRef) {
 	
 	if(textFieldObjectRef.fieldRef.fieldInfo.isCalcField) {
 		container.find('input').prop('disabled',true);
-	} else {
-		return; // stop initialization, the text box is read only.
+		return;  // stop initialization, the text box is read only.
 	}
 	
 	

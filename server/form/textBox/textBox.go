@@ -13,6 +13,10 @@ import (
 
 const textBoxEntityKind string = "TextBox"
 
+func textBoxChildParentEntityRel() datastoreWrapper.ChildParentEntityRel {
+	return datastoreWrapper.ChildParentEntityRel{ParentEntityKind: dataModel.LayoutEntityKind, ChildEntityKind: textBoxEntityKind}
+}
+
 type TextBox struct {
 	Field    *datastore.Key
 	Geometry common.LayoutGeometry
@@ -43,15 +47,10 @@ func validTextBoxFieldType(fieldType string) bool {
 	}
 }
 
-func NewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*TextBoxRef, error) {
+func saveNewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*TextBoxRef, error) {
+
 	if !common.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
-	}
-
-	parentKey, err := datastoreWrapper.GetExistingRootEntityKey(appEngContext, dataModel.LayoutEntityKind,
-		params.ParentID)
-	if err != nil {
-		return nil, err
 	}
 
 	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, field.GetFieldParams{params.FieldID})
@@ -66,8 +65,7 @@ func NewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*Text
 
 	newTextBox := TextBox{Field: fieldKey, Geometry: params.Geometry}
 
-	textBoxID, insertErr := datastoreWrapper.InsertNewEntity(appEngContext, textBoxEntityKind,
-		parentKey, &newTextBox)
+	textBoxID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.ParentID, textBoxChildParentEntityRel(), &newTextBox)
 	if insertErr != nil {
 		return nil, insertErr
 	}
@@ -85,69 +83,46 @@ func NewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*Text
 
 func getTextBox(appEngContext appengine.Context, textBoxID datastoreWrapper.UniqueID) (*TextBox, error) {
 
-	parentKey, parentKeyErr := datastoreWrapper.NewRootEntityKey(appEngContext, dataModel.LayoutEntityKind, textBoxID.ParentID)
-	if parentKeyErr != nil {
-		return nil, fmt.Errorf("getTextBox: unable to retrieve parent key for dashboard = %v", textBoxID.ParentID)
-	}
-
 	var textBox TextBox
-	if getErr := datastoreWrapper.GetChildEntityByID(textBoxID.ObjectID, appEngContext, textBoxEntityKind, parentKey, &textBox); getErr != nil {
+	if getErr := datastoreWrapper.GetChildEntity(appEngContext, textBoxID, textBoxChildParentEntityRel(), &textBox); getErr != nil {
 		return nil, fmt.Errorf("getBarChart: Unable to get bar chart from datastore: error = %v", getErr)
 	}
-
 	return &textBox, nil
 }
 
 func GetTextBoxes(appEngContext appengine.Context, parentFormID datastoreWrapper.UniqueRootID) ([]TextBoxRef, error) {
 
-	parentKey, parentErr := datastoreWrapper.GetExistingRootEntityKey(appEngContext, dataModel.LayoutEntityKind, parentFormID.ObjectID)
-	if parentErr != nil {
-		return nil, fmt.Errorf("GetTextBoxes: Unable to retrieve text boxes: Unable to retrieve parent form: error = %v", parentErr)
-	}
-
-	textBoxQuery := datastore.NewQuery(textBoxEntityKind).Ancestor(parentKey)
 	var textBoxes []TextBox
-	keys, getErr := textBoxQuery.GetAll(appEngContext, &textBoxes)
-
+	textBoxIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentFormID.ObjectID, textBoxChildParentEntityRel(), &textBoxes)
 	if getErr != nil {
 		return nil, fmt.Errorf("Unable to retrieve layout containers: form id=%v", parentFormID.ObjectID)
-	} else {
-
-		textBoxRefs := make([]TextBoxRef, len(textBoxes))
-		for textBoxIter, currTextBox := range textBoxes {
-
-			textBoxKey := keys[textBoxIter]
-			textBoxID, encodeErr := datastoreWrapper.EncodeUniqueEntityIDToStr(textBoxKey)
-			if encodeErr != nil {
-				return nil, fmt.Errorf("Failed to encode unique ID for record: key=%+v, encode err=%v", textBoxKey, encodeErr)
-			}
-
-			fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, currTextBox.Field)
-			if fieldErr != nil {
-				return nil, fmt.Errorf("GetTextBoxes: Error retrieving field for text box: error = %v", fieldErr)
-			}
-
-			textBoxRefs[textBoxIter] = TextBoxRef{
-				UniqueIDHeader: datastoreWrapper.NewUniqueIDHeader(parentFormID.ObjectID, textBoxID),
-				FieldRef:       *fieldRef,
-				Geometry:       currTextBox.Geometry}
-
-		} // for each text box
-		return textBoxRefs, nil
 	}
+
+	textBoxRefs := make([]TextBoxRef, len(textBoxes))
+	for textBoxIter, currTextBox := range textBoxes {
+
+		textBoxID := textBoxIDs[textBoxIter]
+
+		fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, currTextBox.Field)
+		if fieldErr != nil {
+			return nil, fmt.Errorf("GetTextBoxes: Error retrieving field for text box: error = %v", fieldErr)
+		}
+
+		textBoxRefs[textBoxIter] = TextBoxRef{
+			UniqueIDHeader: datastoreWrapper.NewUniqueIDHeader(parentFormID.ObjectID, textBoxID),
+			FieldRef:       *fieldRef,
+			Geometry:       currTextBox.Geometry}
+
+	} // for each text box
+	return textBoxRefs, nil
 
 }
 
 func updateExistingTextBox(appEngContext appengine.Context, uniqueID datastoreWrapper.UniqueID, updatedTextBox *TextBox) (*TextBoxRef, error) {
 
-	parentKey, getErr := datastoreWrapper.GetExistingRootEntityKey(appEngContext, dataModel.LayoutEntityKind, uniqueID.ParentID)
-	if getErr != nil {
-		return nil, fmt.Errorf("updateExistingTextBox: Invalid parent for text box: %v", getErr)
-	}
-
-	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext,
-		uniqueID.ObjectID, textBoxEntityKind, parentKey, updatedTextBox); updateErr != nil {
-		return nil, updateErr
+	if updateErr := datastoreWrapper.UpdateExistingChildEntity(appEngContext, uniqueID,
+		textBoxChildParentEntityRel(), updatedTextBox); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingTextBox: Error updating text box: error = %v", updateErr)
 	}
 
 	fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, updatedTextBox.Field)
