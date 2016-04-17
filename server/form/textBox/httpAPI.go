@@ -3,9 +3,20 @@ package textBox
 import (
 	"appengine"
 	"fmt"
+	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/common/api"
 )
+
+func init() {
+	textBoxRouter := mux.NewRouter()
+
+	textBoxRouter.HandleFunc("/api/frm/textBox/new", newTextBox)
+	textBoxRouter.HandleFunc("/api/frm/textBox/resize", resizeTextBox)
+	textBoxRouter.HandleFunc("/api/frm/textBox/reposition", repositionTextBox)
+
+	http.Handle("/api/frm/textBox/", textBoxRouter)
+}
 
 func getLayoutIDFromRequestParams(r *http.Request) (string, error) {
 	var jsonParams api.JSONParams
