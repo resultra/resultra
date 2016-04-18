@@ -1,28 +1,24 @@
+
+var newFieldDialogPanelID = "newField"
+
 function createNewFieldDialogPanelConfig(elemPrefix) {
 	
-	function createParamFormElemInfo(elemPrefix,elemSuffix) {
-		return {
-			id: elemPrefix + elemSuffix,
-			selector: '#' + elemPrefix + elemSuffix
-		}
-	}
-	
 	var panelSelector = "#" + elemPrefix + "NewFieldPanel"
-	var fieldRefNameInput = createParamFormElemInfo(elemPrefix,"NewFieldRefName")
-	var fieldNameInput = createParamFormElemInfo(elemPrefix,"NewFieldName")
-	var refNameHelpPopup = createParamFormElemInfo(elemPrefix,"RefNameHelp")
-	var isCalcFieldField = createParamFormElemInfo(elemPrefix,"NewFieldCalcFieldCheckbox")
-	var isCalcFieldInput = createParamFormElemInfo(elemPrefix,"NewFieldIsCalcFieldInput")
-	var fieldTypeSelection = createParamFormElemInfo(elemPrefix,"NewFieldValTypeSelection")
+	var fieldRefNameInput = createPrefixedTemplElemInfo(elemPrefix,"NewFieldRefName")
+	var fieldNameInput = createPrefixedTemplElemInfo(elemPrefix,"NewFieldName")
+	var refNameHelpPopup = createPrefixedTemplElemInfo(elemPrefix,"RefNameHelp")
+	var isCalcFieldField = createPrefixedTemplElemInfo(elemPrefix,"NewFieldCalcFieldCheckbox")
+	var isCalcFieldInput = createPrefixedTemplElemInfo(elemPrefix,"NewFieldIsCalcFieldInput")
+	var fieldTypeSelection = createPrefixedTemplElemInfo(elemPrefix,"NewFieldValTypeSelection")
 	
 	var newFieldPanelConfig = {
+		panelID: newFieldDialogPanelID,
 		divID: panelSelector,
 		progressPerc:40,
 		dlgButtons: { 
 			"Previous": function() { 
-				/*
-				transitionToPrevWizardDlgPanel(this,textBoxProgressDivID,
-							newFieldPanelConfig,newOrExistingFieldPanelConfig)	*/
+				transitionToPrevWizardDlgPanelByPanelID(this,textBoxProgressDivID,
+							newFieldDialogPanelID,createNewOrExistingFieldDialogPanelID)	
 			 },
 			"Next" : function() { 
 				if($(panelSelector).form('validate form')) {

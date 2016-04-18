@@ -10,6 +10,20 @@ function transitionToNextWizardDlgPanel(dialog, progressSelector, currPanelConfi
 	$(dialog).dialog("option","buttons",nextPanelConfig.dlgButtons)
 }
 
+function transitionToNextWizardDlgPanelByID(dialog, progressSelector, currPanelID, nextPanelID) {
+	
+	var panelConfigByID = $(dialog).data("wizardDialogPanelsByID")
+	assert(panelConfigByID !== undefined, "Can't call this transitionToNextWizardDlgPanelByID before openWizardDialog()")
+	assert(panelConfigByID[currPanelID] !== undefined, 
+		"transitionToNextWizardDlgPanelByID: panel id not configured for dialog:" + currPanelID)
+	assert(panelConfigByID[nextPanelID] !== undefined, 
+			"transitionToNextWizardDlgPanelByID: panel id not configured for dialog:" + nextPanelID)
+	
+	transitionToNextWizardDlgPanel(dialog,progressSelector,
+			panelConfigByID[currPanelID],panelConfigByID[nextPanelID])
+}
+
+
 function transitionToPrevWizardDlgPanel(dialog, progressSelector, currPanelConfig, prevPanelConfig) {
 	function showPrevPanel() {
 		$(prevPanelConfig.divID).show("slide",{direction:"left"},200);
@@ -19,6 +33,19 @@ function transitionToPrevWizardDlgPanel(dialog, progressSelector, currPanelConfi
 	$(progressSelector).progress({percent:prevPanelConfig.progressPerc});
 	
 	$(dialog).dialog("option","buttons",prevPanelConfig.dlgButtons)
+}
+
+function transitionToPrevWizardDlgPanelByPanelID(dialog, progressSelector, currPanelID, prevPanelID) {
+	
+	var panelConfigByID = $(dialog).data("wizardDialogPanelsByID")
+	assert(panelConfigByID !== undefined, "Can't call this transitionToPrevWizardDlgPanelByPanelID before openWizardDialog()")
+	assert(panelConfigByID[currPanelID] !== undefined, 
+		"transitionToPrevWizardDlgPanelByPanelID: panel id not configured for dialog:" + currPanelID)
+	assert(panelConfigByID[prevPanelID] !== undefined, 
+			"transitionToPrevWizardDlgPanelByPanelID: panel id not configured for dialog:" + prevPanelID)
+	
+	transitionToPrevWizardDlgPanel(dialog,progressSelector,
+			panelConfigByID[currPanelID],panelConfigByID[prevPanelID])
 }
 
 
@@ -56,10 +83,20 @@ function openWizardDialog(dlgParams) {
 	
 	$(dlgParams.progressDivID).progress({percent:0});
 	
+	var panelsByID = {}
 	for(var panelIndex = 0; panelIndex != dlgParams.panels.length; panelIndex++) {
 		dlgParams.panels[panelIndex].initPanel()
+		
+		assert(dlgParams.panels[panelIndex].panelID !== undefined, "Missing panelID on dialog panel configuration")
+		panelsByID[dlgParams.panels[panelIndex].panelID] = dlgParams.panels[panelIndex]
 	}
 
+	// Store a map of panel IDs to the panel configurations. Different dialog panels can reference these unique panel IDs
+	// when transitioning to the next panel or previous panel (see functions above).
+	$(dlgParams.dialogDivID).data("wizardDialogPanelsByID",panelsByID)
+	
+	
+	
 	$(dlgParams.dialogDivID).dialog("open")
 	
 } // openWizardDialog

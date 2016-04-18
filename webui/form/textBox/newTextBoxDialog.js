@@ -57,6 +57,7 @@ function saveNewTextBox()
 
 
 var newTextBoxValidateFormatEntriesPanel = {
+	panelID: "validFormat",
 	divID: "#newTextBoxValidateFormatEntriesPanel",
 	progressPerc:90,
 	dlgButtons: { 
@@ -87,6 +88,7 @@ var newTextBoxValidateFormatEntriesPanel = {
 }
 
 var calcFieldFormulaPanelConfig = {
+	panelID: "calcFieldFormula",
 	divID: "#newTextBoxDlgCalcFieldFormulaPanel",
 	progressPerc:60,
 	dlgButtons: { 
@@ -111,6 +113,7 @@ var calcFieldFormulaPanelConfig = {
 
 
 var newFieldPanelConfig = {
+	panelID: "newField",
 	divID: "#newTextBoxDlgNewFieldPanel",
 	progressPerc:40,
 	dlgButtons: { 
@@ -169,6 +172,7 @@ var newFieldPanelConfig = {
 
 
 var newOrExistingFieldPanelConfig = {
+	panelID: "newOrExistingField",
 	divID: "#newTextBoxDlgSelectOrNewFieldPanel",
 	progressPerc:0,
 	dlgButtons: { 

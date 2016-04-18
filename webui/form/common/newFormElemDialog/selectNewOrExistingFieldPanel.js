@@ -1,4 +1,6 @@
 
+var createNewOrExistingFieldDialogPanelID = "newOrExistingField"
+
 function createNewOrExistingFieldPanelConfig(elemPrefix) {
 
 	// Build up a set of selectors based upon the prefix. The suffixes must match
@@ -6,29 +8,40 @@ function createNewOrExistingFieldPanelConfig(elemPrefix) {
 	var panelSelector = "#" + elemPrefix + "SelectExistingOrNewFieldPanel"
 	var selectExistingFieldName = elemPrefix + "SelectExistingFieldField"
 	var selectExistingFieldSelector = "#" + selectExistingFieldName
+	
+	var createNewFieldRadio = elemPrefix + "CreateNewFieldRadio"
 	var createNewFieldRadioSelector = "#" + elemPrefix + "CreateNewFieldRadio"
 	var newOrExistingRadioInputSelector = "input[name='" + elemPrefix + "NewOrExistingRadio']"
 	var dialogProgressDivID = elemPrefix + "NewFormElemDialogProgress"
 	var selectFieldDropdown = "#" + elemPrefix + "FieldSelection"
 	
 	var fieldSelectionPropertyName = elemPrefix + "FieldSelection"
+	
+	var panelID = "newOrExistingField"
+	
+	function doCreateNewFieldWithTextBox() {
+	
+		return $(panelSelector).form('get field',createNewFieldRadio).prop('checked')
+	}
+	
 
 	var newOrExistingFieldPanelConfig = {
+		panelID: createNewOrExistingFieldDialogPanelID,
 		divID: panelSelector,
 		progressPerc: 0,
 		dlgButtons: {
 			"Next": function() {
 				if ($(panelSelector).form('validate form')) {
 					console.log("New Field checked: " + doCreateNewFieldWithTextBox())
-					/* not implemented yet
+
 					if (doCreateNewFieldWithTextBox()) {
-						transitionToNextWizardDlgPanel(this, dialogProgressDivID,
-							newOrExistingFieldPanelConfig, newFieldPanelConfig)
+						transitionToNextWizardDlgPanelByID(this, dialogProgressDivID,
+								createNewOrExistingFieldDialogPanelID, newFieldDialogPanelID)
 					} else {
-						transitionToNextWizardDlgPanel(this, dialogProgressDivID,
-							newOrExistingFieldPanelConfig, newTextBoxValidateFormatEntriesPanel)
+						//transitionToNextWizardDlgPanel(this, dialogProgressDivID,
+						//	newOrExistingFieldPanelConfig, newTextBoxValidateFormatEntriesPanel)
 					}
-					*/
+					
 				} // if validate form
 			},
 			"Cancel": function() {

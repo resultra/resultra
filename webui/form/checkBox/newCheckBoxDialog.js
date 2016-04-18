@@ -22,6 +22,7 @@ function openNewCheckboxDialog(containerParams)
 	
 	
 	var newOrExistingFieldPanel = createNewOrExistingFieldPanelConfig(checkboxElemPrefix)
+	var newFieldPanel = createNewFieldDialogPanelConfig(checkboxElemPrefix)
 	
 	openWizardDialog({
 		closeFunc: function() {
@@ -35,7 +36,7 @@ function openNewCheckboxDialog(containerParams)
       	},
 		width: 500, height: 500,
 		dialogDivID: checkboxDialogSelector,
-		panels: [newOrExistingFieldPanel],
+		panels: [newOrExistingFieldPanel,newFieldPanel],
 		progressDivID: dialogProgressSelector,
 	})
 		
