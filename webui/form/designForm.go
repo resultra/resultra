@@ -8,19 +8,31 @@ import (
 	"net/http"
 	"resultra/datasheet/server/common/api"
 	"resultra/datasheet/server/form"
+	"resultra/datasheet/webui/form/checkBox"
+	"resultra/datasheet/webui/form/common/newFormElemDialog"
+	"resultra/datasheet/webui/form/textBox"
+	"resultra/datasheet/webui/generic"
 )
 
 // Parse all the HTML templates at once. Individual templates can then
 // be referenced throughout this package using htmlTemplates.ExecuteTemplate(...)
-var designFormTemplates = template.Must(template.ParseFiles(
-	"static/common/common.html",
-	"static/field/calcField.html",
-	"static/form/designForm.html",
-	"static/form/checkBox/newCheckBoxDialog.html",
-	"static/form/textBox/newTextBoxDialog.html",
-	"static/form/viewForm.html",
-	"static/form/common/newFormElemDialog.html",
-	"static/form/checkBox/checkboxProp.html"))
+var designFormTemplates *template.Template
+
+func init() {
+	//	designFormTemplateFiles := []string{}
+
+	baseTemplateFiles := []string{"static/common/common.html",
+		"static/field/calcField.html",
+		"static/form/designForm.html",
+		"static/form/viewForm.html"}
+
+	templateFileLists := [][]string{
+		baseTemplateFiles,
+		newFormElemDialog.TemplateFileList,
+		checkBox.TemplateFileList,
+		textBox.TemplateFileList}
+	designFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
+}
 
 type FormElemTemplateParams struct {
 	ElemPrefix string

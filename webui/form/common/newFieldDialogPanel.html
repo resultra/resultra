@@ -1,0 +1,59 @@
+{{define "newFormElemDialogNewFieldPanel"}}
+
+	<div id="{{.ElemPrefix}}NewFieldPanel" class="wizardPanel">
+			
+		<form class="ui form error">
+			<div class="ui info message">
+				<p>
+					Enter the information for the new field to store the values for this text box.
+				</p>
+			</div>
+			
+			 <!-- important: for the messages to actually appear, 
+				 the error class must also be referenced in the form tag above -->
+			<div class="ui error message wizardErrorMsgBlock"></div>
+			
+			<h4 class="ui dividing header">Basic Field Information</h4>
+			
+			<div class="fields">
+			    <div class="field">
+				      <label>Field Name</label>
+				      <input type="text" name="{{.ElemPrefix}}NewFieldName" placeholder="Enter a Field Name">
+			    </div> <!-- Field name field -->
+			
+				<div class="field">
+					<label>Type of Value</label> 
+					<select class="ui dropdown" id="{{.ElemPrefix}}NewFieldValTypeSelection" name="{{.ElemPrefix}}NewFieldValTypeSelection">
+						<option value="">Select a Type</option>
+						<option value="number">Number</option>
+						<option value="text">Text</option>
+					</select>
+				</div> <!-- Value type field -->
+			</div> <!-- fields -->
+			
+			<h4 class="ui dividing header">Calculated Field Settings</h4>
+			
+			<div class="field">
+		      <div class="ui checkbox" id="{{.ElemPrefix}}NewFieldCalcFieldCheckbox">
+		        <input type="checkbox" name="{{.ElemPrefix}}NewFieldIsCalcFieldInput" tabindex="0">
+		        <label>Values for this field are calculated from other fields.</label>
+		      </div>
+		    </div> <!-- isCalcField checkbox field -->
+			
+			<!-- The use of "inline field" causes the field label to be displayed side-by-side 
+				with the input box. It also allows the help button to align horizontally with the 
+				input box, using semantic UI form layout. There might be some other way to do this,
+				but this was found to be the most straightforward. -->
+		    <div class="inline field" >
+			      <label >Reference Name </label>
+					  <input type="text" id="{{.ElemPrefix}}NewFieldRefName" name="{{.ElemPrefix}}NewFieldRefName" placeholder="Enter a Reference Name">
+		  		<a id="{{.ElemPrefix}}RefNameHelp"
+		  		 data-content="A reference name is the short-hand name used to refer to this field from other calculated fields' formulas." 
+		  		 class="ui small blue circular label">?</a>		
+			</div> <!-- reference name field -->
+			
+			
+		</form> <!-- form for panel -->
+	</div> <!-- panel for giving the parameters for the new field -->
+
+{{end}}

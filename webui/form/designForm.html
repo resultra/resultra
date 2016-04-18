@@ -120,15 +120,10 @@
 	<script src="/static/field/calcField.js"></script>
 	<script src="/static/field/fieldInfo.js"></script>
 		
-	<script src="/static/form/common/newFormElemDialog.js"></script>
-	
-	<script src="/static/form/checkBox/containerHTML.js"></script>
-	<script src="/static/form/checkBox/newCheckBoxDialog.js"></script>
-	<script src="/static/form/checkBox/designFormConfig.js"></script>
-	
-	<script src="/static/form/textBox/containerHTML.js"></script>
-	<script src="/static/form/textBox/newTextBoxDialog.js"></script>
-	<script src="/static/form/textBox/designFormConfig.js"></script>
+	{{template "formCommonNewFormElemDialogJS"}}
+	{{template "formCheckBoxJS"}}
+	{{template "formTextBoxJS"}}
+		
 	
 	<script src="/static/common/designPalette/designPalette.js"></script>
 	<script src="/static/form/formObjectLoader.js"></script>
