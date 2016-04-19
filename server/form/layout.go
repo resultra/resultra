@@ -5,9 +5,9 @@ import (
 	"appengine/datastore"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common"
-	"resultra/datasheet/server/common/datastoreWrapper"
 	"resultra/datasheet/server/dataModel"
+	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
 type Layout struct {
@@ -21,7 +21,7 @@ type LayoutRef struct {
 
 func NewLayout(appEngContext appengine.Context, layoutName string) (string, error) {
 
-	sanitizedLayoutName, sanitizeErr := common.SanitizeName(layoutName)
+	sanitizedLayoutName, sanitizeErr := generic.SanitizeName(layoutName)
 	if sanitizeErr != nil {
 		return "", sanitizeErr
 	}

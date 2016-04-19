@@ -3,9 +3,9 @@ package form
 import (
 	"appengine"
 	"net/http"
-	"resultra/datasheet/server/common/api"
-	"resultra/datasheet/server/common/datastoreWrapper"
-	"resultra/datasheet/server/form/textBox"
+	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/form/components/textBox"
+	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
 func newLayout(w http.ResponseWriter, r *http.Request) {

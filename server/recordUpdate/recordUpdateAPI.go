@@ -3,7 +3,7 @@ package recordUpdate
 import (
 	"appengine"
 	"net/http"
-	"resultra/datasheet/server/common/api"
+	"resultra/datasheet/server/generic/api"
 )
 
 func setTextFieldValue(w http.ResponseWriter, r *http.Request) {

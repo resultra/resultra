@@ -3,7 +3,7 @@ package recordFilter
 import (
 	"appengine"
 	"net/http"
-	"resultra/datasheet/server/common/api"
+	"resultra/datasheet/server/generic/api"
 )
 
 func newRecordFilterRule(w http.ResponseWriter, r *http.Request) {

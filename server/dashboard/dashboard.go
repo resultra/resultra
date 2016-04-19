@@ -5,10 +5,10 @@ import (
 	"appengine/datastore"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common"
-	"resultra/datasheet/server/common/datastoreWrapper"
-	"resultra/datasheet/server/dashboard/barChart"
+	"resultra/datasheet/server/dashboard/components/barChart"
 	"resultra/datasheet/server/dataModel"
+	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
 type Dashboard struct {
@@ -22,7 +22,7 @@ type DashboardRef struct {
 
 func NewDashboard(appEngContext appengine.Context, dashboardName string) (*DashboardRef, error) {
 
-	sanitizedName, sanitizeErr := common.SanitizeName(dashboardName)
+	sanitizedName, sanitizeErr := generic.SanitizeName(dashboardName)
 	if sanitizeErr != nil {
 		return nil, sanitizeErr
 	}

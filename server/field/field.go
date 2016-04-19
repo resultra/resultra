@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"log"
 	"regexp"
-	"resultra/datasheet/server/common"
-	"resultra/datasheet/server/common/datastoreWrapper"
+	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/datastoreWrapper"
 	"strings"
 )
 
@@ -70,7 +70,7 @@ func validFieldType(fieldType string) bool {
 // or calculated field.
 func CreateNewFieldFromRawInputs(appEngContext appengine.Context, newField Field) (string, error) {
 
-	sanitizedName, sanitizeErr := common.SanitizeName(newField.Name)
+	sanitizedName, sanitizeErr := generic.SanitizeName(newField.Name)
 	if sanitizeErr != nil {
 		return "", fmt.Errorf("Can't create new field: invalid name: '%v'", sanitizeErr)
 	}

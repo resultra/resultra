@@ -3,7 +3,7 @@ package calcField
 import (
 	"appengine"
 	"net/http"
-	"resultra/datasheet/server/common/api"
+	"resultra/datasheet/server/generic/api"
 )
 
 type CalcFieldValidationParams struct {

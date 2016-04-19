@@ -6,8 +6,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"resultra/datasheet/server/common/api"
 	"resultra/datasheet/server/dashboard"
+	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/webui/dashboard/components/barChart"
 	"resultra/datasheet/webui/generic"
 )

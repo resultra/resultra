@@ -8,8 +8,6 @@ import (
 func RegisterHTTPHandlers(apiRouter *mux.Router) {
 
 	apiRouter.HandleFunc("/api/newLayout", newLayout)
-	//	apiRouter.HandleFunc("/api/getLayoutEditInfo", getLayoutEditInfo)
-
 }
 
 func init() {

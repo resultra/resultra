@@ -4,9 +4,9 @@ import (
 	"appengine"
 	"fmt"
 	"resultra/datasheet/server/common"
-	"resultra/datasheet/server/common/datastoreWrapper"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/dataModel"
+	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
 const barChartEntityKind string = "DashboardBarChart"

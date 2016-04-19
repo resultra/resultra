@@ -4,7 +4,7 @@ import (
 	"appengine"
 	"fmt"
 	"resultra/datasheet/server/common"
-	"resultra/datasheet/server/common/datastoreWrapper"
+	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
 type TextBoxPropUpdater interface {

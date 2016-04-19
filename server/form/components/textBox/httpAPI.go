@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
-	"resultra/datasheet/server/common/api"
+	"resultra/datasheet/server/generic/api"
 )
 
 func init() {

@@ -6,8 +6,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"resultra/datasheet/server/common/api"
 	"resultra/datasheet/server/form"
+	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/webui/form/components"
 	"resultra/datasheet/webui/generic"
 )

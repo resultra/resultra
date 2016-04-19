@@ -3,7 +3,7 @@ package barChart
 import (
 	"appengine"
 	"net/http"
-	"resultra/datasheet/server/common/api"
+	"resultra/datasheet/server/generic/api"
 )
 
 func newBarChart(w http.ResponseWriter, r *http.Request) {

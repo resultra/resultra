@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common"
-	"resultra/datasheet/server/common/datastoreWrapper"
 	"resultra/datasheet/server/dataModel"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
 const textBoxEntityKind string = "TextBox"

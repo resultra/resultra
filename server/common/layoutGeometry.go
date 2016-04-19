@@ -2,7 +2,7 @@ package common
 
 import (
 	"fmt"
-	"resultra/datasheet/server/common/datastoreWrapper"
+	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
 // A LayoutGeometry stores the size and position information for dashboard and form objects.

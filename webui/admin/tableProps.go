@@ -4,9 +4,9 @@ import (
 	"appengine"
 	"html/template"
 	"net/http"
-	"resultra/datasheet/server/common/api"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form"
+	"resultra/datasheet/server/generic/api"
 )
 
 type TablePropsPageInfo struct {

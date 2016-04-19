@@ -4,7 +4,7 @@ import (
 	"appengine"
 	"appengine/datastore"
 	"fmt"
-	"resultra/datasheet/server/common/datastoreWrapper"
+	"resultra/datasheet/server/generic/datastoreWrapper"
 	"resultra/datasheet/server/field"
 )
 
