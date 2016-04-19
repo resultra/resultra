@@ -147,7 +147,7 @@ $(document).ready(function() {
 	
 	initRecordButtonsBehavior()
 	
-	loadFormObjects({
+	loadFormComponents({
 		formParentElemID: "#layoutCanvas",
 		initTextBoxFunc: function(textBoxObjectRef) {			
 			initTextBoxRecordEditBehavior(textBoxObjectRef)

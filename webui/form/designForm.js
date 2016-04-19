@@ -55,7 +55,7 @@ $(document).ready(function() {
 	})	  
 	  
 	
-	loadFormObjects({
+	loadFormComponents({
 		formParentElemID: "#layoutCanvas",
 		initTextBoxFunc: function(textBoxObjectRef) {
 			initObjectEditBehavior(textBoxObjectRef.uniqueID.parentID,textBox.uniqueID.objectID,textBoxDesignFormConfig)

@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/webui/form/common/newFormElemDialog"
 	"resultra/datasheet/webui/form/components"
+	"resultra/datasheet/webui/form/components/common/newFormElemDialog"
 	"resultra/datasheet/webui/generic"
 )
 

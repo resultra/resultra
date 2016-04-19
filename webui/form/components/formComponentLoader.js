@@ -1,4 +1,4 @@
-function loadFormObjects(loadFormConfig) {
+function loadFormComponents(loadFormConfig) {
 	
 	jsonAPIRequest("frm/getFormInfo", { uniqueID: { objectID: layoutID} }, function(formInfo) {
 						
