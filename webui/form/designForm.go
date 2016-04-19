@@ -9,7 +9,6 @@ import (
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/webui/form/components"
-	"resultra/datasheet/webui/form/components/common/newFormElemDialog"
 	"resultra/datasheet/webui/generic"
 )
 
@@ -27,7 +26,6 @@ func init() {
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
-		newFormElemDialog.TemplateFileList,
 		components.TemplateFileList}
 	designFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
