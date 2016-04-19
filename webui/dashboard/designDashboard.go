@@ -8,15 +8,25 @@ import (
 	"net/http"
 	"resultra/datasheet/server/common/api"
 	"resultra/datasheet/server/dashboard"
+	"resultra/datasheet/webui/dashboard/components/barChart"
+	"resultra/datasheet/webui/generic"
 )
 
-var designDashboardTemplates = template.Must(template.ParseFiles(
+var designDashboardTemplates *template.Template
+
+var templateFileList = []string{
 	"static/common/common.html",
-	"static/dashboard/barChart/barChartProps.html",
-	"static/dashboard/barChart/newBarChartDialog.html",
 	"static/dashboard/dashboardCommon.html",
 	"static/dashboard/dashboardProps.html",
-	"static/dashboard/designDashboard.html"))
+	"static/dashboard/designDashboard.html"}
+
+func init() {
+
+	templateFileLists := [][]string{
+		templateFileList,
+		barChart.TemplateFileList}
+	designDashboardTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
+}
 
 type DesignDashboardPageInfo struct {
 	Title         string

@@ -61,6 +61,7 @@ function saveNewBarChart() {
 
 var barChartXAxisPanelConfig = {
 	divID: "#newBarChartDlgXAxisPanel",
+	panelID: "barChartXAxis",
 	progressPerc:80,
 	dlgButtons: { 
 		"Next" : function() { 
@@ -156,6 +157,7 @@ var barChartXAxisPanelConfig = {
 
 var barChartYAxisPanelConfig = {
 	divID: "#newBarChartDlgYAxisPanel",
+	panelID: "barChartYAxis",
 	progressPerc:80,
 	dlgButtons: { 
 		"Previous": function() {

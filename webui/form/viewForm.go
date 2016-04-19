@@ -8,12 +8,25 @@ import (
 	"net/http"
 	"resultra/datasheet/server/common/api"
 	"resultra/datasheet/server/form"
+	"resultra/datasheet/webui/form/components"
+	"resultra/datasheet/webui/generic"
 )
 
-var viewFormTemplates = template.Must(template.ParseFiles(
-	"static/common/common.html",
-	"static/filter/filterRecords.html",
-	"static/form/viewForm.html"))
+var viewFormTemplates *template.Template
+
+func init() {
+	//	designFormTemplateFiles := []string{}
+
+	baseTemplateFiles := []string{
+		"static/common/common.html",
+		"static/filter/filterRecords.html",
+		"static/form/viewForm.html"}
+
+	templateFileLists := [][]string{
+		baseTemplateFiles,
+		components.TemplateFileList}
+	viewFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
+}
 
 type ViewFormTemplateParams struct {
 	Title      string

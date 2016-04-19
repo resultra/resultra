@@ -8,9 +8,8 @@ import (
 	"net/http"
 	"resultra/datasheet/server/common/api"
 	"resultra/datasheet/server/form"
-	"resultra/datasheet/webui/form/checkBox"
 	"resultra/datasheet/webui/form/common/newFormElemDialog"
-	"resultra/datasheet/webui/form/textBox"
+	"resultra/datasheet/webui/form/components"
 	"resultra/datasheet/webui/generic"
 )
 
@@ -29,8 +28,7 @@ func init() {
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		newFormElemDialog.TemplateFileList,
-		checkBox.TemplateFileList,
-		textBox.TemplateFileList}
+		components.TemplateFileList}
 	designFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
