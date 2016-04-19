@@ -20,8 +20,35 @@ function openNewCheckboxDialog(containerParams)
 	$('.ui.checkbox').checkbox();
 	$('.ui.radio.checkbox').checkbox();	
 	
+	function saveNewCheckbox(newCheckboxDialog) {
+		console.log("New checkbox: done in dialog")
+		
+		var newOrExistingFormInfo = getFormFormInfoByPanelID(newCheckboxDialog,createNewOrExistingFieldDialogPanelID)
+		if($(newOrExistingFormInfo.panelSelector).form('get field',newOrExistingFormInfo.newFieldRadio).prop('checked')) {
+			console.log("saveNewCheckbox: New field selected")
+		} else {
+			console.log("saveNewCheckbox: Existing field selected")
+			console.log("saveNewCheckbox: getting field id from field = " + newOrExistingFormInfo.existingFieldSelection)
+			var fieldID = $(newOrExistingFormInfo.panelSelector).form('get value',newOrExistingFormInfo.existingFieldSelection)
+			console.log("saveNewCheckbox: Selected field ID: " + fieldID)
+			
+			var newCheckBoxAPIParams = {
+				parentID: newCheckBoxParams.containerParams.parentLayoutID,
+				geometry: newCheckBoxParams.containerParams.geometry,
+				fieldID: fieldID
+			}
+			console.log("saveNewCheckbox: API params: " + JSON.stringify(newCheckBoxAPIParams))
+			
+		}
+		
+		$(newCheckboxDialog).dialog('close');
+	}
 	
-	var newOrExistingFieldPanel = createNewOrExistingFieldPanelConfig(checkboxElemPrefix)
+	
+	var newOrExistingFieldPanel = createNewOrExistingFieldPanelConfig({
+		elemPrefix:checkboxElemPrefix,
+		doneIfSelectExistingField:true,
+		doneFunc:saveNewCheckbox})
 	var newFieldPanel = createNewFieldDialogPanelConfig(checkboxElemPrefix)
 	
 	openWizardDialog({

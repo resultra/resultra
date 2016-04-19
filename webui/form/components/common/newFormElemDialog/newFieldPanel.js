@@ -36,7 +36,7 @@ function createNewFieldDialogPanelConfig(elemPrefix) {
 			},
 			"Cancel" : function() { $(this).dialog('close'); },
 	 	}, // dialog buttons
-		initPanel: function () {
+		initPanel: function (dialog) {
 			
 			var fieldValidation = {}
 			fieldValidation[fieldNameInput.id] = {
@@ -67,8 +67,13 @@ function createNewFieldDialogPanelConfig(elemPrefix) {
 		     	},
 		  	})
 			$(refNameHelpPopup.selector).popup({on: 'hover'});
+			
+			var panelFormInfo = {
+				panelSelector: panelSelector
+			}
+			return panelFormInfo
 		
-		}
+		} // init panel
 	} // wizard dialog configuration for panel to create new field
 	
 	return newFieldPanelConfig;

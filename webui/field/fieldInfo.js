@@ -1,5 +1,6 @@
 var fieldTypeNumber = "number"
 var fieldTypeText = "text"
+var fieldTypeBool = "bool"
 
 
 // Use for populating menus with field selections

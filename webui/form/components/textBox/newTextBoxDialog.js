@@ -84,7 +84,7 @@ var newTextBoxValidateFormatEntriesPanel = {
 		},		
 		"Cancel" : function() { $(this).dialog('close'); },
  	}, // dialog buttons
-	initPanel: function() {},	
+	initPanel: function(parentDialog) { return {} },	
 }
 
 var calcFieldFormulaPanelConfig = {
@@ -104,10 +104,11 @@ var calcFieldFormulaPanelConfig = {
 		},
 		"Cancel" : function() { $(this).dialog('close'); },
  	}, // dialog buttons
-	initPanel: function () {
+	initPanel: function (parentDialog) {
 		// Initialize the semantic ui dropdown menus
 		$('.ui.dropdown').dropdown()
 		initCalcFieldEditBehavior(newTextBoxParams.fieldsByID)
+		return {}
 	},
 } // wizard dialog configuration for panel to create new field
 
@@ -136,7 +137,7 @@ var newFieldPanelConfig = {
 		},
 		"Cancel" : function() { $(this).dialog('close'); },
  	}, // dialog buttons
-	initPanel: function () {
+	initPanel: function (parentDialog) {
 		$( "#newTextBoxDlgNewFieldPanel" ).form({
 	    	fields: {
 		        newFieldName: {
@@ -166,6 +167,7 @@ var newFieldPanelConfig = {
 	     	},
 	  	})
 		$('#newRefNameHelp').popup({on: 'hover'});
+		return {}
 		
 	}
 } // wizard dialog configuration for panel to create new field
@@ -192,7 +194,7 @@ var newOrExistingFieldPanelConfig = {
 		"Cancel" : function() { $(this).dialog('close'); },
  	}, // dialog buttons
 	
-	initPanel: function () {
+	initPanel: function (parentDialog) {
 		
 		function enableSelectExistingField() {
 			$('#selectExistingFieldField').removeClass("disabled")
@@ -235,6 +237,7 @@ var newOrExistingFieldPanelConfig = {
 			}
 	    });
 		
+		return {}
 	}
 } // wizard dialog configuration for panel to create new field
 

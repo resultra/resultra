@@ -1,61 +1,76 @@
 
 var createNewOrExistingFieldDialogPanelID = "newOrExistingField"
 
-function createNewOrExistingFieldPanelConfig(elemPrefix) {
+function createNewOrExistingFieldPanelConfig(panelConfig) {
 
 	// Build up a set of selectors based upon the prefix. The suffixes must match
 	// those given in the template newFormElemDialogCommon.html
-	var panelSelector = "#" + elemPrefix + "SelectExistingOrNewFieldPanel"
-	var selectExistingFieldName = elemPrefix + "SelectExistingFieldField"
-	var selectExistingFieldSelector = "#" + selectExistingFieldName
+	var panelSelector = "#" + panelConfig.elemPrefix + "SelectExistingOrNewFieldPanel"
+	var selectExistingField = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"SelectExistingFieldField")
 	
-	var createNewFieldRadio = elemPrefix + "CreateNewFieldRadio"
-	var createNewFieldRadioSelector = "#" + elemPrefix + "CreateNewFieldRadio"
-	var newOrExistingRadioInputSelector = "input[name='" + elemPrefix + "NewOrExistingRadio']"
-	var dialogProgressDivID = elemPrefix + "NewFormElemDialogProgress"
-	var selectFieldDropdown = "#" + elemPrefix + "FieldSelection"
+	var createNewFieldRadio = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"CreateNewFieldRadio")
+	var newOrExistingRadioInputSelector = "input[name='" + panelConfig.elemPrefix + "NewOrExistingRadio']"
+	var dialogProgressDivID = panelConfig.elemPrefix + "NewFormElemDialogProgress"
+	var selectField = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"FieldSelection")
 	
-	var fieldSelectionPropertyName = elemPrefix + "FieldSelection"
+	var fieldSelectionPropertyName = panelConfig.elemPrefix + "FieldSelection"
 	
 	var panelID = "newOrExistingField"
 	
 	function doCreateNewFieldWithTextBox() {
 	
-		return $(panelSelector).form('get field',createNewFieldRadio).prop('checked')
+		return $(panelSelector).form('get field',createNewFieldRadio.id).prop('checked')
 	}
 	
+	function nextButtonClicked() {
+		if ($(panelSelector).form('validate form')) {
+			console.log("New Field checked: " + doCreateNewFieldWithTextBox())
+
+			if (doCreateNewFieldWithTextBox()) {
+				transitionToNextWizardDlgPanelByID(this, dialogProgressDivID,
+						createNewOrExistingFieldDialogPanelID, newFieldDialogPanelID)
+			} else {
+				//transitionToNextWizardDlgPanel(this, dialogProgressDivID,
+				//	newOrExistingFieldPanelConfig, newTextBoxValidateFormatEntriesPanel)
+			}
+			
+		} // if validate form
+	}
+	
+	function doneButtonClicked() {
+		if($(panelSelector).form('validate form')) {
+			panelConfig.doneFunc(this)	
+		}
+	}
+	
+	function cancelButtonClicked() {
+		$(this).dialog('close');	
+	}
+	
+	var selectExistingButtons = {
+		"Done": doneButtonClicked,
+		"Cancel": cancelButtonClicked
+	}
+	
+	var selectNewButtons = {
+		"Next": nextButtonClicked,
+		"Cancel": cancelButtonClicked,		
+	}
 
 	var newOrExistingFieldPanelConfig = {
 		panelID: createNewOrExistingFieldDialogPanelID,
 		divID: panelSelector,
 		progressPerc: 0,
-		dlgButtons: {
-			"Next": function() {
-				if ($(panelSelector).form('validate form')) {
-					console.log("New Field checked: " + doCreateNewFieldWithTextBox())
+		dlgButtons: selectNewButtons, // dialog buttons
 
-					if (doCreateNewFieldWithTextBox()) {
-						transitionToNextWizardDlgPanelByID(this, dialogProgressDivID,
-								createNewOrExistingFieldDialogPanelID, newFieldDialogPanelID)
-					} else {
-						//transitionToNextWizardDlgPanel(this, dialogProgressDivID,
-						//	newOrExistingFieldPanelConfig, newTextBoxValidateFormatEntriesPanel)
-					}
-					
-				} // if validate form
-			},
-			"Cancel": function() {
-				$(this).dialog('close');
-			},
-		}, // dialog buttons
-
-		initPanel: function() {
+		initPanel: function(parentDialog) {
 
 			function enableSelectExistingField() {
-				$(selectExistingFieldSelector).removeClass("disabled")
+				setWizardDialogButtons(parentDialog,selectExistingButtons)
+				$(selectExistingField.selector).removeClass("disabled")
 				
 				var fieldValidation = {}
-				fieldValidation[selectExistingFieldName] = {
+				fieldValidation[selectField.id] = {
 					rules: [{
 						type: 'empty',
 						prompt: 'Please select a field'
@@ -69,7 +84,9 @@ function createNewOrExistingFieldPanelConfig(elemPrefix) {
 			}
 
 			function disableSelectExistingField() {
-				$(selectExistingFieldSelector).addClass("disabled")
+				setWizardDialogButtons(parentDialog,selectNewButtons)
+				$(selectExistingField.selector).addClass("disabled")
+
 				$(panelSelector).form({
 					fields: {},
 					inline: true,
@@ -82,13 +99,13 @@ function createNewOrExistingFieldPanelConfig(elemPrefix) {
 
 			// Populate the select field dialog box with a list of possible fields to
 			// connect the new form element to.
-			$(selectFieldDropdown).dropdown()
+			$(selectField.selector).dropdown()
 			loadFieldInfo(function(fieldsByID) {
-				populateFieldSelectionMenu(fieldsByID,selectFieldDropdown)
+				populateFieldSelectionMenu(fieldsByID,selectField.selector)
 			})
 
 			disableSelectExistingField();
-			$(createNewFieldRadioSelector).prop("checked", true);
+			$(createNewFieldRadio.selector).prop("checked", true);
 			$(newOrExistingRadioInputSelector).change(function() {
 				console.log("new or existing radio value:", this.value);
 				if (this.value == "new") {
@@ -97,8 +114,16 @@ function createNewOrExistingFieldPanelConfig(elemPrefix) {
 					enableSelectExistingField()
 				}
 			});
+			
+			var panelFormInfo = {
+				panelSelector: panelSelector,
+				existingFieldSelection: selectField.id,
+				newFieldRadio: createNewFieldRadio.id
+			}
+			
+			return panelFormInfo;
 
-		}
+		} // init panel
 	} // wizard dialog configuration for panel to create new field
 
 	return newOrExistingFieldPanelConfig;
