@@ -217,6 +217,8 @@ func GetFieldsByType(appEngContext appengine.Context) (*FieldsByType, error) {
 			fieldsByType.DateFields = append(fieldsByType.DateFields, fieldRef)
 		case FieldTypeNumber:
 			fieldsByType.NumberFields = append(fieldsByType.NumberFields, fieldRef)
+		case FieldTypeBool:
+			fieldsByType.BoolFields = append(fieldsByType.BoolFields, fieldRef)
 		default:
 			return nil, fmt.Errorf(
 				"GetFieldsByType: Unable to retrieve fields from datastore: Invalid field type %v",

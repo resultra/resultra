@@ -325,6 +325,9 @@ function initFilterRecordsElems() {
 	
 	
 	loadFieldInfo(function(fieldsByID) {
+		
+		console.log("initFilterRecordsElems: initializing filter panel")
+		
 		$('#filterRecordsAddFilterButton').click(function(e){
 			e.preventDefault();
 			console.log("add filter button clicked")
@@ -341,7 +344,9 @@ function initFilterRecordsElems() {
 		// prototyping.
 		populateFilterPanel()
 		
-	})
+		console.log("initFilterRecordsElems: done initializing filter panel")
+		
+	},[fieldTypeAll])
 	
 
 }

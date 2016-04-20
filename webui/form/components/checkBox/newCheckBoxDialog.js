@@ -47,6 +47,7 @@ function openNewCheckboxDialog(containerParams)
 	
 	var newOrExistingFieldPanel = createNewOrExistingFieldPanelConfig({
 		elemPrefix:checkboxElemPrefix,
+		fieldTypes: [fieldTypeBool],
 		doneIfSelectExistingField:true,
 		doneFunc:saveNewCheckbox})
 	var newFieldPanel = createNewFieldDialogPanelConfig(checkboxElemPrefix)

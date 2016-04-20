@@ -13,7 +13,7 @@ function initNewBarChartDialog(dashboardID) {
 		populateFieldSelectionMenu(fieldsByID,'#xAxisFieldSelection')
 		populateFieldSelectionMenu(fieldsByID,'#yAxisFieldSelection')
 		newBarChartParams.fieldsByID = fieldsByID
-	})
+	},[fieldTypeAll])
 }
 
 function saveNewBarChart() {
@@ -151,7 +151,9 @@ var barChartXAxisPanelConfig = {
 		// Grouping selection is initially disabled until a field is selected
 		$(xAxisSelectGroupByID).empty()
 		$(xAxisSelectGroupByID).addClass("disabled")
-	},	
+		
+		return {}
+	}, // init panel
 }
 
 
@@ -218,7 +220,9 @@ var barChartYAxisPanelConfig = {
 		
 		$(yAxisSummarySelectionID).empty()
 		$(yAxisSummarySelectionID).addClass("disabled")
-	},	
+		
+		return {}
+	},	// init panel
 }
 
 

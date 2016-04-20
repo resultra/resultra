@@ -277,9 +277,9 @@ function newLayoutContainer(containerParams)
 			panels: [newOrExistingFieldPanelConfig, newFieldPanelConfig,
 					calcFieldFormulaPanelConfig, newTextBoxValidateFormatEntriesPanel],
 			progressDivID: '#newTextBoxProgress',
-		})
+		}) // openWizardDialog
 		
-	}) // loadFieldInfo
+	},[fieldTypeNumber,fieldTypeText]) // loadFieldInfo
 		
 } // newLayoutContainer
 

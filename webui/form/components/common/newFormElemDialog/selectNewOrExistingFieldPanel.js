@@ -102,7 +102,7 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 			$(selectField.selector).dropdown()
 			loadFieldInfo(function(fieldsByID) {
 				populateFieldSelectionMenu(fieldsByID,selectField.selector)
-			})
+			},panelConfig.fieldTypes)
 
 			disableSelectExistingField();
 			$(createNewFieldRadio.selector).prop("checked", true);
