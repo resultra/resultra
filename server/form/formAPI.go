@@ -3,8 +3,9 @@ package form
 import (
 	"appengine"
 	"net/http"
-	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/form/components/checkBox"
 	"resultra/datasheet/server/form/components/textBox"
+	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
@@ -26,7 +27,8 @@ func newLayout(w http.ResponseWriter, r *http.Request) {
 }
 
 type FormInfo struct {
-	TextBoxes []textBox.TextBoxRef `json:"textBoxes"`
+	TextBoxes  []textBox.TextBoxRef   `json:"textBoxes"`
+	CheckBoxes []checkBox.CheckBoxRef `json:"checkBoxes"`
 }
 
 func getFormInfo(w http.ResponseWriter, r *http.Request) {
@@ -45,8 +47,15 @@ func getFormInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	checkBoxRefs, err := checkBox.GetCheckBoxes(appEngCntxt, parentFormID.UniqueID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
 	formInfoInfo := FormInfo{
-		TextBoxes: textBoxRefs}
+		TextBoxes:  textBoxRefs,
+		CheckBoxes: checkBoxRefs}
 
 	api.WriteJSONResponse(w, formInfoInfo)
 

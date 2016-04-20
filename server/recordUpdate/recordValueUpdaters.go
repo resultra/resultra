@@ -30,3 +30,16 @@ func (setValParams SetRecordNumberValueParams) fieldType() string { return field
 func (setValParams SetRecordNumberValueParams) updateRecordValue(rec *record.Record) {
 	(*rec)[setValParams.FieldID] = setValParams.Value
 }
+
+// Update a number field value
+
+type SetRecordBoolValueParams struct {
+	RecordUpdateHeader
+	Value bool `json:"value"`
+}
+
+func (setValParams SetRecordBoolValueParams) fieldType() string { return field.FieldTypeBool }
+
+func (setValParams SetRecordBoolValueParams) updateRecordValue(rec *record.Record) {
+	(*rec)[setValParams.FieldID] = setValParams.Value
+}

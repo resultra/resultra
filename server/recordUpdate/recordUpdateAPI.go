@@ -43,3 +43,22 @@ func setNumberFieldValue(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func setBoolFieldValue(w http.ResponseWriter, r *http.Request) {
+
+	setValParams := SetRecordBoolValueParams{}
+	if err := api.DecodeJSONRequest(r, &setValParams); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+	updatedRecordRef, setErr := UpdateRecordValue(appEngCntxt, setValParams)
+	if setErr != nil {
+		api.WriteErrorResponse(w, setErr)
+		return
+	} else {
+		api.WriteJSONResponse(w, updatedRecordRef)
+	}
+
+}

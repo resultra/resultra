@@ -7,5 +7,6 @@ import (
 func RegisterHTTPHandlers(apiRouter *mux.Router) {
 	apiRouter.HandleFunc("/api/setTextFieldValue", setTextFieldValue)
 	apiRouter.HandleFunc("/api/setNumberFieldValue", setNumberFieldValue)
+	apiRouter.HandleFunc("/api/setBoolFieldValue", setBoolFieldValue)
 
 }
