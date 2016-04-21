@@ -1,0 +1,11 @@
+/* Set the default and minimum width for fields added
+   to the layout. This is important for when the field
+   is initially dragged onto the canvas. Otherwise it
+   can shrink as the field is dragged. */
+.checkBoxFormContainer
+{
+	min-width:180px;
+	min-height:30px;
+	width: 180px;
+	height: 30px;
+}

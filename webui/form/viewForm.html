@@ -122,10 +122,12 @@
     <title>{{.Title}}</title>
 	
 	{{template "commonCSS"}}
+	{{template "formComponentsCSS"}}
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/layout.css">
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/form/editRecord.css">
 
 	{{template "commonJS"}}
+
 	<script>var layoutID={{.LayoutID}};</script>
 	
 	<script src="/static/common/objectEdit/objectEditHelper.js"></script>

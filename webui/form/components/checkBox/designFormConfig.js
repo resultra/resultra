@@ -6,7 +6,7 @@
 var checkBoxDesignFormConfig = {
 	draggableHTMLFunc:	checkBoxContainerHTML,
 	createNewItemAfterDropFunc: openNewCheckboxDialog,
-	resizeConstraints: elemResizeConstraints(100,600,400,400),
+	resizeConstraints: elemResizeConstraints(100,640,30,30),
 	resizeAPIName: "frm/checkBox/resize",
 	reposAPIName: "frm/checkBox/reposition"
 }

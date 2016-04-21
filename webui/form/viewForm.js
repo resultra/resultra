@@ -152,6 +152,10 @@ $(document).ready(function() {
 		initTextBoxFunc: function(textBoxObjectRef) {			
 			initTextBoxRecordEditBehavior(textBoxObjectRef)
 		},
+		initCheckBoxFunc: function(checkBoxObjectRef) {
+			console.log("Init check box in view form")
+			initCheckBoxRecordEditBehavior(checkBoxObjectRef)
+		},
 		doneLoadingFormDataFunc: loadRecords	
 	}); 
 

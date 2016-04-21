@@ -12,7 +12,8 @@ func init() {
 
 	TemplateFileList = []string{}
 
-	TemplateFileList = []string{"static/form/components/jsInclude.html"}
+	TemplateFileList = []string{"static/form/components/jsInclude.html",
+		"static/form/components/cssInclude.html"}
 
 	TemplateFileList = append(TemplateFileList, newFormElemDialog.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, checkBox.TemplateFileList...)

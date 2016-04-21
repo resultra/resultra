@@ -25,7 +25,8 @@ function openNewCheckboxDialog(containerParams)
 		
 		var newOrExistingFormInfo = getFormFormInfoByPanelID(newCheckboxDialog,createNewOrExistingFieldDialogPanelID)
 		if($(newOrExistingFormInfo.panelSelector).form('get field',newOrExistingFormInfo.newFieldRadio).prop('checked')) {
-			console.log("saveNewCheckbox: New field selected")
+			console.log("saveNewCheckbox: New field selected - not implemented yet")
+			$(newCheckboxDialog).dialog('close');
 		} else {
 			console.log("saveNewCheckbox: Existing field selected")
 			console.log("saveNewCheckbox: getting field id from field = " + newOrExistingFormInfo.existingFieldSelection)
@@ -39,10 +40,26 @@ function openNewCheckboxDialog(containerParams)
 			}
 			console.log("saveNewCheckbox: API params: " + JSON.stringify(newCheckBoxAPIParams))
 			
-		}
+			jsonAPIRequest("frm/checkBox/new",newCheckBoxAPIParams,function(newCheckBoxObjectRef) {
+		          console.log("saveNewCheckbox: Done getting new ID:response=" + JSON.stringify(newCheckBoxObjectRef));
+			  
+				  $('#'+newCheckBoxParams.placeholderID).find('label').text(newCheckBoxObjectRef.fieldRef.fieldInfo.name)
+				  $('#'+newCheckBoxParams.placeholderID).attr("id",newCheckBoxObjectRef.uniqueID.objectID)
+			  
+				  // Store the newly created object reference in the DOM element. This is needed for follow-on
+				  // property setting, resizing, etc.
+				  setElemObjectRef(newCheckBoxObjectRef.uniqueID.objectID,newCheckBoxObjectRef)
+			
+				  newCheckBoxParams.containerCreated = true				  
+					  
+				  newCheckBoxParams.dialogBox.dialog("close")
+
+		       }) // newLayoutContainer API request
+			
+			
+		} // Create check box with existing field
 		
-		$(newCheckboxDialog).dialog('close');
-	}
+	} // saveNewCheckbox()
 	
 	
 	var newOrExistingFieldPanel = createNewOrExistingFieldPanelConfig({

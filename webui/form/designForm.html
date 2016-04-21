@@ -106,10 +106,12 @@
     <title>{{.Title}}</title>
 	
 	{{template "commonCSS"}}
+	{{template "formComponentsCSS"}}
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/designPalette/designPalette.css">
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/layout.css">
 
 	{{template "commonJS"}}
+	
 	<script>var layoutID={{.LayoutID}};</script>
 	<script src="/static/common/dialog/wizardDialog.js"></script>
 	

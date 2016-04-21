@@ -58,7 +58,13 @@ $(document).ready(function() {
 	loadFormComponents({
 		formParentElemID: "#layoutCanvas",
 		initTextBoxFunc: function(textBoxObjectRef) {
-			initObjectEditBehavior(textBoxObjectRef.uniqueID.parentID,textBox.uniqueID.objectID,textBoxDesignFormConfig)
+			initObjectEditBehavior(textBoxObjectRef.uniqueID.parentID,
+				textBoxObjectRef.uniqueID.objectID,textBoxDesignFormConfig)
+		},
+		initCheckBoxFunc: function(checkBoxObjectRef) {
+			initObjectEditBehavior(checkBoxObjectRef.uniqueID.parentID,
+				checkBoxObjectRef.uniqueID.objectID,checkBoxDesignFormConfig)
+			console.log("Init check box in design form")
 		},
 		doneLoadingFormDataFunc: function() {} // no-op	
 	}); 

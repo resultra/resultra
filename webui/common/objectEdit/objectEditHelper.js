@@ -16,5 +16,8 @@ function setElemObjectRef(objectID, objectRef) {
 }
 
 function getElemObjectRef(objectID) {
-	return $('#'+objectID).data("objectRef")
+	
+	var objectRef = $('#'+objectID).data("objectRef")
+	assert(objectRef !== undefined, "getElemObjectRef: Can't get object element reference for object id = " + objectID)
+	return objectRef
 }
