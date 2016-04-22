@@ -2,9 +2,17 @@ package calcField
 
 import (
 	"appengine"
+	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
 )
+
+func RegisterHTTPHandlers(apiRouter *mux.Router) {
+
+	apiRouter.HandleFunc("/api/validateCalcFieldEqn", validateCalcFieldEqn)
+	apiRouter.HandleFunc("/api/newCalcField", newCalcField)
+
+}
 
 type CalcFieldValidationParams struct {
 	EqnText    string `json:"eqnText"`
