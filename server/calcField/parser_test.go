@@ -1,23 +1,15 @@
 package calcField
 
 import (
-	"encoding/json"
+	"resultra/datasheet/server/common/testUtil"
 	"testing"
 )
-
-func encodeJSONString(t *testing.T, val interface{}) string {
-	b, err := json.Marshal(val)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return string(b)
-}
 
 func verifyOneEqnParsing(t *testing.T, inputStr string) {
 	if eqn, err := parseCalcFieldEqn(inputStr); err != nil {
 		t.Error(err)
 	} else {
-		t.Logf("Matched equation: %v", encodeJSONString(t, eqn))
+		t.Logf("Matched equation: %v", testUtil.EncodeJSONString(t, eqn))
 	}
 }
 
@@ -25,8 +17,8 @@ func verifyOneEqnParsingVsExpected(t *testing.T, inputStr string, expectedJSON s
 	if eqn, err := parseCalcFieldEqn(inputStr); err != nil {
 		t.Error(err)
 	} else {
-		eqnJSON := encodeJSONString(t, eqn)
-		t.Logf("Matched equation: %v", encodeJSONString(t, eqn))
+		eqnJSON := testUtil.EncodeJSONString(t, eqn)
+		t.Logf("Matched equation: %v", testUtil.EncodeJSONString(t, eqn))
 		if eqnJSON != expectedJSON {
 			t.Errorf("Unexpected equation result: expected=%v, got=%v",
 				expectedJSON, eqnJSON)
@@ -39,7 +31,7 @@ func verifyOneEqnParseFail(t *testing.T, inputStr string, whyShouldFail string) 
 		t.Logf("Got an expected parse error for input=%v (why should fail=%v), error=%v", inputStr, whyShouldFail, err)
 	} else {
 		t.Errorf("Matched equation when parsing should have failed: %v, input string = %v, why should fail = %v",
-			encodeJSONString(t, eqn), inputStr, whyShouldFail)
+			testUtil.EncodeJSONString(t, eqn), inputStr, whyShouldFail)
 	}
 }
 

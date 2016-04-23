@@ -13,19 +13,32 @@ type TokenDef struct {
 	ID     string
 }
 
+var tokenWhiteSpace = TokenDef{regexpLeadingWhite, "wspace"}
+var tokenComment = TokenDef{regexp.MustCompile("^//.*"), "comment"}
+
 var tokenIdent = TokenDef{regexp.MustCompile("^[[:alpha:]][[:word:]]+"), "ident"}
+var tokenAssign = TokenDef{regexp.MustCompile("^="), "assign"}
+var tokenEqual = TokenDef{regexp.MustCompile("^=="), "equal"}
 var tokenLParen = TokenDef{regexp.MustCompile("^\\("), "lparen"}
 var tokenRParen = TokenDef{regexp.MustCompile("^\\)"), "rparen"}
+var tokenLBracket = TokenDef{regexp.MustCompile("^\\["), "lbrack"}
+var tokenRBracket = TokenDef{regexp.MustCompile("^\\]"), "rbrack"}
 var tokenComma = TokenDef{regexp.MustCompile("^\\,"), "comma"}
 var tokenBool = TokenDef{regexp.MustCompile("^(true)|(false)|(TRUE)|(FALSE)"), "bool"}
 var tokenNumber = TokenDef{regexp.MustCompile("^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?"), "number"}
 var tokenText = TokenDef{regexp.MustCompile(`"(?:[^"\\]|\\.)*"`), "text"}
 
 var tokenDefs = []TokenDef{
+	tokenWhiteSpace,
+	tokenComment,
 	tokenBool,
 	tokenIdent,
+	tokenEqual,
+	tokenAssign,
 	tokenLParen,
 	tokenRParen,
+	tokenLBracket,
+	tokenRBracket,
 	tokenComma,
 	tokenNumber,
 	tokenText,
@@ -77,14 +90,29 @@ func skipLeadingWhite(inputStr string) string {
 
 }
 
-func tokenizeInput(inputStr string) (TokenMatchSequence, error) {
+func tokenIsWhitespaceOrComment(match TokenMatch) bool {
+	if match.TokenID == tokenWhiteSpace.ID {
+		return true
+	} else if match.TokenID == tokenComment.ID {
+		return true
+	} else {
+		return false
+	}
+}
+
+// tokenizeInput supports 2 modes of tokenizing. If tokenizeWhiteAndComment is set to true, then
+// comments and whitespace are treated like regular tokens and included in the returned
+// TokenMatchSequence. Otherwise, whitespace and comments are stripped. These 2 different modes
+// are needed so the intput can either be parsed as an "executable" equation or pre-processed
+// to replace field references with actual unique field IDs.
+func tokenizeInput(inputStr string, tokenizeWhiteAndComment bool) (TokenMatchSequence, error) {
 
 	var nextToken *TokenMatch
 	var remaining string
 	var tokErr error
 
 	matches := TokenMatchSequence{}
-	remaining = skipLeadingWhite(inputStr)
+	remaining = inputStr
 
 	for len(remaining) > 0 {
 		nextToken, remaining, tokErr = matchNextToken(remaining)
@@ -93,10 +121,16 @@ func tokenizeInput(inputStr string) (TokenMatchSequence, error) {
 			log.Printf("no token found, aborting: remaining = '%v'", remaining)
 			return nil, fmt.Errorf("Error tokening input: %v", tokErr)
 		} else {
-			matches = append(matches, *nextToken)
+			if tokenIsWhitespaceOrComment(*nextToken) {
+				// Only add whitespace and comments to token list if tokenizeWhiteAndComment is true
+				if tokenizeWhiteAndComment {
+					matches = append(matches, *nextToken)
+				}
+			} else { // Not whitespace or comment => always add it to token list
+				matches = append(matches, *nextToken)
+			}
 			log.Printf("found token: %v '%v' , remaining = '%v'", nextToken.TokenID, nextToken.matchedStr, remaining)
 		}
-		remaining = skipLeadingWhite(remaining)
 	}
 	log.Printf("tokenizeInput: done tokenizing input: found  %v tokens", len(matches))
 

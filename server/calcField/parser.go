@@ -143,7 +143,8 @@ func parseCalcFieldEqn(inputStr string) (*EquationNode, error) {
 
 	currTokIndex := 0
 
-	tokens, tokErr := tokenizeInput(inputStr)
+	tokenizeWhiteComment := false
+	tokens, tokErr := tokenizeInput(inputStr, tokenizeWhiteComment)
 	if tokErr != nil {
 		return nil, tokErr
 	}
