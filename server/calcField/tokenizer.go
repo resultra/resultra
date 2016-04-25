@@ -2,7 +2,6 @@ package calcField
 
 import (
 	"fmt"
-	"log"
 	"regexp"
 )
 
@@ -118,7 +117,6 @@ func tokenizeInput(inputStr string, tokenizeWhiteAndComment bool) (TokenMatchSeq
 		nextToken, remaining, tokErr = matchNextToken(remaining)
 		if tokErr != nil {
 			// error handling here
-			log.Printf("no token found, aborting: remaining = '%v'", remaining)
 			return nil, fmt.Errorf("Error tokening input: %v", tokErr)
 		} else {
 			if tokenIsWhitespaceOrComment(*nextToken) {
@@ -129,10 +127,8 @@ func tokenizeInput(inputStr string, tokenizeWhiteAndComment bool) (TokenMatchSeq
 			} else { // Not whitespace or comment => always add it to token list
 				matches = append(matches, *nextToken)
 			}
-			log.Printf("found token: %v '%v' , remaining = '%v'", nextToken.TokenID, nextToken.matchedStr, remaining)
 		}
 	}
-	log.Printf("tokenizeInput: done tokenizing input: found  %v tokens", len(matches))
 
 	return matches, nil
 

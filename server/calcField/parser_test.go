@@ -53,10 +53,14 @@ func TestTextParse(t *testing.T) {
 
 func TestFieldRefParse(t *testing.T) {
 
-	verifyOneEqnParsing(t, `FieldRef1`)
-	verifyOneEqnParsing(t, `SUM(FieldRef1,FieldRef2)`)
-	verifyOneEqnParsing(t, `SUM(FieldRef1,SUM(FieldRef3,4))`)
-	verifyOneEqnParseFail(t, `FieldRef1,FieldRef2`, "argument list outside of function")
+	verifyOneEqnParsing(t, `[FieldRef1]`)
+	verifyOneEqnParsing(t, ` [   FieldRef1  ] `) // extra whitespace
+	verifyOneEqnParsing(t, `SUM([FieldRef1],[FieldRef2])`)
+	verifyOneEqnParsing(t, `SUM([FieldRef1],SUM([FieldRef3],4))`)
+	verifyOneEqnParseFail(t, `[FieldRef1],[FieldRef2]`, "argument list outside of function")
+	verifyOneEqnParseFail(t, `[FieldRef1`, "missing closing bracket")
+	verifyOneEqnParseFail(t, `FieldRef1]`, "missing opening bracket")
+	verifyOneEqnParseFail(t, `[FieldRef1 245]`, "extra characters inside brackets")
 }
 
 func TestFunctionParse(t *testing.T) {
@@ -65,6 +69,6 @@ func TestFunctionParse(t *testing.T) {
 	verifyOneEqnParsing(t, `SUM(1)`)
 	verifyOneEqnParsingVsExpected(t, `SUM(1,2)`, `{"funcName":"SUM","funcArgs":[{"numberVal":1},{"numberVal":2}]}`)
 	verifyOneEqnParsing(t, `SUM(1,2,"arg three")`)
-	verifyOneEqnParsingVsExpected(t, `SUM(1,2,PRODUCT(FieldRef1,-2.5))`, `{"funcName":"SUM","funcArgs":[{"numberVal":1},{"numberVal":2},{"funcName":"PRODUCT","funcArgs":[{"fieldID":"FieldRef1"},{"numberVal":-2.5}]}]}`)
+	verifyOneEqnParsingVsExpected(t, `SUM(1,2,PRODUCT([FieldRef1],-2.5))`, `{"funcName":"SUM","funcArgs":[{"numberVal":1},{"numberVal":2},{"funcName":"PRODUCT","funcArgs":[{"fieldID":"FieldRef1"},{"numberVal":-2.5}]}]}`)
 	verifyOneEqnParseFail(t, `SUM(1,,2)`, "extra comma between arguments")
 }
