@@ -9,23 +9,25 @@ var regexpLeadingWhite = regexp.MustCompile("^[[:space:]]+")
 
 type TokenDef struct {
 	Regexp *regexp.Regexp
-	ID     string
+	ID     int
 }
 
-var tokenWhiteSpace = TokenDef{regexpLeadingWhite, "wspace"}
-var tokenComment = TokenDef{regexp.MustCompile("^//.*"), "comment"}
+var tokenWhiteSpace = TokenDef{regexpLeadingWhite, TOK_WHITE}
+var tokenComment = TokenDef{regexp.MustCompile("^//.*"), TOK_COMMENT}
 
-var tokenIdent = TokenDef{regexp.MustCompile("^[[:alpha:]][[:word:]]+"), "ident"}
-var tokenAssign = TokenDef{regexp.MustCompile("^="), "assign"}
-var tokenEqual = TokenDef{regexp.MustCompile("^=="), "equal"}
-var tokenLParen = TokenDef{regexp.MustCompile("^\\("), "lparen"}
-var tokenRParen = TokenDef{regexp.MustCompile("^\\)"), "rparen"}
-var tokenLBracket = TokenDef{regexp.MustCompile("^\\["), "lbrack"}
-var tokenRBracket = TokenDef{regexp.MustCompile("^\\]"), "rbrack"}
-var tokenComma = TokenDef{regexp.MustCompile("^\\,"), "comma"}
-var tokenBool = TokenDef{regexp.MustCompile("^(true)|(false)|(TRUE)|(FALSE)"), "bool"}
-var tokenNumber = TokenDef{regexp.MustCompile("^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?"), "number"}
-var tokenText = TokenDef{regexp.MustCompile(`"(?:[^"\\]|\\.)*"`), "text"}
+var tokenIdent = TokenDef{regexp.MustCompile("^[[:alpha:]][[:word:]]+"), TOK_IDENT}
+var tokenAssign = TokenDef{regexp.MustCompile("^="), TOK_ASSIGN}
+var tokenEqual = TokenDef{regexp.MustCompile("^=="), TOK_EQUAL}
+var tokenPlus = TokenDef{regexp.MustCompile("^\\+"), TOK_PLUS}
+var tokenTimes = TokenDef{regexp.MustCompile("^\\*"), TOK_TIMES}
+var tokenLParen = TokenDef{regexp.MustCompile("^\\("), TOK_LPAREN}
+var tokenRParen = TokenDef{regexp.MustCompile("^\\)"), TOK_RPAREN}
+var tokenLBracket = TokenDef{regexp.MustCompile("^\\["), TOK_LBRACKET}
+var tokenRBracket = TokenDef{regexp.MustCompile("^\\]"), TOK_RBRACKET}
+var tokenComma = TokenDef{regexp.MustCompile("^\\,"), TOK_COMMA}
+var tokenBool = TokenDef{regexp.MustCompile("^(true)|(false)|(TRUE)|(FALSE)"), TOK_BOOL}
+var tokenNumber = TokenDef{regexp.MustCompile("^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?"), TOK_NUMBER}
+var tokenText = TokenDef{regexp.MustCompile(`"(?:[^"\\]|\\.)*"`), TOK_TEXT}
 
 var tokenDefs = []TokenDef{
 	tokenWhiteSpace,
@@ -33,6 +35,8 @@ var tokenDefs = []TokenDef{
 	tokenBool,
 	tokenIdent,
 	tokenEqual,
+	tokenPlus,
+	tokenTimes,
 	tokenAssign,
 	tokenLParen,
 	tokenRParen,
@@ -44,26 +48,26 @@ var tokenDefs = []TokenDef{
 }
 
 type TokenMatch struct {
-	TokenID    string
+	TokenID    int
 	matchedStr string
 }
 
 type TokenMatchSequence []TokenMatch
 
-func (matchSeq TokenMatchSequence) tokenIDs() []string {
-	matchIDs := []string{}
+func (matchSeq TokenMatchSequence) tokenIDs() []int {
+	matchIDs := []int{}
 	for _, match := range matchSeq {
 		matchIDs = append(matchIDs, match.TokenID)
 	}
 	return matchIDs
 }
 
-func matchToken(inputStr string, tokenRegexp *regexp.Regexp, tokenName string) (*TokenMatch, string, bool) {
+func matchToken(inputStr string, tokenRegexp *regexp.Regexp, tokenID int) (*TokenMatch, string, bool) {
 	matchIndices := tokenRegexp.FindStringIndex(inputStr)
 	if matchIndices != nil {
 		remaining := inputStr[matchIndices[1]:len(inputStr)]
 		matchStr := inputStr[matchIndices[0]:matchIndices[1]]
-		return &TokenMatch{tokenName, matchStr}, remaining, true
+		return &TokenMatch{tokenID, matchStr}, remaining, true
 	} else {
 		return nil, inputStr, false
 	}
