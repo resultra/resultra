@@ -36,8 +36,10 @@ func (lexer *formulaLexerImpl) Lex(lval *formulaSymType) int {
 				log.Printf("lexer: Number token: %v", lval.number)
 				return TOK_NUMBER
 			}
+		case TOK_IDENT:
+			lval.text = currTok.matchedStr
+			return TOK_IDENT
 		default:
-
 			return currTok.TokenID
 		}
 	}

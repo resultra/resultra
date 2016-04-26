@@ -15,13 +15,14 @@ import (
 	number float64
 	text string
 	eqnNode *EquationNode
+	args []EquationNode
 }
 
 %token<number> TOK_NUMBER
 %token TOK_PLUS
 %token TOK_TIMES
 %token TOK_WHITE
-%token TOK_IDENT
+%token<text> TOK_IDENT
 %token TOK_ASSIGN
 %token TOK_EQUAL
 %token TOK_LPAREN
@@ -39,7 +40,10 @@ import (
 // Any non-terminal which returns a value needs a type. This type
 // needs to be one of the field names in the %union above.
 %type <eqnNode> expr
-
+%type <eqnNode> func
+%type <args> funcArg
+%type <args> funcArgs
+	
 %% // start of parser
 			
 root : expr 
@@ -50,7 +54,32 @@ root : expr
 			formulalex.(*formulaLexerImpl).rootEqnNode = $1
 			fmt.Printf("\nRoot equation node: %+v\n",$1) 
 		}
+		| func
+		{
+			formulalex.(*formulaLexerImpl).rootEqnNode = $1
+			fmt.Printf("\nRoot equation node: %+v\n",$1) 
+		}
+		
+func : TOK_IDENT TOK_LPAREN funcArgs TOK_RPAREN
+		{
+			$$ = FuncEqnNode($1,$3)
+		}
 
+funcArgs: funcArg
+		{
+			$$ = $1
+		}
+		| funcArg TOK_COMMA funcArgs
+		{
+			$$ = []EquationNode{}
+			$$ = append($$,$1...)
+			$$ = append($$,$3...)
+		}
+
+funcArg: expr
+		{
+			$$ = []EquationNode{*$1}
+		}
 
 expr	:   expr TOK_PLUS expr
 		{ 
