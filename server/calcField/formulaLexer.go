@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 )
 
 const TOK_EOF = 0
@@ -39,6 +40,17 @@ func (lexer *formulaLexerImpl) Lex(lval *formulaSymType) int {
 		case TOK_IDENT:
 			lval.text = currTok.matchedStr
 			return TOK_IDENT
+		case TOK_TEXT:
+			// Trim enclosing quotes and replace any escaped quotes
+			// with a regular quotes (i.e. "unescape" the escaped quotes)
+			log.Printf("lexer: text token: %v", currTok.matchedStr)
+			enclosingQuote := `"`
+			textVal := strings.TrimPrefix(currTok.matchedStr, enclosingQuote)
+			textVal = strings.TrimSuffix(textVal, enclosingQuote)
+			textVal = strings.Replace(textVal, `\"`, `"`, -1)
+			lval.text = textVal
+			log.Printf("lexer: text token: token=%v, trimmed & unescaped = %v", currTok.matchedStr, textVal)
+			return TOK_TEXT
 		default:
 			return currTok.TokenID
 		}

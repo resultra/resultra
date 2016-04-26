@@ -41,6 +41,7 @@ import (
 // needs to be one of the field names in the %union above.
 %type <eqnNode> expr
 %type <eqnNode> func
+%type <eqnNode> fieldRef
 %type <args> funcArg
 %type <args> funcArgs
 	
@@ -53,11 +54,38 @@ root : expr
 			// The work-around is to set a value on the lexer (see https://goo.gl/NdKNYI)
 			formulalex.(*formulaLexerImpl).rootEqnNode = $1
 			fmt.Printf("\nRoot equation node: %+v\n",$1) 
+		}		
+
+expr	:   expr TOK_PLUS expr
+		{ 
+			funcArgs := []EquationNode{*$1,*$3}
+			$$  =  FuncEqnNode(FuncNameSum,funcArgs)
+		}
+		| expr TOK_TIMES expr
+		{
+			funcArgs := []EquationNode{*$1,*$3}
+			$$  =  FuncEqnNode(FuncNameProduct,funcArgs)
+		}
+		| fieldRef
+		{ 
+			$$ = $1
 		}
 		| func
 		{
-			formulalex.(*formulaLexerImpl).rootEqnNode = $1
-			fmt.Printf("\nRoot equation node: %+v\n",$1) 
+			$$ = $1
+		}
+		| TOK_NUMBER
+		{ 
+			$$ = NumberEqnNode($1) 
+		}
+		| TOK_TEXT
+		{ 
+			$$ = TextEqnNode($1) 
+		}
+
+fieldRef : TOK_LBRACKET TOK_IDENT TOK_RBRACKET
+		{
+			$$ = FieldRefEqnNode($2)
 		}
 		
 func : TOK_IDENT TOK_LPAREN funcArgs TOK_RPAREN
@@ -80,21 +108,6 @@ funcArg: expr
 		{
 			$$ = []EquationNode{*$1}
 		}
-
-expr	:   expr TOK_PLUS expr
-		{ 
-			funcArgs := []EquationNode{*$1,*$3}
-			$$  =  FuncEqnNode(FuncNameSum,funcArgs)
-		}
-		| expr TOK_TIMES expr
-		{
-			funcArgs := []EquationNode{*$1,*$3}
-			$$  =  FuncEqnNode(FuncNameProduct,funcArgs)
-		}
-	|    TOK_NUMBER
-		{ 
-			$$ = NumberEqnNode($1) 
-		}
-
+		
 
 %% // end of parser
