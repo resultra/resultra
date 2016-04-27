@@ -130,21 +130,8 @@ function initBarChartEditBehavior(barChartID)
 			  } // stop function
 	});
 	
-	// jQuery UI draggable and selectable functionality conflict with one another (using draggable masks
-	// the click behavior for selectable). So, the click handling to select a dashboard item needs to 
-	// be done directly.
-	barChartContainer.click(function(e) {
-		
-		// This is important - if a click hits the bar chart, then stop the propagation of the click
-		// to the parent div(s), including the dashboard canvas itself. If the parent dashboard canvas
-		// gets a click, it will deselect all the items.
-		e.stopPropagation();
-		
-		var barChartID = $(this).attr("id")
-		console.log("barchart selection click: " + $(this).attr("id"))
-		
-		selectObject("#dashboardCanvas",this)
- 		
+	
+	initObjectSelectionBehavior(barChartContainer, "#dashboardCanvas",function(barChartID) {
 		var barChartPropsArgs = {
 			dashboardID: dashboardID,
 			barChartID: barChartID,
@@ -166,7 +153,9 @@ function initBarChartEditBehavior(barChartID)
 		}
 		
 		loadBarChartProperties(barChartPropsArgs)
+		
 	})
+	
 }
 
 

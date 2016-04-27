@@ -42,9 +42,8 @@ function saveNewTextBox()
 			  $('#'+newTextBoxParams.placeholderID).find('label').text(newTextBoxObjectRef.fieldRef.fieldInfo.name)
 			  $('#'+newTextBoxParams.placeholderID).attr("id",newTextBoxObjectRef.uniqueID.objectID)
 			  
-			  // Store the newly created object reference in the DOM element. This is needed for follow-on
-			  // property setting, resizing, etc.
-			  setElemObjectRef(newTextBoxObjectRef.uniqueID.objectID,newTextBoxObjectRef)
+			  // Set up the newly created checkbox for resize, selection, etc.
+			  initFormComponentDesignBehavior(newTextBoxObjectRef,textBoxDesignFormConfig)
 			
 			  newTextBoxParams.containerCreated = true				  
 					  

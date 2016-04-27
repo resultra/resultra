@@ -46,9 +46,8 @@ function openNewCheckboxDialog(containerParams)
 				  $('#'+newCheckBoxParams.placeholderID).find('label').text(newCheckBoxObjectRef.fieldRef.fieldInfo.name)
 				  $('#'+newCheckBoxParams.placeholderID).attr("id",newCheckBoxObjectRef.uniqueID.objectID)
 			  
-				  // Store the newly created object reference in the DOM element. This is needed for follow-on
-				  // property setting, resizing, etc.
-				  setElemObjectRef(newCheckBoxObjectRef.uniqueID.objectID,newCheckBoxObjectRef)
+				  // Set up the newly created checkbox for resize, selection, etc.
+				  initFormComponentDesignBehavior(newCheckBoxObjectRef,checkBoxDesignFormConfig)
 			
 				  newCheckBoxParams.containerCreated = true				  
 					  
