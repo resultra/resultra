@@ -87,8 +87,8 @@ $(document).ready(function() {
 	console.log("Initializing form design plug-ins/configurations ...")
 	initObjectCanvasSelectionBehavior(formDesignCanvasSelector, function() {
 		console.log("Select form canvas")
-//		hideSiblingsShowOne('#formProps')
+		hideSiblingsShowOne('#formProps')
 	})
-//	$( '#formProps' ).accordion();	
+	$( '#formProps' ).accordion();	
 	
 });

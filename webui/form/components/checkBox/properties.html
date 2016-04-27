@@ -1,0 +1,24 @@
+
+{{define "checkBoxFormatProps"}}
+	<div class="title">
+		<i class="dropdown icon"></i>
+		Format
+	</div>
+	<div class="content">
+		<p>
+			Checkbox formatting properties go here
+		</p>
+	</div>
+{{end}}
+
+{{define "checkBoxProps"}}
+
+	<div id="checkBoxProps" class="ui accordion initiallyHidden">
+		<form class="ui form">
+		
+		{{template "checkBoxFormatProps"}}
+
+		</form>
+	</div>
+
+{{end}}

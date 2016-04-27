@@ -13,7 +13,8 @@ func init() {
 
 	TemplateFileList = []string{}
 
-	TemplateFileList = []string{"static/form/components/include.html"}
+	TemplateFileList = []string{"static/form/components/include.html",
+		"static/form/components/properties.html"}
 
 	TemplateFileList = append(TemplateFileList, componentEdit.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, newFormElemDialog.TemplateFileList...)

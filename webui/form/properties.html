@@ -1,0 +1,36 @@
+{{define "formNameProps"}}
+	<div class="active title">
+		<i class="dropdown icon"></i>
+		Form Name
+	</div>
+	<div class="active content">
+		<div class="field">
+			<input type="text" id="dashboardNameProp" name="dashboardNameProp" placeholder="Enter a name">
+		</div><!-- Field name field -->
+	</div>
+{{end}}
+
+{{define "formStyleProps"}}
+	<div class="title">
+		<i class="dropdown icon"></i>
+		Style
+	</div>
+	<div class="content">
+		<p>
+			Form style properties go here (e.g. background color)
+		</p>
+	</div>
+{{end}}
+
+{{define "formProps"}}
+
+	<div id="formProps" class="ui accordion initiallyHidden">
+		<form class="ui form">
+		
+		{{template "formNameProps"}}
+		{{template "formStyleProps"}}
+
+		</form>
+	</div>
+
+{{end}}

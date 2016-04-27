@@ -1,0 +1,23 @@
+{{define "textBoxFormatProps"}}
+	<div class="title">
+		<i class="dropdown icon"></i>
+		Format
+	</div>
+	<div class="content">
+		<p>
+			Text box formatting properties go here
+		</p>
+	</div>
+{{end}}
+
+{{define "textBoxProps"}}
+
+	<div id="textBoxProps" class="ui accordion initiallyHidden">
+		<form class="ui form">
+		
+		{{template "textBoxFormatProps"}}
+
+		</form>
+	</div>
+
+{{end}}

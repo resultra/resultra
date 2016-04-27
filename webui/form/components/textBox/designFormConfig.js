@@ -11,6 +11,7 @@ function initDesignFormTextBox() {
 
 function selectFormTextBox (textBoxRef) {
 	console.log("Select text box: " + JSON.stringify(textBoxRef))
+	loadTextBoxProperties()
 }
 
 var textBoxDesignFormConfig = {
