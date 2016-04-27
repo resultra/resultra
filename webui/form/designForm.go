@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/form/components"
 	"resultra/datasheet/webui/generic"
 )
@@ -19,13 +20,13 @@ var designFormTemplates *template.Template
 func init() {
 	//	designFormTemplateFiles := []string{}
 
-	baseTemplateFiles := []string{"static/common/common.html",
-		"static/field/calcField.html",
+	baseTemplateFiles := []string{"static/field/calcField.html",
 		"static/form/designForm.html",
 		"static/form/viewForm.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
+		common.TemplateFileList,
 		components.TemplateFileList}
 	designFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }

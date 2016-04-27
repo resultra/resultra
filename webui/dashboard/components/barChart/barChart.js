@@ -142,9 +142,9 @@ function initBarChartEditBehavior(barChartID)
 		
 		var barChartID = $(this).attr("id")
 		console.log("barchart selection click: " + $(this).attr("id"))
-        $( "#dashboardCanvas > div" ).removeClass("ui-selected");
-        $(this).addClass("ui-selected");
 		
+		selectObject("#dashboardCanvas",this)
+ 		
 		var barChartPropsArgs = {
 			dashboardID: dashboardID,
 			barChartID: barChartID,

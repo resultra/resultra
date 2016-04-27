@@ -1,5 +1,5 @@
 
-{{define "commonCSS"}}
+{{define "thirdPartyCSS"}}
 	<link rel="stylesheet" type="text/css" class="ui" 		
 		href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.css">
 	<link rel="stylesheet" type="text/css" class="ui"
@@ -10,22 +10,39 @@
 		
 	<link rel="stylesheet" type="text/css" class="ui" 
 		href="https://cdnjs.cloudflare.com/ajax/libs/jquery-layout/1.4.3/layout-default.min.css">
+{{end}}
+
+
+
+
+{{define "commonCSS"}}
+
+	{{template "thirdPartyCSS"}}
 
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/common.css">
-		
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/dialog/dialogCommon.css">
+
+	{{template "commonObjectSelectionCSS"}}
+
 	
 {{end}}
 
-{{define "commonJS"}}
+{{define "thirdPartyJS"}}
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
 	<script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-layout/1.4.3/jquery.layout.min.js"></script>
+{{end}}
+
+{{define "commonJS"}}
+
+	{{template "thirdPartyJS"}}
 
 	<script src="/static/common/helper/util.js"></script>
 	<script src="/static/common/helper/uiUtil.js"></script>
+	
+	{{template "commonObjectSelectionJS"}}
 
 {{end}}
 

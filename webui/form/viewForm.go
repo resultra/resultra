@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/form/components"
 	"resultra/datasheet/webui/generic"
 )
@@ -17,13 +18,12 @@ var viewFormTemplates *template.Template
 func init() {
 	//	designFormTemplateFiles := []string{}
 
-	baseTemplateFiles := []string{
-		"static/common/common.html",
-		"static/filter/filterRecords.html",
+	baseTemplateFiles := []string{"static/filter/filterRecords.html",
 		"static/form/viewForm.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
+		common.TemplateFileList,
 		components.TemplateFileList}
 	viewFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }

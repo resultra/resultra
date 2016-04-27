@@ -19,8 +19,3 @@
 	width: 100%;
 	height: 100%;
 }
-
-/* Style to apply when item is selected */
-#dashboardCanvas > div.ui-selected {
-	border: 2px solid gray; 
-}

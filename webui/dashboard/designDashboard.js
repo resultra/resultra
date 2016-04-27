@@ -18,17 +18,11 @@ function loadDashboardData()
 			
 		}
 		
-		// jQuery UI selectable and draggable conflict with one another for click handling, so there is specialized
-		// click handling for the selection and deselection of individual dashboard elements. When a click is made
-		// on the canvas, all the items are deselected.
-		$( "#dashboardCanvas").click(function(e) {
-			console.log("click on dashboard canvas")
-	        $( "#dashboardCanvas > div" ).removeClass("ui-selected");
-			
-			// Toggle to the overall dashboard properties, hiding the other property panels
+		initObjectCanvasSelectionBehavior('#dashboardCanvas', function() {
 			hideSiblingsShowOne('#dashboardProps')
 		})
-		$( "#dashboardProps" ).accordion();	
+		$( '#dashboardProps' ).accordion();	
+		
 						
 	})
 	
