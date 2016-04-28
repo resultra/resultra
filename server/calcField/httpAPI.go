@@ -14,6 +14,14 @@ func RegisterHTTPHandlers(apiRouter *mux.Router) {
 
 }
 
+func init() {
+	calcFieldRouter := mux.NewRouter()
+
+	calcFieldRouter.HandleFunc("/api/calcField/validateFormula", validateFormula)
+
+	http.Handle("/api/calcField/", calcFieldRouter)
+}
+
 type CalcFieldValidationParams struct {
 	EqnText    string `json:"eqnText"`
 	IsNewField bool   `json:"isNewField"`
@@ -56,4 +64,17 @@ func newCalcField(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, api.JSONParams{"fieldID": fieldID})
 	}
 
+}
+
+func validateFormula(w http.ResponseWriter, r *http.Request) {
+
+	var validationParams ValidateFormulaParams
+	if err := api.DecodeJSONRequest(r, &validationParams); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+	validationResponse := validateFormulaText(appEngCntxt, validationParams)
+	api.WriteJSONResponse(w, *validationResponse)
 }

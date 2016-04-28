@@ -67,6 +67,10 @@ $(document).ready(function() {
 	})
 	function showFormulaEditPane() { formDesignLayout.open("south") }
 	function hideFormulaEditPanel() { formDesignLayout.close("south")}
+	var formulaEditorParams = {
+		showEditorFunc:showFormulaEditPane,
+		hideEditorFunc:hideFormulaEditPanel
+	}
 	
 	function initFormComponentDesignBehavior(objectRef, designFormConfig) {
 		initObjectEditBehavior(objectRef.uniqueID.parentID,
@@ -100,6 +104,6 @@ $(document).ready(function() {
 	})
 	$( '#formProps' ).accordion();	
 	
-	initFormulaEditor({showEditorFunc:showFormulaEditPane,hideEditorFunc:hideFormulaEditPanel})
+	initFormulaEditor(formulaEditorParams)
 	
 });

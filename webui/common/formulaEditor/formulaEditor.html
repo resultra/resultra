@@ -30,6 +30,9 @@
 		<button class="ui small grey button" id="saveFormulaButton">
 		  Save Formula
 		</button>
+		<button class="ui small grey button" id="checkFormulaButton">
+		  Check Formula
+		</button>
 {{end}}
 
 {{define "formulaEditPaneHeaderLayout"}}
@@ -41,6 +44,20 @@
 	</div>
 {{end}}
 
+{{define "formulaErrorPopup"}}
+
+<div class="ui flowing popup top left transition hidden">
+	 <div class="ui negative message" id="formulaErrorMsg">
+	   <i class="close icon" id="formulaErrorMsgClose"></i>
+	   <div class="header">
+	     Formula Error
+	   </div>
+	   <p id="formulaErrorMessageMsgText">parse error</p>
+	 </div>
+</div>
+
+{{end}}
+
 
 {{define "formulaEditor"}}
 
@@ -50,11 +67,13 @@
    </div>
  	<div class="ui eight wide column" id="centerFormulaEditColumn">
    		<div id="formulaEditor"></div>
+		{{template "formulaErrorPopup"}}
  	</div>
  	<div class="ui five wide column">
-   		{{template "calcFieldFieldRefSelection"}}
+		<div class="ui vertical segment">
+   			{{template "calcFieldFieldRefSelection"}}
+		</div>
  	</div>
  </div>
-
 
 {{end}}

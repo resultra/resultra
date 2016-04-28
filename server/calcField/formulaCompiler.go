@@ -1,6 +1,7 @@
 package calcField
 
 import (
+	"appengine"
 	"fmt"
 )
 
@@ -21,4 +22,23 @@ func compileFormula(inputStr string) (*EquationNode, error) {
 		return rootEqnNode, nil
 	}
 
+}
+
+type ValidateFormulaParams struct {
+	FieldID     string `json:fieldID`
+	FormulaText string `json:formulaText`
+}
+
+type ValidationResponse struct {
+	IsValidFormula bool   `json:"isValidFormula"`
+	ErrorMsg       string `json:"errorMsg"`
+}
+
+func validateFormulaText(appEngContext appengine.Context, validationParams ValidateFormulaParams) *ValidationResponse {
+
+	if _, err := compileFormula(validationParams.FormulaText); err != nil {
+		return &ValidationResponse{IsValidFormula: false, ErrorMsg: err.Error()}
+	} else {
+		return &ValidationResponse{IsValidFormula: true, ErrorMsg: ""}
+	}
 }
