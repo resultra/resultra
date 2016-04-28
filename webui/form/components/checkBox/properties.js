@@ -1,5 +1,5 @@
 
-function loadCheckboxProperties() {
+function loadCheckboxProperties(checkBoxRef) {
 	console.log("Loading checkbox properties")
 	
 	// Toggle to the check box properties, hiding the other property panels
@@ -7,5 +7,7 @@ function loadCheckboxProperties() {
 	
 	
 	$( "#checkBoxProps" ).accordion();
+	
+	toggleFormulaEditorForField(checkBoxRef.fieldRef)
 	
 }

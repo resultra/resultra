@@ -53,11 +53,11 @@ $(document).ready(function() {
 	console.log("designForm: Done initializing form design plug-ins/configurations.")
 			
 	// Initialize the page layout
-	$('#layoutPage').layout({
+	var formDesignLayout = $('#layoutPage').layout({
 		north: fixedUILayoutPaneParams(40),
 		east: fixedUILayoutPaneParams(300),
 		west: fixedUILayoutPaneParams(200),
-		south: hidableUILayoutPaneAutoSizeToFitContentsParams(),
+		south: fixedInitiallyHiddenUILayoutPaneAutoSizeToFitContentsParams(),
 		// Important: The 'showOverflowOnHover' options give a higher
 		// z-index to sidebars and other panels with controls, etc. Otherwise
 		// popups and other controlls will not be shown on top of the rest
@@ -65,6 +65,8 @@ $(document).ready(function() {
 		west__showOverflowOnHover:	true,
 		south__showOverflowOnHover:	true 
 	})
+	function showFormulaEditPane() { formDesignLayout.open("south") }
+	function hideFormulaEditPanel() { formDesignLayout.close("south")}
 	
 	function initFormComponentDesignBehavior(objectRef, designFormConfig) {
 		initObjectEditBehavior(objectRef.uniqueID.parentID,
@@ -94,9 +96,10 @@ $(document).ready(function() {
 	initObjectCanvasSelectionBehavior(formDesignCanvasSelector, function() {
 		console.log("Select form canvas")
 		hideSiblingsShowOne('#formProps')
+		closeFormulaEditor()
 	})
 	$( '#formProps' ).accordion();	
 	
-	initFormulaEditor()
+	initFormulaEditor({showEditorFunc:showFormulaEditPane,hideEditorFunc:hideFormulaEditPanel})
 	
 });

@@ -10,7 +10,7 @@ function initDesignFormCheckBox() {
 
 function selectFormCheckbox(checkboxObjRef) {
 	console.log("Selected checkbox: " + JSON.stringify(checkboxObjRef))
-	loadCheckboxProperties()
+	loadCheckboxProperties(checkboxObjRef)
 }
 
 

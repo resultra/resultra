@@ -55,6 +55,17 @@ function fixedUILayoutPaneAutoSizeToFitContentsParams() {
 	}
 }
 
+function fixedInitiallyHiddenUILayoutPaneAutoSizeToFitContentsParams() {
+	return { 
+		//Note the size for fixed size panes defaults to "auto", which causes
+		// the pane to fit the content
+		resizable:false,
+		spacing_open:0,
+		spacing_closed:0,
+		initClosed:true
+	}
+}
+
 function hidableUILayoutPaneAutoSizeToFitContentsParams() {
 	return { 
 		// The pane's size will scale to the contents. It can open and close,
