@@ -1,0 +1,23 @@
+
+#formulaEditor {
+    /** Setting height is also important, otherwise editor wont showup**/
+    height: 120px;
+}
+
+#rightFormulaEditHeaderColumn,#leftFormulaEditHeaderColumn {
+	padding: 3px;
+}
+
+#formulaEditHeader,#leftFormulaEditColumn,#centerFormulaEditColumn {
+	background-color:lightGrey;
+}
+
+#saveFormulaButton {
+	padding:9px;
+}
+
+/* Fix an overalapping/z-index issue between the formula help dropdown and 
+   save formula button */
+#formulaEditHeader > .visible.transition {
+  z-index: 1;
+}

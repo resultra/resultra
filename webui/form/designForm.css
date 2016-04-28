@@ -1,0 +1,7 @@
+#formulaEditorPane {
+	padding:0px;
+	height: 125px;
+	min-height: 125px;
+	overflow: visible; /* don't overflow/scroll the content */
+	background-color:lightGrey;
+}

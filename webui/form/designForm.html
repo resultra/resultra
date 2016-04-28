@@ -89,6 +89,7 @@
 	{{template "formComponentsCSS"}}
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/designPalette/designPalette.css">
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/layout.css">
+	<link rel="stylesheet" type="text/css" class="ui" href="/static/form/designForm.css">
 
 	{{template "commonJS"}}
 	
@@ -123,9 +124,14 @@
 		
 			<div id="layoutCanvas" class="pane ui-layout-center droppable">
 			</div> 
-		
+
 			<div class="pane ui-layout-east" id="propertiesPanelUILayout">
 				{{template "formDesignPropertiesSidebar"}}
+			</div>
+			
+			<!-- The formula editor pane must come after the other panes to give it a higher z index -->
+			<div id="formulaEditorPane" class="pane ui-layout-south" style="z-index:99 !important;">
+				{{template "formulaEditor"}}
 			</div>
 			
 		</div>

@@ -57,7 +57,13 @@ $(document).ready(function() {
 		north: fixedUILayoutPaneParams(40),
 		east: fixedUILayoutPaneParams(300),
 		west: fixedUILayoutPaneParams(200),
-		west__showOverflowOnHover:	true
+		south: hidableUILayoutPaneAutoSizeToFitContentsParams(),
+		// Important: The 'showOverflowOnHover' options give a higher
+		// z-index to sidebars and other panels with controls, etc. Otherwise
+		// popups and other controlls will not be shown on top of the rest
+		// of the layout.
+		west__showOverflowOnHover:	true,
+		south__showOverflowOnHover:	true 
 	})
 	
 	function initFormComponentDesignBehavior(objectRef, designFormConfig) {
@@ -90,5 +96,7 @@ $(document).ready(function() {
 		hideSiblingsShowOne('#formProps')
 	})
 	$( '#formProps' ).accordion();	
+	
+	initFormulaEditor()
 	
 });

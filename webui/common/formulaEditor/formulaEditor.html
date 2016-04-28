@@ -1,0 +1,60 @@
+
+
+
+{{define "formulaEditPaneHeader"}}
+
+<div ui class="ui middle aligned padded grid" id="formulaEditHeader">
+	
+	<div class="ui twelve wide column" id="leftFormulaEditHeaderColumn">	
+		<div class="middle aligned content">
+			<h4 class="ui header">Formula Editor</h4>
+		</div>
+	</div> <!-- column -->
+
+	<div class="ui four wide column" id="rightFormulaEditHeaderColumn">
+		<div class="tiny ui icon right floated pointing dropdown button" id="formulaEditMoreDropdown">
+			 <i class="help icon"></i>
+			<div class="left menu">
+				<div class="item">Formula Help</div>
+				<div class="item">Function Reference</div>
+			</div> <!-- menu -->
+		</div> <!-- ui dropdown -->
+	</div> <!-- column -->
+	
+</div> <!-- #formulaEditHeader  -->
+
+
+{{end}}
+
+{{define "formulaEditHeaderControls"}}
+		<button class="ui small grey button" id="saveFormulaButton">
+		  Save Formula
+		</button>
+{{end}}
+
+{{define "formulaEditPaneHeaderLayout"}}
+	<div class="ui vertical segment">
+	  	{{ template "formulaEditPaneHeader"}}
+	</div>
+	<div class="ui center aligned vertical segment">
+		 {{ template "formulaEditHeaderControls"}}
+	</div>
+{{end}}
+
+
+{{define "formulaEditor"}}
+
+ <div class="ui padded grid">
+   <div class="ui three wide column" id="leftFormulaEditColumn"> 
+	   {{template "formulaEditPaneHeaderLayout"}}
+   </div>
+ 	<div class="ui eight wide column" id="centerFormulaEditColumn">
+   		<div id="formulaEditor"></div>
+ 	</div>
+ 	<div class="ui five wide column">
+   		{{template "calcFieldFieldRefSelection"}}
+ 	</div>
+ </div>
+
+
+{{end}}

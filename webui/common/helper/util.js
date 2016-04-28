@@ -55,6 +55,14 @@ function fixedUILayoutPaneAutoSizeToFitContentsParams() {
 	}
 }
 
+function hidableUILayoutPaneAutoSizeToFitContentsParams() {
+	return { 
+		// The pane's size will scale to the contents. It can open and close,
+		// but is not resizable.
+		resizable:false,
+	}
+}
+
 
 function assert(condition,message) {
 	if(!condition) {
