@@ -27,6 +27,9 @@ function initDesignPalette(paletteConfig) {
 	
 		revert: 'invalid',
 		cursor: "move",
+		// The cursorAt option aligns the draggable object at an offset from the cursor, rather than from
+		// the top corner of the palette item.
+		cursorAt: { top: 10, left: 10 },
 		helper: function() { 
 			
 			var paletteItemID = $(this).attr('id')
@@ -42,6 +45,12 @@ function initDesignPalette(paletteConfig) {
 			 // While in layout mode, disable entry into the fields
 			 // Interestingly, there's not CSS for this.
 			placeholder.find('input').prop('disabled',true);
+			
+			
+			// TODO - Test & integrate the following code to make the palette items drag and drop
+			// more seamlessly with the jQuery UI layout plug-in. This is the recommended way
+			// to do drag and drop under jQuery UI Layout (see http://layout.jquery-dev.com/tips.cfm#Widget_Draggable)
+			//placeholder.appendTo('body').css('zIndex',5).show()
 		 			 
 			 return placeholder
 		 },
