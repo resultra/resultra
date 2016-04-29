@@ -26,8 +26,7 @@ function initCalcFieldFieldRefSelector(fieldsByID)
 		var formulaFieldRef = '[' + fieldInfo.refName + ']'
 
 	 	var selectFieldRefHTML = dropdownSelectItemHTML(
-						formulaFieldRef,
-						fieldInfo.name + ' - ' + formulaFieldRef)
+						formulaFieldRef,fieldInfo.name)
 		
 	 	$("#calcFieldFieldRefDropdownMenu").append(selectFieldRefHTML)			
 

@@ -3,15 +3,43 @@
 // a global configuration should suffice.
 var formulaEditorConfig;
 
+function populateFieldRefInsertionMenu()
+{
+	// Populate the menu to insert field references with the list of fields
+	$("#formulaFieldRefList").empty()
+	loadFieldInfo(function(fieldsByID) {
+		for (var fieldID in fieldsByID) {
+		
+			var fieldInfo = fieldsByID[fieldID]		
+		
+     	   var menuItemHTML = '<div class="item" data-value="' + fieldInfo.refName + 
+				'">' + fieldInfo.name + '</div>'
+				
+		 	$("#formulaFieldRefList").append(menuItemHTML)			
+
+		} // for each  field
+		$("#formulaFieldRefSelector").dropdown({
+			onChange: function(fieldRefName,text,$choice) {
+				console.log("formula edit dropdown selection: " + fieldRefName)
+				if(fieldRefName.length > 0) {
+					$("#formulaFieldRefSelector").dropdown('restore default text')
+					formulaEditorConfig.editor.insert("[" + fieldRefName + "]")
+				}	
+			}
+		})
+	}, [fieldTypeAll])
+	
+}
+
 function initFormulaEditor(editorConfig) {
 	console.log("Initializing formula editor")
 	
 	var editor = ace.edit("formulaEditor")
+	editorConfig["editor"] = editor
+	formulaEditorConfig = editorConfig
 	
 	// Address a console warning message on scrolling
 	editor.$blockScrolling = Infinity;
-	
-	
 	editor.setTheme("ace/theme/tomorrow_night")
 	editor.setShowPrintMargin(false);
 	editor.setValue("Hello World!")
@@ -25,15 +53,9 @@ function initFormulaEditor(editorConfig) {
 		$('#formulaEditor').popup('hide')
     })
 	
-	loadFieldInfo(function(fieldsByID) {
-		console.log("Initializing formula editor field insertion menu")
-		initCalcFieldFieldRefSelector(fieldsByID)
-	}, [fieldTypeAll])
+	populateFieldRefInsertionMenu()
 	
-	editorConfig["editor"] = editor
-	formulaEditorConfig = editorConfig
-	
-//	editor.setTheme("ace/mode/javascript")
+	// TODO - Setup the editor for language specific syntax highlighting, etc.
 }
 
 function openFormulaEditor(fieldRef) {

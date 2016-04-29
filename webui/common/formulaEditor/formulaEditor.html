@@ -58,21 +58,29 @@
 
 {{end}}
 
+{{define "formulaFieldRefSelector"}}
+<div class="ui floating dropdown labeled search icon button" id="formulaFieldRefSelector">
+	<i class="dropdown icon"></i>
+  <span class="text">Insert Field Reference</span>
+  <div class="menu" id="formulaFieldRefList">
+    <div class="item" data-value="fieldA">Field A</div>
+  </div>
+</div>
+{{end}}
+
 
 {{define "formulaEditor"}}
 
  <div class="ui padded grid">
-   <div class="ui three wide column" id="leftFormulaEditColumn"> 
+   <div class="ui four wide column" id="leftFormulaEditColumn" style="min-width:250px;max-width:250px;"> 
 	   {{template "formulaEditPaneHeaderLayout"}}
    </div>
- 	<div class="ui eight wide column" id="centerFormulaEditColumn">
+ 	<div class="ui eight wide column" id="centerFormulaEditColumn" style="min-width:250px;">
    		<div id="formulaEditor"></div>
 		{{template "formulaErrorPopup"}}
  	</div>
- 	<div class="ui five wide column">
-		<div class="ui vertical segment">
-   			{{template "calcFieldFieldRefSelection"}}
-		</div>
+ 	<div class="ui four wide column">
+		{{template "formulaFieldRefSelector"}}
  	</div>
  </div>
 
