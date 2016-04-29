@@ -3,7 +3,6 @@ package server
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form"
@@ -22,7 +21,6 @@ func RegisterAPIHTTPHandlers() {
 	recordUpdate.RegisterHTTPHandlers(apiRouter)
 	form.RegisterHTTPHandlers(apiRouter)
 	recordFilter.RegisterHTTPHandlers(apiRouter)
-	calcField.RegisterHTTPHandlers(apiRouter)
 
 	http.Handle("/api/", apiRouter)
 }

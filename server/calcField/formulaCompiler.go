@@ -3,6 +3,7 @@ package calcField
 import (
 	"appengine"
 	"fmt"
+	"resultra/datasheet/server/generic"
 )
 
 func compileFormula(inputStr string) (*EquationNode, error) {
@@ -41,4 +42,23 @@ func validateFormulaText(appEngContext appengine.Context, validationParams Valid
 	} else {
 		return &ValidationResponse{IsValidFormula: true, ErrorMsg: ""}
 	}
+}
+
+func compileAndEncodeFormula(formulaText string) (string, error) {
+
+	// TODO - Need to run the prepocessor on formula text to replace any field references with their
+	// permanent field IDs.
+
+	compiledFormulaEqn, compileErr := compileFormula(formulaText)
+	if compileErr != nil {
+		return "", compileErr
+	}
+
+	jsonEncodeEqn, encodeErr := generic.EncodeJSONString(compiledFormulaEqn)
+	if encodeErr != nil {
+		return "", encodeErr
+	}
+
+	return jsonEncodeEqn, nil
+
 }

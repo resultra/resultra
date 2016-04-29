@@ -20,8 +20,7 @@ var designFormTemplates *template.Template
 func init() {
 	//	designFormTemplateFiles := []string{}
 
-	baseTemplateFiles := []string{"static/field/calcField.html",
-		"static/form/designForm.html",
+	baseTemplateFiles := []string{"static/form/designForm.html",
 		"static/form/viewForm.html",
 		"static/form/properties.html"}
 
@@ -41,6 +40,7 @@ type DesignFormTemplateParams struct {
 	LayoutID       string
 	LayoutName     string
 	CheckboxParams FormElemTemplateParams
+	TextBoxParams  FormElemTemplateParams
 }
 
 func designForm(w http.ResponseWriter, r *http.Request) {
@@ -60,7 +60,8 @@ func designForm(w http.ResponseWriter, r *http.Request) {
 		Title:          "Edit Layout",
 		LayoutID:       layoutID,
 		LayoutName:     layoutRef.Layout.Name,
-		CheckboxParams: FormElemTemplateParams{ElemPrefix: "checkbox_"}}
+		CheckboxParams: FormElemTemplateParams{ElemPrefix: "checkbox_"},
+		TextBoxParams:  FormElemTemplateParams{ElemPrefix: "textBox_"}}
 
 	err := designFormTemplates.ExecuteTemplate(w, "designForm", templParams)
 	if err != nil {

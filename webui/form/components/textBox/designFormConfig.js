@@ -16,7 +16,7 @@ function selectFormTextBox (textBoxRef) {
 
 var textBoxDesignFormConfig = {
 	draggableHTMLFunc:	textBoxContainerHTML,
-	createNewItemAfterDropFunc: newLayoutContainer,
+	createNewItemAfterDropFunc: openNewTextBoxDialog,
 	resizeConstraints: elemResizeConstraints(100,600,400,400),
 	resizeAPIName: "frm/textBox/resize",
 	reposAPIName: "frm/textBox/reposition",

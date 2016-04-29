@@ -8,59 +8,26 @@ import (
 	"resultra/datasheet/server/generic/api"
 )
 
-func RegisterHTTPHandlers(apiRouter *mux.Router) {
-
-	apiRouter.HandleFunc("/api/validateCalcFieldEqn", validateCalcFieldEqn)
-	apiRouter.HandleFunc("/api/newCalcField", newCalcField)
-
-}
-
 func init() {
 	calcFieldRouter := mux.NewRouter()
 
 	calcFieldRouter.HandleFunc("/api/calcField/validateFormula", validateFormula)
 	calcFieldRouter.HandleFunc("/api/calcField/setFieldFormula", setFieldFormula)
+	calcFieldRouter.HandleFunc("/api/calcField/newCalcField", newCalcFieldAPI)
 
 	http.Handle("/api/calcField/", calcFieldRouter)
 }
 
-type CalcFieldValidationParams struct {
-	EqnText    string `json:"eqnText"`
-	IsNewField bool   `json:"isNewField"`
-}
+func newCalcFieldAPI(w http.ResponseWriter, r *http.Request) {
 
-type CalcFieldValidationResponse struct {
-	IsValidEqn bool   `json:"isValidEqn"`
-	ErrorMsg   string `json:"errorMsg"`
-}
-
-func validateCalcFieldEqn(w http.ResponseWriter, r *http.Request) {
-
-	var calcFieldValidationParams CalcFieldValidationParams
-	if err := api.DecodeJSONRequest(r, &calcFieldValidationParams); err != nil {
+	var newCalcFieldParams NewCalcFieldParams
+	if err := api.DecodeJSONRequest(r, &newCalcFieldParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	if validateErr := validateCalcFieldEqnText(appEngCntxt, calcFieldValidationParams.EqnText); validateErr != nil {
-		api.WriteJSONResponse(w, CalcFieldValidationResponse{false, validateErr.Error()})
-	} else {
-		api.WriteJSONResponse(w, CalcFieldValidationResponse{true, ""})
-	}
-
-}
-
-func newCalcField(w http.ResponseWriter, r *http.Request) {
-
-	var newCalcField NewCalcFieldParams
-	if err := api.DecodeJSONRequest(r, &newCalcField); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-
-	appEngCntxt := appengine.NewContext(r)
-	if fieldID, err := NewCalcField(appEngCntxt, newCalcField); err != nil {
+	if fieldID, err := newCalcField(appEngCntxt, newCalcFieldParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, api.JSONParams{"fieldID": fieldID})

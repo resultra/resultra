@@ -2,7 +2,6 @@ package calcField
 
 import (
 	"appengine"
-	"encoding/json"
 	"fmt"
 	"resultra/datasheet/server/field"
 )
@@ -12,35 +11,29 @@ import (
 // end-user format? If so, this code will need an update once equation parsing is
 // done.
 type NewCalcFieldParams struct {
-	Name     string       `json:"name"`
-	Type     string       `json:"type"`
-	RefName  string       `json:"refName"`
-	FieldEqn EquationNode `json:"fieldEqn"`
+	Name        string `json:"name"`
+	Type        string `json:"type"`
+	RefName     string `json:"refName"`
+	FormulaText string `json:"formulaText"`
 }
 
-func encodeEqnJSONString(val interface{}) (string, error) {
-	b, err := json.Marshal(val)
+func newCalcField(appEngContext appengine.Context, calcFieldParams NewCalcFieldParams) (string, error) {
+
+	jsonEncodedEqn, err := compileAndEncodeFormula(calcFieldParams.FormulaText)
 	if err != nil {
-		return "", fmt.Errorf("Error encoding calculated field equaton: %v", err)
-	}
-	return string(b), nil
-}
-
-func NewCalcField(appEngContext appengine.Context, calcFieldParams NewCalcFieldParams) (string, error) {
-
-	jsonEncodeEqn, encodeErr := encodeEqnJSONString(calcFieldParams.FieldEqn)
-	if encodeErr != nil {
-		return "", encodeErr
+		return "", fmt.Errorf("Error creating new calculated field %v, can't compile formula: %v",
+			calcFieldParams.Name, err)
 	}
 
 	// Create the actual field. All the parameters are the same as calcFieldParams, except
 	// the equation which is encoded in JSON.
 	newField := field.Field{
-		Name:         calcFieldParams.Name,
-		Type:         calcFieldParams.Type,
-		RefName:      calcFieldParams.RefName,
-		CalcFieldEqn: jsonEncodeEqn,
-		IsCalcField:  true}
+		Name:                 calcFieldParams.Name,
+		Type:                 calcFieldParams.Type,
+		RefName:              calcFieldParams.RefName,
+		CalcFieldEqn:         jsonEncodedEqn,
+		CalcFieldFormulaText: calcFieldParams.FormulaText,
+		IsCalcField:          true}
 
 	return field.CreateNewFieldFromRawInputs(appEngContext, newField)
 }

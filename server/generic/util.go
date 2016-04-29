@@ -1,7 +1,9 @@
 package generic
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"regexp"
 	"strings"
 )
@@ -18,4 +20,12 @@ func SanitizeName(unsanitizedName string) (string, error) {
 		return "", errors.New("Invalid name: Cannot be empty and must not contain newlines or tabs")
 	}
 	return stripWhite, nil
+}
+
+func EncodeJSONString(val interface{}) (string, error) {
+	b, err := json.Marshal(val)
+	if err != nil {
+		return "", fmt.Errorf("Error encoding JSON: %v", err)
+	}
+	return string(b), nil
 }

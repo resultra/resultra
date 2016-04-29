@@ -100,7 +100,6 @@
 	<script src="/static/common/objectEdit/objectEdit.js"></script>
 	
 	
-	<script src="/static/field/calcField.js"></script>
 	<script src="/static/field/fieldInfo.js"></script>
 		
 	{{template "formComponentsJS"}}		
@@ -137,7 +136,7 @@
 		</div>
 	</form>	
 	   
-	{{template "newTextBoxDialog"}}
+	{{template "newTextBoxDialog" .TextBoxParams}}
 	{{template "newCheckboxDialog" .CheckboxParams}}
 	   
   </body>
