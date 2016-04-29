@@ -128,7 +128,7 @@ func GetRecords(appEngContext appengine.Context) ([]RecordRef, error) {
 // calculated fields)
 func ValidateFieldForRecordValue(appEngContext appengine.Context, fieldID string, expectedFieldType string,
 	allowCalcField bool) error {
-	fieldRef, fieldGetErr := field.GetField(appEngContext, field.GetFieldParams{fieldID})
+	fieldRef, fieldGetErr := field.GetFieldRef(appEngContext, field.GetFieldParams{fieldID})
 	if fieldGetErr != nil {
 		return fmt.Errorf(" Error retrieving field for updating/setting value: err = %v", fieldGetErr)
 	}

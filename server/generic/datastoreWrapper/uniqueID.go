@@ -28,6 +28,14 @@ type UniqueRootID struct {
 	ObjectID string `json:"objectID"`
 }
 
+type UniqueRootIDInterface interface {
+	GetUniqueRootID() UniqueRootID
+}
+
 type UniqueRootIDHeader struct {
 	UniqueID UniqueRootID `json:"uniqueID"`
+}
+
+func (header UniqueRootIDHeader) GetUniqueRootID() UniqueRootID {
+	return header.UniqueID
 }

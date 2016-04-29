@@ -34,8 +34,9 @@ type Field struct {
 	// The datastore can't store recursively nested structs, so
 	// if field is a calculated field, then store a JSON representation
 	// of the equation.
-	CalcFieldEqn string `json:"calcFieldEqn"`
-	IsCalcField  bool   `json:"isCalcField"` // defaults to false
+	CalcFieldEqn         string `json:"calcFieldEqn"`
+	IsCalcField          bool   `json:"isCalcField"` // defaults to false
+	CalcFieldFormulaText string `json:"calcFieldFormulaText"`
 }
 
 type FieldRef struct {
@@ -108,11 +109,12 @@ type NewFieldParams struct {
 
 func NewField(appEngContext appengine.Context, fieldParams NewFieldParams) (string, error) {
 	newField := Field{
-		Name:         fieldParams.Name,
-		Type:         fieldParams.Type,
-		RefName:      fieldParams.RefName,
-		CalcFieldEqn: "",
-		IsCalcField:  false} // always set calculated field to false
+		Name:                 fieldParams.Name,
+		Type:                 fieldParams.Type,
+		RefName:              fieldParams.RefName,
+		CalcFieldEqn:         "",
+		CalcFieldFormulaText: "",
+		IsCalcField:          false} // always set calculated field to false
 
 	return CreateNewFieldFromRawInputs(appEngContext, newField)
 }
@@ -123,13 +125,38 @@ type GetFieldParams struct {
 	FieldID string `json:"fieldID"`
 }
 
-func GetField(appEngContext appengine.Context, fieldParams GetFieldParams) (*FieldRef, error) {
+func GetField(appEngContext appengine.Context, fieldID datastoreWrapper.UniqueRootID) (*Field, error) {
+	var fieldGetDest Field
+	if getErr := datastoreWrapper.GetRootEntityByID(appEngContext, fieldEntityKind,
+		fieldID.ObjectID, &fieldGetDest); getErr != nil {
+		return nil, fmt.Errorf("Unabled to get field: id = %+v: datastore err=%v", fieldID, getErr)
+	}
+	return &fieldGetDest, nil
+}
 
-	fieldGetDest := Field{}
-	if getErr := datastoreWrapper.GetRootEntityByID(appEngContext, fieldEntityKind, fieldParams.FieldID, &fieldGetDest); getErr != nil {
-		return nil, fmt.Errorf("Unabled to get field: params = %+v: datastore err=%v", fieldParams, getErr)
+func UpdateExistingField(appEngContext appengine.Context, fieldID datastoreWrapper.UniqueRootID, updatedField *Field) (*FieldRef, error) {
+
+	if updateErr := datastoreWrapper.UpdateExistingRootEntity(appEngContext, fieldEntityKind,
+		fieldID.ObjectID, updatedField); updateErr != nil {
+		return nil, fmt.Errorf("UpdateExistingField: Can't set value: Error updating existing field: err = %v", updateErr)
+	}
+
+	fieldRef := FieldRef{
+		FieldID:   fieldID.ObjectID,
+		FieldInfo: *updatedField}
+
+	return &fieldRef, nil
+
+}
+
+func GetFieldRef(appEngContext appengine.Context, fieldParams GetFieldParams) (*FieldRef, error) {
+
+	fieldID := datastoreWrapper.UniqueRootID{ObjectID: fieldParams.FieldID}
+
+	if field, getErr := GetField(appEngContext, fieldID); getErr != nil {
+		return nil, getErr
 	} else {
-		return &FieldRef{fieldParams.FieldID, fieldGetDest}, nil
+		return &FieldRef{fieldParams.FieldID, *field}, nil
 	}
 }
 
@@ -165,7 +192,7 @@ func GetExistingFieldKey(appEngContext appengine.Context, fieldID string) (*data
 
 func GetExistingFieldRefAndKey(appEngContext appengine.Context, fieldParams GetFieldParams) (*datastore.Key, *FieldRef, error) {
 	// TODO - combine key retrieval and field retrieval
-	fieldRef, fieldErr := GetField(appEngContext, GetFieldParams{fieldParams.FieldID})
+	fieldRef, fieldErr := GetFieldRef(appEngContext, GetFieldParams{fieldParams.FieldID})
 	if fieldErr != nil {
 		return nil, nil, fmt.Errorf("GetFieldRefAndKey: Can't get field for filter: datastore error = %v", fieldErr)
 	}

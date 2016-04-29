@@ -58,9 +58,48 @@ function initFormulaEditor(editorConfig) {
 	// TODO - Setup the editor for language specific syntax highlighting, etc.
 }
 
+function validateFormula(fieldRef,validationSucceededCallback) {
+	
+	var formulaText =  formulaEditorConfig.editor.getValue()
+	
+	var validationParams = {
+		fieldID: fieldRef.fieldID,
+		formulaText: formulaText
+	}
+	
+	jsonAPIRequest("calcField/validateFormula",validationParams,function(validationResponse) {
+		if(validationResponse.isValidFormula) {
+			console.log("formula validation successful")
+			$('#formulaEditor').popup('hide')
+			validationSucceededCallback(fieldRef,formulaText)
+		} else {
+			console.log("formula validation failed: " + validationResponse.errorMsg)
+			$("#formulaErrorMessageMsgText").text(validationResponse.errorMsg);
+			$('#formulaEditor').popup('show')
+		}
+	})
+	
+}
+
+function saveFormula(fieldRef) {
+	
+	validateFormula(fieldRef,function(fieldRef,formulaText) {
+		var saveFormulaParms = {
+			uniqueID: {
+				objectID: fieldRef.fieldID
+			},
+			formulaText: formulaText
+		}
+		jsonAPIRequest("calcField/setFieldFormula", saveFormulaParms, function(updatedFieldRef) {
+			console.log("Saved formula: updated field = " + JSON.stringify(updatedFieldRef))				
+		})
+	})
+	
+}
+
 function openFormulaEditor(fieldRef) {
 
-	formulaEditorConfig.editor.setValue("")
+	formulaEditorConfig.editor.setValue(fieldRef.fieldInfo.calcFieldFormulaText)
 
 	formulaEditorConfig.showEditorFunc()
 	
@@ -68,28 +107,16 @@ function openFormulaEditor(fieldRef) {
 	$('#saveFormulaButton').click(function(e){
 		e.preventDefault();
 		console.log("save button clicked")
+		saveFormula(fieldRef)	
 	});
 	
 	$('#checkFormulaButton').unbind('click');
-	$('#checkFormulaButton').click(function(e){
-		
+	$('#checkFormulaButton').click(function(e){	
 		e.preventDefault();
+		console.log("check formula button clicked")
+		validateFormula(fieldRef,function(fieldRef,formulaText) {})
 		
-		var validationParams = {
-			fieldID: fieldRef.fieldID,
-			formulaText: formulaEditorConfig.editor.getValue()
-		}
 		
-		jsonAPIRequest("calcField/validateFormula",validationParams,function(validationResponse) {
-			if(validationResponse.isValidFormula) {
-				console.log("formula validation successful")
-				$('#formulaEditor').popup('hide')
-			} else {
-				console.log("formula validation failed: " + validationResponse.errorMsg)
-				$("#formulaErrorMessageMsgText").text(validationResponse.errorMsg);
-				$('#formulaEditor').popup('show')
-			}
-		})
 	});
 	
 }
