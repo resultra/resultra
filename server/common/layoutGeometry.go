@@ -2,7 +2,6 @@ package common
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
 // A LayoutGeometry stores the size and position information for dashboard and form objects.
@@ -37,19 +36,9 @@ func (geom *LayoutGeometry) SetPosition(pos LayoutPosition) error {
 	return nil
 }
 
-type ObjectDimensionsParams struct {
-	datastoreWrapper.UniqueIDHeader
-	Geometry LayoutGeometry `json:"geometry"`
-}
-
 type LayoutPosition struct {
 	Top  int `json:"top"`
 	Left int `json:"left"`
-}
-
-type ObjectRepositionParams struct {
-	datastoreWrapper.UniqueIDHeader
-	Position LayoutPosition `json:"position"`
 }
 
 func ValidPosition(pos LayoutPosition) bool {

@@ -11,6 +11,10 @@ import (
 
 const barChartEntityKind string = "DashboardBarChart"
 
+var barChartChildParentEntityRel = datastoreWrapper.ChildParentEntityRel{
+	ParentEntityKind: dataModel.DashboardEntityKind,
+	ChildEntityKind:  barChartEntityKind}
+
 const xAxisSortAsc string = "asc"
 const xAxisSortDesc string = "desc"
 
@@ -80,15 +84,8 @@ type NewBarChartParams struct {
 
 func updateExistingBarChart(appEngContext appengine.Context, uniqueID BarChartUniqueID, updatedBarChart *BarChart) (*BarChartRef, error) {
 
-	parentDashboardKey, getDashboardErr := datastoreWrapper.GetExistingRootEntityKey(appEngContext, dataModel.DashboardEntityKind,
-		uniqueID.ParentDashboardID)
-	if getDashboardErr != nil {
-		return nil, fmt.Errorf("updateExistingBarChart: Invalid dashboard for bar chart: %v", getDashboardErr)
-	}
-
-	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext,
-		uniqueID.BarChartID, barChartEntityKind,
-		parentDashboardKey, updatedBarChart); updateErr != nil {
+	if updateErr := datastoreWrapper.UpdateExistingChildEntity(
+		appEngContext, uniqueID.BarChartID, barChartChildParentEntityRel, updatedBarChart); updateErr != nil {
 		return nil, updateErr
 	}
 
@@ -129,12 +126,6 @@ func NewBarChart(appEngContext appengine.Context, params NewBarChartParams) (*Ba
 		return nil, fmt.Errorf("NewBarChart: Invalid X axis sort order: %v", params.XAxisSortValues)
 	}
 
-	parentDashboardKey, getDashboardErr := datastoreWrapper.GetExistingRootEntityKey(appEngContext, dataModel.DashboardEntityKind,
-		params.ParentDashboardID)
-	if getDashboardErr != nil {
-		return nil, fmt.Errorf("NewBarChart: Invalid dashboard for bar chart: %v", getDashboardErr)
-	}
-
 	newBarChart := BarChart{
 		XAxisVals:       *valGrouping,
 		XAxisSortValues: params.XAxisSortValues,
@@ -142,8 +133,8 @@ func NewBarChart(appEngContext appengine.Context, params NewBarChartParams) (*Ba
 		Geometry:        params.Geometry,
 		Title:           ""} // default to empty title
 
-	barChartID, insertErr := datastoreWrapper.InsertNewEntity(appEngContext, barChartEntityKind,
-		parentDashboardKey, &newBarChart)
+	barChartID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.ParentDashboardID,
+		barChartChildParentEntityRel, &newBarChart)
 	if insertErr != nil {
 		return nil, fmt.Errorf("NewBarChart: Unable to create new bar chart: %v", insertErr)
 	}
@@ -163,15 +154,8 @@ func NewBarChart(appEngContext appengine.Context, params NewBarChartParams) (*Ba
 
 func getBarChart(appEngContext appengine.Context, params BarChartUniqueID) (*BarChart, error) {
 
-	parentDashboardKey, dashboardKeyErr := datastoreWrapper.NewRootEntityKey(appEngContext,
-		dataModel.DashboardEntityKind, params.ParentDashboardID)
-	if dashboardKeyErr != nil {
-		return nil, fmt.Errorf("getBarChart: unable to retrieve parent dashboard key for dashboard = %v", params.ParentDashboardID)
-	}
-
 	var barChart BarChart
-	getErr := datastoreWrapper.GetChildEntityByID(params.BarChartID, appEngContext, barChartEntityKind,
-		parentDashboardKey, &barChart)
+	getErr := datastoreWrapper.GetChildEntity(appEngContext, params.BarChartID, barChartChildParentEntityRel, &barChart)
 	if getErr != nil {
 		return nil, fmt.Errorf("getBarChart: Unable to get bar chart from datastore: error = %v", getErr)
 	}

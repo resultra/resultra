@@ -1,7 +1,7 @@
 
 var checkboxDialogSelector = "#newCheckbox"
 
-function openNewCheckboxDialog(containerParams)
+function openNewCheckboxDialog(formID,containerParams)
 {
 	
 	// Must be the same as designForm.go - this is the common prefix on all DOM element IDs to distinguish
@@ -44,10 +44,11 @@ function openNewCheckboxDialog(containerParams)
 		          console.log("saveNewCheckbox: Done getting new ID:response=" + JSON.stringify(newCheckBoxObjectRef));
 			  
 				  $('#'+newCheckBoxParams.placeholderID).find('label').text(newCheckBoxObjectRef.fieldRef.fieldInfo.name)
-				  $('#'+newCheckBoxParams.placeholderID).attr("id",newCheckBoxObjectRef.uniqueID.objectID)
+				  $('#'+newCheckBoxParams.placeholderID).attr("id",newCheckBoxObjectRef.checkBoxID)
 			  
 				  // Set up the newly created checkbox for resize, selection, etc.
-				  initFormComponentDesignBehavior(newCheckBoxObjectRef,checkBoxDesignFormConfig)
+				  var componentIDs = { formID: "formID", componentID:newCheckBoxObjectRef.checkBoxID }
+				  initFormComponentDesignBehavior(componentIDs,newCheckBoxObjectRef,checkBoxDesignFormConfig)
 			
 				  newCheckBoxParams.containerCreated = true				  
 					  

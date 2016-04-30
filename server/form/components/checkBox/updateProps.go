@@ -4,18 +4,29 @@ import (
 	"appengine"
 	"fmt"
 	"resultra/datasheet/server/common"
-	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
+type CheckboxIDInterface interface {
+	getCheckBoxID() string
+}
+
+type CheckboxIDHeader struct {
+	TextBoxID string `json:"checkBoxID"`
+}
+
+func (idHeader CheckboxIDHeader) getCheckBoxID() string {
+	return idHeader.TextBoxID
+}
+
 type CheckBoxPropUpdater interface {
-	datastoreWrapper.UniqueIDInterface
+	CheckboxIDInterface
 	updateProps(checkBox *CheckBox) error
 }
 
 func updateCheckBoxProps(appEngContext appengine.Context, propUpdater CheckBoxPropUpdater) (*CheckBoxRef, error) {
 
 	// Retrieve the bar chart from the data store
-	checkBoxForUpdate, getErr := getCheckBox(appEngContext, propUpdater.GetUniqueID())
+	checkBoxForUpdate, getErr := getCheckBox(appEngContext, propUpdater.getCheckBoxID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateCheckBoxProps: Unable to get existing check box: %v", getErr)
 	}
@@ -24,7 +35,7 @@ func updateCheckBoxProps(appEngContext appengine.Context, propUpdater CheckBoxPr
 		return nil, fmt.Errorf("updateCheckBoxProps: Unable to update existing check box properties: %v", propUpdateErr)
 	}
 
-	checkBoxRef, updateErr := updateExistingCheckBox(appEngContext, propUpdater.GetUniqueID(), checkBoxForUpdate)
+	checkBoxRef, updateErr := updateExistingCheckBox(appEngContext, propUpdater.getCheckBoxID(), checkBoxForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateCheckBoxProps: Unable to update existing check box properties: datastore update error =  %v", updateErr)
 	}
@@ -32,7 +43,10 @@ func updateCheckBoxProps(appEngContext appengine.Context, propUpdater CheckBoxPr
 	return checkBoxRef, nil
 }
 
-type CheckBoxResizeParams common.ObjectDimensionsParams
+type CheckBoxResizeParams struct {
+	CheckboxIDHeader
+	Geometry common.LayoutGeometry `json:"geometry"`
+}
 
 func (updateParams CheckBoxResizeParams) updateProps(checkBox *CheckBox) error {
 
@@ -45,7 +59,10 @@ func (updateParams CheckBoxResizeParams) updateProps(checkBox *CheckBox) error {
 	return nil
 }
 
-type CheckBoxRepositionParams common.ObjectRepositionParams
+type CheckBoxRepositionParams struct {
+	CheckboxIDHeader
+	Position common.LayoutPosition `json:"position"`
+}
 
 func (updateParams CheckBoxRepositionParams) updateProps(checkBox *CheckBox) error {
 

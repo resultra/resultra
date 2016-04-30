@@ -2,7 +2,6 @@ package barChart
 
 import (
 	"appengine"
-	"appengine/datastore"
 	"fmt"
 	"resultra/datasheet/server/generic/datastoreWrapper"
 	"resultra/datasheet/server/recordFilter"
@@ -74,13 +73,11 @@ func GetBarChartData(appEngContext appengine.Context, params BarChartUniqueID) (
 
 }
 
-func GetDashboardBarChartsData(appEngContext appengine.Context, parentDashboardID string,
-	parentDashboardKey *datastore.Key) ([]BarChartData, error) {
+func GetDashboardBarChartsData(appEngContext appengine.Context, parentDashboardID string) ([]BarChartData, error) {
 
-	barChartQuery := datastore.NewQuery(barChartEntityKind).Ancestor(parentDashboardKey)
 	var barCharts []BarChart
-	barChartKeys, getBarChartsErr := barChartQuery.GetAll(appEngContext, &barCharts)
-
+	barChartIDs, getBarChartsErr := datastoreWrapper.GetAllChildEntities(appEngContext,
+		parentDashboardID, barChartChildParentEntityRel, &barCharts)
 	if getBarChartsErr != nil {
 		return nil, fmt.Errorf("getDashboardBarChartsData: unable to retrieve bar charts: %v", getBarChartsErr)
 	}
@@ -88,10 +85,7 @@ func GetDashboardBarChartsData(appEngContext appengine.Context, parentDashboardI
 	var barChartsData []BarChartData
 	for barChartIndex, barChart := range barCharts {
 
-		barChartID, idErr := datastoreWrapper.EncodeUniqueEntityIDToStr(barChartKeys[barChartIndex])
-		if idErr != nil {
-			return nil, fmt.Errorf("GetBarChartData: Error encoding bar chart ID: %v", idErr)
-		}
+		barChartID := barChartIDs[barChartIndex]
 
 		params := BarChartUniqueID{
 			ParentDashboardID: parentDashboardID,

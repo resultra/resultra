@@ -89,7 +89,7 @@ func CreateNewFieldFromRawInputs(appEngContext appengine.Context, newField Field
 
 	// TODO: Validate the reference name is unique versus the other names field names already in use.
 
-	fieldID, insertErr := datastoreWrapper.InsertNewEntity(appEngContext, fieldEntityKind, nil, &newField)
+	fieldID, insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, fieldEntityKind, &newField)
 	if insertErr != nil {
 		return "", fmt.Errorf("Can't create new field: error inserting into datastore: %v", insertErr)
 	}
@@ -119,44 +119,36 @@ func NewField(appEngContext appengine.Context, fieldParams NewFieldParams) (stri
 	return CreateNewFieldFromRawInputs(appEngContext, newField)
 }
 
-type GetFieldParams struct {
-	// TODO - There will be more parameters once a field is
-	// tied to a database table (i.e. TableID)
-	FieldID string `json:"fieldID"`
-}
-
-func GetField(appEngContext appengine.Context, fieldID datastoreWrapper.UniqueRootID) (*Field, error) {
+func GetField(appEngContext appengine.Context, fieldID string) (*Field, error) {
 	var fieldGetDest Field
-	if getErr := datastoreWrapper.GetRootEntityByID(appEngContext, fieldEntityKind,
-		fieldID.ObjectID, &fieldGetDest); getErr != nil {
+	if getErr := datastoreWrapper.GetRootEntity(appEngContext, fieldEntityKind,
+		fieldID, &fieldGetDest); getErr != nil {
 		return nil, fmt.Errorf("Unabled to get field: id = %+v: datastore err=%v", fieldID, getErr)
 	}
 	return &fieldGetDest, nil
 }
 
-func UpdateExistingField(appEngContext appengine.Context, fieldID datastoreWrapper.UniqueRootID, updatedField *Field) (*FieldRef, error) {
+func UpdateExistingField(appEngContext appengine.Context, fieldID string, updatedField *Field) (*FieldRef, error) {
 
 	if updateErr := datastoreWrapper.UpdateExistingRootEntity(appEngContext, fieldEntityKind,
-		fieldID.ObjectID, updatedField); updateErr != nil {
+		fieldID, updatedField); updateErr != nil {
 		return nil, fmt.Errorf("UpdateExistingField: Can't set value: Error updating existing field: err = %v", updateErr)
 	}
 
 	fieldRef := FieldRef{
-		FieldID:   fieldID.ObjectID,
+		FieldID:   fieldID,
 		FieldInfo: *updatedField}
 
 	return &fieldRef, nil
 
 }
 
-func GetFieldRef(appEngContext appengine.Context, fieldParams GetFieldParams) (*FieldRef, error) {
-
-	fieldID := datastoreWrapper.UniqueRootID{ObjectID: fieldParams.FieldID}
+func GetFieldRef(appEngContext appengine.Context, fieldID string) (*FieldRef, error) {
 
 	if field, getErr := GetField(appEngContext, fieldID); getErr != nil {
 		return nil, getErr
 	} else {
-		return &FieldRef{fieldParams.FieldID, *field}, nil
+		return &FieldRef{fieldID, *field}, nil
 	}
 }
 
@@ -190,16 +182,16 @@ func GetExistingFieldKey(appEngContext appengine.Context, fieldID string) (*data
 	return fieldKey, nil
 }
 
-func GetExistingFieldRefAndKey(appEngContext appengine.Context, fieldParams GetFieldParams) (*datastore.Key, *FieldRef, error) {
+func GetExistingFieldRefAndKey(appEngContext appengine.Context, fieldID string) (*datastore.Key, *FieldRef, error) {
 	// TODO - combine key retrieval and field retrieval
-	fieldRef, fieldErr := GetFieldRef(appEngContext, GetFieldParams{fieldParams.FieldID})
+	fieldRef, fieldErr := GetFieldRef(appEngContext, fieldID)
 	if fieldErr != nil {
 		return nil, nil, fmt.Errorf("GetFieldRefAndKey: Can't get field for filter: datastore error = %v", fieldErr)
 	}
-	fieldKey, fieldKeyErr := GetExistingFieldKey(appEngContext, fieldParams.FieldID)
+	fieldKey, fieldKeyErr := GetExistingFieldKey(appEngContext, fieldID)
 	if fieldKeyErr != nil {
 		return nil, nil, fmt.Errorf("GetFieldRefAndKey: Can't create filtering rule with field ID = '%v': datastore error=%v",
-			fieldParams.FieldID, fieldKeyErr)
+			fieldID, fieldKeyErr)
 	}
 
 	return fieldKey, fieldRef, nil

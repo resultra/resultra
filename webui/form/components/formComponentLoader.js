@@ -1,6 +1,6 @@
 function loadFormComponents(loadFormConfig) {
 	
-	jsonAPIRequest("frm/getFormInfo", { uniqueID: { objectID: layoutID} }, function(formInfo) {
+	jsonAPIRequest("frm/getFormInfo", { formID: layoutID }, function(formInfo) {
 												
 		for (var textBoxIter in formInfo.textBoxes) {
 			
@@ -10,7 +10,7 @@ function loadFormComponents(loadFormConfig) {
 			
 			// TODO - textBoxContainerHTMl is specific to text boxes only. Need to use a callback
 			// to create the right HTML for the containers.
-			var containerHTML = textBoxContainerHTML(textBox.uniqueID.objectID);
+			var containerHTML = textBoxContainerHTML(textBox.textBoxID);
 			var containerObj = $(containerHTML)
 			
 			// Set the label to the field name
@@ -22,7 +22,7 @@ function loadFormComponents(loadFormConfig) {
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setElemObjectRef(textBox.uniqueID.objectID,textBox)
+			setElemObjectRef(textBox.textBoxID,textBox)
 			
 			// Callback for any specific initialization for either the form design or view mode
 			loadFormConfig.initTextBoxFunc(textBox)
@@ -39,7 +39,7 @@ function loadFormComponents(loadFormConfig) {
 			
 			// TODO - textBoxContainerHTMl is specific to text boxes only. Need to use a callback
 			// to create the right HTML for the containers.
-			var containerHTML = checkBoxContainerHTML(checkBox.uniqueID.objectID);
+			var containerHTML = checkBoxContainerHTML(checkBox.checkBoxID);
 			var containerObj = $(containerHTML)
 			
 			// Set the label to the field name
@@ -51,7 +51,7 @@ function loadFormComponents(loadFormConfig) {
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setElemObjectRef(checkBox.uniqueID.objectID,checkBox)
+			setElemObjectRef(checkBox.checkBoxID,checkBox)
 			
 			// Callback for any specific initialization for either the form design or view mode 
 			loadFormConfig.initCheckBoxFunc(checkBox)

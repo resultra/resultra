@@ -12,7 +12,7 @@ type DummyGetDest struct {
 	dummy string
 }
 
-func NewRootEntityKey(appEngContext appengine.Context,
+func newRootEntityKey(appEngContext appengine.Context,
 	entityKind string, encodedID string) (*datastore.Key, error) {
 
 	decodedID, err := DecodeUniqueEntityIDStrToInt(encodedID)
@@ -72,7 +72,7 @@ func verifyEntityExists(appEngContext appengine.Context, entityKind string, exis
 func GetExistingRootEntityKey(appEngContext appengine.Context,
 	entityKind string, encodedID string) (*datastore.Key, error) {
 
-	rootKey, keyErr := NewRootEntityKey(appEngContext, entityKind, encodedID)
+	rootKey, keyErr := newRootEntityKey(appEngContext, entityKind, encodedID)
 	if keyErr != nil {
 		return nil, keyErr
 	}
@@ -85,7 +85,7 @@ func GetExistingRootEntityKey(appEngContext appengine.Context,
 
 }
 
-func InsertNewEntity(appEngContext appengine.Context, entityKind string,
+func insertNewEntity(appEngContext appengine.Context, entityKind string,
 	parentKey *datastore.Key, src interface{}) (string, error) {
 
 	// nil argument OK for parentKey (meaning no parent)
@@ -111,10 +111,10 @@ func InsertNewEntity(appEngContext appengine.Context, entityKind string,
 func InsertNewRootEntity(appEngContext appengine.Context, entityKind string,
 	src interface{}) (string, error) {
 
-	return InsertNewEntity(appEngContext, entityKind, nil, src)
+	return insertNewEntity(appEngContext, entityKind, nil, src)
 }
 
-func UpdateExistingEntity(appEngContext appengine.Context,
+func updateExistingEntity(appEngContext appengine.Context,
 	encodedID string, entityKind string,
 	parentKey *datastore.Key, src interface{}) error {
 
@@ -133,18 +133,24 @@ func UpdateExistingEntity(appEngContext appengine.Context,
 
 }
 
-func UpdateExistingChildEntity(appEngContext appengine.Context, uniqueID UniqueID, entityRel ChildParentEntityRel, entityToUpdate interface{}) error {
+func UpdateExistingChildEntity(appEngContext appengine.Context, childID string,
+	entityRel ChildParentEntityRel, entityToUpdate interface{}) error {
+
+	uniqueID, decodeErr := decodeUniqueChildID(childID)
+	if decodeErr != nil {
+		return fmt.Errorf("UpdateExistingChildEntity: Invalid child ID: %v", decodeErr)
+	}
 
 	log.Printf("UpdateExistingChildEntity: Updating child entity: parent=(id=%v,kind=%v) child=(id=%v,kind=%v: updated entity = %+v)",
-		uniqueID.ParentID, entityRel.ParentEntityKind, uniqueID.ObjectID, entityRel.ChildEntityKind, entityToUpdate)
+		uniqueID.parentID, entityRel.ParentEntityKind, uniqueID.childID, entityRel.ChildEntityKind, entityToUpdate)
 
-	parentKey, getErr := GetExistingRootEntityKey(appEngContext, entityRel.ParentEntityKind, uniqueID.ParentID)
+	parentKey, getErr := GetExistingRootEntityKey(appEngContext, entityRel.ParentEntityKind, uniqueID.parentID)
 	if getErr != nil {
 		return fmt.Errorf("UpdateExistingChildEntity: Unable to retrieve parent entity: %v", getErr)
 	}
 
-	if updateErr := UpdateExistingEntity(appEngContext,
-		uniqueID.ObjectID, entityRel.ChildEntityKind, parentKey, entityToUpdate); updateErr != nil {
+	if updateErr := updateExistingEntity(appEngContext,
+		uniqueID.childID, entityRel.ChildEntityKind, parentKey, entityToUpdate); updateErr != nil {
 		return fmt.Errorf("UpdateExistingChildEntity: Unable to update child entity: %v", updateErr)
 	}
 
@@ -162,19 +168,19 @@ func InsertNewChildEntity(appEngContext appengine.Context,
 		return "", fmt.Errorf("InsertNewChildEntity: Unable to retrieve parent entity: %v", getErr)
 	}
 
-	childID, insertErr := InsertNewEntity(appEngContext, entityRel.ChildEntityKind, parentKey, newEntity)
+	childID, insertErr := insertNewEntity(appEngContext, entityRel.ChildEntityKind, parentKey, newEntity)
 	if insertErr != nil {
 		return "", insertErr
 	}
 
-	return childID, nil
+	return encodeChildEntityIDToStr(parentID, childID), nil
 
 }
 
 func UpdateExistingRootEntity(appEngContext appengine.Context, entityKind string,
 	encodedID string, src interface{}) error {
 
-	rootKey, keyErr := NewRootEntityKey(appEngContext, entityKind, encodedID)
+	rootKey, keyErr := newRootEntityKey(appEngContext, entityKind, encodedID)
 	if keyErr != nil {
 		return fmt.Errorf("updateExistingRootEntity failed: err = %v", keyErr)
 	}
@@ -189,7 +195,7 @@ func UpdateExistingRootEntity(appEngContext appengine.Context, entityKind string
 
 }
 
-func GetChildEntityByID(encodedID string, appEngContext appengine.Context, entityKind string,
+func getChildEntityByID(encodedID string, appEngContext appengine.Context, entityKind string,
 	parentKey *datastore.Key, dest interface{}) error {
 
 	decodedID, err := DecodeUniqueEntityIDStrToInt(encodedID)
@@ -210,15 +216,23 @@ func GetChildEntityByID(encodedID string, appEngContext appengine.Context, entit
 // GetChildEntity retrieves a child entity for the given unique ID and associated entity kind for both the child
 // and parent entitiy.
 func GetChildEntity(appEngContext appengine.Context,
-	uniqueID UniqueID, entityRel ChildParentEntityRel, getDest interface{}) error {
+	encodedChildID string, entityRel ChildParentEntityRel, getDest interface{}) error {
 
-	parentKey, parentKeyErr := NewRootEntityKey(appEngContext, entityRel.ParentEntityKind, uniqueID.ParentID)
-	if parentKeyErr != nil {
-		return fmt.Errorf("getChildEntity: unable to retrieve parent key for entity: parent id = %v, parent kind = %v",
-			uniqueID.ParentID, entityRel.ParentEntityKind)
+	uniqueID, decodeErr := decodeUniqueChildID(encodedChildID)
+	if decodeErr != nil {
+		return fmt.Errorf("getChildEntity: unable to decode child id: %v", decodeErr)
 	}
 
-	if getErr := GetChildEntityByID(uniqueID.ObjectID, appEngContext, entityRel.ChildEntityKind, parentKey, getDest); getErr != nil {
+	log.Printf("GetChildEntity: Getting child entity: parent=(id=%v,kind=%v) child=(kind=%v,id=%v)",
+		uniqueID.parentID, entityRel.ParentEntityKind, entityRel.ChildEntityKind, uniqueID.childID)
+
+	parentKey, parentKeyErr := newRootEntityKey(appEngContext, entityRel.ParentEntityKind, uniqueID.parentID)
+	if parentKeyErr != nil {
+		return fmt.Errorf("GetChildEntity: unable to retrieve parent key for entity: parent id = %v, parent kind = %v",
+			uniqueID.parentID, entityRel.ParentEntityKind)
+	}
+
+	if getErr := getChildEntityByID(uniqueID.childID, appEngContext, entityRel.ChildEntityKind, parentKey, getDest); getErr != nil {
 		return fmt.Errorf("getChildEntity: Unable to get child entity from datastore: error = %v", getErr)
 	}
 
@@ -250,13 +264,13 @@ func GetAllChildEntities(appEngContext appengine.Context, parentID string,
 		if encodeErr != nil {
 			return nil, fmt.Errorf("GetAllChildEntities: Failed to encode unique ID: key=%+v, encode err=%v", currKey, encodeErr)
 		}
-		childIDs[keyIter] = childID
+		childIDs[keyIter] = encodeChildEntityIDToStr(parentID, childID)
 	}
 
 	return childIDs, nil
 }
 
-func GetRootEntityByID(appEngContext appengine.Context, entityKind string, encodedID string, dest interface{}) error {
+func GetRootEntity(appEngContext appengine.Context, entityKind string, encodedID string, dest interface{}) error {
 
 	decodedID, err := DecodeUniqueEntityIDStrToInt(encodedID)
 	if err != nil {

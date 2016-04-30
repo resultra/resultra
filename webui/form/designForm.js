@@ -37,7 +37,7 @@ $(document).ready(function() {
 				containerID: droppedItemInfo.placeholderID,
 				};
 				
-			objEditConfig.createNewItemAfterDropFunc(layoutContainerParams)
+			objEditConfig.createNewItemAfterDropFunc(layoutID,layoutContainerParams)
 		},
 		
 		dropDestSelector: formDesignCanvasSelector,
@@ -72,26 +72,16 @@ $(document).ready(function() {
 		hideEditorFunc:hideFormulaEditPanel
 	}
 	
-	function initFormComponentDesignBehavior(objectRef, designFormConfig) {
-		initObjectEditBehavior(objectRef.uniqueID.parentID,
-			objectRef.uniqueID.objectID,designFormConfig)
-		initObjectSelectionBehavior($("#"+objectRef.uniqueID.objectID), 
-				formDesignCanvasSelector,function(objectID) {
-			console.log("form design object selected: " + objectID)
-			var selectedObjRef	= getElemObjectRef(objectID)
-			designFormConfig.selectionFunc(selectedObjRef)
-		})	
-		
-	}	  
-	  
 	
 	loadFormComponents({
 		formParentElemID: formDesignCanvasSelector,
 		initTextBoxFunc: function(textBoxObjectRef) {
-			initFormComponentDesignBehavior(textBoxObjectRef,textBoxDesignFormConfig)
+			var componentIDs = { formID: layoutID, componentID: textBoxObjectRef.textBoxID }
+			initFormComponentDesignBehavior(componentIDs,textBoxObjectRef,textBoxDesignFormConfig)
 		},
 		initCheckBoxFunc: function(checkBoxObjectRef) {
-			initFormComponentDesignBehavior(checkBoxObjectRef,checkBoxDesignFormConfig)
+			var componentIDs = { formID: layoutID, componentID: checkBoxObjectRef.checkBoxID }
+			initFormComponentDesignBehavior(componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig)
 		},
 		doneLoadingFormDataFunc: function() {} // no-op	
 	}); 

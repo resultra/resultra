@@ -13,13 +13,37 @@ function selectFormCheckbox(checkboxObjRef) {
 	loadCheckboxProperties(checkboxObjRef)
 }
 
+function repositionCheckBox(checkBoxID,position) {
+	
+	var reposParams = {
+		checkBoxID: checkBoxID,
+		position: position
+	}
+	
+	jsonAPIRequest("frm/checkBox/reposition", reposParams, function(updatedObjRef) {
+		setElemObjectRef(checkBoxID,updatedObjRef)
+	})
+	
+}
+
+function resizeCheckBox(checkBoxID,geometry) {
+	var resizeParams = {
+		checkBoxID: checkBoxID,
+		geometry: geometry
+	}
+	
+	jsonAPIRequest("frm/checkBox/resize", resizeParams, function(updatedObjRef) {
+		setElemObjectRef(checkBoxID,updatedObjRef)
+	})	
+}
+
 
 var checkBoxDesignFormConfig = {
 	draggableHTMLFunc:	checkBoxContainerHTML,
 	createNewItemAfterDropFunc: openNewCheckboxDialog,
 	resizeConstraints: elemResizeConstraints(100,640,30,30),
-	resizeAPIName: "frm/checkBox/resize",
-	reposAPIName: "frm/checkBox/reposition",
+	resizeFunc: resizeCheckBox,
+	repositionFunc:repositionCheckBox,
 	initFunc: initDesignFormCheckBox,
 	selectionFunc: selectFormCheckbox
 }

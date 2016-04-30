@@ -23,9 +23,9 @@ type TextBox struct {
 }
 
 type TextBoxRef struct {
-	datastoreWrapper.UniqueIDHeader
-	FieldRef field.FieldRef        `json:"fieldRef"`
-	Geometry common.LayoutGeometry `json:"geometry"`
+	TextBoxID string                `json:"textBoxID"`
+	FieldRef  field.FieldRef        `json:"fieldRef"`
+	Geometry  common.LayoutGeometry `json:"geometry"`
 }
 
 type NewTextBoxParams struct {
@@ -53,7 +53,7 @@ func saveNewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, field.GetFieldParams{params.FieldID})
+	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewTextBox: Can't text box with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)
@@ -71,9 +71,9 @@ func saveNewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*
 	}
 
 	textBoxRef := TextBoxRef{
-		UniqueIDHeader: datastoreWrapper.NewUniqueIDHeader(params.ParentID, textBoxID),
-		FieldRef:       *fieldRef,
-		Geometry:       params.Geometry}
+		TextBoxID: textBoxID,
+		FieldRef:  *fieldRef,
+		Geometry:  params.Geometry}
 
 	log.Printf("INFO: API: NewLayout: Created new Layout container: id=%v params=%+v", textBoxID, params)
 
@@ -81,7 +81,7 @@ func saveNewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*
 
 }
 
-func getTextBox(appEngContext appengine.Context, textBoxID datastoreWrapper.UniqueID) (*TextBox, error) {
+func getTextBox(appEngContext appengine.Context, textBoxID string) (*TextBox, error) {
 
 	var textBox TextBox
 	if getErr := datastoreWrapper.GetChildEntity(appEngContext, textBoxID, textBoxChildParentEntityRel(), &textBox); getErr != nil {
@@ -90,12 +90,12 @@ func getTextBox(appEngContext appengine.Context, textBoxID datastoreWrapper.Uniq
 	return &textBox, nil
 }
 
-func GetTextBoxes(appEngContext appengine.Context, parentFormID datastoreWrapper.UniqueRootID) ([]TextBoxRef, error) {
+func GetTextBoxes(appEngContext appengine.Context, parentFormID string) ([]TextBoxRef, error) {
 
 	var textBoxes []TextBox
-	textBoxIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentFormID.ObjectID, textBoxChildParentEntityRel(), &textBoxes)
+	textBoxIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentFormID, textBoxChildParentEntityRel(), &textBoxes)
 	if getErr != nil {
-		return nil, fmt.Errorf("Unable to retrieve layout containers: form id=%v", parentFormID.ObjectID)
+		return nil, fmt.Errorf("Unable to retrieve layout containers: form id=%v", parentFormID)
 	}
 
 	textBoxRefs := make([]TextBoxRef, len(textBoxes))
@@ -109,18 +109,18 @@ func GetTextBoxes(appEngContext appengine.Context, parentFormID datastoreWrapper
 		}
 
 		textBoxRefs[textBoxIter] = TextBoxRef{
-			UniqueIDHeader: datastoreWrapper.NewUniqueIDHeader(parentFormID.ObjectID, textBoxID),
-			FieldRef:       *fieldRef,
-			Geometry:       currTextBox.Geometry}
+			TextBoxID: textBoxID,
+			FieldRef:  *fieldRef,
+			Geometry:  currTextBox.Geometry}
 
 	} // for each text box
 	return textBoxRefs, nil
 
 }
 
-func updateExistingTextBox(appEngContext appengine.Context, uniqueID datastoreWrapper.UniqueID, updatedTextBox *TextBox) (*TextBoxRef, error) {
+func updateExistingTextBox(appEngContext appengine.Context, textBoxID string, updatedTextBox *TextBox) (*TextBoxRef, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingChildEntity(appEngContext, uniqueID,
+	if updateErr := datastoreWrapper.UpdateExistingChildEntity(appEngContext, textBoxID,
 		textBoxChildParentEntityRel(), updatedTextBox); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingTextBox: Error updating text box: error = %v", updateErr)
 	}
@@ -131,9 +131,9 @@ func updateExistingTextBox(appEngContext appengine.Context, uniqueID datastoreWr
 	}
 
 	textBoxRef := TextBoxRef{
-		UniqueIDHeader: datastoreWrapper.UniqueIDHeader{uniqueID},
-		FieldRef:       *fieldRef,
-		Geometry:       updatedTextBox.Geometry}
+		TextBoxID: textBoxID,
+		FieldRef:  *fieldRef,
+		Geometry:  updatedTextBox.Geometry}
 
 	return &textBoxRef, nil
 

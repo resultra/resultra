@@ -4,11 +4,10 @@ import (
 	"appengine"
 	"fmt"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
 type SetFormulaParams struct {
-	datastoreWrapper.UniqueRootIDHeader
+	field.FieldIDHeader
 	FormulaText string `json:"formulaText"`
 }
 

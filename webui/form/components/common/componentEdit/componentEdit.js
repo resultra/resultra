@@ -1,17 +1,14 @@
-function initFormComponentDesignBehavior(objectRef, designFormConfig) {
+
+
+function initFormComponentDesignBehavior(componentIDs, objectRef, designFormConfig) {
 	
-	
-	// Store the object reference in the DOM element. This is needed for follow-on
-	// property setting, resizing, etc.
-	setElemObjectRef(objectRef.uniqueID.objectID,objectRef)
-	
-	initObjectEditBehavior(objectRef.uniqueID.parentID,
-		objectRef.uniqueID.objectID,designFormConfig)
+	initObjectEditBehavior(componentIDs.formID,
+		componentIDs.componentID,designFormConfig)
 		
-	initObjectSelectionBehavior($("#"+objectRef.uniqueID.objectID), 
-			formDesignCanvasSelector,function(objectID) {
-		console.log("form design object selected: " + objectID)
-		var selectedObjRef	= getElemObjectRef(objectID)
+	initObjectSelectionBehavior($("#"+componentIDs.componentID), 
+			formDesignCanvasSelector,function(selectedCompenentID) {
+		console.log("form design object selected: " + selectedCompenentID)
+		var selectedObjRef	= getElemObjectRef(selectedCompenentID)
 		designFormConfig.selectionFunc(selectedObjRef)
 	})	
 	

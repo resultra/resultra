@@ -6,7 +6,6 @@ import (
 	"resultra/datasheet/server/form/components/checkBox"
 	"resultra/datasheet/server/form/components/textBox"
 	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
 func newLayout(w http.ResponseWriter, r *http.Request) {
@@ -31,23 +30,27 @@ type FormInfo struct {
 	CheckBoxes []checkBox.CheckBoxRef `json:"checkBoxes"`
 }
 
+type GetFormInfoParams struct {
+	FormID string `json:"formID"`
+}
+
 func getFormInfo(w http.ResponseWriter, r *http.Request) {
 
-	var parentFormID datastoreWrapper.UniqueRootIDHeader
-	if err := api.DecodeJSONRequest(r, &parentFormID); err != nil {
+	var params GetFormInfoParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
 	appEngCntxt := appengine.NewContext(r)
 
-	textBoxRefs, err := textBox.GetTextBoxes(appEngCntxt, parentFormID.UniqueID)
+	textBoxRefs, err := textBox.GetTextBoxes(appEngCntxt, params.FormID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	checkBoxRefs, err := checkBox.GetCheckBoxes(appEngCntxt, parentFormID.UniqueID)
+	checkBoxRefs, err := checkBox.GetCheckBoxes(appEngCntxt, params.FormID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return

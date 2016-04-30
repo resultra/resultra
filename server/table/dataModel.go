@@ -16,13 +16,13 @@ type Table struct {
 }
 
 type NewTableParams struct {
-	ParentDatabaseID datastoreWrapper.UniqueRootID `json:'parentDatabaseID'`
-	Name             string                        `json:"name"`
+	DatabaseID string `json:'databaseID'`
+	Name       string `json:"name"`
 }
 
 type TableRef struct {
-	datastoreWrapper.UniqueIDHeader
-	Name string `json:"name"`
+	TableID string `json:"tableID"`
+	Name    string `json:"name"`
 }
 
 func saveNewTable(appEngContext appengine.Context, params NewTableParams) (*TableRef, error) {
@@ -37,14 +37,14 @@ func saveNewTable(appEngContext appengine.Context, params NewTableParams) (*Tabl
 	newTable := Table{Name: sanitizedTableName}
 
 	tableID, insertErr := datastoreWrapper.InsertNewChildEntity(
-		appEngContext, params.ParentDatabaseID.ObjectID, tableChildParentEntityRel, &newTable)
+		appEngContext, params.DatabaseID, tableChildParentEntityRel, &newTable)
 	if insertErr != nil {
 		return nil, insertErr
 	}
 
 	tableRef := TableRef{
-		UniqueIDHeader: datastoreWrapper.NewUniqueIDHeader(params.ParentDatabaseID.ObjectID, tableID),
-		Name:           sanitizedTableName}
+		TableID: tableID,
+		Name:    sanitizedTableName}
 
 	return &tableRef, nil
 }

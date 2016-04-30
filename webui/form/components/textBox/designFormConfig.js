@@ -14,12 +14,37 @@ function selectFormTextBox (textBoxRef) {
 	loadTextBoxProperties(textBoxRef)
 }
 
+function repositionTextBox(textBoxID,position) {
+	
+	var reposParams = {
+		textBoxID: textBoxID,
+		position: position
+	}
+	
+	jsonAPIRequest("frm/textBox/reposition", reposParams, function(updatedObjRef) {
+		setElemObjectRef(textBoxID,updatedObjRef)
+	})
+	
+}
+
+function resizeTextBox(textBoxID,geometry) {
+	var resizeParams = {
+		textBoxID: textBoxID,
+		geometry: geometry
+	}
+	
+	jsonAPIRequest("frm/textBox/resize", resizeParams, function(updatedObjRef) {
+		setElemObjectRef(textBoxID,updatedObjRef)
+	})	
+}
+
+
 var textBoxDesignFormConfig = {
 	draggableHTMLFunc:	textBoxContainerHTML,
 	createNewItemAfterDropFunc: openNewTextBoxDialog,
 	resizeConstraints: elemResizeConstraints(100,600,400,400),
-	resizeAPIName: "frm/textBox/resize",
-	reposAPIName: "frm/textBox/reposition",
+	resizeFunc: resizeTextBox,
+	repositionFunc: repositionTextBox,
 	initFunc: initDesignFormTextBox,
 	selectionFunc: selectFormTextBox
 }

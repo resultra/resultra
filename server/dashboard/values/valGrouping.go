@@ -80,7 +80,7 @@ func validateFieldTypeWithGrouping(fieldType string, groupValsBy string, bucketW
 
 func NewValGrouping(appEngContext appengine.Context, params NewValGroupingParams) (*ValGrouping, *ValGroupingRef, error) {
 
-	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, field.GetFieldParams{params.FieldID})
+	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, params.FieldID)
 	if fieldErr != nil {
 		return nil, nil, fmt.Errorf("NewValGrouping: Can't get field value grouping: datastore error = %v", fieldErr)
 	}

@@ -4,8 +4,8 @@ import (
 	"appengine"
 	"appengine/datastore"
 	"fmt"
-	"resultra/datasheet/server/generic/datastoreWrapper"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
 const recordFilterRuleEntityKind string = "RecordFilterRule"
@@ -34,7 +34,7 @@ type FilterRuleRef struct {
 
 func NewFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleParams) (*FilterRuleRef, error) {
 
-	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, field.GetFieldParams{newRuleParams.FieldID})
+	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, newRuleParams.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewFilterRule: Can't get field for filter: datastore error = %v", fieldErr)
 	}
@@ -86,7 +86,7 @@ func NewFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleP
 
 	// TODO - Replace nil with database parent
 
-	filterRuleID, insertErr := datastoreWrapper.InsertNewEntity(appEngContext, recordFilterRuleEntityKind, nil, &newFilter)
+	filterRuleID, insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, recordFilterRuleEntityKind, &newFilter)
 	if insertErr != nil {
 		return nil, fmt.Errorf("NewFilterRule: Can't create new filter: error inserting into datastore: %v", insertErr)
 	}

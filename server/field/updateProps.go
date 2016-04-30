@@ -3,11 +3,22 @@ package field
 import (
 	"appengine"
 	"fmt"
-	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
+type FieldIDInterface interface {
+	getFieldID() string
+}
+
+type FieldIDHeader struct {
+	FieldID string `json:"fieldID"`
+}
+
+func (idHeader FieldIDHeader) getFieldID() string {
+	return idHeader.FieldID
+}
+
 type FieldPropUpdater interface {
-	datastoreWrapper.UniqueRootIDInterface
+	FieldIDInterface
 
 	// Normally, UpdateProps would be named updateProps if all the property updaters were in the same
 	// pacakge. However, in this case, the calculated field formula is updated in the CalcField package
@@ -18,7 +29,7 @@ type FieldPropUpdater interface {
 
 func UpdateFieldProps(appEngContext appengine.Context, propUpdater FieldPropUpdater) (*FieldRef, error) {
 
-	fieldForUpdate, getErr := GetField(appEngContext, propUpdater.GetUniqueRootID())
+	fieldForUpdate, getErr := GetField(appEngContext, propUpdater.getFieldID())
 	if getErr != nil {
 		return nil, getErr
 	}
@@ -28,7 +39,7 @@ func UpdateFieldProps(appEngContext appengine.Context, propUpdater FieldPropUpda
 		return nil, fmt.Errorf("UpdateFieldProps: Unable to update existing field properties: %v", propUpdateErr)
 	}
 
-	updatedFieldRef, updateErr := UpdateExistingField(appEngContext, propUpdater.GetUniqueRootID(), fieldForUpdate)
+	updatedFieldRef, updateErr := UpdateExistingField(appEngContext, propUpdater.getFieldID(), fieldForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateFieldProps: error updating field: %v", updateErr)
 	}

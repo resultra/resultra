@@ -8,7 +8,7 @@ function loadRecordIntoCheckBox(checkBoxElem, recordRef) {
 	console.log("loadRecordIntoCheckBox: Field ID to load data:" + checkBoxFieldID)
 
 
-	var checkBoxContainerID = checkBoxObjectRef.uniqueID.objectID
+	var checkBoxContainerID = checkBoxObjectRef.checkBoxID
 	var checkBoxID = checkBoxElemIDFromContainerElemID(checkBoxContainerID)
 	var checkBoxSelector = '#' + checkBoxID;
 	
@@ -40,7 +40,7 @@ function loadRecordIntoCheckBox(checkBoxElem, recordRef) {
 
 function initCheckBoxRecordEditBehavior(checkBoxObjectRef) {
 	
-	var checkBoxContainerID = checkBoxObjectRef.uniqueID.objectID
+	var checkBoxContainerID = checkBoxObjectRef.checkBoxID
 	var checkBoxID = checkBoxElemIDFromContainerElemID(checkBoxContainerID)
 	console.log("initCheckBoxRecordEditBehavior: container ID =  " +checkBoxContainerID + ' checkbox ID = '+ checkBoxID)
 	
@@ -63,7 +63,7 @@ function initCheckBoxRecordEditBehavior(checkBoxObjectRef) {
 		onChange: function () {
 			// Get the most recent copy of the object reference. It could have changed between
 			// initialization time and the time the checkbox was changed.
-			var containerID = checkBoxObjectRef.uniqueID.objectID
+			var containerID = checkBoxObjectRef.checkBoxID
 			var objectRef = getElemObjectRef(containerID)
 			var checkBoxSelect = '#'+checkBoxElemIDFromContainerElemID(containerID)
 			

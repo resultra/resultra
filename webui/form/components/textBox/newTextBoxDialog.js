@@ -8,56 +8,7 @@ var textBoxProgressDivID = '#newTextBoxProgress'
 var textBoxDialogSelector = "#newTextBox"
 
 
-function newFieldIsCalcField() {
-	return $(newFieldPanelConfig.divID).form('get field','isCalcField').prop('checked')
-}
-
-function doCreateNewFieldWithTextBox() {
-	
-	return $(newOrExistingFieldPanelConfig.divID).form('get field','createNewFieldRadio').prop('checked')
-}
-
-
-
-function saveNewTextBox()
-{
-	// Complete the parameters to create the new textBox by including the 
-	// fieldID selected in the dialog box.
-	
-	if(doCreateNewFieldWithTextBox()) {
-		console.log("saveNewTextBox() with create new field - not implemented yet, closing dialog")
-		newTextBoxParams.dialogBox.dialog("close")
-	} else {
-		var fieldID = $( "#newTextBoxDlgSelectOrNewFieldPanel" ).form('get value','textBoxFieldSelection')
-		console.log("saveNewTextBox: Selected field ID: " + fieldID)
-					
-		var newTextBoxAPIParams = {
-			parentID: newTextBoxParams.containerParams.parentLayoutID,
-			geometry: newTextBoxParams.containerParams.geometry,
-			fieldID: fieldID
-		}
-
-		// TODO - saveNewTextBox() depends on containerParams - need to pass in somehow
-		jsonAPIRequest("frm/textBox/new",newTextBoxAPIParams,function(newTextBoxObjectRef) {
-	          console.log("Done getting new ID:response=" + JSON.stringify(newTextBoxObjectRef));
-			  
-			  $('#'+newTextBoxParams.placeholderID).find('label').text(newTextBoxObjectRef.fieldRef.fieldInfo.name)
-			  $('#'+newTextBoxParams.placeholderID).attr("id",newTextBoxObjectRef.uniqueID.objectID)
-			  
-			  // Set up the newly created checkbox for resize, selection, etc.
-			  initFormComponentDesignBehavior(newTextBoxObjectRef,textBoxDesignFormConfig)
-			
-			  newTextBoxParams.containerCreated = true				  
-					  
-			  newTextBoxParams.dialogBox.dialog("close")
-
-	       }) // newLayoutContainer API request
-		
-	} // An existing field was selected
-} // save new text box
-
-
-function openNewTextBoxDialog(containerParams)
+function openNewTextBoxDialog(formID,containerParams)
 {
 	
 	// Must be the same as designForm.go - this is the common prefix on all DOM element IDs to distinguish
@@ -96,10 +47,11 @@ function openNewTextBoxDialog(containerParams)
 		          console.log("saveNewTextBox: Done getting new ID:response=" + JSON.stringify(newTextBoxObjectRef));
 			  
 				  $('#'+newTextBoxParams.placeholderID).find('label').text(newTextBoxObjectRef.fieldRef.fieldInfo.name)
-				  $('#'+newTextBoxParams.placeholderID).attr("id",newTextBoxObjectRef.uniqueID.objectID)
+				  $('#'+newTextBoxParams.placeholderID).attr("id",newTextBoxObjectRef.textBoxID)
 			  
 				  // Set up the newly created checkbox for resize, selection, etc.
-				  initFormComponentDesignBehavior(newTextBoxObjectRef,textBoxDesignFormConfig)
+				  var componentIDs = { formID: formID, componentID: newTextBoxObjectRef.textBoxID}
+				  initFormComponentDesignBehavior(componentIDs,newTextBoxObjectRef,textBoxDesignFormConfig)
 			
 				  newTextBoxParams.containerCreated = true				  
 					  

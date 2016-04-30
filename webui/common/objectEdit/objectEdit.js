@@ -13,20 +13,10 @@ function initObjectEditBehavior(parentID, objID, editConfig) {
 		clone: "original",				
 		stop: function(event, ui) {
 			var objectID = event.target.id
-			var reposParams = {
-				uniqueID: {
-					parentID: parentID,
-					objectID: objectID
-				},
-				position: {
-				  top: ui.position.top,			
-				  left: ui.position.left
-				}
-			}
-			console.log("Object reposition: params = " + JSON.stringify(reposParams))
-			jsonAPIRequest(editConfig.reposAPIName, reposParams, function(updatedObjRef) {
-				setElemObjectRef(objectID,updatedObjRef)
-			})
+			var position = { top: ui.position.top,			
+				left: ui.position.left }
+			console.log("Object reposition: params: component id = " + objectID + " position=" + JSON.stringify(position))
+			editConfig.repositionFunc(objectID,position)
 		} // stop function
 	})
 	
@@ -38,21 +28,13 @@ function initObjectEditBehavior(parentID, objID, editConfig) {
 		grid: 20, // snap to grid during resize
 		stop: function(event, ui) {
 			var objectID = event.target.id  
-			var resizeParams = {
-				uniqueID: {
-					parentID: parentID,
-					objectID: objectID	
-				},
-				geometry: { 
-					positionTop: ui.position.top,
-					positionLeft: ui.position.left,
-					sizeWidth: ui.size.width, 
-					sizeHeight: ui.size.height }
-			} 
-			console.log("Object resize: params = " + JSON.stringify(resizeParams))
-			jsonAPIRequest(editConfig.resizeAPIName, resizeParams, function(updatedObjRef) {
-				setElemObjectRef(objectID,updatedObjRef)
-			})
+			var resizeGeometry = {
+				positionTop: ui.position.top,
+				positionLeft: ui.position.left,
+				sizeWidth: ui.size.width, 
+				sizeHeight: ui.size.height }
+			console.log("Object resize: component id = " + objectID + " geometry=" + JSON.stringify(resizeGeometry))
+			editConfig.resizeFunc(objectID,resizeGeometry)
 		} // stop function
 	})
 	

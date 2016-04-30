@@ -28,7 +28,7 @@ function loadRecordIntoTextBox(textBoxElem, recordRef) {
 
 function initTextBoxRecordEditBehavior(textFieldObjectRef) {
 	
-	var container = $('#'+textFieldObjectRef.uniqueID.objectID)
+	var container = $('#'+textFieldObjectRef.textBoxID)
 
 	container.data("viewFormConfig", {
 		loadRecord: loadRecordIntoTextBox

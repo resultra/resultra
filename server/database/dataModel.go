@@ -16,8 +16,8 @@ type NewDatabaseParams struct {
 }
 
 type DatabaseRef struct {
-	datastoreWrapper.UniqueRootIDHeader
-	Name string `json:"name"`
+	DatabaseID string `json:"databaseID"`
+	Name       string `json:"name"`
 }
 
 func saveNewDatabase(appEngContext appengine.Context, params NewDatabaseParams) (*DatabaseRef, error) {
@@ -31,15 +31,15 @@ func saveNewDatabase(appEngContext appengine.Context, params NewDatabaseParams) 
 
 	newDatabase := Database{Name: sanitizedDbName}
 
-	dbID, insertErr := datastoreWrapper.InsertNewRootEntity(
+	databaseID, insertErr := datastoreWrapper.InsertNewRootEntity(
 		appEngContext, dataModel.DatabaseEntityKind, &newDatabase)
 	if insertErr != nil {
 		return nil, insertErr
 	}
 
 	dbRef := DatabaseRef{
-		UniqueRootIDHeader: datastoreWrapper.NewUniqueRootIDHeader(dbID),
-		Name:               sanitizedDbName}
+		DatabaseID: databaseID,
+		Name:       sanitizedDbName}
 
 	return &dbRef, nil
 }

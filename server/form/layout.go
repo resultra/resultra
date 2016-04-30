@@ -27,7 +27,7 @@ func NewLayout(appEngContext appengine.Context, layoutName string) (string, erro
 	}
 
 	var newLayout = Layout{sanitizedLayoutName}
-	layoutID, insertErr := datastoreWrapper.InsertNewEntity(appEngContext, dataModel.LayoutEntityKind, nil, &newLayout)
+	layoutID, insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, dataModel.LayoutEntityKind, &newLayout)
 	if insertErr != nil {
 		return "", insertErr
 	}
@@ -70,7 +70,7 @@ type GetLayoutParams struct {
 func GetLayoutRef(appEngContext appengine.Context, layoutParams GetLayoutParams) (*LayoutRef, error) {
 
 	getLayout := Layout{}
-	getErr := datastoreWrapper.GetRootEntityByID(appEngContext, dataModel.LayoutEntityKind, layoutParams.LayoutID, &getLayout)
+	getErr := datastoreWrapper.GetRootEntity(appEngContext, dataModel.LayoutEntityKind, layoutParams.LayoutID, &getLayout)
 	if getErr != nil {
 		return nil, fmt.Errorf("Can't get layout: Error retrieving existing layout: params=%+v, err = %v", layoutParams, getErr)
 	}

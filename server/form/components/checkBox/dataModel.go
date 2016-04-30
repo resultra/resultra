@@ -23,9 +23,9 @@ type CheckBox struct {
 }
 
 type CheckBoxRef struct {
-	datastoreWrapper.UniqueIDHeader
-	FieldRef field.FieldRef        `json:"fieldRef"`
-	Geometry common.LayoutGeometry `json:"geometry"`
+	CheckBoxID string                `json:"checkBoxID"`
+	FieldRef   field.FieldRef        `json:"fieldRef"`
+	Geometry   common.LayoutGeometry `json:"geometry"`
 }
 
 type NewCheckBoxParams struct {
@@ -51,7 +51,7 @@ func saveNewCheckBox(appEngContext appengine.Context, params NewCheckBoxParams) 
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, field.GetFieldParams{params.FieldID})
+	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("saveNewCheckBox: Can't text box with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)
@@ -69,9 +69,9 @@ func saveNewCheckBox(appEngContext appengine.Context, params NewCheckBoxParams) 
 	}
 
 	checkBoxRef := CheckBoxRef{
-		UniqueIDHeader: datastoreWrapper.NewUniqueIDHeader(params.ParentID, checkBoxID),
-		FieldRef:       *fieldRef,
-		Geometry:       params.Geometry}
+		CheckBoxID: checkBoxID,
+		FieldRef:   *fieldRef,
+		Geometry:   params.Geometry}
 
 	log.Printf("INFO: API: New Checkbox: Created new check box container: id=%v params=%+v", checkBoxID, params)
 
@@ -79,21 +79,21 @@ func saveNewCheckBox(appEngContext appengine.Context, params NewCheckBoxParams) 
 
 }
 
-func getCheckBox(appEngContext appengine.Context, checkBoxID datastoreWrapper.UniqueID) (*CheckBox, error) {
+func getCheckBox(appEngContext appengine.Context, checkBoxID string) (*CheckBox, error) {
 
 	var checkBox CheckBox
 	if getErr := datastoreWrapper.GetChildEntity(appEngContext, checkBoxID, checkBoxChildParentEntityRel(), &checkBox); getErr != nil {
-		return nil, fmt.Errorf("getBarChart: Unable to get check box from datastore: error = %v", getErr)
+		return nil, fmt.Errorf("getCheckBox: Unable to get check box from datastore: error = %v", getErr)
 	}
 	return &checkBox, nil
 }
 
-func GetCheckBoxes(appEngContext appengine.Context, parentFormID datastoreWrapper.UniqueRootID) ([]CheckBoxRef, error) {
+func GetCheckBoxes(appEngContext appengine.Context, parentFormID string) ([]CheckBoxRef, error) {
 
 	var checkBoxes []CheckBox
-	checkBoxIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentFormID.ObjectID, checkBoxChildParentEntityRel(), &checkBoxes)
+	checkBoxIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentFormID, checkBoxChildParentEntityRel(), &checkBoxes)
 	if getErr != nil {
-		return nil, fmt.Errorf("Unable to retrieve check boxes: form id=%v", parentFormID.ObjectID)
+		return nil, fmt.Errorf("Unable to retrieve check boxes: form id=%v", parentFormID)
 	}
 
 	checkBoxRefs := make([]CheckBoxRef, len(checkBoxes))
@@ -107,18 +107,18 @@ func GetCheckBoxes(appEngContext appengine.Context, parentFormID datastoreWrappe
 		}
 
 		checkBoxRefs[checkBoxIter] = CheckBoxRef{
-			UniqueIDHeader: datastoreWrapper.NewUniqueIDHeader(parentFormID.ObjectID, checkBoxID),
-			FieldRef:       *fieldRef,
-			Geometry:       currCheckBox.Geometry}
+			CheckBoxID: checkBoxID,
+			FieldRef:   *fieldRef,
+			Geometry:   currCheckBox.Geometry}
 
 	} // for each check box
 	return checkBoxRefs, nil
 
 }
 
-func updateExistingCheckBox(appEngContext appengine.Context, uniqueID datastoreWrapper.UniqueID, updatedCheckBox *CheckBox) (*CheckBoxRef, error) {
+func updateExistingCheckBox(appEngContext appengine.Context, checkBoxID string, updatedCheckBox *CheckBox) (*CheckBoxRef, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingChildEntity(appEngContext, uniqueID,
+	if updateErr := datastoreWrapper.UpdateExistingChildEntity(appEngContext, checkBoxID,
 		checkBoxChildParentEntityRel(), updatedCheckBox); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingCheckBox: Error updating check box: error = %v", updateErr)
 	}
@@ -129,9 +129,9 @@ func updateExistingCheckBox(appEngContext appengine.Context, uniqueID datastoreW
 	}
 
 	checkBoxRef := CheckBoxRef{
-		UniqueIDHeader: datastoreWrapper.UniqueIDHeader{uniqueID},
-		FieldRef:       *fieldRef,
-		Geometry:       updatedCheckBox.Geometry}
+		CheckBoxID: checkBoxID,
+		FieldRef:   *fieldRef,
+		Geometry:   updatedCheckBox.Geometry}
 
 	return &checkBoxRef, nil
 

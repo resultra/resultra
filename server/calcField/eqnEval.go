@@ -153,7 +153,7 @@ func (equation EquationNode) EvalEqn(evalContext *EqnEvalContext) (*EquationResu
 		// TODO - Once the Field type has a parent, don't use an individual database
 		// lookup for each field (database only has strong consistency when
 		// entities have a parent.
-		fieldRef, err := field.GetFieldRef(evalContext.AppEngContext, field.GetFieldParams{equation.FieldID})
+		fieldRef, err := field.GetFieldRef(evalContext.AppEngContext, equation.FieldID)
 		if err != nil {
 			return nil, fmt.Errorf("EvalEqn: failure retrieving referenced field: %+v", err)
 		} else {

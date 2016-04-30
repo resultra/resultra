@@ -5,7 +5,14 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 )
+
+// UniqueID stores the opaque/encoded database keys for an entity.
+type decodedChildID struct {
+	parentID string
+	childID  string
+}
 
 // Return ID as a string: An integer representation of the database
 // ID is an internal implementation, so clients of this package
@@ -34,4 +41,28 @@ func DecodeUniqueEntityIDStrToInt(encodedID string) (int64, error) {
 	}
 
 	return decodeVal, nil
+}
+
+func encodeChildEntityIDToStr(parentID string, childID string) string {
+	return parentID + "-" + childID
+}
+
+func decodeUniqueChildID(encodedChildID string) (*decodedChildID, error) {
+	splitParentChildIDs := strings.Split(encodedChildID, "-")
+	if len(splitParentChildIDs) != 2 {
+		return nil, fmt.Errorf("Can't decode datastore id: unrecocognized child id = '%v'", encodedChildID)
+	}
+
+	parentID := splitParentChildIDs[0]
+	if len(parentID) == 0 {
+		return nil, fmt.Errorf("Can't decode datastore id: unrecocognized child id = '%v'", encodedChildID)
+	}
+
+	childID := splitParentChildIDs[1]
+	if len(childID) == 0 {
+		return nil, fmt.Errorf("Can't decode datastore id: unrecocognized child id = '%v'", encodedChildID)
+	}
+
+	return &decodedChildID{parentID: parentID, childID: childID}, nil
+
 }

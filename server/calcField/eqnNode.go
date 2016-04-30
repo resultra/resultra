@@ -93,7 +93,7 @@ func (equation EquationNode) UserText(appEngContext appengine.Context) (string, 
 		resultBuf.WriteString(")")
 	} else if len(equation.FieldID) > 0 {
 
-		fieldRef, err := field.GetFieldRef(appEngContext, field.GetFieldParams{equation.FieldID})
+		fieldRef, err := field.GetFieldRef(appEngContext, equation.FieldID)
 		if err != nil {
 			return "", err
 		} else {

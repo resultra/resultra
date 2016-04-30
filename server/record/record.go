@@ -4,8 +4,8 @@ import (
 	"appengine"
 	"appengine/datastore"
 	"fmt"
-	"resultra/datasheet/server/generic/datastoreWrapper"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
 const recordEntityKind string = "Record"
@@ -58,7 +58,7 @@ func NewRecord(appEngContext appengine.Context) (*RecordRef, error) {
 	newRecord := Record{}
 
 	// TODO - Replace nil with database parent
-	recordID, insertErr := datastoreWrapper.InsertNewEntity(appEngContext, recordEntityKind, nil, &newRecord)
+	recordID, insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, recordEntityKind, &newRecord)
 	if insertErr != nil {
 		return nil, fmt.Errorf("Can't create new field: error inserting into datastore: %v", insertErr)
 	}
@@ -76,7 +76,7 @@ type RecordID struct {
 func GetRecord(appEngContext appengine.Context, recordParams RecordID) (*RecordRef, error) {
 
 	getRecord := Record{}
-	getErr := datastoreWrapper.GetRootEntityByID(appEngContext, recordEntityKind, recordParams.RecordID, &getRecord)
+	getErr := datastoreWrapper.GetRootEntity(appEngContext, recordEntityKind, recordParams.RecordID, &getRecord)
 	if getErr != nil {
 		return nil, fmt.Errorf("Can't get record: Error retrieving existing record: record params=%+v, err = %v", recordParams, getErr)
 	}
@@ -128,7 +128,8 @@ func GetRecords(appEngContext appengine.Context) ([]RecordRef, error) {
 // calculated fields)
 func ValidateFieldForRecordValue(appEngContext appengine.Context, fieldID string, expectedFieldType string,
 	allowCalcField bool) error {
-	fieldRef, fieldGetErr := field.GetFieldRef(appEngContext, field.GetFieldParams{fieldID})
+
+	fieldRef, fieldGetErr := field.GetFieldRef(appEngContext, fieldID)
 	if fieldGetErr != nil {
 		return fmt.Errorf(" Error retrieving field for updating/setting value: err = %v", fieldGetErr)
 	}
