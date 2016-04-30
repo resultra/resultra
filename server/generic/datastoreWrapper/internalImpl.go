@@ -14,7 +14,7 @@ import (
 func newRootEntityKey(appEngContext appengine.Context,
 	entityKind string, encodedID string) (*datastore.Key, error) {
 
-	decodedID, err := DecodeUniqueEntityIDStrToInt(encodedID)
+	decodedID, err := decodeUniqueEntityIDStrToInt(encodedID)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func newChildEntityKey(appEngContext appengine.Context,
 		return nil, fmt.Errorf("nil parent key used to create chiild key: child kind=%v, id=%v", entityKind, encodedID)
 	}
 
-	decodedID, err := DecodeUniqueEntityIDStrToInt(encodedID)
+	decodedID, err := decodeUniqueEntityIDStrToInt(encodedID)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func updateExistingEntity(appEngContext appengine.Context,
 func getChildEntityByID(encodedID string, appEngContext appengine.Context, entityKind string,
 	parentKey *datastore.Key, dest interface{}) error {
 
-	decodedID, err := DecodeUniqueEntityIDStrToInt(encodedID)
+	decodedID, err := decodeUniqueEntityIDStrToInt(encodedID)
 	if err != nil {
 		return err
 	}

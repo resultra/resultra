@@ -39,7 +39,7 @@ func GetExistingRootEntityKey(appEngContext appengine.Context,
 
 func GetRootEntity(appEngContext appengine.Context, entityKind string, encodedID string, dest interface{}) error {
 
-	decodedID, err := DecodeUniqueEntityIDStrToInt(encodedID)
+	decodedID, err := decodeUniqueEntityIDStrToInt(encodedID)
 	if err != nil {
 		return err
 	}

@@ -30,7 +30,7 @@ func TestIDEncodeDecode(t *testing.T) {
 
 	t.Logf("testIDEncodeDecode: key ID: %v encoded ID: %v", putKey.IntID(), encodedID)
 
-	decodedID, decodeErr := DecodeUniqueEntityIDStrToInt(encodedID)
+	decodedID, decodeErr := decodeUniqueEntityIDStrToInt(encodedID)
 	if decodeErr != nil {
 		t.Fatal(err)
 	}

@@ -33,7 +33,7 @@ func EncodeUniqueEntityIDToStr(key *datastore.Key) (string, error) {
 	return encodedID, nil
 }
 
-func DecodeUniqueEntityIDStrToInt(encodedID string) (int64, error) {
+func decodeUniqueEntityIDStrToInt(encodedID string) (int64, error) {
 
 	decodeVal, err := strconv.ParseInt(encodedID, 36, 64)
 	if err != nil {
