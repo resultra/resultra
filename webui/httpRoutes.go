@@ -23,7 +23,3 @@ func init() {
 
 	http.Handle("/", router)
 }
-
-func DummyFunctionForImportFromGoogleAppEngineProjectFolder() {
-
-}

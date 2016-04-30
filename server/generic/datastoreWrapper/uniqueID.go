@@ -36,6 +36,12 @@ type UniqueRootIDHeader struct {
 	UniqueID UniqueRootID `json:"uniqueID"`
 }
 
+func NewUniqueRootIDHeader(objectID string) UniqueRootIDHeader {
+	uniqueID := UniqueRootID{objectID}
+	uniqueIDHeader := UniqueRootIDHeader{uniqueID}
+	return uniqueIDHeader
+}
+
 func (header UniqueRootIDHeader) GetUniqueRootID() UniqueRootID {
 	return header.UniqueID
 }

@@ -108,6 +108,12 @@ func InsertNewEntity(appEngContext appengine.Context, entityKind string,
 
 }
 
+func InsertNewRootEntity(appEngContext appengine.Context, entityKind string,
+	src interface{}) (string, error) {
+
+	return InsertNewEntity(appEngContext, entityKind, nil, src)
+}
+
 func UpdateExistingEntity(appEngContext appengine.Context,
 	encodedID string, entityKind string,
 	parentKey *datastore.Key, src interface{}) error {
