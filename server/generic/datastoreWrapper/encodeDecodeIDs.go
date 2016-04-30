@@ -55,7 +55,7 @@ func decodeUniqueChildID(encodedChildID string) (*decodedChildID, error) {
 
 	parentID := splitParentChildIDs[0]
 	if len(parentID) == 0 {
-		return nil, fmt.Errorf("Can't decode datastore id: unrecocognized child id = '%v'", encodedChildID)
+		return nil, fmt.Errorf("Can't decode datastore id: unrecocognized parent id = '%v'", encodedChildID)
 	}
 
 	childID := splitParentChildIDs[1]
