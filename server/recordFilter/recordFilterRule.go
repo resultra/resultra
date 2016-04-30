@@ -134,13 +134,7 @@ func getOptionalParamValueByRuleDef(filterRuleDef FilterRuleDef,
 // Convert one filter rule from the datastore into a reference which is usable by
 // API clients
 func createOneFilterRef(appEngContext appengine.Context,
-	filterRuleKey *datastore.Key, filterRule RecordFilterRule) (*FilterRuleRef, error) {
-
-	filterRuleID, encodeErr := datastoreWrapper.EncodeUniqueEntityIDToStr(filterRuleKey)
-	if encodeErr != nil {
-		return nil, fmt.Errorf("createOneFilterRef: Failed to encode unique ID for filter rule: key=%+v, encode err=%v",
-			filterRuleKey, encodeErr)
-	}
+	filterRuleID string, filterRule RecordFilterRule) (*FilterRuleRef, error) {
 
 	fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, filterRule.Field)
 	if fieldErr != nil {
@@ -169,30 +163,20 @@ func createOneFilterRef(appEngContext appengine.Context,
 
 }
 
-func GetRecordFilters(appEngContext appengine.Context) ([]*datastore.Key, []RecordFilterRule, error) {
-	var allFilterRules []RecordFilterRule
-	ruleQuery := datastore.NewQuery(recordFilterRuleEntityKind)
-	keys, err := ruleQuery.GetAll(appEngContext, &allFilterRules)
-
-	if err != nil {
-		return nil, nil, fmt.Errorf("GetRecordFilters: Unable to retrieve record filters from datastore: datastore error =%v", err)
-	}
-
-	return keys, allFilterRules, nil
-}
-
 func GetRecordFilterRefs(appEngContext appengine.Context) ([]FilterRuleRef, error) {
 
-	filterRuleKeys, allFilterRules, err := GetRecordFilters(appEngContext)
+	var allFilterRules []RecordFilterRule
+	filterRuleIDs, err := datastoreWrapper.GetAllRootEntities(
+		appEngContext, recordFilterRuleEntityKind, &allFilterRules)
 	if err != nil {
 		return nil, fmt.Errorf("GetRecordFilterRefs: Unable to retrieve record filters from datastore: datastore error =%v", err)
 	}
 
 	filterRefs := make([]FilterRuleRef, len(allFilterRules))
 	for i, currFilterRule := range allFilterRules {
-		filterRuleKey := filterRuleKeys[i]
+		filterRuleID := filterRuleIDs[i]
 
-		filterRuleRef, refErr := createOneFilterRef(appEngContext, filterRuleKey, currFilterRule)
+		filterRuleRef, refErr := createOneFilterRef(appEngContext, filterRuleID, currFilterRule)
 		if refErr != nil {
 			return nil, fmt.Errorf("GetRecordFilterRefs: Unable to create reference to filter rule: error =%v", refErr)
 		}

@@ -18,7 +18,7 @@ type decodedChildID struct {
 // ID is an internal implementation, so clients of this package
 // have no need to manipulate this ID as an integer. The "base 36"
 // encoding is also more compact than an base 10 format.
-func EncodeUniqueEntityIDToStr(key *datastore.Key) (string, error) {
+func encodeUniqueEntityIDToStr(key *datastore.Key) (string, error) {
 
 	if key == nil {
 		return "", errors.New("Error decoding datastore ID: cannot decode nil key")

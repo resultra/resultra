@@ -2,7 +2,6 @@ package form
 
 import (
 	"appengine"
-	"appengine/datastore"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/dataModel"
@@ -40,21 +39,16 @@ func NewLayout(appEngContext appengine.Context, layoutName string) (string, erro
 }
 
 func GetAllLayoutRefs(appEngContext appengine.Context) ([]LayoutRef, error) {
-	var allLayouts []Layout
-	layoutQuery := datastore.NewQuery(dataModel.LayoutEntityKind)
-	keys, err := layoutQuery.GetAll(appEngContext, &allLayouts)
 
+	var allLayouts []Layout
+	ids, err := datastoreWrapper.GetAllRootEntities(appEngContext, dataModel.LayoutEntityKind, &allLayouts)
 	if err != nil {
 		return nil, fmt.Errorf("GetAllLayouts: Unable to retrieve layouts from datastore: datastore error =%v", err)
 	}
 
 	layoutRefs := make([]LayoutRef, len(allLayouts))
 	for i, currLayout := range allLayouts {
-		layoutKey := keys[i]
-		layoutID, encodeErr := datastoreWrapper.EncodeUniqueEntityIDToStr(layoutKey)
-		if encodeErr != nil {
-			return nil, fmt.Errorf("Failed to encode unique ID for layout: key=%+v, encode err=%v", layoutKey, encodeErr)
-		}
+		layoutID := ids[i]
 		layoutRefs[i] = LayoutRef{layoutID, currLayout}
 	}
 	return layoutRefs, nil

@@ -105,19 +105,14 @@ func UpdateExistingRecord(appEngContext appengine.Context, recordID RecordID, re
 func GetRecords(appEngContext appengine.Context) ([]RecordRef, error) {
 
 	var records []Record
-	recordQuery := datastore.NewQuery(recordEntityKind)
-	keys, err := recordQuery.GetAll(appEngContext, &records)
-	if err != nil {
-		return nil, fmt.Errorf("GetRecords: Unable to retrieve records from datastore: datastore error = %v", err)
+	recordIDs, getErr := datastoreWrapper.GetAllRootEntities(appEngContext, recordEntityKind, &records)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetRecords: Unable to retrieve records from datastore: datastore error = %v", getErr)
 	}
 
 	recordRefs := make([]RecordRef, len(records))
 	for recIter, currRec := range records {
-		recKey := keys[recIter]
-		recordID, encodeErr := datastoreWrapper.EncodeUniqueEntityIDToStr(recKey)
-		if encodeErr != nil {
-			return nil, fmt.Errorf("Failed to encode unique ID for record: key=%+v, encode err=%v", recKey, encodeErr)
-		}
+		recordID := recordIDs[recIter]
 		recordRefs[recIter] = RecordRef{recordID, currRec}
 	}
 	return recordRefs, nil

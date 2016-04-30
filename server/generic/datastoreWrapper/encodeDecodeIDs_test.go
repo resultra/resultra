@@ -23,7 +23,7 @@ func TestIDEncodeDecode(t *testing.T) {
 		t.Fatal(putErr)
 	}
 
-	encodedID, err := EncodeUniqueEntityIDToStr(putKey)
+	encodedID, err := encodeUniqueEntityIDToStr(putKey)
 	if err != nil {
 		t.Fatal(err)
 	}

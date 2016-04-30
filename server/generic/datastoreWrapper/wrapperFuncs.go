@@ -56,6 +56,62 @@ func GetRootEntity(appEngContext appengine.Context, entityKind string, encodedID
 	return nil
 }
 
+// GetRootEntityFromKey retrieve a single root entity given a key to that entity. This wrapper function is generally
+// intended for use with entities which store keys to other other entities as a way of referencing those entities.
+// Although the given rootKey exposes the Google datastore implementation, storing references to other entities using
+// *datastore.Key is the most straightforward way to store permanent references to other objects.
+//
+// The alternative would be to store an opaque string key instead of the *datastore.Key, but this would mean we'd no longer be able
+// to change the ID format; however, this design alternative would technically hide more of the implementation of the
+// Google datastore. In fact, this is how records' values are stored into different fields; the property name is overridden
+// as the fields' opaque string ID.
+//
+// TODO(IMPORTANT) - Given the above,evaluate whether to shift entirely off *datastoreKey. It is currently only used for field references
+// and it wouldn't be too expensive to switch over to unique string IDs at this point. This would have the benefit of
+// completely abstracting the application from Google's datastore. With that in place, any back-end datastore could be used
+// with the application for performance or cost reasons. Even a simple JSON storage format could be used for entities.
+//
+// Some considerations:
+//    - This would make evaluation of other database backends much easier (or potentially shifting to another)
+//    - When saving a version of the database as a template or for backup, this would make "swizzling" of the
+//      unique IDs much easier.
+func GetRootEntityFromKey(appEngContext appengine.Context, entityKind string, rootKey *datastore.Key, dest interface{}) (string, error) {
+
+	rootID, encodeErr := encodeUniqueEntityIDToStr(rootKey)
+	if encodeErr != nil {
+		return "", fmt.Errorf("GetRootEntityFromKey: Failed to encode unique ID: key=%+v, encode err=%v", rootKey, encodeErr)
+	}
+
+	if getErr := GetRootEntity(appEngContext, entityKind, rootID, dest); getErr != nil {
+		return "", getErr
+	}
+
+	return rootID, nil
+
+}
+
+// GetAllRootEntities wraps a call to a datastore GetAll() query, given datastore IDs and their entity kinds.
+// It also converts the keys to opaque IDs before returning the results.
+func GetAllRootEntities(appEngContext appengine.Context, entityKind string, destSlice interface{}) ([]string, error) {
+
+	query := datastore.NewQuery(entityKind)
+	keys, err := query.GetAll(appEngContext, destSlice)
+	if err != nil {
+		return nil, fmt.Errorf("GetAllRootEntities: Unable to retrieve layouts from datastore: datastore error =%v", err)
+	}
+
+	rootIDs := make([]string, len(keys))
+	for i, currKey := range keys {
+		rootID, encodeErr := encodeUniqueEntityIDToStr(currKey)
+		if encodeErr != nil {
+			return nil, fmt.Errorf("GetAllRootEntities: Failed to encode unique ID for layout: key=%+v, encode err=%v", currKey, encodeErr)
+		}
+		rootIDs[i] = rootID
+	}
+	return rootIDs, nil
+
+}
+
 func UpdateExistingRootEntity(appEngContext appengine.Context, entityKind string,
 	encodedID string, src interface{}) error {
 
@@ -141,7 +197,7 @@ func GetAllChildEntities(appEngContext appengine.Context, parentID string,
 
 	childIDs := make([]string, len(keys))
 	for keyIter, currKey := range keys {
-		childID, encodeErr := EncodeUniqueEntityIDToStr(currKey)
+		childID, encodeErr := encodeUniqueEntityIDToStr(currKey)
 		if encodeErr != nil {
 			return nil, fmt.Errorf("GetAllChildEntities: Failed to encode unique ID: key=%+v, encode err=%v", currKey, encodeErr)
 		}

@@ -155,16 +155,9 @@ func GetFieldRef(appEngContext appengine.Context, fieldID string) (*FieldRef, er
 func GetFieldFromKey(appEngContext appengine.Context, fieldKey *datastore.Key) (*FieldRef, error) {
 
 	fieldGetDest := Field{}
-	getErr := datastore.Get(appEngContext, fieldKey, &fieldGetDest)
+	fieldID, getErr := datastoreWrapper.GetRootEntityFromKey(appEngContext, fieldEntityKind, fieldKey, &fieldGetDest)
 	if getErr != nil {
-		return nil, fmt.Errorf("GetFieldFromKey: Failed to retrieve field from datastore: key=%+v, datastore err=%v",
-			fieldKey, getErr)
-	}
-
-	fieldID, encodeErr := datastoreWrapper.EncodeUniqueEntityIDToStr(fieldKey)
-	if encodeErr != nil {
-		return nil, fmt.Errorf("GetFieldFromKey: Failed to encode unique ID for field: key=%+v, encode err=%v",
-			fieldKey, encodeErr)
+		return nil, fmt.Errorf("GetFieldFromKey: unable to retrieve field from key: %v", getErr)
 	}
 
 	return &FieldRef{fieldID, fieldGetDest}, nil
@@ -200,20 +193,14 @@ func GetExistingFieldRefAndKey(appEngContext appengine.Context, fieldID string) 
 func GetAllFieldRefs(appEngContext appengine.Context) ([]FieldRef, error) {
 
 	var allFields []Field
-	fieldQuery := datastore.NewQuery(fieldEntityKind)
-	keys, err := fieldQuery.GetAll(appEngContext, &allFields)
-
+	fieldIDs, err := datastoreWrapper.GetAllRootEntities(appEngContext, fieldEntityKind, &allFields)
 	if err != nil {
 		return nil, fmt.Errorf("GetFieldsByType: Unable to retrieve fields from datastore: datastore error =%v", err)
 	}
 
 	fieldRefs := make([]FieldRef, len(allFields))
 	for i, currField := range allFields {
-		fieldKey := keys[i]
-		fieldID, encodeErr := datastoreWrapper.EncodeUniqueEntityIDToStr(fieldKey)
-		if encodeErr != nil {
-			return nil, fmt.Errorf("Failed to encode unique ID for field: key=%+v, encode err=%v", fieldKey, encodeErr)
-		}
+		fieldID := fieldIDs[i]
 		fieldRefs[i] = FieldRef{fieldID, currField}
 	}
 	return fieldRefs, nil
