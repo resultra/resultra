@@ -85,9 +85,7 @@ function saveFormula(fieldRef) {
 	
 	validateFormula(fieldRef,function(fieldRef,formulaText) {
 		var saveFormulaParms = {
-			uniqueID: {
-				objectID: fieldRef.fieldID
-			},
+			fieldID: fieldRef.fieldID,
 			formulaText: formulaText
 		}
 		jsonAPIRequest("calcField/setFieldFormula", saveFormulaParms, function(updatedFieldRef) {
