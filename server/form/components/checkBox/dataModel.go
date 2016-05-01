@@ -77,7 +77,7 @@ func saveNewCheckBox(appEngContext appengine.Context, params NewCheckBoxParams) 
 func getCheckBox(appEngContext appengine.Context, checkBoxID string) (*CheckBox, error) {
 
 	var checkBox CheckBox
-	if getErr := datastoreWrapper.GetChildEntity(appEngContext, checkBoxID, &checkBox); getErr != nil {
+	if getErr := datastoreWrapper.GetEntity(appEngContext, checkBoxID, &checkBox); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to get check box from datastore: error = %v", getErr)
 	}
 	return &checkBox, nil
@@ -113,7 +113,7 @@ func GetCheckBoxes(appEngContext appengine.Context, parentFormID string) ([]Chec
 
 func updateExistingCheckBox(appEngContext appengine.Context, checkBoxID string, updatedCheckBox *CheckBox) (*CheckBoxRef, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingChildEntity(appEngContext, checkBoxID, updatedCheckBox); updateErr != nil {
+	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext, checkBoxID, updatedCheckBox); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingCheckBox: Error updating check box: error = %v", updateErr)
 	}
 

@@ -121,8 +121,7 @@ func NewField(appEngContext appengine.Context, fieldParams NewFieldParams) (stri
 
 func GetField(appEngContext appengine.Context, fieldID string) (*Field, error) {
 	var fieldGetDest Field
-	if getErr := datastoreWrapper.GetRootEntity(appEngContext, fieldEntityKind,
-		fieldID, &fieldGetDest); getErr != nil {
+	if getErr := datastoreWrapper.GetEntity(appEngContext, fieldID, &fieldGetDest); getErr != nil {
 		return nil, fmt.Errorf("Unabled to get field: id = %+v: datastore err=%v", fieldID, getErr)
 	}
 	return &fieldGetDest, nil
@@ -130,7 +129,7 @@ func GetField(appEngContext appengine.Context, fieldID string) (*Field, error) {
 
 func UpdateExistingField(appEngContext appengine.Context, fieldID string, updatedField *Field) (*FieldRef, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingRootEntity(appEngContext,
+	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext,
 		fieldID, updatedField); updateErr != nil {
 		return nil, fmt.Errorf("UpdateExistingField: Can't set value: Error updating existing field: err = %v", updateErr)
 	}
@@ -155,7 +154,7 @@ func GetFieldRef(appEngContext appengine.Context, fieldID string) (*FieldRef, er
 func GetFieldFromKey(appEngContext appengine.Context, fieldKey *datastore.Key) (*FieldRef, error) {
 
 	fieldGetDest := Field{}
-	fieldID, getErr := datastoreWrapper.GetRootEntityFromKey(appEngContext, fieldEntityKind, fieldKey, &fieldGetDest)
+	fieldID, getErr := datastoreWrapper.GetEntityFromKey(appEngContext, fieldEntityKind, fieldKey, &fieldGetDest)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetFieldFromKey: unable to retrieve field from key: %v", getErr)
 	}

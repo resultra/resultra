@@ -65,7 +65,7 @@ type GetLayoutParams struct {
 func GetLayoutRef(appEngContext appengine.Context, layoutParams GetLayoutParams) (*LayoutRef, error) {
 
 	getLayout := Layout{}
-	getErr := datastoreWrapper.GetRootEntity(appEngContext, layoutEntityKind, layoutParams.LayoutID, &getLayout)
+	getErr := datastoreWrapper.GetEntity(appEngContext, layoutParams.LayoutID, &getLayout)
 	if getErr != nil {
 		return nil, fmt.Errorf("Can't get layout: Error retrieving existing layout: params=%+v, err = %v", layoutParams, getErr)
 	}

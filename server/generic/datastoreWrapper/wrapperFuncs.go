@@ -41,14 +41,14 @@ func GetExistingRootEntityKey(appEngContext appengine.Context,
 
 }
 
-func GetRootEntity(appEngContext appengine.Context, entityKind string, encodedID string, dest interface{}) error {
+func GetEntity(appEngContext appengine.Context, encodedID string, dest interface{}) error {
 
-	rootKey, decodeErr := decodeUniqueEntityIDStrToKey(encodedID)
+	entityKey, decodeErr := decodeUniqueEntityIDStrToKey(encodedID)
 	if decodeErr != nil {
-		return fmt.Errorf("GetRootEntity: Unable to decode entity key: %v", decodeErr)
+		return fmt.Errorf("GetEntity: Unable to decode entity key: %v", decodeErr)
 	}
 
-	getErr := datastore.Get(appEngContext, rootKey, dest)
+	getErr := datastore.Get(appEngContext, entityKey, dest)
 	if getErr != nil {
 		return getErr
 	}
@@ -75,14 +75,14 @@ func GetRootEntity(appEngContext appengine.Context, entityKind string, encodedID
 //    - This would make evaluation of other database backends much easier (or potentially shifting to another)
 //    - When saving a version of the database as a template or for backup, this would make "swizzling" of the
 //      unique IDs much easier.
-func GetRootEntityFromKey(appEngContext appengine.Context, entityKind string,
-	rootKey *datastore.Key, dest interface{}) (string, error) {
+func GetEntityFromKey(appEngContext appengine.Context, entityKind string,
+	entityKey *datastore.Key, dest interface{}) (string, error) {
 
-	if getErr := datastore.Get(appEngContext, rootKey, dest); getErr != nil {
+	if getErr := datastore.Get(appEngContext, entityKey, dest); getErr != nil {
 		return "", getErr
 	}
 
-	return rootKey.Encode(), nil
+	return entityKey.Encode(), nil
 
 }
 
@@ -108,22 +108,19 @@ func GetAllRootEntities(appEngContext appengine.Context, entityKind string, dest
 
 }
 
-func UpdateExistingRootEntity(appEngContext appengine.Context,
-	encodedID string, src interface{}) error {
+func UpdateExistingEntity(appEngContext appengine.Context, entityID string, entityToUpdate interface{}) error {
 
-	rootKey, decodeErr := decodeUniqueEntityIDStrToKey(encodedID)
+	entityKey, decodeErr := decodeUniqueEntityIDStrToKey(entityID)
 	if decodeErr != nil {
-		return fmt.Errorf("UpdateExistingRootEntity: Unable to decode entity key: %v", decodeErr)
+		return fmt.Errorf("UpdateExistingEntity: Unable to decode entity key: %v", decodeErr)
 	}
 
-	_, putErr := datastore.Put(appEngContext, rootKey, src)
+	_, putErr := datastore.Put(appEngContext, entityKey, entityToUpdate)
 	if putErr != nil {
-		return fmt.Errorf("UpdateExistingRootEntity Put() failed: root key=%+v, datastore error=%v",
-			rootKey, putErr)
+		return fmt.Errorf("UpdateExistingEntity failed: entity key=%+v, datastore error=%v", entityKey, putErr)
 	}
 
 	return nil
-
 }
 
 func InsertNewChildEntity(appEngContext appengine.Context,
@@ -143,23 +140,6 @@ func InsertNewChildEntity(appEngContext appengine.Context,
 
 	return putKey.Encode(), nil
 
-}
-
-// GetChildEntity retrieves a child entity for the given unique ID and associated entity kind for both the child
-// and parent entitiy.
-func GetChildEntity(appEngContext appengine.Context,
-	encodedChildID string, getDest interface{}) error {
-
-	childKey, decodeErr := decodeUniqueEntityIDStrToKey(encodedChildID)
-	if decodeErr != nil {
-		return fmt.Errorf("GetChildEntity: Unable to decode child key: %v", decodeErr)
-	}
-
-	if getErr := datastore.Get(appEngContext, childKey, getDest); getErr != nil {
-		return getErr
-	}
-
-	return nil
 }
 
 // GetAllChildEntities wraps a call to a datastore GetAll() query, given datastore IDs and their entity kinds.
@@ -186,19 +166,4 @@ func GetAllChildEntities(appEngContext appengine.Context, parentID string,
 	}
 
 	return childIDs, nil
-}
-
-func UpdateExistingChildEntity(appEngContext appengine.Context, childID string, entityToUpdate interface{}) error {
-
-	childKey, decodeErr := decodeUniqueEntityIDStrToKey(childID)
-	if decodeErr != nil {
-		return fmt.Errorf("UpdateExistingChildEntity: Unable to decode entity key: %v", decodeErr)
-	}
-
-	_, putErr := datastore.Put(appEngContext, childKey, entityToUpdate)
-	if putErr != nil {
-		return fmt.Errorf("updateExistingEntity failed: child key=%+v, datastore error=%v", childKey, putErr)
-	}
-
-	return nil
 }

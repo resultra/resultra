@@ -76,7 +76,7 @@ type RecordID struct {
 func GetRecord(appEngContext appengine.Context, recordParams RecordID) (*RecordRef, error) {
 
 	getRecord := Record{}
-	getErr := datastoreWrapper.GetRootEntity(appEngContext, recordEntityKind, recordParams.RecordID, &getRecord)
+	getErr := datastoreWrapper.GetEntity(appEngContext, recordParams.RecordID, &getRecord)
 	if getErr != nil {
 		return nil, fmt.Errorf("Can't get record: Error retrieving existing record: record params=%+v, err = %v", recordParams, getErr)
 	}
@@ -87,7 +87,7 @@ func GetRecord(appEngContext appengine.Context, recordParams RecordID) (*RecordR
 
 func UpdateExistingRecord(appEngContext appengine.Context, recordID RecordID, rec Record) (*RecordRef, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingRootEntity(appEngContext, recordID.RecordID, &rec); updateErr != nil {
+	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext, recordID.RecordID, &rec); updateErr != nil {
 		return nil, fmt.Errorf("UpdateExistingRecord: Can't set value: Error updating existing record: params=%+v, err = %v",
 			recordID, updateErr)
 	}

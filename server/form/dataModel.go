@@ -52,7 +52,7 @@ type GetFormParams struct {
 func getForm(appEngContext appengine.Context, params GetFormParams) (*FormRef, error) {
 
 	var form Form
-	if getErr := datastoreWrapper.GetChildEntity(appEngContext, params.FormID, &form); getErr != nil {
+	if getErr := datastoreWrapper.GetEntity(appEngContext, params.FormID, &form); getErr != nil {
 		return nil, fmt.Errorf("GetForm: Unable to get form from datastore: error = %v", getErr)
 	}
 

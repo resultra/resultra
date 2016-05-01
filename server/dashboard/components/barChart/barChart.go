@@ -79,7 +79,7 @@ type NewBarChartParams struct {
 
 func updateExistingBarChart(appEngContext appengine.Context, uniqueID BarChartUniqueID, updatedBarChart *BarChart) (*BarChartRef, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingChildEntity(
+	if updateErr := datastoreWrapper.UpdateExistingEntity(
 		appEngContext, uniqueID.BarChartID, updatedBarChart); updateErr != nil {
 		return nil, updateErr
 	}
@@ -150,7 +150,7 @@ func NewBarChart(appEngContext appengine.Context, params NewBarChartParams) (*Ba
 func getBarChart(appEngContext appengine.Context, params BarChartUniqueID) (*BarChart, error) {
 
 	var barChart BarChart
-	getErr := datastoreWrapper.GetChildEntity(appEngContext, params.BarChartID, &barChart)
+	getErr := datastoreWrapper.GetEntity(appEngContext, params.BarChartID, &barChart)
 	if getErr != nil {
 		return nil, fmt.Errorf("getBarChart: Unable to get bar chart from datastore: error = %v", getErr)
 	}

@@ -79,7 +79,7 @@ func saveNewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*
 func getTextBox(appEngContext appengine.Context, textBoxID string) (*TextBox, error) {
 
 	var textBox TextBox
-	if getErr := datastoreWrapper.GetChildEntity(appEngContext, textBoxID, &textBox); getErr != nil {
+	if getErr := datastoreWrapper.GetEntity(appEngContext, textBoxID, &textBox); getErr != nil {
 		return nil, fmt.Errorf("getBarChart: Unable to get bar chart from datastore: error = %v", getErr)
 	}
 	return &textBox, nil
@@ -115,7 +115,7 @@ func GetTextBoxes(appEngContext appengine.Context, parentFormID string) ([]TextB
 
 func updateExistingTextBox(appEngContext appengine.Context, textBoxID string, updatedTextBox *TextBox) (*TextBoxRef, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingChildEntity(appEngContext, textBoxID, updatedTextBox); updateErr != nil {
+	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext, textBoxID, updatedTextBox); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingTextBox: Error updating text box: error = %v", updateErr)
 	}
 
