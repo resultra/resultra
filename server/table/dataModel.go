@@ -2,10 +2,11 @@ package table
 
 import (
 	"appengine"
-	"resultra/datasheet/server/dataModel"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/datastoreWrapper"
 )
+
+const tableEntityKind string = "Table"
 
 type Table struct {
 	Name string
@@ -33,7 +34,7 @@ func saveNewTable(appEngContext appengine.Context, params NewTableParams) (*Tabl
 	newTable := Table{Name: sanitizedTableName}
 
 	tableID, insertErr := datastoreWrapper.InsertNewChildEntity(
-		appEngContext, params.DatabaseID, dataModel.TableChildParentEntityRel, &newTable)
+		appEngContext, params.DatabaseID, tableEntityKind, &newTable)
 	if insertErr != nil {
 		return nil, insertErr
 	}

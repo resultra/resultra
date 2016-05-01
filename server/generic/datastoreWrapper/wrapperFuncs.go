@@ -4,7 +4,7 @@ import (
 	"appengine"
 	"appengine/datastore"
 	"fmt"
-	"log"
+	//	"log"
 )
 
 // This file contains the public functions for the datastoreWrapper package.
@@ -17,20 +17,24 @@ import (
 func InsertNewRootEntity(appEngContext appengine.Context, entityKind string,
 	src interface{}) (string, error) {
 
-	return insertNewEntity(appEngContext, entityKind, nil, src)
+	// nil argument is for no parent
+	newKey := datastore.NewIncompleteKey(appEngContext, entityKind, nil)
+
+	putKey, err := datastore.Put(appEngContext, newKey, src)
+	if err != nil {
+		return "", err
+	}
+
+	return putKey.Encode(), nil
 }
 
 // Get an entity key for an existing entity,but first verify the entity exits
 func GetExistingRootEntityKey(appEngContext appengine.Context,
 	entityKind string, encodedID string) (*datastore.Key, error) {
 
-	rootKey, keyErr := newRootEntityKey(appEngContext, entityKind, encodedID)
-	if keyErr != nil {
-		return nil, keyErr
-	}
-
-	if err := verifyEntityExists(appEngContext, entityKind, rootKey); err != nil {
-		return nil, err
+	rootKey, decodeErr := decodeUniqueEntityIDStrToKey(encodedID)
+	if decodeErr != nil {
+		return nil, fmt.Errorf("GetRootEntity: Unable to decode entity key: %v", decodeErr)
 	}
 
 	return rootKey, nil
@@ -39,16 +43,12 @@ func GetExistingRootEntityKey(appEngContext appengine.Context,
 
 func GetRootEntity(appEngContext appengine.Context, entityKind string, encodedID string, dest interface{}) error {
 
-	decodedID, err := decodeUniqueEntityIDStrToInt(encodedID)
-	if err != nil {
-		return err
+	rootKey, decodeErr := decodeUniqueEntityIDStrToKey(encodedID)
+	if decodeErr != nil {
+		return fmt.Errorf("GetRootEntity: Unable to decode entity key: %v", decodeErr)
 	}
 
-	// nil argument for parentKey (no parent in this case)
-	getKey := datastore.NewKey(appEngContext, entityKind, "", decodedID, nil) // nil for parent key
-	log.Printf("GET root entity: kind=%v, id (base36)=%v key=%+v", entityKind, encodedID, getKey)
-
-	getErr := datastore.Get(appEngContext, getKey, dest)
+	getErr := datastore.Get(appEngContext, rootKey, dest)
 	if getErr != nil {
 		return getErr
 	}
@@ -75,18 +75,14 @@ func GetRootEntity(appEngContext appengine.Context, entityKind string, encodedID
 //    - This would make evaluation of other database backends much easier (or potentially shifting to another)
 //    - When saving a version of the database as a template or for backup, this would make "swizzling" of the
 //      unique IDs much easier.
-func GetRootEntityFromKey(appEngContext appengine.Context, entityKind string, rootKey *datastore.Key, dest interface{}) (string, error) {
+func GetRootEntityFromKey(appEngContext appengine.Context, entityKind string,
+	rootKey *datastore.Key, dest interface{}) (string, error) {
 
-	rootID, encodeErr := encodeUniqueEntityIDToStr(rootKey)
-	if encodeErr != nil {
-		return "", fmt.Errorf("GetRootEntityFromKey: Failed to encode unique ID: key=%+v, encode err=%v", rootKey, encodeErr)
-	}
-
-	if getErr := GetRootEntity(appEngContext, entityKind, rootID, dest); getErr != nil {
+	if getErr := datastore.Get(appEngContext, rootKey, dest); getErr != nil {
 		return "", getErr
 	}
 
-	return rootID, nil
+	return rootKey.Encode(), nil
 
 }
 
@@ -112,18 +108,18 @@ func GetAllRootEntities(appEngContext appengine.Context, entityKind string, dest
 
 }
 
-func UpdateExistingRootEntity(appEngContext appengine.Context, entityKind string,
+func UpdateExistingRootEntity(appEngContext appengine.Context,
 	encodedID string, src interface{}) error {
 
-	rootKey, keyErr := newRootEntityKey(appEngContext, entityKind, encodedID)
-	if keyErr != nil {
-		return fmt.Errorf("updateExistingRootEntity failed: err = %v", keyErr)
+	rootKey, decodeErr := decodeUniqueEntityIDStrToKey(encodedID)
+	if decodeErr != nil {
+		return fmt.Errorf("UpdateExistingRootEntity: Unable to decode entity key: %v", decodeErr)
 	}
 
 	_, putErr := datastore.Put(appEngContext, rootKey, src)
 	if putErr != nil {
-		return fmt.Errorf("updateExistingRootEntity Put() failed: entity kind=%v,root key=%+v, datastore error=%v",
-			entityKind, rootKey, putErr)
+		return fmt.Errorf("UpdateExistingRootEntity Put() failed: root key=%+v, datastore error=%v",
+			rootKey, putErr)
 	}
 
 	return nil
@@ -131,47 +127,36 @@ func UpdateExistingRootEntity(appEngContext appengine.Context, entityKind string
 }
 
 func InsertNewChildEntity(appEngContext appengine.Context,
-	parentID string, entityRel ChildParentEntityRel, newEntity interface{}) (string, error) {
+	parentID string, childEntityKind string, newEntity interface{}) (string, error) {
 
-	log.Printf("InsertNewChildEntity: Updating child entity: parent=(id=%v,kind=%v) child=(kind=%v): new entity = %+v)",
-		parentID, entityRel.ParentEntityKind, entityRel.ChildEntityKind, newEntity)
-
-	parentKey, getErr := GetExistingRootEntityKey(appEngContext, entityRel.ParentEntityKind, parentID)
-	if getErr != nil {
-		return "", fmt.Errorf("InsertNewChildEntity: Unable to retrieve parent entity: %v", getErr)
+	parentKey, decodeErr := decodeUniqueEntityIDStrToKey(parentID)
+	if decodeErr != nil {
+		return "", fmt.Errorf("InsertNewChildEntity: Unable to decode parent key: %v", decodeErr)
 	}
 
-	childID, insertErr := insertNewEntity(appEngContext, entityRel.ChildEntityKind, parentKey, newEntity)
-	if insertErr != nil {
-		return "", insertErr
+	newKey := datastore.NewIncompleteKey(appEngContext, childEntityKind, parentKey)
+
+	putKey, err := datastore.Put(appEngContext, newKey, newEntity)
+	if err != nil {
+		return "", err
 	}
 
-	return encodeChildEntityIDToStr(parentID, childID), nil
+	return putKey.Encode(), nil
 
 }
 
 // GetChildEntity retrieves a child entity for the given unique ID and associated entity kind for both the child
 // and parent entitiy.
 func GetChildEntity(appEngContext appengine.Context,
-	encodedChildID string, entityRel ChildParentEntityRel, getDest interface{}) error {
+	encodedChildID string, getDest interface{}) error {
 
-	uniqueID, decodeErr := decodeUniqueChildID(encodedChildID)
+	childKey, decodeErr := decodeUniqueEntityIDStrToKey(encodedChildID)
 	if decodeErr != nil {
-		return fmt.Errorf("getChildEntity: unable to decode child id: %v", decodeErr)
+		return fmt.Errorf("GetChildEntity: Unable to decode child key: %v", decodeErr)
 	}
 
-	log.Printf("GetChildEntity: Getting child entity: parent=(id=%v,kind=%v) child=(kind=%v,id=%v)",
-		uniqueID.parentID, entityRel.ParentEntityKind, entityRel.ChildEntityKind, uniqueID.childID)
-
-	parentKey, parentKeyErr := newRootEntityKey(appEngContext, entityRel.ParentEntityKind, uniqueID.parentID)
-	if parentKeyErr != nil {
-		return fmt.Errorf("GetChildEntity: unable to retrieve parent key for entity: parent id = %v, parent kind = %v",
-			uniqueID.parentID, entityRel.ParentEntityKind)
-	}
-
-	if getErr := getChildEntityByID(uniqueID.childID, appEngContext, entityRel.ChildEntityKind, parentKey, getDest); getErr != nil {
-		return fmt.Errorf("getChildEntity: Unable to get child entity from datastore: child id = %v, error = %v",
-			encodedChildID, getErr)
+	if getErr := datastore.Get(appEngContext, childKey, getDest); getErr != nil {
+		return getErr
 	}
 
 	return nil
@@ -180,53 +165,39 @@ func GetChildEntity(appEngContext appengine.Context,
 // GetAllChildEntities wraps a call to a datastore GetAll() query, given datastore IDs and their entity kinds.
 // It also converts the keys to opaque IDs before returning the results.
 func GetAllChildEntities(appEngContext appengine.Context, parentID string,
-	entityRel ChildParentEntityRel, destSlice interface{}) ([]string, error) {
+	childEntityKind string, destSlice interface{}) ([]string, error) {
 
-	parentKey, parentErr := GetExistingRootEntityKey(appEngContext, entityRel.ParentEntityKind, parentID)
-	if parentErr != nil {
-		return nil, fmt.Errorf("GetAllChildEntities: Unable to retrieve parent: parent id = %v, parent entity kind = %v, error=%v",
-			parentID, entityRel.ParentEntityKind, parentErr)
+	parentKey, decodeErr := decodeUniqueEntityIDStrToKey(parentID)
+	if decodeErr != nil {
+		return nil, fmt.Errorf("InsertNewChildEntity: Unable to decode parent key: %v", decodeErr)
 	}
 
-	getAllQuery := datastore.NewQuery(entityRel.ChildEntityKind).Ancestor(parentKey)
+	getAllQuery := datastore.NewQuery(childEntityKind).Ancestor(parentKey)
 	keys, getErr := getAllQuery.GetAll(appEngContext, destSlice)
 
 	if getErr != nil {
-		return nil, fmt.Errorf("GetAllChildEntities: Unable to get all child entities:  parent id=%+v, entity kinds=%+v, error=%v",
-			parentID, entityRel, getErr)
+		return nil, fmt.Errorf("GetAllChildEntities: Unable to get all child entities:  parent id=%+v, error=%v",
+			parentID, getErr)
 	}
 
 	childIDs := make([]string, len(keys))
 	for keyIter, currKey := range keys {
-		childID, encodeErr := encodeUniqueEntityIDToStr(currKey)
-		if encodeErr != nil {
-			return nil, fmt.Errorf("GetAllChildEntities: Failed to encode unique ID: key=%+v, encode err=%v", currKey, encodeErr)
-		}
-		childIDs[keyIter] = encodeChildEntityIDToStr(parentID, childID)
+		childIDs[keyIter] = currKey.Encode()
 	}
 
 	return childIDs, nil
 }
 
-func UpdateExistingChildEntity(appEngContext appengine.Context, childID string,
-	entityRel ChildParentEntityRel, entityToUpdate interface{}) error {
+func UpdateExistingChildEntity(appEngContext appengine.Context, childID string, entityToUpdate interface{}) error {
 
-	uniqueID, decodeErr := decodeUniqueChildID(childID)
+	childKey, decodeErr := decodeUniqueEntityIDStrToKey(childID)
 	if decodeErr != nil {
-		return fmt.Errorf("UpdateExistingChildEntity: Invalid child ID: %v", decodeErr)
+		return fmt.Errorf("UpdateExistingChildEntity: Unable to decode entity key: %v", decodeErr)
 	}
 
-	log.Printf("UpdateExistingChildEntity: Updating child entity: parent=(id=%v,kind=%v) child=(id=%v,kind=%v: updated entity = %+v)",
-		uniqueID.parentID, entityRel.ParentEntityKind, uniqueID.childID, entityRel.ChildEntityKind, entityToUpdate)
-
-	parentKey, getErr := GetExistingRootEntityKey(appEngContext, entityRel.ParentEntityKind, uniqueID.parentID)
-	if getErr != nil {
-		return fmt.Errorf("UpdateExistingChildEntity: Unable to retrieve parent entity: %v", getErr)
-	}
-
-	if updateErr := updateExistingEntity(appEngContext,
-		uniqueID.childID, entityRel.ChildEntityKind, parentKey, entityToUpdate); updateErr != nil {
-		return fmt.Errorf("UpdateExistingChildEntity: Unable to update child entity: %v", updateErr)
+	_, putErr := datastore.Put(appEngContext, childKey, entityToUpdate)
+	if putErr != nil {
+		return fmt.Errorf("updateExistingEntity failed: child key=%+v, datastore error=%v", childKey, putErr)
 	}
 
 	return nil

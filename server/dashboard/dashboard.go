@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/dashboard/components/barChart"
-	"resultra/datasheet/server/dataModel"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/datastoreWrapper"
 )
+
+const dashboardEntityKind string = "Dashboard"
 
 type Dashboard struct {
 	Name string `json:"name"`
@@ -27,7 +28,7 @@ func NewDashboard(appEngContext appengine.Context, dashboardName string) (*Dashb
 	}
 
 	var newDashboard = Dashboard{sanitizedName}
-	dashboardID, insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, dataModel.DashboardEntityKind, &newDashboard)
+	dashboardID, insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, dashboardEntityKind, &newDashboard)
 	if insertErr != nil {
 		return nil, insertErr
 	}
@@ -42,7 +43,7 @@ func NewDashboard(appEngContext appengine.Context, dashboardName string) (*Dashb
 func GetDashboardRef(appEngContext appengine.Context, dashboardID string) (*DashboardRef, error) {
 
 	var dashboard DashboardRef
-	getErr := datastoreWrapper.GetRootEntity(appEngContext, dataModel.DashboardEntityKind, dashboardID, &dashboard)
+	getErr := datastoreWrapper.GetRootEntity(appEngContext, dashboardEntityKind, dashboardID, &dashboard)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetDashboardRef: Can't get dashboard: Error retrieving existing dashboard: dashboard ID=%v, err = %v", dashboardID, getErr)
 	}

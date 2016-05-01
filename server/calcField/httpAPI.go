@@ -13,7 +13,7 @@ func init() {
 
 	calcFieldRouter.HandleFunc("/api/calcField/validateFormula", validateFormula)
 	calcFieldRouter.HandleFunc("/api/calcField/setFieldFormula", setFieldFormula)
-	calcFieldRouter.HandleFunc("/api/calcField/newCalcField", newCalcFieldAPI)
+	calcFieldRouter.HandleFunc("/api/calcField/new", newCalcFieldAPI)
 
 	http.Handle("/api/calcField/", calcFieldRouter)
 }

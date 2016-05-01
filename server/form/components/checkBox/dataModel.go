@@ -6,16 +6,11 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common"
-	"resultra/datasheet/server/dataModel"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
 const checkBoxEntityKind string = "CheckBox"
-
-func checkBoxChildParentEntityRel() datastoreWrapper.ChildParentEntityRel {
-	return datastoreWrapper.ChildParentEntityRel{ParentEntityKind: dataModel.LayoutEntityKind, ChildEntityKind: checkBoxEntityKind}
-}
 
 type CheckBox struct {
 	Field    *datastore.Key
@@ -63,7 +58,7 @@ func saveNewCheckBox(appEngContext appengine.Context, params NewCheckBoxParams) 
 
 	newCheckBox := CheckBox{Field: fieldKey, Geometry: params.Geometry}
 
-	checkBoxID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.ParentID, checkBoxChildParentEntityRel(), &newCheckBox)
+	checkBoxID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.ParentID, checkBoxEntityKind, &newCheckBox)
 	if insertErr != nil {
 		return nil, insertErr
 	}
@@ -82,7 +77,7 @@ func saveNewCheckBox(appEngContext appengine.Context, params NewCheckBoxParams) 
 func getCheckBox(appEngContext appengine.Context, checkBoxID string) (*CheckBox, error) {
 
 	var checkBox CheckBox
-	if getErr := datastoreWrapper.GetChildEntity(appEngContext, checkBoxID, checkBoxChildParentEntityRel(), &checkBox); getErr != nil {
+	if getErr := datastoreWrapper.GetChildEntity(appEngContext, checkBoxID, &checkBox); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to get check box from datastore: error = %v", getErr)
 	}
 	return &checkBox, nil
@@ -91,7 +86,7 @@ func getCheckBox(appEngContext appengine.Context, checkBoxID string) (*CheckBox,
 func GetCheckBoxes(appEngContext appengine.Context, parentFormID string) ([]CheckBoxRef, error) {
 
 	var checkBoxes []CheckBox
-	checkBoxIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentFormID, checkBoxChildParentEntityRel(), &checkBoxes)
+	checkBoxIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentFormID, checkBoxEntityKind, &checkBoxes)
 	if getErr != nil {
 		return nil, fmt.Errorf("Unable to retrieve check boxes: form id=%v", parentFormID)
 	}
@@ -118,8 +113,7 @@ func GetCheckBoxes(appEngContext appengine.Context, parentFormID string) ([]Chec
 
 func updateExistingCheckBox(appEngContext appengine.Context, checkBoxID string, updatedCheckBox *CheckBox) (*CheckBoxRef, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingChildEntity(appEngContext, checkBoxID,
-		checkBoxChildParentEntityRel(), updatedCheckBox); updateErr != nil {
+	if updateErr := datastoreWrapper.UpdateExistingChildEntity(appEngContext, checkBoxID, updatedCheckBox); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingCheckBox: Error updating check box: error = %v", updateErr)
 	}
 

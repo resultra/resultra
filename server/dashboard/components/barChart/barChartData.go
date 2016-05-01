@@ -77,7 +77,7 @@ func GetDashboardBarChartsData(appEngContext appengine.Context, parentDashboardI
 
 	var barCharts []BarChart
 	barChartIDs, getBarChartsErr := datastoreWrapper.GetAllChildEntities(appEngContext,
-		parentDashboardID, barChartChildParentEntityRel, &barCharts)
+		parentDashboardID, barChartEntityKind, &barCharts)
 	if getBarChartsErr != nil {
 		return nil, fmt.Errorf("getDashboardBarChartsData: unable to retrieve bar charts: %v", getBarChartsErr)
 	}

@@ -6,16 +6,11 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common"
-	"resultra/datasheet/server/dataModel"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
 const textBoxEntityKind string = "TextBox"
-
-func textBoxChildParentEntityRel() datastoreWrapper.ChildParentEntityRel {
-	return datastoreWrapper.ChildParentEntityRel{ParentEntityKind: dataModel.LayoutEntityKind, ChildEntityKind: textBoxEntityKind}
-}
 
 type TextBox struct {
 	Field    *datastore.Key
@@ -65,7 +60,7 @@ func saveNewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*
 
 	newTextBox := TextBox{Field: fieldKey, Geometry: params.Geometry}
 
-	textBoxID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.ParentID, textBoxChildParentEntityRel(), &newTextBox)
+	textBoxID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.ParentID, textBoxEntityKind, &newTextBox)
 	if insertErr != nil {
 		return nil, insertErr
 	}
@@ -84,7 +79,7 @@ func saveNewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*
 func getTextBox(appEngContext appengine.Context, textBoxID string) (*TextBox, error) {
 
 	var textBox TextBox
-	if getErr := datastoreWrapper.GetChildEntity(appEngContext, textBoxID, textBoxChildParentEntityRel(), &textBox); getErr != nil {
+	if getErr := datastoreWrapper.GetChildEntity(appEngContext, textBoxID, &textBox); getErr != nil {
 		return nil, fmt.Errorf("getBarChart: Unable to get bar chart from datastore: error = %v", getErr)
 	}
 	return &textBox, nil
@@ -93,7 +88,7 @@ func getTextBox(appEngContext appengine.Context, textBoxID string) (*TextBox, er
 func GetTextBoxes(appEngContext appengine.Context, parentFormID string) ([]TextBoxRef, error) {
 
 	var textBoxes []TextBox
-	textBoxIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentFormID, textBoxChildParentEntityRel(), &textBoxes)
+	textBoxIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentFormID, textBoxEntityKind, &textBoxes)
 	if getErr != nil {
 		return nil, fmt.Errorf("Unable to retrieve layout containers: form id=%v", parentFormID)
 	}
@@ -120,8 +115,7 @@ func GetTextBoxes(appEngContext appengine.Context, parentFormID string) ([]TextB
 
 func updateExistingTextBox(appEngContext appengine.Context, textBoxID string, updatedTextBox *TextBox) (*TextBoxRef, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingChildEntity(appEngContext, textBoxID,
-		textBoxChildParentEntityRel(), updatedTextBox); updateErr != nil {
+	if updateErr := datastoreWrapper.UpdateExistingChildEntity(appEngContext, textBoxID, updatedTextBox); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingTextBox: Error updating text box: error = %v", updateErr)
 	}
 

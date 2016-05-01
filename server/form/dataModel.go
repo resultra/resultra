@@ -4,14 +4,11 @@ import (
 	"appengine"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/dataModel"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
-var formChildParentEntityRel = datastoreWrapper.ChildParentEntityRel{
-	ParentEntityKind: dataModel.TableEntityKind,
-	ChildEntityKind:  dataModel.FormEntityKind}
+const formEntityKind string = "Form"
 
 type Form struct {
 	Name string
@@ -37,7 +34,7 @@ func newForm(appEngContext appengine.Context, params NewFormParams) (*FormRef, e
 	newForm := Form{Name: sanitizedName}
 	formID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext,
 		params.TableID,
-		formChildParentEntityRel, &newForm)
+		formEntityKind, &newForm)
 	if insertErr != nil {
 		return nil, fmt.Errorf("NewForm: Unable to create new form: %v", insertErr)
 	}
@@ -55,7 +52,7 @@ type GetFormParams struct {
 func getForm(appEngContext appengine.Context, params GetFormParams) (*FormRef, error) {
 
 	var form Form
-	if getErr := datastoreWrapper.GetChildEntity(appEngContext, params.FormID, formChildParentEntityRel, &form); getErr != nil {
+	if getErr := datastoreWrapper.GetChildEntity(appEngContext, params.FormID, &form); getErr != nil {
 		return nil, fmt.Errorf("GetForm: Unable to get form from datastore: error = %v", getErr)
 	}
 
@@ -67,7 +64,7 @@ func getForm(appEngContext appengine.Context, params GetFormParams) (*FormRef, e
 func getAllForms(appEngContext appengine.Context, parentTableID string) ([]FormRef, error) {
 
 	var forms []Form
-	formIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentTableID, formChildParentEntityRel, &forms)
+	formIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentTableID, formEntityKind, &forms)
 	if getErr != nil {
 		return nil, fmt.Errorf("Unable to retrieve forms: table id=%v", parentTableID)
 	}

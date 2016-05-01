@@ -87,8 +87,7 @@ func GetRecord(appEngContext appengine.Context, recordParams RecordID) (*RecordR
 
 func UpdateExistingRecord(appEngContext appengine.Context, recordID RecordID, rec Record) (*RecordRef, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingRootEntity(appEngContext, recordEntityKind,
-		recordID.RecordID, &rec); updateErr != nil {
+	if updateErr := datastoreWrapper.UpdateExistingRootEntity(appEngContext, recordID.RecordID, &rec); updateErr != nil {
 		return nil, fmt.Errorf("UpdateExistingRecord: Can't set value: Error updating existing record: params=%+v, err = %v",
 			recordID, updateErr)
 	}

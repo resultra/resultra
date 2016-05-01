@@ -130,7 +130,7 @@ func GetField(appEngContext appengine.Context, fieldID string) (*Field, error) {
 
 func UpdateExistingField(appEngContext appengine.Context, fieldID string, updatedField *Field) (*FieldRef, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingRootEntity(appEngContext, fieldEntityKind,
+	if updateErr := datastoreWrapper.UpdateExistingRootEntity(appEngContext,
 		fieldID, updatedField); updateErr != nil {
 		return nil, fmt.Errorf("UpdateExistingField: Can't set value: Error updating existing field: err = %v", updateErr)
 	}

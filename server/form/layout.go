@@ -4,10 +4,11 @@ import (
 	"appengine"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/dataModel"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/datastoreWrapper"
 )
+
+const layoutEntityKind string = "Layout"
 
 type Layout struct {
 	Name string `json:"name"`
@@ -26,7 +27,7 @@ func NewLayout(appEngContext appengine.Context, layoutName string) (string, erro
 	}
 
 	var newLayout = Layout{sanitizedLayoutName}
-	layoutID, insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, dataModel.LayoutEntityKind, &newLayout)
+	layoutID, insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, layoutEntityKind, &newLayout)
 	if insertErr != nil {
 		return "", insertErr
 	}
@@ -41,7 +42,7 @@ func NewLayout(appEngContext appengine.Context, layoutName string) (string, erro
 func GetAllLayoutRefs(appEngContext appengine.Context) ([]LayoutRef, error) {
 
 	var allLayouts []Layout
-	ids, err := datastoreWrapper.GetAllRootEntities(appEngContext, dataModel.LayoutEntityKind, &allLayouts)
+	ids, err := datastoreWrapper.GetAllRootEntities(appEngContext, layoutEntityKind, &allLayouts)
 	if err != nil {
 		return nil, fmt.Errorf("GetAllLayouts: Unable to retrieve layouts from datastore: datastore error =%v", err)
 	}
@@ -64,7 +65,7 @@ type GetLayoutParams struct {
 func GetLayoutRef(appEngContext appengine.Context, layoutParams GetLayoutParams) (*LayoutRef, error) {
 
 	getLayout := Layout{}
-	getErr := datastoreWrapper.GetRootEntity(appEngContext, dataModel.LayoutEntityKind, layoutParams.LayoutID, &getLayout)
+	getErr := datastoreWrapper.GetRootEntity(appEngContext, layoutEntityKind, layoutParams.LayoutID, &getLayout)
 	if getErr != nil {
 		return nil, fmt.Errorf("Can't get layout: Error retrieving existing layout: params=%+v, err = %v", layoutParams, getErr)
 	}
