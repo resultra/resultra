@@ -7,10 +7,6 @@ import (
 	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
-var tableChildParentEntityRel = datastoreWrapper.ChildParentEntityRel{
-	ParentEntityKind: dataModel.DatabaseEntityKind,
-	ChildEntityKind:  dataModel.TableEntityKind}
-
 type Table struct {
 	Name string
 }
@@ -37,7 +33,7 @@ func saveNewTable(appEngContext appengine.Context, params NewTableParams) (*Tabl
 	newTable := Table{Name: sanitizedTableName}
 
 	tableID, insertErr := datastoreWrapper.InsertNewChildEntity(
-		appEngContext, params.DatabaseID, tableChildParentEntityRel, &newTable)
+		appEngContext, params.DatabaseID, dataModel.TableChildParentEntityRel, &newTable)
 	if insertErr != nil {
 		return nil, insertErr
 	}

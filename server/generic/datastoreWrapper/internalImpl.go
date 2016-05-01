@@ -46,8 +46,9 @@ func newChildEntityKey(appEngContext appengine.Context,
 
 // Verify the existance of the entity with the given key. When inserting child
 // entities, the datastore doesn't verify the key to the parent entity actually
-// exists in the datastore. Using this function makes these types of operations
-// more robust.
+// exists in the datastore. In other words, the datastore will allow insertion
+// of child entities with a dangling parent reference. Using this function makes
+// these types of operations more robust.
 //
 // Pass a dummy value to the query - it is ignored when the KeysOnly query is used
 func verifyEntityExists(appEngContext appengine.Context, entityKind string, existingEntityKey *datastore.Key) error {

@@ -170,7 +170,8 @@ func GetChildEntity(appEngContext appengine.Context,
 	}
 
 	if getErr := getChildEntityByID(uniqueID.childID, appEngContext, entityRel.ChildEntityKind, parentKey, getDest); getErr != nil {
-		return fmt.Errorf("getChildEntity: Unable to get child entity from datastore: error = %v", getErr)
+		return fmt.Errorf("getChildEntity: Unable to get child entity from datastore: child id = %v, error = %v",
+			encodedChildID, getErr)
 	}
 
 	return nil
