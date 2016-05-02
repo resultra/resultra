@@ -2,9 +2,27 @@ package record
 
 import (
 	"appengine"
+	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
 )
+
+func RegisterHTTPHandlers(apiRouter *mux.Router) {
+
+	apiRouter.HandleFunc("/api/newRecord", newRecord)
+	apiRouter.HandleFunc("/api/getRecord", getRecord)
+	apiRouter.HandleFunc("/api/getRecords", getRecords)
+}
+
+func init() {
+	recordRouter := mux.NewRouter()
+
+	recordRouter.HandleFunc("/api/record/new", newRecord)
+	recordRouter.HandleFunc("/api/record/get", getRecord)
+	recordRouter.HandleFunc("/api/record/getAll", getRecords)
+
+	http.Handle("/api/record/", recordRouter)
+}
 
 func newRecord(w http.ResponseWriter, r *http.Request) {
 
