@@ -49,7 +49,7 @@ type GetFormParams struct {
 	FormID string `json:"formID"`
 }
 
-func getForm(appEngContext appengine.Context, params GetFormParams) (*FormRef, error) {
+func GetFormRef(appEngContext appengine.Context, params GetFormParams) (*FormRef, error) {
 
 	var form Form
 	if getErr := datastoreWrapper.GetEntity(appEngContext, params.FormID, &form); getErr != nil {

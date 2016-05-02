@@ -29,27 +29,24 @@ func init() {
 }
 
 type ViewFormTemplateParams struct {
-	Title      string
-	LayoutID   string
-	LayoutName string
+	Title    string
+	FormID   string
+	FormName string
 }
 
 func viewForm(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	// TODO - Verify layoutID and recordID are valid and have
-	// been passed to this function.
-	layoutID := vars["layoutID"]
-	log.Println("editRecord: editing record: layout ID = %v", layoutID)
-
+	formID := vars["formID"]
+	log.Println("view form: : form ID = %v", formID)
 	appEngContext := appengine.NewContext(r)
-	layoutRef, getErr := form.GetLayoutRef(appEngContext, form.GetLayoutParams{layoutID})
+	formRef, getErr := form.GetFormRef(appEngContext, form.GetFormParams{formID})
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return
 	}
 
-	templParams := ViewFormTemplateParams{"View Form", layoutID, layoutRef.Layout.Name}
+	templParams := ViewFormTemplateParams{"View Form", formID, formRef.Name}
 	err := viewFormTemplates.ExecuteTemplate(w, "viewForm", templParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

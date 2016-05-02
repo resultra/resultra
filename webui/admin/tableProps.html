@@ -47,25 +47,25 @@
 			</table>
 
 			
-			<h2>Layouts (Forms)</h2>
+			<h2>Forms</h2>
 			
 			<table class="ui celled table">
 			  <thead>
 			    <tr>
-			      <th>Layout Name</th>
+			      <th>Form Name</th>
 				  <th class="right aligned"></th>
 			    </tr>
 			  </thead>
 			  <tbody>
 
-			{{range $layoutRef := .LayoutRefs}}
+			{{range $formRef := .FormRefs}}
 			
 				<tr>
 			
-					<td>{{$layoutRef.Layout.Name}}</td>
+					<td>{{$formRef.Name}}</td>
 					
 					<td>
-						<a href="/editLayout/{{$layoutRef.LayoutID}}">
+						<a href="/editForm/{{$formRef.formID}}">
 						<button class="small ui button">
  						   	<i class="icon edit"></i>Edit 
 						</button></a>

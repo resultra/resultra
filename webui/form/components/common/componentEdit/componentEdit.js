@@ -2,6 +2,8 @@
 
 function initFormComponentDesignBehavior(componentIDs, objectRef, designFormConfig) {
 	
+	console.log("initFormComponentDesignBehavior: params = " + JSON.stringify(componentIDs))
+	
 	initObjectEditBehavior(componentIDs.formID,
 		componentIDs.componentID,designFormConfig)
 		

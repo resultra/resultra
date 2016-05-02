@@ -25,19 +25,19 @@ $(document).ready(function() {
 			var objEditConfig = paletteItemsEditConfig[droppedItemInfo.paletteItemID]
 			
 			setTimeout(function() {
-				initObjectEditBehavior(layoutID,droppedItemInfo.placeholderID,objEditConfig) 
+				initObjectEditBehavior(formID,droppedItemInfo.placeholderID,objEditConfig) 
 			}, 50);
 			
 			
-			// "repackage" the dropped item paramaters for creating a new layout element. Also add the layoutID
+			// "repackage" the dropped item paramaters for creating a new layout element. Also add the formID
 			// to the parameters.
-			var layoutContainerParams = {
-				parentLayoutID: layoutID,
+			var containerParams = {
+				parentFormID: formID,
 				geometry: droppedItemInfo.geometry,
 				containerID: droppedItemInfo.placeholderID,
 				};
 				
-			objEditConfig.createNewItemAfterDropFunc(layoutID,layoutContainerParams)
+			objEditConfig.createNewItemAfterDropFunc(formID,containerParams)
 		},
 		
 		dropDestSelector: formDesignCanvasSelector,
@@ -76,11 +76,11 @@ $(document).ready(function() {
 	loadFormComponents({
 		formParentElemID: formDesignCanvasSelector,
 		initTextBoxFunc: function(textBoxObjectRef) {
-			var componentIDs = { formID: layoutID, componentID: textBoxObjectRef.textBoxID }
+			var componentIDs = { formID: formID, componentID: textBoxObjectRef.textBoxID }
 			initFormComponentDesignBehavior(componentIDs,textBoxObjectRef,textBoxDesignFormConfig)
 		},
 		initCheckBoxFunc: function(checkBoxObjectRef) {
-			var componentIDs = { formID: layoutID, componentID: checkBoxObjectRef.checkBoxID }
+			var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
 			initFormComponentDesignBehavior(componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig)
 		},
 		doneLoadingFormDataFunc: function() {} // no-op	

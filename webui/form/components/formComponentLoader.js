@@ -1,6 +1,7 @@
 function loadFormComponents(loadFormConfig) {
 	
-	jsonAPIRequest("frm/getFormInfo", { formID: layoutID }, function(formInfo) {
+	// TODO: formID is accessing a global. Pass it into this function instead.
+	jsonAPIRequest("frm/getFormInfo", { formID: formID }, function(formInfo) {
 												
 		for (var textBoxIter in formInfo.textBoxes) {
 			

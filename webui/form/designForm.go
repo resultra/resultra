@@ -37,8 +37,8 @@ type FormElemTemplateParams struct {
 
 type DesignFormTemplateParams struct {
 	Title          string
-	LayoutID       string
-	LayoutName     string
+	FormID         string
+	FormName       string
 	CheckboxParams FormElemTemplateParams
 	TextBoxParams  FormElemTemplateParams
 }
@@ -46,11 +46,11 @@ type DesignFormTemplateParams struct {
 func designForm(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
-	layoutID := vars["layoutID"]
-	log.Println("Design Form: editing for layout with ID = ", layoutID)
+	formID := vars["formID"]
+	log.Println("Design Form: editing for form with ID = ", formID)
 
 	appEngContext := appengine.NewContext(r)
-	layoutRef, getErr := form.GetLayoutRef(appEngContext, form.GetLayoutParams{layoutID})
+	formRef, getErr := form.GetFormRef(appEngContext, form.GetFormParams{formID})
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return
@@ -58,8 +58,8 @@ func designForm(w http.ResponseWriter, r *http.Request) {
 
 	templParams := DesignFormTemplateParams{
 		Title:          "Edit Layout",
-		LayoutID:       layoutID,
-		LayoutName:     layoutRef.Layout.Name,
+		FormID:         formRef.FormID,
+		FormName:       formRef.Name,
 		CheckboxParams: FormElemTemplateParams{ElemPrefix: "checkbox_"},
 		TextBoxParams:  FormElemTemplateParams{ElemPrefix: "textBox_"}}
 

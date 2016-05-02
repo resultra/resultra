@@ -50,7 +50,7 @@
 	  <i class="right chevron icon divider"></i>
 	  <a class="section"><i class="database icon"></i>Database Name</a>
 	  <i class="right chevron icon divider"></i>
-	  <div class="active section">{{.LayoutName}}</div>
+	  <div class="active section">{{.FormName}}</div>
 	</div> <!-- breadcrumb header -->
 {{end}}
 
@@ -82,7 +82,7 @@
 				<div class="item">Print</div>
 				<div class="item">Export CSV</div>
 				<div class="divider"></div>
-				<a href="/designForm/{{.LayoutID}}" class="item">Edit Form Design</a>
+				<a href="/designForm/{{.FormID}}" class="item">Edit Form Design</a>
 			</div> <!-- menu -->
 		</div> <!-- ui dropdown -->
 	</div> <!-- column -->
@@ -128,7 +128,7 @@
 
 	{{template "commonJS"}}
 
-	<script>var layoutID={{.LayoutID}};</script>
+	<script>var formID={{.FormID}};</script>
 	
 	<script src="/static/common/objectEdit/objectEditHelper.js"></script>
 	<script src="/static/field/fieldInfo.js"></script>

@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/recordUpdate"
@@ -19,7 +18,6 @@ func RegisterAPIHTTPHandlers() {
 	dashboard.RegisterHTTPHandlers(apiRouter)
 	record.RegisterHTTPHandlers(apiRouter)
 	recordUpdate.RegisterHTTPHandlers(apiRouter)
-	form.RegisterHTTPHandlers(apiRouter)
 	recordFilter.RegisterHTTPHandlers(apiRouter)
 
 	http.Handle("/api/", apiRouter)

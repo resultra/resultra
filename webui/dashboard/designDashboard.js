@@ -44,8 +44,8 @@ $(document).ready(function() {
 			// drawing the dummy bar charts. See http://goo.gl/IloNM for more.
 			setTimeout(function() {drawDesignModeDummyBarChart(droppedItemInfo.placeholderID); }, 50);
 			
-			// "repackage" the dropped item paramaters for creating a new layout element. Also add the layoutID
-			// to the parameters.
+			// "repackage" the dropped item paramaters for creating a new dashboard component, adding
+			// the dashboard ID to the parameter list.
 			var barChartParams = {
 				parentDashboardID: dashboardID,
 				geometry: droppedItemInfo.geometry,

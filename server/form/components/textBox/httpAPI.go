@@ -2,7 +2,6 @@ package textBox
 
 import (
 	"appengine"
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -16,20 +15,6 @@ func init() {
 	textBoxRouter.HandleFunc("/api/frm/textBox/reposition", repositionTextBox)
 
 	http.Handle("/api/frm/textBox/", textBoxRouter)
-}
-
-func getLayoutIDFromRequestParams(r *http.Request) (string, error) {
-	var jsonParams api.JSONParams
-	if err := api.DecodeJSONRequest(r, &jsonParams); err != nil {
-		return "", err
-	}
-
-	layoutID, found := jsonParams["layoutID"]
-	if found != true || len(layoutID) == 0 {
-		return "", fmt.Errorf("Missing layoutID parameter in request")
-	}
-
-	return layoutID, nil
 }
 
 func newTextBox(w http.ResponseWriter, r *http.Request) {

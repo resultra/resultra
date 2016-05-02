@@ -13,7 +13,7 @@ type TablePropsPageInfo struct {
 	Title      string
 	DatabaseID string
 	FieldRefs  []field.FieldRef
-	LayoutRefs []form.LayoutRef
+	FormRefs   []form.FormRef
 }
 
 var tablePropsTemplates = template.Must(template.ParseFiles("static/admin/tableProps.html"))
@@ -29,13 +29,15 @@ func tableProps(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	layoutRefs, layoutErr := form.GetAllLayoutRefs(appEngCntxt)
-	if layoutErr != nil {
-		api.WriteErrorResponse(w, layoutErr)
-		return
-	}
+	formRefs := []form.FormRef{}
+	/*
+		formRefs, formErr := form.GetAllFormRefs(appEngCntxt)
+		if formErr != nil {
+			api.WriteErrorResponse(w, formErr)
+			return
+		} */
 
-	p := TablePropsPageInfo{"Database Table Properties", "dummyDatabaseID", fieldRefs, layoutRefs}
+	p := TablePropsPageInfo{"Database Table Properties", "dummyDatabaseID", fieldRefs, formRefs}
 	templErr := tablePropsTemplates.ExecuteTemplate(w, "tableProps", p)
 	if templErr != nil {
 		api.WriteErrorResponse(w, templErr)

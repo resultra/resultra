@@ -9,11 +9,6 @@ import (
 	"resultra/datasheet/server/generic/api"
 )
 
-func RegisterHTTPHandlers(apiRouter *mux.Router) {
-
-	apiRouter.HandleFunc("/api/newLayout", newLayout)
-}
-
 func init() {
 
 	formRouter := mux.NewRouter()
@@ -23,23 +18,6 @@ func init() {
 	formRouter.HandleFunc("/api/frm/get", getFormAPI)
 
 	http.Handle("/api/frm/", formRouter)
-}
-
-func newLayout(w http.ResponseWriter, r *http.Request) {
-
-	var layoutParam map[string]string
-	if err := api.DecodeJSONRequest(r, &layoutParam); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-
-	appEngCntxt := appengine.NewContext(r)
-	if layoutID, err := NewLayout(appEngCntxt, layoutParam["name"]); err != nil {
-		api.WriteErrorResponse(w, err)
-	} else {
-		api.WriteJSONResponse(w, api.JSONParams{"layoutID": layoutID})
-	}
-
 }
 
 func newFormAPI(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +46,7 @@ func getFormAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	if formRef, err := getForm(appEngCntxt, params); err != nil {
+	if formRef, err := GetFormRef(appEngCntxt, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *formRef)

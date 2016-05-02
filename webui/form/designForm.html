@@ -5,7 +5,7 @@
 	  <i class="right chevron icon divider"></i>
 	  <a class="section"><i class="database icon"></i>Database Name</a>
 	  <i class="right chevron icon divider"></i>
-	  <a class="section" href="/viewForm/{{.LayoutID}}">{{.LayoutName}}</a>
+	  <a class="section" href="/viewForm/{{.FormID}}">{{.FormName}}</a>
 	  <i class="right chevron icon divider"></i>
 	  <div class="active section">Design Form</div>
 	</div> <!-- breadcrumb header -->
@@ -93,7 +93,7 @@
 
 	{{template "commonJS"}}
 	
-	<script>var layoutID={{.LayoutID}};</script>
+	<script>var formID={{.FormID}};</script>
 	<script src="/static/common/dialog/wizardDialog.js"></script>
 	
 	<script src="/static/common/objectEdit/objectEditHelper.js"></script>
