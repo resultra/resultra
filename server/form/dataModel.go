@@ -6,6 +6,7 @@ import (
 	"log"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/datastoreWrapper"
+	"resultra/datasheet/server/table"
 )
 
 const formEntityKind string = "Form"
@@ -15,8 +16,9 @@ type Form struct {
 }
 
 type FormRef struct {
-	FormID string `json:"formID"`
-	Name   string `json:"name"`
+	FormID  string `json:"formID"`
+	TableID string `json:"tableID"`
+	Name    string `json:"name"`
 }
 
 type NewFormParams struct {
@@ -41,7 +43,7 @@ func newForm(appEngContext appengine.Context, params NewFormParams) (*FormRef, e
 
 	log.Printf("NewForm: Created new form: id= %v, name='%v'", formID, sanitizedName)
 
-	return &FormRef{FormID: formID, Name: sanitizedName}, nil
+	return &FormRef{TableID: params.TableID, FormID: formID, Name: sanitizedName}, nil
 
 }
 
@@ -56,7 +58,12 @@ func GetFormRef(appEngContext appengine.Context, params GetFormParams) (*FormRef
 		return nil, fmt.Errorf("GetForm: Unable to get form from datastore: error = %v", getErr)
 	}
 
-	formRef := FormRef{FormID: params.FormID, Name: form.Name}
+	tableID, getTableIDErr := datastoreWrapper.GetParentID(params.FormID, table.TableEntityKind)
+	if getTableIDErr != nil {
+		return nil, fmt.Errorf("GetForm: Unable to parent table ID: error = %v", getTableIDErr)
+	}
+
+	formRef := FormRef{TableID: tableID, FormID: params.FormID, Name: form.Name}
 
 	return &formRef, nil
 }

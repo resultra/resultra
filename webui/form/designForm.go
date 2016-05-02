@@ -39,6 +39,7 @@ type DesignFormTemplateParams struct {
 	Title          string
 	FormID         string
 	FormName       string
+	TableID        string
 	CheckboxParams FormElemTemplateParams
 	TextBoxParams  FormElemTemplateParams
 }
@@ -59,6 +60,7 @@ func designForm(w http.ResponseWriter, r *http.Request) {
 	templParams := DesignFormTemplateParams{
 		Title:          "Edit Layout",
 		FormID:         formRef.FormID,
+		TableID:        formRef.TableID,
 		FormName:       formRef.Name,
 		CheckboxParams: FormElemTemplateParams{ElemPrefix: "checkbox_"},
 		TextBoxParams:  FormElemTemplateParams{ElemPrefix: "textBox_"}}

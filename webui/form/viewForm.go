@@ -31,6 +31,7 @@ func init() {
 type ViewFormTemplateParams struct {
 	Title    string
 	FormID   string
+	TableID  string
 	FormName string
 }
 
@@ -46,7 +47,7 @@ func viewForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templParams := ViewFormTemplateParams{"View Form", formID, formRef.Name}
+	templParams := ViewFormTemplateParams{Title: "View Form", FormID: formID, TableID: formRef.TableID, FormName: formRef.Name}
 	err := viewFormTemplates.ExecuteTemplate(w, "viewForm", templParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

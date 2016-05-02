@@ -167,3 +167,24 @@ func GetAllChildEntities(appEngContext appengine.Context, parentID string,
 
 	return childIDs, nil
 }
+
+func GetParentID(childID string, expectedParentEntityKind string) (string, error) {
+
+	childKey, decodeErr := datastore.DecodeKey(childID)
+	if decodeErr != nil {
+		return "", fmt.Errorf("GetParentID: Can't decode id '%v': %v", childID, decodeErr)
+	}
+
+	parentKey := childKey.Parent()
+	if parentKey == nil {
+		return "", fmt.Errorf("GetParentID: No parent key for child with id '%v'", childID)
+	}
+
+	if parentKey.Kind() != expectedParentEntityKind {
+		return "", fmt.Errorf("GetParentID: Unexpected parent type: expecting '%v', but got '%v'",
+			expectedParentEntityKind, parentKey.Kind())
+	}
+
+	return parentKey.Encode(), nil
+
+}

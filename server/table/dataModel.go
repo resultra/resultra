@@ -6,7 +6,7 @@ import (
 	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
-const tableEntityKind string = "Table"
+const TableEntityKind string = "Table"
 
 type Table struct {
 	Name string
@@ -34,7 +34,7 @@ func saveNewTable(appEngContext appengine.Context, params NewTableParams) (*Tabl
 	newTable := Table{Name: sanitizedTableName}
 
 	tableID, insertErr := datastoreWrapper.InsertNewChildEntity(
-		appEngContext, params.DatabaseID, tableEntityKind, &newTable)
+		appEngContext, params.DatabaseID, TableEntityKind, &newTable)
 	if insertErr != nil {
 		return nil, insertErr
 	}
