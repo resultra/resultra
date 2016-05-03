@@ -321,10 +321,10 @@ function initFilterRecordsFieldSelectionMenu(fieldsByID) {
 	
 }
 
-function initFilterRecordsElems() {
+function initFilterRecordsElems(parentTableID) {
 	
 	
-	loadFieldInfo(function(fieldsByID) {
+	loadFieldInfo(parentTableID,[fieldTypeAll],function(fieldsByID) {
 		
 		console.log("initFilterRecordsElems: initializing filter panel")
 		
@@ -346,7 +346,7 @@ function initFilterRecordsElems() {
 		
 		console.log("initFilterRecordsElems: done initializing filter panel")
 		
-	},[fieldTypeAll])
+	})
 	
 
 }

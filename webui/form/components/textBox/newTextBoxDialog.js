@@ -8,7 +8,7 @@ var textBoxProgressDivID = '#newTextBoxProgress'
 var textBoxDialogSelector = "#newTextBox"
 
 
-function openNewTextBoxDialog(formID,containerParams)
+function openNewTextBoxDialog(formID,parentTableID,containerParams)
 {
 	
 	// Must be the same as designForm.go - this is the common prefix on all DOM element IDs to distinguish
@@ -70,6 +70,7 @@ function openNewTextBoxDialog(formID,containerParams)
 	
 	
 	var newOrExistingFieldPanel = createNewOrExistingFieldPanelConfig({
+		parentTableID: parentTableID,
 		elemPrefix:textBoxElemPrefix,
 		fieldTypes: [fieldTypeText,fieldTypeNumber],
 		doneIfSelectExistingField:true,

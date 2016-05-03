@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/datastoreWrapper"
 	"resultra/datasheet/server/record"
+	"resultra/datasheet/server/table"
 )
 
 type EqnEvalFunc func(evalContext *EqnEvalContext, funcArgs []EquationNode) (*EquationResult, error)
@@ -253,7 +255,12 @@ func updateOneCalcFieldValue(appEngContext appengine.Context, recordRef *record.
 // to refresh calculated values.
 func UpdateCalcFieldValues(appEngContext appengine.Context, recordRef *record.RecordRef) error {
 
-	fieldRefs, getFieldErr := field.GetAllFieldRefs(appEngContext)
+	parentTableID, getParentErr := datastoreWrapper.GetParentID(recordRef.RecordID, table.TableEntityKind)
+	if getParentErr != nil {
+		return fmt.Errorf("Error updating field values - can't get record's parent table: %v", getParentErr)
+	}
+
+	fieldRefs, getFieldErr := field.GetAllFieldRefs(appEngContext, field.GetFieldListParams{ParentTableID: parentTableID})
 	if getFieldErr != nil {
 		return fmt.Errorf("Error updating field values - can't get fields: %v", getFieldErr)
 	}

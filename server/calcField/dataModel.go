@@ -11,10 +11,11 @@ import (
 // end-user format? If so, this code will need an update once equation parsing is
 // done.
 type NewCalcFieldParams struct {
-	Name        string `json:"name"`
-	Type        string `json:"type"`
-	RefName     string `json:"refName"`
-	FormulaText string `json:"formulaText"`
+	ParentTableID string `json:"parentTableID"`
+	Name          string `json:"name"`
+	Type          string `json:"type"`
+	RefName       string `json:"refName"`
+	FormulaText   string `json:"formulaText"`
 }
 
 func newCalcField(appEngContext appengine.Context, calcFieldParams NewCalcFieldParams) (string, error) {
@@ -35,5 +36,5 @@ func newCalcField(appEngContext appengine.Context, calcFieldParams NewCalcFieldP
 		CalcFieldFormulaText: calcFieldParams.FormulaText,
 		IsCalcField:          true}
 
-	return field.CreateNewFieldFromRawInputs(appEngContext, newField)
+	return field.CreateNewFieldFromRawInputs(appEngContext, calcFieldParams.ParentTableID, newField)
 }

@@ -37,7 +37,7 @@ $(document).ready(function() {
 				containerID: droppedItemInfo.placeholderID,
 				};
 				
-			objEditConfig.createNewItemAfterDropFunc(formID,containerParams)
+			objEditConfig.createNewItemAfterDropFunc(formID,tableID,containerParams)
 		},
 		
 		dropDestSelector: formDesignCanvasSelector,
@@ -68,6 +68,7 @@ $(document).ready(function() {
 	function showFormulaEditPane() { formDesignLayout.open("south") }
 	function hideFormulaEditPanel() { formDesignLayout.close("south")}
 	var formulaEditorParams = {
+		tableID: tableID,
 		showEditorFunc:showFormulaEditPane,
 		hideEditorFunc:hideFormulaEditPanel
 	}

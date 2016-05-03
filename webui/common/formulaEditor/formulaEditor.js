@@ -3,11 +3,11 @@
 // a global configuration should suffice.
 var formulaEditorConfig;
 
-function populateFieldRefInsertionMenu()
+function populateFieldRefInsertionMenu(tableID)
 {
 	// Populate the menu to insert field references with the list of fields
 	$("#formulaFieldRefList").empty()
-	loadFieldInfo(function(fieldsByID) {
+	loadFieldInfo(tableID, [fieldTypeAll],function(fieldsByID) {
 		for (var fieldID in fieldsByID) {
 		
 			var fieldInfo = fieldsByID[fieldID]		
@@ -27,7 +27,7 @@ function populateFieldRefInsertionMenu()
 				}	
 			}
 		})
-	}, [fieldTypeAll])
+	})
 	
 }
 
@@ -53,7 +53,7 @@ function initFormulaEditor(editorConfig) {
 		$('#formulaEditor').popup('hide')
     })
 	
-	populateFieldRefInsertionMenu()
+	populateFieldRefInsertionMenu(editorConfig.tableID)
 	
 	// TODO - Setup the editor for language specific syntax highlighting, etc.
 }

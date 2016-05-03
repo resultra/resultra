@@ -1,7 +1,7 @@
 
 var checkboxDialogSelector = "#newCheckbox"
 
-function openNewCheckboxDialog(formID,containerParams)
+function openNewCheckboxDialog(formID,parentTableID,containerParams)
 {
 	
 	// Must be the same as designForm.go - this is the common prefix on all DOM element IDs to distinguish
@@ -68,6 +68,7 @@ function openNewCheckboxDialog(formID,containerParams)
 	
 	
 	var newOrExistingFieldPanel = createNewOrExistingFieldPanelConfig({
+		parentTableID: parentTableID,
 		elemPrefix:checkboxElemPrefix,
 		fieldTypes: [fieldTypeBool],
 		doneIfSelectExistingField:true,

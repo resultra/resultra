@@ -18,7 +18,7 @@ function populateFieldSelectionMenu(fieldsByID, menuSelector) {
 	})
 }
 
-function loadFieldInfo(fieldInfoCallback, fieldTypes) {
+function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 	
 	// Map of field ID's to the fieldRef object: see initialization below
 	var fieldsByID = {}
@@ -69,7 +69,9 @@ function loadFieldInfo(fieldInfoCallback, fieldTypes) {
 		fieldInfoCallback(fieldsByID)
 	}
 	
-	jsonAPIRequest("field/getListByType", {},processFieldInfo)
+	assert(parentTableID !== undefined)
+	assert(parentTableID.length > 0)
+	jsonAPIRequest("field/getListByType", {parentTableID:parentTableID},processFieldInfo)
 	
 } // loadFieldInfo
 

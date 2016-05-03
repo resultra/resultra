@@ -100,9 +100,9 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 			// Populate the select field dialog box with a list of possible fields to
 			// connect the new form element to.
 			$(selectField.selector).dropdown()
-			loadFieldInfo(function(fieldsByID) {
+			loadFieldInfo(panelConfig.parentTableID,panelConfig.fieldTypes,function(fieldsByID) {
 				populateFieldSelectionMenu(fieldsByID,selectField.selector)
-			},panelConfig.fieldTypes)
+			})
 
 			disableSelectExistingField();
 			$(createNewFieldRadio.selector).prop("checked", true);
