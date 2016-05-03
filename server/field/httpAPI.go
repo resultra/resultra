@@ -2,9 +2,20 @@ package field
 
 import (
 	"appengine"
+	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
 )
+
+func init() {
+
+	fieldRouter := mux.NewRouter()
+
+	fieldRouter.HandleFunc("/api/field/new", newField)
+	fieldRouter.HandleFunc("/api/field/getListByType", getFieldsByType)
+
+	http.Handle("/api/field/", fieldRouter)
+}
 
 func newField(w http.ResponseWriter, r *http.Request) {
 

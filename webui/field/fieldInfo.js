@@ -69,7 +69,7 @@ function loadFieldInfo(fieldInfoCallback, fieldTypes) {
 		fieldInfoCallback(fieldsByID)
 	}
 	
-	jsonAPIRequest("getFieldsByType", {},processFieldInfo)
+	jsonAPIRequest("field/getListByType", {},processFieldInfo)
 	
 } // loadFieldInfo
 
