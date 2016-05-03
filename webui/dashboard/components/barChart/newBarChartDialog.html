@@ -1,4 +1,26 @@
 
+{{define "newBarChartSelectTablePanel"}}
+	<div id="newBarChartSelectTablePanel" class="wizardPanel">
+		<form class="ui form">
+			<div class="ui info message" >
+				<p>
+					Choose a table to retrieve the data from for the bar chart.
+				</p>
+			</div>
+			<div class="field" id="selectBarChartTable">
+				<label>Table</label> 
+				<select class="ui dropdown" id="barChartTableSelection" name="barChartTableSelection">
+					<option value="">
+						Select a table
+					</option>
+				</select>
+			</div>
+		</form> <!-- form for panel -->
+	</div> <!-- panel for selecting new field or choosing to create a new one -->
+{{end}}
+
+
+
 {{define "newBarChartXAxisPanel"}}
 	<div id="newBarChartDlgXAxisPanel" class="wizardPanel">
 		<form class="ui form">
@@ -75,6 +97,7 @@
 	  <div class="bar"></div>
 	</div>
 	
+	{{template "newBarChartSelectTablePanel"}}
 	{{template "newBarChartXAxisPanel"}}
 	{{template "newBarChartYAxisPanel"}}
 	

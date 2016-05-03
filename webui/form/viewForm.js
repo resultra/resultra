@@ -45,7 +45,7 @@ function loadCurrRecordIntoLayout()
 
 function loadRecords()
 {
-	var getRecordsParams = {} // TODO - will include sort & filter options
+	var getRecordsParams = {tableID:tableID} // TODO - will include sort & filter options
 	jsonAPIRequest("getFilteredRecords",getRecordsParams,function(replyData) {
 		
 		currRecordSet = new RecordSet(replyData);
@@ -66,8 +66,8 @@ function loadRecords()
 }
 
 function createNewRecord() {
-	var newRecordsParams = {}
-	jsonAPIRequest("newRecord",newRecordsParams,function(newRecordRef) {
+	var newRecordsParams = {tableID:tableID}
+	jsonAPIRequest("record/new",newRecordsParams,function(newRecordRef) {
 		currRecordSet.appendNewRecord(newRecordRef);
 		currRecordSet.jumpToRecord(newRecordRef.recordID)
 		loadCurrRecordIntoLayout()

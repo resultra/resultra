@@ -2,6 +2,7 @@ package table
 
 import (
 	"appengine"
+	"fmt"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/datastoreWrapper"
 )
@@ -44,4 +45,25 @@ func saveNewTable(appEngContext appengine.Context, params NewTableParams) (*Tabl
 		Name:    sanitizedTableName}
 
 	return &tableRef, nil
+}
+
+type GetTableListParams struct {
+	DatabaseID string `json:"databaseID"` // parent database
+}
+
+func getTableList(appEngContext appengine.Context, params GetTableListParams) ([]TableRef, error) {
+
+	var tables []Table
+	tablesIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, params.DatabaseID, TableEntityKind, &tables)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetTableList: Unable to retrieve tables from datastore: datastore error = %v", getErr)
+	}
+
+	tableRefs := make([]TableRef, len(tables))
+	for tableIter, currTable := range tables {
+		tableID := tablesIDs[tableIter]
+		tableRefs[tableIter] = TableRef{TableID: tableID, Name: currTable.Name}
+	}
+	return tableRefs, nil
+
 }

@@ -38,12 +38,16 @@ func filterOneRecord(recordRef record.RecordRef, filterRules []FilterRuleRef) (b
 	return true, nil
 }
 
-func GetFilteredRecords(appEngContext appengine.Context) ([]record.RecordRef, error) {
+type GetFilteredRecordsParams struct {
+	TableID string `json:"tableID"`
+}
+
+func GetFilteredRecords(appEngContext appengine.Context, params GetFilteredRecordsParams) ([]record.RecordRef, error) {
 
 	// TODO - The code below retrieve *all* the records. However, the datastore supports up to 1 filtering criterion
 	// for each field, so <=1 of these criterion could be used to filter the records coming from the datastore and
 	// before doing any kind of in-memory filtering.
-	unfilteredRecordRefs, getRecordErr := record.GetRecords(appEngContext)
+	unfilteredRecordRefs, getRecordErr := record.GetRecords(appEngContext, record.GetRecordsParams{TableID: params.TableID})
 	if getRecordErr != nil {
 		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving records: %v", getRecordErr)
 	}

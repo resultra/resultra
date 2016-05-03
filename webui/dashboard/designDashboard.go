@@ -31,6 +31,7 @@ func init() {
 type DesignDashboardPageInfo struct {
 	Title         string
 	DashboardID   string
+	DatabaseID    string
 	DashboardName string
 }
 
@@ -50,6 +51,7 @@ func designDashboard(w http.ResponseWriter, r *http.Request) {
 	p := DesignDashboardPageInfo{
 		Title:         "Design Dashboard",
 		DashboardID:   dashboardID,
+		DatabaseID:    dashboardRef.DatabaseID,
 		DashboardName: dashboardRef.Name}
 	err := designDashboardTemplates.ExecuteTemplate(w, "designDashboard", p)
 	if err != nil {

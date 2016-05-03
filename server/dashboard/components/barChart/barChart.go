@@ -2,13 +2,15 @@ package barChart
 
 import (
 	"appengine"
+	"appengine/datastore"
 	"fmt"
 	"resultra/datasheet/server/common"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic/datastoreWrapper"
+	"resultra/datasheet/server/table"
 )
 
-const barChartEntityKind string = "DashboardBarChart"
+const barChartEntityKind string = "BarChart"
 
 const xAxisSortAsc string = "asc"
 const xAxisSortDesc string = "desc"
@@ -32,7 +34,10 @@ func (idHeader BarChartUniqueIDHeader) uniqueBarChartID() BarChartUniqueID {
 
 // DashboardBarChart is the datastore object for dashboard bar charts.
 type BarChart struct {
-	// TODO: Include table selection, filter settings
+	// TODO: Include filter settings
+
+	// DataSrcTable is the table the bar chart gets its data from
+	DataSrcTable *datastore.Key
 
 	// XAxisVals is a grouping of field values displayed along the x axis of the bar chart.
 	XAxisVals values.ValGrouping
@@ -64,10 +69,7 @@ type BarChartRef struct {
 type NewBarChartParams struct {
 	ParentDashboardID string `json:"parentDashboardID"`
 
-	// PlaceholderID is initially assigned a temporary ID assigned by the client. It is passed back
-	// to the client after the real datastore ID is assigned, allowing the client
-	// to swizzle/replace the placeholder ID with the real one.
-	PlaceholderID string `json:"placeholderID"`
+	DataSrcTableID string `json:"dataSrcTableID"`
 
 	XAxisVals       values.NewValGroupingParams `json:"xAxisVals"`
 	XAxisSortValues string                      `json:"xAxisSortValues"`
@@ -121,9 +123,15 @@ func NewBarChart(appEngContext appengine.Context, params NewBarChartParams) (*Ba
 		return nil, fmt.Errorf("NewBarChart: Invalid X axis sort order: %v", params.XAxisSortValues)
 	}
 
+	tableKey, decodeErr := datastoreWrapper.DecodeKey(params.DataSrcTableID, table.TableEntityKind)
+	if decodeErr != nil {
+		return nil, fmt.Errorf("NewBarChart: Invalid table: %v, decode err = %v", params.DataSrcTableID, decodeErr)
+	}
+
 	newBarChart := BarChart{
 		XAxisVals:       *valGrouping,
 		XAxisSortValues: params.XAxisSortValues,
+		DataSrcTable:    tableKey,
 		YAxisVals:       *valSummary,
 		Geometry:        params.Geometry,
 		Title:           ""} // default to empty title

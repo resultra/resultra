@@ -149,7 +149,7 @@ func GetAllChildEntities(appEngContext appengine.Context, parentID string,
 
 	parentKey, decodeErr := decodeUniqueEntityIDStrToKey(parentID)
 	if decodeErr != nil {
-		return nil, fmt.Errorf("InsertNewChildEntity: Unable to decode parent key: %v", decodeErr)
+		return nil, fmt.Errorf("GetAllChildEntities: Unable to decode parent key: %v", decodeErr)
 	}
 
 	getAllQuery := datastore.NewQuery(childEntityKind).Ancestor(parentKey)
@@ -187,4 +187,21 @@ func GetParentID(childID string, expectedParentEntityKind string) (string, error
 
 	return parentKey.Encode(), nil
 
+}
+
+// Decode key is also passed an expected entity kind. This is to help prevent spoofing on the API; i.e.,
+// if an invalid key is passed to the api, at least the type can be checked.
+func DecodeKey(encodedID string, expectedEntityKind string) (*datastore.Key, error) {
+
+	key, decodeErr := datastore.DecodeKey(encodedID)
+	if decodeErr != nil {
+		return nil, fmt.Errorf("DecodeKey: Can't decode key from id '%v': %v", encodedID, decodeErr)
+	}
+
+	if key.Kind() != expectedEntityKind {
+		return nil, fmt.Errorf("DecodeKey: Unexpected entity type: expecting '%v', but got '%v'",
+			expectedEntityKind, key.Kind())
+	}
+
+	return key, nil
 }

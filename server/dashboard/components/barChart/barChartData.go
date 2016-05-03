@@ -29,7 +29,9 @@ func getOneBarChartData(appEngContext appengine.Context, params BarChartUniqueID
 
 	}
 
-	recordRefs, getRecErr := recordFilter.GetFilteredRecords(appEngContext)
+	tableID := barChart.DataSrcTable.Encode()
+
+	recordRefs, getRecErr := recordFilter.GetFilteredRecords(appEngContext, recordFilter.GetFilteredRecordsParams{TableID: tableID})
 	if getRecErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
 	}

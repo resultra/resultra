@@ -17,13 +17,13 @@ function initNewBarChartDialog(dashboardID) {
 }
 
 function saveNewBarChart() {
-	console.log("Saving new bar chart: dashboard ID = " + newBarChartParams.dashboardID )
 	
-
+	console.log("Saving new bar chart: dashboard ID = " + newBarChartParams.dashboardID )
 	
 	var formID = '#newBarchartDialog'
 		
 	var saveNewBarChartParams = {
+		dataSrcTableID: getFormStringValue(formID,'barChartTableSelection'),
 		parentDashboardID: newBarChartParams.dashboardID,
 		xAxisVals: {
 			fieldID: getFormStringValue(formID,'xAxisFieldSelection'),
@@ -43,8 +43,12 @@ function saveNewBarChart() {
 	jsonAPIRequest("newBarChart",saveNewBarChartParams,function(barChartRef) {
 		console.log("saveNewBarChart: bar chart saved: new bar chart ID = " + barChartRef.barChartID)
 		
-		// Replace the placholder ID with the instantiated bar chart's unique ID.
+		// Replace the placholder ID with the instantiated bar chart's unique ID. In the case
+		// of a bar chart, 2 DOM elements are associated with the bar chart's ID. The first
+		// is the overall/wrapper container, and the 2nd is a child div for the bar chart itself.
+		// See the function barChartContainerHTML() to see how this is setup.
 		 $('#'+newBarChartParams.placeholderID).attr("id",barChartRef.barChartID)
+		 $('#'+newBarChartParams.placeholderID+"_chart").attr("id",barChartRef.barChartID+"_chart")
 
 		newBarChartParams.barChartCreated = true;		
 		newBarChartParams.dialog.dialog("close")
@@ -54,16 +58,71 @@ function saveNewBarChart() {
 			barChartID: barChartRef.barChartID
 		}
 		jsonAPIRequest("getBarChartData",barChartDataParams,function(barChartData) {
-			initBarChartData(barChartData)
+			initBarChartData(newBarChartParams.dashboardID,barChartData)
 		})
 	})
 }
 
+function populateTableSelectionMenu(tableRefList, menuSelector) {
+	$(menuSelector).empty()
+	$(menuSelector).append(emptyOptionHTML("Select a Table"))
+	$.each(tableRefList, function(index, tableRef) {
+		$(menuSelector).append(selectFieldHTML(tableRef.tableID, tableRef.name))		
+	})
+}
+
+
+var barChartTablePanelConfig = {
+	divID: "#newBarChartSelectTablePanel",
+	panelID: "barChartSelectTable",
+	progressPerc:20,
+	dlgButtons: { 
+		"Next" : function() { 
+			if($( "#newBarChartSelectTablePanel" ).form('validate form')) {
+				transitionToNextWizardDlgPanel(this,newBarChartParams.progressDivID,
+						barChartTablePanelConfig,barChartXAxisPanelConfig)
+			} // if validate panel's form
+		},
+		"Cancel" : function() { $(this).dialog('close'); },
+ 	}, // dialog buttons
+	initPanel: function() {
+		
+		
+		$('#newBarChartSelectTablePanel').form({
+	    	fields: {
+		        barChartTableSelection: {
+		          rules: [
+		            {
+		              type   : 'empty',
+		              prompt : 'Please select a table'
+		            }
+		          ]
+		        }, // barChartTableSelection validation
+	     	},
+	  	})
+		
+		
+		var tableListParams =  { databaseID: databaseID }
+		jsonAPIRequest("table/getList",tableListParams,function(tableRefs) {
+			populateTableSelectionMenu(tableRefs,"#barChartTableSelection")
+			$('#barChartTableSelection').dropdown()
+		})
+		
+		return {}
+	}, // init panel
+}
+
+
+
 var barChartXAxisPanelConfig = {
 	divID: "#newBarChartDlgXAxisPanel",
 	panelID: "barChartXAxis",
-	progressPerc:80,
+	progressPerc:40,
 	dlgButtons: { 
+		"Previous": function() {
+			transitionToPrevWizardDlgPanel(this,newBarChartParams.progressDivID,
+				barChartXAxisPanelConfig,barChartTablePanelConfig)	
+		 },
 		"Next" : function() { 
 			if($( "#newBarChartDlgXAxisPanel" ).form('validate form')) {
 				transitionToNextWizardDlgPanel(this,newBarChartParams.progressDivID,
@@ -245,7 +304,7 @@ function newBarChart(barChartParams) {
 		},
 		width: 550, height: 500,
 		dialogDivID: '#newBarchartDialog',
-		panels: [barChartXAxisPanelConfig, barChartYAxisPanelConfig],
+		panels: [barChartTablePanelConfig,barChartXAxisPanelConfig, barChartYAxisPanelConfig],
 		progressDivID: '#newBarChartProgress',
 	})
 		

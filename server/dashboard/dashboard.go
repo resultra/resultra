@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/dashboard/components/barChart"
+	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/datastoreWrapper"
 )
@@ -16,25 +17,31 @@ type Dashboard struct {
 }
 
 type DashboardRef struct {
+	DatabaseID  string `json:"databaseID"`
 	DashboardID string `json:"dashboardID"`
 	Name        string `json:"name"`
 }
 
-func NewDashboard(appEngContext appengine.Context, dashboardName string) (*DashboardRef, error) {
+type NewDashboardParams struct {
+	DatabaseID string `json:"databaseID"`
+	Name       string `json:"name"`
+}
 
-	sanitizedName, sanitizeErr := generic.SanitizeName(dashboardName)
+func NewDashboard(appEngContext appengine.Context, params NewDashboardParams) (*DashboardRef, error) {
+
+	sanitizedName, sanitizeErr := generic.SanitizeName(params.Name)
 	if sanitizeErr != nil {
 		return nil, sanitizeErr
 	}
 
 	var newDashboard = Dashboard{sanitizedName}
-	dashboardID, insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, dashboardEntityKind, &newDashboard)
+	dashboardID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.DatabaseID, dashboardEntityKind, &newDashboard)
 	if insertErr != nil {
 		return nil, insertErr
 	}
 
 	log.Printf("NewDashboard: Created new dashboard: id= %v, name='%v'", dashboardID, sanitizedName)
-	dashboardRef := DashboardRef{dashboardID, sanitizedName}
+	dashboardRef := DashboardRef{DatabaseID: params.DatabaseID, DashboardID: dashboardID, Name: sanitizedName}
 
 	return &dashboardRef, nil
 
@@ -48,7 +55,12 @@ func GetDashboardRef(appEngContext appengine.Context, dashboardID string) (*Dash
 		return nil, fmt.Errorf("GetDashboardRef: Can't get dashboard: Error retrieving existing dashboard: dashboard ID=%v, err = %v", dashboardID, getErr)
 	}
 
-	return &DashboardRef{dashboardID, dashboard.Name}, nil
+	databaseID, getDatabaseIDErr := datastoreWrapper.GetParentID(dashboardID, database.DatabaseEntityKind)
+	if getDatabaseIDErr != nil {
+		return nil, fmt.Errorf("GetDashboardRef: Unable to get parent database ID: error = %v", getDatabaseIDErr)
+	}
+
+	return &DashboardRef{DatabaseID: databaseID, DashboardID: dashboardID, Name: dashboard.Name}, nil
 
 }
 

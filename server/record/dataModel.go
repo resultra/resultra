@@ -53,12 +53,16 @@ func (rec *Record) Save(ch chan<- datastore.Property) error {
 	return nil
 }
 
-func NewRecord(appEngContext appengine.Context) (*RecordRef, error) {
+type NewRecordParams struct {
+	TableID string `json:"tableID"`
+}
+
+func NewRecord(appEngContext appengine.Context, params NewRecordParams) (*RecordRef, error) {
 
 	newRecord := Record{}
 
 	// TODO - Replace nil with database parent
-	recordID, insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, recordEntityKind, &newRecord)
+	recordID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.TableID, recordEntityKind, &newRecord)
 	if insertErr != nil {
 		return nil, fmt.Errorf("Can't create new field: error inserting into datastore: %v", insertErr)
 	}
@@ -101,10 +105,14 @@ func UpdateExistingRecord(appEngContext appengine.Context, recordID RecordID, re
 // - parent table ID (once tables are implemented)
 // - cursor indicating where to start the query (for retrieving results in batches)
 
-func GetRecords(appEngContext appengine.Context) ([]RecordRef, error) {
+type GetRecordsParams struct {
+	TableID string `json:"tableID"`
+}
+
+func GetRecords(appEngContext appengine.Context, params GetRecordsParams) ([]RecordRef, error) {
 
 	var records []Record
-	recordIDs, getErr := datastoreWrapper.GetAllRootEntities(appEngContext, recordEntityKind, &records)
+	recordIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, params.TableID, recordEntityKind, &records)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetRecords: Unable to retrieve records from datastore: datastore error = %v", getErr)
 	}

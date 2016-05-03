@@ -8,14 +8,14 @@ import (
 
 func newDashboard(w http.ResponseWriter, r *http.Request) {
 
-	var dashboardParam map[string]string
-	if err := api.DecodeJSONRequest(r, &dashboardParam); err != nil {
+	var dashboardParams NewDashboardParams
+	if err := api.DecodeJSONRequest(r, &dashboardParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	if dashboardRef, err := NewDashboard(appEngCntxt, dashboardParam["name"]); err != nil {
+	if dashboardRef, err := NewDashboard(appEngCntxt, dashboardParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, dashboardRef)

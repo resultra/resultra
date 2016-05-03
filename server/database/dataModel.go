@@ -6,7 +6,7 @@ import (
 	"resultra/datasheet/server/generic/datastoreWrapper"
 )
 
-const databaseEntityKind string = "Database"
+const DatabaseEntityKind string = "Database"
 
 type Database struct {
 	Name string
@@ -33,7 +33,7 @@ func saveNewDatabase(appEngContext appengine.Context, params NewDatabaseParams) 
 	newDatabase := Database{Name: sanitizedDbName}
 
 	databaseID, insertErr := datastoreWrapper.InsertNewRootEntity(
-		appEngContext, databaseEntityKind, &newDatabase)
+		appEngContext, DatabaseEntityKind, &newDatabase)
 	if insertErr != nil {
 		return nil, insertErr
 	}
