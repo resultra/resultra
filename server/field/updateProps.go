@@ -6,14 +6,14 @@ import (
 )
 
 type FieldIDInterface interface {
-	getFieldID() string
+	GetFieldID() string
 }
 
 type FieldIDHeader struct {
 	FieldID string `json:"fieldID"`
 }
 
-func (idHeader FieldIDHeader) getFieldID() string {
+func (idHeader FieldIDHeader) GetFieldID() string {
 	return idHeader.FieldID
 }
 
@@ -29,7 +29,7 @@ type FieldPropUpdater interface {
 
 func UpdateFieldProps(appEngContext appengine.Context, propUpdater FieldPropUpdater) (*FieldRef, error) {
 
-	fieldForUpdate, getErr := GetField(appEngContext, propUpdater.getFieldID())
+	fieldForUpdate, getErr := GetField(appEngContext, propUpdater.GetFieldID())
 	if getErr != nil {
 		return nil, getErr
 	}
@@ -39,7 +39,7 @@ func UpdateFieldProps(appEngContext appengine.Context, propUpdater FieldPropUpda
 		return nil, fmt.Errorf("UpdateFieldProps: Unable to update existing field properties: %v", propUpdateErr)
 	}
 
-	updatedFieldRef, updateErr := UpdateExistingField(appEngContext, propUpdater.getFieldID(), fieldForUpdate)
+	updatedFieldRef, updateErr := UpdateExistingField(appEngContext, propUpdater.GetFieldID(), fieldForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateFieldProps: error updating field: %v", updateErr)
 	}

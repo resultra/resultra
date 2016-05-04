@@ -55,6 +55,8 @@ function initFormulaEditor(editorConfig) {
 	
 	populateFieldRefInsertionMenu(editorConfig.tableID)
 	
+	
+	
 	// TODO - Setup the editor for language specific syntax highlighting, etc.
 }
 
@@ -97,25 +99,32 @@ function saveFormula(fieldRef) {
 
 function openFormulaEditor(fieldRef) {
 
-	formulaEditorConfig.editor.setValue(fieldRef.fieldInfo.calcFieldFormulaText)
+	var getRawFormulaSrcParams = { fieldID: fieldRef.fieldID }
+	jsonAPIRequest("calcField/getRawFormulaText",getRawFormulaSrcParams,function(formulaInfo) {
+		formulaEditorConfig.editor.setValue(formulaInfo.rawFormulaText)
+		
+		formulaEditorConfig.showEditorFunc()
+	
+		$('#saveFormulaButton').unbind('click');
+		$('#saveFormulaButton').click(function(e){
+			e.preventDefault();
+			console.log("save button clicked")
+			saveFormula(fieldRef)	
+		});
+	
+		$('#checkFormulaButton').unbind('click');
+		$('#checkFormulaButton').click(function(e){	
+			e.preventDefault();
+			console.log("check formula button clicked")
+			validateFormula(fieldRef,function(fieldRef,formulaText) {})
+		
+		
+		});
+		
+		
+	})
 
-	formulaEditorConfig.showEditorFunc()
-	
-	$('#saveFormulaButton').unbind('click');
-	$('#saveFormulaButton').click(function(e){
-		e.preventDefault();
-		console.log("save button clicked")
-		saveFormula(fieldRef)	
-	});
-	
-	$('#checkFormulaButton').unbind('click');
-	$('#checkFormulaButton').click(function(e){	
-		e.preventDefault();
-		console.log("check formula button clicked")
-		validateFormula(fieldRef,function(fieldRef,formulaText) {})
-		
-		
-	});
+
 	
 }
 

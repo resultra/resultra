@@ -34,9 +34,9 @@ type Field struct {
 	// The datastore can't store recursively nested structs, so
 	// if field is a calculated field, then store a JSON representation
 	// of the equation.
-	CalcFieldEqn         string `json:"calcFieldEqn"`
-	IsCalcField          bool   `json:"isCalcField"` // defaults to false
-	CalcFieldFormulaText string `json:"calcFieldFormulaText"`
+	CalcFieldEqn            string `json:"calcFieldEqn"`
+	IsCalcField             bool   `json:"isCalcField"` // defaults to false
+	PreprocessedFormulaText string `json:"calcFieldFormulaText"`
 }
 
 type FieldRef struct {
@@ -110,12 +110,12 @@ type NewFieldParams struct {
 
 func NewField(appEngContext appengine.Context, fieldParams NewFieldParams) (string, error) {
 	newField := Field{
-		Name:                 fieldParams.Name,
-		Type:                 fieldParams.Type,
-		RefName:              fieldParams.RefName,
-		CalcFieldEqn:         "",
-		CalcFieldFormulaText: "",
-		IsCalcField:          false} // always set calculated field to false
+		Name:                    fieldParams.Name,
+		Type:                    fieldParams.Type,
+		RefName:                 fieldParams.RefName,
+		CalcFieldEqn:            "",
+		PreprocessedFormulaText: "",
+		IsCalcField:             false} // always set calculated field to false
 
 	return CreateNewFieldFromRawInputs(appEngContext, fieldParams.ParentTableID, newField)
 }

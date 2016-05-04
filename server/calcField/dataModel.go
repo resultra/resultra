@@ -20,7 +20,12 @@ type NewCalcFieldParams struct {
 
 func newCalcField(appEngContext appengine.Context, calcFieldParams NewCalcFieldParams) (string, error) {
 
-	jsonEncodedEqn, err := compileAndEncodeFormula(calcFieldParams.FormulaText)
+	compileParams := formulaCompileParams{
+		appEngContext: appEngContext,
+		formulaText:   calcFieldParams.FormulaText,
+		parentTableID: calcFieldParams.ParentTableID}
+
+	compileResult, err := compileAndEncodeFormula(compileParams)
 	if err != nil {
 		return "", fmt.Errorf("Error creating new calculated field %v, can't compile formula: %v",
 			calcFieldParams.Name, err)
@@ -29,12 +34,12 @@ func newCalcField(appEngContext appengine.Context, calcFieldParams NewCalcFieldP
 	// Create the actual field. All the parameters are the same as calcFieldParams, except
 	// the equation which is encoded in JSON.
 	newField := field.Field{
-		Name:                 calcFieldParams.Name,
-		Type:                 calcFieldParams.Type,
-		RefName:              calcFieldParams.RefName,
-		CalcFieldEqn:         jsonEncodedEqn,
-		CalcFieldFormulaText: calcFieldParams.FormulaText,
-		IsCalcField:          true}
+		Name:                    calcFieldParams.Name,
+		Type:                    calcFieldParams.Type,
+		RefName:                 calcFieldParams.RefName,
+		CalcFieldEqn:            compileResult.jsonEncodedEqn,
+		PreprocessedFormulaText: compileResult.preprocessedFormula,
+		IsCalcField:             true}
 
 	return field.CreateNewFieldFromRawInputs(appEngContext, calcFieldParams.ParentTableID, newField)
 }

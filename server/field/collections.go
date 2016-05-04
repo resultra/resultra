@@ -59,12 +59,12 @@ func GetFieldsByType(appEngContext appengine.Context, params GetFieldListParams)
 type StringFieldRefMap map[string]FieldRef
 
 type FieldRefIDIndex struct {
-	fieldRefsByID      StringFieldRefMap
-	fieldRefsByRefName StringFieldRefMap
+	FieldRefsByID      StringFieldRefMap
+	FieldRefsByRefName StringFieldRefMap
 }
 
 func (fieldRefIDIndex FieldRefIDIndex) getFieldRefByID(fieldID string) (*FieldRef, error) {
-	fieldRef, fieldRefFound := fieldRefIDIndex.fieldRefsByID[fieldID]
+	fieldRef, fieldRefFound := fieldRefIDIndex.FieldRefsByID[fieldID]
 	if fieldRefFound != true {
 		return nil, fmt.Errorf("getFieldRefByID: Unable to retrieve field for field with ID = %v ", fieldID)
 	}
@@ -76,7 +76,7 @@ func GetFieldRefIDIndex(appEngContext appengine.Context, params GetFieldListPara
 
 	fieldRefs, getErr := GetAllFieldRefs(appEngContext, params)
 	if getErr != nil {
-		return nil, fmt.Errorf("GetFieldsByRefName: Unable to retrieve fields from datastore: datastore error =%v", getErr)
+		return nil, fmt.Errorf("GetFieldRefIDIndex: Unable to retrieve fields from datastore: datastore error =%v", getErr)
 	}
 
 	log.Printf("GetFieldRefIDIndex: Indexing %v fields", len(fieldRefs))
@@ -86,12 +86,12 @@ func GetFieldRefIDIndex(appEngContext appengine.Context, params GetFieldListPara
 	for _, fieldRef := range fieldRefs {
 
 		if _, keyExists := fieldRefsByRefName[fieldRef.FieldInfo.RefName]; keyExists == true {
-			return nil, fmt.Errorf("GetFieldsByRefName: Unable to retrieve fields from datastore: "+
+			return nil, fmt.Errorf("GetFieldRefIDIndex: Unable to retrieve fields from datastore: "+
 				" found duplicate reference name for field = %+v", fieldRef)
 		}
 
 		if _, keyExists := fieldRefsByID[fieldRef.FieldID]; keyExists == true {
-			return nil, fmt.Errorf("GetFieldsByRefName: Unable to retrieve fields from datastore: "+
+			return nil, fmt.Errorf("GetFieldRefIDIndex: Unable to retrieve fields from datastore: "+
 				" found duplicate key for field = %+v", fieldRef)
 		}
 

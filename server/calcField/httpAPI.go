@@ -14,6 +14,7 @@ func init() {
 	calcFieldRouter.HandleFunc("/api/calcField/validateFormula", validateFormula)
 	calcFieldRouter.HandleFunc("/api/calcField/setFieldFormula", setFieldFormula)
 	calcFieldRouter.HandleFunc("/api/calcField/new", newCalcFieldAPI)
+	calcFieldRouter.HandleFunc("/api/calcField/getRawFormulaText", getRawFormulaTextAPI)
 
 	http.Handle("/api/calcField/", calcFieldRouter)
 }
@@ -33,6 +34,22 @@ func newCalcFieldAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, api.JSONParams{"fieldID": fieldID})
 	}
 
+}
+
+func getRawFormulaTextAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetRawFormulaParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+	if rawFormulaText, err := getRawFormulaText(appEngCntxt, params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, rawFormulaText)
+	}
 }
 
 func validateFormula(w http.ResponseWriter, r *http.Request) {

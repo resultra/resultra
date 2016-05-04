@@ -3,7 +3,10 @@ package calcField
 import (
 	"appengine"
 	"fmt"
+	"log"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/datastoreWrapper"
+	"resultra/datasheet/server/table"
 )
 
 type SetFormulaParams struct {
@@ -13,15 +16,28 @@ type SetFormulaParams struct {
 
 func (setFormulaParams SetFormulaParams) UpdateProps(appEngContext appengine.Context, fieldForUpdate *field.Field) error {
 
-	jsonEncodedEqn, compileErr := compileAndEncodeFormula(setFormulaParams.FormulaText)
+	parentTableID, getParentErr := datastoreWrapper.GetParentID(setFormulaParams.GetFieldID(), table.TableEntityKind)
+	if getParentErr != nil {
+		return fmt.Errorf("SetFormula: Unable to get parent table for field: field=%v, error=%v ",
+			fieldForUpdate.Name, getParentErr)
+	}
+
+	compileParams := formulaCompileParams{
+		appEngContext: appEngContext,
+		formulaText:   setFormulaParams.FormulaText,
+		parentTableID: parentTableID}
+
+	compileResult, compileErr := compileAndEncodeFormula(compileParams)
 	if compileErr != nil {
 		fmt.Errorf("Error saving formula, can't compile formula: %v", compileErr)
 	}
 
+	log.Printf("Formula compilation succeeded: %+v", compileResult)
+
 	// The formula source/text is always stored side-by-side with the compile equation.
 	// This compile equation is used for equation evaluation.
-	fieldForUpdate.CalcFieldEqn = jsonEncodedEqn
-	fieldForUpdate.CalcFieldFormulaText = setFormulaParams.FormulaText
+	fieldForUpdate.CalcFieldEqn = compileResult.jsonEncodedEqn
+	fieldForUpdate.PreprocessedFormulaText = compileResult.preprocessedFormula
 
 	// TODO(IMPORTANT) - Saving the equation doesn't yet result in an update to records' values for the field.
 	// All the record values need to be updated for the new equation. Or, formula evaluation needs to be done
