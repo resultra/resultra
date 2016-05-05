@@ -200,6 +200,18 @@ func validateFormulaText(appEngContext appengine.Context, validationParams Valid
 		return &ValidationResponse{IsValidFormula: false, ErrorMsg: errWithPrefixMsg.Error()}
 	}
 
+	fieldRef, getFieldErr := field.GetFieldRef(appEngContext, validationParams.FieldID)
+	if getFieldErr != nil {
+		errMsg := fmt.Sprintf("validateFormulaText: Unable to get  retrieve field: error=%v ", getFieldErr)
+		return &ValidationResponse{IsValidFormula: false, ErrorMsg: errMsg}
+	} else {
+		if !fieldRef.FieldInfo.IsCalcField {
+			errorMsg := fmt.Sprintf("Formulas only work with calculated fields, got a regular field: %v",
+				fieldRef.FieldInfo.Name)
+			return &ValidationResponse{IsValidFormula: false, ErrorMsg: errorMsg}
+		}
+	}
+
 	compileParams := formulaCompileParams{
 		appEngContext: appEngContext,
 		formulaText:   validationParams.FormulaText,

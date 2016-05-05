@@ -22,6 +22,10 @@ func (setFormulaParams SetFormulaParams) UpdateProps(appEngContext appengine.Con
 			fieldForUpdate.Name, getParentErr)
 	}
 
+	if !fieldForUpdate.IsCalcField {
+		return fmt.Errorf("SetFormula: Can't set formula on non-calculated field: %v", fieldForUpdate.Name)
+	}
+
 	compileParams := formulaCompileParams{
 		appEngContext: appEngContext,
 		formulaText:   setFormulaParams.FormulaText,

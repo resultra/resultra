@@ -38,10 +38,15 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
         self.tableID = jsonResp[u'tableID']
         print "testValidateFormula: table ID: ",self.tableID
         
-        fieldParams = {'parentTableID':self.tableID,'name':'Quantity','type':'number','refName':'qty'}
-        jsonResp = self.apiRequest('field/new',fieldParams)
+        fieldParams = {'parentTableID':self.tableID,'name':'Total','type':'number',
+                    'refName':'total','formulaText':'42.5'}
+        jsonResp = self.apiRequest('calcField/new',fieldParams)
         self.fieldID = jsonResp[u'fieldID']
         
+        fieldParams = {'parentTableID':self.tableID,'name':'Quantity','type':'number','refName':'qty'}
+        jsonResp = self.apiRequest('field/new',fieldParams)
+        self.numberFieldID = jsonResp[u'fieldID']
+         
         fieldParams = {'parentTableID':self.tableID,'name':'Comments','type':'text','refName':'CMT'}
         jsonResp = self.apiRequest('field/new',fieldParams)
         self.textFieldID = jsonResp[u'fieldID']
@@ -65,7 +70,14 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
         self.verifyFormula("CONCATENATE([CMT])","CMT field should work as an argument to CONCATENATE")
         self.verifyBadFormula("SUM([CMT])","CMT field should not work as an argument to SUM")
         
+    def testNonCalcField(self):
+        jsonResp = self.apiRequest('calcField/validateFormula',{'fieldID':self.numberFieldID,'formulaText':"42.5"})
+        isValidFormula = jsonResp[u'isValidFormula']
+        print "testNonCalcField: response = ", json.dumps(jsonResp)
+        self.assertFalse(isValidFormula,"Formulas shouldn't work with non-calculated fields")
         
+    # TODO - Test setting of formulas on fields, including:
+    #    - Trying to set a formula on a non-calculated field.
  
 if __name__ == '__main__':
     unittest.main()
