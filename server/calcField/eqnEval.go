@@ -10,16 +10,6 @@ import (
 	"resultra/datasheet/server/table"
 )
 
-type EqnEvalFunc func(evalContext *EqnEvalContext, funcArgs []EquationNode) (*EquationResult, error)
-
-type FunctionInfo struct {
-	funcName   string
-	resultType string
-	evalFunc   EqnEvalFunc
-}
-
-type FuncNameFuncInfoMap map[string]FunctionInfo
-
 type EqnEvalContext struct {
 	AppEngContext appengine.Context
 	DefinedFuncs  FuncNameFuncInfoMap

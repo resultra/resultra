@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/datastoreWrapper"
 	"resultra/datasheet/server/table"
+	"strings"
 )
 
 func compileFormula(inputStr string) (*EquationNode, error) {
@@ -150,6 +151,17 @@ func compileAndEncodeFormula(params formulaCompileParams) (*formulaCompileResult
 		return nil, compileErr
 	} else if compiledFormulaEqn == nil {
 		return nil, fmt.Errorf("Unexpected formula compile err: formula compiler returned nil compile result")
+	}
+
+	semanticAnalysisResults, semAnalysisErr := analyzeSemantics(params.appEngContext, compiledFormulaEqn)
+	if semAnalysisErr != nil {
+		return nil, fmt.Errorf("Unexpected formula compile err: semantic analyzer error = %v", semAnalysisErr)
+	}
+	if semanticAnalysisResults.hasErrors() {
+		// TODO - The compiler needs to support returning multiple errors. The semantic analyzer already support
+		// multiple errors, so we concatenate them until multiple errors can be returned.
+		errMsgs := strings.Join(semanticAnalysisResults.analyzeErrors, " -- ")
+		return nil, fmt.Errorf("Semantic analyzer error(s) = %v", errMsgs)
 	}
 
 	jsonEncodeEqn, encodeErr := generic.EncodeJSONString(compiledFormulaEqn)

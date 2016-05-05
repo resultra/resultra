@@ -90,7 +90,13 @@ fieldRef : TOK_LBRACKET TOK_IDENT TOK_RBRACKET
 		
 func : TOK_IDENT TOK_LPAREN funcArgs TOK_RPAREN
 		{
+			/* 1 or more arguments */
 			$$ = FuncEqnNode($1,$3)
+		}
+		| TOK_IDENT TOK_LPAREN TOK_RPAREN
+		{
+			/* No arguments */
+			$$ = FuncEqnNode($1,[]EquationNode{})
 		}
 
 funcArgs: funcArg
