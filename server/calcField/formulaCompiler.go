@@ -110,9 +110,10 @@ func getRawFormulaText(appEngContext appengine.Context, params GetRawFormulaPara
 	}
 
 	compileParams := formulaCompileParams{
-		appEngContext: appEngContext,
-		formulaText:   calcField.PreprocessedFormulaText,
-		parentTableID: parentTableID}
+		appEngContext:      appEngContext,
+		formulaText:        calcField.PreprocessedFormulaText,
+		parentTableID:      parentTableID,
+		expectedResultType: calcField.Type}
 
 	rawFormulaText, reverseProcessErr := reverseProcessCalcFieldFormula(compileParams)
 	if reverseProcessErr != nil {
@@ -124,9 +125,10 @@ func getRawFormulaText(appEngContext appengine.Context, params GetRawFormulaPara
 }
 
 type formulaCompileParams struct {
-	appEngContext appengine.Context
-	formulaText   string
-	parentTableID string
+	appEngContext      appengine.Context
+	formulaText        string
+	parentTableID      string
+	expectedResultType string
 }
 
 type formulaCompileResults struct {
@@ -153,7 +155,7 @@ func compileAndEncodeFormula(params formulaCompileParams) (*formulaCompileResult
 		return nil, fmt.Errorf("Unexpected formula compile err: formula compiler returned nil compile result")
 	}
 
-	semanticAnalysisResults, semAnalysisErr := analyzeSemantics(params.appEngContext, compiledFormulaEqn)
+	semanticAnalysisResults, semAnalysisErr := analyzeSemantics(params, compiledFormulaEqn)
 	if semAnalysisErr != nil {
 		return nil, fmt.Errorf("Unexpected formula compile err: semantic analyzer error = %v", semAnalysisErr)
 	}
@@ -213,9 +215,10 @@ func validateFormulaText(appEngContext appengine.Context, validationParams Valid
 	}
 
 	compileParams := formulaCompileParams{
-		appEngContext: appEngContext,
-		formulaText:   validationParams.FormulaText,
-		parentTableID: parentTableID}
+		appEngContext:      appEngContext,
+		formulaText:        validationParams.FormulaText,
+		parentTableID:      parentTableID,
+		expectedResultType: fieldRef.FieldInfo.Type}
 
 	_, compileErr := compileAndEncodeFormula(compileParams)
 	if compileErr != nil {

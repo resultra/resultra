@@ -4,6 +4,7 @@ import (
 	"appengine"
 	"fmt"
 	"resultra/datasheet/server/field"
+	"strings"
 )
 
 type semanticAnalysisContext struct {
@@ -36,7 +37,10 @@ func newTypedAnalysisResult(resultType string) *semanticAnalysisResult {
 func analyzeEqnNode(context *semanticAnalysisContext, eqnNode *EquationNode) (*semanticAnalysisResult, error) {
 
 	if len(eqnNode.FuncName) > 0 {
-		funcInfo, funcInfoFound := context.definedFuncs[eqnNode.FuncName]
+		// Function names are case-insenstive, so check if the function is
+		// defined using upper case.
+		upperCaseFuncName := strings.ToUpper(eqnNode.FuncName)
+		funcInfo, funcInfoFound := context.definedFuncs[upperCaseFuncName]
 		if !funcInfoFound {
 			return newErrorAnalysisResult(fmt.Sprintf("Undefined function: %v", eqnNode.FuncName)), nil
 		}
@@ -75,15 +79,32 @@ func analyzeEqnNode(context *semanticAnalysisContext, eqnNode *EquationNode) (*s
 	return nil, fmt.Errorf("analyzeEqnNode: Unknown error: unhandled equation type: %+v", eqnNode)
 }
 
-func analyzeSemantics(appEngContext appengine.Context, rootEqnNode *EquationNode) (*semanticAnalysisResult, error) {
-
-	// TODO - Check the overall result type against what is epected for the formula. This depends on the type
-	// of field the formula is assigned to.
+func analyzeSemantics(compileParams formulaCompileParams, rootEqnNode *EquationNode) (*semanticAnalysisResult, error) {
 
 	context := semanticAnalysisContext{
 		fieldIDsVisited: []string{},
-		appEngContext:   appEngContext,
+		appEngContext:   compileParams.appEngContext,
 		definedFuncs:    CalcFieldDefinedFuncs}
 
-	return analyzeEqnNode(&context, rootEqnNode)
+	// Check the top-level/overall result type to see that it matches the expected type (e.g., bool, number, text)
+	analyzeResult, analyzeErr := analyzeEqnNode(&context, rootEqnNode)
+	if analyzeResult.hasErrors() {
+		return analyzeResult, analyzeErr
+	} else {
+		if len(analyzeResult.resultType) == 0 {
+			return nil, fmt.Errorf("analyzeSemantics: Unexpected results: no errors but not result type either")
+		} else {
+			if analyzeResult.resultType != compileParams.expectedResultType {
+				errMsg := fmt.Sprintf("Unexpected formula result. Expecting %v, but formula returns %v",
+					compileParams.expectedResultType, analyzeResult.resultType)
+				analyzeResult.analyzeErrors = append(analyzeResult.analyzeErrors, errMsg)
+				return analyzeResult, analyzeErr
+			} else {
+				// No error - result type matches expected result type
+				return analyzeResult, analyzeErr
+			}
+
+		}
+	}
+
 }

@@ -27,9 +27,10 @@ func (setFormulaParams SetFormulaParams) UpdateProps(appEngContext appengine.Con
 	}
 
 	compileParams := formulaCompileParams{
-		appEngContext: appEngContext,
-		formulaText:   setFormulaParams.FormulaText,
-		parentTableID: parentTableID}
+		appEngContext:      appEngContext,
+		formulaText:        setFormulaParams.FormulaText,
+		parentTableID:      parentTableID,
+		expectedResultType: fieldForUpdate.Type}
 
 	compileResult, compileErr := compileAndEncodeFormula(compileParams)
 	if compileErr != nil {

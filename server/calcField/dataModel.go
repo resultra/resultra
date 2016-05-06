@@ -21,9 +21,10 @@ type NewCalcFieldParams struct {
 func newCalcField(appEngContext appengine.Context, calcFieldParams NewCalcFieldParams) (string, error) {
 
 	compileParams := formulaCompileParams{
-		appEngContext: appEngContext,
-		formulaText:   calcFieldParams.FormulaText,
-		parentTableID: calcFieldParams.ParentTableID}
+		appEngContext:      appEngContext,
+		formulaText:        calcFieldParams.FormulaText,
+		parentTableID:      calcFieldParams.ParentTableID,
+		expectedResultType: calcFieldParams.Type}
 
 	compileResult, err := compileAndEncodeFormula(compileParams)
 	if err != nil {
