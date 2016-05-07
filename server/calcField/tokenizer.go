@@ -15,7 +15,7 @@ type TokenDef struct {
 var tokenWhiteSpace = TokenDef{regexpLeadingWhite, TOK_WHITE}
 var tokenComment = TokenDef{regexp.MustCompile("^//.*"), TOK_COMMENT}
 
-var tokenIdent = TokenDef{regexp.MustCompile("^[[:alpha:]][[:word:]\\-\\_]+"), TOK_IDENT}
+var tokenIdent = TokenDef{regexp.MustCompile("^[[:alpha:]][[:word:]\\-\\_]*"), TOK_IDENT}
 var tokenAssign = TokenDef{regexp.MustCompile("^="), TOK_ASSIGN}
 var tokenEqual = TokenDef{regexp.MustCompile("^=="), TOK_EQUAL}
 var tokenPlus = TokenDef{regexp.MustCompile("^\\+"), TOK_PLUS}

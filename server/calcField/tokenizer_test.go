@@ -51,6 +51,15 @@ func TestTokens(t *testing.T) {
 
 }
 
+func TestIdentTokens(t *testing.T) {
+
+	tokenizeWhiteOrComment := false
+
+	testOneTokenize(t, tokenizeWhiteOrComment, `a B b_ a_b c-d a_b_c_d `,
+		[]int{tokenIdent.ID, tokenIdent.ID, tokenIdent.ID,
+			tokenIdent.ID, tokenIdent.ID, tokenIdent.ID}, "identifyers - single letter idents and mixed with non-alpha characters")
+}
+
 func TestCommentTokens(t *testing.T) {
 
 	tokenizeWhiteOrComment := true
