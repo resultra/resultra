@@ -113,7 +113,8 @@ func getRawFormulaText(appEngContext appengine.Context, params GetRawFormulaPara
 		appEngContext:      appEngContext,
 		formulaText:        calcField.PreprocessedFormulaText,
 		parentTableID:      parentTableID,
-		expectedResultType: calcField.Type}
+		expectedResultType: calcField.Type,
+		resultFieldID:      params.FieldID}
 
 	rawFormulaText, reverseProcessErr := reverseProcessCalcFieldFormula(compileParams)
 	if reverseProcessErr != nil {
@@ -129,6 +130,13 @@ type formulaCompileParams struct {
 	formulaText        string
 	parentTableID      string
 	expectedResultType string
+
+	// This is the fieldID being assigned to by the formula. This is used to check for
+	// circular references in the semantic analyzer. This can be left
+	// as an empty string if only validating the equation for a new field. In other words,
+	// if validating the formula for a new calculated field, there by definition can't be
+	// any circular references to the field, since the field is new.
+	resultFieldID string
 }
 
 type formulaCompileResults struct {
@@ -218,7 +226,8 @@ func validateFormulaText(appEngContext appengine.Context, validationParams Valid
 		appEngContext:      appEngContext,
 		formulaText:        validationParams.FormulaText,
 		parentTableID:      parentTableID,
-		expectedResultType: fieldRef.FieldInfo.Type}
+		expectedResultType: fieldRef.FieldInfo.Type,
+		resultFieldID:      fieldRef.FieldID}
 
 	_, compileErr := compileAndEncodeFormula(compileParams)
 	if compileErr != nil {

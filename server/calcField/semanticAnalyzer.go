@@ -8,9 +8,9 @@ import (
 )
 
 type semanticAnalysisContext struct {
-	fieldIDsVisited []string // for detecting cycles
-	appEngContext   appengine.Context
-	definedFuncs    FuncNameFuncInfoMap
+	resultFieldID string // for detecting cycles
+	appEngContext appengine.Context
+	definedFuncs  FuncNameFuncInfoMap
 }
 
 type semanticAnalysisResult struct {
@@ -34,6 +34,64 @@ func newTypedAnalysisResult(resultType string) *semanticAnalysisResult {
 	return &semanticAnalysisResult{analyzeErrors: nil, resultType: resultType}
 }
 
+func checkEqnCycles(context *semanticAnalysisContext, eqnNode *EquationNode) (bool, error) {
+	// The only types of equation nodes which need to be checked are field references
+	// and other "non-terminal" nodes in the equation tree. If the equation refers
+	// to a value literal, there is no need to check for cycles.
+	// All the other elements in the compiled formulas equation tree refere to
+	if len(eqnNode.FieldID) > 0 {
+		fieldRef, err := field.GetFieldRef(context.appEngContext, eqnNode.FieldID)
+		if err != nil {
+			return false, fmt.Errorf("Failure retrieving referenced field: %v", err)
+		} else {
+			return checkFieldCycles(context, *fieldRef)
+		}
+	} else if len(eqnNode.FuncName) > 0 {
+		for _, funcArgEqn := range eqnNode.FuncArgs {
+			argHasCycle, argCycleErr := checkEqnCycles(context, &funcArgEqn)
+			if argCycleErr != nil {
+				return false, argCycleErr
+			} else if argHasCycle {
+				return true, nil
+			}
+		} // for each argument in the function call
+		// No cycle dependencies in the function call
+		return false, nil
+	} else {
+		// The remaining types of equation nodes are terminal/literal values, so there's no
+		// need to check for cycles.
+		return false, nil
+	}
+}
+
+// TODO - While doing the recursion to check for cycles, keep a "chain" of field references.
+// If a cycle is found, this can be passed back to give the user more information to resolve
+// the cycle: e.g. "FieldA -> FieldB -> FieldC -> FieldA"
+func checkFieldCycles(context *semanticAnalysisContext, fieldRef field.FieldRef) (bool, error) {
+
+	if !fieldRef.FieldInfo.IsCalcField {
+		// If the fiels is not a calculated field, it is "terminal" and contains a literal
+		// value.
+		return false, nil
+	}
+
+	if fieldRef.FieldID == context.resultFieldID {
+		// Cycle found
+		return true, nil
+	}
+
+	// Retrieve the compiled equation for the field, then recursively check if there are cycles
+	// in that equation. There is no need for full-blown semantic analysis, since semantic analysis
+	// was already performed before the equation was saved.
+	decodedEqn, decodeErr := decodeEquation(fieldRef.FieldInfo.CalcFieldEqn)
+	if decodeErr != nil {
+		return false, fmt.Errorf("Failure decoding equation for formula cycle detection: %v", decodeErr)
+	} else {
+		return checkEqnCycles(context, decodedEqn)
+	}
+
+}
+
 func analyzeEqnNode(context *semanticAnalysisContext, eqnNode *EquationNode) (*semanticAnalysisResult, error) {
 
 	if len(eqnNode.FuncName) > 0 {
@@ -48,9 +106,9 @@ func analyzeEqnNode(context *semanticAnalysisContext, eqnNode *EquationNode) (*s
 			context:  context,
 			funcName: eqnNode.FuncName,
 			funcArgs: eqnNode.FuncArgs}
-		return funcInfo.semAnalysisFunc(funcSemAnalysisParams)
 
-		// TODO - pass argument list to specific analyzer for the function
+		// Perform semantic analysis which is specific to the function (e.g. check number of arguments, type of arguments)
+		return funcInfo.semAnalysisFunc(funcSemAnalysisParams)
 
 	} else if len(eqnNode.FieldID) > 0 {
 
@@ -65,7 +123,36 @@ func analyzeEqnNode(context *semanticAnalysisContext, eqnNode *EquationNode) (*s
 		if err != nil {
 			return nil, fmt.Errorf("Failure retrieving referenced field: %v", err)
 		} else {
-			return newTypedAnalysisResult(fieldRef.FieldInfo.Type), nil
+			if len(context.resultFieldID) == 0 {
+				// If the resultFieldID is empty, then the compilation is being done for a new
+				// field, so no circular reference checking is needed.
+				return newTypedAnalysisResult(fieldRef.FieldInfo.Type), nil
+			} else if eqnNode.FieldID == context.resultFieldID {
+				// Check if the formula refers to itself
+				return newErrorAnalysisResult(fmt.Sprintf("Circular reference: a calculated field cannot refer to itself using [%v]",
+					fieldRef.FieldInfo.RefName)), nil
+			} else {
+				if fieldRef.FieldInfo.IsCalcField {
+					// The field reference is to a calculated field, so we need to retrieve its equation and
+					// check there are no direct or indirect references to the field with id = context.resultFieldID
+					cycleFound, cycleCheckErr := checkFieldCycles(context, *fieldRef)
+					if cycleCheckErr != nil {
+						return nil, cycleCheckErr
+					} else {
+						if cycleFound {
+							return newErrorAnalysisResult(
+								fmt.Sprintf("Circular reference: a calculated field's cannot refer back to itself indirectly through [%v]",
+									fieldRef.FieldInfo.RefName)), nil
+						} else {
+							return newTypedAnalysisResult(fieldRef.FieldInfo.Type), nil
+						}
+					}
+				} else {
+					// The field reference is to a non-calculated field. Since there is an literal value in the field
+					// (i.e., no formula), no further checking for cycles is needed ... just return the fields type.
+					return newTypedAnalysisResult(fieldRef.FieldInfo.Type), nil
+				}
+			}
 		}
 
 	} else if eqnNode.TextVal != nil {
@@ -82,9 +169,9 @@ func analyzeEqnNode(context *semanticAnalysisContext, eqnNode *EquationNode) (*s
 func analyzeSemantics(compileParams formulaCompileParams, rootEqnNode *EquationNode) (*semanticAnalysisResult, error) {
 
 	context := semanticAnalysisContext{
-		fieldIDsVisited: []string{},
-		appEngContext:   compileParams.appEngContext,
-		definedFuncs:    CalcFieldDefinedFuncs}
+		resultFieldID: compileParams.resultFieldID,
+		appEngContext: compileParams.appEngContext,
+		definedFuncs:  CalcFieldDefinedFuncs}
 
 	// Check the top-level/overall result type to see that it matches the expected type (e.g., bool, number, text)
 	analyzeResult, analyzeErr := analyzeEqnNode(&context, rootEqnNode)

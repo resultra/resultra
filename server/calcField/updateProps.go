@@ -30,7 +30,8 @@ func (setFormulaParams SetFormulaParams) UpdateProps(appEngContext appengine.Con
 		appEngContext:      appEngContext,
 		formulaText:        setFormulaParams.FormulaText,
 		parentTableID:      parentTableID,
-		expectedResultType: fieldForUpdate.Type}
+		expectedResultType: fieldForUpdate.Type,
+		resultFieldID:      setFormulaParams.GetFieldID()}
 
 	compileResult, compileErr := compileAndEncodeFormula(compileParams)
 	if compileErr != nil {

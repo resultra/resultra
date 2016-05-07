@@ -24,7 +24,12 @@ func newCalcField(appEngContext appengine.Context, calcFieldParams NewCalcFieldP
 		appEngContext:      appEngContext,
 		formulaText:        calcFieldParams.FormulaText,
 		parentTableID:      calcFieldParams.ParentTableID,
-		expectedResultType: calcFieldParams.Type}
+		expectedResultType: calcFieldParams.Type,
+		// resultFieldID is intentionally left empty. resultFieldID is used
+		// to check for cycles in the formula. Since this is a new field, there
+		// by definition can't be any existing formulas with references to this field,
+		// so cycle detection can be disabled.
+		resultFieldID: ""}
 
 	compileResult, err := compileAndEncodeFormula(compileParams)
 	if err != nil {
