@@ -56,7 +56,7 @@ func validateFieldTypeWithSummary(fieldType string, summarizeValsWith string) er
 			return fmt.Errorf("Invalid summary = %v for field type = %v", summarizeValsWith, fieldType)
 		}
 	case valGroupByDay:
-		if fieldType != field.FieldTypeDate {
+		if fieldType != field.FieldTypeTime {
 			return fmt.Errorf("Invalid summary = %v for field type = %v", summarizeValsWith, fieldType)
 		}
 	default:

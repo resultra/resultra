@@ -11,3 +11,4 @@ googleAppEng/static/*
 *_gen.go
 *.output
 *.swp
+*.pyc

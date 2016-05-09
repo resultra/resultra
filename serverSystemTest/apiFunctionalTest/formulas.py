@@ -131,5 +131,6 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
     # TODO - Test setting of formulas on fields, including:
     #    - Trying to set a formula on a non-calculated field.
  
+# Allow the tests in this file to be run stand-alone
 if __name__ == '__main__':
     unittest.main()

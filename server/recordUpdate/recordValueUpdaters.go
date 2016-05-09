@@ -3,6 +3,7 @@ package recordUpdate
 import (
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/record"
+	"time"
 )
 
 // Update a text field value
@@ -41,5 +42,16 @@ type SetRecordBoolValueParams struct {
 func (setValParams SetRecordBoolValueParams) fieldType() string { return field.FieldTypeBool }
 
 func (setValParams SetRecordBoolValueParams) updateRecordValue(rec *record.Record) {
+	(*rec)[setValParams.FieldID] = setValParams.Value
+}
+
+type SetRecordTimeValueParams struct {
+	RecordUpdateHeader
+	Value time.Time `json:"time"`
+}
+
+func (setValParams SetRecordTimeValueParams) fieldType() string { return field.FieldTypeTime }
+
+func (setValParams SetRecordTimeValueParams) updateRecordValue(rec *record.Record) {
 	(*rec)[setValParams.FieldID] = setValParams.Value
 }

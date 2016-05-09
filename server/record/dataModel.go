@@ -72,8 +72,6 @@ func NewRecord(appEngContext appengine.Context, params NewRecordParams) (*Record
 }
 
 type RecordID struct {
-	// TODO - More fields will go here once a record is
-	// tied to a database table
 	RecordID string `json:"recordID"`
 }
 
@@ -137,7 +135,7 @@ func ValidateFieldForRecordValue(appEngContext appengine.Context, fieldID string
 	}
 	if fieldRef.FieldInfo.Type != expectedFieldType {
 		return fmt.Errorf("Can't update/set value:"+
-			" Type mismatch with field: expecting %v: got %v", expectedFieldType, fieldRef.FieldInfo.Type)
+			" Type mismatch with field: expecting %v: got %v: fieldRef=%+v", expectedFieldType, fieldRef.FieldInfo.Type, fieldRef)
 
 	} else if (!allowCalcField) && fieldRef.FieldInfo.IsCalcField {
 		return fmt.Errorf("Field is a calculated field, setting values directly not supported: field=%v",

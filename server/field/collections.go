@@ -14,7 +14,7 @@ type GetFieldListParams struct {
 func GetAllFieldRefs(appEngContext appengine.Context, params GetFieldListParams) ([]FieldRef, error) {
 
 	var allFields []Field
-	fieldIDs, err := datastoreWrapper.GetAllChildEntities(appEngContext, params.ParentTableID, fieldEntityKind, &allFields)
+	fieldIDs, err := datastoreWrapper.GetAllChildEntities(appEngContext, params.ParentTableID, FieldEntityKind, &allFields)
 	if err != nil {
 		return nil, fmt.Errorf("GetFieldsByType: Unable to retrieve fields from datastore: datastore error =%v", err)
 	}
@@ -25,6 +25,13 @@ func GetAllFieldRefs(appEngContext appengine.Context, params GetFieldListParams)
 		fieldRefs[i] = FieldRef{fieldID, currField}
 	}
 	return fieldRefs, nil
+}
+
+type FieldsByType struct {
+	TextFields   []FieldRef `json:"textFields"`
+	TimeFields   []FieldRef `json:"timeFields"`
+	NumberFields []FieldRef `json:"numberFields"`
+	BoolFields   []FieldRef `json:"boolFields"`
 }
 
 func GetFieldsByType(appEngContext appengine.Context, params GetFieldListParams) (*FieldsByType, error) {
@@ -40,8 +47,8 @@ func GetFieldsByType(appEngContext appengine.Context, params GetFieldListParams)
 		switch fieldRef.FieldInfo.Type {
 		case FieldTypeText:
 			fieldsByType.TextFields = append(fieldsByType.TextFields, fieldRef)
-		case FieldTypeDate:
-			fieldsByType.DateFields = append(fieldsByType.DateFields, fieldRef)
+		case FieldTypeTime:
+			fieldsByType.TimeFields = append(fieldsByType.TimeFields, fieldRef)
 		case FieldTypeNumber:
 			fieldsByType.NumberFields = append(fieldsByType.NumberFields, fieldRef)
 		case FieldTypeBool:

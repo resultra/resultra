@@ -23,8 +23,13 @@ type RecordUpdateHeader struct {
 	FieldID  string `json:"fieldID"`
 }
 
-func (recUpdateHeader RecordUpdateHeader) fieldID() string  { return recUpdateHeader.FieldID }
-func (recUpdateHeader RecordUpdateHeader) recordID() string { return recUpdateHeader.RecordID }
+func (recUpdateHeader RecordUpdateHeader) fieldID() string {
+	return recUpdateHeader.FieldID
+}
+
+func (recUpdateHeader RecordUpdateHeader) recordID() string {
+	return recUpdateHeader.RecordID
+}
 
 // updateRecordValue implements a generic algorithm (strategy design pattern) which wrapp the updating of records.
 // It leaves the low-level updating of values to implementers of the RecordUpdater interface. Different RecordUpdaters

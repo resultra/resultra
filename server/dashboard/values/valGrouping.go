@@ -69,7 +69,7 @@ func validateFieldTypeWithGrouping(fieldType string, groupValsBy string, bucketW
 			return fmt.Errorf("Invalid grouping = %v for field type = %v, bucket width must be > 0.0", groupValsBy, fieldType)
 		}
 	case valGroupByDay:
-		if fieldType != field.FieldTypeDate {
+		if fieldType != field.FieldTypeTime {
 			return fmt.Errorf("Invalid grouping = %v for field type = %v", groupValsBy, fieldType)
 		}
 	default:
@@ -139,7 +139,7 @@ func recordGroupLabel(fieldGroupRef field.FieldRef, recordRef record.RecordRef) 
 		}
 	case field.FieldTypeNumber:
 		return "All Numbers", nil // TODO - Group by number and/or bucket the values
-	case field.FieldTypeDate:
+	case field.FieldTypeTime:
 		return "All Dates", nil // TODO - Group by date and/or bucket the values by day, month, etc.
 	}
 	return "", fmt.Errorf("recordGroupLabel: unsupported grouping: fieldRef = %+v", fieldGroupRef)

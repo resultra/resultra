@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-const fieldEntityKind string = "Field"
+const FieldEntityKind string = "Field"
 
 // A "reference name" for a field can only contain
 // TODO - Can't start with "true or false" - add this when supporting boolean values
@@ -19,7 +19,7 @@ var validRefNameRegexp = regexp.MustCompile("^[a-zA-Z_][a-zA-Z0-9_]*$")
 
 const FieldTypeText string = "text"
 const FieldTypeNumber string = "number"
-const FieldTypeDate string = "date"
+const FieldTypeTime string = "time"
 const FieldTypeBool string = "bool"
 
 type Field struct {
@@ -44,20 +44,13 @@ type FieldRef struct {
 	FieldInfo Field  `json:"fieldInfo"`
 }
 
-type FieldsByType struct {
-	TextFields   []FieldRef `json:"textFields"`
-	DateFields   []FieldRef `json:"dateFields"`
-	NumberFields []FieldRef `json:"numberFields"`
-	BoolFields   []FieldRef `json:"boolFields"`
-}
-
 func validFieldType(fieldType string) bool {
 	switch fieldType {
 	case FieldTypeText:
 		return true
 	case FieldTypeNumber:
 		return true
-	case FieldTypeDate:
+	case FieldTypeTime:
 		return true
 	case FieldTypeBool:
 		return true
@@ -89,7 +82,7 @@ func CreateNewFieldFromRawInputs(appEngContext appengine.Context, parentTableID 
 
 	// TODO: Validate the reference name is unique versus the other names field names already in use.
 
-	fieldID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, parentTableID, fieldEntityKind, &newField)
+	fieldID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, parentTableID, FieldEntityKind, &newField)
 	if insertErr != nil {
 		return "", fmt.Errorf("Can't create new field: error inserting into datastore: %v", insertErr)
 	}
@@ -155,7 +148,7 @@ func GetFieldRef(appEngContext appengine.Context, fieldID string) (*FieldRef, er
 func GetFieldFromKey(appEngContext appengine.Context, fieldKey *datastore.Key) (*FieldRef, error) {
 
 	fieldGetDest := Field{}
-	fieldID, getErr := datastoreWrapper.GetEntityFromKey(appEngContext, fieldEntityKind, fieldKey, &fieldGetDest)
+	fieldID, getErr := datastoreWrapper.GetEntityFromKey(appEngContext, FieldEntityKind, fieldKey, &fieldGetDest)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetFieldFromKey: unable to retrieve field from key: %v", getErr)
 	}
@@ -167,7 +160,7 @@ func GetExistingFieldKey(appEngContext appengine.Context, fieldID string) (*data
 	if len(fieldID) == 0 {
 		return nil, fmt.Errorf("GetExistingFieldKey: Can't get field's key: missing field ID ")
 	}
-	fieldKey, fieldErr := datastoreWrapper.GetExistingRootEntityKey(appEngContext, fieldEntityKind, fieldID)
+	fieldKey, fieldErr := datastoreWrapper.GetExistingRootEntityKey(appEngContext, FieldEntityKind, fieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("GetExistingFieldKey: invalid field ID '%v': datastore error=%v",
 			fieldID, fieldErr)

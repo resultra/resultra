@@ -10,6 +10,9 @@ from testCommon import TestHelperMixin
 
 class populateSimpleDB(unittest.TestCase,TestHelperMixin):
     
+    # TODO - include tests where invalid IDs are passed to the different functions to create or retrieve
+    # database entities; i.e., invalid type or invalid ID altogether.
+    
     def testPopulate(self):
         jsonResp = self.apiRequest('database/new',{'name': 'Test Database'})
         self.databaseID = jsonResp[u'databaseID']
