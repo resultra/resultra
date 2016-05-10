@@ -41,6 +41,7 @@ class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
         
 # TODO - Verify a new record is not created with an invalid table ID
 # TODO - Verify the field ID given for the record update has the same field ID as the record.
+# TODO - If 'value' parameter is ommitted altogether, an error should be generated. For time values, this is currently initializing to a default time.
 
 # Allow the tests in this file to be run stand-alone
 if __name__ == '__main__':

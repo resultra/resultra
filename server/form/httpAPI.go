@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/form/components/checkBox"
+	"resultra/datasheet/server/form/components/datePicker"
 	"resultra/datasheet/server/form/components/textBox"
 	"resultra/datasheet/server/generic/api"
 )
@@ -55,8 +56,9 @@ func getFormAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 type FormInfo struct {
-	TextBoxes  []textBox.TextBoxRef   `json:"textBoxes"`
-	CheckBoxes []checkBox.CheckBoxRef `json:"checkBoxes"`
+	TextBoxes   []textBox.TextBoxRef       `json:"textBoxes"`
+	CheckBoxes  []checkBox.CheckBoxRef     `json:"checkBoxes"`
+	DatePickers []datePicker.DatePickerRef `json:"datePickers"`
 }
 
 type GetFormInfoParams struct {
@@ -85,9 +87,16 @@ func getFormInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	datePickerRefs, err := datePicker.GetDatePickers(appEngCntxt, params.FormID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
 	formInfoInfo := FormInfo{
-		TextBoxes:  textBoxRefs,
-		CheckBoxes: checkBoxRefs}
+		TextBoxes:   textBoxRefs,
+		CheckBoxes:  checkBoxRefs,
+		DatePickers: datePickerRefs}
 
 	api.WriteJSONResponse(w, formInfoInfo)
 

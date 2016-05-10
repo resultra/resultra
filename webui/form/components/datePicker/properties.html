@@ -1,0 +1,24 @@
+
+{{define "datePickerFormatProps"}}
+	<div class="title">
+		<i class="dropdown icon"></i>
+		Format
+	</div>
+	<div class="content">
+		<p>
+			Date picker formatting properties go here
+		</p>
+	</div>
+{{end}}
+
+{{define "datePickerProps"}}
+
+	<div id="datePickerProps" class="ui accordion initiallyHidden">
+		<form class="ui form">
+		
+		{{template "datePickerFormatProps"}}
+
+		</form>
+	</div>
+
+{{end}}

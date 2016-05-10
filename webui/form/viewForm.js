@@ -156,6 +156,10 @@ $(document).ready(function() {
 			console.log("Init check box in view form")
 			initCheckBoxRecordEditBehavior(checkBoxObjectRef)
 		},
+		initDatePickerFunc: function(datePickerObjectRef) {
+			console.log("Init date picker in view form")
+			initDatePickerRecordEditBehavior(datePickerObjectRef)
+		},
 		doneLoadingFormDataFunc: loadRecords	
 	}); 
 

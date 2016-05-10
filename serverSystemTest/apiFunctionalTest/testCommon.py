@@ -37,6 +37,6 @@ class TestHelperMixin:
         return recordRef
         
     def setTimeRecordValue(self,recordID,fieldID,timeVal):
-        recordRef = self.apiRequest('recordUpdate/setTimeFieldValue',{'recordID':recordID,'fieldID':fieldID,'time':timeVal})
+        recordRef = self.apiRequest('recordUpdate/setTimeFieldValue',{'recordID':recordID,'fieldID':fieldID,'value':timeVal})
         return recordRef
     

@@ -11,11 +11,11 @@ type CheckboxIDInterface interface {
 }
 
 type CheckboxIDHeader struct {
-	TextBoxID string `json:"checkBoxID"`
+	CheckBoxID string `json:"checkBoxID"`
 }
 
 func (idHeader CheckboxIDHeader) getCheckBoxID() string {
-	return idHeader.TextBoxID
+	return idHeader.CheckBoxID
 }
 
 type CheckBoxPropUpdater interface {

@@ -33,6 +33,8 @@ class populateSimpleDB(unittest.TestCase,TestHelperMixin):
         fieldParams = {'parentTableID':self.tableID,'name':'Good Price?','type':'bool','refName':'goodPrice'}
         jsonResp = self.apiRequest('field/new',fieldParams)
         self.goodPriceField = jsonResp[u'fieldID']
+        
+        self.purchaseDateField = self.newTimeField(self.tableID,"Purchase Date","PurchDate")
 
         fieldParams = {'parentTableID':self.tableID,'name':'Total','type':'number',
                     'refName':'total','formulaText':'42.5'}

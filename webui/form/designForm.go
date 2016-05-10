@@ -36,12 +36,13 @@ type FormElemTemplateParams struct {
 }
 
 type DesignFormTemplateParams struct {
-	Title          string
-	FormID         string
-	FormName       string
-	TableID        string
-	CheckboxParams FormElemTemplateParams
-	TextBoxParams  FormElemTemplateParams
+	Title            string
+	FormID           string
+	FormName         string
+	TableID          string
+	CheckboxParams   FormElemTemplateParams
+	DatePickerParams FormElemTemplateParams
+	TextBoxParams    FormElemTemplateParams
 }
 
 func designForm(w http.ResponseWriter, r *http.Request) {
@@ -58,12 +59,13 @@ func designForm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	templParams := DesignFormTemplateParams{
-		Title:          "Edit Layout",
-		FormID:         formRef.FormID,
-		TableID:        formRef.TableID,
-		FormName:       formRef.Name,
-		CheckboxParams: FormElemTemplateParams{ElemPrefix: "checkbox_"},
-		TextBoxParams:  FormElemTemplateParams{ElemPrefix: "textBox_"}}
+		Title:            "Edit Layout",
+		FormID:           formRef.FormID,
+		TableID:          formRef.TableID,
+		FormName:         formRef.Name,
+		CheckboxParams:   FormElemTemplateParams{ElemPrefix: "checkbox_"},
+		DatePickerParams: FormElemTemplateParams{ElemPrefix: "datePicker_"},
+		TextBoxParams:    FormElemTemplateParams{ElemPrefix: "textBox_"}}
 
 	err := designFormTemplates.ExecuteTemplate(w, "designForm", templParams)
 	if err != nil {

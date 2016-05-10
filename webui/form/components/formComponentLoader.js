@@ -9,8 +9,6 @@ function loadFormComponents(loadFormConfig) {
 			var textBox = formInfo.textBoxes[textBoxIter]
 			console.log("loadFormComponents: initializing text box: " + JSON.stringify(textBox))
 			
-			// TODO - textBoxContainerHTMl is specific to text boxes only. Need to use a callback
-			// to create the right HTML for the containers.
 			var containerHTML = textBoxContainerHTML(textBox.textBoxID);
 			var containerObj = $(containerHTML)
 			
@@ -38,8 +36,6 @@ function loadFormComponents(loadFormConfig) {
 			var checkBox = formInfo.checkBoxes[checkBoxIter]
 			console.log("loadFormComponents: initializing check box: " + JSON.stringify(checkBox))
 			
-			// TODO - textBoxContainerHTMl is specific to text boxes only. Need to use a callback
-			// to create the right HTML for the containers.
 			var containerHTML = checkBoxContainerHTML(checkBox.checkBoxID);
 			var containerObj = $(containerHTML)
 			
@@ -59,6 +55,32 @@ function loadFormComponents(loadFormConfig) {
 			
 
 		} // for each text box
+	
+		for (var datePickerIter in formInfo.datePickers) {
+			
+			// Create an HTML block for the container
+			var datePicker = formInfo.datePickers[datePickerIter]
+			console.log("loadFormComponents: initializing date picker: " + JSON.stringify(datePicker))
+			
+			var containerHTML = datePickerContainerHTML(datePicker.datePickerID);
+			var containerObj = $(containerHTML)
+			
+			// Set the label to the field name
+			containerObj.find('label').text(datePicker.fieldRef.fieldInfo.name)
+			
+			// Position the object withing the #layoutCanvas div
+			$(loadFormConfig.formParentElemID).append(containerObj)
+			setElemGeometry(containerObj,datePicker.geometry)
+			
+			 // Store the newly created object reference in the DOM element. This is needed for follow-on
+			 // property setting, resizing, etc.
+			setElemObjectRef(datePicker.datePickerID,datePicker)
+			
+			// Callback for any specific initialization for either the form design or view mode
+			loadFormConfig.initDatePickerFunc(datePicker)
+			
+
+		} // for each date picker
 		
 		
 		loadFormConfig.doneLoadingFormDataFunc()

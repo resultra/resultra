@@ -47,7 +47,7 @@ func (setValParams SetRecordBoolValueParams) updateRecordValue(rec *record.Recor
 
 type SetRecordTimeValueParams struct {
 	RecordUpdateHeader
-	Value time.Time `json:"time"`
+	Value time.Time `json:"value"`
 }
 
 func (setValParams SetRecordTimeValueParams) fieldType() string { return field.FieldTypeTime }

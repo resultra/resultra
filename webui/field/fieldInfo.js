@@ -1,7 +1,9 @@
 var fieldTypeNumber = "number"
 var fieldTypeText = "text"
 var fieldTypeBool = "bool"
+var fieldTypeTime = "time"
 var fieldTypeAll = "all"
+
 
 
 // Use for populating menus with field selections
@@ -63,6 +65,15 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 				var boolField = boolFields[boolFieldIter]
 				console.log("Bool field: " + boolField.fieldInfo.name)
 				fieldsByID[boolField.fieldID] = boolField.fieldInfo
+			} // for each bool field
+		}
+		
+		if(loadAllFieldTypes || doLoadFieldByType[fieldTypeTime]==true) {
+			var timeFields = fieldsByType.timeFields
+			for (timeFieldIter in timeFields) {
+				var timeField = timeFields[timeFieldIter]
+				console.log("Time field: " + timeField.fieldInfo.name)
+				fieldsByID[timeField.fieldID] = timeField.fieldInfo
 			} // for each bool field
 		}
 		
