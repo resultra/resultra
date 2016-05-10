@@ -12,10 +12,6 @@ class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
         self.tableID = self.newTable(databaseID,"TestTimeRecordValues: Test Table")
         self.timeFieldID = self.newTimeField(self.tableID,"TestTimeRecordValues - Time Field","TimeField")
         
-    def getRecordFieldVal(self,recordRef,fieldID):
-        fieldValues = recordRef[u'fieldValues']
-        value = fieldValues[fieldID]
-        return value
         
     
     def testSimpleDates(self):
@@ -38,7 +34,24 @@ class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
         with self.assertRaises(AssertionError):
             self.setTimeRecordValue(recordID,self.timeFieldID,"") # Invalid time format
               
+
+class TestLongTextRecordValues(unittest.TestCase,TestHelperMixin):
+    def setUp(self):
+        databaseID = self.newDatabase('TestLongTextRecordValues: Test Database')
+        self.tableID = self.newTable(databaseID,"TestLongTextRecordValues: Test Table")
+        self.longTextFieldID = self.newLongTextField(self.tableID,"TestLongTextRecordValues - Long Text Field","TimeField")
         
+    def testLongText(self):
+        recordID = self.newRecord(self.tableID)
+        someText = "Hello World!"
+        
+        recordRef = self.setLongTextRecordValue(recordID,self.longTextFieldID,someText)
+        
+        self.assertEquals(self.getRecordFieldVal(recordRef,self.longTextFieldID),
+            someText,"record after being initially set has same value")
+          
+
+# TODO - Set record values with invalid types - e.g. set a bool for a text field
 # TODO - Verify a new record is not created with an invalid table ID
 # TODO - Verify the field ID given for the record update has the same field ID as the record.
 # TODO - If 'value' parameter is ommitted altogether, an error should be generated. For time values, this is currently initializing to a default time.

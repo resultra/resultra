@@ -21,6 +21,7 @@ const FieldTypeText string = "text"
 const FieldTypeNumber string = "number"
 const FieldTypeTime string = "time"
 const FieldTypeBool string = "bool"
+const FieldTypeLongText string = "longText"
 
 type Field struct {
 	Name string `json:"name"`
@@ -47,6 +48,8 @@ type FieldRef struct {
 func validFieldType(fieldType string) bool {
 	switch fieldType {
 	case FieldTypeText:
+		return true
+	case FieldTypeLongText:
 		return true
 	case FieldTypeNumber:
 		return true

@@ -19,6 +19,19 @@ func (setValParams SetRecordTextValueParams) updateRecordValue(rec *record.Recor
 	(*rec)[setValParams.FieldID] = setValParams.Value
 }
 
+// Update a long text field value
+
+type SetRecordLongTextValueParams struct {
+	RecordUpdateHeader
+	Value string `json:"value"`
+}
+
+func (setValParams SetRecordLongTextValueParams) fieldType() string { return field.FieldTypeLongText }
+
+func (setValParams SetRecordLongTextValueParams) updateRecordValue(rec *record.Record) {
+	(*rec)[setValParams.FieldID] = setValParams.Value
+}
+
 // Update a number field value
 
 type SetRecordNumberValueParams struct {

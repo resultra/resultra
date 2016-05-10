@@ -100,7 +100,6 @@ func UpdateExistingRecord(appEngContext appengine.Context, recordID RecordID, re
 // TODO - The GetRecord function initially returns all records. However, more fields will be included for:
 // - maximum record to retrieve, along with
 // - sort and filter criteria.
-// - parent table ID (once tables are implemented)
 // - cursor indicating where to start the query (for retrieving results in batches)
 
 type GetRecordsParams struct {

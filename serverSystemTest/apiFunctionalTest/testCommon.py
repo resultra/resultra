@@ -26,7 +26,13 @@ class TestHelperMixin:
         jsonResp = self.apiRequest('field/new',fieldParams)
         fieldID = jsonResp[u'fieldID']
         return fieldID
-        
+
+    def newLongTextField(self,tableID,fieldName,refName):
+        fieldParams = {'parentTableID':tableID,'name':fieldName,'type':'longText','refName':refName}
+        jsonResp = self.apiRequest('field/new',fieldParams)
+        fieldID = jsonResp[u'fieldID']
+        return fieldID
+    
     def newRecord(self,tableID):
         jsonResp = self.apiRequest('record/new',{'tableID':tableID})
         recordID = jsonResp[u'recordID']
@@ -36,7 +42,16 @@ class TestHelperMixin:
         recordRef = self.apiRequest('record/get',{'recordID':recordID})
         return recordRef
         
+    def getRecordFieldVal(self,recordRef,fieldID):
+        fieldValues = recordRef[u'fieldValues']
+        value = fieldValues[fieldID]
+        return value      
+        
     def setTimeRecordValue(self,recordID,fieldID,timeVal):
         recordRef = self.apiRequest('recordUpdate/setTimeFieldValue',{'recordID':recordID,'fieldID':fieldID,'value':timeVal})
+        return recordRef
+ 
+    def setLongTextRecordValue(self,recordID,fieldID,textVal):
+        recordRef = self.apiRequest('recordUpdate/setLongTextFieldValue',{'recordID':recordID,'fieldID':fieldID,'value':textVal})
         return recordRef
     
