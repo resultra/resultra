@@ -160,6 +160,10 @@ $(document).ready(function() {
 			console.log("Init date picker in view form")
 			initDatePickerRecordEditBehavior(datePickerObjectRef)
 		},
+		initHtmlEditorFunc: function(htmlEditorObjectRef) {
+			console.log("Init html editor in view form")
+			initHtmlEditorRecordEditBehavior(htmlEditorObjectRef)
+		},
 		doneLoadingFormDataFunc: loadRecords	
 	}); 
 

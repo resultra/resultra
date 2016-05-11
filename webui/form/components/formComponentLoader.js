@@ -81,6 +81,33 @@ function loadFormComponents(loadFormConfig) {
 			
 
 		} // for each date picker
+
+
+		for (var htmlEditorIter in formInfo.htmlEditors) {
+			
+			// Create an HTML block for the container
+			var htmlEditor = formInfo.htmlEditors[htmlEditorIter]
+			console.log("loadFormComponents: initializing html editor: " + JSON.stringify(htmlEditor))
+			
+			var containerHTML = htmlEditorContainerHTML(htmlEditor.htmlEditorID);
+			var containerObj = $(containerHTML)
+			
+			// Set the label to the field name
+			containerObj.find('label').text(htmlEditor.fieldRef.fieldInfo.name)
+			
+			// Position the object withing the #layoutCanvas div
+			$(loadFormConfig.formParentElemID).append(containerObj)
+			setElemGeometry(containerObj,htmlEditor.geometry)
+			
+			 // Store the newly created object reference in the DOM element. This is needed for follow-on
+			 // property setting, resizing, etc.
+			setElemObjectRef(htmlEditor.htmlEditorID,htmlEditor)
+			
+			// Callback for any specific initialization for either the form design or view mode
+			loadFormConfig.initHtmlEditorFunc(htmlEditor)
+			
+
+		} // for each html editor
 		
 		
 		loadFormConfig.doneLoadingFormDataFunc()

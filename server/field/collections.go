@@ -28,10 +28,11 @@ func GetAllFieldRefs(appEngContext appengine.Context, params GetFieldListParams)
 }
 
 type FieldsByType struct {
-	TextFields   []FieldRef `json:"textFields"`
-	TimeFields   []FieldRef `json:"timeFields"`
-	NumberFields []FieldRef `json:"numberFields"`
-	BoolFields   []FieldRef `json:"boolFields"`
+	TextFields     []FieldRef `json:"textFields"`
+	LongTextFields []FieldRef `json:"longTextFields"`
+	TimeFields     []FieldRef `json:"timeFields"`
+	NumberFields   []FieldRef `json:"numberFields"`
+	BoolFields     []FieldRef `json:"boolFields"`
 }
 
 func GetFieldsByType(appEngContext appengine.Context, params GetFieldListParams) (*FieldsByType, error) {
@@ -47,6 +48,8 @@ func GetFieldsByType(appEngContext appengine.Context, params GetFieldListParams)
 		switch fieldRef.FieldInfo.Type {
 		case FieldTypeText:
 			fieldsByType.TextFields = append(fieldsByType.TextFields, fieldRef)
+		case FieldTypeLongText:
+			fieldsByType.LongTextFields = append(fieldsByType.LongTextFields, fieldRef)
 		case FieldTypeTime:
 			fieldsByType.TimeFields = append(fieldsByType.TimeFields, fieldRef)
 		case FieldTypeNumber:

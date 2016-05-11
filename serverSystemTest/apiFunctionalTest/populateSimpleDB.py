@@ -35,6 +35,8 @@ class populateSimpleDB(unittest.TestCase,TestHelperMixin):
         self.goodPriceField = jsonResp[u'fieldID']
         
         self.purchaseDateField = self.newTimeField(self.tableID,"Purchase Date","PurchDate")
+        self.purchaseCommentsField = self.newLongTextField(self.tableID,"Purchase Comments","PurchComment")
+
 
         fieldParams = {'parentTableID':self.tableID,'name':'Total','type':'number',
                     'refName':'total','formulaText':'42.5'}

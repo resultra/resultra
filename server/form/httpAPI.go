@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/form/components/checkBox"
 	"resultra/datasheet/server/form/components/datePicker"
+	"resultra/datasheet/server/form/components/htmlEditor"
 	"resultra/datasheet/server/form/components/textBox"
 	"resultra/datasheet/server/generic/api"
 )
@@ -59,6 +60,7 @@ type FormInfo struct {
 	TextBoxes   []textBox.TextBoxRef       `json:"textBoxes"`
 	CheckBoxes  []checkBox.CheckBoxRef     `json:"checkBoxes"`
 	DatePickers []datePicker.DatePickerRef `json:"datePickers"`
+	HtmlEditors []htmlEditor.HtmlEditorRef `json:"htmlEditors"`
 }
 
 type GetFormInfoParams struct {
@@ -93,10 +95,17 @@ func getFormInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	htmlEditorRefs, err := htmlEditor.GetHtmlEditors(appEngCntxt, params.FormID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
 	formInfoInfo := FormInfo{
 		TextBoxes:   textBoxRefs,
 		CheckBoxes:  checkBoxRefs,
-		DatePickers: datePickerRefs}
+		DatePickers: datePickerRefs,
+		HtmlEditors: htmlEditorRefs}
 
 	api.WriteJSONResponse(w, formInfoInfo)
 

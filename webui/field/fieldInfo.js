@@ -1,5 +1,6 @@
 var fieldTypeNumber = "number"
 var fieldTypeText = "text"
+var fieldTypeLongText = "longText"
 var fieldTypeBool = "bool"
 var fieldTypeTime = "time"
 var fieldTypeAll = "all"
@@ -75,6 +76,15 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 				console.log("Time field: " + timeField.fieldInfo.name)
 				fieldsByID[timeField.fieldID] = timeField.fieldInfo
 			} // for each bool field
+		}
+		
+		if(loadAllFieldTypes || doLoadFieldByType[fieldTypeLongText]==true) {
+			var longTextFields = fieldsByType.longTextFields
+			for (longTextFieldIter in longTextFields) {		
+				var longTextField = longTextFields[longTextFieldIter]			
+				console.log("Long Text field: " + longTextField.fieldInfo.name)
+				fieldsByID[longTextField.fieldID] = longTextField.fieldInfo
+			} // for each long text field
 		}
 		
 		fieldInfoCallback(fieldsByID)

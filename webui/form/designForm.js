@@ -2,7 +2,8 @@
 var paletteItemsEditConfig = {
 	paletteItemTextBox: textBoxDesignFormConfig,
 	paletteItemCheckBox: checkBoxDesignFormConfig,
-	paletteItemDatePicker: datePickerDesignFormConfig
+	paletteItemDatePicker: datePickerDesignFormConfig,
+	paletteItemHtmlEditor: htmlEditorDesignFormConfig
 }
 
 var formDesignCanvasSelector = "#layoutCanvas"
@@ -88,6 +89,10 @@ $(document).ready(function() {
 		initDatePickerFunc: function(datePickerObjectRef) {
 			var componentIDs = { formID: formID, componentID: datePickerObjectRef.datePickerID }
 			initFormComponentDesignBehavior(componentIDs,datePickerObjectRef,datePickerDesignFormConfig)
+		},
+		initHtmlEditorFunc: function(htmlEditorObjectRef) {
+			var componentIDs = { formID: formID, componentID: htmlEditorObjectRef.htmlEditorID }
+			initFormComponentDesignBehavior(componentIDs,htmlEditorObjectRef,htmlEditorDesignFormConfig)
 		},
 		doneLoadingFormDataFunc: function() {} // no-op	
 	}); 

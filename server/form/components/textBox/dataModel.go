@@ -24,9 +24,6 @@ type TextBoxRef struct {
 }
 
 type NewTextBoxParams struct {
-	// ContainerID is initially assigned a temporary ID assigned by the client. It is passed back
-	// to the client after the real datastore ID is assigned, allowing the client
-	// to swizzle/replace the placeholder ID with the real one.
 	ParentID string                `json:"parentID"`
 	FieldID  string                `json:"fieldID"`
 	Geometry common.LayoutGeometry `json:"geometry"`
