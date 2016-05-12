@@ -14,6 +14,8 @@ func init() {
 	recordRouter.HandleFunc("/api/record/get", getRecord)
 	recordRouter.HandleFunc("/api/record/getAll", getRecords)
 
+	recordRouter.HandleFunc("/api/record/uploadFile", uploadFileAPI)
+
 	http.Handle("/api/record/", recordRouter)
 }
 
@@ -70,6 +72,16 @@ func getRecords(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, recordRefs)
+	}
+
+}
+
+func uploadFileAPI(w http.ResponseWriter, req *http.Request) {
+
+	if uploadResponse, uploadErr := uploadFile(req); uploadErr != nil {
+		api.WriteErrorResponse(w, uploadErr)
+	} else {
+		api.WriteJSONResponse(w, *uploadResponse)
 	}
 
 }

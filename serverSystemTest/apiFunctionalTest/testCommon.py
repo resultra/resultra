@@ -32,6 +32,13 @@ class TestHelperMixin:
         jsonResp = self.apiRequest('field/new',fieldParams)
         fieldID = jsonResp[u'fieldID']
         return fieldID
+ 
+    def newFileField(self,tableID,fieldName,refName):
+        fieldParams = {'parentTableID':tableID,'name':fieldName,'type':'file','refName':refName}
+        jsonResp = self.apiRequest('field/new',fieldParams)
+        fieldID = jsonResp[u'fieldID']
+        return fieldID
+ 
     
     def newRecord(self,tableID):
         jsonResp = self.apiRequest('record/new',{'tableID':tableID})

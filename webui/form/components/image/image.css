@@ -1,0 +1,16 @@
+/* Set the default and minimum width for fields added
+   to the layout. This is important for when the field
+   is initially dragged onto the canvas. Otherwise it
+   can shrink as the field is dragged. */
+.imageContainer
+{
+	min-width:200px;
+	min-height:200px;
+	width: 200px;
+	height: 200px;
+}
+
+.imageInnerContainer
+{
+	
+}

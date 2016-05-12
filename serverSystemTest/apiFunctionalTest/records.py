@@ -7,12 +7,11 @@ import datetime
 from testCommon import TestHelperMixin
 
 class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
+    
     def setUp(self):
         databaseID = self.newDatabase('TestTimeRecordValues: Test Database')
         self.tableID = self.newTable(databaseID,"TestTimeRecordValues: Test Table")
-        self.timeFieldID = self.newTimeField(self.tableID,"TestTimeRecordValues - Time Field","TimeField")
-        
-        
+        self.timeFieldID = self.newTimeField(self.tableID,"TestTimeRecordValues - Time Field","TimeField")    
     
     def testSimpleDates(self):
         recordID = self.newRecord(self.tableID)        

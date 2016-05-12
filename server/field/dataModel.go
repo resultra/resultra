@@ -22,6 +22,7 @@ const FieldTypeNumber string = "number"
 const FieldTypeTime string = "time"
 const FieldTypeBool string = "bool"
 const FieldTypeLongText string = "longText"
+const FieldTypeFile string = "file"
 
 type Field struct {
 	Name string `json:"name"`
@@ -56,6 +57,8 @@ func validFieldType(fieldType string) bool {
 	case FieldTypeTime:
 		return true
 	case FieldTypeBool:
+		return true
+	case FieldTypeFile:
 		return true
 	default:
 		return false

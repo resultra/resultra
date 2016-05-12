@@ -33,6 +33,7 @@ type FieldsByType struct {
 	TimeFields     []FieldRef `json:"timeFields"`
 	NumberFields   []FieldRef `json:"numberFields"`
 	BoolFields     []FieldRef `json:"boolFields"`
+	FileFields     []FieldRef `json:"fileFields"`
 }
 
 func GetFieldsByType(appEngContext appengine.Context, params GetFieldListParams) (*FieldsByType, error) {
@@ -56,6 +57,8 @@ func GetFieldsByType(appEngContext appengine.Context, params GetFieldListParams)
 			fieldsByType.NumberFields = append(fieldsByType.NumberFields, fieldRef)
 		case FieldTypeBool:
 			fieldsByType.BoolFields = append(fieldsByType.BoolFields, fieldRef)
+		case FieldTypeFile:
+			fieldsByType.FileFields = append(fieldsByType.FileFields, fieldRef)
 		default:
 			return nil, fmt.Errorf(
 				"GetFieldsByType: Unable to retrieve fields from datastore: Invalid field type %v",

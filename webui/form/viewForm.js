@@ -164,6 +164,10 @@ $(document).ready(function() {
 			console.log("Init html editor in view form")
 			initHtmlEditorRecordEditBehavior(htmlEditorObjectRef)
 		},
+		initImageFunc: function(imageObjectRef) {
+			console.log("Init image in view form")
+			initImageRecordEditBehavior(imageObjectRef)
+		},
 		doneLoadingFormDataFunc: loadRecords	
 	}); 
 

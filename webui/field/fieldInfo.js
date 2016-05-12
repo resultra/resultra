@@ -1,6 +1,7 @@
 var fieldTypeNumber = "number"
 var fieldTypeText = "text"
 var fieldTypeLongText = "longText"
+var fieldTypeFile = "file"
 var fieldTypeBool = "bool"
 var fieldTypeTime = "time"
 var fieldTypeAll = "all"
@@ -86,6 +87,16 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 				fieldsByID[longTextField.fieldID] = longTextField.fieldInfo
 			} // for each long text field
 		}
+	
+		if(loadAllFieldTypes || doLoadFieldByType[fieldTypeFile]==true) {
+			var fileFields = fieldsByType.fileFields
+			for (fileFieldIter in fileFields) {		
+				var fileField = fileFields[fileFieldIter]			
+				console.log("file field: " + fileField.fieldInfo.name)
+				fieldsByID[fileField.fieldID] = fileField.fieldInfo
+			} // for each file field
+		}
+	
 		
 		fieldInfoCallback(fieldsByID)
 	}

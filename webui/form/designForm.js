@@ -3,7 +3,8 @@ var paletteItemsEditConfig = {
 	paletteItemTextBox: textBoxDesignFormConfig,
 	paletteItemCheckBox: checkBoxDesignFormConfig,
 	paletteItemDatePicker: datePickerDesignFormConfig,
-	paletteItemHtmlEditor: htmlEditorDesignFormConfig
+	paletteItemHtmlEditor: htmlEditorDesignFormConfig,
+	paletteItemImage: imageDesignFormConfig
 }
 
 var formDesignCanvasSelector = "#layoutCanvas"
@@ -93,6 +94,10 @@ $(document).ready(function() {
 		initHtmlEditorFunc: function(htmlEditorObjectRef) {
 			var componentIDs = { formID: formID, componentID: htmlEditorObjectRef.htmlEditorID }
 			initFormComponentDesignBehavior(componentIDs,htmlEditorObjectRef,htmlEditorDesignFormConfig)
+		},
+		initImageFunc: function(imageObjectRef) {
+			var componentIDs = { formID: formID, componentID: imageObjectRef.imageID }
+			initFormComponentDesignBehavior(componentIDs,imageObjectRef,imageDesignFormConfig)
 		},
 		doneLoadingFormDataFunc: function() {} // no-op	
 	}); 

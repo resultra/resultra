@@ -108,6 +108,32 @@ function loadFormComponents(loadFormConfig) {
 			
 
 		} // for each html editor
+
+		for (var imageIter in formInfo.images) {
+			
+			// Create an HTML block for the container
+			var image = formInfo.images[imageIter]
+			console.log("loadFormComponents: initializing image editor: " + JSON.stringify(image))
+			
+			var containerHTML = imageContainerHTML(image.imageID);
+			var containerObj = $(containerHTML)
+			
+			// Set the label to the field name
+			containerObj.find('label').text(image.fieldRef.fieldInfo.name)
+			
+			// Position the object withing the #layoutCanvas div
+			$(loadFormConfig.formParentElemID).append(containerObj)
+			setElemGeometry(containerObj,image.geometry)
+			
+			 // Store the newly created object reference in the DOM element. This is needed for follow-on
+			 // property setting, resizing, etc.
+			setElemObjectRef(image.imageID,image)
+			
+			// Callback for any specific initialization for either the form design or view mode
+			loadFormConfig.initImageFunc(image)
+			
+
+		} // for each html editor
 		
 		
 		loadFormConfig.doneLoadingFormDataFunc()

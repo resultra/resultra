@@ -2,6 +2,7 @@
 	{{template "formComponentCheckBoxCSS"}}
 	{{template "formComponentDatePickerCSS"}}
 	{{template "formComponentHtmlEditorCSS"}}
+	{{template "formComponentImageCSS"}}
 {{end}}
 
 {{define "formComponentsJS"}}
@@ -11,6 +12,16 @@
 	{{template "formComponentTextBoxJS"}}
 	{{template "formComponentDatePickerJS"}}
 	{{template "formComponentHtmlEditorJS"}}
+	{{template "formComponentImageJS"}}
 	<script src="/static/form/components/formComponentLoader.js"></script>
 {{end}}
 
+{{define "newComponentDialogs"}}
+	   
+	{{template "newTextBoxDialog" .TextBoxParams}}
+	{{template "newCheckboxDialog" .CheckboxParams}}
+	{{template "newDatePickerDialog" .DatePickerParams}}
+	{{template "newHtmlEditorDialog" .HtmlEditorParams}}
+	{{template "newImageDialog" .ImageParams}}
+	
+{{end}}
