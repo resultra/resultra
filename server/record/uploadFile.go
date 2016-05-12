@@ -2,8 +2,10 @@ package record
 
 import (
 	"fmt"
+	"golang.org/x/net/context"
+	"golang.org/x/oauth2/google"
 	"google.golang.org/appengine"
-	"google.golang.org/appengine/file"
+	"google.golang.org/cloud"
 	"google.golang.org/cloud/storage"
 	"io/ioutil"
 	"log"
@@ -12,6 +14,29 @@ import (
 
 type UploadFileResponse struct {
 	UploadSuccess bool `json:"status"`
+}
+
+const cloudStorageBucketName string = "resultra-db-dev"
+const cloudStorageJSONAuthInfoFile string = "/Users/sroehling/Development/Datasheet-Dev-60167588e163.json"
+
+func getCloudClient(appEngContext context.Context) (*storage.Client, error) {
+
+	jsonKey, err := ioutil.ReadFile(cloudStorageJSONAuthInfoFile)
+	if err != nil {
+		return nil, fmt.Errorf("getCloudContext: unable to read json auth info: %v", err)
+	}
+	conf, err := google.JWTConfigFromJSON(jsonKey, storage.ScopeFullControl)
+	if err != nil {
+		return nil, fmt.Errorf("getCloudContext: unable to create config from json auth info: %v", err)
+	}
+
+	client, clientErr := storage.NewClient(appEngContext, cloud.WithTokenSource(conf.TokenSource(appEngContext)))
+	if clientErr != nil {
+		return nil, fmt.Errorf("uploadFile: Unable to save to cloud storage: %v", clientErr)
+	}
+
+	return client, nil
+
 }
 
 func uploadFile(req *http.Request) (*UploadFileResponse, error) {
@@ -33,22 +58,16 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 
 	appEngContext := appengine.NewContext(req)
 
-	client, clientErr := storage.NewClient(appEngContext)
+	client, clientErr := getCloudClient(appEngContext)
 	if clientErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to save to cloud storage: %v", clientErr)
 	}
 	defer client.Close()
 
-	//	bucketName := "test-attachments"
-	bucketName, bucketNameErr := file.DefaultBucketName(appEngContext)
-	if bucketNameErr != nil {
-		return nil, fmt.Errorf("uploadFile: failed to get default GCS bucket name: %v", bucketNameErr)
-	}
-	bucket := client.Bucket(bucketName)
-	log.Printf("Uploading file: uploading to bucket: name = %v", bucketName)
+	bucket := client.Bucket(cloudStorageBucketName)
+	log.Printf("uploadFile: start uploading file to cloud: bucket=%v, file name = %v ...", cloudStorageBucketName, cloudFileName)
 
 	cloudWriter := bucket.Object(cloudFileName).NewWriter(appEngContext)
-	cloudWriter.ContentType = "text/plain"
 
 	bytesWritten, writeErr := cloudWriter.Write(fileContents)
 	if writeErr != nil {
@@ -61,6 +80,7 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 	if closeErr := cloudWriter.Close(); closeErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to save: failure closing cloud writer: %v", closeErr)
 	}
+	log.Printf("uploadFile: ... done uloading file to cloud: bucket=%v, file name = %v", cloudStorageBucketName, cloudFileName)
 
 	return &UploadFileResponse{true}, nil
 }
