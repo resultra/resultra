@@ -7,6 +7,7 @@ import (
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/cloudStorageWrapper"
 	"resultra/datasheet/server/record"
+	"resultra/datasheet/server/runtimeConfig"
 )
 
 type UploadFile struct {
@@ -21,30 +22,25 @@ type UploadFileResponse struct {
 	Files []UploadFile `json:"files"`
 }
 
-const cloudStorageBucketName string = "resultra-db-dev"
-const cloudStorageJSONAuthInfoFile string = "/Users/sroehling/Development/Datasheet-Dev-60167588e163.json"
-
 func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 
+	// The string "uploadFile" matches the parameter name used in clients.
 	uploadInfo, uploadErr := api.ReadUploadFile(req, "uploadFile")
 	if uploadErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to read file contents: %v", uploadErr)
 	}
 
-	authConfig, configErr := cloudStorageWrapper.ReadServiceAuthConfig(cloudStorageJSONAuthInfoFile)
-	if configErr != nil {
-		return nil, fmt.Errorf("uploadFile: Unable to get credentials for cloud storage: %v", configErr)
-	}
 	cloudAppEngContext := cloudStorageWrapper.NewCloudStorageContext(req)
 
 	cloudFileName := cloudStorageWrapper.UniqueCloudFileNameFromUserFileName(uploadInfo.FileName)
-	if saveErr := cloudStorageWrapper.SaveCloudFile(cloudAppEngContext, authConfig,
-		cloudStorageBucketName, cloudFileName, uploadInfo.FileData); saveErr != nil {
+	if saveErr := cloudStorageWrapper.SaveCloudFile(cloudAppEngContext, runtimeConfig.CloudStorageAuthConfig,
+		runtimeConfig.CloudStorageBucketName, cloudFileName, uploadInfo.FileData); saveErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to save file to cloud storage: %v", saveErr)
 	}
 
 	// Generate an URL for the newly saved file
-	signedURL, urlErr := cloudStorageWrapper.GetSignedURL(cloudStorageBucketName, cloudFileName, authConfig, 60)
+	signedURL, urlErr := cloudStorageWrapper.GetSignedURL(runtimeConfig.CloudStorageBucketName,
+		cloudFileName, runtimeConfig.CloudStorageAuthConfig, 60)
 	if urlErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to create signed URL for newly uploaded file: %v", urlErr)
 	}
