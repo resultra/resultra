@@ -118,12 +118,16 @@ function loadFormComponents(loadFormConfig) {
 			var containerHTML = imageContainerHTML(image.imageID);
 			var containerObj = $(containerHTML)
 			
-			// Set the label to the field name
-			containerObj.find('label').text(image.fieldRef.fieldInfo.name)
 			
 			// Position the object withing the #layoutCanvas div
 			$(loadFormConfig.formParentElemID).append(containerObj)
 			setElemGeometry(containerObj,image.geometry)
+	
+	
+			// Set the label to the field name
+			var labelID = imageContainerLabelIDFromContainerElemID(image.imageID)
+			console.log("loadFormComponents: initializing label: id=" + labelID)
+			$('#'+labelID).text(image.fieldRef.fieldInfo.name)
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.

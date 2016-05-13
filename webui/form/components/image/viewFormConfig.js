@@ -33,15 +33,32 @@ function initImageRecordEditBehavior(imageObjectRef) {
 	imageContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoImage
 	})
-
+	
 	// Initialize image uploader plugin
 	var imageDropZoneContainerID = imageIDFromContainerElemID(imageContainerID)
 	var imageDropZoneSelector = '#' + imageDropZoneContainerID
-	console.log("Initializing image drop zone: " + imageDropZoneSelector)
-	$(imageDropZoneSelector).dropzone({
-		url: "/api/record/uploadFile",
-		maxFiles: 1
-	})
+		
+	var imageUploadID = imageUploadInputIDFromContainerElemID(imageContainerID)
+	
+	$('#'+imageUploadID).fileupload({
+	        dataType: 'json',
+			autoUpload:true,
+			maxNumberOfFiles:1,
+			// paramName corresponds to the name given to the file when it is sent to the server. 
+			// This name needs to match the name given to the FormFile() function on the server.
+			paramName: "uploadFile",
+	        done: function (e, data) {
+				console.log("Upload file done")
+	            $.each(data.result.files, function (index, file) {
+					console.log("uploaded file: " + file.name + " url = " + file.url)
+					var fileNameLabelID = fileNameLabelFromContainerElemID(imageObjectRef.imageID)		
+					$('#'+fileNameLabelID).text(file.name)
+					var imageDivID = imageIDFromContainerElemID(imageObjectRef.imageID)
+					$("#"+imageDivID).html('<img src="' + file.url + '" alt="someimage" />');
+	            });
+	        },
+			url:"/api/record/uploadFile"
+	    });
 		
 
 	// TODO - Handle notificactions of new image upload - need to refresh display.
