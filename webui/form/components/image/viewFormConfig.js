@@ -40,10 +40,11 @@ function initImageRecordEditBehavior(imageObjectRef) {
 		
 	var imageUploadID = imageUploadInputIDFromContainerElemID(imageContainerID)
 	
+		
 	$('#'+imageUploadID).fileupload({
 	        dataType: 'json',
 			autoUpload:true,
-			maxNumberOfFiles:1,
+			maxNumberOfFiles:1,	
 			// paramName corresponds to the name given to the file when it is sent to the server. 
 			// This name needs to match the name given to the FormFile() function on the server.
 			paramName: "uploadFile",
@@ -59,6 +60,16 @@ function initImageRecordEditBehavior(imageObjectRef) {
 	        },
 			url:"/api/record/uploadFile"
 	    });
+		
+		// Wait until actually starting the upload to initialize the form data with the record ID and
+		// field ID. The reason this can't happen at the same time as the initial upload button initialization is
+		// that the records haven't been loaded when the initial initialization takes place, so the current
+		// record is unknown.
+		$('#'+imageUploadID).bind('fileuploadsubmit', function (e, data) {
+		    // The example input, doesn't have to be part of the upload form:
+			currRecordRef = currRecordSet.currRecordRef()
+		    data.formData = { fieldID: imageObjectRef.fieldRef.fieldID, recordID: currRecordRef.recordID }
+		});
 		
 
 	// TODO - Handle notificactions of new image upload - need to refresh display.

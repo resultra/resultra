@@ -69,6 +69,11 @@ func getSignedURL(bucketName string, fileName string, authConfig *jwt.Config, ex
 }
 
 func uploadFile(req *http.Request) (*UploadFileResponse, error) {
+
+	recordID := req.FormValue("recordID")
+	fieldID := req.FormValue("fieldID")
+	log.Printf("Uploading file: record ID = %v, field id = %v", recordID, fieldID)
+
 	formFile, handler, formErr := req.FormFile("uploadFile")
 	if formErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to upload file: invalid api/form input in request: %v req = %+v", formErr, req)
