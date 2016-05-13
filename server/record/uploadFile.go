@@ -2,6 +2,7 @@ package record
 
 import (
 	"fmt"
+	"github.com/twinj/uuid"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2/google"
 	"golang.org/x/oauth2/jwt"
@@ -11,6 +12,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"path"
 	"time"
 )
 
@@ -68,6 +70,30 @@ func getSignedURL(bucketName string, fileName string, authConfig *jwt.Config, ex
 	return signedURL, nil
 }
 
+// cloudFileNameFromUserFileName takes a file name and generates a unique
+// file name for storage in the cloud. This filename is prefixed with a time-stamp
+// so there is a human-readable portion which also makes the file name sortable. The
+// second component of the filename is a unique "version 4" uuid, based upon
+// random numbers. The uuid (along with the timestamp) ensures the filename
+// is unique versus other files stored in the same cloud bucket.
+func uniqueCloudFileNameFromUserFileName(userFileName string) string {
+
+	timestamp := time.Now().UTC()
+	millisecondsPerNanosecond := 1000000
+	timestampMilliseconds := timestamp.Nanosecond() / millisecondsPerNanosecond
+	timestampStr := fmt.Sprintf("%04d%02d%02d%02d%02d%02d%03d",
+		timestamp.Year(), timestamp.Month(), timestamp.Day(),
+		timestamp.Hour(), timestamp.Minute(), timestamp.Second(),
+		timestampMilliseconds)
+	uuidStr := uuid.NewV4().String()
+
+	fileExt := path.Ext(userFileName)
+
+	cloudFileName := timestampStr + "_" + uuidStr + fileExt
+
+	return cloudFileName
+}
+
 func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 
 	recordID := req.FormValue("recordID")
@@ -80,7 +106,7 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 	}
 	log.Printf("Uploading file: %v", handler.Filename)
 
-	cloudFileName := handler.Filename
+	cloudFileName := uniqueCloudFileNameFromUserFileName(handler.Filename)
 
 	fileContents, readErr := ioutil.ReadAll(formFile)
 	if formErr != nil {
