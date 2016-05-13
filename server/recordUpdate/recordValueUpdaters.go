@@ -1,6 +1,8 @@
 package recordUpdate
 
 import (
+	"appengine"
+	"fmt"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/record"
 	"time"
@@ -67,4 +69,32 @@ func (setValParams SetRecordTimeValueParams) fieldType() string { return field.F
 
 func (setValParams SetRecordTimeValueParams) updateRecordValue(rec *record.Record) {
 	(*rec)[setValParams.FieldID] = setValParams.Value
+}
+
+type SetRecordFileValueParams struct {
+	RecordUpdateHeader
+	CloudFileName string `json:"cloudFileName"`
+}
+
+func (setValParams SetRecordFileValueParams) fieldType() string { return field.FieldTypeFile }
+
+func (setValParams SetRecordFileValueParams) updateRecordValue(rec *record.Record) {
+	(*rec)[setValParams.FieldID] = setValParams.CloudFileName
+}
+
+// setRecordFileNameFieldValue. Although the parameters for a record update with a filename aren't passed through the http request,
+// the standard record updating mechanism can be used to update the field with the filename.
+func setRecordFileNameFieldValue(appEngContext appengine.Context,
+	recordID string, fieldID string, fileName string) (*record.RecordRef, error) {
+	updateRecordHeader := RecordUpdateHeader{
+		RecordID: recordID,
+		FieldID:  fieldID}
+	updateRecordParams := SetRecordFileValueParams{
+		RecordUpdateHeader: updateRecordHeader,
+		CloudFileName:      fileName}
+	updatedRecordRef, updateErr := UpdateRecordValue(appEngContext, updateRecordParams)
+	if updateErr != nil {
+		return nil, fmt.Errorf("uploadFile: Unable to update record for newly uploaded file: %v", updateErr)
+	}
+	return updatedRecordRef, nil
 }

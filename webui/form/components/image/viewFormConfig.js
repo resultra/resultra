@@ -58,7 +58,7 @@ function initImageRecordEditBehavior(imageObjectRef) {
 					$("#"+imageDivID).html('<img src="' + file.url + '" alt="someimage" />');
 	            });
 	        },
-			url:"/api/record/uploadFile"
+			url:"/api/recordUpdate/uploadFileToFieldValue"
 	    });
 		
 		// Wait until actually starting the upload to initialize the form data with the record ID and
