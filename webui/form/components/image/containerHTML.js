@@ -16,6 +16,10 @@ function imageContainerLabelIDFromContainerElemID(imageElemID) {
 	return 	imageElemID + '_containerLabel'
 }
 
+function imageLinkIDFromContainerElemID(imageElemID) {
+	return 	imageElemID + '_imageLink'
+}
+
 
 
 function imageContainerHTML(elementID)
@@ -41,4 +45,12 @@ function imageContainerHTML(elementID)
 	
 		
 	return containerHTML
+}
+
+
+function imageLinkHTML(elementID, imageURL) {
+	var linkID = imageLinkIDFromContainerElemID(elementID)
+	return '<a href="' + imageURL + '" id="' + linkID + '">' + 
+		'<img class="imageComponentImage" src="' + imageURL + '">'+
+	'</a>'
 }

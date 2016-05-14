@@ -14,3 +14,12 @@
 {
 	
 }
+
+/* Class for the actual image within the image component. Initially
+   set the size to a fixed thumbnail.
+   TODO - scale to the size of the container itself, while keeping the 
+   aspect ratio intact. */
+.imageComponentImage {
+	width: 100px;
+	height: 100px;
+}
