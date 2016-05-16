@@ -4,26 +4,13 @@
     height: 120px;
 }
 
-#rightFormulaEditHeaderColumn,#leftFormulaEditHeaderColumn {
-	padding: 3px;
-}
 
 #formulaEditHeader,#leftFormulaEditColumn,#centerFormulaEditColumn {
 	background-color:lightGrey;
-}
-
-#saveFormulaButton,#checkFormulaButton {
-	padding:9px;
 }
 
 /* Fix an overalapping/z-index issue between the formula help dropdown and 
    save formula button */
 #formulaEditHeader > .visible.transition {
   z-index: 1;
-}
-
-/* Use a minimum width on the formula error message, so the popup window
-   with the error messages isn't too small */
-#formulaErrorMsg {
-	min-width:400px;
 }

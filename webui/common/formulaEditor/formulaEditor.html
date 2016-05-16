@@ -3,22 +3,15 @@
 
 {{define "formulaEditPaneHeader"}}
 
-<div ui class="ui middle aligned padded grid" id="formulaEditHeader">
+<div ui class="row" id="formulaEditHeader">
 	
-	<div class="ui twelve wide column" id="leftFormulaEditHeaderColumn">	
-		<div class="middle aligned content">
-			<h4 class="ui header">Formula Editor</h4>
-		</div>
+	<div class="col-md-6" id="leftFormulaEditHeaderColumn">	
+			<h4>Formula Editor</h4>
 	</div> <!-- column -->
 
-	<div class="ui four wide column" id="rightFormulaEditHeaderColumn">
-		<div class="tiny ui icon right floated pointing dropdown button" id="formulaEditMoreDropdown">
-			 <i class="help icon"></i>
-			<div class="left menu">
-				<div class="item">Formula Help</div>
-				<div class="item">Function Reference</div>
-			</div> <!-- menu -->
-		</div> <!-- ui dropdown -->
+	<!-- TODO - Put back a popup menu to link to formula help and reference -->
+	<div class="col-md-6" id="leftFormulaEditHeaderColumn">	
+		<a href="#" id='formulaHelpPopover'>Formula Help</a>
 	</div> <!-- column -->
 	
 </div> <!-- #formulaEditHeader  -->
@@ -27,61 +20,56 @@
 {{end}}
 
 {{define "formulaEditHeaderControls"}}
-		<button class="ui small grey button" id="saveFormulaButton">
-		  Save Formula
-		</button>
-		<button class="ui small grey button" id="checkFormulaButton">
-		  Check Formula
-		</button>
+	<div class="row">
+		<div class="col-md-12">
+			<button class="btn btn-default btn-xs" id="saveFormulaButton">
+			  Save Formula
+			</button>
+			<button class="btn btn-default btn-xs" id="checkFormulaButton" >
+			  Check Formula
+			</button>
+						
+		</div>
+	</div>
 {{end}}
 
 {{define "formulaEditPaneHeaderLayout"}}
-	<div class="ui vertical segment">
-	  	{{ template "formulaEditPaneHeader"}}
-	</div>
-	<div class="ui center aligned vertical segment">
-		 {{ template "formulaEditHeaderControls"}}
-	</div>
+	{{ template "formulaEditPaneHeader"}}
+	{{ template "formulaEditHeaderControls"}}
 {{end}}
 
 {{define "formulaErrorPopup"}}
 
-<div class="ui flowing popup top left transition hidden">
-	 <div class="ui negative message" id="formulaErrorMsg">
-	   <i class="close icon" id="formulaErrorMsgClose"></i>
-	   <div class="header">
-	     Formula Error
-	   </div>
+<div id="formulaErrorPopup">
+	   Formula Error:
 	   <p id="formulaErrorMessageMsgText">parse error</p>
-	 </div>
 </div>
 
 {{end}}
 
 {{define "formulaFieldRefSelector"}}
-<div class="ui floating dropdown labeled search icon button" id="formulaFieldRefSelector">
-	<i class="dropdown icon"></i>
-  <span class="text">Insert Field Reference</span>
-  <div class="menu" id="formulaFieldRefList">
-    <div class="item" data-value="fieldA">Field A</div>
-  </div>
-</div>
+
+<select class="form-control input-sm" data-live-search="true" data-width="fit" id="formulaFieldRefSelector">
+</select>
+
 {{end}}
 
 
 {{define "formulaEditor"}}
 
- <div class="ui padded grid">
-   <div class="ui four wide column" id="leftFormulaEditColumn" style="min-width:250px;max-width:250px;"> 
+ <div class="row">
+   <div class="col-md-3" id="leftFormulaEditColumn" style="min-width:250px;max-width:250px;"> 
 	   {{template "formulaEditPaneHeaderLayout"}}
    </div>
- 	<div class="ui eight wide column" id="centerFormulaEditColumn" style="min-width:250px;">
-   		<div id="formulaEditor"></div>
-		{{template "formulaErrorPopup"}}
+ 	<div class="col-md-6" id="centerFormulaEditColumn" style="min-width:250px;">
+		<div id="formulaEditorErrorPopup" data-toggle="popover" title="Formula Error" data-content="Formula error ...">
+   			<div id="formulaEditor">
+   			</div>
+		</div>
  	</div>
- 	<div class="ui four wide column">
+ 	<div class="col-md-3">
 		{{template "formulaFieldRefSelector"}}
  	</div>
- </div>
+ </div> <!-- row -->
 
 {{end}}

@@ -13,52 +13,58 @@
 
 {{define "formDesignPalette"}}
 
-	<div class="ui small center aligned header" id="galleryHeader">
-		<div class="content">
+	<div class="row">
+		<div class= "col-md-12">
 			Form Design Palette
-	  	</div> 
+		</div> <!-- column -->
 	</div>   <!-- Header for Gallery Sidebar -->
 	
 	<div class="ui-layout-content">
-		<div class="ui padded two column grid">
-		
-			<div class= "column">
+	
+		<div class="row">
+			<div class= "col-md-6">
 				<div class="draggable noselect paletteItem" id="paletteItemTextBox">
 						<i class="large font icon"></i>
 						<div class="paletteItemSpacer"></div>
 						<div>Text Box</div>
 				</div>			
 			</div> <!-- column -->
-			<div class= "column">
+			<div class= "col-md-6">
 				<div class="draggable noselect paletteItem" id="paletteItemCheckBox">
 						<i class="large checkmark icon"></i>
 						<div class="paletteItemSpacer"></div>
 						<div>Check Box</div>
 				</div>			
 			</div> <!-- column -->
-			<div class= "column">
+		</div> <!-- row -->
+	
+		<div class="row">
+			<div class= "col-md-6">
 				<div class="draggable noselect paletteItem " id="paletteItemDatePicker">
 						<i class="large calendar icon"></i>
 						<div class="paletteItemSpacer"></div>
 						<div>Date Picker</div>
 				</div>			
 			</div> <!-- column -->
-			<div class= "column">
+			<div class= "col-md-6">
 				<div class="draggable noselect paletteItem"  id="paletteItemImage">
 						<i class="large file image outline icon"></i>
 						<div class="galleryItemSpacer"></div>
 						<div class="shortPaletteItemLabel">Image</div>
 				</div>			
 			</div> <!-- column -->
-			<div class= "column">
+		</div> <!-- row -->
+	
+		<div class="row">
+			<div class= "col-md-6">
 				<div class="draggable noselect paletteItem" id="paletteItemHtmlEditor">
 						<i class="large align justify icon"></i>
 						<div>HTML Editor</div>
 				</div>			
 			</div> <!-- column -->
-		
-		</div> <!-- Grid -->
-	</div> <!-- UI Layout Content for Gallery Sidebar -->
+		</div> <!-- row -->
+	
+	</div> <!-- ui-layout-content -->
 
 {{end}}
 

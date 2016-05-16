@@ -6,27 +6,31 @@ var formulaEditorConfig;
 function populateFieldRefInsertionMenu(tableID)
 {
 	// Populate the menu to insert field references with the list of fields
-	$("#formulaFieldRefList").empty()
+	$("#formulaFieldRefSelector").empty()
+	
+	$("#formulaFieldRefSelector").append('<option value="" disabled selected>Insert Field Reference</option>')
 	loadFieldInfo(tableID, [fieldTypeAll],function(fieldsByID) {
 		for (var fieldID in fieldsByID) {
 		
 			var fieldInfo = fieldsByID[fieldID]		
 		
-     	   var menuItemHTML = '<div class="item" data-value="' + fieldInfo.refName + 
-				'">' + fieldInfo.name + '</div>'
+     	   var menuItemHTML = '<option value="' + fieldInfo.refName + 
+				'">' + fieldInfo.name + '</option>'
+			
+			console.log("Adding selection to insert formula menu:" + menuItemHTML)
 				
-		 	$("#formulaFieldRefList").append(menuItemHTML)			
+		 	$("#formulaFieldRefSelector").append(menuItemHTML)			
 
 		} // for each  field
-		$("#formulaFieldRefSelector").dropdown({
-			onChange: function(fieldRefName,text,$choice) {
-				console.log("formula edit dropdown selection: " + fieldRefName)
-				if(fieldRefName.length > 0) {
-					$("#formulaFieldRefSelector").dropdown('restore default text')
-					formulaEditorConfig.editor.insert("[" + fieldRefName + "]")
-				}	
+		
+		$("#formulaFieldRefSelector").on('change',function() {
+			var fieldRefName = $(this).find("option:selected").val();
+			if(fieldRefName.length > 0) {
+				formulaEditorConfig.editor.insert("[" + fieldRefName + "]")	
+				$('#formulaFieldRefSelector').prop('selectedIndex',0);
 			}
 		})
+		
 	})
 	
 }
@@ -45,14 +49,9 @@ function initFormulaEditor(editorConfig) {
 	editor.setValue("Hello World!")
 	editor.setHighlightActiveLine(false);
 	
-	$('#formulaEditor').popup({on: 'manual'})
 	
-	$('#formulaEditMoreDropdown').dropdown()
-	
-	$('#formulaErrorMsgClose').on('click', function() {
-		$('#formulaEditor').popup('hide')
-    })
-	
+	$('#formulaEditorErrorPopup').popover({placement:'top',trigger:'manual'})
+		
 	populateFieldRefInsertionMenu(editorConfig.tableID)
 	
 	
@@ -72,12 +71,14 @@ function validateFormula(fieldRef,validationSucceededCallback) {
 	jsonAPIRequest("calcField/validateFormula",validationParams,function(validationResponse) {
 		if(validationResponse.isValidFormula) {
 			console.log("formula validation successful")
-			$('#formulaEditor').popup('hide')
+			$('#formulaEditorErrorPopup').popover('hide')
+			
 			validationSucceededCallback(fieldRef,formulaText)
 		} else {
 			console.log("formula validation failed: " + validationResponse.errorMsg)
-			$("#formulaErrorMessageMsgText").text(validationResponse.errorMsg);
-			$('#formulaEditor').popup('show')
+			$("#formulaEditorErrorPopup").attr("data-content",validationResponse.errorMsg);
+			$('#formulaEditorErrorPopup').popover('show')
+			
 		}
 	})
 	
@@ -99,6 +100,8 @@ function saveFormula(fieldRef) {
 
 function openFormulaEditor(fieldRef) {
 
+	$('#formulaEditorErrorPopup').popover('hide')
+	
 	var getRawFormulaSrcParams = { fieldID: fieldRef.fieldID }
 	jsonAPIRequest("calcField/getRawFormulaText",getRawFormulaSrcParams,function(formulaInfo) {
 		formulaEditorConfig.editor.setValue(formulaInfo.rawFormulaText)
@@ -117,8 +120,6 @@ function openFormulaEditor(fieldRef) {
 			e.preventDefault();
 			console.log("check formula button clicked")
 			validateFormula(fieldRef,function(fieldRef,formulaText) {})
-		
-		
 		});
 		
 		
@@ -129,7 +130,8 @@ function openFormulaEditor(fieldRef) {
 }
 
 function closeFormulaEditor() {
-	$('#formulaEditor').popup('hide')
+	$('#checkFormulaButton').popover('hide')
+	
 	formulaEditorConfig.editor.setValue("")
 	formulaEditorConfig.hideEditorFunc()	
 }
