@@ -1,6 +1,7 @@
 package common
 
 import (
+	"resultra/datasheet/webui/common/breadCrumb"
 	"resultra/datasheet/webui/common/formulaEditor"
 	"resultra/datasheet/webui/common/objectSelection"
 )
@@ -13,5 +14,6 @@ func init() {
 
 	TemplateFileList = append(TemplateFileList, objectSelection.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, formulaEditor.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, breadCrumb.TemplateFileList...)
 
 }

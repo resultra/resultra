@@ -47,10 +47,10 @@
 {{define "viewFormPageHeader"}}
 	<div>
 	  {{template "homePageBreadcrumb"}}
-	  <i class="fa fa-chevron-right" aria-hidden="true"></i>
-	  <a>Database Name</a>
-	  <i class="fa fa-chevron-right" aria-hidden="true"></i>
-	  {{.FormName}}
+	  {{template "breadCrumbSeparator"}}
+	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-database" aria-hidden="true">&nbsp;Database Name</i></a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">{{.FormName}}</span>
 	</div> <!-- breadcrumb header -->
 {{end}}
 

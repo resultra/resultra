@@ -1,10 +1,11 @@
 {{define "designDashboardHeader"}}
 	  {{template "homePageBreadcrumb"}}
-	  <i class="fa fa-chevron-right" aria-hidden="true"></i>
-	  <a><i class="fa fa-database" aria-hidden="true"></i>Database Name</a>
-	  <a href="/viewDashboard/{{.DashboardID}}">{{.DashboardName}}</a>
-	  <i class="fa fa-chevron-right" aria-hidden="true"></i>
-	  Design Dashboard
+	  {{template "breadCrumbSeparator"}}
+	  <a href="/" class="h4"><i class="fa fa-database" aria-hidden="true">Database Name</i></a>
+	  {{template "breadCrumbSeparator"}}
+	  <a class="h4 breadCrumbText" href="/viewDashboard/{{.DashboardID}}">{{.DashboardName}}</a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Design Dashboard</span>
 {{end}}
 
 {{define "dashboardDesignPalette"}}

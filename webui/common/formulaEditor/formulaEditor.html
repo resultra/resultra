@@ -6,15 +6,15 @@
 <div ui class="row" id="formulaEditHeader">
 	
 	<div class="col-md-6" id="leftFormulaEditHeaderColumn">	
-			<h4>Formula Editor</h4>
+		<span class="h5">Formula Editor</span>
 	</div> <!-- column -->
 
 	<!-- TODO - Put back a popup menu to link to formula help and reference -->
-	<div class="col-md-6" id="leftFormulaEditHeaderColumn">	
+	<div class="col-md-6" id="rightFormulaEditHeaderColumn">	
 		<a href="#" id='formulaHelpPopover'>Formula Help</a>
 	</div> <!-- column -->
 	
-</div> <!-- #formulaEditHeader  -->
+</div> <!-- #formulaEditHeader/row  -->
 
 
 {{end}}
@@ -34,8 +34,10 @@
 {{end}}
 
 {{define "formulaEditPaneHeaderLayout"}}
+	<div class="container">
 	{{ template "formulaEditPaneHeader"}}
 	{{ template "formulaEditHeaderControls"}}
+</div>
 {{end}}
 
 {{define "formulaErrorPopup"}}

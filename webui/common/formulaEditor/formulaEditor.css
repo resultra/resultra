@@ -9,10 +9,12 @@
 	background-color:lightGrey;
 }
 
-/* Fix an overalapping/z-index issue between the formula help dropdown and 
-   save formula button */
-#formulaEditHeader > .visible.transition {
-  z-index: 1;
+#formulaEditHeader {
+	min-height: 40px;
+}
+
+#formulaEditHeader {
+	padding:8px;
 }
 
 
