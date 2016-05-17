@@ -86,7 +86,8 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 
 			function enableSelectExistingField() {
 				setWizardDialogButtons(parentDialog,selectExistingButtons)
-				$(selectExistingField.selector).removeClass("disabled")
+				console.log("Enabling field selection")
+				enableFormControl(fieldSelectionSelector)
 				
 				var fieldValidationRules = {}
 				fieldValidationRules[selectField.id] = {
@@ -96,7 +97,8 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 
 			function disableSelectExistingField() {
 				setWizardDialogButtons(parentDialog,selectNewButtons)
-				$(selectExistingField.selector).addClass("disabled")
+				disableFormControl(fieldSelectionSelector)
+				
 				validateForm()
 			}
 
