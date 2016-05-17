@@ -4,7 +4,8 @@ function transitionToNextWizardDlgPanel(dialog, progressSelector, currPanelConfi
 	}
 	$(currPanelConfig.divID).hide("slide",{direction:"left"},200,showNextPanel);
 	
-	$(progressSelector).progress({percent:nextPanelConfig.progressPerc});
+	// TODO - Reintegrate with Bootstrap
+	//$(progressSelector).progress({percent:nextPanelConfig.progressPerc});
 	
 	
 	$(dialog).dialog("option","buttons",nextPanelConfig.dlgButtons)

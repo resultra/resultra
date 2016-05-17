@@ -15,22 +15,22 @@ function openNewCheckboxDialog(formID,parentTableID,containerParams)
 		placeholderID: containerParams.containerID,
 		dialogBox: $( checkboxDialogSelector )
 	}
-	
-	// Enable Semantic UI checkboxes and popups
-	$('.ui.checkbox').checkbox();
-	$('.ui.radio.checkbox').checkbox();	
-	
+		
 	function saveNewCheckbox(newCheckboxDialog) {
 		console.log("New checkbox: done in dialog")
 		
 		var newOrExistingFormInfo = getFormFormInfoByPanelID(newCheckboxDialog,createNewOrExistingFieldDialogPanelID)
-		if($(newOrExistingFormInfo.panelSelector).form('get field',newOrExistingFormInfo.newFieldRadio).prop('checked')) {
+		var doCreateNewField = $(newOrExistingFormInfo.newFieldRadioSelector).prop("checked")
+		
+		if(doCreateNewField) {
 			console.log("saveNewCheckbox: New field selected - not implemented yet")
 			$(newCheckboxDialog).dialog('close');
 		} else {
 			console.log("saveNewCheckbox: Existing field selected")
 			console.log("saveNewCheckbox: getting field id from field = " + newOrExistingFormInfo.existingFieldSelection)
-			var fieldID = $(newOrExistingFormInfo.panelSelector).form('get value',newOrExistingFormInfo.existingFieldSelection)
+			
+			
+			var fieldID = $(newOrExistingFormInfo.existingFieldSelectionSelector).val()
 			console.log("saveNewCheckbox: Selected field ID: " + fieldID)
 			
 			var newCheckBoxAPIParams = {

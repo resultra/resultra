@@ -11,6 +11,10 @@ function createNewFieldDialogPanelConfig(elemPrefix) {
 	var isCalcFieldInput = createPrefixedTemplElemInfo(elemPrefix,"NewFieldIsCalcFieldInput")
 	var fieldTypeSelection = createPrefixedTemplElemInfo(elemPrefix,"NewFieldValTypeSelection")
 	
+	function validateForm() {
+		
+	}
+	
 	var newFieldPanelConfig = {
 		panelID: newFieldDialogPanelID,
 		divID: panelSelector,
@@ -54,7 +58,8 @@ function createNewFieldDialogPanelConfig(elemPrefix) {
 	            }]
 			} // field reference name validation
 			
-			$(panelSelector ).form({
+	// TODO - Re-integrate with Bootstrap
+/*			$(panelSelector ).form({
 		    	fields: {
 			        newFieldValTypeSelection: {
 			          rules: [
@@ -65,8 +70,9 @@ function createNewFieldDialogPanelConfig(elemPrefix) {
 			          ]
 			        }, // newFieldValTypeSelection validation
 		     	},
-		  	})
-			$(refNameHelpPopup.selector).popup({on: 'hover'});
+		  	}) */
+	// TODO - Re-integrate with Bootstrap
+	//		$(refNameHelpPopup.selector).popup({on: 'hover'});
 			
 			var panelFormInfo = {
 				panelSelector: panelSelector

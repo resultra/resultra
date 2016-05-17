@@ -2,34 +2,33 @@
 {{define "newFormElemDialogSelectFieldPanel"}}
 
 	<div id="{{.ElemPrefix}}SelectExistingOrNewFieldPanel" class="wizardPanel">
-		<form class="ui form">
-			<div class="ui info message" >
-				<p>
+		<form id="{{.ElemPrefix}}SelectExistingOrNewFieldForm">
+			
+			<div class="alert alert-info">
 					Values from check boxes are stored in fields. Either a new field can be created for this
 					check box, or an existing field can be used.
-				</p>
 			</div>
-			<div class="grouped field">
+			<div class="form-group">
 				<label>Where should values from this check box be stored?</label>
-				
-				<div class="field">
-					<div class="ui radio checkbox">
-					  <input type="radio" id="{{.ElemPrefix}}CreateNewFieldRadio" name="{{.ElemPrefix}}NewOrExistingRadio" checked="checked" value="new">
-					  <label>Create a new field</label>
-					</div>
+				<div class="radio">
+					<label>
+						<input type="radio" id="{{.ElemPrefix}}CreateNewFieldRadio" 
+								name="{{.ElemPrefix}}NewOrExistingRadio" value="new" checked>
+						Create a new field
+					</label>
 				</div>
-				
-				<div class="field">
-					<div class="ui radio checkbox">
-				 	   <input type="radio" id="{{.ElemPrefix}}UseExistingFieldRadio" name="{{.ElemPrefix}}NewOrExistingRadio" value="existing">
-				  	 <label>Use an existing field</label>
-					</div>
-				</div>
-				
+				<div class="radio">
+					<label>
+						<input type="radio" id="{{.ElemPrefix}}CreateNewFieldRadio" 
+								name="{{.ElemPrefix}}NewOrExistingRadio" value="existing">
+						Use an existing field
+					</label>
+				</div>			
 			</div>
 			
-			<div class="inline field" id="{{.ElemPrefix}}SelectExistingFieldField">
-				<label>Existing fields:</label> <select class="ui dropdown" id="{{.ElemPrefix}}FieldSelection" name="{{.ElemPrefix}}FieldSelection">
+			<div class="form-group" id="{{.ElemPrefix}}SelectExistingFieldField">
+				<label>Existing fields:</label> 
+				<select class="form-control" id="{{.ElemPrefix}}FieldSelection" name="{{.ElemPrefix}}FieldSelection">
 					<option value="">
 						Select a field
 					</option>
