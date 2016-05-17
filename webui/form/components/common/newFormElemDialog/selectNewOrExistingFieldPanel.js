@@ -22,7 +22,7 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 	var panelID = "newOrExistingField"
 	
 	function doCreateNewFieldWithTextBox() {
-		return $(createNewFieldRadio.selector).prop('checked')
+		return radioButtonIsChecked(createNewFieldRadio.selector)
 	}
 	
 	function validateForm() {
@@ -34,12 +34,23 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 			var selectedField = $(fieldSelectionSelector).val();
 			console.log("createNewOrExistingFieldPanelConfig: selected field val: " + selectedField)
 			if(selectedField.length <= 0) {
+				addFormControlError(selectExistingField.selector)
 				return false
 			}
 			return true;
 		}
 		console.log("createNewOrExistingFieldPanelConfig: radio selection: " + newOrExistingSelection)
 	}
+	
+	// Remove any errors on the selection if a non-empty value is selected.
+	$(fieldSelectionSelector).change(function() {
+		var selectedField = $(fieldSelectionSelector).val()
+		if(selectedField.length > 0)
+		{
+			removeFormControlError(selectExistingField.selector)
+		}
+	})
+	
 	
 	function nextButtonClicked() {
 		if (validateForm()) {
@@ -87,18 +98,13 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 			function enableSelectExistingField() {
 				setWizardDialogButtons(parentDialog,selectExistingButtons)
 				console.log("Enabling field selection")
-				enableFormControl(fieldSelectionSelector)
-				
-				var fieldValidationRules = {}
-				fieldValidationRules[selectField.id] = {
-					required: true
-				}		
+				enableFormControl(fieldSelectionSelector)				
 			}
 
 			function disableSelectExistingField() {
 				setWizardDialogButtons(parentDialog,selectNewButtons)
 				disableFormControl(fieldSelectionSelector)
-				
+							
 				validateForm()
 			}
 
@@ -115,10 +121,12 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 				console.log("new or existing radio value:", this.value);
 				if (this.value == "new") {
 					disableSelectExistingField()
+					removeFormControlError(selectExistingField.selector)		
 				} else {
 					enableSelectExistingField()
 				}
 			});
+			
 			
 			var panelFormInfo = {
 				panelSelector: panelSelector,
