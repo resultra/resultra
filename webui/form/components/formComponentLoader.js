@@ -39,8 +39,9 @@ function loadFormComponents(loadFormConfig) {
 			var containerHTML = checkBoxContainerHTML(checkBox.checkBoxID);
 			var containerObj = $(containerHTML)
 			
-			// Set the label to the field name
-			containerObj.find('label').text(checkBox.fieldRef.fieldInfo.name)
+			// Set the label to the field name. A span element is used, since
+			// the checkbox itself is nested inside a label.
+			containerObj.find('span').text(checkBox.fieldRef.fieldInfo.name)
 			
 			// Position the object withing the #layoutCanvas div
 			$(loadFormConfig.formParentElemID).append(containerObj)

@@ -1,69 +1,65 @@
 
 {{define "designFormHeader"}}
-	<div class="ui large breadcrumb">
 	  {{template "homePageBreadcrumb"}}
-	  <i class="right chevron icon divider"></i>
-	  <a class="section"><i class="database icon"></i>Database Name</a>
-	  <i class="right chevron icon divider"></i>
-	  <a class="section" href="/viewForm/{{.FormID}}">{{.FormName}}</a>
-	  <i class="right chevron icon divider"></i>
-	  <div class="active section">Design Form</div>
-	</div> <!-- breadcrumb header -->
+	  <i class="fa fa-chevron-right" aria-hidden="true"></i>
+	  <a>Database Name</a>
+	  <i class="fa fa-chevron-right" aria-hidden="true"></i>
+	  <a href="/viewForm/{{.FormID}}">{{.FormName}}</a>
+	  Design Form
+{{end}}
+
+{{define "designFormPaletteItems" }}
+	<div class="row">
+		<div class= "col-md-6">
+			<div class="draggable noselect paletteItem" id="paletteItemTextBox">
+					<i class="glyphicon glyphicon-search"></i>
+					<div>Text Box</div>
+			</div>			
+		</div> <!-- column -->
+		<div class= "col-md-6">
+			<div class="draggable noselect paletteItem" id="paletteItemCheckBox">
+					<i class="glyphicon glyphicon-check"></i>
+					<div>Check Box</div>
+			</div>			
+		</div> <!-- column -->
+	</div> <!-- row -->
+
+	<div class="row">
+		<div class= "col-md-6">
+			<div class="draggable noselect paletteItem " id="paletteItemDatePicker">
+					<i class="glyphicon glyphicon-calendar"></i>
+					<div>Date Picker</div>
+			</div>			
+		</div> <!-- column -->
+		<div class= "col-md-6">
+			<div class="draggable noselect paletteItem"  id="paletteItemImage">
+					<i class="glyphicon glyphicon-picture"></i>
+					<div>Image</div>
+			</div>			
+		</div> <!-- column -->
+	</div> <!-- row -->
+
+	<div class="row">
+		<div class= "col-md-6">
+			<div class="draggable noselect paletteItem" id="paletteItemHtmlEditor">
+					<i class="glyphicon glyphicon-align-justify"></i>
+					<div>HTML Editor</div>
+			</div>			
+		</div> <!-- column -->
+	</div> <!-- row -->
 {{end}}
 
 {{define "formDesignPalette"}}
 
-	<div class="row">
-		<div class= "col-md-12">
-			Form Design Palette
-		</div> <!-- column -->
-	</div>   <!-- Header for Gallery Sidebar -->
-	
 	<div class="ui-layout-content">
-	
-		<div class="row">
-			<div class= "col-md-6">
-				<div class="draggable noselect paletteItem" id="paletteItemTextBox">
-						<i class="large font icon"></i>
-						<div class="paletteItemSpacer"></div>
-						<div>Text Box</div>
-				</div>			
-			</div> <!-- column -->
-			<div class= "col-md-6">
-				<div class="draggable noselect paletteItem" id="paletteItemCheckBox">
-						<i class="large checkmark icon"></i>
-						<div class="paletteItemSpacer"></div>
-						<div>Check Box</div>
-				</div>			
-			</div> <!-- column -->
-		</div> <!-- row -->
-	
-		<div class="row">
-			<div class= "col-md-6">
-				<div class="draggable noselect paletteItem " id="paletteItemDatePicker">
-						<i class="large calendar icon"></i>
-						<div class="paletteItemSpacer"></div>
-						<div>Date Picker</div>
-				</div>			
-			</div> <!-- column -->
-			<div class= "col-md-6">
-				<div class="draggable noselect paletteItem"  id="paletteItemImage">
-						<i class="large file image outline icon"></i>
-						<div class="galleryItemSpacer"></div>
-						<div class="shortPaletteItemLabel">Image</div>
-				</div>			
-			</div> <!-- column -->
-		</div> <!-- row -->
-	
-		<div class="row">
-			<div class= "col-md-6">
-				<div class="draggable noselect paletteItem" id="paletteItemHtmlEditor">
-						<i class="large align justify icon"></i>
-						<div>HTML Editor</div>
-				</div>			
-			</div> <!-- column -->
-		</div> <!-- row -->
-	
+		
+		<div class="panel panel-default">
+		    <div class="panel-heading">Form Design Palette</div>
+		    <div class="panel-body">
+		       {{template "designFormPaletteItems"}}
+		    </div>
+		</div>
+		
 	</div> <!-- ui-layout-content -->
 
 {{end}}
@@ -117,7 +113,6 @@
   </head>
   
   <body>
-	<form class="ui form" id="editLayoutForm" name="editLayoutForm">
 		<div id="layoutPage" class="layoutPageDiv">
 			
 			<div class="pane ui-layout-north">
@@ -141,7 +136,6 @@
 			</div>
 			
 		</div>
-	</form>	
 	
 	{{template "newComponentDialogs" .}}
 	   	   

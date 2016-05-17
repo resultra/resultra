@@ -77,6 +77,7 @@ function validateFormula(fieldRef,validationSucceededCallback) {
 		} else {
 			console.log("formula validation failed: " + validationResponse.errorMsg)
 			$("#formulaEditorErrorPopup").attr("data-content",validationResponse.errorMsg);
+			
 			$('#formulaEditorErrorPopup').popover('show')
 			
 		}

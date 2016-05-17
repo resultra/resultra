@@ -1,13 +1,10 @@
 {{define "designDashboardHeader"}}
-	<div class="ui large breadcrumb">
 	  {{template "homePageBreadcrumb"}}
-	  <i class="right chevron icon divider"></i>
-	  <a class="section"><i class="database icon"></i>Database Name</a>
-	  <i class="right chevron icon divider"></i>
-	  <a class="section" href="/viewDashboard/{{.DashboardID}}">{{.DashboardName}}</a>
-	  <i class="right chevron icon divider"></i>
-	  <div class="active section">Design Dashboard</div>
-	</div> <!-- breadcrumb header -->
+	  <i class="fa fa-chevron-right" aria-hidden="true"></i>
+	  <a><i class="fa fa-database" aria-hidden="true"></i>Database Name</a>
+	  <a href="/viewDashboard/{{.DashboardID}}">{{.DashboardName}}</a>
+	  <i class="fa fa-chevron-right" aria-hidden="true"></i>
+	  Design Dashboard
 {{end}}
 
 {{define "dashboardDesignPalette"}}
@@ -24,15 +21,13 @@
 		<div class="row">	
 			<div class= "col-md-6">
 				<div class="draggable noselect paletteItem" id="paletteItemBarChart">
-						<i class="large bar chart icon"></i>
-						<div class="paletteItemSpacer"></div>
+						<i class="fa fa-bar-chart" aria-hidden="true"></i>
 						<div>Bar Chart</div>
 				</div>			
 			</div> <!-- column -->
 			<div class= "col-md-6">
 				<div class="draggable noselect paletteItem" id="paletteItemPieChart">
-						<i class="large pie chart icon"></i>
-						<div class="paletteItemSpacer"></div>
+						<i class="fa fa-pie-chart" aria-hidden="true"></i>
 						<div>Pie Chart</div>
 				</div>			
 			</div> <!-- column -->
@@ -41,15 +36,13 @@
 		<div class="row">
 			<div class= "col-md-6">
 				<div class="draggable noselect paletteItem" id="paletteItemLineChart">
-						<i class="large line chart icon"></i>
-						<div class="paletteItemSpacer"></div>
+						<i class="fa fa-line-chart" aria-hidden="true"></i>
 						<div>Line Chart</div>
 				</div>			
 			</div> <!-- column -->
 			<div class= "col-md-6">
 				<div class="draggable noselect paletteItem" id="paletteItemSummaryTable">
-						<i class="large table icon"></i>
-						<div class="paletteItemSpacer"></div>
+						<i class="fa fa-table" aria-hidden="true"></i>
 						<div>Summary Table</div>
 				</div>			
 			</div> <!-- column -->
@@ -58,8 +51,7 @@
 		<div class="row">
 			<div class= "col-md-6">
 				<div class="draggable noselect paletteItem" id="paletteItemLabel">
-						<i class="large font icon"></i>
-						<div class="paletteItemSpacer"></div>
+						<i class="fa fa-font" aria-hidden="true"></i>
 						<div>Label</div>
 				</div>			
 			</div> <!-- column -->

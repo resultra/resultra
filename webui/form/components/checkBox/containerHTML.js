@@ -7,17 +7,17 @@ function checkBoxElemIDFromContainerElemID(checkBoxElemID) {
 function checkBoxContainerHTML(elementID)
 {	
 	var checkboxID = checkBoxElemIDFromContainerElemID(elementID)
-	var checkboxInput = elementID + '_checkboxInput'
 	
 	var containerHTML = ''+
 		'<div class="ui-widget-content layoutContainer checkBoxFormContainer draggable resizable" id="'+elementID+'">' +
-			'<div class="field">'+
-			      '<div class="ui checkbox" id="' + checkboxID + '">' +
-			        '<input type="checkbox" name="' + checkboxInput + '" tabindex="0">' +
-			        '<label>Check box label.</label>' +
-			      '</div>' +
-			'</div>'+
-		'</div>';
+			'<div class="checkbox">' +
+				'<label>' + 
+				  		'<input type="checkbox" id="' + checkboxID + '"></input><span>Checkbox Label</span> ' +
+				'</label>' +
+			'</div>' +
+		'</div><';
+				
+	console.log ("Checkbox HTML: " + containerHTML)
 		
 	return containerHTML
 }

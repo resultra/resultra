@@ -23,16 +23,16 @@ function loadRecordIntoCheckBox(checkBoxElem, recordRef) {
 
 		if(fieldVal == true)
 		{
-			$(checkBoxSelector).checkbox('set checked')	
+			$(checkBoxSelector).prop("checked",true)
 		}
 		else {
-			$(checkBoxSelector).checkbox('set unchecked')		
+			$(checkBoxSelector).prop("checked",false)
 		}
 
 	} // If record has a value for the current container's associated field ID.
 	else
 	{
-		$(checkBoxSelector).checkbox('set indeterminate')
+		$(checkBoxSelector).prop("indeterminate", true)
 	}
 	
 }
@@ -42,10 +42,12 @@ function initCheckBoxRecordEditBehavior(checkBoxObjectRef) {
 	
 	var checkBoxContainerID = checkBoxObjectRef.checkBoxID
 	var checkBoxID = checkBoxElemIDFromContainerElemID(checkBoxContainerID)
+	var checkboxSelector = '#'+checkBoxID
 	console.log("initCheckBoxRecordEditBehavior: container ID =  " +checkBoxContainerID + ' checkbox ID = '+ checkBoxID)
 	
 	var checkBoxContainer = $('#'+checkBoxContainerID)
-	var checkboxSelector = '#'+checkBoxID
+	
+
 
 	checkBoxContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoCheckBox
@@ -57,17 +59,17 @@ function initCheckBoxRecordEditBehavior(checkBoxObjectRef) {
 		$(checkboxSelector).checkbox('set disabled')
 		return;  // stop initialization, the check box is read only.
 	}
+	
 
-
-	$(checkboxSelector).checkbox({
-		onChange: function () {
+  	$(checkboxSelector).click( function () {
+		
 			// Get the most recent copy of the object reference. It could have changed between
 			// initialization time and the time the checkbox was changed.
 			var containerID = checkBoxObjectRef.checkBoxID
 			var objectRef = getElemObjectRef(containerID)
 			var checkBoxSelect = '#'+checkBoxElemIDFromContainerElemID(containerID)
 			
-			var isChecked = $(checkBoxSelect).checkbox('is checked')
+			var isChecked = $(this).prop("checked")
 
 			
 			currRecordRef = currRecordSet.currRecordRef()
@@ -84,8 +86,6 @@ function initCheckBoxRecordEditBehavior(checkBoxObjectRef) {
 				// up to date values will be displayed.
 				loadCurrRecordIntoLayout()
 			}) // set record's text field value
-			
-		}
 	})
 
 	

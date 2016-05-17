@@ -33,3 +33,13 @@
 	padding: 0px;
 	overflow: visible; // don't overflow the content
 }
+
+.paletteItem > .glyphicon {
+	font-size: 25px;
+	margin-bottom:10px;
+}
+
+.paletteItem > .fa {
+	font-size: 25px;
+	margin-bottom:10px;
+}

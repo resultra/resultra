@@ -45,72 +45,44 @@
 {{end}}
 
 {{define "viewFormPageHeader"}}
-	<div class="ui large breadcrumb">
+	<div>
 	  {{template "homePageBreadcrumb"}}
-	  <i class="right chevron icon divider"></i>
-	  <a class="section"><i class="database icon"></i>Database Name</a>
-	  <i class="right chevron icon divider"></i>
-	  <div class="active section">{{.FormName}}</div>
+	  <i class="fa fa-chevron-right" aria-hidden="true"></i>
+	  <a>Database Name</a>
+	  <i class="fa fa-chevron-right" aria-hidden="true"></i>
+	  {{.FormName}}
 	</div> <!-- breadcrumb header -->
 {{end}}
 
 {{define "viewFormHeaderControls"}}
-<div ui class="ui padded grid" id="recordHeaderGrid">
-	
-	<div class="ui four wide grey column" style="padding:3px">
-		<div class="compact ui buttons">
-		    <button class="ui button">Single</button>
-			<div class="or"></div>
-		    <button class="ui button">List</button>
-		</div>
-	</div> <!-- column -->
-	
-	<div class="ui eight wide grey column" style="padding:3px">
-		View with:
-		<select class="ui selection dropdown">
-		  	<option value="">Form</option>
-		    <option value="form1">Entry</option>
-		    <option value="form2">Exit</option>
-		    <option value="form3">Post-mortem</option>
-		</select>
-	</div> <!-- column -->
-	
-	<div class="ui four wide grey column" style="padding:3px">
-		<div class="ui icon right floated pointing dropdown button" id="moreDropdown">
-			 <i class="dropdown icon"></i>
-			<div class="left menu">
-				<div class="item">Print</div>
-				<div class="item">Export CSV</div>
-				<div class="divider"></div>
-				<a href="/designForm/{{.FormID}}" class="item">Edit Form Design</a>
-			</div> <!-- menu -->
-		</div> <!-- ui dropdown -->
-	</div> <!-- column -->
+<div id="recordHeaderGrid">
+		
+		
+	<div class="row">
+		<div class= "col-md-6">
+			<select class="form-control input-sm">
+				 <option value="">Select Form</option>
+				    <option value="form1">Entry</option>
+				    <option value="form2">Exit</option>
+				    <option value="form3">Post-mortem</option>
+				</select>
+		</div> <!-- column -->
+		<div class= "col-md-6">
+			<a href="/designForm/{{.FormID}}" class="item">Edit Form Design</a>	
+		</div> <!-- column -->
+	</div> <!-- row -->
+		
 	
 </div> <!-- #recordHeaderGrid  -->
 {{end}}
 
 {{define "viewFormFooterControls"}}
-<div ui class="grey ui padded grid" id="recordFooterGrid">
+<div id="recordFooterGrid">
 
-	<div class="ui eight wide grey column" style="padding:3px">
-		<button class="ui left labeled icon button" id="prevRecordButton">
-		  <i class="left arrow icon"></i>
-		  Previous
-		</button>
-		<div class="ui label" id="recordNumLabel">&nbsp;</div>
-		<button class="ui right labeled icon button" id="nextRecordButton">
-		  <i class="right arrow icon"></i>
-		  Next
-		</button>
-	</div> <!-- column -->
-
-	<div class="ui eight wide grey column" style="padding:3px">
-		<button class="ui left labeled right floated icon button" id="newRecordButton">
-		  <i class="add icon"></i>
-		  New Record
-		</button>
-	</div> <!-- column -->
+	<button class="btn-primary btn-sm" id="prevRecordButton">Previous</button>
+	<span id="recordNumLabel">&nbsp;</span>
+	<button class="btn-primary btn-sm" id="nextRecordButton">Next </button>
+	<button class="btn-primary btn-sm" id="newRecordButton">New Record</button>
 
 </div> <!-- record footer grid -->
 {{end}}

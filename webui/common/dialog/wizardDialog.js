@@ -91,10 +91,12 @@ function openWizardDialog(dlgParams) {
 	// Clear any previous entries validation errors. The message blocks by 
 	// default don't clear their values with 'clear', so any remaining error
 	// messages need to be removed from the message blocks within the panels.
-	$('.wizardPanel').form('clear') // clear any previous entries
+// TODO - Use Bootstrap form validation to clear any previous errors
+//	$('.wizardPanel').form('clear') // clear any previous entries
 	$('.wizardErrorMsgBlock').empty()
-	
-	$(dlgParams.progressDivID).progress({percent:0});
+
+// TODO Integrate bootstrap progress indicator	
+//	$(dlgParams.progressDivID).progress({percent:0});
 	
 	var panelsByID = {}
 	for(var panelIndex = 0; panelIndex != dlgParams.panels.length; panelIndex++) {

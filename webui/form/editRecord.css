@@ -2,20 +2,13 @@
 
 #recordHeaderUILayout,#recordFooterUILayout
 {
-	padding: 0px; // override jQuery UI Layout padding
+	padding: 4px; /* override jQuery UI Layout padding */
 }
 
 #filterPaneUILayout,#sortPaneUILayout
 {
-	padding: 0px; // override jQuery UI Layout padding	
+	padding: 0px; /* override jQuery UI Layout padding */
 }
-
-
-#recordHeaderGrid,#recordFooterGrid
-{
-	padding: 0px; // override Semantic UI padding
-}
-
 
 #recordsPane
 {
