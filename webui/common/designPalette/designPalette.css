@@ -1,8 +1,48 @@
+
+/* Top-level div for a design palette on a page */
+.paletteSidebar
+{
+	min-height: 100px;
+	padding: 0px;
+	overflow: visible; // don't overflow the content
+}
+
+.paletteSidebar > .ui-layout-content {
+	/* Remove UI Layout padding  from the ui-layout-content. This is necessary to 
+	  align the palette header with the top of the palette sidebar */
+	padding:0;
+}
+
+.paletteItems > .row {
+	padding-top:5px; /* Space between palette item rows (and the header) */
+	margin-left:0px; /* eliminate negative margins */
+	margin-right:0px;
+}
+
+/* TODO - Get override of padding for palette items working with something like
+   the following (which didn't actually work). As a work-around, resorted to using 
+	style inlined in the markup, but
+   there are other possible solutions 
+.paletteItems > col-md-6 {
+	padding-left: 5px !important;
+	padding-right: 5px !important;
+	padding:0 !important;
+}
+*/
+
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
+
 /* The .paletteItem is specific within the div element to ensure it is more "specific"
    than the noselect style which is also applied to many of these elements. This is
    needed so the cursor and other properties will take precedence */
  div .paletteItem {
-	min-height: 80px;
+	height: 90px;
     position: relative; 
 	padding: 6px;
 	border: 1px dashed gray;
@@ -10,6 +50,15 @@
 	margin:2px; /* margin gives some space within the Semantic UI column */
 	background-color: lightGrey;
 	cursor:move; /* match the default cursor used by the jQuery UI for drag and drop */
+}
+
+.paletteHeader {
+	min-height: 30px;
+	background-color:lightGrey;
+	vertical-align:middle;
+	margin-left: 0px; /* eliminate negative margins */
+	margin-right:0px;
+	margin-top: 0px;
 }
 
 /* Palette items with short labels - vertically align the text below the icon */

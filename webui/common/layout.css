@@ -25,12 +25,6 @@
 	overflow: auto; // if the content overflows, show a scrollbar
 }
 
-#gallerySidebar
-{
-	min-height: 100px;
-	padding: 0px;
-	overflow: visible; // don't overflow the content
-}
 
 
 

@@ -11,13 +11,13 @@
 
 {{define "designFormPaletteItems" }}
 	<div class="row">
-		<div class= "col-md-6">
+		<div class= "col-md-6"  style="padding:5px">
 			<div class="draggable noselect paletteItem" id="paletteItemTextBox">
 					<i class="glyphicon glyphicon-search"></i>
 					<div>Text Box</div>
 			</div>			
 		</div> <!-- column -->
-		<div class= "col-md-6">
+		<div class= "col-md-6" style="padding:5px">
 			<div class="draggable noselect paletteItem" id="paletteItemCheckBox">
 					<i class="glyphicon glyphicon-check"></i>
 					<div>Check Box</div>
@@ -26,13 +26,13 @@
 	</div> <!-- row -->
 
 	<div class="row">
-		<div class= "col-md-6">
+		<div class= "col-md-6" style="padding:5px">
 			<div class="draggable noselect paletteItem " id="paletteItemDatePicker">
 					<i class="glyphicon glyphicon-calendar"></i>
 					<div>Date Picker</div>
 			</div>			
 		</div> <!-- column -->
-		<div class= "col-md-6">
+		<div class= "col-md-6" style="padding:5px">
 			<div class="draggable noselect paletteItem"  id="paletteItemImage">
 					<i class="glyphicon glyphicon-picture"></i>
 					<div>Image</div>
@@ -41,7 +41,7 @@
 	</div> <!-- row -->
 
 	<div class="row">
-		<div class= "col-md-6">
+		<div class= "col-md-6" style="padding:5px">
 			<div class="draggable noselect paletteItem" id="paletteItemHtmlEditor">
 					<i class="glyphicon glyphicon-align-justify"></i>
 					<div>HTML Editor</div>
@@ -54,13 +54,15 @@
 
 	<div class="ui-layout-content">
 		
-		<div class="panel panel-default">
-		    <div class="panel-heading">Form Design Palette</div>
-		    <div class="panel-body">
-		       {{template "designFormPaletteItems"}}
-		    </div>
+		<div class="row paletteHeader">
+			<div class= "col-md-12 text-center h5">
+				Design Palette
+			</div>
 		</div>
-		
+		<div class="paletteItems">
+			{{template "designFormPaletteItems"}}
+		</div>
+				
 	</div> <!-- ui-layout-content -->
 
 {{end}}
@@ -120,7 +122,7 @@
 				{{template "designFormHeader" .}}
 			</div> <!-- north ui layout -->
 			
-			<div id="gallerySidebar" class="pane ui-layout-west">
+			<div id="paletteSidebar" class="pane ui-layout-west paletteSidebar">
 				{{template "formDesignPalette"}}
 			</div>
 		

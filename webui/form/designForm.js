@@ -44,7 +44,7 @@ $(document).ready(function() {
 		},
 		
 		dropDestSelector: formDesignCanvasSelector,
-		paletteSelector: "#gallerySidebar",
+		paletteSelector: "#paletteSidebar",
 	}
 	initDesignPalette(paletteConfig)			
 	
