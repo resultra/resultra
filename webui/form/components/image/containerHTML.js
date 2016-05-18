@@ -33,13 +33,13 @@ function imageContainerHTML(elementID)
 	// plugin from displaying it's own messages.
 	
 	var containerHTML = ''+
-	'<div class="ui-widget-content layoutContainer imageContainer  draggable resizable" id="'+elementID+'">' +
-		'<label id="' + containerLabelID + '">Image Label</label>' +
-		'<div>' +
+	'<div class="ui-widget-content layoutContainer imageContainer draggable resizable" id="'+elementID+'">' +
+		'<div class="imageContainerHeader">' +
+			'<label id="' + containerLabelID + '">Image Label</label>' +
 			'<input id="'+ uploadInputID + '" type="file" title=" " single>'+
 			'<label id="' + fileNameLabelID + '"></label>' +
 		'</div>' +
-		'<div id="' + imageID + '" class="imageInnerContainer">'+
+		'<div id="' + imageID + '" class="imageInnerContainer text-center"">'+
 		'</div>'+
 	'</div>';
 	
@@ -51,6 +51,6 @@ function imageContainerHTML(elementID)
 function imageLinkHTML(elementID, imageURL) {
 	var linkID = imageLinkIDFromContainerElemID(elementID)
 	return '<a href="' + imageURL + '" id="' + linkID + '">' + 
-		'<img class="imageComponentImage" src="' + imageURL + '">'+
+		'<img class="img-thumbnail imageContainerImage" src="' + imageURL + '">'+
 	'</a>'
 }

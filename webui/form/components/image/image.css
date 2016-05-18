@@ -10,16 +10,32 @@
 	height: 200px;
 }
 
-.imageInnerContainer
-{
-	
+.imageContainerHeader {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 50px; /* Fixed height header - keep the same as .imageInnerContainer top */
+	padding-left:5px;
+	padding-top:5px;
 }
 
-/* Class for the actual image within the image component. Initially
-   set the size to a fixed thumbnail.
-   TODO - scale to the size of the container itself, while keeping the 
-   aspect ratio intact. */
-.imageComponentImage {
-	width: 100px;
-	height: 100px;
+.imageInnerContainer
+{
+    position: absolute;
+     left: 0;
+	 
+	 /* Start the variable height section for the image itself with after the imageContainerHeder. Keep this
+	    value the same as the height of imageContainerHeader */
+     top: 50px; 
+	 
+     bottom: 5px; /* For some reason, the image overflows the bottom of the container without making this adjustement */
+     width: 100%;
+	overflow:hidden;
+}
+
+/* Scale the actual image to fit the contents of its parent, while preserving its aspect ratio */
+.imageContainerImage {
+	max-height:100%;
+	max-width:100%;
 }
