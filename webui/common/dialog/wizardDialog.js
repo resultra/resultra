@@ -35,7 +35,8 @@ function transitionToPrevWizardDlgPanel(dialog, progressSelector, currPanelConfi
 	}
 	$(currPanelConfig.divID).hide("slide",{direction:"right"},200,showPrevPanel);
 	
-	$(progressSelector).progress({percent:prevPanelConfig.progressPerc});
+	// TODO - Reintegrate with Bootstrap
+//	$(progressSelector).progress({percent:prevPanelConfig.progressPerc});
 	
 	$(dialog).dialog("option","buttons",prevPanelConfig.dlgButtons)
 }

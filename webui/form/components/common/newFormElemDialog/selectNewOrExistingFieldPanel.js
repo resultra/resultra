@@ -20,23 +20,16 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 	var fieldSelectionSelector = '#' + fieldSelectionPropertyName
 	
 	var panelID = "newOrExistingField"
-	
-	function doCreateNewFieldWithTextBox() {
-		return radioButtonIsChecked(createNewFieldRadio.selector)
-	}
-	
+		
 	function validateForm() {
-		var newOrExistingSelection = $(newOrExistingRadioInputCheckedSelector).val()
-		console.log("createNewOrExistingFieldPanelConfig: radio selection: " + newOrExistingSelection)
-		if(newOrExistingSelection == 'new') {
+		if(radioButtonIsChecked(createNewFieldRadio.selector)) {
 			return true			
 		} else {
-			var selectedField = $(fieldSelectionSelector).val();
-			console.log("createNewOrExistingFieldPanelConfig: selected field val: " + selectedField)
-			if(selectedField.length <= 0) {
+			if(formFieldValueIsEmpty(fieldSelectionSelector)) {
 				addFormControlError(selectExistingField.selector)
 				return false
 			}
+			removeFormControlError(selectExistingField.selector)				
 			return true;
 		}
 		console.log("createNewOrExistingFieldPanelConfig: radio selection: " + newOrExistingSelection)
@@ -44,19 +37,15 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 	
 	// Remove any errors on the selection if a non-empty value is selected.
 	$(fieldSelectionSelector).change(function() {
-		var selectedField = $(fieldSelectionSelector).val()
-		if(selectedField.length > 0)
-		{
-			removeFormControlError(selectExistingField.selector)
+		if(formFieldValueIsNonEmpty(fieldSelectionSelector)) {
+			removeFormControlError(selectExistingField.selector)			
 		}
 	})
 	
 	
 	function nextButtonClicked() {
 		if (validateForm()) {
-			console.log("New Field checked: " + doCreateNewFieldWithTextBox())
-
-			if (doCreateNewFieldWithTextBox()) {
+			if (radioButtonIsChecked(createNewFieldRadio.selector)) {
 				transitionToNextWizardDlgPanelByID(this, dialogProgressDivID,
 						createNewOrExistingFieldDialogPanelID, newFieldDialogPanelID)
 			} else {

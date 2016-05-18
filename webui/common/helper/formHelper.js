@@ -19,5 +19,27 @@ function removeFormControlError(controlParentSelector) {
 }
 
 function radioButtonIsChecked(radioButtonSelector) {
-	$(radioButtonSelector).prop('checked')
+	return $(radioButtonSelector).prop('checked')
+}
+
+function formFieldValueIsNonEmpty(controlSelector) {
+	var selectedVal = $(controlSelector).val()
+	if(selectedVal.length > 0)
+	{
+		return true
+	} else {
+		return false
+	}
+	
+}
+
+function formFieldValueIsEmpty(controlSelector) {
+	var selectedVal = $(controlSelector).val()
+	if(selectedVal.length > 0)
+	{
+		return false
+	} else {
+		return true
+	}
+	
 }

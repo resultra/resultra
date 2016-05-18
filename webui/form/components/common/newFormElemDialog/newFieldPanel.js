@@ -25,7 +25,7 @@ function createNewFieldDialogPanelConfig(elemPrefix) {
 							newFieldDialogPanelID,createNewOrExistingFieldDialogPanelID)	
 			 },
 			"Next" : function() { 
-				if($(panelSelector).form('validate form')) {
+				if(validateForm()) {
 			/*
 					if(newFieldIsCalcField()){
 						transitionToNextWizardDlgPanel(this,textBoxProgressDivID,
