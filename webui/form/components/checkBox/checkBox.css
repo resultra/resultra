@@ -2,10 +2,16 @@
    to the layout. This is important for when the field
    is initially dragged onto the canvas. Otherwise it
    can shrink as the field is dragged. */
-.checkBoxFormContainer
-{
+.checkBoxFormContainer {
 	min-width:180px;
-	min-height:40px;
+	min-height:30px;
 	width: 180px;
-	height: 40px;
+	height: 30px;
+}
+
+/* Since the checkbox is inline, override the Bootstrap margins to eliminate 
+  extra space around the checkbox */
+.checkBoxFormContainer > .checkbox {
+	margin-top: 0px;
+	margin-bottom:0px;
 }
