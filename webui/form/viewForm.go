@@ -18,8 +18,7 @@ var viewFormTemplates *template.Template
 func init() {
 	//	designFormTemplateFiles := []string{}
 
-	baseTemplateFiles := []string{"static/filter/filterRecords.html",
-		"static/form/viewForm.html"}
+	baseTemplateFiles := []string{"static/form/viewForm.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
