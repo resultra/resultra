@@ -11,6 +11,8 @@ function createNewFieldDialogPanelConfig(elemPrefix) {
 	var isCalcFieldInput = createPrefixedTemplElemInfo(elemPrefix,"NewFieldIsCalcFieldInput")
 	var fieldTypeSelection = createPrefixedTemplElemInfo(elemPrefix,"NewFieldValTypeSelection")
 	
+	var dialogProgressSelector = "#" + elemPrefix + "NewFormElemDialogProgress"
+	
 	function validateForm() {
 		
 	}
@@ -18,10 +20,10 @@ function createNewFieldDialogPanelConfig(elemPrefix) {
 	var newFieldPanelConfig = {
 		panelID: newFieldDialogPanelID,
 		divID: panelSelector,
-		progressPerc:40,
+		progressPerc:60,
 		dlgButtons: { 
 			"Previous": function() { 
-				transitionToPrevWizardDlgPanelByPanelID(this,textBoxProgressDivID,
+				transitionToPrevWizardDlgPanelByPanelID(this,dialogProgressSelector,
 							newFieldDialogPanelID,createNewOrExistingFieldDialogPanelID)	
 			 },
 			"Next" : function() { 

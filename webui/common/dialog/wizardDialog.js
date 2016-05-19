@@ -1,12 +1,15 @@
+function updateDialogProgress(progressSelector, progressVal) {
+	console.log("Update progress: " + progressSelector + " val:" + progressVal)
+	$(progressSelector).css('width', progressVal+'%').attr('aria-valuenow', progressVal);
+}
+
 function transitionToNextWizardDlgPanel(dialog, progressSelector, currPanelConfig, nextPanelConfig) {
 	function showNextPanel() {
 		$(nextPanelConfig.divID).show("slide",{direction:"right"},200);
 	}
 	$(currPanelConfig.divID).hide("slide",{direction:"left"},200,showNextPanel);
 	
-	// TODO - Reintegrate with Bootstrap
-	//$(progressSelector).progress({percent:nextPanelConfig.progressPerc});
-	
+	updateDialogProgress(progressSelector,nextPanelConfig.progressPerc)
 	
 	$(dialog).dialog("option","buttons",nextPanelConfig.dlgButtons)
 }
@@ -35,9 +38,8 @@ function transitionToPrevWizardDlgPanel(dialog, progressSelector, currPanelConfi
 	}
 	$(currPanelConfig.divID).hide("slide",{direction:"right"},200,showPrevPanel);
 	
-	// TODO - Reintegrate with Bootstrap
-//	$(progressSelector).progress({percent:prevPanelConfig.progressPerc});
-	
+	updateDialogProgress(progressSelector,prevPanelConfig.progressPerc)
+			
 	$(dialog).dialog("option","buttons",prevPanelConfig.dlgButtons)
 }
 
@@ -97,7 +99,8 @@ function openWizardDialog(dlgParams) {
 //	$('.wizardPanel').form('clear') // clear any previous entries
 	$('.wizardErrorMsgBlock').empty()
 
-// TODO Integrate bootstrap progress indicator	
+	updateDialogProgress(dlgParams.progressDivID,10)
+	
 //	$(dlgParams.progressDivID).progress({percent:0});
 	
 	var panelsByID = {}

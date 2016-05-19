@@ -14,6 +14,7 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 	var newOrExistingRadioInputSelector = "input[name='" + panelConfig.elemPrefix + "NewOrExistingRadio']"
 	var newOrExistingRadioInputCheckedSelector = newOrExistingRadioInputSelector + ":checked"
 	var dialogProgressDivID = panelConfig.elemPrefix + "NewFormElemDialogProgress"
+	var dialogProgressSelector = '#' + dialogProgressDivID
 	var selectField = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"FieldSelection")
 	
 	var fieldSelectionPropertyName = panelConfig.elemPrefix + "FieldSelection"
@@ -46,7 +47,7 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 	function nextButtonClicked() {
 		if (validateForm()) {
 			if (radioButtonIsChecked(createNewFieldRadio.selector)) {
-				transitionToNextWizardDlgPanelByID(this, dialogProgressDivID,
+				transitionToNextWizardDlgPanelByID(this, dialogProgressSelector,
 						createNewOrExistingFieldDialogPanelID, newFieldDialogPanelID)
 			} else {
 				//transitionToNextWizardDlgPanel(this, dialogProgressDivID,
@@ -79,7 +80,7 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 	var newOrExistingFieldPanelConfig = {
 		panelID: createNewOrExistingFieldDialogPanelID,
 		divID: panelSelector,
-		progressPerc: 0,
+		progressPerc: 20,
 		dlgButtons: selectNewButtons, // dialog buttons
 
 		initPanel: function(parentDialog) {
