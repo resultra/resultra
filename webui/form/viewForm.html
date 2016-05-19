@@ -1,20 +1,6 @@
 
 
-{{define "viewFormFilterPane"}}
 
-<div class="ui small center aligned header" id="filterHeader">
-	<div class="content">
-	 	<i class="filter icon"></i>
-		Filter &nbsp;&nbsp;
-		{{template "filterRecordsAddFilterButton"}}
-	</div>
-	
-</div>
-<div class="ui-layout-content">
-	{{template "filterRecordsRuleList"}}
-</div>
-
-{{end}}
 
 {{define "viewFormSortPane"}}
 <div class="ui small center aligned header" id="sortHeader">
@@ -125,7 +111,7 @@
 		<div class="pane ui-layout-east" id="eastFilterSortPane">
 			
 			<div class="ui-layout-center" id="filterPaneUILayout">
-				{{template "viewFormFilterPane"}}
+				{{template "recordFilterPane"}}
 			</div> <!-- ui-layout-center #filterPane -->
 	
 			<div class=" ui-layout-south" id="sortPaneUILayout">

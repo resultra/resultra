@@ -1,0 +1,44 @@
+{{define "filterRecordsAddFilterButton"}}
+
+<button type="button" class="btn btn-default btn-xs" id="filterRecordsAddFilterButton">
+  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Filter Rule
+</button>
+
+{{end}}
+
+
+
+{{define "recordFilterPaneHeader"}}
+
+<div class="row filterPaneHeader">
+	<div class= "col-md-12 text-center h5">
+		Filter
+	</div>
+	{{template "filterRecordsAddFilterButton"}}
+</div>
+
+{{end}}
+
+
+{{define "filterRecordsRuleList"}}
+
+<div class="ui celled list" id="filterRecordsRuleList">
+</div>
+
+{{end}}
+
+
+
+
+{{define "recordFilterPane"}}
+
+{{template "recordFilterPaneHeader"}}
+{{template "filterRecordsRuleList"}}
+
+<!-- The dialog is initially hidden, but is referenced when opened by filterRecords.js.
+     Note the recommendation for jQuery UI dialogs is to put this kind of placeholder
+	HTML at the end of the page before the closing <body> tag. However, this was found
+    to cause an unwanted space to the side of the UI layout panel. -->
+{{ template "filterRecordsAddFilterDialog" }}
+
+{{end}}

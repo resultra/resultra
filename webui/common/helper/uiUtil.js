@@ -12,21 +12,6 @@ function createPrefixedTemplElemInfo(elemPrefix,elemSuffix) {
 
 
 
-function dropdownSelectItemHTML(selItemVal, selItemText)
-{
-	var selectFieldRefHTML = '<div class="item" data-value="' +
-	 		selItemVal + '">' +
-	 		selItemText + '</div>'
-	return selectFieldRefHTML
-}
-
-function selectOptionHTML(selItemVal, selItemText) {
-	
-	var selOptionHTML = '<option value="' + selItemVal + '">' + selItemText + '</option>'
-	return selOptionHTML
-	
-}
-
 function itemDivHTML(itemBody) {
 	return '<div class="item">' + itemBody + '</div>'
 }

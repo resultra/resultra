@@ -1,0 +1,62 @@
+{{define "filterRecordsSelectFieldDropdown"}}
+
+<div class="form-group" id="filterRecordsSelectFieldDropdown">
+	<label>Existing fields</label> 
+	<select class="form-control" id="filterRecordsSelectFieldDropdownMenu" name="filterRecordsSelectFieldDropdownMenu">
+		<option value="">
+			Select a field
+		</option>
+	</select>
+	<span class="glyphicon glyphicon-ok form-control-feedback" 
+		aria-hidden="true" aria-describedby="filterRecordsSelectFieldHelp"></span>
+	<span id="filterRecordsSelectFieldHelp" class="help-block collapse">Select a field to filter on.</span>
+</div>
+
+{{end}}
+
+{{define "filterRecordsSelectFilterRuleDropdown"}}
+
+<div class="form-group" id="filterRecordsSelectFilterRuleDropdown">
+	<label>Filtering Rule</label> 
+	<select class="form-control" id="filterRecordsSelectFilterRuleDropdownMenu" name="filterRecordsSelectFilterRuleDropdownMenu">
+		<option value="">
+			Select a rule
+		</option>
+	</select>
+	<span class="glyphicon glyphicon-ok form-control-feedback" 
+		aria-hidden="true" aria-describedby="filterRecordsSelectFilterRuleHelp"></span>
+	<span id="filterRecordsSelectFilterRuleHelp" class="help-block collapse">Select a rule.</span>
+</div>
+
+{{end}}
+
+
+{{define "filterRecordsFilterRuleParamInput"}}
+
+<div class="form-group" id="filterRecordsFilterRuleParamInputField">
+      <label id="filterRecordsFilterRuleParamLabel">Filtering parameter</label>
+      <input class="form-control" type="text" id="filterRecordsFilterRuleParamInput" name="filterRecordsFilterRuleParamInput" 			aria-describedby="filterRecordFilterValInputHelp" placeholder="">
+		<span id="filterRecordFilterValInputHelp" class="help-block collapse">Enter a value.</span>
+</div> <!-- Field name field -->
+
+{{end}}
+
+
+
+{{define "filterRecordsAddFilterDialog"}}
+
+<div id="filterRecordsAddFilterDialog" title="Add Filtering Rule" class="initiallyHiddenDialog">
+  <form class="ui form error">
+	<div class="ui info message">
+		<p>
+			Filter records using the selected field and values matching the filtering rule.
+		</p>
+	</div>
+  	 {{ template "filterRecordsSelectFieldDropdown" }}
+  	 {{ template "filterRecordsSelectFilterRuleDropdown" }}
+	 {{ template "filterRecordsFilterRuleParamInput" }}
+	 
+  </form>
+</div>
+
+{{end}}

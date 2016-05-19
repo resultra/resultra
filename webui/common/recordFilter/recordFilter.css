@@ -1,0 +1,8 @@
+.filterPaneHeader {
+	min-height: 20px;
+	background-color:lightGrey;
+	vertical-align:middle;
+	margin-left: 0px; /* eliminate negative margins */
+	margin-right:0px;
+	margin-top: 0px;
+}

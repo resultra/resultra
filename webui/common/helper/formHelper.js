@@ -18,6 +18,16 @@ function removeFormControlError(controlParentSelector) {
 	$(controlParentSelector).find(".help-block").slideUp()
 }
 
+// resetFormControlError is the same as removeFormControlError, except the
+// help block is immediately removed. This is intended for initialization
+// functions, where a transition out of an error state is not wanted.
+function resetFormControl(controlParentSelector) {
+	$(controlParentSelector).removeClass("has-error")
+	$(controlParentSelector).find(".help-block").hide()
+	$(controlParentSelector).find(".form-control").val("")
+}
+
+
 function radioButtonIsChecked(radioButtonSelector) {
 	return $(radioButtonSelector).prop('checked')
 }
@@ -42,4 +52,15 @@ function formFieldValueIsEmpty(controlSelector) {
 		return true
 	}
 	
+}
+
+
+function selectOptionHTML(selItemVal, selItemText) {
+	var selOptionHTML = '<option value="' + selItemVal + '">' + selItemText + '</option>'
+	return selOptionHTML
+}
+
+function defaultSelectOptionPromptHTML(selItemPrompt) {
+	var selOptionHTML = '<option disabled selected value="">' + selItemPrompt + '</option>'
+	return selOptionHTML
 }
