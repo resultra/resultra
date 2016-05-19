@@ -45,6 +45,15 @@ var filterRulesByType = {
 	"number":filterRulesNumber,
 }
 
+function getFilterRecordsRuleDef(fieldsByID, fieldID, ruleID) {
+	var fieldInfo = fieldsByID[fieldID]
+	var typeRules = filterRulesByType[fieldInfo.type]
+	var ruleDef = typeRules[ruleID]
+	return ruleDef
+}
+
+
+
 
 function initFilterRuleSelection(fieldsByID) {
 		
@@ -200,6 +209,19 @@ function recordFilterValidateAddFilterForm() {
 	
 	return newFilterRuleParams
 }
+
+function addFilterRule(newFilterRuleParams)
+{
+	console.log("Adding new filter rule: params = " + JSON.stringify(newFilterRuleParams))
+	
+	jsonAPIRequest("newRecordFilterRule",newFilterRuleParams,function(newFilterRuleRef) {
+		populateFilterPanelWithOneFilterRule(newFilterRuleRef)
+		// TODO - Also need to invoke a callback function to trigger an update to the view
+		// (dashboard or form) which has a filter. The records shown in these views will 
+		// change.
+	}) // set record's number field value
+}
+
 
 function validateThenAddFilterRule(fieldsByID) {
 	
