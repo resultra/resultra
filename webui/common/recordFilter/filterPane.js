@@ -4,11 +4,21 @@ function populateFilterPanelWithOneFilterRule(filterRuleRef)
 	var ruleLabel = filterRuleRef.filterRuleDef.label
 	
 	// TODO - Filter rule items need better formatting & CSS style
-	var filterRecordRuleItem = itemDivHTML(
-		contentHTML(headerWithBodyHTML(fieldName,ruleLabel)) +
-		contentHTML('<button class="ui compact icon button" style="padding:3px"><i class="remove icon"></i></button>')
-	)
-			
+	
+	
+	var filterRecordRuleItem = 
+		'<div class="list-group-item clearfix filterRecordItem">' + 
+			'<div class="pull-left">' +
+				'<strong>' + fieldName + '</strong>' + ' <BR> ' + ruleLabel + 
+        	'</div>' +	
+    		'<div class="pull-right" style="margin-top:10px;">' + 
+      			'<button class="btn btn-xs btn-danger deleteFilterRuleButton">' + 
+					// padding-bottom: 2px makes the button image vertically line up better.
+					'<span class="glyphicon glyphicon-remove" style="padding-bottom:2px;"></span>' +
+				'</button>' +
+        	'</div>' +	
+		'</div>'
+					
 	$('#filterRecordsRuleList').append(filterRecordRuleItem)
 	
 }

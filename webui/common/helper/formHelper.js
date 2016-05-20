@@ -54,6 +54,9 @@ function formFieldValueIsEmpty(controlSelector) {
 	
 }
 
+function emptyOptionHTML(prompt) {
+	return '<option value="">' + prompt + '</option>'	
+}
 
 function selectOptionHTML(selItemVal, selItemText) {
 	var selOptionHTML = '<option value="' + selItemVal + '">' + selItemText + '</option>'

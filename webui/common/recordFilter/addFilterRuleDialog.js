@@ -254,7 +254,7 @@ function openAddFilterDialog(parentTableID)
 			height: 450, width: 300,
 			resizable: false,
 			modal: false,
-			position: { my: "right top", at: "left-10 top", of: filterButton },
+			position: { my: "right top", at: "left-10 top-200", of: filterButton },
 			buttons: { 
 				"Add Filtering Rule": function() { validateThenAddFilterRule(fieldsByID) },
 	  			"Cancel" : function() { $(this).dialog('close'); },
