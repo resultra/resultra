@@ -19,3 +19,8 @@
 .initiallyHidden {
 	display:none;
 }
+
+/* For adding space between Boostrap rows */
+.marginTop5 { margin-top:5px; }
+.marginTop7 { margin-top:7px; }
+.marginTop10 { margin-top:10px; }

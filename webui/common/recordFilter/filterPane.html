@@ -1,12 +1,3 @@
-{{define "filterRecordsAddFilterButton"}}
-
-<button type="button" class="btn btn-default btn-xs" id="filterRecordsAddFilterButton">
-  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Rule
-</button>
-
-{{end}}
-
-
 
 {{define "recordFilterPaneHeader"}}
 
@@ -18,10 +9,39 @@
 
 {{end}}
 
+{{define "recordFilterRulesButtons"}}
+			<button type="button" class="btn btn-default btn-xs" id="filterRecordsAddFilterButton">
+			  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Rule
+			</button>
+
+			<button type="button" class="btn btn-default btn-xs" id="filterRecordsClearFilterButton">
+			  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Clear All Rules
+			</button>
+{{end}}
+
+{{define "recordLoadSaveButtons"}}
+		<button type="button" class="btn btn-default btn-xs" id="filterRecordsSaveFilterButton">
+		  <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save Filter
+		</button>
+
+		<button type="button" class="btn btn-default btn-xs" id="filterRecordsLoadFilterButton">
+		  <span class="glyphicon glyphicon-open" aria-hidden="true"></span> Load Filter
+		</button>
+{{end}}
+
 {{define "recordFilterPaneFooter"}}
 
 <div id="filterPaneFooter">
-	{{template "filterRecordsAddFilterButton"}}
+	
+	<div class="container">
+		<div class="row">
+			{{template "recordFilterRulesButtons"}}
+		</div>
+		<div class="row marginTop5">
+			{{template "recordLoadSaveButtons"}}
+		</div>
+	</div>
+	
 </div>
 
 {{end}}
