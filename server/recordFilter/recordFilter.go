@@ -6,12 +6,6 @@ import (
 	"resultra/datasheet/server/record"
 )
 
-const recordFilterEntityKind string = "RecordFilter"
-
-type RecordFilter struct {
-	rules []RecordFilterRule
-}
-
 func filterOneRecord(recordRef record.RecordRef, filterRules []FilterRuleRef) (bool, error) {
 
 	for _, currFilterRule := range filterRules {

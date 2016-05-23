@@ -9,6 +9,11 @@ import (
 )
 
 const recordFilterRuleEntityKind string = "RecordFilterRule"
+const recordFilterEntityKind string = "RecordFilter"
+
+type RecordFilter struct {
+	rules []RecordFilterRule
+}
 
 type RecordFilterRule struct {
 	Field           *datastore.Key
@@ -17,19 +22,19 @@ type RecordFilterRule struct {
 	NumberRuleParam float64
 }
 
-type NewFilterRuleParams struct {
-	FieldID         string   `json:"fieldID"`
-	RuleID          string   `json:"ruleID"`
-	TextRuleParam   *string  `json:"textRuleParam,omitempty"`
-	NumberRuleParam *float64 `json:"numberRuleParam,omitempty"`
-}
-
 type FilterRuleRef struct {
 	FilterRuleID    string         `json:"filterRuleID"`
 	FieldRef        field.FieldRef `json:"fieldRef"`
 	FilterRuleDef   FilterRuleDef  `json:"filterRuleDef"`
 	TextRuleParam   *string        `json:"textRuleParam,omitempty"`
 	NumberRuleParam *float64       `json:"numberRuleParam,omitempty"`
+}
+
+type NewFilterRuleParams struct {
+	FieldID         string   `json:"fieldID"`
+	RuleID          string   `json:"ruleID"`
+	TextRuleParam   *string  `json:"textRuleParam,omitempty"`
+	NumberRuleParam *float64 `json:"numberRuleParam,omitempty"`
 }
 
 func NewFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleParams) (*FilterRuleRef, error) {
