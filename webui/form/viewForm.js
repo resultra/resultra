@@ -142,9 +142,9 @@ function initUILayoutPanes()
 $(document).ready(function() {	
 	 
 	initUILayoutPanes()
-		
-	$('#filterRecordsDropdown').dropdown()
 	
+	initRecordFilterSelectAndApplyFilterDropdown(tableID)
+		
 	initRecordButtonsBehavior()
 	
 	loadFormComponents({
