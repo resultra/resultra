@@ -126,7 +126,8 @@ function initUILayoutPanes()
 	$('#recordsPane').layout({
 		north: fixedUILayoutPaneAutoSizeToFitContentsParams(),
 		south: fixedUILayoutPaneAutoSizeToFitContentsParams(),
-		north__showOverflowOnHover:	true
+		north__showOverflowOnHover:	true,
+		south__showOverflowOnHover:	true
 	})
 	
 	$('#eastFilterSortPane').layout({
@@ -142,8 +143,7 @@ $(document).ready(function() {
 	 
 	initUILayoutPanes()
 		
-	// Initialize the semantic ui dropdown menus
-	$('.ui.dropdown').dropdown()
+	$('#filterRecordsDropdown').dropdown()
 	
 	initRecordButtonsBehavior()
 	

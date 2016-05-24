@@ -1,0 +1,22 @@
+{{define "recordFilterSelectApplyFilterDropdown"}}
+
+	<div class="btn-group dropup">
+	  <button type="button" class="btn btn-default btn-sm">
+	    <span class="glyphicon glyphicon-filter" aria-hidden="true"></span>
+		<span id="currentFilterSelectionLabel">Filter</span>
+		<span class="sr-only">Re-filter results</span>
+	  </button>
+	  <button class="btn btn-default btn-sm dropdown-toggle" type="button" id="filterRecordsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	    <span class="caret"></span>
+	  </button>
+	  <ul class="dropdown-menu" aria-labelledby="filterRecordsDropdown">
+	    <li><a href="#">New Filter ...</a></li>
+	    <li><a href="#">Manage Filters ...</a></li>
+	    <li role="separator" class="divider"></li>
+	    <li><a href="#">Filter 2</a></li>
+	    <li><a href="#">Filter 1</a></li>
+	    <li><a href="#">No Filter</a></li>
+	  </ul>
+	</div>
+
+{{end}}

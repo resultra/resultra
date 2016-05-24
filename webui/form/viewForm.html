@@ -62,14 +62,24 @@
 </div> <!-- #recordHeaderGrid  -->
 {{end}}
 
-{{define "viewFormFooterControls"}}
-<div id="recordFooterGrid">
 
+{{define "viewFormFooterButtons"}}
 	<button class="btn-primary btn-sm" id="prevRecordButton">Previous</button>
 	<span id="recordNumLabel">&nbsp;</span>
 	<button class="btn-primary btn-sm" id="nextRecordButton">Next </button>
 	<button class="btn-primary btn-sm" id="newRecordButton">New Record</button>
+{{end}}
 
+{{define "viewFormFooterControls"}}
+<div class="container">
+	<div class="row">
+		<div class="col-md-6">
+			{{template "viewFormFooterButtons"}}
+		</div>
+		<div class="col-md-6">
+			{{template "recordFilterSelectApplyFilterDropdown"}}
+		</div>
+	</div>
 </div> <!-- record footer grid -->
 {{end}}
 
