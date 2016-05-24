@@ -71,7 +71,7 @@ func getRuleDefByFieldType(fieldType string, ruleID string) (*FilterRuleDef, err
 		ruleDef, ruleDefFound := textFieldFilterRuleDefs[ruleID]
 		if !ruleDefFound {
 			return nil, fmt.Errorf(
-				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, rule ID = %v",
+				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
 				fieldType, ruleID)
 		} else {
 			return &ruleDef, nil
@@ -80,7 +80,7 @@ func getRuleDefByFieldType(fieldType string, ruleID string) (*FilterRuleDef, err
 		ruleDef, ruleDefFound := numberFieldFilterRuleDefs[ruleID]
 		if !ruleDefFound {
 			return nil, fmt.Errorf(
-				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, rule ID = %v",
+				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
 				fieldType, ruleID)
 		} else {
 			return &ruleDef, nil

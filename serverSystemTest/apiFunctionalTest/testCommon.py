@@ -7,6 +7,8 @@ class TestHelperMixin:
         fullURL = baseURL + apiPath
         print "TestHelperMixin: API Request: ",apiPath,": args=",json.dumps(jsonArgs)
         resp = requests.post(fullURL,json=jsonArgs)
+        if resp.status_code != 200:
+            print "TestHelperMixin: Error response: ",resp.text
         self.assertEqual(resp.status_code,200,"expecting success return code from server")
         print "TestHelperMixin: API Response: ",json.dumps(resp.json())
         return resp.json()
@@ -20,6 +22,20 @@ class TestHelperMixin:
         jsonResp = self.apiRequest('table/new',{'databaseID': databaseID, 'name': tableName})
         tableID = jsonResp[u'tableID']
         return tableID
+        
+    def newTextField(self,tableID,fieldName,refName):
+        fieldParams = {'parentTableID':tableID,'name':fieldName,'type':'text','refName':refName}
+        jsonResp = self.apiRequest('field/new',fieldParams)
+        fieldID = jsonResp[u'fieldID']
+        return fieldID
+        
+        
+    def newNumberField(self,tableID,fieldName,refName):
+        fieldParams = {'parentTableID':tableID,'name':fieldName,'type':'number','refName':refName}
+        jsonResp = self.apiRequest('field/new',fieldParams)
+        fieldID = jsonResp[u'fieldID']
+        return fieldID
+        
         
     def newTimeField(self,tableID,fieldName,refName):
         fieldParams = {'parentTableID':tableID,'name':fieldName,'type':'time','refName':refName}

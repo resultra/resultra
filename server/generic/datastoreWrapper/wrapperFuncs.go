@@ -205,3 +205,8 @@ func DecodeKey(encodedID string, expectedEntityKind string) (*datastore.Key, err
 
 	return key, nil
 }
+
+func ValidateEntityKind(encodedID string, expectedEntityKind string) error {
+	_, decodeErr := DecodeKey(encodedID, expectedEntityKind)
+	return decodeErr
+}

@@ -5,14 +5,23 @@ import (
 	"appengine/datastore"
 	"fmt"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/datastoreWrapper"
+	"resultra/datasheet/server/table"
 )
 
 const recordFilterRuleEntityKind string = "RecordFilterRule"
 const recordFilterEntityKind string = "RecordFilter"
 
 type RecordFilter struct {
-	rules []RecordFilterRule
+	Rules []RecordFilterRule
+	Name  string
+}
+
+type RecordFilterRef struct {
+	FilterID string          `json:"filterID"`
+	Name     string          `json:"name"`
+	Rules    []FilterRuleRef `json:"rules"`
 }
 
 type RecordFilterRule struct {
@@ -28,6 +37,71 @@ type FilterRuleRef struct {
 	FilterRuleDef   FilterRuleDef  `json:"filterRuleDef"`
 	TextRuleParam   *string        `json:"textRuleParam,omitempty"`
 	NumberRuleParam *float64       `json:"numberRuleParam,omitempty"`
+}
+
+type NewFilterParams struct {
+	ParentTableID string `json:"parentTableID"`
+	Name          string `json:"name"`
+}
+
+func getExistingFilterNames(appEngContext appengine.Context, parentTableID string) ([]string, error) {
+
+	var allFilters []RecordFilter
+	_, err := datastoreWrapper.GetAllChildEntities(appEngContext, parentTableID,
+		recordFilterEntityKind, &allFilters)
+	if err != nil {
+		return nil, fmt.Errorf("validateUnusedFilterName: Unable to retrieve fields from datastore: datastore error =%v", err)
+	}
+
+	existingNames := []string{}
+	for _, currFilter := range allFilters {
+		existingNames = append(existingNames, currFilter.Name)
+	}
+	return existingNames, nil
+
+}
+
+func validateUnusedFilterName(appEngContext appengine.Context, parentTableID string, filterName string) error {
+
+	existingNames, getNamesErr := getExistingFilterNames(appEngContext, parentTableID)
+	if getNamesErr != nil {
+		return getNamesErr
+	}
+	for _, currName := range existingNames {
+		if currName == filterName {
+			return fmt.Errorf("validateUnusedFilterName: Filter name '%v' already used", filterName)
+		}
+	}
+	return nil
+}
+
+func newFilter(appEngContext appengine.Context, params NewFilterParams) (*RecordFilterRef, error) {
+
+	if tableIDErr := datastoreWrapper.ValidateEntityKind(params.ParentTableID, table.TableEntityKind); tableIDErr != nil {
+		return nil, fmt.Errorf("newFilter: %v", tableIDErr)
+	}
+
+	sanitizedName, sanitizeErr := generic.SanitizeName(params.Name)
+	if sanitizeErr != nil {
+		return nil, fmt.Errorf("newFilter: %v", sanitizeErr)
+	}
+
+	if validateNameErr := validateUnusedFilterName(appEngContext, params.ParentTableID, sanitizedName); validateNameErr != nil {
+		return nil, fmt.Errorf("newFilter: %v", validateNameErr)
+	}
+
+	rules := []RecordFilterRule{}
+	newFilter := RecordFilter{Name: sanitizedName, Rules: rules}
+
+	filterID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.ParentTableID, recordFilterEntityKind, &newFilter)
+	if insertErr != nil {
+		return nil, insertErr
+	}
+
+	rulesRefs := []FilterRuleRef{}
+	filterRef := RecordFilterRef{FilterID: filterID, Name: newFilter.Name, Rules: rulesRefs}
+
+	return &filterRef, nil
 }
 
 type NewFilterRuleParams struct {
