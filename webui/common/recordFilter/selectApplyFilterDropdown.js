@@ -10,9 +10,9 @@ function initRecordFilterSelectAndApplyFilterDropdown(tableID) {
 	    e.preventDefault();// prevent the default anchor functionality
 	});
 
-	
 	$('#recordFilterManageFiltersMenuItem').click(function(e) {
 	    console.log("Filter dropdown: Manage filters selected")
+		$('#recordFilterManageRecordsModal').modal('show')
 	    e.preventDefault();// prevent the default anchor functionality
 	});
 	
@@ -20,7 +20,6 @@ function initRecordFilterSelectAndApplyFilterDropdown(tableID) {
 	    console.log("Filter dropdown: no filter selected")
 	    e.preventDefault();// prevent the default anchor functionality
 	});
-
 
 	$('.recordFilterFilterMenuItem').click(function(e) {
 		var filterID = event.target.id
@@ -33,7 +32,4 @@ function initRecordFilterSelectAndApplyFilterDropdown(tableID) {
 	    e.preventDefault();// prevent the default anchor functionality
 	});
 
-
-
-	
 }

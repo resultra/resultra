@@ -1,0 +1,93 @@
+
+{{define "recordFilterFilterSelectionSidebar"}}
+
+<div id="recordFilterManageFilterFilterListContent">
+
+	<div class="row"  >
+		<h5>Filters</h5>
+		<div class="list-group" id="recordFilterManageFilterFilterList">
+		  <a href="#" class="list-group-item">Filter 1</a>
+		  <a href="#" class="list-group-item">Filter 2</a>
+		  <a href="#" class="list-group-item">Filter 3</a>
+		  <a href="#" class="list-group-item">Filter 4</a>
+		  <a href="#" class="list-group-item">Filter 5</a>
+		  <a href="#" class="list-group-item">Filter 6</a>
+		  <a href="#" class="list-group-item">Filter 7</a>
+		  <a href="#" class="list-group-item">Filter 8</a>
+		</div>
+	</div>
+	<div class="row">
+		<button type="button" class="btn btn-default btn-sm" id="filterRecordsManageFilterAddFilterButton">
+		  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Filter
+		</button>
+	</div>
+
+</div>
+{{end}}
+
+{{define "recordFilterManageFilterFilterRuleList"}}
+	<div id="recordFilterManageFilterRuleListContent">
+
+		<div class="row">
+			<form class="form-inline">
+				<div class="form-group">
+				    <label for="recordFilterManageFilterFilterName">Filter Name</label>
+				    <input type="text" class="form-control" id="recordFilterManageFilterFilterName" placeholder="Filter Name">
+				</div>
+			 </form>
+		</div>
+		<div class="row">
+				<h5>Rules</h5>
+				<div class="list-group" id="recordFilterManageFilterRuleList">
+				  <a href="#" class="list-group-item">Rule 1</a>
+				  <a href="#" class="list-group-item">Rule 2</a>
+				  <a href="#" class="list-group-item">Rule 3</a>
+				  <a href="#" class="list-group-item">Rule 4</a>
+				  <a href="#" class="list-group-item">Rule 5</a>
+				</div>
+		</div>
+		<div class="row">
+			<button type="button" class="btn btn-default btn-sm" id="filterRecordsManageFiltersAddRuleButton">
+			  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Rule
+			</button>
+		</div>
+
+	</div>
+
+
+{{end}}
+
+
+{{define "recordFilterManageFiltersLayout"}}
+	<div class="row">
+		<div class="col-md-4">
+			{{template "recordFilterFilterSelectionSidebar"}}
+		</div>
+		<div class="col-md-8">
+			{{template "recordFilterManageFilterFilterRuleList"}}
+		</div>
+	</div>
+{{end}}
+
+
+{{define "recordFilterManageRecordsModal"}}
+
+<!-- Modal dialog for managing filters -->
+<div class="modal fade" id="recordFilterManageRecordsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Manage Record Filters</h4>
+      </div>
+      <div class="modal-body">
+        	{{template "recordFilterManageFiltersLayout"}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}
