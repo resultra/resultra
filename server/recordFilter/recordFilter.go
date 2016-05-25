@@ -46,10 +46,13 @@ func GetFilteredRecords(appEngContext appengine.Context, params GetFilteredRecor
 		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving records: %v", getRecordErr)
 	}
 
-	filterRefs, getFilterErr := GetRecordFilterRefs(appEngContext)
-	if getFilterErr != nil {
-		return nil, fmt.Errorf("GetFilteredRecords: Unable to retrieve filtered records: datastore error =%v", getFilterErr)
-	}
+	/* TODO - Reintegrate with specific forms for forms or dashboard objects */
+	/*
+		filterRefs, getFilterErr := GetRecordFilterRefs(appEngContext)
+		if getFilterErr != nil {
+			return nil, fmt.Errorf("GetFilteredRecords: Unable to retrieve filtered records: datastore error =%v", getFilterErr)
+		}*/
+	filterRefs := []FilterRuleRef{}
 
 	filteredRecordRefs := []record.RecordRef{}
 	for _, currRecordRef := range unfilteredRecordRefs {

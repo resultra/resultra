@@ -31,3 +31,18 @@
 	border: 1px solid gray;
 	
 }
+
+.filterRuleItem {
+	margin-left: 0px; /* eliminate negative margins */
+	margin-right:0px;	
+}
+
+/* Only show the filter rule delete button if the user
+   hovers over the filterRecordItem */
+.filterRecordItem:hover .deleteFilterRuleButton {
+	display:block;
+}
+
+.deleteFilterRuleButton {
+	display:none;
+}

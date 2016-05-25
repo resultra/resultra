@@ -211,7 +211,7 @@ function addFilterRule(newFilterRuleParams)
 {
 	console.log("Adding new filter rule: params = " + JSON.stringify(newFilterRuleParams))
 	
-	jsonAPIRequest("newRecordFilterRule",newFilterRuleParams,function(newFilterRuleRef) {
+	jsonAPIRequest("filter/newRule",newFilterRuleParams,function(newFilterRuleRef) {
 		populateFilterPanelWithOneFilterRule(newFilterRuleRef)
 		// TODO - Also need to invoke a callback function to trigger an update to the view
 		// (dashboard or form) which has a filter. The records shown in these views will 

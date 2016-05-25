@@ -210,3 +210,20 @@ func ValidateEntityKind(encodedID string, expectedEntityKind string) error {
 	_, decodeErr := DecodeKey(encodedID, expectedEntityKind)
 	return decodeErr
 }
+
+func ValidateSameParentEntity(childID1 string, childID2 string, expectedParentEntityKind string) error {
+	parentID1, getParentErr1 := GetParentID(childID1, expectedParentEntityKind)
+	if getParentErr1 != nil {
+		return fmt.Errorf("ValidateSameParentEntity: Invalid ID: %v", getParentErr1)
+	}
+
+	parentID2, getParentErr2 := GetParentID(childID2, expectedParentEntityKind)
+	if getParentErr2 != nil {
+		return fmt.Errorf("ValidateSameParentEntity: Invalid ID: %v", getParentErr2)
+	}
+
+	if parentID1 != parentID2 {
+		return fmt.Errorf("ValidateSameParentEntity: Entities don't have same parent")
+	}
+	return nil
+}

@@ -62,7 +62,6 @@ function loadRecords()
 		}		
 	}) // getRecord
 	
-	initFilterRecordsElems(tableID);
 }
 
 function createNewRecord() {

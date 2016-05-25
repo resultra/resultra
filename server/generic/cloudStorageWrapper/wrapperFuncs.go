@@ -2,7 +2,6 @@ package cloudStorageWrapper
 
 import (
 	"fmt"
-	"github.com/twinj/uuid"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2/google"
 	"golang.org/x/oauth2/jwt"
@@ -18,6 +17,7 @@ import (
 	"log"
 	"net/http"
 	"path"
+	"resultra/datasheet/server/generic"
 	"time"
 )
 
@@ -73,18 +73,11 @@ func GetSignedURL(bucketName string, fileName string, authConfig *jwt.Config, ex
 // is unique versus other files stored in the same cloud bucket.
 func UniqueCloudFileNameFromUserFileName(userFileName string) string {
 
-	timestamp := time.Now().UTC()
-	millisecondsPerNanosecond := 1000000
-	timestampMilliseconds := timestamp.Nanosecond() / millisecondsPerNanosecond
-	timestampStr := fmt.Sprintf("%04d%02d%02d%02d%02d%02d%03d",
-		timestamp.Year(), timestamp.Month(), timestamp.Day(),
-		timestamp.Hour(), timestamp.Minute(), timestamp.Second(),
-		timestampMilliseconds)
-	uuidStr := uuid.NewV4().String()
+	uniqueIDStr := generic.GenerateUniqueID()
 
 	fileExt := path.Ext(userFileName)
 
-	cloudFileName := timestampStr + "_" + uuidStr + fileExt
+	cloudFileName := uniqueIDStr + fileExt
 
 	return cloudFileName
 }

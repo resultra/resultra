@@ -12,15 +12,15 @@ func init() {
 	filterRouter := mux.NewRouter()
 
 	filterRouter.HandleFunc("/api/filter/new", newFilterAPI)
+	filterRouter.HandleFunc("/api/filter/getList", getFilterListAPI)
+	filterRouter.HandleFunc("/api/filter/newRule", newRecordFilterRule)
+	filterRouter.HandleFunc("/api/filter/getRuleList", getRecordFilterRulesAPI)
 
 	http.Handle("/api/filter/", filterRouter)
 }
 
 func RegisterHTTPHandlers(apiRouter *mux.Router) {
 	apiRouter.HandleFunc("/api/getFilteredRecords", getFilteredRecords)
-	apiRouter.HandleFunc("/api/newRecordFilterRule", newRecordFilterRule)
-	apiRouter.HandleFunc("/api/getRecordFilterRules", getRecordFilterRules)
-
 }
 
 func newRecordFilterRule(w http.ResponseWriter, r *http.Request) {
@@ -32,23 +32,12 @@ func newRecordFilterRule(w http.ResponseWriter, r *http.Request) {
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	newRecordFilterRef, newErr := NewFilterRule(appEngCntxt, filterRuleParams)
+	newRecordFilterRef, newErr := newFilterRule(appEngCntxt, filterRuleParams)
 	if newErr != nil {
 		api.WriteErrorResponse(w, newErr)
 		return
 	} else {
 		api.WriteJSONResponse(w, newRecordFilterRef)
-	}
-
-}
-
-func getRecordFilterRules(w http.ResponseWriter, r *http.Request) {
-
-	appEngCntxt := appengine.NewContext(r)
-	if filterRefs, err := GetRecordFilterRefs(appEngCntxt); err != nil {
-		api.WriteErrorResponse(w, err)
-	} else {
-		api.WriteJSONResponse(w, filterRefs)
 	}
 
 }
@@ -87,6 +76,42 @@ func newFilterAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		api.WriteJSONResponse(w, newFilterRef)
+	}
+
+}
+
+func getFilterListAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetFilterListParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+	filterRefs, getListErr := getFilterList(appEngCntxt, params)
+	if getListErr != nil {
+		api.WriteErrorResponse(w, getListErr)
+		return
+	} else {
+		api.WriteJSONResponse(w, filterRefs)
+	}
+
+}
+
+func getRecordFilterRulesAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetFilterRulesParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+	if filterRefs, err := getRecordFilterRuleRefs(appEngCntxt, params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, filterRefs)
 	}
 
 }
