@@ -12,6 +12,8 @@ func init() {
 	filterRouter := mux.NewRouter()
 
 	filterRouter.HandleFunc("/api/filter/new", newFilterAPI)
+	filterRouter.HandleFunc("/api/filter/newWithPrefix", newFilterWithPrefixAPI)
+
 	filterRouter.HandleFunc("/api/filter/getList", getFilterListAPI)
 	filterRouter.HandleFunc("/api/filter/newRule", newRecordFilterRule)
 	filterRouter.HandleFunc("/api/filter/getRuleList", getRecordFilterRulesAPI)
@@ -71,6 +73,25 @@ func newFilterAPI(w http.ResponseWriter, r *http.Request) {
 
 	appEngCntxt := appengine.NewContext(r)
 	newFilterRef, newErr := newFilter(appEngCntxt, params)
+	if newErr != nil {
+		api.WriteErrorResponse(w, newErr)
+		return
+	} else {
+		api.WriteJSONResponse(w, newFilterRef)
+	}
+
+}
+
+func newFilterWithPrefixAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params NewFilterWithPrefixParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+	newFilterRef, newErr := newFilterWithPrefix(appEngCntxt, params)
 	if newErr != nil {
 		api.WriteErrorResponse(w, newErr)
 		return

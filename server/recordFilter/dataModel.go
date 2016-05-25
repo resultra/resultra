@@ -4,6 +4,7 @@ import (
 	"appengine"
 	"appengine/datastore"
 	"fmt"
+	"log"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/datastoreWrapper"
@@ -75,6 +76,38 @@ func validateUnusedFilterName(appEngContext appengine.Context, parentTableID str
 	return nil
 }
 
+func genUnusedFilterName(appEngContext appengine.Context, parentTableID string, namePrefix string) (string, error) {
+
+	existingNames, getNamesErr := getExistingFilterNames(appEngContext, parentTableID)
+	if getNamesErr != nil {
+		return "", getNamesErr
+	}
+
+	currNameLookup := map[string]bool{}
+	for _, currName := range existingNames {
+		currNameLookup[currName] = true
+	}
+
+	// Use prefix all by itself if it's not already in use.
+	if _, nameFound := currNameLookup[namePrefix]; nameFound != true {
+		return namePrefix, nil
+	}
+
+	currNameSuffix := 1
+	for currNameSuffix < 100 {
+		candidateName := fmt.Sprintf("%v %v", namePrefix, currNameSuffix)
+		log.Printf("genUnusedFilterName: candidate name = %v", candidateName)
+		if _, nameFound := currNameLookup[candidateName]; nameFound != true {
+			return candidateName, nil
+		}
+		currNameSuffix = currNameSuffix + 1
+	}
+
+	log.Printf("genUnusedFilterName: failure generating name")
+	return "", fmt.Errorf("Failure generating unused name for filter")
+
+}
+
 func newFilter(appEngContext appengine.Context, params NewFilterParams) (*RecordFilterRef, error) {
 
 	if tableIDErr := datastoreWrapper.ValidateEntityKind(params.ParentTableID, table.TableEntityKind); tableIDErr != nil {
@@ -83,7 +116,7 @@ func newFilter(appEngContext appengine.Context, params NewFilterParams) (*Record
 
 	sanitizedName, sanitizeErr := generic.SanitizeName(params.Name)
 	if sanitizeErr != nil {
-		return nil, fmt.Errorf("newFilter: %v", sanitizeErr)
+		return nil, fmt.Errorf("newFilter (sanitize name): %v", sanitizeErr)
 	}
 
 	if validateNameErr := validateUnusedFilterName(appEngContext, params.ParentTableID, sanitizedName); validateNameErr != nil {
@@ -100,6 +133,25 @@ func newFilter(appEngContext appengine.Context, params NewFilterParams) (*Record
 	filterRef := RecordFilterRef{FilterID: filterID, Name: newFilter.Name}
 
 	return &filterRef, nil
+}
+
+type NewFilterWithPrefixParams struct {
+	ParentTableID string `json:"parentTableID"`
+	NamePrefix    string `json:"namePrefix"`
+}
+
+func newFilterWithPrefix(appEngContext appengine.Context, params NewFilterWithPrefixParams) (*RecordFilterRef, error) {
+	sanitizedPrefix, sanitizeErr := generic.SanitizeName(params.NamePrefix)
+	if sanitizeErr != nil {
+		return nil, fmt.Errorf("newFilterWithPrefix: %v", sanitizeErr)
+	}
+	newFilterName, nameGenErr := genUnusedFilterName(appEngContext, params.ParentTableID, sanitizedPrefix)
+	if nameGenErr != nil {
+		return nil, fmt.Errorf("newFilterWithPrefix: %v", nameGenErr)
+	}
+	log.Printf("newFilterWithPrefix: New filter name: %v", newFilterName)
+	return newFilter(appEngContext, NewFilterParams{ParentTableID: params.ParentTableID, Name: newFilterName})
+
 }
 
 type GetFilterRulesParams struct {

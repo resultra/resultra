@@ -193,6 +193,10 @@ func GetParentID(childID string, expectedParentEntityKind string) (string, error
 // if an invalid key is passed to the api, at least the type can be checked.
 func DecodeKey(encodedID string, expectedEntityKind string) (*datastore.Key, error) {
 
+	if len(encodedID) == 0 {
+		return nil, fmt.Errorf("DecodeKey: got a zero-length (empty) ID")
+	}
+
 	key, decodeErr := datastore.DecodeKey(encodedID)
 	if decodeErr != nil {
 		return nil, fmt.Errorf("DecodeKey: Can't decode key from id '%v': %v", encodedID, decodeErr)

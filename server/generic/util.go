@@ -2,7 +2,6 @@ package generic
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"regexp"
 	"strings"
@@ -17,7 +16,7 @@ func SanitizeName(unsanitizedName string) (string, error) {
 	stripWhite := strings.TrimSpace(unsanitizedName) // strip leading & trailing whitespace
 
 	if !validNameRegexp.MatchString(stripWhite) {
-		return "", errors.New("Invalid name: Cannot be empty and must not contain newlines or tabs")
+		return "", fmt.Errorf("Invalid name: '%v': Cannot be empty and must not contain newlines or tabs", unsanitizedName)
 	}
 	return stripWhite, nil
 }
