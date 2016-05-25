@@ -52,9 +52,6 @@ function getFilterRecordsRuleDef(fieldsByID, fieldID, ruleID) {
 	return ruleDef
 }
 
-
-
-
 function initFilterRuleSelection(fieldsByID) {
 		
 	resetFormControl("#filterRecordsSelectFilterRuleDropdown")
@@ -237,8 +234,7 @@ function validateThenAddFilterRule(fieldsByID) {
 
 var addFilterDialogContext = {}
 
-function openAddFilterDialog(parentTableID)
-{		
+function initAddFilterRuleControlPanel(parentTableID) {
 	configureAddFilterDialogNoParam()
 
 	loadFieldInfo(parentTableID,[fieldTypeAll],function(fieldsByID) {
@@ -248,23 +244,11 @@ function openAddFilterDialog(parentTableID)
 		initFilterRecordsFieldSelectionMenu(fieldsByID)
 		initFilterRuleSelection(fieldsByID)
 		
-		var filterButton = $('#filterRecordsAddFilterButton')
-		$("#filterRecordsAddFilterDialog").dialog({
-			autoOpen: false,
-			height: 450, width: 300,
-			resizable: false,
-			modal: false,
-			position: { my: "right top", at: "left-10 top-200", of: filterButton },
-			buttons: { 
-				"Add Filtering Rule": function() { validateThenAddFilterRule(fieldsByID) },
-	  			"Cancel" : function() { $(this).dialog('close'); },
-	 		 },	
-		 });
-	  
-		 $("#filterRecordsAddFilterDialog").dialog("open")
+		$('#filterRecordsManageFiltersAddRuleButton').click(function(e) {
+		    console.log("Filter dropdown: refilter button clicked")
+			validateThenAddFilterRule(fieldsByID)
+		    e.preventDefault();// prevent the default anchor functionality
+		});
+		
 	})
-
-// TODO - Reintegrate with Bootstrap	
-//	$( "#filterRecordsAddFilterDialog" ).form('clear');
-	
 }

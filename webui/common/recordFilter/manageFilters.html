@@ -25,29 +25,7 @@
 </div>
 {{end}}
 
-{{define "recordFilterManageFilterNewRuleControls"}}
-<form class="form-inline" id="recordFilterManageFilterNewRuleControlForm" name="recordFilterManageFilterNewRuleControlForm">
-	<div id="recordFilterManageFilterNewRuleControlContainer" class="clearfix">
-		<div class="pull-left">
-			<div class="form-group clearfix">
-				<select class="form-control input-sm" id="filterRecordsSelectFilterRuleDropdownMenu" name="filterRecordsSelectFilterRuleDropdownMenu">
-					<option value="">
-						Select a Field
-					</option>
-				</select> <select class="form-control input-sm" id="filterRecordsSelectFilterRuleDropdownMenu" name="filterRecordsSelectFilterRuleDropdownMenu">
-					<option value="">
-						Select a rule
-					</option>
-				</select> <input class="form-control input-sm" type="text" id="filterRecordsFilterRuleParamInput" name="filterRecordsFilterRuleParamInput" aria-describedby="filterRecordFilterValInputHelp" placeholder="">
-			</div>
-		</div>
-		<div class="pull-right">
-			<button type="button" class="btn btn-default btn-sm" id="filterRecordsManageFiltersAddRuleButton">Add Rule</button>
-		</div>
-	</div>
-</form>
 
-{{end}}
 
 {{define "recordFilterManageFilterFilterRuleList"}}
 <div id="recordFilterManageFilterRuleListContent">
@@ -67,7 +45,7 @@
 		</div>
 	</div>
 	<div class="row">
-		{{template "recordFilterManageFilterNewRuleControls"}}
+		{{template "recordFilterManageFilterAddRuleControlPanel"}}
 	</div>
 </div>
 

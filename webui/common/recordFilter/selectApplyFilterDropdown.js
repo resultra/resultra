@@ -12,7 +12,7 @@ function initRecordFilterSelectAndApplyFilterDropdown(tableID) {
 
 	$('#recordFilterManageFiltersMenuItem').click(function(e) {
 	    console.log("Filter dropdown: Manage filters selected")
-		$('#recordFilterManageRecordsModal').modal('show')
+		openRecordFilterManageFiltersDialog(tableID)
 	    e.preventDefault();// prevent the default anchor functionality
 	});
 	

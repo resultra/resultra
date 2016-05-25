@@ -4,20 +4,7 @@
 	border-right: 1px solid lightGray;
 }
 
-/* override form-inline 14px bottom margin */
-#recordFilterManageFilterNewRuleControlForm {
-	margin-bottom:0px;
-}
 
-#recordFilterManageFilterNewRuleControlContainer {
-	padding-left:5px;
-	padding-right:5px;
-	padding-top:5px;
-	padding-bottom:5px;
-	border: 1px solid lightGray;
-	background-color:lightGray;
-	
-}
 
 #recordFilterManageFilterRuleListContent {
 	padding-left:5px;

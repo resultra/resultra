@@ -1,8 +1,7 @@
 {{define "filterRecordsSelectFieldDropdown"}}
 
 <div class="form-group" id="filterRecordsSelectFieldDropdown">
-	<label>Existing fields</label> 
-	<select class="form-control" id="filterRecordsSelectFieldDropdownMenu" name="filterRecordsSelectFieldDropdownMenu">
+	<select class="form-control input-sm" id="filterRecordsSelectFieldDropdownMenu" name="filterRecordsSelectFieldDropdownMenu">
 		<option value="">
 			Select a field
 		</option>
@@ -17,8 +16,7 @@
 {{define "filterRecordsSelectFilterRuleDropdown"}}
 
 <div class="form-group" id="filterRecordsSelectFilterRuleDropdown">
-	<label>Filtering Rule</label> 
-	<select class="form-control" id="filterRecordsSelectFilterRuleDropdownMenu" name="filterRecordsSelectFilterRuleDropdownMenu">
+	<select class="form-control input-sm" id="filterRecordsSelectFilterRuleDropdownMenu" name="filterRecordsSelectFilterRuleDropdownMenu">
 		<option value="">
 			Select a rule
 		</option>
@@ -34,29 +32,24 @@
 {{define "filterRecordsFilterRuleParamInput"}}
 
 <div class="form-group" id="filterRecordsFilterRuleParamInputField">
-      <label id="filterRecordsFilterRuleParamLabel">Filtering parameter</label>
-      <input class="form-control" type="text" id="filterRecordsFilterRuleParamInput" name="filterRecordsFilterRuleParamInput" 			aria-describedby="filterRecordFilterValInputHelp" placeholder="">
+      <input class="form-control input-sm" type="text" id="filterRecordsFilterRuleParamInput" name="filterRecordsFilterRuleParamInput" 			aria-describedby="filterRecordFilterValInputHelp" placeholder="Enter a value">
 		<span id="filterRecordFilterValInputHelp" class="help-block collapse">Enter a value.</span>
 </div> <!-- Field name field -->
 
 {{end}}
 
-
-
-{{define "filterRecordsAddFilterDialog"}}
-
-<div id="filterRecordsAddFilterDialog" title="Add Filtering Rule" class="initiallyHiddenDialog">
-  <form class="ui form error">
-	<div class="ui info message">
-		<p>
-			Filter records using the selected field and values matching the filtering rule.
-		</p>
+{{define "recordFilterManageFilterAddRuleControlPanel"}}
+<form class="form-inline" id="recordFilterManageFilterNewRuleControlForm" name="recordFilterManageFilterNewRuleControlForm">
+	<div id="recordFilterManageFilterNewRuleControlContainer" class="clearfix">
+		<div class="pull-left">
+		  	 {{ template "filterRecordsSelectFieldDropdown" }}
+		  	 {{ template "filterRecordsSelectFilterRuleDropdown" }}
+			 {{ template "filterRecordsFilterRuleParamInput" }}
+		</div>
+		<div class="pull-right">
+			<button type="button" class="btn btn-default btn-sm" id="filterRecordsManageFiltersAddRuleButton">Add Rule</button>
+		</div>
 	</div>
-  	 {{ template "filterRecordsSelectFieldDropdown" }}
-  	 {{ template "filterRecordsSelectFilterRuleDropdown" }}
-	 {{ template "filterRecordsFilterRuleParamInput" }}
-	 
-  </form>
-</div>
+</form>
 
 {{end}}
