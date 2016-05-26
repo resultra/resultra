@@ -143,6 +143,7 @@ $(document).ready(function() {
 	initUILayoutPanes()
 	
 	initRecordFilterSelectAndApplyFilterDropdown(tableID)
+	initRecordFilterPanel(tableID)
 		
 	initRecordButtonsBehavior()
 	

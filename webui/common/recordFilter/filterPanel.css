@@ -1,0 +1,50 @@
+.filterPaneHeader {
+	min-height: 30px;
+	background-color:lightGrey;
+	vertical-align:middle;
+	margin-left: 0px; /* eliminate negative margins */
+	margin-right:0px;
+	margin-top: 0px;
+}
+
+/* Override jQuery UI layout ui-layout-content padding of 10px */
+#recordFilterUILayout {
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+	padding-right:0px;
+	
+}
+
+
+#filterPaneFooter {
+	background-color:lightGrey;
+	padding-top:5px;
+	padding-bottom:5px;
+	padding-left:5px;
+	padding-right:5px;
+}
+
+#filterRecordsPanelFilterList {
+	-webkit-border-radius: 0 !important;
+	-moz-border-radius: 0 !important;
+	border-radius: 0 !important;
+}
+
+/* Override the margins on checkbox items. By default, there is a 15px margin above checkboxes,
+   which provides too much space above the checkboxes when displayed in a list */
+#recordFilterUILayout .filterPanelFilterItem {
+	margin-top:0px;
+}
+
+
+/* Remove the borders on the filter list */
+#recordFilterUILayout .list-group-item:first-child {
+  border-top-right-radius: 0px !important;
+  border-top-left-radius: 0px !important;
+}
+
+#recordFilterUILayout .list-group-item:last-child {
+  border-bottom-right-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+}
