@@ -1,10 +1,9 @@
+var manageFilterCurrFilterID = null
+
 function populateFilterPanelWithOneFilterRule(filterRuleRef)
 {
 	var fieldName = filterRuleRef.fieldRef.fieldInfo.name
 	var ruleLabel = filterRuleRef.filterRuleDef.label
-	
-	// TODO - Filter rule items need better formatting & CSS style
-	
 	
 	var filterRecordRuleItem = 
 		'<div class="list-group-item clearfix filterRecordItem">' + 
@@ -23,8 +22,101 @@ function populateFilterPanelWithOneFilterRule(filterRuleRef)
 	
 }
 
+function populateFilterPanel(filterRules) {
+	
+	$('#recordFilterManageFilterRuleList').empty()
+	$.each(filterRules, function(ruleIndex, ruleRef) {
+		populateFilterPanelWithOneFilterRule(ruleRef)
+	}) 
+	
+}
+
+function filterClickHandler(event) {
+	var filterID = event.target.id
+	console.log("Manage filters: filter selected: filter ID =" + filterID)
+
+	var filterSelector = '#'+filterID
+
+	
+	$(".filterListItem").removeClass("active")
+	$(filterSelector).addClass("active")
+	
+	
+	manageFilterCurrFilterID = filterID
+	var currFilterRef = $(filterSelector).data("filterRef")
+	console.log("Setting filter name: " + currFilterRef.name)
+	$("#recordFilterManageFilterFilterName").val(currFilterRef.name)
+	
+	var getFilterRulesParams = {parentFilterID:filterID}
+	jsonAPIRequest("filter/getRuleList",getFilterRulesParams,function(filterRules) {
+		populateFilterPanel(filterRules)
+	}) // set record's number field value
+	
+	
+	
+	event.preventDefault();// prevent the default anchor functionality
+}
+
+
+function addFilterRefToFilterList(filterRef) {
+	var filterHTML = '<a href="#" class="list-group-item filterListItem" id="' 
+		+ filterRef.filterID + '">' + filterRef.name + '</a>'
+	$('#recordFilterManageFilterFilterList').append(filterHTML)	
+	
+	var filterSelector = '#'+filterRef.filterID
+	$(filterSelector).click(filterClickHandler)
+	$(filterSelector).data("filterRef",filterRef)
+	
+}
+
+
+function populateFilterList(filterList) {
+	
+	$('#recordFilterManageFilterFilterList').empty()	
+	$.each(filterList, function(filterIndex, filterRef) {
+		addFilterRefToFilterList(filterRef)
+	}) 
+}
+
+function addNewFilter(tableID) {
+	jsonAPIRequest("filter/newWithPrefix",{parentTableID:tableID,namePrefix:"Untitled Filter"},function(newFilterRef) {
+		console.log("Filter created: " + newFilterRef.name)
+		addFilterRefToFilterList(newFilterRef)
+	}) // set record's number field value
+	
+}
+
+function manageFiltersAddFilterRule(newFilterRuleParams)
+{
+	console.log("Adding new filter rule: params = " + JSON.stringify(newFilterRuleParams))
+	
+	if(manageFilterCurrFilterID != null) {
+		newFilterRuleParams.parentFilterID = manageFilterCurrFilterID
+		jsonAPIRequest("filter/newRule",newFilterRuleParams,function(newFilterRuleRef) {
+			populateFilterPanelWithOneFilterRule(newFilterRuleRef)
+			// TODO - Also need to invoke a callback function to trigger an update to the view
+			// (dashboard or form) which has a filter. The records shown in these views will 
+			// change.
+		}) // set record's number field value	
+	}
+}
+
+
 
 function openRecordFilterManageFiltersDialog(tableID) {
-		initAddFilterRuleControlPanel(tableID)
+	
+	$('#recordFilterManageFilterRuleList').empty()
+	initAddFilterRuleControlPanel(tableID,manageFiltersAddFilterRule)
+	
+	$('#filterRecordsManageFilterAddFilterButton').click(function(e) {
+	    console.log("Adding new filter for table = " + tableID)
+		addNewFilter(tableID)
+	    e.preventDefault();// prevent the default anchor functionality
+	});
+
+	jsonAPIRequest("filter/getList",{parentTableID:tableID},function(filterList) {
+		populateFilterList(filterList)
 		$('#recordFilterManageRecordsModal').modal('show')	
+	}) // set record's number field value
+	
 }

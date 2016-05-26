@@ -207,26 +207,12 @@ function recordFilterValidateAddFilterForm() {
 	return newFilterRuleParams
 }
 
-function addFilterRule(newFilterRuleParams)
-{
-	console.log("Adding new filter rule: params = " + JSON.stringify(newFilterRuleParams))
-	
-	jsonAPIRequest("filter/newRule",newFilterRuleParams,function(newFilterRuleRef) {
-		populateFilterPanelWithOneFilterRule(newFilterRuleRef)
-		// TODO - Also need to invoke a callback function to trigger an update to the view
-		// (dashboard or form) which has a filter. The records shown in these views will 
-		// change.
-	}) // set record's number field value
-}
-
-
 function validateThenAddFilterRule(fieldsByID) {
 	
 	var newFilterRuleParams = recordFilterValidateAddFilterForm()
 	if(newFilterRuleParams != null) {
 		console.log("filtering rule validated")
-		addFilterRule(newFilterRuleParams)
-		$( "#filterRecordsAddFilterDialog" ).dialog("close")
+		addFilterDialogContext.addRuleCallback(newFilterRuleParams)
 	} else {
 		console.log("filtering rule not validated")
 	}
@@ -234,12 +220,13 @@ function validateThenAddFilterRule(fieldsByID) {
 
 var addFilterDialogContext = {}
 
-function initAddFilterRuleControlPanel(parentTableID) {
+function initAddFilterRuleControlPanel(parentTableID,addRuleCallback) {
 	configureAddFilterDialogNoParam()
 
 	loadFieldInfo(parentTableID,[fieldTypeAll],function(fieldsByID) {
 		
 		addFilterDialogContext.fieldsByID = fieldsByID
+		addFilterDialogContext.addRuleCallback = addRuleCallback
 		
 		initFilterRecordsFieldSelectionMenu(fieldsByID)
 		initFilterRuleSelection(fieldsByID)
