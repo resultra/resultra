@@ -44,7 +44,7 @@ function filterClickHandler(event) {
 	
 	manageFilterCurrFilterID = filterID
 	var currFilterRef = $(filterSelector).data("filterRef")
-	console.log("Setting filter name: " + currFilterRef.name)
+	console.log("Populating filter name: " + currFilterRef.name)
 	$("#recordFilterManageFilterFilterName").val(currFilterRef.name)
 	
 	var getFilterRulesParams = {parentFilterID:filterID}
@@ -101,6 +101,29 @@ function manageFiltersAddFilterRule(newFilterRuleParams)
 	}
 }
 
+function manageFiltersChangeFilterName() {
+	if(manageFilterCurrFilterID != null) {
+		
+		var filterSelector = '#'+manageFilterCurrFilterID
+		var currFilterRef = $(filterSelector).data("filterRef")
+		
+		var newFilterName = $('#recordFilterManageFilterFilterName').val()
+		
+		console.log("manageFiltersChangeFilterName: new name = " + newFilterName + " existing name = " + currFilterRef.name)
+		
+		if(newFilterName != currFilterRef.name) {
+			// TODO - Validate the filter name is unique updating on server.
+			var updateNameParams = { filterID: manageFilterCurrFilterID, name: newFilterName }
+			jsonAPIRequest("filter/setName",updateNameParams,function(updatedFilterRef) {
+				// Update the name in the filter list.
+				var filterSelector = '#'+updatedFilterRef.filterID
+				$(filterSelector).text(updatedFilterRef.name)
+			}) // set record's number field value				
+		}
+		
+	}
+	
+}
 
 
 function openRecordFilterManageFiltersDialog(tableID) {
@@ -108,11 +131,15 @@ function openRecordFilterManageFiltersDialog(tableID) {
 	$('#recordFilterManageFilterRuleList').empty()
 	initAddFilterRuleControlPanel(tableID,manageFiltersAddFilterRule)
 	
+	$('#filterRecordsManageFilterAddFilterButton').unbind("click")
 	$('#filterRecordsManageFilterAddFilterButton').click(function(e) {
 	    console.log("Adding new filter for table = " + tableID)
 		addNewFilter(tableID)
 	    e.preventDefault();// prevent the default anchor functionality
 	});
+	
+	$('#recordFilterManageFilterFilterName').unbind("blur")
+	$('#recordFilterManageFilterFilterName').blur(manageFiltersChangeFilterName)
 
 	jsonAPIRequest("filter/getList",{parentTableID:tableID},function(filterList) {
 		populateFilterList(filterList)

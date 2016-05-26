@@ -15,6 +15,7 @@ func init() {
 	filterRouter.HandleFunc("/api/filter/newWithPrefix", newFilterWithPrefixAPI)
 
 	filterRouter.HandleFunc("/api/filter/getList", getFilterListAPI)
+	filterRouter.HandleFunc("/api/filter/setName", setFilterNameAPI)
 	filterRouter.HandleFunc("/api/filter/newRule", newRecordFilterRule)
 	filterRouter.HandleFunc("/api/filter/getRuleList", getRecordFilterRulesAPI)
 
@@ -133,6 +134,22 @@ func getRecordFilterRulesAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, filterRefs)
+	}
+
+}
+
+func setFilterNameAPI(w http.ResponseWriter, r *http.Request) {
+	var params FilterRenameParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	appEngCntxt := appengine.NewContext(r)
+	if filterRef, err := updateFilterProps(appEngCntxt, params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, filterRef)
 	}
 
 }

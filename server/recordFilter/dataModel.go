@@ -135,6 +135,27 @@ func newFilter(appEngContext appengine.Context, params NewFilterParams) (*Record
 	return &filterRef, nil
 }
 
+func getFilter(appEngContext appengine.Context, filterID string) (*RecordFilter, error) {
+	var filterGetDest RecordFilter
+	if getErr := datastoreWrapper.GetEntity(appEngContext, filterID, &filterGetDest); getErr != nil {
+		return nil, fmt.Errorf("getField: Unabled to get filter: id = %v: datastore err=%v", filterID, getErr)
+	}
+	return &filterGetDest, nil
+}
+
+func updateExistingFilter(appEngContext appengine.Context, filterID string, updatedFilter *RecordFilter) (*RecordFilterRef, error) {
+
+	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext,
+		filterID, updatedFilter); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingFilter: Can't update filter: Error updating existing filter: err = %v", updateErr)
+	}
+
+	filterRef := RecordFilterRef{FilterID: filterID, Name: updatedFilter.Name}
+
+	return &filterRef, nil
+
+}
+
 type NewFilterWithPrefixParams struct {
 	ParentTableID string `json:"parentTableID"`
 	NamePrefix    string `json:"namePrefix"`
