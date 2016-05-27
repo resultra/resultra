@@ -26,6 +26,7 @@ func init() {
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
+		generic.TemplateFileList,
 		common.TemplateFileList,
 		components.TemplateFileList}
 	designFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
@@ -61,7 +62,7 @@ func designForm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	templParams := DesignFormTemplateParams{
-		Title:            "Edit Layout",
+		Title:            "Design Form",
 		FormID:           formRef.FormID,
 		TableID:          formRef.TableID,
 		FormName:         formRef.Name,

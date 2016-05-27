@@ -68,14 +68,10 @@
 {{end}}
 
 {{define "formDesignPropertiesSidebar"}}
-	<div class="ui small center aligned header" id="propertiesHeader">
-		<div class="content">
-			 <i class="options icon"></i>
-			Properties
-	  	</div>
-	</div>
-	
-	<div class="ui-layout-content">
+
+	{{template "propertiesSidebarHeader"}}
+		
+	<div class="ui-layout-content" id="designFormPropertiesSidebarContent">
 		
 		{{template "formComponentProps"}}
 		{{template "formProps"}}
@@ -89,12 +85,14 @@
   <head>
     <title>{{.Title}}</title>
 	
+	{{template "genericCSS"}}
 	{{template "commonCSS"}}
 	{{template "formComponentsCSS"}}
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/designPalette/designPalette.css">
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/layout.css">
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/form/designForm.css">
 
+	{{template "genericJS"}}
 	{{template "commonJS"}}
 	
 	<script>var formID={{.FormID}};</script>

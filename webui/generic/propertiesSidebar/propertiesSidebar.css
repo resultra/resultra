@@ -1,0 +1,58 @@
+.propertiesSidebarHeader {
+	min-height: 30px;
+	background-color:lightGrey;
+	vertical-align:middle;
+	margin-top: 0px;
+}
+
+
+.panel-heading .propertiesSidebarAccordionToggle:after {
+    /* symbol for "opening" panels */
+    font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+    content: "\e114";    /* adjust as needed, taken from bootstrap.css */
+    float: right;        /* adjust as needed */
+    color: grey;         /* adjust as needed */
+}
+.panel-heading .propertiesSidebarAccordionToggle.collapsed:after {
+    /* symbol for "collapsed" panels */
+    content: "\e080";    /* adjust as needed, taken from bootstrap.css */
+}
+
+
+/* Within the panel group, override the padding on the .panel-heading. With the current
+   markup,  the panel heading is needed to make the accordion work properly, so it is needed
+   to enclose the button which does the actual toggling */
+.propertySidebarPanelGroup .panel-heading {
+	padding:0;
+	margin-left:-2px; /* Use negative margins so the panel header fills the entire width of the sidebar */
+	margin-right:-2px;
+}
+
+/* Eliminate margin between panels, so the accordion tabs will be flush against each other when closed */
+.propertySidebarPanelGroup .panel-default {
+	margin-top:0px !important;
+	border-radius:0px !important;
+	border-width:0px;
+}
+
+.propertySidebarPanelGroup .btn-default {
+	width:100%;
+	border-radius:0px;
+}
+
+.propertySidebarPanelGroup .btn-default,
+.propertySidebarPanelGroup .btn-default:hover,
+.propertySidebarPanelGroup .btn-default:active,
+.propertySidebarPanelGroup .btn-default:visited,
+.propertySidebarPanelGroup .btn-default:focus {
+    background-color: lightGrey;
+    border-color: grey;
+	outline: none; /* prevent the blue outline from being shown when the button is in focus */
+}
+
+.propertySidebarPanelContent {
+	padding-top:5px;
+	padding-left:5px;
+	padding-bottom:5px;
+	padding-right:5px;
+}

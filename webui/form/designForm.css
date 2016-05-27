@@ -5,3 +5,8 @@
 	overflow: visible; /* don't overflow/scroll the content */
 	background-color:lightGrey;
 }
+
+/* Override jQuery UI Layout's default padding */
+#designFormPropertiesSidebarContent {
+	padding:0;
+}

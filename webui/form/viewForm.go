@@ -22,6 +22,7 @@ func init() {
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
+		generic.TemplateFileList,
 		common.TemplateFileList,
 		components.TemplateFileList}
 	viewFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)

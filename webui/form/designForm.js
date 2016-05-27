@@ -108,7 +108,6 @@ $(document).ready(function() {
 		hideSiblingsShowOne('#formProps')
 		closeFormulaEditor()
 	})
-	$( '#formProps' ).accordion();	
 	
 	initFormulaEditor(formulaEditorParams)
 	

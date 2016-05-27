@@ -1,0 +1,43 @@
+{{define "propertiesSidebarHeader"}}
+	<div class="container-fluid">
+		<div class="row propertiesSidebarHeader">
+			<div class= "col-md-12 text-center h5"><span>Properties</span></div>
+		</div>
+	</div>
+
+{{end}}
+
+{{define "propertiesSidebarAccordionHeader"}}
+ <div class="panel-heading" role="tab" id="headingOne">
+	<button class="btn btn-default btn-sm propertiesSidebarAccordionToggle" type="button" data-parent="#accordion" data-toggle="collapse" data-target="#{{.}}" aria-expanded="false" aria-controls="{{.}}" style="width:100%;border-radius:0px">
+	  Panel Header (Button) {{.}}
+	</button>
+ </div>
+	
+{{end}}
+
+{{define "propertiesSidebarAccordionBody"}}
+
+    <div id="{{.}}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+		<div class="propertySidebarPanelContent">
+        	<span>Panel Body - {{.}}</span>
+        	<span>More body text</span>
+		</div>
+    </div>
+	
+{{end}}
+
+{{define "propertiesSidebarAccordion"}}
+
+	<div class="panel-group propertySidebarPanelGroup" id="accordion" role="tablist" aria-multiselectable="true">
+	  <div class="panel panel-default">
+		  {{template "propertiesSidebarAccordionHeader" "panel1"}}
+		  {{template "propertiesSidebarAccordionBody" "panel1"}}
+	  </div>
+	  <div class="panel panel-default">
+		  {{template "propertiesSidebarAccordionHeader" "panel2"}}
+		  {{template "propertiesSidebarAccordionBody" "panel2"}}
+	  </div>
+	</div>
+	
+{{end}}
