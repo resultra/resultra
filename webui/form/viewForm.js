@@ -43,9 +43,9 @@ function loadCurrRecordIntoLayout()
 }
 
 
-function loadRecords()
+function reloadRecords(getRecordsParams)
 {
-	var getRecordsParams = {tableID:tableID} // TODO - will include sort & filter options
+	
 	jsonAPIRequest("getFilteredRecords",getRecordsParams,function(replyData) {
 		
 		currRecordSet = new RecordSet(replyData);
@@ -137,13 +137,21 @@ function initUILayoutPanes()
 	
 }
 
+function initAfterViewFormComponentsAlreadyLoaded() {
+	initRecordFilterPanel(tableID,reloadRecords)
+	
+	// Initially all the records are loaded. This can be refined through the filter panel (see above).
+	// TODO - At some point, there should be default filters for forms.
+	var getRecordsParams = {tableID:tableID,filterIDs:[]} 
+	reloadRecords(getRecordsParams)
+}
+
 
 $(document).ready(function() {	
 	 
 	initUILayoutPanes()
 	
-	initRecordFilterSelectAndApplyFilterDropdown(tableID)
-	initRecordFilterPanel(tableID)
+	initRecordFilterSelectAndApplyFilterDropdown(tableID,reloadRecords)
 		
 	initRecordButtonsBehavior()
 	
@@ -168,7 +176,7 @@ $(document).ready(function() {
 			console.log("Init image in view form")
 			initImageRecordEditBehavior(imageObjectRef)
 		},
-		doneLoadingFormDataFunc: loadRecords	
+		doneLoadingFormDataFunc: initAfterViewFormComponentsAlreadyLoaded	
 	}); 
 
 }); // document ready

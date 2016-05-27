@@ -33,7 +33,28 @@ func filterOneRecord(recordRef record.RecordRef, filterRules []FilterRuleRef) (b
 }
 
 type GetFilteredRecordsParams struct {
-	TableID string `json:"tableID"`
+	TableID   string   `json:"tableID"`
+	FilterIDs []string `json:filterIDs`
+}
+
+// Since filtering is done using a logical AND of all the filters and their rules, it simplifies actual
+// filtering to filter using a combined set of rules. Then, if any rule across all the filters doesn't pass,
+// then the record is filtered.
+func getCombinedFilterRules(appEngContext appengine.Context, filterIDs []string) ([]FilterRuleRef, error) {
+
+	allFilterRules := []FilterRuleRef{}
+
+	for _, currFilterID := range filterIDs {
+
+		getFilterRulesParam := GetFilterRulesParams{ParentFilterID: currFilterID}
+		currFilterRules, rulesErr := getRecordFilterRuleRefs(appEngContext, getFilterRulesParam)
+		if rulesErr != nil {
+			return nil, rulesErr
+		}
+		allFilterRules = append(allFilterRules, currFilterRules...)
+	}
+
+	return allFilterRules, nil
 }
 
 func GetFilteredRecords(appEngContext appengine.Context, params GetFilteredRecordsParams) ([]record.RecordRef, error) {
@@ -46,17 +67,14 @@ func GetFilteredRecords(appEngContext appengine.Context, params GetFilteredRecor
 		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving records: %v", getRecordErr)
 	}
 
-	/* TODO - Reintegrate with specific forms for forms or dashboard objects */
-	/*
-		filterRefs, getFilterErr := GetRecordFilterRefs(appEngContext)
-		if getFilterErr != nil {
-			return nil, fmt.Errorf("GetFilteredRecords: Unable to retrieve filtered records: datastore error =%v", getFilterErr)
-		}*/
-	filterRefs := []FilterRuleRef{}
+	filterRules, rulesErr := getCombinedFilterRules(appEngContext, params.FilterIDs)
+	if rulesErr != nil {
+		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving filter rules: %v", rulesErr)
+	}
 
 	filteredRecordRefs := []record.RecordRef{}
 	for _, currRecordRef := range unfilteredRecordRefs {
-		recordIsFiltered, filterErr := filterOneRecord(currRecordRef, filterRefs)
+		recordIsFiltered, filterErr := filterOneRecord(currRecordRef, filterRules)
 		if filterErr != nil {
 			return nil, fmt.Errorf("GetFilteredRecords: Error filtering records: %v", filterErr)
 		}

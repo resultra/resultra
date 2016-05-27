@@ -118,6 +118,7 @@ function manageFiltersChangeFilterName() {
 				// Update the name in the filter list.
 				var filterSelector = '#'+updatedFilterRef.filterID
 				$(filterSelector).text(updatedFilterRef.name)
+				$(filterSelector).data("filterRef",updatedFilterRef)
 			}) // set record's number field value				
 		}
 		
