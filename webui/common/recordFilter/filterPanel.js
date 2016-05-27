@@ -78,6 +78,9 @@ function initRecordFilterPanel(tableID,refilterCallbackFunc) {
 	$('#filterRecordsManageFiltersButton').unbind("click")
 	$('#filterRecordsManageFiltersButton').click(function(e) {
 	    console.log("Filter dropdown: Manage filters selected")
+		// TODO - pass in a callback for when the filters are done being edited.
+		// This may necessitate updating the list of filters for their names and/or
+		// to re-filter the results.
 		openRecordFilterManageFiltersDialog(tableID)
 		$(this).blur();
 	    e.preventDefault();// prevent the default anchor functionality

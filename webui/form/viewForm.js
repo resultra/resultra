@@ -150,9 +150,7 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 $(document).ready(function() {	
 	 
 	initUILayoutPanes()
-	
-	initRecordFilterSelectAndApplyFilterDropdown(tableID,reloadRecords)
-		
+			
 	initRecordButtonsBehavior()
 	
 	loadFormComponents({
