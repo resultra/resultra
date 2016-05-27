@@ -10,7 +10,7 @@
 {{end}}
 
 {{define "recordFilterRulesButtons"}}
-		<button type="button" class="btn btn-default btn-xs" id="filterRecordsClearFilterButton">
+		<button type="button" class="btn btn-default btn-xs" id="filterRecordsClearFiltersButton">
 		  <span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span> Clear All Filters
 		</button>
 		
@@ -20,7 +20,7 @@
 {{end}}
 
 {{define "recordLoadSaveButtons"}}
-		<button type="button" class="btn btn-default btn-sm" id="filterRecordsRefilterButton">
+		<button type="button" class="btn btn-primary btn-sm" id="filterRecordsPanelRefilterButton">
 		  <span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Refilter
 		</button>
 
@@ -47,10 +47,6 @@
 {{define "filterRecordsPanelFilterList"}}
 
 <div class="list-group" id="filterRecordsPanelFilterList">
-	<div class="checkbox list-group-item filterPanelFilterItem"><label><input type="checkbox"></input><span>Filter 1</span></label></div>
-	<div class="checkbox list-group-item filterPanelFilterItem"><label><input type="checkbox"></input><span>Filter 2 With a very, very long name</span></label></div>
-	<div class="checkbox list-group-item filterPanelFilterItem"><label><input type="checkbox"></input><span>Filter 1</span></label></div>
-	<div class="checkbox list-group-item filterPanelFilterItem"><label><input type="checkbox"></input><span>Filter 1</span></label></div>
 </div>
 
 {{end}}

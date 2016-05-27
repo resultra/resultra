@@ -10,7 +10,13 @@ function createPrefixedTemplElemInfo(elemPrefix,elemSuffix) {
 	}
 }
 
-
+function createIDWithSelector(elemID) {
+	return {
+		id: elemID,
+		selector: '#' + elemID
+	}
+	
+}
 
 function headerWithBodyHTML(header, body) {
 	return '<div class="header">' + header  + '</div>' + body

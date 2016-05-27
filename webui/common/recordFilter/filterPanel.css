@@ -39,12 +39,12 @@
 
 
 /* Remove the borders on the filter list */
-#recordFilterUILayout .list-group-item:first-child {
+#filterRecordsPanelFilterList .list-group-item:first-child {
   border-top-right-radius: 0px !important;
   border-top-left-radius: 0px !important;
 }
 
-#recordFilterUILayout .list-group-item:last-child {
+#filterRecordsPanelFilterList .list-group-item:last-child {
   border-bottom-right-radius: 0px !important;
   border-bottom-left-radius: 0px !important;
 }
