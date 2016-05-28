@@ -56,3 +56,15 @@
 	padding-bottom:5px;
 	padding-right:5px;
 }
+
+
+/* Parent container for toggling different sets of property panels based upon what is 
+   selected */
+.propertySidebarPanelGroup .propertyPanelToggleContainer {
+	display: none; /* The container is initially hidden. This is changed dynamically when the different containers are toggled */
+	overflow-y: auto; 
+	/* Horizontal scrollbars for the container as a whole are disabled. The panel headers use negative margins, which 
+	  would otherwise cause horzontal scrollbars to always be visible. */
+	overflow-x: hidden;
+	
+}
