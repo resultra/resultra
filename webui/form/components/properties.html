@@ -1,7 +1,7 @@
 {{define "formComponentProps"}}
-	{{template "textBoxProps"}}
-	{{template "checkBoxProps"}}
-	{{template "datePickerProps"}}
-	{{template "htmlEditorProps"}}
+	{{template "textBoxProps" .TextBoxParams}}
+	{{template "checkBoxProps" .CheckboxParams}}
+	{{template "datePickerProps" .DatePickerParams}}
+	{{template "htmlEditorProps" .HtmlEditorParams}}
 	{{template "imageProps"}}
 {{end}}

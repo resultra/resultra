@@ -1,24 +1,14 @@
 
 {{define "htmlEditorFormatProps"}}
-	<div class="title">
-		<i class="dropdown icon"></i>
-		Format
-	</div>
-	<div class="content">
-		<p>
-			HTML Editor formatting properties go here
-		</p>
-	</div>
+	HTML Editor formatting properties go here
 {{end}}
 
 {{define "htmlEditorProps"}}
 
-	<div id="htmlEditorProps" class="ui accordion initiallyHidden">
-		<form class="ui form">
-		
-		{{template "htmlEditorFormatProps"}}
-
-		</form>
+	<div id="htmlEditorProps" class="propertyPanelToggleContainer">
+		{{template "propertyPanelPrefix" .FormatPanelParams}}
+			{{template "htmlEditorFormatProps"}}
+		{{template "propertyPanelSuffix"}}
 	</div>
 
 {{end}}

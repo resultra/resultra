@@ -1,24 +1,14 @@
 
 {{define "checkBoxFormatProps"}}
-	<div class="title">
-		<i class="dropdown icon"></i>
-		Format
-	</div>
-	<div class="content">
-		<p>
-			Checkbox formatting properties go here
-		</p>
-	</div>
+	Checkbox formatting properties go here
 {{end}}
 
 {{define "checkBoxProps"}}
 
-	<div id="checkBoxProps" class="ui accordion initiallyHidden">
-		<form class="ui form">
-		
-		{{template "checkBoxFormatProps"}}
-
-		</form>
+	<div id="checkBoxProps" class="propertyPanelToggleContainer">
+		{{template "propertyPanelPrefix" .FormatPanelParams}}
+			{{template "checkBoxFormatProps"}}
+		{{template "propertyPanelSuffix"}}
 	</div>
 
 {{end}}

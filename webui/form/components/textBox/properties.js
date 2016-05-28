@@ -3,9 +3,7 @@ function loadTextBoxProperties(textBoxRef) {
 	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#textBoxProps')
-	
-	$( "#textBoxProps" ).accordion();
-	
+		
 	toggleFormulaEditorForField(textBoxRef.fieldRef)
 		
 }

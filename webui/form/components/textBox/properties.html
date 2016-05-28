@@ -1,23 +1,13 @@
 {{define "textBoxFormatProps"}}
-	<div class="title">
-		<i class="dropdown icon"></i>
-		Format
-	</div>
-	<div class="content">
-		<p>
-			Text box formatting properties go here
-		</p>
-	</div>
+	Text box formatting properties go here
 {{end}}
 
 {{define "textBoxProps"}}
 
-	<div id="textBoxProps" class="ui accordion initiallyHidden">
-		<form class="ui form">
-		
-		{{template "textBoxFormatProps"}}
-
-		</form>
+	<div id="textBoxProps" class="propertyPanelToggleContainer">
+		{{template "propertyPanelPrefix" .FormatPanelParams}}
+			{{template "textBoxFormatProps"}}
+		{{template "propertyPanelSuffix"}}
 	</div>
 
 {{end}}

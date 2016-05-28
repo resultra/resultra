@@ -4,10 +4,7 @@ function loadCheckboxProperties(checkBoxRef) {
 	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#checkBoxProps')
-	
-	
-	$( "#checkBoxProps" ).accordion();
-	
+		
 	toggleFormulaEditorForField(checkBoxRef.fieldRef)
 	
 }

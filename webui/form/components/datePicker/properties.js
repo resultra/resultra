@@ -5,9 +5,6 @@ function loadDatePickerProperties(datePickerRef) {
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#datePickerProps')
 	
-	
-	$( "#datePickerProps" ).accordion();
-	
 	toggleFormulaEditorForField(datePickerRef.fieldRef)
 	
 }

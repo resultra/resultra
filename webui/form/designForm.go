@@ -11,7 +11,6 @@ import (
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/form/components"
 	"resultra/datasheet/webui/generic"
-	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 
 // Parse all the HTML templates at once. Individual templates can then
@@ -33,28 +32,6 @@ func init() {
 	designFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
-type FormElemTemplateParams struct {
-	ElemPrefix string
-}
-
-type FormTemplateParams struct {
-	NamePanelParams   propertiesSidebar.PanelTemplateParams
-	FilterPanelParams propertiesSidebar.PanelTemplateParams
-}
-
-type DesignFormTemplateParams struct {
-	Title            string
-	FormID           string
-	FormName         string
-	TableID          string
-	CheckboxParams   FormElemTemplateParams
-	DatePickerParams FormElemTemplateParams
-	TextBoxParams    FormElemTemplateParams
-	HtmlEditorParams FormElemTemplateParams
-	ImageParams      FormElemTemplateParams
-	FormParams       FormTemplateParams
-}
-
 func designForm(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
@@ -68,21 +45,7 @@ func designForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	formParams := FormTemplateParams{
-		NamePanelParams:   propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Form Name", PanelID: "formName"},
-		FilterPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "formFilter"}}
-
-	templParams := DesignFormTemplateParams{
-		Title:            "Design Form",
-		FormID:           formRef.FormID,
-		TableID:          formRef.TableID,
-		FormName:         formRef.Name,
-		CheckboxParams:   FormElemTemplateParams{ElemPrefix: "checkbox_"},
-		DatePickerParams: FormElemTemplateParams{ElemPrefix: "datePicker_"},
-		TextBoxParams:    FormElemTemplateParams{ElemPrefix: "textBox_"},
-		HtmlEditorParams: FormElemTemplateParams{ElemPrefix: "htmlEditor_"},
-		ImageParams:      FormElemTemplateParams{ElemPrefix: "image_"},
-		FormParams:       formParams}
+	templParams := createDesignFormTemplateParams(formRef)
 
 	err := designFormTemplates.ExecuteTemplate(w, "designForm", templParams)
 	if err != nil {

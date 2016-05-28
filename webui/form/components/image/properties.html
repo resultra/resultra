@@ -1,24 +1,14 @@
 
 {{define "imageFormatProps"}}
-	<div class="title">
-		<i class="dropdown icon"></i>
-		Format
-	</div>
-	<div class="content">
-		<p>
-			Image formatting properties go here
-		</p>
-	</div>
+	Image formatting properties go here
 {{end}}
 
 {{define "imageProps"}}
 
-	<div id="imageProps" class="ui accordion initiallyHidden">
-		<form class="ui form">
-		
-		{{template "imageFormatProps"}}
-
-		</form>
+	<div id="imageProps" class="propertyPanelToggleContainer">
+		{{template "propertyPanelPrefix" .FormatPanelParams}}
+			{{template "imageFormatProps"}}
+		{{template "propertyPanelSuffix"}}
 	</div>
 
 {{end}}
