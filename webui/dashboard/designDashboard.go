@@ -23,16 +23,10 @@ func init() {
 
 	templateFileLists := [][]string{
 		templateFileList,
+		generic.TemplateFileList,
 		common.TemplateFileList,
 		barChart.TemplateFileList}
 	designDashboardTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
-}
-
-type DesignDashboardPageInfo struct {
-	Title         string
-	DashboardID   string
-	DatabaseID    string
-	DashboardName string
 }
 
 func designDashboard(w http.ResponseWriter, r *http.Request) {
@@ -48,12 +42,9 @@ func designDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p := DesignDashboardPageInfo{
-		Title:         "Design Dashboard",
-		DashboardID:   dashboardID,
-		DatabaseID:    dashboardRef.DatabaseID,
-		DashboardName: dashboardRef.Name}
-	err := designDashboardTemplates.ExecuteTemplate(w, "designDashboard", p)
+	templParams := createDashboardTemplateParams(dashboardRef)
+
+	err := designDashboardTemplates.ExecuteTemplate(w, "designDashboard", templParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

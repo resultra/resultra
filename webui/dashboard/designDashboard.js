@@ -21,7 +21,6 @@ function loadDashboardData()
 		initObjectCanvasSelectionBehavior('#dashboardCanvas', function() {
 			hideSiblingsShowOne('#dashboardProps')
 		})
-		$( '#dashboardProps' ).accordion();	
 		
 						
 	})

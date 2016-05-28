@@ -68,15 +68,15 @@
 {{end}}
 
 {{define "dashboardDesignPropertiesSidebar"}}
-	<div class="ui small center aligned header sidebarHeader">
-		<div class="content">
-			 <i class="options icon"></i>
-			Properties
-	  	</div>
-	</div>
-	<div class="ui-layout-content">
-		{{template "barChartProps"}}
-		{{template "dashboardProps"}}
+
+	{{template "propertiesSidebarHeader"}}
+	
+	<div class="ui-layout-content" id="designDashboardPropertiesSidebarContent">
+		
+		{{template "propertyPanelGroupPrefix"}}
+			{{template "barChartProps"}}
+			{{template "dashboardProps" .}}
+		{{template "propertyPanelGroupSuffix"}}
 		
 	</div>
 {{end}}
@@ -88,12 +88,15 @@
   <head>
     <title>{{.Title}}</title>
 	
+	{{template "genericCSS"}}
 	{{template "commonCSS"}}
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/designPalette/designPalette.css">
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/layout.css">
-	<link rel="stylesheet" type="text/css" class="ui" href="/static/dashboard/dashboardCommon.css">
+	<link rel="stylesheet" type="text/css" class="ui" href="/static/dashboard/designDashboard.css">
 
+	{{template "genericJS"}}
 	{{template "commonJS"}}
+	
 	{{template "googleChartsJavascript"}}
 	
 	<script>var dashboardID={{.DashboardID}};</script>
@@ -121,7 +124,7 @@
 			<div id="dashboardCanvas" class="pane ui-layout-center droppable"></div>
 					
 			<div class="pane ui-layout-east noPadding">
-				{{template "dashboardDesignPropertiesSidebar"}}
+				{{template "dashboardDesignPropertiesSidebar" .}}
 			</div>
 			
 		</div>
