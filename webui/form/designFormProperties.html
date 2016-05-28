@@ -1,10 +1,21 @@
 
+{{define "formNamePropertyPanel"}}
+	Form Name Properties Panel
+{{end}}
+
+{{define "formFilterPropertyPanel"}}
+	Form Filter Properties Panel
+{{end}}
+
+
 {{define "formProps"}}
 	<div id="formProps" class="initiallyHidden">
-		<form>
-		
-		{{template "propertiesSidebarAccordion"}}
+			  {{template "propertyPanelPrefix" .NamePanelParams}}
+			  		{{template "formNamePropertyPanel"}}
+			  {{template "propertyPanelSuffix"}}
 
-		</form>
+			  {{template "propertyPanelPrefix" .FilterPanelParams}}
+			  		{{template "formFilterPropertyPanel"}}
+			  {{template "propertyPanelSuffix"}}
 	</div>
 {{end}}

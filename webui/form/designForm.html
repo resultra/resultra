@@ -72,9 +72,10 @@
 	{{template "propertiesSidebarHeader"}}
 		
 	<div class="ui-layout-content" id="designFormPropertiesSidebarContent">
-		
-		{{template "formComponentProps"}}
-		{{template "formProps"}}
+		{{template "propertyPanelGroupPrefix"}}
+			{{template "formComponentProps"}}
+			{{template "formProps" .FormParams}}
+		{{template "propertyPanelGroupSuffix"}}
 				
 	</div>
 {{end}}
@@ -127,7 +128,7 @@
 			</div> 
 
 			<div class="pane ui-layout-east" id="propertiesPanelUILayout">
-				{{template "formDesignPropertiesSidebar"}}
+				{{template "formDesignPropertiesSidebar" .}}
 			</div>
 			
 			<!-- The formula editor pane must come after the other panes to give it a higher z index -->

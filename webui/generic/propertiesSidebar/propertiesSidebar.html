@@ -16,18 +16,23 @@
 
 {{end}}
 
+<!-- #propertyPanelAccordion is a unique ID, so there can (currently) only be one property panel per page. -->
 {{define "propertiesSidebarAccordionHeader"}}
  <div class="panel-heading" role="tab" id="headingOne">
-	<button class="btn btn-default btn-sm propertiesSidebarAccordionToggle" type="button" data-parent="#accordion" data-toggle="collapse" data-target="#{{.}}" aria-expanded="false" aria-controls="{{.}}" style="width:100%;border-radius:0px">
-	  Panel Header (Button) {{.}}
+	<button class="btn btn-default btn-sm propertiesSidebarAccordionToggle" type="button" data-parent="#propertyPanelAccordion" data-toggle="collapse" data-target="#{{.PanelID}}" aria-expanded="false" aria-controls="{{.PanelID}}" style="width:100%;border-radius:0px">
+	  {{.PanelHeaderLabel}}
 	</button>
  </div>
 	
 {{end}}
 
+
+
+
+
 {{define "propertiesSidebarAccordionBodyPrefix"}}
 
-    <div id="{{.}}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+    <div id="{{.PanelID}}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 		<div class="propertySidebarPanelContent">
 {{end}}
 
@@ -49,27 +54,14 @@
 	  </div>
 {{end}}
 
+<!-- propertyPanelGroupPrefix should be referenced once from the main page. Each selectable component which has a dynamically shown/hidden
+     list of panels can enclose the list of panels in a single div immediately below this prefix. -->
 {{define "propertyPanelGroupPrefix"}}
-	<div class="panel-group propertySidebarPanelGroup" id="accordion" role="tablist" aria-multiselectable="true">
+	<form>
+	<div class="panel-group propertySidebarPanelGroup" id="propertyPanelAccordion" role="tablist" aria-multiselectable="true">
 {{end}}
 
 {{define "propertyPanelGroupSuffix"}}
 	</div>
-{{end}}
-
-
-{{define "propertiesSidebarAccordion"}}
-
-	{{template "propertyPanelGroupPrefix"}}
-		
-		  {{template "propertyPanelPrefix" "panel1"}}
-		  		{{template "panel1Content"}}
-		  {{template "propertyPanelSuffix"}}
-		  
-		  {{template "propertyPanelPrefix" "panel2"}}
-		  		{{template "panel2Content"}}
-		  {{template "propertyPanelSuffix"}}
-		  
-	{{template "propertyPanelGroupSuffix"}}
-	
+	</form>
 {{end}}
