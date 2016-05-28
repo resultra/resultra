@@ -1,3 +1,12 @@
+{{define "panel1Content"}}
+	Panel 1 contents
+{{end}}
+
+{{define "panel2Content"}}
+	Panel 2 contents
+{{end}}
+
+
 {{define "propertiesSidebarHeader"}}
 	<div class="container-fluid">
 		<div class="row propertiesSidebarHeader">
@@ -16,28 +25,51 @@
 	
 {{end}}
 
-{{define "propertiesSidebarAccordionBody"}}
+{{define "propertiesSidebarAccordionBodyPrefix"}}
 
     <div id="{{.}}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 		<div class="propertySidebarPanelContent">
-        	<span>Panel Body - {{.}}</span>
-        	<span>More body text</span>
-		</div>
-    </div>
-	
 {{end}}
+
+{{define "propertiesSidebarAccordionBodySuffix"}}
+		</div>
+    </div>	
+{{end}}
+
+{{define "propertyPanelPrefix"}}
+	  <div class="panel panel-default">
+		  {{template "propertiesSidebarAccordionHeader" .}}
+		  {{template "propertiesSidebarAccordionBodyPrefix" .}}
+{{end}}
+
+<!-- When using the templates, the content of the panel goes between propertyPanelPrefix and propertyPanelSuffix -->
+
+{{define "propertyPanelSuffix"}}
+			{{template "propertiesSidebarAccordionBodySuffix"}}
+	  </div>
+{{end}}
+
+{{define "propertyPanelGroupPrefix"}}
+	<div class="panel-group propertySidebarPanelGroup" id="accordion" role="tablist" aria-multiselectable="true">
+{{end}}
+
+{{define "propertyPanelGroupSuffix"}}
+	</div>
+{{end}}
+
 
 {{define "propertiesSidebarAccordion"}}
 
-	<div class="panel-group propertySidebarPanelGroup" id="accordion" role="tablist" aria-multiselectable="true">
-	  <div class="panel panel-default">
-		  {{template "propertiesSidebarAccordionHeader" "panel1"}}
-		  {{template "propertiesSidebarAccordionBody" "panel1"}}
-	  </div>
-	  <div class="panel panel-default">
-		  {{template "propertiesSidebarAccordionHeader" "panel2"}}
-		  {{template "propertiesSidebarAccordionBody" "panel2"}}
-	  </div>
-	</div>
+	{{template "propertyPanelGroupPrefix"}}
+		
+		  {{template "propertyPanelPrefix" "panel1"}}
+		  		{{template "panel1Content"}}
+		  {{template "propertyPanelSuffix"}}
+		  
+		  {{template "propertyPanelPrefix" "panel2"}}
+		  		{{template "panel2Content"}}
+		  {{template "propertyPanelSuffix"}}
+		  
+	{{template "propertyPanelGroupSuffix"}}
 	
 {{end}}
