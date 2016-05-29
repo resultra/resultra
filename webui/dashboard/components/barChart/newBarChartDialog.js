@@ -94,19 +94,7 @@ var barChartTablePanelConfig = {
 	initPanel: function() {
 		
 		
-		$('#newBarChartSelectTablePanel').form({
-	    	fields: {
-		        barChartTableSelection: {
-		          rules: [
-		            {
-		              type   : 'empty',
-		              prompt : 'Please select a table'
-		            }
-		          ]
-		        }, // barChartTableSelection validation
-	     	},
-	  	})
-		
+		// TODO - Add Bootstrap validation to ensure a table selection takes place.		
 		
 		var tableListParams =  { databaseID: databaseID }
 		jsonAPIRequest("table/getList",tableListParams,function(tableRefs) {
@@ -140,24 +128,14 @@ var barChartXAxisPanelConfig = {
 	initPanel: function() {
 		
 		function setValidationRulesWithoutBucketSize() {
-			$( "#newBarChartDlgXAxisPanel" ).form({
-		    	fields: {
-			        xAxisFieldSelection: nonEmptyFieldValidation('Please enter a field name'),
-			        xAxisGroupBySelection: nonEmptyFieldValidation('Select a grouping'),
-			        xAxisSortSelection: nonEmptyFieldValidation('Choose a sort order')
-		     	},
-		  	})		
+			
+			// TODO - Add back validation for xAxisFieldSelection,
+			// xAxisSortSelection, and xAxisGroupBySelection
 		}
 		
 		function setValidationRulesWithBucketSize() {
-			$( "#newBarChartDlgXAxisPanel" ).form({
-		    	fields: {
-			        xAxisFieldSelection: nonEmptyFieldValidation('Please enter a field name'),
-			        xAxisGroupBySelection: nonEmptyFieldValidation('Select a grouping'),
-			        xAxisSortSelection: nonEmptyFieldValidation('Choose a sort order'),
-					xAxisBucketSizeInput: validPositiveNumberFieldValidation()
-		     	},
-		  	})
+			// TODO - Add back validation for xAxisFieldSelection,
+			// xAxisSortSelection, and xAxisGroupBySelection
 			
 		}
 		
@@ -241,13 +219,9 @@ var barChartYAxisPanelConfig = {
 	
 	
 	initPanel: function() {
-		$( "#newBarChartDlgYAxisPanel" ).form({
-	    	fields: {
-		        yAxisFieldSelection: nonEmptyFieldValidation('Select a field'),
-		        yAxisSummarySelection: nonEmptyFieldValidation('Choose how to summarize values'),
-	     	},
-	  	})
 		
+		// TODO - configure form validation	
+			
 		var yAxisFieldSelectionID = '#yAxisFieldSelection'
 		var yAxisSummarySelectionID = '#yAxisSummarySelection'
 		

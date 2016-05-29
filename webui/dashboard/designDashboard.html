@@ -90,6 +90,8 @@
 	
 	{{template "genericCSS"}}
 	{{template "commonCSS"}}
+	{{template "dashboardComponentsCSS"}}
+	
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/designPalette/designPalette.css">
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/layout.css">
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/dashboard/designDashboard.css">
@@ -99,6 +101,8 @@
 	
 	{{template "googleChartsJavascript"}}
 	
+	{{template "dashboardComponentsJS"}}
+	
 	<script>var dashboardID={{.DashboardID}};</script>
 	<script>var databaseID={{.DatabaseID}};</script>
 	<script src="/static/common/designPalette/designPalette.js"></script>
@@ -106,7 +110,6 @@
 	<script src="/static/field/fieldInfo.js"></script>
 	<script src="/static/dashboard/designDashboard.js"></script>
 	
-	{{template "dashboardComponentBarChartJS"}}
 	
   </head>
   

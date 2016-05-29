@@ -1,0 +1,17 @@
+{{define "newDashboardComponentSelectTablePanel"}}
+	<div id="{{.ElemPrefix}}DashboardSelectTablePanel" class="wizardPanel">
+		<form>
+			<div class="alert alert-info" >
+				{{.PromptInfoMsg}}
+			</div>
+			<div class="form-group">
+				<label>Table</label> 
+				<select class="form-control" id="barChartTableSelection" name="{{.ElemPrefix}}DashboardTableSelection">
+					<option value="">
+						Select a table
+					</option>
+				</select>
+			</div>
+		</form> <!-- form for panel -->
+	</div> <!-- panel for selecting new field or choosing to create a new one -->
+{{end}}

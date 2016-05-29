@@ -1,15 +1,13 @@
 
 {{define "newBarChartSelectTablePanel"}}
 	<div id="newBarChartSelectTablePanel" class="wizardPanel">
-		<form class="ui form">
-			<div class="ui info message" >
-				<p>
-					Choose a table to retrieve the data from for the bar chart.
-				</p>
+		<form class="form">
+			<div class="alert alert-info" >
+				Choose a table from which to retrieve data for the bar chart.
 			</div>
-			<div class="field" id="selectBarChartTable">
+			<div class="form-group" id="selectBarChartTable">
 				<label>Table</label> 
-				<select class="ui dropdown" id="barChartTableSelection" name="barChartTableSelection">
+				<select class="form-control" id="barChartTableSelection" name="barChartTableSelection">
 					<option value="">
 						Select a table
 					</option>

@@ -9,23 +9,23 @@ import (
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/webui/common"
-	"resultra/datasheet/webui/dashboard/components/barChart"
+	"resultra/datasheet/webui/dashboard/components"
 	"resultra/datasheet/webui/generic"
 )
 
 var designDashboardTemplates *template.Template
 
-var templateFileList = []string{"static/dashboard/dashboardCommon.html",
-	"static/dashboard/dashboardProps.html",
-	"static/dashboard/designDashboard.html"}
-
 func init() {
 
+	baseTemplateFiles := []string{"static/dashboard/dashboardCommon.html",
+		"static/dashboard/dashboardProps.html",
+		"static/dashboard/designDashboard.html"}
+
 	templateFileLists := [][]string{
-		templateFileList,
+		baseTemplateFiles,
 		generic.TemplateFileList,
 		common.TemplateFileList,
-		barChart.TemplateFileList}
+		components.TemplateFileList}
 	designDashboardTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
