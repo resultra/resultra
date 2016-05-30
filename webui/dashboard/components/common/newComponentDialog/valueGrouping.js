@@ -7,7 +7,6 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 	var groupedFieldSelection = createPrefixedTemplElemInfo(elemPrefix,"GroupedFieldSelection")
 	var groupBySelection = createPrefixedTemplElemInfo(elemPrefix,"GroupBySelection")
 	var bucketSizeInput = createPrefixedTemplElemInfo(elemPrefix,"BucketSizeInput")
-	var sortSelection = createPrefixedTemplElemInfo(elemPrefix,"SortSelection")
 	
 	var validateWithBucketSize = false
 	
@@ -18,9 +17,7 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 		
 		// Any one of the fields not passing validation makes the whole validation fail
 		if(!validateNonEmptyFormField(groupedFieldSelection.selector)) { validationResults = false }
-		if(!validateNonEmptyFormField(groupBySelection.selector)) { validationResults = false }
-		if(!validateNonEmptyFormField(sortSelection.selector)) { validationResults = false }
-		
+		if(!validateNonEmptyFormField(groupBySelection.selector)) { validationResults = false }		
 		if (validateWithBucketSize) {
 			if(!validateNonEmptyFormField(bucketSizeInput.selector)) { validationResults = false }
 		}
@@ -55,15 +52,12 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 				if(validateValueGroupingForm()) {
 					console.log("Value grouping panel validated")
 					
-					var panelData = {
-						valGrouping: {
-							fieldID: groupedFieldSelection.val(),
-							groupValsBy: groupBySelection.val(),
-							groupByValBucketWidth: bucketSizeInput.val()
-						},
-						sortOrder: sortSelection.val()
+					var valGrouping = {
+						fieldID: groupedFieldSelection.val(),
+						groupValsBy: groupBySelection.val(),
+						groupByValBucketWidth: bucketSizeInput.val()
 					}
-					setWizardDialogPanelData($(this),elemPrefix,dashboardComponentValueGroupingPanelID,panelData)
+					setWizardDialogPanelData($(this),elemPrefix,dashboardComponentValueGroupingPanelID,valGrouping)
 					
 				//	transitionToNextWizardDlgPanel(this,barChartYAxisPanelConfig)
 				} // if validate panel's form
@@ -93,7 +87,6 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 			
 			revalidateNonEmptyFormFieldOnChange(groupedFieldSelection.selector)
 			revalidateNonEmptyFormFieldOnChange(groupBySelection.selector)
-			revalidateNonEmptyFormFieldOnChange(sortSelection.selector)
 			revalidateNonEmptyFormFieldOnChange(bucketSizeInput.selector)		
 		
 			return {}
