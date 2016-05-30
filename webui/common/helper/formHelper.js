@@ -34,7 +34,7 @@ function radioButtonIsChecked(radioButtonSelector) {
 
 function formFieldValueIsNonEmpty(controlSelector) {
 	var selectedVal = $(controlSelector).val()
-	if(selectedVal.length > 0)
+	if((selectedVal != null) && (selectedVal.length > 0))
 	{
 		return true
 	} else {
@@ -43,9 +43,10 @@ function formFieldValueIsNonEmpty(controlSelector) {
 	
 }
 
+
 function formFieldValueIsEmpty(controlSelector) {
 	var selectedVal = $(controlSelector).val()
-	if(selectedVal.length > 0)
+	if((selectedVal != null) && (selectedVal.length > 0))
 	{
 		return false
 	} else {
@@ -53,6 +54,25 @@ function formFieldValueIsEmpty(controlSelector) {
 	}
 	
 }
+
+function revalidateNonEmptyFormFieldOnChange(controlSelector) {
+	$(controlSelector).change(function() { 
+		validateNonEmptyFormField(controlSelector) 
+	})
+}
+
+function validateNonEmptyFormField(controlSelector) {
+	if(formFieldValueIsEmpty(controlSelector)) {
+		$(controlSelector).parent().addClass("has-error")
+		$(controlSelector).siblings(".help-block").slideDown()
+		return false
+	} else {
+		$(controlSelector).parent().removeClass("has-error")
+		$(controlSelector).siblings(".help-block").slideUp()
+		return true
+	}
+}
+
 
 function emptyOptionHTML(prompt) {
 	return '<option value="">' + prompt + '</option>'	

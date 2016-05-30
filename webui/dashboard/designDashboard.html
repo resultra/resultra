@@ -106,7 +106,6 @@
 	<script>var dashboardID={{.DashboardID}};</script>
 	<script>var databaseID={{.DatabaseID}};</script>
 	<script src="/static/common/designPalette/designPalette.js"></script>
-	<script src="/static/common/dialog/wizardDialog.js"></script>
 	<script src="/static/field/fieldInfo.js"></script>
 	<script src="/static/dashboard/designDashboard.js"></script>
 	
@@ -132,7 +131,7 @@
 			
 		</div>
 	   
-	{{template "newBarChartDialog"}}      
+	{{template "newBarChartDialog" .ComponentParams.BarChartParams}}      
 	   
   </body>
   

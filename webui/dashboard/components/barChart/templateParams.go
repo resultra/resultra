@@ -5,13 +5,18 @@ import (
 )
 
 type BarChartTemplateParams struct {
+	ElemPrefix        string
 	SelectTableParams newComponentDialog.SelectTableTemplateParams
 }
 
 var TemplateParams BarChartTemplateParams
 
 func init() {
+
+	elemPrefix := "barChart_"
+
 	TemplateParams = BarChartTemplateParams{
-		SelectTableParams: newComponentDialog.SelectTableTemplateParams{"barChart_",
+		ElemPrefix: elemPrefix,
+		SelectTableParams: newComponentDialog.SelectTableTemplateParams{elemPrefix,
 			"Select a table as the source of data for this bar chart."}}
 }
