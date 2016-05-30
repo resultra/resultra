@@ -61,73 +61,11 @@ function saveNewBarChart() {
 
 
 
-var barChartTablePanelConfig = createNewDashboardComponentSelectTablePanelConfig("barChart_")
-var barChartXAxisPanelConfig = createNewDashboardComponentValueGroupingPanelConfig("barChart_")
+var barChartElemPrefix = "barChart_"
+var barChartTablePanelConfig = createNewDashboardComponentSelectTablePanelConfig(barChartElemPrefix)
+var barChartXAxisPanelConfig = createNewDashboardComponentValueGroupingPanelConfig(barChartElemPrefix)
+var barChartYAxisPanelConfig = createNewDashboardComponentValueSummaryPanelConfig(barChartElemPrefix)
 
-
-var barChartYAxisPanelConfig = {
-	divID: "#newBarChartDlgYAxisPanel",
-	panelID: "barChartYAxis",
-	progressPerc:80,
-	dlgButtons: { 
-		"Previous": function() {
-			transitionToPrevWizardDlgPanel(this,newBarChartParams.progressDivID,
-				barChartYAxisPanelConfig,barChartXAxisPanelConfig)	
-		 },
-		"Done" : function() { 
-			if($( "#newBarChartDlgYAxisPanel" ).form('validate form')) {
-				saveNewBarChart()
-			} // if validate panel's form
-		},
-		"Cancel" : function() { $(this).dialog('close'); },
- 	}, // dialog buttons
-	
-	
-	initPanel: function() {
-		
-		// TODO - configure form validation	
-			
-		var yAxisFieldSelectionID = '#yAxisFieldSelection'
-		var yAxisSummarySelectionID = '#yAxisSummarySelection'
-		
-		$(yAxisFieldSelectionID).dropdown()
-		$(yAxisSummarySelectionID).dropdown()
-		
-		function populateYAxisSummarySelection(fieldType) {
-			$(yAxisSummarySelectionID).empty()
-			$(yAxisSummarySelectionID).append(emptyOptionHTML("Choose how to summarize values"))
-			if(fieldType == fieldTypeNumber) {
-				$(yAxisSummarySelectionID).append(selectOptionHTML("count","Count of values"))
-				$(yAxisSummarySelectionID).append(selectOptionHTML("sum","Sum of values"))
-				$(yAxisSummarySelectionID).append(selectOptionHTML("average","Average of values"))
-			}
-			else if (fieldType == fieldTypeText) {
-				$(yAxisSummarySelectionID).append(selectOptionHTML("count","Count of values"))
-			}
-			else {
-				console.log("unrecocognized field type: " + fieldType)
-			}
-		}
-		
-		
-		$(yAxisFieldSelectionID).change(function(){
-			var fieldID = $("#newBarChartDlgYAxisPanel").form('get value','yAxisFieldSelection')
-	        console.log("select field: " + fieldID )
-			if(fieldID in newBarChartParams.fieldsByID) {
-				fieldInfo = newBarChartParams.fieldsByID[fieldID]			
-	        	console.log("select field: field ID = " + fieldID  + " name = " + fieldInfo.name + " type = " + fieldInfo.type)
-				
-				populateYAxisSummarySelection(fieldInfo.type)
-				$(yAxisSummarySelectionID).removeClass("disabled")
-			}
-	    });
-		
-		$(yAxisSummarySelectionID).empty()
-		$(yAxisSummarySelectionID).addClass("disabled")
-		
-		return {}
-	},	// init panel
-}
 
 
 function newBarChart(barChartParams) {

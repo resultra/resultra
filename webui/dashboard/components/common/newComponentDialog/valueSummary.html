@@ -1,0 +1,25 @@
+{{define "dashboardComponentValueSummaryPanel"}}
+	<div id="{{.ElemPrefix}}ValueSummaryPanel" class="wizardPanel">
+		<form class="form">
+			<div class="alert alert-info" >
+				{{.PromptInfoMsg}}
+			</div>
+			<div class="form-group">
+				<label>{{.SummaryFieldLabel}}</label> 
+				<select class="form-control" id="{{.ElemPrefix}}SummaryFieldSelection">
+					<option value="">
+						Select a field
+					</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label>Summarize Values By</label>
+				<select class="form-control" id="{{.ElemPrefix}}SummarizeBySelection">
+					<option value="">
+						Summarize Values By
+					</option>
+				</select>
+			</div>
+		</form> <!-- form for panel -->
+	</div>
+{{end}}

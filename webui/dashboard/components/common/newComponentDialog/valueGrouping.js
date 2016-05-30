@@ -59,7 +59,7 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 					}
 					setWizardDialogPanelData($(this),elemPrefix,dashboardComponentValueGroupingPanelID,valGrouping)
 					
-				//	transitionToNextWizardDlgPanel(this,barChartYAxisPanelConfig)
+					transitionToNextWizardDlgPanelByID(this,dashboardComponentValueSummaryPanelID)
 				} // if validate panel's form
 			},
 			"Cancel" : function() { $(this).dialog('close'); },
