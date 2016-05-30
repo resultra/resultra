@@ -31,9 +31,10 @@ function createNewDashboardComponentSelectTablePanelConfig(elemPrefix) {
 				
 					// Since fiels have tables as their parent, the field selection can only be 
 					// initialized after table selection has been made.
-					var formID = '#newBarchartDialog'
 					var selectedTableID = $(tableSelection.selector).val()
 					console.log("Selected table: " + selectedTableID)
+					
+					$(this).data("tableID",selectedTableID)
 					/*
 					loadFieldInfo(selectedTableID,[fieldTypeAll],function(fieldsByID) {
 						populateFieldSelectionMenu(fieldsByID,'#xAxisFieldSelection')
@@ -44,6 +45,8 @@ function createNewDashboardComponentSelectTablePanelConfig(elemPrefix) {
 					transitionToNextWizardDlgPanel(this,newBarChartParams.progressDivID,
 							barChartTablePanelConfig,barChartXAxisPanelConfig)
 					*/
+					transitionToNextWizardDlgPanelByID(this,dashboardComponentValueGroupingPanelID)
+					
 				} // if validate panel's form
 			},
 			"Cancel" : function() { $(this).dialog('close'); },

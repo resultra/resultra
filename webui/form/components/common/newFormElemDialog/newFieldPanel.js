@@ -23,8 +23,7 @@ function createNewFieldDialogPanelConfig(elemPrefix) {
 		progressPerc:60,
 		dlgButtons: { 
 			"Previous": function() { 
-				transitionToPrevWizardDlgPanelByPanelID(this,dialogProgressSelector,
-							newFieldDialogPanelID,createNewOrExistingFieldDialogPanelID)	
+				transitionToPrevWizardDlgPanelByPanelID(this,createNewOrExistingFieldDialogPanelID)	
 			 },
 			"Next" : function() { 
 				if(validateForm()) {

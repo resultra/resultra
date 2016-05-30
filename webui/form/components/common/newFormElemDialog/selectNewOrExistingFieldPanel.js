@@ -47,8 +47,7 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 	function nextButtonClicked() {
 		if (validateForm()) {
 			if (radioButtonIsChecked(createNewFieldRadio.selector)) {
-				transitionToNextWizardDlgPanelByID(this, dialogProgressSelector,
-						createNewOrExistingFieldDialogPanelID, newFieldDialogPanelID)
+				transitionToNextWizardDlgPanelByID(this,newFieldDialogPanelID)
 			} else {
 				//transitionToNextWizardDlgPanel(this, dialogProgressDivID,
 				//	newOrExistingFieldPanelConfig, newTextBoxValidateFormatEntriesPanel)

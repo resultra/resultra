@@ -1,63 +1,62 @@
-function updateDialogProgress(progressSelector, progressVal) {
-	console.log("Update progress: " + progressSelector + " val:" + progressVal)
-	$(progressSelector).css('width', progressVal+'%').attr('aria-valuenow', progressVal);
+function updateDialogProgress(dialog,progressVal) {
+	var dlgParams = $(dialog).data("dialogParams")
+	
+	console.log("Update progress: " + dlgParams.progressDivID + " val:" + progressVal)
+	
+	$(dlgParams.progressDivID).css('width', progressVal+'%').attr('aria-valuenow', progressVal);
 }
 
-function transitionToNextWizardDlgPanel(dialog, progressSelector, currPanelConfig, nextPanelConfig) {
+function updateDialogToPanelConfig(dialog, panelConfig) {
+	updateDialogProgress(dialog,panelConfig.progressPerc)
+	$(dialog).data("currPanelConfig",panelConfig)
+	$(dialog).dialog("option","buttons",panelConfig.dlgButtons)	
+}
+
+function transitionToNextWizardDlgPanel(dialog, nextPanelConfig) {
 	function showNextPanel() {
 		$(nextPanelConfig.divID).show("slide",{direction:"right"},200);
 	}
+	
+	var currPanelConfig = $(dialog).data("currPanelConfig")
 	$(currPanelConfig.divID).hide("slide",{direction:"left"},200,showNextPanel);
 	
-	updateDialogProgress(progressSelector,nextPanelConfig.progressPerc)
-	
-	$(dialog).dialog("option","buttons",nextPanelConfig.dlgButtons)
+	updateDialogToPanelConfig(dialog,nextPanelConfig)
 }
+
+function transitionToPrevWizardDlgPanel(dialog, prevPanelConfig) {
+	function showPrevPanel() {
+		$(prevPanelConfig.divID).show("slide",{direction:"left"},200);
+	}
+
+	var currPanelConfig = $(dialog).data("currPanelConfig")
+	$(currPanelConfig.divID).hide("slide",{direction:"right"},200,showPrevPanel);
+
+	updateDialogToPanelConfig(dialog,prevPanelConfig)
+}
+
 
 function setWizardDialogButtons(dialog,buttons) {
 	$(dialog).dialog("option","buttons",buttons)
 }
 
-function transitionToNextWizardDlgPanelByID(dialog, progressSelector, currPanelID, nextPanelID) {
+function transitionToNextWizardDlgPanelByID(dialog, nextPanelID) {
 	
 	var panelConfigByID = $(dialog).data("wizardDialogPanelsByID")
-	assert(panelConfigByID !== undefined, "Can't call this transitionToNextWizardDlgPanelByID before openWizardDialog()")
-	assert(panelConfigByID[currPanelID] !== undefined, 
-		"transitionToNextWizardDlgPanelByID: panel id not configured for dialog:" + currPanelID)
-	assert(panelConfigByID[nextPanelID] !== undefined, 
-			"transitionToNextWizardDlgPanelByID: panel id not configured for dialog:" + nextPanelID)
-	
-	transitionToNextWizardDlgPanel(dialog,progressSelector,
-			panelConfigByID[currPanelID].config,panelConfigByID[nextPanelID].config)
+		
+	transitionToNextWizardDlgPanel(dialog,panelConfigByID[nextPanelID].config)
 }
 
 
-function transitionToPrevWizardDlgPanel(dialog, progressSelector, currPanelConfig, prevPanelConfig) {
-	function showPrevPanel() {
-		$(prevPanelConfig.divID).show("slide",{direction:"left"},200);
-	}
-	$(currPanelConfig.divID).hide("slide",{direction:"right"},200,showPrevPanel);
-	
-	updateDialogProgress(progressSelector,prevPanelConfig.progressPerc)
-			
-	$(dialog).dialog("option","buttons",prevPanelConfig.dlgButtons)
-}
-
-function transitionToPrevWizardDlgPanelByPanelID(dialog, progressSelector, currPanelID, prevPanelID) {
+function transitionToPrevWizardDlgPanelByPanelID(dialog, prevPanelID) {
 	
 	var panelConfigByID = $(dialog).data("wizardDialogPanelsByID")
-	assert(panelConfigByID !== undefined, "Can't call this transitionToPrevWizardDlgPanelByPanelID before openWizardDialog()")
-	assert(panelConfigByID[currPanelID] !== undefined, 
-		"transitionToPrevWizardDlgPanelByPanelID: panel id not configured for dialog:" + currPanelID)
-	assert(panelConfigByID[prevPanelID] !== undefined, 
-			"transitionToPrevWizardDlgPanelByPanelID: panel id not configured for dialog:" + prevPanelID)
-	
-	transitionToPrevWizardDlgPanel(dialog,progressSelector,
-			panelConfigByID[currPanelID].config,panelConfigByID[prevPanelID].config)
+		
+	transitionToPrevWizardDlgPanel(dialog,panelConfigByID[prevPanelID].config)
 }
 
 
 function getFormFormInfoByPanelID(dialog, panelID) {
+	
 	var panelInfoByID = $(dialog).data("wizardDialogPanelsByID")
 	
 	var panelInfo = panelInfoByID[panelID]
@@ -70,6 +69,8 @@ function openWizardDialog(dlgParams) {
 	var firstPanelConfig = dlgParams.panels[0]
 	
 	var dialog = $(dlgParams.dialogDivID)
+	
+	dialog.data("dialogParams",dlgParams)
 			
     $(dlgParams.dialogDivID).dialog({
 		autoOpen: false,
@@ -90,6 +91,8 @@ function openWizardDialog(dlgParams) {
 	
 	$( ".wizardPanel" ).hide() // hide all the panels
 	$(firstPanelConfig.divID).show() // show the first panel
+	updateDialogToPanelConfig(dialog,firstPanelConfig)
+	
 	$(dlgParams.dialogDivID).dialog("option","buttons",firstPanelConfig.dlgButtons)
 	
 	// Clear any previous entries validation errors. The message blocks by 
@@ -98,11 +101,7 @@ function openWizardDialog(dlgParams) {
 // TODO - Use Bootstrap form validation to clear any previous errors
 //	$('.wizardPanel').form('clear') // clear any previous entries
 	$('.wizardErrorMsgBlock').empty()
-
-	updateDialogProgress(dlgParams.progressDivID,10)
-	
-//	$(dlgParams.progressDivID).progress({percent:0});
-	
+		
 	var panelsByID = {}
 	for(var panelIndex = 0; panelIndex != dlgParams.panels.length; panelIndex++) {
 		

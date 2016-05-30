@@ -1,0 +1,39 @@
+{{define "dashboardComponentValueGroupingPanel"}}
+
+	<div id="{{.ElemPrefix}}DashboardComponentValueGroupingPanel" class="wizardPanel">
+		<form>
+			<div class="alert alert-info" >
+				{{.PromptInfoMsg}}
+			</div>
+			<div class="form-group">
+				<label>{{.ValueFieldLabel}}</label> 
+				<select class="form-control" id="{{.ElemPrefix}}GroupedFieldSelection" name="xAxisFieldSelection">
+					<option value="">
+						Select a field
+					</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label>{{.ValueGroupingLabel}}</label>
+				<select class="form-control" id="{{.ElemPrefix}}GroupBySelection">
+					<option value="">
+						Select a grouping
+					</option>
+				</select>
+			</div>
+			<div class="form-group" >
+			      <label>Grouping Bucket Size</label>
+			      <input type="text" id="{{.ElemPrefix}}BucketSizeInput" placeholder="">
+			</div> <!-- Bucket size -->
+			<div class="form-group">
+				<label>Sort Values</label>
+				<select class="form-control" id="{{.ElemPrefix}}SortSelection">
+					<option value="" selected>Sort Order</option>
+					<option value="asc" selected>Ascending</option>
+					<option value="desc">Descending</option>
+				</select>
+			</div>
+		</form> <!-- form for panel -->
+	</div> <!-- panel for selecting new field or choosing to create a new one -->
+	
+{{end}}
