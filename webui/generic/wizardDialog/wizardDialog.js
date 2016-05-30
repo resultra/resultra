@@ -68,11 +68,11 @@ function openWizardDialog(dlgParams) {
 				
 	var firstPanelConfig = dlgParams.panels[0]
 	
-	var dialog = $(dlgParams.dialogDivID)
+	var $dialog = $(dlgParams.dialogDivID)
 	
-	dialog.data("dialogParams",dlgParams)
+	$dialog.data("dialogParams",dlgParams)
 			
-    $(dlgParams.dialogDivID).dialog({
+	$dialog.dialog({
 		autoOpen: false,
 		width: dlgParams.width,
 		height: dlgParams.height, 
@@ -82,7 +82,7 @@ function openWizardDialog(dlgParams) {
 		close: dlgParams.closeFunc
     });
  
-    $(dlgParams.dialogDivID).find( "form" ).on( "submit", function( event ) {
+    $dialog.find( "form" ).on( "submit", function( event ) {
       	event.preventDefault();
 		//saveNewTextBox()
 		// TODO - reimplement save with enter key
@@ -91,9 +91,7 @@ function openWizardDialog(dlgParams) {
 	
 	$( ".wizardPanel" ).hide() // hide all the panels
 	$(firstPanelConfig.divID).show() // show the first panel
-	updateDialogToPanelConfig(dialog,firstPanelConfig)
-	
-	$(dlgParams.dialogDivID).dialog("option","buttons",firstPanelConfig.dlgButtons)
+	updateDialogToPanelConfig($dialog,firstPanelConfig)
 	
 	// Clear any previous entries validation errors. The message blocks by 
 	// default don't clear their values with 'clear', so any remaining error
@@ -109,7 +107,7 @@ function openWizardDialog(dlgParams) {
 		
 		// Each panel is expected to return an object from initialization which can later
 		// be used to reference the panel and form fields to gather up the 
-		var panelFormInfo = dlgParams.panels[panelIndex].initPanel(dialog)
+		var panelFormInfo = dlgParams.panels[panelIndex].initPanel($dialog)
 		assert(panelFormInfo !== undefined, "Panel form info not returned from init function")
 		
 		var panelInfo = {
@@ -123,9 +121,9 @@ function openWizardDialog(dlgParams) {
 
 	// Store a map of panel IDs to the panel configurations. Different dialog panels can reference these unique panel IDs
 	// when transitioning to the next panel or previous panel (see functions above).
-	$(dlgParams.dialogDivID).data("wizardDialogPanelsByID",panelsByID)
+	$dialog.data("wizardDialogPanelsByID",panelsByID)
 	
-	$(dlgParams.dialogDivID).dialog("open")
+	$dialog.dialog("open")
 	
 } // openWizardDialog
 
