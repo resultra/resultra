@@ -1,7 +1,7 @@
 {{define "dashboardComponentValueGroupingPanel"}}
 
 	<div id="{{.ElemPrefix}}DashboardComponentValueGroupingPanel" class="wizardPanel">
-		<form>
+		<form class="form-horizontal" role="form">
 			<div class="alert alert-info" >
 				{{.PromptInfoMsg}}
 			</div>
@@ -28,7 +28,7 @@
 			<div class="form-group">
 				<label>Sort Values</label>
 				<select class="form-control" id="{{.ElemPrefix}}SortSelection">
-					<option value="" selected>Sort Order</option>
+					<option disabled selected value="">Sort Order</option>
 					<option value="asc" selected>Ascending</option>
 					<option value="desc">Descending</option>
 				</select>

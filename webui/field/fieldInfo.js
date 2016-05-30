@@ -16,7 +16,7 @@ function selectFieldHTML(fieldID, fieldName) {
 
 function populateFieldSelectionMenu(fieldsByID, menuSelector) {
 	$(menuSelector).empty()
-	$(menuSelector).append(emptyOptionHTML("Select a Field"))
+	$(menuSelector).append(defaultSelectOptionPromptHTML("Select a Field"))
 	$.each(fieldsByID, function(fieldID, fieldInfo) {
 		$(menuSelector).append(selectFieldHTML(fieldID, fieldInfo.name))		
 	})

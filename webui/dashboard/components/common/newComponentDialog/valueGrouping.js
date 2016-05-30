@@ -11,13 +11,26 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 	
 	var validateWithBucketSize = false
 	
+	
 	function validateValueGroupingForm() {
-		return true
+		
+		var validationResults = true
+		
+		// Any one of the fields not passing validation makes the whole validation fail
+		if(!validateNonEmptyFormField(groupedFieldSelection.selector)) { validationResults = false }
+		if(!validateNonEmptyFormField(groupBySelection.selector)) { validationResults = false }
+		if(!validateNonEmptyFormField(sortSelection.selector)) { validationResults = false }
+		
+		if (validateWithBucketSize) {
+			if(!validateNonEmptyFormField(bucketSizeInput.selector)) { validationResults = false }
+		}
+		
+		return validationResults
 	}
 	
 	function populateValueGroupingSelection(fieldType) {
 		$(groupBySelection.selector).empty()
-		$(groupBySelection.selector).append(emptyOptionHTML("Select a grouping"))
+		$(groupBySelection.selector).append(defaultSelectOptionPromptHTML("Select a grouping"))
 		if(fieldType == fieldTypeNumber) {
 			$(groupBySelection.selector).append(selectOptionHTML("none","Don't group values"))
 			$(groupBySelection.selector).append(selectOptionHTML("bucket","Bucket values"))
@@ -40,58 +53,78 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 			 },
 			"Next" : function() { 
 				if(validateValueGroupingForm()) {
-					transitionToNextWizardDlgPanel(this,barChartYAxisPanelConfig)
+					console.log("Value grouping panel validated")
+					
+					var panelData = {
+						valGrouping: {
+							fieldID: groupedFieldSelection.val(),
+							groupValsBy: groupBySelection.val(),
+							groupByValBucketWidth: bucketSizeInput.val()
+						},
+						sortOrder: sortSelection.val()
+					}
+					setWizardDialogPanelData($(this),elemPrefix,dashboardComponentValueGroupingPanelID,panelData)
+					
+				//	transitionToNextWizardDlgPanel(this,barChartYAxisPanelConfig)
 				} // if validate panel's form
 			},
 			"Cancel" : function() { $(this).dialog('close'); },
 	 	}, // dialog buttons
 		initPanel: function() {
-		
-			function setValidationRulesWithoutBucketSize() {
-				// TODO - Add back validation for xAxisFieldSelection,
-				// xAxisSortSelection, and xAxisGroupBySelection
-			}
-		
-			function setValidationRulesWithBucketSize() {
-				// TODO - Add back validation for xAxisFieldSelection,
-				// xAxisSortSelection, and xAxisGroupBySelection
-			
-			}
-			
-			$(groupedFieldSelection.selector).change(function(){
-				var fieldID = $(groupedFieldSelection.selector).val()
-		        console.log("select field: " + fieldID )
-				if(fieldID in newBarChartParams.fieldsByID) {
-					fieldInfo = newBarChartParams.fieldsByID[fieldID]			
-		        	console.log("select field: field ID = " + fieldID  + " name = " + fieldInfo.name + " type = " + fieldInfo.type)
-					populateValueGroupingSelection(fieldInfo.type)
-					$(groupBySelection.selector).removeClass("disabled")
-				}
-		    });
-		
+				
 			$(groupBySelection.selector).change(function() {
-				groupBy = $(groupBySelection.selector).val()
+				var groupBy = groupBySelection.val()
+			    console.log(groupBySelection.id)
+				console.log("Value grouping changed: " + groupBy)
 				if(groupBy == "bucket") {
-					$(bucketSizeInput.selector).show()
-					validateWithBucketSize = false
+					$(bucketSizeInput.selector).removeClass("hidden")
+					validateWithBucketSize = true
 				}
 				else {
-					$(bucketSizeInput.selector).hide()
-					validateWithBucketSize = true
+					$(bucketSizeInput.selector).addClass("hidden")
+					validateWithBucketSize = false
 				}
 			});
 		
 			// The field for entering a bucket size is initially hidden. It is only shown if
 			// the group by parameter is set to use a bucket.
-			$(bucketSizeInput.selector).hide()
-			setValidationRulesWithoutBucketSize()
-		
-			// Grouping selection is initially disabled until a field is selected
-			$(groupBySelection.selector).empty()
-			$(groupBySelection.selector).addClass("disabled")
+			$(bucketSizeInput.selector).addClass("hidden")
+			validateWithBucketSize = true
+			
+			revalidateNonEmptyFormFieldOnChange(groupedFieldSelection.selector)
+			revalidateNonEmptyFormFieldOnChange(groupBySelection.selector)
+			revalidateNonEmptyFormFieldOnChange(sortSelection.selector)
+			revalidateNonEmptyFormFieldOnChange(bucketSizeInput.selector)		
 		
 			return {}
 		}, // init panel
+		transitionIntoPanel: function ($dialog) { 
+			
+			var selectedTableID = getWizardDialogPanelData($dialog,
+					elemPrefix,dashboardComponentSelectTablePanelID)
+			console.log("Transitioning into value grouping panel: selected table ID = " + selectedTableID)
+			loadFieldInfo(selectedTableID,[fieldTypeAll],function(valueGroupingFieldsByID) {
+				
+				populateFieldSelectionMenu(valueGroupingFieldsByID,groupedFieldSelection.selector)
+				$(groupBySelection.selector).attr("disabled",true)
+					
+				$(groupedFieldSelection.selector).unbind("change")				
+				$(groupedFieldSelection.selector).change(function(){
+					var fieldID = $(groupedFieldSelection.selector).val()
+			        console.log("select field: " + fieldID )
+					if(fieldID in valueGroupingFieldsByID) {
+						fieldInfo = valueGroupingFieldsByID[fieldID]			
+			        	console.log("select field: field ID = " + fieldID  + " name = " + fieldInfo.name + " type = " + fieldInfo.type)
+						populateValueGroupingSelection(fieldInfo.type)
+						$(groupBySelection.selector).attr("disabled",false)
+					}
+			    });
+				
+			}) // loadFieldInfo
+			
+				
+		} // transitionIntoPanel
+		
 	}
 	
 	return dashboardComponentValueGroupingPanelConfig

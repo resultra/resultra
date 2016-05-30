@@ -4,9 +4,17 @@
 // the id's of the 2 DOM elements. Given a previx and suffix, this function generates both the 
 // base id and selector for addressing these types of elements.
 function createPrefixedTemplElemInfo(elemPrefix,elemSuffix) {
+	
+	var elemSelector = '#' + elemPrefix + elemSuffix
 	return {
 		id: elemPrefix + elemSuffix,
-		selector: '#' + elemPrefix + elemSuffix
+		selector: elemSelector,
+		
+		// Convenience method for the typical case when creating references
+		// to form controls. Provides a short-hand notation to retrieve the form control's value.
+		val: function () {
+			return $(elemSelector).val()
+		}
 	}
 }
 

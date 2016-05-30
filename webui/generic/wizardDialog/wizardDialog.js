@@ -7,9 +7,13 @@ function updateDialogProgress(dialog,progressVal) {
 }
 
 function updateDialogToPanelConfig(dialog, panelConfig) {
+	
+	var $dialog = $(dialog)
+	
+	panelConfig.transitionIntoPanel($dialog)
 	updateDialogProgress(dialog,panelConfig.progressPerc)
-	$(dialog).data("currPanelConfig",panelConfig)
-	$(dialog).dialog("option","buttons",panelConfig.dlgButtons)	
+	$dialog.data("currPanelConfig",panelConfig)
+	$dialog.dialog("option","buttons",panelConfig.dlgButtons)	
 }
 
 function transitionToNextWizardDlgPanel(dialog, nextPanelConfig) {
@@ -37,6 +41,30 @@ function transitionToPrevWizardDlgPanel(dialog, prevPanelConfig) {
 
 function setWizardDialogButtons(dialog,buttons) {
 	$(dialog).dialog("option","buttons",buttons)
+}
+
+// setWizardDialogPanelData should be called after a panel has fully validated its
+// form contents and is ready to transition out of the panel. Other schemes for storing
+// the panel's data for later retrieval are possible, but this method is considered a good
+// separation of concerns for the dialog panel; in other words the dialog panel code has
+// full knowledge of the HTML fields *and* value format from those fields (e.g., number vs text)
+// is thus best positioned to "package up" a data object with the fully validated results.
+function setWizardDialogPanelData($dialog,elemPrefix,panelID,panelData) {
+	var dataIndex = elemPrefix + panelID
+	
+	console.log("setWizardDialogPanelData: " + dataIndex + ": " + JSON.stringify(panelData))
+	
+	$dialog.data(dataIndex,panelData)
+}
+
+function getWizardDialogPanelData($dialog,elemPrefix,panelID) {
+	var dataIndex = elemPrefix + panelID
+	
+	var panelData = $dialog.data(dataIndex)
+	
+	console.log("getWizardDialogPanelData: " + dataIndex + ": " + JSON.stringify(panelData))
+
+	return panelData
 }
 
 function transitionToNextWizardDlgPanelByID(dialog, nextPanelID) {
@@ -69,6 +97,8 @@ function openWizardDialog(dlgParams) {
 	var firstPanelConfig = dlgParams.panels[0]
 	
 	var $dialog = $(dlgParams.dialogDivID)
+	
+	$dialog.removeData() // remove all jQuery data from the dialog
 	
 	$dialog.data("dialogParams",dlgParams)
 			

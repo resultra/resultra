@@ -34,17 +34,8 @@ function createNewDashboardComponentSelectTablePanelConfig(elemPrefix) {
 					var selectedTableID = $(tableSelection.selector).val()
 					console.log("Selected table: " + selectedTableID)
 					
-					$(this).data("tableID",selectedTableID)
-					/*
-					loadFieldInfo(selectedTableID,[fieldTypeAll],function(fieldsByID) {
-						populateFieldSelectionMenu(fieldsByID,'#xAxisFieldSelection')
-						populateFieldSelectionMenu(fieldsByID,'#yAxisFieldSelection')
-						newBarChartParams.fieldsByID = fieldsByID
-					})
-				
-					transitionToNextWizardDlgPanel(this,newBarChartParams.progressDivID,
-							barChartTablePanelConfig,barChartXAxisPanelConfig)
-					*/
+					setWizardDialogPanelData($(this),elemPrefix,dashboardComponentSelectTablePanelID,selectedTableID)
+
 					transitionToNextWizardDlgPanelByID(this,dashboardComponentValueGroupingPanelID)
 					
 				} // if validate panel's form
@@ -61,6 +52,7 @@ function createNewDashboardComponentSelectTablePanelConfig(elemPrefix) {
 					
 			return {}
 		}, // init panel
+		transitionIntoPanel: function ($dialog) { } // no-op
 	}
 	
 	return dashboardSelectTablePanelConfig
