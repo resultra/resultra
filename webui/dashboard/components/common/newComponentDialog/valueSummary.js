@@ -3,14 +3,20 @@
 var dashboardComponentValueSummaryPanelID = "dashboardComponentValueSummary"
 
 
-function createNewDashboardComponentValueSummaryPanelConfig(elemPrefix) {
+function createNewDashboardComponentValueSummaryPanelConfig(elemPrefix,doneCallbackFunc) {
 	
 	var panelSelector = "#" + elemPrefix + "ValueSummaryPanel"
 	var summaryFieldSelection = createPrefixedTemplElemInfo(elemPrefix,"SummaryFieldSelection")
 	var summarizeBySelection = createPrefixedTemplElemInfo(elemPrefix,"SummarizeBySelection")
 	
 	function validateValueSummaryPanel() {
-		return true
+		var validationResults = true
+		
+		// Any one of the fields not passing validation makes the whole validation fail
+		if(!validateNonEmptyFormField(summaryFieldSelection.selector)) { validationResults = false }
+		if(!validateNonEmptyFormField(summarizeBySelection.selector)) { validationResults = false }
+		
+		return validationResults
 	}
 	
 	function populateSummarizeBySelection(fieldType) {
@@ -39,7 +45,11 @@ function createNewDashboardComponentValueSummaryPanelConfig(elemPrefix) {
 			 },
 			"Done" : function() { 
 				if(validateValueSummaryPanel()) {
-				//	saveNewBarChart()
+					var valSummary = {
+						fieldID: summaryFieldSelection.val(),
+						summarizeValsWith: summarizeBySelection.val()}
+					setWizardDialogPanelData($(this),elemPrefix,dashboardComponentValueSummaryPanelID,valSummary)
+					doneCallbackFunc($(this))
 				} // if validate panel's form
 			},
 			"Cancel" : function() { $(this).dialog('close'); },
@@ -50,6 +60,10 @@ function createNewDashboardComponentValueSummaryPanelConfig(elemPrefix) {
 
 			$(summarizeBySelection.selector).empty()
 			$(summarizeBySelection.selector).attr("disabled",true)
+
+			revalidateNonEmptyFormFieldOnChange(summaryFieldSelection.selector)
+			revalidateNonEmptyFormFieldOnChange(summarizeBySelection.selector)
+
 		
 			return {}
 		},	// init panel

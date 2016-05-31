@@ -61,6 +61,17 @@ function revalidateNonEmptyFormFieldOnChange(controlSelector) {
 	})
 }
 
+function validateNumberFormField(controlSelector) {
+	var numberInput = $(controlSelector).val()
+	var inputAsNum = Number(numberInput)
+	if(isNaN(inputAsNum)) {
+		return false
+	} else {
+		return true
+	}
+	
+}
+
 function validateNonEmptyFormField(controlSelector) {
 	if(formFieldValueIsEmpty(controlSelector)) {
 		$(controlSelector).parent().addClass("has-error")

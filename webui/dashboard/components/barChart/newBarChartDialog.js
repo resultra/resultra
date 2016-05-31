@@ -1,6 +1,6 @@
 
 var newBarChartParams = {}
-
+var barChartElemPrefix = "barChart_"
 
 function initNewBarChartDialog(dashboardID) {
 
@@ -11,25 +11,21 @@ function initNewBarChartDialog(dashboardID) {
 	
 }
 
-function saveNewBarChart() {
+function saveNewBarChart($dialog) {
 	
 	console.log("Saving new bar chart: dashboard ID = " + newBarChartParams.dashboardID )
 	
 	var formID = '#newBarchartDialog'
 		
 	var saveNewBarChartParams = {
-		dataSrcTableID: getFormStringValue(formID,'barChartTableSelection'),
+		dataSrcTableID: getWizardDialogPanelData($dialog,
+					barChartElemPrefix,dashboardComponentSelectTablePanelID),
 		parentDashboardID: newBarChartParams.dashboardID,
-		xAxisVals: {
-			fieldID: getFormStringValue(formID,'xAxisFieldSelection'),
-			groupValsBy: getFormStringValue(formID,'xAxisGroupBySelection'),
-			groupByValBucketWidth: getFormFloatValue(formID,'xAxisBucketSizeInput'),		
-		}, // xAxisVals
-		xAxisSortValues: getFormStringValue(formID,'xAxisSortSelection'),
-		yAxisVals: {
-			fieldID: getFormStringValue(formID,'yAxisFieldSelection'),
-			summarizeValsWith: getFormStringValue(formID,'yAxisSummarySelection')
-		}, // yAxisVals
+		xAxisVals: getWizardDialogPanelData($dialog,
+					barChartElemPrefix,dashboardComponentValueGroupingPanelID), // xAxisVals
+		xAxisSortValues: "asc",
+		yAxisVals: getWizardDialogPanelData($dialog,
+					barChartElemPrefix,dashboardComponentValueSummaryPanelID), // yAxisVals
 		geometry: newBarChartParams.geometry
 	}
 	
@@ -60,13 +56,9 @@ function saveNewBarChart() {
 
 
 
-
-var barChartElemPrefix = "barChart_"
 var barChartTablePanelConfig = createNewDashboardComponentSelectTablePanelConfig(barChartElemPrefix)
 var barChartXAxisPanelConfig = createNewDashboardComponentValueGroupingPanelConfig(barChartElemPrefix)
-var barChartYAxisPanelConfig = createNewDashboardComponentValueSummaryPanelConfig(barChartElemPrefix)
-
-
+var barChartYAxisPanelConfig = createNewDashboardComponentValueSummaryPanelConfig(barChartElemPrefix,saveNewBarChart)
 
 function newBarChart(barChartParams) {
 		

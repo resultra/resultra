@@ -17,9 +17,10 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 		
 		// Any one of the fields not passing validation makes the whole validation fail
 		if(!validateNonEmptyFormField(groupedFieldSelection.selector)) { validationResults = false }
-		if(!validateNonEmptyFormField(groupBySelection.selector)) { validationResults = false }		
+		if(!validateNonEmptyFormField(groupBySelection.selector)) { validationResults = false }	
 		if (validateWithBucketSize) {
 			if(!validateNonEmptyFormField(bucketSizeInput.selector)) { validationResults = false }
+			if(!validateNumberFormField(bucketSizeInput.selector))	{ validationResults = false }
 		}
 		
 		return validationResults
@@ -55,7 +56,7 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 					var valGrouping = {
 						fieldID: groupedFieldSelection.val(),
 						groupValsBy: groupBySelection.val(),
-						groupByValBucketWidth: bucketSizeInput.val()
+						groupByValBucketWidth: Number(bucketSizeInput.val())
 					}
 					setWizardDialogPanelData($(this),elemPrefix,dashboardComponentValueGroupingPanelID,valGrouping)
 					
