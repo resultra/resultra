@@ -123,7 +123,7 @@ function initBarChartEditBehavior(barChartID)
 					geometry: resizedGeometry
 				}	
 						
-			 	jsonAPIRequest("setBarChartDimensions",resizeParams,function(updatedBarChartRef) {
+			 	jsonAPIRequest("dashboard/barChart/setDimensions",resizeParams,function(updatedBarChartRef) {
 			 		console.log("bar chart dimensions updated")
 			 	})	
 				  
