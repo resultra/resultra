@@ -20,10 +20,44 @@ class TestDashboard(unittest.TestCase,TestHelperMixin):
         jsonResp = self.apiRequest('dashboard/new',dashboardParams)
         dashboardID = jsonResp[u'dashboardID']
         
+        barChartParams = {'dataSrcTableID':self.tableID,
+            'parentDashboardID':dashboardID,
+            'xAxisVals': {
+                'fieldID': self.numberFieldID,
+                'groupValsBy':"none",
+                'groupByValBucketWidth':0
+            },
+            'xAxisSortValues':"asc",
+            'yAxisVals': {
+                'fieldID':self.textFieldID,
+                'summarizeValsWith':"count"
+            },
+            'geometry': {
+        		"positionTop": 56,
+        		"positionLeft": 212,
+        		"sizeWidth": 394,
+        		"sizeHeight": 394
+            }
+        }
+        jsonResp = self.apiRequest('dashboard/barChart/new',barChartParams)
+        barChartID = jsonResp[u'barChartID']
+        print "Created bar chart : ", barChartID
+        
+        getDataParams = {'barChartID':barChartID}
+        jsonResp = self.apiRequest('dashboard/barChart/getData',getDataParams)
+        dataRows = jsonResp[u'dataRows']
+        self.assertEquals(len(dataRows),0)
+               
         with self.assertRaises(AssertionError):
             # Invalid Parent Database ID - passes table ID instead of database ID
             dashboardParams = {'databaseID':self.tableID,'name':'My Dashboard'}
             jsonResp = self.apiRequest('dashboard/new',dashboardParams)
+            
+        with self.assertRaises(AssertionError):
+            # Invalid Parent Database ID - passes dashboardID instead of barChart ID
+            getDataParams = {'barChartID':dashboardID}
+            jsonResp = self.apiRequest('dashboard/barChart/getData',getDataParams)
+            
         
 
 

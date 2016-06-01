@@ -21,6 +21,10 @@ func encodeUniqueEntityIDToStr(key *datastore.Key) (string, error) {
 
 func decodeUniqueEntityIDStrToKey(encodedID string) (*datastore.Key, error) {
 
+	if len(encodedID) == 0 {
+		return nil, fmt.Errorf("decodeUniqueEntityIDStrToKey: got an empty entity ID")
+	}
+
 	decodedKey, err := datastore.DecodeKey(encodedID)
 	if err != nil {
 		return nil, fmt.Errorf("Can't decode datastore id '%v': %v", encodedID, err)

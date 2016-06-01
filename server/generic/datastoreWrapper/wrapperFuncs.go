@@ -32,9 +32,13 @@ func InsertNewRootEntity(appEngContext appengine.Context, entityKind string,
 func GetExistingRootEntityKey(appEngContext appengine.Context,
 	entityKind string, encodedID string) (*datastore.Key, error) {
 
+	if len(encodedID) == 0 {
+		return nil, fmt.Errorf("GetExistingRootEntityKey: got an empty entity ID")
+	}
+
 	rootKey, decodeErr := decodeUniqueEntityIDStrToKey(encodedID)
 	if decodeErr != nil {
-		return nil, fmt.Errorf("GetRootEntity: Unable to decode entity key: %v", decodeErr)
+		return nil, fmt.Errorf("GetExistingRootEntityKey: Unable to decode entity ID: %v", decodeErr)
 	}
 
 	return rootKey, nil
