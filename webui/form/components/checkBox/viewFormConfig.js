@@ -75,7 +75,7 @@ function initCheckBoxRecordEditBehavior(checkBoxObjectRef) {
 			currRecordRef = currRecordSet.currRecordRef()
 			var setRecordValParams = { recordID:currRecordRef.recordID, fieldID:objectRef.fieldRef.fieldID, value:isChecked }
 			console.log("Setting boolean value: " + JSON.stringify(setRecordValParams))
-			jsonAPIRequest("setBoolFieldValue",setRecordValParams,function(updatedRecordRef) {
+			jsonAPIRequest("recordUpdate/setBoolFieldValue",setRecordValParams,function(updatedRecordRef) {
 				
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached

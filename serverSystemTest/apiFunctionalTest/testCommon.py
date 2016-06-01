@@ -67,7 +67,15 @@ class TestHelperMixin:
     def getRecordFieldVal(self,recordRef,fieldID):
         fieldValues = recordRef[u'fieldValues']
         value = fieldValues[fieldID]
-        return value      
+        return value   
+           
+    def setNumberRecordValue(self,recordID,fieldID,numberVal):
+        recordRef = self.apiRequest('recordUpdate/setNumberFieldValue',{'recordID':recordID,'fieldID':fieldID,'value':numberVal})
+        return recordRef
+
+    def setTextRecordValue(self,recordID,fieldID,textVal):
+        recordRef = self.apiRequest('recordUpdate/setTextFieldValue',{'recordID':recordID,'fieldID':fieldID,'value':textVal})
+        return recordRef
         
     def setTimeRecordValue(self,recordID,fieldID,timeVal):
         recordRef = self.apiRequest('recordUpdate/setTimeFieldValue',{'recordID':recordID,'fieldID':fieldID,'value':timeVal})

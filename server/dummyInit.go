@@ -2,11 +2,15 @@ package server
 
 import (
 	"resultra/datasheet/server/database"
+	"resultra/datasheet/server/recordUpdate"
 	"resultra/datasheet/server/table"
 )
 
-var dummyUnuzedDBParams = database.NewDatabaseParams{}
-var dummyUnuzedTableParams = table.NewTableParams{}
+// Dummy variables to force inclusion of the packages (and not trigger an error from the Golang compiler).
+// This is needed since these packages are essentially plug-ins which register their own HTTP handlers upon startup.
+var dummyUnusedDBParams = database.NewDatabaseParams{}
+var dummyUnusedTableParams = table.NewTableParams{}
+var dummyRecordUpdateParams = recordUpdate.SetRecordBoolValueParams{}
 
 func DummyFunctionForImportFromGoogleAppEngineProjectFolder() {
 	// This dummy function is needed so standaline packages inside

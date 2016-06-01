@@ -20,6 +20,15 @@ class TestDashboard(unittest.TestCase,TestHelperMixin):
         jsonResp = self.apiRequest('dashboard/new',dashboardParams)
         dashboardID = jsonResp[u'dashboardID']
         
+        recordID1 = self.newRecord(self.tableID)
+        self.setTextRecordValue(recordID1,self.textFieldID,"hello world")     
+        self.setNumberRecordValue(recordID1,self.numberFieldID,25.2)
+        
+        recordID2 = self.newRecord(self.tableID)
+        self.setTextRecordValue(recordID2,self.textFieldID,"Testing 1,2,3")     
+        self.setNumberRecordValue(recordID2,self.numberFieldID,42.5)
+        
+        
         barChartParams = {'dataSrcTableID':self.tableID,
             'parentDashboardID':dashboardID,
             'xAxisVals': {
@@ -46,7 +55,9 @@ class TestDashboard(unittest.TestCase,TestHelperMixin):
         getDataParams = {'barChartID':barChartID}
         jsonResp = self.apiRequest('dashboard/barChart/getData',getDataParams)
         dataRows = jsonResp[u'dataRows']
-        self.assertEquals(len(dataRows),0)
+        self.assertEquals(len(dataRows),1,"Expecting 1 data row in the bar chart")
+        firstDataRowVal = dataRows[0]['value']
+        self.assertEquals(firstDataRowVal,2,"Expecting value for first data row to be 2 (count of records)")
                
         with self.assertRaises(AssertionError):
             # Invalid Parent Database ID - passes table ID instead of database ID

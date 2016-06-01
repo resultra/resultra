@@ -7,17 +7,15 @@ import (
 	"resultra/datasheet/server/generic/api"
 )
 
-func RegisterHTTPHandlers(apiRouter *mux.Router) {
-	apiRouter.HandleFunc("/api/setTextFieldValue", setTextFieldValue)
-	apiRouter.HandleFunc("/api/setNumberFieldValue", setNumberFieldValue)
-	apiRouter.HandleFunc("/api/setBoolFieldValue", setBoolFieldValue)
-}
-
 func init() {
 	recordUpdateRouter := mux.NewRouter()
 
+	recordUpdateRouter.HandleFunc("/api/recordUpdate/setBoolFieldValue", setBoolFieldValue)
+	recordUpdateRouter.HandleFunc("/api/recordUpdate/setNumberFieldValue", setNumberFieldValue)
+	recordUpdateRouter.HandleFunc("/api/recordUpdate/setTextFieldValue", setTextFieldValue)
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/setTimeFieldValue", setTimeFieldValue)
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/setLongTextFieldValue", setLongTextFieldValue)
+
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/uploadFileToFieldValue", uploadFileAPI)
 
 	http.Handle("/api/recordUpdate/", recordUpdateRouter)

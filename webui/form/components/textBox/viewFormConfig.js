@@ -69,7 +69,7 @@ function initTextBoxRecordEditBehavior(textFieldObjectRef) {
 				if(fieldType == "text") {
 					currRecordRef.fieldValues[fieldID] = inputVal
 					var setRecordValParams = { recordID:currRecordRef.recordID, fieldID:fieldID, value:inputVal }
-					jsonAPIRequest("setTextFieldValue",setRecordValParams,function(replyData) {
+					jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
 						// After updating the record, the local cache of records in currentRecordSet will
 						// be out of date. So after updating the record on the server, the locally cached
 						// version of the record also needs to be updated.
@@ -88,7 +88,7 @@ function initTextBoxRecordEditBehavior(textFieldObjectRef) {
 						    + " ,number = " + numberVal)
 						currRecordRef.fieldValues[fieldID] = numberVal
 						var setRecordValParams = { recordID:currRecordRef.recordID, fieldID:fieldID, value:numberVal }
-						jsonAPIRequest("setNumberFieldValue",setRecordValParams,function(replyData) {
+						jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
 							// After updating the record, the local cache of records in currentRecordSet will
 							// be out of date. So after updating the record on the server, the locally cached
 							// version of the record also needs to be updated.
