@@ -145,7 +145,7 @@ function initBarChartEditBehavior(barChartID)
 					parentDashboardID:updatedBarChartRef.parentDashboardID,
 					barChartID:updatedBarChartRef.barChartID
 				}
-				jsonAPIRequest("getBarChartData",getDataParams,function(updatedBarChartData) {
+				jsonAPIRequest("dashboard/barChart/getData",getDataParams,function(updatedBarChartData) {
 					console.log("Redrawing barchart after properties update")
 					drawBarChart(updatedBarChartData) // redraw the chart
 				})

@@ -15,10 +15,16 @@ class TestDashboard(unittest.TestCase,TestHelperMixin):
         self.numberFieldID = self.newNumberField(self.tableID,"TestRecordFilter - Number Field","NumberField") 
         self.textFieldID = self.newTextField(self.tableID,"TestRecordFilter - Text Field","TextField") 
     
-    def testSimpleDashboard(self):        
-        dashboardParams = {'databaseID':self.tableID,'name':'My Dashboard'}
+    def testSimpleDashboard(self):      
+        dashboardParams = {'databaseID':self.databaseID,'name':'My Dashboard'}
         jsonResp = self.apiRequest('dashboard/new',dashboardParams)
         dashboardID = jsonResp[u'dashboardID']
+        
+        with self.assertRaises(AssertionError):
+            # Invalid Parent Database ID - passes table ID instead of database ID
+            dashboardParams = {'databaseID':self.tableID,'name':'My Dashboard'}
+            jsonResp = self.apiRequest('dashboard/new',dashboardParams)
+        
 
 
 # Allow the tests in this file to be run stand-alone

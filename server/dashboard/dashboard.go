@@ -34,6 +34,10 @@ func NewDashboard(appEngContext appengine.Context, params NewDashboardParams) (*
 		return nil, sanitizeErr
 	}
 
+	if err := datastoreWrapper.ValidateEntityKind(params.DatabaseID, database.DatabaseEntityKind); err != nil {
+		return nil, err
+	}
+
 	var newDashboard = Dashboard{sanitizedName}
 	dashboardID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.DatabaseID, dashboardEntityKind, &newDashboard)
 	if insertErr != nil {

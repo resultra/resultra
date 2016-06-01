@@ -2,9 +2,22 @@ package barChart
 
 import (
 	"appengine"
+	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
 )
+
+func init() {
+
+	barChartRouter := mux.NewRouter()
+
+	barChartRouter.HandleFunc("/api/dashboard/barChart/new", newBarChart)
+	barChartRouter.HandleFunc("/api/dashboard/barChart/getData", getBarChartData)
+	barChartRouter.HandleFunc("/api/dashboard/barChart/setTitle", setBarChartTitle)
+	barChartRouter.HandleFunc("/api/dashboard/barChart/setDimensions", setBarChartDimensions)
+
+	http.Handle("/api/dashboard/barChart/", barChartRouter)
+}
 
 func newBarChart(w http.ResponseWriter, r *http.Request) {
 

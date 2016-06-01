@@ -31,7 +31,7 @@ function saveNewBarChart($dialog) {
 	
 	
 	console.log("saveNewBarChart: new bar chart params:  " + JSON.stringify(saveNewBarChartParams) )
-	jsonAPIRequest("newBarChart",saveNewBarChartParams,function(barChartRef) {
+	jsonAPIRequest("dashboard/barChart/new",saveNewBarChartParams,function(barChartRef) {
 		console.log("saveNewBarChart: bar chart saved: new bar chart ID = " + barChartRef.barChartID)
 		
 		// Replace the placholder ID with the instantiated bar chart's unique ID. In the case
@@ -48,7 +48,7 @@ function saveNewBarChart($dialog) {
 			parentDashboardID: newBarChartParams.dashboardID,
 			barChartID: barChartRef.barChartID
 		}
-		jsonAPIRequest("getBarChartData",barChartDataParams,function(barChartData) {
+		jsonAPIRequest("dashboard/barChart/getData",barChartDataParams,function(barChartData) {
 			initBarChartData(newBarChartParams.dashboardID,barChartData)
 		})
 	})
