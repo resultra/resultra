@@ -49,7 +49,7 @@ class populateSimpleDB(unittest.TestCase,TestHelperMixin):
         print "populateSimpleDB: Form ID: ", self.formID
     
         newDashboardParams = {'databaseID':self.databaseID,'name':'Summary'}
-        jsonResp = self.apiRequest('newDashboard',newDashboardParams)
+        jsonResp = self.apiRequest('dashboard/new',newDashboardParams)
         self.dashboardID = jsonResp[u'dashboardID']
         print "populateSimpleDB: Dashboard ID: ", self.dashboardID
         

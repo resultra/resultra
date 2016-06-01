@@ -2,7 +2,7 @@ function loadDashboardData()
 {
 	// Load the dashboard data
 	var loadBarChartDataParams = { dashboardID: dashboardID }
-	jsonAPIRequest("getDashboardData",loadBarChartDataParams,function(dashboardData) {
+	jsonAPIRequest("dashboard/getData",loadBarChartDataParams,function(dashboardData) {
 		
 		for (var barChartDataIndex in dashboardData.barChartsData) {
 			var barChartData = dashboardData.barChartsData[barChartDataIndex]
