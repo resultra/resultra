@@ -2,6 +2,7 @@ package barChart
 
 import (
 	"resultra/datasheet/webui/dashboard/components/common/newComponentDialog"
+	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 
 type BarChartTemplateParams struct {
@@ -9,6 +10,8 @@ type BarChartTemplateParams struct {
 	SelectTableParams   newComponentDialog.SelectTableTemplateParams
 	ValueGroupingParams newComponentDialog.ValueGroupingTemplateParams
 	ValueSummaryParams  newComponentDialog.ValueSummaryTemplateParams
+	TitlePanelParams    propertiesSidebar.PanelTemplateParams
+	XAxisPanelParams    propertiesSidebar.PanelTemplateParams
 }
 
 var TemplateParams BarChartTemplateParams
@@ -32,5 +35,7 @@ func init() {
 		ElemPrefix:          elemPrefix,
 		SelectTableParams:   tableSelectionParams,
 		ValueGroupingParams: valueGroupingParams,
-		ValueSummaryParams:  valueSummaryParams}
+		ValueSummaryParams:  valueSummaryParams,
+		TitlePanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "barChartTitle"},
+		XAxisPanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "X Axis", PanelID: "barChartXAxis"}}
 }

@@ -74,7 +74,7 @@
 	<div class="ui-layout-content" id="designDashboardPropertiesSidebarContent">
 		
 		{{template "propertyPanelGroupPrefix"}}
-			{{template "barChartProps"}}
+			{{template "barChartProps" .ComponentParams.BarChartParams}}
 			{{template "dashboardProps" .}}
 		{{template "propertyPanelGroupSuffix"}}
 		
