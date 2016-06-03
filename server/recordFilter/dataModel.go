@@ -121,6 +121,8 @@ func newFilter(appEngContext appengine.Context, params NewFilterParams) (*Record
 		return nil, fmt.Errorf("Can't create new text box component: error inserting into datastore: %v", insertErr)
 	}
 
+	log.Printf("newFilter: Created new filter: %+v", newFilter)
+
 	return &newFilter, nil
 }
 
