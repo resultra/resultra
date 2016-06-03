@@ -15,11 +15,11 @@ const xAxisSortAsc string = "asc"
 const xAxisSortDesc string = "desc"
 
 type BarChartUniqueIDHeader struct {
-	barChartID string `json:"barChartID"`
+	BarChartID string `json:"barChartID"`
 }
 
 func (idHeader BarChartUniqueIDHeader) uniqueBarChartID() string {
-	return idHeader.barChartID
+	return idHeader.BarChartID
 }
 
 // DashboardBarChart is the datastore object for dashboard bar charts.

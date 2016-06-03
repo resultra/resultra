@@ -47,6 +47,10 @@ func getEntityKeyByUUID(appEngContext appengine.Context, entityKind, entityIDFie
 
 func GetEntityByUUID(appEngContext appengine.Context, entityKind string, entityIDFieldName string, entityID string, dest interface{}) error {
 
+	if err := uniqueID.ValidatedWellFormedID(entityID); err != nil {
+		return fmt.Errorf("GetEntityByUUID: Invalid entity ID = %v: %v", entityID, err)
+	}
+
 	entityKey, getKeyErr := getEntityKeyByUUID(appEngContext, entityKind, entityIDFieldName, entityID)
 	if getKeyErr != nil {
 		return getKeyErr

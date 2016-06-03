@@ -36,6 +36,7 @@ func (rec *Record) Save(ch chan<- datastore.Property) error {
 
 func (rec *Record) Load(ch <-chan datastore.Property) error {
 	// Note: you might want to clear current values from the map or create a new map
+	rec.FieldValues = RecFieldValues{}
 	for p := range ch { // Read until channel is closed
 		if p.Name == recordParentTableIDFieldName {
 			rec.ParentTableID = p.Value.(string)

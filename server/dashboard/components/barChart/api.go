@@ -45,7 +45,7 @@ func getBarChartData(w http.ResponseWriter, r *http.Request) {
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	if barChartData, err := GetBarChartData(appEngCntxt, barChartParams.barChartID); err != nil {
+	if barChartData, err := GetBarChartData(appEngCntxt, barChartParams.BarChartID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, barChartData)

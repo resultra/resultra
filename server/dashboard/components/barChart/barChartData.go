@@ -62,7 +62,7 @@ func GetBarChartData(appEngContext appengine.Context, barChartID string) (*BarCh
 
 	barChart, getBarChartErr := getBarChart(appEngContext, barChartID)
 	if getBarChartErr != nil {
-		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart: %v", getBarChartErr)
+		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart with id=%v: error= %v", barChartID, getBarChartErr)
 	}
 
 	barChartData, dataErr := getOneBarChartData(appEngContext, barChart)
