@@ -121,7 +121,7 @@ func tokenizeInput(inputStr string, tokenizeWhiteAndComment bool) (TokenMatchSeq
 		nextToken, remaining, tokErr = matchNextToken(remaining)
 		if tokErr != nil {
 			// error handling here
-			return nil, fmt.Errorf("Error tokening input: %v", tokErr)
+			return nil, fmt.Errorf("Error tokening input: overall input = %v, token error = %v", inputStr, tokErr)
 		} else {
 			if tokenIsWhitespaceOrComment(*nextToken) {
 				// Only add whitespace and comments to token list if tokenizeWhiteAndComment is true

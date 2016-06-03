@@ -58,6 +58,9 @@ func TestIdentTokens(t *testing.T) {
 	testOneTokenize(t, tokenizeWhiteOrComment, `a B b_ a_b c-d a_b_c_d `,
 		[]int{tokenIdent.ID, tokenIdent.ID, tokenIdent.ID,
 			tokenIdent.ID, tokenIdent.ID, tokenIdent.ID}, "identifyers - single letter idents and mixed with non-alpha characters")
+
+	testOneTokenize(t, tokenizeWhiteOrComment, `F20160603204641834_cb3a9fd2-a942-450b-a93c-3fee5b58e6e5`,
+		[]int{tokenIdent.ID}, "UUID - used in place of field after preprocessing")
 }
 
 func TestCommentTokens(t *testing.T) {

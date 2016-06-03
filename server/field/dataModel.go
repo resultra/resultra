@@ -84,7 +84,9 @@ func CreateNewFieldFromRawInputs(appEngContext appengine.Context, parentTableID 
 		return "", err
 	}
 	newField.ParentTableID = parentTableID
-	newField.FieldID = uniqueID.GenerateUniqueID()
+	// The UUID for fields is substituted for the fields reference name when stored in the preprocessed formula.
+	// The tokenizer for the formula compiler could potentially read the UUID as a number literal if there isn't a distinct prefix.
+	newField.FieldID = uniqueID.GenerateUniqueIDWithPrefix("F")
 
 	newField.RefName = strings.TrimSpace(newField.RefName) // strip leading & trailing whitespace
 	if !validRefNameRegexp.MatchString(newField.RefName) {

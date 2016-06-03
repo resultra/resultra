@@ -2,6 +2,7 @@
 
 import unittest
 import json
+import time
 
 from testCommon import TestHelperMixin
     
@@ -55,6 +56,8 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
                   'refName':'textCalc','formulaText':'"hello world"'}
         jsonResp = self.apiRequest('calcField/new',fieldParams)
         self.textCalcField = jsonResp[u'fieldID']
+        
+        time.sleep(1) ## For eventual consistency
   
         
  
@@ -108,11 +111,15 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
         jsonResp = self.apiRequest('calcField/new',fieldParams)
         fieldA = jsonResp[u'fieldID']
 
+        time.sleep(1) # For eventual consistency
+
         # Setup [b]->[a]
         fieldParams = {'parentTableID':self.tableID,'name':'B','type':'number',
                     'refName':'fieldB','formulaText':'42.5 + [fieldA]'}
         jsonResp = self.apiRequest('calcField/new',fieldParams)
         fieldB = jsonResp[u'fieldID']
+        
+        time.sleep(1) # For eventual consistency
         
         self.verifyBadFormula(fieldA,"10*[fieldB]", 
             "circular reference: field B already refers to A, can't make a reference to B from A")

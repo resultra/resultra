@@ -6,8 +6,7 @@ import (
 	"time"
 )
 
-/* Return a UID which also includes the current time down to the millisecond */
-func GenerateUniqueID() string {
+func GenerateUniqueIDWithPrefix(prefix string) string {
 	timestamp := time.Now().UTC()
 	millisecondsPerNanosecond := 1000000
 	timestampMilliseconds := timestamp.Nanosecond() / millisecondsPerNanosecond
@@ -17,10 +16,15 @@ func GenerateUniqueID() string {
 		timestampMilliseconds)
 	uuidStr := uuid.NewV4().String()
 
-	uniqueIDStr := timestampStr + "_" + uuidStr
+	uniqueIDStr := prefix + timestampStr + "_" + uuidStr
 
 	return uniqueIDStr
 
+}
+
+/* Return a UID which also includes the current time down to the millisecond */
+func GenerateUniqueID() string {
+	return GenerateUniqueIDWithPrefix("")
 }
 
 func ValidatedWellFormedID(uniqueID string) error {
