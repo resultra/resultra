@@ -43,7 +43,7 @@ class populateSimpleDB(unittest.TestCase,TestHelperMixin):
         jsonResp = self.apiRequest('calcField/new',fieldParams)
         self.totalFieldID = jsonResp[u'fieldID']
         
-        newFormParams = { 'tableID':self.tableID,'name':'Purchases'}
+        newFormParams = { 'parentTableID':self.tableID,'name':'Purchases'}
         jsonResp = self.apiRequest('frm/new',newFormParams)
         self.formID = jsonResp[u'formID']
         print "populateSimpleDB: Form ID: ", self.formID

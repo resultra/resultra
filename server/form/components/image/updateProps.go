@@ -23,7 +23,7 @@ type ImagePropUpdater interface {
 	updateProps(image *Image) error
 }
 
-func updateImageProps(appEngContext appengine.Context, propUpdater ImagePropUpdater) (*ImageRef, error) {
+func updateImageProps(appEngContext appengine.Context, propUpdater ImagePropUpdater) (*Image, error) {
 
 	// Retrieve the bar chart from the data store
 	imageForUpdate, getErr := getImage(appEngContext, propUpdater.getImageID())
@@ -35,12 +35,12 @@ func updateImageProps(appEngContext appengine.Context, propUpdater ImagePropUpda
 		return nil, fmt.Errorf("UpdateImageProps: Unable to update existing image properties: %v", propUpdateErr)
 	}
 
-	imageRef, updateErr := updateExistingImage(appEngContext, propUpdater.getImageID(), imageForUpdate)
+	image, updateErr := updateExistingImage(appEngContext, propUpdater.getImageID(), imageForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateImageProps: Unable to update existing image properties: datastore update error =  %v", updateErr)
 	}
 
-	return imageRef, nil
+	return image, nil
 }
 
 type ImageResizeParams struct {

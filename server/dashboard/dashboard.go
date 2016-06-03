@@ -3,68 +3,58 @@ package dashboard
 import (
 	"appengine"
 	"fmt"
-	"log"
 	"resultra/datasheet/server/dashboard/components/barChart"
-	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/datastoreWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const dashboardEntityKind string = "Dashboard"
 
 type Dashboard struct {
-	Name string `json:"name"`
+	DashboardID      string `json:"dashboardID"`
+	ParentDatabaseID string `json:"parentDatabaseID"`
+	Name             string `json:"name"`
 }
 
-type DashboardRef struct {
-	DatabaseID  string `json:"databaseID"`
-	DashboardID string `json:"dashboardID"`
-	Name        string `json:"name"`
-}
+const dashboardIDFieldName string = "DashboardID"
 
 type NewDashboardParams struct {
 	DatabaseID string `json:"databaseID"`
 	Name       string `json:"name"`
 }
 
-func NewDashboard(appEngContext appengine.Context, params NewDashboardParams) (*DashboardRef, error) {
+func NewDashboard(appEngContext appengine.Context, params NewDashboardParams) (*Dashboard, error) {
 
 	sanitizedName, sanitizeErr := generic.SanitizeName(params.Name)
 	if sanitizeErr != nil {
 		return nil, sanitizeErr
 	}
 
-	if err := datastoreWrapper.ValidateEntityKind(params.DatabaseID, database.DatabaseEntityKind); err != nil {
-		return nil, err
-	}
+	var newDashboard = Dashboard{
+		DashboardID:      uniqueID.GenerateUniqueID(),
+		ParentDatabaseID: params.DatabaseID,
+		Name:             sanitizedName}
 
-	var newDashboard = Dashboard{sanitizedName}
-	dashboardID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.DatabaseID, dashboardEntityKind, &newDashboard)
+	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, dashboardEntityKind, &newDashboard)
 	if insertErr != nil {
-		return nil, insertErr
+		return nil, fmt.Errorf("Can't create new dashboard: error inserting into datastore: %v", insertErr)
 	}
 
-	log.Printf("NewDashboard: Created new dashboard: id= %v, name='%v'", dashboardID, sanitizedName)
-	dashboardRef := DashboardRef{DatabaseID: params.DatabaseID, DashboardID: dashboardID, Name: sanitizedName}
-
-	return &dashboardRef, nil
+	return &newDashboard, nil
 
 }
 
-func GetDashboardRef(appEngContext appengine.Context, dashboardID string) (*DashboardRef, error) {
+func GetDashboard(appEngContext appengine.Context, dashboardID string) (*Dashboard, error) {
 
-	var dashboard DashboardRef
-	getErr := datastoreWrapper.GetEntity(appEngContext, dashboardID, &dashboard)
-	if getErr != nil {
-		return nil, fmt.Errorf("GetDashboardRef: Can't get dashboard: Error retrieving existing dashboard: dashboard ID=%v, err = %v", dashboardID, getErr)
+	var dashboard Dashboard
+
+	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, dashboardEntityKind,
+		dashboardIDFieldName, dashboardID, &dashboard); getErr != nil {
+		return nil, fmt.Errorf("GetDashboard: Unable to get dashboard from datastore: error = %v", getErr)
 	}
 
-	databaseID, getDatabaseIDErr := datastoreWrapper.GetParentID(dashboardID, database.DatabaseEntityKind)
-	if getDatabaseIDErr != nil {
-		return nil, fmt.Errorf("GetDashboardRef: Unable to get parent database ID: error = %v", getDatabaseIDErr)
-	}
-
-	return &DashboardRef{DatabaseID: databaseID, DashboardID: dashboardID, Name: dashboard.Name}, nil
+	return &dashboard, nil
 
 }
 

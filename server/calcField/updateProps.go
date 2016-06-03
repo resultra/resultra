@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/generic/datastoreWrapper"
-	"resultra/datasheet/server/table"
 )
 
 type SetFormulaParams struct {
@@ -16,12 +14,6 @@ type SetFormulaParams struct {
 
 func (setFormulaParams SetFormulaParams) UpdateProps(appEngContext appengine.Context, fieldForUpdate *field.Field) error {
 
-	parentTableID, getParentErr := datastoreWrapper.GetParentID(setFormulaParams.GetFieldID(), table.TableEntityKind)
-	if getParentErr != nil {
-		return fmt.Errorf("SetFormula: Unable to get parent table for field: field=%v, error=%v ",
-			fieldForUpdate.Name, getParentErr)
-	}
-
 	if !fieldForUpdate.IsCalcField {
 		return fmt.Errorf("SetFormula: Can't set formula on non-calculated field: %v", fieldForUpdate.Name)
 	}
@@ -29,7 +21,7 @@ func (setFormulaParams SetFormulaParams) UpdateProps(appEngContext appengine.Con
 	compileParams := formulaCompileParams{
 		appEngContext:      appEngContext,
 		formulaText:        setFormulaParams.FormulaText,
-		parentTableID:      parentTableID,
+		parentTableID:      fieldForUpdate.ParentTableID,
 		expectedResultType: fieldForUpdate.Type,
 		resultFieldID:      setFormulaParams.GetFieldID()}
 

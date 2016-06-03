@@ -40,11 +40,11 @@ func checkEqnCycles(context *semanticAnalysisContext, eqnNode *EquationNode) (bo
 	// to a value literal, there is no need to check for cycles.
 	// All the other elements in the compiled formulas equation tree refere to
 	if len(eqnNode.FieldID) > 0 {
-		fieldRef, err := field.GetFieldRef(context.appEngContext, eqnNode.FieldID)
-		if err != nil {
-			return false, fmt.Errorf("Failure retrieving referenced field: %v", err)
+		eqnField, fieldErr := field.GetField(context.appEngContext, eqnNode.FieldID)
+		if fieldErr != nil {
+			return false, fmt.Errorf("Failure retrieving referenced field: %v", fieldErr)
 		} else {
-			return checkFieldCycles(context, *fieldRef)
+			return checkFieldCycles(context, eqnField)
 		}
 	} else if len(eqnNode.FuncName) > 0 {
 		for _, funcArgEqn := range eqnNode.FuncArgs {
@@ -67,15 +67,15 @@ func checkEqnCycles(context *semanticAnalysisContext, eqnNode *EquationNode) (bo
 // TODO - While doing the recursion to check for cycles, keep a "chain" of field references.
 // If a cycle is found, this can be passed back to give the user more information to resolve
 // the cycle: e.g. "FieldA -> FieldB -> FieldC -> FieldA"
-func checkFieldCycles(context *semanticAnalysisContext, fieldRef field.FieldRef) (bool, error) {
+func checkFieldCycles(context *semanticAnalysisContext, checkField *field.Field) (bool, error) {
 
-	if !fieldRef.FieldInfo.IsCalcField {
+	if !checkField.IsCalcField {
 		// If the fiels is not a calculated field, it is "terminal" and contains a literal
 		// value.
 		return false, nil
 	}
 
-	if fieldRef.FieldID == context.resultFieldID {
+	if checkField.FieldID == context.resultFieldID {
 		// Cycle found
 		return true, nil
 	}
@@ -83,7 +83,7 @@ func checkFieldCycles(context *semanticAnalysisContext, fieldRef field.FieldRef)
 	// Retrieve the compiled equation for the field, then recursively check if there are cycles
 	// in that equation. There is no need for full-blown semantic analysis, since semantic analysis
 	// was already performed before the equation was saved.
-	decodedEqn, decodeErr := decodeEquation(fieldRef.FieldInfo.CalcFieldEqn)
+	decodedEqn, decodeErr := decodeEquation(checkField.CalcFieldEqn)
 	if decodeErr != nil {
 		return false, fmt.Errorf("Failure decoding equation for formula cycle detection: %v", decodeErr)
 	} else {
@@ -119,38 +119,38 @@ func analyzeEqnNode(context *semanticAnalysisContext, eqnNode *EquationNode) (*s
 		// TODO - Once the Field type has a parent, don't use an individual database
 		// lookup for each field (database only has strong consistency when
 		// entities have a parent.
-		fieldRef, err := field.GetFieldRef(context.appEngContext, eqnNode.FieldID)
+		eqnField, err := field.GetField(context.appEngContext, eqnNode.FieldID)
 		if err != nil {
 			return nil, fmt.Errorf("Failure retrieving referenced field: %v", err)
 		} else {
 			if len(context.resultFieldID) == 0 {
 				// If the resultFieldID is empty, then the compilation is being done for a new
 				// field, so no circular reference checking is needed.
-				return newTypedAnalysisResult(fieldRef.FieldInfo.Type), nil
+				return newTypedAnalysisResult(eqnField.Type), nil
 			} else if eqnNode.FieldID == context.resultFieldID {
 				// Check if the formula refers to itself
 				return newErrorAnalysisResult(fmt.Sprintf("Circular reference: a calculated field cannot refer to itself using [%v]",
-					fieldRef.FieldInfo.RefName)), nil
+					eqnField.RefName)), nil
 			} else {
-				if fieldRef.FieldInfo.IsCalcField {
+				if eqnField.IsCalcField {
 					// The field reference is to a calculated field, so we need to retrieve its equation and
 					// check there are no direct or indirect references to the field with id = context.resultFieldID
-					cycleFound, cycleCheckErr := checkFieldCycles(context, *fieldRef)
+					cycleFound, cycleCheckErr := checkFieldCycles(context, eqnField)
 					if cycleCheckErr != nil {
 						return nil, cycleCheckErr
 					} else {
 						if cycleFound {
 							return newErrorAnalysisResult(
 								fmt.Sprintf("Circular reference: a calculated field's cannot refer back to itself indirectly through [%v]",
-									fieldRef.FieldInfo.RefName)), nil
+									eqnField.RefName)), nil
 						} else {
-							return newTypedAnalysisResult(fieldRef.FieldInfo.Type), nil
+							return newTypedAnalysisResult(eqnField.Type), nil
 						}
 					}
 				} else {
 					// The field reference is to a non-calculated field. Since there is an literal value in the field
 					// (i.e., no formula), no further checking for cycles is needed ... just return the fields type.
-					return newTypedAnalysisResult(fieldRef.FieldInfo.Type), nil
+					return newTypedAnalysisResult(eqnField.Type), nil
 				}
 			}
 		}

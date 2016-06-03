@@ -6,16 +6,26 @@ import (
 	"fmt"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/datastoreWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const recordEntityKind string = "Record"
 
 //const recordCreateDateReservedPropName = "__CreateDate__"
 
-type Record map[string]interface{}
+type RecFieldValues map[string]interface{}
+
+type Record struct {
+	ParentTableID string         `jsaon:"parentTableID"`
+	RecordID      string         `json:"recordID"`
+	FieldValues   RecFieldValues `json:"fieldValues"`
+}
+
+const recordRecordIDFieldName string = "RecordID"
+const recordParentTableIDFieldName string = "ParentTableID"
 
 func (rec Record) ValueIsSet(fieldID string) bool {
-	_, valueExists := rec[fieldID]
+	_, valueExists := rec.FieldValues[fieldID]
 	if valueExists {
 		return true
 	} else {
@@ -24,7 +34,7 @@ func (rec Record) ValueIsSet(fieldID string) bool {
 }
 
 func (rec Record) GetTextFieldValue(fieldID string) (string, error) {
-	rawVal := rec[fieldID]
+	rawVal := rec.FieldValues[fieldID]
 	if theStr, validType := rawVal.(string); validType {
 		return theStr, nil
 	} else {
@@ -32,22 +42,17 @@ func (rec Record) GetTextFieldValue(fieldID string) (string, error) {
 	}
 }
 
-type RecordRef struct {
-	RecordID    string `json:"recordID"`
-	FieldValues Record `json:"fieldValues"`
-}
-
-func (rec *Record) Load(ch <-chan datastore.Property) error {
+func (fieldVals *RecFieldValues) Load(ch <-chan datastore.Property) error {
 	// Note: you might want to clear current values from the map or create a new map
 	for p := range ch { // Read until channel is closed
-		(*rec)[p.Name] = p.Value
+		(*fieldVals)[p.Name] = p.Value
 	}
 	return nil
 }
 
-func (rec *Record) Save(ch chan<- datastore.Property) error {
+func (fieldVals *RecFieldValues) Save(ch chan<- datastore.Property) error {
 	defer close(ch) // Channel must be closed
-	for k, v := range *rec {
+	for k, v := range *fieldVals {
 		ch <- datastore.Property{Name: k, Value: v}
 	}
 	return nil
@@ -57,43 +62,41 @@ type NewRecordParams struct {
 	TableID string `json:"tableID"`
 }
 
-func NewRecord(appEngContext appengine.Context, params NewRecordParams) (*RecordRef, error) {
+func NewRecord(appEngContext appengine.Context, params NewRecordParams) (*Record, error) {
 
-	newRecord := Record{}
+	newRecord := Record{ParentTableID: params.TableID,
+		RecordID: uniqueID.GenerateUniqueID()}
 
-	// TODO - Replace nil with database parent
-	recordID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.TableID, recordEntityKind, &newRecord)
+	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, recordEntityKind, &newRecord)
 	if insertErr != nil {
-		return nil, fmt.Errorf("Can't create new field: error inserting into datastore: %v", insertErr)
+		return nil, fmt.Errorf("Can't create new record: error inserting into datastore: %v", insertErr)
 	}
 
-	return &RecordRef{recordID, newRecord}, nil
+	return &newRecord, nil
 
 }
 
-type RecordID struct {
-	RecordID string `json:"recordID"`
-}
+func GetRecord(appEngContext appengine.Context, recordID string) (*Record, error) {
 
-func GetRecord(appEngContext appengine.Context, recordParams RecordID) (*RecordRef, error) {
+	var getRecord Record
 
-	getRecord := Record{}
-	getErr := datastoreWrapper.GetEntity(appEngContext, recordParams.RecordID, &getRecord)
-	if getErr != nil {
-		return nil, fmt.Errorf("Can't get record: Error retrieving existing record: record params=%+v, err = %v", recordParams, getErr)
+	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, recordEntityKind,
+		recordRecordIDFieldName, recordID, &getRecord); getErr != nil {
+		return nil, fmt.Errorf("GetRecord: Unable to get record from datastore: error = %v", getErr)
 	}
 
-	return &RecordRef{RecordID: recordParams.RecordID, FieldValues: getRecord}, nil
+	return &getRecord, nil
 
 }
 
-func UpdateExistingRecord(appEngContext appengine.Context, recordID RecordID, rec Record) (*RecordRef, error) {
+func UpdateExistingRecord(appEngContext appengine.Context, recordID string, rec *Record) (*Record, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext, recordID.RecordID, &rec); updateErr != nil {
-		return nil, fmt.Errorf("UpdateExistingRecord: Can't set value: Error updating existing record: params=%+v, err = %v",
-			recordID, updateErr)
+	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
+		recordID, recordEntityKind, recordRecordIDFieldName, rec); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingHtmlEditor: Error updating record: error = %v", updateErr)
 	}
-	return &RecordRef{RecordID: recordID.RecordID, FieldValues: rec}, nil
+
+	return rec, nil
 
 }
 
@@ -106,20 +109,17 @@ type GetRecordsParams struct {
 	TableID string `json:"tableID"`
 }
 
-func GetRecords(appEngContext appengine.Context, params GetRecordsParams) ([]RecordRef, error) {
+func GetRecords(appEngContext appengine.Context, params GetRecordsParams) ([]Record, error) {
 
 	var records []Record
-	recordIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, params.TableID, recordEntityKind, &records)
+
+	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, params.TableID,
+		recordEntityKind, recordParentTableIDFieldName, &records)
 	if getErr != nil {
-		return nil, fmt.Errorf("GetRecords: Unable to retrieve records from datastore: datastore error = %v", getErr)
+		return nil, fmt.Errorf("Unable to retrieve records: form id=%v", params.TableID)
 	}
 
-	recordRefs := make([]RecordRef, len(records))
-	for recIter, currRec := range records {
-		recordID := recordIDs[recIter]
-		recordRefs[recIter] = RecordRef{recordID, currRec}
-	}
-	return recordRefs, nil
+	return records, nil
 }
 
 // Validate the field is of the correct type and not a calculated field (if allowCalcField not true). This is for validating
@@ -128,17 +128,17 @@ func GetRecords(appEngContext appengine.Context, params GetRecordsParams) ([]Rec
 func ValidateFieldForRecordValue(appEngContext appengine.Context, fieldID string, expectedFieldType string,
 	allowCalcField bool) error {
 
-	fieldRef, fieldGetErr := field.GetFieldRef(appEngContext, fieldID)
+	field, fieldGetErr := field.GetField(appEngContext, fieldID)
 	if fieldGetErr != nil {
 		return fmt.Errorf(" Error retrieving field for updating/setting value: err = %v", fieldGetErr)
 	}
-	if fieldRef.FieldInfo.Type != expectedFieldType {
+	if field.Type != expectedFieldType {
 		return fmt.Errorf("Can't update/set value:"+
-			" Type mismatch with field: expecting %v: got %v: fieldRef=%+v", expectedFieldType, fieldRef.FieldInfo.Type, fieldRef)
+			" Type mismatch with field: expecting %v: got %v: field=%+v", expectedFieldType, field.Type, field)
 
-	} else if (!allowCalcField) && fieldRef.FieldInfo.IsCalcField {
+	} else if (!allowCalcField) && field.IsCalcField {
 		return fmt.Errorf("Field is a calculated field, setting values directly not supported: field=%v",
-			fieldRef.FieldInfo.RefName)
+			field.RefName)
 	}
 	return nil
 }

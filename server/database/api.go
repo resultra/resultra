@@ -24,10 +24,10 @@ func newDatabase(w http.ResponseWriter, r *http.Request) {
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	if dbRef, err := saveNewDatabase(appEngCntxt, dbParams); err != nil {
+	if newDB, err := saveNewDatabase(appEngCntxt, dbParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
-		api.WriteJSONResponse(w, *dbRef)
+		api.WriteJSONResponse(w, *newDB)
 	}
 
 }

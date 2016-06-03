@@ -38,14 +38,14 @@ func newBarChart(w http.ResponseWriter, r *http.Request) {
 
 func getBarChartData(w http.ResponseWriter, r *http.Request) {
 
-	var barChartParams BarChartUniqueID
+	var barChartParams BarChartUniqueIDHeader
 	if err := api.DecodeJSONRequest(r, &barChartParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	if barChartData, err := GetBarChartData(appEngCntxt, barChartParams); err != nil {
+	if barChartData, err := GetBarChartData(appEngCntxt, barChartParams.barChartID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, barChartData)

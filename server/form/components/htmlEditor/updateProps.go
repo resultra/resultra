@@ -23,7 +23,7 @@ type HtmlEditorPropUpdater interface {
 	updateProps(htmlEditor *HtmlEditor) error
 }
 
-func updateHtmlEditorProps(appEngContext appengine.Context, propUpdater HtmlEditorPropUpdater) (*HtmlEditorRef, error) {
+func updateHtmlEditorProps(appEngContext appengine.Context, propUpdater HtmlEditorPropUpdater) (*HtmlEditor, error) {
 
 	// Retrieve the bar chart from the data store
 	htmlEditorForUpdate, getErr := getHtmlEditor(appEngContext, propUpdater.getHtmlEditorID())
@@ -35,12 +35,12 @@ func updateHtmlEditorProps(appEngContext appengine.Context, propUpdater HtmlEdit
 		return nil, fmt.Errorf("updateHtmlEditorProps: Unable to update existing html editor properties: %v", propUpdateErr)
 	}
 
-	htmlEditorRef, updateErr := updateExistingHtmlEditor(appEngContext, propUpdater.getHtmlEditorID(), htmlEditorForUpdate)
+	htmlEditor, updateErr := updateExistingHtmlEditor(appEngContext, propUpdater.getHtmlEditorID(), htmlEditorForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateHtmlEditorProps: Unable to update existing html editor properties: datastore update error =  %v", updateErr)
 	}
 
-	return htmlEditorRef, nil
+	return htmlEditor, nil
 }
 
 type HtmlEditorResizeParams struct {

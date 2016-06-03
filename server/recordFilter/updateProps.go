@@ -4,8 +4,6 @@ import (
 	"appengine"
 	"fmt"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/datastoreWrapper"
-	"resultra/datasheet/server/table"
 )
 
 type FilterIDInterface interface {
@@ -30,7 +28,7 @@ type FilterPropUpdater interface {
 	updateProps(appEngContext appengine.Context, filterForUpdate *RecordFilter) error
 }
 
-func updateFilterProps(appEngContext appengine.Context, propUpdater FilterPropUpdater) (*RecordFilterRef, error) {
+func updateFilterProps(appEngContext appengine.Context, propUpdater FilterPropUpdater) (*RecordFilter, error) {
 
 	filterForUpdate, getErr := getFilter(appEngContext, propUpdater.GetFilterID())
 	if getErr != nil {
@@ -42,12 +40,12 @@ func updateFilterProps(appEngContext appengine.Context, propUpdater FilterPropUp
 		return nil, fmt.Errorf("UpdateFilterProps: Unable to update existing filter properties: %v", propUpdateErr)
 	}
 
-	updatedFilterRef, updateErr := updateExistingFilter(appEngContext, propUpdater.GetFilterID(), filterForUpdate)
+	updatedFilter, updateErr := updateExistingFilter(appEngContext, propUpdater.GetFilterID(), filterForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateFilterProps: error updating filter: %v", updateErr)
 	}
 
-	return updatedFilterRef, nil
+	return updatedFilter, nil
 
 }
 
@@ -58,17 +56,12 @@ type FilterRenameParams struct {
 
 func (updateParams FilterRenameParams) updateProps(appEngContext appengine.Context, filterForUpdate *RecordFilter) error {
 
-	parentTableID, parentErr := datastoreWrapper.GetParentID(updateParams.GetFilterID(), table.TableEntityKind)
-	if parentErr != nil {
-		return fmt.Errorf("Update filter name: can't get parent table ID: error = %v", parentErr)
-	}
-
 	sanitizedName, sanitizeErr := generic.SanitizeName(updateParams.Name)
 	if sanitizeErr != nil {
 		return fmt.Errorf("Update filter name: sanitize name: %v", sanitizeErr)
 	}
 
-	if validateErr := validateUnusedFilterName(appEngContext, parentTableID, sanitizedName); validateErr != nil {
+	if validateErr := validateUnusedFilterName(appEngContext, filterForUpdate.ParentTableID, sanitizedName); validateErr != nil {
 		return fmt.Errorf("Update filter name: validate unused name: error = %v", validateErr)
 	}
 

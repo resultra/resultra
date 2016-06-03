@@ -3,24 +3,69 @@ package recordFilter
 import (
 	"appengine"
 	"fmt"
+	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/record"
 )
 
-func filterOneRecord(recordRef record.RecordRef, filterRules []FilterRuleRef) (bool, error) {
+type OptonalFilterRuleParamVal struct {
+	textParam   *string
+	numberParam *float64
+}
+
+// Convert the optional paramater values as stored in the datastore (via filterRule),
+// and convert them to pointer values which can be ommitted from output when
+// converting to JSON.
+func getOptionalParamValueByRuleDef(filterRuleDef FilterRuleDef,
+	filterRule RecordFilterRule) (*OptonalFilterRuleParamVal, error) {
+
+	optParamVal := OptonalFilterRuleParamVal{}
+
+	if filterRuleDef.HasParam {
+		switch filterRuleDef.DataType {
+		case field.FieldTypeText:
+			optParamVal.textParam = &filterRule.TextRuleParam
+		case field.FieldTypeNumber:
+			optParamVal.numberParam = &filterRule.NumberRuleParam
+		default:
+			return nil, fmt.Errorf("getOptionalParamValueByRuleDef: unknown rule definition data type = %v",
+				filterRuleDef.DataType)
+		} // switch
+	} // if has param
+
+	return &optParamVal, nil
+}
+
+func filterOneRecord(appEngContext appengine.Context, rec record.Record, filterRules []RecordFilterRule) (bool, error) {
 
 	for _, currFilterRule := range filterRules {
 
+		ruleField, fieldErr := field.GetField(appEngContext, currFilterRule.FieldID)
+		if fieldErr != nil {
+			return false, fmt.Errorf("filterOneRecord: Can't get field for filter rule = '%v': datastore error=%v",
+				currFilterRule.FieldID, fieldErr)
+		}
+
+		filterRuleDef, ruleDefErr := getRuleDefByFieldType(ruleField.Type, currFilterRule.RuleID)
+		if ruleDefErr != nil {
+			return false, fmt.Errorf("createOneFilterRef: Failed to retrieve filter rule definition: err=%v", ruleDefErr)
+		}
+
 		// Pass a limited subset of parameters to the functions for doing the actual filtering. This simplifies
 		// the code inside actual filtering functions and makes these functions easier to test.
-		filterParams :=
-			FilterFuncParams{currFilterRule.FieldRef.FieldID,
-				currFilterRule.TextRuleParam,
-				currFilterRule.NumberRuleParam}
+		optParamVal, paramErr := getOptionalParamValueByRuleDef(*filterRuleDef, currFilterRule)
+		if paramErr != nil {
+			return false, fmt.Errorf("filterOneRecord: Error filtering record: %v", paramErr)
+		}
 
-		recordIsFiltered, filterErr := currFilterRule.FilterRuleDef.filterFunc(filterParams, recordRef.FieldValues)
+		filterParams :=
+			FilterFuncParams{currFilterRule.FieldID,
+				optParamVal.textParam,
+				optParamVal.numberParam}
+
+		recordIsFiltered, filterErr := filterRuleDef.filterFunc(filterParams, rec)
 
 		if filterErr != nil {
-			fmt.Errorf("filterOneRecord: Error filtering record: %v", filterErr)
+			return false, fmt.Errorf("filterOneRecord: Error filtering record: %v", filterErr)
 		} else if !recordIsFiltered {
 
 			// Filtering is performed based upon a logical AND of all filtering rules passing; i.e. (F1 & F2 & F3 ...).
@@ -40,14 +85,14 @@ type GetFilteredRecordsParams struct {
 // Since filtering is done using a logical AND of all the filters and their rules, it simplifies actual
 // filtering to filter using a combined set of rules. Then, if any rule across all the filters doesn't pass,
 // then the record is filtered.
-func getCombinedFilterRules(appEngContext appengine.Context, filterIDs []string) ([]FilterRuleRef, error) {
+func getCombinedFilterRules(appEngContext appengine.Context, filterIDs []string) ([]RecordFilterRule, error) {
 
-	allFilterRules := []FilterRuleRef{}
+	allFilterRules := []RecordFilterRule{}
 
 	for _, currFilterID := range filterIDs {
 
 		getFilterRulesParam := GetFilterRulesParams{ParentFilterID: currFilterID}
-		currFilterRules, rulesErr := getRecordFilterRuleRefs(appEngContext, getFilterRulesParam)
+		currFilterRules, rulesErr := getRecordFilterRules(appEngContext, getFilterRulesParam)
 		if rulesErr != nil {
 			return nil, rulesErr
 		}
@@ -57,12 +102,12 @@ func getCombinedFilterRules(appEngContext appengine.Context, filterIDs []string)
 	return allFilterRules, nil
 }
 
-func GetFilteredRecords(appEngContext appengine.Context, params GetFilteredRecordsParams) ([]record.RecordRef, error) {
+func GetFilteredRecords(appEngContext appengine.Context, params GetFilteredRecordsParams) ([]record.Record, error) {
 
 	// TODO - The code below retrieve *all* the records. However, the datastore supports up to 1 filtering criterion
 	// for each field, so <=1 of these criterion could be used to filter the records coming from the datastore and
 	// before doing any kind of in-memory filtering.
-	unfilteredRecordRefs, getRecordErr := record.GetRecords(appEngContext, record.GetRecordsParams{TableID: params.TableID})
+	unfilteredRecords, getRecordErr := record.GetRecords(appEngContext, record.GetRecordsParams{TableID: params.TableID})
 	if getRecordErr != nil {
 		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving records: %v", getRecordErr)
 	}
@@ -72,16 +117,16 @@ func GetFilteredRecords(appEngContext appengine.Context, params GetFilteredRecor
 		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving filter rules: %v", rulesErr)
 	}
 
-	filteredRecordRefs := []record.RecordRef{}
-	for _, currRecordRef := range unfilteredRecordRefs {
-		recordIsFiltered, filterErr := filterOneRecord(currRecordRef, filterRules)
+	filteredRecords := []record.Record{}
+	for _, currRecord := range unfilteredRecords {
+		recordIsFiltered, filterErr := filterOneRecord(appEngContext, currRecord, filterRules)
 		if filterErr != nil {
 			return nil, fmt.Errorf("GetFilteredRecords: Error filtering records: %v", filterErr)
 		}
 		if recordIsFiltered {
-			filteredRecordRefs = append(filteredRecordRefs, currRecordRef)
+			filteredRecords = append(filteredRecords, currRecord)
 		}
 	}
 
-	return filteredRecordRefs, nil
+	return filteredRecords, nil
 }

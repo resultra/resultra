@@ -2,26 +2,25 @@ package datePicker
 
 import (
 	"appengine"
-	"appengine/datastore"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/datastoreWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const datePickerEntityKind string = "DatePicker"
 
 type DatePicker struct {
-	Field    *datastore.Key
-	Geometry common.LayoutGeometry
+	ParentFormID string `json:"parentFormID"`
+	DatePickerID string `json:"datePickerID"`
+	FieldID      string `json:"fieldID"`
+	Geometry     common.LayoutGeometry
 }
 
-type DatePickerRef struct {
-	DatePickerID string                `json:"datePickerID"`
-	FieldRef     field.FieldRef        `json:"fieldRef"`
-	Geometry     common.LayoutGeometry `json:"geometry"`
-}
+const datePickerIDFieldName string = "DatePickerID"
+const datePickerParentFormIDFieldName string = "ParentFormID"
 
 type NewDatePickerParams struct {
 	ParentID string                `json:"parentID"`
@@ -37,93 +36,71 @@ func validDatePickerFieldType(fieldType string) bool {
 	}
 }
 
-func saveNewDatePicker(appEngContext appengine.Context, params NewDatePickerParams) (*DatePickerRef, error) {
+func saveNewDatePicker(appEngContext appengine.Context, params NewDatePickerParams) (*DatePicker, error) {
 
 	if !common.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, params.FieldID)
+	field, fieldErr := field.GetField(appEngContext, params.FieldID)
 	if fieldErr != nil {
-		return nil, fmt.Errorf("saveNewDatePicker: Can't text box with field ID = '%v': datastore error=%v",
+		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)
 	}
 
-	if !validDatePickerFieldType(fieldRef.FieldInfo.Type) {
-		return nil, fmt.Errorf("saveNewDatePicker: Invalid field type: expecting time field, got %v", fieldRef.FieldInfo.Type)
+	if !validDatePickerFieldType(field.Type) {
+		return nil, fmt.Errorf("saveNewDatePicker: Invalid field type: expecting time field, got %v", field.Type)
 	}
 
-	newDatePicker := DatePicker{Field: fieldKey, Geometry: params.Geometry}
-
-	datePickerID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.ParentID, datePickerEntityKind, &newDatePicker)
-	if insertErr != nil {
-		return nil, insertErr
-	}
-
-	datePickerRef := DatePickerRef{
-		DatePickerID: datePickerID,
-		FieldRef:     *fieldRef,
+	newDatePicker := DatePicker{ParentFormID: params.ParentID,
+		FieldID:      params.FieldID,
+		DatePickerID: uniqueID.GenerateUniqueID(),
 		Geometry:     params.Geometry}
 
-	log.Printf("INFO: API: New DatePicker: Created new date picker container: id=%v params=%+v", datePickerID, params)
+	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, datePickerEntityKind, &newDatePicker)
+	if insertErr != nil {
+		return nil, fmt.Errorf("Can't create new image component: error inserting into datastore: %v", insertErr)
+	}
 
-	return &datePickerRef, nil
+	log.Printf("INFO: API: New DatePicker: Created new date picker container: %+v", newDatePicker)
+
+	return &newDatePicker, nil
 
 }
 
 func getDatePicker(appEngContext appengine.Context, datePickerID string) (*DatePicker, error) {
 
 	var datePicker DatePicker
-	if getErr := datastoreWrapper.GetEntity(appEngContext, datePickerID, &datePicker); getErr != nil {
-		return nil, fmt.Errorf("getDatePicker: Unable to get date picker from datastore: error = %v", getErr)
+
+	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, datePickerEntityKind,
+		datePickerIDFieldName, datePickerID, &datePicker); getErr != nil {
+		return nil, fmt.Errorf("getBarChart: Unable to checkbox container from datastore: error = %v", getErr)
 	}
+
 	return &datePicker, nil
 }
 
-func GetDatePickers(appEngContext appengine.Context, parentFormID string) ([]DatePickerRef, error) {
+func GetDatePickers(appEngContext appengine.Context, parentFormID string) ([]DatePicker, error) {
 
 	var datePickers []DatePicker
-	datePickerIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentFormID, datePickerEntityKind, &datePickers)
+
+	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, parentFormID,
+		datePickerEntityKind, datePickerParentFormIDFieldName, &datePickers)
 	if getErr != nil {
-		return nil, fmt.Errorf("Unable to retrieve date pickers: form id=%v", parentFormID)
+		return nil, fmt.Errorf("Unable to retrieve date picker components: form id=%v", parentFormID)
 	}
 
-	datePickerRefs := make([]DatePickerRef, len(datePickers))
-	for datePickerIter, currDatePicker := range datePickers {
-
-		datePickerID := datePickerIDs[datePickerIter]
-
-		fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, currDatePicker.Field)
-		if fieldErr != nil {
-			return nil, fmt.Errorf("GetDatePickers: Error retrieving field for date picker: error = %v", fieldErr)
-		}
-
-		datePickerRefs[datePickerIter] = DatePickerRef{
-			DatePickerID: datePickerID,
-			FieldRef:     *fieldRef,
-			Geometry:     currDatePicker.Geometry}
-
-	} // for each check box
-	return datePickerRefs, nil
+	return datePickers, nil
 
 }
 
-func updateExistingDatePicker(appEngContext appengine.Context, datePickerID string, updatedDatePicker *DatePicker) (*DatePickerRef, error) {
+func updateExistingDatePicker(appEngContext appengine.Context, datePickerID string, updatedDatePicker *DatePicker) (*DatePicker, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext, datePickerID, updatedDatePicker); updateErr != nil {
-		return nil, fmt.Errorf("updateExistingCheckBox: Error updating check box: error = %v", updateErr)
+	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
+		datePickerID, datePickerEntityKind, datePickerIDFieldName, updatedDatePicker); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingHtmlEditor: Error updating date picker: error = %v", updateErr)
 	}
 
-	fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, updatedDatePicker.Field)
-	if fieldErr != nil {
-		return nil, fmt.Errorf("updateExistingCheckBox: Error retrieving field for check box: error = %v", fieldErr)
-	}
-
-	datePickerRef := DatePickerRef{
-		DatePickerID: datePickerID,
-		FieldRef:     *fieldRef,
-		Geometry:     updatedDatePicker.Geometry}
-
-	return &datePickerRef, nil
+	return updatedDatePicker, nil
 
 }

@@ -27,7 +27,7 @@ type FieldPropUpdater interface {
 	UpdateProps(appEngContext appengine.Context, fieldForUpdate *Field) error
 }
 
-func UpdateFieldProps(appEngContext appengine.Context, propUpdater FieldPropUpdater) (*FieldRef, error) {
+func UpdateFieldProps(appEngContext appengine.Context, propUpdater FieldPropUpdater) (*Field, error) {
 
 	fieldForUpdate, getErr := GetField(appEngContext, propUpdater.GetFieldID())
 	if getErr != nil {
@@ -39,11 +39,11 @@ func UpdateFieldProps(appEngContext appengine.Context, propUpdater FieldPropUpda
 		return nil, fmt.Errorf("UpdateFieldProps: Unable to update existing field properties: %v", propUpdateErr)
 	}
 
-	updatedFieldRef, updateErr := UpdateExistingField(appEngContext, propUpdater.GetFieldID(), fieldForUpdate)
+	updatedField, updateErr := UpdateExistingField(appEngContext, propUpdater.GetFieldID(), fieldForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateFieldProps: error updating field: %v", updateErr)
 	}
 
-	return updatedFieldRef, nil
+	return updatedField, nil
 
 }

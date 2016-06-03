@@ -10,11 +10,11 @@ import (
 )
 
 type FormInfo struct {
-	TextBoxes   []textBox.TextBoxRef       `json:"textBoxes"`
-	CheckBoxes  []checkBox.CheckBoxRef     `json:"checkBoxes"`
-	DatePickers []datePicker.DatePickerRef `json:"datePickers"`
-	HtmlEditors []htmlEditor.HtmlEditorRef `json:"htmlEditors"`
-	Images      []image.ImageRef           `json:"images"`
+	TextBoxes   []textBox.TextBox       `json:"textBoxes"`
+	CheckBoxes  []checkBox.CheckBox     `json:"checkBoxes"`
+	DatePickers []datePicker.DatePicker `json:"datePickers"`
+	HtmlEditors []htmlEditor.HtmlEditor `json:"htmlEditors"`
+	Images      []image.Image           `json:"images"`
 }
 
 type GetFormInfoParams struct {
@@ -23,37 +23,37 @@ type GetFormInfoParams struct {
 
 func getFormInfo(appEngContext appengine.Context, params GetFormInfoParams) (*FormInfo, error) {
 
-	textBoxRefs, err := textBox.GetTextBoxes(appEngContext, params.FormID)
+	textBoxes, err := textBox.GetTextBoxes(appEngContext, params.FormID)
 	if err != nil {
 		return nil, err
 	}
 
-	checkBoxRefs, err := checkBox.GetCheckBoxes(appEngContext, params.FormID)
+	checkBoxes, err := checkBox.GetCheckBoxes(appEngContext, params.FormID)
 	if err != nil {
 		return nil, err
 	}
 
-	datePickerRefs, err := datePicker.GetDatePickers(appEngContext, params.FormID)
+	datePickers, err := datePicker.GetDatePickers(appEngContext, params.FormID)
 	if err != nil {
 		return nil, err
 	}
 
-	htmlEditorRefs, err := htmlEditor.GetHtmlEditors(appEngContext, params.FormID)
+	htmlEditors, err := htmlEditor.GetHtmlEditors(appEngContext, params.FormID)
 	if err != nil {
 		return nil, err
 	}
 
-	imageRefs, err := image.GetImages(appEngContext, params.FormID)
+	images, err := image.GetImages(appEngContext, params.FormID)
 	if err != nil {
 		return nil, err
 	}
 
 	formInfo := FormInfo{
-		TextBoxes:   textBoxRefs,
-		CheckBoxes:  checkBoxRefs,
-		DatePickers: datePickerRefs,
-		HtmlEditors: htmlEditorRefs,
-		Images:      imageRefs}
+		TextBoxes:   textBoxes,
+		CheckBoxes:  checkBoxes,
+		DatePickers: datePickers,
+		HtmlEditors: htmlEditors,
+		Images:      images}
 
 	return &formInfo, nil
 }

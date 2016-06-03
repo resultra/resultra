@@ -25,10 +25,10 @@ func newTable(w http.ResponseWriter, r *http.Request) {
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	if tableRef, err := saveNewTable(appEngCntxt, tableParams); err != nil {
+	if newTable, err := saveNewTable(appEngCntxt, tableParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
-		api.WriteJSONResponse(w, *tableRef)
+		api.WriteJSONResponse(w, *newTable)
 	}
 
 }

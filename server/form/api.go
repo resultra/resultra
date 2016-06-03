@@ -44,10 +44,10 @@ func getFormAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	if formRef, err := GetFormRef(appEngCntxt, params); err != nil {
+	if theForm, err := GetForm(appEngCntxt, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
-		api.WriteJSONResponse(w, *formRef)
+		api.WriteJSONResponse(w, *theForm)
 	}
 
 }

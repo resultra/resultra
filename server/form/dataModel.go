@@ -6,85 +6,76 @@ import (
 	"log"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/datastoreWrapper"
-	"resultra/datasheet/server/table"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const formEntityKind string = "Form"
 
 type Form struct {
-	Name string
+	FormID        string `json:"formID"`
+	ParentTableID string `json:"parentTableID"`
+	Name          string
 }
 
-type FormRef struct {
-	FormID  string `json:"formID"`
-	TableID string `json:"tableID"`
-	Name    string `json:"name"`
-}
+const formIDFieldName string = "FormID"
+const formParentTableFieldName string = "ParentTableID"
 
 type NewFormParams struct {
-	TableID string `json:"tableID"`
-	Name    string `json:"name"`
+	ParentTableID string `json:"parentTableID"`
+	Name          string `json:"name"`
 }
 
-func newForm(appEngContext appengine.Context, params NewFormParams) (*FormRef, error) {
+func newForm(appEngContext appengine.Context, params NewFormParams) (*Form, error) {
 
 	sanitizedName, sanitizeErr := generic.SanitizeName(params.Name)
 	if sanitizeErr != nil {
 		return nil, sanitizeErr
 	}
 
-	newForm := Form{Name: sanitizedName}
-	formID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext,
-		params.TableID,
-		formEntityKind, &newForm)
-	if insertErr != nil {
-		return nil, fmt.Errorf("NewForm: Unable to create new form: %v", insertErr)
+	if err := uniqueID.ValidatedWellFormedID(params.ParentTableID); err != nil {
+		return nil, fmt.Errorf("Can't create new form: invalid parent table: %v", err)
 	}
 
-	log.Printf("NewForm: Created new form: id= %v, name='%v'", formID, sanitizedName)
+	newForm := Form{ParentTableID: params.ParentTableID,
+		FormID: uniqueID.GenerateUniqueID(),
+		Name:   sanitizedName}
 
-	return &FormRef{TableID: params.TableID, FormID: formID, Name: sanitizedName}, nil
+	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, formEntityKind, &newForm)
+	if insertErr != nil {
+		return nil, fmt.Errorf("Can't create new image component: error inserting into datastore: %v", insertErr)
+	}
 
+	log.Printf("NewForm: Created new form: %+v", newForm)
+
+	return &newForm, nil
 }
 
 type GetFormParams struct {
 	FormID string `json:"formID"`
 }
 
-func GetFormRef(appEngContext appengine.Context, params GetFormParams) (*FormRef, error) {
+func GetForm(appEngContext appengine.Context, params GetFormParams) (*Form, error) {
 
 	var form Form
-	if getErr := datastoreWrapper.GetEntity(appEngContext, params.FormID, &form); getErr != nil {
-		return nil, fmt.Errorf("GetForm: Unable to get form from datastore: error = %v", getErr)
+
+	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, formEntityKind,
+		formIDFieldName, params.FormID, &form); getErr != nil {
+		return nil, fmt.Errorf("getBarChart: Unable to get form from datastore: error = %v", getErr)
 	}
 
-	tableID, getTableIDErr := datastoreWrapper.GetParentID(params.FormID, table.TableEntityKind)
-	if getTableIDErr != nil {
-		return nil, fmt.Errorf("GetForm: Unable to parent table ID: error = %v", getTableIDErr)
-	}
-
-	formRef := FormRef{TableID: tableID, FormID: params.FormID, Name: form.Name}
-
-	return &formRef, nil
+	return &form, nil
 }
 
-func getAllForms(appEngContext appengine.Context, parentTableID string) ([]FormRef, error) {
+func getAllForms(appEngContext appengine.Context, parentTableID string) ([]Form, error) {
 
 	var forms []Form
-	formIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentTableID, formEntityKind, &forms)
+
+	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, parentTableID,
+		formEntityKind, formParentTableFieldName, &forms)
 	if getErr != nil {
-		return nil, fmt.Errorf("Unable to retrieve forms: table id=%v", parentTableID)
+		return nil, fmt.Errorf("Unable to retrieve form: table id=%v", parentTableID)
 	}
 
-	formRefs := make([]FormRef, len(forms))
-	for formIter, currForm := range forms {
-		formID := formIDs[formIter]
-
-		formRefs[formIter] = FormRef{
-			FormID: formID,
-			Name:   currForm.Name}
-	} // for each form
-
-	return formRefs, nil
+	return forms, nil
 
 }

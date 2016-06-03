@@ -6,8 +6,6 @@ import (
 	"log"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/datastoreWrapper"
-	"resultra/datasheet/server/table"
 	"strings"
 )
 
@@ -40,8 +38,8 @@ func preprocessCalcFieldFormula(compileParams formulaCompileParams) (string, err
 	}
 
 	fieldRefFieldIDMap := FieldNameReplacementMap{}
-	for fieldRefName, fieldRef := range fieldRefIndex.FieldRefsByRefName {
-		fieldRefFieldIDMap[fieldRefName] = fieldRef.FieldID
+	for fieldRefName, currField := range fieldRefIndex.FieldsByRefName {
+		fieldRefFieldIDMap[fieldRefName] = currField.FieldID
 	}
 
 	preprocessOutput, preprocessErr := preprocessFormulaInput(compileParams.formulaText, fieldRefFieldIDMap)
@@ -67,15 +65,15 @@ func reverseProcessCalcFieldFormula(compileParams formulaCompileParams) (string,
 			compileParams.parentTableID, indexErr)
 	}
 
-	fieldRefFieldIDMap := FieldNameReplacementMap{}
-	for _, fieldRef := range fieldRefIndex.FieldRefsByRefName {
-		fieldRefFieldIDMap[fieldRef.FieldID] = fieldRef.FieldInfo.RefName
+	fieldIDFieldRefMap := FieldNameReplacementMap{}
+	for _, currField := range fieldRefIndex.FieldsByRefName {
+		fieldIDFieldRefMap[currField.FieldID] = currField.RefName
 	}
 
 	log.Printf("reverseProcessCalcFieldFormula: Starting reverse processing of pre-processed formula text: %v",
 		compileParams.formulaText)
 
-	reverseProcessOutput, err := preprocessFormulaInput(compileParams.formulaText, fieldRefFieldIDMap)
+	reverseProcessOutput, err := preprocessFormulaInput(compileParams.formulaText, fieldIDFieldRefMap)
 	if err != nil {
 		return "", fmt.Errorf("reverseProcessCalcFieldFormula: Error loading formula: error=%v ", err)
 	}
@@ -97,12 +95,6 @@ type GetRawFormulaResult struct {
 
 func getRawFormulaText(appEngContext appengine.Context, params GetRawFormulaParams) (*GetRawFormulaResult, error) {
 
-	parentTableID, getParentErr := datastoreWrapper.GetParentID(params.FieldID, table.TableEntityKind)
-	if getParentErr != nil {
-		return nil, fmt.Errorf("getRawFormulaText: Unable to get parent table for field: field id =%v, error=%v ",
-			params.FieldID, getParentErr)
-	}
-
 	calcField, getFieldErr := field.GetField(appEngContext, params.FieldID)
 	if getFieldErr != nil {
 		return nil, fmt.Errorf("getRawFormulaText: Unable to get calculated field field: field id =%v, error=%v ",
@@ -112,7 +104,7 @@ func getRawFormulaText(appEngContext appengine.Context, params GetRawFormulaPara
 	compileParams := formulaCompileParams{
 		appEngContext:      appEngContext,
 		formulaText:        calcField.PreprocessedFormulaText,
-		parentTableID:      parentTableID,
+		parentTableID:      calcField.ParentTableID,
 		expectedResultType: calcField.Type,
 		resultFieldID:      params.FieldID}
 
@@ -203,21 +195,14 @@ type ValidationResponse struct {
 
 func validateFormulaText(appEngContext appengine.Context, validationParams ValidateFormulaParams) *ValidationResponse {
 
-	parentTableID, getParentErr := datastoreWrapper.GetParentID(validationParams.FieldID, table.TableEntityKind)
-	if getParentErr != nil {
-		errWithPrefixMsg := fmt.Errorf("validateFormulaText: Unable to get parent table for field: field id =%v, error=%v ",
-			validationParams.FieldID, getParentErr)
-		return &ValidationResponse{IsValidFormula: false, ErrorMsg: errWithPrefixMsg.Error()}
-	}
-
-	fieldRef, getFieldErr := field.GetFieldRef(appEngContext, validationParams.FieldID)
+	formulaField, getFieldErr := field.GetField(appEngContext, validationParams.FieldID)
 	if getFieldErr != nil {
 		errMsg := fmt.Sprintf("validateFormulaText: Unable to get  retrieve field: error=%v ", getFieldErr)
 		return &ValidationResponse{IsValidFormula: false, ErrorMsg: errMsg}
 	} else {
-		if !fieldRef.FieldInfo.IsCalcField {
+		if !formulaField.IsCalcField {
 			errorMsg := fmt.Sprintf("Formulas only work with calculated fields, got a regular field: %v",
-				fieldRef.FieldInfo.Name)
+				formulaField.Name)
 			return &ValidationResponse{IsValidFormula: false, ErrorMsg: errorMsg}
 		}
 	}
@@ -225,9 +210,9 @@ func validateFormulaText(appEngContext appengine.Context, validationParams Valid
 	compileParams := formulaCompileParams{
 		appEngContext:      appEngContext,
 		formulaText:        validationParams.FormulaText,
-		parentTableID:      parentTableID,
-		expectedResultType: fieldRef.FieldInfo.Type,
-		resultFieldID:      fieldRef.FieldID}
+		parentTableID:      formulaField.ParentTableID,
+		expectedResultType: formulaField.Type,
+		resultFieldID:      formulaField.FieldID}
 
 	_, compileErr := compileAndEncodeFormula(compileParams)
 	if compileErr != nil {

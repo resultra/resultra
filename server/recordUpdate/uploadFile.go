@@ -11,11 +11,11 @@ import (
 )
 
 type UploadFile struct {
-	Name             string           `json:"name"`
-	Size             int              `json:"size"`
-	Error            string           `json"error,omitempty"`
-	Url              string           `json:"url"`
-	UpdatedRecordRef record.RecordRef `json:"updatedRecordRef"`
+	Name          string        `json:"name"`
+	Size          int           `json:"size"`
+	Error         string        `json"error,omitempty"`
+	Url           string        `json:"url"`
+	UpdatedRecord record.Record `json:"updatedRecord"`
 }
 
 type UploadFileResponse struct {
@@ -46,18 +46,18 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 	}
 
 	appEngContext := appengine.NewContext(req)
-	updatedRecordRef, updateErr := setRecordFileNameFieldValue(appEngContext,
+	updatedRecord, updateErr := setRecordFileNameFieldValue(appEngContext,
 		req.FormValue("recordID"), req.FormValue("fieldID"), cloudFileName)
 	if updateErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to update record for newly uploaded file: %v", updateErr)
 	}
 
 	uploadFile := UploadFile{
-		Name:             cloudFileName,
-		Size:             uploadInfo.FileLength,
-		Error:            "",
-		Url:              signedURL,
-		UpdatedRecordRef: *updatedRecordRef}
+		Name:          cloudFileName,
+		Size:          uploadInfo.FileLength,
+		Error:         "",
+		Url:           signedURL,
+		UpdatedRecord: *updatedRecord}
 	uploadResponse := UploadFileResponse{Files: []UploadFile{uploadFile}}
 
 	return &uploadResponse, nil

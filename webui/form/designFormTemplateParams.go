@@ -32,7 +32,7 @@ type DesignFormTemplateParams struct {
 
 var designFormTemplateParams DesignFormTemplateParams
 
-func createDesignFormTemplateParams(formRef *form.FormRef) DesignFormTemplateParams {
+func createDesignFormTemplateParams(formToDesign *form.Form) DesignFormTemplateParams {
 
 	formParams := FormTemplateParams{
 		NamePanelParams:   propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Form Name", PanelID: "formName"},
@@ -40,9 +40,9 @@ func createDesignFormTemplateParams(formRef *form.FormRef) DesignFormTemplatePar
 
 	templParams := DesignFormTemplateParams{
 		Title:            "Design Form",
-		FormID:           formRef.FormID,
-		TableID:          formRef.TableID,
-		FormName:         formRef.Name,
+		FormID:           formToDesign.FormID,
+		TableID:          formToDesign.ParentTableID,
+		FormName:         formToDesign.Name,
 		CheckboxParams:   checkBox.TemplateParams,
 		DatePickerParams: datePicker.TemplateParams,
 		TextBoxParams:    textBox.TemplateParams,

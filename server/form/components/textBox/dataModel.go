@@ -2,26 +2,25 @@ package textBox
 
 import (
 	"appengine"
-	"appengine/datastore"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/datastoreWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const textBoxEntityKind string = "TextBox"
 
 type TextBox struct {
-	Field    *datastore.Key
-	Geometry common.LayoutGeometry
+	ParentFormID string `json:"parentID"`
+	TextBoxID    string `json:"textBoxID"`
+	FieldID      string `json:"fieldID"`
+	Geometry     common.LayoutGeometry
 }
 
-type TextBoxRef struct {
-	TextBoxID string                `json:"textBoxID"`
-	FieldRef  field.FieldRef        `json:"fieldRef"`
-	Geometry  common.LayoutGeometry `json:"geometry"`
-}
+const textBoxParentFormIDFieldName string = "ParentFormID"
+const textBoxTextBoxIDFieldName string = "TextBoxID"
 
 type NewTextBoxParams struct {
 	ParentID string                `json:"parentID"`
@@ -39,93 +38,71 @@ func validTextBoxFieldType(fieldType string) bool {
 	}
 }
 
-func saveNewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*TextBoxRef, error) {
+func saveNewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*TextBox, error) {
 
 	if !common.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, params.FieldID)
+	field, fieldErr := field.GetField(appEngContext, params.FieldID)
 	if fieldErr != nil {
-		return nil, fmt.Errorf("NewTextBox: Can't text box with field ID = '%v': datastore error=%v",
+		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)
 	}
 
-	if !validTextBoxFieldType(fieldRef.FieldInfo.Type) {
-		return nil, fmt.Errorf("NewTextBox: Invalid field type: expecting text or number field, got %v", fieldRef.FieldInfo.Type)
+	if !validTextBoxFieldType(field.Type) {
+		return nil, fmt.Errorf("NewTextBox: Invalid field type: expecting text or number field, got %v", field.Type)
 	}
 
-	newTextBox := TextBox{Field: fieldKey, Geometry: params.Geometry}
-
-	textBoxID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.ParentID, textBoxEntityKind, &newTextBox)
-	if insertErr != nil {
-		return nil, insertErr
-	}
-
-	textBoxRef := TextBoxRef{
-		TextBoxID: textBoxID,
-		FieldRef:  *fieldRef,
+	newTextBox := TextBox{ParentFormID: params.ParentID,
+		FieldID:   params.FieldID,
+		TextBoxID: uniqueID.GenerateUniqueID(),
 		Geometry:  params.Geometry}
 
-	log.Printf("INFO: API: NewLayout: Created new Layout container: id=%v params=%+v", textBoxID, params)
+	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, textBoxEntityKind, &newTextBox)
+	if insertErr != nil {
+		return nil, fmt.Errorf("Can't create new text box component: error inserting into datastore: %v", insertErr)
+	}
 
-	return &textBoxRef, nil
+	log.Printf("INFO: API: NewLayout: Created new Layout container: %+v", newTextBox)
+
+	return &newTextBox, nil
 
 }
 
 func getTextBox(appEngContext appengine.Context, textBoxID string) (*TextBox, error) {
 
 	var textBox TextBox
-	if getErr := datastoreWrapper.GetEntity(appEngContext, textBoxID, &textBox); getErr != nil {
-		return nil, fmt.Errorf("getBarChart: Unable to get bar chart from datastore: error = %v", getErr)
+
+	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, textBoxEntityKind,
+		textBoxTextBoxIDFieldName, textBoxID, &textBox); getErr != nil {
+		return nil, fmt.Errorf("getBarChart: Unable to image container from datastore: error = %v", getErr)
 	}
+
 	return &textBox, nil
 }
 
-func GetTextBoxes(appEngContext appengine.Context, parentFormID string) ([]TextBoxRef, error) {
+func GetTextBoxes(appEngContext appengine.Context, parentFormID string) ([]TextBox, error) {
 
 	var textBoxes []TextBox
-	textBoxIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentFormID, textBoxEntityKind, &textBoxes)
+
+	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, parentFormID,
+		textBoxEntityKind, textBoxParentFormIDFieldName, &textBoxes)
 	if getErr != nil {
-		return nil, fmt.Errorf("Unable to retrieve layout containers: form id=%v", parentFormID)
+		return nil, fmt.Errorf("Unable to retrieve text box components: form id=%v", parentFormID)
 	}
 
-	textBoxRefs := make([]TextBoxRef, len(textBoxes))
-	for textBoxIter, currTextBox := range textBoxes {
-
-		textBoxID := textBoxIDs[textBoxIter]
-
-		fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, currTextBox.Field)
-		if fieldErr != nil {
-			return nil, fmt.Errorf("GetTextBoxes: Error retrieving field for text box: error = %v", fieldErr)
-		}
-
-		textBoxRefs[textBoxIter] = TextBoxRef{
-			TextBoxID: textBoxID,
-			FieldRef:  *fieldRef,
-			Geometry:  currTextBox.Geometry}
-
-	} // for each text box
-	return textBoxRefs, nil
+	return textBoxes, nil
 
 }
 
-func updateExistingTextBox(appEngContext appengine.Context, textBoxID string, updatedTextBox *TextBox) (*TextBoxRef, error) {
+func updateExistingTextBox(appEngContext appengine.Context, textBoxID string, updatedTextBox *TextBox) (*TextBox, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext, textBoxID, updatedTextBox); updateErr != nil {
-		return nil, fmt.Errorf("updateExistingTextBox: Error updating text box: error = %v", updateErr)
+	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
+		textBoxID, textBoxEntityKind, textBoxTextBoxIDFieldName, updatedTextBox); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingHtmlEditor: Error updating text box: error = %v", updateErr)
 	}
 
-	fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, updatedTextBox.Field)
-	if fieldErr != nil {
-		return nil, fmt.Errorf("updateExistingTextBox: Error retrieving field for text box: error = %v", fieldErr)
-	}
-
-	textBoxRef := TextBoxRef{
-		TextBoxID: textBoxID,
-		FieldRef:  *fieldRef,
-		Geometry:  updatedTextBox.Geometry}
-
-	return &textBoxRef, nil
+	return updatedTextBox, nil
 
 }

@@ -23,7 +23,7 @@ type CheckBoxPropUpdater interface {
 	updateProps(checkBox *CheckBox) error
 }
 
-func updateCheckBoxProps(appEngContext appengine.Context, propUpdater CheckBoxPropUpdater) (*CheckBoxRef, error) {
+func updateCheckBoxProps(appEngContext appengine.Context, propUpdater CheckBoxPropUpdater) (*CheckBox, error) {
 
 	// Retrieve the bar chart from the data store
 	checkBoxForUpdate, getErr := getCheckBox(appEngContext, propUpdater.getCheckBoxID())
@@ -35,12 +35,12 @@ func updateCheckBoxProps(appEngContext appengine.Context, propUpdater CheckBoxPr
 		return nil, fmt.Errorf("updateCheckBoxProps: Unable to update existing check box properties: %v", propUpdateErr)
 	}
 
-	checkBoxRef, updateErr := updateExistingCheckBox(appEngContext, propUpdater.getCheckBoxID(), checkBoxForUpdate)
+	checkBox, updateErr := updateExistingCheckBox(appEngContext, propUpdater.getCheckBoxID(), checkBoxForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateCheckBoxProps: Unable to update existing check box properties: datastore update error =  %v", updateErr)
 	}
 
-	return checkBoxRef, nil
+	return checkBox, nil
 }
 
 type CheckBoxResizeParams struct {

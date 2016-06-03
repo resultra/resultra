@@ -13,23 +13,17 @@ type BarChartDataRow struct {
 }
 
 type BarChartData struct {
-	BarChartID  string            `json:"barChartID"`
-	BarChartRef BarChartRef       `json:"barChartRef"`
-	Title       string            `json:"title"`
-	XAxisTitle  string            `json:"xAxisTitle"`
-	YAxisTitle  string            `json:"yAxisTitle"`
-	DataRows    []BarChartDataRow `json:"dataRows"`
+	BarChartID string            `json:"barChartID"`
+	BarChart   BarChart          `json:"barChart"`
+	Title      string            `json:"title"`
+	XAxisTitle string            `json:"xAxisTitle"`
+	YAxisTitle string            `json:"yAxisTitle"`
+	DataRows   []BarChartDataRow `json:"dataRows"`
 }
 
-func getOneBarChartData(appEngContext appengine.Context, params BarChartUniqueID, barChart *BarChart) (*BarChartData, error) {
+func getOneBarChartData(appEngContext appengine.Context, barChart *BarChart) (*BarChartData, error) {
 
-	barChartRef, refErr := getBarChartRef(appEngContext, params, barChart)
-	if refErr != nil {
-		return nil, fmt.Errorf("getDashboardBarChartsData: Error getting bar chart reference: %v", refErr)
-
-	}
-
-	tableID := barChart.DataSrcTable.Encode()
+	tableID := barChart.DataSrcTableID
 
 	// TODO - Store the list of filters with the bar chart and include it in the query.
 	filterIDs := []string{}
@@ -53,25 +47,25 @@ func getOneBarChartData(appEngContext appengine.Context, params BarChartUniqueID
 	}
 
 	barChartData := BarChartData{
-		BarChartID:  barChartRef.BarChartID,
-		BarChartRef: *barChartRef,
-		Title:       barChartRef.Title,
-		XAxisTitle:  valGroupingResult.GroupingLabel,
-		YAxisTitle:  "Count",
-		DataRows:    dataRows}
+		BarChartID: barChart.BarChartID,
+		BarChart:   *barChart,
+		Title:      barChart.Title,
+		XAxisTitle: valGroupingResult.GroupingLabel,
+		YAxisTitle: "Count",
+		DataRows:   dataRows}
 
 	return &barChartData, nil
 
 }
 
-func GetBarChartData(appEngContext appengine.Context, params BarChartUniqueID) (*BarChartData, error) {
+func GetBarChartData(appEngContext appengine.Context, barChartID string) (*BarChartData, error) {
 
-	barChart, getBarChartErr := getBarChart(appEngContext, params)
+	barChart, getBarChartErr := getBarChart(appEngContext, barChartID)
 	if getBarChartErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart: %v", getBarChartErr)
 	}
 
-	barChartData, dataErr := getOneBarChartData(appEngContext, params, barChart)
+	barChartData, dataErr := getOneBarChartData(appEngContext, barChart)
 	if dataErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart data: %v", dataErr)
 	}
@@ -83,22 +77,17 @@ func GetBarChartData(appEngContext appengine.Context, params BarChartUniqueID) (
 func GetDashboardBarChartsData(appEngContext appengine.Context, parentDashboardID string) ([]BarChartData, error) {
 
 	var barCharts []BarChart
-	barChartIDs, getBarChartsErr := datastoreWrapper.GetAllChildEntities(appEngContext,
-		parentDashboardID, barChartEntityKind, &barCharts)
-	if getBarChartsErr != nil {
-		return nil, fmt.Errorf("getDashboardBarChartsData: unable to retrieve bar charts: %v", getBarChartsErr)
+
+	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, parentDashboardID,
+		barChartEntityKind, barChartParentDashboardIDFieldName, &barCharts)
+	if getErr != nil {
+		return nil, fmt.Errorf("Unable to retrieve text box components: form id=%v", parentDashboardID)
 	}
 
 	var barChartsData []BarChartData
-	for barChartIndex, barChart := range barCharts {
+	for _, barChart := range barCharts {
 
-		barChartID := barChartIDs[barChartIndex]
-
-		params := BarChartUniqueID{
-			ParentDashboardID: parentDashboardID,
-			BarChartID:        barChartID}
-
-		barChartData, dataErr := getOneBarChartData(appEngContext, params, &barChart)
+		barChartData, dataErr := getOneBarChartData(appEngContext, &barChart)
 		if dataErr != nil {
 			return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart data: %v", dataErr)
 		}

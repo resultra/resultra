@@ -2,26 +2,25 @@ package image
 
 import (
 	"appengine"
-	"appengine/datastore"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/datastoreWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const imageEntityKind string = "Image"
 
 type Image struct {
-	Field    *datastore.Key
-	Geometry common.LayoutGeometry
+	ParentFormID string `json:"parentFormID"`
+	ImageID      string `json:"imageID"`
+	FieldID      string `json:"fieldID"`
+	Geometry     common.LayoutGeometry
 }
 
-type ImageRef struct {
-	ImageID  string                `json:"imageID"`
-	FieldRef field.FieldRef        `json:"fieldRef"`
-	Geometry common.LayoutGeometry `json:"geometry"`
-}
+const imageParentFormIDFieldName string = "ParentFormID"
+const imageIDFieldName string = "ImageID"
 
 type NewImageParams struct {
 	ParentID string                `json:"parentID"`
@@ -37,93 +36,69 @@ func validImageFieldType(fieldType string) bool {
 	}
 }
 
-func saveNewImage(appEngContext appengine.Context, params NewImageParams) (*ImageRef, error) {
+func saveNewImage(appEngContext appengine.Context, params NewImageParams) (*Image, error) {
 
 	if !common.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, params.FieldID)
+	field, fieldErr := field.GetField(appEngContext, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)
 	}
 
-	if !validImageFieldType(fieldRef.FieldInfo.Type) {
-		return nil, fmt.Errorf("NewImage: Invalid field type: expecting file field, got %v", fieldRef.FieldInfo.Type)
+	if !validImageFieldType(field.Type) {
+		return nil, fmt.Errorf("NewImage: Invalid field type: expecting file field, got %v", field.Type)
 	}
 
-	newImage := Image{Field: fieldKey, Geometry: params.Geometry}
-
-	imageID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.ParentID, imageEntityKind, &newImage)
-	if insertErr != nil {
-		return nil, insertErr
-	}
-
-	imageRef := ImageRef{
-		ImageID:  imageID,
-		FieldRef: *fieldRef,
+	newImage := Image{ParentFormID: params.ParentID,
+		FieldID:  params.FieldID,
+		ImageID:  uniqueID.GenerateUniqueID(),
 		Geometry: params.Geometry}
 
-	log.Printf("INFO: API: saveNewImage: Created new image container: id=%v params=%+v", imageID, params)
+	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, imageEntityKind, &newImage)
+	if insertErr != nil {
+		return nil, fmt.Errorf("Can't create new image component: error inserting into datastore: %v", insertErr)
+	}
 
-	return &imageRef, nil
+	log.Printf("INFO: API: saveNewImage: Created new image component: %+v", newImage)
+
+	return &newImage, nil
 
 }
 
 func getImage(appEngContext appengine.Context, imageID string) (*Image, error) {
 
 	var image Image
-	if getErr := datastoreWrapper.GetEntity(appEngContext, imageID, &image); getErr != nil {
+	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, imageEntityKind,
+		imageIDFieldName, imageID, &image); getErr != nil {
 		return nil, fmt.Errorf("getBarChart: Unable to image container from datastore: error = %v", getErr)
 	}
 	return &image, nil
 }
 
-func GetImages(appEngContext appengine.Context, parentFormID string) ([]ImageRef, error) {
+func GetImages(appEngContext appengine.Context, parentFormID string) ([]Image, error) {
 
-	var imagees []Image
-	imageIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentFormID, imageEntityKind, &imagees)
+	var images []Image
+
+	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, parentFormID,
+		imageEntityKind, imageParentFormIDFieldName, &images)
 	if getErr != nil {
 		return nil, fmt.Errorf("Unable to retrieve layout containers: form id=%v", parentFormID)
 	}
 
-	imageRefs := make([]ImageRef, len(imagees))
-	for imageIter, currImage := range imagees {
-
-		imageID := imageIDs[imageIter]
-
-		fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, currImage.Field)
-		if fieldErr != nil {
-			return nil, fmt.Errorf("GetImagees: Error retrieving field for image: error = %v", fieldErr)
-		}
-
-		imageRefs[imageIter] = ImageRef{
-			ImageID:  imageID,
-			FieldRef: *fieldRef,
-			Geometry: currImage.Geometry}
-
-	} // for each image
-	return imageRefs, nil
+	return images, nil
 
 }
 
-func updateExistingImage(appEngContext appengine.Context, imageID string, updatedImage *Image) (*ImageRef, error) {
+func updateExistingImage(appEngContext appengine.Context, imageID string, updatedImage *Image) (*Image, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext, imageID, updatedImage); updateErr != nil {
-		return nil, fmt.Errorf("updateExistingImage: Error updating image: error = %v", updateErr)
+	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
+		imageID, imageEntityKind, imageIDFieldName, updatedImage); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingImage: Error updating existing image component: error = %v", updateErr)
 	}
 
-	fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, updatedImage.Field)
-	if fieldErr != nil {
-		return nil, fmt.Errorf("updateExistingImage: Error retrieving field for image: error = %v", fieldErr)
-	}
-
-	imageRef := ImageRef{
-		ImageID:  imageID,
-		FieldRef: *fieldRef,
-		Geometry: updatedImage.Geometry}
-
-	return &imageRef, nil
+	return updatedImage, nil
 
 }

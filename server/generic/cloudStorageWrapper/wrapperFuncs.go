@@ -17,7 +17,7 @@ import (
 	"log"
 	"net/http"
 	"path"
-	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/uniqueID"
 	"time"
 )
 
@@ -73,7 +73,7 @@ func GetSignedURL(bucketName string, fileName string, authConfig *jwt.Config, ex
 // is unique versus other files stored in the same cloud bucket.
 func UniqueCloudFileNameFromUserFileName(userFileName string) string {
 
-	uniqueIDStr := generic.GenerateUniqueID()
+	uniqueIDStr := uniqueID.GenerateUniqueID()
 
 	fileExt := path.Ext(userFileName)
 

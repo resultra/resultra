@@ -39,13 +39,13 @@ func designForm(w http.ResponseWriter, r *http.Request) {
 	log.Println("Design Form: editing for form with ID = ", formID)
 
 	appEngContext := appengine.NewContext(r)
-	formRef, getErr := form.GetFormRef(appEngContext, form.GetFormParams{formID})
+	formToDesign, getErr := form.GetForm(appEngContext, form.GetFormParams{formID})
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return
 	}
 
-	templParams := createDesignFormTemplateParams(formRef)
+	templParams := createDesignFormTemplateParams(formToDesign)
 
 	err := designFormTemplates.ExecuteTemplate(w, "designForm", templParams)
 	if err != nil {

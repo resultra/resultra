@@ -23,7 +23,7 @@ type TextBoxPropUpdater interface {
 	updateProps(textBox *TextBox) error
 }
 
-func updateTextBoxProps(appEngContext appengine.Context, propUpdater TextBoxPropUpdater) (*TextBoxRef, error) {
+func updateTextBoxProps(appEngContext appengine.Context, propUpdater TextBoxPropUpdater) (*TextBox, error) {
 
 	// Retrieve the bar chart from the data store
 	textBoxForUpdate, getErr := getTextBox(appEngContext, propUpdater.getTextBoxID())
@@ -35,12 +35,12 @@ func updateTextBoxProps(appEngContext appengine.Context, propUpdater TextBoxProp
 		return nil, fmt.Errorf("UpdateTextBoxProps: Unable to update existing text box properties: %v", propUpdateErr)
 	}
 
-	textBoxRef, updateErr := updateExistingTextBox(appEngContext, propUpdater.getTextBoxID(), textBoxForUpdate)
+	textBox, updateErr := updateExistingTextBox(appEngContext, propUpdater.getTextBoxID(), textBoxForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateTextBoxProps: Unable to update existing text box properties: datastore update error =  %v", updateErr)
 	}
 
-	return textBoxRef, nil
+	return textBox, nil
 }
 
 type TextBoxResizeParams struct {

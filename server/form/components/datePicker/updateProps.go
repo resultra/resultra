@@ -23,7 +23,7 @@ type DatePickerPropUpdater interface {
 	updateProps(datePicker *DatePicker) error
 }
 
-func updateDatePickerProps(appEngContext appengine.Context, propUpdater DatePickerPropUpdater) (*DatePickerRef, error) {
+func updateDatePickerProps(appEngContext appengine.Context, propUpdater DatePickerPropUpdater) (*DatePicker, error) {
 
 	// Retrieve the bar chart from the data store
 	datePickerForUpdate, getErr := getDatePicker(appEngContext, propUpdater.getDatePickerID())
@@ -35,12 +35,12 @@ func updateDatePickerProps(appEngContext appengine.Context, propUpdater DatePick
 		return nil, fmt.Errorf("updateDatePickerProps: Unable to update existing date picker properties: %v", propUpdateErr)
 	}
 
-	datePickerRef, updateErr := updateExistingDatePicker(appEngContext, propUpdater.getDatePickerID(), datePickerForUpdate)
+	datePicker, updateErr := updateExistingDatePicker(appEngContext, propUpdater.getDatePickerID(), datePickerForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateDatePickerProps: Unable to update existing date picker properties: datastore update error =  %v", updateErr)
 	}
 
-	return datePickerRef, nil
+	return datePicker, nil
 }
 
 type DatePickerResizeParams struct {

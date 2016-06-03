@@ -13,11 +13,11 @@ import (
 // be defined for each different property update. The goal is to minimize code bloat of property
 // setting code and also make property updating code more uniform and less error prone.
 type BarChartPropertyUpdater interface {
-	uniqueBarChartID() BarChartUniqueID
+	uniqueBarChartID() string
 	updateBarChartProps(barChart *BarChart) error
 }
 
-func UpdateBarChartProps(appEngContext appengine.Context, propUpdater BarChartPropertyUpdater) (*BarChartRef, error) {
+func UpdateBarChartProps(appEngContext appengine.Context, propUpdater BarChartPropertyUpdater) (*BarChart, error) {
 
 	// Retrieve the bar chart from the data store
 	barChartForUpdate, getBarChartErr := getBarChart(appEngContext, propUpdater.uniqueBarChartID())
@@ -32,12 +32,12 @@ func UpdateBarChartProps(appEngContext appengine.Context, propUpdater BarChartPr
 	}
 
 	// Save the updated bar chart back to the data store
-	barChartRef, updateErr := updateExistingBarChart(appEngContext, propUpdater.uniqueBarChartID(), barChartForUpdate)
+	updatedBarChart, updateErr := updateExistingBarChart(appEngContext, propUpdater.uniqueBarChartID(), barChartForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateBarChartProps: Unable to update existing bar chart: %v", updateErr)
 	}
 
-	return barChartRef, nil
+	return updatedBarChart, nil
 
 }
 

@@ -2,43 +2,37 @@ package recordFilter
 
 import (
 	"appengine"
-	"appengine/datastore"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/datastoreWrapper"
-	"resultra/datasheet/server/table"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const recordFilterRuleEntityKind string = "RecordFilterRule"
 const recordFilterEntityKind string = "RecordFilter"
 
 type RecordFilter struct {
-	Name string
+	ParentTableID string `json:"parentTableID"`
+	FilterID      string `json:"filterID"`
+	Name          string `json:"name"`
 	/* Rules are managed as child entities */
 }
 
-type RecordFilterRef struct {
-	FilterID string `json:"filterID"`
-	Name     string `json:"name"`
-}
+const filterParentTableIDFieldName string = "ParentTableID"
+const recordFilterIDFieldName string = "FilterID"
 
 type RecordFilterRule struct {
-	FilterRuleID    string
-	Field           *datastore.Key
-	RuleID          string
-	TextRuleParam   string
-	NumberRuleParam float64
+	ParentFilterID  string  `json:"parentFilterID"`
+	FilterRuleID    string  `json:"filterRuleID"`
+	FieldID         string  `json:"fieldID"`
+	RuleID          string  `json:"ruleID"`
+	TextRuleParam   string  `json:"textRuleParam"`
+	NumberRuleParam float64 `json:"numberRuleParam"`
 }
 
-type FilterRuleRef struct {
-	FilterRuleID    string         `json:"filterRuleID"`
-	FieldRef        field.FieldRef `json:"fieldRef"`
-	FilterRuleDef   FilterRuleDef  `json:"filterRuleDef"`
-	TextRuleParam   *string        `json:"textRuleParam,omitempty"`
-	NumberRuleParam *float64       `json:"numberRuleParam,omitempty"`
-}
+const filterRuleParentFilterIDFieldName string = "ParentFilterID"
 
 type NewFilterParams struct {
 	ParentTableID string `json:"parentTableID"`
@@ -47,11 +41,9 @@ type NewFilterParams struct {
 
 func getExistingFilterNames(appEngContext appengine.Context, parentTableID string) ([]string, error) {
 
-	var allFilters []RecordFilter
-	_, err := datastoreWrapper.GetAllChildEntities(appEngContext, parentTableID,
-		recordFilterEntityKind, &allFilters)
-	if err != nil {
-		return nil, fmt.Errorf("validateUnusedFilterName: Unable to retrieve fields from datastore: datastore error =%v", err)
+	var allFilters, getFiltersErr = getFilterList(appEngContext, parentTableID)
+	if getFiltersErr != nil {
+		return nil, fmt.Errorf("Unable to retrieve filters: %v", getFiltersErr)
 	}
 
 	existingNames := []string{}
@@ -108,11 +100,7 @@ func genUnusedFilterName(appEngContext appengine.Context, parentTableID string, 
 
 }
 
-func newFilter(appEngContext appengine.Context, params NewFilterParams) (*RecordFilterRef, error) {
-
-	if tableIDErr := datastoreWrapper.ValidateEntityKind(params.ParentTableID, table.TableEntityKind); tableIDErr != nil {
-		return nil, fmt.Errorf("newFilter: %v", tableIDErr)
-	}
+func newFilter(appEngContext appengine.Context, params NewFilterParams) (*RecordFilter, error) {
 
 	sanitizedName, sanitizeErr := generic.SanitizeName(params.Name)
 	if sanitizeErr != nil {
@@ -123,36 +111,38 @@ func newFilter(appEngContext appengine.Context, params NewFilterParams) (*Record
 		return nil, fmt.Errorf("newFilter: %v", validateNameErr)
 	}
 
-	newFilter := RecordFilter{Name: sanitizedName}
+	newFilter := RecordFilter{
+		ParentTableID: params.ParentTableID,
+		FilterID:      uniqueID.GenerateUniqueID(),
+		Name:          sanitizedName}
 
-	filterID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.ParentTableID, recordFilterEntityKind, &newFilter)
+	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, recordFilterEntityKind, &newFilter)
 	if insertErr != nil {
-		return nil, insertErr
+		return nil, fmt.Errorf("Can't create new text box component: error inserting into datastore: %v", insertErr)
 	}
 
-	filterRef := RecordFilterRef{FilterID: filterID, Name: newFilter.Name}
-
-	return &filterRef, nil
+	return &newFilter, nil
 }
 
 func getFilter(appEngContext appengine.Context, filterID string) (*RecordFilter, error) {
 	var filterGetDest RecordFilter
-	if getErr := datastoreWrapper.GetEntity(appEngContext, filterID, &filterGetDest); getErr != nil {
-		return nil, fmt.Errorf("getField: Unabled to get filter: id = %v: datastore err=%v", filterID, getErr)
+
+	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, recordFilterEntityKind,
+		recordFilterIDFieldName, filterID, &filterGetDest); getErr != nil {
+		return nil, fmt.Errorf("getBarChart: Unable to image container from datastore: error = %v", getErr)
 	}
+
 	return &filterGetDest, nil
 }
 
-func updateExistingFilter(appEngContext appengine.Context, filterID string, updatedFilter *RecordFilter) (*RecordFilterRef, error) {
+func updateExistingFilter(appEngContext appengine.Context, filterID string, updatedFilter *RecordFilter) (*RecordFilter, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext,
-		filterID, updatedFilter); updateErr != nil {
-		return nil, fmt.Errorf("updateExistingFilter: Can't update filter: Error updating existing filter: err = %v", updateErr)
+	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
+		filterID, recordFilterEntityKind, recordFilterIDFieldName, updatedFilter); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingHtmlEditor: Error updating filter: error = %v", updateErr)
 	}
 
-	filterRef := RecordFilterRef{FilterID: filterID, Name: updatedFilter.Name}
-
-	return &filterRef, nil
+	return updatedFilter, nil
 
 }
 
@@ -161,7 +151,7 @@ type NewFilterWithPrefixParams struct {
 	NamePrefix    string `json:"namePrefix"`
 }
 
-func newFilterWithPrefix(appEngContext appengine.Context, params NewFilterWithPrefixParams) (*RecordFilterRef, error) {
+func newFilterWithPrefix(appEngContext appengine.Context, params NewFilterWithPrefixParams) (*RecordFilter, error) {
 	sanitizedPrefix, sanitizeErr := generic.SanitizeName(params.NamePrefix)
 	if sanitizeErr != nil {
 		return nil, fmt.Errorf("newFilterWithPrefix: %v", sanitizeErr)
@@ -179,63 +169,29 @@ type GetFilterRulesParams struct {
 	ParentFilterID string `json:"parentFilterID"`
 }
 
-func getRecordFilterRuleRefs(appEngContext appengine.Context, params GetFilterRulesParams) ([]FilterRuleRef, error) {
-
-	if err := datastoreWrapper.ValidateEntityKind(params.ParentFilterID, recordFilterEntityKind); err != nil {
-		return nil, fmt.Errorf("getRecordFilterRefs: Invalid filter ID: %v", err)
-	}
+func getRecordFilterRules(appEngContext appengine.Context, params GetFilterRulesParams) ([]RecordFilterRule, error) {
 
 	var allFilterRules []RecordFilterRule
-	filterRuleIDs, err := datastoreWrapper.GetAllChildEntities(
-		appEngContext, params.ParentFilterID, recordFilterRuleEntityKind, &allFilterRules)
-	if err != nil {
-		return nil, fmt.Errorf("getRecordFilterRefs: Unable to retrieve record filters from datastore: datastore error =%v", err)
+	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, params.ParentFilterID,
+		recordFilterRuleEntityKind, filterRuleParentFilterIDFieldName, &allFilterRules)
+	if getErr != nil {
+		return nil, fmt.Errorf("Unable to retrieve filter rule definitions: filter id=%v", params.ParentFilterID)
 	}
 
-	filterRefs := make([]FilterRuleRef, len(allFilterRules))
-	for i, currFilterRule := range allFilterRules {
-		filterRuleID := filterRuleIDs[i]
-
-		filterRuleRef, refErr := createOneFilterRef(appEngContext, filterRuleID, currFilterRule)
-		if refErr != nil {
-			return nil, fmt.Errorf("getRecordFilterRefs: Unable to create reference to filter rule: error =%v", refErr)
-		}
-
-		filterRefs[i] = *filterRuleRef
-	}
-	return filterRefs, nil
+	return allFilterRules, nil
 }
 
-type GetFilterListParams struct {
-	ParentTableID string `json:"parentTableID"`
-}
-
-func getFilterList(appEngContext appengine.Context, params GetFilterListParams) ([]RecordFilterRef, error) {
-
-	if err := datastoreWrapper.ValidateEntityKind(params.ParentTableID, table.TableEntityKind); err != nil {
-		return nil, fmt.Errorf("getFilterList: Invalid table ID: %v", err)
-	}
+func getFilterList(appEngContext appengine.Context, parentTableID string) ([]RecordFilter, error) {
 
 	var allFilters []RecordFilter
-	filterIDs, err := datastoreWrapper.GetAllChildEntities(appEngContext, params.ParentTableID,
-		recordFilterEntityKind, &allFilters)
-	if err != nil {
-		return nil, fmt.Errorf("GetRecordFilterRefs: Unable to retrieve record filters from datastore: datastore error =%v", err)
+
+	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, parentTableID,
+		recordFilterEntityKind, filterParentTableIDFieldName, &allFilters)
+	if getErr != nil {
+		return nil, fmt.Errorf("Unable to retrieve filters: parent table id=%v", parentTableID)
 	}
 
-	filterRefs := make([]RecordFilterRef, len(allFilters))
-	for currFilterIndex, currFilter := range allFilters {
-		filterID := filterIDs[currFilterIndex]
-
-		filterRef := RecordFilterRef{
-			FilterID: filterID,
-			Name:     currFilter.Name}
-
-		filterRefs[currFilterIndex] = filterRef
-
-	}
-
-	return filterRefs, nil
+	return allFilters, nil
 
 }
 
@@ -247,28 +203,22 @@ type NewFilterRuleParams struct {
 	NumberRuleParam *float64 `json:"numberRuleParam,omitempty"`
 }
 
-func newFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleParams) (*FilterRuleRef, error) {
+func newFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleParams) (*RecordFilterRule, error) {
 
-	if validateParentErr := datastoreWrapper.ValidateSameParentEntity(newRuleParams.FieldID,
-		newRuleParams.ParentFilterID, table.TableEntityKind); validateParentErr != nil {
-		return nil, fmt.Errorf("newFilterRule: Can't create new rule: %v", validateParentErr)
-	}
-
-	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, newRuleParams.FieldID)
+	filterOnField, fieldErr := field.GetField(appEngContext, newRuleParams.FieldID)
 	if fieldErr != nil {
-		return nil, fmt.Errorf("NewFilterRule: Can't get field for filter: datastore error = %v", fieldErr)
+		return nil, fmt.Errorf("NewImage: Can't create filter rule with field ID = '%v': datastore error=%v",
+			newRuleParams.FieldID, fieldErr)
 	}
 
 	// Verify there is a valid rule definition for the given field's data type, then build up the
 	// new filter based upon the rule definition and field type.
-	var newFilter RecordFilterRule
-	var newRuleDef FilterRuleDef
+	var newFilterRule RecordFilterRule
 
-	switch fieldRef.FieldInfo.Type {
+	switch filterOnField.Type {
 
 	case field.FieldTypeText:
 		ruleDef, ruleDefFound := textFieldFilterRuleDefs[newRuleParams.RuleID]
-		newRuleDef = ruleDef
 		if !ruleDefFound {
 			return nil, fmt.Errorf("NewFilterRule: No filtering rule found for rule ID = %v", newRuleParams.RuleID)
 		} else {
@@ -276,16 +226,24 @@ func newFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleP
 				if (newRuleParams.TextRuleParam == nil) || (len(*newRuleParams.TextRuleParam) == 0) {
 					return nil, fmt.Errorf("NewFilterRule: Missing filter paramater for rule ID = %v", newRuleParams.RuleID)
 				}
-				newFilter = RecordFilterRule{Field: fieldKey, RuleID: newRuleParams.RuleID,
-					TextRuleParam: *newRuleParams.TextRuleParam}
+				newFilterRule = RecordFilterRule{
+					ParentFilterID: newRuleParams.ParentFilterID,
+					FilterRuleID:   uniqueID.GenerateUniqueID(),
+					FieldID:        newRuleParams.FieldID,
+					RuleID:         newRuleParams.RuleID,
+					TextRuleParam:  *newRuleParams.TextRuleParam}
 			} else {
-				newFilter = RecordFilterRule{Field: fieldKey, RuleID: newRuleParams.RuleID, TextRuleParam: ""}
+				newFilterRule = RecordFilterRule{
+					ParentFilterID: newRuleParams.ParentFilterID,
+					FilterRuleID:   uniqueID.GenerateUniqueID(),
+					FieldID:        newRuleParams.FieldID,
+					RuleID:         newRuleParams.RuleID,
+					TextRuleParam:  ""}
 			}
 		}
 
 	case field.FieldTypeNumber:
 		ruleDef, ruleDefFound := numberFieldFilterRuleDefs[newRuleParams.RuleID]
-		newRuleDef = ruleDef
 		if !ruleDefFound {
 			return nil, fmt.Errorf("NewFilterRule: No filtering rule found for rule ID = %v", newRuleParams.RuleID)
 		} else {
@@ -293,91 +251,31 @@ func newFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleP
 				if newRuleParams.NumberRuleParam == nil {
 					return nil, fmt.Errorf("NewFilterRule: Missing filter paramater for rule ID = %v", newRuleParams.RuleID)
 				}
-				newFilter = RecordFilterRule{Field: fieldKey, RuleID: newRuleParams.RuleID,
+				newFilterRule = RecordFilterRule{
+					ParentFilterID:  newRuleParams.ParentFilterID,
+					FilterRuleID:    uniqueID.GenerateUniqueID(),
+					FieldID:         newRuleParams.FieldID,
+					RuleID:          newRuleParams.RuleID,
 					NumberRuleParam: *newRuleParams.NumberRuleParam}
 			} else {
-				newFilter = RecordFilterRule{Field: fieldKey, RuleID: newRuleParams.RuleID, NumberRuleParam: 0}
+				newFilterRule = RecordFilterRule{
+					ParentFilterID:  newRuleParams.ParentFilterID,
+					FilterRuleID:    uniqueID.GenerateUniqueID(),
+					FieldID:         newRuleParams.FieldID,
+					RuleID:          newRuleParams.RuleID,
+					NumberRuleParam: 0}
 			}
 		}
 
 	default:
-		return nil, fmt.Errorf("NewFilterRule: Filtering not supported on field type: %v", fieldRef.FieldInfo.Type)
+		return nil, fmt.Errorf("NewFilterRule: Filtering not supported on field type: %v", filterOnField.Type)
 	}
 
-	filterRuleID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext,
-		newRuleParams.ParentFilterID, recordFilterRuleEntityKind, &newFilter)
+	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, recordFilterRuleEntityKind, &newFilterRule)
 	if insertErr != nil {
-		return nil, fmt.Errorf("NewFilterRule: Can't create new filter: error inserting into datastore: %v", insertErr)
+		return nil, fmt.Errorf("Can't create new text box component: error inserting into datastore: %v", insertErr)
 	}
 
-	// Set the parameter value in returned filter rule reference. What is set in the structure
-	// depends on what type of data the filter rule works with and if the filtering rule has a parameter.
-
-	optParamVal, paramValErr := getOptionalParamValueByRuleDef(newRuleDef, newFilter)
-	if paramValErr != nil {
-		return nil, fmt.Errorf("NewFilterRule: Failed to retrieve filter rule parameter values: err=%v", paramValErr)
-	}
-
-	return &FilterRuleRef{filterRuleID, *fieldRef, newRuleDef, optParamVal.textParam, optParamVal.numberParam}, nil
-
-}
-
-type OptonalFilterRuleParamVal struct {
-	textParam   *string
-	numberParam *float64
-}
-
-// Convert the optional paramater values as stored in the datastore (via filterRule),
-// and convert them to pointer values which can be ommitted from output when
-// converting to JSON.
-func getOptionalParamValueByRuleDef(filterRuleDef FilterRuleDef,
-	filterRule RecordFilterRule) (*OptonalFilterRuleParamVal, error) {
-
-	optParamVal := OptonalFilterRuleParamVal{}
-
-	if filterRuleDef.HasParam {
-		switch filterRuleDef.DataType {
-		case field.FieldTypeText:
-			optParamVal.textParam = &filterRule.TextRuleParam
-		case field.FieldTypeNumber:
-			optParamVal.numberParam = &filterRule.NumberRuleParam
-		default:
-			return nil, fmt.Errorf("getOptionalParamValueByRuleDef: unknown rule definition data type = %v",
-				filterRuleDef.DataType)
-		} // switch
-	} // if has param
-
-	return &optParamVal, nil
-}
-
-// Convert one filter rule from the datastore into a reference which is usable by
-// API clients
-func createOneFilterRef(appEngContext appengine.Context,
-	ruleID string, filterRule RecordFilterRule) (*FilterRuleRef, error) {
-
-	fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, filterRule.Field)
-	if fieldErr != nil {
-		return nil, fmt.Errorf("createOneFilterRef: Failed to retrieve field for filter rule: field key=%+v, encode err=%v",
-			filterRule.Field, fieldErr)
-	}
-
-	filterRuleDef, ruleDefErr := getRuleDefByFieldType(fieldRef.FieldInfo.Type, filterRule.RuleID)
-	if ruleDefErr != nil {
-		return nil, fmt.Errorf("createOneFilterRef: Failed to retrieve filter rule definition: err=%v", ruleDefErr)
-	}
-
-	optParamVal, paramValErr := getOptionalParamValueByRuleDef(*filterRuleDef, filterRule)
-	if paramValErr != nil {
-		return nil, fmt.Errorf("createOneFilterRef: Failed to retrieve filter rule parameter values: err=%v", paramValErr)
-	}
-
-	filterRuleRef := FilterRuleRef{
-		FilterRuleID:    ruleID,
-		FieldRef:        *fieldRef,
-		FilterRuleDef:   *filterRuleDef,
-		TextRuleParam:   optParamVal.textParam,
-		NumberRuleParam: optParamVal.numberParam}
-
-	return &filterRuleRef, nil
+	return &newFilterRule, nil
 
 }

@@ -36,9 +36,13 @@ func newRecord(w http.ResponseWriter, r *http.Request) {
 
 }
 
+type GetRecordParams struct {
+	RecordID string `json:"recordID"`
+}
+
 func getRecord(w http.ResponseWriter, r *http.Request) {
 
-	params := RecordID{}
+	var params GetRecordParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -46,11 +50,11 @@ func getRecord(w http.ResponseWriter, r *http.Request) {
 
 	appEngCntxt := appengine.NewContext(r)
 
-	if recordRef, getErr := GetRecord(appEngCntxt, params); getErr != nil {
+	if record, getErr := GetRecord(appEngCntxt, params.RecordID); getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return
 	} else {
-		api.WriteJSONResponse(w, recordRef)
+		api.WriteJSONResponse(w, record)
 	}
 
 }

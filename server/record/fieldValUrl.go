@@ -19,7 +19,7 @@ type RecordFileFieldURLResponse struct {
 
 func getFieldValUrl(appEngCntxt appengine.Context, params GetFieldValUrlParams) (*RecordFileFieldURLResponse, error) {
 
-	recordRef, getErr := GetRecord(appEngCntxt, RecordID{params.RecordID})
+	record, getErr := GetRecord(appEngCntxt, params.RecordID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getFieldValUrl: Unabled to get record: id = %v: get err=%v", params.RecordID, getErr)
 	}
@@ -35,7 +35,7 @@ func getFieldValUrl(appEngCntxt appengine.Context, params GetFieldValUrlParams) 
 
 	// TODO check both record and field have same parent table ID
 
-	cloudFileName, fileNameErr := recordRef.FieldValues.GetTextFieldValue(params.FieldID)
+	cloudFileName, fileNameErr := record.GetTextFieldValue(params.FieldID)
 	if fileNameErr != nil {
 		return nil, fmt.Errorf(
 			"getFieldValUrl: Unabled to get record's value for field: recordID = %v field id = %v: get err=%v",

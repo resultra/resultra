@@ -5,25 +5,25 @@ import (
 	"fmt"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/datastoreWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const TableEntityKind string = "Table"
 
 type Table struct {
-	Name string
+	ParentDatabaseID string `json:"parentDatabaseID"`
+	TableID          string `json:"tableID"`
+	Name             string `json:"name"`
 }
+
+const tableParentIDFieldName string = "ParentDatabaseID"
 
 type NewTableParams struct {
 	DatabaseID string `json:'databaseID'`
 	Name       string `json:"name"`
 }
 
-type TableRef struct {
-	TableID string `json:"tableID"`
-	Name    string `json:"name"`
-}
-
-func saveNewTable(appEngContext appengine.Context, params NewTableParams) (*TableRef, error) {
+func saveNewTable(appEngContext appengine.Context, params NewTableParams) (*Table, error) {
 
 	sanitizedTableName, sanitizeErr := generic.SanitizeName(params.Name)
 	if sanitizeErr != nil {
@@ -32,38 +32,35 @@ func saveNewTable(appEngContext appengine.Context, params NewTableParams) (*Tabl
 
 	// TODO - Validate name is unique
 
-	newTable := Table{Name: sanitizedTableName}
+	if err := uniqueID.ValidatedWellFormedID(params.DatabaseID); err != nil {
+		return nil, err
+	}
 
-	tableID, insertErr := datastoreWrapper.InsertNewChildEntity(
-		appEngContext, params.DatabaseID, TableEntityKind, &newTable)
+	newTable := Table{ParentDatabaseID: params.DatabaseID, TableID: uniqueID.GenerateUniqueID(), Name: sanitizedTableName}
+
+	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, TableEntityKind, &newTable)
 	if insertErr != nil {
 		return nil, insertErr
 	}
 
-	tableRef := TableRef{
-		TableID: tableID,
-		Name:    sanitizedTableName}
-
-	return &tableRef, nil
+	return &newTable, nil
 }
 
 type GetTableListParams struct {
 	DatabaseID string `json:"databaseID"` // parent database
 }
 
-func getTableList(appEngContext appengine.Context, params GetTableListParams) ([]TableRef, error) {
+func getTableList(appEngContext appengine.Context, params GetTableListParams) ([]Table, error) {
 
 	var tables []Table
-	tablesIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, params.DatabaseID, TableEntityKind, &tables)
+
+	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, params.DatabaseID,
+		TableEntityKind, tableParentIDFieldName, &tables)
+
 	if getErr != nil {
 		return nil, fmt.Errorf("GetTableList: Unable to retrieve tables from datastore: datastore error = %v", getErr)
 	}
 
-	tableRefs := make([]TableRef, len(tables))
-	for tableIter, currTable := range tables {
-		tableID := tablesIDs[tableIter]
-		tableRefs[tableIter] = TableRef{TableID: tableID, Name: currTable.Name}
-	}
-	return tableRefs, nil
+	return tables, nil
 
 }

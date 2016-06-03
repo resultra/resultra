@@ -102,6 +102,10 @@ func newFilterWithPrefixAPI(w http.ResponseWriter, r *http.Request) {
 
 }
 
+type GetFilterListParams struct {
+	ParentTableID string `json:"parentTableID"`
+}
+
 func getFilterListAPI(w http.ResponseWriter, r *http.Request) {
 
 	var params GetFilterListParams
@@ -111,7 +115,7 @@ func getFilterListAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	filterRefs, getListErr := getFilterList(appEngCntxt, params)
+	filterRefs, getListErr := getFilterList(appEngCntxt, params.ParentTableID)
 	if getListErr != nil {
 		api.WriteErrorResponse(w, getListErr)
 		return
@@ -130,10 +134,10 @@ func getRecordFilterRulesAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	appEngCntxt := appengine.NewContext(r)
-	if filterRefs, err := getRecordFilterRuleRefs(appEngCntxt, params); err != nil {
+	if filterRules, err := getRecordFilterRules(appEngCntxt, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
-		api.WriteJSONResponse(w, filterRefs)
+		api.WriteJSONResponse(w, filterRules)
 	}
 
 }

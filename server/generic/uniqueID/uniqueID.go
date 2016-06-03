@@ -1,4 +1,4 @@
-package generic
+package uniqueID
 
 import (
 	"fmt"
@@ -21,4 +21,11 @@ func GenerateUniqueID() string {
 
 	return uniqueIDStr
 
+}
+
+func ValidatedWellFormedID(uniqueID string) error {
+	if len(uniqueID) == 0 {
+		return fmt.Errorf("ValidatedWellFormedID: Empty id")
+	}
+	return nil
 }

@@ -2,26 +2,25 @@ package checkBox
 
 import (
 	"appengine"
-	"appengine/datastore"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/datastoreWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const checkBoxEntityKind string = "CheckBox"
 
 type CheckBox struct {
-	Field    *datastore.Key
-	Geometry common.LayoutGeometry
+	ParentFormID string `json:"parentID"`
+	CheckBoxID   string `json:"checkBoxID"`
+	FieldID      string `json:"fieldID"`
+	Geometry     common.LayoutGeometry
 }
 
-type CheckBoxRef struct {
-	CheckBoxID string                `json:"checkBoxID"`
-	FieldRef   field.FieldRef        `json:"fieldRef"`
-	Geometry   common.LayoutGeometry `json:"geometry"`
-}
+const checkBoxIDFieldName string = "CheckBoxID"
+const checkBoxParentFormIDFieldName string = "ParentFormID"
 
 type NewCheckBoxParams struct {
 	ParentID string                `json:"parentID"`
@@ -37,93 +36,70 @@ func validCheckBoxFieldType(fieldType string) bool {
 	}
 }
 
-func saveNewCheckBox(appEngContext appengine.Context, params NewCheckBoxParams) (*CheckBoxRef, error) {
+func saveNewCheckBox(appEngContext appengine.Context, params NewCheckBoxParams) (*CheckBox, error) {
 
 	if !common.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, params.FieldID)
+	field, fieldErr := field.GetField(appEngContext, params.FieldID)
 	if fieldErr != nil {
-		return nil, fmt.Errorf("saveNewCheckBox: Can't text box with field ID = '%v': datastore error=%v",
+		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)
 	}
 
-	if !validCheckBoxFieldType(fieldRef.FieldInfo.Type) {
-		return nil, fmt.Errorf("saveNewCheckBox: Invalid field type: expecting bool field, got %v", fieldRef.FieldInfo.Type)
+	if !validCheckBoxFieldType(field.Type) {
+		return nil, fmt.Errorf("saveNewCheckBox: Invalid field type: expecting bool field, got %v", field.Type)
 	}
 
-	newCheckBox := CheckBox{Field: fieldKey, Geometry: params.Geometry}
-
-	checkBoxID, insertErr := datastoreWrapper.InsertNewChildEntity(appEngContext, params.ParentID, checkBoxEntityKind, &newCheckBox)
-	if insertErr != nil {
-		return nil, insertErr
-	}
-
-	checkBoxRef := CheckBoxRef{
-		CheckBoxID: checkBoxID,
-		FieldRef:   *fieldRef,
+	newCheckBox := CheckBox{ParentFormID: params.ParentID,
+		FieldID:    params.FieldID,
+		CheckBoxID: uniqueID.GenerateUniqueID(),
 		Geometry:   params.Geometry}
 
-	log.Printf("INFO: API: New Checkbox: Created new check box container: id=%v params=%+v", checkBoxID, params)
+	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, checkBoxEntityKind, &newCheckBox)
+	if insertErr != nil {
+		return nil, fmt.Errorf("Can't create new image component: error inserting into datastore: %v", insertErr)
+	}
 
-	return &checkBoxRef, nil
+	log.Printf("INFO: API: New Checkbox: Created new check box container:  %+v", newCheckBox)
+
+	return &newCheckBox, nil
 
 }
 
 func getCheckBox(appEngContext appengine.Context, checkBoxID string) (*CheckBox, error) {
 
 	var checkBox CheckBox
-	if getErr := datastoreWrapper.GetEntity(appEngContext, checkBoxID, &checkBox); getErr != nil {
-		return nil, fmt.Errorf("getCheckBox: Unable to get check box from datastore: error = %v", getErr)
+
+	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, checkBoxEntityKind,
+		checkBoxIDFieldName, checkBoxID, &checkBox); getErr != nil {
+		return nil, fmt.Errorf("getBarChart: Unable to checkbox container from datastore: error = %v", getErr)
 	}
+
 	return &checkBox, nil
 }
 
-func GetCheckBoxes(appEngContext appengine.Context, parentFormID string) ([]CheckBoxRef, error) {
+func GetCheckBoxes(appEngContext appengine.Context, parentFormID string) ([]CheckBox, error) {
 
 	var checkBoxes []CheckBox
-	checkBoxIDs, getErr := datastoreWrapper.GetAllChildEntities(appEngContext, parentFormID, checkBoxEntityKind, &checkBoxes)
+
+	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, parentFormID,
+		checkBoxEntityKind, checkBoxParentFormIDFieldName, &checkBoxes)
 	if getErr != nil {
-		return nil, fmt.Errorf("Unable to retrieve check boxes: form id=%v", parentFormID)
+		return nil, fmt.Errorf("Unable to retrieve html editors: form id=%v", parentFormID)
 	}
 
-	checkBoxRefs := make([]CheckBoxRef, len(checkBoxes))
-	for checkBoxIter, currCheckBox := range checkBoxes {
-
-		checkBoxID := checkBoxIDs[checkBoxIter]
-
-		fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, currCheckBox.Field)
-		if fieldErr != nil {
-			return nil, fmt.Errorf("GetCheckBoxes: Error retrieving field for check box: error = %v", fieldErr)
-		}
-
-		checkBoxRefs[checkBoxIter] = CheckBoxRef{
-			CheckBoxID: checkBoxID,
-			FieldRef:   *fieldRef,
-			Geometry:   currCheckBox.Geometry}
-
-	} // for each check box
-	return checkBoxRefs, nil
-
+	return checkBoxes, nil
 }
 
-func updateExistingCheckBox(appEngContext appengine.Context, checkBoxID string, updatedCheckBox *CheckBox) (*CheckBoxRef, error) {
+func updateExistingCheckBox(appEngContext appengine.Context, checkBoxID string, updatedCheckBox *CheckBox) (*CheckBox, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingEntity(appEngContext, checkBoxID, updatedCheckBox); updateErr != nil {
-		return nil, fmt.Errorf("updateExistingCheckBox: Error updating check box: error = %v", updateErr)
+	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
+		checkBoxID, checkBoxEntityKind, checkBoxIDFieldName, updatedCheckBox); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingHtmlEditor: Error updating html editor: error = %v", updateErr)
 	}
 
-	fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, updatedCheckBox.Field)
-	if fieldErr != nil {
-		return nil, fmt.Errorf("updateExistingCheckBox: Error retrieving field for check box: error = %v", fieldErr)
-	}
-
-	checkBoxRef := CheckBoxRef{
-		CheckBoxID: checkBoxID,
-		FieldRef:   *fieldRef,
-		Geometry:   updatedCheckBox.Geometry}
-
-	return &checkBoxRef, nil
+	return updatedCheckBox, nil
 
 }

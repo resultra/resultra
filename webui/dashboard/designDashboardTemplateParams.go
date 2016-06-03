@@ -16,13 +16,13 @@ type DashboardTemplateParams struct {
 	ComponentParams  components.ComponentTemplateParams
 }
 
-func createDashboardTemplateParams(dashboardRef *dashboard.DashboardRef) DashboardTemplateParams {
+func createDashboardTemplateParams(dashboardForDesign *dashboard.Dashboard) DashboardTemplateParams {
 
 	templParams := DashboardTemplateParams{
 		Title:            "Design Dashboard",
-		DashboardID:      dashboardRef.DashboardID,
-		DatabaseID:       dashboardRef.DatabaseID,
-		DashboardName:    dashboardRef.Name,
+		DashboardID:      dashboardForDesign.DashboardID,
+		DatabaseID:       dashboardForDesign.ParentDatabaseID,
+		DashboardName:    dashboardForDesign.Name,
 		NamePanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Dashboard Name", PanelID: "dashboardName"},
 		StylePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Style", PanelID: "dashboardStyle"},
 		ComponentParams:  components.TemplateParams}

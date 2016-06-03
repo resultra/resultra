@@ -5,17 +5,8 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/api"
 )
-
-type TablePropsPageInfo struct {
-	Title      string
-	DatabaseID string
-	FieldRefs  []field.FieldRef
-	FormRefs   []form.FormRef
-}
 
 var tablePropsTemplates = template.Must(template.ParseFiles("static/admin/tableProps.html"))
 

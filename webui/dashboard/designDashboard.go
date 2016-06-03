@@ -36,13 +36,13 @@ func designDashboard(w http.ResponseWriter, r *http.Request) {
 	log.Println("Design Dashboard: editing for dashboard with ID = ", dashboardID)
 
 	appEngContext := appengine.NewContext(r)
-	dashboardRef, getErr := dashboard.GetDashboardRef(appEngContext, dashboardID)
+	dashboardForDesign, getErr := dashboard.GetDashboard(appEngContext, dashboardID)
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return
 	}
 
-	templParams := createDashboardTemplateParams(dashboardRef)
+	templParams := createDashboardTemplateParams(dashboardForDesign)
 
 	err := designDashboardTemplates.ExecuteTemplate(w, "designDashboard", templParams)
 	if err != nil {

@@ -2,7 +2,6 @@ package values
 
 import (
 	"appengine"
-	"appengine/datastore"
 	"fmt"
 	"resultra/datasheet/server/field"
 )
@@ -16,7 +15,7 @@ const valSummaryAvg string = "average"
 type ValSummary struct {
 
 	// SummaryField is the field used to summarize values.
-	SummarizeByField *datastore.Key
+	SummarizeByFieldID string `json:"summarizeByFieldID"`
 
 	// SummarizeValsWith configures how values from SummarizeByField are summarized.
 	//
@@ -30,21 +29,9 @@ type ValSummary struct {
 	SummarizeValsWith string
 }
 
-// DashboardValGroupingRef is an opaque reference to the dashboard value grouping parameters.
-type ValSummaryRef struct {
-	SummarizeByFieldRef field.FieldRef `json:"summarizeByFieldRef"`
-	SummarizeValsWith   string         `json:"summarizeValsWith"`
-}
-
 type NewValSummaryParams struct {
 	FieldID           string `json:"fieldID"`
 	SummarizeValsWith string `json:"summarizeValsWith"`
-}
-
-func (valSummaryRef ValSummaryRef) toNewValSummaryParams() NewValSummaryParams {
-	return NewValSummaryParams{
-		FieldID:           valSummaryRef.SummarizeByFieldRef.FieldID,
-		SummarizeValsWith: valSummaryRef.SummarizeValsWith}
 }
 
 func validateFieldTypeWithSummary(fieldType string, summarizeValsWith string) error {
@@ -66,36 +53,19 @@ func validateFieldTypeWithSummary(fieldType string, summarizeValsWith string) er
 	return nil
 }
 
-func NewValSummary(appEngContext appengine.Context, params NewValSummaryParams) (*ValSummary, *ValSummaryRef, error) {
+func NewValSummary(appEngContext appengine.Context, params NewValSummaryParams) (*ValSummary, error) {
 
-	fieldKey, fieldRef, fieldErr := field.GetExistingFieldRefAndKey(appEngContext, params.FieldID)
+	summaryField, fieldErr := field.GetField(appEngContext, params.FieldID)
 	if fieldErr != nil {
-		return nil, nil, fmt.Errorf("NewValGrouping: Can't get field value grouping: datastore error = %v", fieldErr)
+		return nil, fmt.Errorf("NewValGrouping: Can't get field value grouping: datastore error = %v", fieldErr)
 	}
 
-	if summarizeErr := validateFieldTypeWithSummary(fieldRef.FieldInfo.Type, params.SummarizeValsWith); summarizeErr != nil {
-		return nil, nil, fmt.Errorf("NewValGrouping: Invalid value summary: %v", summarizeErr)
+	if summarizeErr := validateFieldTypeWithSummary(summaryField.Type, params.SummarizeValsWith); summarizeErr != nil {
+		return nil, fmt.Errorf("NewValGrouping: Invalid value summary: %v", summarizeErr)
 	}
 
-	valSummaryRef := ValSummaryRef{*fieldRef, params.SummarizeValsWith}
-	valSummary := ValSummary{fieldKey, params.SummarizeValsWith}
+	valSummary := ValSummary{summaryField.FieldID, params.SummarizeValsWith}
 
-	return &valSummary, &valSummaryRef, nil
-
-}
-
-func NewValSummaryFromRef(appEngContext appengine.Context, valSummaryRef ValSummaryRef) (*ValSummary, *ValSummaryRef, error) {
-	return NewValSummary(appEngContext, valSummaryRef.toNewValSummaryParams())
-}
-
-func (valSummary ValSummary) GetValSummaryRef(appEngContext appengine.Context) (*ValSummaryRef, error) {
-
-	fieldRef, fieldErr := field.GetFieldFromKey(appEngContext, valSummary.SummarizeByField)
-	if fieldErr != nil {
-		return nil, fmt.Errorf("GetValGroupingRef: Can't get field  for value grouping: datastore error = %v", fieldErr)
-	}
-	valSummaryRef := ValSummaryRef{*fieldRef, valSummary.SummarizeValsWith}
-
-	return &valSummaryRef, nil
+	return &valSummary, nil
 
 }
