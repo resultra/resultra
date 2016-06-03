@@ -3,6 +3,7 @@
 import unittest
 import json
 import datetime
+import time
 
 from testCommon import TestHelperMixin
 
@@ -14,7 +15,10 @@ class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
         self.timeFieldID = self.newTimeField(self.tableID,"TestTimeRecordValues - Time Field","TimeField")    
     
     def testSimpleDates(self):
-        recordID = self.newRecord(self.tableID)        
+        recordID = self.newRecord(self.tableID)
+        time.sleep(1) ## Sleep for eventual consistency
+         
+                
         recordRef = self.getRecord(recordID)
         
         timeVal = "2016-10-12T00:00:00Z" # RFC 3339 date & time format with Z at end for UTC
@@ -41,9 +45,11 @@ class TestLongTextRecordValues(unittest.TestCase,TestHelperMixin):
         self.longTextFieldID = self.newLongTextField(self.tableID,"TestLongTextRecordValues - Long Text Field","TimeField")
         
     def testLongText(self):
+        time.sleep(1) ## Sleep for eventual consistency
         recordID = self.newRecord(self.tableID)
         someText = "Hello World!"
         
+        time.sleep(1) ## Sleep for eventual consistency
         recordRef = self.setLongTextRecordValue(recordID,self.longTextFieldID,someText)
         
         self.assertEquals(self.getRecordFieldVal(recordRef,self.longTextFieldID),

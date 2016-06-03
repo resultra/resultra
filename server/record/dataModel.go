@@ -18,11 +18,35 @@ type RecFieldValues map[string]interface{}
 type Record struct {
 	ParentTableID string         `jsaon:"parentTableID"`
 	RecordID      string         `json:"recordID"`
-	FieldValues   RecFieldValues `json:"fieldValues"`
+	FieldValues   RecFieldValues `json:"fieldValues" datastore:"-"`
 }
 
 const recordRecordIDFieldName string = "RecordID"
 const recordParentTableIDFieldName string = "ParentTableID"
+
+func (rec *Record) Save(ch chan<- datastore.Property) error {
+	defer close(ch) // Channel must be closed
+	for k, v := range rec.FieldValues {
+		ch <- datastore.Property{Name: k, Value: v}
+	}
+	ch <- datastore.Property{Name: recordParentTableIDFieldName, Value: rec.ParentTableID}
+	ch <- datastore.Property{Name: recordRecordIDFieldName, Value: rec.RecordID}
+	return nil
+}
+
+func (rec *Record) Load(ch <-chan datastore.Property) error {
+	// Note: you might want to clear current values from the map or create a new map
+	for p := range ch { // Read until channel is closed
+		if p.Name == recordParentTableIDFieldName {
+			rec.ParentTableID = p.Value.(string)
+		} else if p.Name == recordRecordIDFieldName {
+			rec.RecordID = p.Value.(string)
+		} else {
+			rec.FieldValues[p.Name] = p.Value
+		}
+	}
+	return nil
+}
 
 func (rec Record) ValueIsSet(fieldID string) bool {
 	_, valueExists := rec.FieldValues[fieldID]
@@ -42,31 +66,17 @@ func (rec Record) GetTextFieldValue(fieldID string) (string, error) {
 	}
 }
 
-func (fieldVals *RecFieldValues) Load(ch <-chan datastore.Property) error {
-	// Note: you might want to clear current values from the map or create a new map
-	for p := range ch { // Read until channel is closed
-		(*fieldVals)[p.Name] = p.Value
-	}
-	return nil
-}
-
-func (fieldVals *RecFieldValues) Save(ch chan<- datastore.Property) error {
-	defer close(ch) // Channel must be closed
-	for k, v := range *fieldVals {
-		ch <- datastore.Property{Name: k, Value: v}
-	}
-	return nil
-}
-
 type NewRecordParams struct {
-	TableID string `json:"tableID"`
+	ParentTableID string `json:"parentTableID"`
 }
 
 func NewRecord(appEngContext appengine.Context, params NewRecordParams) (*Record, error) {
 
-	newRecord := Record{ParentTableID: params.TableID,
-		RecordID: uniqueID.GenerateUniqueID()}
+	newRecord := Record{ParentTableID: params.ParentTableID,
+		RecordID:    uniqueID.GenerateUniqueID(),
+		FieldValues: RecFieldValues{}}
 
+	//	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, recordEntityKind, &newRecord)
 	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, recordEntityKind, &newRecord)
 	if insertErr != nil {
 		return nil, fmt.Errorf("Can't create new record: error inserting into datastore: %v", insertErr)
@@ -78,7 +88,7 @@ func NewRecord(appEngContext appengine.Context, params NewRecordParams) (*Record
 
 func GetRecord(appEngContext appengine.Context, recordID string) (*Record, error) {
 
-	var getRecord Record
+	getRecord := Record{"", "", RecFieldValues{}}
 
 	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, recordEntityKind,
 		recordRecordIDFieldName, recordID, &getRecord); getErr != nil {
@@ -93,7 +103,7 @@ func UpdateExistingRecord(appEngContext appengine.Context, recordID string, rec 
 
 	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
 		recordID, recordEntityKind, recordRecordIDFieldName, rec); updateErr != nil {
-		return nil, fmt.Errorf("updateExistingHtmlEditor: Error updating record: error = %v", updateErr)
+		return nil, fmt.Errorf("UpdateExistingRecord: Error updating record: error = %v", updateErr)
 	}
 
 	return rec, nil

@@ -33,13 +33,13 @@ func InsertNewRootEntity(appEngContext appengine.Context, entityKind string,
 func getEntityKeyByUUID(appEngContext appengine.Context, entityKind, entityIDFieldName, entityID string) (*datastore.Key, error) {
 
 	matchingEntityIDFilter := fmt.Sprintf("%v =", entityIDFieldName)
-	getEntityKeyQuery := datastore.NewQuery(entityKind).Filter(matchingEntityIDFilter, entityID)
+	getEntityKeyQuery := datastore.NewQuery(entityKind).Filter(matchingEntityIDFilter, entityID).KeysOnly()
 	entityKeys, getKeyErr := getEntityKeyQuery.GetAll(appEngContext, nil)
 	if getKeyErr != nil {
-		return nil, fmt.Errorf("Unable to find entity to update: no entity found with key = %v,error=%v", entityID, getKeyErr)
+		return nil, fmt.Errorf("getEntityKeyByUUID: Unable to find entity to update: no entity found with ID = %v,error=%v", entityID, getKeyErr)
 	}
 	if len(entityKeys) != 1 {
-		return nil, fmt.Errorf("Unable to find entity to update: no entity found with key = %v", entityID)
+		return nil, fmt.Errorf("getEntityKeyByUUID: Unable to find entity to update: no entity found with ID = %v", entityID)
 	}
 	entityKey := entityKeys[0]
 	return entityKey, nil

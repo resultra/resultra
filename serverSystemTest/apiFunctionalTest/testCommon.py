@@ -56,7 +56,7 @@ class TestHelperMixin:
  
     
     def newRecord(self,tableID):
-        jsonResp = self.apiRequest('record/new',{'tableID':tableID})
+        jsonResp = self.apiRequest('record/new',{'parentTableID':tableID})
         recordID = jsonResp[u'recordID']
         return recordID
     
