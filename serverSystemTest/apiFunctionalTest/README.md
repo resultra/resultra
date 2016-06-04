@@ -9,4 +9,6 @@ Or, assuming the python script itself is executable:
 	
 ## Run all Tests
 
-TBD
+	% ./runAllTests.py
+	
+Note files with unit tests need to start with "test" in order to be discovered by the runAllTests.py script.

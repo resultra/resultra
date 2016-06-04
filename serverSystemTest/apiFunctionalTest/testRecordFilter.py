@@ -64,20 +64,19 @@ class TestRecordFilter(unittest.TestCase,TestHelperMixin):
         filterName = jsonResp[u'name']
         self.assertEquals(filterName,namePrefix,"1st auto-generated filter is just the prefix")
  
-        time.sleep(1) ## For eventual consistency
+        time.sleep(2) ## For eventual consistency
   
         jsonResp = self.apiRequest('filter/newWithPrefix',filterParams)
         filterName = jsonResp[u'name']
         self.assertEquals(filterName,namePrefix + ' 1',"2nd auto-generated filter has 1 as suffix")
 
-        time.sleep(1) ## For eventual consistency
+        time.sleep(2) ## For eventual consistency
 
         jsonResp = self.apiRequest('filter/newWithPrefix',filterParams)
         filterName = jsonResp[u'name']
         self.assertEquals(filterName,namePrefix + ' 2',"3rd auto-generated filter has 2 as suffix")
 
-        time.sleep(1) ## For eventual consistency
-
+        time.sleep(2) ## For eventual consistency
 
         getFiltersParams = {'parentTableID':self.tableID}
         filterList = self.apiRequest('filter/getList',getFiltersParams)
