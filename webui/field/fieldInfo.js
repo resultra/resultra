@@ -6,7 +6,25 @@ var fieldTypeBool = "bool"
 var fieldTypeTime = "time"
 var fieldTypeAll = "all"
 
+var fieldInfoFieldsByID
 
+// initFieldInfo loads the field information once, then it is available globally as a service to other parts of client
+// code which also references field information.
+// TODO - Some type of polling/push mechanism is needed to keep this table up to date.
+function initFieldInfo(fieldInitDoneCallbackFunc) {
+	loadFieldInfo(tableID, [fieldTypeAll],function(fieldsByID) {
+		fieldInfoFieldsByID = fieldsByID;
+		fieldInitDoneCallbackFunc()
+	})
+}
+
+function getFieldRef(fieldID) {
+	return fieldInfoFieldsByID[fieldID]
+}
+
+function getFieldsByID() {
+	return fieldInfoFieldsByID
+}
 
 // Use for populating menus with field selections
 function selectFieldHTML(fieldID, fieldName) {
@@ -47,8 +65,8 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 			var textFields = fieldsByType.textFields
 			for (textFieldIter in textFields) {		
 				var textField = textFields[textFieldIter]			
-				console.log("Text field: " + textField.fieldInfo.name)
-				fieldsByID[textField.fieldID] = textField.fieldInfo
+				console.log("Text field: " + textField.name)
+				fieldsByID[textField.fieldID] = textField
 			} // for each text field
 		}
 		
@@ -56,8 +74,8 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 			var numberFields = fieldsByType.numberFields
 			for (numberFieldIter in numberFields) {		
 				var numberField = numberFields[numberFieldIter]
-				console.log("Number field: " + numberField.fieldInfo.name)
-				fieldsByID[numberField.fieldID] = numberField.fieldInfo
+				console.log("Number field: " + numberField.name)
+				fieldsByID[numberField.fieldID] = numberField
 			} // for each number field
 		}
 
@@ -65,8 +83,8 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 			var boolFields = fieldsByType.boolFields
 			for (boolFieldIter in boolFields) {
 				var boolField = boolFields[boolFieldIter]
-				console.log("Bool field: " + boolField.fieldInfo.name)
-				fieldsByID[boolField.fieldID] = boolField.fieldInfo
+				console.log("Bool field: " + boolField.name)
+				fieldsByID[boolField.fieldID] = boolField
 			} // for each bool field
 		}
 		
@@ -74,8 +92,8 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 			var timeFields = fieldsByType.timeFields
 			for (timeFieldIter in timeFields) {
 				var timeField = timeFields[timeFieldIter]
-				console.log("Time field: " + timeField.fieldInfo.name)
-				fieldsByID[timeField.fieldID] = timeField.fieldInfo
+				console.log("Time field: " + timeField.name)
+				fieldsByID[timeField.fieldID] = timeField
 			} // for each bool field
 		}
 		
@@ -83,8 +101,8 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 			var longTextFields = fieldsByType.longTextFields
 			for (longTextFieldIter in longTextFields) {		
 				var longTextField = longTextFields[longTextFieldIter]			
-				console.log("Long Text field: " + longTextField.fieldInfo.name)
-				fieldsByID[longTextField.fieldID] = longTextField.fieldInfo
+				console.log("Long Text field: " + longTextField.name)
+				fieldsByID[longTextField.fieldID] = longTextField
 			} // for each long text field
 		}
 	
@@ -92,8 +110,8 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 			var fileFields = fieldsByType.fileFields
 			for (fileFieldIter in fileFields) {		
 				var fileField = fileFields[fileFieldIter]			
-				console.log("file field: " + fileField.fieldInfo.name)
-				fieldsByID[fileField.fieldID] = fileField.fieldInfo
+				console.log("file field: " + fileField.name)
+				fieldsByID[fileField.fieldID] = fileField
 			} // for each file field
 		}
 	

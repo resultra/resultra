@@ -27,3 +27,9 @@ packages for dashboard and form components such as check boxes, bar charts, etc.
 The simple script mirrorStaticFilesToGoogleAppEngProjFolder (sorry for the long name) copies
 all the static files under the GAE project folder in one step. The only downside is that 
 this script must be re-run every time a static file changes. 
+
+## Running the Server with a Reset Datastore
+
+The following will start the server and delete all entries from the datastore first:
+
+	% goapp serve --clear_datastore

@@ -13,10 +13,10 @@ import (
 const checkBoxEntityKind string = "CheckBox"
 
 type CheckBox struct {
-	ParentFormID string `json:"parentID"`
-	CheckBoxID   string `json:"checkBoxID"`
-	FieldID      string `json:"fieldID"`
-	Geometry     common.LayoutGeometry
+	ParentFormID string                `json:"parentID"`
+	CheckBoxID   string                `json:"checkBoxID"`
+	FieldID      string                `json:"fieldID"`
+	Geometry     common.LayoutGeometry `json:"geometry"`
 }
 
 const checkBoxIDFieldName string = "CheckBoxID"

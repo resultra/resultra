@@ -26,14 +26,18 @@ function openNewTextBoxDialog(formID,parentTableID,containerParams)
 	function saveNewTextBox(newTextBoxDialog) {
 		console.log("New textBox: done in dialog")
 		
+
 		var newOrExistingFormInfo = getFormFormInfoByPanelID(newTextBoxDialog,createNewOrExistingFieldDialogPanelID)
-		if($(newOrExistingFormInfo.panelSelector).form('get field',newOrExistingFormInfo.newFieldRadio).prop('checked')) {
+		var doCreateNewField = $(newOrExistingFormInfo.newFieldRadioSelector).prop("checked")
+
+
+		if(doCreateNewField) {
 			console.log("saveNewTextBox: New field selected - not implemented yet")
 			$(newCheckboxDialog).dialog('close');
 		} else {
 			console.log("saveNewTextBox: Existing field selected")
 			console.log("saveNewTextBox: getting field id from field = " + newOrExistingFormInfo.existingFieldSelection)
-			var fieldID = $(newOrExistingFormInfo.panelSelector).form('get value',newOrExistingFormInfo.existingFieldSelection)
+			var fieldID = $(newOrExistingFormInfo.existingFieldSelectionSelector).val()			
 			console.log("saveNewTextBox: Selected field ID: " + fieldID)
 			
 			var newTextBoxAPIParams = {
@@ -46,7 +50,8 @@ function openNewTextBoxDialog(formID,parentTableID,containerParams)
 			jsonAPIRequest("frm/textBox/new",newTextBoxAPIParams,function(newTextBoxObjectRef) {
 		          console.log("saveNewTextBox: Done getting new ID:response=" + JSON.stringify(newTextBoxObjectRef));
 			  
-				  $('#'+newTextBoxParams.placeholderID).find('label').text(newTextBoxObjectRef.fieldRef.fieldInfo.name)
+				  var fieldName = getFieldRef(newTextBoxObjectRef.fieldID).name
+				  $('#'+newTextBoxParams.placeholderID).find('label').text(fieldName)
 				  $('#'+newTextBoxParams.placeholderID).attr("id",newTextBoxObjectRef.textBoxID)
 			  
 				  // Set up the newly created checkbox for resize, selection, etc.

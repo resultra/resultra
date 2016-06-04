@@ -6,7 +6,7 @@ function loadRecordIntoImage(imageElem, recordRef) {
 	console.log("loadRecordIntoImage: loading record into html editor: " + JSON.stringify(recordRef))
 	
 	var imageObjectRef = imageElem.data("objectRef")
-	var imageFieldID = imageObjectRef.fieldRef.fieldID
+	var imageFieldID = imageObjectRef.fieldID
 	
 	console.log("loadRecordIntoImage: Field ID to load data:" + imageFieldID)
 
@@ -94,7 +94,7 @@ function initImageRecordEditBehavior(imageObjectRef) {
 		$('#'+imageUploadID).bind('fileuploadsubmit', function (e, data) {
 		    // The example input, doesn't have to be part of the upload form:
 			currRecordRef = currRecordSet.currRecordRef()
-		    data.formData = { fieldID: imageObjectRef.fieldRef.fieldID, recordID: currRecordRef.recordID }
+		    data.formData = { fieldID: imageObjectRef.fieldID, recordID: currRecordRef.recordID }
 		});
 		
 }

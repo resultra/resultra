@@ -13,7 +13,8 @@ function loadFormComponents(loadFormConfig) {
 			var containerObj = $(containerHTML)
 			
 			// Set the label to the field name
-			containerObj.find('label').text(textBox.fieldRef.fieldInfo.name)
+			var fieldName = getFieldRef(textBox.fieldID).name
+			containerObj.find('label').text(fieldName)
 			
 			// Position the object withing the #layoutCanvas div
 			$(loadFormConfig.formParentElemID).append(containerObj)
@@ -41,7 +42,8 @@ function loadFormComponents(loadFormConfig) {
 			
 			// Set the label to the field name. A span element is used, since
 			// the checkbox itself is nested inside a label.
-			containerObj.find('span').text(checkBox.fieldRef.fieldInfo.name)
+			var fieldName = getFieldRef(checkBox.fieldID).name
+			containerObj.find('span').text(fieldName)
 			
 			// Position the object withing the #layoutCanvas div
 			$(loadFormConfig.formParentElemID).append(containerObj)
@@ -67,7 +69,8 @@ function loadFormComponents(loadFormConfig) {
 			var containerObj = $(containerHTML)
 			
 			// Set the label to the field name
-			containerObj.find('label').text(datePicker.fieldRef.fieldInfo.name)
+			var fieldName = getFieldRef(datePicker.fieldID).name
+			containerObj.find('label').text(fieldName)
 			
 			// Position the object withing the #layoutCanvas div
 			$(loadFormConfig.formParentElemID).append(containerObj)
@@ -94,7 +97,8 @@ function loadFormComponents(loadFormConfig) {
 			var containerObj = $(containerHTML)
 			
 			// Set the label to the field name
-			containerObj.find('label').text(htmlEditor.fieldRef.fieldInfo.name)
+			var fieldName = getFieldRef(htmlEditor.fieldID).name
+			containerObj.find('label').text(fieldName)
 			
 			// Position the object withing the #layoutCanvas div
 			$(loadFormConfig.formParentElemID).append(containerObj)
@@ -128,7 +132,8 @@ function loadFormComponents(loadFormConfig) {
 			// Set the label to the field name
 			var labelID = imageContainerLabelIDFromContainerElemID(image.imageID)
 			console.log("loadFormComponents: initializing label: id=" + labelID)
-			$('#'+labelID).text(image.fieldRef.fieldInfo.name)
+			var fieldName = getFieldRef(image.fieldID).name
+			$('#'+labelID).text(fieldName)
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.

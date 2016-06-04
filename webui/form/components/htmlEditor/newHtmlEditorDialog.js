@@ -20,13 +20,15 @@ function openNewHtmlEditorDialog(formID,parentTableID,containerParams)
 		console.log("New html editor: done in dialog")
 		
 		var newOrExistingFormInfo = getFormFormInfoByPanelID(newHtmlEditorDialog,createNewOrExistingFieldDialogPanelID)
-		if($(newOrExistingFormInfo.panelSelector).form('get field',newOrExistingFormInfo.newFieldRadio).prop('checked')) {
+		var doCreateNewField = $(newOrExistingFormInfo.newFieldRadioSelector).prop("checked")
+
+		if(doCreateNewField) {
 			console.log("saveNewHtmlEditor: New field selected - not implemented yet")
 			$(newHtmlEditorDialog).dialog('close');
 		} else {
 			console.log("saveNewHtmlEditor: Existing field selected")
 			console.log("saveNewHtmlEditor: getting field id from field = " + newOrExistingFormInfo.existingFieldSelection)
-			var fieldID = $(newOrExistingFormInfo.panelSelector).form('get value',newOrExistingFormInfo.existingFieldSelection)
+			var fieldID = $(newOrExistingFormInfo.existingFieldSelectionSelector).val()
 			console.log("saveNewHtmlEditor: Selected field ID: " + fieldID)
 			
 			var newHtmlEditorAPIParams = {
@@ -39,7 +41,8 @@ function openNewHtmlEditorDialog(formID,parentTableID,containerParams)
 			jsonAPIRequest("frm/htmlEditor/new",newHtmlEditorAPIParams,function(newHtmlEditorObjectRef) {
 		          console.log("saveNewHtmlEditor: Done getting new ID:response=" + JSON.stringify(newHtmlEditorObjectRef));
 			  
-				  $('#'+newHtmlEditorParams.placeholderID).find('label').text(newHtmlEditorObjectRef.fieldRef.fieldInfo.name)
+				  var fieldName = getFieldRef(newHtmlEditorObjectRef.fieldID).name
+				  $('#'+newHtmlEditorParams.placeholderID).find('label').text(fieldName)
 				  $('#'+newHtmlEditorParams.placeholderID).attr("id",newHtmlEditorObjectRef.htmlEditorID)
 			  
 				  // Set up the newly created editor for resize, selection, etc.

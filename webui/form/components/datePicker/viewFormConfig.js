@@ -3,7 +3,7 @@ function loadRecordIntoDatePicker(datePickerElem, recordRef) {
 	console.log("loadRecordIntoDatePicker: loading record into date picker: " + JSON.stringify(recordRef))
 	
 	var datePickerObjectRef = datePickerElem.data("objectRef")
-	var datePickerFieldID = datePickerObjectRef.fieldRef.fieldID
+	var datePickerFieldID = datePickerObjectRef.fieldID
 	
 	console.log("loadRecordIntoDatePicker: Field ID to load data:" + datePickerFieldID)
 
@@ -59,7 +59,8 @@ function initDatePickerRecordEditBehavior(datePickerObjectRef) {
 
 	var datePickerInputID = datePickerInputIDFromContainerElemID(datePickerContainerID)
 	$('#'+datePickerInputID).datepicker()
-	if(datePickerObjectRef.fieldRef.fieldInfo.isCalcField) {
+	var fieldRef = getFieldRef(datePickerObjectRef.fieldID)
+	if(fieldRef.isCalcField) {
 		$(datePickerSelector).data("DateTimePicker").disable()
 		return;  // stop initialization, the check box is read only.
 	}
@@ -83,7 +84,7 @@ function initDatePickerRecordEditBehavior(datePickerObjectRef) {
 		console.log("Date picker change value: input val = " + inputVal + " param="+dateParam)
 		
 		currRecordRef = currRecordSet.currRecordRef()
-		var setRecordValParams = { recordID:currRecordRef.recordID, fieldID:objectRef.fieldRef.fieldID, value:dateParam }
+		var setRecordValParams = { recordID:currRecordRef.recordID, fieldID:objectRef.fieldID, value:dateParam }
 		console.log("Setting date value: " + JSON.stringify(setRecordValParams))
 		
 		jsonAPIRequest("recordUpdate/setTimeFieldValue",setRecordValParams,function(updatedRecordRef) {

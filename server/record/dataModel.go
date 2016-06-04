@@ -73,6 +73,10 @@ type NewRecordParams struct {
 
 func NewRecord(appEngContext appengine.Context, params NewRecordParams) (*Record, error) {
 
+	if err := uniqueID.ValidatedWellFormedID(params.ParentTableID); err != nil {
+		return nil, err
+	}
+
 	newRecord := Record{ParentTableID: params.ParentTableID,
 		RecordID:    uniqueID.GenerateUniqueID(),
 		FieldValues: RecFieldValues{}}

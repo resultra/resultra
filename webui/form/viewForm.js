@@ -65,7 +65,7 @@ function reloadRecords(getRecordsParams)
 }
 
 function createNewRecord() {
-	var newRecordsParams = {tableID:tableID}
+	var newRecordsParams = {parentTableID:tableID}
 	jsonAPIRequest("record/new",newRecordsParams,function(newRecordRef) {
 		currRecordSet.appendNewRecord(newRecordRef);
 		currRecordSet.jumpToRecord(newRecordRef.recordID)
@@ -153,28 +153,31 @@ $(document).ready(function() {
 			
 	initRecordButtonsBehavior()
 	
-	loadFormComponents({
-		formParentElemID: "#layoutCanvas",
-		initTextBoxFunc: function(textBoxObjectRef) {			
-			initTextBoxRecordEditBehavior(textBoxObjectRef)
-		},
-		initCheckBoxFunc: function(checkBoxObjectRef) {
-			console.log("Init check box in view form")
-			initCheckBoxRecordEditBehavior(checkBoxObjectRef)
-		},
-		initDatePickerFunc: function(datePickerObjectRef) {
-			console.log("Init date picker in view form")
-			initDatePickerRecordEditBehavior(datePickerObjectRef)
-		},
-		initHtmlEditorFunc: function(htmlEditorObjectRef) {
-			console.log("Init html editor in view form")
-			initHtmlEditorRecordEditBehavior(htmlEditorObjectRef)
-		},
-		initImageFunc: function(imageObjectRef) {
-			console.log("Init image in view form")
-			initImageRecordEditBehavior(imageObjectRef)
-		},
-		doneLoadingFormDataFunc: initAfterViewFormComponentsAlreadyLoaded	
-	}); 
+	initFieldInfo( function () {
+		loadFormComponents({
+			formParentElemID: "#layoutCanvas",
+			initTextBoxFunc: function(textBoxObjectRef) {			
+				initTextBoxRecordEditBehavior(textBoxObjectRef)
+			},
+			initCheckBoxFunc: function(checkBoxObjectRef) {
+				console.log("Init check box in view form")
+				initCheckBoxRecordEditBehavior(checkBoxObjectRef)
+			},
+			initDatePickerFunc: function(datePickerObjectRef) {
+				console.log("Init date picker in view form")
+				initDatePickerRecordEditBehavior(datePickerObjectRef)
+			},
+			initHtmlEditorFunc: function(htmlEditorObjectRef) {
+				console.log("Init html editor in view form")
+				initHtmlEditorRecordEditBehavior(htmlEditorObjectRef)
+			},
+			initImageFunc: function(imageObjectRef) {
+				console.log("Init image in view form")
+				initImageRecordEditBehavior(imageObjectRef)
+			},
+			doneLoadingFormDataFunc: initAfterViewFormComponentsAlreadyLoaded	
+		}); 
+	})
+	
 
 }); // document ready

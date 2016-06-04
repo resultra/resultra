@@ -13,10 +13,10 @@ import (
 const textBoxEntityKind string = "TextBox"
 
 type TextBox struct {
-	ParentFormID string `json:"parentID"`
-	TextBoxID    string `json:"textBoxID"`
-	FieldID      string `json:"fieldID"`
-	Geometry     common.LayoutGeometry
+	ParentFormID string                `json:"parentID"`
+	TextBoxID    string                `json:"textBoxID"`
+	FieldID      string                `json:"fieldID"`
+	Geometry     common.LayoutGeometry `json:"geometry"`
 }
 
 const textBoxParentFormIDFieldName string = "ParentFormID"

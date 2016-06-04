@@ -20,13 +20,15 @@ function openNewImageDialog(formID,parentTableID,containerParams)
 		console.log("New html editor: done in dialog")
 		
 		var newOrExistingFormInfo = getFormFormInfoByPanelID(newImageDialog,createNewOrExistingFieldDialogPanelID)
-		if($(newOrExistingFormInfo.panelSelector).form('get field',newOrExistingFormInfo.newFieldRadio).prop('checked')) {
+		var doCreateNewField = $(newOrExistingFormInfo.newFieldRadioSelector).prop("checked")
+		
+		if(doCreateNewField) {
 			console.log("saveNewImage: New field selected - not implemented yet")
 			$(newImageDialog).dialog('close');
 		} else {
 			console.log("saveNewImage: Existing field selected")
 			console.log("saveNewImage: getting field id from field = " + newOrExistingFormInfo.existingFieldSelection)
-			var fieldID = $(newOrExistingFormInfo.panelSelector).form('get value',newOrExistingFormInfo.existingFieldSelection)
+			var fieldID = $(newOrExistingFormInfo.existingFieldSelectionSelector).val()
 			console.log("saveNewImage: Selected field ID: " + fieldID)
 			
 			var newImageAPIParams = {
@@ -39,7 +41,8 @@ function openNewImageDialog(formID,parentTableID,containerParams)
 			jsonAPIRequest("frm/image/new",newImageAPIParams,function(newImageObjectRef) {
 		          console.log("saveNewImage: Done getting new ID:response=" + JSON.stringify(newImageObjectRef));
 			  
-				  $('#'+newImageParams.placeholderID).find('label').text(newImageObjectRef.fieldRef.fieldInfo.name)
+				  var fieldName = getFieldRef(newImageObjectRef.fieldID).name
+				  $('#'+newImageParams.placeholderID).find('label').text(fieldName)
 				  $('#'+newImageParams.placeholderID).attr("id",newImageObjectRef.imageID)
 			  
 				  // Set up the newly created editor for resize, selection, etc.

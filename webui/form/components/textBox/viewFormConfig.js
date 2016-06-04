@@ -3,7 +3,7 @@ function loadRecordIntoTextBox(textBoxElem, recordRef) {
 	console.log("loadRecordIntoTextBox: loading record into text box: " + JSON.stringify(recordRef))
 	
 	var textBoxObjectRef = textBoxElem.data("objectRef")
-	var textBoxFieldID = textBoxObjectRef.fieldRef.fieldID
+	var textBoxFieldID = textBoxObjectRef.fieldID
 	
 	console.log("loadRecordIntoTextBox: Field ID to load data:" + textBoxFieldID)
 	
@@ -35,7 +35,8 @@ function initTextBoxRecordEditBehavior(textFieldObjectRef) {
 	})
 
 	
-	if(textFieldObjectRef.fieldRef.fieldInfo.isCalcField) {
+	var fieldRef = getFieldRef(textFieldObjectRef.fieldID)
+	if(fieldRef.isCalcField) {
 		container.find('input').prop('disabled',true);
 		return;  // stop initialization, the text box is read only.
 	}
@@ -51,8 +52,9 @@ function initTextBoxRecordEditBehavior(textFieldObjectRef) {
 		
 		var currTextObjRef = getElemObjectRef(containerID)
 		
-		var fieldID = currTextObjRef.fieldRef.fieldID
-		var fieldType = currTextObjRef.fieldRef.fieldInfo.type
+		var fieldID = currTextObjRef.fieldID
+		var fieldRef = getFieldRef(fieldID)
+		var fieldType = fieldRef.type
 		console.log("Text Box focus out:" 
 		    + " containerID: " + containerID
 			+ " ,fieldID: " + fieldID

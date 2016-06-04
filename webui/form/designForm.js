@@ -76,31 +76,33 @@ $(document).ready(function() {
 		hideEditorFunc:hideFormulaEditPanel
 	}
 	
-	
-	loadFormComponents({
-		formParentElemID: formDesignCanvasSelector,
-		initTextBoxFunc: function(textBoxObjectRef) {
-			var componentIDs = { formID: formID, componentID: textBoxObjectRef.textBoxID }
-			initFormComponentDesignBehavior(componentIDs,textBoxObjectRef,textBoxDesignFormConfig)
-		},
-		initCheckBoxFunc: function(checkBoxObjectRef) {
-			var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
-			initFormComponentDesignBehavior(componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig)
-		},
-		initDatePickerFunc: function(datePickerObjectRef) {
-			var componentIDs = { formID: formID, componentID: datePickerObjectRef.datePickerID }
-			initFormComponentDesignBehavior(componentIDs,datePickerObjectRef,datePickerDesignFormConfig)
-		},
-		initHtmlEditorFunc: function(htmlEditorObjectRef) {
-			var componentIDs = { formID: formID, componentID: htmlEditorObjectRef.htmlEditorID }
-			initFormComponentDesignBehavior(componentIDs,htmlEditorObjectRef,htmlEditorDesignFormConfig)
-		},
-		initImageFunc: function(imageObjectRef) {
-			var componentIDs = { formID: formID, componentID: imageObjectRef.imageID }
-			initFormComponentDesignBehavior(componentIDs,imageObjectRef,imageDesignFormConfig)
-		},
-		doneLoadingFormDataFunc: function() {} // no-op	
-	}); 
+	initFieldInfo( function () {
+		loadFormComponents({
+			formParentElemID: formDesignCanvasSelector,
+			initTextBoxFunc: function(textBoxObjectRef) {
+				var componentIDs = { formID: formID, componentID: textBoxObjectRef.textBoxID }
+				initFormComponentDesignBehavior(componentIDs,textBoxObjectRef,textBoxDesignFormConfig)
+			},
+			initCheckBoxFunc: function(checkBoxObjectRef) {
+				var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
+				initFormComponentDesignBehavior(componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig)
+			},
+			initDatePickerFunc: function(datePickerObjectRef) {
+				var componentIDs = { formID: formID, componentID: datePickerObjectRef.datePickerID }
+				initFormComponentDesignBehavior(componentIDs,datePickerObjectRef,datePickerDesignFormConfig)
+			},
+			initHtmlEditorFunc: function(htmlEditorObjectRef) {
+				var componentIDs = { formID: formID, componentID: htmlEditorObjectRef.htmlEditorID }
+				initFormComponentDesignBehavior(componentIDs,htmlEditorObjectRef,htmlEditorDesignFormConfig)
+			},
+			initImageFunc: function(imageObjectRef) {
+				var componentIDs = { formID: formID, componentID: imageObjectRef.imageID }
+				initFormComponentDesignBehavior(componentIDs,imageObjectRef,imageDesignFormConfig)
+			},
+			doneLoadingFormDataFunc: function() {} // no-op	
+		}); 
+		
+	})
 	
 	console.log("Initializing form design plug-ins/configurations ...")
 	initObjectCanvasSelectionBehavior(formDesignCanvasSelector, function() {

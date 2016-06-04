@@ -13,10 +13,10 @@ import (
 const htmlEditorEntityKind string = "HtmlEditor"
 
 type HtmlEditor struct {
-	ParentFormID string `json:"parentID"`
-	HtmlEditorID string `json:"htmlEditorID"`
-	FieldID      string `json:"fieldID"`
-	Geometry     common.LayoutGeometry
+	ParentFormID string                `json:"parentID"`
+	HtmlEditorID string                `json:"htmlEditorID"`
+	FieldID      string                `json:"fieldID"`
+	Geometry     common.LayoutGeometry `json:"geometry"`
 }
 
 const htmlEditorParentFormIDFieldName string = "ParentFormID"

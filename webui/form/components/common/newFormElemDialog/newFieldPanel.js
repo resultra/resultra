@@ -80,7 +80,8 @@ function createNewFieldDialogPanelConfig(elemPrefix) {
 			}
 			return panelFormInfo
 		
-		} // init panel
+		}, // init panel
+		transitionIntoPanel: function ($dialog) { }
 	} // wizard dialog configuration for panel to create new field
 	
 	return newFieldPanelConfig;

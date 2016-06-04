@@ -43,7 +43,7 @@ function openNewCheckboxDialog(formID,parentTableID,containerParams)
 			jsonAPIRequest("frm/checkBox/new",newCheckBoxAPIParams,function(newCheckBoxObjectRef) {
 		          console.log("saveNewCheckbox: Done getting new ID:response=" + JSON.stringify(newCheckBoxObjectRef));
 			  
-				  $('#'+newCheckBoxParams.placeholderID).find('label').text(newCheckBoxObjectRef.fieldRef.fieldInfo.name)
+				  $('#'+newCheckBoxParams.placeholderID).find('label').text(newCheckBoxObjectRef.fieldRef.name)
 				  $('#'+newCheckBoxParams.placeholderID).attr("id",newCheckBoxObjectRef.checkBoxID)
 			  
 				  // Set up the newly created checkbox for resize, selection, etc.

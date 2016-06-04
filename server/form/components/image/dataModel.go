@@ -13,10 +13,10 @@ import (
 const imageEntityKind string = "Image"
 
 type Image struct {
-	ParentFormID string `json:"parentFormID"`
-	ImageID      string `json:"imageID"`
-	FieldID      string `json:"fieldID"`
-	Geometry     common.LayoutGeometry
+	ParentFormID string                `json:"parentFormID"`
+	ImageID      string                `json:"imageID"`
+	FieldID      string                `json:"fieldID"`
+	Geometry     common.LayoutGeometry `json:"geometry"`
 }
 
 const imageParentFormIDFieldName string = "ParentFormID"

@@ -20,13 +20,16 @@ function openNewDatePickerDialog(formID,parentTableID,containerParams)
 		console.log("New date picker: done in dialog")
 		
 		var newOrExistingFormInfo = getFormFormInfoByPanelID(newDatePickerDialog,createNewOrExistingFieldDialogPanelID)
-		if($(newOrExistingFormInfo.panelSelector).form('get field',newOrExistingFormInfo.newFieldRadio).prop('checked')) {
+		var doCreateNewField = $(newOrExistingFormInfo.newFieldRadioSelector).prop("checked")
+		
+		
+		if(doCreateNewField) {
 			console.log("saveNewDatePicker: New field selected - not implemented yet")
 			$(newDatePickerDialog).dialog('close');
 		} else {
 			console.log("saveNewDatePicker: Existing field selected")
 			console.log("saveNewDatePicker: getting field id from field = " + newOrExistingFormInfo.existingFieldSelection)
-			var fieldID = $(newOrExistingFormInfo.panelSelector).form('get value',newOrExistingFormInfo.existingFieldSelection)
+			var fieldID = $(newOrExistingFormInfo.existingFieldSelectionSelector).val()			
 			console.log("saveNewDatePicker: Selected field ID: " + fieldID)
 			
 			var newDatePickerAPIParams = {
@@ -39,7 +42,8 @@ function openNewDatePickerDialog(formID,parentTableID,containerParams)
 			jsonAPIRequest("frm/datePicker/new",newDatePickerAPIParams,function(newDatePickerObjectRef) {
 		          console.log("saveNewDatePicker: Done getting new ID:response=" + JSON.stringify(newDatePickerObjectRef));
 			  
-				  $('#'+newDatePickerParams.placeholderID).find('label').text(newDatePickerObjectRef.fieldRef.fieldInfo.name)
+			  	  var fieldName = getFieldRef(newDatePickerObjectRef.fieldID).name
+				  $('#'+newDatePickerParams.placeholderID).find('label').text(fieldName)
 				  $('#'+newDatePickerParams.placeholderID).attr("id",newDatePickerObjectRef.datePickerID)
 			  
 				  // Set up the newly created checkbox for resize, selection, etc.

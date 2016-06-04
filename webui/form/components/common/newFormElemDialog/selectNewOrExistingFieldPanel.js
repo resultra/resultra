@@ -127,7 +127,8 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 			
 			return panelFormInfo;
 
-		} // init panel
+		}, // init panel
+		transitionIntoPanel: function ($dialog) { }
 	} // wizard dialog configuration for panel to create new field
 
 	return newOrExistingFieldPanelConfig;

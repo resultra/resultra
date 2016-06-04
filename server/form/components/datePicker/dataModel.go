@@ -13,10 +13,10 @@ import (
 const datePickerEntityKind string = "DatePicker"
 
 type DatePicker struct {
-	ParentFormID string `json:"parentFormID"`
-	DatePickerID string `json:"datePickerID"`
-	FieldID      string `json:"fieldID"`
-	Geometry     common.LayoutGeometry
+	ParentFormID string                `json:"parentFormID"`
+	DatePickerID string                `json:"datePickerID"`
+	FieldID      string                `json:"fieldID"`
+	Geometry     common.LayoutGeometry `json:"geometry"`
 }
 
 const datePickerIDFieldName string = "DatePickerID"

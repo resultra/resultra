@@ -9,29 +9,30 @@ function populateFieldRefInsertionMenu(tableID)
 	$("#formulaFieldRefSelector").empty()
 	
 	$("#formulaFieldRefSelector").append('<option value="" disabled selected>Insert Field Reference</option>')
-	loadFieldInfo(tableID, [fieldTypeAll],function(fieldsByID) {
-		for (var fieldID in fieldsByID) {
+	
+	var fieldsByID = getFieldsByID()
+	
+	for (var fieldID in fieldsByID) {
+	
+		var fieldInfo = fieldsByID[fieldID]		
+	
+ 	   var menuItemHTML = '<option value="' + fieldInfo.refName + 
+			'">' + fieldInfo.name + '</option>'
 		
-			var fieldInfo = fieldsByID[fieldID]		
-		
-     	   var menuItemHTML = '<option value="' + fieldInfo.refName + 
-				'">' + fieldInfo.name + '</option>'
+		console.log("Adding selection to insert formula menu:" + menuItemHTML)
 			
-			console.log("Adding selection to insert formula menu:" + menuItemHTML)
-				
-		 	$("#formulaFieldRefSelector").append(menuItemHTML)			
+	 	$("#formulaFieldRefSelector").append(menuItemHTML)			
 
-		} // for each  field
-		
-		$("#formulaFieldRefSelector").on('change',function() {
-			var fieldRefName = $(this).find("option:selected").val();
-			if(fieldRefName.length > 0) {
-				formulaEditorConfig.editor.insert("[" + fieldRefName + "]")	
-				$('#formulaFieldRefSelector').prop('selectedIndex',0);
-			}
-		})
-		
+	} // for each  field
+	
+	$("#formulaFieldRefSelector").on('change',function() {
+		var fieldRefName = $(this).find("option:selected").val();
+		if(fieldRefName.length > 0) {
+			formulaEditorConfig.editor.insert("[" + fieldRefName + "]")	
+			$('#formulaFieldRefSelector').prop('selectedIndex',0);
+		}
 	})
+		
 	
 }
 
@@ -137,8 +138,11 @@ function closeFormulaEditor() {
 	formulaEditorConfig.hideEditorFunc()	
 }
 
-function toggleFormulaEditorForField(fieldRef) {
-	if(fieldRef.fieldInfo.isCalcField) {
+function toggleFormulaEditorForField(fieldID) {
+	
+	var fieldRef = getFieldRef(fieldID)
+	
+	if(fieldRef.isCalcField) {
 		openFormulaEditor(fieldRef)
 	} else {
 		closeFormulaEditor()
