@@ -163,11 +163,11 @@ function initBarChartEditBehavior(barChartID)
 function initBarChartData(dashboardID,barChartData) {
 	
 	drawBarChart(barChartData)
-	initBarChartEditBehavior(barChartData.barChartRef.barChartID)
+	initBarChartEditBehavior(barChartData.barChart.barChartID)
 	
-	var barChartContainer = $('#'+barChartData.barChartRef.barChartID)
+	var barChartContainer = $('#'+barChartData.barChart.barChartID)
 	
-	barChartContainer.data("barChartRef",barChartData.barChartRef)
+	barChartContainer.data("barChartRef",barChartData.barChart)
 	
 }
 

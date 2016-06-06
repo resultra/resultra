@@ -48,9 +48,13 @@ function saveNewBarChart($dialog) {
 			parentDashboardID: newBarChartParams.dashboardID,
 			barChartID: barChartRef.barChartID
 		}
-		jsonAPIRequest("dashboard/barChart/getData",barChartDataParams,function(barChartData) {
-			initBarChartData(newBarChartParams.dashboardID,barChartData)
-		})
+		
+		setTimeout(function() { // Wait for eventual consistency
+			jsonAPIRequest("dashboard/barChart/getData",barChartDataParams,function(barChartData) {
+				initBarChartData(newBarChartParams.dashboardID,barChartData)
+			})		
+		}, 2000);
+		
 	})
 }
 
