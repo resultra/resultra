@@ -45,12 +45,13 @@ var filterRulesByType = {
 	"number":filterRulesNumber,
 }
 
-function getFilterRecordsRuleDef(fieldsByID, fieldID, ruleID) {
-	var fieldInfo = fieldsByID[fieldID]
+function getFilterRecordsRuleDef(fieldID, ruleID) {
+	var fieldInfo = getFieldRef(fieldID)
 	var typeRules = filterRulesByType[fieldInfo.type]
 	var ruleDef = typeRules[ruleID]
 	return ruleDef
 }
+
 
 function initFilterRuleSelection(fieldsByID) {
 		
@@ -173,7 +174,7 @@ function recordFilterValidateAddFilterForm() {
 		return null
 	}
 	
-	var ruleDef = getFilterRecordsRuleDef(addFilterDialogContext.fieldsByID,fieldID,ruleID)
+	var ruleDef = getFilterRecordsRuleDef(fieldID,ruleID)
 	var fieldInfo = addFilterDialogContext.fieldsByID[fieldID]
 	
 	var newFilterRuleParams = {

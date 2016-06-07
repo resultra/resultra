@@ -2,8 +2,11 @@ var manageFilterCurrFilterID = null
 
 function populateFilterPanelWithOneFilterRule(filterRuleRef)
 {
-	var fieldName = filterRuleRef.fieldRef.fieldInfo.name
-	var ruleLabel = filterRuleRef.filterRuleDef.label
+	
+	var fieldName = getFieldRef(filterRuleRef.fieldID).name
+	
+	// TODO - Need to retrieve table mapping rule IDs to labels.
+	var ruleLabel = getFilterRecordsRuleDef(filterRuleRef.fieldID, filterRuleRef.ruleID).label
 	
 	var filterRecordRuleItem = 
 		'<div class="list-group-item clearfix filterRecordItem">' + 
