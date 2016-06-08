@@ -15,7 +15,10 @@ type TokenDef struct {
 var tokenWhiteSpace = TokenDef{regexpLeadingWhite, TOK_WHITE}
 var tokenComment = TokenDef{regexp.MustCompile("^//.*"), TOK_COMMENT}
 
+// The parser currently expects both UUIDs and identifyers to return TOK_IDENT. More work is needed to
+// distinguish between both cases.
 var tokenIdent = TokenDef{regexp.MustCompile("^[[:alpha:]][[:word:]\\-\\_]*"), TOK_IDENT}
+var tokenUUID = TokenDef{regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"), TOK_IDENT}
 var tokenAssign = TokenDef{regexp.MustCompile("^="), TOK_ASSIGN}
 var tokenEqual = TokenDef{regexp.MustCompile("^=="), TOK_EQUAL}
 var tokenPlus = TokenDef{regexp.MustCompile("^\\+"), TOK_PLUS}
@@ -33,6 +36,7 @@ var tokenDefs = []TokenDef{
 	tokenWhiteSpace,
 	tokenComment,
 	tokenBool,
+	tokenUUID,
 	tokenIdent,
 	tokenEqual,
 	tokenPlus,

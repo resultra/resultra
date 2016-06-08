@@ -38,8 +38,8 @@ func replaceNextFieldName(startIndex int, matchSeq TokenMatchSequence,
 					replText, foundRepl := fieldNameReplMap[matchSeq[nextTokIndex].matchedStr]
 					if !foundRepl {
 						return nextTokIndex, fmt.Errorf(
-							"Unexpected error prepocessing field name: Can't find substitution for '%v'",
-							matchSeq[nextTokIndex].matchedStr)
+							"Unexpected error prepocessing field name: Can't find substitution for '%v', valid matches = %+v (len=%v)",
+							matchSeq[nextTokIndex].matchedStr, fieldNameReplMap, len(fieldNameReplMap))
 					} else {
 						matchSeq[nextTokIndex].matchedStr = replText
 						return nextTokIndex + 1, nil // skip over closing bracket

@@ -10,7 +10,7 @@ from testCommon import TestHelperMixin
 class TestFormulas(unittest.TestCase,TestHelperMixin):
     
     def verifyFormula(self,resultFieldID,formulaText,whatTested):
-        jsonResp = self.apiRequest('calcField/validateFormula',{'fieldID':resultFieldID,'formulaText':formulaText})
+        jsonResp = self.apiRequest('calcField/validateFormula',{'fieldParentTableID':self.tableID,'fieldID':resultFieldID,'formulaText':formulaText})
         isValidFormula = jsonResp[u'isValidFormula']
         if isValidFormula:
             print "PASS: verifyFormula: ", whatTested
@@ -20,7 +20,7 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
 
     # TODO - Enhance this function to include a string to look for in the expected error message
     def verifyBadFormula(self,resultFieldID,formulaText,whatTested):
-        jsonResp = self.apiRequest('calcField/validateFormula',{'fieldID':resultFieldID,'formulaText':formulaText})
+        jsonResp = self.apiRequest('calcField/validateFormula',{'fieldParentTableID':self.tableID,'fieldID':resultFieldID,'formulaText':formulaText})
         isValidFormula = jsonResp[u'isValidFormula']
         errorMsg = jsonResp[u'errorMsg']
         if not isValidFormula:
@@ -55,10 +55,7 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
         fieldParams = {'parentTableID':self.tableID,'name':'TextCalc','type':'text',
                   'refName':'textCalc','formulaText':'"hello world"'}
         jsonResp = self.apiRequest('calcField/new',fieldParams)
-        self.textCalcField = jsonResp[u'fieldID']
-        
-        time.sleep(1) ## For eventual consistency
-  
+        self.textCalcField = jsonResp[u'fieldID']  
         
  
     def testSimpleFormulas(self):
@@ -77,8 +74,7 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
         self.verifyFormula(self.numberCalcField,"SUM(52.5)","function names are case insensitive")
         self.verifyFormula(self.numberCalcField,"Sum(52.5)","function names are case insensitive")
         self.verifyFormula(self.numberCalcField,"SuM(52.5)","function names are case insensitive")
-        
- 
+         
     def testFunctionArgs(self):
         self.verifyBadFormula(self.numberCalcField, "SUM()","SUM function needs at least one argument")
         self.verifyBadFormula(self.numberCalcField, 'SUM("text")',"SUM function takes numberical arguments")
@@ -111,16 +107,12 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
         jsonResp = self.apiRequest('calcField/new',fieldParams)
         fieldA = jsonResp[u'fieldID']
 
-        time.sleep(1) # For eventual consistency
-
         # Setup [b]->[a]
         fieldParams = {'parentTableID':self.tableID,'name':'B','type':'number',
                     'refName':'fieldB','formulaText':'42.5 + [fieldA]'}
         jsonResp = self.apiRequest('calcField/new',fieldParams)
         fieldB = jsonResp[u'fieldID']
-        
-        time.sleep(1) # For eventual consistency
-        
+                
         self.verifyBadFormula(fieldA,"10*[fieldB]", 
             "circular reference: field B already refers to A, can't make a reference to B from A")
             

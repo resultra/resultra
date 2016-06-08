@@ -4,7 +4,7 @@ import (
 	"appengine"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/generic/datastoreWrapper"
+	"resultra/datasheet/server/generic/cassandraWrapper"
 )
 
 type GetFieldListParams struct {
@@ -15,12 +15,29 @@ const fieldParentTableFieldName string = "ParentTableID"
 
 func GetAllFields(appEngContext appengine.Context, params GetFieldListParams) ([]Field, error) {
 
-	var allFields []Field
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("getTableList: Unable to create database session: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
 
-	err := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, params.ParentTableID,
-		FieldEntityKind, fieldParentTableFieldName, &allFields)
-	if err != nil {
-		return nil, fmt.Errorf("GetFieldsByType: Unable to retrieve fields from datastore: datastore error =%v", err)
+	fieldIter := dbSession.Query(`SELECT tableID,fieldID,name,type,refname,calcFieldEqn,isCalcField,preprocessedFormulaText FROM field WHERE tableID=?`,
+		params.ParentTableID).Iter()
+
+	var currField Field
+	allFields := []Field{}
+	for fieldIter.Scan(&currField.ParentTableID,
+		&currField.FieldID,
+		&currField.Name,
+		&currField.Type,
+		&currField.RefName,
+		&currField.CalcFieldEqn,
+		&currField.IsCalcField,
+		&currField.PreprocessedFormulaText) {
+		allFields = append(allFields, currField)
+	}
+	if closeErr := fieldIter.Close(); closeErr != nil {
+		fmt.Errorf("getTableList: Failure querying database: %v", closeErr)
 	}
 
 	return allFields, nil
