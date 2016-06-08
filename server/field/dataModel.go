@@ -3,11 +3,11 @@ package field
 import (
 	"appengine"
 	"fmt"
+	"github.com/gocql/gocql"
 	"log"
 	"regexp"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/datastoreWrapper"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/generic/cassandraWrapper"
 	"strings"
 )
 
@@ -80,13 +80,10 @@ func CreateNewFieldFromRawInputs(appEngContext appengine.Context, parentTableID 
 		return "", fmt.Errorf("Can't create new field: invalid field type: '%v'", newField.Type)
 	}
 
-	if err := uniqueID.ValidatedWellFormedID(parentTableID); err != nil {
-		return "", err
-	}
 	newField.ParentTableID = parentTableID
 	// The UUID for fields is substituted for the fields reference name when stored in the preprocessed formula.
 	// The tokenizer for the formula compiler could potentially read the UUID as a number literal if there isn't a distinct prefix.
-	newField.FieldID = uniqueID.GenerateUniqueIDWithPrefix("F")
+	newField.FieldID = gocql.TimeUUID().String()
 
 	newField.RefName = strings.TrimSpace(newField.RefName) // strip leading & trailing whitespace
 	if !validRefNameRegexp.MatchString(newField.RefName) {
@@ -96,13 +93,27 @@ func CreateNewFieldFromRawInputs(appEngContext appengine.Context, parentTableID 
 
 	// TODO: Validate the reference name is unique versus the other names field names already in use.
 
-	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, FieldEntityKind, &newField)
-	if insertErr != nil {
-		return "", fmt.Errorf("Can't create new field: error inserting into datastore: %v", insertErr)
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return "", fmt.Errorf("CreateNewFieldFromRawInputs: Can't create database: unable to create database session: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	if insertErr := dbSession.Query(
+		`INSERT INTO field (tableID,fieldID,name,type,refname,calcFieldEqn,isCalcField,preprocessedFormulaText) VALUES (?,?,?,?,?,?,?,?)`,
+		newField.ParentTableID,
+		newField.FieldID,
+		newField.Name,
+		newField.Type,
+		newField.RefName,
+		newField.CalcFieldEqn,
+		newField.IsCalcField,
+		newField.PreprocessedFormulaText).Exec(); insertErr != nil {
+		fmt.Errorf("CreateNewFieldFromRawInputs: Can't create field: unable to insert into database: error = %v", insertErr)
 	}
 
 	// TODO - verify IntID != 0
-	log.Printf("NewField: Created new field: id= %v, field='%+v'", newField.FieldID, newField)
+	log.Printf("CreateNewFieldFromRawInputs: Created new field: id= %v, field='%+v'", newField.FieldID, newField)
 
 	return newField.FieldID, nil
 
@@ -128,20 +139,44 @@ func NewField(appEngContext appengine.Context, fieldParams NewFieldParams) (stri
 }
 
 func GetField(appEngContext appengine.Context, fieldID string) (*Field, error) {
+
 	var fieldGetDest Field
-	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, FieldEntityKind, fieldIDFieldName, fieldID, &fieldGetDest); getErr != nil {
+
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: Can't create database: unable to create database session: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	getErr := dbSession.Query(`SELECT tableID,fieldID,name,type,refname,calcFieldEqn,isCalcField,preprocessedFormulaText FROM field WHERE fieldID = ? LIMIT 1`,
+		fieldID).Scan(&fieldGetDest.ParentTableID,
+		&fieldGetDest.FieldID,
+		&fieldGetDest.Name,
+		&fieldGetDest.Type,
+		&fieldGetDest.RefName,
+		&fieldGetDest.CalcFieldEqn,
+		&fieldGetDest.IsCalcField,
+		&fieldGetDest.PreprocessedFormulaText)
+	if getErr != nil {
 		return nil, fmt.Errorf("Unabled to get field: id = %+v: datastore err=%v", fieldID, getErr)
 	}
+
 	return &fieldGetDest, nil
 }
 
-func UpdateExistingField(appEngContext appengine.Context, fieldID string, updatedField *Field) (*Field, error) {
+func UpdateExistingField(appEngContext appengine.Context, updatedField *Field) (*Field, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
-		fieldID, FieldEntityKind, fieldIDFieldName, updatedField); updateErr != nil {
-		return nil, fmt.Errorf("updateExistingHtmlEditor: Error updating exiting field: error = %v", updateErr)
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: Can't create database: unable to create database session: error = %v", sessionErr)
 	}
+	defer dbSession.Close()
 
+	/*	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
+			fieldID, FieldEntityKind, fieldIDFieldName, updatedField); updateErr != nil {
+			return nil, fmt.Errorf("updateExistingHtmlEditor: Error updating exiting field: error = %v", updateErr)
+		}
+	*/
 	return updatedField, nil
 
 }

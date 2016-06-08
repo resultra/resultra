@@ -11,16 +11,16 @@ import (
 const TableEntityKind string = "Table"
 
 type Table struct {
-	ParentDatabaseID gocql.UUID `json:"parentDatabaseID"`
-	TableID          gocql.UUID `json:"tableID"`
-	Name             string     `json:"name"`
+	ParentDatabaseID string `json:"parentDatabaseID"`
+	TableID          string `json:"tableID"`
+	Name             string `json:"name"`
 }
 
 const tableParentIDFieldName string = "ParentDatabaseID"
 
 type NewTableParams struct {
-	DatabaseID gocql.UUID `json:'databaseID'`
-	Name       string     `json:"name"`
+	DatabaseID string `json:'databaseID'`
+	Name       string `json:"name"`
 }
 
 func saveNewTable(appEngContext appengine.Context, params NewTableParams) (*Table, error) {
@@ -38,7 +38,7 @@ func saveNewTable(appEngContext appengine.Context, params NewTableParams) (*Tabl
 	}
 	defer dbSession.Close()
 
-	tableID := gocql.TimeUUID()
+	tableID := gocql.TimeUUID().String()
 	if insertErr := dbSession.Query(`INSERT INTO dataTable (databaseID, tableID, name) VALUES (?, ?, ?)`,
 		params.DatabaseID, tableID, sanitizedTableName).Exec(); insertErr != nil {
 		fmt.Errorf("saveNewTable: Can't create table: unable to create database: error = %v", insertErr)

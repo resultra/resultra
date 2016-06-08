@@ -39,7 +39,7 @@ func UpdateFieldProps(appEngContext appengine.Context, propUpdater FieldPropUpda
 		return nil, fmt.Errorf("UpdateFieldProps: Unable to update existing field properties: %v", propUpdateErr)
 	}
 
-	updatedField, updateErr := UpdateExistingField(appEngContext, propUpdater.GetFieldID(), fieldForUpdate)
+	updatedField, updateErr := UpdateExistingField(appEngContext, fieldForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateFieldProps: error updating field: %v", updateErr)
 	}

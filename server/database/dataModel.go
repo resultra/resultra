@@ -11,8 +11,8 @@ import (
 const DatabaseEntityKind string = "Database"
 
 type Database struct {
-	DatabaseID gocql.UUID `json:"databaseID"`
-	Name       string     `json:"name"`
+	DatabaseID string `json:"databaseID"`
+	Name       string `json:"name"`
 }
 
 type NewDatabaseParams struct {
@@ -34,7 +34,7 @@ func saveNewDatabase(appEngContext appengine.Context, params NewDatabaseParams) 
 	}
 	defer dbSession.Close()
 
-	databaseID := gocql.TimeUUID()
+	databaseID := gocql.TimeUUID().String()
 	if insertErr := dbSession.Query(`INSERT INTO database (databaseID, name) VALUES (?, ?)`,
 		databaseID, sanitizedDbName).Exec(); insertErr != nil {
 		fmt.Errorf("saveNewDatabase: Can't create database: unable to create database: error = %v", insertErr)
