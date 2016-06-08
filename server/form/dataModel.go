@@ -3,10 +3,10 @@ package form
 import (
 	"appengine"
 	"fmt"
+	"github.com/gocql/gocql"
 	"log"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/datastoreWrapper"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/generic/cassandraWrapper"
 )
 
 const formEntityKind string = "Form"
@@ -32,17 +32,19 @@ func newForm(appEngContext appengine.Context, params NewFormParams) (*Form, erro
 		return nil, sanitizeErr
 	}
 
-	if err := uniqueID.ValidatedWellFormedID(params.ParentTableID); err != nil {
-		return nil, fmt.Errorf("Can't create new form: invalid parent table: %v", err)
-	}
-
 	newForm := Form{ParentTableID: params.ParentTableID,
-		FormID: uniqueID.GenerateUniqueID(),
+		FormID: gocql.TimeUUID().String(),
 		Name:   sanitizedName}
 
-	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, formEntityKind, &newForm)
-	if insertErr != nil {
-		return nil, fmt.Errorf("Can't create new image component: error inserting into datastore: %v", insertErr)
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: Can't create database: unable to create database session: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	if insertErr := dbSession.Query(`INSERT INTO form (tableID,formID,name) VALUES (?,?,?)`,
+		newForm.ParentTableID, newForm.FormID, newForm.Name).Exec(); insertErr != nil {
+		return nil, fmt.Errorf("newForm: Can't create form: error = %v", insertErr)
 	}
 
 	log.Printf("NewForm: Created new form: %+v", newForm)
@@ -56,24 +58,27 @@ type GetFormParams struct {
 
 func GetForm(appEngContext appengine.Context, params GetFormParams) (*Form, error) {
 
-	var form Form
-
-	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, formEntityKind,
-		formIDFieldName, params.FormID, &form); getErr != nil {
-		return nil, fmt.Errorf("getBarChart: Unable to get form from datastore: error = %v", getErr)
-	}
-
-	return &form, nil
+	return nil, fmt.Errorf("GetForm: Need to reimplement with table ID")
 }
 
 func getAllForms(appEngContext appengine.Context, parentTableID string) ([]Form, error) {
 
-	var forms []Form
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("getTableList: Unable to create database session: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
 
-	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, parentTableID,
-		formEntityKind, formParentTableFieldName, &forms)
-	if getErr != nil {
-		return nil, fmt.Errorf("Unable to retrieve form: table id=%v", parentTableID)
+	formIter := dbSession.Query(`SELECT tableID,formID,name FROM dataTable WHERE tableID = ?`,
+		parentTableID).Iter()
+
+	var currForm Form
+	forms := []Form{}
+	for formIter.Scan(&currForm.ParentTableID, &currForm.FormID, &currForm.Name) {
+		forms = append(forms, currForm)
+	}
+	if closeErr := formIter.Close(); closeErr != nil {
+		fmt.Errorf("getAllForms: Failure querying database: %v", closeErr)
 	}
 
 	return forms, nil

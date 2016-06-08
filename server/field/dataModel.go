@@ -168,15 +168,21 @@ func UpdateExistingField(appEngContext appengine.Context, updatedField *Field) (
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
-		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: Can't create database: unable to create database session: error = %v", sessionErr)
+		return nil, fmt.Errorf("UpdateExistingField: Can't create database: unable to create database session: error = %v", sessionErr)
 	}
 	defer dbSession.Close()
 
-	/*	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
-			fieldID, FieldEntityKind, fieldIDFieldName, updatedField); updateErr != nil {
-			return nil, fmt.Errorf("updateExistingHtmlEditor: Error updating exiting field: error = %v", updateErr)
-		}
-	*/
+	if updateErr := dbSession.Query(`UPDATE field SET name=?,type=?,refName=?,calcFieldEqn=?,preprocessedFormulaText=?,isCalcField=? where fieldID=?`,
+		updatedField.Name,
+		updatedField.Type,
+		updatedField.RefName,
+		updatedField.CalcFieldEqn,
+		updatedField.IsCalcField,
+		updatedField.PreprocessedFormulaText,
+		updatedField.FieldID).Exec(); updateErr != nil {
+		return nil, fmt.Errorf("UpdateExistingField: Error updating field %v: error = %v", updatedField.FieldID, updateErr)
+	}
+
 	return updatedField, nil
 
 }

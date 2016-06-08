@@ -24,3 +24,19 @@ create table datasheet.field (
 	preprocessedFormulaText text, 
 	PRIMARY KEY ((tableID),fieldID) 
 ); 
+
+
+create table datasheet.form ( 
+	tableID uuid, 
+	formID uuid, 
+	name text, 
+	PRIMARY KEY ((tableID),formID) 
+); 
+
+
+create table datasheet.dashboard ( 
+	databaseID uuid, 
+	dashboardID uuid, 
+	name text, 
+	PRIMARY KEY ((databaseID),dashboardID) 
+); 

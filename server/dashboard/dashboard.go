@@ -3,10 +3,10 @@ package dashboard
 import (
 	"appengine"
 	"fmt"
+	"github.com/gocql/gocql"
 	"resultra/datasheet/server/dashboard/components/barChart"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/datastoreWrapper"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/generic/cassandraWrapper"
 )
 
 const dashboardEntityKind string = "Dashboard"
@@ -32,13 +32,19 @@ func NewDashboard(appEngContext appengine.Context, params NewDashboardParams) (*
 	}
 
 	var newDashboard = Dashboard{
-		DashboardID:      uniqueID.GenerateUniqueID(),
+		DashboardID:      gocql.TimeUUID().String(),
 		ParentDatabaseID: params.DatabaseID,
 		Name:             sanitizedName}
 
-	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, dashboardEntityKind, &newDashboard)
-	if insertErr != nil {
-		return nil, fmt.Errorf("Can't create new dashboard: error inserting into datastore: %v", insertErr)
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("NewDashboard: Can't create dashboard: unable to create dashboard: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	if insertErr := dbSession.Query(`INSERT INTO dashboard (databaseID, dashboardID, name) VALUES (?,?,?)`,
+		newDashboard.ParentDatabaseID, newDashboard.DashboardID, newDashboard.Name).Exec(); insertErr != nil {
+		fmt.Errorf("NewDashboard: Can't create dashboard: unable to create dashboard: error = %v", insertErr)
 	}
 
 	return &newDashboard, nil
@@ -49,10 +55,7 @@ func GetDashboard(appEngContext appengine.Context, dashboardID string) (*Dashboa
 
 	var dashboard Dashboard
 
-	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, dashboardEntityKind,
-		dashboardIDFieldName, dashboardID, &dashboard); getErr != nil {
-		return nil, fmt.Errorf("GetDashboard: Unable to get dashboard from datastore: error = %v", getErr)
-	}
+	return nil, fmt.Errorf("GetDashboard: Need to reimplement with Cassandra support")
 
 	return &dashboard, nil
 
