@@ -37,6 +37,7 @@ type ValGrouping struct {
 }
 
 type NewValGroupingParams struct {
+	FieldParentTableID    string  `json:"fieldParentTableID"`
 	FieldID               string  `json:"fieldID"`
 	GroupValsBy           string  `json:"groupValsBy"`
 	GroupByValBucketWidth float64 `json:"groupByValBucketWidth"`
@@ -65,7 +66,7 @@ func validateFieldTypeWithGrouping(fieldType string, groupValsBy string, bucketW
 
 func NewValGrouping(appEngContext appengine.Context, params NewValGroupingParams) (*ValGrouping, error) {
 
-	groupingField, fieldErr := field.GetField(appEngContext, params.FieldID)
+	groupingField, fieldErr := field.GetField(appEngContext, params.FieldParentTableID, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewValGrouping: Can't create value grouping with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)
@@ -117,9 +118,9 @@ type ValGroupingResult struct {
 	GroupingLabel string
 }
 
-func (valGrouping ValGrouping) GroupRecords(appEngContext appengine.Context, records []record.Record) (*ValGroupingResult, error) {
+func (valGrouping ValGrouping) GroupRecords(appEngContext appengine.Context, parentFieldID string, records []record.Record) (*ValGroupingResult, error) {
 
-	groupingField, fieldErr := field.GetField(appEngContext, valGrouping.GroupValsByFieldID)
+	groupingField, fieldErr := field.GetField(appEngContext, parentFieldID, valGrouping.GroupValsByFieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("groupRecords: Can't get field to group records: error = %v", fieldErr)
 	}

@@ -12,6 +12,7 @@ type RecordUpdater interface {
 	fieldType() string
 	fieldID() string
 	recordID() string
+	parentTableID() string
 	updateRecordValue(rec *record.Record)
 }
 
@@ -19,8 +20,9 @@ type RecordUpdater interface {
 // part of the RecorddUpdater interface. This struct should be embedded in other structs
 // used to update values of specific types.
 type RecordUpdateHeader struct {
-	RecordID string `json:"recordID"`
-	FieldID  string `json:"fieldID"`
+	ParentTableID string `json:"parentTableID"`
+	RecordID      string `json:"recordID"`
+	FieldID       string `json:"fieldID"`
 }
 
 func (recUpdateHeader RecordUpdateHeader) fieldID() string {
@@ -31,6 +33,10 @@ func (recUpdateHeader RecordUpdateHeader) recordID() string {
 	return recUpdateHeader.RecordID
 }
 
+func (recUpdateHeader RecordUpdateHeader) parentTableID() string {
+	return recUpdateHeader.ParentTableID
+}
+
 // updateRecordValue implements a generic algorithm (strategy design pattern) which wrapp the updating of records.
 // It leaves the low-level updating of values to implementers of the RecordUpdater interface. Different RecordUpdaters
 // are needed for different value types, while the code to (1) retrieve the record, (2) validate the field type,
@@ -39,12 +45,13 @@ func UpdateRecordValue(appEngContext appengine.Context, recUpdater RecordUpdater
 
 	recordID := recUpdater.recordID()
 
-	if fieldValidateErr := record.ValidateFieldForRecordValue(appEngContext, recUpdater.fieldID(), recUpdater.fieldType(), false); fieldValidateErr != nil {
+	if fieldValidateErr := record.ValidateFieldForRecordValue(appEngContext, recUpdater.parentTableID(),
+		recUpdater.fieldID(), recUpdater.fieldType(), false); fieldValidateErr != nil {
 		return nil, fmt.Errorf("updateRecordValue: Can't set record value:"+
 			" Error validating record's field for update: %v", fieldValidateErr)
 	}
 
-	recordForUpdate, getErr := record.GetRecord(appEngContext, recordID)
+	recordForUpdate, getErr := record.GetRecord(appEngContext, recUpdater.parentTableID(), recordID)
 	if getErr != nil {
 		return nil, fmt.Errorf("SetRecordTextValue: Can't set value:"+
 			" Error retrieving existing record for update: err = %v", getErr)
@@ -63,7 +70,7 @@ func UpdateRecordValue(appEngContext appengine.Context, recUpdater RecordUpdater
 	}
 
 	// Write the record back to the datastore (including the calculated values)
-	updatedRecord, updateErr := record.UpdateExistingRecord(appEngContext, recordID, recordForUpdate)
+	updatedRecord, updateErr := record.UpdateExistingRecord(appEngContext, recordForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateRecordValue: Can't set value: Error retrieving existing record for update: err = %v", updateErr)
 	}

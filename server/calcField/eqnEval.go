@@ -24,7 +24,8 @@ func GetNumberRecordEqnResult(appEngContext appengine.Context, evalRecord *recor
 	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
 	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
 	allowCalcField := true
-	if fieldValidateErr := record.ValidateFieldForRecordValue(appEngContext, fieldID, field.FieldTypeNumber, allowCalcField); fieldValidateErr != nil {
+	if fieldValidateErr := record.ValidateFieldForRecordValue(appEngContext, evalRecord.ParentTableID, fieldID,
+		field.FieldTypeNumber, allowCalcField); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
 			"Can't validate field with value type: validation error = %v", evalRecord, fieldID, fieldValidateErr)
 	}
@@ -53,7 +54,8 @@ func GetTextRecordEqnResult(appEngContext appengine.Context, evalRecord *record.
 	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
 	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
 	allowCalcField := true
-	if fieldValidateErr := record.ValidateFieldForRecordValue(appEngContext, fieldID, field.FieldTypeText, allowCalcField); fieldValidateErr != nil {
+	if fieldValidateErr := record.ValidateFieldForRecordValue(appEngContext, evalRecord.ParentTableID,
+		fieldID, field.FieldTypeText, allowCalcField); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
 			"Can't validate field with value type: validation error = %v", evalRecord, fieldID, fieldValidateErr)
 	}
@@ -141,7 +143,7 @@ func (equation EquationNode) EvalEqn(evalContext *EqnEvalContext) (*EquationResu
 		// TODO - Once the Field type has a parent, don't use an individual database
 		// lookup for each field (database only has strong consistency when
 		// entities have a parent.
-		field, err := field.GetField(evalContext.AppEngContext, equation.FieldID)
+		field, err := field.GetField(evalContext.AppEngContext, evalContext.ResultRecord.ParentTableID, equation.FieldID)
 		if err != nil {
 			return nil, fmt.Errorf("EvalEqn: failure retrieving referenced field: %+v", err)
 		} else {

@@ -85,7 +85,8 @@ func reverseProcessCalcFieldFormula(compileParams formulaCompileParams) (string,
 }
 
 type GetRawFormulaParams struct {
-	FieldID string `json:"fieldID"`
+	FieldParentTableID string `json:"fieldParentTableID"`
+	FieldID            string `json:"fieldID"`
 }
 
 type GetRawFormulaResult struct {
@@ -95,7 +96,7 @@ type GetRawFormulaResult struct {
 
 func getRawFormulaText(appEngContext appengine.Context, params GetRawFormulaParams) (*GetRawFormulaResult, error) {
 
-	calcField, getFieldErr := field.GetField(appEngContext, params.FieldID)
+	calcField, getFieldErr := field.GetField(appEngContext, params.FieldParentTableID, params.FieldID)
 	if getFieldErr != nil {
 		return nil, fmt.Errorf("getRawFormulaText: Unable to get calculated field field: field id =%v, error=%v ",
 			params.FieldID, getFieldErr)
@@ -184,8 +185,9 @@ func compileAndEncodeFormula(params formulaCompileParams) (*formulaCompileResult
 }
 
 type ValidateFormulaParams struct {
-	FieldID     string `json:fieldID`
-	FormulaText string `json:formulaText`
+	FieldParentTableID string `json:"fieldParentTableID"`
+	FieldID            string `json:fieldID`
+	FormulaText        string `json:formulaText`
 }
 
 type ValidationResponse struct {
@@ -195,7 +197,7 @@ type ValidationResponse struct {
 
 func validateFormulaText(appEngContext appengine.Context, validationParams ValidateFormulaParams) *ValidationResponse {
 
-	formulaField, getFieldErr := field.GetField(appEngContext, validationParams.FieldID)
+	formulaField, getFieldErr := field.GetField(appEngContext, validationParams.FieldParentTableID, validationParams.FieldID)
 	if getFieldErr != nil {
 		errMsg := fmt.Sprintf("validateFormulaText: Unable to get  retrieve field: error=%v ", getFieldErr)
 		return &ValidationResponse{IsValidFormula: false, ErrorMsg: errMsg}

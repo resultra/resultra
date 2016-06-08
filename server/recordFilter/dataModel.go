@@ -198,16 +198,17 @@ func getFilterList(appEngContext appengine.Context, parentTableID string) ([]Rec
 }
 
 type NewFilterRuleParams struct {
-	ParentFilterID  string   `jsaon:"parentFilterID"`
-	FieldID         string   `json:"fieldID"`
-	RuleID          string   `json:"ruleID"`
-	TextRuleParam   *string  `json:"textRuleParam,omitempty"`
-	NumberRuleParam *float64 `json:"numberRuleParam,omitempty"`
+	ParentFilterID     string   `jsaon:"parentFilterID"`
+	FieldParentTableID string   `json:'fieldParentTableID'`
+	FieldID            string   `json:"fieldID"`
+	RuleID             string   `json:"ruleID"`
+	TextRuleParam      *string  `json:"textRuleParam,omitempty"`
+	NumberRuleParam    *float64 `json:"numberRuleParam,omitempty"`
 }
 
 func newFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleParams) (*RecordFilterRule, error) {
 
-	filterOnField, fieldErr := field.GetField(appEngContext, newRuleParams.FieldID)
+	filterOnField, fieldErr := field.GetField(appEngContext, newRuleParams.FieldParentTableID, newRuleParams.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewImage: Can't create filter rule with field ID = '%v': datastore error=%v",
 			newRuleParams.FieldID, fieldErr)

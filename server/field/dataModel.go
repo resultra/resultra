@@ -138,7 +138,7 @@ func NewField(appEngContext appengine.Context, fieldParams NewFieldParams) (stri
 	return CreateNewFieldFromRawInputs(appEngContext, fieldParams.ParentTableID, newField)
 }
 
-func GetField(appEngContext appengine.Context, fieldID string) (*Field, error) {
+func GetField(appEngContext appengine.Context, tableID string, fieldID string) (*Field, error) {
 
 	var fieldGetDest Field
 
@@ -148,8 +148,8 @@ func GetField(appEngContext appengine.Context, fieldID string) (*Field, error) {
 	}
 	defer dbSession.Close()
 
-	getErr := dbSession.Query(`SELECT tableID,fieldID,name,type,refname,calcFieldEqn,isCalcField,preprocessedFormulaText FROM field WHERE fieldID = ? LIMIT 1`,
-		fieldID).Scan(&fieldGetDest.ParentTableID,
+	getErr := dbSession.Query(`SELECT tableID,fieldID,name,type,refname,calcFieldEqn,isCalcField,preprocessedFormulaText FROM field WHERE tableID=? AND fieldID=? LIMIT 1`,
+		tableID, fieldID).Scan(&fieldGetDest.ParentTableID,
 		&fieldGetDest.FieldID,
 		&fieldGetDest.Name,
 		&fieldGetDest.Type,

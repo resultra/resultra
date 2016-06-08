@@ -60,8 +60,8 @@ class TestHelperMixin:
         recordID = jsonResp[u'recordID']
         return recordID
     
-    def getRecord(self,recordID):
-        recordRef = self.apiRequest('record/get',{'recordID':recordID})
+    def getRecord(self,parentTableID,recordID):
+        recordRef = self.apiRequest('record/get',{'parentTableID':parentTableID,'recordID':recordID})
         return recordRef
         
     def getRecordFieldVal(self,recordRef,fieldID):
@@ -77,11 +77,11 @@ class TestHelperMixin:
         recordRef = self.apiRequest('recordUpdate/setTextFieldValue',{'recordID':recordID,'fieldID':fieldID,'value':textVal})
         return recordRef
         
-    def setTimeRecordValue(self,recordID,fieldID,timeVal):
-        recordRef = self.apiRequest('recordUpdate/setTimeFieldValue',{'recordID':recordID,'fieldID':fieldID,'value':timeVal})
+    def setTimeRecordValue(self,parentTableID, recordID,fieldID,timeVal):
+        recordRef = self.apiRequest('recordUpdate/setTimeFieldValue',{'parentTableID':parentTableID,'recordID':recordID,'fieldID':fieldID,'value':timeVal})
         return recordRef
  
-    def setLongTextRecordValue(self,recordID,fieldID,textVal):
-        recordRef = self.apiRequest('recordUpdate/setLongTextFieldValue',{'recordID':recordID,'fieldID':fieldID,'value':textVal})
+    def setLongTextRecordValue(self,parentTableID,recordID,fieldID,textVal):
+        recordRef = self.apiRequest('recordUpdate/setLongTextFieldValue',{'parentTableID':parentTableID,'recordID':recordID,'fieldID':fieldID,'value':textVal})
         return recordRef
     

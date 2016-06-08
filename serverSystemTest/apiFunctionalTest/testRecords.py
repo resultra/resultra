@@ -16,26 +16,24 @@ class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
     
     def testSimpleDates(self):
         recordID = self.newRecord(self.tableID)
-        time.sleep(1) ## Sleep for eventual consistency
-         
-                
-        recordRef = self.getRecord(recordID)
+                         
+        recordRef = self.getRecord(self.tableID,recordID)
         
         timeVal = "2016-10-12T00:00:00Z" # RFC 3339 date & time format with Z at end for UTC
         
-        recordRef = self.setTimeRecordValue(recordID,self.timeFieldID,timeVal)
+        recordRef = self.setTimeRecordValue(self.tableID,recordID,self.timeFieldID,timeVal)
         # Round-trip comparison on the value set in the record.
         self.assertEquals(self.getRecordFieldVal(recordRef,self.timeFieldID),timeVal, "updated record has time value")       
           
         # Get the record straight from the database
-        recordRef = self.getRecord(recordID)
+        recordRef = self.getRecord(self.tableID,recordID)
         self.assertEquals(self.getRecordFieldVal(recordRef,self.timeFieldID),timeVal,"retrieved record has time value")
         
         with self.assertRaises(AssertionError):
-            self.setTimeRecordValue(recordID,self.timeFieldID,"ABC") # Invalid time format
+            self.setTimeRecordValue(self.tableID,recordID,self.timeFieldID,"ABC") # Invalid time format
             
         with self.assertRaises(AssertionError):
-            self.setTimeRecordValue(recordID,self.timeFieldID,"") # Invalid time format
+            self.setTimeRecordValue(self.tableID,recordID,self.timeFieldID,"") # Invalid time format
               
 
 class TestLongTextRecordValues(unittest.TestCase,TestHelperMixin):
@@ -45,12 +43,10 @@ class TestLongTextRecordValues(unittest.TestCase,TestHelperMixin):
         self.longTextFieldID = self.newLongTextField(self.tableID,"TestLongTextRecordValues - Long Text Field","TimeField")
         
     def testLongText(self):
-        time.sleep(1) ## Sleep for eventual consistency
         recordID = self.newRecord(self.tableID)
         someText = "Hello World!"
         
-        time.sleep(1) ## Sleep for eventual consistency
-        recordRef = self.setLongTextRecordValue(recordID,self.longTextFieldID,someText)
+        recordRef = self.setLongTextRecordValue(self.tableID,recordID,self.longTextFieldID,someText)
         
         self.assertEquals(self.getRecordFieldVal(recordRef,self.longTextFieldID),
             someText,"record after being initially set has same value")

@@ -30,8 +30,9 @@ type ValSummary struct {
 }
 
 type NewValSummaryParams struct {
-	FieldID           string `json:"fieldID"`
-	SummarizeValsWith string `json:"summarizeValsWith"`
+	FieldParentTableID string `json:"fieldParentTableID"`
+	FieldID            string `json:"fieldID"`
+	SummarizeValsWith  string `json:"summarizeValsWith"`
 }
 
 func validateFieldTypeWithSummary(fieldType string, summarizeValsWith string) error {
@@ -55,7 +56,7 @@ func validateFieldTypeWithSummary(fieldType string, summarizeValsWith string) er
 
 func NewValSummary(appEngContext appengine.Context, params NewValSummaryParams) (*ValSummary, error) {
 
-	summaryField, fieldErr := field.GetField(appEngContext, params.FieldID)
+	summaryField, fieldErr := field.GetField(appEngContext, params.FieldParentTableID, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewValGrouping: Can't get field value grouping: datastore error = %v", fieldErr)
 	}

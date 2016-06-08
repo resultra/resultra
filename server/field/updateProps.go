@@ -7,14 +7,20 @@ import (
 
 type FieldIDInterface interface {
 	GetFieldID() string
+	GetParentTableID() string
 }
 
 type FieldIDHeader struct {
-	FieldID string `json:"fieldID"`
+	ParentTableID string `json:"parentTableID"`
+	FieldID       string `json:"fieldID"`
 }
 
 func (idHeader FieldIDHeader) GetFieldID() string {
 	return idHeader.FieldID
+}
+
+func (idHeader FieldIDHeader) GetParentTableID() string {
+	return idHeader.ParentTableID
 }
 
 type FieldPropUpdater interface {
@@ -29,7 +35,7 @@ type FieldPropUpdater interface {
 
 func UpdateFieldProps(appEngContext appengine.Context, propUpdater FieldPropUpdater) (*Field, error) {
 
-	fieldForUpdate, getErr := GetField(appEngContext, propUpdater.GetFieldID())
+	fieldForUpdate, getErr := GetField(appEngContext, propUpdater.GetParentTableID(), propUpdater.GetFieldID())
 	if getErr != nil {
 		return nil, getErr
 	}

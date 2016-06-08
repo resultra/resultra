@@ -10,6 +10,7 @@ import (
 type semanticAnalysisContext struct {
 	resultFieldID string // for detecting cycles
 	appEngContext appengine.Context
+	parentTableID string
 	definedFuncs  FuncNameFuncInfoMap
 }
 
@@ -40,7 +41,7 @@ func checkEqnCycles(context *semanticAnalysisContext, eqnNode *EquationNode) (bo
 	// to a value literal, there is no need to check for cycles.
 	// All the other elements in the compiled formulas equation tree refere to
 	if len(eqnNode.FieldID) > 0 {
-		eqnField, fieldErr := field.GetField(context.appEngContext, eqnNode.FieldID)
+		eqnField, fieldErr := field.GetField(context.appEngContext, context.parentTableID, eqnNode.FieldID)
 		if fieldErr != nil {
 			return false, fmt.Errorf("Failure retrieving referenced field: %v", fieldErr)
 		} else {
@@ -119,7 +120,7 @@ func analyzeEqnNode(context *semanticAnalysisContext, eqnNode *EquationNode) (*s
 		// TODO - Once the Field type has a parent, don't use an individual database
 		// lookup for each field (database only has strong consistency when
 		// entities have a parent.
-		eqnField, err := field.GetField(context.appEngContext, eqnNode.FieldID)
+		eqnField, err := field.GetField(context.appEngContext, context.parentTableID, eqnNode.FieldID)
 		if err != nil {
 			return nil, fmt.Errorf("Failure retrieving referenced field: %v", err)
 		} else {
@@ -171,6 +172,7 @@ func analyzeSemantics(compileParams formulaCompileParams, rootEqnNode *EquationN
 	context := semanticAnalysisContext{
 		resultFieldID: compileParams.resultFieldID,
 		appEngContext: compileParams.appEngContext,
+		parentTableID: compileParams.parentTableID,
 		definedFuncs:  CalcFieldDefinedFuncs}
 
 	// Check the top-level/overall result type to see that it matches the expected type (e.g., bool, number, text)

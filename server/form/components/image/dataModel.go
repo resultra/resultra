@@ -23,9 +23,10 @@ const imageParentFormIDFieldName string = "ParentFormID"
 const imageIDFieldName string = "ImageID"
 
 type NewImageParams struct {
-	ParentID string                `json:"parentID"`
-	FieldID  string                `json:"fieldID"`
-	Geometry common.LayoutGeometry `json:"geometry"`
+	ParentID           string                `json:"parentID"`
+	FieldParentTableID string                `json:"fieldParentTableID"`
+	FieldID            string                `json:"fieldID"`
+	Geometry           common.LayoutGeometry `json:"geometry"`
 }
 
 func validImageFieldType(fieldType string) bool {
@@ -42,7 +43,7 @@ func saveNewImage(appEngContext appengine.Context, params NewImageParams) (*Imag
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	field, fieldErr := field.GetField(appEngContext, params.FieldID)
+	field, fieldErr := field.GetField(appEngContext, params.FieldParentTableID, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)

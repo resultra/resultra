@@ -4,7 +4,10 @@ import (
 	"appengine"
 	"appengine/datastore"
 	"fmt"
+	"github.com/gocql/gocql"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/cassandraWrapper"
 	"resultra/datasheet/server/generic/datastoreWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 )
@@ -78,37 +81,72 @@ func NewRecord(appEngContext appengine.Context, params NewRecordParams) (*Record
 	}
 
 	newRecord := Record{ParentTableID: params.ParentTableID,
-		RecordID:    uniqueID.GenerateUniqueID(),
+		RecordID:    gocql.TimeUUID().String(),
 		FieldValues: RecFieldValues{}}
 
-	//	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, recordEntityKind, &newRecord)
-	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, recordEntityKind, &newRecord)
-	if insertErr != nil {
-		return nil, fmt.Errorf("Can't create new record: error inserting into datastore: %v", insertErr)
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	encodedFieldVals, encodeErr := generic.EncodeJSONString(newRecord.FieldValues)
+	if encodeErr != nil {
+		return nil, fmt.Errorf("NewRecord: failure encoding field values: error = %v", encodeErr)
+	}
+
+	if insertErr := dbSession.Query(`INSERT INTO records (tableID, record_id, field_values) VALUES (?,?,?)`,
+		newRecord.ParentTableID, newRecord.RecordID, encodedFieldVals).Exec(); insertErr != nil {
+		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", insertErr)
 	}
 
 	return &newRecord, nil
 
 }
 
-func GetRecord(appEngContext appengine.Context, recordID string) (*Record, error) {
+func GetRecord(appEngContext appengine.Context, parentTableID string, recordID string) (*Record, error) {
 
 	getRecord := Record{"", "", RecFieldValues{}}
 
-	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, recordEntityKind,
-		recordRecordIDFieldName, recordID, &getRecord); getErr != nil {
-		return nil, fmt.Errorf("GetRecord: Unable to get record from datastore: error = %v", getErr)
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("GetRecord: Can't create database: unable to create database session: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	encodedFieldVals := ""
+	getErr := dbSession.Query(`SELECT tableID,record_id,field_values FROM records WHERE tableID=? AND record_id=? LIMIT 1`,
+		parentTableID, recordID).Scan(&getRecord.ParentTableID,
+		&getRecord.RecordID,
+		&encodedFieldVals)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetRecord: Unabled to get record: id = %v: datastore err=%v", recordID, getErr)
+	}
+
+	if decodeErr := generic.DecodeJSONString(encodedFieldVals, &getRecord.FieldValues); decodeErr != nil {
+		return nil, fmt.Errorf("GetRecord: Unabled to get record: id = %v: datastore err=%v", recordID, decodeErr)
 	}
 
 	return &getRecord, nil
 
 }
 
-func UpdateExistingRecord(appEngContext appengine.Context, recordID string, rec *Record) (*Record, error) {
+func UpdateExistingRecord(appEngContext appengine.Context, rec *Record) (*Record, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
-		recordID, recordEntityKind, recordRecordIDFieldName, rec); updateErr != nil {
-		return nil, fmt.Errorf("UpdateExistingRecord: Error updating record: error = %v", updateErr)
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	encodedFieldVals, encodeErr := generic.EncodeJSONString(rec.FieldValues)
+	if encodeErr != nil {
+		return nil, fmt.Errorf("NewRecord: failure encoding field values: error = %v", encodeErr)
+	}
+
+	if updateErr := dbSession.Query(`UPDATE records set field_values=? WHERE tableID=? and record_id=?`,
+		encodedFieldVals, rec.ParentTableID, rec.RecordID).Exec(); updateErr != nil {
+		return nil, fmt.Errorf("UpdateExistingRecord: Can't update record: unable to update record: error = %v", updateErr)
 	}
 
 	return rec, nil
@@ -140,10 +178,10 @@ func GetRecords(appEngContext appengine.Context, params GetRecordsParams) ([]Rec
 // Validate the field is of the correct type and not a calculated field (if allowCalcField not true). This is for validating
 // the field when setting/getting values from regular "literal" fields which store values entered by end-users (as opposed to
 // calculated fields)
-func ValidateFieldForRecordValue(appEngContext appengine.Context, fieldID string, expectedFieldType string,
+func ValidateFieldForRecordValue(appEngContext appengine.Context, fieldParentTableID string, fieldID string, expectedFieldType string,
 	allowCalcField bool) error {
 
-	field, fieldGetErr := field.GetField(appEngContext, fieldID)
+	field, fieldGetErr := field.GetField(appEngContext, fieldParentTableID, fieldID)
 	if fieldGetErr != nil {
 		return fmt.Errorf(" Error retrieving field for updating/setting value: err = %v", fieldGetErr)
 	}

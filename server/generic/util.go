@@ -28,3 +28,12 @@ func EncodeJSONString(val interface{}) (string, error) {
 	}
 	return string(b), nil
 }
+
+func DecodeJSONString(encodedStr string, decodedVal interface{}) error {
+
+	encodedBytes := []byte(encodedStr)
+	if err := json.Unmarshal(encodedBytes, decodedVal); err != nil {
+		return fmt.Errorf("DecodeJSONString:Error decoding server JSON: encoded =  %v: decode error = %v", encodedStr, err)
+	}
+	return nil
+}

@@ -39,7 +39,7 @@ func filterOneRecord(appEngContext appengine.Context, rec record.Record, filterR
 
 	for _, currFilterRule := range filterRules {
 
-		ruleField, fieldErr := field.GetField(appEngContext, currFilterRule.FieldID)
+		ruleField, fieldErr := field.GetField(appEngContext, rec.ParentTableID, currFilterRule.FieldID)
 		if fieldErr != nil {
 			return false, fmt.Errorf("filterOneRecord: Can't get field for filter rule = '%v': datastore error=%v",
 				currFilterRule.FieldID, fieldErr)

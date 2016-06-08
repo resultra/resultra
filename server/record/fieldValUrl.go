@@ -9,8 +9,9 @@ import (
 )
 
 type GetFieldValUrlParams struct {
-	RecordID string `json:"recordID"`
-	FieldID  string `json:"fieldID"`
+	ParentTableID string `json:"parentTableID"`
+	RecordID      string `json:"recordID"`
+	FieldID       string `json:"fieldID"`
 }
 
 type RecordFileFieldURLResponse struct {
@@ -19,12 +20,12 @@ type RecordFileFieldURLResponse struct {
 
 func getFieldValUrl(appEngCntxt appengine.Context, params GetFieldValUrlParams) (*RecordFileFieldURLResponse, error) {
 
-	record, getErr := GetRecord(appEngCntxt, params.RecordID)
+	record, getErr := GetRecord(appEngCntxt, params.ParentTableID, params.RecordID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getFieldValUrl: Unabled to get record: id = %v: get err=%v", params.RecordID, getErr)
 	}
 
-	theField, fieldErr := field.GetField(appEngCntxt, params.FieldID)
+	theField, fieldErr := field.GetField(appEngCntxt, params.ParentTableID, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("getFieldValUrl: Unabled to get field: id = %+v: get err=%v", params.FieldID, fieldErr)
 	}

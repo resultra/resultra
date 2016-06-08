@@ -23,9 +23,10 @@ const datePickerIDFieldName string = "DatePickerID"
 const datePickerParentFormIDFieldName string = "ParentFormID"
 
 type NewDatePickerParams struct {
-	ParentID string                `json:"parentID"`
-	FieldID  string                `json:"fieldID"`
-	Geometry common.LayoutGeometry `json:"geometry"`
+	FieldParentTableID string                `json:"fieldParentTableID"`
+	ParentID           string                `json:"parentID"`
+	FieldID            string                `json:"fieldID"`
+	Geometry           common.LayoutGeometry `json:"geometry"`
 }
 
 func validDatePickerFieldType(fieldType string) bool {
@@ -42,7 +43,7 @@ func saveNewDatePicker(appEngContext appengine.Context, params NewDatePickerPara
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	field, fieldErr := field.GetField(appEngContext, params.FieldID)
+	field, fieldErr := field.GetField(appEngContext, params.FieldParentTableID, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)
