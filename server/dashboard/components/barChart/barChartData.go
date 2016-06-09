@@ -3,7 +3,6 @@ package barChart
 import (
 	"appengine"
 	"fmt"
-	"resultra/datasheet/server/generic/datastoreWrapper"
 	"resultra/datasheet/server/recordFilter"
 )
 
@@ -77,12 +76,9 @@ func GetBarChartData(appEngContext appengine.Context, parentDashboardID string, 
 
 func GetDashboardBarChartsData(appEngContext appengine.Context, parentDashboardID string) ([]BarChartData, error) {
 
-	var barCharts []BarChart
-
-	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, parentDashboardID,
-		barChartEntityKind, barChartParentDashboardIDFieldName, &barCharts)
-	if getErr != nil {
-		return nil, fmt.Errorf("Unable to retrieve text box components: form id=%v", parentDashboardID)
+	barCharts, err := getBarCharts(parentDashboardID)
+	if err != nil {
+		return nil, fmt.Errorf("GetDashboardBarChartsData: Error retrieving bar charts: %v", err)
 	}
 
 	var barChartsData []BarChartData

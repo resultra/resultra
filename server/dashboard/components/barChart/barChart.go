@@ -180,3 +180,41 @@ func getBarChart(appEngContext appengine.Context, parentDashboardID string, barC
 	return &barChart, nil
 
 }
+
+func getBarCharts(parentDashboardID string) ([]BarChart, error) {
+
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("NewDashboard: Can't create dashboard: unable to create dashboard: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	encodedProperties := ""
+
+	barChartIter := dbSession.Query(`SELECT dashboard_id, barchart_id, properties
+			FROM bar_charts
+			WHERE dashboard_id=?`,
+		parentDashboardID).Iter()
+
+	var currBarChart BarChart
+	barCharts := []BarChart{}
+	for barChartIter.Scan(&currBarChart.ParentDashboardID,
+		&currBarChart.BarChartID,
+		&encodedProperties) {
+
+		decodeErr := generic.DecodeJSONString(encodedProperties, &currBarChart.Properties)
+		if decodeErr != nil {
+			return nil, fmt.Errorf("getBarChart: Unable to get bar chart: error = %v", decodeErr)
+		}
+
+		barCharts = append(barCharts, currBarChart)
+
+		encodedProperties = ""
+	}
+	if closeErr := barChartIter.Close(); closeErr != nil {
+		fmt.Errorf("getTableList: Failure querying database: %v", closeErr)
+	}
+
+	return barCharts, nil
+
+}

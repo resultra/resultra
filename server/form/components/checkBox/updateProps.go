@@ -8,14 +8,20 @@ import (
 
 type CheckboxIDInterface interface {
 	getCheckBoxID() string
+	getParentFormID() string
 }
 
 type CheckboxIDHeader struct {
-	CheckBoxID string `json:"checkBoxID"`
+	ParentFormID string `json:"parentFormID"`
+	CheckBoxID   string `json:"checkBoxID"`
 }
 
 func (idHeader CheckboxIDHeader) getCheckBoxID() string {
 	return idHeader.CheckBoxID
+}
+
+func (idHeader CheckboxIDHeader) getParentFormID() string {
+	return idHeader.ParentFormID
 }
 
 type CheckBoxPropUpdater interface {
@@ -26,7 +32,7 @@ type CheckBoxPropUpdater interface {
 func updateCheckBoxProps(appEngContext appengine.Context, propUpdater CheckBoxPropUpdater) (*CheckBox, error) {
 
 	// Retrieve the bar chart from the data store
-	checkBoxForUpdate, getErr := getCheckBox(appEngContext, propUpdater.getCheckBoxID())
+	checkBoxForUpdate, getErr := getCheckBox(appEngContext, propUpdater.getParentFormID(), propUpdater.getCheckBoxID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateCheckBoxProps: Unable to get existing check box: %v", getErr)
 	}
@@ -35,7 +41,7 @@ func updateCheckBoxProps(appEngContext appengine.Context, propUpdater CheckBoxPr
 		return nil, fmt.Errorf("updateCheckBoxProps: Unable to update existing check box properties: %v", propUpdateErr)
 	}
 
-	checkBox, updateErr := updateExistingCheckBox(appEngContext, propUpdater.getCheckBoxID(), checkBoxForUpdate)
+	checkBox, updateErr := updateExistingCheckBox(appEngContext, checkBoxForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateCheckBoxProps: Unable to update existing check box properties: datastore update error =  %v", updateErr)
 	}
@@ -54,7 +60,7 @@ func (updateParams CheckBoxResizeParams) updateProps(checkBox *CheckBox) error {
 		return fmt.Errorf("set check box dimensions: Invalid geometry: %+v", updateParams.Geometry)
 	}
 
-	checkBox.Geometry = updateParams.Geometry
+	checkBox.Properties.Geometry = updateParams.Geometry
 
 	return nil
 }
@@ -66,7 +72,7 @@ type CheckBoxRepositionParams struct {
 
 func (updateParams CheckBoxRepositionParams) updateProps(checkBox *CheckBox) error {
 
-	if err := checkBox.Geometry.SetPosition(updateParams.Position); err != nil {
+	if err := checkBox.Properties.Geometry.SetPosition(updateParams.Position); err != nil {
 		return fmt.Errorf("Error setting position for check box: Invalid geometry: %v", err)
 	}
 
