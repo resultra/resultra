@@ -3,10 +3,11 @@ package barChart
 import (
 	"appengine"
 	"fmt"
+	"github.com/gocql/gocql"
 	"resultra/datasheet/server/common"
 	"resultra/datasheet/server/dashboard/values"
-	"resultra/datasheet/server/generic/datastoreWrapper"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/cassandraWrapper"
 )
 
 const barChartEntityKind string = "BarChart"
@@ -14,19 +15,7 @@ const barChartEntityKind string = "BarChart"
 const xAxisSortAsc string = "asc"
 const xAxisSortDesc string = "desc"
 
-type BarChartUniqueIDHeader struct {
-	BarChartID string `json:"barChartID"`
-}
-
-func (idHeader BarChartUniqueIDHeader) uniqueBarChartID() string {
-	return idHeader.BarChartID
-}
-
-// DashboardBarChart is the datastore object for dashboard bar charts.
-type BarChart struct {
-	ParentDashboardID string `json:"parentDashboardID"`
-
-	BarChartID string `json:"barChartID"`
+type BarChartProps struct {
 
 	// DataSrcTable is the table the bar chart gets its data from
 	DataSrcTableID string `json:"dataSrcTableID"`
@@ -45,6 +34,16 @@ type BarChart struct {
 	YAxisVals values.ValSummary `json:"yAxisValSummary"`
 }
 
+// DashboardBarChart is the datastore object for dashboard bar charts.
+type BarChart struct {
+	ParentDashboardID string `json:"parentDashboardID"`
+
+	BarChartID string `json:"barChartID"`
+
+	// DataSrcTable is the table the bar chart gets its data from
+	Properties BarChartProps `json:"properties"`
+}
+
 const barChartIDFieldName string = "BarChartID"
 const barChartParentDashboardIDFieldName string = "ParentDashboardID"
 
@@ -61,11 +60,25 @@ type NewBarChartParams struct {
 	Geometry common.LayoutGeometry `json:"geometry"`
 }
 
-func updateExistingBarChart(appEngContext appengine.Context, barChartID string, updatedBarChart *BarChart) (*BarChart, error) {
+func updateExistingBarChart(appEngContext appengine.Context, updatedBarChart *BarChart) (*BarChart, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
-		barChartID, barChartEntityKind, barChartIDFieldName, updatedBarChart); updateErr != nil {
-		return nil, fmt.Errorf("updateExistingHtmlEditor: Error updating text box: error = %v", updateErr)
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("NewDashboard: Can't create dashboard: unable to create dashboard: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	encodedProps, encodeErr := generic.EncodeJSONString(updatedBarChart.Properties)
+	if encodeErr != nil {
+		return nil, fmt.Errorf("updateExistingBarChart: Unable to update bar chart: error = %v", encodeErr)
+	}
+
+	if updateErr := dbSession.Query(
+		`UPDATE bar_charts SET properties=? WHERE dashboard_id=? and bar_chart_id=?`,
+		encodedProps,
+		updatedBarChart.ParentDashboardID,
+		updatedBarChart.BarChartID).Exec(); updateErr != nil {
+		fmt.Errorf("updateExistingBarChart: Can't create bar chart: unable to update bar chart: error = %v", updateErr)
 	}
 
 	return updatedBarChart, nil
@@ -100,32 +113,68 @@ func NewBarChart(appEngContext appengine.Context, params NewBarChartParams) (*Ba
 		return nil, fmt.Errorf("NewBarChart: Invalid X axis sort order: %v", params.XAxisSortValues)
 	}
 
+	barChartProps := BarChartProps{
+		XAxisVals:       *valGrouping,
+		XAxisSortValues: params.XAxisSortValues,
+		DataSrcTableID:  params.DataSrcTableID,
+		YAxisVals:       *valSummary,
+		Geometry:        params.Geometry,
+		Title:           ""}
+
 	newBarChart := BarChart{
 		ParentDashboardID: params.ParentDashboardID,
-		BarChartID:        uniqueID.GenerateUniqueID(),
-		XAxisVals:         *valGrouping,
-		XAxisSortValues:   params.XAxisSortValues,
-		DataSrcTableID:    params.DataSrcTableID,
-		YAxisVals:         *valSummary,
-		Geometry:          params.Geometry,
-		Title:             ""} // default to empty title
+		BarChartID:        gocql.TimeUUID().String(),
+		Properties:        barChartProps}
 
-	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, barChartEntityKind, &newBarChart)
-	if insertErr != nil {
-		return nil, fmt.Errorf("Can't create new text box component: error inserting into datastore: %v", insertErr)
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("NewDashboard: Can't create dashboard: unable to create dashboard: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	encodedProps, encodeErr := generic.EncodeJSONString(newBarChart.Properties)
+	if encodeErr != nil {
+		return nil, fmt.Errorf("NewDashboard: Unable to create dashboard: error = %v", encodeErr)
+	}
+
+	if insertErr := dbSession.Query(
+		`INSERT INTO bar_charts (dashboard_id, barchart_id, properties) 
+			VALUES (?,?,?)`,
+		newBarChart.ParentDashboardID,
+		newBarChart.BarChartID,
+		encodedProps).Exec(); insertErr != nil {
+		fmt.Errorf("NewBarChart: Can't create bar chart: unable to create bar chart: error = %v", insertErr)
 	}
 
 	return &newBarChart, nil
 
 }
 
-func getBarChart(appEngContext appengine.Context, barChartID string) (*BarChart, error) {
+func getBarChart(appEngContext appengine.Context, parentDashboardID string, barChartID string) (*BarChart, error) {
+
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("NewDashboard: Can't create dashboard: unable to create dashboard: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	encodedProperties := ""
 
 	var barChart BarChart
+	getErr := dbSession.Query(
+		`SELECT dashboard_id, barchart_id, properties 
+			FROM bar_charts 
+			WHERE dashboard_id=? AND barchart_id=? LIMIT 1`,
+		parentDashboardID, barChartID).Scan(&barChart.ParentDashboardID,
+		&barChart.BarChartID,
+		&encodedProperties)
+	if getErr != nil {
+		return nil, fmt.Errorf("Unabled to get bar chart: id = %+v: datastore err=%v", barChartID, getErr)
+	}
 
-	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, barChartEntityKind,
-		barChartIDFieldName, barChartID, &barChart); getErr != nil {
-		return nil, fmt.Errorf("getBarChart: Unable to retrieve bar chart from datastore: error = %v", getErr)
+	decodeErr := generic.DecodeJSONString(encodedProperties, &barChart.Properties)
+	if decodeErr != nil {
+		return nil, fmt.Errorf("getBarChart: Unable to get bar chart: error = %v", decodeErr)
 	}
 
 	return &barChart, nil

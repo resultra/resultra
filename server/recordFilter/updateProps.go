@@ -8,14 +8,20 @@ import (
 
 type FilterIDInterface interface {
 	GetFilterID() string
+	GetParentTableID() string
 }
 
 type FilterIDHeader struct {
-	FilterID string `json:"filterID"`
+	FilterID      string `json:"filterID"`
+	ParentTableID string `json:"parentTableID"`
 }
 
 func (idHeader FilterIDHeader) GetFilterID() string {
 	return idHeader.FilterID
+}
+
+func (idHeader FilterIDHeader) GetParentTableID() string {
+	return idHeader.ParentTableID
 }
 
 type FilterPropUpdater interface {
@@ -30,7 +36,7 @@ type FilterPropUpdater interface {
 
 func updateFilterProps(appEngContext appengine.Context, propUpdater FilterPropUpdater) (*RecordFilter, error) {
 
-	filterForUpdate, getErr := getFilter(appEngContext, propUpdater.GetFilterID())
+	filterForUpdate, getErr := getFilter(appEngContext, propUpdater.GetParentTableID(), propUpdater.GetFilterID())
 	if getErr != nil {
 		return nil, getErr
 	}
@@ -40,7 +46,7 @@ func updateFilterProps(appEngContext appengine.Context, propUpdater FilterPropUp
 		return nil, fmt.Errorf("UpdateFilterProps: Unable to update existing filter properties: %v", propUpdateErr)
 	}
 
-	updatedFilter, updateErr := updateExistingFilter(appEngContext, propUpdater.GetFilterID(), filterForUpdate)
+	updatedFilter, updateErr := updateExistingFilter(appEngContext, filterForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateFilterProps: error updating filter: %v", updateErr)
 	}

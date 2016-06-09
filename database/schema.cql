@@ -50,3 +50,30 @@ create table datasheet.records (
 	field_values text, 
 	PRIMARY KEY ((tableID),record_id) 
 ); 
+
+create table datasheet.filters ( 
+	tableID uuid, 
+	filter_id uuid, 
+	name text, 
+	PRIMARY KEY ((tableID),filter_id) 
+); 
+
+// TODO - Should filter_id be the partitioning key for filter_rules?
+
+create table datasheet.filter_rules ( 
+	filter_id uuid, 
+	rule_id uuid,
+	field_id uuid,
+	rule_def_id text,
+	text_param text,
+	number_param double,
+	PRIMARY KEY ((filter_id),rule_id) 
+);
+
+create table datasheet.bar_charts (
+	dashboard_id uuid, 
+	barchart_id uuid,
+	properties text,
+	PRIMARY KEY ((dashboard_id),barchart_id) 
+); 
+

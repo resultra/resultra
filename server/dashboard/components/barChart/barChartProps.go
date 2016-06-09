@@ -14,13 +14,27 @@ import (
 // setting code and also make property updating code more uniform and less error prone.
 type BarChartPropertyUpdater interface {
 	uniqueBarChartID() string
+	parentDashboardID() string
 	updateBarChartProps(barChart *BarChart) error
+}
+
+type BarChartUniqueIDHeader struct {
+	ParentDashboardID string `json:"parentDashboardID"`
+	BarChartID        string `json:"barChartID"`
+}
+
+func (idHeader BarChartUniqueIDHeader) uniqueBarChartID() string {
+	return idHeader.BarChartID
+}
+
+func (idHeader BarChartUniqueIDHeader) parentDashboardID() string {
+	return idHeader.ParentDashboardID
 }
 
 func UpdateBarChartProps(appEngContext appengine.Context, propUpdater BarChartPropertyUpdater) (*BarChart, error) {
 
 	// Retrieve the bar chart from the data store
-	barChartForUpdate, getBarChartErr := getBarChart(appEngContext, propUpdater.uniqueBarChartID())
+	barChartForUpdate, getBarChartErr := getBarChart(appEngContext, propUpdater.parentDashboardID(), propUpdater.uniqueBarChartID())
 	if getBarChartErr != nil {
 		return nil, fmt.Errorf("updateBarChartProps: Unable to get existing bar chart: %v", getBarChartErr)
 	}
@@ -32,7 +46,7 @@ func UpdateBarChartProps(appEngContext appengine.Context, propUpdater BarChartPr
 	}
 
 	// Save the updated bar chart back to the data store
-	updatedBarChart, updateErr := updateExistingBarChart(appEngContext, propUpdater.uniqueBarChartID(), barChartForUpdate)
+	updatedBarChart, updateErr := updateExistingBarChart(appEngContext, barChartForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateBarChartProps: Unable to update existing bar chart: %v", updateErr)
 	}
@@ -53,7 +67,7 @@ type SetBarChartTitleParams struct {
 
 func (titleParam SetBarChartTitleParams) updateBarChartProps(barChart *BarChart) error {
 
-	barChart.Title = titleParam.Title
+	barChart.Properties.Title = titleParam.Title
 
 	return nil
 }
@@ -71,7 +85,7 @@ func (params SetBarChartDimensionsParams) updateBarChartProps(barChart *BarChart
 		return fmt.Errorf("setBarChartDimensions: Invalid geometry for bar chart: %+v", params.Geometry)
 	}
 
-	barChart.Geometry = params.Geometry
+	barChart.Properties.Geometry = params.Geometry
 
 	return nil
 }

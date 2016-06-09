@@ -23,7 +23,7 @@ type BarChartData struct {
 
 func getOneBarChartData(appEngContext appengine.Context, barChart *BarChart) (*BarChartData, error) {
 
-	tableID := barChart.DataSrcTableID
+	tableID := barChart.Properties.DataSrcTableID
 
 	// TODO - Store the list of filters with the bar chart and include it in the query.
 	filterIDs := []string{}
@@ -35,7 +35,7 @@ func getOneBarChartData(appEngContext appengine.Context, barChart *BarChart) (*B
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
 	}
 
-	valGroupingResult, groupingErr := barChart.XAxisVals.GroupRecords(appEngContext, tableID, recordRefs)
+	valGroupingResult, groupingErr := barChart.Properties.XAxisVals.GroupRecords(appEngContext, tableID, recordRefs)
 	if groupingErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error grouping records for bar chart: %v", groupingErr)
 	}
@@ -49,7 +49,7 @@ func getOneBarChartData(appEngContext appengine.Context, barChart *BarChart) (*B
 	barChartData := BarChartData{
 		BarChartID: barChart.BarChartID,
 		BarChart:   *barChart,
-		Title:      barChart.Title,
+		Title:      barChart.Properties.Title,
 		XAxisTitle: valGroupingResult.GroupingLabel,
 		YAxisTitle: "Count",
 		DataRows:   dataRows}
@@ -58,11 +58,12 @@ func getOneBarChartData(appEngContext appengine.Context, barChart *BarChart) (*B
 
 }
 
-func GetBarChartData(appEngContext appengine.Context, barChartID string) (*BarChartData, error) {
+func GetBarChartData(appEngContext appengine.Context, parentDashboardID string, barChartID string) (*BarChartData, error) {
 
-	barChart, getBarChartErr := getBarChart(appEngContext, barChartID)
+	barChart, getBarChartErr := getBarChart(appEngContext, parentDashboardID, barChartID)
 	if getBarChartErr != nil {
-		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart with id=%v: error= %v", barChartID, getBarChartErr)
+		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart with id=%v, parent dashboard = %v: error= %v",
+			barChartID, parentDashboardID, getBarChartErr)
 	}
 
 	barChartData, dataErr := getOneBarChartData(appEngContext, barChart)

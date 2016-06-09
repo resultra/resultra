@@ -8,8 +8,6 @@ import (
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/cassandraWrapper"
-	"resultra/datasheet/server/generic/datastoreWrapper"
-	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const recordEntityKind string = "Record"
@@ -75,10 +73,6 @@ type NewRecordParams struct {
 }
 
 func NewRecord(appEngContext appengine.Context, params NewRecordParams) (*Record, error) {
-
-	if err := uniqueID.ValidatedWellFormedID(params.ParentTableID); err != nil {
-		return nil, err
-	}
 
 	newRecord := Record{ParentTableID: params.ParentTableID,
 		RecordID:    gocql.TimeUUID().String(),
@@ -164,12 +158,29 @@ type GetRecordsParams struct {
 
 func GetRecords(appEngContext appengine.Context, params GetRecordsParams) ([]Record, error) {
 
-	var records []Record
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
 
-	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, params.TableID,
-		recordEntityKind, recordParentTableIDFieldName, &records)
-	if getErr != nil {
-		return nil, fmt.Errorf("Unable to retrieve records: form id=%v", params.TableID)
+	recordIter := dbSession.Query(`SELECT tableID,record_id,field_values FROM records WHERE tableID=?`,
+		params.TableID).Iter()
+
+	var currRecord Record
+	encodedFieldVals := ""
+	records := []Record{}
+	for recordIter.Scan(&currRecord.ParentTableID,
+		&currRecord.RecordID,
+		&encodedFieldVals) {
+
+		if decodeErr := generic.DecodeJSONString(encodedFieldVals, &currRecord.FieldValues); decodeErr != nil {
+			return nil, fmt.Errorf("GetRecord: Unabled to get record: id = %v: datastore err=%v", currRecord.RecordID, decodeErr)
+		}
+		records = append(records, currRecord)
+	}
+	if closeErr := recordIter.Close(); closeErr != nil {
+		fmt.Errorf("GetRecords: Failure querying database: %v", closeErr)
 	}
 
 	return records, nil

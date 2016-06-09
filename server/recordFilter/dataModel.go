@@ -3,11 +3,11 @@ package recordFilter
 import (
 	"appengine"
 	"fmt"
+	"github.com/gocql/gocql"
 	"log"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/datastoreWrapper"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/generic/cassandraWrapper"
 )
 
 const recordFilterRuleEntityKind string = "RecordFilterRule"
@@ -113,12 +113,18 @@ func newFilter(appEngContext appengine.Context, params NewFilterParams) (*Record
 
 	newFilter := RecordFilter{
 		ParentTableID: params.ParentTableID,
-		FilterID:      uniqueID.GenerateUniqueID(),
+		FilterID:      gocql.TimeUUID().String(),
 		Name:          sanitizedName}
 
-	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, recordFilterEntityKind, &newFilter)
-	if insertErr != nil {
-		return nil, fmt.Errorf("Can't create new text box component: error inserting into datastore: %v", insertErr)
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	if insertErr := dbSession.Query(`INSERT INTO filters (tableID, filter_id, name) VALUES (?,?,?)`,
+		newFilter.ParentTableID, newFilter.FilterID, newFilter.Name).Exec(); insertErr != nil {
+		return nil, fmt.Errorf("newFilter: Can't create filter: error = %v", insertErr)
 	}
 
 	log.Printf("newFilter: Created new filter: %+v", newFilter)
@@ -126,22 +132,38 @@ func newFilter(appEngContext appengine.Context, params NewFilterParams) (*Record
 	return &newFilter, nil
 }
 
-func getFilter(appEngContext appengine.Context, filterID string) (*RecordFilter, error) {
-	var filterGetDest RecordFilter
+func getFilter(appEngContext appengine.Context, parentTableID string, filterID string) (*RecordFilter, error) {
 
-	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, recordFilterEntityKind,
-		recordFilterIDFieldName, filterID, &filterGetDest); getErr != nil {
-		return nil, fmt.Errorf("getBarChart: Unable to image container from datastore: error = %v", getErr)
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("GetRecord: Can't create database: unable to create database session: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	var filterGetDest RecordFilter
+	getErr := dbSession.Query(`SELECT tableID,filter_id,name FROM filters WHERE tableID=? AND filter_id=? LIMIT 1`,
+		parentTableID, filterID).Scan(&filterGetDest.ParentTableID,
+		&filterGetDest.FilterID,
+		&filterGetDest.Name)
+	if getErr != nil {
+		return nil, fmt.Errorf("getFilter: Unabled to get filter: id = %v: datastore err=%v", filterID, getErr)
 	}
 
 	return &filterGetDest, nil
 }
 
-func updateExistingFilter(appEngContext appengine.Context, filterID string, updatedFilter *RecordFilter) (*RecordFilter, error) {
+func updateExistingFilter(appEngContext appengine.Context, updatedFilter *RecordFilter) (*RecordFilter, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
-		filterID, recordFilterEntityKind, recordFilterIDFieldName, updatedFilter); updateErr != nil {
-		return nil, fmt.Errorf("updateExistingHtmlEditor: Error updating filter: error = %v", updateErr)
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("updateExistingFilter: Can't create database: unable to create database session: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	updateErr := dbSession.Query(`UPDATE filters SET name=? WHERE tableID=? AND filter_id=?`,
+		updatedFilter.Name, updatedFilter.ParentTableID, updatedFilter.FilterID).Exec()
+	if updateErr != nil {
+		return nil, fmt.Errorf("updateExistingFilter: Unabled to update filter: id = %v: datastore err=%v", updatedFilter.FilterID, updateErr)
 	}
 
 	return updatedFilter, nil
@@ -154,6 +176,7 @@ type NewFilterWithPrefixParams struct {
 }
 
 func newFilterWithPrefix(appEngContext appengine.Context, params NewFilterWithPrefixParams) (*RecordFilter, error) {
+
 	sanitizedPrefix, sanitizeErr := generic.SanitizeName(params.NamePrefix)
 	if sanitizeErr != nil {
 		return nil, fmt.Errorf("newFilterWithPrefix: %v", sanitizeErr)
@@ -173,11 +196,27 @@ type GetFilterRulesParams struct {
 
 func getRecordFilterRules(appEngContext appengine.Context, params GetFilterRulesParams) ([]RecordFilterRule, error) {
 
-	var allFilterRules []RecordFilterRule
-	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, params.ParentFilterID,
-		recordFilterRuleEntityKind, filterRuleParentFilterIDFieldName, &allFilterRules)
-	if getErr != nil {
-		return nil, fmt.Errorf("Unable to retrieve filter rule definitions: filter id=%v", params.ParentFilterID)
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("getTableList: Unable to create database session: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	ruleIter := dbSession.Query(`SELECT filter_id, rule_id, field_id,rule_def_id,text_param,number_param FROM filter_rules WHERE filterID=?`,
+		params.ParentFilterID).Iter()
+
+	var currRule RecordFilterRule
+	allFilterRules := []RecordFilterRule{}
+	for ruleIter.Scan(&currRule.ParentFilterID,
+		&currRule.FilterRuleID,
+		&currRule.FieldID,
+		&currRule.RuleID,
+		&currRule.TextRuleParam,
+		&currRule.NumberRuleParam) {
+		allFilterRules = append(allFilterRules, currRule)
+	}
+	if closeErr := ruleIter.Close(); closeErr != nil {
+		fmt.Errorf("getRecordFilterRules: Failure querying database: %v", closeErr)
 	}
 
 	return allFilterRules, nil
@@ -185,12 +224,24 @@ func getRecordFilterRules(appEngContext appengine.Context, params GetFilterRules
 
 func getFilterList(appEngContext appengine.Context, parentTableID string) ([]RecordFilter, error) {
 
-	var allFilters []RecordFilter
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("getTableList: Unable to create database session: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
 
-	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, parentTableID,
-		recordFilterEntityKind, filterParentTableIDFieldName, &allFilters)
-	if getErr != nil {
-		return nil, fmt.Errorf("Unable to retrieve filters: parent table id=%v", parentTableID)
+	filterIter := dbSession.Query(`SELECT tableID,filter_id,name FROM filters WHERE tableID=?`,
+		parentTableID).Iter()
+
+	var currFilter RecordFilter
+	allFilters := []RecordFilter{}
+	for filterIter.Scan(&currFilter.ParentTableID,
+		&currFilter.FilterID,
+		&currFilter.Name) {
+		allFilters = append(allFilters, currFilter)
+	}
+	if closeErr := filterIter.Close(); closeErr != nil {
+		fmt.Errorf("getFilterList: Failure querying database: %v", closeErr)
 	}
 
 	return allFilters, nil
@@ -231,14 +282,14 @@ func newFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleP
 				}
 				newFilterRule = RecordFilterRule{
 					ParentFilterID: newRuleParams.ParentFilterID,
-					FilterRuleID:   uniqueID.GenerateUniqueID(),
+					FilterRuleID:   gocql.TimeUUID().String(),
 					FieldID:        newRuleParams.FieldID,
 					RuleID:         newRuleParams.RuleID,
 					TextRuleParam:  *newRuleParams.TextRuleParam}
 			} else {
 				newFilterRule = RecordFilterRule{
 					ParentFilterID: newRuleParams.ParentFilterID,
-					FilterRuleID:   uniqueID.GenerateUniqueID(),
+					FilterRuleID:   gocql.TimeUUID().String(),
 					FieldID:        newRuleParams.FieldID,
 					RuleID:         newRuleParams.RuleID,
 					TextRuleParam:  ""}
@@ -256,14 +307,14 @@ func newFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleP
 				}
 				newFilterRule = RecordFilterRule{
 					ParentFilterID:  newRuleParams.ParentFilterID,
-					FilterRuleID:    uniqueID.GenerateUniqueID(),
+					FilterRuleID:    gocql.TimeUUID().String(),
 					FieldID:         newRuleParams.FieldID,
 					RuleID:          newRuleParams.RuleID,
 					NumberRuleParam: *newRuleParams.NumberRuleParam}
 			} else {
 				newFilterRule = RecordFilterRule{
 					ParentFilterID:  newRuleParams.ParentFilterID,
-					FilterRuleID:    uniqueID.GenerateUniqueID(),
+					FilterRuleID:    gocql.TimeUUID().String(),
 					FieldID:         newRuleParams.FieldID,
 					RuleID:          newRuleParams.RuleID,
 					NumberRuleParam: 0}
@@ -274,9 +325,20 @@ func newFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleP
 		return nil, fmt.Errorf("NewFilterRule: Filtering not supported on field type: %v", filterOnField.Type)
 	}
 
-	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, recordFilterRuleEntityKind, &newFilterRule)
-	if insertErr != nil {
-		return nil, fmt.Errorf("Can't create new text box component: error inserting into datastore: %v", insertErr)
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	if insertErr := dbSession.Query(`INSERT INTO filter_rules (filter_id, rule_id, field_id,rule_def_id,text_param,number_param) VALUES (?,?,?,?,?,?)`,
+		newFilterRule.ParentFilterID,
+		newFilterRule.FilterRuleID,
+		newFilterRule.FieldID,
+		newFilterRule.RuleID,
+		newFilterRule.TextRuleParam,
+		newFilterRule.NumberRuleParam).Exec(); insertErr != nil {
+		return nil, fmt.Errorf("newFilter: Can't create filter rule: error = %v", insertErr)
 	}
 
 	return &newFilterRule, nil
