@@ -66,7 +66,7 @@ function initFilterRuleSelection(fieldsByID) {
 			
 			var ruleID = $("#filterRecordsSelectFilterRuleDropdownMenu").val()
 			if(ruleID.length > 0) {
-				var ruleDef = getFilterRecordsRuleDef(fieldsByID,fieldID,ruleID)
+				var ruleDef = getFilterRecordsRuleDef(fieldID,ruleID)
 				var fieldInfo = fieldsByID[fieldID]
 		
 				console.log("filterRecords: rule selection changed: ruleID=" + ruleID)
@@ -178,6 +178,7 @@ function recordFilterValidateAddFilterForm() {
 	var fieldInfo = addFilterDialogContext.fieldsByID[fieldID]
 	
 	var newFilterRuleParams = {
+		fieldParentTableID: addFilterDialogContext.parentTableID,
 		fieldID: fieldID,
 		ruleID: ruleID,
 	}
@@ -226,6 +227,7 @@ function initAddFilterRuleControlPanel(parentTableID,addRuleCallback) {
 
 	loadFieldInfo(parentTableID,[fieldTypeAll],function(fieldsByID) {
 		
+		addFilterDialogContext.parentTableID = parentTableID
 		addFilterDialogContext.fieldsByID = fieldsByID
 		addFilterDialogContext.addRuleCallback = addRuleCallback
 		

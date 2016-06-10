@@ -19,7 +19,12 @@ function initFieldInfo(fieldInitDoneCallbackFunc) {
 }
 
 function getFieldRef(fieldID) {
-	return fieldInfoFieldsByID[fieldID]
+	
+	var fieldRef = fieldInfoFieldsByID[fieldID]
+	assert(fieldRef !== undefined, "No field information found for field ID = " + fieldID)
+	
+	return fieldRef
+	
 }
 
 function getFieldsByID() {

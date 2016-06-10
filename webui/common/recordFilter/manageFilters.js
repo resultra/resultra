@@ -116,7 +116,12 @@ function manageFiltersChangeFilterName() {
 		
 		if(newFilterName != currFilterRef.name) {
 			// TODO - Validate the filter name is unique updating on server.
-			var updateNameParams = { filterID: manageFilterCurrFilterID, name: newFilterName }
+			var updateNameParams = { 
+				// TODO - When/if the manage filters happens outside of viewing forms,
+				// retrieval of the current table ID needs to happen independently of the current view.
+				parentTableID: viewFormContext.tableID, 
+				filterID: manageFilterCurrFilterID, 
+				name: newFilterName }
 			jsonAPIRequest("filter/setName",updateNameParams,function(updatedFilterRef) {
 				// Update the name in the filter list.
 				var filterSelector = '#'+updatedFilterRef.filterID

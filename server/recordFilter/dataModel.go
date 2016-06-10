@@ -202,7 +202,8 @@ func getRecordFilterRules(appEngContext appengine.Context, params GetFilterRules
 	}
 	defer dbSession.Close()
 
-	ruleIter := dbSession.Query(`SELECT filter_id, rule_id, field_id,rule_def_id,text_param,number_param FROM filter_rules WHERE filterID=?`,
+	ruleIter := dbSession.Query(`SELECT filter_id, rule_id, field_id,rule_def_id,text_param,number_param 
+					FROM filter_rules WHERE filter_id=?`,
 		params.ParentFilterID).Iter()
 
 	var currRule RecordFilterRule
