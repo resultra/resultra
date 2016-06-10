@@ -3,30 +3,32 @@ package datePicker
 import (
 	"appengine"
 	"fmt"
+	"github.com/gocql/gocql"
 	"log"
-	"resultra/datasheet/server/common"
+	geometry "resultra/datasheet/server/common"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/generic/datastoreWrapper"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/form/components/common"
+	"resultra/datasheet/server/generic"
 )
 
-const datePickerEntityKind string = "DatePicker"
+const datePickerEntityKind string = "datepicker"
 
-type DatePicker struct {
-	ParentFormID string                `json:"parentFormID"`
-	DatePickerID string                `json:"datePickerID"`
-	FieldID      string                `json:"fieldID"`
-	Geometry     common.LayoutGeometry `json:"geometry"`
+type DatePickerProperties struct {
+	FieldID  string                  `json:"fieldID"`
+	Geometry geometry.LayoutGeometry `json:"geometry"`
 }
 
-const datePickerIDFieldName string = "DatePickerID"
-const datePickerParentFormIDFieldName string = "ParentFormID"
+type DatePicker struct {
+	ParentFormID string               `json:"parentFormID"`
+	DatePickerID string               `json:"datePickerID"`
+	Properties   DatePickerProperties `json:"properties"`
+}
 
 type NewDatePickerParams struct {
-	FieldParentTableID string                `json:"fieldParentTableID"`
-	ParentID           string                `json:"parentID"`
-	FieldID            string                `json:"fieldID"`
-	Geometry           common.LayoutGeometry `json:"geometry"`
+	FieldParentTableID string                  `json:"fieldParentTableID"`
+	ParentFormID       string                  `json:"parentFormID"`
+	FieldID            string                  `json:"fieldID"`
+	Geometry           geometry.LayoutGeometry `json:"geometry"`
 }
 
 func validDatePickerFieldType(fieldType string) bool {
@@ -39,7 +41,7 @@ func validDatePickerFieldType(fieldType string) bool {
 
 func saveNewDatePicker(appEngContext appengine.Context, params NewDatePickerParams) (*DatePicker, error) {
 
-	if !common.ValidGeometry(params.Geometry) {
+	if !geometry.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
@@ -53,14 +55,17 @@ func saveNewDatePicker(appEngContext appengine.Context, params NewDatePickerPara
 		return nil, fmt.Errorf("saveNewDatePicker: Invalid field type: expecting time field, got %v", field.Type)
 	}
 
-	newDatePicker := DatePicker{ParentFormID: params.ParentID,
-		FieldID:      params.FieldID,
-		DatePickerID: uniqueID.GenerateUniqueID(),
-		Geometry:     params.Geometry}
+	properties := DatePickerProperties{
+		Geometry: params.Geometry,
+		FieldID:  params.FieldID}
 
-	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, datePickerEntityKind, &newDatePicker)
-	if insertErr != nil {
-		return nil, fmt.Errorf("Can't create new image component: error inserting into datastore: %v", insertErr)
+	newDatePicker := DatePicker{ParentFormID: params.ParentFormID,
+		DatePickerID: gocql.TimeUUID().String(),
+		Properties:   properties}
+
+	if saveErr := common.SaveNewFormComponent(datePickerEntityKind,
+		newDatePicker.ParentFormID, newDatePicker.DatePickerID, newDatePicker.Properties); saveErr != nil {
+		return nil, fmt.Errorf("saveNewDatePicker: Unable to save date picker with params=%+v: error = %v", params, saveErr)
 	}
 
 	log.Printf("INFO: API: New DatePicker: Created new date picker container: %+v", newDatePicker)
@@ -69,26 +74,41 @@ func saveNewDatePicker(appEngContext appengine.Context, params NewDatePickerPara
 
 }
 
-func getDatePicker(appEngContext appengine.Context, datePickerID string) (*DatePicker, error) {
+func getDatePicker(appEngContext appengine.Context, parentFormID string, datePickerID string) (*DatePicker, error) {
 
-	var datePicker DatePicker
-
-	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, datePickerEntityKind,
-		datePickerIDFieldName, datePickerID, &datePicker); getErr != nil {
-		return nil, fmt.Errorf("getBarChart: Unable to checkbox container from datastore: error = %v", getErr)
+	datePickerProps := DatePickerProperties{}
+	if getErr := common.GetFormComponent(datePickerEntityKind, parentFormID, datePickerID, &datePickerProps); getErr != nil {
+		return nil, fmt.Errorf("getDatePicker: Unable to retrieve date picker: %v", getErr)
 	}
+
+	datePicker := DatePicker{
+		ParentFormID: parentFormID,
+		DatePickerID: datePickerID,
+		Properties:   datePickerProps}
 
 	return &datePicker, nil
 }
 
 func GetDatePickers(appEngContext appengine.Context, parentFormID string) ([]DatePicker, error) {
 
-	var datePickers []DatePicker
+	datePickers := []DatePicker{}
+	addDatePicker := func(datePickerID string, encodedProps string) error {
 
-	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, parentFormID,
-		datePickerEntityKind, datePickerParentFormIDFieldName, &datePickers)
-	if getErr != nil {
-		return nil, fmt.Errorf("Unable to retrieve date picker components: form id=%v", parentFormID)
+		var datePickerProps DatePickerProperties
+		if decodeErr := generic.DecodeJSONString(encodedProps, &datePickerProps); decodeErr != nil {
+			return fmt.Errorf("GetDatePickers: can't decode properties: %v", encodedProps)
+		}
+
+		currDatePicker := DatePicker{
+			ParentFormID: parentFormID,
+			DatePickerID: datePickerID,
+			Properties:   datePickerProps}
+		datePickers = append(datePickers, currDatePicker)
+
+		return nil
+	}
+	if getErr := common.GetFormComponents(datePickerEntityKind, parentFormID, addDatePicker); getErr != nil {
+		return nil, fmt.Errorf("GetDatePickers: Can't get date pickers: %v")
 	}
 
 	return datePickers, nil
@@ -97,9 +117,8 @@ func GetDatePickers(appEngContext appengine.Context, parentFormID string) ([]Dat
 
 func updateExistingDatePicker(appEngContext appengine.Context, datePickerID string, updatedDatePicker *DatePicker) (*DatePicker, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
-		datePickerID, datePickerEntityKind, datePickerIDFieldName, updatedDatePicker); updateErr != nil {
-		return nil, fmt.Errorf("updateExistingHtmlEditor: Error updating date picker: error = %v", updateErr)
+	if updateErr := common.UpdateFormComponent(datePickerEntityKind, updatedDatePicker.ParentFormID,
+		updatedDatePicker.DatePickerID, updatedDatePicker.Properties); updateErr != nil {
 	}
 
 	return updatedDatePicker, nil

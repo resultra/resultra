@@ -87,7 +87,7 @@ function initDatePickerRecordEditBehavior(datePickerObjectRef) {
 		var setRecordValParams = {
 			parentTableID:viewFormContext.tableID,
 			recordID:currRecordRef.recordID, 
-			fieldID:objectRef.fieldID, 
+			fieldID:objectRef.properties.fieldID, 
 			value:dateParam }
 		console.log("Setting date value: " + JSON.stringify(setRecordValParams))
 		

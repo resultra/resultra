@@ -8,14 +8,20 @@ import (
 
 type DatePickerIDInterface interface {
 	getDatePickerID() string
+	getParentFormID() string
 }
 
 type DatePickerIDHeader struct {
+	ParentFormID string `json:"parentFormID"`
 	DatePickerID string `json:"datePickerID"`
 }
 
 func (idHeader DatePickerIDHeader) getDatePickerID() string {
 	return idHeader.DatePickerID
+}
+
+func (idHeader DatePickerIDHeader) getParentFormID() string {
+	return idHeader.ParentFormID
 }
 
 type DatePickerPropUpdater interface {
@@ -26,7 +32,7 @@ type DatePickerPropUpdater interface {
 func updateDatePickerProps(appEngContext appengine.Context, propUpdater DatePickerPropUpdater) (*DatePicker, error) {
 
 	// Retrieve the bar chart from the data store
-	datePickerForUpdate, getErr := getDatePicker(appEngContext, propUpdater.getDatePickerID())
+	datePickerForUpdate, getErr := getDatePicker(appEngContext, propUpdater.getParentFormID(), propUpdater.getDatePickerID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateDatePickerProps: Unable to get existing date picker: %v", getErr)
 	}
@@ -54,7 +60,7 @@ func (updateParams DatePickerResizeParams) updateProps(datePicker *DatePicker) e
 		return fmt.Errorf("set date picker dimensions: Invalid geometry: %+v", updateParams.Geometry)
 	}
 
-	datePicker.Geometry = updateParams.Geometry
+	datePicker.Properties.Geometry = updateParams.Geometry
 
 	return nil
 }
@@ -66,7 +72,7 @@ type DatePickerRepositionParams struct {
 
 func (updateParams DatePickerRepositionParams) updateProps(datePicker *DatePicker) error {
 
-	if err := datePicker.Geometry.SetPosition(updateParams.Position); err != nil {
+	if err := datePicker.Properties.Geometry.SetPosition(updateParams.Position); err != nil {
 		return fmt.Errorf("Error setting position for date picker: Invalid geometry: %v", err)
 	}
 

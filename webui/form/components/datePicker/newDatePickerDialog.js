@@ -43,7 +43,7 @@ function openNewDatePickerDialog(formID,parentTableID,containerParams)
 			jsonAPIRequest("frm/datePicker/new",newDatePickerAPIParams,function(newDatePickerObjectRef) {
 		          console.log("saveNewDatePicker: Done getting new ID:response=" + JSON.stringify(newDatePickerObjectRef));
 			  
-			  	  var fieldName = getFieldRef(newDatePickerObjectRef.fieldID).name
+			  	  var fieldName = getFieldRef(newDatePickerObjectRef.properties.fieldID).name
 				  $('#'+newDatePickerParams.placeholderID).find('label').text(fieldName)
 				  $('#'+newDatePickerParams.placeholderID).attr("id",newDatePickerObjectRef.datePickerID)
 			  
