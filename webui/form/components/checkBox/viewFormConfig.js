@@ -3,7 +3,7 @@ function loadRecordIntoCheckBox(checkBoxElem, recordRef) {
 	console.log("loadRecordIntoCheckBox: loading record into text box: " + JSON.stringify(recordRef))
 	
 	var checkBoxObjectRef = checkBoxElem.data("objectRef")
-	var checkBoxFieldID = checkBoxObjectRef.fieldID
+	var checkBoxFieldID = checkBoxObjectRef.properties.fieldID
 	
 	console.log("loadRecordIntoCheckBox: Field ID to load data:" + checkBoxFieldID)
 
@@ -54,7 +54,7 @@ function initCheckBoxRecordEditBehavior(checkBoxObjectRef) {
 	})
 
 
-	var fieldRef = getFieldRef(checkBoxObjectRef.fieldID)
+	var fieldRef = getFieldRef(checkBoxObjectRef.properties.fieldID)
 	if(fieldRef.isCalcField) {
 		$(checkboxSelector).checkbox()
 		$(checkboxSelector).checkbox('set disabled')
@@ -73,7 +73,11 @@ function initCheckBoxRecordEditBehavior(checkBoxObjectRef) {
 			var isChecked = $(this).prop("checked")
 	
 			currRecordRef = currRecordSet.currRecordRef()
-			var setRecordValParams = { recordID:currRecordRef.recordID, fieldID:objectRef.fieldID, value:isChecked }
+			var setRecordValParams = {
+				parentTableID:viewFormContext.tableID,
+				recordID:currRecordRef.recordID, 
+				fieldID:objectRef.properties.fieldID, 
+				value:isChecked }
 			console.log("Setting boolean value: " + JSON.stringify(setRecordValParams))
 			jsonAPIRequest("recordUpdate/setBoolFieldValue",setRecordValParams,function(updatedRecordRef) {
 				

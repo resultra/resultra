@@ -41,7 +41,7 @@ function openNewHtmlEditorDialog(formID,parentTableID,containerParams)
 			jsonAPIRequest("frm/htmlEditor/new",newHtmlEditorAPIParams,function(newHtmlEditorObjectRef) {
 		          console.log("saveNewHtmlEditor: Done getting new ID:response=" + JSON.stringify(newHtmlEditorObjectRef));
 			  
-				  var fieldName = getFieldRef(newHtmlEditorObjectRef.fieldID).name
+				  var fieldName = getFieldRef(newHtmlEditorObjectRef.properties.fieldID).name
 				  $('#'+newHtmlEditorParams.placeholderID).find('label').text(fieldName)
 				  $('#'+newHtmlEditorParams.placeholderID).attr("id",newHtmlEditorObjectRef.htmlEditorID)
 			  

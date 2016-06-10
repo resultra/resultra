@@ -3,7 +3,7 @@ function loadRecordIntoTextBox(textBoxElem, recordRef) {
 	console.log("loadRecordIntoTextBox: loading record into text box: " + JSON.stringify(recordRef))
 	
 	var textBoxObjectRef = textBoxElem.data("objectRef")
-	var textBoxFieldID = textBoxObjectRef.fieldID
+	var textBoxFieldID = textBoxObjectRef.properties.fieldID
 	
 	console.log("loadRecordIntoTextBox: Field ID to load data:" + textBoxFieldID)
 	
@@ -35,7 +35,7 @@ function initTextBoxRecordEditBehavior(textFieldObjectRef) {
 	})
 
 	
-	var fieldRef = getFieldRef(textFieldObjectRef.fieldID)
+	var fieldRef = getFieldRef(textFieldObjectRef.properties.fieldID)
 	if(fieldRef.isCalcField) {
 		container.find('input').prop('disabled',true);
 		return;  // stop initialization, the text box is read only.
@@ -52,7 +52,7 @@ function initTextBoxRecordEditBehavior(textFieldObjectRef) {
 		
 		var currTextObjRef = getElemObjectRef(containerID)
 		
-		var fieldID = currTextObjRef.fieldID
+		var fieldID = currTextObjRef.properties.fieldID
 		var fieldRef = getFieldRef(fieldID)
 		var fieldType = fieldRef.type
 		console.log("Text Box focus out:" 
@@ -70,7 +70,10 @@ function initTextBoxRecordEditBehavior(textFieldObjectRef) {
 				
 				if(fieldType == "text") {
 					currRecordRef.fieldValues[fieldID] = inputVal
-					var setRecordValParams = { recordID:currRecordRef.recordID, fieldID:fieldID, value:inputVal }
+					var setRecordValParams = { 
+						parentTableID:viewFormContext.tableID,
+						recordID:currRecordRef.recordID, 
+						fieldID:fieldID, value:inputVal }
 					jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
 						// After updating the record, the local cache of records in currentRecordSet will
 						// be out of date. So after updating the record on the server, the locally cached
@@ -89,7 +92,11 @@ function initTextBoxRecordEditBehavior(textFieldObjectRef) {
 							+ "fieldID: " + fieldID
 						    + " ,number = " + numberVal)
 						currRecordRef.fieldValues[fieldID] = numberVal
-						var setRecordValParams = { recordID:currRecordRef.recordID, fieldID:fieldID, value:numberVal }
+						var setRecordValParams = { 
+							parentTableID:viewFormContext.tableID,
+							recordID:currRecordRef.recordID, 
+							fieldID:fieldID, 
+							value:numberVal }
 						jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
 							// After updating the record, the local cache of records in currentRecordSet will
 							// be out of date. So after updating the record on the server, the locally cached

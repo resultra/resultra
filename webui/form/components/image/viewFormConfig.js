@@ -6,7 +6,7 @@ function loadRecordIntoImage(imageElem, recordRef) {
 	console.log("loadRecordIntoImage: loading record into html editor: " + JSON.stringify(recordRef))
 	
 	var imageObjectRef = imageElem.data("objectRef")
-	var imageFieldID = imageObjectRef.fieldID
+	var imageFieldID = imageObjectRef.properties.fieldID
 	
 	console.log("loadRecordIntoImage: Field ID to load data:" + imageFieldID)
 
@@ -21,7 +21,10 @@ function loadRecordIntoImage(imageElem, recordRef) {
 		
 		// If record has a value for the current container's associated field ID,
 		// retrieve an URL for the image and add it to the container.
-		var getUrlParams = { recordID: recordRef.recordID, fieldID: imageFieldID }
+		var getUrlParams = { 
+			parentTableID:viewFormContext.tableID,
+			recordID: recordRef.recordID, 
+			fieldID: imageFieldID }
 		jsonAPIRequest("record/getFieldValUrl", getUrlParams, function(urlResp) {
 					
 			$(imageDivIDSelector).html(imageLinkHTML(imageContainerID,urlResp.url));

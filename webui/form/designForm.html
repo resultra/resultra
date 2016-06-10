@@ -4,7 +4,7 @@
 	  {{template "breadCrumbSeparator"}}
 	  <a href="/" class="h4"><i class="fa fa-database" aria-hidden="true">&nbsp;<span class="h4">Database Name</span></i></a>
 	  {{template "breadCrumbSeparator"}}
-	  <a class="h4 breadCrumbText" href="/viewForm/{{.FormID}}">{{.FormName}}</a>
+	  <a class="h4 breadCrumbText" href="/viewForm/{{.TableID}}/{{.FormID}}">{{.FormName}}</a>
 	  {{template "breadCrumbSeparator"}}
 	  <span class="h4 breadCrumbText">Design Form</span>
 {{end}}
@@ -98,7 +98,7 @@
 	
 	<script>var formID={{.FormID}};</script>
 	<script>var tableID={{.TableID}};</script>
-	<script>var designFormContext = { tableID:{{.TableID}},formID:{{.FormID}} } </script>
+	<script>var designFormContext = { tableID:"{{.TableID}}","formID:{{.FormID}}" } </script>
 	
 	<script src="/static/common/objectEdit/objectEditHelper.js"></script>
 	<script src="/static/common/objectEdit/objectEdit.js"></script>

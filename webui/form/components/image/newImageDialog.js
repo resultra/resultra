@@ -41,7 +41,7 @@ function openNewImageDialog(formID,parentTableID,containerParams)
 			jsonAPIRequest("frm/image/new",newImageAPIParams,function(newImageObjectRef) {
 		          console.log("saveNewImage: Done getting new ID:response=" + JSON.stringify(newImageObjectRef));
 			  
-				  var fieldName = getFieldRef(newImageObjectRef.fieldID).name
+				  var fieldName = getFieldRef(newImageObjectRef.properties.fieldID).name
 				  $('#'+newImageParams.placeholderID).find('label').text(fieldName)
 				  $('#'+newImageParams.placeholderID).attr("id",newImageObjectRef.imageID)
 			  

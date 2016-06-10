@@ -50,7 +50,7 @@ function openNewTextBoxDialog(formID,parentTableID,containerParams)
 			jsonAPIRequest("frm/textBox/new",newTextBoxAPIParams,function(newTextBoxObjectRef) {
 		          console.log("saveNewTextBox: Done getting new ID:response=" + JSON.stringify(newTextBoxObjectRef));
 			  
-				  var fieldName = getFieldRef(newTextBoxObjectRef.fieldID).name
+				  var fieldName = getFieldRef(newTextBoxObjectRef.properties.fieldID).name
 				  $('#'+newTextBoxParams.placeholderID).find('label').text(fieldName)
 				  $('#'+newTextBoxParams.placeholderID).attr("id",newTextBoxObjectRef.textBoxID)
 			  

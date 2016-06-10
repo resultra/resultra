@@ -3,7 +3,7 @@ function loadRecordIntoHtmlEditor(htmlEditorElem, recordRef) {
 	console.log("loadRecordIntoHtmlEditor: loading record into html editor: " + JSON.stringify(recordRef))
 	
 	var htmlEditorObjectRef = htmlEditorElem.data("objectRef")
-	var htmlEditorFieldID = htmlEditorObjectRef.fieldID
+	var htmlEditorFieldID = htmlEditorObjectRef.properties.fieldID
 	
 	console.log("loadRecordIntoHtmlEditor: Field ID to load data:" + htmlEditorFieldID)
 
@@ -66,7 +66,11 @@ function initHtmlEditorRecordEditBehavior(htmlEditorObjectRef) {
 		
 		currRecordRef = currRecordSet.currRecordRef()
 		
-		var setRecordValParams = { recordID:currRecordRef.recordID, fieldID:objectRef.fieldID, value:inputVal }
+		var setRecordValParams = { 
+			parentTableID:viewFormContext.tableID,
+			recordID:currRecordRef.recordID, 
+			fieldID:objectRef.fieldID, 
+			value:inputVal }
 		
 		console.log("Setting date value: " + JSON.stringify(setRecordValParams))
 		
