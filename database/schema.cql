@@ -77,3 +77,11 @@ create table datasheet.bar_charts (
 	PRIMARY KEY ((dashboard_id),barchart_id) 
 ); 
 
+create table datasheet.form_components (
+	form_id uuid, 
+	component_id uuid,
+	properties text,
+	type text,
+	PRIMARY KEY ((form_id),component_id) 
+);
+CREATE INDEX component_type on datasheet.form_components(type);

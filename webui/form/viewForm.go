@@ -39,15 +39,21 @@ func viewForm(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	formID := vars["formID"]
+	tableID := vars["tableID"]
+
 	log.Println("view form: : form ID = %v", formID)
 	appEngContext := appengine.NewContext(r)
-	formToView, getErr := form.GetForm(appEngContext, form.GetFormParams{formID})
+	formToView, getErr := form.GetForm(appEngContext, form.GetFormParams{tableID, formID})
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return
 	}
 
-	templParams := ViewFormTemplateParams{Title: "View Form", FormID: formID, TableID: formToView.ParentTableID, FormName: formToView.Name}
+	templParams := ViewFormTemplateParams{Title: "View Form",
+		FormID:   formID,
+		TableID:  formToView.ParentTableID,
+		FormName: formToView.Name}
+
 	err := viewFormTemplates.ExecuteTemplate(w, "viewForm", templParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

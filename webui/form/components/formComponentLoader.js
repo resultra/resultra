@@ -13,7 +13,7 @@ function loadFormComponents(loadFormConfig) {
 			var containerObj = $(containerHTML)
 			
 			// Set the label to the field name
-			var fieldName = getFieldRef(textBox.fieldID).name
+			var fieldName = getFieldRef(textBox.properties.fieldID).name
 			containerObj.find('label').text(fieldName)
 			
 			// Position the object withing the #layoutCanvas div
@@ -42,12 +42,12 @@ function loadFormComponents(loadFormConfig) {
 			
 			// Set the label to the field name. A span element is used, since
 			// the checkbox itself is nested inside a label.
-			var fieldName = getFieldRef(checkBox.fieldID).name
+			var fieldName = getFieldRef(checkBox.properties.fieldID).name
 			containerObj.find('span').text(fieldName)
 			
 			// Position the object withing the #layoutCanvas div
 			$(loadFormConfig.formParentElemID).append(containerObj)
-			setElemGeometry(containerObj,checkBox.geometry)
+			setElemGeometry(containerObj,checkBox.properties.geometry)
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
@@ -69,7 +69,7 @@ function loadFormComponents(loadFormConfig) {
 			var containerObj = $(containerHTML)
 			
 			// Set the label to the field name
-			var fieldName = getFieldRef(datePicker.fieldID).name
+			var fieldName = getFieldRef(datePicker.properties.fieldID).name
 			containerObj.find('label').text(fieldName)
 			
 			// Position the object withing the #layoutCanvas div
@@ -97,7 +97,7 @@ function loadFormComponents(loadFormConfig) {
 			var containerObj = $(containerHTML)
 			
 			// Set the label to the field name
-			var fieldName = getFieldRef(htmlEditor.fieldID).name
+			var fieldName = getFieldRef(htmlEditor.properties.fieldID).name
 			containerObj.find('label').text(fieldName)
 			
 			// Position the object withing the #layoutCanvas div
@@ -126,13 +126,13 @@ function loadFormComponents(loadFormConfig) {
 			
 			// Position the object withing the #layoutCanvas div
 			$(loadFormConfig.formParentElemID).append(containerObj)
-			setElemGeometry(containerObj,image.geometry)
+			setElemGeometry(containerObj,image.properties.geometry)
 	
 	
 			// Set the label to the field name
 			var labelID = imageContainerLabelIDFromContainerElemID(image.imageID)
 			console.log("loadFormComponents: initializing label: id=" + labelID)
-			var fieldName = getFieldRef(image.fieldID).name
+			var fieldName = getFieldRef(image.properties.fieldID).name
 			$('#'+labelID).text(fieldName)
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on

@@ -36,10 +36,11 @@ func designForm(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	formID := vars["formID"]
+	tableID := vars["tableID"]
 	log.Println("Design Form: editing for form with ID = ", formID)
 
 	appEngContext := appengine.NewContext(r)
-	formToDesign, getErr := form.GetForm(appEngContext, form.GetFormParams{formID})
+	formToDesign, getErr := form.GetForm(appEngContext, form.GetFormParams{tableID, formID})
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return

@@ -16,6 +16,7 @@ function selectFormCheckbox(checkboxObjRef) {
 function repositionCheckBox(checkBoxID,position) {
 	
 	var reposParams = {
+		parentFormID: designFormContext.formID,
 		checkBoxID: checkBoxID,
 		position: position
 	}
@@ -28,6 +29,7 @@ function repositionCheckBox(checkBoxID,position) {
 
 function resizeCheckBox(checkBoxID,geometry) {
 	var resizeParams = {
+		parentFormID: designFormContext.formID,
 		checkBoxID: checkBoxID,
 		geometry: geometry
 	}

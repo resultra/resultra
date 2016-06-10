@@ -17,6 +17,7 @@ function selectFormTextBox (textBoxRef) {
 function repositionTextBox(textBoxID,position) {
 	
 	var reposParams = {
+		parentFormID: designFormContext.formID,
 		textBoxID: textBoxID,
 		position: position
 	}
@@ -29,6 +30,7 @@ function repositionTextBox(textBoxID,position) {
 
 function resizeTextBox(textBoxID,geometry) {
 	var resizeParams = {
+		parentFormID: designFormContext.formID,
 		textBoxID: textBoxID,
 		geometry: geometry
 	}

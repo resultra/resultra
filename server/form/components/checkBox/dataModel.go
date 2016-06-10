@@ -50,8 +50,8 @@ func saveNewCheckBox(appEngContext appengine.Context, params NewCheckBoxParams) 
 
 	field, fieldErr := field.GetField(appEngContext, params.FieldParentTableID, params.FieldID)
 	if fieldErr != nil {
-		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
-			params.FieldID, fieldErr)
+		return nil, fmt.Errorf("saveNewCheckBox: Can't create check box with params = '%+v': datastore error=%v",
+			params, fieldErr)
 	}
 
 	if !validCheckBoxFieldType(field.Type) {
@@ -68,7 +68,7 @@ func saveNewCheckBox(appEngContext appengine.Context, params NewCheckBoxParams) 
 
 	if saveErr := common.SaveNewFormComponent(checkBoxEntityKind,
 		newCheckBox.ParentFormID, newCheckBox.CheckBoxID, newCheckBox.Properties); saveErr != nil {
-		return nil, fmt.Errorf("saveNewCheckBox: Unable to save bar chart: error = %v", saveErr)
+		return nil, fmt.Errorf("saveNewCheckBox: Unable to save bar chart with params=%+v: error = %v", params, saveErr)
 	}
 
 	log.Printf("INFO: API: New Checkbox: Created new check box container:  %+v", newCheckBox)

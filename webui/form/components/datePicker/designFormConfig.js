@@ -16,6 +16,7 @@ function selectFormDatePicker(datePickerObjRef) {
 function repositionDatePicker(datePickerID,position) {
 	
 	var reposParams = {
+		parentFormID: designFormContext.formID,
 		datePickerID: datePickerID,
 		position: position
 	}
@@ -28,6 +29,7 @@ function repositionDatePicker(datePickerID,position) {
 
 function resizeDatePicker(datePickerID,geometry) {
 	var resizeParams = {
+		parentFormID: designFormContext.formID,
 		datePickerID: datePickerID,
 		geometry: geometry
 	}

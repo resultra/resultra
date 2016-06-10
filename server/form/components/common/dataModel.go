@@ -2,6 +2,7 @@ package common
 
 import (
 	"fmt"
+	"log"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/cassandraWrapper"
 )
@@ -61,15 +62,16 @@ func GetFormComponents(componentType string, parentFormID string, addComponentFu
 	}
 	defer dbSession.Close()
 
-	componentIter := dbSession.Query(`SELECT component_id,type,properties
-			FROM form_components field 
+	componentIter := dbSession.Query(`SELECT component_id,properties
+			FROM form_components 
 			WHERE form_id=? AND type=?`,
 		parentFormID, componentType).Iter()
 
 	currComponentID := ""
 	encodedProps := ""
 	for componentIter.Scan(&currComponentID, &encodedProps) {
-
+		log.Printf("GetFormComponents: Got form component: component id = %v, properties=%v",
+			currComponentID, encodedProps)
 		if err := addComponentFunc(currComponentID, encodedProps); err != nil {
 			return err
 		}
@@ -94,8 +96,8 @@ func UpdateFormComponent(componentType string, parentFormID string, componentID 
 
 	if updateErr := dbSession.Query(`UPDATE form_components 
 				SET properties=? 
-				WHERE form_id=? AND component_id=? AND type=?`,
-		encodedProps, parentFormID, componentID, componentType).Exec(); updateErr != nil {
+				WHERE form_id=? AND component_id=?`,
+		encodedProps, parentFormID, componentID).Exec(); updateErr != nil {
 		return fmt.Errorf("UpdateFormComponent: Can't update form component %v: error = %v",
 			componentType, updateErr)
 	}

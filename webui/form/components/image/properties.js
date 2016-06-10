@@ -5,6 +5,6 @@ function loadImageProperties(imageRef) {
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#imageProps')
 
-	toggleFormulaEditorForField(imageRef.fieldID)
+	toggleFormulaEditorForField(imageRef.properties.fieldID)
 	
 }

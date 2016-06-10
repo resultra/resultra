@@ -53,12 +53,33 @@ func newForm(appEngContext appengine.Context, params NewFormParams) (*Form, erro
 }
 
 type GetFormParams struct {
-	FormID string `json:"formID"`
+	ParentTableID string `json:"parentTableID"`
+	FormID        string `json:"formID"`
 }
 
 func GetForm(appEngContext appengine.Context, params GetFormParams) (*Form, error) {
 
-	return nil, fmt.Errorf("GetForm: Need to reimplement with table ID")
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("GetForm: Unable to create database session: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	formName := ""
+	getErr := dbSession.Query(`SELECT name FROM form
+		 WHERE tableid=? AND formid=? LIMIT 1`,
+		params.ParentTableID, params.FormID).Scan(&formName)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetForm: Unabled to get form: params = %+v: datastore err=%v",
+			params, getErr)
+	}
+
+	getForm := Form{
+		ParentTableID: params.ParentTableID,
+		FormID:        params.FormID,
+		Name:          formName}
+
+	return &getForm, nil
 }
 
 func getAllForms(appEngContext appengine.Context, parentTableID string) ([]Form, error) {

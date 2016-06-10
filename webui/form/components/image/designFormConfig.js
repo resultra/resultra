@@ -16,6 +16,7 @@ function selectFormImage(imageObjRef) {
 function repositionImage(imageID,position) {
 	
 	var reposParams = {
+		parentFormID: designFormContext.formID,
 		imageID: imageID,
 		position: position
 	}
@@ -28,6 +29,7 @@ function repositionImage(imageID,position) {
 
 function resizeImage(imageID,geometry) {
 	var resizeParams = {
+		parentFormID: designFormContext.formID,
 		imageID: imageID,
 		geometry: geometry
 	}

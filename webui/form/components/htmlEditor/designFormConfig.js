@@ -16,6 +16,7 @@ function selectFormHtmlEditor(htmlEditorObjRef) {
 function repositionHtmlEditor(htmlEditorID,position) {
 	
 	var reposParams = {
+		parentFormID: designFormContext.formID,
 		htmlEditorID: htmlEditorID,
 		position: position
 	}
@@ -28,6 +29,7 @@ function repositionHtmlEditor(htmlEditorID,position) {
 
 function resizeHtmlEditor(htmlEditorID,geometry) {
 	var resizeParams = {
+		parentFormID: designFormContext.formID,
 		htmlEditorID: htmlEditorID,
 		geometry: geometry
 	}

@@ -4,6 +4,6 @@ function loadTextBoxProperties(textBoxRef) {
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#textBoxProps')
 		
-	toggleFormulaEditorForField(textBoxRef.fieldID)
+	toggleFormulaEditorForField(textBoxRef.properties.fieldID)
 		
 }
