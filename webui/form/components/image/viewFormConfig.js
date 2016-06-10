@@ -78,12 +78,14 @@ function initImageRecordEditBehavior(imageObjectRef) {
 					var linkID = imageLinkIDFromContainerElemID(imageContainerID)
 					$('#'+linkID).magnificPopup({type:'image'})
 					
+					console.log("Done uploading file: updated record ref = " + JSON.stringify(file.updatedRecord))
+					
 					// After uploading the file, the local cache of records in currentRecordSet will
 					// be out of date. So after updating the record on the server, the locally cached
 					// version of the record also needs to be updated. However, unlike other field
 					// types, there is no need to refresh all the fields in the record, since 
 					// calculated fields' calculations don't (yet) occur based upon files.
-					currRecordSet.updateRecordRef(file.updatedRecordRef)
+					currRecordSet.updateRecordRef(file.updatedRecord)
 					
 	            })
 	        },
@@ -97,7 +99,15 @@ function initImageRecordEditBehavior(imageObjectRef) {
 		$('#'+imageUploadID).bind('fileuploadsubmit', function (e, data) {
 		    // The example input, doesn't have to be part of the upload form:
 			currRecordRef = currRecordSet.currRecordRef()
-		    data.formData = { fieldID: imageObjectRef.fieldID, recordID: currRecordRef.recordID }
+			
+			var fileUploadParams = {
+				parentTableID: viewFormContext.tableID,
+				fieldID: imageObjectRef.properties.fieldID, 
+				recordID: currRecordRef.recordID }
+				
+			console.log("Starting file upload: params = " + JSON.stringify(fileUploadParams))
+			
+		    data.formData = fileUploadParams
 		});
 		
 }

@@ -85,10 +85,12 @@ func (setValParams SetRecordFileValueParams) updateRecordValue(rec *record.Recor
 // setRecordFileNameFieldValue. Although the parameters for a record update with a filename aren't passed through the http request,
 // the standard record updating mechanism can be used to update the field with the filename.
 func setRecordFileNameFieldValue(appEngContext appengine.Context,
+	parentTableID string,
 	recordID string, fieldID string, fileName string) (*record.Record, error) {
 	updateRecordHeader := RecordUpdateHeader{
-		RecordID: recordID,
-		FieldID:  fieldID}
+		ParentTableID: parentTableID,
+		RecordID:      recordID,
+		FieldID:       fieldID}
 	updateRecordParams := SetRecordFileValueParams{
 		RecordUpdateHeader: updateRecordHeader,
 		CloudFileName:      fileName}

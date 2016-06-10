@@ -8,14 +8,20 @@ import (
 
 type ImageIDInterface interface {
 	getImageID() string
+	getParentFormID() string
 }
 
 type ImageIDHeader struct {
-	ImageID string `json:"imageID"`
+	ParentFormID string `json:"parentFormID"`
+	ImageID      string `json:"imageID"`
 }
 
 func (idHeader ImageIDHeader) getImageID() string {
 	return idHeader.ImageID
+}
+
+func (idHeader ImageIDHeader) getParentFormID() string {
+	return idHeader.ParentFormID
 }
 
 type ImagePropUpdater interface {
@@ -26,7 +32,7 @@ type ImagePropUpdater interface {
 func updateImageProps(appEngContext appengine.Context, propUpdater ImagePropUpdater) (*Image, error) {
 
 	// Retrieve the bar chart from the data store
-	imageForUpdate, getErr := getImage(appEngContext, propUpdater.getImageID())
+	imageForUpdate, getErr := getImage(appEngContext, propUpdater.getParentFormID(), propUpdater.getImageID())
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateImageProps: Unable to get existing image: %v", getErr)
 	}
@@ -54,7 +60,7 @@ func (updateParams ImageResizeParams) updateProps(image *Image) error {
 		return fmt.Errorf("set image dimensions: Invalid geometry: %+v", updateParams.Geometry)
 	}
 
-	image.Geometry = updateParams.Geometry
+	image.Properties.Geometry = updateParams.Geometry
 
 	return nil
 }
@@ -66,7 +72,7 @@ type ImageRepositionParams struct {
 
 func (updateParams ImageRepositionParams) updateProps(image *Image) error {
 
-	if err := image.Geometry.SetPosition(updateParams.Position); err != nil {
+	if err := image.Properties.Geometry.SetPosition(updateParams.Position); err != nil {
 		return fmt.Errorf("Error setting position for image: Invalid geometry: %v", err)
 	}
 

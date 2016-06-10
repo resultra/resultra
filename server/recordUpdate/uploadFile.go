@@ -3,6 +3,7 @@ package recordUpdate
 import (
 	"appengine"
 	"fmt"
+	"log"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/cloudStorageWrapper"
@@ -47,10 +48,13 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 
 	appEngContext := appengine.NewContext(req)
 	updatedRecord, updateErr := setRecordFileNameFieldValue(appEngContext,
+		req.FormValue("parentTableID"),
 		req.FormValue("recordID"), req.FormValue("fieldID"), cloudFileName)
 	if updateErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to update record for newly uploaded file: %v", updateErr)
 	}
+
+	log.Printf("uploadFile: Done uploading file: updated record = %+v", updatedRecord)
 
 	uploadFile := UploadFile{
 		Name:          cloudFileName,

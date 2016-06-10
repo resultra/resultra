@@ -3,30 +3,32 @@ package image
 import (
 	"appengine"
 	"fmt"
+	"github.com/gocql/gocql"
 	"log"
-	"resultra/datasheet/server/common"
+	geometry "resultra/datasheet/server/common"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/generic/datastoreWrapper"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/form/components/common"
+	"resultra/datasheet/server/generic"
 )
 
-const imageEntityKind string = "Image"
+const imageEntityKind string = "image"
 
-type Image struct {
-	ParentFormID string                `json:"parentFormID"`
-	ImageID      string                `json:"imageID"`
-	FieldID      string                `json:"fieldID"`
-	Geometry     common.LayoutGeometry `json:"geometry"`
+type ImageProperties struct {
+	FieldID  string                  `json:"fieldID"`
+	Geometry geometry.LayoutGeometry `json:"geometry"`
 }
 
-const imageParentFormIDFieldName string = "ParentFormID"
-const imageIDFieldName string = "ImageID"
+type Image struct {
+	ParentFormID string          `json:"parentFormID"`
+	ImageID      string          `json:"imageID"`
+	Properties   ImageProperties `json:"properties"`
+}
 
 type NewImageParams struct {
-	ParentID           string                `json:"parentID"`
-	FieldParentTableID string                `json:"fieldParentTableID"`
-	FieldID            string                `json:"fieldID"`
-	Geometry           common.LayoutGeometry `json:"geometry"`
+	ParentFormID       string                  `json:"parentFormID"`
+	FieldParentTableID string                  `json:"fieldParentTableID"`
+	FieldID            string                  `json:"fieldID"`
+	Geometry           geometry.LayoutGeometry `json:"geometry"`
 }
 
 func validImageFieldType(fieldType string) bool {
@@ -39,7 +41,7 @@ func validImageFieldType(fieldType string) bool {
 
 func saveNewImage(appEngContext appengine.Context, params NewImageParams) (*Image, error) {
 
-	if !common.ValidGeometry(params.Geometry) {
+	if !geometry.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
@@ -53,14 +55,17 @@ func saveNewImage(appEngContext appengine.Context, params NewImageParams) (*Imag
 		return nil, fmt.Errorf("NewImage: Invalid field type: expecting file field, got %v", field.Type)
 	}
 
-	newImage := Image{ParentFormID: params.ParentID,
+	properties := ImageProperties{
 		FieldID:  params.FieldID,
-		ImageID:  uniqueID.GenerateUniqueID(),
 		Geometry: params.Geometry}
 
-	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, imageEntityKind, &newImage)
-	if insertErr != nil {
-		return nil, fmt.Errorf("Can't create new image component: error inserting into datastore: %v", insertErr)
+	newImage := Image{ParentFormID: params.ParentFormID,
+		ImageID:    gocql.TimeUUID().String(),
+		Properties: properties}
+
+	if saveErr := common.SaveNewFormComponent(imageEntityKind,
+		newImage.ParentFormID, newImage.ImageID, newImage.Properties); saveErr != nil {
+		return nil, fmt.Errorf("saveNewImage: Unable to save image form component with params=%+v: error = %v", params, saveErr)
 	}
 
 	log.Printf("INFO: API: saveNewImage: Created new image component: %+v", newImage)
@@ -69,24 +74,41 @@ func saveNewImage(appEngContext appengine.Context, params NewImageParams) (*Imag
 
 }
 
-func getImage(appEngContext appengine.Context, imageID string) (*Image, error) {
+func getImage(appEngContext appengine.Context, parentFormID string, imageID string) (*Image, error) {
 
-	var image Image
-	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, imageEntityKind,
-		imageIDFieldName, imageID, &image); getErr != nil {
-		return nil, fmt.Errorf("getBarChart: Unable to image container from datastore: error = %v", getErr)
+	imageProps := ImageProperties{}
+	if getErr := common.GetFormComponent(imageEntityKind, parentFormID, imageID, &imageProps); getErr != nil {
+		return nil, fmt.Errorf("getImage: Unable to retrieve image form component: %v", getErr)
 	}
+
+	image := Image{
+		ParentFormID: parentFormID,
+		ImageID:      imageID,
+		Properties:   imageProps}
+
 	return &image, nil
 }
 
 func GetImages(appEngContext appengine.Context, parentFormID string) ([]Image, error) {
 
-	var images []Image
+	images := []Image{}
+	addImage := func(imageID string, encodedProps string) error {
 
-	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, parentFormID,
-		imageEntityKind, imageParentFormIDFieldName, &images)
-	if getErr != nil {
-		return nil, fmt.Errorf("Unable to retrieve layout containers: form id=%v", parentFormID)
+		var imageProps ImageProperties
+		if decodeErr := generic.DecodeJSONString(encodedProps, &imageProps); decodeErr != nil {
+			return fmt.Errorf("GetImages: can't decode properties: %v", encodedProps)
+		}
+
+		currImage := Image{
+			ParentFormID: parentFormID,
+			ImageID:      imageID,
+			Properties:   imageProps}
+		images = append(images, currImage)
+
+		return nil
+	}
+	if getErr := common.GetFormComponents(imageEntityKind, parentFormID, addImage); getErr != nil {
+		return nil, fmt.Errorf("GetCheckBoxes: Can't get image form components: %v")
 	}
 
 	return images, nil
@@ -95,9 +117,8 @@ func GetImages(appEngContext appengine.Context, parentFormID string) ([]Image, e
 
 func updateExistingImage(appEngContext appengine.Context, imageID string, updatedImage *Image) (*Image, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
-		imageID, imageEntityKind, imageIDFieldName, updatedImage); updateErr != nil {
-		return nil, fmt.Errorf("updateExistingImage: Error updating existing image component: error = %v", updateErr)
+	if updateErr := common.UpdateFormComponent(imageEntityKind, updatedImage.ParentFormID,
+		updatedImage.ImageID, updatedImage.Properties); updateErr != nil {
 	}
 
 	return updatedImage, nil
