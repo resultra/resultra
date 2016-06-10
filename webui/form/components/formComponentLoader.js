@@ -18,7 +18,7 @@ function loadFormComponents(loadFormConfig) {
 			
 			// Position the object withing the #layoutCanvas div
 			$(loadFormConfig.formParentElemID).append(containerObj)
-			setElemGeometry(containerObj,textBox.geometry)
+			setElemGeometry(containerObj,textBox.properties.geometry)
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
@@ -74,7 +74,7 @@ function loadFormComponents(loadFormConfig) {
 			
 			// Position the object withing the #layoutCanvas div
 			$(loadFormConfig.formParentElemID).append(containerObj)
-			setElemGeometry(containerObj,datePicker.geometry)
+			setElemGeometry(containerObj,datePicker.properties.geometry)
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
@@ -102,7 +102,7 @@ function loadFormComponents(loadFormConfig) {
 			
 			// Position the object withing the #layoutCanvas div
 			$(loadFormConfig.formParentElemID).append(containerObj)
-			setElemGeometry(containerObj,htmlEditor.geometry)
+			setElemGeometry(containerObj,htmlEditor.properties.geometry)
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.

@@ -32,7 +32,8 @@ function openNewImageDialog(formID,parentTableID,containerParams)
 			console.log("saveNewImage: Selected field ID: " + fieldID)
 			
 			var newImageAPIParams = {
-				parentID: newImageParams.containerParams.parentFormID,
+				fieldParentTableID: designFormContext.tableID,
+				parentFormID: newImageParams.containerParams.parentFormID,
 				geometry: newImageParams.containerParams.geometry,
 				fieldID: fieldID
 			}

@@ -41,7 +41,8 @@ function openNewTextBoxDialog(formID,parentTableID,containerParams)
 			console.log("saveNewTextBox: Selected field ID: " + fieldID)
 			
 			var newTextBoxAPIParams = {
-				parentID: newTextBoxParams.containerParams.parentFormID,
+				fieldParentTableID: designFormContext.tableID,
+				parentFormID: newTextBoxParams.containerParams.parentFormID,
 				geometry: newTextBoxParams.containerParams.geometry,
 				fieldID: fieldID
 			}

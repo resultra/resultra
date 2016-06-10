@@ -33,7 +33,8 @@ function openNewDatePickerDialog(formID,parentTableID,containerParams)
 			console.log("saveNewDatePicker: Selected field ID: " + fieldID)
 			
 			var newDatePickerAPIParams = {
-				parentID: newDatePickerParams.containerParams.parentFormID,
+				fieldParentTableID: designFormContext.tableID,
+				parentFormID: newDatePickerParams.containerParams.parentFormID,
 				geometry: newDatePickerParams.containerParams.geometry,
 				fieldID: fieldID
 			}

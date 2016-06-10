@@ -8,14 +8,20 @@ import (
 
 type TextBoxIDInterface interface {
 	getTextBoxID() string
+	getParentFormID() string
 }
 
 type TextBoxIDHeader struct {
-	TextBoxID string `json:"textBoxID"`
+	ParentFormID string `json:"parentFormID"`
+	TextBoxID    string `json:"textBoxID"`
 }
 
 func (idHeader TextBoxIDHeader) getTextBoxID() string {
 	return idHeader.TextBoxID
+}
+
+func (idHeader TextBoxIDHeader) getParentFormID() string {
+	return idHeader.ParentFormID
 }
 
 type TextBoxPropUpdater interface {
@@ -26,7 +32,7 @@ type TextBoxPropUpdater interface {
 func updateTextBoxProps(appEngContext appengine.Context, propUpdater TextBoxPropUpdater) (*TextBox, error) {
 
 	// Retrieve the bar chart from the data store
-	textBoxForUpdate, getErr := getTextBox(appEngContext, propUpdater.getTextBoxID())
+	textBoxForUpdate, getErr := getTextBox(appEngContext, propUpdater.getParentFormID(), propUpdater.getTextBoxID())
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateTextBoxProps: Unable to get existing text box: %v", getErr)
 	}
@@ -54,7 +60,7 @@ func (updateParams TextBoxResizeParams) updateProps(textBox *TextBox) error {
 		return fmt.Errorf("set text box dimensions: Invalid geometry: %+v", updateParams.Geometry)
 	}
 
-	textBox.Geometry = updateParams.Geometry
+	textBox.Properties.Geometry = updateParams.Geometry
 
 	return nil
 }
@@ -66,7 +72,7 @@ type TextBoxRepositionParams struct {
 
 func (updateParams TextBoxRepositionParams) updateProps(textBox *TextBox) error {
 
-	if err := textBox.Geometry.SetPosition(updateParams.Position); err != nil {
+	if err := textBox.Properties.Geometry.SetPosition(updateParams.Position); err != nil {
 		return fmt.Errorf("Error setting position for text box: Invalid geometry: %v", err)
 	}
 

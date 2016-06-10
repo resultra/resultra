@@ -32,7 +32,8 @@ function openNewHtmlEditorDialog(formID,parentTableID,containerParams)
 			console.log("saveNewHtmlEditor: Selected field ID: " + fieldID)
 			
 			var newHtmlEditorAPIParams = {
-				parentID: newHtmlEditorParams.containerParams.parentFormID,
+				fieldParentTableID: designFormContext.tableID,
+				parentFormID: newHtmlEditorParams.containerParams.parentFormID,
 				geometry: newHtmlEditorParams.containerParams.geometry,
 				fieldID: fieldID
 			}
