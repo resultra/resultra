@@ -3,30 +3,32 @@ package htmlEditor
 import (
 	"appengine"
 	"fmt"
+	"github.com/gocql/gocql"
 	"log"
-	"resultra/datasheet/server/common"
+	geometry "resultra/datasheet/server/common"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/generic/datastoreWrapper"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/form/components/common"
+	"resultra/datasheet/server/generic"
 )
 
-const htmlEditorEntityKind string = "HtmlEditor"
+const htmlEditorEntityKind string = "html_editor"
 
-type HtmlEditor struct {
-	ParentFormID string                `json:"parentID"`
-	HtmlEditorID string                `json:"htmlEditorID"`
-	FieldID      string                `json:"fieldID"`
-	Geometry     common.LayoutGeometry `json:"geometry"`
+type HtmlEditorProperties struct {
+	FieldID  string                  `json:"fieldID"`
+	Geometry geometry.LayoutGeometry `json:"geometry"`
 }
 
-const htmlEditorParentFormIDFieldName string = "ParentFormID"
-const htmlEditorIDFieldName string = "HtmlEditorID"
+type HtmlEditor struct {
+	ParentFormID string               `json:"parentID"`
+	HtmlEditorID string               `json:"htmlEditorID"`
+	Properties   HtmlEditorProperties `json:"properties"`
+}
 
 type NewHtmlEditorParams struct {
-	ParentID           string                `json:"parentID"`
-	FieldParentTableID string                `json:"fieldParentTableID"`
-	FieldID            string                `json:"fieldID"`
-	Geometry           common.LayoutGeometry `json:"geometry"`
+	ParentFormID       string                  `json:"parentFormID"`
+	FieldParentTableID string                  `json:"fieldParentTableID"`
+	FieldID            string                  `json:"fieldID"`
+	Geometry           geometry.LayoutGeometry `json:"geometry"`
 }
 
 func validHtmlEditorFieldType(fieldType string) bool {
@@ -39,7 +41,7 @@ func validHtmlEditorFieldType(fieldType string) bool {
 
 func saveNewHtmlEditor(appEngContext appengine.Context, params NewHtmlEditorParams) (*HtmlEditor, error) {
 
-	if !common.ValidGeometry(params.Geometry) {
+	if !geometry.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
@@ -53,14 +55,17 @@ func saveNewHtmlEditor(appEngContext appengine.Context, params NewHtmlEditorPara
 		return nil, fmt.Errorf("saveNewHtmlEditor: Invalid field type: expecting time field, got %v", field.Type)
 	}
 
-	newHtmlEditor := HtmlEditor{ParentFormID: params.ParentID,
-		FieldID:      params.FieldID,
-		HtmlEditorID: uniqueID.GenerateUniqueID(),
-		Geometry:     params.Geometry}
+	properties := HtmlEditorProperties{
+		Geometry: params.Geometry,
+		FieldID:  params.FieldID}
 
-	insertErr := datastoreWrapper.InsertNewRootEntity(appEngContext, htmlEditorEntityKind, &newHtmlEditor)
-	if insertErr != nil {
-		return nil, fmt.Errorf("Can't create new html editor component: error inserting into datastore: %v", insertErr)
+	newHtmlEditor := HtmlEditor{ParentFormID: params.ParentFormID,
+		HtmlEditorID: gocql.TimeUUID().String(),
+		Properties:   properties}
+
+	if saveErr := common.SaveNewFormComponent(htmlEditorEntityKind,
+		newHtmlEditor.ParentFormID, newHtmlEditor.HtmlEditorID, newHtmlEditor.Properties); saveErr != nil {
+		return nil, fmt.Errorf("saveNewHtmlEditor: Unable to save html editor with params=%+v: error = %v", params, saveErr)
 	}
 
 	log.Printf("INFO: API: New HtmlEditor: Created new html editor container: %+v", newHtmlEditor)
@@ -69,25 +74,42 @@ func saveNewHtmlEditor(appEngContext appengine.Context, params NewHtmlEditorPara
 
 }
 
-func getHtmlEditor(appEngContext appengine.Context, htmlEditorID string) (*HtmlEditor, error) {
+func getHtmlEditor(appEngContext appengine.Context, parentFormID string, htmlEditorID string) (*HtmlEditor, error) {
 
-	var htmlEditor HtmlEditor
-
-	if getErr := datastoreWrapper.GetEntityByUUID(appEngContext, htmlEditorEntityKind,
-		htmlEditorIDFieldName, htmlEditorID, &htmlEditor); getErr != nil {
-		return nil, fmt.Errorf("getBarChart: Unable to image container from datastore: error = %v", getErr)
+	editorProps := HtmlEditorProperties{}
+	if getErr := common.GetFormComponent(htmlEditorEntityKind, parentFormID, htmlEditorID, &editorProps); getErr != nil {
+		return nil, fmt.Errorf("getHtmlEditor: Unable to retrieve html editor: %v", getErr)
 	}
+
+	htmlEditor := HtmlEditor{
+		ParentFormID: parentFormID,
+		HtmlEditorID: htmlEditorID,
+		Properties:   editorProps}
+
 	return &htmlEditor, nil
 }
 
 func GetHtmlEditors(appEngContext appengine.Context, parentFormID string) ([]HtmlEditor, error) {
 
-	var htmlEditors []HtmlEditor
+	htmlEditors := []HtmlEditor{}
 
-	getErr := datastoreWrapper.GetAllChildEntitiesWithParentUUID(appEngContext, parentFormID,
-		htmlEditorEntityKind, htmlEditorParentFormIDFieldName, &htmlEditors)
-	if getErr != nil {
-		return nil, fmt.Errorf("Unable to retrieve html editors: form id=%v", parentFormID)
+	addEditor := func(editorID string, encodedProps string) error {
+		var editorProps HtmlEditorProperties
+		if decodeErr := generic.DecodeJSONString(encodedProps, &editorProps); decodeErr != nil {
+			return fmt.Errorf("GetHtmlEditors: can't decode properties: %v", encodedProps)
+		}
+
+		currEditor := HtmlEditor{
+			ParentFormID: parentFormID,
+			HtmlEditorID: editorID,
+			Properties:   editorProps}
+
+		htmlEditors = append(htmlEditors, currEditor)
+
+		return nil
+	}
+	if getErr := common.GetFormComponents(htmlEditorEntityKind, parentFormID, addEditor); getErr != nil {
+		return nil, fmt.Errorf("GetHtmlEditors: Can't get html editors: %v")
 	}
 
 	return htmlEditors, nil
@@ -96,9 +118,8 @@ func GetHtmlEditors(appEngContext appengine.Context, parentFormID string) ([]Htm
 
 func updateExistingHtmlEditor(appEngContext appengine.Context, htmlEditorID string, updatedHtmlEditor *HtmlEditor) (*HtmlEditor, error) {
 
-	if updateErr := datastoreWrapper.UpdateExistingEntityByUUID(appEngContext,
-		htmlEditorID, htmlEditorEntityKind, htmlEditorIDFieldName, updatedHtmlEditor); updateErr != nil {
-		return nil, fmt.Errorf("updateExistingHtmlEditor: Error updating html editor: error = %v", updateErr)
+	if updateErr := common.UpdateFormComponent(htmlEditorEntityKind, updatedHtmlEditor.ParentFormID,
+		updatedHtmlEditor.HtmlEditorID, updatedHtmlEditor.Properties); updateErr != nil {
 	}
 
 	return updatedHtmlEditor, nil

@@ -69,7 +69,7 @@ function initHtmlEditorRecordEditBehavior(htmlEditorObjectRef) {
 		var setRecordValParams = { 
 			parentTableID:viewFormContext.tableID,
 			recordID:currRecordRef.recordID, 
-			fieldID:objectRef.fieldID, 
+			fieldID:objectRef.properties.fieldID, 
 			value:inputVal }
 		
 		console.log("Setting date value: " + JSON.stringify(setRecordValParams))

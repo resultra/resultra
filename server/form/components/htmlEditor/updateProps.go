@@ -8,14 +8,20 @@ import (
 
 type HtmlEditorIDInterface interface {
 	getHtmlEditorID() string
+	getParentFormID() string
 }
 
 type HtmlEditorIDHeader struct {
 	HtmlEditorID string `json:"htmlEditorID"`
+	ParentFormID string `json:"parentFormID"`
 }
 
 func (idHeader HtmlEditorIDHeader) getHtmlEditorID() string {
 	return idHeader.HtmlEditorID
+}
+
+func (idHeader HtmlEditorIDHeader) getParentFormID() string {
+	return idHeader.ParentFormID
 }
 
 type HtmlEditorPropUpdater interface {
@@ -26,7 +32,7 @@ type HtmlEditorPropUpdater interface {
 func updateHtmlEditorProps(appEngContext appengine.Context, propUpdater HtmlEditorPropUpdater) (*HtmlEditor, error) {
 
 	// Retrieve the bar chart from the data store
-	htmlEditorForUpdate, getErr := getHtmlEditor(appEngContext, propUpdater.getHtmlEditorID())
+	htmlEditorForUpdate, getErr := getHtmlEditor(appEngContext, propUpdater.getParentFormID(), propUpdater.getHtmlEditorID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateHtmlEditorProps: Unable to get existing html editor: %v", getErr)
 	}
@@ -54,7 +60,7 @@ func (updateParams HtmlEditorResizeParams) updateProps(htmlEditor *HtmlEditor) e
 		return fmt.Errorf("set html editor dimensions: Invalid geometry: %+v", updateParams.Geometry)
 	}
 
-	htmlEditor.Geometry = updateParams.Geometry
+	htmlEditor.Properties.Geometry = updateParams.Geometry
 
 	return nil
 }
@@ -66,7 +72,7 @@ type HtmlEditorRepositionParams struct {
 
 func (updateParams HtmlEditorRepositionParams) updateProps(htmlEditor *HtmlEditor) error {
 
-	if err := htmlEditor.Geometry.SetPosition(updateParams.Position); err != nil {
+	if err := htmlEditor.Properties.Geometry.SetPosition(updateParams.Position); err != nil {
 		return fmt.Errorf("Error setting position for html editor: Invalid geometry: %v", err)
 	}
 
