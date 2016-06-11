@@ -28,6 +28,9 @@ function getFieldRef(fieldID) {
 }
 
 function getFieldsByID() {
+	
+	assert(fieldInfoFieldsByID !== undefined, "getFieldsByID: field info not initialized")
+	
 	return fieldInfoFieldsByID
 }
 

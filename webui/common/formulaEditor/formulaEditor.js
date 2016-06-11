@@ -65,6 +65,7 @@ function validateFormula(fieldRef,validationSucceededCallback) {
 	var formulaText =  formulaEditorConfig.editor.getValue()
 	
 	var validationParams = {
+		fieldParentTableID: designFormContext.tableID,
 		fieldID: fieldRef.fieldID,
 		formulaText: formulaText
 	}
@@ -90,6 +91,9 @@ function saveFormula(fieldRef) {
 	
 	validateFormula(fieldRef,function(fieldRef,formulaText) {
 		var saveFormulaParms = {
+			// TODO - If the formula editor is incorporated in other pages besides the design form
+			// page, the parent table ID needs to be made available through another variable than designFormContext.
+			parentTableID: designFormContext.tableID,
 			fieldID: fieldRef.fieldID,
 			formulaText: formulaText
 		}
@@ -104,7 +108,9 @@ function openFormulaEditor(fieldRef) {
 
 	$('#formulaEditorErrorPopup').popover('hide')
 	
-	var getRawFormulaSrcParams = { fieldID: fieldRef.fieldID }
+	var getRawFormulaSrcParams = {
+		fieldParentTableID: designFormContext.tableID,
+		fieldID: fieldRef.fieldID }
 	jsonAPIRequest("calcField/getRawFormulaText",getRawFormulaSrcParams,function(formulaInfo) {
 		formulaEditorConfig.editor.setValue(formulaInfo.rawFormulaText)
 		

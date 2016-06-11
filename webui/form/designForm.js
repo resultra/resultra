@@ -102,6 +102,9 @@ $(document).ready(function() {
 			doneLoadingFormDataFunc: function() {} // no-op	
 		}); 
 		
+		// The formula editor depends on the field information first being initialized.
+		initFormulaEditor(formulaEditorParams)
+		
 	})
 	
 	console.log("Initializing form design plug-ins/configurations ...")
@@ -111,6 +114,5 @@ $(document).ready(function() {
 		closeFormulaEditor()
 	})
 	
-	initFormulaEditor(formulaEditorParams)
 	
 });

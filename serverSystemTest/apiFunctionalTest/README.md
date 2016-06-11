@@ -16,5 +16,10 @@ Note files with unit tests need to start with "test" in order to be discovered b
 
 ## Testing TODO List
 
-* Create form components
+* Create form components, then retrieve them back.
+* Set properties on a form component.
 * Retrieve the list of filter rules associated with a filter.
+* Calculated field formulas
+	* Validate formula
+	* Get raw text from formula
+	* Set formula text.

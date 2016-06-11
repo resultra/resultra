@@ -172,13 +172,16 @@ func UpdateExistingField(appEngContext appengine.Context, updatedField *Field) (
 	}
 	defer dbSession.Close()
 
-	if updateErr := dbSession.Query(`UPDATE field SET name=?,type=?,refName=?,calcFieldEqn=?,preprocessedFormulaText=?,isCalcField=? where fieldID=?`,
+	if updateErr := dbSession.Query(`UPDATE field 
+			SET name=?,type=?,refName=?,calcFieldEqn=?,preprocessedFormulaText=?,isCalcField=? 
+			WHERE tableID=? AND fieldID=?`,
 		updatedField.Name,
 		updatedField.Type,
 		updatedField.RefName,
 		updatedField.CalcFieldEqn,
-		updatedField.IsCalcField,
 		updatedField.PreprocessedFormulaText,
+		updatedField.IsCalcField,
+		updatedField.ParentTableID,
 		updatedField.FieldID).Exec(); updateErr != nil {
 		return nil, fmt.Errorf("UpdateExistingField: Error updating field %v: error = %v", updatedField.FieldID, updateErr)
 	}
