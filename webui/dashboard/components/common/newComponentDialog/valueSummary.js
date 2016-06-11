@@ -2,6 +2,7 @@
 
 var dashboardComponentValueSummaryPanelID = "dashboardComponentValueSummary"
 
+var valueSummaryDialogPanelSelectedTableID;
 
 function createNewDashboardComponentValueSummaryPanelConfig(elemPrefix,doneCallbackFunc) {
 	
@@ -46,6 +47,7 @@ function createNewDashboardComponentValueSummaryPanelConfig(elemPrefix,doneCallb
 			"Done" : function() { 
 				if(validateValueSummaryPanel()) {
 					var valSummary = {
+						fieldParentTableID: valueSummaryDialogPanelSelectedTableID,
 						fieldID: summaryFieldSelection.val(),
 						summarizeValsWith: summarizeBySelection.val()}
 					setWizardDialogPanelData($(this),elemPrefix,dashboardComponentValueSummaryPanelID,valSummary)
@@ -72,6 +74,7 @@ function createNewDashboardComponentValueSummaryPanelConfig(elemPrefix,doneCallb
 			
 			var selectedTableID = getWizardDialogPanelData($dialog,
 					elemPrefix,dashboardComponentSelectTablePanelID)
+			valueSummaryDialogPanelSelectedTableID = selectedTableID
 			
 			loadFieldInfo(selectedTableID,[fieldTypeAll],function(valueSummaryFieldsByID) {
 				populateFieldSelectionMenu(valueSummaryFieldsByID,summaryFieldSelection.selector)

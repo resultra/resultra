@@ -73,8 +73,7 @@ func updateExistingBarChart(appEngContext appengine.Context, updatedBarChart *Ba
 		return nil, fmt.Errorf("updateExistingBarChart: Unable to update bar chart: error = %v", encodeErr)
 	}
 
-	if updateErr := dbSession.Query(
-		`UPDATE bar_charts SET properties=? WHERE dashboard_id=? and bar_chart_id=?`,
+	if updateErr := dbSession.Query(`UPDATE bar_charts SET properties=? WHERE dashboard_id=? and barchart_id=?`,
 		encodedProps,
 		updatedBarChart.ParentDashboardID,
 		updatedBarChart.BarChartID).Exec(); updateErr != nil {

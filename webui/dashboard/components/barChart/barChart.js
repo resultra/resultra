@@ -116,10 +116,8 @@ function initBarChartEditBehavior(barChartID)
 				var barChartRef = barChartContainer.data("barChartRef")
 					
 				var resizeParams = {
-					uniqueID: {
-						parentDashboardID: barChartRef.parentDashboardID,
-						barChartID: barChartRef.barChartID
-					},
+					parentDashboardID: barChartRef.parentDashboardID,
+					barChartID: barChartRef.barChartID,
 					geometry: resizedGeometry
 				}	
 						

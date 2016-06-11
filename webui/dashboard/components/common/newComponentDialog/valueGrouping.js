@@ -1,6 +1,8 @@
 
 var dashboardComponentValueGroupingPanelID = "dashboardComponentValueGrouping"
 
+var valueGroupingDialogPanelTableID;
+
 function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 	
 	var panelSelector = "#" + elemPrefix + "DashboardComponentValueGroupingPanel"
@@ -54,6 +56,7 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 					console.log("Value grouping panel validated")
 					
 					var valGrouping = {
+						fieldParentTableID: valueGroupingDialogPanelTableID,
 						fieldID: groupedFieldSelection.val(),
 						groupValsBy: groupBySelection.val(),
 						groupByValBucketWidth: Number(bucketSizeInput.val())
@@ -97,6 +100,9 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 			var selectedTableID = getWizardDialogPanelData($dialog,
 					elemPrefix,dashboardComponentSelectTablePanelID)
 			console.log("Transitioning into value grouping panel: selected table ID = " + selectedTableID)
+			valueGroupingDialogPanelTableID = 	selectedTableID
+				
+				
 			loadFieldInfo(selectedTableID,[fieldTypeAll],function(valueGroupingFieldsByID) {
 				
 				populateFieldSelectionMenu(valueGroupingFieldsByID,groupedFieldSelection.selector)

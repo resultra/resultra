@@ -12,7 +12,7 @@ function loadDashboardData()
 			var barChartElem = $(barChartHTML)
 			
 			$("#dashboardCanvas").append(barChartElem)
-			setElemGeometry(barChartElem,barChartData.barChart.geometry)
+			setElemGeometry(barChartElem,barChartData.barChart.properties.geometry)
 			
 			initBarChartData(dashboardID,barChartData);			
 			
