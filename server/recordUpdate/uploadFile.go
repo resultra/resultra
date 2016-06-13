@@ -49,7 +49,7 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 	appEngContext := appengine.NewContext(req)
 	updatedRecord, updateErr := setRecordFileNameFieldValue(appEngContext,
 		req.FormValue("parentTableID"),
-		req.FormValue("recordID"), req.FormValue("fieldID"), cloudFileName)
+		req.FormValue("recordID"), req.FormValue("fieldID"), uploadInfo.FileName, cloudFileName)
 	if updateErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to update record for newly uploaded file: %v", updateErr)
 	}

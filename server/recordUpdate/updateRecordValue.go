@@ -14,6 +14,7 @@ type RecordUpdater interface {
 	recordID() string
 	parentTableID() string
 	updateRecordValue(rec *record.Record)
+	generateCellValue() (string, error)
 }
 
 // RecordUpdateHeader is a common header for all record value updates. It also implements
@@ -47,13 +48,13 @@ func UpdateRecordValue(appEngContext appengine.Context, recUpdater RecordUpdater
 
 	if fieldValidateErr := record.ValidateFieldForRecordValue(appEngContext, recUpdater.parentTableID(),
 		recUpdater.fieldID(), recUpdater.fieldType(), false); fieldValidateErr != nil {
-		return nil, fmt.Errorf("updateRecordValue: Can't set record value:"+
+		return nil, fmt.Errorf("UpdateRecordValue: Can't set record value:"+
 			" Error validating record's field for update: %v", fieldValidateErr)
 	}
 
 	recordForUpdate, getErr := record.GetRecord(appEngContext, recUpdater.parentTableID(), recordID)
 	if getErr != nil {
-		return nil, fmt.Errorf("SetRecordTextValue: Can't set value:"+
+		return nil, fmt.Errorf("UpdateRecordValue: Can't set value:"+
 			" Error retrieving existing record for update: err = %v", getErr)
 	}
 
@@ -61,6 +62,15 @@ func UpdateRecordValue(appEngContext appengine.Context, recUpdater RecordUpdater
 	//	recordForUpdate.FieldValues[setValParams.FieldID] = setValParams.Value
 	log.Printf("updateRecordValue: Setting value for field = %v", recUpdater.fieldID())
 	recUpdater.updateRecordValue(recordForUpdate)
+
+	cellValue, cellErr := recUpdater.generateCellValue()
+	if cellErr != nil {
+		return nil, fmt.Errorf("UpdateRecordValue: Error generating value for cell update: %v", cellErr)
+	}
+	cellUpdate := newCellUpdate(recUpdater.parentTableID(), recUpdater.fieldID(), recUpdater.recordID(), cellValue)
+	if saveErr := saveCellUpdate(cellUpdate); saveErr != nil {
+		return nil, fmt.Errorf("UpdateRecordValue: Error saving cell update: %v", saveErr)
+	}
 
 	// Changing this value may have caused the values for calculated fields to also change.
 	// Clients of this function need a fully up to date record reference, so the calculated
