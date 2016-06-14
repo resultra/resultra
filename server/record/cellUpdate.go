@@ -1,4 +1,4 @@
-package recordUpdate
+package record
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ type CellUpdate struct {
 	CellValue       string // Value encoded as JSON
 }
 
-func newCellUpdate(parentTableID string, fieldID string, recordID string, cellValue string) CellUpdate {
+func NewCellUpdate(parentTableID string, fieldID string, recordID string, cellValue string) CellUpdate {
 	return CellUpdate{
 		ParentTableID: parentTableID,
 		FieldID:       fieldID,
@@ -23,7 +23,7 @@ func newCellUpdate(parentTableID string, fieldID string, recordID string, cellVa
 		CellValue:     cellValue}
 }
 
-func saveCellUpdate(cellUpdate CellUpdate) error {
+func SaveCellUpdate(cellUpdate CellUpdate) error {
 
 	// TODO - Verify all IDs are well-formed and cell value is non empty.
 

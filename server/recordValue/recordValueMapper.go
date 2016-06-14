@@ -2,13 +2,14 @@ package recordValue
 
 import (
 	"fmt"
+	"resultra/datasheet/server/record"
 )
 
 func MapOneRecordUpdatesToFieldValues(parentTableID string, recordID string) (*RecordValueResults, error) {
 	return nil, fmt.Errorf("MapRecordUpdatesToFieldValues: Not implemented")
 
 	//	cellUpdateFieldValIndex, indexErr := NewUpdateFieldValueIndex(parentTableID, recordID)
-	_, indexErr := NewUpdateFieldValueIndex(parentTableID, recordID)
+	_, indexErr := record.NewUpdateFieldValueIndex(parentTableID, recordID)
 	if indexErr != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: error mapping updates to field values for "+
 			" parent table = %v, record = %v: error = %v", parentTableID, recordID, indexErr)

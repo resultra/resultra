@@ -1,4 +1,4 @@
-package recordUpdate
+package record
 
 import (
 	"fmt"

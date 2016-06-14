@@ -69,8 +69,8 @@ func UpdateRecordValue(appEngContext appengine.Context, recUpdater RecordUpdater
 	if cellErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Error generating value for cell update: %v", cellErr)
 	}
-	cellUpdate := newCellUpdate(recUpdater.parentTableID(), recUpdater.fieldID(), recUpdater.recordID(), cellValue)
-	if saveErr := saveCellUpdate(cellUpdate); saveErr != nil {
+	cellUpdate := record.NewCellUpdate(recUpdater.parentTableID(), recUpdater.fieldID(), recUpdater.recordID(), cellValue)
+	if saveErr := record.SaveCellUpdate(cellUpdate); saveErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Error saving cell update: %v", saveErr)
 	}
 

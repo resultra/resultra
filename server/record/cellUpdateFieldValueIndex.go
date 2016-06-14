@@ -1,9 +1,8 @@
-package recordValue
+package record
 
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/recordUpdate"
 	"sort"
 	"time"
 )
@@ -34,7 +33,7 @@ type CellUpdateFieldValueIndex map[string]FieldValueUpdateSeries
 
 func NewUpdateFieldValueIndex(parentTableID string, recordID string) (*CellUpdateFieldValueIndex, error) {
 
-	recCellUpdates, getErr := recordUpdate.GetRecordCellUpdates(parentTableID, recordID)
+	recCellUpdates, getErr := GetRecordCellUpdates(parentTableID, recordID)
 	if getErr != nil {
 		return nil, fmt.Errorf("NewFieldValueIndex: failure retrieving cell updates for record = %v: error = %v",
 			recordID, getErr)
@@ -57,7 +56,7 @@ func NewUpdateFieldValueIndex(parentTableID string, recordID string) (*CellUpdat
 				currUpdate.FieldID, parentTableID, fieldErr)
 		}
 
-		decodedCellVal, decodeErr := recordUpdate.DecodeCellValue(fieldInfo.Type, currUpdate.CellValue)
+		decodedCellVal, decodeErr := DecodeCellValue(fieldInfo.Type, currUpdate.CellValue)
 		if decodeErr != nil {
 			return nil, fmt.Errorf(
 				"NewUpdateFieldValueIndex: Unable to cell value for field ID = %v: tableID=%v: error=%v ",

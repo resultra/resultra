@@ -24,7 +24,7 @@ func (setValParams SetRecordTextValueParams) updateRecordValue(rec *record.Recor
 
 func (valParams SetRecordTextValueParams) generateCellValue() (string, error) {
 
-	cellVal := TextCellValue{Val: valParams.Value}
+	cellVal := record.TextCellValue{Val: valParams.Value}
 
 	return generic.EncodeJSONString(cellVal)
 }
@@ -61,7 +61,7 @@ func (setValParams SetRecordNumberValueParams) updateRecordValue(rec *record.Rec
 
 func (valParams SetRecordNumberValueParams) generateCellValue() (string, error) {
 
-	cellVal := NumberCellValue{Val: valParams.Value}
+	cellVal := record.NumberCellValue{Val: valParams.Value}
 
 	return generic.EncodeJSONString(cellVal)
 }
@@ -81,7 +81,7 @@ func (setValParams SetRecordBoolValueParams) updateRecordValue(rec *record.Recor
 
 func (valParams SetRecordBoolValueParams) generateCellValue() (string, error) {
 
-	cellVal := BoolCellValue{Val: valParams.Value}
+	cellVal := record.BoolCellValue{Val: valParams.Value}
 
 	return generic.EncodeJSONString(cellVal)
 }
@@ -99,7 +99,7 @@ func (setValParams SetRecordTimeValueParams) updateRecordValue(rec *record.Recor
 
 func (valParams SetRecordTimeValueParams) generateCellValue() (string, error) {
 
-	cellVal := TimeCellValue{Val: valParams.Value}
+	cellVal := record.TimeCellValue{Val: valParams.Value}
 
 	return generic.EncodeJSONString(cellVal)
 }
@@ -118,7 +118,7 @@ func (setValParams SetRecordFileValueParams) updateRecordValue(rec *record.Recor
 
 func (valParams SetRecordFileValueParams) generateCellValue() (string, error) {
 
-	cellValue := FileCellValue{
+	cellValue := record.FileCellValue{
 		CloudName: valParams.CloudFileName,
 		OrigName:  valParams.OrigFileName}
 
