@@ -1,7 +1,6 @@
 package record
 
 import (
-	"appengine"
 	"fmt"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/cloudStorageWrapper"
@@ -18,14 +17,14 @@ type RecordFileFieldURLResponse struct {
 	Url string `json:"url"`
 }
 
-func getFieldValUrl(appEngCntxt appengine.Context, params GetFieldValUrlParams) (*RecordFileFieldURLResponse, error) {
+func getFieldValUrl(params GetFieldValUrlParams) (*RecordFileFieldURLResponse, error) {
 
-	record, getErr := GetRecord(appEngCntxt, params.ParentTableID, params.RecordID)
+	record, getErr := GetRecord(params.ParentTableID, params.RecordID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getFieldValUrl: Unabled to get record: id = %v: get err=%v", params.RecordID, getErr)
 	}
 
-	theField, fieldErr := field.GetField(appEngCntxt, params.ParentTableID, params.FieldID)
+	theField, fieldErr := field.GetField(params.ParentTableID, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("getFieldValUrl: Unabled to get field: id = %+v: get err=%v", params.FieldID, fieldErr)
 	}

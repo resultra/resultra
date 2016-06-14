@@ -1,7 +1,6 @@
 package recordFilter
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -34,8 +33,7 @@ func newRecordFilterRule(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	newRecordFilterRef, newErr := newFilterRule(appEngCntxt, filterRuleParams)
+	newRecordFilterRef, newErr := newFilterRule(filterRuleParams)
 	if newErr != nil {
 		api.WriteErrorResponse(w, newErr)
 		return
@@ -55,8 +53,7 @@ func getFilteredRecords(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if recordRefs, err := GetFilteredRecords(appEngCntxt, params); err != nil {
+	if recordRefs, err := GetFilteredRecords(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, recordRefs)
@@ -72,8 +69,7 @@ func newFilterAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	newFilterRef, newErr := newFilter(appEngCntxt, params)
+	newFilterRef, newErr := newFilter(params)
 	if newErr != nil {
 		api.WriteErrorResponse(w, newErr)
 		return
@@ -91,8 +87,7 @@ func newFilterWithPrefixAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	newFilterRef, newErr := newFilterWithPrefix(appEngCntxt, params)
+	newFilterRef, newErr := newFilterWithPrefix(params)
 	if newErr != nil {
 		api.WriteErrorResponse(w, newErr)
 		return
@@ -114,8 +109,7 @@ func getFilterListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	filterRefs, getListErr := getFilterList(appEngCntxt, params.ParentTableID)
+	filterRefs, getListErr := getFilterList(params.ParentTableID)
 	if getListErr != nil {
 		api.WriteErrorResponse(w, getListErr)
 		return
@@ -133,8 +127,7 @@ func getRecordFilterRulesAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if filterRules, err := getRecordFilterRules(appEngCntxt, params); err != nil {
+	if filterRules, err := getRecordFilterRules(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, filterRules)
@@ -149,8 +142,7 @@ func setFilterNameAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if filterRef, err := updateFilterProps(appEngCntxt, params); err != nil {
+	if filterRef, err := updateFilterProps(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, filterRef)

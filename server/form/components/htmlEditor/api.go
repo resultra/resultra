@@ -1,7 +1,6 @@
 package htmlEditor
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -25,18 +24,16 @@ func newHtmlEditor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if checkBoxRef, err := saveNewHtmlEditor(appEngCntxt, params); err != nil {
+	if editorRef, err := saveNewHtmlEditor(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
-		api.WriteJSONResponse(w, *checkBoxRef)
+		api.WriteJSONResponse(w, *editorRef)
 	}
 
 }
 
 func processHtmlEditorPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater HtmlEditorPropUpdater) {
-	appEngCntxt := appengine.NewContext(r)
-	if checkBoxRef, err := updateHtmlEditorProps(appEngCntxt, propUpdater); err != nil {
+	if checkBoxRef, err := updateHtmlEditorProps(propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, checkBoxRef)

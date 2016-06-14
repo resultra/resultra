@@ -1,7 +1,6 @@
 package calcField
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/field"
@@ -27,8 +26,7 @@ func newCalcFieldAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if fieldID, err := newCalcField(appEngCntxt, newCalcFieldParams); err != nil {
+	if fieldID, err := newCalcField(newCalcFieldParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, api.JSONParams{"fieldID": fieldID})
@@ -44,8 +42,7 @@ func getRawFormulaTextAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if rawFormulaText, err := getRawFormulaText(appEngCntxt, params); err != nil {
+	if rawFormulaText, err := getRawFormulaText(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, rawFormulaText)
@@ -60,8 +57,7 @@ func validateFormula(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	validationResponse := validateFormulaText(appEngCntxt, validationParams)
+	validationResponse := validateFormulaText(validationParams)
 	api.WriteJSONResponse(w, *validationResponse)
 }
 
@@ -73,8 +69,7 @@ func setFieldFormula(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if updatedFieldRef, err := field.UpdateFieldProps(appEngCntxt, setFormulaParams); err != nil {
+	if updatedFieldRef, err := field.UpdateFieldProps(setFormulaParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, updatedFieldRef)

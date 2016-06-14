@@ -1,7 +1,6 @@
 package textBox
 
 import (
-	"appengine"
 	"fmt"
 	"github.com/gocql/gocql"
 	"log"
@@ -41,13 +40,13 @@ func validTextBoxFieldType(fieldType string) bool {
 	}
 }
 
-func saveNewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*TextBox, error) {
+func saveNewTextBox(params NewTextBoxParams) (*TextBox, error) {
 
 	if !geometry.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	field, fieldErr := field.GetField(appEngContext, params.FieldParentTableID, params.FieldID)
+	field, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)
@@ -76,7 +75,7 @@ func saveNewTextBox(appEngContext appengine.Context, params NewTextBoxParams) (*
 
 }
 
-func getTextBox(appEngContext appengine.Context, parentFormID string, textBoxID string) (*TextBox, error) {
+func getTextBox(parentFormID string, textBoxID string) (*TextBox, error) {
 
 	textBoxProps := TextBoxProperties{}
 	if getErr := common.GetFormComponent(textBoxEntityKind, parentFormID, textBoxID, &textBoxProps); getErr != nil {
@@ -91,7 +90,7 @@ func getTextBox(appEngContext appengine.Context, parentFormID string, textBoxID 
 	return &textBox, nil
 }
 
-func GetTextBoxes(appEngContext appengine.Context, parentFormID string) ([]TextBox, error) {
+func GetTextBoxes(parentFormID string) ([]TextBox, error) {
 
 	textBoxes := []TextBox{}
 	addTextBox := func(textBoxID string, encodedProps string) error {
@@ -117,7 +116,7 @@ func GetTextBoxes(appEngContext appengine.Context, parentFormID string) ([]TextB
 
 }
 
-func updateExistingTextBox(appEngContext appengine.Context, textBoxID string, updatedTextBox *TextBox) (*TextBox, error) {
+func updateExistingTextBox(textBoxID string, updatedTextBox *TextBox) (*TextBox, error) {
 
 	if updateErr := common.UpdateFormComponent(textBoxEntityKind, updatedTextBox.ParentFormID,
 		updatedTextBox.TextBoxID, updatedTextBox.Properties); updateErr != nil {

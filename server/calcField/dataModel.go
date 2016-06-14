@@ -1,7 +1,6 @@
 package calcField
 
 import (
-	"appengine"
 	"fmt"
 	"resultra/datasheet/server/field"
 )
@@ -18,10 +17,9 @@ type NewCalcFieldParams struct {
 	FormulaText   string `json:"formulaText"`
 }
 
-func newCalcField(appEngContext appengine.Context, calcFieldParams NewCalcFieldParams) (string, error) {
+func newCalcField(calcFieldParams NewCalcFieldParams) (string, error) {
 
 	compileParams := formulaCompileParams{
-		appEngContext:      appEngContext,
 		formulaText:        calcFieldParams.FormulaText,
 		parentTableID:      calcFieldParams.ParentTableID,
 		expectedResultType: calcFieldParams.Type,
@@ -47,5 +45,5 @@ func newCalcField(appEngContext appengine.Context, calcFieldParams NewCalcFieldP
 		PreprocessedFormulaText: compileResult.preprocessedFormula,
 		IsCalcField:             true}
 
-	return field.CreateNewFieldFromRawInputs(appEngContext, calcFieldParams.ParentTableID, newField)
+	return field.CreateNewFieldFromRawInputs(calcFieldParams.ParentTableID, newField)
 }

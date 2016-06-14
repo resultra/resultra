@@ -1,7 +1,6 @@
 package form
 
 import (
-	"appengine"
 	"fmt"
 	"github.com/gocql/gocql"
 	"log"
@@ -17,15 +16,12 @@ type Form struct {
 	Name          string
 }
 
-const formIDFieldName string = "FormID"
-const formParentTableFieldName string = "ParentTableID"
-
 type NewFormParams struct {
 	ParentTableID string `json:"parentTableID"`
 	Name          string `json:"name"`
 }
 
-func newForm(appEngContext appengine.Context, params NewFormParams) (*Form, error) {
+func newForm(params NewFormParams) (*Form, error) {
 
 	sanitizedName, sanitizeErr := generic.SanitizeName(params.Name)
 	if sanitizeErr != nil {
@@ -57,7 +53,7 @@ type GetFormParams struct {
 	FormID        string `json:"formID"`
 }
 
-func GetForm(appEngContext appengine.Context, params GetFormParams) (*Form, error) {
+func GetForm(params GetFormParams) (*Form, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
@@ -82,7 +78,7 @@ func GetForm(appEngContext appengine.Context, params GetFormParams) (*Form, erro
 	return &getForm, nil
 }
 
-func getAllForms(appEngContext appengine.Context, parentTableID string) ([]Form, error) {
+func getAllForms(parentTableID string) ([]Form, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {

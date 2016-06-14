@@ -1,7 +1,6 @@
 package record
 
 import (
-	"appengine"
 	"appengine/datastore"
 	"fmt"
 	"github.com/gocql/gocql"
@@ -72,7 +71,7 @@ type NewRecordParams struct {
 	ParentTableID string `json:"parentTableID"`
 }
 
-func NewRecord(appEngContext appengine.Context, params NewRecordParams) (*Record, error) {
+func NewRecord(params NewRecordParams) (*Record, error) {
 
 	newRecord := Record{ParentTableID: params.ParentTableID,
 		RecordID:    gocql.TimeUUID().String(),
@@ -98,7 +97,7 @@ func NewRecord(appEngContext appengine.Context, params NewRecordParams) (*Record
 
 }
 
-func GetRecord(appEngContext appengine.Context, parentTableID string, recordID string) (*Record, error) {
+func GetRecord(parentTableID string, recordID string) (*Record, error) {
 
 	getRecord := Record{"", "", RecFieldValues{}}
 
@@ -125,7 +124,7 @@ func GetRecord(appEngContext appengine.Context, parentTableID string, recordID s
 
 }
 
-func UpdateExistingRecord(appEngContext appengine.Context, rec *Record) (*Record, error) {
+func UpdateExistingRecord(rec *Record) (*Record, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
@@ -156,7 +155,7 @@ type GetRecordsParams struct {
 	TableID string `json:"tableID"`
 }
 
-func GetRecords(appEngContext appengine.Context, params GetRecordsParams) ([]Record, error) {
+func GetRecords(params GetRecordsParams) ([]Record, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
@@ -189,10 +188,10 @@ func GetRecords(appEngContext appengine.Context, params GetRecordsParams) ([]Rec
 // Validate the field is of the correct type and not a calculated field (if allowCalcField not true). This is for validating
 // the field when setting/getting values from regular "literal" fields which store values entered by end-users (as opposed to
 // calculated fields)
-func ValidateFieldForRecordValue(appEngContext appengine.Context, fieldParentTableID string, fieldID string, expectedFieldType string,
+func ValidateFieldForRecordValue(fieldParentTableID string, fieldID string, expectedFieldType string,
 	allowCalcField bool) error {
 
-	field, fieldGetErr := field.GetField(appEngContext, fieldParentTableID, fieldID)
+	field, fieldGetErr := field.GetField(fieldParentTableID, fieldID)
 	if fieldGetErr != nil {
 		return fmt.Errorf(" Error retrieving field for updating/setting value: err = %v", fieldGetErr)
 	}

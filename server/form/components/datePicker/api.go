@@ -1,7 +1,6 @@
 package datePicker
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -25,8 +24,7 @@ func newDatePicker(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if checkBoxRef, err := saveNewDatePicker(appEngCntxt, params); err != nil {
+	if checkBoxRef, err := saveNewDatePicker(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *checkBoxRef)
@@ -35,8 +33,7 @@ func newDatePicker(w http.ResponseWriter, r *http.Request) {
 }
 
 func processDatePickerPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater DatePickerPropUpdater) {
-	appEngCntxt := appengine.NewContext(r)
-	if checkBoxRef, err := updateDatePickerProps(appEngCntxt, propUpdater); err != nil {
+	if checkBoxRef, err := updateDatePickerProps(propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, checkBoxRef)

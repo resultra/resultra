@@ -1,7 +1,6 @@
 package calcField
 
 import (
-	"appengine"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/field"
@@ -12,14 +11,13 @@ type SetFormulaParams struct {
 	FormulaText string `json:"formulaText"`
 }
 
-func (setFormulaParams SetFormulaParams) UpdateProps(appEngContext appengine.Context, fieldForUpdate *field.Field) error {
+func (setFormulaParams SetFormulaParams) UpdateProps(fieldForUpdate *field.Field) error {
 
 	if !fieldForUpdate.IsCalcField {
 		return fmt.Errorf("SetFormula: Can't set formula on non-calculated field: %v", fieldForUpdate.Name)
 	}
 
 	compileParams := formulaCompileParams{
-		appEngContext:      appEngContext,
 		formulaText:        setFormulaParams.FormulaText,
 		parentTableID:      fieldForUpdate.ParentTableID,
 		expectedResultType: fieldForUpdate.Type,

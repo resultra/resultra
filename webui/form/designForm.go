@@ -1,7 +1,6 @@
 package form
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"html/template"
 	"log"
@@ -39,8 +38,7 @@ func designForm(w http.ResponseWriter, r *http.Request) {
 	tableID := vars["tableID"]
 	log.Println("Design Form: editing for form with ID = ", formID)
 
-	appEngContext := appengine.NewContext(r)
-	formToDesign, getErr := form.GetForm(appEngContext, form.GetFormParams{tableID, formID})
+	formToDesign, getErr := form.GetForm(form.GetFormParams{tableID, formID})
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return

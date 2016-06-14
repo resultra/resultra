@@ -1,7 +1,6 @@
 package recordUpdate
 
 import (
-	"appengine"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/calcField"
@@ -42,17 +41,17 @@ func (recUpdateHeader RecordUpdateHeader) parentTableID() string {
 // It leaves the low-level updating of values to implementers of the RecordUpdater interface. Different RecordUpdaters
 // are needed for different value types, while the code to (1) retrieve the record, (2) validate the field type,
 // (3) re-calculate calculated fields, then (4) save the updated record is made common.
-func UpdateRecordValue(appEngContext appengine.Context, recUpdater RecordUpdater) (*record.Record, error) {
+func UpdateRecordValue(recUpdater RecordUpdater) (*record.Record, error) {
 
 	recordID := recUpdater.recordID()
 
-	if fieldValidateErr := record.ValidateFieldForRecordValue(appEngContext, recUpdater.parentTableID(),
+	if fieldValidateErr := record.ValidateFieldForRecordValue(recUpdater.parentTableID(),
 		recUpdater.fieldID(), recUpdater.fieldType(), false); fieldValidateErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Can't set record value:"+
 			" Error validating record's field for update: %v", fieldValidateErr)
 	}
 
-	recordForUpdate, getErr := record.GetRecord(appEngContext, recUpdater.parentTableID(), recordID)
+	recordForUpdate, getErr := record.GetRecord(recUpdater.parentTableID(), recordID)
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Can't set value:"+
 			" Error retrieving existing record for update: err = %v", getErr)
@@ -77,12 +76,12 @@ func UpdateRecordValue(appEngContext appengine.Context, recUpdater RecordUpdater
 	// Changing this value may have caused the values for calculated fields to also change.
 	// Clients of this function need a fully up to date record reference, so the calculated
 	// field's values must also be recalculated when a value changes.
-	if calcErr := calcField.UpdateCalcFieldValues(appEngContext, recordForUpdate); calcErr != nil {
+	if calcErr := calcField.UpdateCalcFieldValues(recordForUpdate); calcErr != nil {
 		return nil, fmt.Errorf("updateRecordValue: Can't set value: Error calculating fields to reflect update: err = %v", calcErr)
 	}
 
 	// Write the record back to the datastore (including the calculated values)
-	updatedRecord, updateErr := record.UpdateExistingRecord(appEngContext, recordForUpdate)
+	updatedRecord, updateErr := record.UpdateExistingRecord(recordForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateRecordValue: Can't set value: Error retrieving existing record for update: err = %v", updateErr)
 	}

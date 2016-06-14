@@ -1,7 +1,6 @@
 package calcField
 
 import (
-	"appengine"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/field"
@@ -92,16 +91,15 @@ type GetRawFormulaResult struct {
 	RawFormulaText string `json:"rawFormulaText"`
 }
 
-func getRawFormulaText(appEngContext appengine.Context, params GetRawFormulaParams) (*GetRawFormulaResult, error) {
+func getRawFormulaText(params GetRawFormulaParams) (*GetRawFormulaResult, error) {
 
-	calcField, getFieldErr := field.GetField(appEngContext, params.FieldParentTableID, params.FieldID)
+	calcField, getFieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
 	if getFieldErr != nil {
 		return nil, fmt.Errorf("getRawFormulaText: Unable to get calculated field field: field id =%v, error=%v ",
 			params.FieldID, getFieldErr)
 	}
 
 	compileParams := formulaCompileParams{
-		appEngContext:      appEngContext,
 		formulaText:        calcField.PreprocessedFormulaText,
 		parentTableID:      calcField.ParentTableID,
 		expectedResultType: calcField.Type,
@@ -117,7 +115,6 @@ func getRawFormulaText(appEngContext appengine.Context, params GetRawFormulaPara
 }
 
 type formulaCompileParams struct {
-	appEngContext      appengine.Context
 	formulaText        string
 	parentTableID      string
 	expectedResultType string
@@ -193,9 +190,9 @@ type ValidationResponse struct {
 	ErrorMsg       string `json:"errorMsg"`
 }
 
-func validateFormulaText(appEngContext appengine.Context, validationParams ValidateFormulaParams) *ValidationResponse {
+func validateFormulaText(validationParams ValidateFormulaParams) *ValidationResponse {
 
-	formulaField, getFieldErr := field.GetField(appEngContext, validationParams.FieldParentTableID, validationParams.FieldID)
+	formulaField, getFieldErr := field.GetField(validationParams.FieldParentTableID, validationParams.FieldID)
 	if getFieldErr != nil {
 		errMsg := fmt.Sprintf("validateFormulaText: Unable to get  retrieve field: error=%v ", getFieldErr)
 		return &ValidationResponse{IsValidFormula: false, ErrorMsg: errMsg}
@@ -208,7 +205,6 @@ func validateFormulaText(appEngContext appengine.Context, validationParams Valid
 	}
 
 	compileParams := formulaCompileParams{
-		appEngContext:      appEngContext,
 		formulaText:        validationParams.FormulaText,
 		parentTableID:      formulaField.ParentTableID,
 		expectedResultType: formulaField.Type,

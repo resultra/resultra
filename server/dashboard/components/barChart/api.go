@@ -1,7 +1,6 @@
 package barChart
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -27,8 +26,7 @@ func newBarChart(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if barChartRef, err := NewBarChart(appEngCntxt, barChartParams); err != nil {
+	if barChartRef, err := NewBarChart(barChartParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, barChartRef)
@@ -44,8 +42,7 @@ func getBarChartData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if barChartData, err := GetBarChartData(appEngCntxt, barChartParams.ParentDashboardID, barChartParams.BarChartID); err != nil {
+	if barChartData, err := GetBarChartData(barChartParams.ParentDashboardID, barChartParams.BarChartID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, barChartData)
@@ -57,8 +54,8 @@ func getBarChartData(w http.ResponseWriter, r *http.Request) {
 // duplicated code in the individual property updates. There doesn't seem to be a way to generically
 // read/decode the parameters, so this is still done explicitely.
 func processBarChartPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater BarChartPropertyUpdater) {
-	appEngCntxt := appengine.NewContext(r)
-	if barChartRef, err := UpdateBarChartProps(appEngCntxt, propUpdater); err != nil {
+
+	if barChartRef, err := UpdateBarChartProps(propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, barChartRef)

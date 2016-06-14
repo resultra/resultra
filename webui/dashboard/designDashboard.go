@@ -1,7 +1,6 @@
 package dashboard
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"html/template"
 	"log"
@@ -36,8 +35,7 @@ func designDashboard(w http.ResponseWriter, r *http.Request) {
 	parentDatabaseID := vars["databaseID"]
 	log.Println("Design Dashboard: editing for dashboard with params = %+v", vars)
 
-	appEngContext := appengine.NewContext(r)
-	dashboardForDesign, getErr := dashboard.GetDashboard(appEngContext, parentDatabaseID, dashboardID)
+	dashboardForDesign, getErr := dashboard.GetDashboard(parentDatabaseID, dashboardID)
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return

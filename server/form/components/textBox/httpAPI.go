@@ -1,7 +1,6 @@
 package textBox
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -25,8 +24,7 @@ func newTextBox(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if textBoxRef, err := saveNewTextBox(appEngCntxt, textBoxParams); err != nil {
+	if textBoxRef, err := saveNewTextBox(textBoxParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *textBoxRef)
@@ -35,8 +33,7 @@ func newTextBox(w http.ResponseWriter, r *http.Request) {
 }
 
 func processTextBoxPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater TextBoxPropUpdater) {
-	appEngCntxt := appengine.NewContext(r)
-	if textBoxRef, err := updateTextBoxProps(appEngCntxt, propUpdater); err != nil {
+	if textBoxRef, err := updateTextBoxProps(propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, textBoxRef)

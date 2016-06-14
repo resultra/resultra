@@ -1,7 +1,6 @@
 package htmlEditor
 
 import (
-	"appengine"
 	"fmt"
 	"resultra/datasheet/server/common"
 )
@@ -29,10 +28,10 @@ type HtmlEditorPropUpdater interface {
 	updateProps(htmlEditor *HtmlEditor) error
 }
 
-func updateHtmlEditorProps(appEngContext appengine.Context, propUpdater HtmlEditorPropUpdater) (*HtmlEditor, error) {
+func updateHtmlEditorProps(propUpdater HtmlEditorPropUpdater) (*HtmlEditor, error) {
 
 	// Retrieve the bar chart from the data store
-	htmlEditorForUpdate, getErr := getHtmlEditor(appEngContext, propUpdater.getParentFormID(), propUpdater.getHtmlEditorID())
+	htmlEditorForUpdate, getErr := getHtmlEditor(propUpdater.getParentFormID(), propUpdater.getHtmlEditorID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateHtmlEditorProps: Unable to get existing html editor: %v", getErr)
 	}
@@ -41,7 +40,7 @@ func updateHtmlEditorProps(appEngContext appengine.Context, propUpdater HtmlEdit
 		return nil, fmt.Errorf("updateHtmlEditorProps: Unable to update existing html editor properties: %v", propUpdateErr)
 	}
 
-	htmlEditor, updateErr := updateExistingHtmlEditor(appEngContext, propUpdater.getHtmlEditorID(), htmlEditorForUpdate)
+	htmlEditor, updateErr := updateExistingHtmlEditor(propUpdater.getHtmlEditorID(), htmlEditorForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateHtmlEditorProps: Unable to update existing html editor properties: datastore update error =  %v", updateErr)
 	}

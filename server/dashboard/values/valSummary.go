@@ -1,7 +1,6 @@
 package values
 
 import (
-	"appengine"
 	"fmt"
 	"resultra/datasheet/server/field"
 )
@@ -54,9 +53,9 @@ func validateFieldTypeWithSummary(fieldType string, summarizeValsWith string) er
 	return nil
 }
 
-func NewValSummary(appEngContext appengine.Context, params NewValSummaryParams) (*ValSummary, error) {
+func NewValSummary(params NewValSummaryParams) (*ValSummary, error) {
 
-	summaryField, fieldErr := field.GetField(appEngContext, params.FieldParentTableID, params.FieldID)
+	summaryField, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewValGrouping: Can't get field value grouping: datastore error = %v", fieldErr)
 	}

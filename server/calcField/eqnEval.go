@@ -1,7 +1,6 @@
 package calcField
 
 import (
-	"appengine"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/field"
@@ -9,8 +8,7 @@ import (
 )
 
 type EqnEvalContext struct {
-	AppEngContext appengine.Context
-	DefinedFuncs  FuncNameFuncInfoMap
+	DefinedFuncs FuncNameFuncInfoMap
 
 	// Record into which the results will be calculated. This is also the record
 	// which is referenced for field values, in the case a calculated field references
@@ -19,12 +17,12 @@ type EqnEvalContext struct {
 }
 
 // Get the literal value from a number field, or undefined if it doesn't exist.
-func GetNumberRecordEqnResult(appEngContext appengine.Context, evalRecord *record.Record, fieldID string) (*EquationResult, error) {
+func GetNumberRecordEqnResult(evalRecord *record.Record, fieldID string) (*EquationResult, error) {
 
 	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
 	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
 	allowCalcField := true
-	if fieldValidateErr := record.ValidateFieldForRecordValue(appEngContext, evalRecord.ParentTableID, fieldID,
+	if fieldValidateErr := record.ValidateFieldForRecordValue(evalRecord.ParentTableID, fieldID,
 		field.FieldTypeNumber, allowCalcField); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
 			"Can't validate field with value type: validation error = %v", evalRecord, fieldID, fieldValidateErr)
@@ -49,12 +47,12 @@ func GetNumberRecordEqnResult(appEngContext appengine.Context, evalRecord *recor
 }
 
 // Get the literal value from a text field, or undefined if it doesn't exist.
-func GetTextRecordEqnResult(appEngContext appengine.Context, evalRecord *record.Record, fieldID string) (*EquationResult, error) {
+func GetTextRecordEqnResult(evalRecord *record.Record, fieldID string) (*EquationResult, error) {
 
 	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
 	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
 	allowCalcField := true
-	if fieldValidateErr := record.ValidateFieldForRecordValue(appEngContext, evalRecord.ParentTableID,
+	if fieldValidateErr := record.ValidateFieldForRecordValue(evalRecord.ParentTableID,
 		fieldID, field.FieldTypeText, allowCalcField); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
 			"Can't validate field with value type: validation error = %v", evalRecord, fieldID, fieldValidateErr)
@@ -104,11 +102,9 @@ func EvalEqn(evalContext *EqnEvalContext, evalField field.Field) (*EquationResul
 	} else { // literal field values
 		switch evalField.Type {
 		case field.FieldTypeText:
-			return GetTextRecordEqnResult(
-				evalContext.AppEngContext, evalContext.ResultRecord, evalField.FieldID)
+			return GetTextRecordEqnResult(evalContext.ResultRecord, evalField.FieldID)
 		case field.FieldTypeNumber:
-			return GetNumberRecordEqnResult(
-				evalContext.AppEngContext, evalContext.ResultRecord, evalField.FieldID)
+			return GetNumberRecordEqnResult(evalContext.ResultRecord, evalField.FieldID)
 			//		case FieldTypeDate:
 		default:
 			return nil, fmt.Errorf("Unknown field result type: %v", evalField.Type)
@@ -143,7 +139,7 @@ func (equation EquationNode) EvalEqn(evalContext *EqnEvalContext) (*EquationResu
 		// TODO - Once the Field type has a parent, don't use an individual database
 		// lookup for each field (database only has strong consistency when
 		// entities have a parent.
-		field, err := field.GetField(evalContext.AppEngContext, evalContext.ResultRecord.ParentTableID, equation.FieldID)
+		field, err := field.GetField(evalContext.ResultRecord.ParentTableID, equation.FieldID)
 		if err != nil {
 			return nil, fmt.Errorf("EvalEqn: failure retrieving referenced field: %+v", err)
 		} else {
@@ -163,7 +159,7 @@ func (equation EquationNode) EvalEqn(evalContext *EqnEvalContext) (*EquationResu
 }
 
 // Update the calculated value for one calculated field
-func updateOneCalcFieldValue(appEngContext appengine.Context, evalRecord *record.Record, evalField field.Field) error {
+func updateOneCalcFieldValue(evalRecord *record.Record, evalField field.Field) error {
 
 	if !evalField.IsCalcField {
 		return fmt.Errorf("updateOneCalcFieldValue: Calculated field expected: got non-calculated field = %v", evalField.RefName)
@@ -181,7 +177,7 @@ func updateOneCalcFieldValue(appEngContext appengine.Context, evalRecord *record
 
 	// Perform the actual evaluation/calculation.
 	fieldEqnResult, evalErr := rootFieldEqnNode.EvalEqn(
-		&EqnEvalContext{appEngContext, CalcFieldDefinedFuncs, evalRecord})
+		&EqnEvalContext{CalcFieldDefinedFuncs, evalRecord})
 	if evalErr != nil {
 		return fmt.Errorf("Unexpected error evaluating equation for field=%v: error=%+v",
 			evalField.RefName, evalErr)
@@ -241,7 +237,7 @@ func updateOneCalcFieldValue(appEngContext appengine.Context, evalRecord *record
 // UpdateCalcFieldValues is (currently) the top-most entry point into the calculated field
 // equation evaluation functionality. This is called after record updates (see recordUpdate package)
 // to refresh calculated values.
-func UpdateCalcFieldValues(appEngContext appengine.Context, evalRecord *record.Record) error {
+func UpdateCalcFieldValues(evalRecord *record.Record) error {
 
 	fields, getErr := field.GetAllFields(field.GetFieldListParams{ParentTableID: evalRecord.ParentTableID})
 	if getErr != nil {
@@ -251,7 +247,7 @@ func UpdateCalcFieldValues(appEngContext appengine.Context, evalRecord *record.R
 	for _, currField := range fields {
 
 		if currField.IsCalcField {
-			if calcErr := updateOneCalcFieldValue(appEngContext, evalRecord, currField); calcErr != nil {
+			if calcErr := updateOneCalcFieldValue(evalRecord, currField); calcErr != nil {
 				// Some of the calculated fields may evaluate to an undefined values, in which case
 				// an error won't be returned, but we can continue evaluating the other calculated
 				// fields. However, if there is an actual error calculating the field values, processing

@@ -1,7 +1,6 @@
 package dashboard
 
 import (
-	"appengine"
 	"fmt"
 	"github.com/gocql/gocql"
 	"resultra/datasheet/server/dashboard/components/barChart"
@@ -9,22 +8,18 @@ import (
 	"resultra/datasheet/server/generic/cassandraWrapper"
 )
 
-const dashboardEntityKind string = "Dashboard"
-
 type Dashboard struct {
 	DashboardID      string `json:"dashboardID"`
 	ParentDatabaseID string `json:"parentDatabaseID"`
 	Name             string `json:"name"`
 }
 
-const dashboardIDFieldName string = "DashboardID"
-
 type NewDashboardParams struct {
 	DatabaseID string `json:"databaseID"`
 	Name       string `json:"name"`
 }
 
-func NewDashboard(appEngContext appengine.Context, params NewDashboardParams) (*Dashboard, error) {
+func NewDashboard(params NewDashboardParams) (*Dashboard, error) {
 
 	sanitizedName, sanitizeErr := generic.SanitizeName(params.Name)
 	if sanitizeErr != nil {
@@ -51,7 +46,7 @@ func NewDashboard(appEngContext appengine.Context, params NewDashboardParams) (*
 
 }
 
-func GetDashboard(appEngContext appengine.Context, databaseID string, dashboardID string) (*Dashboard, error) {
+func GetDashboard(databaseID string, dashboardID string) (*Dashboard, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
@@ -84,9 +79,9 @@ type DashboardDataRef struct {
 	BarChartsData []barChart.BarChartData `json:"barChartsData"`
 }
 
-func GetDashboardData(appEngContext appengine.Context, params GetDashboardDataParams) (*DashboardDataRef, error) {
+func GetDashboardData(params GetDashboardDataParams) (*DashboardDataRef, error) {
 
-	barChartData, getBarChartsErr := barChart.GetDashboardBarChartsData(appEngContext, params.DashboardID)
+	barChartData, getBarChartsErr := barChart.GetDashboardBarChartsData(params.DashboardID)
 	if getBarChartsErr != nil {
 		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard barchart data: error = %v", getBarChartsErr)
 	}

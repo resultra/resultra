@@ -1,7 +1,6 @@
 package image
 
 import (
-	"appengine"
 	"fmt"
 	"github.com/gocql/gocql"
 	"log"
@@ -39,13 +38,13 @@ func validImageFieldType(fieldType string) bool {
 	}
 }
 
-func saveNewImage(appEngContext appengine.Context, params NewImageParams) (*Image, error) {
+func saveNewImage(params NewImageParams) (*Image, error) {
 
 	if !geometry.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	field, fieldErr := field.GetField(appEngContext, params.FieldParentTableID, params.FieldID)
+	field, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)
@@ -74,7 +73,7 @@ func saveNewImage(appEngContext appengine.Context, params NewImageParams) (*Imag
 
 }
 
-func getImage(appEngContext appengine.Context, parentFormID string, imageID string) (*Image, error) {
+func getImage(parentFormID string, imageID string) (*Image, error) {
 
 	imageProps := ImageProperties{}
 	if getErr := common.GetFormComponent(imageEntityKind, parentFormID, imageID, &imageProps); getErr != nil {
@@ -89,7 +88,7 @@ func getImage(appEngContext appengine.Context, parentFormID string, imageID stri
 	return &image, nil
 }
 
-func GetImages(appEngContext appengine.Context, parentFormID string) ([]Image, error) {
+func GetImages(parentFormID string) ([]Image, error) {
 
 	images := []Image{}
 	addImage := func(imageID string, encodedProps string) error {
@@ -115,7 +114,7 @@ func GetImages(appEngContext appengine.Context, parentFormID string) ([]Image, e
 
 }
 
-func updateExistingImage(appEngContext appengine.Context, imageID string, updatedImage *Image) (*Image, error) {
+func updateExistingImage(imageID string, updatedImage *Image) (*Image, error) {
 
 	if updateErr := common.UpdateFormComponent(imageEntityKind, updatedImage.ParentFormID,
 		updatedImage.ImageID, updatedImage.Properties); updateErr != nil {

@@ -1,7 +1,6 @@
 package record
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -26,8 +25,7 @@ func newRecord(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	newRecordRef, err := NewRecord(appEngCntxt, params)
+	newRecordRef, err := NewRecord(params)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
@@ -49,9 +47,7 @@ func getRecord(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-
-	if record, getErr := GetRecord(appEngCntxt, params.ParentTableID, params.RecordID); getErr != nil {
+	if record, getErr := GetRecord(params.ParentTableID, params.RecordID); getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return
 	} else {
@@ -71,8 +67,7 @@ func getRecords(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if recordRefs, err := GetRecords(appEngCntxt, params); err != nil {
+	if recordRefs, err := GetRecords(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, recordRefs)
@@ -91,8 +86,7 @@ func getFieldValUrlAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if urlResponse, err := getFieldValUrl(appEngCntxt, params); err != nil {
+	if urlResponse, err := getFieldValUrl(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, urlResponse)

@@ -1,7 +1,6 @@
 package form
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"html/template"
 	"log"
@@ -42,8 +41,7 @@ func viewForm(w http.ResponseWriter, r *http.Request) {
 	tableID := vars["tableID"]
 
 	log.Println("view form: : form ID = %v", formID)
-	appEngContext := appengine.NewContext(r)
-	formToView, getErr := form.GetForm(appEngContext, form.GetFormParams{tableID, formID})
+	formToView, getErr := form.GetForm(form.GetFormParams{tableID, formID})
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return

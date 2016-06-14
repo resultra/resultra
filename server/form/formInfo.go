@@ -1,7 +1,6 @@
 package form
 
 import (
-	"appengine"
 	"resultra/datasheet/server/form/components/checkBox"
 	"resultra/datasheet/server/form/components/datePicker"
 	"resultra/datasheet/server/form/components/htmlEditor"
@@ -21,29 +20,29 @@ type GetFormInfoParams struct {
 	FormID string `json:"formID"`
 }
 
-func getFormInfo(appEngContext appengine.Context, params GetFormInfoParams) (*FormInfo, error) {
+func getFormInfo(params GetFormInfoParams) (*FormInfo, error) {
 
-	textBoxes, err := textBox.GetTextBoxes(appEngContext, params.FormID)
+	textBoxes, err := textBox.GetTextBoxes(params.FormID)
 	if err != nil {
 		return nil, err
 	}
 
-	checkBoxes, err := checkBox.GetCheckBoxes(appEngContext, params.FormID)
+	checkBoxes, err := checkBox.GetCheckBoxes(params.FormID)
 	if err != nil {
 		return nil, err
 	}
 
-	datePickers, err := datePicker.GetDatePickers(appEngContext, params.FormID)
+	datePickers, err := datePicker.GetDatePickers(params.FormID)
 	if err != nil {
 		return nil, err
 	}
 
-	htmlEditors, err := htmlEditor.GetHtmlEditors(appEngContext, params.FormID)
+	htmlEditors, err := htmlEditor.GetHtmlEditors(params.FormID)
 	if err != nil {
 		return nil, err
 	}
 
-	images, err := image.GetImages(appEngContext, params.FormID)
+	images, err := image.GetImages(params.FormID)
 	if err != nil {
 		return nil, err
 	}

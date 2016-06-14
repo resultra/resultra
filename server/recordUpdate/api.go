@@ -1,7 +1,6 @@
 package recordUpdate
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -29,8 +28,7 @@ func setTextFieldValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	updatedRecordRef, setErr := UpdateRecordValue(appEngCntxt, setValParams)
+	updatedRecordRef, setErr := UpdateRecordValue(setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -49,8 +47,7 @@ func setLongTextFieldValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	updatedRecordRef, setErr := UpdateRecordValue(appEngCntxt, setValParams)
+	updatedRecordRef, setErr := UpdateRecordValue(setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -68,8 +65,7 @@ func setNumberFieldValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	updatedRecordRef, setErr := UpdateRecordValue(appEngCntxt, setValParams)
+	updatedRecordRef, setErr := UpdateRecordValue(setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -87,8 +83,7 @@ func setBoolFieldValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	updatedRecordRef, setErr := UpdateRecordValue(appEngCntxt, setValParams)
+	updatedRecordRef, setErr := UpdateRecordValue(setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -106,8 +101,7 @@ func setTimeFieldValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	updatedRecordRef, setErr := UpdateRecordValue(appEngCntxt, setValParams)
+	updatedRecordRef, setErr := UpdateRecordValue(setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return

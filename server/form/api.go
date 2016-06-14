@@ -1,7 +1,6 @@
 package form
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -26,8 +25,7 @@ func newFormAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if formRef, err := newForm(appEngCntxt, params); err != nil {
+	if formRef, err := newForm(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *formRef)
@@ -43,8 +41,7 @@ func getFormAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if theForm, err := GetForm(appEngCntxt, params); err != nil {
+	if theForm, err := GetForm(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *theForm)
@@ -60,8 +57,7 @@ func getFormInfoAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if formInfo, err := getFormInfo(appEngCntxt, params); err != nil {
+	if formInfo, err := getFormInfo(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *formInfo)

@@ -1,7 +1,6 @@
 package barChart
 
 import (
-	"appengine"
 	"fmt"
 	"resultra/datasheet/server/recordFilter"
 )
@@ -20,7 +19,7 @@ type BarChartData struct {
 	DataRows   []BarChartDataRow `json:"dataRows"`
 }
 
-func getOneBarChartData(appEngContext appengine.Context, barChart *BarChart) (*BarChartData, error) {
+func getOneBarChartData(barChart *BarChart) (*BarChartData, error) {
 
 	tableID := barChart.Properties.DataSrcTableID
 
@@ -29,12 +28,12 @@ func getOneBarChartData(appEngContext appengine.Context, barChart *BarChart) (*B
 	getRecordParams := recordFilter.GetFilteredRecordsParams{
 		TableID:   tableID,
 		FilterIDs: filterIDs}
-	recordRefs, getRecErr := recordFilter.GetFilteredRecords(appEngContext, getRecordParams)
+	recordRefs, getRecErr := recordFilter.GetFilteredRecords(getRecordParams)
 	if getRecErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
 	}
 
-	valGroupingResult, groupingErr := barChart.Properties.XAxisVals.GroupRecords(appEngContext, tableID, recordRefs)
+	valGroupingResult, groupingErr := barChart.Properties.XAxisVals.GroupRecords(tableID, recordRefs)
 	if groupingErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error grouping records for bar chart: %v", groupingErr)
 	}
@@ -57,15 +56,15 @@ func getOneBarChartData(appEngContext appengine.Context, barChart *BarChart) (*B
 
 }
 
-func GetBarChartData(appEngContext appengine.Context, parentDashboardID string, barChartID string) (*BarChartData, error) {
+func GetBarChartData(parentDashboardID string, barChartID string) (*BarChartData, error) {
 
-	barChart, getBarChartErr := getBarChart(appEngContext, parentDashboardID, barChartID)
+	barChart, getBarChartErr := getBarChart(parentDashboardID, barChartID)
 	if getBarChartErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart with id=%v, parent dashboard = %v: error= %v",
 			barChartID, parentDashboardID, getBarChartErr)
 	}
 
-	barChartData, dataErr := getOneBarChartData(appEngContext, barChart)
+	barChartData, dataErr := getOneBarChartData(barChart)
 	if dataErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart data: %v", dataErr)
 	}
@@ -74,7 +73,7 @@ func GetBarChartData(appEngContext appengine.Context, parentDashboardID string, 
 
 }
 
-func GetDashboardBarChartsData(appEngContext appengine.Context, parentDashboardID string) ([]BarChartData, error) {
+func GetDashboardBarChartsData(parentDashboardID string) ([]BarChartData, error) {
 
 	barCharts, err := getBarCharts(parentDashboardID)
 	if err != nil {
@@ -84,7 +83,7 @@ func GetDashboardBarChartsData(appEngContext appengine.Context, parentDashboardI
 	var barChartsData []BarChartData
 	for _, barChart := range barCharts {
 
-		barChartData, dataErr := getOneBarChartData(appEngContext, &barChart)
+		barChartData, dataErr := getOneBarChartData(&barChart)
 		if dataErr != nil {
 			return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart data: %v", dataErr)
 		}

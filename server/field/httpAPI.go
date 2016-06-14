@@ -1,7 +1,6 @@
 package field
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -25,8 +24,7 @@ func newField(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if fieldID, err := NewField(appEngCntxt, newFieldParams); err != nil {
+	if fieldID, err := NewField(newFieldParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, api.JSONParams{"fieldID": fieldID})

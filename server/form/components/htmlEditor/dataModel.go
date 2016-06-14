@@ -1,7 +1,6 @@
 package htmlEditor
 
 import (
-	"appengine"
 	"fmt"
 	"github.com/gocql/gocql"
 	"log"
@@ -39,13 +38,13 @@ func validHtmlEditorFieldType(fieldType string) bool {
 	}
 }
 
-func saveNewHtmlEditor(appEngContext appengine.Context, params NewHtmlEditorParams) (*HtmlEditor, error) {
+func saveNewHtmlEditor(params NewHtmlEditorParams) (*HtmlEditor, error) {
 
 	if !geometry.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	field, fieldErr := field.GetField(appEngContext, params.FieldParentTableID, params.FieldID)
+	field, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)
@@ -74,7 +73,7 @@ func saveNewHtmlEditor(appEngContext appengine.Context, params NewHtmlEditorPara
 
 }
 
-func getHtmlEditor(appEngContext appengine.Context, parentFormID string, htmlEditorID string) (*HtmlEditor, error) {
+func getHtmlEditor(parentFormID string, htmlEditorID string) (*HtmlEditor, error) {
 
 	editorProps := HtmlEditorProperties{}
 	if getErr := common.GetFormComponent(htmlEditorEntityKind, parentFormID, htmlEditorID, &editorProps); getErr != nil {
@@ -89,7 +88,7 @@ func getHtmlEditor(appEngContext appengine.Context, parentFormID string, htmlEdi
 	return &htmlEditor, nil
 }
 
-func GetHtmlEditors(appEngContext appengine.Context, parentFormID string) ([]HtmlEditor, error) {
+func GetHtmlEditors(parentFormID string) ([]HtmlEditor, error) {
 
 	htmlEditors := []HtmlEditor{}
 
@@ -116,7 +115,7 @@ func GetHtmlEditors(appEngContext appengine.Context, parentFormID string) ([]Htm
 
 }
 
-func updateExistingHtmlEditor(appEngContext appengine.Context, htmlEditorID string, updatedHtmlEditor *HtmlEditor) (*HtmlEditor, error) {
+func updateExistingHtmlEditor(htmlEditorID string, updatedHtmlEditor *HtmlEditor) (*HtmlEditor, error) {
 
 	if updateErr := common.UpdateFormComponent(htmlEditorEntityKind, updatedHtmlEditor.ParentFormID,
 		updatedHtmlEditor.HtmlEditorID, updatedHtmlEditor.Properties); updateErr != nil {

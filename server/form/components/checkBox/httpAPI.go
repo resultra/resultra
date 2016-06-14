@@ -1,7 +1,6 @@
 package checkBox
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -25,8 +24,7 @@ func newCheckBox(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if checkBoxRef, err := saveNewCheckBox(appEngCntxt, checkBoxParams); err != nil {
+	if checkBoxRef, err := saveNewCheckBox(checkBoxParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *checkBoxRef)
@@ -35,8 +33,7 @@ func newCheckBox(w http.ResponseWriter, r *http.Request) {
 }
 
 func processCheckBoxPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater CheckBoxPropUpdater) {
-	appEngCntxt := appengine.NewContext(r)
-	if checkBoxRef, err := updateCheckBoxProps(appEngCntxt, propUpdater); err != nil {
+	if checkBoxRef, err := updateCheckBoxProps(propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, checkBoxRef)

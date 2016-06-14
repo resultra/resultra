@@ -1,7 +1,6 @@
 package image
 
 import (
-	"appengine"
 	"fmt"
 	"resultra/datasheet/server/common"
 )
@@ -29,10 +28,10 @@ type ImagePropUpdater interface {
 	updateProps(image *Image) error
 }
 
-func updateImageProps(appEngContext appengine.Context, propUpdater ImagePropUpdater) (*Image, error) {
+func updateImageProps(propUpdater ImagePropUpdater) (*Image, error) {
 
 	// Retrieve the bar chart from the data store
-	imageForUpdate, getErr := getImage(appEngContext, propUpdater.getParentFormID(), propUpdater.getImageID())
+	imageForUpdate, getErr := getImage(propUpdater.getParentFormID(), propUpdater.getImageID())
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateImageProps: Unable to get existing image: %v", getErr)
 	}
@@ -41,7 +40,7 @@ func updateImageProps(appEngContext appengine.Context, propUpdater ImagePropUpda
 		return nil, fmt.Errorf("UpdateImageProps: Unable to update existing image properties: %v", propUpdateErr)
 	}
 
-	image, updateErr := updateExistingImage(appEngContext, propUpdater.getImageID(), imageForUpdate)
+	image, updateErr := updateExistingImage(propUpdater.getImageID(), imageForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateImageProps: Unable to update existing image properties: datastore update error =  %v", updateErr)
 	}

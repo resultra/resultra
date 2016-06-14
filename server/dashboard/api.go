@@ -1,7 +1,6 @@
 package dashboard
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -25,8 +24,7 @@ func newDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if dashboardRef, err := NewDashboard(appEngCntxt, dashboardParams); err != nil {
+	if dashboardRef, err := NewDashboard(dashboardParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, dashboardRef)
@@ -42,8 +40,7 @@ func getDashboardData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if dashboardData, err := GetDashboardData(appEngCntxt, dashboardParams); err != nil {
+	if dashboardData, err := GetDashboardData(dashboardParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *dashboardData)

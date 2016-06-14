@@ -1,7 +1,6 @@
 package image
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -25,8 +24,7 @@ func newImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if imageRef, err := saveNewImage(appEngCntxt, imageParams); err != nil {
+	if imageRef, err := saveNewImage(imageParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *imageRef)
@@ -35,8 +33,7 @@ func newImage(w http.ResponseWriter, r *http.Request) {
 }
 
 func processImagePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater ImagePropUpdater) {
-	appEngCntxt := appengine.NewContext(r)
-	if imageRef, err := updateImageProps(appEngCntxt, propUpdater); err != nil {
+	if imageRef, err := updateImageProps(propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, imageRef)

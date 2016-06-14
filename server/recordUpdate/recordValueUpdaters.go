@@ -1,7 +1,6 @@
 package recordUpdate
 
 import (
-	"appengine"
 	"fmt"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -127,8 +126,7 @@ func (valParams SetRecordFileValueParams) generateCellValue() (string, error) {
 
 // setRecordFileNameFieldValue. Although the parameters for a record update with a filename aren't passed through the http request,
 // the standard record updating mechanism can be used to update the field with the filename.
-func setRecordFileNameFieldValue(appEngContext appengine.Context,
-	parentTableID string,
+func setRecordFileNameFieldValue(parentTableID string,
 	recordID string, fieldID string, origFileName string, cloudFileName string) (*record.Record, error) {
 	updateRecordHeader := RecordUpdateHeader{
 		ParentTableID: parentTableID,
@@ -138,7 +136,7 @@ func setRecordFileNameFieldValue(appEngContext appengine.Context,
 		RecordUpdateHeader: updateRecordHeader,
 		OrigFileName:       origFileName,
 		CloudFileName:      cloudFileName}
-	updatedRecord, updateErr := UpdateRecordValue(appEngContext, updateRecordParams)
+	updatedRecord, updateErr := UpdateRecordValue(updateRecordParams)
 	if updateErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to update record for newly uploaded file: %v", updateErr)
 	}

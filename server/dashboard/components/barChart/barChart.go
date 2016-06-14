@@ -1,7 +1,6 @@
 package barChart
 
 import (
-	"appengine"
 	"fmt"
 	"github.com/gocql/gocql"
 	"resultra/datasheet/server/common"
@@ -60,7 +59,7 @@ type NewBarChartParams struct {
 	Geometry common.LayoutGeometry `json:"geometry"`
 }
 
-func updateExistingBarChart(appEngContext appengine.Context, updatedBarChart *BarChart) (*BarChart, error) {
+func updateExistingBarChart(updatedBarChart *BarChart) (*BarChart, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
@@ -92,14 +91,14 @@ func validBarChartSortXAxisProp(xAxisSortVal string) bool {
 	}
 }
 
-func NewBarChart(appEngContext appengine.Context, params NewBarChartParams) (*BarChart, error) {
+func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 
-	valGrouping, valGroupingErr := values.NewValGrouping(appEngContext, params.XAxisVals)
+	valGrouping, valGroupingErr := values.NewValGrouping(params.XAxisVals)
 	if valGroupingErr != nil {
 		return nil, fmt.Errorf("NewBarChart: Error creating new value grouping for bar chart: error = %v", valGroupingErr)
 	}
 
-	valSummary, valSummaryErr := values.NewValSummary(appEngContext, params.YAxisVals)
+	valSummary, valSummaryErr := values.NewValSummary(params.YAxisVals)
 	if valSummaryErr != nil {
 		return nil, fmt.Errorf("NewBarChart: Error creating summary values for bar chart: error = %v", valSummaryErr)
 	}
@@ -149,7 +148,7 @@ func NewBarChart(appEngContext appengine.Context, params NewBarChartParams) (*Ba
 
 }
 
-func getBarChart(appEngContext appengine.Context, parentDashboardID string, barChartID string) (*BarChart, error) {
+func getBarChart(parentDashboardID string, barChartID string) (*BarChart, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {

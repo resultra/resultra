@@ -1,7 +1,6 @@
 package datePicker
 
 import (
-	"appengine"
 	"fmt"
 	"resultra/datasheet/server/common"
 )
@@ -29,10 +28,10 @@ type DatePickerPropUpdater interface {
 	updateProps(datePicker *DatePicker) error
 }
 
-func updateDatePickerProps(appEngContext appengine.Context, propUpdater DatePickerPropUpdater) (*DatePicker, error) {
+func updateDatePickerProps(propUpdater DatePickerPropUpdater) (*DatePicker, error) {
 
 	// Retrieve the bar chart from the data store
-	datePickerForUpdate, getErr := getDatePicker(appEngContext, propUpdater.getParentFormID(), propUpdater.getDatePickerID())
+	datePickerForUpdate, getErr := getDatePicker(propUpdater.getParentFormID(), propUpdater.getDatePickerID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateDatePickerProps: Unable to get existing date picker: %v", getErr)
 	}
@@ -41,7 +40,7 @@ func updateDatePickerProps(appEngContext appengine.Context, propUpdater DatePick
 		return nil, fmt.Errorf("updateDatePickerProps: Unable to update existing date picker properties: %v", propUpdateErr)
 	}
 
-	datePicker, updateErr := updateExistingDatePicker(appEngContext, propUpdater.getDatePickerID(), datePickerForUpdate)
+	datePicker, updateErr := updateExistingDatePicker(propUpdater.getDatePickerID(), datePickerForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateDatePickerProps: Unable to update existing date picker properties: datastore update error =  %v", updateErr)
 	}

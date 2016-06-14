@@ -1,7 +1,6 @@
 package field
 
 import (
-	"appengine"
 	"fmt"
 )
 
@@ -30,22 +29,22 @@ type FieldPropUpdater interface {
 	// pacakge. However, in this case, the calculated field formula is updated in the CalcField package
 	// so the function name needs to start with an upper case, so a FieldPropUpdater defined
 	// in the CalcField package can be used.
-	UpdateProps(appEngContext appengine.Context, fieldForUpdate *Field) error
+	UpdateProps(fieldForUpdate *Field) error
 }
 
-func UpdateFieldProps(appEngContext appengine.Context, propUpdater FieldPropUpdater) (*Field, error) {
+func UpdateFieldProps(propUpdater FieldPropUpdater) (*Field, error) {
 
-	fieldForUpdate, getErr := GetField(appEngContext, propUpdater.GetParentTableID(), propUpdater.GetFieldID())
+	fieldForUpdate, getErr := GetField(propUpdater.GetParentTableID(), propUpdater.GetFieldID())
 	if getErr != nil {
 		return nil, getErr
 	}
 
 	// Do the actual property update through the FieldPropUpdater interface
-	if propUpdateErr := propUpdater.UpdateProps(appEngContext, fieldForUpdate); propUpdateErr != nil {
+	if propUpdateErr := propUpdater.UpdateProps(fieldForUpdate); propUpdateErr != nil {
 		return nil, fmt.Errorf("UpdateFieldProps: Unable to update existing field properties: %v", propUpdateErr)
 	}
 
-	updatedField, updateErr := UpdateExistingField(appEngContext, fieldForUpdate)
+	updatedField, updateErr := UpdateExistingField(fieldForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateFieldProps: error updating field: %v", updateErr)
 	}

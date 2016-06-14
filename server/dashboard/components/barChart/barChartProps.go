@@ -1,7 +1,6 @@
 package barChart
 
 import (
-	"appengine"
 	"fmt"
 	"resultra/datasheet/server/common"
 )
@@ -31,10 +30,10 @@ func (idHeader BarChartUniqueIDHeader) parentDashboardID() string {
 	return idHeader.ParentDashboardID
 }
 
-func UpdateBarChartProps(appEngContext appengine.Context, propUpdater BarChartPropertyUpdater) (*BarChart, error) {
+func UpdateBarChartProps(propUpdater BarChartPropertyUpdater) (*BarChart, error) {
 
 	// Retrieve the bar chart from the data store
-	barChartForUpdate, getBarChartErr := getBarChart(appEngContext, propUpdater.parentDashboardID(), propUpdater.uniqueBarChartID())
+	barChartForUpdate, getBarChartErr := getBarChart(propUpdater.parentDashboardID(), propUpdater.uniqueBarChartID())
 	if getBarChartErr != nil {
 		return nil, fmt.Errorf("updateBarChartProps: Unable to get existing bar chart: %v", getBarChartErr)
 	}
@@ -46,7 +45,7 @@ func UpdateBarChartProps(appEngContext appengine.Context, propUpdater BarChartPr
 	}
 
 	// Save the updated bar chart back to the data store
-	updatedBarChart, updateErr := updateExistingBarChart(appEngContext, barChartForUpdate)
+	updatedBarChart, updateErr := updateExistingBarChart(barChartForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateBarChartProps: Unable to update existing bar chart: %v", updateErr)
 	}

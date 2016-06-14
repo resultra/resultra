@@ -1,7 +1,6 @@
 package recordFilter
 
 import (
-	"appengine"
 	"fmt"
 	"github.com/gocql/gocql"
 	"log"
@@ -39,9 +38,9 @@ type NewFilterParams struct {
 	Name          string `json:"name"`
 }
 
-func getExistingFilterNames(appEngContext appengine.Context, parentTableID string) ([]string, error) {
+func getExistingFilterNames(parentTableID string) ([]string, error) {
 
-	var allFilters, getFiltersErr = getFilterList(appEngContext, parentTableID)
+	var allFilters, getFiltersErr = getFilterList(parentTableID)
 	if getFiltersErr != nil {
 		return nil, fmt.Errorf("Unable to retrieve filters: %v", getFiltersErr)
 	}
@@ -54,9 +53,9 @@ func getExistingFilterNames(appEngContext appengine.Context, parentTableID strin
 
 }
 
-func validateUnusedFilterName(appEngContext appengine.Context, parentTableID string, filterName string) error {
+func validateUnusedFilterName(parentTableID string, filterName string) error {
 
-	existingNames, getNamesErr := getExistingFilterNames(appEngContext, parentTableID)
+	existingNames, getNamesErr := getExistingFilterNames(parentTableID)
 	if getNamesErr != nil {
 		return getNamesErr
 	}
@@ -68,9 +67,9 @@ func validateUnusedFilterName(appEngContext appengine.Context, parentTableID str
 	return nil
 }
 
-func genUnusedFilterName(appEngContext appengine.Context, parentTableID string, namePrefix string) (string, error) {
+func genUnusedFilterName(parentTableID string, namePrefix string) (string, error) {
 
-	existingNames, getNamesErr := getExistingFilterNames(appEngContext, parentTableID)
+	existingNames, getNamesErr := getExistingFilterNames(parentTableID)
 	if getNamesErr != nil {
 		return "", getNamesErr
 	}
@@ -100,14 +99,14 @@ func genUnusedFilterName(appEngContext appengine.Context, parentTableID string, 
 
 }
 
-func newFilter(appEngContext appengine.Context, params NewFilterParams) (*RecordFilter, error) {
+func newFilter(params NewFilterParams) (*RecordFilter, error) {
 
 	sanitizedName, sanitizeErr := generic.SanitizeName(params.Name)
 	if sanitizeErr != nil {
 		return nil, fmt.Errorf("newFilter (sanitize name): %v", sanitizeErr)
 	}
 
-	if validateNameErr := validateUnusedFilterName(appEngContext, params.ParentTableID, sanitizedName); validateNameErr != nil {
+	if validateNameErr := validateUnusedFilterName(params.ParentTableID, sanitizedName); validateNameErr != nil {
 		return nil, fmt.Errorf("newFilter: %v", validateNameErr)
 	}
 
@@ -132,7 +131,7 @@ func newFilter(appEngContext appengine.Context, params NewFilterParams) (*Record
 	return &newFilter, nil
 }
 
-func getFilter(appEngContext appengine.Context, parentTableID string, filterID string) (*RecordFilter, error) {
+func getFilter(parentTableID string, filterID string) (*RecordFilter, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
@@ -152,7 +151,7 @@ func getFilter(appEngContext appengine.Context, parentTableID string, filterID s
 	return &filterGetDest, nil
 }
 
-func updateExistingFilter(appEngContext appengine.Context, updatedFilter *RecordFilter) (*RecordFilter, error) {
+func updateExistingFilter(updatedFilter *RecordFilter) (*RecordFilter, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
@@ -175,18 +174,18 @@ type NewFilterWithPrefixParams struct {
 	NamePrefix    string `json:"namePrefix"`
 }
 
-func newFilterWithPrefix(appEngContext appengine.Context, params NewFilterWithPrefixParams) (*RecordFilter, error) {
+func newFilterWithPrefix(params NewFilterWithPrefixParams) (*RecordFilter, error) {
 
 	sanitizedPrefix, sanitizeErr := generic.SanitizeName(params.NamePrefix)
 	if sanitizeErr != nil {
 		return nil, fmt.Errorf("newFilterWithPrefix: %v", sanitizeErr)
 	}
-	newFilterName, nameGenErr := genUnusedFilterName(appEngContext, params.ParentTableID, sanitizedPrefix)
+	newFilterName, nameGenErr := genUnusedFilterName(params.ParentTableID, sanitizedPrefix)
 	if nameGenErr != nil {
 		return nil, fmt.Errorf("newFilterWithPrefix: %v", nameGenErr)
 	}
 	log.Printf("newFilterWithPrefix: New filter name: %v", newFilterName)
-	return newFilter(appEngContext, NewFilterParams{ParentTableID: params.ParentTableID, Name: newFilterName})
+	return newFilter(NewFilterParams{ParentTableID: params.ParentTableID, Name: newFilterName})
 
 }
 
@@ -194,7 +193,7 @@ type GetFilterRulesParams struct {
 	ParentFilterID string `json:"parentFilterID"`
 }
 
-func getRecordFilterRules(appEngContext appengine.Context, params GetFilterRulesParams) ([]RecordFilterRule, error) {
+func getRecordFilterRules(params GetFilterRulesParams) ([]RecordFilterRule, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
@@ -223,7 +222,7 @@ func getRecordFilterRules(appEngContext appengine.Context, params GetFilterRules
 	return allFilterRules, nil
 }
 
-func getFilterList(appEngContext appengine.Context, parentTableID string) ([]RecordFilter, error) {
+func getFilterList(parentTableID string) ([]RecordFilter, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
@@ -258,9 +257,9 @@ type NewFilterRuleParams struct {
 	NumberRuleParam    *float64 `json:"numberRuleParam,omitempty"`
 }
 
-func newFilterRule(appEngContext appengine.Context, newRuleParams NewFilterRuleParams) (*RecordFilterRule, error) {
+func newFilterRule(newRuleParams NewFilterRuleParams) (*RecordFilterRule, error) {
 
-	filterOnField, fieldErr := field.GetField(appEngContext, newRuleParams.FieldParentTableID, newRuleParams.FieldID)
+	filterOnField, fieldErr := field.GetField(newRuleParams.FieldParentTableID, newRuleParams.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewImage: Can't create filter rule with field ID = '%v': datastore error=%v",
 			newRuleParams.FieldID, fieldErr)

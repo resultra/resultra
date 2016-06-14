@@ -1,7 +1,6 @@
 package field
 
 import (
-	"appengine"
 	"fmt"
 	"github.com/gocql/gocql"
 	"log"
@@ -68,7 +67,7 @@ func validFieldType(fieldType string) bool {
 // Internal function for creating new fields given raw inputs. Should only be called by
 // other "NewField" functions with well-formed parameters for either a regular (non-calculated)
 // or calculated field.
-func CreateNewFieldFromRawInputs(appEngContext appengine.Context, parentTableID string, newField Field) (string, error) {
+func CreateNewFieldFromRawInputs(parentTableID string, newField Field) (string, error) {
 
 	sanitizedName, sanitizeErr := generic.SanitizeName(newField.Name)
 	if sanitizeErr != nil {
@@ -126,7 +125,7 @@ type NewFieldParams struct {
 	RefName       string `json:"refName"`
 }
 
-func NewField(appEngContext appengine.Context, fieldParams NewFieldParams) (string, error) {
+func NewField(fieldParams NewFieldParams) (string, error) {
 	newField := Field{
 		Name:                    fieldParams.Name,
 		Type:                    fieldParams.Type,
@@ -135,10 +134,10 @@ func NewField(appEngContext appengine.Context, fieldParams NewFieldParams) (stri
 		PreprocessedFormulaText: "",
 		IsCalcField:             false} // always set calculated field to false
 
-	return CreateNewFieldFromRawInputs(appEngContext, fieldParams.ParentTableID, newField)
+	return CreateNewFieldFromRawInputs(fieldParams.ParentTableID, newField)
 }
 
-func GetField(appEngContext appengine.Context, tableID string, fieldID string) (*Field, error) {
+func GetField(tableID string, fieldID string) (*Field, error) {
 
 	var fieldGetDest Field
 
@@ -164,7 +163,7 @@ func GetField(appEngContext appengine.Context, tableID string, fieldID string) (
 	return &fieldGetDest, nil
 }
 
-func UpdateExistingField(appEngContext appengine.Context, updatedField *Field) (*Field, error) {
+func UpdateExistingField(updatedField *Field) (*Field, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {

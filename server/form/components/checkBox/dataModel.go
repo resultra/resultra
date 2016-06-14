@@ -1,7 +1,6 @@
 package checkBox
 
 import (
-	"appengine"
 	"fmt"
 	"github.com/gocql/gocql"
 	"log"
@@ -24,9 +23,6 @@ type CheckBox struct {
 	Properties   CheckBoxProperties `json:"properties"`
 }
 
-const checkBoxIDFieldName string = "CheckBoxID"
-const checkBoxParentFormIDFieldName string = "ParentFormID"
-
 type NewCheckBoxParams struct {
 	ParentFormID       string                  `json:"parentFormID"`
 	FieldParentTableID string                  `json:"fieldParentTableID"`
@@ -42,13 +38,13 @@ func validCheckBoxFieldType(fieldType string) bool {
 	}
 }
 
-func saveNewCheckBox(appEngContext appengine.Context, params NewCheckBoxParams) (*CheckBox, error) {
+func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 
 	if !geometry.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	field, fieldErr := field.GetField(appEngContext, params.FieldParentTableID, params.FieldID)
+	field, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("saveNewCheckBox: Can't create check box with params = '%+v': datastore error=%v",
 			params, fieldErr)
@@ -77,7 +73,7 @@ func saveNewCheckBox(appEngContext appengine.Context, params NewCheckBoxParams) 
 
 }
 
-func getCheckBox(appEngContext appengine.Context, parentFormID string, checkBoxID string) (*CheckBox, error) {
+func getCheckBox(parentFormID string, checkBoxID string) (*CheckBox, error) {
 
 	checkBoxProps := CheckBoxProperties{}
 	if getErr := common.GetFormComponent(checkBoxEntityKind, parentFormID, checkBoxID, &checkBoxProps); getErr != nil {
@@ -92,7 +88,7 @@ func getCheckBox(appEngContext appengine.Context, parentFormID string, checkBoxI
 	return &checkBox, nil
 }
 
-func GetCheckBoxes(appEngContext appengine.Context, parentFormID string) ([]CheckBox, error) {
+func GetCheckBoxes(parentFormID string) ([]CheckBox, error) {
 
 	checkBoxes := []CheckBox{}
 	addCheckbox := func(checkboxID string, encodedProps string) error {
@@ -117,7 +113,7 @@ func GetCheckBoxes(appEngContext appengine.Context, parentFormID string) ([]Chec
 	return checkBoxes, nil
 }
 
-func updateExistingCheckBox(appEngContext appengine.Context, updatedCheckBox *CheckBox) (*CheckBox, error) {
+func updateExistingCheckBox(updatedCheckBox *CheckBox) (*CheckBox, error) {
 
 	if updateErr := common.UpdateFormComponent(checkBoxEntityKind, updatedCheckBox.ParentFormID,
 		updatedCheckBox.CheckBoxID, updatedCheckBox.Properties); updateErr != nil {

@@ -1,7 +1,6 @@
 package datePicker
 
 import (
-	"appengine"
 	"fmt"
 	"github.com/gocql/gocql"
 	"log"
@@ -39,13 +38,13 @@ func validDatePickerFieldType(fieldType string) bool {
 	}
 }
 
-func saveNewDatePicker(appEngContext appengine.Context, params NewDatePickerParams) (*DatePicker, error) {
+func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 
 	if !geometry.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	field, fieldErr := field.GetField(appEngContext, params.FieldParentTableID, params.FieldID)
+	field, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)
@@ -74,7 +73,7 @@ func saveNewDatePicker(appEngContext appengine.Context, params NewDatePickerPara
 
 }
 
-func getDatePicker(appEngContext appengine.Context, parentFormID string, datePickerID string) (*DatePicker, error) {
+func getDatePicker(parentFormID string, datePickerID string) (*DatePicker, error) {
 
 	datePickerProps := DatePickerProperties{}
 	if getErr := common.GetFormComponent(datePickerEntityKind, parentFormID, datePickerID, &datePickerProps); getErr != nil {
@@ -89,7 +88,7 @@ func getDatePicker(appEngContext appengine.Context, parentFormID string, datePic
 	return &datePicker, nil
 }
 
-func GetDatePickers(appEngContext appengine.Context, parentFormID string) ([]DatePicker, error) {
+func GetDatePickers(parentFormID string) ([]DatePicker, error) {
 
 	datePickers := []DatePicker{}
 	addDatePicker := func(datePickerID string, encodedProps string) error {
@@ -115,7 +114,7 @@ func GetDatePickers(appEngContext appengine.Context, parentFormID string) ([]Dat
 
 }
 
-func updateExistingDatePicker(appEngContext appengine.Context, datePickerID string, updatedDatePicker *DatePicker) (*DatePicker, error) {
+func updateExistingDatePicker(datePickerID string, updatedDatePicker *DatePicker) (*DatePicker, error) {
 
 	if updateErr := common.UpdateFormComponent(datePickerEntityKind, updatedDatePicker.ParentFormID,
 		updatedDatePicker.DatePickerID, updatedDatePicker.Properties); updateErr != nil {
