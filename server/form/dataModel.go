@@ -99,7 +99,7 @@ func getAllForms(appEngContext appengine.Context, parentTableID string) ([]Form,
 		forms = append(forms, currForm)
 	}
 	if closeErr := formIter.Close(); closeErr != nil {
-		fmt.Errorf("getAllForms: Failure querying database: %v", closeErr)
+		return nil, fmt.Errorf("getAllForms: Failure querying database: %v", closeErr)
 	}
 
 	return forms, nil

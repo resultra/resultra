@@ -243,7 +243,7 @@ func updateOneCalcFieldValue(appEngContext appengine.Context, evalRecord *record
 // to refresh calculated values.
 func UpdateCalcFieldValues(appEngContext appengine.Context, evalRecord *record.Record) error {
 
-	fields, getErr := field.GetAllFields(appEngContext, field.GetFieldListParams{ParentTableID: evalRecord.ParentTableID})
+	fields, getErr := field.GetAllFields(field.GetFieldListParams{ParentTableID: evalRecord.ParentTableID})
 	if getErr != nil {
 		return fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve fields from datastore: datastore error =%v", getErr)
 	}

@@ -189,3 +189,37 @@ func UpdateExistingField(appEngContext appengine.Context, updatedField *Field) (
 	return updatedField, nil
 
 }
+
+type GetFieldListParams struct {
+	ParentTableID string `json:"parentTableID"`
+}
+
+func GetAllFields(params GetFieldListParams) ([]Field, error) {
+
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("getTableList: Unable to create database session: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	fieldIter := dbSession.Query(`SELECT tableID,fieldID,name,type,refname,calcFieldEqn,isCalcField,preprocessedFormulaText FROM field WHERE tableID=?`,
+		params.ParentTableID).Iter()
+
+	var currField Field
+	allFields := []Field{}
+	for fieldIter.Scan(&currField.ParentTableID,
+		&currField.FieldID,
+		&currField.Name,
+		&currField.Type,
+		&currField.RefName,
+		&currField.CalcFieldEqn,
+		&currField.IsCalcField,
+		&currField.PreprocessedFormulaText) {
+		allFields = append(allFields, currField)
+	}
+	if closeErr := fieldIter.Close(); closeErr != nil {
+		return nil, fmt.Errorf("getTableList: Failure querying database: %v", closeErr)
+	}
+
+	return allFields, nil
+}

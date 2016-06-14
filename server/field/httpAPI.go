@@ -42,8 +42,7 @@ func getFieldsByType(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if fieldsByType, err := GetFieldsByType(appEngCntxt, fieldListParams); err != nil {
+	if fieldsByType, err := GetFieldsByType(fieldListParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, fieldsByType)

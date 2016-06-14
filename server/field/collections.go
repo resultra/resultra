@@ -1,47 +1,9 @@
 package field
 
 import (
-	"appengine"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/generic/cassandraWrapper"
 )
-
-type GetFieldListParams struct {
-	ParentTableID string `json:"parentTableID"`
-}
-
-const fieldParentTableFieldName string = "ParentTableID"
-
-func GetAllFields(appEngContext appengine.Context, params GetFieldListParams) ([]Field, error) {
-
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("getTableList: Unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	fieldIter := dbSession.Query(`SELECT tableID,fieldID,name,type,refname,calcFieldEqn,isCalcField,preprocessedFormulaText FROM field WHERE tableID=?`,
-		params.ParentTableID).Iter()
-
-	var currField Field
-	allFields := []Field{}
-	for fieldIter.Scan(&currField.ParentTableID,
-		&currField.FieldID,
-		&currField.Name,
-		&currField.Type,
-		&currField.RefName,
-		&currField.CalcFieldEqn,
-		&currField.IsCalcField,
-		&currField.PreprocessedFormulaText) {
-		allFields = append(allFields, currField)
-	}
-	if closeErr := fieldIter.Close(); closeErr != nil {
-		fmt.Errorf("getTableList: Failure querying database: %v", closeErr)
-	}
-
-	return allFields, nil
-}
 
 type FieldsByType struct {
 	TextFields     []Field `json:"textFields"`
@@ -52,9 +14,9 @@ type FieldsByType struct {
 	FileFields     []Field `json:"fileFields"`
 }
 
-func GetFieldsByType(appEngContext appengine.Context, params GetFieldListParams) (*FieldsByType, error) {
+func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
 
-	fields, getErr := GetAllFields(appEngContext, params)
+	fields, getErr := GetAllFields(params)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetFieldsByType: Unable to retrieve fields from datastore: datastore error =%v", getErr)
 	}
@@ -92,7 +54,7 @@ type FieldIDIndex struct {
 	FieldsByRefName StringFieldMap
 }
 
-func (fieldIDIndex FieldIDIndex) getFieldRefByID(fieldID string) (*Field, error) {
+func (fieldIDIndex FieldIDIndex) GetFieldRefByID(fieldID string) (*Field, error) {
 	field, fieldFound := fieldIDIndex.FieldsByID[fieldID]
 	if fieldFound != true {
 		return nil, fmt.Errorf("getFieldRefByID: Unable to retrieve field for field with ID = %v ", fieldID)
@@ -101,9 +63,9 @@ func (fieldIDIndex FieldIDIndex) getFieldRefByID(fieldID string) (*Field, error)
 
 }
 
-func GetFieldRefIDIndex(appEngContext appengine.Context, params GetFieldListParams) (*FieldIDIndex, error) {
+func GetFieldRefIDIndex(params GetFieldListParams) (*FieldIDIndex, error) {
 
-	fields, getErr := GetAllFields(appEngContext, params)
+	fields, getErr := GetAllFields(params)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetFieldRefIDIndex: Unable to retrieve fields from datastore: datastore error =%v", getErr)
 	}

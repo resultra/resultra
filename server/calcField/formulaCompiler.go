@@ -30,8 +30,7 @@ func compileFormula(inputStr string) (*EquationNode, error) {
 
 func preprocessCalcFieldFormula(compileParams formulaCompileParams) (string, error) {
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(compileParams.appEngContext,
-		field.GetFieldListParams{ParentTableID: compileParams.parentTableID})
+	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentTableID: compileParams.parentTableID})
 	if indexErr != nil {
 		return "", fmt.Errorf("preprocessCalcFieldFormula: Unable to retrieve fields list for table: tableID=%v, error=%v ",
 			compileParams.parentTableID, indexErr)
@@ -58,8 +57,7 @@ func preprocessCalcFieldFormula(compileParams formulaCompileParams) (string, err
 // date reference name.
 func reverseProcessCalcFieldFormula(compileParams formulaCompileParams) (string, error) {
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(compileParams.appEngContext,
-		field.GetFieldListParams{ParentTableID: compileParams.parentTableID})
+	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentTableID: compileParams.parentTableID})
 	if indexErr != nil {
 		return "", fmt.Errorf("preprocessCalcFieldFormula: Unable to retrieve fields list for table: tableID=%v, error=%v ",
 			compileParams.parentTableID, indexErr)

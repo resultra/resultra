@@ -63,6 +63,8 @@ func UpdateRecordValue(appEngContext appengine.Context, recUpdater RecordUpdater
 	log.Printf("updateRecordValue: Setting value for field = %v", recUpdater.fieldID())
 	recUpdater.updateRecordValue(recordForUpdate)
 
+	// Changes to records are stored as a series of updates, which are then rolled up into a simpler
+	// structure which has all the calculated values and filter results.
 	cellValue, cellErr := recUpdater.generateCellValue()
 	if cellErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Error generating value for cell update: %v", cellErr)

@@ -217,7 +217,7 @@ func getRecordFilterRules(appEngContext appengine.Context, params GetFilterRules
 		allFilterRules = append(allFilterRules, currRule)
 	}
 	if closeErr := ruleIter.Close(); closeErr != nil {
-		fmt.Errorf("getRecordFilterRules: Failure querying database: %v", closeErr)
+		return nil, fmt.Errorf("getRecordFilterRules: Failure querying database: %v", closeErr)
 	}
 
 	return allFilterRules, nil
@@ -242,7 +242,7 @@ func getFilterList(appEngContext appengine.Context, parentTableID string) ([]Rec
 		allFilters = append(allFilters, currFilter)
 	}
 	if closeErr := filterIter.Close(); closeErr != nil {
-		fmt.Errorf("getFilterList: Failure querying database: %v", closeErr)
+		return nil, fmt.Errorf("getFilterList: Failure querying database: %v", closeErr)
 	}
 
 	return allFilters, nil

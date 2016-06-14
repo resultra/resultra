@@ -70,7 +70,7 @@ func getTableList(appEngContext appengine.Context, params GetTableListParams) ([
 		tables = append(tables, currTable)
 	}
 	if closeErr := tableIter.Close(); closeErr != nil {
-		fmt.Errorf("getTableList: Failure querying database: %v", closeErr)
+		return nil,fmt.Errorf("getTableList: Failure querying database: %v", closeErr)
 	}
 
 	return tables, nil

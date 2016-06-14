@@ -3,6 +3,7 @@ package server
 import (
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/recordUpdate"
+	"resultra/datasheet/server/recordValue"
 	"resultra/datasheet/server/table"
 )
 
@@ -11,6 +12,7 @@ import (
 var dummyUnusedDBParams = database.NewDatabaseParams{}
 var dummyUnusedTableParams = table.NewTableParams{}
 var dummyRecordUpdateParams = recordUpdate.SetRecordBoolValueParams{}
+var dummyRecordVals = recordValue.RecordValueResults{}
 
 func DummyFunctionForImportFromGoogleAppEngineProjectFolder() {
 	// This dummy function is needed so standaline packages inside

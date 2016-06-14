@@ -211,7 +211,7 @@ func getBarCharts(parentDashboardID string) ([]BarChart, error) {
 		encodedProperties = ""
 	}
 	if closeErr := barChartIter.Close(); closeErr != nil {
-		fmt.Errorf("getTableList: Failure querying database: %v", closeErr)
+		return nil, fmt.Errorf("getTableList: Failure querying database: %v", closeErr)
 	}
 
 	return barCharts, nil

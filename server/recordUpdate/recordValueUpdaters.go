@@ -22,10 +22,6 @@ func (setValParams SetRecordTextValueParams) updateRecordValue(rec *record.Recor
 	(*rec).FieldValues[setValParams.FieldID] = setValParams.Value
 }
 
-type TextCellValue struct {
-	Val string `json:"val"`
-}
-
 func (valParams SetRecordTextValueParams) generateCellValue() (string, error) {
 
 	cellVal := TextCellValue{Val: valParams.Value}
@@ -63,10 +59,6 @@ func (setValParams SetRecordNumberValueParams) updateRecordValue(rec *record.Rec
 	(*rec).FieldValues[setValParams.FieldID] = setValParams.Value
 }
 
-type NumberCellValue struct {
-	Val float64 `json:'val'`
-}
-
 func (valParams SetRecordNumberValueParams) generateCellValue() (string, error) {
 
 	cellVal := NumberCellValue{Val: valParams.Value}
@@ -79,10 +71,6 @@ func (valParams SetRecordNumberValueParams) generateCellValue() (string, error) 
 type SetRecordBoolValueParams struct {
 	RecordUpdateHeader
 	Value bool `json:"value"`
-}
-
-type BoolCellValue struct {
-	Val bool `json:"val"`
 }
 
 func (setValParams SetRecordBoolValueParams) fieldType() string { return field.FieldTypeBool }
@@ -109,10 +97,6 @@ func (setValParams SetRecordTimeValueParams) updateRecordValue(rec *record.Recor
 	(*rec).FieldValues[setValParams.FieldID] = setValParams.Value
 }
 
-type TimeCellValue struct {
-	Val time.Time `json:"val"`
-}
-
 func (valParams SetRecordTimeValueParams) generateCellValue() (string, error) {
 
 	cellVal := TimeCellValue{Val: valParams.Value}
@@ -130,11 +114,6 @@ func (setValParams SetRecordFileValueParams) fieldType() string { return field.F
 
 func (setValParams SetRecordFileValueParams) updateRecordValue(rec *record.Record) {
 	(*rec).FieldValues[setValParams.FieldID] = setValParams.CloudFileName
-}
-
-type FileCellValue struct {
-	CloudName string `json:"cloudName"`
-	OrigName  string `json:"origName"`
 }
 
 func (valParams SetRecordFileValueParams) generateCellValue() (string, error) {

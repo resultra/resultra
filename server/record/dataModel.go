@@ -180,7 +180,7 @@ func GetRecords(appEngContext appengine.Context, params GetRecordsParams) ([]Rec
 		records = append(records, currRecord)
 	}
 	if closeErr := recordIter.Close(); closeErr != nil {
-		fmt.Errorf("GetRecords: Failure querying database: %v", closeErr)
+		return nil, fmt.Errorf("GetRecords: Failure querying database: %v", closeErr)
 	}
 
 	return records, nil
