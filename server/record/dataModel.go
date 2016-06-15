@@ -11,7 +11,7 @@ import (
 type RecFieldValues map[string]interface{}
 
 type Record struct {
-	ParentTableID string         `jsaon:"parentTableID"`
+	ParentTableID string         `json:"parentTableID"`
 	RecordID      string         `json:"recordID"`
 	FieldValues   RecFieldValues `json:"fieldValues"`
 }

@@ -10,25 +10,26 @@ import (
 type EqnEvalContext struct {
 	DefinedFuncs FuncNameFuncInfoMap
 
-	// Record into which the results will be calculated. This is also the record
-	// which is referenced for field values, in the case a calculated field references
-	// other fields.
-	ResultRecord *record.Record
+	ParentTableID string
+
+	// Set of field values into which the results will be calculated.
+	// This is expected to be pre-populated with values from non-calculated fields.
+	ResultFieldVals *record.RecFieldValues
 }
 
 // Get the literal value from a number field, or undefined if it doesn't exist.
-func GetNumberRecordEqnResult(evalRecord *record.Record, fieldID string) (*EquationResult, error) {
+func getNumberRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*EquationResult, error) {
 
 	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
 	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
 	allowCalcField := true
-	if fieldValidateErr := record.ValidateFieldForRecordValue(evalRecord.ParentTableID, fieldID,
+	if fieldValidateErr := record.ValidateFieldForRecordValue(evalContext.ParentTableID, fieldID,
 		field.FieldTypeNumber, allowCalcField); fieldValidateErr != nil {
-		return nil, fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
-			"Can't validate field with value type: validation error = %v", evalRecord, fieldID, fieldValidateErr)
+		return nil, fmt.Errorf("Can't get value from record with fieldID = %v: "+
+			"Can't validate field with value type: validation error = %v", fieldID, fieldValidateErr)
 	}
 
-	val, foundVal := evalRecord.FieldValues[fieldID]
+	val, foundVal := (*evalContext.ResultFieldVals)[fieldID]
 	if !foundVal {
 		// Note this is the only place which will return an undefined equation result (along with the
 		// the similar function for other value types). This is because record values for non-calculated
@@ -38,8 +39,8 @@ func GetNumberRecordEqnResult(evalRecord *record.Record, fieldID string) (*Equat
 		return undefinedEqnResult(), nil
 	} else {
 		if numberVal, foundNumber := val.(float64); !foundNumber {
-			return nil, fmt.Errorf("Type mismatch retrieving value from record with ID = %v, field = %v:"+
-				" expecting number, got %v", evalRecord.RecordID, fieldID, val)
+			return nil, fmt.Errorf("Type mismatch retrieving value from record field id = %v:"+
+				" expecting number, got %v", fieldID, val)
 		} else {
 			return numberEqnResult(numberVal), nil
 		}
@@ -47,18 +48,18 @@ func GetNumberRecordEqnResult(evalRecord *record.Record, fieldID string) (*Equat
 }
 
 // Get the literal value from a text field, or undefined if it doesn't exist.
-func GetTextRecordEqnResult(evalRecord *record.Record, fieldID string) (*EquationResult, error) {
+func getTextRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*EquationResult, error) {
 
 	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
 	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
 	allowCalcField := true
-	if fieldValidateErr := record.ValidateFieldForRecordValue(evalRecord.ParentTableID,
+	if fieldValidateErr := record.ValidateFieldForRecordValue(evalContext.ParentTableID,
 		fieldID, field.FieldTypeText, allowCalcField); fieldValidateErr != nil {
-		return nil, fmt.Errorf("Can't get value from record = %+v and fieldID = %v: "+
-			"Can't validate field with value type: validation error = %v", evalRecord, fieldID, fieldValidateErr)
+		return nil, fmt.Errorf("Can't get value from record with fieldID = %v: "+
+			"Can't validate field with value type: validation error = %v", fieldID, fieldValidateErr)
 	}
 
-	val, foundVal := evalRecord.FieldValues[fieldID]
+	val, foundVal := (*evalContext.ResultFieldVals)[fieldID]
 	if !foundVal {
 		// Note this is the only place which will return an undefined equation result (along with the
 		// the similar function for other value types). This is because record values for non-calculated
@@ -68,8 +69,8 @@ func GetTextRecordEqnResult(evalRecord *record.Record, fieldID string) (*Equatio
 		return undefinedEqnResult(), nil
 	} else {
 		if textVal, foundText := val.(string); !foundText {
-			return nil, fmt.Errorf("Type mismatch retrieving value from record with ID = %v, field = %v:"+
-				" expecting string, got %v", evalRecord.RecordID, fieldID, val)
+			return nil, fmt.Errorf("Type mismatch retrieving value from record field id = %v:"+
+				" expecting string, got %v", fieldID, val)
 
 		} else {
 			return textEqnResult(textVal), nil
@@ -102,9 +103,9 @@ func EvalEqn(evalContext *EqnEvalContext, evalField field.Field) (*EquationResul
 	} else { // literal field values
 		switch evalField.Type {
 		case field.FieldTypeText:
-			return GetTextRecordEqnResult(evalContext.ResultRecord, evalField.FieldID)
+			return getTextRecordEqnResult(evalContext, evalField.FieldID)
 		case field.FieldTypeNumber:
-			return GetNumberRecordEqnResult(evalContext.ResultRecord, evalField.FieldID)
+			return getNumberRecordEqnResult(evalContext, evalField.FieldID)
 			//		case FieldTypeDate:
 		default:
 			return nil, fmt.Errorf("Unknown field result type: %v", evalField.Type)
@@ -139,7 +140,7 @@ func (equation EquationNode) EvalEqn(evalContext *EqnEvalContext) (*EquationResu
 		// TODO - Once the Field type has a parent, don't use an individual database
 		// lookup for each field (database only has strong consistency when
 		// entities have a parent.
-		field, err := field.GetField(evalContext.ResultRecord.ParentTableID, equation.FieldID)
+		field, err := field.GetField(evalContext.ParentTableID, equation.FieldID)
 		if err != nil {
 			return nil, fmt.Errorf("EvalEqn: failure retrieving referenced field: %+v", err)
 		} else {
@@ -159,7 +160,7 @@ func (equation EquationNode) EvalEqn(evalContext *EqnEvalContext) (*EquationResu
 }
 
 // Update the calculated value for one calculated field
-func updateOneCalcFieldValue(evalRecord *record.Record, evalField field.Field) error {
+func updateOneCalcFieldValue(evalContext *EqnEvalContext, evalField field.Field) error {
 
 	if !evalField.IsCalcField {
 		return fmt.Errorf("updateOneCalcFieldValue: Calculated field expected: got non-calculated field = %v", evalField.RefName)
@@ -176,8 +177,7 @@ func updateOneCalcFieldValue(evalRecord *record.Record, evalField field.Field) e
 	}
 
 	// Perform the actual evaluation/calculation.
-	fieldEqnResult, evalErr := rootFieldEqnNode.EvalEqn(
-		&EqnEvalContext{CalcFieldDefinedFuncs, evalRecord})
+	fieldEqnResult, evalErr := rootFieldEqnNode.EvalEqn(evalContext)
 	if evalErr != nil {
 		return fmt.Errorf("Unexpected error evaluating equation for field=%v: error=%+v",
 			evalField.RefName, evalErr)
@@ -209,7 +209,7 @@ func updateOneCalcFieldValue(evalRecord *record.Record, evalField field.Field) e
 		}
 		log.Printf("updateCalcFieldValues: Setting calculated field value: field=%v, value=%v", evalField.RefName, textResult)
 		// TODO - encapsulate the actual setting of raw values into record.go
-		evalRecord.FieldValues[evalField.FieldID] = textResult
+		(*evalContext.ResultFieldVals)[evalField.FieldID] = textResult
 		return nil
 
 	case field.FieldTypeNumber:
@@ -222,7 +222,7 @@ func updateOneCalcFieldValue(evalRecord *record.Record, evalField field.Field) e
 		}
 		log.Printf("updateCalcFieldValues: Setting calculated field value: field=%v, value=%v", evalField.RefName, numberResult)
 		// TODO - encapsulate the actual setting of raw values into record.go
-		evalRecord.FieldValues[evalField.FieldID] = numberResult
+		(*evalContext.ResultFieldVals)[evalField.FieldID] = numberResult
 		return nil
 		// TODO case FieldTypeDate
 
@@ -237,9 +237,14 @@ func updateOneCalcFieldValue(evalRecord *record.Record, evalField field.Field) e
 // UpdateCalcFieldValues is (currently) the top-most entry point into the calculated field
 // equation evaluation functionality. This is called after record updates (see recordUpdate package)
 // to refresh calculated values.
-func UpdateCalcFieldValues(evalRecord *record.Record) error {
+func UpdateCalcFieldValues(parentTableID string, resultFieldVals *record.RecFieldValues) error {
 
-	fields, getErr := field.GetAllFields(field.GetFieldListParams{ParentTableID: evalRecord.ParentTableID})
+	eqnEvalContext := EqnEvalContext{
+		ParentTableID:   parentTableID,
+		ResultFieldVals: resultFieldVals,
+		DefinedFuncs:    CalcFieldDefinedFuncs}
+
+	fields, getErr := field.GetAllFields(field.GetFieldListParams{ParentTableID: parentTableID})
 	if getErr != nil {
 		return fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve fields from datastore: datastore error =%v", getErr)
 	}
@@ -247,7 +252,7 @@ func UpdateCalcFieldValues(evalRecord *record.Record) error {
 	for _, currField := range fields {
 
 		if currField.IsCalcField {
-			if calcErr := updateOneCalcFieldValue(evalRecord, currField); calcErr != nil {
+			if calcErr := updateOneCalcFieldValue(&eqnEvalContext, currField); calcErr != nil {
 				// Some of the calculated fields may evaluate to an undefined values, in which case
 				// an error won't be returned, but we can continue evaluating the other calculated
 				// fields. However, if there is an actual error calculating the field values, processing
