@@ -1,10 +1,9 @@
-package recordUpdate
+package record
 
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/record"
 	"time"
 )
 
@@ -17,13 +16,13 @@ type SetRecordTextValueParams struct {
 
 func (setValParams SetRecordTextValueParams) fieldType() string { return field.FieldTypeText }
 
-func (setValParams SetRecordTextValueParams) updateRecordValue(rec *record.Record) {
+func (setValParams SetRecordTextValueParams) updateRecordValue(rec *Record) {
 	(*rec).FieldValues[setValParams.FieldID] = setValParams.Value
 }
 
 func (valParams SetRecordTextValueParams) generateCellValue() (string, error) {
 
-	cellVal := record.TextCellValue{Val: valParams.Value}
+	cellVal := TextCellValue{Val: valParams.Value}
 
 	return generic.EncodeJSONString(cellVal)
 }
@@ -37,7 +36,7 @@ type SetRecordLongTextValueParams struct {
 
 func (setValParams SetRecordLongTextValueParams) fieldType() string { return field.FieldTypeLongText }
 
-func (setValParams SetRecordLongTextValueParams) updateRecordValue(rec *record.Record) {
+func (setValParams SetRecordLongTextValueParams) updateRecordValue(rec *Record) {
 	(*rec).FieldValues[setValParams.FieldID] = setValParams.Value
 }
 
@@ -54,13 +53,13 @@ type SetRecordNumberValueParams struct {
 
 func (setValParams SetRecordNumberValueParams) fieldType() string { return field.FieldTypeNumber }
 
-func (setValParams SetRecordNumberValueParams) updateRecordValue(rec *record.Record) {
+func (setValParams SetRecordNumberValueParams) updateRecordValue(rec *Record) {
 	(*rec).FieldValues[setValParams.FieldID] = setValParams.Value
 }
 
 func (valParams SetRecordNumberValueParams) generateCellValue() (string, error) {
 
-	cellVal := record.NumberCellValue{Val: valParams.Value}
+	cellVal := NumberCellValue{Val: valParams.Value}
 
 	return generic.EncodeJSONString(cellVal)
 }
@@ -74,13 +73,13 @@ type SetRecordBoolValueParams struct {
 
 func (setValParams SetRecordBoolValueParams) fieldType() string { return field.FieldTypeBool }
 
-func (setValParams SetRecordBoolValueParams) updateRecordValue(rec *record.Record) {
+func (setValParams SetRecordBoolValueParams) updateRecordValue(rec *Record) {
 	(*rec).FieldValues[setValParams.FieldID] = setValParams.Value
 }
 
 func (valParams SetRecordBoolValueParams) generateCellValue() (string, error) {
 
-	cellVal := record.BoolCellValue{Val: valParams.Value}
+	cellVal := BoolCellValue{Val: valParams.Value}
 
 	return generic.EncodeJSONString(cellVal)
 }
@@ -92,13 +91,13 @@ type SetRecordTimeValueParams struct {
 
 func (setValParams SetRecordTimeValueParams) fieldType() string { return field.FieldTypeTime }
 
-func (setValParams SetRecordTimeValueParams) updateRecordValue(rec *record.Record) {
+func (setValParams SetRecordTimeValueParams) updateRecordValue(rec *Record) {
 	(*rec).FieldValues[setValParams.FieldID] = setValParams.Value
 }
 
 func (valParams SetRecordTimeValueParams) generateCellValue() (string, error) {
 
-	cellVal := record.TimeCellValue{Val: valParams.Value}
+	cellVal := TimeCellValue{Val: valParams.Value}
 
 	return generic.EncodeJSONString(cellVal)
 }
@@ -111,13 +110,13 @@ type SetRecordFileValueParams struct {
 
 func (setValParams SetRecordFileValueParams) fieldType() string { return field.FieldTypeFile }
 
-func (setValParams SetRecordFileValueParams) updateRecordValue(rec *record.Record) {
+func (setValParams SetRecordFileValueParams) updateRecordValue(rec *Record) {
 	(*rec).FieldValues[setValParams.FieldID] = setValParams.CloudFileName
 }
 
 func (valParams SetRecordFileValueParams) generateCellValue() (string, error) {
 
-	cellValue := record.FileCellValue{
+	cellValue := FileCellValue{
 		CloudName: valParams.CloudFileName,
 		OrigName:  valParams.OrigFileName}
 
@@ -126,8 +125,8 @@ func (valParams SetRecordFileValueParams) generateCellValue() (string, error) {
 
 // setRecordFileNameFieldValue. Although the parameters for a record update with a filename aren't passed through the http request,
 // the standard record updating mechanism can be used to update the field with the filename.
-func setRecordFileNameFieldValue(parentTableID string,
-	recordID string, fieldID string, origFileName string, cloudFileName string) (*record.Record, error) {
+func SetRecordFileNameFieldValue(parentTableID string,
+	recordID string, fieldID string, origFileName string, cloudFileName string) (*Record, error) {
 	updateRecordHeader := RecordUpdateHeader{
 		ParentTableID: parentTableID,
 		RecordID:      recordID,

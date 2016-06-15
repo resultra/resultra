@@ -45,7 +45,7 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 		return nil, fmt.Errorf("uploadFile: Unable to create signed URL for newly uploaded file: %v", urlErr)
 	}
 
-	updatedRecord, updateErr := setRecordFileNameFieldValue(req.FormValue("parentTableID"),
+	updatedRecord, updateErr := record.SetRecordFileNameFieldValue(req.FormValue("parentTableID"),
 		req.FormValue("recordID"), req.FormValue("fieldID"), uploadInfo.FileName, cloudFileName)
 	if updateErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to update record for newly uploaded file: %v", updateErr)

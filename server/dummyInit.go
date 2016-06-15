@@ -11,7 +11,7 @@ import (
 // This is needed since these packages are essentially plug-ins which register their own HTTP handlers upon startup.
 var dummyUnusedDBParams = database.NewDatabaseParams{}
 var dummyUnusedTableParams = table.NewTableParams{}
-var dummyRecordUpdateParams = recordUpdate.SetRecordBoolValueParams{}
+var dummyRecordUpdateParams = recordUpdate.DummyStructForInclude{}
 var dummyRecordVals = recordValue.RecordValueResults{}
 
 func DummyFunctionForImportFromGoogleAppEngineProjectFolder() {

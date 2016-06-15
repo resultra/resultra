@@ -4,7 +4,12 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/record"
 )
+
+type DummyStructForInclude struct {
+	Val int64
+}
 
 func init() {
 	recordUpdateRouter := mux.NewRouter()
@@ -22,13 +27,13 @@ func init() {
 
 func setTextFieldValue(w http.ResponseWriter, r *http.Request) {
 
-	setValParams := SetRecordTextValueParams{}
+	setValParams := record.SetRecordTextValueParams{}
 	if err := api.DecodeJSONRequest(r, &setValParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	updatedRecordRef, setErr := UpdateRecordValue(setValParams)
+	updatedRecordRef, setErr := updateRecordValue(setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -41,13 +46,13 @@ func setTextFieldValue(w http.ResponseWriter, r *http.Request) {
 func setLongTextFieldValue(w http.ResponseWriter, r *http.Request) {
 
 	// Reuse same parameter struct as setting text.
-	setValParams := SetRecordLongTextValueParams{}
+	setValParams := record.SetRecordLongTextValueParams{}
 	if err := api.DecodeJSONRequest(r, &setValParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	updatedRecordRef, setErr := UpdateRecordValue(setValParams)
+	updatedRecordRef, setErr := updateRecordValue(setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -59,13 +64,13 @@ func setLongTextFieldValue(w http.ResponseWriter, r *http.Request) {
 
 func setNumberFieldValue(w http.ResponseWriter, r *http.Request) {
 
-	setValParams := SetRecordNumberValueParams{}
+	setValParams := record.SetRecordNumberValueParams{}
 	if err := api.DecodeJSONRequest(r, &setValParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	updatedRecordRef, setErr := UpdateRecordValue(setValParams)
+	updatedRecordRef, setErr := updateRecordValue(setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -77,13 +82,13 @@ func setNumberFieldValue(w http.ResponseWriter, r *http.Request) {
 
 func setBoolFieldValue(w http.ResponseWriter, r *http.Request) {
 
-	setValParams := SetRecordBoolValueParams{}
+	setValParams := record.SetRecordBoolValueParams{}
 	if err := api.DecodeJSONRequest(r, &setValParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	updatedRecordRef, setErr := UpdateRecordValue(setValParams)
+	updatedRecordRef, setErr := updateRecordValue(setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -95,13 +100,13 @@ func setBoolFieldValue(w http.ResponseWriter, r *http.Request) {
 
 func setTimeFieldValue(w http.ResponseWriter, r *http.Request) {
 
-	setValParams := SetRecordTimeValueParams{}
+	setValParams := record.SetRecordTimeValueParams{}
 	if err := api.DecodeJSONRequest(r, &setValParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	updatedRecordRef, setErr := UpdateRecordValue(setValParams)
+	updatedRecordRef, setErr := updateRecordValue(setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
