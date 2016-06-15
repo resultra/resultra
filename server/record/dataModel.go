@@ -1,7 +1,6 @@
 package record
 
 import (
-	"appengine/datastore"
 	"fmt"
 	"github.com/gocql/gocql"
 	"resultra/datasheet/server/field"
@@ -9,44 +8,12 @@ import (
 	"resultra/datasheet/server/generic/cassandraWrapper"
 )
 
-const recordEntityKind string = "Record"
-
-//const recordCreateDateReservedPropName = "__CreateDate__"
-
 type RecFieldValues map[string]interface{}
 
 type Record struct {
 	ParentTableID string         `jsaon:"parentTableID"`
 	RecordID      string         `json:"recordID"`
-	FieldValues   RecFieldValues `json:"fieldValues" datastore:"-"`
-}
-
-const recordRecordIDFieldName string = "RecordID"
-const recordParentTableIDFieldName string = "ParentTableID"
-
-func (rec *Record) Save(ch chan<- datastore.Property) error {
-	defer close(ch) // Channel must be closed
-	for k, v := range rec.FieldValues {
-		ch <- datastore.Property{Name: k, Value: v}
-	}
-	ch <- datastore.Property{Name: recordParentTableIDFieldName, Value: rec.ParentTableID}
-	ch <- datastore.Property{Name: recordRecordIDFieldName, Value: rec.RecordID}
-	return nil
-}
-
-func (rec *Record) Load(ch <-chan datastore.Property) error {
-	// Note: you might want to clear current values from the map or create a new map
-	rec.FieldValues = RecFieldValues{}
-	for p := range ch { // Read until channel is closed
-		if p.Name == recordParentTableIDFieldName {
-			rec.ParentTableID = p.Value.(string)
-		} else if p.Name == recordRecordIDFieldName {
-			rec.RecordID = p.Value.(string)
-		} else {
-			rec.FieldValues[p.Name] = p.Value
-		}
-	}
-	return nil
+	FieldValues   RecFieldValues `json:"fieldValues"`
 }
 
 func (rec Record) ValueIsSet(fieldID string) bool {
