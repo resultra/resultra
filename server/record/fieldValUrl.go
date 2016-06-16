@@ -11,6 +11,7 @@ type GetFieldValUrlParams struct {
 	ParentTableID string `json:"parentTableID"`
 	RecordID      string `json:"recordID"`
 	FieldID       string `json:"fieldID"`
+	CloudFileName string `json:"cloudFileName"`
 }
 
 type RecordFileFieldURLResponse struct {
@@ -19,7 +20,7 @@ type RecordFileFieldURLResponse struct {
 
 func getFieldValUrl(params GetFieldValUrlParams) (*RecordFileFieldURLResponse, error) {
 
-	record, getErr := GetRecord(params.ParentTableID, params.RecordID)
+	_, getErr := GetRecord(params.ParentTableID, params.RecordID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getFieldValUrl: Unabled to get record: id = %v: get err=%v", params.RecordID, getErr)
 	}
@@ -35,20 +36,14 @@ func getFieldValUrl(params GetFieldValUrlParams) (*RecordFileFieldURLResponse, e
 
 	// TODO check both record and field have same parent table ID
 
-	cloudFileName, fileNameErr := record.GetTextFieldValue(params.FieldID)
-	if fileNameErr != nil {
-		return nil, fmt.Errorf(
-			"getFieldValUrl: Unabled to get record's value for field: recordID = %v field id = %v: get err=%v",
-			params.RecordID, params.FieldID, fileNameErr)
-	}
-	if len(cloudFileName) == 0 {
+	if len(params.CloudFileName) == 0 {
 		return nil, fmt.Errorf(
 			"getFieldValUrl: Unabled to get record's value for field: recordID = %v field id = %v: unexpected 0 length file name",
 			params.RecordID, params.FieldID)
 	}
 
 	signedURL, urlErr := cloudStorageWrapper.GetSignedURL(runtimeConfig.CloudStorageBucketName,
-		cloudFileName, runtimeConfig.CloudStorageAuthConfig, 60)
+		params.CloudFileName, runtimeConfig.CloudStorageAuthConfig, 60)
 	if urlErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to create signed URL for newly uploaded file: %v", urlErr)
 	}

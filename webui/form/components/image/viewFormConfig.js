@@ -19,12 +19,14 @@ function loadRecordIntoImage(imageElem, recordRef) {
 	// with the fields shown by the layout's containers.
 	if(recordRef.fieldValues.hasOwnProperty(imageFieldID)) {
 		
+		var cloudFileName = recordRef.fieldValues[imageFieldID].cloudName
 		// If record has a value for the current container's associated field ID,
 		// retrieve an URL for the image and add it to the container.
 		var getUrlParams = { 
 			parentTableID:viewFormContext.tableID,
 			recordID: recordRef.recordID, 
-			fieldID: imageFieldID }
+			fieldID: imageFieldID,
+			cloudFileName: cloudFileName }
 		jsonAPIRequest("record/getFieldValUrl", getUrlParams, function(urlResp) {
 					
 			$(imageDivIDSelector).html(imageLinkHTML(imageContainerID,urlResp.url));

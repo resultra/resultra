@@ -45,10 +45,9 @@ create table datasheet.dashboards (
 
 
 create table datasheet.records ( 
-	tableID uuid, 
+	table_id uuid, 
 	record_id uuid, 
-	field_values text, 
-	PRIMARY KEY ((tableID),record_id) 
+	PRIMARY KEY ((table_id),record_id) 
 ); 
 
 create table datasheet.record_val_results ( 

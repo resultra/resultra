@@ -2,7 +2,6 @@ package record
 
 import (
 	"fmt"
-	"log"
 )
 
 type RecordUpdater interface {
@@ -10,7 +9,6 @@ type RecordUpdater interface {
 	fieldID() string
 	recordID() string
 	parentTableID() string
-	updateRecordValue(rec *Record)
 	generateCellValue() (string, error)
 }
 
@@ -54,11 +52,6 @@ func UpdateRecordValue(recUpdater RecordUpdater) (*Record, error) {
 		return nil, fmt.Errorf("UpdateRecordValue: Can't set value:"+
 			" Error retrieving existing record for update: err = %v", getErr)
 	}
-
-	// TODO - Consider putting a prefix on the field ID before saving it to the datastore.
-	//	recordForUpdate.FieldValues[setValParams.FieldID] = setValParams.Value
-	log.Printf("updateRecordValue: Setting value for field = %v", recUpdater.fieldID())
-	recUpdater.updateRecordValue(recordForUpdate)
 
 	// Changes to records are stored as a series of updates, which are then rolled up into a simpler
 	// structure which has all the calculated values and filter results.

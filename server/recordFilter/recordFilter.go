@@ -3,7 +3,7 @@ package recordFilter
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/record"
+	"resultra/datasheet/server/recordValue"
 )
 
 type OptonalFilterRuleParamVal struct {
@@ -34,11 +34,11 @@ func getOptionalParamValueByRuleDef(filterRuleDef FilterRuleDef,
 	return &optParamVal, nil
 }
 
-func filterOneRecord(rec record.Record, filterRules []RecordFilterRule) (bool, error) {
+func filterOneRecord(recValResults recordValue.RecordValueResults, filterRules []RecordFilterRule) (bool, error) {
 
 	for _, currFilterRule := range filterRules {
 
-		ruleField, fieldErr := field.GetField(rec.ParentTableID, currFilterRule.FieldID)
+		ruleField, fieldErr := field.GetField(recValResults.ParentTableID, currFilterRule.FieldID)
 		if fieldErr != nil {
 			return false, fmt.Errorf("filterOneRecord: Can't get field for filter rule = '%v': datastore error=%v",
 				currFilterRule.FieldID, fieldErr)
@@ -61,7 +61,7 @@ func filterOneRecord(rec record.Record, filterRules []RecordFilterRule) (bool, e
 				optParamVal.textParam,
 				optParamVal.numberParam}
 
-		recordIsFiltered, filterErr := filterRuleDef.filterFunc(filterParams, rec)
+		recordIsFiltered, filterErr := filterRuleDef.filterFunc(filterParams, recValResults)
 
 		if filterErr != nil {
 			return false, fmt.Errorf("filterOneRecord: Error filtering record: %v", filterErr)
@@ -101,12 +101,12 @@ func getCombinedFilterRules(filterIDs []string) ([]RecordFilterRule, error) {
 	return allFilterRules, nil
 }
 
-func GetFilteredRecords(params GetFilteredRecordsParams) ([]record.Record, error) {
+func GetFilteredRecords(params GetFilteredRecordsParams) ([]recordValue.RecordValueResults, error) {
 
 	// TODO - The code below retrieve *all* the records. However, the datastore supports up to 1 filtering criterion
 	// for each field, so <=1 of these criterion could be used to filter the records coming from the datastore and
 	// before doing any kind of in-memory filtering.
-	unfilteredRecords, getRecordErr := record.GetRecords(record.GetRecordsParams{TableID: params.TableID})
+	unfilteredRecordValues, getRecordErr := recordValue.GetAllRecordValueResults(params.TableID)
 	if getRecordErr != nil {
 		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving records: %v", getRecordErr)
 	}
@@ -116,14 +116,14 @@ func GetFilteredRecords(params GetFilteredRecordsParams) ([]record.Record, error
 		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving filter rules: %v", rulesErr)
 	}
 
-	filteredRecords := []record.Record{}
-	for _, currRecord := range unfilteredRecords {
-		recordIsFiltered, filterErr := filterOneRecord(currRecord, filterRules)
+	filteredRecords := []recordValue.RecordValueResults{}
+	for _, currRecordValResult := range unfilteredRecordValues {
+		recordIsFiltered, filterErr := filterOneRecord(currRecordValResult, filterRules)
 		if filterErr != nil {
 			return nil, fmt.Errorf("GetFilteredRecords: Error filtering records: %v", filterErr)
 		}
 		if recordIsFiltered {
-			filteredRecords = append(filteredRecords, currRecord)
+			filteredRecords = append(filteredRecords, currRecordValResult)
 		}
 	}
 

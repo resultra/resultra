@@ -7,15 +7,16 @@ import (
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/cloudStorageWrapper"
 	"resultra/datasheet/server/record"
+	"resultra/datasheet/server/recordValue"
 	"resultra/datasheet/server/runtimeConfig"
 )
 
 type UploadFile struct {
-	Name          string        `json:"name"`
-	Size          int           `json:"size"`
-	Error         string        `json"error,omitempty"`
-	Url           string        `json:"url"`
-	UpdatedRecord record.Record `json:"updatedRecord"`
+	Name          string                         `json:"name"`
+	Size          int                            `json:"size"`
+	Error         string                         `json"error,omitempty"`
+	Url           string                         `json:"url"`
+	UpdatedRecord recordValue.RecordValueResults `json:"updatedRecord"`
 }
 
 type UploadFileResponse struct {

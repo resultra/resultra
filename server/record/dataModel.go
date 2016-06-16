@@ -4,34 +4,14 @@ import (
 	"fmt"
 	"github.com/gocql/gocql"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/cassandraWrapper"
 )
 
 type RecFieldValues map[string]interface{}
 
 type Record struct {
-	ParentTableID string         `json:"parentTableID"`
-	RecordID      string         `json:"recordID"`
-	FieldValues   RecFieldValues `json:"fieldValues"`
-}
-
-func (rec Record) ValueIsSet(fieldID string) bool {
-	_, valueExists := rec.FieldValues[fieldID]
-	if valueExists {
-		return true
-	} else {
-		return false
-	}
-}
-
-func (rec Record) GetTextFieldValue(fieldID string) (string, error) {
-	rawVal := rec.FieldValues[fieldID]
-	if theStr, validType := rawVal.(string); validType {
-		return theStr, nil
-	} else {
-		return "", fmt.Errorf("Type mismatch retrieving text field value from record: field ID = %v, raw value = %v", fieldID, rawVal)
-	}
+	ParentTableID string `json:"parentTableID"`
+	RecordID      string `json:"recordID"`
 }
 
 type NewRecordParams struct {
@@ -41,8 +21,7 @@ type NewRecordParams struct {
 func NewRecord(params NewRecordParams) (*Record, error) {
 
 	newRecord := Record{ParentTableID: params.ParentTableID,
-		RecordID:    gocql.TimeUUID().String(),
-		FieldValues: RecFieldValues{}}
+		RecordID: gocql.TimeUUID().String()}
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
@@ -50,13 +29,8 @@ func NewRecord(params NewRecordParams) (*Record, error) {
 	}
 	defer dbSession.Close()
 
-	encodedFieldVals, encodeErr := generic.EncodeJSONString(newRecord.FieldValues)
-	if encodeErr != nil {
-		return nil, fmt.Errorf("NewRecord: failure encoding field values: error = %v", encodeErr)
-	}
-
-	if insertErr := dbSession.Query(`INSERT INTO records (tableID, record_id, field_values) VALUES (?,?,?)`,
-		newRecord.ParentTableID, newRecord.RecordID, encodedFieldVals).Exec(); insertErr != nil {
+	if insertErr := dbSession.Query(`INSERT INTO records (table_id, record_id) VALUES (?,?)`,
+		newRecord.ParentTableID, newRecord.RecordID).Exec(); insertErr != nil {
 		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", insertErr)
 	}
 
@@ -66,7 +40,7 @@ func NewRecord(params NewRecordParams) (*Record, error) {
 
 func GetRecord(parentTableID string, recordID string) (*Record, error) {
 
-	getRecord := Record{"", "", RecFieldValues{}}
+	getRecord := Record{}
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
@@ -74,49 +48,16 @@ func GetRecord(parentTableID string, recordID string) (*Record, error) {
 	}
 	defer dbSession.Close()
 
-	encodedFieldVals := ""
-	getErr := dbSession.Query(`SELECT tableID,record_id,field_values FROM records WHERE tableID=? AND record_id=? LIMIT 1`,
+	getErr := dbSession.Query(`SELECT table_id,record_id FROM records WHERE table_id=? AND record_id=? LIMIT 1`,
 		parentTableID, recordID).Scan(&getRecord.ParentTableID,
-		&getRecord.RecordID,
-		&encodedFieldVals)
+		&getRecord.RecordID)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetRecord: Unabled to get record: id = %v: datastore err=%v", recordID, getErr)
-	}
-
-	if decodeErr := generic.DecodeJSONString(encodedFieldVals, &getRecord.FieldValues); decodeErr != nil {
-		return nil, fmt.Errorf("GetRecord: Unabled to get record: id = %v: datastore err=%v", recordID, decodeErr)
 	}
 
 	return &getRecord, nil
 
 }
-
-func UpdateExistingRecord(rec *Record) (*Record, error) {
-
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	encodedFieldVals, encodeErr := generic.EncodeJSONString(rec.FieldValues)
-	if encodeErr != nil {
-		return nil, fmt.Errorf("NewRecord: failure encoding field values: error = %v", encodeErr)
-	}
-
-	if updateErr := dbSession.Query(`UPDATE records set field_values=? WHERE tableID=? and record_id=?`,
-		encodedFieldVals, rec.ParentTableID, rec.RecordID).Exec(); updateErr != nil {
-		return nil, fmt.Errorf("UpdateExistingRecord: Can't update record: unable to update record: error = %v", updateErr)
-	}
-
-	return rec, nil
-
-}
-
-// TODO - The GetRecord function initially returns all records. However, more fields will be included for:
-// - maximum record to retrieve, along with
-// - sort and filter criteria.
-// - cursor indicating where to start the query (for retrieving results in batches)
 
 type GetRecordsParams struct {
 	TableID string `json:"tableID"`
@@ -130,19 +71,14 @@ func GetRecords(params GetRecordsParams) ([]Record, error) {
 	}
 	defer dbSession.Close()
 
-	recordIter := dbSession.Query(`SELECT tableID,record_id,field_values FROM records WHERE tableID=?`,
+	recordIter := dbSession.Query(`SELECT table_id,record_id FROM records WHERE table_id=?`,
 		params.TableID).Iter()
 
 	var currRecord Record
-	encodedFieldVals := ""
 	records := []Record{}
 	for recordIter.Scan(&currRecord.ParentTableID,
-		&currRecord.RecordID,
-		&encodedFieldVals) {
+		&currRecord.RecordID) {
 
-		if decodeErr := generic.DecodeJSONString(encodedFieldVals, &currRecord.FieldValues); decodeErr != nil {
-			return nil, fmt.Errorf("GetRecord: Unabled to get record: id = %v: datastore err=%v", currRecord.RecordID, decodeErr)
-		}
 		records = append(records, currRecord)
 	}
 	if closeErr := recordIter.Close(); closeErr != nil {

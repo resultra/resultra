@@ -6,12 +6,32 @@ import (
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/cassandraWrapper"
 	"resultra/datasheet/server/record"
+	"time"
 )
 
 type RecordValueResults struct {
-	ParentTableID string                `json:"parentTableID"`
-	RecordID      string                `json:"recordID"`
-	FieldValues   record.RecFieldValues `json:"fieldValues"`
+	ParentTableID   string                `json:"parentTableID"`
+	RecordID        string                `json:"recordID"`
+	FieldValues     record.RecFieldValues `json:"fieldValues"`
+	UpdateTimestamp time.Time             `json:"updateTimestamp"`
+}
+
+func (recValResults RecordValueResults) ValueIsSet(fieldID string) bool {
+	_, valueExists := recValResults.FieldValues[fieldID]
+	if valueExists {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (recValResults RecordValueResults) GetTextFieldValue(fieldID string) (string, error) {
+	rawVal := recValResults.FieldValues[fieldID]
+	if theStr, validType := rawVal.(string); validType {
+		return theStr, nil
+	} else {
+		return "", fmt.Errorf("Type mismatch retrieving text field value from record: field ID = %v, raw value = %v", fieldID, rawVal)
+	}
 }
 
 func saveRecordValueResults(recValResults RecordValueResults) error {
@@ -37,4 +57,70 @@ func saveRecordValueResults(recValResults RecordValueResults) error {
 	}
 
 	return nil
+}
+
+func GetAllRecordValueResults(parentTableID string) ([]RecordValueResults, error) {
+
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("GetAllRecordValueResults: Can't create database session: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	valResultsIter := dbSession.Query(`SELECT record_id,field_vals,update_timestamp_utc 
+		FROM record_val_results WHERE table_id = ?`,
+		parentTableID).Iter()
+
+	var currValResults RecordValueResults
+	recValResults := []RecordValueResults{}
+	encodedFieldVals := ""
+	for valResultsIter.Scan(&currValResults.RecordID, &encodedFieldVals, &currValResults.UpdateTimestamp) {
+		var currFieldVals record.RecFieldValues
+		if err := generic.DecodeJSONString(encodedFieldVals, &currFieldVals); err != nil {
+			return nil, fmt.Errorf("GetAllRecordValueResults: failure decoding field values: %v", err)
+		}
+		currValResults.ParentTableID = parentTableID
+		currValResults.FieldValues = currFieldVals
+		recValResults = append(recValResults, currValResults)
+	}
+	if closeErr := valResultsIter.Close(); closeErr != nil {
+		return nil, fmt.Errorf("GetAllRecordValueResults: Failure querying database: %v", closeErr)
+	}
+
+	return recValResults, nil
+
+}
+
+type GetRecordValResultParams struct {
+	ParentTableID string `json:"parentTableID"`
+	RecordID      string `json:"recordID"`
+}
+
+func getRecordValueResults(params GetRecordValResultParams) (*RecordValueResults, error) {
+
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("GetAllRecordValueResults: Can't create database session: error = %v", sessionErr)
+	}
+	defer dbSession.Close()
+
+	var valResults RecordValueResults
+	valResults.ParentTableID = params.ParentTableID
+	valResults.RecordID = params.RecordID
+	encodedFieldVals := ""
+	getErr := dbSession.Query(`SELECT field_vals,update_timestamp_utc 
+		FROM record_val_results 
+		WHERE table_id=? and record_id=? LIMIT 1`,
+		params.ParentTableID, params.RecordID).Scan(&encodedFieldVals, &valResults.UpdateTimestamp)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetForm: Unabled to get dashboard: datastore err=%v", getErr)
+	}
+	var fieldVals record.RecFieldValues
+	if err := generic.DecodeJSONString(encodedFieldVals, &fieldVals); err != nil {
+		return nil, fmt.Errorf("GetAllRecordValueResults: failure decoding field values: %v", err)
+	}
+	valResults.FieldValues = fieldVals
+
+	return &valResults, nil
+
 }

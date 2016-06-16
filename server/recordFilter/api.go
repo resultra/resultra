@@ -18,11 +18,9 @@ func init() {
 	filterRouter.HandleFunc("/api/filter/newRule", newRecordFilterRule)
 	filterRouter.HandleFunc("/api/filter/getRuleList", getRecordFilterRulesAPI)
 
-	http.Handle("/api/filter/", filterRouter)
-}
+	filterRouter.HandleFunc("/api/filter/getFilteredRecordValues", getFilteredRecords)
 
-func RegisterHTTPHandlers(apiRouter *mux.Router) {
-	apiRouter.HandleFunc("/api/getFilteredRecords", getFilteredRecords)
+	http.Handle("/api/filter/", filterRouter)
 }
 
 func newRecordFilterRule(w http.ResponseWriter, r *http.Request) {

@@ -3,7 +3,6 @@ package webui
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"resultra/datasheet/server"
 	"resultra/datasheet/webui/admin"
 	"resultra/datasheet/webui/dashboard"
 	"resultra/datasheet/webui/form"
@@ -11,8 +10,6 @@ import (
 )
 
 func init() {
-
-	server.RegisterAPIHTTPHandlers()
 
 	router := mux.NewRouter()
 

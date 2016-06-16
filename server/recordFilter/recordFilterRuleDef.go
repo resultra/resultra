@@ -3,7 +3,7 @@ package recordFilter
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/record"
+	"resultra/datasheet/server/recordValue"
 )
 
 type FilterFuncParams struct {
@@ -12,7 +12,7 @@ type FilterFuncParams struct {
 	numberParamVal *float64
 }
 
-type FilterRuleFunc func(filterParams FilterFuncParams, record record.Record) (bool, error)
+type FilterRuleFunc func(filterParams FilterFuncParams, recValResults recordValue.RecordValueResults) (bool, error)
 
 type FilterRuleDef struct {
 	RuleID     string         `json:"ruleID"`
@@ -25,9 +25,9 @@ type FilterRuleDef struct {
 const filterRuleIDNotBlank string = "notBlank"
 const filterRuleIDBlank string = "isBlank"
 
-func filterBlankField(filterParams FilterFuncParams, record record.Record) (bool, error) {
+func filterBlankField(filterParams FilterFuncParams, recValResults recordValue.RecordValueResults) (bool, error) {
 
-	valueIsSet := record.ValueIsSet(filterParams.fieldID)
+	valueIsSet := recValResults.ValueIsSet(filterParams.fieldID)
 
 	if valueIsSet {
 		return false, nil
@@ -36,9 +36,9 @@ func filterBlankField(filterParams FilterFuncParams, record record.Record) (bool
 	}
 }
 
-func filterNonBlankField(filterParams FilterFuncParams, record record.Record) (bool, error) {
+func filterNonBlankField(filterParams FilterFuncParams, recValResults recordValue.RecordValueResults) (bool, error) {
 
-	valueIsSet := record.ValueIsSet(filterParams.fieldID)
+	valueIsSet := recValResults.ValueIsSet(filterParams.fieldID)
 
 	if valueIsSet {
 		return true, nil

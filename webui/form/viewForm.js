@@ -46,7 +46,7 @@ function loadCurrRecordIntoLayout()
 function reloadRecords(getRecordsParams)
 {
 	
-	jsonAPIRequest("getFilteredRecords",getRecordsParams,function(replyData) {
+	jsonAPIRequest("filter/getFilteredRecordValues",getRecordsParams,function(replyData) {
 		
 		currRecordSet = new RecordSet(replyData);
 		if(currRecordSet.numRecords() > 0) {
@@ -66,7 +66,7 @@ function reloadRecords(getRecordsParams)
 
 function createNewRecord() {
 	var newRecordsParams = {parentTableID:tableID}
-	jsonAPIRequest("record/new",newRecordsParams,function(newRecordRef) {
+	jsonAPIRequest("recordUpdate/newRecord",newRecordsParams,function(newRecordRef) {
 		currRecordSet.appendNewRecord(newRecordRef);
 		currRecordSet.jumpToRecord(newRecordRef.recordID)
 		loadCurrRecordIntoLayout()

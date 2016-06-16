@@ -109,7 +109,7 @@ func newFilter(params NewFilterParams) (*RecordFilter, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
-		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", sessionErr)
+		return nil, fmt.Errorf("newFilter: Can't create record: unable to create record: error = %v", sessionErr)
 	}
 	defer dbSession.Close()
 
@@ -127,7 +127,7 @@ func getFilter(parentTableID string, filterID string) (*RecordFilter, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
-		return nil, fmt.Errorf("GetRecord: Can't create database: unable to create database session: error = %v", sessionErr)
+		return nil, fmt.Errorf("getFilter: Can't create database: unable to create database session: error = %v", sessionErr)
 	}
 	defer dbSession.Close()
 
