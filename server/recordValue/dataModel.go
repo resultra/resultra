@@ -16,24 +16,6 @@ type RecordValueResults struct {
 	UpdateTimestamp time.Time             `json:"updateTimestamp"`
 }
 
-func (recValResults RecordValueResults) ValueIsSet(fieldID string) bool {
-	_, valueExists := recValResults.FieldValues[fieldID]
-	if valueExists {
-		return true
-	} else {
-		return false
-	}
-}
-
-func (recValResults RecordValueResults) GetTextFieldValue(fieldID string) (string, error) {
-	rawVal := recValResults.FieldValues[fieldID]
-	if theStr, validType := rawVal.(string); validType {
-		return theStr, nil
-	} else {
-		return "", fmt.Errorf("Type mismatch retrieving text field value from record: field ID = %v, raw value = %v", fieldID, rawVal)
-	}
-}
-
 func saveRecordValueResults(recValResults RecordValueResults) error {
 
 	log.Printf("saveRecordValueResults: Saving results: %+v", recValResults)

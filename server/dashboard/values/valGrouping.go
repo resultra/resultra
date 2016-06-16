@@ -94,8 +94,8 @@ type ValGroupingRecordVal struct {
 func recordGroupLabel(fieldGroup field.Field, recValResults recordValue.RecordValueResults) (string, error) {
 	switch fieldGroup.Type {
 	case field.FieldTypeText:
-		if recValResults.ValueIsSet(fieldGroup.FieldID) {
-			textVal, valErr := recValResults.GetTextFieldValue(fieldGroup.FieldID)
+		if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
+			textVal, valErr := recValResults.FieldValues.GetTextFieldValue(fieldGroup.FieldID)
 			if valErr != nil {
 				return "", fmt.Errorf("recordGroupLabel: Unabled to retrieve value for grouping label: error = %v", valErr)
 			} else {

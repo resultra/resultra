@@ -27,7 +27,7 @@ const filterRuleIDBlank string = "isBlank"
 
 func filterBlankField(filterParams FilterFuncParams, recValResults recordValue.RecordValueResults) (bool, error) {
 
-	valueIsSet := recValResults.ValueIsSet(filterParams.fieldID)
+	valueIsSet := recValResults.FieldValues.ValueIsSet(filterParams.fieldID)
 
 	if valueIsSet {
 		return false, nil
@@ -38,7 +38,7 @@ func filterBlankField(filterParams FilterFuncParams, recValResults recordValue.R
 
 func filterNonBlankField(filterParams FilterFuncParams, recValResults recordValue.RecordValueResults) (bool, error) {
 
-	valueIsSet := recValResults.ValueIsSet(filterParams.fieldID)
+	valueIsSet := recValResults.FieldValues.ValueIsSet(filterParams.fieldID)
 
 	if valueIsSet {
 		return true, nil

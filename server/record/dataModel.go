@@ -7,8 +7,6 @@ import (
 	"resultra/datasheet/server/generic/cassandraWrapper"
 )
 
-type RecFieldValues map[string]interface{}
-
 type Record struct {
 	ParentTableID string `json:"parentTableID"`
 	RecordID      string `json:"recordID"`
