@@ -1,7 +1,6 @@
 package record
 
 import (
-	"fmt"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"time"
@@ -41,7 +40,10 @@ func (setValParams SetRecordLongTextValueParams) updateRecordValue(rec *Record) 
 }
 
 func (valParams SetRecordLongTextValueParams) generateCellValue() (string, error) {
-	return generic.EncodeJSONString(valParams.Value)
+
+	cellVal := TextCellValue{Val: valParams.Value}
+
+	return generic.EncodeJSONString(cellVal)
 }
 
 // Update a number field value
@@ -121,23 +123,4 @@ func (valParams SetRecordFileValueParams) generateCellValue() (string, error) {
 		OrigName:  valParams.OrigFileName}
 
 	return generic.EncodeJSONString(cellValue)
-}
-
-// setRecordFileNameFieldValue. Although the parameters for a record update with a filename aren't passed through the http request,
-// the standard record updating mechanism can be used to update the field with the filename.
-func SetRecordFileNameFieldValue(parentTableID string,
-	recordID string, fieldID string, origFileName string, cloudFileName string) (*Record, error) {
-	updateRecordHeader := RecordUpdateHeader{
-		ParentTableID: parentTableID,
-		RecordID:      recordID,
-		FieldID:       fieldID}
-	updateRecordParams := SetRecordFileValueParams{
-		RecordUpdateHeader: updateRecordHeader,
-		OrigFileName:       origFileName,
-		CloudFileName:      cloudFileName}
-	updatedRecord, updateErr := UpdateRecordValue(updateRecordParams)
-	if updateErr != nil {
-		return nil, fmt.Errorf("uploadFile: Unable to update record for newly uploaded file: %v", updateErr)
-	}
-	return updatedRecord, nil
 }

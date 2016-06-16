@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/record"
+	"resultra/datasheet/server/recordValue"
 )
 
 func updateRecordValue(recUpdater record.RecordUpdater) (*record.Record, error) {
@@ -25,6 +26,15 @@ func updateRecordValue(recUpdater record.RecordUpdater) (*record.Record, error) 
 	updatedRecord, updateErr := record.UpdateExistingRecord(recordForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateRecordValue: Can't set value: Error retrieving existing record for update: err = %v", updateErr)
+	}
+
+	// Since a change has occored to one of the record's values, a new set of mapped record
+	// values needs to be created.
+	_, mapErr := recordValue.MapOneRecordUpdatesToFieldValues(
+		recordForUpdate.ParentTableID, recordForUpdate.RecordID)
+	if mapErr != nil {
+		return nil, fmt.Errorf(
+			"updateRecordValue: Error mapping field values: err = %v", mapErr)
 	}
 
 	return updatedRecord, nil

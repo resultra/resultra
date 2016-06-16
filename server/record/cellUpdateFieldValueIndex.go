@@ -31,6 +31,20 @@ func (s ByUpdateTime) Less(i, j int) bool {
 
 type CellUpdateFieldValueIndex map[string]FieldValueUpdateSeries
 
+// There will only be cell updates in the datastore for non-calculated fields. For these fields,
+// this function returns the latest (most recent) values.
+func (cellUpdateFieldValIndex CellUpdateFieldValueIndex) LatestNonCalcFieldValues() *RecFieldValues {
+	recFieldValues := RecFieldValues{}
+
+	for fieldID, updateSeries := range cellUpdateFieldValIndex {
+		if len(updateSeries) > 0 {
+			recFieldValues[fieldID] = updateSeries[0].CellValue
+		}
+	}
+
+	return &recFieldValues
+}
+
 func NewUpdateFieldValueIndex(parentTableID string, recordID string) (*CellUpdateFieldValueIndex, error) {
 
 	recCellUpdates, getErr := GetRecordCellUpdates(parentTableID, recordID)
@@ -46,7 +60,7 @@ func NewUpdateFieldValueIndex(parentTableID string, recordID string) (*CellUpdat
 	}
 
 	// Populate the index with all the updates for the given recordID, broken down by FieldID.
-	var fieldValSeriesMap CellUpdateFieldValueIndex
+	fieldValSeriesMap := CellUpdateFieldValueIndex{}
 	for _, currUpdate := range recCellUpdates {
 
 		fieldInfo, fieldErr := fieldRefIndex.GetFieldRefByID(currUpdate.FieldID)

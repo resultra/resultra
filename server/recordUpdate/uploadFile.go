@@ -45,8 +45,18 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 		return nil, fmt.Errorf("uploadFile: Unable to create signed URL for newly uploaded file: %v", urlErr)
 	}
 
-	updatedRecord, updateErr := record.SetRecordFileNameFieldValue(req.FormValue("parentTableID"),
-		req.FormValue("recordID"), req.FormValue("fieldID"), uploadInfo.FileName, cloudFileName)
+	// setRecordFileNameFieldValue. Although the parameters for a record update with a filename aren't passed through the http request,
+	// the standard record updating mechanism can be used to update the field with the filename.
+	updateRecordHeader := record.RecordUpdateHeader{
+		ParentTableID: req.FormValue("parentTableID"),
+		RecordID:      req.FormValue("recordID"),
+		FieldID:       req.FormValue("fieldID")}
+	updateRecordParams := record.SetRecordFileValueParams{
+		RecordUpdateHeader: updateRecordHeader,
+		OrigFileName:       uploadInfo.FileName,
+		CloudFileName:      cloudFileName}
+
+	updatedRecord, updateErr := updateRecordValue(updateRecordParams)
 	if updateErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to update record for newly uploaded file: %v", updateErr)
 	}

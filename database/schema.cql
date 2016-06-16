@@ -51,6 +51,14 @@ create table datasheet.records (
 	PRIMARY KEY ((tableID),record_id) 
 ); 
 
+create table datasheet.record_val_results ( 
+	table_id uuid, 
+	record_id uuid, 
+	field_vals text,
+	update_timestamp_utc timestamp,
+	PRIMARY KEY ((table_id),record_id) 
+); 
+
 // In the cell_update table it's necessary to specify
 // the clustering keys for all the fields but the value field
 // (i.e., record_id,field_id, and update_time)

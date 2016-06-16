@@ -9,18 +9,12 @@ import (
 	"resultra/datasheet/server/generic/cassandraWrapper"
 )
 
-const recordFilterRuleEntityKind string = "RecordFilterRule"
-const recordFilterEntityKind string = "RecordFilter"
-
 type RecordFilter struct {
 	ParentTableID string `json:"parentTableID"`
 	FilterID      string `json:"filterID"`
 	Name          string `json:"name"`
 	/* Rules are managed as child entities */
 }
-
-const filterParentTableIDFieldName string = "ParentTableID"
-const recordFilterIDFieldName string = "FilterID"
 
 type RecordFilterRule struct {
 	ParentFilterID  string  `json:"parentFilterID"`
@@ -30,8 +24,6 @@ type RecordFilterRule struct {
 	TextRuleParam   string  `json:"textRuleParam"`
 	NumberRuleParam float64 `json:"numberRuleParam"`
 }
-
-const filterRuleParentFilterIDFieldName string = "ParentFilterID"
 
 type NewFilterParams struct {
 	ParentTableID string `json:"parentTableID"`
@@ -249,7 +241,7 @@ func getFilterList(parentTableID string) ([]RecordFilter, error) {
 }
 
 type NewFilterRuleParams struct {
-	ParentFilterID     string   `jsaon:"parentFilterID"`
+	ParentFilterID     string   `json:"parentFilterID"`
 	FieldParentTableID string   `json:'fieldParentTableID'`
 	FieldID            string   `json:"fieldID"`
 	RuleID             string   `json:"ruleID"`
