@@ -1,35 +1,5 @@
 
 
-
-
-{{define "viewFormSortPane"}}
-<div class="ui small center aligned header" id="sortHeader">
-	<div class="content">
-	 <i class="sort icon"></i>
-		Sort
-  	</div>
-</div>
-<div class="ui-layout-content">
-	<p>Sort options will go here - header shouldn't scroll'</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-	<p>Sort options go here</p>
-</div>
-{{end}}
-
 {{define "viewFormPageHeader"}}
 	<div>
 	  {{template "homePageBreadcrumb"}}
@@ -88,6 +58,7 @@
 	
 	{{template "commonCSS"}}
 	{{template "formComponentsCSS"}}
+	{{template "formCommonSortCSS"}}
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/layout.css">
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/form/editRecord.css">
 
@@ -101,6 +72,7 @@
 	<script src="/static/field/fieldInfo.js"></script>
 
 	{{template "formComponentsJS"}}
+	{{template "formCommonSortJS"}}
 	
 	<script src="/static/form/recordSet.js"></script>
 	<script src="/static/form/viewForm.js"></script>
@@ -125,7 +97,7 @@
 			</div> <!-- ui-layout-center #filterPane -->
 	
 			<div class=" ui-layout-south" id="sortPaneUILayout">
-				{{template "viewFormSortPane"}}
+				{{template "recordSortPane"}}
 				
 			    
 			</div> <!-- ui-layout-south #sortPane -->

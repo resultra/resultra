@@ -1,0 +1,33 @@
+.recordSortPaneHeader {
+	min-height: 30px;
+	background-color:lightGrey;
+	vertical-align:middle;
+	margin-top: 0px;
+}
+
+/* Override jQuery UI layout ui-layout-content padding of 10px */
+#recordSortUILayout {
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:0px;
+	padding-right:0px;
+	
+}
+
+#sortPaneFooter {
+	background-color:lightGrey;
+	padding-top:5px;
+	padding-bottom:5px;
+	padding-left:5px;
+	padding-right:5px;
+}
+
+#sortPaneSortRuleList {
+	-webkit-border-radius: 0 !important;
+	-moz-border-radius: 0 !important;
+	border-radius: 0 !important;
+}
+
+.recordSortDirectionRow {
+	padding-top: 5px;
+}

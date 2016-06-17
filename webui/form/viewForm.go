@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/webui/common"
+	"resultra/datasheet/webui/form/common/sort"
 	"resultra/datasheet/webui/form/components"
 	"resultra/datasheet/webui/generic"
 )
@@ -23,7 +24,8 @@ func init() {
 		baseTemplateFiles,
 		generic.TemplateFileList,
 		common.TemplateFileList,
-		components.TemplateFileList}
+		components.TemplateFileList,
+		sort.TemplateFileList}
 	viewFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 

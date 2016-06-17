@@ -1,0 +1,76 @@
+{{define "recordSortPaneHeader"}}
+	<div class="container-fluid">
+		<div class="row recordSortPaneHeader">
+			<div class= "col-md-12 text-center h5"><span>Sort</span></div>
+		</div>
+	</div>
+{{end}}
+
+{{define "sortPaneFooterButtons"}}
+	<button type="button" class="btn btn-primary btn-sm" id="sortPanelResortButton">
+	  <span class="glyphicon glyphicon-sort" aria-hidden="true"></span> Resort
+	</button>
+{{end}}
+
+
+{{define "recordSortPaneFooter"}}
+	<div id="sortPaneFooter">
+		<div class="container">
+			<div class="row">
+				{{template "sortPaneFooterButtons"}}
+			</div>
+		</div>
+	</div>
+{{end}}
+
+{{define "recordSortPanelSortListItem"}}
+	<div class="list-group-item">
+		
+		<div class="container-fluid">
+			<div class="row">
+				<select class="form-control input-sm">
+					 <option value="">Sort By</option>
+					    <option value="field1">Field 1</option>
+					    <option value="field1">Field 2</option>
+					    <option value="field1">Field 3</option>
+				</select>
+			</div>
+			<div class="row recordSortDirectionRow">
+				<div class="btn-group" data-toggle="buttons">
+				  <label class="btn btn-default active btn-sm">
+					  <span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
+				    <input type="radio" name="sortDirection" id="sortAsc" autocomplete="off" checked> Ascending
+				  </label>
+				  <label class="btn btn-default btn-sm">
+					  <span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
+				    <input type="radio" name="sortDirection" id="sortDesc" autocomplete="off"> Descending
+				  </label>
+				</div>
+			</div>
+		</div>
+		
+		
+	</div>
+{{end}}
+
+{{define "recordSortPaneSortSettings"}}
+	<div class="list-group" id="sortPaneSortRuleList">
+		{{template "recordSortPanelSortListItem"}}
+		{{template "recordSortPanelSortListItem"}}
+	</div>	
+{{end}}
+
+
+{{define "recordSortPane"}}
+
+	{{template "recordSortPaneHeader"}}
+
+	<div class="ui-layout-content" id="recordSortUILayout">
+		{{template "recordSortPaneSortSettings"}}
+	</div>
+
+	<div class="ui-layout-footer">
+		{{template "recordSortPaneFooter"}}
+	</div>
+
+{{end}}
