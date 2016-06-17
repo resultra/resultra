@@ -18,8 +18,6 @@ func init() {
 	filterRouter.HandleFunc("/api/filter/newRule", newRecordFilterRule)
 	filterRouter.HandleFunc("/api/filter/getRuleList", getRecordFilterRulesAPI)
 
-	filterRouter.HandleFunc("/api/filter/getFilteredRecordValues", getFilteredRecords)
-
 	http.Handle("/api/filter/", filterRouter)
 }
 
@@ -37,24 +35,6 @@ func newRecordFilterRule(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		api.WriteJSONResponse(w, newRecordFilterRef)
-	}
-
-}
-
-func getFilteredRecords(w http.ResponseWriter, r *http.Request) {
-
-	// TODO - Once filtering is implemented on a per form/dashboard basis,
-	// pass in the parent filter.
-	var params GetFilteredRecordsParams
-	if err := api.DecodeJSONRequest(r, &params); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-
-	if recordRefs, err := GetFilteredRecords(params); err != nil {
-		api.WriteErrorResponse(w, err)
-	} else {
-		api.WriteJSONResponse(w, recordRefs)
 	}
 
 }

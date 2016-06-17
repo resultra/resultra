@@ -54,6 +54,7 @@ create table datasheet.record_val_results (
 	table_id uuid, 
 	record_id uuid, 
 	field_vals text,
+	filter_matches text,
 	update_timestamp_utc timestamp,
 	PRIMARY KEY ((table_id),record_id) 
 ); 

@@ -6,14 +6,16 @@ import (
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/cassandraWrapper"
 	"resultra/datasheet/server/record"
+	"resultra/datasheet/server/recordFilter"
 	"time"
 )
 
 type RecordValueResults struct {
-	ParentTableID   string                `json:"parentTableID"`
-	RecordID        string                `json:"recordID"`
-	FieldValues     record.RecFieldValues `json:"fieldValues"`
-	UpdateTimestamp time.Time             `json:"updateTimestamp"`
+	ParentTableID   string                             `json:"parentTableID"`
+	RecordID        string                             `json:"recordID"`
+	FieldValues     record.RecFieldValues              `json:"fieldValues"`
+	FilterMatches   recordFilter.RecFilterMatchResults `json:"filterMatches"`
+	UpdateTimestamp time.Time                          `json:"updateTimestamp"`
 }
 
 func saveRecordValueResults(recValResults RecordValueResults) error {
@@ -31,10 +33,15 @@ func saveRecordValueResults(recValResults RecordValueResults) error {
 		return fmt.Errorf("saveRecordValueResults: Unable to encode record value results %+v: error = %v", encodeErr)
 	}
 
+	encodedMatches, encodeMatchErr := generic.EncodeJSONString(recValResults.FilterMatches)
+	if encodeMatchErr != nil {
+		return fmt.Errorf("saveRecordValueResults: Unable to encode record value results %+v: error = %v", encodeMatchErr)
+	}
+
 	if insertErr := dbSession.Query(`INSERT INTO record_val_results 
-					(table_id, record_id, field_vals,update_timestamp_utc) 
-					VALUES (?,?,?,toTimestamp(now()))`,
-		recValResults.ParentTableID, recValResults.RecordID, encodedValues).Exec(); insertErr != nil {
+					(table_id, record_id, field_vals,filter_matches, update_timestamp_utc) 
+					VALUES (?,?,?,?,toTimestamp(now()))`,
+		recValResults.ParentTableID, recValResults.RecordID, encodedValues, encodedMatches).Exec(); insertErr != nil {
 		return fmt.Errorf("saveRecordValueResults: Error saving results %+v: error = %v", recValResults, insertErr)
 	}
 
@@ -49,21 +56,26 @@ func GetAllRecordValueResults(parentTableID string) ([]RecordValueResults, error
 	}
 	defer dbSession.Close()
 
-	valResultsIter := dbSession.Query(`SELECT record_id,field_vals,update_timestamp_utc 
+	valResultsIter := dbSession.Query(`SELECT record_id,field_vals,filter_matches,update_timestamp_utc 
 		FROM record_val_results WHERE table_id = ?`,
 		parentTableID).Iter()
 
 	var currValResults RecordValueResults
 	recValResults := []RecordValueResults{}
 	encodedFieldVals := ""
-	for valResultsIter.Scan(&currValResults.RecordID, &encodedFieldVals, &currValResults.UpdateTimestamp) {
-		var currFieldVals record.RecFieldValues
-		if err := generic.DecodeJSONString(encodedFieldVals, &currFieldVals); err != nil {
+	encodedMatches := ""
+	for valResultsIter.Scan(&currValResults.RecordID, &encodedFieldVals, &encodedMatches, &currValResults.UpdateTimestamp) {
+		if err := generic.DecodeJSONString(encodedFieldVals, &currValResults.FieldValues); err != nil {
+			return nil, fmt.Errorf("GetAllRecordValueResults: failure decoding field values: %v", err)
+		}
+		if err := generic.DecodeJSONString(encodedMatches, &currValResults.FilterMatches); err != nil {
 			return nil, fmt.Errorf("GetAllRecordValueResults: failure decoding field values: %v", err)
 		}
 		currValResults.ParentTableID = parentTableID
-		currValResults.FieldValues = currFieldVals
 		recValResults = append(recValResults, currValResults)
+		encodedFieldVals = ""
+		encodedMatches = ""
+		currValResults = RecordValueResults{}
 	}
 	if closeErr := valResultsIter.Close(); closeErr != nil {
 		return nil, fmt.Errorf("GetAllRecordValueResults: Failure querying database: %v", closeErr)
@@ -82,7 +94,7 @@ func getRecordValueResults(params GetRecordValResultParams) (*RecordValueResults
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
-		return nil, fmt.Errorf("GetAllRecordValueResults: Can't create database session: error = %v", sessionErr)
+		return nil, fmt.Errorf("getRecordValueResults: Can't create database session: error = %v", sessionErr)
 	}
 	defer dbSession.Close()
 
@@ -90,18 +102,20 @@ func getRecordValueResults(params GetRecordValResultParams) (*RecordValueResults
 	valResults.ParentTableID = params.ParentTableID
 	valResults.RecordID = params.RecordID
 	encodedFieldVals := ""
-	getErr := dbSession.Query(`SELECT field_vals,update_timestamp_utc 
+	encodedMatches := ""
+	getErr := dbSession.Query(`SELECT field_vals,filter_matches, update_timestamp_utc 
 		FROM record_val_results 
 		WHERE table_id=? and record_id=? LIMIT 1`,
-		params.ParentTableID, params.RecordID).Scan(&encodedFieldVals, &valResults.UpdateTimestamp)
+		params.ParentTableID, params.RecordID).Scan(&encodedFieldVals, &encodedMatches, &valResults.UpdateTimestamp)
 	if getErr != nil {
-		return nil, fmt.Errorf("GetForm: Unabled to get dashboard: datastore err=%v", getErr)
+		return nil, fmt.Errorf("getRecordValueResults: Unabled to get record results: datastore err=%v", getErr)
 	}
-	var fieldVals record.RecFieldValues
-	if err := generic.DecodeJSONString(encodedFieldVals, &fieldVals); err != nil {
+	if err := generic.DecodeJSONString(encodedFieldVals, &valResults.FieldValues); err != nil {
 		return nil, fmt.Errorf("GetAllRecordValueResults: failure decoding field values: %v", err)
 	}
-	valResults.FieldValues = fieldVals
+	if err := generic.DecodeJSONString(encodedMatches, &valResults.FilterMatches); err != nil {
+		return nil, fmt.Errorf("GetAllRecordValueResults: failure decoding field values: %v", err)
+	}
 
 	return &valResults, nil
 

@@ -3,7 +3,7 @@ package recordFilter
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/recordValue"
+	"resultra/datasheet/server/record"
 )
 
 type OptonalFilterRuleParamVal struct {
@@ -34,11 +34,11 @@ func getOptionalParamValueByRuleDef(filterRuleDef FilterRuleDef,
 	return &optParamVal, nil
 }
 
-func filterOneRecord(recValResults recordValue.RecordValueResults, filterRules []RecordFilterRule) (bool, error) {
+func filterOneRecord(parentTableID string, recFieldVals record.RecFieldValues, filterRules []RecordFilterRule) (bool, error) {
 
 	for _, currFilterRule := range filterRules {
 
-		ruleField, fieldErr := field.GetField(recValResults.ParentTableID, currFilterRule.FieldID)
+		ruleField, fieldErr := field.GetField(parentTableID, currFilterRule.FieldID)
 		if fieldErr != nil {
 			return false, fmt.Errorf("filterOneRecord: Can't get field for filter rule = '%v': datastore error=%v",
 				currFilterRule.FieldID, fieldErr)
@@ -61,7 +61,7 @@ func filterOneRecord(recValResults recordValue.RecordValueResults, filterRules [
 				optParamVal.textParam,
 				optParamVal.numberParam}
 
-		recordIsFiltered, filterErr := filterRuleDef.filterFunc(filterParams, recValResults)
+		recordIsFiltered, filterErr := filterRuleDef.filterFunc(filterParams, recFieldVals)
 
 		if filterErr != nil {
 			return false, fmt.Errorf("filterOneRecord: Error filtering record: %v", filterErr)
@@ -76,56 +76,40 @@ func filterOneRecord(recValResults recordValue.RecordValueResults, filterRules [
 	return true, nil
 }
 
-type GetFilteredRecordsParams struct {
-	TableID   string   `json:"tableID"`
-	FilterIDs []string `json:filterIDs`
-}
+func testOneFilterOneRecFieldVals(parentTableID string, recFieldVals record.RecFieldValues, filterID string) (bool, error) {
 
-// Since filtering is done using a logical AND of all the filters and their rules, it simplifies actual
-// filtering to filter using a combined set of rules. Then, if any rule across all the filters doesn't pass,
-// then the record is filtered.
-func getCombinedFilterRules(filterIDs []string) ([]RecordFilterRule, error) {
-
-	allFilterRules := []RecordFilterRule{}
-
-	for _, currFilterID := range filterIDs {
-
-		getFilterRulesParam := GetFilterRulesParams{ParentFilterID: currFilterID}
-		currFilterRules, rulesErr := getRecordFilterRules(getFilterRulesParam)
-		if rulesErr != nil {
-			return nil, rulesErr
-		}
-		allFilterRules = append(allFilterRules, currFilterRules...)
-	}
-
-	return allFilterRules, nil
-}
-
-func GetFilteredRecords(params GetFilteredRecordsParams) ([]recordValue.RecordValueResults, error) {
-
-	// TODO - The code below retrieve *all* the records. However, the datastore supports up to 1 filtering criterion
-	// for each field, so <=1 of these criterion could be used to filter the records coming from the datastore and
-	// before doing any kind of in-memory filtering.
-	unfilteredRecordValues, getRecordErr := recordValue.GetAllRecordValueResults(params.TableID)
-	if getRecordErr != nil {
-		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving records: %v", getRecordErr)
-	}
-
-	filterRules, rulesErr := getCombinedFilterRules(params.FilterIDs)
+	getFilterRulesParam := GetFilterRulesParams{ParentFilterID: filterID}
+	filterRules, rulesErr := getRecordFilterRules(getFilterRulesParam)
 	if rulesErr != nil {
-		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving filter rules: %v", rulesErr)
+		return false, rulesErr
 	}
 
-	filteredRecords := []recordValue.RecordValueResults{}
-	for _, currRecordValResult := range unfilteredRecordValues {
-		recordIsFiltered, filterErr := filterOneRecord(currRecordValResult, filterRules)
-		if filterErr != nil {
-			return nil, fmt.Errorf("GetFilteredRecords: Error filtering records: %v", filterErr)
-		}
-		if recordIsFiltered {
-			filteredRecords = append(filteredRecords, currRecordValResult)
-		}
+	recordIsFiltered, filterErr := filterOneRecord(parentTableID, recFieldVals, filterRules)
+	if filterErr != nil {
+		return false, fmt.Errorf("GetFilteredRecords: Error filtering records: %v", filterErr)
 	}
 
-	return filteredRecords, nil
+	return recordIsFiltered, nil
+
+}
+
+func GenerateFilterMatchResults(recFieldVals record.RecFieldValues, parentTableID string) (RecFilterMatchResults, error) {
+
+	filters, getFilterErr := getFilterList(parentTableID)
+	if getFilterErr != nil {
+		return nil, fmt.Errorf("GenerateFilterMatchResults: Unable to retrieve filters for table ID = %v", parentTableID)
+	}
+
+	matchResults := RecFilterMatchResults{}
+	for _, currFilter := range filters {
+		matchResult, matchErr := testOneFilterOneRecFieldVals(parentTableID, recFieldVals, currFilter.FilterID)
+		if matchErr != nil {
+			return nil, fmt.Errorf(
+				"GenerateFilterMatchResults: Error matching filter for table ID = %v, filter ID = %v: error = %v",
+				parentTableID, currFilter.FilterID, matchErr)
+		}
+		matchResults[currFilter.FilterID] = matchResult
+	}
+	return matchResults, nil
+
 }
