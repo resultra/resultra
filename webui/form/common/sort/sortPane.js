@@ -1,7 +1,6 @@
+var sortPaneContext = {}
 
-
-function sortPaneRuleListChanged() {
-	
+function getSortPaneSortRules() {
 	var sortRules = []
 	$(".recordSortPaneRuleListItem").each(function() {
 		var elemPrefix = $(this).data("elemPrefix")
@@ -20,6 +19,12 @@ function sortPaneRuleListChanged() {
 	})
 	
 	console.log("Sort rules: " + JSON.stringify(sortRules))
+	
+	return sortRules;
+}
+
+function sortPaneRuleListChanged() {
+	sortPaneContext.resortCallback()
 }
 
 function sortFunctionSelectionID(elemPrefix) {
@@ -142,6 +147,8 @@ function generateSortRulePrefix() {
 }
 
 function initFormSortRecordsPane(resortCallback) {
+	
+	sortPaneContext.resortCallback = resortCallback
 	
 	addSortRuleListItem(generateSortRulePrefix())
 	addSortRuleListItem(generateSortRulePrefix())

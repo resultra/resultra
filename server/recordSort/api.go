@@ -23,7 +23,7 @@ func newSortRuleAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newSortRule, newErr := saveSortRule(sortRuleParams)
+	newSortRule, newErr := saveFormSortRules(sortRuleParams)
 	if newErr != nil {
 		api.WriteErrorResponse(w, newErr)
 		return

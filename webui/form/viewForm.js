@@ -45,7 +45,7 @@ function loadCurrRecordIntoLayout()
 
 function reloadRecords(reloadParams) {
 	
-	jsonAPIRequest("recordValue/getFilteredRecordValues",reloadParams,function(replyData) {
+	jsonAPIRequest("recordValue/getFilteredSortedRecordValues",reloadParams,function(replyData) {
 		
 		currRecordSet = new RecordSet(replyData);
 		if(currRecordSet.numRecords() > 0) {
@@ -67,9 +67,12 @@ function reloadSortedAndFilterRecords()
 {
 	
 	var selectedFilterIDs = getSelectedFilterPanelFilterIDs()
+	var sortRules = getSortPaneSortRules()
 	
-	var getFilteredRecordsParams = { tableID: viewFormContext.tableID,
-		 filterIDs: selectedFilterIDs }
+	var getFilteredRecordsParams = { 
+		tableID: viewFormContext.tableID,
+		filterIDs: selectedFilterIDs,
+		sortRules: sortRules}
 	
 	reloadRecords(getFilteredRecordsParams)
 }
@@ -154,7 +157,10 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 	
 	// Initially all the records are loaded. This can be refined through the filter panel (see above).
 	// TODO - At some point, there should be default filters for forms.
-	var getRecordsParams = {tableID:tableID,filterIDs:[]} 
+	var getRecordsParams = {
+		tableID:tableID,
+		filterIDs:[],
+		sortRules:[]} 
 	reloadRecords(getRecordsParams)
 }
 
