@@ -1,7 +1,7 @@
 
 var filterPaneContext = {}
 
-function refilterWithCurrentlySelectedFilters() {
+function getSelectedFilterPanelFilterIDs() {
 	// Iterate over checkboxes which are descendants of #filterRecordsPanelFilterList
 	// and build a list of currently selected filters.
 	var selectedFilters = []
@@ -14,11 +14,12 @@ function refilterWithCurrentlySelectedFilters() {
 	console.log("Selected filters: " + JSON.stringify(selectedFilters))
 	console.log("Selected filterIDs: " + JSON.stringify(selectedFilterIDs))
 	
-	// The pane doesn't actually trigger the refiltering of records, but supports a
-	// callback to do so.
-	var refilterParams = { tableID: filterPaneContext.tableID,
-		 filterIDs: selectedFilterIDs }
-	filterPaneContext.refilterCallbackFunc(refilterParams)
+	return selectedFilterIDs
+}
+
+function refilterWithCurrentlySelectedFilters() {
+	
+	filterPaneContext.refilterCallbackFunc()
 }
 
 function filterPaneUnselectAllFilters() {

@@ -23,40 +23,9 @@
 	</div>
 {{end}}
 
-{{define "recordSortPanelSortListItem"}}
-	<div class="list-group-item">
-		
-		<div class="container-fluid">
-			<div class="row">
-				<select class="form-control input-sm">
-					 <option value="">Sort By</option>
-					    <option value="field1">Field 1</option>
-					    <option value="field1">Field 2</option>
-					    <option value="field1">Field 3</option>
-				</select>
-			</div>
-			<div class="row recordSortDirectionRow">
-				<div class="btn-group" data-toggle="buttons">
-				  <label class="btn btn-default active btn-sm">
-					  <span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
-				    <input type="radio" name="sortDirection" id="sortAsc" autocomplete="off" checked> Ascending
-				  </label>
-				  <label class="btn btn-default btn-sm">
-					  <span class="glyphicon glyphicon-sort-by-attributes-alt" aria-hidden="true"></span>
-				    <input type="radio" name="sortDirection" id="sortDesc" autocomplete="off"> Descending
-				  </label>
-				</div>
-			</div>
-		</div>
-		
-		
-	</div>
-{{end}}
 
 {{define "recordSortPaneSortSettings"}}
 	<div class="list-group" id="sortPaneSortRuleList">
-		{{template "recordSortPanelSortListItem"}}
-		{{template "recordSortPanelSortListItem"}}
 	</div>	
 {{end}}
 

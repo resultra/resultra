@@ -43,10 +43,9 @@ function loadCurrRecordIntoLayout()
 }
 
 
-function reloadRecords(getRecordsParams)
-{
+function reloadRecords(reloadParams) {
 	
-	jsonAPIRequest("recordValue/getFilteredRecordValues",getRecordsParams,function(replyData) {
+	jsonAPIRequest("recordValue/getFilteredRecordValues",reloadParams,function(replyData) {
 		
 		currRecordSet = new RecordSet(replyData);
 		if(currRecordSet.numRecords() > 0) {
@@ -62,6 +61,17 @@ function reloadRecords(getRecordsParams)
 		}		
 	}) // getRecord
 	
+}
+
+function reloadSortedAndFilterRecords()
+{
+	
+	var selectedFilterIDs = getSelectedFilterPanelFilterIDs()
+	
+	var getFilteredRecordsParams = { tableID: viewFormContext.tableID,
+		 filterIDs: selectedFilterIDs }
+	
+	reloadRecords(getFilteredRecordsParams)
 }
 
 function createNewRecord() {
@@ -138,7 +148,9 @@ function initUILayoutPanes()
 }
 
 function initAfterViewFormComponentsAlreadyLoaded() {
-	initRecordFilterPanel(tableID,reloadRecords)
+	initRecordFilterPanel(tableID,reloadSortedAndFilterRecords)
+	
+	initFormSortRecordsPane(reloadSortedAndFilterRecords)
 	
 	// Initially all the records are loaded. This can be refined through the filter panel (see above).
 	// TODO - At some point, there should be default filters for forms.

@@ -105,6 +105,14 @@ create table datasheet.filter_rules (
 	PRIMARY KEY ((filter_id),rule_id) 
 );
 
+create table datasheet.form_sort_rules ( 
+	form_id uuid, 
+	sort_rules text,
+	PRIMARY KEY (form_id) 
+);
+
+
+
 create table datasheet.bar_charts (
 	dashboard_id uuid, 
 	barchart_id uuid,

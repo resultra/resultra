@@ -30,7 +30,8 @@ func saveRecordValueResults(recValResults RecordValueResults) error {
 
 	encodedValues, encodeErr := generic.EncodeJSONString(recValResults.FieldValues)
 	if encodeErr != nil {
-		return fmt.Errorf("saveRecordValueResults: Unable to encode record value results %+v: error = %v", encodeErr)
+		return fmt.Errorf("saveRecordValueResults: Unable to encode record value results %+v: error = %v",
+			recValResults.FieldValues, encodeErr)
 	}
 
 	encodedMatches, encodeMatchErr := generic.EncodeJSONString(recValResults.FilterMatches)
