@@ -45,7 +45,7 @@ function loadCurrRecordIntoLayout()
 
 function reloadRecords(reloadParams) {
 	
-	jsonAPIRequest("recordValue/getFilteredSortedRecordValues",reloadParams,function(replyData) {
+	jsonAPIRequest("recordRead/getFilteredSortedRecordValues",reloadParams,function(replyData) {
 		
 		currRecordSet = new RecordSet(replyData);
 		if(currRecordSet.numRecords() > 0) {

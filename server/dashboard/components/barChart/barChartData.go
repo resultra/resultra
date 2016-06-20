@@ -2,8 +2,8 @@ package barChart
 
 import (
 	"fmt"
+	"resultra/datasheet/server/recordReadController"
 	"resultra/datasheet/server/recordSort"
-	"resultra/datasheet/server/recordValue"
 )
 
 type BarChartDataRow struct {
@@ -27,11 +27,11 @@ func getOneBarChartData(barChart *BarChart) (*BarChartData, error) {
 	// TODO - Store the list of filters with the bar chart and include it in the query.
 	filterIDs := []string{}
 	sortRules := []recordSort.RecordSortRule{}
-	getRecordParams := recordValue.GetFilteredSortedRecordsParams{
+	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
 		TableID:   tableID,
 		FilterIDs: filterIDs,
 		SortRules: sortRules}
-	recordRefs, getRecErr := recordValue.GetFilteredSortedRecords(getRecordParams)
+	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(getRecordParams)
 	if getRecErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
 	}

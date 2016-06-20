@@ -1,8 +1,9 @@
-package recordValue
+package recordReadController
 
 import (
 	"fmt"
 	"resultra/datasheet/server/recordSort"
+	"resultra/datasheet/server/recordValue"
 )
 
 type GetFilteredSortedRecordsParams struct {
@@ -11,16 +12,16 @@ type GetFilteredSortedRecordsParams struct {
 	SortRules []recordSort.RecordSortRule `json:"sortRules"`
 }
 
-func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]RecordValueResults, error) {
+func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordValue.RecordValueResults, error) {
 
 	// The code below retrieve *all* the mapped record values. A more scalable approach would be to filter the
 	// record values in batches, then combine and sort them.
-	unfilteredRecordValues, getRecordErr := GetAllRecordValueResults(params.TableID)
+	unfilteredRecordValues, getRecordErr := recordValue.GetAllRecordValueResults(params.TableID)
 	if getRecordErr != nil {
 		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving records: %v", getRecordErr)
 	}
 
-	filteredRecords := []RecordValueResults{}
+	filteredRecords := []recordValue.RecordValueResults{}
 	for _, recValue := range unfilteredRecordValues {
 		if recValue.FilterMatches.MatchAllFilterIDs(params.FilterIDs) {
 			filteredRecords = append(filteredRecords, recValue)
