@@ -25,6 +25,14 @@ function getSortPaneSortRules() {
 
 function sortPaneRuleListChanged() {
 	sortPaneContext.resortCallback()
+	
+	var sortRules = getSortPaneSortRules()
+	var saveSortRulesParams = {
+		parentFormID: sortPaneContext.parentFormID,
+		sortRules: sortRules
+	}
+	jsonAPIRequest("recordSort/saveFormSortRules",saveSortRulesParams,function(saveReply) {}) // getRecord
+	
 }
 
 function sortFunctionSelectionID(elemPrefix) {
@@ -146,9 +154,10 @@ function generateSortRulePrefix() {
 	return "sortRule" + currRecordSortPaneID + "_"
 }
 
-function initFormSortRecordsPane(resortCallback) {
+function initFormSortRecordsPane(parentFormID, resortCallback) {
 	
 	sortPaneContext.resortCallback = resortCallback
+	sortPaneContext.parentFormID = parentFormID
 	
 	addSortRuleListItem(generateSortRulePrefix())
 	addSortRuleListItem(generateSortRulePrefix())

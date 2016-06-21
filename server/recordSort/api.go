@@ -10,12 +10,12 @@ func init() {
 
 	sortRouter := mux.NewRouter()
 
-	sortRouter.HandleFunc("/api/recordSort/saveSortRule", newSortRuleAPI)
+	sortRouter.HandleFunc("/api/recordSort/saveFormSortRules", saveFormSortRulesAPI)
 
 	http.Handle("/api/recordSort/", sortRouter)
 }
 
-func newSortRuleAPI(w http.ResponseWriter, r *http.Request) {
+func saveFormSortRulesAPI(w http.ResponseWriter, r *http.Request) {
 
 	sortRuleParams := NewSortRuleParams{}
 	if err := api.DecodeJSONRequest(r, &sortRuleParams); err != nil {

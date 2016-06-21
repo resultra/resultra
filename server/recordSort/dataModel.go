@@ -56,7 +56,7 @@ func saveFormSortRules(params NewSortRuleParams) (*FormSortRules, error) {
 		return nil, fmt.Errorf("saveSortRule: Unable to encode sort rules %+v: error = %v", params.SortRules, encodeErr)
 	}
 
-	if insertErr := dbSession.Query(`INSERT INTO sort_rules 
+	if insertErr := dbSession.Query(`INSERT INTO form_sort_rules 
 			(form_id, sort_rules) VALUES (?,?)`,
 		params.ParentFormID, encodedSortRules).Exec(); insertErr != nil {
 		return nil, fmt.Errorf("saveSortRule: Can't save sort rule for form %+v: error = %v", params, insertErr)

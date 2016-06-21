@@ -153,7 +153,7 @@ function initUILayoutPanes()
 function initAfterViewFormComponentsAlreadyLoaded() {
 	initRecordFilterPanel(tableID,reloadSortedAndFilterRecords)
 	
-	initFormSortRecordsPane(reloadSortedAndFilterRecords)
+	initFormSortRecordsPane(viewFormContext.formID, reloadSortedAndFilterRecords)
 	
 	// Initially all the records are loaded. This can be refined through the filter panel (see above).
 	// TODO - At some point, there should be default filters for forms.
