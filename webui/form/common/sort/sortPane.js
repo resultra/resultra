@@ -119,7 +119,7 @@ function populateSortByFieldMenu(fieldsByID, elemPrefix) {
 
 function addSortRuleListItem(elemPrefix) {
 	
-	var fieldsByID = getFieldsByID()
+	var fieldsByID = getFilteredFieldsByID([fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime])
 	
 	$('#sortPaneSortRuleList').append(sortPaneListItemHTML(elemPrefix))
 	

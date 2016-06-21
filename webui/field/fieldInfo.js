@@ -34,6 +34,37 @@ function getFieldsByID() {
 	return fieldInfoFieldsByID
 }
 
+function createFieldTypesFilterInfo(fieldTypes) {
+	var doLoadFieldByType = {}
+	var loadAllFieldTypes = false
+	for(var fieldTypeIndex = 0; fieldTypeIndex != fieldTypes.length; fieldTypeIndex++) {
+		var fieldType = fieldTypes[fieldTypeIndex]
+		if(fieldType == fieldTypeAll)
+		{
+			loadAllFieldTypes = true
+			console.log("loadFieldInfo: loading field info for all field types")
+		}
+		else {
+			doLoadFieldByType[fieldType] = true
+		}
+	}
+	return { loadAllFieldTypes: loadAllFieldTypes, doLoadFieldByType: doLoadFieldByType }
+}
+
+
+function getFilteredFieldsByID(fieldTypes) {
+	var unfilteredFieldsByID = getFieldsByID()
+	var filterInfo = createFieldTypesFilterInfo(fieldTypes)
+	var filteredFields = {}
+	for (var fieldID in unfilteredFieldsByID) {
+		var fieldRef = unfilteredFieldsByID[fieldID]
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldRef.type]==true) {
+			filteredFields[fieldID] = fieldRef
+		}
+	}
+	return filteredFields
+}
+
 // Use for populating menus with field selections
 function selectFieldHTML(fieldID, fieldName) {
  	return selectFieldOptionHTML = '<option value="' +
@@ -48,28 +79,17 @@ function populateFieldSelectionMenu(fieldsByID, menuSelector) {
 	})
 }
 
+
 function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 	
 	// Map of field ID's to the fieldRef object: see initialization below
 	var fieldsByID = {}
 	
-	var doLoadFieldByType = {}
-	var loadAllFieldTypes = false
-	for(var fieldTypeIndex = 0; fieldTypeIndex != fieldTypes.length; fieldTypeIndex++) {
-		var fieldType = fieldTypes[fieldTypeIndex]
-		if(fieldType == fieldTypeAll)
-		{
-			loadAllFieldTypes = true
-			console.log("loadFieldInfo: loading field info for all field types")
-		}
-		else {
-			doLoadFieldByType[fieldType] = true
-		}
-	}
-	
+	var filterInfo = createFieldTypesFilterInfo(fieldTypes)
+		
 	function processFieldInfo(fieldsByType) {
 		
-		if(loadAllFieldTypes || doLoadFieldByType[fieldTypeText]==true) {
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeText]==true) {
 			var textFields = fieldsByType.textFields
 			for (textFieldIter in textFields) {		
 				var textField = textFields[textFieldIter]			
@@ -78,7 +98,7 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 			} // for each text field
 		}
 		
-		if(loadAllFieldTypes || doLoadFieldByType[fieldTypeNumber]==true) {
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeNumber]==true) {
 			var numberFields = fieldsByType.numberFields
 			for (numberFieldIter in numberFields) {		
 				var numberField = numberFields[numberFieldIter]
@@ -87,7 +107,7 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 			} // for each number field
 		}
 
-		if(loadAllFieldTypes || doLoadFieldByType[fieldTypeBool]==true) {
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeBool]==true) {
 			var boolFields = fieldsByType.boolFields
 			for (boolFieldIter in boolFields) {
 				var boolField = boolFields[boolFieldIter]
@@ -96,7 +116,7 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 			} // for each bool field
 		}
 		
-		if(loadAllFieldTypes || doLoadFieldByType[fieldTypeTime]==true) {
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeTime]==true) {
 			var timeFields = fieldsByType.timeFields
 			for (timeFieldIter in timeFields) {
 				var timeField = timeFields[timeFieldIter]
@@ -105,7 +125,7 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 			} // for each bool field
 		}
 		
-		if(loadAllFieldTypes || doLoadFieldByType[fieldTypeLongText]==true) {
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeLongText]==true) {
 			var longTextFields = fieldsByType.longTextFields
 			for (longTextFieldIter in longTextFields) {		
 				var longTextField = longTextFields[longTextFieldIter]			
@@ -114,7 +134,7 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 			} // for each long text field
 		}
 	
-		if(loadAllFieldTypes || doLoadFieldByType[fieldTypeFile]==true) {
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeFile]==true) {
 			var fileFields = fieldsByType.fileFields
 			for (fileFieldIter in fileFields) {		
 				var fileField = fileFields[fileFieldIter]			
