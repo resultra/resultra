@@ -155,14 +155,14 @@ func TestTimeValueSort(t *testing.T) {
 	rec1Values := record.RecFieldValues{}
 	timeFormat := "2006-Jan-02"
 	time1, _ := time.Parse(timeFormat, "2015-Dec-01")
-	rec1Values[fieldID] = time1
+	rec1Values[fieldID] = time1.Format(time.RFC3339)
 	recVal1 := recordValue.RecordValueResults{
 		RecordID:    "Record_01",
 		FieldValues: rec1Values}
 
 	rec2Values := record.RecFieldValues{}
 	time2, _ := time.Parse(timeFormat, "2016-Jan-31")
-	rec2Values[fieldID] = time2
+	rec2Values[fieldID] = time2.Format(time.RFC3339)
 	recVal2 := recordValue.RecordValueResults{
 		RecordID:    "Record_02",
 		FieldValues: rec2Values}

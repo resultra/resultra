@@ -2,6 +2,8 @@ package record
 
 import (
 	"fmt"
+	"log"
+	"time"
 )
 
 // RecFieldValues is the low-level/base type for storing field values of different types,
@@ -25,4 +27,34 @@ func (recFieldVals RecFieldValues) GetTextFieldValue(fieldID string) (string, er
 	} else {
 		return "", fmt.Errorf("Type mismatch retrieving text field value from record: field ID = %v, raw value = %v", fieldID, rawVal)
 	}
+}
+
+// TODO (Important) - Save time values as time.Time. When saved then restored from an interface{} value, time values get restored as
+// strings rather than dates. This makes it necessary to decode the strings after the fact. A more type safe way to store the
+// values would be to have a different map of values for each type; i.e. bool, time, etc.
+func (recFieldVals RecFieldValues) GetTimeFieldValue(fieldID string) (time.Time, bool) {
+	// Time fields are stored as strings when serialized using the RecFieldValues
+	// To return the actual date, the string needs to be deserialized into a time.Time type.
+	timeVal := time.Time{}
+
+	rawVal, foundVal := recFieldVals[fieldID]
+	if !foundVal {
+		log.Printf("GetTimeFieldValue: rawVal not found")
+		return timeVal, false
+	}
+
+	timeStr, foundStrVal := rawVal.(string)
+	if !foundStrVal {
+		log.Printf("GetTimeFieldValue: string not found")
+		return timeVal, false
+	}
+
+	timeVal, parseErr := time.Parse(time.RFC3339, timeStr)
+	if parseErr != nil {
+		log.Printf("GetTimeFieldValue: parse failed")
+		return timeVal, false
+	}
+
+	return timeVal, true
+
 }

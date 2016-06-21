@@ -28,5 +28,9 @@ func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordVa
 		}
 	}
 
+	if sortErr := recordSort.SortRecordValues(params.TableID, filteredRecords, params.SortRules); sortErr != nil {
+		return nil, fmt.Errorf("GetFilteredRecords: Error sorting records: %v", sortErr)
+	}
+
 	return filteredRecords, nil
 }

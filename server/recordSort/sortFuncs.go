@@ -3,7 +3,6 @@ package recordSort
 import (
 	"resultra/datasheet/server/recordValue"
 	"sort"
-	"time"
 )
 
 // ByRecordValue is the type of a "less" function that defines the ordering
@@ -256,8 +255,8 @@ func SortByTimeField(fieldID string, direction string) ByRecordValueLessFunc {
 			// type and get those values if they are the correct type. This assignment
 			// also does the right thing when no value is found or the value is the incorrect type;
 			// in both these cases the value will be returned as not found ()
-			p1Val, p1Found := p1.FieldValues[fieldID].(time.Time)
-			p2Val, p2Found := p2.FieldValues[fieldID].(time.Time)
+			p1Val, p1Found := p1.FieldValues.GetTimeFieldValue(fieldID)
+			p2Val, p2Found := p2.FieldValues.GetTimeFieldValue(fieldID)
 
 			if p1Found {
 				if p2Found {
@@ -282,8 +281,8 @@ func SortByTimeField(fieldID string, direction string) ByRecordValueLessFunc {
 	} else { // sortDirectionDesc
 		lessDescFunc := func(p1, p2 recordValue.RecordValueResults) bool {
 
-			p1Val, p1Found := p1.FieldValues[fieldID].(time.Time)
-			p2Val, p2Found := p2.FieldValues[fieldID].(time.Time)
+			p1Val, p1Found := p1.FieldValues.GetTimeFieldValue(fieldID)
+			p2Val, p2Found := p2.FieldValues.GetTimeFieldValue(fieldID)
 
 			if p1Found {
 				if p2Found {
