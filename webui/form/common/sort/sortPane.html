@@ -6,6 +6,17 @@
 	</div>
 {{end}}
 
+{{define "sortPaneRulesActionsButtons"}}
+		<button type="button" class="btn btn-default btn-xs" id="sortRecordsClearRulesButton">
+		  <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Clear All Sorting Rules
+		</button>
+		
+		<button type="button" class="btn btn-default btn-xs" id="sortRecordsAddRuleButton">
+		  <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Rule
+		</button>
+{{end}}
+
+
 {{define "sortPaneFooterButtons"}}
 	<button type="button" class="btn btn-primary btn-sm" id="sortPanelResortButton">
 	  <span class="glyphicon glyphicon-sort" aria-hidden="true"></span> Resort
@@ -17,6 +28,9 @@
 	<div id="sortPaneFooter">
 		<div class="container">
 			<div class="row">
+				{{template "sortPaneRulesActionsButtons"}}
+			</div>
+			<div class="row marginTop5">
 				{{template "sortPaneFooterButtons"}}
 			</div>
 		</div>

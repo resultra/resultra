@@ -117,7 +117,9 @@ function populateSortByFieldMenu(elemPrefix,sortRule) {
 	})
 	
 	// Initialize the menu to the field ID of the given sortRule
-	$(menuSelector).val(sortRule.fieldID)
+	if(sortRule != null) {
+		$(menuSelector).val(sortRule.fieldID)	
+	}
 	
 	$(menuSelector).change(function(){
 		var fieldID = $(menuSelector).val()
@@ -146,7 +148,9 @@ function addSortRuleListItem(elemPrefix,sortRule) {
 	// Initialize the radio button selection based upon the sort direction. Using the
 	// click() function is needed for bootstrap, so it will trigger the right changes
 	// with CSS classes.
-	$(':radio[name="'+radioName+'"][value="' + sortRule.direction + '"]').click()
+	if(sortRule != null) {
+		$(':radio[name="'+radioName+'"][value="' + sortRule.direction + '"]').click()	
+	}
 	
 	$(radioSelector).change(function() {
 		console.log("Sort direction changed: radio name = " + radioName + " direction = " + this.value)
@@ -178,7 +182,31 @@ function initFormSortRecordsPane(parentFormID, resortCallback, initDoneCallback)
 			console.log("getFormSortRules: initializing sort rule: " + JSON.stringify(sortRule))
 			addSortRuleListItem(generateSortRulePrefix(),sortRule)		
 		}
+		if(formSortRules.sortRules.length ==0) {
+			// If no rules are already set add at least one uninitialized sort rule
+			addSortRuleListItem(generateSortRulePrefix(),null)
+		}
 		initDoneCallback()
 	}) // getFormSortRules
+	
+	
+	$('#sortRecordsAddRuleButton').click(function(e) {
+		console.log("add rule button clicked")
+		$(this).blur();
+	    e.preventDefault();// prevent the default anchor functionality
+		
+		// Add a new uninitialized sort rule
+		addSortRuleListItem(generateSortRulePrefix(),null)
+	})
+
+	$('#sortRecordsClearRulesButton').click(function(e) {
+		console.log("reset rule button clicked")
+		$(this).blur();
+	    e.preventDefault();// prevent the default anchor functionality
+		
+		$('#sortPaneSortRuleList').empty()
+		addSortRuleListItem(generateSortRulePrefix(),null)
+		sortPaneRuleListChanged()
+	})
 	
 }
