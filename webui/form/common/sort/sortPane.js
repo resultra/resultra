@@ -105,16 +105,19 @@ function sortPaneListItemHTML(elemPrefix) {
 	
 }
 
-function populateSortByFieldMenu(fieldsByID, elemPrefix) {
+function populateSortByFieldMenu(elemPrefix,sortRule) {
 	
 	var selectionID = sortFunctionSelectionID(elemPrefix)
 	var menuSelector = '#' + selectionID
 	
 	$(menuSelector).empty()
 	$(menuSelector).append(defaultSelectOptionPromptHTML("Sort By"))
-	$.each(fieldsByID, function(fieldID, fieldInfo) {
+	$.each(sortPaneContext.fieldsByID, function(fieldID, fieldInfo) {
 		$(menuSelector).append(selectFieldHTML(fieldID, fieldInfo.name))		
 	})
+	
+	// Initialize the menu to the field ID of the given sortRule
+	$(menuSelector).val(sortRule.fieldID)
 	
 	$(menuSelector).change(function(){
 		var fieldID = $(menuSelector).val()
@@ -125,20 +128,25 @@ function populateSortByFieldMenu(fieldsByID, elemPrefix) {
 	
 }
 
-function addSortRuleListItem(elemPrefix) {
+function addSortRuleListItem(elemPrefix,sortRule) {
 	
 	var fieldsByID = getFilteredFieldsByID([fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime])
 	
 	$('#sortPaneSortRuleList').append(sortPaneListItemHTML(elemPrefix))
 	
-	populateSortByFieldMenu(fieldsByID,elemPrefix)
+	populateSortByFieldMenu(elemPrefix,sortRule)
 	
 	var listItemID = sortPanelRuleListItemID(elemPrefix)
 	var listItemSelector = '#' + listItemID
 	$(listItemSelector).data("elemPrefix",elemPrefix)
 	
 	var radioName = sortRuleDirectionRadioName(elemPrefix) 
-	var radioSelector = 'input[type=radio][name='+radioName+']'
+	var radioSelector = 'input[type="radio"][name="'+radioName+'"]'
+	
+	// Initialize the radio button selection based upon the sort direction. Using the
+	// click() function is needed for bootstrap, so it will trigger the right changes
+	// with CSS classes.
+	$(':radio[name="'+radioName+'"][value="' + sortRule.direction + '"]').click()
 	
 	$(radioSelector).change(function() {
 		console.log("Sort direction changed: radio name = " + radioName + " direction = " + this.value)
@@ -154,12 +162,23 @@ function generateSortRulePrefix() {
 	return "sortRule" + currRecordSortPaneID + "_"
 }
 
-function initFormSortRecordsPane(parentFormID, resortCallback) {
+function initFormSortRecordsPane(parentFormID, resortCallback, initDoneCallback) {
 	
 	sortPaneContext.resortCallback = resortCallback
 	sortPaneContext.parentFormID = parentFormID
+	sortPaneContext.fieldsByID = getFilteredFieldsByID([fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime])
 	
-	addSortRuleListItem(generateSortRulePrefix())
-	addSortRuleListItem(generateSortRulePrefix())
+	var getSortRulesParams = {
+		parentFormID: parentFormID
+	}
+	
+	jsonAPIRequest("recordSort/getFormSortRules",getSortRulesParams,function(formSortRules) {
+		for (var sortRuleIndex = 0; sortRuleIndex < formSortRules.sortRules.length; sortRuleIndex++) {
+			var sortRule = formSortRules.sortRules[sortRuleIndex]
+			console.log("getFormSortRules: initializing sort rule: " + JSON.stringify(sortRule))
+			addSortRuleListItem(generateSortRulePrefix(),sortRule)		
+		}
+		initDoneCallback()
+	}) // getFormSortRules
 	
 }

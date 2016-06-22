@@ -17,7 +17,7 @@ type RecordSortRule struct {
 
 type FormSortRules struct {
 	ParentFormID string           `json:"parentFormID"`
-	SortRules    []RecordSortRule `json:sortRules`
+	SortRules    []RecordSortRule `json:"sortRules"`
 }
 
 type NewSortRuleParams FormSortRules
