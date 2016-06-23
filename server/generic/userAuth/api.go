@@ -36,7 +36,7 @@ func loginUserAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authResp := loginUser(params)
+	authResp := loginUser(w, r, params)
 	api.WriteJSONResponse(w, authResp)
 
 }
