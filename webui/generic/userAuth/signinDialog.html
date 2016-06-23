@@ -1,0 +1,37 @@
+{{define "UserSignInDialogBody"}}
+
+   <div id="userSigninDialogBody">
+
+	   <div class="alert alert-danger" id="signinDialogAlert">
+	     <span id="signinDialogErrorMsg">Error message</span>
+	   </div>
+      <form class="form-signin">
+        <label for="signinDialogEmailInput" class="sr-only">Email address</label>
+        <input type="email" id="signinDialogEmailInput" class="form-control" placeholder="Email address" required autofocus>
+        <label for="signinDialogPasswordInput" class="sr-only">Password</label>
+        <input type="password" id="signinDialogPasswordInput" class="form-control marginTop5" placeholder="Password" required>
+      </form>
+
+    </div> <!-- dialog body -->
+{{end}}
+
+{{define "UserSignInDialog"}}
+
+<div class="modal fade" id="signInModalDialog" tabindex="-1" role="dialog" aria-labelledby="signInLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="signInLabel">Sign In</h4>
+      </div>
+      <div class="modal-body">
+        	{{template "UserSignInDialogBody"}}
+      </div>
+      <div class="modal-footer">
+  	   	<button type="button" class="btn btn-primary" id="signInDialogSigninButton" type="submit">Sign in</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}

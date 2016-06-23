@@ -1,0 +1,23 @@
+
+{{define "homePagePublic"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "genericCSS"}}
+	{{template "commonCSS"}}
+
+	{{template "genericJS"}}
+	{{template "commonJS"}}
+	<script src="/static/homePage/homePagePublic.js"></script>
+			
+  </head>
+  <body>
+	  <h1>{{.Title}}</h1>
+	  <p>Under construction</p>
+	  <button type="button" id="signInButton" class="btn btn-primary">Sign In</button>
+  </body>
+  {{template "UserSignInDialog"}}
+</html>
+{{end}}

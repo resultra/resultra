@@ -1,27 +1,36 @@
-function jsonAPIRequest(apiName,requestData, successFunc)
-{
+function jsonRequest(requestUrl, requestData,replyFunc) {
 	var jsonReqData = JSON.stringify(requestData)
 			
 	// TODO - In debug builds, the API logging could be enabled, but disabled in production
-	console.log("JSON API: Sending Request: api name = " + apiName + " requestData =" + jsonReqData)
+	console.log("JSON Request: Sending Request: url = " + requestUrl + " requestData =" + jsonReqData)
 	
     $.ajax({
-       url: '/api/'+ apiName,
+       url: requestUrl,
 		contentType : 'application/json',
        data: jsonReqData,
        error: function() {
-		  var errMsg = "ERROR: API Request failed: api name = " + apiName + " requestData =" + jsonReqData
+		  var errMsg = "ERROR: Request failed: url = " + requestUrl + " requestData =" + jsonReqData
 		  console.log(errMsg)
           alert(errMsg)
        },
        dataType: 'json',
        success: function(replyData) {
-		  console.log("JSON API: Received Reply: api name = " + apiName + " replyData =" + JSON.stringify(replyData))
-		  successFunc(replyData)
+		  console.log("JSON Received Reply: url = " + requestUrl + " replyData =" + JSON.stringify(replyData))
+		  replyFunc(replyData)
        },
        type: 'POST'
     });
 	
+}
+
+function jsonAPIRequest(apiName,requestData, successFunc)
+{
+	var jsonReqData = JSON.stringify(requestData)
+	
+	var requestUrl = '/api/' + apiName
+	
+	jsonRequest(requestUrl,requestData,successFunc)
+				
 }
 
 

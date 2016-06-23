@@ -69,3 +69,35 @@ func loginUser(rw http.ResponseWriter, req *http.Request, params LoginParams) *A
 
 	return newAuthResponse(true, "Login successful")
 }
+
+func GetCurrentUserInfo(req *http.Request) (*UserInfo, error) {
+
+	authSession, sessErr := authCookieStore.Get(req, "auth")
+	if sessErr != nil {
+		return nil, fmt.Errorf("CurrentUser: Couldn't get session to authenticate user")
+	}
+
+	userID, userIDFound := authSession.Values["user_id"].(string)
+	if !userIDFound {
+		return nil, fmt.Errorf("CurrentUser: Can't get session value for user")
+	}
+
+	return getUserInfoByID(userID)
+
+}
+
+func signOutUser(rw http.ResponseWriter, req *http.Request) *AuthResponse {
+
+	authSession, sessErr := authCookieStore.Get(req, "auth")
+	if sessErr != nil {
+		return newAuthResponse(false, "Couldn't get session information to sign out")
+	}
+
+	authSession.Options.MaxAge = -1 // kill the cookie
+	if saveErr := authSession.Save(req, rw); saveErr != nil {
+		return newAuthResponse(false, "Couldn't save session information while signing out")
+	}
+
+	return newAuthResponse(true, "Successfully signed out")
+
+}

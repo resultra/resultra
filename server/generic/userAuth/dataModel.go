@@ -12,6 +12,10 @@ type User struct {
 	PasswordHash string
 }
 
+type UserInfo struct {
+	EmailAddr string
+}
+
 type NewUserParams struct {
 	EmailAddr string `json:"emailAddr"`
 	Password  string `json:"password"`
@@ -66,4 +70,26 @@ func getUser(emailAddr string) (*User, *AuthResponse) {
 	}
 
 	return &user, newAuthResponse(true, "Successfully retrieved user information")
+}
+
+func getUserInfoByID(userID string) (*UserInfo, error) {
+
+	dbSession, sessionErr := cassandraWrapper.CreateSession()
+	if sessionErr != nil {
+		return nil, fmt.Errorf("System error: failed to create database session")
+	}
+	defer dbSession.Close()
+
+	var userInfo UserInfo
+	getErr := dbSession.Query(
+		`SELECT email_addr 
+			FROM users 
+			WHERE user_id=? LIMIT 1`,
+		userID).Scan(&userInfo.EmailAddr)
+	if getErr != nil {
+
+		return nil, fmt.Errorf("Can't find user with id: %v", userID)
+	}
+
+	return &userInfo, nil
 }

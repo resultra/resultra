@@ -4,26 +4,50 @@ import (
 	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
+	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/webui/common"
+	"resultra/datasheet/webui/generic"
 )
+
+var homePageTemplates *template.Template
+
+func init() {
+	//	designFormTemplateFiles := []string{}
+
+	baseTemplateFiles := []string{"static/homePage/homePagePublic.html",
+		"static/homePage/homePageSignedIn.html"}
+
+	templateFileLists := [][]string{
+		baseTemplateFiles,
+		generic.TemplateFileList,
+		common.TemplateFileList}
+	homePageTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
+}
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
 	mainRouter.HandleFunc("/", home)
 }
 
-// Parse the templates once
-var homePageTemplates = template.Must(template.ParseFiles("static/homePage/homePage.html"))
-
 type PageInfo struct {
 	Title string `json:"title"`
 }
 
-func home(w http.ResponseWriter, r *http.Request) {
-	//	c := appengine.NewContext(r)
+func home(respWriter http.ResponseWriter, req *http.Request) {
 
-	p := PageInfo{"Home Page"}
-	err := homePageTemplates.Execute(w, p)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	_, authErr := userAuth.GetCurrentUserInfo(req)
+	if authErr != nil {
+		templParams := PageInfo{"Home Page - Signed out"}
+		err := homePageTemplates.ExecuteTemplate(respWriter, "homePagePublic", templParams)
+		if err != nil {
+			http.Error(respWriter, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		templParams := PageInfo{"Home Page - Signed In"}
+		err := homePageTemplates.ExecuteTemplate(respWriter, "homePageSignedIn", templParams)
+		if err != nil {
+			http.Error(respWriter, err.Error(), http.StatusInternalServerError)
+		}
+
 	}
 
 }

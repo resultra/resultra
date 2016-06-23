@@ -1,0 +1,21 @@
+{{define "homePageSignedIn"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "genericCSS"}}
+	{{template "commonCSS"}}
+
+	{{template "genericJS"}}
+	{{template "commonJS"}}
+	<script src="/static/homePage/homePageSignedIn.js"></script>
+			
+  </head>
+  <body>
+	  <h1>{{.Title}}</h1>
+	  <p>Signed In!</p>
+	  <button type="button" id="signOutButton" class="btn btn-primary">Sign Out</button>
+  </body>
+</html>
+{{end}}
