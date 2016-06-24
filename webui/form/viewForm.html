@@ -1,13 +1,26 @@
-
-
-{{define "viewFormPageHeader"}}
-	<div>
+{{define "viewFormBreadcrumbHeader"}}
+	<div class="marginTop2">
 	  {{template "homePageBreadcrumb"}}
 	  {{template "breadCrumbSeparator"}}
 	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-database" aria-hidden="true">&nbsp;Database Name</i></a>
 	  {{template "breadCrumbSeparator"}}
 	  <span class="h4 breadCrumbText">{{.FormName}}</span>
 	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "viewFormPageHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-8">
+				{{template "viewFormBreadcrumbHeader" .}}
+			</div>
+			<div class="col-md-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
 {{end}}
 
 {{define "viewFormHeaderControls"}}
@@ -56,12 +69,15 @@
   <head>
     <title>{{.Title}}</title>
 	
+	{{template "genericCSS"}}
 	{{template "commonCSS"}}
 	{{template "formComponentsCSS"}}
 	{{template "formCommonSortCSS"}}
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/layout.css">
 	<link rel="stylesheet" type="text/css" class="ui" href="/static/form/editRecord.css">
+	<link rel="stylesheet" type="text/css" class="ui" href="/static/form/viewForm.css">
 
+	{{template "genericJS"}}
 	{{template "commonJS"}}
 
 	<script>var formID={{.FormID}};</script>
@@ -86,7 +102,7 @@
 
 	<div id="layoutPage" class="layoutPageDiv">
 		
-		<div class="pane ui-layout-north">
+		<div class="pane ui-layout-north" id="viewFormPageHeaderUILayout">
 			{{template "viewFormPageHeader" .}}
 		</div> <!-- ui layout north -->
 

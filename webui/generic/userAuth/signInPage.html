@@ -1,0 +1,54 @@
+{{define "userSignInPage"}}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "genericCSS"}}
+	{{template "commonCSS"}}
+
+	{{template "genericJS"}}
+	{{template "commonJS"}}
+	<script src="/static/generic/userAuth/signInPage.js"></script>
+			
+  </head>
+  <body>
+	  <h1>{{.Title}}</h1>
+	  
+	  <div class="container-fluid">
+		  <div class="col-md-4"></div>
+		  <div class="col-md-4">
+			  <div class="alert alert-warning" role="alert">
+				  You must be signed in to view this page. Please sign in to proceed.
+			  </div>
+			  
+			  <div class="well">
+				  
+				  <div class="container-fluid">
+			  
+			  		<div class="row">
+		  		 	   {{template "userSignInDialogBody"}}
+				 	</div>
+					
+			  		<div class="row marginTop7">
+						 <div class="pull-right">
+							  {{template "userSignInButton"}}
+						 </div>
+				 	</div>
+				 
+			 </div>
+				 
+			</div>
+			
+		  </div>
+		  <div class="col-md-4"></div>
+	  </div>
+  	 
+	
+  </body>
+  
+  
+</html>
+
+{{end}}

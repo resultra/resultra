@@ -174,6 +174,8 @@ $(document).ready(function() {
 			
 	initRecordButtonsBehavior()
 	
+	initUserDropdownMenu()
+	
 	initFieldInfo( function () {
 		loadFormComponents({
 			formParentElemID: "#layoutCanvas",

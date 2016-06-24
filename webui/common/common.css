@@ -21,6 +21,7 @@
 }
 
 /* For adding space between Boostrap rows */
+.marginTop2 { margin-top:2px; }
 .marginTop5 { margin-top:5px; }
 .marginTop7 { margin-top:7px; }
 .marginTop10 { margin-top:10px; }

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/form/common/sort"
 	"resultra/datasheet/webui/form/components"
@@ -42,21 +43,29 @@ func viewForm(w http.ResponseWriter, r *http.Request) {
 	formID := vars["formID"]
 	tableID := vars["tableID"]
 
-	log.Println("view form: : form ID = %v", formID)
-	formToView, getErr := form.GetForm(form.GetFormParams{tableID, formID})
-	if getErr != nil {
-		api.WriteErrorResponse(w, getErr)
-		return
+	_, authErr := userAuth.GetCurrentUserInfo(r)
+	if authErr != nil {
+		err := viewFormTemplates.ExecuteTemplate(w, "userSignInPage", nil)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		log.Println("view form: : form ID = %v", formID)
+		formToView, getErr := form.GetForm(form.GetFormParams{tableID, formID})
+		if getErr != nil {
+			api.WriteErrorResponse(w, getErr)
+			return
+		}
+
+		templParams := ViewFormTemplateParams{Title: "View Form",
+			FormID:   formID,
+			TableID:  formToView.ParentTableID,
+			FormName: formToView.Name}
+
+		err := viewFormTemplates.ExecuteTemplate(w, "viewForm", templParams)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
 	}
-
-	templParams := ViewFormTemplateParams{Title: "View Form",
-		FormID:   formID,
-		TableID:  formToView.ParentTableID,
-		FormName: formToView.Name}
-
-	err := viewFormTemplates.ExecuteTemplate(w, "viewForm", templParams)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-
 }

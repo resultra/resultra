@@ -1,0 +1,20 @@
+{{define "userSignInDialogBody"}}
+
+   <div id="userSigninDialogBody">
+
+	   <div class="alert alert-danger" id="signinDialogAlert">
+	     <span id="signinDialogErrorMsg">Error message</span>
+	   </div>
+      <form class="form-signin">
+        <label for="signinDialogEmailInput" class="sr-only">Email address</label>
+        <input type="email" id="signinDialogEmailInput" class="form-control" placeholder="Email address" required autofocus>
+        <label for="signinDialogPasswordInput" class="sr-only">Password</label>
+        <input type="password" id="signinDialogPasswordInput" class="form-control marginTop5" placeholder="Password" required>
+      </form>
+
+    </div> <!-- dialog body -->
+{{end}}
+
+{{define "userSignInButton"}}
+  	   	<button type="button" class="btn btn-primary" id="signInDialogSigninButton" type="submit">Sign in</button>
+{{end}}
