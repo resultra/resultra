@@ -23,6 +23,11 @@ type NewUserParams struct {
 
 func saveNewUser(params NewUserParams) *AuthResponse {
 
+	passwordValResp := validatePasswordStrength(params.Password)
+	if !passwordValResp.ValidPassword {
+		return newAuthResponse(false, passwordValResp.Msg)
+	}
+
 	pwHash, hashErr := generatePasswordHash(params.Password)
 	if hashErr != nil {
 		return newAuthResponse(false, "System error: failed to create login credentials")

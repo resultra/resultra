@@ -7,16 +7,16 @@ from userAuthTestHelper import UserAuthTestHelperMixin
 class TestUserAuth(unittest.TestCase,UserAuthTestHelperMixin):
         
     def testAuth(self):
-        newUserParams = {'emailAddr':'test@example.com','password':'testpw123'}
+        newUserParams = {'emailAddr':'test@example.com','password':'testpw123$'}
         jsonResp = self.authRequest('register',newUserParams)
         self.assertEquals(jsonResp['success'],True,"register new user")
  
-        newUserParams = {'emailAddr':'test@example.com','password':'testpw123'}
+        newUserParams = {'emailAddr':'test@example.com','password':'testpw123$'}
         jsonResp = self.authRequest('register',newUserParams)
         self.assertEquals(jsonResp['success'],False,"repeat registration")
  
         
-        loginParams = {'emailAddr':'test@example.com','password':'testpw123'}
+        loginParams = {'emailAddr':'test@example.com','password':'testpw123$'}
         jsonResp = self.authRequest('login',loginParams)
         self.assertEquals(jsonResp['success'],True,"successful login")
 
@@ -29,6 +29,11 @@ class TestUserAuth(unittest.TestCase,UserAuthTestHelperMixin):
         self.assertEquals(jsonResp['success'],False,"invalid email")
     
         print "TestRegisterUser done"
+
+    def testInvalidRegistration(self):
+        newUserParams = {'emailAddr':'test1@example.com','password':'test123'}
+        jsonResp = self.authRequest('register',newUserParams)
+        self.assertEquals(jsonResp['success'],False,"password too short")
           
 
 # Allow the tests in this file to be run stand-alone

@@ -19,20 +19,7 @@ func init() {
 	authCookieStore.MaxAge(3600 * 8) // 8 hours
 }
 
-const minPasswordLength int = 8
-
-func validateWellFormedPassword(password string) error {
-	if len(password) < minPasswordLength {
-		return fmt.Errorf("validateWellFormedPassword: password must be at least 8 characters")
-	}
-	return nil
-}
-
 func generatePasswordHash(password string) (string, error) {
-
-	if validatePassErr := validateWellFormedPassword(password); validatePassErr != nil {
-		return "", fmt.Errorf("generatePasswordHash: invalid password: %v", validatePassErr)
-	}
 
 	hash, hashErr := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if hashErr != nil {
