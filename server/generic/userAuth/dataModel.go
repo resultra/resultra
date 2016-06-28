@@ -4,10 +4,14 @@ import (
 	"fmt"
 	"github.com/gocql/gocql"
 	"resultra/datasheet/server/generic/cassandraWrapper"
+	"strings"
 )
 
 type User struct {
 	UserID       string
+	UserName     string
+	FirstName    string
+	LastName     string
 	EmailAddr    string
 	PasswordHash string
 }
@@ -18,10 +22,47 @@ type UserInfo struct {
 
 type NewUserParams struct {
 	EmailAddr string `json:"emailAddr"`
+	UserName  string `json:"userName"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
 	Password  string `json:"password"`
 }
 
-func saveNewUser(params NewUserParams) *AuthResponse {
+// Strip leading and trailing whitespace from most registration parameters.
+func (rawParams NewUserParams) sanitize() NewUserParams {
+	sanitizedParams := NewUserParams{
+		EmailAddr: strings.TrimSpace(rawParams.EmailAddr),
+		UserName:  strings.TrimSpace(rawParams.UserName),
+		FirstName: strings.TrimSpace(rawParams.FirstName),
+		LastName:  strings.TrimSpace(rawParams.LastName),
+		Password:  rawParams.Password}
+	return sanitizedParams
+}
+
+func saveNewUser(rawParams NewUserParams) *AuthResponse {
+
+	params := rawParams.sanitize()
+
+	firstNameResp := validateWellFormedRealName(params.FirstName)
+	if !firstNameResp.Success {
+		return newAuthResponse(false, "First name is required")
+	}
+
+	lastNameResp := validateWellFormedRealName(params.LastName)
+	if !lastNameResp.Success {
+		return newAuthResponse(false, "Last name is required")
+	}
+
+	userNameResp := validateNewUserName(params.UserName)
+	if !userNameResp.Success {
+		return userNameResp
+	}
+
+	sanitizedEmail := strings.TrimSpace(params.EmailAddr)
+	emailResp := validateWellFormedEmailAddr(sanitizedEmail)
+	if !emailResp.Success {
+		return emailResp
+	}
 
 	passwordValResp := validatePasswordStrength(params.Password)
 	if !passwordValResp.ValidPassword {
@@ -46,8 +87,11 @@ func saveNewUser(params NewUserParams) *AuthResponse {
 
 	userID := gocql.TimeUUID().String()
 
-	if insertErr := dbSession.Query(`INSERT INTO users (user_id, email_addr, password_hash) VALUES (?,?,?)`,
-		userID, params.EmailAddr, pwHash).Exec(); insertErr != nil {
+	if insertErr := dbSession.Query(
+		`INSERT INTO users (user_id, email_addr, user_name, first_name,last_name, password_hash) 
+				VALUES (?,?,?,?,?,?)`,
+		userID, params.EmailAddr, params.UserName,
+		params.FirstName, params.LastName, pwHash).Exec(); insertErr != nil {
 		return newAuthResponse(false, "System error: failed to create login credentials")
 	}
 

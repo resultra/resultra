@@ -7,16 +7,22 @@ from userAuthTestHelper import UserAuthTestHelperMixin
 class TestUserAuth(unittest.TestCase,UserAuthTestHelperMixin):
         
     def testAuth(self):
-        newUserParams = {'emailAddr':'test@example.com','password':'testpw123$'}
+        newUserParams = {'emailAddr':'test@example.com','password':'testpw123$',
+            'firstName':'John','lastName':"Smith",
+            'userName':"JSmith"}
         jsonResp = self.authRequest('register',newUserParams)
         self.assertEquals(jsonResp['success'],True,"register new user")
  
-        newUserParams = {'emailAddr':'test@example.com','password':'testpw123$'}
+        newUserParams = {'emailAddr':'test@example.com','password':'testpw123$',
+            'firstName':'John','lastName':"Smith",
+            'userName':"JSmith"}
         jsonResp = self.authRequest('register',newUserParams)
         self.assertEquals(jsonResp['success'],False,"repeat registration")
  
         
-        loginParams = {'emailAddr':'test@example.com','password':'testpw123$'}
+        loginParams = {'emailAddr':'test@example.com','password':'testpw123$',
+            'firstName':'John','lastName':"Smith",
+            'userName':"JSmith"}
         jsonResp = self.authRequest('login',loginParams)
         self.assertEquals(jsonResp['success'],True,"successful login")
 

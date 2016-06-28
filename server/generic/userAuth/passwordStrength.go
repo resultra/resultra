@@ -70,7 +70,8 @@ func validatePasswordStrength(password string) ValidatePasswordResponse {
 		return ValidatePasswordResponse{
 			ValidPassword: false,
 			Msg: "Invalid password: passwords must be at least 8 characters, and " +
-				"include a mix of upper case letters, lower case letters, numbers and other symbols."}
+				"include a mix of at least 3 of the following: upper case letters, " +
+				" lower case letters, numbers and other symbols."}
 	}
 
 }
