@@ -21,20 +21,20 @@ type UserInfo struct {
 }
 
 type NewUserParams struct {
-	EmailAddr string `json:"emailAddr"`
-	UserName  string `json:"userName"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
+	UserName  string `json:"userName"`
+	EmailAddr string `json:"emailAddr"`
 	Password  string `json:"password"`
 }
 
 // Strip leading and trailing whitespace from most registration parameters.
 func (rawParams NewUserParams) sanitize() NewUserParams {
 	sanitizedParams := NewUserParams{
-		EmailAddr: strings.TrimSpace(rawParams.EmailAddr),
-		UserName:  strings.TrimSpace(rawParams.UserName),
 		FirstName: strings.TrimSpace(rawParams.FirstName),
 		LastName:  strings.TrimSpace(rawParams.LastName),
+		UserName:  strings.TrimSpace(rawParams.UserName),
+		EmailAddr: strings.TrimSpace(rawParams.EmailAddr),
 		Password:  rawParams.Password}
 	return sanitizedParams
 }
