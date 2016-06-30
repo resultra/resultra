@@ -17,7 +17,9 @@ type User struct {
 }
 
 type UserInfo struct {
-	EmailAddr string
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	UserName  string `json:"userName"`
 }
 
 type NewUserParams struct {
@@ -131,12 +133,11 @@ func getUserInfoByID(userID string) (*UserInfo, error) {
 
 	var userInfo UserInfo
 	getErr := dbSession.Query(
-		`SELECT email_addr 
+		`SELECT first_name,last_name,user_name 
 			FROM users 
 			WHERE user_id=? LIMIT 1`,
-		userID).Scan(&userInfo.EmailAddr)
+		userID).Scan(&userInfo.FirstName, &userInfo.LastName, &userInfo.UserName)
 	if getErr != nil {
-
 		return nil, fmt.Errorf("Can't find user with id: %v", userID)
 	}
 

@@ -14,6 +14,7 @@ func init() {
 	authRouter.HandleFunc("/auth/register", registerNewUserAPI)
 	authRouter.HandleFunc("/auth/login", loginUserAPI)
 	authRouter.HandleFunc("/auth/signout", signoutUserAPI)
+	authRouter.HandleFunc("/auth/getUserInfo", getUserInfoAPI)
 
 	http.Handle("/auth/", authRouter)
 }
@@ -46,4 +47,14 @@ func signoutUserAPI(w http.ResponseWriter, r *http.Request) {
 	authResp := signOutUser(w, r)
 	api.WriteJSONResponse(w, authResp)
 
+}
+
+func getUserInfoAPI(w http.ResponseWriter, r *http.Request) {
+	userInfo, err := GetCurrentUserInfo(r)
+
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	api.WriteJSONResponse(w, userInfo)
 }
