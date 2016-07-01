@@ -92,6 +92,7 @@ function getFormFormInfoByPanelID(dialog, panelID) {
 	return panelInfo.formInfo
 }
 
+
 function openWizardDialog(dlgParams) {
 				
 	var firstPanelConfig = dlgParams.panels[0]
@@ -99,7 +100,6 @@ function openWizardDialog(dlgParams) {
 	var $dialog = $(dlgParams.dialogDivID)
 	
 	$dialog.removeData() // remove all jQuery data from the dialog
-	
 	$dialog.data("dialogParams",dlgParams)
 			
 	$dialog.dialog({
@@ -109,7 +109,10 @@ function openWizardDialog(dlgParams) {
 		resizable: false,
 		modal: true,
 		buttons: firstPanelConfig.dlgButtons,
-		close: dlgParams.closeFunc
+		close: function () {
+			dlgParams.closeFunc()
+			 $(this).dialog("destroy")
+		}
     });
  
     $dialog.find( "form" ).on( "submit", function( event ) {
@@ -157,12 +160,4 @@ function openWizardDialog(dlgParams) {
 	
 } // openWizardDialog
 
-function initWizardDialog(dialogDivID) {
-	// Initialize the newBarchart dialog with the minimum parameters. This is necessary
-	// to hide the dialog from view when the document is initially loaded. The
-	// dialog is fully re-initialized just prior to it being opened.
-    $(dialogDivID).dialog({ autoOpen: false })
-
-	
-}
 

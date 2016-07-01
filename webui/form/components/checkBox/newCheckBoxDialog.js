@@ -96,8 +96,5 @@ function openNewCheckboxDialog(formID,parentTableID,containerParams)
 } // newLayoutContainer
 
 function initNewCheckBoxDialog() {
-	// Initialize the newTextBox dialog with the minimum parameters. This is necessary
-	// to hide the dialog from view when the document is initially loaded. The
-	// dialog is fully re-initialized just prior to it being opened.
-	initWizardDialog(checkboxDialogSelector)
+	
 }

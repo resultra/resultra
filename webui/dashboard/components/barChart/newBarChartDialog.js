@@ -5,10 +5,7 @@ var barChartElemPrefix = "barChart_"
 function initNewBarChartDialog(dashboardID) {
 
 	newBarChartParams.dashboardID = dashboardID
-	newBarChartParams.progressDivID = '#newBarChartProgress'	
-	
-	initWizardDialog('#newBarchartDialog')
-	
+	newBarChartParams.progressDivID = '#newBarChartProgress'		
 }
 
 function saveNewBarChart($dialog) {
