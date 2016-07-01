@@ -1,0 +1,17 @@
+/* The dialog suffers from the problem described here:
+
+	http://stackoverflow.com/questions/17911918/bootstrap-modal-popping-up-but-has-a-tinted-page-and-cant-interact
+
+	The CSS below is the solution.
+*/
+
+
+/* TODO - Nest this override inside another div, so as not to make it global */
+
+body.modal-open div.modal-backdrop { 
+    z-index: 0; 
+}
+
+.newFormComponentDialogBody {
+	min-height:400px;
+}

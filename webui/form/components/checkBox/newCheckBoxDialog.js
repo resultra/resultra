@@ -1,6 +1,11 @@
 
 var checkboxDialogSelector = "#newCheckbox"
 
+function openNewCheckboxDialogBootstrap(formID,parentTableID,containerParams) {
+	console.log("Open bootstrap version of checkbox dialog")
+	openNewFormComponentDialog('checkbox_')
+}
+
 function openNewCheckboxDialog(formID,parentTableID,containerParams)
 {
 	

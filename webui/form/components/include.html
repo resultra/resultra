@@ -3,6 +3,7 @@
 	{{template "formComponentDatePickerCSS"}}
 	{{template "formComponentHtmlEditorCSS"}}
 	{{template "formComponentImageCSS"}}
+	{{template "formComponentsCommonNewFormElemDialogCSS"}}
 {{end}}
 
 {{define "formComponentsJS"}}
@@ -19,7 +20,9 @@
 {{define "newComponentDialogs"}}
 	   
 	{{template "newTextBoxDialog" .TextBoxParams}}
-	{{template "newCheckboxDialog" .CheckboxParams}}
+		
+	{{template "newFormComponentDialog" .CheckboxParams}}
+
 	{{template "newDatePickerDialog" .DatePickerParams}}
 	{{template "newHtmlEditorDialog" .HtmlEditorParams}}
 	{{template "newImageDialog" .ImageParams}}
