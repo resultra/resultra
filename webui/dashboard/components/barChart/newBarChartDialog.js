@@ -11,18 +11,13 @@ function initNewBarChartDialog(dashboardID) {
 function saveNewBarChart($dialog) {
 	
 	console.log("Saving new bar chart: dashboard ID = " + newBarChartParams.dashboardID )
-	
-	var formID = '#newBarchartDialog'
-		
+			
 	var saveNewBarChartParams = {
-		dataSrcTableID: getWizardDialogPanelData($dialog,
-					barChartElemPrefix,dashboardComponentSelectTablePanelID),
+		dataSrcTableID: getWizardDialogPanelVals($dialog,dashboardComponentSelectTablePanelID),
 		parentDashboardID: newBarChartParams.dashboardID,
-		xAxisVals: getWizardDialogPanelData($dialog,
-					barChartElemPrefix,dashboardComponentValueGroupingPanelID), // xAxisVals
+		xAxisVals: getWizardDialogPanelVals($dialog,dashboardComponentValueGroupingPanelID), // xAxisVals
 		xAxisSortValues: "asc",
-		yAxisVals: getWizardDialogPanelData($dialog,
-					barChartElemPrefix,dashboardComponentValueSummaryPanelID), // yAxisVals
+		yAxisVals: getWizardDialogPanelVals($dialog,dashboardComponentValueSummaryPanelID), // yAxisVals
 		geometry: newBarChartParams.geometry
 	}
 	
@@ -38,8 +33,7 @@ function saveNewBarChart($dialog) {
 		 $('#'+newBarChartParams.placeholderID).attr("id",barChartRef.barChartID)
 		 $('#'+newBarChartParams.placeholderID+"_chart").attr("id",barChartRef.barChartID+"_chart")
 
-		newBarChartParams.barChartCreated = true;		
-		newBarChartParams.dialog.dialog("close")
+		$dialog.modal("hide")
 		
 		barChartDataParams = { 
 			parentDashboardID: newBarChartParams.dashboardID,
@@ -78,7 +72,6 @@ function newBarChart(barChartParams) {
   			  $('#'+newBarChartParams.placeholderID).remove()
   		  }	
 		},
-		width: 550, height: 500,
 		dialogDivID: '#newBarchartDialog',
 		panels: [barChartTablePanelConfig,barChartXAxisPanelConfig, barChartYAxisPanelConfig],
 		progressDivID: '#barChart_WizardDialogProgress',

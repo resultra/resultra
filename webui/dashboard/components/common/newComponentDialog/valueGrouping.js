@@ -43,32 +43,22 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 		}
 	}
 	
+	function getPanelValues() {
+		var valGrouping = {
+			fieldParentTableID: valueGroupingDialogPanelTableID,
+			fieldID: groupedFieldSelection.val(),
+			groupValsBy: groupBySelection.val(),
+			groupByValBucketWidth: Number(bucketSizeInput.val())
+		}
+		return valGrouping
+	}
+	
 	var dashboardComponentValueGroupingPanelConfig = {
 		divID: panelSelector,
 		panelID: dashboardComponentValueGroupingPanelID,
 		progressPerc:40,
-		dlgButtons: { 
-			"Previous": function() {
-				transitionToPrevWizardDlgPanelByPanelID(this,dashboardComponentSelectTablePanelID)	
-			 },
-			"Next" : function() { 
-				if(validateValueGroupingForm()) {
-					console.log("Value grouping panel validated")
-					
-					var valGrouping = {
-						fieldParentTableID: valueGroupingDialogPanelTableID,
-						fieldID: groupedFieldSelection.val(),
-						groupValsBy: groupBySelection.val(),
-						groupByValBucketWidth: Number(bucketSizeInput.val())
-					}
-					setWizardDialogPanelData($(this),elemPrefix,dashboardComponentValueGroupingPanelID,valGrouping)
-					
-					transitionToNextWizardDlgPanelByID(this,dashboardComponentValueSummaryPanelID)
-				} // if validate panel's form
-			},
-			"Cancel" : function() { $(this).dialog('close'); },
-	 	}, // dialog buttons
-		initPanel: function() {
+		getPanelVals:getPanelValues,
+		initPanel: function($dialog) {
 				
 			$(groupBySelection.selector).change(function() {
 				var groupBy = groupBySelection.val()
@@ -83,6 +73,19 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 					validateWithBucketSize = false
 				}
 			});
+			
+			var nextButtonSelector = '#' + elemPrefix + 'NewDashboardComponentValueGroupingNextButton'
+			initButtonClickHandler(nextButtonSelector,function() {
+				if(validateValueGroupingForm()) {				
+					transitionToNextWizardDlgPanelByID($dialog,dashboardComponentValueSummaryPanelID)
+				} // if validate panel's form
+			})
+
+			var prevButtonSelector = '#' + elemPrefix + 'NewDashboardComponentValueGroupingPrevButton'
+			initButtonClickHandler(prevButtonSelector,function() {
+				transitionToPrevWizardDlgPanelByPanelID($dialog,dashboardComponentSelectTablePanelID)	
+			})
+
 		
 			// The field for entering a bucket size is initially hidden. It is only shown if
 			// the group by parameter is set to use a bucket.
@@ -92,13 +95,13 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 			revalidateNonEmptyFormFieldOnChange(groupedFieldSelection.selector)
 			revalidateNonEmptyFormFieldOnChange(groupBySelection.selector)
 			revalidateNonEmptyFormFieldOnChange(bucketSizeInput.selector)		
-		
-			return {}
+
 		}, // init panel
 		transitionIntoPanel: function ($dialog) { 
 			
-			var selectedTableID = getWizardDialogPanelData($dialog,
-					elemPrefix,dashboardComponentSelectTablePanelID)
+			setWizardDialogButtonSet("newDashboardComponentValueGroupingButtons")
+			
+			var selectedTableID = getWizardDialogPanelVals($dialog,dashboardComponentSelectTablePanelID)
 			console.log("Transitioning into value grouping panel: selected table ID = " + selectedTableID)
 			valueGroupingDialogPanelTableID = 	selectedTableID
 				
@@ -119,6 +122,8 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 						$(groupBySelection.selector).attr("disabled",false)
 					}
 			    });
+				
+				
 				
 			}) // loadFieldInfo
 			

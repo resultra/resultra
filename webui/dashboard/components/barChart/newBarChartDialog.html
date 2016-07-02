@@ -1,14 +1,43 @@
 
-{{define "newBarChartDialog"}}
+{{define "newBarChartDialogBody"}}
 
-<div id="newBarchartDialog" title="New Bar Chart" class="initiallyHiddenDialog">
-	
 	{{template "wizardDialogProgress" . }}
 	
 	{{template "newDashboardComponentSelectTablePanel" .SelectTableParams}}
 	{{template "dashboardComponentValueGroupingPanel" .ValueGroupingParams}}
 	{{template "dashboardComponentValueSummaryPanel" .ValueSummaryParams}}
 	
-</div> <!-- new bar chart dialog -->
+{{end}}
+
+
+{{define "newBarChartDialogButtons"}}
+	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	{{template "newDashboardComponentSelectTablePanelButtons" .SelectTableParams}}
+	{{template "dashboardComponentValueGroupingPanelButtons"  .ValueGroupingParams}}
+	{{template "dashboardComponentValueSummaryPanelButtons" .ValueSummaryParams}}
+{{end}}
+
+
+{{define "newBarChartDialog"}}
+
+<div class="modal fade" id="newBarchartDialog"  tabindex="-1" role="document"
+						aria-labelledby="newBarChartLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="newBarChartLabel">New Barchart</h4>
+      </div>
+      <div class="modal-body newBarChartBody">
+		  <div>
+			  {{template "newBarChartDialogBody" . }}
+		</div>
+      </div>
+      <div class="modal-footer">
+		  {{template "newBarChartDialogButtons" .}}
+      </div>
+    </div>
+  </div>
+</div>
 
 {{end}}

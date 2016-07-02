@@ -35,30 +35,22 @@ function createNewDashboardComponentValueSummaryPanelConfig(elemPrefix,doneCallb
 			console.log("unrecocognized field type: " + fieldType)
 		}
 	}
+
+	function getPanelValues() {
+		var valSummary = {
+			fieldParentTableID: valueSummaryDialogPanelSelectedTableID,
+			fieldID: summaryFieldSelection.val(),
+			summarizeValsWith: summarizeBySelection.val()}
+		return valSummary
+	}
+
 	
 	var valueSummaryPanelConfig = {
 		divID: panelSelector,
 		panelID: dashboardComponentValueSummaryPanelID,
 		progressPerc:80,
-		dlgButtons: { 
-			"Previous": function() {
-				transitionToPrevWizardDlgPanelByPanelID(this,dashboardComponentValueGroupingPanelID)	
-			 },
-			"Done" : function() { 
-				if(validateValueSummaryPanel()) {
-					var valSummary = {
-						fieldParentTableID: valueSummaryDialogPanelSelectedTableID,
-						fieldID: summaryFieldSelection.val(),
-						summarizeValsWith: summarizeBySelection.val()}
-					setWizardDialogPanelData($(this),elemPrefix,dashboardComponentValueSummaryPanelID,valSummary)
-					doneCallbackFunc($(this))
-				} // if validate panel's form
-			},
-			"Cancel" : function() { $(this).dialog('close'); },
-	 	}, // dialog buttons
-	
-	
-		initPanel: function() {
+		getPanelVals:getPanelValues,
+		initPanel: function($dialog) {
 
 			$(summarizeBySelection.selector).empty()
 			$(summarizeBySelection.selector).attr("disabled",true)
@@ -66,14 +58,25 @@ function createNewDashboardComponentValueSummaryPanelConfig(elemPrefix,doneCallb
 			revalidateNonEmptyFormFieldOnChange(summaryFieldSelection.selector)
 			revalidateNonEmptyFormFieldOnChange(summarizeBySelection.selector)
 
-		
-			return {}
+			var prevButtonSelector = '#' + elemPrefix + 'NewDashboardComponentValueSummaryPrevButton'
+			initButtonClickHandler(prevButtonSelector,function() {
+				transitionToPrevWizardDlgPanelByPanelID($dialog,dashboardComponentValueGroupingPanelID)	
+			})
+			
+			var doneButtonSelector = '#' + elemPrefix + 'NewDashboardComponentValueSummaryDoneButton'
+			initButtonClickHandler(doneButtonSelector,function() {
+				if(validateValueSummaryPanel()) {
+					doneCallbackFunc($dialog)
+				} // if validate panel's form
+			})
 		},	// init panel
 		
 		transitionIntoPanel: function ($dialog) { 
+
+			setWizardDialogButtonSet("newDashboardComponentValueSummaryButtons")
+
 			
-			var selectedTableID = getWizardDialogPanelData($dialog,
-					elemPrefix,dashboardComponentSelectTablePanelID)
+			var selectedTableID = getWizardDialogPanelVals($dialog,dashboardComponentSelectTablePanelID)
 			valueSummaryDialogPanelSelectedTableID = selectedTableID
 			
 			loadFieldInfo(selectedTableID,[fieldTypeAll],function(valueSummaryFieldsByID) {

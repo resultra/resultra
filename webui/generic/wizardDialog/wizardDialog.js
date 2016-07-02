@@ -74,7 +74,7 @@ function transitionToPrevWizardDlgPanelByPanelID($dialog, prevPanelID) {
 	transitionToPrevWizardDlgPanel($dialog,panelConfigByID[prevPanelID])
 }
 
-function openWizardDialogBootstrap(dlgParams) {
+function openWizardDialog(dlgParams) {
 	var firstPanelConfig = dlgParams.panels[0]
 	
 	var $dialog = $(dlgParams.dialogDivID)

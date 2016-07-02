@@ -21,38 +21,39 @@ function createNewDashboardComponentSelectTablePanelConfig(elemPrefix) {
 		})
 	}
 	
+	function getPanelValues() {
+		var selectedTableID = $(tableSelection.selector).val()
+		console.log("Selected table: " + selectedTableID)
+		return selectedTableID
+	}
+	
+	
 	var dashboardSelectTablePanelConfig = {
 		divID: panelSelector,
 		panelID: dashboardComponentSelectTablePanelID,
 		progressPerc:20,
-		dlgButtons: { 
-			"Next" : function() { 
-				if(validateTableSelectionForm()) {
-				
-					// Since fiels have tables as their parent, the field selection can only be 
-					// initialized after table selection has been made.
-					var selectedTableID = $(tableSelection.selector).val()
-					console.log("Selected table: " + selectedTableID)
-					
-					setWizardDialogPanelData($(this),elemPrefix,dashboardComponentSelectTablePanelID,selectedTableID)
-
-					transitionToNextWizardDlgPanelByID(this,dashboardComponentValueGroupingPanelID)
-					
-				} // if validate panel's form
-			},
-			"Cancel" : function() { $(this).dialog('close'); },
-	 	}, // dialog buttons
-		initPanel: function() {
+		getPanelVals:getPanelValues,
+		initPanel: function($dialog) {
 			var tableListParams =  { databaseID: databaseID }
 			jsonAPIRequest("table/getList",tableListParams,function(tableRefs) {
 				populateTableSelectionMenu(tableRefs,tableSelection.selector)
 			})
 			
 			revalidateNonEmptyFormFieldOnChange(tableSelection.selector)
-					
-			return {}
+
+			var nextButtonSelector = '#' + elemPrefix + 'NewDashboardComponentSelectTableNextButton'
+			initButtonClickHandler(nextButtonSelector,function() {
+				if(validateTableSelectionForm()) {
+					transitionToNextWizardDlgPanelByID($dialog,dashboardComponentValueGroupingPanelID)
+				} // if validate panel's form
+			})
+
+
 		}, // init panel
-		transitionIntoPanel: function ($dialog) { } // no-op
+		transitionIntoPanel: function ($dialog) {
+			setWizardDialogButtonSet("newDashboardComponentSelectTableNextButton")
+			
+		 } // no-op
 	}
 	
 	return dashboardSelectTablePanelConfig

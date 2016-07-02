@@ -35,7 +35,7 @@ function openNewFormComponentDialog(newComponentParams) {
 	var newFieldPanel = createNewFieldDialogPanelContextBootstrap(newComponentParams.elemPrefix)
 		
 		
-	openWizardDialogBootstrap({
+	openWizardDialog({
 		closeFunc: function() {
 			console.log("Close dialog")
 			if(!newCheckBoxParams.containerCreated)
