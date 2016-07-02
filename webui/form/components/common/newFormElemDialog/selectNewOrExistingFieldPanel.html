@@ -1,10 +1,11 @@
 {{define "newFormElemDialogSelectFieldPanelButtons"}}
 	<button type="button" class="btn btn-primary" id="{{.ElemPrefix}}NewFormComponentNewFieldNextButton" type="submit">Next</button>
+	<button type="button" class="btn btn-primary" id="{{.ElemPrefix}}NewFormComponentNewFieldDoneButton" type="submit">Done</button>
 {{end}}
 
 {{define "newFormElemDialogSelectFieldPanel"}}
 
-	<div id="{{.ElemPrefix}}SelectExistingOrNewFieldPanel" class="newFormComponentPanel">
+	<div id="{{.ElemPrefix}}SelectExistingOrNewFieldPanel" class="wizardPanel">
 		<form id="{{.ElemPrefix}}SelectExistingOrNewFieldForm">
 			
 			<div class="alert alert-info">

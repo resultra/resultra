@@ -1,7 +1,8 @@
 
 var newFieldDialogPanelID = "newField"
 
-function createNewFieldDialogPanelConfig(elemPrefix) {
+
+function createNewFieldDialogPanelContextBootstrap(elemPrefix) {
 	
 	var panelSelector = "#" + elemPrefix + "NewFieldPanel"
 	var fieldRefNameInput = createPrefixedTemplElemInfo(elemPrefix,"NewFieldRefName")
@@ -21,65 +22,18 @@ function createNewFieldDialogPanelConfig(elemPrefix) {
 		panelID: newFieldDialogPanelID,
 		divID: panelSelector,
 		progressPerc:60,
-		dlgButtons: { 
-			"Previous": function() { 
-				transitionToPrevWizardDlgPanelByPanelID(this,createNewOrExistingFieldDialogPanelID)	
-			 },
-			"Next" : function() { 
-				if(validateForm()) {
-			/*
-					if(newFieldIsCalcField()){
-						transitionToNextWizardDlgPanel(this,textBoxProgressDivID,
-							newFieldPanelConfig,calcFieldFormulaPanelConfig)
-					}
-					else {
-						transitionToNextWizardDlgPanel(this,textBoxProgressDivID,
-							newFieldPanelConfig,newTextBoxValidateFormatEntriesPanel)
-					}	
-					*/
-				} // if validate panel's form	
-			},
-			"Cancel" : function() { $(this).dialog('close'); },
-	 	}, // dialog buttons
-		initPanel: function (dialog) {
+		dlgButtons: null, // todo - initialize buttons with Bootstrap based button handling
+		initPanel: function ($parentDialog) {
 			
-			var fieldValidation = {}
-			fieldValidation[fieldNameInput.id] = {
-	          rules: [
-	            {
-	              type   : 'empty',
-	              prompt : 'Please enter a field name'
-	            }]
-			} // field name input validation
-			fieldValidation[fieldRefNameInput.id] = {
-	          rules: [
-	            {
-	              type   : 'empty',
-	              prompt : 'Please enter a reference name'
-	            }]
-			} // field reference name validation
+			var prevButtonSelector = '#' + elemPrefix + 'NewFormComponentSelectFieldPrevButton'
+			$(prevButtonSelector).unbind("click")
+			$(prevButtonSelector).click(function(e) {
+				$(this).blur();
+			    e.preventDefault();// prevent the default anchor functionality
+				
+				transitionToPrevWizardDlgPanelByPanelID($parentDialog,createNewOrExistingFieldDialogPanelID)
+			})
 			
-	// TODO - Re-integrate with Bootstrap
-/*			$(panelSelector ).form({
-		    	fields: {
-			        newFieldValTypeSelection: {
-			          rules: [
-			            {
-			              type   : 'empty',
-			              prompt : 'Please select a type'
-			            }
-			          ]
-			        }, // newFieldValTypeSelection validation
-		     	},
-		  	}) */
-	// TODO - Re-integrate with Bootstrap
-	//		$(refNameHelpPopup.selector).popup({on: 'hover'});
-			
-			var panelFormInfo = {
-				panelSelector: panelSelector
-			}
-			return panelFormInfo
-		
 		}, // init panel
 		transitionIntoPanel: function ($dialog) { }
 	} // wizard dialog configuration for panel to create new field

@@ -98,3 +98,5 @@ function defaultSelectOptionPromptHTML(selItemPrompt) {
 	var selOptionHTML = '<option disabled selected value="">' + selItemPrompt + '</option>'
 	return selOptionHTML
 }
+
+

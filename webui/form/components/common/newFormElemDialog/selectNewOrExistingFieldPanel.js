@@ -1,7 +1,8 @@
 
 var createNewOrExistingFieldDialogPanelID = "newOrExistingField"
 
-function createNewOrExistingFieldPanelConfig(panelConfig) {
+
+function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 
 	// Build up a set of selectors based upon the prefix. The suffixes must match
 	// those given in the template newFormElemDialogCommon.html
@@ -43,19 +44,7 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 		}
 	})
 	
-	
-	function nextButtonClicked() {
-		if (validateForm()) {
-			if (radioButtonIsChecked(createNewFieldRadio.selector)) {
-				transitionToNextWizardDlgPanelByID(this,newFieldDialogPanelID)
-			} else {
-				//transitionToNextWizardDlgPanel(this, dialogProgressDivID,
-				//	newOrExistingFieldPanelConfig, newTextBoxValidateFormatEntriesPanel)
-			}
-			
-		} // if validate form
-	}
-	
+		
 	function doneButtonClicked() {
 		if(validateForm()) {
 			panelConfig.doneFunc(this)	
@@ -66,32 +55,22 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 		$(this).dialog('close');	
 	}
 	
-	var selectExistingButtons = {
-		"Done": doneButtonClicked,
-		"Cancel": cancelButtonClicked
-	}
-	
-	var selectNewButtons = {
-		"Next": nextButtonClicked,
-		"Cancel": cancelButtonClicked,		
-	}
-
 	var newOrExistingFieldPanelConfig = {
 		panelID: createNewOrExistingFieldDialogPanelID,
 		divID: panelSelector,
 		progressPerc: 20,
-		dlgButtons: selectNewButtons, // dialog buttons
+		dlgButtons: null, // dialog buttons - TODO - reimplement with Bootstrap buttons
 
-		initPanel: function(parentDialog) {
+		initPanel: function($parentDialog) {
 
 			function enableSelectExistingField() {
-				setWizardDialogButtons(parentDialog,selectExistingButtons)
+//				setWizardDialogButtons(parentDialog,selectExistingButtons)
 				console.log("Enabling field selection")
 				enableFormControl(fieldSelectionSelector)				
 			}
 
 			function disableSelectExistingField() {
-				setWizardDialogButtons(parentDialog,selectNewButtons)
+	//			setWizardDialogButtons(parentDialog,selectNewButtons)
 				disableFormControl(fieldSelectionSelector)
 							
 				validateForm()
@@ -115,18 +94,27 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 					enableSelectExistingField()
 				}
 			});
+						
+			var nextButtonSelector = '#' + panelConfig.elemPrefix + 'NewFormComponentNewFieldNextButton'
+			initButtonClickHandler(nextButtonSelector,function() {
+				if (validateForm()) {
+					if (radioButtonIsChecked(createNewFieldRadio.selector)) {
+						transitionToNextWizardDlgPanelByID($parentDialog,newFieldDialogPanelID)
+					} else {
+						//transitionToNextWizardDlgPanel(this, dialogProgressDivID,
+						//	newOrExistingFieldPanelConfig, newTextBoxValidateFormatEntriesPanel)
+					}
+				} // if validate form
+			})
+			
+			var doneButtonSelector = '#' + panelConfig.elemPrefix + 'NewFormComponentNewFieldDoneButton'
+			initButtonClickHandler(doneButtonSelector,function() {
+				if(validateForm()) {
+					panelConfig.doneFunc($parentDialog)	
+				}
+			})
 			
 			
-			var panelFormInfo = {
-				panelSelector: panelSelector,
-				existingFieldSelection: selectField.id,
-				existingFieldSelectionSelector: selectField.selector,
-				newFieldRadio: createNewFieldRadio.id,
-				newFieldRadioSelector: createNewFieldRadio.selector
-			}
-			
-			return panelFormInfo;
-
 		}, // init panel
 		transitionIntoPanel: function ($dialog) { }
 	} // wizard dialog configuration for panel to create new field
@@ -134,4 +122,3 @@ function createNewOrExistingFieldPanelConfig(panelConfig) {
 	return newOrExistingFieldPanelConfig;
 
 } // createNewOrExistingFieldPanelConfig
-

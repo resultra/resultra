@@ -1,41 +1,41 @@
-function updateDialogProgress(dialog,progressVal) {
-	var dlgParams = $(dialog).data("dialogParams")
+function updateDialogProgress($dialog,progressVal) {
+	var dlgParams = $dialog.data("dialogParams")
 	
 	console.log("Update progress: " + dlgParams.progressDivID + " val:" + progressVal)
 	
 	$(dlgParams.progressDivID).css('width', progressVal+'%').attr('aria-valuenow', progressVal);
 }
 
-function updateDialogToPanelConfig(dialog, panelConfig) {
-	
-	var $dialog = $(dialog)
-	
+function updateDialogToPanelConfig($dialog, panelConfig) {
+		
 	panelConfig.transitionIntoPanel($dialog)
-	updateDialogProgress(dialog,panelConfig.progressPerc)
+	updateDialogProgress($dialog,panelConfig.progressPerc)
 	$dialog.data("currPanelConfig",panelConfig)
-	$dialog.dialog("option","buttons",panelConfig.dlgButtons)	
+	
+	// TODO - Reenable buttons 
+//	$dialog.dialog("option","buttons",panelConfig.dlgButtons)	
 }
 
-function transitionToNextWizardDlgPanel(dialog, nextPanelConfig) {
+function transitionToNextWizardDlgPanel($dialog, nextPanelConfig) {
 	function showNextPanel() {
 		$(nextPanelConfig.divID).show("slide",{direction:"right"},200);
 	}
 	
-	var currPanelConfig = $(dialog).data("currPanelConfig")
+	var currPanelConfig = $dialog.data("currPanelConfig")
 	$(currPanelConfig.divID).hide("slide",{direction:"left"},200,showNextPanel);
 	
-	updateDialogToPanelConfig(dialog,nextPanelConfig)
+	updateDialogToPanelConfig($dialog,nextPanelConfig)
 }
 
-function transitionToPrevWizardDlgPanel(dialog, prevPanelConfig) {
+function transitionToPrevWizardDlgPanel($dialog, prevPanelConfig) {
 	function showPrevPanel() {
 		$(prevPanelConfig.divID).show("slide",{direction:"left"},200);
 	}
 
-	var currPanelConfig = $(dialog).data("currPanelConfig")
+	var currPanelConfig = $dialog.data("currPanelConfig")
 	$(currPanelConfig.divID).hide("slide",{direction:"right"},200,showPrevPanel);
 
-	updateDialogToPanelConfig(dialog,prevPanelConfig)
+	updateDialogToPanelConfig($dialog,prevPanelConfig)
 }
 
 
@@ -67,54 +67,29 @@ function getWizardDialogPanelData($dialog,elemPrefix,panelID) {
 	return panelData
 }
 
-function transitionToNextWizardDlgPanelByID(dialog, nextPanelID) {
+function transitionToNextWizardDlgPanelByID($dialog, nextPanelID) {
 	
-	var panelConfigByID = $(dialog).data("wizardDialogPanelsByID")
+	var panelConfigByID = $dialog.data("wizardDialogPanelsByID")
 		
-	transitionToNextWizardDlgPanel(dialog,panelConfigByID[nextPanelID].config)
+	transitionToNextWizardDlgPanel($dialog,panelConfigByID[nextPanelID].config)
 }
 
 
-function transitionToPrevWizardDlgPanelByPanelID(dialog, prevPanelID) {
+function transitionToPrevWizardDlgPanelByPanelID($dialog, prevPanelID) {
 	
-	var panelConfigByID = $(dialog).data("wizardDialogPanelsByID")
+	var panelConfigByID = $dialog.data("wizardDialogPanelsByID")
 		
-	transitionToPrevWizardDlgPanel(dialog,panelConfigByID[prevPanelID].config)
+	transitionToPrevWizardDlgPanel($dialog,panelConfigByID[prevPanelID].config)
 }
 
-
-function getFormFormInfoByPanelID(dialog, panelID) {
-	
-	var panelInfoByID = $(dialog).data("wizardDialogPanelsByID")
-	
-	var panelInfo = panelInfoByID[panelID]
-	assert(panelInfo !== undefined, "Missing panel information for panel ID = " + panelID)
-	return panelInfo.formInfo
-}
-
-
-function openWizardDialog(dlgParams) {
-				
+function openWizardDialogBootstrap(dlgParams) {
 	var firstPanelConfig = dlgParams.panels[0]
 	
 	var $dialog = $(dlgParams.dialogDivID)
 	
 	$dialog.removeData() // remove all jQuery data from the dialog
 	$dialog.data("dialogParams",dlgParams)
-			
-	$dialog.dialog({
-		autoOpen: false,
-		width: dlgParams.width,
-		height: dlgParams.height, 
-		resizable: false,
-		modal: true,
-		buttons: firstPanelConfig.dlgButtons,
-		close: function () {
-			dlgParams.closeFunc()
-			 $(this).dialog("destroy")
-		}
-    });
- 
+			 
     $dialog.find( "form" ).on( "submit", function( event ) {
       	event.preventDefault();
 		//saveNewTextBox()
@@ -124,28 +99,19 @@ function openWizardDialog(dlgParams) {
 	
 	$( ".wizardPanel" ).hide() // hide all the panels
 	$(firstPanelConfig.divID).show() // show the first panel
-	updateDialogToPanelConfig($dialog,firstPanelConfig)
+	// TODO - Set dialog buttons to first panel's buttons
 	
-	// Clear any previous entries validation errors. The message blocks by 
-	// default don't clear their values with 'clear', so any remaining error
-	// messages need to be removed from the message blocks within the panels.
-// TODO - Use Bootstrap form validation to clear any previous errors
-//	$('.wizardPanel').form('clear') // clear any previous entries
-	$('.wizardErrorMsgBlock').empty()
-		
+	updateDialogToPanelConfig($dialog,firstPanelConfig)
+			
 	var panelsByID = {}
 	for(var panelIndex = 0; panelIndex != dlgParams.panels.length; panelIndex++) {
 		
 		var panelConfig = dlgParams.panels[panelIndex]
 		
-		// Each panel is expected to return an object from initialization which can later
-		// be used to reference the panel and form fields to gather up the 
-		var panelFormInfo = dlgParams.panels[panelIndex].initPanel($dialog)
-		assert(panelFormInfo !== undefined, "Panel form info not returned from init function")
+		dlgParams.panels[panelIndex].initPanel($dialog)
 		
 		var panelInfo = {
 			config: panelConfig,
-			formInfo: panelFormInfo
 		}
 		
 		assert(panelConfig.panelID !== undefined, "Missing panelID on dialog panel configuration")
@@ -156,8 +122,7 @@ function openWizardDialog(dlgParams) {
 	// when transitioning to the next panel or previous panel (see functions above).
 	$dialog.data("wizardDialogPanelsByID",panelsByID)
 	
-	$dialog.dialog("open")
+	$dialog.modal('show')
 	
-} // openWizardDialog
-
+}
 

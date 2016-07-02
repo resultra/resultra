@@ -60,6 +60,16 @@ function setElemGeometry(elem, geometry) {
 	
 }
 
+function initButtonClickHandler(buttonSelector,handlerFunc) {
+	$(buttonSelector).unbind("click")
+	$(buttonSelector).click(function(e) {
+		$(this).blur(); // de-select the button after it's been clicked
+	    e.preventDefault();// prevent the default  functionality
+		handlerFunc()
+	})
+}
+
+
 function insertTextAreaAtCursor(elem, newText) {
 	
   console.log("appending text to formula box: " + newText)

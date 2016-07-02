@@ -1,61 +1,36 @@
-function slideToNextDialogPanel(currPanelSelector, nextPanelSelector) {
-	function showNextPanel() {
-		$(nextPanelSelector).show("slide",{direction:"right"},200);
-	}
-	$(currPanelSelector).hide("slide",{direction:"left"},200,showNextPanel);
-	
-}
 
-function slideToPrevDialogPanel(currPanelSelector, prevPanelSelector) {
-	function showNextPanel() {
-		$(prevPanelSelector).show("slide",{direction:"left"},200);
-	}
-	$(currPanelSelector).hide("slide",{direction:"right"},200,showNextPanel);
-	
-}
 
-function updateWizardDialogProgress(elemPrefix,progressPerc) {
-	
+function openNewFormComponentDialog(elemPrefix, formID,parentTableID,containerParams) {
+
+	var dialogSelector = '#' + elemPrefix + "NewFormComponentDialog"
 	var progressSelector = '#' + elemPrefix + 'WizardDialogProgress'
-	
-	$(progressSelector).css('width', progressPerc+'%').attr('aria-valuenow', progressPerc);
-	
-}
 
-
-function openNewFormComponentDialog(elemPrefix) {
+	function saveNewFormComponent($parentDialog) {
+		console.log("saveNewFormComponent: done handler called")
+	}
 	
-	var dlgSelector = '#' + elemPrefix + 'NewFormComponentDialog'
-	var selectFieldSelector = '#' + elemPrefix + 'SelectExistingOrNewFieldPanel'
-	var newFieldSelector =  '#' + elemPrefix + 'NewFieldPanel'
-	
-	$('.newFormComponentPanel').hide()
-	$(selectFieldSelector).show()
-	updateWizardDialogProgress(elemPrefix,10)
+	var newOrExistingFieldPanel = createNewOrExistingFieldPanelContextBootstrap({
+		parentTableID: parentTableID,
+		elemPrefix:elemPrefix,
+		fieldTypes: [fieldTypeBool],
+		doneIfSelectExistingField:true,
+		doneFunc:saveNewFormComponent})
+	var newFieldPanel = createNewFieldDialogPanelContextBootstrap(elemPrefix)
 		
-	$(dlgSelector).modal('show')
-	
-	var nextButtonSelector = '#' + elemPrefix + 'NewFormComponentNewFieldNextButton'
-	$(nextButtonSelector).unbind("click")
-	$(nextButtonSelector).click(function(e) {
-		$(this).blur();
-	    e.preventDefault();// prevent the default anchor functionality
 		
-		slideToNextDialogPanel(selectFieldSelector,newFieldSelector)
-		updateWizardDialogProgress(elemPrefix,60)
-				
+	openWizardDialogBootstrap({
+		closeFunc: function() {
+			console.log("Close dialog")
+			if(!newCheckBoxParams.containerCreated)
+			{
+			  // If the the text box creation is not complete, remove the placeholder
+			  // from the canvas.
+				$('#'+newCheckBoxParams.placeholderID).remove()
+			}
+      	},
+		dialogDivID: dialogSelector,
+		panels: [newOrExistingFieldPanel,newFieldPanel],
+		progressDivID: progressSelector,
 	})
-	
-	
-	var prevButtonSelector = '#' + elemPrefix + 'NewFormComponentSelectFieldPrevButton'
-	$(prevButtonSelector).unbind("click")
-	$(prevButtonSelector).click(function(e) {
-		$(this).blur();
-	    e.preventDefault();// prevent the default anchor functionality
-
-		slideToPrevDialogPanel(newFieldSelector,selectFieldSelector)
-		updateWizardDialogProgress(elemPrefix,40)
-	})
-	
-	
+		
 }
