@@ -1,21 +1,38 @@
 
 
-function openNewFormComponentDialog(elemPrefix, formID,parentTableID,containerParams) {
+function openNewFormComponentDialog(newComponentParams) {
 
-	var dialogSelector = '#' + elemPrefix + "NewFormComponentDialog"
-	var progressSelector = '#' + elemPrefix + 'WizardDialogProgress'
+
+	var dialogSelector = '#' + newComponentParams.elemPrefix + "NewFormComponentDialog"
+	var progressSelector = '#' + newComponentParams.elemPrefix + 'WizardDialogProgress'
 
 	function saveNewFormComponent($parentDialog) {
 		console.log("saveNewFormComponent: done handler called")
+		
+		var newOrExistingVals = getWizardDialogPanelVals($parentDialog,createNewOrExistingFieldDialogPanelID)
+				
+		console.log("saveNewFormComponent: panel values: " + JSON.stringify(newOrExistingVals))
+		
+		if(newOrExistingVals.newField == true) {
+			// TODO Create the new field first, then create the component attached to this field
+		} else {
+			var newComponentAPIParams = {
+				fieldParentTableID: newComponentParams.parentTableID,
+				parentFormID: newComponentParams.formID,
+				geometry: newComponentParams.containerParams.geometry,
+				fieldID: newOrExistingVals.selectedFieldID
+			}
+			newComponentParams.createNewFormComponent($parentDialog,newComponentAPIParams)
+		}
 	}
 	
 	var newOrExistingFieldPanel = createNewOrExistingFieldPanelContextBootstrap({
-		parentTableID: parentTableID,
-		elemPrefix:elemPrefix,
-		fieldTypes: [fieldTypeBool],
+		parentTableID: newComponentParams.parentTableID,
+		elemPrefix:newComponentParams.elemPrefix,
+		fieldTypes: newComponentParams.fieldTypes,
 		doneIfSelectExistingField:true,
 		doneFunc:saveNewFormComponent})
-	var newFieldPanel = createNewFieldDialogPanelContextBootstrap(elemPrefix)
+	var newFieldPanel = createNewFieldDialogPanelContextBootstrap(newComponentParams.elemPrefix)
 		
 		
 	openWizardDialogBootstrap({

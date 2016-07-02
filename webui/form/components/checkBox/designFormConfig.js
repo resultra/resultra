@@ -42,7 +42,7 @@ function resizeCheckBox(checkBoxID,geometry) {
 
 var checkBoxDesignFormConfig = {
 	draggableHTMLFunc:	checkBoxContainerHTML,
-	createNewItemAfterDropFunc: openNewCheckboxDialogBootstrap,
+	createNewItemAfterDropFunc: openNewCheckboxDialog,
 	resizeConstraints: elemResizeConstraints(100,640,30,30),
 	resizeFunc: resizeCheckBox,
 	repositionFunc:repositionCheckBox,

@@ -43,35 +43,27 @@ function setWizardDialogButtonSet(buttonClassName) {
 	$('.'+buttonClassName).show() // show specific buttons with the given class name
 }
 
-// setWizardDialogPanelData should be called after a panel has fully validated its
+
+// getWizardDialogPanelVals should be called after a panel has fully validated its
 // form contents and is ready to transition out of the panel. Other schemes for storing
 // the panel's data for later retrieval are possible, but this method is considered a good
 // separation of concerns for the dialog panel; in other words the dialog panel code has
 // full knowledge of the HTML fields *and* value format from those fields (e.g., number vs text)
 // is thus best positioned to "package up" a data object with the fully validated results.
-function setWizardDialogPanelData($dialog,elemPrefix,panelID,panelData) {
-	var dataIndex = elemPrefix + panelID
+function getWizardDialogPanelVals($dialog,panelID) {
 	
-	console.log("setWizardDialogPanelData: " + dataIndex + ": " + JSON.stringify(panelData))
+	var panelsByID = $dialog.data("wizardDialogPanelsByID")
 	
-	$dialog.data(dataIndex,panelData)
-}
-
-function getWizardDialogPanelData($dialog,elemPrefix,panelID) {
-	var dataIndex = elemPrefix + panelID
+	var panelVals = panelsByID[panelID].getPanelVals()
 	
-	var panelData = $dialog.data(dataIndex)
-	
-	console.log("getWizardDialogPanelData: " + dataIndex + ": " + JSON.stringify(panelData))
-
-	return panelData
+	return panelVals
 }
 
 function transitionToNextWizardDlgPanelByID($dialog, nextPanelID) {
 	
 	var panelConfigByID = $dialog.data("wizardDialogPanelsByID")
 		
-	transitionToNextWizardDlgPanel($dialog,panelConfigByID[nextPanelID].config)
+	transitionToNextWizardDlgPanel($dialog,panelConfigByID[nextPanelID])
 }
 
 
@@ -79,7 +71,7 @@ function transitionToPrevWizardDlgPanelByPanelID($dialog, prevPanelID) {
 	
 	var panelConfigByID = $dialog.data("wizardDialogPanelsByID")
 		
-	transitionToPrevWizardDlgPanel($dialog,panelConfigByID[prevPanelID].config)
+	transitionToPrevWizardDlgPanel($dialog,panelConfigByID[prevPanelID])
 }
 
 function openWizardDialogBootstrap(dlgParams) {
@@ -99,7 +91,6 @@ function openWizardDialogBootstrap(dlgParams) {
 	
 	$( ".wizardPanel" ).hide() // hide all the panels
 	$(firstPanelConfig.divID).show() // show the first panel
-	// TODO - Set dialog buttons to first panel's buttons
 	
 	updateDialogToPanelConfig($dialog,firstPanelConfig)
 			
@@ -109,13 +100,9 @@ function openWizardDialogBootstrap(dlgParams) {
 		var panelConfig = dlgParams.panels[panelIndex]
 		
 		dlgParams.panels[panelIndex].initPanel($dialog)
-		
-		var panelInfo = {
-			config: panelConfig,
-		}
-		
+				
 		assert(panelConfig.panelID !== undefined, "Missing panelID on dialog panel configuration")
-		panelsByID[panelConfig.panelID] = panelInfo
+		panelsByID[panelConfig.panelID] = panelConfig
 	}
 
 	// Store a map of panel IDs to the panel configurations. Different dialog panels can reference these unique panel IDs

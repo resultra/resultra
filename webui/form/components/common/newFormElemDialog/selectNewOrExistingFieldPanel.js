@@ -55,67 +55,78 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 		$(this).dialog('close');	
 	}
 	
+	function initSelectNewOrExistingFieldPanel($parentDialog) {
+		function enableSelectExistingField() {
+			setWizardDialogButtonSet("newFormComponentDlgExistingFieldButtons")
+			console.log("Enabling field selection")
+			enableFormControl(fieldSelectionSelector)				
+		}
+
+		function disableSelectExistingField() {
+			setWizardDialogButtonSet("newFormComponentDlgNewFieldButtons")
+			disableFormControl(fieldSelectionSelector)
+						
+			validateForm()
+		}
+
+		// Populate the select field dialog box with a list of possible fields to
+		// connect the new form element to.
+		$(selectField.selector).dropdown()
+		loadFieldInfo(panelConfig.parentTableID,panelConfig.fieldTypes,function(fieldsByID) {
+			populateFieldSelectionMenu(fieldsByID,selectField.selector)
+		})
+
+		disableSelectExistingField();
+		$(createNewFieldRadio.selector).prop("checked", true);
+		$(newOrExistingRadioInputSelector).change(function() {
+			console.log("new or existing radio value:", this.value);
+			if (this.value == "new") {
+				disableSelectExistingField()
+				removeFormControlError(selectExistingField.selector)		
+			} else {
+				enableSelectExistingField()
+			}
+		});
+					
+		var nextButtonSelector = '#' + panelConfig.elemPrefix + 'NewFormComponentNewFieldNextButton'
+		initButtonClickHandler(nextButtonSelector,function() {
+			if (validateForm()) {
+				if (radioButtonIsChecked(createNewFieldRadio.selector)) {
+					transitionToNextWizardDlgPanelByID($parentDialog,newFieldDialogPanelID)
+				} else {
+					//transitionToNextWizardDlgPanel(this, dialogProgressDivID,
+					//	newOrExistingFieldPanelConfig, newTextBoxValidateFormatEntriesPanel)
+				}
+			} // if validate form
+		})
+		
+		var doneButtonSelector = '#' + panelConfig.elemPrefix + 'NewFormComponentNewFieldDoneButton'
+		initButtonClickHandler(doneButtonSelector,function() {
+			if(validateForm()) {
+				panelConfig.doneFunc($parentDialog)	
+			}
+		})
+		
+	}
+	
+	function getPanelValues() {
+		var panelVals = {}
+		if (radioButtonIsChecked(createNewFieldRadio.selector)) {
+			panelVals.newField = true
+		} else {
+			panelVals.newField = false
+			panelVals.selectedFieldID = $(fieldSelectionSelector).val()
+		}
+		return panelVals
+	}
+	
 	var newOrExistingFieldPanelConfig = {
 		panelID: createNewOrExistingFieldDialogPanelID,
 		divID: panelSelector,
 		progressPerc: 20,
 		dlgButtons: null, // dialog buttons - TODO - reimplement with Bootstrap buttons
-
-		initPanel: function($parentDialog) {
-
-			function enableSelectExistingField() {
-				setWizardDialogButtonSet("newFormComponentDlgExistingFieldButtons")
-				console.log("Enabling field selection")
-				enableFormControl(fieldSelectionSelector)				
-			}
-
-			function disableSelectExistingField() {
-				setWizardDialogButtonSet("newFormComponentDlgNewFieldButtons")
-				disableFormControl(fieldSelectionSelector)
-							
-				validateForm()
-			}
-
-			// Populate the select field dialog box with a list of possible fields to
-			// connect the new form element to.
-			$(selectField.selector).dropdown()
-			loadFieldInfo(panelConfig.parentTableID,panelConfig.fieldTypes,function(fieldsByID) {
-				populateFieldSelectionMenu(fieldsByID,selectField.selector)
-			})
-
-			disableSelectExistingField();
-			$(createNewFieldRadio.selector).prop("checked", true);
-			$(newOrExistingRadioInputSelector).change(function() {
-				console.log("new or existing radio value:", this.value);
-				if (this.value == "new") {
-					disableSelectExistingField()
-					removeFormControlError(selectExistingField.selector)		
-				} else {
-					enableSelectExistingField()
-				}
-			});
-						
-			var nextButtonSelector = '#' + panelConfig.elemPrefix + 'NewFormComponentNewFieldNextButton'
-			initButtonClickHandler(nextButtonSelector,function() {
-				if (validateForm()) {
-					if (radioButtonIsChecked(createNewFieldRadio.selector)) {
-						transitionToNextWizardDlgPanelByID($parentDialog,newFieldDialogPanelID)
-					} else {
-						//transitionToNextWizardDlgPanel(this, dialogProgressDivID,
-						//	newOrExistingFieldPanelConfig, newTextBoxValidateFormatEntriesPanel)
-					}
-				} // if validate form
-			})
-			
-			var doneButtonSelector = '#' + panelConfig.elemPrefix + 'NewFormComponentNewFieldDoneButton'
-			initButtonClickHandler(doneButtonSelector,function() {
-				if(validateForm()) {
-					panelConfig.doneFunc($parentDialog)	
-				}
-			})
-			
-			
-		}, // init panel
+		initPanel: initSelectNewOrExistingFieldPanel, // init panel
+		getPanelVals: getPanelValues,
 		transitionIntoPanel: function ($dialog) {
 			if (radioButtonIsChecked(createNewFieldRadio.selector)) {
 				setWizardDialogButtonSet("newFormComponentDlgNewFieldButtons")				
