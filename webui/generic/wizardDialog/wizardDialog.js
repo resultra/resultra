@@ -1,3 +1,5 @@
+
+
 function updateDialogProgress($dialog,progressVal) {
 	var dlgParams = $dialog.data("dialogParams")
 	
@@ -11,9 +13,6 @@ function updateDialogToPanelConfig($dialog, panelConfig) {
 	panelConfig.transitionIntoPanel($dialog)
 	updateDialogProgress($dialog,panelConfig.progressPerc)
 	$dialog.data("currPanelConfig",panelConfig)
-	
-	// TODO - Reenable buttons 
-//	$dialog.dialog("option","buttons",panelConfig.dlgButtons)	
 }
 
 function transitionToNextWizardDlgPanel($dialog, nextPanelConfig) {
@@ -39,8 +38,9 @@ function transitionToPrevWizardDlgPanel($dialog, prevPanelConfig) {
 }
 
 
-function setWizardDialogButtons(dialog,buttons) {
-	$(dialog).dialog("option","buttons",buttons)
+function setWizardDialogButtonSet(buttonClassName) {
+	$('.wizardPanelButton').hide() // hide all buttons with the wizardPanelButton class
+	$('.'+buttonClassName).show() // show specific buttons with the given class name
 }
 
 // setWizardDialogPanelData should be called after a panel has fully validated its

@@ -64,13 +64,13 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 		initPanel: function($parentDialog) {
 
 			function enableSelectExistingField() {
-//				setWizardDialogButtons(parentDialog,selectExistingButtons)
+				setWizardDialogButtonSet("newFormComponentDlgExistingFieldButtons")
 				console.log("Enabling field selection")
 				enableFormControl(fieldSelectionSelector)				
 			}
 
 			function disableSelectExistingField() {
-	//			setWizardDialogButtons(parentDialog,selectNewButtons)
+				setWizardDialogButtonSet("newFormComponentDlgNewFieldButtons")
 				disableFormControl(fieldSelectionSelector)
 							
 				validateForm()
@@ -116,7 +116,13 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 			
 			
 		}, // init panel
-		transitionIntoPanel: function ($dialog) { }
+		transitionIntoPanel: function ($dialog) {
+			if (radioButtonIsChecked(createNewFieldRadio.selector)) {
+				setWizardDialogButtonSet("newFormComponentDlgNewFieldButtons")				
+			} else {
+				setWizardDialogButtonSet("newFormComponentDlgExistingFieldButtons")				
+			}
+		}
 	} // wizard dialog configuration for panel to create new field
 
 	return newOrExistingFieldPanelConfig;

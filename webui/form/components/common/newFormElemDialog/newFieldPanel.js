@@ -35,7 +35,9 @@ function createNewFieldDialogPanelContextBootstrap(elemPrefix) {
 			})
 			
 		}, // init panel
-		transitionIntoPanel: function ($dialog) { }
+		transitionIntoPanel: function ($dialog) { 
+			setWizardDialogButtonSet('newFormComponentNewFieldButtons')
+		}
 	} // wizard dialog configuration for panel to create new field
 	
 	return newFieldPanelConfig;
