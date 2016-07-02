@@ -92,6 +92,11 @@ function openWizardDialog(dlgParams) {
 	$( ".wizardPanel" ).hide() // hide all the panels
 	$(firstPanelConfig.divID).show() // show the first panel
 	
+	// Optional minBodyHeight parameter
+	if(dlgParams.hasOwnProperty('minBodyHeight')) {
+		$dialog.find('.modal-body').css('min-height',dlgParams.minBodyHeight)
+	}
+	
 	updateDialogToPanelConfig($dialog,firstPanelConfig)
 			
 	var panelsByID = {}

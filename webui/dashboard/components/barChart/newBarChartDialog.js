@@ -75,6 +75,7 @@ function newBarChart(barChartParams) {
 		dialogDivID: '#newBarchartDialog',
 		panels: [barChartTablePanelConfig,barChartXAxisPanelConfig, barChartYAxisPanelConfig],
 		progressDivID: '#barChart_WizardDialogProgress',
+		minBodyHeight:'350px'
 	})
 		
 } // newBarChart
