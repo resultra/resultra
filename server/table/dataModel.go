@@ -1,7 +1,6 @@
 package table
 
 import (
-	"appengine"
 	"fmt"
 	"github.com/gocql/gocql"
 	"resultra/datasheet/server/generic"
@@ -23,7 +22,7 @@ type NewTableParams struct {
 	Name       string `json:"name"`
 }
 
-func saveNewTable(appEngContext appengine.Context, params NewTableParams) (*Table, error) {
+func saveNewTable(params NewTableParams) (*Table, error) {
 
 	sanitizedTableName, sanitizeErr := generic.SanitizeName(params.Name)
 	if sanitizeErr != nil {
@@ -53,7 +52,7 @@ type GetTableListParams struct {
 	DatabaseID gocql.UUID `json:"databaseID"` // parent database
 }
 
-func getTableList(appEngContext appengine.Context, params GetTableListParams) ([]Table, error) {
+func getTableList(params GetTableListParams) ([]Table, error) {
 
 	dbSession, sessionErr := cassandraWrapper.CreateSession()
 	if sessionErr != nil {
@@ -70,7 +69,7 @@ func getTableList(appEngContext appengine.Context, params GetTableListParams) ([
 		tables = append(tables, currTable)
 	}
 	if closeErr := tableIter.Close(); closeErr != nil {
-		return nil,fmt.Errorf("getTableList: Failure querying database: %v", closeErr)
+		return nil, fmt.Errorf("getTableList: Failure querying database: %v", closeErr)
 	}
 
 	return tables, nil

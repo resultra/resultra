@@ -8,7 +8,6 @@ import (
 	"resultra/datasheet/server/generic/cloudStorageWrapper"
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordValue"
-	"resultra/datasheet/server/runtimeConfig"
 )
 
 type UploadFile struct {
@@ -31,20 +30,13 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 		return nil, fmt.Errorf("uploadFile: Unable to read file contents: %v", uploadErr)
 	}
 
-	cloudAppEngContext := cloudStorageWrapper.NewCloudStorageContext(req)
-
 	cloudFileName := cloudStorageWrapper.UniqueCloudFileNameFromUserFileName(uploadInfo.FileName)
-	if saveErr := cloudStorageWrapper.SaveCloudFile(cloudAppEngContext, runtimeConfig.CloudStorageAuthConfig,
-		runtimeConfig.CloudStorageBucketName, cloudFileName, uploadInfo.FileData); saveErr != nil {
+	if saveErr := cloudStorageWrapper.SaveCloudFile(cloudFileName, uploadInfo.FileData); saveErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to save file to cloud storage: %v", saveErr)
 	}
 
 	// Generate an URL for the newly saved file
-	signedURL, urlErr := cloudStorageWrapper.GetSignedURL(runtimeConfig.CloudStorageBucketName,
-		cloudFileName, runtimeConfig.CloudStorageAuthConfig, 60)
-	if urlErr != nil {
-		return nil, fmt.Errorf("uploadFile: Unable to create signed URL for newly uploaded file: %v", urlErr)
-	}
+	fileURL := record.GetFileURL(cloudFileName)
 
 	// setRecordFileNameFieldValue. Although the parameters for a record update with a filename aren't passed through the http request,
 	// the standard record updating mechanism can be used to update the field with the filename.
@@ -68,7 +60,7 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 		Name:          cloudFileName,
 		Size:          uploadInfo.FileLength,
 		Error:         "",
-		Url:           signedURL,
+		Url:           fileURL,
 		UpdatedRecord: *updatedRecord}
 	uploadResponse := UploadFileResponse{Files: []UploadFile{uploadFile}}
 

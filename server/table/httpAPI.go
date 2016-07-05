@@ -1,7 +1,6 @@
 package table
 
 import (
-	"appengine"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -24,8 +23,7 @@ func newTable(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if newTable, err := saveNewTable(appEngCntxt, tableParams); err != nil {
+	if newTable, err := saveNewTable(tableParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *newTable)
@@ -41,8 +39,7 @@ func getTableListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appEngCntxt := appengine.NewContext(r)
-	if tableRefs, err := getTableList(appEngCntxt, tableParams); err != nil {
+	if tableRefs, err := getTableList(tableParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, tableRefs)

@@ -3,8 +3,6 @@ package record
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/generic/cloudStorageWrapper"
-	"resultra/datasheet/server/runtimeConfig"
 )
 
 type GetFieldValUrlParams struct {
@@ -16,6 +14,13 @@ type GetFieldValUrlParams struct {
 
 type RecordFileFieldURLResponse struct {
 	Url string `json:"url"`
+}
+
+func GetFileURL(cloudFileName string) string {
+	// TODO - Replace localhost part with dynamically configured host name.
+	fileURL := "http://localhost:8080/api/record/getFile/" + cloudFileName
+
+	return fileURL
 }
 
 func getFieldValUrl(params GetFieldValUrlParams) (*RecordFileFieldURLResponse, error) {
@@ -42,12 +47,8 @@ func getFieldValUrl(params GetFieldValUrlParams) (*RecordFileFieldURLResponse, e
 			params.RecordID, params.FieldID)
 	}
 
-	signedURL, urlErr := cloudStorageWrapper.GetSignedURL(runtimeConfig.CloudStorageBucketName,
-		params.CloudFileName, runtimeConfig.CloudStorageAuthConfig, 60)
-	if urlErr != nil {
-		return nil, fmt.Errorf("uploadFile: Unable to create signed URL for newly uploaded file: %v", urlErr)
-	}
+	fileURL := GetFileURL(params.CloudFileName)
 
-	return &RecordFileFieldURLResponse{Url: signedURL}, nil
+	return &RecordFileFieldURLResponse{Url: fileURL}, nil
 
 }

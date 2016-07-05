@@ -1,7 +1,6 @@
 package database
 
 import (
-	"appengine"
 	"fmt"
 	"github.com/gocql/gocql"
 	"resultra/datasheet/server/generic"
@@ -19,7 +18,7 @@ type NewDatabaseParams struct {
 	Name string `json:"name"`
 }
 
-func saveNewDatabase(appEngContext appengine.Context, params NewDatabaseParams) (*Database, error) {
+func saveNewDatabase(params NewDatabaseParams) (*Database, error) {
 
 	sanitizedDbName, sanitizeErr := generic.SanitizeName(params.Name)
 	if sanitizeErr != nil {
