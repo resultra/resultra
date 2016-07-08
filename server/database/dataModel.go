@@ -2,9 +2,8 @@ package database
 
 import (
 	"fmt"
-	"github.com/gocql/gocql"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/cassandraWrapper"
+	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
 const DatabaseEntityKind string = "Database"
@@ -25,18 +24,11 @@ func saveNewDatabase(params NewDatabaseParams) (*Database, error) {
 		return nil, sanitizeErr
 	}
 
-	// TODO - Validate name is unique
+	databaseID := databaseWrapper.GlobalUniqueID()
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("saveNewDatabase: Can't create database: unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	databaseID := gocql.TimeUUID().String()
-	if insertErr := dbSession.Query(`INSERT INTO database (databaseID, name) VALUES (?, ?)`,
-		databaseID, sanitizedDbName).Exec(); insertErr != nil {
-		fmt.Errorf("saveNewDatabase: Can't create database: unable to create database: error = %v", insertErr)
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO databases VALUES ($1,$2)`,
+		databaseID, sanitizedDbName); insertErr != nil {
+		return nil, fmt.Errorf("saveNewDatabase: insert failed: error = %v", insertErr)
 	}
 
 	newDatabase := Database{DatabaseID: databaseID, Name: sanitizedDbName}

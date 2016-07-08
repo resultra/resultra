@@ -2,26 +2,19 @@ package common
 
 import (
 	"fmt"
-	"log"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/cassandraWrapper"
+	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
 func SaveNewFormComponent(componentType string, parentForm string, componentID string, properties interface{}) error {
-
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return fmt.Errorf("CreateNewFieldFromRawInputs: Can't create database: unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
 
 	encodedProps, encodeErr := generic.EncodeJSONString(properties)
 	if encodeErr != nil {
 		return fmt.Errorf("saveNewCheckBox: Unable to save %v: error = %v", componentType, encodeErr)
 	}
 
-	if insertErr := dbSession.Query(`INSERT INTO form_components (form_id,component_id,type,properties) VALUES (?,?,?,?)`,
-		parentForm, componentID, componentType, encodedProps).Exec(); insertErr != nil {
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO form_components (form_id,component_id,type,properties) VALUES ($1,$2,$3,$4)`,
+		parentForm, componentID, componentType, encodedProps); insertErr != nil {
 		return fmt.Errorf("saveNewFormComponent: Can't save %v: error = %v", componentType, insertErr)
 	}
 
@@ -29,18 +22,13 @@ func SaveNewFormComponent(componentType string, parentForm string, componentID s
 }
 
 func GetFormComponent(componentType string, parentFormID string, componentID string, properties interface{}) error {
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return fmt.Errorf("CreateNewFieldFromRawInputs: Can't create database: unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
 
 	encodedProps := ""
-	getErr := dbSession.Query(`SELECT properties FROM form_components
-		 WHERE form_id=? AND component_id=? AND type=? LIMIT 1`,
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT properties FROM form_components
+		 WHERE form_id=$1 AND component_id=$2 AND type=$3 LIMIT 1`,
 		parentFormID, componentID, componentType).Scan(&encodedProps)
 	if getErr != nil {
-		return fmt.Errorf("GetRecord: Unabled to get form component %v: id = %v: datastore err=%v",
+		return fmt.Errorf("GetFormComponent: Unabled to get form component %v: id = %v: datastore err=%v",
 			componentType, componentID, getErr)
 	}
 
@@ -56,48 +44,39 @@ type addComponentCallbackFunc func(string, string) error
 
 func GetFormComponents(componentType string, parentFormID string, addComponentFunc addComponentCallbackFunc) error {
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return fmt.Errorf("GetFormComponents: Unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	componentIter := dbSession.Query(`SELECT component_id,properties
+	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT component_id,properties
 			FROM form_components 
-			WHERE form_id=? AND type=?`,
-		parentFormID, componentType).Iter()
+			WHERE form_id=$1 AND type=$2`,
+		parentFormID, componentType)
+	if queryErr != nil {
+		return fmt.Errorf("GetFormComponents: Failure querying database: %v", queryErr)
+	}
 
-	currComponentID := ""
-	encodedProps := ""
-	for componentIter.Scan(&currComponentID, &encodedProps) {
-		log.Printf("GetFormComponents: Got form component: component id = %v, properties=%v",
-			currComponentID, encodedProps)
+	for rows.Next() {
+		currComponentID := ""
+		encodedProps := ""
+		if scanErr := rows.Scan(&currComponentID, &encodedProps); scanErr != nil {
+			return fmt.Errorf("GetFormComponents: Failure querying database: %v", scanErr)
+		}
 		if err := addComponentFunc(currComponentID, encodedProps); err != nil {
 			return err
 		}
-		currComponentID = ""
-		encodedProps = ""
 	}
+
 	return nil
 }
 
 func UpdateFormComponent(componentType string, parentFormID string, componentID string, properties interface{}) error {
-
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return fmt.Errorf("CreateNewFieldFromRawInputs: Can't create database: unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
 
 	encodedProps, encodeErr := generic.EncodeJSONString(properties)
 	if encodeErr != nil {
 		return fmt.Errorf("UpdateFormComponent: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if updateErr := dbSession.Query(`UPDATE form_components 
-				SET properties=? 
-				WHERE form_id=? AND component_id=?`,
-		encodedProps, parentFormID, componentID).Exec(); updateErr != nil {
+	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE form_components 
+				SET properties=$1
+				WHERE form_id=$2 AND component_id=$3`,
+		encodedProps, parentFormID, componentID); updateErr != nil {
 		return fmt.Errorf("UpdateFormComponent: Can't update form component %v: error = %v",
 			componentType, updateErr)
 	}

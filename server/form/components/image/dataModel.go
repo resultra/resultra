@@ -2,12 +2,12 @@ package image
 
 import (
 	"fmt"
-	"github.com/gocql/gocql"
 	"log"
 	geometry "resultra/datasheet/server/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
 const imageEntityKind string = "image"
@@ -59,7 +59,7 @@ func saveNewImage(params NewImageParams) (*Image, error) {
 		Geometry: params.Geometry}
 
 	newImage := Image{ParentFormID: params.ParentFormID,
-		ImageID:    gocql.TimeUUID().String(),
+		ImageID:    databaseWrapper.GlobalUniqueID(),
 		Properties: properties}
 
 	if saveErr := common.SaveNewFormComponent(imageEntityKind,

@@ -2,9 +2,8 @@ package table
 
 import (
 	"fmt"
-	"github.com/gocql/gocql"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/cassandraWrapper"
+	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
 const TableEntityKind string = "Table"
@@ -29,18 +28,12 @@ func saveNewTable(params NewTableParams) (*Table, error) {
 		return nil, sanitizeErr
 	}
 
-	// TODO - Validate name is unique
+	tableID := databaseWrapper.GlobalUniqueID()
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("saveNewTable: Can't create database: unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	tableID := gocql.TimeUUID().String()
-	if insertErr := dbSession.Query(`INSERT INTO dataTable (databaseID, tableID, name) VALUES (?, ?, ?)`,
-		params.DatabaseID, tableID, sanitizedTableName).Exec(); insertErr != nil {
-		fmt.Errorf("saveNewTable: Can't create table: unable to create database: error = %v", insertErr)
+	if _, insertErr := databaseWrapper.DBHandle().Exec(
+		`INSERT INTO data_tables (table_id, database_id, name) VALUES ($1, $2, $3)`,
+		tableID, params.DatabaseID, sanitizedTableName); insertErr != nil {
+		return nil, fmt.Errorf("saveNewTable: insert failed: error = %v", insertErr)
 	}
 
 	newTable := Table{ParentDatabaseID: params.DatabaseID, TableID: tableID, Name: sanitizedTableName}
@@ -49,27 +42,23 @@ func saveNewTable(params NewTableParams) (*Table, error) {
 }
 
 type GetTableListParams struct {
-	DatabaseID gocql.UUID `json:"databaseID"` // parent database
+	DatabaseID string `json:"databaseID"` // parent database
 }
 
 func getTableList(params GetTableListParams) ([]Table, error) {
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("getTableList: Unable to create database session: error = %v", sessionErr)
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT database_id,table_id,name FROM data_tables WHERE database_id = $1`, params.DatabaseID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("getTableList: Failure querying database: %v", queryErr)
 	}
-	defer dbSession.Close()
-
-	tableIter := dbSession.Query(`SELECT databaseID,tableID,name FROM dataTable WHERE databaseID = ?`,
-		params.DatabaseID).Iter()
-
-	var currTable Table
 	tables := []Table{}
-	for tableIter.Scan(&currTable.ParentDatabaseID, &currTable.TableID, &currTable.Name) {
+	for rows.Next() {
+		var currTable Table
+		if scanErr := rows.Scan(&currTable.ParentDatabaseID, &currTable.TableID, &currTable.Name); scanErr != nil {
+			return nil, fmt.Errorf("getTableList: Failure querying database: %v", scanErr)
+		}
 		tables = append(tables, currTable)
-	}
-	if closeErr := tableIter.Close(); closeErr != nil {
-		return nil, fmt.Errorf("getTableList: Failure querying database: %v", closeErr)
 	}
 
 	return tables, nil

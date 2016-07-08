@@ -2,12 +2,12 @@ package htmlEditor
 
 import (
 	"fmt"
-	"github.com/gocql/gocql"
 	"log"
 	geometry "resultra/datasheet/server/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
 const htmlEditorEntityKind string = "html_editor"
@@ -59,7 +59,7 @@ func saveNewHtmlEditor(params NewHtmlEditorParams) (*HtmlEditor, error) {
 		FieldID:  params.FieldID}
 
 	newHtmlEditor := HtmlEditor{ParentFormID: params.ParentFormID,
-		HtmlEditorID: gocql.TimeUUID().String(),
+		HtmlEditorID: databaseWrapper.GlobalUniqueID(),
 		Properties:   properties}
 
 	if saveErr := common.SaveNewFormComponent(htmlEditorEntityKind,

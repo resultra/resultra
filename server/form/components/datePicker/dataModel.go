@@ -2,12 +2,12 @@ package datePicker
 
 import (
 	"fmt"
-	"github.com/gocql/gocql"
 	"log"
 	geometry "resultra/datasheet/server/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
 const datePickerEntityKind string = "datepicker"
@@ -59,7 +59,7 @@ func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 		FieldID:  params.FieldID}
 
 	newDatePicker := DatePicker{ParentFormID: params.ParentFormID,
-		DatePickerID: gocql.TimeUUID().String(),
+		DatePickerID: databaseWrapper.GlobalUniqueID(),
 		Properties:   properties}
 
 	if saveErr := common.SaveNewFormComponent(datePickerEntityKind,

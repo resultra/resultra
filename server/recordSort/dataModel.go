@@ -1,10 +1,11 @@
 package recordSort
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/cassandraWrapper"
+	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
 const sortDirectionAsc string = "asc"
@@ -45,20 +46,20 @@ func saveFormSortRules(params NewSortRuleParams) (*FormSortRules, error) {
 		}
 	}
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("saveSortRule: Can't create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
 	encodedSortRules, encodeErr := generic.EncodeJSONString(params.SortRules)
 	if encodeErr != nil {
 		return nil, fmt.Errorf("saveSortRule: Unable to encode sort rules %+v: error = %v", params.SortRules, encodeErr)
 	}
 
-	if insertErr := dbSession.Query(`INSERT INTO form_sort_rules 
-			(form_id, sort_rules) VALUES (?,?)`,
-		params.ParentFormID, encodedSortRules).Exec(); insertErr != nil {
+	// Delete any previous sort rules
+	if _, deleteErr := databaseWrapper.DBHandle().Exec(`DELETE FROM form_sort_rules WHERE form_id=$1`,
+		params.ParentFormID); deleteErr != nil {
+		return nil, fmt.Errorf("saveSortRule: Can't save sort rule for form %+v: error = %v", params, deleteErr)
+	}
+
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO form_sort_rules 
+			(form_id, sort_rules) VALUES ($1,$2)`,
+		params.ParentFormID, encodedSortRules); insertErr != nil {
 		return nil, fmt.Errorf("saveSortRule: Can't save sort rule for form %+v: error = %v", params, insertErr)
 	}
 
@@ -77,19 +78,19 @@ func GetFormSortRules(parentFormID string) (*FormSortRules, error) {
 		return nil, fmt.Errorf("GetFormSortRules: Missing parent form ID")
 	}
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("saveSortRule: Can't create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
 	decodedSortRules := []RecordSortRule{}
-
 	encodedSortRules := ""
-	getErr := dbSession.Query(`SELECT sort_rules FROM form_sort_rules
-			WHERE form_id=? LIMIT 1`, parentFormID).Scan(&encodedSortRules)
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT sort_rules FROM form_sort_rules
+			WHERE form_id=$1 LIMIT 1`, parentFormID).Scan(&encodedSortRules)
+
 	if getErr != nil {
-		return nil, fmt.Errorf("Unabled to get form sort rules for form: datastore err=%v", getErr)
+		if getErr == sql.ErrNoRows {
+			return &FormSortRules{
+				ParentFormID: parentFormID,
+				SortRules:    decodedSortRules}, nil
+		} else {
+			return nil, fmt.Errorf("Unabled to get form sort rules for form: datastore err=%v", getErr)
+		}
 	}
 
 	decodeErr := generic.DecodeJSONString(encodedSortRules, &decodedSortRules)

@@ -2,10 +2,9 @@ package form
 
 import (
 	"fmt"
-	"github.com/gocql/gocql"
 	"log"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/cassandraWrapper"
+	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
 const formEntityKind string = "Form"
@@ -29,17 +28,11 @@ func newForm(params NewFormParams) (*Form, error) {
 	}
 
 	newForm := Form{ParentTableID: params.ParentTableID,
-		FormID: gocql.TimeUUID().String(),
+		FormID: databaseWrapper.GlobalUniqueID(),
 		Name:   sanitizedName}
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: Can't create database: unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	if insertErr := dbSession.Query(`INSERT INTO form (tableID,formID,name) VALUES (?,?,?)`,
-		newForm.ParentTableID, newForm.FormID, newForm.Name).Exec(); insertErr != nil {
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO forms (table_id,form_id,name) VALUES ($1,$2,$3)`,
+		newForm.ParentTableID, newForm.FormID, newForm.Name); insertErr != nil {
 		return nil, fmt.Errorf("newForm: Can't create form: error = %v", insertErr)
 	}
 
@@ -55,15 +48,9 @@ type GetFormParams struct {
 
 func GetForm(params GetFormParams) (*Form, error) {
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("GetForm: Unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
 	formName := ""
-	getErr := dbSession.Query(`SELECT name FROM form
-		 WHERE tableid=? AND formid=? LIMIT 1`,
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT name FROM forms
+		 WHERE table_id=$1 AND form_id=$2 LIMIT 1`,
 		params.ParentTableID, params.FormID).Scan(&formName)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetForm: Unabled to get form: params = %+v: datastore err=%v",
@@ -80,22 +67,20 @@ func GetForm(params GetFormParams) (*Form, error) {
 
 func getAllForms(parentTableID string) ([]Form, error) {
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("getTableList: Unable to create database session: error = %v", sessionErr)
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT table_id,form_id,name FROM forms WHERE table_id = $1`,
+		parentTableID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("getAllForms: Failure querying database: %v", queryErr)
 	}
-	defer dbSession.Close()
 
-	formIter := dbSession.Query(`SELECT tableID,formID,name FROM dataTable WHERE tableID = ?`,
-		parentTableID).Iter()
-
-	var currForm Form
 	forms := []Form{}
-	for formIter.Scan(&currForm.ParentTableID, &currForm.FormID, &currForm.Name) {
+	for rows.Next() {
+		var currForm Form
+		if scanErr := rows.Scan(&currForm.ParentTableID, &currForm.FormID, &currForm.Name); scanErr != nil {
+			return nil, fmt.Errorf("getAllForms: Failure querying database: %v", scanErr)
+		}
 		forms = append(forms, currForm)
-	}
-	if closeErr := formIter.Close(); closeErr != nil {
-		return nil, fmt.Errorf("getAllForms: Failure querying database: %v", closeErr)
 	}
 
 	return forms, nil

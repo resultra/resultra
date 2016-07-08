@@ -2,10 +2,9 @@ package dashboard
 
 import (
 	"fmt"
-	"github.com/gocql/gocql"
 	"resultra/datasheet/server/dashboard/components/barChart"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/cassandraWrapper"
+	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
 type Dashboard struct {
@@ -27,18 +26,12 @@ func NewDashboard(params NewDashboardParams) (*Dashboard, error) {
 	}
 
 	var newDashboard = Dashboard{
-		DashboardID:      gocql.TimeUUID().String(),
+		DashboardID:      databaseWrapper.GlobalUniqueID(),
 		ParentDatabaseID: params.DatabaseID,
 		Name:             sanitizedName}
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("NewDashboard: Can't create dashboard: unable to create dashboard: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	if insertErr := dbSession.Query(`INSERT INTO dashboard (databaseID, dashboardID, name) VALUES (?,?,?)`,
-		newDashboard.ParentDatabaseID, newDashboard.DashboardID, newDashboard.Name).Exec(); insertErr != nil {
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO dashboards (database_id, dashboard_id, name) VALUES ($1,$2,$3)`,
+		newDashboard.ParentDatabaseID, newDashboard.DashboardID, newDashboard.Name); insertErr != nil {
 		fmt.Errorf("NewDashboard: Can't create dashboard: unable to create dashboard: error = %v", insertErr)
 	}
 
@@ -48,15 +41,9 @@ func NewDashboard(params NewDashboardParams) (*Dashboard, error) {
 
 func GetDashboard(databaseID string, dashboardID string) (*Dashboard, error) {
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("GetDashboard: Unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
 	dashboardName := ""
-	getErr := dbSession.Query(`SELECT name FROM dashboard
-		 WHERE databaseID=? AND dashboardID=? LIMIT 1`,
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT name FROM dashboards
+		 WHERE database_id=$1 AND dashboard_id=$2 LIMIT 1`,
 		databaseID, dashboardID).Scan(&dashboardName)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetForm: Unabled to get dashboard: datastore err=%v", getErr)

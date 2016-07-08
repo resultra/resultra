@@ -2,12 +2,12 @@ package textBox
 
 import (
 	"fmt"
-	"github.com/gocql/gocql"
 	"log"
 	geometry "resultra/datasheet/server/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
 const textBoxEntityKind string = "textbox"
@@ -61,7 +61,7 @@ func saveNewTextBox(params NewTextBoxParams) (*TextBox, error) {
 		FieldID:  params.FieldID}
 
 	newTextBox := TextBox{ParentFormID: params.ParentFormID,
-		TextBoxID:  gocql.TimeUUID().String(),
+		TextBoxID:  databaseWrapper.GlobalUniqueID(),
 		Properties: properties}
 
 	if saveErr := common.SaveNewFormComponent(textBoxEntityKind,

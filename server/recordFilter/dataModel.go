@@ -2,11 +2,10 @@ package recordFilter
 
 import (
 	"fmt"
-	"github.com/gocql/gocql"
 	"log"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/cassandraWrapper"
+	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
 type RecordFilter struct {
@@ -104,17 +103,11 @@ func newFilter(params NewFilterParams) (*RecordFilter, error) {
 
 	newFilter := RecordFilter{
 		ParentTableID: params.ParentTableID,
-		FilterID:      gocql.TimeUUID().String(),
+		FilterID:      databaseWrapper.GlobalUniqueID(),
 		Name:          sanitizedName}
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("newFilter: Can't create record: unable to create record: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	if insertErr := dbSession.Query(`INSERT INTO filters (tableID, filter_id, name) VALUES (?,?,?)`,
-		newFilter.ParentTableID, newFilter.FilterID, newFilter.Name).Exec(); insertErr != nil {
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO filters (table_id, filter_id, name) VALUES ($1,$2,$3)`,
+		newFilter.ParentTableID, newFilter.FilterID, newFilter.Name); insertErr != nil {
 		return nil, fmt.Errorf("newFilter: Can't create filter: error = %v", insertErr)
 	}
 
@@ -125,14 +118,8 @@ func newFilter(params NewFilterParams) (*RecordFilter, error) {
 
 func getFilter(parentTableID string, filterID string) (*RecordFilter, error) {
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("getFilter: Can't create database: unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
 	var filterGetDest RecordFilter
-	getErr := dbSession.Query(`SELECT tableID,filter_id,name FROM filters WHERE tableID=? AND filter_id=? LIMIT 1`,
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT table_id,filter_id,name FROM filters WHERE table_id=$1 AND filter_id=$2 LIMIT 1`,
 		parentTableID, filterID).Scan(&filterGetDest.ParentTableID,
 		&filterGetDest.FilterID,
 		&filterGetDest.Name)
@@ -145,14 +132,8 @@ func getFilter(parentTableID string, filterID string) (*RecordFilter, error) {
 
 func updateExistingFilter(updatedFilter *RecordFilter) (*RecordFilter, error) {
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("updateExistingFilter: Can't create database: unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	updateErr := dbSession.Query(`UPDATE filters SET name=? WHERE tableID=? AND filter_id=?`,
-		updatedFilter.Name, updatedFilter.ParentTableID, updatedFilter.FilterID).Exec()
+	_, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE filters SET name=$1 WHERE table_id=$2 AND filter_id=$3`,
+		updatedFilter.Name, updatedFilter.ParentTableID, updatedFilter.FilterID)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateExistingFilter: Unabled to update filter: id = %v: datastore err=%v", updatedFilter.FilterID, updateErr)
 	}
@@ -187,28 +168,23 @@ type GetFilterRulesParams struct {
 
 func getRecordFilterRules(params GetFilterRulesParams) ([]RecordFilterRule, error) {
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("getTableList: Unable to create database session: error = %v", sessionErr)
+	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT filter_id, rule_id, field_id,rule_def_id,text_param,number_param 
+					FROM filter_rules WHERE filter_id=$1`, params.ParentFilterID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("getRecordFilterRules: Failure querying database: %v", queryErr)
 	}
-	defer dbSession.Close()
-
-	ruleIter := dbSession.Query(`SELECT filter_id, rule_id, field_id,rule_def_id,text_param,number_param 
-					FROM filter_rules WHERE filter_id=?`,
-		params.ParentFilterID).Iter()
-
-	var currRule RecordFilterRule
 	allFilterRules := []RecordFilterRule{}
-	for ruleIter.Scan(&currRule.ParentFilterID,
-		&currRule.FilterRuleID,
-		&currRule.FieldID,
-		&currRule.RuleID,
-		&currRule.TextRuleParam,
-		&currRule.NumberRuleParam) {
+	for rows.Next() {
+		var currRule RecordFilterRule
+		if scanErr := rows.Scan(&currRule.ParentFilterID,
+			&currRule.FilterRuleID,
+			&currRule.FieldID,
+			&currRule.RuleID,
+			&currRule.TextRuleParam,
+			&currRule.NumberRuleParam); scanErr != nil {
+			return nil, fmt.Errorf("getRecordFilterRules: Failure querying database: %v", scanErr)
+		}
 		allFilterRules = append(allFilterRules, currRule)
-	}
-	if closeErr := ruleIter.Close(); closeErr != nil {
-		return nil, fmt.Errorf("getRecordFilterRules: Failure querying database: %v", closeErr)
 	}
 
 	return allFilterRules, nil
@@ -216,24 +192,20 @@ func getRecordFilterRules(params GetFilterRulesParams) ([]RecordFilterRule, erro
 
 func getFilterList(parentTableID string) ([]RecordFilter, error) {
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("getTableList: Unable to create database session: error = %v", sessionErr)
+	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT table_id,filter_id,name FROM filters WHERE table_id=$1`, parentTableID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("getFilterList: Failure querying database: %v", queryErr)
 	}
-	defer dbSession.Close()
 
-	filterIter := dbSession.Query(`SELECT tableID,filter_id,name FROM filters WHERE tableID=?`,
-		parentTableID).Iter()
-
-	var currFilter RecordFilter
 	allFilters := []RecordFilter{}
-	for filterIter.Scan(&currFilter.ParentTableID,
-		&currFilter.FilterID,
-		&currFilter.Name) {
+	for rows.Next() {
+		var currFilter RecordFilter
+		if scanErr := rows.Scan(&currFilter.ParentTableID,
+			&currFilter.FilterID,
+			&currFilter.Name); scanErr != nil {
+			return nil, fmt.Errorf("getFilterList: Failure querying database: %v", scanErr)
+		}
 		allFilters = append(allFilters, currFilter)
-	}
-	if closeErr := filterIter.Close(); closeErr != nil {
-		return nil, fmt.Errorf("getFilterList: Failure querying database: %v", closeErr)
 	}
 
 	return allFilters, nil
@@ -274,14 +246,14 @@ func newFilterRule(newRuleParams NewFilterRuleParams) (*RecordFilterRule, error)
 				}
 				newFilterRule = RecordFilterRule{
 					ParentFilterID: newRuleParams.ParentFilterID,
-					FilterRuleID:   gocql.TimeUUID().String(),
+					FilterRuleID:   databaseWrapper.GlobalUniqueID(),
 					FieldID:        newRuleParams.FieldID,
 					RuleID:         newRuleParams.RuleID,
 					TextRuleParam:  *newRuleParams.TextRuleParam}
 			} else {
 				newFilterRule = RecordFilterRule{
 					ParentFilterID: newRuleParams.ParentFilterID,
-					FilterRuleID:   gocql.TimeUUID().String(),
+					FilterRuleID:   databaseWrapper.GlobalUniqueID(),
 					FieldID:        newRuleParams.FieldID,
 					RuleID:         newRuleParams.RuleID,
 					TextRuleParam:  ""}
@@ -299,14 +271,14 @@ func newFilterRule(newRuleParams NewFilterRuleParams) (*RecordFilterRule, error)
 				}
 				newFilterRule = RecordFilterRule{
 					ParentFilterID:  newRuleParams.ParentFilterID,
-					FilterRuleID:    gocql.TimeUUID().String(),
+					FilterRuleID:    databaseWrapper.GlobalUniqueID(),
 					FieldID:         newRuleParams.FieldID,
 					RuleID:          newRuleParams.RuleID,
 					NumberRuleParam: *newRuleParams.NumberRuleParam}
 			} else {
 				newFilterRule = RecordFilterRule{
 					ParentFilterID:  newRuleParams.ParentFilterID,
-					FilterRuleID:    gocql.TimeUUID().String(),
+					FilterRuleID:    databaseWrapper.GlobalUniqueID(),
 					FieldID:         newRuleParams.FieldID,
 					RuleID:          newRuleParams.RuleID,
 					NumberRuleParam: 0}
@@ -317,20 +289,16 @@ func newFilterRule(newRuleParams NewFilterRuleParams) (*RecordFilterRule, error)
 		return nil, fmt.Errorf("NewFilterRule: Filtering not supported on field type: %v", filterOnField.Type)
 	}
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	if insertErr := dbSession.Query(`INSERT INTO filter_rules (filter_id, rule_id, field_id,rule_def_id,text_param,number_param) VALUES (?,?,?,?,?,?)`,
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO filter_rules 
+				(filter_id, rule_id, field_id,rule_def_id,text_param,number_param) 
+				VALUES ($1,$2,$3,$4,$5,$6)`,
 		newFilterRule.ParentFilterID,
 		newFilterRule.FilterRuleID,
 		newFilterRule.FieldID,
 		newFilterRule.RuleID,
 		newFilterRule.TextRuleParam,
-		newFilterRule.NumberRuleParam).Exec(); insertErr != nil {
-		return nil, fmt.Errorf("newFilter: Can't create filter rule: error = %v", insertErr)
+		newFilterRule.NumberRuleParam); insertErr != nil {
+		return nil, fmt.Errorf("saveNewTable: insert failed: error = %v", insertErr)
 	}
 
 	return &newFilterRule, nil

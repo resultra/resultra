@@ -2,8 +2,7 @@ package userAuth
 
 import (
 	"fmt"
-	"github.com/gocql/gocql"
-	"resultra/datasheet/server/generic/cassandraWrapper"
+	"resultra/datasheet/server/generic/databaseWrapper"
 	"strings"
 )
 
@@ -81,19 +80,13 @@ func saveNewUser(rawParams NewUserParams) *AuthResponse {
 		return newAuthResponse(false, "Registration failed: user with same email already exists")
 	}
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return newAuthResponse(false, "System error: failed to create database session")
-	}
-	defer dbSession.Close()
+	userID := databaseWrapper.GlobalUniqueID()
 
-	userID := gocql.TimeUUID().String()
-
-	if insertErr := dbSession.Query(
+	if _, insertErr := databaseWrapper.DBHandle().Exec(
 		`INSERT INTO users (user_id, email_addr, user_name, first_name,last_name, password_hash) 
-				VALUES (?,?,?,?,?,?)`,
+				VALUES ($1,$2,$3,$4,$5,$6)`,
 		userID, params.EmailAddr, params.UserName,
-		params.FirstName, params.LastName, pwHash).Exec(); insertErr != nil {
+		params.FirstName, params.LastName, pwHash); insertErr != nil {
 		return newAuthResponse(false, "System error: failed to create login credentials")
 	}
 
@@ -102,21 +95,14 @@ func saveNewUser(rawParams NewUserParams) *AuthResponse {
 
 func getUser(emailAddr string) (*User, *AuthResponse) {
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, newAuthResponse(false, "System error: failed to create database session")
-	}
-	defer dbSession.Close()
-
 	var user User
 	user.EmailAddr = emailAddr
-	getErr := dbSession.Query(
+	getErr := databaseWrapper.DBHandle().QueryRow(
 		`SELECT user_id, password_hash 
 			FROM users 
-			WHERE email_addr=? LIMIT 1`,
+			WHERE email_addr=$1 LIMIT 1`,
 		emailAddr).Scan(&user.UserID, &user.PasswordHash)
 	if getErr != nil {
-
 		return nil, newAuthResponse(false, fmt.Sprintf("Can't find user with email: %v", emailAddr))
 	}
 
@@ -125,17 +111,11 @@ func getUser(emailAddr string) (*User, *AuthResponse) {
 
 func getUserInfoByID(userID string) (*UserInfo, error) {
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("System error: failed to create database session")
-	}
-	defer dbSession.Close()
-
 	var userInfo UserInfo
-	getErr := dbSession.Query(
+	getErr := databaseWrapper.DBHandle().QueryRow(
 		`SELECT first_name,last_name,user_name 
 			FROM users 
-			WHERE user_id=? LIMIT 1`,
+			WHERE user_id=$1 LIMIT 1`,
 		userID).Scan(&userInfo.FirstName, &userInfo.LastName, &userInfo.UserName)
 	if getErr != nil {
 		return nil, fmt.Errorf("Can't find user with id: %v", userID)

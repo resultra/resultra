@@ -97,7 +97,7 @@ func GenerateFilterMatchResults(recFieldVals record.RecFieldValues, parentTableI
 
 	filters, getFilterErr := getFilterList(parentTableID)
 	if getFilterErr != nil {
-		return nil, fmt.Errorf("GenerateFilterMatchResults: Unable to retrieve filters for table ID = %v", parentTableID)
+		return nil, fmt.Errorf("GenerateFilterMatchResults: Unable to retrieve filters for table ID = %v: error = %v", parentTableID, getFilterErr)
 	}
 
 	matchResults := RecFilterMatchResults{}

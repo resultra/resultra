@@ -2,12 +2,12 @@ package checkBox
 
 import (
 	"fmt"
-	"github.com/gocql/gocql"
 	"log"
 	geometry "resultra/datasheet/server/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
 const checkBoxEntityKind string = "checkbox"
@@ -59,7 +59,7 @@ func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 		FieldID:  params.FieldID}
 
 	newCheckBox := CheckBox{ParentFormID: params.ParentFormID,
-		CheckBoxID: gocql.TimeUUID().String(),
+		CheckBoxID: databaseWrapper.GlobalUniqueID(),
 		Properties: properties}
 
 	if saveErr := common.SaveNewFormComponent(checkBoxEntityKind,

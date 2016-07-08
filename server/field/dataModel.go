@@ -2,11 +2,10 @@ package field
 
 import (
 	"fmt"
-	"github.com/gocql/gocql"
 	"log"
 	"regexp"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/cassandraWrapper"
+	"resultra/datasheet/server/generic/databaseWrapper"
 	"strings"
 )
 
@@ -82,7 +81,7 @@ func CreateNewFieldFromRawInputs(parentTableID string, newField Field) (string, 
 	newField.ParentTableID = parentTableID
 	// The UUID for fields is substituted for the fields reference name when stored in the preprocessed formula.
 	// The tokenizer for the formula compiler could potentially read the UUID as a number literal if there isn't a distinct prefix.
-	newField.FieldID = gocql.TimeUUID().String()
+	newField.FieldID = databaseWrapper.GlobalUniqueID()
 
 	newField.RefName = strings.TrimSpace(newField.RefName) // strip leading & trailing whitespace
 	if !validRefNameRegexp.MatchString(newField.RefName) {
@@ -92,14 +91,9 @@ func CreateNewFieldFromRawInputs(parentTableID string, newField Field) (string, 
 
 	// TODO: Validate the reference name is unique versus the other names field names already in use.
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return "", fmt.Errorf("CreateNewFieldFromRawInputs: Can't create database: unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	if insertErr := dbSession.Query(
-		`INSERT INTO field (tableID,fieldID,name,type,refname,calcFieldEqn,isCalcField,preprocessedFormulaText) VALUES (?,?,?,?,?,?,?,?)`,
+	if _, insertErr := databaseWrapper.DBHandle().Exec(
+		`INSERT INTO fields (table_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text) 
+				VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
 		newField.ParentTableID,
 		newField.FieldID,
 		newField.Name,
@@ -107,8 +101,8 @@ func CreateNewFieldFromRawInputs(parentTableID string, newField Field) (string, 
 		newField.RefName,
 		newField.CalcFieldEqn,
 		newField.IsCalcField,
-		newField.PreprocessedFormulaText).Exec(); insertErr != nil {
-		fmt.Errorf("CreateNewFieldFromRawInputs: Can't create field: unable to insert into database: error = %v", insertErr)
+		newField.PreprocessedFormulaText); insertErr != nil {
+		return "", fmt.Errorf("CreateNewFieldFromRawInputs: insert failed: error = %v", insertErr)
 	}
 
 	// TODO - verify IntID != 0
@@ -141,23 +135,17 @@ func GetField(tableID string, fieldID string) (*Field, error) {
 
 	var fieldGetDest Field
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: Can't create database: unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	getErr := dbSession.Query(`SELECT tableID,fieldID,name,type,refname,calcFieldEqn,isCalcField,preprocessedFormulaText FROM field WHERE tableID=? AND fieldID=? LIMIT 1`,
-		tableID, fieldID).Scan(&fieldGetDest.ParentTableID,
+	if getErr := databaseWrapper.DBHandle().QueryRow(`SELECT table_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text 
+			FROM fields WHERE table_id=$1 AND field_id=$2 LIMIT 1`, tableID, fieldID).Scan(
+		&fieldGetDest.ParentTableID,
 		&fieldGetDest.FieldID,
 		&fieldGetDest.Name,
 		&fieldGetDest.Type,
 		&fieldGetDest.RefName,
 		&fieldGetDest.CalcFieldEqn,
 		&fieldGetDest.IsCalcField,
-		&fieldGetDest.PreprocessedFormulaText)
-	if getErr != nil {
-		return nil, fmt.Errorf("Unabled to get field: id = %+v: datastore err=%v", fieldID, getErr)
+		&fieldGetDest.PreprocessedFormulaText); getErr != nil {
+		return nil, fmt.Errorf("GetField: Unabled to get field: id = %+v: datastore err=%v", fieldID, getErr)
 	}
 
 	return &fieldGetDest, nil
@@ -165,15 +153,9 @@ func GetField(tableID string, fieldID string) (*Field, error) {
 
 func UpdateExistingField(updatedField *Field) (*Field, error) {
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("UpdateExistingField: Can't create database: unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	if updateErr := dbSession.Query(`UPDATE field 
-			SET name=?,type=?,refName=?,calcFieldEqn=?,preprocessedFormulaText=?,isCalcField=? 
-			WHERE tableID=? AND fieldID=?`,
+	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE fields 
+			SET name=$1,type=$2,ref_name=$3,calc_field_eqn=$4,preprocessed_formula_text=$5,is_calc_field=$6 
+			WHERE table_id=$7 AND field_id=$8`,
 		updatedField.Name,
 		updatedField.Type,
 		updatedField.RefName,
@@ -181,7 +163,7 @@ func UpdateExistingField(updatedField *Field) (*Field, error) {
 		updatedField.PreprocessedFormulaText,
 		updatedField.IsCalcField,
 		updatedField.ParentTableID,
-		updatedField.FieldID).Exec(); updateErr != nil {
+		updatedField.FieldID); updateErr != nil {
 		return nil, fmt.Errorf("UpdateExistingField: Error updating field %v: error = %v", updatedField.FieldID, updateErr)
 	}
 
@@ -195,29 +177,27 @@ type GetFieldListParams struct {
 
 func GetAllFields(params GetFieldListParams) ([]Field, error) {
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("getTableList: Unable to create database session: error = %v", sessionErr)
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT table_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text 
+		FROM fields WHERE table_id=$1`, params.ParentTableID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("getTableList: Failure querying database: %v", queryErr)
 	}
-	defer dbSession.Close()
-
-	fieldIter := dbSession.Query(`SELECT tableID,fieldID,name,type,refname,calcFieldEqn,isCalcField,preprocessedFormulaText FROM field WHERE tableID=?`,
-		params.ParentTableID).Iter()
-
-	var currField Field
 	allFields := []Field{}
-	for fieldIter.Scan(&currField.ParentTableID,
-		&currField.FieldID,
-		&currField.Name,
-		&currField.Type,
-		&currField.RefName,
-		&currField.CalcFieldEqn,
-		&currField.IsCalcField,
-		&currField.PreprocessedFormulaText) {
+	for rows.Next() {
+		var currField Field
+		if scanErr := rows.Scan(&currField.ParentTableID,
+			&currField.FieldID,
+			&currField.Name,
+			&currField.Type,
+			&currField.RefName,
+			&currField.CalcFieldEqn,
+			&currField.IsCalcField,
+			&currField.PreprocessedFormulaText); scanErr != nil {
+			return nil, fmt.Errorf("getTableList: Failure querying database: %v", scanErr)
+
+		}
 		allFields = append(allFields, currField)
-	}
-	if closeErr := fieldIter.Close(); closeErr != nil {
-		return nil, fmt.Errorf("getTableList: Failure querying database: %v", closeErr)
 	}
 
 	return allFields, nil

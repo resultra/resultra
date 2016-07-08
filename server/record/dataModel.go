@@ -2,9 +2,8 @@ package record
 
 import (
 	"fmt"
-	"github.com/gocql/gocql"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/generic/cassandraWrapper"
+	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
 type Record struct {
@@ -19,16 +18,10 @@ type NewRecordParams struct {
 func NewRecord(params NewRecordParams) (*Record, error) {
 
 	newRecord := Record{ParentTableID: params.ParentTableID,
-		RecordID: gocql.TimeUUID().String()}
+		RecordID: databaseWrapper.GlobalUniqueID()}
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	if insertErr := dbSession.Query(`INSERT INTO records (table_id, record_id) VALUES (?,?)`,
-		newRecord.ParentTableID, newRecord.RecordID).Exec(); insertErr != nil {
+	if _, insertErr := databaseWrapper.DBHandle().Exec(
+		`INSERT INTO records (table_id, record_id) VALUES ($1,$2)`, newRecord.ParentTableID, newRecord.RecordID); insertErr != nil {
 		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", insertErr)
 	}
 
@@ -40,16 +33,9 @@ func GetRecord(parentTableID string, recordID string) (*Record, error) {
 
 	getRecord := Record{}
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("GetRecord: Can't create database: unable to create database session: error = %v", sessionErr)
-	}
-	defer dbSession.Close()
-
-	getErr := dbSession.Query(`SELECT table_id,record_id FROM records WHERE table_id=? AND record_id=? LIMIT 1`,
-		parentTableID, recordID).Scan(&getRecord.ParentTableID,
-		&getRecord.RecordID)
-	if getErr != nil {
+	if getErr := databaseWrapper.DBHandle().QueryRow(
+		`SELECT table_id,record_id FROM records WHERE table_id=$1 AND record_id=$2 LIMIT 1`, parentTableID, recordID).Scan(&getRecord.ParentTableID,
+		&getRecord.RecordID); getErr != nil {
 		return nil, fmt.Errorf("GetRecord: Unabled to get record: id = %v: datastore err=%v", recordID, getErr)
 	}
 
@@ -63,24 +49,19 @@ type GetRecordsParams struct {
 
 func GetRecords(params GetRecordsParams) ([]Record, error) {
 
-	dbSession, sessionErr := cassandraWrapper.CreateSession()
-	if sessionErr != nil {
-		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", sessionErr)
+	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT table_id,record_id FROM records WHERE table_id=$1`, params.TableID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetRecords: Failure querying database: %v", queryErr)
 	}
-	defer dbSession.Close()
-
-	recordIter := dbSession.Query(`SELECT table_id,record_id FROM records WHERE table_id=?`,
-		params.TableID).Iter()
-
-	var currRecord Record
 	records := []Record{}
-	for recordIter.Scan(&currRecord.ParentTableID,
-		&currRecord.RecordID) {
+	for rows.Next() {
+		var currRecord Record
+		if scanErr := rows.Scan(&currRecord.ParentTableID,
+			&currRecord.RecordID); scanErr != nil {
+			return nil, fmt.Errorf("getTableList: Failure querying database: %v", scanErr)
 
+		}
 		records = append(records, currRecord)
-	}
-	if closeErr := recordIter.Close(); closeErr != nil {
-		return nil, fmt.Errorf("GetRecords: Failure querying database: %v", closeErr)
 	}
 
 	return records, nil
