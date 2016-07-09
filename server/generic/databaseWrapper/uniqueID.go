@@ -1,6 +1,7 @@
 package databaseWrapper
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/binary"
 	"fmt"
@@ -10,14 +11,14 @@ import (
 )
 
 const (
-	numNodeBits   uint64 = 10
-	maxNodeNumber int64  = (1 << numNodeBits) - 1
-
 	numSequenceBits   uint64 = 12
-	sequenceMask      uint64 = (1 << numSequenceBits) - 1
+	sequenceMask      int64  = (1 << numSequenceBits) - 1
 	maxSequenceNumber int64  = (1 << numSequenceBits) - 1
 
+	numNodeBits   uint64 = 10
+	maxNodeNumber int64  = (1 << numNodeBits) - 1
 	nodeShiftBits uint64 = numSequenceBits // 12
+	nodeMask      int64  = maxNodeNumber << nodeShiftBits
 
 	timeShiftBits uint64 = numNodeBits + numSequenceBits // 22
 
@@ -31,6 +32,31 @@ type SnowflakeIDGenerator struct {
 	nodeID          int64
 	currSequenceNum int64
 	currTimeMillis  int64
+}
+
+type SnowflakeID struct {
+	nodeID             int64
+	sequenceNum        int64
+	timeMsecSinceEpoch int64
+	snowflakeID        int64
+}
+
+func (id SnowflakeID) encodeBase64() string {
+	// Encode the integer ID into a byte array. Putvarint uses a variable length encoding for the
+	// int64, so it could potentially need more (or less) than 8 bytes.
+	varEncodeBytes := make([]byte, 16)
+	varEncodeLen := binary.PutVarint(varEncodeBytes, id.snowflakeID)
+
+	snowflakeIDBytes := make([]byte, varEncodeLen)
+	copy(snowflakeIDBytes, varEncodeBytes)
+
+	// Encode the ID as base64, making it suitable for use in URLs, or as a text
+	// string to store in the database. RawURLEncoding will encode the string
+	// without the padding characters ('=').
+	idEncode := base64.RawURLEncoding.EncodeToString(snowflakeIDBytes)
+
+	return idEncode
+
 }
 
 func millisSinceEpochToTime(millis int64) time.Time {
@@ -60,6 +86,42 @@ func timeNowMillisSinceEpoch() int64 {
 	return timeToMillisecondsSinceEpoch(currTime)
 }
 
+func (gen SnowflakeIDGenerator) currSnowflakeID() SnowflakeID {
+
+	timestampOffset := gen.currTimeMillis - startTimeMillisSinceEpoch
+
+	snowflakeID := (timestampOffset << timeShiftBits) | (gen.nodeID << nodeShiftBits) | gen.currSequenceNum
+
+	return SnowflakeID{
+		timeMsecSinceEpoch: gen.currTimeMillis,
+		nodeID:             gen.nodeID,
+		sequenceNum:        gen.currSequenceNum,
+		snowflakeID:        snowflakeID}
+}
+
+func DecodeFromBase64(encodedID string) (*SnowflakeID, error) {
+
+	decodedBytes, decodeErr := base64.RawURLEncoding.DecodeString(encodedID)
+	if decodeErr != nil {
+		return nil, fmt.Errorf("SnowflakeID: DecodeFromBase64: Can't decode base64 encoded snowflake ID = %v: error = %v", encodedID, decodeErr)
+	}
+
+	snowflakeID, readErr := binary.ReadVarint(bytes.NewBuffer(decodedBytes))
+	if readErr != nil {
+		return nil, fmt.Errorf("SnowflakeID: DecodeFromBase64: Can't decode base64 encoded snowflake ID = %v: error = %v", encodedID, readErr)
+	}
+
+	timeSinceEpochMsec := (snowflakeID >> timeShiftBits) + startTimeMillisSinceEpoch
+	sequenceNum := snowflakeID & sequenceMask
+	nodeID := (snowflakeID & nodeMask) >> nodeShiftBits
+
+	return &SnowflakeID{
+		timeMsecSinceEpoch: timeSinceEpochMsec,
+		nodeID:             nodeID,
+		sequenceNum:        sequenceNum,
+		snowflakeID:        snowflakeID}, nil
+}
+
 func nextTimeMillisSinceEpoch(currTimeMillis int64) int64 {
 	nextTimeMillis := timeNowMillisSinceEpoch()
 	for nextTimeMillis <= currTimeMillis {
@@ -73,25 +135,8 @@ func nextTimeMillisSinceEpoch(currTimeMillis int64) int64 {
 	return nextTimeMillis
 }
 
-func (gen SnowflakeIDGenerator) currSnowflakeID() string {
+func (gen *SnowflakeIDGenerator) generateID() SnowflakeID {
 
-	timestampOffset := gen.currTimeMillis - startTimeMillisSinceEpoch
-
-	snowflakeID := (timestampOffset << timeShiftBits) | (gen.nodeID << nodeShiftBits) | gen.currSequenceNum
-
-	// Encode the integer ID into a byte array
-	snowflakeIDBytes := make([]byte, 8, 8)
-	binary.PutVarint(snowflakeIDBytes, snowflakeID)
-
-	// Encode the ID as base64, making it suitable for use in URLs, or as a text
-	// string to store in the database. RawURLEncoding will encode the string
-	// without the padding characters ('=').
-	idEncode := base64.RawURLEncoding.EncodeToString(snowflakeIDBytes)
-
-	return idEncode
-}
-
-func (gen *SnowflakeIDGenerator) generateID() string {
 	gen.Lock()
 
 	currTimeMillis := timeNowMillisSinceEpoch()
@@ -104,9 +149,11 @@ func (gen *SnowflakeIDGenerator) generateID() string {
 		// its sequence number.
 		gen.currTimeMillis = currTimeMillis
 		gen.currSequenceNum = 0
-	} else {
+	} else if currTimeMillis == gen.currTimeMillis {
 		// The timestamp hasn't advanced since the last ID which was generated.
-		// currTimeMillis <= gen.currTimeMillis.
+		// If the sequence numbers aren't exhausted for the current msec,
+		// use the next sequence number. Otherwise, wait until the next msec,
+		// and generate an ID with a reset sequence number and next mswec.
 		nextSequenceNum := gen.currSequenceNum + 1
 		if nextSequenceNum > maxSequenceNumber {
 			// All the sequence numbers are used up for the current millisecond.
@@ -115,10 +162,32 @@ func (gen *SnowflakeIDGenerator) generateID() string {
 			gen.currTimeMillis = nextTimeMillisSinceEpoch(currTimeMillis)
 
 		} else {
+			// nextSequenceNum is within the range of sequence numbers for
+			// the current msec, so it can be used to generate an ID.
 			gen.currSequenceNum = nextSequenceNum
 		}
+	} else { // currTimeMillis < gen.currTimeMillis
+		// Shouldn't get here, since SnowflakeIDGenerator is initialized with the current timestamp
+		// in NewSnowflakeIDGenerator(). Time is expected to "monotonically increase" from there.
+		//
+		// However, if there is clock skew with the system clock
+		// to set it backwards, this case could potentially happen. This could potentially happen
+		// if the system is re-synchronized via NTP.
+		//
+		// At this point, the only way to gracefully recover is to wait until the current system
+		// clock advances past the time currently in gen.currTimeMillis. This is similar to the case
+		// where all the sequence numbers are exhausted for the current msec.
+		log.Printf("Warning: SnowflakeIDGenerator: system clock skew detected, "+
+			"waiting until after last ID generation time = %v(%v) to generate new IDs",
+			gen.currTimeMillis, millisSinceEpochToTime(gen.currTimeMillis))
+		gen.currSequenceNum = 0
+		gen.currTimeMillis = nextTimeMillisSinceEpoch(gen.currTimeMillis)
+
 	}
 
+	// After the code block above, the sequence number and/or timestamp on the generator will
+	// have beeen advanced to the next unique ID. So, the next ID can be generated based upon
+	// the generator's current snowflake ID paramater values.
 	snowflakeID := gen.currSnowflakeID()
 
 	gen.Unlock()
@@ -167,5 +236,5 @@ func init() {
 }
 
 func GlobalUniqueID() string {
-	return globalIDGen.generateID()
+	return globalIDGen.generateID().encodeBase64()
 }
