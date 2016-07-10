@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/dashboard/components/barChart"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 type Dashboard struct {
@@ -26,7 +27,7 @@ func NewDashboard(params NewDashboardParams) (*Dashboard, error) {
 	}
 
 	var newDashboard = Dashboard{
-		DashboardID:      databaseWrapper.GlobalUniqueID(),
+		DashboardID:      uniqueID.GenerateSnowflakeID(),
 		ParentDatabaseID: params.DatabaseID,
 		Name:             sanitizedName}
 

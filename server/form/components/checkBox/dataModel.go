@@ -7,7 +7,7 @@ import (
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const checkBoxEntityKind string = "checkbox"
@@ -59,7 +59,7 @@ func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 		FieldID:  params.FieldID}
 
 	newCheckBox := CheckBox{ParentFormID: params.ParentFormID,
-		CheckBoxID: databaseWrapper.GlobalUniqueID(),
+		CheckBoxID: uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
 	if saveErr := common.SaveNewFormComponent(checkBoxEntityKind,

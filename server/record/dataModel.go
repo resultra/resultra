@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 type Record struct {
@@ -18,7 +19,7 @@ type NewRecordParams struct {
 func NewRecord(params NewRecordParams) (*Record, error) {
 
 	newRecord := Record{ParentTableID: params.ParentTableID,
-		RecordID: databaseWrapper.GlobalUniqueID()}
+		RecordID: uniqueID.GenerateSnowflakeID()}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
 		`INSERT INTO records (table_id, record_id) VALUES ($1,$2)`, newRecord.ParentTableID, newRecord.RecordID); insertErr != nil {

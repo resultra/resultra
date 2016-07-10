@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const barChartEntityKind string = "BarChart"
@@ -114,7 +115,7 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 
 	newBarChart := BarChart{
 		ParentDashboardID: params.ParentDashboardID,
-		BarChartID:        databaseWrapper.GlobalUniqueID(),
+		BarChartID:        uniqueID.GenerateSnowflakeID(),
 		Properties:        barChartProps}
 
 	encodedProps, encodeErr := generic.EncodeJSONString(newBarChart.Properties)

@@ -7,7 +7,7 @@ import (
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const datePickerEntityKind string = "datepicker"
@@ -59,7 +59,7 @@ func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 		FieldID:  params.FieldID}
 
 	newDatePicker := DatePicker{ParentFormID: params.ParentFormID,
-		DatePickerID: databaseWrapper.GlobalUniqueID(),
+		DatePickerID: uniqueID.GenerateSnowflakeID(),
 		Properties:   properties}
 
 	if saveErr := common.SaveNewFormComponent(datePickerEntityKind,

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const TableEntityKind string = "Table"
@@ -28,7 +29,7 @@ func saveNewTable(params NewTableParams) (*Table, error) {
 		return nil, sanitizeErr
 	}
 
-	tableID := databaseWrapper.GlobalUniqueID()
+	tableID := uniqueID.GenerateSnowflakeID()
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
 		`INSERT INTO data_tables (table_id, database_id, name) VALUES ($1, $2, $3)`,

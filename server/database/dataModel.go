@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const DatabaseEntityKind string = "Database"
@@ -24,7 +25,7 @@ func saveNewDatabase(params NewDatabaseParams) (*Database, error) {
 		return nil, sanitizeErr
 	}
 
-	databaseID := databaseWrapper.GlobalUniqueID()
+	databaseID := uniqueID.GenerateSnowflakeID()
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO databases VALUES ($1,$2)`,
 		databaseID, sanitizedDbName); insertErr != nil {

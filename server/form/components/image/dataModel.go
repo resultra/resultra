@@ -7,7 +7,7 @@ import (
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const imageEntityKind string = "image"
@@ -59,7 +59,7 @@ func saveNewImage(params NewImageParams) (*Image, error) {
 		Geometry: params.Geometry}
 
 	newImage := Image{ParentFormID: params.ParentFormID,
-		ImageID:    databaseWrapper.GlobalUniqueID(),
+		ImageID:    uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
 	if saveErr := common.SaveNewFormComponent(imageEntityKind,

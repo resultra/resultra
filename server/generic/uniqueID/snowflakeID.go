@@ -1,4 +1,4 @@
-package databaseWrapper
+package uniqueID
 
 import (
 	"bytes"
@@ -214,7 +214,7 @@ func NewSnowflakeIDGenerator(nodeID int64) (*SnowflakeIDGenerator, error) {
 		currSequenceNum: 0,
 		currTimeMillis:  timeNowMillisSinceEpoch()}
 
-	log.Printf("Snowflake database ID generator intialized: "+
+	log.Printf("Snowflake unique ID generator intialized: "+
 		"start time = %v (%v), curr time = %v (%v), expiration/max time = %v (%v), node ID = %v",
 		startTimeMillisSinceEpoch, millisSinceEpochToTime(startTimeMillisSinceEpoch),
 		currTimeMillis, millisSinceEpochToTime(currTimeMillis),
@@ -235,6 +235,6 @@ func init() {
 	}
 }
 
-func GlobalUniqueID() string {
+func GenerateSnowflakeID() string {
 	return globalIDGen.generateID().encodeBase64()
 }

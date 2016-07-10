@@ -1,4 +1,4 @@
-package databaseWrapper
+package uniqueID
 
 import (
 	"strconv"

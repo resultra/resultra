@@ -7,7 +7,7 @@ import (
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const htmlEditorEntityKind string = "html_editor"
@@ -59,7 +59,7 @@ func saveNewHtmlEditor(params NewHtmlEditorParams) (*HtmlEditor, error) {
 		FieldID:  params.FieldID}
 
 	newHtmlEditor := HtmlEditor{ParentFormID: params.ParentFormID,
-		HtmlEditorID: databaseWrapper.GlobalUniqueID(),
+		HtmlEditorID: uniqueID.GenerateSnowflakeID(),
 		Properties:   properties}
 
 	if saveErr := common.SaveNewFormComponent(htmlEditorEntityKind,

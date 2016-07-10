@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 type RecordFilter struct {
@@ -103,7 +104,7 @@ func newFilter(params NewFilterParams) (*RecordFilter, error) {
 
 	newFilter := RecordFilter{
 		ParentTableID: params.ParentTableID,
-		FilterID:      databaseWrapper.GlobalUniqueID(),
+		FilterID:      uniqueID.GenerateSnowflakeID(),
 		Name:          sanitizedName}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO filters (table_id, filter_id, name) VALUES ($1,$2,$3)`,
@@ -246,14 +247,14 @@ func newFilterRule(newRuleParams NewFilterRuleParams) (*RecordFilterRule, error)
 				}
 				newFilterRule = RecordFilterRule{
 					ParentFilterID: newRuleParams.ParentFilterID,
-					FilterRuleID:   databaseWrapper.GlobalUniqueID(),
+					FilterRuleID:   uniqueID.GenerateSnowflakeID(),
 					FieldID:        newRuleParams.FieldID,
 					RuleID:         newRuleParams.RuleID,
 					TextRuleParam:  *newRuleParams.TextRuleParam}
 			} else {
 				newFilterRule = RecordFilterRule{
 					ParentFilterID: newRuleParams.ParentFilterID,
-					FilterRuleID:   databaseWrapper.GlobalUniqueID(),
+					FilterRuleID:   uniqueID.GenerateSnowflakeID(),
 					FieldID:        newRuleParams.FieldID,
 					RuleID:         newRuleParams.RuleID,
 					TextRuleParam:  ""}
@@ -271,14 +272,14 @@ func newFilterRule(newRuleParams NewFilterRuleParams) (*RecordFilterRule, error)
 				}
 				newFilterRule = RecordFilterRule{
 					ParentFilterID:  newRuleParams.ParentFilterID,
-					FilterRuleID:    databaseWrapper.GlobalUniqueID(),
+					FilterRuleID:    uniqueID.GenerateSnowflakeID(),
 					FieldID:         newRuleParams.FieldID,
 					RuleID:          newRuleParams.RuleID,
 					NumberRuleParam: *newRuleParams.NumberRuleParam}
 			} else {
 				newFilterRule = RecordFilterRule{
 					ParentFilterID:  newRuleParams.ParentFilterID,
-					FilterRuleID:    databaseWrapper.GlobalUniqueID(),
+					FilterRuleID:    uniqueID.GenerateSnowflakeID(),
 					FieldID:         newRuleParams.FieldID,
 					RuleID:          newRuleParams.RuleID,
 					NumberRuleParam: 0}

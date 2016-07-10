@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 	"strings"
 )
 
@@ -81,7 +82,7 @@ func CreateNewFieldFromRawInputs(parentTableID string, newField Field) (string, 
 	newField.ParentTableID = parentTableID
 	// The UUID for fields is substituted for the fields reference name when stored in the preprocessed formula.
 	// The tokenizer for the formula compiler could potentially read the UUID as a number literal if there isn't a distinct prefix.
-	newField.FieldID = databaseWrapper.GlobalUniqueID()
+	newField.FieldID = uniqueID.GenerateSnowflakeID()
 
 	newField.RefName = strings.TrimSpace(newField.RefName) // strip leading & trailing whitespace
 	if !validRefNameRegexp.MatchString(newField.RefName) {

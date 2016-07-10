@@ -3,6 +3,7 @@ package userAuth
 import (
 	"fmt"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 	"strings"
 )
 
@@ -80,7 +81,7 @@ func saveNewUser(rawParams NewUserParams) *AuthResponse {
 		return newAuthResponse(false, "Registration failed: user with same email already exists")
 	}
 
-	userID := databaseWrapper.GlobalUniqueID()
+	userID := uniqueID.GenerateSnowflakeID()
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
 		`INSERT INTO users (user_id, email_addr, user_name, first_name,last_name, password_hash) 

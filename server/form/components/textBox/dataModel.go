@@ -7,7 +7,7 @@ import (
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const textBoxEntityKind string = "textbox"
@@ -61,7 +61,7 @@ func saveNewTextBox(params NewTextBoxParams) (*TextBox, error) {
 		FieldID:  params.FieldID}
 
 	newTextBox := TextBox{ParentFormID: params.ParentFormID,
-		TextBoxID:  databaseWrapper.GlobalUniqueID(),
+		TextBoxID:  uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
 	if saveErr := common.SaveNewFormComponent(textBoxEntityKind,

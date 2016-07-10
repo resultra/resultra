@@ -5,6 +5,7 @@ import (
 	"log"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const formEntityKind string = "Form"
@@ -28,7 +29,7 @@ func newForm(params NewFormParams) (*Form, error) {
 	}
 
 	newForm := Form{ParentTableID: params.ParentTableID,
-		FormID: databaseWrapper.GlobalUniqueID(),
+		FormID: uniqueID.GenerateSnowflakeID(),
 		Name:   sanitizedName}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO forms (table_id,form_id,name) VALUES ($1,$2,$3)`,
