@@ -31,11 +31,12 @@ func init() {
 }
 
 type ViewFormTemplateParams struct {
-	Title      string
-	FormID     string
-	TableID    string
-	DatabaseID string
-	FormName   string
+	Title        string
+	FormID       string
+	TableID      string
+	DatabaseID   string
+	DatabaseName string
+	FormName     string
 }
 
 func viewForm(w http.ResponseWriter, r *http.Request) {
@@ -59,10 +60,11 @@ func viewForm(w http.ResponseWriter, r *http.Request) {
 		}
 
 		templParams := ViewFormTemplateParams{Title: "View Form",
-			FormID:     formID,
-			TableID:    formDBInfo.TableID,
-			DatabaseID: formDBInfo.DatabaseID,
-			FormName:   formDBInfo.FormName}
+			FormID:       formID,
+			TableID:      formDBInfo.TableID,
+			DatabaseID:   formDBInfo.DatabaseID,
+			DatabaseName: formDBInfo.DatabaseName,
+			FormName:     formDBInfo.FormName}
 
 		err := viewFormTemplates.ExecuteTemplate(w, "viewForm", templParams)
 		if err != nil {

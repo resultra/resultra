@@ -90,23 +90,26 @@ func getDatabaseInfo(params DatabaseInfoParams) (*DatabaseInfo, error) {
 }
 
 type FormDatabaseInfo struct {
-	FormID     string
-	TableID    string
-	DatabaseID string
-	FormName   string
+	FormID       string
+	TableID      string
+	DatabaseID   string
+	DatabaseName string
+	FormName     string
 }
 
 func GetFormDatabaseInfo(formID string) (*FormDatabaseInfo, error) {
 
 	var formDBInfo FormDatabaseInfo
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT databases.database_id, data_tables.table_id, forms.form_id, forms.name 
+	getErr := databaseWrapper.DBHandle().QueryRow(`
+			SELECT 
+				databases.database_id, databases.name AS database_name, data_tables.table_id, forms.form_id, forms.name 
 			FROM 
 				forms,data_tables,databases 
 			WHERE 
 				forms.form_id = $1 AND 
 				data_tables.database_id = databases.database_id AND
 				forms.table_id = data_tables.table_id`, formID).Scan(
-		&formDBInfo.DatabaseID, &formDBInfo.TableID, &formDBInfo.FormID, &formDBInfo.FormName)
+		&formDBInfo.DatabaseID, &formDBInfo.DatabaseName, &formDBInfo.TableID, &formDBInfo.FormID, &formDBInfo.FormName)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetFormDatabaseInfo: Unabled to get form info: form id = %v: datastore err=%v",
 			formID, getErr)

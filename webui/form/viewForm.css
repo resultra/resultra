@@ -5,3 +5,12 @@
 #recordFooterUILayout {
 	overflow:hidden; /* disable scroll bars */
 }
+
+#formNameHeaderCol {
+	 text-align:center;
+}
+
+#formNameHeader {
+	margin-top:5px;
+	margin-bottom:5px;
+}
