@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"resultra/datasheet/server/form"
+	"resultra/datasheet/server/databaseInfo"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/form/components"
@@ -35,16 +35,15 @@ func designForm(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	formID := vars["formID"]
-	tableID := vars["tableID"]
 	log.Println("Design Form: editing for form with ID = ", formID)
 
-	formToDesign, getErr := form.GetForm(form.GetFormParams{tableID, formID})
+	formDBInfo, getErr := databaseInfo.GetFormDatabaseInfo(formID)
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return
 	}
 
-	templParams := createDesignFormTemplateParams(formToDesign)
+	templParams := createDesignFormTemplateParams(formDBInfo)
 
 	err := designFormTemplates.ExecuteTemplate(w, "designForm", templParams)
 	if err != nil {

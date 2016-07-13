@@ -40,14 +40,14 @@ func NewDashboard(params NewDashboardParams) (*Dashboard, error) {
 
 }
 
-func GetDashboard(databaseID string, dashboardID string) (*Dashboard, error) {
+func GetDashboard(dashboardID string) (*Dashboard, error) {
 
 	dashboardName := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT name FROM dashboards
-		 WHERE database_id=$1 AND dashboard_id=$2 LIMIT 1`,
-		databaseID, dashboardID).Scan(&dashboardName)
+	databaseID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT database_id,name FROM dashboards
+		 WHERE dashboard_id=$1 LIMIT 1`, dashboardID).Scan(&databaseID, &dashboardName)
 	if getErr != nil {
-		return nil, fmt.Errorf("GetForm: Unabled to get dashboard: datastore err=%v", getErr)
+		return nil, fmt.Errorf("GetDashboard: Unabled to get dashboard with ID = %v: datastore err=%v", dashboardID, getErr)
 	}
 
 	getDashboard := Dashboard{

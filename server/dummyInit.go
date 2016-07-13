@@ -2,6 +2,8 @@ package server
 
 import (
 	"resultra/datasheet/server/database"
+	"resultra/datasheet/server/databaseInfo"
+	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/recordReadController"
 	"resultra/datasheet/server/recordUpdate"
 	"resultra/datasheet/server/table"
@@ -13,6 +15,8 @@ var dummyUnusedDBParams = database.NewDatabaseParams{}
 var dummyUnusedTableParams = table.NewTableParams{}
 var dummyRecordUpdateParams = recordUpdate.DummyStructForInclude{}
 var dummyRecordVals = recordReadController.DummyStructForInclude{}
+var dummDBInfo = databaseInfo.DummyStructForInclude{}
+var dummyFormInfo = form.DummyStructForInclude{}
 
 func DummyFunctionForImportFromGoogleAppEngineProjectFolder() {
 	// This dummy function is needed so standaline packages inside

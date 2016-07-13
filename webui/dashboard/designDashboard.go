@@ -32,10 +32,9 @@ func designDashboard(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	dashboardID := vars["dashboardID"]
-	parentDatabaseID := vars["databaseID"]
 	log.Println("Design Dashboard: editing for dashboard with params = %+v", vars)
 
-	dashboardForDesign, getErr := dashboard.GetDashboard(parentDatabaseID, dashboardID)
+	dashboardForDesign, getErr := dashboard.GetDashboard(dashboardID)
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return

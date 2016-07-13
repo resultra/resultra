@@ -6,6 +6,10 @@ import (
 	"resultra/datasheet/server/generic/api"
 )
 
+type DummyStructForInclude struct {
+	Val int64
+}
+
 func init() {
 
 	formRouter := mux.NewRouter()

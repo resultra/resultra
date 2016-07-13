@@ -5,5 +5,5 @@ import (
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
-	mainRouter.HandleFunc("/designDashboard/{databaseID}/{dashboardID}", designDashboard)
+	mainRouter.HandleFunc("/designDashboard/{dashboardID}", designDashboard)
 }

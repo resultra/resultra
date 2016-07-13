@@ -34,7 +34,7 @@
 			</button>
 		</div> <!-- column -->
 		<div class= "col-md-6">
-			<a href="/designForm/{{.TableID}}/{{.FormID}}" class="item">Edit Form Design</a>	
+			<a href="/designForm/{{.FormID}}" class="item">Edit Form Design</a>	
 		</div> <!-- column -->
 	</div> <!-- row -->
 		
@@ -79,7 +79,9 @@
 
 	<script>var formID={{.FormID}};</script>
 	<script>var tableID={{.TableID}};</script>
-	<script>var viewFormContext = { formID:"{{.FormID}}", tableID:"{{.TableID}}" } </script>
+	<script>var viewFormContext = { formID:"{{.FormID}}", 
+		tableID:"{{.TableID}}",
+	 	databaseID: "{{.DatabaseID}}"} </script>
 	
 	<script src="/static/common/objectEdit/objectEditHelper.js"></script>
 	<script src="/static/field/fieldInfo.js"></script>

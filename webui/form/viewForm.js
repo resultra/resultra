@@ -138,7 +138,8 @@ function initUILayoutPanes()
 			resizable:false,
 			slidable: false,
 			spacing_open:4,
-			spacing_closed:4,			
+			spacing_closed:4,
+			initClosed:true // panel is initially closed	
 		}
 	})
 	
@@ -189,6 +190,8 @@ $(document).ready(function() {
 	initRecordButtonsBehavior()
 	
 	initUserDropdownMenu()
+	
+	initDatabaseTOC(viewFormContext.databaseID)
 	
 	initFieldInfo( function () {
 		loadFormComponents({
