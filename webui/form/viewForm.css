@@ -1,3 +1,16 @@
 #viewFormPageHeaderUILayout {
 	padding-top:5px; /* override the default 10px padding */
 }
+
+#recordFooterUILayout {
+	overflow:hidden;
+}
+
+#tocFormList, #tocDashboardList {
+	max-height:200px;
+}
+
+/* Overrides list-group-item from Bootstrap */ 
+#viewFormTocLayout .list-group-item {
+    padding: 5px 10px
+}

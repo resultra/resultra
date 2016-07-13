@@ -117,7 +117,7 @@ function initUILayoutPanes()
 	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
 	
 	// Initialize the page layout
-	$('#layoutPage').layout({
+	var mainLayout = $('#layoutPage').layout({
 		inset: zeroPaddingInset,
 		north: fixedUILayoutPaneParams(40),
 		east: {
@@ -132,6 +132,13 @@ function initUILayoutPanes()
 			togglerAlign_closed: "middle",	// align to top of resizer
 			togglerAlign_open: "middle"		// align to top of resizer
 			
+		},
+		west: {
+			size: 250,
+			resizable:false,
+			slidable: false,
+			spacing_open:4,
+			spacing_closed:4,			
 		}
 	})
 	
@@ -147,6 +154,13 @@ function initUILayoutPanes()
 		center__size:.6,
 		south__size:.4,
 	})
+		
+	initButtonClickHandler("#viewTableOfContentsMenuButton", function() {
+		console.log("TOC button clicked")
+		mainLayout.toggle("west")
+	})
+	
+	
 	
 }
 

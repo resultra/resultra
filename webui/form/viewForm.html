@@ -29,12 +29,9 @@
 		
 	<div class="row">
 		<div class= "col-md-6">
-			<select class="form-control input-sm">
-				 <option value="">Select Form</option>
-				    <option value="form1">Entry</option>
-				    <option value="form2">Exit</option>
-				    <option value="form3">Post-mortem</option>
-				</select>
+			<button type="button" class="btn btn-default btn-sm" id="viewTableOfContentsMenuButton">
+			  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+			</button>
 		</div> <!-- column -->
 		<div class= "col-md-6">
 			<a href="/designForm/{{.TableID}}/{{.FormID}}" class="item">Edit Form Design</a>	
@@ -98,12 +95,34 @@
  	
 	
   <body>
-	{{template "recordFilterManageRecordsModal"}} 
 
 	<div id="layoutPage" class="layoutPageDiv">
 		
 		<div class="pane ui-layout-north" id="viewFormPageHeaderUILayout">
 			{{template "viewFormPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west" id="viewFormTocLayout">
+			<div class="container-fluid">
+				<div class="row"  >
+					<label>Forms</label>
+					<div class="list-group" id="tocFormList">
+					  <a href="#" class="list-group-item">Form 1</a>
+					  <a href="#" class="list-group-item active">Form 2</a>
+					</div>
+				</div>
+			</div>
+			<div class="container-fluid">
+				<div class="row"  >
+					<label>Dashboards</label>
+					<div class="list-group" id="tocDashboardList">
+					  <a href="#" class="list-group-item">Dashboard 1</a>
+					  <a href="#" class="list-group-item">Dashboard 2</a>
+					  <a href="#" class="list-group-item active">Dashboard 3</a>
+					  <a href="#" class="list-group-item">Dashboard 4</a>
+					</div>
+				</div>
+			</div>
 		</div> <!-- ui layout north -->
 
 		<div class="pane ui-layout-east" id="eastFilterSortPane">
@@ -112,7 +131,7 @@
 				{{template "recordFilterPane"}}
 			</div> <!-- ui-layout-center #filterPane -->
 	
-			<div class=" ui-layout-south" id="sortPaneUILayout">
+			<div class=" ui-layout-south" id="sortPaneUILayout" >
 				{{template "recordSortPane"}}
 				
 			    
@@ -154,6 +173,9 @@
 				
 		</div> <!-- center pane for entire page -->	
 	</div> <!-- layout page -->
+
+	{{template "recordFilterManageRecordsModal"}} 
+
 	
   </body>
   	
