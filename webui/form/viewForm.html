@@ -103,26 +103,7 @@
 		</div> <!-- ui layout north -->
 		
 		<div class="pane ui-layout-west" id="viewFormTocLayout">
-			<div class="container-fluid">
-				<div class="row"  >
-					<label>Forms</label>
-					<div class="list-group" id="tocFormList">
-					  <a href="#" class="list-group-item">Form 1</a>
-					  <a href="#" class="list-group-item active">Form 2</a>
-					</div>
-				</div>
-			</div>
-			<div class="container-fluid">
-				<div class="row"  >
-					<label>Dashboards</label>
-					<div class="list-group" id="tocDashboardList">
-					  <a href="#" class="list-group-item">Dashboard 1</a>
-					  <a href="#" class="list-group-item">Dashboard 2</a>
-					  <a href="#" class="list-group-item active">Dashboard 3</a>
-					  <a href="#" class="list-group-item">Dashboard 4</a>
-					</div>
-				</div>
-			</div>
+			{{template "databaseTOC"}}
 		</div> <!-- ui layout north -->
 
 		<div class="pane ui-layout-east" id="eastFilterSortPane">

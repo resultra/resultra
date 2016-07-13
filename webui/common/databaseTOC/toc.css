@@ -1,0 +1,8 @@
+#tocFormList, #tocDashboardList {
+	max-height:200px;
+}
+
+/* Overrides list-group-item from Bootstrap */ 
+.databaseTOCContainer .list-group-item {
+    padding: 5px 10px
+}

@@ -3,14 +3,5 @@
 }
 
 #recordFooterUILayout {
-	overflow:hidden;
-}
-
-#tocFormList, #tocDashboardList {
-	max-height:200px;
-}
-
-/* Overrides list-group-item from Bootstrap */ 
-#viewFormTocLayout .list-group-item {
-    padding: 5px 10px
+	overflow:hidden; /* disable scroll bars */
 }
