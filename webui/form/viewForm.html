@@ -11,10 +11,10 @@
 {{define "viewFormPageHeader"}}
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-8">
+			<div class="col-sm-8">
 				{{template "viewFormBreadcrumbHeader" .}}
 			</div>
-			<div class="col-md-4">
+			<div class="col-sm-4">
 				<div class="pull-right">
 					{{template "userDropdownMenu"}}
 				</div>
@@ -41,17 +41,17 @@
 {{end}}
 
 {{define "viewFormHeaderControls"}}
-<div id="recordHeaderGrid">
+<div class="container-fluid" id="recordHeaderGrid">
 	<div class="row">
-		<div class= "col-md-4">
+		<div class= "col-sm-4">
 			<button type="button" class="btn btn-default btn-sm" id="viewTableOfContentsMenuButton">
 			  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 			</button>
 		</div> <!-- column -->
-		<div class= "col-md-4"  id="formNameHeaderCol">
+		<div class= "col-sm-4"  id="formNameHeaderCol">
 			<h4 id="formNameHeader">{{.FormName}}</h4>
 		</div> <!-- column -->
-		<div class= "col-md-4">
+		<div class= "col-sm-4">
 			<div class="pull-right">
 				{{template "viewFormMoreMenu" .}}
 			</div>
@@ -61,18 +61,22 @@
 {{end}}
 
 
-{{define "viewFormFooterButtons"}}
+{{define "viewFormFooterLeftButtons"}}
 	<button class="btn-primary btn-sm" id="prevRecordButton">Previous</button>
 	<span id="recordNumLabel">&nbsp;</span>
 	<button class="btn-primary btn-sm" id="nextRecordButton">Next </button>
-	<button class="btn-primary btn-sm" id="newRecordButton">New Record</button>
 {{end}}
 
 {{define "viewFormFooterControls"}}
-<div class="container">
+<div class="container-fluid">
 	<div class="row">
-		<div class="col-md-12">
-			{{template "viewFormFooterButtons"}}
+		<div class="col-sm-6">
+			{{template "viewFormFooterLeftButtons"}}
+		</div>
+		<div class="col-sm-6">
+			<div class="pull-right">
+				<button class="btn-primary btn-sm" id="newRecordButton">New Record</button>
+			</div>
 		</div>
 	</div>
 </div> <!-- record footer grid -->
