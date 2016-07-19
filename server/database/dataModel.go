@@ -7,8 +7,6 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
-const DatabaseEntityKind string = "Database"
-
 type Database struct {
 	DatabaseID string `json:"databaseID"`
 	Name       string `json:"name"`
