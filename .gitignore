@@ -5,6 +5,9 @@
 # beneath the project folder with the app.yaml.
 serverMain/static/*
 
+# Build output files
+build/dest/*
+
 # Executable file
 serverMain/datasheetServer
 
