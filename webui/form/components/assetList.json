@@ -1,0 +1,6 @@
+{
+	"subDirs":[],
+	"cssFiles": [],
+	"htmlFiles": [],
+	"jsFiles": ["formComponentLoader.js"] 
+}

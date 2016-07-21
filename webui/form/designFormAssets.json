@@ -1,0 +1,9 @@
+{
+	"subDirs":["components"],
+	"cssFiles": ["designForm.css"],
+	"minCSSFile":"form/designForm.min.css",
+	"jsFiles": ["designForm.js"],
+	"minJSFile": "form/designForm.min.js",
+	"htmlFiles":["designForm.html"],
+	"injectPlaceholderName":"designFormAssets"
+}

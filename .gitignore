@@ -5,8 +5,13 @@
 # beneath the project folder with the app.yaml.
 serverMain/static/*
 
-# Build output files
+# Build intermediate and output files
 build/dest/*
+*_gen.json
+
+# Locally installed Node.js modules used to support building finalized
+# HTML, JS and CSS files. 
+webui/build/node_modules/*
 
 # Executable file
 serverMain/datasheetServer
