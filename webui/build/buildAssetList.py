@@ -13,7 +13,7 @@ def buildAssetList(jsFileList, cssFileList, htmlFileList, rootPath, assetListFil
         assetList = json.load(json_file)
         for subDir in assetList['subDirs']:
             subDirPath = rootPath + subDir + "/"
-            buildAssetList(jsFileList,cssFileList,htmlFileList,subDirPath,"assetList.json")
+            buildAssetList(jsFileList,cssFileList,htmlFileList,subDirPath,"assetManifest.json")
         for cssFile in assetList['cssFiles']:
             cssFileAbsPath = os.path.abspath(rootPath + cssFile)
             cssFileList.append(cssFileAbsPath)
@@ -41,6 +41,9 @@ destAssetList['cssFiles'] = cssFileList
 destAssetList['htmlFiles'] = htmlFileList
 destAssetList['basePath'] = basePath
 
+# Copy the individual properties from the source asset list to the destination.
+# The final output will contain a recursively expanded set of assets and these
+# properties.
 with open(assetListFileName) as json_file:
     srcAssetList = json.load(json_file)
     destAssetList['minJSFile'] = srcAssetList['minJSFile']
