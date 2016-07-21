@@ -8,6 +8,6 @@ clean:
 	$(RM) *_gen.json
 		
 package:
-	$(BUILD_ASSET_LIST) designFormAssets.json $(ASSET_BASE_PATH) > designFormAssets_gen.json
+	$(BUILD_ASSET_LIST) designFormAssetInclude.json $(ASSET_BASE_PATH) > designFormAssets_gen.json
 	$(GULP) debugExportAssets exportMinifiedAssets injectHTMLFiles --assets $(abspath ./designFormAssets_gen.json)
 
