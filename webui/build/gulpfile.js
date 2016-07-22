@@ -67,14 +67,12 @@ function transformCSSFileForInjection(filepath, file, index, length, targetFile)
 	return '<link rel="stylesheet" href="' + newCSSPath  + '">'
 }
 
-
-
 gulp.task('injectHTMLFilesWithIndividualAssets', function() {
 		
   	// Inject the list of javascript sources into the HTML template(s).
 	// Injection is based upon the absolute path of the JS and HTML file, and uses
 	// a transformation function to do the actual mapping.
-	var htmlTarget = gulp.src(assets.htmlFiles)
+	var htmlTarget = gulp.src(assets.htmlFiles,{base:assets.basePath})
 		
 	var jsSources = gulp.src(assets.jsFiles, {read: false})
 	var cssSources = gulp.src(assets.cssFiles,{read:false})
@@ -89,7 +87,7 @@ gulp.task('injectHTMLFilesWithIndividualAssets', function() {
 
 gulp.task('injectHTMLFilesWithMinifiedAssets', function() {
 
-	var htmlTarget = gulp.src(assets.htmlFiles)
+	var htmlTarget = gulp.src(assets.htmlFiles,{base:assets.basePath})
 
 	gutil.log("Injecting HTML files with minified JS and CSS references: html files = " + assets.htmlFiles.length 
 		+ ", inject placholder name = " + assets.injectPlaceholderName)

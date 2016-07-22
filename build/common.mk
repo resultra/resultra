@@ -1,4 +1,6 @@
 
+# Default is a debug build. This can be set explicitely on the command line with DEBUG=0 or DEBUG=1
+DEBUG ?= 1
 
 RM = rm -f
 INSTALL_FILE = $(DEPTH)/build/installFile.sh
