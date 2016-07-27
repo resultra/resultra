@@ -5,12 +5,15 @@
   <head>
     <title>{{.Title}}</title>
 	
-	{{template "genericCSS"}}
-	{{template "commonCSS"}}
-
-	{{template "genericJS"}}
-	{{template "commonJS"}}
-	<script src="/static/homePage/homePagePublic.js"></script>
+	{{template "thirdPartyCSS"}}
+		
+	<!-- homePagePublicAssets:css -->
+	<!-- endinject -->
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- homePagePublicAssets:js -->
+	<!-- endinject -->
 			
   </head>
   <body>
@@ -19,7 +22,9 @@
 	  <button type="button" id="signInButton" class="btn btn-primary">Sign In</button>
 	  <button type="button" id="homePageRegisterButton" class="btn btn-primary">Register</button>
   </body>
+  
   {{template "UserSignInDialog"}}
   {{template "userRegisterDialog"}}
+  
 </html>
 {{end}}

@@ -11,3 +11,13 @@ PKG_SCHEMA_DIR = $(DEPTH)/build/dest/schema
 GO = go
 GOBUILD = $(GO) build 
 GOTEST = $(GO) test -v .
+
+# Default, no-op/empty rules for different build phases. Makefiles can override these
+# to implement build rules for different phases.
+clean:
+
+prebuild:
+
+build:
+
+package:

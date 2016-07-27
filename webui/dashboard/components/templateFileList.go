@@ -9,7 +9,7 @@ var TemplateFileList []string
 
 func init() {
 
-	TemplateFileList = []string{"static/dashboard/components/include.html"}
+	TemplateFileList = []string{}
 
 	TemplateFileList = append(TemplateFileList, barChart.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, newComponentDialog.TemplateFileList...)

@@ -86,34 +86,17 @@
   <head>
     <title>{{.Title}}</title>
 	
-	{{template "genericCSS"}}
-	{{template "commonCSS"}}
-	{{template "formComponentsCSS"}}
-	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/designPalette/designPalette.css">
-	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/layout.css">
-	<link rel="stylesheet" type="text/css" class="ui" href="/static/form/designForm.css">
+	{{template "thirdPartyCSS"}}
 	
 	<!-- designFormAssets:css -->
 	<!-- endinject -->
 	
 
-	{{template "genericJS"}}
-	{{template "commonJS"}}
-	
 	<script>var formID={{.FormID}};</script>
 	<script>var tableID={{.TableID}};</script>
 	<script>var designFormContext = { tableID:"{{.TableID}}",formID:"{{.FormID}}" } </script>
 	
-	<script src="/static/common/objectEdit/objectEditHelper.js"></script>
-	<script src="/static/common/objectEdit/objectEdit.js"></script>
-	
-	
-	<script src="/static/field/fieldInfo.js"></script>
-		
-	{{template "formComponentsJS"}}		
-	
-	<script src="/static/common/designPalette/designPalette.js"></script>
-	<script src="/static/form/designForm.js"></script>
+	{{template "thirdPartyJS"}}
 	
 	<!-- designFormAssets:js -->
 	<!-- endinject -->

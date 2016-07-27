@@ -1,5 +1,8 @@
 {
-	"subDirs":["components"],
+	"subDirs":["../generic",
+		"../common",
+		"../field",
+			"components"],
 	"cssFiles": ["designForm.css"],
 	"minCSSFile":"form/designForm.min.css",
 	"jsFiles": ["designForm.js"],

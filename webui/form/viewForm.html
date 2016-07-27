@@ -88,32 +88,22 @@
   <head>
     <title>{{.Title}}</title>
 	
-	{{template "genericCSS"}}
-	{{template "commonCSS"}}
-	{{template "formComponentsCSS"}}
-	{{template "formCommonSortCSS"}}
-	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/layout.css">
-	<link rel="stylesheet" type="text/css" class="ui" href="/static/form/editRecord.css">
-	<link rel="stylesheet" type="text/css" class="ui" href="/static/form/viewForm.css">
-
-	{{template "genericJS"}}
-	{{template "commonJS"}}
-
+	{{template "thirdPartyCSS"}}
+	
+	<!-- viewFormAssets:css -->
+	<!-- endinject -->
+	
 	<script>var formID={{.FormID}};</script>
 	<script>var tableID={{.TableID}};</script>
 	<script>var viewFormContext = { formID:"{{.FormID}}", 
 		tableID:"{{.TableID}}",
 	 	databaseID: "{{.DatabaseID}}"} </script>
 	
-	<script src="/static/common/objectEdit/objectEditHelper.js"></script>
-	<script src="/static/field/fieldInfo.js"></script>
-
-	{{template "formComponentsJS"}}
-	{{template "formCommonSortJS"}}
+	{{template "thirdPartyJS"}}
 	
-	<script src="/static/form/recordSet.js"></script>
-	<script src="/static/form/viewForm.js"></script>
-			
+	<!-- viewFormAssets:js -->
+	<!-- endinject -->
+				
   </head>
 	
  	

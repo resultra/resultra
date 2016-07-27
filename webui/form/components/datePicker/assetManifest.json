@@ -1,0 +1,16 @@
+{
+    "cssFiles": [
+        "datePicker.css"
+    ], 
+    "htmlFiles": [
+        "properties.html"
+    ], 
+    "jsFiles": [
+        "containerHTML.js", 
+        "newDatePickerDialog.js", 
+        "properties.js", 
+        "designFormConfig.js", 
+        "viewFormConfig.js"
+    ],
+	"imageFiles":[]
+}

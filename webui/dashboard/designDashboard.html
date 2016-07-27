@@ -88,26 +88,20 @@
   <head>
     <title>{{.Title}}</title>
 	
-	{{template "genericCSS"}}
-	{{template "commonCSS"}}
-	{{template "dashboardComponentsCSS"}}
-	
-	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/designPalette/designPalette.css">
-	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/layout.css">
-	<link rel="stylesheet" type="text/css" class="ui" href="/static/dashboard/designDashboard.css">
+	{{template "thirdPartyCSS"}}
 
-	{{template "genericJS"}}
-	{{template "commonJS"}}
+	<!-- designDashboardAssets:css -->
+	<!-- endinject -->
+
+	{{template "thirdPartyJS"}}
 	
 	{{template "googleChartsJavascript"}}
-	
-	{{template "dashboardComponentsJS"}}
-	
+		
 	<script>var dashboardID={{.DashboardID}};</script>
 	<script>var databaseID={{.DatabaseID}};</script>
-	<script src="/static/common/designPalette/designPalette.js"></script>
-	<script src="/static/field/fieldInfo.js"></script>
-	<script src="/static/dashboard/designDashboard.js"></script>
+	
+	<!-- designDashboardAssets:js -->
+	<!-- endinject -->
 	
 	
   </head>

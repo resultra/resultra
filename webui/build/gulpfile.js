@@ -24,6 +24,16 @@ gulp.task('exportIndividualAssets', function() {
 	gutil.log("Exporting individual css files from asset list: # files = " + assets.cssFiles.length)
 	gulp.src(assets.cssFiles,{base:assets.basePath})
       .pipe(gulp.dest(distDir))
+
+	gutil.log("Exporting individual html template files from asset list: # files = " + assets.htmlFiles.length)
+	gulp.src(assets.htmlFiles,{base:assets.basePath})
+      .pipe(gulp.dest(distDir))
+
+	gutil.log("Exporting individual image files from asset list: # files = " + assets.imageFiles.length)
+	gulp.src(assets.imageFiles,{base:assets.basePath})
+      .pipe(gulp.dest(distDir))
+
+	
 })
 
 gulp.task('exportMinifiedAssets', function() {
@@ -43,6 +53,15 @@ gulp.task('exportMinifiedAssets', function() {
 	  .pipe(concat(assets.minCSSFile))
 	  .pipe(minifyCSS({keepBreaks:true}))
 	  .pipe(gulp.dest(distDir))
+
+	// TODO - Export concatenated html templates when in release build.
+	gutil.log("Exporting individual html template files from asset list: # files = " + assets.htmlFiles.length)
+	gulp.src(assets.htmlFiles,{base:assets.basePath})
+      .pipe(gulp.dest(distDir))
+
+	gutil.log("Exporting individual image files from asset list: # files = " + assets.imageFiles.length)
+	gulp.src(assets.imageFiles,{base:assets.basePath})
+      .pipe(gulp.dest(distDir))
 
 })
 

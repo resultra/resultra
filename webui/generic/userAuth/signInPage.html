@@ -5,12 +5,15 @@
   <head>
     <title>{{.Title}}</title>
 	
-	{{template "genericCSS"}}
-	{{template "commonCSS"}}
+	{{template "thirdPartyCSS"}}
+	
+	<!-- signinPageAssets:css -->
+	<!-- endinject -->
 
-	{{template "genericJS"}}
-	{{template "commonJS"}}
-	<script src="/static/generic/userAuth/signInPage.js"></script>
+	{{template "thirdPartyJS"}}
+	
+	<!-- signinPageAssets:js -->
+	<!-- endinject -->
 			
   </head>
   <body>

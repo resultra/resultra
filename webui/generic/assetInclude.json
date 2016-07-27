@@ -1,0 +1,5 @@
+{
+    "subDirs": ["propertiesSidebar",
+		"userAuth",
+		"wizardDialog"]
+}

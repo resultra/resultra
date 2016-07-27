@@ -4,12 +4,15 @@
   <head>
     <title>{{.Title}}</title>
 	
-	{{template "genericCSS"}}
-	{{template "commonCSS"}}
-
-	{{template "genericJS"}}
-	{{template "commonJS"}}
-	<script src="/static/homePage/homePageSignedIn.js"></script>
+	{{template "thirdPartyCSS"}}
+	
+	<!-- homePageSignedInAssets:css -->
+	<!-- endinject -->
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- homePageSignedInAssets:js -->
+	<!-- endinject -->
 			
   </head>
   <body>

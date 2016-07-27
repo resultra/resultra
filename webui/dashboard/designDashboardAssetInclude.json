@@ -1,0 +1,13 @@
+{
+	"subDirs":["../generic",
+				"../common",
+				"../field",
+				"components/common/newComponentDialog",
+				"components/barChart"],
+	"cssFiles": ["designDashboard.css"],
+	"jsFiles": ["designDashboard.js"],
+	"htmlFiles":["designDashboard.html"],
+	"minJSFile": "dashboard/designDashboard.min.js",
+	"minCSSFile":"dashboard/designDashboard.min.css",
+	"injectPlaceholderName":"designDashboardAssets"
+}

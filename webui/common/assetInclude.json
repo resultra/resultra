@@ -1,0 +1,10 @@
+{
+    "subDirs": ["breadCrumb",
+		"databaseTOC",
+		"designPalette",
+		"formulaEditor",
+		"helper",
+		"objectEdit",
+		"objectSelection",
+		"recordFilter"]
+}

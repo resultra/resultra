@@ -1,0 +1,10 @@
+{
+    "subDirs": [
+		"common/componentEdit",
+		"common/newFormElemDialog",
+		"checkBox",
+		"datePicker",
+		"htmlEditor",
+		"image",
+		"textBox"]
+}

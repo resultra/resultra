@@ -1,0 +1,16 @@
+{
+    "cssFiles": [
+        "htmlEditor.css"
+    ], 
+    "htmlFiles": [
+        "properties.html"
+    ], 
+    "jsFiles": [
+        "containerHTML.js", 
+        "newHtmlEditorDialog.js", 
+        "properties.js", 
+        "designFormConfig.js", 
+        "viewFormConfig.js"
+    ],
+	"imageFiles":[]
+}

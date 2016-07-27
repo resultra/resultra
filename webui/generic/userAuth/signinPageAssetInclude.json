@@ -1,0 +1,10 @@
+{
+	"subDirs":["..",
+		"../../common"],
+	"cssFiles": [],
+	"jsFiles": ["signinPage.js"],
+	"htmlFiles":["signinPage.html"],
+	"minCSSFile":"generic/userAuth/signinPage.min.css",
+	"minJSFile": "generic/userAuth/signinPage.min.js",
+	"injectPlaceholderName":"signinPageAssets"
+}

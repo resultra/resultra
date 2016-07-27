@@ -1,0 +1,13 @@
+{
+	"subDirs":["../generic",
+		"../common",
+		"../field",
+		"common/sort",
+			"components"],
+	"cssFiles": ["editRecord.css","viewForm.css"],
+	"jsFiles": ["recordSet.js","viewForm.js"],
+	"htmlFiles":["viewForm.html"],
+	"minCSSFile":"form/viewForm.min.css",
+	"minJSFile": "form/viewForm.min.js",
+	"injectPlaceholderName":"viewFormAssets"
+}

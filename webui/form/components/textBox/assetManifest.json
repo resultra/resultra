@@ -1,0 +1,14 @@
+{
+    "cssFiles": [], 
+    "htmlFiles": [
+        "properties.html"
+    ], 
+    "jsFiles": [
+        "containerHTML.js", 
+        "newTextBoxDialog.js", 
+        "properties.js", 
+        "designFormConfig.js", 
+        "viewFormConfig.js"
+    ],
+	"imageFiles":[]
+}

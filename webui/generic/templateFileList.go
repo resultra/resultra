@@ -10,7 +10,7 @@ var TemplateFileList []string
 
 func init() {
 
-	TemplateFileList = []string{"static/generic/include.html"}
+	TemplateFileList = []string{}
 
 	TemplateFileList = append(TemplateFileList, propertiesSidebar.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, wizardDialog.TemplateFileList...)

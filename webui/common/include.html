@@ -1,6 +1,4 @@
 
-
-
 {{define "thirdPartyCSS"}}
 
   <!--Bootstrap conflicts with Semantic UI - need to resolve conflicts or move to bootstrap before integrating
@@ -23,21 +21,6 @@
 		href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css"> 
 		
 		
-{{end}}
-
-
-{{define "commonCSS"}}
-
-	{{template "thirdPartyCSS"}}
-
-	<link rel="stylesheet" type="text/css" class="ui" href="/static/common/common.css">
-
-	{{template "commonObjectSelectionCSS"}}
-	{{template "commonFormulaEditorCSS"}}
-	{{template "commonBreadCrumbCSS"}}
-	{{template "commonRecordFilterCSS"}}
-	{{template "commonDatabaseTOCCSS"}}
-	
 {{end}}
 
 {{define "thirdPartyJS"}}
@@ -64,18 +47,5 @@
 	<script type="text/javascript" src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-layout/1.4.3/jquery.layout.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/ace.js"></script>
-{{end}}
-
-{{define "commonJS"}}
-
-	{{template "thirdPartyJS"}}
-
-	{{template "commonHelperJS"}}	
-	{{template "commonObjectSelectionJS"}}
-	{{template "commonFormulaEditorJS"}}
-	{{template "commonRecordFilterJS"}}
-	{{template "commonBreadCrumbJS"}}
-	{{template "commonDatabaseTOCJS"}}
-
 {{end}}
 

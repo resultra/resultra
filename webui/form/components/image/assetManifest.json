@@ -1,0 +1,16 @@
+{
+    "cssFiles": [
+        "image.css"
+    ], 
+    "htmlFiles": [
+        "properties.html"
+    ], 
+    "jsFiles": [
+        "containerHTML.js", 
+        "newImageDialog.js", 
+        "properties.js", 
+        "designFormConfig.js", 
+        "viewFormConfig.js"
+    ],
+	"imageFiles":[]
+}

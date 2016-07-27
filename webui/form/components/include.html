@@ -1,28 +1,8 @@
-{{define "formComponentsCSS"}}
-	{{template "formComponentCheckBoxCSS"}}
-	{{template "formComponentDatePickerCSS"}}
-	{{template "formComponentHtmlEditorCSS"}}
-	{{template "formComponentImageCSS"}}
-	{{template "formComponentsCommonNewFormElemDialogCSS"}}
-{{end}}
 
-{{define "formComponentsJS"}}
-	{{template "formComponentsCommonComponentEditJS"}}
-	{{template "formComponentsCommonNewFormElemDialogJS"}}
-	{{template "formComponentCheckBoxJS"}}
-	{{template "formComponentTextBoxJS"}}
-	{{template "formComponentDatePickerJS"}}
-	{{template "formComponentHtmlEditorJS"}}
-	{{template "formComponentImageJS"}}
-	<script src="/static/form/components/formComponentLoader.js"></script>
-{{end}}
-
-{{define "newComponentDialogs"}}
-	   
+{{define "newComponentDialogs"}} 
 	{{template "newFormComponentDialog" .TextBoxParams}}
 	{{template "newFormComponentDialog" .CheckboxParams}}
 	{{template "newFormComponentDialog" .DatePickerParams}}
 	{{template "newFormComponentDialog" .HtmlEditorParams}}
 	{{template "newFormComponentDialog" .ImageParams}}
-	
 {{end}}
