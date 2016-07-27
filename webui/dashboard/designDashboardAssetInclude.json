@@ -7,6 +7,7 @@
 	"cssFiles": ["designDashboard.css"],
 	"jsFiles": ["designDashboard.js"],
 	"htmlFiles":["designDashboard.html"],
+	"imageFiles":[],
 	"minJSFile": "dashboard/designDashboard.min.js",
 	"minCSSFile":"dashboard/designDashboard.min.css",
 	"injectPlaceholderName":"designDashboardAssets"

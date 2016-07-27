@@ -51,7 +51,6 @@ gulp.task('exportMinifiedAssets', function() {
 		+ ", target file = " + assets.minCSSFile)
 	gulp.src(assets.cssFiles,{base:assets.basePath})
 	  .pipe(concat(assets.minCSSFile))
-	  .pipe(minifyCSS({keepBreaks:true}))
 	  .pipe(gulp.dest(distDir))
 
 	// TODO - Export concatenated html templates when in release build.
