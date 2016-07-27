@@ -7,6 +7,7 @@
 	"cssFiles": ["editRecord.css","viewForm.css"],
 	"jsFiles": ["recordSet.js","viewForm.js"],
 	"htmlFiles":["viewForm.html"],
+	"imageFiles":[],
 	"minCSSFile":"form/viewForm.min.css",
 	"minJSFile": "form/viewForm.min.js",
 	"injectPlaceholderName":"viewFormAssets"
