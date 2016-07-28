@@ -2,7 +2,7 @@ package server
 
 import (
 	"resultra/datasheet/server/database"
-	"resultra/datasheet/server/databaseInfo"
+	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/recordReadController"
 	"resultra/datasheet/server/recordUpdate"
@@ -15,7 +15,7 @@ var dummyUnusedDBParams = database.NewDatabaseParams{}
 var dummyUnusedTableParams = table.NewTableParams{}
 var dummyRecordUpdateParams = recordUpdate.DummyStructForInclude{}
 var dummyRecordVals = recordReadController.DummyStructForInclude{}
-var dummDBInfo = databaseInfo.DummyStructForInclude{}
+var dummDBInfo = databaseController.DummyStructForInclude{}
 var dummyFormInfo = form.DummyStructForInclude{}
 
 func DummyFunctionForImportFromGoogleAppEngineProjectFolder() {

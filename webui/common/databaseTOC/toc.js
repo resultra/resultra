@@ -15,7 +15,7 @@ function addDashboardLinkToTOCList(dashboardInfo) {
 function initDatabaseTOC(databaseID) {
 	
 	var getDBInfoParams = { databaseID: databaseID }
-	jsonAPIRequest("databaseInfo/getInfo",getDBInfoParams,function(dbInfo) {
+	jsonAPIRequest("database/getInfo",getDBInfoParams,function(dbInfo) {
 		console.log("Got database info: " + JSON.stringify(dbInfo))
 		
 		$('#tocFormList').empty()

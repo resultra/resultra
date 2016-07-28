@@ -1,4 +1,4 @@
-package databaseInfo
+package databaseController
 
 import (
 	"fmt"

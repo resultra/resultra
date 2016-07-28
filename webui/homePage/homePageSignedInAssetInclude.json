@@ -2,6 +2,7 @@
 	"subDirs":["../generic",
 		"../common"],
 	"cssFiles": [],
+	"imageFiles": [],
 	"jsFiles": ["homePageSignedIn.js"],
 	"htmlFiles":["homePageSignedIn.html"],
 	"minCSSFile":"homePage/homePageSignedIn.min.css",

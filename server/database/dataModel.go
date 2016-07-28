@@ -16,7 +16,7 @@ type NewDatabaseParams struct {
 	Name string `json:"name"`
 }
 
-func saveNewDatabase(params NewDatabaseParams) (*Database, error) {
+func SaveNewDatabase(params NewDatabaseParams) (*Database, error) {
 
 	sanitizedDbName, sanitizeErr := generic.SanitizeName(params.Name)
 	if sanitizeErr != nil {

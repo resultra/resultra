@@ -2,6 +2,7 @@
 	"subDirs":["../generic",
 		"../common"],
 	"cssFiles": [],
+	"imageFiles": [],
 	"jsFiles": ["homePagePublic.js"],
 	"htmlFiles":["homePagePublic.html"],
 	"minCSSFile":"homePage/homePagePublic.min.css",

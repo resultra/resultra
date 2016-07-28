@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"resultra/datasheet/server/databaseInfo"
+	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/webui/common"
@@ -53,7 +53,7 @@ func viewForm(w http.ResponseWriter, r *http.Request) {
 	} else {
 		log.Println("view form: : form ID = %v", formID)
 
-		formDBInfo, getErr := databaseInfo.GetFormDatabaseInfo(formID)
+		formDBInfo, getErr := databaseController.GetFormDatabaseInfo(formID)
 		if getErr != nil {
 			api.WriteErrorResponse(w, getErr)
 			return

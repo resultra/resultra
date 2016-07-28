@@ -1,7 +1,7 @@
 package form
 
 import (
-	"resultra/datasheet/server/databaseInfo"
+	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/webui/form/components/checkBox"
 	"resultra/datasheet/webui/form/components/datePicker"
 	"resultra/datasheet/webui/form/components/htmlEditor"
@@ -32,7 +32,7 @@ type DesignFormTemplateParams struct {
 
 var designFormTemplateParams DesignFormTemplateParams
 
-func createDesignFormTemplateParams(formInfo *databaseInfo.FormDatabaseInfo) DesignFormTemplateParams {
+func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInfo) DesignFormTemplateParams {
 
 	formParams := FormTemplateParams{
 		NamePanelParams:   propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Form Name", PanelID: "formName"},
