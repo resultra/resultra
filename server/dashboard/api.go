@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/userRole"
 )
 
 func init() {
@@ -21,6 +22,12 @@ func newDashboard(w http.ResponseWriter, r *http.Request) {
 	var dashboardParams NewDashboardParams
 	if err := api.DecodeJSONRequest(r, &dashboardParams); err != nil {
 		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyUserErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+		r, dashboardParams.DatabaseID); verifyUserErr != nil {
+		api.WriteErrorResponse(w, verifyUserErr)
 		return
 	}
 

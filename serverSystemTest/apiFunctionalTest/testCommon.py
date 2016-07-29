@@ -49,6 +49,11 @@ class TestHelperMixin:
         jsonResp = self.authRequest('login',signinParams)
         self.assertEquals(jsonResp['success'],True,"successful login")
         
+    def signoutCurrUser(self):
+        signoutParams = {}
+        jsonResp = self.authRequest('signout',signoutParams)
+        self.assertEquals(jsonResp['success'],True,"successful signout")
+        
     # Initialize the session, create a test user and sign that user in for the session
     def createTestSession(self):
         self.initSession()

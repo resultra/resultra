@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/userRole"
 )
 
 func init() {
@@ -21,6 +22,12 @@ func newField(w http.ResponseWriter, r *http.Request) {
 	var newFieldParams NewFieldParams
 	if err := api.DecodeJSONRequest(r, &newFieldParams); err != nil {
 		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForTable(
+		r, newFieldParams.ParentTableID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 

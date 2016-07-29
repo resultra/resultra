@@ -77,7 +77,7 @@ func GetCurrentUserInfo(req *http.Request) (*UserInfo, error) {
 
 	userID, getErr := GetCurrentUserID(req)
 	if getErr != nil {
-		return nil, fmt.Errorf("GetCurrentUserInfo: Can't get session value for user")
+		return nil, fmt.Errorf("GetCurrentUserInfo: Can't get session value for user (user not signed in)")
 	}
 
 	return getUserInfoByID(userID)

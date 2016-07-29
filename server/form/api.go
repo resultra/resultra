@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/userRole"
 )
 
 type DummyStructForInclude struct {
@@ -26,6 +27,12 @@ func newFormAPI(w http.ResponseWriter, r *http.Request) {
 	var params NewFormParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForTable(
+		r, params.ParentTableID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
