@@ -57,16 +57,27 @@ func loginUser(rw http.ResponseWriter, req *http.Request, params LoginParams) *A
 	return newAuthResponse(true, "Login successful")
 }
 
-func GetCurrentUserInfo(req *http.Request) (*UserInfo, error) {
+func GetCurrentUserID(req *http.Request) (string, error) {
 
 	authSession, sessErr := authCookieStore.Get(req, "auth")
 	if sessErr != nil {
-		return nil, fmt.Errorf("CurrentUser: Couldn't get session to authenticate user")
+		return "", fmt.Errorf("GetCurrentUserID: Couldn't get session to authenticate user")
 	}
 
 	userID, userIDFound := authSession.Values["user_id"].(string)
 	if !userIDFound {
-		return nil, fmt.Errorf("CurrentUser: Can't get session value for user")
+		return "", fmt.Errorf("GetCurrentUserID: Can't get session value for user")
+	}
+
+	return userID, nil
+
+}
+
+func GetCurrentUserInfo(req *http.Request) (*UserInfo, error) {
+
+	userID, getErr := GetCurrentUserID(req)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetCurrentUserInfo: Can't get session value for user")
 	}
 
 	return getUserInfoByID(userID)

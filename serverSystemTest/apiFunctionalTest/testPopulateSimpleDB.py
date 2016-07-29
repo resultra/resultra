@@ -14,6 +14,9 @@ class populateSimpleDB(unittest.TestCase,TestHelperMixin):
     # database entities; i.e., invalid type or invalid ID altogether.
     
     def testPopulate(self):
+        
+        self.createTestSession()
+        
         jsonResp = self.apiRequest('database/new',{'name': 'Test Database'})
         self.databaseID = jsonResp[u'databaseID']
         print "populateSimpleDB: Database ID: ",self.databaseID

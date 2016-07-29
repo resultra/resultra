@@ -10,6 +10,7 @@ from testCommon import TestHelperMixin
 class TestRecordFilter(unittest.TestCase,TestHelperMixin):
     
     def setUp(self):
+        self.createTestSession()
         databaseID = self.newDatabase('TestRecordFilter: Test Database')
         self.tableID = self.newTable(databaseID,"TestRecordFilter: Test Table")
         self.timeFieldID = self.newTimeField(self.tableID,"TestRecordFilter - Time Field","TimeField")

@@ -31,6 +31,8 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
         
  
     def setUp(self):
+        self.createTestSession()
+        
         jsonResp = self.apiRequest('database/new',{'name': 'Test Database'})
         self.databaseID = jsonResp[u'databaseID']
         print "testValidateFormula: database ID: ",self.databaseID

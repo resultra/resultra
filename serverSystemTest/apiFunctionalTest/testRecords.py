@@ -10,6 +10,7 @@ from testCommon import TestHelperMixin
 class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
     
     def setUp(self):
+        self.createTestSession()
         databaseID = self.newDatabase('TestTimeRecordValues: Test Database')
         self.tableID = self.newTable(databaseID,"TestTimeRecordValues: Test Table")
         self.timeFieldID = self.newTimeField(self.tableID,"TestTimeRecordValues - Time Field","TimeField")    
@@ -38,6 +39,7 @@ class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
 
 class TestLongTextRecordValues(unittest.TestCase,TestHelperMixin):
     def setUp(self):
+        self.createTestSession()
         databaseID = self.newDatabase('TestLongTextRecordValues: Test Database')
         self.tableID = self.newTable(databaseID,"TestLongTextRecordValues: Test Table")
         self.longTextFieldID = self.newLongTextField(self.tableID,"TestLongTextRecordValues - Long Text Field","TimeField")

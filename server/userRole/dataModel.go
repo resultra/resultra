@@ -1,15 +1,13 @@
 package userRole
 
 import (
-	"database/sql"
 	"fmt"
-	"log"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
-func addDatabaseAdmin(databaseID string, userID string) error {
+func AddDatabaseAdmin(databaseID string, userID string) error {
 	// TODO verify the current user has permissions to add the user as an admin.
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
@@ -25,7 +23,7 @@ func addDatabaseAdmin(databaseID string, userID string) error {
 
 type DatabaseRole struct {
 	DatabaseID string `json:"databaseID"`
-	RoldID     string `json:"roleID"`
+	RoleID     string `json:"roleID"`
 	RoleName   string `json:"roleName"`
 }
 

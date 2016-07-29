@@ -45,7 +45,7 @@ func newDatabase(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if newDB, err := database.SaveNewDatabase(dbParams); err != nil {
+	if newDB, err := createNewDatabase(r, dbParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *newDB)

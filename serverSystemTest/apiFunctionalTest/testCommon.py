@@ -1,17 +1,59 @@
 import requests
 import json
+import time
 
 class TestHelperMixin:
+        
+    def initSession(self):
+        self.session = requests.session()
+    
+    def authRequest(self, apiPath,jsonArgs):
+        baseURL = 'http://localhost:8080/auth/'
+        fullURL = baseURL + apiPath
+        print "TestHelperMixin: Request: ",apiPath,": args=",json.dumps(jsonArgs)
+        resp = self.session.post(fullURL,json=jsonArgs)
+        print resp.cookies
+        if resp.status_code != 200:
+            print "TestHelperMixin: Error response: ",resp.text
+        self.assertEqual(resp.status_code,200,"expecting success return code from server")
+        print "TestHelperMixin: Response: ",json.dumps(resp.json())
+        return resp.json()
+    
+    
     def apiRequest(self, apiPath,jsonArgs):
         baseURL = 'http://localhost:8080/api/'
         fullURL = baseURL + apiPath
         print "TestHelperMixin: API Request: ",apiPath,": args=",json.dumps(jsonArgs)
-        resp = requests.post(fullURL,json=jsonArgs)
+        resp = self.session.post(fullURL,json=jsonArgs)
         if resp.status_code != 200:
             print "TestHelperMixin: Error response: ",resp.text
         self.assertEqual(resp.status_code,200,"expecting success return code from server")
         print "TestHelperMixin: API Response: ",json.dumps(resp.json())
         return resp.json()
+        
+    def newTestUser(self):
+        # Create a new user for the test using the timestamp as the userID
+        newUserID = "u" +  str(int(time.time() * 1000))
+        newUserEmail = newUserID + "@example.com"
+        newUserParams = {'emailAddr':newUserEmail,'password':'testpw123$',
+            'firstName':'John','lastName':"Smith",
+            'userName':newUserID}
+        jsonResp = self.authRequest('register',newUserParams)
+        self.assertEquals(jsonResp['success'],True,"new test user")
+        return newUserID
+        
+    def signinTestUser(self,userID):
+        signinParams = {'emailAddr':userID+'@example.com','password':'testpw123$',
+            'firstName':'John','lastName':"Smith",
+            'userName':userID}
+        jsonResp = self.authRequest('login',signinParams)
+        self.assertEquals(jsonResp['success'],True,"successful login")
+        
+    # Initialize the session, create a test user and sign that user in for the session
+    def createTestSession(self):
+        self.initSession()
+        userID = self.newTestUser()
+        self.signinTestUser(userID)      
 
     def newDatabase(self,databaseName):
         jsonResp = self.apiRequest('database/new',{'name': databaseName})
