@@ -1,0 +1,69 @@
+
+{{define "adminBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-database" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Database Settings</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "adminPageHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "adminBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "adminPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- adminAssets:css -->
+	<!-- endinject -->
+	
+	<script>var adminContext = { databaseID:"{{.DatabaseID}}" } </script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- adminAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="adminPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north" id="adminPageHeaderUILayout">
+			{{template "adminPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west" id="adminPageTocLayout">
+			{{template "databaseTOC" .}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center" id="adminPageLayout">
+							
+		</div> <!-- center pane for entire page -->	
+	</div> <!-- layout page -->	
+  </body>
+  	
+</html>
+
+{{end}}

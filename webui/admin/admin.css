@@ -1,0 +1,4 @@
+#adminPageHeaderUILayout {
+	padding-top:5px; /* override the default 10px padding */
+	overflow:hidden; /* disable scroll bars */
+}

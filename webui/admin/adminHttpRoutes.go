@@ -5,5 +5,5 @@ import (
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
-	mainRouter.HandleFunc("/admin/tableProps", tableProps)
+	mainRouter.HandleFunc("/admin/{databaseID}", adminPage)
 }

@@ -6,3 +6,18 @@
 .databaseTOCContainer .list-group-item {
     padding: 5px 10px
 }
+
+#databaseTOCWrapper {
+	height: 100%;
+}
+
+#databaseTOCContents {
+	height: 100%;
+	padding-bottom: 20px;
+}
+
+#databaseTOCFooter {
+	position: absolute;
+	height: 20px;
+	bottom: 5px;
+}

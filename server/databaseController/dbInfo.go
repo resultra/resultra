@@ -14,11 +14,6 @@ type FormInfo struct {
 	Name   string `json:"name"`
 }
 
-type DatabaseInfo struct {
-	FormsInfo      []FormInfo      `json:"formsInfo"`
-	DashboardsInfo []DashboardInfo `json:"dashboardsInfo"`
-}
-
 type DashboardInfo struct {
 	DashboardID string `json:"dashboardID"`
 	Name        string `json:"name"`
@@ -70,7 +65,12 @@ func getDatabaseFormsInfo(params DatabaseInfoParams) ([]FormInfo, error) {
 	return formsInfo, nil
 }
 
-func getDatabaseInfo(params DatabaseInfoParams) (*DatabaseInfo, error) {
+type DatabaseContentsInfo struct {
+	FormsInfo      []FormInfo      `json:"formsInfo"`
+	DashboardsInfo []DashboardInfo `json:"dashboardsInfo"`
+}
+
+func getDatabaseInfo(params DatabaseInfoParams) (*DatabaseContentsInfo, error) {
 
 	formsInfo, formsErr := getDatabaseFormsInfo(params)
 	if formsErr != nil {
@@ -82,7 +82,7 @@ func getDatabaseInfo(params DatabaseInfoParams) (*DatabaseInfo, error) {
 		return nil, dashboardsErr
 	}
 
-	dbInfo := DatabaseInfo{
+	dbInfo := DatabaseContentsInfo{
 		FormsInfo:      formsInfo,
 		DashboardsInfo: dashboardsInfo}
 
@@ -116,5 +116,31 @@ func GetFormDatabaseInfo(formID string) (*FormDatabaseInfo, error) {
 	}
 
 	return &formDBInfo, nil
+
+}
+
+type DatabaseInfo struct {
+	DatabaseID   string
+	DatabaseName string
+}
+
+func GetDatabaseInfo(databaseID string) (*DatabaseInfo, error) {
+
+	var dbInfo DatabaseInfo
+	getErr := databaseWrapper.DBHandle().QueryRow(`
+			SELECT 
+				database_id, name 
+			FROM 
+				databases 
+			WHERE 
+				database_id = $1
+			LIMIT 1`, databaseID).Scan(
+		&dbInfo.DatabaseID, &dbInfo.DatabaseName)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetDatabaseInfo: Unabled to get database info: database id = %v: datastore err=%v",
+			databaseID, getErr)
+	}
+
+	return &dbInfo, nil
 
 }

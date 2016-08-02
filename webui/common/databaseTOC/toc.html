@@ -1,5 +1,4 @@
-{{define "databaseTOC"}}
-
+{{define "databaseTOCContents"}}
 	<div class="container-fluid databaseTOCContainer">
 		<div class="row"  >
 			<label>Forms</label>
@@ -7,13 +6,30 @@
 			</div>
 		</div>
 	</div>
+	
 	<div class="container-fluid databaseTOCContainer">
-		<div class="row"  >
+		<div class="row" >
 			<label>Dashboards</label>
 			<div class="list-group" id="tocDashboardList">
 			</div>
 		</div>
 	</div>
+{{end}}
+
+
+{{define "databaseTOC"}}
+
+<div id="databaseTOCWrapper">
+	
+	<div id="databaseTOCContents">
+		{{template "databaseTOCContents"}}
+	</div>
+	
+	<div id="databaseTOCFooter">
+		<a href="/admin/{{.DatabaseID}}">Database Settings</a>
+	</div>
+	
+</div>
 
 
 {{end}}
