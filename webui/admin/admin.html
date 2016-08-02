@@ -24,6 +24,23 @@
 	</div>
 {{end}}
 
+{{define "adminPanes"}}
+<div class="container-fluid">
+	<div class="row">
+    <ul class="nav nav-tabs">
+        <li class="nav active"><a href="#general" data-toggle="tab">General</a></li>
+        <li class="nav"><a href="#roles" data-toggle="tab">Roles &amp; Priveleges</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="general">General database settings</div>
+        <div class="tab-pane fade" id="roles">Roles and Privileges</div>
+    </div>
+</div>
+</div>
+{{end}}
+
 
 {{define "adminPage"}}
 <!DOCTYPE html>
@@ -59,7 +76,7 @@
 		</div> <!-- ui layout north -->
 
 		<div class="pane ui-layout-center" id="adminPageLayout">
-							
+			{{template "adminPanes"}}
 		</div> <!-- center pane for entire page -->	
 	</div> <!-- layout page -->	
   </body>
