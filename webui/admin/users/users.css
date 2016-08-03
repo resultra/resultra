@@ -1,0 +1,19 @@
+.userListItem:hover .userListItemButtons {
+	display:block;
+}
+
+.userListRow:hover .userListItemButtons {
+	display:block;
+}
+
+.userListItemButtons {
+	display:none;
+}
+
+.userListButtonCell {
+	min-width: 100px;
+}
+
+.userListRow {
+	min-height:35px;
+}

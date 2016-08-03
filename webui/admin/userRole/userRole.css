@@ -1,0 +1,8 @@
+/* Only show the buttons for list items when hovering over the item */
+.userRoleListItem:hover .userRoleListItemButtons {
+	display:block;
+}
+
+.userRoleListItemButtons {
+	display:none;
+}

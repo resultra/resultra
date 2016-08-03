@@ -21,5 +21,7 @@ $(document).ready(function() {
 	initDatabaseTOC(adminContext.databaseID)
 	initUserDropdownMenu()
 		
+	initUserRoleSettings()
+	initUserListSettings()
 	
 })

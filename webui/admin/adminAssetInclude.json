@@ -1,7 +1,9 @@
 {
 	"subDirs":["../generic",
 		"../common",
-		"../field"],
+		"../field",
+		"userRole",
+		"users"],
 	"cssFiles": ["admin.css"],
 	"jsFiles": ["admin.js"],
 	"htmlFiles":["admin.html"],

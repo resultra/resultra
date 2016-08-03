@@ -29,13 +29,19 @@
 	<div class="row">
     <ul class="nav nav-tabs">
         <li class="nav active"><a href="#general" data-toggle="tab">General</a></li>
-        <li class="nav"><a href="#roles" data-toggle="tab">Roles &amp; Priveleges</a></li>
+        <li class="nav"><a href="#users" data-toggle="tab">Users</a></li>
+        <li class="nav"><a href="#roles" data-toggle="tab">Roles &amp; Privileges</a></li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
         <div class="tab-pane fade in active" id="general">General database settings</div>
-        <div class="tab-pane fade" id="roles">Roles and Privileges</div>
+        <div class="tab-pane fade" id="users">
+        	{{template "userList"}}
+        </div>
+        <div class="tab-pane fade" id="roles">
+        	{{template "userRoleList"}}
+        </div>
     </div>
 </div>
 </div>
