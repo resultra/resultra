@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/generic/userAuth"
 )
 
 func AddDatabaseAdmin(databaseID string, userID string) error {
@@ -65,5 +66,32 @@ func addUserRole(roleID string, userID string) error {
 	}
 
 	return nil
+
+}
+
+func GetDatabaseAdminUserInfo(databaseID string) ([]userAuth.UserInfo, error) {
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT users.user_id,users.user_name,users.first_name,users.last_name 
+				FROM database_admins,users
+				WHERE database_admins.database_id=$1
+				   AND database_admins.user_id=users.user_id`, databaseID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetDatabaseAdminUserInfo: Failure querying database: %v", queryErr)
+	}
+
+	adminsInfo := []userAuth.UserInfo{}
+
+	for rows.Next() {
+
+		currAdmin := userAuth.UserInfo{}
+		if scanErr := rows.Scan(&currAdmin.UserID, &currAdmin.UserName,
+			&currAdmin.FirstName, &currAdmin.LastName); scanErr != nil {
+			return nil, fmt.Errorf("GetDatabaseAdminUserInfo: Failure querying database: %v", scanErr)
+		}
+		adminsInfo = append(adminsInfo, currAdmin)
+	}
+
+	return adminsInfo, nil
 
 }

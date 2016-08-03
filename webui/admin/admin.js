@@ -22,6 +22,6 @@ $(document).ready(function() {
 	initUserDropdownMenu()
 		
 	initUserRoleSettings()
-	initUserListSettings()
+	initUserListSettings(adminContext.databaseID)
 	
 })

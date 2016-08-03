@@ -17,6 +17,7 @@ type User struct {
 }
 
 type UserInfo struct {
+	UserID    string `json:"userID"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	UserName  string `json:"userName"`
@@ -113,6 +114,7 @@ func getUser(emailAddr string) (*User, *AuthResponse) {
 func getUserInfoByID(userID string) (*UserInfo, error) {
 
 	var userInfo UserInfo
+	userInfo.UserID = userID
 	getErr := databaseWrapper.DBHandle().QueryRow(
 		`SELECT first_name,last_name,user_name 
 			FROM users 

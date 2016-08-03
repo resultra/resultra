@@ -16,24 +16,43 @@ return '' +
 	
 }
 
-function userListTableRowHTML(userID) {
+function userListTableRowHTML(userRoleInfo) {
 	
-	var roles = "TBD"
+	var roles = ""
+	if(userRoleInfo.isAdmin) {
+		roles = roles + "Administrator"
+	}
+	
+	var userInfo = userRoleInfo.userInfo
+	var userNameDisplay = '@' + userInfo.userName + 
+		" (" + userInfo.firstName + " " + userInfo.lastName + ")"
 	
 	var buttonsHTML = userListItemButtonsHTML()
 	
 	return '' +
 		'<tr class="userListRow">' +
-	         '<td>' + userID +  '</td>' +
+	         '<td>' + userNameDisplay +  '</td>' +
 	         '<td>' + roles +  '</td>' +
 	         '<td class="userListButtonCell">' + buttonsHTML + '</td>' +
 	     '</tr>'
 	
 }
 
-function initUserListSettings() {	
-	$('#userListTableBody').append(userListTableRowHTML('user1'))
-	$('#userListTableBody').append(userListTableRowHTML('user2'))
-	$('#userListTableBody').append(userListTableRowHTML('user3'))
+function initUserListSettings(databaseID) {	
+	
+	var getRoleInfoParams = { databaseID: databaseID }
+	jsonAPIRequest("user/getRoleInfo",getRoleInfoParams,function(userRoleInfo) {
+		console.log("Got role info: " + JSON.stringify(userRoleInfo))
+		console.log("Number of roles: " + userRoleInfo.length)
+		
+		for (var userRoleIndex = 0; userRoleIndex < userRoleInfo.length; userRoleIndex++) {
+			var currUserRole = userRoleInfo[userRoleIndex]
+			console.log("appending user role")
+			$('#userListTableBody').append(userListTableRowHTML(currUserRole))
+		}
+
+		
+	}) // getRecord
+	
 
 }
