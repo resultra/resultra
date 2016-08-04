@@ -20,7 +20,7 @@ function userListTableRowHTML(userRoleInfo) {
 	
 	var roles = ""
 	if(userRoleInfo.isAdmin) {
-		roles = roles + "Administrator"
+		roles = roles + "<strong>Administrator</strong>"
 	}
 	
 	var userInfo = userRoleInfo.userInfo
@@ -52,7 +52,7 @@ function initUserListSettings(databaseID) {
 		}
 
 		
-	}) // getRecord
+	})
 	
 
 }

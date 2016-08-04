@@ -22,6 +22,7 @@ type GetUserRolesParams struct {
 	DatabaseID string `json:"databaseID"`
 }
 
+// get a list of users and their roles.
 func getUserRolesInfo(params GetUserRolesParams) ([]UserRoleInfo, error) {
 
 	adminUserInfo, err := userRole.GetDatabaseAdminUserInfo(params.DatabaseID)
@@ -36,4 +37,22 @@ func getUserRolesInfo(params GetUserRolesParams) ([]UserRoleInfo, error) {
 	}
 
 	return userRoles, nil
+}
+
+type RoleInfo struct {
+	AdminUsers []userAuth.UserInfo `json:"adminUsers"`
+}
+
+type GetRoleInfoParams GetUserRolesParams
+
+func getRoleInfo(params GetRoleInfoParams) (*RoleInfo, error) {
+	adminUserInfo, err := userRole.GetDatabaseAdminUserInfo(params.DatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("getUserRolesInfo: %v", err)
+	}
+
+	roleInfo := RoleInfo{
+		AdminUsers: adminUserInfo}
+
+	return &roleInfo, nil
 }

@@ -35,12 +35,42 @@ function userRoleTableRowHTML(roleID) {
 	
 }
 
+function addAdminRoleTableRow(adminUsers) {
+	
+	var adminUserDispl = []
+	for(var adminUserIndex = 0; adminUserIndex < adminUsers.length; adminUserIndex++) {
+		var userInfo = adminUsers[adminUserIndex]
+		var userNameDisplay = '@' + userInfo.userName + 
+			" (" + userInfo.firstName + " " + userInfo.lastName + ")"
+		adminUserDispl.push(userNameDisplay)
+	}
+
+	var buttonsHTML = userRoleItemButtonsHTML()
+
+	var privs = "Full Access"
+	
+	var rowHTML = '' +
+		'<tr class="userListRow">' +
+	         '<td>' + "<strong>Administrator<strong>" +  '</td>' +
+	         '<td>' + adminUserDispl.join(", ") +  '</td>' +
+	         '<td>' + privs +  '</td>' +
+	         '<td class="userListButtonCell">' + buttonsHTML + '</td>' +
+	     '</tr>'
+	
+	$('#userRoleTableBody').append(rowHTML)
+}
 
 
-
-function initUserRoleSettings() {
-	$('#userRoleTableBody').append(userRoleTableRowHTML("Role1"))
-	$('#userRoleTableBody').append(userRoleTableRowHTML("Role2"))
-	$('#userRoleTableBody').append(userRoleTableRowHTML("Role3"))
-
+function initUserRoleSettings(databaseID) {
+	
+	var getRoleInfoParams = { databaseID: databaseID }
+	jsonAPIRequest("admin/getRoleInfo",getRoleInfoParams,function(roleInfo) {
+		
+		console.log("Got role info: " + JSON.stringify(roleInfo))
+		console.log("Number of roles: " + roleInfo.length)
+		
+		addAdminRoleTableRow(roleInfo.adminUsers)
+		
+	})
+	
 }
