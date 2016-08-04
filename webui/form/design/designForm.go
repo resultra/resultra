@@ -1,4 +1,4 @@
-package form
+package design
 
 import (
 	"github.com/gorilla/mux"
@@ -19,9 +19,8 @@ var designFormTemplates *template.Template
 func init() {
 	//	designFormTemplateFiles := []string{}
 
-	baseTemplateFiles := []string{"static/form/designForm.html",
-		"static/form/viewForm.html",
-		"static/form/designFormProperties.html"}
+	baseTemplateFiles := []string{"static/form/design/designForm.html",
+		"static/form/design/designFormProperties.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
@@ -31,7 +30,7 @@ func init() {
 	designFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
-func designForm(w http.ResponseWriter, r *http.Request) {
+func DesignForm(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	formID := vars["formID"]

@@ -1,4 +1,4 @@
-package form
+package view
 
 import (
 	"github.com/gorilla/mux"
@@ -19,7 +19,7 @@ var viewFormTemplates *template.Template
 func init() {
 	//	designFormTemplateFiles := []string{}
 
-	baseTemplateFiles := []string{"static/form/viewForm.html"}
+	baseTemplateFiles := []string{"static/form/view/viewForm.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
@@ -39,7 +39,7 @@ type ViewFormTemplateParams struct {
 	FormName     string
 }
 
-func viewForm(w http.ResponseWriter, r *http.Request) {
+func ViewForm(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	formID := vars["formID"]
