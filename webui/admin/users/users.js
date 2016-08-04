@@ -41,7 +41,7 @@ function userListTableRowHTML(userRoleInfo) {
 function initUserListSettings(databaseID) {	
 	
 	var getRoleInfoParams = { databaseID: databaseID }
-	jsonAPIRequest("user/getRoleInfo",getRoleInfoParams,function(userRoleInfo) {
+	jsonAPIRequest("admin/getUserRoleInfo",getRoleInfoParams,function(userRoleInfo) {
 		console.log("Got role info: " + JSON.stringify(userRoleInfo))
 		console.log("Number of roles: " + userRoleInfo.length)
 		

@@ -1,13 +1,13 @@
 package server
 
 import (
+	"resultra/datasheet/server/adminController"
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/recordReadController"
 	"resultra/datasheet/server/recordUpdate"
 	"resultra/datasheet/server/table"
-	"resultra/datasheet/server/userController"
 )
 
 // Dummy variables to force inclusion of the packages (and not trigger an error from the Golang compiler).
@@ -18,7 +18,7 @@ var dummyRecordUpdateParams = recordUpdate.DummyStructForInclude{}
 var dummyRecordVals = recordReadController.DummyStructForInclude{}
 var dummDBInfo = databaseController.DummyStructForInclude{}
 var dummyFormInfo = form.DummyStructForInclude{}
-var dummyUserInfo = userController.DummyStructForInclude{}
+var dummyAdminInfo = adminController.DummyStructForInclude{}
 
 func DummyFunctionForImportFromGoogleAppEngineProjectFolder() {
 	// This dummy function is needed so standaline packages inside

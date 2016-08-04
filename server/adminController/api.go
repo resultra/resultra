@@ -1,4 +1,4 @@
-package userController
+package adminController
 
 import (
 	"github.com/gorilla/mux"
@@ -12,14 +12,14 @@ type DummyStructForInclude struct {
 }
 
 func init() {
-	userRouter := mux.NewRouter()
+	adminRouter := mux.NewRouter()
 
-	userRouter.HandleFunc("/api/user/getRoleInfo", getRoleInfoAPI)
+	adminRouter.HandleFunc("/api/admin/getUserRoleInfo", getUserRoleInfoAPI)
 
-	http.Handle("/api/user/", userRouter)
+	http.Handle("/api/admin/", adminRouter)
 }
 
-func getRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
+func getUserRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
 
 	// TODO - Once filtering is implemented on a per form/dashboard basis,
 	// pass in the parent filter.
