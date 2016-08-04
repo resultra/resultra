@@ -7,6 +7,10 @@
 	Form Filter Properties Panel
 {{end}}
 
+{{define "formRolesPropertyPanel"}}
+	Form Roles Properties Panel
+{{end}}
+
 
 {{define "formProps"}}
 	<div id="formProps" class="propertyPanelToggleContainer">
@@ -16,6 +20,10 @@
 
 			  {{template "propertyPanelPrefix" .FilterPanelParams}}
 			  		{{template "formFilterPropertyPanel"}}
+			  {{template "propertyPanelSuffix"}}
+			  
+			  {{template "propertyPanelPrefix" .RolesPanelParams}}
+			  		{{template "formRolesPropertyPanel"}}
 			  {{template "propertyPanelSuffix"}}
 	</div>
 {{end}}
