@@ -1,16 +1,3 @@
-function formRolePrivsSelectionHTML(roleID) {
-	
-	var selectionID = "privSel_" + roleID
-		
-	return '' + 
-		'<div class="row">' +
-			'<select class="form-control input-sm" id="'+ selectionID + '">' + 
-				selectOptionHTML("none", "None") +
-				selectOptionHTML("view", "View") +
-				selectOptionHTML("edit", "Edit") +
-			'</select>' +
-		'</div>';
-}
 
 function formRolePrivsRoleNameHTML(roleName) {
 	return '' + 
@@ -19,24 +6,11 @@ function formRolePrivsRoleNameHTML(roleName) {
 		'</div>';
 }
 
-function formRolePrivsButtonsHTML(roleID) {
-	
-		var radioName = "privSelection_" + roleID
-	
-		return '' + 
-			'<div class="row formRolePrivsPrivRadioRow">' +
-				'<div class="btn-group" data-toggle="buttons">' +
-					  '<label class="btn btn-default active btn-sm">' +
-					    	'<input type="radio" name="'+ radioName + '" value="none" autocomplete="off" checked>None' +
-					  '</label>' +
-					  '<label class="btn btn-default btn-sm">' +
-					    	'<input type="radio" name="'+ radioName + '"  value = "view" autocomplete="off">View' +
-					  '</label>' +
-					  '<label class="btn btn-default btn-sm">' +
-					    	'<input type="radio" name="'+ radioName + '"  value = "edit" autocomplete="off">Edit' +
-					  '</label>' +
-				'</div>' +
-			'</div>';
+function formPropsPrivsButtonRowHTML(roleID) {
+	return '' + 
+		'<div class="row formRolePrivsPrivRadioRow">' +
+			formRolePrivsButtonsHTML(roleID) + 
+		'</div>';
 }
 
 
@@ -46,7 +20,7 @@ function formRolePrivilegeListItemHTML(roleID) {
 		'<div class="list-group-item formRolePrivListItem" id="'+roleID+'">' +
 			'<div class="container-fluid">' +
 				formRolePrivsRoleNameHTML(roleID) +
-				formRolePrivsButtonsHTML(roleID)
+				formPropsPrivsButtonRowHTML(roleID)
 			'</div>' +
 		'</div>';
 }

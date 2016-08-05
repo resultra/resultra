@@ -6,5 +6,6 @@
 		"helper",
 		"objectEdit",
 		"objectSelection",
-		"recordFilter"]
+		"recordFilter",
+		"userRole"]
 }

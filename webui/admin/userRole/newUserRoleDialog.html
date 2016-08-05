@@ -1,0 +1,33 @@
+{{define "newUserRoleDialogBody"}}
+      <form>
+        <label for="newUserRoleDialogRoleName" class="sr-only">Role Name</label>
+        <input type="text" id="registerDialogFirstNameInput" class="form-control" placeholder="Role Name" required autofocus>
+			
+		{{template "roleFormPrivsTable"}}
+		{{template "roleDashboardPrivsTable"}}		
+		
+      </form>
+{{end}}
+
+
+{{define "newUserRoleDialog"}}
+
+<div class="modal fade" id="newUserRoleDialog" tabindex="-1" role="dialog" aria-labelledby="newUserRoleLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="newUserRoleLabel">New Role</h4>
+      </div>
+      <div class="modal-body">
+        	{{template "newUserRoleDialogBody"}}
+      </div>
+      <div class="modal-footer">
+		  <button type="button" class="btn btn-default" id="newUserRoleCancelButton" data-dismiss="modal">Cancel</button>
+		  <button type="button" class="btn btn-primary" id="newUserRoleSaveButton">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}
