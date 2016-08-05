@@ -20,7 +20,7 @@ func init() {
 	//	designFormTemplateFiles := []string{}
 
 	baseTemplateFiles := []string{"static/form/design/designForm.html",
-		"static/form/design/designFormProperties.html"}
+		"static/form/design/properties.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,

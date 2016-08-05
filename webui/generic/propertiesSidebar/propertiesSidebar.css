@@ -35,16 +35,16 @@
 	border-width:0px;
 }
 
-.propertySidebarPanelGroup .btn-default {
+.propertySidebarPanelGroup .propertiesSidebarAccordionToggle {
 	width:100%;
 	border-radius:0px;
 }
 
-.propertySidebarPanelGroup .btn-default,
-.propertySidebarPanelGroup .btn-default:hover,
-.propertySidebarPanelGroup .btn-default:active,
-.propertySidebarPanelGroup .btn-default:visited,
-.propertySidebarPanelGroup .btn-default:focus {
+.propertySidebarPanelGroup .propertiesSidebarAccordionToggle,
+.propertySidebarPanelGroup .propertiesSidebarAccordionToggle:hover,
+.propertySidebarPanelGroup .propertiesSidebarAccordionToggle:active,
+.propertySidebarPanelGroup .propertiesSidebarAccordionToggle:visited,
+.propertySidebarPanelGroup .propertiesSidebarAccordionToggle:focus {
     background-color: lightGrey;
     border-color: grey;
 	outline: none; /* prevent the blue outline from being shown when the button is in focus */
