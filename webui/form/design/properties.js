@@ -15,9 +15,7 @@ function formRolePrivsSelectionHTML(roleID) {
 function formRolePrivsRoleNameHTML(roleName) {
 	return '' + 
 		'<div class="row">' +
-				'<div class="col-sm-12">' +
-					'<label>' + roleName + '</label>' +
-				'</div>' +
+			'<label>' + roleName + '</label>' +
 		'</div>';
 }
 
@@ -27,18 +25,16 @@ function formRolePrivsButtonsHTML(roleID) {
 	
 		return '' + 
 			'<div class="row formRolePrivsPrivRadioRow">' +
-				'<div class="col-sm-12">' +
-					'<div class="btn-group" data-toggle="buttons">' +
-						  '<label class="btn btn-default active btn-sm">' +
-						    	'<input type="radio" name="'+ radioName + '" value="none" autocomplete="off" checked>None' +
-						  '</label>' +
-						  '<label class="btn btn-default btn-sm">' +
-						    	'<input type="radio" name="'+ radioName + '"  value = "view" autocomplete="off">View' +
-						  '</label>' +
-						  '<label class="btn btn-default btn-sm">' +
-						    	'<input type="radio" name="'+ radioName + '"  value = "edit" autocomplete="off">Edit' +
-						  '</label>' +
-					'</div>' +
+				'<div class="btn-group" data-toggle="buttons">' +
+					  '<label class="btn btn-default active btn-sm">' +
+					    	'<input type="radio" name="'+ radioName + '" value="none" autocomplete="off" checked>None' +
+					  '</label>' +
+					  '<label class="btn btn-default btn-sm">' +
+					    	'<input type="radio" name="'+ radioName + '"  value = "view" autocomplete="off">View' +
+					  '</label>' +
+					  '<label class="btn btn-default btn-sm">' +
+					    	'<input type="radio" name="'+ radioName + '"  value = "edit" autocomplete="off">Edit' +
+					  '</label>' +
 				'</div>' +
 			'</div>';
 }
