@@ -1,4 +1,4 @@
-function addRoleFormPrivTableRow(formID,roleID) {
+function addRoleFormPrivTableRow(formID) {
 	
 	var buttonsHTML = userRoleItemButtonsHTML()
 
@@ -7,7 +7,7 @@ function addRoleFormPrivTableRow(formID,roleID) {
 	var rowHTML = '' +
 		'<tr>' +
 	         '<td style="vertical-align:middle;text-align:right;">' + formID +  '</td>' +
-	         '<td>' + formRolePrivsButtonsHTML(roleID) +  '</td>' +
+	         '<td>' + formRolePrivsButtonsHTML(formID) +  '</td>' +
 	     '</tr>'
 	
 	$('#roleFormPrivsTable').append(rowHTML)
@@ -20,4 +20,8 @@ function initRoleFormPrivSettingsTable() {
 	addRoleFormPrivTableRow("form2")
 	addRoleFormPrivTableRow("form3")
 	
+}
+
+function getFormPrivSettingVals() {
+	console.log("settings val: " + getFormRolePrivRadioButtonVal("form1"))
 }

@@ -1,6 +1,9 @@
+
+var formRolePrivsPrefix = "formPrivSel_"
+
 function formRolePrivsButtonsHTML(roleID) {
 	
-	var radioName = "privSelection_" + roleID
+	var radioName = formRolePrivsPrefix + roleID
 
 	return '' + 
 			'<div class="btn-group" data-toggle="buttons">' +
@@ -14,5 +17,23 @@ function formRolePrivsButtonsHTML(roleID) {
 				    	'<input type="radio" name="'+ radioName + '"  value = "edit" autocomplete="off">Edit' +
 				  '</label>' +
 		'</div>';
+}
+
+function getFormRolePrivRadioButtonVal(roleID) {
+	
+	var radioVals = {}
+	
+	$("input:radio").each (function() {
+		var radioName = $(this).attr('name')
+		if(radioName.indexOf(formRolePrivsPrefix) == 0) {
+			var idVal = radioName.replace(formRolePrivsPrefix,'')
+			var radioSelector = 'input[name="'+radioName+'"]:checked'
+			radioVals[idVal] = $(radioSelector).val()			
+		}
+	})
+	
+	console.log("Radio vals: " + JSON.stringify(radioVals))
+	
+	return radioVals
 }
 
