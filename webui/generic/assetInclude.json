@@ -1,5 +1,6 @@
 {
     "subDirs": ["propertiesSidebar",
 		"userAuth",
-		"wizardDialog"]
+		"wizardDialog",
+		"formValidation"]
 }

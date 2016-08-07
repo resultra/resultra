@@ -1,8 +1,10 @@
 {{define "newUserRoleDialogBody"}}
-      <form>
-        <label for="newUserRoleDialogRoleName" class="sr-only">Role Name</label>
-        <input type="text" id="registerDialogFirstNameInput" class="form-control" placeholder="Role Name" required autofocus>
-			
+
+      <form id="newUserRoleDialogForm">
+		<div class="form-group">
+        	<label for="newUserRoleDialogRoleName" class="sr-only">Role Name</label>
+        	<input type="text" id="newRoleNameInput" name="newRoleNameInput" class="form-control" placeholder="Role Name" required autofocus>
+		</div>
 		{{template "roleFormPrivsTable"}}
 		{{template "roleDashboardPrivsTable"}}		
 		
