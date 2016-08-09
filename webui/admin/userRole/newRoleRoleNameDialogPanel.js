@@ -15,7 +15,6 @@ function createNewRoleRoleNamePanelContext() {
 				console.log("Next button clicked")
 				var $newRoleRoleNamePanelForm = $('#newUserRoleDialogRoleNameForm')
 				if($newRoleRoleNamePanelForm.valid()) {
-					var formPrivs = getFormPrivSettingVals()
 					transitionToNextWizardDlgPanelByID($parentDialog,newRoleFormPrivsDialogPanelID)
 				}
 			})			
@@ -43,6 +42,9 @@ function createNewRoleRoleNamePanelContext() {
 	
 			validator.resetForm()
 			
+		},
+		getPanelVals: function () {
+			return $('#newRoleNameInput').val()
 		}
 	} // wizard dialog configuration for panel to create new field
 	

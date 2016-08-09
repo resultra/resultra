@@ -19,21 +19,9 @@ function formRolePrivsButtonsHTML(roleID) {
 		'</div>';
 }
 
-function getFormRolePrivRadioButtonVal(roleID) {
-	
-	var radioVals = {}
-	
-	$("input:radio").each (function() {
-		var radioName = $(this).attr('name')
-		if(radioName.indexOf(formRolePrivsPrefix) == 0) {
-			var idVal = radioName.replace(formRolePrivsPrefix,'')
-			var radioSelector = 'input[name="'+radioName+'"]:checked'
-			radioVals[idVal] = $(radioSelector).val()			
-		}
-	})
-	
-	console.log("Radio vals: " + JSON.stringify(radioVals))
-	
-	return radioVals
+
+function getFormRolePrivRadioButtonVals() {
+
+	return getGroupedRadioButtonVals(formRolePrivsPrefix)
 }
 

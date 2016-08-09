@@ -100,3 +100,28 @@ function defaultSelectOptionPromptHTML(selItemPrompt) {
 }
 
 
+// A group of radio buttons can use a name prefix to identify what the radio buttons are for, then a
+// unique ID value as the names' suffix. For the same commonNamePrefix, this function returns a list
+// of IDs mapped to the radio button values.
+// 
+// This is applicable to "columns of radio buttons groups" used for groups of values, such as setting
+// the priviliges to none,view, or edit for each of the different forms.
+function getGroupedRadioButtonVals(commonNamePrefix) {
+	var radioVals = {}
+	
+	$("input:radio").each (function() {
+		var radioName = $(this).attr('name')
+		if(radioName.indexOf(commonNamePrefix) == 0) {
+			var idVal = radioName.replace(commonNamePrefix,'')
+			var radioSelector = 'input[name="'+radioName+'"]:checked'
+			radioVals[idVal] = $(radioSelector).val()			
+		}
+	})
+	
+	console.log("Radio vals: " + JSON.stringify(radioVals))
+	
+	return radioVals
+	
+}
+
+

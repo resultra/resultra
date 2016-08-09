@@ -21,7 +21,3 @@ function initRoleFormPrivSettingsTable() {
 	addRoleFormPrivTableRow("form3")
 	
 }
-
-function getFormPrivSettingVals() {
-	console.log("settings val: " + getFormRolePrivRadioButtonVal("form1"))
-}

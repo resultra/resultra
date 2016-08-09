@@ -17,3 +17,4 @@ function initRoleDashboardPrivSettingsTable() {
 	addRoleDashboardPrivTableRow("dashboard3")
 	
 }
+

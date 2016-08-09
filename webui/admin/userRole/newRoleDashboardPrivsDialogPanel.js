@@ -1,7 +1,7 @@
 var newRoleDashboardPrivsDialogPanelID = "dashboardPrivs"
 
 
-function createNewRoleDashboardPrivsPanelContext() {
+function createNewRoleDashboardPrivsPanelContext(saveUserRoleFunc) {
 	
 	var panelSelector = "#newUserRoleDialogDashboardPrivsPanel"
 	
@@ -19,7 +19,7 @@ function createNewRoleDashboardPrivsPanelContext() {
 			
 			initButtonClickHandler('#newRoleDashboardPrivsSaveButton',function() {
 				console.log("Save button clicked")
-				$('#newUserRoleDialog').modal('hide')		
+				saveUserRoleFunc($parentDialog)	
 			})
 			
 			initRoleDashboardPrivSettingsTable()
@@ -31,7 +31,11 @@ function createNewRoleDashboardPrivsPanelContext() {
 			
 			var $newRoleRoleNamePanelForm = $('#newUserRoleDialoggDashboardPrivsForm')
 						
+		},
+		getPanelVals: function () {
+			return getDashboardRolePrivRadioButtonVals()
 		}
+
 	} // wizard dialog configuration for panel to create new field
 	
 	return newFieldPanelConfig;

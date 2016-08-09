@@ -32,6 +32,9 @@ function createNewRoleFormPrivsPanelContext() {
 			
 			var $newRoleRoleNamePanelForm = $('#newUserRoleDialogFormPrivsForm')
 						
+		},
+		getPanelVals: function () {
+			return getFormRolePrivRadioButtonVals()
 		}
 	} // wizard dialog configuration for panel to create new field
 	

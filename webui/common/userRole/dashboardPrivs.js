@@ -1,6 +1,9 @@
+
+var dashboardRolePrivSelectionRadioPrefix = "dashboardPrivSelection_"
+
 function dashboardRolePrivsButtonsHTML(roleID) {
 	
-	var radioName = "privSelection_" + roleID
+	var radioName = dashboardRolePrivSelectionRadioPrefix + roleID
 
 	return '' + 
 			'<div class="btn-group" data-toggle="buttons">' +
@@ -11,4 +14,10 @@ function dashboardRolePrivsButtonsHTML(roleID) {
 				    	'<input type="radio" name="'+ radioName + '"  value = "view" autocomplete="off">View' +
 				  '</label>' +
 		'</div>';
+}
+
+
+function getDashboardRolePrivRadioButtonVals() {
+
+	return getGroupedRadioButtonVals(dashboardRolePrivSelectionRadioPrefix)
 }
