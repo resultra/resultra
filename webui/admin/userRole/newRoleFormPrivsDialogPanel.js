@@ -21,6 +21,9 @@ function createNewRoleFormPrivsPanelContext() {
 				console.log("Next button clicked")
 				transitionToNextWizardDlgPanelByID($parentDialog,newRoleDashboardPrivsDialogPanelID)
 			})
+			
+			initRoleFormPrivSettingsTable()
+			
 					
 		}, // init panel
 		transitionIntoPanel: function ($dialog) { 

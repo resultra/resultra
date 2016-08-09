@@ -4,11 +4,7 @@ var newRoleRoleNameDialogPanelID = "roleName"
 function createNewRoleRoleNamePanelContext() {
 	
 	var panelSelector = "#newUserRoleDialogRoleNamePanel"
-	
-	function validateForm() {
 		
-	}
-	
 	var newFieldPanelConfig = {
 		panelID: newRoleRoleNameDialogPanelID,
 		divID: panelSelector,
@@ -22,11 +18,7 @@ function createNewRoleRoleNamePanelContext() {
 					var formPrivs = getFormPrivSettingVals()
 					transitionToNextWizardDlgPanelByID($parentDialog,newRoleFormPrivsDialogPanelID)
 				}
-			})
-			
-			
-			
-						
+			})			
 		}, // init panel
 		transitionIntoPanel: function ($dialog) { 
 			

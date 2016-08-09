@@ -21,7 +21,9 @@ function createNewRoleDashboardPrivsPanelContext() {
 				console.log("Save button clicked")
 				$('#newUserRoleDialog').modal('hide')		
 			})
-					
+			
+			initRoleDashboardPrivSettingsTable()
+						
 		}, // init panel
 		transitionIntoPanel: function ($dialog) { 
 			

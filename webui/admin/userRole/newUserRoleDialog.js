@@ -2,10 +2,6 @@
 var newUserRoleDialogProgressSelector = "#" + "userRole" + "WizardDialogProgress"
 
 function openNewUserRoleDialog() {
-	
-	initRoleFormPrivSettingsTable()
-	initRoleDashboardPrivSettingsTable()
-
 
 	var dialogSelector = '#newUserRoleDialog'
 	var roleNamePanel = createNewRoleRoleNamePanelContext()
