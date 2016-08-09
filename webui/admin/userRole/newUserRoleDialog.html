@@ -1,14 +1,18 @@
 {{define "newUserRoleDialogBody"}}
 
-      <form id="newUserRoleDialogForm">
-		<div class="form-group">
-        	<label for="newUserRoleDialogRoleName" class="sr-only">Role Name</label>
-        	<input type="text" id="newRoleNameInput" name="newRoleNameInput" class="form-control" placeholder="Role Name" required autofocus>
-		</div>
-		{{template "roleFormPrivsTable"}}
-		{{template "roleDashboardPrivsTable"}}		
+		{{template "newUserRoleDialogRoleNamePanel"}}
+		{{template "newUserRoleDialogFormPrivsPanel"}}
+		{{template "newUserRoleDialogDashboardPrivsPanel"}}
 		
-      </form>
+{{end}}
+
+
+{{define "newUserRoleDialogButtons"}}
+
+	<button type="button" class="btn btn-default" id="newUserRoleCancelButton" data-dismiss="modal">Cancel</button>
+	{{template "newUserRoleDialogRoleNamePanelButtons"}}
+	{{template "newUserRoleDialogFormPrivsPanelButtons"}}
+	{{template "newUserRoleDialogDashboardPrivsPanelButtons"}}
 {{end}}
 
 
@@ -22,11 +26,11 @@
         <h4 class="modal-title" id="newUserRoleLabel">New Role</h4>
       </div>
       <div class="modal-body">
-        	{{template "newUserRoleDialogBody"}}
+			  {{template "wizardDialogProgressParamIsPrefix" "userRole"}}
+			  {{template "newUserRoleDialogBody"}}
       </div>
       <div class="modal-footer">
-		  <button type="button" class="btn btn-default" id="newUserRoleCancelButton" data-dismiss="modal">Cancel</button>
-		  <button type="button" class="btn btn-primary" id="newUserRoleSaveButton">Save</button>
+		  {{template "newUserRoleDialogButtons"}}
       </div>
     </div>
   </div>

@@ -6,3 +6,12 @@
 	  </div>
 	</div>
 {{end}}
+
+{{define "wizardDialogProgressParamIsPrefix"}}	
+	<div class="progress">
+	  <div id="{{.}}WizardDialogProgress" class="progress-bar progress-bar-info" role="progressbar" 
+	  			aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+	    <span class="sr-only">40% Complete (success)</span>
+	  </div>
+	</div>
+{{end}}

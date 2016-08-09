@@ -1,0 +1,21 @@
+{{define "newUserRoleDialogDashboardPrivsPanelButtons"}}
+	<button type="button" class="btn btn-default wizardPanelButton newRoleDashboardPrivsButtons" 
+				id="newRoleDashboardPrivsPrevButton" type="submit">Previous</button>
+	<button type="button" class="btn btn-primary wizardPanelButton newRoleDashboardPrivsButtons" 
+				id="newRoleDashboardPrivsSaveButton" type="submit">Save</button>
+{{end}}
+
+{{define "newUserRoleDialogDashboardPrivsPanel"}}
+
+	<div id="newUserRoleDialogDashboardPrivsPanel" class="wizardPanel">
+			
+		<form id="newUserRoleDialogDashboardPrivsForm">
+			<div class="alert alert-info">
+				Set dashboard privileges for this role.
+			</div>
+		{{template "roleDashboardPrivsTable"}}
+									
+		</form> <!-- form for panel -->
+	</div> <!-- panel for giving the parameters for the new field -->
+
+{{end}}

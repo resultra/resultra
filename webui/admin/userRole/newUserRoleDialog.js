@@ -1,36 +1,25 @@
+
+var newUserRoleDialogProgressSelector = "#" + "userRole" + "WizardDialogProgress"
+
 function openNewUserRoleDialog() {
 	
 	initRoleFormPrivSettingsTable()
 	initRoleDashboardPrivSettingsTable()
-	$('#newUserRoleDialog').modal('show')
+
+
+	var dialogSelector = '#newUserRoleDialog'
+	var roleNamePanel = createNewRoleRoleNamePanelContext()
+	var formPrivsPanel = createNewRoleFormPrivsPanelContext()
+	var dashboardPrivsPanel = createNewRoleDashboardPrivsPanelContext()
 	
-	var $newRoleForm = $('#newUserRoleDialogForm')
-	
-	initButtonClickHandler('#newUserRoleSaveButton',function() {
-		console.log("Save button clicked")
-		
-		if($newRoleForm.valid()) {
-			var formPrivs = getFormPrivSettingVals()
-			$('#newUserRoleDialog').modal('hide')		
-		}
-				
+	openWizardDialog({
+		closeFunc: function() {
+			console.log("Close dialog")
+      	},
+		dialogDivID: dialogSelector,
+		panels: [roleNamePanel,formPrivsPanel,dashboardPrivsPanel],
+		progressDivID: newUserRoleDialogProgressSelector,
 	})
 	
-	var validator = $newRoleForm.validate({
-		rules: {
-			newRoleNameInput: {
-				minlength: 3,
-				required: true,
-				remote: {
-					url: '/api/userRole/validateRoleName',
-					data: {
-						roleName: function() { return $('#newRoleNameInput').val(); }
-					}
-				} // remote
-			} // newRoleNameInput
-		},
-	})
-	
-	validator.resetForm()
-	
+	var $newRoleForm = $('#newUserRoleDialogForm')		
 }
