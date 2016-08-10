@@ -1,7 +1,7 @@
 var newRoleFormPrivsDialogPanelID = "formPrivs"
 
 
-function createNewRoleFormPrivsPanelContext() {
+function createNewRoleFormPrivsPanelContext(formsInfo) {
 	
 	var panelSelector = "#newUserRoleDialogFormPrivsPanel"
 	
@@ -22,7 +22,7 @@ function createNewRoleFormPrivsPanelContext() {
 				transitionToNextWizardDlgPanelByID($parentDialog,newRoleDashboardPrivsDialogPanelID)
 			})
 			
-			initRoleFormPrivSettingsTable()
+			initRoleFormPrivSettingsTable(formsInfo)
 			
 					
 		}, // init panel

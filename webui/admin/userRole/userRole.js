@@ -75,7 +75,7 @@ function initUserRoleSettings(databaseID) {
 	
 	initButtonClickHandler('#userRoleNewRoleButton',function() {
 		console.log("New Role button clicked")
-		openNewUserRoleDialog()
+		openNewUserRoleDialog(databaseID)
 	})
 	
 }

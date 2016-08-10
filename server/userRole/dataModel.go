@@ -2,6 +2,7 @@ package userRole
 
 import (
 	"fmt"
+	"log"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -53,6 +54,38 @@ func addDatabaseRole(databaseID string, roleName string) (*DatabaseRole, error) 
 
 	return &dbRole, nil
 
+}
+
+type NewDatabaseRoleWithPrivsParams struct {
+	DatabaseID     string            `json:"databaseID"`
+	RoleName       string            `json:"roleName"`
+	FormPrivs      map[string]string `json:"formPrivs"`      // Map of form ID to privilege
+	DashboardPrivs map[string]string `json:"dashboardPrivs"` // Map of dashboard ID to privilege
+}
+
+func newDatabaseRoleWithPrivs(params NewDatabaseRoleWithPrivsParams) error {
+	log.Printf("newDatabaseRoleWithPrivs: %+v", params)
+
+	// TODO Wrap all the database writes from this function into a transaction.
+
+	newRole, newRoleErr := addDatabaseRole(params.DatabaseID, params.RoleName)
+	if newRoleErr != nil {
+		return fmt.Errorf("newDatabaseRoleWithPrivs: %v", newRoleErr)
+	}
+
+	for formID, priv := range params.FormPrivs {
+		if formPrivErr := setFormRolePrivs(newRole.RoleID, formID, priv); formPrivErr != nil {
+			return fmt.Errorf("newDatabaseRoleWithPrivs: %v", formPrivErr)
+		}
+	}
+
+	for dashboardID, priv := range params.DashboardPrivs {
+		if dashboardPrivErr := setDashboardRolePrivs(newRole.RoleID, dashboardID, priv); dashboardPrivErr != nil {
+			return fmt.Errorf("newDatabaseRoleWithPrivs: %v", dashboardPrivErr)
+		}
+	}
+
+	return nil
 }
 
 func addUserRole(roleID string, userID string) error {

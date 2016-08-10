@@ -16,6 +16,7 @@ func init() {
 	roleRouter := mux.NewRouter()
 
 	roleRouter.HandleFunc("/api/userRole/validateRoleName", validateRoleNameAPI)
+	roleRouter.HandleFunc("/api/userRole/newRole", newRoleAPI)
 
 	http.Handle("/api/userRole/", roleRouter)
 }
@@ -38,4 +39,26 @@ func validateRoleNameAPI(w http.ResponseWriter, r *http.Request) {
 	//	response := true
 	response := "Invalid role name"
 	api.WriteJSONResponse(w, response)
+}
+
+func newRoleAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params NewDatabaseRoleWithPrivsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if newErr := newDatabaseRoleWithPrivs(params); newErr != nil {
+		api.WriteErrorResponse(w, newErr)
+	} else {
+		successResponse := true
+		api.WriteJSONResponse(w, successResponse)
+	}
+
 }

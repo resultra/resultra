@@ -1,7 +1,7 @@
 var newRoleDashboardPrivsDialogPanelID = "dashboardPrivs"
 
 
-function createNewRoleDashboardPrivsPanelContext(saveUserRoleFunc) {
+function createNewRoleDashboardPrivsPanelContext(saveUserRoleFunc, dashboardsInfo) {
 	
 	var panelSelector = "#newUserRoleDialogDashboardPrivsPanel"
 	
@@ -22,7 +22,7 @@ function createNewRoleDashboardPrivsPanelContext(saveUserRoleFunc) {
 				saveUserRoleFunc($parentDialog)	
 			})
 			
-			initRoleDashboardPrivSettingsTable()
+			initRoleDashboardPrivSettingsTable(dashboardsInfo)
 						
 		}, // init panel
 		transitionIntoPanel: function ($dialog) { 

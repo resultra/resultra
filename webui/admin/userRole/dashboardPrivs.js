@@ -1,20 +1,24 @@
-function addRoleDashboardPrivTableRow(dashboardID) {
+function addRoleDashboardPrivTableRow(dashboardInfo) {
 		
 	var rowHTML = '' +
 		'<tr>' +
-	         '<td style="vertical-align:middle;text-align:right;">' + dashboardID +  '</td>' +
-	         '<td>' + dashboardRolePrivsButtonsHTML(dashboardID) +  '</td>' +
+	         '<td style="vertical-align:middle;text-align:right;">' + dashboardInfo.name +  '</td>' +
+	         '<td>' + dashboardRolePrivsButtonsHTML(dashboardInfo.dashboardID) +  '</td>' +
 	     '</tr>'
 	
 	$('#roleDashboardPrivsTable').append(rowHTML)
 }
 
 
-function initRoleDashboardPrivSettingsTable() {
+function initRoleDashboardPrivSettingsTable(dashboardsInfo) {
+	
+	
 	$('#roleDashboardPrivsTable').empty()
-	addRoleDashboardPrivTableRow("dashboard1")
-	addRoleDashboardPrivTableRow("dashboard2")
-	addRoleDashboardPrivTableRow("dashboard3")
+	
+	for(var dashboardIndex = 0; dashboardIndex < dashboardsInfo.length; dashboardIndex++) {
+		var dashboardInfo = dashboardsInfo[dashboardIndex]
+		addRoleDashboardPrivTableRow(dashboardInfo)
+	}
 	
 }
 
