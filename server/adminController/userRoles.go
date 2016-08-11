@@ -40,7 +40,8 @@ func getUserRolesInfo(params GetUserRolesParams) ([]UserRoleInfo, error) {
 }
 
 type RoleInfo struct {
-	AdminUsers []userAuth.UserInfo `json:"adminUsers"`
+	AdminUsers  []userAuth.UserInfo       `json:"adminUsers"`
+	CustomRoles []userRole.CustomRoleInfo `json:"customRoles"`
 }
 
 type GetRoleInfoParams GetUserRolesParams
@@ -51,8 +52,14 @@ func getRoleInfo(params GetRoleInfoParams) (*RoleInfo, error) {
 		return nil, fmt.Errorf("getUserRolesInfo: %v", err)
 	}
 
+	customRoleInfo, err := userRole.GetCustomRoleInfo(params.DatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("getUserRolesInfo: %v", err)
+	}
+
 	roleInfo := RoleInfo{
-		AdminUsers: adminUserInfo}
+		AdminUsers:  adminUserInfo,
+		CustomRoles: customRoleInfo}
 
 	return &roleInfo, nil
 }

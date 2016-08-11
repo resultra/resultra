@@ -128,3 +128,190 @@ func GetDatabaseAdminUserInfo(databaseID string) ([]userAuth.UserInfo, error) {
 	return adminsInfo, nil
 
 }
+
+type FormPrivInfo struct {
+	FormID   string `json:"formID"`
+	FormName string `json:"formName"`
+	Privs    string `json:"privs"`
+}
+
+type CustomFormRoleInfo struct {
+	RoleID    string         `json:"roleID"`
+	RoleName  string         `json:"roleName"`
+	FormPrivs []FormPrivInfo `json:"formPrivs"`
+}
+
+func GetCustomRoleFormInfo(databaseID string) ([]CustomFormRoleInfo, error) {
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT database_roles.role_id,database_roles.name,
+					forms.form_id,forms.name,form_role_privs.privs
+				FROM form_role_privs,database_roles,forms
+				WHERE database_roles.database_id=$1
+				   AND database_roles.role_id=form_role_privs.role_id
+				   AND form_role_privs.form_id=forms.form_id 
+				ORDER BY database_roles.role_id`, databaseID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetCustomRoleInfo: Failure querying database: %v", queryErr)
+	}
+
+	roleInfoMap := map[string]*CustomFormRoleInfo{}
+
+	for rows.Next() {
+
+		currFormPrivInfo := FormPrivInfo{}
+		currRoleName := ""
+		currRoleID := ""
+
+		if scanErr := rows.Scan(&currRoleID, &currRoleName,
+			&currFormPrivInfo.FormID, &currFormPrivInfo.FormName, &currFormPrivInfo.Privs); scanErr != nil {
+			return nil, fmt.Errorf("GetCustomRoleInfo: Failure querying database: %v", scanErr)
+		}
+
+		var roleInfo *CustomFormRoleInfo
+		if currRoleInfo, roleInfoFound := roleInfoMap[currRoleID]; !roleInfoFound {
+			roleInfo = &CustomFormRoleInfo{
+				RoleID:    currRoleID,
+				RoleName:  currRoleName,
+				FormPrivs: []FormPrivInfo{}}
+			roleInfoMap[currRoleID] = roleInfo
+		} else {
+			roleInfo = currRoleInfo
+		}
+
+		roleInfo.FormPrivs = append(roleInfo.FormPrivs, currFormPrivInfo)
+
+	}
+
+	customRoleInfo := []CustomFormRoleInfo{}
+	for _, currRoleInfo := range roleInfoMap {
+		customRoleInfo = append(customRoleInfo, *currRoleInfo)
+	}
+
+	return customRoleInfo, nil
+
+}
+
+type DashboardPrivInfo struct {
+	DashboardID   string `json:"dashboardID"`
+	DashboardName string `json:"dashboardName"`
+	Privs         string `json:"privs"`
+}
+
+type CustomRoleDashboardInfo struct {
+	RoleID         string              `json:"roleID"`
+	RoleName       string              `json:"roleName"`
+	DashboardPrivs []DashboardPrivInfo `json:"dashboardPrivs"`
+}
+
+func GetCustomRoleDashboardInfo(databaseID string) ([]CustomRoleDashboardInfo, error) {
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT database_roles.role_id,database_roles.name,
+					dashboards.dashboard_id,dashboards.name,dashboard_role_privs.privs
+				FROM dashboard_role_privs,database_roles,dashboards
+				WHERE database_roles.database_id=$1
+				   AND database_roles.role_id=dashboard_role_privs.role_id
+				   AND dashboard_role_privs.dashboard_id=dashboards.dashboard_id 
+				ORDER BY database_roles.role_id`, databaseID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetCustomRoleInfo: Failure querying database: %v", queryErr)
+	}
+
+	roleInfoMap := map[string]*CustomRoleDashboardInfo{}
+
+	for rows.Next() {
+
+		currDashPrivInfo := DashboardPrivInfo{}
+		currRoleName := ""
+		currRoleID := ""
+
+		if scanErr := rows.Scan(&currRoleID, &currRoleName,
+			&currDashPrivInfo.DashboardID, &currDashPrivInfo.DashboardName, &currDashPrivInfo.Privs); scanErr != nil {
+			return nil, fmt.Errorf("GetCustomRoleDashboardInfo: Failure querying database: %v", scanErr)
+		}
+
+		var roleInfo *CustomRoleDashboardInfo
+		if currRoleInfo, roleInfoFound := roleInfoMap[currRoleID]; !roleInfoFound {
+			roleInfo = &CustomRoleDashboardInfo{
+				RoleID:         currRoleID,
+				RoleName:       currRoleName,
+				DashboardPrivs: []DashboardPrivInfo{}}
+			roleInfoMap[currRoleID] = roleInfo
+		} else {
+			roleInfo = currRoleInfo
+		}
+
+		roleInfo.DashboardPrivs = append(roleInfo.DashboardPrivs, currDashPrivInfo)
+
+	}
+
+	customRoleInfo := []CustomRoleDashboardInfo{}
+	for _, currRoleInfo := range roleInfoMap {
+		customRoleInfo = append(customRoleInfo, *currRoleInfo)
+	}
+
+	return customRoleInfo, nil
+
+}
+
+type CustomRoleInfo struct {
+	RoleID         string              `json:"roleID"`
+	RoleName       string              `json:"roleName"`
+	FormPrivs      []FormPrivInfo      `json:"formPrivs"`
+	DashboardPrivs []DashboardPrivInfo `json:"dashboardPrivs"`
+}
+
+func GetCustomRoleInfo(databaseID string) ([]CustomRoleInfo, error) {
+
+	roleInfoMap := map[string]*CustomRoleInfo{}
+
+	customFormInfo, formErr := GetCustomRoleFormInfo(databaseID)
+	if formErr != nil {
+		return nil, fmt.Errorf("GetCustomRoleInfo: %v", formErr)
+	}
+	for _, formInfo := range customFormInfo {
+
+		var roleInfo *CustomRoleInfo
+		if currRoleInfo, roleInfoFound := roleInfoMap[formInfo.RoleID]; roleInfoFound {
+			roleInfo = currRoleInfo
+		} else {
+			roleInfo = &CustomRoleInfo{
+				RoleID:         formInfo.RoleID,
+				RoleName:       formInfo.RoleName,
+				FormPrivs:      []FormPrivInfo{},
+				DashboardPrivs: []DashboardPrivInfo{}}
+			roleInfoMap[formInfo.RoleID] = roleInfo
+		}
+		roleInfo.FormPrivs = formInfo.FormPrivs
+	}
+
+	customDashboardInfo, dashErr := GetCustomRoleDashboardInfo(databaseID)
+	if dashErr != nil {
+		return nil, fmt.Errorf("GetCustomRoleInfo: %v", dashErr)
+	}
+	for _, dashInfo := range customDashboardInfo {
+
+		var roleInfo *CustomRoleInfo
+		if currRoleInfo, roleInfoFound := roleInfoMap[dashInfo.RoleID]; roleInfoFound {
+			roleInfo = currRoleInfo
+		} else {
+			roleInfo = &CustomRoleInfo{
+				RoleID:         dashInfo.RoleID,
+				RoleName:       dashInfo.RoleName,
+				FormPrivs:      []FormPrivInfo{},
+				DashboardPrivs: []DashboardPrivInfo{}}
+			roleInfoMap[dashInfo.RoleID] = roleInfo
+		}
+		roleInfo.DashboardPrivs = dashInfo.DashboardPrivs
+
+	}
+
+	customRoleInfo := []CustomRoleInfo{}
+	for _, roleInfo := range roleInfoMap {
+		customRoleInfo = append(customRoleInfo, *roleInfo)
+	}
+
+	return customRoleInfo, nil
+
+}

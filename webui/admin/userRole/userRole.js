@@ -54,11 +54,45 @@ function addAdminRoleTableRow(adminUsers) {
 	         '<td>' + "<strong>Administrator<strong>" +  '</td>' +
 	         '<td>' + adminUserDispl.join(", ") +  '</td>' +
 	         '<td>' + privs +  '</td>' +
-	         '<td class="userListButtonCell">' + buttonsHTML + '</td>' +
+	         '<td class="roleListButtonCell">' + buttonsHTML + '</td>' +
 	     '</tr>'
 	
 	$('#userRoleTableBody').append(rowHTML)
 }
+
+function addCustomRoleTableRow(customRoleInfo) {
+	
+	var formPrivDisplay = []
+	for(var formPrivIndex = 0; formPrivIndex < customRoleInfo.formPrivs.length; formPrivIndex++) {
+		var formPrivInfo = customRoleInfo.formPrivs[formPrivIndex]
+		var privDisplay = formPrivInfo.formName + 
+			" (" + formPrivInfo.privs + ")"
+		formPrivDisplay.push(privDisplay)
+	}
+
+	var dashPrivDisplay = []
+	for(var dashPrivIndex = 0; dashPrivIndex < customRoleInfo.dashboardPrivs.length; dashPrivIndex++) {
+		var dashPrivInfo = customRoleInfo.dashboardPrivs[dashPrivIndex]
+		var privDisplay = dashPrivInfo.dashboardName + 
+			" (" + dashPrivInfo.privs + ")"
+		dashPrivDisplay.push(privDisplay)
+	}
+
+	var buttonsHTML = userRoleItemButtonsHTML()
+
+	var privs = "Full Access"
+	
+	var rowHTML = '' +
+		'<tr class="userListRow">' +
+	         '<td>' + customRoleInfo.roleName +  '</td>' +
+	         '<td>' + "TBD" +  '</td>' +
+	         '<td>' + formPrivDisplay.join(", ") +  '<BR>' +  dashPrivDisplay.join(", ") + '</td>' +
+	         '<td class="roleListButtonCell">' + buttonsHTML + '</td>' +
+	     '</tr>'
+	
+	$('#userRoleTableBody').append(rowHTML)
+}
+
 
 
 function initUserRoleSettings(databaseID) {
@@ -70,6 +104,11 @@ function initUserRoleSettings(databaseID) {
 		console.log("Number of roles: " + roleInfo.length)
 		
 		addAdminRoleTableRow(roleInfo.adminUsers)
+		
+		for(var customRoleIndex = 0; customRoleIndex < roleInfo.customRoles.length; customRoleIndex++) {
+			var customRoleInfo = roleInfo.customRoles[customRoleIndex]
+			addCustomRoleTableRow(customRoleInfo)
+		}
 		
 	})
 	
