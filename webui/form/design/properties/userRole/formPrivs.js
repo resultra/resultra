@@ -1,4 +1,3 @@
-
 function formRolePrivsRoleNameHTML(roleName) {
 	return '' + 
 		'<div class="row">' +
@@ -25,11 +24,9 @@ function formRolePrivilegeListItemHTML(roleID) {
 		'</div>';
 }
 
-
-function initDesignFormProperties() {
+function initDesignFormRolePrivProperties() {
 	$('#formRolesPrivilegesList').empty()
 	$('#formRolesPrivilegesList').append(formRolePrivilegeListItemHTML("role1"))
 	$('#formRolesPrivilegesList').append(formRolePrivilegeListItemHTML("role2"))
 	$('#formRolesPrivilegesList').append(formRolePrivilegeListItemHTML("role3"))
-	
 }

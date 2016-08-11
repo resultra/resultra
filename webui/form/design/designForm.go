@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/form/components"
+	"resultra/datasheet/webui/form/design/properties"
 	"resultra/datasheet/webui/generic"
 )
 
@@ -26,7 +27,8 @@ func init() {
 		baseTemplateFiles,
 		generic.TemplateFileList,
 		common.TemplateFileList,
-		components.TemplateFileList}
+		components.TemplateFileList,
+		properties.TemplateFileList}
 	designFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
