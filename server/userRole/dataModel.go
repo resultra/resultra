@@ -74,7 +74,12 @@ func newDatabaseRoleWithPrivs(params NewDatabaseRoleWithPrivsParams) error {
 	}
 
 	for formID, priv := range params.FormPrivs {
-		if formPrivErr := setFormRolePrivs(newRole.RoleID, formID, priv); formPrivErr != nil {
+
+		params := SetFormRolePrivsParams{
+			FormID: formID,
+			RoleID: newRole.RoleID,
+			Privs:  priv}
+		if formPrivErr := setFormRolePrivs(params); formPrivErr != nil {
 			return fmt.Errorf("newDatabaseRoleWithPrivs: %v", formPrivErr)
 		}
 	}

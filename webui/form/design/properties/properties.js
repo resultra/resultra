@@ -2,6 +2,6 @@
 
 
 
-function initDesignFormProperties() {
-	initDesignFormRolePrivProperties()
+function initDesignFormProperties(formID) {
+	initDesignFormRolePrivProperties(formID)
 }

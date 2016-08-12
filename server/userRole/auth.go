@@ -60,3 +60,36 @@ func VerifyCurrUserIsDatabaseAdminForTable(req *http.Request, tableID string) er
 
 	return nil
 }
+
+func getFormDatabaseID(formID string) (string, error) {
+
+	databaseID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(
+		`SELECT database_id 
+			FROM data_tables, forms 
+			WHERE forms.form_id=$1 
+				AND forms.table_id=data_tables.table_id LIMIT 1`,
+		formID).Scan(&databaseID)
+	if getErr != nil {
+		return "", fmt.Errorf(
+			"getFormDatabaseID: can't get database for form = %v: err=%v",
+			formID, getErr)
+	}
+
+	return databaseID, nil
+
+}
+
+func VerifyCurrUserIsDatabaseAdminForForm(req *http.Request, formID string) error {
+
+	databaseID, err := getFormDatabaseID(formID)
+	if err != nil {
+		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForForm: %v", err)
+	}
+
+	if err := VerifyCurrUserIsDatabaseAdmin(req, databaseID); err != nil {
+		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForTable: %v", err)
+	}
+
+	return nil
+}

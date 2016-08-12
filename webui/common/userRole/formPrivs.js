@@ -1,9 +1,13 @@
 
 var formRolePrivsPrefix = "formPrivSel_"
 
+function formRoleButtonsRadioName(roleID) {
+	return formRolePrivsPrefix + roleID
+}
+
 function formRolePrivsButtonsHTML(roleID) {
 	
-	var radioName = formRolePrivsPrefix + roleID
+	var radioName = formRoleButtonsRadioName(roleID)
 
 	return '' + 
 			'<div class="btn-group" data-toggle="buttons">' +
@@ -17,6 +21,23 @@ function formRolePrivsButtonsHTML(roleID) {
 				    	'<input type="radio" name="'+ radioName + '"  value = "edit" autocomplete="off">Edit' +
 				  '</label>' +
 		'</div>';
+}
+
+function initFormRolePrivsButtons(roleID,privs,privsChangedFunc) {
+
+	var radioName = formRoleButtonsRadioName(roleID)
+
+	// Initialize the radio selection - Using the click() function is Bootstrap specific
+	$(':radio[name="'+radioName+'"][value="' + privs + '"]').click()
+	
+	var radioSelector = 'input[type="radio"][name="'+radioName+'"]'
+	
+	$(radioSelector).change(function() {
+		var newPrivs = this.value
+		console.log("Privilege selection changed: radio name = " + radioName + " privilages = " + newPrivs)
+		privsChangedFunc(roleID,newPrivs)
+	});
+	
 }
 
 

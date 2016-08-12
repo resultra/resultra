@@ -18,6 +18,9 @@ func init() {
 	roleRouter.HandleFunc("/api/userRole/validateRoleName", validateRoleNameAPI)
 	roleRouter.HandleFunc("/api/userRole/newRole", newRoleAPI)
 
+	roleRouter.HandleFunc("/api/userRole/getFormRolePrivs", getFormRolePrivsAPI)
+	roleRouter.HandleFunc("/api/userRole/setFormRolePrivs", setFormRolePrivsAPI)
+
 	http.Handle("/api/userRole/", roleRouter)
 }
 
@@ -61,4 +64,51 @@ func newRoleAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, successResponse)
 	}
 
+}
+
+type FormRolePrivsParams struct {
+	FormID string `json:"formID"`
+}
+
+func getFormRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params FormRolePrivsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := VerifyCurrUserIsDatabaseAdminForForm(r, params.FormID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if formRolePrivs, err := getFormRolePrivs(params.FormID); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, formRolePrivs)
+
+	}
+
+}
+
+func setFormRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params SetFormRolePrivsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := VerifyCurrUserIsDatabaseAdminForForm(r, params.FormID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if err := setFormRolePrivs(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		successResponse := true
+		api.WriteJSONResponse(w, successResponse)
+	}
 }
