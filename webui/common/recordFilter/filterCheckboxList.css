@@ -1,0 +1,17 @@
+.filterCheckboxList .filterCheckboxListItem {
+	padding-top: 6px !important;
+	padding-bottom:6px !important;
+	padding-left:10px !important;
+	padding-right:5px !important;
+	border: none;
+}
+
+.filterCheckboxList .label {
+	margin-bottom: 0px !important;
+}
+
+.filterCheckboxList .list-group {
+	margin-bottom: 10px !important;
+	/* There is too much space above the filter list. This compensates for this extra space */
+	margin-top:-5px; 
+}
