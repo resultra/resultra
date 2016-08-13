@@ -112,7 +112,7 @@ $(document).ready(function() {
 		console.log("Select form canvas")
 		hideSiblingsShowOne('#formProps')
 		closeFormulaEditor()
-		initDesignFormProperties(formID)
+		initDesignFormProperties(designFormContext.tableID,formID)
 	})
 	
 	

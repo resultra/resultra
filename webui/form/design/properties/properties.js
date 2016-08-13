@@ -2,7 +2,7 @@
 
 
 
-function initDesignFormProperties(formID) {
+function initDesignFormProperties(table,formID) {
 	initDesignFormRolePrivProperties(formID)
-	initDesignFormFilterProperties(formID)
+	initDesignFormFilterProperties(tableID,formID)
 }

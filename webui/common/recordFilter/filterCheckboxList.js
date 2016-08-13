@@ -22,3 +22,44 @@ function addFilterToFilterCheckboxList(listSelector, elemPrefix,filterRef,filter
 	})
 	
 }
+
+function getFilterCheckboxListSelectedFilterIDs(listSelector) {
+	
+	var selectedFilterIDs = []
+	
+	var checkboxSelector = listSelector + " input[type=checkbox]:checked"
+	
+	$(checkboxSelector).each(function() {
+		var filterRef = $(this).data("filterRef")
+		selectedFilterIDs.push(filterRef.filterID)
+	});
+	
+	return selectedFilterIDs
+	
+}
+
+function selectFilterCheckboxListItem(elemPrefix,filterID) {
+	var checkboxSelector = createPrefixedSelector(elemPrefix,filterID)
+	$(checkboxSelector).prop("checked",true)
+}
+
+function initializeFilterCheckboxList(filterListSelector, elemPrefix, allFilters, 
+				selectedFilterIDs,filterSelectionChangedFunc) {
+	
+	// Populate the checkbox list
+	$(filterListSelector).empty()
+	for(var filterIndex = 0; filterIndex < allFilters.length; filterIndex++) {
+		var filterInfo = allFilters[filterIndex]
+		addFilterToFilterCheckboxList(filterListSelector, elemPrefix,
+			filterInfo,filterSelectionChangedFunc)
+	}
+	
+	
+	// Initialize the checkboxes which are selected.
+	for(var filterIndex = 0; filterIndex < selectedFilterIDs.length;
+		filterIndex++) {
+			var filterID = selectedFilterIDs[filterIndex]
+			selectFilterCheckboxListItem(elemPrefix,filterID)
+	}
+	
+}

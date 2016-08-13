@@ -19,6 +19,9 @@ func init() {
 	formRouter.HandleFunc("/api/frm/new", newFormAPI)
 	formRouter.HandleFunc("/api/frm/get", getFormAPI)
 
+	formRouter.HandleFunc("/api/frm/setDefaultFilters", setDefaultFilters)
+	formRouter.HandleFunc("/api/frm/setAvailableFilters", setAvailableFilters)
+
 	http.Handle("/api/frm/", formRouter)
 }
 
@@ -44,6 +47,10 @@ func newFormAPI(w http.ResponseWriter, r *http.Request) {
 
 }
 
+type GetFormParams struct {
+	FormID string `json:"formID"`
+}
+
 func getFormAPI(w http.ResponseWriter, r *http.Request) {
 
 	var params GetFormParams
@@ -52,7 +59,7 @@ func getFormAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if theForm, err := GetForm(params); err != nil {
+	if theForm, err := GetForm(params.FormID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *theForm)
@@ -74,4 +81,30 @@ func getFormInfoAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, *formInfo)
 	}
 
+}
+
+func processFormPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater FormPropUpdater) {
+	if updatedForm, err := updateFormProps(propUpdater); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, updatedForm)
+	}
+}
+
+func setDefaultFilters(w http.ResponseWriter, r *http.Request) {
+	var params FormDefaultFilterParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFormPropUpdate(w, r, params)
+}
+
+func setAvailableFilters(w http.ResponseWriter, r *http.Request) {
+	var params FormAvailableFilterParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFormPropUpdate(w, r, params)
 }

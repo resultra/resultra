@@ -1,28 +1,47 @@
-function initDesignFormFilterProperties(formID) {
+function initDesignFormFilterProperties(tableID,formID) {
 	
 	function changeDefaultFilterSelection(filterID, isChecked) {
+		var selectedFilterIDs = getFilterCheckboxListSelectedFilterIDs('#designFormDefaultFilterList')
+		console.log("Default filters: updated selection: " + JSON.stringify(selectedFilterIDs))
+		
+		var setDefaultFiltersParams = {
+			formID: formID,
+			defaultFilterIDs: selectedFilterIDs
+		}
+		
+		jsonAPIRequest("frm/setDefaultFilters",setDefaultFiltersParams,function(updatedForm) {
+			console.log(" Default filters updated")
+		}) // set record's number field value
+		
 		
 	}
-	
-	$('#designFormDefaultFilterList').empty()
-	addFilterToFilterCheckboxList('#designFormDefaultFilterList', 'defaultFilter_',
-		{filterID:"filter1",name:"Filter 1"},changeDefaultFilterSelection)
-	addFilterToFilterCheckboxList('#designFormDefaultFilterList', 'defaultFilter_',
-		{filterID:"filter2",name:"Filter 2"},changeDefaultFilterSelection)
-
 
 	function changeAvailableFilterSelection(filterID, isChecked) {
 		
+		var selectedFilterIDs = getFilterCheckboxListSelectedFilterIDs('#designFormAvailableFilterList')
+		console.log("Available filters: updated selection: " + JSON.stringify(selectedFilterIDs))
+		
+		var setAvailFiltersParams = {
+			formID: formID,
+			availableFilterIDs: selectedFilterIDs
+		}
+		
+		jsonAPIRequest("frm/setAvailableFilters",setAvailFiltersParams,function(updatedForm) {
+			console.log("Available filters updated")
+		}) // set record's number field value
 	}
 	
-	$('#designFormAvailableFilterList').empty()
-	addFilterToFilterCheckboxList('#designFormAvailableFilterList', 'availableFilter_',
-		{filterID:"filter1",name:"Filter 1"},changeAvailableFilterSelection)
-	addFilterToFilterCheckboxList('#designFormAvailableFilterList', 'availableFilter_',
-		{filterID:"filter2",name:"Filter 2"},changeAvailableFilterSelection)
-	addFilterToFilterCheckboxList('#designFormAvailableFilterList', 'availableFilter_',
-		{filterID:"filter3",name:"Filter 3"},changeAvailableFilterSelection)
-	addFilterToFilterCheckboxList('#designFormAvailableFilterList', 'availableFilter_',
-		{filterID:"filter4",name:"Filter 4"},changeAvailableFilterSelection)
+	jsonAPIRequest("filter/getList",{parentTableID:tableID},function(filterList) {
+		jsonAPIRequest("frm/get",{formID:formID},function(formInfo) {
+						
+			initializeFilterCheckboxList('#designFormDefaultFilterList','defaultFilters_',
+				filterList,formInfo.properties.defaultFilterIDs,changeDefaultFilterSelection)
+			
+			initializeFilterCheckboxList('#designFormAvailableFilterList','availFilters_',
+				filterList,formInfo.properties.availableFilterIDs,changeAvailableFilterSelection)
+			
+		})
+	})
+		
 
 }
