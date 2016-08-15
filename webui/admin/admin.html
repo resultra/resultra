@@ -31,6 +31,7 @@
         <li class="nav active"><a href="#general" data-toggle="tab">General</a></li>
         <li class="nav"><a href="#users" data-toggle="tab">Users</a></li>
         <li class="nav"><a href="#roles" data-toggle="tab">Roles &amp; Privileges</a></li>
+        <li class="nav"><a href="#forms" data-toggle="tab">Forms</a></li>
     </ul>
 
     <!-- Tab panes -->
@@ -41,6 +42,9 @@
         </div>
         <div class="tab-pane fade" id="roles">
         	{{template "userRoleList"}}
+        </div>
+        <div class="tab-pane fade" id="forms">
+        	{{template "adminFormList"}}
         </div>
     </div>
 </div>

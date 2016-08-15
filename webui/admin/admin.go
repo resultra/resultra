@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"resultra/datasheet/server/databaseController"
+	"resultra/datasheet/webui/admin/forms"
 	"resultra/datasheet/webui/admin/userRole"
 	"resultra/datasheet/webui/admin/users"
 	"resultra/datasheet/webui/common"
@@ -24,7 +25,8 @@ func init() {
 		generic.TemplateFileList,
 		common.TemplateFileList,
 		userRole.TemplateFileList,
-		users.TemplateFileList}
+		users.TemplateFileList,
+		forms.TemplateFileList}
 	adminTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
