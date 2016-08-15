@@ -57,11 +57,9 @@
 <!-- propertyPanelGroupPrefix should be referenced once from the main page. Each selectable component which has a dynamically shown/hidden
      list of panels can enclose the list of panels in a single div immediately below this prefix. -->
 {{define "propertyPanelGroupPrefix"}}
-	<form>
 	<div class="panel-group propertySidebarPanelGroup" id="propertyPanelAccordion" role="tablist" aria-multiselectable="true">
 {{end}}
 
 {{define "propertyPanelGroupSuffix"}}
 	</div>
-	</form>
 {{end}}

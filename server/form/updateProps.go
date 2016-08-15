@@ -69,3 +69,15 @@ func (updateParams FormAvailableFilterParams) updateProps(form *Form) error {
 
 	return nil
 }
+
+type SetFormNameParams struct {
+	FormIDHeader
+	NewFormName string `json:"newFormName"`
+}
+
+func (updateParams SetFormNameParams) updateProps(form *Form) error {
+
+	form.Name = updateParams.NewFormName
+
+	return nil
+}

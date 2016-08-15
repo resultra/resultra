@@ -1,6 +1,7 @@
 package properties
 
 import (
+	"resultra/datasheet/webui/form/design/properties/formName"
 	"resultra/datasheet/webui/form/design/properties/recordFiltering"
 	"resultra/datasheet/webui/form/design/properties/userRole"
 )
@@ -13,5 +14,6 @@ func init() {
 
 	TemplateFileList = append(TemplateFileList, userRole.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, recordFiltering.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, formName.TemplateFileList...)
 
 }

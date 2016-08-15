@@ -3,6 +3,10 @@
 
 
 function initDesignFormProperties(table,formID) {
-	initDesignFormRolePrivProperties(formID)
-	initDesignFormFilterProperties(tableID,formID)
+	
+	jsonAPIRequest("frm/get",{formID:formID},function(formInfo) {
+		initDesignFormRolePrivProperties(formID)
+		initDesignFormFilterProperties(tableID,formInfo)
+		initFormPropertiesFormName(formInfo)
+	})
 }

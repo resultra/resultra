@@ -1,4 +1,4 @@
-function initDesignFormFilterProperties(tableID,formID) {
+function initDesignFormFilterProperties(tableID,formInfo) {
 	
 	function changeDefaultFilterSelection(filterID, isChecked) {
 		var selectedFilterIDs = getFilterCheckboxListSelectedFilterIDs('#designFormDefaultFilterList')
@@ -32,15 +32,13 @@ function initDesignFormFilterProperties(tableID,formID) {
 	}
 	
 	jsonAPIRequest("filter/getList",{parentTableID:tableID},function(filterList) {
-		jsonAPIRequest("frm/get",{formID:formID},function(formInfo) {
 						
-			initializeFilterCheckboxList('#designFormDefaultFilterList','defaultFilters_',
-				filterList,formInfo.properties.defaultFilterIDs,changeDefaultFilterSelection)
+		initializeFilterCheckboxList('#designFormDefaultFilterList','defaultFilters_',
+			filterList,formInfo.properties.defaultFilterIDs,changeDefaultFilterSelection)
+		
+		initializeFilterCheckboxList('#designFormAvailableFilterList','availFilters_',
+			filterList,formInfo.properties.availableFilterIDs,changeAvailableFilterSelection)
 			
-			initializeFilterCheckboxList('#designFormAvailableFilterList','availFilters_',
-				filterList,formInfo.properties.availableFilterIDs,changeAvailableFilterSelection)
-			
-		})
 	})
 		
 

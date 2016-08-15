@@ -1,6 +1,7 @@
 package form
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -21,6 +22,9 @@ func init() {
 
 	formRouter.HandleFunc("/api/frm/setDefaultFilters", setDefaultFilters)
 	formRouter.HandleFunc("/api/frm/setAvailableFilters", setAvailableFilters)
+	formRouter.HandleFunc("/api/frm/setName", setFormName)
+
+	formRouter.HandleFunc("/api/frm/validateFormName", validateFormNameAPI)
 
 	http.Handle("/api/frm/", formRouter)
 }
@@ -107,4 +111,28 @@ func setAvailableFilters(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processFormPropUpdate(w, r, params)
+}
+
+func setFormName(w http.ResponseWriter, r *http.Request) {
+	var params SetFormNameParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFormPropUpdate(w, r, params)
+}
+
+func validateFormNameAPI(w http.ResponseWriter, r *http.Request) {
+
+	formName := r.FormValue("formName")
+	formID := r.FormValue("formID")
+
+	if err := validateFormName(formID, formName); err != nil {
+		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
+		return
+	}
+
+	response := true
+	api.WriteJSONResponse(w, response)
+
 }
