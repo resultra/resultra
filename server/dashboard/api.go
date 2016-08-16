@@ -1,6 +1,7 @@
 package dashboard
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -13,6 +14,8 @@ func init() {
 
 	dashboardRouter.HandleFunc("/api/dashboard/new", newDashboard)
 	dashboardRouter.HandleFunc("/api/dashboard/getData", getDashboardData)
+
+	dashboardRouter.HandleFunc("/api/dashboard/validateNewDashboardName", validateNewDashboardNameAPI)
 
 	http.Handle("/api/dashboard/", dashboardRouter)
 }
@@ -52,5 +55,20 @@ func getDashboardData(w http.ResponseWriter, r *http.Request) {
 	} else {
 		api.WriteJSONResponse(w, *dashboardData)
 	}
+
+}
+
+func validateNewDashboardNameAPI(w http.ResponseWriter, r *http.Request) {
+
+	dashboardName := r.FormValue("dashboardName")
+	databaseID := r.FormValue("databaseID")
+
+	if err := validateNewDashboardName(databaseID, dashboardName); err != nil {
+		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
+		return
+	}
+
+	response := true
+	api.WriteJSONResponse(w, response)
 
 }

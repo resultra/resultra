@@ -79,3 +79,45 @@ func GetDashboardData(params GetDashboardDataParams) (*DashboardDataRef, error) 
 
 	return &dashboardDataRef, nil
 }
+
+func validateUniqueDashboardName(databaseID string, dashboardID string, dashboardName string) error {
+	// Query to validate the name is unique:
+	// 1. Select all the dashboards in the same database
+	// 2. Include dashboards with the same name.
+	// 3. Exclude dashboards with the same form ID. In other words
+	//    the name is considered valid if it is the same as its
+	//    existing name.
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT dashboards.dashboard_id 
+			FROM dashboards,databases
+			WHERE databases.database_id=$1 AND
+				dashboards.database_id=databases.database_id AND 
+				dashboards.name=$2 AND dashboards.dashboard_id<>$3`,
+		databaseID, dashboardName, dashboardID)
+	if queryErr != nil {
+		return fmt.Errorf("System error validating dashboard name (%v)", queryErr)
+	}
+
+	existingDashboardNameUsedByAnotherDashboard := rows.Next()
+	if existingDashboardNameUsedByAnotherDashboard {
+		return fmt.Errorf("Invalid dashboard name - names must be unique")
+	}
+
+	return nil
+
+}
+
+func validateNewDashboardName(databaseID string, dashboardName string) error {
+	if !generic.WellFormedItemName(dashboardName) {
+		return fmt.Errorf("Invalid dashboard name")
+	}
+
+	// No dashboard will have an empty dashboardID, so this will cause test for unique
+	// dashboard names to return true if any dashboard already has the given dashboardName.
+	dashboardID := ""
+	if uniqueErr := validateUniqueDashboardName(databaseID, dashboardID, dashboardName); uniqueErr != nil {
+		return uniqueErr
+	}
+
+	return nil
+}

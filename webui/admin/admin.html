@@ -32,6 +32,7 @@
         <li class="nav"><a href="#users" data-toggle="tab">Users</a></li>
         <li class="nav"><a href="#roles" data-toggle="tab">Roles &amp; Privileges</a></li>
         <li class="nav"><a href="#forms" data-toggle="tab">Forms</a></li>
+        <li class="nav"><a href="#dashboards" data-toggle="tab">Dashboards</a></li>
     </ul>
 
     <!-- Tab panes -->
@@ -45,6 +46,9 @@
         </div>
         <div class="tab-pane fade" id="forms">
         	{{template "adminFormList"}}
+        </div>
+        <div class="tab-pane fade" id="dashboards">
+        	{{template "adminDashboardList"}}
         </div>
     </div>
 </div>
@@ -92,6 +96,7 @@
 	
 	{{template "newUserRoleDialog"}}
 	{{template "newFormDialog"}}
+	{{template "newDashboardDialog"}}
 	
   </body>
   	

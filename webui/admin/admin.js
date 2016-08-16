@@ -26,5 +26,6 @@ $(document).ready(function() {
 	initUserRoleSettings(adminContext.databaseID)
 	initUserListSettings(adminContext.databaseID)
 	initAdminFormSettings(adminContext.databaseID)
+	initAdminDashboardSettings(adminContext.databaseID)
 	
 })

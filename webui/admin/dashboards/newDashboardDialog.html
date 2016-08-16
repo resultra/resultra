@@ -1,0 +1,39 @@
+{{define "newDashboardDialogBody"}}
+
+	  <div class="form-group">
+      	  <label for="newDashboardNameInput">Dashboard Name</label>
+      	  <input type="text" id="newDashboardNameInput" name="newDashboardNameInput" class="form-control" placeholder="Dashboard Name" required autofocus>
+	  </div>	
+
+{{end}}
+
+{{define "newDashboardDialogButtons"}}
+	<button type="button" class="btn btn-default" id="newDashboardCancelButton" data-dismiss="modal">Cancel</button>
+	<button type="button" class="btn btn-primary" id="newDashboardSaveButton" type="submit">Save</button>
+{{end}}
+
+
+{{define "newDashboardDialog"}}
+
+    <form id="newDashboardDialogForm">
+		
+		<div class="modal fade" id="newDashboardDialog" tabindex="-1" role="dialog" aria-labelledby="newDashboardLabel">
+		  <div class="modal-dialog modal-sm" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="newDashboardLabel">New Dashboard</h4>
+		      </div>
+		      <div class="modal-body">
+				  {{template "newDashboardDialogBody"}}
+		      </div>
+		      <div class="modal-footer">
+				  {{template "newDashboardDialogButtons"}}
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+	</form>
+
+{{end}}
