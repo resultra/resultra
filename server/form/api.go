@@ -25,6 +25,7 @@ func init() {
 	formRouter.HandleFunc("/api/frm/setName", setFormName)
 
 	formRouter.HandleFunc("/api/frm/validateFormName", validateFormNameAPI)
+	formRouter.HandleFunc("/api/frm/validateNewFormName", validateNewFormNameAPI)
 
 	http.Handle("/api/frm/", formRouter)
 }
@@ -128,6 +129,21 @@ func validateFormNameAPI(w http.ResponseWriter, r *http.Request) {
 	formID := r.FormValue("formID")
 
 	if err := validateFormName(formID, formName); err != nil {
+		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
+		return
+	}
+
+	response := true
+	api.WriteJSONResponse(w, response)
+
+}
+
+func validateNewFormNameAPI(w http.ResponseWriter, r *http.Request) {
+
+	formName := r.FormValue("formName")
+	databaseID := r.FormValue("databaseID")
+
+	if err := validateNewFormName(databaseID, formName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}

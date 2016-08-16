@@ -39,7 +39,7 @@ func newForm(params NewFormParams) (*Form, error) {
 		return nil, fmt.Errorf("newForm: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO forms (table_id,form_id,name,properties) VALUES ($1,$2,$3)`,
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO forms (table_id,form_id,name,properties) VALUES ($1,$2,$3,$4)`,
 		newForm.ParentTableID, newForm.FormID, newForm.Name, encodedFormProps); insertErr != nil {
 		return nil, fmt.Errorf("newForm: Can't create form: error = %v", insertErr)
 	}
@@ -149,17 +149,7 @@ type FormNameValidationInfo struct {
 	ID   string
 }
 
-func validateFormName(formID string, formName string) error {
-
-	if !generic.WellFormedItemName(formName) {
-		return fmt.Errorf("Invalid form name")
-	}
-
-	databaseID, err := getFormDatabaseID(formID)
-	if err != nil {
-		return fmt.Errorf("System error validating form name (%v)", err)
-	}
-
+func validateUniqueFormName(databaseID string, formID string, formName string) error {
 	// Query to validate the name is unique:
 	// 1. Select all the forms in the same database
 	// 2. Include forms with the same name.
@@ -181,6 +171,41 @@ func validateFormName(formID string, formName string) error {
 	existingFormNameUsedByAnotherForm := rows.Next()
 	if existingFormNameUsedByAnotherForm {
 		return fmt.Errorf("Invalid form name - names must be unique")
+	}
+
+	return nil
+
+}
+
+func validateFormName(formID string, formName string) error {
+
+	if !generic.WellFormedItemName(formName) {
+		return fmt.Errorf("Invalid form name")
+	}
+
+	databaseID, err := getFormDatabaseID(formID)
+	if err != nil {
+		return fmt.Errorf("System error validating form name (%v)", err)
+	}
+
+	if uniqueErr := validateUniqueFormName(databaseID, formID, formName); uniqueErr != nil {
+		return uniqueErr
+	}
+
+	return nil
+}
+
+func validateNewFormName(databaseID string, formName string) error {
+
+	if !generic.WellFormedItemName(formName) {
+		return fmt.Errorf("Invalid form name")
+	}
+
+	// No form will have an empty formID, so this will cause test for unique
+	// form names to return true if any form already has the given formName.
+	formID := ""
+	if uniqueErr := validateUniqueFormName(databaseID, formID, formName); uniqueErr != nil {
+		return uniqueErr
 	}
 
 	return nil

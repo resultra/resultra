@@ -19,9 +19,12 @@ $(document).ready(function() {
 		})
 		
 	initDatabaseTOC(adminContext.databaseID)
+		
 	initUserDropdownMenu()
 		
+	// Initialize the different settings panels
 	initUserRoleSettings(adminContext.databaseID)
 	initUserListSettings(adminContext.databaseID)
+	initAdminFormSettings(adminContext.databaseID)
 	
 })

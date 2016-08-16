@@ -30,4 +30,12 @@ $(document).ready(function() {
 	  return itemName && (!allPunc)
 	}, 'Please enter a valid name');
 	
+   // add the rule here
+    $.validator.addMethod("optionSelectionRequired", function(value, element, arg){
+		console.log("validating option: " + value)
+		return (value != null) && (value.length > 0);
+    }, "Please select a {0}");
+	
 })
+
+
