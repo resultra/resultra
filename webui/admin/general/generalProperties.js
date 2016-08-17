@@ -4,11 +4,13 @@ function initDatabaseNameProperties(databaseInfo) {
 	$('#databasePropsNameInput').val(databaseInfo.name)
 	
 	var $databaseNameForm = $('#databaseNamePropertyForm')
-	
-	
-	var nameValidationParams = {
-		databaseID: function() { return databaseInfo.databaseID },
-		databaseName: function() { return $('#databasePropsNameInput').val() }
+		
+	var remoteValidationParams = {
+		url: '/api/database/validateDatabaseName',
+		data: {
+			databaseID: function() { return databaseInfo.databaseID },
+			databaseName: function() { return $('#databasePropsNameInput').val() }
+		}	
 	}
 	
 	var validationSettings = createInlineFormValidationSettings({
@@ -16,10 +18,7 @@ function initDatabaseNameProperties(databaseInfo) {
 			databasePropsNameInput: {
 				minlength: 3,
 				required: true,
-				remote: {
-					url: '/api/database/validateDatabaseName',
-					data: nameValidationParams
-				} // remote
+				remote: remoteValidationParams
 			} // newRoleNameInput
 		}
 	})	
@@ -27,34 +26,16 @@ function initDatabaseNameProperties(databaseInfo) {
 	
 	var validator = $databaseNameForm.validate(validationSettings)
 	
-	$('#databasePropsNameInput').unbind("blur")
-	$('#databasePropsNameInput').blur(function() {
-		if(validator.element('#databasePropsNameInput')) {
-			
-			var newName = $('#databasePropsNameInput').val()
-			
-			console.log("Starting database name change (pending remote validation): " + newName)
-			
-			doubleCheckRemoteFormValidation('/api/database/validateDatabaseName',nameValidationParams, 
-							function(validationResult) {
-				
-				if(validationResult == true) {
-					console.log("Changing database name: " + newName)
-					var setNameParams = {
-						databaseID:databaseInfo.databaseID,
-						newName:newName
-					}
-					jsonAPIRequest("database/setName",setNameParams,function(dbInfo) {
-						console.log("Done changing database name: " + newName)
-					})
-				} else {
-					console.log("Remote validation failed, aborting database name change: " + newName)
-				}
+	initInlineInputValidationOnBlur(validator,'#databasePropsNameInput',
+		remoteValidationParams, function(validatedName) {		
+			var setNameParams = {
+				databaseID:databaseInfo.databaseID,
+				newName:validatedName
+			}
+			jsonAPIRequest("database/setName",setNameParams,function(dbInfo) {
+				console.log("Done changing database name: " + validatedName)
 			})
-			
-		}
 	})	
-	
 
 	validator.resetForm()
 	
