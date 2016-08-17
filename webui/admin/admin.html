@@ -37,7 +37,9 @@
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div class="tab-pane fade in active" id="general">General database settings</div>
+        <div class="tab-pane fade in active" id="general">
+			{{template "adminGeneralProperties"}}
+		</div>
         <div class="tab-pane fade" id="users">
         	{{template "userList"}}
         </div>

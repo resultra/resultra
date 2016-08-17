@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/webui/admin/dashboards"
 	"resultra/datasheet/webui/admin/forms"
+	"resultra/datasheet/webui/admin/general"
 	"resultra/datasheet/webui/admin/userRole"
 	"resultra/datasheet/webui/admin/users"
 	"resultra/datasheet/webui/common"
@@ -28,7 +29,8 @@ func init() {
 		userRole.TemplateFileList,
 		users.TemplateFileList,
 		forms.TemplateFileList,
-		dashboards.TemplateFileList}
+		dashboards.TemplateFileList,
+		general.TemplateFileList}
 	adminTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 

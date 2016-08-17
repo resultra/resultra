@@ -2,6 +2,7 @@ package databaseController
 
 import (
 	"fmt"
+	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
@@ -66,8 +67,9 @@ func getDatabaseFormsInfo(params DatabaseInfoParams) ([]FormInfo, error) {
 }
 
 type DatabaseContentsInfo struct {
-	FormsInfo      []FormInfo      `json:"formsInfo"`
-	DashboardsInfo []DashboardInfo `json:"dashboardsInfo"`
+	DatabaseInfo   database.Database `json:"databaseInfo"`
+	FormsInfo      []FormInfo        `json:"formsInfo"`
+	DashboardsInfo []DashboardInfo   `json:"dashboardsInfo"`
 }
 
 func getDatabaseInfo(params DatabaseInfoParams) (*DatabaseContentsInfo, error) {
@@ -82,7 +84,13 @@ func getDatabaseInfo(params DatabaseInfoParams) (*DatabaseContentsInfo, error) {
 		return nil, dashboardsErr
 	}
 
+	db, getErr := database.GetDatabase(params.DatabaseID)
+	if getErr != nil {
+		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
+	}
+
 	dbInfo := DatabaseContentsInfo{
+		DatabaseInfo:   *db,
 		FormsInfo:      formsInfo,
 		DashboardsInfo: dashboardsInfo}
 

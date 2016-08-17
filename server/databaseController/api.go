@@ -17,6 +17,9 @@ func init() {
 	databaseRouter.HandleFunc("/api/database/getInfo", getDatabaseInfoAPI)
 	databaseRouter.HandleFunc("/api/database/new", newDatabase)
 
+	databaseRouter.HandleFunc("/api/database/setName", database.SetNameAPI)
+	databaseRouter.HandleFunc("/api/database/validateDatabaseName", database.ValidateDatabaseNameAPI)
+
 	http.Handle("/api/database/", databaseRouter)
 }
 

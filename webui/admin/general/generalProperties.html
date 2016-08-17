@@ -1,0 +1,20 @@
+{{define "adminDatabaseNameProperty"}}
+	<form class="form-inline" id="databaseNamePropertyForm">
+		<div class="container-fluid">
+			<div class="form-group">
+				<label for="databasePropsNameInput">Database Name</label>
+				<input type="text" id="databasePropsNameInput" name="databasePropsNameInput" class="form-control" placeholder="Database Name" required="" autofocus="">
+			</div>
+		</div>
+	</form>
+{{end}}
+
+
+{{define "adminGeneralProperties"}}
+
+	<div class="marginTop20">
+		{{template "adminDatabaseNameProperty"}}
+	</div>
+
+
+{{end}}
