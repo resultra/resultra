@@ -7,7 +7,7 @@ function initFormPropertiesFormName(formInfo) {
 	
 	var $formNameForm = $('#formNamePropertyPanelForm')
 	
-	var validator = $formNameForm.validate({
+	var validationSettings = createInlineFormValidationSettings({
 		rules: {
 			formPropsFormNameInput: {
 				minlength: 3,
@@ -21,12 +21,8 @@ function initFormPropertiesFormName(formInfo) {
 				} // remote
 			} // newRoleNameInput
 		},
-		// Since there is already a value in place, the validation can be made "eager" by 
-		// always triggering the validation when the key goes up. The default behavior is
-		// to only trigger the first validation when the input focus is lost (blur), then
-		// become more eager when an error is detected.
-		onkeyup: function(element) { $(element).valid() }
-	})
+	})	
+	var validator = $formNameForm.validate(validationSettings)
 	
 	$('#formPropsFormNameInput').unbind("blur")
 	$('#formPropsFormNameInput').blur(function() {

@@ -1,30 +1,31 @@
 
-function initDashboardNameProperties(databaseInfo) {
+function initDatabaseNameProperties(databaseInfo) {
 	
 	$('#databasePropsNameInput').val(databaseInfo.name)
 	
 	var $databaseNameForm = $('#databaseNamePropertyForm')
 	
-	var validator = $databaseNameForm.validate({
+	
+	var nameValidationParams = {
+		databaseID: function() { return databaseInfo.databaseID },
+		databaseName: function() { return $('#databasePropsNameInput').val() }
+	}
+	
+	var validationSettings = createInlineFormValidationSettings({
 		rules: {
 			databasePropsNameInput: {
 				minlength: 3,
 				required: true,
 				remote: {
 					url: '/api/database/validateDatabaseName',
-					data: {
-						databaseID: databaseInfo.databaseID,
-						databaseName: $('#databasePropsNameInput').val()
-					}
+					data: nameValidationParams
 				} // remote
 			} // newRoleNameInput
-		},
-		// Since there is already a value in place, the validation can be made "eager" by 
-		// always triggering the validation when the key goes up. The default behavior is
-		// to only trigger the first validation when the input focus is lost (blur), then
-		// become more eager when an error is detected.
-		onkeyup: function(element) { $(element).valid() }
-	})
+		}
+	})	
+	
+	
+	var validator = $databaseNameForm.validate(validationSettings)
 	
 	$('#databasePropsNameInput').unbind("blur")
 	$('#databasePropsNameInput').blur(function() {
@@ -34,9 +35,8 @@ function initDashboardNameProperties(databaseInfo) {
 			
 			console.log("Starting database name change (pending remote validation): " + newName)
 			
-			var validationParams = { databaseID: databaseInfo.databaseID,
-						databaseName: newName }
-			doubleCheckRemoteFormValidation('/api/database/validateDatabaseName',validationParams, function(validationResult) {
+			doubleCheckRemoteFormValidation('/api/database/validateDatabaseName',nameValidationParams, 
+							function(validationResult) {
 				
 				if(validationResult == true) {
 					console.log("Changing database name: " + newName)
@@ -63,7 +63,7 @@ function initDashboardNameProperties(databaseInfo) {
 function initAdminGeneralProperties(databaseID) {
 	var getDBInfoParams = { databaseID: databaseID }
 	jsonAPIRequest("database/getInfo",getDBInfoParams,function(dbInfo) {
-		initDashboardNameProperties(dbInfo.databaseInfo)
+		initDatabaseNameProperties(dbInfo.databaseInfo)
 	})
 	
 }
