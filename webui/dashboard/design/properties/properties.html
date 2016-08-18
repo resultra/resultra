@@ -1,6 +1,4 @@
-{{define "dashboardNameProps"}}
-		Dashboard Name
-{{end}}
+
 
 {{define "dashboardStyleProps"}}
 	Dashboard style properties go here (e.g. background color)
@@ -11,7 +9,7 @@
 	<div id="dashboardProps" class="propertyPanelToggleContainer">
 		
 	  {{template "propertyPanelPrefix" .NamePanelParams}}
-	  		{{template "dashboardNameProps"}}
+	  		{{template "dashboardNamePropertyPanel"}}
 	  {{template "propertyPanelSuffix"}}
 		
 	  {{template "propertyPanelPrefix" .StylePanelParams}}

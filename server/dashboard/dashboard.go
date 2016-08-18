@@ -40,6 +40,10 @@ func NewDashboard(params NewDashboardParams) (*Dashboard, error) {
 
 }
 
+type GetDashboardParams struct {
+	DashboardID string `json:"dashboardID"`
+}
+
 func GetDashboard(dashboardID string) (*Dashboard, error) {
 
 	dashboardName := ""
@@ -56,6 +60,27 @@ func GetDashboard(dashboardID string) (*Dashboard, error) {
 		Name:             dashboardName}
 
 	return &getDashboard, nil
+
+}
+
+func updateExistingDashboard(dashboardID string, updatedDB *Dashboard) (*Dashboard, error) {
+
+	/*
+		encodedProps, encodeErr := generic.EncodeJSONString(updatedDB.Properties)
+		if encodeErr != nil {
+			return nil, fmt.Errorf("updateExistingDatabase: failure encoding properties: error = %v", encodeErr)
+		}
+	*/
+
+	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE dashboards 
+				SET name=$1
+				WHERE dashboard_id=$2`,
+		updatedDB.Name, dashboardID); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingDashboard: Can't update dashboard properties %v: error = %v",
+			dashboardID, updateErr)
+	}
+
+	return updatedDB, nil
 
 }
 
@@ -107,7 +132,27 @@ func validateUniqueDashboardName(databaseID string, dashboardID string, dashboar
 
 }
 
+func getDashboardDatabaseID(dashboardID string) (string, error) {
+
+	databaseID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(
+		`SELECT databases.database_id 
+			FROM databases,dashboards 
+			WHERE dashboards.dashboard_id=$1 
+				AND dashboards.database_id=databases.database_id LIMIT 1`,
+		dashboardID).Scan(&databaseID)
+	if getErr != nil {
+		return "", fmt.Errorf(
+			"getDashboardDatabaseID: can't get database for dashboard = %v: err=%v",
+			dashboardID, getErr)
+	}
+
+	return databaseID, nil
+
+}
+
 func validateNewDashboardName(databaseID string, dashboardName string) error {
+
 	if !generic.WellFormedItemName(dashboardName) {
 		return fmt.Errorf("Invalid dashboard name")
 	}
@@ -120,4 +165,23 @@ func validateNewDashboardName(databaseID string, dashboardName string) error {
 	}
 
 	return nil
+}
+
+func validateDashboardName(dashboardID string, dashboardName string) error {
+
+	if !generic.WellFormedItemName(dashboardName) {
+		return fmt.Errorf("Invalid dashboard name")
+	}
+
+	databaseID, err := getDashboardDatabaseID(dashboardID)
+	if err != nil {
+		return fmt.Errorf("System error validating name")
+	}
+
+	if uniqueErr := validateUniqueDashboardName(databaseID, dashboardID, dashboardName); uniqueErr != nil {
+		return uniqueErr
+	}
+
+	return nil
+
 }

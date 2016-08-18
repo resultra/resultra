@@ -19,6 +19,7 @@ function loadDashboardData()
 		}
 		
 		initObjectCanvasSelectionBehavior('#dashboardCanvas', function() {
+			initDesignDashboardProperties(designDashboardContext.dashboardID)
 			hideSiblingsShowOne('#dashboardProps')
 		})
 		
