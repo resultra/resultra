@@ -1,4 +1,4 @@
-package dashboard
+package design
 
 import (
 	"github.com/gorilla/mux"
@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/webui/common"
+	dashboardCommon "resultra/datasheet/webui/dashboard/common"
 	"resultra/datasheet/webui/dashboard/components"
 	"resultra/datasheet/webui/dashboard/design/properties"
 	"resultra/datasheet/webui/generic"
@@ -17,19 +18,19 @@ var designDashboardTemplates *template.Template
 
 func init() {
 
-	baseTemplateFiles := []string{"static/dashboard/dashboardCommon.html",
-		"static/dashboard/designDashboard.html"}
+	baseTemplateFiles := []string{"static/dashboard/design/designDashboard.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
 		common.TemplateFileList,
+		dashboardCommon.TemplateFileList,
 		components.TemplateFileList,
 		properties.TemplateFileList}
 	designDashboardTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
-func designDashboard(w http.ResponseWriter, r *http.Request) {
+func DesignDashboard(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	dashboardID := vars["dashboardID"]

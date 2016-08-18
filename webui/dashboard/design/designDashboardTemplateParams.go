@@ -1,4 +1,4 @@
-package dashboard
+package design
 
 import (
 	"resultra/datasheet/server/dashboard"
