@@ -1,0 +1,12 @@
+/* Inner div for actually drawing the chart */
+.dashboardChartWrapper {
+	width: 100%;
+	height: 100%;
+}
+
+/* Styling for outer div when the item is displayed in the dashboard designer */
+.dashboardItemDesignContainer {
+    position: absolute; 
+	border: 1px dashed gray; 
+	padding: 2px; /* Padding needed so selection can take place without interfering with container's content */
+}

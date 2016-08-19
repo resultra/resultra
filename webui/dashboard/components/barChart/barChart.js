@@ -71,7 +71,7 @@ function drawDesignModeDummyBarChart(placeholderID) {
    	drawBarChart(dummyBarChartData)
 }
 
-function initBarChartEditBehavior(barChartID)
+function initBarChartEditBehavior(dashboardID,barChartID)
 {
 
 	// While in edit mode, disable input on the container
@@ -161,7 +161,7 @@ function initBarChartEditBehavior(barChartID)
 function initBarChartData(dashboardID,barChartData) {
 	
 	drawBarChart(barChartData)
-	initBarChartEditBehavior(barChartData.barChart.barChartID)
+	initBarChartEditBehavior(dashboardID, barChartData.barChart.barChartID)
 	
 	var barChartContainer = $('#'+barChartData.barChart.barChartID)
 	

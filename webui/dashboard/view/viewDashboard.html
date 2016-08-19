@@ -86,10 +86,14 @@
 	<!-- viewDashboardAssets:css -->
 	<!-- endinject -->
 	
-	<script>var viewDashboardContext = { dashboardID:"{{.DashboardID}}",
-	 	databaseID: "{{.DatabaseID}}"} </script>
+	<script>
+		var viewDashboardContext = { 
+			dashboardID:"{{.DashboardID}}",
+	 		databaseID: "{{.DatabaseID}}"} 
+	</script>
 	
 	{{template "thirdPartyJS"}}
+	{{template "googleChartsJavascript"}}
 	
 	<!-- viewDashboardAssets:js -->
 	<!-- endinject -->
@@ -120,7 +124,7 @@
 			<div class="ui-layout-center" id="dashboardViewPane">
 				
 				<div class="layoutPageDiv" id="layoutPage">
-					<div id="layoutCanvas"></div>
+					<div id="dashboardCanvas"></div>
 				</div>	
 				
 			</div> <!-- ui-layout-center #recordHeader -->

@@ -1,0 +1,9 @@
+/* Bar chart specific style for outer container div */
+.dashboardBarChartContainer {
+	min-width:300px;
+	min-height:300px;
+	width: 400px;
+	height: 400px; 
+}
+
+

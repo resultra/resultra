@@ -50,6 +50,11 @@ $(document).ready(function() {
 			
 	initUserDropdownMenu()
 	
-	initDatabaseTOC(viewDashboardContext.databaseID)	
+	initDatabaseTOC(viewDashboardContext.databaseID)
+	
+	google.charts.setOnLoadCallback(function() {
+		loadDashboardData(viewDashboardContext.dashboardID)
+	})
+		
 
 }); // document ready
