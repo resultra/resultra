@@ -1,0 +1,27 @@
+#viewDashboardPageHeaderUILayout {
+	padding-top:5px; /* override the default 10px padding */
+}
+
+#recordFooterUILayout {
+	overflow:hidden; /* disable scroll bars */
+}
+
+#dashboardNameHeaderCol {
+	 text-align:center;
+}
+
+#dashboardNameHeader {
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+
+#dashboardPane
+{
+	padding: 0px;
+}
+
+#dashboardHeaderUILayout,#dashboardFooterUILayout
+{
+	padding: 4px; /* override jQuery UI Layout padding */
+}

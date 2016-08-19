@@ -127,6 +127,35 @@ func GetFormDatabaseInfo(formID string) (*FormDatabaseInfo, error) {
 
 }
 
+type DashboardDatabaseInfo struct {
+	DashboardID   string
+	DatabaseID    string
+	DatabaseName  string
+	DashboardName string
+}
+
+func GetDashboardDatabaseInfo(dashboardID string) (*DashboardDatabaseInfo, error) {
+
+	var dashDBInfo DashboardDatabaseInfo
+	getErr := databaseWrapper.DBHandle().QueryRow(`
+			SELECT 
+				databases.database_id, databases.name, dashboards.dashboard_id,dashboards.name
+			FROM 
+				dashboards,databases 
+			WHERE 
+				dashboards.dashboard_id = $1 AND 
+				dashboards.database_id = databases.database_id`, dashboardID).Scan(
+		&dashDBInfo.DatabaseID, &dashDBInfo.DatabaseName,
+		&dashDBInfo.DashboardID, &dashDBInfo.DashboardName)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetDashboardDatabaseInfo: Unabled to get dashboard info: dashboard id = %v: datastore err=%v",
+			dashboardID, getErr)
+	}
+
+	return &dashDBInfo, nil
+
+}
+
 type DatabaseInfo struct {
 	DatabaseID   string
 	DatabaseName string

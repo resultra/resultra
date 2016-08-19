@@ -6,7 +6,7 @@ function addFormToFormTOCList(formInfo) {
 
 function addDashboardLinkToTOCList(dashboardInfo) {
 	// TODO - Link to "dashboard view" page instead of dashboard design page (view page isn't implemented yet)
-	var dashboardListItemHTML = '<a href="/designDashboard/' + dashboardInfo.dashboardID 
+	var dashboardListItemHTML = '<a href="/viewDashboard/' + dashboardInfo.dashboardID 
 			+ '" class="list-group-item">' + dashboardInfo.name + '</a>'
 	$('#tocDashboardList').append(dashboardListItemHTML)		
 }

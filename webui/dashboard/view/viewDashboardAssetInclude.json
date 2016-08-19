@@ -1,0 +1,15 @@
+{
+	"subDirs":["../../generic",
+				"../../common",
+				"../common",
+				"../../field",
+				"../components/common/newComponentDialog",
+				"../components/barChart"],
+	"cssFiles": ["viewDashboard.css"],
+	"jsFiles": ["viewDashboard.js"],
+	"htmlFiles":["viewDashboard.html"],
+	"imageFiles":[],
+	"minJSFile": "dashboard/view/viewDashboard.min.js",
+	"minCSSFile":"dashboard/view/viewDashboard.min.css",
+	"injectPlaceholderName":"viewDashboardAssets"
+}
