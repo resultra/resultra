@@ -3,9 +3,9 @@ package barChart
 import (
 	"fmt"
 	"resultra/datasheet/server/common"
+	componentsCommon "resultra/datasheet/server/dashboard/components/common"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
@@ -61,16 +61,8 @@ type NewBarChartParams struct {
 
 func updateExistingBarChart(updatedBarChart *BarChart) (*BarChart, error) {
 
-	encodedProps, encodeErr := generic.EncodeJSONString(updatedBarChart.Properties)
-	if encodeErr != nil {
-		return nil, fmt.Errorf("updateExistingBarChart: Unable to update bar chart: error = %v", encodeErr)
-	}
-
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE bar_charts SET properties=$1 WHERE dashboard_id=$2 and barchart_id=$3`,
-		encodedProps,
-		updatedBarChart.ParentDashboardID,
-		updatedBarChart.BarChartID); updateErr != nil {
-		fmt.Errorf("updateExistingBarChart: Can't create bar chart: unable to update bar chart: error = %v", updateErr)
+	if updateErr := componentsCommon.UpdateDashboardComponent(barChartEntityKind, updatedBarChart.ParentDashboardID,
+		updatedBarChart.BarChartID, updatedBarChart.Properties); updateErr != nil {
 	}
 
 	return updatedBarChart, nil
@@ -118,18 +110,9 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 		BarChartID:        uniqueID.GenerateSnowflakeID(),
 		Properties:        barChartProps}
 
-	encodedProps, encodeErr := generic.EncodeJSONString(newBarChart.Properties)
-	if encodeErr != nil {
-		return nil, fmt.Errorf("NewDashboard: Unable to create dashboard: error = %v", encodeErr)
-	}
-
-	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO bar_charts (dashboard_id, barchart_id, properties) 
-			VALUES ($1,$2,$3)`,
-		newBarChart.ParentDashboardID,
-		newBarChart.BarChartID,
-		encodedProps); insertErr != nil {
-		fmt.Errorf("NewBarChart: Can't create bar chart: unable to create bar chart: error = %v", insertErr)
+	if saveErr := componentsCommon.SaveNewDashboardComponent(barChartEntityKind,
+		newBarChart.ParentDashboardID, newBarChart.BarChartID, newBarChart.Properties); saveErr != nil {
+		return nil, fmt.Errorf("NewBarChart: Unable to save bar chart component with params=%+v: error = %v", params, saveErr)
 	}
 
 	return &newBarChart, nil
@@ -138,24 +121,15 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 
 func getBarChart(parentDashboardID string, barChartID string) (*BarChart, error) {
 
-	encodedProperties := ""
-
-	var barChart BarChart
-	getErr := databaseWrapper.DBHandle().QueryRow(
-		`SELECT dashboard_id, barchart_id, properties 
-			FROM bar_charts 
-			WHERE dashboard_id=$1 AND barchart_id=$2 LIMIT 1`,
-		parentDashboardID, barChartID).Scan(&barChart.ParentDashboardID,
-		&barChart.BarChartID,
-		&encodedProperties)
-	if getErr != nil {
-		return nil, fmt.Errorf("Unabled to get bar chart: id = %+v: datastore err=%v", barChartID, getErr)
+	barChartProps := BarChartProps{}
+	if getErr := componentsCommon.GetDashboardComponent(barChartEntityKind, parentDashboardID, barChartID, &barChartProps); getErr != nil {
+		return nil, fmt.Errorf("getImage: Unable to retrieve bar chart component: %v", getErr)
 	}
 
-	decodeErr := generic.DecodeJSONString(encodedProperties, &barChart.Properties)
-	if decodeErr != nil {
-		return nil, fmt.Errorf("getBarChart: Unable to get bar chart: error = %v", decodeErr)
-	}
+	barChart := BarChart{
+		ParentDashboardID: parentDashboardID,
+		BarChartID:        barChartID,
+		Properties:        barChartProps}
 
 	return &barChart, nil
 
@@ -163,32 +137,25 @@ func getBarChart(parentDashboardID string, barChartID string) (*BarChart, error)
 
 func getBarCharts(parentDashboardID string) ([]BarChart, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT dashboard_id, barchart_id, properties
-			FROM bar_charts
-			WHERE dashboard_id=$1`,
-		parentDashboardID)
-	if queryErr != nil {
-		return nil, fmt.Errorf("getBarCharts: Failure querying database: %v", queryErr)
-	}
 	barCharts := []BarChart{}
-	for rows.Next() {
-		var currBarChart BarChart
-		encodedProperties := ""
-		if scanErr := rows.Scan(&currBarChart.ParentDashboardID,
-			&currBarChart.BarChartID,
-			&encodedProperties); scanErr != nil {
-			return nil, fmt.Errorf("getBarCharts: Failure querying database: %v", scanErr)
+	addBarChart := func(barChartID string, encodedProps string) error {
+
+		var barChartProps BarChartProps
+		if decodeErr := generic.DecodeJSONString(encodedProps, &barChartProps); decodeErr != nil {
+			return fmt.Errorf("getBarCharts: can't decode properties: %v", encodedProps)
 		}
 
-		decodeErr := generic.DecodeJSONString(encodedProperties, &currBarChart.Properties)
-		if decodeErr != nil {
-			return nil, fmt.Errorf("getBarChart: Unable to get bar chart: error = %v", decodeErr)
-		}
-
+		currBarChart := BarChart{
+			ParentDashboardID: parentDashboardID,
+			BarChartID:        barChartID,
+			Properties:        barChartProps}
 		barCharts = append(barCharts, currBarChart)
 
+		return nil
+	}
+	if getErr := componentsCommon.GetDashboardComponents(barChartEntityKind, parentDashboardID, addBarChart); getErr != nil {
+		return nil, fmt.Errorf("getBarCharts: Can't get bar chart components: %v")
 	}
 
 	return barCharts, nil
-
 }
