@@ -13,6 +13,7 @@ type DashboardTemplateParams struct {
 	DashboardName    string
 	NamePanelParams  propertiesSidebar.PanelTemplateParams
 	StylePanelParams propertiesSidebar.PanelTemplateParams
+	RolePanelParams  propertiesSidebar.PanelTemplateParams
 	ComponentParams  components.ComponentTemplateParams
 }
 
@@ -25,6 +26,7 @@ func createDashboardTemplateParams(dashboardForDesign *dashboard.Dashboard) Dash
 		DashboardName:    dashboardForDesign.Name,
 		NamePanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Dashboard Name", PanelID: "dashboardName"},
 		StylePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Style", PanelID: "dashboardStyle"},
+		RolePanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Roles & Privileges", PanelID: "dashboardRoles"},
 		ComponentParams:  components.TemplateParams}
 
 	return templParams

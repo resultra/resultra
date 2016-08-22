@@ -85,7 +85,13 @@ func newDatabaseRoleWithPrivs(params NewDatabaseRoleWithPrivsParams) error {
 	}
 
 	for dashboardID, priv := range params.DashboardPrivs {
-		if dashboardPrivErr := setDashboardRolePrivs(newRole.RoleID, dashboardID, priv); dashboardPrivErr != nil {
+
+		setPrivParams := SetDashboardRolePrivsParams{
+			DashboardID: dashboardID,
+			RoleID:      newRole.RoleID,
+			Privs:       priv}
+
+		if dashboardPrivErr := setDashboardRolePrivs(setPrivParams); dashboardPrivErr != nil {
 			return fmt.Errorf("newDatabaseRoleWithPrivs: %v", dashboardPrivErr)
 		}
 	}

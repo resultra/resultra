@@ -11,7 +11,11 @@
 	  {{template "propertyPanelPrefix" .NamePanelParams}}
 	  		{{template "dashboardNamePropertyPanel"}}
 	  {{template "propertyPanelSuffix"}}
-		
+
+	  {{template "propertyPanelPrefix" .RolePanelParams}}
+	  		{{template "dashboardRolesPropertyPanel"}}
+	  {{template "propertyPanelSuffix"}}
+	
 	  {{template "propertyPanelPrefix" .StylePanelParams}}
 	  		{{template "dashboardStyleProps"}}
 	  {{template "propertyPanelSuffix"}}

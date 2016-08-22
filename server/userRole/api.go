@@ -21,6 +21,9 @@ func init() {
 	roleRouter.HandleFunc("/api/userRole/getFormRolePrivs", getFormRolePrivsAPI)
 	roleRouter.HandleFunc("/api/userRole/setFormRolePrivs", setFormRolePrivsAPI)
 
+	roleRouter.HandleFunc("/api/userRole/getDashboardRolePrivs", getDashboardRolePrivsAPI)
+	roleRouter.HandleFunc("/api/userRole/setDashboardRolePrivs", setDashboardRolePrivsAPI)
+
 	http.Handle("/api/userRole/", roleRouter)
 }
 
@@ -111,4 +114,51 @@ func setFormRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 		successResponse := true
 		api.WriteJSONResponse(w, successResponse)
 	}
+}
+
+type DashboardRolePrivsParams struct {
+	DashboardID string `json:"dashboardID"`
+}
+
+func setDashboardRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
+	var params SetDashboardRolePrivsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := VerifyCurrUserIsDatabaseAdminForDashboard(r, params.DashboardID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if err := setDashboardRolePrivs(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		successResponse := true
+		api.WriteJSONResponse(w, successResponse)
+	}
+
+}
+
+func getDashboardRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params DashboardRolePrivsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := VerifyCurrUserIsDatabaseAdminForDashboard(r, params.DashboardID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if dashboardRolePrivs, err := getDashboardRolePrivs(params.DashboardID); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, dashboardRolePrivs)
+
+	}
+
 }

@@ -93,3 +93,35 @@ func VerifyCurrUserIsDatabaseAdminForForm(req *http.Request, formID string) erro
 
 	return nil
 }
+
+func getDashboardDatabaseID(dashboardID string) (string, error) {
+
+	databaseID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(
+		`SELECT database_id 
+			FROM dashboards 
+			WHERE dashboards.dashboard_id=$1 LIMIT 1`,
+		dashboardID).Scan(&databaseID)
+	if getErr != nil {
+		return "", fmt.Errorf(
+			"getDashboardDatabaseID: can't get database for dashboard = %v: err=%v",
+			dashboardID, getErr)
+	}
+
+	return databaseID, nil
+
+}
+
+func VerifyCurrUserIsDatabaseAdminForDashboard(req *http.Request, dashboardID string) error {
+
+	databaseID, err := getDashboardDatabaseID(dashboardID)
+	if err != nil {
+		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForDashboard: %v", err)
+	}
+
+	if err := VerifyCurrUserIsDatabaseAdmin(req, databaseID); err != nil {
+		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForTable: %v", err)
+	}
+
+	return nil
+}
