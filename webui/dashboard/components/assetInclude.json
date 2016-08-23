@@ -1,6 +1,5 @@
 {
     "subDirs": [
 		"common",
-		"common/newComponentDialog",
 		"barChart"]
 }

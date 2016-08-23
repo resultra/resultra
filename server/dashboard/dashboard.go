@@ -185,3 +185,12 @@ func validateDashboardName(dashboardID string, dashboardName string) error {
 	return nil
 
 }
+
+func validateComponentTitle(title string) error {
+
+	if !generic.WellFormedItemName(title) {
+		return fmt.Errorf("Invalid title")
+	}
+
+	return nil
+}

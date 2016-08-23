@@ -2,6 +2,7 @@ package barChart
 
 import (
 	"fmt"
+	"log"
 	"resultra/datasheet/server/common"
 )
 
@@ -61,12 +62,14 @@ type SetBarChartTitleParams struct {
 	// the niqueBarChartID() method to retrieve the unique ID. So, once decoded, the struct can be passed as an
 	// BarChartPropertyUpdater interface to a generic/reusable function to process the property update.
 	BarChartUniqueIDHeader
-	Title string `json:"title"`
+	NewTitle string `json:"newTitle"`
 }
 
 func (titleParam SetBarChartTitleParams) updateBarChartProps(barChart *BarChart) error {
 
-	barChart.Properties.Title = titleParam.Title
+	log.Printf("Updating bar chart title: %v", titleParam.NewTitle)
+
+	barChart.Properties.Title = titleParam.NewTitle
 
 	return nil
 }

@@ -20,6 +20,7 @@ func init() {
 
 	dashboardRouter.HandleFunc("/api/dashboard/validateNewDashboardName", validateNewDashboardNameAPI)
 	dashboardRouter.HandleFunc("/api/dashboard/validateDashboardName", validateDashboardNameAPI)
+	dashboardRouter.HandleFunc("/api/dashboard/validateComponentTitle", validateComponentTitleAPI)
 
 	http.Handle("/api/dashboard/", dashboardRouter)
 }
@@ -98,6 +99,20 @@ func validateDashboardNameAPI(w http.ResponseWriter, r *http.Request) {
 	dashboardID := r.FormValue("dashboardID")
 
 	if err := validateDashboardName(dashboardID, dashboardName); err != nil {
+		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
+		return
+	}
+
+	response := true
+	api.WriteJSONResponse(w, response)
+
+}
+
+func validateComponentTitleAPI(w http.ResponseWriter, r *http.Request) {
+
+	title := r.FormValue(`title`)
+
+	if err := validateComponentTitle(title); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}

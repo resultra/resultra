@@ -106,7 +106,7 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 		DataSrcTableID:     params.DataSrcTableID,
 		YAxisVals:          *valSummary,
 		Geometry:           params.Geometry,
-		Title:              "",
+		Title:              "", // optional
 		AvailableFilterIDs: []string{},
 		DefaultFilterIDs:   []string{}}
 
