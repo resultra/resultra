@@ -15,6 +15,9 @@ func init() {
 	barChartRouter.HandleFunc("/api/dashboard/barChart/setTitle", setBarChartTitle)
 	barChartRouter.HandleFunc("/api/dashboard/barChart/setDimensions", setBarChartDimensions)
 
+	barChartRouter.HandleFunc("/api/dashboard/barChart/setAvailableFilters", setBarChartAvailableFilters)
+	barChartRouter.HandleFunc("/api/dashboard/barChart/setDefaultFilters", setBarChartDefaultFilters)
+
 	http.Handle("/api/dashboard/barChart/", barChartRouter)
 }
 
@@ -74,6 +77,24 @@ func setBarChartTitle(w http.ResponseWriter, r *http.Request) {
 func setBarChartDimensions(w http.ResponseWriter, r *http.Request) {
 
 	var params SetBarChartDimensionsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processBarChartPropUpdate(w, r, params)
+}
+
+func setBarChartAvailableFilters(w http.ResponseWriter, r *http.Request) {
+	var params SetBarChartAvailableFilterParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processBarChartPropUpdate(w, r, params)
+}
+
+func setBarChartDefaultFilters(w http.ResponseWriter, r *http.Request) {
+	var params SetBarChartDefaultFilterParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

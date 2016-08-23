@@ -1,4 +1,6 @@
-
+{{define "barChartFilterProps"}}
+	{{template "recordFilterPropertyPanel" "barChart_"}}
+{{end}}
 
 {{define "barChartTitleProps"}}
 	Bar Chart title properties go here.
@@ -13,6 +15,10 @@
 	<div id="barChartProps" class="propertyPanelToggleContainer">
 		{{template "propertyPanelPrefix" .TitlePanelParams}}
 			{{template "barChartTitleProps"}}	
+		{{template "propertyPanelSuffix"}}
+
+		{{template "propertyPanelPrefix" .FilteringPanelParams}}
+			{{template "barChartFilterProps"}}
 		{{template "propertyPanelSuffix"}}
 
 		{{template "propertyPanelPrefix" .XAxisPanelParams}}

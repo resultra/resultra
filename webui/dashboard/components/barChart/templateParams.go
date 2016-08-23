@@ -6,12 +6,13 @@ import (
 )
 
 type BarChartTemplateParams struct {
-	ElemPrefix          string
-	SelectTableParams   newComponentDialog.SelectTableTemplateParams
-	ValueGroupingParams newComponentDialog.ValueGroupingTemplateParams
-	ValueSummaryParams  newComponentDialog.ValueSummaryTemplateParams
-	TitlePanelParams    propertiesSidebar.PanelTemplateParams
-	XAxisPanelParams    propertiesSidebar.PanelTemplateParams
+	ElemPrefix           string
+	SelectTableParams    newComponentDialog.SelectTableTemplateParams
+	ValueGroupingParams  newComponentDialog.ValueGroupingTemplateParams
+	ValueSummaryParams   newComponentDialog.ValueSummaryTemplateParams
+	TitlePanelParams     propertiesSidebar.PanelTemplateParams
+	XAxisPanelParams     propertiesSidebar.PanelTemplateParams
+	FilteringPanelParams propertiesSidebar.PanelTemplateParams
 }
 
 var TemplateParams BarChartTemplateParams
@@ -32,10 +33,11 @@ func init() {
 		"Field to summarize with", "Summarize values by"}
 
 	TemplateParams = BarChartTemplateParams{
-		ElemPrefix:          elemPrefix,
-		SelectTableParams:   tableSelectionParams,
-		ValueGroupingParams: valueGroupingParams,
-		ValueSummaryParams:  valueSummaryParams,
-		TitlePanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "barChartTitle"},
-		XAxisPanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "X Axis", PanelID: "barChartXAxis"}}
+		ElemPrefix:           elemPrefix,
+		SelectTableParams:    tableSelectionParams,
+		ValueGroupingParams:  valueGroupingParams,
+		ValueSummaryParams:   valueSummaryParams,
+		TitlePanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "barChartTitle"},
+		XAxisPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "X Axis", PanelID: "barChartXAxis"},
+		FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "barChartFiltering"}}
 }

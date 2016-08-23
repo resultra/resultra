@@ -29,8 +29,8 @@ func GetDashboardComponent(componentType string, parentDashboardID string, compo
 		 WHERE dashboard_id=$1 AND component_id=$2 AND type=$3 LIMIT 1`,
 		parentDashboardID, componentID, componentType).Scan(&encodedProps)
 	if getErr != nil {
-		return fmt.Errorf("GetDashboardComponent: Unabled to get form component %v: id = %v: datastore err=%v",
-			componentType, componentID, getErr)
+		return fmt.Errorf("GetDashboardComponent: Unabled to get dashboard component: dashboard id=%v, type=%v, id=%v: datastore err=%v",
+			parentDashboardID, componentType, componentID, getErr)
 	}
 
 	if decodeErr := generic.DecodeJSONString(encodedProps, properties); decodeErr != nil {

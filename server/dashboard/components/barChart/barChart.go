@@ -31,6 +31,9 @@ type BarChartProps struct {
 	Title string `json:"title"`
 
 	YAxisVals values.ValSummary `json:"yAxisValSummary"`
+
+	AvailableFilterIDs []string `json:"availableFilterIDs"`
+	DefaultFilterIDs   []string `json:"defaultFilterIDs"`
 }
 
 // DashboardBarChart is the datastore object for dashboard bar charts.
@@ -98,12 +101,14 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 	}
 
 	barChartProps := BarChartProps{
-		XAxisVals:       *valGrouping,
-		XAxisSortValues: params.XAxisSortValues,
-		DataSrcTableID:  params.DataSrcTableID,
-		YAxisVals:       *valSummary,
-		Geometry:        params.Geometry,
-		Title:           ""}
+		XAxisVals:          *valGrouping,
+		XAxisSortValues:    params.XAxisSortValues,
+		DataSrcTableID:     params.DataSrcTableID,
+		YAxisVals:          *valSummary,
+		Geometry:           params.Geometry,
+		Title:              "",
+		AvailableFilterIDs: []string{},
+		DefaultFilterIDs:   []string{}}
 
 	newBarChart := BarChart{
 		ParentDashboardID: params.ParentDashboardID,
@@ -123,7 +128,7 @@ func getBarChart(parentDashboardID string, barChartID string) (*BarChart, error)
 
 	barChartProps := BarChartProps{}
 	if getErr := componentsCommon.GetDashboardComponent(barChartEntityKind, parentDashboardID, barChartID, &barChartProps); getErr != nil {
-		return nil, fmt.Errorf("getImage: Unable to retrieve bar chart component: %v", getErr)
+		return nil, fmt.Errorf("getBarChart: Unable to retrieve bar chart component: %v", getErr)
 	}
 
 	barChart := BarChart{

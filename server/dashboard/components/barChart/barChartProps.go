@@ -22,12 +22,12 @@ type BarChartUniqueIDHeader struct {
 	BarChartID        string `json:"barChartID"`
 }
 
-func (idHeader BarChartUniqueIDHeader) uniqueBarChartID() string {
-	return idHeader.BarChartID
-}
-
 func (idHeader BarChartUniqueIDHeader) parentDashboardID() string {
 	return idHeader.ParentDashboardID
+}
+
+func (idHeader BarChartUniqueIDHeader) uniqueBarChartID() string {
+	return idHeader.BarChartID
 }
 
 func UpdateBarChartProps(propUpdater BarChartPropertyUpdater) (*BarChart, error) {
@@ -85,6 +85,30 @@ func (params SetBarChartDimensionsParams) updateBarChartProps(barChart *BarChart
 	}
 
 	barChart.Properties.Geometry = params.Geometry
+
+	return nil
+}
+
+type SetBarChartAvailableFilterParams struct {
+	BarChartUniqueIDHeader
+	AvailableFilterIDs []string `json:"availableFilterIDs"`
+}
+
+func (params SetBarChartAvailableFilterParams) updateBarChartProps(barChart *BarChart) error {
+
+	barChart.Properties.AvailableFilterIDs = params.AvailableFilterIDs
+
+	return nil
+}
+
+type SetBarChartDefaultFilterParams struct {
+	BarChartUniqueIDHeader
+	DefaultFilterIDs []string `json:"defaultFilterIDs"`
+}
+
+func (params SetBarChartDefaultFilterParams) updateBarChartProps(barChart *BarChart) error {
+
+	barChart.Properties.DefaultFilterIDs = params.DefaultFilterIDs
 
 	return nil
 }
