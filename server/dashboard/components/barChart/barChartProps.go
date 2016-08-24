@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common"
+	"resultra/datasheet/server/dashboard/values"
 )
 
 // The BarChartPropertyUpdater interface along with UpdateBarChartProps() implement a harness for
@@ -112,6 +113,18 @@ type SetBarChartDefaultFilterParams struct {
 func (params SetBarChartDefaultFilterParams) updateBarChartProps(barChart *BarChart) error {
 
 	barChart.Properties.DefaultFilterIDs = params.DefaultFilterIDs
+
+	return nil
+}
+
+type SetXAxisValuesParams struct {
+	BarChartUniqueIDHeader
+	XAxisValueGrouping values.ValGrouping `json:"xAxisValueGrouping"`
+}
+
+func (params SetXAxisValuesParams) updateBarChartProps(barChart *BarChart) error {
+
+	barChart.Properties.XAxisVals = params.XAxisValueGrouping
 
 	return nil
 }

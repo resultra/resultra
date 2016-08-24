@@ -74,6 +74,24 @@ function initButtonClickHandler(buttonSelector,handlerFunc) {
 	})
 }
 
+function disableButton(buttonSelector) {
+	$(buttonSelector).prop('disabled', true);
+}
+
+function enableButton(buttonSelector) {
+	$(buttonSelector).prop('disabled', false);
+}
+
+
+function initSelectionChangedHandler(selectionSelector, handlerFunc) {
+	$(selectionSelector).unbind("change")				
+	$(selectionSelector).change(function(){
+		var newValue = $(selectionSelector).val()
+		handlerFunc(newValue)
+	})
+	
+}
+
 
 function insertTextAreaAtCursor(elem, newText) {
 	

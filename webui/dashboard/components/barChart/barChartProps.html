@@ -7,7 +7,7 @@
 {{end}}
 
 {{define "barChartXAxisProps"}}
-	X Axis properties go here
+	{{template "dashboardComponentValueGroupingPropertyPanel" .}}
 {{end}}
 
 {{define "barChartProps"}}
@@ -22,7 +22,7 @@
 		{{template "propertyPanelSuffix"}}
 
 		{{template "propertyPanelPrefix" .XAxisPanelParams}}
-			{{template "barChartXAxisProps"}}
+			{{template "barChartXAxisProps" .ValueGroupingParams}}
 		{{template "propertyPanelSuffix"}}
 	</div>
 

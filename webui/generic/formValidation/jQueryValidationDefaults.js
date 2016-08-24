@@ -37,7 +37,11 @@ $(document).ready(function() {
 		console.log("validating option: " + value)
 		return (value != null) && (value.length > 0);
     }, "Please select a {0}");
-	
+
+	$.validator.addMethod('positiveNumber',function (value) { 
+		console.log("validating positive number: " + value)
+        return Number(value) > 0;
+    }, 'Enter a positive number.');	
 })
 
 

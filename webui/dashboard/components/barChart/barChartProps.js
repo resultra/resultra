@@ -53,7 +53,26 @@ function loadBarChartProperties(barChartPropsArgs) {
 		}
 	}
 	initDashboardComponentTitlePropertyPanel(barChartElemPrefix,titlePropertyPanelParams)
+	
+	
+	var xAxisPropertyPanelParams = {
+		elemPrefix: barChartElemPrefix,
+		tableID: barChartRef.properties.dataSrcTableID,
+		valGroupingProps: barChartRef.properties.xAxisVals,
+		saveValueGroupingFunc: function(newValueGroupingParams) {
+			var setXAxisValGroupingParams = {
+				parentDashboardID:barChartPropsArgs.dashboardID,
+				barChartID: barChartRef.barChartID,
+				xAxisValueGrouping:newValueGroupingParams
+			}
+			jsonAPIRequest("dashboard/barChart/setXAxisValueGrouping",setXAxisValGroupingParams,function(updatedBarChart) {
+					barChartContainer.data("barChartRef",updatedBarChart)
+			})
+		}
 		
+	}
+	initDashboardValueGroupingPropertyPanel(xAxisPropertyPanelParams)
+	
 	// Toggle to the bar chart properties, hiding the other property panels
 	hideSiblingsShowOne('#barChartProps')
 			

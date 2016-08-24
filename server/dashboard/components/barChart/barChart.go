@@ -20,7 +20,7 @@ type BarChartProps struct {
 	DataSrcTableID string `json:"dataSrcTableID"`
 
 	// XAxisVals is a grouping of field values displayed along the x axis of the bar chart.
-	XAxisVals values.ValGrouping `json"xAxisVals"`
+	XAxisVals values.ValGrouping `json:"xAxisVals"`
 
 	// XAxisSortValues configures how values (bars) along the x axis are sorted. Options include
 	// yAxisValAsc, yAxisValDesc, xAxisValAsc, xAxisValDesc. The default is xAxisValAsc.
