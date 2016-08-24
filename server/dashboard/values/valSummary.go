@@ -25,7 +25,7 @@ type ValSummary struct {
 	// Date: count
 	// Text: count
 	// Bool: count
-	SummarizeValsWith string
+	SummarizeValsWith string `json:"summarizeValsWith"`
 }
 
 type NewValSummaryParams struct {

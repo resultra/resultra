@@ -24,6 +24,10 @@
 		{{template "propertyPanelPrefix" .XAxisPanelParams}}
 			{{template "barChartXAxisProps" .ValueGroupingParams}}
 		{{template "propertyPanelSuffix"}}
+		
+		{{template "propertyPanelPrefix" .YAxisPanelParams}}
+			{{template "dashboardComponentValueSummaryPropertyPanel" .ValueSummaryParams}}
+		{{template "propertyPanelSuffix"}}
 	</div>
 
 {{end}}

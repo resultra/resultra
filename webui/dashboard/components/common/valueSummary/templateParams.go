@@ -1,4 +1,4 @@
-package newComponentDialog
+package valueSummary
 
 type ValueSummaryTemplateParams struct {
 	ElemPrefix        string

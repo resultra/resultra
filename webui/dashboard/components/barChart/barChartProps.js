@@ -73,6 +73,25 @@ function loadBarChartProperties(barChartPropsArgs) {
 	}
 	initDashboardValueGroupingPropertyPanel(xAxisPropertyPanelParams)
 	
+	var yAxisPropertyPanelParams = {
+		elemPrefix: barChartElemPrefix,
+		tableID: barChartRef.properties.dataSrcTableID,
+		valSummaryProps: barChartRef.properties.yAxisValSummary,
+		saveValueSummaryFunc: function(newValSummaryParams) {
+			var setYAxisSummaryParams = {
+				parentDashboardID:barChartPropsArgs.dashboardID,
+				barChartID: barChartRef.barChartID,
+				yAxisValSummary:newValSummaryParams
+			}
+			jsonAPIRequest("dashboard/barChart/setYAxisSummaryVals",
+								setYAxisSummaryParams,function(updatedBarChart) {
+				barChartContainer.data("barChartRef",updatedBarChart)
+			})
+			
+		}
+	}
+	initDashboardValueSummaryPropertyPanel(yAxisPropertyPanelParams)
+	
 	// Toggle to the bar chart properties, hiding the other property panels
 	hideSiblingsShowOne('#barChartProps')
 			

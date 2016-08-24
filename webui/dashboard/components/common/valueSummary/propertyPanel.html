@@ -1,0 +1,25 @@
+{{define "dashboardComponentValueSummaryPropertyPanel"}}
+
+<form class="form" id="{{.ElemPrefix}}ValueSummaryPropertyPanelForm">
+	<div class="form-group">
+		<label>{{.SummaryFieldLabel}}</label> 
+		<select class="form-control" id="{{.ElemPrefix}}SummaryFieldSelection" name="{{.ElemPrefix}}SummaryFieldSelection">
+			<option value="">
+				Select a field
+			</option>
+		</select>
+	</div>
+	<div class="form-group">
+		<label>Summarize Values By</label>
+		<select class="form-control" id="{{.ElemPrefix}}SummarizeBySelection" name="{{.ElemPrefix}}SummarizeBySelection">
+			<option value="">
+				Summarize Values By
+			</option>
+		</select>
+	</div>
+	
+	<button type="button" class="btn btn-default btn-xs " 
+			id="{{.ElemPrefix}}ValSummaryPropertiesSaveChangesButton" type="submit">Save Changes</button>
+</form> <!-- form for panel -->
+
+{{end}}

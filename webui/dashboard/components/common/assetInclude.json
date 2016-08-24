@@ -1,4 +1,6 @@
 {
     "subDirs": ["componentTitle",
-		"newComponentDialog","valueGrouping"]
+		"newComponentDialog",
+		"valueGrouping",
+		"valueSummary"]
 }

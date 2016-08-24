@@ -128,3 +128,15 @@ func (params SetXAxisValuesParams) updateBarChartProps(barChart *BarChart) error
 
 	return nil
 }
+
+type SetYAxisSummaryParams struct {
+	BarChartUniqueIDHeader
+	YAxisValSummary values.ValSummary `json:"yAxisValSummary"`
+}
+
+func (params SetYAxisSummaryParams) updateBarChartProps(barChart *BarChart) error {
+
+	barChart.Properties.YAxisVals = params.YAxisValSummary
+
+	return nil
+}
