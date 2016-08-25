@@ -1,0 +1,19 @@
+.componentRow {
+	margin-top: 5px;
+	margin-bottom:5px;
+	width:100%;
+	min-height: 30px;
+}
+
+.componentRow .ui-sortable-placeholder {
+	/* inline-block is needed to align the placeholder horizontally within 
+	   the componentRow. vertical-align of top is also needed to properly
+	   align the placeholder; otherwise, the placeholder will extend the
+	   height of the componentRow and cause dragging and sorting not to work
+	   display correctly */
+	display: inline-block;
+	vertical-align:top;
+	background-color:HoneyDew;
+	margin-top:5px;
+	margin-left:5px;
+}

@@ -28,7 +28,7 @@ $(document).ready(function() {
 			var objEditConfig = paletteItemsEditConfig[droppedItemInfo.paletteItemID]
 			
 			setTimeout(function() {
-				initObjectEditBehavior(formID,droppedItemInfo.placeholderID,objEditConfig) 
+				initObjectGridEditBehavior(formID,droppedItemInfo.placeholderID,objEditConfig) 
 			}, 50);
 			
 			

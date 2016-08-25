@@ -1,8 +1,38 @@
 function loadFormComponents(loadFormConfig) {
 	
+	function createComponentRow() {
+		var rowHTML = '<div class="componentRow">' +
+		  '</div>'
+		
+		var $componentRow = $(rowHTML)
+		$componentRow.sortable({
+			revert:true,
+			placeholder: "ui-sortable-placeholder",
+			forcePlaceholderSize: true,
+			connectWith:".layoutContainer",
+			axis: 'x',
+			start: function(event, ui) { 
+				ui.placeholder.html('&nbsp;');
+			},
+			stop: function(event,ui) {
+				console.log("sorting within component row complete")
+			}
+		})
+		
+		return $componentRow
+	}
+	
 	// TODO: formID is accessing a global. Pass it into this function instead.
+	
 	jsonAPIRequest("frm/getFormInfo", { formID: formID }, function(formInfo) {
 												
+			var $componentRow = createComponentRow()
+			$(loadFormConfig.formParentElemID).append($componentRow)
+		
+			var $placeholderRowForDrop = createComponentRow()
+			$(loadFormConfig.formParentElemID).append($placeholderRowForDrop)
+			
+
 		for (var textBoxIter in formInfo.textBoxes) {
 			
 			// Create an HTML block for the container
@@ -16,9 +46,9 @@ function loadFormComponents(loadFormConfig) {
 			var fieldName = getFieldRef(textBox.properties.fieldID).name
 			containerObj.find('label').text(fieldName)
 			
-			// Position the object withing the #layoutCanvas div
-			$(loadFormConfig.formParentElemID).append(containerObj)
-			setElemGeometry(containerObj,textBox.properties.geometry)
+			// Wrap the component in div for it's row and column.
+			$componentRow.append(containerObj)
+			setElemDimensions(containerObj,textBox.properties.geometry)
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
@@ -30,7 +60,7 @@ function loadFormComponents(loadFormConfig) {
 
 		} // for each text box
 		
-		
+/*		
 		for (var checkBoxIter in formInfo.checkBoxes) {
 			
 			// Create an HTML block for the container
@@ -144,7 +174,7 @@ function loadFormComponents(loadFormConfig) {
 			
 
 		} // for each html editor
-		
+	*/	
 		
 		loadFormConfig.doneLoadingFormDataFunc()
 	})

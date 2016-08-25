@@ -10,7 +10,7 @@ function initObjectCanvasSelectionBehavior(canvasElemSelector,selectionCallbackF
 		
 		// Unselect all the other divs within the canvas. This is done by 
 		// removing the objectSelected CSS class.
-	    $( canvasElemSelector + " > div" ).removeClass("objectSelected");
+	    $(canvasElemSelector).find("div").removeClass("objectSelected");
 	
 		// Toggle to the overall dashboard properties, hiding the other property panels
 		selectionCallbackFunc()
@@ -21,7 +21,7 @@ function initObjectCanvasSelectionBehavior(canvasElemSelector,selectionCallbackF
 
 function selectObject(canvasElemSelector, objectElem)
 {
-	$(canvasElemSelector+" > div").removeClass("objectSelected");
+	$(canvasElemSelector).find("div").removeClass("objectSelected");
 	$(objectElem).addClass("objectSelected");
 	
 }

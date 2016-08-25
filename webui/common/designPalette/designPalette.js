@@ -107,7 +107,7 @@ function initDesignPalette(paletteConfig) {
 			paletteConfig.dropComplete(droppedObjInfo)
 					
 	    }
-	}); // #layoutCanvas droppable
+	}); // droppable
 	
 } // initDesignPalette
 

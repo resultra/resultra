@@ -4,6 +4,7 @@ function loadDashboardData(dashboardID)
 	var loadBarChartDataParams = { dashboardID: dashboardID }
 	jsonAPIRequest("dashboard/getData",loadBarChartDataParams,function(dashboardData) {
 		
+		/* TODO - Re-enable dashboard loading once the new grid system is in place 
 		for (var barChartDataIndex in dashboardData.barChartsData) {
 			var barChartData = dashboardData.barChartsData[barChartDataIndex]
 			console.log ("Loading bar chart: id = " + barChartData.barChartID)
@@ -12,7 +13,7 @@ function loadDashboardData(dashboardID)
 			var barChartElem = $(barChartHTML)
 			
 			$("#dashboardCanvas").append(barChartElem)
-			setElemGeometry(barChartElem,barChartData.barChart.properties.geometry)
+			setElemDimensions(barChartElem,barChartData.barChart.properties.geometry)
 			
 			initBarChartData(dashboardID,barChartData);			
 			
@@ -22,6 +23,8 @@ function loadDashboardData(dashboardID)
 			initDesignDashboardProperties(designDashboardContext.dashboardID)
 			hideSiblingsShowOne('#dashboardProps')
 		})
+		
+		*/
 		
 						
 	})

@@ -54,15 +54,12 @@ function getFormFloatValue(formID,fieldID) {
 	return parseFloat($(formID).form('get value',fieldID))
 }
 
-function setElemGeometry(elem, geometry) {
+function setElemDimensions(elem, geometry) {
 	elem.css({
-		top: geometry.positionTop,
-		left: geometry.positionLeft,
 		width: geometry.sizeWidth,
 		height: geometry.sizeHeight,
-		position: "absolute"
+		position: "relative"
 	});
-	
 }
 
 function initButtonClickHandler(buttonSelector,handlerFunc) {

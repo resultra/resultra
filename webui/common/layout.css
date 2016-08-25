@@ -1,8 +1,16 @@
 .layoutContainer
 {
-    position: absolute; 
+    position: relative; 
 	padding: 5px;
 	border: 1px dashed gray;
+	margin-top:5px;
+	margin-bottom:5px;
+	margin-left:5px;
+	margin-right:5px;
+	
+	/* inline-block is needed so the container will be aligned
+	   horizontally in the same row of the form/dashboard layout */
+	display: inline-block;
 }
 
 
