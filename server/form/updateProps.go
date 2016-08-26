@@ -4,9 +4,14 @@ import (
 	"fmt"
 )
 
+type LayoutComponentRow struct {
+	ComponentIDs []string `json:"componentIDs"`
+}
+
 type FormProperties struct {
-	DefaultFilterIDs   []string `json:"defaultFilterIDs"`
-	AvailableFilterIDs []string `json:"availableFilterIDs"`
+	DefaultFilterIDs   []string             `json:"defaultFilterIDs"`
+	AvailableFilterIDs []string             `json:"availableFilterIDs"`
+	Layout             []LayoutComponentRow `json:"layout"`
 }
 
 type FormIDInterface interface {
@@ -77,7 +82,21 @@ type SetFormNameParams struct {
 
 func (updateParams SetFormNameParams) updateProps(form *Form) error {
 
+	// TODO - Validate name
+
 	form.Name = updateParams.NewFormName
+
+	return nil
+}
+
+type SetLayoutParams struct {
+	FormIDHeader
+	Layout []LayoutComponentRow `json:"layout"`
+}
+
+func (updateParams SetLayoutParams) updateProps(form *Form) error {
+
+	form.Properties.Layout = updateParams.Layout
 
 	return nil
 }

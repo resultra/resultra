@@ -9,22 +9,24 @@ function loadFormComponents(loadFormConfig) {
 			console.log("saveUpdatedFormComponentLayout: saving updated layout " 
 				+ parentComponentLayoutSelector + ", form id = " + formID)
 			
-			var rowNum = 0
 			var componentRows = []
 			$(parentComponentLayoutSelector).children('.componentRow').each(function() { 
-				console.log("saveUpdatedFormComponentLayout: component row = " + rowNum)
-				
 				var rowComponents = []
 				$(this).children('.layoutContainer').each(function() {
 					var componentID = $(this).attr("id")
-					console.log("saveUpdatedFormComponentLayout: component id: " + componentID)
 					rowComponents.push(componentID)
 				})
-				rowNum++
-				componentRows.push(rowComponents)
+				componentRows.push({componentIDs: rowComponents } )
 			});
 			
 			console.log("saveUpdatedFormComponentLayout: component layout = " + JSON.stringify(componentRows))
+			
+			var setLayoutParams = {
+				formID: loadFormConfig.formID,
+				layout: componentRows
+			}
+			jsonAPIRequest("frm/setLayout", setLayoutParams, function(formInfo) {
+			})
 		}		
 		
 		function receiveNewComponent($droppedObj) {
