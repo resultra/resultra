@@ -11,7 +11,6 @@ func init() {
 
 	imageRouter.HandleFunc("/api/frm/image/new", newImage)
 	imageRouter.HandleFunc("/api/frm/image/resize", resizeImage)
-	imageRouter.HandleFunc("/api/frm/image/reposition", repositionImage)
 
 	http.Handle("/api/frm/image/", imageRouter)
 }
@@ -47,13 +46,4 @@ func resizeImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processImagePropUpdate(w, r, resizeParams)
-}
-
-func repositionImage(w http.ResponseWriter, r *http.Request) {
-	var reposParams ImageRepositionParams
-	if err := api.DecodeJSONRequest(r, &reposParams); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processImagePropUpdate(w, r, reposParams)
 }

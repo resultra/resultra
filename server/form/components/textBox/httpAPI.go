@@ -11,7 +11,6 @@ func init() {
 
 	textBoxRouter.HandleFunc("/api/frm/textBox/new", newTextBox)
 	textBoxRouter.HandleFunc("/api/frm/textBox/resize", resizeTextBox)
-	textBoxRouter.HandleFunc("/api/frm/textBox/reposition", repositionTextBox)
 
 	http.Handle("/api/frm/textBox/", textBoxRouter)
 }
@@ -47,13 +46,4 @@ func resizeTextBox(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processTextBoxPropUpdate(w, r, resizeParams)
-}
-
-func repositionTextBox(w http.ResponseWriter, r *http.Request) {
-	var reposParams TextBoxRepositionParams
-	if err := api.DecodeJSONRequest(r, &reposParams); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processTextBoxPropUpdate(w, r, reposParams)
 }

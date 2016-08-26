@@ -35,6 +35,7 @@ $(document).ready(function() {
 				parentFormID: formID,
 				geometry: droppedItemInfo.geometry,
 				containerID: droppedItemInfo.placeholderID,
+				finalizeLayoutIncludingNewComponentFunc: droppedItemInfo.finalizeLayoutIncludingNewComponentFunc
 				};
 				
 			objEditConfig.createNewItemAfterDropFunc(formID,tableID,containerParams)
@@ -76,6 +77,7 @@ $(document).ready(function() {
 	initFieldInfo( function () {
 		loadFormComponents({
 			formParentElemID: formDesignCanvasSelector,
+			formID: designFormContext.formID,
 			initTextBoxFunc: function(textBoxObjectRef) {
 				var componentIDs = { formID: formID, componentID: textBoxObjectRef.textBoxID }
 				initFormComponentDesignBehavior(componentIDs,textBoxObjectRef,textBoxDesignFormConfig)

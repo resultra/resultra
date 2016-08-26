@@ -13,19 +13,6 @@ function selectFormImage(imageObjRef) {
 	loadImageProperties(imageObjRef)
 }
 
-function repositionImage(imageID,position) {
-	
-	var reposParams = {
-		parentFormID: designFormContext.formID,
-		imageID: imageID,
-		position: position
-	}
-	
-	jsonAPIRequest("frm/image/reposition", reposParams, function(updatedObjRef) {
-		setElemObjectRef(imageID,updatedObjRef)
-	})
-	
-}
 
 function resizeImage(imageID,geometry) {
 	var resizeParams = {
@@ -45,7 +32,6 @@ var imageDesignFormConfig = {
 	createNewItemAfterDropFunc: openNewImageDialog,
 	resizeConstraints: elemResizeConstraints(100,640,100,500),
 	resizeFunc: resizeImage,
-	repositionFunc:repositionImage,
 	initFunc: initDesignFormImage,
 	selectionFunc: selectFormImage
 }

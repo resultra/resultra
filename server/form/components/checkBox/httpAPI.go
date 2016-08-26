@@ -11,7 +11,6 @@ func init() {
 
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/new", newCheckBox)
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/resize", resizeCheckBox)
-	checkBoxRouter.HandleFunc("/api/frm/checkBox/reposition", repositionCheckBox)
 
 	http.Handle("/api/frm/checkBox/", checkBoxRouter)
 }
@@ -47,13 +46,4 @@ func resizeCheckBox(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processCheckBoxPropUpdate(w, r, resizeParams)
-}
-
-func repositionCheckBox(w http.ResponseWriter, r *http.Request) {
-	var reposParams CheckBoxRepositionParams
-	if err := api.DecodeJSONRequest(r, &reposParams); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processCheckBoxPropUpdate(w, r, reposParams)
 }

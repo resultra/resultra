@@ -14,20 +14,6 @@ function selectFormTextBox (textBoxRef) {
 	loadTextBoxProperties(textBoxRef)
 }
 
-function repositionTextBox(textBoxID,position) {
-	
-	var reposParams = {
-		parentFormID: designFormContext.formID,
-		textBoxID: textBoxID,
-		position: position
-	}
-	
-	jsonAPIRequest("frm/textBox/reposition", reposParams, function(updatedObjRef) {
-		setElemObjectRef(textBoxID,updatedObjRef)
-	})
-	
-}
-
 function resizeTextBox(textBoxID,geometry) {
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
@@ -46,7 +32,6 @@ var textBoxDesignFormConfig = {
 	createNewItemAfterDropFunc: openNewTextBoxDialog,
 	resizeConstraints: elemResizeConstraints(100,600,400,400),
 	resizeFunc: resizeTextBox,
-	repositionFunc: repositionTextBox,
 	initFunc: initDesignFormTextBox,
 	selectionFunc: selectFormTextBox
 }

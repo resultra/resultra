@@ -13,20 +13,6 @@ function selectFormCheckbox(checkboxObjRef) {
 	loadCheckboxProperties(checkboxObjRef)
 }
 
-function repositionCheckBox(checkBoxID,position) {
-	
-	var reposParams = {
-		parentFormID: designFormContext.formID,
-		checkBoxID: checkBoxID,
-		position: position
-	}
-	
-	jsonAPIRequest("frm/checkBox/reposition", reposParams, function(updatedObjRef) {
-		setElemObjectRef(checkBoxID,updatedObjRef)
-	})
-	
-}
-
 function resizeCheckBox(checkBoxID,geometry) {
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
@@ -45,7 +31,6 @@ var checkBoxDesignFormConfig = {
 	createNewItemAfterDropFunc: openNewCheckboxDialog,
 	resizeConstraints: elemResizeConstraints(100,640,30,30),
 	resizeFunc: resizeCheckBox,
-	repositionFunc:repositionCheckBox,
 	initFunc: initDesignFormCheckBox,
 	selectionFunc: selectFormCheckbox
 }

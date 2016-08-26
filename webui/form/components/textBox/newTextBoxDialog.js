@@ -7,6 +7,9 @@ function openNewTextBoxDialog(formID,parentTableID,containerParams)
 		jsonAPIRequest("frm/textBox/new",newComponentParams,function(newTextBoxObjectRef) {
 	          console.log("saveNewTextBox: Done getting new ID:response=" + JSON.stringify(newTextBoxObjectRef));
 		  
+			  // The new text box has been saved on the server, but only a placeholder of the text box 
+			  // is currently shown in the layout. The following code is needed to update and finalize the placeholder
+			  // as a complete and fully-functional text box.
 			  var fieldName = getFieldRef(newTextBoxObjectRef.properties.fieldID).name
 
 			  var placeholderSelector = '#'+containerParams.containerID
@@ -23,6 +26,9 @@ function openNewTextBoxDialog(formID,parentTableID,containerParams)
 			  setElemObjectRef(newTextBoxObjectRef.textBoxID,newTextBoxObjectRef)
 		
 			  $parentDialog.modal("hide")
+			  
+			  // TODO -  Now that the text box has been finalized, the layout containing the text box needs to be saved as well.
+			  containerParams.finalizeLayoutIncludingNewComponentFunc()
 
 	       }) // newLayoutContainer API request
 	}

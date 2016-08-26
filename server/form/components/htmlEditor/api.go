@@ -11,7 +11,6 @@ func init() {
 
 	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/new", newHtmlEditor)
 	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/resize", resizeHtmlEditor)
-	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/reposition", repositionHtmlEditor)
 
 	http.Handle("/api/frm/htmlEditor/", htmlEditorRouter)
 }
@@ -47,13 +46,4 @@ func resizeHtmlEditor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processHtmlEditorPropUpdate(w, r, resizeParams)
-}
-
-func repositionHtmlEditor(w http.ResponseWriter, r *http.Request) {
-	var reposParams HtmlEditorRepositionParams
-	if err := api.DecodeJSONRequest(r, &reposParams); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processHtmlEditorPropUpdate(w, r, reposParams)
 }

@@ -4,6 +4,29 @@ function loadFormComponents(loadFormConfig) {
 		var rowHTML = '<div class="componentRow">' +
 		  '</div>'
 		
+
+		function saveUpdatedFormComponentLayout(parentComponentLayoutSelector, formID) {
+			console.log("saveUpdatedFormComponentLayout: saving updated layout " 
+				+ parentComponentLayoutSelector + ", form id = " + formID)
+			
+			var rowNum = 0
+			var componentRows = []
+			$(parentComponentLayoutSelector).children('.componentRow').each(function() { 
+				console.log("saveUpdatedFormComponentLayout: component row = " + rowNum)
+				
+				var rowComponents = []
+				$(this).children('.layoutContainer').each(function() {
+					var componentID = $(this).attr("id")
+					console.log("saveUpdatedFormComponentLayout: component id: " + componentID)
+					rowComponents.push(componentID)
+				})
+				rowNum++
+				componentRows.push(rowComponents)
+			});
+			
+			console.log("saveUpdatedFormComponentLayout: component layout = " + JSON.stringify(componentRows))
+		}		
+		
 		function receiveNewComponent($droppedObj) {
 			
 			$droppedObj.removeClass("newComponent")
@@ -18,16 +41,23 @@ function loadFormComponents(loadFormConfig) {
 			var paletteItemID = $droppedObj.data("paletteItemID")
 			console.log("receiveNewComponent: drop: palette item ID/type: " + paletteItemID)
 		
+			var paletteConfig = $droppedObj.data("paletteConfig")
+			
+			var componentParentLayoutSelector = paletteConfig.dropDestSelector
+			
 			var droppedObjInfo = {
 				droppedElem: $droppedObj,
 				paletteItemID: paletteItemID,
 				placeholderID: placeholderID,
 				geometry: {positionTop: 0, positionLeft: 0,
-				sizeWidth: objWidth,sizeHeight: objHeight}
-				};
+				sizeWidth: objWidth,sizeHeight: objHeight},
+				finalizeLayoutIncludingNewComponentFunc: function() {
+						console.log("receiveNewComponent: finalizing layout with new component")
+						saveUpdatedFormComponentLayout(loadFormConfig.formParentElemID,loadFormConfig.formID)
+					}
+			};
 			
-			var $paletteConfig = $droppedObj.data("paletteConfig")
-			$paletteConfig.dropComplete(droppedObjInfo)
+			paletteConfig.dropComplete(droppedObjInfo)
 			
 		}
 		
@@ -51,6 +81,7 @@ function loadFormComponents(loadFormConfig) {
 					receiveNewComponent($droppedObj)				
 				} else {
 					console.log("Re-order existing component in row")
+					saveUpdatedFormComponentLayout(loadFormConfig.formParentElemID,loadFormConfig.formID)
 				}
 				
 			}

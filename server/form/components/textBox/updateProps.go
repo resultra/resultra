@@ -63,17 +63,3 @@ func (updateParams TextBoxResizeParams) updateProps(textBox *TextBox) error {
 
 	return nil
 }
-
-type TextBoxRepositionParams struct {
-	TextBoxIDHeader
-	Position common.LayoutPosition `json:"position"`
-}
-
-func (updateParams TextBoxRepositionParams) updateProps(textBox *TextBox) error {
-
-	if err := textBox.Properties.Geometry.SetPosition(updateParams.Position); err != nil {
-		return fmt.Errorf("Error setting position for text box: Invalid geometry: %v", err)
-	}
-
-	return nil
-}

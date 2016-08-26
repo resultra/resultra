@@ -63,17 +63,3 @@ func (updateParams DatePickerResizeParams) updateProps(datePicker *DatePicker) e
 
 	return nil
 }
-
-type DatePickerRepositionParams struct {
-	DatePickerIDHeader
-	Position common.LayoutPosition `json:"position"`
-}
-
-func (updateParams DatePickerRepositionParams) updateProps(datePicker *DatePicker) error {
-
-	if err := datePicker.Properties.Geometry.SetPosition(updateParams.Position); err != nil {
-		return fmt.Errorf("Error setting position for date picker: Invalid geometry: %v", err)
-	}
-
-	return nil
-}

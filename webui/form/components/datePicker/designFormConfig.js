@@ -13,19 +13,6 @@ function selectFormDatePicker(datePickerObjRef) {
 	loadDatePickerProperties(datePickerObjRef)
 }
 
-function repositionDatePicker(datePickerID,position) {
-	
-	var reposParams = {
-		parentFormID: designFormContext.formID,
-		datePickerID: datePickerID,
-		position: position
-	}
-	
-	jsonAPIRequest("frm/datePicker/reposition", reposParams, function(updatedObjRef) {
-		setElemObjectRef(datePickerID,updatedObjRef)
-	})
-	
-}
 
 function resizeDatePicker(datePickerID,geometry) {
 	var resizeParams = {
@@ -45,7 +32,6 @@ var datePickerDesignFormConfig = {
 	createNewItemAfterDropFunc: openNewDatePickerDialog,
 	resizeConstraints: elemResizeConstraints(100,640,30,30),
 	resizeFunc: resizeDatePicker,
-	repositionFunc:repositionDatePicker,
 	initFunc: initDesignFormDatePicker,
 	selectionFunc: selectFormDatePicker
 }

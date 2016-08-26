@@ -11,7 +11,6 @@ func init() {
 
 	datePickerRouter.HandleFunc("/api/frm/datePicker/new", newDatePicker)
 	datePickerRouter.HandleFunc("/api/frm/datePicker/resize", resizeDatePicker)
-	datePickerRouter.HandleFunc("/api/frm/datePicker/reposition", repositionDatePicker)
 
 	http.Handle("/api/frm/datePicker/", datePickerRouter)
 }
@@ -47,13 +46,4 @@ func resizeDatePicker(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processDatePickerPropUpdate(w, r, resizeParams)
-}
-
-func repositionDatePicker(w http.ResponseWriter, r *http.Request) {
-	var reposParams DatePickerRepositionParams
-	if err := api.DecodeJSONRequest(r, &reposParams); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processDatePickerPropUpdate(w, r, reposParams)
 }

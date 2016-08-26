@@ -63,17 +63,3 @@ func (updateParams ImageResizeParams) updateProps(image *Image) error {
 
 	return nil
 }
-
-type ImageRepositionParams struct {
-	ImageIDHeader
-	Position common.LayoutPosition `json:"position"`
-}
-
-func (updateParams ImageRepositionParams) updateProps(image *Image) error {
-
-	if err := image.Properties.Geometry.SetPosition(updateParams.Position); err != nil {
-		return fmt.Errorf("Error setting position for image: Invalid geometry: %v", err)
-	}
-
-	return nil
-}

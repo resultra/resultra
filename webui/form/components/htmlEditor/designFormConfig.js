@@ -13,19 +13,6 @@ function selectFormHtmlEditor(htmlEditorObjRef) {
 	loadHtmlEditorProperties(htmlEditorObjRef)
 }
 
-function repositionHtmlEditor(htmlEditorID,position) {
-	
-	var reposParams = {
-		parentFormID: designFormContext.formID,
-		htmlEditorID: htmlEditorID,
-		position: position
-	}
-	
-	jsonAPIRequest("frm/htmlEditor/reposition", reposParams, function(updatedObjRef) {
-		setElemObjectRef(htmlEditorID,updatedObjRef)
-	})
-	
-}
 
 function resizeHtmlEditor(htmlEditorID,geometry) {
 	var resizeParams = {
@@ -45,7 +32,6 @@ var htmlEditorDesignFormConfig = {
 	createNewItemAfterDropFunc: openNewHtmlEditorDialog,
 	resizeConstraints: elemResizeConstraints(100,640,100,500),
 	resizeFunc: resizeHtmlEditor,
-	repositionFunc:repositionHtmlEditor,
 	initFunc: initDesignFormHtmlEditor,
 	selectionFunc: selectFormHtmlEditor
 }

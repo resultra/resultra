@@ -63,17 +63,3 @@ func (updateParams HtmlEditorResizeParams) updateProps(htmlEditor *HtmlEditor) e
 
 	return nil
 }
-
-type HtmlEditorRepositionParams struct {
-	HtmlEditorIDHeader
-	Position common.LayoutPosition `json:"position"`
-}
-
-func (updateParams HtmlEditorRepositionParams) updateProps(htmlEditor *HtmlEditor) error {
-
-	if err := htmlEditor.Properties.Geometry.SetPosition(updateParams.Position); err != nil {
-		return fmt.Errorf("Error setting position for html editor: Invalid geometry: %v", err)
-	}
-
-	return nil
-}

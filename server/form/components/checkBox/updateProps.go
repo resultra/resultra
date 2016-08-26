@@ -63,17 +63,3 @@ func (updateParams CheckBoxResizeParams) updateProps(checkBox *CheckBox) error {
 
 	return nil
 }
-
-type CheckBoxRepositionParams struct {
-	CheckboxIDHeader
-	Position common.LayoutPosition `json:"position"`
-}
-
-func (updateParams CheckBoxRepositionParams) updateProps(checkBox *CheckBox) error {
-
-	if err := checkBox.Properties.Geometry.SetPosition(updateParams.Position); err != nil {
-		return fmt.Errorf("Error setting position for check box: Invalid geometry: %v", err)
-	}
-
-	return nil
-}

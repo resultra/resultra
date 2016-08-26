@@ -12,15 +12,7 @@ function initObjectGridEditBehavior(parentID, objID, editConfig) {
 /*		TODO - Components can be dragged between different parents, but need to be contained 
 		within the same overall parent layout. */
 		clone: "original",
-		connectToSortable: ".componentRow",			
-		stop: function(event, ui) {
-			var objectID = event.target.id
-			// TODO - Remove position altogether since positioning is now relative
-			var position = { top: 0,			
-				left: 0 }
-			console.log("Object reposition: params: component id = " + objectID + " position=" + JSON.stringify(position))
-			editConfig.repositionFunc(objectID,position)
-		} // stop function
+		connectToSortable: ".componentRow"	
 	})
 	
 	$(objSelector).resizable({

@@ -196,6 +196,7 @@ $(document).ready(function() {
 	initFieldInfo( function () {
 		loadFormComponents({
 			formParentElemID: "#layoutCanvas",
+			formID: viewFormContext.formID,
 			initTextBoxFunc: function(textBoxObjectRef) {			
 				initTextBoxRecordEditBehavior(textBoxObjectRef)
 			},
