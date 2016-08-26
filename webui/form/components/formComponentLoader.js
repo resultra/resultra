@@ -4,6 +4,33 @@ function loadFormComponents(loadFormConfig) {
 		var rowHTML = '<div class="componentRow">' +
 		  '</div>'
 		
+		function receiveNewComponent($droppedObj) {
+			
+			$droppedObj.removeClass("newComponent")
+			
+			var placeholderID = $droppedObj.attr('id')
+			assert(placeholderID !== undefined, "receiveNewComponent: palette item missing element id")
+			console.log("receiveNewComponent: drop: placeholder ID of palette item: " + placeholderID)
+		
+			var objWidth = $droppedObj.width()
+			var objHeight = $droppedObj.height()
+		
+			var paletteItemID = $droppedObj.data("paletteItemID")
+			console.log("receiveNewComponent: drop: palette item ID/type: " + paletteItemID)
+		
+			var droppedObjInfo = {
+				droppedElem: $droppedObj,
+				paletteItemID: paletteItemID,
+				placeholderID: placeholderID,
+				geometry: {positionTop: 0, positionLeft: 0,
+				sizeWidth: objWidth,sizeHeight: objHeight}
+				};
+			
+			var $paletteConfig = $droppedObj.data("paletteConfig")
+			$paletteConfig.dropComplete(droppedObjInfo)
+			
+		}
+		
 		var $componentRow = $(rowHTML)
 		$componentRow.sortable({
 			revert:true,
@@ -12,10 +39,20 @@ function loadFormComponents(loadFormConfig) {
 			connectWith:".layoutContainer",
 			axis: 'x',
 			start: function(event, ui) { 
+				// The next line is a work-around for horizontal sorting.
 				ui.placeholder.html('&nbsp;');
 			},
 			stop: function(event,ui) {
-				console.log("sorting within component row complete")
+					
+				var $droppedObj = ui.item
+				
+				if($droppedObj.hasClass("newComponent")) {
+					console.log("Adding new component to row")
+					receiveNewComponent($droppedObj)				
+				} else {
+					console.log("Re-order existing component in row")
+				}
+				
 			}
 		})
 		

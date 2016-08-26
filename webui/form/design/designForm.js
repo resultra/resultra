@@ -16,10 +16,8 @@ $(document).ready(function() {
 			return paletteItemsEditConfig[paletteItemID].draggableHTMLFunc(placeholderID)
 		},
 		
-		dropComplete: function(droppedItemInfo) {
-			console.log("designForm: Dashboard design pallete: drop item: " + JSON.stringify(droppedItemInfo))			
-			
-			// After the drag operation is complete, the draggable and resizable
+		dropComplete: function(droppedItemInfo) {			
+			// After the drag operation is complete, the resizable
 			// properties need to be initialized.
 			//
 			// At this point, the placholder div for the bar chart will have just been inserted. However, the DOM may 
@@ -30,8 +28,7 @@ $(document).ready(function() {
 			setTimeout(function() {
 				initObjectGridEditBehavior(formID,droppedItemInfo.placeholderID,objEditConfig) 
 			}, 50);
-			
-			
+					
 			// "repackage" the dropped item paramaters for creating a new layout element. Also add the formID
 			// to the parameters.
 			var containerParams = {

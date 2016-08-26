@@ -30,6 +30,11 @@ function initDesignPalette(paletteConfig) {
 		// The cursorAt option aligns the draggable object at an offset from the cursor, rather than from
 		// the top corner of the palette item.
 		cursorAt: { top: 10, left: 10 },
+		
+		// componentRow is the class which will receive items dropped from the palette.
+		// TBD - the receiver class could be made a parameter in paletteConfig.
+		connectToSortable: ".componentRow",			
+		
 		helper: function() { 
 			
 			var paletteItemID = $(this).attr('id')
@@ -40,11 +45,18 @@ function initDesignPalette(paletteConfig) {
 			 // item itself. This allows the user to see the proporitions of the field relative
 			 // to the other elements already on the canvas.
 			var newItemDraggablePlaceholderHTML = paletteConfig.draggableItemHTML(allocNextPaletteItemPlaceholderID(),paletteItemID);
-			var placeholder = $(newItemDraggablePlaceholderHTML);
+			var $placeholder = $(newItemDraggablePlaceholderHTML);
 					
 			 // While in layout mode, disable entry into the fields
 			 // Interestingly, there's not CSS for this.
-			placeholder.find('input').prop('disabled',true);
+			$placeholder.find('input').prop('disabled',true);
+			
+			// Set some data within the DOM element being dragged strictly for passing parameters
+			// for drag and drop. Adding the class "newComponent" allows the recipient of the drop
+			// to distinguish between existing components being dragged to new position or new components.
+			$placeholder.data("paletteConfig",paletteConfig)
+			$placeholder.data("paletteItemID",paletteItemID)
+			$placeholder.addClass("newComponent")
 			
 			
 			// TODO - Test & integrate the following code to make the palette items drag and drop
@@ -52,7 +64,7 @@ function initDesignPalette(paletteConfig) {
 			// to do drag and drop under jQuery UI Layout (see http://layout.jquery-dev.com/tips.cfm#Widget_Draggable)
 			//placeholder.appendTo('body').css('zIndex',5).show()
 		 			 
-			 return placeholder
+			 return $placeholder
 		 },
 		// The following are needed to keep the draggable above the other elements. Getting Semantic UI,
 		// jQuery UI Layout and jQuery UI drag-and-drop working together is really tricky. Some issues:
@@ -73,41 +85,6 @@ function initDesignPalette(paletteConfig) {
 		zIndex: 999
 	
 	});
-
-	$(paletteConfig.dropDestSelector).droppable({
-	    accept: ".paletteItem",
-	    activeClass: "ui-state-highlight",
-	    drop: function( event, ui ) {
-			var theClone = $(ui.helper).clone()
-			
-			var paletteItemID = ui.draggable.attr('id')
-			assert(paletteItemID !== undefined, "designPalette: palette item missing element id")
-			console.log("designPallete: drop: ID of palette item: " + paletteItemID)
-						
-			$(this).append(theClone);
-
-			// IMPORTANT - Don't call droppedPaletteItemGeometry until after theClone has been appended
-			// Otherwise the width and height will be returned as 0.
-			var placeholderID = $(theClone).attr("id");
-			var droppedObjGeom = droppedPaletteItemGeometry(this,theClone,ui)
-		
-			theClone.css({top: droppedObjGeom.top, left: droppedObjGeom.left, position:"absolute"});
-		
-		    console.log("designPalette: End Palette item drag and drop: placeholder ID=" + placeholderID + 
-				" drop geometry =" + JSON.stringify(droppedObjGeom));
-		
-			var droppedObjInfo = {
-				droppedElem: theClone,
-				paletteItemID: paletteItemID,
-				placeholderID: placeholderID,
-				geometry: {positionTop: droppedObjGeom.top, positionLeft: droppedObjGeom.left,
-				sizeWidth: droppedObjGeom.width,sizeHeight: droppedObjGeom.height}
-				};
-		
-			paletteConfig.dropComplete(droppedObjInfo)
-					
-	    }
-	}); // droppable
 	
 } // initDesignPalette
 
