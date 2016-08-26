@@ -1,3 +1,5 @@
+
+
 function loadFormComponents(loadFormConfig) {
 	
 	function createComponentRow() {
@@ -124,7 +126,69 @@ function loadFormComponents(loadFormConfig) {
 			
 		}
 
+		function initCheckBox($componentRow,checkBox) {
+			// Create an HTML block for the container
+			
+			var containerHTML = checkBoxContainerHTML(checkBox.checkBoxID);
+			var containerObj = $(containerHTML)
+			
+			// Set the label to the field name. A span element is used, since
+			// the checkbox itself is nested inside a label.
+			var fieldName = getFieldRef(checkBox.properties.fieldID).name
+			containerObj.find('span').text(fieldName)
+			
+			// Position the object withing the #layoutCanvas div
+			$componentRow.append(containerObj)
+			setElemDimensions(containerObj,checkBox.properties.geometry)
+			
+			 // Store the newly created object reference in the DOM element. This is needed for follow-on
+			 // property setting, resizing, etc.
+			setElemObjectRef(checkBox.checkBoxID,checkBox)
+			
+			// Callback for any specific initialization for either the form design or view mode 
+			loadFormConfig.initCheckBoxFunc(checkBox)
+		}
+		
+		function populateFormLayout(formLayout, parentLayoutSelector, compenentIDComponentMap) {
+	
+			var completedLayoutComponentIDs = {}
+			for(var rowIndex = 0; rowIndex < formLayout.length; rowIndex++) {
+	
+				var currRowComponents = formLayout[rowIndex].componentIDs
+				var $componentRow = createComponentRow()
+				$(parentLayoutSelector).append($componentRow)
+	
+				for(var componentIndex = 0; componentIndex<currRowComponents.length; componentIndex++) {
+					var componentID = currRowComponents[componentIndex]
+					console.log("Form layout: row=" + rowIndex + " component ID=" + componentID)
+					var initInfo = compenentIDComponentMap[componentID]
+					console.log("Form layout: component info=" + JSON.stringify(initInfo.componentInfo))
+					initInfo.initFunc($componentRow,initInfo.componentInfo)
+					completedLayoutComponentIDs[componentID] = true
+				}
+	
+			}
+	
+			// Layout any "orphans" which may are not, for whatever reason in the
+			// list of rows and component IDs
+			if(Object.keys(completedLayoutComponentIDs).length < Object.keys(compenentIDComponentMap).length) {
+				console.log("populateFormLayout: Layout orphan components")
+				var $orphanLayoutRow = createComponentRow()
+				$(parentLayoutSelector).append($orphanLayoutRow)
+				for(var componentID in compenentIDComponentMap) {
+					if(completedLayoutComponentIDs[componentID] != true) {
+						var initInfo = compenentIDComponentMap[componentID]
+						console.log("populateFormLayout: Layout orphan component: " + componentID)
+						initInfo.initFunc($orphanLayoutRow,initInfo.componentInfo)	
+					}
+				}	
+			}
 
+			var $placeholderRowForDrop = createComponentRow()
+			$(parentLayoutSelector).append($placeholderRowForDrop)
+	
+		}
+	
 		for (var textBoxIter in formInfo.textBoxes) {
 			
 			var textBoxProps = formInfo.textBoxes[textBoxIter]
@@ -137,73 +201,22 @@ function loadFormComponents(loadFormConfig) {
 
 		} // for each text box
 	
+		for (var checkBoxIter in formInfo.checkBoxes) {
+			var checkBoxProps = formInfo.checkBoxes[checkBoxIter]
+			console.log("loadFormComponents: initializing check box: " + JSON.stringify(checkBoxProps))
+			compenentIDComponentMap[checkBoxProps.checkBoxID] = {
+				componentInfo: checkBoxProps,
+				initFunc: initCheckBox
+			}			
+			
+		}
 		
 		var formLayout = formInfo.form.properties.layout
-		var completedLayoutComponentIDs = {}
-		for(var rowIndex = 0; rowIndex < formLayout.length; rowIndex++) {
-			
-			var currRowComponents = formLayout[rowIndex].componentIDs
-			var $componentRow = createComponentRow()
-			$(loadFormConfig.formParentElemID).append($componentRow)
-			
-			for(var componentIndex = 0; componentIndex<currRowComponents.length; componentIndex++) {
-				var componentID = currRowComponents[componentIndex]
-				console.log("Form layout: row=" + rowIndex + " component ID=" + componentID)
-				var initInfo = compenentIDComponentMap[componentID]
-				console.log("Form layout: component info=" + JSON.stringify(initInfo.componentInfo))
-				initInfo.initFunc($componentRow,initInfo.componentInfo)
-				completedLayoutComponentIDs[componentID] = true
-			}
-			
-		}
-		// Layout any "orphans" which may are not, for whatever reason in the
-		// list of rows and component IDs
-		if(completedLayoutComponentIDs.length < compenentIDComponentMap.length) {
-			var $orphanLayoutRow = createComponentRow()
-			$(loadFormConfig.formParentElemID).append($orphanLayoutRow)
-			for(var componentIndex = 0; componentIndex<compenentIDComponentMap.length; componentIndex++) {
-				var componentID = compenentIDComponentMap[componentIndex]
-				if(completedLayoutComponentIDs[componentID] != true) {
-					var initInfo = compenentIDComponentMap[componentID]
-					initInfo.initFunc($orphanLayoutRow,initInfo.componentInfo)	
-				}
-			}	
-		}
-		
-		var $placeholderRowForDrop = createComponentRow()
-		$(loadFormConfig.formParentElemID).append($placeholderRowForDrop)
+		populateFormLayout(formLayout,loadFormConfig.formParentElemID,compenentIDComponentMap)
 		
 		
 		
-/*		
-		for (var checkBoxIter in formInfo.checkBoxes) {
-			
-			// Create an HTML block for the container
-			var checkBox = formInfo.checkBoxes[checkBoxIter]
-			console.log("loadFormComponents: initializing check box: " + JSON.stringify(checkBox))
-			
-			var containerHTML = checkBoxContainerHTML(checkBox.checkBoxID);
-			var containerObj = $(containerHTML)
-			
-			// Set the label to the field name. A span element is used, since
-			// the checkbox itself is nested inside a label.
-			var fieldName = getFieldRef(checkBox.properties.fieldID).name
-			containerObj.find('span').text(fieldName)
-			
-			// Position the object withing the #layoutCanvas div
-			$(loadFormConfig.formParentElemID).append(containerObj)
-			setElemGeometry(containerObj,checkBox.properties.geometry)
-			
-			 // Store the newly created object reference in the DOM element. This is needed for follow-on
-			 // property setting, resizing, etc.
-			setElemObjectRef(checkBox.checkBoxID,checkBox)
-			
-			// Callback for any specific initialization for either the form design or view mode 
-			loadFormConfig.initCheckBoxFunc(checkBox)
-			
-
-		} // for each text box
-	
+/*			
 		for (var datePickerIter in formInfo.datePickers) {
 			
 			// Create an HTML block for the container
