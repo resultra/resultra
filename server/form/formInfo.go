@@ -9,6 +9,7 @@ import (
 )
 
 type FormInfo struct {
+	Form        Form                    `json:"form"`
 	TextBoxes   []textBox.TextBox       `json:"textBoxes"`
 	CheckBoxes  []checkBox.CheckBox     `json:"checkBoxes"`
 	DatePickers []datePicker.DatePicker `json:"datePickers"`
@@ -21,6 +22,11 @@ type GetFormInfoParams struct {
 }
 
 func getFormInfo(params GetFormInfoParams) (*FormInfo, error) {
+
+	form, err := GetForm(params.FormID)
+	if err != nil {
+		return nil, err
+	}
 
 	textBoxes, err := textBox.GetTextBoxes(params.FormID)
 	if err != nil {
@@ -48,6 +54,7 @@ func getFormInfo(params GetFormInfoParams) (*FormInfo, error) {
 	}
 
 	formInfo := FormInfo{
+		Form:        *form,
 		TextBoxes:   textBoxes,
 		CheckBoxes:  checkBoxes,
 		DatePickers: datePickers,

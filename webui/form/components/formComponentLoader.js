@@ -4,7 +4,6 @@ function loadFormComponents(loadFormConfig) {
 		var rowHTML = '<div class="componentRow">' +
 		  '</div>'
 		
-
 		function saveUpdatedFormComponentLayout(parentComponentLayoutSelector, formID) {
 			console.log("saveUpdatedFormComponentLayout: saving updated layout " 
 				+ parentComponentLayoutSelector + ", form id = " + formID)
@@ -16,7 +15,10 @@ function loadFormComponents(loadFormConfig) {
 					var componentID = $(this).attr("id")
 					rowComponents.push(componentID)
 				})
-				componentRows.push({componentIDs: rowComponents } )
+				if (rowComponents.length > 0) {
+					// Skip over empty/placeholder rows
+					componentRows.push({componentIDs: rowComponents } )	
+				}
 			});
 			
 			console.log("saveUpdatedFormComponentLayout: component layout = " + JSON.stringify(componentRows))
@@ -95,40 +97,83 @@ function loadFormComponents(loadFormConfig) {
 	// TODO: formID is accessing a global. Pass it into this function instead.
 	
 	jsonAPIRequest("frm/getFormInfo", { formID: formID }, function(formInfo) {
-												
-			var $componentRow = createComponentRow()
-			$(loadFormConfig.formParentElemID).append($componentRow)
-		
-			var $placeholderRowForDrop = createComponentRow()
-			$(loadFormConfig.formParentElemID).append($placeholderRowForDrop)
-			
+													
+		var compenentIDComponentMap = {}	
 
-		for (var textBoxIter in formInfo.textBoxes) {
-			
+		function initTextBox($componentRow,textBox) {
 			// Create an HTML block for the container
-			var textBox = formInfo.textBoxes[textBoxIter]
 			console.log("loadFormComponents: initializing text box: " + JSON.stringify(textBox))
-			
+		
 			var containerHTML = textBoxContainerHTML(textBox.textBoxID);
 			var containerObj = $(containerHTML)
-			
+		
 			// Set the label to the field name
 			var fieldName = getFieldRef(textBox.properties.fieldID).name
 			containerObj.find('label').text(fieldName)
-			
-			// Wrap the component in div for it's row and column.
+		
 			$componentRow.append(containerObj)
-			setElemDimensions(containerObj,textBox.properties.geometry)
 			
+			setElemDimensions(containerObj,textBox.properties.geometry)
+		
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
 			setElemObjectRef(textBox.textBoxID,textBox)
-			
+		
 			// Callback for any specific initialization for either the form design or view mode
 			loadFormConfig.initTextBoxFunc(textBox)
 			
+		}
+
+
+		for (var textBoxIter in formInfo.textBoxes) {
+			
+			var textBoxProps = formInfo.textBoxes[textBoxIter]
+					
+			console.log("Form layout: text box component info=" + JSON.stringify(textBoxProps))
+			compenentIDComponentMap[textBoxProps.textBoxID] = {
+				componentInfo: textBoxProps,
+				initFunc: initTextBox
+			}			
 
 		} // for each text box
+	
+		
+		var formLayout = formInfo.form.properties.layout
+		var completedLayoutComponentIDs = {}
+		for(var rowIndex = 0; rowIndex < formLayout.length; rowIndex++) {
+			
+			var currRowComponents = formLayout[rowIndex].componentIDs
+			var $componentRow = createComponentRow()
+			$(loadFormConfig.formParentElemID).append($componentRow)
+			
+			for(var componentIndex = 0; componentIndex<currRowComponents.length; componentIndex++) {
+				var componentID = currRowComponents[componentIndex]
+				console.log("Form layout: row=" + rowIndex + " component ID=" + componentID)
+				var initInfo = compenentIDComponentMap[componentID]
+				console.log("Form layout: component info=" + JSON.stringify(initInfo.componentInfo))
+				initInfo.initFunc($componentRow,initInfo.componentInfo)
+				completedLayoutComponentIDs[componentID] = true
+			}
+			
+		}
+		// Layout any "orphans" which may are not, for whatever reason in the
+		// list of rows and component IDs
+		if(completedLayoutComponentIDs.length < compenentIDComponentMap.length) {
+			var $orphanLayoutRow = createComponentRow()
+			$(loadFormConfig.formParentElemID).append($orphanLayoutRow)
+			for(var componentIndex = 0; componentIndex<compenentIDComponentMap.length; componentIndex++) {
+				var componentID = compenentIDComponentMap[componentIndex]
+				if(completedLayoutComponentIDs[componentID] != true) {
+					var initInfo = compenentIDComponentMap[componentID]
+					initInfo.initFunc($orphanLayoutRow,initInfo.componentInfo)	
+				}
+			}	
+		}
+		
+		var $placeholderRowForDrop = createComponentRow()
+		$(loadFormConfig.formParentElemID).append($placeholderRowForDrop)
+		
+		
 		
 /*		
 		for (var checkBoxIter in formInfo.checkBoxes) {
