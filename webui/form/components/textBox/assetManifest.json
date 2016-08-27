@@ -1,5 +1,5 @@
 {
-    "cssFiles": [], 
+    "cssFiles": ["textBoxComponent.css"], 
     "htmlFiles": [
         "properties.html"
     ], 

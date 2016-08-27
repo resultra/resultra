@@ -3,92 +3,7 @@
 
 function loadFormComponents(loadFormConfig) {
 	
-	function createComponentRow() {
-		var rowHTML = '<div class="componentRow">' +
-		  '</div>'
-		
-		function saveUpdatedFormComponentLayout(parentComponentLayoutSelector, formID) {
-			console.log("saveUpdatedFormComponentLayout: saving updated layout " 
-				+ parentComponentLayoutSelector + ", form id = " + formID)
-			
-			componentRows = getComponentLayout(parentComponentLayoutSelector)
-			
-			console.log("saveUpdatedFormComponentLayout: component layout = " + JSON.stringify(componentRows))
-			
-			var setLayoutParams = {
-				formID: loadFormConfig.formID,
-				layout: componentRows
-			}
-			jsonAPIRequest("frm/setLayout", setLayoutParams, function(formInfo) {
-			})
-		}		
-		
-		function receiveNewComponent($droppedObj) {
-			
-			$droppedObj.removeClass("newComponent")
-			
-			var placeholderID = $droppedObj.attr('id')
-			assert(placeholderID !== undefined, "receiveNewComponent: palette item missing element id")
-			console.log("receiveNewComponent: drop: placeholder ID of palette item: " + placeholderID)
-		
-			var objWidth = $droppedObj.width()
-			var objHeight = $droppedObj.height()
-		
-			var paletteItemID = $droppedObj.data("paletteItemID")
-			console.log("receiveNewComponent: drop: palette item ID/type: " + paletteItemID)
-		
-			var paletteConfig = $droppedObj.data("paletteConfig")
-			
-			var componentParentLayoutSelector = paletteConfig.dropDestSelector
-			
-			var droppedObjInfo = {
-				droppedElem: $droppedObj,
-				paletteItemID: paletteItemID,
-				placeholderID: placeholderID,
-				geometry: {positionTop: 0, positionLeft: 0,
-				sizeWidth: objWidth,sizeHeight: objHeight},
-				finalizeLayoutIncludingNewComponentFunc: function() {
-						console.log("receiveNewComponent: finalizing layout with new component")
-						saveUpdatedFormComponentLayout(loadFormConfig.formParentElemID,loadFormConfig.formID)
-					}
-			};
-			
-			paletteConfig.dropComplete(droppedObjInfo)
-			
-		}
-		
-		var $componentRow = $(rowHTML)
-		$componentRow.sortable({
-			revert:true,
-			placeholder: "ui-sortable-placeholder",
-			forcePlaceholderSize: true,
-			connectWith:".layoutContainer",
-			axis: 'x',
-			start: function(event, ui) { 
-				// The next line is a work-around for horizontal sorting.
-				ui.placeholder.html('&nbsp;');
-			},
-			stop: function(event,ui) {
-					
-				var $droppedObj = ui.item
-				
-				if($droppedObj.hasClass("newComponent")) {
-					console.log("Adding new component to row")
-					receiveNewComponent($droppedObj)				
-				} else {
-					console.log("Re-order existing component in row")
-					saveUpdatedFormComponentLayout(loadFormConfig.formParentElemID,loadFormConfig.formID)
-				}
-				
-			}
-		})
-		
-		return $componentRow
-	}
-	
-	// TODO: formID is accessing a global. Pass it into this function instead.
-	
-	jsonAPIRequest("frm/getFormInfo", { formID: formID }, function(formInfo) {
+	jsonAPIRequest("frm/getFormInfo", { formID: loadFormConfig.formID }, function(formInfo) {
 													
 		var compenentIDComponentMap = {}	
 
@@ -207,46 +122,6 @@ function loadFormComponents(loadFormConfig) {
 		}
 
 		
-		function populateFormLayout(formLayout, parentLayoutSelector, compenentIDComponentMap) {
-	
-			var completedLayoutComponentIDs = {}
-			for(var rowIndex = 0; rowIndex < formLayout.length; rowIndex++) {
-	
-				var currRowComponents = formLayout[rowIndex].componentIDs
-				var $componentRow = createComponentRow()
-				$(parentLayoutSelector).append($componentRow)
-	
-				for(var componentIndex = 0; componentIndex<currRowComponents.length; componentIndex++) {
-					var componentID = currRowComponents[componentIndex]
-					console.log("Form layout: row=" + rowIndex + " component ID=" + componentID)
-					var initInfo = compenentIDComponentMap[componentID]
-					console.log("Form layout: component info=" + JSON.stringify(initInfo.componentInfo))
-					initInfo.initFunc($componentRow,initInfo.componentInfo)
-					completedLayoutComponentIDs[componentID] = true
-				}
-	
-			}
-	
-			// Layout any "orphans" which may are not, for whatever reason in the
-			// list of rows and component IDs
-			if(Object.keys(completedLayoutComponentIDs).length < Object.keys(compenentIDComponentMap).length) {
-				console.log("populateFormLayout: Layout orphan components")
-				var $orphanLayoutRow = createComponentRow()
-				$(parentLayoutSelector).append($orphanLayoutRow)
-				for(var componentID in compenentIDComponentMap) {
-					if(completedLayoutComponentIDs[componentID] != true) {
-						var initInfo = compenentIDComponentMap[componentID]
-						console.log("populateFormLayout: Layout orphan component: " + componentID)
-						initInfo.initFunc($orphanLayoutRow,initInfo.componentInfo)	
-					}
-				}	
-			}
-
-			var $placeholderRowForDrop = createComponentRow()
-			$(parentLayoutSelector).append($placeholderRowForDrop)
-	
-		}
-	
 		// Iterate through each type of component and populate a map/dictonary with 
 		// the component ID and method to initialize the compnent. This map is then
 		// referenced when populating the layout to put each component in the right place
@@ -301,8 +176,20 @@ function loadFormComponents(loadFormConfig) {
 
 		}
 		
+		function saveUpdatedFormComponentLayout(updatedLayout) {
+			console.log("saveUpdatedFormComponentLayout: component layout = " + JSON.stringify(updatedLayout))		
+			var setLayoutParams = {
+				formID: loadFormConfig.formID,
+				layout: updatedLayout
+			}
+			jsonAPIRequest("frm/setLayout", setLayoutParams, function(formInfo) {
+			})
+		}		
+		
+		
 		var formLayout = formInfo.form.properties.layout
-		populateFormLayout(formLayout,loadFormConfig.formParentElemID,compenentIDComponentMap)
+		populateComponentLayout(formLayout,loadFormConfig.formParentElemID,
+				compenentIDComponentMap,saveUpdatedFormComponentLayout)
 				
 		loadFormConfig.doneLoadingFormDataFunc()
 	})
