@@ -1,5 +1,6 @@
 
 
+
 function loadFormComponents(loadFormConfig) {
 	
 	function createComponentRow() {
@@ -10,18 +11,7 @@ function loadFormComponents(loadFormConfig) {
 			console.log("saveUpdatedFormComponentLayout: saving updated layout " 
 				+ parentComponentLayoutSelector + ", form id = " + formID)
 			
-			var componentRows = []
-			$(parentComponentLayoutSelector).children('.componentRow').each(function() { 
-				var rowComponents = []
-				$(this).children('.layoutContainer').each(function() {
-					var componentID = $(this).attr("id")
-					rowComponents.push(componentID)
-				})
-				if (rowComponents.length > 0) {
-					// Skip over empty/placeholder rows
-					componentRows.push({componentIDs: rowComponents } )	
-				}
-			});
+			componentRows = getComponentLayout(parentComponentLayoutSelector)
 			
 			console.log("saveUpdatedFormComponentLayout: component layout = " + JSON.stringify(componentRows))
 			

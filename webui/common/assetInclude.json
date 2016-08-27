@@ -4,6 +4,7 @@
 		"designPalette",
 		"formulaEditor",
 		"helper",
+		"componentLayout",
 		"objectEdit",
 		"objectSelection",
 		"recordFilter",
