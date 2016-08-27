@@ -10,18 +10,6 @@ function allocNextPaletteItemPlaceholderID()
 	return placeholderID
 }
 
-function droppedPaletteItemGeometry(dropDest,droppedObj,ui)
-{
-	// TODO - Support snapping of the top and left
-	var relTop = ui.offset.top-$(dropDest).offset().top
-	var relLeft = ui.offset.left-$(dropDest).offset().left
-	var objWidth = droppedObj.width()
-	var objHeight = droppedObj.height()
-		
-	return { top: relTop, left: relLeft, width: objWidth, height: objHeight }
-}
-
-
 function initDesignPalette(paletteConfig) {
 	$(".paletteItem").draggable({
 	

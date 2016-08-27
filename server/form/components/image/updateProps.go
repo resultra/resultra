@@ -2,7 +2,7 @@ package image
 
 import (
 	"fmt"
-	"resultra/datasheet/server/common"
+	"resultra/datasheet/server/common/componentLayout"
 )
 
 type ImageIDInterface interface {
@@ -50,12 +50,12 @@ func updateImageProps(propUpdater ImagePropUpdater) (*Image, error) {
 
 type ImageResizeParams struct {
 	ImageIDHeader
-	Geometry common.LayoutGeometry `json:"geometry"`
+	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func (updateParams ImageResizeParams) updateProps(image *Image) error {
 
-	if !common.ValidGeometry(updateParams.Geometry) {
+	if !componentLayout.ValidGeometry(updateParams.Geometry) {
 		return fmt.Errorf("set image dimensions: Invalid geometry: %+v", updateParams.Geometry)
 	}
 

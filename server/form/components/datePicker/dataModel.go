@@ -3,7 +3,7 @@ package datePicker
 import (
 	"fmt"
 	"log"
-	geometry "resultra/datasheet/server/common"
+	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -13,8 +13,8 @@ import (
 const datePickerEntityKind string = "datepicker"
 
 type DatePickerProperties struct {
-	FieldID  string                  `json:"fieldID"`
-	Geometry geometry.LayoutGeometry `json:"geometry"`
+	FieldID  string                         `json:"fieldID"`
+	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 type DatePicker struct {
@@ -24,10 +24,10 @@ type DatePicker struct {
 }
 
 type NewDatePickerParams struct {
-	FieldParentTableID string                  `json:"fieldParentTableID"`
-	ParentFormID       string                  `json:"parentFormID"`
-	FieldID            string                  `json:"fieldID"`
-	Geometry           geometry.LayoutGeometry `json:"geometry"`
+	FieldParentTableID string                         `json:"fieldParentTableID"`
+	ParentFormID       string                         `json:"parentFormID"`
+	FieldID            string                         `json:"fieldID"`
+	Geometry           componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func validDatePickerFieldType(fieldType string) bool {
@@ -40,7 +40,7 @@ func validDatePickerFieldType(fieldType string) bool {
 
 func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 
-	if !geometry.ValidGeometry(params.Geometry) {
+	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 

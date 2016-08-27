@@ -2,7 +2,7 @@ package textBox
 
 import (
 	"fmt"
-	"resultra/datasheet/server/common"
+	"resultra/datasheet/server/common/componentLayout"
 )
 
 type TextBoxIDInterface interface {
@@ -50,12 +50,12 @@ func updateTextBoxProps(propUpdater TextBoxPropUpdater) (*TextBox, error) {
 
 type TextBoxResizeParams struct {
 	TextBoxIDHeader
-	Geometry common.LayoutGeometry `json:"geometry"`
+	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func (updateParams TextBoxResizeParams) updateProps(textBox *TextBox) error {
 
-	if !common.ValidGeometry(updateParams.Geometry) {
+	if !componentLayout.ValidGeometry(updateParams.Geometry) {
 		return fmt.Errorf("set text box dimensions: Invalid geometry: %+v", updateParams.Geometry)
 	}
 

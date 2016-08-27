@@ -3,7 +3,7 @@ package image
 import (
 	"fmt"
 	"log"
-	geometry "resultra/datasheet/server/common"
+	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -13,8 +13,8 @@ import (
 const imageEntityKind string = "image"
 
 type ImageProperties struct {
-	FieldID  string                  `json:"fieldID"`
-	Geometry geometry.LayoutGeometry `json:"geometry"`
+	FieldID  string                         `json:"fieldID"`
+	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 type Image struct {
@@ -24,10 +24,10 @@ type Image struct {
 }
 
 type NewImageParams struct {
-	ParentFormID       string                  `json:"parentFormID"`
-	FieldParentTableID string                  `json:"fieldParentTableID"`
-	FieldID            string                  `json:"fieldID"`
-	Geometry           geometry.LayoutGeometry `json:"geometry"`
+	ParentFormID       string                         `json:"parentFormID"`
+	FieldParentTableID string                         `json:"fieldParentTableID"`
+	FieldID            string                         `json:"fieldID"`
+	Geometry           componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func validImageFieldType(fieldType string) bool {
@@ -40,7 +40,7 @@ func validImageFieldType(fieldType string) bool {
 
 func saveNewImage(params NewImageParams) (*Image, error) {
 
-	if !geometry.ValidGeometry(params.Geometry) {
+	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 

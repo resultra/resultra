@@ -2,7 +2,7 @@ package datePicker
 
 import (
 	"fmt"
-	"resultra/datasheet/server/common"
+	"resultra/datasheet/server/common/componentLayout"
 )
 
 type DatePickerIDInterface interface {
@@ -50,12 +50,12 @@ func updateDatePickerProps(propUpdater DatePickerPropUpdater) (*DatePicker, erro
 
 type DatePickerResizeParams struct {
 	DatePickerIDHeader
-	Geometry common.LayoutGeometry `json:"geometry"`
+	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func (updateParams DatePickerResizeParams) updateProps(datePicker *DatePicker) error {
 
-	if !common.ValidGeometry(updateParams.Geometry) {
+	if !componentLayout.ValidGeometry(updateParams.Geometry) {
 		return fmt.Errorf("set date picker dimensions: Invalid geometry: %+v", updateParams.Geometry)
 	}
 

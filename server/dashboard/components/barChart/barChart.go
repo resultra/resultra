@@ -2,8 +2,8 @@ package barChart
 
 import (
 	"fmt"
-	"resultra/datasheet/server/common"
-	componentsCommon "resultra/datasheet/server/dashboard/components/common"
+	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/dashboard/components/common"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -26,7 +26,7 @@ type BarChartProps struct {
 	// yAxisValAsc, yAxisValDesc, xAxisValAsc, xAxisValDesc. The default is xAxisValAsc.
 	XAxisSortValues string `json:"xAxisSortValues"`
 
-	Geometry common.LayoutGeometry `json:"geometry"`
+	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 
 	Title string `json:"title"`
 
@@ -59,12 +59,12 @@ type NewBarChartParams struct {
 
 	YAxisVals values.NewValSummaryParams `json:"yAxisVals"`
 
-	Geometry common.LayoutGeometry `json:"geometry"`
+	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func updateExistingBarChart(updatedBarChart *BarChart) (*BarChart, error) {
 
-	if updateErr := componentsCommon.UpdateDashboardComponent(barChartEntityKind, updatedBarChart.ParentDashboardID,
+	if updateErr := common.UpdateDashboardComponent(barChartEntityKind, updatedBarChart.ParentDashboardID,
 		updatedBarChart.BarChartID, updatedBarChart.Properties); updateErr != nil {
 	}
 
@@ -92,7 +92,7 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 		return nil, fmt.Errorf("NewBarChart: Error creating summary values for bar chart: error = %v", valSummaryErr)
 	}
 
-	if !common.ValidGeometry(params.Geometry) {
+	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("NewBarChart: Invalid geometry for bar chart: %+v", params.Geometry)
 	}
 
@@ -115,7 +115,7 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 		BarChartID:        uniqueID.GenerateSnowflakeID(),
 		Properties:        barChartProps}
 
-	if saveErr := componentsCommon.SaveNewDashboardComponent(barChartEntityKind,
+	if saveErr := common.SaveNewDashboardComponent(barChartEntityKind,
 		newBarChart.ParentDashboardID, newBarChart.BarChartID, newBarChart.Properties); saveErr != nil {
 		return nil, fmt.Errorf("NewBarChart: Unable to save bar chart component with params=%+v: error = %v", params, saveErr)
 	}
@@ -127,7 +127,7 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 func getBarChart(parentDashboardID string, barChartID string) (*BarChart, error) {
 
 	barChartProps := BarChartProps{}
-	if getErr := componentsCommon.GetDashboardComponent(barChartEntityKind, parentDashboardID, barChartID, &barChartProps); getErr != nil {
+	if getErr := common.GetDashboardComponent(barChartEntityKind, parentDashboardID, barChartID, &barChartProps); getErr != nil {
 		return nil, fmt.Errorf("getBarChart: Unable to retrieve bar chart component: %v", getErr)
 	}
 
@@ -158,7 +158,7 @@ func getBarCharts(parentDashboardID string) ([]BarChart, error) {
 
 		return nil
 	}
-	if getErr := componentsCommon.GetDashboardComponents(barChartEntityKind, parentDashboardID, addBarChart); getErr != nil {
+	if getErr := common.GetDashboardComponents(barChartEntityKind, parentDashboardID, addBarChart); getErr != nil {
 		return nil, fmt.Errorf("getBarCharts: Can't get bar chart components: %v")
 	}
 

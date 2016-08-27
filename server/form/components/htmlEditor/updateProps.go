@@ -2,7 +2,7 @@ package htmlEditor
 
 import (
 	"fmt"
-	"resultra/datasheet/server/common"
+	"resultra/datasheet/server/common/componentLayout"
 )
 
 type HtmlEditorIDInterface interface {
@@ -50,12 +50,12 @@ func updateHtmlEditorProps(propUpdater HtmlEditorPropUpdater) (*HtmlEditor, erro
 
 type HtmlEditorResizeParams struct {
 	HtmlEditorIDHeader
-	Geometry common.LayoutGeometry `json:"geometry"`
+	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func (updateParams HtmlEditorResizeParams) updateProps(htmlEditor *HtmlEditor) error {
 
-	if !common.ValidGeometry(updateParams.Geometry) {
+	if !componentLayout.ValidGeometry(updateParams.Geometry) {
 		return fmt.Errorf("set html editor dimensions: Invalid geometry: %+v", updateParams.Geometry)
 	}
 

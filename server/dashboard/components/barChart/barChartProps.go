@@ -3,7 +3,7 @@ package barChart
 import (
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common"
+	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/dashboard/values"
 )
 
@@ -79,12 +79,12 @@ func (titleParam SetBarChartTitleParams) updateBarChartProps(barChart *BarChart)
 
 type SetBarChartDimensionsParams struct {
 	BarChartUniqueIDHeader
-	Geometry common.LayoutGeometry `json:"geometry"`
+	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func (params SetBarChartDimensionsParams) updateBarChartProps(barChart *BarChart) error {
 
-	if !common.ValidGeometry(params.Geometry) {
+	if !componentLayout.ValidGeometry(params.Geometry) {
 		return fmt.Errorf("setBarChartDimensions: Invalid geometry for bar chart: %+v", params.Geometry)
 	}
 

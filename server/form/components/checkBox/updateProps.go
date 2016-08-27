@@ -2,7 +2,7 @@ package checkBox
 
 import (
 	"fmt"
-	"resultra/datasheet/server/common"
+	"resultra/datasheet/server/common/componentLayout"
 )
 
 type CheckboxIDInterface interface {
@@ -50,12 +50,12 @@ func updateCheckBoxProps(propUpdater CheckBoxPropUpdater) (*CheckBox, error) {
 
 type CheckBoxResizeParams struct {
 	CheckboxIDHeader
-	Geometry common.LayoutGeometry `json:"geometry"`
+	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func (updateParams CheckBoxResizeParams) updateProps(checkBox *CheckBox) error {
 
-	if !common.ValidGeometry(updateParams.Geometry) {
+	if !componentLayout.ValidGeometry(updateParams.Geometry) {
 		return fmt.Errorf("set check box dimensions: Invalid geometry: %+v", updateParams.Geometry)
 	}
 
