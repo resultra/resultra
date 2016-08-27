@@ -2,16 +2,13 @@ package form
 
 import (
 	"fmt"
+	"resultra/datasheet/server/common/componentLayout"
 )
 
-type LayoutComponentRow struct {
-	ComponentIDs []string `json:"componentIDs"`
-}
-
 type FormProperties struct {
-	DefaultFilterIDs   []string             `json:"defaultFilterIDs"`
-	AvailableFilterIDs []string             `json:"availableFilterIDs"`
-	Layout             []LayoutComponentRow `json:"layout"`
+	DefaultFilterIDs   []string                        `json:"defaultFilterIDs"`
+	AvailableFilterIDs []string                        `json:"availableFilterIDs"`
+	Layout             componentLayout.ComponentLayout `json:"layout"`
 }
 
 type FormIDInterface interface {
@@ -91,7 +88,7 @@ func (updateParams SetFormNameParams) updateProps(form *Form) error {
 
 type SetLayoutParams struct {
 	FormIDHeader
-	Layout []LayoutComponentRow `json:"layout"`
+	Layout componentLayout.ComponentLayout `json:"layout"`
 }
 
 func (updateParams SetLayoutParams) updateProps(form *Form) error {

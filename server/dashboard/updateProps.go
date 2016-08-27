@@ -2,6 +2,7 @@ package dashboard
 
 import (
 	"fmt"
+	"resultra/datasheet/server/common/componentLayout"
 )
 
 type DashboardIDInterface interface {
@@ -53,6 +54,18 @@ func (updateParams SetDashboardNameParams) updateProps(db *Dashboard) error {
 	}
 
 	db.Name = updateParams.NewName
+
+	return nil
+}
+
+type SetDashboardLayoutParams struct {
+	DashboardIDHeader
+	Layout componentLayout.ComponentLayout `json:"layout"`
+}
+
+func (updateParams SetDashboardLayoutParams) updateProps(db *Dashboard) error {
+
+	db.Properties.Layout = updateParams.Layout
 
 	return nil
 }

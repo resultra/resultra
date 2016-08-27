@@ -6,7 +6,7 @@ function barChartContainerHTML(barChartID) {
 	// and resize the bar chart within the dashboard canvas. If the chart is placed directly within the out div, there
 	// is a conflict with the Google chart code disabling the resize behavor after the chart is refreshed.
 	var containerHTML = ''+
-	'<div class="dashboardItemDesignContainer dashboardBarChartContainer draggable resizable selectable" id="'+ barChartID+'">' +
+	'<div class="layoutContainer dashboardBarChartComponent" id="'+ barChartID+'">' +
 		'<div id="' + barChartID+'_chart" class="dashboardChartWrapper"</div>'+
 	'</div>';
 	return containerHTML
@@ -83,20 +83,8 @@ function initBarChartEditBehavior(dashboardID,barChartID)
 	barChartContainer.draggable ({
 		grid: [20, 20], // snap to a grid
 		cursor: "move",
-		containment: "parent",
-		clone: "original",						
-		stop: function(event, ui) {
-				  var layoutPos = {
-					  positionLeft: ui.position.left,
-					  positionTop: ui.position.top,
-				   };
-		  
-				  console.log("drag stop: id: " + event.target.id);
-				  console.log("drag stop: new position: " + JSON.stringify(layoutPos));
-				  
-				  // TODO: send ajax request to reposition the container
-  
-		      } // stop function
+		clone: "original",
+		connectToSortable: ".componentRow"									
 	})
 	  
 	barChartContainer.resizable({

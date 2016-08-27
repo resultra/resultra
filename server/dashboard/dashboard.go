@@ -2,16 +2,22 @@ package dashboard
 
 import (
 	"fmt"
+	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/dashboard/components/barChart"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
+type DashboardProperties struct {
+	Layout componentLayout.ComponentLayout `json:"layout"`
+}
+
 type Dashboard struct {
-	DashboardID      string `json:"dashboardID"`
-	ParentDatabaseID string `json:"parentDatabaseID"`
-	Name             string `json:"name"`
+	DashboardID      string              `json:"dashboardID"`
+	ParentDatabaseID string              `json:"parentDatabaseID"`
+	Name             string              `json:"name"`
+	Properties       DashboardProperties `json:"properties"`
 }
 
 type NewDashboardParams struct {
@@ -26,13 +32,22 @@ func NewDashboard(params NewDashboardParams) (*Dashboard, error) {
 		return nil, sanitizeErr
 	}
 
+	dashboardProps := DashboardProperties{
+		Layout: componentLayout.ComponentLayout{}}
+	encodedDashboardProps, encodeErr := generic.EncodeJSONString(dashboardProps)
+	if encodeErr != nil {
+		return nil, fmt.Errorf("NewDashboard: failure encoding properties: error = %v", encodeErr)
+	}
+
 	var newDashboard = Dashboard{
 		DashboardID:      uniqueID.GenerateSnowflakeID(),
 		ParentDatabaseID: params.DatabaseID,
-		Name:             sanitizedName}
+		Name:             sanitizedName,
+		Properties:       dashboardProps}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO dashboards (database_id, dashboard_id, name) VALUES ($1,$2,$3)`,
-		newDashboard.ParentDatabaseID, newDashboard.DashboardID, newDashboard.Name); insertErr != nil {
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO dashboards (database_id, dashboard_id, name,properties) 
+			VALUES ($1,$2,$3,$4)`,
+		newDashboard.ParentDatabaseID, newDashboard.DashboardID, newDashboard.Name, encodedDashboardProps); insertErr != nil {
 		fmt.Errorf("NewDashboard: Can't create dashboard: unable to create dashboard: error = %v", insertErr)
 	}
 
@@ -48,16 +63,24 @@ func GetDashboard(dashboardID string) (*Dashboard, error) {
 
 	dashboardName := ""
 	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT database_id,name FROM dashboards
-		 WHERE dashboard_id=$1 LIMIT 1`, dashboardID).Scan(&databaseID, &dashboardName)
+	encodedProps := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT database_id,name,properties
+		 FROM dashboards
+		 WHERE dashboard_id=$1 LIMIT 1`, dashboardID).Scan(&databaseID, &dashboardName, &encodedProps)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetDashboard: Unabled to get dashboard with ID = %v: datastore err=%v", dashboardID, getErr)
+	}
+
+	var dashboardProps DashboardProperties
+	if decodeErr := generic.DecodeJSONString(encodedProps, &dashboardProps); decodeErr != nil {
+		return nil, fmt.Errorf("GetDashboard: can't decode properties: %v", encodedProps)
 	}
 
 	getDashboard := Dashboard{
 		ParentDatabaseID: databaseID,
 		DashboardID:      dashboardID,
-		Name:             dashboardName}
+		Name:             dashboardName,
+		Properties:       dashboardProps}
 
 	return &getDashboard, nil
 
@@ -65,17 +88,15 @@ func GetDashboard(dashboardID string) (*Dashboard, error) {
 
 func updateExistingDashboard(dashboardID string, updatedDB *Dashboard) (*Dashboard, error) {
 
-	/*
-		encodedProps, encodeErr := generic.EncodeJSONString(updatedDB.Properties)
-		if encodeErr != nil {
-			return nil, fmt.Errorf("updateExistingDatabase: failure encoding properties: error = %v", encodeErr)
-		}
-	*/
+	encodedProps, encodeErr := generic.EncodeJSONString(updatedDB.Properties)
+	if encodeErr != nil {
+		return nil, fmt.Errorf("updateExistingDatabase: failure encoding properties: error = %v", encodeErr)
+	}
 
 	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE dashboards 
-				SET name=$1
-				WHERE dashboard_id=$2`,
-		updatedDB.Name, dashboardID); updateErr != nil {
+				SET name=$1,properties=$2
+				WHERE dashboard_id=$3`,
+		updatedDB.Name, encodedProps, dashboardID); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingDashboard: Can't update dashboard properties %v: error = %v",
 			dashboardID, updateErr)
 	}
@@ -89,10 +110,16 @@ type GetDashboardDataParams struct {
 }
 
 type DashboardDataRef struct {
+	Dashboard     Dashboard               `json:"dashboard"`
 	BarChartsData []barChart.BarChartData `json:"barChartsData"`
 }
 
 func GetDashboardData(params GetDashboardDataParams) (*DashboardDataRef, error) {
+
+	dashboard, err := GetDashboard(params.DashboardID)
+	if err != nil {
+		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard: error = %v", err)
+	}
 
 	barChartData, getBarChartsErr := barChart.GetDashboardBarChartsData(params.DashboardID)
 	if getBarChartsErr != nil {
@@ -100,6 +127,7 @@ func GetDashboardData(params GetDashboardDataParams) (*DashboardDataRef, error) 
 	}
 
 	dashboardDataRef := DashboardDataRef{
+		Dashboard:     *dashboard,
 		BarChartsData: barChartData}
 
 	return &dashboardDataRef, nil

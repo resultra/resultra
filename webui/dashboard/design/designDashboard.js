@@ -7,9 +7,7 @@ $(document).ready(function() {
 			return containerHTML
 		},
 		
-		dropComplete: function(droppedItemInfo) {
-			console.log("Dashboard design pallete: drop item: " + JSON.stringify(droppedItemInfo))
-			
+		dropComplete: function(droppedItemInfo) {			
 			// At this point, the placholder div for the bar chart will have just been inserted. However, the DOM may 
 			// not be completely updated at this point. To ensure this, a small delay is needed before
 			// drawing the dummy bar charts. See http://goo.gl/IloNM for more.
