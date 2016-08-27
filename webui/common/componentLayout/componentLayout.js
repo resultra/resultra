@@ -64,11 +64,9 @@ function createComponentRow(parentComponentLayoutSelector, saveLayoutFunc) {
 	
 	var $componentRow = $(rowHTML)
 	$componentRow.sortable({
-		revert:true,
 		placeholder: "ui-sortable-placeholder",
 		forcePlaceholderSize: true,
 		connectWith:".layoutContainer",
-		axis: 'x',
 		start: function(event, ui) { 
 			// The next line is a work-around for horizontal sorting.
 			ui.placeholder.html('&nbsp;');
