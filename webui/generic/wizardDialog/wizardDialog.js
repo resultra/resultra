@@ -114,6 +114,12 @@ function openWizardDialog(dlgParams) {
 	// when transitioning to the next panel or previous panel (see functions above).
 	$dialog.data("wizardDialogPanelsByID",panelsByID)
 	
+	$dialog.on("hidden.bs.modal", function () {
+	    // put your default event here
+		console.log("Wizard dialog closed")
+		dlgParams.closeFunc()
+	});
+	
 	$dialog.modal('show')
 	
 }

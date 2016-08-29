@@ -5,6 +5,12 @@ function openNewFormComponentDialog(newComponentParams) {
 
 	var dialogSelector = '#' + newComponentParams.elemPrefix + "NewFormComponentDialog"
 	var progressSelector = '#' + newComponentParams.elemPrefix + 'WizardDialogProgress'
+	
+	// Use this flag to track whether or not the user canceled or closed the dialog, or 
+	// continued on the actually finish creating the component. If the component is created,
+	// The flag is set to true, which prevents the component's container from being removed
+	// when the dialog is closed.
+	var componentCreated = false
 
 	function saveNewFormComponent($parentDialog) {
 		console.log("saveNewFormComponent: done handler called")
@@ -22,6 +28,7 @@ function openNewFormComponentDialog(newComponentParams) {
 				geometry: newComponentParams.containerParams.geometry,
 				fieldID: newOrExistingVals.selectedFieldID
 			}
+			componentCreated = true
 			newComponentParams.createNewFormComponent($parentDialog,newComponentAPIParams)
 		}
 	}
@@ -37,13 +44,13 @@ function openNewFormComponentDialog(newComponentParams) {
 		
 	openWizardDialog({
 		closeFunc: function() {
-			console.log("Close dialog")
-			if(!newCheckBoxParams.containerCreated)
-			{
-			  // If the the text box creation is not complete, remove the placeholder
-			  // from the canvas.
-				$('#'+newCheckBoxParams.placeholderID).remove()
+			if(!componentCreated) {
+				var newComponentPlaceholderSelector = '#' + newComponentParams.containerParams.containerID
+				console.log("Cancel new component creation: removing placholder component = " 
+									+ newComponentPlaceholderSelector)
+				$(newComponentPlaceholderSelector).remove()				
 			}
+			
       	},
 		dialogDivID: dialogSelector,
 		panels: [newOrExistingFieldPanel,newFieldPanel],
