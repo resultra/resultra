@@ -13,6 +13,9 @@
 			</div>
 			<div class="form-group">
 				<label>Where should values from this check box be stored?</label>
+			</div>
+	
+			<div class="form-group">
 				<div class="radio">
 					<label>
 						<input type="radio" id="{{.ElemPrefix}}CreateNewFieldRadio" 
@@ -20,26 +23,59 @@
 						Create a new field
 					</label>
 				</div>
+			</div>
+				
+			<div class="form-group">
 				<div class="radio">
 					<label>
-						<input type="radio" id="{{.ElemPrefix}}CreateNewFieldRadio" 
+						<input type="radio" id="{{.ElemPrefix}}UseExistingFieldRadio" 
 								name="{{.ElemPrefix}}NewOrExistingRadio" value="existing">
 						Use an existing field
 					</label>
 				</div>			
 			</div>
 			
-			<div class="form-group" id="{{.ElemPrefix}}SelectExistingFieldField">
-				<label>Existing fields:</label> 
-				<select class="form-control" id="{{.ElemPrefix}}FieldSelection" name="{{.ElemPrefix}}FieldSelection" disabled>
+			<div class="form-group">
+				<label class="marginLeft30">Existing fields:</label> 
+				<select class="form-control marginLeft30" 
+					id="{{.ElemPrefix}}FieldSelection" name="{{.ElemPrefix}}FieldSelection" style="width:80%" disabled>
 					<option value="">
 						Select a field
 					</option>
 				</select>
-				<span class="form-control-feedback" 
-					aria-hidden="true" aria-describedby="{{.ElemPrefix}}FieldSelectionHelp"></span>
-				<span id="{{.ElemPrefix}}FieldSelectionHelp" class="help-block collapse">Select an existing field to store the values.</span>
 			</div>
+
+			<div class="form-group">
+				<div class="radio">
+					<label>
+						<input type="radio" id="{{.ElemPrefix}}CreateNewGlobalRadio" 
+								name="{{.ElemPrefix}}NewOrExistingRadio" value="newGlobal">
+						Create a new global value
+					</label>
+				</div>			
+			</div>
+
+			<div class="form-group">
+				<div class="radio">
+					<label>
+						<input type="radio" id="{{.ElemPrefix}}UseExistingGlobalRadio" 
+								name="{{.ElemPrefix}}NewOrExistingRadio" value="existingGlobal">
+						Use an existing global value
+					</label>
+				</div>			
+			</div>
+			
+			<div class="form-group">
+				<label  class="marginLeft30">Existing Globals:</label> 
+				<select class="form-control marginLeft30" id="{{.ElemPrefix}}GlobalSelection" 
+										name="{{.ElemPrefix}}GlobalSelection" style="width:80%" disabled>
+					<option value="">
+						Select a global value
+					</option>
+				</select>
+			</div>
+
+
 			
 		</form> <!-- form for panel -->
 	</div> <!-- panel for selecting new field or choosing to create a new one -->

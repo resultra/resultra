@@ -1,7 +1,7 @@
 
 
 
-function openNewCheckboxDialog(formID,parentTableID,containerParams) {
+function openNewCheckboxDialog(databaseID,formID,parentTableID,containerParams) {
 	
 	function createNewCheckbox($parentDialog, newComponentParams) {
 		
@@ -32,6 +32,7 @@ function openNewCheckboxDialog(formID,parentTableID,containerParams) {
 	var newFormComponentDialogParams = {
 		elemPrefix: "checkbox_",
 		parentTableID: parentTableID,
+		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeBool],
 		containerParams: containerParams,

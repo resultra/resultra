@@ -4,49 +4,38 @@ var createNewOrExistingFieldDialogPanelID = "newOrExistingField"
 
 function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 
+
 	// Build up a set of selectors based upon the prefix. The suffixes must match
 	// those given in the template newFormElemDialogCommon.html
 	var panelSelector = "#" + panelConfig.elemPrefix + "SelectExistingOrNewFieldPanel"
 	var selectExistingField = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"SelectExistingFieldField")
 	
 	var formSelector = "#" + panelConfig.elemPrefix + "SelectExistingOrNewFieldForm"
+	var $panelForm = $(formSelector)
 	
+	// Selectors & ids for individual radio buttons
 	var createNewFieldRadio = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"CreateNewFieldRadio")
-	var newOrExistingRadioInputSelector = "input[name='" + panelConfig.elemPrefix + "NewOrExistingRadio']"
-	var newOrExistingRadioInputCheckedSelector = newOrExistingRadioInputSelector + ":checked"
-	var dialogProgressDivID = panelConfig.elemPrefix + "NewFormElemDialogProgress"
-	var dialogProgressSelector = '#' + dialogProgressDivID
+	var useExistingFieldRadio = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"UseExistingFieldRadio")
+	var useExistingGlobalRadio = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"UseExistingGlobalRadio")
+
+	// Selectors for field and global selection
 	var selectField = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"FieldSelection")
+	var selectGlobal = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"GlobalSelection")
 	
-	var fieldSelectionPropertyName = panelConfig.elemPrefix + "FieldSelection"
-	var fieldSelectionSelector = '#' + fieldSelectionPropertyName
+	// Selector for the radio group as a whole
+	var newOrExistingRadioInputSelector = "input[name='" + panelConfig.elemPrefix + "NewOrExistingRadio']"
 	
+	
+	var newOrExistingRadioInputCheckedSelector = newOrExistingRadioInputSelector + ":checked"
+	
+	
+	
+
 	var panelID = "newOrExistingField"
 		
-	function validateForm() {
-		if(radioButtonIsChecked(createNewFieldRadio.selector)) {
-			return true			
-		} else {
-			if(formFieldValueIsEmpty(fieldSelectionSelector)) {
-				addFormControlError(selectExistingField.selector)
-				return false
-			}
-			removeFormControlError(selectExistingField.selector)				
-			return true;
-		}
-		console.log("createNewOrExistingFieldPanelConfig: radio selection: " + newOrExistingSelection)
-	}
-	
-	// Remove any errors on the selection if a non-empty value is selected.
-	$(fieldSelectionSelector).change(function() {
-		if(formFieldValueIsNonEmpty(fieldSelectionSelector)) {
-			removeFormControlError(selectExistingField.selector)			
-		}
-	})
-	
-		
+				
 	function doneButtonClicked() {
-		if(validateForm()) {
+		if($panelForm.valid()) {
 			panelConfig.doneFunc(this)	
 		}
 	}
@@ -56,35 +45,64 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 	}
 	
 	function initSelectNewOrExistingFieldPanel($parentDialog) {
-		function enableSelectExistingField() {
-			setWizardDialogButtonSet("newFormComponentDlgExistingFieldButtons")
-			console.log("Enabling field selection")
-			enableFormControl(fieldSelectionSelector)				
+		
+		var validationRules = {}
+			
+		validationRules[selectField.id] = { 
+			required: {
+				depends: function(element) {
+					return radioButtonIsChecked(useExistingFieldRadio.selector)
+				}
+			} 
 		}
-
-		function disableSelectExistingField() {
-			setWizardDialogButtonSet("newFormComponentDlgNewFieldButtons")
-			disableFormControl(fieldSelectionSelector)
-						
-			validateForm()
+		validationRules[selectGlobal.id] = { 
+			required: {
+				depends: function(element) {
+					return radioButtonIsChecked(useExistingGlobalRadio.selector)
+				}
+			} 
 		}
-
+		var validator = $panelForm.validate({rules: validationRules })
+		
+		validator.resetForm()	
+		
+		
 		// Populate the select field dialog box with a list of possible fields to
 		// connect the new form element to.
 		$(selectField.selector).dropdown()
 		loadFieldInfo(panelConfig.parentTableID,panelConfig.fieldTypes,function(fieldsByID) {
 			populateFieldSelectionMenu(fieldsByID,selectField.selector)
 		})
+		
+		populateGlobalSelectionMenu(selectGlobal.selector,panelConfig.databaseID)
 
-		disableSelectExistingField();
+		// By default, the radio button to create a new field is selected.
+		setWizardDialogButtonSet("newFormComponentDlgNewFieldButtons")
+		disableFormControl(selectGlobal.selector)
+		disableFormControl(selectField.selector)			
 		$(createNewFieldRadio.selector).prop("checked", true);
+		
+		// Listen to the radio buttons for changes. Depending upon 
+		// which radio button is selected, the additional selection for existing
+		// fields or globals is also enabled or disabled.
 		$(newOrExistingRadioInputSelector).change(function() {
 			console.log("new or existing radio value:", this.value);
 			if (this.value == "new") {
-				disableSelectExistingField()
-				removeFormControlError(selectExistingField.selector)		
+				setWizardDialogButtonSet("newFormComponentDlgNewFieldButtons")
+				disableFormControl(selectGlobal.selector)
+				disableFormControl(selectField.selector)
+			} else if (this.value == "existing") {
+				setWizardDialogButtonSet("newFormComponentDlgExistingFieldButtons")
+				disableFormControl(selectGlobal.selector)
+				enableFormControl(selectField.selector)
+			} else if (this.value == "newGlobal") {
+				setWizardDialogButtonSet("newFormComponentDlgNewFieldButtons")
+				disableFormControl(selectGlobal.selector)
+				disableFormControl(selectField.selector)			
 			} else {
-				enableSelectExistingField()
+				setWizardDialogButtonSet("newFormComponentDlgExistingFieldButtons")
+				enableFormControl(selectGlobal.selector)
+				disableFormControl(selectField.selector)
 			}
 		});
 					
@@ -102,7 +120,7 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 		
 		var doneButtonSelector = '#' + panelConfig.elemPrefix + 'NewFormComponentNewFieldDoneButton'
 		initButtonClickHandler(doneButtonSelector,function() {
-			if(validateForm()) {
+			if($panelForm.valid()) {
 				panelConfig.doneFunc($parentDialog)	
 			}
 		})
@@ -119,7 +137,7 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 		}
 		return panelVals
 	}
-	
+		
 	var newOrExistingFieldPanelConfig = {
 		panelID: createNewOrExistingFieldDialogPanelID,
 		divID: panelSelector,

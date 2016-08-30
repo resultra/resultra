@@ -3,7 +3,6 @@ package global
 import (
 	"fmt"
 	"log"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 )
@@ -60,7 +59,7 @@ func newGlobal(params NewGlobalParams) (*Global, error) {
 
 	newGlobal := Global{ParentDatabaseID: params.ParentDatabaseID,
 		GlobalID: uniqueID.GenerateSnowflakeID(),
-		Name:     sanitizedName,
+		Name:     params.Name,
 		Type:     params.Type}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(

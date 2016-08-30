@@ -38,7 +38,7 @@ $(document).ready(function() {
 				finalizeLayoutIncludingNewComponentFunc: droppedItemInfo.finalizeLayoutIncludingNewComponentFunc
 				};
 				
-			objEditConfig.createNewItemAfterDropFunc(formID,tableID,containerParams)
+			objEditConfig.createNewItemAfterDropFunc(designFormContext.databaseID,formID,tableID,containerParams)
 		},
 		
 		dropDestSelector: formDesignCanvasSelector,

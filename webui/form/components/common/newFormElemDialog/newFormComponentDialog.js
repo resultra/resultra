@@ -35,6 +35,7 @@ function openNewFormComponentDialog(newComponentParams) {
 	
 	var newOrExistingFieldPanel = createNewOrExistingFieldPanelContextBootstrap({
 		parentTableID: newComponentParams.parentTableID,
+		databaseID: newComponentParams.databaseID,
 		elemPrefix:newComponentParams.elemPrefix,
 		fieldTypes: newComponentParams.fieldTypes,
 		doneIfSelectExistingField:true,

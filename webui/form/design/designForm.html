@@ -94,7 +94,9 @@
 
 	<script>var formID={{.FormID}};</script>
 	<script>var tableID={{.TableID}};</script>
-	<script>var designFormContext = { tableID:"{{.TableID}}",formID:"{{.FormID}}" } </script>
+	<script>var designFormContext = { databaseID:"{{.DatabaseID}}",
+			tableID:"{{.TableID}}",
+			formID:"{{.FormID}}" } </script>
 	
 	{{template "thirdPartyJS"}}
 	

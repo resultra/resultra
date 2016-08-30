@@ -9,5 +9,6 @@
 		"objectSelection",
 		"recordFilter",
 		"userRole",
-		"table"]
+		"table",
+		"global"]
 }

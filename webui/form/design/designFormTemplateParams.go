@@ -20,6 +20,7 @@ type FormTemplateParams struct {
 // combine them with the paramers for the form itself.
 type DesignFormTemplateParams struct {
 	Title            string
+	DatabaseID       string
 	FormID           string
 	FormName         string
 	TableID          string
@@ -44,6 +45,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 
 	templParams := DesignFormTemplateParams{
 		Title:            "Design Form",
+		DatabaseID:       formInfo.DatabaseID,
 		FormID:           formInfo.FormID,
 		TableID:          formInfo.TableID,
 		FormName:         formInfo.FormName,
