@@ -31,8 +31,6 @@ function openNewGlobalDialog(databaseID) {
 	$typeSelection.val("")
 	validator.resetForm()
 	
-	// Populate type selection menu
-	
 	
 	$newGlobalDialog.modal('show')
 
@@ -45,6 +43,7 @@ function openNewGlobalDialog(databaseID) {
 				type: $typeSelection.val()}
 			jsonAPIRequest("global/new",newGlobalParams,function(newGlobalInfo) {
 				console.log("Created new global: " + JSON.stringify(newGlobalInfo))
+				addGlobalToAdminList(newGlobalInfo)
 				$newGlobalDialog.modal('hide')
 			})
 		}
