@@ -28,5 +28,6 @@ $(document).ready(function() {
 	initAdminFormSettings(adminContext.databaseID)
 	initAdminDashboardSettings(adminContext.databaseID)
 	initAdminGeneralProperties(adminContext.databaseID)
+	initAdminGlobals(adminContext.databaseID)
 	
 })

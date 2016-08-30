@@ -6,7 +6,7 @@
 		"users",
 		"forms",
 		"dashboards",
-		"general"],
+		"general","globals"],
 	"cssFiles": ["admin.css"],
 	"jsFiles": ["admin.js"],
 	"htmlFiles":["admin.html"],

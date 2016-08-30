@@ -49,12 +49,12 @@ type NewGlobalParams struct {
 
 func newGlobal(params NewGlobalParams) (*Global, error) {
 
-	sanitizedName, sanitizeErr := generic.SanitizeName(params.Name)
-	if sanitizeErr != nil {
-		return nil, sanitizeErr
+	validateErr := validateNewGlobalName(params.ParentDatabaseID, params.Name)
+	if validateErr != nil {
+		return nil, validateErr
 	}
 
-	if validGlobalType(params.Type) {
+	if !validGlobalType(params.Type) {
 		return nil, fmt.Errorf("newGlobal: Invalid type = %v", params.Type)
 	}
 
@@ -101,5 +101,23 @@ func getGlobals(parentDatabaseID string) ([]Global, error) {
 	}
 
 	return globals, nil
+
+}
+
+func getGlobalDatabaseID(globalID string) (string, error) {
+
+	databaseID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(
+		`SELECT database_id 
+			FROM globals 
+			WHERE globals.global_id=$1 LIMIT 1`,
+		globalID).Scan(&databaseID)
+	if getErr != nil {
+		return "", fmt.Errorf(
+			"getGlobalDatabaseID: can't get database for global = %v: err=%v",
+			globalID, getErr)
+	}
+
+	return databaseID, nil
 
 }
