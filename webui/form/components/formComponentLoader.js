@@ -14,9 +14,17 @@ function loadFormComponents(loadFormConfig) {
 			var containerHTML = textBoxContainerHTML(textBox.textBoxID);
 			var containerObj = $(containerHTML)
 		
-			// Set the label to the field name
-			var fieldName = getFieldRef(textBox.properties.fieldID).name
-			containerObj.find('label').text(fieldName)
+		
+			if(textBox.properties.linkedValType == linkedComponentValTypeField) {
+				// text box is linked to a field type
+				// Set the label to the field name
+				var fieldName = getFieldRef(textBox.properties.fieldID).name
+				containerObj.find('label').text(fieldName)
+			} else {
+				// text box is linked to a global
+				var globalName = "Global Value"
+				containerObj.find('label').text(globalName)
+			}
 		
 			$componentRow.append(containerObj)
 			

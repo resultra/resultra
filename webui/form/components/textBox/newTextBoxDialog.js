@@ -10,11 +10,17 @@ function openNewTextBoxDialog(databaseID,formID,parentTableID,containerParams)
 			  // The new text box has been saved on the server, but only a placeholder of the text box 
 			  // is currently shown in the layout. The following code is needed to update and finalize the placeholder
 			  // as a complete and fully-functional text box.
-			  var fieldName = getFieldRef(newTextBoxObjectRef.properties.fieldID).name
 
 			  var placeholderSelector = '#'+containerParams.containerID
-
-			  $(placeholderSelector).find('label').text(fieldName)
+			  
+			  if(newTextBoxObjectRef.properties.linkedValType == linkedComponentValTypeField) {
+				  var fieldName = getFieldRef(newTextBoxObjectRef.properties.fieldID).name
+				  $(placeholderSelector).find('label').text(fieldName)			  	
+			  } else {
+				  var globalName = "Global Value"
+				  $(placeholderSelector).find('label').text(globalName)			  	
+			  }
+			  
 			  $(placeholderSelector).attr("id",newTextBoxObjectRef.textBoxID)
 		  
 			  // Set up the newly created checkbox for resize, selection, etc.

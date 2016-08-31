@@ -104,10 +104,14 @@ function populateComponentLayout(componentLayout, parentLayoutSelector, compenen
 		for(var componentIndex = 0; componentIndex<currRowComponents.length; componentIndex++) {
 			var componentID = currRowComponents[componentIndex]
 			console.log("Component layout: row=" + rowIndex + " component ID=" + componentID)
-			var initInfo = compenentIDComponentMap[componentID]
-			console.log("Component layout: component info=" + JSON.stringify(initInfo.componentInfo))
-			initInfo.initFunc($componentRow,initInfo.componentInfo)
-			completedLayoutComponentIDs[componentID] = true
+			// If the component has been deleted, then it won't be in the componentIDComponentMap.
+			// In this case, skip initialiation for the deleted component.
+			if(componentID in compenentIDComponentMap) {
+				var initInfo = compenentIDComponentMap[componentID]
+				console.log("Component layout: component info=" + JSON.stringify(initInfo.componentInfo))
+				initInfo.initFunc($componentRow,initInfo.componentInfo)
+				completedLayoutComponentIDs[componentID] = true			
+			}
 		}
 
 	}

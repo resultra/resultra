@@ -27,6 +27,7 @@ function openNewFormComponentDialog(newComponentParams) {
 			var newComponentAPIParams = {
 				fieldParentTableID: newComponentParams.parentTableID,
 				parentFormID: newComponentParams.formID,
+				linkedValType: "field",
 				geometry: newComponentParams.containerParams.geometry,
 				fieldID: newOrExistingVals.selectedFieldID
 			}
@@ -37,11 +38,12 @@ function openNewFormComponentDialog(newComponentParams) {
 			var newComponentAPIParams = {
 				parentFormID: newComponentParams.formID,
 				geometry: newComponentParams.containerParams.geometry,
+				linkedValType: "global",
 				globalID: newOrExistingVals.selectedGlobalID
 			}
 			componentCreated = true
 			console.log("New Component params (existing global):" + JSON.stringify(newComponentAPIParams))
-//			newComponentParams.createNewFormComponent($parentDialog,newComponentAPIParams)
+			newComponentParams.createNewFormComponent($parentDialog,newComponentAPIParams)
 		}
 	}
 	

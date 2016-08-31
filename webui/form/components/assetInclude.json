@@ -1,7 +1,6 @@
 {
     "subDirs": [
-		"common/componentEdit",
-		"common/newFormElemDialog",
+		"common",
 		"checkBox",
 		"datePicker",
 		"htmlEditor",

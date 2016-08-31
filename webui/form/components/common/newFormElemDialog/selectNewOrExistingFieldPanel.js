@@ -110,10 +110,11 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 		var componentValSelection = $(checkedComponentValRadioSelector).val()
 		panelVals.componentValSelection = componentValSelection
 		if(componentValSelection == "existingField") {
+			panelVals.linkedValType = linkedComponentValTypeField
 			panelVals.selectedFieldID = $(selectField.selector).val()
 		} else if (componentValSelection == "existingGlobal") {
+			panelVals.linkedValType = linkedComponentValTypeGlobal
 			panelVals.selectedGlobalID = $(selectGlobal.selector).val()
-			
 		}
 		return panelVals
 	}

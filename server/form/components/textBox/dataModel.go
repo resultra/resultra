@@ -13,8 +13,10 @@ import (
 const textBoxEntityKind string = "textbox"
 
 type TextBoxProperties struct {
-	FieldID  string                         `json:"fieldID"`
-	Geometry componentLayout.LayoutGeometry `json:"geometry"`
+	LinkedValType string                         `json:"linkedValType"`
+	FieldID       string                         `json:"fieldID"`
+	GlobalID      string                         `json:"globalID"`
+	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 type TextBox struct {
@@ -26,7 +28,9 @@ type TextBox struct {
 type NewTextBoxParams struct {
 	ParentFormID       string                         `json:"parentFormID"`
 	FieldParentTableID string                         `json:"fieldParentTableID"`
+	LinkedValType      string                         `json:"linkedValType"`
 	FieldID            string                         `json:"fieldID"`
+	GlobalID           string                         `json:"globalID"`
 	Geometry           componentLayout.LayoutGeometry `json:"geometry"`
 }
 
@@ -40,10 +44,22 @@ func validTextBoxFieldType(fieldType string) bool {
 	}
 }
 
+func validLinkedValType(valType string) bool {
+	if valType == "global" || valType == "field" {
+		return true
+	} else {
+		return false
+	}
+}
+
 func saveNewTextBox(params NewTextBoxParams) (*TextBox, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
+	}
+
+	if !validLinkedValType(params.LinkedValType) {
+		return nil, fmt.Errorf("Invalid text box parameters (linked value type): %v", params.LinkedValType)
 	}
 
 	field, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
@@ -57,8 +73,10 @@ func saveNewTextBox(params NewTextBoxParams) (*TextBox, error) {
 	}
 
 	properties := TextBoxProperties{
-		Geometry: params.Geometry,
-		FieldID:  params.FieldID}
+		Geometry:      params.Geometry,
+		LinkedValType: params.LinkedValType,
+		FieldID:       params.FieldID,
+		GlobalID:      params.GlobalID}
 
 	newTextBox := TextBox{ParentFormID: params.ParentFormID,
 		TextBoxID:  uniqueID.GenerateSnowflakeID(),
