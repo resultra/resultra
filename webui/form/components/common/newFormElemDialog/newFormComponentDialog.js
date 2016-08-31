@@ -19,9 +19,11 @@ function openNewFormComponentDialog(newComponentParams) {
 				
 		console.log("saveNewFormComponent: panel values: " + JSON.stringify(newOrExistingVals))
 		
-		if(newOrExistingVals.newField == true) {
+		if(newOrExistingVals.componentValSelection == "newField") {
 			// TODO Create the new field first, then create the component attached to this field
-		} else {
+		} else if (newOrExistingVals.componentValSelection == "newGlobal") {
+			// TODO Create the new global first, then create the component attached to this field
+		} else if (newOrExistingVals.componentValSelection == "existingField") {
 			var newComponentAPIParams = {
 				fieldParentTableID: newComponentParams.parentTableID,
 				parentFormID: newComponentParams.formID,
@@ -30,6 +32,16 @@ function openNewFormComponentDialog(newComponentParams) {
 			}
 			componentCreated = true
 			newComponentParams.createNewFormComponent($parentDialog,newComponentAPIParams)
+		} else {
+			assert(newOrExistingVals.componentValSelection == "existingGlobal")
+			var newComponentAPIParams = {
+				parentFormID: newComponentParams.formID,
+				geometry: newComponentParams.containerParams.geometry,
+				globalID: newOrExistingVals.selectedGlobalID
+			}
+			componentCreated = true
+			console.log("New Component params (existing global):" + JSON.stringify(newComponentAPIParams))
+//			newComponentParams.createNewFormComponent($parentDialog,newComponentAPIParams)
 		}
 	}
 	
