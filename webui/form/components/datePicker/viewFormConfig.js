@@ -43,7 +43,7 @@ function loadRecordIntoDatePicker(datePickerElem, recordRef) {
 }
 
 
-function initDatePickerRecordEditBehavior(datePickerObjectRef) {
+function initDatePickerRecordEditBehavior(componentContext,datePickerObjectRef) {
 	
 	var datePickerContainerID = datePickerObjectRef.datePickerID
 	var datePickerID = datePickerElemIDFromContainerElemID(datePickerContainerID)

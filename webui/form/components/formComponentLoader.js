@@ -1,9 +1,43 @@
-
+function getFormComponentContext(formContext, contextLoadCompleteCallback) {
+	var contextPartsRemaining = 4;
+	var context = {}
+	
+	context.formID = formContext.formID
+	context.databaseID = formContext.databaseID
+	context.tableID = formContext.tableID
+	
+	function completeOneContextPart() {
+		contextPartsRemaining -= 1
+		if(contextPartsRemaining <= 0) {
+			contextLoadCompleteCallback(context)
+		}
+	}
+	
+	loadFieldInfo(context.tableID, [fieldTypeAll],function(fieldsByID) {
+		context.fieldsByID = fieldsByID
+		completeOneContextPart()
+	})
+	
+	initFieldInfo( function () {
+		completeOneContextPart()
+	})
+	
+	getGlobalInfoIndexedByID(context.databaseID,function(globalsByID) {
+		context.globalsByID = globalsByID
+		completeOneContextPart()
+	})
+	
+	jsonAPIRequest("frm/getFormInfo", { formID: context.formID }, function(formInfo) {
+		context.formInfo = formInfo
+		completeOneContextPart()
+	})
+	
+}
 
 
 function loadFormComponents(loadFormConfig) {
 	
-	jsonAPIRequest("frm/getFormInfo", { formID: loadFormConfig.formID }, function(formInfo) {
+	getFormComponentContext(loadFormConfig.formContext, function(componentContext) {
 													
 		var compenentIDComponentMap = {}	
 
@@ -13,17 +47,22 @@ function loadFormComponents(loadFormConfig) {
 		
 			var containerHTML = textBoxContainerHTML(textBox.textBoxID);
 			var containerObj = $(containerHTML)
+			
+			function setTextBoxLabel($textBoxContainer,label) {
+				$textBoxContainer.find('label').text(label)
+			}
 		
 		
 			if(textBox.properties.linkedValType == linkedComponentValTypeField) {
 				// text box is linked to a field type
 				// Set the label to the field name
 				var fieldName = getFieldRef(textBox.properties.fieldID).name
-				containerObj.find('label').text(fieldName)
+				setTextBoxLabel(containerObj,fieldName)
 			} else {
 				// text box is linked to a global
-				var globalName = "Global Value"
-				containerObj.find('label').text(globalName)
+				var globalInfo = componentContext.globalsByID[textBox.properties.globalID]
+				var globalName = globalInfo.name
+				setTextBoxLabel(containerObj,globalName)
 			}
 		
 			$componentRow.append(containerObj)
@@ -35,7 +74,7 @@ function loadFormComponents(loadFormConfig) {
 			setElemObjectRef(textBox.textBoxID,textBox)
 		
 			// Callback for any specific initialization for either the form design or view mode
-			loadFormConfig.initTextBoxFunc(textBox)
+			loadFormConfig.initTextBoxFunc(componentContext,textBox)
 			
 		}
 
@@ -59,7 +98,7 @@ function loadFormComponents(loadFormConfig) {
 			setElemObjectRef(checkBox.checkBoxID,checkBox)
 			
 			// Callback for any specific initialization for either the form design or view mode 
-			loadFormConfig.initCheckBoxFunc(checkBox)
+			loadFormConfig.initCheckBoxFunc(componentContext,checkBox)
 		}
 		
 		function initDatePickerLayout($componentRow,datePicker) {
@@ -80,7 +119,7 @@ function loadFormComponents(loadFormConfig) {
 			setElemObjectRef(datePicker.datePickerID,datePicker)
 			
 			// Callback for any specific initialization for either the form design or view mode
-			loadFormConfig.initDatePickerFunc(datePicker)
+			loadFormConfig.initDatePickerFunc(componentContext,datePicker)
 			
 		}
 
@@ -102,7 +141,7 @@ function loadFormComponents(loadFormConfig) {
 			setElemObjectRef(htmlEditor.htmlEditorID,htmlEditor)
 			
 			// Callback for any specific initialization for either the form design or view mode
-			loadFormConfig.initHtmlEditorFunc(htmlEditor)
+			loadFormConfig.initHtmlEditorFunc(componentContext,htmlEditor)
 		}
 		
 		function initImageEditorLayout($componentRow,image) {
@@ -125,10 +164,11 @@ function loadFormComponents(loadFormConfig) {
 			setElemObjectRef(image.imageID,image)
 			
 			// Callback for any specific initialization for either the form design or view mode
-			loadFormConfig.initImageFunc(image)
+			loadFormConfig.initImageFunc(componentContext,image)
 			
 		}
 
+		var formInfo = componentContext.formInfo
 		
 		// Iterate through each type of component and populate a map/dictonary with 
 		// the component ID and method to initialize the compnent. This map is then

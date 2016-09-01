@@ -32,7 +32,7 @@ function loadRecordIntoHtmlEditor(htmlEditorElem, recordRef) {
 }
 
 
-function initHtmlEditorRecordEditBehavior(htmlEditorObjectRef) {
+function initHtmlEditorRecordEditBehavior(componentContext,htmlEditorObjectRef) {
 	
 	var htmlEditorContainerID = htmlEditorObjectRef.htmlEditorID
 	var htmlEditorInputID = htmlInputIDFromContainerElemID(htmlEditorContainerID)

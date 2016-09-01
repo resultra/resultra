@@ -38,7 +38,7 @@ function loadRecordIntoCheckBox(checkBoxElem, recordRef) {
 }
 
 
-function initCheckBoxRecordEditBehavior(checkBoxObjectRef) {
+function initCheckBoxRecordEditBehavior(componentContext,checkBoxObjectRef) {
 	
 	var checkBoxContainerID = checkBoxObjectRef.checkBoxID
 	var checkBoxID = checkBoxElemIDFromContainerElemID(checkBoxContainerID)

@@ -41,7 +41,7 @@ function loadRecordIntoImage(imageElem, recordRef) {
 }
 
 
-function initImageRecordEditBehavior(imageObjectRef) {
+function initImageRecordEditBehavior(componentContext,imageObjectRef) {
 	
 	var imageContainerID = imageObjectRef.imageID
 

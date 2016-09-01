@@ -20,6 +20,8 @@ func init() {
 	globalRouter.HandleFunc("/api/global/validateName", validateNameAPI)
 	globalRouter.HandleFunc("/api/global/validateNewName", validateNewNameAPI)
 
+	globalRouter.HandleFunc("/api/global/setTextValue", setTextValue)
+
 	http.Handle("/api/global/", globalRouter)
 }
 
@@ -50,12 +52,6 @@ func getListAPI(w http.ResponseWriter, r *http.Request) {
 	var params GetGlobalsParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
-		return
-	}
-
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
-		r, params.ParentDatabaseID); verifyErr != nil {
-		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
@@ -94,5 +90,22 @@ func validateNewNameAPI(w http.ResponseWriter, r *http.Request) {
 
 	response := true
 	api.WriteJSONResponse(w, response)
+
+}
+
+func setTextValue(w http.ResponseWriter, r *http.Request) {
+	var params SetTextGlobalValueParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	globalValUpdate, setErr := updateGlobalValue(params)
+	if setErr != nil {
+		api.WriteErrorResponse(w, setErr)
+		return
+	} else {
+		api.WriteJSONResponse(w, globalValUpdate)
+	}
 
 }

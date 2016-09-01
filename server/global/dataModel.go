@@ -5,6 +5,7 @@ import (
 	"log"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
+	"time"
 )
 
 const GlobalTypeText string = "text"
@@ -73,6 +74,25 @@ func newGlobal(params NewGlobalParams) (*Global, error) {
 	return &newGlobal, nil
 }
 
+func getGlobal(globalID string) (*Global, error) {
+
+	var theGlobal Global
+	getErr := databaseWrapper.DBHandle().QueryRow(
+		`SELECT database_id,global_id,name,type 
+			FROM globals 
+			WHERE globals.global_id=$1 LIMIT 1`,
+		globalID).Scan(&theGlobal.ParentDatabaseID, &theGlobal.GlobalID,
+		&theGlobal.Name, &theGlobal.Type)
+	if getErr != nil {
+		return nil, fmt.Errorf(
+			"getGlobal: can't get database for global = %v: err=%v",
+			globalID, getErr)
+	}
+
+	return &theGlobal, nil
+
+}
+
 type GetGlobalsParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 }
@@ -118,5 +138,30 @@ func getGlobalDatabaseID(globalID string) (string, error) {
 	}
 
 	return databaseID, nil
+
+}
+
+type GlobalValUpdate struct {
+	UpdateID        string `json:"updateID"`
+	GlobalID        string `json:"globalID"`
+	UpdateTimestamp time.Time
+	Value           string `json:value`
+}
+
+func saveValUpdate(globalID string, encodedValue string) (*GlobalValUpdate, error) {
+
+	valUpdate := GlobalValUpdate{
+		UpdateID:        uniqueID.GenerateSnowflakeID(),
+		GlobalID:        globalID,
+		UpdateTimestamp: time.Now().UTC(),
+		Value:           encodedValue}
+
+	if _, insertErr := databaseWrapper.DBHandle().Exec(
+		`INSERT INTO global_updates (update_id,global_id,update_timestamp_utc,value) VALUES ($1,$2,$3,$4)`,
+		valUpdate.UpdateID, valUpdate.GlobalID, valUpdate.UpdateTimestamp, valUpdate.Value); insertErr != nil {
+		return nil, fmt.Errorf("saveValUpdate: Can't save global value: error = %v", insertErr)
+	}
+
+	return &valUpdate, nil
 
 }

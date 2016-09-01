@@ -74,37 +74,37 @@ $(document).ready(function() {
 		hideEditorFunc:hideFormulaEditPanel
 	}
 	
-	initFieldInfo( function () {
-		loadFormComponents({
-			formParentElemID: formDesignCanvasSelector,
-			formID: designFormContext.formID,
-			initTextBoxFunc: function(textBoxObjectRef) {
-				var componentIDs = { formID: formID, componentID: textBoxObjectRef.textBoxID }
-				initFormComponentDesignBehavior(componentIDs,textBoxObjectRef,textBoxDesignFormConfig)
-			},
-			initCheckBoxFunc: function(checkBoxObjectRef) {
-				var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
-				initFormComponentDesignBehavior(componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig)
-			},
-			initDatePickerFunc: function(datePickerObjectRef) {
-				var componentIDs = { formID: formID, componentID: datePickerObjectRef.datePickerID }
-				initFormComponentDesignBehavior(componentIDs,datePickerObjectRef,datePickerDesignFormConfig)
-			},
-			initHtmlEditorFunc: function(htmlEditorObjectRef) {
-				var componentIDs = { formID: formID, componentID: htmlEditorObjectRef.htmlEditorID }
-				initFormComponentDesignBehavior(componentIDs,htmlEditorObjectRef,htmlEditorDesignFormConfig)
-			},
-			initImageFunc: function(imageObjectRef) {
-				var componentIDs = { formID: formID, componentID: imageObjectRef.imageID }
-				initFormComponentDesignBehavior(componentIDs,imageObjectRef,imageDesignFormConfig)
-			},
-			doneLoadingFormDataFunc: function() {} // no-op	
-		}); 
+	loadFormComponents({
+		formParentElemID: formDesignCanvasSelector,
+		formContext: designFormContext,
+		initTextBoxFunc: function(componentContext,textBoxObjectRef) {
+			var componentIDs = { formID: formID, componentID: textBoxObjectRef.textBoxID }
+			initFormComponentDesignBehavior(componentIDs,textBoxObjectRef,textBoxDesignFormConfig)
+		},
+		initCheckBoxFunc: function(componentContext,checkBoxObjectRef) {
+			var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
+			initFormComponentDesignBehavior(componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig)
+		},
+		initDatePickerFunc: function(componentContext,datePickerObjectRef) {
+			var componentIDs = { formID: formID, componentID: datePickerObjectRef.datePickerID }
+			initFormComponentDesignBehavior(componentIDs,datePickerObjectRef,datePickerDesignFormConfig)
+		},
+		initHtmlEditorFunc: function(componentContext,htmlEditorObjectRef) {
+			var componentIDs = { formID: formID, componentID: htmlEditorObjectRef.htmlEditorID }
+			initFormComponentDesignBehavior(componentIDs,htmlEditorObjectRef,htmlEditorDesignFormConfig)
+		},
+		initImageFunc: function(componentContext,imageObjectRef) {
+			var componentIDs = { formID: formID, componentID: imageObjectRef.imageID }
+			initFormComponentDesignBehavior(componentIDs,imageObjectRef,imageDesignFormConfig)
+		},
+		doneLoadingFormDataFunc: function() {
+			// The formula editor depends on the field information first being initialized.
+			initFormulaEditor(formulaEditorParams)
+			
+		} // no-op	
+	}); 
 		
-		// The formula editor depends on the field information first being initialized.
-		initFormulaEditor(formulaEditorParams)
 		
-	})
 	
 	console.log("Initializing form design plug-ins/configurations ...")
 	initObjectCanvasSelectionBehavior(formDesignCanvasSelector, function() {
