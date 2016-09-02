@@ -227,7 +227,7 @@ function loadFormComponents(loadFormConfig) {
 		function saveUpdatedFormComponentLayout(updatedLayout) {
 			console.log("saveUpdatedFormComponentLayout: component layout = " + JSON.stringify(updatedLayout))		
 			var setLayoutParams = {
-				formID: loadFormConfig.formID,
+				formID: componentContext.formID,
 				layout: updatedLayout
 			}
 			jsonAPIRequest("frm/setLayout", setLayoutParams, function(formInfo) {
