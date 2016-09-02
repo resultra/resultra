@@ -8,32 +8,6 @@ import (
 	"time"
 )
 
-const GlobalTypeText string = "text"
-const GlobalTypeNumber string = "number"
-const GlobalTypeTime string = "time"
-const GlobalTypeBool string = "bool"
-const GlobalTypeLongText string = "longText"
-const GlobalTypeFile string = "file"
-
-func validGlobalType(globalType string) bool {
-	switch globalType {
-	case GlobalTypeText:
-		return true
-	case GlobalTypeNumber:
-		return true
-	case GlobalTypeTime:
-		return true
-	case GlobalTypeBool:
-		return true
-	case GlobalTypeLongText:
-		return true
-	case GlobalTypeFile:
-		return true
-	default:
-		return false
-	}
-}
-
 type Global struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 	GlobalID         string `json:"globalID"`
@@ -164,4 +138,30 @@ func saveValUpdate(globalID string, encodedValue string) (*GlobalValUpdate, erro
 
 	return &valUpdate, nil
 
+}
+
+// getValUpdates retrieves a list of value updates for all the globals in the database.
+func getValUpdates(parentDatabaseID string) ([]GlobalValUpdate, error) {
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT update_id,global_id,update_timestamp_utc,value
+			FROM globals,global_updates
+			WHERE globals.database_id=$1 and globals.global_id=global_updates.global_id
+			ORDER BY global_id,update_timestamp_utc`,
+		parentDatabaseID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("getValUpdates: Failure querying database: %v", queryErr)
+	}
+	valUpdates := []GlobalValUpdate{}
+	for rows.Next() {
+		var currValUpdate GlobalValUpdate
+		if scanErr := rows.Scan(&currValUpdate.UpdateID,
+			&currValUpdate.GlobalID,
+			&currValUpdate.UpdateTimestamp, &currValUpdate.Value); scanErr != nil {
+			return nil, fmt.Errorf("getValUpdates: Failure querying database: %v", scanErr)
+
+		}
+		valUpdates = append(valUpdates, currValUpdate)
+	}
+
+	return valUpdates, nil
 }

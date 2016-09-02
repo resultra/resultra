@@ -58,10 +58,6 @@ type SetTextGlobalValueParams struct {
 	Value string `json:"value"`
 }
 
-type TextValue struct {
-	Val string `json:"val"`
-}
-
 func (params SetTextGlobalValueParams) valueType() string { return GlobalTypeText }
 
 func (params SetTextGlobalValueParams) generateValue() (string, error) {
