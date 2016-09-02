@@ -21,6 +21,7 @@ func init() {
 	globalRouter.HandleFunc("/api/global/validateNewName", validateNewNameAPI)
 
 	globalRouter.HandleFunc("/api/global/setTextValue", setTextValue)
+	globalRouter.HandleFunc("/api/global/getValues", getValues)
 
 	http.Handle("/api/global/", globalRouter)
 }
@@ -106,6 +107,23 @@ func setTextValue(w http.ResponseWriter, r *http.Request) {
 		return
 	} else {
 		api.WriteJSONResponse(w, globalValUpdate)
+	}
+
+}
+
+func getValues(w http.ResponseWriter, r *http.Request) {
+	var params GetGlobalValuesParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	globalVals, getErr := getGlobalValues(params)
+	if getErr != nil {
+		api.WriteErrorResponse(w, getErr)
+		return
+	} else {
+		api.WriteJSONResponse(w, globalVals)
 	}
 
 }

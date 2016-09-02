@@ -1,6 +1,7 @@
 
 
 var currRecordSet;
+var currGlobalVals;
 
 
 function enableRecordButtons(isEnabled)
@@ -42,12 +43,38 @@ function loadCurrRecordIntoLayout()
 	} // if current record != null
 }
 
+function loadFormData(reloadRecordParams, formDataCallback) {
+	var numDataSetsRemainingToLoad = 2
+	
+	var formData =  {}
+	
+	function oneDataSetLoaded() {
+		numDataSetsRemainingToLoad -= 1
+		if(numDataSetsRemainingToLoad <= 0) {
+			formDataCallback(formData)
+		}
+	}
+	
+	jsonAPIRequest("recordRead/getFilteredSortedRecordValues",reloadRecordParams,function(recordsData) {
+		formData.recordData = recordsData
+		oneDataSetLoaded()
+	})
+	
+	var globalParams = { parentDatabaseID: viewFormContext.databaseID }
+	jsonAPIRequest("global/getValues",globalParams,function(globalVals) {
+		formData.globalVals = globalVals
+		oneDataSetLoaded()
+	})
+	
+}
+
 
 function reloadRecords(reloadParams) {
 	
-	jsonAPIRequest("recordRead/getFilteredSortedRecordValues",reloadParams,function(replyData) {
-		
-		currRecordSet = new RecordSet(replyData);
+	
+	loadFormData(reloadParams,function(formData) {
+		currGlobalVals = formData.globalVals	
+		currRecordSet = new RecordSet(formData.recordData);
 		if(currRecordSet.numRecords() > 0) {
 			loadCurrRecordIntoLayout()		
 		}
@@ -58,9 +85,9 @@ function reloadRecords(reloadParams) {
 		}
 		else {
 			enableNewRecordButton() // just enable the "New Record" button
-		}		
-	}) // getRecord
-	
+		}
+		
+	})	
 }
 
 function reloadSortedAndFilterRecords()

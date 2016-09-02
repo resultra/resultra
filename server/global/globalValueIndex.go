@@ -30,6 +30,23 @@ func (s ByUpdateTime) Less(i, j int) bool {
 
 type GlobalValueUpdateSeriesIndex map[string]GlobalValueUpdateSeries
 
+type GlobalValues map[string]interface{}
+
+// There will only be cell updates in the datastore for non-calculated fields. For these fields,
+// this function returns the latest (most recent) values.
+func (globalValSeriesIndex GlobalValueUpdateSeriesIndex) LatestValues() *GlobalValues {
+
+	globalValues := GlobalValues{}
+
+	for globalID, updateSeries := range globalValSeriesIndex {
+		if len(updateSeries) > 0 {
+			globalValues[globalID] = updateSeries[0].Value
+		}
+	}
+
+	return &globalValues
+}
+
 func NewGlobalValueIndex(parentDatabaseID string) (*GlobalValueUpdateSeriesIndex, error) {
 
 	valUpdates, getErr := getValUpdates(parentDatabaseID)
@@ -77,4 +94,20 @@ func NewGlobalValueIndex(parentDatabaseID string) (*GlobalValueUpdateSeriesIndex
 	}
 
 	return &globalValSeriesMap, nil
+}
+
+type GetGlobalValuesParams struct {
+	ParentDatabaseID string `json:"parentDatabaseID"`
+}
+
+func getGlobalValues(params GetGlobalValuesParams) (*GlobalValues, error) {
+	globalValIndex, err := NewGlobalValueIndex(params.ParentDatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("getGlobalValues: failure retrieving global value index: %v", err)
+	}
+
+	latestVals := globalValIndex.LatestValues()
+
+	return latestVals, nil
+
 }

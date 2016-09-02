@@ -143,7 +143,7 @@ func saveValUpdate(globalID string, encodedValue string) (*GlobalValUpdate, erro
 // getValUpdates retrieves a list of value updates for all the globals in the database.
 func getValUpdates(parentDatabaseID string) ([]GlobalValUpdate, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT update_id,global_id,update_timestamp_utc,value
+	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT update_id,global_updates.global_id,update_timestamp_utc,value
 			FROM globals,global_updates
 			WHERE globals.database_id=$1 and globals.global_id=global_updates.global_id
 			ORDER BY global_id,update_timestamp_utc`,

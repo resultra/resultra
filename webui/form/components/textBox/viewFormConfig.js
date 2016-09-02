@@ -28,6 +28,17 @@ function loadRecordIntoTextBox(textBoxElem, recordRef) {
 		
 	} else {
 		// Text box is linked to a global value
+		
+		var textBoxGlobalID = textBoxObjectRef.properties.globalID
+		if(textBoxGlobalID in currGlobalVals) {
+			var globalVal = currGlobalVals[textBoxGlobalID]
+			textBoxElem.find('input').val(globalVal)
+		}
+		else
+		{
+			textBoxElem.find('input').val("") // clear the value in the container
+		}
+		
 		console.log("text box: skipping initialization for global value")
 	}
 	
