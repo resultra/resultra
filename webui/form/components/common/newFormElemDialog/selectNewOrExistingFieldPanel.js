@@ -52,7 +52,7 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 			populateFieldSelectionMenu(fieldsByID,selectField.selector)
 		})
 		
-		populateGlobalSelectionMenu(selectGlobal.selector,panelConfig.databaseID)
+		populateGlobalSelectionMenu(selectGlobal.selector,panelConfig.databaseID,panelConfig.globalTypes)
 
 		// By default, the radio button to create a new field is selected.
 		setWizardDialogButtonSet("newFormComponentDlgNewFieldButtons")

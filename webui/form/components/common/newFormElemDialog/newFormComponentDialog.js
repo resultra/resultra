@@ -52,6 +52,7 @@ function openNewFormComponentDialog(newComponentParams) {
 		databaseID: newComponentParams.databaseID,
 		elemPrefix:newComponentParams.elemPrefix,
 		fieldTypes: newComponentParams.fieldTypes,
+		globalTypes: newComponentParams.globalTypes,
 		doneIfSelectExistingField:true,
 		doneFunc:saveNewFormComponent})
 	var newFieldPanel = createNewFieldDialogPanelContextBootstrap(newComponentParams.elemPrefix)

@@ -45,6 +45,7 @@ function openNewTextBoxDialog(databaseID,formID,parentTableID,containerParams)
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeText,fieldTypeNumber],
+		globalTypes: [globalTypeText,globalTypeNumber],
 		containerParams: containerParams,
 		createNewFormComponent: createNewTextBox
 	}

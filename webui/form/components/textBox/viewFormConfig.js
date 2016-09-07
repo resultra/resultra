@@ -157,11 +157,11 @@ function initTextBoxRecordEditBehavior(componentContext,textFieldObjectRef) {
 		loadRecord: loadRecordIntoTextBox
 	})
 	
-	if(textFieldObjectRef.properties.linkedValType == "field") {
+	if(textFieldObjectRef.properties.linkedValType == linkedComponentValTypeField) {
 		initTextBoxFieldEditBehavior(container,textFieldObjectRef)
 		
 	} else { 
-		assert(textFieldObjectRef.properties.linkedValType == "global")
+		assert(textFieldObjectRef.properties.linkedValType == linkedComponentValTypeGlobal)
 		initTextBoxGlobalValBehavior(componentContext,container,textFieldObjectRef)
 	}
 

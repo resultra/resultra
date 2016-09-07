@@ -1,4 +1,4 @@
-function populateGlobalSelectionMenu(menuSelector, databaseID) {
+function populateGlobalSelectionMenu(menuSelector, databaseID, globalTypes) {
 	
 	function populateSelectionMenuTableList(globalsInfo, menuSelector) {
 		$(menuSelector).empty()		
@@ -8,9 +8,28 @@ function populateGlobalSelectionMenu(menuSelector, databaseID) {
 		})
 	}
 	
+	var includeType = {}
+	for (var globalTypeIndex = 0; globalTypeIndex < globalTypes.length; globalTypeIndex++) {
+		var type = globalTypes[globalTypeIndex]
+		includeType[type] = true
+	}
+	
+	function filterByType(globalInfo) {
+		if((includeType['all'] == true) || (includeType[globalInfo.type] == true)) {
+			return true
+		} else {
+			return false
+		}
+	}
+	
+	
+	
 	var listParams =  { parentDatabaseID: databaseID }
 	jsonAPIRequest("global/getList",listParams,function(globalsInfo) {
-		populateSelectionMenuTableList(globalsInfo,menuSelector)
+		
+		var filteredInfo = globalsInfo.filter(filterByType)
+		
+		populateSelectionMenuTableList(filteredInfo,menuSelector)
 	})
 	
 }

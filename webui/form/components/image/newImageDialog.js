@@ -7,11 +7,17 @@ function openNewImageDialog(databaseID,formID,parentTableID,containerParams)
 		jsonAPIRequest("frm/image/new",newComponentParams,function(newImageObjectRef) {
 	          console.log("saveNewImage: Done getting new ID:response=" + JSON.stringify(newImageObjectRef));
 		  
-			  var fieldName = getFieldRef(newImageObjectRef.properties.fieldID).name
 
 			  var placeholderSelector = '#'+containerParams.containerID
 
-			  $(placeholderSelector).find('label').text(fieldName)
+			  if(newTextBoxObjectRef.properties.linkedValType == linkedComponentValTypeField) {
+				  var fieldName = getFieldRef(newImageObjectRef.properties.fieldID).name
+				  $(placeholderSelector).find('label').text(fieldName)
+			  } else {
+				  var globalName = "Global Value"
+				  $(placeholderSelector).find('label').text(globalName)			  				  	
+			  }
+
 			  $(placeholderSelector).attr("id",newImageObjectRef.imageID)
 		  
 			  // Set up the newly created editor for resize, selection, etc.
@@ -33,6 +39,7 @@ function openNewImageDialog(databaseID,formID,parentTableID,containerParams)
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeFile],
+		globalTypes:[globalTypeImage],
 		containerParams: containerParams,
 		createNewFormComponent: createNewImageComponent
 	}

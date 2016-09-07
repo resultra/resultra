@@ -13,8 +13,10 @@ import (
 const imageEntityKind string = "image"
 
 type ImageProperties struct {
-	FieldID  string                         `json:"fieldID"`
-	Geometry componentLayout.LayoutGeometry `json:"geometry"`
+	LinkedValType string                         `json:"linkedValType"`
+	FieldID       string                         `json:"fieldID"`
+	GlobalID      string                         `json:"globalID"`
+	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 type Image struct {
@@ -26,7 +28,9 @@ type Image struct {
 type NewImageParams struct {
 	ParentFormID       string                         `json:"parentFormID"`
 	FieldParentTableID string                         `json:"fieldParentTableID"`
+	LinkedValType      string                         `json:"linkedValType"`
 	FieldID            string                         `json:"fieldID"`
+	GlobalID           string                         `json:"globalID"`
 	Geometry           componentLayout.LayoutGeometry `json:"geometry"`
 }
 
@@ -44,19 +48,26 @@ func saveNewImage(params NewImageParams) (*Image, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	field, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
-	if fieldErr != nil {
-		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
-			params.FieldID, fieldErr)
-	}
+	if params.LinkedValType == common.LinkedValTypeGlobal {
 
-	if !validImageFieldType(field.Type) {
-		return nil, fmt.Errorf("NewImage: Invalid field type: expecting file field, got %v", field.Type)
+	} else {
+		field, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
+		if fieldErr != nil {
+			return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
+				params.FieldID, fieldErr)
+		}
+
+		if !validImageFieldType(field.Type) {
+			return nil, fmt.Errorf("NewImage: Invalid field type: expecting file field, got %v", field.Type)
+		}
+
 	}
 
 	properties := ImageProperties{
-		FieldID:  params.FieldID,
-		Geometry: params.Geometry}
+		Geometry:      params.Geometry,
+		LinkedValType: params.LinkedValType,
+		FieldID:       params.FieldID,
+		GlobalID:      params.GlobalID}
 
 	newImage := Image{ParentFormID: params.ParentFormID,
 		ImageID:    uniqueID.GenerateSnowflakeID(),

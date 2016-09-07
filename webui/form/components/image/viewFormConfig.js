@@ -6,38 +6,62 @@ function loadRecordIntoImage(imageElem, recordRef) {
 	console.log("loadRecordIntoImage: loading record into html editor: " + JSON.stringify(recordRef))
 	
 	var imageObjectRef = imageElem.data("objectRef")
-	var imageFieldID = imageObjectRef.properties.fieldID
-	
-	console.log("loadRecordIntoImage: Field ID to load data:" + imageFieldID)
-
 	var imageContainerID = imageObjectRef.imageID
 	var imageDivID = imageIDFromContainerElemID(imageContainerID)
 	var imageDivIDSelector = '#' + imageDivID
-
-
-	// Populate the "intersection" of field values in the record
-	// with the fields shown by the layout's containers.
-	if(recordRef.fieldValues.hasOwnProperty(imageFieldID)) {
+	
+	function initImageContainer(imageURL) {
 		
-		var cloudFileName = recordRef.fieldValues[imageFieldID].cloudName
-		// If record has a value for the current container's associated field ID,
-		// retrieve an URL for the image and add it to the container.
-		var getUrlParams = { 
-			parentTableID:viewFormContext.tableID,
-			recordID: recordRef.recordID, 
-			fieldID: imageFieldID,
-			cloudFileName: cloudFileName }
-		jsonAPIRequest("record/getFieldValUrl", getUrlParams, function(urlResp) {
+	}
+	
+	if(imageObjectRef.properties.linkedValType == linkedComponentValTypeField) {
+		var imageFieldID = imageObjectRef.properties.fieldID
+	
+		console.log("loadRecordIntoImage: Field ID to load data:" + imageFieldID)
+
+		// Populate the "intersection" of field values in the record
+		// with the fields shown by the layout's containers.
+		if(recordRef.fieldValues.hasOwnProperty(imageFieldID)) {
+		
+			var cloudFileName = recordRef.fieldValues[imageFieldID].cloudName
+			// If record has a value for the current container's associated field ID,
+			// retrieve an URL for the image and add it to the container.
+			var getUrlParams = { 
+				parentTableID:viewFormContext.tableID,
+				recordID: recordRef.recordID, 
+				fieldID: imageFieldID,
+				cloudFileName: cloudFileName }
+			jsonAPIRequest("record/getFieldValUrl", getUrlParams, function(urlResp) {
 					
-			$(imageDivIDSelector).html(imageLinkHTML(imageContainerID,urlResp.url));
-			var linkID = imageLinkIDFromContainerElemID(imageContainerID)
-			$('#'+linkID).magnificPopup({type:'image'})
-		})
+				$(imageDivIDSelector).html(imageLinkHTML(imageContainerID,urlResp.url));
+				var linkID = imageLinkIDFromContainerElemID(imageContainerID)
+				$('#'+linkID).magnificPopup({type:'image'})
+			})
 		
+		} else {
+			// There's no value in the current record for this field, so clear the value in the container
+			$(imageDivIDSelector).html('')
+		}	
 	} else {
-		// There's no value in the current record for this field, so clear the value in the container
-		$(imageDivIDSelector).html('')
-	}	
+		assert(imageObjectRef.properties.linkedValType == linkedComponentValTypeGlobal)
+		
+		var imageGlobalID = imageObjectRef.properties.globalID
+		if(imageGlobalID in currGlobalVals) {
+			var globalVal = currGlobalVals[imageGlobalID]
+			var getUrlParams = {
+				globalID: imageGlobalID,
+				cloudFileName: globalVal.cloudFileName 
+			}
+			jsonAPIRequest("global/getGlobalValUrl", getUrlParams, function(urlResp) {
+				
+				$(imageDivIDSelector).html(imageLinkHTML(imageContainerID,urlResp.url));
+				var linkID = imageLinkIDFromContainerElemID(imageContainerID)
+				$('#'+linkID).magnificPopup({type:'image'})
+			})
+		}
+		
+	}
+	
 }
 
 
@@ -51,18 +75,28 @@ function initImageRecordEditBehavior(componentContext,imageObjectRef) {
 	imageContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoImage
 	})
-	
+
+
 	// Initialize image uploader plugin
 	var imageDropZoneContainerID = imageIDFromContainerElemID(imageContainerID)
 	var imageDropZoneSelector = '#' + imageDropZoneContainerID
 	var imageUploadID = imageUploadInputIDFromContainerElemID(imageContainerID)
+	
+	
+	var uploadImageURL = ""
+	if(imageObjectRef.properties.linkedValType == linkedComponentValTypeField) {
+		uploadImageURL = "/api/recordUpdate/uploadFileToFieldValue"
+	} else {
+		assert(imageObjectRef.properties.linkedValType == linkedComponentValTypeGlobal)
+		uploadImageURL = "/api/global/uploadFileToGlobalValue"
+	}
 		
 	$('#'+imageUploadID).fileupload({
 	        dataType: 'json',
 			autoUpload:true,
 			maxNumberOfFiles:1,	
 			paramName: "uploadFile",
-			url:"/api/recordUpdate/uploadFileToFieldValue",
+			url:uploadImageURL,
 			// paramName corresponds to the name given to the file when it is sent to the server. 
 			// This name needs to match the name given to the FormFile() function on the server.
 	        done: function (e, data) {
@@ -82,12 +116,17 @@ function initImageRecordEditBehavior(componentContext,imageObjectRef) {
 					
 					console.log("Done uploading file: updated record ref = " + JSON.stringify(file.updatedRecord))
 					
-					// After uploading the file, the local cache of records in currentRecordSet will
-					// be out of date. So after updating the record on the server, the locally cached
-					// version of the record also needs to be updated. However, unlike other field
-					// types, there is no need to refresh all the fields in the record, since 
-					// calculated fields' calculations don't (yet) occur based upon files.
-					currRecordSet.updateRecordRef(file.updatedRecord)
+					if(imageObjectRef.properties.linkedValType == linkedComponentValTypeField) {
+						// After uploading the file, the local cache of records in currentRecordSet will
+						// be out of date. So after updating the record on the server, the locally cached
+						// version of the record also needs to be updated. However, unlike other field
+						// types, there is no need to refresh all the fields in the record, since 
+						// calculated fields' calculations don't (yet) occur based upon files.
+						currRecordSet.updateRecordRef(file.updatedRecord)
+					} else {
+						assert(imageObjectRef.properties.linkedValType == linkedComponentValTypeGlobal)
+						// TODO - Update local cache for global 
+					}
 					
 	            })
 	        },
@@ -100,12 +139,21 @@ function initImageRecordEditBehavior(componentContext,imageObjectRef) {
 		// record is unknown.
 		$('#'+imageUploadID).bind('fileuploadsubmit', function (e, data) {
 		    // The example input, doesn't have to be part of the upload form:
-			currRecordRef = currRecordSet.currRecordRef()
 			
-			var fileUploadParams = {
-				parentTableID: viewFormContext.tableID,
-				fieldID: imageObjectRef.properties.fieldID, 
-				recordID: currRecordRef.recordID }
+			var fileUploadParams = {}
+			if(imageObjectRef.properties.linkedValType == linkedComponentValTypeField) {
+				currRecordRef = currRecordSet.currRecordRef()
+				fileUploadParams = {
+					parentTableID: viewFormContext.tableID,
+					fieldID: imageObjectRef.properties.fieldID, 
+					recordID: currRecordRef.recordID }
+			} else {
+				assert(imageObjectRef.properties.linkedValType == linkedComponentValTypeGlobal)
+				fileUploadParams = {
+					parentDatabaseID: componentContext.databaseID,
+					globalID: imageObjectRef.properties.globalID,
+				}
+			}
 				
 			console.log("Starting file upload: params = " + JSON.stringify(fileUploadParams))
 			

@@ -66,3 +66,19 @@ func (params SetTextGlobalValueParams) generateValue() (string, error) {
 
 	return generic.EncodeJSONString(val)
 }
+
+type SetImageGlobalValueParams struct {
+	GlobalValUpdateHeader
+	CloudFileName string `json:"cloudFileName"`
+	OrigFileName  string `json:"origFileName"`
+}
+
+func (params SetImageGlobalValueParams) valueType() string { return GlobalTypeImage }
+
+func (params SetImageGlobalValueParams) generateValue() (string, error) {
+
+	val := ImageValue{CloudFileName: params.CloudFileName,
+		OrigFileName: params.OrigFileName}
+
+	return generic.EncodeJSONString(val)
+}

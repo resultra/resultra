@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/generic/cloudStorageWrapper"
 	"resultra/datasheet/server/userRole"
 )
 
@@ -22,6 +23,10 @@ func init() {
 
 	globalRouter.HandleFunc("/api/global/setTextValue", setTextValue)
 	globalRouter.HandleFunc("/api/global/getValues", getValues)
+
+	globalRouter.HandleFunc("/api/global/uploadFileToGlobalValue", uploadFileAPI)
+	globalRouter.HandleFunc("/api/global/getFile/{fileName}", getGlobalFileAPI)
+	globalRouter.HandleFunc("/api/global/getGlobalValUrl", getGlobalValUrlAPI)
 
 	http.Handle("/api/global/", globalRouter)
 }
@@ -126,4 +131,38 @@ func getValues(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, globalVals)
 	}
 
+}
+
+func uploadFileAPI(w http.ResponseWriter, req *http.Request) {
+
+	if uploadResponse, uploadErr := uploadFile(req); uploadErr != nil {
+		api.WriteErrorResponse(w, uploadErr)
+	} else {
+		api.WriteJSONResponse(w, *uploadResponse)
+	}
+
+}
+
+func getGlobalFileAPI(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	fileName := vars["fileName"]
+
+	http.ServeFile(w, r, cloudStorageWrapper.LocalAttachmentFileUploadDir+fileName)
+
+}
+
+func getGlobalValUrlAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetGlobalValUrlParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if urlResponse, err := getGlobalValUrl(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, urlResponse)
+	}
 }
