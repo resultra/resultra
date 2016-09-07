@@ -13,8 +13,8 @@ import (
 const checkBoxEntityKind string = "checkbox"
 
 type CheckBoxProperties struct {
-	Geometry componentLayout.LayoutGeometry `json:"geometry"`
-	FieldID  string                         `json:"fieldID"`
+	ComponentLink common.ComponentLink           `json:"componentLink"`
+	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 type CheckBox struct {
@@ -24,10 +24,9 @@ type CheckBox struct {
 }
 
 type NewCheckBoxParams struct {
-	ParentFormID       string                         `json:"parentFormID"`
-	FieldParentTableID string                         `json:"fieldParentTableID"`
-	FieldID            string                         `json:"fieldID"`
-	Geometry           componentLayout.LayoutGeometry `json:"geometry"`
+	ParentFormID  string                         `json:"parentFormID"`
+	ComponentLink common.ComponentLink           `json:"componentLink"`
+	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func validCheckBoxFieldType(fieldType string) bool {
@@ -44,19 +43,13 @@ func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	field, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
-	if fieldErr != nil {
-		return nil, fmt.Errorf("saveNewCheckBox: Can't create check box with params = '%+v': datastore error=%v",
-			params, fieldErr)
-	}
-
-	if !validCheckBoxFieldType(field.Type) {
-		return nil, fmt.Errorf("saveNewCheckBox: Invalid field type: expecting bool field, got %v", field.Type)
+	if compLinkErr := common.ValidateComponentLink(params.ComponentLink, validCheckBoxFieldType); compLinkErr != nil {
+		return nil, fmt.Errorf("saveNewCheckBox: %v", compLinkErr)
 	}
 
 	properties := CheckBoxProperties{
-		Geometry: params.Geometry,
-		FieldID:  params.FieldID}
+		ComponentLink: params.ComponentLink,
+		Geometry:      params.Geometry}
 
 	newCheckBox := CheckBox{ParentFormID: params.ParentFormID,
 		CheckBoxID: uniqueID.GenerateSnowflakeID(),

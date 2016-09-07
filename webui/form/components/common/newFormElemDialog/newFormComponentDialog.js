@@ -25,11 +25,12 @@ function openNewFormComponentDialog(newComponentParams) {
 			// TODO Create the new global first, then create the component attached to this field
 		} else if (newOrExistingVals.componentValSelection == "existingField") {
 			var newComponentAPIParams = {
-				fieldParentTableID: newComponentParams.parentTableID,
 				parentFormID: newComponentParams.formID,
-				linkedValType: "field",
 				geometry: newComponentParams.containerParams.geometry,
-				fieldID: newOrExistingVals.selectedFieldID
+				componentLink: {
+					linkedValType: "field",
+					fieldID: newOrExistingVals.selectedFieldID
+				}
 			}
 			componentCreated = true
 			newComponentParams.createNewFormComponent($parentDialog,newComponentAPIParams)
@@ -38,8 +39,10 @@ function openNewFormComponentDialog(newComponentParams) {
 			var newComponentAPIParams = {
 				parentFormID: newComponentParams.formID,
 				geometry: newComponentParams.containerParams.geometry,
-				linkedValType: "global",
-				globalID: newOrExistingVals.selectedGlobalID
+				componentLink: {
+					linkedValType: "global",
+					globalID: newOrExistingVals.selectedGlobalID					
+				}
 			}
 			componentCreated = true
 			console.log("New Component params (existing global):" + JSON.stringify(newComponentAPIParams))

@@ -22,6 +22,9 @@ func init() {
 	globalRouter.HandleFunc("/api/global/validateNewName", validateNewNameAPI)
 
 	globalRouter.HandleFunc("/api/global/setTextValue", setTextValue)
+	globalRouter.HandleFunc("/api/global/setBoolValue", setBoolValue)
+	globalRouter.HandleFunc("/api/global/setTimeValue", setTimeValue)
+	globalRouter.HandleFunc("/api/global/setTimeValue", setNumberValue)
 	globalRouter.HandleFunc("/api/global/getValues", getValues)
 
 	globalRouter.HandleFunc("/api/global/uploadFileToGlobalValue", uploadFileAPI)
@@ -101,6 +104,57 @@ func validateNewNameAPI(w http.ResponseWriter, r *http.Request) {
 
 func setTextValue(w http.ResponseWriter, r *http.Request) {
 	var params SetTextGlobalValueParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	globalValUpdate, setErr := updateGlobalValue(params)
+	if setErr != nil {
+		api.WriteErrorResponse(w, setErr)
+		return
+	} else {
+		api.WriteJSONResponse(w, globalValUpdate)
+	}
+
+}
+
+func setTimeValue(w http.ResponseWriter, r *http.Request) {
+	var params SetTimeGlobalValueParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	globalValUpdate, setErr := updateGlobalValue(params)
+	if setErr != nil {
+		api.WriteErrorResponse(w, setErr)
+		return
+	} else {
+		api.WriteJSONResponse(w, globalValUpdate)
+	}
+
+}
+
+func setBoolValue(w http.ResponseWriter, r *http.Request) {
+	var params SetBoolGlobalValueParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	globalValUpdate, setErr := updateGlobalValue(params)
+	if setErr != nil {
+		api.WriteErrorResponse(w, setErr)
+		return
+	} else {
+		api.WriteJSONResponse(w, globalValUpdate)
+	}
+
+}
+
+func setNumberValue(w http.ResponseWriter, r *http.Request) {
+	var params SetNumberGlobalValueParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

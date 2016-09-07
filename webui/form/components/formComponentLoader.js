@@ -52,15 +52,16 @@ function loadFormComponents(loadFormConfig) {
 				$textBoxContainer.find('label').text(label)
 			}
 		
+			var componentLink = textBox.properties.componentLink
 		
-			if(textBox.properties.linkedValType == linkedComponentValTypeField) {
+			if(componentLink.linkedValType == linkedComponentValTypeField) {
 				// text box is linked to a field type
 				// Set the label to the field name
-				var fieldName = getFieldRef(textBox.properties.fieldID).name
+				var fieldName = getFieldRef(componentLink.fieldID).name
 				setTextBoxLabel(containerObj,fieldName)
 			} else {
 				// text box is linked to a global
-				var globalInfo = componentContext.globalsByID[textBox.properties.globalID]
+				var globalInfo = componentContext.globalsByID[componentLink.globalID]
 				var globalName = globalInfo.name
 				setTextBoxLabel(containerObj,globalName)
 			}
@@ -84,10 +85,19 @@ function loadFormComponents(loadFormConfig) {
 			var containerHTML = checkBoxContainerHTML(checkBox.checkBoxID);
 			var containerObj = $(containerHTML)
 			
-			// Set the label to the field name. A span element is used, since
-			// the checkbox itself is nested inside a label.
-			var fieldName = getFieldRef(checkBox.properties.fieldID).name
-			containerObj.find('span').text(fieldName)
+			var componentLink = checkBox.properties.componentLink
+			
+			var componentLabel
+			if(componentLink.linkedValType == linkedComponentValTypeField) {
+				// Set the label to the field name. A span element is used, since
+				// the checkbox itself is nested inside a label.
+				componentLabel = getFieldRef(componentLink.fieldID).name
+			} else {
+				var globalInfo = componentContext.globalsByID[componentLink.globalID]
+				componentLabel = globalInfo.name
+			}
+			
+			containerObj.find('span').text(componentLabel)
 			
 			// Position the object withing the #layoutCanvas div
 			$componentRow.append(containerObj)
@@ -106,9 +116,17 @@ function loadFormComponents(loadFormConfig) {
 			var containerHTML = datePickerContainerHTML(datePicker.datePickerID);
 			var containerObj = $(containerHTML)
 			
-			// Set the label to the field name
-			var fieldName = getFieldRef(datePicker.properties.fieldID).name
-			containerObj.find('label').text(fieldName)
+			var componentLink = datePicker.properties.componentLink
+			
+			var componentLabel
+			if(componentLink.linkedValType == linkedComponentValTypeField) {
+				// Set the label to the field name.
+				componentLabel = getFieldRef(componentLink.fieldID).name
+			} else {
+				var globalInfo = componentContext.globalsByID[componentLink.globalID]
+				componentLabel = globalInfo.name
+			}
+			containerObj.find('label').text(componentLabel)
 			
 			// Position the object withing the #layoutCanvas div
 			$componentRow.append(containerObj)
@@ -157,11 +175,13 @@ function loadFormComponents(loadFormConfig) {
 			var labelID = imageContainerLabelIDFromContainerElemID(image.imageID)
 			console.log("loadFormComponents: initializing label: id=" + labelID)
 			
+			var componentLink = image.properties.componentLink
+			
 			var componentLabel
-			if(image.properties.linkedValType == linkedComponentValTypeField) {
-				componentLabel = getFieldRef(image.properties.fieldID).name
+			if(componentLink.linkedValType == linkedComponentValTypeField) {
+				componentLabel = getFieldRef(componentLink.fieldID).name
 			} else {
-				var globalInfo = componentContext.globalsByID[image.properties.globalID]
+				var globalInfo = componentContext.globalsByID[componentLink.globalID]
 				componentLabel = globalInfo.name
 			}
 			

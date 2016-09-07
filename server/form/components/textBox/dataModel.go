@@ -13,9 +13,7 @@ import (
 const textBoxEntityKind string = "textbox"
 
 type TextBoxProperties struct {
-	LinkedValType string                         `json:"linkedValType"`
-	FieldID       string                         `json:"fieldID"`
-	GlobalID      string                         `json:"globalID"`
+	ComponentLink common.ComponentLink           `json:"componentLink"`
 	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
 }
 
@@ -26,12 +24,9 @@ type TextBox struct {
 }
 
 type NewTextBoxParams struct {
-	ParentFormID       string                         `json:"parentFormID"`
-	FieldParentTableID string                         `json:"fieldParentTableID"`
-	LinkedValType      string                         `json:"linkedValType"`
-	FieldID            string                         `json:"fieldID"`
-	GlobalID           string                         `json:"globalID"`
-	Geometry           componentLayout.LayoutGeometry `json:"geometry"`
+	ParentFormID  string                         `json:"parentFormID"`
+	ComponentLink common.ComponentLink           `json:"componentLink"`
+	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func validTextBoxFieldType(fieldType string) bool {
@@ -44,39 +39,19 @@ func validTextBoxFieldType(fieldType string) bool {
 	}
 }
 
-func validLinkedValType(valType string) bool {
-	if valType == "global" || valType == "field" {
-		return true
-	} else {
-		return false
-	}
-}
-
 func saveNewTextBox(params NewTextBoxParams) (*TextBox, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if !validLinkedValType(params.LinkedValType) {
-		return nil, fmt.Errorf("Invalid text box parameters (linked value type): %v", params.LinkedValType)
-	}
-
-	field, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
-	if fieldErr != nil {
-		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
-			params.FieldID, fieldErr)
-	}
-
-	if !validTextBoxFieldType(field.Type) {
-		return nil, fmt.Errorf("NewTextBox: Invalid field type: expecting text or number field, got %v", field.Type)
+	if compLinkErr := common.ValidateComponentLink(params.ComponentLink, validTextBoxFieldType); compLinkErr != nil {
+		return nil, fmt.Errorf("saveNewTextBox: %v", compLinkErr)
 	}
 
 	properties := TextBoxProperties{
 		Geometry:      params.Geometry,
-		LinkedValType: params.LinkedValType,
-		FieldID:       params.FieldID,
-		GlobalID:      params.GlobalID}
+		ComponentLink: params.ComponentLink}
 
 	newTextBox := TextBox{ParentFormID: params.ParentFormID,
 		TextBoxID:  uniqueID.GenerateSnowflakeID(),

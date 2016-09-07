@@ -4,9 +4,11 @@ function loadRecordIntoTextBox(textBoxElem, recordRef) {
 	
 	var textBoxObjectRef = textBoxElem.data("objectRef")
 	
-	if(textBoxObjectRef.properties.linkedValType == linkedComponentValTypeField) {
+	var componentLink = textBoxObjectRef.properties.componentLink
+	
+	if(componentLink.linkedValType == linkedComponentValTypeField) {
 		// text box is linked to a field value
-		var textBoxFieldID = textBoxObjectRef.properties.fieldID
+		var textBoxFieldID = componentLink.fieldID
 	
 		console.log("loadRecordIntoTextBox: Field ID to load data:" + textBoxFieldID)
 	
@@ -29,7 +31,7 @@ function loadRecordIntoTextBox(textBoxElem, recordRef) {
 	} else {
 		// Text box is linked to a global value
 		
-		var textBoxGlobalID = textBoxObjectRef.properties.globalID
+		var textBoxGlobalID = componentLink.globalID
 		if(textBoxGlobalID in currGlobalVals) {
 			var globalVal = currGlobalVals[textBoxGlobalID]
 			textBoxElem.find('input').val(globalVal)
@@ -48,7 +50,9 @@ function loadRecordIntoTextBox(textBoxElem, recordRef) {
 
 function initTextBoxFieldEditBehavior(container, textFieldObjectRef) {
 	
-	var fieldRef = getFieldRef(textFieldObjectRef.properties.fieldID)
+	var componentLink = textFieldObjectRef.properties.componentLink
+	
+	var fieldRef = getFieldRef(componentLink.fieldID)
 	if(fieldRef.isCalcField) {
 		container.find('input').prop('disabled',true);
 		return;  // stop initialization, the text box is read only.
@@ -62,8 +66,10 @@ function initTextBoxFieldEditBehavior(container, textFieldObjectRef) {
 		var containerID = container.attr("id")
 	
 		var currTextObjRef = getElemObjectRef(containerID)
+		
+		var componentLink = currTextObjRef.properties.componentLink
 	
-		var fieldID = currTextObjRef.properties.fieldID
+		var fieldID = componentLink.fieldID
 		var fieldRef = getFieldRef(fieldID)
 		var fieldType = fieldRef.type
 		console.log("Text Box focus out:" 
@@ -135,12 +141,14 @@ function initTextBoxFieldEditBehavior(container, textFieldObjectRef) {
 
 function initTextBoxGlobalValBehavior(componentContext,$container, textFieldObjectRef) {
 	
-	var globalInfo = componentContext.globalsByID[textFieldObjectRef.properties.globalID]
+	var componentLink = textFieldObjectRef.properties.componentLink
+	
+	var globalInfo = componentContext.globalsByID[componentLink.globalID]
 	$container.focusout(function () {
 		var inputVal = $container.find("input").val()
 		var setGlobalValParams = {
 			parentDatabaseID: componentContext.databaseID,
-			globalID: textFieldObjectRef.properties.globalID,
+			globalID: componentLink.globalID,
 			value: inputVal
 		}
 		console.log("Setting global value: " + JSON.stringify(setGlobalValParams))
@@ -157,11 +165,13 @@ function initTextBoxRecordEditBehavior(componentContext,textFieldObjectRef) {
 		loadRecord: loadRecordIntoTextBox
 	})
 	
-	if(textFieldObjectRef.properties.linkedValType == linkedComponentValTypeField) {
+	var componentLink = textFieldObjectRef.properties.componentLink
+	
+	if(componentLink.linkedValType == linkedComponentValTypeField) {
 		initTextBoxFieldEditBehavior(container,textFieldObjectRef)
 		
 	} else { 
-		assert(textFieldObjectRef.properties.linkedValType == linkedComponentValTypeGlobal)
+		assert(componentLink.linkedValType == linkedComponentValTypeGlobal)
 		initTextBoxGlobalValBehavior(componentContext,container,textFieldObjectRef)
 	}
 

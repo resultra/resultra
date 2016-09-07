@@ -13,8 +13,8 @@ import (
 const datePickerEntityKind string = "datepicker"
 
 type DatePickerProperties struct {
-	FieldID  string                         `json:"fieldID"`
-	Geometry componentLayout.LayoutGeometry `json:"geometry"`
+	ComponentLink common.ComponentLink           `json:"componentLink"`
+	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 type DatePicker struct {
@@ -24,10 +24,9 @@ type DatePicker struct {
 }
 
 type NewDatePickerParams struct {
-	FieldParentTableID string                         `json:"fieldParentTableID"`
-	ParentFormID       string                         `json:"parentFormID"`
-	FieldID            string                         `json:"fieldID"`
-	Geometry           componentLayout.LayoutGeometry `json:"geometry"`
+	ParentFormID  string                         `json:"parentFormID"`
+	ComponentLink common.ComponentLink           `json:"componentLink"`
+	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func validDatePickerFieldType(fieldType string) bool {
@@ -44,19 +43,13 @@ func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	field, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
-	if fieldErr != nil {
-		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
-			params.FieldID, fieldErr)
-	}
-
-	if !validDatePickerFieldType(field.Type) {
-		return nil, fmt.Errorf("saveNewDatePicker: Invalid field type: expecting time field, got %v", field.Type)
+	if compLinkErr := common.ValidateComponentLink(params.ComponentLink, validDatePickerFieldType); compLinkErr != nil {
+		return nil, fmt.Errorf("saveNewDatePicker: %v", compLinkErr)
 	}
 
 	properties := DatePickerProperties{
-		Geometry: params.Geometry,
-		FieldID:  params.FieldID}
+		Geometry:      params.Geometry,
+		ComponentLink: params.ComponentLink}
 
 	newDatePicker := DatePicker{ParentFormID: params.ParentFormID,
 		DatePickerID: uniqueID.GenerateSnowflakeID(),

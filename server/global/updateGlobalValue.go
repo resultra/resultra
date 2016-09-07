@@ -3,6 +3,7 @@ package global
 import (
 	"fmt"
 	"resultra/datasheet/server/generic"
+	"time"
 )
 
 type GlobalValUpdater interface {
@@ -63,6 +64,48 @@ func (params SetTextGlobalValueParams) valueType() string { return GlobalTypeTex
 func (params SetTextGlobalValueParams) generateValue() (string, error) {
 
 	val := TextValue{Val: params.Value}
+
+	return generic.EncodeJSONString(val)
+}
+
+type SetBoolGlobalValueParams struct {
+	GlobalValUpdateHeader
+	Value bool `json:"value"`
+}
+
+func (params SetBoolGlobalValueParams) valueType() string { return GlobalTypeBool }
+
+func (params SetBoolGlobalValueParams) generateValue() (string, error) {
+
+	val := BoolValue{Val: params.Value}
+
+	return generic.EncodeJSONString(val)
+}
+
+type SetTimeGlobalValueParams struct {
+	GlobalValUpdateHeader
+	Value time.Time `json:"value"`
+}
+
+func (params SetTimeGlobalValueParams) valueType() string { return GlobalTypeTime }
+
+func (params SetTimeGlobalValueParams) generateValue() (string, error) {
+
+	val := TimeValue{Val: params.Value}
+
+	return generic.EncodeJSONString(val)
+}
+
+type SetNumberGlobalValueParams struct {
+	GlobalValUpdateHeader
+	Value float64 `json:"value"`
+}
+
+func (params SetNumberGlobalValueParams) valueType() string { return GlobalTypeNumber }
+
+func (params SetNumberGlobalValueParams) generateValue() (string, error) {
+
+	val := NumberValue{Val: params.Value}
 
 	return generic.EncodeJSONString(val)
 }

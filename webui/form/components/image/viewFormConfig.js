@@ -14,8 +14,10 @@ function loadRecordIntoImage(imageElem, recordRef) {
 		
 	}
 	
-	if(imageObjectRef.properties.linkedValType == linkedComponentValTypeField) {
-		var imageFieldID = imageObjectRef.properties.fieldID
+	var componentLink = imageObjectRef.properties.componentLink
+	
+	if(componentLink.linkedValType == linkedComponentValTypeField) {
+		var imageFieldID = componentLink.fieldID
 	
 		console.log("loadRecordIntoImage: Field ID to load data:" + imageFieldID)
 
@@ -43,9 +45,9 @@ function loadRecordIntoImage(imageElem, recordRef) {
 			$(imageDivIDSelector).html('')
 		}	
 	} else {
-		assert(imageObjectRef.properties.linkedValType == linkedComponentValTypeGlobal)
+		assert(componentLink.linkedValType == linkedComponentValTypeGlobal)
 		
-		var imageGlobalID = imageObjectRef.properties.globalID
+		var imageGlobalID = componentLink.globalID
 		if(imageGlobalID in currGlobalVals) {
 			var globalVal = currGlobalVals[imageGlobalID]
 			var getUrlParams = {
@@ -82,12 +84,13 @@ function initImageRecordEditBehavior(componentContext,imageObjectRef) {
 	var imageDropZoneSelector = '#' + imageDropZoneContainerID
 	var imageUploadID = imageUploadInputIDFromContainerElemID(imageContainerID)
 	
+	var componentLink = imageObjectRef.properties.componentLink
 	
 	var uploadImageURL = ""
-	if(imageObjectRef.properties.linkedValType == linkedComponentValTypeField) {
+	if(componentLink.linkedValType == linkedComponentValTypeField) {
 		uploadImageURL = "/api/recordUpdate/uploadFileToFieldValue"
 	} else {
-		assert(imageObjectRef.properties.linkedValType == linkedComponentValTypeGlobal)
+		assert(componentLink.linkedValType == linkedComponentValTypeGlobal)
 		uploadImageURL = "/api/global/uploadFileToGlobalValue"
 	}
 		
@@ -116,7 +119,7 @@ function initImageRecordEditBehavior(componentContext,imageObjectRef) {
 					
 					console.log("Done uploading file: updated record ref = " + JSON.stringify(file.updatedRecord))
 					
-					if(imageObjectRef.properties.linkedValType == linkedComponentValTypeField) {
+					if(imageObjectRef.properties.componentLink.linkedValType == linkedComponentValTypeField) {
 						// After uploading the file, the local cache of records in currentRecordSet will
 						// be out of date. So after updating the record on the server, the locally cached
 						// version of the record also needs to be updated. However, unlike other field
@@ -124,7 +127,7 @@ function initImageRecordEditBehavior(componentContext,imageObjectRef) {
 						// calculated fields' calculations don't (yet) occur based upon files.
 						currRecordSet.updateRecordRef(file.updatedRecord)
 					} else {
-						assert(imageObjectRef.properties.linkedValType == linkedComponentValTypeGlobal)
+						assert(imageObjectRef.properties.componentLink.linkedValType == linkedComponentValTypeGlobal)
 						// TODO - Update local cache for global 
 					}
 					
@@ -141,17 +144,17 @@ function initImageRecordEditBehavior(componentContext,imageObjectRef) {
 		    // The example input, doesn't have to be part of the upload form:
 			
 			var fileUploadParams = {}
-			if(imageObjectRef.properties.linkedValType == linkedComponentValTypeField) {
+			if(componentLink.linkedValType == linkedComponentValTypeField) {
 				currRecordRef = currRecordSet.currRecordRef()
 				fileUploadParams = {
 					parentTableID: viewFormContext.tableID,
-					fieldID: imageObjectRef.properties.fieldID, 
+					fieldID: componentLink.fieldID, 
 					recordID: currRecordRef.recordID }
 			} else {
-				assert(imageObjectRef.properties.linkedValType == linkedComponentValTypeGlobal)
+				assert(componentLink.linkedValType == linkedComponentValTypeGlobal)
 				fileUploadParams = {
 					parentDatabaseID: componentContext.databaseID,
-					globalID: imageObjectRef.properties.globalID,
+					globalID: componentLink.globalID,
 				}
 			}
 				

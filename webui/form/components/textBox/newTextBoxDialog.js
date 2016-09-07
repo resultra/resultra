@@ -13,8 +13,10 @@ function openNewTextBoxDialog(databaseID,formID,parentTableID,containerParams)
 
 			  var placeholderSelector = '#'+containerParams.containerID
 			  
-			  if(newTextBoxObjectRef.properties.linkedValType == linkedComponentValTypeField) {
-				  var fieldName = getFieldRef(newTextBoxObjectRef.properties.fieldID).name
+			  var componentLink = newTextBoxObjectRef.properties.componentLink
+			  
+			  if(componentLink.linkedValType == linkedComponentValTypeField) {
+				  var fieldName = getFieldRef(componentLink.fieldID).name
 				  $(placeholderSelector).find('label').text(fieldName)			  	
 			  } else {
 				  var globalName = "Global Value"

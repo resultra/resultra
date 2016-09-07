@@ -132,12 +132,13 @@ func NewField(fieldParams NewFieldParams) (string, error) {
 	return CreateNewFieldFromRawInputs(fieldParams.ParentTableID, newField)
 }
 
-func GetField(tableID string, fieldID string) (*Field, error) {
-
+// Getting an individual field doesn't require the table ID, since the field ID is unique.
+// TODO - Refactor existing code to remove dependency on parent table ID to retrieve an individiual field.
+func GetFieldWithoutTableID(fieldID string) (*Field, error) {
 	var fieldGetDest Field
 
 	if getErr := databaseWrapper.DBHandle().QueryRow(`SELECT table_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text 
-			FROM fields WHERE table_id=$1 AND field_id=$2 LIMIT 1`, tableID, fieldID).Scan(
+			FROM fields WHERE field_id=$1 LIMIT 1`, fieldID).Scan(
 		&fieldGetDest.ParentTableID,
 		&fieldGetDest.FieldID,
 		&fieldGetDest.Name,
@@ -150,6 +151,12 @@ func GetField(tableID string, fieldID string) (*Field, error) {
 	}
 
 	return &fieldGetDest, nil
+
+}
+
+func GetField(tableID string, fieldID string) (*Field, error) {
+
+	return GetFieldWithoutTableID(fieldID)
 }
 
 func UpdateExistingField(updatedField *Field) (*Field, error) {

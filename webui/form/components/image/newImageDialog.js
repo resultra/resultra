@@ -10,8 +10,10 @@ function openNewImageDialog(databaseID,formID,parentTableID,containerParams)
 
 			  var placeholderSelector = '#'+containerParams.containerID
 
-			  if(newTextBoxObjectRef.properties.linkedValType == linkedComponentValTypeField) {
-				  var fieldName = getFieldRef(newImageObjectRef.properties.fieldID).name
+			  var componentLink = newImageObjectRef.properties.componentLink
+
+			  if(componentLink.linkedValType == linkedComponentValTypeField) {
+				  var fieldName = getFieldRef(componentLink.fieldID).name
 				  $(placeholderSelector).find('label').text(fieldName)
 			  } else {
 				  var globalName = "Global Value"
