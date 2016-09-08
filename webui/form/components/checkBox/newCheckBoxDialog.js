@@ -8,11 +8,18 @@ function openNewCheckboxDialog(databaseID,formID,parentTableID,containerParams) 
 		jsonAPIRequest("frm/checkBox/new",newComponentParams,function(newCheckBoxObjectRef) {
 	          console.log("createNewCheckbox: Done getting new ID:response=" + JSON.stringify(newCheckBoxObjectRef));
 	  
-		  	  var fieldName = getFieldRef(newCheckBoxObjectRef.properties.fieldID).name;
-			  
+	  		  var componentLink = newCheckBoxObjectRef.properties.componentLink
+	  
+			  var componentLabel
+			  if(componentLink.linkedValType == linkedComponentValTypeField) {
+				  componentLabel = getFieldRef(componentLink.fieldID).name;
+			  } else {
+			  	componentLabel = "Global Value"
+			  }
+	  			  
 			  var placeholderSelector = '#'+containerParams.containerID
 			  
-			  $(placeholderSelector).find('label').text(fieldName)
+			  $(placeholderSelector).find('label').text(componentLabel)
 			  $(placeholderSelector).attr("id",newCheckBoxObjectRef.checkBoxID)
 	  
 			  // Set up the newly created checkbox for resize, selection, etc.
@@ -35,6 +42,7 @@ function openNewCheckboxDialog(databaseID,formID,parentTableID,containerParams) 
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeBool],
+		globalTypes: [globalTypeBool],
 		containerParams: containerParams,
 		createNewFormComponent: createNewCheckbox
 	}

@@ -3,58 +3,72 @@ function loadRecordIntoCheckBox(checkBoxElem, recordRef) {
 	console.log("loadRecordIntoCheckBox: loading record into text box: " + JSON.stringify(recordRef))
 	
 	var checkBoxObjectRef = checkBoxElem.data("objectRef")
-	var checkBoxFieldID = checkBoxObjectRef.properties.fieldID
-	
-	console.log("loadRecordIntoCheckBox: Field ID to load data:" + checkBoxFieldID)
-
-
 	var checkBoxContainerID = checkBoxObjectRef.checkBoxID
 	var checkBoxID = checkBoxElemIDFromContainerElemID(checkBoxContainerID)
 	var checkBoxSelector = '#' + checkBoxID;
 	
-	// Populate the "intersection" of field values in the record
-	// with the fields shown by the layout's containers.
-	if(recordRef.fieldValues.hasOwnProperty(checkBoxFieldID)) {
+	var componentLink = checkBoxObjectRef.properties.componentLink
+	
+	if(componentLink.linkedValType == linkedComponentValTypeField) {
+		var checkBoxFieldID = componentLink.fieldID
+	
+		console.log("loadRecordIntoCheckBox: Field ID to load data:" + checkBoxFieldID)
 
-		var fieldVal = recordRef.fieldValues[checkBoxFieldID]
 
-		console.log("loadRecordIntoCheckBox: Load value into container: " + $(checkBoxElem).attr("id") + " field ID:" + 
-					checkBoxFieldID + "  value:" + fieldVal)
+	
+		// Populate the "intersection" of field values in the record
+		// with the fields shown by the layout's containers.
+		if(recordRef.fieldValues.hasOwnProperty(checkBoxFieldID)) {
 
-		if(fieldVal == true)
+			var fieldVal = recordRef.fieldValues[checkBoxFieldID]
+
+			console.log("loadRecordIntoCheckBox: Load value into container: " + $(checkBoxElem).attr("id") + " field ID:" + 
+						checkBoxFieldID + "  value:" + fieldVal)
+
+			if(fieldVal == true)
+			{
+				$(checkBoxSelector).prop("checked",true)
+			}
+			else {
+				$(checkBoxSelector).prop("checked",false)
+			}
+
+		} // If record has a value for the current container's associated field ID.
+		else
 		{
-			$(checkBoxSelector).prop("checked",true)
+			$(checkBoxSelector).prop("indeterminate", true)
 		}
-		else {
-			$(checkBoxSelector).prop("checked",false)
+	} else {
+		var checkBoxGlobalID = componentLink.globalID
+		console.log("loadRecordIntoCheckBox: Global ID to load data:" + checkBoxGlobalID)
+		
+		if(checkBoxGlobalID in currGlobalVals) {
+			var globalVal = currGlobalVals[checkBoxGlobalID]
+			if(globalVal == true)
+			{
+				$(checkBoxSelector).prop("checked",true)
+			}
+			else {
+				$(checkBoxSelector).prop("checked",false)
+			}
 		}
-
-	} // If record has a value for the current container's associated field ID.
-	else
-	{
-		$(checkBoxSelector).prop("indeterminate", true)
+		else
+		{
+			$(checkBoxSelector).prop("indeterminate", true)
+		}
+		
 	}
+	
 	
 }
 
-
-function initCheckBoxRecordEditBehavior(componentContext,checkBoxObjectRef) {
+function initCheckBoxFieldEditBehavior(componentContext,checkBoxObjectRef) {
 	
-	var checkBoxContainerID = checkBoxObjectRef.checkBoxID
-	var checkBoxID = checkBoxElemIDFromContainerElemID(checkBoxContainerID)
-	var checkboxSelector = '#'+checkBoxID
-	console.log("initCheckBoxRecordEditBehavior: container ID =  " +checkBoxContainerID + ' checkbox ID = '+ checkBoxID)
+	var checkboxSelector = '#'+checkBoxElemIDFromContainerElemID(checkBoxObjectRef.checkBoxID)
 	
-	var checkBoxContainer = $('#'+checkBoxContainerID)
+	var componentLink = checkBoxObjectRef.properties.componentLink
 	
-
-
-	checkBoxContainer.data("viewFormConfig", {
-		loadRecord: loadRecordIntoCheckBox
-	})
-
-
-	var fieldRef = getFieldRef(checkBoxObjectRef.properties.fieldID)
+	var fieldRef = getFieldRef(componentLink.fieldID)
 	if(fieldRef.isCalcField) {
 		$(checkboxSelector).checkbox()
 		$(checkboxSelector).checkbox('set disabled')
@@ -66,19 +80,18 @@ function initCheckBoxRecordEditBehavior(componentContext,checkBoxObjectRef) {
 		
 			// Get the most recent copy of the object reference. It could have changed between
 			// initialization time and the time the checkbox was changed.
-			var containerID = checkBoxObjectRef.checkBoxID
-			var objectRef = getElemObjectRef(containerID)
-			var checkBoxSelect = '#'+checkBoxElemIDFromContainerElemID(containerID)
+			var objectRef = getElemObjectRef(checkBoxObjectRef.checkBoxID)
+			var componentLink = objectRef.properties.componentLink
 			
 			var isChecked = $(this).prop("checked")
-	
+		
 			currRecordRef = currRecordSet.currRecordRef()
 			var setRecordValParams = {
 				parentTableID:viewFormContext.tableID,
 				recordID:currRecordRef.recordID, 
-				fieldID:objectRef.properties.fieldID, 
+				fieldID:componentLink.fieldID, 
 				value:isChecked }
-			console.log("Setting boolean value: " + JSON.stringify(setRecordValParams))
+			console.log("Setting boolean value (record): " + JSON.stringify(setRecordValParams))
 			jsonAPIRequest("recordUpdate/setBoolFieldValue",setRecordValParams,function(updatedRecordRef) {
 				
 				// After updating the record, the local cache of records in currentRecordSet will
@@ -91,6 +104,52 @@ function initCheckBoxRecordEditBehavior(componentContext,checkBoxObjectRef) {
 				loadCurrRecordIntoLayout()
 			}) // set record's text field value
 	})
+	
+}
+
+function initCheckBoxGlobalEditBehavior(componentContext,checkBoxObjectRef) {
+
+	var checkboxSelector = '#'+checkBoxElemIDFromContainerElemID(checkBoxObjectRef.checkBoxID)
+		
+  	$(checkboxSelector).click( function () {
+		
+		// Get the most recent copy of the object reference. It could have changed between
+		// initialization time and the time the checkbox was changed.
+		var objectRef = getElemObjectRef(checkBoxObjectRef.checkBoxID)
+		var componentLink = objectRef.properties.componentLink
+		
+		var isChecked = $(this).prop("checked")
+		
+		var setGlobalValParams = {
+			parentDatabaseID: componentContext.databaseID,
+			globalID: componentLink.globalID,
+			value: isChecked }
+		console.log("Setting boolean value (global): " + JSON.stringify(setGlobalValParams))
+		jsonAPIRequest("global/setBoolValue",setGlobalValParams,function(updatedGlobalVal) {
+			
+			// TODO - Update global structure with updated value.
+		}) // set record's text field value
+		
+	})
+	
+}
+
+function initCheckBoxRecordEditBehavior(componentContext,checkBoxObjectRef) {
+
+	var $checkBoxContainer = $('#'+checkBoxObjectRef.checkBoxID)
+		
+	$checkBoxContainer.data("viewFormConfig", {
+		loadRecord: loadRecordIntoCheckBox
+	})
+	
+	var componentLink = checkBoxObjectRef.properties.componentLink
+
+	if(componentLink.linkedValType == linkedComponentValTypeField) {
+		initCheckBoxFieldEditBehavior(componentContext,checkBoxObjectRef)
+	} else {
+		initCheckBoxGlobalEditBehavior(componentContext,checkBoxObjectRef)
+	}
+
 
 	
 	
