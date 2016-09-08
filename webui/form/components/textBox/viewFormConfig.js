@@ -39,9 +39,7 @@ function loadRecordIntoTextBox(textBoxElem, recordRef) {
 		else
 		{
 			textBoxElem.find('input').val("") // clear the value in the container
-		}
-		
-		console.log("text box: skipping initialization for global value")
+		}		
 	}
 	
 	
@@ -144,16 +142,32 @@ function initTextBoxGlobalValBehavior(componentContext,$container, textFieldObje
 	var componentLink = textFieldObjectRef.properties.componentLink
 	
 	var globalInfo = componentContext.globalsByID[componentLink.globalID]
+	
 	$container.focusout(function () {
 		var inputVal = $container.find("input").val()
-		var setGlobalValParams = {
-			parentDatabaseID: componentContext.databaseID,
-			globalID: componentLink.globalID,
-			value: inputVal
+		if(globalInfo.type == globalTypeNumber) {
+			var numberVal = Number(inputVal)
+			if(!isNaN(numberVal)) {
+				var setGlobalValParams = {
+					parentDatabaseID: componentContext.databaseID,
+					globalID: componentLink.globalID,
+					value: numberVal
+				}
+				console.log("Setting global value (number): " + JSON.stringify(setGlobalValParams))
+				jsonAPIRequest("global/setNumberValue",setGlobalValParams,function(replyData) {
+				})
+				
+			}
+		} else {
+			var setGlobalValParams = {
+				parentDatabaseID: componentContext.databaseID,
+				globalID: componentLink.globalID,
+				value: inputVal
+			}
+			console.log("Setting global value (text): " + JSON.stringify(setGlobalValParams))
+			jsonAPIRequest("global/setTextValue",setGlobalValParams,function(replyData) {
+			})	
 		}
-		console.log("Setting global value: " + JSON.stringify(setGlobalValParams))
-		jsonAPIRequest("global/setTextValue",setGlobalValParams,function(replyData) {
-		})
 	})
 }
 

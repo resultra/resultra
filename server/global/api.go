@@ -24,7 +24,7 @@ func init() {
 	globalRouter.HandleFunc("/api/global/setTextValue", setTextValue)
 	globalRouter.HandleFunc("/api/global/setBoolValue", setBoolValue)
 	globalRouter.HandleFunc("/api/global/setTimeValue", setTimeValue)
-	globalRouter.HandleFunc("/api/global/setTimeValue", setNumberValue)
+	globalRouter.HandleFunc("/api/global/setNumberValue", setNumberValue)
 	globalRouter.HandleFunc("/api/global/getValues", getValues)
 
 	globalRouter.HandleFunc("/api/global/uploadFileToGlobalValue", uploadFileAPI)
