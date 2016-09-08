@@ -5,6 +5,6 @@ function loadHtmlEditorProperties(htmlEditorRef) {
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#htmlEditorProps')
 		
-	toggleFormulaEditorForField(htmlEditorRef.properties.fieldID)
+	toggleFormulaEditorForComponent(htmlEditorRef.properties.componentLink)
 	
 }

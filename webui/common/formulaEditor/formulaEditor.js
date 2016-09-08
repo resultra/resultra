@@ -144,13 +144,20 @@ function closeFormulaEditor() {
 	formulaEditorConfig.hideEditorFunc()	
 }
 
-function toggleFormulaEditorForField(fieldID) {
+function toggleFormulaEditorForComponent(componentLink) {
 	
-	var fieldRef = getFieldRef(fieldID)
+	if(componentLink.linkedValType == linkedComponentValTypeField) {
+		
+		var fieldRef = getFieldRef(componentLink.fieldID)
 	
-	if(fieldRef.isCalcField) {
-		openFormulaEditor(fieldRef)
+		if(fieldRef.isCalcField) {
+			openFormulaEditor(fieldRef)
+		} else {
+			closeFormulaEditor()
+		}
 	} else {
-		closeFormulaEditor()
+		// Global values don't have formulas
+			closeFormulaEditor()		
 	}
+	
 }
