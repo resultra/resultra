@@ -2,6 +2,7 @@ CREATE TABLE globals (
 	global_id text PRIMARY KEY,
 	database_id text REFERENCES databases (database_id), 
 	name text NOT NULL, 
+	ref_name text NOT NULL, 
 	type text NOT NULL
 );
 

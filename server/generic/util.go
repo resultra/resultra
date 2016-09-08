@@ -47,3 +47,15 @@ func WellFormedItemName(itemName string) bool {
 	}
 	return true
 }
+
+// A "reference name" for a field can only contain
+// TODO - Can't start with "true or false" - add this when supporting boolean values
+var wellFormedFormulaReferenceNameRegexp = regexp.MustCompile("^[a-zA-Z_][a-zA-Z0-9_]*$")
+
+func WellFormedFormulaReferenceName(referenceName string) bool {
+	if !wellFormedFormulaReferenceNameRegexp.MatchString(referenceName) {
+		return false
+	} else {
+		return true
+	}
+}

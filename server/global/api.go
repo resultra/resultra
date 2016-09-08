@@ -21,6 +21,8 @@ func init() {
 	globalRouter.HandleFunc("/api/global/validateName", validateNameAPI)
 	globalRouter.HandleFunc("/api/global/validateNewName", validateNewNameAPI)
 
+	globalRouter.HandleFunc("/api/global/validateNewReferenceName", validateNewReferenceNameAPI)
+
 	globalRouter.HandleFunc("/api/global/setTextValue", setTextValue)
 	globalRouter.HandleFunc("/api/global/setBoolValue", setBoolValue)
 	globalRouter.HandleFunc("/api/global/setTimeValue", setTimeValue)
@@ -93,6 +95,21 @@ func validateNewNameAPI(w http.ResponseWriter, r *http.Request) {
 	databaseID := r.FormValue("databaseID")
 
 	if err := validateNewGlobalName(databaseID, globalName); err != nil {
+		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
+		return
+	}
+
+	response := true
+	api.WriteJSONResponse(w, response)
+
+}
+
+func validateNewReferenceNameAPI(w http.ResponseWriter, r *http.Request) {
+
+	refName := r.FormValue("refName")
+	databaseID := r.FormValue("databaseID")
+
+	if err := validateNewReferenceName(databaseID, refName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}

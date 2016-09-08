@@ -3,6 +3,7 @@ function openNewGlobalDialog(databaseID) {
 	var $newGlobalDialogForm = $('#adminNewGlobalForm')
 	var $newGlobalDialog = $('#adminNewGlobalDialog')
 	var $nameInput = $('#adminGlobalNewGlobalNameInput')
+	var $refNameInput = $('#adminGlobalNewGlobalReferenceNameInput')
 	var $typeSelection = $("#adminGlobalNewGlobalTypeSelection")
 	
 	var validator = $newGlobalDialogForm.validate({
@@ -18,11 +19,25 @@ function openNewGlobalDialog(databaseID) {
 					}
 				} // remote
 			}, // new
+			adminGlobalNewGlobalReferenceNameInput: {
+				minlength: 3,
+				required: true,
+				remote: {
+					url: '/api/global/validateNewReferenceName',
+					data: {
+						databaseID: databaseID,
+						refName: function() { return $refNameInput.val(); }
+					}
+				} // remote		
+			},
 			adminGlobalNewGlobalTypeSelection: { optionSelectionRequired:"type" }
 		},
 		messages: {
 			adminGlobalNewGlobalNameInput: {
 				required: "Global name is required"
+			},
+			adminGlobalNewGlobalReferenceNameInput: {
+				required: "Reference name is required"
 			}
 		}
 	})
@@ -40,6 +55,7 @@ function openNewGlobalDialog(databaseID) {
 			var newGlobalParams = { 
 				parentDatabaseID:databaseID, 
 				name: $nameInput.val(),
+				refName: $refNameInput.val(),
 				type: $typeSelection.val()}
 			jsonAPIRequest("global/new",newGlobalParams,function(newGlobalInfo) {
 				console.log("Created new global: " + JSON.stringify(newGlobalInfo))

@@ -12,12 +12,14 @@ type Global struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 	GlobalID         string `json:"globalID"`
 	Name             string `json:"name"`
+	RefName          string `json:"refName"`
 	Type             string `json:"type"`
 }
 
 type NewGlobalParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 	Name             string `json:"name"`
+	RefName          string `json:"refName"`
 	Type             string `json:"type"`
 }
 
@@ -32,14 +34,19 @@ func newGlobal(params NewGlobalParams) (*Global, error) {
 		return nil, fmt.Errorf("newGlobal: Invalid type = %v", params.Type)
 	}
 
+	if refNameErr := validateNewReferenceName(params.ParentDatabaseID, params.RefName); refNameErr != nil {
+		return nil, fmt.Errorf("newGlobal: Invalid formula reference name = %v: %v", params.RefName, refNameErr)
+	}
+
 	newGlobal := Global{ParentDatabaseID: params.ParentDatabaseID,
 		GlobalID: uniqueID.GenerateSnowflakeID(),
 		Name:     params.Name,
+		RefName:  params.RefName,
 		Type:     params.Type}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO globals (database_id,global_id,name,type) VALUES ($1,$2,$3,$4)`,
-		newGlobal.ParentDatabaseID, newGlobal.GlobalID, newGlobal.Name, newGlobal.Type); insertErr != nil {
+		`INSERT INTO globals (database_id,global_id,name,ref_name,type) VALUES ($1,$2,$3,$4,$5)`,
+		newGlobal.ParentDatabaseID, newGlobal.GlobalID, newGlobal.Name, newGlobal.RefName, newGlobal.Type); insertErr != nil {
 		return nil, fmt.Errorf("newGlobal: Can't create global: error = %v", insertErr)
 	}
 
@@ -52,11 +59,11 @@ func getGlobal(globalID string) (*Global, error) {
 
 	var theGlobal Global
 	getErr := databaseWrapper.DBHandle().QueryRow(
-		`SELECT database_id,global_id,name,type 
+		`SELECT database_id,global_id,name,ref_name,type 
 			FROM globals 
 			WHERE globals.global_id=$1 LIMIT 1`,
 		globalID).Scan(&theGlobal.ParentDatabaseID, &theGlobal.GlobalID,
-		&theGlobal.Name, &theGlobal.Type)
+		&theGlobal.Name, &theGlobal.RefName, &theGlobal.Type)
 	if getErr != nil {
 		return nil, fmt.Errorf(
 			"getGlobal: can't get database for global = %v: err=%v",
@@ -74,7 +81,7 @@ type GetGlobalsParams struct {
 func getGlobals(parentDatabaseID string) ([]Global, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT global_id,name,type FROM globals WHERE database_id = $1`,
+		`SELECT global_id,name,ref_name,type FROM globals WHERE database_id = $1`,
 		parentDatabaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("getGlobals: Failure querying database: %v", queryErr)
@@ -86,7 +93,8 @@ func getGlobals(parentDatabaseID string) ([]Global, error) {
 		var currGlobal Global
 		currGlobal.ParentDatabaseID = parentDatabaseID
 
-		if scanErr := rows.Scan(&currGlobal.GlobalID, &currGlobal.Name, &currGlobal.Type); scanErr != nil {
+		if scanErr := rows.Scan(&currGlobal.GlobalID, &currGlobal.Name, &currGlobal.RefName,
+			&currGlobal.Type); scanErr != nil {
 			return nil, fmt.Errorf("getGlobals: Failure querying database: %v", scanErr)
 		}
 

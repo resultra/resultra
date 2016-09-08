@@ -3,18 +3,12 @@ package field
 import (
 	"fmt"
 	"log"
-	"regexp"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
-	"strings"
 )
 
 const FieldEntityKind string = "Field"
-
-// A "reference name" for a field can only contain
-// TODO - Can't start with "true or false" - add this when supporting boolean values
-var validRefNameRegexp = regexp.MustCompile("^[a-zA-Z_][a-zA-Z0-9_]*$")
 
 const FieldTypeText string = "text"
 const FieldTypeNumber string = "number"
@@ -84,10 +78,10 @@ func CreateNewFieldFromRawInputs(parentTableID string, newField Field) (string, 
 	// The tokenizer for the formula compiler could potentially read the UUID as a number literal if there isn't a distinct prefix.
 	newField.FieldID = uniqueID.GenerateSnowflakeID()
 
-	newField.RefName = strings.TrimSpace(newField.RefName) // strip leading & trailing whitespace
-	if !validRefNameRegexp.MatchString(newField.RefName) {
-		return "", fmt.Errorf("Invalid reference name: '%v' Cannot be empty and must only contain letters, numbers and underscores",
+	if !generic.WellFormedFormulaReferenceName(newField.RefName) {
+		return "", fmt.Errorf("Invalid formula reference name: '%v' Cannot be empty and must only contain letters, numbers and underscores",
 			newField.RefName)
+
 	}
 
 	// TODO: Validate the reference name is unique versus the other names field names already in use.
