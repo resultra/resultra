@@ -6,11 +6,19 @@ function openNewDatePickerDialog(databaseID,formID,parentTableID,containerParams
 		jsonAPIRequest("frm/datePicker/new",newComponentParams,function(newDatePickerObjectRef) {
 	          console.log("saveNewDatePicker: Done getting new ID:response=" + JSON.stringify(newDatePickerObjectRef));
 		  
-		  	  var fieldName = getFieldRef(newDatePickerObjectRef.properties.fieldID).name
 
+			  var componentLink = newDatePickerObjectRef.properties.componentLink
+		  
+		  		var componentLabel
+			  if(componentLink.linkedValType == linkedComponentValTypeField) {
+		  	  	 componentLabel = getFieldRef(componentLink.fieldID).name
+			  } else {
+			  	 componentLabel = "Global Field"
+			  }
+			  
 			  var placeholderSelector = '#'+containerParams.containerID
 	
-			  $(placeholderSelector).find('label').text(fieldName)
+			  $(placeholderSelector).find('label').text(componentLabel)
 			  $(placeholderSelector).attr("id",newDatePickerObjectRef.datePickerID)
 		  
 			  // Set up the newly created checkbox for resize, selection, etc.
@@ -32,6 +40,7 @@ function openNewDatePickerDialog(databaseID,formID,parentTableID,containerParams
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeTime],
+		globalTypes: [globalTypeTime],
 		containerParams: containerParams,
 		createNewFormComponent: createNewDatePicker
 	}
