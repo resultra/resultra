@@ -124,7 +124,23 @@ func TestFieldRefParse(t *testing.T) {
 	verifyOneEqnParseFail(t, `[FieldRef1],[FieldRef2]`, "argument list outside of function")
 	verifyOneEqnParseFail(t, `[FieldRef1`, "missing closing bracket")
 	verifyOneEqnParseFail(t, `FieldRef1]`, "missing opening bracket")
+	verifyOneEqnParseFail(t, `[]`, "missing identifier")
+	verifyOneEqnParseFail(t, `[ ]`, "missing identifier")
 	verifyOneEqnParseFail(t, `[FieldRef1 245]`, "extra characters inside brackets")
+}
+
+func TestGlobalRefParse(t *testing.T) {
+
+	verifyOneEqnParsing(t, `[[GlobalRef1]]`)
+	verifyOneEqnParsing(t, ` [[   GlobalRef1  ]] `) // extra whitespace
+	verifyOneEqnParsing(t, `SUM([[GlobalRef1]],[[GlobalRef2]])`)
+
+	verifyOneEqnParseFail(t, `[[FieldRef1`, "missing closing double bracket")
+	verifyOneEqnParseFail(t, `FieldRef1]]`, "missing opening double bracket")
+	verifyOneEqnParseFail(t, `[[FieldRef1 245]]`, "extra characters inside double brackets")
+	verifyOneEqnParseFail(t, `[[]]`, "missing identifier inside double brackets")
+	verifyOneEqnParseFail(t, `[[ ]]`, "missing identifier inside double brackets")
+	verifyOneEqnParseFail(t, `[[42.5]]`, "invalid characters inside double brackets")
 }
 
 func TestFunctionParse(t *testing.T) {

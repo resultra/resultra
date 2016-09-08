@@ -27,6 +27,8 @@ import (
 %token TOK_EQUAL
 %token TOK_LPAREN
 %token TOK_RPAREN
+%token TOK_DOUBLE_LBRACKET
+%token TOK_DOUBLE_RBRACKET
 %token TOK_LBRACKET
 %token TOK_RBRACKET
 %token TOK_COMMA
@@ -42,6 +44,7 @@ import (
 %type <eqnNode> expr
 %type <eqnNode> func
 %type <eqnNode> fieldRef
+%type <eqnNode> globalRef
 %type <args> funcArg
 %type <args> funcArgs
 	
@@ -70,6 +73,10 @@ expr	:   expr TOK_PLUS expr
 		{ 
 			$$ = $1
 		}
+		| globalRef
+		{ 
+			$$ = $1
+		}
 		| func
 		{
 			$$ = $1
@@ -87,6 +94,13 @@ fieldRef : TOK_LBRACKET TOK_IDENT TOK_RBRACKET
 		{
 			$$ = FieldRefEqnNode($2)
 		}
+
+globalRef : TOK_DOUBLE_LBRACKET TOK_IDENT TOK_DOUBLE_RBRACKET
+		{
+			$$ = GlobalRefEqnNode($2)
+		}
+
+
 		
 func : TOK_IDENT TOK_LPAREN funcArgs TOK_RPAREN
 		{

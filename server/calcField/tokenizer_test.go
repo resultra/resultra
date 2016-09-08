@@ -91,3 +91,18 @@ func TestWhitespaceTokens(t *testing.T) {
 		[]int{tokenIdent.ID, tokenIdent.ID}, "comment")
 
 }
+
+func TestGlobalReferenceTokens(t *testing.T) {
+
+	tokenizeWhiteOrComment := false
+
+	testOneTokenize(t, tokenizeWhiteOrComment, `[[ident2]] `,
+		[]int{tokenDoubleLBracket.ID, tokenIdent.ID, tokenDoubleRBracket.ID},
+		"global references")
+
+	testOneTokenize(t, tokenizeWhiteOrComment, `[ident1] [[ident2]] `,
+		[]int{tokenLBracket.ID, tokenIdent.ID, tokenRBracket.ID,
+			tokenDoubleLBracket.ID, tokenIdent.ID, tokenDoubleRBracket.ID},
+		"field vs global references")
+
+}

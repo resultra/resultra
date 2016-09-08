@@ -27,6 +27,9 @@ var tokenLParen = TokenDef{regexp.MustCompile("^\\("), TOK_LPAREN}
 var tokenRParen = TokenDef{regexp.MustCompile("^\\)"), TOK_RPAREN}
 var tokenLBracket = TokenDef{regexp.MustCompile("^\\["), TOK_LBRACKET}
 var tokenRBracket = TokenDef{regexp.MustCompile("^\\]"), TOK_RBRACKET}
+
+var tokenDoubleLBracket = TokenDef{regexp.MustCompile("^\\[\\["), TOK_DOUBLE_LBRACKET}
+var tokenDoubleRBracket = TokenDef{regexp.MustCompile("^\\]\\]"), TOK_DOUBLE_RBRACKET}
 var tokenComma = TokenDef{regexp.MustCompile("^\\,"), TOK_COMMA}
 var tokenBool = TokenDef{regexp.MustCompile("^(true)|(false)|(TRUE)|(FALSE)"), TOK_BOOL}
 var tokenNumber = TokenDef{regexp.MustCompile("^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?"), TOK_NUMBER}
@@ -44,6 +47,8 @@ var tokenDefs = []TokenDef{
 	tokenAssign,
 	tokenLParen,
 	tokenRParen,
+	tokenDoubleLBracket,
+	tokenDoubleRBracket,
 	tokenLBracket,
 	tokenRBracket,
 	tokenComma,

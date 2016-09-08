@@ -13,7 +13,8 @@ type EquationNode struct {
 	FuncArgs []EquationNode `json:"funcArgs,omitempty"`
 
 	// Leaf nodes - values
-	FieldID string `json:"fieldID,omitempty"`
+	FieldID  string `json:"fieldID,omitempty"`
+	GlobalID string `json:"globalID,omitempty"`
 
 	// Literal values -  Use pointers to the values, which allows the use of
 	// empty strings or zero numbers in the values.
@@ -26,6 +27,10 @@ type EquationNode struct {
 func FieldRefEqnNode(fieldID string) *EquationNode {
 	// TODO - Verify the field with fieldID exists
 	return &EquationNode{FieldID: fieldID}
+}
+
+func GlobalRefEqnNode(globalID string) *EquationNode {
+	return &EquationNode{GlobalID: globalID}
 }
 
 func FuncEqnNode(funcName string, funcArgs []EquationNode) *EquationNode {
