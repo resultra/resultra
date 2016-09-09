@@ -72,13 +72,15 @@ func preprocessTokenSeq(tokSeq TokenMatchSequence, identReplMap IdentReplacement
 }
 
 // preprocessFormula takes equation/formula source and replaces field references inside [] with
-// the corresponding value in fieldNameReplMap. The user types field names using a "field reference name".
+// the corresponding value in fieldNameReplMap. A similar operation is performed for global
+// references inside [[]]. The user types field names using a "field reference name".
 // However, the preprocessed source is stored using the permanent field ID; i.e. the user can easily
 // change the field reference name, in which case we can't have the stored formulas then have invalid
 // references. After retrieving pre-processed formula source from the datastore, the reverse mapping
 // can be done using this same function to allow the user to edit the source again. Or, if the formula
 // is being retrieve for calculations, the field ID in the pre-processed source can be used directly.
-func preprocessFormulaInput(inputStr string, fieldNameReplMap IdentReplacementMap) (string, error) {
+func preprocessFormulaInput(inputStr string, fieldNameReplMap IdentReplacementMap,
+	globalNameReplMap IdentReplacementMap) (string, error) {
 
 	// Tokenize the input, keeping whitespace and comments as tokens
 	tokenizeWhiteOrComment := true
@@ -88,7 +90,11 @@ func preprocessFormulaInput(inputStr string, fieldNameReplMap IdentReplacementMa
 	}
 
 	if err := preprocessTokenSeq(matchSeq, fieldNameReplMap, tokenLBracket.ID); err != nil {
-		return "", fmt.Errorf("Error preprocessing formula input: %v", err)
+		return "", fmt.Errorf("Error preprocessing formula field references: %v", err)
+	}
+
+	if err := preprocessTokenSeq(matchSeq, globalNameReplMap, tokenDoubleLBracket.ID); err != nil {
+		return "", fmt.Errorf("Error preprocessing formula global references: %v", err)
 	}
 
 	// Re-assemble the pre-processed tokens back into a single string

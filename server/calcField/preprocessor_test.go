@@ -7,7 +7,9 @@ import (
 func testOnePreprocess(t *testing.T, inputStr string, fieldReplMap IdentReplacementMap,
 	expectedOutput string, whatTest string) {
 
-	if preprocessedStr, err := preprocessFormulaInput(inputStr, fieldReplMap); err != nil {
+	globalReplMap := IdentReplacementMap{}
+
+	if preprocessedStr, err := preprocessFormulaInput(inputStr, fieldReplMap, globalReplMap); err != nil {
 		t.Error(err)
 	} else {
 		if preprocessedStr != expectedOutput {
@@ -21,7 +23,9 @@ func testOnePreprocess(t *testing.T, inputStr string, fieldReplMap IdentReplacem
 
 func testOnePreprocessFail(t *testing.T, inputStr string, fieldReplMap IdentReplacementMap, whatTest string) {
 
-	if preprocessedStr, err := preprocessFormulaInput(inputStr, fieldReplMap); err == nil {
+	globalReplMap := IdentReplacementMap{}
+
+	if preprocessedStr, err := preprocessFormulaInput(inputStr, fieldReplMap, globalReplMap); err == nil {
 		t.Errorf("testOnePreprocess (fail): Expecting failure, but preprocessing succeeded: %v: input=%v, output=%v",
 			whatTest, inputStr, preprocessedStr)
 	} else {

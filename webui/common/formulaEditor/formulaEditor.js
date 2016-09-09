@@ -65,7 +65,6 @@ function validateFormula(fieldRef,validationSucceededCallback) {
 	var formulaText =  formulaEditorConfig.editor.getValue()
 	
 	var validationParams = {
-		fieldParentTableID: designFormContext.tableID,
 		fieldID: fieldRef.fieldID,
 		formulaText: formulaText
 	}
@@ -108,9 +107,7 @@ function openFormulaEditor(fieldRef) {
 
 	$('#formulaEditorErrorPopup').popover('hide')
 	
-	var getRawFormulaSrcParams = {
-		fieldParentTableID: designFormContext.tableID,
-		fieldID: fieldRef.fieldID }
+	var getRawFormulaSrcParams = { fieldID: fieldRef.fieldID }
 	jsonAPIRequest("calcField/getRawFormulaText",getRawFormulaSrcParams,function(formulaInfo) {
 		formulaEditorConfig.editor.setValue(formulaInfo.rawFormulaText)
 		

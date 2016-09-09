@@ -42,6 +42,24 @@ func saveNewTable(params NewTableParams) (*Table, error) {
 	return &newTable, nil
 }
 
+func GetTableDatabaseID(tableID string) (string, error) {
+
+	databaseID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(
+		`SELECT database_id 
+			FROM data_tables 
+			WHERE table_id=$1 LIMIT 1`,
+		tableID).Scan(&databaseID)
+	if getErr != nil {
+		return "", fmt.Errorf(
+			"getTableDatabaseID: can't get database for table = %v: err=%v",
+			tableID, getErr)
+	}
+
+	return databaseID, nil
+
+}
+
 type GetTableListParams struct {
 	DatabaseID string `json:"databaseID"` // parent database
 }

@@ -5,6 +5,7 @@ import (
 	"log"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/table"
 	"strings"
 )
 
@@ -40,7 +41,10 @@ func preprocessCalcFieldFormula(compileParams formulaCompileParams) (string, err
 		fieldRefFieldIDMap[fieldRefName] = currField.FieldID
 	}
 
-	preprocessOutput, preprocessErr := preprocessFormulaInput(compileParams.formulaText, fieldRefFieldIDMap)
+	globalRefGlobalIDMap := IdentReplacementMap{}
+	// TODO - populate with global names
+
+	preprocessOutput, preprocessErr := preprocessFormulaInput(compileParams.formulaText, fieldRefFieldIDMap, globalRefGlobalIDMap)
 	if preprocessErr != nil {
 		return "", fmt.Errorf("preprocessCalcFieldFormula: Error preprocessing formula: error=%v ", preprocessErr)
 	}
@@ -67,10 +71,13 @@ func reverseProcessCalcFieldFormula(compileParams formulaCompileParams) (string,
 		fieldIDFieldRefMap[currField.FieldID] = currField.RefName
 	}
 
+	globalIDGlobalRefMap := IdentReplacementMap{}
+	// TODO - populate with global names
+
 	log.Printf("reverseProcessCalcFieldFormula: Starting reverse processing of pre-processed formula text: %v",
 		compileParams.formulaText)
 
-	reverseProcessOutput, err := preprocessFormulaInput(compileParams.formulaText, fieldIDFieldRefMap)
+	reverseProcessOutput, err := preprocessFormulaInput(compileParams.formulaText, fieldIDFieldRefMap, globalIDGlobalRefMap)
 	if err != nil {
 		return "", fmt.Errorf("reverseProcessCalcFieldFormula: Error loading formula: error=%v ", err)
 	}
@@ -82,8 +89,7 @@ func reverseProcessCalcFieldFormula(compileParams formulaCompileParams) (string,
 }
 
 type GetRawFormulaParams struct {
-	FieldParentTableID string `json:"fieldParentTableID"`
-	FieldID            string `json:"fieldID"`
+	FieldID string `json:"fieldID"`
 }
 
 type GetRawFormulaResult struct {
@@ -91,32 +97,10 @@ type GetRawFormulaResult struct {
 	RawFormulaText string `json:"rawFormulaText"`
 }
 
-func getRawFormulaText(params GetRawFormulaParams) (*GetRawFormulaResult, error) {
-
-	calcField, getFieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
-	if getFieldErr != nil {
-		return nil, fmt.Errorf("getRawFormulaText: Unable to get calculated field field: field id =%v, error=%v ",
-			params.FieldID, getFieldErr)
-	}
-
-	compileParams := formulaCompileParams{
-		formulaText:        calcField.PreprocessedFormulaText,
-		parentTableID:      calcField.ParentTableID,
-		expectedResultType: calcField.Type,
-		resultFieldID:      params.FieldID}
-
-	rawFormulaText, reverseProcessErr := reverseProcessCalcFieldFormula(compileParams)
-	if reverseProcessErr != nil {
-		return nil, fmt.Errorf("getRawFormulaText: Unable to read calculated field field: field id =%v, error=%v ",
-			params.FieldID, reverseProcessErr)
-	}
-
-	return &GetRawFormulaResult{FieldID: params.FieldID, RawFormulaText: rawFormulaText}, nil
-}
-
 type formulaCompileParams struct {
 	formulaText        string
 	parentTableID      string
+	databaseID         string
 	expectedResultType string
 
 	// This is the fieldID being assigned to by the formula. This is used to check for
@@ -125,6 +109,50 @@ type formulaCompileParams struct {
 	// if validating the formula for a new calculated field, there by definition can't be
 	// any circular references to the field, since the field is new.
 	resultFieldID string
+}
+
+func assembleCalcFieldCompileParams(fieldID string) (*formulaCompileParams, error) {
+
+	calcField, getFieldErr := field.GetFieldWithoutTableID(fieldID)
+	if getFieldErr != nil {
+		return nil, fmt.Errorf("assembleCalcFieldCompileParams: Unable to get calculated field field: field id =%v, error=%v ",
+			fieldID, getFieldErr)
+	}
+	if !calcField.IsCalcField {
+		return nil, fmt.Errorf("assembleCalcFieldCompileParams: Formulas only work with calculated fields, got a regular field: %v",
+			calcField.Name)
+	}
+
+	databaseID, getDatabaseIDErr := table.GetTableDatabaseID(calcField.ParentTableID)
+	if getDatabaseIDErr != nil {
+		return nil, fmt.Errorf("assembleCalcFieldCompileParams: Unable to get database ID for field: field id =%v, error=%v ",
+			fieldID, getDatabaseIDErr)
+	}
+
+	compileParams := formulaCompileParams{
+		formulaText:        calcField.PreprocessedFormulaText,
+		parentTableID:      calcField.ParentTableID,
+		databaseID:         databaseID,
+		expectedResultType: calcField.Type,
+		resultFieldID:      fieldID}
+
+	return &compileParams, nil
+}
+
+func getRawFormulaText(params GetRawFormulaParams) (*GetRawFormulaResult, error) {
+
+	compileParams, paramErr := assembleCalcFieldCompileParams(params.FieldID)
+	if paramErr != nil {
+		return nil, fmt.Errorf("getRawFormulaText: Unable to retrieve compilation parameters: error=%v ", paramErr)
+	}
+
+	rawFormulaText, reverseProcessErr := reverseProcessCalcFieldFormula(*compileParams)
+	if reverseProcessErr != nil {
+		return nil, fmt.Errorf("getRawFormulaText: Unable to read calculated field field: field id =%v, error=%v ",
+			params.FieldID, reverseProcessErr)
+	}
+
+	return &GetRawFormulaResult{FieldID: params.FieldID, RawFormulaText: rawFormulaText}, nil
 }
 
 type formulaCompileResults struct {
@@ -180,9 +208,8 @@ func compileAndEncodeFormula(params formulaCompileParams) (*formulaCompileResult
 }
 
 type ValidateFormulaParams struct {
-	FieldParentTableID string `json:"fieldParentTableID"`
-	FieldID            string `json:fieldID`
-	FormulaText        string `json:formulaText`
+	FieldID     string `json:fieldID`
+	FormulaText string `json:formulaText`
 }
 
 type ValidationResponse struct {
@@ -192,25 +219,16 @@ type ValidationResponse struct {
 
 func validateFormulaText(validationParams ValidateFormulaParams) *ValidationResponse {
 
-	formulaField, getFieldErr := field.GetField(validationParams.FieldParentTableID, validationParams.FieldID)
-	if getFieldErr != nil {
-		errMsg := fmt.Sprintf("validateFormulaText: Unable to get  retrieve field: error=%v ", getFieldErr)
+	compileParams, paramErr := assembleCalcFieldCompileParams(validationParams.FieldID)
+	if paramErr != nil {
+		errMsg := fmt.Sprintf("validateFormulaText: Unable to get  retrieve field: error=%v ", paramErr)
 		return &ValidationResponse{IsValidFormula: false, ErrorMsg: errMsg}
-	} else {
-		if !formulaField.IsCalcField {
-			errorMsg := fmt.Sprintf("Formulas only work with calculated fields, got a regular field: %v",
-				formulaField.Name)
-			return &ValidationResponse{IsValidFormula: false, ErrorMsg: errorMsg}
-		}
 	}
+	// By default, assembleCalcFieldCompileParams will return the parameters populated with the preprocessed formula text.
+	// However, in this case,we want to compile with the given formula text.
+	compileParams.formulaText = validationParams.FormulaText
 
-	compileParams := formulaCompileParams{
-		formulaText:        validationParams.FormulaText,
-		parentTableID:      formulaField.ParentTableID,
-		expectedResultType: formulaField.Type,
-		resultFieldID:      formulaField.FieldID}
-
-	_, compileErr := compileAndEncodeFormula(compileParams)
+	_, compileErr := compileAndEncodeFormula(*compileParams)
 	if compileErr != nil {
 		return &ValidationResponse{IsValidFormula: false, ErrorMsg: compileErr.Error()}
 	} else {
