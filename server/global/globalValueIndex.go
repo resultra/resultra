@@ -55,7 +55,7 @@ func NewGlobalValueIndex(parentDatabaseID string) (*GlobalValueUpdateSeriesIndex
 			parentDatabaseID, getErr)
 	}
 
-	globals, getGlobalsErr := getGlobals(parentDatabaseID)
+	globals, getGlobalsErr := GetGlobals(parentDatabaseID)
 	if getGlobalsErr != nil {
 		return nil, fmt.Errorf("NewGlobalValueIndex: failure retrieving globals for database = %v error = %v",
 			parentDatabaseID, getGlobalsErr)

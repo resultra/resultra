@@ -78,7 +78,7 @@ type GetGlobalsParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
-func getGlobals(parentDatabaseID string) ([]Global, error) {
+func GetGlobals(parentDatabaseID string) ([]Global, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
 		`SELECT global_id,name,ref_name,type FROM globals WHERE database_id = $1`,

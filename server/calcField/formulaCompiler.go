@@ -5,6 +5,7 @@ import (
 	"log"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/table"
 	"strings"
 )
@@ -41,8 +42,15 @@ func preprocessCalcFieldFormula(compileParams formulaCompileParams) (string, err
 		fieldRefFieldIDMap[fieldRefName] = currField.FieldID
 	}
 
+	globals, getGlobalsErr := global.GetGlobals(compileParams.databaseID)
+	if getGlobalsErr != nil {
+		return "", fmt.Errorf("reverseProcessCalcFieldFormula: Unable to retrieve globals: databaseID=%v, error=%v ",
+			compileParams.databaseID, getGlobalsErr)
+	}
 	globalRefGlobalIDMap := IdentReplacementMap{}
-	// TODO - populate with global names
+	for _, currGlobal := range globals {
+		globalRefGlobalIDMap[currGlobal.RefName] = currGlobal.GlobalID
+	}
 
 	preprocessOutput, preprocessErr := preprocessFormulaInput(compileParams.formulaText, fieldRefFieldIDMap, globalRefGlobalIDMap)
 	if preprocessErr != nil {
@@ -71,8 +79,15 @@ func reverseProcessCalcFieldFormula(compileParams formulaCompileParams) (string,
 		fieldIDFieldRefMap[currField.FieldID] = currField.RefName
 	}
 
+	globals, getGlobalsErr := global.GetGlobals(compileParams.databaseID)
+	if getGlobalsErr != nil {
+		return "", fmt.Errorf("reverseProcessCalcFieldFormula: Unable to retrieve globals: databaseID=%v, error=%v ",
+			compileParams.databaseID, getGlobalsErr)
+	}
 	globalIDGlobalRefMap := IdentReplacementMap{}
-	// TODO - populate with global names
+	for _, currGlobal := range globals {
+		globalIDGlobalRefMap[currGlobal.GlobalID] = currGlobal.RefName
+	}
 
 	log.Printf("reverseProcessCalcFieldFormula: Starting reverse processing of pre-processed formula text: %v",
 		compileParams.formulaText)

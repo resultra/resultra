@@ -66,7 +66,7 @@ func getListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if globals, err := getGlobals(params.ParentDatabaseID); err != nil {
+	if globals, err := GetGlobals(params.ParentDatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, globals)
