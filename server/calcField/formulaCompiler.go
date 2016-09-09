@@ -35,7 +35,7 @@ func preprocessCalcFieldFormula(compileParams formulaCompileParams) (string, err
 			compileParams.parentTableID, indexErr)
 	}
 
-	fieldRefFieldIDMap := FieldNameReplacementMap{}
+	fieldRefFieldIDMap := IdentReplacementMap{}
 	for fieldRefName, currField := range fieldRefIndex.FieldsByRefName {
 		fieldRefFieldIDMap[fieldRefName] = currField.FieldID
 	}
@@ -62,7 +62,7 @@ func reverseProcessCalcFieldFormula(compileParams formulaCompileParams) (string,
 			compileParams.parentTableID, indexErr)
 	}
 
-	fieldIDFieldRefMap := FieldNameReplacementMap{}
+	fieldIDFieldRefMap := IdentReplacementMap{}
 	for _, currField := range fieldRefIndex.FieldsByRefName {
 		fieldIDFieldRefMap[currField.FieldID] = currField.RefName
 	}

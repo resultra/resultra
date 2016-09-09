@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func testOnePreprocess(t *testing.T, inputStr string, fieldReplMap FieldNameReplacementMap,
+func testOnePreprocess(t *testing.T, inputStr string, fieldReplMap IdentReplacementMap,
 	expectedOutput string, whatTest string) {
 
 	if preprocessedStr, err := preprocessFormulaInput(inputStr, fieldReplMap); err != nil {
@@ -19,7 +19,7 @@ func testOnePreprocess(t *testing.T, inputStr string, fieldReplMap FieldNameRepl
 	}
 }
 
-func testOnePreprocessFail(t *testing.T, inputStr string, fieldReplMap FieldNameReplacementMap, whatTest string) {
+func testOnePreprocessFail(t *testing.T, inputStr string, fieldReplMap IdentReplacementMap, whatTest string) {
 
 	if preprocessedStr, err := preprocessFormulaInput(inputStr, fieldReplMap); err == nil {
 		t.Errorf("testOnePreprocess (fail): Expecting failure, but preprocessing succeeded: %v: input=%v, output=%v",
@@ -32,7 +32,7 @@ func testOnePreprocessFail(t *testing.T, inputStr string, fieldReplMap FieldName
 
 func TestPreprocess(t *testing.T) {
 
-	fieldReplMap := FieldNameReplacementMap{}
+	fieldReplMap := IdentReplacementMap{}
 
 	fieldReplMap["fieldRef1"] = "fieldID1"
 	fieldReplMap["fieldRef2"] = "fieldID2"

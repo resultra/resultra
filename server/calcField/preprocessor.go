@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type FieldNameReplacementMap map[string]string
+type IdentReplacementMap map[string]string
 
 func skipWhiteTokens(startIndex int, matchSeq TokenMatchSequence) int {
 	if startIndex >= len(matchSeq) {
@@ -19,15 +19,15 @@ func skipWhiteTokens(startIndex int, matchSeq TokenMatchSequence) int {
 	return currIndex
 }
 
-func replaceNextFieldName(startIndex int, matchSeq TokenMatchSequence,
-	fieldNameReplMap FieldNameReplacementMap) (int, error) {
+func replaceNextIdent(startIndex int, matchSeq TokenMatchSequence,
+	identReplMap IdentReplacementMap, prefixTokID int) (int, error) {
 
 	if startIndex >= len(matchSeq) {
 		return startIndex, nil
 	}
 
 	for currTokIndex := startIndex; currTokIndex < len(matchSeq); currTokIndex++ {
-		if matchSeq[currTokIndex].TokenID == tokenLBracket.ID {
+		if matchSeq[currTokIndex].TokenID == prefixTokID {
 			nextTokIndex := currTokIndex + 1
 			nextTokIndex = skipWhiteTokens(nextTokIndex, matchSeq) // skip any leading whitespace
 			if nextTokIndex >= len(matchSeq) {
@@ -35,17 +35,17 @@ func replaceNextFieldName(startIndex int, matchSeq TokenMatchSequence,
 			} else {
 				if matchSeq[nextTokIndex].TokenID == tokenIdent.ID {
 
-					replText, foundRepl := fieldNameReplMap[matchSeq[nextTokIndex].matchedStr]
+					replText, foundRepl := identReplMap[matchSeq[nextTokIndex].matchedStr]
 					if !foundRepl {
 						return nextTokIndex, fmt.Errorf(
-							"Unexpected error prepocessing field name: Can't find substitution for '%v', valid matches = %+v (len=%v)",
-							matchSeq[nextTokIndex].matchedStr, fieldNameReplMap, len(fieldNameReplMap))
+							"Unexpected error prepocessing formula: Can't find substitution for '%v', valid matches = %+v (len=%v)",
+							matchSeq[nextTokIndex].matchedStr, identReplMap, len(identReplMap))
 					} else {
 						matchSeq[nextTokIndex].matchedStr = replText
 						return nextTokIndex + 1, nil // skip over closing bracket
 					}
 				} else {
-					return nextTokIndex, fmt.Errorf("Unexpected input, expecting a field reference inside [], got '%v'",
+					return nextTokIndex, fmt.Errorf("Unexpected input, expecting an identifier, got '%v'",
 						matchSeq[nextTokIndex].matchedStr)
 				}
 			}
@@ -57,6 +57,20 @@ func replaceNextFieldName(startIndex int, matchSeq TokenMatchSequence,
 
 }
 
+func preprocessTokenSeq(tokSeq TokenMatchSequence, identReplMap IdentReplacementMap, prefixTokID int) error {
+	currTokIndex := 0
+	for currTokIndex < len(tokSeq) {
+		tokIndexAfterRepl, err := replaceNextIdent(currTokIndex, tokSeq, identReplMap, prefixTokID)
+		if err != nil {
+			return fmt.Errorf("Error preprocessing formula input: %v", err)
+		} else {
+			currTokIndex = tokIndexAfterRepl
+		}
+	}
+	return nil
+
+}
+
 // preprocessFormula takes equation/formula source and replaces field references inside [] with
 // the corresponding value in fieldNameReplMap. The user types field names using a "field reference name".
 // However, the preprocessed source is stored using the permanent field ID; i.e. the user can easily
@@ -64,7 +78,7 @@ func replaceNextFieldName(startIndex int, matchSeq TokenMatchSequence,
 // references. After retrieving pre-processed formula source from the datastore, the reverse mapping
 // can be done using this same function to allow the user to edit the source again. Or, if the formula
 // is being retrieve for calculations, the field ID in the pre-processed source can be used directly.
-func preprocessFormulaInput(inputStr string, fieldNameReplMap FieldNameReplacementMap) (string, error) {
+func preprocessFormulaInput(inputStr string, fieldNameReplMap IdentReplacementMap) (string, error) {
 
 	// Tokenize the input, keeping whitespace and comments as tokens
 	tokenizeWhiteOrComment := true
@@ -73,16 +87,11 @@ func preprocessFormulaInput(inputStr string, fieldNameReplMap FieldNameReplaceme
 		return "", fmt.Errorf("Error preprocessing formula input: %v", err)
 	}
 
-	currTokIndex := 0
-	for currTokIndex < len(matchSeq) {
-		tokIndexAfterRepl, err := replaceNextFieldName(currTokIndex, matchSeq, fieldNameReplMap)
-		if err != nil {
-			return "", fmt.Errorf("Error preprocessing formula input: %v", err)
-		} else {
-			currTokIndex = tokIndexAfterRepl
-		}
+	if err := preprocessTokenSeq(matchSeq, fieldNameReplMap, tokenLBracket.ID); err != nil {
+		return "", fmt.Errorf("Error preprocessing formula input: %v", err)
 	}
 
+	// Re-assemble the pre-processed tokens back into a single string
 	preprocessedTokText := []string{}
 	for tokIndex := 0; tokIndex < len(matchSeq); tokIndex++ {
 		preprocessedTokText = append(preprocessedTokText, matchSeq[tokIndex].matchedStr)
