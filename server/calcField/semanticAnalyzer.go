@@ -3,6 +3,8 @@ package calcField
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/global"
+	"resultra/datasheet/server/table"
 	"strings"
 )
 
@@ -10,6 +12,7 @@ type semanticAnalysisContext struct {
 	resultFieldID string // for detecting cycles
 	parentTableID string
 	definedFuncs  FuncNameFuncInfoMap
+	globalIndex   global.GlobalIDGlobalIndex
 }
 
 type semanticAnalysisResult struct {
@@ -154,6 +157,22 @@ func analyzeEqnNode(context *semanticAnalysisContext, eqnNode *EquationNode) (*s
 			}
 		}
 
+	} else if len(eqnNode.GlobalID) > 0 {
+		globalInfo, globalInfoFound := (context.globalIndex)[eqnNode.GlobalID]
+		if !globalInfoFound {
+			return nil, fmt.Errorf("Failure retrieving referenced global %v", eqnNode.GlobalID)
+		}
+		switch globalInfo.Type {
+		case global.GlobalTypeText:
+			return newTypedAnalysisResult(field.FieldTypeText), nil
+		case global.GlobalTypeNumber:
+			return newTypedAnalysisResult(field.FieldTypeNumber), nil
+		default:
+			return nil, fmt.Errorf("Unknown global result type: %v", globalInfo.Type)
+
+		}
+
+		return nil, fmt.Errorf("Unknown error: global result type not supported yet")
 	} else if eqnNode.TextVal != nil {
 		return newTypedAnalysisResult(field.FieldTypeText), nil
 	} else if eqnNode.NumberVal != nil {
@@ -167,14 +186,27 @@ func analyzeEqnNode(context *semanticAnalysisContext, eqnNode *EquationNode) (*s
 
 func analyzeSemantics(compileParams formulaCompileParams, rootEqnNode *EquationNode) (*semanticAnalysisResult, error) {
 
+	databaseID, getDatabaseErr := table.GetTableDatabaseID(compileParams.parentTableID)
+	if getDatabaseErr != nil {
+		return nil, fmt.Errorf("analyzeSemantics: Unable to retrieve database for table: error =%v", getDatabaseErr)
+	}
+
+	globalIndex, globalIndexErr := global.GetIndexedGlobals(databaseID)
+	if globalIndexErr != nil {
+		return nil, fmt.Errorf("analyzeSemantics: Unable to retrieve indexed globals: error =%v", globalIndexErr)
+	}
+
 	context := semanticAnalysisContext{
 		resultFieldID: compileParams.resultFieldID,
 		parentTableID: compileParams.parentTableID,
+		globalIndex:   globalIndex,
 		definedFuncs:  CalcFieldDefinedFuncs}
 
 	// Check the top-level/overall result type to see that it matches the expected type (e.g., bool, number, text)
 	analyzeResult, analyzeErr := analyzeEqnNode(&context, rootEqnNode)
-	if analyzeResult.hasErrors() {
+	if analyzeErr != nil {
+		return nil, fmt.Errorf("analyzeSemantics: Unexpected results: analyze failed with error = %v", analyzeErr)
+	} else if analyzeResult.hasErrors() {
 		return analyzeResult, analyzeErr
 	} else {
 		if len(analyzeResult.resultType) == 0 {

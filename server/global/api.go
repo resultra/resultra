@@ -194,7 +194,7 @@ func getValues(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	globalVals, getErr := getGlobalValues(params)
+	globalVals, getErr := GetGlobalValues(params)
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return

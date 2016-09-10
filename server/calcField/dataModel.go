@@ -3,6 +3,7 @@ package calcField
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/table"
 )
 
 // Parameters for creating a new calculated field. FieldEqn needs to be converted to
@@ -19,9 +20,16 @@ type NewCalcFieldParams struct {
 
 func newCalcField(calcFieldParams NewCalcFieldParams) (string, error) {
 
+	databaseID, getDatabaseIDErr := table.GetTableDatabaseID(calcFieldParams.ParentTableID)
+	if getDatabaseIDErr != nil {
+		return "", fmt.Errorf("assembleCalcFieldCompileParams: Unable to get database ID for table: table id =%v, error=%v ",
+			calcFieldParams.ParentTableID, getDatabaseIDErr)
+	}
+
 	compileParams := formulaCompileParams{
 		formulaText:        calcFieldParams.FormulaText,
 		parentTableID:      calcFieldParams.ParentTableID,
+		databaseID:         databaseID,
 		expectedResultType: calcFieldParams.Type,
 		// resultFieldID is intentionally left empty. resultFieldID is used
 		// to check for cycles in the formula. Since this is a new field, there

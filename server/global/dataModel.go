@@ -105,6 +105,25 @@ func GetGlobals(parentDatabaseID string) ([]Global, error) {
 
 }
 
+type GlobalIDGlobalIndex map[string]Global
+
+func GetIndexedGlobals(parentDatabaseID string) (GlobalIDGlobalIndex, error) {
+
+	globals, getGlobalErr := GetGlobals(parentDatabaseID)
+	if getGlobalErr != nil {
+		return nil, fmt.Errorf("GetIndexedGlobals: Failure getting globals: %v", getGlobalErr)
+
+	}
+
+	globalIDGlobalIndex := GlobalIDGlobalIndex{}
+
+	for _, currGlobal := range globals {
+		globalIDGlobalIndex[currGlobal.GlobalID] = currGlobal
+	}
+
+	return globalIDGlobalIndex, nil
+}
+
 func getGlobalDatabaseID(globalID string) (string, error) {
 
 	databaseID := ""

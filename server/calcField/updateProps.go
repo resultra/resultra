@@ -17,15 +17,15 @@ func (setFormulaParams SetFormulaParams) UpdateProps(fieldForUpdate *field.Field
 		return fmt.Errorf("SetFormula: Can't set formula on non-calculated field: %v", fieldForUpdate.Name)
 	}
 
-	compileParams := formulaCompileParams{
-		formulaText:        setFormulaParams.FormulaText,
-		parentTableID:      fieldForUpdate.ParentTableID,
-		expectedResultType: fieldForUpdate.Type,
-		resultFieldID:      setFormulaParams.GetFieldID()}
+	compileParams, paramErr := assembleCalcFieldCompileParams(setFormulaParams.GetFieldID())
+	if paramErr != nil {
+		return fmt.Errorf("Error saving formula, can't setup parameters for formula compilation: %v", paramErr)
+	}
+	compileParams.formulaText = setFormulaParams.FormulaText
 
-	compileResult, compileErr := compileAndEncodeFormula(compileParams)
+	compileResult, compileErr := compileAndEncodeFormula(*compileParams)
 	if compileErr != nil {
-		fmt.Errorf("Error saving formula, can't compile formula: %v", compileErr)
+		return fmt.Errorf("Error saving formula, can't compile formula: %v", compileErr)
 	}
 
 	log.Printf("Formula compilation succeeded: %+v", compileResult)

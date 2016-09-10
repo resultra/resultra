@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/record"
+	"resultra/datasheet/server/table"
 )
 
 type EqnEvalContext struct {
@@ -15,6 +17,9 @@ type EqnEvalContext struct {
 	// Set of field values into which the results will be calculated.
 	// This is expected to be pre-populated with values from non-calculated fields.
 	ResultFieldVals *record.RecFieldValues
+
+	GlobalVals  global.GlobalValues
+	GlobalIndex global.GlobalIDGlobalIndex
 }
 
 // Get the literal value from a number field, or undefined if it doesn't exist.
@@ -76,6 +81,47 @@ func getTextRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*Equat
 			return textEqnResult(textVal), nil
 		}
 	} // else (if found a value for the given field ID)
+}
+
+func getGlobalValResult(evalContext *EqnEvalContext, globalID string) (*EquationResult, error) {
+
+	globalInfo, globalInfoFound := (evalContext.GlobalIndex)[globalID]
+	if !globalInfoFound {
+		return nil, fmt.Errorf("getGlobalValResult: Can't find global information for global ID = %v", globalID)
+	}
+
+	val, foundVal := (evalContext.GlobalVals)[globalID]
+	if !foundVal {
+		// Note this is the only place which will return an undefined equation result (along with the
+		// the similar function for other value types). This is because record values for non-calculated
+		// fields is the only place where an undefined (or blank) value could originate, because a
+		// user hasn't entered a value yet for the field.
+		log.Printf("getGlobalValResult: Undefined equation result for globalID: %v", globalID)
+		return undefinedEqnResult(), nil
+	} else {
+		switch globalInfo.Type {
+		case global.GlobalTypeText:
+			if textVal, foundText := val.(string); !foundText {
+				return nil, fmt.Errorf("Type mismatch retrieving value from global id = %v:"+
+					" expecting string, got %v", globalID, val)
+
+			} else {
+				return textEqnResult(textVal), nil
+			}
+		case global.GlobalTypeNumber:
+			if numVal, foundNum := val.(float64); !foundNum {
+				return nil, fmt.Errorf("Type mismatch retrieving value from global id = %v:"+
+					" expecting number, got %v", globalID, val)
+
+			} else {
+				return numberEqnResult(numVal), nil
+			}
+		default:
+			return nil, fmt.Errorf("Unknown global result type: %v", globalInfo.Type)
+
+		}
+	} // else (if found a value for the given field ID)
+
 }
 
 func EvalEqn(evalContext *EqnEvalContext, evalField field.Field) (*EquationResult, error) {
@@ -147,6 +193,8 @@ func (equation EquationNode) EvalEqn(evalContext *EqnEvalContext) (*EquationResu
 			return EvalEqn(evalContext, *field)
 		}
 
+	} else if len(equation.GlobalID) > 0 {
+		return getGlobalValResult(evalContext, equation.GlobalID)
 	} else if equation.TextVal != nil {
 		// Text literal given directly in the equation itself  (rather than a field value)
 		return textEqnResult(*equation.TextVal), nil
@@ -239,10 +287,26 @@ func updateOneCalcFieldValue(evalContext *EqnEvalContext, evalField field.Field)
 // to refresh calculated values.
 func UpdateCalcFieldValues(parentTableID string, resultFieldVals *record.RecFieldValues) error {
 
+	databaseID, getDatabaseErr := table.GetTableDatabaseID(parentTableID)
+	if getDatabaseErr != nil {
+		return fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve database for table: error =%v", getDatabaseErr)
+	}
+	globalVals, globalValErr := global.GetGlobalValues(global.GetGlobalValuesParams{ParentDatabaseID: databaseID})
+	if globalValErr != nil {
+		return fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve global values: error =%v", globalValErr)
+	}
+
+	globalIndex, globalIndexErr := global.GetIndexedGlobals(databaseID)
+	if globalIndexErr != nil {
+		return fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve indexed globals: error =%v", globalIndexErr)
+	}
+
 	eqnEvalContext := EqnEvalContext{
 		ParentTableID:   parentTableID,
 		ResultFieldVals: resultFieldVals,
-		DefinedFuncs:    CalcFieldDefinedFuncs}
+		DefinedFuncs:    CalcFieldDefinedFuncs,
+		GlobalVals:      *globalVals,
+		GlobalIndex:     globalIndex}
 
 	fields, getErr := field.GetAllFields(field.GetFieldListParams{ParentTableID: parentTableID})
 	if getErr != nil {

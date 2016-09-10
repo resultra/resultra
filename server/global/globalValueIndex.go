@@ -100,7 +100,7 @@ type GetGlobalValuesParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
-func getGlobalValues(params GetGlobalValuesParams) (*GlobalValues, error) {
+func GetGlobalValues(params GetGlobalValuesParams) (*GlobalValues, error) {
 	globalValIndex, err := NewGlobalValueIndex(params.ParentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("getGlobalValues: failure retrieving global value index: %v", err)
