@@ -57,7 +57,19 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
         fieldParams = {'parentTableID':self.tableID,'name':'TextCalc','type':'text',
                   'refName':'textCalc','formulaText':'"hello world"'}
         jsonResp = self.apiRequest('calcField/new',fieldParams)
-        self.textCalcField = jsonResp[u'fieldID']  
+        self.textCalcField = jsonResp[u'fieldID']
+               
+        globalParams = {'parentDatabaseID':self.databaseID,
+            'name':'Global Number','refName':'globalNum',
+            'type':'number'}  
+        jsonResp = self.apiRequest('global/new',globalParams)
+        self.numberGlobal = jsonResp[u'globalID']
+        
+        globalTextParams = {'parentDatabaseID':self.databaseID,
+            'name':'Global Text','refName':'globalText',
+            'type':'text'}  
+        jsonResp = self.apiRequest('global/new',globalTextParams)
+        self.textGlobal = jsonResp[u'globalID']
         
  
     def testSimpleFormulas(self):
@@ -127,7 +139,18 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
         self.verifyBadFormula(fieldA,"10*[fieldC]", 
          "circular reference: field C already refers to A (indirectoy through B), so can't make a reference to C from A")
  
+    
+    def testGlobals(self):
+        self.verifyFormula(self.numberCalcField,"[[globalNum]]","Reference to global in formula")
+        self.verifyBadFormula(self.textCalcField,"[[globalNum]]","Reference to global number assigned to text field")
+        self.verifyFormula(self.numberCalcField,"[[globalNum]]*42.5","Reference to global and literals in same formula")
+        self.verifyFormula(self.numberCalcField,"[[globalNum]]*[qty]","Reference to global and fields in same formula")
         
+        self.verifyFormula(self.textCalcField,"[[globalText]]","Reference to global text value")
+        self.verifyBadFormula(self.numberCalcField,"[[globalText]]","Reference to global text value - assigned to number field")
+        self.verifyFormula(self.textCalcField,"CONCATENATE([[globalText]])","Pass global text field to concatenate function")
+        self.verifyFormula(self.textCalcField,"CONCATENATE([[globalText]])","Pass global text field to concatenate function")
+       
         
     # TODO - Test setting of formulas on fields, including:
     #    - Trying to set a formula on a non-calculated field.
