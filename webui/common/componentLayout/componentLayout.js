@@ -1,18 +1,28 @@
 
 // Reads the component layout from the DOM elements, using parentComponentLayoutSelector
 // as the parent div of the layout elements.
-function getComponentLayout(parentComponentLayoutSelector) {
+function getComponentLayout($parentLayout) {
 	var componentRows = []
-	$(parentComponentLayoutSelector).children('.componentRow').each(function() { 
-		var rowComponents = []
-		$(this).children('.layoutContainer').each(function() {
-			var componentID = $(this).attr("id")
-			rowComponents.push(componentID)
+	$parentLayout.children('.componentRow').each(function() { 
+		
+		var currRowCols = []
+		
+		$(this).children('.componentCol').each(function() {
+			var colComponents = []
+			$(this).children('.layoutContainer').each(function() {
+				var componentID = $(this).attr("id")
+				colComponents.push(componentID)
+			})
+			if (colComponents.length > 0) {
+				// Skip over empty/placeholder rows
+				currRowCols.push({componentIDs: colComponents } )	
+			}
+			
 		})
-		if (rowComponents.length > 0) {
-			// Skip over empty/placeholder rows
-			componentRows.push({componentIDs: rowComponents } )	
-		}
+		
+		if(currRowCols.length > 0) {
+			componentRows.push({columns:currRowCols})
+		}	
 	});
 	
 	return componentRows
@@ -22,10 +32,20 @@ function getComponentLayout(parentComponentLayoutSelector) {
 // Create a new row in the layout and setup the drag-and-drop functionality to insert new
 // components, or re-order existing components. Whenever the row changes, the saveLayoutFunc
 // is called with the updated overall layout.
-function createComponentRow(parentComponentLayoutSelector, saveLayoutFunc) {
+function createComponentRow($parentLayout) {
 	var rowHTML = '<div class="componentRow">' +
 	  '</div>'
+	var $componentRow = $(rowHTML)
 	
+	$parentLayout.append($componentRow)
+	
+	return $componentRow	
+}
+
+function createComponentCol($parentLayout,$parentRow, saveLayoutFunc) {
+	
+	var colHTML = '<div class="componentCol"></div>'
+	var $componentCol = $(colHTML)
 	
 	function receiveNewComponent($droppedObj) {
 		
@@ -53,7 +73,7 @@ function createComponentRow(parentComponentLayoutSelector, saveLayoutFunc) {
 			sizeWidth: objWidth,sizeHeight: objHeight},
 			finalizeLayoutIncludingNewComponentFunc: function() {
 					console.log("receiveNewComponent: finalizing layout with new component")
-					var updatedLayout = getComponentLayout(parentComponentLayoutSelector)
+					var updatedLayout = getComponentLayout($parentLayout)
 					saveLayoutFunc(updatedLayout)
 				}
 		};
@@ -62,32 +82,30 @@ function createComponentRow(parentComponentLayoutSelector, saveLayoutFunc) {
 		
 	}
 	
-	var $componentRow = $(rowHTML)
-	$componentRow.sortable({
-		placeholder: "ui-sortable-placeholder",
+	$componentCol.sortable({
+//		placeholder: "ui-sortable-placeholder",
+		placeholder: "component-placeholder",
 		forcePlaceholderSize: true,
 		connectWith:".layoutContainer",
-		start: function(event, ui) { 
-			// The next line is a work-around for horizontal sorting.
-			ui.placeholder.html('&nbsp;');
-		},
 		stop: function(event,ui) {
 				
 			var $droppedObj = ui.item
 			
 			if($droppedObj.hasClass("newComponent")) {
-				console.log("Adding new component to row")
+				console.log("Adding new component to column")
 				receiveNewComponent($droppedObj)				
 			} else {
-				console.log("Re-order existing component in row")
-				var updatedLayout = getComponentLayout(parentComponentLayoutSelector)
+				console.log("Re-order existing component in column")
+				var updatedLayout = getComponentLayout($parentLayout)
 				saveLayoutFunc(updatedLayout)
 			}
 			
 		}
 	})
 	
-	return $componentRow
+	$parentRow.append($componentCol)
+	
+	return $componentCol
 }
 
 
@@ -95,43 +113,68 @@ function createComponentRow(parentComponentLayoutSelector, saveLayoutFunc) {
 function populateComponentLayout(componentLayout, parentLayoutSelector, compenentIDComponentMap,saveLayoutFunc) {
 
 	var completedLayoutComponentIDs = {}
+	
+	$parentLayout = $(parentLayoutSelector)
+	
 	for(var rowIndex = 0; rowIndex < componentLayout.length; rowIndex++) {
+		
+		var currRow = componentLayout[rowIndex]
+		
+		var $componentRow = createComponentRow($parentLayout)
+		
+		if(currRow.columns !== null) {
+			for (var colIndex = 0; colIndex < currRow.columns.length; colIndex++) {
+			
+				var currCol = currRow.columns[colIndex]
+				var currColComponents = currCol.componentIDs
+			
+				var $componentCol = createComponentCol($parentLayout,$componentRow,saveLayoutFunc)
 
-		var currRowComponents = componentLayout[rowIndex].componentIDs
-		var $componentRow = createComponentRow(parentLayoutSelector,saveLayoutFunc)
-		$(parentLayoutSelector).append($componentRow)
+				for(var componentIndex = 0; componentIndex<currColComponents.length; componentIndex++) {
+					var componentID = currColComponents[componentIndex]
+					console.log("Component layout: row=" + rowIndex + " col=" + colIndex +
+						" component ID=" + componentID)
+					// If the component has been deleted, then it won't be in the componentIDComponentMap.
+					// In this case, skip initialiation for the deleted component.
+					if(componentID in compenentIDComponentMap) {
+						var initInfo = compenentIDComponentMap[componentID]
+						console.log("Component layout: component info=" + JSON.stringify(initInfo.componentInfo))
+						initInfo.initFunc($componentCol,initInfo.componentInfo)
+						completedLayoutComponentIDs[componentID] = true			
+					}
+				} // for each component
+							
+			} // for each column
+			
+			// Create an extra placedholder column at the end of the row
+			createComponentCol($parentLayout,$componentRow,saveLayoutFunc)
+			
+			
+		} // columns !== null
 
-		for(var componentIndex = 0; componentIndex<currRowComponents.length; componentIndex++) {
-			var componentID = currRowComponents[componentIndex]
-			console.log("Component layout: row=" + rowIndex + " component ID=" + componentID)
-			// If the component has been deleted, then it won't be in the componentIDComponentMap.
-			// In this case, skip initialiation for the deleted component.
-			if(componentID in compenentIDComponentMap) {
-				var initInfo = compenentIDComponentMap[componentID]
-				console.log("Component layout: component info=" + JSON.stringify(initInfo.componentInfo))
-				initInfo.initFunc($componentRow,initInfo.componentInfo)
-				completedLayoutComponentIDs[componentID] = true			
-			}
-		}
 
-	}
+	} // for each row
 
 	// Layout any "orphans" which may are not, for whatever reason in the
-	// list of rows and component IDs
+	// list of rows/cols and component IDs
 	if(Object.keys(completedLayoutComponentIDs).length < Object.keys(compenentIDComponentMap).length) {
 		console.log("populateComponentLayout: Layout orphan components")
-		var $orphanLayoutRow = createComponentRow(parentLayoutSelector,saveLayoutFunc)
-		$(parentLayoutSelector).append($orphanLayoutRow)
+		
+		var $orphanLayoutRow = createComponentRow($parentLayout)
+		var $orphanLayoutCol = createComponentCol($parentLayout,$orphanLayoutRow,saveLayoutFunc)
+		
 		for(var componentID in compenentIDComponentMap) {
 			if(completedLayoutComponentIDs[componentID] != true) {
 				var initInfo = compenentIDComponentMap[componentID]
 				console.log("populateComponentLayout: Layout orphan component: " + componentID)
-				initInfo.initFunc($orphanLayoutRow,initInfo.componentInfo)	
+				initInfo.initFunc($orphanLayoutCol,initInfo.componentInfo)	
 			}
 		}	
 	}
 
-	var $placeholderRowForDrop = createComponentRow(parentLayoutSelector,saveLayoutFunc)
-	$(parentLayoutSelector).append($placeholderRowForDrop)
+	// At the bottom of the layout, create a placeholder row and colum for new rows & columns.
+	var $placeholderRowForDrop = createComponentRow($parentLayout)
+	createComponentCol($parentLayout,$placeholderRowForDrop,saveLayoutFunc)
+
 
 }

@@ -6,15 +6,17 @@ function initObjectGridEditBehavior(parentID, objID, editConfig) {
 	
 	// While in edit mode, disable input on the container
 	$(objSelector).find('input').prop('disabled',true);
+
 	
 	$(objSelector).draggable ({
 		cursor: "move",
-/*		TODO - Components can be dragged between different parents, but need to be contained 
-		within the same overall parent layout. */
+		//TODO - Components can be dragged between different parents, but need to be contained 
+		// within the same overall parent layout. 
 		clone: "original",
-		connectToSortable: ".componentRow"	
+		connectToSortable: ".componentCol"	
 	})
-	
+
+		
 	$(objSelector).resizable({
 		aspectRatio: false,
 		handles: 'e', // Only allow resizing horizontally

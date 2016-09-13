@@ -21,7 +21,7 @@ function initDesignPalette(paletteConfig) {
 		
 		// componentRow is the class which will receive items dropped from the palette.
 		// TBD - the receiver class could be made a parameter in paletteConfig.
-		connectToSortable: ".componentRow",			
+		connectToSortable: ".componentCol",			
 		
 		helper: function() { 
 			

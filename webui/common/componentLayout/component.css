@@ -5,15 +5,27 @@
 	min-height: 30px;
 }
 
-.componentRow .ui-sortable-placeholder {
-	/* inline-block is needed to align the placeholder horizontally within 
-	   the componentRow. vertical-align of top is also needed to properly
-	   align the placeholder; otherwise, the placeholder will extend the
-	   height of the componentRow and cause dragging and sorting not to work
-	   display correctly */
-	display: inline-block;
+.componentCol {
+	margin-left: 5px;
+	min-height: 100px;
+	min-width: 100px;
+	height:100%;
+
 	vertical-align:top;
-	background-color:HoneyDew;
-	margin-top:5px;
-	margin-left:5px;
+	display: inline-block;
+
 }
+
+
+.componentCol .ui-sortable-placeholder {
+	background-color:HoneyDew;
+}
+
+
+.component-placeholder {
+    border: 1px dotted black;
+    margin-left:10px;
+	margin-right:10px;
+    height: 30px;
+	background-color:HoneyDew;
+  }

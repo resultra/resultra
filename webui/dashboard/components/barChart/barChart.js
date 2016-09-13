@@ -81,10 +81,9 @@ function initBarChartEditBehavior(dashboardID,barChartID)
 	// properties should be the same for objects loaded with the page
 	// and newly added objects.
 	barChartContainer.draggable ({
-		grid: [20, 20], // snap to a grid
 		cursor: "move",
 		clone: "original",
-		connectToSortable: ".componentRow"									
+		connectToSortable: ".componentCol"									
 	})
 	  
 	barChartContainer.resizable({

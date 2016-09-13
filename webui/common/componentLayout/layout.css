@@ -7,11 +7,7 @@
 	margin-bottom:5px;
 	margin-left:5px;
 	margin-right:5px;
-	
-	/* inline-block is needed so the container will be aligned
-	   horizontally in the same row of the form/dashboard layout */
-	display: inline-block;
-	
+		
 	/* By default all layoutContainer's are aligned to the top
 	  of the row they are contained within */
 	vertical-align:top;
