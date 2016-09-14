@@ -1,0 +1,10 @@
+{
+    "cssFiles": [], 
+    "htmlFiles": [], 
+    "jsFiles": ["summaryTable.js", 
+        "properties.js", 
+        "newSummaryTableDialog.js", 
+        "designDashboardConfig.js"
+    ],
+	"imageFiles":[]
+}

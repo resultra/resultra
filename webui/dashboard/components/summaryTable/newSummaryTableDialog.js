@@ -1,0 +1,3 @@
+function openNewSummaryTableDialog(summaryTableParams) {
+	
+}
