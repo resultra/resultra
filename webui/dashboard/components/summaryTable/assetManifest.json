@@ -1,6 +1,7 @@
 {
     "cssFiles": [], 
-    "htmlFiles": [], 
+    "htmlFiles": ["newSummaryTableDialog.html",
+		"properties.html"], 
     "jsFiles": ["summaryTable.js", 
         "properties.js", 
         "newSummaryTableDialog.js", 

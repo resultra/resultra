@@ -1,0 +1,30 @@
+{{define "summaryTableFilterProps"}}
+	{{template "recordFilterPropertyPanel" "summaryTable_"}}
+{{end}}
+
+{{define "summaryTableTitleProps"}}
+	{{template "dashboardComponentTitlePropertyPanel" "summaryTable_"}}
+{{end}}
+
+{{define "summaryTableRowProps"}}
+	{{template "dashboardComponentValueGroupingPropertyPanel" .}}
+{{end}}
+
+{{define "summaryTableProps"}}
+
+	<div id="summaryTableProps" class="propertyPanelToggleContainer">
+		{{template "propertyPanelPrefix" .TitlePanelParams}}
+			{{template "summaryTableTitleProps"}}	
+		{{template "propertyPanelSuffix"}}
+
+		{{template "propertyPanelPrefix" .FilteringPanelParams}}
+			{{template "summaryTableFilterProps"}}
+		{{template "propertyPanelSuffix"}}
+
+		{{template "propertyPanelPrefix" .RowGroupingPanelParams}}
+			{{template "summaryTableRowProps" .RowGroupingPanelParams}}
+		{{template "propertyPanelSuffix"}}
+		
+	</div>
+
+{{end}}

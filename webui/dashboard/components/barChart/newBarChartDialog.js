@@ -35,7 +35,7 @@ function saveNewBarChart($dialog) {
 
 		$dialog.modal("hide")
 		
-		barChartDataParams = { 
+		var barChartDataParams = { 
 			parentDashboardID: newBarChartParams.dashboardID,
 			barChartID: barChartRef.barChartID
 		}
