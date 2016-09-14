@@ -8,64 +8,6 @@
 	  <span class="h4 breadCrumbText">Design Dashboard</span>
 {{end}}
 
-{{define "dashboardPaletteItems"}}
-	<div class="row">	
-		<div class= "col-md-6"  style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemBarChart">
-					<i class="fa fa-bar-chart" aria-hidden="true"></i>
-					<div>Bar Chart</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemPieChart">
-					<i class="fa fa-pie-chart" aria-hidden="true"></i>
-					<div>Pie Chart</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-	
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemLineChart">
-					<i class="fa fa-line-chart" aria-hidden="true"></i>
-					<div>Line Chart</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemSummaryTable">
-					<i class="fa fa-table" aria-hidden="true"></i>
-					<div>Summary Table</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-	
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemLabel">
-					<i class="fa fa-font" aria-hidden="true"></i>
-					<div>Label</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-
-{{end}}
-
-{{define "dashboardDesignPalette"}}
-
-	<div class="ui-layout-content">
-		
-		<div class="row paletteHeader">
-			<div class= "col-md-12 text-center h5">
-				Dashboard Palette
-			</div>
-		</div>
-		<div class="paletteItems">
-			{{template "dashboardPaletteItems"}}
-		</div>
-				
-	</div> <!-- ui-layout-content -->
-
-{{end}}
 
 {{define "dashboardDesignPropertiesSidebar"}}
 

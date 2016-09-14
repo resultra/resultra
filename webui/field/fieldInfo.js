@@ -74,9 +74,13 @@ function selectFieldHTML(fieldID, fieldName) {
 function populateFieldSelectionMenu(fieldsByID, menuSelector) {
 	$(menuSelector).empty()
 	$(menuSelector).append(defaultSelectOptionPromptHTML("Select a Field"))
-	$.each(fieldsByID, function(fieldID, fieldInfo) {
-		$(menuSelector).append(selectFieldHTML(fieldID, fieldInfo.name))		
-	})
+	
+	for (var fieldID in fieldsByID) {
+	  if (fieldsByID.hasOwnProperty(fieldID)) {
+		  var fieldInfo = fieldsByID[fieldID]	  	
+		  $(menuSelector).append(selectFieldHTML(fieldID, fieldInfo.name))		
+	  }
+	}
 }
 
 

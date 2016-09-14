@@ -7,8 +7,8 @@ var valueSummaryDialogPanelSelectedTableID;
 function createNewDashboardComponentValueSummaryPanelConfig(elemPrefix,doneCallbackFunc) {
 	
 	var panelSelector = "#" + elemPrefix + "ValueSummaryPanel"
-	var summaryFieldSelection = createPrefixedTemplElemInfo(elemPrefix,"SummaryFieldSelection")
-	var summarizeBySelection = createPrefixedTemplElemInfo(elemPrefix,"SummarizeBySelection")
+	var summaryFieldSelection = createPrefixedTemplElemInfo(elemPrefix,"NewComponentSummaryFieldSelection")
+	var summarizeBySelection = createPrefixedTemplElemInfo(elemPrefix,"NewComponentSummarizeBySelection")
 	
 	function validateValueSummaryPanel() {
 		var validationResults = true

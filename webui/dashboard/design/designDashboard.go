@@ -18,7 +18,8 @@ var designDashboardTemplates *template.Template
 
 func init() {
 
-	baseTemplateFiles := []string{"static/dashboard/design/designDashboard.html"}
+	baseTemplateFiles := []string{"static/dashboard/design/designDashboard.html",
+		"static/dashboard/design/designDashboardPalette.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,

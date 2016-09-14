@@ -1,0 +1,14 @@
+{
+    "cssFiles": ["barChart.css"], 
+    "htmlFiles": [
+        "barChartProps.html",
+		"newBarChartDialog.html"
+    ], 
+    "jsFiles": [
+        "barChart.js", 
+        "barChartProps.js", 
+        "newBarChartDialog.js", 
+        "designDashboardConfig.js"
+    ],
+	"imageFiles":[]
+}

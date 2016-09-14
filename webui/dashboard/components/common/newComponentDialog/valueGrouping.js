@@ -6,9 +6,9 @@ var valueGroupingDialogPanelTableID;
 function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 	
 	var panelSelector = "#" + elemPrefix + "DashboardComponentValueGroupingPanel"
-	var groupedFieldSelection = createPrefixedTemplElemInfo(elemPrefix,"GroupedFieldSelection")
-	var groupBySelection = createPrefixedTemplElemInfo(elemPrefix,"GroupBySelection")
-	var bucketSizeInput = createPrefixedTemplElemInfo(elemPrefix,"BucketSizeInput")
+	var groupedFieldSelection = createPrefixedTemplElemInfo(elemPrefix,"NewComponentGroupedFieldSelection")
+	var groupBySelection = createPrefixedTemplElemInfo(elemPrefix,"NewComponentGroupBySelection")
+	var bucketSizeInput = createPrefixedTemplElemInfo(elemPrefix,"NewComponentBucketSizeInput")
 	
 	var validateWithBucketSize = false
 	

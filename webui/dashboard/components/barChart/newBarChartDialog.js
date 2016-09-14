@@ -2,9 +2,9 @@
 var newBarChartParams = {}
 var barChartElemPrefix = "barChart_"
 
-function initNewBarChartDialog(dashboardID) {
+function initNewBarChartDialog(dashboardContext) {
 
-	newBarChartParams.dashboardID = dashboardID
+	newBarChartParams.dashboardID = dashboardContext.dashboardID
 	newBarChartParams.progressDivID = '#newBarChartProgress'		
 }
 
@@ -55,9 +55,9 @@ var barChartTablePanelConfig = createNewDashboardComponentSelectTablePanelConfig
 var barChartXAxisPanelConfig = createNewDashboardComponentValueGroupingPanelConfig(barChartElemPrefix)
 var barChartYAxisPanelConfig = createNewDashboardComponentValueSummaryPanelConfig(barChartElemPrefix,saveNewBarChart)
 
-function newBarChart(barChartParams) {
+function openNewBarChartDialog(barChartParams) {
 		
-	newBarChartParams.placeholderID = barChartParams.containerID
+	newBarChartParams.placeholderID = barChartParams.placeholderComponentID
 	newBarChartParams.geometry = barChartParams.geometry
 	newBarChartParams.barChartCreated = false
 	newBarChartParams.dialog = $('#newBarchartDialog')

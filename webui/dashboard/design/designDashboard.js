@@ -1,26 +1,38 @@
+var dashboardPaletteItemsEditConfig = {
+	paletteItemBarChart: barChartDashboardDesignConfig,
+	paletteItemSummaryTable: summaryTableDashboardDesignConfig
+}
+
+var dashboardDesignCanvasSelector = "#dashboardCanvas"
+
 
 $(document).ready(function() {
 							
 	var paletteConfig = {
-		draggableItemHTML: function(placeholderID,paletteItemID) {
-			var containerHTML = barChartContainerHTML(placeholderID);
-			return containerHTML
+		draggableItemHTML: function(placeholderID,paletteItemID) {			
+			return dashboardPaletteItemsEditConfig[paletteItemID].draggableHTMLFunc(placeholderID)
 		},
 		
-		dropComplete: function(droppedItemInfo) {			
-			// At this point, the placholder div for the bar chart will have just been inserted. However, the DOM may 
-			// not be completely updated at this point. To ensure this, a small delay is needed before
-			// drawing the dummy bar charts. See http://goo.gl/IloNM for more.
-			setTimeout(function() {drawDesignModeDummyBarChart(droppedItemInfo.placeholderID); }, 50);
+		dropComplete: function(droppedItemInfo) {						
+			
+			var componentEditConfig = dashboardPaletteItemsEditConfig[droppedItemInfo.paletteItemID]
+			
+			setTimeout(function() {
+				initObjectGridEditBehavior(designDashboardContext.dashboardID,
+							droppedItemInfo.placeholderID,componentEditConfig)
+				componentEditConfig.populatePlaceholderData(droppedItemInfo.placeholderID)
+			}, 50);
 			
 			// "repackage" the dropped item paramaters for creating a new dashboard component, adding
-			// the dashboard ID to the parameter list.
-			var barChartParams = {
-				parentDashboardID: dashboardID,
+			// the dashboard context to the parameter list.				
+			var componentParams = {
+				dashboardContext: designDashboardContext, 
 				geometry: droppedItemInfo.geometry,
-				containerID: droppedItemInfo.placeholderID,
-				};
-			newBarChart(barChartParams)
+				placeholderComponentID: droppedItemInfo.placeholderID,
+				finalizeLayoutIncludingNewComponentFunc: droppedItemInfo.finalizeLayoutIncludingNewComponentFunc
+			};
+				
+			componentEditConfig.createNewComponentAfterDropFunc(componentParams)
 			
 		},
 		
@@ -30,7 +42,7 @@ $(document).ready(function() {
 	
 	initDesignPalette(paletteConfig)	
 	
-	initNewBarChartDialog(dashboardID)
+	initNewBarChartDialog(designDashboardContext)
 						
 	// Initialize the page layout
 	$('#designDashboardPage').layout({
