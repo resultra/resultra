@@ -1,66 +1,68 @@
-var newSummaryTableParams = {}
-var summaryTableElemPrefix = "summaryTable_"
 
-function initNewSummaryTableDialog(dashboardContext) {
-
-	newSummaryTableParams.dashboardID = dashboardContext.dashboardID
-	newSummaryTableParams.progressDivID = '#newSummaryTableProgress'		
-}
-
-function saveNewSummaryTable($dialog) {
-	
-	console.log("Saving new summary table: dashboard ID = " + newBarChartParams.dashboardID )
-			
-	var saveNewSummaryTableParams = {
-		dataSrcTableID: getWizardDialogPanelVals($dialog,dashboardComponentSelectTablePanelID),
-		parentDashboardID: newSummaryTableParams.dashboardID,
-		rowGroupingVals: getWizardDialogPanelVals($dialog,dashboardComponentValueGroupingPanelID), // rowGrouping
-		columnVals: getWizardDialogPanelVals($dialog,dashboardComponentValueSummaryPanelID), // 1st column - TODO - support adding multiple cols from dialog
-		geometry: newSummaryTableParams.geometry
-	}
-	
-	
-	console.log("saveNewSummaryTable: new summary table params:  " + JSON.stringify(saveNewSummaryTableParams) )
-	jsonAPIRequest("dashboard/summaryTable/new",saveNewSummaryTableParams,function(summaryTableRef) {
-		
-		console.log("saveNewBarChart: bar chart saved: new bar chart ID = " + summaryTableRef.summaryTableID)
-		
-		// Replace the placholder ID with the instantiated bar chart's unique ID. In the case
-		// of a bar chart, 2 DOM elements are associated with the bar chart's ID. The first
-		// is the overall/wrapper container, and the 2nd is a child div for the bar chart itself.
-		// See the function barChartContainerHTML() to see how this is setup.
-		 $('#'+newBarChartParams.placeholderID).attr("id",summaryTableRef.summaryTableID)
-		 $('#'+newBarChartParams.placeholderID+"_table").attr("id",summaryTableRef.summaryTableID+"_table")
-
-		$dialog.modal("hide")
-		
-		var summaryTableDataParams = { 
-			parentDashboardID: newSummaryTableParams.dashboardID,
-			summaryTableID: summaryTableRef.summaryTableID
-		}
-		
-		setTimeout(function() { // Wait for eventual consistency
-			jsonAPIRequest("dashboard/summaryTable/getData",summaryTableDataParams,function(summaryTableData) {
-				initSummaryTableData(newSummaryTableParams.dashboardID,summaryTableData)
-			})		
-		}, 2000);
-		
-	})
-}
-
-
-
-var summaryTableTablePanelConfig = createNewDashboardComponentSelectTablePanelConfig(summaryTableElemPrefix)
-var summaryTableRowGroupingPanelConfig = createNewDashboardComponentValueGroupingPanelConfig(summaryTableElemPrefix)
-var summaryTableColPanelConfig = createNewDashboardComponentValueSummaryPanelConfig(summaryTableElemPrefix,saveNewSummaryTable)
 
 function openNewSummaryTableDialog(summaryTableParams) {
-		
+	
+	var summaryTableElemPrefix = "summaryTable_"
+	
+	var newSummaryTableParams = {}
+	newSummaryTableParams.dashboardID = summaryTableParams.dashboardContext.dashboardID
+	newSummaryTableParams.progressDivID = '#newSummaryTableProgress'
 	newSummaryTableParams.placeholderID = summaryTableParams.placeholderComponentID
 	newSummaryTableParams.geometry = summaryTableParams.geometry
 	newSummaryTableParams.summaryTableCreated = false
 	newSummaryTableParams.dialog = $('#newSummaryTableDialog')
+	
+	function saveNewSummaryTable($dialog) {
+	
+		console.log("Saving new summary table: dashboard ID = " + newBarChartParams.dashboardID )
+	
+		// The summary table is created with a list of columns.
+		// TODO - support adding multiple cols from dialog
+		var tableColSummaryParams = [
+			getWizardDialogPanelVals($dialog,dashboardComponentValueSummaryPanelID)
+		]
+			
+		var saveNewSummaryTableParams = {
+			parentDashboardID: newSummaryTableParams.dashboardID,
+			dataSrcTableID: getWizardDialogPanelVals($dialog,dashboardComponentSelectTablePanelID),
+			rowGroupingVals: getWizardDialogPanelVals($dialog,dashboardComponentValueGroupingPanelID), // rowGrouping
+			columnValSummaries: tableColSummaryParams,
+			geometry: newSummaryTableParams.geometry
+		}
+	
+		console.log("saveNewSummaryTable: new summary table params:  " + JSON.stringify(saveNewSummaryTableParams) )
+		jsonAPIRequest("dashboard/summaryTable/new",saveNewSummaryTableParams,function(summaryTableRef) {
+		
+			console.log("saveNewBarChart: bar chart saved: new bar chart ID = " + summaryTableRef.summaryTableID)
+		
+			// Replace the placholder ID with the instantiated bar chart's unique ID. In the case
+			// of a bar chart, 2 DOM elements are associated with the bar chart's ID. The first
+			// is the overall/wrapper container, and the 2nd is a child div for the bar chart itself.
+			// See the function barChartContainerHTML() to see how this is setup.
+			 $('#'+newBarChartParams.placeholderID).attr("id",summaryTableRef.summaryTableID)
+			 $('#'+newBarChartParams.placeholderID+"_table").attr("id",summaryTableRef.summaryTableID+"_table")
 
+			newSummaryTableParams.summaryTableCreated = true
+			$dialog.modal("hide")
+		
+			var summaryTableDataParams = { 
+				parentDashboardID: newSummaryTableParams.dashboardID,
+				summaryTableID: summaryTableRef.summaryTableID
+			}
+		
+			setTimeout(function() { // Wait for eventual consistency
+				jsonAPIRequest("dashboard/summaryTable/getData",summaryTableDataParams,function(summaryTableData) {
+					initSummaryTableData(newSummaryTableParams.dashboardID,summaryTableData)
+				})		
+			}, 2000);
+		
+		})
+	}
+	
+	var summaryTableTablePanelConfig = createNewDashboardComponentSelectTablePanelConfig(summaryTableElemPrefix)
+	var summaryTableRowGroupingPanelConfig = createNewDashboardComponentValueGroupingPanelConfig(summaryTableElemPrefix)
+	var summaryTableColPanelConfig = createNewDashboardComponentValueSummaryPanelConfig(summaryTableElemPrefix,saveNewSummaryTable)
+	
 	openWizardDialog({
 		closeFunc: function () {
   		  console.log("Close dialog")

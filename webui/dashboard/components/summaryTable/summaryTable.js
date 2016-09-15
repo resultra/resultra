@@ -9,3 +9,15 @@ function summaryTableComponentHTML(summaryTableID) {
 	'</div>';
 	return containerHTML
 }
+
+
+function initSummaryTableData(dashboardID,summaryTableData) {
+	
+//	drawBarChart(barChartData)
+//	initBarChartEditBehavior(dashboardID, barChartData.barChart.barChartID)
+	
+	var $summaryTable = $('#'+summaryTableData.summaryTable.summaryTableID)
+	
+	$summaryTable.data("summaryTableRef",summaryTableData.summaryTable)
+	
+}

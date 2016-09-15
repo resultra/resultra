@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/dashboard/components/barChart"
+	"resultra/datasheet/server/dashboard/components/summaryTable"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -110,8 +111,9 @@ type GetDashboardDataParams struct {
 }
 
 type DashboardDataRef struct {
-	Dashboard     Dashboard               `json:"dashboard"`
-	BarChartsData []barChart.BarChartData `json:"barChartsData"`
+	Dashboard         Dashboard                       `json:"dashboard"`
+	BarChartsData     []barChart.BarChartData         `json:"barChartsData"`
+	SummaryTablesData []summaryTable.SummaryTableData `json:"summaryTablesData"`
 }
 
 func GetDashboardData(params GetDashboardDataParams) (*DashboardDataRef, error) {
@@ -126,9 +128,15 @@ func GetDashboardData(params GetDashboardDataParams) (*DashboardDataRef, error) 
 		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard barchart data: error = %v", getBarChartsErr)
 	}
 
+	summaryTablesData, getTableErr := summaryTable.GetDashboardSummaryTablesData(params.DashboardID)
+	if getTableErr != nil {
+		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard summary tables data: error = %v", getTableErr)
+	}
+
 	dashboardDataRef := DashboardDataRef{
-		Dashboard:     *dashboard,
-		BarChartsData: barChartData}
+		Dashboard:         *dashboard,
+		BarChartsData:     barChartData,
+		SummaryTablesData: summaryTablesData}
 
 	return &dashboardDataRef, nil
 }

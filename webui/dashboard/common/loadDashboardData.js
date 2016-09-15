@@ -13,6 +13,18 @@ function loadDashboardData(dashboardID)
 		
 		initBarChartData(dashboardID,barChartData);			
 	}
+
+	function initSummaryTableLayout($componentRow,summaryTableData) {
+		
+		var summaryTableHTML = summaryTableComponentHTML(summaryTableData.summaryTableID);
+		var $summaryTableElem = $(summaryTableHTML)
+		
+		$componentRow.append($summaryTableElem)
+		setElemDimensions($summaryTableElem,summaryTableData.summaryTable.properties.geometry)
+		
+		initSummaryTableData(dashboardID,summaryTableData)		
+	}
+
 	
 	// Load the dashboard data
 	var loadBarChartDataParams = { dashboardID: dashboardID }
@@ -26,8 +38,15 @@ function loadDashboardData(dashboardID)
 			compenentIDComponentMap[barChartData.barChartID] = {
 				componentInfo: barChartData,
 				initFunc: initBarChartLayout
-			}			
-			
+			}		
+		}
+		for (var summaryTableDataIndex in dashboardData.summaryTablesData) {
+			var summaryTableData = dashboardData.summaryTablesData[summaryTableDataIndex]
+			console.log ("Loading summary table: id = " + summaryTableData.summaryTableID)
+			compenentIDComponentMap[summaryTableData.summaryTableID] = {
+				componentInfo: summaryTableData,
+				initFunc: initSummaryTableLayout
+			}		
 		}
 		
 		function saveUpdatedDashboardComponentLayout(updatedLayout) {

@@ -82,6 +82,14 @@ func validBarChartSortXAxisProp(xAxisSortVal string) bool {
 
 func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 
+	if len(params.ParentDashboardID) <= 0 {
+		return nil, fmt.Errorf("newSummaryTable: Error creating bar chart: missing parent dashboard ID")
+	}
+
+	if len(params.DataSrcTableID) <= 0 {
+		return nil, fmt.Errorf("newSummaryTable: Error creating bar chart: missing table ID")
+	}
+
 	valGrouping, valGroupingErr := values.NewValGrouping(params.XAxisVals)
 	if valGroupingErr != nil {
 		return nil, fmt.Errorf("NewBarChart: Error creating new value grouping for bar chart: error = %v", valGroupingErr)
