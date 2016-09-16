@@ -1,7 +1,7 @@
 
-function initObjectGridEditBehavior(parentID, objID, editConfig) {
+function initObjectGridEditBehavior(objID, editConfig) {
 	
-	console.log("Initialize object edit behavior: parent ID = " + parentID + " object ID = " + objID)
+	console.log("Initialize object edit behavior: object ID = " + objID)
 	var objSelector = "#"+objID
 	
 	// While in edit mode, disable input on the container

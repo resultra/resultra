@@ -1,17 +1,21 @@
-function loadDashboardData(dashboardID)
+function loadDashboardData(loadDashboardConfig)
 {
+		
+	var dashboardID = loadDashboardConfig.dashboardContext.dashboardID
 	
 	var dashboardLayoutSelector = '#dashboardCanvas'
 	
 	function initBarChartLayout($componentRow,barChartData) {
 		
 		var barChartHTML = barChartContainerHTML(barChartData.barChartID);
-		var barChartElem = $(barChartHTML)
+		var $barChartElem = $(barChartHTML)
 		
-		$componentRow.append(barChartElem)
-		setElemDimensions(barChartElem,barChartData.barChart.properties.geometry)
+		$componentRow.append($barChartElem)
+		setElemDimensions($barChartElem,barChartData.barChart.properties.geometry)
 		
-		initBarChartData(dashboardID,barChartData);			
+		initBarChartData(dashboardID,barChartData);	
+		
+		loadDashboardConfig.initBarChartComponent($barChartElem,barChartData.barChart)	
 	}
 
 	function initSummaryTableLayout($componentRow,summaryTableData) {
@@ -22,7 +26,9 @@ function loadDashboardData(dashboardID)
 		$componentRow.append($summaryTableElem)
 		setElemDimensions($summaryTableElem,summaryTableData.summaryTable.properties.geometry)
 		
-		initSummaryTableData(dashboardID,summaryTableData)		
+		initSummaryTableData(dashboardID,summaryTableData)
+		
+		loadDashboardConfig.initSummaryTableComponent($summaryTableElem,summaryTableData.summaryTable)
 	}
 
 	
@@ -63,14 +69,8 @@ function loadDashboardData(dashboardID)
 		populateComponentLayout(dashboardLayout,dashboardLayoutSelector,
 				compenentIDComponentMap,saveUpdatedDashboardComponentLayout)
 		
-		
-		initObjectCanvasSelectionBehavior(dashboardLayoutSelector, function() {
-			initDesignDashboardProperties(designDashboardContext.dashboardID)
-			hideSiblingsShowOne('#dashboardProps')
-		})
-		
-		
+		loadDashboardConfig.doneLoadingDashboardDataFunc()
 						
-	})
+	}) // getData
 	
 }

@@ -26,7 +26,7 @@ $(document).ready(function() {
 			var objEditConfig = paletteItemsEditConfig[droppedItemInfo.paletteItemID]
 			
 			setTimeout(function() {
-				initObjectGridEditBehavior(formID,droppedItemInfo.placeholderID,objEditConfig) 
+				initObjectGridEditBehavior(droppedItemInfo.placeholderID,objEditConfig) 
 			}, 50);
 					
 			// "repackage" the dropped item paramaters for creating a new layout element. Also add the formID

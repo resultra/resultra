@@ -3,7 +3,7 @@
 function loadBarChartProperties(barChartPropsArgs) {
 	
 	var barChartContainer = $('#'+barChartPropsArgs.barChartID)
-	var barChartRef = barChartContainer.data("barChartRef")
+	var barChartRef = getElemObjectRef(barChartPropsArgs.barChartID)
 	var barChartElemPrefix = "barChart_"
 	
 	var filterPropertyPanelParams = {

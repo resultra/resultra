@@ -53,7 +53,19 @@ $(document).ready(function() {
 	initDatabaseTOC(viewDashboardContext.databaseID)
 	
 	google.charts.setOnLoadCallback(function() {
-		loadDashboardData(viewDashboardContext.dashboardID)
+		
+		var loadDashboardConfig = {
+			dashboardContext: viewDashboardContext,
+			doneLoadingDashboardDataFunc: function() {},
+			initBarChartComponent: function($barChart,barChartRef) {
+				console.log("Init bar chart component")
+			},
+			initSummaryTableComponent: function($summaryTable,summaryTableRef) {
+				console.log("Init summary table component")
+			}
+		}
+		
+		loadDashboardData(loadDashboardConfig)
 	})
 		
 

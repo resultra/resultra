@@ -2,26 +2,46 @@
 function selectDashboardBarChart (barChartRef) {
 	console.log("Select bar chart: " + barChartRef.barChartID)
 	
-	
-	var barChartPropertiesArgs = {
+	var barChartPropsArgs = {
+		dashboardID: barChartRef.parentDashboardID,
+		barChartID: barChartRef.barChartID,
 		
+		propertyUpdateComplete: function (updatedBarChartRef) {
+			
+			var updateContainer = $('#'+updatedBarChartRef.barChartID)
+			updateContainer.data("barChartRef",updatedBarChartRef)
+			
+			var getDataParams = {
+				parentDashboardID:updatedBarChartRef.parentDashboardID,
+				barChartID:updatedBarChartRef.barChartID
+			}
+			jsonAPIRequest("dashboard/barChart/getData",getDataParams,function(updatedBarChartData) {
+				console.log("Redrawing barchart after properties update")
+				drawBarChart(updatedBarChartData) // redraw the chart
+			})
+		}
 	}
-	loadBarChartProperties(barChartPropertiesArgs)
+	
+	loadBarChartProperties(barChartPropsArgs)
+	
 }
 
 function resizeDashboardBarChart(barChartID,geometry) {
+	
+	var barChartRef = getElemObjectRef(barChartID)
+	
 	var resizeParams = {
-//		parentFormID: designFormContext.formID,
-		barChartID: barChartID,
+		parentDashboardID: barChartRef.parentDashboardID,
+		barChartID: barChartRef.barChartID,
 		geometry: geometry
-	}
+	}	
+			
+ 	jsonAPIRequest("dashboard/barChart/setDimensions",resizeParams,function(updatedBarChartRef) {
+ 		console.log("bar chart dimensions updated")
+ 	})	
 
 	console.log("Resize bar chart: " +  JSON.stringify(resizeParams))
-
 	
-//	jsonAPIRequest("frm/textBox/resize", resizeParams, function(updatedObjRef) {
-//		setElemObjectRef(textBoxID,updatedObjRef)
-//	})	
 }
 
 function initDesignDashboardBarChart() {

@@ -64,8 +64,8 @@ function initSummaryTableData(dashboardID,summaryTableData) {
 	populateSummaryTableHeader($summaryTable,summaryTableData)
 	populateSummaryTableRows($summaryTable,summaryTableData)
 	
+	setElemObjectRef(summaryTableData.summaryTableID,summaryTableData.summaryTable)
+	
 	$summaryTable.data("summaryTableRef",summaryTableData.summaryTable)
-	
-	
 	
 }

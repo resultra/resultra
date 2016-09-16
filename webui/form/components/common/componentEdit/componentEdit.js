@@ -4,8 +4,7 @@ function initFormComponentDesignBehavior(componentIDs, objectRef, designFormConf
 	
 	console.log("initFormComponentDesignBehavior: params = " + JSON.stringify(componentIDs))
 	
-	initObjectGridEditBehavior(componentIDs.formID,
-		componentIDs.componentID,designFormConfig)
+	initObjectGridEditBehavior(componentIDs.componentID,designFormConfig)
 	
 	
 	initObjectSelectionBehavior($("#"+componentIDs.componentID), 

@@ -1,7 +1,9 @@
 function loadSummaryTableProperties(propArgs) {
 	
 	var $summaryTable = $('#'+propArgs.summaryTableID)
-	var summaryTableRef = $summaryTable.data("summaryTableRef")
+	
+	
+	var summaryTableRef = getElemObjectRef(propArgs.summaryTableID)
 	var summaryTableElemPrefix = "summaryTable_"
 	
 	
@@ -22,5 +24,8 @@ function loadSummaryTableProperties(propArgs) {
 		}
 	}
 	initDashboardComponentTitlePropertyPanel(summaryTableElemPrefix,titlePropertyPanelParams)
+	
+	// Toggle to the summary properties, hiding the other property panels
+	hideSiblingsShowOne('#summaryTableProps')
 	
 }

@@ -71,88 +71,12 @@ function drawDesignModeDummyBarChart(placeholderID) {
    	drawBarChart(dummyBarChartData)
 }
 
-function initBarChartEditBehavior(dashboardID,barChartID)
-{
-
-	// While in edit mode, disable input on the container
-	var barChartContainer = $('#'+barChartID)
-
-	// TODO - This could be put into a common function, since these
-	// properties should be the same for objects loaded with the page
-	// and newly added objects.
-	barChartContainer.draggable ({
-		cursor: "move",
-		clone: "original",
-		connectToSortable: ".componentCol"									
-	})
-	  
-	barChartContainer.resizable({
-		aspectRatio: false,
-		handles: 'e, w, n, s', // Only allow resizing horizontally
-		minWidth: 300,
-		minHeight: 300,
-		grid: 20, // snap to grid during resize
-
-		stop: function(event, ui) {  
-				  
-  				var resizedGeometry = { positionTop: ui.position.top,positionLeft: ui.position.left,
-					sizeWidth: ui.size.width, sizeHeight: ui.size.height }
-				
-				barChartContainer.data("redrawFunc")()
-				
-				var barChartRef = barChartContainer.data("barChartRef")
-					
-				var resizeParams = {
-					parentDashboardID: barChartRef.parentDashboardID,
-					barChartID: barChartRef.barChartID,
-					geometry: resizedGeometry
-				}	
-						
-			 	jsonAPIRequest("dashboard/barChart/setDimensions",resizeParams,function(updatedBarChartRef) {
-			 		console.log("bar chart dimensions updated")
-			 	})	
-				  
-			  } // stop function
-	});
-	
-	
-	initObjectSelectionBehavior(barChartContainer, "#dashboardCanvas",function(barChartID) {
-		var barChartPropsArgs = {
-			dashboardID: dashboardID,
-			barChartID: barChartID,
-			
-			propertyUpdateComplete: function (updatedBarChartRef) {
-				
-				var updateContainer = $('#'+updatedBarChartRef.barChartID)
-				updateContainer.data("barChartRef",updatedBarChartRef)
-				
-				var getDataParams = {
-					parentDashboardID:updatedBarChartRef.parentDashboardID,
-					barChartID:updatedBarChartRef.barChartID
-				}
-				jsonAPIRequest("dashboard/barChart/getData",getDataParams,function(updatedBarChartData) {
-					console.log("Redrawing barchart after properties update")
-					drawBarChart(updatedBarChartData) // redraw the chart
-				})
-			}
-		}
-		
-		loadBarChartProperties(barChartPropsArgs)
-		
-	})
-	
-}
-
-
 
 function initBarChartData(dashboardID,barChartData) {
 	
 	drawBarChart(barChartData)
-	initBarChartEditBehavior(dashboardID, barChartData.barChart.barChartID)
 	
-	var barChartContainer = $('#'+barChartData.barChart.barChartID)
-	
-	barChartContainer.data("barChartRef",barChartData.barChart)
+	setElemObjectRef(barChartData.barChart.barChartID,barChartData.barChart)
 	
 }
 

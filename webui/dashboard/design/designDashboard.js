@@ -18,8 +18,7 @@ $(document).ready(function() {
 			var componentEditConfig = dashboardPaletteItemsEditConfig[droppedItemInfo.paletteItemID]
 			
 			setTimeout(function() {
-				initObjectGridEditBehavior(designDashboardContext.dashboardID,
-							droppedItemInfo.placeholderID,componentEditConfig)
+				initObjectGridEditBehavior(droppedItemInfo.placeholderID,componentEditConfig)
 				componentEditConfig.populatePlaceholderData(droppedItemInfo.placeholderID)
 			}, 50);
 			
@@ -50,10 +49,46 @@ $(document).ready(function() {
 		east: fixedUILayoutPaneParams(300),
 		west: fixedUILayoutPaneParams(200),
 		west__showOverflowOnHover:	true
-	})	  
+	})
+	
+	function initDashboardComponentDesignDashboardEditBehavior($component,componentID, designDashboardConfig) {
+		console.log("initDashboardComponentDesignDashboardEditBehavior: component ID = " + componentID)
+	
+		initObjectGridEditBehavior(componentID,designDashboardConfig)
+	
+	
+		initObjectSelectionBehavior($component, 
+				dashboardDesignCanvasSelector,function(selectedComponentID) {
+			console.log("dashboard design object selected: " + selectedComponentID)
+			var selectedObjRef	= getElemObjectRef(selectedComponentID)
+			designDashboardConfig.selectionFunc(selectedObjRef)
+		})
+		
+		
+	}
 	
 	google.charts.setOnLoadCallback(function() {
-		loadDashboardData(designDashboardContext.dashboardID)
+		var loadDashboardConfig = {
+			dashboardContext: designDashboardContext,
+			doneLoadingDashboardDataFunc: function() {
+				initObjectCanvasSelectionBehavior(dashboardDesignCanvasSelector, function() {
+					initDesignDashboardProperties(designDashboardContext.dashboardID)
+					hideSiblingsShowOne('#dashboardProps')
+				})
+			},
+			initBarChartComponent: function($barChart,barChartRef) {
+				console.log("Init bar chart component")
+				initDashboardComponentDesignDashboardEditBehavior($barChart,
+						barChartRef.barChartID,barChartDashboardDesignConfig)
+			},
+			initSummaryTableComponent: function($summaryTable,summaryTableRef) {
+				console.log("Init summary table component")
+				initDashboardComponentDesignDashboardEditBehavior($summaryTable,
+						summaryTableRef.summaryTableID,summaryTableDashboardDesignConfig)
+			}
+		}
+		
+		loadDashboardData(loadDashboardConfig)
 	});
 	  
 });
