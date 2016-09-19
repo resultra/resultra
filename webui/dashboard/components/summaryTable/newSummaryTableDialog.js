@@ -51,7 +51,7 @@ function openNewSummaryTableDialog(summaryTableParams) {
 			}
 		
 			setTimeout(function() { // Wait for eventual consistency
-				jsonAPIRequest("dashboard/summaryTable/getData",summaryTableDataParams,function(summaryTableData) {
+				jsonAPIRequest("dashboardController/getSummaryTableData",summaryTableDataParams,function(summaryTableData) {
 					initSummaryTableData(newSummaryTableParams.dashboardID,summaryTableData)
 				})		
 			}, 2000);

@@ -41,7 +41,7 @@ function saveNewBarChart($dialog) {
 		}
 		
 		setTimeout(function() { // Wait for eventual consistency
-			jsonAPIRequest("dashboard/barChart/getData",barChartDataParams,function(barChartData) {
+			jsonAPIRequest("dashboardController/getBarChartData",barChartDataParams,function(barChartData) {
 				initBarChartData(newBarChartParams.dashboardID,barChartData)
 			})		
 		}, 2000);

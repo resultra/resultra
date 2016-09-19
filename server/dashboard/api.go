@@ -13,7 +13,6 @@ func init() {
 	dashboardRouter := mux.NewRouter()
 
 	dashboardRouter.HandleFunc("/api/dashboard/new", newDashboard)
-	dashboardRouter.HandleFunc("/api/dashboard/getData", getDashboardData)
 
 	dashboardRouter.HandleFunc("/api/dashboard/getProperties", getDashboardPropsAPI)
 	dashboardRouter.HandleFunc("/api/dashboard/setName", setNameAPI)
@@ -44,22 +43,6 @@ func newDashboard(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, dashboardRef)
-	}
-
-}
-
-func getDashboardData(w http.ResponseWriter, r *http.Request) {
-
-	var dashboardParams GetDashboardDataParams
-	if err := api.DecodeJSONRequest(r, &dashboardParams); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-
-	if dashboardData, err := GetDashboardData(dashboardParams); err != nil {
-		api.WriteErrorResponse(w, err)
-	} else {
-		api.WriteJSONResponse(w, *dashboardData)
 	}
 
 }

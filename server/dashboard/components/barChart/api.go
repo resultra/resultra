@@ -11,7 +11,6 @@ func init() {
 	barChartRouter := mux.NewRouter()
 
 	barChartRouter.HandleFunc("/api/dashboard/barChart/new", newBarChart)
-	barChartRouter.HandleFunc("/api/dashboard/barChart/getData", getBarChartData)
 	barChartRouter.HandleFunc("/api/dashboard/barChart/setTitle", setBarChartTitle)
 	barChartRouter.HandleFunc("/api/dashboard/barChart/setDimensions", setBarChartDimensions)
 	barChartRouter.HandleFunc("/api/dashboard/barChart/setXAxisValueGrouping", setXAxisValueGrouping)
@@ -35,22 +34,6 @@ func newBarChart(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, barChartRef)
-	}
-
-}
-
-func getBarChartData(w http.ResponseWriter, r *http.Request) {
-
-	var barChartParams BarChartUniqueIDHeader
-	if err := api.DecodeJSONRequest(r, &barChartParams); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-
-	if barChartData, err := GetBarChartData(barChartParams.ParentDashboardID, barChartParams.BarChartID); err != nil {
-		api.WriteErrorResponse(w, err)
-	} else {
-		api.WriteJSONResponse(w, barChartData)
 	}
 
 }

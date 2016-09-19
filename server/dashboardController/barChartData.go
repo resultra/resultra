@@ -1,7 +1,8 @@
-package barChart
+package dashboardController
 
 import (
 	"fmt"
+	"resultra/datasheet/server/dashboard/components/barChart"
 	"resultra/datasheet/server/recordReadController"
 	"resultra/datasheet/server/recordSort"
 )
@@ -13,14 +14,14 @@ type BarChartDataRow struct {
 
 type BarChartData struct {
 	BarChartID string            `json:"barChartID"`
-	BarChart   BarChart          `json:"barChart"`
+	BarChart   barChart.BarChart `json:"barChart"`
 	Title      string            `json:"title"`
 	XAxisTitle string            `json:"xAxisTitle"`
 	YAxisTitle string            `json:"yAxisTitle"`
 	DataRows   []BarChartDataRow `json:"dataRows"`
 }
 
-func getOneBarChartData(barChart *BarChart) (*BarChartData, error) {
+func getOneBarChartData(barChart *barChart.BarChart) (*BarChartData, error) {
 
 	tableID := barChart.Properties.DataSrcTableID
 
@@ -59,9 +60,9 @@ func getOneBarChartData(barChart *BarChart) (*BarChartData, error) {
 
 }
 
-func GetBarChartData(parentDashboardID string, barChartID string) (*BarChartData, error) {
+func getBarChartData(parentDashboardID string, barChartID string) (*BarChartData, error) {
 
-	barChart, getBarChartErr := getBarChart(parentDashboardID, barChartID)
+	barChart, getBarChartErr := barChart.GetBarChart(parentDashboardID, barChartID)
 	if getBarChartErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart with id=%v, parent dashboard = %v: error= %v",
 			barChartID, parentDashboardID, getBarChartErr)
@@ -76,9 +77,9 @@ func GetBarChartData(parentDashboardID string, barChartID string) (*BarChartData
 
 }
 
-func GetDashboardBarChartsData(parentDashboardID string) ([]BarChartData, error) {
+func getDashboardBarChartsData(parentDashboardID string) ([]BarChartData, error) {
 
-	barCharts, err := getBarCharts(parentDashboardID)
+	barCharts, err := barChart.GetBarCharts(parentDashboardID)
 	if err != nil {
 		return nil, fmt.Errorf("GetDashboardBarChartsData: Error retrieving bar charts: %v", err)
 	}

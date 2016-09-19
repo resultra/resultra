@@ -11,7 +11,6 @@ func init() {
 	summaryTableRouter := mux.NewRouter()
 
 	summaryTableRouter.HandleFunc("/api/dashboard/summaryTable/new", newSummaryTableAPI)
-	summaryTableRouter.HandleFunc("/api/dashboard/summaryTable/getData", getSummaryTableDataAPI)
 
 	/*
 
@@ -38,22 +37,6 @@ func newSummaryTableAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, summaryTableRef)
-	}
-
-}
-
-func getSummaryTableDataAPI(w http.ResponseWriter, r *http.Request) {
-
-	var params GetSummaryTableDataParams
-	if err := api.DecodeJSONRequest(r, &params); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-
-	if summaryTableData, err := GetSummaryTableData(params); err != nil {
-		api.WriteErrorResponse(w, err)
-	} else {
-		api.WriteJSONResponse(w, summaryTableData)
 	}
 
 }

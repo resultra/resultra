@@ -34,7 +34,7 @@ function loadDashboardData(loadDashboardConfig)
 	
 	// Load the dashboard data
 	var loadBarChartDataParams = { dashboardID: dashboardID }
-	jsonAPIRequest("dashboard/getData",loadBarChartDataParams,function(dashboardData) {
+	jsonAPIRequest("dashboardController/getData",loadBarChartDataParams,function(dashboardData) {
 		
 		var compenentIDComponentMap = {}
 			

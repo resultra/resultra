@@ -2,6 +2,7 @@ package server
 
 import (
 	"resultra/datasheet/server/adminController"
+	"resultra/datasheet/server/dashboardController"
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/form"
@@ -17,6 +18,7 @@ var dummyUnusedDBParams = database.NewDatabaseParams{}
 var dummyUnusedTableParams = table.NewTableParams{}
 var dummyRecordUpdateParams = recordUpdate.DummyStructForInclude{}
 var dummyRecordVals = recordReadController.DummyStructForInclude{}
+var dummyDashboardControllerVals = dashboardController.DummyStructForInclude{}
 var dummDBInfo = databaseController.DummyStructForInclude{}
 var dummyFormInfo = form.DummyStructForInclude{}
 var dummyAdminInfo = adminController.DummyStructForInclude{}

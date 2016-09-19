@@ -58,7 +58,7 @@ class TestDashboard(unittest.TestCase,TestHelperMixin):
         print "Created bar chart : ", barChartID 
         
         getDataParams = {'parentDashboardID':dashboardID, 'barChartID':barChartID}
-        jsonResp = self.apiRequest('dashboard/barChart/getData',getDataParams)
+        jsonResp = self.apiRequest('dashboardController/getBarChartData',getDataParams)
         dataRows = jsonResp[u'dataRows']
         self.assertEquals(len(dataRows),1,"Expecting 1 data row in the bar chart")
         firstDataRowVal = dataRows[0]['value']

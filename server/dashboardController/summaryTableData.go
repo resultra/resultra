@@ -1,15 +1,16 @@
-package summaryTable
+package dashboardController
 
 import (
 	"fmt"
+	"resultra/datasheet/server/dashboard/components/summaryTable"
 )
 
 type SummaryTableData struct {
-	SummaryTableID string       `json:"summaryTableID"`
-	SummaryTable   SummaryTable `json:"summaryTable"`
+	SummaryTableID string                    `json:"summaryTableID"`
+	SummaryTable   summaryTable.SummaryTable `json:"summaryTable"`
 }
 
-func getOneSummaryTableData(summaryTable *SummaryTable) (*SummaryTableData, error) {
+func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable) (*SummaryTableData, error) {
 
 	summaryTableData := SummaryTableData{
 		SummaryTableID: summaryTable.SummaryTableID,
@@ -25,7 +26,7 @@ type GetSummaryTableDataParams struct {
 	SummaryTableID    string `json:"summaryTableID"`
 }
 
-func GetSummaryTableData(params GetSummaryTableDataParams) (*SummaryTableData, error) {
+func getSummaryTableData(params GetSummaryTableDataParams) (*SummaryTableData, error) {
 
 	if len(params.SummaryTableID) <= 0 {
 		return nil, fmt.Errorf("GetSummaryTableData: missing summary table ID")
@@ -35,7 +36,7 @@ func GetSummaryTableData(params GetSummaryTableDataParams) (*SummaryTableData, e
 		return nil, fmt.Errorf("GetSummaryTableData: missing dashboard ID")
 	}
 
-	summaryTable, getSummaryTableErr := getSummaryTable(params.ParentDashboardID, params.SummaryTableID)
+	summaryTable, getSummaryTableErr := summaryTable.GetSummaryTable(params.ParentDashboardID, params.SummaryTableID)
 	if getSummaryTableErr != nil {
 		return nil, fmt.Errorf("GetSummaryTableData: Error retrieving summary table with params=%+v: error= %v",
 			params, getSummaryTableErr)
@@ -50,9 +51,9 @@ func GetSummaryTableData(params GetSummaryTableDataParams) (*SummaryTableData, e
 
 }
 
-func GetDashboardSummaryTablesData(parentDashboardID string) ([]SummaryTableData, error) {
+func getDashboardSummaryTablesData(parentDashboardID string) ([]SummaryTableData, error) {
 
-	summaryTables, err := getSummaryTables(parentDashboardID)
+	summaryTables, err := summaryTable.GetSummaryTables(parentDashboardID)
 	if err != nil {
 		return nil, fmt.Errorf("GetDashboardBarChartsData: Error retrieving bar charts: %v", err)
 	}

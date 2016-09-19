@@ -15,7 +15,7 @@ function selectDashboardBarChart (barChartRef) {
 				parentDashboardID:updatedBarChartRef.parentDashboardID,
 				barChartID:updatedBarChartRef.barChartID
 			}
-			jsonAPIRequest("dashboard/barChart/getData",getDataParams,function(updatedBarChartData) {
+			jsonAPIRequest("dashboardController/getBarChartData",getDataParams,function(updatedBarChartData) {
 				console.log("Redrawing barchart after properties update")
 				drawBarChart(updatedBarChartData) // redraw the chart
 			})

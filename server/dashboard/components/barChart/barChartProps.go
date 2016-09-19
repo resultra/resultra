@@ -35,7 +35,7 @@ func (idHeader BarChartUniqueIDHeader) uniqueBarChartID() string {
 func UpdateBarChartProps(propUpdater BarChartPropertyUpdater) (*BarChart, error) {
 
 	// Retrieve the bar chart from the data store
-	barChartForUpdate, getBarChartErr := getBarChart(propUpdater.parentDashboardID(), propUpdater.uniqueBarChartID())
+	barChartForUpdate, getBarChartErr := GetBarChart(propUpdater.parentDashboardID(), propUpdater.uniqueBarChartID())
 	if getBarChartErr != nil {
 		return nil, fmt.Errorf("updateBarChartProps: Unable to get existing bar chart: %v", getBarChartErr)
 	}

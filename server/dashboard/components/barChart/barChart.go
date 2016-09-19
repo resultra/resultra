@@ -132,7 +132,7 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 
 }
 
-func getBarChart(parentDashboardID string, barChartID string) (*BarChart, error) {
+func GetBarChart(parentDashboardID string, barChartID string) (*BarChart, error) {
 
 	barChartProps := BarChartProps{}
 	if getErr := common.GetDashboardComponent(barChartEntityKind, parentDashboardID, barChartID, &barChartProps); getErr != nil {
@@ -148,7 +148,7 @@ func getBarChart(parentDashboardID string, barChartID string) (*BarChart, error)
 
 }
 
-func getBarCharts(parentDashboardID string) ([]BarChart, error) {
+func GetBarCharts(parentDashboardID string) ([]BarChart, error) {
 
 	barCharts := []BarChart{}
 	addBarChart := func(barChartID string, encodedProps string) error {

@@ -101,7 +101,7 @@ func newSummaryTable(params NewSummaryTableParams) (*SummaryTable, error) {
 	return &newSummaryTable, nil
 }
 
-func getSummaryTable(parentDashboardID string, summaryTableID string) (*SummaryTable, error) {
+func GetSummaryTable(parentDashboardID string, summaryTableID string) (*SummaryTable, error) {
 
 	summaryTableProps := SummaryTableProps{}
 	if getErr := common.GetDashboardComponent(summaryTableEntityKind, parentDashboardID, summaryTableID, &summaryTableProps); getErr != nil {
@@ -117,7 +117,7 @@ func getSummaryTable(parentDashboardID string, summaryTableID string) (*SummaryT
 
 }
 
-func getSummaryTables(parentDashboardID string) ([]SummaryTable, error) {
+func GetSummaryTables(parentDashboardID string) ([]SummaryTable, error) {
 
 	summaryTables := []SummaryTable{}
 	addSummaryTable := func(summaryTableID string, encodedProps string) error {
