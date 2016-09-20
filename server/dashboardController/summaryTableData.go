@@ -3,20 +3,47 @@ package dashboardController
 import (
 	"fmt"
 	"resultra/datasheet/server/dashboard/components/summaryTable"
+	"resultra/datasheet/server/recordReadController"
+	"resultra/datasheet/server/recordSort"
 )
 
 type SummaryTableData struct {
-	SummaryTableID string                    `json:"summaryTableID"`
-	SummaryTable   summaryTable.SummaryTable `json:"summaryTable"`
+	SummaryTableID        string                    `json:"summaryTableID"`
+	SummaryTable          summaryTable.SummaryTable `json:"summaryTable"`
+	GroupedSummarizedVals GroupedSummarizedVals     `json:"groupedSummarizedVals"`
 }
 
 func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable) (*SummaryTableData, error) {
 
-	summaryTableData := SummaryTableData{
-		SummaryTableID: summaryTable.SummaryTableID,
-		SummaryTable:   *summaryTable}
+	tableID := summaryTable.Properties.DataSrcTableID
 
-	// TODO - Retrieve data for table
+	// TODO - Store the list of filters with the bar chart and include it in the query.
+	filterIDs := []string{}
+	sortRules := []recordSort.RecordSortRule{}
+	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
+		TableID:   tableID,
+		FilterIDs: filterIDs,
+		SortRules: sortRules}
+	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(getRecordParams)
+	if getRecErr != nil {
+		return nil, fmt.Errorf("getOneSummaryTableData: Error retrieving records for summary table: %v", getRecErr)
+	}
+
+	valGroupingResult, groupingErr := groupRecords(summaryTable.Properties.RowGroupingVals, tableID, recordRefs)
+	if groupingErr != nil {
+		return nil, fmt.Errorf("getOneSummaryTableData: Error grouping records for summary table: %v", groupingErr)
+	}
+
+	groupedSummarizedVals, summarizeErr := summarizeGroupedRecords(valGroupingResult,
+		summaryTable.Properties.ColumnValSummaries)
+	if summarizeErr != nil {
+		return nil, fmt.Errorf("getOneSummaryTableData: Error grouping records for summary table: %v", summarizeErr)
+	}
+
+	summaryTableData := SummaryTableData{
+		SummaryTableID:        summaryTable.SummaryTableID,
+		SummaryTable:          *summaryTable,
+		GroupedSummarizedVals: *groupedSummarizedVals}
 
 	return &summaryTableData, nil
 }

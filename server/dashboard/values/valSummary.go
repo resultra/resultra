@@ -69,3 +69,22 @@ func NewValSummary(params NewValSummaryParams) (*ValSummary, error) {
 	return &valSummary, nil
 
 }
+
+func (valSummary ValSummary) SummaryLabel() (string, error) {
+
+	summaryField, fieldErr := field.GetFieldWithoutTableID(valSummary.SummarizeByFieldID)
+	if fieldErr != nil {
+		return "", fmt.Errorf("SummaryLabel: Can't get field: %v", fieldErr)
+	}
+
+	switch valSummary.SummarizeValsWith {
+	case valSummaryCount:
+		return fmt.Sprintf(`Count of '%v'`, summaryField.Name), nil
+	case valSummaryAvg:
+		return "TBD", nil
+	case valSummarySum:
+		return "TBD", nil
+	default:
+		return "", fmt.Errorf("Unable to generate value label: unexpected summary = %v", valSummary.SummarizeValsWith)
+	}
+}
