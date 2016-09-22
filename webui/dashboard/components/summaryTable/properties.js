@@ -25,6 +25,8 @@ function loadSummaryTableProperties(propArgs) {
 	}
 	initDashboardComponentTitlePropertyPanel(summaryTableElemPrefix,titlePropertyPanelParams)
 	
+	initDashboardComponentSummaryColsPropertyPanel(summaryTableElemPrefix,summaryTableRef)
+	
 	// Toggle to the summary properties, hiding the other property panels
 	hideSiblingsShowOne('#summaryTableProps')
 	

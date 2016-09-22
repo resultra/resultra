@@ -10,7 +10,7 @@ type SummaryTableTemplateParams struct {
 	ElemPrefix             string
 	SelectTableParams      newComponentDialog.SelectTableTemplateParams
 	RowValueGroupingParams newComponentDialog.ValueGroupingTemplateParams
-	ColValueSummaryParams  valueSummary.ValueSummaryTemplateParams
+	ColValueSummaryParams  valueSummary.ColumnsValueSummaryTemplateParams
 	TitlePanelParams       propertiesSidebar.PanelTemplateParams
 	RowPanelParams         propertiesSidebar.PanelTemplateParams
 	ColPanelParams         propertiesSidebar.PanelTemplateParams
@@ -30,9 +30,8 @@ func init() {
 		elemPrefix, "Configure which field is used to group values into rows",
 		"Field for grouping values into rows", "Group Values By"}
 
-	colSummaryParams := valueSummary.ValueSummaryTemplateParams{
-		elemPrefix, "Configure how values are summarized in the 1st column (more to come later)",
-		"Field to summarize with", "Summarize values by"}
+	colSummaryParams := valueSummary.ColumnsValueSummaryTemplateParams{
+		elemPrefix, "Configure how values are summarized in the 1st column (more to come later)"}
 
 	TemplateParams = SummaryTableTemplateParams{
 		ElemPrefix:             elemPrefix,

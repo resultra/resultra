@@ -10,6 +10,10 @@
 	{{template "dashboardComponentValueGroupingPropertyPanel" .}}
 {{end}}
 
+{{define "summaryTableColumnProps"}}
+	{{template "dashboardComponentSummaryColumnsPropertyPanel" .}}
+{{end}}
+
 {{define "summaryTableProps"}}
 
 	<div id="summaryTableProps" class="propertyPanelToggleContainer">
@@ -24,6 +28,11 @@
 		{{template "propertyPanelPrefix" .RowPanelParams}}
 			{{template "summaryTableRowProps" .RowValueGroupingParams}}
 		{{template "propertyPanelSuffix"}}
+
+		{{template "propertyPanelPrefix" .ColPanelParams}}
+			{{template "summaryTableColumnProps" .ColValueSummaryParams}}
+		{{template "propertyPanelSuffix"}}
+
 		
 	</div>
 

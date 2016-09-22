@@ -1,0 +1,15 @@
+{{define "dashboardComponentSummaryColumnsPropertyButtons"}}		
+		<button type="button" class="btn btn-default btn-xs" id="{{.ElemPrefix}}SummaryColsAddColButton">
+		  <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Column
+		</button>
+{{end}}
+
+
+{{define "dashboardComponentSummaryColumnsPropertyPanel"}}
+
+	<div class="list-group" id="{{.ElemPrefix}}SummaryColsList">
+	</div>	
+	
+	{{template "dashboardComponentSummaryColumnsPropertyButtons" .}}
+
+{{end}}

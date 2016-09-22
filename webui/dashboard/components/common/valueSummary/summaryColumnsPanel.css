@@ -1,0 +1,9 @@
+
+
+/* Don't have rounded in the columns list */
+.summaryColsList {
+	-webkit-border-radius: 0 !important;
+	-moz-border-radius: 0 !important;
+	border-radius: 0 !important;
+	
+}
