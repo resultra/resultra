@@ -21,7 +21,7 @@ function summaryFieldSelectionHTML(elemPrefix) {
 		
 	return '' + 
 		'<div class="row">' +
-			'<select class="form-control input-sm" id="'+ selectionID + '"></select>' +
+			'<select class="form-control input-sm summarizeByFieldSelection" id="'+ selectionID + '"></select>' +
 		'</div>';
 }
 
@@ -31,7 +31,7 @@ function summarizeBySelectionHTML(elemPrefix) {
 		
 	return '' + 
 		'<div class="row">' +
-			'<select class="form-control input-sm" id="'+ selectionID + '"></select>' +
+			'<select class="form-control input-sm summarizeBySelection" id="'+ selectionID + '"></select>' +
 		'</div>';
 }
 
@@ -50,7 +50,54 @@ function summaryColumnListItemHTML(elemPrefix) {
 		'</div>';
 }
 
-function populateSummaryColFieldMenu(elemPrefix,valSummary,fieldsByID) {
+function getSummaryColumnValSummaries(elemPrefix) {
+	var valSummaries = []
+	
+	var listSelector = summaryColListSelector(elemPrefix)
+		
+	$(".summaryColumnsListItem").each(function() {
+		var summaryFieldID = $(this).find(".summarizeByFieldSelection").first().val()
+		var summarizeBy = $(this).find(".summarizeBySelection").first().val()
+				
+		if((summarizeBy.length>0) && (summaryFieldID.length > 0)) {
+			valSummaries.push({
+				summarizeByFieldID: summaryFieldID,
+				summarizeValsWith: summarizeBy
+			})
+			
+		}
+	})
+	
+	console.log("Value summary properties: " + JSON.stringify(valSummaries))
+	
+	return valSummaries;
+}
+
+
+
+function populateSummarizeByMenu(elemPrefix,fieldsByID,fieldType,initialSummary) {
+	
+	var selectionID = summarizeBySelectionID(elemPrefix)
+	var menuSelector = '#' + selectionID
+	
+	$(menuSelector).empty()
+	populateSummarizeBySelection(menuSelector,fieldType)	
+	
+	if(initialSummary != null) {
+		$(menuSelector).val(initialSummary)	
+	}
+	
+	$(menuSelector).unbind("change")
+	$(menuSelector).change(function(){
+		var summarizeValWith = $(menuSelector).val()
+        console.log("Value summary: list elem = " + $(this).attr('id')+ " selected summary setting = " + summarizeValWith )
+		getSummaryColumnValSummaries(elemPrefix)
+    }); // change
+	
+	
+}
+
+function populateSummaryColFieldMenu(elemPrefix,fieldsByID, initialFieldID) {
 	
 	var selectionID = summaryFieldSelectionID(elemPrefix)
 	var menuSelector = '#' + selectionID
@@ -63,46 +110,21 @@ function populateSummaryColFieldMenu(elemPrefix,valSummary,fieldsByID) {
 	
 	// Initialize the menu to the field ID of the given valSummary
 	// If none is given, leave it unselected and prompt the user.
-	if(valSummary != null) {
-		$(menuSelector).val(valSummary.summarizeByFieldID)	
+	if(initialFieldID != null) {
+		$(menuSelector).val(initialFieldID)	
 	}
 	
 	$(menuSelector).change(function(){
 		var fieldID = $(menuSelector).val()
         console.log("Value Summary: list elem = " + $(this).attr('id')+ " selected field id = " + fieldID )
-//		sortPaneRuleListChanged()
+		var fieldInfo = fieldsByID[fieldID]
+		populateSummarizeByMenu(elemPrefix,fieldsByID,fieldInfo.type,null)
     }); // change
 	
 	
 }
 
-function populateSummarizeByMenu(elemPrefix,valSummary,fieldsByID) {
-	
-	var selectionID = summarizeBySelectionID(elemPrefix)
-	var menuSelector = '#' + selectionID
-	
-	$(menuSelector).empty()
-	if (valSummary != null) {
-		var fieldInfo = fieldsByID[valSummary.summarizeByFieldID]
-		if (fieldInfo != null) {
-			populateSummarizeBySelection(menuSelector,fieldInfo.type)	
-		}		
-	}
-	
-	// Initialize the menu to the field ID of the given valSummary
-	// If none is given, leave it unselected and prompt the user.
-	if(valSummary != null) {
-		$(menuSelector).val(valSummary.summarizeValsWith)	
-	}
-	
-	$(menuSelector).change(function(){
-		var summarizeValWith = $(menuSelector).val()
-        console.log("Value summary: list elem = " + $(this).attr('id')+ " selected summary setting = " + summarizeValWith )
-//		sortPaneRuleListChanged()
-    }); // change
-	
-	
-}
+
 
 
 
@@ -116,12 +138,9 @@ function addColumnSummaryListItem(elemPrefix,valSummary, fieldsByID) {
 	var colsListSelector = summaryColListSelector(elemPrefix)
 	$(colsListSelector).append(summaryColumnListItemHTML(elemPrefix))
 	
-	populateSummaryColFieldMenu(elemPrefix,valSummary,fieldsByID)
-	populateSummarizeByMenu(elemPrefix,valSummary,fieldsByID)
-		
-	var listItemSelector = '#' + summaryColumnListItemID(elemPrefix)
-	$(listItemSelector).data("elemPrefix",elemPrefix)
-		
+	populateSummaryColFieldMenu(elemPrefix,fieldsByID,valSummary.summarizeByFieldID)
+	var fieldInfo = fieldsByID[valSummary.summarizeByFieldID]
+	populateSummarizeByMenu(elemPrefix,fieldsByID,fieldInfo.type,valSummary.summarizeValsWith)		
 }
 
 function initDashboardComponentSummaryColsPropertyPanel(summaryTableElemPrefix,summaryTable) {
@@ -136,7 +155,16 @@ function initDashboardComponentSummaryColsPropertyPanel(summaryTableElemPrefix,s
 			addColumnSummaryListItem(summaryTableElemPrefix,colValSummary,valueSummaryFieldsByID)
 
 		}
+		
+		initButtonClickHandler(createPrefixedSelector(summaryTableElemPrefix, 'SummaryColsAddColButton'),function() {
+			console.log("Adding summary column")
+//			populateSummaryColFieldMenu(elemPrefix,fieldsByID,valSummary.summarizeByFieldID)
+		
+		})
+		
+		
 	})
+	
 	
 	
 	
