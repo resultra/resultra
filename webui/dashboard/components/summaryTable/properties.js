@@ -18,12 +18,31 @@ function loadSummaryTableProperties(propArgs) {
 				newTitle:newTitle
 			}
 			jsonAPIRequest("dashboard/summaryTable/setTitle",setTitleParams,function(updatedSummaryTable) {
-					setElemObjectRef(updatedSummaryTable.summaryTableID,updatedObjRef)
+					setElemObjectRef(updatedSummaryTable.summaryTableID,updatedSummaryTable)
 			})
 			
 		}
 	}
 	initDashboardComponentTitlePropertyPanel(summaryTableElemPrefix,titlePropertyPanelParams)
+	
+	
+	var rowGroupingPropertyPanelParams = {
+		elemPrefix: summaryTableElemPrefix,
+		tableID: summaryTableRef.properties.dataSrcTableID,
+		valGroupingProps: summaryTableRef.properties.rowGroupingVals,
+		saveValueGroupingFunc: function(newValueGroupingParams) {
+			var setRowGroupingParams = {
+				parentDashboardID:propArgs.dashboardID,
+				summaryTableID: summaryTableRef.summaryTableID,
+				rowValueGrouping:newValueGroupingParams
+			}
+			jsonAPIRequest("dashboard/summaryTable/setRowValueGrouping",setRowGroupingParams,function(updatedSummaryTable) {
+					setElemObjectRef(updatedSummaryTable.summaryTableID,updatedSummaryTable)
+			})
+		}
+		
+	}
+	initDashboardValueGroupingPropertyPanel(rowGroupingPropertyPanelParams)
 	
 	
 	var filterPropertyPanelParams = {

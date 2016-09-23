@@ -128,3 +128,15 @@ func (params SetSummaryTableSummaryColumns) updateSummaryTableProps(summaryTable
 
 	return nil
 }
+
+type SetRowGroupingParams struct {
+	SummaryTableUniqueIDHeader
+	RowValueGrouping values.ValGrouping `json:"rowValueGrouping"`
+}
+
+func (params SetRowGroupingParams) updateSummaryTableProps(summaryTable *SummaryTable) error {
+
+	summaryTable.Properties.RowGroupingVals = params.RowValueGrouping
+
+	return nil
+}
