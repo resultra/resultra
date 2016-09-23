@@ -1,5 +1,13 @@
 
 
+// Generate unique element IDs for the different sort rule list items.
+var currValSummaryPrefix = 0;
+function generateValSummaryElemPrefix() {
+	currValSummaryPrefix++;
+	return "valSummary" + currValSummaryPrefix + "_"
+}
+
+
 function summaryFieldSelectionID(elemPrefix) {
 	var fieldSelectionID = elemPrefix + "SummaryFieldSelection"
 	return fieldSelectionID
@@ -125,22 +133,32 @@ function populateSummaryColFieldMenu(elemPrefix,fieldsByID, initialFieldID) {
 }
 
 
-
-
-
 function summaryColListSelector(elemPrefix) {
 	var colsListSelector = '#' + elemPrefix + 'SummaryColsList'
 	return colsListSelector
 }
 
-function addColumnSummaryListItem(elemPrefix,valSummary, fieldsByID) {
+function addColumnSummaryListItem(listElemPrefix, valSummary, fieldsByID) {
 	
-	var colsListSelector = summaryColListSelector(elemPrefix)
+	var elemPrefix = generateValSummaryElemPrefix()
+	
+	var colsListSelector = summaryColListSelector(listElemPrefix)
 	$(colsListSelector).append(summaryColumnListItemHTML(elemPrefix))
 	
 	populateSummaryColFieldMenu(elemPrefix,fieldsByID,valSummary.summarizeByFieldID)
 	var fieldInfo = fieldsByID[valSummary.summarizeByFieldID]
 	populateSummarizeByMenu(elemPrefix,fieldsByID,fieldInfo.type,valSummary.summarizeValsWith)		
+}
+
+function addNewColumnSummaryListItem(listElemPrefix, fieldsByID) {
+	var elemPrefix = generateValSummaryElemPrefix()
+
+	var colsListSelector = summaryColListSelector(listElemPrefix)
+	$(colsListSelector).append(summaryColumnListItemHTML(elemPrefix))
+
+	populateSummaryColFieldMenu(elemPrefix,fieldsByID,null)
+	populateSummarizeByMenu(elemPrefix,fieldsByID,null,null)		
+	
 }
 
 function initDashboardComponentSummaryColsPropertyPanel(summaryTableElemPrefix,summaryTable) {
@@ -158,15 +176,10 @@ function initDashboardComponentSummaryColsPropertyPanel(summaryTableElemPrefix,s
 		
 		initButtonClickHandler(createPrefixedSelector(summaryTableElemPrefix, 'SummaryColsAddColButton'),function() {
 			console.log("Adding summary column")
-//			populateSummaryColFieldMenu(elemPrefix,fieldsByID,valSummary.summarizeByFieldID)
-		
+			addNewColumnSummaryListItem(summaryTableElemPrefix, valueSummaryFieldsByID)		
 		})
 		
-		
 	})
-	
-	
-	
 	
 }
 
