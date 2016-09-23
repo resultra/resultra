@@ -18,7 +18,7 @@ function loadSummaryTableProperties(propArgs) {
 				newTitle:newTitle
 			}
 			jsonAPIRequest("dashboard/summaryTable/setTitle",setTitleParams,function(updatedSummaryTable) {
-					$summaryTable.data("summaryTableRef",updatedSummaryTable)
+					setElemObjectRef(updatedSummaryTable.summaryTableID,updatedObjRef)
 			})
 			
 		}
@@ -36,8 +36,8 @@ function loadSummaryTableProperties(propArgs) {
 				parentDashboardID:propArgs.dashboardID,
 				summaryTableID: summaryTableRef.summaryTableID,
 				columnValSummaries: newColumns }
-			jsonAPIRequest("dashboard/summaryTable/setColumns",setColumnParams,function(updatedSummaryTable) {
-					$summaryTable.data("summaryTableRef",updatedSummaryTable)
+			jsonAPIRequest("dashboard/summaryTable/setColumns",setColumnParams,function(updatedSummaryTable) {	
+					setElemObjectRef(updatedSummaryTable.summaryTableID,updatedObjRef)
 			})
 		}
 	}

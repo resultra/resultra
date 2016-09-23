@@ -6,7 +6,6 @@ var summaryTableDashboardDesignConfig = {
 function selectDashboardSummaryTable(summaryTableRef) {
 	console.log("Select summary table: " + summaryTableRef.summaryTableID)
 	
-	
 	var summaryTablePropertiesArgs = {
 		dashboardID: summaryTableRef.parentDashboardID,
 		summaryTableID: summaryTableRef.summaryTableID
@@ -15,18 +14,20 @@ function selectDashboardSummaryTable(summaryTableRef) {
 }
 
 function resizeDashboardSummaryTable(summaryTableID,geometry) {
+	
+	var summaryTableRef = getElemObjectRef(summaryTableID)
+	
 	var resizeParams = {
-//		parentFormID: designFormContext.formID,
-		barChartID: barChartID,
+		parentDashboardID: summaryTableRef.parentDashboardID,
+		summaryTableID: summaryTableID,
 		geometry: geometry
 	}
 
 	console.log("Resize summary table: " +  JSON.stringify(resizeParams))
 
-	
-//	jsonAPIRequest("frm/textBox/resize", resizeParams, function(updatedObjRef) {
-//		setElemObjectRef(textBoxID,updatedObjRef)
-//	})	
+	jsonAPIRequest("dashboard/summaryTable/setDimensions", resizeParams, function(updatedObjRef) {
+		setElemObjectRef(updatedObjRef.summaryTableID,updatedObjRef)
+	})	
 }
 
 function initDesignDashboardSummaryTable() {
