@@ -26,6 +26,36 @@ function loadSummaryTableProperties(propArgs) {
 	initDashboardComponentTitlePropertyPanel(summaryTableElemPrefix,titlePropertyPanelParams)
 	
 	
+	var filterPropertyPanelParams = {
+		elemPrefix: summaryTableElemPrefix,
+		tableID: summaryTableRef.properties.dataSrcTableID,
+		defaultFilterIDs: summaryTableRef.properties.defaultFilterIDs,
+		setDefaultFilterFunc: function(defaultFilterIDs) {
+			var params = {
+				parentDashboardID: propArgs.dashboardID,
+				summaryTableID: summaryTableRef.summaryTableID,
+				defaultFilterIDs: defaultFilterIDs }
+			jsonAPIRequest("dashboard/summaryTable/setDefaultFilters",params,function(updatedSummaryTable) {
+				setElemObjectRef(updatedSummaryTable.summaryTableID,updatedSummaryTable)
+				console.log("Default filters updated")
+			}) // set record's number field value
+			
+		},
+		availableFilterIDs: summaryTableRef.properties.availableFilterIDs,
+		setAvailableFilterFunc: function(availFilterIDs) {
+			var params = {
+				parentDashboardID: propArgs.dashboardID,
+				summaryTableID: summaryTableRef.summaryTableID,
+				availableFilterIDs: availFilterIDs }
+			jsonAPIRequest("dashboard/summaryTable/setAvailableFilters",params,function(updatedSummaryTable) {
+				setElemObjectRef(updatedSummaryTable.summaryTableID,updatedSummaryTable)
+				console.log("Available filters updated")
+			}) // set record's number field value
+			
+		}
+	}
+	initFilterPropertyPanel(filterPropertyPanelParams)
+	
 	var columnsPropertyPanelParams = {
 		listElemPrefix: summaryTableElemPrefix,
 		dataSrcTableID: summaryTableRef.properties.dataSrcTableID,
