@@ -142,3 +142,14 @@ func GetSummaryTables(parentDashboardID string) ([]SummaryTable, error) {
 
 	return summaryTables, nil
 }
+
+func updateExistingSummaryTable(updatedSummaryTable *SummaryTable) (*SummaryTable, error) {
+
+	if updateErr := common.UpdateDashboardComponent(summaryTableEntityKind, updatedSummaryTable.ParentDashboardID,
+		updatedSummaryTable.SummaryTableID, updatedSummaryTable.Properties); updateErr != nil {
+		return nil, fmt.Errorf("Error updating summary table %+v: %v", updatedSummaryTable, updateErr)
+	}
+
+	return updatedSummaryTable, nil
+
+}

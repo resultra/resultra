@@ -8,6 +8,7 @@ function selectDashboardSummaryTable(summaryTableRef) {
 	
 	
 	var summaryTablePropertiesArgs = {
+		dashboardID: summaryTableRef.parentDashboardID,
 		summaryTableID: summaryTableRef.summaryTableID
 	}
 	loadSummaryTableProperties(summaryTablePropertiesArgs)

@@ -83,7 +83,7 @@ function getSummaryColumnValSummaries(elemPrefix) {
 
 
 
-function populateSummarizeByMenu(elemPrefix,fieldsByID,fieldType,initialSummary) {
+function populateSummarizeByMenu(panelParams,elemPrefix,fieldsByID,fieldType,initialSummary) {
 	
 	var selectionID = summarizeBySelectionID(elemPrefix)
 	var menuSelector = '#' + selectionID
@@ -99,13 +99,14 @@ function populateSummarizeByMenu(elemPrefix,fieldsByID,fieldType,initialSummary)
 	$(menuSelector).change(function(){
 		var summarizeValWith = $(menuSelector).val()
         console.log("Value summary: list elem = " + $(this).attr('id')+ " selected summary setting = " + summarizeValWith )
-		getSummaryColumnValSummaries(elemPrefix)
+		var valSummaries = getSummaryColumnValSummaries(panelParams.listElemPrefix)
+		panelParams.setColumnsFunc(valSummaries)
     }); // change
 	
 	
 }
 
-function populateSummaryColFieldMenu(elemPrefix,fieldsByID, initialFieldID) {
+function populateSummaryColFieldMenu(panelParams,elemPrefix,fieldsByID, initialFieldID) {
 	
 	var selectionID = summaryFieldSelectionID(elemPrefix)
 	var menuSelector = '#' + selectionID
@@ -126,7 +127,7 @@ function populateSummaryColFieldMenu(elemPrefix,fieldsByID, initialFieldID) {
 		var fieldID = $(menuSelector).val()
         console.log("Value Summary: list elem = " + $(this).attr('id')+ " selected field id = " + fieldID )
 		var fieldInfo = fieldsByID[fieldID]
-		populateSummarizeByMenu(elemPrefix,fieldsByID,fieldInfo.type,null)
+		populateSummarizeByMenu(panelParams,elemPrefix,fieldsByID,fieldInfo.type,null)
     }); // change
 	
 	
@@ -138,45 +139,47 @@ function summaryColListSelector(elemPrefix) {
 	return colsListSelector
 }
 
-function addColumnSummaryListItem(listElemPrefix, valSummary, fieldsByID) {
+function addColumnSummaryListItem(panelParams, valSummary, fieldsByID) {
 	
 	var elemPrefix = generateValSummaryElemPrefix()
 	
-	var colsListSelector = summaryColListSelector(listElemPrefix)
+	var colsListSelector = summaryColListSelector(panelParams.listElemPrefix)
 	$(colsListSelector).append(summaryColumnListItemHTML(elemPrefix))
 	
-	populateSummaryColFieldMenu(elemPrefix,fieldsByID,valSummary.summarizeByFieldID)
+	populateSummaryColFieldMenu(panelParams,elemPrefix,fieldsByID,valSummary.summarizeByFieldID)
 	var fieldInfo = fieldsByID[valSummary.summarizeByFieldID]
-	populateSummarizeByMenu(elemPrefix,fieldsByID,fieldInfo.type,valSummary.summarizeValsWith)		
+	populateSummarizeByMenu(panelParams,elemPrefix,fieldsByID,fieldInfo.type,valSummary.summarizeValsWith)		
 }
 
-function addNewColumnSummaryListItem(listElemPrefix, fieldsByID) {
+function addNewColumnSummaryListItem(panelParams, fieldsByID) {
 	var elemPrefix = generateValSummaryElemPrefix()
 
-	var colsListSelector = summaryColListSelector(listElemPrefix)
+	var colsListSelector = summaryColListSelector(panelParams.listElemPrefix)
 	$(colsListSelector).append(summaryColumnListItemHTML(elemPrefix))
 
-	populateSummaryColFieldMenu(elemPrefix,fieldsByID,null)
-	populateSummarizeByMenu(elemPrefix,fieldsByID,null,null)		
+	populateSummaryColFieldMenu(panelParams,elemPrefix,fieldsByID,null)
+	populateSummarizeByMenu(panelParams,elemPrefix,fieldsByID,null,null)		
 	
 }
 
-function initDashboardComponentSummaryColsPropertyPanel(summaryTableElemPrefix,summaryTable) {
+function initDashboardComponentSummaryColsPropertyPanel(panelParams) {
 	
-	loadFieldInfo(summaryTable.properties.dataSrcTableID,[fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime],
+	loadFieldInfo(panelParams.dataSrcTableID,[fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime],
 			function(valueSummaryFieldsByID) {
-		var colValSummaries = summaryTable.properties.columnValSummaries
-		$(summaryColListSelector(summaryTableElemPrefix)).empty()
+		var listSelector = summaryColListSelector(panelParams.listElemPrefix)
+		$(listSelector).empty()
+		var colValSummaries = panelParams.initialColumnValSummaries
 		for(var colIndex = 0; colIndex < colValSummaries.length; colIndex++) {
 			var colValSummary = colValSummaries[colIndex]
 
-			addColumnSummaryListItem(summaryTableElemPrefix,colValSummary,valueSummaryFieldsByID)
+			addColumnSummaryListItem(panelParams,colValSummary,valueSummaryFieldsByID)
 
 		}
 		
-		initButtonClickHandler(createPrefixedSelector(summaryTableElemPrefix, 'SummaryColsAddColButton'),function() {
+		var addColumnButtonSelector = createPrefixedSelector(panelParams.listElemPrefix, 'SummaryColsAddColButton')
+		initButtonClickHandler(addColumnButtonSelector,function() {
 			console.log("Adding summary column")
-			addNewColumnSummaryListItem(summaryTableElemPrefix, valueSummaryFieldsByID)		
+			addNewColumnSummaryListItem(panelParams, valueSummaryFieldsByID)		
 		})
 		
 	})

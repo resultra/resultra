@@ -66,6 +66,8 @@ func updateExistingBarChart(updatedBarChart *BarChart) (*BarChart, error) {
 
 	if updateErr := common.UpdateDashboardComponent(barChartEntityKind, updatedBarChart.ParentDashboardID,
 		updatedBarChart.BarChartID, updatedBarChart.Properties); updateErr != nil {
+		return nil, fmt.Errorf("Error updating bar chart %+v: %v", updatedBarChart, updateErr)
+
 	}
 
 	return updatedBarChart, nil

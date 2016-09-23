@@ -25,7 +25,23 @@ function loadSummaryTableProperties(propArgs) {
 	}
 	initDashboardComponentTitlePropertyPanel(summaryTableElemPrefix,titlePropertyPanelParams)
 	
-	initDashboardComponentSummaryColsPropertyPanel(summaryTableElemPrefix,summaryTableRef)
+	
+	var columnsPropertyPanelParams = {
+		listElemPrefix: summaryTableElemPrefix,
+		dataSrcTableID: summaryTableRef.properties.dataSrcTableID,
+		initialColumnValSummaries: summaryTableRef.properties.columnValSummaries,
+		setColumnsFunc: function(newColumns) {
+			console.log("Setting summary table column properties: " + JSON.stringify(newColumns))
+			var setColumnParams = {
+				parentDashboardID:propArgs.dashboardID,
+				summaryTableID: summaryTableRef.summaryTableID,
+				columnValSummaries: newColumns }
+			jsonAPIRequest("dashboard/summaryTable/setColumns",setColumnParams,function(updatedSummaryTable) {
+					$summaryTable.data("summaryTableRef",updatedSummaryTable)
+			})
+		}
+	}
+	initDashboardComponentSummaryColsPropertyPanel(columnsPropertyPanelParams)
 	
 	// Toggle to the summary properties, hiding the other property panels
 	hideSiblingsShowOne('#summaryTableProps')
