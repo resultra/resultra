@@ -69,8 +69,11 @@ function initSummaryTableData(dashboardID,summaryTableData) {
 	var $summaryTable = $('#'+tableElemID)
 
 
-	var $tableTitle = $("<caption>Table title</caption>")
-	$summaryTable.append($tableTitle)
+	var tableTitle = summaryTableData.summaryTable.properties.title
+	if (tableTitle !== null && tableTitle.length >0) {
+		var $tableTitle = $("<caption>" + tableTitle + "</caption>")
+		$summaryTable.append($tableTitle)	
+	}
 
 	populateSummaryTableHeader($summaryTable,summaryTableData)
 	populateSummaryTableRows($summaryTable,summaryTableData)
