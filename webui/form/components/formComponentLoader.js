@@ -41,6 +41,28 @@ function loadFormComponents(loadFormConfig) {
 													
 		var compenentIDComponentMap = {}	
 
+		function initHeaderLayout($componentRow,header) {
+			// Create an HTML block for the container
+			console.log("loadFormComponents: initializing header: " + JSON.stringify(header))
+		
+			var containerHTML = formHeaderContainerHTML(header.headerID);
+			var $containerObj = $(containerHTML)
+			$containerObj.find(".formHeader").text(header.properties.label)
+					
+			$componentRow.append($containerObj)
+			
+			setElemDimensions($containerObj,header.properties.geometry)
+		
+			 // Store the newly created object reference in the DOM element. This is needed for follow-on
+			 // property setting, resizing, etc.
+			setElemObjectRef(header.headerID,header)
+		
+			// Callback for any specific initialization for either the form design or view mode
+			loadFormConfig.initHeaderFunc(componentContext,header)
+			
+		}
+
+
 		function initTextBoxLayout($componentRow,textBox) {
 			// Create an HTML block for the container
 			console.log("loadFormComponents: initializing text box: " + JSON.stringify(textBox))
@@ -220,6 +242,16 @@ function loadFormComponents(loadFormConfig) {
 				initFunc: initCheckBoxLayout
 			}		
 		}
+
+		for (var headerIter in formInfo.headers) {
+			var headerProps = formInfo.headers[headerIter]
+			console.log("loadFormComponents: initializing header: " + JSON.stringify(headerProps))
+			compenentIDComponentMap[headerProps.headerID] = {
+				componentInfo: headerProps,
+				initFunc: initHeaderLayout
+			}		
+		}
+
 		
 		for (var datePickerIter in formInfo.datePickers) {
 			var datePickerProps = formInfo.datePickers[datePickerIter]

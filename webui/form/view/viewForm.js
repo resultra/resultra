@@ -244,6 +244,10 @@ $(document).ready(function() {
 			console.log("Init image in view form")
 			initImageRecordEditBehavior(componentContext,imageObjectRef)
 		},
+		initHeaderFunc: function(componentContext,headerObjectRef) {
+			console.log("Init header in view form")
+			initHeaderRecordEditBehavior(componentContext,headerObjectRef)
+		},
 		doneLoadingFormDataFunc: initAfterViewFormComponentsAlreadyLoaded	
 	}); 	
 		

@@ -1,0 +1,12 @@
+{
+    "cssFiles": ["header.css"], 
+    "htmlFiles": ["properties.html"], 
+    "jsFiles": ["newFormHeaderDialog.js",
+		"properties.js",
+		"containerHTML.js",
+		"designFormConfig.js",
+		"viewFormConfig.js"
+    ],
+	"imageFiles":[],
+    "subDirs": []
+}

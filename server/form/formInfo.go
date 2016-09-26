@@ -3,6 +3,7 @@ package form
 import (
 	"resultra/datasheet/server/form/components/checkBox"
 	"resultra/datasheet/server/form/components/datePicker"
+	"resultra/datasheet/server/form/components/header"
 	"resultra/datasheet/server/form/components/htmlEditor"
 	"resultra/datasheet/server/form/components/image"
 	"resultra/datasheet/server/form/components/textBox"
@@ -15,6 +16,7 @@ type FormInfo struct {
 	DatePickers []datePicker.DatePicker `json:"datePickers"`
 	HtmlEditors []htmlEditor.HtmlEditor `json:"htmlEditors"`
 	Images      []image.Image           `json:"images"`
+	Headers     []header.Header         `json:"headers"`
 }
 
 type GetFormInfoParams struct {
@@ -53,13 +55,19 @@ func getFormInfo(params GetFormInfoParams) (*FormInfo, error) {
 		return nil, err
 	}
 
+	headers, err := header.GetHeaders(params.FormID)
+	if err != nil {
+		return nil, err
+	}
+
 	formInfo := FormInfo{
 		Form:        *form,
 		TextBoxes:   textBoxes,
 		CheckBoxes:  checkBoxes,
 		DatePickers: datePickers,
 		HtmlEditors: htmlEditors,
-		Images:      images}
+		Images:      images,
+		Headers:     headers}
 
 	return &formInfo, nil
 }

@@ -4,7 +4,8 @@ var paletteItemsEditConfig = {
 	paletteItemCheckBox: checkBoxDesignFormConfig,
 	paletteItemDatePicker: datePickerDesignFormConfig,
 	paletteItemHtmlEditor: htmlEditorDesignFormConfig,
-	paletteItemImage: imageDesignFormConfig
+	paletteItemImage: imageDesignFormConfig,
+	paletteItemHeader: formHeaderDesignFormConfig
 }
 
 var formDesignCanvasSelector = "#layoutCanvas"
@@ -96,6 +97,10 @@ $(document).ready(function() {
 		initImageFunc: function(componentContext,imageObjectRef) {
 			var componentIDs = { formID: formID, componentID: imageObjectRef.imageID }
 			initFormComponentDesignBehavior(componentIDs,imageObjectRef,imageDesignFormConfig)
+		},
+		initHeaderFunc: function(componentContext,headerObjectRef) {
+			var componentIDs = { formID: formID, componentID: headerObjectRef.headerID }
+			initFormComponentDesignBehavior(componentIDs,headerObjectRef,formHeaderDesignFormConfig)
 		},
 		doneLoadingFormDataFunc: function() {
 			// The formula editor depends on the field information first being initialized.

@@ -4,6 +4,7 @@ import (
 	"resultra/datasheet/webui/form/components/checkBox"
 	"resultra/datasheet/webui/form/components/common/newFormElemDialog"
 	"resultra/datasheet/webui/form/components/datePicker"
+	"resultra/datasheet/webui/form/components/header"
 	"resultra/datasheet/webui/form/components/htmlEditor"
 	"resultra/datasheet/webui/form/components/image"
 	"resultra/datasheet/webui/form/components/textBox"
@@ -24,5 +25,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, htmlEditor.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, image.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, textBox.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, header.TemplateFileList...)
 
 }

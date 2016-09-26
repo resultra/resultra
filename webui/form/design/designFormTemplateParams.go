@@ -4,6 +4,7 @@ import (
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/webui/form/components/checkBox"
 	"resultra/datasheet/webui/form/components/datePicker"
+	"resultra/datasheet/webui/form/components/header"
 	"resultra/datasheet/webui/form/components/htmlEditor"
 	"resultra/datasheet/webui/form/components/image"
 	"resultra/datasheet/webui/form/components/textBox"
@@ -29,6 +30,7 @@ type DesignFormTemplateParams struct {
 	TextBoxParams    textBox.TextboxTemplateParams
 	HtmlEditorParams htmlEditor.HTMLEditorTemplateParams
 	ImageParams      image.ImageTemplateParams
+	HeaderParams     header.HeaderTemplateParams
 	FormParams       FormTemplateParams
 }
 
@@ -54,6 +56,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		TextBoxParams:    textBox.TemplateParams,
 		HtmlEditorParams: htmlEditor.TemplateParams,
 		ImageParams:      image.TemplateParams,
+		HeaderParams:     header.TemplateParams,
 		FormParams:       formParams}
 
 	return templParams

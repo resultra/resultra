@@ -1,0 +1,13 @@
+{{define "formHeaderFormatProps"}}
+	Header formatting properties go here
+{{end}}
+
+{{define "formHeaderProps"}}
+
+	<div id="formHeaderProps" class="propertyPanelToggleContainer">
+		{{template "propertyPanelPrefix" .FormatPanelParams}}
+			{{template "formHeaderFormatProps"}}
+		{{template "propertyPanelSuffix"}}
+	</div>
+
+{{end}}
