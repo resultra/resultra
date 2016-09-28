@@ -29,13 +29,13 @@ function getComponentLayout($parentLayout) {
 
 }
 
+
 // Create a new row in the layout and setup the drag-and-drop functionality to insert new
 // components, or re-order existing components. Whenever the row changes, the saveLayoutFunc
 // is called with the updated overall layout.
 function createComponentRow($parentLayout) {
-	var rowHTML = '<div class="componentRow">' +
-	  '</div>'
-	var $componentRow = $(rowHTML)
+	var rowHTML = '<div class="componentRow"></div>'
+	var $componentRow = $(rowHTML)	
 	
 	$parentLayout.append($componentRow)
 	
@@ -82,27 +82,27 @@ function createComponentCol($parentLayout,$parentRow, saveLayoutFunc) {
 		
 	}
 	
+	/*
 	$componentCol.sortable({
-//		placeholder: "ui-sortable-placeholder",
 		placeholder: "component-placeholder",
-		forcePlaceholderSize: true,
 		connectWith:".layoutContainer",
 		stop: function(event,ui) {
 				
 			var $droppedObj = ui.item
 			
 			if($droppedObj.hasClass("newComponent")) {
-				console.log("Adding new component to column")
+				console.log("Adding new component to existing column")
 				receiveNewComponent($droppedObj)				
 			} else {
-				console.log("Re-order existing component in column")
+				console.log("Re-order existing component in existing column")
 				var updatedLayout = getComponentLayout($parentLayout)
 				saveLayoutFunc(updatedLayout)
 			}
 			
 		}
 	})
-	
+*/
+		
 	$parentRow.append($componentCol)
 	
 	return $componentCol
@@ -129,7 +129,7 @@ function populateComponentLayout(componentLayout, parentLayoutSelector, compenen
 				var currColComponents = currCol.componentIDs
 			
 				var $componentCol = createComponentCol($parentLayout,$componentRow,saveLayoutFunc)
-
+				
 				for(var componentIndex = 0; componentIndex<currColComponents.length; componentIndex++) {
 					var componentID = currColComponents[componentIndex]
 					console.log("Component layout: row=" + rowIndex + " col=" + colIndex +
@@ -143,12 +143,9 @@ function populateComponentLayout(componentLayout, parentLayoutSelector, compenen
 						completedLayoutComponentIDs[componentID] = true			
 					}
 				} // for each component
+				
 							
-			} // for each column
-			
-			// Create an extra placedholder column at the end of the row
-			createComponentCol($parentLayout,$componentRow,saveLayoutFunc)
-			
+			} // for each column			
 			
 		} // columns !== null
 
@@ -171,10 +168,6 @@ function populateComponentLayout(componentLayout, parentLayoutSelector, compenen
 			}
 		}	
 	}
-
-	// At the bottom of the layout, create a placeholder row and colum for new rows & columns.
-	var $placeholderRowForDrop = createComponentRow($parentLayout)
-	createComponentCol($parentLayout,$placeholderRowForDrop,saveLayoutFunc)
 
 
 }

@@ -1,4 +1,5 @@
 
+
 function initObjectGridEditBehavior(objID, editConfig) {
 	
 	console.log("Initialize object edit behavior: object ID = " + objID)
@@ -6,14 +7,25 @@ function initObjectGridEditBehavior(objID, editConfig) {
 	
 	// While in edit mode, disable input on the container
 	$(objSelector).find('input').prop('disabled',true);
-
 	
 	$(objSelector).draggable ({
 		cursor: "move",
 		//TODO - Components can be dragged between different parents, but need to be contained 
 		// within the same overall parent layout. 
-		clone: "original",
-		connectToSortable: ".componentCol"	
+//		clone: "original",
+		helper:'clone',
+		opacity: 0.5,
+		drag: function(e,ui) {			
+			var mouseOffset = {
+				top: e.pageY,
+				left: e.pageX
+			}
+			console.log("Drag component: mouse offset: " + JSON.stringify(mouseOffset))
+			highlightDroppablePlaceholder(mouseOffset)
+		}, // drag
+		 stop: function( event, ui ) {
+		 	hideAllComponentLayoutPlaceholders()
+		 }
 	})
 
 		

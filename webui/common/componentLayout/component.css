@@ -15,17 +15,3 @@
 	display: inline-block;
 
 }
-
-
-.componentCol .ui-sortable-placeholder {
-	background-color:HoneyDew;
-}
-
-
-.component-placeholder {
-    border: 1px dotted black;
-    margin-left:10px;
-	margin-right:10px;
-    height: 30px;
-	background-color:HoneyDew;
-  }

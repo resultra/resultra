@@ -1,0 +1,25 @@
+.newComponentRowPlaceholder {
+      border: 1px dotted black;
+      min-height:25px;
+	  min-width:200px;
+	  width:100%;
+	  background-color:HoneyDew;	
+   }
+  
+.newComponentColumnPlaceholder {
+	border: 1px dotted black;
+	min-height:50px;
+	min-width:25px;
+	background-color:HoneyDew;
+	vertical-align:top;
+	display: inline-block;
+}
+
+
+.componentColumnPlacementPlaceholder {
+      border: 1px dotted black;
+      min-height:20px;
+	  min-width:200px;
+	  width:100%;
+	  background-color:HoneyDew;	
+   }
