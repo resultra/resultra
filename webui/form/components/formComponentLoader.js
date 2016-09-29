@@ -282,22 +282,10 @@ function loadFormComponents(loadFormConfig) {
 				initFunc: initImageEditorLayout
 			}			
 
-		}
-		
-		function saveUpdatedFormComponentLayout(updatedLayout) {
-			console.log("saveUpdatedFormComponentLayout: component layout = " + JSON.stringify(updatedLayout))		
-			var setLayoutParams = {
-				formID: componentContext.formID,
-				layout: updatedLayout
-			}
-			jsonAPIRequest("frm/setLayout", setLayoutParams, function(formInfo) {
-			})
 		}		
 		
-		
 		var formLayout = formInfo.form.properties.layout
-		populateComponentLayout(formLayout,loadFormConfig.formParentElemID,
-				compenentIDComponentMap,saveUpdatedFormComponentLayout)
+		populateComponentLayout(formLayout,loadFormConfig.formParentElemID,compenentIDComponentMap)
 				
 		loadFormConfig.doneLoadingFormDataFunc()
 	})

@@ -51,10 +51,10 @@ $(document).ready(function() {
 		west__showOverflowOnHover:	true
 	})
 	
-	function initDashboardComponentDesignDashboardEditBehavior($component,componentID, designDashboardConfig) {
+	function initDashboardComponentDesignDashboardEditBehavior($component,componentID, designDashboardConfig,layoutDesignConfig) {
 		console.log("initDashboardComponentDesignDashboardEditBehavior: component ID = " + componentID)
 	
-		initObjectGridEditBehavior(componentID,designDashboardConfig)
+		initObjectGridEditBehavior(componentID,designDashboardConfig,layoutDesignConfig)
 	
 	
 		initObjectSelectionBehavior($component, 
@@ -68,6 +68,23 @@ $(document).ready(function() {
 	}
 	
 	google.charts.setOnLoadCallback(function() {
+		
+		// TODO - Move to function for dragging items
+		function saveUpdatedDashboardComponentLayout(updatedLayout) {
+			console.log("saveUpdatedDashboardComponentLayout: component layout = " + JSON.stringify(updatedLayout))		
+			var setLayoutParams = {
+				dashboardID: designDashboardContext.dashboardID,
+				layout: updatedLayout
+			}
+			jsonAPIRequest("dashboard/setLayout", setLayoutParams, function(dashboardInfo) {})
+			
+		}
+		
+		var layoutDesignConfig = {
+			parentLayoutSelector: dashboardDesignCanvasSelector,
+			saveLayoutFunc: saveUpdatedDashboardComponentLayout
+		}
+		
 		var loadDashboardConfig = {
 			dashboardContext: designDashboardContext,
 			doneLoadingDashboardDataFunc: function() {
@@ -79,12 +96,12 @@ $(document).ready(function() {
 			initBarChartComponent: function($barChart,barChartRef) {
 				console.log("Init bar chart component")
 				initDashboardComponentDesignDashboardEditBehavior($barChart,
-						barChartRef.barChartID,barChartDashboardDesignConfig)
+						barChartRef.barChartID,barChartDashboardDesignConfig,layoutDesignConfig)
 			},
 			initSummaryTableComponent: function($summaryTable,summaryTableRef) {
 				console.log("Init summary table component")
 				initDashboardComponentDesignDashboardEditBehavior($summaryTable,
-						summaryTableRef.summaryTableID,summaryTableDashboardDesignConfig)
+						summaryTableRef.summaryTableID,summaryTableDashboardDesignConfig,layoutDesignConfig)
 			}
 		}
 		

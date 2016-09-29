@@ -75,32 +75,48 @@ $(document).ready(function() {
 		hideEditorFunc:hideFormulaEditPanel
 	}
 	
+	function saveUpdatedFormComponentLayout(updatedLayout) {
+		console.log("saveUpdatedFormComponentLayout: component layout = " + JSON.stringify(updatedLayout))		
+		var setLayoutParams = {
+			formID: designFormContext.formID,
+			layout: updatedLayout
+		}
+		jsonAPIRequest("frm/setLayout", setLayoutParams, function(formInfo) {
+		})
+	}		
+	
+	
+	var designFormLayoutConfig =  {
+		parentLayoutSelector: formDesignCanvasSelector,
+		saveLayoutFunc: saveUpdatedFormComponentLayout
+	}
+	
 	loadFormComponents({
 		formParentElemID: formDesignCanvasSelector,
 		formContext: designFormContext,
 		initTextBoxFunc: function(componentContext,textBoxObjectRef) {
 			var componentIDs = { formID: formID, componentID: textBoxObjectRef.textBoxID }
-			initFormComponentDesignBehavior(componentIDs,textBoxObjectRef,textBoxDesignFormConfig)
+			initFormComponentDesignBehavior(componentIDs,textBoxObjectRef,textBoxDesignFormConfig,designFormLayoutConfig)
 		},
 		initCheckBoxFunc: function(componentContext,checkBoxObjectRef) {
 			var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
-			initFormComponentDesignBehavior(componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig)
+			initFormComponentDesignBehavior(componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig,designFormLayoutConfig)
 		},
 		initDatePickerFunc: function(componentContext,datePickerObjectRef) {
 			var componentIDs = { formID: formID, componentID: datePickerObjectRef.datePickerID }
-			initFormComponentDesignBehavior(componentIDs,datePickerObjectRef,datePickerDesignFormConfig)
+			initFormComponentDesignBehavior(componentIDs,datePickerObjectRef,datePickerDesignFormConfig,designFormLayoutConfig)
 		},
 		initHtmlEditorFunc: function(componentContext,htmlEditorObjectRef) {
 			var componentIDs = { formID: formID, componentID: htmlEditorObjectRef.htmlEditorID }
-			initFormComponentDesignBehavior(componentIDs,htmlEditorObjectRef,htmlEditorDesignFormConfig)
+			initFormComponentDesignBehavior(componentIDs,htmlEditorObjectRef,htmlEditorDesignFormConfig,designFormLayoutConfig)
 		},
 		initImageFunc: function(componentContext,imageObjectRef) {
 			var componentIDs = { formID: formID, componentID: imageObjectRef.imageID }
-			initFormComponentDesignBehavior(componentIDs,imageObjectRef,imageDesignFormConfig)
+			initFormComponentDesignBehavior(componentIDs,imageObjectRef,imageDesignFormConfig,designFormLayoutConfig)
 		},
 		initHeaderFunc: function(componentContext,headerObjectRef) {
 			var componentIDs = { formID: formID, componentID: headerObjectRef.headerID }
-			initFormComponentDesignBehavior(componentIDs,headerObjectRef,formHeaderDesignFormConfig)
+			initFormComponentDesignBehavior(componentIDs,headerObjectRef,formHeaderDesignFormConfig,designFormLayoutConfig)
 		},
 		doneLoadingFormDataFunc: function() {
 			// The formula editor depends on the field information first being initialized.

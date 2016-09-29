@@ -127,28 +127,47 @@ function highlightDroppablePlaceholder(currMouseOffset) {
 	
 }
 
-function handleDropOnComponentLayoutPlaceholder(currMouseOffset) {
+function handleDropOnComponentLayoutPlaceholder(currMouseOffset,layoutDesignConfig,$component) {
+	
+	var $parentLayout = $(layoutDesignConfig.parentLayoutSelector)
 	
 	var $newRowPlaceholder = findPlaceholderUnderMousePosition(".newComponentRowPlaceholder",currMouseOffset)
 	if ($newRowPlaceholder !== null) {
 		console.log("handleDropOnComponentLayoutPlaceholder: dropping on new row")
+		$newRow = createComponentRowNoInsert($parentLayout)
+		$newCol = createComponentColNoInsert()
+		$newCol.append($component)
+		$newRow.append($newCol)
+		$newRow.insertAfter($newRowPlaceholder)
 		hideAllComponentLayoutPlaceholders()
+		var updatedLayout = getComponentLayout($parentLayout)
+		layoutDesignConfig.saveLayoutFunc(updatedLayout)
 		return
 	}
 
 	var $newColPlaceholder = findPlaceholderUnderMousePosition(".newComponentColumnPlaceholder",currMouseOffset)
 	if ($newColPlaceholder !== null) {
 		console.log("handleDropOnComponentLayoutPlaceholder: dropping on new column")
+		$newCol = createComponentColNoInsert()
+		$newCol.append($component)
+		$newCol.insertAfter($newColPlaceholder)
 		hideAllComponentLayoutPlaceholders()
+		var updatedLayout = getComponentLayout($parentLayout)
+		layoutDesignConfig.saveLayoutFunc(updatedLayout)
 		return		
 	}
 
 	var $colPlacementPlaceholder = findPlaceholderUnderMousePosition(".componentColumnPlacementPlaceholder",currMouseOffset)
 	if ($colPlacementPlaceholder !== null) {
 		console.log("handleDropOnComponentLayoutPlaceholder: dropping on different column placement")
+		$component.insertAfter($colPlacementPlaceholder)
+		hideAllComponentLayoutPlaceholders()
+		var updatedLayout = getComponentLayout($parentLayout)
+		layoutDesignConfig.saveLayoutFunc(updatedLayout)		
 		hideAllComponentLayoutPlaceholders()
 		return		
 	}
 	
-	
+	// Mouse is not over any current placeholder. Handle the drop without changing the layout.
+	hideAllComponentLayoutPlaceholders()
 }

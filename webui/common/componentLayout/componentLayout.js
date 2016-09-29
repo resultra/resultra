@@ -29,24 +29,34 @@ function getComponentLayout($parentLayout) {
 
 }
 
-
-// Create a new row in the layout and setup the drag-and-drop functionality to insert new
-// components, or re-order existing components. Whenever the row changes, the saveLayoutFunc
-// is called with the updated overall layout.
-function createComponentRow($parentLayout) {
+function createComponentRowNoInsert($parentLayout) {
 	var rowHTML = '<div class="componentRow"></div>'
-	var $componentRow = $(rowHTML)	
+	var $componentRow = $(rowHTML)
+	
+	return $componentRow
+}
+
+// Create a new row in the layout.
+function createComponentRow($parentLayout) {
+	var $componentRow = createComponentRowNoInsert($parentLayout)	
 	
 	$parentLayout.append($componentRow)
 	
 	return $componentRow	
 }
 
-function createComponentCol($parentLayout,$parentRow, saveLayoutFunc) {
-	
+function createComponentColNoInsert() {
 	var colHTML = '<div class="componentCol"></div>'
 	var $componentCol = $(colHTML)
 	
+	return $componentCol
+}
+
+function createComponentCol($parentLayout,$parentRow) {
+	
+	var $componentCol = createComponentColNoInsert()
+	
+	/*
 	function receiveNewComponent($droppedObj) {
 		
 		$droppedObj.removeClass("newComponent")
@@ -82,7 +92,6 @@ function createComponentCol($parentLayout,$parentRow, saveLayoutFunc) {
 		
 	}
 	
-	/*
 	$componentCol.sortable({
 		placeholder: "component-placeholder",
 		connectWith:".layoutContainer",
@@ -110,11 +119,11 @@ function createComponentCol($parentLayout,$parentRow, saveLayoutFunc) {
 
 
 
-function populateComponentLayout(componentLayout, parentLayoutSelector, compenentIDComponentMap,saveLayoutFunc) {
+function populateComponentLayout(componentLayout, parentLayoutSelector, compenentIDComponentMap) {
 
 	var completedLayoutComponentIDs = {}
 	
-	$parentLayout = $(parentLayoutSelector)
+	var $parentLayout = $(parentLayoutSelector)
 	
 	for(var rowIndex = 0; rowIndex < componentLayout.length; rowIndex++) {
 		
@@ -128,7 +137,7 @@ function populateComponentLayout(componentLayout, parentLayoutSelector, compenen
 				var currCol = currRow.columns[colIndex]
 				var currColComponents = currCol.componentIDs
 			
-				var $componentCol = createComponentCol($parentLayout,$componentRow,saveLayoutFunc)
+				var $componentCol = createComponentCol($parentLayout,$componentRow)
 				
 				for(var componentIndex = 0; componentIndex<currColComponents.length; componentIndex++) {
 					var componentID = currColComponents[componentIndex]
@@ -158,7 +167,7 @@ function populateComponentLayout(componentLayout, parentLayoutSelector, compenen
 		console.log("populateComponentLayout: Layout orphan components")
 		
 		var $orphanLayoutRow = createComponentRow($parentLayout)
-		var $orphanLayoutCol = createComponentCol($parentLayout,$orphanLayoutRow,saveLayoutFunc)
+		var $orphanLayoutCol = createComponentCol($parentLayout,$orphanLayoutRow)
 		
 		for(var componentID in compenentIDComponentMap) {
 			if(completedLayoutComponentIDs[componentID] != true) {

@@ -1,10 +1,10 @@
 
 
-function initFormComponentDesignBehavior(componentIDs, objectRef, designFormConfig) {
+function initFormComponentDesignBehavior(componentIDs, objectRef, designFormConfig,layoutDesignConfig) {
 	
 	console.log("initFormComponentDesignBehavior: params = " + JSON.stringify(componentIDs))
 	
-	initObjectGridEditBehavior(componentIDs.componentID,designFormConfig)
+	initObjectGridEditBehavior(componentIDs.componentID,designFormConfig,layoutDesignConfig)
 	
 	
 	initObjectSelectionBehavior($("#"+componentIDs.componentID), 

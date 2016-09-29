@@ -1,6 +1,6 @@
 
 
-function initObjectGridEditBehavior(objID, editConfig) {
+function initObjectGridEditBehavior(objID, editConfig,layoutDesignConfig) {
 	
 	console.log("Initialize object edit behavior: object ID = " + objID)
 	var objSelector = "#"+objID
@@ -10,9 +10,6 @@ function initObjectGridEditBehavior(objID, editConfig) {
 	
 	$(objSelector).draggable ({
 		cursor: "move",
-		//TODO - Components can be dragged between different parents, but need to be contained 
-		// within the same overall parent layout. 
-//		clone: "original",
 		helper:'clone',
 		opacity: 0.5,
 		drag: function(e,ui) {			
@@ -26,7 +23,8 @@ function initObjectGridEditBehavior(objID, editConfig) {
  			var mouseOffset = { 
  				top: e.pageY, 
  				left: e.pageX }
-			handleDropOnComponentLayoutPlaceholder(mouseOffset)
+			var $draggedComponent = $(e.target)
+			handleDropOnComponentLayoutPlaceholder(mouseOffset,layoutDesignConfig,$draggedComponent )
 		 }
 	})
 

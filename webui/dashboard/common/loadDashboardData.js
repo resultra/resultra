@@ -55,19 +55,9 @@ function loadDashboardData(loadDashboardConfig)
 			}		
 		}
 		
-		function saveUpdatedDashboardComponentLayout(updatedLayout) {
-			console.log("saveUpdatedDashboardComponentLayout: component layout = " + JSON.stringify(updatedLayout))		
-			var setLayoutParams = {
-				dashboardID: dashboardID,
-				layout: updatedLayout
-			}
-			jsonAPIRequest("dashboard/setLayout", setLayoutParams, function(dashboardInfo) {})
-			
-		}
 		
 		var dashboardLayout = dashboardData.dashboard.properties.layout
-		populateComponentLayout(dashboardLayout,dashboardLayoutSelector,
-				compenentIDComponentMap,saveUpdatedDashboardComponentLayout)
+		populateComponentLayout(dashboardLayout,dashboardLayoutSelector,compenentIDComponentMap)
 		
 		loadDashboardConfig.doneLoadingDashboardDataFunc()
 						
