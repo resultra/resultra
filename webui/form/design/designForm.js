@@ -10,6 +10,27 @@ var paletteItemsEditConfig = {
 
 var formDesignCanvasSelector = "#layoutCanvas"
 
+
+function createFormLayoutDesignConfig() {
+	function saveUpdatedFormComponentLayout(updatedLayout) {
+		console.log("saveUpdatedFormComponentLayout: component layout = " + JSON.stringify(updatedLayout))		
+		var setLayoutParams = {
+			formID: designFormContext.formID,
+			layout: updatedLayout
+		}
+		jsonAPIRequest("frm/setLayout", setLayoutParams, function(formInfo) {
+		})
+	}		
+	
+	
+	var designFormLayoutConfig =  {
+		parentLayoutSelector: formDesignCanvasSelector,
+		saveLayoutFunc: saveUpdatedFormComponentLayout
+	}
+	
+	return designFormLayoutConfig
+}
+
 $(document).ready(function() {
 					
 	var paletteConfig = {
@@ -45,7 +66,14 @@ $(document).ready(function() {
 		dropDestSelector: formDesignCanvasSelector,
 		paletteSelector: "#paletteSidebar",
 	}
-	initDesignPalette(paletteConfig)			
+	
+	var designFormPaletteLayoutConfig =  {
+		parentLayoutSelector: formDesignCanvasSelector,
+		saveLayoutFunc: function(updatedLayout) { } // no-op: layout gets saved after placeholder replaced with real component.
+	}
+	
+	
+	initDesignPalette(paletteConfig,designFormPaletteLayoutConfig)			
 	
 	// Initialize all the different plug-ins/configurations for text boxes, check boxes, etc.
 	console.log("designForm: Initializing form design plug-ins/configurations ...")
@@ -74,22 +102,8 @@ $(document).ready(function() {
 		showEditorFunc:showFormulaEditPane,
 		hideEditorFunc:hideFormulaEditPanel
 	}
-	
-	function saveUpdatedFormComponentLayout(updatedLayout) {
-		console.log("saveUpdatedFormComponentLayout: component layout = " + JSON.stringify(updatedLayout))		
-		var setLayoutParams = {
-			formID: designFormContext.formID,
-			layout: updatedLayout
-		}
-		jsonAPIRequest("frm/setLayout", setLayoutParams, function(formInfo) {
-		})
-	}		
-	
-	
-	var designFormLayoutConfig =  {
-		parentLayoutSelector: formDesignCanvasSelector,
-		saveLayoutFunc: saveUpdatedFormComponentLayout
-	}
+		
+	var designFormLayoutConfig =  createFormLayoutDesignConfig()
 	
 	loadFormComponents({
 		formParentElemID: formDesignCanvasSelector,

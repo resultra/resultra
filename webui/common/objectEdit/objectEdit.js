@@ -24,7 +24,8 @@ function initObjectGridEditBehavior(objID, editConfig,layoutDesignConfig) {
  				top: e.pageY, 
  				left: e.pageX }
 			var $draggedComponent = $(e.target)
-			handleDropOnComponentLayoutPlaceholder(mouseOffset,layoutDesignConfig,$draggedComponent )
+			var dropCompleteFunc = function($component) {} // no-op
+			handleDropOnComponentLayoutPlaceholder(mouseOffset,layoutDesignConfig,$draggedComponent,dropCompleteFunc)
 		 }
 	})
 

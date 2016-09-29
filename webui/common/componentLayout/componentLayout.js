@@ -55,63 +55,7 @@ function createComponentColNoInsert() {
 function createComponentCol($parentLayout,$parentRow) {
 	
 	var $componentCol = createComponentColNoInsert()
-	
-	/*
-	function receiveNewComponent($droppedObj) {
-		
-		$droppedObj.removeClass("newComponent")
-		
-		var placeholderID = $droppedObj.attr('id')
-		assert(placeholderID !== undefined, "receiveNewComponent: palette item missing element id")
-		console.log("receiveNewComponent: drop: placeholder ID of palette item: " + placeholderID)
-	
-		var objWidth = $droppedObj.width()
-		var objHeight = $droppedObj.height()
-	
-		var paletteItemID = $droppedObj.data("paletteItemID")
-		console.log("receiveNewComponent: drop: palette item ID/type: " + paletteItemID)
-	
-		var paletteConfig = $droppedObj.data("paletteConfig")
-		
-		var componentParentLayoutSelector = paletteConfig.dropDestSelector
-		
-		var droppedObjInfo = {
-			droppedElem: $droppedObj,
-			paletteItemID: paletteItemID,
-			placeholderID: placeholderID,
-			geometry: {positionTop: 0, positionLeft: 0,
-			sizeWidth: objWidth,sizeHeight: objHeight},
-			finalizeLayoutIncludingNewComponentFunc: function() {
-					console.log("receiveNewComponent: finalizing layout with new component")
-					var updatedLayout = getComponentLayout($parentLayout)
-					saveLayoutFunc(updatedLayout)
-				}
-		};
-		
-		paletteConfig.dropComplete(droppedObjInfo)
-		
-	}
-	
-	$componentCol.sortable({
-		placeholder: "component-placeholder",
-		connectWith:".layoutContainer",
-		stop: function(event,ui) {
-				
-			var $droppedObj = ui.item
 			
-			if($droppedObj.hasClass("newComponent")) {
-				console.log("Adding new component to existing column")
-				receiveNewComponent($droppedObj)				
-			} else {
-				console.log("Re-order existing component in existing column")
-				var updatedLayout = getComponentLayout($parentLayout)
-				saveLayoutFunc(updatedLayout)
-			}
-			
-		}
-	})
-*/
-		
 	$parentRow.append($componentCol)
 	
 	return $componentCol

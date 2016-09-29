@@ -10,19 +10,14 @@ function allocNextPaletteItemPlaceholderID()
 	return placeholderID
 }
 
-function initDesignPalette(paletteConfig) {
+function initDesignPalette(paletteConfig,layoutDesignConfig) {
 	$(".paletteItem").draggable({
 	
-		revert: 'invalid',
 		cursor: "move",
 		// The cursorAt option aligns the draggable object at an offset from the cursor, rather than from
 		// the top corner of the palette item.
 		cursorAt: { top: 10, left: 10 },
-		
-		// componentRow is the class which will receive items dropped from the palette.
-		// TBD - the receiver class could be made a parameter in paletteConfig.
-		connectToSortable: ".componentCol",			
-		
+				
 		helper: function() { 
 			
 			var paletteItemID = $(this).attr('id')
@@ -54,6 +49,66 @@ function initDesignPalette(paletteConfig) {
 		 			 
 			 return $placeholder
 		 },
+		 
+ 		drag: function(e,ui) {			
+ 			var mouseOffset = { 
+ 				top: e.pageY, 
+ 				left: e.pageX }
+ 			console.log("Drag component: mouse offset: " + JSON.stringify(mouseOffset))
+ 			highlightDroppablePlaceholder(mouseOffset)
+ 		}, // drag
+		
+		 stop: function( e, ui ) {
+				var mouseOffset = { 
+					top: e.pageY, 
+					left: e.pageX }
+					
+			var paletteConfig = $(ui.helper).data("paletteConfig")
+			var paletteItemID = $(ui.helper).data("paletteItemID")
+			var componentHTML = paletteConfig.draggableItemHTML(allocNextPaletteItemPlaceholderID(),paletteItemID)
+					
+			var $draggedPlaceholderComponent = $(componentHTML);
+			$draggedPlaceholderComponent.data("paletteConfig",paletteConfig)
+			$draggedPlaceholderComponent.data("paletteItemID",paletteItemID)
+				
+			function newComponentDropComplete($droppedObj) {
+		
+				$droppedObj.removeClass("newComponent")
+		
+				var placeholderID = $droppedObj.attr('id')
+				assert(placeholderID !== undefined, "receiveNewComponent: palette item missing element id")
+				console.log("receiveNewComponent: drop: placeholder ID of palette item: " + placeholderID)
+	
+				var objWidth = $droppedObj.width()
+				var objHeight = $droppedObj.height()
+	
+				var paletteItemID = $droppedObj.data("paletteItemID")
+				console.log("receiveNewComponent: drop: palette item ID/type: " + paletteItemID)
+	
+				var paletteConfig = $droppedObj.data("paletteConfig")
+		
+				var componentParentLayoutSelector = paletteConfig.dropDestSelector
+		
+				var droppedObjInfo = {
+					droppedElem: $droppedObj,
+					paletteItemID: paletteItemID,
+					placeholderID: placeholderID,
+					geometry: {positionTop: 0, positionLeft: 0,
+					sizeWidth: objWidth,sizeHeight: objHeight},
+					finalizeLayoutIncludingNewComponentFunc: function() {
+							console.log("receiveNewComponent: finalizing layout with new component")
+							var updatedLayout = getComponentLayout($parentLayout)
+							saveLayoutFunc(updatedLayout)
+						}
+				};
+		
+				paletteConfig.dropComplete(droppedObjInfo)
+		
+			}	
+			handleDropOnComponentLayoutPlaceholder(mouseOffset,layoutDesignConfig,$draggedPlaceholderComponent,newComponentDropComplete)
+		 },
+		
+		 
 		// The following are needed to keep the draggable above the other elements. Getting Semantic UI,
 		// jQuery UI Layout and jQuery UI drag-and-drop working together is really tricky. Some issues:
 		//
@@ -69,7 +124,7 @@ function initDesignPalette(paletteConfig) {
 		// So, the following solution is the only solution which could be found to address both issues.
 		// described above.
 		stack: "div",
-		appendTo: paletteConfig.paletteSelector,
+		appendTo: 'body',
 		zIndex: 999
 	
 	});

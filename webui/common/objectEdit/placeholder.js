@@ -127,7 +127,7 @@ function highlightDroppablePlaceholder(currMouseOffset) {
 	
 }
 
-function handleDropOnComponentLayoutPlaceholder(currMouseOffset,layoutDesignConfig,$component) {
+function handleDropOnComponentLayoutPlaceholder(currMouseOffset,layoutDesignConfig,$component,dropCompleteFunc) {
 	
 	var $parentLayout = $(layoutDesignConfig.parentLayoutSelector)
 	
@@ -142,6 +142,7 @@ function handleDropOnComponentLayoutPlaceholder(currMouseOffset,layoutDesignConf
 		hideAllComponentLayoutPlaceholders()
 		var updatedLayout = getComponentLayout($parentLayout)
 		layoutDesignConfig.saveLayoutFunc(updatedLayout)
+		dropCompleteFunc($component)
 		return
 	}
 
@@ -154,6 +155,7 @@ function handleDropOnComponentLayoutPlaceholder(currMouseOffset,layoutDesignConf
 		hideAllComponentLayoutPlaceholders()
 		var updatedLayout = getComponentLayout($parentLayout)
 		layoutDesignConfig.saveLayoutFunc(updatedLayout)
+		dropCompleteFunc($component)
 		return		
 	}
 
@@ -164,7 +166,7 @@ function handleDropOnComponentLayoutPlaceholder(currMouseOffset,layoutDesignConf
 		hideAllComponentLayoutPlaceholders()
 		var updatedLayout = getComponentLayout($parentLayout)
 		layoutDesignConfig.saveLayoutFunc(updatedLayout)		
-		hideAllComponentLayoutPlaceholders()
+		dropCompleteFunc($component)
 		return		
 	}
 	

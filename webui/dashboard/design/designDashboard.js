@@ -6,6 +6,25 @@ var dashboardPaletteItemsEditConfig = {
 var dashboardDesignCanvasSelector = "#dashboardCanvas"
 
 
+function createDashboardLayoutDesignConfig() {
+	// TODO - Move to function for dragging items
+	function saveUpdatedDashboardComponentLayout(updatedLayout) {
+		console.log("saveUpdatedDashboardComponentLayout: component layout = " + JSON.stringify(updatedLayout))		
+		var setLayoutParams = {
+			dashboardID: designDashboardContext.dashboardID,
+			layout: updatedLayout
+		}
+		jsonAPIRequest("dashboard/setLayout", setLayoutParams, function(dashboardInfo) {})
+		
+	}
+	
+	var layoutDesignConfig = {
+		parentLayoutSelector: dashboardDesignCanvasSelector,
+		saveLayoutFunc: saveUpdatedDashboardComponentLayout
+	}
+	return layoutDesignConfig
+}
+
 $(document).ready(function() {
 							
 	var paletteConfig = {
@@ -39,7 +58,12 @@ $(document).ready(function() {
 		paletteSelector: "#dashboardPaletteSidebar",
 	}
 	
-	initDesignPalette(paletteConfig)	
+	var designDashboardPaletteLayoutConfig = {
+		parentLayoutSelector: dashboardDesignCanvasSelector,
+		saveLayoutFunc: function() {} // no-op layout gets saved after component is finalized
+	}
+	
+	initDesignPalette(paletteConfig,designDashboardPaletteLayoutConfig)	
 	
 	initNewBarChartDialog(designDashboardContext)
 						
@@ -68,22 +92,8 @@ $(document).ready(function() {
 	}
 	
 	google.charts.setOnLoadCallback(function() {
-		
-		// TODO - Move to function for dragging items
-		function saveUpdatedDashboardComponentLayout(updatedLayout) {
-			console.log("saveUpdatedDashboardComponentLayout: component layout = " + JSON.stringify(updatedLayout))		
-			var setLayoutParams = {
-				dashboardID: designDashboardContext.dashboardID,
-				layout: updatedLayout
-			}
-			jsonAPIRequest("dashboard/setLayout", setLayoutParams, function(dashboardInfo) {})
-			
-		}
-		
-		var layoutDesignConfig = {
-			parentLayoutSelector: dashboardDesignCanvasSelector,
-			saveLayoutFunc: saveUpdatedDashboardComponentLayout
-		}
+				
+		var layoutDesignConfig = createDashboardLayoutDesignConfig()
 		
 		var loadDashboardConfig = {
 			dashboardContext: designDashboardContext,
