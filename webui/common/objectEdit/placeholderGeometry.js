@@ -67,16 +67,27 @@ function hitTestLayoutRect(position, rect) {
 	}
 }
 
-function hitExistingPlaceholder(selector,currMouseOffset) {
-	var placeholderFound = false
+function findPlaceholderUnderMousePosition(selector,currMouseOffset) {
+	var foundPlaceholder = null
 	$(selector).each(function() {
-		if (placeholderFound) { return } // short-circuit loop if placeholder already found
+		if (foundPlaceholder !== null) { return } // short-circuit loop if placeholder already found
 		var placeholderRect = createElemRect($(this))
 		if(hitTestLayoutRect(currMouseOffset,placeholderRect)) {
 			console.log("found existing placeholder: " + JSON.stringify(placeholderRect))
-			placeholderFound = true
+			foundPlaceholder = $(this)
 		}	
 	})
+	return foundPlaceholder
+	
+}
+
+function hitExistingPlaceholder(selector,currMouseOffset) {
+	var placeholderFound = false
+	
+	var $placeholderFound = findPlaceholderUnderMousePosition(selector,currMouseOffset)
+	if($placeholderFound !== null) {
+		placeholderFound = true
+	}	
 	return placeholderFound
 }
 

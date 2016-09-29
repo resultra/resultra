@@ -126,3 +126,29 @@ function highlightDroppablePlaceholder(currMouseOffset) {
 	}
 	
 }
+
+function handleDropOnComponentLayoutPlaceholder(currMouseOffset) {
+	
+	var $newRowPlaceholder = findPlaceholderUnderMousePosition(".newComponentRowPlaceholder",currMouseOffset)
+	if ($newRowPlaceholder !== null) {
+		console.log("handleDropOnComponentLayoutPlaceholder: dropping on new row")
+		hideAllComponentLayoutPlaceholders()
+		return
+	}
+
+	var $newColPlaceholder = findPlaceholderUnderMousePosition(".newComponentColumnPlaceholder",currMouseOffset)
+	if ($newColPlaceholder !== null) {
+		console.log("handleDropOnComponentLayoutPlaceholder: dropping on new column")
+		hideAllComponentLayoutPlaceholders()
+		return		
+	}
+
+	var $colPlacementPlaceholder = findPlaceholderUnderMousePosition(".componentColumnPlacementPlaceholder",currMouseOffset)
+	if ($colPlacementPlaceholder !== null) {
+		console.log("handleDropOnComponentLayoutPlaceholder: dropping on different column placement")
+		hideAllComponentLayoutPlaceholders()
+		return		
+	}
+	
+	
+}

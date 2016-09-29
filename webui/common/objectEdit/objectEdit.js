@@ -16,15 +16,17 @@ function initObjectGridEditBehavior(objID, editConfig) {
 		helper:'clone',
 		opacity: 0.5,
 		drag: function(e,ui) {			
-			var mouseOffset = {
-				top: e.pageY,
-				left: e.pageX
-			}
+			var mouseOffset = { 
+				top: e.pageY, 
+				left: e.pageX }
 			console.log("Drag component: mouse offset: " + JSON.stringify(mouseOffset))
 			highlightDroppablePlaceholder(mouseOffset)
 		}, // drag
-		 stop: function( event, ui ) {
-		 	hideAllComponentLayoutPlaceholders()
+		 stop: function( e, ui ) {
+ 			var mouseOffset = { 
+ 				top: e.pageY, 
+ 				left: e.pageX }
+			handleDropOnComponentLayoutPlaceholder(mouseOffset)
 		 }
 	})
 
