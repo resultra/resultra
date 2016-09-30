@@ -1,11 +1,9 @@
 {
     "subDirs": ["breadCrumb",
 		"databaseTOC",
-		"designPalette",
 		"formulaEditor",
 		"helper",
 		"componentLayout",
-		"objectEdit",
 		"objectSelection",
 		"recordFilter",
 		"userRole",
