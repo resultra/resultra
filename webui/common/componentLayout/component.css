@@ -2,12 +2,12 @@
 	margin-top: 5px;
 	margin-bottom:5px;
 	width:100%;
-	min-height: 30px;
+	min-height: 25px;
 }
 
 .componentCol {
 	margin-left: 5px;
-	min-height: 100px;
+	min-height: 25px;
 	min-width: 100px;
 	height:100%;
 

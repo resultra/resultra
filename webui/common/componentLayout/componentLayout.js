@@ -1,4 +1,25 @@
 
+function pruneComponentLayoutEmptyColsAndRows($parentLayout) {
+	
+	// Prune empty columns
+	$parentLayout.find('.componentCol').each(function() {
+		var colComponentCount = $(this).children().length
+		if (colComponentCount <= 0) {
+			$(this).remove()
+		}
+	})
+	
+	// Prune empty rows
+	$parentLayout.find('.componentRow').each(function() {
+		var rowColCount = $(this).children().length
+		if (rowColCount <= 0) {
+			$(this).remove()
+		}
+	})
+	
+}
+
+
 // Reads the component layout from the DOM elements, using parentComponentLayoutSelector
 // as the parent div of the layout elements.
 function getComponentLayout($parentLayout) {

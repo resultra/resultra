@@ -140,8 +140,11 @@ function handleDropOnComponentLayoutPlaceholder(currMouseOffset,layoutDesignConf
 		$newRow.append($newCol)
 		$newRow.insertAfter($newRowPlaceholder)
 		hideAllComponentLayoutPlaceholders()
+		
+		pruneComponentLayoutEmptyColsAndRows($parentLayout)
 		var updatedLayout = getComponentLayout($parentLayout)
 		layoutDesignConfig.saveLayoutFunc(updatedLayout)
+		
 		dropCompleteFunc($component)
 		return
 	}
@@ -153,8 +156,11 @@ function handleDropOnComponentLayoutPlaceholder(currMouseOffset,layoutDesignConf
 		$newCol.append($component)
 		$newCol.insertAfter($newColPlaceholder)
 		hideAllComponentLayoutPlaceholders()
+		
+		pruneComponentLayoutEmptyColsAndRows($parentLayout)
 		var updatedLayout = getComponentLayout($parentLayout)
 		layoutDesignConfig.saveLayoutFunc(updatedLayout)
+		
 		dropCompleteFunc($component)
 		return		
 	}
@@ -164,8 +170,11 @@ function handleDropOnComponentLayoutPlaceholder(currMouseOffset,layoutDesignConf
 		console.log("handleDropOnComponentLayoutPlaceholder: dropping on different column placement")
 		$component.insertAfter($colPlacementPlaceholder)
 		hideAllComponentLayoutPlaceholders()
+		
+		pruneComponentLayoutEmptyColsAndRows($parentLayout)
 		var updatedLayout = getComponentLayout($parentLayout)
-		layoutDesignConfig.saveLayoutFunc(updatedLayout)		
+		layoutDesignConfig.saveLayoutFunc(updatedLayout)
+				
 		dropCompleteFunc($component)
 		return		
 	}
