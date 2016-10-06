@@ -194,18 +194,35 @@ function initUILayoutPanes()
 
 function initAfterViewFormComponentsAlreadyLoaded() {
 	
-	initRecordFilterPanel(tableID,reloadSortedAndFilterRecords)
+	var getFormParams = {
+		formID: viewFormContext.formID
+	}
 	
-	initFormSortRecordsPane(viewFormContext.formID, reloadSortedAndFilterRecords, function() {
-		console.log("sort panel initialization done")
+	jsonAPIRequest("frm/get",getFormParams,function(formInfo) {
 		
-		var getRecordsParams = {
-			tableID:tableID,
-			filterIDs:[], 	// TODO - There should be default filters for forms, and they need to be re-initialized upon load.
-			sortRules:getSortPaneSortRules()} 
-		reloadRecords(getRecordsParams)
+		var filterPaneParams = {
+			tableID: viewFormContext.tableID,
+			defaultFilterIDs: formInfo.properties.defaultFilterIDs,
+			availableFilterIDs: formInfo.properties.availableFilterIDs,
+			refilterCallbackFunc: reloadSortedAndFilterRecords
+		}
+		
+		initRecordFilterPanel(filterPaneParams)
+	
+		initFormSortRecordsPane(viewFormContext.formID, reloadSortedAndFilterRecords, function() {
+			console.log("sort panel initialization done")
+		
+			var getRecordsParams = {
+				tableID:tableID,
+				filterIDs:[], 	// TODO - There should be default filters for forms, and they need to be re-initialized upon load.
+				sortRules:getSortPaneSortRules()} 
+			reloadRecords(getRecordsParams)
+		
+		})
 		
 	})
+	
+	
 	
 }
 

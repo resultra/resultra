@@ -29,7 +29,7 @@ function filterPaneUnselectAllFilters() {
 	refilterWithCurrentlySelectedFilters()
 }
 
-function addFilterToFilterPanelList(filterRef) {
+function addFilterToFilterPanelList(defaultFilterLookup, filterRef) {
 	
 	var filterID = filterRef.filterID;
 	var itemPrefix = "filterPanelFilterItem_"
@@ -46,6 +46,11 @@ function addFilterToFilterPanelList(filterRef) {
 	
 	$('#filterRecordsPanelFilterList').append(filterItemHTML)
 	
+	// If the filter is part of the default selection, then select it initially.
+	if(defaultFilterLookup.hasID(filterID)) {
+		$(filterListFilterCheckbox.selector).prop("checked",true)
+	}
+	
 	$(filterListFilterCheckbox.selector).data("filterRef",filterRef)
 	$(filterListFilterCheckbox.selector).click(function(event) {
 		var isChecked = $(this).prop("checked")
@@ -57,36 +62,40 @@ function addFilterToFilterPanelList(filterRef) {
 	
 }
 
-function populateFilterPanelFilterList(filterList) {
+function populateFilterPanelFilterList(filterPaneParams,filterList) {
+	
+	
+	var availableFilterLookup = new IDLookupTable(filterPaneParams.availableFilterIDs)
+	var defaultFilterLookup = new IDLookupTable(filterPaneParams.defaultFilterIDs)
 	
 	$('#filterRecordsPanelFilterList').empty()	
 	$.each(filterList, function(filterIndex, filterRef) {
-		addFilterToFilterPanelList(filterRef)
+		// Only show the filter if it is in the available filter IDs list.
+		if(availableFilterLookup.hasID(filterRef.filterID)) {
+			addFilterToFilterPanelList(defaultFilterLookup,filterRef)		
+		}
 	}) 
 }
 
-function initRecordFilterPanel(tableID,refilterCallbackFunc) {
+function initRecordFilterPanel(filterPaneParams) {
 	
 	filterPaneContext = {
-		tableID: tableID,
-		refilterCallbackFunc: refilterCallbackFunc
+		tableID: filterPaneParams.tableID,
+		refilterCallbackFunc: filterPaneParams.refilterCallbackFunc
 	}
 	
-	jsonAPIRequest("filter/getList",{parentTableID:tableID},function(filterList) {
-		populateFilterPanelFilterList(filterList)
+	jsonAPIRequest("filter/getList",{parentTableID:filterPaneParams.tableID},function(filterList) {
+		populateFilterPanelFilterList(filterPaneParams,filterList)
 	})
 	
-	$('#filterRecordsManageFiltersButton').unbind("click")
-	$('#filterRecordsManageFiltersButton').click(function(e) {
-	    console.log("Filter dropdown: Manage filters selected")
-		// TODO - pass in a callback for when the filters are done being edited.
-		// This may necessitate updating the list of filters for their names and/or
-		// to re-filter the results.
-		openRecordFilterManageFiltersDialog(tableID)
+	
+	$('#filterRecordsPanelRefilterButton').unbind("click")
+	$('#filterRecordsPanelRefilterButton').click(function(e) {
+		refilterWithCurrentlySelectedFilters()
 		$(this).blur();
 	    e.preventDefault();// prevent the default anchor functionality
 	});
-
+	
 	$('#filterRecordsClearFiltersButton').unbind("click")
 	$('#filterRecordsClearFiltersButton').click(function(e) {
 		filterPaneUnselectAllFilters()

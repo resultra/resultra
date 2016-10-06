@@ -89,3 +89,24 @@ function assert(condition,message) {
 		throw message || "Assertion failed"
 	}
 }
+
+function IDLookupTable(idList) {
+	
+	function createIDLookupTable(idList) {	
+		var idLookup = {}
+		for(var idIndex = 0; idIndex < idList.length; idIndex++) {
+			var currID = idList[idIndex]
+			idLookup[currID] = true
+		}
+		return idLookup
+	}
+	
+	this.idLookup = createIDLookupTable(idList)
+	this.hasID = function hasID(id) {
+		if(this.idLookup.hasOwnProperty(id)) {
+			return true
+		} else {
+			return false
+		}
+	}
+}
