@@ -35,4 +35,10 @@ function initFilterPropertyPanel(panelParams) {
 		
 	})
 	
+	
+	var manageFiltersSelector = createPrefixedSelector(panelParams.elemPrefix,'FilterRecordsManageFiltersButton')	
+	initButtonClickHandler(manageFiltersSelector,function() {
+		openRecordFilterManageFiltersDialog(panelParams.tableID)	
+	}) 
+	
 }

@@ -94,13 +94,4 @@ function initRecordFilterPanel(tableID,refilterCallbackFunc) {
 	    e.preventDefault();// prevent the default anchor functionality
 	});
 	
-	
-	$('#filterRecordsPanelRefilterButton').unbind("click")
-	$('#filterRecordsPanelRefilterButton').click(function(e) {
-		refilterWithCurrentlySelectedFilters()
-		$(this).blur();
-	    e.preventDefault();// prevent the default anchor functionality
-	});
-
-	
 }

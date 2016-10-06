@@ -40,6 +40,10 @@ function initDesignFormFilterProperties(tableID,formInfo) {
 			filterList,formInfo.properties.availableFilterIDs,changeAvailableFilterSelection)
 			
 	})
+	
+	initButtonClickHandler('#filterRecordsManageFiltersButton',function() {
+		openRecordFilterManageFiltersDialog(tableID)	
+	}) 
 		
 
 }
