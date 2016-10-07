@@ -59,6 +59,15 @@
 </div> <!-- #recordHeaderGrid  -->
 {{end}}
 
+{{define "dashboardViewProps"}}
+
+	<div id="dashboardViewProps" class="propertyPanelToggleContainer">
+		Dashboard view properties - TBD
+	</div>
+
+{{end}}
+
+
 {{define "dashboardViewSidebar"}}
 
 	{{template "propertiesSidebarHeader"}}
@@ -66,12 +75,14 @@
 	<div class="ui-layout-content" id="viewDashboardSidebarContent">
 		
 		{{template "propertyPanelGroupPrefix"}}
+			{{template "summaryTableViewProps" .ComponentParams.SummaryTableParams}}
+			{{template "barChartViewProps" .ComponentParams.BarChartParams}}	
+			{{template "dashboardViewProps" .}}
+		
 		{{template "propertyPanelGroupSuffix"}}
 		
 	</div>
 {{end}}
-
-
 
 {{define "viewDashboardFooterControls"}}
 <div class="container-fluid">

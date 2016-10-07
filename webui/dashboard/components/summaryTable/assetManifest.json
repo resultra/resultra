@@ -1,11 +1,13 @@
 {
     "cssFiles": [], 
     "htmlFiles": ["newSummaryTableDialog.html",
+		"viewProperties.html",
 		"properties.html"], 
     "jsFiles": ["summaryTable.js", 
         "properties.js", 
         "newSummaryTableDialog.js", 
-        "designDashboardConfig.js"
+        "designDashboardConfig.js",
+		"viewDashboardConfig.js"
     ],
 	"imageFiles":[]
 }

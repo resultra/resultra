@@ -50,18 +50,48 @@ $(document).ready(function() {
 			
 	initUserDropdownMenu()
 	
+	var viewDashboardCanvasSelector = '#dashboardCanvas'
+	
 	initDatabaseTOC(viewDashboardContext.databaseID)
 	
 	google.charts.setOnLoadCallback(function() {
 		
+		function initDashboardComponentViewBehavior($component,componentID, viewDashboardConfig) {	
+			initObjectSelectionBehavior($component, 
+					viewDashboardCanvasSelector,function(selectedComponentID) {
+				console.log("dashboard view object selected: " + selectedComponentID)
+				var selectedObjRef	= getElemObjectRef(selectedComponentID)
+				viewDashboardConfig.selectionFunc(selectedObjRef)
+			})
+		}
+			
 		var loadDashboardConfig = {
 			dashboardContext: viewDashboardContext,
-			doneLoadingDashboardDataFunc: function() {},
+			doneLoadingDashboardDataFunc: function() {
+				
+				initObjectCanvasSelectionBehavior(viewDashboardCanvasSelector, function() {
+	//				initViewDashboardProperties(viewDashboardContext.dashboardID)
+					hideSiblingsShowOne('#dashboardViewProps')
+				})
+				
+				
+			},
 			initBarChartComponent: function($barChart,barChartRef) {
+				
+				var barChartViewConfig = barChartViewDashboardConfig()
+				
 				console.log("Init bar chart component")
+				initDashboardComponentViewBehavior($barChart,
+						barChartRef.barChartID,barChartViewConfig)
 			},
 			initSummaryTableComponent: function($summaryTable,summaryTableRef) {
+				
+				var summaryTableViewConfig = summaryTableViewDashboardConfig()
+				
 				console.log("Init summary table component")
+				initDashboardComponentViewBehavior($summaryTable,
+						summaryTableRef.summaryTableID,summaryTableViewConfig)
+				
 			}
 		}
 		

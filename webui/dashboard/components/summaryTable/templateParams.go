@@ -6,7 +6,8 @@ import (
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 
-type SummaryTableTemplateParams struct {
+// Template parameters when the summary table is in design mode
+type SummaryTableDesignTemplateParams struct {
 	ElemPrefix             string
 	SelectTableParams      newComponentDialog.SelectTableTemplateParams
 	RowValueGroupingParams newComponentDialog.ValueGroupingTemplateParams
@@ -17,7 +18,14 @@ type SummaryTableTemplateParams struct {
 	FilteringPanelParams   propertiesSidebar.PanelTemplateParams
 }
 
-var TemplateParams SummaryTableTemplateParams
+// Template parameters when the summary table is in view mode
+type SummaryTableViewTemplateParams struct {
+	ElemPrefix           string
+	FilteringPanelParams propertiesSidebar.PanelTemplateParams
+}
+
+var DesignTemplateParams SummaryTableDesignTemplateParams
+var ViewTemplateParams SummaryTableViewTemplateParams
 
 func init() {
 
@@ -33,7 +41,7 @@ func init() {
 	colSummaryParams := valueSummary.ColumnsValueSummaryTemplateParams{
 		elemPrefix, "Configure how values are summarized in the 1st column (more to come later)"}
 
-	TemplateParams = SummaryTableTemplateParams{
+	DesignTemplateParams = SummaryTableDesignTemplateParams{
 		ElemPrefix:             elemPrefix,
 		SelectTableParams:      tableSelectionParams,
 		RowValueGroupingParams: rowGroupingParams,
@@ -42,4 +50,8 @@ func init() {
 		RowPanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Rows", PanelID: "summaryTableRows"},
 		ColPanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Columns", PanelID: "summaryTableCols"},
 		FilteringPanelParams:   propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "summaryTableFiltering"}}
+
+	ViewTemplateParams = SummaryTableViewTemplateParams{
+		ElemPrefix:           elemPrefix,
+		FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "summaryTableFiltering"}}
 }

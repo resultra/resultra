@@ -31,11 +31,12 @@ func init() {
 }
 
 type ViewDashboardTemplateParams struct {
-	DatabaseID    string
-	DatabaseName  string
-	DashboardID   string
-	DashboardName string
-	Title         string
+	DatabaseID      string
+	DatabaseName    string
+	DashboardID     string
+	DashboardName   string
+	Title           string
+	ComponentParams components.ComponentViewTemplateParams
 }
 
 func ViewDashboard(w http.ResponseWriter, r *http.Request) {
@@ -51,11 +52,12 @@ func ViewDashboard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	templParams := ViewDashboardTemplateParams{
-		DatabaseID:    dashboardDbInfo.DatabaseID,
-		DatabaseName:  dashboardDbInfo.DatabaseName,
-		DashboardID:   dashboardDbInfo.DashboardID,
-		DashboardName: dashboardDbInfo.DashboardName,
-		Title:         "View Dashboard"}
+		DatabaseID:      dashboardDbInfo.DatabaseID,
+		DatabaseName:    dashboardDbInfo.DatabaseName,
+		DashboardID:     dashboardDbInfo.DashboardID,
+		DashboardName:   dashboardDbInfo.DashboardName,
+		Title:           "View Dashboard",
+		ComponentParams: components.ViewTemplateParams}
 
 	err := viewDashboardTemplates.ExecuteTemplate(w, "viewDashboard", templParams)
 	if err != nil {

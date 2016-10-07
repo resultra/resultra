@@ -6,7 +6,7 @@ import (
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 
-type BarChartTemplateParams struct {
+type BarChartDesignTemplateParams struct {
 	ElemPrefix           string
 	SelectTableParams    newComponentDialog.SelectTableTemplateParams
 	ValueGroupingParams  newComponentDialog.ValueGroupingTemplateParams
@@ -17,7 +17,14 @@ type BarChartTemplateParams struct {
 	FilteringPanelParams propertiesSidebar.PanelTemplateParams
 }
 
-var TemplateParams BarChartTemplateParams
+// Template parameters when the summary table is in view mode
+type BarChartViewTemplateParams struct {
+	ElemPrefix           string
+	FilteringPanelParams propertiesSidebar.PanelTemplateParams
+}
+
+var DesignTemplateParams BarChartDesignTemplateParams
+var ViewTemplateParams BarChartViewTemplateParams
 
 func init() {
 
@@ -34,7 +41,7 @@ func init() {
 		elemPrefix, "Configure how values are summarized along the Y axis.",
 		"Field to summarize with", "Summarize values by"}
 
-	TemplateParams = BarChartTemplateParams{
+	DesignTemplateParams = BarChartDesignTemplateParams{
 		ElemPrefix:           elemPrefix,
 		SelectTableParams:    tableSelectionParams,
 		ValueGroupingParams:  valueGroupingParams,
@@ -43,4 +50,9 @@ func init() {
 		XAxisPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "X Axis", PanelID: "barChartXAxis"},
 		YAxisPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Y Axis", PanelID: "barChartYAxis"},
 		FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "barChartFiltering"}}
+
+	ViewTemplateParams = BarChartViewTemplateParams{
+		ElemPrefix:           elemPrefix,
+		FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "barChartFiltering"}}
+
 }

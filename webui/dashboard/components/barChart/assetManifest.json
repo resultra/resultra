@@ -2,13 +2,15 @@
     "cssFiles": ["barChart.css"], 
     "htmlFiles": [
         "barChartProps.html",
-		"newBarChartDialog.html"
+		"newBarChartDialog.html",
+		"viewProperties.html"
     ], 
     "jsFiles": [
         "barChart.js", 
         "barChartProps.js", 
         "newBarChartDialog.js", 
-        "designDashboardConfig.js"
+        "designDashboardConfig.js",
+		"viewDashboardConfig.js"
     ],
 	"imageFiles":[]
 }

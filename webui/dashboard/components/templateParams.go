@@ -5,15 +5,25 @@ import (
 	"resultra/datasheet/webui/dashboard/components/summaryTable"
 )
 
-type ComponentTemplateParams struct {
-	BarChartParams     barChart.BarChartTemplateParams
-	SummaryTableParams summaryTable.SummaryTableTemplateParams
+type ComponentDesignTemplateParams struct {
+	BarChartParams     barChart.BarChartDesignTemplateParams
+	SummaryTableParams summaryTable.SummaryTableDesignTemplateParams
 }
 
-var TemplateParams ComponentTemplateParams
+type ComponentViewTemplateParams struct {
+	SummaryTableParams summaryTable.SummaryTableViewTemplateParams
+	BarChartParams     barChart.BarChartViewTemplateParams
+}
+
+var DesignTemplateParams ComponentDesignTemplateParams
+var ViewTemplateParams ComponentViewTemplateParams
 
 func init() {
-	TemplateParams = ComponentTemplateParams{
-		BarChartParams:     barChart.TemplateParams,
-		SummaryTableParams: summaryTable.TemplateParams}
+	DesignTemplateParams = ComponentDesignTemplateParams{
+		BarChartParams:     barChart.DesignTemplateParams,
+		SummaryTableParams: summaryTable.DesignTemplateParams}
+
+	ViewTemplateParams = ComponentViewTemplateParams{
+		SummaryTableParams: summaryTable.ViewTemplateParams,
+		BarChartParams:     barChart.ViewTemplateParams}
 }
