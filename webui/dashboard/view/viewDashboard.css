@@ -25,3 +25,8 @@
 {
 	padding: 4px; /* override jQuery UI Layout padding */
 }
+
+/* Override jQuery UI Layout's default padding */
+#viewDashboardSidebarContent {
+	padding:0;
+}

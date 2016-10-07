@@ -8,5 +8,6 @@
 		"recordFilter",
 		"userRole",
 		"table",
-		"global"]
+		"global",
+		"pageLayout"]
 }

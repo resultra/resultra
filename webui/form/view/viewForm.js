@@ -174,9 +174,6 @@ function initUILayoutPanes()
 		console.log("TOC button clicked")
 		mainLayout.toggle("west")
 	})
-	
-	
-	
 }
 
 

@@ -59,6 +59,19 @@
 </div> <!-- #recordHeaderGrid  -->
 {{end}}
 
+{{define "dashboardViewSidebar"}}
+
+	{{template "propertiesSidebarHeader"}}
+	
+	<div class="ui-layout-content" id="viewDashboardSidebarContent">
+		
+		{{template "propertyPanelGroupPrefix"}}
+		{{template "propertyPanelGroupSuffix"}}
+		
+	</div>
+{{end}}
+
+
 
 {{define "viewDashboardFooterControls"}}
 <div class="container-fluid">
@@ -114,8 +127,9 @@
 			{{template "databaseTOC" .}}
 		</div> <!-- ui layout north -->
 
-		<div class="pane ui-layout-east" id="eastDashboardDetailPane">
-			TBD
+		<div class="pane ui-layout-east noPadding" id="eastDashboardDetailPane">
+			{{template "dashboardViewSidebar" .}}
+			
 		</div> <!-- east filter & sort pane for entire page -->
 
 
