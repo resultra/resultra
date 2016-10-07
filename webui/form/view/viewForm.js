@@ -90,19 +90,6 @@ function reloadRecords(reloadParams) {
 	})	
 }
 
-function reloadSortedAndFilterRecords()
-{
-	
-	var selectedFilterIDs = getSelectedFilterPanelFilterIDs()
-	var sortRules = getSortPaneSortRules()
-	
-	var getFilteredRecordsParams = { 
-		tableID: viewFormContext.tableID,
-		filterIDs: selectedFilterIDs,
-		sortRules: sortRules}
-	
-	reloadRecords(getFilteredRecordsParams)
-}
 
 function createNewRecord() {
 	var newRecordsParams = {parentTableID:tableID}
@@ -192,6 +179,8 @@ function initUILayoutPanes()
 	
 }
 
+
+
 function initAfterViewFormComponentsAlreadyLoaded() {
 	
 	var getFormParams = {
@@ -199,6 +188,25 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 	}
 	
 	jsonAPIRequest("frm/get",getFormParams,function(formInfo) {
+		
+		
+		function reloadSortedAndFilterRecords()
+		{
+	
+			var currFilterIDs = getCurrentFilterPanelFilterIDsWithDefaults(
+					formInfo.properties.defaultFilterIDs,
+					formInfo.properties.availableFilterIDs)
+			
+			var sortRules = getSortPaneSortRules()
+	
+			var getFilteredRecordsParams = { 
+				tableID: viewFormContext.tableID,
+				filterIDs: currFilterIDs,
+				sortRules: sortRules}
+	
+			reloadRecords(getFilteredRecordsParams)
+		}
+		
 		
 		var filterPaneParams = {
 			tableID: viewFormContext.tableID,
@@ -214,7 +222,7 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 		
 			var getRecordsParams = {
 				tableID:tableID,
-				filterIDs:[], 	// TODO - There should be default filters for forms, and they need to be re-initialized upon load.
+				filterIDs:formInfo.properties.defaultFilterIDs,
 				sortRules:getSortPaneSortRules()} 
 			reloadRecords(getRecordsParams)
 		

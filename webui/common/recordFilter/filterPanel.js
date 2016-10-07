@@ -17,6 +17,27 @@ function getSelectedFilterPanelFilterIDs() {
 	return selectedFilterIDs
 }
 
+function getCurrentFilterPanelFilterIDsWithDefaults(defaultFilterIDs,availableFilterIDs) {
+	
+	var availableFilterLookup = new IDLookupTable(availableFilterIDs)
+	
+	// Start building the list of current filters based upon those explicitely selected in the panel.
+	var currentFilters = getSelectedFilterPanelFilterIDs()
+	
+	// Add any default filters which are not part of the availableFitlerIDs (i.e., any default filters which are
+	// not shown for selection in the filter panel). In other words, defaultFilterIDs which are not part of 
+	// availableFilterIDs serve as a base set of filters which are always enabled. 
+	for(var defaultFilterIndex = 0; defaultFilterIndex < defaultFilterIDs.length; defaultFilterIndex++) {
+		var currDefaultFilterID = defaultFilterIDs[defaultFilterIndex]
+		if(!availableFilterLookup.hasID(currDefaultFilterID)) {
+			currentFilters.push(currDefaultFilterID)
+		}
+	}
+	
+	return currentFilters
+}
+
+
 function refilterWithCurrentlySelectedFilters() {
 	
 	filterPaneContext.refilterCallbackFunc()
