@@ -10,13 +10,13 @@
 {{end}}
 
 {{define "recordFilterRulesButtons"}}
-		<button type="button" class="btn btn-default btn-xs" id="filterRecordsClearFiltersButton">
+		<button type="button" class="btn btn-default btn-xs" id="{{.}}FilterRecordsClearFiltersButton">
 		  <span class="glyphicon glyphicon-unchecked" aria-hidden="true"></span> Clear All Filters
 		</button>		
 {{end}}
 
 {{define "recordLoadSaveButtons"}}
-		<button type="button" class="btn btn-primary btn-sm" id="filterRecordsPanelRefilterButton">
+		<button type="button" class="btn btn-primary btn-sm" id="{{.}}FilterRecordsPanelRefilterButton">
 		  <span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Refilter
 		</button>
 
@@ -28,10 +28,10 @@
 	
 	<div class="container">
 		<div class="row">
-			{{template "recordFilterRulesButtons"}}
+			{{template "recordFilterRulesButtons" .}}
 		</div>
 		<div class="row marginTop5">
-			{{template "recordLoadSaveButtons"}}
+			{{template "recordLoadSaveButtons" .}}
 		</div>
 	</div>
 	
@@ -42,19 +42,19 @@
 
 {{define "filterRecordsPanelFilterList"}}
 
-<div class="list-group" id="filterRecordsPanelFilterList">
+<div class="list-group" id="{{.}}FilterRecordsPanelFilterList">
 </div>
 
 {{end}}
 
 {{define "recordFilterPane"}}
 
-{{template "recordFilterPaneHeader"}}
-<div class="ui-layout-content" id="recordFilterUILayout">
-	{{template "filterRecordsPanelFilterList"}}
+{{template "recordFilterPaneHeader" .}}
+<div class="ui-layout-content noPadding">
+	{{template "filterRecordsPanelFilterList" .}}
 </div>
 <div class="ui-layout-footer">
-	{{template "recordFilterPaneFooter"}}
+	{{template "recordFilterPaneFooter" .}}
 </div>
 
 

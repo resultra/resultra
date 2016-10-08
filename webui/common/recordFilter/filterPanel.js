@@ -1,12 +1,12 @@
 
 var filterPaneContext = {}
 
-function getSelectedFilterPanelFilterIDs() {
+function getSelectedFilterPanelFilterIDs(filterListSelector) {
 	// Iterate over checkboxes which are descendants of #filterRecordsPanelFilterList
 	// and build a list of currently selected filters.
 	var selectedFilters = []
 	var selectedFilterIDs = []
-	$('#filterRecordsPanelFilterList input[type=checkbox]:checked').each(function() {
+	$(filterListSelector + ' input[type=checkbox]:checked').each(function() {
 		var filterRef = $(this).data("filterRef")
 		selectedFilters.push(filterRef.name)
 		selectedFilterIDs.push(filterRef.filterID)
@@ -17,12 +17,15 @@ function getSelectedFilterPanelFilterIDs() {
 	return selectedFilterIDs
 }
 
-function getCurrentFilterPanelFilterIDsWithDefaults(defaultFilterIDs,availableFilterIDs) {
+function getCurrentFilterPanelFilterIDsWithDefaults(elemPrefix, defaultFilterIDs,availableFilterIDs) {
 	
 	var availableFilterLookup = new IDLookupTable(availableFilterIDs)
 	
+	var filterListSelector = createPrefixedSelector(elemPrefix,'FilterRecordsPanelFilterList')
+	
+	
 	// Start building the list of current filters based upon those explicitely selected in the panel.
-	var currentFilters = getSelectedFilterPanelFilterIDs()
+	var currentFilters = getSelectedFilterPanelFilterIDs(filterListSelector)
 	
 	// Add any default filters which are not part of the availableFitlerIDs (i.e., any default filters which are
 	// not shown for selection in the filter panel). In other words, defaultFilterIDs which are not part of 
@@ -43,19 +46,20 @@ function refilterWithCurrentlySelectedFilters() {
 	filterPaneContext.refilterCallbackFunc()
 }
 
-function filterPaneUnselectAllFilters() {
-	$('#filterRecordsPanelFilterList input[type=checkbox]:checked').each(function() {
+function filterPaneUnselectAllFilters(filterListSelector) {
+	$(filterListSelector + ' input[type=checkbox]:checked').each(function() {
 		$(this).prop("checked",false)
 	});
 	refilterWithCurrentlySelectedFilters()
 }
 
-function addFilterToFilterPanelList(defaultFilterLookup, filterRef) {
+function addFilterToFilterPanelList(elemPrefix, defaultFilterLookup, filterRef) {
 	
 	var filterID = filterRef.filterID;
-	var itemPrefix = "filterPanelFilterItem_"
+	var itemPrefix = elemPrefix + "filterPanelFilterItem_"
 	
 	var filterListFilterCheckbox = createIDWithSelector(itemPrefix + filterID)
+	var filterListSelector = createPrefixedSelector(elemPrefix,'FilterRecordsPanelFilterList')
 	
 	var filterItemHTML = '' +
 		'<div class="checkbox list-group-item filterPanelFilterItem">' +
@@ -65,7 +69,7 @@ function addFilterToFilterPanelList(defaultFilterLookup, filterRef) {
 			'</label>' +
 		'</div>'
 	
-	$('#filterRecordsPanelFilterList').append(filterItemHTML)
+	$(filterListSelector).append(filterItemHTML)
 	
 	// If the filter is part of the default selection, then select it initially.
 	if(defaultFilterLookup.hasID(filterID)) {
@@ -89,11 +93,13 @@ function populateFilterPanelFilterList(filterPaneParams,filterList) {
 	var availableFilterLookup = new IDLookupTable(filterPaneParams.availableFilterIDs)
 	var defaultFilterLookup = new IDLookupTable(filterPaneParams.defaultFilterIDs)
 	
-	$('#filterRecordsPanelFilterList').empty()	
+	var filterListSelector = createPrefixedSelector(filterPaneParams.elemPrefix,'FilterRecordsPanelFilterList')
+	
+	$(filterListSelector).empty()	
 	$.each(filterList, function(filterIndex, filterRef) {
 		// Only show the filter if it is in the available filter IDs list.
 		if(availableFilterLookup.hasID(filterRef.filterID)) {
-			addFilterToFilterPanelList(defaultFilterLookup,filterRef)		
+			addFilterToFilterPanelList(filterPaneParams.elemPrefix,defaultFilterLookup,filterRef)		
 		}
 	}) 
 }
@@ -105,21 +111,26 @@ function initRecordFilterPanel(filterPaneParams) {
 		refilterCallbackFunc: filterPaneParams.refilterCallbackFunc
 	}
 	
+	var filterListSelector = createPrefixedSelector(filterPaneParams.elemPrefix,'FilterRecordsPanelFilterList')
+	
 	jsonAPIRequest("filter/getList",{parentTableID:filterPaneParams.tableID},function(filterList) {
 		populateFilterPanelFilterList(filterPaneParams,filterList)
 	})
 	
+	var refilterButtonSelector = createPrefixedSelector(filterPaneParams.elemPrefix,'FilterRecordsPanelRefilterButton')
 	
-	$('#filterRecordsPanelRefilterButton').unbind("click")
-	$('#filterRecordsPanelRefilterButton').click(function(e) {
+	$(refilterButtonSelector).unbind("click")
+	$(refilterButtonSelector).click(function(e) {
 		refilterWithCurrentlySelectedFilters()
 		$(this).blur();
 	    e.preventDefault();// prevent the default anchor functionality
 	});
 	
-	$('#filterRecordsClearFiltersButton').unbind("click")
-	$('#filterRecordsClearFiltersButton').click(function(e) {
-		filterPaneUnselectAllFilters()
+	
+	var clearFiltersButtonSelector = createPrefixedSelector(filterPaneParams.elemPrefix,'FilterRecordsClearFiltersButton')
+	$(clearFiltersButtonSelector).unbind("click")
+	$(clearFiltersButtonSelector).click(function(e) {
+		filterPaneUnselectAllFilters(filterListSelector)
 		$(this).blur();
 	    e.preventDefault();// prevent the default anchor functionality
 	});

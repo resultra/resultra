@@ -186,11 +186,12 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 	
 	jsonAPIRequest("frm/get",getFormParams,function(formInfo) {
 		
+		var filterPanelElemPrefix = "form_"
 		
 		function reloadSortedAndFilterRecords()
 		{
 	
-			var currFilterIDs = getCurrentFilterPanelFilterIDsWithDefaults(
+			var currFilterIDs = getCurrentFilterPanelFilterIDsWithDefaults(filterPanelElemPrefix,
 					formInfo.properties.defaultFilterIDs,
 					formInfo.properties.availableFilterIDs)
 			
@@ -206,6 +207,7 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 		
 		
 		var filterPaneParams = {
+			elemPrefix: filterPanelElemPrefix,
 			tableID: viewFormContext.tableID,
 			defaultFilterIDs: formInfo.properties.defaultFilterIDs,
 			availableFilterIDs: formInfo.properties.availableFilterIDs,
