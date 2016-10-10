@@ -26,7 +26,7 @@ func getOneBarChartData(barChart *barChart.BarChart) (*BarChartData, error) {
 	tableID := barChart.Properties.DataSrcTableID
 
 	// TODO - Store the list of filters with the bar chart and include it in the query.
-	filterIDs := []string{}
+	filterIDs := barChart.Properties.DefaultFilterIDs
 	sortRules := []recordSort.RecordSortRule{}
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
 		TableID:   tableID,

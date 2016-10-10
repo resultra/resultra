@@ -18,7 +18,7 @@ func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable) (*SummaryTa
 	tableID := summaryTable.Properties.DataSrcTableID
 
 	// TODO - Store the list of filters with the bar chart and include it in the query.
-	filterIDs := []string{}
+	filterIDs := summaryTable.Properties.DefaultFilterIDs
 	sortRules := []recordSort.RecordSortRule{}
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
 		TableID:   tableID,
