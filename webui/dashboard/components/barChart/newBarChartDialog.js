@@ -37,7 +37,8 @@ function saveNewBarChart($dialog) {
 		
 		var barChartDataParams = { 
 			parentDashboardID: newBarChartParams.dashboardID,
-			barChartID: barChartRef.barChartID
+			barChartID: barChartRef.barChartID,
+			filterIDs: barChartRef.properties.defaultFilterIDs
 		}
 		
 		setTimeout(function() { // Wait for eventual consistency

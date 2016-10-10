@@ -47,15 +47,12 @@ function openNewSummaryTableDialog(summaryTableParams) {
 		
 			var summaryTableDataParams = { 
 				parentDashboardID: newSummaryTableParams.dashboardID,
-				summaryTableID: summaryTableRef.summaryTableID
+				summaryTableID: summaryTableRef.summaryTableID,
+				filterIDs: summaryTableRef.properties.defaultFilterIDs
 			}
-		
-			setTimeout(function() { // Wait for eventual consistency
-				jsonAPIRequest("dashboardController/getSummaryTableData",summaryTableDataParams,function(summaryTableData) {
-					initSummaryTableData(newSummaryTableParams.dashboardID,summaryTableData)
-				})		
-			}, 2000);
-		
+			jsonAPIRequest("dashboardController/getSummaryTableData",summaryTableDataParams,function(summaryTableData) {
+				initSummaryTableData(newSummaryTableParams.dashboardID,summaryTableData)
+			})			
 		})
 	}
 	

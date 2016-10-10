@@ -15,19 +15,19 @@ type DashboardDataRef struct {
 	SummaryTablesData []SummaryTableData  `json:"summaryTablesData"`
 }
 
-func getDashboardData(params GetDashboardDataParams) (*DashboardDataRef, error) {
+func getDefaultDashboardData(params GetDashboardDataParams) (*DashboardDataRef, error) {
 
 	dashboard, err := dashboard.GetDashboard(params.DashboardID)
 	if err != nil {
 		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard: error = %v", err)
 	}
 
-	barChartData, getBarChartsErr := getDashboardBarChartsData(params.DashboardID)
+	barChartData, getBarChartsErr := getDefaultDashboardBarChartsData(params.DashboardID)
 	if getBarChartsErr != nil {
 		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard barchart data: error = %v", getBarChartsErr)
 	}
 
-	summaryTablesData, getTableErr := getDashboardSummaryTablesData(params.DashboardID)
+	summaryTablesData, getTableErr := getDefaultDashboardSummaryTablesData(params.DashboardID)
 	if getTableErr != nil {
 		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard summary tables data: error = %v", getTableErr)
 	}

@@ -13,12 +13,10 @@ type SummaryTableData struct {
 	GroupedSummarizedVals GroupedSummarizedVals     `json:"groupedSummarizedVals"`
 }
 
-func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable) (*SummaryTableData, error) {
+func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable, filterIDs []string) (*SummaryTableData, error) {
 
 	tableID := summaryTable.Properties.DataSrcTableID
 
-	// TODO - Store the list of filters with the bar chart and include it in the query.
-	filterIDs := summaryTable.Properties.DefaultFilterIDs
 	sortRules := []recordSort.RecordSortRule{}
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
 		TableID:   tableID,
@@ -49,8 +47,9 @@ func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable) (*SummaryTa
 }
 
 type GetSummaryTableDataParams struct {
-	ParentDashboardID string `json:"parentDashboardID"`
-	SummaryTableID    string `json:"summaryTableID"`
+	ParentDashboardID string   `json:"parentDashboardID"`
+	SummaryTableID    string   `json:"summaryTableID"`
+	FilterIDs         []string `json:"filterIDs"`
 }
 
 func getSummaryTableData(params GetSummaryTableDataParams) (*SummaryTableData, error) {
@@ -69,7 +68,7 @@ func getSummaryTableData(params GetSummaryTableDataParams) (*SummaryTableData, e
 			params, getSummaryTableErr)
 	}
 
-	summaryTableData, dataErr := getOneSummaryTableData(summaryTable)
+	summaryTableData, dataErr := getOneSummaryTableData(summaryTable, params.FilterIDs)
 	if dataErr != nil {
 		return nil, fmt.Errorf("GetSummaryTableData: Error retrieving bar chart data: %v", dataErr)
 	}
@@ -78,7 +77,7 @@ func getSummaryTableData(params GetSummaryTableDataParams) (*SummaryTableData, e
 
 }
 
-func getDashboardSummaryTablesData(parentDashboardID string) ([]SummaryTableData, error) {
+func getDefaultDashboardSummaryTablesData(parentDashboardID string) ([]SummaryTableData, error) {
 
 	summaryTables, err := summaryTable.GetSummaryTables(parentDashboardID)
 	if err != nil {
@@ -88,7 +87,8 @@ func getDashboardSummaryTablesData(parentDashboardID string) ([]SummaryTableData
 	summaryTablesData := []SummaryTableData{}
 	for _, summaryTable := range summaryTables {
 
-		summaryTableData, dataErr := getOneSummaryTableData(&summaryTable)
+		filterIDs := summaryTable.Properties.DefaultFilterIDs
+		summaryTableData, dataErr := getOneSummaryTableData(&summaryTable, filterIDs)
 		if dataErr != nil {
 			return nil, fmt.Errorf("GetData: Error retrieving summary table data: %v", dataErr)
 		}

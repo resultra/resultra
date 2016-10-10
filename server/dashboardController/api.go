@@ -3,7 +3,6 @@ package dashboardController
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"resultra/datasheet/server/dashboard/components/barChart"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -13,7 +12,7 @@ func init() {
 
 	dashboardControllerRouter := mux.NewRouter()
 
-	dashboardControllerRouter.HandleFunc("/api/dashboardController/getData", getDashboardDataAPI)
+	dashboardControllerRouter.HandleFunc("/api/dashboardController/getDefaultData", getDefaultDashboardDataAPI)
 
 	dashboardControllerRouter.HandleFunc("/api/dashboardController/getBarChartData", getBarChartDataAPI)
 	dashboardControllerRouter.HandleFunc("/api/dashboardController/getSummaryTableData", getSummaryTableDataAPI)
@@ -21,7 +20,7 @@ func init() {
 	http.Handle("/api/dashboardController/", dashboardControllerRouter)
 }
 
-func getDashboardDataAPI(w http.ResponseWriter, r *http.Request) {
+func getDefaultDashboardDataAPI(w http.ResponseWriter, r *http.Request) {
 
 	var dashboardParams GetDashboardDataParams
 	if err := api.DecodeJSONRequest(r, &dashboardParams); err != nil {
@@ -29,7 +28,7 @@ func getDashboardDataAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if dashboardData, err := getDashboardData(dashboardParams); err != nil {
+	if dashboardData, err := getDefaultDashboardData(dashboardParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *dashboardData)
@@ -55,13 +54,13 @@ func getSummaryTableDataAPI(w http.ResponseWriter, r *http.Request) {
 
 func getBarChartDataAPI(w http.ResponseWriter, r *http.Request) {
 
-	var barChartParams barChart.BarChartUniqueIDHeader
+	var barChartParams GetBarChartDataParams
 	if err := api.DecodeJSONRequest(r, &barChartParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	if barChartData, err := getBarChartData(barChartParams.ParentDashboardID, barChartParams.BarChartID); err != nil {
+	if barChartData, err := getBarChartData(barChartParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, barChartData)
