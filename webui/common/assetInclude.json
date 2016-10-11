@@ -9,5 +9,6 @@
 		"userRole",
 		"table",
 		"global",
-		"pageLayout"]
+		"pageLayout",
+		"recordSort"]
 }

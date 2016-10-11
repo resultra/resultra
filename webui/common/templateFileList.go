@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/webui/common/databaseTOC"
 	"resultra/datasheet/webui/common/formulaEditor"
 	"resultra/datasheet/webui/common/recordFilter"
+	"resultra/datasheet/webui/common/recordSort"
 )
 
 var TemplateFileList []string
@@ -17,5 +18,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, breadCrumb.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, recordFilter.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, databaseTOC.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, recordSort.TemplateFileList...)
 
 }
