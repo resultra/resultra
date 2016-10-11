@@ -62,6 +62,7 @@ function initSummaryTableData(dashboardID,summaryTableData) {
 	
 	var tableElemID = summaryTableTableElemID(summaryTableData.summaryTable.summaryTableID)
 	var $summaryTable = $('#'+tableElemID)
+	$summaryTable.empty()
 
 
 	var tableTitle = summaryTableData.summaryTable.properties.title

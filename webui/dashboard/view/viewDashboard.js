@@ -78,7 +78,7 @@ $(document).ready(function() {
 			},
 			initBarChartComponent: function($barChart,barChartRef) {
 				
-				var barChartViewConfig = barChartViewDashboardConfig()
+				var barChartViewConfig = barChartViewDashboardConfig(barChartRef)
 				
 				console.log("Init bar chart component")
 				initDashboardComponentViewBehavior($barChart,
@@ -86,7 +86,7 @@ $(document).ready(function() {
 			},
 			initSummaryTableComponent: function($summaryTable,summaryTableRef) {
 				
-				var summaryTableViewConfig = summaryTableViewDashboardConfig()
+				var summaryTableViewConfig = summaryTableViewDashboardConfig(summaryTableRef)
 				
 				console.log("Init summary table component")
 				initDashboardComponentViewBehavior($summaryTable,

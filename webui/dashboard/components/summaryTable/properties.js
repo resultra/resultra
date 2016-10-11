@@ -57,6 +57,16 @@ function loadSummaryTableProperties(propArgs) {
 			jsonAPIRequest("dashboard/summaryTable/setDefaultFilters",params,function(updatedSummaryTable) {
 				setElemObjectRef(updatedSummaryTable.summaryTableID,updatedSummaryTable)
 				console.log("Default filters updated")
+				
+				var reloadDataParams = {
+					parentDashboardID: updatedSummaryTable.parentDashboardID,
+					summaryTableID: updatedSummaryTable.summaryTableID,
+					filterIDs: updatedSummaryTable.properties.defaultFilterIDs }
+					
+				jsonAPIRequest("dashboardController/getSummaryTableData",reloadDataParams,function(summaryTableData) {
+					initSummaryTableData(updatedSummaryTable.parentDashboardID,summaryTableData)
+				})			
+				
 			}) // set record's number field value
 			
 		},

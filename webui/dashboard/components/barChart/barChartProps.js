@@ -18,6 +18,16 @@ function loadBarChartProperties(barChartPropsArgs) {
 			jsonAPIRequest("dashboard/barChart/setDefaultFilters",params,function(updatedBarChart) {
 				barChartContainer.data("barChartRef",updatedBarChart)
 				console.log("Default filters updated")
+				
+				var reloadDataParams = {
+					parentDashboardID: updatedBarChart.parentDashboardID,
+					barChartID: updatedBarChart.barChartID,
+					filterIDs: updatedBarChart.properties.defaultFilterIDs }
+					
+				jsonAPIRequest("dashboardController/getBarChartData",reloadDataParams,function(barChartData) {
+					initBarChartData(updatedBarChart.parentDashboardID,barChartData)
+				})			
+				
 			}) // set record's number field value
 			
 		},
