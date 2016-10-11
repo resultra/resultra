@@ -215,8 +215,8 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 		}
 		
 		initRecordFilterPanel(filterPaneParams)
-	
-		initFormSortRecordsPane(viewFormContext.formID, reloadSortedAndFilterRecords, function() {
+		
+		function recordSortPaneInitDone() {
 			console.log("sort panel initialization done")
 		
 			var getRecordsParams = {
@@ -224,13 +224,28 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 				filterIDs:formInfo.properties.defaultFilterIDs,
 				sortRules:getSortPaneSortRules()} 
 			reloadRecords(getRecordsParams)
+			
+		}
 		
+		function saveFormSortRules(sortRules) {
+			var saveSortRulesParams = {
+				parentFormID: viewFormContext.formID,
+				sortRules: sortRules
+			}
+			jsonAPIRequest("recordSort/saveFormSortRules",saveSortRulesParams,function(saveReply) {}) // getRecord			
+		}
+		
+		var getSortRulesParams = { parentFormID: viewFormContext.formID }
+		jsonAPIRequest("recordSort/getFormSortRules",getSortRulesParams,function(formSortRules) {
+			var recordSortPaneParams = {
+				defaultSortRules: formSortRules.sortRules,
+				resortFunc: reloadSortedAndFilterRecords,
+				initDoneFunc: recordSortPaneInitDone,
+				saveUpdatedSortRulesFunc: saveFormSortRules}
+	
+			initSortRecordsPane(recordSortPaneParams)
 		})
-		
 	})
-	
-	
-	
 }
 
 

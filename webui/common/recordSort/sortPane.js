@@ -1,40 +1,5 @@
 var sortPaneContext = {}
 
-function getSortPaneSortRules() {
-	var sortRules = []
-	$(".recordSortPaneRuleListItem").each(function() {
-		var elemPrefix = $(this).data("elemPrefix")
-		var sortDirection = $(sortRuleDirectionCheckedRadioSelector(elemPrefix)).val()
-		var selectedFieldID = $(sortRuleFieldSelectionMenuSelector(elemPrefix)).val()
-		console.log("Sort pane rule: " + elemPrefix + " field ID = " + selectedFieldID
-			+ " direction=" + sortDirection)
-		
-		if(selectedFieldID != null && selectedFieldID.length > 0) {
-			sortRules.push({
-				fieldID: selectedFieldID,
-				direction: sortDirection
-			})
-			
-		}
-	})
-	
-	console.log("Sort rules: " + JSON.stringify(sortRules))
-	
-	return sortRules;
-}
-
-function sortPaneRuleListChanged() {
-	sortPaneContext.resortCallback()
-	
-	var sortRules = getSortPaneSortRules()
-	var saveSortRulesParams = {
-		parentFormID: sortPaneContext.parentFormID,
-		sortRules: sortRules
-	}
-	jsonAPIRequest("recordSort/saveFormSortRules",saveSortRulesParams,function(saveReply) {}) // getRecord
-	
-}
-
 function sortFunctionSelectionID(elemPrefix) {
 	var fieldSelectionID = elemPrefix + "SortFieldSelection"
 	return fieldSelectionID
@@ -66,7 +31,6 @@ function sortRuleDirectionCheckedRadioSelector(elemPrefix) {
 	var radioSelector = 'input[type=radio][name='+radioName+']:checked'
 	return radioSelector
 }
-
 
 function sortDirectionButtonsHTML(elemPrefix) {
 	
@@ -105,14 +69,47 @@ function sortPaneListItemHTML(elemPrefix) {
 	
 }
 
-function populateSortByFieldMenu(elemPrefix,sortRule) {
+
+function getSortPaneSortRules() {
+	var sortRules = []
+	$(".recordSortPaneRuleListItem").each(function() {
+		var elemPrefix = $(this).data("elemPrefix")
+		var sortDirection = $(sortRuleDirectionCheckedRadioSelector(elemPrefix)).val()
+		var selectedFieldID = $(sortRuleFieldSelectionMenuSelector(elemPrefix)).val()
+		console.log("Sort pane rule: " + elemPrefix + " field ID = " + selectedFieldID
+			+ " direction=" + sortDirection)
+		
+		if(selectedFieldID != null && selectedFieldID.length > 0) {
+			sortRules.push({
+				fieldID: selectedFieldID,
+				direction: sortDirection
+			})
+			
+		}
+	})
+	
+	console.log("Sort rules: " + JSON.stringify(sortRules))
+	
+	return sortRules;
+}
+
+function sortPaneRuleListChanged(sortPaneParams) {
+	sortPaneParams.resortFunc()
+	
+	var sortRules = getSortPaneSortRules()
+	sortPaneParams.saveUpdatedSortRulesFunc(sortRules)
+	
+}
+
+
+function populateSortByFieldMenu(sortPaneParams,elemPrefix,sortRule) {
 	
 	var selectionID = sortFunctionSelectionID(elemPrefix)
 	var menuSelector = '#' + selectionID
 	
 	$(menuSelector).empty()
 	$(menuSelector).append(defaultSelectOptionPromptHTML("Sort By"))
-	$.each(sortPaneContext.fieldsByID, function(fieldID, fieldInfo) {
+	$.each(sortPaneParams.fieldsByID, function(fieldID, fieldInfo) {
 		$(menuSelector).append(selectFieldHTML(fieldID, fieldInfo.name))		
 	})
 	
@@ -124,19 +121,19 @@ function populateSortByFieldMenu(elemPrefix,sortRule) {
 	$(menuSelector).change(function(){
 		var fieldID = $(menuSelector).val()
         console.log("Sort rule: list elem = " + $(this).attr('id')+ " selected field id = " + fieldID )
-		sortPaneRuleListChanged()
+		sortPaneRuleListChanged(sortPaneParams)
     }); // change
 	
 	
 }
 
-function addSortRuleListItem(elemPrefix,sortRule) {
+function addSortRuleListItem(sortPaneParams,elemPrefix,sortRule) {
 	
 	var fieldsByID = getFilteredFieldsByID([fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime])
 	
 	$('#sortPaneSortRuleList').append(sortPaneListItemHTML(elemPrefix))
 	
-	populateSortByFieldMenu(elemPrefix,sortRule)
+	populateSortByFieldMenu(sortPaneParams,elemPrefix,sortRule)
 	
 	var listItemID = sortPanelRuleListItemID(elemPrefix)
 	var listItemSelector = '#' + listItemID
@@ -154,7 +151,7 @@ function addSortRuleListItem(elemPrefix,sortRule) {
 	
 	$(radioSelector).change(function() {
 		console.log("Sort direction changed: radio name = " + radioName + " direction = " + this.value)
-		sortPaneRuleListChanged()
+		sortPaneRuleListChanged(sortPaneParams)
 	});
 	
 }
@@ -166,28 +163,20 @@ function generateSortRulePrefix() {
 	return "sortRule" + currRecordSortPaneID + "_"
 }
 
-function initFormSortRecordsPane(parentFormID, resortCallback, initDoneCallback) {
-	
-	sortPaneContext.resortCallback = resortCallback
-	sortPaneContext.parentFormID = parentFormID
-	sortPaneContext.fieldsByID = getFilteredFieldsByID([fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime])
-	
-	var getSortRulesParams = {
-		parentFormID: parentFormID
+function initSortRecordsPane(sortPaneParams) {
+			
+	sortPaneParams.fieldsByID = getFilteredFieldsByID([fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime])
+		
+	for (var sortRuleIndex = 0; sortRuleIndex < sortPaneParams.defaultSortRules.length; sortRuleIndex++) {
+		var sortRule = sortPaneParams.defaultSortRules[sortRuleIndex]
+		console.log("getFormSortRules: initializing sort rule: " + JSON.stringify(sortRule))
+		addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),sortRule)		
 	}
-	
-	jsonAPIRequest("recordSort/getFormSortRules",getSortRulesParams,function(formSortRules) {
-		for (var sortRuleIndex = 0; sortRuleIndex < formSortRules.sortRules.length; sortRuleIndex++) {
-			var sortRule = formSortRules.sortRules[sortRuleIndex]
-			console.log("getFormSortRules: initializing sort rule: " + JSON.stringify(sortRule))
-			addSortRuleListItem(generateSortRulePrefix(),sortRule)		
-		}
-		if(formSortRules.sortRules.length ==0) {
-			// If no rules are already set add at least one uninitialized sort rule
-			addSortRuleListItem(generateSortRulePrefix(),null)
-		}
-		initDoneCallback()
-	}) // getFormSortRules
+	if(sortPaneParams.defaultSortRules.length ==0) {
+		// If no rules are already set add at least one uninitialized sort rule
+		addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),null)
+	}
+	sortPaneParams.initDoneFunc()
 	
 	
 	$('#sortRecordsAddRuleButton').click(function(e) {
@@ -196,7 +185,7 @@ function initFormSortRecordsPane(parentFormID, resortCallback, initDoneCallback)
 	    e.preventDefault();// prevent the default anchor functionality
 		
 		// Add a new uninitialized sort rule
-		addSortRuleListItem(generateSortRulePrefix(),null)
+		addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),null)
 	})
 
 	$('#sortRecordsClearRulesButton').click(function(e) {
@@ -205,8 +194,8 @@ function initFormSortRecordsPane(parentFormID, resortCallback, initDoneCallback)
 	    e.preventDefault();// prevent the default anchor functionality
 		
 		$('#sortPaneSortRuleList').empty()
-		addSortRuleListItem(generateSortRulePrefix(),null)
-		sortPaneRuleListChanged()
+		addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),null)
+		sortPaneRuleListChanged(sortPaneParams)
 	})
 	
 }
