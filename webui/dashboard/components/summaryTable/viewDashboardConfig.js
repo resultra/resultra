@@ -2,9 +2,15 @@ function summaryTableViewDashboardConfig(summaryTableRef) {
 	
 	var summaryTableElemPrefix =  "summaryTable_"
 	
+	// Start with the defaultFilterIDs for the given bar chart. Then, if the selection changes,
+	// the currentFilterIDs will also change. Then, if the bar chart is selected again, the 
+	// current IDs can be used instead of the default IDs.
+	var currentFilterIDs = summaryTableRef.properties.defaultFilterIDs
+	
+	
 	function reloadSummaryTable() {
-		var currentFilterIDs = getCurrentFilterPanelFilterIDsWithDefaults(summaryTableElemPrefix, 
-			summaryTableRef.properties.defaultFilterIDs,
+		currentFilterIDs = getCurrentFilterPanelFilterIDsWithDefaults(summaryTableElemPrefix, 
+			currentFilterIDs,
 			summaryTableRef.properties.availableFilterIDs)
 	
 		var getDataParams = {
@@ -26,7 +32,7 @@ function summaryTableViewDashboardConfig(summaryTableRef) {
 			var filterPaneParams = {
 				elemPrefix: summaryTableElemPrefix,
 				tableID: updatedSummaryTableRef.properties.dataSrcTableID,
-				defaultFilterIDs: updatedSummaryTableRef.properties.defaultFilterIDs,
+				defaultFilterIDs: currentFilterIDs,
 				availableFilterIDs: updatedSummaryTableRef.properties.availableFilterIDs,
 				refilterCallbackFunc: reloadSummaryTable
 			}

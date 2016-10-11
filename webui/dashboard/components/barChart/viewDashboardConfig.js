@@ -2,9 +2,14 @@ function barChartViewDashboardConfig(barChartRef) {
 	
 	var barChartElemPrefix = "barChart_"
 	
+	// Start with the defaultFilterIDs for the given bar chart. Then, if the selection changes,
+	// the currentFilterIDs will also change. Then, if the bar chart is selected again, the 
+	// current IDs can be used instead of the default IDs.
+	var currentFilterIDs = barChartRef.properties.defaultFilterIDs
+	
 	function reloadBarChart() {
 	
-		var currentFilterIDs = getCurrentFilterPanelFilterIDsWithDefaults(barChartElemPrefix, 
+		currentFilterIDs = getCurrentFilterPanelFilterIDsWithDefaults(barChartElemPrefix, 
 			barChartRef.properties.defaultFilterIDs,
 			barChartRef.properties.availableFilterIDs)
 	
@@ -27,7 +32,7 @@ function barChartViewDashboardConfig(barChartRef) {
 			var filterPaneParams = {
 				elemPrefix: barChartElemPrefix,
 				tableID: selectedBarChartRef.properties.dataSrcTableID,
-				defaultFilterIDs: selectedBarChartRef.properties.defaultFilterIDs,
+				defaultFilterIDs: currentFilterIDs,
 				availableFilterIDs: selectedBarChartRef.properties.availableFilterIDs,
 				refilterCallbackFunc: reloadBarChart
 			}
