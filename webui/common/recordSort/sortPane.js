@@ -179,20 +179,15 @@ function initSortRecordsPane(sortPaneParams) {
 	sortPaneParams.initDoneFunc()
 	
 	
-	$('#sortRecordsAddRuleButton').click(function(e) {
+	initButtonClickHandler('#sortRecordsAddRuleButton',function(e) {
 		console.log("add rule button clicked")
-		$(this).blur();
-	    e.preventDefault();// prevent the default anchor functionality
-		
 		// Add a new uninitialized sort rule
 		addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),null)
 	})
+	
 
-	$('#sortRecordsClearRulesButton').click(function(e) {
+	initButtonClickHandler('#sortRecordsClearRulesButton',function(e) {
 		console.log("reset rule button clicked")
-		$(this).blur();
-	    e.preventDefault();// prevent the default anchor functionality
-		
 		$('#sortPaneSortRuleList').empty()
 		addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),null)
 		sortPaneRuleListChanged(sortPaneParams)
