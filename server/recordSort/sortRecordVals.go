@@ -2,13 +2,14 @@ package recordSort
 
 import (
 	"fmt"
+	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/recordValue"
 )
 
 func SortRecordValues(parentTableID string,
 	recordVals []recordValue.RecordValueResults,
-	sortRules []RecordSortRule) error {
+	sortRules []recordSortDataModel.RecordSortRule) error {
 
 	if len(sortRules) == 0 {
 		return nil // no sorting necessary
@@ -23,7 +24,7 @@ func SortRecordValues(parentTableID string,
 	sortFuncs := []ByRecordValueLessFunc{}
 	for _, currSortRule := range sortRules {
 
-		if !validSortDirection(currSortRule.SortDirection) {
+		if !recordSortDataModel.ValidSortDirection(currSortRule.SortDirection) {
 			return fmt.Errorf("SortRecordValues: invalid sort direction for sort rule = %+v", currSortRule)
 		}
 

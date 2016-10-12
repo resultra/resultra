@@ -3,12 +3,19 @@ package form
 import (
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const formEntityKind string = "Form"
+
+type FormProperties struct {
+	DefaultFilterIDs   []string                        `json:"defaultFilterIDs"`
+	AvailableFilterIDs []string                        `json:"availableFilterIDs"`
+	Layout             componentLayout.ComponentLayout `json:"layout"`
+}
 
 type Form struct {
 	FormID        string         `json:"formID"`

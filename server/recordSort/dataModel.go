@@ -4,32 +4,17 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
-const sortDirectionAsc string = "asc"
-const sortDirectionDesc string = "desc"
-
-type RecordSortRule struct {
-	SortFieldID   string `json:"fieldID"`
-	SortDirection string `json:"direction"`
-}
-
 type FormSortRules struct {
-	ParentFormID string           `json:"parentFormID"`
-	SortRules    []RecordSortRule `json:"sortRules"`
+	ParentFormID string                               `json:"parentFormID"`
+	SortRules    []recordSortDataModel.RecordSortRule `json:"sortRules"`
 }
 
 type NewSortRuleParams FormSortRules
-
-func validSortDirection(sortDir string) bool {
-	if (sortDir == sortDirectionAsc) || (sortDir == sortDirectionDesc) {
-		return true
-	} else {
-		return false
-	}
-}
 
 func saveFormSortRules(params NewSortRuleParams) (*FormSortRules, error) {
 
@@ -38,7 +23,7 @@ func saveFormSortRules(params NewSortRuleParams) (*FormSortRules, error) {
 	}
 
 	for _, sortRule := range params.SortRules {
-		if !validSortDirection(sortRule.SortDirection) {
+		if !recordSortDataModel.ValidSortDirection(sortRule.SortDirection) {
 			return nil, fmt.Errorf("saveSortRule: Invalid sort direction '%v'", sortRule.SortDirection)
 		}
 		if len(sortRule.SortFieldID) == 0 {
@@ -78,7 +63,7 @@ func GetFormSortRules(parentFormID string) (*FormSortRules, error) {
 		return nil, fmt.Errorf("GetFormSortRules: Missing parent form ID")
 	}
 
-	decodedSortRules := []RecordSortRule{}
+	decodedSortRules := []recordSortDataModel.RecordSortRule{}
 	encodedSortRules := ""
 	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT sort_rules FROM form_sort_rules
 			WHERE form_id=$1 LIMIT 1`, parentFormID).Scan(&encodedSortRules)

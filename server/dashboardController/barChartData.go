@@ -2,9 +2,9 @@ package dashboardController
 
 import (
 	"fmt"
+	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/dashboard/components/barChart"
 	"resultra/datasheet/server/recordReadController"
-	"resultra/datasheet/server/recordSort"
 )
 
 type BarChartDataRow struct {
@@ -26,7 +26,7 @@ func getOneBarChartData(barChart *barChart.BarChart, filterIDs []string) (*BarCh
 	tableID := barChart.Properties.DataSrcTableID
 
 	// TODO - Store the list of filters with the bar chart and include it in the query.
-	sortRules := []recordSort.RecordSortRule{}
+	sortRules := []recordSortDataModel.RecordSortRule{}
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
 		TableID:   tableID,
 		FilterIDs: filterIDs,

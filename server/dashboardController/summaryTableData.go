@@ -2,9 +2,9 @@ package dashboardController
 
 import (
 	"fmt"
+	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/dashboard/components/summaryTable"
 	"resultra/datasheet/server/recordReadController"
-	"resultra/datasheet/server/recordSort"
 )
 
 type SummaryTableData struct {
@@ -17,7 +17,7 @@ func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable, filterIDs [
 
 	tableID := summaryTable.Properties.DataSrcTableID
 
-	sortRules := []recordSort.RecordSortRule{}
+	sortRules := []recordSortDataModel.RecordSortRule{}
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
 		TableID:   tableID,
 		FilterIDs: filterIDs,

@@ -1,6 +1,7 @@
 package recordSort
 
 import (
+	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/recordValue"
 	"sort"
 )
@@ -67,7 +68,7 @@ func (recValSorter *RecordValueSorter) Sort(recordValues []recordValue.RecordVal
 // sortByNumberField uses a closure to create a less sorting function conforming
 // to the ByRecordValueLessFunc type.
 func SortByNumberField(fieldID string, direction string) ByRecordValueLessFunc {
-	if direction == sortDirectionAsc {
+	if direction == recordSortDataModel.SortDirectionAsc {
 		lessAscFunc := func(p1, p2 recordValue.RecordValueResults) bool {
 
 			// The following assignments will try to find the value with the right
@@ -125,7 +126,7 @@ func SortByNumberField(fieldID string, direction string) ByRecordValueLessFunc {
 }
 
 func SortByTextField(fieldID string, direction string) ByRecordValueLessFunc {
-	if direction == sortDirectionAsc {
+	if direction == recordSortDataModel.SortDirectionAsc {
 		lessAscFunc := func(p1, p2 recordValue.RecordValueResults) bool {
 
 			// The following assignments will try to find the value with the right
@@ -185,7 +186,7 @@ func SortByTextField(fieldID string, direction string) ByRecordValueLessFunc {
 }
 
 func SortByBoolField(fieldID string, direction string) ByRecordValueLessFunc {
-	if direction == sortDirectionAsc {
+	if direction == recordSortDataModel.SortDirectionAsc {
 		lessAscFunc := func(p1, p2 recordValue.RecordValueResults) bool {
 
 			// The following assignments will try to find the value with the right
@@ -248,7 +249,7 @@ func SortByBoolField(fieldID string, direction string) ByRecordValueLessFunc {
 }
 
 func SortByTimeField(fieldID string, direction string) ByRecordValueLessFunc {
-	if direction == sortDirectionAsc {
+	if direction == recordSortDataModel.SortDirectionAsc {
 		lessAscFunc := func(p1, p2 recordValue.RecordValueResults) bool {
 
 			// The following assignments will try to find the value with the right

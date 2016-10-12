@@ -5,12 +5,6 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 )
 
-type FormProperties struct {
-	DefaultFilterIDs   []string                        `json:"defaultFilterIDs"`
-	AvailableFilterIDs []string                        `json:"availableFilterIDs"`
-	Layout             componentLayout.ComponentLayout `json:"layout"`
-}
-
 type FormIDInterface interface {
 	getFormID() string
 }

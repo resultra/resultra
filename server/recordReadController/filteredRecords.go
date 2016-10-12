@@ -2,14 +2,15 @@ package recordReadController
 
 import (
 	"fmt"
+	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/recordSort"
 	"resultra/datasheet/server/recordValue"
 )
 
 type GetFilteredSortedRecordsParams struct {
-	TableID   string                      `json:"tableID"`
-	FilterIDs []string                    `json:filterIDs`
-	SortRules []recordSort.RecordSortRule `json:"sortRules"`
+	TableID   string                               `json:"tableID"`
+	FilterIDs []string                             `json:filterIDs`
+	SortRules []recordSortDataModel.RecordSortRule `json:"sortRules"`
 }
 
 func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordValue.RecordValueResults, error) {
