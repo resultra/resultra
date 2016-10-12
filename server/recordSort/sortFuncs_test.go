@@ -1,6 +1,7 @@
 package recordSort
 
 import (
+	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/common/testUtil"
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordValue"
@@ -27,14 +28,14 @@ func TestNumberValueSort(t *testing.T) {
 	// recValues initialized with records out of order
 	recValues := []recordValue.RecordValueResults{recVal2, recVal1}
 
-	fieldAsc := SortByNumberField(fieldID, sortDirectionAsc)
+	fieldAsc := SortByNumberField(fieldID, recordSortDataModel.SortDirectionAsc)
 	OrderedBy(fieldAsc).Sort(recValues)
 	if recValues[0].RecordID != "Record_01" {
 		t.Errorf("TestRecordValueSort: expecting Record_01 first")
 	}
 	t.Logf("TestRecordValueSort: sort asc results %+v", testUtil.EncodeJSONString(t, recValues))
 
-	fieldDesc := SortByNumberField(fieldID, sortDirectionDesc)
+	fieldDesc := SortByNumberField(fieldID, recordSortDataModel.SortDirectionDesc)
 	OrderedBy(fieldDesc).Sort(recValues)
 	if recValues[0].RecordID != "Record_02" {
 		t.Errorf("TestRecordValueSort: expecting Record_02 first")
@@ -62,14 +63,14 @@ func TestBlankNumberValueSort(t *testing.T) {
 	// recValues initialized with records out of order
 	recValues := []recordValue.RecordValueResults{recVal1, recVal2}
 
-	fieldAsc := SortByNumberField(fieldID, sortDirectionAsc)
+	fieldAsc := SortByNumberField(fieldID, recordSortDataModel.SortDirectionAsc)
 	OrderedBy(fieldAsc).Sort(recValues)
 	if recValues[0].RecordID != "Record_02" {
 		t.Errorf("TestRecordValueSort: expecting Record_01 first (blanks last)")
 	}
 	t.Logf("TestRecordValueSort: sort asc results %+v", testUtil.EncodeJSONString(t, recValues))
 
-	fieldDesc := SortByNumberField(fieldID, sortDirectionDesc)
+	fieldDesc := SortByNumberField(fieldID, recordSortDataModel.SortDirectionDesc)
 	OrderedBy(fieldDesc).Sort(recValues)
 	if recValues[0].RecordID != "Record_01" {
 		t.Errorf("TestRecordValueSort: expecting Record_02 first (blanks first)")
@@ -97,14 +98,14 @@ func TestTextValueSort(t *testing.T) {
 	// recValues initialized with records out of order
 	recValues := []recordValue.RecordValueResults{recVal2, recVal1}
 
-	fieldAsc := SortByTextField(fieldID, sortDirectionAsc)
+	fieldAsc := SortByTextField(fieldID, recordSortDataModel.SortDirectionAsc)
 	OrderedBy(fieldAsc).Sort(recValues)
 	if recValues[0].RecordID != "Record_01" {
 		t.Errorf("TestTextValueSort: expecting Record_01 first")
 	}
 	t.Logf("TestTextValueSort: sort asc results %+v", testUtil.EncodeJSONString(t, recValues))
 
-	fieldDesc := SortByTextField(fieldID, sortDirectionDesc)
+	fieldDesc := SortByTextField(fieldID, recordSortDataModel.SortDirectionDesc)
 	OrderedBy(fieldDesc).Sort(recValues)
 	if recValues[0].RecordID != "Record_02" {
 		t.Errorf("TestRecordValueSort: expecting Record_02 first")
@@ -132,14 +133,14 @@ func TestBoolValueSort(t *testing.T) {
 	// recValues initialized with records out of order
 	recValues := []recordValue.RecordValueResults{recVal2, recVal1}
 
-	fieldAsc := SortByBoolField(fieldID, sortDirectionAsc)
+	fieldAsc := SortByBoolField(fieldID, recordSortDataModel.SortDirectionAsc)
 	OrderedBy(fieldAsc).Sort(recValues)
 	if recValues[0].RecordID != "Record_01" {
 		t.Errorf("TestTextValueSort: expecting Record_01 first")
 	}
 	t.Logf("TestTextValueSort: sort asc results %+v", testUtil.EncodeJSONString(t, recValues))
 
-	fieldDesc := SortByBoolField(fieldID, sortDirectionDesc)
+	fieldDesc := SortByBoolField(fieldID, recordSortDataModel.SortDirectionDesc)
 	OrderedBy(fieldDesc).Sort(recValues)
 	if recValues[0].RecordID != "Record_02" {
 		t.Errorf("TestRecordValueSort: expecting Record_02 first")
@@ -170,14 +171,14 @@ func TestTimeValueSort(t *testing.T) {
 	// recValues initialized with records out of order
 	recValues := []recordValue.RecordValueResults{recVal2, recVal1}
 
-	fieldAsc := SortByTimeField(fieldID, sortDirectionAsc)
+	fieldAsc := SortByTimeField(fieldID, recordSortDataModel.SortDirectionAsc)
 	OrderedBy(fieldAsc).Sort(recValues)
 	if recValues[0].RecordID != "Record_01" {
 		t.Errorf("TestTextValueSort: expecting Record_01 first")
 	}
 	t.Logf("TestTextValueSort: sort asc results %+v", testUtil.EncodeJSONString(t, recValues))
 
-	fieldDesc := SortByTimeField(fieldID, sortDirectionDesc)
+	fieldDesc := SortByTimeField(fieldID, recordSortDataModel.SortDirectionDesc)
 	OrderedBy(fieldDesc).Sort(recValues)
 	if recValues[0].RecordID != "Record_02" {
 		t.Errorf("TestRecordValueSort: expecting Record_02 first")
@@ -209,8 +210,8 @@ func TestMultiFieldValueSort(t *testing.T) {
 	// recValues initialized with records out of order
 	recValues := []recordValue.RecordValueResults{rec4Vals, rec1Vals, rec3Vals, rec2Vals}
 
-	numberAsc := SortByNumberField(numberFieldID, sortDirectionAsc)
-	textAsc := SortByTextField(textFieldID, sortDirectionAsc)
+	numberAsc := SortByNumberField(numberFieldID, recordSortDataModel.SortDirectionAsc)
+	textAsc := SortByTextField(textFieldID, recordSortDataModel.SortDirectionAsc)
 	OrderedBy(textAsc, numberAsc).Sort(recValues)
 	if recValues[0].RecordID != "rec1" {
 		t.Errorf("TestRecordValueSort: expecting rec1 first")

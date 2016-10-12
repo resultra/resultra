@@ -226,25 +226,16 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 			reloadRecords(getRecordsParams)
 			
 		}
-		
-		function saveFormSortRules(sortRules) {
-			var saveSortRulesParams = {
-				parentFormID: viewFormContext.formID,
-				sortRules: sortRules
-			}
-			jsonAPIRequest("recordSort/saveFormSortRules",saveSortRulesParams,function(saveReply) {}) // getRecord			
+				
+		var recordSortPaneParams = {
+			defaultSortRules: formInfo.properties.defaultRecordSortRules,
+			resortFunc: reloadSortedAndFilterRecords,
+			initDoneFunc: recordSortPaneInitDone,
+			saveUpdatedSortRulesFunc: function(sortRules) {} // no-op
 		}
-		
-		var getSortRulesParams = { parentFormID: viewFormContext.formID }
-		jsonAPIRequest("recordSort/getFormSortRules",getSortRulesParams,function(formSortRules) {
-			var recordSortPaneParams = {
-				defaultSortRules: formSortRules.sortRules,
-				resortFunc: reloadSortedAndFilterRecords,
-				initDoneFunc: recordSortPaneInitDone,
-				saveUpdatedSortRulesFunc: saveFormSortRules}
-	
-			initSortRecordsPane(recordSortPaneParams)
-		})
+
+		initSortRecordsPane(recordSortPaneParams)
+
 	})
 }
 
