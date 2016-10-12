@@ -15,6 +15,7 @@ type FormTemplateParams struct {
 	NamePanelParams   propertiesSidebar.PanelTemplateParams
 	FilterPanelParams propertiesSidebar.PanelTemplateParams
 	RolesPanelParams  propertiesSidebar.PanelTemplateParams
+	SortPanelParams   propertiesSidebar.PanelTemplateParams
 }
 
 // Aggregate the template parameters from all the form components, then
@@ -40,9 +41,10 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 
 	formParams := FormTemplateParams{
 		NamePanelParams:   propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Form Name", PanelID: "formName"},
-		FilterPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "formFilter"},
+		FilterPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Filtering", PanelID: "formFilter"},
 		RolesPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Roles and Privileges",
 			PanelID: "formRoles"},
+		SortPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Sorting", PanelID: "formSort"},
 	}
 
 	templParams := DesignFormTemplateParams{

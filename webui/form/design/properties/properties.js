@@ -8,5 +8,6 @@ function initDesignFormProperties(table,formID) {
 		initDesignFormRolePrivProperties(formID)
 		initDesignFormFilterProperties(tableID,formInfo)
 		initFormPropertiesFormName(formInfo)
+		initFormSortPropertyPanel(formInfo)
 	})
 }

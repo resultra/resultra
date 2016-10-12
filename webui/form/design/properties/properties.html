@@ -10,7 +10,11 @@
 			  {{template "propertyPanelPrefix" .FilterPanelParams}}
 			  		{{template "formFilterPropertyPanel"}}
 			  {{template "propertyPanelSuffix"}}
-			  
+
+			  {{template "propertyPanelPrefix" .SortPanelParams}}
+			  		{{template "formSortPropertyPanel"}}
+			  {{template "propertyPanelSuffix"}}
+  
 			  {{template "propertyPanelPrefix" .RolesPanelParams}}
 			  		{{template "formRolesPropertyPanel"}}
 			  {{template "propertyPanelSuffix"}}
