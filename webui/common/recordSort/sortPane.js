@@ -164,6 +164,8 @@ function generateSortRulePrefix() {
 }
 
 function initSortRecordsPane(sortPaneParams) {
+	
+	$('#sortPaneSortRuleList').empty()
 			
 	sortPaneParams.fieldsByID = getFilteredFieldsByID([fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime])
 		

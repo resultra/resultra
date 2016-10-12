@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -12,9 +13,10 @@ import (
 const formEntityKind string = "Form"
 
 type FormProperties struct {
-	DefaultFilterIDs   []string                        `json:"defaultFilterIDs"`
-	AvailableFilterIDs []string                        `json:"availableFilterIDs"`
-	Layout             componentLayout.ComponentLayout `json:"layout"`
+	DefaultFilterIDs       []string                             `json:"defaultFilterIDs"`
+	AvailableFilterIDs     []string                             `json:"availableFilterIDs"`
+	Layout                 componentLayout.ComponentLayout      `json:"layout"`
+	DefaultRecordSortRules []recordSortDataModel.RecordSortRule `json:"defaultRecordSortRules"`
 }
 
 type Form struct {

@@ -1,20 +1,20 @@
 function initFormSortPropertyPanel(formInfo) {
-	
-	var defaultSortRules = []
-	
+		
 	function saveDefaultFormSortRules(sortRules) {
 		console.log("Saving default sort rules for form: " + JSON.stringify(sortRules))
-/*		var saveSortRulesParams = {
-			parentFormID: viewFormContext.formID,
+		var saveSortRulesParams = {
+			formID:formInfo.formID,
 			sortRules: sortRules
 		}
-		jsonAPIRequest("recordSort/saveFormSortRules",saveSortRulesParams,function(saveReply) {}) // getRecord			
-*/
+		jsonAPIRequest("frm/setDefaultSortRules",saveSortRulesParams,function(saveReply) {
+			console.log("Done saving default sort rules")
+		})			
+
 	}
 	
 	
 	var sortPaneParams = {
-		defaultSortRules: defaultSortRules,
+		defaultSortRules: formInfo.properties.defaultRecordSortRules,
 		resortFunc: function() {}, // no-op
 		initDoneFunc: function() {}, // no-op
 		saveUpdatedSortRulesFunc: saveDefaultFormSortRules}
