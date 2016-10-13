@@ -135,7 +135,7 @@ function initUILayoutPanes()
 		inset: zeroPaddingInset,
 		north: fixedUILayoutPaneParams(40),
 		east: {
-			size: 250,
+			size: 300,
 			resizable:false,
 			slidable: false,
 			spacing_open:16,
@@ -163,13 +163,8 @@ function initUILayoutPanes()
 		north__showOverflowOnHover:	true,
 		south__showOverflowOnHover:	true
 	})
-	
-	$('#eastFilterSortPane').layout({
-		inset: zeroPaddingInset,
-		center__size:.6,
-		south__size:.4,
-	})
-		
+	hideSiblingsShowOne('#formViewProps')
+			
 	initButtonClickHandler("#viewTableOfContentsMenuButton", function() {
 		console.log("TOC button clicked")
 		mainLayout.toggle("west")

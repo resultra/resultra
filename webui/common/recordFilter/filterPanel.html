@@ -1,13 +1,4 @@
 
-{{define "recordFilterPaneHeader"}}
-
-<div class="row filterPaneHeader">
-	<div class= "col-md-12 text-center h5">
-		Filter
-	</div>
-</div>
-
-{{end}}
 
 {{define "recordFilterRulesButtons"}}
 		<button type="button" class="btn btn-default btn-xs" id="{{.}}FilterRecordsClearFiltersButton">
@@ -49,7 +40,6 @@
 
 {{define "recordFilterPane"}}
 
-{{template "recordFilterPaneHeader" .}}
 <div class="ui-layout-content noPadding">
 	{{template "filterRecordsPanelFilterList" .}}
 </div>

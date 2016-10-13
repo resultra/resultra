@@ -7,7 +7,7 @@ function initDashboardUILayoutPanes()
 		inset: zeroPaddingInset,
 		north: fixedUILayoutPaneParams(40),
 		east: {
-			size: 250,
+			size: 300,
 			resizable:false,
 			slidable: false,
 			spacing_open:16,

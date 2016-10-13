@@ -11,6 +11,7 @@ import (
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/form/components"
 	"resultra/datasheet/webui/generic"
+	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 
 var viewFormTemplates *template.Template
@@ -29,12 +30,14 @@ func init() {
 }
 
 type ViewFormTemplateParams struct {
-	Title        string
-	FormID       string
-	TableID      string
-	DatabaseID   string
-	DatabaseName string
-	FormName     string
+	Title                string
+	FormID               string
+	TableID              string
+	DatabaseID           string
+	DatabaseName         string
+	FormName             string
+	FilteringPanelParams propertiesSidebar.PanelTemplateParams
+	SortPanelParams      propertiesSidebar.PanelTemplateParams
 }
 
 func ViewForm(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +65,11 @@ func ViewForm(w http.ResponseWriter, r *http.Request) {
 			TableID:      formDBInfo.TableID,
 			DatabaseID:   formDBInfo.DatabaseID,
 			DatabaseName: formDBInfo.DatabaseName,
-			FormName:     formDBInfo.FormName}
+			FormName:     formDBInfo.FormName,
+			FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering",
+				PanelID: "viewFormFiltering"},
+			SortPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Sorting",
+				PanelID: "viewFormSorting"}}
 
 		err := viewFormTemplates.ExecuteTemplate(w, "viewForm", templParams)
 		if err != nil {

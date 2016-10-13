@@ -82,6 +82,34 @@
 </div> <!-- record footer grid -->
 {{end}}
 
+{{define "formViewMainProps"}}
+	<div id="formViewProps" class="propertyPanelToggleContainer">
+		
+		{{template "propertyPanelPrefix" .FilteringPanelParams}}
+			{{template "recordFilterPane" "form_"}}
+		{{template "propertyPanelSuffix"}}
+
+		{{template "propertyPanelPrefix" .SortPanelParams}}
+			{{template "recordSortPane"}}
+		{{template "propertyPanelSuffix"}}
+		
+		
+	</div>
+{{end}}
+
+{{define "formViewProps"}}
+
+	{{template "propertiesSidebarHeader"}}
+		
+	<div class="ui-layout-content noPadding">
+			{{template "propertyPanelGroupPrefix"}}
+				{{template "formViewMainProps" .}}
+			{{template "propertyPanelGroupSuffix"}}	
+	</div>
+
+{{end}}
+
+
 {{define "viewForm"}}
 <!DOCTYPE html>
 <html>
@@ -120,18 +148,12 @@
 			{{template "databaseTOC" .}}
 		</div> <!-- ui layout north -->
 
-		<div class="pane ui-layout-east" id="eastFilterSortPane">
+		<div class="pane ui-layout-east noPadding">
 			
-			<div class="ui-layout-center" id="filterPaneUILayout">
-				{{template "recordFilterPane" "form_"}}
-			</div> <!-- ui-layout-center #filterPane -->
-	
-			<div class=" ui-layout-south" id="sortPaneUILayout" >
-				{{template "recordSortPane"}}
-				
-			    
-			</div> <!-- ui-layout-south #sortPane -->
-		
+			{{template "propertyPanelGroupPrefix"}}
+				{{template "formViewProps" .}}
+			{{template "propertyPanelGroupSuffix"}}
+					
 		</div> <!-- east filter & sort pane for entire page -->
 
 
