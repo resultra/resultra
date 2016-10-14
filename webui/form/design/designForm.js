@@ -116,7 +116,7 @@ $(document).ready(function() {
 			var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
 			initFormComponentDesignBehavior(componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig,designFormLayoutConfig)
 		},
-		initDatePickerFunc: function(componentContext,datePickerObjectRef) {
+		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			var componentIDs = { formID: formID, componentID: datePickerObjectRef.datePickerID }
 			initFormComponentDesignBehavior(componentIDs,datePickerObjectRef,datePickerDesignFormConfig,designFormLayoutConfig)
 		},

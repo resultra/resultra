@@ -3,13 +3,15 @@
         "datePicker.css"
     ], 
     "htmlFiles": [
-        "properties.html"
+        "properties.html",
+		"viewProperties.html"
     ], 
     "jsFiles": [
         "containerHTML.js", 
         "newDatePickerDialog.js", 
         "properties.js", 
-        "designFormConfig.js", 
+        "designFormConfig.js",
+		"viewProperties.js",
         "viewFormConfig.js"
     ],
 	"imageFiles":[]

@@ -159,7 +159,7 @@ function loadFormComponents(loadFormConfig) {
 			setElemObjectRef(datePicker.datePickerID,datePicker)
 			
 			// Callback for any specific initialization for either the form design or view mode
-			loadFormConfig.initDatePickerFunc(componentContext,datePicker)
+			loadFormConfig.initDatePickerFunc(componentContext,containerObj,datePicker)
 			
 		}
 

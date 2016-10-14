@@ -105,6 +105,7 @@
 			{{template "propertyPanelGroupPrefix"}}
 				{{template "formViewMainProps" .}}
 				{{template "checkBoxViewProps" .ComponentParams.CheckBoxParams}}
+				{{template "datePickerViewProps" .ComponentParams.DatePickerParams}}
 			{{template "propertyPanelGroupSuffix"}}	
 	</div>
 
@@ -151,9 +152,7 @@
 
 		<div class="pane ui-layout-east noPadding">
 			
-			{{template "propertyPanelGroupPrefix"}}
-				{{template "formViewProps" .}}
-			{{template "propertyPanelGroupSuffix"}}
+			{{template "formViewProps" .}}
 					
 		</div> <!-- east filter & sort pane for entire page -->
 

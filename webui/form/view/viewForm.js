@@ -278,9 +278,11 @@ $(document).ready(function() {
 					checkBoxObjectRef.checkBoxID,initCheckBoxViewProperties)
 			
 		},
-		initDatePickerFunc: function(componentContext,datePickerObjectRef) {
+		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			console.log("Init date picker in view form")
 			initDatePickerRecordEditBehavior(componentContext,datePickerObjectRef)
+			initFormComponentViewBehavior($datePicker,
+					datePickerObjectRef.datePickerID,initDatePickerViewProperties)
 		},
 		initHtmlEditorFunc: function(componentContext,htmlEditorObjectRef) {
 			console.log("Init html editor in view form")
