@@ -20,18 +20,21 @@ var DesignTemplateParams DatePickerDesignTemplateParams
 var ViewTemplateParams DatePickerViewTemplateParams
 
 func init() {
+
+	elemPrefix := "datePicker_"
+
 	DesignTemplateParams = DatePickerDesignTemplateParams{
-		ElemPrefix:        "datePicker_",
+		ElemPrefix:        elemPrefix,
 		FormatPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "datePickerFormat"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
-			ElemPrefix:  "datePicker_",
+			ElemPrefix:  elemPrefix,
 			DialogTitle: "New Date Picker",
 			FieldInfoPrompt: `Values from date pickers are stored in fields. Either a new field can be created for this
 					date picker, or an existing field can be used.`,
 			NewFieldInfoPrompt: `Enter the parameters for the new field to store this date picker's values.`}}
 
 	ViewTemplateParams = DatePickerViewTemplateParams{
-		ElemPrefix:          "datePicker_",
+		ElemPrefix:          elemPrefix,
 		TimelinePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Timeline", PanelID: "datePickerTimeline"}}
 
 }

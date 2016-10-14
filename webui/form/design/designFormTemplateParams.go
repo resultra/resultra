@@ -30,7 +30,7 @@ type DesignFormTemplateParams struct {
 	DatePickerParams datePicker.DatePickerDesignTemplateParams
 	TextBoxParams    textBox.TextboxDesignTemplateParams
 	HtmlEditorParams htmlEditor.HTMLEditorTemplateParams
-	ImageParams      image.ImageTemplateParams
+	ImageParams      image.ImageDesignTemplateParams
 	HeaderParams     header.HeaderTemplateParams
 	FormParams       FormTemplateParams
 }
@@ -57,7 +57,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		DatePickerParams: datePicker.DesignTemplateParams,
 		TextBoxParams:    textBox.DesignTemplateParams,
 		HtmlEditorParams: htmlEditor.TemplateParams,
-		ImageParams:      image.TemplateParams,
+		ImageParams:      image.DesignTemplateParams,
 		HeaderParams:     header.TemplateParams,
 		FormParams:       formParams}
 

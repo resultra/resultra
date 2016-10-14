@@ -124,7 +124,7 @@ $(document).ready(function() {
 			var componentIDs = { formID: formID, componentID: htmlEditorObjectRef.htmlEditorID }
 			initFormComponentDesignBehavior(componentIDs,htmlEditorObjectRef,htmlEditorDesignFormConfig,designFormLayoutConfig)
 		},
-		initImageFunc: function(componentContext,imageObjectRef) {
+		initImageFunc: function(componentContext,$image,imageObjectRef) {
 			var componentIDs = { formID: formID, componentID: imageObjectRef.imageID }
 			initFormComponentDesignBehavior(componentIDs,imageObjectRef,imageDesignFormConfig,designFormLayoutConfig)
 		},

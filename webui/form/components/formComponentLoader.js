@@ -214,7 +214,7 @@ function loadFormComponents(loadFormConfig) {
 			setElemObjectRef(image.imageID,image)
 			
 			// Callback for any specific initialization for either the form design or view mode
-			loadFormConfig.initImageFunc(componentContext,image)
+			loadFormConfig.initImageFunc(componentContext,containerObj,image)
 			
 		}
 

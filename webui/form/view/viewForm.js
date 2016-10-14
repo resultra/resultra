@@ -290,9 +290,11 @@ $(document).ready(function() {
 			console.log("Init html editor in view form")
 			initHtmlEditorRecordEditBehavior(componentContext,htmlEditorObjectRef)
 		},
-		initImageFunc: function(componentContext,imageObjectRef) {
+		initImageFunc: function(componentContext,$image,imageObjectRef) {
 			console.log("Init image in view form")
 			initImageRecordEditBehavior(componentContext,imageObjectRef)
+			initFormComponentViewBehavior($image,
+					imageObjectRef.imageID,initImageViewProperties)
 		},
 		initHeaderFunc: function(componentContext,headerObjectRef) {
 			console.log("Init header in view form")

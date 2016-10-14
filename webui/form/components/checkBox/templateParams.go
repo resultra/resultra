@@ -20,18 +20,21 @@ var DesignTemplateParams CheckboxDesignTemplateParams
 var ViewTemplateParams CheckboxViewTemplateParams
 
 func init() {
+
+	elemPrefix := "checkbox_"
+
 	DesignTemplateParams = CheckboxDesignTemplateParams{
-		ElemPrefix:        "checkbox_",
+		ElemPrefix:        elemPrefix,
 		FormatPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "checkboxFormat"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
-			ElemPrefix:  "checkbox_",
+			ElemPrefix:  elemPrefix,
 			DialogTitle: "New Check Box",
 			FieldInfoPrompt: `Check box values are stored in fields. Either a new field can be created to store the values, 
 					or an existing field can be used.`,
 			NewFieldInfoPrompt: `Enter the parameters for the new field to store this check box's values.`}}
 
 	ViewTemplateParams = CheckboxViewTemplateParams{
-		ElemPrefix:         "checkbox_",
+		ElemPrefix:         elemPrefix,
 		CommentPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Comments", PanelID: "checkboxComments"}}
 
 }
