@@ -1,10 +1,12 @@
 {
     "cssFiles": ["checkBox.css"], 
-    "htmlFiles": ["properties.html"], 
+    "htmlFiles": ["properties.html",
+		"viewProperties.html"], 
     "jsFiles": ["newCheckBoxDialog.js",
 		"properties.js",
 		"containerHTML.js",
 		"designFormConfig.js",
+		"viewProperties.js",
 		"viewFormConfig.js"
     ],
 	"imageFiles":[],

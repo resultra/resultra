@@ -38,6 +38,7 @@ type ViewFormTemplateParams struct {
 	FormName             string
 	FilteringPanelParams propertiesSidebar.PanelTemplateParams
 	SortPanelParams      propertiesSidebar.PanelTemplateParams
+	ComponentParams      components.ComponentViewTemplateParams
 }
 
 func ViewForm(w http.ResponseWriter, r *http.Request) {
@@ -69,7 +70,8 @@ func ViewForm(w http.ResponseWriter, r *http.Request) {
 			FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering",
 				PanelID: "viewFormFiltering"},
 			SortPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Sorting",
-				PanelID: "viewFormSorting"}}
+				PanelID: "viewFormSorting"},
+			ComponentParams: components.ViewTemplateParams}
 
 		err := viewFormTemplates.ExecuteTemplate(w, "viewForm", templParams)
 		if err != nil {

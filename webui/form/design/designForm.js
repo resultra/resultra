@@ -112,7 +112,7 @@ $(document).ready(function() {
 			var componentIDs = { formID: formID, componentID: textBoxObjectRef.textBoxID }
 			initFormComponentDesignBehavior(componentIDs,textBoxObjectRef,textBoxDesignFormConfig,designFormLayoutConfig)
 		},
-		initCheckBoxFunc: function(componentContext,checkBoxObjectRef) {
+		initCheckBoxFunc: function(componentContext,$checkBox,checkBoxObjectRef) {
 			var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
 			initFormComponentDesignBehavior(componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig,designFormLayoutConfig)
 		},

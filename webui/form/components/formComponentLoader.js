@@ -130,7 +130,7 @@ function loadFormComponents(loadFormConfig) {
 			setElemObjectRef(checkBox.checkBoxID,checkBox)
 			
 			// Callback for any specific initialization for either the form design or view mode 
-			loadFormConfig.initCheckBoxFunc(componentContext,checkBox)
+			loadFormConfig.initCheckBoxFunc(componentContext,containerObj,checkBox)
 		}
 		
 		function initDatePickerLayout($componentRow,datePicker) {

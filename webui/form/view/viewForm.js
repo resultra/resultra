@@ -163,7 +163,6 @@ function initUILayoutPanes()
 		north__showOverflowOnHover:	true,
 		south__showOverflowOnHover:	true
 	})
-	hideSiblingsShowOne('#formViewProps')
 			
 	initButtonClickHandler("#viewTableOfContentsMenuButton", function() {
 		console.log("TOC button clicked")
@@ -178,6 +177,8 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 	var getFormParams = {
 		formID: viewFormContext.formID
 	}
+	
+	
 	
 	jsonAPIRequest("frm/get",getFormParams,function(formInfo) {
 		
@@ -247,15 +248,35 @@ $(document).ready(function() {
 	
 	initDatabaseTOC(viewFormContext.databaseID)
 	
+	var viewFormCanvasSelector = '#layoutCanvas'
+	
+	function initFormComponentViewBehavior($component,componentID, selectionFunc) {	
+		initObjectSelectionBehavior($component, 
+				viewFormCanvasSelector,function(selectedComponentID) {
+			console.log("Form view object selected: " + selectedComponentID)
+			var selectedObjRef	= getElemObjectRef(selectedComponentID)
+			selectionFunc(selectedObjRef)
+		})
+	}
+	
+	hideSiblingsShowOne('#formViewProps')
+	initObjectCanvasSelectionBehavior(viewFormCanvasSelector, function() {
+		hideSiblingsShowOne('#formViewProps')
+	})
+
+	
 	loadFormComponents({
-		formParentElemID: "#layoutCanvas",
+		formParentElemID: viewFormCanvasSelector,
 		formContext: viewFormContext,
 		initTextBoxFunc: function(componentContext,textBoxObjectRef) {			
 			initTextBoxRecordEditBehavior(componentContext,textBoxObjectRef)
 		},
-		initCheckBoxFunc: function(componentContext,checkBoxObjectRef) {
+		initCheckBoxFunc: function(componentContext,$checkBox,checkBoxObjectRef) {
 			console.log("Init check box in view form")
 			initCheckBoxRecordEditBehavior(componentContext,checkBoxObjectRef)
+			initFormComponentViewBehavior($checkBox,
+					checkBoxObjectRef.checkBoxID,initCheckBoxViewProperties)
+			
 		},
 		initDatePickerFunc: function(componentContext,datePickerObjectRef) {
 			console.log("Init date picker in view form")
