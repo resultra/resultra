@@ -108,7 +108,7 @@ $(document).ready(function() {
 	loadFormComponents({
 		formParentElemID: formDesignCanvasSelector,
 		formContext: designFormContext,
-		initTextBoxFunc: function(componentContext,textBoxObjectRef) {
+		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {
 			var componentIDs = { formID: formID, componentID: textBoxObjectRef.textBoxID }
 			initFormComponentDesignBehavior(componentIDs,textBoxObjectRef,textBoxDesignFormConfig,designFormLayoutConfig)
 		},

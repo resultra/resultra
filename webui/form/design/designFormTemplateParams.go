@@ -28,7 +28,7 @@ type DesignFormTemplateParams struct {
 	TableID          string
 	CheckboxParams   checkBox.CheckboxDesignTemplateParams
 	DatePickerParams datePicker.DatePickerDesignTemplateParams
-	TextBoxParams    textBox.TextboxTemplateParams
+	TextBoxParams    textBox.TextboxDesignTemplateParams
 	HtmlEditorParams htmlEditor.HTMLEditorTemplateParams
 	ImageParams      image.ImageTemplateParams
 	HeaderParams     header.HeaderTemplateParams
@@ -55,7 +55,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		FormName:         formInfo.FormName,
 		CheckboxParams:   checkBox.DesignTemplateParams,
 		DatePickerParams: datePicker.DesignTemplateParams,
-		TextBoxParams:    textBox.TemplateParams,
+		TextBoxParams:    textBox.DesignTemplateParams,
 		HtmlEditorParams: htmlEditor.TemplateParams,
 		ImageParams:      image.TemplateParams,
 		HeaderParams:     header.TemplateParams,

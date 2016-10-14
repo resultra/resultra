@@ -97,7 +97,7 @@ function loadFormComponents(loadFormConfig) {
 			setElemObjectRef(textBox.textBoxID,textBox)
 		
 			// Callback for any specific initialization for either the form design or view mode
-			loadFormConfig.initTextBoxFunc(componentContext,textBox)
+			loadFormConfig.initTextBoxFunc(componentContext,containerObj,textBox)
 			
 		}
 

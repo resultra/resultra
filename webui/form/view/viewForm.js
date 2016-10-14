@@ -268,8 +268,10 @@ $(document).ready(function() {
 	loadFormComponents({
 		formParentElemID: viewFormCanvasSelector,
 		formContext: viewFormContext,
-		initTextBoxFunc: function(componentContext,textBoxObjectRef) {			
+		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {			
 			initTextBoxRecordEditBehavior(componentContext,textBoxObjectRef)
+			initFormComponentViewBehavior($textBox,
+					textBoxObjectRef.textBoxID,initTextBoxViewProperties)
 		},
 		initCheckBoxFunc: function(componentContext,$checkBox,checkBoxObjectRef) {
 			console.log("Init check box in view form")

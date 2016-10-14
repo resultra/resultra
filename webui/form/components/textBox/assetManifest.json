@@ -1,13 +1,15 @@
 {
     "cssFiles": ["textBoxComponent.css"], 
     "htmlFiles": [
-        "properties.html"
+        "properties.html",
+		"viewProperties.html"
     ], 
     "jsFiles": [
         "containerHTML.js", 
         "newTextBoxDialog.js", 
         "properties.js", 
-        "designFormConfig.js", 
+        "designFormConfig.js",
+		"viewProperties.js",
         "viewFormConfig.js"
     ],
 	"imageFiles":[]
