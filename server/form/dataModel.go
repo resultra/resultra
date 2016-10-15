@@ -7,6 +7,7 @@ import (
 	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
@@ -33,7 +34,7 @@ type NewFormParams struct {
 
 func newForm(params NewFormParams) (*Form, error) {
 
-	sanitizedName, sanitizeErr := generic.SanitizeName(params.Name)
+	sanitizedName, sanitizeErr := stringValidation.SanitizeName(params.Name)
 	if sanitizeErr != nil {
 		return nil, sanitizeErr
 	}
@@ -188,7 +189,7 @@ func validateUniqueFormName(databaseID string, formID string, formName string) e
 
 func validateFormName(formID string, formName string) error {
 
-	if !generic.WellFormedItemName(formName) {
+	if !stringValidation.WellFormedItemName(formName) {
 		return fmt.Errorf("Invalid form name")
 	}
 
@@ -206,7 +207,7 @@ func validateFormName(formID string, formName string) error {
 
 func validateNewFormName(databaseID string, formName string) error {
 
-	if !generic.WellFormedItemName(formName) {
+	if !stringValidation.WellFormedItemName(formName) {
 		return fmt.Errorf("Invalid form name")
 	}
 

@@ -2,8 +2,8 @@ package table
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
@@ -24,7 +24,7 @@ type NewTableParams struct {
 
 func saveNewTable(params NewTableParams) (*Table, error) {
 
-	sanitizedTableName, sanitizeErr := generic.SanitizeName(params.Name)
+	sanitizedTableName, sanitizeErr := stringValidation.SanitizeName(params.Name)
 	if sanitizeErr != nil {
 		return nil, sanitizeErr
 	}

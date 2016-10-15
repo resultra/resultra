@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
@@ -26,7 +27,7 @@ type NewDashboardParams struct {
 
 func NewDashboard(params NewDashboardParams) (*Dashboard, error) {
 
-	sanitizedName, sanitizeErr := generic.SanitizeName(params.Name)
+	sanitizedName, sanitizeErr := stringValidation.SanitizeName(params.Name)
 	if sanitizeErr != nil {
 		return nil, sanitizeErr
 	}
@@ -152,7 +153,7 @@ func getDashboardDatabaseID(dashboardID string) (string, error) {
 
 func validateNewDashboardName(databaseID string, dashboardName string) error {
 
-	if !generic.WellFormedItemName(dashboardName) {
+	if !stringValidation.WellFormedItemName(dashboardName) {
 		return fmt.Errorf("Invalid dashboard name")
 	}
 
@@ -168,7 +169,7 @@ func validateNewDashboardName(databaseID string, dashboardName string) error {
 
 func validateDashboardName(dashboardID string, dashboardName string) error {
 
-	if !generic.WellFormedItemName(dashboardName) {
+	if !stringValidation.WellFormedItemName(dashboardName) {
 		return fmt.Errorf("Invalid dashboard name")
 	}
 
@@ -187,7 +188,7 @@ func validateDashboardName(dashboardID string, dashboardName string) error {
 
 func validateComponentTitle(title string) error {
 
-	if !generic.WellFormedItemName(title) {
+	if !stringValidation.WellFormedItemName(title) {
 		return fmt.Errorf("Invalid title")
 	}
 

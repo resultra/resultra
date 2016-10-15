@@ -2,8 +2,8 @@ package global
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/stringValidation"
 )
 
 func validateUniqueGlobalName(databaseID string, globalID string, globalName string) error {
@@ -35,7 +35,7 @@ func validateUniqueGlobalName(databaseID string, globalID string, globalName str
 
 func validateGlobalName(globalID string, globalName string) error {
 
-	if !generic.WellFormedItemName(globalName) {
+	if !stringValidation.WellFormedItemName(globalName) {
 		return fmt.Errorf("Invalid name")
 	}
 
@@ -53,7 +53,7 @@ func validateGlobalName(globalID string, globalName string) error {
 
 func validateNewGlobalName(databaseID string, globalName string) error {
 
-	if !generic.WellFormedItemName(globalName) {
+	if !stringValidation.WellFormedItemName(globalName) {
 		return fmt.Errorf("Invalid global name")
 	}
 

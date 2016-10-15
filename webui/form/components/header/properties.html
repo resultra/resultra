@@ -2,9 +2,26 @@
 	Header formatting properties go here
 {{end}}
 
+
+{{define "formHeaderLabelFormatProps"}}
+
+	<form id="headerTextPropertyPanelForm">
+		<div class="form-group marginBottom0">
+			<input type="text" id="headerTextNameInput" name="headerTextNameInput" class="form-control" placeholder="Header text" required="" autofocus="">
+		</div>
+	</form>
+	
+{{end}}
+
+
 {{define "formHeaderProps"}}
 
 	<div id="formHeaderProps" class="propertyPanelToggleContainer">
+		
+		{{template "propertyPanelPrefix" .LabelPanelParams}}
+			{{template "formHeaderLabelFormatProps"}}
+		{{template "propertyPanelSuffix"}}
+		
 		{{template "propertyPanelPrefix" .FormatPanelParams}}
 			{{template "formHeaderFormatProps"}}
 		{{template "propertyPanelSuffix"}}

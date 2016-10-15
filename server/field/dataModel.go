@@ -5,6 +5,7 @@ import (
 	"log"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
@@ -63,7 +64,7 @@ func validFieldType(fieldType string) bool {
 // or calculated field.
 func CreateNewFieldFromRawInputs(parentTableID string, newField Field) (string, error) {
 
-	sanitizedName, sanitizeErr := generic.SanitizeName(newField.Name)
+	sanitizedName, sanitizeErr := stringValidation.SanitizeName(newField.Name)
 	if sanitizeErr != nil {
 		return "", fmt.Errorf("Can't create new field: invalid name: '%v'", sanitizeErr)
 	}

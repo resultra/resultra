@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
@@ -24,7 +25,7 @@ type NewDatabaseParams struct {
 
 func SaveNewDatabase(params NewDatabaseParams) (*Database, error) {
 
-	sanitizedDbName, sanitizeErr := generic.SanitizeName(params.Name)
+	sanitizedDbName, sanitizeErr := stringValidation.SanitizeName(params.Name)
 	if sanitizeErr != nil {
 		return nil, sanitizeErr
 	}
@@ -94,7 +95,7 @@ func updateExistingDatabase(databaseID string, updatedDB *Database) (*Database, 
 }
 
 func validateDatabaseName(databaseID string, databaseName string) error {
-	if !generic.WellFormedItemName(databaseName) {
+	if !stringValidation.WellFormedItemName(databaseName) {
 		return fmt.Errorf("Invalid database name")
 	}
 	return nil

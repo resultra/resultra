@@ -4,8 +4,8 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/generic/stringValidation"
 )
 
 type DummyStructForInclude struct {
@@ -36,7 +36,7 @@ func validateRoleNameAPI(w http.ResponseWriter, r *http.Request) {
 	roleName := r.FormValue("roleName")
 	log.Printf("Role Name: %v", roleName)
 
-	if generic.WellFormedItemName(roleName) {
+	if stringValidation.WellFormedItemName(roleName) {
 		response := true
 		api.WriteJSONResponse(w, response)
 		return

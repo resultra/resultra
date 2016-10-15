@@ -2,7 +2,7 @@ package recordFilter
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/stringValidation"
 )
 
 type FilterIDInterface interface {
@@ -61,7 +61,7 @@ type FilterRenameParams struct {
 
 func (updateParams FilterRenameParams) updateProps(filterForUpdate *RecordFilter) error {
 
-	sanitizedName, sanitizeErr := generic.SanitizeName(updateParams.Name)
+	sanitizedName, sanitizeErr := stringValidation.SanitizeName(updateParams.Name)
 	if sanitizeErr != nil {
 		return fmt.Errorf("Update filter name: sanitize name: %v", sanitizeErr)
 	}

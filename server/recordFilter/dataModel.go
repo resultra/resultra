@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
@@ -93,7 +93,7 @@ func genUnusedFilterName(parentTableID string, namePrefix string) (string, error
 
 func newFilter(params NewFilterParams) (*RecordFilter, error) {
 
-	sanitizedName, sanitizeErr := generic.SanitizeName(params.Name)
+	sanitizedName, sanitizeErr := stringValidation.SanitizeName(params.Name)
 	if sanitizeErr != nil {
 		return nil, fmt.Errorf("newFilter (sanitize name): %v", sanitizeErr)
 	}
@@ -150,7 +150,7 @@ type NewFilterWithPrefixParams struct {
 
 func newFilterWithPrefix(params NewFilterWithPrefixParams) (*RecordFilter, error) {
 
-	sanitizedPrefix, sanitizeErr := generic.SanitizeName(params.NamePrefix)
+	sanitizedPrefix, sanitizeErr := stringValidation.SanitizeName(params.NamePrefix)
 	if sanitizeErr != nil {
 		return nil, fmt.Errorf("newFilterWithPrefix: %v", sanitizeErr)
 	}

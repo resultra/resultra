@@ -3,8 +3,8 @@ package userRole
 import (
 	"fmt"
 	"log"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"
 )
@@ -33,7 +33,7 @@ func addDatabaseRole(databaseID string, roleName string) (*DatabaseRole, error) 
 
 	// TODO verify the current user has admin permissions to modify roles
 
-	sanitizedRoleName, sanitizeErr := generic.SanitizeName(roleName)
+	sanitizedRoleName, sanitizeErr := stringValidation.SanitizeName(roleName)
 	if sanitizeErr != nil {
 		return nil, sanitizeErr
 	}
