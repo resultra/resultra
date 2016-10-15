@@ -278,7 +278,6 @@ $(document).ready(function() {
 			initCheckBoxRecordEditBehavior(componentContext,checkBoxObjectRef)
 			initFormComponentViewBehavior($checkBox,
 					checkBoxObjectRef.checkBoxID,initCheckBoxViewProperties)
-			
 		},
 		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			console.log("Init date picker in view form")
@@ -286,9 +285,11 @@ $(document).ready(function() {
 			initFormComponentViewBehavior($datePicker,
 					datePickerObjectRef.datePickerID,initDatePickerViewProperties)
 		},
-		initHtmlEditorFunc: function(componentContext,htmlEditorObjectRef) {
+		initHtmlEditorFunc: function(componentContext,$htmlEditor,htmlEditorObjectRef) {
 			console.log("Init html editor in view form")
 			initHtmlEditorRecordEditBehavior(componentContext,htmlEditorObjectRef)
+			initFormComponentViewBehavior($htmlEditor,
+					htmlEditorObjectRef.htmlEditorID,initHTMLEditorViewProperties)
 		},
 		initImageFunc: function(componentContext,$image,imageObjectRef) {
 			console.log("Init image in view form")

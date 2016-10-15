@@ -13,8 +13,8 @@ import (
 const htmlEditorEntityKind string = "html_editor"
 
 type HtmlEditorProperties struct {
-	FieldID  string                         `json:"fieldID"`
-	Geometry componentLayout.LayoutGeometry `json:"geometry"`
+	ComponentLink common.ComponentLink           `json:"componentLink"`
+	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 type HtmlEditor struct {
@@ -24,10 +24,9 @@ type HtmlEditor struct {
 }
 
 type NewHtmlEditorParams struct {
-	ParentFormID       string                         `json:"parentFormID"`
-	FieldParentTableID string                         `json:"fieldParentTableID"`
-	FieldID            string                         `json:"fieldID"`
-	Geometry           componentLayout.LayoutGeometry `json:"geometry"`
+	ParentFormID  string                         `json:"parentFormID"`
+	ComponentLink common.ComponentLink           `json:"componentLink"`
+	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func validHtmlEditorFieldType(fieldType string) bool {
@@ -44,19 +43,13 @@ func saveNewHtmlEditor(params NewHtmlEditorParams) (*HtmlEditor, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	field, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
-	if fieldErr != nil {
-		return nil, fmt.Errorf("NewImage: Can't create image with field ID = '%v': datastore error=%v",
-			params.FieldID, fieldErr)
-	}
-
-	if !validHtmlEditorFieldType(field.Type) {
-		return nil, fmt.Errorf("saveNewHtmlEditor: Invalid field type: expecting time field, got %v", field.Type)
+	if compLinkErr := common.ValidateComponentLink(params.ComponentLink, validHtmlEditorFieldType); compLinkErr != nil {
+		return nil, fmt.Errorf("saveNewCheckBox: %v", compLinkErr)
 	}
 
 	properties := HtmlEditorProperties{
-		Geometry: params.Geometry,
-		FieldID:  params.FieldID}
+		Geometry:      params.Geometry,
+		ComponentLink: params.ComponentLink}
 
 	newHtmlEditor := HtmlEditor{ParentFormID: params.ParentFormID,
 		HtmlEditorID: uniqueID.GenerateSnowflakeID(),

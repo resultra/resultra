@@ -120,7 +120,7 @@ $(document).ready(function() {
 			var componentIDs = { formID: formID, componentID: datePickerObjectRef.datePickerID }
 			initFormComponentDesignBehavior(componentIDs,datePickerObjectRef,datePickerDesignFormConfig,designFormLayoutConfig)
 		},
-		initHtmlEditorFunc: function(componentContext,htmlEditorObjectRef) {
+		initHtmlEditorFunc: function(componentContext,$htmlEditor,htmlEditorObjectRef) {
 			var componentIDs = { formID: formID, componentID: htmlEditorObjectRef.htmlEditorID }
 			initFormComponentDesignBehavior(componentIDs,htmlEditorObjectRef,htmlEditorDesignFormConfig,designFormLayoutConfig)
 		},

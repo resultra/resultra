@@ -3,7 +3,7 @@ function loadRecordIntoHtmlEditor(htmlEditorElem, recordRef) {
 	console.log("loadRecordIntoHtmlEditor: loading record into html editor: " + JSON.stringify(recordRef))
 	
 	var htmlEditorObjectRef = htmlEditorElem.data("objectRef")
-	var htmlEditorFieldID = htmlEditorObjectRef.properties.fieldID
+	
 	
 	console.log("loadRecordIntoHtmlEditor: Field ID to load data:" + htmlEditorFieldID)
 
@@ -17,18 +17,28 @@ function loadRecordIntoHtmlEditor(htmlEditorElem, recordRef) {
 	var editor = $('#'+htmlEditorContainerID).data("htmlEditor")
 
 
-	// Populate the "intersection" of field values in the record
-	// with the fields shown by the layout's containers.
-	if(recordRef.fieldValues.hasOwnProperty(htmlEditorFieldID)) {
+	var componentLink = htmlEditorObjectRef.properties.componentLink
+	
+	if(componentLink.linkedValType == linkedComponentValTypeField) {
+		var htmlEditorFieldID = componentLink.fieldID
+		// Populate the "intersection" of field values in the record
+		// with the fields shown by the layout's containers.
+		if(recordRef.fieldValues.hasOwnProperty(htmlEditorFieldID)) {
 
-		// If record has a value for the current container's associated field ID.
-		var fieldVal = recordRef.fieldValues[htmlEditorFieldID]		
-		editor.setData(fieldVal)
+			// If record has a value for the current container's associated field ID.
+			var fieldVal = recordRef.fieldValues[htmlEditorFieldID]		
+			editor.setData(fieldVal)
 		
+		} else {
+			// There's no value in the current record for this field, so clear the value in the container
+			editor.setData("")
+		}	
 	} else {
-		// There's no value in the current record for this field, so clear the value in the container
-		editor.setData("")
-	}	
+		console.log("Globals not yet supported for HTML editor")
+	}
+	
+
+
 }
 
 
@@ -66,25 +76,35 @@ function initHtmlEditorRecordEditBehavior(componentContext,htmlEditorObjectRef) 
 		
 		currRecordRef = currRecordSet.currRecordRef()
 		
-		var setRecordValParams = { 
-			parentTableID:viewFormContext.tableID,
-			recordID:currRecordRef.recordID, 
-			fieldID:objectRef.properties.fieldID, 
-			value:inputVal }
-		
-		console.log("Setting date value: " + JSON.stringify(setRecordValParams))
-		
-		jsonAPIRequest("recordUpdate/setLongTextFieldValue",setRecordValParams,function(updatedRecordRef) {
+		var componentLink = objectRef.properties.componentLink
+	
+		if(componentLink.linkedValType == linkedComponentValTypeField) {
 			
-			// After updating the record, the local cache of records in currentRecordSet will
-			// be out of date. So after updating the record on the server, the locally cached
-			// version of the record also needs to be updated.
-			currRecordSet.updateRecordRef(updatedRecordRef)
-			// After changing the value, some of the calculated fields may have changed. For this
-			// reason, it is necessary to reload the record into the layout/form, so the most
-			// up to date values will be displayed.
-			loadCurrRecordIntoLayout()
-		}) // set record's text field value
+			var htmlEditorFieldID = componentLink.fieldID
+			
+			var setRecordValParams = { 
+				parentTableID:viewFormContext.tableID,
+				recordID:currRecordRef.recordID, 
+				fieldID:htmlEditorFieldID, 
+				value:inputVal }
+		
+			console.log("Setting date value: " + JSON.stringify(setRecordValParams))
+		
+			jsonAPIRequest("recordUpdate/setLongTextFieldValue",setRecordValParams,function(updatedRecordRef) {
+			
+				// After updating the record, the local cache of records in currentRecordSet will
+				// be out of date. So after updating the record on the server, the locally cached
+				// version of the record also needs to be updated.
+				currRecordSet.updateRecordRef(updatedRecordRef)
+				// After changing the value, some of the calculated fields may have changed. For this
+				// reason, it is necessary to reload the record into the layout/form, so the most
+				// up to date values will be displayed.
+				loadCurrRecordIntoLayout()
+			}) // set record's text field value
+		} else {
+			console.log("HTML editor global values not yet supported")
+		}
+		
 		
 	});	
 	

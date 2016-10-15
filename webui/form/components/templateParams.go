@@ -3,7 +3,7 @@ package components
 import (
 	"resultra/datasheet/webui/form/components/checkBox"
 	"resultra/datasheet/webui/form/components/datePicker"
-	//	"resultra/datasheet/webui/form/components/htmlEditor"
+	"resultra/datasheet/webui/form/components/htmlEditor"
 	"resultra/datasheet/webui/form/components/image"
 	"resultra/datasheet/webui/form/components/textBox"
 )
@@ -13,6 +13,7 @@ type ComponentViewTemplateParams struct {
 	DatePickerParams datePicker.DatePickerViewTemplateParams
 	TextBoxParams    textBox.TextboxViewTemplateParams
 	ImageParams      image.ImageViewTemplateParams
+	HTMLEditorParams htmlEditor.HTMLEditorViewTemplateParams
 }
 
 //var DesignTemplateParams ComponentDesignTemplateParams
@@ -24,6 +25,7 @@ func init() {
 		CheckBoxParams:   checkBox.ViewTemplateParams,
 		DatePickerParams: datePicker.ViewTemplateParams,
 		TextBoxParams:    textBox.ViewTemplateParams,
-		ImageParams:      image.ViewTemplateParams}
+		ImageParams:      image.ViewTemplateParams,
+		HTMLEditorParams: htmlEditor.ViewTemplateParams}
 
 }

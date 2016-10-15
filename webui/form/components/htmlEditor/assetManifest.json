@@ -3,12 +3,14 @@
         "htmlEditor.css"
     ], 
     "htmlFiles": [
-        "properties.html"
+        "properties.html",
+		"viewProperties.html"
     ], 
     "jsFiles": [
         "containerHTML.js", 
         "newHtmlEditorDialog.js", 
-        "properties.js", 
+        "properties.js",
+		"viewProperties.js",
         "designFormConfig.js", 
         "viewFormConfig.js"
     ],

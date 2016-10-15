@@ -169,8 +169,18 @@ function loadFormComponents(loadFormConfig) {
 			var containerObj = $(containerHTML)
 			
 			// Set the label to the field name
-			var fieldName = getFieldRef(htmlEditor.properties.fieldID).name
-			containerObj.find('label').text(fieldName)
+			var componentLink = htmlEditor.properties.componentLink
+			
+			var componentLabel
+			if(componentLink.linkedValType == linkedComponentValTypeField) {
+				// Set the label to the field name.
+				componentLabel = getFieldRef(componentLink.fieldID).name
+			} else {
+				var globalInfo = componentContext.globalsByID[componentLink.globalID]
+				componentLabel = globalInfo.name
+			}
+				
+			containerObj.find('label').text(componentLabel)
 			
 			// Position the object withing the #layoutCanvas div
 			$componentRow.append(containerObj)
@@ -181,7 +191,7 @@ function loadFormComponents(loadFormConfig) {
 			setElemObjectRef(htmlEditor.htmlEditorID,htmlEditor)
 			
 			// Callback for any specific initialization for either the form design or view mode
-			loadFormConfig.initHtmlEditorFunc(componentContext,htmlEditor)
+			loadFormConfig.initHtmlEditorFunc(componentContext,containerObj,htmlEditor)
 		}
 		
 		function initImageEditorLayout($componentRow,image) {

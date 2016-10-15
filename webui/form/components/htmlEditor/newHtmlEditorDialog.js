@@ -7,11 +7,19 @@ function openNewHtmlEditorDialog(databaseID,formID,parentTableID,containerParams
 		jsonAPIRequest("frm/htmlEditor/new",newComponentParams,function(newHtmlEditorObjectRef) {
 	          console.log("saveNewHtmlEditor: Done getting new ID:response=" + JSON.stringify(newHtmlEditorObjectRef));
 		  
-			  var fieldName = getFieldRef(newHtmlEditorObjectRef.properties.fieldID).name
+
+	  		  var componentLink = newHtmlEditorObjectRef.properties.componentLink
+
+			  var componentLabel
+			  if(componentLink.linkedValType == linkedComponentValTypeField) {
+				  componentLabel = getFieldRef(componentLink.fieldID).name;
+			  } else {
+			  	componentLabel = "Global Value"
+			  }
 			  
 			  var placeholderSelector = '#'+containerParams.containerID
 			  
-			  $(placeholderSelector).find('label').text(fieldName)
+			  $(placeholderSelector).find('label').text(componentLabel)
 			  $(placeholderSelector).attr("id",newHtmlEditorObjectRef.htmlEditorID)
 		  
 			  // Set up the newly created editor for resize, selection, etc.
@@ -33,6 +41,7 @@ function openNewHtmlEditorDialog(databaseID,formID,parentTableID,containerParams
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeLongText],
+		globalTypes: [],
 		containerParams: containerParams,
 		createNewFormComponent: createNewHtmlEditor
 	}
