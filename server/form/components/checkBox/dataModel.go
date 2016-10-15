@@ -110,6 +110,7 @@ func updateExistingCheckBox(updatedCheckBox *CheckBox) (*CheckBox, error) {
 
 	if updateErr := common.UpdateFormComponent(checkBoxEntityKind, updatedCheckBox.ParentFormID,
 		updatedCheckBox.CheckBoxID, updatedCheckBox.Properties); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingCheckBox: failure updating checkbox: %v", updateErr)
 	}
 	return updatedCheckBox, nil
 

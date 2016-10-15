@@ -1,7 +1,7 @@
 
 function initHeaderTextProperties(headerRef) {
 	
-//	$('#headerTextNameInput').val(headerRef.properties.label)
+	$('#headerTextNameInput').val(headerRef.properties.label)
 	
 	var $headerLabelForm = $('#headerTextPropertyPanelForm')
 	
@@ -25,17 +25,24 @@ function initHeaderTextProperties(headerRef) {
 	
 	
 	initInlineInputValidationOnBlur(validator,'#headerTextNameInput',
-			remoteValidationParams, function(validatedName) {
+		remoteValidationParams, function(validatedName) {
+			
+			console.log("Header label changed: " + validatedName)
+			
+			var setLabelParams = {
+				parentFormID: headerRef.parentFormID,
+				headerID: headerRef.headerID,
+				label: validatedName
+			}
+			
+			jsonAPIRequest("frm/header/setLabel",setLabelParams,function(updatedHeader) {
+				console.log("Done changing header label: " + validatedName)
 				
-				console.log("Header label changed: " + validatedName)
-				
-				var setLabelParams = {
-					label: validatedName
-				}
-				
-//				jsonAPIRequest("frm/setName",{formID:formInfo.formID,newFormName:validatedName},function(formInfo) {
-//					console.log("Done changing header label: " + validatedName)
-//				})		
+				setElemObjectRef(updatedHeader.headerID,updatedHeader)	
+				var $header = $('#'+updatedHeader.headerID)
+				$header.find(".formHeader").text(updatedHeader.properties.label)
+					
+			})		
 	})
 		
 

@@ -53,6 +53,21 @@ func saveNewHeader(params NewHeaderParams) (*Header, error) {
 
 }
 
+func getHeader(parentFormID string, headerID string) (*Header, error) {
+
+	headerProps := HeaderProperties{}
+	if getErr := common.GetFormComponent(headerEntityKind, parentFormID, headerID, &headerProps); getErr != nil {
+		return nil, fmt.Errorf("getHeader: Unable to retrieve header: %v", getErr)
+	}
+
+	header := Header{
+		ParentFormID: parentFormID,
+		HeaderID:     headerID,
+		Properties:   headerProps}
+
+	return &header, nil
+}
+
 func GetHeaders(parentFormID string) ([]Header, error) {
 
 	headers := []Header{}
@@ -76,5 +91,15 @@ func GetHeaders(parentFormID string) ([]Header, error) {
 	}
 
 	return headers, nil
+
+}
+
+func updateExistingHeader(updatedHeader *Header) (*Header, error) {
+
+	if updateErr := common.UpdateFormComponent(headerEntityKind, updatedHeader.ParentFormID,
+		updatedHeader.HeaderID, updatedHeader.Properties); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingHeader: failure updating header: %v", updateErr)
+	}
+	return updatedHeader, nil
 
 }

@@ -111,6 +111,7 @@ func updateExistingDatePicker(datePickerID string, updatedDatePicker *DatePicker
 
 	if updateErr := common.UpdateFormComponent(datePickerEntityKind, updatedDatePicker.ParentFormID,
 		updatedDatePicker.DatePickerID, updatedDatePicker.Properties); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingDatePicker: error updating existing date picker: %v", updateErr)
 	}
 
 	return updatedDatePicker, nil

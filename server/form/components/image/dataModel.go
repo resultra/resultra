@@ -111,6 +111,7 @@ func updateExistingImage(imageID string, updatedImage *Image) (*Image, error) {
 
 	if updateErr := common.UpdateFormComponent(imageEntityKind, updatedImage.ParentFormID,
 		updatedImage.ImageID, updatedImage.Properties); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingImage: error updating existing image component: %v", updateErr)
 	}
 
 	return updatedImage, nil

@@ -112,6 +112,7 @@ func updateExistingHtmlEditor(htmlEditorID string, updatedHtmlEditor *HtmlEditor
 
 	if updateErr := common.UpdateFormComponent(htmlEditorEntityKind, updatedHtmlEditor.ParentFormID,
 		updatedHtmlEditor.HtmlEditorID, updatedHtmlEditor.Properties); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingHtmlEditor: error updating existing date editor: %v", updateErr)
 	}
 
 	return updatedHtmlEditor, nil

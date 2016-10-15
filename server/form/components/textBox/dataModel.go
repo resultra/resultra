@@ -113,6 +113,7 @@ func updateExistingTextBox(textBoxID string, updatedTextBox *TextBox) (*TextBox,
 
 	if updateErr := common.UpdateFormComponent(textBoxEntityKind, updatedTextBox.ParentFormID,
 		updatedTextBox.TextBoxID, updatedTextBox.Properties); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingTextBox: error updating existing text box component: %v", updateErr)
 	}
 
 	return updatedTextBox, nil
