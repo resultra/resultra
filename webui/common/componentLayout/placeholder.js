@@ -131,9 +131,23 @@ function handleDropOnComponentLayoutPlaceholder(currMouseOffset,layoutDesignConf
 	
 	var $parentLayout = $(layoutDesignConfig.parentLayoutSelector)
 	
+	function saveUpdatedLayout() {
+		
+		// There's a delay between the time the DOM is updated in this thread and when those 
+		// changes are fully reflected in the DOM (see http://stackoverflow.com/questions/16876394/dom-refresh-on-long-running-function)
+		// To accommodate this, the layout is pruned and saved after a small delay.
+		setTimeout(function() {
+			pruneComponentLayoutEmptyColsAndRows($parentLayout)
+			var updatedLayout = getComponentLayout($parentLayout)
+			layoutDesignConfig.saveLayoutFunc(updatedLayout)
+		 },20);
+		
+	}
+	
 	var $newRowPlaceholder = findPlaceholderUnderMousePosition(".newComponentRowPlaceholder",currMouseOffset)
 	if ($newRowPlaceholder !== null) {
 		console.log("handleDropOnComponentLayoutPlaceholder: dropping on new row")
+		
 		$newRow = createComponentRowNoInsert($parentLayout)
 		$newCol = createComponentColNoInsert()
 		$newCol.append($component)
@@ -141,9 +155,7 @@ function handleDropOnComponentLayoutPlaceholder(currMouseOffset,layoutDesignConf
 		$newRow.insertAfter($newRowPlaceholder)
 		hideAllComponentLayoutPlaceholders()
 		
-		pruneComponentLayoutEmptyColsAndRows($parentLayout)
-		var updatedLayout = getComponentLayout($parentLayout)
-		layoutDesignConfig.saveLayoutFunc(updatedLayout)
+		saveUpdatedLayout()
 		
 		dropCompleteFunc($component)
 		return
@@ -152,14 +164,13 @@ function handleDropOnComponentLayoutPlaceholder(currMouseOffset,layoutDesignConf
 	var $newColPlaceholder = findPlaceholderUnderMousePosition(".newComponentColumnPlaceholder",currMouseOffset)
 	if ($newColPlaceholder !== null) {
 		console.log("handleDropOnComponentLayoutPlaceholder: dropping on new column")
+		
 		$newCol = createComponentColNoInsert()
 		$newCol.append($component)
 		$newCol.insertAfter($newColPlaceholder)
 		hideAllComponentLayoutPlaceholders()
 		
-		pruneComponentLayoutEmptyColsAndRows($parentLayout)
-		var updatedLayout = getComponentLayout($parentLayout)
-		layoutDesignConfig.saveLayoutFunc(updatedLayout)
+		saveUpdatedLayout()
 		
 		dropCompleteFunc($component)
 		return		
@@ -168,12 +179,11 @@ function handleDropOnComponentLayoutPlaceholder(currMouseOffset,layoutDesignConf
 	var $colPlacementPlaceholder = findPlaceholderUnderMousePosition(".componentColumnPlacementPlaceholder",currMouseOffset)
 	if ($colPlacementPlaceholder !== null) {
 		console.log("handleDropOnComponentLayoutPlaceholder: dropping on different column placement")
+		
 		$component.insertAfter($colPlacementPlaceholder)
 		hideAllComponentLayoutPlaceholders()
 		
-		pruneComponentLayoutEmptyColsAndRows($parentLayout)
-		var updatedLayout = getComponentLayout($parentLayout)
-		layoutDesignConfig.saveLayoutFunc(updatedLayout)
+		saveUpdatedLayout()
 				
 		dropCompleteFunc($component)
 		return		
