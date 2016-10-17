@@ -1,0 +1,14 @@
+
+{{define "timelineCommentBox"}}
+	<form id="timelineCommentForm">
+		<textarea class="form-control timelineCommentBox" rows="2" id="{{.}}TimelineCommentText"></textarea>
+		<button class="btn btn-primary btn-sm" type="submit" id="{{.}}TimelineCommentAddButton">Add Comment</button>
+	</form>
+	
+{{end}}
+
+{{define "timelinePane"}}
+	
+	{{template "timelineCommentBox" .}}
+
+{{end}}
