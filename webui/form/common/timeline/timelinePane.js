@@ -9,8 +9,13 @@ function initFormComponentTimelinePane(timelineParams) {
 	$(commentTextSelector).val("")
 	
 	function populateOneTimelineComment(comment) {
+		
+		var formattedCreateDate = moment(comment.createTimestamp).calendar()
 
-		var commentHTML =  '<div class="list-group-item">' + escapeHTML(comment.comment) + '</div>';		
+		var commentHTML =  '<div class="list-group-item">' +
+			'<div><small>' + formattedCreateDate + '</small></div>' +
+			'<div>' + escapeHTML(comment.comment) + '</div>' +
+		'</div>';		
 		
 		$(timelineListSelector).prepend(commentHTML)
 	}
