@@ -1,14 +1,22 @@
 
 {{define "timelineCommentBox"}}
-	<form id="timelineCommentForm">
-		<textarea class="form-control timelineCommentBox" rows="2" id="{{.}}TimelineCommentText"></textarea>
-		<button class="btn btn-primary btn-sm" type="submit" id="{{.}}TimelineCommentAddButton">Add Comment</button>
+	<form id="{{.}}TimelineCommentForm">
+		<div class="form-group">
+			<textarea class="form-control timelineCommentBox" rows="2" id="{{.}}TimelineCommentText"></textarea>
+			<button class="btn btn-primary btn-sm" type="submit" id="{{.}}TimelineCommentAddButton">Add Comment</button>
+		</div>
 	</form>
+{{end}}
+
+{{define "timelineList"}}
+	<div class="list-group" id="{{.}}TimelineList">
+	</div>	
 	
 {{end}}
 
 {{define "timelinePane"}}
 	
 	{{template "timelineCommentBox" .}}
+	{{template "timelineList" .}}
 
 {{end}}

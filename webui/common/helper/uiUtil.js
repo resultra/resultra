@@ -103,3 +103,19 @@ function insertTextAreaAtCursor(elem, newText) {
   elem[0].selectionStart = elem[0].selectionEnd = selStart + newText.length
   elem.focus()
 }
+
+
+var escapeHTMLEntityMap = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': '&quot;',
+  "'": '&#39;',
+  "/": '&#x2F;'
+};
+
+function escapeHTML(string) {
+  return String(string).replace(/[&<>"'\/]/g, function (s) {
+    return escapeHTMLEntityMap[s];
+  });
+}

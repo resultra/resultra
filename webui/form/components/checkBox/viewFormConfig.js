@@ -85,7 +85,7 @@ function initCheckBoxFieldEditBehavior(componentContext,checkBoxObjectRef) {
 			
 			var isChecked = $(this).prop("checked")
 		
-			currRecordRef = currRecordSet.currRecordRef()
+			var currRecordRef = currRecordSet.currRecordRef()
 			var setRecordValParams = {
 				parentTableID:viewFormContext.tableID,
 				recordID:currRecordRef.recordID, 
