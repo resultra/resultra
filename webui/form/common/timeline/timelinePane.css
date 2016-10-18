@@ -2,3 +2,7 @@
 	resize:vertical;
 	margin-bottom: 5px;
 }
+
+.formTimelineComment {
+	white-space:pre-wrap;
+}

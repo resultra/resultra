@@ -14,7 +14,7 @@ function initFormComponentTimelinePane(timelineParams) {
 
 		var commentHTML =  '<div class="list-group-item">' +
 			'<div><small>' + formattedCreateDate + '</small></div>' +
-			'<div>' + escapeHTML(comment.comment) + '</div>' +
+			'<div class="formTimelineComment">' + escapeHTML(comment.comment) + '</div>' +
 		'</div>';		
 		
 		$(timelineListSelector).prepend(commentHTML)
