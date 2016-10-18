@@ -46,3 +46,12 @@ function initObjectSelectionBehavior(objectElem, canvasElemSelector,objectSelect
 	})
 	
 }
+
+// Re-triggers the selection of any currently selected object. If the same layout is loaded with different data, this
+// is used to re-initialize any selection-dependent behavior for the new data.
+function reselectCurrentObjectSelection() {
+	
+	$(".objectSelected").each(function() {
+		$(this).trigger("click")		
+	})	
+}

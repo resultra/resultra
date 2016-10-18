@@ -34,11 +34,17 @@ function loadCurrRecordIntoLayout()
 			// function is called on each of these objects to perform per form object record initialization.
 			var viewFormConfig = $(this).data("viewFormConfig")
 			viewFormConfig.loadRecord($(this),recordRef)
+			
 	
 		}) // for each container in the layout
 	
 		// Update footer to reflect where the current record is in list of currently loaded records
 		$('#recordNumLabel').text(currRecordSet.recPageLabel())
+		
+		// If the record changed, and one of the form components is already loaded, it needs to be 
+		// re-selected so the sidebar can be re-initialized with any settings specific to this 
+		// record.
+		reselectCurrentObjectSelection()
 		
 	} // if current record != null
 }
