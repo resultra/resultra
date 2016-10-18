@@ -4,16 +4,15 @@ function initCheckBoxViewProperties(checkboxRef) {
 	var elemPrefix = "checkbox_"
 	var componentLink = checkboxRef.properties.componentLink
 	var currRecordRef = currRecordSet.currRecordRef()	
-		
-	if(componentLink.linkedValType == linkedComponentValTypeField) {
-		var timelineParams = {
-			elemPrefix: elemPrefix,
-			recordID: currRecordRef.recordID,
-			fieldID: componentLink.fieldID
-		}
-	
-		initFormComponentTimelinePane(timelineParams)
+
+	var timelineParams = {
+		elemPrefix: elemPrefix,
+		recordID: currRecordRef.recordID,
+		componentLink: componentLink
 	}
+	initFormComponentTimelinePane(timelineParams)
+
+		
 	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#checkBoxViewProps')

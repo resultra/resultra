@@ -23,9 +23,9 @@ function initFormComponentTimelinePane(timelineParams) {
 	function initTimelineWithComments() {
 		
 		$(timelineListSelector).empty()
-		if(timelineParams.hasOwnProperty("fieldID")) {
+		if(timelineParams.componentLink.linkedValType == linkedComponentValTypeField) {
 			var getCommentParams = {
-				fieldID: timelineParams.fieldID,
+				fieldID: timelineParams.componentLink.fieldID,
 				recordID:timelineParams.recordID }
 			jsonAPIRequest("timeline/getFieldComments", getCommentParams, function(comments) {
 				for (var commentIndex = 0; commentIndex < comments.length; commentIndex++) {
@@ -44,9 +44,9 @@ function initFormComponentTimelinePane(timelineParams) {
 		console.log("Add comment button clicked: comment= " + $(commentTextSelector).val())
 		$(commentTextSelector).val("")
 		
-		if(timelineParams.hasOwnProperty("fieldID")) {
+		if(timelineParams.componentLink.linkedValType == linkedComponentValTypeField) {
 			var saveCommentParams = {
-				fieldID: timelineParams.fieldID,
+				fieldID: timelineParams.componentLink.fieldID,
 				recordID:timelineParams.recordID, 
 				comment: commentText,
 			}
