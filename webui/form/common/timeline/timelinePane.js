@@ -10,10 +10,15 @@ function initFormComponentTimelinePane(timelineParams) {
 	
 	function populateOneTimelineComment(comment) {
 		
-		var formattedCreateDate = moment(comment.createTimestamp).calendar()
+		var formattedUserName = "@" + comment.UserName
+		if(comment.isCurrentUser) {
+				formattedUserName = formattedUserName + ' (you)'
+		}
+		
+		var formattedCreateDate = moment(comment.commentDate).calendar()
 
 		var commentHTML =  '<div class="list-group-item">' +
-			'<div><small>' + formattedCreateDate + '</small></div>' +
+			'<div><small>' + formattedUserName  + ' - ' + formattedCreateDate + '</small></div>' +
 			'<div class="formTimelineComment">' + escapeHTML(comment.comment) + '</div>' +
 		'</div>';		
 		

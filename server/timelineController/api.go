@@ -27,7 +27,7 @@ func saveFieldCommentAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newComment, err := saveFieldComment(r, params)
+	newComment, err := saveTimelineComment(r, params)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
@@ -38,13 +38,13 @@ func saveFieldCommentAPI(w http.ResponseWriter, r *http.Request) {
 
 func getFieldCommentsAPI(w http.ResponseWriter, r *http.Request) {
 
-	params := GetFieldCommentsParams{}
+	params := GetFieldRecordCommentInfoParams{}
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	comments, err := GetFieldComments(params)
+	comments, err := getFieldRecordTimelineCommentInfo(r, params)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {

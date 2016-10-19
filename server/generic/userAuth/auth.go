@@ -80,7 +80,7 @@ func GetCurrentUserInfo(req *http.Request) (*UserInfo, error) {
 		return nil, fmt.Errorf("GetCurrentUserInfo: Can't get session value for user (user not signed in)")
 	}
 
-	return getUserInfoByID(userID)
+	return GetUserInfoByID(userID)
 
 }
 

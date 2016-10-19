@@ -111,7 +111,7 @@ func getUser(emailAddr string) (*User, *AuthResponse) {
 	return &user, newAuthResponse(true, "Successfully retrieved user information")
 }
 
-func getUserInfoByID(userID string) (*UserInfo, error) {
+func GetUserInfoByID(userID string) (*UserInfo, error) {
 
 	var userInfo UserInfo
 	userInfo.UserID = userID
