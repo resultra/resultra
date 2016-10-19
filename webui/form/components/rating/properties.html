@@ -1,0 +1,13 @@
+{{define "ratingFormatProps"}}
+	Rating formatting properties go here
+{{end}}
+
+{{define "ratingProps"}}
+
+	<div id="ratingProps" class="propertyPanelToggleContainer">
+		{{template "propertyPanelPrefix" .FormatPanelParams}}
+			{{template "ratingFormatProps"}}
+		{{template "propertyPanelSuffix"}}
+	</div>
+
+{{end}}

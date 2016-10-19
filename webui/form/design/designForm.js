@@ -5,7 +5,8 @@ var paletteItemsEditConfig = {
 	paletteItemDatePicker: datePickerDesignFormConfig,
 	paletteItemHtmlEditor: htmlEditorDesignFormConfig,
 	paletteItemImage: imageDesignFormConfig,
-	paletteItemHeader: formHeaderDesignFormConfig
+	paletteItemHeader: formHeaderDesignFormConfig,
+	paletteItemRating: ratingDesignFormConfig
 }
 
 var formDesignCanvasSelector = "#layoutCanvas"
@@ -115,6 +116,10 @@ $(document).ready(function() {
 		initCheckBoxFunc: function(componentContext,$checkBox,checkBoxObjectRef) {
 			var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
 			initFormComponentDesignBehavior(componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig,designFormLayoutConfig)
+		},
+		initRatingFunc: function(componentContext,$rating,ratingObjectRef) {
+			var componentIDs = { formID: formID, componentID: ratingObjectRef.ratingID }
+			initFormComponentDesignBehavior(componentIDs,ratingObjectRef,ratingDesignFormConfig,designFormLayoutConfig)
 		},
 		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			var componentIDs = { formID: formID, componentID: datePickerObjectRef.datePickerID }

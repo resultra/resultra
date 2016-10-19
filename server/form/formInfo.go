@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/form/components/header"
 	"resultra/datasheet/server/form/components/htmlEditor"
 	"resultra/datasheet/server/form/components/image"
+	"resultra/datasheet/server/form/components/rating"
 	"resultra/datasheet/server/form/components/textBox"
 )
 
@@ -15,6 +16,7 @@ type FormInfo struct {
 	CheckBoxes  []checkBox.CheckBox     `json:"checkBoxes"`
 	DatePickers []datePicker.DatePicker `json:"datePickers"`
 	HtmlEditors []htmlEditor.HtmlEditor `json:"htmlEditors"`
+	Ratings     []rating.Rating         `json:"ratings"`
 	Images      []image.Image           `json:"images"`
 	Headers     []header.Header         `json:"headers"`
 }
@@ -60,6 +62,11 @@ func getFormInfo(params GetFormInfoParams) (*FormInfo, error) {
 		return nil, err
 	}
 
+	ratings, err := rating.GetRatings(params.FormID)
+	if err != nil {
+		return nil, err
+	}
+
 	formInfo := FormInfo{
 		Form:        *form,
 		TextBoxes:   textBoxes,
@@ -67,7 +74,8 @@ func getFormInfo(params GetFormInfoParams) (*FormInfo, error) {
 		DatePickers: datePickers,
 		HtmlEditors: htmlEditors,
 		Images:      images,
-		Headers:     headers}
+		Headers:     headers,
+		Ratings:     ratings}
 
 	return &formInfo, nil
 }

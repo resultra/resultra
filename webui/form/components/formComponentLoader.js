@@ -132,6 +132,39 @@ function loadFormComponents(loadFormConfig) {
 			// Callback for any specific initialization for either the form design or view mode 
 			loadFormConfig.initCheckBoxFunc(componentContext,containerObj,checkBox)
 		}
+
+		function initRatingLayout($componentRow,rating) {
+			// Create an HTML block for the container
+			
+			var containerHTML = ratingContainerHTML(rating.ratingID);
+			var containerObj = $(containerHTML)
+			
+			var componentLink = rating.properties.componentLink
+			
+			var componentLabel
+			if(componentLink.linkedValType == linkedComponentValTypeField) {
+				// Set the label to the field name. A span element is used, since
+				// the checkbox itself is nested inside a label.
+				componentLabel = getFieldRef(componentLink.fieldID).name
+			} else {
+				var globalInfo = componentContext.globalsByID[componentLink.globalID]
+				componentLabel = globalInfo.name
+			}
+			
+			containerObj.find('span').text(componentLabel)
+			
+			// Position the object withing the #layoutCanvas div
+			$componentRow.append(containerObj)
+			setElemDimensions(containerObj,rating.properties.geometry)
+			
+			 // Store the newly created object reference in the DOM element. This is needed for follow-on
+			 // property setting, resizing, etc.
+			setElemObjectRef(rating.ratingID,rating)
+			
+			// Callback for any specific initialization for either the form design or view mode 
+			loadFormConfig.initRatingFunc(componentContext,containerObj,rating)
+		}
+
 		
 		function initDatePickerLayout($componentRow,datePicker) {
 			// Create an HTML block for the container			
@@ -252,6 +285,16 @@ function loadFormComponents(loadFormConfig) {
 				initFunc: initCheckBoxLayout
 			}		
 		}
+
+		for (var ratingIter in formInfo.ratings) {
+			var ratingProps = formInfo.ratings[ratingIter]
+			console.log("loadFormComponents: initializing rating: " + JSON.stringify(ratingProps))
+			compenentIDComponentMap[ratingProps.ratingID] = {
+				componentInfo: ratingProps,
+				initFunc: initRatingLayout
+			}		
+		}
+
 
 		for (var headerIter in formInfo.headers) {
 			var headerProps = formInfo.headers[headerIter]

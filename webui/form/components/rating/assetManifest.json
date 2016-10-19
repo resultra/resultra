@@ -1,0 +1,14 @@
+{
+    "cssFiles": [], 
+    "htmlFiles": ["properties.html",
+		"viewProperties.html"], 
+    "jsFiles": ["newRatingDialog.js",
+		"properties.js",
+		"containerHTML.js",
+		"designFormConfig.js",
+		"viewProperties.js",
+		"viewFormConfig.js"
+    ],
+	"imageFiles":[],
+    "subDirs": []
+}

@@ -7,6 +7,7 @@ import (
 	"resultra/datasheet/webui/form/components/header"
 	"resultra/datasheet/webui/form/components/htmlEditor"
 	"resultra/datasheet/webui/form/components/image"
+	"resultra/datasheet/webui/form/components/rating"
 	"resultra/datasheet/webui/form/components/textBox"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -31,6 +32,7 @@ type DesignFormTemplateParams struct {
 	TextBoxParams    textBox.TextboxDesignTemplateParams
 	HtmlEditorParams htmlEditor.HTMLEditorDesignTemplateParams
 	ImageParams      image.ImageDesignTemplateParams
+	RatingParams     rating.RatingDesignTemplateParams
 	HeaderParams     header.HeaderTemplateParams
 	FormParams       FormTemplateParams
 }
@@ -58,6 +60,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		TextBoxParams:    textBox.DesignTemplateParams,
 		HtmlEditorParams: htmlEditor.DesignTemplateParams,
 		ImageParams:      image.DesignTemplateParams,
+		RatingParams:     rating.DesignTemplateParams,
 		HeaderParams:     header.TemplateParams,
 		FormParams:       formParams}
 

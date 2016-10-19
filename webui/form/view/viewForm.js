@@ -285,6 +285,12 @@ $(document).ready(function() {
 			initFormComponentViewBehavior($checkBox,
 					checkBoxObjectRef.checkBoxID,initCheckBoxViewProperties)
 		},
+		initRatingFunc: function(componentContext,$rating,ratingObjectRef) {
+			console.log("Init rating in view form")
+			initRatingRecordEditBehavior(componentContext,ratingObjectRef)
+			initFormComponentViewBehavior($rating,
+					ratingObjectRef.ratingID,initRatingViewProperties)
+		},
 		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			console.log("Init date picker in view form")
 			initDatePickerRecordEditBehavior(componentContext,datePickerObjectRef)
