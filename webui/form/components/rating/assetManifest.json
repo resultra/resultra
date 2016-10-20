@@ -1,5 +1,5 @@
 {
-    "cssFiles": [], 
+    "cssFiles": ["rating.css"], 
     "htmlFiles": ["properties.html",
 		"viewProperties.html"], 
     "jsFiles": ["newRatingDialog.js",
