@@ -118,6 +118,7 @@ $(document).ready(function() {
 			initFormComponentDesignBehavior(componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig,designFormLayoutConfig)
 		},
 		initRatingFunc: function(componentContext,$rating,ratingObjectRef) {
+			initRatingDesignControlBehavior(ratingObjectRef)
 			var componentIDs = { formID: formID, componentID: ratingObjectRef.ratingID }
 			initFormComponentDesignBehavior(componentIDs,ratingObjectRef,ratingDesignFormConfig,designFormLayoutConfig)
 		},

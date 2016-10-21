@@ -157,12 +157,7 @@ function loadFormComponents(loadFormConfig) {
 			// Position the object withing the #layoutCanvas div
 			$componentRow.append(containerObj)
 			setElemDimensions(containerObj,rating.properties.geometry)
-	
-			var ratingControlSelector = '#' + ratingControlIDFromElemID(rating.ratingID)
-	
-			$(ratingControlSelector).rating()
-	
-			
+		
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
 			setElemObjectRef(rating.ratingID,rating)

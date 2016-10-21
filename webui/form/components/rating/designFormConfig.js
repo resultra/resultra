@@ -1,4 +1,12 @@
 
+function initRatingDesignControlBehavior(ratingObjectRef) {
+	var ratingControlSelector = '#' + ratingControlIDFromElemID(ratingObjectRef.ratingID)
+
+	$(ratingControlSelector).rating()
+	
+}
+
+
 function initDesignFormRating() {
 	initNewRatingDialog()
 }
