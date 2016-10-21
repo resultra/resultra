@@ -152,7 +152,7 @@ function loadFormComponents(loadFormConfig) {
 				componentLabel = globalInfo.name
 			}
 			
-			containerObj.find('span').text(componentLabel)
+			containerObj.find('label').text(componentLabel)
 			
 			// Position the object withing the #layoutCanvas div
 			$componentRow.append(containerObj)

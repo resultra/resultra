@@ -29,6 +29,7 @@ function resizeTextBox(textBoxID,geometry) {
 
 var textBoxDesignFormConfig = {
 	draggableHTMLFunc:	textBoxContainerHTML,
+	startPaletteDrag: function(placeholderID) {},
 	createNewItemAfterDropFunc: openNewTextBoxDialog,
 	resizeConstraints: elemResizeConstraints(100,600,400,400),
 	resizeFunc: resizeTextBox,

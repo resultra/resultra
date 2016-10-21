@@ -27,9 +27,15 @@ function resizeRating(ratingID,geometry) {
 	})	
 }
 
+function startRatingPaletteDrag(placeholderID) {
+	var ratingControlSelector = '#'+ratingControlIDFromElemID(placeholderID)
+	$(ratingControlSelector).rating()
+}
+
 
 var ratingDesignFormConfig = {
 	draggableHTMLFunc:	ratingContainerHTML,
+	startPaletteDrag: startRatingPaletteDrag,
 	createNewItemAfterDropFunc: openNewRatingDialog,
 	resizeConstraints: elemResizeConstraints(100,640,30,30),
 	resizeFunc: resizeRating,

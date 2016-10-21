@@ -14,6 +14,9 @@ function ratingContainerHTML(elementID)
 				'<input type="hidden" id="'+controlID+'"/>' + // Rating control from Bootstrap Rating plugin
 			'</div>' +
 		'</div><';
+		
+//	var controlSelector = '#' + ratingControlIDFromElemID(elementID)
+//	$(controlSelector).rating()
 								
 	return containerHTML
 }

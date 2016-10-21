@@ -29,6 +29,7 @@ function resizeDatePicker(datePickerID,geometry) {
 
 var datePickerDesignFormConfig = {
 	draggableHTMLFunc:	datePickerContainerHTML,
+	startPaletteDrag: function(placeholderID) {},
 	createNewItemAfterDropFunc: openNewDatePickerDialog,
 	resizeConstraints: elemResizeConstraints(100,640,30,30),
 	resizeFunc: resizeDatePicker,

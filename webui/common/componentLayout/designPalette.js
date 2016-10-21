@@ -50,6 +50,18 @@ function initDesignPalette(paletteConfig,layoutDesignConfig) {
 			 return $placeholder
 		 },
 		 
+		 start: function(event,ui) {
+		 	console.log("drag start")
+			 
+			 var placeholderID = $(ui.helper).attr('id')
+			 var paletteItemID = $(this).attr('id')
+			 
+			 // The startPaletteDrag function is called so any dynamic Javascript initialization
+			 // which needs to take place after the helper has been added can take place.
+			 paletteConfig.startPaletteDrag(placeholderID,paletteItemID)
+			 
+		 },
+		 
  		drag: function(e,ui) {			
  			var mouseOffset = { 
  				top: e.pageY, 
