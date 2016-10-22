@@ -68,6 +68,15 @@ function initSelectionRecordEditBehavior(componentContext,selectionObjectRef) {
 	$selectionControl.append(selectOptionHTML("3","Three"))
 	$selectionControl.append(selectOptionHTML("4","Four"))
 	
+	// When the user clicks on the control, prevent the click from propagating higher.
+	// This allows the user to change the rating without selecting the form component itself.
+	// The user can still select the component by clicking on the label or anywwhere outside
+	// the control.
+	container.find(".selectionFormControl").click(function (event){
+		event.stopPropagation();
+		return false;
+	});
+
 
 
 	var componentLink = selectionObjectRef.properties.componentLink

@@ -17,7 +17,7 @@ function selectFormSelection (selectionRef) {
 function resizeSelection(selectionID,geometry) {
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
-		textBoxID: selectionID,
+		selectionID: selectionID,
 		geometry: geometry
 	}
 	
@@ -34,5 +34,5 @@ var selectionDesignFormConfig = {
 	resizeConstraints: elemResizeConstraints(100,600,400,400),
 	resizeFunc: resizeSelection,
 	initFunc: initDesignFormSelection,
-	selectionFunc: selectFormTextBox
+	selectionFunc: selectFormSelection
 }

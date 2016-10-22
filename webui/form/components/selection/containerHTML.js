@@ -11,7 +11,9 @@ function selectionContainerHTML(elementID)
 		'<div class="ui-widget-content layoutContainer selectionFormComponent" id="'+elementID+'">' +
 			'<div class="form-group">'+
 				'<label for="' + controlID + '">Selection</label>'+
-				'<select class="form-control" id="' + controlID + '"></select>'+
+				'<div class="selectionFormControl">' + 
+					'<select class="form-control" id="' + controlID + '"></select>' +
+				'</div>' +
 			'</div>'+
 		'</div>';
 	return containerHTML

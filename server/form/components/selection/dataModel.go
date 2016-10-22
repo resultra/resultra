@@ -113,7 +113,7 @@ func updateExistingSelection(selectionID string, updatedSelection *Selection) (*
 
 	if updateErr := common.UpdateFormComponent(selectionEntityKind, updatedSelection.ParentFormID,
 		updatedSelection.SelectionID, updatedSelection.Properties); updateErr != nil {
-		return nil, fmt.Errorf("updateExistingSelection: error updating existing text box component: %v", updateErr)
+		return nil, fmt.Errorf("updateExistingSelection: error updating existing selection component: %v", updateErr)
 	}
 
 	return updatedSelection, nil
