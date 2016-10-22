@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/webui/form/components/htmlEditor"
 	"resultra/datasheet/webui/form/components/image"
 	"resultra/datasheet/webui/form/components/rating"
+	"resultra/datasheet/webui/form/components/selection"
 	"resultra/datasheet/webui/form/components/textBox"
 )
 
@@ -28,5 +29,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, textBox.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, header.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, rating.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, selection.TemplateFileList...)
 
 }

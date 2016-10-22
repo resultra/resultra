@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/webui/form/components/htmlEditor"
 	"resultra/datasheet/webui/form/components/image"
 	"resultra/datasheet/webui/form/components/rating"
+	"resultra/datasheet/webui/form/components/selection"
 	"resultra/datasheet/webui/form/components/textBox"
 )
 
@@ -16,6 +17,7 @@ type ComponentViewTemplateParams struct {
 	ImageParams      image.ImageViewTemplateParams
 	HTMLEditorParams htmlEditor.HTMLEditorViewTemplateParams
 	RatingParams     rating.RatingViewTemplateParams
+	SelectionParams  selection.SelectionViewTemplateParams
 }
 
 //var DesignTemplateParams ComponentDesignTemplateParams
@@ -29,6 +31,7 @@ func init() {
 		TextBoxParams:    textBox.ViewTemplateParams,
 		ImageParams:      image.ViewTemplateParams,
 		HTMLEditorParams: htmlEditor.ViewTemplateParams,
-		RatingParams:     rating.ViewTemplateParams}
+		RatingParams:     rating.ViewTemplateParams,
+		SelectionParams:  selection.ViewTemplateParams}
 
 }

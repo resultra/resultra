@@ -76,7 +76,7 @@ function initTextBoxFieldEditBehavior(container, textFieldObjectRef) {
 		    + " ,fieldType: " + fieldType
 			+ " , inputval:" + inputVal)
 	
-		currRecordRef = currRecordSet.currRecordRef()
+		var currRecordRef = currRecordSet.currRecordRef()
 		if(currRecordRef != null) {
 		
 			// Only update the value if it has changed. Sometimes a user may focus on or tab

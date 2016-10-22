@@ -279,6 +279,11 @@ $(document).ready(function() {
 			initFormComponentViewBehavior($textBox,
 					textBoxObjectRef.textBoxID,initTextBoxViewProperties)
 		},
+		initSelectionFunc: function(componentContext,$selection,selectionObjectRef) {			
+			initSelectionRecordEditBehavior(componentContext,selectionObjectRef)
+			initFormComponentViewBehavior($selection,
+					selectionObjectRef.selectionID,initSelectionViewProperties)
+		},
 		initCheckBoxFunc: function(componentContext,$checkBox,checkBoxObjectRef) {
 			console.log("Init check box in view form")
 			initCheckBoxRecordEditBehavior(componentContext,checkBoxObjectRef)

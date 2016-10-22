@@ -7,6 +7,7 @@ import (
 	"resultra/datasheet/server/form/components/htmlEditor"
 	"resultra/datasheet/server/form/components/image"
 	"resultra/datasheet/server/form/components/rating"
+	"resultra/datasheet/server/form/components/selection"
 	"resultra/datasheet/server/form/components/textBox"
 )
 
@@ -19,6 +20,7 @@ type FormInfo struct {
 	Ratings     []rating.Rating         `json:"ratings"`
 	Images      []image.Image           `json:"images"`
 	Headers     []header.Header         `json:"headers"`
+	Selections  []selection.Selection   `json:"selections"`
 }
 
 type GetFormInfoParams struct {
@@ -67,6 +69,11 @@ func getFormInfo(params GetFormInfoParams) (*FormInfo, error) {
 		return nil, err
 	}
 
+	selections, err := selection.GetSelections(params.FormID)
+	if err != nil {
+		return nil, err
+	}
+
 	formInfo := FormInfo{
 		Form:        *form,
 		TextBoxes:   textBoxes,
@@ -75,7 +82,8 @@ func getFormInfo(params GetFormInfoParams) (*FormInfo, error) {
 		HtmlEditors: htmlEditors,
 		Images:      images,
 		Headers:     headers,
-		Ratings:     ratings}
+		Ratings:     ratings,
+		Selections:  selections}
 
 	return &formInfo, nil
 }

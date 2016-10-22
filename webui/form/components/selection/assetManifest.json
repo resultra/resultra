@@ -1,0 +1,16 @@
+{
+    "cssFiles": ["selection.css"], 
+    "htmlFiles": [
+        "properties.html",
+		"viewProperties.html"
+    ], 
+    "jsFiles": [
+        "containerHTML.js", 
+        "newSelectionDialog.js", 
+        "properties.js", 
+        "designFormConfig.js",
+		"viewProperties.js",
+        "viewFormConfig.js"
+    ],
+	"imageFiles":[]
+}

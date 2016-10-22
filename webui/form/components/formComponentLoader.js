@@ -101,6 +101,46 @@ function loadFormComponents(loadFormConfig) {
 			
 		}
 
+		function initSelectionLayout($componentRow,selection) {
+			// Create an HTML block for the container
+			console.log("loadFormComponents: initializing text box: " + JSON.stringify(selection))
+		
+			var containerHTML = selectionContainerHTML(selection.selectionID);
+			var containerObj = $(containerHTML)
+			
+			function setSelectionLabel($selectionContainer,label) {
+				$selectionContainer.find('label').text(label)
+			}
+		
+			var componentLink = selection.properties.componentLink
+		
+			if(componentLink.linkedValType == linkedComponentValTypeField) {
+				// text box is linked to a field type
+				// Set the label to the field name
+				var fieldName = getFieldRef(componentLink.fieldID).name
+				setSelectionLabel(containerObj,fieldName)
+			} else {
+				// text box is linked to a global
+				var globalInfo = componentContext.globalsByID[componentLink.globalID]
+				var globalName = globalInfo.name
+				setSelectionLabel(containerObj,globalName)
+			}
+		
+			$componentRow.append(containerObj)
+			
+			setElemDimensions(containerObj,selection.properties.geometry)
+		
+			 // Store the newly created object reference in the DOM element. This is needed for follow-on
+			 // property setting, resizing, etc.
+			setElemObjectRef(selection.selectionID,selection)
+		
+			// Callback for any specific initialization for either the form design or view mode
+			loadFormConfig.initSelectionFunc(componentContext,containerObj,selection)
+			
+		}
+
+
+
 		function initCheckBoxLayout($componentRow,checkBox) {
 			// Create an HTML block for the container
 			
@@ -277,6 +317,18 @@ function loadFormComponents(loadFormConfig) {
 			}			
 
 		} // for each text box
+
+
+		for (var selectionIter in formInfo.selections) {			
+			var selectionProps = formInfo.selections[selectionIter]			
+			console.log("Form layout: selection component info=" + JSON.stringify(selectionProps))
+			compenentIDComponentMap[selectionProps.selectionID] = {
+				componentInfo: selectionProps,
+				initFunc: initSelectionLayout
+			}			
+
+		} // for each selection
+
 	
 		for (var checkBoxIter in formInfo.checkBoxes) {
 			var checkBoxProps = formInfo.checkBoxes[checkBoxIter]
