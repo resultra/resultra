@@ -2,9 +2,18 @@
 	Selection formatting properties go here
 {{end}}
 
+{{define "selectionValuesProps"}}
+	Selection values properties go here
+{{end}}
+
+
 {{define "selectionProps"}}
 
 	<div id="selectionProps" class="propertyPanelToggleContainer">
+		{{template "propertyPanelPrefix" .ValuesPanelParams}}
+			{{template "selectionValuesProps"}}
+		{{template "propertyPanelSuffix"}}
+		
 		{{template "propertyPanelPrefix" .FormatPanelParams}}
 			{{template "selectionFormatProps"}}
 		{{template "propertyPanelSuffix"}}

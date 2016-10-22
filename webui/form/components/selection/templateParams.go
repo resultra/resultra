@@ -8,6 +8,7 @@ import (
 type SelectionDesignTemplateParams struct {
 	ElemPrefix               string
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
+	ValuesPanelParams        propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 }
 
@@ -24,8 +25,11 @@ func init() {
 	elemPrefix := "selection_"
 
 	DesignTemplateParams = SelectionDesignTemplateParams{
-		ElemPrefix:        elemPrefix,
+		ElemPrefix: elemPrefix,
+
 		FormatPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "selectionFormat"},
+		ValuesPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Selectable Values", PanelID: "selectionValues"},
+
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
 			DialogTitle: "New Selection",
