@@ -63,10 +63,10 @@ function initSelectionRecordEditBehavior(componentContext,selectionObjectRef) {
 	var selectionControlSelector = '#' + selectionFormControlID(selectionObjectRef.selectionID)
 	var $selectionControl = $(selectionControlSelector)
 	$selectionControl.append(defaultSelectOptionPromptHTML("Select a Value"))
-	$selectionControl.append(selectOptionHTML("1","One"))
-	$selectionControl.append(selectOptionHTML("2","Two"))
-	$selectionControl.append(selectOptionHTML("3","Three"))
-	$selectionControl.append(selectOptionHTML("4","Four"))
+	for(var selValIndex = 0; selValIndex < selectionObjectRef.properties.selectableVals.length; selValIndex++) {
+		var selectableVal = selectionObjectRef.properties.selectableVals[selValIndex]	
+		$selectionControl.append(selectOptionHTML(selectableVal.val,selectableVal.label))
+	}
 	
 	// When the user clicks on the control, prevent the click from propagating higher.
 	// This allows the user to change the rating without selecting the form component itself.

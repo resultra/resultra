@@ -2,11 +2,13 @@
     "cssFiles": ["selection.css"], 
     "htmlFiles": [
         "properties.html",
+		"selectableValues.html",
 		"viewProperties.html"
     ], 
     "jsFiles": [
         "containerHTML.js", 
-        "newSelectionDialog.js", 
+        "newSelectionDialog.js",
+		"selectableValues.js",
         "properties.js", 
         "designFormConfig.js",
 		"viewProperties.js",

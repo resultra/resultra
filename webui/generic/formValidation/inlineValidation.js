@@ -31,10 +31,6 @@ function createInlineFormValidationSettings(specificRules) {
 	return settings
 }
 
-
-
-
-
 function initInlineInputValidationOnBlur(validator, inputSelector,
 				remoteValidationParams, validationSucceedFunc) {
 	

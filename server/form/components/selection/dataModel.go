@@ -12,13 +12,19 @@ import (
 
 const selectionEntityKind string = "selection"
 
+type SelectionSelectableVal struct {
+	Val   string `json:"val"`
+	Label string `json:"label"`
+}
+
 type SelectionProperties struct {
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
+	ComponentLink  common.ComponentLink           `json:"componentLink"`
+	Geometry       componentLayout.LayoutGeometry `json:"geometry"`
+	SelectableVals []SelectionSelectableVal       `json:"selectableVals"`
 }
 
 type Selection struct {
-	ParentFormID string              `json:"parentID"`
+	ParentFormID string              `json:"parentFormID"`
 	SelectionID  string              `json:"selectionID"`
 	Properties   SelectionProperties `json:"properties"`
 }

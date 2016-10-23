@@ -37,12 +37,12 @@ func updateSelectionProps(propUpdater SelectionPropUpdater) (*Selection, error) 
 	}
 
 	if propUpdateErr := propUpdater.updateProps(selectionForUpdate); propUpdateErr != nil {
-		return nil, fmt.Errorf("UpdateSelectionProps: Unable to update existing text box properties: %v", propUpdateErr)
+		return nil, fmt.Errorf("UpdateSelectionProps: Unable to update existing selection properties: %v", propUpdateErr)
 	}
 
 	selection, updateErr := updateExistingSelection(propUpdater.getSelectionID(), selectionForUpdate)
 	if updateErr != nil {
-		return nil, fmt.Errorf("UpdateSelectionProps: Unable to update existing text box properties: datastore update error =  %v", updateErr)
+		return nil, fmt.Errorf("UpdateSelectionProps: Unable to update existing selection properties: datastore update error =  %v", updateErr)
 	}
 
 	return selection, nil
@@ -60,6 +60,18 @@ func (updateParams SelectionResizeParams) updateProps(selection *Selection) erro
 	}
 
 	selection.Properties.Geometry = updateParams.Geometry
+
+	return nil
+}
+
+type SelectionSelectableValsParams struct {
+	SelectionIDHeader
+	SelectableVals []SelectionSelectableVal `json:"selectableVals"`
+}
+
+func (updateParams SelectionSelectableValsParams) updateProps(selection *Selection) error {
+
+	selection.Properties.SelectableVals = updateParams.SelectableVals
 
 	return nil
 }
