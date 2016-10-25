@@ -8,6 +8,7 @@ function initHTMLEditorViewProperties(htmlEditorRef) {
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
+		tableID: viewFormContext.tableID,
 		recordID: currRecordRef.recordID,
 		componentLink: componentLink
 	}

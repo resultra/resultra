@@ -3,85 +3,78 @@ package timelineController
 import (
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/generic/userAuth"
+	//	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/record"
+	"sort"
 	"time"
 )
 
-type TimelineCommentInfo struct {
-	UserName      string    `json:"UserName"`
-	IsCurrentUser bool      `json:"isCurrentUser"`
-	CommentID     string    `json:"commentID"`
-	Comment       string    `json:"comment"`
-	CommentDate   time.Time `json:"commentDate"`
+type FieldTimelineInfo struct {
+	UpdateTime         time.Time                          `json:"updateTime"`
+	CommentInfo        *TimelineCommentInfo               `json:"commentInfo,omitempty"`
+	FieldValChangeInfo *record.FieldValTimelineChangeInfo `json:"fieldValChangeInfo,omitempty"`
 }
 
-type GetFieldRecordCommentInfoParams struct {
-	RecordID string `json:"recordID"`
-	FieldID  string `json:"fieldID"`
+// Custom sort function for the FieldValTimelineChangeInfo
+type ByFieldTimelineInfoUpdateTime []FieldTimelineInfo
+
+func (s ByFieldTimelineInfoUpdateTime) Len() int {
+	return len(s)
+}
+func (s ByFieldTimelineInfoUpdateTime) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
 }
 
-func newTimelineCommentInfo(currUserID string, comment FieldComment) (*TimelineCommentInfo, error) {
-
-	isCurrentUser := false
-	if currUserID == comment.UserID {
-		isCurrentUser = true
-	}
-
-	commentUserInfo, err := userAuth.GetUserInfoByID(comment.UserID)
-	if err != nil {
-		return nil, fmt.Errorf("getFieldRecordTimelineCommentInfo: %v", err)
-	}
-
-	commentInfo := TimelineCommentInfo{
-		UserName:      commentUserInfo.UserName,
-		IsCurrentUser: isCurrentUser,
-		CommentID:     comment.CommentID,
-		Comment:       comment.Comment,
-		CommentDate:   comment.CreateTimestamp}
-
-	return &commentInfo, nil
-
+// Sort in reverse chronological order; i.e. the most recent dates come first.
+func (s ByFieldTimelineInfoUpdateTime) Less(i, j int) bool {
+	return s[i].UpdateTime.After(s[j].UpdateTime)
 }
 
-func saveTimelineComment(req *http.Request, params SaveFieldCommentParams) (*TimelineCommentInfo, error) {
-	newComment, err := saveFieldComment(req, params)
-	if err != nil {
-		return nil, fmt.Errorf("saveTimelineComment: %v", err)
-	}
-	currUserID, err := userAuth.GetCurrentUserID(req)
-	if err != nil {
-		return nil, fmt.Errorf("saveTimelineComment: %v", err)
-	}
-
-	return newTimelineCommentInfo(currUserID, *newComment)
+type GetFieldTimelineInfoParams struct {
+	ParentTableID string `json:"parentTableID"`
+	RecordID      string `json:"recordID"`
+	FieldID       string `json:"fieldID"`
 }
 
-func getFieldRecordTimelineCommentInfo(req *http.Request, params GetFieldRecordCommentInfoParams) ([]TimelineCommentInfo, error) {
+func getFieldTimelineInfo(req *http.Request, params GetFieldTimelineInfoParams) ([]FieldTimelineInfo, error) {
 
-	currUserID, err := userAuth.GetCurrentUserID(req)
-	if err != nil {
-		return nil, fmt.Errorf("getFieldRecordTimelineCommentInfo: %v", err)
-	}
-
-	commentParams := GetFieldCommentsParams{
+	commentParams := GetFieldRecordCommentInfoParams{
 		RecordID: params.RecordID,
 		FieldID:  params.FieldID}
-	comments, commentErr := GetFieldComments(commentParams)
-	if commentErr != nil {
-		return nil, fmt.Errorf("getFieldRecordTimelineCommentInfo: %v", commentErr)
+	timelineComments, err := getFieldRecordTimelineCommentInfo(req, commentParams)
+	if err != nil {
+		return nil, fmt.Errorf("getFieldTimelineInfo: Error retrieving timeline comments: %+v, error = %v", params, err)
 	}
 
-	timelineCommentsInfo := []TimelineCommentInfo{}
-	for _, currComment := range comments {
+	timelineInfoItems := []FieldTimelineInfo{}
 
-		commentInfo, err := newTimelineCommentInfo(currUserID, currComment)
-		if err != nil {
-			return nil, fmt.Errorf("getFieldRecordTimelineCommentInfo: %v", err)
-		}
+	for _, currComment := range timelineComments {
 
-		timelineCommentsInfo = append(timelineCommentsInfo, *commentInfo)
+		comment := currComment
+
+		timelineInfo := FieldTimelineInfo{
+			UpdateTime:  comment.CommentDate,
+			CommentInfo: &comment}
+		timelineInfoItems = append(timelineInfoItems, timelineInfo)
 	}
 
-	return timelineCommentsInfo, nil
+	fieldValTimelineChanges, err := record.GetFieldValUpdateTimelineInfo(params.ParentTableID,
+		params.RecordID, params.FieldID)
+	if err != nil {
+		return nil, fmt.Errorf("getFieldTimelineInfo: Error retrieving timeline field value changes: %+v, error = %v", params, err)
+	}
 
+	for _, currFieldValChange := range fieldValTimelineChanges {
+
+		valChange := currFieldValChange
+
+		timelineInfo := FieldTimelineInfo{
+			UpdateTime:         valChange.UpdateTimeStamp,
+			FieldValChangeInfo: &valChange}
+		timelineInfoItems = append(timelineInfoItems, timelineInfo)
+	}
+
+	sort.Sort(ByFieldTimelineInfoUpdateTime(timelineInfoItems))
+
+	return timelineInfoItems, nil
 }

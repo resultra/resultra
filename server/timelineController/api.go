@@ -15,6 +15,7 @@ func init() {
 
 	timelineRouter.HandleFunc("/api/timeline/saveFieldComment", saveFieldCommentAPI)
 	timelineRouter.HandleFunc("/api/timeline/getFieldComments", getFieldCommentsAPI)
+	timelineRouter.HandleFunc("/api/timeline/getTimelineInfo", getFieldTimelineInfoAPI)
 
 	http.Handle("/api/timeline/", timelineRouter)
 }
@@ -49,6 +50,23 @@ func getFieldCommentsAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, comments)
+	}
+
+}
+
+func getFieldTimelineInfoAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetFieldTimelineInfoParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	timelineInfo, err := getFieldTimelineInfo(r, params)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, timelineInfo)
 	}
 
 }

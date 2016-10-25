@@ -62,3 +62,28 @@ func GetRecordCellUpdates(parentTableID string, recordID string) ([]CellUpdate, 
 
 	return cellUpdates, nil
 }
+
+// GetCellUpdates retrieves a list of cell updates for all the fields in the given record.
+func GetRecordFieldCellUpdates(parentTableID string, recordID string, fieldID string) ([]CellUpdate, error) {
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT field_id, update_timestamp_utc, value
+			FROM cell_updates
+			WHERE table_id=$1 and record_id=$2 and field_id=$3`,
+		parentTableID, recordID, fieldID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetRecordCellUpdates: Failure querying database: %v", queryErr)
+	}
+	cellUpdates := []CellUpdate{}
+	for rows.Next() {
+		var currCellUpdate CellUpdate
+		if scanErr := rows.Scan(&currCellUpdate.FieldID,
+			&currCellUpdate.UpdateTimeStamp,
+			&currCellUpdate.CellValue); scanErr != nil {
+			return nil, fmt.Errorf("getTableList: Failure querying database: %v", scanErr)
+
+		}
+		cellUpdates = append(cellUpdates, currCellUpdate)
+	}
+
+	return cellUpdates, nil
+}
