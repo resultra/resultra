@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/record"
 )
 
@@ -51,6 +52,12 @@ func setTextFieldValue(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteErrorResponse(w, userErr)
+		return
+	}
+	setValParams.UserID = currUserID
 
 	updatedRecordRef, setErr := updateRecordValue(setValParams)
 	if setErr != nil {
@@ -70,6 +77,12 @@ func setLongTextFieldValue(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteErrorResponse(w, userErr)
+		return
+	}
+	setValParams.UserID = currUserID
 
 	updatedRecordRef, setErr := updateRecordValue(setValParams)
 	if setErr != nil {
@@ -88,6 +101,12 @@ func setNumberFieldValue(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteErrorResponse(w, userErr)
+		return
+	}
+	setValParams.UserID = currUserID
 
 	updatedRecordRef, setErr := updateRecordValue(setValParams)
 	if setErr != nil {
@@ -106,6 +125,12 @@ func setBoolFieldValue(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteErrorResponse(w, userErr)
+		return
+	}
+	setValParams.UserID = currUserID
 
 	updatedRecordRef, setErr := updateRecordValue(setValParams)
 	if setErr != nil {
@@ -124,6 +149,12 @@ func setTimeFieldValue(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteErrorResponse(w, userErr)
+		return
+	}
+	setValParams.UserID = currUserID
 
 	updatedRecordRef, setErr := updateRecordValue(setValParams)
 	if setErr != nil {

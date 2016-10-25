@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/cloudStorageWrapper"
+	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordValue"
 )
@@ -38,12 +39,18 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 	// Generate an URL for the newly saved file
 	fileURL := record.GetFileURL(cloudFileName)
 
+	currUserID, userErr := userAuth.GetCurrentUserID(req)
+	if userErr != nil {
+		return nil, fmt.Errorf("saveFieldComment: can't get current user user: %v", userErr)
+	}
+
 	// setRecordFileNameFieldValue. Although the parameters for a record update with a filename aren't passed through the http request,
 	// the standard record updating mechanism can be used to update the field with the filename.
 	updateRecordHeader := record.RecordUpdateHeader{
 		ParentTableID: req.FormValue("parentTableID"),
 		RecordID:      req.FormValue("recordID"),
-		FieldID:       req.FormValue("fieldID")}
+		FieldID:       req.FormValue("fieldID"),
+		UserID:        currUserID}
 	updateRecordParams := record.SetRecordFileValueParams{
 		RecordUpdateHeader: updateRecordHeader,
 		OrigFileName:       uploadInfo.FileName,

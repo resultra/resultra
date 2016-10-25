@@ -9,6 +9,7 @@ type RecordUpdater interface {
 	fieldID() string
 	recordID() string
 	parentTableID() string
+	userID() string
 	generateCellValue() (string, error)
 }
 
@@ -19,6 +20,7 @@ type RecordUpdateHeader struct {
 	ParentTableID string `json:"parentTableID"`
 	RecordID      string `json:"recordID"`
 	FieldID       string `json:"fieldID"`
+	UserID        string // filled in by API client based upon current login credentials
 }
 
 func (recUpdateHeader RecordUpdateHeader) fieldID() string {
@@ -31,6 +33,10 @@ func (recUpdateHeader RecordUpdateHeader) recordID() string {
 
 func (recUpdateHeader RecordUpdateHeader) parentTableID() string {
 	return recUpdateHeader.ParentTableID
+}
+
+func (recUpdateHeader RecordUpdateHeader) userID() string {
+	return recUpdateHeader.UserID
 }
 
 // updateRecordValue implements a generic algorithm (strategy design pattern) which wrapp the updating of records.
@@ -59,7 +65,11 @@ func UpdateRecordValue(recUpdater RecordUpdater) (*Record, error) {
 	if cellErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Error generating value for cell update: %v", cellErr)
 	}
-	cellUpdate := NewCellUpdate(recUpdater.parentTableID(), recUpdater.fieldID(), recUpdater.recordID(), cellValue)
+	cellUpdate := NewCellUpdate(recUpdater.userID(),
+		recUpdater.parentTableID(),
+		recUpdater.fieldID(),
+		recUpdater.recordID(),
+		cellValue)
 	if saveErr := SaveCellUpdate(cellUpdate); saveErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Error saving cell update: %v", saveErr)
 	}
