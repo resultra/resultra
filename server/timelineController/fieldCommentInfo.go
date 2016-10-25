@@ -8,7 +8,7 @@ import (
 )
 
 type TimelineCommentInfo struct {
-	UserName      string    `json:"UserName"`
+	UserName      string    `json:"userName"`
 	IsCurrentUser bool      `json:"isCurrentUser"`
 	CommentID     string    `json:"commentID"`
 	Comment       string    `json:"comment"`

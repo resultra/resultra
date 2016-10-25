@@ -27,7 +27,10 @@ function initFormComponentTimelinePane(timelineParams) {
 	
 	function createOneTimelineFieldValChange(fieldValChange) {
 		
-		var formattedUserName = "@" + "TBD"
+		var formattedUserName = "@" + fieldValChange.userName
+		if(fieldValChange.isCurrentUser) {
+				formattedUserName = formattedUserName + ' (you)'			
+		}
 		
 		var formattedCreateDate = moment(fieldValChange.updateTime).calendar()
 

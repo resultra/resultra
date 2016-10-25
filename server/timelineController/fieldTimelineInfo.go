@@ -3,7 +3,7 @@ package timelineController
 import (
 	"fmt"
 	"net/http"
-	//	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/record"
 	"sort"
 	"time"
@@ -36,6 +36,32 @@ type GetFieldTimelineInfoParams struct {
 	FieldID       string `json:"fieldID"`
 }
 
+type FieldValChangeTimelineInfo struct {
+}
+
+func newFieldValChangeTimelineInfo(currUserID string, comment FieldComment) (*TimelineCommentInfo, error) {
+
+	isCurrentUser := false
+	if currUserID == comment.UserID {
+		isCurrentUser = true
+	}
+
+	commentUserInfo, err := userAuth.GetUserInfoByID(comment.UserID)
+	if err != nil {
+		return nil, fmt.Errorf("getFieldRecordTimelineCommentInfo: %v", err)
+	}
+
+	commentInfo := TimelineCommentInfo{
+		UserName:      commentUserInfo.UserName,
+		IsCurrentUser: isCurrentUser,
+		CommentID:     comment.CommentID,
+		Comment:       comment.Comment,
+		CommentDate:   comment.CreateTimestamp}
+
+	return &commentInfo, nil
+
+}
+
 func getFieldTimelineInfo(req *http.Request, params GetFieldTimelineInfoParams) ([]FieldTimelineInfo, error) {
 
 	commentParams := GetFieldRecordCommentInfoParams{
@@ -58,7 +84,12 @@ func getFieldTimelineInfo(req *http.Request, params GetFieldTimelineInfoParams) 
 		timelineInfoItems = append(timelineInfoItems, timelineInfo)
 	}
 
-	fieldValTimelineChanges, err := record.GetFieldValUpdateTimelineInfo(params.ParentTableID,
+	currUserID, err := userAuth.GetCurrentUserID(req)
+	if err != nil {
+		return nil, fmt.Errorf("getFieldTimelineInfo: %v", err)
+	}
+
+	fieldValTimelineChanges, err := record.GetFieldValUpdateTimelineInfo(currUserID, params.ParentTableID,
 		params.RecordID, params.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("getFieldTimelineInfo: Error retrieving timeline field value changes: %+v, error = %v", params, err)
