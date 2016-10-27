@@ -54,5 +54,9 @@ function initUserListSettings(databaseID) {
 		
 	})
 	
+	initButtonClickHandler('#addUserButton',function() {
+		console.log("Add new user button clicked")
+		openNewUserDialog(databaseID)
+	})
 
 }
