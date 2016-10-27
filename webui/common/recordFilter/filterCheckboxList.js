@@ -27,6 +27,7 @@ function getFilterCheckboxListSelectedFilterIDs(listSelector) {
 	
 	var selectedFilterIDs = []
 	
+	// TODO - Is this selector too generic?
 	var checkboxSelector = listSelector + " input[type=checkbox]:checked"
 	
 	$(checkboxSelector).each(function() {

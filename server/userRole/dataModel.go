@@ -56,6 +56,38 @@ func addDatabaseRole(databaseID string, roleName string) (*DatabaseRole, error) 
 
 }
 
+type DatabaseRoleInfo struct {
+	RoleID   string `json:"roleID"`
+	RoleName string `json:"roleName"`
+}
+
+type DatabaseRolesParams struct {
+	DatabaseID string `json:"databaseID"`
+}
+
+func getDatabaseRoles(databaseID string) ([]DatabaseRoleInfo, error) {
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT role_id, name FROM database_roles
+				WHERE database_id=$1`, databaseID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetDatabaseRoles: Failure querying database: %v", queryErr)
+	}
+
+	rolesInfo := []DatabaseRoleInfo{}
+	for rows.Next() {
+
+		currRoleInfo := DatabaseRoleInfo{}
+		if scanErr := rows.Scan(&currRoleInfo.RoleID, &currRoleInfo.RoleName); scanErr != nil {
+			return nil, fmt.Errorf("GetDatabaseRoles: Failure querying database: %v", scanErr)
+		}
+		rolesInfo = append(rolesInfo, currRoleInfo)
+	}
+
+	return rolesInfo, nil
+
+}
+
 type NewDatabaseRoleWithPrivsParams struct {
 	DatabaseID     string            `json:"databaseID"`
 	RoleName       string            `json:"roleName"`
