@@ -2,6 +2,7 @@ package userAuth
 
 import (
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
 )
@@ -15,6 +16,8 @@ func init() {
 	authRouter.HandleFunc("/auth/login", loginUserAPI)
 	authRouter.HandleFunc("/auth/signout", signoutUserAPI)
 	authRouter.HandleFunc("/auth/getUserInfo", getUserInfoAPI)
+
+	authRouter.HandleFunc("/auth/searchUsers", searchUsersAPI)
 
 	http.Handle("/auth/", authRouter)
 }
@@ -57,4 +60,21 @@ func getUserInfoAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	api.WriteJSONResponse(w, userInfo)
+}
+
+func searchUsersAPI(w http.ResponseWriter, r *http.Request) {
+
+	searchTerm := r.FormValue("searchTerm")
+	page := r.FormValue("page")
+
+	log.Printf("Search users: term = %v, page = %v", searchTerm, page)
+
+	results, err := searchUsers(searchTerm)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	api.WriteJSONResponse(w, results)
+
 }
