@@ -48,7 +48,7 @@ function addAdminRoleTableRow(adminUsers) {
 
 	var buttonsHTML = userRoleItemButtonsHTML()
 
-	var privs = "Full Access"
+	var privs = "<strong>Full Access</strong>"
 	
 	var rowHTML = '' +
 		'<tr class="userListRow">' +
