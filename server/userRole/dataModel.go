@@ -301,6 +301,7 @@ func GetCustomRoleDashboardInfo(databaseID string) ([]CustomRoleDashboardInfo, e
 type CustomRoleInfo struct {
 	RoleID         string              `json:"roleID"`
 	RoleName       string              `json:"roleName"`
+	RoleUsers      []userAuth.UserInfo `json:"roleUsers"`
 	FormPrivs      []FormPrivInfo      `json:"formPrivs"`
 	DashboardPrivs []DashboardPrivInfo `json:"dashboardPrivs"`
 }
@@ -309,23 +310,30 @@ func GetCustomRoleInfo(databaseID string) ([]CustomRoleInfo, error) {
 
 	roleInfoMap := map[string]*CustomRoleInfo{}
 
+	getOrAllocRoleInfo := func(roleID string, roleName string) *CustomRoleInfo {
+		var roleInfo *CustomRoleInfo
+		if currRoleInfo, roleInfoFound := roleInfoMap[roleID]; roleInfoFound {
+			roleInfo = currRoleInfo
+		} else {
+			roleInfo = &CustomRoleInfo{
+				RoleID:         roleID,
+				RoleName:       roleName,
+				RoleUsers:      []userAuth.UserInfo{},
+				FormPrivs:      []FormPrivInfo{},
+				DashboardPrivs: []DashboardPrivInfo{}}
+			roleInfoMap[roleID] = roleInfo
+		}
+		return roleInfo
+
+	}
+
 	customFormInfo, formErr := GetCustomRoleFormInfo(databaseID)
 	if formErr != nil {
 		return nil, fmt.Errorf("GetCustomRoleInfo: %v", formErr)
 	}
 	for _, formInfo := range customFormInfo {
 
-		var roleInfo *CustomRoleInfo
-		if currRoleInfo, roleInfoFound := roleInfoMap[formInfo.RoleID]; roleInfoFound {
-			roleInfo = currRoleInfo
-		} else {
-			roleInfo = &CustomRoleInfo{
-				RoleID:         formInfo.RoleID,
-				RoleName:       formInfo.RoleName,
-				FormPrivs:      []FormPrivInfo{},
-				DashboardPrivs: []DashboardPrivInfo{}}
-			roleInfoMap[formInfo.RoleID] = roleInfo
-		}
+		roleInfo := getOrAllocRoleInfo(formInfo.RoleID, formInfo.RoleName)
 		roleInfo.FormPrivs = formInfo.FormPrivs
 	}
 
@@ -335,21 +343,23 @@ func GetCustomRoleInfo(databaseID string) ([]CustomRoleInfo, error) {
 	}
 	for _, dashInfo := range customDashboardInfo {
 
-		var roleInfo *CustomRoleInfo
-		if currRoleInfo, roleInfoFound := roleInfoMap[dashInfo.RoleID]; roleInfoFound {
-			roleInfo = currRoleInfo
-		} else {
-			roleInfo = &CustomRoleInfo{
-				RoleID:         dashInfo.RoleID,
-				RoleName:       dashInfo.RoleName,
-				FormPrivs:      []FormPrivInfo{},
-				DashboardPrivs: []DashboardPrivInfo{}}
-			roleInfoMap[dashInfo.RoleID] = roleInfo
-		}
+		roleInfo := getOrAllocRoleInfo(dashInfo.RoleID, dashInfo.RoleName)
 		roleInfo.DashboardPrivs = dashInfo.DashboardPrivs
 
 	}
 
+	usersRoleInfo, err := GetAllUsersRoleInfo(databaseID)
+	if err != nil {
+		return nil, fmt.Errorf("GetCustomRoleInfo: %v", err)
+	}
+	for _, currUserRoleInfo := range usersRoleInfo {
+		for _, currRoleInfo := range currUserRoleInfo.RoleInfo {
+			roleInfo := getOrAllocRoleInfo(currRoleInfo.RoleID, currRoleInfo.RoleName)
+			roleInfo.RoleUsers = append(roleInfo.RoleUsers, currUserRoleInfo.UserInfo)
+		}
+	}
+
+	// Flatten information from a map to a list
 	customRoleInfo := []CustomRoleInfo{}
 	for _, roleInfo := range roleInfoMap {
 		customRoleInfo = append(customRoleInfo, *roleInfo)
