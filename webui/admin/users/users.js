@@ -21,6 +21,13 @@ function userListTableRowHTML(userRoleInfo) {
 	var roles = ""
 	if(userRoleInfo.isAdmin) {
 		roles = roles + "<strong>Administrator</strong>"
+	} else {
+		var roleNames = []
+		for (var roleIndex = 0; roleIndex < userRoleInfo.customRoles.length; roleIndex++) {
+			var currRoleInfo = userRoleInfo.customRoles[roleIndex]
+			roleNames.push(currRoleInfo.roleName)
+		}
+		roles = roleNames.join(", ")
 	}
 	
 	var userInfo = userRoleInfo.userInfo

@@ -131,7 +131,7 @@ func newDatabaseRoleWithPrivs(params NewDatabaseRoleWithPrivsParams) error {
 	return nil
 }
 
-func addUserRole(roleID string, userID string) error {
+func AddUserRole(roleID string, userID string) error {
 	// TODO verify the current user has permissions to add the user as an admin.
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
@@ -357,4 +357,92 @@ func GetCustomRoleInfo(databaseID string) ([]CustomRoleInfo, error) {
 
 	return customRoleInfo, nil
 
+}
+
+type UserRoleInfo struct {
+	UserInfo userAuth.UserInfo  `json:"userInfo"`
+	RoleInfo []DatabaseRoleInfo `json:"roleInfo"`
+}
+
+func GetUserRoleInfo(databaseID string, userID string) (*UserRoleInfo, error) {
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT user_roles.user_id, database_roles.role_id,database_roles.name
+				FROM database_roles,user_roles
+				WHERE database_roles.database_id=$1
+				   AND database_roles.role_id=user_roles.role_id
+				   AND user_roles.user_id=$2
+				   ORDER BY user_roles.user_id`, databaseID, userID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetUserRoleInfo: Failure querying database: %v", queryErr)
+	}
+
+	userInfo, err := userAuth.GetUserInfoByID(userID)
+	if err != nil {
+		return nil, fmt.Errorf("GetUserRoleInfo: Failure getting user info: userID=%v, error = %v", userID, err)
+	}
+
+	userRoleInfo := UserRoleInfo{UserInfo: *userInfo, RoleInfo: []DatabaseRoleInfo{}}
+
+	for rows.Next() {
+
+		var currUserID string
+		var currRoleInfo DatabaseRoleInfo
+
+		if scanErr := rows.Scan(&currUserID, &currRoleInfo.RoleID, &currRoleInfo.RoleName); scanErr != nil {
+			return nil, fmt.Errorf("GetAllUsersRoleInfo: Failure querying database: %v", scanErr)
+		}
+		userRoleInfo.RoleInfo = append(userRoleInfo.RoleInfo, currRoleInfo)
+	}
+
+	return &userRoleInfo, nil
+
+}
+
+// Aggregate the role information by user.
+func GetAllUsersRoleInfo(databaseID string) ([]UserRoleInfo, error) {
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT user_roles.user_id, database_roles.role_id,database_roles.name
+				FROM database_roles,user_roles
+				WHERE database_roles.database_id=$1
+				   AND database_roles.role_id=user_roles.role_id
+				   ORDER BY user_roles.user_id`, databaseID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetAllUsersRoleInfo: Failure querying database: %v", queryErr)
+	}
+
+	roleInfoByUserID := map[string]*UserRoleInfo{}
+
+	for rows.Next() {
+
+		var currUserID string
+		var currRoleInfo DatabaseRoleInfo
+
+		if scanErr := rows.Scan(&currUserID, &currRoleInfo.RoleID, &currRoleInfo.RoleName); scanErr != nil {
+			return nil, fmt.Errorf("GetAllUsersRoleInfo: Failure querying database: %v", scanErr)
+		}
+
+		var userRoleInfo *UserRoleInfo
+		userRoleInfo, foundInfo := roleInfoByUserID[currUserID]
+		if !foundInfo {
+			userInfo, err := userAuth.GetUserInfoByID(currUserID)
+			if err != nil {
+				return nil, fmt.Errorf("GetAllUsersRoleInfo: Failure getting user info: userID=%v, error = %v", currUserID, err)
+			}
+
+			userRoleInfo = &UserRoleInfo{UserInfo: *userInfo, RoleInfo: []DatabaseRoleInfo{}}
+			roleInfoByUserID[currUserID] = userRoleInfo
+		}
+
+		userRoleInfo.RoleInfo = append(userRoleInfo.RoleInfo, currRoleInfo)
+
+	}
+
+	usersRoleInfo := []UserRoleInfo{}
+	for _, currRoleInfo := range roleInfoByUserID {
+		usersRoleInfo = append(usersRoleInfo, *currRoleInfo)
+	}
+
+	return usersRoleInfo, nil
 }

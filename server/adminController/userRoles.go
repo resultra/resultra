@@ -7,15 +7,10 @@ import (
 	//	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
-type CustomUserRolesInfo struct {
-	RoleID   string `json:"roleID"`
-	RoleName string `json:"roleName"`
-}
-
 type UserRoleInfo struct {
-	UserInfo    userAuth.UserInfo     `json:"userInfo"`
-	IsAdmin     bool                  `json:"isAdmin"`
-	CustomRoles []CustomUserRolesInfo `json:"customRoles"`
+	UserInfo    userAuth.UserInfo           `json:"userInfo"`
+	IsAdmin     bool                        `json:"isAdmin"`
+	CustomRoles []userRole.DatabaseRoleInfo `json:"customRoles"`
 }
 
 type GetUserRolesParams struct {
@@ -34,6 +29,18 @@ func getUserRolesInfo(params GetUserRolesParams) ([]UserRoleInfo, error) {
 	for _, currUserInfo := range adminUserInfo {
 		currAdminInfo := UserRoleInfo{UserInfo: currUserInfo, IsAdmin: true}
 		userRoles = append(userRoles, currAdminInfo)
+	}
+
+	usersRoleInfo, err := userRole.GetAllUsersRoleInfo(params.DatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("getUserRolesInfo: %v", err)
+	}
+	for _, currRoleInfo := range usersRoleInfo {
+		currInfo := UserRoleInfo{
+			UserInfo:    currRoleInfo.UserInfo,
+			IsAdmin:     false,
+			CustomRoles: currRoleInfo.RoleInfo}
+		userRoles = append(userRoles, currInfo)
 	}
 
 	return userRoles, nil

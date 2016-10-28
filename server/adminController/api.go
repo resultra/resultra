@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/userRole"
 	//	"resultra/datasheet/server/generic/userAuth"
 )
 
@@ -16,6 +17,7 @@ func init() {
 
 	adminRouter.HandleFunc("/api/admin/getUserRoleInfo", getUserRoleInfoAPI)
 	adminRouter.HandleFunc("/api/admin/getRoleInfo", getRoleInfoAPI)
+	adminRouter.HandleFunc("/api/admin/addCollaborator", addCollaboratorAPI)
 
 	http.Handle("/api/admin/", adminRouter)
 }
@@ -52,6 +54,27 @@ func getRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *roleInfo)
+	}
+
+}
+
+func addCollaboratorAPI(w http.ResponseWriter, r *http.Request) {
+	var params AddCollaboratorParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if collaboratorUserRoleInfo, err := addCollaborator(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, collaboratorUserRoleInfo)
+
 	}
 
 }

@@ -10,7 +10,7 @@ function initFormComponentTimelinePane(timelineParams) {
 	
 	function createOneTimelineComment(comment) {
 		
-		var formattedUserName = "@" + comment.UserName
+		var formattedUserName = "@" + comment.userName
 		if(comment.isCurrentUser) {
 				formattedUserName = formattedUserName + ' (you)'
 		}

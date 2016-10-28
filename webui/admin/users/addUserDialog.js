@@ -104,24 +104,24 @@ function openNewUserDialog(databaseID) {
 		}
 	});
 	
-	
-
 	initButtonClickHandler('#newUserDialogSaveUserButton',function() {
 		console.log("Add new user save button clicked")
 		if($newUserForm.valid()) {
 			var selectedUserID = $userNameInput.val()
 			var selectedRoleIDs = getRoleListSelectedRoleIDs()
 			
-			var addUserParams = {
+			var addCollabParams = {
+				databaseID: databaseID,
 				userID: selectedUserID,
-				roles: selectedRoleIDs
+				roleIDs: selectedRoleIDs
 			}
-			console.log("Adding new user: " + JSON.stringify(addUserParams))
+			console.log("Adding new collaborator: " + JSON.stringify(addCollabParams))
+			jsonAPIRequest("admin/addCollaborator",addCollabParams,function(collabUserRoleInfo) {
+					console.log("Added new collaborator: " + JSON.stringify(collabUserRoleInfo))
+				$('#userListTableBody').append(userListTableRowHTML(collabUserRoleInfo))
+			})
 			$newUserDialog.modal('hide')
 		}
-//		jsonAPIRequest("global/addUser",newGlobalParams,function(newUserInfo) {
-//			console.log("Add new user: " + JSON.stringify(newUserInfo))
-//		})
 	})
 	
 	
