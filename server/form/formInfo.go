@@ -9,18 +9,20 @@ import (
 	"resultra/datasheet/server/form/components/rating"
 	"resultra/datasheet/server/form/components/selection"
 	"resultra/datasheet/server/form/components/textBox"
+	"resultra/datasheet/server/form/components/userSelection"
 )
 
 type FormInfo struct {
-	Form        Form                    `json:"form"`
-	TextBoxes   []textBox.TextBox       `json:"textBoxes"`
-	CheckBoxes  []checkBox.CheckBox     `json:"checkBoxes"`
-	DatePickers []datePicker.DatePicker `json:"datePickers"`
-	HtmlEditors []htmlEditor.HtmlEditor `json:"htmlEditors"`
-	Ratings     []rating.Rating         `json:"ratings"`
-	Images      []image.Image           `json:"images"`
-	Headers     []header.Header         `json:"headers"`
-	Selections  []selection.Selection   `json:"selections"`
+	Form           Form                          `json:"form"`
+	TextBoxes      []textBox.TextBox             `json:"textBoxes"`
+	CheckBoxes     []checkBox.CheckBox           `json:"checkBoxes"`
+	DatePickers    []datePicker.DatePicker       `json:"datePickers"`
+	HtmlEditors    []htmlEditor.HtmlEditor       `json:"htmlEditors"`
+	Ratings        []rating.Rating               `json:"ratings"`
+	Images         []image.Image                 `json:"images"`
+	Headers        []header.Header               `json:"headers"`
+	Selections     []selection.Selection         `json:"selections"`
+	UserSelections []userSelection.UserSelection `json:"userSelections"`
 }
 
 type GetFormInfoParams struct {
@@ -74,16 +76,22 @@ func getFormInfo(params GetFormInfoParams) (*FormInfo, error) {
 		return nil, err
 	}
 
+	userSelections, err := userSelection.GetUserSelections(params.FormID)
+	if err != nil {
+		return nil, err
+	}
+
 	formInfo := FormInfo{
-		Form:        *form,
-		TextBoxes:   textBoxes,
-		CheckBoxes:  checkBoxes,
-		DatePickers: datePickers,
-		HtmlEditors: htmlEditors,
-		Images:      images,
-		Headers:     headers,
-		Ratings:     ratings,
-		Selections:  selections}
+		Form:           *form,
+		TextBoxes:      textBoxes,
+		CheckBoxes:     checkBoxes,
+		DatePickers:    datePickers,
+		HtmlEditors:    htmlEditors,
+		Images:         images,
+		Headers:        headers,
+		Ratings:        ratings,
+		Selections:     selections,
+		UserSelections: userSelections}
 
 	return &formInfo, nil
 }

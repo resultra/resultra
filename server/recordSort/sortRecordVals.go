@@ -43,6 +43,10 @@ func SortRecordValues(parentTableID string,
 			sortFuncs = append(sortFuncs, SortByTimeField(currSortRule.SortFieldID, currSortRule.SortDirection))
 		case field.FieldTypeBool:
 			sortFuncs = append(sortFuncs, SortByBoolField(currSortRule.SortFieldID, currSortRule.SortDirection))
+		case field.FieldTypeUser:
+			// TODO - Implement sort function for users
+			return fmt.Errorf("Sorting by user not yet implemented")
+			//			sortFuncs = append(sortFuncs, SortByUserField(currSortRule.SortFieldID, currSortRule.SortDirection))
 		default:
 			return fmt.Errorf("SortRecordValues: invalid sort field type %v for sort rule = %+v",
 				sortField.Type, sortField)

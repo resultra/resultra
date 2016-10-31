@@ -12,6 +12,7 @@ type FieldsByType struct {
 	NumberFields   []Field `json:"numberFields"`
 	BoolFields     []Field `json:"boolFields"`
 	FileFields     []Field `json:"fileFields"`
+	UserFields     []Field `json:"userFields"`
 }
 
 func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
@@ -35,6 +36,8 @@ func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
 			fieldsByType.NumberFields = append(fieldsByType.NumberFields, currField)
 		case FieldTypeBool:
 			fieldsByType.BoolFields = append(fieldsByType.BoolFields, currField)
+		case FieldTypeUser:
+			fieldsByType.UserFields = append(fieldsByType.UserFields, currField)
 		case FieldTypeFile:
 			fieldsByType.FileFields = append(fieldsByType.FileFields, currField)
 		default:

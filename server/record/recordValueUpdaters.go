@@ -22,6 +22,22 @@ func (valParams SetRecordTextValueParams) generateCellValue() (string, error) {
 	return generic.EncodeJSONString(cellVal)
 }
 
+// Update a user field value
+
+type SetRecordUserValueParams struct {
+	RecordUpdateHeader
+	UserID string `json:"userID"`
+}
+
+func (setValParams SetRecordUserValueParams) fieldType() string { return field.FieldTypeUser }
+
+func (valParams SetRecordUserValueParams) generateCellValue() (string, error) {
+
+	cellVal := UserCellValue{UserID: valParams.UserID}
+
+	return generic.EncodeJSONString(cellVal)
+}
+
 // Update a long text field value
 
 type SetRecordLongTextValueParams struct {
