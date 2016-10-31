@@ -4,6 +4,7 @@ var fieldTypeLongText = "longText"
 var fieldTypeFile = "file"
 var fieldTypeBool = "bool"
 var fieldTypeTime = "time"
+var fieldTypeUser = "user"
 var fieldTypeAll = "all"
 
 var fieldInfoFieldsByID

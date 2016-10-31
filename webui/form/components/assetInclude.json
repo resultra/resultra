@@ -8,5 +8,6 @@
 		"textBox",
 		"header",
 		"rating",
-		"selection"]
+		"selection",
+		"userSelection"]
 }

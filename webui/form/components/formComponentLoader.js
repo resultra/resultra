@@ -206,6 +206,41 @@ function loadFormComponents(loadFormConfig) {
 			loadFormConfig.initRatingFunc(componentContext,containerObj,rating)
 		}
 
+
+		function initUserSelectionLayout($componentRow,userSelection) {
+			// Create an HTML block for the container
+			
+			var containerHTML = userSelectionContainerHTML(userSelection.userSelectionID);
+			
+			var containerObj = $(containerHTML)
+			
+			var componentLink = userSelection.properties.componentLink
+			
+			var componentLabel
+			if(componentLink.linkedValType == linkedComponentValTypeField) {
+				// Set the label to the field name. A span element is used, since
+				// the checkbox itself is nested inside a label.
+				componentLabel = getFieldRef(componentLink.fieldID).name
+			} else {
+				var globalInfo = componentContext.globalsByID[componentLink.globalID]
+				componentLabel = globalInfo.name
+			}
+			
+			containerObj.find('label').text(componentLabel)
+			
+			// Position the object withing the #layoutCanvas div
+			$componentRow.append(containerObj)
+			setElemDimensions(containerObj,userSelection.properties.geometry)
+		
+			 // Store the newly created object reference in the DOM element. This is needed for follow-on
+			 // property setting, resizing, etc.
+			setElemObjectRef(userSelection.userSelectionID,userSelection)
+			
+			// Callback for any specific initialization for either the form design or view mode 
+			loadFormConfig.initUserSelectionFunc(componentContext,containerObj,userSelection)
+		}
+
+
 		
 		function initDatePickerLayout($componentRow,datePicker) {
 			// Create an HTML block for the container			
@@ -345,6 +380,16 @@ function loadFormComponents(loadFormConfig) {
 			compenentIDComponentMap[ratingProps.ratingID] = {
 				componentInfo: ratingProps,
 				initFunc: initRatingLayout
+			}		
+		}
+
+
+		for (var userSelIter in formInfo.userSelections) {
+			var userSelProps = formInfo.userSelections[userSelIter]
+			console.log("loadFormComponents: initializing user selection: " + JSON.stringify(userSelProps))
+			compenentIDComponentMap[userSelProps.userSelectionID] = {
+				componentInfo: userSelProps,
+				initFunc: initUserSelectionLayout
 			}		
 		}
 

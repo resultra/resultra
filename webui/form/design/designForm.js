@@ -7,7 +7,8 @@ var paletteItemsEditConfig = {
 	paletteItemImage: imageDesignFormConfig,
 	paletteItemHeader: formHeaderDesignFormConfig,
 	paletteItemRating: ratingDesignFormConfig,
-	paletteItemSelection: selectionDesignFormConfig
+	paletteItemSelection: selectionDesignFormConfig,
+	paletteItemUserSelection: userSelectionDesignFormConfig
 }
 
 var formDesignCanvasSelector = "#layoutCanvas"
@@ -132,6 +133,11 @@ $(document).ready(function() {
 			initRatingDesignControlBehavior(ratingObjectRef)
 			var componentIDs = { formID: formID, componentID: ratingObjectRef.ratingID }
 			initFormComponentDesignBehavior(componentIDs,ratingObjectRef,ratingDesignFormConfig,designFormLayoutConfig)
+		},
+		initUserSelectionFunc: function(componentContext,$userSelection,userSelectionObjectRef) {
+			initUserSelectionDesignControlBehavior(userSelectionObjectRef)
+			var componentIDs = { formID: formID, componentID: userSelectionObjectRef.userSelectionID }
+			initFormComponentDesignBehavior(componentIDs,userSelectionObjectRef,userSelectionDesignFormConfig,designFormLayoutConfig)
 		},
 		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			var componentIDs = { formID: formID, componentID: datePickerObjectRef.datePickerID }

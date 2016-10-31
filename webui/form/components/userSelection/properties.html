@@ -1,0 +1,13 @@
+{{define "userSelectionFormatProps"}}
+	User selection formatting properties go here
+{{end}}
+
+{{define "userSelectionProps"}}
+
+	<div id="userSelectionProps" class="propertyPanelToggleContainer">
+		{{template "propertyPanelPrefix" .FormatPanelParams}}
+			{{template "userSelectionFormatProps"}}
+		{{template "propertyPanelSuffix"}}
+	</div>
+
+{{end}}

@@ -8,16 +8,18 @@ import (
 	"resultra/datasheet/webui/form/components/rating"
 	"resultra/datasheet/webui/form/components/selection"
 	"resultra/datasheet/webui/form/components/textBox"
+	"resultra/datasheet/webui/form/components/userSelection"
 )
 
 type ComponentViewTemplateParams struct {
-	CheckBoxParams   checkBox.CheckboxViewTemplateParams
-	DatePickerParams datePicker.DatePickerViewTemplateParams
-	TextBoxParams    textBox.TextboxViewTemplateParams
-	ImageParams      image.ImageViewTemplateParams
-	HTMLEditorParams htmlEditor.HTMLEditorViewTemplateParams
-	RatingParams     rating.RatingViewTemplateParams
-	SelectionParams  selection.SelectionViewTemplateParams
+	CheckBoxParams      checkBox.CheckboxViewTemplateParams
+	DatePickerParams    datePicker.DatePickerViewTemplateParams
+	TextBoxParams       textBox.TextboxViewTemplateParams
+	ImageParams         image.ImageViewTemplateParams
+	HTMLEditorParams    htmlEditor.HTMLEditorViewTemplateParams
+	RatingParams        rating.RatingViewTemplateParams
+	SelectionParams     selection.SelectionViewTemplateParams
+	UserSelectionParams userSelection.UserSelectionViewTemplateParams
 }
 
 //var DesignTemplateParams ComponentDesignTemplateParams
@@ -26,12 +28,13 @@ var ViewTemplateParams ComponentViewTemplateParams
 func init() {
 
 	ViewTemplateParams = ComponentViewTemplateParams{
-		CheckBoxParams:   checkBox.ViewTemplateParams,
-		DatePickerParams: datePicker.ViewTemplateParams,
-		TextBoxParams:    textBox.ViewTemplateParams,
-		ImageParams:      image.ViewTemplateParams,
-		HTMLEditorParams: htmlEditor.ViewTemplateParams,
-		RatingParams:     rating.ViewTemplateParams,
-		SelectionParams:  selection.ViewTemplateParams}
+		CheckBoxParams:      checkBox.ViewTemplateParams,
+		DatePickerParams:    datePicker.ViewTemplateParams,
+		TextBoxParams:       textBox.ViewTemplateParams,
+		ImageParams:         image.ViewTemplateParams,
+		HTMLEditorParams:    htmlEditor.ViewTemplateParams,
+		RatingParams:        rating.ViewTemplateParams,
+		SelectionParams:     selection.ViewTemplateParams,
+		UserSelectionParams: userSelection.ViewTemplateParams}
 
 }

@@ -10,6 +10,7 @@ import (
 	"resultra/datasheet/webui/form/components/rating"
 	"resultra/datasheet/webui/form/components/selection"
 	"resultra/datasheet/webui/form/components/textBox"
+	"resultra/datasheet/webui/form/components/userSelection"
 )
 
 var TemplateFileList []string
@@ -30,5 +31,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, header.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, rating.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, selection.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, userSelection.TemplateFileList...)
 
 }

@@ -296,6 +296,12 @@ $(document).ready(function() {
 			initFormComponentViewBehavior($rating,
 					ratingObjectRef.ratingID,initRatingViewProperties)
 		},
+		initUserSelectionFunc: function(componentContext,$userSelection,userSelectionObjectRef) {
+			console.log("Init user selection in view form")
+			initUserSelectionRecordEditBehavior(componentContext,userSelectionObjectRef)
+			initFormComponentViewBehavior($userSelection,
+					userSelectionObjectRef.userSelectionID,initUserSelectionViewProperties)
+		},
 		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			console.log("Init date picker in view form")
 			initDatePickerRecordEditBehavior(componentContext,datePickerObjectRef)

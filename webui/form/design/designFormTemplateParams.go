@@ -10,6 +10,7 @@ import (
 	"resultra/datasheet/webui/form/components/rating"
 	"resultra/datasheet/webui/form/components/selection"
 	"resultra/datasheet/webui/form/components/textBox"
+	"resultra/datasheet/webui/form/components/userSelection"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 
@@ -23,20 +24,21 @@ type FormTemplateParams struct {
 // Aggregate the template parameters from all the form components, then
 // combine them with the paramers for the form itself.
 type DesignFormTemplateParams struct {
-	Title            string
-	DatabaseID       string
-	FormID           string
-	FormName         string
-	TableID          string
-	CheckboxParams   checkBox.CheckboxDesignTemplateParams
-	DatePickerParams datePicker.DatePickerDesignTemplateParams
-	TextBoxParams    textBox.TextboxDesignTemplateParams
-	SelectionParams  selection.SelectionDesignTemplateParams
-	HtmlEditorParams htmlEditor.HTMLEditorDesignTemplateParams
-	ImageParams      image.ImageDesignTemplateParams
-	RatingParams     rating.RatingDesignTemplateParams
-	HeaderParams     header.HeaderTemplateParams
-	FormParams       FormTemplateParams
+	Title               string
+	DatabaseID          string
+	FormID              string
+	FormName            string
+	TableID             string
+	CheckboxParams      checkBox.CheckboxDesignTemplateParams
+	DatePickerParams    datePicker.DatePickerDesignTemplateParams
+	TextBoxParams       textBox.TextboxDesignTemplateParams
+	SelectionParams     selection.SelectionDesignTemplateParams
+	HtmlEditorParams    htmlEditor.HTMLEditorDesignTemplateParams
+	ImageParams         image.ImageDesignTemplateParams
+	RatingParams        rating.RatingDesignTemplateParams
+	UserSelectionParams userSelection.UserSelectionDesignTemplateParams
+	HeaderParams        header.HeaderTemplateParams
+	FormParams          FormTemplateParams
 }
 
 var designFormTemplateParams DesignFormTemplateParams
@@ -52,20 +54,21 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 	}
 
 	templParams := DesignFormTemplateParams{
-		Title:            "Design Form",
-		DatabaseID:       formInfo.DatabaseID,
-		FormID:           formInfo.FormID,
-		TableID:          formInfo.TableID,
-		FormName:         formInfo.FormName,
-		CheckboxParams:   checkBox.DesignTemplateParams,
-		DatePickerParams: datePicker.DesignTemplateParams,
-		TextBoxParams:    textBox.DesignTemplateParams,
-		SelectionParams:  selection.DesignTemplateParams,
-		HtmlEditorParams: htmlEditor.DesignTemplateParams,
-		ImageParams:      image.DesignTemplateParams,
-		RatingParams:     rating.DesignTemplateParams,
-		HeaderParams:     header.TemplateParams,
-		FormParams:       formParams}
+		Title:               "Design Form",
+		DatabaseID:          formInfo.DatabaseID,
+		FormID:              formInfo.FormID,
+		TableID:             formInfo.TableID,
+		FormName:            formInfo.FormName,
+		CheckboxParams:      checkBox.DesignTemplateParams,
+		DatePickerParams:    datePicker.DesignTemplateParams,
+		TextBoxParams:       textBox.DesignTemplateParams,
+		SelectionParams:     selection.DesignTemplateParams,
+		UserSelectionParams: userSelection.DesignTemplateParams,
+		HtmlEditorParams:    htmlEditor.DesignTemplateParams,
+		ImageParams:         image.DesignTemplateParams,
+		RatingParams:        rating.DesignTemplateParams,
+		HeaderParams:        header.TemplateParams,
+		FormParams:          formParams}
 
 	return templParams
 

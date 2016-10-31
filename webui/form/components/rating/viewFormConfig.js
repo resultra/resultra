@@ -42,7 +42,7 @@ function loadRecordIntoRating(ratingElem, recordRef) {
 		console.log("loadRecordIntoRating: Global ID to load data:" + ratingGlobalID)
 		
 		if(ratingGlobalID in currGlobalVals) {
-			var globalVal = currGlobalVals[textBoxGlobalID]
+			var globalVal = currGlobalVals[ratingGlobalID]
 			
 			if((fieldVal >= 0) && (fieldVal <= maxRating)) {
 				$(ratingControlSelector).rating('rate',globalVal)
