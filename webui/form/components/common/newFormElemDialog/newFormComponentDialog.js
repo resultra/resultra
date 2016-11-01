@@ -20,6 +20,9 @@ function openNewFormComponentDialog(newComponentParams) {
 		console.log("saveNewFormComponent: panel values: " + JSON.stringify(newOrExistingVals))
 		
 		if(newOrExistingVals.componentValSelection == "newField") {
+			var newFieldParams = getWizardDialogPanelVals($parentDialog,newFieldDialogPanelID)
+			console.log("creating new field: params= " + JSON.stringify(newFieldParams))
+			$parentDialog.modal("hide")
 			// TODO Create the new field first, then create the component attached to this field
 		} else if (newOrExistingVals.componentValSelection == "newGlobal") {
 			// TODO Create the new global first, then create the component attached to this field
@@ -58,7 +61,7 @@ function openNewFormComponentDialog(newComponentParams) {
 		globalTypes: newComponentParams.globalTypes,
 		doneIfSelectExistingField:true,
 		doneFunc:saveNewFormComponent})
-	var newFieldPanel = createNewFieldDialogPanelContextBootstrap(newComponentParams.elemPrefix)
+	var newFieldPanel = createNewFieldDialogPanelContextBootstrap(newComponentParams)
 		
 		
 	openWizardDialog({

@@ -1,12 +1,16 @@
 {{define "newFormElemDialogNewFieldPanelButtons"}}
-	<button type="button" class="btn btn-primary wizardPanelButton newFormComponentNewFieldButtons" id="{{.ElemPrefix}}NewFormComponentSelectFieldPrevButton" type="submit">Previous</button>
+	<button type="button" class="btn btn-default wizardPanelButton newFormComponentNewFieldButtons"
+		 id="{{.ElemPrefix}}NewFormComponentSelectFieldPrevButton" type="submit">Previous</button>
+	<button type="button" class="btn btn-primary wizardPanelButton newFormComponentNewFieldButtons"
+		 id="{{.ElemPrefix}}NewFormComponentCreateNewFieldDoneButton" type="submit">Done</button>
 {{end}}
 
 {{define "newFormElemDialogNewFieldPanel"}}
 
 	<div id="{{.ElemPrefix}}NewFieldPanel" class="wizardPanel">
 			
-		<form>
+		<form class="form-inline" id="{{.ElemPrefix}}NewFieldForm">
+			
 			<div class="alert alert-info">
 				{{.NewFieldInfoPrompt}}
 			</div>
@@ -14,24 +18,27 @@
 			<h4>Basic Field Information</h4>
 			
 			    <div class="form-group">
-				      <label>Field Name
-				      <input type="text" name="{{.ElemPrefix}}NewFieldName" placeholder="Enter a Field Name"></label>
+				      <label>Field Name</label>
+				      <input type="text" class="form-control" id="{{.ElemPrefix}}NewFieldName"
+					  	 	name="{{.ElemPrefix}}NewFieldName" placeholder="Enter a Field Name">
 			    </div> <!-- Field name field -->
 			
 				<div class="form-group">
-					<label>Type of Value
+					<label>Type of Value</label>
 						<select class="form-control" id="{{.ElemPrefix}}NewFieldValTypeSelection" name="{{.ElemPrefix}}NewFieldValTypeSelection">
-							<option value="">Select a Type</option>
+							<option value="">Select a Field Type</option>
 							<option value="number">Number</option>
 							<option value="text">Text</option>
+							<option value="user">User</option>
 					</select>
-					</label> 
+					 
 				</div> <!-- Value type field -->
 			
 			<h4>Calculated Field Settings</h4>
 			
 		      <div class="checkbox" id="{{.ElemPrefix}}NewFieldCalcFieldCheckbox">
-		        <label><input type="checkbox" name="{{.ElemPrefix}}NewFieldIsCalcFieldInput" tabindex="0">
+		        <label><input type="checkbox" id="{{.ElemPrefix}}NewFieldIsCalcFieldInput"
+					name="{{.ElemPrefix}}NewFieldIsCalcFieldInput"></label>
 		        Values for this field are calculated from other fields.</label>
 		      </div>
 			
@@ -40,11 +47,9 @@
 				input box, using semantic UI form layout. There might be some other way to do this,
 				but this was found to be the most straightforward. -->
 		    <div class="form-group" >
-			      <label >Reference Name 
-					  <input type="text" id="{{.ElemPrefix}}NewFieldRefName" name="{{.ElemPrefix}}NewFieldRefName" placeholder="Enter a Reference Name"></label>
-		  		<a id="{{.ElemPrefix}}RefNameHelp"
-		  		 data-content="A reference name is the short-hand name used to refer to this field from other calculated fields' formulas." 
-		  		 class="ui small blue circular label">?</a>		
+			      <label id="{{.ElemPrefix}}RefNameLabel" data-toggle="tooltip" title="A reference name is the short-hand name used to refer to this field from other calculated fields' formulas.">Reference Name</label>
+				  <input type="text" class="form-control" id="{{.ElemPrefix}}NewFieldRefName"
+				  	 name="{{.ElemPrefix}}NewFieldRefName" placeholder="Enter a Reference Name">		
 			</div> <!-- reference name field -->
 			
 			

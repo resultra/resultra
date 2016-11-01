@@ -86,7 +86,7 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 					
 		var nextButtonSelector = '#' + panelConfig.elemPrefix + 'NewFormComponentNewFieldNextButton'
 		initButtonClickHandler(nextButtonSelector,function() {
-			if (validateForm()) {
+			if ($panelForm.valid()) {
 				if (radioButtonIsChecked(createNewFieldRadio.selector)) {
 					transitionToNextWizardDlgPanelByID($parentDialog,newFieldDialogPanelID)
 				} else {

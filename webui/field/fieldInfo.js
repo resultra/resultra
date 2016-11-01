@@ -112,6 +112,16 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 			} // for each number field
 		}
 
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeUser]==true) {
+			var userFields = fieldsByType.userFields
+			for (userFieldIter in userFields) {		
+				var userField = userFields[userFieldIter]
+				console.log("User field: " + userField.name)
+				fieldsByID[userField.fieldID] = userField
+			} // for each number field
+		}
+
+
 		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeBool]==true) {
 			var boolFields = fieldsByType.boolFields
 			for (boolFieldIter in boolFields) {
