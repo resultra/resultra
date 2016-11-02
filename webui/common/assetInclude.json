@@ -10,5 +10,6 @@
 		"table",
 		"global",
 		"pageLayout",
-		"recordSort"]
+		"recordSort",
+		"userSelection"]
 }

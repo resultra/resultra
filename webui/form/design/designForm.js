@@ -137,7 +137,8 @@ $(document).ready(function() {
 		initUserSelectionFunc: function(componentContext,$userSelection,userSelectionObjectRef) {
 			initUserSelectionDesignControlBehavior(userSelectionObjectRef)
 			var componentIDs = { formID: formID, componentID: userSelectionObjectRef.userSelectionID }
-			initFormComponentDesignBehavior(componentIDs,userSelectionObjectRef,userSelectionDesignFormConfig,designFormLayoutConfig)
+			initFormComponentDesignBehavior(componentIDs,userSelectionObjectRef,
+						userSelectionDesignFormConfig,designFormLayoutConfig)
 		},
 		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			var componentIDs = { formID: formID, componentID: datePickerObjectRef.datePickerID }

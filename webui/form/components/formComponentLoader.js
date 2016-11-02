@@ -103,7 +103,7 @@ function loadFormComponents(loadFormConfig) {
 
 		function initSelectionLayout($componentRow,selection) {
 			// Create an HTML block for the container
-			console.log("loadFormComponents: initializing text box: " + JSON.stringify(selection))
+			console.log("loadFormComponents: initializing selection: " + JSON.stringify(selection))
 		
 			var containerHTML = selectionContainerHTML(selection.selectionID);
 			var containerObj = $(containerHTML)

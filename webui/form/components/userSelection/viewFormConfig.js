@@ -58,6 +58,7 @@ function initUserSelectionRecordEditBehavior(componentContext,userSelectionObjec
 	var componentLink = userSelectionObjectRef.properties.componentLink
 	
 	var userSelectionControlSelector = '#' + userSelectionIDFromElemID(userSelectionObjectRef.userSelectionID)
+	
 
 	function setUserSelectionValue(userVal) {
 		
@@ -102,7 +103,17 @@ function initUserSelectionRecordEditBehavior(componentContext,userSelectionObjec
 		
 	}
 
-	$(userSelectionControlSelector).on('change', function() {
+	var $userSelectionControl = $(userSelectionControlSelector)
+	
+	var userSelectionParams = {
+		selectionInput: $userSelectionControl,
+		dropdownParent: $userSelectionContainer,
+		width: '150px'
+	}
+	
+	initUserSelection(userSelectionParams)
+
+	$userSelectionControl.on('change', function() {
 		var userVal = $(this).val()
 		console.log('User selection changed: ' + userVal);
 		setUserSelectionValue(userVal)
