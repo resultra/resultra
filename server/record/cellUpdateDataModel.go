@@ -40,7 +40,7 @@ func SaveCellUpdate(cellUpdate CellUpdate) error {
 		cellUpdate.FieldID,
 		time.Now().UTC(),
 		cellUpdate.CellValue); insertErr != nil {
-		return fmt.Errorf("saveCellUpdate: insert failed: error = %v", insertErr)
+		return fmt.Errorf("saveCellUpdate: insert failed: update = %+v, error = %v", cellUpdate, insertErr)
 	}
 	return nil
 

@@ -1,7 +1,7 @@
 function initUserDropdownMenu() {
 	
 	var getUserInfoParams = {}
-	jsonRequest("/auth/getUserInfo",getUserInfoParams,function(userInfo) {
+	jsonRequest("/auth/getCurrentUserInfo",getUserInfoParams,function(userInfo) {
 		$('#userMenuUserName').text(userInfo.userName)
 	})
 	

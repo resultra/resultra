@@ -2,14 +2,21 @@ package recordUpdate
 
 import (
 	"fmt"
+	"net/http"
+	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordValue"
 )
 
-func updateRecordValue(recUpdater record.RecordUpdater) (*recordValue.RecordValueResults, error) {
+func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*recordValue.RecordValueResults, error) {
+
+	currUserID, userErr := userAuth.GetCurrentUserID(req)
+	if userErr != nil {
+		return nil, fmt.Errorf("updateRecordValue: Can't get current user: err = %v", userErr)
+	}
 
 	// Perform the low-level datastore write of the record value update.
-	recordForUpdate, writeErr := record.UpdateRecordValue(recUpdater)
+	recordForUpdate, writeErr := record.UpdateRecordValue(currUserID, recUpdater)
 	if writeErr != nil {
 		return nil, fmt.Errorf("updateRecordValue: Can't set record value: err = %v", writeErr)
 	}

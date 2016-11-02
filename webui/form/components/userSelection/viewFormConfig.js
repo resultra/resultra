@@ -5,6 +5,7 @@ function loadRecordIntoUserSelection(userSelectionElem, recordRef) {
 	var userSelectionContainerID = userSelectionObjectRef.userSelectionID
 	var userSelectionControlID = userSelectionIDFromElemID(userSelectionContainerID)
 	var userSelectionControlSelector = '#' + userSelectionControlID;
+	var $userSelectionControl = $(userSelectionControlSelector)
 	
 	var componentLink = userSelectionObjectRef.properties.componentLink
 	
@@ -19,17 +20,14 @@ function loadRecordIntoUserSelection(userSelectionElem, recordRef) {
 
 			var fieldVal = recordRef.fieldValues[userSelectionFieldID]
 
-			console.log("loadRecordIntoTextBox: Load value into container: " + $(this).attr("id") + " field ID:" + 
+			console.log("loadRecordIntoUserSelection: Load value into container: " + $(this).attr("id") + " field ID:" + 
 						userSelectionFieldID + "  value:" + fieldVal)
-			
-			// TODO - set user settings
-			$(userSelectionControlSelector).val("TBD")
-			
-			
+			setUserSelectionControlVal($userSelectionControl,fieldVal)
+	
 		} // If record has a value for the current container's associated field ID.
 		else
 		{
-			$(userSelectionControlSelector).val("TBD")
+			clearUserSelectionControlVal($userSelectionControl)
 		}
 	} else {
 		var userSelectionGlobalID = componentLink.globalID
@@ -37,16 +35,13 @@ function loadRecordIntoUserSelection(userSelectionElem, recordRef) {
 		
 		if(userSelectionGlobalID in currGlobalVals) {
 			var globalVal = currGlobalVals[userSelectionGlobalID]
-			
-			$(userSelectionControlSelector).val("Global value - TBD")
-			
+			setUserSelectionControlVal($userSelectionControl,globalVal)
 		}
 		else
 		{
-			$(userSelectionControlSelector).val("")
+			clearUserSelectionControlVal($userSelectionControl)
 		}				
 	}
-	
 	
 }
 
@@ -60,7 +55,7 @@ function initUserSelectionRecordEditBehavior(componentContext,userSelectionObjec
 	var userSelectionControlSelector = '#' + userSelectionIDFromElemID(userSelectionObjectRef.userSelectionID)
 	
 
-	function setUserSelectionValue(userVal) {
+	function setUserSelectionValue(selectedUserID) {
 		
 		currRecordRef = currRecordSet.currRecordRef()
 	
@@ -71,7 +66,7 @@ function initUserSelectionRecordEditBehavior(componentContext,userSelectionObjec
 				parentTableID:viewFormContext.tableID,
 				recordID:currRecordRef.recordID, 
 				fieldID:userFieldID, 
-				value:userVal }
+				userID:selectedUserID }
 			jsonAPIRequest("recordUpdate/setUserFieldValue",setRecordValParams,function(updatedFieldVal) {
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached
@@ -93,7 +88,7 @@ function initUserSelectionRecordEditBehavior(componentContext,userSelectionObjec
 			var setGlobalValParams = {
 				parentDatabaseID: componentContext.databaseID,
 				globalID: componentLink.globalID,
-				value: userVal
+				userID: selectedUserID
 			}
 			console.log("Setting global value (user): " + JSON.stringify(setGlobalValParams))
 			jsonAPIRequest("global/setUserValue",setGlobalValParams,function(replyData) {
@@ -114,9 +109,9 @@ function initUserSelectionRecordEditBehavior(componentContext,userSelectionObjec
 	initUserSelection(userSelectionParams)
 
 	$userSelectionControl.on('change', function() {
-		var userVal = $(this).val()
-		console.log('User selection changed: ' + userVal);
-		setUserSelectionValue(userVal)
+		var selectedUserID = $(this).val()
+		console.log('User selection changed: ' + selectedUserID);
+		setUserSelectionValue(selectedUserID)
 	});
 	
 	// When the user clicks on the control, prevent the click from propagating higher.

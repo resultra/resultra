@@ -9,7 +9,6 @@ type RecordUpdater interface {
 	fieldID() string
 	recordID() string
 	parentTableID() string
-	userID() string
 	generateCellValue() (string, error)
 }
 
@@ -20,7 +19,6 @@ type RecordUpdateHeader struct {
 	ParentTableID string `json:"parentTableID"`
 	RecordID      string `json:"recordID"`
 	FieldID       string `json:"fieldID"`
-	UserID        string // filled in by API client based upon current login credentials
 }
 
 func (recUpdateHeader RecordUpdateHeader) fieldID() string {
@@ -35,15 +33,11 @@ func (recUpdateHeader RecordUpdateHeader) parentTableID() string {
 	return recUpdateHeader.ParentTableID
 }
 
-func (recUpdateHeader RecordUpdateHeader) userID() string {
-	return recUpdateHeader.UserID
-}
-
 // updateRecordValue implements a generic algorithm (strategy design pattern) which wrapp the updating of records.
 // It leaves the low-level updating of values to implementers of the RecordUpdater interface. Different RecordUpdaters
 // are needed for different value types, while the code to (1) retrieve the record, (2) validate the field type,
 // (3) re-calculate calculated fields, then (4) save the updated record is made common.
-func UpdateRecordValue(recUpdater RecordUpdater) (*Record, error) {
+func UpdateRecordValue(currUserID string, recUpdater RecordUpdater) (*Record, error) {
 
 	recordID := recUpdater.recordID()
 
@@ -65,7 +59,7 @@ func UpdateRecordValue(recUpdater RecordUpdater) (*Record, error) {
 	if cellErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Error generating value for cell update: %v", cellErr)
 	}
-	cellUpdate := NewCellUpdate(recUpdater.userID(),
+	cellUpdate := NewCellUpdate(currUserID,
 		recUpdater.parentTableID(),
 		recUpdater.fieldID(),
 		recUpdater.recordID(),

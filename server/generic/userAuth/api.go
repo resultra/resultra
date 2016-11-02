@@ -15,6 +15,8 @@ func init() {
 	authRouter.HandleFunc("/auth/register", registerNewUserAPI)
 	authRouter.HandleFunc("/auth/login", loginUserAPI)
 	authRouter.HandleFunc("/auth/signout", signoutUserAPI)
+
+	authRouter.HandleFunc("/auth/getCurrentUserInfo", getCurrentUserInfoAPI)
 	authRouter.HandleFunc("/auth/getUserInfo", getUserInfoAPI)
 
 	authRouter.HandleFunc("/auth/searchUsers", searchUsersAPI)
@@ -52,9 +54,29 @@ func signoutUserAPI(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func getUserInfoAPI(w http.ResponseWriter, r *http.Request) {
+func getCurrentUserInfoAPI(w http.ResponseWriter, r *http.Request) {
 	userInfo, err := GetCurrentUserInfo(r)
 
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	api.WriteJSONResponse(w, userInfo)
+}
+
+type GetUserInfoParams struct {
+	UserID string `json:"userID"`
+}
+
+func getUserInfoAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetUserInfoParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	userInfo, err := GetUserInfoByID(params.UserID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return

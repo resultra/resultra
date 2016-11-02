@@ -4,7 +4,6 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/record"
 )
 
@@ -53,14 +52,8 @@ func setTextFieldValue(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
-	currUserID, userErr := userAuth.GetCurrentUserID(r)
-	if userErr != nil {
-		api.WriteErrorResponse(w, userErr)
-		return
-	}
-	setValParams.UserID = currUserID
 
-	updatedRecordRef, setErr := updateRecordValue(setValParams)
+	updatedRecordRef, setErr := updateRecordValue(r, setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -78,14 +71,8 @@ func setLongTextFieldValue(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
-	currUserID, userErr := userAuth.GetCurrentUserID(r)
-	if userErr != nil {
-		api.WriteErrorResponse(w, userErr)
-		return
-	}
-	setValParams.UserID = currUserID
 
-	updatedRecordRef, setErr := updateRecordValue(setValParams)
+	updatedRecordRef, setErr := updateRecordValue(r, setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -102,14 +89,8 @@ func setNumberFieldValue(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
-	currUserID, userErr := userAuth.GetCurrentUserID(r)
-	if userErr != nil {
-		api.WriteErrorResponse(w, userErr)
-		return
-	}
-	setValParams.UserID = currUserID
 
-	updatedRecordRef, setErr := updateRecordValue(setValParams)
+	updatedRecordRef, setErr := updateRecordValue(r, setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -126,14 +107,8 @@ func setUserFieldValue(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
-	currUserID, userErr := userAuth.GetCurrentUserID(r)
-	if userErr != nil {
-		api.WriteErrorResponse(w, userErr)
-		return
-	}
-	setValParams.UserID = currUserID
 
-	updatedRecordRef, setErr := updateRecordValue(setValParams)
+	updatedRecordRef, setErr := updateRecordValue(r, setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -150,14 +125,8 @@ func setBoolFieldValue(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
-	currUserID, userErr := userAuth.GetCurrentUserID(r)
-	if userErr != nil {
-		api.WriteErrorResponse(w, userErr)
-		return
-	}
-	setValParams.UserID = currUserID
 
-	updatedRecordRef, setErr := updateRecordValue(setValParams)
+	updatedRecordRef, setErr := updateRecordValue(r, setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -174,14 +143,8 @@ func setTimeFieldValue(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
-	currUserID, userErr := userAuth.GetCurrentUserID(r)
-	if userErr != nil {
-		api.WriteErrorResponse(w, userErr)
-		return
-	}
-	setValParams.UserID = currUserID
 
-	updatedRecordRef, setErr := updateRecordValue(setValParams)
+	updatedRecordRef, setErr := updateRecordValue(r, setValParams)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
