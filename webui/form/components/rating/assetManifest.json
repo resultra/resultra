@@ -1,8 +1,10 @@
 {
     "cssFiles": ["rating.css"], 
     "htmlFiles": ["properties.html",
+		"tooltipProperties.html",
 		"viewProperties.html"], 
     "jsFiles": ["newRatingDialog.js",
+		"tooltipProperties.js",
 		"properties.js",
 		"containerHTML.js",
 		"designFormConfig.js",

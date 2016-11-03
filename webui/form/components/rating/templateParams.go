@@ -8,6 +8,7 @@ import (
 type RatingDesignTemplateParams struct {
 	ElemPrefix               string
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
+	TooltipPanelParams       propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 }
 
@@ -24,8 +25,9 @@ func init() {
 	elemPrefix := "rating_"
 
 	DesignTemplateParams = RatingDesignTemplateParams{
-		ElemPrefix:        elemPrefix,
-		FormatPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "ratingFormat"},
+		ElemPrefix:         elemPrefix,
+		FormatPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "ratingFormat"},
+		TooltipPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Tooltips", PanelID: "ratingTooltip"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
 			DialogTitle: "New Rating",

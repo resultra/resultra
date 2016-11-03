@@ -5,8 +5,13 @@
 {{define "ratingProps"}}
 
 	<div id="ratingProps" class="propertyPanelToggleContainer">
+
 		{{template "propertyPanelPrefix" .FormatPanelParams}}
 			{{template "ratingFormatProps"}}
+		{{template "propertyPanelSuffix"}}
+		
+		{{template "propertyPanelPrefix" .TooltipPanelParams}}
+			{{template "ratingTooltipProps"}}
 		{{template "propertyPanelSuffix"}}
 	</div>
 
