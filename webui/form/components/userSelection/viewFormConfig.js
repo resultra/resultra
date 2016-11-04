@@ -100,10 +100,11 @@ function initUserSelectionRecordEditBehavior(componentContext,userSelectionObjec
 
 	var $userSelectionControl = $(userSelectionControlSelector)
 	
+	var selectionWidth = (userSelectionObjectRef.properties.geometry.sizeWidth - 15).toString() + "px"
 	var userSelectionParams = {
 		selectionInput: $userSelectionControl,
 		dropdownParent: $userSelectionContainer,
-		width: '150px'
+		width: selectionWidth
 	}
 	
 	initUserSelection(userSelectionParams)

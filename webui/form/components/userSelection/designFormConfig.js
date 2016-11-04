@@ -37,7 +37,7 @@ var userSelectionDesignFormConfig = {
 	draggableHTMLFunc:	userSelectionContainerHTML,
 	startPaletteDrag: startUserSelectionPaletteDrag,
 	createNewItemAfterDropFunc: openNewUserSelectionDialog,
-	resizeConstraints: elemResizeConstraints(100,640,30,30),
+	resizeConstraints: elemResizeConstraints(200,400,75,75),
 	resizeFunc: resizeUserSelection,
 	initFunc: initDesignFormUserSelection,
 	selectionFunc: selectFormUserSelection
