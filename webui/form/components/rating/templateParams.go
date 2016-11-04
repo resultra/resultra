@@ -27,7 +27,7 @@ func init() {
 	DesignTemplateParams = RatingDesignTemplateParams{
 		ElemPrefix:         elemPrefix,
 		FormatPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "ratingFormat"},
-		TooltipPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Tooltips", PanelID: "ratingTooltip"},
+		TooltipPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Rating Descriptions", PanelID: "ratingTooltip"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
 			DialogTitle: "New Rating",

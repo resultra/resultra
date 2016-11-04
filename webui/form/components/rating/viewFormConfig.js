@@ -70,6 +70,7 @@ function initRatingRecordEditBehavior(componentContext,ratingObjectRef) {
 	var componentLink = ratingObjectRef.properties.componentLink
 	
 	var ratingControlSelector = '#' + ratingControlIDFromElemID(ratingObjectRef.ratingID)
+	var $ratingControl = $(ratingControlSelector)
 
 	function setRatingValue(ratingVal) {
 		
@@ -114,16 +115,26 @@ function initRatingRecordEditBehavior(componentContext,ratingObjectRef) {
 		
 	}
 
-	$(ratingControlSelector).rating({
-		extendSymbol: function(rate) {
-			$(this).tooltip({
-				container: 'body',
-				placement: 'bottom',
-				title: 'Rate ' + rate
-			});
+	$ratingControl.rating({
+		extendSymbol: function(rating) {
+			var ratingIndex = rating-1 // 0 based index
+			if(ratingObjectRef.properties.tooltips[ratingIndex] !== undefined) {
+				var tooltipText = ratingObjectRef.properties.tooltips[ratingIndex]
+				if(tooltipText.length > 0) {
+					var tooltipHTML = '<p class="ratingTooltip">' + escapeHTML(tooltipText) + '</p>'
+					$(this).tooltip({
+						container: 'body',
+						placement: 'bottom',
+						title: tooltipHTML,
+						html: true 
+					});
+					
+				}
+			}
+			
 		}
 	})
-	$(ratingControlSelector).on('change', function() {
+	$ratingControl.on('change', function() {
 		var ratingVal = Number($(this).val())
 		console.log('Rating changed: ' + ratingVal);
 		setRatingValue(ratingVal)

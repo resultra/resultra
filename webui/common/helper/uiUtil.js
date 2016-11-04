@@ -114,6 +114,7 @@ var escapeHTMLEntityMap = {
   "/": '&#x2F;'
 };
 
+// See: http://stackoverflow.com/questions/24816/escaping-html-strings-with-jquery
 function escapeHTML(string) {
   return String(string).replace(/[&<>"'\/]/g, function (s) {
     return escapeHTMLEntityMap[s];

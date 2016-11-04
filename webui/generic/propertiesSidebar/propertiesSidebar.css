@@ -68,3 +68,12 @@
 	overflow-x: hidden;
 	
 }
+/* If alerts are included in the side bar, tighten up the spacing around them. The default margin is 20px below
+   and 15px padding. */
+.propertySidebarPanelGroup .alert {
+	margin-bottom: 10px;
+	padding-top: 5px;
+	padding-right:5px;
+	padding-left:5px;
+	padding-bottom:5px;
+}

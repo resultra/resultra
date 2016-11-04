@@ -17,7 +17,7 @@ function selectFormRating(ratingObjRef) {
 
 function resizeRating(ratingID,geometry) {
 	var resizeParams = {
-		parentFormID: designFormContext.formID,
+		parentFormID: ratingObjectRef.parentFormID,
 		ratingID: ratingID,
 		geometry: geometry
 	}

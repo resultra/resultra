@@ -15,3 +15,9 @@
 	width: 160px;
 	height: 60px;
 }
+
+.ratingTooltip {
+	white-space:pre-wrap;
+	text-align:left;
+	margin-bottom:0px;
+}

@@ -15,10 +15,11 @@ const ratingEntityKind string = "rating"
 type RatingProperties struct {
 	ComponentLink common.ComponentLink           `json:"componentLink"`
 	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
+	Tooltips      []string                       `json:"tooltips"`
 }
 
 type Rating struct {
-	ParentFormID string           `json:"parentID"`
+	ParentFormID string           `json:"parentFormID"`
 	RatingID     string           `json:"ratingID"`
 	Properties   RatingProperties `json:"properties"`
 }
@@ -49,7 +50,8 @@ func saveNewRating(params NewRatingParams) (*Rating, error) {
 
 	properties := RatingProperties{
 		ComponentLink: params.ComponentLink,
-		Geometry:      params.Geometry}
+		Geometry:      params.Geometry,
+		Tooltips:      []string{}}
 
 	newRating := Rating{ParentFormID: params.ParentFormID,
 		RatingID:   uniqueID.GenerateSnowflakeID(),
@@ -87,6 +89,7 @@ func GetRatings(parentFormID string) ([]Rating, error) {
 	addRating := func(ratingID string, encodedProps string) error {
 
 		var ratingProps RatingProperties
+		ratingProps.Tooltips = []string{} // Default to empty set of tooltips
 		if decodeErr := generic.DecodeJSONString(encodedProps, &ratingProps); decodeErr != nil {
 			return fmt.Errorf("GetRatings: can't decode properties: %v", encodedProps)
 		}

@@ -63,3 +63,15 @@ func (updateParams RatingResizeParams) updateProps(rating *Rating) error {
 
 	return nil
 }
+
+type RatingTooltipParams struct {
+	RatingIDHeader
+	Tooltips []string `json:"tooltips"`
+}
+
+func (updateParams RatingTooltipParams) updateProps(rating *Rating) error {
+
+	rating.Properties.Tooltips = updateParams.Tooltips
+
+	return nil
+}

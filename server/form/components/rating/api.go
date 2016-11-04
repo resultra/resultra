@@ -11,6 +11,7 @@ func init() {
 
 	ratingRouter.HandleFunc("/api/frm/rating/new", newRating)
 	ratingRouter.HandleFunc("/api/frm/rating/resize", resizeRating)
+	ratingRouter.HandleFunc("/api/frm/rating/setTooltips", setTooltips)
 
 	http.Handle("/api/frm/rating/", ratingRouter)
 }
@@ -46,4 +47,13 @@ func resizeRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processRatingPropUpdate(w, r, resizeParams)
+}
+
+func setTooltips(w http.ResponseWriter, r *http.Request) {
+	var tooltipParams RatingTooltipParams
+	if err := api.DecodeJSONRequest(r, &tooltipParams); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processRatingPropUpdate(w, r, tooltipParams)
 }

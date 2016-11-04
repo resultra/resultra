@@ -1,5 +1,6 @@
 {
-    "cssFiles": ["rating.css"], 
+    "cssFiles": ["rating.css",
+			"tooltipProperties.css"], 
     "htmlFiles": ["properties.html",
 		"tooltipProperties.html",
 		"viewProperties.html"], 
