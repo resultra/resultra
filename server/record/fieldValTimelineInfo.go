@@ -9,10 +9,11 @@ import (
 )
 
 type FieldValTimelineChangeInfo struct {
-	UpdateTimeStamp time.Time   `json:"updateTime"`
-	UserName        string      `json:"userName"`
-	IsCurrentUser   bool        `json:"isCurrentUser"`
-	UpdatedValue    interface{} `json:"updatedValue"` // Decoded value, type depends on field.
+	UpdateTimeStamp time.Time             `json:"updateTime"`
+	UserName        string                `json:"userName"`
+	IsCurrentUser   bool                  `json:"isCurrentUser"`
+	UpdatedValue    interface{}           `json:"updatedValue"` // Decoded value, type depends on field.
+	ValueFormat     CellUpdateValueFormat `json:"valueFormat"`
 }
 
 // Custom sort function for the FieldValTimelineChangeInfo
@@ -77,7 +78,8 @@ func GetFieldValUpdateTimelineInfo(currUserID string,
 			UpdateTimeStamp: currUpdate.UpdateTimeStamp,
 			UserName:        updateUserInfo.UserName,
 			IsCurrentUser:   isCurrentUser,
-			UpdatedValue:    decodedCellVal}
+			UpdatedValue:    decodedCellVal,
+			ValueFormat:     currUpdate.Properties.ValueFormat}
 
 		allFieldValChanges = append(allFieldValChanges, fieldValChangeInfo)
 

@@ -2,10 +2,25 @@ package record
 
 import (
 	"fmt"
+	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
-	"resultra/datasheet/server/generic/uniqueID"
 	"time"
 )
+
+type CellUpdateValueFormat struct {
+	Context string `json:"context"`
+	Format  string `json:"format"`
+}
+
+type CellUpdateProperties struct {
+	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
+}
+
+func newDefaultCellUpdateProperties() CellUpdateProperties {
+	valFormat := CellUpdateValueFormat{"", ""}
+	props := CellUpdateProperties{valFormat}
+	return props
+}
 
 type CellUpdate struct {
 	UpdateID        string
@@ -14,32 +29,28 @@ type CellUpdate struct {
 	FieldID         string
 	UserID          string
 	UpdateTimeStamp time.Time
-	CellValue       string // Value encoded as JSON
-}
-
-func NewCellUpdate(userID string, parentTableID string, fieldID string, recordID string, cellValue string) CellUpdate {
-	return CellUpdate{
-		UserID:        userID,
-		ParentTableID: parentTableID,
-		FieldID:       fieldID,
-		RecordID:      recordID,
-		CellValue:     cellValue}
+	CellValue       string               // Value encoded as JSON
+	Properties      CellUpdateProperties // Properties encoded as JSON
 }
 
 func SaveCellUpdate(cellUpdate CellUpdate) error {
 
-	uniqueUpdateID := uniqueID.GenerateSnowflakeID()
+	encodedProps, err := generic.EncodeJSONString(cellUpdate.Properties)
+	if err != nil {
+		return fmt.Errorf("SaveCellUpdate: Error encoding properties: %v", err)
+	}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO cell_updates (update_id, user_id, table_id, record_id, field_id,update_timestamp_utc,value) 
-			 VALUES ($1,$2,$3,$4,$5,$6,$7)`,
-		uniqueUpdateID,
+		`INSERT INTO cell_updates (update_id, user_id, table_id, record_id, field_id,update_timestamp_utc,value,properties) 
+			 VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+		cellUpdate.UpdateID,
 		cellUpdate.UserID,
 		cellUpdate.ParentTableID,
 		cellUpdate.RecordID,
 		cellUpdate.FieldID,
-		time.Now().UTC(),
-		cellUpdate.CellValue); insertErr != nil {
+		cellUpdate.UpdateTimeStamp,
+		cellUpdate.CellValue,
+		encodedProps); insertErr != nil {
 		return fmt.Errorf("saveCellUpdate: insert failed: update = %+v, error = %v", cellUpdate, insertErr)
 	}
 	return nil
@@ -50,7 +61,7 @@ func SaveCellUpdate(cellUpdate CellUpdate) error {
 func GetRecordCellUpdates(parentTableID string, recordID string) ([]CellUpdate, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT update_id, user_id, table_id, record_id, field_id, update_timestamp_utc, value
+		`SELECT update_id, user_id, table_id, record_id, field_id, update_timestamp_utc, value,properties
 			FROM cell_updates
 			WHERE table_id=$1 and record_id=$2`,
 		parentTableID, recordID)
@@ -60,6 +71,7 @@ func GetRecordCellUpdates(parentTableID string, recordID string) ([]CellUpdate, 
 	cellUpdates := []CellUpdate{}
 	for rows.Next() {
 		var currCellUpdate CellUpdate
+		var encodedProps string
 		if scanErr := rows.Scan(
 			&currCellUpdate.UpdateID,
 			&currCellUpdate.UserID,
@@ -67,10 +79,17 @@ func GetRecordCellUpdates(parentTableID string, recordID string) ([]CellUpdate, 
 			&currCellUpdate.RecordID,
 			&currCellUpdate.FieldID,
 			&currCellUpdate.UpdateTimeStamp,
-			&currCellUpdate.CellValue); scanErr != nil {
+			&currCellUpdate.CellValue,
+			&encodedProps); scanErr != nil {
 			return nil, fmt.Errorf("getTableList: Failure querying database: %v", scanErr)
 
 		}
+		cellUpdateProps := newDefaultCellUpdateProperties()
+		if decodeErr := generic.DecodeJSONString(encodedProps, &cellUpdateProps); decodeErr != nil {
+			return nil, fmt.Errorf("GetRecordCellUpdates: can't decode properties: %v", encodedProps)
+		}
+		currCellUpdate.Properties = cellUpdateProps
+
 		cellUpdates = append(cellUpdates, currCellUpdate)
 	}
 
@@ -81,7 +100,7 @@ func GetRecordCellUpdates(parentTableID string, recordID string) ([]CellUpdate, 
 func GetRecordFieldCellUpdates(parentTableID string, recordID string, fieldID string) ([]CellUpdate, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT update_id,user_id,table_id, record_id,field_id, update_timestamp_utc, value
+		`SELECT update_id,user_id,table_id, record_id,field_id, update_timestamp_utc, value,properties
 			FROM cell_updates
 			WHERE table_id=$1 and record_id=$2 and field_id=$3`,
 		parentTableID, recordID, fieldID)
@@ -91,6 +110,7 @@ func GetRecordFieldCellUpdates(parentTableID string, recordID string, fieldID st
 	cellUpdates := []CellUpdate{}
 	for rows.Next() {
 		var currCellUpdate CellUpdate
+		var encodedProps string
 		if scanErr := rows.Scan(
 			&currCellUpdate.UpdateID,
 			&currCellUpdate.UserID,
@@ -98,10 +118,17 @@ func GetRecordFieldCellUpdates(parentTableID string, recordID string, fieldID st
 			&currCellUpdate.RecordID,
 			&currCellUpdate.FieldID,
 			&currCellUpdate.UpdateTimeStamp,
-			&currCellUpdate.CellValue); scanErr != nil {
+			&currCellUpdate.CellValue,
+			&encodedProps); scanErr != nil {
 			return nil, fmt.Errorf("getTableList: Failure querying database: %v", scanErr)
 
 		}
+		cellUpdateProps := newDefaultCellUpdateProperties()
+		if decodeErr := generic.DecodeJSONString(encodedProps, &cellUpdateProps); decodeErr != nil {
+			return nil, fmt.Errorf("GetRecordCellUpdates: can't decode properties: %v", encodedProps)
+		}
+		currCellUpdate.Properties = cellUpdateProps
+
 		cellUpdates = append(cellUpdates, currCellUpdate)
 	}
 

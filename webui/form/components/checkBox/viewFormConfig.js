@@ -86,11 +86,16 @@ function initCheckBoxFieldEditBehavior(componentContext,checkBoxObjectRef) {
 			var isChecked = $(this).prop("checked")
 		
 			var currRecordRef = currRecordSet.currRecordRef()
+			var checkboxValueFormat = {
+				context: "checkbox",
+				format: "check"
+			}
 			var setRecordValParams = {
 				parentTableID:viewFormContext.tableID,
 				recordID:currRecordRef.recordID, 
 				fieldID:componentLink.fieldID, 
-				value:isChecked }
+				value:isChecked,
+				 valueFormat: checkboxValueFormat }
 			console.log("Setting boolean value (record): " + JSON.stringify(setRecordValParams))
 			jsonAPIRequest("recordUpdate/setBoolFieldValue",setRecordValParams,function(updatedRecordRef) {
 				

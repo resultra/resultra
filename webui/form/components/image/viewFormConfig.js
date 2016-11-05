@@ -146,10 +146,13 @@ function initImageRecordEditBehavior(componentContext,imageObjectRef) {
 			var fileUploadParams = {}
 			if(componentLink.linkedValType == linkedComponentValTypeField) {
 				currRecordRef = currRecordSet.currRecordRef()
+								
 				fileUploadParams = {
 					parentTableID: viewFormContext.tableID,
 					fieldID: componentLink.fieldID, 
-					recordID: currRecordRef.recordID }
+					recordID: currRecordRef.recordID,
+					valueFormatContext: "image",
+					valueFormatFormat: "general"}
 			} else {
 				assert(componentLink.linkedValType == linkedComponentValTypeGlobal)
 				fileUploadParams = {

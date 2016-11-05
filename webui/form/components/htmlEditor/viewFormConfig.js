@@ -82,11 +82,18 @@ function initHtmlEditorRecordEditBehavior(componentContext,htmlEditorObjectRef) 
 			
 			var htmlEditorFieldID = componentLink.fieldID
 			
+			var textBoxTextValueFormat = {
+				context:"htmlEditor",
+				format:"general"
+			}
+			
+			
 			var setRecordValParams = { 
 				parentTableID:viewFormContext.tableID,
 				recordID:currRecordRef.recordID, 
 				fieldID:htmlEditorFieldID, 
-				value:inputVal }
+				value:inputVal,
+			valueFormat:textBoxTextValueFormat }
 		
 			console.log("Setting date value: " + JSON.stringify(setRecordValParams))
 		

@@ -95,11 +95,17 @@ function initDatePickerFieldEditBehavior(componentContext,datePickerObjectRef,$d
 		var dateParam = getDataPickerDateVal(containerID)
 		
 		currRecordRef = currRecordSet.currRecordRef()
+		
+		var dateValueFormat = {
+			context: "datePicker",
+			format: "date"
+		}
 		var setRecordValParams = {
 			parentTableID:viewFormContext.tableID,
 			recordID:currRecordRef.recordID, 
 			fieldID:componentLink.fieldID, 
-			value:dateParam }
+			value:dateParam,
+			 valueFormat: dateValueFormat}
 		console.log("Setting date value: " + JSON.stringify(setRecordValParams))
 		
 		jsonAPIRequest("recordUpdate/setTimeFieldValue",setRecordValParams,function(updatedRecordRef) {

@@ -90,10 +90,15 @@ function initSelectionRecordEditBehavior(componentContext,selectionObjectRef) {
 			var fieldType = fieldRef.type
 			if(fieldType == "text") {
 				currRecordRef.fieldValues[fieldID] = newValue
+				var setTextFieldValueFormat = {
+					context: "select",
+					format:"general" 
+				}
 				var setRecordValParams = { 
 					parentTableID:viewFormContext.tableID,
 					recordID:currRecordRef.recordID, 
-					fieldID:fieldID, value:newValue }
+					fieldID:fieldID, value:newValue,
+					 valueFormat:setTextFieldValueFormat}
 				jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
 					// After updating the record, the local cache of records in currentRecordSet will
 					// be out of date. So after updating the record on the server, the locally cached
@@ -112,11 +117,16 @@ function initSelectionRecordEditBehavior(componentContext,selectionObjectRef) {
 						+ "fieldID: " + fieldID
 					    + " ,number = " + numberVal)
 					currRecordRef.fieldValues[fieldID] = numberVal
+					var setNumberFieldValueFormat = {
+						context: "select",
+						format:"general" 
+					}			
 					var setRecordValParams = { 
 						parentTableID:viewFormContext.tableID,
 						recordID:currRecordRef.recordID, 
 						fieldID:fieldID, 
-						value:numberVal }
+						value:numberVal,
+						 valueFormat:setNumberFieldValueFormat}
 					jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
 						// After updating the record, the local cache of records in currentRecordSet will
 						// be out of date. So after updating the record on the server, the locally cached

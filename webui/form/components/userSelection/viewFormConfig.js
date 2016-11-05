@@ -62,11 +62,16 @@ function initUserSelectionRecordEditBehavior(componentContext,userSelectionObjec
 		if(componentLink.linkedValType == linkedComponentValTypeField) {
 			var userFieldID = componentLink.fieldID
 	
+			var userValueFormat = {
+				context: "selectUser",
+				format: "general"
+			}
 			var setRecordValParams = { 
 				parentTableID:viewFormContext.tableID,
 				recordID:currRecordRef.recordID, 
 				fieldID:userFieldID, 
-				userID:selectedUserID }
+				userID:selectedUserID,
+				valueFormat:userValueFormat}
 			jsonAPIRequest("recordUpdate/setUserFieldValue",setRecordValParams,function(updatedFieldVal) {
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached

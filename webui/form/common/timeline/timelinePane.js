@@ -34,7 +34,8 @@ function initFormComponentTimelinePane(timelineParams) {
 		
 		var formattedCreateDate = moment(fieldValChange.updateTime).calendar()
 
-		var valueUpdateLabel = "Changed value to " + fieldValChange.updatedValue
+		var valueUpdateLabel = "Changed value to " + fieldValChange.updatedValue + 
+					" -- " + JSON.stringify(fieldValChange.valueFormat)
 		
 		var updateHTML =  '<div class="list-group-item">' +
 			'<div><small>' + formattedUserName  + ' - ' + formattedCreateDate + '</small></div>' +

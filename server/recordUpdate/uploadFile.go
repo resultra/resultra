@@ -44,10 +44,14 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 		ParentTableID: req.FormValue("parentTableID"),
 		RecordID:      req.FormValue("recordID"),
 		FieldID:       req.FormValue("fieldID")}
+	valueFormat := record.CellUpdateValueFormat{
+		Context: req.FormValue("valueFormatContext"),
+		Format:  req.FormValue("valueFormatFormat")}
 	updateRecordParams := record.SetRecordFileValueParams{
 		RecordUpdateHeader: updateRecordHeader,
 		OrigFileName:       uploadInfo.FileName,
-		CloudFileName:      cloudFileName}
+		CloudFileName:      cloudFileName,
+		ValueFormat:        valueFormat}
 
 	updatedRecord, updateErr := updateRecordValue(req, updateRecordParams)
 	if updateErr != nil {

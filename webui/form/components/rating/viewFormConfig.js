@@ -79,11 +79,13 @@ function initRatingRecordEditBehavior(componentContext,ratingObjectRef) {
 		if(componentLink.linkedValType == linkedComponentValTypeField) {
 			var ratingFieldID = componentLink.fieldID
 	
+			var ratingValueFormat = { context: "rating", format: "star" }
 			var setRecordValParams = { 
 				parentTableID:viewFormContext.tableID,
 				recordID:currRecordRef.recordID, 
 				fieldID:ratingFieldID, 
-				value:ratingVal }
+				value:ratingVal,
+				valueFormat: ratingValueFormat}
 			jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached

@@ -10,7 +10,8 @@ import (
 
 type SetRecordTextValueParams struct {
 	RecordUpdateHeader
-	Value string `json:"value"`
+	Value       string                `json:"value"`
+	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
 }
 
 func (setValParams SetRecordTextValueParams) fieldType() string { return field.FieldTypeText }
@@ -22,11 +23,18 @@ func (valParams SetRecordTextValueParams) generateCellValue() (string, error) {
 	return generic.EncodeJSONString(cellVal)
 }
 
+func (valParams SetRecordTextValueParams) getUpdateProperties() CellUpdateProperties {
+	props := CellUpdateProperties{valParams.ValueFormat}
+
+	return props
+}
+
 // Update a user field value
 
 type SetRecordUserValueParams struct {
 	RecordUpdateHeader
-	UserID string `json:"userID"`
+	UserID      string                `json:"userID"`
+	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
 }
 
 func (setValParams SetRecordUserValueParams) fieldType() string { return field.FieldTypeUser }
@@ -38,11 +46,18 @@ func (valParams SetRecordUserValueParams) generateCellValue() (string, error) {
 	return generic.EncodeJSONString(cellVal)
 }
 
+func (valParams SetRecordUserValueParams) getUpdateProperties() CellUpdateProperties {
+	props := CellUpdateProperties{valParams.ValueFormat}
+
+	return props
+}
+
 // Update a long text field value
 
 type SetRecordLongTextValueParams struct {
 	RecordUpdateHeader
-	Value string `json:"value"`
+	Value       string                `json:"value"`
+	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
 }
 
 func (setValParams SetRecordLongTextValueParams) fieldType() string { return field.FieldTypeLongText }
@@ -54,11 +69,18 @@ func (valParams SetRecordLongTextValueParams) generateCellValue() (string, error
 	return generic.EncodeJSONString(cellVal)
 }
 
+func (valParams SetRecordLongTextValueParams) getUpdateProperties() CellUpdateProperties {
+	props := CellUpdateProperties{valParams.ValueFormat}
+
+	return props
+}
+
 // Update a number field value
 
 type SetRecordNumberValueParams struct {
 	RecordUpdateHeader
-	Value float64 `json:"value"`
+	Value       float64               `json:"value"`
+	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
 }
 
 func (setValParams SetRecordNumberValueParams) fieldType() string { return field.FieldTypeNumber }
@@ -70,11 +92,19 @@ func (valParams SetRecordNumberValueParams) generateCellValue() (string, error) 
 	return generic.EncodeJSONString(cellVal)
 }
 
+func (valParams SetRecordNumberValueParams) getUpdateProperties() CellUpdateProperties {
+
+	props := CellUpdateProperties{valParams.ValueFormat}
+
+	return props
+}
+
 // Update a number field value
 
 type SetRecordBoolValueParams struct {
 	RecordUpdateHeader
-	Value bool `json:"value"`
+	Value       bool                  `json:"value"`
+	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
 }
 
 func (setValParams SetRecordBoolValueParams) fieldType() string { return field.FieldTypeBool }
@@ -86,9 +116,17 @@ func (valParams SetRecordBoolValueParams) generateCellValue() (string, error) {
 	return generic.EncodeJSONString(cellVal)
 }
 
+func (valParams SetRecordBoolValueParams) getUpdateProperties() CellUpdateProperties {
+
+	props := CellUpdateProperties{valParams.ValueFormat}
+
+	return props
+}
+
 type SetRecordTimeValueParams struct {
 	RecordUpdateHeader
-	Value time.Time `json:"value"`
+	Value       time.Time             `json:"value"`
+	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
 }
 
 func (setValParams SetRecordTimeValueParams) fieldType() string { return field.FieldTypeTime }
@@ -100,10 +138,17 @@ func (valParams SetRecordTimeValueParams) generateCellValue() (string, error) {
 	return generic.EncodeJSONString(cellVal)
 }
 
+func (valParams SetRecordTimeValueParams) getUpdateProperties() CellUpdateProperties {
+	props := CellUpdateProperties{valParams.ValueFormat}
+
+	return props
+}
+
 type SetRecordFileValueParams struct {
 	RecordUpdateHeader
-	CloudFileName string `json:"cloudFileName"`
-	OrigFileName  string `json:"origFileName"`
+	ValueFormat   CellUpdateValueFormat `json:"valueFormat"`
+	CloudFileName string                `json:"cloudFileName"`
+	OrigFileName  string                `json:"origFileName"`
 }
 
 func (setValParams SetRecordFileValueParams) fieldType() string { return field.FieldTypeFile }
@@ -115,4 +160,10 @@ func (valParams SetRecordFileValueParams) generateCellValue() (string, error) {
 		OrigName:  valParams.OrigFileName}
 
 	return generic.EncodeJSONString(cellValue)
+}
+
+func (valParams SetRecordFileValueParams) getUpdateProperties() CellUpdateProperties {
+	props := CellUpdateProperties{valParams.ValueFormat}
+
+	return props
 }

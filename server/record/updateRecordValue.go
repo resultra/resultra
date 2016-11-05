@@ -2,6 +2,8 @@ package record
 
 import (
 	"fmt"
+	"resultra/datasheet/server/generic/uniqueID"
+	"time"
 )
 
 type RecordUpdater interface {
@@ -10,6 +12,7 @@ type RecordUpdater interface {
 	recordID() string
 	parentTableID() string
 	generateCellValue() (string, error)
+	getUpdateProperties() CellUpdateProperties
 }
 
 // RecordUpdateHeader is a common header for all record value updates. It also implements
@@ -59,11 +62,21 @@ func UpdateRecordValue(currUserID string, recUpdater RecordUpdater) (*Record, er
 	if cellErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Error generating value for cell update: %v", cellErr)
 	}
-	cellUpdate := NewCellUpdate(currUserID,
-		recUpdater.parentTableID(),
-		recUpdater.fieldID(),
-		recUpdater.recordID(),
-		cellValue)
+
+	updateProps := recUpdater.getUpdateProperties()
+	uniqueUpdateID := uniqueID.GenerateSnowflakeID()
+	updateTimestamp := time.Now().UTC()
+
+	cellUpdate := CellUpdate{
+		UpdateID:        uniqueUpdateID,
+		UserID:          currUserID,
+		ParentTableID:   recUpdater.parentTableID(),
+		FieldID:         recUpdater.fieldID(),
+		RecordID:        recUpdater.recordID(),
+		CellValue:       cellValue,
+		UpdateTimeStamp: updateTimestamp,
+		Properties:      updateProps}
+
 	if saveErr := SaveCellUpdate(cellUpdate); saveErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Error saving cell update: %v", saveErr)
 	}
