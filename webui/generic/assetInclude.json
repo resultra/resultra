@@ -2,5 +2,6 @@
     "subDirs": ["propertiesSidebar",
 		"userAuth",
 		"wizardDialog",
-		"formValidation"]
+		"formValidation",
+		"valueFormat"]
 }

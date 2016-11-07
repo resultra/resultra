@@ -1,10 +1,40 @@
+
+
+function formatTextBoxVal(componentLink, componentContext, rawInputVal) {
+	
+	if(componentLink.linkedValType == linkedComponentValTypeField) {
+		var fieldID = componentLink.fieldID
+		var fieldRef = getFieldRef(fieldID)
+		var fieldType = fieldRef.type
+		if(fieldType == fieldTypeNumber) {
+			return rawInputVal + " F"
+		} else {
+			return rawInputVal
+		}
+	} else {
+		var globalInfo = componentContext.globalsByID[componentLink.globalID]
+		if(globalInfo.type == globalTypeNumber) {
+			return rawInputVal + " F"
+		} else {
+			return rawInputVal
+		}
+	}
+}
+
+
+
 function loadRecordIntoTextBox(textBoxElem, recordRef) {
 	
 	console.log("loadRecordIntoTextBox: loading record into text box: " + JSON.stringify(recordRef))
 	
 	var textBoxObjectRef = textBoxElem.data("objectRef")
+	var $textBoxInput = textBoxElem.find('input')
+	var componentContext = textBoxElem.data("componentContext")
 	
 	var componentLink = textBoxObjectRef.properties.componentLink
+	
+	function setRawInputVal(rawVal) { $textBoxInput.data("rawVal",rawVal) }
+	
 	
 	if(componentLink.linkedValType == linkedComponentValTypeField) {
 		// text box is linked to a field value
@@ -16,16 +46,21 @@ function loadRecordIntoTextBox(textBoxElem, recordRef) {
 		// with the fields shown by the layout's containers.
 		if(recordRef.fieldValues.hasOwnProperty(textBoxFieldID)) {
 
-			var fieldVal = recordRef.fieldValues[textBoxFieldID]
+			var rawFieldVal = recordRef.fieldValues[textBoxFieldID]
 
 			console.log("loadRecordIntoTextBox: Load value into container: " + $(this).attr("id") + " field ID:" + 
-						textBoxFieldID + "  value:" + fieldVal)
+						textBoxFieldID + "  value:" + rawFieldVal)
+			
+			setRawInputVal(rawFieldVal)
+			
+			var formattedVal = formatTextBoxVal(componentLink,componentContext,rawFieldVal)
 
-			textBoxElem.find('input').val(fieldVal)
+			$textBoxInput.val(formattedVal)
 		} // If record has a value for the current container's associated field ID.
 		else
 		{
-			textBoxElem.find('input').val("") // clear the value in the container
+			$textBoxInput.val("") // clear the value in the container
+			setRawInputVal("")
 		}
 		
 	} else {
@@ -33,12 +68,16 @@ function loadRecordIntoTextBox(textBoxElem, recordRef) {
 		
 		var textBoxGlobalID = componentLink.globalID
 		if(textBoxGlobalID in currGlobalVals) {
-			var globalVal = currGlobalVals[textBoxGlobalID]
-			textBoxElem.find('input').val(globalVal)
+			var rawGlobalVal = currGlobalVals[textBoxGlobalID]
+			
+			$textBoxInput.val(rawGlobalVal)
+			
+			setRawInputVal(rawGlobalVal)
 		}
 		else
 		{
-			textBoxElem.find('input').val("") // clear the value in the container
+			$textBoxInput.val("") // clear the value in the container
+			setRawInputVal("")
 		}		
 	}
 	
@@ -46,27 +85,34 @@ function loadRecordIntoTextBox(textBoxElem, recordRef) {
 	
 }
 
-function initTextBoxFieldEditBehavior(container, textFieldObjectRef) {
+function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput, textFieldObjectRef) {
 	
 	var componentLink = textFieldObjectRef.properties.componentLink
 	
 	var fieldRef = getFieldRef(componentLink.fieldID)
 	if(fieldRef.isCalcField) {
-		container.find('input').prop('disabled',true);
+		$textBoxInput.prop('disabled',true);
 		return;  // stop initialization, the text box is read only.
 	}
-
-	container.focusout(function () {
-		var inputVal = container.find("input").val()
 	
-		// TODO - get edit information from single "objectRef", rather
-		// than a scattering of different data values.
-		var containerID = container.attr("id")
-	
-		var currTextObjRef = getElemObjectRef(containerID)
+	var fieldType = fieldRef.type
 		
-		var componentLink = currTextObjRef.properties.componentLink
+	if(fieldType == fieldTypeNumber) {
+		$textBoxInput.focusin(function() {
+			// When focusing on the text input box, replaced the formatted value with 
+			// the raw input value.
+			var rawInputVal = $textBoxInput.data("rawVal")
+			console.log("Focus in for number field: raw value for editing: " + rawInputVal)
+			$textBoxInput.val(rawInputVal)
+		})
+	}
 	
+
+	$textBoxInput.focusout(function () {
+
+		var containerID = $container.attr("id")
+		var currTextObjRef = getElemObjectRef(containerID)		
+		var componentLink = currTextObjRef.properties.componentLink
 		var fieldID = componentLink.fieldID
 		var fieldRef = getFieldRef(fieldID)
 		var fieldType = fieldRef.type
@@ -75,7 +121,17 @@ function initTextBoxFieldEditBehavior(container, textFieldObjectRef) {
 			+ " ,fieldID: " + fieldID
 		    + " ,fieldType: " + fieldType
 			+ " , inputval:" + inputVal)
-	
+
+		// Retrieve the "raw input" value entered by the user and 
+		// update the "rawVal" data setting on the text box.
+		var inputVal = $textBoxInput.val()
+		$textBoxInput.data("rawVal",inputVal)
+		
+		// Now that entry of the raw value is complete, revert the 
+		// displayed value back to the format specified for the text box.
+		var formattedVal = formatTextBoxVal(componentLink,componentContext,inputVal)
+		$textBoxInput.val(formattedVal)
+		
 		var currRecordRef = currRecordSet.currRecordRef()
 		if(currRecordRef != null) {
 		
@@ -83,7 +139,7 @@ function initTextBoxFieldEditBehavior(container, textFieldObjectRef) {
 			// through a field but not change it. In this case we don't need to update the record.
 			if(currRecordRef.fieldValues[fieldID] != inputVal) {
 			
-				if(fieldType == "text") {
+				if(fieldType == fieldTypeText) {
 					currRecordRef.fieldValues[fieldID] = inputVal
 					
 					var textBoxTextValueFormat = {
@@ -107,7 +163,7 @@ function initTextBoxFieldEditBehavior(container, textFieldObjectRef) {
 						loadCurrRecordIntoLayout()
 					}) // set record's text field value
 				
-				} else if (fieldType == "number") {
+				} else if (fieldType == fieldTypeNumber) {
 					var numberVal = Number(inputVal)
 					if(!isNaN(numberVal)) {
 						console.log("Change number val: "
@@ -150,13 +206,13 @@ function initTextBoxFieldEditBehavior(container, textFieldObjectRef) {
 	
 }
 
-function initTextBoxGlobalValBehavior(componentContext,$container, textFieldObjectRef) {
+function initTextBoxGlobalValBehavior(componentContext,$textBoxInput, textFieldObjectRef) {
 	
 	var componentLink = textFieldObjectRef.properties.componentLink
 	
 	var globalInfo = componentContext.globalsByID[componentLink.globalID]
-	
-	$container.focusout(function () {
+		
+	$textBoxInput.focusout(function () {
 		var inputVal = $container.find("input").val()
 		if(globalInfo.type == globalTypeNumber) {
 			var numberVal = Number(inputVal)
@@ -186,20 +242,35 @@ function initTextBoxGlobalValBehavior(componentContext,$container, textFieldObje
 
 function initTextBoxRecordEditBehavior(componentContext,textFieldObjectRef) {
 	
-	var container = $('#'+textFieldObjectRef.textBoxID)
+	var $container = $('#'+textFieldObjectRef.textBoxID)
+	var $textBoxInput = $container.find("input")
 
-	container.data("viewFormConfig", {
+	$container.data("viewFormConfig", {
 		loadRecord: loadRecordIntoTextBox
 	})
+	
+	$container.data("componentContext",componentContext)
+	
+	
+	// When the user clicks on the text box input control, prevent the click from propagating higher.
+	// This allows the user to change the values without selecting the form component itself.
+	// The user can still select the component by clicking on the label or anywwhere outside
+	// the input control.
+	$textBoxInput.click(function (event){
+		event.stopPropagation();
+   	 	//   ... your code here
+		return false;
+	});
+	
 	
 	var componentLink = textFieldObjectRef.properties.componentLink
 	
 	if(componentLink.linkedValType == linkedComponentValTypeField) {
-		initTextBoxFieldEditBehavior(container,textFieldObjectRef)
+		initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput,textFieldObjectRef)
 		
 	} else { 
 		assert(componentLink.linkedValType == linkedComponentValTypeGlobal)
-		initTextBoxGlobalValBehavior(componentContext,container,textFieldObjectRef)
+		initTextBoxGlobalValBehavior(componentContext,$textBoxInput,textFieldObjectRef)
 	}
 
 	
