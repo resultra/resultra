@@ -3,6 +3,7 @@ package record
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/userAuth"
 	"sort"
 	"time"
@@ -31,6 +32,62 @@ func (s ByTimelineUpdateTime) Less(i, j int) bool {
 	return s[i].UpdateTimeStamp.After(s[j].UpdateTimeStamp)
 }
 
+type UserTimelineVal struct {
+	UserName      string `json:"userName"`
+	IsCurrentUser bool   `json:"isCurrentUser"`
+}
+
+type FileTimelineValue struct {
+	CloudName string `json:"cloudName"`
+	OrigName  string `json:"origName"`
+	Url       string `json:"url"`
+}
+
+func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal string) (interface{}, error) {
+
+	if fieldType == field.FieldTypeUser {
+		var userVal UserCellValue
+		if err := generic.DecodeJSONString(encodedVal, &userVal); err != nil {
+			return nil, fmt.Errorf("DecodeCellValue: failure decoding user value: %v", err)
+		}
+
+		userInfo, err := userAuth.GetUserInfoByID(userVal.UserID)
+		if err != nil {
+			return nil, fmt.Errorf("DecodeTimelineCellValue: %v", err)
+		}
+
+		isCurrentUser := false
+		if currUserID == userVal.UserID {
+			isCurrentUser = true
+		}
+
+		userTimelineVal := UserTimelineVal{
+			UserName:      userInfo.UserName,
+			IsCurrentUser: isCurrentUser}
+
+		return userTimelineVal, nil
+
+	} else if fieldType == field.FieldTypeFile {
+
+		var fileVal FileCellValue
+		if err := generic.DecodeJSONString(encodedVal, &fileVal); err != nil {
+			return nil, fmt.Errorf("DecodeCellValue: failure decoding file value: %v", err)
+		}
+
+		fileTimelineVal := FileTimelineValue{
+			OrigName:  fileVal.OrigName,
+			CloudName: fileVal.CloudName,
+			Url:       GetFileURL(fileVal.CloudName)}
+
+		return fileTimelineVal, nil
+
+	} else {
+		// If the field type is anything but a user or file field, the decoded value can be returned as is.
+		// However, if the field type is a user, additional information needs to be retrieved for display.
+		return DecodeCellValue(fieldType, encodedVal)
+	}
+}
+
 func GetFieldValUpdateTimelineInfo(currUserID string,
 	parentTableID string, recordID string, fieldID string) ([]FieldValTimelineChangeInfo, error) {
 
@@ -56,7 +113,7 @@ func GetFieldValUpdateTimelineInfo(currUserID string,
 				currUpdate.FieldID, parentTableID, fieldErr)
 		}
 
-		decodedCellVal, decodeErr := DecodeCellValue(fieldInfo.Type, currUpdate.CellValue)
+		decodedCellVal, decodeErr := DecodeTimelineCellValue(currUserID, fieldInfo.Type, currUpdate.CellValue)
 		if decodeErr != nil {
 			return nil, fmt.Errorf(
 				"NewUpdateFieldValueIndex: Unable to cell value for field ID = %v: tableID=%v: error=%v ",
