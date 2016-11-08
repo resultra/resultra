@@ -1,20 +1,20 @@
 
 
-function formatTextBoxVal(componentLink, componentContext, rawInputVal) {
+function formatTextBoxVal(componentLink, componentContext, rawInputVal, format) {
 	
 	if(componentLink.linkedValType == linkedComponentValTypeField) {
 		var fieldID = componentLink.fieldID
 		var fieldRef = getFieldRef(fieldID)
 		var fieldType = fieldRef.type
 		if(fieldType == fieldTypeNumber) {
-			return rawInputVal + " F"
+			return formatNumberValue(format,rawInputVal)
 		} else {
 			return rawInputVal
 		}
 	} else {
 		var globalInfo = componentContext.globalsByID[componentLink.globalID]
 		if(globalInfo.type == globalTypeNumber) {
-			return rawInputVal + " F"
+			return formatNumberValue(format,rawInputVal)
 		} else {
 			return rawInputVal
 		}
@@ -53,7 +53,8 @@ function loadRecordIntoTextBox(textBoxElem, recordRef) {
 			
 			setRawInputVal(rawFieldVal)
 			
-			var formattedVal = formatTextBoxVal(componentLink,componentContext,rawFieldVal)
+			var formattedVal = formatTextBoxVal(componentLink,componentContext,
+					rawFieldVal,textBoxObjectRef.properties.valueFormat.format)
 
 			$textBoxInput.val(formattedVal)
 		} // If record has a value for the current container's associated field ID.
@@ -129,7 +130,8 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 		
 		// Now that entry of the raw value is complete, revert the 
 		// displayed value back to the format specified for the text box.
-		var formattedVal = formatTextBoxVal(componentLink,componentContext,inputVal)
+		var formattedVal = formatTextBoxVal(componentLink,componentContext,
+						inputVal,currTextObjRef.properties.valueFormat.format)
 		$textBoxInput.val(formattedVal)
 		
 		var currRecordRef = currRecordSet.currRecordRef()

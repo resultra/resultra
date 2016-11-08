@@ -63,3 +63,15 @@ func (updateParams TextBoxResizeParams) updateProps(textBox *TextBox) error {
 
 	return nil
 }
+
+type TextBoxValueFormatParams struct {
+	TextBoxIDHeader
+	ValueFormat TextBoxValueFormatProperties `json:"valueFormat"`
+}
+
+func (updateParams TextBoxValueFormatParams) updateProps(textBox *TextBox) error {
+
+	textBox.Properties.ValueFormat = updateParams.ValueFormat
+
+	return nil
+}

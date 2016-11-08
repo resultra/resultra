@@ -1,9 +1,34 @@
-function formatNumberValue(format, rawVal) {
 
+function initNumberFormatSelection(params) {
+	
+	var selectFormatSelector = createPrefixedSelector(params.elemPrefix,"NumberFormatSelection")
+	
+	$(selectFormatSelector).val(params.initialFormat)
+	initSelectionChangedHandler(selectFormatSelector, params.formatChangedCallback)
+}
+
+
+function formatNumberValue(format, rawVal) {
+	
+	function isInt(val) {
+		return Number(val) % 1 === 0 // remainder non-zero with modulo arithmetic
+	}
+	
 	switch (format) {
-		case "percOPrec":
+		case "percent":
+			return (Number(rawVal)*100.0).toFixed(2) + "%"
 		case "general":
-			return rawVal
+			if(isInt(rawVal)) {
+				return Number(rawVal)
+				
+			} else {
+				return accounting.toFixed(rawVal,2)	
+			}
+			
+		case "currency":
+			return accounting.formatMoney(rawVal)
+		case "currency0prec":
+			return accounting.formatMoney(rawVal,{precision:0})
 		default:
 			return rawVal
 	}

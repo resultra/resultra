@@ -12,13 +12,18 @@ import (
 
 const textBoxEntityKind string = "textbox"
 
+type TextBoxValueFormatProperties struct {
+	Format string `json:"format"`
+}
+
 type TextBoxProperties struct {
 	ComponentLink common.ComponentLink           `json:"componentLink"`
 	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
+	ValueFormat   TextBoxValueFormatProperties   `json:"valueFormat"`
 }
 
 type TextBox struct {
-	ParentFormID string            `json:"parentID"`
+	ParentFormID string            `json:"parentFormID"`
 	TextBoxID    string            `json:"textBoxID"`
 	Properties   TextBoxProperties `json:"properties"`
 }
@@ -49,9 +54,11 @@ func saveNewTextBox(params NewTextBoxParams) (*TextBox, error) {
 		return nil, fmt.Errorf("saveNewTextBox: %v", compLinkErr)
 	}
 
+	defaultValueFormat := TextBoxValueFormatProperties{Format: "general"}
 	properties := TextBoxProperties{
 		Geometry:      params.Geometry,
-		ComponentLink: params.ComponentLink}
+		ComponentLink: params.ComponentLink,
+		ValueFormat:   defaultValueFormat}
 
 	newTextBox := TextBox{ParentFormID: params.ParentFormID,
 		TextBoxID:  uniqueID.GenerateSnowflakeID(),
