@@ -43,8 +43,14 @@ function initFilterPropertyPanel(panelParams) {
 
 	var addFilterSelector = createPrefixedSelector(panelParams.elemPrefix,'FilterRecordsAddFilter')	
 	initButtonClickHandler(addFilterSelector,function() {
-		console.log("Add filter button selected")	
+		console.log("Add filter button selected")
+		var addFilterParams = {
+			elemPrefix: panelParams.elemPrefix
+		}
+		openAddFilterDialog(addFilterParams)
 	}) 
+	
+	
 
 	
 	
