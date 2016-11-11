@@ -89,6 +89,15 @@ function initSelectionChangedHandler(selectionSelector, handlerFunc) {
 	
 }
 
+function initSelectControlChangeHandler($selectControl, handlerFunc) {
+	$selectControl.unbind("change")				
+	$selectControl.change(function(){
+		var newValue = $selectControl.val()
+		handlerFunc(newValue)
+	})
+	
+}
+
 
 function insertTextAreaAtCursor(elem, newText) {
 	

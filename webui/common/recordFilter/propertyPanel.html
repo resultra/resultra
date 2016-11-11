@@ -1,3 +1,33 @@
+{{define "recordFilterSelectFieldDropdown"}}
+<div class="btn-group" role="group">
+	<button type="button" class="btn btn-xs btn-default dropdown-toggle" 
+			id="{{.}}RecordFilterSelectFieldDropdownMenuLabel"
+			data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		  <span class="glyphicon glyphicon-plus"></span>
+		  Add Filter
+	</button>
+	<ul id="{{.}}RecordFilterSelectFieldDropdownMenu"
+				class="dropdown-menu dropdown-menu-right"
+				aria-labelledby="{{.}}RecordFilterSelectFieldDropdownMenuLabel">
+	</ul>
+</div>
+
+{{end}}
+
+{{define "recordFilterRuleTemplates"}}
+
+<div style="display:none;">
+	
+	<div id="recordFilterNumberFieldRuleListItem" class="form-group">
+		<select class="form-control input-sm" class="recordFilterRuleSelection"></select>
+	      <input class="form-control input-sm" type="text" placeholder="Enter a value" class="recordFilterRuleParam">
+	</div> <!-- Field name field -->
+	
+</div>
+
+{{end}}
+
+
 {{define "recordFilterPropertyPanel"}}
 
 	<div class="filterCheckboxList">
@@ -9,6 +39,9 @@
 		<label>Filters available for selection:</label>
 		<div class="list-group" id="{{.}}AvailableFilterList"></div>
 	</div>
+
+	<div class="list-group" id="{{.}}RecordFilterFilterRuleList">
+	</div>	
 	
 	<button type="button" class="btn btn-default btn-xs" id="{{.}}FilterRecordsManageFiltersButton">
 	  <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Manage Filters
@@ -18,6 +51,9 @@
 	  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add Filter
 	</button>
 	
-	{{template "addRecordFilterDialog" . }}
+	{{template "recordFilterSelectFieldDropdown" .}}
+	
+	{{template "recordFilterRuleTemplates"}}
+
 	
 {{end}}
