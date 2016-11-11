@@ -133,55 +133,18 @@ function initFilterPropertyPanel(panelParams) {
 	initButtonClickHandler(manageFiltersSelector,function() {
 		openRecordFilterManageFiltersDialog(panelParams.tableID)	
 	}) 
-	
-	function populateAddFilterDropdownMenu(fieldsByID) {
 		
-		var fieldSelectionSelector = createPrefixedSelector(panelParams.elemPrefix,
-						'RecordFilterSelectFieldDropdownMenu')
-		var $fieldSelect = $(fieldSelectionSelector)
-	
-		$fieldSelect.empty()
-		
-		var fieldIDAttrName = "data-fieldID"
-	
-		// Populate the selection menu for selecting the field to filter on
-		for (var fieldID in fieldsByID) {
-			var fieldInfo = fieldsByID[fieldID]
-			
-			var $fieldListItem = $('<li><a data-fieldID="'+fieldID+'" href="#">' + fieldInfo.name + '</a></li>')
-		 	$fieldSelect.append($fieldListItem)
-			$fieldListItem.attr(fieldIDAttrName,fieldID)
-			console.log("Populating field: " + $fieldListItem.data("fieldID"))
-		} // for each field	
-		
-		$fieldSelect.find("a").click(function(e) {
-			
-			var fieldID = $(this).attr(fieldIDAttrName)
-			
-			console.log("click on field: " + fieldID)
-			var fieldInfo = fieldsByID[fieldID]
-			
+	var fieldSelectionDropdownParams = {
+		elemPrefix: panelParams.elemPrefix,
+		tableID: panelParams.tableID,
+		fieldTypes: [fieldTypeAll],
+		fieldSelectionCallback: function(fieldInfo) {
 			var filterRuleListSelector = createPrefixedSelector(panelParams.elemPrefix,
 							'RecordFilterFilterRuleList')
-			var $filterRuleList = $(filterRuleListSelector)
-				
+			var $filterRuleList = $(filterRuleListSelector)		
 			$filterRuleList.append(recordFilterPanelRuleItem(panelParams,fieldInfo))
-	
-				e.preventDefault();// prevent the default anchor functionality
-		})
-				
+		}
 	}
-	
-	loadFieldInfo(panelParams.tableID,[fieldTypeAll],function(fieldsByID) {
-				
-		populateAddFilterDropdownMenu(fieldsByID)
-			
-	})
-	
-	
-	
-
-	
-	
+	initFieldSelectionDropdown(fieldSelectionDropdownParams)	
 	
 }

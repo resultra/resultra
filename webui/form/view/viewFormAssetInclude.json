@@ -2,7 +2,6 @@
 	"subDirs":["../../generic",
 		"../../common",
 		"../common/timeline",
-		"../../field",
 			"../components"],
 	"cssFiles": ["editRecord.css","viewForm.css"],
 	"jsFiles": ["recordSet.js","viewForm.js"],

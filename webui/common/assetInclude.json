@@ -11,5 +11,6 @@
 		"global",
 		"pageLayout",
 		"recordSort",
-		"userSelection"]
+		"userSelection",
+		"field"]
 }

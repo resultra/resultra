@@ -2,6 +2,8 @@ package design
 
 import (
 	"resultra/datasheet/server/databaseController"
+	"resultra/datasheet/webui/common/field"
+	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/form/components/checkBox"
 	"resultra/datasheet/webui/form/components/datePicker"
 	"resultra/datasheet/webui/form/components/header"
@@ -14,11 +16,12 @@ import (
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 
-type FormTemplateParams struct {
-	NamePanelParams   propertiesSidebar.PanelTemplateParams
-	FilterPanelParams propertiesSidebar.PanelTemplateParams
-	RolesPanelParams  propertiesSidebar.PanelTemplateParams
-	SortPanelParams   propertiesSidebar.PanelTemplateParams
+type FormPropertyTemplateParams struct {
+	NamePanelParams       propertiesSidebar.PanelTemplateParams
+	FilterPanelParams     propertiesSidebar.PanelTemplateParams
+	RolesPanelParams      propertiesSidebar.PanelTemplateParams
+	SortPanelParams       propertiesSidebar.PanelTemplateParams
+	FilterPropPanelParams recordFilter.FilterPanelTemplateParams
 }
 
 // Aggregate the template parameters from all the form components, then
@@ -38,27 +41,38 @@ type DesignFormTemplateParams struct {
 	RatingParams        rating.RatingDesignTemplateParams
 	UserSelectionParams userSelection.UserSelectionDesignTemplateParams
 	HeaderParams        header.HeaderTemplateParams
-	FormParams          FormTemplateParams
+	FormPropertyParams  FormPropertyTemplateParams
 }
 
 var designFormTemplateParams DesignFormTemplateParams
 
 func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInfo) DesignFormTemplateParams {
 
-	formParams := FormTemplateParams{
+	elemPrefix := "form_"
+
+	fieldSelectionParams := field.FieldSelectionDropdownTemplateParams{
+		ElemPrefix:     elemPrefix,
+		ButtonTitle:    "Add Filter",
+		ButtonIconName: "glyphicon-plus"}
+	filterPanelParams := recordFilter.FilterPanelTemplateParams{
+		ElemPrefix:           "form_",
+		FieldSelectionParams: fieldSelectionParams}
+
+	formPropParams := FormPropertyTemplateParams{
 		NamePanelParams:   propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Form Name", PanelID: "formName"},
 		FilterPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Filtering", PanelID: "formFilter"},
 		RolesPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Roles and Privileges",
 			PanelID: "formRoles"},
-		SortPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Sorting", PanelID: "formSort"},
-	}
+		SortPanelParams:       propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Sorting", PanelID: "formSort"},
+		FilterPropPanelParams: filterPanelParams}
 
 	templParams := DesignFormTemplateParams{
-		Title:               "Design Form",
-		DatabaseID:          formInfo.DatabaseID,
-		FormID:              formInfo.FormID,
-		TableID:             formInfo.TableID,
-		FormName:            formInfo.FormName,
+		Title:      "Design Form",
+		DatabaseID: formInfo.DatabaseID,
+		FormID:     formInfo.FormID,
+		TableID:    formInfo.TableID,
+		FormName:   formInfo.FormName,
+
 		CheckboxParams:      checkBox.DesignTemplateParams,
 		DatePickerParams:    datePicker.DesignTemplateParams,
 		TextBoxParams:       textBox.DesignTemplateParams,
@@ -68,7 +82,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		ImageParams:         image.DesignTemplateParams,
 		RatingParams:        rating.DesignTemplateParams,
 		HeaderParams:        header.TemplateParams,
-		FormParams:          formParams}
+		FormPropertyParams:  formPropParams}
 
 	return templParams
 

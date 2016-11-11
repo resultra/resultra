@@ -2,7 +2,6 @@
 	"subDirs":["../../generic",
 				"../../common",
 				"../common",
-				"../../field",
 				"../components"],
 	"cssFiles": ["viewDashboard.css"],
 	"jsFiles": ["viewDashboard.js"],
