@@ -16,7 +16,6 @@ function initFieldSelectionDropdown(params) {
 			var $fieldListItem = $('<li><a data-fieldID="'+fieldID+'" href="#">' + fieldInfo.name + '</a></li>')
 		 	$fieldSelect.append($fieldListItem)
 			$fieldListItem.attr(fieldIDAttrName,fieldID)
-			console.log("Populating field: " + $fieldListItem.data("fieldID"))
 		} // for each field	
 		
 		$fieldSelect.find("a").click(function(e) {
@@ -27,7 +26,7 @@ function initFieldSelectionDropdown(params) {
 			var fieldInfo = fieldsByID[fieldID]
 			params.fieldSelectionCallback(fieldInfo)
 		
-				e.preventDefault();// prevent the default anchor functionality
+			e.preventDefault();// prevent the default anchor functionality
 		})
 				
 	}
