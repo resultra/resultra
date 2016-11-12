@@ -1,20 +1,22 @@
 package barChart
 
 import (
+	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/dashboard/components/common/newComponentDialog"
 	"resultra/datasheet/webui/dashboard/components/common/valueSummary"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 
 type BarChartDesignTemplateParams struct {
-	ElemPrefix           string
-	SelectTableParams    newComponentDialog.SelectTableTemplateParams
-	ValueGroupingParams  newComponentDialog.ValueGroupingTemplateParams
-	ValueSummaryParams   valueSummary.ValueSummaryTemplateParams
-	TitlePanelParams     propertiesSidebar.PanelTemplateParams
-	XAxisPanelParams     propertiesSidebar.PanelTemplateParams
-	YAxisPanelParams     propertiesSidebar.PanelTemplateParams
-	FilteringPanelParams propertiesSidebar.PanelTemplateParams
+	ElemPrefix            string
+	SelectTableParams     newComponentDialog.SelectTableTemplateParams
+	ValueGroupingParams   newComponentDialog.ValueGroupingTemplateParams
+	ValueSummaryParams    valueSummary.ValueSummaryTemplateParams
+	TitlePanelParams      propertiesSidebar.PanelTemplateParams
+	XAxisPanelParams      propertiesSidebar.PanelTemplateParams
+	YAxisPanelParams      propertiesSidebar.PanelTemplateParams
+	FilteringPanelParams  propertiesSidebar.PanelTemplateParams
+	FilterPropPanelParams recordFilter.FilterPanelTemplateParams
 }
 
 // Template parameters when the summary table is in view mode
@@ -42,14 +44,15 @@ func init() {
 		"Field to summarize with", "Summarize values by"}
 
 	DesignTemplateParams = BarChartDesignTemplateParams{
-		ElemPrefix:           elemPrefix,
-		SelectTableParams:    tableSelectionParams,
-		ValueGroupingParams:  valueGroupingParams,
-		ValueSummaryParams:   valueSummaryParams,
-		TitlePanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "barChartTitle"},
-		XAxisPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "X Axis", PanelID: "barChartXAxis"},
-		YAxisPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Y Axis", PanelID: "barChartYAxis"},
-		FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "barChartFiltering"}}
+		ElemPrefix:            elemPrefix,
+		SelectTableParams:     tableSelectionParams,
+		ValueGroupingParams:   valueGroupingParams,
+		ValueSummaryParams:    valueSummaryParams,
+		TitlePanelParams:      propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "barChartTitle"},
+		XAxisPanelParams:      propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "X Axis", PanelID: "barChartXAxis"},
+		YAxisPanelParams:      propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Y Axis", PanelID: "barChartYAxis"},
+		FilteringPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "barChartFiltering"},
+		FilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(elemPrefix)}
 
 	ViewTemplateParams = BarChartViewTemplateParams{
 		ElemPrefix:           elemPrefix,

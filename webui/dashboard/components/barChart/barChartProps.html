@@ -1,6 +1,3 @@
-{{define "barChartFilterProps"}}
-	{{template "recordFilterPropertyPanel" "barChart_"}}
-{{end}}
 
 {{define "barChartTitleProps"}}
 	{{template "dashboardComponentTitlePropertyPanel" "barChart_"}}
@@ -18,7 +15,7 @@
 		{{template "propertyPanelSuffix"}}
 
 		{{template "propertyPanelPrefix" .FilteringPanelParams}}
-			{{template "barChartFilterProps"}}
+			{{template "recordFilterPropertyPanel" .FilterPropPanelParams}}
 		{{template "propertyPanelSuffix"}}
 
 		{{template "propertyPanelPrefix" .XAxisPanelParams}}

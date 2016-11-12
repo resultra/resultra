@@ -1,5 +1,4 @@
 {{define "summaryTableFilterProps"}}
-	{{template "recordFilterPropertyPanel" "summaryTable_"}}
 {{end}}
 
 {{define "summaryTableTitleProps"}}
@@ -22,7 +21,7 @@
 		{{template "propertyPanelSuffix"}}
 
 		{{template "propertyPanelPrefix" .FilteringPanelParams}}
-			{{template "summaryTableFilterProps"}}
+			{{template "recordFilterPropertyPanel" .FilterPropPanelParams}}
 		{{template "propertyPanelSuffix"}}
 
 		{{template "propertyPanelPrefix" .RowPanelParams}}

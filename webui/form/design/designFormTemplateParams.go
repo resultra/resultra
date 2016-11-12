@@ -2,7 +2,6 @@ package design
 
 import (
 	"resultra/datasheet/server/databaseController"
-	"resultra/datasheet/webui/common/field"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/form/components/checkBox"
 	"resultra/datasheet/webui/form/components/datePicker"
@@ -50,21 +49,13 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 
 	elemPrefix := "form_"
 
-	fieldSelectionParams := field.FieldSelectionDropdownTemplateParams{
-		ElemPrefix:     elemPrefix,
-		ButtonTitle:    "Add Filter",
-		ButtonIconName: "glyphicon-plus"}
-	filterPanelParams := recordFilter.FilterPanelTemplateParams{
-		ElemPrefix:           "form_",
-		FieldSelectionParams: fieldSelectionParams}
-
 	formPropParams := FormPropertyTemplateParams{
 		NamePanelParams:   propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Form Name", PanelID: "formName"},
 		FilterPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Filtering", PanelID: "formFilter"},
 		RolesPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Roles and Privileges",
 			PanelID: "formRoles"},
 		SortPanelParams:       propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Sorting", PanelID: "formSort"},
-		FilterPropPanelParams: filterPanelParams}
+		FilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(elemPrefix)}
 
 	templParams := DesignFormTemplateParams{
 		Title:      "Design Form",

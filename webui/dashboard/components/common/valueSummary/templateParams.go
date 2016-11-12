@@ -6,8 +6,3 @@ type ValueSummaryTemplateParams struct {
 	SummaryFieldLabel string
 	SummarizeByLabel  string
 }
-
-type ColumnsValueSummaryTemplateParams struct {
-	ElemPrefix    string
-	PromptInfoMsg string
-}

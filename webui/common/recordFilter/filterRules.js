@@ -79,7 +79,7 @@ function numberFilterPanelRuleItem(panelParams, fieldInfo) {
 	$filterListItem.data("filterRuleConfigFunc",function() {
 		var ruleID = $ruleSelection.val()
 		var paramVal = $paramInput.val()
-		if(ruleID.length > 0) {
+		if(ruleID !== null && ruleID.length > 0) {
 			var ruleInfo = filterRulesNumber[ruleID]
 			if(ruleInfo.hasParam) {				
 			} else {
