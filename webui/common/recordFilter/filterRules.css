@@ -10,3 +10,8 @@
 .recordFilterPanelRuleListItem .form-group {
 	margin-bottom: 10px;
 }
+
+/* Adjust the vertical positioning of the close button to better line up with the field label */
+.recordFilterPanelRuleListItem .close {
+	line-height: 15px;
+}

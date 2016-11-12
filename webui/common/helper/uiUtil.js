@@ -71,6 +71,15 @@ function initButtonClickHandler(buttonSelector,handlerFunc) {
 	})
 }
 
+function initButtonControlClickHandler($button,handlerFunc) {
+	$button.unbind("click")
+	$button.click(function(e) {
+		$(this).blur(); // de-select the button after it's been clicked
+	    e.preventDefault();// prevent the default  functionality
+		handlerFunc()
+	})
+}
+
 function disableButton(buttonSelector) {
 	$(buttonSelector).prop('disabled', true);
 }

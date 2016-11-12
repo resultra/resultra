@@ -20,17 +20,20 @@ function updateFilterRules(panelParams) {
 	return filterRules
 }
 
-function createFilterListRuleListItem(fieldName) {
+function createFilterListRuleListItem(panelParams,fieldName) {
 	
-	var filterListItemHTML =  '' +
-		'<div class="list-group-item recordFilterPanelRuleListItem">' +
-			'<label>' +
-				fieldName +
-			'</label>' +
-		'</div>';
+	var $filterRuleListItem = $('#recordFilterRuleListItem').clone()
+	$filterRuleListItem.attr("id","")
 	
-	var $filterRuleListItem = $(filterListItemHTML)
-		
+	var $fieldLabel = $filterRuleListItem.find(".filterRuleListItemLabel")
+	$fieldLabel.text(fieldName)
+	
+	var $deleteButton = $filterRuleListItem.find(".filterRuleListItemDeleteRuleButton")
+	initButtonControlClickHandler($deleteButton,function() {
+		$filterRuleListItem.remove()
+		updateFilterRules(panelParams)
+	})
+
 	return $filterRuleListItem
 }
 
@@ -106,7 +109,7 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo) {
 		updateFilterRules(panelParams)
     });
 	
-	var $filterListItem = createFilterListRuleListItem(fieldInfo.name)
+	var $filterListItem = createFilterListRuleListItem(panelParams,fieldInfo.name)
 	$filterListItem.data("filterRuleConfigFunc",function() {
 		console.log("Date filter rule - getting config")
 		var modeID = $dateFilterModeSelection.val()
@@ -164,7 +167,7 @@ function numberFilterPanelRuleItem(panelParams, fieldInfo) {
 	})
 		
 		
-	var $filterListItem = createFilterListRuleListItem(fieldInfo.name)
+	var $filterListItem = createFilterListRuleListItem(panelParams,fieldInfo.name)
 		
 	$filterListItem.data("filterRuleConfigFunc",function() {
 		var ruleID = $ruleSelection.val()
