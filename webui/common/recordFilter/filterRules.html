@@ -3,10 +3,32 @@
 <div style="display:none;">
 	
 	<div id="recordFilterNumberFieldRuleListItem" class="form-group">
-		<select class="form-control input-sm" class="recordFilterRuleSelection"></select>
-	      <input class="form-control input-sm" type="text" placeholder="Enter a value" class="recordFilterRuleParam">
+		<select class="form-control input-sm recordFilterRuleSelection"></select>
+	      <input class="form-control input-sm recordFilterRuleParam" type="text" placeholder="Enter a value">
 	</div> <!-- Field name field -->
-	
+
+
+	<div id="recordFilterDateFieldRuleListItem">
+		<div class="form-group">
+			<select class="form-control input-sm filterDateRuleModeSelection"></select>
+		</div> <!-- Field name field -->
+		
+		<div class="form-group filterCustomStartEndDateControls">
+	        <div class='input-group date filterDateRangeStartInput'>
+	            <input type='text' class="form-control input-sm" placeholder="Enter a start date"/>
+	            <span class="input-group-addon ">
+	                <span class="glyphicon glyphicon-calendar"></span>
+	            </span>
+	        </div>
+	        <div class='input-group date filterDateRangeEndInput'>
+	            <input type='text' class="form-control input-sm" placeholder="Enter an end date"/>
+	            <span class="input-group-addon">
+	                <span class="glyphicon glyphicon-calendar"></span>
+	            </span>
+	        </div>
+		
+		</div> <!-- Field name field -->	
+	</div>
 </div>
 
 {{end}}
