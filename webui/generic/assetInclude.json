@@ -3,5 +3,6 @@
 		"userAuth",
 		"wizardDialog",
 		"formValidation",
-		"valueFormat"]
+		"valueFormat",
+		"bootstrapDropdown"]
 }
