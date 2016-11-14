@@ -31,9 +31,6 @@ type BarChartProps struct {
 	Title string `json:"title"`
 
 	YAxisVals values.ValSummary `json:"yAxisValSummary"`
-
-	AvailableFilterIDs []string `json:"availableFilterIDs"`
-	DefaultFilterIDs   []string `json:"defaultFilterIDs"`
 }
 
 // DashboardBarChart is the datastore object for dashboard bar charts.
@@ -111,14 +108,12 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 	}
 
 	barChartProps := BarChartProps{
-		XAxisVals:          *valGrouping,
-		XAxisSortValues:    params.XAxisSortValues,
-		DataSrcTableID:     params.DataSrcTableID,
-		YAxisVals:          *valSummary,
-		Geometry:           params.Geometry,
-		Title:              "", // optional
-		AvailableFilterIDs: []string{},
-		DefaultFilterIDs:   []string{}}
+		XAxisVals:       *valGrouping,
+		XAxisSortValues: params.XAxisSortValues,
+		DataSrcTableID:  params.DataSrcTableID,
+		YAxisVals:       *valSummary,
+		Geometry:        params.Geometry,
+		Title:           ""}
 
 	newBarChart := BarChart{
 		ParentDashboardID: params.ParentDashboardID,

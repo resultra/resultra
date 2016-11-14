@@ -24,9 +24,6 @@ type SummaryTableProps struct {
 	Title string `json:"title"`
 
 	ColumnValSummaries []values.ValSummary `json:"columnValSummaries"`
-
-	AvailableFilterIDs []string `json:"availableFilterIDs"`
-	DefaultFilterIDs   []string `json:"defaultFilterIDs"`
 }
 
 // DashboardBarChart is the datastore object for dashboard bar charts.
@@ -84,9 +81,7 @@ func newSummaryTable(params NewSummaryTableParams) (*SummaryTable, error) {
 		ColumnValSummaries: colSummaries,
 		DataSrcTableID:     params.DataSrcTableID,
 		Geometry:           params.Geometry,
-		Title:              "", // optional
-		AvailableFilterIDs: []string{},
-		DefaultFilterIDs:   []string{}}
+		Title:              ""}
 
 	newSummaryTable := SummaryTable{
 		ParentDashboardID: params.ParentDashboardID,

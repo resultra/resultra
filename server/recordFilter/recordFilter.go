@@ -1,9 +1,9 @@
 package recordFilter
 
 import (
-	"fmt"
-	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/record"
+//	"fmt"
+//	"resultra/datasheet/server/field"
+//	"resultra/datasheet/server/record"
 )
 
 type OptonalFilterRuleParamVal struct {
@@ -11,6 +11,7 @@ type OptonalFilterRuleParamVal struct {
 	numberParam *float64
 }
 
+/*
 // Convert the optional paramater values as stored in the datastore (via filterRule),
 // and convert them to pointer values which can be ommitted from output when
 // converting to JSON.
@@ -113,3 +114,4 @@ func GenerateFilterMatchResults(recFieldVals record.RecFieldValues, parentTableI
 	return matchResults, nil
 
 }
+*/

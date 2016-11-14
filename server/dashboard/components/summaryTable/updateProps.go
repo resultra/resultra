@@ -93,30 +93,6 @@ func (params SetSummaryTableDimensionsParams) updateSummaryTableProps(summaryTab
 	return nil
 }
 
-type SetSummaryTableAvailableFilterParams struct {
-	SummaryTableUniqueIDHeader
-	AvailableFilterIDs []string `json:"availableFilterIDs"`
-}
-
-func (params SetSummaryTableAvailableFilterParams) updateSummaryTableProps(summaryTable *SummaryTable) error {
-
-	summaryTable.Properties.AvailableFilterIDs = params.AvailableFilterIDs
-
-	return nil
-}
-
-type SetSummaryTableDefaultFilterParams struct {
-	SummaryTableUniqueIDHeader
-	DefaultFilterIDs []string `json:"defaultFilterIDs"`
-}
-
-func (params SetSummaryTableDefaultFilterParams) updateSummaryTableProps(summaryTable *SummaryTable) error {
-
-	summaryTable.Properties.DefaultFilterIDs = params.DefaultFilterIDs
-
-	return nil
-}
-
 type SetSummaryTableSummaryColumns struct {
 	SummaryTableUniqueIDHeader
 	ColumnValSummaries []values.ValSummary `json:"columnValSummaries"`

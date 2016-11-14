@@ -193,15 +193,13 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 		function reloadSortedAndFilterRecords()
 		{
 	
-			var currFilterIDs = getCurrentFilterPanelFilterIDsWithDefaults(filterPanelElemPrefix,
-					formInfo.properties.defaultFilterIDs,
-					formInfo.properties.availableFilterIDs)
+			// TODO FilterRefactor - Replace with call to retrieve current filter settings
 			
 			var sortRules = getSortPaneSortRules()
 	
 			var getFilteredRecordsParams = { 
 				tableID: viewFormContext.tableID,
-				filterIDs: currFilterIDs,
+			/*	filterIDs: currFilterIDs, */ //  TODO FilterRefactor - pass refactored filter settings
 				sortRules: sortRules}
 	
 			reloadRecords(getFilteredRecordsParams)
@@ -211,8 +209,6 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 		var filterPaneParams = {
 			elemPrefix: filterPanelElemPrefix,
 			tableID: viewFormContext.tableID,
-			defaultFilterIDs: formInfo.properties.defaultFilterIDs,
-			availableFilterIDs: formInfo.properties.availableFilterIDs,
 			refilterCallbackFunc: reloadSortedAndFilterRecords
 		}
 		

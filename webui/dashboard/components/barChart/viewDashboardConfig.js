@@ -9,14 +9,10 @@ function barChartViewDashboardConfig(barChartRef) {
 	
 	function reloadBarChart() {
 	
-		currentFilterIDs = getCurrentFilterPanelFilterIDsWithDefaults(barChartElemPrefix, 
-			barChartRef.properties.defaultFilterIDs,
-			barChartRef.properties.availableFilterIDs)
-	
+		// TODO - Include filtering parameters when getting data
 		var getDataParams = {
 			parentDashboardID:barChartRef.parentDashboardID,
-			barChartID:barChartRef.barChartID,
-			filterIDs: currentFilterIDs
+			barChartID:barChartRef.barChartID
 		}
 		jsonAPIRequest("dashboardController/getBarChartData",getDataParams,function(updatedBarChartData) {
 			console.log("Redrawing barchart after changing filter selection")
@@ -32,8 +28,6 @@ function barChartViewDashboardConfig(barChartRef) {
 			var filterPaneParams = {
 				elemPrefix: barChartElemPrefix,
 				tableID: selectedBarChartRef.properties.dataSrcTableID,
-				defaultFilterIDs: currentFilterIDs,
-				availableFilterIDs: selectedBarChartRef.properties.availableFilterIDs,
 				refilterCallbackFunc: reloadBarChart
 			}
 

@@ -21,7 +21,7 @@ type BarChartData struct {
 	DataRows   []BarChartDataRow `json:"dataRows"`
 }
 
-func getOneBarChartData(barChart *barChart.BarChart, filterIDs []string) (*BarChartData, error) {
+func getOneBarChartData(barChart *barChart.BarChart) (*BarChartData, error) {
 
 	tableID := barChart.Properties.DataSrcTableID
 
@@ -29,7 +29,6 @@ func getOneBarChartData(barChart *barChart.BarChart, filterIDs []string) (*BarCh
 	sortRules := []recordSortDataModel.RecordSortRule{}
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
 		TableID:   tableID,
-		FilterIDs: filterIDs,
 		SortRules: sortRules}
 	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(getRecordParams)
 	if getRecErr != nil {
@@ -60,9 +59,8 @@ func getOneBarChartData(barChart *barChart.BarChart, filterIDs []string) (*BarCh
 }
 
 type GetBarChartDataParams struct {
-	ParentDashboardID string   `json:"parentDashboardID"`
-	BarChartID        string   `json:"barChartID"`
-	FilterIDs         []string `json:"filterIDs"`
+	ParentDashboardID string `json:"parentDashboardID"`
+	BarChartID        string `json:"barChartID"`
 }
 
 func getBarChartData(params GetBarChartDataParams) (*BarChartData, error) {
@@ -73,7 +71,7 @@ func getBarChartData(params GetBarChartDataParams) (*BarChartData, error) {
 			params, getBarChartErr)
 	}
 
-	barChartData, dataErr := getOneBarChartData(barChart, params.FilterIDs)
+	barChartData, dataErr := getOneBarChartData(barChart)
 	if dataErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart data: %v", dataErr)
 	}
@@ -92,8 +90,7 @@ func getDefaultDashboardBarChartsData(parentDashboardID string) ([]BarChartData,
 	var barChartsData []BarChartData
 	for _, barChart := range barCharts {
 
-		filterIDs := barChart.Properties.DefaultFilterIDs
-		barChartData, dataErr := getOneBarChartData(&barChart, filterIDs)
+		barChartData, dataErr := getOneBarChartData(&barChart)
 		if dataErr != nil {
 			return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart data: %v", dataErr)
 		}

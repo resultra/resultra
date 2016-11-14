@@ -13,14 +13,13 @@ type SummaryTableData struct {
 	GroupedSummarizedVals GroupedSummarizedVals     `json:"groupedSummarizedVals"`
 }
 
-func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable, filterIDs []string) (*SummaryTableData, error) {
+func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable) (*SummaryTableData, error) {
 
 	tableID := summaryTable.Properties.DataSrcTableID
 
 	sortRules := []recordSortDataModel.RecordSortRule{}
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
 		TableID:   tableID,
-		FilterIDs: filterIDs,
 		SortRules: sortRules}
 	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(getRecordParams)
 	if getRecErr != nil {
@@ -47,9 +46,8 @@ func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable, filterIDs [
 }
 
 type GetSummaryTableDataParams struct {
-	ParentDashboardID string   `json:"parentDashboardID"`
-	SummaryTableID    string   `json:"summaryTableID"`
-	FilterIDs         []string `json:"filterIDs"`
+	ParentDashboardID string `json:"parentDashboardID"`
+	SummaryTableID    string `json:"summaryTableID"`
 }
 
 func getSummaryTableData(params GetSummaryTableDataParams) (*SummaryTableData, error) {
@@ -68,7 +66,7 @@ func getSummaryTableData(params GetSummaryTableDataParams) (*SummaryTableData, e
 			params, getSummaryTableErr)
 	}
 
-	summaryTableData, dataErr := getOneSummaryTableData(summaryTable, params.FilterIDs)
+	summaryTableData, dataErr := getOneSummaryTableData(summaryTable)
 	if dataErr != nil {
 		return nil, fmt.Errorf("GetSummaryTableData: Error retrieving bar chart data: %v", dataErr)
 	}
@@ -87,8 +85,7 @@ func getDefaultDashboardSummaryTablesData(parentDashboardID string) ([]SummaryTa
 	summaryTablesData := []SummaryTableData{}
 	for _, summaryTable := range summaryTables {
 
-		filterIDs := summaryTable.Properties.DefaultFilterIDs
-		summaryTableData, dataErr := getOneSummaryTableData(&summaryTable, filterIDs)
+		summaryTableData, dataErr := getOneSummaryTableData(&summaryTable)
 		if dataErr != nil {
 			return nil, fmt.Errorf("GetData: Error retrieving summary table data: %v", dataErr)
 		}

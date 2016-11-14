@@ -9,14 +9,12 @@ function summaryTableViewDashboardConfig(summaryTableRef) {
 	
 	
 	function reloadSummaryTable() {
-		currentFilterIDs = getCurrentFilterPanelFilterIDsWithDefaults(summaryTableElemPrefix, 
-			currentFilterIDs,
-			summaryTableRef.properties.availableFilterIDs)
+
+		// TODO - Include filtering parameters when loading table data
 	
 		var getDataParams = {
 			parentDashboardID:summaryTableRef.parentDashboardID,
-			summaryTableID:summaryTableRef.summaryTableID,
-			filterIDs: currentFilterIDs
+			summaryTableID:summaryTableRef.summaryTableID
 		}
 		jsonAPIRequest("dashboardController/getSummaryTableData",getDataParams,function(updatedSummaryTableData) {
 			console.log("Repopulating summary table after changing filter selection")
@@ -32,8 +30,6 @@ function summaryTableViewDashboardConfig(summaryTableRef) {
 			var filterPaneParams = {
 				elemPrefix: summaryTableElemPrefix,
 				tableID: updatedSummaryTableRef.properties.dataSrcTableID,
-				defaultFilterIDs: currentFilterIDs,
-				availableFilterIDs: updatedSummaryTableRef.properties.availableFilterIDs,
 				refilterCallbackFunc: reloadSummaryTable
 			}
 

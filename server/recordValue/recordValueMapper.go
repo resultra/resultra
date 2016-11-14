@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/record"
-	"resultra/datasheet/server/recordFilter"
 )
 
 // Re-map the series of value updates to "flattened" current (most recent) values for both calculated
@@ -28,17 +27,9 @@ func MapOneRecordUpdatesToFieldValues(parentTableID string, recordID string) (*R
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: Can't set value: Error calculating fields to reflect update: err = %v", calcErr)
 	}
 
-	// Test each filter against the record values. This will make actual filtering very simple and quick since the
-	// result for individual filters is already calculated.
-	filterMatchResults, filterErr := recordFilter.GenerateFilterMatchResults(*latestFieldValues, parentTableID)
-	if filterErr != nil {
-		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: Error matching filters: err = %v", filterErr)
-	}
-
 	recValResults := RecordValueResults{
 		ParentTableID: parentTableID,
 		RecordID:      recordID,
-		FilterMatches: filterMatchResults,
 		FieldValues:   *latestFieldValues}
 
 	// Write the complete RecordValue to the datastore. The intent is to keep the RecordValue results up to date

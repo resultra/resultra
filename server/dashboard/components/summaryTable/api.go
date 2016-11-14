@@ -14,8 +14,6 @@ func init() {
 
 	summaryTableRouter.HandleFunc("/api/dashboard/summaryTable/setTitle", setSummaryTableTitle)
 	summaryTableRouter.HandleFunc("/api/dashboard/summaryTable/setDimensions", setSummaryTableDimensions)
-	summaryTableRouter.HandleFunc("/api/dashboard/summaryTable/setAvailableFilters", setSummaryTableAvailableFilters)
-	summaryTableRouter.HandleFunc("/api/dashboard/summaryTable/setDefaultFilters", setSummaryTableDefaultFilters)
 	summaryTableRouter.HandleFunc("/api/dashboard/summaryTable/setColumns", setSummaryTableColumns)
 
 	summaryTableRouter.HandleFunc("/api/dashboard/summaryTable/setRowValueGrouping", setRowValueGrouping)
@@ -65,24 +63,6 @@ func setSummaryTableTitle(w http.ResponseWriter, r *http.Request) {
 func setSummaryTableDimensions(w http.ResponseWriter, r *http.Request) {
 
 	var params SetSummaryTableDimensionsParams
-	if err := api.DecodeJSONRequest(r, &params); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processSummaryTablePropUpdate(w, r, params)
-}
-
-func setSummaryTableAvailableFilters(w http.ResponseWriter, r *http.Request) {
-	var params SetSummaryTableAvailableFilterParams
-	if err := api.DecodeJSONRequest(r, &params); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processSummaryTablePropUpdate(w, r, params)
-}
-
-func setSummaryTableDefaultFilters(w http.ResponseWriter, r *http.Request) {
-	var params SetSummaryTableDefaultFilterParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

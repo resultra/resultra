@@ -17,31 +17,12 @@ function initDesignFormProperties(table,formID) {
 		var filterPropertyPanelParams = {
 			elemPrefix: formElemPrefix,
 			tableID: tableID,
-			defaultFilterIDs: formInfo.properties.defaultFilterIDs,
-			setDefaultFilterFunc: function(defaultFilterIDs) {
-				
+			/* TODO - restore a callback with functions like the following:
 				var setDefaultFiltersParams = {
 					formID: formID,
 					defaultFilterIDs: defaultFilterIDs
 				}
-		
-				jsonAPIRequest("frm/setDefaultFilters",setDefaultFiltersParams,function(updatedForm) {
-					console.log(" Default filters updated")
-				}) // set record's number field value
-							
-			},
-			availableFilterIDs: formInfo.properties.availableFilterIDs,
-			setAvailableFilterFunc: function(availFilterIDs) {
-				var setAvailFiltersParams = {
-					formID: formID,
-					availableFilterIDs: availFilterIDs
-				}
-		
-				jsonAPIRequest("frm/setAvailableFilters",setAvailFiltersParams,function(updatedForm) {
-					console.log("Available filters updated")
-				}) // set record's number field value
-			
-			}
+			*/
 		}
 		initFilterPropertyPanel(filterPropertyPanelParams)
 		

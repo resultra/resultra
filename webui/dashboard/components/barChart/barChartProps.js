@@ -9,40 +9,13 @@ function loadBarChartProperties(barChartPropsArgs) {
 	var filterPropertyPanelParams = {
 		elemPrefix: barChartElemPrefix,
 		tableID: barChartRef.properties.dataSrcTableID,
-		defaultFilterIDs: barChartRef.properties.defaultFilterIDs,
-		setDefaultFilterFunc: function(defaultFilterIDs) {
+		
+		/* TODO - restore a callback function for filters; with params something like:
 			var params = {
 				barChartID: barChartRef.barChartID,
 				parentDashboardID: barChartPropsArgs.dashboardID,
 				defaultFilterIDs: defaultFilterIDs }
-			jsonAPIRequest("dashboard/barChart/setDefaultFilters",params,function(updatedBarChart) {
-				barChartContainer.data("barChartRef",updatedBarChart)
-				console.log("Default filters updated")
-				
-				var reloadDataParams = {
-					parentDashboardID: updatedBarChart.parentDashboardID,
-					barChartID: updatedBarChart.barChartID,
-					filterIDs: updatedBarChart.properties.defaultFilterIDs }
-					
-				jsonAPIRequest("dashboardController/getBarChartData",reloadDataParams,function(barChartData) {
-					initBarChartData(updatedBarChart.parentDashboardID,barChartData)
-				})			
-				
-			}) // set record's number field value
-			
-		},
-		availableFilterIDs: barChartRef.properties.availableFilterIDs,
-		setAvailableFilterFunc: function(availFilterIDs) {
-			var params = {
-				barChartID: barChartRef.barChartID,
-				parentDashboardID: barChartPropsArgs.dashboardID,
-				availableFilterIDs: availFilterIDs }
-			jsonAPIRequest("dashboard/barChart/setAvailableFilters",params,function(updatedBarChart) {
-				barChartContainer.data("barChartRef",updatedBarChart)
-				console.log("Available filters updated")
-			}) // set record's number field value
-			
-		}
+		*/
 	}
 	initFilterPropertyPanel(filterPropertyPanelParams)
 	

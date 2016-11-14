@@ -9,7 +9,6 @@ import (
 
 type GetFilteredSortedRecordsParams struct {
 	TableID   string                               `json:"tableID"`
-	FilterIDs []string                             `json:filterIDs`
 	SortRules []recordSortDataModel.RecordSortRule `json:"sortRules"`
 }
 
@@ -22,12 +21,15 @@ func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordVa
 		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving records: %v", getRecordErr)
 	}
 
-	filteredRecords := []recordValue.RecordValueResults{}
-	for _, recValue := range unfilteredRecordValues {
-		if recValue.FilterMatches.MatchAllFilterIDs(params.FilterIDs) {
-			filteredRecords = append(filteredRecords, recValue)
+	filteredRecords := unfilteredRecordValues
+	/*
+		filteredRecords := []recordValue.RecordValueResults{}
+		for _, recValue := range unfilteredRecordValues {
+			if recValue.FilterMatches.MatchAllFilterIDs(params.FilterIDs) {
+				filteredRecords = append(filteredRecords, recValue)
+			}
 		}
-	}
+	*/
 
 	if sortErr := recordSort.SortRecordValues(params.TableID, filteredRecords, params.SortRules); sortErr != nil {
 		return nil, fmt.Errorf("GetFilteredRecords: Error sorting records: %v", sortErr)

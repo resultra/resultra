@@ -48,40 +48,12 @@ function loadSummaryTableProperties(propArgs) {
 	var filterPropertyPanelParams = {
 		elemPrefix: summaryTableElemPrefix,
 		tableID: summaryTableRef.properties.dataSrcTableID,
-		defaultFilterIDs: summaryTableRef.properties.defaultFilterIDs,
-		setDefaultFilterFunc: function(defaultFilterIDs) {
+		/* TODO - restore a property panel with a callback and params like the following: 
 			var params = {
 				parentDashboardID: propArgs.dashboardID,
 				summaryTableID: summaryTableRef.summaryTableID,
 				defaultFilterIDs: defaultFilterIDs }
-			jsonAPIRequest("dashboard/summaryTable/setDefaultFilters",params,function(updatedSummaryTable) {
-				setElemObjectRef(updatedSummaryTable.summaryTableID,updatedSummaryTable)
-				console.log("Default filters updated")
-				
-				var reloadDataParams = {
-					parentDashboardID: updatedSummaryTable.parentDashboardID,
-					summaryTableID: updatedSummaryTable.summaryTableID,
-					filterIDs: updatedSummaryTable.properties.defaultFilterIDs }
-					
-				jsonAPIRequest("dashboardController/getSummaryTableData",reloadDataParams,function(summaryTableData) {
-					initSummaryTableData(updatedSummaryTable.parentDashboardID,summaryTableData)
-				})			
-				
-			}) // set record's number field value
-			
-		},
-		availableFilterIDs: summaryTableRef.properties.availableFilterIDs,
-		setAvailableFilterFunc: function(availFilterIDs) {
-			var params = {
-				parentDashboardID: propArgs.dashboardID,
-				summaryTableID: summaryTableRef.summaryTableID,
-				availableFilterIDs: availFilterIDs }
-			jsonAPIRequest("dashboard/summaryTable/setAvailableFilters",params,function(updatedSummaryTable) {
-				setElemObjectRef(updatedSummaryTable.summaryTableID,updatedSummaryTable)
-				console.log("Available filters updated")
-			}) // set record's number field value
-			
-		}
+		*/
 	}
 	initFilterPropertyPanel(filterPropertyPanelParams)
 	

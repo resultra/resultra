@@ -15,3 +15,15 @@
 .recordFilterPanelRuleListItem .close {
 	line-height: 15px;
 }
+
+
+/* Remove the borders on the filter list */
+#filterRecordsPanelFilterList .list-group-item:first-child {
+  border-top-right-radius: 0px !important;
+  border-top-left-radius: 0px !important;
+}
+
+#filterRecordsPanelFilterList .list-group-item:last-child {
+  border-bottom-right-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+}
