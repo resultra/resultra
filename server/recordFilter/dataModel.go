@@ -6,6 +6,7 @@ import (
 
 type RecordFilterRule struct {
 	FieldID    string                `json:"fieldID"`
+	RuleID     string                `json:"ruleID"`
 	Conditions []FilterRuleCondition `json:"conditions"`
 }
 
@@ -15,7 +16,7 @@ type RecordFilterRule struct {
 // Using pointers and omitempty for the optional parameters results in compact
 // JSON storage of the FilterRuleCondition when only a subset of optional parameters is used.
 type FilterRuleCondition struct {
-	RuleID      string     `json:"ruleID"`
+	OperatorID  string     `json:"operatorID"`
 	TextParam   *string    `json:"textParam,omitempty"`
 	NumberParam *float64   `json:"numberParam,omitempty"`
 	DateParam   *time.Time `json:"dateParam,omitempty"`

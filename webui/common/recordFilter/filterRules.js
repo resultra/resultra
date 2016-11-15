@@ -57,8 +57,9 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo) {
 				updateFilterRules(panelParams)
 			},
 			modeConfig: function() {
-				var condition = { ruleID: "anyDate" }
-				var ruleConfig = { fieldID: fieldInfo.fieldID, 
+				var condition = { conditionID: "anyDate" }
+				var ruleConfig = { fieldID: fieldInfo.fieldID,
+					ruleID: "anyDate",
 					conditions: [condition]}
 				return ruleConfig				
 			}
@@ -77,8 +78,8 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo) {
 				if (endDate === null) { return null }
 				var endDateUTC = endDate.utc()
 				var conditions = [
-					{ ruleID: "minDate", dateParam: startDateUTC },
-					{ ruleID: "maxDate", dateParam: endDateUTC }
+					{ operatorID: "minDate", dateParam: startDateUTC },
+					{ operatorID: "maxDate", dateParam: endDateUTC }
 				]
 				var ruleConfig = { fieldID: fieldInfo.fieldID, 
 					ruleID: "dateRange", 
@@ -186,12 +187,13 @@ function numberFilterPanelRuleItem(panelParams, fieldInfo) {
 			var ruleInfo = filterRulesNumber[ruleID]
 			var conditions = []
 			if(ruleInfo.hasParam) {
-				conditions.push({ ruleID: ruleID, numberParam: Number(paramVal) })				
+				conditions.push({ operatorID: ruleID, numberParam: Number(paramVal) })				
 			} else {
-				conditions.push({ ruleID: ruleID })				
+				conditions.push({ operatorID: ruleID })				
 			}
 			
-			var ruleConfig = { fieldID: fieldInfo.fieldID, 
+			var ruleConfig = { fieldID: fieldInfo.fieldID,
+				ruleID: ruleID,
 				conditions: conditions }
 			return ruleConfig
 		} else {
