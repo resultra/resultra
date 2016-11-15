@@ -17,12 +17,17 @@ function initDesignFormProperties(table,formID) {
 		var filterPropertyPanelParams = {
 			elemPrefix: formElemPrefix,
 			tableID: tableID,
-			/* TODO - restore a callback with functions like the following:
+			updateFilterRules: function (updatedFilterRules) {
 				var setDefaultFiltersParams = {
 					formID: formID,
-					defaultFilterIDs: defaultFilterIDs
+					filterRules: updatedFilterRules
 				}
-			*/
+				jsonAPIRequest("frm/setDefaultFilterRules",setDefaultFiltersParams,function(updatedForm) {
+					console.log(" Default filters updated")
+				}) // set record's number field value
+				
+			}
+			
 		}
 		initFilterPropertyPanel(filterPropertyPanelParams)
 		

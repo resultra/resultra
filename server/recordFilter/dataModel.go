@@ -1,12 +1,22 @@
 package recordFilter
 
-type FilterRuleCondition struct {
-	RuleID          string  `json:"ruleID"`
-	TextRuleParam   string  `json:"textRuleParam"`
-	NumberRuleParam float64 `json:"numberRuleParam"`
-}
+import (
+	"time"
+)
 
 type RecordFilterRule struct {
 	FieldID    string                `json:"fieldID"`
 	Conditions []FilterRuleCondition `json:"conditions"`
+}
+
+// A FilterRuleCondition consists of a RuleID, which is a string depicting how the
+// results are filter and optional parameters of different types. The use of
+// different optional parameters depends on the RuleID.
+// Using pointers and omitempty for the optional parameters results in compact
+// JSON storage of the FilterRuleCondition when only a subset of optional parameters is used.
+type FilterRuleCondition struct {
+	RuleID      string     `json:"ruleID"`
+	TextParam   *string    `json:"textParam,omitempty"`
+	NumberParam *float64   `json:"numberParam,omitempty"`
+	DateParam   *time.Time `json:"dateParam,omitempty"`
 }

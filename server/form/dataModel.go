@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/recordFilter"
 )
 
 const formEntityKind string = "Form"
@@ -18,6 +19,7 @@ type FormProperties struct {
 	AvailableFilterIDs     []string                             `json:"availableFilterIDs"`
 	Layout                 componentLayout.ComponentLayout      `json:"layout"`
 	DefaultRecordSortRules []recordSortDataModel.RecordSortRule `json:"defaultRecordSortRules"`
+	DefaultFilterRules     []recordFilter.RecordFilterRule      `json:"defaultFilterRules"`
 }
 
 type Form struct {

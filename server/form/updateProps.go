@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/common/recordSortDataModel"
+	"resultra/datasheet/server/recordFilter"
 )
 
 type FormIDInterface interface {
@@ -43,30 +44,6 @@ func updateFormProps(propUpdater FormPropUpdater) (*Form, error) {
 	return form, nil
 }
 
-type FormDefaultFilterParams struct {
-	FormIDHeader
-	DefaultFilterIDs []string `json:"defaultFilterIDs"`
-}
-
-func (updateParams FormDefaultFilterParams) updateProps(form *Form) error {
-
-	form.Properties.DefaultFilterIDs = updateParams.DefaultFilterIDs
-
-	return nil
-}
-
-type FormAvailableFilterParams struct {
-	FormIDHeader
-	AvailableFilterIDs []string `json:"availableFilterIDs"`
-}
-
-func (updateParams FormAvailableFilterParams) updateProps(form *Form) error {
-
-	form.Properties.AvailableFilterIDs = updateParams.AvailableFilterIDs
-
-	return nil
-}
-
 type SetFormNameParams struct {
 	FormIDHeader
 	NewFormName string `json:"newFormName"`
@@ -89,6 +66,19 @@ type SetLayoutParams struct {
 func (updateParams SetLayoutParams) updateProps(form *Form) error {
 
 	form.Properties.Layout = updateParams.Layout
+
+	return nil
+}
+
+type SetFilterRulesParams struct {
+	FormIDHeader
+	FilterRules []recordFilter.RecordFilterRule `json:"filterRules"`
+}
+
+func (updateParams SetFilterRulesParams) updateProps(form *Form) error {
+
+	// TODO - Validate filter rules before saving
+	form.Properties.DefaultFilterRules = updateParams.FilterRules
 
 	return nil
 }

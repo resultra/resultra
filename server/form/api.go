@@ -20,11 +20,11 @@ func init() {
 	formRouter.HandleFunc("/api/frm/new", newFormAPI)
 	formRouter.HandleFunc("/api/frm/get", getFormAPI)
 
-	formRouter.HandleFunc("/api/frm/setDefaultFilters", setDefaultFilters)
-	formRouter.HandleFunc("/api/frm/setAvailableFilters", setAvailableFilters)
 	formRouter.HandleFunc("/api/frm/setName", setFormName)
 	formRouter.HandleFunc("/api/frm/setLayout", setLayout)
 	formRouter.HandleFunc("/api/frm/setDefaultSortRules", setDefaultSortRules)
+
+	formRouter.HandleFunc("/api/frm/setDefaultFilterRules", setDefaultFilterRules)
 
 	formRouter.HandleFunc("/api/frm/validateFormName", validateFormNameAPI)
 	formRouter.HandleFunc("/api/frm/validateNewFormName", validateNewFormNameAPI)
@@ -98,24 +98,6 @@ func processFormPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater F
 	}
 }
 
-func setDefaultFilters(w http.ResponseWriter, r *http.Request) {
-	var params FormDefaultFilterParams
-	if err := api.DecodeJSONRequest(r, &params); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processFormPropUpdate(w, r, params)
-}
-
-func setAvailableFilters(w http.ResponseWriter, r *http.Request) {
-	var params FormAvailableFilterParams
-	if err := api.DecodeJSONRequest(r, &params); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processFormPropUpdate(w, r, params)
-}
-
 func setFormName(w http.ResponseWriter, r *http.Request) {
 	var params SetFormNameParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
@@ -127,6 +109,15 @@ func setFormName(w http.ResponseWriter, r *http.Request) {
 
 func setLayout(w http.ResponseWriter, r *http.Request) {
 	var params SetLayoutParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFormPropUpdate(w, r, params)
+}
+
+func setDefaultFilterRules(w http.ResponseWriter, r *http.Request) {
+	var params SetFilterRulesParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

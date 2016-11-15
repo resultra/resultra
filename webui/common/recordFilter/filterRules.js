@@ -16,8 +16,8 @@ function updateFilterRules(panelParams) {
 	})
 
 	console.log("filterRules rules: " + JSON.stringify(filterRules))
-
-	return filterRules
+	
+	panelParams.updateFilterRules(filterRules)
 }
 
 function createFilterListRuleListItem(panelParams,fieldName) {
@@ -57,9 +57,9 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo) {
 				updateFilterRules(panelParams)
 			},
 			modeConfig: function() {
+				var condition = { ruleID: "anyDate" }
 				var ruleConfig = { fieldID: fieldInfo.fieldID, 
-					ruleID: "anyDate", 
-					param: "" }
+					conditions: [condition]}
 				return ruleConfig				
 			}
 		},
@@ -70,9 +70,19 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo) {
 				updateFilterRules(panelParams)
 			},
 			modeConfig: function() {
+				var startDate = $startDatePicker.data("DateTimePicker").date()
+				if (startDate === null) { return null }
+				var startDateUTC = startDate.utc()
+				var endDate = $endDatePicker.data("DateTimePicker").date()
+				if (endDate === null) { return null }
+				var endDateUTC = endDate.utc()
+				var conditions = [
+					{ ruleID: "minDate", dateParam: startDateUTC },
+					{ ruleID: "maxDate", dateParam: endDateUTC }
+				]
 				var ruleConfig = { fieldID: fieldInfo.fieldID, 
 					ruleID: "dateRange", 
-					param: "" }
+					conditions: conditions }
 				return ruleConfig
 			}
 		},
@@ -174,13 +184,15 @@ function numberFilterPanelRuleItem(panelParams, fieldInfo) {
 		var paramVal = $paramInput.val()
 		if(ruleID !== null && ruleID.length > 0) {
 			var ruleInfo = filterRulesNumber[ruleID]
-			if(ruleInfo.hasParam) {				
+			var conditions = []
+			if(ruleInfo.hasParam) {
+				conditions.push({ ruleID: ruleID, numberParam: Number(paramVal) })				
 			} else {
-				paramVal = ""
+				conditions.push({ ruleID: ruleID })				
 			}
+			
 			var ruleConfig = { fieldID: fieldInfo.fieldID, 
-				ruleID: ruleID, 
-				param: paramVal }
+				conditions: conditions }
 			return ruleConfig
 		} else {
 			return null
