@@ -9,10 +9,16 @@ function initFilterPropertyPanel(panelParams) {
 		fieldSelectionCallback: function(fieldInfo) {
 			var filterRuleListSelector = createPrefixedSelector(panelParams.elemPrefix,
 							'RecordFilterFilterRuleList')
-			var $filterRuleList = $(filterRuleListSelector)		
-			$filterRuleList.append(createFilterRulePanelListItem(panelParams,fieldInfo))
+			var $filterRuleList = $(filterRuleListSelector)
+			
+			// Use null to signify no default rule information. This is true when
+			// creating new rules, but will not be when re-loading the rules.
+			var defaultRuleInfo = null
+			$filterRuleList.append(createFilterRulePanelListItem(panelParams,fieldInfo,defaultRuleInfo))
 		}
 	}
-	initFieldSelectionDropdown(fieldSelectionDropdownParams)	
+	initFieldSelectionDropdown(fieldSelectionDropdownParams)
+	
+	initDefaultFilterRules(panelParams)	
 	
 }

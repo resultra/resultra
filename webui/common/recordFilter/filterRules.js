@@ -37,7 +37,16 @@ function createFilterListRuleListItem(panelParams,fieldName) {
 	return $filterRuleListItem
 }
 
-function dateFilterPanelRuleItem(panelParams,fieldInfo) {
+function mapRuleConditionsByOperatorID(ruleInfo) {
+	var ruleOpererators = {}
+	for(var paramIndex = 0; paramIndex < ruleInfo.conditions.length; paramIndex++) {
+		var currCondition = ruleInfo.conditions[paramIndex]
+		ruleOpererators[currCondition.operatorID] = currCondition
+	}
+	return ruleOpererators
+}
+
+function dateFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	
 	var $ruleControls = $('#recordFilterDateFieldRuleListItem').clone()
 	$ruleControls.attr("id","")
@@ -50,7 +59,7 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo) {
 	$dateFilterModeSelection.append(defaultSelectOptionPromptHTML("Filter for"))
 	
 	var dateFilterModes = {
-		"any": {
+		"anyDate": {
 			label: "Any date",
 			modeSelected: function() {
 				$startEndDateControls.hide()
@@ -62,9 +71,12 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo) {
 					ruleID: "anyDate",
 					conditions: [condition]}
 				return ruleConfig				
+			},
+			initDefaultVals: function(ruleInfo) {
+				$startEndDateControls.hide()			
 			}
 		},
-		"customRange": {
+		"customDateRange": {
 			label: "Custom date range",
 			modeSelected: function() {
 				$startEndDateControls.show()
@@ -82,9 +94,17 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo) {
 					{ operatorID: "maxDate", dateParam: endDateUTC }
 				]
 				var ruleConfig = { fieldID: fieldInfo.fieldID, 
-					ruleID: "dateRange", 
+					ruleID: "customDateRange", 
 					conditions: conditions }
 				return ruleConfig
+			}, 
+			initDefaultVals: function(ruleInfo) {
+				var ruleConditions = mapRuleConditionsByOperatorID(ruleInfo)
+				$startEndDateControls.show()
+				var startDate = moment(ruleConditions["minDate"].dateParam)
+				$startDatePicker.data("DateTimePicker").date(startDate)
+				var endDate = moment(ruleConditions["maxDate"].dateParam)
+				$endDatePicker.data("DateTimePicker").date(endDate)
 			}
 		},
 	}
@@ -106,6 +126,18 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo) {
 	$endDatePicker.datetimepicker({
             useCurrent: false //Important! See issue #1075
         });
+		
+		
+		
+	// Initialization of default values needs to happen *before* the 
+	// event handlers are setup for the date pickers. This ensures
+	// the event handlers aren't triggered while initializing the defaults.
+	if(defaultRuleInfo !== null) {
+		var ruleInfo = dateFilterModes[defaultRuleInfo.ruleID]
+		$dateFilterModeSelection.val(defaultRuleInfo.ruleID)
+		ruleInfo.initDefaultVals(defaultRuleInfo)	
+	}
+		
 	
 	// Link the start and end date controls based to ensure
     // the range is preserved.
@@ -132,6 +164,10 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo) {
 		}
 		
 	})
+	
+	
+	
+	
 	$filterListItem.append($ruleControls)
 		
 	return $filterListItem
@@ -140,7 +176,7 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo) {
 }
 
 
-function numberFilterPanelRuleItem(panelParams, fieldInfo) {
+function numberFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	
 	var $ruleControls = $('#recordFilterNumberFieldRuleListItem').clone()
 	$ruleControls.attr("id","")
@@ -155,6 +191,20 @@ function numberFilterPanelRuleItem(panelParams, fieldInfo) {
 	}
 		
 	var $paramInput = $ruleControls.find("input")
+	$paramInput.hide()
+	
+	
+	if(defaultRuleInfo !== null) {
+		var ruleInfo = filterRulesNumber[defaultRuleInfo.ruleID]
+		$ruleSelection.val(defaultRuleInfo.ruleID)
+		if(ruleInfo.hasParam) {
+			var ruleConditions = mapRuleConditionsByOperatorID(defaultRuleInfo)
+			var numParam = ruleConditions[defaultRuleInfo.ruleID].numberParam
+			$paramInput.val(numParam)
+			$paramInput.show()
+		}
+	}
+	
 	
 	$paramInput.blur(function() {
 		var numberVal = Number($paramInput.val())
@@ -163,7 +213,6 @@ function numberFilterPanelRuleItem(panelParams, fieldInfo) {
 		}
 	})
 	
-	$paramInput.hide()
 		
 	initSelectControlChangeHandler($ruleSelection,function(ruleID) {
 		var ruleInfo = filterRulesNumber[ruleID]
@@ -208,16 +257,43 @@ function numberFilterPanelRuleItem(panelParams, fieldInfo) {
 }
 
 
-function createFilterRulePanelListItem(panelParams, fieldInfo) {
+function createFilterRulePanelListItem(panelParams, fieldInfo,defaultRuleInfo) {
 	
 	switch (fieldInfo.type) {
 	case fieldTypeNumber:
-		return numberFilterPanelRuleItem(panelParams, fieldInfo)
+		return numberFilterPanelRuleItem(panelParams, fieldInfo,defaultRuleInfo)
 	case fieldTypeTime: 
-		return dateFilterPanelRuleItem(panelParams, fieldInfo)
+		return dateFilterPanelRuleItem(panelParams, fieldInfo,defaultRuleInfo)
 	default:
 		console.log("createFilterRulePanelListItem: Unsupported field type:  " + fieldInfo.type)
 		return $("")
 	}
+	
+}
+
+function initDefaultFilterRules(panelParams) {
+	
+	loadFieldInfo(panelParams.tableID,[fieldTypeAll],function(fieldsByID) {
+		
+		var filterRuleListSelector = createPrefixedSelector(panelParams.elemPrefix,
+						'RecordFilterFilterRuleList')
+		var $filterRuleList = $(filterRuleListSelector)		
+		$filterRuleList.empty()
+		
+		for(var defaultRuleIndex = 0; 
+				defaultRuleIndex < panelParams.defaultFilterRules.length; defaultRuleIndex++) {
+					
+			var currRuleInfo = panelParams.defaultFilterRules[defaultRuleIndex]
+			
+			var fieldInfo = fieldsByID[currRuleInfo.fieldID]
+					
+			$filterRuleList.append(createFilterRulePanelListItem(panelParams,fieldInfo,currRuleInfo))
+				
+		}
+		
+		
+	})
+	
+	
 	
 }
