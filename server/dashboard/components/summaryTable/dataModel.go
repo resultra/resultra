@@ -7,6 +7,7 @@ import (
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/recordFilter"
 )
 
 const summaryTableEntityKind string = "SummaryTable"
@@ -24,6 +25,8 @@ type SummaryTableProps struct {
 	Title string `json:"title"`
 
 	ColumnValSummaries []values.ValSummary `json:"columnValSummaries"`
+
+	DefaultFilterRules []recordFilter.RecordFilterRule `json:"defaultFilterRules"`
 }
 
 // DashboardBarChart is the datastore object for dashboard bar charts.
@@ -81,7 +84,8 @@ func newSummaryTable(params NewSummaryTableParams) (*SummaryTable, error) {
 		ColumnValSummaries: colSummaries,
 		DataSrcTableID:     params.DataSrcTableID,
 		Geometry:           params.Geometry,
-		Title:              ""}
+		Title:              "",
+		DefaultFilterRules: []recordFilter.RecordFilterRule{}}
 
 	newSummaryTable := SummaryTable{
 		ParentDashboardID: params.ParentDashboardID,

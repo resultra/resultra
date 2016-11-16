@@ -1,20 +1,15 @@
 function summaryTableViewDashboardConfig(summaryTableRef) {
 	
 	var summaryTableElemPrefix =  "summaryTable_"
-	
-	// Start with the defaultFilterIDs for the given bar chart. Then, if the selection changes,
-	// the currentFilterIDs will also change. Then, if the bar chart is selected again, the 
-	// current IDs can be used instead of the default IDs.
-	var currentFilterIDs = summaryTableRef.properties.defaultFilterIDs
-	
-	
+		
 	function reloadSummaryTable() {
 
 		// TODO - Include filtering parameters when loading table data
 	
 		var getDataParams = {
 			parentDashboardID:summaryTableRef.parentDashboardID,
-			summaryTableID:summaryTableRef.summaryTableID
+			summaryTableID:summaryTableRef.summaryTableID,
+			filterRules: summaryTableRef.properties.defaultFilterRules
 		}
 		jsonAPIRequest("dashboardController/getSummaryTableData",getDataParams,function(updatedSummaryTableData) {
 			console.log("Repopulating summary table after changing filter selection")
@@ -30,10 +25,15 @@ function summaryTableViewDashboardConfig(summaryTableRef) {
 			var filterPaneParams = {
 				elemPrefix: summaryTableElemPrefix,
 				tableID: updatedSummaryTableRef.properties.dataSrcTableID,
-				refilterCallbackFunc: reloadSummaryTable
+				defaultFilterRules: updatedSummaryTableRef.properties.defaultFilterRules,
+				initDone: function () {},
+				updateFilterRules: function (updatedFilterRules) {
+					// TODO - Reload table with updated filtering params.
+					reloadSummaryTable()
+				}
 			}
 
-			initRecordFilterPanel(filterPaneParams)
+			initDefaultFilterRules(filterPaneParams)
 	
 			// Toggle to the summary properties, hiding the other property panels
 			hideSiblingsShowOne('#summaryTableViewProps')

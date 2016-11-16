@@ -5,6 +5,7 @@ import (
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/dashboard/values"
+	"resultra/datasheet/server/recordFilter"
 )
 
 // The BarChartPropertyUpdater interface along with UpdateBarChartProps() implement a harness for
@@ -113,6 +114,18 @@ type SetRowGroupingParams struct {
 func (params SetRowGroupingParams) updateSummaryTableProps(summaryTable *SummaryTable) error {
 
 	summaryTable.Properties.RowGroupingVals = params.RowValueGrouping
+
+	return nil
+}
+
+type SetSummaryTableDefaultFilterRulesParams struct {
+	SummaryTableUniqueIDHeader
+	DefaultFilterRules []recordFilter.RecordFilterRule `json:"defaultFilterRules"`
+}
+
+func (params SetSummaryTableDefaultFilterRulesParams) updateSummaryTableProps(summaryTable *SummaryTable) error {
+
+	summaryTable.Properties.DefaultFilterRules = params.DefaultFilterRules
 
 	return nil
 }

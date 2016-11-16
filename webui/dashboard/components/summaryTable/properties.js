@@ -48,12 +48,20 @@ function loadSummaryTableProperties(propArgs) {
 	var filterPropertyPanelParams = {
 		elemPrefix: summaryTableElemPrefix,
 		tableID: summaryTableRef.properties.dataSrcTableID,
-		/* TODO - restore a property panel with a callback and params like the following: 
-			var params = {
-				parentDashboardID: propArgs.dashboardID,
+		defaultFilterRules: summaryTableRef.properties.defaultFilterRules,
+		initDone: function () {},
+		updateFilterRules: function (updatedFilterRules) {
+			var setDefaultFiltersParams = {
+				parentDashboardID:propArgs.dashboardID,
 				summaryTableID: summaryTableRef.summaryTableID,
-				defaultFilterIDs: defaultFilterIDs }
-		*/
+				defaultFilterRules: updatedFilterRules
+			}
+			jsonAPIRequest("dashboard/summaryTable/setDefaultFilterRules",setDefaultFiltersParams,function(updatedSummaryTable) {
+				console.log(" Default filters updated")
+				setElemObjectRef(updatedSummaryTable.summaryTableID,updatedSummaryTable)
+			}) // set record's number field value
+			
+		}
 	}
 	initFilterPropertyPanel(filterPropertyPanelParams)
 	
