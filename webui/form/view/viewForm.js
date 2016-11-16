@@ -190,48 +190,46 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 		
 		var filterPanelElemPrefix = "form_"
 		
+			
 		function reloadSortedAndFilterRecords()
 		{
-	
-			// TODO FilterRefactor - Replace with call to retrieve current filter settings
-			
+			var filterRules = getRecordFilterRuleListRules(filterPanelElemPrefix)		
 			var sortRules = getSortPaneSortRules()
 	
 			var getFilteredRecordsParams = { 
 				tableID: viewFormContext.tableID,
-			/*	filterIDs: currFilterIDs, */ //  TODO FilterRefactor - pass refactored filter settings
+				filterRules: filterRules,
 				sortRules: sortRules}
 	
 			reloadRecords(getFilteredRecordsParams)
 		}
 		
+		var panelInitRemaining = 2
+		function decrementRemainingPanelInitCount() {
+			panelInitRemaining--
+			if(panelInitRemaining <= 0) {
+				reloadSortedAndFilterRecords()	
+			}
+		}
 		
-		var filterPaneParams = {
+		var filterPropertyPanelParams = {
 			elemPrefix: filterPanelElemPrefix,
-			tableID: viewFormContext.tableID,
-			refilterCallbackFunc: reloadSortedAndFilterRecords
+			tableID: tableID,
+			defaultFilterRules: formInfo.properties.defaultFilterRules,
+			initDone: decrementRemainingPanelInitCount,
+			updateFilterRules: function (updatedFilterRules) {
+				console.log("View form: filters changed - updating filtering")
+				reloadSortedAndFilterRecords()
+			}
 		}
-		
-		initRecordFilterPanel(filterPaneParams)
-		
-		function recordSortPaneInitDone() {
-			console.log("sort panel initialization done")
-		
-			var getRecordsParams = {
-				tableID:tableID,
-				filterIDs:formInfo.properties.defaultFilterIDs,
-				sortRules:getSortPaneSortRules()} 
-			reloadRecords(getRecordsParams)
-			
-		}
-				
+		initDefaultFilterRules(filterPropertyPanelParams)
+						
 		var recordSortPaneParams = {
 			defaultSortRules: formInfo.properties.defaultRecordSortRules,
 			resortFunc: reloadSortedAndFilterRecords,
-			initDoneFunc: recordSortPaneInitDone,
+			initDoneFunc: decrementRemainingPanelInitCount,
 			saveUpdatedSortRulesFunc: function(sortRules) {} // no-op
 		}
-
 		initSortRecordsPane(recordSortPaneParams)
 
 	})

@@ -1,8 +1,7 @@
-
-function updateFilterRules(panelParams) {
+function getRecordFilterRuleListRules(elemPrefix) {
 	var filterRules = []
 	
-	var filterRuleListSelector = createPrefixedSelector(panelParams.elemPrefix,
+	var filterRuleListSelector = createPrefixedSelector(elemPrefix,
 					'RecordFilterFilterRuleList')
 	
 	$(filterRuleListSelector + " .recordFilterPanelRuleListItem").each(function() {
@@ -16,6 +15,14 @@ function updateFilterRules(panelParams) {
 	})
 
 	console.log("filterRules rules: " + JSON.stringify(filterRules))
+	
+	return filterRules
+}
+
+
+function updateFilterRules(panelParams) {
+	
+	var filterRules = getRecordFilterRuleListRules(panelParams.elemPrefix)
 	
 	panelParams.updateFilterRules(filterRules)
 }
@@ -291,6 +298,7 @@ function initDefaultFilterRules(panelParams) {
 				
 		}
 		
+		panelParams.initDone()
 		
 	})
 	

@@ -1,12 +1,10 @@
 
 
 
-
 {{define "recordFilterPropertyPanel"}}
 
-	<div class="list-group" id="{{.ElemPrefix}}RecordFilterFilterRuleList">
-	</div>	
-		
+	{{template "recordFilterRuleList" .ElemPrefix}}
+	
 	{{template "fieldSelectionDropdown" .FieldSelectionParams}}
 	
 	{{template "recordFilterRuleTemplates"}}

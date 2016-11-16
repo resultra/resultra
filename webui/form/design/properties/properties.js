@@ -18,6 +18,7 @@ function initDesignFormProperties(table,formID) {
 			elemPrefix: formElemPrefix,
 			tableID: tableID,
 			defaultFilterRules: formInfo.properties.defaultFilterRules,
+			initDone: function () {},
 			updateFilterRules: function (updatedFilterRules) {
 				var setDefaultFiltersParams = {
 					formID: formID,

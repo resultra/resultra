@@ -36,9 +36,9 @@
 
 {{define "filterRecordsPanelFilterList"}}
 
-	<div class="list-group" id="{{.}}FilterRecordsPanelFilterList">
-	</div>
-
+	{{template "recordFilterRuleList" .}}
+	
+	{{template "recordFilterRuleTemplates"}}
 
 {{end}}
 
