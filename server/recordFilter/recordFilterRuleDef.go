@@ -15,9 +15,6 @@ type FilterRuleFunc func(filterParams FilterFuncParams, recFieldVals record.RecF
 
 type FilterRuleDef struct {
 	RuleID     string         `json:"ruleID"`
-	HasParam   bool           `json:"hasParam"`
-	DataType   string         `json:"dataType"`
-	Label      string         `json:"label"`
 	filterFunc FilterRuleFunc `json:"-"`
 }
 
@@ -69,20 +66,20 @@ func filterCustomDateRange(filterParams FilterFuncParams, recFieldVals record.Re
 type RuleIDRuleDefMap map[string]FilterRuleDef
 
 var textFieldFilterRuleDefs = RuleIDRuleDefMap{
-	filterRuleIDNotBlank: FilterRuleDef{filterRuleIDNotBlank, false, field.FieldTypeText, "Text is set (not blank)", filterNonBlankField},
-	filterRuleIDBlank:    FilterRuleDef{filterRuleIDBlank, false, field.FieldTypeText, "Text is not set (blank)", filterBlankField},
+	filterRuleIDNotBlank: FilterRuleDef{filterRuleIDNotBlank, filterNonBlankField},
+	filterRuleIDBlank:    FilterRuleDef{filterRuleIDBlank, filterBlankField},
 }
 
 var numberFieldFilterRuleDefs = RuleIDRuleDefMap{
-	filterRuleIDNotBlank: FilterRuleDef{filterRuleIDNotBlank, false, field.FieldTypeNumber, "Value is set (not blank)", filterNonBlankField},
-	filterRuleIDBlank:    FilterRuleDef{filterRuleIDBlank, false, field.FieldTypeNumber, "Value is not set (blank)", filterBlankField},
-	filterRuleIDGreater:  FilterRuleDef{filterRuleIDGreater, false, field.FieldTypeNumber, "Value is greater", filterGreater},
-	filterRuleIDLess:     FilterRuleDef{filterRuleIDLess, false, field.FieldTypeNumber, "Value is greater", filterLess},
+	filterRuleIDNotBlank: FilterRuleDef{filterRuleIDNotBlank, filterNonBlankField},
+	filterRuleIDBlank:    FilterRuleDef{filterRuleIDBlank, filterBlankField},
+	filterRuleIDGreater:  FilterRuleDef{filterRuleIDGreater, filterGreater},
+	filterRuleIDLess:     FilterRuleDef{filterRuleIDLess, filterLess},
 }
 
 var timeFieldFilterRuleDefs = RuleIDRuleDefMap{
-	filterRuleIDCustomDateRange: FilterRuleDef{filterRuleIDCustomDateRange, false, field.FieldTypeTime, "Date Range", filterCustomDateRange},
-	filterRuleIDAny:             FilterRuleDef{filterRuleIDAny, false, field.FieldTypeTime, "Any Date", filterAny},
+	filterRuleIDCustomDateRange: FilterRuleDef{filterRuleIDCustomDateRange, filterCustomDateRange},
+	filterRuleIDAny:             FilterRuleDef{filterRuleIDAny, filterAny},
 }
 
 var FilterRuleDefs struct {
