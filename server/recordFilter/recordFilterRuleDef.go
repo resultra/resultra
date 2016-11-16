@@ -13,11 +13,6 @@ type FilterFuncParams struct {
 
 type FilterRuleFunc func(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error)
 
-type FilterRuleDef struct {
-	RuleID     string         `json:"ruleID"`
-	filterFunc FilterRuleFunc `json:"-"`
-}
-
 const filterRuleIDNotBlank string = "notBlank"
 const filterRuleIDBlank string = "isBlank"
 const filterRuleIDCustomDateRange string = "dateRange"
@@ -63,59 +58,51 @@ func filterCustomDateRange(filterParams FilterFuncParams, recFieldVals record.Re
 	return true, nil // stubbed out
 }
 
-type RuleIDRuleDefMap map[string]FilterRuleDef
+type RuleIDFilterFuncMap map[string]FilterRuleFunc
 
-var textFieldFilterRuleDefs = RuleIDRuleDefMap{
-	filterRuleIDNotBlank: FilterRuleDef{filterRuleIDNotBlank, filterNonBlankField},
-	filterRuleIDBlank:    FilterRuleDef{filterRuleIDBlank, filterBlankField},
-}
+var textFieldFilterRuleDefs = RuleIDFilterFuncMap{
+	filterRuleIDNotBlank: filterNonBlankField,
+	filterRuleIDBlank:    filterBlankField}
 
-var numberFieldFilterRuleDefs = RuleIDRuleDefMap{
-	filterRuleIDNotBlank: FilterRuleDef{filterRuleIDNotBlank, filterNonBlankField},
-	filterRuleIDBlank:    FilterRuleDef{filterRuleIDBlank, filterBlankField},
-	filterRuleIDGreater:  FilterRuleDef{filterRuleIDGreater, filterGreater},
-	filterRuleIDLess:     FilterRuleDef{filterRuleIDLess, filterLess},
-}
+var numberFieldFilterRuleDefs = RuleIDFilterFuncMap{
+	filterRuleIDNotBlank: filterNonBlankField,
+	filterRuleIDBlank:    filterBlankField,
+	filterRuleIDGreater:  filterGreater,
+	filterRuleIDLess:     filterLess}
 
-var timeFieldFilterRuleDefs = RuleIDRuleDefMap{
-	filterRuleIDCustomDateRange: FilterRuleDef{filterRuleIDCustomDateRange, filterCustomDateRange},
-	filterRuleIDAny:             FilterRuleDef{filterRuleIDAny, filterAny},
-}
-
-var FilterRuleDefs struct {
-	TextFieldRules   RuleIDRuleDefMap `json:"textFieldRules"`
-	NumberFieldRules RuleIDRuleDefMap `json:"numberFieldRules"`
-}
+var timeFieldFilterRuleDefs = RuleIDFilterFuncMap{
+	filterRuleIDCustomDateRange: filterCustomDateRange,
+	filterRuleIDAny:             filterAny}
 
 // Get the rule definition based upon the field type
-func getRuleDefByFieldType(fieldType string, ruleID string) (*FilterRuleDef, error) {
+func getFilterFuncByFieldType(fieldType string, ruleID string) (FilterRuleFunc, error) {
 	switch fieldType {
 	case field.FieldTypeText:
-		ruleDef, ruleDefFound := textFieldFilterRuleDefs[ruleID]
-		if !ruleDefFound {
+		filterFunc, funcFound := textFieldFilterRuleDefs[ruleID]
+		if !funcFound {
 			return nil, fmt.Errorf(
 				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
 				fieldType, ruleID)
 		} else {
-			return &ruleDef, nil
+			return filterFunc, nil
 		}
 	case field.FieldTypeNumber:
-		ruleDef, ruleDefFound := numberFieldFilterRuleDefs[ruleID]
-		if !ruleDefFound {
+		filterFunc, funcFound := numberFieldFilterRuleDefs[ruleID]
+		if !funcFound {
 			return nil, fmt.Errorf(
 				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
 				fieldType, ruleID)
 		} else {
-			return &ruleDef, nil
+			return filterFunc, nil
 		}
 	case field.FieldTypeTime:
-		ruleDef, ruleDefFound := timeFieldFilterRuleDefs[ruleID]
-		if !ruleDefFound {
+		filterFunc, funcFound := timeFieldFilterRuleDefs[ruleID]
+		if !funcFound {
 			return nil, fmt.Errorf(
 				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
 				fieldType, ruleID)
 		} else {
-			return &ruleDef, nil
+			return filterFunc, nil
 		}
 	default:
 		return nil, fmt.Errorf(

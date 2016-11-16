@@ -17,14 +17,14 @@ func MatchRecord(recValResults recordValue.RecordValueResults, filterRules []Rec
 				currFilterRule.FieldID, fieldErr)
 		}
 
-		filterRuleDef, ruleDefErr := getRuleDefByFieldType(ruleField.Type, currFilterRule.RuleID)
+		filterFunc, ruleDefErr := getFilterFuncByFieldType(ruleField.Type, currFilterRule.RuleID)
 		if ruleDefErr != nil {
 			return false, fmt.Errorf("MatchRecord: Failed to retrieve filter rule definition: err=%v", ruleDefErr)
 		}
 
 		filterParams := FilterFuncParams{
 			Conditions: currFilterRule.Conditions}
-		recordIsFiltered, filterErr := filterRuleDef.filterFunc(filterParams, recValResults.FieldValues)
+		recordIsFiltered, filterErr := filterFunc(filterParams, recValResults.FieldValues)
 		if filterErr != nil {
 			return false, fmt.Errorf("MatchRecord: Error filtering: %v", filterErr)
 		}
