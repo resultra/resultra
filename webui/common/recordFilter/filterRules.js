@@ -66,7 +66,7 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	$dateFilterModeSelection.append(defaultSelectOptionPromptHTML("Filter for"))
 	
 	var dateFilterModes = {
-		"anyDate": {
+		"any": {
 			label: "Any date",
 			modeSelected: function() {
 				$startEndDateControls.hide()
@@ -75,7 +75,7 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 			modeConfig: function() {
 				var condition = { conditionID: "anyDate" }
 				var ruleConfig = { fieldID: fieldInfo.fieldID,
-					ruleID: "anyDate",
+					ruleID: "any",
 					conditions: [condition]}
 				return ruleConfig				
 			},
@@ -83,7 +83,7 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 				$startEndDateControls.hide()			
 			}
 		},
-		"customDateRange": {
+		"dateRange": {
 			label: "Custom date range",
 			modeSelected: function() {
 				$startEndDateControls.show()
@@ -101,7 +101,7 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 					{ operatorID: "maxDate", dateParam: endDateUTC }
 				]
 				var ruleConfig = { fieldID: fieldInfo.fieldID, 
-					ruleID: "customDateRange", 
+					ruleID: "dateRange", 
 					conditions: conditions }
 				return ruleConfig
 			}, 

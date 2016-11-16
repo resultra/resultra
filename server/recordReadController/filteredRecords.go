@@ -3,13 +3,15 @@ package recordReadController
 import (
 	"fmt"
 	"resultra/datasheet/server/common/recordSortDataModel"
+	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/recordSort"
 	"resultra/datasheet/server/recordValue"
 )
 
 type GetFilteredSortedRecordsParams struct {
-	TableID   string                               `json:"tableID"`
-	SortRules []recordSortDataModel.RecordSortRule `json:"sortRules"`
+	TableID     string                               `json:"tableID"`
+	FilterRules []recordFilter.RecordFilterRule      `json:"filterRules"`
+	SortRules   []recordSortDataModel.RecordSortRule `json:"sortRules"`
 }
 
 func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordValue.RecordValueResults, error) {
@@ -21,18 +23,23 @@ func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordVa
 		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving records: %v", getRecordErr)
 	}
 
-	filteredRecords := unfilteredRecordValues
-	/*
-		filteredRecords := []recordValue.RecordValueResults{}
-		for _, recValue := range unfilteredRecordValues {
-			if recValue.FilterMatches.MatchAllFilterIDs(params.FilterIDs) {
-				filteredRecords = append(filteredRecords, recValue)
-			}
+	filteredRecords := []recordValue.RecordValueResults{}
+	for _, recValue := range unfilteredRecordValues {
+
+		isFiltered, filterErr := recordFilter.MatchRecord(recValue, params.FilterRules)
+
+		if filterErr != nil {
+			return nil, fmt.Errorf("GetFilteredSortedRecords: Error filtering record: %v", filterErr)
 		}
-	*/
+
+		if isFiltered {
+			filteredRecords = append(filteredRecords, recValue)
+		}
+
+	}
 
 	if sortErr := recordSort.SortRecordValues(params.TableID, filteredRecords, params.SortRules); sortErr != nil {
-		return nil, fmt.Errorf("GetFilteredRecords: Error sorting records: %v", sortErr)
+		return nil, fmt.Errorf("GetFilteredSortedRecords: Error sorting records: %v", sortErr)
 	}
 
 	return filteredRecords, nil

@@ -7,9 +7,8 @@ import (
 )
 
 type FilterFuncParams struct {
-	fieldID        string
-	textParamVal   *string
-	numberParamVal *float64
+	Conditions []FilterRuleCondition
+	FieldID    string
 }
 
 type FilterRuleFunc func(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error)
@@ -24,10 +23,14 @@ type FilterRuleDef struct {
 
 const filterRuleIDNotBlank string = "notBlank"
 const filterRuleIDBlank string = "isBlank"
+const filterRuleIDCustomDateRange string = "dateRange"
+const filterRuleIDGreater string = "greater"
+const filterRuleIDLess string = "less"
+const filterRuleIDAny string = "any"
 
 func filterBlankField(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
 
-	valueIsSet := recFieldVals.ValueIsSet(filterParams.fieldID)
+	valueIsSet := recFieldVals.ValueIsSet(filterParams.FieldID)
 
 	if valueIsSet {
 		return false, nil
@@ -38,13 +41,29 @@ func filterBlankField(filterParams FilterFuncParams, recFieldVals record.RecFiel
 
 func filterNonBlankField(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
 
-	valueIsSet := recFieldVals.ValueIsSet(filterParams.fieldID)
+	valueIsSet := recFieldVals.ValueIsSet(filterParams.FieldID)
 
 	if valueIsSet {
 		return true, nil
 	} else {
 		return false, nil
 	}
+}
+
+func filterGreater(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+	return true, nil // stubbed out
+}
+
+func filterLess(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+	return true, nil // stubbed out
+}
+
+func filterAny(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+	return true, nil // stubbed out
+}
+
+func filterCustomDateRange(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+	return true, nil // stubbed out
 }
 
 type RuleIDRuleDefMap map[string]FilterRuleDef
@@ -57,6 +76,13 @@ var textFieldFilterRuleDefs = RuleIDRuleDefMap{
 var numberFieldFilterRuleDefs = RuleIDRuleDefMap{
 	filterRuleIDNotBlank: FilterRuleDef{filterRuleIDNotBlank, false, field.FieldTypeNumber, "Value is set (not blank)", filterNonBlankField},
 	filterRuleIDBlank:    FilterRuleDef{filterRuleIDBlank, false, field.FieldTypeNumber, "Value is not set (blank)", filterBlankField},
+	filterRuleIDGreater:  FilterRuleDef{filterRuleIDGreater, false, field.FieldTypeNumber, "Value is greater", filterGreater},
+	filterRuleIDLess:     FilterRuleDef{filterRuleIDLess, false, field.FieldTypeNumber, "Value is greater", filterLess},
+}
+
+var timeFieldFilterRuleDefs = RuleIDRuleDefMap{
+	filterRuleIDCustomDateRange: FilterRuleDef{filterRuleIDCustomDateRange, false, field.FieldTypeTime, "Date Range", filterCustomDateRange},
+	filterRuleIDAny:             FilterRuleDef{filterRuleIDAny, false, field.FieldTypeTime, "Any Date", filterAny},
 }
 
 var FilterRuleDefs struct {
@@ -78,6 +104,15 @@ func getRuleDefByFieldType(fieldType string, ruleID string) (*FilterRuleDef, err
 		}
 	case field.FieldTypeNumber:
 		ruleDef, ruleDefFound := numberFieldFilterRuleDefs[ruleID]
+		if !ruleDefFound {
+			return nil, fmt.Errorf(
+				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
+				fieldType, ruleID)
+		} else {
+			return &ruleDef, nil
+		}
+	case field.FieldTypeTime:
+		ruleDef, ruleDefFound := timeFieldFilterRuleDefs[ruleID]
 		if !ruleDefFound {
 			return nil, fmt.Errorf(
 				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
