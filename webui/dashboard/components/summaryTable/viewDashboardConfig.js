@@ -1,15 +1,18 @@
 function summaryTableViewDashboardConfig(summaryTableRef) {
 	
 	var summaryTableElemPrefix =  "summaryTable_"
+
+	// Store the default filter rules in a local variable (closure). If the
+	// filter rules are modified locally in the dashboard view, the rules can
+	// be modified there. 
+	var currFilterRules = summaryTableRef.properties.defaultFilterRules
 		
 	function reloadSummaryTable() {
-
-		// TODO - Include filtering parameters when loading table data
 	
 		var getDataParams = {
 			parentDashboardID:summaryTableRef.parentDashboardID,
 			summaryTableID:summaryTableRef.summaryTableID,
-			filterRules: summaryTableRef.properties.defaultFilterRules
+			filterRules: currFilterRules
 		}
 		jsonAPIRequest("dashboardController/getSummaryTableData",getDataParams,function(updatedSummaryTableData) {
 			console.log("Repopulating summary table after changing filter selection")
@@ -25,10 +28,11 @@ function summaryTableViewDashboardConfig(summaryTableRef) {
 			var filterPaneParams = {
 				elemPrefix: summaryTableElemPrefix,
 				tableID: updatedSummaryTableRef.properties.dataSrcTableID,
-				defaultFilterRules: updatedSummaryTableRef.properties.defaultFilterRules,
+				defaultFilterRules: currFilterRules,
 				initDone: function () {},
 				updateFilterRules: function (updatedFilterRules) {
 					// TODO - Reload table with updated filtering params.
+					currFilterRules = updatedFilterRules
 					reloadSummaryTable()
 				}
 			}

@@ -5,6 +5,7 @@ import (
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/dashboard/values"
+	"resultra/datasheet/server/recordFilter"
 )
 
 // The BarChartPropertyUpdater interface along with UpdateBarChartProps() implement a harness for
@@ -113,6 +114,18 @@ type SetYAxisSummaryParams struct {
 func (params SetYAxisSummaryParams) updateBarChartProps(barChart *BarChart) error {
 
 	barChart.Properties.YAxisVals = params.YAxisValSummary
+
+	return nil
+}
+
+type SetDefaultFilterRulesParams struct {
+	BarChartUniqueIDHeader
+	DefaultFilterRules []recordFilter.RecordFilterRule `json:"defaultFilterRules"`
+}
+
+func (params SetDefaultFilterRulesParams) updateBarChartProps(barChart *BarChart) error {
+
+	barChart.Properties.DefaultFilterRules = params.DefaultFilterRules
 
 	return nil
 }

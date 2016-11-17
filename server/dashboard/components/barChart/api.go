@@ -16,6 +16,8 @@ func init() {
 	barChartRouter.HandleFunc("/api/dashboard/barChart/setXAxisValueGrouping", setXAxisValueGrouping)
 	barChartRouter.HandleFunc("/api/dashboard/barChart/setYAxisSummaryVals", setYAxisSummaryVals)
 
+	barChartRouter.HandleFunc("/api/dashboard/barChart/setDefaultFilterRules", setDefaultFilterRules)
+
 	http.Handle("/api/dashboard/barChart/", barChartRouter)
 }
 
@@ -78,6 +80,16 @@ func setXAxisValueGrouping(w http.ResponseWriter, r *http.Request) {
 
 func setYAxisSummaryVals(w http.ResponseWriter, r *http.Request) {
 	var params SetYAxisSummaryParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processBarChartPropUpdate(w, r, params)
+
+}
+
+func setDefaultFilterRules(w http.ResponseWriter, r *http.Request) {
+	var params SetDefaultFilterRulesParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

@@ -9,13 +9,19 @@ function loadBarChartProperties(barChartPropsArgs) {
 	var filterPropertyPanelParams = {
 		elemPrefix: barChartElemPrefix,
 		tableID: barChartRef.properties.dataSrcTableID,
-		
-		/* TODO - restore a callback function for filters; with params something like:
-			var params = {
+		defaultFilterRules: barChartRef.properties.defaultFilterRules,
+		initDone: function () {},
+		updateFilterRules: function (updatedFilterRules) {
+			var setDefaultFiltersParams = {
+				parentDashboardID:barChartPropsArgs.dashboardID,
 				barChartID: barChartRef.barChartID,
-				parentDashboardID: barChartPropsArgs.dashboardID,
-				defaultFilterIDs: defaultFilterIDs }
-		*/
+				defaultFilterRules: updatedFilterRules
+			}
+			jsonAPIRequest("dashboard/barChart/setDefaultFilterRules",setDefaultFiltersParams,function(updatedBarChart) {
+				console.log(" Default filters updated")
+				setElemObjectRef(updatedBarChart.barChartID,updatedBarChart)
+			}) // set record's number field value
+		}
 	}
 	initFilterPropertyPanel(filterPropertyPanelParams)
 	

@@ -7,6 +7,7 @@ import (
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/recordFilter"
 )
 
 const barChartEntityKind string = "BarChart"
@@ -31,6 +32,8 @@ type BarChartProps struct {
 	Title string `json:"title"`
 
 	YAxisVals values.ValSummary `json:"yAxisValSummary"`
+
+	DefaultFilterRules []recordFilter.RecordFilterRule `json:"defaultFilterRules"`
 }
 
 // DashboardBarChart is the datastore object for dashboard bar charts.
@@ -108,12 +111,13 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 	}
 
 	barChartProps := BarChartProps{
-		XAxisVals:       *valGrouping,
-		XAxisSortValues: params.XAxisSortValues,
-		DataSrcTableID:  params.DataSrcTableID,
-		YAxisVals:       *valSummary,
-		Geometry:        params.Geometry,
-		Title:           ""}
+		XAxisVals:          *valGrouping,
+		XAxisSortValues:    params.XAxisSortValues,
+		DataSrcTableID:     params.DataSrcTableID,
+		YAxisVals:          *valSummary,
+		Geometry:           params.Geometry,
+		Title:              "",
+		DefaultFilterRules: []recordFilter.RecordFilterRule{}}
 
 	newBarChart := BarChart{
 		ParentDashboardID: params.ParentDashboardID,

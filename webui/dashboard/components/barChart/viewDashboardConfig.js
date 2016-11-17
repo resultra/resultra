@@ -2,17 +2,18 @@ function barChartViewDashboardConfig(barChartRef) {
 	
 	var barChartElemPrefix = "barChart_"
 	
-	// Start with the defaultFilterIDs for the given bar chart. Then, if the selection changes,
-	// the currentFilterIDs will also change. Then, if the bar chart is selected again, the 
-	// current IDs can be used instead of the default IDs.
-	var currentFilterIDs = barChartRef.properties.defaultFilterIDs
+	// Start with the default filter rules for the given bar chart. Then, if the selection changes,
+	// currFilterRules will also change. Then, if the bar chart is selected again, the 
+	// currFilterRules can be used instead of the default filter rules.
+	var currFilterRules = barChartRef.properties.defaultFilterRules
 	
 	function reloadBarChart() {
 	
 		// TODO - Include filtering parameters when getting data
 		var getDataParams = {
 			parentDashboardID:barChartRef.parentDashboardID,
-			barChartID:barChartRef.barChartID
+			barChartID:barChartRef.barChartID,
+			filterRules: currFilterRules
 		}
 		jsonAPIRequest("dashboardController/getBarChartData",getDataParams,function(updatedBarChartData) {
 			console.log("Redrawing barchart after changing filter selection")
@@ -28,10 +29,16 @@ function barChartViewDashboardConfig(barChartRef) {
 			var filterPaneParams = {
 				elemPrefix: barChartElemPrefix,
 				tableID: selectedBarChartRef.properties.dataSrcTableID,
-				refilterCallbackFunc: reloadBarChart
+				defaultFilterRules: currFilterRules,
+				initDone: function () {},
+				updateFilterRules: function (updatedFilterRules) {
+					// TODO - Reload table with updated filtering params.
+					currFilterRules = updatedFilterRules
+					reloadBarChart()
+				}
 			}
 
-			initRecordFilterPanel(filterPaneParams)
+			initDefaultFilterRules(filterPaneParams)
 		
 			hideSiblingsShowOne('#barChartViewProps')
 	}
