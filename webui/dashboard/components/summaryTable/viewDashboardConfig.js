@@ -28,16 +28,19 @@ function summaryTableViewDashboardConfig(summaryTableRef) {
 			var filterPaneParams = {
 				elemPrefix: summaryTableElemPrefix,
 				tableID: updatedSummaryTableRef.properties.dataSrcTableID,
-				defaultFilterRules: currFilterRules,
+				defaultFilterRules: summaryTableRef.properties.defaultFilterRules,
 				initDone: function () {},
 				updateFilterRules: function (updatedFilterRules) {
 					// TODO - Reload table with updated filtering params.
 					currFilterRules = updatedFilterRules
 					reloadSummaryTable()
+				},
+				refilterWithCurrentFilterRules: function() {
+					reloadSummaryTable()
 				}
 			}
 
-			initDefaultFilterRules(filterPaneParams)
+			initRecordFilterViewPanel(filterPaneParams)
 	
 			// Toggle to the summary properties, hiding the other property panels
 			hideSiblingsShowOne('#summaryTableViewProps')

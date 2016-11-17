@@ -278,8 +278,7 @@ function createFilterRulePanelListItem(panelParams, fieldInfo,defaultRuleInfo) {
 	
 }
 
-function initDefaultFilterRules(panelParams) {
-	
+function updateDefaultFilterRules(panelParams, updateDoneFunc) {
 	loadFieldInfo(panelParams.tableID,[fieldTypeAll],function(fieldsByID) {
 		
 		var filterRuleListSelector = createPrefixedSelector(panelParams.elemPrefix,
@@ -297,11 +296,11 @@ function initDefaultFilterRules(panelParams) {
 			$filterRuleList.append(createFilterRulePanelListItem(panelParams,fieldInfo,currRuleInfo))
 				
 		}
-		
-		panelParams.initDone()
-		
+		updateDoneFunc()
 	})
 	
-	
-	
+}
+
+function initDefaultFilterRules(panelParams) {
+	updateDefaultFilterRules(panelParams,panelParams.initDone)	
 }

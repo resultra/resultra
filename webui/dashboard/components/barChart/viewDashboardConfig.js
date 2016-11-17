@@ -29,16 +29,19 @@ function barChartViewDashboardConfig(barChartRef) {
 			var filterPaneParams = {
 				elemPrefix: barChartElemPrefix,
 				tableID: selectedBarChartRef.properties.dataSrcTableID,
-				defaultFilterRules: currFilterRules,
+				defaultFilterRules: barChartRef.properties.defaultFilterRules,
 				initDone: function () {},
 				updateFilterRules: function (updatedFilterRules) {
 					// TODO - Reload table with updated filtering params.
 					currFilterRules = updatedFilterRules
 					reloadBarChart()
+				},
+				refilterWithCurrentFilterRules: function() {
+					reloadBarChart()
 				}
 			}
 
-			initDefaultFilterRules(filterPaneParams)
+			initRecordFilterViewPanel(filterPaneParams)
 		
 			hideSiblingsShowOne('#barChartViewProps')
 	}

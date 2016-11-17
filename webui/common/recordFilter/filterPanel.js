@@ -1,23 +1,19 @@
 
-function initRecordFilterPanel(filterPaneParams) {
+function initRecordFilterViewPanel(filterPaneParams) {
 		
+	initDefaultFilterRules(filterPaneParams) 
 		
 	var refilterButtonSelector = createPrefixedSelector(filterPaneParams.elemPrefix,'FilterRecordsPanelRefilterButton')
-	$(refilterButtonSelector).unbind("click")
-	$(refilterButtonSelector).click(function(e) {
-		filterPaneParams.refilterCallbackFunc()
-		$(this).blur();
-	    e.preventDefault();// prevent the default anchor functionality
-	});
+	initButtonClickHandler(refilterButtonSelector,function (){
+		filterPaneParams.refilterWithCurrentFilterRules()		
+	})
 	
 	
-	var clearFiltersButtonSelector = createPrefixedSelector(filterPaneParams.elemPrefix,'FilterRecordsClearFiltersButton')
-	$(clearFiltersButtonSelector).unbind("click")
-	$(clearFiltersButtonSelector).click(function(e) {
-		// TODO - Revert filters back to defaults
-		filterPaneParams.refilterCallbackFunc()
-		$(this).blur();
-	    e.preventDefault();// prevent the default anchor functionality
-	});
+	var resetFiltersButtonSelector = createPrefixedSelector(filterPaneParams.elemPrefix,'FilterRecordsResetFiltersButton')
+	initButtonClickHandler(resetFiltersButtonSelector,function () {
+		updateDefaultFilterRules(filterPaneParams, function () {
+			filterPaneParams.updateFilterRules(filterPaneParams.defaultFilterRules)
+		})		
+	})
 	
 }

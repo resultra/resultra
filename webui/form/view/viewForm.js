@@ -220,9 +220,12 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 			updateFilterRules: function (updatedFilterRules) {
 				console.log("View form: filters changed - updating filtering")
 				reloadSortedAndFilterRecords()
+			},
+			refilterWithCurrentFilterRules: function() {
+				reloadSortedAndFilterRecords()
 			}
 		}
-		initDefaultFilterRules(filterPropertyPanelParams)
+		initRecordFilterViewPanel(filterPropertyPanelParams)
 						
 		var recordSortPaneParams = {
 			defaultSortRules: formInfo.properties.defaultRecordSortRules,
