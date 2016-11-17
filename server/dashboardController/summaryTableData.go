@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/dashboard/components/summaryTable"
+	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/recordReadController"
 )
 
@@ -13,14 +14,15 @@ type SummaryTableData struct {
 	GroupedSummarizedVals GroupedSummarizedVals     `json:"groupedSummarizedVals"`
 }
 
-func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable) (*SummaryTableData, error) {
+func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable, filterRules []recordFilter.RecordFilterRule) (*SummaryTableData, error) {
 
 	tableID := summaryTable.Properties.DataSrcTableID
 
 	sortRules := []recordSortDataModel.RecordSortRule{}
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
-		TableID:   tableID,
-		SortRules: sortRules}
+		TableID:     tableID,
+		FilterRules: filterRules,
+		SortRules:   sortRules}
 	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(getRecordParams)
 	if getRecErr != nil {
 		return nil, fmt.Errorf("getOneSummaryTableData: Error retrieving records for summary table: %v", getRecErr)
@@ -46,8 +48,9 @@ func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable) (*SummaryTa
 }
 
 type GetSummaryTableDataParams struct {
-	ParentDashboardID string `json:"parentDashboardID"`
-	SummaryTableID    string `json:"summaryTableID"`
+	ParentDashboardID string                          `json:"parentDashboardID"`
+	SummaryTableID    string                          `json:"summaryTableID"`
+	FilterRules       []recordFilter.RecordFilterRule `json:"filterRules"`
 }
 
 func getSummaryTableData(params GetSummaryTableDataParams) (*SummaryTableData, error) {
@@ -66,7 +69,7 @@ func getSummaryTableData(params GetSummaryTableDataParams) (*SummaryTableData, e
 			params, getSummaryTableErr)
 	}
 
-	summaryTableData, dataErr := getOneSummaryTableData(summaryTable)
+	summaryTableData, dataErr := getOneSummaryTableData(summaryTable, params.FilterRules)
 	if dataErr != nil {
 		return nil, fmt.Errorf("GetSummaryTableData: Error retrieving bar chart data: %v", dataErr)
 	}
@@ -85,7 +88,7 @@ func getDefaultDashboardSummaryTablesData(parentDashboardID string) ([]SummaryTa
 	summaryTablesData := []SummaryTableData{}
 	for _, summaryTable := range summaryTables {
 
-		summaryTableData, dataErr := getOneSummaryTableData(&summaryTable)
+		summaryTableData, dataErr := getOneSummaryTableData(&summaryTable, summaryTable.Properties.DefaultFilterRules)
 		if dataErr != nil {
 			return nil, fmt.Errorf("GetData: Error retrieving summary table data: %v", dataErr)
 		}

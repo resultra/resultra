@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/dashboard/components/barChart"
+	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/recordReadController"
 )
 
@@ -21,15 +22,16 @@ type BarChartData struct {
 	DataRows   []BarChartDataRow `json:"dataRows"`
 }
 
-func getOneBarChartData(barChart *barChart.BarChart) (*BarChartData, error) {
+func getOneBarChartData(barChart *barChart.BarChart, filterRules []recordFilter.RecordFilterRule) (*BarChartData, error) {
 
 	tableID := barChart.Properties.DataSrcTableID
 
 	// TODO - Store the list of filters with the bar chart and include it in the query.
 	sortRules := []recordSortDataModel.RecordSortRule{}
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
-		TableID:   tableID,
-		SortRules: sortRules}
+		TableID:     tableID,
+		FilterRules: filterRules,
+		SortRules:   sortRules}
 	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(getRecordParams)
 	if getRecErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
@@ -59,8 +61,9 @@ func getOneBarChartData(barChart *barChart.BarChart) (*BarChartData, error) {
 }
 
 type GetBarChartDataParams struct {
-	ParentDashboardID string `json:"parentDashboardID"`
-	BarChartID        string `json:"barChartID"`
+	ParentDashboardID string                          `json:"parentDashboardID"`
+	BarChartID        string                          `json:"barChartID"`
+	FilterRules       []recordFilter.RecordFilterRule `json:"filterRules"`
 }
 
 func getBarChartData(params GetBarChartDataParams) (*BarChartData, error) {
@@ -71,7 +74,7 @@ func getBarChartData(params GetBarChartDataParams) (*BarChartData, error) {
 			params, getBarChartErr)
 	}
 
-	barChartData, dataErr := getOneBarChartData(barChart)
+	barChartData, dataErr := getOneBarChartData(barChart, params.FilterRules)
 	if dataErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart data: %v", dataErr)
 	}
@@ -90,7 +93,7 @@ func getDefaultDashboardBarChartsData(parentDashboardID string) ([]BarChartData,
 	var barChartsData []BarChartData
 	for _, barChart := range barCharts {
 
-		barChartData, dataErr := getOneBarChartData(&barChart)
+		barChartData, dataErr := getOneBarChartData(&barChart, barChart.Properties.DefaultFilterRules)
 		if dataErr != nil {
 			return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart data: %v", dataErr)
 		}
