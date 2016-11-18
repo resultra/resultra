@@ -23,19 +23,9 @@ func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordVa
 		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving records: %v", getRecordErr)
 	}
 
-	filteredRecords := []recordValue.RecordValueResults{}
-	for _, recValue := range unfilteredRecordValues {
-
-		isFiltered, filterErr := recordFilter.MatchRecord(recValue, params.FilterRules)
-
-		if filterErr != nil {
-			return nil, fmt.Errorf("GetFilteredSortedRecords: Error filtering record: %v", filterErr)
-		}
-
-		if isFiltered {
-			filteredRecords = append(filteredRecords, recValue)
-		}
-
+	filteredRecords, err := recordFilter.FilterRecordValues(params.FilterRules, unfilteredRecordValues)
+	if err != nil {
+		return nil, fmt.Errorf("GetFilteredRecords: Error filtering records: %v", err)
 	}
 
 	if sortErr := recordSort.SortRecordValues(params.TableID, filteredRecords, params.SortRules); sortErr != nil {

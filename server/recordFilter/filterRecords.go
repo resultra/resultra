@@ -41,3 +41,25 @@ func MatchRecord(recValResults recordValue.RecordValueResults, filterRules []Rec
 
 	return true, nil
 }
+
+func FilterRecordValues(filterRules []RecordFilterRule,
+	unfilteredRecordValues []recordValue.RecordValueResults) ([]recordValue.RecordValueResults, error) {
+
+	filteredRecords := []recordValue.RecordValueResults{}
+	for _, recValue := range unfilteredRecordValues {
+
+		isFiltered, filterErr := MatchRecord(recValue, filterRules)
+
+		if filterErr != nil {
+			return nil, fmt.Errorf("GetFilteredSortedRecords: Error filtering record: %v", filterErr)
+		}
+
+		if isFiltered {
+			filteredRecords = append(filteredRecords, recValue)
+		}
+
+	}
+
+	return filteredRecords, nil
+
+}
