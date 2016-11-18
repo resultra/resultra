@@ -129,6 +129,7 @@ var textFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDBlank:    filterBlankField}
 
 var numberFieldFilterRuleDefs = RuleIDFilterFuncMap{
+	filterRuleIDAny:      filterAny,
 	filterRuleIDNotBlank: filterNonBlankField,
 	filterRuleIDBlank:    filterBlankField,
 	filterRuleIDGreater:  filterGreater,

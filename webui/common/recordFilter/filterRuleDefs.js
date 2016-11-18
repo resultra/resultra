@@ -20,6 +20,10 @@ var filterRulesText = {
 }
 
 var filterRulesNumber = {
+	"any": {
+		label: "Any value (no filtering)",
+		hasParam: false,
+	},
 	"isBlank": {
 		label: "Value not set (blank)",
 		hasParam: false,
