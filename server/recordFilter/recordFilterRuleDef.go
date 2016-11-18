@@ -2,13 +2,15 @@ package recordFilter
 
 import (
 	"fmt"
+	"log"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/record"
 )
 
 type FilterFuncParams struct {
-	Conditions []FilterRuleCondition
-	FieldID    string
+	Conditions   []FilterRuleCondition
+	FieldID      string
+	ConditionMap FilterConditionMap
 }
 
 type FilterRuleFunc func(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error)
@@ -19,6 +21,11 @@ const filterRuleIDCustomDateRange string = "dateRange"
 const filterRuleIDGreater string = "greater"
 const filterRuleIDLess string = "less"
 const filterRuleIDAny string = "any"
+
+const conditionDateRangeMinDate string = "minDate"
+const conditionDateRangeMaxDate string = "maxDate"
+const conditionGreater string = "greater"
+const conditionLess string = "less"
 
 func filterBlankField(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
 
@@ -43,18 +50,75 @@ func filterNonBlankField(filterParams FilterFuncParams, recFieldVals record.RecF
 }
 
 func filterGreater(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
-	return true, nil // stubbed out
+
+	greaterComparisonVal := filterParams.ConditionMap.getNumberConditionParam(conditionGreater)
+	if greaterComparisonVal == nil {
+		return false, nil
+	}
+
+	log.Printf("filterGreater: comparison value = %v", *greaterComparisonVal)
+
+	numberVal, valFound := recFieldVals.GetNumberFieldValue(filterParams.FieldID)
+	if !valFound {
+		return false, nil
+	}
+	log.Printf("filterGreater: value = %v", numberVal)
+
+	if numberVal > *greaterComparisonVal {
+		return true, nil
+	} else {
+		return false, nil
+	}
+
 }
 
 func filterLess(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
-	return true, nil // stubbed out
+	lessComparisonVal := filterParams.ConditionMap.getNumberConditionParam(conditionLess)
+	if lessComparisonVal == nil {
+		return false, nil
+	}
+
+	log.Printf("filterLess: comparison value = %v", *lessComparisonVal)
+
+	numberVal, valFound := recFieldVals.GetNumberFieldValue(filterParams.FieldID)
+	if !valFound {
+		return false, nil
+	}
+	log.Printf("filterLess: value = %v", numberVal)
+
+	if numberVal < *lessComparisonVal {
+		return true, nil
+	} else {
+		return false, nil
+	}
 }
 
 func filterAny(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
-	return true, nil // stubbed out
+	return true, nil // Always return true
 }
 
 func filterCustomDateRange(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+
+	startDate := filterParams.ConditionMap.getDateConditionParam(conditionDateRangeMinDate)
+	endDate := filterParams.ConditionMap.getDateConditionParam(conditionDateRangeMaxDate)
+	if startDate == nil || endDate == nil {
+		return false, nil
+	}
+	log.Printf("date range filter: start date = %v, end date = %v", *startDate, *endDate)
+
+	timeVal, valFound := recFieldVals.GetTimeFieldValue(filterParams.FieldID)
+	if !valFound {
+		return false, nil
+	}
+
+	log.Printf("date range filter: date val = %v", timeVal)
+
+	if timeVal.After(*startDate) && timeVal.Before(*endDate) {
+		return true, nil
+	} else {
+		return false, nil
+	}
+
 	return true, nil // stubbed out
 }
 

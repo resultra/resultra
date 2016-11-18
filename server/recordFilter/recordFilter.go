@@ -1,10 +1,8 @@
 package recordFilter
 
 import (
-	//	"fmt"
-	"resultra/datasheet/server/field"
-	//	"resultra/datasheet/server/record"
 	"fmt"
+	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/recordValue"
 )
 
@@ -22,8 +20,12 @@ func MatchRecord(recValResults recordValue.RecordValueResults, filterRules []Rec
 			return false, fmt.Errorf("MatchRecord: Failed to retrieve filter rule definition: err=%v", ruleDefErr)
 		}
 
+		conditionMap := newFilterConditionMap(currFilterRule.Conditions)
+
 		filterParams := FilterFuncParams{
-			Conditions: currFilterRule.Conditions}
+			FieldID:      currFilterRule.FieldID,
+			Conditions:   currFilterRule.Conditions,
+			ConditionMap: conditionMap}
 		recordIsFiltered, filterErr := filterFunc(filterParams, recValResults.FieldValues)
 		if filterErr != nil {
 			return false, fmt.Errorf("MatchRecord: Error filtering: %v", filterErr)
