@@ -15,8 +15,6 @@ import (
 const formEntityKind string = "Form"
 
 type FormProperties struct {
-	DefaultFilterIDs       []string                             `json:"defaultFilterIDs"`
-	AvailableFilterIDs     []string                             `json:"availableFilterIDs"`
 	Layout                 componentLayout.ComponentLayout      `json:"layout"`
 	DefaultRecordSortRules []recordSortDataModel.RecordSortRule `json:"defaultRecordSortRules"`
 	DefaultFilterRules     []recordFilter.RecordFilterRule      `json:"defaultFilterRules"`

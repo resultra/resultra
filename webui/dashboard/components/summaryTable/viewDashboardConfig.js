@@ -31,7 +31,6 @@ function summaryTableViewDashboardConfig(summaryTableRef) {
 				defaultFilterRules: summaryTableRef.properties.defaultFilterRules,
 				initDone: function () {},
 				updateFilterRules: function (updatedFilterRules) {
-					// TODO - Reload table with updated filtering params.
 					currFilterRules = updatedFilterRules
 					reloadSummaryTable()
 				},

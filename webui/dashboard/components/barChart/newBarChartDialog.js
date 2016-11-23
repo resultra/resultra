@@ -38,10 +38,10 @@ function saveNewBarChart($dialog) {
 		var barChartDataParams = { 
 			parentDashboardID: newBarChartParams.dashboardID,
 			barChartID: barChartRef.barChartID,
-			filterIDs: barChartRef.properties.defaultFilterIDs
+			filterRules: barChartRef.properties.defaultFilterRules
 		}
 		
-		setTimeout(function() { // Wait for eventual consistency
+		setTimeout(function() {
 			jsonAPIRequest("dashboardController/getBarChartData",barChartDataParams,function(barChartData) {
 				initBarChartData(newBarChartParams.dashboardID,barChartData)
 			})		
