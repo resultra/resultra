@@ -20,6 +20,8 @@ func init() {
 	databaseRouter.HandleFunc("/api/database/setName", database.SetNameAPI)
 	databaseRouter.HandleFunc("/api/database/validateDatabaseName", database.ValidateDatabaseNameAPI)
 
+	databaseRouter.HandleFunc("/api/database/saveAsTemplate", saveAsTemplate)
+
 	http.Handle("/api/database/", databaseRouter)
 }
 
@@ -52,6 +54,22 @@ func newDatabase(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *newDB)
+	}
+
+}
+
+func saveAsTemplate(w http.ResponseWriter, r *http.Request) {
+
+	var params SaveTemplateParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if templateDB, err := saveDatabaseToTemplate(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, *templateDB)
 	}
 
 }

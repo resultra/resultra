@@ -19,11 +19,50 @@ type Database struct {
 	Properties DatabaseProperties `json:"properties"`
 }
 
+func SaveNewDatabase(newDatabase Database) error {
+
+	encodedProps, encodeErr := generic.EncodeJSONString(newDatabase.Properties)
+	if encodeErr != nil {
+		return fmt.Errorf("SaveNewDatabase: failure encoding properties: error = %v", encodeErr)
+	}
+
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO databases VALUES ($1,$2,$3)`,
+		newDatabase.DatabaseID, newDatabase.Name, encodedProps); insertErr != nil {
+		return fmt.Errorf("saveNewDatabase: insert failed: error = %v", insertErr)
+	}
+
+	return nil
+
+}
+
+func CloneDatabase(remappedIDs map[string]string, newName string, srcDatabaseID string) (*Database, error) {
+
+	srcDatabase, err := GetDatabase(srcDatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
+	}
+
+	destDatabaseID := uniqueID.GenerateSnowflakeID()
+	remappedIDs[srcDatabaseID] = destDatabaseID
+
+	dest := *srcDatabase
+	dest.DatabaseID = destDatabaseID
+	dest.Name = newName
+	// TODO - handle properties
+
+	if err := SaveNewDatabase(dest); err != nil {
+		return nil, fmt.Errorf("Clone database: Can't save database: %v", err)
+	}
+
+	return &dest, nil
+
+}
+
 type NewDatabaseParams struct {
 	Name string `json:"name"`
 }
 
-func SaveNewDatabase(params NewDatabaseParams) (*Database, error) {
+func SaveNewEmptyDatabase(params NewDatabaseParams) (*Database, error) {
 
 	sanitizedDbName, sanitizeErr := stringValidation.SanitizeName(params.Name)
 	if sanitizeErr != nil {
@@ -33,20 +72,15 @@ func SaveNewDatabase(params NewDatabaseParams) (*Database, error) {
 	databaseID := uniqueID.GenerateSnowflakeID()
 
 	dbProps := DatabaseProperties{}
-	encodedProps, encodeErr := generic.EncodeJSONString(dbProps)
-	if encodeErr != nil {
-		return nil, fmt.Errorf("SaveNewDatabase: failure encoding properties: error = %v", encodeErr)
-	}
-
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO databases VALUES ($1,$2,$3)`,
-		databaseID, sanitizedDbName, encodedProps); insertErr != nil {
-		return nil, fmt.Errorf("saveNewDatabase: insert failed: error = %v", insertErr)
-	}
 
 	newDatabase := Database{
 		DatabaseID: databaseID,
 		Name:       sanitizedDbName,
 		Properties: dbProps}
+
+	if err := SaveNewDatabase(newDatabase); err != nil {
+		return nil, fmt.Errorf("SaveNewEmptyDatabase: %v", err)
+	}
 
 	return &newDatabase, nil
 }

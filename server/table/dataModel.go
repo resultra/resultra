@@ -22,7 +22,18 @@ type NewTableParams struct {
 	Name       string `json:"name"`
 }
 
-func saveNewTable(params NewTableParams) (*Table, error) {
+func saveNewTable(newTable Table) error {
+
+	if _, insertErr := databaseWrapper.DBHandle().Exec(
+		`INSERT INTO data_tables (table_id, database_id, name) VALUES ($1, $2, $3)`,
+		newTable.TableID, newTable.ParentDatabaseID, newTable.Name); insertErr != nil {
+		return fmt.Errorf("saveNewTable: insert failed: error = %v", insertErr)
+	}
+
+	return nil
+}
+
+func saveNewEmptyTable(params NewTableParams) (*Table, error) {
 
 	sanitizedTableName, sanitizeErr := stringValidation.SanitizeName(params.Name)
 	if sanitizeErr != nil {
@@ -31,15 +42,36 @@ func saveNewTable(params NewTableParams) (*Table, error) {
 
 	tableID := uniqueID.GenerateSnowflakeID()
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO data_tables (table_id, database_id, name) VALUES ($1, $2, $3)`,
-		tableID, params.DatabaseID, sanitizedTableName); insertErr != nil {
-		return nil, fmt.Errorf("saveNewTable: insert failed: error = %v", insertErr)
-	}
-
 	newTable := Table{ParentDatabaseID: params.DatabaseID, TableID: tableID, Name: sanitizedTableName}
 
+	if err := saveNewTable(newTable); err != nil {
+		return nil, err
+	}
+
 	return &newTable, nil
+}
+
+func CloneTables(remappedIDs map[string]string, srcDatabaseID string) error {
+
+	destDatabaseID, found := remappedIDs[srcDatabaseID]
+	if !found {
+		return fmt.Errorf("CloneTables: Destination database ID not found for src database = %v", srcDatabaseID)
+	}
+
+	tableParams := GetTableListParams{DatabaseID: srcDatabaseID}
+	tables, err := GetTableList(tableParams)
+	if err != nil {
+		return fmt.Errorf("CloneTables: %v", err)
+	}
+	for _, srcTable := range tables {
+		destTableID := uniqueID.GenerateSnowflakeID()
+		remappedIDs[srcTable.TableID] = destTableID
+
+		destTable := srcTable
+		destTable.ParentDatabaseID = destDatabaseID
+		destTable.TableID = destTableID
+	}
+	return nil
 }
 
 func GetTableDatabaseID(tableID string) (string, error) {
@@ -64,7 +96,7 @@ type GetTableListParams struct {
 	DatabaseID string `json:"databaseID"` // parent database
 }
 
-func getTableList(params GetTableListParams) ([]Table, error) {
+func GetTableList(params GetTableListParams) ([]Table, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
 		`SELECT database_id,table_id,name FROM data_tables WHERE database_id = $1`, params.DatabaseID)

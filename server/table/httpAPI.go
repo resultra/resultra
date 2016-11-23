@@ -29,7 +29,7 @@ func newTable(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if newTable, err := saveNewTable(tableParams); err != nil {
+	if newTable, err := saveNewEmptyTable(tableParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *newTable)
@@ -45,7 +45,7 @@ func getTableListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if tableRefs, err := getTableList(tableParams); err != nil {
+	if tableRefs, err := GetTableList(tableParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, tableRefs)

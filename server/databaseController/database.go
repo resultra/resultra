@@ -14,7 +14,7 @@ func createNewDatabase(req *http.Request, dbParams database.NewDatabaseParams) (
 		return nil, userErr
 	}
 
-	newDB, newDBErr := database.SaveNewDatabase(dbParams)
+	newDB, newDBErr := database.SaveNewEmptyDatabase(dbParams)
 	if newDBErr != nil {
 		return nil, newDBErr
 	}
