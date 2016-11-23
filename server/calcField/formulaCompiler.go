@@ -44,7 +44,7 @@ func preprocessCalcFieldFormula(compileParams formulaCompileParams) (string, err
 
 	globals, getGlobalsErr := global.GetGlobals(compileParams.databaseID)
 	if getGlobalsErr != nil {
-		return "", fmt.Errorf("reverseProcessCalcFieldFormula: Unable to retrieve globals: databaseID=%v, error=%v ",
+		return "", fmt.Errorf("preprocessCalcFieldFormula: Unable to retrieve globals: databaseID=%v, error=%v ",
 			compileParams.databaseID, getGlobalsErr)
 	}
 	globalRefGlobalIDMap := IdentReplacementMap{}
@@ -58,6 +58,49 @@ func preprocessCalcFieldFormula(compileParams formulaCompileParams) (string, err
 	}
 
 	return preprocessOutput, nil
+
+}
+
+// ClonePreprocessedFormula is used to duplicate a formula when saving an existing database as a template or when cloning from a
+// template to a new database.
+func ClonePreprocessedFormula(srcDatabaseID string, parentTableID string,
+	remappedIDs map[string]string, preProcessedFormula string) (string, error) {
+
+	getFieldParams := field.GetFieldListParams{ParentTableID: parentTableID}
+	fields, err := field.GetAllFields(getFieldParams)
+	if err != nil {
+		return "", fmt.Errorf("cloneFields: %v", err)
+	}
+
+	fieldIDRemappedIDMap := IdentReplacementMap{}
+	for _, currField := range fields {
+		remappedID, idFound := remappedIDs[currField.FieldID]
+		if !idFound {
+			return "", fmt.Errorf("ClonePreprocessedFormula: Can't find mapped ID for field id = %v", currField.FieldID)
+		}
+		fieldIDRemappedIDMap[currField.FieldID] = remappedID
+	}
+
+	globals, err := global.GetGlobals(srcDatabaseID)
+	if err != nil {
+		return "", fmt.Errorf("ClonePreprocessedFormula: Unable to retrieve globals: databaseID=%v, error=%v ",
+			srcDatabaseID, err)
+	}
+	globalIDRemappedIDMap := IdentReplacementMap{}
+	for _, currGlobal := range globals {
+		remappedID, idFound := remappedIDs[currGlobal.GlobalID]
+		if !idFound {
+			return "", fmt.Errorf("ClonePreprocessedFormula: Can't find mapped ID for global id = %v", currGlobal.GlobalID)
+		}
+		globalIDRemappedIDMap[currGlobal.GlobalID] = remappedID
+	}
+
+	remappedFormulaOutput, err := preprocessFormulaInput(preProcessedFormula, fieldIDRemappedIDMap, globalIDRemappedIDMap)
+	if err != nil {
+		return "", fmt.Errorf("ClonePreprocessedFormula: Error mapping ids to clone: error=%v ", err)
+	}
+
+	return remappedFormulaOutput, nil
 
 }
 

@@ -10,10 +10,10 @@ import (
 type FuncSemAnalysisParams struct {
 	context  *semanticAnalysisContext
 	funcName string
-	funcArgs []EquationNode
+	funcArgs []*EquationNode
 }
 
-type EqnEvalFunc func(evalContext *EqnEvalContext, funcArgs []EquationNode) (*EquationResult, error)
+type EqnEvalFunc func(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error)
 type FuncSemAnalyzeFunc func(semAnalysisParams FuncSemAnalysisParams) (*semanticAnalysisResult, error)
 
 type FunctionInfo struct {
@@ -41,7 +41,7 @@ func oneOrMoreNumberArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult,
 	argErrors := []string{}
 	for argIndex, argEqnNode := range params.funcArgs {
 		argNum := argIndex + 1
-		analyzeResult, analyzeErr := analyzeEqnNode(params.context, &argEqnNode)
+		analyzeResult, analyzeErr := analyzeEqnNode(params.context, argEqnNode)
 		if analyzeErr != nil {
 			return nil, analyzeErr
 		}
@@ -68,7 +68,7 @@ func oneOrMoreTextArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, e
 	argErrors := []string{}
 	for argIndex, argEqnNode := range params.funcArgs {
 		argNum := argIndex + 1
-		analyzeResult, analyzeErr := analyzeEqnNode(params.context, &argEqnNode)
+		analyzeResult, analyzeErr := analyzeEqnNode(params.context, argEqnNode)
 		if analyzeErr != nil {
 			return nil, analyzeErr
 		}
@@ -86,7 +86,7 @@ func oneOrMoreTextArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, e
 
 const FuncNameSum string = "SUM"
 
-func sumEvalFunc(evalContext *EqnEvalContext, funcArgs []EquationNode) (*EquationResult, error) {
+func sumEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
 
 	var sumResult float64 = 0.0
 
@@ -113,7 +113,7 @@ func sumEvalFunc(evalContext *EqnEvalContext, funcArgs []EquationNode) (*Equatio
 
 const FuncNameProduct string = "PRODUCT"
 
-func productEvalFunc(evalContext *EqnEvalContext, funcArgs []EquationNode) (*EquationResult, error) {
+func productEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
 
 	var prodResult float64 = 1.0
 
@@ -144,7 +144,7 @@ func productEvalFunc(evalContext *EqnEvalContext, funcArgs []EquationNode) (*Equ
 
 const FuncNameConcat string = "CONCATENATE"
 
-func concatEvalFunc(evalContext *EqnEvalContext, funcArgs []EquationNode) (*EquationResult, error) {
+func concatEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
 
 	var concatBuf bytes.Buffer
 

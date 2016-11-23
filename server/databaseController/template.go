@@ -2,6 +2,7 @@ package databaseController
 
 import (
 	"fmt"
+	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -43,6 +44,20 @@ func cloneFields(remappedIDs map[string]string, srcDatabaseID string) error {
 			clonedField.FieldID = remappedIDs[currField.FieldID]
 
 			if currField.IsCalcField {
+				clonedEqn, err := calcField.CloneEquation(remappedIDs, currField.CalcFieldEqn)
+				if err != nil {
+					return fmt.Errorf("cloneFields: %v", err)
+				}
+				clonedField.CalcFieldEqn = clonedEqn
+
+				clonedFormulaText, err := calcField.ClonePreprocessedFormula(srcDatabaseID, currTable.TableID,
+					remappedIDs, currField.PreprocessedFormulaText)
+				if err != nil {
+					return fmt.Errorf("cloneFields: %v", err)
+				}
+				clonedField.PreprocessedFormulaText = clonedFormulaText
+
+				field.CreateNewFieldFromRawInputs(clonedField)
 
 			} else {
 				field.CreateNewFieldFromRawInputs(clonedField)
@@ -73,6 +88,8 @@ func saveDatabaseToTemplate(params SaveTemplateParams) (*database.Database, erro
 	if err := table.CloneTables(remappedIDs, params.SourceDatabaseID); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
+
+	// TODO - Clone Globals before cloning fields
 
 	if err := cloneFields(remappedIDs, params.SourceDatabaseID); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)

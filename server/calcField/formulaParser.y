@@ -15,7 +15,7 @@ import (
 	number float64
 	text string
 	eqnNode *EquationNode
-	args []EquationNode
+	args []*EquationNode
 }
 
 %token<number> TOK_NUMBER
@@ -61,12 +61,12 @@ root : expr
 
 expr	:   expr TOK_PLUS expr
 		{ 
-			funcArgs := []EquationNode{*$1,*$3}
+			funcArgs := []*EquationNode{$1,$3}
 			$$  =  FuncEqnNode(FuncNameSum,funcArgs)
 		}
 		| expr TOK_TIMES expr
 		{
-			funcArgs := []EquationNode{*$1,*$3}
+			funcArgs := []*EquationNode{$1,$3}
 			$$  =  FuncEqnNode(FuncNameProduct,funcArgs)
 		}
 		| fieldRef
@@ -110,7 +110,7 @@ func : TOK_IDENT TOK_LPAREN funcArgs TOK_RPAREN
 		| TOK_IDENT TOK_LPAREN TOK_RPAREN
 		{
 			/* No arguments */
-			$$ = FuncEqnNode($1,[]EquationNode{})
+			$$ = FuncEqnNode($1,[]*EquationNode{})
 		}
 
 funcArgs: funcArg
@@ -119,14 +119,14 @@ funcArgs: funcArg
 		}
 		| funcArg TOK_COMMA funcArgs
 		{
-			$$ = []EquationNode{}
+			$$ = []*EquationNode{}
 			$$ = append($$,$1...)
 			$$ = append($$,$3...)
 		}
 
 funcArg: expr
 		{
-			$$ = []EquationNode{*$1}
+			$$ = []*EquationNode{$1}
 		}
 		
 

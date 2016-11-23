@@ -50,7 +50,7 @@ func checkEqnCycles(context *semanticAnalysisContext, eqnNode *EquationNode) (bo
 		}
 	} else if len(eqnNode.FuncName) > 0 {
 		for _, funcArgEqn := range eqnNode.FuncArgs {
-			argHasCycle, argCycleErr := checkEqnCycles(context, &funcArgEqn)
+			argHasCycle, argCycleErr := checkEqnCycles(context, funcArgEqn)
 			if argCycleErr != nil {
 				return false, argCycleErr
 			} else if argHasCycle {
