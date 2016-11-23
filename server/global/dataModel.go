@@ -23,6 +23,19 @@ type NewGlobalParams struct {
 	Type             string `json:"type"`
 }
 
+func saveNewGlobal(newGlobal Global) error {
+
+	if _, insertErr := databaseWrapper.DBHandle().Exec(
+		`INSERT INTO globals (database_id,global_id,name,ref_name,type) VALUES ($1,$2,$3,$4,$5)`,
+		newGlobal.ParentDatabaseID, newGlobal.GlobalID, newGlobal.Name, newGlobal.RefName, newGlobal.Type); insertErr != nil {
+		return fmt.Errorf("newGlobal: Can't create global: error = %v", insertErr)
+	}
+
+	log.Printf("newGlobal: Created new global: %+v", newGlobal)
+
+	return nil
+}
+
 func newGlobal(params NewGlobalParams) (*Global, error) {
 
 	validateErr := validateNewGlobalName(params.ParentDatabaseID, params.Name)
@@ -44,10 +57,8 @@ func newGlobal(params NewGlobalParams) (*Global, error) {
 		RefName:  params.RefName,
 		Type:     params.Type}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO globals (database_id,global_id,name,ref_name,type) VALUES ($1,$2,$3,$4,$5)`,
-		newGlobal.ParentDatabaseID, newGlobal.GlobalID, newGlobal.Name, newGlobal.RefName, newGlobal.Type); insertErr != nil {
-		return nil, fmt.Errorf("newGlobal: Can't create global: error = %v", insertErr)
+	if err := saveNewGlobal(newGlobal); err != nil {
+		return nil, fmt.Errorf("newGlobal: Can't create global: error = %v", err)
 	}
 
 	log.Printf("newGlobal: Created new global: %+v", newGlobal)
@@ -102,6 +113,36 @@ func GetGlobals(parentDatabaseID string) ([]Global, error) {
 	}
 
 	return globals, nil
+
+}
+
+func CloneGlobals(remappedIDs map[string]string, srcDatabaseID string) error {
+
+	destDatabaseID, idFound := remappedIDs[srcDatabaseID]
+	if !idFound {
+		return fmt.Errorf("CloneGlobals: Unable to get mapped ID for source database id = %v", srcDatabaseID)
+	}
+
+	globals, err := GetGlobals(srcDatabaseID)
+	if err != nil {
+		return fmt.Errorf("CloneGlobals: Unable to retrieve globals: databaseID=%v, error=%v ",
+			srcDatabaseID, err)
+	}
+	for _, currGlobal := range globals {
+
+		remappedID := uniqueID.GenerateSnowflakeID()
+		remappedIDs[currGlobal.GlobalID] = remappedID
+
+		destGlobal := currGlobal
+		destGlobal.ParentDatabaseID = destDatabaseID
+		destGlobal.GlobalID = remappedID
+
+		if err := saveNewGlobal(destGlobal); err != nil {
+			return fmt.Errorf("CloneGlobals: Can't create global: error = %v", err)
+		}
+	}
+
+	return nil
 
 }
 

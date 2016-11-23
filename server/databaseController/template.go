@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/table"
 )
 
@@ -89,7 +90,9 @@ func saveDatabaseToTemplate(params SaveTemplateParams) (*database.Database, erro
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
-	// TODO - Clone Globals before cloning fields
+	if err := global.CloneGlobals(remappedIDs, params.SourceDatabaseID); err != nil {
+		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
+	}
 
 	if err := cloneFields(remappedIDs, params.SourceDatabaseID); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
