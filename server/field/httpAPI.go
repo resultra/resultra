@@ -19,7 +19,7 @@ func init() {
 
 func newField(w http.ResponseWriter, r *http.Request) {
 
-	var newFieldParams NewFieldParams
+	var newFieldParams NewNonCalcFieldParams
 	if err := api.DecodeJSONRequest(r, &newFieldParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -31,10 +31,10 @@ func newField(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if fieldID, err := NewField(newFieldParams); err != nil {
+	if newField, err := NewNonCalcField(newFieldParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
-		api.WriteJSONResponse(w, api.JSONParams{"fieldID": fieldID})
+		api.WriteJSONResponse(w, *newField)
 	}
 
 }

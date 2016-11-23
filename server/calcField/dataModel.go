@@ -3,6 +3,7 @@ package calcField
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/table"
 )
 
@@ -18,11 +19,11 @@ type NewCalcFieldParams struct {
 	FormulaText   string `json:"formulaText"`
 }
 
-func newCalcField(calcFieldParams NewCalcFieldParams) (string, error) {
+func newCalcField(calcFieldParams NewCalcFieldParams) (*field.Field, error) {
 
 	databaseID, getDatabaseIDErr := table.GetTableDatabaseID(calcFieldParams.ParentTableID)
 	if getDatabaseIDErr != nil {
-		return "", fmt.Errorf("assembleCalcFieldCompileParams: Unable to get database ID for table: table id =%v, error=%v ",
+		return nil, fmt.Errorf("assembleCalcFieldCompileParams: Unable to get database ID for table: table id =%v, error=%v ",
 			calcFieldParams.ParentTableID, getDatabaseIDErr)
 	}
 
@@ -39,13 +40,15 @@ func newCalcField(calcFieldParams NewCalcFieldParams) (string, error) {
 
 	compileResult, err := compileAndEncodeFormula(compileParams)
 	if err != nil {
-		return "", fmt.Errorf("Error creating new calculated field %v, can't compile formula: %v",
+		return nil, fmt.Errorf("Error creating new calculated field %v, can't compile formula: %v",
 			calcFieldParams.Name, err)
 	}
 
 	// Create the actual field. All the parameters are the same as calcFieldParams, except
 	// the equation which is encoded in JSON.
 	newField := field.Field{
+		ParentTableID:           calcFieldParams.ParentTableID,
+		FieldID:                 uniqueID.GenerateSnowflakeID(),
 		Name:                    calcFieldParams.Name,
 		Type:                    calcFieldParams.Type,
 		RefName:                 calcFieldParams.RefName,
@@ -53,5 +56,5 @@ func newCalcField(calcFieldParams NewCalcFieldParams) (string, error) {
 		PreprocessedFormulaText: compileResult.preprocessedFormula,
 		IsCalcField:             true}
 
-	return field.CreateNewFieldFromRawInputs(calcFieldParams.ParentTableID, newField)
+	return field.CreateNewFieldFromRawInputs(newField)
 }

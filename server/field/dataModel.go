@@ -5,7 +5,6 @@ import (
 	"log"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
-	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
@@ -65,25 +64,16 @@ func validFieldType(fieldType string) bool {
 // Internal function for creating new fields given raw inputs. Should only be called by
 // other "NewField" functions with well-formed parameters for either a regular (non-calculated)
 // or calculated field.
-func CreateNewFieldFromRawInputs(parentTableID string, newField Field) (string, error) {
+func CreateNewFieldFromRawInputs(newField Field) (*Field, error) {
 
-	sanitizedName, sanitizeErr := stringValidation.SanitizeName(newField.Name)
-	if sanitizeErr != nil {
-		return "", fmt.Errorf("Can't create new field: invalid name: '%v'", sanitizeErr)
-	}
-	newField.Name = sanitizedName
+	// TODO Validate field name
 
 	if !validFieldType(newField.Type) {
-		return "", fmt.Errorf("Can't create new field: invalid field type: '%v'", newField.Type)
+		return nil, fmt.Errorf("Can't create new field: invalid field type: '%v'", newField.Type)
 	}
 
-	newField.ParentTableID = parentTableID
-	// The UUID for fields is substituted for the fields reference name when stored in the preprocessed formula.
-	// The tokenizer for the formula compiler could potentially read the UUID as a number literal if there isn't a distinct prefix.
-	newField.FieldID = uniqueID.GenerateSnowflakeID()
-
 	if !generic.WellFormedFormulaReferenceName(newField.RefName) {
-		return "", fmt.Errorf("Invalid formula reference name: '%v' Cannot be empty and must only contain letters, numbers and underscores",
+		return nil, fmt.Errorf("Invalid formula reference name: '%v' Cannot be empty and must only contain letters, numbers and underscores",
 			newField.RefName)
 
 	}
@@ -101,25 +91,27 @@ func CreateNewFieldFromRawInputs(parentTableID string, newField Field) (string, 
 		newField.CalcFieldEqn,
 		newField.IsCalcField,
 		newField.PreprocessedFormulaText); insertErr != nil {
-		return "", fmt.Errorf("CreateNewFieldFromRawInputs: insert failed: error = %v", insertErr)
+		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: insert failed: error = %v", insertErr)
 	}
 
 	// TODO - verify IntID != 0
 	log.Printf("CreateNewFieldFromRawInputs: Created new field: id= %v, field='%+v'", newField.FieldID, newField)
 
-	return newField.FieldID, nil
+	return &newField, nil
 
 }
 
-type NewFieldParams struct {
+type NewNonCalcFieldParams struct {
 	ParentTableID string `json:"parentTableID"`
 	Name          string `json:"name"`
 	Type          string `json:"type"`
 	RefName       string `json:"refName"`
 }
 
-func NewField(fieldParams NewFieldParams) (string, error) {
+func NewNonCalcField(fieldParams NewNonCalcFieldParams) (*Field, error) {
 	newField := Field{
+		ParentTableID:           fieldParams.ParentTableID,
+		FieldID:                 uniqueID.GenerateSnowflakeID(),
 		Name:                    fieldParams.Name,
 		Type:                    fieldParams.Type,
 		RefName:                 fieldParams.RefName,
@@ -127,7 +119,7 @@ func NewField(fieldParams NewFieldParams) (string, error) {
 		PreprocessedFormulaText: "",
 		IsCalcField:             false} // always set calculated field to false
 
-	return CreateNewFieldFromRawInputs(fieldParams.ParentTableID, newField)
+	return CreateNewFieldFromRawInputs(newField)
 }
 
 // Getting an individual field doesn't require the table ID, since the field ID is unique.

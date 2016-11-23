@@ -26,10 +26,10 @@ func newCalcFieldAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if fieldID, err := newCalcField(newCalcFieldParams); err != nil {
+	if newField, err := newCalcField(newCalcFieldParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
-		api.WriteJSONResponse(w, api.JSONParams{"fieldID": fieldID})
+		api.WriteJSONResponse(w, *newField)
 	}
 
 }
