@@ -116,11 +116,11 @@ func GetGlobals(parentDatabaseID string) ([]Global, error) {
 
 }
 
-func CloneGlobals(remappedIDs map[string]string, srcDatabaseID string) error {
+func CloneGlobals(remappedIDs uniqueID.UniqueIDRemapper, srcDatabaseID string) error {
 
-	destDatabaseID, idFound := remappedIDs[srcDatabaseID]
-	if !idFound {
-		return fmt.Errorf("CloneGlobals: Unable to get mapped ID for source database id = %v", srcDatabaseID)
+	destDatabaseID, err := remappedIDs.GetExistingRemappedID(srcDatabaseID)
+	if err != nil {
+		return fmt.Errorf("CloneGlobals: Unable to get mapped ID for source database: %v", err)
 	}
 
 	globals, err := GetGlobals(srcDatabaseID)

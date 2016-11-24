@@ -5,6 +5,7 @@ import (
 	"log"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/table"
 	"strings"
@@ -64,7 +65,7 @@ func preprocessCalcFieldFormula(compileParams formulaCompileParams) (string, err
 // ClonePreprocessedFormula is used to duplicate a formula when saving an existing database as a template or when cloning from a
 // template to a new database.
 func ClonePreprocessedFormula(srcDatabaseID string, parentTableID string,
-	remappedIDs map[string]string, preProcessedFormula string) (string, error) {
+	remappedIDs uniqueID.UniqueIDRemapper, preProcessedFormula string) (string, error) {
 
 	getFieldParams := field.GetFieldListParams{ParentTableID: parentTableID}
 	fields, err := field.GetAllFields(getFieldParams)
@@ -74,8 +75,8 @@ func ClonePreprocessedFormula(srcDatabaseID string, parentTableID string,
 
 	fieldIDRemappedIDMap := IdentReplacementMap{}
 	for _, currField := range fields {
-		remappedID, idFound := remappedIDs[currField.FieldID]
-		if !idFound {
+		remappedID, err := remappedIDs.GetExistingRemappedID(currField.FieldID)
+		if err != nil {
 			return "", fmt.Errorf("ClonePreprocessedFormula: Can't find mapped ID for field id = %v", currField.FieldID)
 		}
 		fieldIDRemappedIDMap[currField.FieldID] = remappedID
@@ -88,8 +89,8 @@ func ClonePreprocessedFormula(srcDatabaseID string, parentTableID string,
 	}
 	globalIDRemappedIDMap := IdentReplacementMap{}
 	for _, currGlobal := range globals {
-		remappedID, idFound := remappedIDs[currGlobal.GlobalID]
-		if !idFound {
+		remappedID, err := remappedIDs.GetExistingRemappedID(currGlobal.GlobalID)
+		if err != nil {
 			return "", fmt.Errorf("ClonePreprocessedFormula: Can't find mapped ID for global id = %v", currGlobal.GlobalID)
 		}
 		globalIDRemappedIDMap[currGlobal.GlobalID] = remappedID

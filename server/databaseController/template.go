@@ -10,7 +10,7 @@ import (
 	"resultra/datasheet/server/table"
 )
 
-func cloneFields(remappedIDs map[string]string, srcDatabaseID string) error {
+func cloneFields(remappedIDs uniqueID.UniqueIDRemapper, srcDatabaseID string) error {
 
 	getTableParams := table.GetTableListParams{DatabaseID: srcDatabaseID}
 	tables, err := table.GetTableList(getTableParams)
@@ -20,8 +20,8 @@ func cloneFields(remappedIDs map[string]string, srcDatabaseID string) error {
 
 	for _, currTable := range tables {
 
-		remappedTableID, foundTableID := remappedIDs[currTable.TableID]
-		if !foundTableID {
+		remappedTableID, err := remappedIDs.GetExistingRemappedID(currTable.TableID)
+		if err != nil {
 			return fmt.Errorf("cloneFields: Can't find remapped table ID for table = %v", currTable.TableID)
 		}
 
@@ -35,14 +35,24 @@ func cloneFields(remappedIDs map[string]string, srcDatabaseID string) error {
 		// requires a 2-pass algorithm to first remap just the field IDs, then clnoe the
 		// the fields themselves with the remapped IDs already in place.
 		for _, currField := range fields {
-			remappedIDs[currField.FieldID] = uniqueID.GenerateSnowflakeID()
+			_, err := remappedIDs.AllocNewRemappedID(currField.FieldID)
+			if err != nil {
+				return fmt.Errorf("cloneFields: Duplicate mapping for field ID = %v (err=%v)",
+					currField.FieldID, err)
+			}
 		}
 
 		for _, currField := range fields {
 
 			clonedField := currField
 			clonedField.ParentTableID = remappedTableID
-			clonedField.FieldID = remappedIDs[currField.FieldID]
+
+			remappedFieldID, err := remappedIDs.GetExistingRemappedID(currField.FieldID)
+			if err != nil {
+				return fmt.Errorf("cloneFields: Missing mapping for field ID = %v (err=%v)",
+					currField.FieldID, err)
+			}
+			clonedField.FieldID = remappedFieldID
 
 			if currField.IsCalcField {
 				clonedEqn, err := calcField.CloneEquation(remappedIDs, currField.CalcFieldEqn)
@@ -58,10 +68,14 @@ func cloneFields(remappedIDs map[string]string, srcDatabaseID string) error {
 				}
 				clonedField.PreprocessedFormulaText = clonedFormulaText
 
-				field.CreateNewFieldFromRawInputs(clonedField)
+				if _, err := field.CreateNewFieldFromRawInputs(clonedField); err != nil {
+					return fmt.Errorf("cloneFields: failure saving cloned field: %v", err)
+				}
 
 			} else {
-				field.CreateNewFieldFromRawInputs(clonedField)
+				if _, err := field.CreateNewFieldFromRawInputs(clonedField); err != nil {
+					return fmt.Errorf("cloneFields: failure saving cloned field: %v", err)
+				}
 			}
 
 		}
@@ -79,7 +93,7 @@ type SaveTemplateParams struct {
 
 func saveDatabaseToTemplate(params SaveTemplateParams) (*database.Database, error) {
 
-	remappedIDs := map[string]string{}
+	remappedIDs := uniqueID.UniqueIDRemapper{}
 
 	templateDB, err := database.CloneDatabase(remappedIDs, params.NewTemplateName, params.SourceDatabaseID)
 	if err != nil {

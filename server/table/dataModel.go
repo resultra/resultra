@@ -51,10 +51,10 @@ func saveNewEmptyTable(params NewTableParams) (*Table, error) {
 	return &newTable, nil
 }
 
-func CloneTables(remappedIDs map[string]string, srcDatabaseID string) error {
+func CloneTables(remappedIDs uniqueID.UniqueIDRemapper, srcDatabaseID string) error {
 
-	destDatabaseID, found := remappedIDs[srcDatabaseID]
-	if !found {
+	destDatabaseID, err := remappedIDs.GetExistingRemappedID(srcDatabaseID)
+	if err != nil {
 		return fmt.Errorf("CloneTables: Destination database ID not found for src database = %v", srcDatabaseID)
 	}
 
@@ -64,12 +64,19 @@ func CloneTables(remappedIDs map[string]string, srcDatabaseID string) error {
 		return fmt.Errorf("CloneTables: %v", err)
 	}
 	for _, srcTable := range tables {
-		destTableID := uniqueID.GenerateSnowflakeID()
-		remappedIDs[srcTable.TableID] = destTableID
+
+		destTableID, err := remappedIDs.AllocNewRemappedID(srcTable.TableID)
+		if err != nil {
+			return fmt.Errorf("CloneTables: %v", err)
+		}
 
 		destTable := srcTable
 		destTable.ParentDatabaseID = destDatabaseID
 		destTable.TableID = destTableID
+
+		if err := saveNewTable(destTable); err != nil {
+			return fmt.Errorf("CloneTables: failure saving cloned table: %v", err)
+		}
 	}
 	return nil
 }

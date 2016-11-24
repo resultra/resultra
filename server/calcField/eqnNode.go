@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 type EquationNode struct {
@@ -63,12 +64,12 @@ func decodeEquation(encodedEqn string) (*EquationNode, error) {
 
 // Traverse the equation node tree, mapping the field and global IDs from source to the re-mapped IDs. This
 // is used when copying an existing database to a template or copying a template to create a new database.
-func remapEquationToClonedIDs(remappedIDs map[string]string, eqnNode *EquationNode) error {
+func remapEquationToClonedIDs(remappedIDs uniqueID.UniqueIDRemapper, eqnNode *EquationNode) error {
 
 	if len(eqnNode.FieldID) > 0 {
 
-		remappedFieldID, idFound := remappedIDs[eqnNode.FieldID]
-		if !idFound {
+		remappedFieldID, err := remappedIDs.GetExistingRemappedID(eqnNode.FieldID)
+		if err != nil {
 			return fmt.Errorf("RemapEquationNodeToClonedIDs: Can't find remapped ID for field ID = %v", eqnNode.FieldID)
 		}
 
@@ -77,8 +78,8 @@ func remapEquationToClonedIDs(remappedIDs map[string]string, eqnNode *EquationNo
 
 	if len(eqnNode.GlobalID) > 0 {
 
-		remappedGlobalID, idFound := remappedIDs[eqnNode.GlobalID]
-		if !idFound {
+		remappedGlobalID, err := remappedIDs.GetExistingRemappedID(eqnNode.GlobalID)
+		if err != nil {
 			return fmt.Errorf("RemapEquationNodeToClonedIDs: Can't find remapped ID for global ID = %v", eqnNode.GlobalID)
 		}
 		eqnNode.GlobalID = remappedGlobalID
@@ -97,7 +98,7 @@ func remapEquationToClonedIDs(remappedIDs map[string]string, eqnNode *EquationNo
 	return nil
 }
 
-func CloneEquation(remappedIDs map[string]string, encodedEqn string) (string, error) {
+func CloneEquation(remappedIDs uniqueID.UniqueIDRemapper, encodedEqn string) (string, error) {
 
 	rootEqnNode, err := decodeEquation(encodedEqn)
 	if err != nil {

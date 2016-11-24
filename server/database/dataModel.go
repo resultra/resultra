@@ -35,15 +35,17 @@ func SaveNewDatabase(newDatabase Database) error {
 
 }
 
-func CloneDatabase(remappedIDs map[string]string, newName string, srcDatabaseID string) (*Database, error) {
+func CloneDatabase(remappedIDs uniqueID.UniqueIDRemapper, newName string, srcDatabaseID string) (*Database, error) {
 
 	srcDatabase, err := GetDatabase(srcDatabaseID)
 	if err != nil {
-		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
+		return nil, fmt.Errorf("CloneDatabase: %v", err)
 	}
 
-	destDatabaseID := uniqueID.GenerateSnowflakeID()
-	remappedIDs[srcDatabaseID] = destDatabaseID
+	destDatabaseID, err := remappedIDs.AllocNewRemappedID(srcDatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("CloneDatabase: %v", err)
+	}
 
 	dest := *srcDatabase
 	dest.DatabaseID = destDatabaseID
