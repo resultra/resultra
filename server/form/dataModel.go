@@ -2,23 +2,14 @@ package form
 
 import (
 	"fmt"
-	"log"
-	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/recordFilter"
+	"resultra/datasheet/server/table"
 )
 
 const formEntityKind string = "Form"
-
-type FormProperties struct {
-	Layout                 componentLayout.ComponentLayout      `json:"layout"`
-	DefaultRecordSortRules []recordSortDataModel.RecordSortRule `json:"defaultRecordSortRules"`
-	DefaultFilterRules     []recordFilter.RecordFilterRule      `json:"defaultFilterRules"`
-}
 
 type Form struct {
 	FormID        string         `json:"formID"`
@@ -32,6 +23,20 @@ type NewFormParams struct {
 	Name          string `json:"name"`
 }
 
+func saveForm(newForm Form) error {
+	encodedFormProps, encodeErr := generic.EncodeJSONString(newForm.Properties)
+	if encodeErr != nil {
+		return fmt.Errorf("saveForm: failure encoding properties: error = %v", encodeErr)
+	}
+
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO forms (table_id,form_id,name,properties) VALUES ($1,$2,$3,$4)`,
+		newForm.ParentTableID, newForm.FormID, newForm.Name, encodedFormProps); insertErr != nil {
+		return fmt.Errorf("saveForm: Can't create form: error = %v", insertErr)
+	}
+	return nil
+
+}
+
 func newForm(params NewFormParams) (*Form, error) {
 
 	sanitizedName, sanitizeErr := stringValidation.SanitizeName(params.Name)
@@ -40,21 +45,13 @@ func newForm(params NewFormParams) (*Form, error) {
 	}
 
 	newForm := Form{ParentTableID: params.ParentTableID,
-		FormID: uniqueID.GenerateSnowflakeID(),
-		Name:   sanitizedName}
+		FormID:     uniqueID.GenerateSnowflakeID(),
+		Name:       sanitizedName,
+		Properties: newDefaultFormProperties()}
 
-	formProps := FormProperties{}
-	encodedFormProps, encodeErr := generic.EncodeJSONString(formProps)
-	if encodeErr != nil {
-		return nil, fmt.Errorf("newForm: failure encoding properties: error = %v", encodeErr)
+	if err := saveForm(newForm); err != nil {
+		return nil, fmt.Errorf("newForm: error saving form: %v", err)
 	}
-
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO forms (table_id,form_id,name,properties) VALUES ($1,$2,$3,$4)`,
-		newForm.ParentTableID, newForm.FormID, newForm.Name, encodedFormProps); insertErr != nil {
-		return nil, fmt.Errorf("newForm: Can't create form: error = %v", insertErr)
-	}
-
-	log.Printf("NewForm: Created new form: %+v", newForm)
 
 	return &newForm, nil
 }
@@ -105,7 +102,7 @@ func getAllForms(parentTableID string) ([]Form, error) {
 
 		var formProps FormProperties
 		if decodeErr := generic.DecodeJSONString(encodedProps, &formProps); decodeErr != nil {
-			return nil, fmt.Errorf("GetForm: can't decode properties: %v", encodedProps)
+			return nil, fmt.Errorf("getAllForms: can't decode properties: %v", encodedProps)
 		}
 		currForm.Properties = formProps
 
@@ -114,6 +111,64 @@ func getAllForms(parentTableID string) ([]Form, error) {
 
 	return forms, nil
 
+}
+
+func CloneTableForms(remappedIDs uniqueID.UniqueIDRemapper, srcParentTableID string) error {
+
+	remappedTableID, err := remappedIDs.GetExistingRemappedID(srcParentTableID)
+	if err != nil {
+		return fmt.Errorf("CloneTableForms: Error getting remapped table ID: %v", err)
+	}
+
+	forms, err := getAllForms(srcParentTableID)
+	if err != nil {
+		return fmt.Errorf("CloneTableForms: Error getting forms for parent table ID = %v: %v",
+			srcParentTableID, err)
+	}
+
+	for _, currForm := range forms {
+
+		destForm := currForm
+		destForm.ParentTableID = remappedTableID
+
+		destFormID, err := remappedIDs.AllocNewRemappedID(currForm.FormID)
+		if err != nil {
+			return fmt.Errorf("CloneTableForms: %v", err)
+		}
+		destForm.FormID = destFormID
+
+		destProps, err := currForm.Properties.Clone(remappedIDs)
+		if err != nil {
+			return fmt.Errorf("CloneTableForms: %v", err)
+		}
+		destForm.Properties = *destProps
+
+		if err := saveForm(destForm); err != nil {
+			return fmt.Errorf("CloneTableForms: %v", err)
+		}
+
+	}
+
+	return nil
+
+}
+
+func CloneForms(remappedIDs uniqueID.UniqueIDRemapper, srcDatabaseID string) error {
+
+	getTableParams := table.GetTableListParams{DatabaseID: srcDatabaseID}
+	tables, err := table.GetTableList(getTableParams)
+	if err != nil {
+		return fmt.Errorf("CloneForms: %v", err)
+	}
+
+	for _, srcTable := range tables {
+
+		if err := CloneTableForms(remappedIDs, srcTable.TableID); err != nil {
+			return fmt.Errorf("CloneForms: %v", err)
+		}
+	}
+
+	return nil
 }
 
 func updateExistingForm(formID string, updatedForm *Form) (*Form, error) {

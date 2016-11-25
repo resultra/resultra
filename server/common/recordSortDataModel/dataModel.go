@@ -1,5 +1,10 @@
 package recordSortDataModel
 
+import (
+	"fmt"
+	"resultra/datasheet/server/generic/uniqueID"
+)
+
 const SortDirectionAsc string = "asc"
 const SortDirectionDesc string = "desc"
 
@@ -14,4 +19,32 @@ func ValidSortDirection(sortDir string) bool {
 	} else {
 		return false
 	}
+}
+
+func (srcRule RecordSortRule) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*RecordSortRule, error) {
+
+	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcRule.SortFieldID)
+	if err != nil {
+		return nil, fmt.Errorf("RecordSortRule.Clone: %v", err)
+	}
+
+	destRule := srcRule
+	destRule.SortFieldID = remappedFieldID
+
+	return &destRule, nil
+}
+
+func CloneSortRules(remappedIDs uniqueID.UniqueIDRemapper, srcRules []RecordSortRule) ([]RecordSortRule, error) {
+
+	destRules := []RecordSortRule{}
+
+	for _, srcRule := range srcRules {
+		destRule, err := srcRule.Clone(remappedIDs)
+		if err != nil {
+			return nil, fmt.Errorf("CloneSortRules: %v", err)
+		}
+		destRules = append(destRules, *destRule)
+	}
+
+	return destRules, nil
 }

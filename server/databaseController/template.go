@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/table"
@@ -109,6 +110,10 @@ func saveDatabaseToTemplate(params SaveTemplateParams) (*database.Database, erro
 	}
 
 	if err := cloneFields(remappedIDs, params.SourceDatabaseID); err != nil {
+		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
+	}
+
+	if err := form.CloneForms(remappedIDs, params.SourceDatabaseID); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
