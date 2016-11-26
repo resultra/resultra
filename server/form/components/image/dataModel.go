@@ -12,11 +12,6 @@ import (
 
 const imageEntityKind string = "image"
 
-type ImageProperties struct {
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
-}
-
 type Image struct {
 	ParentFormID string          `json:"parentFormID"`
 	ImageID      string          `json:"imageID"`
@@ -37,6 +32,16 @@ func validImageFieldType(fieldType string) bool {
 	}
 }
 
+func saveImage(newImage Image) error {
+
+	if saveErr := common.SaveNewFormComponent(imageEntityKind,
+		newImage.ParentFormID, newImage.ImageID, newImage.Properties); saveErr != nil {
+		return fmt.Errorf("saveNewImage: Unable to save image form component: error = %v", saveErr)
+	}
+	return nil
+
+}
+
 func saveNewImage(params NewImageParams) (*Image, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
@@ -55,8 +60,7 @@ func saveNewImage(params NewImageParams) (*Image, error) {
 		ImageID:    uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if saveErr := common.SaveNewFormComponent(imageEntityKind,
-		newImage.ParentFormID, newImage.ImageID, newImage.Properties); saveErr != nil {
+	if saveErr := saveImage(newImage); saveErr != nil {
 		return nil, fmt.Errorf("saveNewImage: Unable to save image form component with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -105,6 +109,35 @@ func GetImages(parentFormID string) ([]Image, error) {
 
 	return images, nil
 
+}
+
+func CloneImages(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+
+	srcImages, err := GetImages(parentFormID)
+	if err != nil {
+		return fmt.Errorf("CloneImages: %v", err)
+	}
+
+	for _, srcImage := range srcImages {
+		remappedImageID := remappedIDs.AllocNewOrGetExistingRemappedID(srcImage.ImageID)
+		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcImage.ParentFormID)
+		if err != nil {
+			return fmt.Errorf("CloneImages: %v", err)
+		}
+		destProperties, err := srcImage.Properties.Clone(remappedIDs)
+		if err != nil {
+			return fmt.Errorf("CloneImages: %v", err)
+		}
+		destImage := Image{
+			ParentFormID: remappedFormID,
+			ImageID:      remappedImageID,
+			Properties:   *destProperties}
+		if err := saveImage(destImage); err != nil {
+			return fmt.Errorf("CloneImages: %v", err)
+		}
+	}
+
+	return nil
 }
 
 func updateExistingImage(imageID string, updatedImage *Image) (*Image, error) {
