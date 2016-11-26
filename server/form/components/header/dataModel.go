@@ -11,11 +11,6 @@ import (
 
 const headerEntityKind string = "header"
 
-type HeaderProperties struct {
-	Label    string                         `json:"label"`
-	Geometry componentLayout.LayoutGeometry `json:"geometry"`
-}
-
 type Header struct {
 	ParentFormID string           `json:"parentFormID"`
 	HeaderID     string           `json:"headerID"`
@@ -26,6 +21,16 @@ type NewHeaderParams struct {
 	ParentFormID string                         `json:"parentFormID"`
 	Geometry     componentLayout.LayoutGeometry `json:"geometry"`
 	Label        string                         `json:"label"`
+}
+
+func saveHeader(newHeader Header) error {
+
+	if saveErr := common.SaveNewFormComponent(headerEntityKind,
+		newHeader.ParentFormID, newHeader.HeaderID, newHeader.Properties); saveErr != nil {
+		return fmt.Errorf("saveHeader: Unable to save header: error = %v", saveErr)
+	}
+	return nil
+
 }
 
 func saveNewHeader(params NewHeaderParams) (*Header, error) {
@@ -42,9 +47,8 @@ func saveNewHeader(params NewHeaderParams) (*Header, error) {
 		HeaderID:   uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if saveErr := common.SaveNewFormComponent(headerEntityKind,
-		newHeader.ParentFormID, newHeader.HeaderID, newHeader.Properties); saveErr != nil {
-		return nil, fmt.Errorf("saveNewHeader: Unable to save header with params=%+v: error = %v", params, saveErr)
+	if err := saveHeader(newHeader); err != nil {
+		return nil, fmt.Errorf("saveNewHeader: Unable to save header with params=%+v: error = %v", params, err)
 	}
 
 	log.Printf("INFO: API: New form header: Created new form header: %+v", newHeader)
@@ -92,6 +96,35 @@ func GetHeaders(parentFormID string) ([]Header, error) {
 
 	return headers, nil
 
+}
+
+func CloneHeaders(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+
+	srcHeaders, err := GetHeaders(parentFormID)
+	if err != nil {
+		return fmt.Errorf("CloneHeaders: %v", err)
+	}
+
+	for _, srcHeader := range srcHeaders {
+		remappedHeaderID := remappedIDs.AllocNewOrGetExistingRemappedID(srcHeader.HeaderID)
+		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcHeader.ParentFormID)
+		if err != nil {
+			return fmt.Errorf("CloneHeaders: %v", err)
+		}
+		destProperties, err := srcHeader.Properties.Clone(remappedIDs)
+		if err != nil {
+			return fmt.Errorf("CloneHeaders: %v", err)
+		}
+		destHeader := Header{
+			ParentFormID: remappedFormID,
+			HeaderID:     remappedHeaderID,
+			Properties:   *destProperties}
+		if err := saveHeader(destHeader); err != nil {
+			return fmt.Errorf("CloneHeaders: %v", err)
+		}
+	}
+
+	return nil
 }
 
 func updateExistingHeader(updatedHeader *Header) (*Header, error) {
