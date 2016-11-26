@@ -3,6 +3,7 @@ package common
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const LinkedValTypeGlobal string = "global"
@@ -44,5 +45,27 @@ func ValidateComponentLink(compLink ComponentLink, fieldTypeValidationFunc Field
 	}
 
 	return nil
+
+}
+
+func (srcLink ComponentLink) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ComponentLink, error) {
+
+	destLink := srcLink
+
+	if srcLink.LinkedValType == LinkedValTypeGlobal {
+		remappedGlobalID, err := remappedIDs.GetExistingRemappedID(srcLink.GlobalID)
+		if err != nil {
+			return nil, fmt.Errorf("ComponentLink.Clone: %v", err)
+		}
+		destLink.GlobalID = remappedGlobalID
+	} else {
+		remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcLink.FieldID)
+		if err != nil {
+			return nil, fmt.Errorf("ComponentLink.Clone: %v", err)
+		}
+		destLink.FieldID = remappedFieldID
+	}
+
+	return &destLink, nil
 
 }

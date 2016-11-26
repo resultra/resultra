@@ -96,7 +96,7 @@ func getAllForms(parentTableID string) ([]Form, error) {
 		var currForm Form
 		encodedProps := ""
 
-		if scanErr := rows.Scan(&currForm.ParentTableID, &currForm.FormID, &currForm.Name, encodedProps); scanErr != nil {
+		if scanErr := rows.Scan(&currForm.ParentTableID, &currForm.FormID, &currForm.Name, &encodedProps); scanErr != nil {
 			return nil, fmt.Errorf("getAllForms: Failure querying database: %v", scanErr)
 		}
 
@@ -144,6 +144,10 @@ func CloneTableForms(remappedIDs uniqueID.UniqueIDRemapper, srcParentTableID str
 		destForm.Properties = *destProps
 
 		if err := saveForm(destForm); err != nil {
+			return fmt.Errorf("CloneTableForms: %v", err)
+		}
+
+		if err := cloneFormComponents(remappedIDs, currForm.FormID); err != nil {
 			return fmt.Errorf("CloneTableForms: %v", err)
 		}
 

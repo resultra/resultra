@@ -12,16 +12,6 @@ import (
 
 const textBoxEntityKind string = "textbox"
 
-type TextBoxValueFormatProperties struct {
-	Format string `json:"format"`
-}
-
-type TextBoxProperties struct {
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
-	ValueFormat   TextBoxValueFormatProperties   `json:"valueFormat"`
-}
-
 type TextBox struct {
 	ParentFormID string            `json:"parentFormID"`
 	TextBoxID    string            `json:"textBoxID"`
@@ -44,6 +34,15 @@ func validTextBoxFieldType(fieldType string) bool {
 	}
 }
 
+func saveTextBox(newTextBox TextBox) error {
+	if saveErr := common.SaveNewFormComponent(textBoxEntityKind,
+		newTextBox.ParentFormID, newTextBox.TextBoxID, newTextBox.Properties); saveErr != nil {
+		return fmt.Errorf("saveTextBox: Unable to save text box: %v", saveErr)
+	}
+	return nil
+
+}
+
 func saveNewTextBox(params NewTextBoxParams) (*TextBox, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
@@ -64,9 +63,8 @@ func saveNewTextBox(params NewTextBoxParams) (*TextBox, error) {
 		TextBoxID:  uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if saveErr := common.SaveNewFormComponent(textBoxEntityKind,
-		newTextBox.ParentFormID, newTextBox.TextBoxID, newTextBox.Properties); saveErr != nil {
-		return nil, fmt.Errorf("saveNewTextBox: Unable to save text box with params=%+v: error = %v", params, saveErr)
+	if err := saveTextBox(newTextBox); err != nil {
+		return nil, fmt.Errorf("saveNewTextBox: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
 	log.Printf("INFO: API: NewLayout: Created new Layout container: %+v", newTextBox)
@@ -114,6 +112,35 @@ func GetTextBoxes(parentFormID string) ([]TextBox, error) {
 
 	return textBoxes, nil
 
+}
+
+func CloneTextBoxes(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+
+	srcTextBoxes, err := GetTextBoxes(parentFormID)
+	if err != nil {
+		return fmt.Errorf("CloneTextBoxes: %v", err)
+	}
+
+	for _, srcTextBox := range srcTextBoxes {
+		remappedTextBoxID := remappedIDs.AllocNewOrGetExistingRemappedID(srcTextBox.TextBoxID)
+		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcTextBox.ParentFormID)
+		if err != nil {
+			return fmt.Errorf("CloneTextBoxes: %v", err)
+		}
+		destProperties, err := srcTextBox.Properties.Clone(remappedIDs)
+		if err != nil {
+			return fmt.Errorf("CloneTextBoxes: %v", err)
+		}
+		destTextBox := TextBox{
+			ParentFormID: remappedFormID,
+			TextBoxID:    remappedTextBoxID,
+			Properties:   *destProperties}
+		if err := saveTextBox(destTextBox); err != nil {
+			return fmt.Errorf("CloneTextBoxes: %v", err)
+		}
+	}
+
+	return nil
 }
 
 func updateExistingTextBox(textBoxID string, updatedTextBox *TextBox) (*TextBox, error) {
