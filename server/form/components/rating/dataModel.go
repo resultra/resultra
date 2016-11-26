@@ -12,12 +12,6 @@ import (
 
 const ratingEntityKind string = "rating"
 
-type RatingProperties struct {
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
-	Tooltips      []string                       `json:"tooltips"`
-}
-
 type Rating struct {
 	ParentFormID string           `json:"parentFormID"`
 	RatingID     string           `json:"ratingID"`
@@ -36,6 +30,16 @@ func validRatingFieldType(fieldType string) bool {
 	} else {
 		return false
 	}
+}
+
+func saveRating(newRating Rating) error {
+
+	if saveErr := common.SaveNewFormComponent(ratingEntityKind,
+		newRating.ParentFormID, newRating.RatingID, newRating.Properties); saveErr != nil {
+		return fmt.Errorf("saveRating: Unable to save rating: error = %v", saveErr)
+	}
+
+	return nil
 }
 
 func saveNewRating(params NewRatingParams) (*Rating, error) {
@@ -57,8 +61,7 @@ func saveNewRating(params NewRatingParams) (*Rating, error) {
 		RatingID:   uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if saveErr := common.SaveNewFormComponent(ratingEntityKind,
-		newRating.ParentFormID, newRating.RatingID, newRating.Properties); saveErr != nil {
+	if saveErr := saveRating(newRating); saveErr != nil {
 		return nil, fmt.Errorf("saveNewRating: Unable to save rating with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -107,6 +110,35 @@ func GetRatings(parentFormID string) ([]Rating, error) {
 	}
 
 	return ratings, nil
+}
+
+func CloneRatings(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+
+	srcRatings, err := GetRatings(parentFormID)
+	if err != nil {
+		return fmt.Errorf("CloneRatings: %v", err)
+	}
+
+	for _, srcRating := range srcRatings {
+		remappedRatingID := remappedIDs.AllocNewOrGetExistingRemappedID(srcRating.RatingID)
+		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcRating.ParentFormID)
+		if err != nil {
+			return fmt.Errorf("CloneRatings: %v", err)
+		}
+		destProperties, err := srcRating.Properties.Clone(remappedIDs)
+		if err != nil {
+			return fmt.Errorf("CloneRatings: %v", err)
+		}
+		destRating := Rating{
+			ParentFormID: remappedFormID,
+			RatingID:     remappedRatingID,
+			Properties:   *destProperties}
+		if err := saveRating(destRating); err != nil {
+			return fmt.Errorf("CloneRatings: %v", err)
+		}
+	}
+
+	return nil
 }
 
 func updateExistingRating(updatedRating *Rating) (*Rating, error) {
