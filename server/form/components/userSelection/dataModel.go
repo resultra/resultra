@@ -12,11 +12,6 @@ import (
 
 const userSelectionEntityKind string = "userSelection"
 
-type UserSelectionProperties struct {
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
-}
-
 type UserSelection struct {
 	ParentFormID    string                  `json:"parentFormID"`
 	UserSelectionID string                  `json:"userSelectionID"`
@@ -37,6 +32,14 @@ func validUserSelectionFieldType(fieldType string) bool {
 	}
 }
 
+func saveUserSelection(newUserSelection UserSelection) error {
+	if saveErr := common.SaveNewFormComponent(userSelectionEntityKind,
+		newUserSelection.ParentFormID, newUserSelection.UserSelectionID, newUserSelection.Properties); saveErr != nil {
+		return fmt.Errorf("saveNewUserSelection: Unable to save userSelection: error = %v", saveErr)
+	}
+	return nil
+}
+
 func saveNewUserSelection(params NewUserSelectionParams) (*UserSelection, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
@@ -55,8 +58,7 @@ func saveNewUserSelection(params NewUserSelectionParams) (*UserSelection, error)
 		UserSelectionID: uniqueID.GenerateSnowflakeID(),
 		Properties:      properties}
 
-	if saveErr := common.SaveNewFormComponent(userSelectionEntityKind,
-		newUserSelection.ParentFormID, newUserSelection.UserSelectionID, newUserSelection.Properties); saveErr != nil {
+	if saveErr := saveUserSelection(newUserSelection); saveErr != nil {
 		return nil, fmt.Errorf("saveNewUserSelection: Unable to save userSelection with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -105,6 +107,35 @@ func GetUserSelections(parentFormID string) ([]UserSelection, error) {
 	}
 
 	return userSelections, nil
+}
+
+func CloneUserSelections(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+
+	srcUserSelections, err := GetUserSelections(parentFormID)
+	if err != nil {
+		return fmt.Errorf("CloneUserSelections: %v", err)
+	}
+
+	for _, srcUserSelection := range srcUserSelections {
+		remappedUserSelectionID := remappedIDs.AllocNewOrGetExistingRemappedID(srcUserSelection.UserSelectionID)
+		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcUserSelection.ParentFormID)
+		if err != nil {
+			return fmt.Errorf("CloneUserSelections: %v", err)
+		}
+		destProperties, err := srcUserSelection.Properties.Clone(remappedIDs)
+		if err != nil {
+			return fmt.Errorf("CloneUserSelections: %v", err)
+		}
+		destUserSelection := UserSelection{
+			ParentFormID:    remappedFormID,
+			UserSelectionID: remappedUserSelectionID,
+			Properties:      *destProperties}
+		if err := saveUserSelection(destUserSelection); err != nil {
+			return fmt.Errorf("CloneUserSelections: %v", err)
+		}
+	}
+
+	return nil
 }
 
 func updateExistingUserSelection(updatedUserSelection *UserSelection) (*UserSelection, error) {
