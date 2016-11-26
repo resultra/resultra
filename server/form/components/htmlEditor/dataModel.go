@@ -12,11 +12,6 @@ import (
 
 const htmlEditorEntityKind string = "html_editor"
 
-type HtmlEditorProperties struct {
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
-}
-
 type HtmlEditor struct {
 	ParentFormID string               `json:"parentID"`
 	HtmlEditorID string               `json:"htmlEditorID"`
@@ -37,6 +32,16 @@ func validHtmlEditorFieldType(fieldType string) bool {
 	}
 }
 
+func saveHtmlEditor(newHtmlEditor HtmlEditor) error {
+
+	if saveErr := common.SaveNewFormComponent(htmlEditorEntityKind,
+		newHtmlEditor.ParentFormID, newHtmlEditor.HtmlEditorID, newHtmlEditor.Properties); saveErr != nil {
+		return fmt.Errorf("saveNewHtmlEditor: Unable to save html editor: error = %v", saveErr)
+	}
+	return nil
+
+}
+
 func saveNewHtmlEditor(params NewHtmlEditorParams) (*HtmlEditor, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
@@ -55,9 +60,8 @@ func saveNewHtmlEditor(params NewHtmlEditorParams) (*HtmlEditor, error) {
 		HtmlEditorID: uniqueID.GenerateSnowflakeID(),
 		Properties:   properties}
 
-	if saveErr := common.SaveNewFormComponent(htmlEditorEntityKind,
-		newHtmlEditor.ParentFormID, newHtmlEditor.HtmlEditorID, newHtmlEditor.Properties); saveErr != nil {
-		return nil, fmt.Errorf("saveNewHtmlEditor: Unable to save html editor with params=%+v: error = %v", params, saveErr)
+	if err := saveHtmlEditor(newHtmlEditor); err != nil {
+		return nil, fmt.Errorf("saveNewHtmlEditor: Unable to save html editor with params=%+v: error = %v", params, err)
 	}
 
 	log.Printf("INFO: API: New HtmlEditor: Created new html editor container: %+v", newHtmlEditor)
@@ -106,6 +110,35 @@ func GetHtmlEditors(parentFormID string) ([]HtmlEditor, error) {
 
 	return htmlEditors, nil
 
+}
+
+func CloneHTMLEditors(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+
+	srcHtmlEditors, err := GetHtmlEditors(parentFormID)
+	if err != nil {
+		return fmt.Errorf("CloneHTMLEditors: %v", err)
+	}
+
+	for _, srcHtmlEditor := range srcHtmlEditors {
+		remappedHtmlEditorID := remappedIDs.AllocNewOrGetExistingRemappedID(srcHtmlEditor.HtmlEditorID)
+		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcHtmlEditor.ParentFormID)
+		if err != nil {
+			return fmt.Errorf("CloneHTMLEditors: %v", err)
+		}
+		destProperties, err := srcHtmlEditor.Properties.Clone(remappedIDs)
+		if err != nil {
+			return fmt.Errorf("CloneHTMLEditors: %v", err)
+		}
+		destHtmlEditor := HtmlEditor{
+			ParentFormID: remappedFormID,
+			HtmlEditorID: remappedHtmlEditorID,
+			Properties:   *destProperties}
+		if err := saveHtmlEditor(destHtmlEditor); err != nil {
+			return fmt.Errorf("CloneHTMLEditors: %v", err)
+		}
+	}
+
+	return nil
 }
 
 func updateExistingHtmlEditor(htmlEditorID string, updatedHtmlEditor *HtmlEditor) (*HtmlEditor, error) {
