@@ -3,7 +3,7 @@ package form
 import (
 	"fmt"
 	//	"resultra/datasheet/server/form/components/checkBox"
-	//	"resultra/datasheet/server/form/components/datePicker"
+	"resultra/datasheet/server/form/components/datePicker"
 	//	"resultra/datasheet/server/form/components/header"
 	//	"resultra/datasheet/server/form/components/htmlEditor"
 	//	"resultra/datasheet/server/form/components/image"
@@ -18,6 +18,10 @@ import (
 func cloneFormComponents(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
 
 	if err := textBox.CloneTextBoxes(remappedIDs, parentFormID); err != nil {
+		return fmt.Errorf("cloneFormComponents: %v", err)
+	}
+
+	if err := datePicker.CloneDatePickers(remappedIDs, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 

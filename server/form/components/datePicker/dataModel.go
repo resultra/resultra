@@ -12,11 +12,6 @@ import (
 
 const datePickerEntityKind string = "datepicker"
 
-type DatePickerProperties struct {
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
-}
-
 type DatePicker struct {
 	ParentFormID string               `json:"parentFormID"`
 	DatePickerID string               `json:"datePickerID"`
@@ -37,6 +32,16 @@ func validDatePickerFieldType(fieldType string) bool {
 	}
 }
 
+func saveDatePicker(newDatePicker DatePicker) error {
+
+	if saveErr := common.SaveNewFormComponent(datePickerEntityKind,
+		newDatePicker.ParentFormID, newDatePicker.DatePickerID, newDatePicker.Properties); saveErr != nil {
+		return fmt.Errorf("saveNewDatePicker: Unable to save date picker: error = %v", saveErr)
+	}
+	return nil
+
+}
+
 func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
@@ -55,9 +60,8 @@ func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 		DatePickerID: uniqueID.GenerateSnowflakeID(),
 		Properties:   properties}
 
-	if saveErr := common.SaveNewFormComponent(datePickerEntityKind,
-		newDatePicker.ParentFormID, newDatePicker.DatePickerID, newDatePicker.Properties); saveErr != nil {
-		return nil, fmt.Errorf("saveNewDatePicker: Unable to save date picker with params=%+v: error = %v", params, saveErr)
+	if err := saveDatePicker(newDatePicker); err != nil {
+		return nil, fmt.Errorf("saveNewDatePicker: %v", err)
 	}
 
 	log.Printf("INFO: API: New DatePicker: Created new date picker container: %+v", newDatePicker)
@@ -105,6 +109,35 @@ func GetDatePickers(parentFormID string) ([]DatePicker, error) {
 
 	return datePickers, nil
 
+}
+
+func CloneDatePickers(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+
+	srcDatePickers, err := GetDatePickers(parentFormID)
+	if err != nil {
+		return fmt.Errorf("CloneDatePickers: %v", err)
+	}
+
+	for _, srcDatePicker := range srcDatePickers {
+		remappedDatePickerID := remappedIDs.AllocNewOrGetExistingRemappedID(srcDatePicker.DatePickerID)
+		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcDatePicker.ParentFormID)
+		if err != nil {
+			return fmt.Errorf("CloneDatePickers: %v", err)
+		}
+		destProperties, err := srcDatePicker.Properties.Clone(remappedIDs)
+		if err != nil {
+			return fmt.Errorf("CloneDatePickers: %v", err)
+		}
+		destDatePicker := DatePicker{
+			ParentFormID: remappedFormID,
+			DatePickerID: remappedDatePickerID,
+			Properties:   *destProperties}
+		if err := saveDatePicker(destDatePicker); err != nil {
+			return fmt.Errorf("CloneDatePickers: %v", err)
+		}
+	}
+
+	return nil
 }
 
 func updateExistingDatePicker(datePickerID string, updatedDatePicker *DatePicker) (*DatePicker, error) {
