@@ -12,11 +12,6 @@ import (
 
 const checkBoxEntityKind string = "checkbox"
 
-type CheckBoxProperties struct {
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
-}
-
 type CheckBox struct {
 	ParentFormID string             `json:"parentID"`
 	CheckBoxID   string             `json:"checkBoxID"`
@@ -37,6 +32,14 @@ func validCheckBoxFieldType(fieldType string) bool {
 	}
 }
 
+func saveCheckbox(newCheckBox CheckBox) error {
+	if saveErr := common.SaveNewFormComponent(checkBoxEntityKind,
+		newCheckBox.ParentFormID, newCheckBox.CheckBoxID, newCheckBox.Properties); saveErr != nil {
+		return fmt.Errorf("saveCheckbox: Unable to save bar chart with error = %v", saveErr)
+	}
+	return nil
+}
+
 func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
@@ -55,9 +58,8 @@ func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 		CheckBoxID: uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if saveErr := common.SaveNewFormComponent(checkBoxEntityKind,
-		newCheckBox.ParentFormID, newCheckBox.CheckBoxID, newCheckBox.Properties); saveErr != nil {
-		return nil, fmt.Errorf("saveNewCheckBox: Unable to save bar chart with params=%+v: error = %v", params, saveErr)
+	if err := saveCheckbox(newCheckBox); err != nil {
+		return nil, fmt.Errorf("saveNewCheckBox: Unable to save bar chart with params=%+v: error = %v", params, err)
 	}
 
 	log.Printf("INFO: API: New Checkbox: Created new check box container:  %+v", newCheckBox)
@@ -104,6 +106,35 @@ func GetCheckBoxes(parentFormID string) ([]CheckBox, error) {
 	}
 
 	return checkBoxes, nil
+}
+
+func CloneCheckBoxes(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+
+	srcCheckBoxes, err := GetCheckBoxes(parentFormID)
+	if err != nil {
+		return fmt.Errorf("CloneCheckBoxes: %v", err)
+	}
+
+	for _, srcCheckBox := range srcCheckBoxes {
+		remappedCheckBoxID := remappedIDs.AllocNewOrGetExistingRemappedID(srcCheckBox.CheckBoxID)
+		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcCheckBox.ParentFormID)
+		if err != nil {
+			return fmt.Errorf("CloneCheckBoxes: %v", err)
+		}
+		destProperties, err := srcCheckBox.Properties.Clone(remappedIDs)
+		if err != nil {
+			return fmt.Errorf("CloneCheckBoxes: %v", err)
+		}
+		destCheckBox := CheckBox{
+			ParentFormID: remappedFormID,
+			CheckBoxID:   remappedCheckBoxID,
+			Properties:   *destProperties}
+		if err := saveCheckbox(destCheckBox); err != nil {
+			return fmt.Errorf("CloneCheckBoxes: %v", err)
+		}
+	}
+
+	return nil
 }
 
 func updateExistingCheckBox(updatedCheckBox *CheckBox) (*CheckBox, error) {

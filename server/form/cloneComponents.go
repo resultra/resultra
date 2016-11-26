@@ -2,7 +2,7 @@ package form
 
 import (
 	"fmt"
-	//	"resultra/datasheet/server/form/components/checkBox"
+	"resultra/datasheet/server/form/components/checkBox"
 	"resultra/datasheet/server/form/components/datePicker"
 	//	"resultra/datasheet/server/form/components/header"
 	//	"resultra/datasheet/server/form/components/htmlEditor"
@@ -22,6 +22,10 @@ func cloneFormComponents(remappedIDs uniqueID.UniqueIDRemapper, parentFormID str
 	}
 
 	if err := datePicker.CloneDatePickers(remappedIDs, parentFormID); err != nil {
+		return fmt.Errorf("cloneFormComponents: %v", err)
+	}
+
+	if err := checkBox.CloneCheckBoxes(remappedIDs, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
