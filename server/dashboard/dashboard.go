@@ -9,10 +9,6 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
-type DashboardProperties struct {
-	Layout componentLayout.ComponentLayout `json:"layout"`
-}
-
 type Dashboard struct {
 	DashboardID      string              `json:"dashboardID"`
 	ParentDatabaseID string              `json:"parentDatabaseID"`
@@ -25,6 +21,22 @@ type NewDashboardParams struct {
 	Name       string `json:"name"`
 }
 
+func saveDashboard(newDashboard Dashboard) error {
+
+	encodedDashboardProps, err := generic.EncodeJSONString(newDashboard.Properties)
+	if err != nil {
+		return fmt.Errorf("NewDashboard: failure encoding properties: error = %v", err)
+	}
+
+	if _, err := databaseWrapper.DBHandle().Exec(`INSERT INTO dashboards (database_id, dashboard_id, name,properties) 
+			VALUES ($1,$2,$3,$4)`,
+		newDashboard.ParentDatabaseID, newDashboard.DashboardID, newDashboard.Name, encodedDashboardProps); err != nil {
+		return fmt.Errorf("NewDashboard: Can't create dashboard: unable to create dashboard: error = %v", err)
+	}
+
+	return nil
+}
+
 func NewDashboard(params NewDashboardParams) (*Dashboard, error) {
 
 	sanitizedName, sanitizeErr := stringValidation.SanitizeName(params.Name)
@@ -34,10 +46,6 @@ func NewDashboard(params NewDashboardParams) (*Dashboard, error) {
 
 	dashboardProps := DashboardProperties{
 		Layout: componentLayout.ComponentLayout{}}
-	encodedDashboardProps, encodeErr := generic.EncodeJSONString(dashboardProps)
-	if encodeErr != nil {
-		return nil, fmt.Errorf("NewDashboard: failure encoding properties: error = %v", encodeErr)
-	}
 
 	var newDashboard = Dashboard{
 		DashboardID:      uniqueID.GenerateSnowflakeID(),
@@ -45,10 +53,8 @@ func NewDashboard(params NewDashboardParams) (*Dashboard, error) {
 		Name:             sanitizedName,
 		Properties:       dashboardProps}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO dashboards (database_id, dashboard_id, name,properties) 
-			VALUES ($1,$2,$3,$4)`,
-		newDashboard.ParentDatabaseID, newDashboard.DashboardID, newDashboard.Name, encodedDashboardProps); insertErr != nil {
-		fmt.Errorf("NewDashboard: Can't create dashboard: unable to create dashboard: error = %v", insertErr)
+	if err := saveDashboard(newDashboard); err != nil {
+		fmt.Errorf("NewDashboard: Can't create dashboard: unable to create dashboard: error = %v", err)
 	}
 
 	return &newDashboard, nil
@@ -83,6 +89,84 @@ func GetDashboard(dashboardID string) (*Dashboard, error) {
 		Properties:       dashboardProps}
 
 	return &getDashboard, nil
+
+}
+
+func getAllDashboards(parentDatabaseID string) ([]Dashboard, error) {
+
+	rows, err := databaseWrapper.DBHandle().Query(
+		`SELECT database_id,name,properties
+		 FROM dashboards
+		 WHERE database_id = $1`,
+		parentDatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("getAllForms: Failure querying database: %v", err)
+	}
+
+	dashboards := []Dashboard{}
+	for rows.Next() {
+		var currDashboard Dashboard
+		encodedProps := ""
+
+		if err := rows.Scan(&currDashboard.ParentDatabaseID, &currDashboard.DashboardID,
+			&currDashboard.Name, &encodedProps); err != nil {
+			return nil, fmt.Errorf("getAllForms: Failure querying database: %v", err)
+		}
+
+		var dashboardProps DashboardProperties
+		if err := generic.DecodeJSONString(encodedProps, &dashboardProps); err != nil {
+			return nil, fmt.Errorf("getAllDashboards: can't decode properties: %v,error=%v", encodedProps, err)
+		}
+		currDashboard.Properties = dashboardProps
+
+		dashboards = append(dashboards, currDashboard)
+	}
+
+	return dashboards, nil
+
+}
+
+func CloneDashboards(remappedIDs uniqueID.UniqueIDRemapper, parentDatabaseID string) error {
+
+	remappedDatabaseID, err := remappedIDs.GetExistingRemappedID(parentDatabaseID)
+	if err != nil {
+		return fmt.Errorf("CloneDashboards: Error getting remapped database ID: %v", err)
+	}
+
+	dashboards, err := getAllDashboards(parentDatabaseID)
+	if err != nil {
+		return fmt.Errorf("CloneDashboards: Error getting dashboards for parent database ID = %v: %v",
+			parentDatabaseID, err)
+	}
+
+	for _, currDashboard := range dashboards {
+
+		destDashboard := currDashboard
+		destDashboard.ParentDatabaseID = remappedDatabaseID
+
+		destDashboardID, err := remappedIDs.AllocNewRemappedID(currDashboard.DashboardID)
+		if err != nil {
+			return fmt.Errorf("CloneDashboards: %v", err)
+		}
+		destDashboard.DashboardID = destDashboardID
+
+		destProps, err := currDashboard.Properties.Clone(remappedIDs)
+		if err != nil {
+			return fmt.Errorf("CloneDashboards: %v", err)
+		}
+		destDashboard.Properties = *destProps
+
+		if err := saveDashboard(destDashboard); err != nil {
+			return fmt.Errorf("CloneTableForms: %v", err)
+		}
+
+		if err := cloneDashboardComponents(remappedIDs, currDashboard.DashboardID); err != nil {
+			return fmt.Errorf("CloneDashboards: %v", err)
+		}
+
+	}
+
+	return nil
 
 }
 
