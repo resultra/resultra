@@ -12,23 +12,6 @@ import (
 
 const summaryTableEntityKind string = "SummaryTable"
 
-type SummaryTableProps struct {
-
-	// DataSrcTable is the table the bar chart gets its data from
-	DataSrcTableID string `json:"dataSrcTableID"`
-
-	// XAxisVals is a grouping of field values displayed along the x axis of the bar chart.
-	RowGroupingVals values.ValGrouping `json:"rowGroupingVals"`
-
-	Geometry componentLayout.LayoutGeometry `json:"geometry"`
-
-	Title string `json:"title"`
-
-	ColumnValSummaries []values.ValSummary `json:"columnValSummaries"`
-
-	DefaultFilterRules []recordFilter.RecordFilterRule `json:"defaultFilterRules"`
-}
-
 // DashboardBarChart is the datastore object for dashboard bar charts.
 type SummaryTable struct {
 	ParentDashboardID string `json:"parentDashboardID"`
@@ -49,6 +32,16 @@ type NewSummaryTableParams struct {
 	ColumnValSummaries []values.NewValSummaryParams `json:"columnValSummaries"`
 
 	Geometry componentLayout.LayoutGeometry `json:"geometry"`
+}
+
+func saveSummaryTable(newSummaryTable SummaryTable) error {
+
+	if saveErr := common.SaveNewDashboardComponent(summaryTableEntityKind,
+		newSummaryTable.ParentDashboardID, newSummaryTable.SummaryTableID, newSummaryTable.Properties); saveErr != nil {
+		return fmt.Errorf("newSummaryTable: Unable to save summary table component: error = %v", saveErr)
+	}
+	return nil
+
 }
 
 func newSummaryTable(params NewSummaryTableParams) (*SummaryTable, error) {
@@ -92,8 +85,7 @@ func newSummaryTable(params NewSummaryTableParams) (*SummaryTable, error) {
 		SummaryTableID:    uniqueID.GenerateSnowflakeID(),
 		Properties:        summaryTableProps}
 
-	if saveErr := common.SaveNewDashboardComponent(summaryTableEntityKind,
-		newSummaryTable.ParentDashboardID, newSummaryTable.SummaryTableID, newSummaryTable.Properties); saveErr != nil {
+	if saveErr := saveSummaryTable(newSummaryTable); saveErr != nil {
 		return nil, fmt.Errorf("newSummaryTable: Unable to save summary component with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -140,6 +132,43 @@ func GetSummaryTables(parentDashboardID string) ([]SummaryTable, error) {
 	}
 
 	return summaryTables, nil
+}
+
+func CloneSummaryTables(remappedIDs uniqueID.UniqueIDRemapper, srcParentDashboardID string) error {
+
+	remappedDashboardID, err := remappedIDs.GetExistingRemappedID(srcParentDashboardID)
+	if err != nil {
+		return fmt.Errorf("CloneSummaryTables: %v", err)
+	}
+
+	summaryTables, err := GetSummaryTables(srcParentDashboardID)
+	if err != nil {
+		return fmt.Errorf("CloneSummaryTables: %v", err)
+	}
+
+	for _, srcSummaryTable := range summaryTables {
+
+		remappedSummaryTableID, err := remappedIDs.AllocNewRemappedID(srcSummaryTable.SummaryTableID)
+		if err != nil {
+			return fmt.Errorf("CloneSummaryTables: %v", err)
+		}
+
+		clonedProps, err := srcSummaryTable.Properties.Clone(remappedIDs)
+		if err != nil {
+			return fmt.Errorf("CloneSummaryTables: %v", err)
+		}
+
+		destSummaryTable := SummaryTable{
+			ParentDashboardID: remappedDashboardID,
+			SummaryTableID:    remappedSummaryTableID,
+			Properties:        *clonedProps}
+
+		if err := saveSummaryTable(destSummaryTable); err != nil {
+			return fmt.Errorf("CloneSummaryTables: %v", err)
+		}
+	}
+
+	return nil
 }
 
 func updateExistingSummaryTable(updatedSummaryTable *SummaryTable) (*SummaryTable, error) {
