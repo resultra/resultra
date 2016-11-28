@@ -3,6 +3,7 @@ package values
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const valSummaryCount string = "count"
@@ -26,6 +27,20 @@ type ValSummary struct {
 	// Text: count
 	// Bool: count
 	SummarizeValsWith string `json:"summarizeValsWith"`
+}
+
+func (srcValSummary ValSummary) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ValSummary, error) {
+
+	destSummary := srcValSummary
+
+	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcValSummary.SummarizeByFieldID)
+	if err != nil {
+		return nil, fmt.Errorf("ValSummary.Clone: %v", err)
+	}
+	destSummary.SummarizeByFieldID = remappedFieldID
+
+	return &destSummary, nil
+
 }
 
 type NewValSummaryParams struct {

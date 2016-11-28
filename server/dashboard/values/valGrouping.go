@@ -3,6 +3,7 @@ package values
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const valGroupByNone string = "none"
@@ -32,6 +33,18 @@ type ValGrouping struct {
 	// GroupByValBucketWidth is used with the GroupValsBy "bucket" property to configure a threshold for
 	// grouping values.
 	GroupByValBucketWidth float64 `json:"groupValsByBucketWidth"`
+}
+
+func (srcGrouping ValGrouping) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ValGrouping, error) {
+	destGrouping := srcGrouping
+
+	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcGrouping.GroupValsByFieldID)
+	if err != nil {
+		return nil, fmt.Errorf("ValGrouping.Clone: %v", err)
+	}
+	destGrouping.GroupValsByFieldID = remappedFieldID
+
+	return &destGrouping, nil
 }
 
 type NewValGroupingParams struct {
