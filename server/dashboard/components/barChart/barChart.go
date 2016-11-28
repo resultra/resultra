@@ -12,30 +12,6 @@ import (
 
 const barChartEntityKind string = "BarChart"
 
-const xAxisSortAsc string = "asc"
-const xAxisSortDesc string = "desc"
-
-type BarChartProps struct {
-
-	// DataSrcTable is the table the bar chart gets its data from
-	DataSrcTableID string `json:"dataSrcTableID"`
-
-	// XAxisVals is a grouping of field values displayed along the x axis of the bar chart.
-	XAxisVals values.ValGrouping `json:"xAxisVals"`
-
-	// XAxisSortValues configures how values (bars) along the x axis are sorted. Options include
-	// yAxisValAsc, yAxisValDesc, xAxisValAsc, xAxisValDesc. The default is xAxisValAsc.
-	XAxisSortValues string `json:"xAxisSortValues"`
-
-	Geometry componentLayout.LayoutGeometry `json:"geometry"`
-
-	Title string `json:"title"`
-
-	YAxisVals values.ValSummary `json:"yAxisValSummary"`
-
-	DefaultFilterRules []recordFilter.RecordFilterRule `json:"defaultFilterRules"`
-}
-
 // DashboardBarChart is the datastore object for dashboard bar charts.
 type BarChart struct {
 	ParentDashboardID string `json:"parentDashboardID"`
@@ -82,6 +58,14 @@ func validBarChartSortXAxisProp(xAxisSortVal string) bool {
 	}
 }
 
+func saveBarChart(newBarChart BarChart) error {
+	if saveErr := common.SaveNewDashboardComponent(barChartEntityKind,
+		newBarChart.ParentDashboardID, newBarChart.BarChartID, newBarChart.Properties); saveErr != nil {
+		return fmt.Errorf("NewBarChart: Unable to save bar chart component: error = %v", saveErr)
+	}
+	return nil
+}
+
 func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 
 	if len(params.ParentDashboardID) <= 0 {
@@ -124,8 +108,7 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 		BarChartID:        uniqueID.GenerateSnowflakeID(),
 		Properties:        barChartProps}
 
-	if saveErr := common.SaveNewDashboardComponent(barChartEntityKind,
-		newBarChart.ParentDashboardID, newBarChart.BarChartID, newBarChart.Properties); saveErr != nil {
+	if saveErr := saveBarChart(newBarChart); saveErr != nil {
 		return nil, fmt.Errorf("NewBarChart: Unable to save bar chart component with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -172,4 +155,41 @@ func GetBarCharts(parentDashboardID string) ([]BarChart, error) {
 	}
 
 	return barCharts, nil
+}
+
+func CloneBarCharts(remappedIDs uniqueID.UniqueIDRemapper, srcParentDashboardID string) error {
+
+	remappedDashboardID, err := remappedIDs.GetExistingRemappedID(srcParentDashboardID)
+	if err != nil {
+		return fmt.Errorf("CloneBarCharts: %v", err)
+	}
+
+	barCharts, err := GetBarCharts(srcParentDashboardID)
+	if err != nil {
+		return fmt.Errorf("CloneBarCharts: %v", err)
+	}
+
+	for _, srcBarChart := range barCharts {
+
+		remappedBarChartID, err := remappedIDs.AllocNewRemappedID(srcBarChart.BarChartID)
+		if err != nil {
+			return fmt.Errorf("CloneBarCharts: %v", err)
+		}
+
+		clonedProps, err := srcBarChart.Properties.Clone(remappedIDs)
+		if err != nil {
+			return fmt.Errorf("CloneBarCharts: %v", err)
+		}
+
+		destBarChart := BarChart{
+			ParentDashboardID: remappedDashboardID,
+			BarChartID:        remappedBarChartID,
+			Properties:        *clonedProps}
+
+		if err := saveBarChart(destBarChart); err != nil {
+			return fmt.Errorf("CloneBarCharts: %v", err)
+		}
+	}
+
+	return nil
 }

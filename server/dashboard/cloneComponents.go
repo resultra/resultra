@@ -1,10 +1,16 @@
 package dashboard
 
 import (
-	//	"fmt"
+	"fmt"
+	"resultra/datasheet/server/dashboard/components/barChart"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
 func cloneDashboardComponents(remappedIDs uniqueID.UniqueIDRemapper, srcParentDashboard string) error {
-	return nil // not implemented yet
+
+	if err := barChart.CloneBarCharts(remappedIDs, srcParentDashboard); err != nil {
+		return fmt.Errorf("cloneDashboardComponents: %v", err)
+	}
+
+	return nil
 }
