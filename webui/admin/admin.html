@@ -29,10 +29,11 @@
 	<div class="row">
     <ul class="nav nav-tabs">
         <li class="nav active"><a href="#general" data-toggle="tab">General</a></li>
-        <li class="nav"><a href="#users" data-toggle="tab">Collaborators</a></li>
-        <li class="nav"><a href="#roles" data-toggle="tab">Roles &amp; Privileges</a></li>
+        <li class="nav"><a href="#lists" data-toggle="tab">Lists</a></li>
         <li class="nav"><a href="#forms" data-toggle="tab">Forms</a></li>
         <li class="nav"><a href="#dashboards" data-toggle="tab">Dashboards</a></li>
+        <li class="nav"><a href="#users" data-toggle="tab">Collaborators</a></li>
+        <li class="nav"><a href="#roles" data-toggle="tab">Roles &amp; Privileges</a></li>
         <li class="nav"><a href="#globals" data-toggle="tab">Globals</a></li>
     </ul>
 
@@ -41,11 +42,8 @@
         <div class="tab-pane fade in active" id="general">
 			{{template "adminGeneralProperties"}}
 		</div>
-        <div class="tab-pane fade" id="users">
-        	{{template "userList"}}
-        </div>
-        <div class="tab-pane fade" id="roles">
-        	{{template "userRoleList"}}
+        <div class="tab-pane fade" id="lists">
+        	{{template "adminListList"}}
         </div>
         <div class="tab-pane fade" id="forms">
         	{{template "adminFormList"}}
@@ -55,6 +53,12 @@
         </div>
         <div class="tab-pane fade" id="globals">
         	{{template "adminGlobalsList"}}
+        </div>
+        <div class="tab-pane fade" id="users">
+        	{{template "userList"}}
+        </div>
+        <div class="tab-pane fade" id="roles">
+        	{{template "userRoleList"}}
         </div>
     </div>
 </div>

@@ -4,6 +4,7 @@
 		"userRole",
 		"users",
 		"forms",
+		"lists",
 		"dashboards",
 		"general","globals"],
 	"cssFiles": ["admin.css"],

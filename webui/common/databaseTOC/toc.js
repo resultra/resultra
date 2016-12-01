@@ -1,7 +1,7 @@
 
 function addFormToFormTOCList(formInfo) {
 	var formListItemHTML = '<a href="/viewForm/' + formInfo.formID + '" class="list-group-item">' + formInfo.name + '</a>'
-	$('#tocFormList').append(formListItemHTML)		
+	$('#tocListList').append(formListItemHTML)		
 }
 
 function addDashboardLinkToTOCList(dashboardInfo) {
@@ -18,7 +18,7 @@ function initDatabaseTOC(databaseID) {
 	jsonAPIRequest("database/getInfo",getDBInfoParams,function(dbInfo) {
 		console.log("Got database info: " + JSON.stringify(dbInfo))
 		
-		$('#tocFormList').empty()
+		$('#tocListList').empty()
 		for (var formInfoIndex = 0; formInfoIndex < dbInfo.formsInfo.length; formInfoIndex++) {
 			var formInfo = dbInfo.formsInfo[formInfoIndex]
 			addFormToFormTOCList(formInfo)
