@@ -1,4 +1,20 @@
+function addListToAdminItemListList(listInfo) {
+ 
+	var $itemListListItem = $('#adminListListItemTemplate').clone()
+	$itemListListItem.attr("id","")
+	
+	$itemListListItem.attr("data-listID",listInfo.listID)
+
+	var $nameLabel = $itemListListItem.find(".listNameLabel")
+	$nameLabel.text(listInfo.name)
+ 	
+	$('#adminListList').append($itemListListItem)		
+}
+
+
+
 function initAdminListSettings(databaseID) {
+	
 	
     $("#adminListList").sortable({
 		placeholder: "ui-state-highlight",
@@ -15,22 +31,22 @@ function initAdminListSettings(databaseID) {
     });
 	
 	
-	var getDBInfoParams = { databaseID: databaseID }
-	jsonAPIRequest("database/getInfo",getDBInfoParams,function(dbInfo) {
-		console.log("Got database info: " + JSON.stringify(dbInfo))
+	var listsInfoParams = { databaseID: databaseID }
+	jsonAPIRequest("itemList/list",listsInfoParams,function(listsInfo) {
+		console.log("Got item lists info: " + JSON.stringify(listsInfo))
 		
-/*		$('#adminFormList').empty()
-		for (var formInfoIndex = 0; formInfoIndex < dbInfo.formsInfo.length; formInfoIndex++) {
-			var formInfo = dbInfo.formsInfo[formInfoIndex]
-			addFormToAdminFormList(formInfo)
+		$('#adminListList').empty()
+		for (var listInfoIndex = 0; listInfoIndex < listsInfo.length; listInfoIndex++) {
+			var listInfo = listsInfo[listInfoIndex]
+			addListToAdminItemListList(listInfo)
 		}
-*/		
+		
 	})
 	
 	
 	initButtonClickHandler('#adminNewListButton',function() {
 		console.log("New list button clicked")
-//		openNewListDialog(databaseID)
+		openNewListDialog(databaseID)
 	})
 	
 	

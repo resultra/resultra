@@ -111,6 +111,28 @@ func getAllItemLists(parentTableID string) ([]ItemList, error) {
 
 }
 
+func getDatabaseItemLists(databaseID string) ([]ItemList, error) {
+
+	getTableParams := table.GetTableListParams{DatabaseID: databaseID}
+	tables, err := table.GetTableList(getTableParams)
+	if err != nil {
+		return nil, fmt.Errorf("getDatabaseItemLists: %v", err)
+	}
+
+	allItemLists := []ItemList{}
+
+	for _, currTable := range tables {
+		tableItemLists, err := getAllItemLists(currTable.TableID)
+		if err != nil {
+			return nil, fmt.Errorf("getDatabaseItemLists: can't get lists: %v", err)
+		}
+		allItemLists = append(allItemLists, tableItemLists...)
+	}
+
+	return allItemLists, nil
+
+}
+
 func CloneTableItemLists(remappedIDs uniqueID.UniqueIDRemapper, srcParentTableID string) error {
 
 	remappedTableID, err := remappedIDs.GetExistingRemappedID(srcParentTableID)

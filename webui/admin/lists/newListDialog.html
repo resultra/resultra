@@ -1,0 +1,50 @@
+{{define "newListDialogBody"}}
+
+		
+	  <div class="form-group">
+      	  <label for="newFormNameInput">List Name</label>
+      	  <input type="text" id="newListNameInput" name="newListNameInput" class="form-control" placeholder="List Name" required autofocus>
+	  </div>
+	
+	<div class="form-group">
+		<label>Table</label> 
+		<select class="form-control" id="newListTableSelection" name="newListTableSelection">
+			<option value="">
+				Select a table
+			</option>
+		</select>
+	</div>
+	
+
+{{end}}
+
+{{define "newListDialogButtons"}}
+	<button type="button" class="btn btn-default" id="newListCancelButton" data-dismiss="modal">Cancel</button>
+	<button type="button" class="btn btn-primary" id="newListSaveButton" type="submit">Save</button>
+{{end}}
+
+
+{{define "newListDialog"}}
+
+    <form id="newListDialogForm">
+		
+		<div class="modal fade" id="newListDialog" tabindex="-1" role="dialog" aria-labelledby="newListLabel">
+		  <div class="modal-dialog modal-sm" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="newListLabel">New Item List</h4>
+		      </div>
+		      <div class="modal-body">
+				  {{template "newListDialogBody"}}
+		      </div>
+		      <div class="modal-footer">
+				  {{template "newListDialogButtons"}}
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+	</form>
+
+{{end}}
