@@ -4,6 +4,10 @@ function addListToAdminItemListList(listInfo) {
 	$itemListListItem.attr("id","")
 	
 	$itemListListItem.attr("data-listID",listInfo.listID)
+	
+	var $editListPropsButton = $itemListListItem.find(".editListPropsButton")
+	var editListLink = '/admin/itemList/' + listInfo.listID
+	$editListPropsButton.attr('href',editListLink)
 
 	var $nameLabel = $itemListListItem.find(".listNameLabel")
 	$nameLabel.text(listInfo.name)

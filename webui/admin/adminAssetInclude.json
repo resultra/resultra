@@ -4,7 +4,7 @@
 		"userRole",
 		"users",
 		"forms",
-		"itemList",
+		"itemList/itemListList",
 		"dashboards",
 		"general","globals"],
 	"cssFiles": ["admin.css"],

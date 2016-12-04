@@ -1,0 +1,11 @@
+{
+	"subDirs":["../../../generic",
+		"../../../common"],
+	"cssFiles": ["editListProps.css"],
+	"jsFiles": ["editListProps.js"],
+	"htmlFiles":["editListProps.html"],
+	"imageFiles":[],
+	"minCSSFile":"admin/itemList/editListProps.min.css",
+	"minJSFile": "admin/itemList/editListProps.min.js",
+	"injectPlaceholderName":"itemListAssets"
+}

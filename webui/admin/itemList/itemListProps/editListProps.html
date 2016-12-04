@@ -1,0 +1,77 @@
+{{define "itemListBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-database" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Item Lists Settings</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "itemListPropsHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "itemListBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "itemListPropsBody"}}
+Item List body TBD
+{{end}}
+
+{{define "editItemListPropsPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- itemListAssets:css -->
+	<!-- endinject -->
+	
+	<script>var itemListPropsContext = { 
+		listID:"{{.ListID}}",
+		 databaseID:"{{.DatabaseID}}"} 
+	</script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- itemListAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="editItemListPropsPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north" id="itemListPageHeaderUILayout">
+			{{template "itemListPropsHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west" id="itemListPageTocLayout">
+			{{template "databaseTOC" .}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center" id="itemListPageLayout">
+			{{template "itemListPropsBody"}}
+		</div> <!-- center pane for entire page -->	
+		
+	</div> <!-- layout page -->	
+		
+  </body>
+  	
+</html>
+
+{{end}}

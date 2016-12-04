@@ -210,7 +210,7 @@ func updateExistingItemList(listID string, updatedItemList *ItemList) (*ItemList
 
 }
 
-func getItemListDatabaseID(listID string) (string, error) {
+func GetItemListDatabaseID(listID string) (string, error) {
 
 	databaseID := ""
 	getErr := databaseWrapper.DBHandle().QueryRow(

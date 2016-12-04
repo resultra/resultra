@@ -40,7 +40,7 @@ func validateItemListName(listID string, listName string) error {
 		return fmt.Errorf("Invalid list name")
 	}
 
-	databaseID, err := getItemListDatabaseID(listID)
+	databaseID, err := GetItemListDatabaseID(listID)
 	if err != nil {
 		return fmt.Errorf("System error validating form name (%v)", err)
 	}
