@@ -19,5 +19,33 @@ $(document).ready(function() {
 	initDatabaseTOC(itemListPropsContext.databaseID)
 		
 	initUserDropdownMenu()
+		
+		var listElemPrefix = "itemList_"
+		
+		var getItemListParams = { listID: itemListPropsContext.listID }
+		jsonAPIRequest("itemList/get",getItemListParams,function(listInfo) {
+			var filterPropertyPanelParams = {
+				elemPrefix: listElemPrefix,
+				tableID: listInfo.parentTableID,
+				defaultFilterRules: listInfo.properties.defaultFilterRules,
+				initDone: function () {},
+				updateFilterRules: function (updatedFilterRules) {
+					var setDefaultFiltersParams = {
+						listID: listInfo.listID,
+						filterRules: updatedFilterRules
+					}
+					jsonAPIRequest("itemList/setDefaultFilterRules",setDefaultFiltersParams,function(updatedList) {
+						console.log(" Default filters updated")
+					}) // set record's number field value
+				
+				}
+			
+			}
+			initFilterPropertyPanel(filterPropertyPanelParams)
+
+		}) // set record's number field value
+	
+		
+	
 	
 })

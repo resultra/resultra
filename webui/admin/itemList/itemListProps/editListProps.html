@@ -25,7 +25,10 @@
 
 
 {{define "itemListPropsBody"}}
-Item List body TBD
+
+	<h4>Default Filtering</h4>
+	{{template "recordFilterPropertyPanel" .FilterPropPanelParams}}
+
 {{end}}
 
 {{define "editItemListPropsPage"}}
@@ -65,7 +68,7 @@ Item List body TBD
 		</div> <!-- ui layout north -->
 
 		<div class="pane ui-layout-center" id="itemListPageLayout">
-			{{template "itemListPropsBody"}}
+			{{template "itemListPropsBody" .}}
 		</div> <!-- center pane for entire page -->	
 		
 	</div> <!-- layout page -->	

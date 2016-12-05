@@ -9,6 +9,7 @@ import (
 	itemListDataModel "resultra/datasheet/server/itemList"
 
 	"resultra/datasheet/webui/common"
+	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/generic"
 )
 
@@ -28,10 +29,11 @@ func init() {
 }
 
 type ItemListTemplParams struct {
-	Title        string
-	DatabaseID   string
-	DatabaseName string
-	ListID       string
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	ListID                string
+	FilterPropPanelParams recordFilter.FilterPanelTemplateParams
 }
 
 func editListPropsPage(w http.ResponseWriter, r *http.Request) {
@@ -50,11 +52,13 @@ func editListPropsPage(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("editListPropsPage: viewing/editing admin settings for list ID = ", listID)
 
+	elemPrefix := "itemList_"
 	templParams := ItemListTemplParams{
-		Title:        "Item List Settings",
-		DatabaseID:   databaseID,
-		DatabaseName: dbInfo.DatabaseName,
-		ListID:       listID}
+		Title:                 "Item List Settings",
+		DatabaseID:            databaseID,
+		DatabaseName:          dbInfo.DatabaseName,
+		ListID:                listID,
+		FilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(elemPrefix)}
 
 	if err := itemListTemplates.ExecuteTemplate(w, "editItemListPropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
