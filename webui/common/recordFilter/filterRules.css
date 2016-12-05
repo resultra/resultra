@@ -1,4 +1,12 @@
 
+.recordFilterFilterRuleList {
+	-webkit-border-radius: 0 !important;
+	-moz-border-radius: 0 !important;
+	border-radius: 0 !important;
+	max-width: 300px;
+}
+
+
 /* Lessen the default padding around list-group-item */
 .recordFilterPanelRuleListItem {
 	padding-top:5px;

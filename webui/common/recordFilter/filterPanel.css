@@ -15,11 +15,6 @@
 	padding-right:5px;
 }
 
-#filterRecordsPanelFilterList {
-	-webkit-border-radius: 0 !important;
-	-moz-border-radius: 0 !important;
-	border-radius: 0 !important;
-}
 
 /* Override the margins on checkbox items. By default, there is a 15px margin above checkboxes,
    which provides too much space above the checkboxes when displayed in a list */

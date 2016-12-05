@@ -25,10 +25,10 @@
 
 
 {{define "adminItemListNameProperty"}}
+	<h4>List Name</h4>
 	<form class="form-inline" id="itemListNamePropertyForm">
 		<div class="container-fluid">
 			<div class="form-group">
-				<label for="itemListPropsNameInput">List Name</label>
 				<input type="text" id="itemListPropsNameInput" name="itemListPropsNameInput" 
 						class="form-control" placeholder="List Name" required="" autofocus="">
 			</div>
@@ -40,12 +40,17 @@
 {{define "itemListPropsBody"}}
 
 	{{template "adminItemListNameProperty"}}
+	
+	<hr>
 
 	<h4>Default Filtering</h4>
 	{{template "recordFilterPropertyPanel" .FilterPropPanelParams}}
+
+	<hr>
+
 	
 	<h4>Default Sorting</h4>
-	{{template "recordSortPane"}}
+	{{template "recordSortPropertiesPage"}}
 
 {{end}}
 
