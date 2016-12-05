@@ -1,4 +1,50 @@
-$(document).ready(function() {	
+$(document).ready(function() {
+	
+	
+	function initItemListNameProperties(listInfo) {
+	
+		var $nameInput = $('#itemListPropsNameInput')
+	
+		var $listNameForm = $('#itemListNamePropertyForm')
+		
+		$nameInput.val(listInfo.name)
+		
+		
+		var remoteValidationParams = {
+			url: '/api/itemList/validateListName',
+			data: {
+				listID: function() { return listInfo.listID },
+				listName: function() { return $nameInput.val() }
+			}	
+		}
+	
+		var validationSettings = createInlineFormValidationSettings({
+			rules: {
+				itemListPropsNameInput: {
+					minlength: 3,
+					required: true,
+					remote: remoteValidationParams
+				} // newRoleNameInput
+			}
+		})	
+	
+	
+		var validator = $listNameForm.validate(validationSettings)
+	
+		initInlineInputValidationOnBlur(validator,'#itemListPropsNameInput',
+			remoteValidationParams, function(validatedName) {		
+				var setNameParams = {
+					listID:listInfo.listID,
+					newListName:validatedName
+				}
+				jsonAPIRequest("itemList/setName",setNameParams,function(listInfo) {
+					console.log("Done changing list name: " + validatedName)
+				})
+		})	
+
+		validator.resetForm()
+	
+	}	
 	
 	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
 
@@ -66,6 +112,8 @@ $(document).ready(function() {
 	
 	
 			initSortRecordsPane(sortPaneParams)
+				
+			initItemListNameProperties(listInfo)
 			
 
 		}) // set record's number field value

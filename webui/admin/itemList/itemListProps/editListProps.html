@@ -24,7 +24,22 @@
 {{end}}
 
 
+{{define "adminItemListNameProperty"}}
+	<form class="form-inline" id="itemListNamePropertyForm">
+		<div class="container-fluid">
+			<div class="form-group">
+				<label for="itemListPropsNameInput">List Name</label>
+				<input type="text" id="itemListPropsNameInput" name="itemListPropsNameInput" 
+						class="form-control" placeholder="List Name" required="" autofocus="">
+			</div>
+		</div>
+	</form>
+{{end}}
+
+
 {{define "itemListPropsBody"}}
+
+	{{template "adminItemListNameProperty"}}
 
 	<h4>Default Filtering</h4>
 	{{template "recordFilterPropertyPanel" .FilterPropPanelParams}}
