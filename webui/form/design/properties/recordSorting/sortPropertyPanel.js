@@ -15,6 +15,7 @@ function initFormSortPropertyPanel(formInfo) {
 	
 	var sortPaneParams = {
 		defaultSortRules: formInfo.properties.defaultRecordSortRules,
+		tableID: formInfo.parentTableID,
 		resortFunc: function() {}, // no-op
 		initDoneFunc: function() {}, // no-op
 		saveUpdatedSortRulesFunc: saveDefaultFormSortRules}

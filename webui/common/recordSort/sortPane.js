@@ -129,7 +129,7 @@ function populateSortByFieldMenu(sortPaneParams,elemPrefix,sortRule) {
 
 function addSortRuleListItem(sortPaneParams,elemPrefix,sortRule) {
 	
-	var fieldsByID = getFilteredFieldsByID([fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime])
+	var fieldsByID = sortPaneParams.fieldByID
 	
 	$('#sortPaneSortRuleList').append(sortPaneListItemHTML(elemPrefix))
 	
@@ -166,19 +166,24 @@ function generateSortRulePrefix() {
 function initSortRecordsPane(sortPaneParams) {
 	
 	$('#sortPaneSortRuleList').empty()
+	
+	loadFieldInfo(sortPaneParams.tableID, 
+		[fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime], function(fieldsByID) {
 			
-	sortPaneParams.fieldsByID = getFilteredFieldsByID([fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime])
-		
-	for (var sortRuleIndex = 0; sortRuleIndex < sortPaneParams.defaultSortRules.length; sortRuleIndex++) {
-		var sortRule = sortPaneParams.defaultSortRules[sortRuleIndex]
-		console.log("getFormSortRules: initializing sort rule: " + JSON.stringify(sortRule))
-		addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),sortRule)		
-	}
-	if(sortPaneParams.defaultSortRules.length ==0) {
-		// If no rules are already set add at least one uninitialized sort rule
-		addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),null)
-	}
-	sortPaneParams.initDoneFunc()
+			sortPaneParams.fieldsByID = fieldsByID
+
+			for (var sortRuleIndex = 0; sortRuleIndex < sortPaneParams.defaultSortRules.length; sortRuleIndex++) {
+				var sortRule = sortPaneParams.defaultSortRules[sortRuleIndex]
+				console.log("getFormSortRules: initializing sort rule: " + JSON.stringify(sortRule))
+				addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),sortRule)		
+			}
+			if(sortPaneParams.defaultSortRules.length ==0) {
+				// If no rules are already set add at least one uninitialized sort rule
+				addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),null)
+			}
+			sortPaneParams.initDoneFunc()
+	})
+			
 	
 	
 	initButtonClickHandler('#sortRecordsAddRuleButton',function(e) {

@@ -42,6 +42,31 @@ $(document).ready(function() {
 			
 			}
 			initFilterPropertyPanel(filterPropertyPanelParams)
+			
+			
+			function saveDefaultListSortRules(sortRules) {
+				console.log("Saving default sort rules for list: " + JSON.stringify(sortRules))
+				var saveSortRulesParams = {
+					listID:listInfo.listID,
+					sortRules: sortRules
+				}
+				jsonAPIRequest("itemList/setDefaultSortRules",saveSortRulesParams,function(saveReply) {
+					console.log("Done saving default sort rules")
+				})			
+
+			}
+	
+	
+			var sortPaneParams = {
+				defaultSortRules: listInfo.properties.defaultRecordSortRules,
+				tableID: listInfo.parentTableID,
+				resortFunc: function() {}, // no-op
+				initDoneFunc: function() {}, // no-op
+				saveUpdatedSortRulesFunc: saveDefaultListSortRules}
+	
+	
+			initSortRecordsPane(sortPaneParams)
+			
 
 		}) // set record's number field value
 	

@@ -229,6 +229,7 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 						
 		var recordSortPaneParams = {
 			defaultSortRules: formInfo.properties.defaultRecordSortRules,
+			tableID: formInfo.parentTableID,
 			resortFunc: reloadSortedAndFilterRecords,
 			initDoneFunc: decrementRemainingPanelInitCount,
 			saveUpdatedSortRulesFunc: function(sortRules) {} // no-op
