@@ -36,10 +36,27 @@
 	</form>
 {{end}}
 
+{{define "adminItemListDisplayProperty"}}
+
+	<h4>List Display</h4>
+	<form class="form-inline" id="itemListFormPropertyForm">
+		<div class="container-fluid">
+			<div class="form-group">
+				<label>Default Form for viewing items:</label>
+				<select class="form-control" id="itemListDefaultFormSelection"></select>
+			</div>
+		</div>
+	</form>
+
+{{end}}
 
 {{define "itemListPropsBody"}}
 
 	{{template "adminItemListNameProperty"}}
+	
+	<hr>
+	
+	{{template "adminItemListDisplayProperty"}}
 	
 	<hr>
 

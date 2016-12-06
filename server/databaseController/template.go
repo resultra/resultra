@@ -114,11 +114,13 @@ func saveDatabaseToTemplate(params SaveTemplateParams) (*database.Database, erro
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
-	if err := itemList.CloneItemLists(remappedIDs, params.SourceDatabaseID); err != nil {
+	if err := form.CloneForms(remappedIDs, params.SourceDatabaseID); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
-	if err := form.CloneForms(remappedIDs, params.SourceDatabaseID); err != nil {
+	// Item lists have a form as a property, so they must be cloned after the forms, ensuring
+	// the form IDs have already been remapped.
+	if err := itemList.CloneItemLists(remappedIDs, params.SourceDatabaseID); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 

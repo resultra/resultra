@@ -82,6 +82,10 @@ func GetForm(formID string) (*Form, error) {
 	return &getForm, nil
 }
 
+type GetFormListParams struct {
+	ParentTableID string `json:"parentTableID"`
+}
+
 func getAllForms(parentTableID string) ([]Form, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(

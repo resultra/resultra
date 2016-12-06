@@ -19,6 +19,7 @@ func init() {
 	formRouter.HandleFunc("/api/frm/getFormInfo", getFormInfoAPI)
 	formRouter.HandleFunc("/api/frm/new", newFormAPI)
 	formRouter.HandleFunc("/api/frm/get", getFormAPI)
+	formRouter.HandleFunc("/api/frm/list", getFormListAPI)
 
 	formRouter.HandleFunc("/api/frm/setName", setFormName)
 	formRouter.HandleFunc("/api/frm/setLayout", setLayout)
@@ -70,6 +71,22 @@ func getFormAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *theForm)
+	}
+
+}
+
+func getFormListAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetFormListParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if forms, err := getAllForms(params.ParentTableID); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, forms)
 	}
 
 }

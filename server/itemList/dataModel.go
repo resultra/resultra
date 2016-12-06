@@ -12,6 +12,7 @@ import (
 type ItemList struct {
 	ListID        string             `json:"listID"`
 	ParentTableID string             `json:"parentTableID"`
+	FormID        string             `json:"formID"`
 	Name          string             `json:"name"`
 	Properties    ItemListProperties `json:"properties"`
 }
@@ -22,8 +23,9 @@ func saveItemList(newList ItemList) error {
 		return fmt.Errorf("saveItemList: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO item_lists (table_id,list_id,name,properties) VALUES ($1,$2,$3,$4)`,
-		newList.ParentTableID, newList.ListID, newList.Name, encodedProps); insertErr != nil {
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO item_lists (table_id,list_id,form_id,name,properties) 
+					VALUES ($1,$2,$3,$4,$5)`,
+		newList.ParentTableID, newList.ListID, newList.FormID, newList.Name, encodedProps); insertErr != nil {
 		return fmt.Errorf("saveItemList: Can't create list: error = %v", insertErr)
 	}
 	return nil
@@ -32,6 +34,7 @@ func saveItemList(newList ItemList) error {
 
 type NewItemListParams struct {
 	ParentTableID string `json:"parentTableID"`
+	FormID        string `json:"formID"`
 	Name          string `json:"name"`
 }
 
@@ -43,6 +46,7 @@ func newItemList(params NewItemListParams) (*ItemList, error) {
 	}
 
 	newList := ItemList{ParentTableID: params.ParentTableID,
+		FormID:     params.FormID,
 		ListID:     uniqueID.GenerateSnowflakeID(),
 		Name:       sanitizedName,
 		Properties: newDefaultItemListProperties()}
@@ -59,8 +63,9 @@ func GetItemList(listID string) (*ItemList, error) {
 	listName := ""
 	encodedProps := ""
 	tableID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT table_id,name,properties FROM item_lists
-		 WHERE list_id=$1 LIMIT 1`, listID).Scan(&tableID, &listName, &encodedProps)
+	formID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT table_id,form_id,name,properties FROM item_lists
+		 WHERE list_id=$1 LIMIT 1`, listID).Scan(&tableID, &formID, &listName, &encodedProps)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetItemList: Unabled to get item list: list ID = %v: datastore err=%v",
 			listID, getErr)
@@ -73,6 +78,7 @@ func GetItemList(listID string) (*ItemList, error) {
 
 	retrievedList := ItemList{
 		ParentTableID: tableID,
+		FormID:        formID,
 		ListID:        listID,
 		Name:          listName,
 		Properties:    listProps}
@@ -83,7 +89,7 @@ func GetItemList(listID string) (*ItemList, error) {
 func getAllItemLists(parentTableID string) ([]ItemList, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT table_id,list_id,name,properties FROM item_lists WHERE table_id = $1`,
+		`SELECT table_id,list_id,form_id,name,properties FROM item_lists WHERE table_id = $1`,
 		parentTableID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("getAllItemLists: Failure querying database: %v", queryErr)
@@ -94,7 +100,7 @@ func getAllItemLists(parentTableID string) ([]ItemList, error) {
 		var currList ItemList
 		encodedProps := ""
 
-		if scanErr := rows.Scan(&currList.ParentTableID, &currList.ListID, &currList.Name, &encodedProps); scanErr != nil {
+		if scanErr := rows.Scan(&currList.ParentTableID, &currList.ListID, &currList.FormID, &currList.Name, &encodedProps); scanErr != nil {
 			return nil, fmt.Errorf("getAllItemLists: Failure querying database: %v", scanErr)
 		}
 
@@ -157,6 +163,12 @@ func CloneTableItemLists(remappedIDs uniqueID.UniqueIDRemapper, srcParentTableID
 		}
 		destList.ListID = destListID
 
+		destFormID, err := remappedIDs.GetExistingRemappedID(currList.FormID)
+		if err != nil {
+			return fmt.Errorf("CloneTableForms: %v", err)
+		}
+		destList.FormID = destFormID
+
 		destProps, err := currList.Properties.Clone(remappedIDs)
 		if err != nil {
 			return fmt.Errorf("CloneTableLists: %v", err)
@@ -199,9 +211,9 @@ func updateExistingItemList(listID string, updatedItemList *ItemList) (*ItemList
 	}
 
 	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE item_lists 
-				SET properties=$1, name=$2
-				WHERE list_id=$3`,
-		encodedProps, updatedItemList.Name, listID); updateErr != nil {
+				SET properties=$1, name=$2,form_id=$3
+				WHERE list_id=$4`,
+		encodedProps, updatedItemList.Name, updatedItemList.FormID, listID); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingItemList: Can't update form properties %v: error = %v",
 			listID, updateErr)
 	}

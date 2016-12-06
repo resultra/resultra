@@ -44,7 +44,29 @@ $(document).ready(function() {
 
 		validator.resetForm()
 	
-	}	
+	} // initItemListNameProperties
+	
+	function initItemListFormProperties(listInfo) {
+		var selectFormParams = {
+			menuSelector: "#itemListDefaultFormSelection",
+			parentTableID: listInfo.parentTableID,
+			initialFormID: listInfo.formID
+		}	
+		populateFormSelectionMenu(selectFormParams)
+		var $formSelection = $("#itemListDefaultFormSelection")
+		initSelectControlChangeHandler($formSelection, function(selectedFormID) {
+
+			var setFormParams = {
+				listID: listInfo.listID,
+				formID: selectedFormID
+			}	
+			jsonAPIRequest("itemList/setForm",setFormParams,function(saveReply) {
+				console.log("Done setting form for list")
+			})			
+		})
+		
+	} // initItemListFormProperties
+	
 	
 	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
 
@@ -114,11 +136,10 @@ $(document).ready(function() {
 			initSortRecordsPane(sortPaneParams)
 				
 			initItemListNameProperties(listInfo)
-			
+				
+			initItemListFormProperties(listInfo)
+				
 
 		}) // set record's number field value
-	
-		
-	
 	
 })
