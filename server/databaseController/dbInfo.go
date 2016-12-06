@@ -20,6 +20,11 @@ type DashboardInfo struct {
 	Name        string `json:"name"`
 }
 
+type ItemListInfo struct {
+	ListID string `json:"listID"`
+	Name   string `json:"name"`
+}
+
 func getDatabaseDashboardsInfo(params DatabaseInfoParams) ([]DashboardInfo, error) {
 	rows, queryErr := databaseWrapper.DBHandle().Query(
 		`SELECT dashboards.dashboard_id, dashboards.name FROM dashboards,databases WHERE 
@@ -66,9 +71,33 @@ func getDatabaseFormsInfo(params DatabaseInfoParams) ([]FormInfo, error) {
 	return formsInfo, nil
 }
 
+func getDatabaseItemListInfo(params DatabaseInfoParams) ([]ItemListInfo, error) {
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT item_lists.list_id, item_lists.name FROM item_lists,data_tables,databases WHERE 
+			databases.database_id=$1 AND 
+			data_tables.database_id = databases.database_id AND
+			item_lists.table_id = data_tables.table_id`,
+		params.DatabaseID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("getDatabaseInfo: Failure querying database: %v", queryErr)
+	}
+
+	listsInfo := []ItemListInfo{}
+	for rows.Next() {
+		var currListInfo ItemListInfo
+		if scanErr := rows.Scan(&currListInfo.ListID, &currListInfo.Name); scanErr != nil {
+			return nil, fmt.Errorf("getDatabaseInfo: Failure querying database: %v", scanErr)
+		}
+		listsInfo = append(listsInfo, currListInfo)
+	}
+
+	return listsInfo, nil
+}
+
 type DatabaseContentsInfo struct {
 	DatabaseInfo   database.Database `json:"databaseInfo"`
 	FormsInfo      []FormInfo        `json:"formsInfo"`
+	ListsInfo      []ItemListInfo    `json:"listsInfo"`
 	DashboardsInfo []DashboardInfo   `json:"dashboardsInfo"`
 }
 
@@ -84,6 +113,11 @@ func getDatabaseInfo(params DatabaseInfoParams) (*DatabaseContentsInfo, error) {
 		return nil, dashboardsErr
 	}
 
+	listsInfo, err := getDatabaseItemListInfo(params)
+	if err != nil {
+		return nil, err
+	}
+
 	db, getErr := database.GetDatabase(params.DatabaseID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
@@ -92,6 +126,7 @@ func getDatabaseInfo(params DatabaseInfoParams) (*DatabaseContentsInfo, error) {
 	dbInfo := DatabaseContentsInfo{
 		DatabaseInfo:   *db,
 		FormsInfo:      formsInfo,
+		ListsInfo:      listsInfo,
 		DashboardsInfo: dashboardsInfo}
 
 	return &dbInfo, nil

@@ -11,6 +11,13 @@ function addDashboardLinkToTOCList(dashboardInfo) {
 	$('#tocDashboardList').append(dashboardListItemHTML)		
 }
 
+function addItemListLinkToTOCList(listInfo) {
+	var itemListItemHTML = '<a href="/viewList/' + listInfo.listID 
+			+ '" class="list-group-item">' + listInfo.name + '</a>'
+	$('#tocListList').append(itemListItemHTML)		
+	
+}
+
 
 function initDatabaseTOC(databaseID) {
 	
@@ -22,6 +29,10 @@ function initDatabaseTOC(databaseID) {
 		for (var formInfoIndex = 0; formInfoIndex < dbInfo.formsInfo.length; formInfoIndex++) {
 			var formInfo = dbInfo.formsInfo[formInfoIndex]
 			addFormToFormTOCList(formInfo)
+		}
+		for(var listInfoIndex = 0; listInfoIndex < dbInfo.listsInfo.length; listInfoIndex++) {
+			var listInfo = dbInfo.listsInfo[listInfoIndex]
+			addItemListLinkToTOCList(listInfo)
 		}
 
 		$('#tocDashboardList').empty()
