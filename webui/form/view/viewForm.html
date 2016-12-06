@@ -4,7 +4,7 @@
 	  {{template "breadCrumbSeparator"}}
 	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-database" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
 	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">{{.FormName}}</span>
+	  <span class="h4 breadCrumbText">{{.ListName}}</span>
 	</div> <!-- breadcrumb header -->
 {{end}}
 
@@ -49,7 +49,7 @@
 			</button>
 		</div> <!-- column -->
 		<div class= "col-sm-4"  id="formNameHeaderCol">
-			<h4 id="formNameHeader">{{.FormName}}</h4>
+			<h4 id="formNameHeader">{{.ListName}}</h4>
 		</div> <!-- column -->
 		<div class= "col-sm-4">
 			<div class="pull-right">
@@ -131,9 +131,11 @@
 	
 	<script>var formID={{.FormID}};</script>
 	<script>var tableID={{.TableID}};</script>
-	<script>var viewFormContext = { formID:"{{.FormID}}", 
+	<script>var viewFormContext = { formID:"{{.FormID}}",
+		listID:"{{.ListID}}",
 		tableID:"{{.TableID}}",
-	 	databaseID: "{{.DatabaseID}}"} </script>
+	 	databaseID: "{{.DatabaseID}}"} 
+	</script>
 	
 	{{template "thirdPartyJS"}}
 	

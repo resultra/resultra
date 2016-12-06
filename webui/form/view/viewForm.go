@@ -5,9 +5,12 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/itemList"
+
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/form/common/timeline"
 	"resultra/datasheet/webui/form/components"
@@ -34,19 +37,20 @@ func init() {
 type ViewFormTemplateParams struct {
 	Title                string
 	FormID               string
+	ListID               string
 	TableID              string
 	DatabaseID           string
 	DatabaseName         string
-	FormName             string
+	ListName             string
 	FilteringPanelParams propertiesSidebar.PanelTemplateParams
 	SortPanelParams      propertiesSidebar.PanelTemplateParams
 	ComponentParams      components.ComponentViewTemplateParams
 }
 
-func ViewForm(w http.ResponseWriter, r *http.Request) {
+func ViewList(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	formID := vars["formID"]
+	listID := vars["listID"]
 
 	_, authErr := userAuth.GetCurrentUserInfo(r)
 	if authErr != nil {
@@ -55,7 +59,14 @@ func ViewForm(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	} else {
-		log.Println("view form: : form ID = %v", formID)
+		log.Println("view list: : listID ID = %v", listID)
+
+		listInfo, err := itemList.GetItemList(listID)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
+		formID := listInfo.FormID
 
 		formDBInfo, getErr := databaseController.GetFormDatabaseInfo(formID)
 		if getErr != nil {
@@ -63,20 +74,20 @@ func ViewForm(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		templParams := ViewFormTemplateParams{Title: "View Form",
+		templParams := ViewFormTemplateParams{Title: "View List",
 			FormID:       formID,
+			ListID:       listID,
 			TableID:      formDBInfo.TableID,
 			DatabaseID:   formDBInfo.DatabaseID,
 			DatabaseName: formDBInfo.DatabaseName,
-			FormName:     formDBInfo.FormName,
+			ListName:     listInfo.Name,
 			FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering",
 				PanelID: "viewFormFiltering"},
 			SortPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Sorting",
 				PanelID: "viewFormSorting"},
 			ComponentParams: components.ViewTemplateParams}
 
-		err := viewFormTemplates.ExecuteTemplate(w, "viewForm", templParams)
-		if err != nil {
+		if err := viewFormTemplates.ExecuteTemplate(w, "viewForm", templParams); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 

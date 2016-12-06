@@ -180,13 +180,13 @@ function initUILayoutPanes()
 
 function initAfterViewFormComponentsAlreadyLoaded() {
 	
-	var getFormParams = {
-		formID: viewFormContext.formID
+	var getListParams = {
+		listID: viewFormContext.listID
 	}
 	
 	
 	
-	jsonAPIRequest("frm/get",getFormParams,function(formInfo) {
+	jsonAPIRequest("itemList/get",getListParams,function(listInfo) {
 		
 		var filterPanelElemPrefix = "form_"
 		
@@ -214,8 +214,8 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 		
 		var filterPropertyPanelParams = {
 			elemPrefix: filterPanelElemPrefix,
-			tableID: tableID,
-			defaultFilterRules: formInfo.properties.defaultFilterRules,
+			tableID: listInfo.parentTableID,
+			defaultFilterRules: listInfo.properties.defaultFilterRules,
 			initDone: decrementRemainingPanelInitCount,
 			updateFilterRules: function (updatedFilterRules) {
 				console.log("View form: filters changed - updating filtering")
@@ -228,8 +228,8 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 		initRecordFilterViewPanel(filterPropertyPanelParams)
 						
 		var recordSortPaneParams = {
-			defaultSortRules: formInfo.properties.defaultRecordSortRules,
-			tableID: formInfo.parentTableID,
+			defaultSortRules: listInfo.properties.defaultRecordSortRules,
+			tableID: listInfo.parentTableID,
 			resortFunc: reloadSortedAndFilterRecords,
 			initDoneFunc: decrementRemainingPanelInitCount,
 			saveUpdatedSortRulesFunc: function(sortRules) {} // no-op

@@ -1,8 +1,4 @@
 
-function addFormToFormTOCList(formInfo) {
-	var formListItemHTML = '<a href="/viewForm/' + formInfo.formID + '" class="list-group-item">' + formInfo.name + '</a>'
-	$('#tocListList').append(formListItemHTML)		
-}
 
 function addDashboardLinkToTOCList(dashboardInfo) {
 	// TODO - Link to "dashboard view" page instead of dashboard design page (view page isn't implemented yet)
@@ -26,10 +22,6 @@ function initDatabaseTOC(databaseID) {
 		console.log("Got database info: " + JSON.stringify(dbInfo))
 		
 		$('#tocListList').empty()
-		for (var formInfoIndex = 0; formInfoIndex < dbInfo.formsInfo.length; formInfoIndex++) {
-			var formInfo = dbInfo.formsInfo[formInfoIndex]
-			addFormToFormTOCList(formInfo)
-		}
 		for(var listInfoIndex = 0; listInfoIndex < dbInfo.listsInfo.length; listInfoIndex++) {
 			var listInfo = dbInfo.listsInfo[listInfoIndex]
 			addItemListLinkToTOCList(listInfo)
