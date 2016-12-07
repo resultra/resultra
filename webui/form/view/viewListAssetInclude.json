@@ -3,11 +3,11 @@
 		"../../common",
 		"../common/timeline",
 			"../components"],
-	"cssFiles": ["editRecord.css","viewForm.css"],
-	"jsFiles": ["recordSet.js","viewForm.js"],
-	"htmlFiles":["viewForm.html"],
+	"cssFiles": ["editRecord.css","viewList.css"],
+	"jsFiles": ["recordSet.js","viewList.js"],
+	"htmlFiles":["viewList.html"],
 	"imageFiles":[],
 	"minCSSFile":"form/view/viewForm.min.css",
 	"minJSFile": "form/view/viewForm.min.js",
-	"injectPlaceholderName":"viewFormAssets"
+	"injectPlaceholderName":"viewListAssets"
 }

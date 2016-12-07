@@ -21,9 +21,7 @@ import (
 var viewListTemplates *template.Template
 
 func init() {
-	//	designFormTemplateFiles := []string{}
-
-	baseTemplateFiles := []string{"static/form/view/viewForm.html"}
+	baseTemplateFiles := []string{"static/form/view/viewList.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
