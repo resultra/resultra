@@ -1,4 +1,4 @@
-#viewFormPageHeaderUILayout {
+#viewListPageHeaderUILayout {
 	padding-top:5px; /* override the default 10px padding */
 }
 
@@ -6,11 +6,11 @@
 	overflow:hidden; /* disable scroll bars */
 }
 
-#formNameHeaderCol {
+#listNameHeaderCol {
 	 text-align:center;
 }
 
-#formNameHeader {
+#listNameHeader {
 	margin-top:5px;
 	margin-bottom:5px;
 }

@@ -91,7 +91,7 @@ function initCheckBoxFieldEditBehavior(componentContext,checkBoxObjectRef) {
 				format: "check"
 			}
 			var setRecordValParams = {
-				parentTableID:viewFormContext.tableID,
+				parentTableID:viewListContext.tableID,
 				recordID:currRecordRef.recordID, 
 				fieldID:componentLink.fieldID, 
 				value:isChecked,

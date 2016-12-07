@@ -101,7 +101,7 @@ function initDatePickerFieldEditBehavior(componentContext,datePickerObjectRef,$d
 			format: "date"
 		}
 		var setRecordValParams = {
-			parentTableID:viewFormContext.tableID,
+			parentTableID:viewListContext.tableID,
 			recordID:currRecordRef.recordID, 
 			fieldID:componentLink.fieldID, 
 			value:dateParam,

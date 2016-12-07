@@ -150,7 +150,7 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 					}
 					
 					var setRecordValParams = { 
-						parentTableID:viewFormContext.tableID,
+						parentTableID:viewListContext.tableID,
 						recordID:currRecordRef.recordID, 
 						fieldID:fieldID, value:inputVal,
 						 valueFormat: textBoxTextValueFormat }
@@ -177,7 +177,7 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 							format:"general"
 						}
 						var setRecordValParams = { 
-							parentTableID:viewFormContext.tableID,
+							parentTableID:viewListContext.tableID,
 							recordID:currRecordRef.recordID, 
 							fieldID:fieldID, 
 							value:numberVal,

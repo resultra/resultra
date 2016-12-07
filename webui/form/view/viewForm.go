@@ -18,7 +18,7 @@ import (
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 
-var viewFormTemplates *template.Template
+var viewListTemplates *template.Template
 
 func init() {
 	//	designFormTemplateFiles := []string{}
@@ -31,10 +31,10 @@ func init() {
 		common.TemplateFileList,
 		components.TemplateFileList,
 		timeline.TemplateFileList}
-	viewFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
+	viewListTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
-type ViewFormTemplateParams struct {
+type ViewListTemplateParams struct {
 	Title                string
 	FormID               string
 	ListID               string
@@ -54,7 +54,7 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 
 	_, authErr := userAuth.GetCurrentUserInfo(r)
 	if authErr != nil {
-		err := viewFormTemplates.ExecuteTemplate(w, "userSignInPage", nil)
+		err := viewListTemplates.ExecuteTemplate(w, "userSignInPage", nil)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
@@ -74,7 +74,7 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		templParams := ViewFormTemplateParams{Title: "View List",
+		templParams := ViewListTemplateParams{Title: "View List",
 			FormID:       formID,
 			ListID:       listID,
 			TableID:      formDBInfo.TableID,
@@ -87,7 +87,7 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 				PanelID: "viewFormSorting"},
 			ComponentParams: components.ViewTemplateParams}
 
-		if err := viewFormTemplates.ExecuteTemplate(w, "viewForm", templParams); err != nil {
+		if err := viewListTemplates.ExecuteTemplate(w, "viewList", templParams); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 

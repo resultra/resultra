@@ -7,7 +7,7 @@ function initSelectionViewProperties(selectionRef) {
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
-		tableID: viewFormContext.tableID,
+		tableID: viewListContext.tableID,
 		recordID: currRecordRef.recordID,
 		componentLink: componentLink
 	}

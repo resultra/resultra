@@ -66,7 +66,7 @@ function loadFormData(reloadRecordParams, formDataCallback) {
 		oneDataSetLoaded()
 	})
 	
-	var globalParams = { parentDatabaseID: viewFormContext.databaseID }
+	var globalParams = { parentDatabaseID: viewListContext.databaseID }
 	jsonAPIRequest("global/getValues",globalParams,function(globalVals) {
 		formData.globalVals = globalVals
 		oneDataSetLoaded()
@@ -181,7 +181,7 @@ function initUILayoutPanes()
 function initAfterViewFormComponentsAlreadyLoaded() {
 	
 	var getListParams = {
-		listID: viewFormContext.listID
+		listID: viewListContext.listID
 	}
 	
 	
@@ -197,7 +197,7 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 			var sortRules = getSortPaneSortRules()
 	
 			var getFilteredRecordsParams = { 
-				tableID: viewFormContext.tableID,
+				tableID: viewListContext.tableID,
 				filterRules: filterRules,
 				sortRules: sortRules}
 	
@@ -250,7 +250,7 @@ $(document).ready(function() {
 	
 	initUserDropdownMenu()
 	
-	initDatabaseTOC(viewFormContext.databaseID)
+	initDatabaseTOC(viewListContext.databaseID)
 	
 	var viewFormCanvasSelector = '#layoutCanvas'
 	
@@ -263,15 +263,15 @@ $(document).ready(function() {
 		})
 	}
 	
-	hideSiblingsShowOne('#formViewProps')
+	hideSiblingsShowOne('#listViewProps')
 	initObjectCanvasSelectionBehavior(viewFormCanvasSelector, function() {
-		hideSiblingsShowOne('#formViewProps')
+		hideSiblingsShowOne('#listViewProps')
 	})
 
 	
 	loadFormComponents({
 		formParentElemID: viewFormCanvasSelector,
-		formContext: viewFormContext,
+		formContext: viewListContext,
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {			
 			initTextBoxRecordEditBehavior(componentContext,textBoxObjectRef)
 			initFormComponentViewBehavior($textBox,
