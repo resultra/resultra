@@ -3,8 +3,6 @@ package form
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/recordSortDataModel"
-	"resultra/datasheet/server/recordFilter"
 )
 
 type FormIDInterface interface {
@@ -66,32 +64,6 @@ type SetLayoutParams struct {
 func (updateParams SetLayoutParams) updateProps(form *Form) error {
 
 	form.Properties.Layout = updateParams.Layout
-
-	return nil
-}
-
-type SetFilterRulesParams struct {
-	FormIDHeader
-	FilterRules []recordFilter.RecordFilterRule `json:"filterRules"`
-}
-
-func (updateParams SetFilterRulesParams) updateProps(form *Form) error {
-
-	// TODO - Validate filter rules before saving
-	form.Properties.DefaultFilterRules = updateParams.FilterRules
-
-	return nil
-}
-
-type SetDefaultSortRulesParams struct {
-	FormIDHeader
-	SortRules []recordSortDataModel.RecordSortRule `json:"sortRules"`
-}
-
-func (updateParams SetDefaultSortRulesParams) updateProps(form *Form) error {
-
-	// TODO - Validate sort rules before saving
-	form.Properties.DefaultRecordSortRules = updateParams.SortRules
 
 	return nil
 }

@@ -23,9 +23,6 @@ func init() {
 
 	formRouter.HandleFunc("/api/frm/setName", setFormName)
 	formRouter.HandleFunc("/api/frm/setLayout", setLayout)
-	formRouter.HandleFunc("/api/frm/setDefaultSortRules", setDefaultSortRules)
-
-	formRouter.HandleFunc("/api/frm/setDefaultFilterRules", setDefaultFilterRules)
 
 	formRouter.HandleFunc("/api/frm/validateFormName", validateFormNameAPI)
 	formRouter.HandleFunc("/api/frm/validateNewFormName", validateNewFormNameAPI)
@@ -126,24 +123,6 @@ func setFormName(w http.ResponseWriter, r *http.Request) {
 
 func setLayout(w http.ResponseWriter, r *http.Request) {
 	var params SetLayoutParams
-	if err := api.DecodeJSONRequest(r, &params); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processFormPropUpdate(w, r, params)
-}
-
-func setDefaultFilterRules(w http.ResponseWriter, r *http.Request) {
-	var params SetFilterRulesParams
-	if err := api.DecodeJSONRequest(r, &params); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processFormPropUpdate(w, r, params)
-}
-
-func setDefaultSortRules(w http.ResponseWriter, r *http.Request) {
-	var params SetDefaultSortRulesParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

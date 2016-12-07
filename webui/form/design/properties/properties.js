@@ -11,29 +11,6 @@ function initDesignFormProperties(table,formID) {
 		
 		initDesignFormRolePrivProperties(formID)
 		initFormPropertiesFormName(formInfo)
-		initFormSortPropertyPanel(formInfo)
-		
-		
-		var filterPropertyPanelParams = {
-			elemPrefix: formElemPrefix,
-			tableID: tableID,
-			defaultFilterRules: formInfo.properties.defaultFilterRules,
-			initDone: function () {},
-			updateFilterRules: function (updatedFilterRules) {
-				var setDefaultFiltersParams = {
-					formID: formID,
-					filterRules: updatedFilterRules
-				}
-				jsonAPIRequest("frm/setDefaultFilterRules",setDefaultFiltersParams,function(updatedForm) {
-					console.log(" Default filters updated")
-				}) // set record's number field value
 				
-			}
-			
-		}
-		initFilterPropertyPanel(filterPropertyPanelParams)
-		
-		
-		
 	})
 }
