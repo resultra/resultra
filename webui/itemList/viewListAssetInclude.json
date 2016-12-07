@@ -1,13 +1,13 @@
 {
-	"subDirs":["../../generic",
-		"../../common",
-		"../common/timeline",
-			"../components"],
+	"subDirs":["../generic",
+		"../common",
+		"../form/common/timeline",
+			"../form/components"],
 	"cssFiles": ["editRecord.css","viewList.css"],
 	"jsFiles": ["recordSet.js","viewList.js"],
 	"htmlFiles":["viewList.html"],
 	"imageFiles":[],
-	"minCSSFile":"form/view/viewForm.min.css",
-	"minJSFile": "form/view/viewForm.min.js",
+	"minCSSFile":"itemList/viewList.min.css",
+	"minJSFile": "itemList/viewList.min.js",
 	"injectPlaceholderName":"viewListAssets"
 }

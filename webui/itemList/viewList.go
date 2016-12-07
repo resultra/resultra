@@ -1,4 +1,4 @@
-package view
+package itemList
 
 import (
 	"github.com/gorilla/mux"
@@ -21,7 +21,7 @@ import (
 var viewListTemplates *template.Template
 
 func init() {
-	baseTemplateFiles := []string{"static/form/view/viewList.html"}
+	baseTemplateFiles := []string{"static/itemList/viewList.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
