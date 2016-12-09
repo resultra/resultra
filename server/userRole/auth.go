@@ -29,46 +29,13 @@ func VerifyCurrUserIsDatabaseAdmin(req *http.Request, databaseID string) error {
 	return nil
 }
 
-func getTableDatabaseID(tableID string) (string, error) {
-
-	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(
-		`SELECT database_id 
-			FROM data_tables 
-			WHERE table_id=$1 LIMIT 1`,
-		tableID).Scan(&databaseID)
-	if getErr != nil {
-		return "", fmt.Errorf(
-			"getTableDatabaseID: can't get database for table = %v: err=%v",
-			tableID, getErr)
-	}
-
-	return databaseID, nil
-
-}
-
-func VerifyCurrUserIsDatabaseAdminForTable(req *http.Request, tableID string) error {
-
-	databaseID, err := getTableDatabaseID(tableID)
-	if err != nil {
-		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForTable: %v", err)
-	}
-
-	if err := VerifyCurrUserIsDatabaseAdmin(req, databaseID); err != nil {
-		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForTable: %v", err)
-	}
-
-	return nil
-}
-
 func getFormDatabaseID(formID string) (string, error) {
 
 	databaseID := ""
 	getErr := databaseWrapper.DBHandle().QueryRow(
 		`SELECT database_id 
-			FROM data_tables, forms 
-			WHERE forms.form_id=$1 
-				AND forms.table_id=data_tables.table_id LIMIT 1`,
+			FROM forms 
+			WHERE forms.form_id=$1 LIMIT 1`,
 		formID).Scan(&databaseID)
 	if getErr != nil {
 		return "", fmt.Errorf(

@@ -45,18 +45,17 @@ func (cellUpdateFieldValIndex CellUpdateFieldValueIndex) LatestNonCalcFieldValue
 	return &recFieldValues
 }
 
-func NewUpdateFieldValueIndex(parentTableID string, recordID string) (*CellUpdateFieldValueIndex, error) {
+func NewUpdateFieldValueIndex(parentDatabaseID string, recordID string) (*CellUpdateFieldValueIndex, error) {
 
-	recCellUpdates, getErr := GetRecordCellUpdates(parentTableID, recordID)
+	recCellUpdates, getErr := GetRecordCellUpdates(parentDatabaseID, recordID)
 	if getErr != nil {
 		return nil, fmt.Errorf("NewFieldValueIndex: failure retrieving cell updates for record = %v: error = %v",
 			recordID, getErr)
 	}
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentTableID: parentTableID})
+	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentDatabaseID: parentDatabaseID})
 	if indexErr != nil {
-		return nil, fmt.Errorf("NewUpdateFieldValueIndex: Unable to retrieve fields list for table: tableID=%v, error=%v ",
-			parentTableID, indexErr)
+		return nil, indexErr
 	}
 
 	// Populate the index with all the updates for the given recordID, broken down by FieldID.
@@ -65,16 +64,12 @@ func NewUpdateFieldValueIndex(parentTableID string, recordID string) (*CellUpdat
 
 		fieldInfo, fieldErr := fieldRefIndex.GetFieldRefByID(currUpdate.FieldID)
 		if fieldErr != nil {
-			return nil, fmt.Errorf(
-				"NewUpdateFieldValueIndex: Unable to retrieve field information for field ID = %v: tableID=%v: error=%v ",
-				currUpdate.FieldID, parentTableID, fieldErr)
+			return nil, fieldErr
 		}
 
 		decodedCellVal, decodeErr := DecodeCellValue(fieldInfo.Type, currUpdate.CellValue)
 		if decodeErr != nil {
-			return nil, fmt.Errorf(
-				"NewUpdateFieldValueIndex: Unable to cell value for field ID = %v: tableID=%v: error=%v ",
-				currUpdate.FieldID, parentTableID, decodeErr)
+			return nil, decodeErr
 
 		}
 

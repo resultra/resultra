@@ -32,7 +32,7 @@ func ValidateComponentLink(compLink ComponentLink, fieldTypeValidationFunc Field
 	}
 
 	if compLink.LinkedValType == LinkedValTypeField {
-		field, fieldErr := field.GetFieldWithoutTableID(compLink.FieldID)
+		field, fieldErr := field.GetField(compLink.FieldID)
 		if fieldErr != nil {
 			return fmt.Errorf("verifyComponentLink: Can't get field with field ID = '%v': datastore error=%v",
 				compLink.FieldID, fieldErr)

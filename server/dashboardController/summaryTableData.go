@@ -3,6 +3,7 @@ package dashboardController
 import (
 	"fmt"
 	"resultra/datasheet/server/common/recordSortDataModel"
+	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/dashboard/components/summaryTable"
 	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/recordReadController"
@@ -16,11 +17,14 @@ type SummaryTableData struct {
 
 func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable, filterRules []recordFilter.RecordFilterRule) (*SummaryTableData, error) {
 
-	tableID := summaryTable.Properties.DataSrcTableID
+	parentDashboard, err := dashboard.GetDashboard(summaryTable.ParentDashboardID)
+	if err != nil {
+		return nil, fmt.Errorf("getOneSummaryTableData: %v", err)
+	}
 
 	sortRules := []recordSortDataModel.RecordSortRule{}
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
-		TableID:     tableID,
+		DatabaseID:  parentDashboard.ParentDatabaseID,
 		FilterRules: filterRules,
 		SortRules:   sortRules}
 	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(getRecordParams)
@@ -28,7 +32,7 @@ func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable, filterRules
 		return nil, fmt.Errorf("getOneSummaryTableData: Error retrieving records for summary table: %v", getRecErr)
 	}
 
-	valGroupingResult, groupingErr := groupRecords(summaryTable.Properties.RowGroupingVals, tableID, recordRefs)
+	valGroupingResult, groupingErr := groupRecords(summaryTable.Properties.RowGroupingVals, recordRefs)
 	if groupingErr != nil {
 		return nil, fmt.Errorf("getOneSummaryTableData: Error grouping records for summary table: %v", groupingErr)
 	}

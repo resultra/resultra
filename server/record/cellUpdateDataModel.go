@@ -23,14 +23,14 @@ func newDefaultCellUpdateProperties() CellUpdateProperties {
 }
 
 type CellUpdate struct {
-	UpdateID        string
-	ParentTableID   string
-	RecordID        string
-	FieldID         string
-	UserID          string
-	UpdateTimeStamp time.Time
-	CellValue       string               // Value encoded as JSON
-	Properties      CellUpdateProperties // Properties encoded as JSON
+	UpdateID         string
+	ParentDatabaseID string
+	RecordID         string
+	FieldID          string
+	UserID           string
+	UpdateTimeStamp  time.Time
+	CellValue        string               // Value encoded as JSON
+	Properties       CellUpdateProperties // Properties encoded as JSON
 }
 
 func SaveCellUpdate(cellUpdate CellUpdate) error {
@@ -41,11 +41,11 @@ func SaveCellUpdate(cellUpdate CellUpdate) error {
 	}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO cell_updates (update_id, user_id, table_id, record_id, field_id,update_timestamp_utc,value,properties) 
+		`INSERT INTO cell_updates (update_id, user_id, database_id, record_id, field_id,update_timestamp_utc,value,properties) 
 			 VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
 		cellUpdate.UpdateID,
 		cellUpdate.UserID,
-		cellUpdate.ParentTableID,
+		cellUpdate.ParentDatabaseID,
 		cellUpdate.RecordID,
 		cellUpdate.FieldID,
 		cellUpdate.UpdateTimeStamp,
@@ -58,13 +58,13 @@ func SaveCellUpdate(cellUpdate CellUpdate) error {
 }
 
 // GetCellUpdates retrieves a list of cell updates for all the fields in the given record.
-func GetRecordCellUpdates(parentTableID string, recordID string) ([]CellUpdate, error) {
+func GetRecordCellUpdates(parentDatabaseID string, recordID string) ([]CellUpdate, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT update_id, user_id, table_id, record_id, field_id, update_timestamp_utc, value,properties
+		`SELECT update_id, user_id, database_id, record_id, field_id, update_timestamp_utc, value,properties
 			FROM cell_updates
-			WHERE table_id=$1 and record_id=$2`,
-		parentTableID, recordID)
+			WHERE database_id=$1 and record_id=$2`,
+		parentDatabaseID, recordID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRecordCellUpdates: Failure querying database: %v", queryErr)
 	}
@@ -75,7 +75,7 @@ func GetRecordCellUpdates(parentTableID string, recordID string) ([]CellUpdate, 
 		if scanErr := rows.Scan(
 			&currCellUpdate.UpdateID,
 			&currCellUpdate.UserID,
-			&currCellUpdate.ParentTableID,
+			&currCellUpdate.ParentDatabaseID,
 			&currCellUpdate.RecordID,
 			&currCellUpdate.FieldID,
 			&currCellUpdate.UpdateTimeStamp,
@@ -97,13 +97,13 @@ func GetRecordCellUpdates(parentTableID string, recordID string) ([]CellUpdate, 
 }
 
 // GetCellUpdates retrieves a list of cell updates for all the fields in the given record.
-func GetRecordFieldCellUpdates(parentTableID string, recordID string, fieldID string) ([]CellUpdate, error) {
+func GetRecordFieldCellUpdates(recordID string, fieldID string) ([]CellUpdate, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT update_id,user_id,table_id, record_id,field_id, update_timestamp_utc, value,properties
+		`SELECT update_id,user_id,database_id, record_id,field_id, update_timestamp_utc, value,properties
 			FROM cell_updates
-			WHERE table_id=$1 and record_id=$2 and field_id=$3`,
-		parentTableID, recordID, fieldID)
+			WHERE record_id=$2 and field_id=$3`,
+		recordID, fieldID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRecordCellUpdates: Failure querying database: %v", queryErr)
 	}
@@ -114,7 +114,7 @@ func GetRecordFieldCellUpdates(parentTableID string, recordID string, fieldID st
 		if scanErr := rows.Scan(
 			&currCellUpdate.UpdateID,
 			&currCellUpdate.UserID,
-			&currCellUpdate.ParentTableID,
+			&currCellUpdate.ParentDatabaseID,
 			&currCellUpdate.RecordID,
 			&currCellUpdate.FieldID,
 			&currCellUpdate.UpdateTimeStamp,

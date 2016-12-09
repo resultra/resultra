@@ -35,8 +35,8 @@ func newListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForTable(
-		r, params.ParentTableID); verifyErr != nil {
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+		r, params.ParentDatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
@@ -81,7 +81,7 @@ func getItemListListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if listList, err := getDatabaseItemLists(params.DatabaseID); err != nil {
+	if listList, err := getAllItemLists(params.DatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, listList)

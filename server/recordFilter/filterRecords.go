@@ -20,7 +20,7 @@ func createFilterRuleContexts(filterRules []RecordFilterRule) ([]filterRuleConte
 	contexts := []filterRuleContext{}
 
 	for _, currFilterRule := range filterRules {
-		ruleField, fieldErr := field.GetFieldWithoutTableID(currFilterRule.FieldID)
+		ruleField, fieldErr := field.GetField(currFilterRule.FieldID)
 		if fieldErr != nil {
 			return nil, fmt.Errorf("createFilterRuleContexts: Can't get field for filter rule = '%v': datastore error=%v",
 				currFilterRule.FieldID, fieldErr)

@@ -12,37 +12,33 @@ class TestDashboard(unittest.TestCase,TestHelperMixin):
     def setUp(self):
         self.createTestSession()
         self.databaseID = self.newDatabase('TestRecordFilter: Test Database')
-        self.tableID = self.newTable(self.databaseID,"TestRecordFilter: Test Table")
-        self.timeFieldID = self.newTimeField(self.tableID,"TestRecordFilter - Time Field","TimeField")
-        self.numberFieldID = self.newNumberField(self.tableID,"TestRecordFilter - Number Field","NumberField") 
-        self.textFieldID = self.newTextField(self.tableID,"TestRecordFilter - Text Field","TextField") 
+        self.timeFieldID = self.newTimeField(self.databaseID,"TestRecordFilter - Time Field","TimeField")
+        self.numberFieldID = self.newNumberField(self.databaseID,"TestRecordFilter - Number Field","NumberField") 
+        self.textFieldID = self.newTextField(self.databaseID,"TestRecordFilter - Text Field","TextField") 
     
     def testSimpleDashboard(self):      
         dashboardParams = {'databaseID':self.databaseID,'name':'My Dashboard'}
         jsonResp = self.apiRequest('dashboard/new',dashboardParams)
         dashboardID = jsonResp[u'dashboardID']
         
-        recordID1 = self.newRecord(self.tableID)
-        recordID2 = self.newRecord(self.tableID)
+        recordID1 = self.newRecord(self.databaseID)
+        recordID2 = self.newRecord(self.databaseID)
                 
-        self.setTextRecordValue(self.tableID,recordID1,self.textFieldID,"hello world")     
-        self.setNumberRecordValue(self.tableID,recordID1,self.numberFieldID,25.2)
+        self.setTextRecordValue(self.databaseID,recordID1,self.textFieldID,"hello world")     
+        self.setNumberRecordValue(self.databaseID,recordID1,self.numberFieldID,25.2)
         
-        self.setTextRecordValue(self.tableID,recordID2,self.textFieldID,"Testing 1,2,3")     
-        self.setNumberRecordValue(self.tableID,recordID2,self.numberFieldID,42.5)
+        self.setTextRecordValue(self.databaseID,recordID2,self.textFieldID,"Testing 1,2,3")     
+        self.setNumberRecordValue(self.databaseID,recordID2,self.numberFieldID,42.5)
         
         
-        barChartParams = {'dataSrcTableID':self.tableID,
-            'parentDashboardID':dashboardID,
+        barChartParams = {'parentDashboardID':dashboardID,
             'xAxisVals': {
-                'fieldParentTableID':self.tableID,
                 'fieldID': self.numberFieldID,
                 'groupValsBy':"none",
                 'groupByValBucketWidth':0
             },
             'xAxisSortValues':"asc",
             'yAxisVals': {
-                'fieldParentTableID':self.tableID,
                  'fieldID':self.textFieldID,
                 'summarizeValsWith':"count"
             },

@@ -21,32 +21,29 @@ class populateSimpleDB(unittest.TestCase,TestHelperMixin):
         self.databaseID = jsonResp[u'databaseID']
         print "populateSimpleDB: Database ID: ",self.databaseID
         
-        jsonResp = self.apiRequest('table/new',{'databaseID': self.databaseID, 'name': 'Test Table'})
-        self.tableID = jsonResp[u'tableID']
-        print "populateSimpleDB: Table ID: ",self.tableID
-        
-        fieldParams = {'parentTableID':self.tableID,'name':'Quantity','type':'number','refName':'qty'}
+      
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'Quantity','type':'number','refName':'qty'}
         jsonResp = self.apiRequest('field/new',fieldParams)
         self.qtyFieldID = jsonResp[u'fieldID']
 
-        fieldParams = {'parentTableID':self.tableID,'name':'Price','type':'number','refName':'price'}
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'Price','type':'number','refName':'price'}
         jsonResp = self.apiRequest('field/new',fieldParams)
         self.priceFieldID = jsonResp[u'fieldID']
         
-        fieldParams = {'parentTableID':self.tableID,'name':'Good Price?','type':'bool','refName':'goodPrice'}
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'Good Price?','type':'bool','refName':'goodPrice'}
         jsonResp = self.apiRequest('field/new',fieldParams)
         self.goodPriceField = jsonResp[u'fieldID']
         
-        self.purchaseDateField = self.newTimeField(self.tableID,"Purchase Date","PurchDate")
-        self.purchaseCommentsField = self.newLongTextField(self.tableID,"Purchase Comments","PurchComment")
-        self.entryChartField = self.newFileField(self.tableID,"Entry Chart","EntryChart")
+        self.purchaseDateField = self.newTimeField(self.databaseID,"Purchase Date","PurchDate")
+        self.purchaseCommentsField = self.newLongTextField(self.databaseID,"Purchase Comments","PurchComment")
+        self.entryChartField = self.newFileField(self.databaseID,"Entry Chart","EntryChart")
 
-        fieldParams = {'parentTableID':self.tableID,'name':'Total','type':'number',
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'Total','type':'number',
                     'refName':'total','formulaText':'42.5'}
         jsonResp = self.apiRequest('calcField/new',fieldParams)
         self.totalFieldID = jsonResp[u'fieldID']
         
-        newFormParams = { 'parentTableID':self.tableID,'name':'Purchases'}
+        newFormParams = { 'parentDatabaseID':self.databaseID,'name':'Purchases'}
         jsonResp = self.apiRequest('frm/new',newFormParams)
         self.formID = jsonResp[u'formID']
         print "populateSimpleDB: Form ID: ", self.formID
@@ -71,12 +68,7 @@ class populateSimpleDB(unittest.TestCase,TestHelperMixin):
         # Completely sign out the current user. This will cause the attempt to create a new 
         # table to fail, since there won't be a signed in user with admin privileges.
         self.signoutCurrUser()
-        
-        with self.assertRaises(AssertionError):
-            jsonResp = self.apiRequest('table/new',{'databaseID': self.databaseID, 'name': 'Test Table'})
-            self.tableID = jsonResp[u'tableID']
-            print "testInvalidAdminCreateTable: Table ID: ",self.tableID
-                        
+                                
         with self.assertRaises(AssertionError):
             newDashboardParams = {'databaseID':self.databaseID,'name':'Summary'}
             jsonResp = self.apiRequest('dashboard/new',newDashboardParams)
@@ -87,10 +79,6 @@ class populateSimpleDB(unittest.TestCase,TestHelperMixin):
         # admin privileges. Try again to create a table while signed in as this user, and it should also fail.
         anotherUser = self.newTestUser()
         self.signinTestUser(anotherUser)      
-        with self.assertRaises(AssertionError):
-            jsonResp = self.apiRequest('table/new',{'databaseID': self.databaseID, 'name': 'Test Table'})
-            self.tableID = jsonResp[u'tableID']
-            print "testInvalidAdminCreateTable: Table ID: ",self.tableID
                   
         with self.assertRaises(AssertionError):
             newDashboardParams = {'databaseID':self.databaseID,'name':'Summary'}
@@ -102,11 +90,7 @@ class populateSimpleDB(unittest.TestCase,TestHelperMixin):
         # Sign out, then sign back in as the est user. Creation of the table should work now.
         self.signoutCurrUser()
         self.signinTestUser(adminUser)  
-            
-        jsonResp = self.apiRequest('table/new',{'databaseID': self.databaseID, 'name': 'Test Table'})
-        self.tableID = jsonResp[u'tableID']
-        print "testInvalidAdminCreateTable: Table ID: ",self.tableID
-        
+                    
         newDashboardParams = {'databaseID':self.databaseID,'name':'Summary'}
         jsonResp = self.apiRequest('dashboard/new',newDashboardParams)
         self.dashboardID = jsonResp[u'dashboardID']
@@ -120,22 +104,18 @@ class populateSimpleDB(unittest.TestCase,TestHelperMixin):
         jsonResp = self.apiRequest('database/new',{'name': 'Test Database'})
         self.databaseID = jsonResp[u'databaseID']
         print "populateSimpleDB: Database ID: ",self.databaseID
-         
-        jsonResp = self.apiRequest('table/new',{'databaseID': self.databaseID, 'name': 'Test Table'})
-        self.tableID = jsonResp[u'tableID']
-        print "populateSimpleDB: Table ID: ",self.tableID
-         
+                  
         # Completely sign out the current user. This will cause the attempt to create a new
         # table to fail, since there won't be a signed in user with admin privileges.
         self.signoutCurrUser()
          
         with self.assertRaises(AssertionError):
-            fieldParams = {'parentTableID':self.tableID,'name':'Quantity','type':'number','refName':'qty'}
+            fieldParams = {'parentDatabaseID':self.databaseID,'name':'Quantity','type':'number','refName':'qty'}
             jsonResp = self.apiRequest('field/new',fieldParams)
             self.qtyFieldID = jsonResp[u'fieldID']
             
         with self.assertRaises(AssertionError):
-            newFormParams = { 'parentTableID':self.tableID,'name':'Purchases'}
+            newFormParams = { 'parentDatabaseID':self.databaseID,'name':'Purchases'}
             jsonResp = self.apiRequest('frm/new',newFormParams)
             self.formID = jsonResp[u'formID']
             print "populateSimpleDB: Form ID: ", self.formID
@@ -146,12 +126,12 @@ class populateSimpleDB(unittest.TestCase,TestHelperMixin):
         self.signinTestUser(anotherUser)
          
         with self.assertRaises(AssertionError):
-            fieldParams = {'parentTableID':self.tableID,'name':'Quantity','type':'number','refName':'qty'}
+            fieldParams = {'parentDatabaseID':self.databaseID,'name':'Quantity','type':'number','refName':'qty'}
             jsonResp = self.apiRequest('field/new',fieldParams)
             self.qtyFieldID = jsonResp[u'fieldID']
             
         with self.assertRaises(AssertionError):
-            newFormParams = { 'parentTableID':self.tableID,'name':'Purchases'}
+            newFormParams = { 'parentDatabaseID':self.databaseID,'name':'Purchases'}
             jsonResp = self.apiRequest('frm/new',newFormParams)
             self.formID = jsonResp[u'formID']
             print "populateSimpleDB: Form ID: ", self.formID

@@ -38,8 +38,8 @@ func newFormAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForTable(
-		r, params.ParentTableID); verifyErr != nil {
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+		r, params.ParentDatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
@@ -80,7 +80,7 @@ func getFormListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if forms, err := getAllForms(params.ParentTableID); err != nil {
+	if forms, err := getAllForms(params.ParentDatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, forms)

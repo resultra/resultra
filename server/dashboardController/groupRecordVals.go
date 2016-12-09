@@ -21,10 +21,10 @@ type ValGroupingResult struct {
 	GroupingLabel string
 }
 
-func groupRecords(valGrouping values.ValGrouping, parentFieldID string,
+func groupRecords(valGrouping values.ValGrouping,
 	recValResults []recordValue.RecordValueResults) (*ValGroupingResult, error) {
 
-	groupingField, fieldErr := field.GetFieldWithoutTableID(valGrouping.GroupValsByFieldID)
+	groupingField, fieldErr := field.GetField(valGrouping.GroupValsByFieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("groupRecords: Can't get field to group records: error = %v", fieldErr)
 	}

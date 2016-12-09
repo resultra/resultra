@@ -10,7 +10,7 @@ type RecordUpdater interface {
 	fieldType() string
 	fieldID() string
 	recordID() string
-	parentTableID() string
+	parentDatabaseID() string
 	generateCellValue() (string, error)
 	getUpdateProperties() CellUpdateProperties
 }
@@ -19,9 +19,9 @@ type RecordUpdater interface {
 // part of the RecorddUpdater interface. This struct should be embedded in other structs
 // used to update values of specific types.
 type RecordUpdateHeader struct {
-	ParentTableID string `json:"parentTableID"`
-	RecordID      string `json:"recordID"`
-	FieldID       string `json:"fieldID"`
+	ParentDatabaseID string `json:"parentDatabaseID"`
+	RecordID         string `json:"recordID"`
+	FieldID          string `json:"fieldID"`
 }
 
 func (recUpdateHeader RecordUpdateHeader) fieldID() string {
@@ -32,8 +32,8 @@ func (recUpdateHeader RecordUpdateHeader) recordID() string {
 	return recUpdateHeader.RecordID
 }
 
-func (recUpdateHeader RecordUpdateHeader) parentTableID() string {
-	return recUpdateHeader.ParentTableID
+func (recUpdateHeader RecordUpdateHeader) parentDatabaseID() string {
+	return recUpdateHeader.ParentDatabaseID
 }
 
 // updateRecordValue implements a generic algorithm (strategy design pattern) which wrapp the updating of records.
@@ -44,13 +44,13 @@ func UpdateRecordValue(currUserID string, recUpdater RecordUpdater) (*Record, er
 
 	recordID := recUpdater.recordID()
 
-	if fieldValidateErr := ValidateFieldForRecordValue(recUpdater.parentTableID(),
+	if fieldValidateErr := ValidateFieldForRecordValue(
 		recUpdater.fieldID(), recUpdater.fieldType(), false); fieldValidateErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Can't set record value:"+
 			" Error validating record's field for update: %v", fieldValidateErr)
 	}
 
-	recordForUpdate, getErr := GetRecord(recUpdater.parentTableID(), recordID)
+	recordForUpdate, getErr := GetRecord(recordID)
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Can't set value:"+
 			" Error retrieving existing record for update: err = %v", getErr)
@@ -68,14 +68,14 @@ func UpdateRecordValue(currUserID string, recUpdater RecordUpdater) (*Record, er
 	updateTimestamp := time.Now().UTC()
 
 	cellUpdate := CellUpdate{
-		UpdateID:        uniqueUpdateID,
-		UserID:          currUserID,
-		ParentTableID:   recUpdater.parentTableID(),
-		FieldID:         recUpdater.fieldID(),
-		RecordID:        recUpdater.recordID(),
-		CellValue:       cellValue,
-		UpdateTimeStamp: updateTimestamp,
-		Properties:      updateProps}
+		UpdateID:         uniqueUpdateID,
+		UserID:           currUserID,
+		ParentDatabaseID: recUpdater.parentDatabaseID(),
+		FieldID:          recUpdater.fieldID(),
+		RecordID:         recUpdater.recordID(),
+		CellValue:        cellValue,
+		UpdateTimeStamp:  updateTimestamp,
+		Properties:       updateProps}
 
 	if saveErr := SaveCellUpdate(cellUpdate); saveErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Error saving cell update: %v", saveErr)

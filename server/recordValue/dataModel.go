@@ -10,10 +10,10 @@ import (
 )
 
 type RecordValueResults struct {
-	ParentTableID   string                `json:"parentTableID"`
-	RecordID        string                `json:"recordID"`
-	FieldValues     record.RecFieldValues `json:"fieldValues"`
-	UpdateTimestamp time.Time             `json:"updateTimestamp"`
+	ParentDatabaseID string                `json:"parentDatabaseID"`
+	RecordID         string                `json:"recordID"`
+	FieldValues      record.RecFieldValues `json:"fieldValues"`
+	UpdateTimestamp  time.Time             `json:"updateTimestamp"`
 }
 
 func saveRecordValueResults(recValResults RecordValueResults) error {
@@ -26,25 +26,25 @@ func saveRecordValueResults(recValResults RecordValueResults) error {
 			recValResults.FieldValues, encodeErr)
 	}
 
-	if _, delPrevErr := databaseWrapper.DBHandle().Exec(`DELETE FROM record_val_results WHERE table_id=$1 and record_id=$2`,
-		recValResults.ParentTableID, recValResults.RecordID); delPrevErr != nil {
+	if _, delPrevErr := databaseWrapper.DBHandle().Exec(`DELETE FROM record_val_results WHERE database_id=$1 and record_id=$2`,
+		recValResults.ParentDatabaseID, recValResults.RecordID); delPrevErr != nil {
 		return fmt.Errorf("saveRecordValueResults: delete previous record failed: error = %v", delPrevErr)
 	}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO record_val_results 
-					(table_id, record_id, field_vals,update_timestamp_utc) 
+					(database_id, record_id, field_vals,update_timestamp_utc) 
 					VALUES ($1,$2,$3,$4)`,
-		recValResults.ParentTableID, recValResults.RecordID, encodedValues, time.Now().UTC()); insertErr != nil {
+		recValResults.ParentDatabaseID, recValResults.RecordID, encodedValues, time.Now().UTC()); insertErr != nil {
 		return fmt.Errorf("saveRecordValueResults: insert failed: error = %v", insertErr)
 	}
 
 	return nil
 }
 
-func GetAllRecordValueResults(parentTableID string) ([]RecordValueResults, error) {
+func GetAllRecordValueResults(parentDatabaseID string) ([]RecordValueResults, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT record_id,field_vals,update_timestamp_utc 
-		FROM record_val_results WHERE table_id = $1`, parentTableID)
+		FROM record_val_results WHERE database_id = $1`, parentDatabaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAllRecordValueResults: Failure querying database: %v", queryErr)
 	}
@@ -58,7 +58,7 @@ func GetAllRecordValueResults(parentTableID string) ([]RecordValueResults, error
 		if err := generic.DecodeJSONString(encodedFieldVals, &currValResults.FieldValues); err != nil {
 			return nil, fmt.Errorf("GetAllRecordValueResults: failure decoding field values: %v", err)
 		}
-		currValResults.ParentTableID = parentTableID
+		currValResults.ParentDatabaseID = parentDatabaseID
 		recValResults = append(recValResults, currValResults)
 	}
 
@@ -67,20 +67,20 @@ func GetAllRecordValueResults(parentTableID string) ([]RecordValueResults, error
 }
 
 type GetRecordValResultParams struct {
-	ParentTableID string `json:"parentTableID"`
-	RecordID      string `json:"recordID"`
+	ParentDatabaseID string `json:"parentDatabaseID"`
+	RecordID         string `json:"recordID"`
 }
 
 func getRecordValueResults(params GetRecordValResultParams) (*RecordValueResults, error) {
 
 	var valResults RecordValueResults
-	valResults.ParentTableID = params.ParentTableID
+	valResults.ParentDatabaseID = params.ParentDatabaseID
 	valResults.RecordID = params.RecordID
 	encodedFieldVals := ""
 	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT field_vals,update_timestamp_utc 
 		FROM record_val_results 
-		WHERE table_id=$1 and record_id=$2 LIMIT 1`,
-		params.ParentTableID, params.RecordID).Scan(&encodedFieldVals, &valResults.UpdateTimestamp)
+		WHERE database_id=$1 and record_id=$2 LIMIT 1`,
+		params.ParentDatabaseID, params.RecordID).Scan(&encodedFieldVals, &valResults.UpdateTimestamp)
 	if getErr != nil {
 		return nil, fmt.Errorf("getRecordValueResults: Unabled to get record results: datastore err=%v", getErr)
 	}

@@ -64,51 +64,47 @@ class TestHelperMixin:
         jsonResp = self.apiRequest('database/new',{'name': databaseName})
         databaseID = jsonResp[u'databaseID']
         return databaseID
-        
-    def newTable(self,databaseID,tableName):
-        jsonResp = self.apiRequest('table/new',{'databaseID': databaseID, 'name': tableName})
-        tableID = jsonResp[u'tableID']
-        return tableID
-        
-    def newTextField(self,tableID,fieldName,refName):
-        fieldParams = {'parentTableID':tableID,'name':fieldName,'type':'text','refName':refName}
+                
+    def newTextField(self,databaseID,fieldName,refName):
+        fieldParams = {'parentDatabaseID':databaseID,'name':fieldName,'type':'text','refName':refName}
         jsonResp = self.apiRequest('field/new',fieldParams)
         fieldID = jsonResp[u'fieldID']
         return fieldID
             
-    def newNumberField(self,tableID,fieldName,refName):
-        fieldParams = {'parentTableID':tableID,'name':fieldName,'type':'number','refName':refName}
+    def newNumberField(self,databaseID,fieldName,refName):
+        fieldParams = {'parentDatabaseID':databaseID,'name':fieldName,'type':'number','refName':refName}
         jsonResp = self.apiRequest('field/new',fieldParams)
         fieldID = jsonResp[u'fieldID']
         return fieldID
         
         
-    def newTimeField(self,tableID,fieldName,refName):
-        fieldParams = {'parentTableID':tableID,'name':fieldName,'type':'time','refName':refName}
+    def newTimeField(self,databaseID,fieldName,refName):
+        fieldParams = {'parentDatabaseID':databaseID,'name':fieldName,'type':'time','refName':refName}
         jsonResp = self.apiRequest('field/new',fieldParams)
         fieldID = jsonResp[u'fieldID']
         return fieldID
 
-    def newLongTextField(self,tableID,fieldName,refName):
-        fieldParams = {'parentTableID':tableID,'name':fieldName,'type':'longText','refName':refName}
+    def newLongTextField(self,databaseID,fieldName,refName):
+        fieldParams = {'parentDatabaseID':databaseID,'name':fieldName,'type':'longText','refName':refName}
         jsonResp = self.apiRequest('field/new',fieldParams)
         fieldID = jsonResp[u'fieldID']
         return fieldID
  
-    def newFileField(self,tableID,fieldName,refName):
-        fieldParams = {'parentTableID':tableID,'name':fieldName,'type':'file','refName':refName}
+    def newFileField(self,databaseID,fieldName,refName):
+        fieldParams = {'parentDatabaseID':databaseID,'name':fieldName,'type':'file','refName':refName}
         jsonResp = self.apiRequest('field/new',fieldParams)
         fieldID = jsonResp[u'fieldID']
         return fieldID
  
     
     def newRecord(self,tableID):
-        jsonResp = self.apiRequest('recordUpdate/newRecord',{'parentTableID':tableID})
+        jsonResp = self.apiRequest('recordUpdate/newRecord',{'parentDatabaseID':tableID})
         recordID = jsonResp[u'recordID']
         return recordID
     
-    def getRecord(self,parentTableID,recordID):
-        recordRef = self.apiRequest('recordValue/getRecordValueResults',{'parentTableID':parentTableID,'recordID':recordID})
+    def getRecord(self,parentDatabaseID,recordID):
+        recordRef = self.apiRequest('recordValue/getRecordValueResults',
+                {'parentDatabaseID':parentDatabaseID,'recordID':recordID})
         return recordRef
         
     def getRecordFieldVal(self,recordRef,fieldID):
@@ -116,19 +112,19 @@ class TestHelperMixin:
         value = fieldValues[fieldID]
         return value   
            
-    def setNumberRecordValue(self,parentTableID,recordID,fieldID,numberVal):
-        recordRef = self.apiRequest('recordUpdate/setNumberFieldValue',{'parentTableID':parentTableID,'recordID':recordID,'fieldID':fieldID,'value':numberVal})
+    def setNumberRecordValue(self,parentDatabaseID,recordID,fieldID,numberVal):
+        recordRef = self.apiRequest('recordUpdate/setNumberFieldValue',{'parentDatabaseID':parentDatabaseID,'recordID':recordID,'fieldID':fieldID,'value':numberVal})
         return recordRef
 
-    def setTextRecordValue(self,parentTableID,recordID,fieldID,textVal):
-        recordRef = self.apiRequest('recordUpdate/setTextFieldValue',{'parentTableID':parentTableID,'recordID':recordID,'fieldID':fieldID,'value':textVal})
+    def setTextRecordValue(self,parentDatabaseID,recordID,fieldID,textVal):
+        recordRef = self.apiRequest('recordUpdate/setTextFieldValue',{'parentDatabaseID':parentDatabaseID,'recordID':recordID,'fieldID':fieldID,'value':textVal})
         return recordRef
         
-    def setTimeRecordValue(self,parentTableID, recordID,fieldID,timeVal):
-        recordRef = self.apiRequest('recordUpdate/setTimeFieldValue',{'parentTableID':parentTableID,'recordID':recordID,'fieldID':fieldID,'value':timeVal})
+    def setTimeRecordValue(self,parentDatabaseID, recordID,fieldID,timeVal):
+        recordRef = self.apiRequest('recordUpdate/setTimeFieldValue',{'parentDatabaseID':parentDatabaseID,'recordID':recordID,'fieldID':fieldID,'value':timeVal})
         return recordRef
  
-    def setLongTextRecordValue(self,parentTableID,recordID,fieldID,textVal):
-        recordRef = self.apiRequest('recordUpdate/setLongTextFieldValue',{'parentTableID':parentTableID,'recordID':recordID,'fieldID':fieldID,'value':textVal})
+    def setLongTextRecordValue(self,parentDatabaseID,recordID,fieldID,textVal):
+        recordRef = self.apiRequest('recordUpdate/setLongTextFieldValue',{'parentDatabaseID':parentDatabaseID,'recordID':recordID,'fieldID':fieldID,'value':textVal})
         return recordRef
     

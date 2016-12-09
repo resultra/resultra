@@ -9,7 +9,7 @@ import (
 )
 
 type GetFilteredSortedRecordsParams struct {
-	TableID     string                               `json:"tableID"`
+	DatabaseID  string                               `json:"databaseID"`
 	FilterRules []recordFilter.RecordFilterRule      `json:"filterRules"`
 	SortRules   []recordSortDataModel.RecordSortRule `json:"sortRules"`
 }
@@ -18,7 +18,7 @@ func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordVa
 
 	// The code below retrieve *all* the mapped record values. A more scalable approach would be to filter the
 	// record values in batches, then combine and sort them.
-	unfilteredRecordValues, getRecordErr := recordValue.GetAllRecordValueResults(params.TableID)
+	unfilteredRecordValues, getRecordErr := recordValue.GetAllRecordValueResults(params.DatabaseID)
 	if getRecordErr != nil {
 		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving records: %v", getRecordErr)
 	}
@@ -28,7 +28,7 @@ func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordVa
 		return nil, fmt.Errorf("GetFilteredRecords: Error filtering records: %v", err)
 	}
 
-	if sortErr := recordSort.SortRecordValues(params.TableID, filteredRecords, params.SortRules); sortErr != nil {
+	if sortErr := recordSort.SortRecordValues(params.DatabaseID, filteredRecords, params.SortRules); sortErr != nil {
 		return nil, fmt.Errorf("GetFilteredSortedRecords: Error sorting records: %v", sortErr)
 	}
 

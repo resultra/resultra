@@ -9,14 +9,12 @@ import (
 	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/recordReadController"
 	"resultra/datasheet/server/recordUpdate"
-	"resultra/datasheet/server/table"
 	"resultra/datasheet/server/timelineController"
 )
 
 // Dummy variables to force inclusion of the packages (and not trigger an error from the Golang compiler).
 // This is needed since these packages are essentially plug-ins which register their own HTTP handlers upon startup.
 var dummyUnusedDBParams = database.NewDatabaseParams{}
-var dummyUnusedTableParams = table.NewTableParams{}
 var dummyRecordUpdateParams = recordUpdate.DummyStructForInclude{}
 var dummyRecordVals = recordReadController.DummyStructForInclude{}
 var dummyDashboardControllerVals = dashboardController.DummyStructForInclude{}

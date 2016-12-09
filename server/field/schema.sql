@@ -1,6 +1,6 @@
 CREATE TABLE fields ( 
 	field_id text PRIMARY KEY, 
-	table_id text REFERENCES data_tables (table_id), 
+	database_id text REFERENCES databases (database_id), 
 	name text NOT NULL, 
 	type text NOT NULL, 
 	ref_name text NOT NULL, 

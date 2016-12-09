@@ -61,7 +61,6 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		Title:      "Design Form",
 		DatabaseID: formInfo.DatabaseID,
 		FormID:     formInfo.FormID,
-		TableID:    formInfo.TableID,
 		FormName:   formInfo.FormName,
 
 		CheckboxParams:      checkBox.DesignTemplateParams,

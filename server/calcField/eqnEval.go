@@ -6,13 +6,12 @@ import (
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/record"
-	"resultra/datasheet/server/table"
 )
 
 type EqnEvalContext struct {
 	DefinedFuncs FuncNameFuncInfoMap
 
-	ParentTableID string
+	ParentDatabaseID string
 
 	// Set of field values into which the results will be calculated.
 	// This is expected to be pre-populated with values from non-calculated fields.
@@ -28,7 +27,7 @@ func getNumberRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*Equ
 	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
 	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
 	allowCalcField := true
-	if fieldValidateErr := record.ValidateFieldForRecordValue(evalContext.ParentTableID, fieldID,
+	if fieldValidateErr := record.ValidateFieldForRecordValue(fieldID,
 		field.FieldTypeNumber, allowCalcField); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't get value from record with fieldID = %v: "+
 			"Can't validate field with value type: validation error = %v", fieldID, fieldValidateErr)
@@ -58,8 +57,7 @@ func getTextRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*Equat
 	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
 	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
 	allowCalcField := true
-	if fieldValidateErr := record.ValidateFieldForRecordValue(evalContext.ParentTableID,
-		fieldID, field.FieldTypeText, allowCalcField); fieldValidateErr != nil {
+	if fieldValidateErr := record.ValidateFieldForRecordValue(fieldID, field.FieldTypeText, allowCalcField); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't get value from record with fieldID = %v: "+
 			"Can't validate field with value type: validation error = %v", fieldID, fieldValidateErr)
 	}
@@ -186,7 +184,7 @@ func (equation EquationNode) EvalEqn(evalContext *EqnEvalContext) (*EquationResu
 		// TODO - Once the Field type has a parent, don't use an individual database
 		// lookup for each field (database only has strong consistency when
 		// entities have a parent.
-		field, err := field.GetField(evalContext.ParentTableID, equation.FieldID)
+		field, err := field.GetField(equation.FieldID)
 		if err != nil {
 			return nil, fmt.Errorf("EvalEqn: failure retrieving referenced field: %+v", err)
 		} else {
@@ -285,30 +283,26 @@ func updateOneCalcFieldValue(evalContext *EqnEvalContext, evalField field.Field)
 // UpdateCalcFieldValues is (currently) the top-most entry point into the calculated field
 // equation evaluation functionality. This is called after record updates (see recordUpdate package)
 // to refresh calculated values.
-func UpdateCalcFieldValues(parentTableID string, resultFieldVals *record.RecFieldValues) error {
+func UpdateCalcFieldValues(parentDatabaseID string, resultFieldVals *record.RecFieldValues) error {
 
-	databaseID, getDatabaseErr := table.GetTableDatabaseID(parentTableID)
-	if getDatabaseErr != nil {
-		return fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve database for table: error =%v", getDatabaseErr)
-	}
-	globalVals, globalValErr := global.GetGlobalValues(global.GetGlobalValuesParams{ParentDatabaseID: databaseID})
+	globalVals, globalValErr := global.GetGlobalValues(global.GetGlobalValuesParams{ParentDatabaseID: parentDatabaseID})
 	if globalValErr != nil {
 		return fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve global values: error =%v", globalValErr)
 	}
 
-	globalIndex, globalIndexErr := global.GetIndexedGlobals(databaseID)
+	globalIndex, globalIndexErr := global.GetIndexedGlobals(parentDatabaseID)
 	if globalIndexErr != nil {
 		return fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve indexed globals: error =%v", globalIndexErr)
 	}
 
 	eqnEvalContext := EqnEvalContext{
-		ParentTableID:   parentTableID,
-		ResultFieldVals: resultFieldVals,
-		DefinedFuncs:    CalcFieldDefinedFuncs,
-		GlobalVals:      *globalVals,
-		GlobalIndex:     globalIndex}
+		ParentDatabaseID: parentDatabaseID,
+		ResultFieldVals:  resultFieldVals,
+		DefinedFuncs:     CalcFieldDefinedFuncs,
+		GlobalVals:       *globalVals,
+		GlobalIndex:      globalIndex}
 
-	fields, getErr := field.GetAllFields(field.GetFieldListParams{ParentTableID: parentTableID})
+	fields, getErr := field.GetAllFields(field.GetFieldListParams{ParentDatabaseID: parentDatabaseID})
 	if getErr != nil {
 		return fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve fields from datastore: datastore error =%v", getErr)
 	}

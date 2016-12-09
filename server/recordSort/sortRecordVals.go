@@ -7,7 +7,7 @@ import (
 	"resultra/datasheet/server/recordValue"
 )
 
-func SortRecordValues(parentTableID string,
+func SortRecordValues(parentDatabaseID string,
 	recordVals []recordValue.RecordValueResults,
 	sortRules []recordSortDataModel.RecordSortRule) error {
 
@@ -15,10 +15,9 @@ func SortRecordValues(parentTableID string,
 		return nil // no sorting necessary
 	}
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentTableID: parentTableID})
+	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentDatabaseID: parentDatabaseID})
 	if indexErr != nil {
-		return fmt.Errorf("NewUpdateFieldValueIndex: Unable to retrieve fields list for table: tableID=%v, error=%v ",
-			parentTableID, indexErr)
+		return fmt.Errorf("SortRecordValues: %v", indexErr)
 	}
 
 	sortFuncs := []ByRecordValueLessFunc{}

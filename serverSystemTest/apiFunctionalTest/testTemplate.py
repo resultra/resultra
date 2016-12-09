@@ -20,26 +20,22 @@ class CopyToTemplate(unittest.TestCase,TestHelperMixin):
         jsonResp = self.apiRequest('database/new',{'name': 'Test Database'})
         self.databaseID = jsonResp[u'databaseID']
         print "testSimpleTemplate: Database ID: ",self.databaseID
-        
-        jsonResp = self.apiRequest('table/new',{'databaseID': self.databaseID, 'name': 'Test Table'})
-        self.tableID = jsonResp[u'tableID']
-        print "testSimpleTemplate: Table ID: ",self.tableID
-        
-        fieldParams = {'parentTableID':self.tableID,'name':'Quantity','type':'number','refName':'qty'}
+                
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'Quantity','type':'number','refName':'qty'}
         jsonResp = self.apiRequest('field/new',fieldParams)
         self.qtyFieldID = jsonResp[u'fieldID']
 
-        fieldParams = {'parentTableID':self.tableID,'name':'Price','type':'number','refName':'price'}
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'Price','type':'number','refName':'price'}
         jsonResp = self.apiRequest('field/new',fieldParams)
         self.priceFieldID = jsonResp[u'fieldID']
         
-        fieldParams = {'parentTableID':self.tableID,'name':'Good Price?','type':'bool','refName':'goodPrice'}
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'Good Price?','type':'bool','refName':'goodPrice'}
         jsonResp = self.apiRequest('field/new',fieldParams)
         self.goodPriceField = jsonResp[u'fieldID']
         
-        self.purchaseDateField = self.newTimeField(self.tableID,"Purchase Date","PurchDate")
-        self.purchaseCommentsField = self.newLongTextField(self.tableID,"Purchase Comments","PurchComment")
-        self.entryChartField = self.newFileField(self.tableID,"Entry Chart","EntryChart")
+        self.purchaseDateField = self.newTimeField(self.databaseID,"Purchase Date","PurchDate")
+        self.purchaseCommentsField = self.newLongTextField(self.databaseID,"Purchase Comments","PurchComment")
+        self.entryChartField = self.newFileField(self.databaseID,"Entry Chart","EntryChart")
         
         globalParams = {'parentDatabaseID':self.databaseID,
             'name':'Global Number','refName':'globalNum',
@@ -48,12 +44,12 @@ class CopyToTemplate(unittest.TestCase,TestHelperMixin):
         self.numberGlobal = jsonResp[u'globalID']
         
 
-        fieldParams = {'parentTableID':self.tableID,'name':'Total','type':'number',
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'Total','type':'number',
                     'refName':'total','formulaText':'42.5'}
         jsonResp = self.apiRequest('calcField/new',fieldParams)
         self.totalFieldID = jsonResp[u'fieldID']
         
-        newFormParams = { 'parentTableID':self.tableID,'name':'Purchases'}
+        newFormParams = { 'parentDatabaseID':self.databaseID,'name':'Purchases'}
         jsonResp = self.apiRequest('frm/new',newFormParams)
         self.formID = jsonResp[u'formID']
         print "testSimpleTemplate: Form ID: ", self.formID

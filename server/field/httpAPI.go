@@ -25,8 +25,8 @@ func newField(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForTable(
-		r, newFieldParams.ParentTableID); verifyErr != nil {
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+		r, newFieldParams.ParentDatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}

@@ -19,7 +19,7 @@ func newRecord(params record.NewRecordParams) (*recordValue.RecordValueResults, 
 	// calculated fields may also have fixed values which don't depend on any values being set
 	// in the record.
 	updateRecordValResult, mapErr := recordValue.MapOneRecordUpdatesToFieldValues(
-		newRecord.ParentTableID, newRecord.RecordID)
+		newRecord.ParentDatabaseID, newRecord.RecordID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(
 			"newRecord: Error mapping field values: err = %v", mapErr)

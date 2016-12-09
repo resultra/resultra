@@ -6,7 +6,6 @@ import (
 )
 
 type GetFieldValUrlParams struct {
-	ParentTableID string `json:"parentTableID"`
 	RecordID      string `json:"recordID"`
 	FieldID       string `json:"fieldID"`
 	CloudFileName string `json:"cloudFileName"`
@@ -25,12 +24,12 @@ func GetFileURL(cloudFileName string) string {
 
 func getFieldValUrl(params GetFieldValUrlParams) (*RecordFileFieldURLResponse, error) {
 
-	_, getErr := GetRecord(params.ParentTableID, params.RecordID)
+	_, getErr := GetRecord(params.RecordID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getFieldValUrl: Unabled to get record: id = %v: get err=%v", params.RecordID, getErr)
 	}
 
-	theField, fieldErr := field.GetField(params.ParentTableID, params.FieldID)
+	theField, fieldErr := field.GetField(params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("getFieldValUrl: Unabled to get field: id = %+v: get err=%v", params.FieldID, fieldErr)
 	}

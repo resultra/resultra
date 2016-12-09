@@ -3,6 +3,7 @@ package dashboardController
 import (
 	"fmt"
 	"resultra/datasheet/server/common/recordSortDataModel"
+	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/dashboard/components/barChart"
 	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/recordReadController"
@@ -24,12 +25,15 @@ type BarChartData struct {
 
 func getOneBarChartData(barChart *barChart.BarChart, filterRules []recordFilter.RecordFilterRule) (*BarChartData, error) {
 
-	tableID := barChart.Properties.DataSrcTableID
+	parentDashboard, err := dashboard.GetDashboard(barChart.ParentDashboardID)
+	if err != nil {
+		return nil, fmt.Errorf("getOneSummaryTableData: %v", err)
+	}
 
 	// TODO - Store the list of filters with the bar chart and include it in the query.
 	sortRules := []recordSortDataModel.RecordSortRule{}
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
-		TableID:     tableID,
+		DatabaseID:  parentDashboard.ParentDatabaseID,
 		FilterRules: filterRules,
 		SortRules:   sortRules}
 	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(getRecordParams)
@@ -37,7 +41,7 @@ func getOneBarChartData(barChart *barChart.BarChart, filterRules []recordFilter.
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
 	}
 
-	valGroupingResult, groupingErr := groupRecords(barChart.Properties.XAxisVals, tableID, recordRefs)
+	valGroupingResult, groupingErr := groupRecords(barChart.Properties.XAxisVals, recordRefs)
 	if groupingErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error grouping records for bar chart: %v", groupingErr)
 	}

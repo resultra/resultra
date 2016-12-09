@@ -19,8 +19,8 @@ const FieldTypeFile string = "file"
 const FieldTypeUser string = "user"
 
 type Field struct {
-	ParentTableID string `json:"parentTableID"`
-	FieldID       string `json:"fieldID"`
+	ParentDatabaseID string `json:"parentDatabaseID"`
+	FieldID          string `json:"fieldID"`
 
 	Name string `json:"name"`
 	Type string `json:"type"`
@@ -81,9 +81,9 @@ func CreateNewFieldFromRawInputs(newField Field) (*Field, error) {
 	// TODO: Validate the reference name is unique versus the other names field names already in use.
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO fields (table_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text) 
+		`INSERT INTO fields (database_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text) 
 				VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
-		newField.ParentTableID,
+		newField.ParentDatabaseID,
 		newField.FieldID,
 		newField.Name,
 		newField.Type,
@@ -102,15 +102,15 @@ func CreateNewFieldFromRawInputs(newField Field) (*Field, error) {
 }
 
 type NewNonCalcFieldParams struct {
-	ParentTableID string `json:"parentTableID"`
-	Name          string `json:"name"`
-	Type          string `json:"type"`
-	RefName       string `json:"refName"`
+	ParentDatabaseID string `json:"parentDatabaseID"`
+	Name             string `json:"name"`
+	Type             string `json:"type"`
+	RefName          string `json:"refName"`
 }
 
 func NewNonCalcField(fieldParams NewNonCalcFieldParams) (*Field, error) {
 	newField := Field{
-		ParentTableID:           fieldParams.ParentTableID,
+		ParentDatabaseID:        fieldParams.ParentDatabaseID,
 		FieldID:                 uniqueID.GenerateSnowflakeID(),
 		Name:                    fieldParams.Name,
 		Type:                    fieldParams.Type,
@@ -124,12 +124,12 @@ func NewNonCalcField(fieldParams NewNonCalcFieldParams) (*Field, error) {
 
 // Getting an individual field doesn't require the table ID, since the field ID is unique.
 // TODO - Refactor existing code to remove dependency on parent table ID to retrieve an individiual field.
-func GetFieldWithoutTableID(fieldID string) (*Field, error) {
+func GetField(fieldID string) (*Field, error) {
 	var fieldGetDest Field
 
-	if getErr := databaseWrapper.DBHandle().QueryRow(`SELECT table_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text 
+	if getErr := databaseWrapper.DBHandle().QueryRow(`SELECT database_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text 
 			FROM fields WHERE field_id=$1 LIMIT 1`, fieldID).Scan(
-		&fieldGetDest.ParentTableID,
+		&fieldGetDest.ParentDatabaseID,
 		&fieldGetDest.FieldID,
 		&fieldGetDest.Name,
 		&fieldGetDest.Type,
@@ -144,23 +144,18 @@ func GetFieldWithoutTableID(fieldID string) (*Field, error) {
 
 }
 
-func GetField(tableID string, fieldID string) (*Field, error) {
-
-	return GetFieldWithoutTableID(fieldID)
-}
-
 func UpdateExistingField(updatedField *Field) (*Field, error) {
 
 	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE fields 
 			SET name=$1,type=$2,ref_name=$3,calc_field_eqn=$4,preprocessed_formula_text=$5,is_calc_field=$6 
-			WHERE table_id=$7 AND field_id=$8`,
+			WHERE database_id=$7 AND field_id=$8`,
 		updatedField.Name,
 		updatedField.Type,
 		updatedField.RefName,
 		updatedField.CalcFieldEqn,
 		updatedField.PreprocessedFormulaText,
 		updatedField.IsCalcField,
-		updatedField.ParentTableID,
+		updatedField.ParentDatabaseID,
 		updatedField.FieldID); updateErr != nil {
 		return nil, fmt.Errorf("UpdateExistingField: Error updating field %v: error = %v", updatedField.FieldID, updateErr)
 	}
@@ -170,21 +165,21 @@ func UpdateExistingField(updatedField *Field) (*Field, error) {
 }
 
 type GetFieldListParams struct {
-	ParentTableID string `json:"parentTableID"`
+	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
 func GetAllFields(params GetFieldListParams) ([]Field, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT table_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text 
-		FROM fields WHERE table_id=$1`, params.ParentTableID)
+		`SELECT database_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text 
+		FROM fields WHERE database_id=$1`, params.ParentDatabaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("getTableList: Failure querying database: %v", queryErr)
 	}
 	allFields := []Field{}
 	for rows.Next() {
 		var currField Field
-		if scanErr := rows.Scan(&currField.ParentTableID,
+		if scanErr := rows.Scan(&currField.ParentDatabaseID,
 			&currField.FieldID,
 			&currField.Name,
 			&currField.Type,

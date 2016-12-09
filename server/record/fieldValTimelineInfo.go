@@ -89,18 +89,17 @@ func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal str
 }
 
 func GetFieldValUpdateTimelineInfo(currUserID string,
-	parentTableID string, recordID string, fieldID string) ([]FieldValTimelineChangeInfo, error) {
+	parentDatabaseID string, recordID string, fieldID string) ([]FieldValTimelineChangeInfo, error) {
 
-	fieldCellUpdates, getErr := GetRecordFieldCellUpdates(parentTableID, recordID, fieldID)
+	fieldCellUpdates, getErr := GetRecordFieldCellUpdates(recordID, fieldID)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetCellUpdateTimelineInfo: failure retrieving cell updates for record = %v: error = %v",
 			recordID, getErr)
 	}
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentTableID: parentTableID})
+	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentDatabaseID: parentDatabaseID})
 	if indexErr != nil {
-		return nil, fmt.Errorf("GetCellUpdateTimelineInfo: Unable to retrieve fields list for table: tableID=%v, error=%v ",
-			parentTableID, indexErr)
+		return nil, fmt.Errorf("GetCellUpdateTimelineInfo: %v", indexErr)
 	}
 
 	allFieldValChanges := []FieldValTimelineChangeInfo{}
@@ -109,15 +108,13 @@ func GetFieldValUpdateTimelineInfo(currUserID string,
 		fieldInfo, fieldErr := fieldRefIndex.GetFieldRefByID(currUpdate.FieldID)
 		if fieldErr != nil {
 			return nil, fmt.Errorf(
-				"GetCellUpdateTimelineInfo: Unable to retrieve field information for field ID = %v: tableID=%v: error=%v ",
-				currUpdate.FieldID, parentTableID, fieldErr)
+				"GetCellUpdateTimelineInfo: %v", fieldErr)
 		}
 
 		decodedCellVal, decodeErr := DecodeTimelineCellValue(currUserID, fieldInfo.Type, currUpdate.CellValue)
 		if decodeErr != nil {
 			return nil, fmt.Errorf(
-				"NewUpdateFieldValueIndex: Unable to cell value for field ID = %v: tableID=%v: error=%v ",
-				currUpdate.FieldID, parentTableID, decodeErr)
+				"NewUpdateFieldValueIndex: %v ", decodeErr)
 
 		}
 

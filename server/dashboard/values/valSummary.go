@@ -44,9 +44,8 @@ func (srcValSummary ValSummary) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*V
 }
 
 type NewValSummaryParams struct {
-	FieldParentTableID string `json:"fieldParentTableID"`
-	FieldID            string `json:"fieldID"`
-	SummarizeValsWith  string `json:"summarizeValsWith"`
+	FieldID           string `json:"fieldID"`
+	SummarizeValsWith string `json:"summarizeValsWith"`
 }
 
 func validateFieldTypeWithSummary(fieldType string, summarizeValsWith string) error {
@@ -70,7 +69,7 @@ func validateFieldTypeWithSummary(fieldType string, summarizeValsWith string) er
 
 func NewValSummary(params NewValSummaryParams) (*ValSummary, error) {
 
-	summaryField, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
+	summaryField, fieldErr := field.GetField(params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewValGrouping: Can't get field value grouping: datastore error = %v", fieldErr)
 	}
@@ -87,7 +86,7 @@ func NewValSummary(params NewValSummaryParams) (*ValSummary, error) {
 
 func (valSummary ValSummary) SummaryLabel() (string, error) {
 
-	summaryField, fieldErr := field.GetFieldWithoutTableID(valSummary.SummarizeByFieldID)
+	summaryField, fieldErr := field.GetField(valSummary.SummarizeByFieldID)
 	if fieldErr != nil {
 		return "", fmt.Errorf("SummaryLabel: Can't get field: %v", fieldErr)
 	}

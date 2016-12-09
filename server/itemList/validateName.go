@@ -14,12 +14,9 @@ func validateUniqueItemListName(databaseID string, listID string, listName strin
 	//    the name is considered valid if it is the same as its
 	//    existing name.
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT item_lists.list_id,item_lists.name 
-			FROM item_lists,data_tables,databases
-			WHERE databases.database_id=$1 AND
-				data_tables.database_id=databases.database_id AND 
-				item_lists.table_id=data_tables.table_id AND
-				item_lists.name=$2 AND item_lists.list_id<>$3`,
+		`SELECT list_id,name 
+			FROM item_lists
+			WHERE database_id=$1 AND name=$2 AND list_id<>$3`,
 		databaseID, listName, listID)
 	if queryErr != nil {
 		return fmt.Errorf("System error validating list name (%v)", queryErr)

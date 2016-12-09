@@ -10,7 +10,7 @@ from testCommon import TestHelperMixin
 class TestFormulas(unittest.TestCase,TestHelperMixin):
     
     def verifyFormula(self,resultFieldID,formulaText,whatTested):
-        jsonResp = self.apiRequest('calcField/validateFormula',{'fieldParentTableID':self.tableID,'fieldID':resultFieldID,'formulaText':formulaText})
+        jsonResp = self.apiRequest('calcField/validateFormula',{'fieldID':resultFieldID,'formulaText':formulaText})
         isValidFormula = jsonResp[u'isValidFormula']
         if isValidFormula:
             print "PASS: verifyFormula: ", whatTested
@@ -20,7 +20,7 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
 
     # TODO - Enhance this function to include a string to look for in the expected error message
     def verifyBadFormula(self,resultFieldID,formulaText,whatTested):
-        jsonResp = self.apiRequest('calcField/validateFormula',{'fieldParentTableID':self.tableID,'fieldID':resultFieldID,'formulaText':formulaText})
+        jsonResp = self.apiRequest('calcField/validateFormula',{'fieldID':resultFieldID,'formulaText':formulaText})
         isValidFormula = jsonResp[u'isValidFormula']
         errorMsg = jsonResp[u'errorMsg']
         if not isValidFormula:
@@ -36,25 +36,21 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
         jsonResp = self.apiRequest('database/new',{'name': 'Test Database'})
         self.databaseID = jsonResp[u'databaseID']
         print "testValidateFormula: database ID: ",self.databaseID
-        
-        jsonResp = self.apiRequest('table/new',{'databaseID': self.databaseID, 'name': 'Test Table'})
-        self.tableID = jsonResp[u'tableID']
-        print "testValidateFormula: table ID: ",self.tableID
- 
-        fieldParams = {'parentTableID':self.tableID,'name':'Quantity','type':'number','refName':'qty'}
+         
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'Quantity','type':'number','refName':'qty'}
         jsonResp = self.apiRequest('field/new',fieldParams)
         self.numberFieldID = jsonResp[u'fieldID']
 
-        fieldParams = {'parentTableID':self.tableID,'name':'Comments','type':'text','refName':'CMT'}
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'Comments','type':'text','refName':'CMT'}
         jsonResp = self.apiRequest('field/new',fieldParams)
         self.textFieldID = jsonResp[u'fieldID']
  
-        fieldParams = {'parentTableID':self.tableID,'name':'Total','type':'number',
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'Total','type':'number',
                     'refName':'total','formulaText':'42.5'}
         jsonResp = self.apiRequest('calcField/new',fieldParams)
         self.numberCalcField = jsonResp[u'fieldID']
   
-        fieldParams = {'parentTableID':self.tableID,'name':'TextCalc','type':'text',
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'TextCalc','type':'text',
                   'refName':'textCalc','formulaText':'"hello world"'}
         jsonResp = self.apiRequest('calcField/new',fieldParams)
         self.textCalcField = jsonResp[u'fieldID']
@@ -116,13 +112,13 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
         
         
     def testFormulaCycles(self):
-        fieldParams = {'parentTableID':self.tableID,'name':'A','type':'number',
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'A','type':'number',
                     'refName':'fieldA','formulaText':'42.5'}
         jsonResp = self.apiRequest('calcField/new',fieldParams)
         fieldA = jsonResp[u'fieldID']
 
         # Setup [b]->[a]
-        fieldParams = {'parentTableID':self.tableID,'name':'B','type':'number',
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'B','type':'number',
                     'refName':'fieldB','formulaText':'42.5 + [fieldA]'}
         jsonResp = self.apiRequest('calcField/new',fieldParams)
         fieldB = jsonResp[u'fieldID']
@@ -131,7 +127,7 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
             "circular reference: field B already refers to A, can't make a reference to B from A")
             
         # Setup [c]->[b]->[a]
-        fieldParams = {'parentTableID':self.tableID,'name':'C','type':'number',
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'C','type':'number',
                     'refName':'fieldC','formulaText':'[fieldB]'}
         jsonResp = self.apiRequest('calcField/new',fieldParams)
         fieldB = jsonResp[u'fieldID']

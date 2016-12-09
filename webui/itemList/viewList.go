@@ -36,7 +36,6 @@ type ViewListTemplateParams struct {
 	Title                string
 	FormID               string
 	ListID               string
-	TableID              string
 	DatabaseID           string
 	DatabaseName         string
 	ListName             string
@@ -75,7 +74,6 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 		templParams := ViewListTemplateParams{Title: "View List",
 			FormID:       formID,
 			ListID:       listID,
-			TableID:      formDBInfo.TableID,
 			DatabaseID:   formDBInfo.DatabaseID,
 			DatabaseName: formDBInfo.DatabaseName,
 			ListName:     listInfo.Name,

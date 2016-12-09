@@ -48,7 +48,6 @@ func (srcGrouping ValGrouping) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*Va
 }
 
 type NewValGroupingParams struct {
-	FieldParentTableID    string  `json:"fieldParentTableID"`
 	FieldID               string  `json:"fieldID"`
 	GroupValsBy           string  `json:"groupValsBy"`
 	GroupByValBucketWidth float64 `json:"groupByValBucketWidth"`
@@ -77,7 +76,7 @@ func validateFieldTypeWithGrouping(fieldType string, groupValsBy string, bucketW
 
 func NewValGrouping(params NewValGroupingParams) (*ValGrouping, error) {
 
-	groupingField, fieldErr := field.GetField(params.FieldParentTableID, params.FieldID)
+	groupingField, fieldErr := field.GetField(params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewValGrouping: Can't create value grouping with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)
@@ -96,7 +95,7 @@ func NewValGrouping(params NewValGroupingParams) (*ValGrouping, error) {
 
 func (valGrouping ValGrouping) GroupingLabel() (string, error) {
 
-	groupingField, fieldErr := field.GetFieldWithoutTableID(valGrouping.GroupValsByFieldID)
+	groupingField, fieldErr := field.GetField(valGrouping.GroupValsByFieldID)
 	if fieldErr != nil {
 		return "", fmt.Errorf("GroupingLabel: Can't create grouping label: %v", fieldErr)
 	}

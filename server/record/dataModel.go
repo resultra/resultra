@@ -8,21 +8,21 @@ import (
 )
 
 type Record struct {
-	ParentTableID string `json:"parentTableID"`
-	RecordID      string `json:"recordID"`
+	ParentDatabaseID string `json:"parentDatabaseID"`
+	RecordID         string `json:"recordID"`
 }
 
 type NewRecordParams struct {
-	ParentTableID string `json:"parentTableID"`
+	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
 func NewRecord(params NewRecordParams) (*Record, error) {
 
-	newRecord := Record{ParentTableID: params.ParentTableID,
+	newRecord := Record{ParentDatabaseID: params.ParentDatabaseID,
 		RecordID: uniqueID.GenerateSnowflakeID()}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO records (table_id, record_id) VALUES ($1,$2)`, newRecord.ParentTableID, newRecord.RecordID); insertErr != nil {
+		`INSERT INTO records (database_id, record_id) VALUES ($1,$2)`, newRecord.ParentDatabaseID, newRecord.RecordID); insertErr != nil {
 		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", insertErr)
 	}
 
@@ -30,12 +30,13 @@ func NewRecord(params NewRecordParams) (*Record, error) {
 
 }
 
-func GetRecord(parentTableID string, recordID string) (*Record, error) {
+func GetRecord(recordID string) (*Record, error) {
 
 	getRecord := Record{}
 
 	if getErr := databaseWrapper.DBHandle().QueryRow(
-		`SELECT table_id,record_id FROM records WHERE table_id=$1 AND record_id=$2 LIMIT 1`, parentTableID, recordID).Scan(&getRecord.ParentTableID,
+		`SELECT database_id,record_id FROM records WHERE record_id=$1 LIMIT 1`, recordID).Scan(
+		&getRecord.ParentDatabaseID,
 		&getRecord.RecordID); getErr != nil {
 		return nil, fmt.Errorf("GetRecord: Unabled to get record: id = %v: datastore err=%v", recordID, getErr)
 	}
@@ -45,19 +46,20 @@ func GetRecord(parentTableID string, recordID string) (*Record, error) {
 }
 
 type GetRecordsParams struct {
-	TableID string `json:"tableID"`
+	DatabaseID string `json:"databaseID"`
 }
 
 func GetRecords(params GetRecordsParams) ([]Record, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT table_id,record_id FROM records WHERE table_id=$1`, params.TableID)
+	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT database_id,record_id FROM records WHERE database_id=$1`,
+		params.DatabaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRecords: Failure querying database: %v", queryErr)
 	}
 	records := []Record{}
 	for rows.Next() {
 		var currRecord Record
-		if scanErr := rows.Scan(&currRecord.ParentTableID,
+		if scanErr := rows.Scan(&currRecord.ParentDatabaseID,
 			&currRecord.RecordID); scanErr != nil {
 			return nil, fmt.Errorf("getTableList: Failure querying database: %v", scanErr)
 
@@ -71,10 +73,10 @@ func GetRecords(params GetRecordsParams) ([]Record, error) {
 // Validate the field is of the correct type and not a calculated field (if allowCalcField not true). This is for validating
 // the field when setting/getting values from regular "literal" fields which store values entered by end-users (as opposed to
 // calculated fields)
-func ValidateFieldForRecordValue(fieldParentTableID string, fieldID string, expectedFieldType string,
+func ValidateFieldForRecordValue(fieldID string, expectedFieldType string,
 	allowCalcField bool) error {
 
-	field, fieldGetErr := field.GetField(fieldParentTableID, fieldID)
+	field, fieldGetErr := field.GetField(fieldID)
 	if fieldGetErr != nil {
 		return fmt.Errorf(" Error retrieving field for updating/setting value: err = %v", fieldGetErr)
 	}

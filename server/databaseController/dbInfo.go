@@ -50,10 +50,7 @@ func getDatabaseDashboardsInfo(params DatabaseInfoParams) ([]DashboardInfo, erro
 
 func getDatabaseFormsInfo(params DatabaseInfoParams) ([]FormInfo, error) {
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT forms.form_id, forms.name FROM forms,data_tables,databases WHERE 
-			databases.database_id=$1 AND 
-			data_tables.database_id = databases.database_id AND
-			forms.table_id = data_tables.table_id`,
+		`SELECT form_id, name FROM forms WHERE  database_id=$1`,
 		params.DatabaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("getDatabaseInfo: Failure querying database: %v", queryErr)
@@ -73,10 +70,7 @@ func getDatabaseFormsInfo(params DatabaseInfoParams) ([]FormInfo, error) {
 
 func getDatabaseItemListInfo(params DatabaseInfoParams) ([]ItemListInfo, error) {
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT item_lists.list_id, item_lists.name FROM item_lists,data_tables,databases WHERE 
-			databases.database_id=$1 AND 
-			data_tables.database_id = databases.database_id AND
-			item_lists.table_id = data_tables.table_id`,
+		`SELECT list_id, name FROM item_lists WHERE database_id=$1`,
 		params.DatabaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("getDatabaseInfo: Failure querying database: %v", queryErr)
@@ -134,7 +128,6 @@ func getDatabaseInfo(params DatabaseInfoParams) (*DatabaseContentsInfo, error) {
 
 type FormDatabaseInfo struct {
 	FormID       string
-	TableID      string
 	DatabaseID   string
 	DatabaseName string
 	FormName     string
@@ -145,14 +138,13 @@ func GetFormDatabaseInfo(formID string) (*FormDatabaseInfo, error) {
 	var formDBInfo FormDatabaseInfo
 	getErr := databaseWrapper.DBHandle().QueryRow(`
 			SELECT 
-				databases.database_id, databases.name AS database_name, data_tables.table_id, forms.form_id, forms.name 
+				databases.database_id, databases.name AS database_name, forms.form_id, forms.name 
 			FROM 
-				forms,data_tables,databases 
+				forms,databases 
 			WHERE 
 				forms.form_id = $1 AND 
-				data_tables.database_id = databases.database_id AND
-				forms.table_id = data_tables.table_id`, formID).Scan(
-		&formDBInfo.DatabaseID, &formDBInfo.DatabaseName, &formDBInfo.TableID, &formDBInfo.FormID, &formDBInfo.FormName)
+				forms.database_id = databases.database_id`, formID).Scan(
+		&formDBInfo.DatabaseID, &formDBInfo.DatabaseName, &formDBInfo.FormID, &formDBInfo.FormName)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetFormDatabaseInfo: Unabled to get form info: form id = %v: datastore err=%v",
 			formID, getErr)

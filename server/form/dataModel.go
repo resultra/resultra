@@ -6,21 +6,20 @@ import (
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/table"
 )
 
 const formEntityKind string = "Form"
 
 type Form struct {
-	FormID        string         `json:"formID"`
-	ParentTableID string         `json:"parentTableID"`
-	Name          string         `json:"name"`
-	Properties    FormProperties `json:"properties"`
+	FormID           string         `json:"formID"`
+	ParentDatabaseID string         `json:"parentDatabaseID"`
+	Name             string         `json:"name"`
+	Properties       FormProperties `json:"properties"`
 }
 
 type NewFormParams struct {
-	ParentTableID string `json:"parentTableID"`
-	Name          string `json:"name"`
+	ParentDatabaseID string `json:"parentDatabaseID"`
+	Name             string `json:"name"`
 }
 
 func saveForm(newForm Form) error {
@@ -29,8 +28,8 @@ func saveForm(newForm Form) error {
 		return fmt.Errorf("saveForm: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO forms (table_id,form_id,name,properties) VALUES ($1,$2,$3,$4)`,
-		newForm.ParentTableID, newForm.FormID, newForm.Name, encodedFormProps); insertErr != nil {
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO forms (database_id,form_id,name,properties) VALUES ($1,$2,$3,$4)`,
+		newForm.ParentDatabaseID, newForm.FormID, newForm.Name, encodedFormProps); insertErr != nil {
 		return fmt.Errorf("saveForm: Can't create form: error = %v", insertErr)
 	}
 	return nil
@@ -44,7 +43,7 @@ func newForm(params NewFormParams) (*Form, error) {
 		return nil, sanitizeErr
 	}
 
-	newForm := Form{ParentTableID: params.ParentTableID,
+	newForm := Form{ParentDatabaseID: params.ParentDatabaseID,
 		FormID:     uniqueID.GenerateSnowflakeID(),
 		Name:       sanitizedName,
 		Properties: newDefaultFormProperties()}
@@ -60,9 +59,9 @@ func GetForm(formID string) (*Form, error) {
 
 	formName := ""
 	encodedProps := ""
-	tableID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT table_id,name,properties FROM forms
-		 WHERE form_id=$1 LIMIT 1`, formID).Scan(&tableID, &formName, &encodedProps)
+	databaseID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT database_id,name,properties FROM forms
+		 WHERE form_id=$1 LIMIT 1`, formID).Scan(&databaseID, &formName, &encodedProps)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetForm: Unabled to get form: form ID = %v: datastore err=%v",
 			formID, getErr)
@@ -74,23 +73,23 @@ func GetForm(formID string) (*Form, error) {
 	}
 
 	getForm := Form{
-		ParentTableID: tableID,
-		FormID:        formID,
-		Name:          formName,
-		Properties:    formProps}
+		ParentDatabaseID: databaseID,
+		FormID:           formID,
+		Name:             formName,
+		Properties:       formProps}
 
 	return &getForm, nil
 }
 
 type GetFormListParams struct {
-	ParentTableID string `json:"parentTableID"`
+	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
-func getAllForms(parentTableID string) ([]Form, error) {
+func getAllForms(parentDatabaseID string) ([]Form, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT table_id,form_id,name,properties FROM forms WHERE table_id = $1`,
-		parentTableID)
+		`SELECT database_id,form_id,name,properties FROM forms WHERE database_id = $1`,
+		parentDatabaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("getAllForms: Failure querying database: %v", queryErr)
 	}
@@ -100,7 +99,7 @@ func getAllForms(parentTableID string) ([]Form, error) {
 		var currForm Form
 		encodedProps := ""
 
-		if scanErr := rows.Scan(&currForm.ParentTableID, &currForm.FormID, &currForm.Name, &encodedProps); scanErr != nil {
+		if scanErr := rows.Scan(&currForm.ParentDatabaseID, &currForm.FormID, &currForm.Name, &encodedProps); scanErr != nil {
 			return nil, fmt.Errorf("getAllForms: Failure querying database: %v", scanErr)
 		}
 
@@ -117,23 +116,23 @@ func getAllForms(parentTableID string) ([]Form, error) {
 
 }
 
-func CloneTableForms(remappedIDs uniqueID.UniqueIDRemapper, srcParentTableID string) error {
+func CloneForms(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID string) error {
 
-	remappedTableID, err := remappedIDs.GetExistingRemappedID(srcParentTableID)
+	remappedDatabaseID, err := remappedIDs.GetExistingRemappedID(srcParentDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneTableForms: Error getting remapped table ID: %v", err)
 	}
 
-	forms, err := getAllForms(srcParentTableID)
+	forms, err := getAllForms(srcParentDatabaseID)
 	if err != nil {
-		return fmt.Errorf("CloneTableForms: Error getting forms for parent table ID = %v: %v",
-			srcParentTableID, err)
+		return fmt.Errorf("CloneTableForms: Error getting forms for parent database ID = %v: %v",
+			srcParentDatabaseID, err)
 	}
 
 	for _, currForm := range forms {
 
 		destForm := currForm
-		destForm.ParentTableID = remappedTableID
+		destForm.ParentDatabaseID = remappedDatabaseID
 
 		destFormID, err := remappedIDs.AllocNewRemappedID(currForm.FormID)
 		if err != nil {
@@ -161,24 +160,6 @@ func CloneTableForms(remappedIDs uniqueID.UniqueIDRemapper, srcParentTableID str
 
 }
 
-func CloneForms(remappedIDs uniqueID.UniqueIDRemapper, srcDatabaseID string) error {
-
-	getTableParams := table.GetTableListParams{DatabaseID: srcDatabaseID}
-	tables, err := table.GetTableList(getTableParams)
-	if err != nil {
-		return fmt.Errorf("CloneForms: %v", err)
-	}
-
-	for _, srcTable := range tables {
-
-		if err := CloneTableForms(remappedIDs, srcTable.TableID); err != nil {
-			return fmt.Errorf("CloneForms: %v", err)
-		}
-	}
-
-	return nil
-}
-
 func updateExistingForm(formID string, updatedForm *Form) (*Form, error) {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(updatedForm.Properties)
@@ -200,21 +181,11 @@ func updateExistingForm(formID string, updatedForm *Form) (*Form, error) {
 
 func getFormDatabaseID(formID string) (string, error) {
 
-	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(
-		`SELECT database_id 
-			FROM data_tables, forms 
-			WHERE forms.form_id=$1 
-				AND forms.table_id=data_tables.table_id LIMIT 1`,
-		formID).Scan(&databaseID)
-	if getErr != nil {
-		return "", fmt.Errorf(
-			"getFormDatabaseID: can't get database for form = %v: err=%v",
-			formID, getErr)
+	theForm, err := GetForm(formID)
+	if err != nil {
+		return "", nil
 	}
-
-	return databaseID, nil
-
+	return theForm.ParentDatabaseID, nil
 }
 
 type FormNameValidationInfo struct {
@@ -233,8 +204,6 @@ func validateUniqueFormName(databaseID string, formID string, formName string) e
 		`SELECT forms.form_id,forms.name 
 			FROM forms,data_tables,databases
 			WHERE databases.database_id=$1 AND
-				data_tables.database_id=databases.database_id AND 
-				forms.table_id=data_tables.table_id AND
 				forms.name=$2 AND forms.form_id<>$3`,
 		databaseID, formName, formID)
 	if queryErr != nil {

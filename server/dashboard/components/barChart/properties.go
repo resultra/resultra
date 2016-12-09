@@ -13,9 +13,6 @@ const xAxisSortDesc string = "desc"
 
 type BarChartProps struct {
 
-	// DataSrcTable is the table the bar chart gets its data from
-	DataSrcTableID string `json:"dataSrcTableID"`
-
 	// XAxisVals is a grouping of field values displayed along the x axis of the bar chart.
 	XAxisVals values.ValGrouping `json:"xAxisVals"`
 
@@ -35,12 +32,6 @@ type BarChartProps struct {
 func (srcProps BarChartProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*BarChartProps, error) {
 
 	destProps := srcProps
-
-	remappedTableID, err := remappedIDs.GetExistingRemappedID(srcProps.DataSrcTableID)
-	if err != nil {
-		return nil, fmt.Errorf("BarChartProps.Clone: %v", err)
-	}
-	destProps.DataSrcTableID = remappedTableID
 
 	xAxisVals, err := srcProps.XAxisVals.Clone(remappedIDs)
 	if err != nil {

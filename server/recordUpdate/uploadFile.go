@@ -41,9 +41,9 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 	// setRecordFileNameFieldValue. Although the parameters for a record update with a filename aren't passed through the http request,
 	// the standard record updating mechanism can be used to update the field with the filename.
 	updateRecordHeader := record.RecordUpdateHeader{
-		ParentTableID: req.FormValue("parentTableID"),
-		RecordID:      req.FormValue("recordID"),
-		FieldID:       req.FormValue("fieldID")}
+		ParentDatabaseID: req.FormValue("parentDatabaseID"),
+		RecordID:         req.FormValue("recordID"),
+		FieldID:          req.FormValue("fieldID")}
 	valueFormat := record.CellUpdateValueFormat{
 		Context: req.FormValue("valueFormatContext"),
 		Format:  req.FormValue("valueFormatFormat")}

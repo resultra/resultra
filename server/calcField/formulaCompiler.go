@@ -7,7 +7,6 @@ import (
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/global"
-	"resultra/datasheet/server/table"
 	"strings"
 )
 
@@ -32,10 +31,10 @@ func compileFormula(inputStr string) (*EquationNode, error) {
 
 func preprocessCalcFieldFormula(compileParams formulaCompileParams) (string, error) {
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentTableID: compileParams.parentTableID})
+	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(
+		field.GetFieldListParams{ParentDatabaseID: compileParams.databaseID})
 	if indexErr != nil {
-		return "", fmt.Errorf("preprocessCalcFieldFormula: Unable to retrieve fields list for table: tableID=%v, error=%v ",
-			compileParams.parentTableID, indexErr)
+		return "", fmt.Errorf("preprocessCalcFieldFormula: %v", indexErr)
 	}
 
 	fieldRefFieldIDMap := IdentReplacementMap{}
@@ -64,10 +63,10 @@ func preprocessCalcFieldFormula(compileParams formulaCompileParams) (string, err
 
 // ClonePreprocessedFormula is used to duplicate a formula when saving an existing database as a template or when cloning from a
 // template to a new database.
-func ClonePreprocessedFormula(srcDatabaseID string, parentTableID string,
+func ClonePreprocessedFormula(srcDatabaseID string,
 	remappedIDs uniqueID.UniqueIDRemapper, preProcessedFormula string) (string, error) {
 
-	getFieldParams := field.GetFieldListParams{ParentTableID: parentTableID}
+	getFieldParams := field.GetFieldListParams{ParentDatabaseID: srcDatabaseID}
 	fields, err := field.GetAllFields(getFieldParams)
 	if err != nil {
 		return "", fmt.Errorf("cloneFields: %v", err)
@@ -112,10 +111,9 @@ func ClonePreprocessedFormula(srcDatabaseID string, parentTableID string,
 // date reference name.
 func reverseProcessCalcFieldFormula(compileParams formulaCompileParams) (string, error) {
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentTableID: compileParams.parentTableID})
+	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentDatabaseID: compileParams.databaseID})
 	if indexErr != nil {
-		return "", fmt.Errorf("preprocessCalcFieldFormula: Unable to retrieve fields list for table: tableID=%v, error=%v ",
-			compileParams.parentTableID, indexErr)
+		return "", fmt.Errorf("preprocessCalcFieldFormula: %v", indexErr)
 	}
 
 	fieldIDFieldRefMap := IdentReplacementMap{}
@@ -158,7 +156,6 @@ type GetRawFormulaResult struct {
 
 type formulaCompileParams struct {
 	formulaText        string
-	parentTableID      string
 	databaseID         string
 	expectedResultType string
 
@@ -172,7 +169,7 @@ type formulaCompileParams struct {
 
 func assembleCalcFieldCompileParams(fieldID string) (*formulaCompileParams, error) {
 
-	calcField, getFieldErr := field.GetFieldWithoutTableID(fieldID)
+	calcField, getFieldErr := field.GetField(fieldID)
 	if getFieldErr != nil {
 		return nil, fmt.Errorf("assembleCalcFieldCompileParams: Unable to get calculated field field: field id =%v, error=%v ",
 			fieldID, getFieldErr)
@@ -182,16 +179,9 @@ func assembleCalcFieldCompileParams(fieldID string) (*formulaCompileParams, erro
 			calcField.Name)
 	}
 
-	databaseID, getDatabaseIDErr := table.GetTableDatabaseID(calcField.ParentTableID)
-	if getDatabaseIDErr != nil {
-		return nil, fmt.Errorf("assembleCalcFieldCompileParams: Unable to get database ID for field: field id =%v, error=%v ",
-			fieldID, getDatabaseIDErr)
-	}
-
 	compileParams := formulaCompileParams{
 		formulaText:        calcField.PreprocessedFormulaText,
-		parentTableID:      calcField.ParentTableID,
-		databaseID:         databaseID,
+		databaseID:         calcField.ParentDatabaseID,
 		expectedResultType: calcField.Type,
 		resultFieldID:      fieldID}
 

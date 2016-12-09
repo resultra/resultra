@@ -11,44 +11,42 @@ class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
     
     def setUp(self):
         self.createTestSession()
-        databaseID = self.newDatabase('TestTimeRecordValues: Test Database')
-        self.tableID = self.newTable(databaseID,"TestTimeRecordValues: Test Table")
-        self.timeFieldID = self.newTimeField(self.tableID,"TestTimeRecordValues - Time Field","TimeField")    
+        self.databaseID = self.newDatabase('TestTimeRecordValues: Test Database')
+        self.timeFieldID = self.newTimeField(self.databaseID,"TestTimeRecordValues - Time Field","TimeField")    
     
     def testSimpleDates(self):
-        recordID = self.newRecord(self.tableID)
+        recordID = self.newRecord(self.databaseID)
                          
-        recordRef = self.getRecord(self.tableID,recordID)
+        recordRef = self.getRecord(self.databaseID,recordID)
         
         timeVal = "2016-10-12T00:00:00Z" # RFC 3339 date & time format with Z at end for UTC
         
-        recordRef = self.setTimeRecordValue(self.tableID,recordID,self.timeFieldID,timeVal)
+        recordRef = self.setTimeRecordValue(self.databaseID,recordID,self.timeFieldID,timeVal)
         # Round-trip comparison on the value set in the record.
         self.assertEquals(self.getRecordFieldVal(recordRef,self.timeFieldID),timeVal, "updated record has time value")       
           
         # Get the record straight from the database
-        recordRef = self.getRecord(self.tableID,recordID)
+        recordRef = self.getRecord(self.databaseID,recordID)
         self.assertEquals(self.getRecordFieldVal(recordRef,self.timeFieldID),timeVal,"retrieved record has time value")
         
         with self.assertRaises(AssertionError):
-            self.setTimeRecordValue(self.tableID,recordID,self.timeFieldID,"ABC") # Invalid time format
+            self.setTimeRecordValue(self.databaseID,recordID,self.timeFieldID,"ABC") # Invalid time format
             
         with self.assertRaises(AssertionError):
-            self.setTimeRecordValue(self.tableID,recordID,self.timeFieldID,"") # Invalid time format
+            self.setTimeRecordValue(self.databaseID,recordID,self.timeFieldID,"") # Invalid time format
               
 
 class TestLongTextRecordValues(unittest.TestCase,TestHelperMixin):
     def setUp(self):
         self.createTestSession()
-        databaseID = self.newDatabase('TestLongTextRecordValues: Test Database')
-        self.tableID = self.newTable(databaseID,"TestLongTextRecordValues: Test Table")
-        self.longTextFieldID = self.newLongTextField(self.tableID,"TestLongTextRecordValues - Long Text Field","TimeField")
+        self.databaseID = self.newDatabase('TestLongTextRecordValues: Test Database')
+        self.longTextFieldID = self.newLongTextField(self.databaseID,"TestLongTextRecordValues - Long Text Field","TimeField")
         
     def testLongText(self):
-        recordID = self.newRecord(self.tableID)
+        recordID = self.newRecord(self.databaseID)
         someText = "Hello World!"
         
-        recordRef = self.setLongTextRecordValue(self.tableID,recordID,self.longTextFieldID,someText)
+        recordRef = self.setLongTextRecordValue(self.databaseID,recordID,self.longTextFieldID,someText)
         
         self.assertEquals(self.getRecordFieldVal(recordRef,self.longTextFieldID),
             someText,"record after being initially set has same value")

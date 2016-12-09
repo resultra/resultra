@@ -10,9 +10,6 @@ import (
 
 type SummaryTableProps struct {
 
-	// DataSrcTable is the table the bar chart gets its data from
-	DataSrcTableID string `json:"dataSrcTableID"`
-
 	// XAxisVals is a grouping of field values displayed along the x axis of the bar chart.
 	RowGroupingVals values.ValGrouping `json:"rowGroupingVals"`
 
@@ -28,12 +25,6 @@ type SummaryTableProps struct {
 func (srcProps SummaryTableProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*SummaryTableProps, error) {
 
 	destProps := srcProps
-
-	remappedTableID, err := remappedIDs.GetExistingRemappedID(srcProps.DataSrcTableID)
-	if err != nil {
-		return nil, fmt.Errorf("BarChartProps.Clone: %v", err)
-	}
-	destProps.DataSrcTableID = remappedTableID
 
 	rowGroupingVals, err := srcProps.RowGroupingVals.Clone(remappedIDs)
 	if err != nil {

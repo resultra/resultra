@@ -28,8 +28,6 @@ const barChartParentDashboardIDFieldName string = "ParentDashboardID"
 type NewBarChartParams struct {
 	ParentDashboardID string `json:"parentDashboardID"`
 
-	DataSrcTableID string `json:"dataSrcTableID"`
-
 	XAxisVals       values.NewValGroupingParams `json:"xAxisVals"`
 	XAxisSortValues string                      `json:"xAxisSortValues"`
 
@@ -72,10 +70,6 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 		return nil, fmt.Errorf("newSummaryTable: Error creating bar chart: missing parent dashboard ID")
 	}
 
-	if len(params.DataSrcTableID) <= 0 {
-		return nil, fmt.Errorf("newSummaryTable: Error creating bar chart: missing table ID")
-	}
-
 	valGrouping, valGroupingErr := values.NewValGrouping(params.XAxisVals)
 	if valGroupingErr != nil {
 		return nil, fmt.Errorf("NewBarChart: Error creating new value grouping for bar chart: error = %v", valGroupingErr)
@@ -97,7 +91,6 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 	barChartProps := BarChartProps{
 		XAxisVals:          *valGrouping,
 		XAxisSortValues:    params.XAxisSortValues,
-		DataSrcTableID:     params.DataSrcTableID,
 		YAxisVals:          *valSummary,
 		Geometry:           params.Geometry,
 		Title:              "",

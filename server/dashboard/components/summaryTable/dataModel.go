@@ -25,8 +25,6 @@ type SummaryTable struct {
 type NewSummaryTableParams struct {
 	ParentDashboardID string `json:"parentDashboardID"`
 
-	DataSrcTableID string `json:"dataSrcTableID"`
-
 	RowGroupingVals values.NewValGroupingParams `json:"rowGroupingVals"`
 
 	ColumnValSummaries []values.NewValSummaryParams `json:"columnValSummaries"`
@@ -50,10 +48,6 @@ func newSummaryTable(params NewSummaryTableParams) (*SummaryTable, error) {
 		return nil, fmt.Errorf("newSummaryTable: Error creating summary table: missing parent dashboard ID")
 	}
 
-	if len(params.DataSrcTableID) <= 0 {
-		return nil, fmt.Errorf("newSummaryTable: Error creating summary table: missing table ID")
-	}
-
 	rowGrouping, rowGroupingErr := values.NewValGrouping(params.RowGroupingVals)
 	if rowGroupingErr != nil {
 		return nil, fmt.Errorf("newSummaryTable: Error creating new value grouping for bar chart: error = %v", rowGroupingErr)
@@ -75,7 +69,6 @@ func newSummaryTable(params NewSummaryTableParams) (*SummaryTable, error) {
 	summaryTableProps := SummaryTableProps{
 		RowGroupingVals:    *rowGrouping,
 		ColumnValSummaries: colSummaries,
-		DataSrcTableID:     params.DataSrcTableID,
 		Geometry:           params.Geometry,
 		Title:              "",
 		DefaultFilterRules: []recordFilter.RecordFilterRule{}}

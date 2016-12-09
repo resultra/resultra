@@ -6,20 +6,14 @@ import (
 
 type FieldIDInterface interface {
 	GetFieldID() string
-	GetParentTableID() string
 }
 
 type FieldIDHeader struct {
-	ParentTableID string `json:"parentTableID"`
-	FieldID       string `json:"fieldID"`
+	FieldID string `json:"fieldID"`
 }
 
 func (idHeader FieldIDHeader) GetFieldID() string {
 	return idHeader.FieldID
-}
-
-func (idHeader FieldIDHeader) GetParentTableID() string {
-	return idHeader.ParentTableID
 }
 
 type FieldPropUpdater interface {
@@ -34,7 +28,7 @@ type FieldPropUpdater interface {
 
 func UpdateFieldProps(propUpdater FieldPropUpdater) (*Field, error) {
 
-	fieldForUpdate, getErr := GetField(propUpdater.GetParentTableID(), propUpdater.GetFieldID())
+	fieldForUpdate, getErr := GetField(propUpdater.GetFieldID())
 	if getErr != nil {
 		return nil, getErr
 	}

@@ -24,7 +24,7 @@ func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*rec
 	// Since a change has occored to one of the record's values, a new set of mapped record
 	// values needs to be created.
 	updateRecordValResult, mapErr := recordValue.MapOneRecordUpdatesToFieldValues(
-		recordForUpdate.ParentTableID, recordForUpdate.RecordID)
+		recordForUpdate.ParentDatabaseID, recordForUpdate.RecordID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(
 			"updateRecordValue: Error mapping field values: err = %v", mapErr)
