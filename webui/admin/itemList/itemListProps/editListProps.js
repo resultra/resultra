@@ -49,7 +49,7 @@ $(document).ready(function() {
 	function initItemListFormProperties(listInfo) {
 		var selectFormParams = {
 			menuSelector: "#itemListDefaultFormSelection",
-			parentTableID: listInfo.parentTableID,
+			parentDatabaseID: itemListPropsContext.databaseID,
 			initialFormID: listInfo.formID
 		}	
 		populateFormSelectionMenu(selectFormParams)
@@ -94,7 +94,7 @@ $(document).ready(function() {
 		jsonAPIRequest("itemList/get",getItemListParams,function(listInfo) {
 			var filterPropertyPanelParams = {
 				elemPrefix: listElemPrefix,
-				tableID: listInfo.parentTableID,
+				databaseID: itemListPropsContext.databaseID,
 				defaultFilterRules: listInfo.properties.defaultFilterRules,
 				initDone: function () {},
 				updateFilterRules: function (updatedFilterRules) {
@@ -127,7 +127,7 @@ $(document).ready(function() {
 	
 			var sortPaneParams = {
 				defaultSortRules: listInfo.properties.defaultRecordSortRules,
-				tableID: listInfo.parentTableID,
+				databaseID: itemListPropsContext.databaseID,
 				resortFunc: function() {}, // no-op
 				initDoneFunc: function() {}, // no-op
 				saveUpdatedSortRulesFunc: saveDefaultListSortRules}

@@ -32,7 +32,7 @@ function createNewFieldDialogPanelContextBootstrap(panelParams) {
 	
 	function getPanelValues($parentDialog) {
 		var newFieldParams = {
-			parentTableID: panelParams.parentTableID,
+			parentDatabaseID: panelParams.databaseID,
 			name: $(fieldNameInput.selector).val(),
 			refName: $(fieldRefNameInput.selector).val(),
 			isCalcField: $(isCalcFieldInput.selector).prop("checked"),

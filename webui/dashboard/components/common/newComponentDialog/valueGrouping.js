@@ -1,9 +1,7 @@
 
 var dashboardComponentValueGroupingPanelID = "dashboardComponentValueGrouping"
 
-var valueGroupingDialogPanelTableID;
-
-function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
+function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix,databaseID) {
 	
 	var panelSelector = "#" + elemPrefix + "DashboardComponentValueGroupingPanel"
 	var groupedFieldSelection = createPrefixedTemplElemInfo(elemPrefix,"NewComponentGroupedFieldSelection")
@@ -45,7 +43,6 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 	
 	function getPanelValues() {
 		var valGrouping = {
-			fieldParentTableID: valueGroupingDialogPanelTableID,
 			fieldID: groupedFieldSelection.val(),
 			groupValsBy: groupBySelection.val(),
 			groupByValBucketWidth: Number(bucketSizeInput.val())
@@ -99,14 +96,9 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix) {
 		}, // init panel
 		transitionIntoPanel: function ($dialog) { 
 			
-			setWizardDialogButtonSet("newDashboardComponentValueGroupingButtons")
-			
-			var selectedTableID = getWizardDialogPanelVals($dialog,dashboardComponentSelectTablePanelID)
-			console.log("Transitioning into value grouping panel: selected table ID = " + selectedTableID)
-			valueGroupingDialogPanelTableID = 	selectedTableID
+			setWizardDialogButtonSet("newDashboardComponentValueGroupingButtons")				
 				
-				
-			loadFieldInfo(selectedTableID,[fieldTypeAll],function(valueGroupingFieldsByID) {
+			loadFieldInfo(databaseID,[fieldTypeAll],function(valueGroupingFieldsByID) {
 				
 				populateFieldSelectionMenu(valueGroupingFieldsByID,groupedFieldSelection.selector)
 				$(groupBySelection.selector).attr("disabled",true)

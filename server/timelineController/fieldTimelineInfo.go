@@ -57,9 +57,8 @@ func newFieldValChangeTimelineInfo(currUserID string, comment FieldComment) (*Ti
 }
 
 type GetFieldTimelineInfoParams struct {
-	ParentDatabaseID string `json:"parentDatabaseID"`
-	RecordID         string `json:"recordID"`
-	FieldID          string `json:"fieldID"`
+	RecordID string `json:"recordID"`
+	FieldID  string `json:"fieldID"`
 }
 
 func getFieldTimelineInfo(req *http.Request, params GetFieldTimelineInfoParams) ([]FieldTimelineInfo, error) {
@@ -89,7 +88,7 @@ func getFieldTimelineInfo(req *http.Request, params GetFieldTimelineInfoParams) 
 		return nil, fmt.Errorf("getFieldTimelineInfo: %v", err)
 	}
 
-	fieldValTimelineChanges, err := record.GetFieldValUpdateTimelineInfo(currUserID, params.ParentDatabaseID,
+	fieldValTimelineChanges, err := record.GetFieldValUpdateTimelineInfo(currUserID,
 		params.RecordID, params.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("getFieldTimelineInfo: Error retrieving timeline field value changes: %+v, error = %v", params, err)

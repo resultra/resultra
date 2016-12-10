@@ -1,6 +1,6 @@
 
 
-function openNewImageDialog(databaseID,formID,parentTableID,containerParams)
+function openNewImageDialog(databaseID,formID,containerParams)
 {
 			
 	function createNewImageComponent($parentDialog, newComponentParams) {
@@ -37,7 +37,6 @@ function openNewImageDialog(databaseID,formID,parentTableID,containerParams)
 	
 	var newFormComponentDialogParams = {
 		elemPrefix: "image_",
-		parentTableID: parentTableID,
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeFile],

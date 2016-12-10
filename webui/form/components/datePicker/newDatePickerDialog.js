@@ -1,5 +1,5 @@
 
-function openNewDatePickerDialog(databaseID,formID,parentTableID,containerParams)
+function openNewDatePickerDialog(databaseID,formID,containerParams)
 {
 		
 	function createNewDatePicker($parentDialog, newComponentParams) {
@@ -36,7 +36,6 @@ function openNewDatePickerDialog(databaseID,formID,parentTableID,containerParams
 	
 	var newFormComponentDialogParams = {
 		elemPrefix: "datePicker_",
-		parentTableID: parentTableID,
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeTime],

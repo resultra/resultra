@@ -88,8 +88,12 @@ func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal str
 	}
 }
 
-func GetFieldValUpdateTimelineInfo(currUserID string,
-	parentDatabaseID string, recordID string, fieldID string) ([]FieldValTimelineChangeInfo, error) {
+func GetFieldValUpdateTimelineInfo(currUserID string, recordID string, fieldID string) ([]FieldValTimelineChangeInfo, error) {
+
+	timelineRecord, err := GetRecord(recordID)
+	if err != nil {
+		return nil, fmt.Errorf("GetCellUpdateTimelineInfo: %v", err)
+	}
 
 	fieldCellUpdates, getErr := GetRecordFieldCellUpdates(recordID, fieldID)
 	if getErr != nil {
@@ -97,7 +101,7 @@ func GetFieldValUpdateTimelineInfo(currUserID string,
 			recordID, getErr)
 	}
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentDatabaseID: parentDatabaseID})
+	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentDatabaseID: timelineRecord.ParentDatabaseID})
 	if indexErr != nil {
 		return nil, fmt.Errorf("GetCellUpdateTimelineInfo: %v", indexErr)
 	}

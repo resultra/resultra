@@ -28,7 +28,7 @@ function barChartViewDashboardConfig(barChartRef) {
 			
 			var filterPaneParams = {
 				elemPrefix: barChartElemPrefix,
-				tableID: selectedBarChartRef.properties.dataSrcTableID,
+				databaseID: viewDashboardContext.databaseID,
 				defaultFilterRules: barChartRef.properties.defaultFilterRules,
 				initDone: function () {},
 				updateFilterRules: function (updatedFilterRules) {

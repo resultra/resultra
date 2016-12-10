@@ -49,7 +49,7 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 	}
 
 
-	loadFieldInfo(panelParams.tableID,[fieldTypeAll],function(valueGroupingFieldsByID) {
+	loadFieldInfo(panelParams.databaseID,[fieldTypeAll],function(valueGroupingFieldsByID) {
 		populateFieldSelectionMenu(valueGroupingFieldsByID,groupedFieldSelectionElemInfo.selector)
 	
 		// Initialize the controls to the existing values

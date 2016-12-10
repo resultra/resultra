@@ -4,7 +4,6 @@ function getFormComponentContext(formContext, contextLoadCompleteCallback) {
 	
 	context.formID = formContext.formID
 	context.databaseID = formContext.databaseID
-	context.tableID = formContext.tableID
 	
 	function completeOneContextPart() {
 		contextPartsRemaining -= 1
@@ -13,12 +12,12 @@ function getFormComponentContext(formContext, contextLoadCompleteCallback) {
 		}
 	}
 	
-	loadFieldInfo(context.tableID, [fieldTypeAll],function(fieldsByID) {
+	loadFieldInfo(context.databaseID, [fieldTypeAll],function(fieldsByID) {
 		context.fieldsByID = fieldsByID
 		completeOneContextPart()
 	})
 	
-	initFieldInfo( function () {
+	initFieldInfo( formContext.databaseID, function () {
 		completeOneContextPart()
 	})
 	

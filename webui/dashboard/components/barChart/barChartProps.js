@@ -8,7 +8,7 @@ function loadBarChartProperties(barChartPropsArgs) {
 	
 	var filterPropertyPanelParams = {
 		elemPrefix: barChartElemPrefix,
-		tableID: barChartRef.properties.dataSrcTableID,
+		databaseID: barChartPropsArgs.databaseID,
 		defaultFilterRules: barChartRef.properties.defaultFilterRules,
 		initDone: function () {},
 		updateFilterRules: function (updatedFilterRules) {
@@ -46,7 +46,7 @@ function loadBarChartProperties(barChartPropsArgs) {
 	
 	var xAxisPropertyPanelParams = {
 		elemPrefix: barChartElemPrefix,
-		tableID: barChartRef.properties.dataSrcTableID,
+		databaseID: barChartPropsArgs.databaseID,
 		valGroupingProps: barChartRef.properties.xAxisVals,
 		saveValueGroupingFunc: function(newValueGroupingParams) {
 			var setXAxisValGroupingParams = {
@@ -64,7 +64,7 @@ function loadBarChartProperties(barChartPropsArgs) {
 	
 	var yAxisPropertyPanelParams = {
 		elemPrefix: barChartElemPrefix,
-		tableID: barChartRef.properties.dataSrcTableID,
+		databaseID: barChartPropsArgs.databaseID,
 		valSummaryProps: barChartRef.properties.yAxisValSummary,
 		saveValueSummaryFunc: function(newValSummaryParams) {
 			var setYAxisSummaryParams = {

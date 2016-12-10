@@ -4,7 +4,7 @@ function initFilterPropertyPanel(panelParams) {
 		
 	var fieldSelectionDropdownParams = {
 		elemPrefix: panelParams.elemPrefix,
-		tableID: panelParams.tableID,
+		databaseID: panelParams.databaseID,
 		fieldTypes: [fieldTypeAll],
 		fieldSelectionCallback: function(fieldInfo) {
 			var filterRuleListSelector = createPrefixedSelector(panelParams.elemPrefix,

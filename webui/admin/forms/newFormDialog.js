@@ -15,7 +15,6 @@ function openNewFormDialog(databaseID) {
 					}
 				} // remote
 			}, // newFormNameInput
-			newFormTableSelection: { optionSelectionRequired:"table" }
 		},
 		messages: {
 			newFormNameInput: {
@@ -25,10 +24,7 @@ function openNewFormDialog(databaseID) {
 	})
 
 	validator.resetForm()
-	
-	populateTableSelectionMenu('#newFormTableSelection',databaseID)
-	
-	
+		
 	$('#newFormDialog').modal('show')
 	
 	initButtonClickHandler('#newFormSaveButton',function() {
@@ -37,7 +33,7 @@ function openNewFormDialog(databaseID) {
 			console.log("table selection: " + $('#newFormTableSelection').val() )
 			
 			var newFormParams = { 
-				parentTableID: $('#newFormTableSelection').val(), 
+				parentDatabaseID: databaseID, 
 				name: $('#newFormNameInput').val() }
 			jsonAPIRequest("frm/new",newFormParams,function(newFormInfo) {
 				console.log("Created new form: " + JSON.stringify(newFormInfo))

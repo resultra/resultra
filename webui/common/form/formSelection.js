@@ -9,7 +9,7 @@ function populateFormSelectionMenu(params) {
 	}	
 	
 	
-	var listParams =  { parentTableID: params.parentTableID }
+	var listParams =  { parentDatabaseID: params.parentDatabaseID }
 	jsonAPIRequest("frm/list",listParams,function(formsInfo) {
 		
 		populateSelectionMenuFormList(formsInfo,params.menuSelector)

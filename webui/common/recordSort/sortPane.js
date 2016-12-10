@@ -167,7 +167,7 @@ function initSortRecordsPane(sortPaneParams) {
 	
 	$('#sortPaneSortRuleList').empty()
 	
-	loadFieldInfo(sortPaneParams.tableID, 
+	loadFieldInfo(sortPaneParams.databaseID, 
 		[fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime], function(fieldsByID) {
 			
 			sortPaneParams.fieldsByID = fieldsByID

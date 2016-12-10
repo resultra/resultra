@@ -67,7 +67,7 @@ function initUserSelectionRecordEditBehavior(componentContext,userSelectionObjec
 				format: "general"
 			}
 			var setRecordValParams = { 
-				parentTableID:viewListContext.tableID,
+				parentDatabaseID:viewListContext.databaseID,
 				recordID:currRecordRef.recordID, 
 				fieldID:userFieldID, 
 				userID:selectedUserID,

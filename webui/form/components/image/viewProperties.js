@@ -7,7 +7,6 @@ function initImageViewProperties(imageRef) {
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
-		tableID: viewListContext.tableID,
 		recordID: currRecordRef.recordID,
 		componentLink: componentLink
 	}

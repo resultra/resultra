@@ -12,8 +12,8 @@ var fieldInfoFieldsByID
 // initFieldInfo loads the field information once, then it is available globally as a service to other parts of client
 // code which also references field information.
 // TODO - Some type of polling/push mechanism is needed to keep this table up to date.
-function initFieldInfo(fieldInitDoneCallbackFunc) {
-	loadFieldInfo(tableID, [fieldTypeAll],function(fieldsByID) {
+function initFieldInfo(databaseID, fieldInitDoneCallbackFunc) {
+	loadFieldInfo(databaseID, [fieldTypeAll],function(fieldsByID) {
 		fieldInfoFieldsByID = fieldsByID;
 		fieldInitDoneCallbackFunc()
 	})
@@ -85,7 +85,7 @@ function populateFieldSelectionMenu(fieldsByID, menuSelector) {
 }
 
 
-function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
+function loadFieldInfo(parentDatabaseID,fieldTypes,fieldInfoCallback) {
 	
 	// Map of field ID's to the fieldRef object: see initialization below
 	var fieldsByID = {}
@@ -162,9 +162,7 @@ function loadFieldInfo(parentTableID,fieldTypes,fieldInfoCallback) {
 		fieldInfoCallback(fieldsByID)
 	}
 	
-	assert(parentTableID !== undefined)
-	assert(parentTableID.length > 0)
-	jsonAPIRequest("field/getListByType", {parentTableID:parentTableID},processFieldInfo)
+	jsonAPIRequest("field/getListByType", {parentDatabaseID:parentDatabaseID},processFieldInfo)
 	
 } // loadFieldInfo
 

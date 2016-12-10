@@ -10,7 +10,6 @@ import (
 // Template parameters when the summary table is in design mode
 type SummaryTableDesignTemplateParams struct {
 	ElemPrefix             string
-	SelectTableParams      newComponentDialog.SelectTableTemplateParams
 	RowValueGroupingParams newComponentDialog.ValueGroupingTemplateParams
 	ColValueSummaryParams  valueSummary.ValueSummaryTemplateParams
 	TitlePanelParams       propertiesSidebar.PanelTemplateParams
@@ -33,9 +32,6 @@ func init() {
 
 	elemPrefix := "summaryTable_"
 
-	tableSelectionParams := newComponentDialog.SelectTableTemplateParams{elemPrefix,
-		"Select a table as the source of data for this summary table."}
-
 	rowGroupingParams := newComponentDialog.ValueGroupingTemplateParams{
 		elemPrefix, "Configure which field is used to group values into rows",
 		"Field for grouping values into rows", "Group Values By"}
@@ -46,7 +42,6 @@ func init() {
 
 	DesignTemplateParams = SummaryTableDesignTemplateParams{
 		ElemPrefix:             elemPrefix,
-		SelectTableParams:      tableSelectionParams,
 		RowValueGroupingParams: rowGroupingParams,
 		ColValueSummaryParams:  valueSummaryParams,
 		TitlePanelParams:       propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "summaryTableTitle"},

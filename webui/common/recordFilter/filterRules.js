@@ -279,7 +279,7 @@ function createFilterRulePanelListItem(panelParams, fieldInfo,defaultRuleInfo) {
 }
 
 function updateDefaultFilterRules(panelParams, updateDoneFunc) {
-	loadFieldInfo(panelParams.tableID,[fieldTypeAll],function(fieldsByID) {
+	loadFieldInfo(panelParams.databaseID,[fieldTypeAll],function(fieldsByID) {
 		
 		var filterRuleListSelector = createPrefixedSelector(panelParams.elemPrefix,
 						'RecordFilterFilterRuleList')

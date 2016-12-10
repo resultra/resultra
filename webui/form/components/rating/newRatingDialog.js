@@ -1,7 +1,7 @@
 
 
 
-function openNewRatingDialog(databaseID,formID,parentTableID,containerParams) {
+function openNewRatingDialog(databaseID,formID,containerParams) {
 	
 	function createNewRating($parentDialog, newComponentParams) {
 		
@@ -39,7 +39,6 @@ function openNewRatingDialog(databaseID,formID,parentTableID,containerParams) {
 	
 	var newFormComponentDialogParams = {
 		elemPrefix: "rating_",
-		parentTableID: parentTableID,
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeNumber],

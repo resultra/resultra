@@ -81,7 +81,7 @@ function initRatingRecordEditBehavior(componentContext,ratingObjectRef) {
 	
 			var ratingValueFormat = { context: "rating", format: "star" }
 			var setRecordValParams = { 
-				parentTableID:viewListContext.tableID,
+				parentDatabaseID:viewListContext.databaseID,
 				recordID:currRecordRef.recordID, 
 				fieldID:ratingFieldID, 
 				value:ratingVal,

@@ -7,6 +7,7 @@ function selectDashboardSummaryTable(summaryTableRef) {
 	console.log("Select summary table: " + summaryTableRef.summaryTableID)
 	
 	var summaryTablePropertiesArgs = {
+		databaseID: designDashboardContext.databaseID,
 		dashboardID: summaryTableRef.parentDashboardID,
 		summaryTableID: summaryTableRef.summaryTableID
 	}

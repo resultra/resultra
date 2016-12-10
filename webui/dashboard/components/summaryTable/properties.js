@@ -28,7 +28,7 @@ function loadSummaryTableProperties(propArgs) {
 	
 	var rowGroupingPropertyPanelParams = {
 		elemPrefix: summaryTableElemPrefix,
-		tableID: summaryTableRef.properties.dataSrcTableID,
+		databaseID: propArgs.databaseID,
 		valGroupingProps: summaryTableRef.properties.rowGroupingVals,
 		saveValueGroupingFunc: function(newValueGroupingParams) {
 			var setRowGroupingParams = {
@@ -47,7 +47,7 @@ function loadSummaryTableProperties(propArgs) {
 	
 	var filterPropertyPanelParams = {
 		elemPrefix: summaryTableElemPrefix,
-		tableID: summaryTableRef.properties.dataSrcTableID,
+		databaseID: propArgs.databaseID,
 		defaultFilterRules: summaryTableRef.properties.defaultFilterRules,
 		initDone: function () {},
 		updateFilterRules: function (updatedFilterRules) {
@@ -67,7 +67,7 @@ function loadSummaryTableProperties(propArgs) {
 	
 	var columnsPropertyPanelParams = {
 		listElemPrefix: summaryTableElemPrefix,
-		dataSrcTableID: summaryTableRef.properties.dataSrcTableID,
+		databaseID: propArgs.databaseID,
 		initialColumnValSummaries: summaryTableRef.properties.columnValSummaries,
 		setColumnsFunc: function(newColumns) {
 			console.log("Setting summary table column properties: " + JSON.stringify(newColumns))

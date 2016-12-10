@@ -1,6 +1,6 @@
 
 
-function openNewTextBoxDialog(databaseID,formID,parentTableID,containerParams)
+function openNewTextBoxDialog(databaseID,formID,containerParams)
 {
 		
 	function createNewTextBox($parentDialog, newComponentParams) {
@@ -43,7 +43,6 @@ function openNewTextBoxDialog(databaseID,formID,parentTableID,containerParams)
 	
 	var newFormComponentDialogParams = {
 		elemPrefix: "textBox_",
-		parentTableID: parentTableID,
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeText,fieldTypeNumber],

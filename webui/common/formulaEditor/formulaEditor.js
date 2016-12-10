@@ -3,27 +3,29 @@
 // a global configuration should suffice.
 var formulaEditorConfig;
 
-function populateFieldRefInsertionMenu(tableID)
+function populateFieldRefInsertionMenu(databaseID)
 {
 	// Populate the menu to insert field references with the list of fields
 	$("#formulaFieldRefSelector").empty()
 	
 	$("#formulaFieldRefSelector").append('<option value="" disabled selected>Insert Field Reference</option>')
-	
-	var fieldsByID = getFieldsByID()
-	
-	for (var fieldID in fieldsByID) {
-	
-		var fieldInfo = fieldsByID[fieldID]		
-	
- 	   var menuItemHTML = '<option value="' + fieldInfo.refName + 
-			'">' + fieldInfo.name + '</option>'
 		
-		console.log("Adding selection to insert formula menu:" + menuItemHTML)
+	loadFieldInfo(databaseID, [fieldTypeAll],function(fieldsByID) {
+		for (var fieldID in fieldsByID) {
+	
+			var fieldInfo = fieldsByID[fieldID]		
+	
+	 	   var menuItemHTML = '<option value="' + fieldInfo.refName + 
+				'">' + fieldInfo.name + '</option>'
+		
+			console.log("Adding selection to insert formula menu:" + menuItemHTML)
 			
-	 	$("#formulaFieldRefSelector").append(menuItemHTML)			
+		 	$("#formulaFieldRefSelector").append(menuItemHTML)			
 
-	} // for each  field
+		} // for each  field
+	})
+	
+	
 	
 	$("#formulaFieldRefSelector").on('change',function() {
 		var fieldRefName = $(this).find("option:selected").val();
@@ -53,7 +55,7 @@ function initFormulaEditor(editorConfig) {
 	
 	$('#formulaEditorErrorPopup').popover({placement:'top',trigger:'manual'})
 		
-	populateFieldRefInsertionMenu(editorConfig.tableID)
+	populateFieldRefInsertionMenu(editorConfig.databaseID)
 	
 	
 	
@@ -90,9 +92,6 @@ function saveFormula(fieldRef) {
 	
 	validateFormula(fieldRef,function(fieldRef,formulaText) {
 		var saveFormulaParms = {
-			// TODO - If the formula editor is incorporated in other pages besides the design form
-			// page, the parent table ID needs to be made available through another variable than designFormContext.
-			parentTableID: designFormContext.tableID,
 			fieldID: fieldRef.fieldID,
 			formulaText: formulaText
 		}

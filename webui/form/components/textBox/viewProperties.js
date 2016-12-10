@@ -7,7 +7,6 @@ function initTextBoxViewProperties(textBoxRef) {
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
-		tableID: viewListContext.tableID,
 		recordID: currRecordRef.recordID,
 		componentLink: componentLink
 	}

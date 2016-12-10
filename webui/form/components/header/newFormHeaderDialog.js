@@ -1,4 +1,4 @@
-function openNewFormHeaderDialog(databaseID,formID,parentTableID,containerParams) {
+function openNewFormHeaderDialog(databaseID,formID,containerParams) {
 	console.log("New form header dialog")
 	
 	var newHeaderParams = {

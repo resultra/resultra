@@ -1,7 +1,7 @@
 
 
 
-function openNewUserSelectionDialog(databaseID,formID,parentTableID,containerParams) {
+function openNewUserSelectionDialog(databaseID,formID,containerParams) {
 	
 	function createNewUserSelection($parentDialog, newComponentParams) {
 		
@@ -40,7 +40,6 @@ function openNewUserSelectionDialog(databaseID,formID,parentTableID,containerPar
 	
 	var newFormComponentDialogParams = {
 		elemPrefix: "userSelection_",
-		parentTableID: parentTableID,
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeUser],

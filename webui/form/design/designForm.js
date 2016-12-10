@@ -69,7 +69,7 @@ $(document).ready(function() {
 				finalizeLayoutIncludingNewComponentFunc: droppedItemInfo.finalizeLayoutIncludingNewComponentFunc
 				};
 				
-			objEditConfig.createNewItemAfterDropFunc(designFormContext.databaseID,formID,tableID,containerParams)
+			objEditConfig.createNewItemAfterDropFunc(designFormContext.databaseID,formID,containerParams)
 		},
 		
 		dropDestSelector: formDesignCanvasSelector,
@@ -107,7 +107,7 @@ $(document).ready(function() {
 	function showFormulaEditPane() { formDesignLayout.open("south") }
 	function hideFormulaEditPanel() { formDesignLayout.close("south")}
 	var formulaEditorParams = {
-		tableID: tableID,
+		databaseID: designFormContext.databaseID,
 		showEditorFunc:showFormulaEditPane,
 		hideEditorFunc:hideFormulaEditPanel
 	}
@@ -170,7 +170,7 @@ $(document).ready(function() {
 		console.log("Select form canvas")
 		hideSiblingsShowOne('#formProps')
 		closeFormulaEditor()
-		initDesignFormProperties(designFormContext.tableID,formID)
+		initDesignFormProperties(formID)
 	})
 	
 	

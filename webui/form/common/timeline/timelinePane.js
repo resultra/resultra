@@ -51,7 +51,6 @@ function initFormComponentTimelinePane(timelineParams) {
 		$(timelineListSelector).empty()
 		if(timelineParams.componentLink.linkedValType == linkedComponentValTypeField) {
 			var getCommentParams = {
-				parentTableID: timelineParams.tableID,
 				fieldID: timelineParams.componentLink.fieldID,
 				recordID:timelineParams.recordID }
 			jsonAPIRequest("timeline/getTimelineInfo", getCommentParams, function(timelineInfo) {

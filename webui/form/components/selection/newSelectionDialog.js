@@ -1,6 +1,6 @@
 
 
-function openNewSelectionDialog(databaseID,formID,parentTableID,containerParams)
+function openNewSelectionDialog(databaseID,formID,containerParams)
 {
 		
 	function createNewSelection($parentDialog, newComponentParams) {
@@ -43,7 +43,6 @@ function openNewSelectionDialog(databaseID,formID,parentTableID,containerParams)
 	
 	var newFormComponentDialogParams = {
 		elemPrefix: "selection_",
-		parentTableID: parentTableID,
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeText,fieldTypeNumber],

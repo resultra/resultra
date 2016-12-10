@@ -27,7 +27,7 @@ function summaryTableViewDashboardConfig(summaryTableRef) {
 	
 			var filterPaneParams = {
 				elemPrefix: summaryTableElemPrefix,
-				tableID: updatedSummaryTableRef.properties.dataSrcTableID,
+				databaseID: viewDashboardContext.databaseID,
 				defaultFilterRules: summaryTableRef.properties.defaultFilterRules,
 				initDone: function () {},
 				updateFilterRules: function (updatedFilterRules) {

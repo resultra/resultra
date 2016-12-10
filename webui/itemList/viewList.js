@@ -98,7 +98,7 @@ function reloadRecords(reloadParams) {
 
 
 function createNewRecord() {
-	var newRecordsParams = {parentTableID:tableID}
+	var newRecordsParams = {parentDatabaseID:viewFormContext.databaseID}
 	jsonAPIRequest("recordUpdate/newRecord",newRecordsParams,function(newRecordRef) {
 		currRecordSet.appendNewRecord(newRecordRef);
 		currRecordSet.jumpToRecord(newRecordRef.recordID)
@@ -197,7 +197,7 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 			var sortRules = getSortPaneSortRules()
 	
 			var getFilteredRecordsParams = { 
-				tableID: viewListContext.tableID,
+				databaseID: viewListContext.databaseID,
 				filterRules: filterRules,
 				sortRules: sortRules}
 	
@@ -214,7 +214,7 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 		
 		var filterPropertyPanelParams = {
 			elemPrefix: filterPanelElemPrefix,
-			tableID: listInfo.parentTableID,
+			databaseID: viewListContext.databaseID,
 			defaultFilterRules: listInfo.properties.defaultFilterRules,
 			initDone: decrementRemainingPanelInitCount,
 			updateFilterRules: function (updatedFilterRules) {
@@ -229,7 +229,7 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 						
 		var recordSortPaneParams = {
 			defaultSortRules: listInfo.properties.defaultRecordSortRules,
-			tableID: listInfo.parentTableID,
+			databaseID: viewListContext.databaseID,
 			resortFunc: reloadSortedAndFilterRecords,
 			initDoneFunc: decrementRemainingPanelInitCount,
 			saveUpdatedSortRulesFunc: function(sortRules) {} // no-op

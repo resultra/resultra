@@ -32,7 +32,7 @@ function initFieldSelectionDropdown(params) {
 	}
 	
 	
-	loadFieldInfo(params.tableID,params.fieldTypes,function(fieldsByID) {
+	loadFieldInfo(params.databaseID,params.fieldTypes,function(fieldsByID) {
 		populateAddFilterDropdownMenu(fieldsByID)
 	})
 }

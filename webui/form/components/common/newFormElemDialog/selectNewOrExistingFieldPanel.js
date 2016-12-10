@@ -48,7 +48,7 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 		// Populate the select field dialog box with a list of possible fields to
 		// connect the new form element to.
 		$(selectField.selector).dropdown()
-		loadFieldInfo(panelConfig.parentTableID,panelConfig.fieldTypes,function(fieldsByID) {
+		loadFieldInfo(panelConfig.databaseID,panelConfig.fieldTypes,function(fieldsByID) {
 			populateFieldSelectionMenu(fieldsByID,selectField.selector)
 		})
 		

@@ -2,7 +2,7 @@
 
 
 
-function initDesignFormProperties(table,formID) {
+function initDesignFormProperties(formID) {
 	
 	
 	jsonAPIRequest("frm/get",{formID:formID},function(formInfo) {

@@ -24,7 +24,6 @@ function openNewSummaryTableDialog(summaryTableParams) {
 			
 		var saveNewSummaryTableParams = {
 			parentDashboardID: newSummaryTableParams.dashboardID,
-			dataSrcTableID: getWizardDialogPanelVals($dialog,dashboardComponentSelectTablePanelID),
 			rowGroupingVals: getWizardDialogPanelVals($dialog,dashboardComponentValueGroupingPanelID), // rowGrouping
 			columnValSummaries: tableColSummaryParams,
 			geometry: newSummaryTableParams.geometry
@@ -56,9 +55,10 @@ function openNewSummaryTableDialog(summaryTableParams) {
 		})
 	}
 	
-	var summaryTableTablePanelConfig = createNewDashboardComponentSelectTablePanelConfig(summaryTableElemPrefix)
-	var summaryTableRowGroupingPanelConfig = createNewDashboardComponentValueGroupingPanelConfig(summaryTableElemPrefix)
-	var summaryTableColPanelConfig = createNewDashboardComponentValueSummaryPanelConfig(summaryTableElemPrefix,saveNewSummaryTable)
+	var databaseID = summaryTableParams.dashboardContext.databaseID
+	
+	var summaryTableRowGroupingPanelConfig = createNewDashboardComponentValueGroupingPanelConfig(summaryTableElemPrefix,databaseID)
+	var summaryTableColPanelConfig = createNewDashboardComponentValueSummaryPanelConfig(summaryTableElemPrefix,saveNewSummaryTable,databaseID)
 	
 	openWizardDialog({
 		closeFunc: function () {
@@ -71,7 +71,7 @@ function openNewSummaryTableDialog(summaryTableParams) {
   		  }	
 		},
 		dialogDivID: '#newSummaryTableDialog',
-		panels: [summaryTableTablePanelConfig,summaryTableRowGroupingPanelConfig, summaryTableColPanelConfig],
+		panels: [summaryTableRowGroupingPanelConfig, summaryTableColPanelConfig],
 		progressDivID: '#summaryTable_WizardDialogProgress',
 		minBodyHeight:'350px'
 	})

@@ -13,7 +13,6 @@ function saveNewBarChart($dialog) {
 	console.log("Saving new bar chart: dashboard ID = " + newBarChartParams.dashboardID )
 			
 	var saveNewBarChartParams = {
-		dataSrcTableID: getWizardDialogPanelVals($dialog,dashboardComponentSelectTablePanelID),
 		parentDashboardID: newBarChartParams.dashboardID,
 		xAxisVals: getWizardDialogPanelVals($dialog,dashboardComponentValueGroupingPanelID), // xAxisVals
 		xAxisSortValues: "asc",
@@ -52,9 +51,6 @@ function saveNewBarChart($dialog) {
 
 
 
-var barChartTablePanelConfig = createNewDashboardComponentSelectTablePanelConfig(barChartElemPrefix)
-var barChartXAxisPanelConfig = createNewDashboardComponentValueGroupingPanelConfig(barChartElemPrefix)
-var barChartYAxisPanelConfig = createNewDashboardComponentValueSummaryPanelConfig(barChartElemPrefix,saveNewBarChart)
 
 function openNewBarChartDialog(barChartParams) {
 		
@@ -62,6 +58,12 @@ function openNewBarChartDialog(barChartParams) {
 	newBarChartParams.geometry = barChartParams.geometry
 	newBarChartParams.barChartCreated = false
 	newBarChartParams.dialog = $('#newBarchartDialog')
+	
+	var databaseID = barChartParams.dashboardContext.databaseID
+	
+	var barChartXAxisPanelConfig = createNewDashboardComponentValueGroupingPanelConfig(barChartElemPrefix,databaseID)
+	var barChartYAxisPanelConfig = createNewDashboardComponentValueSummaryPanelConfig(barChartElemPrefix,saveNewBarChart,databaseID)
+	
 
 	openWizardDialog({
 		closeFunc: function () {
@@ -74,7 +76,7 @@ function openNewBarChartDialog(barChartParams) {
   		  }	
 		},
 		dialogDivID: '#newBarchartDialog',
-		panels: [barChartTablePanelConfig,barChartXAxisPanelConfig, barChartYAxisPanelConfig],
+		panels: [barChartXAxisPanelConfig, barChartYAxisPanelConfig],
 		progressDivID: '#barChart_WizardDialogProgress',
 		minBodyHeight:'350px'
 	})

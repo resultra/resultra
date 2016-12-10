@@ -9,7 +9,6 @@ import (
 
 type BarChartDesignTemplateParams struct {
 	ElemPrefix            string
-	SelectTableParams     newComponentDialog.SelectTableTemplateParams
 	ValueGroupingParams   newComponentDialog.ValueGroupingTemplateParams
 	ValueSummaryParams    valueSummary.ValueSummaryTemplateParams
 	TitlePanelParams      propertiesSidebar.PanelTemplateParams
@@ -32,9 +31,6 @@ func init() {
 
 	elemPrefix := "barChart_"
 
-	tableSelectionParams := newComponentDialog.SelectTableTemplateParams{elemPrefix,
-		"Select a table as the source of data for this bar chart."}
-
 	valueGroupingParams := newComponentDialog.ValueGroupingTemplateParams{
 		elemPrefix, "Configure which values are shown along the X axis and how these values are grouped",
 		"Field for X axis' values", "Group Values By"}
@@ -45,7 +41,6 @@ func init() {
 
 	DesignTemplateParams = BarChartDesignTemplateParams{
 		ElemPrefix:            elemPrefix,
-		SelectTableParams:     tableSelectionParams,
 		ValueGroupingParams:   valueGroupingParams,
 		ValueSummaryParams:    valueSummaryParams,
 		TitlePanelParams:      propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "barChartTitle"},

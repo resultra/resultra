@@ -164,7 +164,7 @@ function addNewColumnSummaryListItem(panelParams, fieldsByID) {
 
 function initDashboardComponentSummaryColsPropertyPanel(panelParams) {
 	
-	loadFieldInfo(panelParams.dataSrcTableID,[fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime],
+	loadFieldInfo(panelParams.databaseID,[fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime],
 			function(valueSummaryFieldsByID) {
 		var listSelector = summaryColListSelector(panelParams.listElemPrefix)
 		$(listSelector).empty()

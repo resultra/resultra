@@ -19,7 +19,7 @@ function initDashboardValueSummaryPropertyPanel(panelParams) {
 	validator.resetForm()	
 	disableButton(saveChangesButtonElemInfo.selector)
 	
-	loadFieldInfo(panelParams.tableID,[fieldTypeAll],function(valueSummaryFieldsByID) {
+	loadFieldInfo(panelParams.databaseID,[fieldTypeAll],function(valueSummaryFieldsByID) {
 		
 		// Initialize the field selection and "summarize with" selections with the existing values.
 		var existingFieldInfo = valueSummaryFieldsByID[panelParams.valSummaryProps.summarizeByFieldID]

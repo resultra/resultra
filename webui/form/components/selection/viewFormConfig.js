@@ -95,7 +95,7 @@ function initSelectionRecordEditBehavior(componentContext,selectionObjectRef) {
 					format:"general" 
 				}
 				var setRecordValParams = { 
-					parentTableID:viewListContext.tableID,
+					parentDatabaseID:viewListContext.databaseID,
 					recordID:currRecordRef.recordID, 
 					fieldID:fieldID, value:newValue,
 					 valueFormat:setTextFieldValueFormat}
@@ -122,7 +122,7 @@ function initSelectionRecordEditBehavior(componentContext,selectionObjectRef) {
 						format:"general" 
 					}			
 					var setRecordValParams = { 
-						parentTableID:viewListContext.tableID,
+						parentDatabaseID:viewListContext.databaseID,
 						recordID:currRecordRef.recordID, 
 						fieldID:fieldID, 
 						value:numberVal,

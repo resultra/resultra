@@ -15,7 +15,6 @@ function openNewListDialog(databaseID) {
 					}
 				} // remote
 			}, // newListNameInput
-			newListTableSelection: { optionSelectionRequired:"table" },
 			newListFormSelection: { required:true }
 		},
 		messages: {
@@ -27,20 +26,12 @@ function openNewListDialog(databaseID) {
 
 	validator.resetForm()
 	
-	var $tableSelection = $('#newListTableSelection')
-	
-	populateTableSelectionMenu('#newListTableSelection',databaseID)
-	
-	initSelectControlChangeHandler($tableSelection, function(selectedTableID) {
-		
-		var selectFormParams = {
-			menuSelector: "#newListFormSelection",
-			parentTableID: selectedTableID
-		}	
-		
-		populateFormSelectionMenu(selectFormParams)
-	})
-	
+	var selectFormParams = {
+		menuSelector: "#newListFormSelection",
+		parentDatabaseID: databaseID
+	}	
+	populateFormSelectionMenu(selectFormParams)
+			
 	$('#newListDialog').modal('show')
 	
 	initButtonClickHandler('#newListSaveButton',function() {
@@ -49,7 +40,7 @@ function openNewListDialog(databaseID) {
 			console.log("table selection: " + $('#newListTableSelection').val() )
 			
 			var newListParams = { 
-				parentTableID: $('#newListTableSelection').val(),
+				parentDatabaseID: databaseID,
 				formID: $('#newListFormSelection').val(),
 				name: $('#newListNameInput').val() }
 			jsonAPIRequest("itemList/new",newListParams,function(newListInfo) {

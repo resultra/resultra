@@ -3,6 +3,7 @@ function selectDashboardBarChart (barChartRef) {
 	console.log("Select bar chart: " + barChartRef.barChartID)
 	
 	var barChartPropsArgs = {
+		databaseID: designDashboardContext.databaseID,
 		dashboardID: barChartRef.parentDashboardID,
 		barChartID: barChartRef.barChartID,
 		

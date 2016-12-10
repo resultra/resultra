@@ -1,6 +1,6 @@
 
 
-function openNewHtmlEditorDialog(databaseID,formID,parentTableID,containerParams)
+function openNewHtmlEditorDialog(databaseID,formID,containerParams)
 {
 				
 	function createNewHtmlEditor($parentDialog, newComponentParams) {
@@ -37,7 +37,6 @@ function openNewHtmlEditorDialog(databaseID,formID,parentTableID,containerParams
 		
 	var newFormComponentDialogParams = {
 		elemPrefix: "htmlEditor_",
-		parentTableID: parentTableID,
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeLongText],

@@ -30,7 +30,6 @@ type DesignFormTemplateParams struct {
 	DatabaseID          string
 	FormID              string
 	FormName            string
-	TableID             string
 	CheckboxParams      checkBox.CheckboxDesignTemplateParams
 	DatePickerParams    datePicker.DatePickerDesignTemplateParams
 	TextBoxParams       textBox.TextboxDesignTemplateParams
