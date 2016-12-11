@@ -5,7 +5,7 @@ function hideAllComponentLayoutPlaceholders() {
 		$(".componentColumnPlacementPlaceholder").remove()	
 }
 
-function highlightDroppablePlaceholder(currMouseOffset) {
+function highlightDroppablePlaceholder(currMouseOffset,parentLayoutSelector) {
 	
 	var placeholderFound = false
 	
@@ -18,6 +18,15 @@ function highlightDroppablePlaceholder(currMouseOffset) {
 	if(hitExistingPlaceholder(".componentColumnPlacementPlaceholder",currMouseOffset)) {
 		return
 	}
+	
+	// If the layout is completely empty, use a new row placholder for the drop.
+	if(($(".componentRow").length == 0) && ($(".newComponentRowPlaceholder").length==0)) {
+		console.log("Empty layout - no placeholders to be found")
+		var $parentLayout = $(parentLayoutSelector)
+		$parentLayout.append('<div class="newComponentRowPlaceholder"></div>')
+		placeholderFound = true
+	}
+	
 	
 	$(".componentRow").each(function() {
 		

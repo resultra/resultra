@@ -58,15 +58,13 @@ func SaveCellUpdate(cellUpdate CellUpdate) error {
 }
 
 // GetCellUpdates retrieves a list of cell updates for all the fields in the given record.
-func GetRecordCellUpdates(parentDatabaseID string, recordID string) ([]CellUpdate, error) {
+func GetRecordCellUpdates(recordID string) ([]CellUpdate, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT update_id, user_id, database_id, record_id, field_id, update_timestamp_utc, value,properties
-			FROM cell_updates
-			WHERE database_id=$1 and record_id=$2`,
-		parentDatabaseID, recordID)
+		`SELECT update_id,user_id,database_id,record_id,field_id,update_timestamp_utc,value,properties
+			FROM cell_updates WHERE record_id = $1`, recordID)
 	if queryErr != nil {
-		return nil, fmt.Errorf("GetRecordCellUpdates: Failure querying database: %v", queryErr)
+		return nil, fmt.Errorf("GetRecordCellUpdates: Failure querying database for record ID = %v: %v", recordID, queryErr)
 	}
 	cellUpdates := []CellUpdate{}
 	for rows.Next() {
@@ -81,7 +79,7 @@ func GetRecordCellUpdates(parentDatabaseID string, recordID string) ([]CellUpdat
 			&currCellUpdate.UpdateTimeStamp,
 			&currCellUpdate.CellValue,
 			&encodedProps); scanErr != nil {
-			return nil, fmt.Errorf("getTableList: Failure querying database: %v", scanErr)
+			return nil, fmt.Errorf("GetRecordCellUpdates: Failure scanning database row: %v", scanErr)
 
 		}
 		cellUpdateProps := newDefaultCellUpdateProperties()
@@ -102,7 +100,7 @@ func GetRecordFieldCellUpdates(recordID string, fieldID string) ([]CellUpdate, e
 	rows, queryErr := databaseWrapper.DBHandle().Query(
 		`SELECT update_id,user_id,database_id, record_id,field_id, update_timestamp_utc, value,properties
 			FROM cell_updates
-			WHERE record_id=$2 and field_id=$3`,
+			WHERE record_id=$1 and field_id=$2`,
 		recordID, fieldID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRecordCellUpdates: Failure querying database: %v", queryErr)

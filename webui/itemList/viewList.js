@@ -98,7 +98,7 @@ function reloadRecords(reloadParams) {
 
 
 function createNewRecord() {
-	var newRecordsParams = {parentDatabaseID:viewFormContext.databaseID}
+	var newRecordsParams = {parentDatabaseID:viewListContext.databaseID}
 	jsonAPIRequest("recordUpdate/newRecord",newRecordsParams,function(newRecordRef) {
 		currRecordSet.appendNewRecord(newRecordRef);
 		currRecordSet.jumpToRecord(newRecordRef.recordID)

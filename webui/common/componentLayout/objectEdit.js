@@ -17,7 +17,7 @@ function initObjectGridEditBehavior(objID, editConfig,layoutDesignConfig) {
 				top: e.pageY, 
 				left: e.pageX }
 			console.log("Drag component: mouse offset: " + JSON.stringify(mouseOffset))
-			highlightDroppablePlaceholder(mouseOffset)
+			highlightDroppablePlaceholder(mouseOffset,layoutDesignConfig.parentLayoutSelector)
 		}, // drag
 		 stop: function( e, ui ) {
  			var mouseOffset = { 
