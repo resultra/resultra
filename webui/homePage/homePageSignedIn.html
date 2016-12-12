@@ -1,3 +1,19 @@
+{{define "homePageTemplates"}}
+
+<div style="display:none;">
+	
+	<div id="trackerListItemTemplate">
+			<label class="nameLabel">Database Name Goes Here</label>
+			<a class="btn btn-sm btn-default adminEditPropsButton" role="button">
+				<span class="glyphicon glyphicon-cog"  style="font-size:12px;"></span>
+			</a> 
+						
+	</div>
+	
+</div>
+
+{{end}}
+
 {{define "homePageSignedIn"}}
 <!DOCTYPE html>
 <html>
@@ -16,8 +32,15 @@
 			
   </head>
   <body>
+	  
+	  {{template "homePageTemplates"}}
+	  
 	  <h1>{{.Title}}</h1>
-	  <p>Signed In!</p>
+
+	  <h4>My Trackers</h4>	  
+	  <div id="myTrackerList"></div>
+	  
+	  
 	  <button type="button" id="signOutButton" class="btn btn-primary">Sign Out</button>
   </body>
 </html>
