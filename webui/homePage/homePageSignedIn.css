@@ -1,0 +1,14 @@
+#homePageHeader {
+	padding-top:5px;
+}
+
+#homePageContent {
+	padding-left: 10px;
+	padding-right:10px;
+}
+
+#homePageHeaderBodySep {
+	margin-top:5px;
+	margin-bottom:5px;
+	border-top: 2px solid darkgray;
+}

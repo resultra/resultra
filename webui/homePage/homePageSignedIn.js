@@ -1,12 +1,7 @@
 $(document).ready(function() {	
-	$('#signOutButton').click(function(e) {
-	    console.log("Sign out button clicked")
-		$(this).blur();
-	    e.preventDefault();// prevent the default anchor functionality
-		userAuthSignoutCurrentUser()
-	});
 	
-	
+	initUserDropdownMenu()
+		
 	var getDBListParams = {}
 	var $trackerList = $("#myTrackerList")
 	jsonAPIRequest("database/getList",getDBListParams,function(trackerList) {
@@ -28,9 +23,7 @@ $(document).ready(function() {
 		
 			$trackerList.append($listItem)
 		}
-		
+			
 	})
-	
-	
 	
 }); // document ready

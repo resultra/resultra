@@ -1,14 +1,45 @@
+{{define "homePageBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "homePageHeader"}}
+	<div class="container-fluid" id="homePageHeader">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "homePageBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+
 {{define "homePageTemplates"}}
 
 <div style="display:none;">
-	
-	<div id="trackerListItemTemplate">
+		
+	<div id="trackerListItemTemplate" class="list-group-item">
+		
 			<label class="nameLabel">Database Name Goes Here</label>
-			<a class="btn btn-sm btn-default adminEditPropsButton" role="button">
-				<span class="glyphicon glyphicon-cog"  style="font-size:12px;"></span>
-			</a> 
-						
+			
+			<div class="pull-right trackerListButtons">
+	
+				<a class="btn btn-sm btn-default adminEditPropsButton" role="button">
+					<span class="glyphicon glyphicon-cog"  style="font-size:12px;"></span>
+				</a> 
+
+			</div>		
+	
 	</div>
+	
+	
 	
 </div>
 
@@ -35,13 +66,20 @@
 	  
 	  {{template "homePageTemplates"}}
 	  
-	  <h1>{{.Title}}</h1>
-
-	  <h4>My Trackers</h4>	  
-	  <div id="myTrackerList"></div>
+	  {{template "homePageHeader"}}
 	  
+	  <hr id="homePageHeaderBodySep">
 	  
-	  <button type="button" id="signOutButton" class="btn btn-primary">Sign Out</button>
+	  <div id="homePageContent">
+		  <h4>My Trackers</h4>
+			<ul id="myTrackerList" class="list-group">
+			</ul>
+		
+		<button type="button" class="btn btn-default btn-sm" id="homePageNewTrackerButton">
+		  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Tracker
+		</button>
+	  </div>
+	  
   </body>
 </html>
 {{end}}
