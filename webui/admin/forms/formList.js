@@ -2,7 +2,7 @@ var adminFormListElemPrefix = "adminFormList_"
 
 
 function designFormPageHTMLLink(formID) {
-	return '/designForm/' + formID
+	return '/admin/frm/' + formID
 }
 
 function adminFormListButtonsHTML(formInfo) {

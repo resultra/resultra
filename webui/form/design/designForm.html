@@ -1,13 +1,34 @@
 
-{{define "designFormHeader"}}
+{{define "designFormBreadCrumbHeader"}}
+	<div class="marginTop2">
+
 	  {{template "homePageBreadcrumb"}}
 	  {{template "breadCrumbSeparator"}}
-	  <a href="/" class="h4"><i class="fa fa-tasks" aria-hidden="true">&nbsp;<span class="h4">Database Name</span></i></a>
+	  <a href="/" class="h4"><i class="fa fa-tasks" aria-hidden="true">&nbsp;<span class="h4">{{.DatabaseName}}</span></i></a>
 	  {{template "breadCrumbSeparator"}}
-	  <a class="h4 breadCrumbText" href="/viewForm/{{.FormID}}">{{.FormName}}</a>
+	  <a class="h4 breadCrumbText" href="/admin/{{.DatabaseID}}">Settings</a>
 	  {{template "breadCrumbSeparator"}}
 	  <span class="h4 breadCrumbText">Design Form</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">{{.FormName}}</span>
+	</div>
 {{end}}
+
+{{define "designFormHeader"}}
+	<div class="container-fluid" id="designFormHeader">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "designFormBreadCrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
 
 {{define "designFormPaletteItems" }}
 	<div class="row">
@@ -140,7 +161,7 @@
   <body>
 		<div id="layoutPage" class="layoutPageDiv">
 			
-			<div class="pane ui-layout-north">
+			<div class="pane ui-layout-north" id="designFormPageHeaderUILayout">
 				{{template "designFormHeader" .}}
 			</div> <!-- north ui layout -->
 			

@@ -10,3 +10,11 @@
 #designFormPropertiesSidebarContent {
 	padding:0;
 }
+
+#designFormHeader {
+	padding-top: 0px;
+}
+
+#designFormPageHeaderUILayout {
+	padding-top:5px; /* override the default 10px padding */
+}

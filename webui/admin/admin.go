@@ -56,7 +56,7 @@ func adminPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	templParams := AdminTemplParams{
-		Title:        "Database Settings",
+		Title:        "Tracker Settings",
 		DatabaseName: dbInfo.DatabaseName,
 		DatabaseID:   databaseID}
 

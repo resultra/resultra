@@ -28,6 +28,7 @@ type FormPropertyTemplateParams struct {
 type DesignFormTemplateParams struct {
 	Title               string
 	DatabaseID          string
+	DatabaseName        string
 	FormID              string
 	FormName            string
 	CheckboxParams      checkBox.CheckboxDesignTemplateParams
@@ -57,10 +58,11 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		FilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(elemPrefix)}
 
 	templParams := DesignFormTemplateParams{
-		Title:      "Design Form",
-		DatabaseID: formInfo.DatabaseID,
-		FormID:     formInfo.FormID,
-		FormName:   formInfo.FormName,
+		Title:        "Design Form",
+		DatabaseID:   formInfo.DatabaseID,
+		DatabaseName: formInfo.DatabaseName,
+		FormID:       formInfo.FormID,
+		FormName:     formInfo.FormName,
 
 		CheckboxParams:      checkBox.DesignTemplateParams,
 		DatePickerParams:    datePicker.DesignTemplateParams,

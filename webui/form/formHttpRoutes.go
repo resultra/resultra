@@ -6,5 +6,5 @@ import (
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
-	mainRouter.HandleFunc("/designForm/{formID}", design.DesignForm)
+	mainRouter.HandleFunc("/admin/frm/{formID}", design.DesignForm)
 }

@@ -35,6 +35,9 @@ function createFormLayoutDesignConfig() {
 }
 
 $(document).ready(function() {
+	
+	initUserDropdownMenu()
+	
 					
 	var paletteConfig = {
 		draggableItemHTML: function(placeholderID,paletteItemID) {
