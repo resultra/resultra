@@ -33,6 +33,7 @@ type ItemListTemplParams struct {
 	DatabaseID            string
 	DatabaseName          string
 	ListID                string
+	ListName              string
 	FilterPropPanelParams recordFilter.FilterPanelTemplateParams
 }
 
@@ -41,11 +42,12 @@ func editListPropsPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	listID := vars["listID"]
 
-	databaseID, err := itemListDataModel.GetItemListDatabaseID(listID)
+	listInfo, err := itemListDataModel.GetItemList(listID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(databaseID)
+
+	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(listInfo.ParentDatabaseID)
 	if dbInfoErr != nil {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
 	}
@@ -55,9 +57,10 @@ func editListPropsPage(w http.ResponseWriter, r *http.Request) {
 	elemPrefix := "itemList_"
 	templParams := ItemListTemplParams{
 		Title:                 "Item List Settings",
-		DatabaseID:            databaseID,
+		DatabaseID:            listInfo.ParentDatabaseID,
 		DatabaseName:          dbInfo.DatabaseName,
 		ListID:                listID,
+		ListName:              listInfo.Name,
 		FilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(elemPrefix)}
 
 	if err := itemListTemplates.ExecuteTemplate(w, "editItemListPropsPage", templParams); err != nil {
