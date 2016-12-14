@@ -7,6 +7,6 @@ import (
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
-	mainRouter.HandleFunc("/designDashboard/{dashboardID}", design.DesignDashboard)
+	mainRouter.HandleFunc("/admin/dashboard/{dashboardID}", design.DesignDashboard)
 	mainRouter.HandleFunc("/viewDashboard/{dashboardID}", view.ViewDashboard)
 }

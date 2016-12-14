@@ -2,7 +2,7 @@ var adminDashboardListElemPrefix = "adminDashboardList_"
 
 
 function dashboardDesignPageHTMLLink(dashboardID) {
-	return '/designDashboard/' + dashboardID
+	return '/admin/dashboard/' + dashboardID
 }
 
 function adminDashboardListButtonsHTML(dashboardInfo) {

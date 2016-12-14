@@ -1,12 +1,32 @@
-{{define "designDashboardHeader"}}
+{{define "designDashboardBreadcrumbHeader"}}
+	<div class="marginTop2">
 	  {{template "homePageBreadcrumb"}}
 	  {{template "breadCrumbSeparator"}}
-	  <a href="/" class="h4"><i class="fa fa-tasks" aria-hidden="true">Database Name</i></a>
+	  <a href="/" class="h4"><i class="fa fa-tasks" aria-hidden="true">&nbsp;<span class="h4">{{.DatabaseName}}</span></i></a>
 	  {{template "breadCrumbSeparator"}}
-	  <a class="h4 breadCrumbText" href="/viewDashboard/{{.DashboardID}}">{{.DashboardName}}</a>
+	  <a class="h4 breadCrumbText" href="/admin/{{.DatabaseID}}">Settings</a>
 	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">Design Dashboard</span>
+	  <span class="h4 breadCrumbText">Dashboard Settings</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">{{.DashboardName}}</span>
+	 </div>
 {{end}}
+
+{{define "designDashboardHeader"}}
+	<div class="container-fluid" id="designDashboardHeader">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "designDashboardBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
 
 
 {{define "dashboardDesignPropertiesSidebar"}}
@@ -55,7 +75,7 @@
   <body>
 		<div id="designDashboardPage" class="layoutPageDiv">
 			
-			<div class="pane ui-layout-north">
+			<div class="pane ui-layout-north" id="designDashboardPageHeaderUILayout">
 				{{template "designDashboardHeader" .}}
 			</div> <!-- north ui layout -->
 			
