@@ -1,6 +1,6 @@
 {
     "subDirs": ["breadCrumb",
-		"databaseTOC",
+		"database",
 		"formulaEditor",
 		"helper",
 		"componentLayout",

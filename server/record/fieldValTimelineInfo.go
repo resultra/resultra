@@ -48,7 +48,7 @@ func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal str
 	if fieldType == field.FieldTypeUser {
 		var userVal UserCellValue
 		if err := generic.DecodeJSONString(encodedVal, &userVal); err != nil {
-			return nil, fmt.Errorf("DecodeCellValue: failure decoding user value: %v", err)
+			return nil, fmt.Errorf("DecodeTimelineCellValue: failure decoding user value: %v", err)
 		}
 
 		userInfo, err := userAuth.GetUserInfoByID(userVal.UserID)
@@ -71,7 +71,7 @@ func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal str
 
 		var fileVal FileCellValue
 		if err := generic.DecodeJSONString(encodedVal, &fileVal); err != nil {
-			return nil, fmt.Errorf("DecodeCellValue: failure decoding file value: %v", err)
+			return nil, fmt.Errorf("DecodeTimelineCellValue: failure decoding file value: %v", err)
 		}
 
 		fileTimelineVal := FileTimelineValue{
