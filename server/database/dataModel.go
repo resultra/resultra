@@ -129,10 +129,3 @@ func updateExistingDatabase(databaseID string, updatedDB *Database) (*Database, 
 	return updatedDB, nil
 
 }
-
-func validateDatabaseName(databaseID string, databaseName string) error {
-	if !stringValidation.WellFormedItemName(databaseName) {
-		return fmt.Errorf("Invalid database name")
-	}
-	return nil
-}

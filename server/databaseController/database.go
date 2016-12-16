@@ -7,7 +7,7 @@ import (
 	"resultra/datasheet/server/userRole"
 )
 
-func createNewDatabase(req *http.Request, dbParams database.NewDatabaseParams) (*database.Database, error) {
+func createNewDatabase(req *http.Request, dbParams database.NewDatabaseParams) (*UserTrackingDatabaseInfo, error) {
 
 	userID, userErr := userAuth.GetCurrentUserID(req)
 	if userErr != nil {
@@ -23,5 +23,14 @@ func createNewDatabase(req *http.Request, dbParams database.NewDatabaseParams) (
 		return nil, adminErr
 	}
 
-	return newDB, nil
+	// Return a structure which includes not only the name and ID, but also the information
+	// about the current user's permissions. Rather than returning the raw database struct,
+	// this UserTrackingDatabaseInfo struct allows the tracking database to be displayed in a
+	// list with options to change settings, etc.
+	newDBInfo := UserTrackingDatabaseInfo{
+		DatabaseID:   newDB.DatabaseID,
+		DatabaseName: newDB.Name,
+		IsAdmin:      true}
+
+	return &newDBInfo, nil
 }

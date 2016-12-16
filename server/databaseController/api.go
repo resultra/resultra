@@ -21,6 +21,7 @@ func init() {
 
 	databaseRouter.HandleFunc("/api/database/setName", database.SetNameAPI)
 	databaseRouter.HandleFunc("/api/database/validateDatabaseName", database.ValidateDatabaseNameAPI)
+	databaseRouter.HandleFunc("/api/database/validateNewTrackerName", database.ValidateNewTrackerNameAPI)
 
 	databaseRouter.HandleFunc("/api/database/saveAsTemplate", saveAsTemplate)
 

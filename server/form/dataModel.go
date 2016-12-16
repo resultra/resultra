@@ -202,8 +202,9 @@ func validateUniqueFormName(databaseID string, formID string, formName string) e
 	//    existing name.
 	rows, queryErr := databaseWrapper.DBHandle().Query(
 		`SELECT forms.form_id,forms.name 
-			FROM forms,data_tables,databases
+			FROM forms,databases
 			WHERE databases.database_id=$1 AND
+			forms.database_id=databases.database_id AND
 				forms.name=$2 AND forms.form_id<>$3`,
 		databaseID, formName, formID)
 	if queryErr != nil {

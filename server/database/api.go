@@ -37,3 +37,17 @@ func ValidateDatabaseNameAPI(w http.ResponseWriter, r *http.Request) {
 	api.WriteJSONResponse(w, response)
 
 }
+
+func ValidateNewTrackerNameAPI(w http.ResponseWriter, r *http.Request) {
+
+	trackerName := r.FormValue("trackerName")
+
+	if err := validateNewTrackerName(trackerName); err != nil {
+		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
+		return
+	}
+
+	response := true
+	api.WriteJSONResponse(w, response)
+
+}
