@@ -12,55 +12,25 @@ function openNewFormComponentDialog(newComponentParams) {
 	// when the dialog is closed.
 	var componentCreated = false
 
-	function saveNewFormComponent($parentDialog) {
-		console.log("saveNewFormComponent: done handler called")
-		
-		var newOrExistingVals = getWizardDialogPanelVals($parentDialog,createNewOrExistingFieldDialogPanelID)
-				
-		console.log("saveNewFormComponent: panel values: " + JSON.stringify(newOrExistingVals))
-		
-		if(newOrExistingVals.componentValSelection == "newField") {
-			var newFieldParams = getWizardDialogPanelVals($parentDialog,newFieldDialogPanelID)
-			console.log("creating new field: params= " + JSON.stringify(newFieldParams))
-			$parentDialog.modal("hide")
-			// TODO Create the new field first, then create the component attached to this field
-		} else if (newOrExistingVals.componentValSelection == "newGlobal") {
-			// TODO Create the new global first, then create the component attached to this field
-		} else if (newOrExistingVals.componentValSelection == "existingField") {
-			var newComponentAPIParams = {
-				parentFormID: newComponentParams.formID,
-				geometry: newComponentParams.containerParams.geometry,
-				componentLink: {
-					linkedValType: "field",
-					fieldID: newOrExistingVals.selectedFieldID
-				}
-			}
-			componentCreated = true
-			newComponentParams.createNewFormComponent($parentDialog,newComponentAPIParams)
-		} else {
-			assert(newOrExistingVals.componentValSelection == "existingGlobal")
-			var newComponentAPIParams = {
-				parentFormID: newComponentParams.formID,
-				geometry: newComponentParams.containerParams.geometry,
-				componentLink: {
-					linkedValType: "global",
-					globalID: newOrExistingVals.selectedGlobalID					
-				}
-			}
-			componentCreated = true
-			console.log("New Component params (existing global):" + JSON.stringify(newComponentAPIParams))
-			newComponentParams.createNewFormComponent($parentDialog,newComponentAPIParams)
-		}
+	function doneCreatingComponent($parentDialog) {
+		componentCreated = true
+		$parentDialog.modal("hide")
 	}
 	
-	var newOrExistingFieldPanel = createNewOrExistingFieldPanelContextBootstrap({
-		databaseID: newComponentParams.databaseID,
-		elemPrefix:newComponentParams.elemPrefix,
-		fieldTypes: newComponentParams.fieldTypes,
-		globalTypes: newComponentParams.globalTypes,
+	// Create the wizard dialog panels
+	
+	var newOrExistingFieldPanelParams = {
 		doneIfSelectExistingField:true,
-		doneFunc:saveNewFormComponent})
-	var newFieldPanel = createNewFieldDialogPanelContextBootstrap(newComponentParams)
+		doneFunc:doneCreatingComponent
+	}
+	$.extend(newOrExistingFieldPanelParams,newComponentParams)
+	var newOrExistingFieldPanel = createNewOrExistingFieldPanelContextBootstrap(newOrExistingFieldPanelParams)
+		
+	var newFieldPanelParams = {
+		doneFunc:doneCreatingComponent
+	}
+	$.extend(newFieldPanelParams,newComponentParams)			
+	var newFieldPanel = createNewFieldDialogPanelContextBootstrap(newFieldPanelParams)
 		
 		
 	openWizardDialog({

@@ -99,6 +99,35 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 		var doneButtonSelector = '#' + panelConfig.elemPrefix + 'NewFormComponentNewFieldDoneButton'
 		initButtonClickHandler(doneButtonSelector,function() {
 			if($panelForm.valid()) {
+				
+				var componentValSelection = $(checkedComponentValRadioSelector).val()
+				
+				if (componentValSelection == "existingField") {
+					var newComponentAPIParams = {
+						parentFormID: panelConfig.formID,
+						geometry: panelConfig.containerParams.geometry,
+						componentLink: {
+							linkedValType: "field",
+							fieldID: $(selectField.selector).val()
+						}
+					}
+					componentCreated = true
+					panelConfig.createNewFormComponent($parentDialog,newComponentAPIParams)
+				} else {
+					assert(componentValSelection == "existingGlobal")
+					var newComponentAPIParams = {
+						parentFormID: panelConfig.formID,
+						geometry: panelConfig.containerParams.geometry,
+						componentLink: {
+							linkedValType: "global",
+							globalID: $(selectGlobal.selector).val()					
+						}
+					}
+					componentCreated = true
+					console.log("New Component params (existing global):" + JSON.stringify(newComponentAPIParams))
+					panelConfig.createNewFormComponent($parentDialog,newComponentAPIParams)
+				}
+					
 				panelConfig.doneFunc($parentDialog)	
 			}
 		})

@@ -56,8 +56,24 @@ function createNewFieldDialogPanelContextBootstrap(panelParams) {
 				console.log("creating new field: params= " + JSON.stringify(newFieldParams))
 				jsonAPIRequest("field/new",newFieldParams,function(newField) {
 					console.log("new field created: " + JSON.stringify(newField))
+									
+					// Re-initialize the field information used by different elements.
+					initFieldInfo(panelParams.databaseID,function() {
+						var newComponentAPIParams = {
+							parentFormID: panelParams.formID,
+							geometry: panelParams.containerParams.geometry,
+							componentLink: {
+								linkedValType: "field",
+								fieldID: newField.fieldID
+							}
+						}
+						panelParams.createNewFormComponent($parentDialog,newComponentAPIParams)
+						
+						panelParams.doneFunc($parentDialog)
+					})
+									
 				})
-				$parentDialog.modal("hide")
+
 			}	
 		})
 		
