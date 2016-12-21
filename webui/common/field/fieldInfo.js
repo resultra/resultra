@@ -7,6 +7,21 @@ var fieldTypeTime = "time"
 var fieldTypeUser = "user"
 var fieldTypeAll = "all"
 
+function fieldTypeLabel(fieldType) {
+	switch (fieldType) {
+	case fieldTypeNumber: return "Number"
+	case fieldTypeText: return "Text"
+	case fieldTypeTime: return "Date and/or Time"
+	case fieldTypeUser: return "User"
+	case fieldTypeBool: return "True or False (Boolean)"
+	case fieldTypeFile: return "File"
+	case fieldTypeLongText: return "Long Text"
+	default: return "Unknown field type"
+	}
+}
+
+
+
 var fieldInfoFieldsByID
 
 // initFieldInfo loads the field information once, then it is available globally as a service to other parts of client
@@ -18,6 +33,7 @@ function initFieldInfo(databaseID, fieldInitDoneCallbackFunc) {
 		fieldInitDoneCallbackFunc()
 	})
 }
+
 
 function getFieldRef(fieldID) {
 	

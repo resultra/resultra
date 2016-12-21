@@ -17,18 +17,52 @@ function createNewFieldDialogPanelContextBootstrap(panelParams) {
 	var refNameLabel = createPrefixedTemplElemInfo(elemPrefix,"RefNameLabel")
 	var isCalcFieldField = createPrefixedTemplElemInfo(elemPrefix,"NewFieldCalcFieldCheckbox")
 	var isCalcFieldInput = createPrefixedTemplElemInfo(elemPrefix,"NewFieldIsCalcFieldInput")
+	
 	var fieldTypeSelection = createPrefixedTemplElemInfo(elemPrefix,"NewFieldValTypeSelection")
+	var fieldTypeSelectionFormGroup = createPrefixedTemplElemInfo(elemPrefix,"NewFieldValTypeSelectionFormGroup")
 	
 	var dialogProgressSelector = "#" + elemPrefix + "NewFormElemDialogProgress"
 	
+	// Initialize the field type selection: If there is only 1 field type to choose from,
+	// this field type is set in singleFieldType and the form's selection for field type is
+	// disabled. 
+	var multipleFieldTypes = false
+	var singleFieldType = null
+	if (panelParams.fieldTypes.length == 1) {
+		singleFieldType = panelParams.fieldTypes[0]
+		$(fieldTypeSelectionFormGroup.selector).hide()
+	} else {
+		$(fieldTypeSelectionFormGroup.selector).show()
+		multipleFieldTypes = true
+		$(fieldTypeSelection.selector).empty()
+		$(fieldTypeSelection.selector).append(defaultSelectOptionPromptHTML("Select a Field Type"))
+		for(var fieldTypeIndex = 0; fieldTypeIndex < panelParams.fieldTypes.length; fieldTypeIndex++) {
+			var fieldType = panelParams.fieldTypes[fieldTypeIndex]
+			$(fieldTypeSelection.selector).append(selectOptionHTML(fieldType,fieldTypeLabel(fieldType)))
+		}
+		
+	}
+	function getFieldTypeSelection() {
+		if (multipleFieldTypes) {
+			return $(fieldTypeSelection.selector).val()
+		} else {
+			return singleFieldType
+		}
+	}
+	
+	
+	
 	var validationRules = {}
 	validationRules[fieldNameInput.id] = { required: true } 
-	validationRules[fieldTypeSelection.id] = { required: true } 
+	if (multipleFieldTypes) {
+		validationRules[fieldTypeSelection.id] = { required: true } 		
+	}
 	validationRules[fieldRefNameInput.id] = { required: true } 
 	var validator = $panelForm.validate({rules: validationRules })
 	validator.resetForm()	
 	
-	$(refNameLabel.selector).tooltip()	
+	$(refNameLabel.selector).tooltip()
+	
 	
 	function getPanelValues($parentDialog) {
 		var newFieldParams = {
@@ -36,7 +70,7 @@ function createNewFieldDialogPanelContextBootstrap(panelParams) {
 			name: $(fieldNameInput.selector).val(),
 			refName: $(fieldRefNameInput.selector).val(),
 			isCalcField: $(isCalcFieldInput.selector).prop("checked"),
-			type: $(fieldTypeSelection.selector).val()
+			type: getFieldTypeSelection()
 		}
 		return newFieldParams
 	}
