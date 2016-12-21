@@ -50,6 +50,21 @@ function createNewFieldDialogPanelContextBootstrap(panelParams) {
 		}
 	}
 	
+	// Set a default reference name based upon the field name the user inputs.
+	// However, after the field reference name has been manually edited, don't
+	// change it to the default reference name anymore.
+	var fieldRefNameManuallyEdited = false
+	$(fieldNameInput.selector).on('input',function() {
+		if (!fieldRefNameManuallyEdited) {
+			var fieldName = $(fieldNameInput.selector).val()
+			var defaultFieldRefName = fieldName.replace(/[^0-9a-zA-Z]/g,"")
+			$(fieldRefNameInput.selector).val(defaultFieldRefName)
+		}
+	})
+	$(fieldRefNameInput.selector).change(function() {
+		fieldRefNameManuallyEdited = true
+	})
+	
 	
 	
 	var validationRules = {}
