@@ -58,8 +58,9 @@ func saveNewSelection(params NewSelectionParams) (*Selection, error) {
 	}
 
 	properties := SelectionProperties{
-		Geometry:      params.Geometry,
-		ComponentLink: params.ComponentLink}
+		Geometry:       params.Geometry,
+		ComponentLink:  params.ComponentLink,
+		SelectableVals: []SelectionSelectableVal{}}
 
 	newSelection := Selection{ParentFormID: params.ParentFormID,
 		SelectionID: uniqueID.GenerateSnowflakeID(),

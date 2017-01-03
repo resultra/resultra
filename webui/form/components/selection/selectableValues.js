@@ -111,10 +111,12 @@ function initSelectableValuesProperties(selectionRef) {
 	
 	$selectableValuesList.empty()
 	
-	for(var selValIndex = 0; selValIndex < selectionRef.properties.selectableVals.length; selValIndex++) {
-		var selectableVal = selectionRef.properties.selectableVals[selValIndex]	
-		var $listItem = selectableValuesListItem(generateSelectableValuePrefix(),selectionRef,selectableVal)
-		$selectableValuesList.append($listItem)
+	if(selectionRef.properties.selectableVals !== null) {
+		for(var selValIndex = 0; selValIndex < selectionRef.properties.selectableVals.length; selValIndex++) {
+			var selectableVal = selectionRef.properties.selectableVals[selValIndex]	
+			var $listItem = selectableValuesListItem(generateSelectableValuePrefix(),selectionRef,selectableVal)
+			$selectableValuesList.append($listItem)
+		}		
 	}
 		
 	initButtonClickHandler('#selectionAddSelectableValueButton',function(e) {
