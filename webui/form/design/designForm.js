@@ -8,7 +8,8 @@ var paletteItemsEditConfig = {
 	paletteItemHeader: formHeaderDesignFormConfig,
 	paletteItemRating: ratingDesignFormConfig,
 	paletteItemSelection: selectionDesignFormConfig,
-	paletteItemUserSelection: userSelectionDesignFormConfig
+	paletteItemUserSelection: userSelectionDesignFormConfig,
+	paletteItemComment: commentDesignFormConfig
 }
 
 var formDesignCanvasSelector = "#layoutCanvas"
@@ -131,6 +132,10 @@ $(document).ready(function() {
 		initCheckBoxFunc: function(componentContext,$checkBox,checkBoxObjectRef) {
 			var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
 			initFormComponentDesignBehavior(componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig,designFormLayoutConfig)
+		},
+		initCommentFunc: function(componentContext,$comment,commentObjectRef) {
+			var componentIDs = { formID: formID, componentID: commentObjectRef.commentID }
+			initFormComponentDesignBehavior(componentIDs,commentObjectRef,commentDesignFormConfig,designFormLayoutConfig)
 		},
 		initRatingFunc: function(componentContext,$rating,ratingObjectRef) {
 			initRatingDesignControlBehavior(ratingObjectRef)

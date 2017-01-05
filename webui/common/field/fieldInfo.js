@@ -6,6 +6,7 @@ var fieldTypeBool = "bool"
 var fieldTypeTime = "time"
 var fieldTypeUser = "user"
 var fieldTypeAll = "all"
+var fieldTypeComment = "comment"
 
 function fieldTypeLabel(fieldType) {
 	switch (fieldType) {
@@ -16,6 +17,7 @@ function fieldTypeLabel(fieldType) {
 	case fieldTypeBool: return "True or False (Boolean)"
 	case fieldTypeFile: return "File"
 	case fieldTypeLongText: return "Long Text"
+	case fieldTypeComment: return "Comment"
 	default: return "Unknown field type"
 	}
 }
@@ -171,6 +173,15 @@ function loadFieldInfo(parentDatabaseID,fieldTypes,fieldInfoCallback) {
 				var fileField = fileFields[fileFieldIter]			
 				console.log("file field: " + fileField.name)
 				fieldsByID[fileField.fieldID] = fileField
+			} // for each file field
+		}
+
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeComment]==true) {
+			var commentFields = fieldsByType.commentFields
+			for (commentFieldIter in commentFields) {		
+				var commentField = commentFields[commentFieldIter]			
+				console.log("comment field: " + commentField.name)
+				fieldsByID[commentField.fieldID] = commentField
 			} // for each file field
 		}
 	

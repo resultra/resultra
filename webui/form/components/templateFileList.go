@@ -2,6 +2,7 @@ package components
 
 import (
 	"resultra/datasheet/webui/form/components/checkBox"
+	"resultra/datasheet/webui/form/components/comment"
 	"resultra/datasheet/webui/form/components/common/newFormElemDialog"
 	"resultra/datasheet/webui/form/components/datePicker"
 	"resultra/datasheet/webui/form/components/header"
@@ -32,5 +33,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, rating.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, selection.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, userSelection.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, comment.TemplateFileList...)
 
 }

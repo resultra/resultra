@@ -2,6 +2,7 @@
     "subDirs": [
 		"common",
 		"checkBox",
+		"comment",
 		"datePicker",
 		"htmlEditor",
 		"image",

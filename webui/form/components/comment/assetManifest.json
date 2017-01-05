@@ -1,0 +1,16 @@
+{
+    "cssFiles": ["comment.css"], 
+    "htmlFiles": [
+        "designProperties.html",
+		"viewProperties.html"
+    ], 
+    "jsFiles": [
+        "containerHTML.js", 
+        "newCommentDialog.js", 
+        "designProperties.js", 
+        "designFormConfig.js",
+		"viewProperties.js",
+        "viewFormConfig.js"
+    ],
+	"imageFiles":[]
+}

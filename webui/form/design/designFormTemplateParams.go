@@ -4,6 +4,7 @@ import (
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/form/components/checkBox"
+	"resultra/datasheet/webui/form/components/comment"
 	"resultra/datasheet/webui/form/components/datePicker"
 	"resultra/datasheet/webui/form/components/header"
 	"resultra/datasheet/webui/form/components/htmlEditor"
@@ -37,6 +38,7 @@ type DesignFormTemplateParams struct {
 	SelectionParams     selection.SelectionDesignTemplateParams
 	HtmlEditorParams    htmlEditor.HTMLEditorDesignTemplateParams
 	ImageParams         image.ImageDesignTemplateParams
+	CommentParams       comment.CommentDesignTemplateParams
 	RatingParams        rating.RatingDesignTemplateParams
 	UserSelectionParams userSelection.UserSelectionDesignTemplateParams
 	HeaderParams        header.HeaderTemplateParams
@@ -71,6 +73,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		UserSelectionParams: userSelection.DesignTemplateParams,
 		HtmlEditorParams:    htmlEditor.DesignTemplateParams,
 		ImageParams:         image.DesignTemplateParams,
+		CommentParams:       comment.DesignTemplateParams,
 		RatingParams:        rating.DesignTemplateParams,
 		HeaderParams:        header.TemplateParams,
 		FormPropertyParams:  formPropParams}

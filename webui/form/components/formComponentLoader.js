@@ -139,6 +139,29 @@ function loadFormComponents(loadFormConfig) {
 		}
 
 
+		function initCommentLayout($componentRow,comment) {
+			// Create an HTML block for the container
+			
+			var containerHTML = commentContainerHTML(comment.commentID);
+			var containerObj = $(containerHTML)
+			
+			var fieldID = comment.properties.fieldID			
+			var componentLabel = getFieldRef(fieldID).name		
+			containerObj.find('span').text(componentLabel)
+			
+			// Position the object withing the #layoutCanvas div
+			$componentRow.append(containerObj)
+			setElemDimensions(containerObj,comment.properties.geometry)
+			
+			 // Store the newly created object reference in the DOM element. This is needed for follow-on
+			 // property setting, resizing, etc.
+			setElemObjectRef(comment.commentID,comment)
+			
+			// Callback for any specific initialization for either the form design or view mode 
+			loadFormConfig.initCommentFunc(componentContext,containerObj,comment)
+		}
+
+
 
 		function initCheckBoxLayout($componentRow,checkBox) {
 			// Create an HTML block for the container
@@ -382,6 +405,14 @@ function loadFormComponents(loadFormConfig) {
 			}		
 		}
 
+		for (var commentIter in formInfo.comments) {
+			var commentProps = formInfo.comments[commentIter]
+			console.log("loadFormComponents: initializing comment component: " + JSON.stringify(commentProps))
+			compenentIDComponentMap[commentProps.commentID] = {
+				componentInfo: commentProps,
+				initFunc: initCommentLayout
+			}		
+		}
 
 		for (var userSelIter in formInfo.userSelections) {
 			var userSelProps = formInfo.userSelections[userSelIter]
