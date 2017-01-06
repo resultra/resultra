@@ -283,7 +283,7 @@ $(document).ready(function() {
 					selectionObjectRef.selectionID,initSelectionViewProperties)
 		},
 		initCommentFunc: function(componentContext,$comment,commentObjectRef) {			
-			initSelectionRecordEditBehavior(componentContext,commentObjectRef)
+			initCommentBoxRecordEditBehavior(componentContext,commentObjectRef)
 			initFormComponentViewBehavior($comment,
 					commentObjectRef.commentID,initCommentViewProperties)
 		},

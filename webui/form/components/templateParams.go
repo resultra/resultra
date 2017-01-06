@@ -2,6 +2,7 @@ package components
 
 import (
 	"resultra/datasheet/webui/form/components/checkBox"
+	"resultra/datasheet/webui/form/components/comment"
 	"resultra/datasheet/webui/form/components/datePicker"
 	"resultra/datasheet/webui/form/components/htmlEditor"
 	"resultra/datasheet/webui/form/components/image"
@@ -18,6 +19,7 @@ type ComponentViewTemplateParams struct {
 	ImageParams         image.ImageViewTemplateParams
 	HTMLEditorParams    htmlEditor.HTMLEditorViewTemplateParams
 	RatingParams        rating.RatingViewTemplateParams
+	CommentParams       comment.CommentViewTemplateParams
 	SelectionParams     selection.SelectionViewTemplateParams
 	UserSelectionParams userSelection.UserSelectionViewTemplateParams
 }
@@ -34,6 +36,7 @@ func init() {
 		ImageParams:         image.ViewTemplateParams,
 		HTMLEditorParams:    htmlEditor.ViewTemplateParams,
 		RatingParams:        rating.ViewTemplateParams,
+		CommentParams:       comment.ViewTemplateParams,
 		SelectionParams:     selection.ViewTemplateParams,
 		UserSelectionParams: userSelection.ViewTemplateParams}
 
