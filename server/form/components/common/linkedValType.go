@@ -25,6 +25,21 @@ func validLinkedValType(valType string) bool {
 
 type FieldTypeValidationFunc func(string) bool
 
+func ValidateField(fieldID string, fieldTypeValidationFunc FieldTypeValidationFunc) error {
+	field, fieldErr := field.GetField(fieldID)
+	if fieldErr != nil {
+		return fmt.Errorf("ValidateField: Can't get field with field ID = '%v': datastore error=%v",
+			fieldID, fieldErr)
+	}
+
+	if !fieldTypeValidationFunc(field.Type) {
+		return fmt.Errorf("ValidateField: Invalid field type %v", field.Type)
+	}
+
+	return nil
+
+}
+
 func ValidateComponentLink(compLink ComponentLink, fieldTypeValidationFunc FieldTypeValidationFunc) error {
 
 	if !validLinkedValType(compLink.LinkedValType) {

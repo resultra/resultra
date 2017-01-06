@@ -17,6 +17,7 @@ const FieldTypeBool string = "bool"
 const FieldTypeLongText string = "longText"
 const FieldTypeFile string = "file"
 const FieldTypeUser string = "user"
+const FieldTypeComment string = "comment"
 
 type Field struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
@@ -55,6 +56,8 @@ func validFieldType(fieldType string) bool {
 	case FieldTypeFile:
 		return true
 	case FieldTypeUser:
+		return true
+	case FieldTypeComment:
 		return true
 	default:
 		return false
