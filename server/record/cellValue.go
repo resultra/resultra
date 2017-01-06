@@ -64,6 +64,12 @@ func DecodeCellValue(fieldType string, encodedVal string) (interface{}, error) {
 			return nil, fmt.Errorf("DecodeCellValue: failure decoding long text value: %v", err)
 		}
 		return textVal.Val, nil
+	case field.FieldTypeComment:
+		var textVal TextCellValue
+		if err := generic.DecodeJSONString(encodedVal, &textVal); err != nil {
+			return nil, fmt.Errorf("DecodeCellValue: failure decoding long text value: %v", err)
+		}
+		return textVal.Val, nil
 	case field.FieldTypeFile:
 		var fileVal FileCellValue
 		if err := generic.DecodeJSONString(encodedVal, &fileVal); err != nil {

@@ -124,4 +124,15 @@ function getGroupedRadioButtonVals(commonNamePrefix) {
 	
 }
 
+function nonEmptyStringVal(val) {
+	var valWithoutSpace = val.replace(/\s/g,'')
+	if(valWithoutSpace.length > 0) {
+		return true
+	} else {
+		return false
+	}
+	
+}
+
+
 

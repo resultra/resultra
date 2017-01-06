@@ -74,7 +74,7 @@ function initHtmlEditorRecordEditBehavior(componentContext,htmlEditorObjectRef) 
 		var editor = $('#'+containerID).data("htmlEditor")
 		var inputVal = editor.getData();
 		
-		currRecordRef = currRecordSet.currRecordRef()
+		var currRecordRef = currRecordSet.currRecordRef()
 		
 		var componentLink = objectRef.properties.componentLink
 	

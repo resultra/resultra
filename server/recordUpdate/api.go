@@ -22,6 +22,7 @@ func init() {
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/setTimeFieldValue", setTimeFieldValue)
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/setLongTextFieldValue", setLongTextFieldValue)
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/setUserFieldValue", setUserFieldValue)
+	recordUpdateRouter.HandleFunc("/api/recordUpdate/setCommentFieldValue", setCommentFieldValue)
 
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/uploadFileToFieldValue", uploadFileAPI)
 
@@ -139,6 +140,24 @@ func setBoolFieldValue(w http.ResponseWriter, r *http.Request) {
 func setTimeFieldValue(w http.ResponseWriter, r *http.Request) {
 
 	setValParams := record.SetRecordTimeValueParams{}
+	if err := api.DecodeJSONRequest(r, &setValParams); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	updatedRecordRef, setErr := updateRecordValue(r, setValParams)
+	if setErr != nil {
+		api.WriteErrorResponse(w, setErr)
+		return
+	} else {
+		api.WriteJSONResponse(w, updatedRecordRef)
+	}
+
+}
+
+func setCommentFieldValue(w http.ResponseWriter, r *http.Request) {
+
+	setValParams := record.SetRecordCommentValueParams{}
 	if err := api.DecodeJSONRequest(r, &setValParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

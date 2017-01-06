@@ -75,6 +75,29 @@ func (valParams SetRecordLongTextValueParams) getUpdateProperties() CellUpdatePr
 	return props
 }
 
+// Update a comment field value
+
+type SetRecordCommentValueParams struct {
+	RecordUpdateHeader
+	Value       string                `json:"value"`
+	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
+}
+
+func (setValParams SetRecordCommentValueParams) fieldType() string { return field.FieldTypeComment }
+
+func (valParams SetRecordCommentValueParams) generateCellValue() (string, error) {
+
+	cellVal := TextCellValue{Val: valParams.Value}
+
+	return generic.EncodeJSONString(cellVal)
+}
+
+func (valParams SetRecordCommentValueParams) getUpdateProperties() CellUpdateProperties {
+	props := CellUpdateProperties{valParams.ValueFormat}
+
+	return props
+}
+
 // Update a number field value
 
 type SetRecordNumberValueParams struct {
