@@ -2,7 +2,14 @@ function openNewCommentComponentDialog(databaseID,formID,containerParams)
 {
 		
 	function createNewCommentComponent($parentDialog, newComponentParams) {
-		jsonAPIRequest("frm/comment/new",newComponentParams,function(newCommentObjectRef) {
+		
+		var newCommentBoxParams = {
+			fieldID: newComponentParams.componentLink.fieldID,
+			geometry: newComponentParams.geometry,
+			parentFormID: newComponentParams.parentFormID
+		}
+		
+		jsonAPIRequest("frm/comment/new",newCommentBoxParams,function(newCommentObjectRef) {
 	          console.log("createNewComment: Done getting new ID:response=" + JSON.stringify(newCommentObjectRef));
 		  			  
 			  var fieldID = newCommentObjectRef.properties.fieldID

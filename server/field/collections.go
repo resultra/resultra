@@ -13,6 +13,7 @@ type FieldsByType struct {
 	BoolFields     []Field `json:"boolFields"`
 	FileFields     []Field `json:"fileFields"`
 	UserFields     []Field `json:"userFields"`
+	CommentFields  []Field `json:"commentFields"`
 }
 
 func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
@@ -40,6 +41,8 @@ func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
 			fieldsByType.UserFields = append(fieldsByType.UserFields, currField)
 		case FieldTypeFile:
 			fieldsByType.FileFields = append(fieldsByType.FileFields, currField)
+		case FieldTypeComment:
+			fieldsByType.CommentFields = append(fieldsByType.CommentFields, currField)
 		default:
 			return nil, fmt.Errorf(
 				"GetFieldsByType: Unable to retrieve fields from datastore: Invalid field type %v",
