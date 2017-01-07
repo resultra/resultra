@@ -42,6 +42,16 @@ function formatTimelineValue(fieldValChange) {
 			return "Entered " + rawVal + "."
 		}
 	}
+	
+	
+	function formatCommentBoxVal() {
+		switch(format){
+		case "general":
+			return "Added comment: " + rawVal + "."
+		default:
+			return "Added comment:  " + rawVal + "."
+		}
+	}
 
 	function formatSelectVal() {
 		switch(format){
@@ -82,6 +92,8 @@ function formatTimelineValue(fieldValChange) {
 		return formatSelectVal()
 	case "selectUser":
 		return formatSelectUserVal()
+	case "commentBox":
+		return formatCommentBoxVal()
 	default:
 		return "Changed value to " + rawVal + 
 					" -- " + JSON.stringify(fieldValChange.valueFormat)
