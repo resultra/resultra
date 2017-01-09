@@ -2,6 +2,7 @@ package record
 
 import (
 	"fmt"
+	"net/http"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/userAuth"
@@ -145,4 +146,26 @@ func GetFieldValUpdateTimelineInfo(currUserID string, recordID string, fieldID s
 	sort.Sort(ByTimelineUpdateTime(allFieldValChanges))
 
 	return allFieldValChanges, nil
+}
+
+type GetFieldValChangeInfoParams struct {
+	RecordID string `json:"recordID"`
+	FieldID  string `json:"fieldID"`
+}
+
+func getFieldValChangeInfo(req *http.Request, params GetFieldValChangeInfoParams) ([]FieldValTimelineChangeInfo, error) {
+
+	currUserID, err := userAuth.GetCurrentUserID(req)
+	if err != nil {
+		return nil, fmt.Errorf("getFieldTimelineInfo: %v", err)
+	}
+
+	fieldValTimelineChanges, err := GetFieldValUpdateTimelineInfo(currUserID,
+		params.RecordID, params.FieldID)
+	if err != nil {
+		return nil, fmt.Errorf("getFieldValChangeInfo: Error retrieving timeline field value changes: %+v, error = %v", params, err)
+	}
+
+	return fieldValTimelineChanges, nil
+
 }

@@ -1,14 +1,51 @@
 function loadRecordIntoCommentBox(commentElem, recordRef) {
 	
-	console.log("loadRecordIntoTextBox: loading record into text box: " + JSON.stringify(recordRef))
+	console.log("loadRecordIntoCommentBox: loading record into comment box: " + JSON.stringify(recordRef))
 	
 	var commentObjectRef = commentElem.data("objectRef")
 	var $commentInput = commentElem.find('input')
 	var componentContext = commentElem.data("componentContext")
+		
 	
-	var fieldID = commentObjectRef.properties.fieldID
+	var changeInfoParams = {
+		recordID: recordRef.recordID,
+		fieldID: commentObjectRef.properties.fieldID
+	}
 	
-	// TODO - Load existing comments into comment box
+	jsonAPIRequest("record/getFieldValChangeInfo",changeInfoParams,function(valChanges) {
+		
+		console.log("loadRecordIntoCommentBox: retrieved comment info: " + JSON.stringify(valChanges))
+		
+		var commentListID = commentCommentListFromContainerElemID(commentObjectRef.commentID)
+		var $commentList = $('#'+commentListID)
+		$commentList.empty()
+		
+		for(var valChangeIter = 0; valChangeIter < valChanges.length; valChangeIter++) {
+			
+			function createOneCommentValDisplay(valChange) {
+		
+				var formattedUserName = "@" + valChange.userName
+				if(valChange.isCurrentUser) {
+						formattedUserName = formattedUserName + ' (you)'
+				}
+		
+				var formattedCreateDate = moment(valChange.updateTime).calendar()
+
+				var commentHTML =  '<div class="list-group-item">' +
+					'<div><small>' + formattedUserName  + ' - ' + formattedCreateDate + '</small></div>' +
+					'<div class="formTimelineComment">' + escapeHTML(valChange.updatedValue) + '</div>' +
+				'</div>';		
+		
+				return $(commentHTML)
+			}
+
+			var valChange = valChanges[valChangeIter]
+			
+			$commentList.append(createOneCommentValDisplay(valChange))
+			
+		}
+		
+	}) // set record's text field value
 	
 	
 }

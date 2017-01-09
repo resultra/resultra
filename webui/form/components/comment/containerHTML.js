@@ -10,6 +10,10 @@ function commentAddCommentButtonIDFromContainerElemID(commentElemID) {
 	return 	commentElemID + '_addCommentButton'
 }
 
+function commentCommentListFromContainerElemID(commentElemID) {
+	return 	commentElemID + '_commentList'
+}
+
 
 
 function commentContainerHTML(elementID)
@@ -17,6 +21,7 @@ function commentContainerHTML(elementID)
 	var commentID = commentElemIDFromContainerElemID(elementID)
 	var commentInputID = commentInputIDFromContainerElemID(elementID)
 	var addCommentButtonID = commentAddCommentButtonIDFromContainerElemID(elementID)
+	var commentListID = commentCommentListFromContainerElemID(elementID)
 	
 	var containerHTML = ''+
 	'<div class="ui-widget-content layoutContainer commentContainer  draggable resizable" id="'+elementID+'">' +
@@ -27,6 +32,8 @@ function commentContainerHTML(elementID)
 					'<button class="btn btn-primary btn-sm" type="submit" id="' + addCommentButtonID + '">Add Comment</button>' +
 				'</div>' + 
 		'</div>'+
+		'<div class="list-group" id="'+commentListID+'"></div>' +	
+	
 	'</div>';
 		
 	return containerHTML

@@ -14,6 +14,7 @@ func init() {
 
 	recordRouter.HandleFunc("/api/record/getFieldValUrl", getFieldValUrlAPI)
 	recordRouter.HandleFunc("/api/record/getFile/{fileName}", getRecordFileAPI)
+	recordRouter.HandleFunc("/api/record/getFieldValChangeInfo", getFieldValChangeInfoAPI)
 
 	http.Handle("/api/record/", recordRouter)
 }
@@ -49,6 +50,22 @@ func getFieldValUrlAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, urlResponse)
+	}
+
+}
+
+func getFieldValChangeInfoAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetFieldValChangeInfoParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if valChangeInfo, err := getFieldValChangeInfo(r, params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, valChangeInfo)
 	}
 
 }
