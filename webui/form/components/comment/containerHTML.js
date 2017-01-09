@@ -29,7 +29,7 @@ function commentContainerHTML(elementID)
 			'<label>Comment Box Label</label>'+
 				'<div class="form-group">' + 
 					'<textarea class="form-control commentCommentEntryBox" rows="2" id="' + commentInputID + '"></textarea>' + 
-					'<button class="btn btn-primary btn-sm" type="submit" id="' + addCommentButtonID + '">Add Comment</button>' +
+					'<button class="btn btn-primary btn-xs" type="submit" id="' + addCommentButtonID + '">Add Comment</button>' +
 				'</div>' + 
 		'</div>'+
 		'<div class="list-group" id="'+commentListID+'"></div>' +	
