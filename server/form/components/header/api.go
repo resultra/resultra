@@ -10,7 +10,7 @@ func init() {
 	headerRouter := mux.NewRouter()
 
 	headerRouter.HandleFunc("/api/frm/header/new", newHeader)
-	//	headerRouter.HandleFunc("/api/frm/header/resize", resizeHeader)
+	headerRouter.HandleFunc("/api/frm/header/resize", resizeHeader)
 	headerRouter.HandleFunc("/api/frm/header/setLabel", setHeaderLabel)
 
 	http.Handle("/api/frm/header/", headerRouter)
@@ -47,4 +47,13 @@ func setHeaderLabel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processHeaderPropUpdate(w, r, labelParams)
+}
+
+func resizeHeader(w http.ResponseWriter, r *http.Request) {
+	var params HeaderResizeParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processHeaderPropUpdate(w, r, params)
 }

@@ -2,6 +2,7 @@ package header
 
 import (
 	"fmt"
+	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/generic/stringValidation"
 )
 
@@ -60,6 +61,22 @@ func (updateParams HeaderLabelParams) updateProps(headerForUpdate *Header) error
 	}
 
 	headerForUpdate.Properties.Label = updateParams.Label
+
+	return nil
+}
+
+type HeaderResizeParams struct {
+	HeaderIDHeader
+	Geometry componentLayout.LayoutGeometry `json:"geometry"`
+}
+
+func (updateParams HeaderResizeParams) updateProps(headerForUpdate *Header) error {
+
+	if !componentLayout.ValidGeometry(updateParams.Geometry) {
+		return fmt.Errorf("set comment box dimensions: Invalid geometry: %+v", updateParams.Geometry)
+	}
+
+	headerForUpdate.Properties.Geometry = updateParams.Geometry
 
 	return nil
 }
