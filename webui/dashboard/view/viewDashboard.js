@@ -52,7 +52,12 @@ $(document).ready(function() {
 	
 	var viewDashboardCanvasSelector = '#dashboardCanvas'
 	
-	initDatabaseTOC(viewDashboardContext.databaseID)
+	var tocConfig = {
+		databaseID: viewDashboardContext.databaseID,
+		newItemFormButtonFunc: openSubmitFormDialog
+	}
+	
+	initDatabaseTOC(tocConfig)
 	
 	google.charts.setOnLoadCallback(function() {
 		

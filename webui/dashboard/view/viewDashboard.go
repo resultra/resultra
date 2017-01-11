@@ -11,6 +11,7 @@ import (
 	dashboardCommon "resultra/datasheet/webui/dashboard/common"
 	"resultra/datasheet/webui/dashboard/components"
 	"resultra/datasheet/webui/dashboard/design/properties"
+	"resultra/datasheet/webui/form/submit"
 	"resultra/datasheet/webui/generic"
 )
 
@@ -26,7 +27,8 @@ func init() {
 		common.TemplateFileList,
 		dashboardCommon.TemplateFileList,
 		components.TemplateFileList,
-		properties.TemplateFileList}
+		properties.TemplateFileList,
+		submit.TemplateFileList}
 	viewDashboardTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 

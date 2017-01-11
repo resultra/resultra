@@ -18,7 +18,12 @@ $(document).ready(function() {
 			}
 		})
 		
-	initDatabaseTOC(adminContext.databaseID)
+	var tocConfig = {
+		databaseID: adminContext.databaseID,
+		newItemFormButtonFunc: openSubmitFormDialog
+	}
+		
+	initDatabaseTOC(tocConfig)
 		
 	initUserDropdownMenu()
 		

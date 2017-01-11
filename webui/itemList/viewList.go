@@ -14,6 +14,7 @@ import (
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/form/common/timeline"
 	"resultra/datasheet/webui/form/components"
+	"resultra/datasheet/webui/form/submit"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -28,6 +29,7 @@ func init() {
 		generic.TemplateFileList,
 		common.TemplateFileList,
 		components.TemplateFileList,
+		submit.TemplateFileList,
 		timeline.TemplateFileList}
 	viewListTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }

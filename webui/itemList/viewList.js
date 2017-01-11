@@ -248,7 +248,12 @@ $(document).ready(function() {
 	
 	initUserDropdownMenu()
 	
-	initDatabaseTOC(viewListContext.databaseID)
+	var tocConfig = {
+		databaseID: viewListContext.databaseID,
+		newItemFormButtonFunc: openSubmitFormDialog
+	}
+	
+	initDatabaseTOC(tocConfig)
 	
 	var viewFormCanvasSelector = '#layoutCanvas'
 		
@@ -256,6 +261,7 @@ $(document).ready(function() {
 	initObjectCanvasSelectionBehavior(viewFormCanvasSelector, function() {
 		hideSiblingsShowOne('#listViewProps')
 	})
+
 
 	loadFormViewComponents(viewFormCanvasSelector,viewListContext,initAfterViewFormComponentsAlreadyLoaded)
 			

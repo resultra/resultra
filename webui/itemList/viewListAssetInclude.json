@@ -3,6 +3,7 @@
 		"../common",
 		"../form/common/timeline",
 		"../form/view",
+		"../form/submit",
 			"../form/components"],
 	"cssFiles": ["editRecord.css","viewList.css"],
 	"jsFiles": ["recordSet.js","viewList.js"],
