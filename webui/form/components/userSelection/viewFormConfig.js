@@ -46,7 +46,7 @@ function loadRecordIntoUserSelection(userSelectionElem, recordRef) {
 }
 
 
-function initUserSelectionRecordEditBehavior(componentContext,userSelectionObjectRef) {
+function initUserSelectionRecordEditBehavior(componentContext,getRecordFunc, updateRecordFunc, userSelectionObjectRef) {
 
 	var $userSelectionContainer = $('#'+userSelectionObjectRef.userSelectionID)
 	
@@ -57,7 +57,7 @@ function initUserSelectionRecordEditBehavior(componentContext,userSelectionObjec
 
 	function setUserSelectionValue(selectedUserID) {
 		
-		currRecordRef = currRecordSet.currRecordRef()
+		currRecordRef = getRecordFunc()
 	
 		if(componentLink.linkedValType == linkedComponentValTypeField) {
 			var userFieldID = componentLink.fieldID
@@ -76,12 +76,8 @@ function initUserSelectionRecordEditBehavior(componentContext,userSelectionObjec
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached
 				// version of the record also needs to be updated.
-				currRecordSet.updateRecordRef(updatedFieldVal)
+				updateRecordFunc(updatedFieldVal)
 		
-				// After changing the value, some of the calculated fields may have changed. For this
-				// reason, it is necessary to reload the record into the layout/form, so the most
-				// up to date values will be displayed.
-				loadCurrRecordIntoLayout()
 			}) // set record's number field value
 
 			// TBD - initialize control

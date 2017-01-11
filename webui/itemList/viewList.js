@@ -18,25 +18,15 @@ function enableNewRecordButton()
 	$('#newRecordButton').prop("disabled",false)
 }
 
+var viewFormCanvasSelector = '#layoutCanvas'
 
 function loadCurrRecordIntoLayout()
 {
 	recordRef = currRecordSet.currRecordRef()
 	if(recordRef != null)
 	{
-		console.log("Loading record into layout: record field values: " + JSON.stringify(recordRef.fieldValues))
 
-		// Iterate through all the containers in the current layout (which may be a subset of the record's fields),
-		// and populate the container's value with the field's value from the record.
-		$(".layoutContainer").each(function() {
-			
-			// Each type of form object needs to set a "viewFormConfig" object on it's DOM element. The loadRecord()
-			// function is called on each of these objects to perform per form object record initialization.
-			var viewFormConfig = $(this).data("viewFormConfig")
-			viewFormConfig.loadRecord($(this),recordRef)
-			
-	
-		}) // for each container in the layout
+		loadRecordIntoFormLayout(viewFormCanvasSelector,recordRef)
 	
 		// Update footer to reflect where the current record is in list of currently loaded records
 		$('#recordNumLabel').text(currRecordSet.recPageLabel())
@@ -255,14 +245,24 @@ $(document).ready(function() {
 	
 	initDatabaseTOC(tocConfig)
 	
-	var viewFormCanvasSelector = '#layoutCanvas'
+	
 		
 	hideSiblingsShowOne('#listViewProps')
 	initObjectCanvasSelectionBehavior(viewFormCanvasSelector, function() {
 		hideSiblingsShowOne('#listViewProps')
 	})
+	
+	function getCurrentRecord() {
+		return  currRecordSet.currRecordRef()
+	}
+	function updateCurrentRecord(updatedRecordRef) {
+		currRecordSet.updateRecordRef(updatedRecordRef)
+		loadCurrRecordIntoLayout()
+	}
 
 
-	loadFormViewComponents(viewFormCanvasSelector,viewListContext,initAfterViewFormComponentsAlreadyLoaded)
+	loadFormViewComponents(viewFormCanvasSelector,viewListContext,
+		getCurrentRecord,updateCurrentRecord,
+		initAfterViewFormComponentsAlreadyLoaded)
 			
 }); // document ready

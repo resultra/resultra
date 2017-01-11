@@ -42,7 +42,7 @@ function loadRecordIntoHtmlEditor(htmlEditorElem, recordRef) {
 }
 
 
-function initHtmlEditorRecordEditBehavior(componentContext,htmlEditorObjectRef) {
+function initHtmlEditorRecordEditBehavior(componentContext,getRecordFunc, updateRecordFunc,htmlEditorObjectRef) {
 	
 	var htmlEditorContainerID = htmlEditorObjectRef.htmlEditorID
 	var htmlEditorInputID = htmlInputIDFromContainerElemID(htmlEditorContainerID)
@@ -74,7 +74,7 @@ function initHtmlEditorRecordEditBehavior(componentContext,htmlEditorObjectRef) 
 		var editor = $('#'+containerID).data("htmlEditor")
 		var inputVal = editor.getData();
 		
-		var currRecordRef = currRecordSet.currRecordRef()
+		var currRecordRef = getRecordFunc()
 		
 		var componentLink = objectRef.properties.componentLink
 	
@@ -102,11 +102,7 @@ function initHtmlEditorRecordEditBehavior(componentContext,htmlEditorObjectRef) 
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached
 				// version of the record also needs to be updated.
-				currRecordSet.updateRecordRef(updatedRecordRef)
-				// After changing the value, some of the calculated fields may have changed. For this
-				// reason, it is necessary to reload the record into the layout/form, so the most
-				// up to date values will be displayed.
-				loadCurrRecordIntoLayout()
+				updateRecordFunc(updatedRecordRef)
 			}) // set record's text field value
 		} else {
 			console.log("HTML editor global values not yet supported")

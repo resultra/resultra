@@ -64,7 +64,7 @@ function loadRecordIntoRating(ratingElem, recordRef) {
 }
 
 
-function initRatingRecordEditBehavior(componentContext,ratingObjectRef) {
+function initRatingRecordEditBehavior(componentContext,getRecordFunc, updateRecordFunc, ratingObjectRef) {
 
 	var $ratingContainer = $('#'+ratingObjectRef.ratingID)
 	var componentLink = ratingObjectRef.properties.componentLink
@@ -74,7 +74,7 @@ function initRatingRecordEditBehavior(componentContext,ratingObjectRef) {
 
 	function setRatingValue(ratingVal) {
 		
-		currRecordRef = currRecordSet.currRecordRef()
+		currRecordRef = getRecordFunc()
 	
 		if(componentLink.linkedValType == linkedComponentValTypeField) {
 			var ratingFieldID = componentLink.fieldID
@@ -90,12 +90,8 @@ function initRatingRecordEditBehavior(componentContext,ratingObjectRef) {
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached
 				// version of the record also needs to be updated.
-				currRecordSet.updateRecordRef(replyData)
+				updateRecordFunc(replyData)
 		
-				// After changing the value, some of the calculated fields may have changed. For this
-				// reason, it is necessary to reload the record into the layout/form, so the most
-				// up to date values will be displayed.
-				loadCurrRecordIntoLayout()
 			}) // set record's number field value
 
 			// TBD - initialize control

@@ -52,7 +52,7 @@ function loadRecordIntoSelection(selectionElem, recordRef) {
 	
 }
 
-function initSelectionRecordEditBehavior(componentContext,selectionObjectRef) {
+function initSelectionRecordEditBehavior(componentContext,getRecordFunc, updateRecordFunc, selectionObjectRef) {
 	
 	var container = $('#'+selectionObjectRef.selectionID)
 
@@ -84,7 +84,7 @@ function initSelectionRecordEditBehavior(componentContext,selectionObjectRef) {
 	
 	initSelectionChangedHandler(selectionControlSelector,function(newValue) {
 		if(componentLink.linkedValType == linkedComponentValTypeField) {
-			var currRecordRef = currRecordSet.currRecordRef()	
+			var currRecordRef = getRecordFunc()	
 			var fieldID = componentLink.fieldID
 			var fieldRef = getFieldRef(fieldID)
 			var fieldType = fieldRef.type
@@ -103,11 +103,7 @@ function initSelectionRecordEditBehavior(componentContext,selectionObjectRef) {
 					// After updating the record, the local cache of records in currentRecordSet will
 					// be out of date. So after updating the record on the server, the locally cached
 					// version of the record also needs to be updated.
-					currRecordSet.updateRecordRef(replyData)
-					// After changing the value, some of the calculated fields may have changed. For this
-					// reason, it is necessary to reload the record into the layout/form, so the most
-					// up to date values will be displayed.
-					loadCurrRecordIntoLayout()
+					updateRecordFunc(replyData)
 				}) // set record's text field value
 			
 			} else if (fieldType == "number") {
@@ -131,12 +127,7 @@ function initSelectionRecordEditBehavior(componentContext,selectionObjectRef) {
 						// After updating the record, the local cache of records in currentRecordSet will
 						// be out of date. So after updating the record on the server, the locally cached
 						// version of the record also needs to be updated.
-						currRecordSet.updateRecordRef(replyData)
-					
-						// After changing the value, some of the calculated fields may have changed. For this
-						// reason, it is necessary to reload the record into the layout/form, so the most
-						// up to date values will be displayed.
-						loadCurrRecordIntoLayout()
+						updateRecordFunc(replyData)
 					}) // set record's number field value
 				}
 			
@@ -154,7 +145,7 @@ function initSelectionRecordEditBehavior(componentContext,selectionObjectRef) {
 					}
 					console.log("Setting global value (number): " + JSON.stringify(setGlobalValParams))
 					jsonAPIRequest("global/setNumberValue",setGlobalValParams,function(replyData) {
-						loadCurrRecordIntoLayout()
+						// TODO - Update record after recalculation based upon global values
 					})
 				
 				}
@@ -166,7 +157,7 @@ function initSelectionRecordEditBehavior(componentContext,selectionObjectRef) {
 				}
 				console.log("Setting global value (text): " + JSON.stringify(setGlobalValParams))
 				jsonAPIRequest("global/setTextValue",setGlobalValParams,function(replyData) {
-						loadCurrRecordIntoLayout()
+						// TODO - Update record after recalculation based upon global values
 				})	
 			}
 		

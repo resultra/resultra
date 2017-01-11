@@ -86,7 +86,8 @@ function loadRecordIntoTextBox(textBoxElem, recordRef) {
 	
 }
 
-function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput, textFieldObjectRef) {
+function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput, 
+		getRecordFunc, updateRecordFunc, textFieldObjectRef) {
 	
 	var componentLink = textFieldObjectRef.properties.componentLink
 	
@@ -134,7 +135,9 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 						inputVal,currTextObjRef.properties.valueFormat.format)
 		$textBoxInput.val(formattedVal)
 		
-		var currRecordRef = currRecordSet.currRecordRef()
+		var currRecordRef = getRecordFunc()
+			
+			
 		if(currRecordRef != null) {
 		
 			// Only update the value if it has changed. Sometimes a user may focus on or tab
@@ -155,14 +158,11 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 						fieldID:fieldID, value:inputVal,
 						 valueFormat: textBoxTextValueFormat }
 					jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
-						// After updating the record, the local cache of records in currentRecordSet will
+						// After updating the record, the local cache of records will
 						// be out of date. So after updating the record on the server, the locally cached
 						// version of the record also needs to be updated.
-						currRecordSet.updateRecordRef(replyData)
-						// After changing the value, some of the calculated fields may have changed. For this
-						// reason, it is necessary to reload the record into the layout/form, so the most
-						// up to date values will be displayed.
-						loadCurrRecordIntoLayout()
+						updateRecordFunc(replyData)
+						
 					}) // set record's text field value
 				
 				} else if (fieldType == fieldTypeNumber) {
@@ -184,15 +184,11 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 							 valueFormat:textBoxNumberValueFormat
 						}
 						jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
-							// After updating the record, the local cache of records in currentRecordSet will
+							// After updating the record, the local cache of records will
 							// be out of date. So after updating the record on the server, the locally cached
 							// version of the record also needs to be updated.
-							currRecordSet.updateRecordRef(replyData)
-						
-							// After changing the value, some of the calculated fields may have changed. For this
-							// reason, it is necessary to reload the record into the layout/form, so the most
-							// up to date values will be displayed.
-							loadCurrRecordIntoLayout()
+							updateRecordFunc(replyData)
+							
 						}) // set record's number field value
 					}
 				
@@ -242,7 +238,8 @@ function initTextBoxGlobalValBehavior(componentContext,$textBoxInput, textFieldO
 	})
 }
 
-function initTextBoxRecordEditBehavior(componentContext,textFieldObjectRef) {
+function initTextBoxRecordEditBehavior(componentContext,
+	getCurrentRecordFunc, updateCurrentRecordFunc, textFieldObjectRef) {
 	
 	var $container = $('#'+textFieldObjectRef.textBoxID)
 	var $textBoxInput = $container.find("input")
@@ -268,7 +265,7 @@ function initTextBoxRecordEditBehavior(componentContext,textFieldObjectRef) {
 	var componentLink = textFieldObjectRef.properties.componentLink
 	
 	if(componentLink.linkedValType == linkedComponentValTypeField) {
-		initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput,textFieldObjectRef)
+		initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput,getCurrentRecordFunc, updateCurrentRecordFunc, textFieldObjectRef)
 		
 	} else { 
 		assert(componentLink.linkedValType == linkedComponentValTypeGlobal)
