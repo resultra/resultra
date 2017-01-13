@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/webui/admin/forms/design/properties"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/form/components"
-	"resultra/datasheet/webui/form/design/properties"
 	"resultra/datasheet/webui/generic"
 )
 

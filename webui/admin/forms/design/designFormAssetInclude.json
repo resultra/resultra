@@ -1,7 +1,7 @@
 {
-	"subDirs":["../../generic",
-		"../../common",
-			"../../common/form/components",
+	"subDirs":["../../../generic",
+		"../../../common",
+			"../../../common/form/components",
 			"properties"],
 	"cssFiles": ["designForm.css"],
 	"minCSSFile":"form/design/designForm.min.css",
