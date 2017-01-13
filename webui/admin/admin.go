@@ -14,7 +14,7 @@ import (
 	"resultra/datasheet/webui/admin/userRole"
 	"resultra/datasheet/webui/admin/users"
 	"resultra/datasheet/webui/common"
-	"resultra/datasheet/webui/form/submit"
+	"resultra/datasheet/webui/common/form/submit"
 	"resultra/datasheet/webui/generic"
 )
 

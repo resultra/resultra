@@ -2,17 +2,17 @@ package design
 
 import (
 	"resultra/datasheet/server/databaseController"
+	"resultra/datasheet/webui/common/form/components/checkBox"
+	"resultra/datasheet/webui/common/form/components/comment"
+	"resultra/datasheet/webui/common/form/components/datePicker"
+	"resultra/datasheet/webui/common/form/components/header"
+	"resultra/datasheet/webui/common/form/components/htmlEditor"
+	"resultra/datasheet/webui/common/form/components/image"
+	"resultra/datasheet/webui/common/form/components/rating"
+	"resultra/datasheet/webui/common/form/components/selection"
+	"resultra/datasheet/webui/common/form/components/textBox"
+	"resultra/datasheet/webui/common/form/components/userSelection"
 	"resultra/datasheet/webui/common/recordFilter"
-	"resultra/datasheet/webui/form/components/checkBox"
-	"resultra/datasheet/webui/form/components/comment"
-	"resultra/datasheet/webui/form/components/datePicker"
-	"resultra/datasheet/webui/form/components/header"
-	"resultra/datasheet/webui/form/components/htmlEditor"
-	"resultra/datasheet/webui/form/components/image"
-	"resultra/datasheet/webui/form/components/rating"
-	"resultra/datasheet/webui/form/components/selection"
-	"resultra/datasheet/webui/form/components/textBox"
-	"resultra/datasheet/webui/form/components/userSelection"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 

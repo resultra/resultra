@@ -12,11 +12,11 @@ import (
 	"resultra/datasheet/server/itemList"
 
 	"resultra/datasheet/webui/common"
-	"resultra/datasheet/webui/form/common/timeline"
-	"resultra/datasheet/webui/form/components"
-	"resultra/datasheet/webui/form/submit"
+	"resultra/datasheet/webui/common/form/components"
+	"resultra/datasheet/webui/common/form/submit"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
+	"resultra/datasheet/webui/itemList/common/timeline"
 )
 
 var viewListTemplates *template.Template

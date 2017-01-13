@@ -8,10 +8,10 @@ import (
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/webui/common"
+	"resultra/datasheet/webui/common/form/submit"
 	dashboardCommon "resultra/datasheet/webui/dashboard/common"
 	"resultra/datasheet/webui/dashboard/components"
 	"resultra/datasheet/webui/dashboard/design/properties"
-	"resultra/datasheet/webui/form/submit"
 	"resultra/datasheet/webui/generic"
 )
 
