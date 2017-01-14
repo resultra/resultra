@@ -2,6 +2,7 @@ package properties
 
 import (
 	"resultra/datasheet/webui/admin/forms/design/properties/formName"
+	"resultra/datasheet/webui/admin/forms/design/properties/newItem"
 	"resultra/datasheet/webui/admin/forms/design/properties/userRole"
 )
 
@@ -13,5 +14,6 @@ func init() {
 
 	TemplateFileList = append(TemplateFileList, userRole.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, formName.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, newItem.TemplateFileList...)
 
 }

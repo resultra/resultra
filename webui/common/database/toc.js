@@ -46,7 +46,9 @@ function initDatabaseTOC(tocConfig) {
 		$('#tocFormList').empty()
 		for(var formInfoIndex = 0; formInfoIndex < dbInfo.formsInfo.length; formInfoIndex++) {
 			var formInfo = dbInfo.formsInfo[formInfoIndex]
-			addFormLinkToTOCList(tocConfig,formInfo)
+			if(formInfo.properties.addNewItemFromForm) {
+				addFormLinkToTOCList(tocConfig,formInfo)		
+			}
 		}
 		
 		

@@ -11,6 +11,7 @@ function initDesignFormProperties(formID) {
 		
 		initDesignFormRolePrivProperties(formID)
 		initFormPropertiesFormName(formInfo)
+		initFormPropertiesNewItem(formInfo)
 				
 	})
 }

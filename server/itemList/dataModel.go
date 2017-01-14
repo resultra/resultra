@@ -105,7 +105,7 @@ func getAllItemLists(parentDatabaseID string) ([]ItemList, error) {
 
 		var listProps ItemListProperties
 		if decodeErr := generic.DecodeJSONString(encodedProps, &listProps); decodeErr != nil {
-			return nil, fmt.Errorf("getAllForms: can't decode properties: %v", encodedProps)
+			return nil, fmt.Errorf("getAllItemLists: can't decode properties: %v", encodedProps)
 		}
 		currList.Properties = listProps
 

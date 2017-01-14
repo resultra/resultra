@@ -1,4 +1,5 @@
 {
     "subDirs": ["userRole",
-		"formName"]
+		"formName",
+		"newItem"]
 }

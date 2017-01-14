@@ -20,6 +20,7 @@ type FormPropertyTemplateParams struct {
 	NamePanelParams       propertiesSidebar.PanelTemplateParams
 	FilterPanelParams     propertiesSidebar.PanelTemplateParams
 	RolesPanelParams      propertiesSidebar.PanelTemplateParams
+	NewItemPanelParams    propertiesSidebar.PanelTemplateParams
 	SortPanelParams       propertiesSidebar.PanelTemplateParams
 	FilterPropPanelParams recordFilter.FilterPanelTemplateParams
 }
@@ -56,6 +57,8 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		FilterPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Filtering", PanelID: "formFilter"},
 		RolesPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Roles and Privileges",
 			PanelID: "formRoles"},
+		NewItemPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "New Items",
+			PanelID: "newItems"},
 		SortPanelParams:       propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Sorting", PanelID: "formSort"},
 		FilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(elemPrefix)}
 

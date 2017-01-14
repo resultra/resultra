@@ -20,7 +20,7 @@ var designFormTemplates *template.Template
 func init() {
 	//	designFormTemplateFiles := []string{}
 
-	baseTemplateFiles := []string{"static/form/design/designForm.html"}
+	baseTemplateFiles := []string{"static/admin/forms/design/designForm.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,

@@ -23,6 +23,7 @@ func init() {
 
 	formRouter.HandleFunc("/api/frm/setName", setFormName)
 	formRouter.HandleFunc("/api/frm/setLayout", setLayout)
+	formRouter.HandleFunc("/api/frm/setAddNewFromForm", setAddNewItemFromForm)
 
 	formRouter.HandleFunc("/api/frm/validateFormName", validateFormNameAPI)
 	formRouter.HandleFunc("/api/frm/validateNewFormName", validateNewFormNameAPI)
@@ -80,7 +81,7 @@ func getFormListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if forms, err := getAllForms(params.ParentDatabaseID); err != nil {
+	if forms, err := GetAllForms(params.ParentDatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, forms)
@@ -123,6 +124,15 @@ func setFormName(w http.ResponseWriter, r *http.Request) {
 
 func setLayout(w http.ResponseWriter, r *http.Request) {
 	var params SetLayoutParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFormPropUpdate(w, r, params)
+}
+
+func setAddNewItemFromForm(w http.ResponseWriter, r *http.Request) {
+	var params SetAddNewParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

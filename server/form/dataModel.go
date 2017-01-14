@@ -85,13 +85,13 @@ type GetFormListParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
-func getAllForms(parentDatabaseID string) ([]Form, error) {
+func GetAllForms(parentDatabaseID string) ([]Form, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
 		`SELECT database_id,form_id,name,properties FROM forms WHERE database_id = $1`,
 		parentDatabaseID)
 	if queryErr != nil {
-		return nil, fmt.Errorf("getAllForms: Failure querying database: %v", queryErr)
+		return nil, fmt.Errorf("GetAllForms: Failure querying database: %v", queryErr)
 	}
 
 	forms := []Form{}
@@ -100,12 +100,12 @@ func getAllForms(parentDatabaseID string) ([]Form, error) {
 		encodedProps := ""
 
 		if scanErr := rows.Scan(&currForm.ParentDatabaseID, &currForm.FormID, &currForm.Name, &encodedProps); scanErr != nil {
-			return nil, fmt.Errorf("getAllForms: Failure querying database: %v", scanErr)
+			return nil, fmt.Errorf("GetAllForms: Failure querying database: %v", scanErr)
 		}
 
 		var formProps FormProperties
 		if decodeErr := generic.DecodeJSONString(encodedProps, &formProps); decodeErr != nil {
-			return nil, fmt.Errorf("getAllForms: can't decode properties: %v", encodedProps)
+			return nil, fmt.Errorf("GetAllForms: can't decode properties: %v", encodedProps)
 		}
 		currForm.Properties = formProps
 
@@ -123,7 +123,7 @@ func CloneForms(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID strin
 		return fmt.Errorf("CloneTableForms: Error getting remapped table ID: %v", err)
 	}
 
-	forms, err := getAllForms(srcParentDatabaseID)
+	forms, err := GetAllForms(srcParentDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneTableForms: Error getting forms for parent database ID = %v: %v",
 			srcParentDatabaseID, err)

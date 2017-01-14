@@ -3,16 +3,12 @@ package databaseController
 import (
 	"fmt"
 	"resultra/datasheet/server/database"
+	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/databaseWrapper"
 )
 
 type DatabaseInfoParams struct {
 	DatabaseID string `json:"databaseID"`
-}
-
-type FormInfo struct {
-	FormID string `json:"formID"`
-	Name   string `json:"name"`
 }
 
 type DashboardInfo struct {
@@ -48,21 +44,11 @@ func getDatabaseDashboardsInfo(params DatabaseInfoParams) ([]DashboardInfo, erro
 
 }
 
-func getDatabaseFormsInfo(params DatabaseInfoParams) ([]FormInfo, error) {
-	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT form_id, name FROM forms WHERE  database_id=$1`,
-		params.DatabaseID)
-	if queryErr != nil {
-		return nil, fmt.Errorf("getDatabaseInfo: Failure querying database: %v", queryErr)
-	}
+func getDatabaseFormsInfo(params DatabaseInfoParams) ([]form.Form, error) {
 
-	formsInfo := []FormInfo{}
-	for rows.Next() {
-		var currFormInfo FormInfo
-		if scanErr := rows.Scan(&currFormInfo.FormID, &currFormInfo.Name); scanErr != nil {
-			return nil, fmt.Errorf("getDatabaseInfo: Failure querying database: %v", scanErr)
-		}
-		formsInfo = append(formsInfo, currFormInfo)
+	formsInfo, getFormsErr := form.GetAllForms(params.DatabaseID)
+	if getFormsErr != nil {
+		return nil, fmt.Errorf("getDatabaseFormsInfo: Failure querying database: %v", getFormsErr)
 	}
 
 	return formsInfo, nil
@@ -90,7 +76,7 @@ func getDatabaseItemListInfo(params DatabaseInfoParams) ([]ItemListInfo, error) 
 
 type DatabaseContentsInfo struct {
 	DatabaseInfo   database.Database `json:"databaseInfo"`
-	FormsInfo      []FormInfo        `json:"formsInfo"`
+	FormsInfo      []form.Form       `json:"formsInfo"`
 	ListsInfo      []ItemListInfo    `json:"listsInfo"`
 	DashboardsInfo []DashboardInfo   `json:"dashboardsInfo"`
 }

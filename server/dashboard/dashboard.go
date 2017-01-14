@@ -100,7 +100,7 @@ func getAllDashboards(parentDatabaseID string) ([]Dashboard, error) {
 		 WHERE database_id = $1`,
 		parentDatabaseID)
 	if err != nil {
-		return nil, fmt.Errorf("getAllForms: Failure querying database: %v", err)
+		return nil, fmt.Errorf("getAllDashboards: Failure querying database: %v", err)
 	}
 
 	dashboards := []Dashboard{}
@@ -110,7 +110,7 @@ func getAllDashboards(parentDatabaseID string) ([]Dashboard, error) {
 
 		if err := rows.Scan(&currDashboard.ParentDatabaseID, &currDashboard.DashboardID,
 			&currDashboard.Name, &encodedProps); err != nil {
-			return nil, fmt.Errorf("getAllForms: Failure querying database: %v", err)
+			return nil, fmt.Errorf("getAllDashboards: Failure querying database: %v", err)
 		}
 
 		var dashboardProps DashboardProperties
