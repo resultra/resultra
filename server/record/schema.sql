@@ -1,6 +1,8 @@
 CREATE TABLE records ( 
 	database_id text REFERENCES databases (database_id), 
-	record_id text PRIMARY KEY
+	record_id text PRIMARY KEY,
+	is_draft_record boolean NOT NULL,
+	create_timestamp_utc timestamp NOT NULL
 );
 
 CREATE TABLE cell_updates (

@@ -43,8 +43,12 @@ func saveRecordValueResults(recValResults RecordValueResults) error {
 
 func GetAllRecordValueResults(parentDatabaseID string) ([]RecordValueResults, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT record_id,field_vals,update_timestamp_utc 
-		FROM record_val_results WHERE database_id = $1`, parentDatabaseID)
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT record_val_results.record_id,record_val_results.field_vals,record_val_results.update_timestamp_utc 
+		 FROM record_val_results,records WHERE 
+		 record_val_results.record_id = records.record_id AND
+		 records.is_draft_record = $1 AND
+		 record_val_results.database_id = $2`, false, parentDatabaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAllRecordValueResults: Failure querying database: %v", queryErr)
 	}

@@ -12,6 +12,8 @@ func init() {
 
 	recordRouter.HandleFunc("/api/record/getAll", getRecords)
 
+	recordRouter.HandleFunc("/api/record/setDraftStatus", setDraftStatusAPI)
+
 	recordRouter.HandleFunc("/api/record/getFieldValUrl", getFieldValUrlAPI)
 	recordRouter.HandleFunc("/api/record/getFile/{fileName}", getRecordFileAPI)
 	recordRouter.HandleFunc("/api/record/getFieldValChangeInfo", getFieldValChangeInfoAPI)
@@ -68,6 +70,21 @@ func getFieldValChangeInfoAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, valChangeInfo)
 	}
 
+}
+
+func setDraftStatusAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params SetDraftStatusParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if err := setDraftStatus(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, true)
+	}
 }
 
 func getRecordFileAPI(w http.ResponseWriter, r *http.Request) {

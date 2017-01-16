@@ -10,7 +10,10 @@ function openSubmitFormDialog(viewFormContext) {
 	$viewFormCanvas.empty()
 	
 	
-	var newRecordsParams = {parentDatabaseID:viewFormContext.databaseID}
+	var newRecordsParams = {
+		parentDatabaseID:viewFormContext.databaseID,
+		isDraftRecord:true
+	}
 	jsonAPIRequest("recordUpdate/newRecord",newRecordsParams,function(newRecordRef) {
 
 		var newRecord = newRecordRef
@@ -30,6 +33,20 @@ function openSubmitFormDialog(viewFormContext) {
 	
 		loadFormViewComponents(viewFormCanvasSelector,viewFormContext,
 			getCurrentRecord,updateCurrentRecord,showDialogAfterFormComponentLoaded)
+		
+		initButtonClickHandler('#submitFormSaveButton', function() {
+			console.log("Saving form results")
+			
+			var recordDraftParams = {
+				recordID: newRecord.recordID,
+				isDraftRecord: false
+			}
+			
+			jsonAPIRequest("record/setDraftStatus",recordDraftParams,function(response) {
+				$dialog.modal('hide')
+			})
+
+		})
 		
 
 		
