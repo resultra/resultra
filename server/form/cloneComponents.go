@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/form/components/checkBox"
 	"resultra/datasheet/server/form/components/comment"
 	"resultra/datasheet/server/form/components/datePicker"
+	"resultra/datasheet/server/form/components/formButton"
 	"resultra/datasheet/server/form/components/header"
 	"resultra/datasheet/server/form/components/htmlEditor"
 	"resultra/datasheet/server/form/components/image"
@@ -32,6 +33,10 @@ func cloneFormComponents(remappedIDs uniqueID.UniqueIDRemapper, parentFormID str
 	}
 
 	if err := header.CloneHeaders(remappedIDs, parentFormID); err != nil {
+		return fmt.Errorf("cloneFormComponents: %v", err)
+	}
+
+	if err := formButton.CloneButtons(remappedIDs, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
