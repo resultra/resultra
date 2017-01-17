@@ -1,0 +1,26 @@
+{{define "formButtonFormatProps"}}
+	Button formatting properties go here
+{{end}}
+
+
+{{define "formButtonLinkedFormProps"}}
+
+	Properties for linking button to a form go here.
+	
+{{end}}
+
+
+{{define "formButtonProps"}}
+
+	<div id="formButtonProps" class="propertyPanelToggleContainer">
+		
+		{{template "propertyPanelPrefix" .LinkedFormPanelParams}}
+			{{template "formButtonLinkedFormProps"}}
+		{{template "propertyPanelSuffix"}}
+		
+		{{template "propertyPanelPrefix" .FormatPanelParams}}
+			{{template "formButtonFormatProps"}}
+		{{template "propertyPanelSuffix"}}
+	</div>
+
+{{end}}

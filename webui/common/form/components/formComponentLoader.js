@@ -62,6 +62,28 @@ function loadFormComponents(loadFormConfig) {
 		}
 
 
+		function initFormButtonLayout($componentRow,formButton) {
+			// Create an HTML block for the container
+			console.log("loadFormComponents: initializing form button: " + JSON.stringify(formButton))
+		
+			var containerHTML = formButtonContainerHTML(formButton.buttonID);
+			var $containerObj = $(containerHTML)
+			$containerObj.find(".formButton").text(formButton.properties.label)
+					
+			$componentRow.append($containerObj)
+			
+			setElemDimensions($containerObj,formButton.properties.geometry)
+		
+			 // Store the newly created object reference in the DOM element. This is needed for follow-on
+			 // property setting, resizing, etc.
+			setElemObjectRef(formButton.buttonID,formButton)
+		
+			// Callback for any specific initialization for either the form design or view mode
+			loadFormConfig.initFormButtonFunc(componentContext,formButton)
+			
+		}
+
+
 		function initTextBoxLayout($componentRow,textBox) {
 			// Create an HTML block for the container
 			console.log("loadFormComponents: initializing text box: " + JSON.stringify(textBox))

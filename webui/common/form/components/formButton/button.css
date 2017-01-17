@@ -1,0 +1,15 @@
+.buttonFormContainer {
+	min-width:180px;
+	min-height:45px;
+	width: 180px;
+	height: 45px;
+}
+
+.buttonFormContainer .formHeader {
+	margin-top: 5px;
+	margin-bottom:5px;
+}
+
+.formButton {
+	width: 80%;
+}

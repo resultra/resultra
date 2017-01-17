@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/comment"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
 	"resultra/datasheet/webui/common/form/components/datePicker"
+	"resultra/datasheet/webui/common/form/components/formButton"
 	"resultra/datasheet/webui/common/form/components/header"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
 	"resultra/datasheet/webui/common/form/components/image"
@@ -34,5 +35,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, selection.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, userSelection.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, comment.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, formButton.TemplateFileList...)
 
 }

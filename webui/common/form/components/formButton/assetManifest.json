@@ -1,0 +1,12 @@
+{
+    "cssFiles": ["button.css"], 
+    "htmlFiles": ["properties.html"], 
+    "jsFiles": ["newFormButtonDialog.js",
+		"properties.js",
+		"containerHTML.js",
+		"designFormConfig.js",
+		"viewFormConfig.js"
+    ],
+	"imageFiles":[],
+    "subDirs": []
+}

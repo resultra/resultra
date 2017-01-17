@@ -9,7 +9,8 @@ var paletteItemsEditConfig = {
 	paletteItemRating: ratingDesignFormConfig,
 	paletteItemSelection: selectionDesignFormConfig,
 	paletteItemUserSelection: userSelectionDesignFormConfig,
-	paletteItemComment: commentDesignFormConfig
+	paletteItemComment: commentDesignFormConfig,
+	paletteItemButton: formButtonDesignFormConfig
 }
 
 var formDesignCanvasSelector = "#layoutCanvas"
@@ -163,6 +164,10 @@ $(document).ready(function() {
 		initHeaderFunc: function(componentContext,headerObjectRef) {
 			var componentIDs = { formID: formID, componentID: headerObjectRef.headerID }
 			initFormComponentDesignBehavior(componentIDs,headerObjectRef,formHeaderDesignFormConfig,designFormLayoutConfig)
+		},
+		initButtonFunc: function(componentContext,buttonObjectRef) {
+			var componentIDs = { formID: formID, componentID: buttonObjectRef.buttonID }
+			initFormComponentDesignBehavior(componentIDs,buttonObjectRef,formButtonDesignFormConfig,designFormLayoutConfig)
 		},
 		doneLoadingFormDataFunc: function() {
 			// The formula editor depends on the field information first being initialized.

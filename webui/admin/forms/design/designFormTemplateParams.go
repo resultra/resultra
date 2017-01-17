@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/checkBox"
 	"resultra/datasheet/webui/common/form/components/comment"
 	"resultra/datasheet/webui/common/form/components/datePicker"
+	"resultra/datasheet/webui/common/form/components/formButton"
 	"resultra/datasheet/webui/common/form/components/header"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
 	"resultra/datasheet/webui/common/form/components/image"
@@ -43,6 +44,7 @@ type DesignFormTemplateParams struct {
 	RatingParams        rating.RatingDesignTemplateParams
 	UserSelectionParams userSelection.UserSelectionDesignTemplateParams
 	HeaderParams        header.HeaderTemplateParams
+	ButtonParams        formButton.ButtonTemplateParams
 	FormPropertyParams  FormPropertyTemplateParams
 }
 
@@ -79,6 +81,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		CommentParams:       comment.DesignTemplateParams,
 		RatingParams:        rating.DesignTemplateParams,
 		HeaderParams:        header.TemplateParams,
+		ButtonParams:        formButton.TemplateParams,
 		FormPropertyParams:  formPropParams}
 
 	return templParams
