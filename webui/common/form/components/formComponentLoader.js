@@ -455,6 +455,15 @@ function loadFormComponents(loadFormConfig) {
 			}		
 		}
 
+		for (var buttonIter in formInfo.formButtons) {
+			var buttonProps = formInfo.formButtons[buttonIter]
+			console.log("loadFormComponents: initializing form button: " + JSON.stringify(buttonProps))
+			compenentIDComponentMap[buttonProps.buttonID] = {
+				componentInfo: buttonProps,
+				initFunc: initFormButtonLayout
+			}		
+		}
+
 		
 		for (var datePickerIter in formInfo.datePickers) {
 			var datePickerProps = formInfo.datePickers[datePickerIter]

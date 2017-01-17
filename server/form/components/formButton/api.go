@@ -9,8 +9,8 @@ import (
 func init() {
 	buttonRouter := mux.NewRouter()
 
-	buttonRouter.HandleFunc("/api/frm/header/new", newButton)
-	buttonRouter.HandleFunc("/api/frm/header/resize", resizeButton)
+	buttonRouter.HandleFunc("/api/frm/formButton/new", newButton)
+	buttonRouter.HandleFunc("/api/frm/formButton/resize", resizeButton)
 
 	http.Handle("/api/frm/formButton/", buttonRouter)
 }

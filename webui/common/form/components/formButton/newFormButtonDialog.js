@@ -5,15 +5,16 @@ function openNewFormButtonDialog(databaseID,formID,containerParams) {
 		parentFormID: formID,
 		geometry: containerParams.geometry}
 	
-	/*
+	
 	jsonAPIRequest("frm/formButton/new",newButtonParams,function(newButtonObjectRef) {
 		
           console.log("create new form button: Done getting new ID:response=" + JSON.stringify(newButtonObjectRef));
     			  
 		  var placeholderSelector = '#'+containerParams.containerID
 		  
-		  $(placeholderSelector).find('.formButton').text(newButtonObjectRef.properties.label)
-		  $(placeholderSelector).attr("id",newHeaderObjectRef.headerID)
+		  var buttonLabel = "TBD - Button Label"
+		  $(placeholderSelector).find('.formButton').text(buttonLabel)
+		  $(placeholderSelector).attr("id",newButtonObjectRef.buttonID)
   
 		  // Set up the newly created checkbox for resize, selection, etc.
 		  var componentIDs = { formID: formID, componentID:newButtonObjectRef.buttonID }
@@ -25,5 +26,5 @@ function openNewFormButtonDialog(databaseID,formID,containerParams) {
 		  setElemObjectRef(newButtonObjectRef.buttonID,newButtonObjectRef)
 	  			  
        }) // newLayoutContainer API request
-	*/
+	
 }
