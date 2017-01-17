@@ -1,0 +1,40 @@
+{{define "newFormButtonDialogBody"}}
+
+	<div class="form-group">
+		<label for="newFormButtonFormLinkSelection">Form to show when button pressed</label> 
+		<select class="form-control" id="newFormButtonFormLinkSelection" name="newFormButtonFormLinkSelection">
+		</select>
+	</div>		
+
+{{end}}
+
+{{define "newFormButtonDialogButtons"}}
+	<button type="button" class="btn btn-default" id="newFormButtonCancelButton" data-dismiss="modal">Cancel</button>
+	<button type="button" class="btn btn-primary" id="newFormButtonSaveButton" type="submit">Save</button>
+{{end}}
+
+
+{{define "newFormButtonDialog"}}
+
+    <form id="newFormButtonDialogForm">
+		
+		<div class="modal fade" id="newFormButtonDialog" tabindex="-1" role="dialog" aria-labelledby="newFormButtonLabel">
+		  <div class="modal-dialog modal-sm" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="newFormButtonLabel">New Popup Form Button</h4>
+		      </div>
+		      <div class="modal-body">
+				  {{template "newFormButtonDialogBody"}}
+		      </div>
+		      <div class="modal-footer">
+				  {{template "newFormButtonDialogButtons"}}
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+	</form>
+
+{{end}}

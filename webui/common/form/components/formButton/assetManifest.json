@@ -1,6 +1,7 @@
 {
     "cssFiles": ["button.css"], 
-    "htmlFiles": ["properties.html"], 
+    "htmlFiles": ["properties.html",
+		"newFormButtonDialog.html"], 
     "jsFiles": ["newFormButtonDialog.js",
 		"properties.js",
 		"containerHTML.js",
