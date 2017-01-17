@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
+	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
@@ -20,6 +21,7 @@ type FormButton struct {
 type NewButtonParams struct {
 	ParentFormID string                         `json:"parentFormID"`
 	Geometry     componentLayout.LayoutGeometry `json:"geometry"`
+	LinkedFormID string                         `json:"linkedFormID"`
 }
 
 func saveButton(newButton FormButton) error {
@@ -32,14 +34,36 @@ func saveButton(newButton FormButton) error {
 
 }
 
+// This function somewhat duplicates the same functino in the form package. However,
+// since the form package already depends on this package, a circular package reference cannot
+// be created.
+// TODO - Move the datamodel specific functions in the form package to a lower level package
+// (which doesn't depend on this package), but
+// keep the controller-level functionality in a higher level package.
+func validateFormExists(formID string) error {
+	var retrievedFormID string
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT form_id FROM forms
+		 WHERE form_id=$1 LIMIT 1`, formID).Scan(&retrievedFormID)
+	if getErr != nil {
+		return fmt.Errorf("validateFormExists: Unabled to get form: form ID = %v: datastore err=%v",
+			formID, getErr)
+	}
+	return nil
+}
+
 func saveNewButton(params NewButtonParams) (*FormButton, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid form component layout parameters: %+v", params)
 	}
 
+	if validateErr := validateFormExists(params.LinkedFormID); validateErr != nil {
+		return nil, validateErr
+	}
+
 	properties := ButtonProperties{
-		Geometry: params.Geometry}
+		Geometry:     params.Geometry,
+		LinkedFormID: params.LinkedFormID}
 
 	newButton := FormButton{ParentFormID: params.ParentFormID,
 		ButtonID:   uniqueID.GenerateSnowflakeID(),

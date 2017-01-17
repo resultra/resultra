@@ -6,12 +6,15 @@ import (
 )
 
 type ButtonProperties struct {
-	Geometry componentLayout.LayoutGeometry `json:"geometry"`
+	Geometry     componentLayout.LayoutGeometry `json:"geometry"`
+	LinkedFormID string                         `json:"linkedFormID"`
 }
 
 func (srcProps ButtonProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ButtonProperties, error) {
 
 	destProps := srcProps
+
+	destProps.LinkedFormID = remappedIDs.AllocNewOrGetExistingRemappedID(srcProps.LinkedFormID)
 
 	return &destProps, nil
 }
