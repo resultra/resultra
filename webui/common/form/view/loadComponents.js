@@ -50,8 +50,13 @@ function loadFormViewComponents(canvasSelector, viewFormContext,
 		},
 		initFormButtonFunc: function(componentContext,$button,buttonObjectRef) {
 			console.log("Init form button in view form")
+			
+			// The loadFormViewComponents and loadRecordIntoFormLayout functions
+			// need to be passed to initFormButtonRecordEditBehavior in order
+			// to avoid a cyclical package dependency.
 			initFormButtonRecordEditBehavior(componentContext,
-					getCurrentRecordFunc,updateCurrentRecordFunc,buttonObjectRef)
+					getCurrentRecordFunc,updateCurrentRecordFunc,buttonObjectRef,
+					loadFormViewComponents,loadRecordIntoFormLayout)
 		},
 		initUserSelectionFunc: function(componentContext,$userSelection,userSelectionObjectRef) {
 			console.log("Init user selection in view form")

@@ -1,7 +1,8 @@
 {
     "cssFiles": ["button.css"], 
     "htmlFiles": ["properties.html",
-		"newFormButtonDialog.html"], 
+		"newFormButtonDialog.html",
+		"popupFormDialog.html"], 
     "jsFiles": ["newFormButtonDialog.js",
 		"properties.js",
 		"containerHTML.js",

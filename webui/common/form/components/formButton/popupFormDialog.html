@@ -1,0 +1,26 @@
+{{define "formButtonPopupFormDialogButtons"}}
+	<button type="button" class="btn btn-primary" id="formButtonPopupFormDialogDoneButton">Done</button>
+{{end}}
+
+
+{{define "formButtonPopupFormDialog"}}
+
+<div class="modal fade submitFormDialog" id="formButtonPopupFormDialog" tabindex="-1" role="document"
+						aria-labelledby="formButtonPopupFormDialogLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="formButtonPopupFormDialogLabel">Edit Item</h4>
+      </div>
+      <div class="modal-body formButtonPopupFormDialogBody">
+		  <div id="formButtonPopupFormCanvas"></div>
+      </div>
+      <div class="modal-footer">
+		  {{template "formButtonPopupFormDialogButtons" .}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}
