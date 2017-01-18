@@ -48,6 +48,11 @@ function loadFormViewComponents(canvasSelector, viewFormContext,
 			initFormComponentViewBehavior($rating,
 					ratingObjectRef.ratingID,initRatingViewProperties)
 		},
+		initFormButtonFunc: function(componentContext,$button,buttonObjectRef) {
+			console.log("Init form button in view form")
+			initFormButtonRecordEditBehavior(componentContext,
+					getCurrentRecordFunc,updateCurrentRecordFunc,buttonObjectRef)
+		},
 		initUserSelectionFunc: function(componentContext,$userSelection,userSelectionObjectRef) {
 			console.log("Init user selection in view form")
 			initUserSelectionRecordEditBehavior(componentContext,

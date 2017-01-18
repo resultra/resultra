@@ -79,7 +79,7 @@ function loadFormComponents(loadFormConfig) {
 			setElemObjectRef(formButton.buttonID,formButton)
 		
 			// Callback for any specific initialization for either the form design or view mode
-			loadFormConfig.initFormButtonFunc(componentContext,formButton)
+			loadFormConfig.initFormButtonFunc(componentContext,$containerObj,formButton)
 			
 		}
 

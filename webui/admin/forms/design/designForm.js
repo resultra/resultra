@@ -165,7 +165,7 @@ $(document).ready(function() {
 			var componentIDs = { formID: formID, componentID: headerObjectRef.headerID }
 			initFormComponentDesignBehavior(componentIDs,headerObjectRef,formHeaderDesignFormConfig,designFormLayoutConfig)
 		},
-		initFormButtonFunc: function(componentContext,buttonObjectRef) {
+		initFormButtonFunc: function(componentContext,$button,buttonObjectRef) {
 			var componentIDs = { formID: formID, componentID: buttonObjectRef.buttonID }
 			initFormComponentDesignBehavior(componentIDs,buttonObjectRef,formButtonDesignFormConfig,designFormLayoutConfig)
 		},

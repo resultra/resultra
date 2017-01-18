@@ -6,7 +6,8 @@
 		"properties.js",
 		"containerHTML.js",
 		"designFormConfig.js",
-		"viewFormConfig.js"
+		"viewFormConfig.js",
+		"viewProperties.js"
     ],
 	"imageFiles":[],
     "subDirs": []
