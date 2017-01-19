@@ -68,7 +68,12 @@ function loadFormComponents(loadFormConfig) {
 		
 			var containerHTML = formButtonContainerHTML(formButton.buttonID);
 			var $containerObj = $(containerHTML)
-			$containerObj.find(".formButton").text(formButton.properties.label)
+			
+			
+			jsonAPIRequest("frm/getFormInfo", { formID: formButton.properties.linkedFormID }, function(formInfo) {
+				$containerObj.find(".formButton").text(formInfo.form.name)		
+			})
+			
 					
 			$componentRow.append($containerObj)
 			

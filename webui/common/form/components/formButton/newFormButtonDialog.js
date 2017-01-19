@@ -44,20 +44,24 @@ function openNewFormButtonDialog(databaseID,formID,containerParams) {
 			          console.log("create new form button: Done getting new ID:response=" + JSON.stringify(newButtonObjectRef));
 			  
 					  var buttonLabel = "TBD - Button Label"
-					  $(placeholderSelector).find('.formButton').text(buttonLabel)
-					  $(placeholderSelector).attr("id",newButtonObjectRef.buttonID)
-
-					  // Set up the newly created checkbox for resize, selection, etc.
-					  var componentIDs = { formID: formID, componentID:newButtonObjectRef.buttonID }
-	  
-					  initFormComponentDesignBehavior(componentIDs,newButtonObjectRef,formButtonDesignFormConfig)
-  
-					  // Put a reference to the check box's reference object in the check box's DOM element.
-					  // This reference can be retrieved later for property setting, etc.
-					  setElemObjectRef(newButtonObjectRef.buttonID,newButtonObjectRef)
 					  
-					  componentCreated = true
-					  $newFormButtonDialog.modal('hide')
+					  jsonAPIRequest("frm/getFormInfo", { formID: newButtonObjectRef.properties.linkedFormID }, function(formInfo) {
+						  $(placeholderSelector).find(".formButton").text(formInfo.form.name)		
+						  $(placeholderSelector).attr("id",newButtonObjectRef.buttonID)
+
+						  // Set up the newly created checkbox for resize, selection, etc.
+						  var componentIDs = { formID: formID, componentID:newButtonObjectRef.buttonID }
+	  
+						  initFormComponentDesignBehavior(componentIDs,newButtonObjectRef,formButtonDesignFormConfig)
+  
+						  // Put a reference to the check box's reference object in the check box's DOM element.
+						  // This reference can be retrieved later for property setting, etc.
+						  setElemObjectRef(newButtonObjectRef.buttonID,newButtonObjectRef)
+					  
+						  componentCreated = true
+						  $newFormButtonDialog.modal('hide')
+					  })
+					    
   			  
 			    }) // newLayoutContainer API request
 			
