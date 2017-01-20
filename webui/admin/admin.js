@@ -32,6 +32,7 @@ $(document).ready(function() {
 	initUserListSettings(adminContext.databaseID)
 	initAdminFormSettings(adminContext.databaseID)
 	initAdminListSettings(adminContext.databaseID)
+	initAdminFieldSettings(adminContext.databaseID)
 	initAdminDashboardSettings(adminContext.databaseID)
 	initAdminGeneralProperties(adminContext.databaseID)
 	initAdminGlobals(adminContext.databaseID)

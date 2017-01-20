@@ -1,0 +1,66 @@
+{{define "adminFieldPropertiesDialogBody"}}
+
+    <form class="form-horizontal" id="adminFieldPropertiesDialogBodyForm">
+		
+	  <div class="form-group">
+      	  <label for="fieldPropertiesFieldNameInput" class="control-label col-sm-4">Field Name</label>
+		  <div class="col-sm-8">
+      	 	 <input type="text" id="fieldPropertiesFieldNameInput" name="fieldPropertiesFieldNameInput" class="form-control" placeholder="Field Name" required autofocus>
+		 </div>
+	  </div>
+	  
+	  <div class="form-group">
+	      <label class="control-label col-sm-4">Field Type</label>
+	      <div class="col-sm-8">
+	        <p class="form-control-static" id="fieldPropertiesFieldType"></p>
+	      </div>
+	    </div>
+	  
+	  <div class="form-group">
+      	  <label for="fieldPropertiesFieldRefNameInput" class="control-label col-sm-4">Formula Reference Name</label>
+		  <div class="col-sm-8">
+      	  	<input type="text" id="fieldPropertiesFieldRefNameInput" 
+				name="fieldPropertiesFieldRefNameInput" 
+				class="form-control" placeholder="Reference Name" required autofocus>
+			</div>
+	  </div>
+	  
+	  <div class="form-group">
+	      <div class="checkbox disabled col-sm-offset-4 col-sm-8">
+	        <label><input type="checkbox" id="fieldPropertiesFieldIsCalcField" disabled>
+	        Values for this field are calculated from other fields.</label>
+	      </div>
+	   </div>
+	  
+	</form>
+		
+
+{{end}}
+
+{{define "adminFieldPropertiesDialogButtons"}}
+	<button type="button" class="btn btn-primary" id="fieldPropertiesDialogButtonDone" type="submit">Done</button>
+{{end}}
+
+
+{{define "adminFieldPropertiesDialog"}}
+
+		
+		<div class="modal fade" id="adminFieldPropertiesDialog" tabindex="-1" role="dialog" aria-labelledby="fieldPropertiesLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="fieldPropertiesLabel">Field Properties</h4>
+		      </div>
+		      <div class="modal-body">
+				  {{template "adminFieldPropertiesDialogBody"}}
+		      </div>
+		      <div class="modal-footer">
+				  {{template "adminFieldPropertiesDialogButtons"}}
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+
+{{end}}
