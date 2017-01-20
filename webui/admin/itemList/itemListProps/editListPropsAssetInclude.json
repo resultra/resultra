@@ -1,6 +1,10 @@
 {
 	"subDirs":["../../../generic",
-		"../../../common"],
+		"../../../common",
+		"../../../common/form/submit",
+		"../../../common/form/view",
+		"../../../common/form/components"
+	],
 	"cssFiles": ["editListProps.css"],
 	"jsFiles": ["editListProps.js"],
 	"htmlFiles":["editListProps.html"],

@@ -137,7 +137,9 @@ var numberFieldFilterRuleDefs = RuleIDFilterFuncMap{
 
 var timeFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDCustomDateRange: filterCustomDateRange,
-	filterRuleIDAny:             filterAny}
+	filterRuleIDAny:             filterAny,
+	filterRuleIDNotBlank:        filterNonBlankField,
+	filterRuleIDBlank:           filterBlankField}
 
 // Get the rule definition based upon the field type
 func getFilterFuncByFieldType(fieldType string, ruleID string) (FilterRuleFunc, error) {

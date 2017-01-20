@@ -67,7 +67,7 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	
 	var dateFilterModes = {
 		"any": {
-			label: "Any date",
+			label: "Any date (no filtering)",
 			modeSelected: function() {
 				$startEndDateControls.hide()
 				updateFilterRules(panelParams)
@@ -76,6 +76,40 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 				var condition = { conditionID: "anyDate" }
 				var ruleConfig = { fieldID: fieldInfo.fieldID,
 					ruleID: "any",
+					conditions: [condition]}
+				return ruleConfig				
+			},
+			initDefaultVals: function(ruleInfo) {
+				$startEndDateControls.hide()			
+			}
+		},
+		"notBlank": {
+			label: "Date is set (not blank)",
+			modeSelected: function() {
+				$startEndDateControls.hide()
+				updateFilterRules(panelParams)
+			},
+			modeConfig: function() {
+				var condition = { conditionID: "notBlank" }
+				var ruleConfig = { fieldID: fieldInfo.fieldID,
+					ruleID: "notBlank",
+					conditions: [condition]}
+				return ruleConfig				
+			},
+			initDefaultVals: function(ruleInfo) {
+				$startEndDateControls.hide()			
+			}
+		},
+		"isBlank": {
+			label: "Date is not set (blank)",
+			modeSelected: function() {
+				$startEndDateControls.hide()
+				updateFilterRules(panelParams)
+			},
+			modeConfig: function() {
+				var condition = { conditionID: "isBlank" }
+				var ruleConfig = { fieldID: fieldInfo.fieldID,
+					ruleID: "isBlank",
 					conditions: [condition]}
 				return ruleConfig				
 			},
