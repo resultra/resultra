@@ -89,7 +89,7 @@ function initHtmlEditorRecordEditBehavior(componentContext,getRecordFunc, update
 			
 			
 			var setRecordValParams = { 
-				parentDatabaseID:viewListContext.databaseID,
+				parentDatabaseID:currRecordRef.parentDatabaseID,
 				recordID:currRecordRef.recordID, 
 				fieldID:htmlEditorFieldID, 
 				value:inputVal,

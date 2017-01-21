@@ -29,7 +29,7 @@ function loadRecordIntoImage(imageElem, recordRef) {
 			// If record has a value for the current container's associated field ID,
 			// retrieve an URL for the image and add it to the container.
 			var getUrlParams = { 
-				parentDatabaseID:viewListContext.databaseID,
+				parentDatabaseID:recordRef.parentDatabaseID,
 				recordID: recordRef.recordID, 
 				fieldID: imageFieldID,
 				cloudFileName: cloudFileName }
@@ -148,7 +148,7 @@ function initImageRecordEditBehavior(componentContext,getRecordFunc, updateRecor
 				var currRecordRef = getRecordFunc()
 								
 				fileUploadParams = {
-					parentDatabaseID:viewListContext.databaseID,
+					parentDatabaseID:currRecordRef.parentDatabaseID,
 					fieldID: componentLink.fieldID, 
 					recordID: currRecordRef.recordID,
 					valueFormatContext: "image",

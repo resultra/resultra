@@ -90,7 +90,7 @@ function initCommentBoxRecordEditBehavior(componentContext,getRecordFunc, update
 			}
 			
 			var setRecordValParams = { 
-				parentDatabaseID:viewListContext.databaseID,
+				parentDatabaseID:currRecordRef.parentDatabaseID,
 				recordID:currRecordRef.recordID, 
 				fieldID:commentFieldID, 
 				value:commentVal,
