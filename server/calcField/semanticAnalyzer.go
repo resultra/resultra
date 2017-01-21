@@ -34,6 +34,10 @@ func newTypedAnalysisResult(resultType string) *semanticAnalysisResult {
 	return &semanticAnalysisResult{analyzeErrors: nil, resultType: resultType}
 }
 
+func newUndefinedAnalysisResult() *semanticAnalysisResult {
+	return &semanticAnalysisResult{analyzeErrors: nil, resultType: ""}
+}
+
 func checkEqnCycles(context *semanticAnalysisContext, eqnNode *EquationNode) (bool, error) {
 	// The only types of equation nodes which need to be checked are field references
 	// and other "non-terminal" nodes in the equation tree. If the equation refers
@@ -176,7 +180,9 @@ func analyzeEqnNode(context *semanticAnalysisContext, eqnNode *EquationNode) (*s
 	} else if eqnNode.NumberVal != nil {
 		return newTypedAnalysisResult(field.FieldTypeNumber), nil
 	} else {
-		return nil, fmt.Errorf("Unknown error: unexpected result type")
+		// If the EquationNode doesn't have any of it's properties defined, it is considered undefined.
+		// This corresponds to an empty formula, which will always return an undefined result.
+		return newUndefinedAnalysisResult(), nil
 	}
 
 	return nil, fmt.Errorf("analyzeEqnNode: Unknown error: unhandled equation type: %+v", eqnNode)
@@ -202,7 +208,8 @@ func analyzeSemantics(compileParams formulaCompileParams, rootEqnNode *EquationN
 		return analyzeResult, analyzeErr
 	} else {
 		if len(analyzeResult.resultType) == 0 {
-			return nil, fmt.Errorf("analyzeSemantics: Unexpected results: no errors but not result type either")
+			// The formula is an empty formula which will always return an undefined result.
+			return analyzeResult, analyzeErr
 		} else {
 			if analyzeResult.resultType != compileParams.expectedResultType {
 				errMsg := fmt.Sprintf("Unexpected formula result. Expecting %v, but formula returns %v",

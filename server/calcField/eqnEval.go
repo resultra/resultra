@@ -200,7 +200,9 @@ func (equation EquationNode) EvalEqn(evalContext *EqnEvalContext) (*EquationResu
 		// Number literal given directly in the equation itself (rather than a field value)
 		return numberEqnResult(*equation.NumberVal), nil
 	} else {
-		return nil, fmt.Errorf("EvalEqn: malformed calculated field equation : system error: %+v", equation)
+		// The EquationNode corresponds to an empty formula. In this case, always return an
+		// undefined result.
+		return undefinedEqnResult(), nil
 	}
 
 }

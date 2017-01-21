@@ -102,26 +102,54 @@ function createNewFieldDialogPanelContextBootstrap(panelParams) {
 			if($panelForm.valid()) {
 				console.log("New field panel form validated")
 				var newFieldParams = getPanelValues($parentDialog)
-				console.log("creating new field: params= " + JSON.stringify(newFieldParams))
-				jsonAPIRequest("field/new",newFieldParams,function(newField) {
-					console.log("new field created: " + JSON.stringify(newField))
+				
+				if (newFieldParams.isCalcField) {
+					newFieldParams.formulaText = "" // initially empty formula
+					console.log("creating new calculated field: params= " + JSON.stringify(newFieldParams))
+					jsonAPIRequest("calcField/new",newFieldParams,function(newField) {
+						console.log("new field created: " + JSON.stringify(newField))
 									
-					// Re-initialize the field information used by different elements.
-					initFieldInfo(panelParams.databaseID,function() {
-						var newComponentAPIParams = {
-							parentFormID: panelParams.formID,
-							geometry: panelParams.containerParams.geometry,
-							componentLink: {
-								linkedValType: "field",
-								fieldID: newField.fieldID
+						// Re-initialize the field information used by different elements.
+						initFieldInfo(panelParams.databaseID,function() {
+							var newComponentAPIParams = {
+								parentFormID: panelParams.formID,
+								geometry: panelParams.containerParams.geometry,
+								componentLink: {
+									linkedValType: "field",
+									fieldID: newField.fieldID
+								}
 							}
-						}
-						panelParams.createNewFormComponent($parentDialog,newComponentAPIParams)
+							panelParams.createNewFormComponent($parentDialog,newComponentAPIParams)
 						
-						panelParams.doneFunc($parentDialog)
-					})
+							panelParams.doneFunc($parentDialog)
+						})
 									
-				})
+					})
+					
+				} else {
+					console.log("creating new field: params= " + JSON.stringify(newFieldParams))
+					jsonAPIRequest("field/new",newFieldParams,function(newField) {
+						console.log("new field created: " + JSON.stringify(newField))
+									
+						// Re-initialize the field information used by different elements.
+						initFieldInfo(panelParams.databaseID,function() {
+							var newComponentAPIParams = {
+								parentFormID: panelParams.formID,
+								geometry: panelParams.containerParams.geometry,
+								componentLink: {
+									linkedValType: "field",
+									fieldID: newField.fieldID
+								}
+							}
+							panelParams.createNewFormComponent($parentDialog,newComponentAPIParams)
+						
+							panelParams.doneFunc($parentDialog)
+						})
+									
+					})
+					
+				}
+				
 
 			}	
 		})

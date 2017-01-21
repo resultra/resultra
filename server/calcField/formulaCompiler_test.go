@@ -115,6 +115,11 @@ func TestTextParse(t *testing.T) {
 	verifyOneEqnParseFail(t, ` "Hello world""`, "extra quote after text")
 }
 
+func TestEmptyFormulaParse(t *testing.T) {
+	verifyOneEqnParsing(t, ``)
+	verifyOneEqnParsing(t, `   `)
+}
+
 func TestFieldRefParse(t *testing.T) {
 
 	verifyOneEqnParsing(t, `[FieldRef1]`)

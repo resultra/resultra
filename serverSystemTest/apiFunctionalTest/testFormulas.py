@@ -74,6 +74,10 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
         self.verifyFormula(self.numberCalcField,"-1.5*SUM(52.5)","negative numbers")
         self.verifyBadFormula(self.numberCalcField,"-SUM(52.5)","unary - not supported")
         
+    def testEmptyFormulas(self):
+        self.verifyFormula(self.numberCalcField,"","empty number formula")
+        self.verifyFormula(self.textCalcField,"","empty text formula")
+ 
         
     # TODO - Test valid and invalid field references
     # Test single letter field references.

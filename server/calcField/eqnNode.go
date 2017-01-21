@@ -50,6 +50,10 @@ func TextEqnNode(textVal string) *EquationNode {
 	return &EquationNode{TextVal: &theVal}
 }
 
+func EmptyEqnNode() *EquationNode {
+	return &EquationNode{}
+}
+
 func decodeEquation(encodedEqn string) (*EquationNode, error) {
 
 	decodedEqnNode := EquationNode{}

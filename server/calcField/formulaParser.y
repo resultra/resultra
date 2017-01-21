@@ -57,9 +57,14 @@ root : expr
 			// The work-around is to set a value on the lexer (see https://goo.gl/NdKNYI)
 			formulalex.(*formulaLexerImpl).rootEqnNode = $1
 			fmt.Printf("\nRoot equation node: %+v\n",$1) 
-		}		
+		}
+		| /* empty */		
+		{
+			formulalex.(*formulaLexerImpl).rootEqnNode = EmptyEqnNode()
+			fmt.Printf("\nEmpty root equation node\n") 
+		}
 
-expr	:   expr TOK_PLUS expr
+expr :	expr TOK_PLUS expr
 		{ 
 			funcArgs := []*EquationNode{$1,$3}
 			$$  =  FuncEqnNode(FuncNameSum,funcArgs)
