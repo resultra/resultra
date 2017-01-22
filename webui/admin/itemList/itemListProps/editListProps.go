@@ -9,8 +9,6 @@ import (
 	itemListDataModel "resultra/datasheet/server/itemList"
 
 	"resultra/datasheet/webui/common"
-	"resultra/datasheet/webui/common/form/components"
-	"resultra/datasheet/webui/common/form/submit"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/generic"
 )
@@ -25,9 +23,7 @@ func init() {
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
-		common.TemplateFileList,
-		submit.TemplateFileList,
-		components.TemplateFileList}
+		common.TemplateFileList}
 
 	itemListTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }

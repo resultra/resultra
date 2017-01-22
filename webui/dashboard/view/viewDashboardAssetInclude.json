@@ -1,9 +1,6 @@
 {
 	"subDirs":["../../generic",
 				"../../common",
-				"../../common/form/submit",
-				"../../common/form/view",
-				"../../common/form/components",
 				"../common",
 				"../components"],
 	"cssFiles": ["viewDashboard.css"],

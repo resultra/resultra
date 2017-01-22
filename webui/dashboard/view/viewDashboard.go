@@ -8,7 +8,6 @@ import (
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/webui/common"
-	"resultra/datasheet/webui/common/form/submit"
 	dashboardCommon "resultra/datasheet/webui/dashboard/common"
 	"resultra/datasheet/webui/dashboard/components"
 	"resultra/datasheet/webui/dashboard/design/properties"
@@ -27,8 +26,7 @@ func init() {
 		common.TemplateFileList,
 		dashboardCommon.TemplateFileList,
 		components.TemplateFileList,
-		properties.TemplateFileList,
-		submit.TemplateFileList}
+		properties.TemplateFileList}
 	viewDashboardTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 

@@ -1,10 +1,7 @@
 {
 	"subDirs":["../generic",
 		"../common",
-		"./common/timeline",
-		"../common/form/view",
-		"../common/form/submit",
-			"../common/form/components"],
+		"./common/timeline"],
 	"cssFiles": ["editRecord.css","viewList.css"],
 	"jsFiles": ["recordSet.js","viewList.js"],
 	"htmlFiles":["viewList.html"],
