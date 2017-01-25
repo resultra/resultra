@@ -70,7 +70,7 @@ func GetItemList(listID string) (*ItemList, error) {
 			listID, getErr)
 	}
 
-	var listProps ItemListProperties
+	listProps := newDefaultItemListProperties()
 	if decodeErr := generic.DecodeJSONString(encodedProps, &listProps); decodeErr != nil {
 		return nil, fmt.Errorf("GetItemList: can't decode properties: %v", encodedProps)
 	}
@@ -103,7 +103,7 @@ func getAllItemLists(parentDatabaseID string) ([]ItemList, error) {
 			return nil, fmt.Errorf("getAllItemLists: Failure querying database: %v", scanErr)
 		}
 
-		var listProps ItemListProperties
+		listProps := newDefaultItemListProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &listProps); decodeErr != nil {
 			return nil, fmt.Errorf("getAllItemLists: can't decode properties: %v", encodedProps)
 		}

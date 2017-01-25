@@ -10,11 +10,17 @@ import (
 type ItemListProperties struct {
 	DefaultRecordSortRules []recordSortDataModel.RecordSortRule `json:"defaultRecordSortRules"`
 	DefaultFilterRules     []recordFilter.RecordFilterRule      `json:"defaultFilterRules"`
+	PreFilterRules         []recordFilter.RecordFilterRule      `json:"preFilterRules"`
 }
 
 func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ItemListProperties, error) {
 
 	destFilterRules, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.DefaultFilterRules)
+	if err != nil {
+		return nil, fmt.Errorf("FormProperties.Clone: %v")
+	}
+
+	destPreFilterRules, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.PreFilterRules)
 	if err != nil {
 		return nil, fmt.Errorf("FormProperties.Clone: %v")
 	}
@@ -26,7 +32,8 @@ func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) 
 
 	destProps := ItemListProperties{
 		DefaultRecordSortRules: destSortRules,
-		DefaultFilterRules:     destFilterRules}
+		DefaultFilterRules:     destFilterRules,
+		PreFilterRules:         destPreFilterRules}
 
 	return &destProps, nil
 }
@@ -34,7 +41,8 @@ func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) 
 func newDefaultItemListProperties() ItemListProperties {
 	defaultProps := ItemListProperties{
 		DefaultRecordSortRules: []recordSortDataModel.RecordSortRule{},
-		DefaultFilterRules:     []recordFilter.RecordFilterRule{}}
+		DefaultFilterRules:     []recordFilter.RecordFilterRule{},
+		PreFilterRules:         []recordFilter.RecordFilterRule{}}
 
 	return defaultProps
 }

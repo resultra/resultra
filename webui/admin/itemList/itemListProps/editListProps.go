@@ -29,12 +29,13 @@ func init() {
 }
 
 type ItemListTemplParams struct {
-	Title                 string
-	DatabaseID            string
-	DatabaseName          string
-	ListID                string
-	ListName              string
-	FilterPropPanelParams recordFilter.FilterPanelTemplateParams
+	Title                    string
+	DatabaseID               string
+	DatabaseName             string
+	ListID                   string
+	ListName                 string
+	FilterPropPanelParams    recordFilter.FilterPanelTemplateParams
+	PreFilterPropPanelParams recordFilter.FilterPanelTemplateParams
 }
 
 func editListPropsPage(w http.ResponseWriter, r *http.Request) {
@@ -55,13 +56,16 @@ func editListPropsPage(w http.ResponseWriter, r *http.Request) {
 	log.Println("editListPropsPage: viewing/editing admin settings for list ID = ", listID)
 
 	elemPrefix := "itemList_"
+	preFilterElemPrefix := "itemListPreFilter_"
 	templParams := ItemListTemplParams{
-		Title:                 "Item List Settings",
-		DatabaseID:            listInfo.ParentDatabaseID,
-		DatabaseName:          dbInfo.DatabaseName,
-		ListID:                listID,
-		ListName:              listInfo.Name,
-		FilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(elemPrefix)}
+		Title:                    "Item List Settings",
+		DatabaseID:               listInfo.ParentDatabaseID,
+		DatabaseName:             dbInfo.DatabaseName,
+		ListID:                   listID,
+		ListName:                 listInfo.Name,
+		FilterPropPanelParams:    recordFilter.NewFilterPanelTemplateParams(elemPrefix),
+		PreFilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(preFilterElemPrefix),
+	}
 
 	if err := itemListTemplates.ExecuteTemplate(w, "editItemListPropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

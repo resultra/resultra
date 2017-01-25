@@ -19,6 +19,7 @@ func init() {
 	itemListRouter.HandleFunc("/api/itemList/setName", setItemListName)
 	itemListRouter.HandleFunc("/api/itemList/setDefaultSortRules", setDefaultSortRules)
 	itemListRouter.HandleFunc("/api/itemList/setDefaultFilterRules", setDefaultFilterRules)
+	itemListRouter.HandleFunc("/api/itemList/setPreFilterRules", setPreFilterRules)
 	itemListRouter.HandleFunc("/api/itemList/setForm", setForm)
 
 	itemListRouter.HandleFunc("/api/itemList/validateListName", validateListNameAPI)
@@ -108,6 +109,15 @@ func setItemListName(w http.ResponseWriter, r *http.Request) {
 
 func setDefaultFilterRules(w http.ResponseWriter, r *http.Request) {
 	var params SetFilterRulesParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processItemListPropUpdate(w, r, params)
+}
+
+func setPreFilterRules(w http.ResponseWriter, r *http.Request) {
+	var params SetPreFilterRulesParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

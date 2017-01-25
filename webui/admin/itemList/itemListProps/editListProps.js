@@ -116,6 +116,26 @@ $(document).ready(function() {
 			initFilterPropertyPanel(filterPropertyPanelParams)
 			
 			
+			var preFilterElemPrefix = "itemListPreFilter_"
+			var preFilterPropertyPanelParams = {
+				elemPrefix: preFilterElemPrefix,
+				databaseID: itemListPropsContext.databaseID,
+				defaultFilterRules: listInfo.properties.preFilterRules,
+				initDone: function () {},
+				updateFilterRules: function (updatedFilterRules) {
+					var setPreFiltersParams = {
+						listID: listInfo.listID,
+						filterRules: updatedFilterRules
+					}
+					jsonAPIRequest("itemList/setPreFilterRules",setPreFiltersParams,function(updatedList) {
+						console.log(" Pre filters updated")
+					}) // set record's number field value
+				
+				}
+			
+			}
+			initFilterPropertyPanel(preFilterPropertyPanelParams)
+			
 			function saveDefaultListSortRules(sortRules) {
 				console.log("Saving default sort rules for list: " + JSON.stringify(sortRules))
 				var saveSortRulesParams = {

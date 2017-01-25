@@ -70,6 +70,19 @@ func (updateParams SetFilterRulesParams) updateProps(itemList *ItemList) error {
 	return nil
 }
 
+type SetPreFilterRulesParams struct {
+	ItemListIDHeader
+	FilterRules []recordFilter.RecordFilterRule `json:"filterRules"`
+}
+
+func (updateParams SetPreFilterRulesParams) updateProps(itemList *ItemList) error {
+
+	// TODO - Validate filter rules before saving
+	itemList.Properties.PreFilterRules = updateParams.FilterRules
+
+	return nil
+}
+
 type SetDefaultSortRulesParams struct {
 	ItemListIDHeader
 	SortRules []recordSortDataModel.RecordSortRule `json:"sortRules"`
