@@ -21,6 +21,10 @@ const filterRuleIDCustomDateRange string = "dateRange"
 const filterRuleIDGreater string = "greater"
 const filterRuleIDLess string = "less"
 const filterRuleIDAny string = "any"
+const filterRuleTrue string = "true"
+const filterRuleNotTrue string = "notTrue"
+const filterRuleFalse string = "false"
+const filterRuleNotFalse string = "notFalse"
 
 const conditionDateRangeMinDate string = "minDate"
 const conditionDateRangeMaxDate string = "maxDate"
@@ -122,6 +126,64 @@ func filterCustomDateRange(filterParams FilterFuncParams, recFieldVals record.Re
 	return true, nil // stubbed out
 }
 
+func filterTrue(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+
+	boolVal, valFound := recFieldVals.GetBoolFieldValue(filterParams.FieldID)
+	if !valFound {
+		return false, nil
+	}
+
+	if boolVal == true {
+		return true, nil
+	} else {
+		return false, nil
+	}
+
+}
+
+func filterNotTrue(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+
+	isTrue, err := filterTrue(filterParams, recFieldVals)
+	if err != nil {
+		return false, err
+	} else {
+		if !isTrue {
+			return true, nil
+		} else {
+			return false, nil
+		}
+	}
+}
+
+func filterFalse(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+
+	boolVal, valFound := recFieldVals.GetBoolFieldValue(filterParams.FieldID)
+	if !valFound {
+		return false, nil
+	}
+
+	if boolVal == false {
+		return true, nil
+	} else {
+		return false, nil
+	}
+
+}
+
+func filterNotFalse(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+
+	isFalse, err := filterFalse(filterParams, recFieldVals)
+	if err != nil {
+		return false, err
+	} else {
+		if !isFalse {
+			return true, nil
+		} else {
+			return false, nil
+		}
+	}
+}
+
 type RuleIDFilterFuncMap map[string]FilterRuleFunc
 
 var textFieldFilterRuleDefs = RuleIDFilterFuncMap{
@@ -140,6 +202,15 @@ var timeFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDAny:             filterAny,
 	filterRuleIDNotBlank:        filterNonBlankField,
 	filterRuleIDBlank:           filterBlankField}
+
+var boolFieldFilterRuleDefs = RuleIDFilterFuncMap{
+	filterRuleIDAny:      filterAny,
+	filterRuleIDNotBlank: filterNonBlankField,
+	filterRuleIDBlank:    filterBlankField,
+	filterRuleTrue:       filterTrue,
+	filterRuleNotTrue:    filterNotTrue,
+	filterRuleFalse:      filterFalse,
+	filterRuleNotFalse:   filterNotFalse}
 
 // Get the rule definition based upon the field type
 func getFilterFuncByFieldType(fieldType string, ruleID string) (FilterRuleFunc, error) {
@@ -164,6 +235,15 @@ func getFilterFuncByFieldType(fieldType string, ruleID string) (FilterRuleFunc, 
 		}
 	case field.FieldTypeTime:
 		filterFunc, funcFound := timeFieldFilterRuleDefs[ruleID]
+		if !funcFound {
+			return nil, fmt.Errorf(
+				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
+				fieldType, ruleID)
+		} else {
+			return filterFunc, nil
+		}
+	case field.FieldTypeBool:
+		filterFunc, funcFound := boolFieldFilterRuleDefs[ruleID]
 		if !funcFound {
 			return nil, fmt.Errorf(
 				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",

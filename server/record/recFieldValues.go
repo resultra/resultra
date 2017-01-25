@@ -46,6 +46,24 @@ func (recFieldVals RecFieldValues) GetNumberFieldValue(fieldID string) (float64,
 	}
 }
 
+func (recFieldVals RecFieldValues) GetBoolFieldValue(fieldID string) (bool, bool) {
+
+	rawVal, foundVal := recFieldVals[fieldID]
+
+	if !foundVal {
+		log.Printf("GetBoolFieldValue: value not found for fieldID = %v", fieldID)
+		return false, false
+	}
+
+	if theBool, validType := rawVal.(bool); validType {
+		log.Printf("GetNumberFieldValue: got value for fieldID = %v, value = %v", fieldID, theBool)
+		return theBool, true
+	} else {
+		log.Printf("GetBoolFieldValue: invalid type for value for fieldID = %v, value = %v", fieldID, rawVal)
+		return false, false
+	}
+}
+
 // TODO (Important) - Save time values as time.Time. When saved then restored from an interface{} value, time values get restored as
 // strings rather than dates. This makes it necessary to decode the strings after the fact. A more type safe way to store the
 // values would be to have a different map of values for each type; i.e. bool, time, etc.

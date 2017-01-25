@@ -206,9 +206,6 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 		
 	})
 	
-	
-	
-	
 	$filterListItem.append($ruleControls)
 		
 	return $filterListItem
@@ -297,14 +294,91 @@ function numberFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	
 }
 
+function boolFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
+	
+	var $ruleControls = $('#recordFilterBoolFieldRuleListItem').clone()
+	$ruleControls.attr("id","")
+	
+	var $ruleSelection = $ruleControls.find("select")
+	$ruleSelection.empty()
+	$ruleSelection.append(defaultSelectOptionPromptHTML("Filter for"))
+	
+	var filterRulesBool = {
+		"any": {
+			label: "Any value (no filtering)",
+		},
+		"isBlank": {
+			label: "Value not set (blank)",
+		},
+		"notBlank": {
+			label: "Value is set (not blank)",
+		},
+		"true": {
+			label: "Value is true",
+		},
+		"notTrue": {
+			label: "Value not true",
+		},
+		"false": {
+			label: "Value is false",
+		},
+		"notFalse": {
+			label: "Value is not False",
+		}
+	}
+	
+	for(var ruleID in filterRulesBool) {
+	 	var selectRuleHTML = selectOptionHTML(ruleID, filterRulesBool[ruleID].label)
+	 	$ruleSelection.append(selectRuleHTML)				
+	}	
+	
+	if(defaultRuleInfo !== null) {
+		var ruleInfo = filterRulesBool[defaultRuleInfo.ruleID]
+		$ruleSelection.val(defaultRuleInfo.ruleID)
+	}	
+		
+	initSelectControlChangeHandler($ruleSelection,function(ruleID) {
+		var ruleInfo = filterRulesBool[ruleID]
+		console.log("Rule selection change: " + ruleID)
+		updateFilterRules(panelParams)
+	})
+		
+		
+	var $filterListItem = createFilterListRuleListItem(panelParams,fieldInfo.name)
+		
+	$filterListItem.data("filterRuleConfigFunc",function() {
+		var ruleID = $ruleSelection.val()
+		if(ruleID !== null && ruleID.length > 0) {
+			var ruleInfo = filterRulesBool[ruleID]
+			var conditions = []
+			conditions.push({ operatorID: ruleID })				
+			
+			var ruleConfig = { fieldID: fieldInfo.fieldID,
+				ruleID: ruleID,
+				conditions: conditions }	
+			return ruleConfig
+		} else {
+			return null
+		}
+	})
+		
+	$filterListItem.append($ruleControls)
+		
+	return $filterListItem
+	
+}
+
+
 
 function createFilterRulePanelListItem(panelParams, fieldInfo,defaultRuleInfo) {
 	
 	switch (fieldInfo.type) {
 	case fieldTypeNumber:
-		return numberFilterPanelRuleItem(panelParams, fieldInfo,defaultRuleInfo)
+		return numberFilterPanelRuleItem(panelParams, fieldInfo, defaultRuleInfo)
 	case fieldTypeTime: 
-		return dateFilterPanelRuleItem(panelParams, fieldInfo,defaultRuleInfo)
+		return dateFilterPanelRuleItem(panelParams, fieldInfo, defaultRuleInfo)
+	case fieldTypeBool: 
+		return boolFilterPanelRuleItem(panelParams, fieldInfo, defaultRuleInfo)
 	default:
 		console.log("createFilterRulePanelListItem: Unsupported field type:  " + fieldInfo.type)
 		return $("")
