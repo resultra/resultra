@@ -9,9 +9,16 @@ import (
 )
 
 type GetFilteredSortedRecordsParams struct {
-	DatabaseID  string                               `json:"databaseID"`
-	FilterRules []recordFilter.RecordFilterRule      `json:"filterRules"`
-	SortRules   []recordSortDataModel.RecordSortRule `json:"sortRules"`
+	DatabaseID     string                               `json:"databaseID"`
+	PreFilterRules []recordFilter.RecordFilterRule      `json:"preFilterRules"`
+	FilterRules    []recordFilter.RecordFilterRule      `json:"filterRules"`
+	SortRules      []recordSortDataModel.RecordSortRule `json:"sortRules"`
+}
+
+func NewDefaultGetFilteredSortedRecordsParams() GetFilteredSortedRecordsParams {
+	return GetFilteredSortedRecordsParams{
+		"", []recordFilter.RecordFilterRule{}, []recordFilter.RecordFilterRule{}, []recordSortDataModel.RecordSortRule{}}
+
 }
 
 func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordValue.RecordValueResults, error) {
@@ -23,7 +30,12 @@ func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordVa
 		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving records: %v", getRecordErr)
 	}
 
-	filteredRecords, err := recordFilter.FilterRecordValues(params.FilterRules, unfilteredRecordValues)
+	preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(params.PreFilterRules, unfilteredRecordValues)
+	if preFilterErr != nil {
+		return nil, fmt.Errorf("GetFilteredRecords: Error pre-filtering records: %v", preFilterErr)
+	}
+
+	filteredRecords, err := recordFilter.FilterRecordValues(params.FilterRules, preFilteredRecords)
 	if err != nil {
 		return nil, fmt.Errorf("GetFilteredRecords: Error filtering records: %v", err)
 	}

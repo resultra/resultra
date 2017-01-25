@@ -22,7 +22,7 @@ func getFilteredSortedRecordsAPI(w http.ResponseWriter, r *http.Request) {
 
 	// TODO - Once filtering is implemented on a per form/dashboard basis,
 	// pass in the parent filter.
-	var params GetFilteredSortedRecordsParams
+	params := NewDefaultGetFilteredSortedRecordsParams()
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

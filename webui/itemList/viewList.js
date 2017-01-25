@@ -188,7 +188,8 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 	
 			var getFilteredRecordsParams = { 
 				databaseID: viewListContext.databaseID,
-				filterRules: filterRules,
+				preFilterRules: listInfo.properties.preFilterRules,
+				filterRules: filterRules,		
 				sortRules: sortRules}
 	
 			reloadRecords(getFilteredRecordsParams)
