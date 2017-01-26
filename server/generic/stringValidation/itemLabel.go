@@ -22,3 +22,11 @@ func validateItemLabel(itemLabel string) error {
 	}
 	return nil
 }
+
+func ValidateOptionalItemLabel(itemLabel string) error {
+	if len(itemLabel) == 0 {
+		return nil
+	}
+
+	return validateItemLabel(itemLabel)
+}

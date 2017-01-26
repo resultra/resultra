@@ -62,8 +62,9 @@ func saveNewButton(params NewButtonParams) (*FormButton, error) {
 	}
 
 	properties := ButtonProperties{
-		Geometry:     params.Geometry,
-		LinkedFormID: params.LinkedFormID}
+		Geometry:      params.Geometry,
+		LinkedFormID:  params.LinkedFormID,
+		PopupBehavior: newDefaultPopupBehavior()}
 
 	newButton := FormButton{ParentFormID: params.ParentFormID,
 		ButtonID:   uniqueID.GenerateSnowflakeID(),
@@ -99,7 +100,7 @@ func GetButtons(parentFormID string) ([]FormButton, error) {
 	buttons := []FormButton{}
 	addButton := func(datePickerID string, encodedProps string) error {
 
-		var buttonProps ButtonProperties
+		buttonProps := newDefaultButtonProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &buttonProps); decodeErr != nil {
 			return fmt.Errorf("GetButtons: can't decode properties: %v", encodedProps)
 		}

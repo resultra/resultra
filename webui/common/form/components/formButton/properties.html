@@ -9,6 +9,31 @@
 	
 {{end}}
 
+{{define "formButtonPopupBehaviorProps"}}
+	
+	<form class="form-inline" id="formButtonPopupBehaviorForm">
+			
+	<div class="form-group">
+	
+		<label for="formButtonPopupBehaviorSelection">When to save changes made in popup form:</label>
+
+		<select class="form-control" id="formButtonPopupBehaviorSelection">
+			<option disabled selected value="">Select a behavior</option>
+			<option value="modeless">Save changes immediately</option>
+			<option value="modal">Save changes when popup closes</option>
+		</select>
+		
+	</div>
+    <div class="form-group" id="formButtonCustomModalSaveLabelFormGroup">
+      <label for="">Custom button label to save changes and close popup (optional):</label>
+      <input type="text" class="form-control" id="formButtonCustomModalSaveLabelInput" name="formButtonCustomModalSaveLabelInput">
+    </div>
+	
+</form>
+	
+{{end}}
+
+
 
 {{define "formButtonProps"}}
 
@@ -20,6 +45,10 @@
 		
 		{{template "propertyPanelPrefix" .FormatPanelParams}}
 			{{template "formButtonFormatProps"}}
+		{{template "propertyPanelSuffix"}}
+		
+		{{template "propertyPanelPrefix" .PopupBehaviorPanelParams}}
+			{{template "formButtonPopupBehaviorProps"}}
 		{{template "propertyPanelSuffix"}}
 	</div>
 

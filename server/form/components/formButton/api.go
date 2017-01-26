@@ -11,6 +11,7 @@ func init() {
 
 	buttonRouter.HandleFunc("/api/frm/formButton/new", newButton)
 	buttonRouter.HandleFunc("/api/frm/formButton/resize", resizeButton)
+	buttonRouter.HandleFunc("/api/frm/formButton/setPopupBehavior", setPopupBehavior)
 
 	http.Handle("/api/frm/formButton/", buttonRouter)
 }
@@ -41,6 +42,15 @@ func processButtonPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater
 
 func resizeButton(w http.ResponseWriter, r *http.Request) {
 	var params ButtonResizeParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processButtonPropUpdate(w, r, params)
+}
+
+func setPopupBehavior(w http.ResponseWriter, r *http.Request) {
+	var params ButtonBehaviorParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

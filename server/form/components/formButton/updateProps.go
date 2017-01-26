@@ -63,3 +63,19 @@ func (updateParams ButtonResizeParams) updateProps(buttonForUpdate *FormButton) 
 
 	return nil
 }
+
+type ButtonBehaviorParams struct {
+	ButtonIDHeader
+	PopupBehavior ButtonPopupBehavior `json:"popupBehavior"`
+}
+
+func (updateParams ButtonBehaviorParams) updateProps(buttonForUpdate *FormButton) error {
+
+	if err := updateParams.PopupBehavior.validateWellFormed(); err != nil {
+		return err
+	}
+
+	buttonForUpdate.Properties.PopupBehavior = updateParams.PopupBehavior
+
+	return nil
+}
