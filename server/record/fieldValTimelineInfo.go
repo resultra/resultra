@@ -96,7 +96,7 @@ func GetFieldValUpdateTimelineInfo(currUserID string, recordID string, fieldID s
 		return nil, fmt.Errorf("GetCellUpdateTimelineInfo: %v", err)
 	}
 
-	fieldCellUpdates, getErr := GetRecordFieldCellUpdates(recordID, fieldID)
+	fieldCellUpdates, getErr := GetRecordFieldCellUpdates(recordID, fieldID, FullyCommittedCellUpdatesChangeSetID)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetCellUpdateTimelineInfo: failure retrieving cell updates for record = %v: error = %v",
 			recordID, getErr)

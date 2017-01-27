@@ -75,6 +75,7 @@ func UpdateRecordValue(currUserID string, recUpdater RecordUpdater) (*Record, er
 		RecordID:         recUpdater.recordID(),
 		CellValue:        cellValue,
 		UpdateTimeStamp:  updateTimestamp,
+		ChangeSetID:      FullyCommittedCellUpdatesChangeSetID,
 		Properties:       updateProps}
 
 	if saveErr := SaveCellUpdate(cellUpdate); saveErr != nil {

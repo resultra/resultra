@@ -29,9 +29,12 @@ type CellUpdate struct {
 	FieldID          string
 	UserID           string
 	UpdateTimeStamp  time.Time
+	ChangeSetID      string
 	CellValue        string               // Value encoded as JSON
 	Properties       CellUpdateProperties // Properties encoded as JSON
 }
+
+const FullyCommittedCellUpdatesChangeSetID string = ""
 
 func SaveCellUpdate(cellUpdate CellUpdate) error {
 
@@ -41,8 +44,8 @@ func SaveCellUpdate(cellUpdate CellUpdate) error {
 	}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO cell_updates (update_id, user_id, database_id, record_id, field_id,update_timestamp_utc,value,properties) 
-			 VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+		`INSERT INTO cell_updates (update_id, user_id, database_id, record_id, field_id,update_timestamp_utc,value,properties,change_set_id) 
+			 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
 		cellUpdate.UpdateID,
 		cellUpdate.UserID,
 		cellUpdate.ParentDatabaseID,
@@ -50,7 +53,8 @@ func SaveCellUpdate(cellUpdate CellUpdate) error {
 		cellUpdate.FieldID,
 		cellUpdate.UpdateTimeStamp,
 		cellUpdate.CellValue,
-		encodedProps); insertErr != nil {
+		encodedProps,
+		cellUpdate.ChangeSetID); insertErr != nil {
 		return fmt.Errorf("saveCellUpdate: insert failed: update = %+v, error = %v", cellUpdate, insertErr)
 	}
 	return nil
@@ -58,11 +62,24 @@ func SaveCellUpdate(cellUpdate CellUpdate) error {
 }
 
 // GetCellUpdates retrieves a list of cell updates for all the fields in the given record.
-func GetRecordCellUpdates(recordID string) ([]CellUpdate, error) {
+func GetRecordCellUpdates(recordID string, changeSetID string) ([]CellUpdate, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT update_id,user_id,database_id,record_id,field_id,update_timestamp_utc,value,properties
-			FROM cell_updates WHERE record_id = $1`, recordID)
+	selectFields := `SELECT update_id,user_id,database_id,record_id,field_id,update_timestamp_utc,value,properties
+							FROM cell_updates`
+	matchRecordQuery := ` record_id = $1 `
+
+	// Build up the query depending on whether or not the changeSetID is empty or not.
+	changeSetIDMatch := ""
+	changeIDQuery := ` (change_set_id is null or change_set_id = $2)`
+	if len(changeSetID) > 0 {
+		// match a specific change_set_id
+		changeIDQuery = ` change_set_id = $2`
+		changeSetIDMatch = changeSetID
+	}
+
+	cellUpdatesQuery := selectFields + ` WHERE ` + matchRecordQuery + ` AND ` + changeIDQuery
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(cellUpdatesQuery, recordID, changeSetIDMatch)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRecordCellUpdates: Failure querying database for record ID = %v: %v", recordID, queryErr)
 	}
@@ -95,15 +112,26 @@ func GetRecordCellUpdates(recordID string) ([]CellUpdate, error) {
 }
 
 // GetCellUpdates retrieves a list of cell updates for all the fields in the given record.
-func GetRecordFieldCellUpdates(recordID string, fieldID string) ([]CellUpdate, error) {
+func GetRecordFieldCellUpdates(recordID string, fieldID string, changeSetID string) ([]CellUpdate, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT update_id,user_id,database_id, record_id,field_id, update_timestamp_utc, value,properties
-			FROM cell_updates
-			WHERE record_id=$1 and field_id=$2`,
-		recordID, fieldID)
+	selectFields := `SELECT update_id,user_id,database_id, record_id,field_id, update_timestamp_utc, value,properties
+			FROM cell_updates`
+	matchRecordAndFieldQuery := ` record_id = $1 AND field_id = $2 `
+
+	// Build up the query depending on whether or not the changeSetID is empty or not.
+	changeSetIDMatch := ""
+	changeIDQuery := ` (change_set_id is null or change_set_id = $3)`
+	if len(changeSetID) > 0 {
+		// match a specific change_set_id
+		changeIDQuery = `change_set_id = $3`
+		changeSetIDMatch = changeSetID
+	}
+
+	cellUpdatesQuery := selectFields + ` WHERE ` + matchRecordAndFieldQuery + ` AND ` + changeIDQuery
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(cellUpdatesQuery, recordID, fieldID, changeSetIDMatch)
 	if queryErr != nil {
-		return nil, fmt.Errorf("GetRecordCellUpdates: Failure querying database: %v", queryErr)
+		return nil, fmt.Errorf("GetRecordFieldCellUpdates: Failure querying database: %v", queryErr)
 	}
 	cellUpdates := []CellUpdate{}
 	for rows.Next() {
@@ -118,12 +146,12 @@ func GetRecordFieldCellUpdates(recordID string, fieldID string) ([]CellUpdate, e
 			&currCellUpdate.UpdateTimeStamp,
 			&currCellUpdate.CellValue,
 			&encodedProps); scanErr != nil {
-			return nil, fmt.Errorf("getTableList: Failure querying database: %v", scanErr)
+			return nil, fmt.Errorf("GetRecordFieldCellUpdates: Failure querying database: %v", scanErr)
 
 		}
 		cellUpdateProps := newDefaultCellUpdateProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &cellUpdateProps); decodeErr != nil {
-			return nil, fmt.Errorf("GetRecordCellUpdates: can't decode properties: %v", encodedProps)
+			return nil, fmt.Errorf("GetRecordFieldCellUpdates: can't decode properties: %v", encodedProps)
 		}
 		currCellUpdate.Properties = cellUpdateProps
 
