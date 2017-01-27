@@ -8,9 +8,9 @@ import (
 
 // Re-map the series of value updates to "flattened" current (most recent) values for both calculated
 // and non-calculated fields.
-func MapOneRecordUpdatesToFieldValues(parentDatabaseID string, recordID string) (*RecordValueResults, error) {
+func MapOneRecordUpdatesToFieldValues(parentDatabaseID string, recordID string, changeSetID string) (*RecordValueResults, error) {
 
-	cellUpdateFieldValIndex, indexErr := record.NewUpdateFieldValueIndex(parentDatabaseID, recordID)
+	cellUpdateFieldValIndex, indexErr := record.NewUpdateFieldValueIndex(parentDatabaseID, recordID, changeSetID)
 	if indexErr != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", indexErr)
 	}
@@ -34,8 +34,14 @@ func MapOneRecordUpdatesToFieldValues(parentDatabaseID string, recordID string) 
 	// in the datastore.  When individual records change, a single RecordValue can be updated. However, if a calculated field
 	// formula changes, a new field is added, or some other change impacting all the records, all the RecordValue's must
 	// be updated.
-	if saveErr := saveRecordValueResults(recValResults); saveErr != nil {
-		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: Error saving mapped record value results: err = %v", saveErr)
+	if changeSetID == record.FullyCommittedCellUpdatesChangeSetID {
+		// Only permanently save mapped results values if the changeSetID is for a fully committed set of values. Otherwise,
+		// the values being mapped are for a temporary set of changes being made in a modal dialog and subject to being
+		// cancelled.
+		if saveErr := saveRecordValueResults(recValResults); saveErr != nil {
+			return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: Error saving mapped record value results: err = %v", saveErr)
+		}
+
 	}
 
 	return &recValResults, nil

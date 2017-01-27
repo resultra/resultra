@@ -45,9 +45,9 @@ func (cellUpdateFieldValIndex CellUpdateFieldValueIndex) LatestNonCalcFieldValue
 	return &recFieldValues
 }
 
-func NewUpdateFieldValueIndex(parentDatabaseID string, recordID string) (*CellUpdateFieldValueIndex, error) {
+func NewUpdateFieldValueIndex(parentDatabaseID string, recordID string, changeSetID string) (*CellUpdateFieldValueIndex, error) {
 
-	recCellUpdates, getErr := GetRecordCellUpdates(recordID, FullyCommittedCellUpdatesChangeSetID)
+	recCellUpdates, getErr := GetRecordCellUpdates(recordID, changeSetID)
 	if getErr != nil {
 		return nil, fmt.Errorf("NewFieldValueIndex: failure retrieving cell updates for record = %v: error = %v",
 			recordID, getErr)

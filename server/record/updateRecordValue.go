@@ -13,6 +13,7 @@ type RecordUpdater interface {
 	parentDatabaseID() string
 	generateCellValue() (string, error)
 	getUpdateProperties() CellUpdateProperties
+	GetChangeSetID() string
 }
 
 // RecordUpdateHeader is a common header for all record value updates. It also implements
@@ -22,6 +23,7 @@ type RecordUpdateHeader struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 	RecordID         string `json:"recordID"`
 	FieldID          string `json:"fieldID"`
+	ChangeSetID      string `json:"changeSetID"`
 }
 
 func (recUpdateHeader RecordUpdateHeader) fieldID() string {
@@ -34,6 +36,10 @@ func (recUpdateHeader RecordUpdateHeader) recordID() string {
 
 func (recUpdateHeader RecordUpdateHeader) parentDatabaseID() string {
 	return recUpdateHeader.ParentDatabaseID
+}
+
+func (recUpdateHeader RecordUpdateHeader) GetChangeSetID() string {
+	return recUpdateHeader.ChangeSetID
 }
 
 // updateRecordValue implements a generic algorithm (strategy design pattern) which wrapp the updating of records.
@@ -75,7 +81,7 @@ func UpdateRecordValue(currUserID string, recUpdater RecordUpdater) (*Record, er
 		RecordID:         recUpdater.recordID(),
 		CellValue:        cellValue,
 		UpdateTimeStamp:  updateTimestamp,
-		ChangeSetID:      FullyCommittedCellUpdatesChangeSetID,
+		ChangeSetID:      recUpdater.GetChangeSetID(),
 		Properties:       updateProps}
 
 	if saveErr := SaveCellUpdate(cellUpdate); saveErr != nil {
