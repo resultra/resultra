@@ -33,3 +33,32 @@ func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*rec
 	return updateRecordValResult, nil
 
 }
+
+type CommitChangeSetParams struct {
+	RecordID    string `json:"recordID"`
+	ChangeSetID string `json:"changeSetID"`
+}
+
+func commitChangeSet(params CommitChangeSetParams) (*recordValue.RecordValueResults, error) {
+
+	commitRecord, err := record.GetRecord(params.RecordID)
+	if err != nil {
+		return nil, fmt.Errorf("commitChangeSet: error getting record: %v", err)
+	}
+
+	if commitErr := record.CommitChangeSet(params.RecordID, params.ChangeSetID); commitErr != nil {
+		return nil, fmt.Errorf("commitChangeSet: error committing changes : %v", commitErr)
+	}
+
+	// Temporary changes made under the given changeSetID have been made permanent, so
+	// a new set of mapped record values needs to be created.
+	updateRecordValResult, mapErr := recordValue.MapOneRecordUpdatesToFieldValues(
+		commitRecord.ParentDatabaseID, params.RecordID, record.FullyCommittedCellUpdatesChangeSetID)
+	if mapErr != nil {
+		return nil, fmt.Errorf(
+			"updateRecordValue: Error mapping field values: err = %v", mapErr)
+	}
+
+	return updateRecordValResult, nil
+
+}

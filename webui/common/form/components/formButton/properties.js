@@ -1,19 +1,17 @@
 
+var FormButtonPopupBehaviorModal = "modal"
 
 function initFormButtonPopupBehaviorProperties(buttonRef) {
 	
 	var $behaviorSelection = $('#formButtonPopupBehaviorSelection')
 	var $customModalSaveLabelInput = $('#formButtonCustomModalSaveLabelInput')
-	
-	var popupBehaviorModal = "modal"
-		
+			
 	$behaviorSelection.val(buttonRef.properties.popupBehavior.popupMode)
 	$customModalSaveLabelInput.val(buttonRef.properties.popupBehavior.customLabelModalSave)
 	
-	
 	function updateModelLabelVisibility(popupMode) {
 		var $modalLabelFormGroup = $('#formButtonCustomModalSaveLabelFormGroup')
-		if(popupMode === popupBehaviorModal) {
+		if(popupMode === FormButtonPopupBehaviorModal) {
 			$modalLabelFormGroup.show()
 		} else {
 			$modalLabelFormGroup.hide()

@@ -262,7 +262,7 @@ $(document).ready(function() {
 	}
 
 
-	loadFormViewComponents(viewFormCanvasSelector,viewListContext,
+	loadFormViewComponents(viewFormCanvasSelector,viewListContext,MainLineFullyCommittedChangeSetID,
 		getCurrentRecord,updateCurrentRecord,
 		initAfterViewFormComponentsAlreadyLoaded)
 			

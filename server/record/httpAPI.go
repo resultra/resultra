@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/cloudStorageWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 func init() {
@@ -13,6 +14,8 @@ func init() {
 	recordRouter.HandleFunc("/api/record/getAll", getRecords)
 
 	recordRouter.HandleFunc("/api/record/setDraftStatus", setDraftStatusAPI)
+
+	recordRouter.HandleFunc("/api/record/allocateChangeSetID", allocateChangeSetIDAPI)
 
 	recordRouter.HandleFunc("/api/record/getFieldValUrl", getFieldValUrlAPI)
 	recordRouter.HandleFunc("/api/record/getFile/{fileName}", getRecordFileAPI)
@@ -94,4 +97,17 @@ func getRecordFileAPI(w http.ResponseWriter, r *http.Request) {
 
 	http.ServeFile(w, r, cloudStorageWrapper.LocalAttachmentFileUploadDir+fileName)
 
+}
+
+type changeSetIDAllocationResponse struct {
+	ChangeSetID string `json:"changeSetID"`
+}
+
+func allocateChangeSetIDAPI(w http.ResponseWriter, r *http.Request) {
+
+	changeSetID := uniqueID.GenerateSnowflakeID()
+
+	response := changeSetIDAllocationResponse{changeSetID}
+
+	api.WriteJSONResponse(w, response)
 }

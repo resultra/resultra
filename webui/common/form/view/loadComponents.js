@@ -1,6 +1,11 @@
 
+// By default, changes made within forms are immediately committed to the "main line". 
+// However, if a specific change set ID is used, the changes will be "branched" from the main line.
+// This branching is needed for modal forms which may cancel changes made before the "save changes" button
+// of the dialog is pressed to fully commit the changes.
+var MainLineFullyCommittedChangeSetID = ""
 
-function loadFormViewComponents(canvasSelector, viewFormContext, 
+function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 	 getCurrentRecordFunc, updateCurrentRecordFunc,
 	 doneLoadingComponentsFunc) {
 	

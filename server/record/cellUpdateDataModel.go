@@ -160,3 +160,17 @@ func GetRecordFieldCellUpdates(recordID string, fieldID string, changeSetID stri
 
 	return cellUpdates, nil
 }
+
+func CommitChangeSet(recordID string, changeSetID string) error {
+
+	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE cell_updates 
+				SET change_set_id=$1
+				WHERE record_id=$3 AND change_set_id=$2`,
+		FullyCommittedCellUpdatesChangeSetID, recordID, changeSetID); updateErr != nil {
+		return fmt.Errorf("CommitChangeSet: Can't commit changes to record=%v, change set=%v: error = %v",
+			recordID, changeSetID, updateErr)
+	}
+
+	return nil
+
+}

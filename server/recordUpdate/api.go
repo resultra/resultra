@@ -24,6 +24,8 @@ func init() {
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/setUserFieldValue", setUserFieldValue)
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/setCommentFieldValue", setCommentFieldValue)
 
+	recordUpdateRouter.HandleFunc("/api/recordUpdate/commitChangeSet", commitChangeSetAPI)
+
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/uploadFileToFieldValue", uploadFileAPI)
 
 	http.Handle("/api/recordUpdate/", recordUpdateRouter)
@@ -181,4 +183,18 @@ func uploadFileAPI(w http.ResponseWriter, req *http.Request) {
 		api.WriteJSONResponse(w, *uploadResponse)
 	}
 
+}
+
+func commitChangeSetAPI(w http.ResponseWriter, r *http.Request) {
+	var params CommitChangeSetParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if updatedRecordRef, err := commitChangeSet(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, updatedRecordRef)
+	}
 }
