@@ -62,7 +62,7 @@ function loadRecordIntoCheckBox(checkBoxElem, recordRef) {
 	
 }
 
-function initCheckBoxFieldEditBehavior(componentContext,getRecordFunc, updateRecordFunc, checkBoxObjectRef) {
+function initCheckBoxFieldEditBehavior(componentContext,changeSetID,getRecordFunc, updateRecordFunc, checkBoxObjectRef) {
 	
 	var checkboxSelector = '#'+checkBoxElemIDFromContainerElemID(checkBoxObjectRef.checkBoxID)
 	
@@ -92,7 +92,8 @@ function initCheckBoxFieldEditBehavior(componentContext,getRecordFunc, updateRec
 			}
 			var setRecordValParams = {
 				parentDatabaseID:currRecordRef.parentDatabaseID,
-				recordID:currRecordRef.recordID, 
+				recordID:currRecordRef.recordID,
+				changeSetID: changeSetID,
 				fieldID:componentLink.fieldID, 
 				value:isChecked,
 				 valueFormat: checkboxValueFormat }
@@ -135,7 +136,8 @@ function initCheckBoxGlobalEditBehavior(componentContext,checkBoxObjectRef) {
 	
 }
 
-function initCheckBoxRecordEditBehavior(componentContext,getRecordFunc, updateRecordFunc, checkBoxObjectRef) {
+function initCheckBoxRecordEditBehavior(componentContext,changeSetID,
+					getRecordFunc, updateRecordFunc, checkBoxObjectRef) {
 
 	var $checkBoxContainer = $('#'+checkBoxObjectRef.checkBoxID)
 		
@@ -146,7 +148,8 @@ function initCheckBoxRecordEditBehavior(componentContext,getRecordFunc, updateRe
 	var componentLink = checkBoxObjectRef.properties.componentLink
 
 	if(componentLink.linkedValType == linkedComponentValTypeField) {
-		initCheckBoxFieldEditBehavior(componentContext,getRecordFunc, updateRecordFunc, checkBoxObjectRef)
+		initCheckBoxFieldEditBehavior(componentContext,changeSetID,
+				getRecordFunc, updateRecordFunc, checkBoxObjectRef)
 	} else {
 		initCheckBoxGlobalEditBehavior(componentContext,checkBoxObjectRef)
 	}

@@ -46,7 +46,8 @@ function loadRecordIntoUserSelection(userSelectionElem, recordRef) {
 }
 
 
-function initUserSelectionRecordEditBehavior(componentContext,getRecordFunc, updateRecordFunc, userSelectionObjectRef) {
+function initUserSelectionRecordEditBehavior(componentContext,changeSetID,
+				getRecordFunc, updateRecordFunc, userSelectionObjectRef) {
 
 	var $userSelectionContainer = $('#'+userSelectionObjectRef.userSelectionID)
 	
@@ -68,7 +69,8 @@ function initUserSelectionRecordEditBehavior(componentContext,getRecordFunc, upd
 			}
 			var setRecordValParams = { 
 				parentDatabaseID:currRecordRef.parentDatabaseID,
-				recordID:currRecordRef.recordID, 
+				recordID:currRecordRef.recordID,
+				changeSetID: changeSetID, 
 				fieldID:userFieldID, 
 				userID:selectedUserID,
 				valueFormat:userValueFormat}

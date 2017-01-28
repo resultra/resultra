@@ -22,33 +22,33 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 		formParentElemID: canvasSelector,
 		formContext: viewFormContext,
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {			
-			initTextBoxRecordEditBehavior(componentContext,
+			initTextBoxRecordEditBehavior(componentContext, changeSetID,
 				getCurrentRecordFunc,updateCurrentRecordFunc,textBoxObjectRef)
 			initFormComponentViewBehavior($textBox,
 					textBoxObjectRef.textBoxID,initTextBoxViewProperties)
 		},
 		initSelectionFunc: function(componentContext,$selection,selectionObjectRef) {			
-			initSelectionRecordEditBehavior(componentContext,
+			initSelectionRecordEditBehavior(componentContext,changeSetID,
 					getCurrentRecordFunc,updateCurrentRecordFunc,selectionObjectRef)
 			initFormComponentViewBehavior($selection,
 					selectionObjectRef.selectionID,initSelectionViewProperties)
 		},
 		initCommentFunc: function(componentContext,$comment,commentObjectRef) {			
-			initCommentBoxRecordEditBehavior(componentContext,
+			initCommentBoxRecordEditBehavior(componentContext,changeSetID,
 					getCurrentRecordFunc,updateCurrentRecordFunc,commentObjectRef)
 			initFormComponentViewBehavior($comment,
 					commentObjectRef.commentID,initCommentViewProperties)
 		},
 		initCheckBoxFunc: function(componentContext,$checkBox,checkBoxObjectRef) {
 			console.log("Init check box in view form")
-			initCheckBoxRecordEditBehavior(componentContext,
+			initCheckBoxRecordEditBehavior(componentContext,changeSetID,
 					getCurrentRecordFunc,updateCurrentRecordFunc,checkBoxObjectRef)
 			initFormComponentViewBehavior($checkBox,
 					checkBoxObjectRef.checkBoxID,initCheckBoxViewProperties)
 		},
 		initRatingFunc: function(componentContext,$rating,ratingObjectRef) {
 			console.log("Init rating in view form")
-			initRatingRecordEditBehavior(componentContext,
+			initRatingRecordEditBehavior(componentContext,changeSetID,
 					getCurrentRecordFunc,updateCurrentRecordFunc,ratingObjectRef)
 			initFormComponentViewBehavior($rating,
 					ratingObjectRef.ratingID,initRatingViewProperties)
@@ -65,28 +65,28 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 		},
 		initUserSelectionFunc: function(componentContext,$userSelection,userSelectionObjectRef) {
 			console.log("Init user selection in view form")
-			initUserSelectionRecordEditBehavior(componentContext,
+			initUserSelectionRecordEditBehavior(componentContext,changeSetID,
 					getCurrentRecordFunc,updateCurrentRecordFunc,userSelectionObjectRef)
 			initFormComponentViewBehavior($userSelection,
 					userSelectionObjectRef.userSelectionID,initUserSelectionViewProperties)
 		},
 		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			console.log("Init date picker in view form")
-			initDatePickerRecordEditBehavior(componentContext,
+			initDatePickerRecordEditBehavior(componentContext,changeSetID,
 					getCurrentRecordFunc,updateCurrentRecordFunc,datePickerObjectRef)
 			initFormComponentViewBehavior($datePicker,
 					datePickerObjectRef.datePickerID,initDatePickerViewProperties)
 		},
 		initHtmlEditorFunc: function(componentContext,$htmlEditor,htmlEditorObjectRef) {
 			console.log("Init html editor in view form")
-			initHtmlEditorRecordEditBehavior(componentContext,
+			initHtmlEditorRecordEditBehavior(componentContext,changeSetID,
 					getCurrentRecordFunc,updateCurrentRecordFunc,htmlEditorObjectRef)
 			initFormComponentViewBehavior($htmlEditor,
 					htmlEditorObjectRef.htmlEditorID,initHTMLEditorViewProperties)
 		},
 		initImageFunc: function(componentContext,$image,imageObjectRef) {
 			console.log("Init image in view form")
-			initImageRecordEditBehavior(componentContext,
+			initImageRecordEditBehavior(componentContext,changeSetID,
 				getCurrentRecordFunc,updateCurrentRecordFunc,imageObjectRef)
 			initFormComponentViewBehavior($image,
 					imageObjectRef.imageID,initImageViewProperties)

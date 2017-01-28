@@ -66,7 +66,8 @@ function getDataPickerDateVal(containerID) {
 	return dateParam
 }
 
-function initDatePickerFieldEditBehavior(componentContext,getRecordFunc, updateRecordFunc, datePickerObjectRef,$datePickerContainer) {
+function initDatePickerFieldEditBehavior(componentContext,changeSetID,
+		getRecordFunc, updateRecordFunc, datePickerObjectRef,$datePickerContainer) {
 	
 	
 	var datePickerContainerID = datePickerObjectRef.datePickerID
@@ -103,6 +104,7 @@ function initDatePickerFieldEditBehavior(componentContext,getRecordFunc, updateR
 		var setRecordValParams = {
 			parentDatabaseID:currRecordRef.parentDatabaseID,
 			recordID:currRecordRef.recordID, 
+			changeSetID: changeSetID,
 			fieldID:componentLink.fieldID, 
 			value:dateParam,
 			 valueFormat: dateValueFormat}
@@ -150,7 +152,8 @@ function initDatePickerGlobalEditBehavior(componentContext,datePickerObjectRef,$
 
 
 
-function initDatePickerRecordEditBehavior(componentContext,getRecordFunc, updateRecordFunc, datePickerObjectRef) {
+function initDatePickerRecordEditBehavior(componentContext,changeSetID,
+		getRecordFunc, updateRecordFunc, datePickerObjectRef) {
 	
 	var datePickerContainerID = datePickerObjectRef.datePickerID
 	var datePickerID = datePickerElemIDFromContainerElemID(datePickerContainerID)
@@ -170,7 +173,8 @@ function initDatePickerRecordEditBehavior(componentContext,getRecordFunc, update
 	var componentLink = datePickerObjectRef.properties.componentLink
 	
 	if(componentLink.linkedValType == linkedComponentValTypeField) {
-		initDatePickerFieldEditBehavior(componentContext,getRecordFunc, updateRecordFunc, datePickerObjectRef,$datePickerContainer)
+		initDatePickerFieldEditBehavior(componentContext,changeSetID,
+					getRecordFunc, updateRecordFunc, datePickerObjectRef,$datePickerContainer)
 		
 	} else { 
 		assert(componentLink.linkedValType == linkedComponentValTypeGlobal)

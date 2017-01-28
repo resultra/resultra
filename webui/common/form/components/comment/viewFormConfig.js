@@ -51,7 +51,8 @@ function loadRecordIntoCommentBox(commentElem, recordRef) {
 }
 
 
-function initCommentBoxRecordEditBehavior(componentContext,getRecordFunc, updateRecordFunc, commentObjectRef) {
+function initCommentBoxRecordEditBehavior(componentContext,changeSetID,
+					getRecordFunc, updateRecordFunc, commentObjectRef) {
 	
 	var commentContainerID = commentObjectRef.commentID
 	var commentID = commentElemIDFromContainerElemID(commentContainerID)
@@ -91,7 +92,8 @@ function initCommentBoxRecordEditBehavior(componentContext,getRecordFunc, update
 			
 			var setRecordValParams = { 
 				parentDatabaseID:currRecordRef.parentDatabaseID,
-				recordID:currRecordRef.recordID, 
+				recordID:currRecordRef.recordID,
+				changeSetID: changeSetID,
 				fieldID:commentFieldID, 
 				value:commentVal,
 			valueFormat:commentValueFormat }

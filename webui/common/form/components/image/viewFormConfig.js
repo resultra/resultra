@@ -67,7 +67,8 @@ function loadRecordIntoImage(imageElem, recordRef) {
 }
 
 
-function initImageRecordEditBehavior(componentContext,getRecordFunc, updateRecordFunc,imageObjectRef) {
+function initImageRecordEditBehavior(componentContext,changeSetID,
+			getRecordFunc, updateRecordFunc,imageObjectRef) {
 	
 	var imageContainerID = imageObjectRef.imageID
 
@@ -151,6 +152,7 @@ function initImageRecordEditBehavior(componentContext,getRecordFunc, updateRecor
 					parentDatabaseID:currRecordRef.parentDatabaseID,
 					fieldID: componentLink.fieldID, 
 					recordID: currRecordRef.recordID,
+					changeSetID: changeSetID,
 					valueFormatContext: "image",
 					valueFormatFormat: "general"}
 			} else {

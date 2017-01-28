@@ -52,7 +52,7 @@ function loadRecordIntoSelection(selectionElem, recordRef) {
 	
 }
 
-function initSelectionRecordEditBehavior(componentContext,getRecordFunc, updateRecordFunc, selectionObjectRef) {
+function initSelectionRecordEditBehavior(componentContext,changeSetID,getRecordFunc, updateRecordFunc, selectionObjectRef) {
 	
 	var container = $('#'+selectionObjectRef.selectionID)
 
@@ -97,6 +97,7 @@ function initSelectionRecordEditBehavior(componentContext,getRecordFunc, updateR
 				var setRecordValParams = { 
 					parentDatabaseID:currRecordRef.parentDatabaseID,
 					recordID:currRecordRef.recordID, 
+					changeSetID: changeSetID,
 					fieldID:fieldID, value:newValue,
 					 valueFormat:setTextFieldValueFormat}
 				jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
@@ -120,6 +121,7 @@ function initSelectionRecordEditBehavior(componentContext,getRecordFunc, updateR
 					var setRecordValParams = { 
 						parentDatabaseID:currRecordRef.parentDatabaseID,
 						recordID:currRecordRef.recordID, 
+						changeSetID: changeSetID,
 						fieldID:fieldID, 
 						value:numberVal,
 						 valueFormat:setNumberFieldValueFormat}

@@ -64,7 +64,7 @@ function loadRecordIntoRating(ratingElem, recordRef) {
 }
 
 
-function initRatingRecordEditBehavior(componentContext,getRecordFunc, updateRecordFunc, ratingObjectRef) {
+function initRatingRecordEditBehavior(componentContext,changeSetID,getRecordFunc, updateRecordFunc, ratingObjectRef) {
 
 	var $ratingContainer = $('#'+ratingObjectRef.ratingID)
 	var componentLink = ratingObjectRef.properties.componentLink
@@ -82,7 +82,8 @@ function initRatingRecordEditBehavior(componentContext,getRecordFunc, updateReco
 			var ratingValueFormat = { context: "rating", format: "star" }
 			var setRecordValParams = { 
 				parentDatabaseID:currRecordRef.parentDatabaseID,
-				recordID:currRecordRef.recordID, 
+				recordID:currRecordRef.recordID,
+				changeSetID: changeSetID,
 				fieldID:ratingFieldID, 
 				value:ratingVal,
 				valueFormat: ratingValueFormat}

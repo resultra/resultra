@@ -42,7 +42,8 @@ function loadRecordIntoHtmlEditor(htmlEditorElem, recordRef) {
 }
 
 
-function initHtmlEditorRecordEditBehavior(componentContext,getRecordFunc, updateRecordFunc,htmlEditorObjectRef) {
+function initHtmlEditorRecordEditBehavior(componentContext,changeSetID,
+			getRecordFunc, updateRecordFunc,htmlEditorObjectRef) {
 	
 	var htmlEditorContainerID = htmlEditorObjectRef.htmlEditorID
 	var htmlEditorInputID = htmlInputIDFromContainerElemID(htmlEditorContainerID)
@@ -90,7 +91,8 @@ function initHtmlEditorRecordEditBehavior(componentContext,getRecordFunc, update
 			
 			var setRecordValParams = { 
 				parentDatabaseID:currRecordRef.parentDatabaseID,
-				recordID:currRecordRef.recordID, 
+				recordID:currRecordRef.recordID,
+				changeSetID: changeSetID,
 				fieldID:htmlEditorFieldID, 
 				value:inputVal,
 			valueFormat:textBoxTextValueFormat }

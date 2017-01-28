@@ -86,7 +86,7 @@ function loadRecordIntoTextBox(textBoxElem, recordRef) {
 	
 }
 
-function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput, 
+function initTextBoxFieldEditBehavior(componentContext, changeSetID, $container,$textBoxInput, 
 		getRecordFunc, updateRecordFunc, textFieldObjectRef) {
 	
 	var componentLink = textFieldObjectRef.properties.componentLink
@@ -155,6 +155,7 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 					var setRecordValParams = { 
 						parentDatabaseID:currRecordRef.parentDatabaseID,
 						recordID:currRecordRef.recordID, 
+						changeSetID: changeSetID,
 						fieldID:fieldID, value:inputVal,
 						 valueFormat: textBoxTextValueFormat }
 					jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
@@ -178,7 +179,8 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 						}
 						var setRecordValParams = { 
 							parentDatabaseID:currRecordRef.parentDatabaseID,
-							recordID:currRecordRef.recordID, 
+							recordID:currRecordRef.recordID,
+							changeSetID: changeSetID,
 							fieldID:fieldID, 
 							value:numberVal,
 							 valueFormat:textBoxNumberValueFormat
@@ -238,7 +240,7 @@ function initTextBoxGlobalValBehavior(componentContext,$textBoxInput, textFieldO
 	})
 }
 
-function initTextBoxRecordEditBehavior(componentContext,
+function initTextBoxRecordEditBehavior(componentContext,changeSetID,
 	getCurrentRecordFunc, updateCurrentRecordFunc, textFieldObjectRef) {
 	
 	var $container = $('#'+textFieldObjectRef.textBoxID)
@@ -265,7 +267,8 @@ function initTextBoxRecordEditBehavior(componentContext,
 	var componentLink = textFieldObjectRef.properties.componentLink
 	
 	if(componentLink.linkedValType == linkedComponentValTypeField) {
-		initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput,getCurrentRecordFunc, updateCurrentRecordFunc, textFieldObjectRef)
+		initTextBoxFieldEditBehavior(componentContext, changeSetID, $container,$textBoxInput,
+				getCurrentRecordFunc, updateCurrentRecordFunc, textFieldObjectRef)
 		
 	} else { 
 		assert(componentLink.linkedValType == linkedComponentValTypeGlobal)
