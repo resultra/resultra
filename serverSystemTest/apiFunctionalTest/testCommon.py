@@ -127,4 +127,9 @@ class TestHelperMixin:
     def setLongTextRecordValue(self,parentDatabaseID,recordID,fieldID,textVal):
         recordRef = self.apiRequest('recordUpdate/setLongTextFieldValue',{'parentDatabaseID':parentDatabaseID,'recordID':recordID,'fieldID':fieldID,'value':textVal})
         return recordRef
+
+    def setLongTextRecordValueWithChangeSet(self,parentDatabaseID,recordID,fieldID,changeSetID,textVal):
+        setValParams = {'parentDatabaseID':parentDatabaseID,'recordID':recordID,'fieldID':fieldID,'changeSetID':changeSetID,'value':textVal}
+        recordRef = self.apiRequest('recordUpdate/setLongTextFieldValue',setValParams)
+        return recordRef
     
