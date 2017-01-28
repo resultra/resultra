@@ -4,17 +4,21 @@ function loadRecordIntoButton(buttonElem, recordRef) {
 	// no-op
 }
 
-function initFormButtonRecordEditBehavior(componentContext,getRecordFunc, updateRecordFunc,buttonObjectRef,
+function initFormButtonRecordEditBehavior(componentContext,
+			parentFormGetRecordFunc, parentFormUpdateRecordFunc,buttonObjectRef,
 		loadFormViewComponentFunc,loadRecordIntoFormLayoutFunc) {
 	
 	
 	var $popupFormDialog = $('#formButtonPopupFormDialog')
+			
+	var popupMode = buttonObjectRef.properties.popupBehavior.popupMode
 	
 	var buttonElemID = buttonIDFromContainerElemID(buttonObjectRef.buttonID)
 	initButtonClickHandler('#' + buttonElemID, function() {
 		console.log("Form button clicked: " + JSON.stringify(buttonObjectRef))
 		
-		var currRecord = getRecordFunc()
+		// Editing of the record in the popup is done with the parent form's current record.
+		var currRecord = parentFormGetRecordFunc()
 
 		var canvasSelector = '#formButtonPopupFormCanvas'
 		var $viewFormCanvas = $(canvasSelector)
@@ -26,8 +30,15 @@ function initFormButtonRecordEditBehavior(componentContext,getRecordFunc, update
 			loadRecordIntoFormLayoutFunc(canvasSelector,updatedRecordRef)
 			
 			// Propagate the record update the parent form, allowing an update
-			// to the parent layout.
-			updateRecordFunc(updatedRecordRef)
+			// to the parent layout. The changes are only propagated when the popup
+			// form is not in a modal state and the changes are committed immediately.
+			// If the popup is in a modal state, the changes are linked to a temporary
+			// changeSetID and are not propagated until the "Save Changes" button is
+			// pressed; however, if the "Cancel" button is pressed all these changes are
+			// rolled back.
+			if (popupMode !== FormButtonPopupBehaviorModal) {
+				parentFormUpdateRecordFunc(updatedRecordRef)			
+			}
 		}
 		
 		function showDialogAfterFormComponentLoaded() {
@@ -40,7 +51,6 @@ function initFormButtonRecordEditBehavior(componentContext,getRecordFunc, update
 			formID: buttonObjectRef.properties.linkedFormID
 		}
 				
-		var popupMode = buttonObjectRef.properties.popupBehavior.popupMode
 		if (popupMode === FormButtonPopupBehaviorModal) {
 			
 			$(".formButtonPopupModalPopupDialogButton").show()
@@ -63,8 +73,11 @@ function initFormButtonRecordEditBehavior(componentContext,getRecordFunc, update
 						recordID: getPopupFormRecordFunc().recordID,
 						changeSetID: changeSetIDResp.changeSetID }
 					jsonAPIRequest("recordUpdate/commitChangeSet",commitChangeParams,function(updatedRecordRef) {
+						// If the popup form is modal, the parent form's record is not updated until the "Save Changes" button
+						// is pressed.
+						parentFormUpdateRecordFunc(updatedRecordRef)
+						$popupFormDialog.modal('hide')
 					})
-					$popupFormDialog.modal('hide')
 				})
 				initButtonClickHandler('#formButtonPopupFormDialogCancelChangesButton', function() {
 					console.log("Cancel button clicked: " + JSON.stringify(buttonObjectRef))
@@ -82,8 +95,8 @@ function initFormButtonRecordEditBehavior(componentContext,getRecordFunc, update
 				$popupFormDialog.modal('hide')
 			})
 			
-			var changeSetID = ""
-			loadFormViewComponentFunc(canvasSelector, viewFormContext, changeSetID,
+			var immediatelyCommitChangesChangeSetID = ""
+			loadFormViewComponentFunc(canvasSelector, viewFormContext, immediatelyCommitChangesChangeSetID,
 				 getPopupFormRecordFunc, updatePopupFormRecordFunc,
 				 showDialogAfterFormComponentLoaded)
 		}
