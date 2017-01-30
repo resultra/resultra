@@ -13,23 +13,29 @@
 	
 	<form class="form-inline" id="formButtonPopupBehaviorForm">
 			
-	<div class="form-group">
+		<div class="form-group">
 	
-		<label for="formButtonPopupBehaviorSelection">When to save changes made in popup form:</label>
+			<label for="formButtonPopupBehaviorSelection">When to save changes made in popup form:</label>
 
-		<select class="form-control" id="formButtonPopupBehaviorSelection">
-			<option disabled selected value="">Select a behavior</option>
-			<option value="modeless">Save changes immediately</option>
-			<option value="modal">Save changes when popup closes</option>
-		</select>
-		
-	</div>
-    <div class="form-group" id="formButtonCustomModalSaveLabelFormGroup">
-      <label for="">Custom button label to save changes and close popup (optional):</label>
-      <input type="text" class="form-control" id="formButtonCustomModalSaveLabelInput" name="formButtonCustomModalSaveLabelInput">
-    </div>
+			<select class="form-control" id="formButtonPopupBehaviorSelection">
+				<option disabled selected value="">Select a behavior</option>
+				<option value="modeless">Save changes immediately</option>
+				<option value="modal">Save changes when popup closes</option>
+			</select>
+		</div>
 	
-</form>
+	    <div class="form-group marginTop5" id="formButtonCustomModalSaveLabelFormGroup">
+	      <label for="">Custom button label to save changes and close popup (optional):</label>
+	      <input type="text" class="form-control" id="formButtonCustomModalSaveLabelInput" name="formButtonCustomModalSaveLabelInput">
+	    </div>
+	
+	</form>
+
+	<hr>
+
+      <label>Default values to set when opening popup form:</label>
+		{{template "defaultValuesPropertyPanel" .DefaultValuePanelParams}}
+
 	
 {{end}}
 
@@ -48,7 +54,7 @@
 		{{template "propertyPanelSuffix"}}
 		
 		{{template "propertyPanelPrefix" .PopupBehaviorPanelParams}}
-			{{template "formButtonPopupBehaviorProps"}}
+			{{template "formButtonPopupBehaviorProps" .PopupBehaviorPropParams}}
 		{{template "propertyPanelSuffix"}}
 	</div>
 

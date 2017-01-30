@@ -1,0 +1,25 @@
+{{define "defaultValuesList"}}
+	<div class="list-group defaultValuesList" id="{{.}}DefaultValuesList">
+	</div>	
+{{end}}
+
+
+
+{{define "defaultValuesTemplates"}}
+
+<div style="display:none;">
+	
+	<div id="defaultValuesPanelListItem" class="list-group-item defaultValuesPanelListItem">
+			<label class="defaultValuesListItemLabel"></label>
+			<button type="button" class="close defaultValuesListItemDeleteDefaultValButton">
+				<span aria-hidden="true">&times;</span>
+			</button>
+	</div>
+	
+	<div id="defaultValueBoolFieldListItem" class="form-group">
+		<select class="form-control input-sm defaultValueSelection"></select>
+	</div> <!-- Field name field -->
+
+</div>
+
+{{end}}

@@ -76,6 +76,15 @@ function loadFormButtonProperties(buttonRef) {
 	console.log("Loading button properties")
 	
 	initFormButtonPopupBehaviorProperties(buttonRef)
+	
+	var defaultValPropParams = {
+		databaseID: designFormContext.databaseID,
+		elemPrefix: "button_",
+		updateDefaultValues: function(updatedDefaultVals) {
+			console.log("Updateing default values for form button: " + JSON.stringify(updatedDefaultVals))
+		}
+	}
+	initDefaultValuesPropertyPanel(defaultValPropParams)
 		
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#formButtonProps')
