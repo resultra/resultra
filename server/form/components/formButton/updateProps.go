@@ -2,7 +2,9 @@ package formButton
 
 import (
 	"fmt"
+	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/record"
 )
 
 type ButtonIDInterface interface {
@@ -76,6 +78,24 @@ func (updateParams ButtonBehaviorParams) updateProps(buttonForUpdate *FormButton
 	}
 
 	buttonForUpdate.Properties.PopupBehavior = updateParams.PopupBehavior
+
+	return nil
+}
+
+type ButtonDefaultValParams struct {
+	ButtonIDHeader
+	DefaultValues []record.DefaultFieldValue `json:"defaultValues"`
+}
+
+func (updateParams ButtonDefaultValParams) updateProps(buttonForUpdate *FormButton) error {
+
+	if validateErr := record.ValidateWellFormedDefaultValues(updateParams.DefaultValues); validateErr != nil {
+		return fmt.Errorf("updateProps: invalid default value(s): %v", validateErr)
+	}
+
+	log.Printf("Setting default values: %+v", updateParams.DefaultValues)
+
+	buttonForUpdate.Properties.PopupBehavior.DefaultValues = updateParams.DefaultValues
 
 	return nil
 }

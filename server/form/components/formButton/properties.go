@@ -5,20 +5,23 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/record"
 )
 
 const popupBehaviorModeless string = "modeless"
 const popupBehaviorModal string = "modal"
 
 type ButtonPopupBehavior struct {
-	PopupMode            string `json:"popupMode"`
-	CustomLabelModalSave string `json:"customLabelModalSave"`
+	PopupMode            string                     `json:"popupMode"`
+	CustomLabelModalSave string                     `json:"customLabelModalSave"`
+	DefaultValues        []record.DefaultFieldValue `json:"defaultValues"`
 }
 
 func newDefaultPopupBehavior() ButtonPopupBehavior {
 	defaultPopupBehavior := ButtonPopupBehavior{
 		PopupMode:            popupBehaviorModeless,
-		CustomLabelModalSave: ""}
+		CustomLabelModalSave: "",
+		DefaultValues:        []record.DefaultFieldValue{}}
 	return defaultPopupBehavior
 }
 
@@ -47,6 +50,8 @@ func (srcProps ButtonProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*
 	destProps := srcProps
 
 	destProps.LinkedFormID = remappedIDs.AllocNewOrGetExistingRemappedID(srcProps.LinkedFormID)
+
+	// TODO - Remap field IDs from default values.
 
 	return &destProps, nil
 }

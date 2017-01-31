@@ -19,6 +19,6 @@ function initDefaultValuesPropertyPanel(panelParams) {
 	}
 	initFieldSelectionDropdown(fieldSelectionDropdownParams)
 	
-//	initDefaultFilterRules(panelParams)	
+	initDefaultDefaultValuePanelItems(panelParams)	
 	
 }

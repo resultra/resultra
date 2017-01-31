@@ -12,6 +12,7 @@ func init() {
 	buttonRouter.HandleFunc("/api/frm/formButton/new", newButton)
 	buttonRouter.HandleFunc("/api/frm/formButton/resize", resizeButton)
 	buttonRouter.HandleFunc("/api/frm/formButton/setPopupBehavior", setPopupBehavior)
+	buttonRouter.HandleFunc("/api/frm/formButton/setDefaultVals", setDefaultVals)
 
 	http.Handle("/api/frm/formButton/", buttonRouter)
 }
@@ -51,6 +52,15 @@ func resizeButton(w http.ResponseWriter, r *http.Request) {
 
 func setPopupBehavior(w http.ResponseWriter, r *http.Request) {
 	var params ButtonBehaviorParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processButtonPropUpdate(w, r, params)
+}
+
+func setDefaultVals(w http.ResponseWriter, r *http.Request) {
+	var params ButtonDefaultValParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

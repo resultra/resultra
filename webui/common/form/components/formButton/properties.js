@@ -80,8 +80,17 @@ function loadFormButtonProperties(buttonRef) {
 	var defaultValPropParams = {
 		databaseID: designFormContext.databaseID,
 		elemPrefix: "button_",
+		defaultDefaultValues: buttonRef.properties.popupBehavior.defaultValues,
 		updateDefaultValues: function(updatedDefaultVals) {
 			console.log("Updateing default values for form button: " + JSON.stringify(updatedDefaultVals))
+			
+			var setDefaultValsParams = {
+				parentFormID: buttonRef.parentFormID,
+				buttonID: buttonRef.buttonID,
+				defaultValues: updatedDefaultVals }
+			
+			jsonAPIRequest("frm/formButton/setDefaultVals",setDefaultValsParams,function(updatedButtonRef) {
+			})
 		}
 	}
 	initDefaultValuesPropertyPanel(defaultValPropParams)

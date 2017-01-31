@@ -72,8 +72,7 @@ function boolDefaultValueItem(panelParams,fieldInfo,defaultDefaultValInfo) {
 	}	
 	
 	if(defaultDefaultValInfo !== null) {
-		var defaultValInfo = defaultValuesBool[defaultDefaultValInfo.defaulaValID]
-		$defaultValSelection.val(defaultDefaultValInfo.defaulaValID)
+		$defaultValSelection.val(defaultDefaultValInfo.defaultValueID)
 	}	
 		
 	initSelectControlChangeHandler($defaultValSelection,function(defaultValID) {
@@ -91,7 +90,7 @@ function boolDefaultValueItem(panelParams,fieldInfo,defaultDefaultValInfo) {
 			var conditions = []
 			
 			var defaultValConfig = { fieldID: fieldInfo.fieldID,
-				defaultValID: defaultValID }	
+				defaultValueID: defaultValID }	
 			return defaultValConfig
 		} else {
 			return null
@@ -121,5 +120,30 @@ function createDefaultValuePanelListItem(panelParams, fieldInfo,defaultValueInfo
 		console.log("createFilterRulePanelListItem: Unsupported field type:  " + fieldInfo.type)
 		return $("")
 	}
+	
+}
+
+
+
+function initDefaultDefaultValuePanelItems(panelParams) {
+	
+	loadFieldInfo(panelParams.databaseID,[fieldTypeAll],function(fieldsByID) {
+		
+		var defaultValListSelector = createPrefixedSelector(panelParams.elemPrefix,
+						'DefaultValuesList')
+		var $defaultValList = $(defaultValListSelector)		
+		$defaultValList.empty()
+		
+		for(var defaultValIndex = 0; 
+				defaultValIndex < panelParams.defaultDefaultValues.length; defaultValIndex++) {
+					
+			var currDefaultVal = panelParams.defaultDefaultValues[defaultValIndex]
+			
+			var fieldInfo = fieldsByID[currDefaultVal.fieldID]
+					
+			$defaultValList.append(createDefaultValuePanelListItem(panelParams,fieldInfo,currDefaultVal))
+				
+		}
+	})
 	
 }
