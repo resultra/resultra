@@ -17,6 +17,21 @@ type ButtonPopupBehavior struct {
 	DefaultValues        []record.DefaultFieldValue `json:"defaultValues"`
 }
 
+func (srcProps ButtonPopupBehavior) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ButtonPopupBehavior, error) {
+
+	destProps := srcProps
+
+	destDefaultVals, cloneErr := record.CloneDefaultFieldValues(remappedIDs, srcProps.DefaultValues)
+	if cloneErr != nil {
+		return nil, fmt.Errorf("ButtonPopupBehavior.Clone: %v", cloneErr)
+	}
+
+	destProps.DefaultValues = destDefaultVals
+
+	return &destProps, nil
+
+}
+
 func newDefaultPopupBehavior() ButtonPopupBehavior {
 	defaultPopupBehavior := ButtonPopupBehavior{
 		PopupMode:            popupBehaviorModeless,
@@ -51,7 +66,11 @@ func (srcProps ButtonProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*
 
 	destProps.LinkedFormID = remappedIDs.AllocNewOrGetExistingRemappedID(srcProps.LinkedFormID)
 
-	// TODO - Remap field IDs from default values.
+	destPopupProps, cloneErr := srcProps.PopupBehavior.Clone(remappedIDs)
+	if cloneErr != nil {
+		return nil, fmt.Errorf("ButtonProperties.Clone: %v", cloneErr)
+	}
+	destProps.PopupBehavior = *destPopupProps
 
 	return &destProps, nil
 }

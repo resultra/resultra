@@ -3,6 +3,7 @@ package record
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const defaultValIDTrue string = "true"
@@ -11,6 +12,34 @@ const defaultValIDFalse string = "false"
 type DefaultFieldValue struct {
 	FieldID        string `json:"fieldID"`
 	DefaultValueID string `json:"defaultValueID"`
+}
+
+func (srcDefaultVal DefaultFieldValue) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*DefaultFieldValue, error) {
+
+	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcDefaultVal.FieldID)
+	if err != nil {
+		return nil, fmt.Errorf("DefaultFieldValue.Clone: %v", err)
+	}
+
+	destDefaultVal := srcDefaultVal
+	destDefaultVal.FieldID = remappedFieldID
+
+	return &destDefaultVal, nil
+}
+
+func CloneDefaultFieldValues(remappedIDs uniqueID.UniqueIDRemapper, srcDefaultVals []DefaultFieldValue) ([]DefaultFieldValue, error) {
+
+	destDefaultVals := []DefaultFieldValue{}
+
+	for _, srcDefaultVal := range srcDefaultVals {
+		destDefaultVal, err := srcDefaultVal.Clone(remappedIDs)
+		if err != nil {
+			return nil, fmt.Errorf("CloneDefaultFieldValues: %v", err)
+		}
+		destDefaultVals = append(destDefaultVals, *destDefaultVal)
+	}
+
+	return destDefaultVals, nil
 }
 
 type SetDefaultValFunc func(currUserID string, recUpdateHeader RecordUpdateHeader, defaultVal DefaultFieldValue) (*Record, error)
