@@ -70,10 +70,12 @@ func GetRecordCellUpdates(recordID string, changeSetID string) ([]CellUpdate, er
 
 	// Build up the query depending on whether or not the changeSetID is empty or not.
 	changeSetIDMatch := ""
-	changeIDQuery := ` (change_set_id is null or change_set_id = $2)`
+	changeIDQuery := ` (change_set_id is null OR change_set_id = $2)`
 	if len(changeSetID) > 0 {
 		// match a specific change_set_id
-		changeIDQuery = ` change_set_id = $2`
+		// TODO - Get the cell updates for changes without a changeSetID (i.e., baseline/main values)
+		// and with the given changeSetID
+		changeIDQuery = ` (change_set_id is null OR change_set_id = '' OR change_set_id = $2)`
 		changeSetIDMatch = changeSetID
 	}
 
@@ -122,8 +124,8 @@ func GetRecordFieldCellUpdates(recordID string, fieldID string, changeSetID stri
 	changeSetIDMatch := ""
 	changeIDQuery := ` (change_set_id is null or change_set_id = $3)`
 	if len(changeSetID) > 0 {
-		// match a specific change_set_id
-		changeIDQuery = `change_set_id = $3`
+		// match a specific change_set_id or value without a changeSetID (i.e., main/baseline values)
+		changeIDQuery = `(change_set_id is null OR change_set_id = '' OR change_set_id = $3)`
 		changeSetIDMatch = changeSetID
 	}
 

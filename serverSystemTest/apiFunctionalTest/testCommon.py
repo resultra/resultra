@@ -84,6 +84,13 @@ class TestHelperMixin:
         fieldID = jsonResp[u'fieldID']
         return fieldID
 
+    def newBoolField(self,databaseID,fieldName,refName):
+        fieldParams = {'parentDatabaseID':databaseID,'name':fieldName,'type':'bool','refName':refName}
+        jsonResp = self.apiRequest('field/new',fieldParams)
+        fieldID = jsonResp[u'fieldID']
+        return fieldID
+
+
     def newLongTextField(self,databaseID,fieldName,refName):
         fieldParams = {'parentDatabaseID':databaseID,'name':fieldName,'type':'longText','refName':refName}
         jsonResp = self.apiRequest('field/new',fieldParams)
@@ -114,6 +121,10 @@ class TestHelperMixin:
            
     def setNumberRecordValue(self,parentDatabaseID,recordID,fieldID,numberVal):
         recordRef = self.apiRequest('recordUpdate/setNumberFieldValue',{'parentDatabaseID':parentDatabaseID,'recordID':recordID,'fieldID':fieldID,'value':numberVal})
+        return recordRef
+
+    def setBoolRecordValue(self,parentDatabaseID,recordID,fieldID,boolVal):
+        recordRef = self.apiRequest('recordUpdate/setBoolFieldValue',{'parentDatabaseID':parentDatabaseID,'recordID':recordID,'fieldID':fieldID,'value':boolVal})
         return recordRef
 
     def setTextRecordValue(self,parentDatabaseID,recordID,fieldID,textVal):

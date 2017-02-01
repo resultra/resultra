@@ -61,9 +61,33 @@ function initFormButtonRecordEditBehavior(componentContext,
 				
 				// loadFormViewComponentFunc is passed in as a parameter, since the loadFormViewComponents function is in 
 				// a package which has a dependency on this package. 
-				loadFormViewComponentFunc(canvasSelector, viewFormContext, changeSetIDResp.changeSetID,
-					 getPopupFormRecordFunc, updatePopupFormRecordFunc,
-					 showDialogAfterFormComponentLoaded)
+				
+				var defaultVals = buttonObjectRef.properties.popupBehavior.defaultValues
+				
+				if (defaultVals.length > 0) {
+					// Apply the default values before loading the form.
+					var defaultValRecord = getPopupFormRecordFunc()
+					var defaultValParams = {
+						parentDatabaseID: componentContext.databaseID,
+						recordID: defaultValRecord.recordID,
+						changeSetID: changeSetIDResp.changeSetID,
+						defaultVals: defaultVals }
+					jsonAPIRequest("recordUpdate/setDefaultValues",defaultValParams,function(updatedRecordRef) {
+						
+						currRecord = updatedRecordRef
+						
+						loadFormViewComponentFunc(canvasSelector, viewFormContext, changeSetIDResp.changeSetID,
+							 getPopupFormRecordFunc, updatePopupFormRecordFunc,
+							 showDialogAfterFormComponentLoaded)
+					})
+					
+					
+				} else {
+					loadFormViewComponentFunc(canvasSelector, viewFormContext, changeSetIDResp.changeSetID,
+						 getPopupFormRecordFunc, updatePopupFormRecordFunc,
+						 showDialogAfterFormComponentLoaded)
+				}
+				
 					
 				initButtonClickHandler('#formButtonPopupFormDialogSaveChangesButton', function() {
 					console.log("Modal Save changes button clicked: " + JSON.stringify(buttonObjectRef))
@@ -88,6 +112,10 @@ function initFormButtonRecordEditBehavior(componentContext,
 			})
 			
 		} else { // Popup shown in modeless mode
+			
+			// TBD - Should the default value be set when the popup form is modeless? It wouldn't
+			// seem to make sense to set the default values in this case.
+			
 			$(".formButtonPopupModalPopupDialogButton").hide()
 			$(".formButtonPopupModelessPopupDialogButton").show()
 			initButtonClickHandler('#formButtonPopupFormDialogDoneButton', function() {

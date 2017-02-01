@@ -62,3 +62,25 @@ func commitChangeSet(params CommitChangeSetParams) (*recordValue.RecordValueResu
 	return updateRecordValResult, nil
 
 }
+
+func setDefaultValues(req *http.Request, params record.SetDefaultValsParams) (*recordValue.RecordValueResults, error) {
+
+	currUserID, err := userAuth.GetCurrentUserID(req)
+	if err != nil {
+		return nil, fmt.Errorf("setDefaultValues: %v", err)
+	}
+
+	if setDefaultErr := record.SetDefaultValues(currUserID, params); setDefaultErr != nil {
+		return nil, fmt.Errorf("setDefaultValues: %v", setDefaultErr)
+	}
+
+	updateRecordValResult, mapErr := recordValue.MapOneRecordUpdatesToFieldValues(
+		params.ParentDatabaseID, params.RecordID, params.ChangeSetID)
+	if mapErr != nil {
+		return nil, fmt.Errorf(
+			"updateRecordValue: Error mapping field values: err = %v", mapErr)
+	}
+
+	return updateRecordValResult, nil
+
+}
