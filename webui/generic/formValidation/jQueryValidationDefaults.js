@@ -1,4 +1,7 @@
-
+function resetFormValidationFeedback($form) {
+	$form.find(".form-group").removeClass("has-feedback has-success has-error has-success-feedback ")
+	$form.find(".form-control-feedback").remove()
+}
 
 $(document).ready(function() {	
 	$.validator.setDefaults({

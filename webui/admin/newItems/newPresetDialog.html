@@ -1,0 +1,53 @@
+{{define "newNewItemPresetDialogBody"}}	
+  <div class="form-group">
+  	  <label for="newNewItemPresetNameInput">Preset Name</label>
+  	  <input type="text" id="newNewItemPresetNameInput" name="newNewItemPresetNameInput" class="form-control" placeholder="Preset Name" required autofocus>
+  </div>
+  	  
+  	<div class="form-group">
+  		<label>Form for creating new items</label> 
+  		<select class="form-control" id="newNewItemPresetFormSelection" name="newNewItemPresetFormSelection">
+  		</select>
+  	</div>
+	
+  <div class="form-group">
+      <div class="checkbox">
+        <label><input type="checkbox" id="newNewItemPresetIncludeInSidebar">
+        Include this preset in the sidebar.</label>
+      </div>
+   </div>
+	
+	  
+
+{{end}}
+
+{{define "newNewItemPresetDialogButtons"}}
+	<button type="button" class="btn btn-default" id="newNewItemPresetCancelButton" data-dismiss="modal">Cancel</button>
+	<button type="button" class="btn btn-primary" id="newNewItemPresetSaveButton" type="submit">Save</button>
+{{end}}
+
+
+{{define "adminNewNewItemPresetDialog"}}
+
+    <form id="adminNewNewItemPresetDialogForm">
+		
+		<div class="modal fade" id="adminNewNewItemPresetDialog" tabindex="-1" role="dialog" aria-labelledby="newNewItemPresetLabel">
+		  <div class="modal-dialog modal-sm" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="newFormLabel">Add Preset for New Items</h4>
+		      </div>
+		      <div class="modal-body">
+				  {{template "newNewItemPresetDialogBody"}}
+		      </div>
+		      <div class="modal-footer">
+				  {{template "newNewItemPresetDialogButtons"}}
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+	</form>
+
+{{end}}

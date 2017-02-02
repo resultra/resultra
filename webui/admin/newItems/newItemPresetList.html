@@ -1,0 +1,38 @@
+{{define "adminNewItemPresetTemplates"}}
+
+<div style="display:none;">
+	
+	<div id="adminNewItemPresetListItemTemplate" class="list-group-item">
+			<label class="newItemPresetLabel">Preset label goes here</label>
+			
+			<div class="pull-right adminNewItemPresetListButtons">
+	
+				<a class="btn btn-xs btn-default editNewItemPresetPropsButton" role="button">
+					<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>
+				</a> 
+  				<button class="btn btn-xs btn-danger deleteNewItemPresetButton">
+					<span class="glyphicon glyphicon-remove" style="padding-bottom:2px;"></span>
+				</button>
+			</div>
+	</div>
+	
+</div>
+
+{{end}}
+
+
+
+{{define "adminNewItemPresetList"}}
+
+	{{template "adminNewItemPresetTemplates"}}
+
+	<div class="marginTop20">
+		<ul id="adminNewItemPresetList" class="list-group">
+		</ul>
+
+		<button type="button" class="btn btn-default btn-sm" id="adminNewNewItemPresetButton">
+		  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create Preset for New Items
+		</button>
+	</div>
+
+{{end}}
