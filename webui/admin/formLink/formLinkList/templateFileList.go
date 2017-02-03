@@ -1,4 +1,4 @@
 package formLinkList
 
-var TemplateFileList = []string{"static/admin/formLink/formLinkList/newItemPresetList.html",
-	"static/admin/formLink/formLinkList/newPresetDialog.html"}
+var TemplateFileList = []string{"static/admin/formLink/formLinkList/formLinkList.html",
+	"static/admin/formLink/formLinkList/newFormLinkDialog.html"}

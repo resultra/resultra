@@ -28,7 +28,7 @@ function initAdminNewItemPresetSettings(databaseID) {
 	})
 	
 	
-	initButtonClickHandler('#adminNewNewItemPresetButton',function() {
+	initButtonClickHandler('#adminNewFormLinkButton',function() {
 		console.log("New field button clicked")
 		openNewNewItemPresetDialog(databaseID)
 	})
