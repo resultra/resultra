@@ -1,16 +1,16 @@
-{{define "adminNewItemPresetTemplates"}}
+{{define "adminFormLinkTemplates"}}
 
 <div style="display:none;">
 	
-	<div id="adminNewItemPresetListItemTemplate" class="list-group-item">
-			<label class="newItemPresetLabel">Preset label goes here</label>
+	<div id="formLinkItemTemplate" class="list-group-item">
+			<label class="adminFormLinkItemLabel">Form link label goes here</label>
 			
-			<div class="pull-right adminNewItemPresetListButtons">
+			<div class="pull-right adminFormLinkButtons">
 	
-				<a class="btn btn-xs btn-default editNewItemPresetPropsButton" role="button">
+				<a class="btn btn-xs btn-default editFormLinkPropsButton" role="button">
 					<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>
 				</a> 
-  				<button class="btn btn-xs btn-danger deleteNewItemPresetButton">
+  				<button class="btn btn-xs btn-danger deleteFormLinkButton">
 					<span class="glyphicon glyphicon-remove" style="padding-bottom:2px;"></span>
 				</button>
 			</div>
@@ -22,16 +22,16 @@
 
 
 
-{{define "adminNewItemPresetList"}}
+{{define "adminFormLinkList"}}
 
-	{{template "adminNewItemPresetTemplates"}}
+	{{template "adminFormLinkTemplates"}}
 
 	<div class="marginTop20">
-		<ul id="adminNewItemPresetList" class="list-group">
+		<ul id="adminFormLinkList" class="list-group">
 		</ul>
 
 		<button type="button" class="btn btn-default btn-sm" id="adminNewNewItemPresetButton">
-		  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create Preset for New Items
+		  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Form Link
 		</button>
 	</div>
 

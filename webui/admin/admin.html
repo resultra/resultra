@@ -32,7 +32,7 @@
         <li class="nav"><a href="#lists" data-toggle="tab">Lists</a></li>
         <li class="nav"><a href="#forms" data-toggle="tab">Forms</a></li>
         <li class="nav"><a href="#fields" data-toggle="tab">Fields</a></li>
-        <li class="nav"><a href="#newItems" data-toggle="tab">New Items</a></li>
+        <li class="nav"><a href="#formLinks" data-toggle="tab">Form Links</a></li>
         <li class="nav"><a href="#dashboards" data-toggle="tab">Dashboards</a></li>
         <li class="nav"><a href="#users" data-toggle="tab">Collaborators</a></li>
         <li class="nav"><a href="#roles" data-toggle="tab">Roles &amp; Privileges</a></li>
@@ -53,8 +53,8 @@
         <div class="tab-pane fade" id="fields">
         	{{template "adminFieldList"}}
         </div>
-        <div class="tab-pane fade" id="newItems">
-        	{{template "adminNewItemPresetList"}}
+        <div class="tab-pane fade" id="formLinks">
+        	{{template "adminFormLinkList"}}
         </div>
         <div class="tab-pane fade" id="dashboards">
         	{{template "adminDashboardList"}}
@@ -118,7 +118,7 @@
 	{{template "newDashboardDialog"}}
 	{{template "adminNewGlobalDialog"}}
 	{{template "adminNewUserDialog"}}
-	{{template "adminNewNewItemPresetDialog"}}
+	{{template "adminNewFormLinkDialog"}}
 	
 	{{template "submitFormDialog"}}
 	{{template "formButtonPopupFormDialog"}}

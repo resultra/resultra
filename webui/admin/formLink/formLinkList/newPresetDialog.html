@@ -1,19 +1,19 @@
-{{define "newNewItemPresetDialogBody"}}	
+{{define "newFormLinkDialogBody"}}	
   <div class="form-group">
-  	  <label for="newNewItemPresetNameInput">Preset Name</label>
-  	  <input type="text" id="newNewItemPresetNameInput" name="newNewItemPresetNameInput" class="form-control" placeholder="Preset Name" required autofocus>
+  	  <label for="newFormLinkNameInput">Link Name</label>
+  	  <input type="text" id="newFormLinkNameInput" name="newFormLinkNameInput" class="form-control" placeholder="Link Name" required autofocus>
   </div>
   	  
   	<div class="form-group">
   		<label>Form for creating new items</label> 
-  		<select class="form-control" id="newNewItemPresetFormSelection" name="newNewItemPresetFormSelection">
+  		<select class="form-control" id="newFormLinkFormSelection" name="newFormLinkFormSelection">
   		</select>
   	</div>
 	
   <div class="form-group">
       <div class="checkbox">
-        <label><input type="checkbox" id="newNewItemPresetIncludeInSidebar">
-        Include this preset in the sidebar.</label>
+        <label><input type="checkbox" id="newFormLinkIncludeInSidebar">
+        Include this link in the sidebar.</label>
       </div>
    </div>
 	
@@ -21,28 +21,28 @@
 
 {{end}}
 
-{{define "newNewItemPresetDialogButtons"}}
-	<button type="button" class="btn btn-default" id="newNewItemPresetCancelButton" data-dismiss="modal">Cancel</button>
-	<button type="button" class="btn btn-primary" id="newNewItemPresetSaveButton" type="submit">Save</button>
+{{define "newFormLinkDialogButtons"}}
+	<button type="button" class="btn btn-default" id="newFormLinkCancelButton" data-dismiss="modal">Cancel</button>
+	<button type="button" class="btn btn-primary" id="newFormLinkSaveButton" type="submit">Save</button>
 {{end}}
 
 
-{{define "adminNewNewItemPresetDialog"}}
+{{define "adminNewFormLinkDialog"}}
 
-    <form id="adminNewNewItemPresetDialogForm">
+    <form id="adminFormLinkDialogForm">
 		
-		<div class="modal fade" id="adminNewNewItemPresetDialog" tabindex="-1" role="dialog" aria-labelledby="newNewItemPresetLabel">
+		<div class="modal fade" id="adminNewFormLinkDialog" tabindex="-1" role="dialog" aria-labelledby="newFormLinkLabel">
 		  <div class="modal-dialog modal-sm" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		        <h4 class="modal-title" id="newFormLabel">Add Preset for New Items</h4>
+		        <h4 class="modal-title" id="newFormLabel">Add Form Link</h4>
 		      </div>
 		      <div class="modal-body">
-				  {{template "newNewItemPresetDialogBody"}}
+				  {{template "newFormLinkDialogBody"}}
 		      </div>
 		      <div class="modal-footer">
-				  {{template "newNewItemPresetDialogButtons"}}
+				  {{template "newFormLinkDialogButtons"}}
 		      </div>
 		    </div>
 		  </div>

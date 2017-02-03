@@ -1,16 +1,16 @@
 function openNewNewItemPresetDialog(databaseID) {
 	
-	var $newPresetDialogForm = $('#adminNewNewItemPresetDialogForm')	
-	var $presetNameInput = $('#newNewItemPresetNameInput')
-	var $newPresetDialog = $('#adminNewNewItemPresetDialog')
-	var formSelectionSelector = '#newNewItemPresetFormSelection'
+	var $newPresetDialogForm = $('#adminFormLinkDialogForm')	
+	var $presetNameInput = $('#newFormLinkNameInput')
+	var $newPresetDialog = $('#adminNewFormLinkDialog')
+	var formSelectionSelector = '#newFormLinkFormSelection'
 	var $formSelection = $(formSelectionSelector)
 	
-	var $includeInSidebarCheckbox = $('#newNewItemPresetIncludeInSidebar')
+	var $includeInSidebarCheckbox = $('#newFormLinkIncludeInSidebar')
 	
 	var validator = $newPresetDialogForm.validate({
 		rules: {
-			newNewItemPresetNameInput: {
+			newFormLinkNameInput: {
 				minlength: 3,
 				required: true,
 				remote: {
@@ -20,11 +20,11 @@ function openNewNewItemPresetDialog(databaseID) {
 					}
 				} // remote
 			}, // newFormNameInput
-			newNewItemPresetFormSelection: { required:true }
+			newFormLinkFormSelection: { required:true }
 		},
 		messages: {
-			newNewItemPresetNameInput: {
-				required: "Preset name is required"
+			newFormLinkNameInput: {
+				required: "Link name is required"
 			}
 		}
 	})	
@@ -44,18 +44,18 @@ function openNewNewItemPresetDialog(databaseID) {
 		
 	$newPresetDialog.modal('show')
 	
-	initButtonClickHandler('#newNewItemPresetSaveButton',function() {
-		console.log("New preset save button clicked")
+	initButtonClickHandler('#newFormLinkSaveButton',function() {
+		console.log("New form link save button clicked")
 		if($newPresetDialogForm.valid()) {	
 			
-			var newPresetParams = { 
+			var newFormLinkParams = { 
 				parentDatabaseID: databaseID, 
 				name: $presetNameInput.val(),
 				formID: $formSelection.val(),
 				includeInSidebar:$includeInSidebarCheckbox.prop("checked") }
 								
-			jsonAPIRequest("formLink/new",newPresetParams,function(newPresetInfo) {
-				console.log("Created new item preset: " + JSON.stringify(newPresetInfo))
+			jsonAPIRequest("formLink/new",newFormLinkParams,function(newFormLinkInfo) {
+				console.log("Created new form link: " + JSON.stringify(newFormLinkInfo))
 				$newPresetDialog.modal('hide')
 			})
 			

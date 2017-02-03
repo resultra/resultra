@@ -3,19 +3,19 @@ function initAdminNewItemPresetSettings(databaseID) {
 		
 	function addPresetToAdminPresetList(presetInfo) {
  
-		var $presetListItem = $('#adminNewItemPresetListItemTemplate').clone()
+		var $presetListItem = $('#formLinkItemTemplate').clone()
 		$presetListItem.attr("id","")
 	
 		$presetListItem.attr("data-linkID",presetInfo.linkID)
 	
-		var $editPropsButton = $presetListItem.find(".editNewItemPresetPropsButton")
+		var $editPropsButton = $presetListItem.find(".editFormLinkPropsButton")
 		var editPropsLink = '/admin/formLink/' + presetInfo.linkID
 		$editPropsButton.attr('href',editPropsLink)
 		
-		var $nameLabel = $presetListItem.find(".newItemPresetLabel")
+		var $nameLabel = $presetListItem.find(".adminFormLinkItemLabel")
 		$nameLabel.text(presetInfo.name)
 		 	
-		$('#adminNewItemPresetList').append($presetListItem)		
+		$('#adminFormLinkList').append($presetListItem)		
 	}
 		
 	// Retrieve presets from the server, populate the list of presets.
