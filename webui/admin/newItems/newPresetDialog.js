@@ -51,13 +51,13 @@ function openNewNewItemPresetDialog(databaseID) {
 			var newPresetParams = { 
 				parentDatabaseID: databaseID, 
 				name: $presetNameInput.val(),
+				formID: $formSelection.val(),
 				includeInSidebar:$includeInSidebarCheckbox.prop("checked") }
-				
-				console.log("Create new preset: " + JSON.stringify(newPresetParams))
-//			jsonAPIRequest("frm/new",newFormParams,function(newFormInfo) {
-//				console.log("Created new form: " + JSON.stringify(newFormInfo))
+								
+			jsonAPIRequest("newItem/newPreset",newPresetParams,function(newPresetInfo) {
+				console.log("Created new item preset: " + JSON.stringify(newPresetInfo))
 				$newPresetDialog.modal('hide')
-//			})
+			})
 			
 
 		}

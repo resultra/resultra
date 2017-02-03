@@ -4,7 +4,7 @@ function initAdminNewItemPresetSettings(databaseID) {
 	function addPresetToAdminPresetList(presetInfo) {
  
 		var $presetListItem = $('#adminNewItemPresetListItemTemplate').clone()
-		$fieldListItem.attr("id","")
+		$presetListItem.attr("id","")
 	
 		$presetListItem.attr("data-presetID",presetInfo.presetID)
 	
@@ -21,8 +21,14 @@ function initAdminNewItemPresetSettings(databaseID) {
 		$('#adminNewItemPresetList').append($presetListItem)		
 	}
 		
-	// TODO - Retrieve presets from the server, populate the list of presets.
-	// For each presetInfo ... addPresetToAdminPresetList(presetInfo)
+	// Retrieve presets from the server, populate the list of presets.
+	var presetParams = { parentDatabaseID: databaseID }
+	jsonAPIRequest("newItem/getPresets",presetParams,function(presetList) {
+		for(var presetIndex = 0; presetIndex < presetList.length; presetIndex++) {
+			var currPreset = presetList[presetIndex]
+			addPresetToAdminPresetList(currPreset)
+		}
+	})
 	
 	
 	initButtonClickHandler('#adminNewNewItemPresetButton',function() {
