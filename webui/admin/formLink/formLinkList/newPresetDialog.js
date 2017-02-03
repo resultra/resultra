@@ -54,7 +54,7 @@ function openNewNewItemPresetDialog(databaseID) {
 				formID: $formSelection.val(),
 				includeInSidebar:$includeInSidebarCheckbox.prop("checked") }
 								
-			jsonAPIRequest("formLink/newPreset",newPresetParams,function(newPresetInfo) {
+			jsonAPIRequest("formLink/new",newPresetParams,function(newPresetInfo) {
 				console.log("Created new item preset: " + JSON.stringify(newPresetInfo))
 				$newPresetDialog.modal('hide')
 			})

@@ -15,7 +15,7 @@ type NewFormLinkParams struct {
 }
 
 type FormLink struct {
-	PresetID         string             `json:"presetID"`
+	LinkID           string             `json:"linkID"`
 	Name             string             `json:"name"`
 	FormID           string             `json:"formID"`
 	IncludeInSidebar bool               `json:"includeInSidebar"`
@@ -29,9 +29,9 @@ func saveNewFormLink(newPreset FormLink) error {
 		return fmt.Errorf("savePreset: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO new_item_presets 
-				(preset_id,form_id,name,include_in_sidebar,properties) VALUES ($1,$2,$3,$4,$5)`,
-		newPreset.PresetID,
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO form_links 
+				(link_id,form_id,name,include_in_sidebar,properties) VALUES ($1,$2,$3,$4,$5)`,
+		newPreset.LinkID,
 		newPreset.FormID,
 		newPreset.Name,
 		newPreset.IncludeInSidebar,
@@ -47,7 +47,7 @@ func newFormLink(params NewFormLinkParams) (*FormLink, error) {
 	newProps := newDefaultNewItemProperties()
 
 	newPreset := FormLink{
-		PresetID:         uniqueID.GenerateSnowflakeID(),
+		LinkID:           uniqueID.GenerateSnowflakeID(),
 		Name:             params.Name,
 		FormID:           params.FormID,
 		IncludeInSidebar: params.IncludeInSidebar,
@@ -68,9 +68,9 @@ func GetFormLink(linkID string) (*FormLink, error) {
 
 	formLink := FormLink{}
 	encodedProps := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT preset_id,name,form_id,include_in_sidebar,properties
-			FROM new_item_presets WHERE
-			preset_id=$1 LIMIT 1`, linkID).Scan(&formLink.PresetID,
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT link_id,name,form_id,include_in_sidebar,properties
+			FROM form_links WHERE
+			link_id=$1 LIMIT 1`, linkID).Scan(&formLink.LinkID,
 		&formLink.Name,
 		&formLink.FormID,
 		&formLink.IncludeInSidebar,
@@ -93,10 +93,10 @@ func GetFormLink(linkID string) (*FormLink, error) {
 func getAllFormLinks(parentDatabaseID string) ([]FormLink, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT new_item_presets.preset_id,new_item_presets.name,new_item_presets.form_id,
-						new_item_presets.include_in_sidebar,new_item_presets.properties
-				FROM forms,new_item_presets WHERE 
-				forms.database_id=$1 AND new_item_presets.form_id=forms.form_id`,
+		`SELECT form_links.link_id,form_links.name,form_links.form_id,
+						form_links.include_in_sidebar,form_links.properties
+				FROM forms,form_links WHERE 
+				forms.database_id=$1 AND form_links.form_id=forms.form_id`,
 		parentDatabaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAllPresets: Failure querying database: %v", queryErr)
@@ -107,7 +107,7 @@ func getAllFormLinks(parentDatabaseID string) ([]FormLink, error) {
 		var currPreset FormLink
 		encodedProps := ""
 
-		if scanErr := rows.Scan(&currPreset.PresetID,
+		if scanErr := rows.Scan(&currPreset.LinkID,
 			&currPreset.Name,
 			&currPreset.FormID,
 			&currPreset.IncludeInSidebar, &encodedProps); scanErr != nil {
@@ -139,11 +139,11 @@ func CloneFormLinks(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID s
 
 		destPreset := currPreset
 
-		destPresetID, err := remappedIDs.AllocNewRemappedID(currPreset.PresetID)
+		destLinkID, err := remappedIDs.AllocNewRemappedID(currPreset.LinkID)
 		if err != nil {
 			return fmt.Errorf("CloneTableForms: %v", err)
 		}
-		destPreset.PresetID = destPresetID
+		destPreset.LinkID = destLinkID
 
 		destFormID, err := remappedIDs.GetExistingRemappedID(currPreset.FormID)
 		if err != nil {

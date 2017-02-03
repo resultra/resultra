@@ -6,10 +6,10 @@ function initAdminNewItemPresetSettings(databaseID) {
 		var $presetListItem = $('#adminNewItemPresetListItemTemplate').clone()
 		$presetListItem.attr("id","")
 	
-		$presetListItem.attr("data-presetID",presetInfo.presetID)
+		$presetListItem.attr("data-linkID",presetInfo.linkID)
 	
 		var $editPropsButton = $presetListItem.find(".editNewItemPresetPropsButton")
-		var editPropsLink = '/admin/formLink/' + presetInfo.presetID
+		var editPropsLink = '/admin/formLink/' + presetInfo.linkID
 		$editPropsButton.attr('href',editPropsLink)
 		
 		var $nameLabel = $presetListItem.find(".newItemPresetLabel")
@@ -20,7 +20,7 @@ function initAdminNewItemPresetSettings(databaseID) {
 		
 	// Retrieve presets from the server, populate the list of presets.
 	var presetParams = { parentDatabaseID: databaseID }
-	jsonAPIRequest("formLink/getPresets",presetParams,function(presetList) {
+	jsonAPIRequest("formLink/getList",presetParams,function(presetList) {
 		for(var presetIndex = 0; presetIndex < presetList.length; presetIndex++) {
 			var currPreset = presetList[presetIndex]
 			addPresetToAdminPresetList(currPreset)

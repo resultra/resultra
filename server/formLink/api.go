@@ -11,13 +11,13 @@ type DummyStructForInclude struct{ Val int64 }
 func init() {
 	formLinkRouter := mux.NewRouter()
 
-	formLinkRouter.HandleFunc("/api/formLink/newPreset", newPresetAPI)
-	formLinkRouter.HandleFunc("/api/formLink/getPresets", getPresetsAPI)
+	formLinkRouter.HandleFunc("/api/formLink/new", newFormLinkAPI)
+	formLinkRouter.HandleFunc("/api/formLink/getList", getFormLinksAPI)
 
 	http.Handle("/api/formLink/", formLinkRouter)
 }
 
-func newPresetAPI(w http.ResponseWriter, r *http.Request) {
+func newFormLinkAPI(w http.ResponseWriter, r *http.Request) {
 
 	params := NewFormLinkParams{}
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
@@ -34,7 +34,7 @@ func newPresetAPI(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func getPresetsAPI(w http.ResponseWriter, r *http.Request) {
+func getFormLinksAPI(w http.ResponseWriter, r *http.Request) {
 
 	params := GetFormLinkListParams{}
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
