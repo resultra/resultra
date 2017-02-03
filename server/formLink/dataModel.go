@@ -1,4 +1,4 @@
-package newItem
+package formLink
 
 import (
 	"fmt"
@@ -8,21 +8,21 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
-type NewNewItemPresetParams struct {
+type NewFormLinkParams struct {
 	Name             string `json:"name"`
 	FormID           string `json:"formID"`
 	IncludeInSidebar bool   `json:"includeInSidebar"`
 }
 
-type NewItemPreset struct {
-	PresetID         string                  `json:"presetID"`
-	Name             string                  `json:"name"`
-	FormID           string                  `json:"formID"`
-	IncludeInSidebar bool                    `json:"includeInSidebar"`
-	Properties       NewItemPresetProperties `json:"properties"`
+type FormLink struct {
+	PresetID         string             `json:"presetID"`
+	Name             string             `json:"name"`
+	FormID           string             `json:"formID"`
+	IncludeInSidebar bool               `json:"includeInSidebar"`
+	Properties       FormLinkProperties `json:"properties"`
 }
 
-func saveNewPreset(newPreset NewItemPreset) error {
+func saveNewFormLink(newPreset FormLink) error {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(newPreset.Properties)
 	if encodeErr != nil {
@@ -42,29 +42,55 @@ func saveNewPreset(newPreset NewItemPreset) error {
 
 }
 
-func newNewItemPreset(params NewNewItemPresetParams) (*NewItemPreset, error) {
+func newFormLink(params NewFormLinkParams) (*FormLink, error) {
 
 	newProps := newDefaultNewItemProperties()
 
-	newPreset := NewItemPreset{
+	newPreset := FormLink{
 		PresetID:         uniqueID.GenerateSnowflakeID(),
 		Name:             params.Name,
 		FormID:           params.FormID,
 		IncludeInSidebar: params.IncludeInSidebar,
 		Properties:       newProps}
 
-	if saveErr := saveNewPreset(newPreset); saveErr != nil {
-		return nil, fmt.Errorf("newNewItemPreset: %v", saveErr)
+	if saveErr := saveNewFormLink(newPreset); saveErr != nil {
+		return nil, fmt.Errorf("newFormLink: %v", saveErr)
 	}
 
 	return &newPreset, nil
 }
 
-type GetPresetListParams struct {
+type GetFormLinkListParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
-func getAllPresets(parentDatabaseID string) ([]NewItemPreset, error) {
+func GetFormLink(linkID string) (*FormLink, error) {
+
+	formLink := FormLink{}
+	encodedProps := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT preset_id,name,form_id,include_in_sidebar,properties
+			FROM new_item_presets WHERE
+			preset_id=$1 LIMIT 1`, linkID).Scan(&formLink.PresetID,
+		&formLink.Name,
+		&formLink.FormID,
+		&formLink.IncludeInSidebar,
+		&encodedProps)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetFormLink: Unabled to get form link: link ID = %v: datastore err=%v",
+			linkID, getErr)
+	}
+
+	props := newDefaultNewItemProperties()
+	if decodeErr := generic.DecodeJSONString(encodedProps, &props); decodeErr != nil {
+		return nil, fmt.Errorf("GetForm: can't decode properties: %v", encodedProps)
+	}
+	formLink.Properties = props
+
+	return &formLink, nil
+
+}
+
+func getAllFormLinks(parentDatabaseID string) ([]FormLink, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
 		`SELECT new_item_presets.preset_id,new_item_presets.name,new_item_presets.form_id,
@@ -76,9 +102,9 @@ func getAllPresets(parentDatabaseID string) ([]NewItemPreset, error) {
 		return nil, fmt.Errorf("GetAllPresets: Failure querying database: %v", queryErr)
 	}
 
-	presets := []NewItemPreset{}
+	presets := []FormLink{}
 	for rows.Next() {
-		var currPreset NewItemPreset
+		var currPreset FormLink
 		encodedProps := ""
 
 		if scanErr := rows.Scan(&currPreset.PresetID,
@@ -101,11 +127,11 @@ func getAllPresets(parentDatabaseID string) ([]NewItemPreset, error) {
 
 }
 
-func ClonePresets(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID string) error {
+func CloneFormLinks(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID string) error {
 
-	presets, err := getAllPresets(srcParentDatabaseID)
+	presets, err := getAllFormLinks(srcParentDatabaseID)
 	if err != nil {
-		return fmt.Errorf("ClonePresets: Error getting presets for parent database ID = %v: %v",
+		return fmt.Errorf("CloneFormLinks: Error getting presets for parent database ID = %v: %v",
 			srcParentDatabaseID, err)
 	}
 
@@ -127,12 +153,12 @@ func ClonePresets(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID str
 
 		destProps, err := currPreset.Properties.Clone(remappedIDs)
 		if err != nil {
-			return fmt.Errorf("ClonePresets: %v", err)
+			return fmt.Errorf("CloneFormLinks: %v", err)
 		}
 		destPreset.Properties = *destProps
 
-		if err := saveNewPreset(destPreset); err != nil {
-			return fmt.Errorf("ClonePresets: %v", err)
+		if err := saveNewFormLink(destPreset); err != nil {
+			return fmt.Errorf("CloneFormLinks: %v", err)
 		}
 
 	}

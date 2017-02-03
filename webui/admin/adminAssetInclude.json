@@ -5,7 +5,7 @@
 		"users",
 		"forms",
 		"fields",
-		"newItems",
+		"formLink/formLinkList",
 		"itemList/itemListList",
 		"dashboards",
 		"general","globals"],

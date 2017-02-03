@@ -1,4 +1,4 @@
-package newItem
+package formLink
 
 import (
 	"fmt"
@@ -6,23 +6,23 @@ import (
 	"resultra/datasheet/server/record"
 )
 
-type NewItemPresetProperties struct {
+type FormLinkProperties struct {
 	DefaultValues []record.DefaultFieldValue `json:"defaultValues"`
 }
 
-func newDefaultNewItemProperties() NewItemPresetProperties {
-	defaultProps := NewItemPresetProperties{
+func newDefaultNewItemProperties() FormLinkProperties {
+	defaultProps := FormLinkProperties{
 		DefaultValues: []record.DefaultFieldValue{}}
 	return defaultProps
 }
 
-func (srcProps NewItemPresetProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*NewItemPresetProperties, error) {
+func (srcProps FormLinkProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*FormLinkProperties, error) {
 
 	destProps := srcProps
 
 	destDefaultVals, cloneErr := record.CloneDefaultFieldValues(remappedIDs, srcProps.DefaultValues)
 	if cloneErr != nil {
-		return nil, fmt.Errorf("NewItemPresetProperties.Clone: %v", cloneErr)
+		return nil, fmt.Errorf("FormLinkProperties.Clone: %v", cloneErr)
 	}
 
 	destProps.DefaultValues = destDefaultVals

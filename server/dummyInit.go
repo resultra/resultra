@@ -7,7 +7,7 @@ import (
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/global"
-	"resultra/datasheet/server/newItem"
+	"resultra/datasheet/server/formLink"
 	"resultra/datasheet/server/recordReadController"
 	"resultra/datasheet/server/recordUpdate"
 	"resultra/datasheet/server/timelineController"
@@ -24,7 +24,7 @@ var dummyFormInfo = form.DummyStructForInclude{}
 var dummyAdminInfo = adminController.DummyStructForInclude{}
 var dummyGlobalInfo = global.DummyStructForInclude{}
 var dummyTimelineInfo = timelineController.DummyStructForInclude{}
-var dummyNewItemInfo = newItem.DummyStructForInclude{}
+var dummyNewItemInfo = formLink.DummyStructForInclude{}
 
 func DummyFunctionForImportFromGoogleAppEngineProjectFolder() {
 	// This dummy function is needed so standaline packages inside

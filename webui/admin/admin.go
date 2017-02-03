@@ -8,11 +8,11 @@ import (
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/webui/admin/dashboards"
 	"resultra/datasheet/webui/admin/fields"
+	"resultra/datasheet/webui/admin/formLink/formLinkList"
 	"resultra/datasheet/webui/admin/forms"
 	"resultra/datasheet/webui/admin/general"
 	"resultra/datasheet/webui/admin/globals"
 	"resultra/datasheet/webui/admin/itemList/itemListList"
-	"resultra/datasheet/webui/admin/newItems"
 	"resultra/datasheet/webui/admin/userRole"
 	"resultra/datasheet/webui/admin/users"
 	"resultra/datasheet/webui/common"
@@ -34,7 +34,7 @@ func init() {
 		users.TemplateFileList,
 		forms.TemplateFileList,
 		fields.TemplateFileList,
-		newItems.TemplateFileList,
+		formLinkList.TemplateFileList,
 		itemListList.TemplateFileList,
 		dashboards.TemplateFileList,
 		general.TemplateFileList,

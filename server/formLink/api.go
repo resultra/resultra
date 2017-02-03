@@ -1,4 +1,4 @@
-package newItem
+package formLink
 
 import (
 	"github.com/gorilla/mux"
@@ -9,23 +9,23 @@ import (
 type DummyStructForInclude struct{ Val int64 }
 
 func init() {
-	newItemRouter := mux.NewRouter()
+	formLinkRouter := mux.NewRouter()
 
-	newItemRouter.HandleFunc("/api/newItem/newPreset", newPresetAPI)
-	newItemRouter.HandleFunc("/api/newItem/getPresets", getPresetsAPI)
+	formLinkRouter.HandleFunc("/api/formLink/newPreset", newPresetAPI)
+	formLinkRouter.HandleFunc("/api/formLink/getPresets", getPresetsAPI)
 
-	http.Handle("/api/newItem/", newItemRouter)
+	http.Handle("/api/formLink/", formLinkRouter)
 }
 
 func newPresetAPI(w http.ResponseWriter, r *http.Request) {
 
-	params := NewNewItemPresetParams{}
+	params := NewFormLinkParams{}
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	newPreset, err := newNewItemPreset(params)
+	newPreset, err := newFormLink(params)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
@@ -36,13 +36,13 @@ func newPresetAPI(w http.ResponseWriter, r *http.Request) {
 
 func getPresetsAPI(w http.ResponseWriter, r *http.Request) {
 
-	params := GetPresetListParams{}
+	params := GetFormLinkListParams{}
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	presets, err := getAllPresets(params.ParentDatabaseID)
+	presets, err := getAllFormLinks(params.ParentDatabaseID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {

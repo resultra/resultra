@@ -1,0 +1,98 @@
+{{define "formLinkBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-tasks" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
+	  {{template "breadCrumbSeparator"}}
+	  <a class="h4 breadCrumbText" href="/admin/{{.DatabaseID}}">Settings</a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Form Link Settings</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">{{.LinkName}}</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "formLinkPropsHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "formLinkBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "adminFormLinkNameProperty"}}
+	<h4>Form Link Name</h4>
+	<form class="form-inline" id="formLinkNamePropertyForm">
+		<div class="container-fluid">
+			<div class="form-group">
+				<input type="text" id="formLinkPropsNameInput" name="formLinkPropsNameInput" 
+						class="form-control" placeholder="List Name" required="" autofocus="">
+			</div>
+		</div>
+	</form>
+{{end}}
+
+
+{{define "formLinkPropsBody"}}
+
+	{{template "adminFormLinkNameProperty"}}
+	
+	<hr>
+	
+{{end}}
+
+{{define "editFormLinkPropsPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- formLinkAssets:css -->
+	<!-- endinject -->
+	
+	<script>var formLinkPropsContext = { 
+		linkID:"{{.LinkID}}",
+		 databaseID:"{{.DatabaseID}}"} 
+	</script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- formLinkAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="editFormLinkPropsPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north" id="formLinkPageHeaderUILayout">
+			{{template "formLinkPropsHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west" id="formLinkPageTocLayout">
+			{{template "databaseTOC" .}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center" id="formLinkPageLayout">
+			{{template "formLinkPropsBody" .}}
+		</div> <!-- center pane for entire page -->	
+		
+	</div> <!-- layout page -->	
+				
+  </body>
+  	
+</html>
+
+{{end}}
