@@ -29,24 +29,42 @@
 
 
 {{define "adminFormLinkNameProperty"}}
-	<h4>Form Link Name</h4>
-	<form class="form-inline" id="formLinkNamePropertyForm">
-		<div class="container-fluid">
-			<div class="form-group">
-				<input type="text" id="formLinkPropsNameInput" name="formLinkPropsNameInput" 
-						class="form-control" placeholder="List Name" required="" autofocus="">
-			</div>
-		</div>
-	</form>
+<tr>
+	<td class="width200"><label>Form link name:</label></td>
+	<td>
+		<form id="formLinkNamePropertyForm">
+				<div class="form-group">
+					<input type="text" id="formLinkPropsNameInput" name="formLinkPropsNameInput" 
+							class="form-control maxWidth300" placeholder="List Name" required="" autofocus="">
+				</div>
+		</form>
+	</td>
+</tr>
 {{end}}
 
+{{define "adminFormLinkDefaultValuesProperty"}}
+
+	<tr>
+		<td class="width200"><label>Default values:</label>
+			<div><small>Configure which default values are set when creating new items.</small></div>
+		</td>
+
+		<td>
+			{{template "defaultValuesPropertyPanel" .DefaultValuePanelParams}}
+		</td>
+	</tr>
+
+{{end}}
 
 {{define "formLinkPropsBody"}}
 
-	{{template "adminFormLinkNameProperty"}}
+<table class="table">
+
+	{{template "adminFormLinkNameProperty" .}}
+	{{template "adminFormLinkDefaultValuesProperty" .}}
 	
-	<hr>
-	
+</table>
+		
 {{end}}
 
 {{define "editFormLinkPropsPage"}}

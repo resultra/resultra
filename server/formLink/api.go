@@ -12,7 +12,9 @@ func init() {
 	formLinkRouter := mux.NewRouter()
 
 	formLinkRouter.HandleFunc("/api/formLink/new", newFormLinkAPI)
+	formLinkRouter.HandleFunc("/api/formLink/get", getFormLinkAPI)
 	formLinkRouter.HandleFunc("/api/formLink/getList", getFormLinksAPI)
+	formLinkRouter.HandleFunc("/api/formLink/setDefaultVals", setDefaultVals)
 
 	http.Handle("/api/formLink/", formLinkRouter)
 }
@@ -34,6 +36,23 @@ func newFormLinkAPI(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func getFormLinkAPI(w http.ResponseWriter, r *http.Request) {
+
+	params := GetFormLinkParams{}
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	presets, err := GetFormLink(params.FormLinkID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, presets)
+	}
+
+}
+
 func getFormLinksAPI(w http.ResponseWriter, r *http.Request) {
 
 	params := GetFormLinkListParams{}
@@ -49,4 +68,21 @@ func getFormLinksAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, presets)
 	}
 
+}
+
+func processFormLinkPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater FormLinkPropUpdater) {
+	if headerRef, err := updateFormLinkProps(propUpdater); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, headerRef)
+	}
+}
+
+func setDefaultVals(w http.ResponseWriter, r *http.Request) {
+	var params FormLinkDefaultValParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFormLinkPropUpdate(w, r, params)
 }

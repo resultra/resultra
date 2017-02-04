@@ -60,8 +60,8 @@ func newFormLink(params NewFormLinkParams) (*FormLink, error) {
 	return &newLink, nil
 }
 
-type GetFormLinkListParams struct {
-	ParentDatabaseID string `json:"parentDatabaseID"`
+type GetFormLinkParams struct {
+	FormLinkID string `json:"formLinkID"`
 }
 
 func GetFormLink(linkID string) (*FormLink, error) {
@@ -88,6 +88,10 @@ func GetFormLink(linkID string) (*FormLink, error) {
 
 	return &formLink, nil
 
+}
+
+type GetFormLinkListParams struct {
+	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
 func getAllFormLinks(parentDatabaseID string) ([]FormLink, error) {
@@ -124,6 +128,25 @@ func getAllFormLinks(parentDatabaseID string) ([]FormLink, error) {
 	}
 
 	return links, nil
+
+}
+
+func updateExistingFormLink(updatedFormLink *FormLink) (*FormLink, error) {
+
+	encodedProps, encodeErr := generic.EncodeJSONString(updatedFormLink.Properties)
+	if encodeErr != nil {
+		return nil, fmt.Errorf("updateExistingFormLink: failure encoding properties: error = %v", encodeErr)
+	}
+
+	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE form_links 
+				SET properties=$1,name=$2,include_in_sidebar=$3
+				WHERE link_id=$4`,
+		encodedProps, updatedFormLink.Name, updatedFormLink.IncludeInSidebar, updatedFormLink.LinkID); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingFormLink: Can't update form link properties %v: error = %v",
+			updatedFormLink.LinkID, updateErr)
+	}
+
+	return updatedFormLink, nil
 
 }
 
