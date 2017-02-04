@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form"
+	"resultra/datasheet/server/formLink"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/itemList"
@@ -106,6 +107,10 @@ func saveDatabaseToTemplate(params SaveTemplateParams) (*database.Database, erro
 	// Item lists have a form as a property, so they must be cloned after the forms, ensuring
 	// the form IDs have already been remapped.
 	if err := itemList.CloneItemLists(remappedIDs, params.SourceDatabaseID); err != nil {
+		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
+	}
+
+	if err := formLink.CloneFormLinks(remappedIDs, params.SourceDatabaseID); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 

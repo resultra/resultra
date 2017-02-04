@@ -22,19 +22,19 @@ type FormLink struct {
 	Properties       FormLinkProperties `json:"properties"`
 }
 
-func saveNewFormLink(newPreset FormLink) error {
+func saveNewFormLink(newLink FormLink) error {
 
-	encodedProps, encodeErr := generic.EncodeJSONString(newPreset.Properties)
+	encodedProps, encodeErr := generic.EncodeJSONString(newLink.Properties)
 	if encodeErr != nil {
-		return fmt.Errorf("savePreset: failure encoding properties: error = %v", encodeErr)
+		return fmt.Errorf("saveNewFormLink: failure encoding properties: error = %v", encodeErr)
 	}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO form_links 
 				(link_id,form_id,name,include_in_sidebar,properties) VALUES ($1,$2,$3,$4,$5)`,
-		newPreset.LinkID,
-		newPreset.FormID,
-		newPreset.Name,
-		newPreset.IncludeInSidebar,
+		newLink.LinkID,
+		newLink.FormID,
+		newLink.Name,
+		newLink.IncludeInSidebar,
 		encodedProps); insertErr != nil {
 		return fmt.Errorf("savePreset: Can't create preset: error = %v", insertErr)
 	}
@@ -46,18 +46,18 @@ func newFormLink(params NewFormLinkParams) (*FormLink, error) {
 
 	newProps := newDefaultNewItemProperties()
 
-	newPreset := FormLink{
+	newLink := FormLink{
 		LinkID:           uniqueID.GenerateSnowflakeID(),
 		Name:             params.Name,
 		FormID:           params.FormID,
 		IncludeInSidebar: params.IncludeInSidebar,
 		Properties:       newProps}
 
-	if saveErr := saveNewFormLink(newPreset); saveErr != nil {
+	if saveErr := saveNewFormLink(newLink); saveErr != nil {
 		return nil, fmt.Errorf("newFormLink: %v", saveErr)
 	}
 
-	return &newPreset, nil
+	return &newLink, nil
 }
 
 type GetFormLinkListParams struct {
@@ -102,15 +102,15 @@ func getAllFormLinks(parentDatabaseID string) ([]FormLink, error) {
 		return nil, fmt.Errorf("GetAllPresets: Failure querying database: %v", queryErr)
 	}
 
-	presets := []FormLink{}
+	links := []FormLink{}
 	for rows.Next() {
-		var currPreset FormLink
+		var currLink FormLink
 		encodedProps := ""
 
-		if scanErr := rows.Scan(&currPreset.LinkID,
-			&currPreset.Name,
-			&currPreset.FormID,
-			&currPreset.IncludeInSidebar, &encodedProps); scanErr != nil {
+		if scanErr := rows.Scan(&currLink.LinkID,
+			&currLink.Name,
+			&currLink.FormID,
+			&currLink.IncludeInSidebar, &encodedProps); scanErr != nil {
 			return nil, fmt.Errorf("GetAllForms: Failure querying database: %v", scanErr)
 		}
 
@@ -118,46 +118,46 @@ func getAllFormLinks(parentDatabaseID string) ([]FormLink, error) {
 		if decodeErr := generic.DecodeJSONString(encodedProps, &props); decodeErr != nil {
 			return nil, fmt.Errorf("GetAllPresets: can't decode properties: %v", encodedProps)
 		}
-		currPreset.Properties = props
+		currLink.Properties = props
 
-		presets = append(presets, currPreset)
+		links = append(links, currLink)
 	}
 
-	return presets, nil
+	return links, nil
 
 }
 
 func CloneFormLinks(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID string) error {
 
-	presets, err := getAllFormLinks(srcParentDatabaseID)
+	links, err := getAllFormLinks(srcParentDatabaseID)
 	if err != nil {
-		return fmt.Errorf("CloneFormLinks: Error getting presets for parent database ID = %v: %v",
+		return fmt.Errorf("CloneFormLinks: Error getting form links for parent database ID = %v: %v",
 			srcParentDatabaseID, err)
 	}
 
-	for _, currPreset := range presets {
+	for _, currLink := range links {
 
-		destPreset := currPreset
+		destLink := currLink
 
-		destLinkID, err := remappedIDs.AllocNewRemappedID(currPreset.LinkID)
+		destLinkID, err := remappedIDs.AllocNewRemappedID(currLink.LinkID)
 		if err != nil {
 			return fmt.Errorf("CloneTableForms: %v", err)
 		}
-		destPreset.LinkID = destLinkID
+		destLink.LinkID = destLinkID
 
-		destFormID, err := remappedIDs.GetExistingRemappedID(currPreset.FormID)
+		destFormID, err := remappedIDs.GetExistingRemappedID(currLink.FormID)
 		if err != nil {
 			return fmt.Errorf("CloneTableForms: %v", err)
 		}
-		destPreset.FormID = destFormID
+		destLink.FormID = destFormID
 
-		destProps, err := currPreset.Properties.Clone(remappedIDs)
+		destProps, err := currLink.Properties.Clone(remappedIDs)
 		if err != nil {
 			return fmt.Errorf("CloneFormLinks: %v", err)
 		}
-		destPreset.Properties = *destProps
+		destLink.Properties = *destProps
 
-		if err := saveNewFormLink(destPreset); err != nil {
+		if err := saveNewFormLink(destLink); err != nil {
 			return fmt.Errorf("CloneFormLinks: %v", err)
 		}
 
