@@ -3,19 +3,18 @@ $(document).ready(function() {
 	
 	function initFormLinkNameProperties(linkInfo) {
 	
-/*		var $nameInput = $('#itemListPropsNameInput')
+		var $nameInput = $('#formLinkPropsNameInput')
 	
-		var $listNameForm = $('#itemListNamePropertyForm')
+		var $nameForm = $('#formLinkNamePropertyForm')
 		
-		$nameInput.val(listInfo.name)
+		$nameInput.val(linkInfo.name)
 		
 		
 		var remoteValidationParams = {
-			url: '/api/itemList/validateListName',
+			url: '/api/generic/stringValidation/validateItemLabel',
 			data: {
-				listID: function() { return listInfo.listID },
-				listName: function() { return $nameInput.val() }
-			}	
+				label: function() { return $nameInput.val(); }
+			}
 		}
 	
 		var validationSettings = createInlineFormValidationSettings({
@@ -24,26 +23,26 @@ $(document).ready(function() {
 					minlength: 3,
 					required: true,
 					remote: remoteValidationParams
-				} // newRoleNameInput
+				}
 			}
 		})	
 	
 	
-		var validator = $listNameForm.validate(validationSettings)
+		var validator = $nameForm.validate(validationSettings)
 	
-		initInlineInputValidationOnBlur(validator,'#itemListPropsNameInput',
+		initInlineInputValidationOnBlur(validator,'#formLinkPropsNameInput',
 			remoteValidationParams, function(validatedName) {		
 				var setNameParams = {
-					listID:listInfo.listID,
-					newListName:validatedName
+					formLinkID:linkInfo.linkID,
+					newName:validatedName
 				}
-				jsonAPIRequest("itemList/setName",setNameParams,function(listInfo) {
-					console.log("Done changing list name: " + validatedName)
+				jsonAPIRequest("formLink/setName",setNameParams,function(updatedLinkInfo) {
+					console.log("Done changing form link name: " + validatedName)
 				})
 		})	
 
 		validator.resetForm()
-	*/
+	
 	
 	} // initFormLinkNameProperties
 		

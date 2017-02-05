@@ -2,6 +2,7 @@ package formLink
 
 import (
 	"fmt"
+	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/record"
 )
 
@@ -55,6 +56,22 @@ func (updateParams FormLinkDefaultValParams) updateProps(linkForUpdate *FormLink
 	}
 
 	linkForUpdate.Properties.DefaultValues = updateParams.DefaultValues
+
+	return nil
+}
+
+type FormLinkNameParams struct {
+	FormLinkIDHeader
+	NewName string `json:"newName"`
+}
+
+func (updateParams FormLinkNameParams) updateProps(linkForUpdate *FormLink) error {
+
+	if !stringValidation.WellFormedItemLabel(updateParams.NewName) {
+		return fmt.Errorf("Can't update form link name: invalid name: %v", updateParams.NewName)
+	}
+
+	linkForUpdate.Name = updateParams.NewName
 
 	return nil
 }
