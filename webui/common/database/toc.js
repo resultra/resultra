@@ -14,20 +14,21 @@ function addItemListLinkToTOCList(listInfo) {
 	
 }
 
-function addFormLinkToTOCList(tocConfig, formInfo) {
+function addFormLinkToTOCList(tocConfig, linkInfo) {
+	
 	var formLinkHTML = '<div class="row marginTop5">' + 
 			'<div class="col-md-12">' +
-				'<button type="button" class="btn btn-default btn-sm formLinkButton">' + formInfo.name + '</button>' +
+				'<button type="button" class="btn btn-default btn-sm formLinkButton">' + linkInfo.name + '</button>' +
 			'</div>' +
 		'</div>';
 	var $formLinkButton = $(formLinkHTML)
 	
 	initButtonControlClickHandler($formLinkButton,function() {
-		console.log("Form button clicked: " + JSON.stringify(formInfo))
+		console.log("Form button clicked: " + JSON.stringify(linkInfo))
 		
 		var viewFormContext = {
 			databaseID: tocConfig.databaseID,
-			formID: formInfo.formID
+			formID: linkInfo.formID
 		}
 		
 		tocConfig.newItemFormButtonFunc(viewFormContext)
@@ -39,18 +40,22 @@ function addFormLinkToTOCList(tocConfig, formInfo) {
 
 function initDatabaseTOC(tocConfig) {
 	
-	var getDBInfoParams = { databaseID: tocConfig.databaseID }
-	jsonAPIRequest("database/getInfo",getDBInfoParams,function(dbInfo) {
-		console.log("Got database info: " + JSON.stringify(dbInfo))
-		
-		$('#tocFormList').empty()
-		for(var formInfoIndex = 0; formInfoIndex < dbInfo.formsInfo.length; formInfoIndex++) {
-			var formInfo = dbInfo.formsInfo[formInfoIndex]
-			if(formInfo.properties.addNewItemFromForm) {
-				addFormLinkToTOCList(tocConfig,formInfo)		
+	
+	$('#tocFormList').empty()
+	var linkParams = { parentDatabaseID: tocConfig.databaseID }
+	jsonAPIRequest("formLink/getList",linkParams,function(linkList) {
+		for(var linkIndex = 0; linkIndex < linkList.length; linkIndex++) {
+			var currLink = linkList[linkIndex]
+			if(currLink.includeInSidebar) {
+				addFormLinkToTOCList(tocConfig,currLink)		
 			}
 		}
-		
+	})
+	
+	
+	var getDBInfoParams = { databaseID: tocConfig.databaseID }
+	jsonAPIRequest("database/getInfo",getDBInfoParams,function(dbInfo) {
+		console.log("Got database info: " + JSON.stringify(dbInfo))		
 		
 		$('#tocListList').empty()
 		for(var listInfoIndex = 0; listInfoIndex < dbInfo.listsInfo.length; listInfoIndex++) {
