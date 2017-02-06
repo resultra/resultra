@@ -17,6 +17,7 @@ func init() {
 	formLinkRouter.HandleFunc("/api/formLink/setDefaultVals", setDefaultVals)
 	formLinkRouter.HandleFunc("/api/formLink/setName", setName)
 	formLinkRouter.HandleFunc("/api/formLink/setForm", setForm)
+	formLinkRouter.HandleFunc("/api/formLink/setIncludeInSidebar", setIncludeInSidebar)
 
 	http.Handle("/api/formLink/", formLinkRouter)
 }
@@ -100,6 +101,15 @@ func setName(w http.ResponseWriter, r *http.Request) {
 
 func setForm(w http.ResponseWriter, r *http.Request) {
 	var params FormLinkFormParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFormLinkPropUpdate(w, r, params)
+}
+
+func setIncludeInSidebar(w http.ResponseWriter, r *http.Request) {
+	var params FormLinkIncludeInSidebarParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

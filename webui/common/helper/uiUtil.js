@@ -98,6 +98,16 @@ function initSelectionChangedHandler(selectionSelector, handlerFunc) {
 	
 }
 
+function initCheckboxChangeHandler(checkboxSelector, initialVal, handlerFunc) {
+	var $checkbox = $(checkboxSelector)
+	$checkbox.prop("checked",initialVal)
+	$checkbox.unbind("click")
+	$checkbox.click( function () {
+		var newVal = $checkbox.prop("checked")
+		handlerFunc(newVal)
+	})	
+}
+
 function initSelectControlChangeHandler($selectControl, handlerFunc) {
 	$selectControl.unbind("change")				
 	$selectControl.change(function(){

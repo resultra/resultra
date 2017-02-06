@@ -57,6 +57,24 @@
 {{end}}
 
 
+{{define "adminFormLinkIncludeInSidebarProperty"}}
+
+<tr>
+	<td class="width200"><label></label></td>
+	<td>
+		<form id="formLinkPropIncludeInSidebarForm">
+			  <div class="form-group">
+			      <div class="checkbox">
+			        <label><input type="checkbox" id="adminFormLinkIncludeInSidebar">
+			        Include this link in the sidebar.</label>
+			      </div>
+			   </div>
+		</form>
+	</td>
+</tr>
+{{end}}
+
+
 {{define "adminFormLinkDefaultValuesProperty"}}
 
 	<tr>
@@ -77,6 +95,7 @@
 
 	{{template "adminFormLinkNameProperty" .}}
 	{{template "adminFormLinkFormProperty" .}}
+	{{template "adminFormLinkIncludeInSidebarProperty" .}}
 	{{template "adminFormLinkDefaultValuesProperty" .}}
 	
 </table>

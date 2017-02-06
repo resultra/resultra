@@ -68,7 +68,22 @@ $(document).ready(function() {
 		
 	} // initItemListFormProperties
 	
+	function initIncludeInSidebarProperty(linkInfo) {
 		
+		initCheckboxChangeHandler('#adminFormLinkIncludeInSidebar', 
+					linkInfo.includeInSidebar, function(newVal) {
+			var setIncludeSidebarParams = {
+				formLinkID: linkInfo.linkID,
+				includeInSidebar: newVal
+			}
+			jsonAPIRequest("formLink/setIncludeInSidebar",setIncludeSidebarParams,function(updatedLinkInfo) {
+				console.log("Done setting form for formLink")
+			})			
+			
+		})
+		
+	}
+	
 	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
 
 	$('#editFormLinkPropsPage').layout({
@@ -99,6 +114,7 @@ $(document).ready(function() {
 			
 			initFormLinkNameProperties(linkInfo)
 			initFormLinkFormProperties(linkInfo)
+			initIncludeInSidebarProperty(linkInfo)
 	
 			var defaultValPropParams = {
 				databaseID: formLinkPropsContext.databaseID,

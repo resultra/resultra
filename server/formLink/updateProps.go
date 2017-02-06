@@ -102,3 +102,15 @@ func (updateParams FormLinkFormParams) updateProps(linkForUpdate *FormLink) erro
 
 	return nil
 }
+
+type FormLinkIncludeInSidebarParams struct {
+	FormLinkIDHeader
+	IncludeInSidebar bool `json:"includeInSidebar"`
+}
+
+func (updateParams FormLinkIncludeInSidebarParams) updateProps(linkForUpdate *FormLink) error {
+
+	linkForUpdate.IncludeInSidebar = updateParams.IncludeInSidebar
+
+	return nil
+}
