@@ -46,10 +46,10 @@ $(document).ready(function() {
 			return paletteItemsEditConfig[paletteItemID].draggableHTMLFunc(placeholderID)
 		},
 		
-		startPaletteDrag: function(placeholderID,paletteItemID) {
+		startPaletteDrag: function(placeholderID,paletteItemID,$paletteItemContainer) {
 			// If a palette item needs to initialize the dragged item after it's been
 			// inserted into the DOM, then this is done in the startPaletteDrag function
-			return paletteItemsEditConfig[paletteItemID].startPaletteDrag(placeholderID)			
+			return paletteItemsEditConfig[paletteItemID].startPaletteDrag(placeholderID,$paletteItemContainer)			
 		},
 		
 		dropComplete: function(droppedItemInfo) {			
@@ -139,7 +139,7 @@ $(document).ready(function() {
 			initFormComponentDesignBehavior(componentIDs,commentObjectRef,commentDesignFormConfig,designFormLayoutConfig)
 		},
 		initRatingFunc: function(componentContext,$rating,ratingObjectRef) {
-			initRatingDesignControlBehavior(ratingObjectRef)
+			initRatingDesignControlBehavior($rating,ratingObjectRef)
 			var componentIDs = { formID: formID, componentID: ratingObjectRef.ratingID }
 			initFormComponentDesignBehavior(componentIDs,ratingObjectRef,ratingDesignFormConfig,designFormLayoutConfig)
 		},

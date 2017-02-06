@@ -11,6 +11,16 @@ function elemResizeConstraints(minWidth, maxWidth, minHeight, maxHeight) {
 	}
 }
 
+function setContainerObjectRef($container,objectRef) {
+	$container.data("objectRef",objectRef)
+}
+
+function getContainerObjectRef($container) {
+	var objectRef = $container.data("objectRef")
+	assert(objectRef !== undefined, "getElemObjectRef: Can't get object element reference for object id = " + objectID)
+	return objectRef	
+}
+
 function setElemObjectRef(objectID, objectRef) {
 	$('#'+objectID).data("objectRef",objectRef)
 }

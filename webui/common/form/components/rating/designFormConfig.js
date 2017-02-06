@@ -1,8 +1,10 @@
 
-function initRatingDesignControlBehavior(ratingObjectRef) {
-	var ratingControlSelector = '#' + ratingControlIDFromElemID(ratingObjectRef.ratingID)
+function initRatingDesignControlBehavior($ratingContainer,ratingObjectRef) {
+	
+	
+	var $ratingControl = getRatingControlFromRatingContainer($ratingContainer)
 
-	$(ratingControlSelector).rating()
+	$ratingControl.rating()
 	
 }
 
@@ -27,9 +29,10 @@ function resizeRating(ratingID,geometry) {
 	})	
 }
 
-function startRatingPaletteDrag(placeholderID) {
-	var ratingControlSelector = '#'+ratingControlIDFromElemID(placeholderID)
-	$(ratingControlSelector).rating()
+function startRatingPaletteDrag(placeholderID,$paletteItemContainer) {
+	
+	var $ratingControl = getRatingControlFromRatingContainer($paletteItemContainer)
+	 $ratingControl.rating()
 }
 
 

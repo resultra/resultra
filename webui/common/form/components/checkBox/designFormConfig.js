@@ -28,7 +28,7 @@ function resizeCheckBox(checkBoxID,geometry) {
 
 var checkBoxDesignFormConfig = {
 	draggableHTMLFunc:	checkBoxContainerHTML,
-	startPaletteDrag: function(placeholderID) {},
+	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewCheckboxDialog,
 	resizeConstraints: elemResizeConstraints(100,640,30,30),
 	resizeFunc: resizeCheckBox,

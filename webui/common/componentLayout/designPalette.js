@@ -53,12 +53,14 @@ function initDesignPalette(paletteConfig,layoutDesignConfig) {
 		 start: function(event,ui) {
 		 	console.log("drag start")
 			 
+			 var $paletteContainer = $(ui.helper)
 			 var placeholderID = $(ui.helper).attr('id')
 			 var paletteItemID = $(this).attr('id')
 			 
+			 
 			 // The startPaletteDrag function is called so any dynamic Javascript initialization
 			 // which needs to take place after the helper has been added can take place.
-			 paletteConfig.startPaletteDrag(placeholderID,paletteItemID)
+			 paletteConfig.startPaletteDrag(placeholderID,paletteItemID,$paletteContainer)
 			 
 		 },
 		 
@@ -88,7 +90,6 @@ function initDesignPalette(paletteConfig,layoutDesignConfig) {
 				$droppedObj.removeClass("newComponent")
 		
 				var placeholderID = $droppedObj.attr('id')
-				assert(placeholderID !== undefined, "receiveNewComponent: palette item missing element id")
 				console.log("receiveNewComponent: drop: placeholder ID of palette item: " + placeholderID)
 	
 				var objWidth = $droppedObj.width()

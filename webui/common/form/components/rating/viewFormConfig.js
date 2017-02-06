@@ -1,10 +1,8 @@
 function loadRecordIntoRating(ratingElem, recordRef) {
 	
 	
-	var ratingObjectRef = ratingElem.data("objectRef")
-	var ratingContainerID = ratingObjectRef.ratingID
-	var ratingControlID = ratingControlIDFromElemID(ratingContainerID)
-	var ratingControlSelector = '#' + ratingControlID;
+	var ratingObjectRef = getContainerObjectRef(ratingElem)
+	var $ratingControl = getRatingControlFromRatingContainer(ratingElem)
 	
 	var componentLink = ratingObjectRef.properties.componentLink
 	
@@ -24,15 +22,15 @@ function loadRecordIntoRating(ratingElem, recordRef) {
 			
 			var maxRating = 5
 			if((fieldVal >= 0) && (fieldVal <= maxRating)) {
-				$(ratingControlSelector).rating('rate',fieldVal)	
+				$ratingControl.rating('rate',fieldVal)	
 			} else {
-				$(ratingControlSelector).rating('rate','')		
+				$ratingControl.rating('rate','')		
 			}
 			
 		} // If record has a value for the current container's associated field ID.
 		else
 		{
-			$(ratingControlSelector).rating('rate','')
+			$ratingControl.rating('rate','')
 		}
 
 		// TBD - initialize control
@@ -45,15 +43,15 @@ function loadRecordIntoRating(ratingElem, recordRef) {
 			var globalVal = currGlobalVals[ratingGlobalID]
 			
 			if((fieldVal >= 0) && (fieldVal <= maxRating)) {
-				$(ratingControlSelector).rating('rate',globalVal)
+				$ratingControl.rating('rate',globalVal)
 			} else {
-				$(ratingControlSelector).rating('rate','')
+				$ratingControl.rating('rate','')
 			}
 			
 		}
 		else
 		{
-			$(ratingControlSelector).rating('rate','')
+			$ratingControl.rating('rate','')
 		}		
 
 		// TBD - initialize control
@@ -64,13 +62,11 @@ function loadRecordIntoRating(ratingElem, recordRef) {
 }
 
 
-function initRatingRecordEditBehavior(componentContext,changeSetID,getRecordFunc, updateRecordFunc, ratingObjectRef) {
+function initRatingRecordEditBehavior($ratingContainer,componentContext,changeSetID,getRecordFunc, updateRecordFunc, ratingObjectRef) {
 
-	var $ratingContainer = $('#'+ratingObjectRef.ratingID)
 	var componentLink = ratingObjectRef.properties.componentLink
 	
-	var ratingControlSelector = '#' + ratingControlIDFromElemID(ratingObjectRef.ratingID)
-	var $ratingControl = $(ratingControlSelector)
+	var $ratingControl = getRatingControlFromRatingContainer($ratingContainer)
 
 	function setRatingValue(ratingVal) {
 		

@@ -29,7 +29,7 @@ function resizeSelection(selectionID,geometry) {
 
 var selectionDesignFormConfig = {
 	draggableHTMLFunc:	selectionContainerHTML,
-	startPaletteDrag: function(placeholderID) {},
+	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewSelectionDialog,
 	resizeConstraints: elemResizeConstraints(100,600,400,400),
 	resizeFunc: resizeSelection,

@@ -48,7 +48,7 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 		},
 		initRatingFunc: function(componentContext,$rating,ratingObjectRef) {
 			console.log("Init rating in view form")
-			initRatingRecordEditBehavior(componentContext,changeSetID,
+			initRatingRecordEditBehavior($rating,componentContext,changeSetID,
 					getCurrentRecordFunc,updateCurrentRecordFunc,ratingObjectRef)
 			initFormComponentViewBehavior($rating,
 					ratingObjectRef.ratingID,initRatingViewProperties)

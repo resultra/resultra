@@ -23,7 +23,7 @@ function resizeFormHeader(headerID,geometry) {
 
 var formHeaderDesignFormConfig = {
 	draggableHTMLFunc:	formHeaderContainerHTML,
-	startPaletteDrag: function(placeholderID) {},
+	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewFormHeaderDialog,
 	resizeConstraints: elemResizeConstraints(320,640,50,50),
 	resizeFunc: resizeFormHeader,

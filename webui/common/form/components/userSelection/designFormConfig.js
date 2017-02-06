@@ -27,7 +27,7 @@ function resizeUserSelection(userSelectionID,geometry) {
 	})	
 }
 
-function startUserSelectionPaletteDrag(placeholderID) {
+function startUserSelectionPaletteDrag(placeholderID,$paletteItemContainer) {
 	var userSelectionControlSelector = '#'+userSelectionIDFromElemID(placeholderID)
 //	$(userSelectionControlSelector).rating()
 }

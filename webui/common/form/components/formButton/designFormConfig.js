@@ -22,7 +22,7 @@ function resizeFormButton(buttonID,geometry) {
 
 var formButtonDesignFormConfig = {
 	draggableHTMLFunc:	formButtonContainerHTML,
-	startPaletteDrag: function(placeholderID) {},
+	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewFormButtonDialog,
 	resizeConstraints: elemResizeConstraints(320,640,50,50),
 	resizeFunc: resizeFormButton,

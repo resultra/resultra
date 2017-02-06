@@ -227,7 +227,7 @@ function loadFormComponents(loadFormConfig) {
 			
 			var containerHTML = ratingContainerHTML(rating.ratingID);
 			
-			var containerObj = $(containerHTML)
+			var $ratingContainer = $(containerHTML)
 			
 			var componentLink = rating.properties.componentLink
 			
@@ -241,18 +241,18 @@ function loadFormComponents(loadFormConfig) {
 				componentLabel = globalInfo.name
 			}
 			
-			containerObj.find('label').text(componentLabel)
+			$ratingContainer.find('label').text(componentLabel)
 			
 			// Position the object withing the #layoutCanvas div
-			$componentRow.append(containerObj)
-			setElemDimensions(containerObj,rating.properties.geometry)
+			$componentRow.append($ratingContainer)
+			setElemDimensions($ratingContainer,rating.properties.geometry)
 		
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setElemObjectRef(rating.ratingID,rating)
+			setContainerObjectRef($ratingContainer,rating)
 			
 			// Callback for any specific initialization for either the form design or view mode 
-			loadFormConfig.initRatingFunc(componentContext,containerObj,rating)
+			loadFormConfig.initRatingFunc(componentContext,$ratingContainer,rating)
 		}
 
 

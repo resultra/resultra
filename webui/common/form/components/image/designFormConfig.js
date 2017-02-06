@@ -29,7 +29,7 @@ function resizeImage(imageID,geometry) {
 
 var imageDesignFormConfig = {
 	draggableHTMLFunc:	imageContainerHTML,
-	startPaletteDrag: function(placeholderID) {},
+	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewImageDialog,
 	resizeConstraints: elemResizeConstraints(100,640,100,500),
 	resizeFunc: resizeImage,
