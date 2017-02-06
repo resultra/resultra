@@ -2,6 +2,7 @@ package formLink
 
 import (
 	"fmt"
+	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/record"
 )
@@ -72,6 +73,32 @@ func (updateParams FormLinkNameParams) updateProps(linkForUpdate *FormLink) erro
 	}
 
 	linkForUpdate.Name = updateParams.NewName
+
+	return nil
+}
+
+type FormLinkFormParams struct {
+	FormLinkIDHeader
+	FormID string `json:"formID"`
+}
+
+func (updateParams FormLinkFormParams) updateProps(linkForUpdate *FormLink) error {
+
+	newForm, getErr := form.GetForm(updateParams.FormID)
+	if getErr != nil {
+		return fmt.Errorf("Update form properties: Unable to get form specified as new form: %v", getErr)
+	}
+
+	oldForm, getErr := form.GetForm(linkForUpdate.FormID)
+	if getErr != nil {
+		return fmt.Errorf("Update form properties: Unable to get form specified as new form: %v", getErr)
+	}
+
+	if newForm.ParentDatabaseID != oldForm.ParentDatabaseID {
+		return fmt.Errorf("Update form properties: Database mismatch for new form: %v", newForm.ParentDatabaseID)
+	}
+
+	linkForUpdate.FormID = updateParams.FormID
 
 	return nil
 }

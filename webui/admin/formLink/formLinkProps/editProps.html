@@ -39,8 +39,23 @@
 				</div>
 		</form>
 	</td>
+
+{{end}}
+
+{{define "adminFormLinkFormProperty"}}
+
+<tr>
+	<td class="width200"><label>Form to link to:</label></td>
+	<td>
+		<form id="formLinkPropFormForm">
+				<div class="form-group">
+					<select class="form-control maxWidth300" id="formLinkPropFormSelection"></select>
+				</div>
+		</form>
+	</td>
 </tr>
 {{end}}
+
 
 {{define "adminFormLinkDefaultValuesProperty"}}
 
@@ -61,6 +76,7 @@
 <table class="table">
 
 	{{template "adminFormLinkNameProperty" .}}
+	{{template "adminFormLinkFormProperty" .}}
 	{{template "adminFormLinkDefaultValuesProperty" .}}
 	
 </table>

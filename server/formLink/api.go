@@ -16,6 +16,7 @@ func init() {
 	formLinkRouter.HandleFunc("/api/formLink/getList", getFormLinksAPI)
 	formLinkRouter.HandleFunc("/api/formLink/setDefaultVals", setDefaultVals)
 	formLinkRouter.HandleFunc("/api/formLink/setName", setName)
+	formLinkRouter.HandleFunc("/api/formLink/setForm", setForm)
 
 	http.Handle("/api/formLink/", formLinkRouter)
 }
@@ -90,6 +91,15 @@ func setDefaultVals(w http.ResponseWriter, r *http.Request) {
 
 func setName(w http.ResponseWriter, r *http.Request) {
 	var params FormLinkNameParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFormLinkPropUpdate(w, r, params)
+}
+
+func setForm(w http.ResponseWriter, r *http.Request) {
+	var params FormLinkFormParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

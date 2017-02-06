@@ -45,6 +45,29 @@ $(document).ready(function() {
 	
 	
 	} // initFormLinkNameProperties
+	
+	
+	function initFormLinkFormProperties(linkInfo) {
+		var selectFormParams = {
+			menuSelector: "#formLinkPropFormSelection",
+			parentDatabaseID: formLinkPropsContext.databaseID,
+			initialFormID: linkInfo.formID
+		}	
+		populateFormSelectionMenu(selectFormParams)
+		var $formSelection = $("#formLinkPropFormSelection")
+		initSelectControlChangeHandler($formSelection, function(selectedFormID) {
+
+			var setFormParams = {
+				formLinkID: linkInfo.linkID,
+				formID: selectedFormID
+			}	
+			jsonAPIRequest("formLink/setForm",setFormParams,function(updatedLinkInfo) {
+				console.log("Done setting form for formLink")
+			})			
+		})
+		
+	} // initItemListFormProperties
+	
 		
 	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
 
@@ -75,6 +98,7 @@ $(document).ready(function() {
 		jsonAPIRequest("formLink/get",getFormLinkParams,function(linkInfo) {
 			
 			initFormLinkNameProperties(linkInfo)
+			initFormLinkFormProperties(linkInfo)
 	
 			var defaultValPropParams = {
 				databaseID: formLinkPropsContext.databaseID,
