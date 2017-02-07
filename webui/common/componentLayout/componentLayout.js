@@ -31,7 +31,8 @@ function getComponentLayout($parentLayout) {
 		$(this).children('.componentCol').each(function() {
 			var colComponents = []
 			$(this).children('.layoutContainer').each(function() {
-				var componentID = $(this).attr("id")
+				var $layoutContainer = $(this)
+				var componentID = getContainerComponentID($layoutContainer)		
 				colComponents.push(componentID)
 			})
 			if (colComponents.length > 0) {

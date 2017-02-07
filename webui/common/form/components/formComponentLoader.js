@@ -54,7 +54,7 @@ function loadFormComponents(loadFormConfig) {
 		
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setElemObjectRef(header.headerID,header)
+			setContainerComponentInfo($containerObj,header,header.headerID)
 		
 			// Callback for any specific initialization for either the form design or view mode
 			loadFormConfig.initHeaderFunc($containerObj,componentContext,header)
@@ -81,7 +81,7 @@ function loadFormComponents(loadFormConfig) {
 		
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setElemObjectRef(formButton.buttonID,formButton)
+			setContainerComponentInfo($containerObj,formButton,formButton.buttonID)
 		
 			// Callback for any specific initialization for either the form design or view mode
 			loadFormConfig.initFormButtonFunc(componentContext,$containerObj,formButton)
@@ -120,7 +120,7 @@ function loadFormComponents(loadFormConfig) {
 		
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setElemObjectRef(textBox.textBoxID,textBox)
+			setContainerComponentInfo(containerObj,textBox,textBox.textBoxID)
 		
 			// Callback for any specific initialization for either the form design or view mode
 			loadFormConfig.initTextBoxFunc(componentContext,containerObj,textBox)
@@ -158,7 +158,7 @@ function loadFormComponents(loadFormConfig) {
 		
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setElemObjectRef(selection.selectionID,selection)
+			setContainerComponentInfo(containerObj,selection,selection.selectionID)
 		
 			// Callback for any specific initialization for either the form design or view mode
 			loadFormConfig.initSelectionFunc(componentContext,containerObj,selection)
@@ -182,7 +182,7 @@ function loadFormComponents(loadFormConfig) {
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setElemObjectRef(comment.commentID,comment)
+			setContainerComponentInfo(containerObj,comment,comment.commentID)
 			
 			// Callback for any specific initialization for either the form design or view mode 
 			loadFormConfig.initCommentFunc(componentContext,containerObj,comment)
@@ -216,7 +216,7 @@ function loadFormComponents(loadFormConfig) {
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setContainerObjectRef($checkboxContainer,checkBox)
+			setContainerComponentInfo($checkboxContainer,checkBox,checkBox.checkBoxID)
 			
 			// Callback for any specific initialization for either the form design or view mode 
 			loadFormConfig.initCheckBoxFunc(componentContext,$checkboxContainer,checkBox)
@@ -249,7 +249,7 @@ function loadFormComponents(loadFormConfig) {
 		
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setContainerObjectRef($ratingContainer,rating)
+			setContainerComponentInfo($ratingContainer,rating,rating.ratingID)
 			
 			// Callback for any specific initialization for either the form design or view mode 
 			loadFormConfig.initRatingFunc(componentContext,$ratingContainer,rating)
@@ -283,7 +283,7 @@ function loadFormComponents(loadFormConfig) {
 		
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setElemObjectRef(userSelection.userSelectionID,userSelection)
+			setContainerComponentInfo(containerObj,userSelection,userSelection.userSelectionID)
 			
 			// Callback for any specific initialization for either the form design or view mode 
 			loadFormConfig.initUserSelectionFunc(componentContext,containerObj,userSelection)
@@ -314,8 +314,8 @@ function loadFormComponents(loadFormConfig) {
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setElemObjectRef(datePicker.datePickerID,datePicker)
-			
+			setContainerComponentInfo(containerObj,datePicker,datePicker.datePickerID)
+						
 			// Callback for any specific initialization for either the form design or view mode
 			loadFormConfig.initDatePickerFunc(componentContext,containerObj,datePicker)
 			
@@ -346,7 +346,7 @@ function loadFormComponents(loadFormConfig) {
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setElemObjectRef(htmlEditor.htmlEditorID,htmlEditor)
+			setContainerComponentInfo(containerObj,htmlEditor,htmlEditor.htmlEditorID)
 			
 			// Callback for any specific initialization for either the form design or view mode
 			loadFormConfig.initHtmlEditorFunc(componentContext,containerObj,htmlEditor)
@@ -379,7 +379,7 @@ function loadFormComponents(loadFormConfig) {
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setElemObjectRef(image.imageID,image)
+			setContainerComponentInfo(containerObj,image,image.imageID)
 			
 			// Callback for any specific initialization for either the form design or view mode
 			loadFormConfig.initImageFunc(componentContext,containerObj,image)
