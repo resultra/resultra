@@ -1,16 +1,16 @@
 
 
-function initFormComponentDesignBehavior(componentIDs, objectRef, designFormConfig,layoutDesignConfig) {
+function initFormComponentDesignBehavior($componentContainer, componentIDs, objectRef, designFormConfig,layoutDesignConfig) {
 	
 	console.log("initFormComponentDesignBehavior: params = " + JSON.stringify(componentIDs))
 	
-	initObjectGridEditBehavior(componentIDs.componentID,designFormConfig,layoutDesignConfig)
+	initObjectGridEditBehavior($componentContainer,designFormConfig,layoutDesignConfig)
 	
 	
-	initObjectSelectionBehavior($("#"+componentIDs.componentID), 
+	initObjectSelectionBehavior($componentContainer, 
 			formDesignCanvasSelector,function(selectedCompenentID) {
 		console.log("form design object selected: " + selectedCompenentID)
-		var selectedObjRef	= getElemObjectRef(selectedCompenentID)
+		var selectedObjRef	= getContainerObjectRef($componentContainer)
 		designFormConfig.selectionFunc(selectedObjRef)
 	})
 		

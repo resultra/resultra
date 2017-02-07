@@ -52,7 +52,7 @@ function openNewFormButtonDialog(databaseID,formID,containerParams) {
 						  // Set up the newly created checkbox for resize, selection, etc.
 						  var componentIDs = { formID: formID, componentID:newButtonObjectRef.buttonID }
 	  
-						  initFormComponentDesignBehavior(componentIDs,newButtonObjectRef,formButtonDesignFormConfig)
+						  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newButtonObjectRef,formButtonDesignFormConfig)
   
 						  // Put a reference to the check box's reference object in the check box's DOM element.
 						  // This reference can be retrieved later for property setting, etc.

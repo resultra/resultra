@@ -1,14 +1,11 @@
 
 
-function initObjectGridEditBehavior(objID, editConfig,layoutDesignConfig) {
-	
-	console.log("Initialize object edit behavior: object ID = " + objID)
-	var objSelector = "#"+objID
-	
+function initObjectGridEditBehavior($container, editConfig,layoutDesignConfig) {
+		
 	// While in edit mode, disable input on the container
-	$(objSelector).find('input').prop('disabled',true);
+	$container.find('input').prop('disabled',true);
 	
-	$(objSelector).draggable ({
+	$container.draggable ({
 		cursor: "move",
 		helper:'clone',
 		opacity: 0.5,
@@ -30,7 +27,7 @@ function initObjectGridEditBehavior(objID, editConfig,layoutDesignConfig) {
 	})
 
 		
-	$(objSelector).resizable({
+	$container.resizable({
 		aspectRatio: false,
 		handles: 'e', // Only allow resizing horizontally
 		maxWidth: editConfig.resizeConstraints.maxWidth,

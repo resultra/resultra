@@ -24,7 +24,7 @@ function openNewImageDialog(databaseID,formID,containerParams)
 		  
 			  // Set up the newly created editor for resize, selection, etc.
 			  var componentIDs = { formID: formID, componentID:newImageObjectRef.imageID }
-			  initFormComponentDesignBehavior(componentIDs,newImageObjectRef,imageDesignFormConfig)
+			  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newImageObjectRef,imageDesignFormConfig)
 			  
 			  // Put a reference to the check box's reference object in the check box's DOM element.
 			  // This reference can be retrieved later for property setting, etc.

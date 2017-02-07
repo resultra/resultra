@@ -62,7 +62,8 @@ $(document).ready(function() {
 			var objEditConfig = paletteItemsEditConfig[droppedItemInfo.paletteItemID]
 			
 			setTimeout(function() {
-				initObjectGridEditBehavior(droppedItemInfo.placeholderID,objEditConfig) 
+				// TODO - need to pass "layoutDesignConfig" parameter to initObjectGridEditBehavior
+				initObjectGridEditBehavior(droppedItemInfo.droppedElem,objEditConfig) 
 			}, 50);
 					
 			// "repackage" the dropped item paramaters for creating a new layout element. Also add the formID
@@ -71,6 +72,7 @@ $(document).ready(function() {
 				parentFormID: formID,
 				geometry: droppedItemInfo.geometry,
 				containerID: droppedItemInfo.placeholderID,
+				containerObj: droppedItemInfo.droppedElem,
 				finalizeLayoutIncludingNewComponentFunc: droppedItemInfo.finalizeLayoutIncludingNewComponentFunc
 				};
 				
@@ -124,50 +126,50 @@ $(document).ready(function() {
 		formContext: designFormContext,
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {
 			var componentIDs = { formID: formID, componentID: textBoxObjectRef.textBoxID }
-			initFormComponentDesignBehavior(componentIDs,textBoxObjectRef,textBoxDesignFormConfig,designFormLayoutConfig)
+			initFormComponentDesignBehavior($textBox,componentIDs,textBoxObjectRef,textBoxDesignFormConfig,designFormLayoutConfig)
 		},
 		initSelectionFunc: function(componentContext,$selection,selectionObjectRef) {
 			var componentIDs = { formID: formID, componentID: selectionObjectRef.selectionID }
-			initFormComponentDesignBehavior(componentIDs,selectionObjectRef,selectionDesignFormConfig,designFormLayoutConfig)
+			initFormComponentDesignBehavior($selection,componentIDs,selectionObjectRef,selectionDesignFormConfig,designFormLayoutConfig)
 		},
 		initCheckBoxFunc: function(componentContext,$checkBox,checkBoxObjectRef) {
 			var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
-			initFormComponentDesignBehavior(componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig,designFormLayoutConfig)
+			initFormComponentDesignBehavior($checkBox,componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig,designFormLayoutConfig)
 		},
 		initCommentFunc: function(componentContext,$comment,commentObjectRef) {
 			var componentIDs = { formID: formID, componentID: commentObjectRef.commentID }
-			initFormComponentDesignBehavior(componentIDs,commentObjectRef,commentDesignFormConfig,designFormLayoutConfig)
+			initFormComponentDesignBehavior($comment,componentIDs,commentObjectRef,commentDesignFormConfig,designFormLayoutConfig)
 		},
 		initRatingFunc: function(componentContext,$rating,ratingObjectRef) {
 			initRatingDesignControlBehavior($rating,ratingObjectRef)
 			var componentIDs = { formID: formID, componentID: ratingObjectRef.ratingID }
-			initFormComponentDesignBehavior(componentIDs,ratingObjectRef,ratingDesignFormConfig,designFormLayoutConfig)
+			initFormComponentDesignBehavior($rating,componentIDs,ratingObjectRef,ratingDesignFormConfig,designFormLayoutConfig)
 		},
 		initUserSelectionFunc: function(componentContext,$userSelection,userSelectionObjectRef) {
 			initUserSelectionDesignControlBehavior(userSelectionObjectRef)
 			var componentIDs = { formID: formID, componentID: userSelectionObjectRef.userSelectionID }
-			initFormComponentDesignBehavior(componentIDs,userSelectionObjectRef,
+			initFormComponentDesignBehavior($userSelection,componentIDs,userSelectionObjectRef,
 						userSelectionDesignFormConfig,designFormLayoutConfig)
 		},
 		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			var componentIDs = { formID: formID, componentID: datePickerObjectRef.datePickerID }
-			initFormComponentDesignBehavior(componentIDs,datePickerObjectRef,datePickerDesignFormConfig,designFormLayoutConfig)
+			initFormComponentDesignBehavior($datePicker,componentIDs,datePickerObjectRef,datePickerDesignFormConfig,designFormLayoutConfig)
 		},
 		initHtmlEditorFunc: function(componentContext,$htmlEditor,htmlEditorObjectRef) {
 			var componentIDs = { formID: formID, componentID: htmlEditorObjectRef.htmlEditorID }
-			initFormComponentDesignBehavior(componentIDs,htmlEditorObjectRef,htmlEditorDesignFormConfig,designFormLayoutConfig)
+			initFormComponentDesignBehavior($htmlEditor,componentIDs,htmlEditorObjectRef,htmlEditorDesignFormConfig,designFormLayoutConfig)
 		},
 		initImageFunc: function(componentContext,$image,imageObjectRef) {
 			var componentIDs = { formID: formID, componentID: imageObjectRef.imageID }
-			initFormComponentDesignBehavior(componentIDs,imageObjectRef,imageDesignFormConfig,designFormLayoutConfig)
+			initFormComponentDesignBehavior($image,componentIDs,imageObjectRef,imageDesignFormConfig,designFormLayoutConfig)
 		},
-		initHeaderFunc: function(componentContext,headerObjectRef) {
+		initHeaderFunc: function($header,componentContext,headerObjectRef) {
 			var componentIDs = { formID: formID, componentID: headerObjectRef.headerID }
-			initFormComponentDesignBehavior(componentIDs,headerObjectRef,formHeaderDesignFormConfig,designFormLayoutConfig)
+			initFormComponentDesignBehavior($header,componentIDs,headerObjectRef,formHeaderDesignFormConfig,designFormLayoutConfig)
 		},
 		initFormButtonFunc: function(componentContext,$button,buttonObjectRef) {
 			var componentIDs = { formID: formID, componentID: buttonObjectRef.buttonID }
-			initFormComponentDesignBehavior(componentIDs,buttonObjectRef,formButtonDesignFormConfig,designFormLayoutConfig)
+			initFormComponentDesignBehavior($button,componentIDs,buttonObjectRef,formButtonDesignFormConfig,designFormLayoutConfig)
 		},
 		doneLoadingFormDataFunc: function() {
 			// The formula editor depends on the field information first being initialized.

@@ -57,7 +57,7 @@ function loadFormComponents(loadFormConfig) {
 			setElemObjectRef(header.headerID,header)
 		
 			// Callback for any specific initialization for either the form design or view mode
-			loadFormConfig.initHeaderFunc(componentContext,header)
+			loadFormConfig.initHeaderFunc($containerObj,componentContext,header)
 			
 		}
 
@@ -194,7 +194,7 @@ function loadFormComponents(loadFormConfig) {
 			// Create an HTML block for the container
 			
 			var containerHTML = checkBoxContainerHTML(checkBox.checkBoxID);
-			var containerObj = $(containerHTML)
+			var $checkboxContainer = $(containerHTML)
 			
 			var componentLink = checkBox.properties.componentLink
 			
@@ -208,18 +208,18 @@ function loadFormComponents(loadFormConfig) {
 				componentLabel = globalInfo.name
 			}
 			
-			containerObj.find('span').text(componentLabel)
+			$checkboxContainer.find('span').text(componentLabel)
 			
 			// Position the object withing the #layoutCanvas div
-			$componentRow.append(containerObj)
-			setElemDimensions(containerObj,checkBox.properties.geometry)
+			$componentRow.append($checkboxContainer)
+			setElemDimensions($checkboxContainer,checkBox.properties.geometry)
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.
-			setElemObjectRef(checkBox.checkBoxID,checkBox)
+			setContainerObjectRef($checkboxContainer,checkBox)
 			
 			// Callback for any specific initialization for either the form design or view mode 
-			loadFormConfig.initCheckBoxFunc(componentContext,containerObj,checkBox)
+			loadFormConfig.initCheckBoxFunc(componentContext,$checkboxContainer,checkBox)
 		}
 
 		function initRatingLayout($componentRow,rating) {

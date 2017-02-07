@@ -13,7 +13,7 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 		initObjectSelectionBehavior($component, 
 				canvasSelector,function(selectedComponentID) {
 			console.log("Form view object selected: " + selectedComponentID)
-			var selectedObjRef	= getElemObjectRef(selectedComponentID)
+			var selectedObjRef	= getContainerObjectRef($component)
 			selectionFunc(selectedObjRef)
 		})
 	}
@@ -41,7 +41,7 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 		},
 		initCheckBoxFunc: function(componentContext,$checkBox,checkBoxObjectRef) {
 			console.log("Init check box in view form")
-			initCheckBoxRecordEditBehavior(componentContext,changeSetID,
+			initCheckBoxRecordEditBehavior($checkBox,componentContext,changeSetID,
 					getCurrentRecordFunc,updateCurrentRecordFunc,checkBoxObjectRef)
 			initFormComponentViewBehavior($checkBox,
 					checkBoxObjectRef.checkBoxID,initCheckBoxViewProperties)
@@ -91,7 +91,7 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 			initFormComponentViewBehavior($image,
 					imageObjectRef.imageID,initImageViewProperties)
 		},
-		initHeaderFunc: function(componentContext,headerObjectRef) {
+		initHeaderFunc: function($header,componentContext,headerObjectRef) {
 			console.log("Init header in view form")
 			initHeaderRecordEditBehavior(componentContext,headerObjectRef)
 		},

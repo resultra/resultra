@@ -45,7 +45,8 @@ $(document).ready(function() {
 			var componentEditConfig = dashboardPaletteItemsEditConfig[droppedItemInfo.paletteItemID]
 			
 			setTimeout(function() {
-				initObjectGridEditBehavior(droppedItemInfo.placeholderID,componentEditConfig)
+				// TODO - need to pass "layoutDesignConfig" parameter to initObjectGridEditBehavior
+				initObjectGridEditBehavior(droppedItemInfo.droppedElem,componentEditConfig)
 				componentEditConfig.populatePlaceholderData(droppedItemInfo.placeholderID)
 			}, 50);
 			
@@ -86,7 +87,7 @@ $(document).ready(function() {
 	function initDashboardComponentDesignDashboardEditBehavior($component,componentID, designDashboardConfig,layoutDesignConfig) {
 		console.log("initDashboardComponentDesignDashboardEditBehavior: component ID = " + componentID)
 	
-		initObjectGridEditBehavior(componentID,designDashboardConfig,layoutDesignConfig)
+		initObjectGridEditBehavior($component,designDashboardConfig,layoutDesignConfig)
 	
 	
 		initObjectSelectionBehavior($component, 

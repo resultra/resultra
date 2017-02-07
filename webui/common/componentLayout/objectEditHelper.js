@@ -17,7 +17,7 @@ function setContainerObjectRef($container,objectRef) {
 
 function getContainerObjectRef($container) {
 	var objectRef = $container.data("objectRef")
-	assert(objectRef !== undefined, "getElemObjectRef: Can't get object element reference for object id = " + objectID)
+	assert(objectRef !== undefined, "getElemObjectRef: Can't get object element reference")
 	return objectRef	
 }
 
