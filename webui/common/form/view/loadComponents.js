@@ -72,7 +72,7 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 		},
 		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			console.log("Init date picker in view form")
-			initDatePickerRecordEditBehavior(componentContext,changeSetID,
+			initDatePickerRecordEditBehavior($datePicker,componentContext,changeSetID,
 					getCurrentRecordFunc,updateCurrentRecordFunc,datePickerObjectRef)
 			initFormComponentViewBehavior($datePicker,
 					datePickerObjectRef.datePickerID,initDatePickerViewProperties)

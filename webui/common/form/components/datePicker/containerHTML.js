@@ -1,24 +1,18 @@
 
 
-function datePickerElemIDFromContainerElemID(datePickerElemID) {
-	return 	datePickerElemID + '_datePicker'
-}
-
-function datePickerInputIDFromContainerElemID(datePickerElemID) {
-	return 	datePickerElemID + '_datePickerInput'
+function datePickerInputFromContainer($datePickerContainer) {
+	return 	$datePickerContainer.find(".datePickerComponentInput")
 }
 
 
 function datePickerContainerHTML(elementID)
 {	
-	var datePickerID = datePickerElemIDFromContainerElemID(elementID)
-	var datePickerInputID = datePickerInputIDFromContainerElemID(elementID)
 	
 	var containerHTML = ''+
-	'<div class="ui-widget-content layoutContainer datePickerContainer  draggable resizable" id="'+elementID+'">' +
+	'<div class="ui-widget-content layoutContainer datePickerContainer  draggable resizable">' +
 		'<div class="field">'+
 			'<label>New Field</label>'+
-			'<input type="text" name="symbol" id="' + datePickerInputID + '" class="layoutInput" placeholder="Select a Date">'+
+			'<input type="text" name="symbol"  class="layoutInput datePickerComponentInput" placeholder="Select a Date">'+
 		'</div>'+
 	'</div>';
 	

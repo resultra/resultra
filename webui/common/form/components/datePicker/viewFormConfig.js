@@ -1,8 +1,8 @@
-function loadRecordIntoDatePicker(datePickerElem, recordRef) {
+function loadRecordIntoDatePicker($datePicker, recordRef) {
 	
 	console.log("loadRecordIntoDatePicker: loading record into date picker: " + JSON.stringify(recordRef))
 	
-	var datePickerObjectRef = datePickerElem.data("objectRef")
+	var datePickerObjectRef = $datePicker.data("objectRef")
 	var componentLink = datePickerObjectRef.properties.componentLink
 	
 	var datePickerFieldID = componentLink.fieldID
@@ -10,12 +10,8 @@ function loadRecordIntoDatePicker(datePickerElem, recordRef) {
 	
 	console.log("loadRecordIntoDatePicker: Field ID to load data:" + datePickerFieldID)
 
-
-	var datePickerContainerID = datePickerObjectRef.datePickerID
-	var datePickerID = datePickerElemIDFromContainerElemID(datePickerContainerID)
-	var datePickerSelector = '#' + datePickerID;
-		var datePickerInputID = datePickerInputIDFromContainerElemID(datePickerContainerID)
-		var datePickerInputSelector = '#'+datePickerInputID
+	
+	var $datePickerInput = datePickerInputFromContainer($datePicker)
 	
 	if(componentLink.linkedValType == linkedComponentValTypeField) {
 		// Populate the "intersection" of field values in the record
@@ -29,38 +25,36 @@ function loadRecordIntoDatePicker(datePickerElem, recordRef) {
 			// integrated, only the date will be formatted and shown in the input field.
 			var dateVal = moment(fieldVal).format("MM/DD/YYYY")
 
-			console.log("loadRecordIntoDatePicker: Load value into container: " + $(datePickerElem).attr("id") + " field ID:" + 
-						datePickerFieldID + "  value:" + fieldVal)
-
-			var currDateVal = $(datePickerInputSelector).val()
+			var currDateVal = $datePickerInput.val()
 		
 			if(currDateVal != dateVal) {
-				$(datePickerInputSelector).val(dateVal)
+				$datePickerInput.val(dateVal)
 			}
 		
 		} else {
 			// There's no value in the current record for this field, so clear the value in the container
-			$(datePickerInputSelector).val("") 
+			$datePickerInput.val("") 
 		}
 	} else {
 		var datePickerGlobalID = componentLink.globalID
 		if(datePickerGlobalID in currGlobalVals) {
 			var globalVal = currGlobalVals[datePickerGlobalID]
 			var dateVal = moment(globalVal).format("MM/DD/YYYY")
-			$(datePickerInputSelector).val(dateVal)
+			$datePickerInput.val(dateVal)
 		}
 		else
 		{
-			$(datePickerInputSelector).val("") 
+			$datePickerInput.val("") 
 		}
 		
 	}
 }
 
-function getDataPickerDateVal(containerID) {
-	var datePickerInputID = datePickerInputIDFromContainerElemID(containerID)
+function getDataPickerDateVal($datePicker) {
 	
-	var inputVal = $('#'+datePickerInputID).val()
+	var $datePickerInput = datePickerInputFromContainer($datePicker)
+	
+	var inputVal = $datePickerInput.val()
 	var dateVal = new Date(inputVal)
 	var dateParam = moment(dateVal).toISOString()
 	return dateParam
@@ -69,9 +63,8 @@ function getDataPickerDateVal(containerID) {
 function initDatePickerFieldEditBehavior(componentContext,changeSetID,
 		getRecordFunc, updateRecordFunc, datePickerObjectRef,$datePickerContainer) {
 	
-	
-	var datePickerContainerID = datePickerObjectRef.datePickerID
-	var datePickerID = datePickerElemIDFromContainerElemID(datePickerContainerID)
+
+	var $datePickerInput = datePickerInputFromContainer($datePickerContainer)
 	
 	var componentLink = datePickerObjectRef.properties.componentLink
 	
@@ -88,12 +81,11 @@ function initDatePickerFieldEditBehavior(componentContext,changeSetID,
 	    console.log("date picker changed dates")
 		// Get the most recent copy of the object reference. It could have changed between
 		// initialization time and the time the checkbox was changed.
-		var containerID = datePickerObjectRef.datePickerID
-		var objectRef = getElemObjectRef(containerID)
+		var objectRef = getContainerObjectRef($datePickerContainer)
 		
 		var componentLink = objectRef.properties.componentLink
 		
-		var dateParam = getDataPickerDateVal(containerID)
+		var dateParam = getDataPickerDateVal($datePickerContainer)
 		
 		currRecordRef = getRecordFunc()
 		
@@ -127,12 +119,11 @@ function initDatePickerGlobalEditBehavior(componentContext,datePickerObjectRef,$
 	    console.log("date picker changed dates (global)")
 		// Get the most recent copy of the object reference. It could have changed between
 		// initialization time and the time the checkbox was changed.
-		var containerID = datePickerObjectRef.datePickerID
-		var objectRef = getElemObjectRef(containerID)
+		var objectRef = getContainerObjectRef($datePickerContainer)
 		
 		var componentLink = objectRef.properties.componentLink
 				
-		var dateParam = getDataPickerDateVal(containerID)
+		var dateParam = getDataPickerDateVal($datePickerContainer)
 		
 		
 		var setGlobalValParams = {
@@ -152,19 +143,13 @@ function initDatePickerGlobalEditBehavior(componentContext,datePickerObjectRef,$
 
 
 
-function initDatePickerRecordEditBehavior(componentContext,changeSetID,
+function initDatePickerRecordEditBehavior($datePickerContainer, componentContext,changeSetID,
 		getRecordFunc, updateRecordFunc, datePickerObjectRef) {
-	
-	var datePickerContainerID = datePickerObjectRef.datePickerID
-	var datePickerID = datePickerElemIDFromContainerElemID(datePickerContainerID)
-	
-	var datePickerInputID = datePickerInputIDFromContainerElemID(datePickerContainerID)
-	$('#'+datePickerInputID).datepicker()
+		
+	var $datePickerInput = datePickerInputFromContainer($datePickerContainer)
+	$datePickerInput.datepicker()
 	
 	
-	console.log("initDatePickerRecordEditBehavior: container ID =  " +datePickerContainerID + ' date picker ID = '+ datePickerID)
-	
-	var $datePickerContainer = $('#'+datePickerContainerID)
 
 	$datePickerContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoDatePicker
