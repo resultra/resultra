@@ -86,7 +86,7 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 		},
 		initImageFunc: function(componentContext,$image,imageObjectRef) {
 			console.log("Init image in view form")
-			initImageRecordEditBehavior(componentContext,changeSetID,
+			initImageRecordEditBehavior($image,componentContext,changeSetID,
 				getCurrentRecordFunc,updateCurrentRecordFunc,imageObjectRef)
 			initFormComponentViewBehavior($image,
 					imageObjectRef.imageID,initImageViewProperties)

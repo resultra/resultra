@@ -362,8 +362,6 @@ function loadFormComponents(loadFormConfig) {
 	
 	
 			// Set the label to the field name
-			var labelID = imageContainerLabelIDFromContainerElemID(image.imageID)
-			console.log("loadFormComponents: initializing label: id=" + labelID)
 			
 			var componentLink = image.properties.componentLink
 			
@@ -375,7 +373,8 @@ function loadFormComponents(loadFormConfig) {
 				componentLabel = globalInfo.name
 			}
 			
-			$('#'+labelID).text(componentLabel)
+			var $imageLabel = imageContainerLabelImageComponentContainer(containerObj)
+			$imageLabel.text(componentLabel)
 			
 			 // Store the newly created object reference in the DOM element. This is needed for follow-on
 			 // property setting, resizing, etc.

@@ -7,8 +7,8 @@ function loadRecordIntoImage(imageElem, recordRef) {
 	
 	var imageObjectRef = imageElem.data("objectRef")
 	var imageContainerID = imageObjectRef.imageID
-	var imageDivID = imageIDFromContainerElemID(imageContainerID)
-	var imageDivIDSelector = '#' + imageDivID
+	
+	var $imageInnerContainer = imageInnerContainerFromImageComponentContainer(imageElem)
 	
 	function initImageContainer(imageURL) {
 		
@@ -35,14 +35,14 @@ function loadRecordIntoImage(imageElem, recordRef) {
 				cloudFileName: cloudFileName }
 			jsonAPIRequest("record/getFieldValUrl", getUrlParams, function(urlResp) {
 					
-				$(imageDivIDSelector).html(imageLinkHTML(imageContainerID,urlResp.url));
+				$imageInnerContainer.html(imageLinkHTML(imageContainerID,urlResp.url));
 				var linkID = imageLinkIDFromContainerElemID(imageContainerID)
 				$('#'+linkID).magnificPopup({type:'image'})
 			})
 		
 		} else {
 			// There's no value in the current record for this field, so clear the value in the container
-			$(imageDivIDSelector).html('')
+			$imageInnerContainer.html('')
 		}	
 	} else {
 		assert(componentLink.linkedValType == linkedComponentValTypeGlobal)
@@ -56,7 +56,7 @@ function loadRecordIntoImage(imageElem, recordRef) {
 			}
 			jsonAPIRequest("global/getGlobalValUrl", getUrlParams, function(urlResp) {
 				
-				$(imageDivIDSelector).html(imageLinkHTML(imageContainerID,urlResp.url));
+				$imageInnerContainer.html(imageLinkHTML(imageContainerID,urlResp.url));
 				var linkID = imageLinkIDFromContainerElemID(imageContainerID)
 				$('#'+linkID).magnificPopup({type:'image'})
 			})
@@ -67,23 +67,16 @@ function loadRecordIntoImage(imageElem, recordRef) {
 }
 
 
-function initImageRecordEditBehavior(componentContext,changeSetID,
+function initImageRecordEditBehavior($imageContainer, componentContext,changeSetID,
 			getRecordFunc, updateRecordFunc,imageObjectRef) {
 	
 	var imageContainerID = imageObjectRef.imageID
 
 	console.log("initImageRecordEditBehavior: container ID =  " +imageContainerID)
 	
-	var imageContainer = $('#'+imageContainerID)
-	imageContainer.data("viewFormConfig", {
+	$imageContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoImage
-	})
-
-
-	// Initialize image uploader plugin
-	var imageDropZoneContainerID = imageIDFromContainerElemID(imageContainerID)
-	var imageDropZoneSelector = '#' + imageDropZoneContainerID
-	var imageUploadID = imageUploadInputIDFromContainerElemID(imageContainerID)
+	})		
 	
 	var componentLink = imageObjectRef.properties.componentLink
 	
@@ -95,7 +88,8 @@ function initImageRecordEditBehavior(componentContext,changeSetID,
 		uploadImageURL = "/api/global/uploadFileToGlobalValue"
 	}
 		
-	$('#'+imageUploadID).fileupload({
+	var $imageUploadInput = imageUploadInputFromImageComponentContainer($imageContainer)
+	$imageUploadInput.fileupload({
 	        dataType: 'json',
 			autoUpload:true,
 			maxNumberOfFiles:1,	
@@ -109,12 +103,13 @@ function initImageRecordEditBehavior(componentContext,changeSetID,
 					
 					console.log("Done uploading file: " + file.name + " url = " + file.url)
 					
-					var fileNameLabelID = fileNameLabelFromContainerElemID(imageObjectRef.imageID)		
-					$('#'+fileNameLabelID).text(file.name)
-					var imageDivID = imageIDFromContainerElemID(imageObjectRef.imageID)
-					var imageDivIDSelector = '#' + imageDivID
+					var $fileNameLabel = fileNameLabelFromImageComponentContainer($imageContainer)		
+					$fileNameLabel.text(file.name)
 					
-					$(imageDivIDSelector).html(imageLinkHTML(imageContainerID,file.url));
+					var $imageInnerContainer = imageInnerContainerFromImageComponentContainer($imageContainer)
+										
+					$imageInnerContainer.html(imageLinkHTML(imageContainerID,file.url));
+					
 					var linkID = imageLinkIDFromContainerElemID(imageContainerID)
 					$('#'+linkID).magnificPopup({type:'image'})
 					
@@ -141,7 +136,7 @@ function initImageRecordEditBehavior(componentContext,changeSetID,
 		// field ID. The reason this can't happen at the same time as the initial upload button initialization is
 		// that the records haven't been loaded when the initial initialization takes place, so the current
 		// record is unknown.
-		$('#'+imageUploadID).bind('fileuploadsubmit', function (e, data) {
+		$imageUploadInput.bind('fileuploadsubmit', function (e, data) {
 		    // The example input, doesn't have to be part of the upload form:
 			
 			var fileUploadParams = {}

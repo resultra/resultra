@@ -1,45 +1,36 @@
 
 
-function imageIDFromContainerElemID(imageElemID) {
-	return 	imageElemID + '_image'
+
+function imageContainerLabelImageComponentContainer($image) {
+	return 	$image.find(".imageContainerLabel")
 }
 
-function imageUploadInputIDFromContainerElemID(imageElemID) {
-	return 	imageElemID + '_uploadFileInput'
+function imageUploadInputFromImageComponentContainer($image) {
+	return 	$image.find(".imageComponentUploadInput")
 }
 
-function fileNameLabelFromContainerElemID(imageElemID) {
-	return 	imageElemID + '_fileNameLabel'
+function fileNameLabelFromImageComponentContainer($image) {
+	return  $image.find(".imageComponentFileNameLabel")
 }
 
-function imageContainerLabelIDFromContainerElemID(imageElemID) {
-	return 	imageElemID + '_containerLabel'
+function imageInnerContainerFromImageComponentContainer($image) {
+	return $image.find(".imageInnerContainer")
 }
-
-function imageLinkIDFromContainerElemID(imageElemID) {
-	return 	imageElemID + '_imageLink'
-}
-
 
 
 function imageContainerHTML(elementID)
-{	
-	var imageID = imageIDFromContainerElemID(elementID)
-	var uploadInputID = imageUploadInputIDFromContainerElemID(elementID)
-	var fileNameLabelID = fileNameLabelFromContainerElemID(elementID)
-	var containerLabelID = imageContainerLabelIDFromContainerElemID(elementID)
-	
+{		
 	// Adding title=" " to the file input field prevents the jQuery File Upload
 	// plugin from displaying it's own messages.
 	
 	var containerHTML = ''+
-	'<div class="ui-widget-content layoutContainer imageContainer draggable resizable" id="'+elementID+'">' +
+	'<div class="ui-widget-content layoutContainer imageContainer draggable resizable">' +
 		'<div class="imageContainerHeader">' +
-			'<label id="' + containerLabelID + '">Image Label</label>' +
-			'<input id="'+ uploadInputID + '" type="file" title=" " single>'+
-			'<label id="' + fileNameLabelID + '"></label>' +
+			'<label class="imageContainerLabel">Image Label</label>' +
+			'<input class="imageComponentUploadInput" type="file" title=" " single>'+
+			'<label class="imageComponentFileNameLabel"></label>' +
 		'</div>' +
-		'<div id="' + imageID + '" class="imageInnerContainer text-center"">'+
+		'<div class="imageInnerContainer text-center"">'+
 		'</div>'+
 	'</div>';
 	
@@ -47,6 +38,9 @@ function imageContainerHTML(elementID)
 	return containerHTML
 }
 
+function imageLinkIDFromContainerElemID(imageElemID) {
+	return 	imageElemID + '_imageLink'
+}
 
 function imageLinkHTML(elementID, imageURL) {
 	var linkID = imageLinkIDFromContainerElemID(elementID)
