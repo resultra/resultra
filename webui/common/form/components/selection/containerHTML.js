@@ -1,18 +1,17 @@
 
-function selectionFormControlID(elementID) {
-	return elementID + "_selection"
+
+function selectionFormControlFromSelectionFormComponent($selectionComponent) {
+	return $selectionComponent.find(".selectionFormComponentSelection")
 }
 
 function selectionContainerHTML(elementID)
-{
-	var controlID = selectionFormControlID(elementID)
-	
+{	
 	var containerHTML = ''+
 		'<div class="ui-widget-content layoutContainer selectionFormComponent" id="'+elementID+'">' +
 			'<div class="form-group">'+
-				'<label for="' + controlID + '">Selection</label>'+
+				'<label>Selection</label>'+
 				'<div class="selectionFormControl">' + 
-					'<select class="form-control" id="' + controlID + '"></select>' +
+					'<select class="form-control selectionFormComponentSelection"></select>' +
 				'</div>' +
 			'</div>'+
 		'</div>';

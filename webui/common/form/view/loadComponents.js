@@ -28,7 +28,7 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 					textBoxObjectRef.textBoxID,initTextBoxViewProperties)
 		},
 		initSelectionFunc: function(componentContext,$selection,selectionObjectRef) {			
-			initSelectionRecordEditBehavior(componentContext,changeSetID,
+			initSelectionRecordEditBehavior($selection,componentContext,changeSetID,
 					getCurrentRecordFunc,updateCurrentRecordFunc,selectionObjectRef)
 			initFormComponentViewBehavior($selection,
 					selectionObjectRef.selectionID,initSelectionViewProperties)

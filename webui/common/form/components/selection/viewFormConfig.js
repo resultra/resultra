@@ -1,15 +1,8 @@
 function loadRecordIntoSelection(selectionElem, recordRef) {
 
 	var selectionObjectRef = selectionElem.data("objectRef")
-	var selectionControlSelector = '#'+selectionFormControlID(selectionObjectRef.selectionID)
-	var $selectionControl = $(selectionControlSelector)
 
-	
-	console.log("loadRecordIntoSelection: loading record into selection: " + JSON.stringify(recordRef))
-	console.log("loadRecordIntoSelection: loading record into selection: " + 
-		" selectionID = " + selectionObjectRef.selectionID + 
-		" selector=" + selectionControlSelector)
-	
+	var $selectionControl = selectionFormControlFromSelectionFormComponent(selectionElem)	
 	
 	var componentLink = selectionObjectRef.properties.componentLink
 	
@@ -52,16 +45,15 @@ function loadRecordIntoSelection(selectionElem, recordRef) {
 	
 }
 
-function initSelectionRecordEditBehavior(componentContext,changeSetID,getRecordFunc, updateRecordFunc, selectionObjectRef) {
+function initSelectionRecordEditBehavior($selectionContainer,componentContext,changeSetID,getRecordFunc, updateRecordFunc, selectionObjectRef) {
 	
-	var container = $('#'+selectionObjectRef.selectionID)
-
-	container.data("viewFormConfig", {
+	$selectionContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoSelection
 	})
 	
-	var selectionControlSelector = '#' + selectionFormControlID(selectionObjectRef.selectionID)
-	var $selectionControl = $(selectionControlSelector)
+	var $selectionControl = selectionFormControlFromSelectionFormComponent($selectionContainer)
+	
+	
 	$selectionControl.append(defaultSelectOptionPromptHTML("Select a Value"))
 	for(var selValIndex = 0; selValIndex < selectionObjectRef.properties.selectableVals.length; selValIndex++) {
 		var selectableVal = selectionObjectRef.properties.selectableVals[selValIndex]	
@@ -72,7 +64,7 @@ function initSelectionRecordEditBehavior(componentContext,changeSetID,getRecordF
 	// This allows the user to change the rating without selecting the form component itself.
 	// The user can still select the component by clicking on the label or anywwhere outside
 	// the control.
-	container.find(".selectionFormControl").click(function (event){
+	$selectionContainer.find(".selectionFormControl").click(function (event){
 		event.stopPropagation();
 		return false;
 	});
@@ -80,9 +72,8 @@ function initSelectionRecordEditBehavior(componentContext,changeSetID,getRecordF
 
 
 	var componentLink = selectionObjectRef.properties.componentLink
-	var currRecordRef = 
 	
-	initSelectionChangedHandler(selectionControlSelector,function(newValue) {
+	initSelectControlChangeHandler($selectionControl,function(newValue) {
 		if(componentLink.linkedValType == linkedComponentValTypeField) {
 			var currRecordRef = getRecordFunc()	
 			var fieldID = componentLink.fieldID
