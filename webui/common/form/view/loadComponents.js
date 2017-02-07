@@ -93,7 +93,7 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 		},
 		initHeaderFunc: function($header,componentContext,headerObjectRef) {
 			console.log("Init header in view form")
-			initHeaderRecordEditBehavior(componentContext,headerObjectRef)
+			initHeaderRecordEditBehavior($header, componentContext,headerObjectRef)
 		},
 		
 		doneLoadingFormDataFunc: doneLoadingComponentsFunc
