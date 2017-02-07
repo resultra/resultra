@@ -1,9 +1,6 @@
 
 function initUserSelectionDesignControlBehavior(userSelectionObjectRef) {
-	var userSelectionControlSelector = '#' + userSelectionIDFromElemID(userSelectionObjectRef.userSelectionID)
-
-//	$(userSelectionControlSelector).rating()
-	
+// no-op	
 }
 
 
@@ -28,8 +25,7 @@ function resizeUserSelection(userSelectionID,geometry) {
 }
 
 function startUserSelectionPaletteDrag(placeholderID,$paletteItemContainer) {
-	var userSelectionControlSelector = '#'+userSelectionIDFromElemID(placeholderID)
-//	$(userSelectionControlSelector).rating()
+// no-op
 }
 
 

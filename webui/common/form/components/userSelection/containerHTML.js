@@ -1,18 +1,16 @@
 
-function userSelectionIDFromElemID(elementID) {
-	return "userSelection_"+elementID
+function userSelectionControlFromUserSelectionComponentContainer($userSelContainer) {
+	return $userSelContainer.find(".userSelectionCompSelectionControl")
 }
 
 function userSelectionContainerHTML(elementID)
 {
-	var controlID = userSelectionIDFromElemID(elementID)
-	
 	var containerHTML = ''+
-		'<div class="ui-widget-content layoutContainer userSelectionFormContainer" id="'+elementID+'">' +
+		'<div class="ui-widget-content layoutContainer userSelectionFormContainer">' +
 			'<div class="form-group">'+
-				'<label for="' + controlID + '">Select User</label>'+
+				'<label>Select User</label>'+
 				'<div class="formUserSelectionControl">' + 
-					'<select class="form-control" id="' + controlID + '"></select>' +
+					'<select class="form-control userSelectionCompSelectionControl"></select>' +
 				'</div>' +
 			'</div>'+
 		'</div><';

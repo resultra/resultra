@@ -2,10 +2,8 @@ function loadRecordIntoUserSelection(userSelectionElem, recordRef) {
 	
 	
 	var userSelectionObjectRef = userSelectionElem.data("objectRef")
-	var userSelectionContainerID = userSelectionObjectRef.userSelectionID
-	var userSelectionControlID = userSelectionIDFromElemID(userSelectionContainerID)
-	var userSelectionControlSelector = '#' + userSelectionControlID;
-	var $userSelectionControl = $(userSelectionControlSelector)
+	
+	var $userSelectionControl = userSelectionControlFromUserSelectionComponentContainer(userSelectionElem)
 	
 	var componentLink = userSelectionObjectRef.properties.componentLink
 	
@@ -20,8 +18,6 @@ function loadRecordIntoUserSelection(userSelectionElem, recordRef) {
 
 			var fieldVal = recordRef.fieldValues[userSelectionFieldID]
 
-			console.log("loadRecordIntoUserSelection: Load value into container: " + $(this).attr("id") + " field ID:" + 
-						userSelectionFieldID + "  value:" + fieldVal)
 			setUserSelectionControlVal($userSelectionControl,fieldVal)
 	
 		} // If record has a value for the current container's associated field ID.
@@ -46,15 +42,12 @@ function loadRecordIntoUserSelection(userSelectionElem, recordRef) {
 }
 
 
-function initUserSelectionRecordEditBehavior(componentContext,changeSetID,
+function initUserSelectionRecordEditBehavior($userSelectionContainer, componentContext,changeSetID,
 				getRecordFunc, updateRecordFunc, userSelectionObjectRef) {
 
-	var $userSelectionContainer = $('#'+userSelectionObjectRef.userSelectionID)
-	
 	var componentLink = userSelectionObjectRef.properties.componentLink
-	
-	var userSelectionControlSelector = '#' + userSelectionIDFromElemID(userSelectionObjectRef.userSelectionID)
-	
+		
+	var $userSelectionControl = userSelectionControlFromUserSelectionComponentContainer($userSelectionContainer)
 
 	function setUserSelectionValue(selectedUserID) {
 		
@@ -100,8 +93,6 @@ function initUserSelectionRecordEditBehavior(componentContext,changeSetID,
 		}
 		
 	}
-
-	var $userSelectionControl = $(userSelectionControlSelector)
 	
 	var selectionWidth = (userSelectionObjectRef.properties.geometry.sizeWidth - 15).toString() + "px"
 	var userSelectionParams = {

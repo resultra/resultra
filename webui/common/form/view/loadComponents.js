@@ -65,7 +65,7 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 		},
 		initUserSelectionFunc: function(componentContext,$userSelection,userSelectionObjectRef) {
 			console.log("Init user selection in view form")
-			initUserSelectionRecordEditBehavior(componentContext,changeSetID,
+			initUserSelectionRecordEditBehavior($userSelection,componentContext,changeSetID,
 					getCurrentRecordFunc,updateCurrentRecordFunc,userSelectionObjectRef)
 			initFormComponentViewBehavior($userSelection,
 					userSelectionObjectRef.userSelectionID,initUserSelectionViewProperties)
