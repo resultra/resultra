@@ -34,7 +34,7 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 					selectionObjectRef.selectionID,initSelectionViewProperties)
 		},
 		initCommentFunc: function(componentContext,$comment,commentObjectRef) {			
-			initCommentBoxRecordEditBehavior(componentContext,changeSetID,
+			initCommentBoxRecordEditBehavior($comment,componentContext,changeSetID,
 					getCurrentRecordFunc,updateCurrentRecordFunc,commentObjectRef)
 			initFormComponentViewBehavior($comment,
 					commentObjectRef.commentID,initCommentViewProperties)

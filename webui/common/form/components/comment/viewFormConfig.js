@@ -3,10 +3,10 @@ function loadRecordIntoCommentBox(commentElem, recordRef) {
 	console.log("loadRecordIntoCommentBox: loading record into comment box: " + JSON.stringify(recordRef))
 	
 	var commentObjectRef = commentElem.data("objectRef")
-	var $commentInput = commentElem.find('input')
 	var componentContext = commentElem.data("componentContext")
+
+	var $commentInput = commentInputFromContainer(commentElem)
 		
-	
 	var changeInfoParams = {
 		recordID: recordRef.recordID,
 		fieldID: commentObjectRef.properties.fieldID
@@ -16,8 +16,7 @@ function loadRecordIntoCommentBox(commentElem, recordRef) {
 		
 		console.log("loadRecordIntoCommentBox: retrieved comment info: " + JSON.stringify(valChanges))
 		
-		var commentListID = commentCommentListFromContainerElemID(commentObjectRef.commentID)
-		var $commentList = $('#'+commentListID)
+		var $commentList = commentCommentListFromContainer(commentElem)
 		$commentList.empty()
 		
 		for(var valChangeIter = 0; valChangeIter < valChanges.length; valChangeIter++) {
@@ -51,19 +50,9 @@ function loadRecordIntoCommentBox(commentElem, recordRef) {
 }
 
 
-function initCommentBoxRecordEditBehavior(componentContext,changeSetID,
+function initCommentBoxRecordEditBehavior($commentContainer, componentContext,changeSetID,
 					getRecordFunc, updateRecordFunc, commentObjectRef) {
-	
-	var commentContainerID = commentObjectRef.commentID
-	var commentID = commentElemIDFromContainerElemID(commentContainerID)
-	
-	var commentInputID = commentInputIDFromContainerElemID(commentContainerID)
-	var addCommentButtonID = commentAddCommentButtonIDFromContainerElemID(commentContainerID)
-	
-	console.log("initCommentBoxRecordEditBehavior: container ID =  " +commentContainerID + ' comment box ID = '+ commentID)
-	
-	var $commentContainer = $('#'+commentContainerID)
-	
+				
 	$commentContainer.data("componentContext",componentContext)
 	
 	$commentContainer.data("viewFormConfig", {
@@ -72,10 +61,10 @@ function initCommentBoxRecordEditBehavior(componentContext,changeSetID,
 	
 	var commentFieldID = commentObjectRef.properties.fieldID
 	
-	var $addCommentButton = $('#' + addCommentButtonID)
+	var $addCommentButton = commentAddCommentButtonFromContainer($commentContainer)
+	var $commentInput = commentInputFromContainer($commentContainer)
 	
 	
-	var $commentInput = $('#'+commentInputID)
 	initButtonControlClickHandler($addCommentButton,function() {
 		var commentVal = $commentInput.val()
 		

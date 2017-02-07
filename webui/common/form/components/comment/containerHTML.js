@@ -1,38 +1,29 @@
-function commentElemIDFromContainerElemID(commentElemID) {
-	return 	commentElemID + '_comment'
+
+function commentInputFromContainer($commentContainer) {
+	return 	$commentContainer.find(".commentCommentEntryBox")
 }
 
-function commentInputIDFromContainerElemID(commentElemID) {
-	return 	commentElemID + '_commentInput'
+function commentAddCommentButtonFromContainer($commentContainer) {
+	return 	$commentContainer.find(".commentComponentAddCommentButton")
 }
 
-function commentAddCommentButtonIDFromContainerElemID(commentElemID) {
-	return 	commentElemID + '_addCommentButton'
+function commentCommentListFromContainer($commentContainer) {
+	return 	$commentContainer.find(".commentComponentCommentList")
 }
-
-function commentCommentListFromContainerElemID(commentElemID) {
-	return 	commentElemID + '_commentList'
-}
-
 
 
 function commentContainerHTML(elementID)
 {	
-	var commentID = commentElemIDFromContainerElemID(elementID)
-	var commentInputID = commentInputIDFromContainerElemID(elementID)
-	var addCommentButtonID = commentAddCommentButtonIDFromContainerElemID(elementID)
-	var commentListID = commentCommentListFromContainerElemID(elementID)
-	
 	var containerHTML = ''+
-	'<div class="ui-widget-content layoutContainer commentContainer  draggable resizable" id="'+elementID+'">' +
+	'<div class="ui-widget-content layoutContainer commentContainer  draggable resizable">' +
 		'<div class="field">'+
 			'<label>Comment Box Label</label>'+
 				'<div class="form-group">' + 
-					'<textarea class="form-control commentCommentEntryBox" rows="2" id="' + commentInputID + '"></textarea>' + 
-					'<button class="btn btn-primary btn-xs" type="submit" id="' + addCommentButtonID + '">Add Comment</button>' +
+					'<textarea class="form-control commentCommentEntryBox" rows="2"></textarea>' + 
+					'<button class="btn btn-primary btn-xs commentComponentAddCommentButton" type="submit">Add Comment</button>' +
 				'</div>' + 
 		'</div>'+
-		'<div class="list-group" id="'+commentListID+'"></div>' +	
+		'<div class="list-group commentComponentCommentList"></div>' +	
 	
 	'</div>';
 		
