@@ -22,7 +22,7 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 		formParentElemID: canvasSelector,
 		formContext: viewFormContext,
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {			
-			initTextBoxRecordEditBehavior(componentContext, changeSetID,
+			initTextBoxRecordEditBehavior($textBox,componentContext, changeSetID,
 				getCurrentRecordFunc,updateCurrentRecordFunc,textBoxObjectRef)
 			initFormComponentViewBehavior($textBox,
 					textBoxObjectRef.textBoxID,initTextBoxViewProperties)

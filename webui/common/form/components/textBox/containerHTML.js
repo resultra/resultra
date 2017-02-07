@@ -1,12 +1,10 @@
 function textBoxContainerHTML(elementID)
 {
-	var elementInputID = elementID + "_input"
-	
 	var containerHTML = ''+
-		'<div class="ui-widget-content layoutContainer textBoxComponent" id="'+elementID+'">' +
+		'<div class="ui-widget-content layoutContainer textBoxComponent">' +
 			'<div class="form-group">'+
-				'<label for="' + elementInputID + '">New Field</label>'+
-				'<input type="text" name="symbol" class="layoutInput form-control" placeholder="Enter" id="' + elementInputID + '">'+
+				'<label>New Text Box</label>'+
+				'<input type="text" name="symbol" class="layoutInput form-control" placeholder="Enter">'+
 			'</div>'+
 		'</div>';
 	return containerHTML

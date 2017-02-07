@@ -23,13 +23,13 @@ function formatTextBoxVal(componentLink, componentContext, rawInputVal, format) 
 
 
 
-function loadRecordIntoTextBox(textBoxElem, recordRef) {
+function loadRecordIntoTextBox($textBoxContainer, recordRef) {
 	
 	console.log("loadRecordIntoTextBox: loading record into text box: " + JSON.stringify(recordRef))
 	
-	var textBoxObjectRef = textBoxElem.data("objectRef")
-	var $textBoxInput = textBoxElem.find('input')
-	var componentContext = textBoxElem.data("componentContext")
+	var textBoxObjectRef = $textBoxContainer.data("objectRef")
+	var $textBoxInput = $textBoxContainer.find('input')
+	var componentContext = $textBoxContainer.data("componentContext")
 	
 	var componentLink = textBoxObjectRef.properties.componentLink
 	
@@ -112,14 +112,12 @@ function initTextBoxFieldEditBehavior(componentContext, changeSetID, $container,
 
 	$textBoxInput.focusout(function () {
 
-		var containerID = $container.attr("id")
-		var currTextObjRef = getElemObjectRef(containerID)		
+		var currTextObjRef = getContainerObjectRef($container)		
 		var componentLink = currTextObjRef.properties.componentLink
 		var fieldID = componentLink.fieldID
 		var fieldRef = getFieldRef(fieldID)
 		var fieldType = fieldRef.type
 		console.log("Text Box focus out:" 
-		    + " containerID: " + containerID
 			+ " ,fieldID: " + fieldID
 		    + " ,fieldType: " + fieldType
 			+ " , inputval:" + inputVal)
@@ -213,7 +211,7 @@ function initTextBoxGlobalValBehavior(componentContext,$textBoxInput, textFieldO
 	var globalInfo = componentContext.globalsByID[componentLink.globalID]
 		
 	$textBoxInput.focusout(function () {
-		var inputVal = $container.find("input").val()
+		var inputVal = $textBoxInput.val()
 		if(globalInfo.type == globalTypeNumber) {
 			var numberVal = Number(inputVal)
 			if(!isNaN(numberVal)) {
@@ -240,10 +238,9 @@ function initTextBoxGlobalValBehavior(componentContext,$textBoxInput, textFieldO
 	})
 }
 
-function initTextBoxRecordEditBehavior(componentContext,changeSetID,
+function initTextBoxRecordEditBehavior($container,componentContext,changeSetID,
 	getCurrentRecordFunc, updateCurrentRecordFunc, textFieldObjectRef) {
 	
-	var $container = $('#'+textFieldObjectRef.textBoxID)
 	var $textBoxInput = $container.find("input")
 
 	$container.data("viewFormConfig", {
