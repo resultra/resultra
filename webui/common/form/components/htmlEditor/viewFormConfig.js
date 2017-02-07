@@ -1,20 +1,12 @@
-function loadRecordIntoHtmlEditor(htmlEditorElem, recordRef) {
+function loadRecordIntoHtmlEditor($htmlEditor, recordRef) {
 	
 	console.log("loadRecordIntoHtmlEditor: loading record into html editor: " + JSON.stringify(recordRef))
 	
-	var htmlEditorObjectRef = htmlEditorElem.data("objectRef")
-	
-	
-	console.log("loadRecordIntoHtmlEditor: Field ID to load data:" + htmlEditorFieldID)
-
-
-	var htmlEditorContainerID = htmlEditorObjectRef.htmlEditorID
-	var htmlEditorInputID = htmlInputIDFromContainerElemID(htmlEditorContainerID)
-	var htmlEditorInputSelector = '#'+htmlEditorInputID
-	
-	// The editor is stored in alongsied the editable DIV, see 
+	var htmlEditorObjectRef = $htmlEditor.data("objectRef")
+			
+	// The editor is stored in alongside the editable DIV, see 
 	// initHtmlEditorRecordEditBehavior below.
-	var editor = $('#'+htmlEditorContainerID).data("htmlEditor")
+	var editor = $htmlEditor.data("htmlEditor")
 
 
 	var componentLink = htmlEditorObjectRef.properties.componentLink
@@ -42,25 +34,20 @@ function loadRecordIntoHtmlEditor(htmlEditorElem, recordRef) {
 }
 
 
-function initHtmlEditorRecordEditBehavior(componentContext,changeSetID,
+function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,changeSetID,
 			getRecordFunc, updateRecordFunc,htmlEditorObjectRef) {
 	
-	var htmlEditorContainerID = htmlEditorObjectRef.htmlEditorID
-	var htmlEditorInputID = htmlInputIDFromContainerElemID(htmlEditorContainerID)
-	
-	console.log("initHtmlEditorRecordEditBehavior: container ID =  " +htmlEditorContainerID)
-	
-	var htmlEditorContainer = $('#'+htmlEditorContainerID)
-	htmlEditorContainer.data("viewFormConfig", {
+		
+	$htmlEditor.data("viewFormConfig", {
 		loadRecord: loadRecordIntoHtmlEditor
 	})
 
-
-	var htmlEditorInputID = htmlInputIDFromContainerElemID(htmlEditorContainerID)
-
     CKEDITOR.disableAutoInline = true;
-    var editor = CKEDITOR.inline( htmlEditorInputID );
-	htmlEditorContainer.data("htmlEditor",editor)
+	
+	var $htmlEditorInput = htmlInputFromHTMLEditorContainer($htmlEditor)
+	var htmlEditorInputDomElem = $htmlEditorInput.get(0)
+    var editor = CKEDITOR.inline( htmlEditorInputDomElem );
+	$htmlEditor.data("htmlEditor",editor)
 
 	editor.on('blur', function(event) {
 	    console.log("html editor blur")
@@ -68,11 +55,9 @@ function initHtmlEditorRecordEditBehavior(componentContext,changeSetID,
 		// Get the most recent copy of the object reference. It could have changed between
 		// initialization time and the time the checkbox was changed.
 		var containerID = htmlEditorObjectRef.htmlEditorID
-		var objectRef = getElemObjectRef(containerID)
+		var objectRef = getContainerObjectRef($htmlEditor)
 		
-		var htmlEditorInputID = htmlInputIDFromContainerElemID(containerID)
-		
-		var editor = $('#'+containerID).data("htmlEditor")
+		var editor = $htmlEditor.data("htmlEditor")
 		var inputVal = editor.getData();
 		
 		var currRecordRef = getRecordFunc()

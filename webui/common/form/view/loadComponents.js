@@ -79,7 +79,7 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 		},
 		initHtmlEditorFunc: function(componentContext,$htmlEditor,htmlEditorObjectRef) {
 			console.log("Init html editor in view form")
-			initHtmlEditorRecordEditBehavior(componentContext,changeSetID,
+			initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,changeSetID,
 					getCurrentRecordFunc,updateCurrentRecordFunc,htmlEditorObjectRef)
 			initFormComponentViewBehavior($htmlEditor,
 					htmlEditorObjectRef.htmlEditorID,initHTMLEditorViewProperties)
