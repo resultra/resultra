@@ -59,7 +59,7 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 			// The loadFormViewComponents and loadRecordIntoFormLayout functions
 			// need to be passed to initFormButtonRecordEditBehavior in order
 			// to avoid a cyclical package dependency.
-			initFormButtonRecordEditBehavior(componentContext,
+			initFormButtonRecordEditBehavior($button,componentContext,
 					getCurrentRecordFunc,updateCurrentRecordFunc,buttonObjectRef,
 					loadFormViewComponents,loadRecordIntoFormLayout)
 		},

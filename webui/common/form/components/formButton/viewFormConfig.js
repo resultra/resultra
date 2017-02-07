@@ -4,17 +4,23 @@ function loadRecordIntoButton(buttonElem, recordRef) {
 	// no-op
 }
 
-function initFormButtonRecordEditBehavior(componentContext,
+function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 			parentFormGetRecordFunc, parentFormUpdateRecordFunc,buttonObjectRef,
 		loadFormViewComponentFunc,loadRecordIntoFormLayoutFunc) {
+	
+	
+	$buttonContainer.data("viewFormConfig", {
+		loadRecord: loadRecordIntoButton
+	})
 	
 	
 	var $popupFormDialog = $('#formButtonPopupFormDialog')
 			
 	var popupMode = buttonObjectRef.properties.popupBehavior.popupMode
 	
-	var buttonElemID = buttonIDFromContainerElemID(buttonObjectRef.buttonID)
-	initButtonClickHandler('#' + buttonElemID, function() {
+	var $formButton = buttonFromFormButtonContainer($buttonContainer)
+			
+	initButtonControlClickHandler($formButton, function() {
 		console.log("Form button clicked: " + JSON.stringify(buttonObjectRef))
 		
 		// Editing of the record in the popup is done with the parent form's current record.
@@ -133,9 +139,5 @@ function initFormButtonRecordEditBehavior(componentContext,
 	})
 	
 	
-	var $buttonContainer = $('#'+buttonObjectRef.buttonID)
-	$buttonContainer.data("viewFormConfig", {
-		loadRecord: loadRecordIntoButton
-	})
 	
 }

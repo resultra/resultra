@@ -1,15 +1,13 @@
-function buttonIDFromContainerElemID(buttonElemID) {
-	return 	buttonElemID + '_button'
+function buttonFromFormButtonContainer($formButton) {
+	return 	$formButton.find(".formButton")
 }
 
 
 function formButtonContainerHTML(elementID)
 {	
-	var buttonID = buttonIDFromContainerElemID(elementID)
-	
 	var containerHTML = ''+
-		'<div class="ui-widget-content layoutContainer buttonFormContainer" id="'+elementID+'">' +
-			'<button type="button" class="btn btn-primary formButton" + id="' + buttonID + '">' + 
+		'<div class="ui-widget-content layoutContainer buttonFormContainer">' +
+			'<button type="button" class="btn btn-primary formButton">' + 
 			'Open Form' +
 			'</button>' +
 		'</div><';
