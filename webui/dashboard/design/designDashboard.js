@@ -90,8 +90,9 @@ $(document).ready(function() {
 		initObjectGridEditBehavior($component,designDashboardConfig,layoutDesignConfig)
 	
 	
+		var $parentDashboardCanvas = $(dashboardDesignCanvasSelector)
 		initObjectSelectionBehavior($component, 
-				dashboardDesignCanvasSelector,function(selectedComponentID) {
+				$parentDashboardCanvas,function(selectedComponentID) {
 			console.log("dashboard design object selected: " + selectedComponentID)
 			var selectedObjRef	= getElemObjectRef(selectedComponentID)
 			designDashboardConfig.selectionFunc(selectedObjRef)

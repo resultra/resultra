@@ -120,9 +120,10 @@ $(document).ready(function() {
 	}
 		
 	var designFormLayoutConfig =  createFormLayoutDesignConfig()
+	var $parentFormLayout = $(formDesignCanvasSelector)
 	
 	loadFormComponents({
-		formParentElemID: formDesignCanvasSelector,
+		$parentFormLayout: $parentFormLayout,
 		formContext: designFormContext,
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {
 			var componentIDs = { formID: formID, componentID: textBoxObjectRef.textBoxID }

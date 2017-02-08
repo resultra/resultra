@@ -57,7 +57,9 @@ function loadDashboardData(loadDashboardConfig)
 		
 		
 		var dashboardLayout = dashboardData.dashboard.properties.layout
-		populateComponentLayout(dashboardLayout,dashboardLayoutSelector,compenentIDComponentMap)
+		var $parentLayout = $(dashboardLayoutSelector)
+		
+		populateComponentLayout(dashboardLayout,$parentLayout,compenentIDComponentMap)
 		
 		loadDashboardConfig.doneLoadingDashboardDataFunc()
 						

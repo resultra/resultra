@@ -26,16 +26,14 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 		// Editing of the record in the popup is done with the parent form's current record.
 		var currRecord = parentFormGetRecordFunc()
 
-		var canvasSelector = '#formButtonPopupFormCanvas'
-		var $viewFormCanvas = $(canvasSelector)
+		var $viewFormCanvas = $('#formButtonPopupFormCanvas')
 		$viewFormCanvas.empty()
 
 		
 		function getPopupFormRecordFunc() { return currRecord }
 		function updatePopupFormRecordFunc(updatedRecordRef) {
 			
-			var $parentFormLayout = $(canvasSelector)
-			loadRecordIntoFormLayoutFunc($parentFormLayout,updatedRecordRef)
+			loadRecordIntoFormLayoutFunc($viewFormCanvas,updatedRecordRef)
 			
 			// Propagate the record update the parent form, allowing an update
 			// to the parent layout. The changes are only propagated when the popup
@@ -50,8 +48,7 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 		}
 		
 		function showDialogAfterFormComponentLoaded() {
-			var $parentFormLayout = $(canvasSelector)
-			loadRecordIntoFormLayoutFunc($parentFormLayout ,currRecord)
+			loadRecordIntoFormLayoutFunc($viewFormCanvas ,currRecord)
 			$popupFormDialog.modal('show')
 		}
 			
@@ -68,8 +65,6 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 			
 			jsonAPIRequest("record/allocateChangeSetID",{},function(changeSetIDResp) {
 				
-				// loadFormViewComponentFunc is passed in as a parameter, since the loadFormViewComponents function is in 
-				// a package which has a dependency on this package. 
 				
 				var defaultVals = buttonObjectRef.properties.popupBehavior.defaultValues
 				
@@ -85,14 +80,18 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 						
 						currRecord = updatedRecordRef
 						
-						loadFormViewComponentFunc(canvasSelector, viewFormContext, changeSetIDResp.changeSetID,
+						// loadFormViewComponentFunc is passed in as a parameter, since the loadFormViewComponents 
+						// function is in 
+						// a package which has a dependency on this package. 
+						loadFormViewComponentFunc($viewFormCanvas, viewFormContext, changeSetIDResp.changeSetID,
 							 getPopupFormRecordFunc, updatePopupFormRecordFunc,
 							 showDialogAfterFormComponentLoaded)
 					})
 					
 					
 				} else {
-					loadFormViewComponentFunc(canvasSelector, viewFormContext, changeSetIDResp.changeSetID,
+					var $parentFormLayout = $(canvasSelector)
+					loadFormViewComponentFunc($parentFormLayout, viewFormContext, changeSetIDResp.changeSetID,
 						 getPopupFormRecordFunc, updatePopupFormRecordFunc,
 						 showDialogAfterFormComponentLoaded)
 				}

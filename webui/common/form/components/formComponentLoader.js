@@ -501,7 +501,7 @@ function loadFormComponents(loadFormConfig) {
 		}		
 		
 		var formLayout = formInfo.form.properties.layout
-		populateComponentLayout(formLayout,loadFormConfig.formParentElemID,compenentIDComponentMap)
+		populateComponentLayout(formLayout,loadFormConfig.$parentFormLayout,compenentIDComponentMap)
 				
 		loadFormConfig.doneLoadingFormDataFunc()
 	})

@@ -6,9 +6,10 @@ function initFormComponentDesignBehavior($componentContainer, componentIDs, obje
 	
 	initObjectGridEditBehavior($componentContainer,designFormConfig,layoutDesignConfig)
 	
+	var $designFormParentCanvas = $(formDesignCanvasSelector)
 	
 	initObjectSelectionBehavior($componentContainer, 
-			formDesignCanvasSelector,function(selectedCompenentID) {
+			$designFormParentCanvas,function(selectedCompenentID) {
 		console.log("form design object selected: " + selectedCompenentID)
 		var selectedObjRef	= getContainerObjectRef($componentContainer)
 		designFormConfig.selectionFunc(selectedObjRef)

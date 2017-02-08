@@ -32,7 +32,8 @@ function openSubmitFormDialog(viewFormContext) {
 			$dialog.modal('show')
 		}
 	
-		loadFormViewComponents(viewFormCanvasSelector,viewFormContext,MainLineFullyCommittedChangeSetID,
+		var $parentFormLayout = $(viewFormCanvasSelector)
+		loadFormViewComponents($parentFormLayout,viewFormContext,MainLineFullyCommittedChangeSetID,
 			getCurrentRecord,updateCurrentRecord,showDialogAfterFormComponentLoaded)
 		
 		initButtonClickHandler('#submitFormSaveButton', function() {

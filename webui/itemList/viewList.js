@@ -262,8 +262,8 @@ $(document).ready(function() {
 		loadCurrRecordIntoLayout()
 	}
 
-
-	loadFormViewComponents(viewFormCanvasSelector,viewListContext,MainLineFullyCommittedChangeSetID,
+	var $parentFormLayout = $(viewFormCanvasSelector)
+	loadFormViewComponents($parentFormLayout,viewListContext,MainLineFullyCommittedChangeSetID,
 		getCurrentRecord,updateCurrentRecord,
 		initAfterViewFormComponentsAlreadyLoaded)
 			

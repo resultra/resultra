@@ -19,17 +19,21 @@ function initObjectCanvasSelectionBehavior(canvasElemSelector,selectionCallbackF
 }
 
 
-function selectObject(canvasElemSelector, objectElem)
-{
-	$(canvasElemSelector).find("div").removeClass("objectSelected");
-	$(objectElem).addClass("objectSelected");
-	
-}
+
 
 // jQuery UI draggable and selectable functionality conflict with one another (using draggable masks
 // the click behavior for selectable). So, the click handling to select an object/item needs to 
 // be done directly.
-function initObjectSelectionBehavior(objectElem, canvasElemSelector,objectSelectedCallbackFunc) {
+function initObjectSelectionBehavior(objectElem, $parentCanvas,objectSelectedCallbackFunc) {
+
+	function selectObject(objectElem)
+	{
+		$parentCanvas.find("div").removeClass("objectSelected");
+		$(objectElem).addClass("objectSelected");
+	
+	}
+
+
 	objectElem.click(function(e) {
 		
 		// This is important - if a click hits an object, then stop the propagation of the click
@@ -40,8 +44,9 @@ function initObjectSelectionBehavior(objectElem, canvasElemSelector,objectSelect
 		var objectID = $(this).attr("id")
 		console.log("Selection click on object: object ID = " + $(this).attr("id"))
 		
-		selectObject(canvasElemSelector,this)
+		selectObject(this)
 		
+		// TODO - need to make object selection based upon the object itself.
 		objectSelectedCallbackFunc(objectID)
 	})
 	

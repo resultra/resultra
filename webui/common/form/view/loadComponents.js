@@ -5,13 +5,13 @@
 // of the dialog is pressed to fully commit the changes.
 var MainLineFullyCommittedChangeSetID = ""
 
-function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
+function loadFormViewComponents($parentFormLayout, viewFormContext, changeSetID,
 	 getCurrentRecordFunc, updateCurrentRecordFunc,
 	 doneLoadingComponentsFunc) {
 	
 	function initFormComponentViewBehavior($component,componentID, selectionFunc) {	
 		initObjectSelectionBehavior($component, 
-				canvasSelector,function(selectedComponentID) {
+				$parentFormLayout,function(selectedComponentID) {
 			console.log("Form view object selected: " + selectedComponentID)
 			var selectedObjRef	= getContainerObjectRef($component)
 			selectionFunc(selectedObjRef)
@@ -19,7 +19,7 @@ function loadFormViewComponents(canvasSelector, viewFormContext, changeSetID,
 	}
 	
 	loadFormComponents({
-		formParentElemID: canvasSelector,
+		$parentFormLayout: $parentFormLayout,
 		formContext: viewFormContext,
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {			
 			initTextBoxRecordEditBehavior($textBox,componentContext, changeSetID,

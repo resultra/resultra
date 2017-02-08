@@ -61,9 +61,11 @@ $(document).ready(function() {
 	
 	google.charts.setOnLoadCallback(function() {
 		
-		function initDashboardComponentViewBehavior($component,componentID, viewDashboardConfig) {	
+		function initDashboardComponentViewBehavior($component,componentID, viewDashboardConfig) {
+			
+			var $parentDashboardCanvas = $(viewDashboardCanvasSelector)	
 			initObjectSelectionBehavior($component, 
-					viewDashboardCanvasSelector,function(selectedComponentID) {
+					$parentDashboardCanvas,function(selectedComponentID) {
 				console.log("dashboard view object selected: " + selectedComponentID)
 				var selectedObjRef	= getElemObjectRef(selectedComponentID)
 				viewDashboardConfig.selectionFunc(selectedObjRef)

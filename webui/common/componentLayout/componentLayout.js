@@ -85,12 +85,10 @@ function createComponentCol($parentLayout,$parentRow) {
 
 
 
-function populateComponentLayout(componentLayout, parentLayoutSelector, compenentIDComponentMap) {
+function populateComponentLayout(componentLayout, $parentLayout, compenentIDComponentMap) {
 
 	var completedLayoutComponentIDs = {}
-	
-	var $parentLayout = $(parentLayoutSelector)
-	
+		
 	for(var rowIndex = 0; rowIndex < componentLayout.length; rowIndex++) {
 		
 		var currRow = componentLayout[rowIndex]
