@@ -1,9 +1,11 @@
-function initRatingViewProperties(ratingRef) {
+function initRatingViewProperties(componentSelectionParams) {
 	console.log("Init checkbox properties panel")
 	
+	var ratingRef = componentSelectionParams.selectedObjRef
+	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()		
+
 	var elemPrefix = "rating_"
 	var componentLink = ratingRef.properties.componentLink
-	var currRecordRef = currRecordSet.currRecordRef()	
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
@@ -12,8 +14,6 @@ function initRatingViewProperties(ratingRef) {
 	}
 	initFormComponentTimelinePane(timelineParams)
 
-		
-	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#ratingViewProps')
 	

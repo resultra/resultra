@@ -1,10 +1,12 @@
-function initDatePickerViewProperties(datePickerRef) {
+function initDatePickerViewProperties(componentSelectionParams) {
 	console.log("Init date picker properties panel")
 	
+	var datePickerRef = componentSelectionParams.selectedObjRef
+	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()	
+
 	var elemPrefix = "datePicker_"
 	var componentLink = datePickerRef.properties.componentLink
-	var currRecordRef = currRecordSet.currRecordRef()	
-
+	
 	var timelineParams = {
 		elemPrefix: elemPrefix,
 		recordID: currRecordRef.recordID,

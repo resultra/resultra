@@ -14,7 +14,14 @@ function loadFormViewComponents($parentFormLayout, viewFormContext, changeSetID,
 				$parentFormLayout,function(selectedComponentID) {
 			console.log("Form view object selected: " + selectedComponentID)
 			var selectedObjRef	= getContainerObjectRef($component)
-			selectionFunc(selectedObjRef)
+					
+			var formViewComponentSelectionParams = {
+				selectedObjRef: selectedObjRef,
+				getCurrentRecordFunc: getCurrentRecordFunc,
+				updateCurrentRecordFunc: updateCurrentRecordFunc
+			}
+					
+			selectionFunc(formViewComponentSelectionParams)
 		})
 	}
 	

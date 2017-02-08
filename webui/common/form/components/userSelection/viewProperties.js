@@ -1,9 +1,12 @@
-function initUserSelectionViewProperties(userSelectionRef) {
+function initUserSelectionViewProperties(componentSelectionParams) {
+	
 	console.log("Init user selection properties panel")
 	
+	var userSelectionRef = componentSelectionParams.selectedObjRef
+	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()
+
 	var elemPrefix = "userSelection_"
 	var componentLink = userSelectionRef.properties.componentLink
-	var currRecordRef = currRecordSet.currRecordRef()	
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
@@ -12,8 +15,6 @@ function initUserSelectionViewProperties(userSelectionRef) {
 	}
 	initFormComponentTimelinePane(timelineParams)
 
-		
-	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#userSelectionViewProps')
 	

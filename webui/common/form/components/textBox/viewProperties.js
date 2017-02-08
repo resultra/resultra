@@ -1,9 +1,11 @@
-function initTextBoxViewProperties(textBoxRef) {
+function initTextBoxViewProperties(componentSelectionParams) {
 	console.log("Init text box properties panel")
+
+	var textBoxRef = componentSelectionParams.selectedObjRef
+	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()		
 
 	var elemPrefix = "textBox_"
 	var componentLink = textBoxRef.properties.componentLink
-	var currRecordRef = currRecordSet.currRecordRef()	
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,

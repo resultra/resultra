@@ -1,9 +1,11 @@
-function initSelectionViewProperties(selectionRef) {
+function initSelectionViewProperties(componentSelectionParams) {
 	console.log("Init selection properties panel")
+
+	var selectionRef = componentSelectionParams.selectedObjRef
+	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()	
 
 	var elemPrefix = "selection_"
 	var componentLink = selectionRef.properties.componentLink
-	var currRecordRef = currRecordSet.currRecordRef()	
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,

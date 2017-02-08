@@ -1,9 +1,11 @@
-function initCheckBoxViewProperties(checkboxRef) {
+function initCheckBoxViewProperties(componentSelectionParams) {
 	console.log("Init checkbox properties panel")
-	
+		
+	var checboxRef = componentSelectionParams.selectedObjRef
+	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()	
+
 	var elemPrefix = "checkbox_"
 	var componentLink = checkboxRef.properties.componentLink
-	var currRecordRef = currRecordSet.currRecordRef()	
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
