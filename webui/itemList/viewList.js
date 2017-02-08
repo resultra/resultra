@@ -26,7 +26,8 @@ function loadCurrRecordIntoLayout()
 	if(recordRef != null)
 	{
 
-		loadRecordIntoFormLayout(viewFormCanvasSelector,recordRef)
+		var $parentFormLayout = $(viewFormCanvasSelector)
+		loadRecordIntoFormLayout($parentFormLayout,recordRef)
 	
 		// Update footer to reflect where the current record is in list of currently loaded records
 		$('#recordNumLabel').text(currRecordSet.recPageLabel())

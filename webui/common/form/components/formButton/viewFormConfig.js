@@ -33,7 +33,9 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 		
 		function getPopupFormRecordFunc() { return currRecord }
 		function updatePopupFormRecordFunc(updatedRecordRef) {
-			loadRecordIntoFormLayoutFunc(canvasSelector,updatedRecordRef)
+			
+			var $parentFormLayout = $(canvasSelector)
+			loadRecordIntoFormLayoutFunc($parentFormLayout,updatedRecordRef)
 			
 			// Propagate the record update the parent form, allowing an update
 			// to the parent layout. The changes are only propagated when the popup
@@ -48,7 +50,8 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 		}
 		
 		function showDialogAfterFormComponentLoaded() {
-			loadRecordIntoFormLayoutFunc(canvasSelector,currRecord)
+			var $parentFormLayout = $(canvasSelector)
+			loadRecordIntoFormLayoutFunc($parentFormLayout ,currRecord)
 			$popupFormDialog.modal('show')
 		}
 			
