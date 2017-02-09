@@ -5,9 +5,8 @@ function openSubmitFormDialog(viewFormContext) {
 	
 	var $dialog = $('#submitFormDialog')
 	
-	var viewFormCanvasSelector = '#submitFormDialogLayoutCanvas'
-	var $viewFormCanvas = $(viewFormCanvasSelector)
-	$viewFormCanvas.empty()
+	var $submitFormViewCanvas = $('#submitFormDialogLayoutCanvas')
+	$submitFormViewCanvas.empty()
 	
 	
 	var newRecordsParams = {
@@ -25,16 +24,21 @@ function openSubmitFormDialog(viewFormContext) {
 		function updateCurrentRecord(updatedRecordRef) {
 			newRecord = updatedRecordRef
 			var $parentFormLayout = $(viewFormCanvasSelector)
-			loadRecordIntoFormLayout($parentFormLayout,newRecord)
+			loadRecordIntoFormLayout($submitFormViewCanvas,newRecord)
 		}
 		
 		function showDialogAfterFormComponentLoaded() {
 			$dialog.modal('show')
 		}
 	
-		var $parentFormLayout = $(viewFormCanvasSelector)
-		loadFormViewComponents($parentFormLayout,viewFormContext,MainLineFullyCommittedChangeSetID,
-			getCurrentRecord,updateCurrentRecord,showDialogAfterFormComponentLoaded)
+		var recordProxy = {
+			changeSetID: MainLineFullyCommittedChangeSetID,
+			getRecordFunc: getCurrentRecord,
+			updateRecordFunc: updateCurrentRecord
+		}
+		
+		
+		loadFormViewComponents($submitFormViewCanvas,viewFormContext,recordProxy,showDialogAfterFormComponentLoaded)
 		
 		initButtonClickHandler('#submitFormSaveButton', function() {
 			console.log("Saving form results")

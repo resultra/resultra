@@ -5,8 +5,7 @@
 // of the dialog is pressed to fully commit the changes.
 var MainLineFullyCommittedChangeSetID = ""
 
-function loadFormViewComponents($parentFormLayout, viewFormContext, changeSetID,
-	 getCurrentRecordFunc, updateCurrentRecordFunc,
+function loadFormViewComponents($parentFormLayout, viewFormContext, recordProxy,
 	 doneLoadingComponentsFunc) {
 	
 	function initFormComponentViewBehavior($component,componentID, selectionFunc) {	
@@ -17,46 +16,41 @@ function loadFormViewComponents($parentFormLayout, viewFormContext, changeSetID,
 					
 			var formViewComponentSelectionParams = {
 				selectedObjRef: selectedObjRef,
-				getCurrentRecordFunc: getCurrentRecordFunc,
-				updateCurrentRecordFunc: updateCurrentRecordFunc
+				getCurrentRecordFunc: recordProxy.getRecordFunc,
+				updateCurrentRecordFunc: recordProxy.updateRecordFunc
 			}
 					
 			selectionFunc(formViewComponentSelectionParams)
 		})
 	}
-	
+		
 	loadFormComponents({
 		$parentFormLayout: $parentFormLayout,
 		formContext: viewFormContext,
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {			
-			initTextBoxRecordEditBehavior($textBox,componentContext, changeSetID,
-				getCurrentRecordFunc,updateCurrentRecordFunc,textBoxObjectRef)
+			initTextBoxRecordEditBehavior($textBox,componentContext,recordProxy,textBoxObjectRef)
 			initFormComponentViewBehavior($textBox,
 					textBoxObjectRef.textBoxID,initTextBoxViewProperties)
 		},
 		initSelectionFunc: function(componentContext,$selection,selectionObjectRef) {			
-			initSelectionRecordEditBehavior($selection,componentContext,changeSetID,
-					getCurrentRecordFunc,updateCurrentRecordFunc,selectionObjectRef)
+			initSelectionRecordEditBehavior($selection,componentContext,recordProxy,selectionObjectRef)
 			initFormComponentViewBehavior($selection,
 					selectionObjectRef.selectionID,initSelectionViewProperties)
 		},
 		initCommentFunc: function(componentContext,$comment,commentObjectRef) {			
-			initCommentBoxRecordEditBehavior($comment,componentContext,changeSetID,
-					getCurrentRecordFunc,updateCurrentRecordFunc,commentObjectRef)
+			initCommentBoxRecordEditBehavior($comment,componentContext,recordProxy,commentObjectRef)
 			initFormComponentViewBehavior($comment,
 					commentObjectRef.commentID,initCommentViewProperties)
 		},
 		initCheckBoxFunc: function(componentContext,$checkBox,checkBoxObjectRef) {
 			console.log("Init check box in view form")
-			initCheckBoxRecordEditBehavior($checkBox,componentContext,changeSetID,
-					getCurrentRecordFunc,updateCurrentRecordFunc,checkBoxObjectRef)
+			initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy,checkBoxObjectRef)
 			initFormComponentViewBehavior($checkBox,
 					checkBoxObjectRef.checkBoxID,initCheckBoxViewProperties)
 		},
 		initRatingFunc: function(componentContext,$rating,ratingObjectRef) {
 			console.log("Init rating in view form")
-			initRatingRecordEditBehavior($rating,componentContext,changeSetID,
-					getCurrentRecordFunc,updateCurrentRecordFunc,ratingObjectRef)
+			initRatingRecordEditBehavior($rating,componentContext,recordProxy,ratingObjectRef)
 			initFormComponentViewBehavior($rating,
 					ratingObjectRef.ratingID,initRatingViewProperties)
 		},
@@ -66,35 +60,30 @@ function loadFormViewComponents($parentFormLayout, viewFormContext, changeSetID,
 			// The loadFormViewComponents and loadRecordIntoFormLayout functions
 			// need to be passed to initFormButtonRecordEditBehavior in order
 			// to avoid a cyclical package dependency.
-			initFormButtonRecordEditBehavior($button,componentContext,
-					getCurrentRecordFunc,updateCurrentRecordFunc,buttonObjectRef,
+			initFormButtonRecordEditBehavior($button,componentContext,recordProxy,buttonObjectRef,
 					loadFormViewComponents,loadRecordIntoFormLayout)
 		},
 		initUserSelectionFunc: function(componentContext,$userSelection,userSelectionObjectRef) {
 			console.log("Init user selection in view form")
-			initUserSelectionRecordEditBehavior($userSelection,componentContext,changeSetID,
-					getCurrentRecordFunc,updateCurrentRecordFunc,userSelectionObjectRef)
+			initUserSelectionRecordEditBehavior($userSelection,componentContext,recordProxy,userSelectionObjectRef)
 			initFormComponentViewBehavior($userSelection,
 					userSelectionObjectRef.userSelectionID,initUserSelectionViewProperties)
 		},
 		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			console.log("Init date picker in view form")
-			initDatePickerRecordEditBehavior($datePicker,componentContext,changeSetID,
-					getCurrentRecordFunc,updateCurrentRecordFunc,datePickerObjectRef)
+			initDatePickerRecordEditBehavior($datePicker,componentContext,recordProxy,datePickerObjectRef)
 			initFormComponentViewBehavior($datePicker,
 					datePickerObjectRef.datePickerID,initDatePickerViewProperties)
 		},
 		initHtmlEditorFunc: function(componentContext,$htmlEditor,htmlEditorObjectRef) {
 			console.log("Init html editor in view form")
-			initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,changeSetID,
-					getCurrentRecordFunc,updateCurrentRecordFunc,htmlEditorObjectRef)
+			initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordProxy,htmlEditorObjectRef)
 			initFormComponentViewBehavior($htmlEditor,
 					htmlEditorObjectRef.htmlEditorID,initHTMLEditorViewProperties)
 		},
 		initImageFunc: function(componentContext,$image,imageObjectRef) {
 			console.log("Init image in view form")
-			initImageRecordEditBehavior($image,componentContext,changeSetID,
-				getCurrentRecordFunc,updateCurrentRecordFunc,imageObjectRef)
+			initImageRecordEditBehavior($image,componentContext,recordProxy,imageObjectRef)
 			initFormComponentViewBehavior($image,
 					imageObjectRef.imageID,initImageViewProperties)
 		},

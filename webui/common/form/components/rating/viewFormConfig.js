@@ -62,7 +62,7 @@ function loadRecordIntoRating(ratingElem, recordRef) {
 }
 
 
-function initRatingRecordEditBehavior($ratingContainer,componentContext,changeSetID,getRecordFunc, updateRecordFunc, ratingObjectRef) {
+function initRatingRecordEditBehavior($ratingContainer,componentContext,recordProxy, ratingObjectRef) {
 
 	var componentLink = ratingObjectRef.properties.componentLink
 	
@@ -70,7 +70,7 @@ function initRatingRecordEditBehavior($ratingContainer,componentContext,changeSe
 
 	function setRatingValue(ratingVal) {
 		
-		currRecordRef = getRecordFunc()
+		currRecordRef = recordProxy.getRecordFunc()
 	
 		if(componentLink.linkedValType == linkedComponentValTypeField) {
 			var ratingFieldID = componentLink.fieldID
@@ -79,7 +79,7 @@ function initRatingRecordEditBehavior($ratingContainer,componentContext,changeSe
 			var setRecordValParams = { 
 				parentDatabaseID:currRecordRef.parentDatabaseID,
 				recordID:currRecordRef.recordID,
-				changeSetID: changeSetID,
+				changeSetID: recordProxy.changeSetID,
 				fieldID:ratingFieldID, 
 				value:ratingVal,
 				valueFormat: ratingValueFormat}
@@ -87,7 +87,7 @@ function initRatingRecordEditBehavior($ratingContainer,componentContext,changeSe
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached
 				// version of the record also needs to be updated.
-				updateRecordFunc(replyData)
+				recordProxy.updateRecordFunc(replyData)
 		
 			}) // set record's number field value
 

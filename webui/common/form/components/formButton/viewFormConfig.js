@@ -5,14 +5,13 @@ function loadRecordIntoButton(buttonElem, recordRef) {
 }
 
 function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
-			parentFormGetRecordFunc, parentFormUpdateRecordFunc,buttonObjectRef,
+			parentRecordProxy,buttonObjectRef,
 		loadFormViewComponentFunc,loadRecordIntoFormLayoutFunc) {
 	
 	
 	$buttonContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoButton
 	})
-	
 	
 	var $popupFormDialog = $('#formButtonPopupFormDialog')
 			
@@ -24,16 +23,16 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 		console.log("Form button clicked: " + JSON.stringify(buttonObjectRef))
 		
 		// Editing of the record in the popup is done with the parent form's current record.
-		var currRecord = parentFormGetRecordFunc()
+		var currRecord = parentRecordProxy.getRecordFunc()
 
-		var $viewFormCanvas = $('#formButtonPopupFormCanvas')
-		$viewFormCanvas.empty()
+		var $popupFormViewCanvas = $('#formButtonPopupFormCanvas')
+		$popupFormViewCanvas.empty()
 
 		
 		function getPopupFormRecordFunc() { return currRecord }
 		function updatePopupFormRecordFunc(updatedRecordRef) {
 			
-			loadRecordIntoFormLayoutFunc($viewFormCanvas,updatedRecordRef)
+			loadRecordIntoFormLayoutFunc($popupFormViewCanvas,updatedRecordRef)
 			
 			// Propagate the record update the parent form, allowing an update
 			// to the parent layout. The changes are only propagated when the popup
@@ -43,12 +42,12 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 			// pressed; however, if the "Cancel" button is pressed all these changes are
 			// rolled back.
 			if (popupMode !== FormButtonPopupBehaviorModal) {
-				parentFormUpdateRecordFunc(updatedRecordRef)			
+				parentRecordProxy.updateRecordFunc(updatedRecordRef)			
 			}
 		}
 		
 		function showDialogAfterFormComponentLoaded() {
-			loadRecordIntoFormLayoutFunc($viewFormCanvas ,currRecord)
+			loadRecordIntoFormLayoutFunc($popupFormViewCanvas ,currRecord)
 			$popupFormDialog.modal('show')
 		}
 			
@@ -65,6 +64,11 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 			
 			jsonAPIRequest("record/allocateChangeSetID",{},function(changeSetIDResp) {
 				
+				var recordProxy = {
+					changeSetID: changeSetIDResp.changeSetID,
+					getRecordFunc: getPopupFormRecordFunc,
+					updateRecordFunc: updatePopupFormRecordFunc
+				}
 				
 				var defaultVals = buttonObjectRef.properties.popupBehavior.defaultValues
 				
@@ -82,17 +86,15 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 						
 						// loadFormViewComponentFunc is passed in as a parameter, since the loadFormViewComponents 
 						// function is in 
-						// a package which has a dependency on this package. 
-						loadFormViewComponentFunc($viewFormCanvas, viewFormContext, changeSetIDResp.changeSetID,
-							 getPopupFormRecordFunc, updatePopupFormRecordFunc,
+						// a package which has a dependency on this package.
+									 
+						loadFormViewComponentFunc($popupFormViewCanvas, viewFormContext, recordProxy,
 							 showDialogAfterFormComponentLoaded)
 					})
 					
 					
 				} else {
-					var $parentFormLayout = $(canvasSelector)
-					loadFormViewComponentFunc($parentFormLayout, viewFormContext, changeSetIDResp.changeSetID,
-						 getPopupFormRecordFunc, updatePopupFormRecordFunc,
+					loadFormViewComponentFunc($popupFormViewCanvas, viewFormContext, recordProxy,
 						 showDialogAfterFormComponentLoaded)
 				}
 				
@@ -107,7 +109,7 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 					jsonAPIRequest("recordUpdate/commitChangeSet",commitChangeParams,function(updatedRecordRef) {
 						// If the popup form is modal, the parent form's record is not updated until the "Save Changes" button
 						// is pressed.
-						parentFormUpdateRecordFunc(updatedRecordRef)
+						parentRecordProxy.updateRecordFunc(updatedRecordRef)
 						$popupFormDialog.modal('hide')
 					})
 				})
@@ -132,8 +134,13 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 			})
 			
 			var immediatelyCommitChangesChangeSetID = ""
-			loadFormViewComponentFunc(canvasSelector, viewFormContext, immediatelyCommitChangesChangeSetID,
-				 getPopupFormRecordFunc, updatePopupFormRecordFunc,
+			var recordProxy = {
+				changeSetID: immediatelyCommitChangesChangeSetID,
+				getRecordFunc: getPopupFormRecordFunc,
+				updateRecordFunc: updatePopupFormRecordFunc
+			}
+			
+			loadFormViewComponentFunc($popupFormViewCanvas, viewFormContext, recordProxy,
 				 showDialogAfterFormComponentLoaded)
 		}
 			

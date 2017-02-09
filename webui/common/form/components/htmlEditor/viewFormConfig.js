@@ -34,8 +34,7 @@ function loadRecordIntoHtmlEditor($htmlEditor, recordRef) {
 }
 
 
-function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,changeSetID,
-			getRecordFunc, updateRecordFunc,htmlEditorObjectRef) {
+function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordProxy,htmlEditorObjectRef) {
 	
 		
 	$htmlEditor.data("viewFormConfig", {
@@ -60,7 +59,7 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,changeSet
 		var editor = $htmlEditor.data("htmlEditor")
 		var inputVal = editor.getData();
 		
-		var currRecordRef = getRecordFunc()
+		var currRecordRef = recordProxy.getRecordFunc()
 		
 		var componentLink = objectRef.properties.componentLink
 	
@@ -77,7 +76,7 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,changeSet
 			var setRecordValParams = { 
 				parentDatabaseID:currRecordRef.parentDatabaseID,
 				recordID:currRecordRef.recordID,
-				changeSetID: changeSetID,
+				changeSetID: recordProxy.changeSetID,
 				fieldID:htmlEditorFieldID, 
 				value:inputVal,
 			valueFormat:textBoxTextValueFormat }
@@ -89,7 +88,7 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,changeSet
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached
 				// version of the record also needs to be updated.
-				updateRecordFunc(updatedRecordRef)
+				recordProxy.updateRecordFunc(updatedRecordRef)
 			}) // set record's text field value
 		} else {
 			console.log("HTML editor global values not yet supported")

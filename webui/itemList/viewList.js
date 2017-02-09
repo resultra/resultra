@@ -261,10 +261,16 @@ $(document).ready(function() {
 		currRecordSet.updateRecordRef(updatedRecordRef)
 		loadCurrRecordIntoLayout()
 	}
+	
+	var recordProxy = {
+		changeSetID: MainLineFullyCommittedChangeSetID,
+		getRecordFunc: getCurrentRecord,
+		updateRecordFunc: updateCurrentRecord
+	}
+	
 
 	var $parentFormLayout = $(viewFormCanvasSelector)
-	loadFormViewComponents($parentFormLayout,viewListContext,MainLineFullyCommittedChangeSetID,
-		getCurrentRecord,updateCurrentRecord,
+	loadFormViewComponents($parentFormLayout,viewListContext,recordProxy,
 		initAfterViewFormComponentsAlreadyLoaded)
 			
 }); // document ready

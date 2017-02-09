@@ -45,7 +45,7 @@ function loadRecordIntoSelection(selectionElem, recordRef) {
 	
 }
 
-function initSelectionRecordEditBehavior($selectionContainer,componentContext,changeSetID,getRecordFunc, updateRecordFunc, selectionObjectRef) {
+function initSelectionRecordEditBehavior($selectionContainer,componentContext,recordProxy, selectionObjectRef) {
 	
 	$selectionContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoSelection
@@ -75,7 +75,7 @@ function initSelectionRecordEditBehavior($selectionContainer,componentContext,ch
 	
 	initSelectControlChangeHandler($selectionControl,function(newValue) {
 		if(componentLink.linkedValType == linkedComponentValTypeField) {
-			var currRecordRef = getRecordFunc()	
+			var currRecordRef = recordProxy.getRecordFunc()	
 			var fieldID = componentLink.fieldID
 			var fieldRef = getFieldRef(fieldID)
 			var fieldType = fieldRef.type
@@ -88,14 +88,14 @@ function initSelectionRecordEditBehavior($selectionContainer,componentContext,ch
 				var setRecordValParams = { 
 					parentDatabaseID:currRecordRef.parentDatabaseID,
 					recordID:currRecordRef.recordID, 
-					changeSetID: changeSetID,
+					changeSetID: recordProxy.changeSetID,
 					fieldID:fieldID, value:newValue,
 					 valueFormat:setTextFieldValueFormat}
 				jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
 					// After updating the record, the local cache of records in currentRecordSet will
 					// be out of date. So after updating the record on the server, the locally cached
 					// version of the record also needs to be updated.
-					updateRecordFunc(replyData)
+					recordProxy.updateRecordFunc(replyData)
 				}) // set record's text field value
 			
 			} else if (fieldType == "number") {
@@ -112,7 +112,7 @@ function initSelectionRecordEditBehavior($selectionContainer,componentContext,ch
 					var setRecordValParams = { 
 						parentDatabaseID:currRecordRef.parentDatabaseID,
 						recordID:currRecordRef.recordID, 
-						changeSetID: changeSetID,
+						changeSetID: recordProxy.changeSetID,
 						fieldID:fieldID, 
 						value:numberVal,
 						 valueFormat:setNumberFieldValueFormat}
@@ -120,7 +120,7 @@ function initSelectionRecordEditBehavior($selectionContainer,componentContext,ch
 						// After updating the record, the local cache of records will
 						// be out of date. So after updating the record on the server, the locally cached
 						// version of the record also needs to be updated.
-						updateRecordFunc(replyData)
+						recordProxy.updateRecordFunc(replyData)
 					}) // set record's number field value
 				}
 			

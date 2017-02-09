@@ -42,8 +42,7 @@ function loadRecordIntoUserSelection(userSelectionElem, recordRef) {
 }
 
 
-function initUserSelectionRecordEditBehavior($userSelectionContainer, componentContext,changeSetID,
-				getRecordFunc, updateRecordFunc, userSelectionObjectRef) {
+function initUserSelectionRecordEditBehavior($userSelectionContainer, componentContext,recordProxy, userSelectionObjectRef) {
 
 	var componentLink = userSelectionObjectRef.properties.componentLink
 		
@@ -51,7 +50,7 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 
 	function setUserSelectionValue(selectedUserID) {
 		
-		currRecordRef = getRecordFunc()
+		currRecordRef = recordProxy.getRecordFunc()
 	
 		if(componentLink.linkedValType == linkedComponentValTypeField) {
 			var userFieldID = componentLink.fieldID
@@ -63,7 +62,7 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 			var setRecordValParams = { 
 				parentDatabaseID:currRecordRef.parentDatabaseID,
 				recordID:currRecordRef.recordID,
-				changeSetID: changeSetID, 
+				changeSetID: recordProxy.changeSetID, 
 				fieldID:userFieldID, 
 				userID:selectedUserID,
 				valueFormat:userValueFormat}
@@ -71,7 +70,7 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached
 				// version of the record also needs to be updated.
-				updateRecordFunc(updatedFieldVal)
+				recordProxy.updateRecordFunc(updatedFieldVal)
 		
 			}) // set record's number field value
 

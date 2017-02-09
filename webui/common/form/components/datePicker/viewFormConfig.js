@@ -60,8 +60,7 @@ function getDataPickerDateVal($datePicker) {
 	return dateParam
 }
 
-function initDatePickerFieldEditBehavior(componentContext,changeSetID,
-		getRecordFunc, updateRecordFunc, datePickerObjectRef,$datePickerContainer) {
+function initDatePickerFieldEditBehavior(componentContext,recordProxy, datePickerObjectRef,$datePickerContainer) {
 	
 
 	var $datePickerInput = datePickerInputFromContainer($datePickerContainer)
@@ -87,7 +86,7 @@ function initDatePickerFieldEditBehavior(componentContext,changeSetID,
 		
 		var dateParam = getDataPickerDateVal($datePickerContainer)
 		
-		currRecordRef = getRecordFunc()
+		currRecordRef = recordProxy.getRecordFunc()
 		
 		var dateValueFormat = {
 			context: "datePicker",
@@ -96,7 +95,7 @@ function initDatePickerFieldEditBehavior(componentContext,changeSetID,
 		var setRecordValParams = {
 			parentDatabaseID:currRecordRef.parentDatabaseID,
 			recordID:currRecordRef.recordID, 
-			changeSetID: changeSetID,
+			changeSetID: recordProxy.changeSetID,
 			fieldID:componentLink.fieldID, 
 			value:dateParam,
 			 valueFormat: dateValueFormat}
@@ -107,7 +106,7 @@ function initDatePickerFieldEditBehavior(componentContext,changeSetID,
 			// After updating the record, the local cache of records in currentRecordSet will
 			// be out of date. So after updating the record on the server, the locally cached
 			// version of the record also needs to be updated.
-			updateRecordFunc(updatedRecordRef)
+			recordProxy.updateRecordFunc(updatedRecordRef)
 		}) // set record's text field value
 		
 	});	
@@ -143,8 +142,7 @@ function initDatePickerGlobalEditBehavior(componentContext,datePickerObjectRef,$
 
 
 
-function initDatePickerRecordEditBehavior($datePickerContainer, componentContext,changeSetID,
-		getRecordFunc, updateRecordFunc, datePickerObjectRef) {
+function initDatePickerRecordEditBehavior($datePickerContainer, componentContext,recordProxy, datePickerObjectRef) {
 		
 	var $datePickerInput = datePickerInputFromContainer($datePickerContainer)
 	$datePickerInput.datepicker()
@@ -158,8 +156,7 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 	var componentLink = datePickerObjectRef.properties.componentLink
 	
 	if(componentLink.linkedValType == linkedComponentValTypeField) {
-		initDatePickerFieldEditBehavior(componentContext,changeSetID,
-					getRecordFunc, updateRecordFunc, datePickerObjectRef,$datePickerContainer)
+		initDatePickerFieldEditBehavior(componentContext,recordProxy, datePickerObjectRef,$datePickerContainer)
 		
 	} else { 
 		assert(componentLink.linkedValType == linkedComponentValTypeGlobal)

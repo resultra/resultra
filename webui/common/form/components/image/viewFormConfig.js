@@ -67,8 +67,7 @@ function loadRecordIntoImage(imageElem, recordRef) {
 }
 
 
-function initImageRecordEditBehavior($imageContainer, componentContext,changeSetID,
-			getRecordFunc, updateRecordFunc,imageObjectRef) {
+function initImageRecordEditBehavior($imageContainer, componentContext,recordProxy,imageObjectRef) {
 	
 	var imageContainerID = imageObjectRef.imageID
 
@@ -121,7 +120,7 @@ function initImageRecordEditBehavior($imageContainer, componentContext,changeSet
 						// version of the record also needs to be updated. However, unlike other field
 						// types, there is no need to refresh all the fields in the record, since 
 						// calculated fields' calculations don't (yet) occur based upon files.
-						updateRecordFunc(file.updatedRecord)
+						recordProxy.updateRecordFunc(file.updatedRecord)
 					} else {
 						assert(imageObjectRef.properties.componentLink.linkedValType == linkedComponentValTypeGlobal)
 						// TODO - Update local cache for global 
@@ -141,13 +140,13 @@ function initImageRecordEditBehavior($imageContainer, componentContext,changeSet
 			
 			var fileUploadParams = {}
 			if(componentLink.linkedValType == linkedComponentValTypeField) {
-				var currRecordRef = getRecordFunc()
+				var currRecordRef = recordProxy.getRecordFunc()
 								
 				fileUploadParams = {
 					parentDatabaseID:currRecordRef.parentDatabaseID,
 					fieldID: componentLink.fieldID, 
 					recordID: currRecordRef.recordID,
-					changeSetID: changeSetID,
+					changeSetID: recordProxy.changeSetID,
 					valueFormatContext: "image",
 					valueFormatFormat: "general"}
 			} else {

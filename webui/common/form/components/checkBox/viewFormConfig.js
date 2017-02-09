@@ -57,7 +57,7 @@ function loadRecordIntoCheckBox($checkboxContainer, recordRef) {
 	
 }
 
-function initCheckBoxFieldEditBehavior($checkBox,componentContext,changeSetID,getRecordFunc, updateRecordFunc, checkBoxObjectRef) {
+function initCheckBoxFieldEditBehavior($checkBox,componentContext,recordProxy, checkBoxObjectRef) {
 	
 	var $checkboxControl = getCheckboxControlFromCheckboxContainer($checkBox)
 	
@@ -80,7 +80,7 @@ function initCheckBoxFieldEditBehavior($checkBox,componentContext,changeSetID,ge
 			
 			var isChecked = $(this).prop("checked")
 		
-			var currRecordRef = getRecordFunc()
+			var currRecordRef = recordProxy.getRecordFunc()
 			var checkboxValueFormat = {
 				context: "checkbox",
 				format: "check"
@@ -88,7 +88,7 @@ function initCheckBoxFieldEditBehavior($checkBox,componentContext,changeSetID,ge
 			var setRecordValParams = {
 				parentDatabaseID:currRecordRef.parentDatabaseID,
 				recordID:currRecordRef.recordID,
-				changeSetID: changeSetID,
+				changeSetID: recordProxy.changeSetID,
 				fieldID:componentLink.fieldID, 
 				value:isChecked,
 				 valueFormat: checkboxValueFormat }
@@ -98,7 +98,7 @@ function initCheckBoxFieldEditBehavior($checkBox,componentContext,changeSetID,ge
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached
 				// version of the record also needs to be updated.
-				updateRecordFunc(updatedRecordRef)
+				recordProxy.updateRecordFunc(updatedRecordRef)
 			}) // set record's text field value
 	})
 	
@@ -131,8 +131,7 @@ function initCheckBoxGlobalEditBehavior($checkBox,componentContext,checkBoxObjec
 	
 }
 
-function initCheckBoxRecordEditBehavior($checkBox,componentContext,changeSetID,
-					getRecordFunc, updateRecordFunc, checkBoxObjectRef) {
+function initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, checkBoxObjectRef) {
 		
 	$checkBox.data("viewFormConfig", {
 		loadRecord: loadRecordIntoCheckBox
@@ -141,8 +140,7 @@ function initCheckBoxRecordEditBehavior($checkBox,componentContext,changeSetID,
 	var componentLink = checkBoxObjectRef.properties.componentLink
 
 	if(componentLink.linkedValType == linkedComponentValTypeField) {
-		initCheckBoxFieldEditBehavior($checkBox,componentContext,changeSetID,
-				getRecordFunc, updateRecordFunc, checkBoxObjectRef)
+		initCheckBoxFieldEditBehavior($checkBox,componentContext,recordProxy, checkBoxObjectRef)
 	} else {
 		initCheckBoxGlobalEditBehavior($checkBox,componentContext,checkBoxObjectRef)
 	}

@@ -50,8 +50,7 @@ function loadRecordIntoCommentBox(commentElem, recordRef) {
 }
 
 
-function initCommentBoxRecordEditBehavior($commentContainer, componentContext,changeSetID,
-					getRecordFunc, updateRecordFunc, commentObjectRef) {
+function initCommentBoxRecordEditBehavior($commentContainer, componentContext,recordProxy, commentObjectRef) {
 				
 	$commentContainer.data("componentContext",componentContext)
 	
@@ -68,7 +67,7 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,ch
 	initButtonControlClickHandler($addCommentButton,function() {
 		var commentVal = $commentInput.val()
 		
-		var currRecordRef = getRecordFunc()
+		var currRecordRef = recordProxy.getRecordFunc()
 				
 		if(nonEmptyStringVal(commentVal)) {
 			console.log("initCommentBoxRecordEditBehavior: Add comment:" + commentVal)
@@ -82,7 +81,7 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,ch
 			var setRecordValParams = { 
 				parentDatabaseID:currRecordRef.parentDatabaseID,
 				recordID:currRecordRef.recordID,
-				changeSetID: changeSetID,
+				changeSetID: recordProxy.changeSetID,
 				fieldID:commentFieldID, 
 				value:commentVal,
 			valueFormat:commentValueFormat }
@@ -94,7 +93,7 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,ch
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached
 				// version of the record also needs to be updated.
-				updateRecordFunc(updatedRecordRef)
+				recordProxy.updateRecordFunc(updatedRecordRef)
 			}) // set record's text field value
 						
 				

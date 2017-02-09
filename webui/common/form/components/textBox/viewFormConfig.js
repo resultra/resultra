@@ -86,8 +86,7 @@ function loadRecordIntoTextBox($textBoxContainer, recordRef) {
 	
 }
 
-function initTextBoxFieldEditBehavior(componentContext, changeSetID, $container,$textBoxInput, 
-		getRecordFunc, updateRecordFunc, textFieldObjectRef) {
+function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput,recordProxy, textFieldObjectRef) {
 	
 	var componentLink = textFieldObjectRef.properties.componentLink
 	
@@ -133,7 +132,7 @@ function initTextBoxFieldEditBehavior(componentContext, changeSetID, $container,
 						inputVal,currTextObjRef.properties.valueFormat.format)
 		$textBoxInput.val(formattedVal)
 		
-		var currRecordRef = getRecordFunc()
+		var currRecordRef = recordProxy.getRecordFunc()
 			
 			
 		if(currRecordRef != null) {
@@ -153,14 +152,14 @@ function initTextBoxFieldEditBehavior(componentContext, changeSetID, $container,
 					var setRecordValParams = { 
 						parentDatabaseID:currRecordRef.parentDatabaseID,
 						recordID:currRecordRef.recordID, 
-						changeSetID: changeSetID,
+						changeSetID: recordProxy.changeSetID,
 						fieldID:fieldID, value:inputVal,
 						 valueFormat: textBoxTextValueFormat }
 					jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
 						// After updating the record, the local cache of records will
 						// be out of date. So after updating the record on the server, the locally cached
 						// version of the record also needs to be updated.
-						updateRecordFunc(replyData)
+						recordProxy.updateRecordFunc(replyData)
 						
 					}) // set record's text field value
 				
@@ -178,7 +177,7 @@ function initTextBoxFieldEditBehavior(componentContext, changeSetID, $container,
 						var setRecordValParams = { 
 							parentDatabaseID:currRecordRef.parentDatabaseID,
 							recordID:currRecordRef.recordID,
-							changeSetID: changeSetID,
+							changeSetID: recordProxy.changeSetID,
 							fieldID:fieldID, 
 							value:numberVal,
 							 valueFormat:textBoxNumberValueFormat
@@ -238,8 +237,7 @@ function initTextBoxGlobalValBehavior(componentContext,$textBoxInput, textFieldO
 	})
 }
 
-function initTextBoxRecordEditBehavior($container,componentContext,changeSetID,
-	getCurrentRecordFunc, updateCurrentRecordFunc, textFieldObjectRef) {
+function initTextBoxRecordEditBehavior($container,componentContext,recordProxy, textFieldObjectRef) {
 	
 	var $textBoxInput = $container.find("input")
 
@@ -264,8 +262,8 @@ function initTextBoxRecordEditBehavior($container,componentContext,changeSetID,
 	var componentLink = textFieldObjectRef.properties.componentLink
 	
 	if(componentLink.linkedValType == linkedComponentValTypeField) {
-		initTextBoxFieldEditBehavior(componentContext, changeSetID, $container,$textBoxInput,
-				getCurrentRecordFunc, updateCurrentRecordFunc, textFieldObjectRef)
+		initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput,
+				recordProxy, textFieldObjectRef)
 		
 	} else { 
 		assert(componentLink.linkedValType == linkedComponentValTypeGlobal)
