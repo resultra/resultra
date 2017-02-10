@@ -107,3 +107,19 @@ function loadFormViewComponents($parentFormLayout, viewFormContext, recordProxy,
 	
 		
 }
+
+
+function loadMultipleFormViewContainers(viewFormContext,containersInfo, doneLoadingContainersFunc) {
+	getFormComponentContext(viewFormContext, function(componentContext) {
+		
+		for (var containerIndex=0; containerIndex < containersInfo.length; containerIndex++) {
+			
+			var currContainerInfo = containersInfo[containerIndex]
+			
+			loadFormViewComponentsIntoOneLayout(currContainerInfo.$listItemContainer, viewFormContext, 
+					currContainerInfo.recordProxy,componentContext)	
+			
+		}
+		doneLoadingContainersFunc()	
+	})
+}

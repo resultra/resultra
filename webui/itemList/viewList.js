@@ -41,27 +41,35 @@ function loadFormData(reloadRecordParams, formDataCallback) {
 
 var currRecordSet;
 var currGlobalVals;
-
-var viewFormCanvasSelector = '#layoutCanvas'
+var listItemsInfo
 
 function loadCurrRecordIntoLayout()
 {
-	recordRef = currRecordSet.currRecordRef()
-	if(recordRef != null)
-	{
-
-		var $parentFormLayout = $(viewFormCanvasSelector)
-		loadRecordIntoFormLayout($parentFormLayout,recordRef)
 	
-		// Update footer to reflect where the current record is in list of currently loaded records
-		$('#recordNumLabel').text(currRecordSet.recPageLabel())
+	
+	for(var listItemIndex = 0; listItemIndex < listItemsInfo.length; listItemIndex++) {
+		var currListItem = listItemsInfo[listItemIndex]
 		
-		// If the record changed, and one of the form components is already loaded, it needs to be 
-		// re-selected so the sidebar can be re-initialized with any settings specific to this 
-		// record.
-		reselectCurrentObjectSelection()
+		var recordRef = currListItem.recordProxy.getRecordFunc()
+		if(recordRef != null)
+		{
+			currListItem.$listItemContainer.show()
+			loadRecordIntoFormLayout(currListItem.$listItemContainer,recordRef)
+	
+			// Update footer to reflect where the current record is in list of currently loaded records
+			$('#recordNumLabel').text(currRecordSet.recPageLabel())
 		
-	} // if current record != null
+		
+		} else {
+			currListItem.$listItemContainer.hide()
+		}
+		
+	}
+	// If the record changed, and one of the form components is already loaded, it needs to be 
+	// re-selected so the sidebar can be re-initialized with any settings specific to this 
+	// record.
+	reselectCurrentObjectSelection()
+	
 }
 
 
@@ -247,26 +255,42 @@ $(document).ready(function() {
 	initDatabaseTOC(tocConfig)
 	
 	hideSiblingsShowOne('#listViewProps')
-	initObjectCanvasSelectionBehavior(viewFormCanvasSelector, function() {
-		hideSiblingsShowOne('#listViewProps')
-	})
 	
-	function getCurrentRecord() {
-		return  currRecordSet.currRecordRef()
-	}
-	function updateCurrentRecord(updatedRecordRef) {
-		currRecordSet.updateRecordRef(updatedRecordRef)
-		loadCurrRecordIntoLayout()
-	}
+	var numListItems = 1
+	listItemsInfo = []
+	for(var listIndex = 0; listIndex < numListItems; listIndex++) {
+		var $listItemContainer = $('<div class="listItemContainer"></div>')
+		
+		initObjectCanvasContainerSelectionBehavior($listItemContainer, function() {
+			hideSiblingsShowOne('#listViewProps')
+		})
 	
-	var recordProxy = {
-		changeSetID: MainLineFullyCommittedChangeSetID,
-		getRecordFunc: getCurrentRecord,
-		updateRecordFunc: updateCurrentRecord
-	}
+		function getCurrentRecord() {
+			return  currRecordSet.currRecordRef()
+		}
+		function updateCurrentRecord(updatedRecordRef) {
+			currRecordSet.updateRecordRef(updatedRecordRef)
+			loadCurrRecordIntoLayout()
+		}
 	
-	var $parentFormLayout = $(viewFormCanvasSelector)
-	loadFormViewComponents($parentFormLayout,viewListContext,recordProxy,
-		initAfterViewFormComponentsAlreadyLoaded)
+		var recordProxy = {
+			changeSetID: MainLineFullyCommittedChangeSetID,
+			getRecordFunc: getCurrentRecord,
+			updateRecordFunc: updateCurrentRecord
+		}
+		
+		var listItemInfo = {
+			$listItemContainer: $listItemContainer,
+			recordProxy: recordProxy
+		}
+		
+		$('#layoutCanvas').append($listItemContainer)
+		listItemsInfo.push(listItemInfo)
+	
+		
+	}
+	loadMultipleFormViewContainers(viewListContext,listItemsInfo,initAfterViewFormComponentsAlreadyLoaded)
+	
+	
 			
 }); // document ready
