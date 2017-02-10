@@ -5,8 +5,7 @@
 // of the dialog is pressed to fully commit the changes.
 var MainLineFullyCommittedChangeSetID = ""
 
-function loadFormViewComponents($parentFormLayout, viewFormContext, recordProxy,
-	 doneLoadingComponentsFunc) {
+function loadFormViewComponents($parentFormLayout, viewFormContext, recordProxy,doneLoadingComponentsFunc) {
 	
 	function initFormComponentViewBehavior($component,componentID, selectionFunc) {	
 		initObjectSelectionBehavior($component, 
@@ -24,7 +23,7 @@ function loadFormViewComponents($parentFormLayout, viewFormContext, recordProxy,
 		})
 	}
 		
-	loadFormComponents({
+	loadFormComponentsIntoSingleLayout({
 		$parentFormLayout: $parentFormLayout,
 		formContext: viewFormContext,
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {			

@@ -122,7 +122,7 @@ $(document).ready(function() {
 	var designFormLayoutConfig =  createFormLayoutDesignConfig()
 	var $parentFormLayout = $(formDesignCanvasSelector)
 	
-	loadFormComponents({
+	loadFormComponentsIntoSingleLayout({
 		$parentFormLayout: $parentFormLayout,
 		formContext: designFormContext,
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {

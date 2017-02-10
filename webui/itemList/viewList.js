@@ -1,9 +1,5 @@
 
 
-var currRecordSet;
-var currGlobalVals;
-
-
 function enableRecordButtons(isEnabled)
 {
 	var isDisabled = true;
@@ -16,28 +12,6 @@ function enableRecordButtons(isEnabled)
 function enableNewRecordButton()
 {
 	$('#newRecordButton').prop("disabled",false)
-}
-
-var viewFormCanvasSelector = '#layoutCanvas'
-
-function loadCurrRecordIntoLayout()
-{
-	recordRef = currRecordSet.currRecordRef()
-	if(recordRef != null)
-	{
-
-		var $parentFormLayout = $(viewFormCanvasSelector)
-		loadRecordIntoFormLayout($parentFormLayout,recordRef)
-	
-		// Update footer to reflect where the current record is in list of currently loaded records
-		$('#recordNumLabel').text(currRecordSet.recPageLabel())
-		
-		// If the record changed, and one of the form components is already loaded, it needs to be 
-		// re-selected so the sidebar can be re-initialized with any settings specific to this 
-		// record.
-		reselectCurrentObjectSelection()
-		
-	} // if current record != null
 }
 
 function loadFormData(reloadRecordParams, formDataCallback) {
@@ -65,9 +39,34 @@ function loadFormData(reloadRecordParams, formDataCallback) {
 	
 }
 
+var currRecordSet;
+var currGlobalVals;
+
+var viewFormCanvasSelector = '#layoutCanvas'
+
+function loadCurrRecordIntoLayout()
+{
+	recordRef = currRecordSet.currRecordRef()
+	if(recordRef != null)
+	{
+
+		var $parentFormLayout = $(viewFormCanvasSelector)
+		loadRecordIntoFormLayout($parentFormLayout,recordRef)
+	
+		// Update footer to reflect where the current record is in list of currently loaded records
+		$('#recordNumLabel').text(currRecordSet.recPageLabel())
+		
+		// If the record changed, and one of the form components is already loaded, it needs to be 
+		// re-selected so the sidebar can be re-initialized with any settings specific to this 
+		// record.
+		reselectCurrentObjectSelection()
+		
+	} // if current record != null
+}
+
+
 
 function reloadRecords(reloadParams) {
-	
 	
 	loadFormData(reloadParams,function(formData) {
 		currGlobalVals = formData.globalVals	
@@ -247,8 +246,6 @@ $(document).ready(function() {
 	
 	initDatabaseTOC(tocConfig)
 	
-	
-		
 	hideSiblingsShowOne('#listViewProps')
 	initObjectCanvasSelectionBehavior(viewFormCanvasSelector, function() {
 		hideSiblingsShowOne('#listViewProps')
@@ -268,7 +265,6 @@ $(document).ready(function() {
 		updateRecordFunc: updateCurrentRecord
 	}
 	
-
 	var $parentFormLayout = $(viewFormCanvasSelector)
 	loadFormViewComponents($parentFormLayout,viewListContext,recordProxy,
 		initAfterViewFormComponentsAlreadyLoaded)
