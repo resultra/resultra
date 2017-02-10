@@ -34,6 +34,7 @@ function getFormComponentContext(formContext, contextLoadCompleteCallback) {
 }
 
 function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
+	
 	var compenentIDComponentMap = {}	
 
 	function initHeaderLayout($componentRow,header) {
@@ -502,11 +503,11 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 }
 
 
-function loadFormComponentsIntoSingleLayout(loadFormConfig) {
+function loadFormComponentsIntoSingleLayout(loadFormConfig, doneLoadingFormDataFunc) {
 	
 	getFormComponentContext(loadFormConfig.formContext, function(componentContext) {											
 		populateOneFormLayoutWithComponents(loadFormConfig,componentContext)		
-		loadFormConfig.doneLoadingFormDataFunc()
+		doneLoadingFormDataFunc()
 	})
 	
 }

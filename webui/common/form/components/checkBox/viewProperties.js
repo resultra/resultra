@@ -1,7 +1,7 @@
 function initCheckBoxViewProperties(componentSelectionParams) {
 	console.log("Init checkbox properties panel")
 		
-	var checboxRef = componentSelectionParams.selectedObjRef
+	var checkboxRef = componentSelectionParams.selectedObjRef
 	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()	
 
 	var elemPrefix = "checkbox_"

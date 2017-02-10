@@ -5,12 +5,12 @@
 // of the dialog is pressed to fully commit the changes.
 var MainLineFullyCommittedChangeSetID = ""
 
-function loadFormViewComponents($parentFormLayout, viewFormContext, recordProxy,doneLoadingComponentsFunc) {
+function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext, recordProxy,componentContext) {
 	
 	function initFormComponentViewBehavior($component,componentID, selectionFunc) {	
 		initObjectSelectionBehavior($component, 
 				$parentFormLayout,function(selectedComponentID) {
-			console.log("Form view object selected: " + selectedComponentID)
+										
 			var selectedObjRef	= getContainerObjectRef($component)
 					
 			var formViewComponentSelectionParams = {
@@ -22,8 +22,8 @@ function loadFormViewComponents($parentFormLayout, viewFormContext, recordProxy,
 			selectionFunc(formViewComponentSelectionParams)
 		})
 	}
-		
-	loadFormComponentsIntoSingleLayout({
+	
+	var loadFormConfig = {
 		$parentFormLayout: $parentFormLayout,
 		formContext: viewFormContext,
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {			
@@ -89,8 +89,21 @@ function loadFormViewComponents($parentFormLayout, viewFormContext, recordProxy,
 		initHeaderFunc: function($header,componentContext,headerObjectRef) {
 			console.log("Init header in view form")
 			initHeaderRecordEditBehavior($header, componentContext,headerObjectRef)
-		},
+		}		
+	}
+	
+	populateOneFormLayoutWithComponents(loadFormConfig,componentContext);
+	
+}
+
+function loadFormViewComponents($parentFormLayout, viewFormContext, recordProxy,doneLoadingComponentsFunc) {
+	
+	getFormComponentContext(viewFormContext, function(componentContext) {
+												
+		loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext, recordProxy,componentContext)	
+			
+		doneLoadingComponentsFunc()
+	})
+	
 		
-		doneLoadingFormDataFunc: doneLoadingComponentsFunc
-	});
 }

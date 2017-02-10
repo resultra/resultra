@@ -122,7 +122,7 @@ $(document).ready(function() {
 	var designFormLayoutConfig =  createFormLayoutDesignConfig()
 	var $parentFormLayout = $(formDesignCanvasSelector)
 	
-	loadFormComponentsIntoSingleLayout({
+	var loadFormConfig = {
 		$parentFormLayout: $parentFormLayout,
 		formContext: designFormContext,
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {
@@ -171,13 +171,16 @@ $(document).ready(function() {
 		initFormButtonFunc: function(componentContext,$button,buttonObjectRef) {
 			var componentIDs = { formID: formID, componentID: buttonObjectRef.buttonID }
 			initFormComponentDesignBehavior($button,componentIDs,buttonObjectRef,formButtonDesignFormConfig,designFormLayoutConfig)
-		},
-		doneLoadingFormDataFunc: function() {
+		}
+	}
+	
+	function doneLoadingFormData() {
 			// The formula editor depends on the field information first being initialized.
 			initFormulaEditor(formulaEditorParams)
-			
-		} // no-op	
-	}); 
+		
+	}
+	
+	loadFormComponentsIntoSingleLayout(loadFormConfig,doneLoadingFormData); 
 		
 		
 	
