@@ -9,13 +9,11 @@ function ListItemController() {
 	var listItemControllerSelf = this
 	
 	var currRecordSet = null
+	var currRecordSetWindowSize = 1
 	
 	this.populateListViewWithListItemContainers = function (populationDoneCallback) {
-		var numListItems = 1
 		
-		this.listItemsInfo = []
-		$('#layoutCanvas').empty()
-		for(var listIndex = 0; listIndex < numListItems; listIndex++) {
+		function populateOneListItem(itemWindowIndex) {
 			var $listItemContainer = $('<div class="listItemContainer"></div>')
 		
 			initObjectCanvasContainerSelectionBehavior($listItemContainer, function() {
@@ -23,7 +21,8 @@ function ListItemController() {
 			})
 	
 			function getCurrentRecord() {
-				return  currRecordSet.currRecordRef()
+				console.log("getCurrentRecord: item list: window index = " + itemWindowIndex)
+				return  currRecordSet.getRecordRefAtWindowIndex(itemWindowIndex)
 			}
 			function updateCurrentRecord(updatedRecordRef) {
 				currRecordSet.updateRecordRef(updatedRecordRef)
@@ -42,9 +41,15 @@ function ListItemController() {
 			}
 		
 			$('#layoutCanvas').append($listItemContainer)
-			this.listItemsInfo.push(listItemInfo)
-	
+			
+			return listItemInfo
+		}
 		
+		this.listItemsInfo = []
+		$('#layoutCanvas').empty()
+		for(var listIndex = 0; listIndex < currRecordSetWindowSize; listIndex++) {
+			var listItemInfo = populateOneListItem(listIndex)
+			this.listItemsInfo.push(listItemInfo)
 		}
 		loadMultipleFormViewContainers(viewListContext,this.listItemsInfo,populationDoneCallback)
 	
@@ -122,10 +127,12 @@ function ListItemController() {
 	}
 	
 	this.reloadRecords =  function(reloadParams) {
+		
+		currReloadParams = reloadParams
 	
 		loadFormData(reloadParams,function(formData) {
 			currGlobalVals = formData.globalVals	
-			currRecordSet = new RecordSet(formData.recordData);
+			currRecordSet = new RecordSet(formData.recordData,currRecordSetWindowSize);
 			if(currRecordSet.numRecords() > 0) {
 				reloadRecordsIntoContainers()		
 			}
@@ -148,14 +155,14 @@ function ListItemController() {
 	
 	$('#nextRecordButton').click(function(e){
 	         e.preventDefault();
-			 if(currRecordSet.advanceToNextRecord()) {
+			 if(currRecordSet.advanceToNextPage()) {
 			 	reloadRecordsIntoContainers()
 			 }
 	});
 	
 	$('#prevRecordButton').click(function(e){
 	         e.preventDefault();
-			 if(currRecordSet.advanceToPrevRecord()) {
+			 if(currRecordSet.advanceToPrevPage()) {
 				 console.log("Advance to next record")
 			 	reloadRecordsIntoContainers()
 			 } 
@@ -172,6 +179,17 @@ function ListItemController() {
 	}
 	
 	$('#newRecordButton').click(function(e){ createNewRecord() });
+	
+	var $pageSizeSelection = $('#viewListPageSizeSelection')
+	$pageSizeSelection.val(currRecordSetWindowSize)
+	initSelectControlChangeHandler($pageSizeSelection, function(newPageSize){
+		currRecordSetWindowSize = Number(newPageSize)
+		// Re-initialize the list view, then repopulate it with the records.
+		listItemControllerSelf.populateListViewWithListItemContainers(function() {
+			currRecordSet.setWindowSize(currRecordSetWindowSize)
+			reloadRecordsIntoContainers()
+		})
+	})
 	
 	
 	
