@@ -1,134 +1,10 @@
 
 
-function enableRecordButtons(isEnabled)
-{
-	var isDisabled = true;
-	if(isEnabled) { isDisabled=false }
-	$('#prevRecordButton').prop("disabled",isDisabled)
-	$('#nextRecordButton').prop("disabled",isDisabled)
-	$('#newRecordButton').prop("disabled",isDisabled)
-}
+// TODO - Need to move currGlobalVals out of this file and/or figure something else out for retrieval
+// and access to global values.
+var currGlobalVals
 
-function enableNewRecordButton()
-{
-	$('#newRecordButton').prop("disabled",false)
-}
-
-function loadFormData(reloadRecordParams, formDataCallback) {
-	var numDataSetsRemainingToLoad = 2
-	
-	var formData =  {}
-	
-	function oneDataSetLoaded() {
-		numDataSetsRemainingToLoad -= 1
-		if(numDataSetsRemainingToLoad <= 0) {
-			formDataCallback(formData)
-		}
-	}
-	
-	jsonAPIRequest("recordRead/getFilteredSortedRecordValues",reloadRecordParams,function(recordsData) {
-		formData.recordData = recordsData
-		oneDataSetLoaded()
-	})
-	
-	var globalParams = { parentDatabaseID: viewListContext.databaseID }
-	jsonAPIRequest("global/getValues",globalParams,function(globalVals) {
-		formData.globalVals = globalVals
-		oneDataSetLoaded()
-	})
-	
-}
-
-var currRecordSet;
-var currGlobalVals;
-var listItemsInfo
-
-function loadCurrRecordIntoLayout()
-{
-	
-	
-	for(var listItemIndex = 0; listItemIndex < listItemsInfo.length; listItemIndex++) {
-		var currListItem = listItemsInfo[listItemIndex]
-		
-		var recordRef = currListItem.recordProxy.getRecordFunc()
-		if(recordRef != null)
-		{
-			currListItem.$listItemContainer.show()
-			loadRecordIntoFormLayout(currListItem.$listItemContainer,recordRef)
-	
-			// Update footer to reflect where the current record is in list of currently loaded records
-			$('#recordNumLabel').text(currRecordSet.recPageLabel())
-		
-		
-		} else {
-			currListItem.$listItemContainer.hide()
-		}
-		
-	}
-	// If the record changed, and one of the form components is already loaded, it needs to be 
-	// re-selected so the sidebar can be re-initialized with any settings specific to this 
-	// record.
-	reselectCurrentObjectSelection()
-	
-}
-
-
-
-function reloadRecords(reloadParams) {
-	
-	loadFormData(reloadParams,function(formData) {
-		currGlobalVals = formData.globalVals	
-		currRecordSet = new RecordSet(formData.recordData);
-		if(currRecordSet.numRecords() > 0) {
-			loadCurrRecordIntoLayout()		
-		}
-		
-		// Enable the buttons to page through the records
-		if(currRecordSet.numRecords() > 0) {
-			enableRecordButtons(true)
-		}
-		else {
-			enableNewRecordButton() // just enable the "New Record" button
-		}
-		
-	})	
-}
-
-
-function createNewRecord() {
-	var newRecordsParams = {parentDatabaseID:viewListContext.databaseID}
-	jsonAPIRequest("recordUpdate/newRecord",newRecordsParams,function(newRecordRef) {
-		currRecordSet.appendNewRecord(newRecordRef);
-		currRecordSet.jumpToRecord(newRecordRef.recordID)
-		loadCurrRecordIntoLayout()
-	}) // getRecord
-	
-}
-
-function initRecordButtonsBehavior()
-{
-	// Initially disabled the buttons for paging through the records. They'll be 
-	// enabled once the records are loaded.
-	enableRecordButtons(false)
-	
-	$('#nextRecordButton').click(function(e){
-	         e.preventDefault();
-			 if(currRecordSet.advanceToNextRecord()) {
-			 	loadCurrRecordIntoLayout()
-			 }
-	});
-	
-	$('#prevRecordButton').click(function(e){
-	         e.preventDefault();
-			 if(currRecordSet.advanceToPrevRecord()) {
-				 console.log("Advance to next record")
-			 	loadCurrRecordIntoLayout()
-			 } 
-	});
-	
-	$('#newRecordButton').click(function(e){ createNewRecord() });
-	
-}
+var listItemController
 
 function initUILayoutPanes()
 {
@@ -174,21 +50,16 @@ function initUILayoutPanes()
 	})
 }
 
-
-
 function initAfterViewFormComponentsAlreadyLoaded() {
 	
 	var getListParams = {
 		listID: viewListContext.listID
 	}
 	
-	
-	
 	jsonAPIRequest("itemList/get",getListParams,function(listInfo) {
 		
 		var filterPanelElemPrefix = "form_"
-		
-			
+					
 		function reloadSortedAndFilterRecords()
 		{
 			var filterRules = getRecordFilterRuleListRules(filterPanelElemPrefix)		
@@ -200,7 +71,7 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 				filterRules: filterRules,		
 				sortRules: sortRules}
 	
-			reloadRecords(getFilteredRecordsParams)
+			listItemController.reloadRecords(getFilteredRecordsParams)
 		}
 		
 		var panelInitRemaining = 2
@@ -242,9 +113,7 @@ function initAfterViewFormComponentsAlreadyLoaded() {
 $(document).ready(function() {	
 	 
 	initUILayoutPanes()
-			
-	initRecordButtonsBehavior()
-	
+				
 	initUserDropdownMenu()
 	
 	var tocConfig = {
@@ -256,41 +125,7 @@ $(document).ready(function() {
 	
 	hideSiblingsShowOne('#listViewProps')
 	
-	var numListItems = 1
-	listItemsInfo = []
-	for(var listIndex = 0; listIndex < numListItems; listIndex++) {
-		var $listItemContainer = $('<div class="listItemContainer"></div>')
-		
-		initObjectCanvasContainerSelectionBehavior($listItemContainer, function() {
-			hideSiblingsShowOne('#listViewProps')
-		})
-	
-		function getCurrentRecord() {
-			return  currRecordSet.currRecordRef()
-		}
-		function updateCurrentRecord(updatedRecordRef) {
-			currRecordSet.updateRecordRef(updatedRecordRef)
-			loadCurrRecordIntoLayout()
-		}
-	
-		var recordProxy = {
-			changeSetID: MainLineFullyCommittedChangeSetID,
-			getRecordFunc: getCurrentRecord,
-			updateRecordFunc: updateCurrentRecord
-		}
-		
-		var listItemInfo = {
-			$listItemContainer: $listItemContainer,
-			recordProxy: recordProxy
-		}
-		
-		$('#layoutCanvas').append($listItemContainer)
-		listItemsInfo.push(listItemInfo)
-	
-		
-	}
-	loadMultipleFormViewContainers(viewListContext,listItemsInfo,initAfterViewFormComponentsAlreadyLoaded)
-	
-	
-			
+	listItemController = new ListItemController()
+	listItemController.populateListViewWithListItemContainers(initAfterViewFormComponentsAlreadyLoaded)
+				
 }); // document ready
