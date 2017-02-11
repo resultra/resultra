@@ -15,6 +15,13 @@ function ListItemController() {
 		
 		function populateOneListItem(itemWindowIndex) {
 			var $listItemContainer = $('<div class="listItemContainer"></div>')
+			
+			if (itemWindowIndex % 2 === 0) {
+				$listItemContainer.addClass("listItemEvenItem")
+			} else {
+				$listItemContainer.addClass("listItemOddItem")
+
+			}
 		
 			initObjectCanvasContainerSelectionBehavior($listItemContainer, function() {
 				hideSiblingsShowOne('#listViewProps')

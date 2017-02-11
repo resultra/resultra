@@ -1,0 +1,11 @@
+.listItemEvenItem {
+	background-color: WhiteSmoke;
+}
+
+.listItemOddItem {
+	background-color: Gainsboro;
+}
+
+.listItemContainer {
+	padding: 5px;
+}
