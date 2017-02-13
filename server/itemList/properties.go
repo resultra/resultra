@@ -11,6 +11,7 @@ type ItemListProperties struct {
 	DefaultRecordSortRules []recordSortDataModel.RecordSortRule `json:"defaultRecordSortRules"`
 	DefaultFilterRules     []recordFilter.RecordFilterRule      `json:"defaultFilterRules"`
 	PreFilterRules         []recordFilter.RecordFilterRule      `json:"preFilterRules"`
+	DefaultPageSize        int                                  `json:"defaultPageSize"`
 }
 
 func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ItemListProperties, error) {
@@ -42,7 +43,8 @@ func newDefaultItemListProperties() ItemListProperties {
 	defaultProps := ItemListProperties{
 		DefaultRecordSortRules: []recordSortDataModel.RecordSortRule{},
 		DefaultFilterRules:     []recordFilter.RecordFilterRule{},
-		PreFilterRules:         []recordFilter.RecordFilterRule{}}
+		PreFilterRules:         []recordFilter.RecordFilterRule{},
+		DefaultPageSize:        1}
 
 	return defaultProps
 }

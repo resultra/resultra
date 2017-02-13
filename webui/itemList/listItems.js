@@ -1,6 +1,6 @@
 
 
-function ListItemController() {
+function ListItemController(defaultPageSize) {
 	
 	this.listItemsInfo = []
 	
@@ -9,7 +9,7 @@ function ListItemController() {
 	var listItemControllerSelf = this
 	
 	var currRecordSet = null
-	var currRecordSetWindowSize = 1
+	var currRecordSetWindowSize = defaultPageSize
 	
 	this.populateListViewWithListItemContainers = function (populationDoneCallback) {
 		

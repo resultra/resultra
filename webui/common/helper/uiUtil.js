@@ -107,6 +107,13 @@ function initSelectControlChangeHandler($selectControl, handlerFunc) {
 	
 }
 
+function initNumberSelectionChangeHandler($selectionControl, handlerFunc) {
+	initSelectControlChangeHandler($selectionControl,function(selectedVal) {
+		var numberVal = Number(selectedVal)
+		handlerFunc(numberVal)
+	})
+}
+
 
 function initCheckboxChangeHandler(checkboxSelector, initialVal, handlerFunc) {
 	var $checkbox = $(checkboxSelector)

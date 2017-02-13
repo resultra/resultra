@@ -97,6 +97,26 @@
 	</tr>
 {{end}}
 
+{{define "adminItemListPageSizeProperty"}}
+	<tr>
+		<td class="width200"><label>Default page size:</label>
+			<div><small>Configure the maximum number of items shown on a single page.</small></div>
+		</td>
+
+		<td>
+		  	<select class="form-control maxWidth50" id="adminItemListPageSizeSelection">
+		   		<option value="1">1</option>
+		 		<option value="5">5</option>
+		 		<option value="10">10</option>
+		 		<option value="25">25</option>
+		 		<option value="50">50</option>
+			</select>
+			
+		</td>
+	</tr>
+{{end}}
+
+
 
 {{define "itemListPropsBody"}}
 
@@ -106,6 +126,7 @@
 	{{template "adminItemListPreFilterProperty" .PreFilterPropPanelParams}}
 	{{template "adminItemListDefaultFilterProperty" .FilterPropPanelParams}}
 	{{template "adminItemListSortingProperty"}}	
+	{{template "adminItemListPageSizeProperty"}}	
 </table>
 
 

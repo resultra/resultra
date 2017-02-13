@@ -50,63 +50,58 @@ function initUILayoutPanes()
 	})
 }
 
-function initAfterViewFormComponentsAlreadyLoaded() {
+function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 	
-	var getListParams = {
-		listID: viewListContext.listID
+		
+	var filterPanelElemPrefix = "form_"
+				
+	function reloadSortedAndFilterRecords()
+	{
+		var filterRules = getRecordFilterRuleListRules(filterPanelElemPrefix)		
+		var sortRules = getSortPaneSortRules()
+
+		var getFilteredRecordsParams = { 
+			databaseID: viewListContext.databaseID,
+			preFilterRules: listInfo.properties.preFilterRules,
+			filterRules: filterRules,		
+			sortRules: sortRules}
+
+		listItemController.reloadRecords(getFilteredRecordsParams)
 	}
 	
-	jsonAPIRequest("itemList/get",getListParams,function(listInfo) {
-		
-		var filterPanelElemPrefix = "form_"
+	var panelInitRemaining = 2
+	function decrementRemainingPanelInitCount() {
+		panelInitRemaining--
+		if(panelInitRemaining <= 0) {
+			reloadSortedAndFilterRecords()	
+		}
+	}
+	
+	var filterPropertyPanelParams = {
+		elemPrefix: filterPanelElemPrefix,
+		databaseID: viewListContext.databaseID,
+		defaultFilterRules: listInfo.properties.defaultFilterRules,
+		initDone: decrementRemainingPanelInitCount,
+		updateFilterRules: function (updatedFilterRules) {
+			console.log("View form: filters changed - updating filtering")
+			reloadSortedAndFilterRecords()
+		},
+		refilterWithCurrentFilterRules: function() {
+			reloadSortedAndFilterRecords()
+		}
+	}
+	initRecordFilterViewPanel(filterPropertyPanelParams)
 					
-		function reloadSortedAndFilterRecords()
-		{
-			var filterRules = getRecordFilterRuleListRules(filterPanelElemPrefix)		
-			var sortRules = getSortPaneSortRules()
-	
-			var getFilteredRecordsParams = { 
-				databaseID: viewListContext.databaseID,
-				preFilterRules: listInfo.properties.preFilterRules,
-				filterRules: filterRules,		
-				sortRules: sortRules}
-	
-			listItemController.reloadRecords(getFilteredRecordsParams)
-		}
-		
-		var panelInitRemaining = 2
-		function decrementRemainingPanelInitCount() {
-			panelInitRemaining--
-			if(panelInitRemaining <= 0) {
-				reloadSortedAndFilterRecords()	
-			}
-		}
-		
-		var filterPropertyPanelParams = {
-			elemPrefix: filterPanelElemPrefix,
-			databaseID: viewListContext.databaseID,
-			defaultFilterRules: listInfo.properties.defaultFilterRules,
-			initDone: decrementRemainingPanelInitCount,
-			updateFilterRules: function (updatedFilterRules) {
-				console.log("View form: filters changed - updating filtering")
-				reloadSortedAndFilterRecords()
-			},
-			refilterWithCurrentFilterRules: function() {
-				reloadSortedAndFilterRecords()
-			}
-		}
-		initRecordFilterViewPanel(filterPropertyPanelParams)
-						
-		var recordSortPaneParams = {
-			defaultSortRules: listInfo.properties.defaultRecordSortRules,
-			databaseID: viewListContext.databaseID,
-			resortFunc: reloadSortedAndFilterRecords,
-			initDoneFunc: decrementRemainingPanelInitCount,
-			saveUpdatedSortRulesFunc: function(sortRules) {} // no-op
-		}
-		initSortRecordsPane(recordSortPaneParams)
+	var recordSortPaneParams = {
+		defaultSortRules: listInfo.properties.defaultRecordSortRules,
+		databaseID: viewListContext.databaseID,
+		resortFunc: reloadSortedAndFilterRecords,
+		initDoneFunc: decrementRemainingPanelInitCount,
+		saveUpdatedSortRulesFunc: function(sortRules) {} // no-op
+	}
+	initSortRecordsPane(recordSortPaneParams)
 
-	})
+
 }
 
 
@@ -125,7 +120,16 @@ $(document).ready(function() {
 	
 	hideSiblingsShowOne('#listViewProps')
 	
-	listItemController = new ListItemController()
-	listItemController.populateListViewWithListItemContainers(initAfterViewFormComponentsAlreadyLoaded)
+	var getListParams = {
+		listID: viewListContext.listID
+	}
+	
+	jsonAPIRequest("itemList/get",getListParams,function(listInfo) {
+		listItemController = new ListItemController(listInfo.properties.defaultPageSize)
+		listItemController.populateListViewWithListItemContainers(function() {
+			initAfterViewFormComponentsAlreadyLoaded(listInfo)
+		})
+	})
+	
 				
 }); // document ready

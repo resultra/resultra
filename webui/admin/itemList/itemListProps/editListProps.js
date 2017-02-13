@@ -155,6 +155,21 @@ $(document).ready(function() {
 				resortFunc: function() {}, // no-op
 				initDoneFunc: function() {}, // no-op
 				saveUpdatedSortRulesFunc: saveDefaultListSortRules}
+				
+				
+			var $pageSizeSelection = $('#adminItemListPageSizeSelection')
+			$pageSizeSelection.val(listInfo.properties.defaultPageSize)
+			initNumberSelectionChangeHandler($pageSizeSelection,function(newPageSize) {
+				var savePageSizeParams = {
+					listID:listInfo.listID,
+					pageSize: newPageSize
+				}
+				
+				jsonAPIRequest("itemList/setDefaultPageSize",savePageSizeParams,function(saveReply) {
+					console.log("Done saving default page size")
+				})			
+				
+			})
 	
 	
 			initSortRecordsPane(sortPaneParams)
