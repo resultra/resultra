@@ -29,53 +29,85 @@
 
 
 {{define "adminItemListNameProperty"}}
-	<h4>List Name</h4>
-	<form class="form-inline" id="itemListNamePropertyForm">
-		<div class="container-fluid">
-			<div class="form-group">
-				<input type="text" id="itemListPropsNameInput" name="itemListPropsNameInput" 
-						class="form-control" placeholder="List Name" required="" autofocus="">
-			</div>
-		</div>
-	</form>
+
+
+	<tr>
+		<td class="width200"><label>List name:</label>
+		</td>
+
+		<td>
+			<form class="form-inline" id="itemListNamePropertyForm">
+				<div class="form-group">
+					<input type="text" id="itemListPropsNameInput" name="itemListPropsNameInput" 
+							class="form-control" placeholder="List Name" required="" autofocus="">
+				</div>
+			</form>
+		</td>
+	</tr>
+
 {{end}}
 
 {{define "adminItemListDisplayProperty"}}
 
-	<h4>List Display</h4>
-	<form class="form-inline" id="itemListFormPropertyForm">
-		<div class="container-fluid">
-			<div class="form-group">
-				<label>Default Form for viewing items:</label>
-				<select class="form-control" id="itemListDefaultFormSelection"></select>
-			</div>
-		</div>
-	</form>
+	<tr>
+		<td class="width200"><label>Default form for viewing items:</label>
+		</td>
+
+		<td>
+			<form class="form-inline" id="itemListFormPropertyForm">
+					<div class="form-group">
+						<select class="form-control" id="itemListDefaultFormSelection"></select>
+					</div>
+			</form>
+		</td>
+	</tr>
 
 {{end}}
 
+{{define "adminItemListPreFilterProperty"}}
+	<tr>
+		<td class="width200"><label>Pre-filtering:</label>
+		</td>
+
+		<td>
+			{{template "recordFilterPropertyPanel" .}}
+		</td>
+	</tr>
+{{end}}
+
+{{define "adminItemListDefaultFilterProperty"}}
+	<tr>
+		<td class="width200"><label>Default filtering:</label>
+		</td>
+
+		<td>
+			{{template "recordFilterPropertyPanel" .}}
+		</td>
+	</tr>
+{{end}}
+
+{{define "adminItemListSortingProperty"}}
+	<tr>
+		<td class="width200"><label>Default sorting:</label>
+		</td>
+
+		<td>
+			{{template "recordSortPropertiesPage"}}
+		</td>
+	</tr>
+{{end}}
+
+
 {{define "itemListPropsBody"}}
 
-	{{template "adminItemListNameProperty"}}
-	
-	<hr>
-	
+<table class="table">
+	{{template "adminItemListNameProperty"}}	
 	{{template "adminItemListDisplayProperty"}}
-	
-	<hr>
+	{{template "adminItemListPreFilterProperty" .PreFilterPropPanelParams}}
+	{{template "adminItemListDefaultFilterProperty" .FilterPropPanelParams}}
+	{{template "adminItemListSortingProperty"}}	
+</table>
 
-	<h4>Pre-Filtering</h4>
-	{{template "recordFilterPropertyPanel" .PreFilterPropPanelParams}}
-	
-	<hr>
-
-	<h4>Default Filtering</h4>
-	{{template "recordFilterPropertyPanel" .FilterPropPanelParams}}
-
-	<hr>
-
-	<h4>Default Sorting</h4>
-	{{template "recordSortPropertiesPage"}}
 
 {{end}}
 
