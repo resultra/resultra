@@ -21,7 +21,8 @@ import (
 var viewListTemplates *template.Template
 
 func init() {
-	baseTemplateFiles := []string{"static/itemList/viewList.html"}
+	baseTemplateFiles := []string{"static/itemList/viewList.html",
+		"static/itemList/listItems.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,

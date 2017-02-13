@@ -61,30 +61,12 @@
 {{end}}
 
 
-{{define "viewListFooterLeftButtons"}}
-<form class="form-inline">
-		
-	<button class="btn-primary btn-sm" id="prevRecordButton">Previous</button>
-	<span id="recordNumLabel">&nbsp;</span>
-	<button class="btn-primary btn-sm" id="nextRecordButton">Next </button>
-  	<label for="viewListPageSizeSelection">Page Size: </label>
-  	<select class="form-control maxWidth50" id="viewListPageSizeSelection" name="viewListPageSizeSelection">
-   		<option value="1">1</option>
- 		<option value="5">5</option>
- 		<option value="10">10</option>
- 		<option value="25">25</option>
- 		<option value="50">50</option>
-	</select>
-	
-</form>
-	
-{{end}}
 
 {{define "viewListFooterControls"}}
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-sm-6">
-			{{template "viewListFooterLeftButtons"}}
+			{{template "itemListPagingControls"}}
 		</div>
 		<div class="col-sm-6">
 			<div class="pull-right">
