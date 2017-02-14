@@ -1,0 +1,11 @@
+{
+	"subDirs":["../../../generic",
+		"../../../common"],
+	"cssFiles": ["editRoleProps.css"],
+	"jsFiles": ["editRoleProps.js"],
+	"htmlFiles":["editRoleProps.html"],
+	"imageFiles":[],
+	"minCSSFile":"admin/userRole/editListProps.min.css",
+	"minJSFile": "admin/userRole/editListProps.min.js",
+	"injectPlaceholderName":"rolePropsAssets"
+}

@@ -124,3 +124,33 @@ func VerifyCurrUserIsDatabaseAdminForItemList(req *http.Request, listID string) 
 
 	return nil
 }
+
+func getUserRoleDatabaseID(roleID string) (string, error) {
+	databaseID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(
+		`SELECT database_id 
+			FROM database_roles 
+			WHERE database_roles.role_id=$1 LIMIT 1`,
+		roleID).Scan(&databaseID)
+	if getErr != nil {
+		return "", fmt.Errorf(
+			"getUserRoleDatabaseID: can't get database for user role = %v: err=%v",
+			roleID, getErr)
+	}
+
+	return databaseID, nil
+}
+
+func VerifyCurrUserIsDatabaseAdminForUserRole(req *http.Request, roleID string) error {
+
+	databaseID, err := getUserRoleDatabaseID(roleID)
+	if err != nil {
+		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForUserRole: %v", err)
+	}
+
+	if err := VerifyCurrUserIsDatabaseAdmin(req, databaseID); err != nil {
+		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForItemList: %v", err)
+	}
+
+	return nil
+}

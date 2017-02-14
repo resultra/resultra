@@ -16,7 +16,9 @@ func init() {
 	roleRouter := mux.NewRouter()
 
 	roleRouter.HandleFunc("/api/userRole/validateRoleName", validateRoleNameAPI)
+	roleRouter.HandleFunc("/api/userRole/setName", setNameAPI)
 	roleRouter.HandleFunc("/api/userRole/newRole", newRoleAPI)
+	roleRouter.HandleFunc("/api/userRole/get", getRoleAPI)
 
 	roleRouter.HandleFunc("/api/userRole/getListRolePrivs", getListRolePrivsAPI)
 	roleRouter.HandleFunc("/api/userRole/setListRolePrivs", setListRolePrivsAPI)
@@ -69,6 +71,40 @@ func newRoleAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, successResponse)
 	}
 
+}
+
+type GetRoleParams struct {
+	RoleID string `json:"roleID"`
+}
+
+func getRoleAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetRoleParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	/*	if verifyErr := VerifyCurrUserIsDatabaseAdminForRole(r, params.RoleID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	} */
+
+	if roleInfo, getErr := GetUserRole(params.RoleID); getErr != nil {
+		api.WriteErrorResponse(w, getErr)
+	} else {
+		api.WriteJSONResponse(w, roleInfo)
+	}
+
+}
+
+func setNameAPI(w http.ResponseWriter, r *http.Request) {
+	var params SetRoleNameParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processRolePropUpdate(w, r, params)
 }
 
 type ListRolePrivsParams struct {
@@ -185,4 +221,18 @@ func getDatabaseRolesAPI(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+}
+
+func processRolePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater RolePropUpdater) {
+
+	if verifyErr := VerifyCurrUserIsDatabaseAdminForUserRole(r, propUpdater.getRoleID()); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if updatedRole, err := updateRoleProps(propUpdater); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, updatedRole)
+	}
 }

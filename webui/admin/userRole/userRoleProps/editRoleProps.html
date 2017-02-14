@@ -1,0 +1,110 @@
+{{define "itemListBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-tasks" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
+	  {{template "breadCrumbSeparator"}}
+	  <a class="h4 breadCrumbText" href="/admin/{{.DatabaseID}}">Settings</a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">RoleSettings</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">{{.RoleName}}</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "rolePropsHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "itemListBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "adminRoleNameProperty"}}
+
+
+	<tr>
+		<td class="width200"><label>Role name:</label>
+		</td>
+
+		<td>
+			<form class="form-inline" id="roleNamePropertyForm">
+				<div class="form-group">
+					<input type="text" id="rolePropsNameInput" name="rolePropsNameInput" 
+							class="form-control" placeholder="Role Name" required="" autofocus="">
+				</div>
+			</form>
+		</td>
+	</tr>
+
+{{end}}
+
+
+
+{{define "rolePropsBody"}}
+
+<table class="table">
+	{{template "adminRoleNameProperty"}}	
+</table>
+
+
+{{end}}
+
+{{define "editUserRolePropsPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- rolePropsAssets:css -->
+	<!-- endinject -->
+	
+	<script>var rolePropsContext = { 
+		roleID:"{{.RoleID}}",
+		 databaseID:"{{.DatabaseID}}"} 
+	</script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- rolePropsAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="editRolePropsPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north" id="rolePageHeaderUILayout">
+			{{template "rolePropsHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west" id="rolePageTocLayout">
+			{{template "databaseTOC" .}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center" id="rolePageLayout">
+			{{template "rolePropsBody" .}}
+		</div> <!-- center pane for entire page -->	
+		
+	</div> <!-- layout page -->	
+		
+		
+	{{template "submitFormDialog"}}
+		
+  </body>
+  	
+</html>
+
+{{end}}

@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/webui/admin/formLink/formLinkProps"
 	"resultra/datasheet/webui/admin/forms/design"
 	"resultra/datasheet/webui/admin/itemList/itemListProps"
+	"resultra/datasheet/webui/admin/userRole/userRoleProps"
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -15,4 +16,5 @@ func RegisterHTTPHandlers(mainRouter *mux.Router) {
 
 	itemListProps.RegisterHTTPHandlers(mainRouter)
 	formLinkProps.RegisterHTTPHandlers(mainRouter)
+	userRoleProps.RegisterHTTPHandlers(mainRouter)
 }

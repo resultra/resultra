@@ -1,13 +1,16 @@
 // Javascript for user roles
 
-function userRoleItemButtonsHTML() {
+function userRoleItemButtonsHTML(roleID) {
+	
+	var editRoleLink = '/admin/userRole/' + roleID
+	
+	
 return '' +
 			'<div class="pull-right userListItemButtons">' + 
 	
-  			'<button class="btn btn-xs editUserRoleButton">' + 
-				// padding-bottom: 2px makes the button image vertically line up better.
-				'<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>' +
-			'</button>' +
+			'<a class="btn btn-xs btn-default editUserRoleButton" role="button" href="'+ editRoleLink + '">' + 
+					'<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>' +
+				'</a>' + 
   			'<button class="btn btn-xs btn-danger deleteUserRoleButton">' + 
 				// padding-bottom: 2px makes the button image vertically line up better.
 				'<span class="glyphicon glyphicon-remove" style="padding-bottom:2px;"></span>' +
@@ -23,7 +26,7 @@ function userRoleTableRowHTML(roleID) {
 	var roles = "TBD"
 	var privs = "TBD"
 	
-	var buttonsHTML = userRoleItemButtonsHTML()
+	var buttonsHTML = userRoleItemButtonsHTML(roleID)
 	
 	return '' +
 		'<tr class="userListRow">' +
@@ -88,7 +91,7 @@ function addCustomRoleTableRow(customRoleInfo) {
 	}
 	
 
-	var buttonsHTML = userRoleItemButtonsHTML()
+	var buttonsHTML = userRoleItemButtonsHTML(customRoleInfo.roleID)
 
 	var privs = "Full Access"
 	

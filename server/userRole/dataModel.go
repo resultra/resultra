@@ -57,8 +57,9 @@ func addDatabaseRole(databaseID string, roleName string) (*DatabaseRole, error) 
 }
 
 type DatabaseRoleInfo struct {
-	RoleID   string `json:"roleID"`
-	RoleName string `json:"roleName"`
+	ParentDatabaseID string `json:"parentDatabaseID"`
+	RoleID           string `json:"roleID"`
+	RoleName         string `json:"roleName"`
 }
 
 type DatabaseRolesParams struct {
@@ -81,10 +82,38 @@ func getDatabaseRoles(databaseID string) ([]DatabaseRoleInfo, error) {
 		if scanErr := rows.Scan(&currRoleInfo.RoleID, &currRoleInfo.RoleName); scanErr != nil {
 			return nil, fmt.Errorf("GetDatabaseRoles: Failure querying database: %v", scanErr)
 		}
+		currRoleInfo.ParentDatabaseID = databaseID
 		rolesInfo = append(rolesInfo, currRoleInfo)
 	}
 
 	return rolesInfo, nil
+
+}
+
+func GetUserRole(roleID string) (*DatabaseRoleInfo, error) {
+	roleInfo := DatabaseRoleInfo{}
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT database_id,role_id, name FROM database_roles
+		 WHERE role_id=$1 LIMIT 1`, roleID).Scan(&roleInfo.ParentDatabaseID,
+		&roleInfo.RoleID, &roleInfo.RoleName)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetUserRole: Unabled to get role: role ID = %v: datastore err=%v",
+			roleID, getErr)
+	}
+
+	return &roleInfo, nil
+
+}
+
+func updateExistingRole(roleID string, updatedRole *DatabaseRoleInfo) (*DatabaseRoleInfo, error) {
+
+	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE database_roles 
+				SET name=$1
+				WHERE role_id=$2`, updatedRole.RoleName, roleID); updateErr != nil {
+		return nil, fmt.Errorf("updateExistingRole: Can't update role properties %v: error = %v",
+			roleID, updateErr)
+	}
+
+	return updatedRole, nil
 
 }
 
