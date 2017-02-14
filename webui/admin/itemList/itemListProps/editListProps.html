@@ -116,6 +116,18 @@
 	</tr>
 {{end}}
 
+{{define "adminItemListRolesProperty"}}
+	<tr>
+		<td class="width200"><label>Roles and privileges:</label>
+			<div><small>Configure which roles have access to read and/or write items in this list.</small></div>
+		</td>
+
+		<td>
+			 {{template "listRolesPropertyPanel"}}
+			
+		</td>
+	</tr>
+{{end}}
 
 
 {{define "itemListPropsBody"}}
@@ -127,6 +139,7 @@
 	{{template "adminItemListDefaultFilterProperty" .FilterPropPanelParams}}
 	{{template "adminItemListSortingProperty"}}	
 	{{template "adminItemListPageSizeProperty"}}	
+	{{template "adminItemListRolesProperty"}}	
 </table>
 
 

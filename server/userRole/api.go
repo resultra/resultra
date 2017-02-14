@@ -18,8 +18,8 @@ func init() {
 	roleRouter.HandleFunc("/api/userRole/validateRoleName", validateRoleNameAPI)
 	roleRouter.HandleFunc("/api/userRole/newRole", newRoleAPI)
 
-	roleRouter.HandleFunc("/api/userRole/getFormRolePrivs", getFormRolePrivsAPI)
-	roleRouter.HandleFunc("/api/userRole/setFormRolePrivs", setFormRolePrivsAPI)
+	roleRouter.HandleFunc("/api/userRole/getListRolePrivs", getListRolePrivsAPI)
+	roleRouter.HandleFunc("/api/userRole/setListRolePrivs", setListRolePrivsAPI)
 
 	roleRouter.HandleFunc("/api/userRole/getDatabaseRoles", getDatabaseRolesAPI)
 
@@ -71,46 +71,46 @@ func newRoleAPI(w http.ResponseWriter, r *http.Request) {
 
 }
 
-type FormRolePrivsParams struct {
-	FormID string `json:"formID"`
+type ListRolePrivsParams struct {
+	ListID string `json:"listID"`
 }
 
-func getFormRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
+func getListRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 
-	var params FormRolePrivsParams
+	var params ListRolePrivsParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	if verifyErr := VerifyCurrUserIsDatabaseAdminForForm(r, params.FormID); verifyErr != nil {
+	if verifyErr := VerifyCurrUserIsDatabaseAdminForItemList(r, params.ListID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if formRolePrivs, err := getFormRolePrivs(params.FormID); err != nil {
+	if listRolePrivs, err := getListRolePrivs(params.ListID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
-		api.WriteJSONResponse(w, formRolePrivs)
+		api.WriteJSONResponse(w, listRolePrivs)
 
 	}
 
 }
 
-func setFormRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
+func setListRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 
-	var params SetFormRolePrivsParams
+	var params SetListRolePrivsParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	if verifyErr := VerifyCurrUserIsDatabaseAdminForForm(r, params.FormID); verifyErr != nil {
+	if verifyErr := VerifyCurrUserIsDatabaseAdminForItemList(r, params.ListID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if err := setFormRolePrivs(params); err != nil {
+	if err := setListRolePrivs(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		successResponse := true

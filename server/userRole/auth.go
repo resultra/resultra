@@ -92,3 +92,35 @@ func VerifyCurrUserIsDatabaseAdminForDashboard(req *http.Request, dashboardID st
 
 	return nil
 }
+
+func getItemListDatabaseID(listID string) (string, error) {
+
+	databaseID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(
+		`SELECT database_id 
+			FROM item_lists 
+			WHERE item_lists.list_id=$1 LIMIT 1`,
+		listID).Scan(&databaseID)
+	if getErr != nil {
+		return "", fmt.Errorf(
+			"getListDatabaseID: can't get database for item list = %v: err=%v",
+			listID, getErr)
+	}
+
+	return databaseID, nil
+
+}
+
+func VerifyCurrUserIsDatabaseAdminForItemList(req *http.Request, listID string) error {
+
+	databaseID, err := getItemListDatabaseID(listID)
+	if err != nil {
+		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForItemList: %v", err)
+	}
+
+	if err := VerifyCurrUserIsDatabaseAdmin(req, databaseID); err != nil {
+		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForItemList: %v", err)
+	}
+
+	return nil
+}

@@ -170,6 +170,8 @@ $(document).ready(function() {
 				})			
 				
 			})
+			
+			initListRolePrivProperties(listInfo.listID)
 	
 	
 			initSortRecordsPane(sortPaneParams)

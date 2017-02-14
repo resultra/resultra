@@ -1,7 +1,7 @@
 {
 	"subDirs":["../../../generic",
-		"../../../common"
-	],
+		"../../../common",
+		"userRole"],
 	"cssFiles": ["editListProps.css"],
 	"jsFiles": ["editListProps.js"],
 	"htmlFiles":["editListProps.html"],

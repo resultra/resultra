@@ -91,7 +91,7 @@ func getDatabaseRoles(databaseID string) ([]DatabaseRoleInfo, error) {
 type NewDatabaseRoleWithPrivsParams struct {
 	DatabaseID     string            `json:"databaseID"`
 	RoleName       string            `json:"roleName"`
-	FormPrivs      map[string]string `json:"formPrivs"`      // Map of form ID to privilege
+	ListPrivs      map[string]string `json:"listPrivs"`      // Map of list ID to privilege
 	DashboardPrivs map[string]string `json:"dashboardPrivs"` // Map of dashboard ID to privilege
 }
 
@@ -105,14 +105,14 @@ func newDatabaseRoleWithPrivs(params NewDatabaseRoleWithPrivsParams) error {
 		return fmt.Errorf("newDatabaseRoleWithPrivs: %v", newRoleErr)
 	}
 
-	for formID, priv := range params.FormPrivs {
+	for listID, priv := range params.ListPrivs {
 
-		params := SetFormRolePrivsParams{
-			FormID: formID,
+		params := SetListRolePrivsParams{
+			ListID: listID,
 			RoleID: newRole.RoleID,
 			Privs:  priv}
-		if formPrivErr := setFormRolePrivs(params); formPrivErr != nil {
-			return fmt.Errorf("newDatabaseRoleWithPrivs: %v", formPrivErr)
+		if listPrivErr := setListRolePrivs(params); listPrivErr != nil {
+			return fmt.Errorf("newDatabaseRoleWithPrivs: %v", listPrivErr)
 		}
 	}
 
@@ -172,61 +172,61 @@ func GetDatabaseAdminUserInfo(databaseID string) ([]userAuth.UserInfo, error) {
 
 }
 
-type FormPrivInfo struct {
-	FormID   string `json:"formID"`
-	FormName string `json:"formName"`
+type ListPrivInfo struct {
+	ListID   string `json:"listID"`
+	ListName string `json:"listName"`
 	Privs    string `json:"privs"`
 }
 
-type CustomFormRoleInfo struct {
+type CustomListRoleInfo struct {
 	RoleID    string         `json:"roleID"`
 	RoleName  string         `json:"roleName"`
-	FormPrivs []FormPrivInfo `json:"formPrivs"`
+	ListPrivs []ListPrivInfo `json:"listPrivs"`
 }
 
-func GetCustomRoleFormInfo(databaseID string) ([]CustomFormRoleInfo, error) {
+func GetCustomRoleListInfo(databaseID string) ([]CustomListRoleInfo, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
 		`SELECT database_roles.role_id,database_roles.name,
-					forms.form_id,forms.name,form_role_privs.privs
-				FROM form_role_privs,database_roles,forms
+					item_lists.list_id,item_lists.name,list_role_privs.privs
+				FROM list_role_privs,database_roles,item_lists
 				WHERE database_roles.database_id=$1
-				   AND database_roles.role_id=form_role_privs.role_id
-				   AND form_role_privs.form_id=forms.form_id 
+				   AND database_roles.role_id=list_role_privs.role_id
+				   AND list_role_privs.list_id=item_lists.list_id 
 				ORDER BY database_roles.role_id`, databaseID)
 	if queryErr != nil {
-		return nil, fmt.Errorf("GetCustomRoleInfo: Failure querying database: %v", queryErr)
+		return nil, fmt.Errorf("GetCustomRoleListInfo: Failure querying database: %v", queryErr)
 	}
 
-	roleInfoMap := map[string]*CustomFormRoleInfo{}
+	roleInfoMap := map[string]*CustomListRoleInfo{}
 
 	for rows.Next() {
 
-		currFormPrivInfo := FormPrivInfo{}
+		currListPrivInfo := ListPrivInfo{}
 		currRoleName := ""
 		currRoleID := ""
 
 		if scanErr := rows.Scan(&currRoleID, &currRoleName,
-			&currFormPrivInfo.FormID, &currFormPrivInfo.FormName, &currFormPrivInfo.Privs); scanErr != nil {
+			&currListPrivInfo.ListID, &currListPrivInfo.ListName, &currListPrivInfo.Privs); scanErr != nil {
 			return nil, fmt.Errorf("GetCustomRoleInfo: Failure querying database: %v", scanErr)
 		}
 
-		var roleInfo *CustomFormRoleInfo
+		var roleInfo *CustomListRoleInfo
 		if currRoleInfo, roleInfoFound := roleInfoMap[currRoleID]; !roleInfoFound {
-			roleInfo = &CustomFormRoleInfo{
+			roleInfo = &CustomListRoleInfo{
 				RoleID:    currRoleID,
 				RoleName:  currRoleName,
-				FormPrivs: []FormPrivInfo{}}
+				ListPrivs: []ListPrivInfo{}}
 			roleInfoMap[currRoleID] = roleInfo
 		} else {
 			roleInfo = currRoleInfo
 		}
 
-		roleInfo.FormPrivs = append(roleInfo.FormPrivs, currFormPrivInfo)
+		roleInfo.ListPrivs = append(roleInfo.ListPrivs, currListPrivInfo)
 
 	}
 
-	customRoleInfo := []CustomFormRoleInfo{}
+	customRoleInfo := []CustomListRoleInfo{}
 	for _, currRoleInfo := range roleInfoMap {
 		customRoleInfo = append(customRoleInfo, *currRoleInfo)
 	}
@@ -302,7 +302,7 @@ type CustomRoleInfo struct {
 	RoleID         string              `json:"roleID"`
 	RoleName       string              `json:"roleName"`
 	RoleUsers      []userAuth.UserInfo `json:"roleUsers"`
-	FormPrivs      []FormPrivInfo      `json:"formPrivs"`
+	ListPrivs      []ListPrivInfo      `json:"listPrivs"`
 	DashboardPrivs []DashboardPrivInfo `json:"dashboardPrivs"`
 }
 
@@ -319,7 +319,7 @@ func GetCustomRoleInfo(databaseID string) ([]CustomRoleInfo, error) {
 				RoleID:         roleID,
 				RoleName:       roleName,
 				RoleUsers:      []userAuth.UserInfo{},
-				FormPrivs:      []FormPrivInfo{},
+				ListPrivs:      []ListPrivInfo{},
 				DashboardPrivs: []DashboardPrivInfo{}}
 			roleInfoMap[roleID] = roleInfo
 		}
@@ -327,14 +327,14 @@ func GetCustomRoleInfo(databaseID string) ([]CustomRoleInfo, error) {
 
 	}
 
-	customFormInfo, formErr := GetCustomRoleFormInfo(databaseID)
-	if formErr != nil {
-		return nil, fmt.Errorf("GetCustomRoleInfo: %v", formErr)
+	customListInfo, listErr := GetCustomRoleListInfo(databaseID)
+	if listErr != nil {
+		return nil, fmt.Errorf("GetCustomRoleInfo: %v", listErr)
 	}
-	for _, formInfo := range customFormInfo {
+	for _, listInfo := range customListInfo {
 
-		roleInfo := getOrAllocRoleInfo(formInfo.RoleID, formInfo.RoleName)
-		roleInfo.FormPrivs = formInfo.FormPrivs
+		roleInfo := getOrAllocRoleInfo(listInfo.RoleID, listInfo.RoleName)
+		roleInfo.ListPrivs = listInfo.ListPrivs
 	}
 
 	customDashboardInfo, dashErr := GetCustomRoleDashboardInfo(databaseID)
