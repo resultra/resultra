@@ -6,11 +6,12 @@ import (
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/form"
-	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/formLink"
+	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/recordReadController"
 	"resultra/datasheet/server/recordUpdate"
 	"resultra/datasheet/server/timelineController"
+	"resultra/datasheet/server/userRoleController"
 )
 
 // Dummy variables to force inclusion of the packages (and not trigger an error from the Golang compiler).
@@ -25,6 +26,7 @@ var dummyAdminInfo = adminController.DummyStructForInclude{}
 var dummyGlobalInfo = global.DummyStructForInclude{}
 var dummyTimelineInfo = timelineController.DummyStructForInclude{}
 var dummyNewItemInfo = formLink.DummyStructForInclude{}
+var dummyUserRoleInfo = userRoleController.DummyStructForInclude{}
 
 func DummyFunctionForImportFromGoogleAppEngineProjectFolder() {
 	// This dummy function is needed so standaline packages inside

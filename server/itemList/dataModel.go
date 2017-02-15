@@ -85,13 +85,13 @@ func GetItemList(listID string) (*ItemList, error) {
 	return &retrievedList, nil
 }
 
-func getAllItemLists(parentDatabaseID string) ([]ItemList, error) {
+func GetAllItemLists(parentDatabaseID string) ([]ItemList, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
 		`SELECT database_id,list_id,form_id,name,properties FROM item_lists WHERE database_id = $1`,
 		parentDatabaseID)
 	if queryErr != nil {
-		return nil, fmt.Errorf("getAllItemLists: Failure querying database: %v", queryErr)
+		return nil, fmt.Errorf("GetAllItemLists: Failure querying database: %v", queryErr)
 	}
 
 	itemLists := []ItemList{}
@@ -100,12 +100,12 @@ func getAllItemLists(parentDatabaseID string) ([]ItemList, error) {
 		encodedProps := ""
 
 		if scanErr := rows.Scan(&currList.ParentDatabaseID, &currList.ListID, &currList.FormID, &currList.Name, &encodedProps); scanErr != nil {
-			return nil, fmt.Errorf("getAllItemLists: Failure querying database: %v", scanErr)
+			return nil, fmt.Errorf("GetAllItemLists: Failure querying database: %v", scanErr)
 		}
 
 		listProps := newDefaultItemListProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &listProps); decodeErr != nil {
-			return nil, fmt.Errorf("getAllItemLists: can't decode properties: %v", encodedProps)
+			return nil, fmt.Errorf("GetAllItemLists: can't decode properties: %v", encodedProps)
 		}
 		currList.Properties = listProps
 
@@ -123,7 +123,7 @@ func CloneItemLists(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID s
 		return fmt.Errorf("CloneTableLists: Error getting remapped database ID: %v", err)
 	}
 
-	lists, err := getAllItemLists(srcParentDatabaseID)
+	lists, err := GetAllItemLists(srcParentDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneTableLists: $v", err)
 	}

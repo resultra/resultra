@@ -47,12 +47,28 @@
 
 {{end}}
 
+{{define "adminRoleListPrivsProperty"}}
+
+
+	<tr>
+		<td class="width200"><label>List privileges:</label>
+			<div><small>For users belonging to this role, configure which lists these users have read or write access to.</small></div>
+		</td>
+
+		<td>
+			<div class="list-group" id="adminRoleListPrivilegesList">
+			</div>		
+		</td>
+	</tr>
+
+{{end}}
 
 
 {{define "rolePropsBody"}}
 
 <table class="table">
-	{{template "adminRoleNameProperty"}}	
+	{{template "adminRoleNameProperty"}}
+	{{template "adminRoleListPrivsProperty"}}	
 </table>
 
 

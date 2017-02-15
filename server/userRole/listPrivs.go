@@ -30,22 +30,22 @@ type SetListRolePrivsParams struct {
 	Privs  string `json:"privs"`
 }
 
-func setListRolePrivs(params SetListRolePrivsParams) error {
+func SetListRolePrivs(params SetListRolePrivsParams) error {
 
 	if privsErr := verifyListRolePrivs(params.Privs); privsErr != nil {
-		return fmt.Errorf("setListRolePrivs: error = %v", privsErr)
+		return fmt.Errorf("SetListRolePrivs: error = %v", privsErr)
 	}
 
 	if _, deleteErr := databaseWrapper.DBHandle().Exec(
 		`DELETE FROM list_role_privs where role_id=$1 and list_id=$2`,
 		params.RoleID, params.ListID); deleteErr != nil {
-		return fmt.Errorf("setListRolePrivs: Can't delete old privs: error = %v", deleteErr)
+		return fmt.Errorf("SetListRolePrivs: Can't delete old privs: error = %v", deleteErr)
 	}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
 		`INSERT INTO list_role_privs (role_id,list_id,privs) VALUES ($1,$2,$3)`,
 		params.RoleID, params.ListID, params.Privs); insertErr != nil {
-		return fmt.Errorf("setListRolePrivs: Can't set list privileges: error = %v", insertErr)
+		return fmt.Errorf("SetListRolePrivs: Can't set list privileges: error = %v", insertErr)
 	}
 
 	return nil
@@ -58,14 +58,14 @@ type ListRolePriv struct {
 	Privs    string `json:"privs"`
 }
 
-func getListRolePrivs(listID string) ([]ListRolePriv, error) {
+func GetListRolePrivs(listID string) ([]ListRolePriv, error) {
 
 	databaseID, databaseErr := getItemListDatabaseID(listID)
 	if databaseErr != nil {
 		return nil, fmt.Errorf("getListRolePrivs: Error retrieving database info for list: %v", listID)
 	}
 
-	roles, rolesErr := getDatabaseRoles(databaseID)
+	roles, rolesErr := GetDatabaseRoles(databaseID)
 	if rolesErr != nil {
 		return nil, fmt.Errorf("getListRolePrivs: Error getting roles for list: %v", listID)
 	}
@@ -118,6 +118,26 @@ type RoleListPriv struct {
 	Privs    string `json:"privs"`
 }
 
-func getRoleListPrivs(roleID string) ([]RoleListPriv, error) {
-	return nil, fmt.Errorf("Not implemented")
+func GetRoleListPrivs(roleID string) ([]RoleListPriv, error) {
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT item_lists.list_id,item_lists.name,list_role_privs.privs
+			FROM list_role_privs,item_lists
+			WHERE list_role_privs.role_id=$1 AND
+				item_lists.list_id = list_role_privs.list_id`, roleID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetRoleListPrivs: Failure querying database: %v", queryErr)
+	}
+
+	roleListPrivs := []RoleListPriv{}
+	for rows.Next() {
+		currPrivInfo := RoleListPriv{}
+
+		if scanErr := rows.Scan(&currPrivInfo.ListID, &currPrivInfo.ListName, &currPrivInfo.Privs); scanErr != nil {
+			return nil, fmt.Errorf("GetRoleListPrivs: Failure querying database: %v", scanErr)
+		}
+		roleListPrivs = append(roleListPrivs, currPrivInfo)
+	}
+
+	return roleListPrivs, nil
 }

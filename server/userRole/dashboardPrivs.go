@@ -28,22 +28,22 @@ type SetDashboardRolePrivsParams struct {
 	Privs       string `json:"privs"`
 }
 
-func setDashboardRolePrivs(params SetDashboardRolePrivsParams) error {
+func SetDashboardRolePrivs(params SetDashboardRolePrivsParams) error {
 
 	if privsErr := verifyDashboardRolePrivs(params.Privs); privsErr != nil {
-		return fmt.Errorf("setDashboardRolePrivs: error = %v", privsErr)
+		return fmt.Errorf("SetDashboardRolePrivs: error = %v", privsErr)
 	}
 
 	if _, deleteErr := databaseWrapper.DBHandle().Exec(
 		`DELETE FROM dashboard_role_privs where role_id=$1 and dashboard_id=$2`,
 		params.RoleID, params.DashboardID); deleteErr != nil {
-		return fmt.Errorf("setDashboardRolePrivs: Can't delete old privs: error = %v", deleteErr)
+		return fmt.Errorf("SetDashboardRolePrivs: Can't delete old privs: error = %v", deleteErr)
 	}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
 		`INSERT INTO dashboard_role_privs (role_id,dashboard_id,privs) VALUES ($1,$2,$3)`,
 		params.RoleID, params.DashboardID, params.Privs); insertErr != nil {
-		return fmt.Errorf("setDashboardRolePrivs: Can't set form privileges: error = %v", insertErr)
+		return fmt.Errorf("SetDashboardRolePrivs: Can't set form privileges: error = %v", insertErr)
 	}
 
 	return nil
@@ -56,7 +56,7 @@ type DashboardRolePriv struct {
 	Privs    string `json:"privs"`
 }
 
-func getDashboardRolePrivs(dashboardID string) ([]DashboardRolePriv, error) {
+func GetDashboardRolePrivs(dashboardID string) ([]DashboardRolePriv, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
 		`SELECT database_roles.role_id,database_roles.name,dashboard_role_privs.privs

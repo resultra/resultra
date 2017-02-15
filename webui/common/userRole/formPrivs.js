@@ -26,11 +26,13 @@ function formRolePrivsButtonsHTML(roleID) {
 function initFormRolePrivsButtons(roleID,privs,privsChangedFunc) {
 
 	var radioName = formRoleButtonsRadioName(roleID)
+	var radioSelector = 'input[type="radio"][name="'+radioName+'"]'
+	
+	$(radioSelector).unbind("click")
 
 	// Initialize the radio selection - Using the click() function is Bootstrap specific
 	$(':radio[name="'+radioName+'"][value="' + privs + '"]').click()
 	
-	var radioSelector = 'input[type="radio"][name="'+radioName+'"]'
 	
 	$(radioSelector).change(function() {
 		var newPrivs = this.value

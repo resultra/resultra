@@ -66,7 +66,7 @@ type DatabaseRolesParams struct {
 	DatabaseID string `json:"databaseID"`
 }
 
-func getDatabaseRoles(databaseID string) ([]DatabaseRoleInfo, error) {
+func GetDatabaseRoles(databaseID string) ([]DatabaseRoleInfo, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
 		`SELECT role_id, name FROM database_roles
@@ -124,7 +124,7 @@ type NewDatabaseRoleWithPrivsParams struct {
 	DashboardPrivs map[string]string `json:"dashboardPrivs"` // Map of dashboard ID to privilege
 }
 
-func newDatabaseRoleWithPrivs(params NewDatabaseRoleWithPrivsParams) error {
+func NewDatabaseRoleWithPrivs(params NewDatabaseRoleWithPrivsParams) error {
 	log.Printf("newDatabaseRoleWithPrivs: %+v", params)
 
 	// TODO Wrap all the database writes from this function into a transaction.
@@ -140,7 +140,7 @@ func newDatabaseRoleWithPrivs(params NewDatabaseRoleWithPrivsParams) error {
 			ListID: listID,
 			RoleID: newRole.RoleID,
 			Privs:  priv}
-		if listPrivErr := setListRolePrivs(params); listPrivErr != nil {
+		if listPrivErr := SetListRolePrivs(params); listPrivErr != nil {
 			return fmt.Errorf("newDatabaseRoleWithPrivs: %v", listPrivErr)
 		}
 	}
@@ -152,7 +152,7 @@ func newDatabaseRoleWithPrivs(params NewDatabaseRoleWithPrivsParams) error {
 			RoleID:      newRole.RoleID,
 			Privs:       priv}
 
-		if dashboardPrivErr := setDashboardRolePrivs(setPrivParams); dashboardPrivErr != nil {
+		if dashboardPrivErr := SetDashboardRolePrivs(setPrivParams); dashboardPrivErr != nil {
 			return fmt.Errorf("newDatabaseRoleWithPrivs: %v", dashboardPrivErr)
 		}
 	}

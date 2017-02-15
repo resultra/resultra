@@ -1,4 +1,4 @@
-package userRole
+package userRoleController
 
 import (
 	"github.com/gorilla/mux"
@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/stringValidation"
+	"resultra/datasheet/server/userRole"
 )
 
 type DummyStructForInclude struct {
@@ -55,18 +56,18 @@ func validateRoleNameAPI(w http.ResponseWriter, r *http.Request) {
 
 func newRoleAPI(w http.ResponseWriter, r *http.Request) {
 
-	var params NewDatabaseRoleWithPrivsParams
+	var params userRole.NewDatabaseRoleWithPrivsParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	if verifyErr := VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if newErr := newDatabaseRoleWithPrivs(params); newErr != nil {
+	if newErr := userRole.NewDatabaseRoleWithPrivs(params); newErr != nil {
 		api.WriteErrorResponse(w, newErr)
 	} else {
 		successResponse := true
@@ -92,7 +93,7 @@ func getRoleAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	} */
 
-	if roleInfo, getErr := GetUserRole(params.RoleID); getErr != nil {
+	if roleInfo, getErr := userRole.GetUserRole(params.RoleID); getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 	} else {
 		api.WriteJSONResponse(w, roleInfo)
@@ -101,12 +102,12 @@ func getRoleAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func setNameAPI(w http.ResponseWriter, r *http.Request) {
-	var params SetRoleNameParams
+	var params userRole.SetRoleNameParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
-	processRolePropUpdate(w, r, params)
+	userRole.ProcessRolePropUpdate(w, r, params)
 }
 
 type ListRolePrivsParams struct {
@@ -121,12 +122,12 @@ func getListRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := VerifyCurrUserIsDatabaseAdminForItemList(r, params.ListID); verifyErr != nil {
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForItemList(r, params.ListID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if listRolePrivs, err := getListRolePrivs(params.ListID); err != nil {
+	if listRolePrivs, err := userRole.GetListRolePrivs(params.ListID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, listRolePrivs)
@@ -137,18 +138,18 @@ func getListRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 
 func setListRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 
-	var params SetListRolePrivsParams
+	var params userRole.SetListRolePrivsParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	if verifyErr := VerifyCurrUserIsDatabaseAdminForItemList(r, params.ListID); verifyErr != nil {
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForItemList(r, params.ListID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if err := setListRolePrivs(params); err != nil {
+	if err := userRole.SetListRolePrivs(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		successResponse := true
@@ -158,18 +159,18 @@ func setListRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 
 func getRoleListPrivsAPI(w http.ResponseWriter, r *http.Request) {
 
-	var params GetRoleListPrivParams
+	var params userRole.GetRoleListPrivParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	if verifyErr := VerifyCurrUserIsDatabaseAdminForUserRole(r, params.RoleID); verifyErr != nil {
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForUserRole(r, params.RoleID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if roleListPrivs, err := getRoleListPrivs(params.RoleID); err != nil {
+	if roleListPrivs, err := getRoleListPrivsWithDefaults(params.RoleID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, roleListPrivs)
@@ -183,18 +184,18 @@ type DashboardRolePrivsParams struct {
 }
 
 func setDashboardRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
-	var params SetDashboardRolePrivsParams
+	var params userRole.SetDashboardRolePrivsParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	if verifyErr := VerifyCurrUserIsDatabaseAdminForDashboard(r, params.DashboardID); verifyErr != nil {
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForDashboard(r, params.DashboardID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if err := setDashboardRolePrivs(params); err != nil {
+	if err := userRole.SetDashboardRolePrivs(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		successResponse := true
@@ -211,12 +212,12 @@ func getDashboardRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := VerifyCurrUserIsDatabaseAdminForDashboard(r, params.DashboardID); verifyErr != nil {
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForDashboard(r, params.DashboardID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if dashboardRolePrivs, err := getDashboardRolePrivs(params.DashboardID); err != nil {
+	if dashboardRolePrivs, err := userRole.GetDashboardRolePrivs(params.DashboardID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, dashboardRolePrivs)
@@ -227,36 +228,22 @@ func getDashboardRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 
 func getDatabaseRolesAPI(w http.ResponseWriter, r *http.Request) {
 
-	var params DatabaseRolesParams
+	var params userRole.DatabaseRolesParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	if verifyErr := VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if roles, err := getDatabaseRoles(params.DatabaseID); err != nil {
+	if roles, err := userRole.GetDatabaseRoles(params.DatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, roles)
 
 	}
 
-}
-
-func processRolePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater RolePropUpdater) {
-
-	if verifyErr := VerifyCurrUserIsDatabaseAdminForUserRole(r, propUpdater.getRoleID()); verifyErr != nil {
-		api.WriteErrorResponse(w, verifyErr)
-		return
-	}
-
-	if updatedRole, err := updateRoleProps(propUpdater); err != nil {
-		api.WriteErrorResponse(w, err)
-	} else {
-		api.WriteJSONResponse(w, updatedRole)
-	}
 }
