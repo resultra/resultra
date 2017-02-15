@@ -107,3 +107,17 @@ func getListRolePrivs(listID string) ([]ListRolePriv, error) {
 	return listRolePrivs, nil
 
 }
+
+type GetRoleListPrivParams struct {
+	RoleID string `json:"roleID"`
+}
+
+type RoleListPriv struct {
+	ListID   string `json:"listID"`
+	ListName string `json:"listName"`
+	Privs    string `json:"privs"`
+}
+
+func getRoleListPrivs(roleID string) ([]RoleListPriv, error) {
+	return nil, fmt.Errorf("Not implemented")
+}
