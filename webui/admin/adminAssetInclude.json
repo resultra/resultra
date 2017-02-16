@@ -4,7 +4,7 @@
 		"userRole/userRoleList",
 		"users",
 		"forms",
-		"fields",
+		"fields/fieldList",
 		"formLink/formLinkList",
 		"itemList/itemListList",
 		"dashboards",

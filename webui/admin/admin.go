@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/webui/admin/dashboards"
-	"resultra/datasheet/webui/admin/fields"
+	"resultra/datasheet/webui/admin/fields/fieldList"
 	"resultra/datasheet/webui/admin/formLink/formLinkList"
 	"resultra/datasheet/webui/admin/forms"
 	"resultra/datasheet/webui/admin/general"
@@ -33,7 +33,7 @@ func init() {
 		userRole.TemplateFileList,
 		users.TemplateFileList,
 		forms.TemplateFileList,
-		fields.TemplateFileList,
+		fieldList.TemplateFileList,
 		formLinkList.TemplateFileList,
 		itemListList.TemplateFileList,
 		dashboards.TemplateFileList,
