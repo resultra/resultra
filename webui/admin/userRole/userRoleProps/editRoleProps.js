@@ -76,6 +76,7 @@ $(document).ready(function() {
 		initUserRoleNameProperties(roleInfo)
 		
 		initRoleListPrivProperties(rolePropsContext.roleID)
+		initRoleDashboardPrivProperties(rolePropsContext.roleID)
 	}) // set record's number field value
 	
 })

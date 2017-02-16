@@ -6,7 +6,7 @@
 	  {{template "breadCrumbSeparator"}}
 	  <a class="h4 breadCrumbText" href="/admin/{{.DatabaseID}}">Settings</a>
 	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">RoleSettings</span>
+	  <span class="h4 breadCrumbText">Role Settings</span>
 	  {{template "breadCrumbSeparator"}}
 	  <span class="h4 breadCrumbText">{{.RoleName}}</span>
 	</div> <!-- breadcrumb header -->
@@ -63,12 +63,30 @@
 
 {{end}}
 
+{{define "adminRoleDashboardPrivsProperty"}}
+
+
+	<tr>
+		<td class="width200"><label>Dashboard privileges:</label>
+			<div><small>For users belonging to this role, configure which dashboard these users have read access to.</small></div>
+		</td>
+
+		<td>
+			<div class="list-group" id="adminDashboardRolesPrivilegesList">
+			</div>		
+		</td>
+	</tr>
+
+{{end}}
+
+
 
 {{define "rolePropsBody"}}
 
 <table class="table">
 	{{template "adminRoleNameProperty"}}
 	{{template "adminRoleListPrivsProperty"}}	
+	{{template "adminRoleDashboardPrivsProperty"}}
 </table>
 
 

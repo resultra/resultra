@@ -83,3 +83,37 @@ func GetDashboardRolePrivs(dashboardID string) ([]DashboardRolePriv, error) {
 	return dashboardRolePrivs, nil
 
 }
+
+type GetRoleDashboardPrivParams struct {
+	RoleID string `json:"roleID"`
+}
+
+type RoleDashboardPriv struct {
+	DashboardID   string `json:"dashboardID"`
+	DashboardName string `json:"dashboardName"`
+	Privs         string `json:"privs"`
+}
+
+func GetRoleDashboardPrivs(roleID string) ([]RoleDashboardPriv, error) {
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT dashboards.dashboard_id,dashboards.name,dashboard_role_privs.privs
+			FROM dashboard_role_privs,dashboards
+			WHERE dashboard_role_privs.role_id=$1 AND
+				dashboard_role_privs.dashboard_id = dashboards.dashboard_id`, roleID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetRoleDashboardPrivs: Failure querying database: %v", queryErr)
+	}
+
+	roleDashboardPrivs := []RoleDashboardPriv{}
+	for rows.Next() {
+		currPrivInfo := RoleDashboardPriv{}
+
+		if scanErr := rows.Scan(&currPrivInfo.DashboardID, &currPrivInfo.DashboardName, &currPrivInfo.Privs); scanErr != nil {
+			return nil, fmt.Errorf("GetRoleDashboardPrivs: Failure querying database: %v", scanErr)
+		}
+		roleDashboardPrivs = append(roleDashboardPrivs, currPrivInfo)
+	}
+
+	return roleDashboardPrivs, nil
+}

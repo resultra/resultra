@@ -92,30 +92,31 @@ func GetDashboard(dashboardID string) (*Dashboard, error) {
 
 }
 
-func getAllDashboards(parentDatabaseID string) ([]Dashboard, error) {
+func GetAllDashboards(parentDatabaseID string) ([]Dashboard, error) {
 
 	rows, err := databaseWrapper.DBHandle().Query(
-		`SELECT database_id,name,properties
+		`SELECT database_id,dashboard_id,name,properties
 		 FROM dashboards
 		 WHERE database_id = $1`,
 		parentDatabaseID)
 	if err != nil {
-		return nil, fmt.Errorf("getAllDashboards: Failure querying database: %v", err)
+		return nil, fmt.Errorf("GetAllDashboards: Failure querying database: %v", err)
 	}
 
 	dashboards := []Dashboard{}
 	for rows.Next() {
-		var currDashboard Dashboard
+		currDashboard := Dashboard{}
 		encodedProps := ""
 
-		if err := rows.Scan(&currDashboard.ParentDatabaseID, &currDashboard.DashboardID,
+		if err := rows.Scan(&currDashboard.ParentDatabaseID,
+			&currDashboard.DashboardID,
 			&currDashboard.Name, &encodedProps); err != nil {
-			return nil, fmt.Errorf("getAllDashboards: Failure querying database: %v", err)
+			return nil, fmt.Errorf("GetAllDashboards: Failure querying database: %v", err)
 		}
 
 		var dashboardProps DashboardProperties
 		if err := generic.DecodeJSONString(encodedProps, &dashboardProps); err != nil {
-			return nil, fmt.Errorf("getAllDashboards: can't decode properties: %v,error=%v", encodedProps, err)
+			return nil, fmt.Errorf("GetAllDashboards: can't decode properties: %v,error=%v", encodedProps, err)
 		}
 		currDashboard.Properties = dashboardProps
 
@@ -133,7 +134,7 @@ func CloneDashboards(remappedIDs uniqueID.UniqueIDRemapper, parentDatabaseID str
 		return fmt.Errorf("CloneDashboards: Error getting remapped database ID: %v", err)
 	}
 
-	dashboards, err := getAllDashboards(parentDatabaseID)
+	dashboards, err := GetAllDashboards(parentDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneDashboards: Error getting dashboards for parent database ID = %v: %v",
 			parentDatabaseID, err)
