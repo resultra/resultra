@@ -7,19 +7,19 @@ $(document).ready(function() {
 	
 		var $nameForm = $('#fieldNamePropertyForm')
 		
-		$nameInput.val(roleInfo.roleName)
+		$nameInput.val(fieldInfo.name)
 		
 		var remoteValidationParams = {
-			url: '/api/userRole/validateRoleName',
+			url: '/api/field/validateExistingFieldName',
 			data: {
-				roleID: function() { return roleInfo.roleID },
-				roleName: function() { return $nameInput.val() }
+				fieldID: function() { return fieldInfo.fieldID },
+				fieldName: function() { return $nameInput.val() }
 			}	
 		}
 	
 		var validationSettings = createInlineFormValidationSettings({
 			rules: {
-				itemListPropsNameInput: {
+				fieldPropsNameInput: {
 					minlength: 3,
 					required: true,
 					remote: remoteValidationParams
@@ -28,16 +28,16 @@ $(document).ready(function() {
 		})	
 	
 	
-		var validator = $listNameForm.validate(validationSettings)
+		var validator = $nameForm.validate(validationSettings)
 	
 		initInlineInputValidationOnBlur(validator,'#fieldPropsNameInput',
 			remoteValidationParams, function(validatedName) {		
 				var setNameParams = {
-					roleID:roleInfo.roleID,
-					newRoleName:validatedName
+					fieldID:fieldInfo.fieldID,
+					newFieldName:validatedName
 				}
-				jsonAPIRequest("userRole/setName",setNameParams,function(listInfo) {
-					console.log("Done changing list name: " + validatedName)
+				jsonAPIRequest("field/setName",setNameParams,function(updatedFieldInfo) {
+					console.log("Done changing field name: " + validatedName)
 				})
 		})	
 
@@ -71,7 +71,7 @@ $(document).ready(function() {
 		
 	var getFieldParams = { fieldID: fieldPropsContext.fieldID }
 	jsonAPIRequest("field/get",getFieldParams,function(fieldInfo) {
-//		initUserRoleNameProperties(roleInfo)		
+		initFieldNameProperties(fieldInfo)		
 	}) // set record's number field value
 	
 })

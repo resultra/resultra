@@ -2,6 +2,8 @@ package field
 
 import (
 	"fmt"
+	"net/http"
+	"resultra/datasheet/server/generic/api"
 )
 
 type FieldIDInterface interface {
@@ -26,6 +28,14 @@ type FieldPropUpdater interface {
 	UpdateProps(fieldForUpdate *Field) error
 }
 
+func processFieldPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater FieldPropUpdater) {
+	if updatedField, err := UpdateFieldProps(propUpdater); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, updatedField)
+	}
+}
+
 func UpdateFieldProps(propUpdater FieldPropUpdater) (*Field, error) {
 
 	fieldForUpdate, getErr := GetField(propUpdater.GetFieldID())
@@ -45,4 +55,20 @@ func UpdateFieldProps(propUpdater FieldPropUpdater) (*Field, error) {
 
 	return updatedField, nil
 
+}
+
+type SetFieldNameParams struct {
+	FieldIDHeader
+	NewFieldName string `json:"newFieldName"`
+}
+
+func (updateParams SetFieldNameParams) UpdateProps(field *Field) error {
+
+	if validateErr := validateExistingFieldName(field.FieldID, updateParams.NewFieldName); validateErr != nil {
+		return validateErr
+	}
+
+	field.Name = updateParams.NewFieldName
+
+	return nil
 }
