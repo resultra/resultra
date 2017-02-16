@@ -3,6 +3,7 @@ package admin
 import (
 	"github.com/gorilla/mux"
 
+	"resultra/datasheet/webui/admin/fields/fieldProps"
 	"resultra/datasheet/webui/admin/formLink/formLinkProps"
 	"resultra/datasheet/webui/admin/forms/design"
 	"resultra/datasheet/webui/admin/itemList/itemListProps"
@@ -17,4 +18,5 @@ func RegisterHTTPHandlers(mainRouter *mux.Router) {
 	itemListProps.RegisterHTTPHandlers(mainRouter)
 	formLinkProps.RegisterHTTPHandlers(mainRouter)
 	userRoleProps.RegisterHTTPHandlers(mainRouter)
+	fieldProps.RegisterHTTPHandlers(mainRouter)
 }

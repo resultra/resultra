@@ -1,0 +1,110 @@
+{{define "fieldPropsBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-tasks" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
+	  {{template "breadCrumbSeparator"}}
+	  <a class="h4 breadCrumbText" href="/admin/{{.DatabaseID}}">Settings</a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Field Settings</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">{{.FieldName}}</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "fieldPropsHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "fieldPropsBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "adminFieldNameProperty"}}
+
+
+	<tr>
+		<td class="width200"><label>Field name:</label>
+		</td>
+
+		<td>
+			<form class="form-inline" id="fieldNamePropertyForm">
+				<div class="form-group">
+					<input type="text" id="fieldPropsNameInput" name="fieldPropsNameInput" 
+							class="form-control" placeholder="Field Name" required="" autofocus="">
+				</div>
+			</form>
+		</td>
+	</tr>
+
+{{end}}
+
+
+
+{{define "fieldPropsBody"}}
+
+<table class="table">
+	{{template "adminFieldNameProperty"}}
+</table>
+
+
+{{end}}
+
+{{define "editFieldPropsPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- fieldPropsAssets:css -->
+	<!-- endinject -->
+	
+	<script>var fieldPropsContext = { 
+		fieldID:"{{.FieldID}}",
+		databaseID:"{{.DatabaseID}}"} 
+	</script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- fieldPropsAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="editFieldPropsPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north" id="fieldPageHeaderUILayout">
+			{{template "fieldPropsHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west" id="fieldPageTocLayout">
+			{{template "databaseTOC" .}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center" id="fieldPageLayout">
+			{{template "fieldPropsBody" .}}
+		</div> <!-- center pane for entire page -->	
+		
+	</div> <!-- layout page -->	
+		
+		
+	{{template "submitFormDialog"}}
+		
+  </body>
+  	
+</html>
+
+{{end}}

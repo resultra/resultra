@@ -13,6 +13,7 @@ func init() {
 
 	fieldRouter.HandleFunc("/api/field/new", newField)
 	fieldRouter.HandleFunc("/api/field/getListByType", getFieldsByType)
+	fieldRouter.HandleFunc("/api/field/get", getField)
 
 	http.Handle("/api/field/", fieldRouter)
 }
@@ -51,6 +52,26 @@ func getFieldsByType(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, fieldsByType)
+	}
+
+}
+
+type GetFieldParams struct {
+	FieldID string `json:"fieldID"`
+}
+
+func getField(w http.ResponseWriter, r *http.Request) {
+
+	var params GetFieldParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if fieldInfo, err := GetField(params.FieldID); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, fieldInfo)
 	}
 
 }

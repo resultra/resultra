@@ -9,15 +9,13 @@ function initAdminFieldSettings(databaseID) {
 		$fieldListItem.attr("data-fieldID",fieldInfo.fieldID)
 	
 		var $editFieldPropsButton = $fieldListItem.find(".editFieldPropsButton")
+		var editPropsLink = '/admin/field/' + fieldInfo.fieldID
+		$editFieldPropsButton.attr("href",editPropsLink)
 
 		var $nameLabel = $fieldListItem.find(".fieldNameLabel")
 		$nameLabel.text(fieldInfo.name)
 		
-		initButtonControlClickHandler($editFieldPropsButton,function() {
-			console.log("Edit field properties: " + JSON.stringify(fieldInfo))
-			openFieldPropertiesDialog(fieldInfo)
-		}) 
- 	
+	
 		$('#adminFieldList').append($fieldListItem)		
 	}
 		
