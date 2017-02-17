@@ -47,12 +47,33 @@
 
 {{end}}
 
+{{define "adminFieldRefNameProperty"}}
+
+
+	<tr>
+		<td class="width200"><label>Formula reference name:</label>
+			<div><small>Set the name used to reference this field from calculated fields' formulas.</small></div>
+		</td>
+
+		<td>
+			<form class="form-inline" id="fieldRefNamePropertyForm">
+				<div class="form-group">
+					<input type="text" id="fieldPropsRefNameInput" name="fieldPropsRefNameInput" 
+							class="form-control" placeholder="Field Reference Name" required="" autofocus="">
+				</div>
+			</form>
+		</td>
+	</tr>
+
+{{end}}
+
 
 
 {{define "fieldPropsBody"}}
 
 <table class="table">
 	{{template "adminFieldNameProperty"}}
+	{{template "adminFieldRefNameProperty"}}
 </table>
 
 

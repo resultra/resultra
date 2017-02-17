@@ -18,8 +18,11 @@ func init() {
 
 	fieldRouter.HandleFunc("/api/field/validateExistingFieldName", validateExistingFieldNameAPI)
 	fieldRouter.HandleFunc("/api/field/validateNewFieldName", validateNewFieldNameAPI)
-
 	fieldRouter.HandleFunc("/api/field/setName", setNameAPI)
+
+	fieldRouter.HandleFunc("/api/field/validateExistingFieldRefName", validateExistingFieldRefNameAPI)
+	fieldRouter.HandleFunc("/api/field/validateNewFieldRefName", validateNewFieldRefNameAPI)
+	fieldRouter.HandleFunc("/api/field/setRefName", setRefNameAPI)
 
 	http.Handle("/api/field/", fieldRouter)
 }
@@ -112,8 +115,47 @@ func validateNewFieldNameAPI(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func validateExistingFieldRefNameAPI(w http.ResponseWriter, r *http.Request) {
+
+	fieldRefName := r.FormValue("fieldRefName")
+	fieldID := r.FormValue("fieldID")
+
+	if err := validateExistingFieldRefName(fieldID, fieldRefName); err != nil {
+		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
+		return
+	}
+
+	response := true
+	api.WriteJSONResponse(w, response)
+
+}
+
+func validateNewFieldRefNameAPI(w http.ResponseWriter, r *http.Request) {
+
+	fieldRefName := r.FormValue("fieldRefName")
+	databaseID := r.FormValue("databaseID")
+
+	if err := validateNewFieldRefName(databaseID, fieldRefName); err != nil {
+		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
+		return
+	}
+
+	response := true
+	api.WriteJSONResponse(w, response)
+
+}
+
 func setNameAPI(w http.ResponseWriter, r *http.Request) {
 	var params SetFieldNameParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFieldPropUpdate(w, r, params)
+}
+
+func setRefNameAPI(w http.ResponseWriter, r *http.Request) {
+	var params SetFieldRefNameParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

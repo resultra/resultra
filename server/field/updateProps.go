@@ -72,3 +72,20 @@ func (updateParams SetFieldNameParams) UpdateProps(field *Field) error {
 
 	return nil
 }
+
+type SetFieldRefNameParams struct {
+	FieldIDHeader
+	NewFieldRefName string `json:"newFieldRefName"`
+}
+
+func (updateParams SetFieldRefNameParams) UpdateProps(field *Field) error {
+
+	if validateErr := validateExistingFieldRefName(field.FieldID,
+		updateParams.NewFieldRefName); validateErr != nil {
+		return validateErr
+	}
+
+	field.RefName = updateParams.NewFieldRefName
+
+	return nil
+}
