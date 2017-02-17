@@ -115,7 +115,26 @@ $(document).ready(function() {
 	var getFieldParams = { fieldID: fieldPropsContext.fieldID }
 	jsonAPIRequest("field/get",getFieldParams,function(fieldInfo) {
 		initFieldNameProperties(fieldInfo)
-		initFieldRefNameProperties(fieldInfo)	
+		initFieldRefNameProperties(fieldInfo)
+		
+		
+		var $formulaEditorProperty = $('#adminCalcFieldFormulaProperty')
+		if (fieldInfo.isCalcField) {
+			$formulaEditorProperty.show()
+			function showFormulaEditPane() { /* no-op */ }
+			function hideFormulaEditPanel() { /* no-op */ }
+			var formulaEditorParams = {
+				databaseID: fieldInfo.parentDatabaseID,
+				showEditorFunc:showFormulaEditPane,
+				hideEditorFunc:hideFormulaEditPanel
+			}
+			initFormulaEditor(formulaEditorParams)
+			openFormulaEditor(fieldInfo)
+			
+		} else {
+			$formulaEditorProperty.hide()
+		}
+			
 	}) // set record's number field value
 	
 })

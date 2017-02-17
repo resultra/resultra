@@ -52,7 +52,7 @@
 
 	<tr>
 		<td class="width200"><label>Formula reference name:</label>
-			<div><small>Set the name used to reference this field from calculated fields' formulas.</small></div>
+			<div><small>Set the name used to reference this field from other calculated fields' formulas.</small></div>
 		</td>
 
 		<td>
@@ -67,6 +67,22 @@
 
 {{end}}
 
+{{define "adminFieldFormulaProperty"}}
+
+
+	<tr id="adminCalcFieldFormulaProperty" class="initiallyHidden">
+		<td class="width200"><label>Calculated field formula:</label>
+			<div><small>Configure the formula used to automatically calculate values for this field.</small></div>
+		</td>
+
+		<td>
+			{{template "formulaEditor"}}
+		</td>
+	</tr>
+
+{{end}}
+
+
 
 
 {{define "fieldPropsBody"}}
@@ -74,6 +90,7 @@
 <table class="table">
 	{{template "adminFieldNameProperty"}}
 	{{template "adminFieldRefNameProperty"}}
+	{{template "adminFieldFormulaProperty"}}
 </table>
 
 
