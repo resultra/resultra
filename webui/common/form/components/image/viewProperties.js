@@ -5,12 +5,11 @@ function initImageViewProperties(componentSelectionParams) {
 	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()		
 
 	var elemPrefix = "image_"
-	var componentLink = imageRef.properties.componentLink
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
 		recordID: currRecordRef.recordID,
-		componentLink: componentLink
+		fieldID: imageRef.properties.fieldID
 	}
 	initFormComponentTimelinePane(timelineParams)
 	

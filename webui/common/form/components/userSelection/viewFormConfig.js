@@ -5,91 +5,58 @@ function loadRecordIntoUserSelection(userSelectionElem, recordRef) {
 	
 	var $userSelectionControl = userSelectionControlFromUserSelectionComponentContainer(userSelectionElem)
 	
-	var componentLink = userSelectionObjectRef.properties.componentLink
-	
-	if(componentLink.linkedValType == linkedComponentValTypeField) {
-		var userSelectionFieldID = componentLink.fieldID
-	
-		console.log("loadRecordIntoUserSelection: Field ID to load data:" + userSelectionFieldID)
-	
-		// In other words, we are populating the "intersection" of field values in the record
-		// with the fields shown by the layout's containers.
-		if(recordRef.fieldValues.hasOwnProperty(userSelectionFieldID)) {
+	var userSelectionFieldID = userSelectionObjectRef.properties.fieldID
 
-			var fieldVal = recordRef.fieldValues[userSelectionFieldID]
+	console.log("loadRecordIntoUserSelection: Field ID to load data:" + userSelectionFieldID)
 
-			setUserSelectionControlVal($userSelectionControl,fieldVal)
-	
-		} // If record has a value for the current container's associated field ID.
-		else
-		{
-			clearUserSelectionControlVal($userSelectionControl)
-		}
-	} else {
-		var userSelectionGlobalID = componentLink.globalID
-		console.log("loadRecordIntoUserSelection: Global ID to load data:" + userSelectionGlobalID)
-		
-		if(userSelectionGlobalID in currGlobalVals) {
-			var globalVal = currGlobalVals[userSelectionGlobalID]
-			setUserSelectionControlVal($userSelectionControl,globalVal)
-		}
-		else
-		{
-			clearUserSelectionControlVal($userSelectionControl)
-		}				
+	// In other words, we are populating the "intersection" of field values in the record
+	// with the fields shown by the layout's containers.
+	if(recordRef.fieldValues.hasOwnProperty(userSelectionFieldID)) {
+
+		var fieldVal = recordRef.fieldValues[userSelectionFieldID]
+
+		setUserSelectionControlVal($userSelectionControl,fieldVal)
+
+	} // If record has a value for the current container's associated field ID.
+	else
+	{
+		clearUserSelectionControlVal($userSelectionControl)
 	}
-	
+		
 }
 
 
 function initUserSelectionRecordEditBehavior($userSelectionContainer, componentContext,recordProxy, userSelectionObjectRef) {
 
-	var componentLink = userSelectionObjectRef.properties.componentLink
+	var selectionFieldID = userSelectionObjectRef.properties.fieldID
 		
 	var $userSelectionControl = userSelectionControlFromUserSelectionComponentContainer($userSelectionContainer)
 
 	function setUserSelectionValue(selectedUserID) {
 		
 		currRecordRef = recordProxy.getRecordFunc()
-	
-		if(componentLink.linkedValType == linkedComponentValTypeField) {
-			var userFieldID = componentLink.fieldID
-	
-			var userValueFormat = {
-				context: "selectUser",
-				format: "general"
-			}
-			var setRecordValParams = { 
-				parentDatabaseID:currRecordRef.parentDatabaseID,
-				recordID:currRecordRef.recordID,
-				changeSetID: recordProxy.changeSetID, 
-				fieldID:userFieldID, 
-				userID:selectedUserID,
-				valueFormat:userValueFormat}
-			jsonAPIRequest("recordUpdate/setUserFieldValue",setRecordValParams,function(updatedFieldVal) {
-				// After updating the record, the local cache of records in currentRecordSet will
-				// be out of date. So after updating the record on the server, the locally cached
-				// version of the record also needs to be updated.
-				recordProxy.updateRecordFunc(updatedFieldVal)
-		
-			}) // set record's number field value
 
-			// TBD - initialize control
-		
-		} else {
-			var userGlobalID = componentLink.globalID
-			console.log("loadRecordIntoUserSelection: Global ID to load data:" + userGlobalID)
-			
-			var setGlobalValParams = {
-				parentDatabaseID: componentContext.databaseID,
-				globalID: componentLink.globalID,
-				userID: selectedUserID
-			}
-			console.log("Setting global value (user): " + JSON.stringify(setGlobalValParams))
-			jsonAPIRequest("global/setUserValue",setGlobalValParams,function(replyData) {
-			})
-					
+		var userFieldID = selectionFieldID
+
+		var userValueFormat = {
+			context: "selectUser",
+			format: "general"
 		}
+		var setRecordValParams = { 
+			parentDatabaseID:currRecordRef.parentDatabaseID,
+			recordID:currRecordRef.recordID,
+			changeSetID: recordProxy.changeSetID, 
+			fieldID:userFieldID, 
+			userID:selectedUserID,
+			valueFormat:userValueFormat}
+		jsonAPIRequest("recordUpdate/setUserFieldValue",setRecordValParams,function(updatedFieldVal) {
+			// After updating the record, the local cache of records in currentRecordSet will
+			// be out of date. So after updating the record on the server, the locally cached
+			// version of the record also needs to be updated.
+			recordProxy.updateRecordFunc(updatedFieldVal)
+	
+		}) // set record's number field value
+
 		
 	}
 	

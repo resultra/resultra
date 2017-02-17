@@ -19,9 +19,9 @@ type Rating struct {
 }
 
 type NewRatingParams struct {
-	ParentFormID  string                         `json:"parentFormID"`
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
+	ParentFormID string                         `json:"parentFormID"`
+	FieldID      string                         `json:"fieldID"`
+	Geometry     componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func validRatingFieldType(fieldType string) bool {
@@ -48,14 +48,14 @@ func saveNewRating(params NewRatingParams) (*Rating, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if compLinkErr := common.ValidateComponentLink(params.ComponentLink, validRatingFieldType); compLinkErr != nil {
-		return nil, fmt.Errorf("saveNewRating: %v", compLinkErr)
+	if fieldErr := common.ValidateField(params.FieldID, validRatingFieldType); fieldErr != nil {
+		return nil, fmt.Errorf("saveNewRating: %v", fieldErr)
 	}
 
 	properties := RatingProperties{
-		ComponentLink: params.ComponentLink,
-		Geometry:      params.Geometry,
-		Tooltips:      []string{}}
+		FieldID:  params.FieldID,
+		Geometry: params.Geometry,
+		Tooltips: []string{}}
 
 	newRating := Rating{ParentFormID: params.ParentFormID,
 		RatingID:   uniqueID.GenerateSnowflakeID(),

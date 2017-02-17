@@ -114,10 +114,7 @@ function createNewFieldDialogPanelContextBootstrap(panelParams) {
 							var newComponentAPIParams = {
 								parentFormID: panelParams.formID,
 								geometry: panelParams.containerParams.geometry,
-								componentLink: {
-									linkedValType: "field",
-									fieldID: newField.fieldID
-								}
+								fieldID: newField.fieldID
 							}
 							panelParams.createNewFormComponent($parentDialog,newComponentAPIParams)
 						
@@ -136,10 +133,7 @@ function createNewFieldDialogPanelContextBootstrap(panelParams) {
 							var newComponentAPIParams = {
 								parentFormID: panelParams.formID,
 								geometry: panelParams.containerParams.geometry,
-								componentLink: {
-									linkedValType: "field",
-									fieldID: newField.fieldID
-								}
+								fieldID: newField.fieldID
 							}
 							panelParams.createNewFormComponent($parentDialog,newComponentAPIParams)
 						

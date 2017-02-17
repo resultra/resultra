@@ -19,9 +19,9 @@ type HtmlEditor struct {
 }
 
 type NewHtmlEditorParams struct {
-	ParentFormID  string                         `json:"parentFormID"`
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
+	ParentFormID string                         `json:"parentFormID"`
+	FieldID      string                         `json:"fieldID"`
+	Geometry     componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func validHtmlEditorFieldType(fieldType string) bool {
@@ -48,13 +48,13 @@ func saveNewHtmlEditor(params NewHtmlEditorParams) (*HtmlEditor, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if compLinkErr := common.ValidateComponentLink(params.ComponentLink, validHtmlEditorFieldType); compLinkErr != nil {
-		return nil, fmt.Errorf("saveNewCheckBox: %v", compLinkErr)
+	if fieldErr := common.ValidateField(params.FieldID, validHtmlEditorFieldType); fieldErr != nil {
+		return nil, fmt.Errorf("saveNewCheckBox: %v", fieldErr)
 	}
 
 	properties := HtmlEditorProperties{
-		Geometry:      params.Geometry,
-		ComponentLink: params.ComponentLink}
+		Geometry: params.Geometry,
+		FieldID:  params.FieldID}
 
 	newHtmlEditor := HtmlEditor{ParentFormID: params.ParentFormID,
 		HtmlEditorID: uniqueID.GenerateSnowflakeID(),

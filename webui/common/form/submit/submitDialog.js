@@ -23,7 +23,6 @@ function openSubmitFormDialog(viewFormContext) {
 	
 		function updateCurrentRecord(updatedRecordRef) {
 			newRecord = updatedRecordRef
-			var $parentFormLayout = $(viewFormCanvasSelector)
 			loadRecordIntoFormLayout($submitFormViewCanvas,newRecord)
 		}
 		

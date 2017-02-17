@@ -5,16 +5,13 @@ function initDatePickerViewProperties(componentSelectionParams) {
 	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()	
 
 	var elemPrefix = "datePicker_"
-	var componentLink = datePickerRef.properties.componentLink
 	
 	var timelineParams = {
 		elemPrefix: elemPrefix,
 		recordID: currRecordRef.recordID,
-		componentLink: componentLink
+		fieldID: datePickerRef.properties.fieldID
 	}
 	initFormComponentTimelinePane(timelineParams)
-	
-	
 	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#datePickerViewProps')

@@ -19,9 +19,9 @@ type DatePicker struct {
 }
 
 type NewDatePickerParams struct {
-	ParentFormID  string                         `json:"parentFormID"`
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
+	ParentFormID string                         `json:"parentFormID"`
+	FieldID      string                         `json:"fieldID"`
+	Geometry     componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func validDatePickerFieldType(fieldType string) bool {
@@ -48,13 +48,13 @@ func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if compLinkErr := common.ValidateComponentLink(params.ComponentLink, validDatePickerFieldType); compLinkErr != nil {
-		return nil, fmt.Errorf("saveNewDatePicker: %v", compLinkErr)
+	if fieldErr := common.ValidateField(params.FieldID, validDatePickerFieldType); fieldErr != nil {
+		return nil, fmt.Errorf("saveNewDatePicker: %v", fieldErr)
 	}
 
 	properties := DatePickerProperties{
-		Geometry:      params.Geometry,
-		ComponentLink: params.ComponentLink}
+		Geometry: params.Geometry,
+		FieldID:  params.FieldID}
 
 	newDatePicker := DatePicker{ParentFormID: params.ParentFormID,
 		DatePickerID: uniqueID.GenerateSnowflakeID(),

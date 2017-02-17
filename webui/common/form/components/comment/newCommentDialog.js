@@ -4,7 +4,7 @@ function openNewCommentComponentDialog(databaseID,formID,containerParams)
 	function createNewCommentComponent($parentDialog, newComponentParams) {
 		
 		var newCommentBoxParams = {
-			fieldID: newComponentParams.componentLink.fieldID,
+			fieldID: newComponentParams.fieldID,
 			geometry: newComponentParams.geometry,
 			parentFormID: newComponentParams.parentFormID
 		}

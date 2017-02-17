@@ -8,18 +8,10 @@ function openNewUserSelectionDialog(databaseID,formID,containerParams) {
 		jsonAPIRequest("frm/userSelection/new",newComponentParams,function(newUserSelectionObjectRef) {
 	          console.log("createNewUserSelection: Done getting new ID:response=" + 
 						JSON.stringify(newUserSelectionObjectRef));
-	  
-	  		  var componentLink = newUserSelectionObjectRef.properties.componentLink
-	  
-			  var componentLabel
-			  if(componentLink.linkedValType == linkedComponentValTypeField) {
-				  componentLabel = getFieldRef(componentLink.fieldID).name;
-			  } else {
-			  	componentLabel = "Global Value"
-			  }
-	  			  
+	  	  			  
 			  var placeholderSelector = '#'+containerParams.containerID
 			  
+			  var componentLabel = getFieldRef(newUserSelectionObjectRef.properties.fieldID).name
 			  $(placeholderSelector).find('label').text(componentLabel)
 			  $(placeholderSelector).attr("id",newUserSelectionObjectRef.userSelectionID)
 	  

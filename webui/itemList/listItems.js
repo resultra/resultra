@@ -33,7 +33,7 @@ function ListItemController(defaultPageSize) {
 			}
 			function updateCurrentRecord(updatedRecordRef) {
 				currRecordSet.updateRecordRef(updatedRecordRef)
-				loadCurrentRecordsIntoItemLayoutContainers()
+				reloadRecordsIntoContainers()
 			}
 	
 			var recordProxy = {

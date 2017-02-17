@@ -79,10 +79,7 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 				var newComponentAPIParams = {
 					parentFormID: panelConfig.formID,
 					geometry: panelConfig.containerParams.geometry,
-					componentLink: {
-						linkedValType: "field",
-						fieldID: $(selectField.selector).val()
-					}
+					fieldID: $(selectField.selector).val()
 				}
 				componentCreated = true
 				panelConfig.createNewFormComponent($parentDialog,newComponentAPIParams)					

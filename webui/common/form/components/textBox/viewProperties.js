@@ -5,12 +5,11 @@ function initTextBoxViewProperties(componentSelectionParams) {
 	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()		
 
 	var elemPrefix = "textBox_"
-	var componentLink = textBoxRef.properties.componentLink
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
 		recordID: currRecordRef.recordID,
-		componentLink: componentLink
+		fieldID: textBoxRef.properties.fieldID
 	}
 	initFormComponentTimelinePane(timelineParams)
 

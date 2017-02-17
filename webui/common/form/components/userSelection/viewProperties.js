@@ -6,12 +6,11 @@ function initUserSelectionViewProperties(componentSelectionParams) {
 	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()
 
 	var elemPrefix = "userSelection_"
-	var componentLink = userSelectionRef.properties.componentLink
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
 		recordID: currRecordRef.recordID,
-		componentLink: componentLink
+		fieldID: userSelectionRef.properties.fieldID
 	}
 	initFormComponentTimelinePane(timelineParams)
 

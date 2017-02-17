@@ -4,6 +4,6 @@ function loadUserSelectionProperties(userSelectionRef) {
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#userSelectionProps')
 		
-	toggleFormulaEditorForComponent(userSelectionRef.properties.componentLink)
+	toggleFormulaEditorForField(userSelectionRef.properties.fieldID)
 	
 }

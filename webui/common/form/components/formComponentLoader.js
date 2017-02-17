@@ -97,19 +97,8 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 			$textBoxContainer.find('label').text(label)
 		}
 	
-		var componentLink = textBox.properties.componentLink
-	
-		if(componentLink.linkedValType == linkedComponentValTypeField) {
-			// text box is linked to a field type
-			// Set the label to the field name
-			var fieldName = getFieldRef(componentLink.fieldID).name
-			setTextBoxLabel(containerObj,fieldName)
-		} else {
-			// text box is linked to a global
-			var globalInfo = componentContext.globalsByID[componentLink.globalID]
-			var globalName = globalInfo.name
-			setTextBoxLabel(containerObj,globalName)
-		}
+		var fieldName = getFieldRef(textBox.properties.fieldID).name
+		setTextBoxLabel(containerObj,fieldName)
 	
 		$componentRow.append(containerObj)
 		
@@ -135,19 +124,8 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 			$selectionContainer.find('label').text(label)
 		}
 	
-		var componentLink = selection.properties.componentLink
-	
-		if(componentLink.linkedValType == linkedComponentValTypeField) {
-			// text box is linked to a field type
-			// Set the label to the field name
-			var fieldName = getFieldRef(componentLink.fieldID).name
-			setSelectionLabel(containerObj,fieldName)
-		} else {
-			// text box is linked to a global
-			var globalInfo = componentContext.globalsByID[componentLink.globalID]
-			var globalName = globalInfo.name
-			setSelectionLabel(containerObj,globalName)
-		}
+		var fieldName = getFieldRef(selection.properties.fieldID).name
+		setSelectionLabel(containerObj,fieldName)
 	
 		$componentRow.append(containerObj)
 		
@@ -192,19 +170,8 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		var containerHTML = checkBoxContainerHTML(checkBox.checkBoxID);
 		var $checkboxContainer = $(containerHTML)
-		
-		var componentLink = checkBox.properties.componentLink
-		
-		var componentLabel
-		if(componentLink.linkedValType == linkedComponentValTypeField) {
-			// Set the label to the field name. A span element is used, since
-			// the checkbox itself is nested inside a label.
-			componentLabel = getFieldRef(componentLink.fieldID).name
-		} else {
-			var globalInfo = componentContext.globalsByID[componentLink.globalID]
-			componentLabel = globalInfo.name
-		}
-		
+				
+		var componentLabel = getFieldRef(checkBox.properties.fieldID).name		
 		$checkboxContainer.find('span').text(componentLabel)
 		
 		// Position the object withing the #layoutCanvas div
@@ -226,18 +193,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		var $ratingContainer = $(containerHTML)
 		
-		var componentLink = rating.properties.componentLink
-		
-		var componentLabel
-		if(componentLink.linkedValType == linkedComponentValTypeField) {
-			// Set the label to the field name. A span element is used, since
-			// the checkbox itself is nested inside a label.
-			componentLabel = getFieldRef(componentLink.fieldID).name
-		} else {
-			var globalInfo = componentContext.globalsByID[componentLink.globalID]
-			componentLabel = globalInfo.name
-		}
-		
+		var componentLabel = getFieldRef(rating.properties.fieldID).name		
 		$ratingContainer.find('label').text(componentLabel)
 		
 		// Position the object withing the #layoutCanvas div
@@ -259,19 +215,8 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = userSelectionContainerHTML(userSelection.userSelectionID);
 		
 		var containerObj = $(containerHTML)
-		
-		var componentLink = userSelection.properties.componentLink
-		
-		var componentLabel
-		if(componentLink.linkedValType == linkedComponentValTypeField) {
-			// Set the label to the field name. A span element is used, since
-			// the checkbox itself is nested inside a label.
-			componentLabel = getFieldRef(componentLink.fieldID).name
-		} else {
-			var globalInfo = componentContext.globalsByID[componentLink.globalID]
-			componentLabel = globalInfo.name
-		}
-		
+				
+		var componentLabel = getFieldRef(userSelection.properties.fieldID).name
 		containerObj.find('label').text(componentLabel)
 		
 		// Position the object withing the #layoutCanvas div
@@ -293,16 +238,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = datePickerContainerHTML(datePicker.datePickerID);
 		var containerObj = $(containerHTML)
 		
-		var componentLink = datePicker.properties.componentLink
-		
-		var componentLabel
-		if(componentLink.linkedValType == linkedComponentValTypeField) {
-			// Set the label to the field name.
-			componentLabel = getFieldRef(componentLink.fieldID).name
-		} else {
-			var globalInfo = componentContext.globalsByID[componentLink.globalID]
-			componentLabel = globalInfo.name
-		}
+		var componentLabel = getFieldRef(datePicker.properties.fieldID).name
 		containerObj.find('label').text(componentLabel)
 		
 		// Position the object withing the #layoutCanvas div
@@ -323,18 +259,8 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = htmlEditorContainerHTML(htmlEditor.htmlEditorID);
 		var containerObj = $(containerHTML)
 		
-		// Set the label to the field name
-		var componentLink = htmlEditor.properties.componentLink
-		
-		var componentLabel
-		if(componentLink.linkedValType == linkedComponentValTypeField) {
-			// Set the label to the field name.
-			componentLabel = getFieldRef(componentLink.fieldID).name
-		} else {
-			var globalInfo = componentContext.globalsByID[componentLink.globalID]
-			componentLabel = globalInfo.name
-		}
-			
+		// Set the label to the field name		
+		var componentLabel = getFieldRef(htmlEditor.properties.fieldID).name			
 		containerObj.find('label').text(componentLabel)
 		
 		// Position the object withing the #layoutCanvas div
@@ -359,17 +285,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 
 
 		// Set the label to the field name
-		
-		var componentLink = image.properties.componentLink
-		
-		var componentLabel
-		if(componentLink.linkedValType == linkedComponentValTypeField) {
-			componentLabel = getFieldRef(componentLink.fieldID).name
-		} else {
-			var globalInfo = componentContext.globalsByID[componentLink.globalID]
-			componentLabel = globalInfo.name
-		}
-		
+		var componentLabel = getFieldRef(image.properties.fieldID).name		
 		var $imageLabel = imageContainerLabelImageComponentContainer(containerObj)
 		$imageLabel.text(componentLabel)
 		

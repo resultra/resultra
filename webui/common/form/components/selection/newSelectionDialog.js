@@ -13,16 +13,9 @@ function openNewSelectionDialog(databaseID,formID,containerParams)
 
 			  var placeholderSelector = '#'+containerParams.containerID
 			  
-			  var componentLink = newSelectionObjectRef.properties.componentLink
-			  
-			  if(componentLink.linkedValType == linkedComponentValTypeField) {
-				  var fieldName = getFieldRef(componentLink.fieldID).name
-				  $(placeholderSelector).find('label').text(fieldName)			  	
-			  } else {
-				  var globalName = "Global Value"
-				  $(placeholderSelector).find('label').text(globalName)			  	
-			  }
-			  
+			  var fieldName = getFieldRef(newSelectionObjectRef.properties.fieldID).name
+			  $(placeholderSelector).find('label').text(fieldName)			  	
+				  			  
 			  $(placeholderSelector).attr("id",newSelectionObjectRef.selectionID)
 		  
 			  // Set up the newly created checkbox for resize, selection, etc.

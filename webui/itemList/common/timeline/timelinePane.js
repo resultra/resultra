@@ -49,21 +49,21 @@ function initFormComponentTimelinePane(timelineParams) {
 	function initTimelineWithComments() {
 		
 		$(timelineListSelector).empty()
-		if(timelineParams.componentLink.linkedValType == linkedComponentValTypeField) {
-			var getCommentParams = {
-				fieldID: timelineParams.componentLink.fieldID,
-				recordID:timelineParams.recordID }
-			jsonAPIRequest("timeline/getTimelineInfo", getCommentParams, function(timelineInfo) {
-				for (var infoIndex = 0; infoIndex < timelineInfo.length; infoIndex++) {
-					var currInfo = timelineInfo[infoIndex]
-					if(currInfo.hasOwnProperty('commentInfo')) {
-						$(timelineListSelector).append(createOneTimelineComment(currInfo.commentInfo))
-					} else if (currInfo.hasOwnProperty('fieldValChangeInfo')) {
-						$(timelineListSelector).append(createOneTimelineFieldValChange(currInfo.fieldValChangeInfo))
-					}
+
+		var getCommentParams = {
+			fieldID: timelineParams.fieldID,
+			recordID:timelineParams.recordID }
+		jsonAPIRequest("timeline/getTimelineInfo", getCommentParams, function(timelineInfo) {
+			for (var infoIndex = 0; infoIndex < timelineInfo.length; infoIndex++) {
+				var currInfo = timelineInfo[infoIndex]
+				if(currInfo.hasOwnProperty('commentInfo')) {
+					$(timelineListSelector).append(createOneTimelineComment(currInfo.commentInfo))
+				} else if (currInfo.hasOwnProperty('fieldValChangeInfo')) {
+					$(timelineListSelector).append(createOneTimelineFieldValChange(currInfo.fieldValChangeInfo))
 				}
-			})
-		}
+			}
+		})
+
 	}
 	
 	initTimelineWithComments()
@@ -73,19 +73,15 @@ function initFormComponentTimelinePane(timelineParams) {
 		var commentText = $(commentTextSelector).val()
 		console.log("Add comment button clicked: comment= " + $(commentTextSelector).val())
 		$(commentTextSelector).val("")
-		
-		if(timelineParams.componentLink.linkedValType == linkedComponentValTypeField) {
-			var saveCommentParams = {
-				fieldID: timelineParams.componentLink.fieldID,
-				recordID:timelineParams.recordID, 
-				comment: commentText,
-			}
-		
-			jsonAPIRequest("timeline/saveFieldComment", saveCommentParams, function(newComment) {
-				$(timelineListSelector).prepend(createOneTimelineComment(newComment))
-			})
-			
+		var saveCommentParams = {
+			fieldID: timelineParams.fieldID,
+			recordID:timelineParams.recordID, 
+			comment: commentText,
 		}
-
+	
+		jsonAPIRequest("timeline/saveFieldComment", saveCommentParams, function(newComment) {
+			$(timelineListSelector).prepend(createOneTimelineComment(newComment))
+		})
+		
 	})
 }

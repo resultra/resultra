@@ -5,12 +5,11 @@ function initSelectionViewProperties(componentSelectionParams) {
 	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()	
 
 	var elemPrefix = "selection_"
-	var componentLink = selectionRef.properties.componentLink
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
 		recordID: currRecordRef.recordID,
-		componentLink: componentLink
+		fieldID: selectionRef.properties.fieldID
 	}
 	initFormComponentTimelinePane(timelineParams)
 

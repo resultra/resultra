@@ -10,16 +10,9 @@ function openNewImageDialog(databaseID,formID,containerParams)
 
 			  var placeholderSelector = '#'+containerParams.containerID
 
-			  var componentLink = newImageObjectRef.properties.componentLink
-
-			  if(componentLink.linkedValType == linkedComponentValTypeField) {
-				  var fieldName = getFieldRef(componentLink.fieldID).name
-				  $(placeholderSelector).find('label').text(fieldName)
-			  } else {
-				  var globalName = "Global Value"
-				  $(placeholderSelector).find('label').text(globalName)			  				  	
-			  }
-
+			  var componentLabel = getFieldRef(newImageObjectRef.properties.fieldID).name
+			  $(placeholderSelector).find('label').text(fieldName)
+			  
 			  $(placeholderSelector).attr("id",newImageObjectRef.imageID)
 		  
 			  // Set up the newly created editor for resize, selection, etc.

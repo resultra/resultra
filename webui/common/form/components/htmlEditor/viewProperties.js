@@ -5,12 +5,11 @@ function initHTMLEditorViewProperties(componentSelectionParams) {
 	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()	
 
 	var elemPrefix = "htmlEditor_"
-	var componentLink = htmlEditorRef.properties.componentLink	
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
 		recordID: currRecordRef.recordID,
-		componentLink: componentLink
+		fieldID: htmlEditorRef.properties.fieldID
 	}
 	initFormComponentTimelinePane(timelineParams)
 

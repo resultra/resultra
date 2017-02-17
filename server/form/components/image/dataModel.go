@@ -19,9 +19,9 @@ type Image struct {
 }
 
 type NewImageParams struct {
-	ParentFormID  string                         `json:"parentFormID"`
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
+	ParentFormID string                         `json:"parentFormID"`
+	FieldID      string                         `json:"fieldID"`
+	Geometry     componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func validImageFieldType(fieldType string) bool {
@@ -48,13 +48,13 @@ func saveNewImage(params NewImageParams) (*Image, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if compLinkErr := common.ValidateComponentLink(params.ComponentLink, validImageFieldType); compLinkErr != nil {
-		return nil, fmt.Errorf("saveNewTextBox: %v", compLinkErr)
+	if fieldErr := common.ValidateField(params.FieldID, validImageFieldType); fieldErr != nil {
+		return nil, fmt.Errorf("saveNewTextBox: %v", fieldErr)
 	}
 
 	properties := ImageProperties{
-		Geometry:      params.Geometry,
-		ComponentLink: params.ComponentLink}
+		Geometry: params.Geometry,
+		FieldID:  params.FieldID}
 
 	newImage := Image{ParentFormID: params.ParentFormID,
 		ImageID:    uniqueID.GenerateSnowflakeID(),

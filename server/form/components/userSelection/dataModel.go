@@ -19,9 +19,9 @@ type UserSelection struct {
 }
 
 type NewUserSelectionParams struct {
-	ParentFormID  string                         `json:"parentFormID"`
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
+	ParentFormID string                         `json:"parentFormID"`
+	FieldID      string                         `json:"fieldID"`
+	Geometry     componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func validUserSelectionFieldType(fieldType string) bool {
@@ -46,13 +46,13 @@ func saveNewUserSelection(params NewUserSelectionParams) (*UserSelection, error)
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if compLinkErr := common.ValidateComponentLink(params.ComponentLink, validUserSelectionFieldType); compLinkErr != nil {
-		return nil, fmt.Errorf("saveNewUserSelection: %v", compLinkErr)
+	if fieldErr := common.ValidateField(params.FieldID, validUserSelectionFieldType); fieldErr != nil {
+		return nil, fmt.Errorf("saveNewUserSelection: %v", fieldErr)
 	}
 
 	properties := UserSelectionProperties{
-		ComponentLink: params.ComponentLink,
-		Geometry:      params.Geometry}
+		FieldID:  params.FieldID,
+		Geometry: params.Geometry}
 
 	newUserSelection := UserSelection{ParentFormID: params.ParentFormID,
 		UserSelectionID: uniqueID.GenerateSnowflakeID(),

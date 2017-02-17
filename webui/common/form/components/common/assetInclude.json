@@ -1,6 +1,5 @@
 {
     "subDirs": [
 		"componentEdit",
-		"newFormElemDialog",
-		"componentValType"]
+		"newFormElemDialog"]
 }

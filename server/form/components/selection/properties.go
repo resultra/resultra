@@ -3,12 +3,11 @@ package selection
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
 type SelectionProperties struct {
-	ComponentLink  common.ComponentLink           `json:"componentLink"`
+	FieldID        string                         `json:"fieldID"`
 	Geometry       componentLayout.LayoutGeometry `json:"geometry"`
 	SelectableVals []SelectionSelectableVal       `json:"selectableVals"`
 }
@@ -17,11 +16,11 @@ func (srcProps SelectionProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper)
 
 	destProps := srcProps
 
-	destLink, err := srcProps.ComponentLink.Clone(remappedIDs)
+	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
-		return nil, fmt.Errorf("SelectionProperties.Clone: %v", err)
+		return nil, fmt.Errorf("Clone: %v", err)
 	}
-	destProps.ComponentLink = *destLink
+	destProps.FieldID = remappedFieldID
 
 	return &destProps, nil
 }

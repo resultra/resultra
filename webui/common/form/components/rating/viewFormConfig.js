@@ -4,109 +4,60 @@ function loadRecordIntoRating(ratingElem, recordRef) {
 	var ratingObjectRef = getContainerObjectRef(ratingElem)
 	var $ratingControl = getRatingControlFromRatingContainer(ratingElem)
 	
-	var componentLink = ratingObjectRef.properties.componentLink
-	
-	if(componentLink.linkedValType == linkedComponentValTypeField) {
-		var ratingFieldID = componentLink.fieldID
-	
-		console.log("loadRecordIntoRating: Field ID to load data:" + ratingFieldID)
-	
-		// In other words, we are populating the "intersection" of field values in the record
-		// with the fields shown by the layout's containers.
-		if(recordRef.fieldValues.hasOwnProperty(ratingFieldID)) {
+	var ratingFieldID = ratingObjectRef.properties.fieldID
 
-			var fieldVal = recordRef.fieldValues[ratingFieldID]
+	console.log("loadRecordIntoRating: Field ID to load data:" + ratingFieldID)
 
-			console.log("loadRecordIntoTextBox: Load value into container: " + $(this).attr("id") + " field ID:" + 
-						ratingFieldID + "  value:" + fieldVal)
-			
-			var maxRating = 5
-			if((fieldVal >= 0) && (fieldVal <= maxRating)) {
-				$ratingControl.rating('rate',fieldVal)	
-			} else {
-				$ratingControl.rating('rate','')		
-			}
-			
-		} // If record has a value for the current container's associated field ID.
-		else
-		{
-			$ratingControl.rating('rate','')
+	// In other words, we are populating the "intersection" of field values in the record
+	// with the fields shown by the layout's containers.
+	if(recordRef.fieldValues.hasOwnProperty(ratingFieldID)) {
+
+		var fieldVal = recordRef.fieldValues[ratingFieldID]
+
+		console.log("loadRecordIntoTextBox: Load value into container: " + $(this).attr("id") + " field ID:" + 
+					ratingFieldID + "  value:" + fieldVal)
+		
+		var maxRating = 5
+		if((fieldVal >= 0) && (fieldVal <= maxRating)) {
+			$ratingControl.rating('rate',fieldVal)	
+		} else {
+			$ratingControl.rating('rate','')		
 		}
-
-		// TBD - initialize control
 		
-	} else {
-		var ratingGlobalID = componentLink.globalID
-		console.log("loadRecordIntoRating: Global ID to load data:" + ratingGlobalID)
-		
-		if(ratingGlobalID in currGlobalVals) {
-			var globalVal = currGlobalVals[ratingGlobalID]
-			
-			if((fieldVal >= 0) && (fieldVal <= maxRating)) {
-				$ratingControl.rating('rate',globalVal)
-			} else {
-				$ratingControl.rating('rate','')
-			}
-			
-		}
-		else
-		{
-			$ratingControl.rating('rate','')
-		}		
-
-		// TBD - initialize control
-		
+	} // If record has a value for the current container's associated field ID.
+	else
+	{
+		$ratingControl.rating('rate','')
 	}
-	
+		
 	
 }
 
 
 function initRatingRecordEditBehavior($ratingContainer,componentContext,recordProxy, ratingObjectRef) {
 
-	var componentLink = ratingObjectRef.properties.componentLink
-	
 	var $ratingControl = getRatingControlFromRatingContainer($ratingContainer)
 
 	function setRatingValue(ratingVal) {
 		
 		currRecordRef = recordProxy.getRecordFunc()
-	
-		if(componentLink.linkedValType == linkedComponentValTypeField) {
-			var ratingFieldID = componentLink.fieldID
-	
-			var ratingValueFormat = { context: "rating", format: "star" }
-			var setRecordValParams = { 
-				parentDatabaseID:currRecordRef.parentDatabaseID,
-				recordID:currRecordRef.recordID,
-				changeSetID: recordProxy.changeSetID,
-				fieldID:ratingFieldID, 
-				value:ratingVal,
-				valueFormat: ratingValueFormat}
-			jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
-				// After updating the record, the local cache of records in currentRecordSet will
-				// be out of date. So after updating the record on the server, the locally cached
-				// version of the record also needs to be updated.
-				recordProxy.updateRecordFunc(replyData)
-		
-			}) // set record's number field value
+		var ratingFieldID = ratingObjectRef.properties.fieldID
 
-			// TBD - initialize control
-		
-		} else {
-			var ratingGlobalID = componentLink.globalID
-			console.log("loadRecordIntoRating: Global ID to load data:" + ratingGlobalID)
-			
-			var setGlobalValParams = {
-				parentDatabaseID: componentContext.databaseID,
-				globalID: componentLink.globalID,
-				value: ratingVal
-			}
-			console.log("Setting global value (number): " + JSON.stringify(setGlobalValParams))
-			jsonAPIRequest("global/setNumberValue",setGlobalValParams,function(replyData) {
-			})
-					
-		}
+		var ratingValueFormat = { context: "rating", format: "star" }
+		var setRecordValParams = { 
+			parentDatabaseID:currRecordRef.parentDatabaseID,
+			recordID:currRecordRef.recordID,
+			changeSetID: recordProxy.changeSetID,
+			fieldID:ratingFieldID, 
+			value:ratingVal,
+			valueFormat: ratingValueFormat}
+		jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
+			// After updating the record, the local cache of records in currentRecordSet will
+			// be out of date. So after updating the record on the server, the locally cached
+			// version of the record also needs to be updated.
+			recordProxy.updateRecordFunc(replyData)
+	
+		}) // set record's number field value
 		
 	}
 

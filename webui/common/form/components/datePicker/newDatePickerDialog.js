@@ -6,18 +6,9 @@ function openNewDatePickerDialog(databaseID,formID,containerParams)
 		jsonAPIRequest("frm/datePicker/new",newComponentParams,function(newDatePickerObjectRef) {
 	          console.log("saveNewDatePicker: Done getting new ID:response=" + JSON.stringify(newDatePickerObjectRef));
 		  
-
-			  var componentLink = newDatePickerObjectRef.properties.componentLink
-		  
-		  		var componentLabel
-			  if(componentLink.linkedValType == linkedComponentValTypeField) {
-		  	  	 componentLabel = getFieldRef(componentLink.fieldID).name
-			  } else {
-			  	 componentLabel = "Global Field"
-			  }
-			  
 			  var placeholderSelector = '#'+containerParams.containerID
 	
+			  var componentLabel = getFieldRef(newDatePickerObjectRef.properties.fieldID).name
 			  $(placeholderSelector).find('label').text(componentLabel)
 			  $(placeholderSelector).attr("id",newDatePickerObjectRef.datePickerID)
 		  
@@ -39,7 +30,6 @@ function openNewDatePickerDialog(databaseID,formID,containerParams)
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeTime],
-		globalTypes: [globalTypeTime],
 		containerParams: containerParams,
 		createNewFormComponent: createNewDatePicker
 	}

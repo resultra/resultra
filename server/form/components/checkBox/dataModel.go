@@ -19,9 +19,9 @@ type CheckBox struct {
 }
 
 type NewCheckBoxParams struct {
-	ParentFormID  string                         `json:"parentFormID"`
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
+	ParentFormID string                         `json:"parentFormID"`
+	FieldID      string                         `json:"fieldID"`
+	Geometry     componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func validCheckBoxFieldType(fieldType string) bool {
@@ -46,13 +46,13 @@ func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if compLinkErr := common.ValidateComponentLink(params.ComponentLink, validCheckBoxFieldType); compLinkErr != nil {
-		return nil, fmt.Errorf("saveNewCheckBox: %v", compLinkErr)
+	if fieldErr := common.ValidateField(params.FieldID, validCheckBoxFieldType); fieldErr != nil {
+		return nil, fmt.Errorf("saveNewCheckBox: %v", fieldErr)
 	}
 
 	properties := CheckBoxProperties{
-		ComponentLink: params.ComponentLink,
-		Geometry:      params.Geometry}
+		FieldID:  params.FieldID,
+		Geometry: params.Geometry}
 
 	newCheckBox := CheckBox{ParentFormID: params.ParentFormID,
 		CheckBoxID: uniqueID.GenerateSnowflakeID(),

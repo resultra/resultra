@@ -5,6 +5,6 @@ function loadCheckboxProperties(checkBoxRef) {
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#checkBoxProps')
 		
-	toggleFormulaEditorForComponent(checkBoxRef.properties.componentLink)
+	toggleFormulaEditorForField(checkBoxRef.properties.fieldID)
 	
 }

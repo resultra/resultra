@@ -6,19 +6,10 @@ function openNewHtmlEditorDialog(databaseID,formID,containerParams)
 	function createNewHtmlEditor($parentDialog, newComponentParams) {
 		jsonAPIRequest("frm/htmlEditor/new",newComponentParams,function(newHtmlEditorObjectRef) {
 	          console.log("saveNewHtmlEditor: Done getting new ID:response=" + JSON.stringify(newHtmlEditorObjectRef));
-		  
-
-	  		  var componentLink = newHtmlEditorObjectRef.properties.componentLink
-
-			  var componentLabel
-			  if(componentLink.linkedValType == linkedComponentValTypeField) {
-				  componentLabel = getFieldRef(componentLink.fieldID).name;
-			  } else {
-			  	componentLabel = "Global Value"
-			  }
-			  
+		  	  
 			  var placeholderSelector = '#'+containerParams.containerID
 			  
+	  		  var componentLabel = getFieldRef(newHtmlEditorObjectRef.properties.fieldID).name
 			  $(placeholderSelector).find('label').text(componentLabel)
 			  $(placeholderSelector).attr("id",newHtmlEditorObjectRef.htmlEditorID)
 		  

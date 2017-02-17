@@ -7,18 +7,10 @@ function openNewRatingDialog(databaseID,formID,containerParams) {
 		
 		jsonAPIRequest("frm/rating/new",newComponentParams,function(newRatingObjectRef) {
 	          console.log("createNewRating: Done getting new ID:response=" + JSON.stringify(newRatingObjectRef));
-	  
-	  		  var componentLink = newRatingObjectRef.properties.componentLink
-	  
-			  var componentLabel
-			  if(componentLink.linkedValType == linkedComponentValTypeField) {
-				  componentLabel = getFieldRef(componentLink.fieldID).name;
-			  } else {
-			  	componentLabel = "Global Value"
-			  }
-	  			  
+	    			  
 			  var placeholderSelector = '#'+containerParams.containerID
 			  
+	  		  var componentLabel = getFieldRef(newRatingObjectRef.properties.fieldID).name
 			  $(placeholderSelector).find('label').text(componentLabel)
 			  $(placeholderSelector).attr("id",newRatingObjectRef.ratingID)
 	  

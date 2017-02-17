@@ -6,6 +6,6 @@ function loadRatingProperties(ratingRef) {
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#ratingProps')
 		
-	toggleFormulaEditorForComponent(ratingRef.properties.componentLink)
+	toggleFormulaEditorForField(ratingRef.properties.fieldID)
 	
 }

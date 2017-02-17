@@ -5,12 +5,11 @@ function initRatingViewProperties(componentSelectionParams) {
 	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()		
 
 	var elemPrefix = "rating_"
-	var componentLink = ratingRef.properties.componentLink
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
 		recordID: currRecordRef.recordID,
-		componentLink: componentLink
+		fieldID: ratingRef.properties.fieldID
 	}
 	initFormComponentTimelinePane(timelineParams)
 

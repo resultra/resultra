@@ -5,12 +5,11 @@ function initCheckBoxViewProperties(componentSelectionParams) {
 	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()	
 
 	var elemPrefix = "checkbox_"
-	var componentLink = checkboxRef.properties.componentLink
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
 		recordID: currRecordRef.recordID,
-		componentLink: componentLink
+		fieldID: checkboxRef.properties.fieldID
 	}
 	initFormComponentTimelinePane(timelineParams)
 

@@ -24,9 +24,9 @@ type Selection struct {
 }
 
 type NewSelectionParams struct {
-	ParentFormID  string                         `json:"parentFormID"`
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
+	ParentFormID string                         `json:"parentFormID"`
+	FieldID      string                         `json:"fieldID"`
+	Geometry     componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func validSelectionFieldType(fieldType string) bool {
@@ -53,13 +53,13 @@ func saveNewSelection(params NewSelectionParams) (*Selection, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if compLinkErr := common.ValidateComponentLink(params.ComponentLink, validSelectionFieldType); compLinkErr != nil {
+	if compLinkErr := common.ValidateField(params.FieldID, validSelectionFieldType); compLinkErr != nil {
 		return nil, fmt.Errorf("saveNewSelection: %v", compLinkErr)
 	}
 
 	properties := SelectionProperties{
 		Geometry:       params.Geometry,
-		ComponentLink:  params.ComponentLink,
+		FieldID:        params.FieldID,
 		SelectableVals: []SelectionSelectableVal{}}
 
 	newSelection := Selection{ParentFormID: params.ParentFormID,

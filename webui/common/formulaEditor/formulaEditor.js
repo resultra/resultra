@@ -150,16 +150,3 @@ function toggleFormulaEditorForField(fieldID) {
 	}
 	
 }
-
-function toggleFormulaEditorForComponent(componentLink) {
-	
-	if(componentLink.linkedValType == linkedComponentValTypeField) {
-		
-		toggleFormulaEditorForField(componentLink.fieldID)
-		
-	} else {
-		// Global values don't have formulas
-			closeFormulaEditor()		
-	}
-	
-}

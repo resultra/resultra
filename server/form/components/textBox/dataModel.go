@@ -19,9 +19,9 @@ type TextBox struct {
 }
 
 type NewTextBoxParams struct {
-	ParentFormID  string                         `json:"parentFormID"`
-	ComponentLink common.ComponentLink           `json:"componentLink"`
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
+	ParentFormID string                         `json:"parentFormID"`
+	FieldID      string                         `json:"fieldID"`
+	Geometry     componentLayout.LayoutGeometry `json:"geometry"`
 }
 
 func validTextBoxFieldType(fieldType string) bool {
@@ -49,15 +49,15 @@ func saveNewTextBox(params NewTextBoxParams) (*TextBox, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if compLinkErr := common.ValidateComponentLink(params.ComponentLink, validTextBoxFieldType); compLinkErr != nil {
-		return nil, fmt.Errorf("saveNewTextBox: %v", compLinkErr)
+	if fieldErr := common.ValidateField(params.FieldID, validTextBoxFieldType); fieldErr != nil {
+		return nil, fmt.Errorf("saveNewTextBox: %v", fieldErr)
 	}
 
 	defaultValueFormat := TextBoxValueFormatProperties{Format: "general"}
 	properties := TextBoxProperties{
-		Geometry:      params.Geometry,
-		ComponentLink: params.ComponentLink,
-		ValueFormat:   defaultValueFormat}
+		Geometry:    params.Geometry,
+		FieldID:     params.FieldID,
+		ValueFormat: defaultValueFormat}
 
 	newTextBox := TextBox{ParentFormID: params.ParentFormID,
 		TextBoxID:  uniqueID.GenerateSnowflakeID(),

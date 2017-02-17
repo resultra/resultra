@@ -13,15 +13,9 @@ function openNewTextBoxDialog(databaseID,formID,containerParams)
 
 			  var placeholderSelector = '#'+containerParams.containerID
 			  
-			  var componentLink = newTextBoxObjectRef.properties.componentLink
+			  var fieldName = getFieldRef(newTextBoxObjectRef.properties.fieldID).name
+			  $(placeholderSelector).find('label').text(fieldName)			  	
 			  
-			  if(componentLink.linkedValType == linkedComponentValTypeField) {
-				  var fieldName = getFieldRef(componentLink.fieldID).name
-				  $(placeholderSelector).find('label').text(fieldName)			  	
-			  } else {
-				  var globalName = "Global Value"
-				  $(placeholderSelector).find('label').text(globalName)			  	
-			  }
 			  
 			  $(placeholderSelector).attr("id",newTextBoxObjectRef.textBoxID)
 		  

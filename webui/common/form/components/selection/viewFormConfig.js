@@ -4,44 +4,24 @@ function loadRecordIntoSelection(selectionElem, recordRef) {
 
 	var $selectionControl = selectionFormControlFromSelectionFormComponent(selectionElem)	
 	
-	var componentLink = selectionObjectRef.properties.componentLink
-	
-	if(componentLink.linkedValType == linkedComponentValTypeField) {
-		// text box is linked to a field value
-		var selectionFieldID = componentLink.fieldID
-		console.log("loadRecordIntoSelection: Field ID to load data:" + selectionFieldID)	
-	
-		// In other words, we are populating the "intersection" of field values in the record
-		// with the fields shown by the layout's containers.
-		if(recordRef.fieldValues.hasOwnProperty(selectionFieldID)) {
+	var selectionFieldID = selectionObjectRef.properties.fieldID
+	console.log("loadRecordIntoSelection: Field ID to load data:" + selectionFieldID)	
 
-			var fieldVal = recordRef.fieldValues[selectionFieldID]
+	// In other words, we are populating the "intersection" of field values in the record
+	// with the fields shown by the layout's containers.
+	if(recordRef.fieldValues.hasOwnProperty(selectionFieldID)) {
 
-			console.log("loadRecordIntoSelection: Load value into container: " + " field ID:" + 
-						selectionFieldID + "  value:" + fieldVal)
+		var fieldVal = recordRef.fieldValues[selectionFieldID]
 
-			$selectionControl.val(fieldVal.toString())
-		} // If record has a value for the current container's associated field ID.
-		else
-		{
-			$selectionControl.val("")
-		}
-		
-	} else {
-		// Text box is linked to a global value
-		
-		var selectionGlobalID = componentLink.globalID
-		if(selectionGlobalID in currGlobalVals) {
-			var globalVal = currGlobalVals[selectionGlobalID]
-			$selectionControl.val(globalVal.toString())
-		}
-		else
-		{
-			$selectionControl.val("")
-		}		
-	}
-	
-	
+		console.log("loadRecordIntoSelection: Load value into container: " + " field ID:" + 
+					selectionFieldID + "  value:" + fieldVal)
+
+		$selectionControl.val(fieldVal.toString())
+	} // If record has a value for the current container's associated field ID.
+	else
+	{
+		$selectionControl.val("")
+	}	
 	
 }
 
@@ -71,91 +51,61 @@ function initSelectionRecordEditBehavior($selectionContainer,componentContext,re
 
 
 
-	var componentLink = selectionObjectRef.properties.componentLink
+	var selectionFieldID = selectionObjectRef.properties.fieldID
 	
 	initSelectControlChangeHandler($selectionControl,function(newValue) {
-		if(componentLink.linkedValType == linkedComponentValTypeField) {
-			var currRecordRef = recordProxy.getRecordFunc()	
-			var fieldID = componentLink.fieldID
-			var fieldRef = getFieldRef(fieldID)
-			var fieldType = fieldRef.type
-			if(fieldType == "text") {
-				currRecordRef.fieldValues[fieldID] = newValue
-				var setTextFieldValueFormat = {
+		
+		var currRecordRef = recordProxy.getRecordFunc()	
+		var fieldID = selectionFieldID
+		var fieldRef = getFieldRef(selectionFieldID)
+		var fieldType = fieldRef.type
+		if(fieldType == "text") {
+			currRecordRef.fieldValues[selectionFieldID] = newValue
+			var setTextFieldValueFormat = {
+				context: "select",
+				format:"general" 
+			}
+			var setRecordValParams = { 
+				parentDatabaseID:currRecordRef.parentDatabaseID,
+				recordID:currRecordRef.recordID, 
+				changeSetID: recordProxy.changeSetID,
+				fieldID:selectionFieldID, value:newValue,
+				 valueFormat:setTextFieldValueFormat}
+			jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
+				// After updating the record, the local cache of records in currentRecordSet will
+				// be out of date. So after updating the record on the server, the locally cached
+				// version of the record also needs to be updated.
+				recordProxy.updateRecordFunc(replyData)
+			}) // set record's text field value
+		
+		} else if (fieldType == "number") {
+			var numberVal = Number(newValue)
+			if(!isNaN(numberVal)) {
+				console.log("Change number val: "
+					+ "fieldID: " + fieldID
+				    + " ,number = " + numberVal)
+				currRecordRef.fieldValues[fieldID] = numberVal
+				var setNumberFieldValueFormat = {
 					context: "select",
 					format:"general" 
-				}
+				}			
 				var setRecordValParams = { 
 					parentDatabaseID:currRecordRef.parentDatabaseID,
 					recordID:currRecordRef.recordID, 
 					changeSetID: recordProxy.changeSetID,
-					fieldID:fieldID, value:newValue,
-					 valueFormat:setTextFieldValueFormat}
-				jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
-					// After updating the record, the local cache of records in currentRecordSet will
+					fieldID:selectionFieldID, 
+					value:numberVal,
+					 valueFormat:setNumberFieldValueFormat}
+				jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
+					// After updating the record, the local cache of records will
 					// be out of date. So after updating the record on the server, the locally cached
 					// version of the record also needs to be updated.
 					recordProxy.updateRecordFunc(replyData)
-				}) // set record's text field value
-			
-			} else if (fieldType == "number") {
-				var numberVal = Number(newValue)
-				if(!isNaN(numberVal)) {
-					console.log("Change number val: "
-						+ "fieldID: " + fieldID
-					    + " ,number = " + numberVal)
-					currRecordRef.fieldValues[fieldID] = numberVal
-					var setNumberFieldValueFormat = {
-						context: "select",
-						format:"general" 
-					}			
-					var setRecordValParams = { 
-						parentDatabaseID:currRecordRef.parentDatabaseID,
-						recordID:currRecordRef.recordID, 
-						changeSetID: recordProxy.changeSetID,
-						fieldID:fieldID, 
-						value:numberVal,
-						 valueFormat:setNumberFieldValueFormat}
-					jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
-						// After updating the record, the local cache of records will
-						// be out of date. So after updating the record on the server, the locally cached
-						// version of the record also needs to be updated.
-						recordProxy.updateRecordFunc(replyData)
-					}) // set record's number field value
-				}
-			
-			}
-		
-		} else { 
-			assert(componentLink.linkedValType == linkedComponentValTypeGlobal)
-			if(globalInfo.type == globalTypeNumber) {
-				var numberVal = Number(inputVal)
-				if(!isNaN(numberVal)) {
-					var setGlobalValParams = {
-						parentDatabaseID: componentContext.databaseID,
-						globalID: componentLink.globalID,
-						value: numberVal
-					}
-					console.log("Setting global value (number): " + JSON.stringify(setGlobalValParams))
-					jsonAPIRequest("global/setNumberValue",setGlobalValParams,function(replyData) {
-						// TODO - Update record after recalculation based upon global values
-					})
-				
-				}
-			} else {
-				var setGlobalValParams = {
-					parentDatabaseID: componentContext.databaseID,
-					globalID: componentLink.globalID,
-					value: inputVal
-				}
-				console.log("Setting global value (text): " + JSON.stringify(setGlobalValParams))
-				jsonAPIRequest("global/setTextValue",setGlobalValParams,function(replyData) {
-						// TODO - Update record after recalculation based upon global values
-				})	
+				}) // set record's number field value
 			}
 		
 		}
-		
+				
 	})
 	
 	

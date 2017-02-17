@@ -7,12 +7,11 @@ function initCommentViewProperties(componentSelectionParams) {
 	// Comment boxes are not linked to the timeline with a ComponentLink,
 	// However, a ComponentLink can be synthesized with just a field ID.
 	var elemPrefix = "comment_"
-	var componentLink = fieldComponentValType(commentRef.properties.fieldID)
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
 		recordID: currRecordRef.recordID,
-		componentLink: componentLink
+		fieldID: commentRef.properties.fieldID
 	}
 	initFormComponentTimelinePane(timelineParams)
 	
