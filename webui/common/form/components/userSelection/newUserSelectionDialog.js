@@ -43,7 +43,6 @@ function openNewUserSelectionDialog(databaseID,formID,containerParams) {
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeUser],
-		globalTypes: [globalTypeUser],
 		containerParams: containerParams,
 		createNewFormComponent: createNewUserSelection
 	}

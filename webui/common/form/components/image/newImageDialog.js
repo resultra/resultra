@@ -40,7 +40,6 @@ function openNewImageDialog(databaseID,formID,containerParams)
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeFile],
-		globalTypes:[globalTypeImage],
 		containerParams: containerParams,
 		createNewFormComponent: createNewImageComponent
 	}

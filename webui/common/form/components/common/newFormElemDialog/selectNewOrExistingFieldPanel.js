@@ -13,14 +13,12 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 	// Selectors & ids for individual radio buttons
 	var createNewFieldRadio = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"CreateNewFieldRadio")
 	var useExistingFieldRadio = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"UseExistingFieldRadio")
-	var useExistingGlobalRadio = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"UseExistingGlobalRadio")
 	// Selector for the radio group as a whole
 	var newOrExistingRadioInputSelector = "input[name='" + panelConfig.elemPrefix + "NewOrExistingRadio']"
 	var checkedComponentValRadioSelector = "input[name='" + panelConfig.elemPrefix + "NewOrExistingRadio']:checked"
 
 	// Selectors for field and global selection
 	var selectField = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"FieldSelection")
-	var selectGlobal = createPrefixedTemplElemInfo(panelConfig.elemPrefix,"GlobalSelection")
 							
 	function initSelectNewOrExistingFieldPanel($parentDialog) {
 		
@@ -30,13 +28,6 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 			required: {
 				depends: function(element) {
 					return radioButtonIsChecked(useExistingFieldRadio.selector)
-				}
-			} 
-		}
-		validationRules[selectGlobal.id] = { 
-			required: {
-				depends: function(element) {
-					return radioButtonIsChecked(useExistingGlobalRadio.selector)
 				}
 			} 
 		}
@@ -52,11 +43,9 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 			populateFieldSelectionMenu(fieldsByID,selectField.selector)
 		})
 		
-		populateGlobalSelectionMenu(selectGlobal.selector,panelConfig.databaseID,panelConfig.globalTypes)
 
 		// By default, the radio button to create a new field is selected.
 		setWizardDialogButtonSet("newFormComponentDlgNewFieldButtons")
-		disableFormControl(selectGlobal.selector)
 		disableFormControl(selectField.selector)			
 		$(createNewFieldRadio.selector).prop("checked", true);
 		
@@ -67,19 +56,12 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 			console.log("new or existing radio value:", this.value);
 			if (this.value == "newField") {
 				setWizardDialogButtonSet("newFormComponentDlgNewFieldButtons")
-				disableFormControl(selectGlobal.selector)
 				disableFormControl(selectField.selector)
 			} else if (this.value == "existingField") {
 				setWizardDialogButtonSet("newFormComponentDlgExistingFieldButtons")
-				disableFormControl(selectGlobal.selector)
 				enableFormControl(selectField.selector)
-			} else if (this.value == "newGlobal") {
-				setWizardDialogButtonSet("newFormComponentDlgNewFieldButtons")
-				disableFormControl(selectGlobal.selector)
-				disableFormControl(selectField.selector)			
 			} else {
 				setWizardDialogButtonSet("newFormComponentDlgExistingFieldButtons")
-				enableFormControl(selectGlobal.selector)
 				disableFormControl(selectField.selector)
 			}
 		});
@@ -87,47 +69,23 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 		var nextButtonSelector = '#' + panelConfig.elemPrefix + 'NewFormComponentNewFieldNextButton'
 		initButtonClickHandler(nextButtonSelector,function() {
 			if ($panelForm.valid()) {
-				if (radioButtonIsChecked(createNewFieldRadio.selector)) {
-					transitionToNextWizardDlgPanelByID($parentDialog,newFieldDialogPanelID)
-				} else {
-					//transitionToNextWizardDlgPanel(this, dialogProgressDivID,
-					//	newOrExistingFieldPanelConfig, newTextBoxValidateFormatEntriesPanel)
-				}
+				transitionToNextWizardDlgPanelByID($parentDialog,newFieldDialogPanelID)
 			} // if validate form
 		})
 		
 		var doneButtonSelector = '#' + panelConfig.elemPrefix + 'NewFormComponentNewFieldDoneButton'
 		initButtonClickHandler(doneButtonSelector,function() {
 			if($panelForm.valid()) {
-				
-				var componentValSelection = $(checkedComponentValRadioSelector).val()
-				
-				if (componentValSelection == "existingField") {
-					var newComponentAPIParams = {
-						parentFormID: panelConfig.formID,
-						geometry: panelConfig.containerParams.geometry,
-						componentLink: {
-							linkedValType: "field",
-							fieldID: $(selectField.selector).val()
-						}
+				var newComponentAPIParams = {
+					parentFormID: panelConfig.formID,
+					geometry: panelConfig.containerParams.geometry,
+					componentLink: {
+						linkedValType: "field",
+						fieldID: $(selectField.selector).val()
 					}
-					componentCreated = true
-					panelConfig.createNewFormComponent($parentDialog,newComponentAPIParams)
-				} else {
-					assert(componentValSelection == "existingGlobal")
-					var newComponentAPIParams = {
-						parentFormID: panelConfig.formID,
-						geometry: panelConfig.containerParams.geometry,
-						componentLink: {
-							linkedValType: "global",
-							globalID: $(selectGlobal.selector).val()					
-						}
-					}
-					componentCreated = true
-					console.log("New Component params (existing global):" + JSON.stringify(newComponentAPIParams))
-					panelConfig.createNewFormComponent($parentDialog,newComponentAPIParams)
 				}
-					
+				componentCreated = true
+				panelConfig.createNewFormComponent($parentDialog,newComponentAPIParams)					
 				panelConfig.doneFunc($parentDialog)	
 			}
 		})
@@ -138,13 +96,8 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 		var panelVals = {}
 		var componentValSelection = $(checkedComponentValRadioSelector).val()
 		panelVals.componentValSelection = componentValSelection
-		if(componentValSelection == "existingField") {
-			panelVals.linkedValType = linkedComponentValTypeField
-			panelVals.selectedFieldID = $(selectField.selector).val()
-		} else if (componentValSelection == "existingGlobal") {
-			panelVals.linkedValType = linkedComponentValTypeGlobal
-			panelVals.selectedGlobalID = $(selectGlobal.selector).val()
-		}
+		panelVals.linkedValType = linkedComponentValTypeField
+		panelVals.selectedFieldID = $(selectField.selector).val()
 		return panelVals
 	}
 		

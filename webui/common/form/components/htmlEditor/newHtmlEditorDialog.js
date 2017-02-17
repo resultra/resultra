@@ -40,7 +40,6 @@ function openNewHtmlEditorDialog(databaseID,formID,containerParams)
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeLongText],
-		globalTypes: [],
 		containerParams: containerParams,
 		createNewFormComponent: createNewHtmlEditor
 	}

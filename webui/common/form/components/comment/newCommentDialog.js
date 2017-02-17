@@ -38,7 +38,6 @@ function openNewCommentComponentDialog(databaseID,formID,containerParams)
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeComment],
-		globalTypes: [],
 		containerParams: containerParams,
 		createNewFormComponent: createNewCommentComponent
 	}

@@ -42,7 +42,6 @@ function openNewRatingDialog(databaseID,formID,containerParams) {
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeNumber],
-		globalTypes: [globalTypeNumber],
 		containerParams: containerParams,
 		createNewFormComponent: createNewRating
 	}

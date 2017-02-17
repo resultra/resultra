@@ -41,7 +41,6 @@ function openNewCheckboxDialog(databaseID,formID,containerParams) {
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeBool],
-		globalTypes: [globalTypeBool],
 		containerParams: containerParams,
 		createNewFormComponent: createNewCheckbox
 	}

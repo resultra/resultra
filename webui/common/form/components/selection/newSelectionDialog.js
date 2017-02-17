@@ -46,7 +46,6 @@ function openNewSelectionDialog(databaseID,formID,containerParams)
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeText,fieldTypeNumber],
-		globalTypes: [globalTypeText,globalTypeNumber],
 		containerParams: containerParams,
 		createNewFormComponent: createNewSelection
 	}
