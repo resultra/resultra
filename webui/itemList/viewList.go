@@ -15,7 +15,7 @@ import (
 	"resultra/datasheet/webui/common/form/components"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
-	"resultra/datasheet/webui/itemList/common/timeline"
+	itemListCommon "resultra/datasheet/webui/itemList/common"
 )
 
 var viewListTemplates *template.Template
@@ -28,7 +28,7 @@ func init() {
 		baseTemplateFiles,
 		generic.TemplateFileList,
 		common.TemplateFileList,
-		timeline.TemplateFileList}
+		itemListCommon.TemplateFileList}
 	viewListTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
@@ -39,6 +39,7 @@ type ViewListTemplateParams struct {
 	DatabaseID           string
 	DatabaseName         string
 	ListName             string
+	DisplayPanelParams   propertiesSidebar.PanelTemplateParams
 	FilteringPanelParams propertiesSidebar.PanelTemplateParams
 	SortPanelParams      propertiesSidebar.PanelTemplateParams
 	ComponentParams      components.ComponentViewTemplateParams
@@ -77,6 +78,8 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 			DatabaseID:   formDBInfo.DatabaseID,
 			DatabaseName: formDBInfo.DatabaseName,
 			ListName:     listInfo.Name,
+			DisplayPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Display",
+				PanelID: "viewListDisplay"},
 			FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering",
 				PanelID: "viewFormFiltering"},
 			SortPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Sorting",

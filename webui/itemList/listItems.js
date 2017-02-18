@@ -93,6 +93,17 @@ function ListItemController(defaultPageSize) {
 		reloadRecordsIntoContainers()
 	}
 	
+	this.setPageSize = function(newPageSize) {
+		currRecordSetWindowSize = Number(newPageSize)
+		
+		// Re-initialize the list view, then repopulate it with the records.
+		listItemControllerSelf.populateListViewWithListItemContainers(function() {
+			currRecordSet.setWindowSize(currRecordSetWindowSize)
+			reloadRecordsIntoContainers()
+		})
+		
+	}
+	
 	
 	function loadFormData(reloadRecordParams, formDataCallback) {
 		var numDataSetsRemainingToLoad = 2
@@ -187,16 +198,6 @@ function ListItemController(defaultPageSize) {
 	
 	$('#newRecordButton').click(function(e){ createNewRecord() });
 	
-	var $pageSizeSelection = $('#viewListPageSizeSelection')
-	$pageSizeSelection.val(currRecordSetWindowSize)
-	initSelectControlChangeHandler($pageSizeSelection, function(newPageSize){
-		currRecordSetWindowSize = Number(newPageSize)
-		// Re-initialize the list view, then repopulate it with the records.
-		listItemControllerSelf.populateListViewWithListItemContainers(function() {
-			currRecordSet.setWindowSize(currRecordSetWindowSize)
-			reloadRecordsIntoContainers()
-		})
-	})
 	
 	
 	

@@ -80,6 +80,11 @@
 {{define "listViewMainProps"}}
 	<div id="listViewProps" class="propertyPanelToggleContainer">
 		
+		
+		{{template "propertyPanelPrefix" .DisplayPanelParams}}
+			{{template "itemListDisplayPanel"}}
+		{{template "propertyPanelSuffix"}}
+		
 		{{template "propertyPanelPrefix" .FilteringPanelParams}}
 			{{template "recordFilterPane" "form_"}}
 		{{template "propertyPanelSuffix"}}

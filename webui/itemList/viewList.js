@@ -101,6 +101,10 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 	}
 	initSortRecordsPane(recordSortPaneParams)
 
+	initItemListDisplayConfigPanel(listInfo,function(newPageSize) {
+		listItemController.setPageSize(newPageSize)
+	})
+
 
 }
 
@@ -129,7 +133,10 @@ $(document).ready(function() {
 		listItemController.populateListViewWithListItemContainers(function() {
 			initAfterViewFormComponentsAlreadyLoaded(listInfo)
 		})
+		
 	})
+	
+	
 	
 				
 }); // document ready
