@@ -10,8 +10,11 @@ function ListItemController(defaultPageSize) {
 	
 	var currRecordSet = null
 	var currRecordSetWindowSize = defaultPageSize
+	var currListContext = null
 	
-	this.populateListViewWithListItemContainers = function (populationDoneCallback) {
+	this.populateListViewWithListItemContainers = function (viewListContext,populationDoneCallback) {
+		
+		currListContext = viewListContext
 		
 		function populateOneListItem(itemWindowIndex) {
 			var $listItemContainer = $('<div class="listItemContainer"></div>')
@@ -97,11 +100,23 @@ function ListItemController(defaultPageSize) {
 		currRecordSetWindowSize = Number(newPageSize)
 		
 		// Re-initialize the list view, then repopulate it with the records.
-		listItemControllerSelf.populateListViewWithListItemContainers(function() {
+		listItemControllerSelf.populateListViewWithListItemContainers(currListContext,function() {
 			currRecordSet.setWindowSize(currRecordSetWindowSize)
 			reloadRecordsIntoContainers()
 		})
 		
+	}
+	
+	this.setForm = function(formID) {
+		var newViewContext = {
+			databaseID: currListContext.databaseID,
+			listID: currListContext.listID,
+			formID: formID
+		}
+		// Re-initialize the list view, then repopulate it with the records.
+		listItemControllerSelf.populateListViewWithListItemContainers(newViewContext,function() {
+			reloadRecordsIntoContainers()
+		})
 	}
 	
 	

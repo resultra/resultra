@@ -101,9 +101,15 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 	}
 	initSortRecordsPane(recordSortPaneParams)
 
-	initItemListDisplayConfigPanel(listInfo,function(newPageSize) {
+	function updatePageSize(newPageSize) {
 		listItemController.setPageSize(newPageSize)
-	})
+	}
+	
+	function updateForm(newFormID) {
+		listItemController.setForm(newFormID)
+	}
+
+	initItemListDisplayConfigPanel(listInfo,updatePageSize,updateForm)
 
 
 }
@@ -130,7 +136,14 @@ $(document).ready(function() {
 	
 	jsonAPIRequest("itemList/get",getListParams,function(listInfo) {
 		listItemController = new ListItemController(listInfo.properties.defaultPageSize)
-		listItemController.populateListViewWithListItemContainers(function() {
+		
+		
+		var defaultListContext = {
+			databaseID: listInfo.parentDatabaseID,
+			formID: listInfo.formID,
+			listID: listInfo.listID
+		}
+		listItemController.populateListViewWithListItemContainers(defaultListContext,function() {
 			initAfterViewFormComponentsAlreadyLoaded(listInfo)
 		})
 		

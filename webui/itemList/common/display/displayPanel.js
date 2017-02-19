@@ -1,4 +1,4 @@
-function initItemListDisplayConfigPanel(listInfo,changeDisplayPageSizeCallback) {
+function initItemListDisplayConfigPanel(listInfo,changeDisplayPageSizeCallback,changeFormCallback) {
 	
 	var $pageSizeSelection = $('#viewListPageSizeSelection')
 	
@@ -19,6 +19,10 @@ function initItemListDisplayConfigPanel(listInfo,changeDisplayPageSizeCallback) 
 		limitToFormIDs:limitSelectionToFormIDs
 	}	
 	populateFormSelectionMenu(selectFormParams)
+	
+	initSelectControlChangeHandler($displayFormSelection, function(newFormID) {
+		changeFormCallback(newFormID)
+	})
 	
 	
 }
