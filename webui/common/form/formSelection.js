@@ -1,10 +1,22 @@
 function populateFormSelectionMenu(params) {
 	
+	var limitToFormsLookup = null
+	if (params.hasOwnProperty("limitToFormIDs")) {
+		limitToFormsLookup = new IDLookupTable(params.limitToFormIDs)
+	}
+	
 	function populateSelectionMenuFormList(formsInfo, menuSelector) {
 		$(menuSelector).empty()		
 		$(menuSelector).append(defaultSelectOptionPromptHTML("Select a form"))
 		$.each(formsInfo, function(index, formInfo) {
-			$(menuSelector).append(selectFieldHTML(formInfo.formID, formInfo.name))		
+			
+			if (limitToFormsLookup !== null) {
+				if(limitToFormsLookup.hasID(formInfo.formID)) {
+					$(menuSelector).append(selectFieldHTML(formInfo.formID, formInfo.name))				
+				}
+			} else {
+				$(menuSelector).append(selectFieldHTML(formInfo.formID, formInfo.name))		
+			}	
 		})
 	}	
 	

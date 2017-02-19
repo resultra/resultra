@@ -30,3 +30,13 @@ func (mapper UniqueIDRemapper) GetExistingRemappedID(unmappedID string) (string,
 	}
 	return remappedID, nil
 }
+
+func CloneIDList(remapper UniqueIDRemapper, srcIDList []string) []string {
+
+	destIDList := []string{}
+	for _, srcID := range srcIDList {
+		destID := remapper.AllocNewOrGetExistingRemappedID(srcID)
+		destIDList = append(destIDList, destID)
+	}
+	return destIDList
+}

@@ -120,3 +120,15 @@ func (updateParams SetPageSizeParams) updateProps(itemList *ItemList) error {
 
 	return nil
 }
+
+type SetAlternateFormsParams struct {
+	ItemListIDHeader
+	AlternateForms []string `json:"alternateForms"`
+}
+
+func (updateParams SetAlternateFormsParams) updateProps(itemList *ItemList) error {
+
+	itemList.Properties.AlternateForms = updateParams.AlternateForms
+
+	return nil
+}

@@ -100,7 +100,7 @@
 {{define "adminItemListPageSizeProperty"}}
 	<tr>
 		<td class="width200"><label>Default page size:</label>
-			<div><small>Configure the maximum number of items shown on a single page.</small></div>
+			<div><small>Configure the maximum number of items displayed on a single page.</small></div>
 		</td>
 
 		<td>
@@ -115,6 +115,28 @@
 		</td>
 	</tr>
 {{end}}
+
+{{define "adminItemListFormDisplayPropertyTemplates"}}
+			<div style="display:none">
+  			  <div class="form-group alternateFormCheckboxContainer" id="adminItemListAlternateFormCheckboxTemplate">
+  			      <div class="checkbox">
+  			        <label><input type="checkbox"><span>Form name goes here.</span></label>
+  			      </div>
+  			   </div>
+			</div>
+{{end}}
+
+{{define "adminItemListFormDisplayProperty"}}
+	<tr>
+		<td class="width200"><label>Alternate forms:</label>
+			<div><small>In addition to the default form, optionally select other forms which can be used to display items in the list.</small></div>
+		</td>
+
+		<td id="adminItemListAlternateFormListPropertyCell">
+		</td>
+	</tr>
+{{end}}
+
 
 {{define "adminItemListRolesProperty"}}
 	<tr>
@@ -132,9 +154,12 @@
 
 {{define "itemListPropsBody"}}
 
+{{template "adminItemListFormDisplayPropertyTemplates"}}
+
 <table class="table">
 	{{template "adminItemListNameProperty"}}	
 	{{template "adminItemListDisplayProperty"}}
+	{{template "adminItemListFormDisplayProperty"}}
 	{{template "adminItemListPreFilterProperty" .PreFilterPropPanelParams}}
 	{{template "adminItemListDefaultFilterProperty" .FilterPropPanelParams}}
 	{{template "adminItemListSortingProperty"}}	

@@ -12,6 +12,7 @@ type ItemListProperties struct {
 	DefaultFilterRules     []recordFilter.RecordFilterRule      `json:"defaultFilterRules"`
 	PreFilterRules         []recordFilter.RecordFilterRule      `json:"preFilterRules"`
 	DefaultPageSize        int                                  `json:"defaultPageSize"`
+	AlternateForms         []string                             `json:"alternateForms"`
 }
 
 func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ItemListProperties, error) {
@@ -31,10 +32,14 @@ func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) 
 		return nil, fmt.Errorf("FormProperties.Clone: %v")
 	}
 
+	destAlternateForms := uniqueID.CloneIDList(remappedIDs, srcProps.AlternateForms)
+
 	destProps := ItemListProperties{
 		DefaultRecordSortRules: destSortRules,
 		DefaultFilterRules:     destFilterRules,
-		PreFilterRules:         destPreFilterRules}
+		PreFilterRules:         destPreFilterRules,
+		DefaultPageSize:        srcProps.DefaultPageSize,
+		AlternateForms:         destAlternateForms}
 
 	return &destProps, nil
 }
@@ -44,7 +49,8 @@ func newDefaultItemListProperties() ItemListProperties {
 		DefaultRecordSortRules: []recordSortDataModel.RecordSortRule{},
 		DefaultFilterRules:     []recordFilter.RecordFilterRule{},
 		PreFilterRules:         []recordFilter.RecordFilterRule{},
-		DefaultPageSize:        1}
+		DefaultPageSize:        1,
+		AlternateForms:         []string{}}
 
 	return defaultProps
 }
