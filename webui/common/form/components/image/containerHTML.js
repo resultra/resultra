@@ -27,7 +27,7 @@ function imageContainerHTML(elementID)
 	'<div class="ui-widget-content layoutContainer imageContainer draggable resizable">' +
 		'<div class="imageContainerHeader">' +
 			'<label class="imageContainerLabel">Image Label</label>' +
-			'<input class="imageComponentUploadInput" type="file" title=" " single>'+
+			'<input class="imageComponentUploadInput" type="file" title=" " multiple>'+
 			'<label class="imageComponentFileNameLabel"></label>' +
 		'</div>' +
 		'<div class="imageInnerContainer text-center"">'+

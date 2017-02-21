@@ -38,10 +38,14 @@ type UserTimelineVal struct {
 	IsCurrentUser bool   `json:"isCurrentUser"`
 }
 
-type FileTimelineValue struct {
+type SingleFileTimelineValue struct {
 	CloudName string `json:"cloudName"`
 	OrigName  string `json:"origName"`
 	Url       string `json:"url"`
+}
+
+type FileTimelineValue struct {
+	FileTimelineVals []SingleFileTimelineValue `json:"fileTimelineVals"`
 }
 
 func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal string) (interface{}, error) {
@@ -75,10 +79,15 @@ func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal str
 			return nil, fmt.Errorf("DecodeTimelineCellValue: failure decoding file value: %v", err)
 		}
 
-		fileTimelineVal := FileTimelineValue{
-			OrigName:  fileVal.OrigName,
-			CloudName: fileVal.CloudName,
-			Url:       GetFileURL(fileVal.CloudName)}
+		timelineVals := []SingleFileTimelineValue{}
+		for _, fileVal := range fileVal.Files {
+			singleFileTimelineVal := SingleFileTimelineValue{
+				OrigName:  fileVal.OrigName,
+				CloudName: fileVal.CloudName,
+				Url:       GetFileURL(fileVal.CloudName)}
+			timelineVals = append(timelineVals, singleFileTimelineVal)
+		}
+		fileTimelineVal := FileTimelineValue{FileTimelineVals: timelineVals}
 
 		return fileTimelineVal, nil
 

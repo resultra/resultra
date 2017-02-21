@@ -31,7 +31,7 @@
 	 
      bottom: 5px; /* For some reason, the image overflows the bottom of the container without making this adjustement */
      width: 100%;
-	overflow:hidden;
+	overflow:auto;
 }
 
 /* Scale the actual image to fit the contents of its parent, while preserving its aspect ratio */

@@ -2,6 +2,7 @@ package server
 
 import (
 	"resultra/datasheet/server/adminController"
+	"resultra/datasheet/server/common/attachment"
 	"resultra/datasheet/server/dashboardController"
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/databaseController"
@@ -27,6 +28,7 @@ var dummyGlobalInfo = global.DummyStructForInclude{}
 var dummyTimelineInfo = timelineController.DummyStructForInclude{}
 var dummyNewItemInfo = formLink.DummyStructForInclude{}
 var dummyUserRoleInfo = userRoleController.DummyStructForInclude{}
+var dummyAttachmentInfo = attachment.DummyStructForInclude{}
 
 func DummyFunctionForImportFromGoogleAppEngineProjectFolder() {
 	// This dummy function is needed so standaline packages inside
