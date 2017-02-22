@@ -67,106 +67,44 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 	var uploadedFileResults = []
 		
 	var $imageUploadInput = imageUploadInputFromImageComponentContainer($imageContainer)
-	$imageUploadInput.fileupload({
-	        dataType: 'json',
-			// paramName corresponds to the name given to the file when it is sent to the server. 
-			// This name needs to match the name given to the FormFile() function on the server.
-		paramName: "uploadFile",
-			url:uploadImageURL,
+	
+	function saveRecordUpdateWithNewAttachments(attachments) {
+		var currRecordRef = recordProxy.getRecordFunc()
 		
-		start: function(e) {
-			uploadedFileResults = []
-			console.log("Attachment: Starting file upload operation")
-		},
+		// Start with the current file list, then append the newly uploaded attachments.
+		var fileValList = []
+		if(currRecordRef.fieldValues.hasOwnProperty(imageFieldID)) {
+			fileValList = currRecordRef.fieldValues[imageFieldID].files
+		}
+		for(var currFileIndex = 0; currFileIndex < attachments.length; currFileIndex++) {
+			var currFileInfo = attachments[currFileIndex]
+			var currFileVal = {
+				cloudName: currFileInfo.cloudFileName,
+				origName: currFileInfo.origFileName}
+			fileValList.push(currFileVal)
+		}
 		
-			// The done callback is invoked every time an individual file complete's its upload, not when the 
-			// entire upload operation is done. This is the default behavior, unless the 'singleFileUploads' option
-			// is set to false, in which case multiple files may be uploaded.
-	        done: function (e, data) {
-				console.log("Attachment:  upload request done.")
-	            $.each(data.result.files, function (index, file) {
-					
-					console.log("Attachment: Done uploading file: " + file.name + " url = " + file.url)
-					
-					var $fileNameLabel = fileNameLabelFromImageComponentContainer($imageContainer)		
-					$fileNameLabel.text(file.name)
-					
-					var $imageInnerContainer = imageInnerContainerFromImageComponentContainer($imageContainer)
-										
-					$imageInnerContainer.html(imageLinkHTML(imageContainerID,file.url));
-					
-					var linkID = imageLinkIDFromContainerElemID(imageContainerID)
-					$('#'+linkID).magnificPopup({type:'image'})
-					
-					
-					uploadedFileResults.push(file.attachmentInfo)
-										
-	            })
-	        },
-			
-			progress: function(e,data) {
-				 var uploadProgress = parseInt(data.loaded / data.total * 100, 10);
-				 console.log("Attachment: File upload progress: " + uploadProgress)
-			},
-
-			progressall: function(e,data) {
-				 var uploadProgress = parseInt(data.loaded / data.total * 100, 10);
-				 console.log("Attachment: All file upload progress: " + uploadProgress)
-			},
-
-			
-			stop: function(e) {
-				console.log("Attachment: All file uploads complete: " + JSON.stringify(uploadedFileResults))
-				
-				var currRecordRef = recordProxy.getRecordFunc()
-				
-				// Start with the current file list, then append the newly uploaded attachments.
-				var fileValList = []
-				if(currRecordRef.fieldValues.hasOwnProperty(imageFieldID)) {
-					fileValList = currRecordRef.fieldValues[imageFieldID].files
-				}
-				for(var currFileIndex = 0; currFileIndex < uploadedFileResults.length; currFileIndex++) {
-					var currFileInfo = uploadedFileResults[currFileIndex]
-					var currFileVal = {
-						cloudName: currFileInfo.cloudFileName,
-						origName: currFileInfo.origFileName}
-					fileValList.push(currFileVal)
-				}
-				
-				
-				var recordUpdateParams = {
-					parentDatabaseID:currRecordRef.parentDatabaseID,
-					fieldID: imageFieldID, 
-					recordID: currRecordRef.recordID,
-					changeSetID: recordProxy.changeSetID,
-					valueFormatContext: "image",
-					valueFormatFormat: "general",
-					files: fileValList }
-				console.log("Attachment: Setting file field value: " + JSON.stringify(recordUpdateParams))
-				jsonAPIRequest("recordUpdate/setFileFieldValue", recordUpdateParams, function(updatedRecord) {
-					console.log("Attachment: Done uploading file: updated record ref = " + JSON.stringify(updatedRecord))
-					recordProxy.updateRecordFunc(updatedRecord)
-				})
-					
-				uploadedFileResults = []
-			}
-	    });
 		
-		// Wait until actually starting the upload to initialize the form data with the record ID and
-		// field ID. The reason this can't happen at the same time as the initial upload button initialization is
-		// that the records haven't been loaded when the initial initialization takes place, so the current
-		// record is unknown.
-		$imageUploadInput.bind('fileuploadsubmit', function (e, data) {
-		    // The example input, doesn't have to be part of the upload form:
-			
-			var currRecordRef = recordProxy.getRecordFunc()
-			
-								
-			var fileUploadParams = { parentDatabaseID:currRecordRef.parentDatabaseID }
-				
-			console.log("Attachment: Starting file upload: params = " + JSON.stringify(fileUploadParams))
-			
-		    data.formData = fileUploadParams
-		});
+		var recordUpdateParams = {
+			parentDatabaseID:currRecordRef.parentDatabaseID,
+			fieldID: imageFieldID, 
+			recordID: currRecordRef.recordID,
+			changeSetID: recordProxy.changeSetID,
+			valueFormatContext: "image",
+			valueFormatFormat: "general",
+			files: fileValList }
+		console.log("Attachment: Setting file field value: " + JSON.stringify(recordUpdateParams))
+		jsonAPIRequest("recordUpdate/setFileFieldValue", recordUpdateParams, function(updatedRecord) {
+			console.log("Attachment: Done uploading file: updated record ref = " + JSON.stringify(updatedRecord))
+			recordProxy.updateRecordFunc(updatedRecord)
+		})
+		
+	}
+	
+	var addAttachmentParams = {
+		parentDatabaseID: componentContext.databaseID,
+		$addAttachmentInput: $imageUploadInput,
+		attachDoneCallback: saveRecordUpdateWithNewAttachments }
+	initAddAttachmentControl(addAttachmentParams)
 		
 }
