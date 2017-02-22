@@ -17,7 +17,6 @@ func init() {
 
 	recordRouter.HandleFunc("/api/record/allocateChangeSetID", allocateChangeSetIDAPI)
 
-	recordRouter.HandleFunc("/api/record/getFieldValUrl", getFieldValUrlAPI)
 	recordRouter.HandleFunc("/api/record/getFile/{fileName}", getRecordFileAPI)
 	recordRouter.HandleFunc("/api/record/getFieldValChangeInfo", getFieldValChangeInfoAPI)
 
@@ -39,22 +38,6 @@ func getRecords(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, recordRefs)
-	}
-
-}
-
-func getFieldValUrlAPI(w http.ResponseWriter, r *http.Request) {
-
-	var params GetFieldValUrlParams
-	if err := api.DecodeJSONRequest(r, &params); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-
-	if urlResponse, err := getFieldValUrl(params); err != nil {
-		api.WriteErrorResponse(w, err)
-	} else {
-		api.WriteJSONResponse(w, urlResponse)
 	}
 
 }
