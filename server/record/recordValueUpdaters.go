@@ -170,14 +170,14 @@ func (valParams SetRecordTimeValueParams) getUpdateProperties() CellUpdateProper
 type SetRecordFileValueParams struct {
 	RecordUpdateHeader
 	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
-	Files       []FileValue           `json:"files"`
+	Attachments []string              `json:"attachments"`
 }
 
 func (setValParams SetRecordFileValueParams) fieldType() string { return field.FieldTypeFile }
 
 func (valParams SetRecordFileValueParams) generateCellValue() (string, error) {
 
-	cellValue := FileCellValue{Files: valParams.Files}
+	cellValue := FileCellValue{Attachments: valParams.Attachments}
 
 	return generic.EncodeJSONString(cellValue)
 }

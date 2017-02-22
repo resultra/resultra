@@ -46,3 +46,22 @@ func newAttachmentInfo(parentDatabaseID string, userID string, origFileName stri
 	return attachInfo
 
 }
+
+func GetAttachmentInfo(attachmentID string) (*AttachmentInfo, error) {
+
+	attachInfo := AttachmentInfo{}
+	getErr := databaseWrapper.DBHandle().QueryRow(
+		`SELECT attachment_id, database_id, user_id, create_timestamp_utc, orig_file_name,cloud_file_name FROM attachments
+		 WHERE attachment_id=$1 LIMIT 1`, attachmentID).Scan(
+		&attachInfo.AttachmentID,
+		&attachInfo.ParentDatabaseID,
+		&attachInfo.UserID,
+		&attachInfo.CreateTimestampUTC,
+		&attachInfo.OrigFileName,
+		&attachInfo.CloudFileName)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetAttachmentInfo: Unabled to get attachment info: ID = %v: datastore err=%v",
+			attachmentID, getErr)
+	}
+	return &attachInfo, nil
+}

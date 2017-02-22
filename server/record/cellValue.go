@@ -15,13 +15,8 @@ type BoolCellValue struct {
 	Val bool `json:"val"`
 }
 
-type FileValue struct {
-	CloudName string `json:"cloudName"`
-	OrigName  string `json:"origName"`
-}
-
 type FileCellValue struct {
-	Files []FileValue `json:"files"`
+	Attachments []string `json:"attachments"`
 }
 
 type UserCellValue struct {

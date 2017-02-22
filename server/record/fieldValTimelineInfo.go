@@ -3,6 +3,7 @@ package record
 import (
 	"fmt"
 	"net/http"
+	"resultra/datasheet/server/common/attachment"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/userAuth"
@@ -38,14 +39,8 @@ type UserTimelineVal struct {
 	IsCurrentUser bool   `json:"isCurrentUser"`
 }
 
-type SingleFileTimelineValue struct {
-	CloudName string `json:"cloudName"`
-	OrigName  string `json:"origName"`
-	Url       string `json:"url"`
-}
-
 type FileTimelineValue struct {
-	FileTimelineVals []SingleFileTimelineValue `json:"fileTimelineVals"`
+	FileTimelineVals []attachment.AttachmentReference `json:"fileTimelineVals"`
 }
 
 func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal string) (interface{}, error) {
@@ -79,13 +74,15 @@ func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal str
 			return nil, fmt.Errorf("DecodeTimelineCellValue: failure decoding file value: %v", err)
 		}
 
-		timelineVals := []SingleFileTimelineValue{}
-		for _, fileVal := range fileVal.Files {
-			singleFileTimelineVal := SingleFileTimelineValue{
-				OrigName:  fileVal.OrigName,
-				CloudName: fileVal.CloudName,
-				Url:       GetFileURL(fileVal.CloudName)}
-			timelineVals = append(timelineVals, singleFileTimelineVal)
+		timelineVals := []attachment.AttachmentReference{}
+		for _, attachmentID := range fileVal.Attachments {
+
+			attachRef, err := attachment.GetAttachmentReference(attachmentID)
+			if err != nil {
+				return nil, fmt.Errorf("DecodeTimelineCellValue: error get attachment info: %v", err)
+			}
+
+			timelineVals = append(timelineVals, *attachRef)
 		}
 		fileTimelineVal := FileTimelineValue{FileTimelineVals: timelineVals}
 

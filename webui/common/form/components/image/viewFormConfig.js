@@ -24,23 +24,18 @@ function loadRecordIntoImage(imageElem, recordRef) {
 		
 		var fieldVal = recordRef.fieldValues[imageFieldID]
 		
-		var fileVals = fieldVal.files
-		
-		// Populate the image component container with thumbnail images of the images.
-		// TODO - Transition to use a gallery or slideshow instead.
-		for (var currFileIndex = 0; currFileIndex < fileVals.length; currFileIndex++) {
-			var currFileVal = fileVals[currFileIndex]
-			var getUrlParams = { 
-				parentDatabaseID:recordRef.parentDatabaseID,
-				recordID: recordRef.recordID, 
-				fieldID: imageFieldID,
-				cloudFileName: currFileVal.cloudName }
-			jsonAPIRequest("record/getFieldValUrl", getUrlParams, function(urlResp) {
-				var $imageContainer = $(imageLinkHTML(imageContainerID,urlResp.url))
+		var getRefParams = { attachmentIDs: fieldVal.attachments }
+		jsonAPIRequest("attachment/getReferences", getRefParams, function(attachRefs) {
+			for(var refIndex = 0; refIndex < attachRefs.length; refIndex++) {
+				
+				var attachRef = attachRefs[refIndex]
+				
+				var $imageContainer = $(imageLinkHTML(imageContainerID,attachRef.url))
 				$imageContainer.magnificPopup({type:'image'})
 				$imageInnerContainer.append($imageContainer)
-			})
-		}
+				
+			}
+		})
 	
 	} else {
 		// There's no value in the current record for this field, so clear the value in the container
@@ -72,16 +67,13 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 		var currRecordRef = recordProxy.getRecordFunc()
 		
 		// Start with the current file list, then append the newly uploaded attachments.
-		var fileValList = []
+		var attachmentList = []
 		if(currRecordRef.fieldValues.hasOwnProperty(imageFieldID)) {
-			fileValList = currRecordRef.fieldValues[imageFieldID].files
+			attachmentList = currRecordRef.fieldValues[imageFieldID].attachments
 		}
 		for(var currFileIndex = 0; currFileIndex < attachments.length; currFileIndex++) {
-			var currFileInfo = attachments[currFileIndex]
-			var currFileVal = {
-				cloudName: currFileInfo.cloudFileName,
-				origName: currFileInfo.origFileName}
-			fileValList.push(currFileVal)
+			var newAttachment = attachments[currFileIndex]
+			attachmentList.push(newAttachment.attachmentID)
 		}
 		
 		
@@ -92,7 +84,7 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 			changeSetID: recordProxy.changeSetID,
 			valueFormatContext: "image",
 			valueFormatFormat: "general",
-			files: fileValList }
+			attachments: attachmentList }
 		console.log("Attachment: Setting file field value: " + JSON.stringify(recordUpdateParams))
 		jsonAPIRequest("recordUpdate/setFileFieldValue", recordUpdateParams, function(updatedRecord) {
 			console.log("Attachment: Done uploading file: updated record ref = " + JSON.stringify(updatedRecord))
