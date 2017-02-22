@@ -5,13 +5,8 @@ import (
 	"net/http"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/cloudStorageWrapper"
+	"resultra/datasheet/server/generic/userAuth"
 )
-
-type AttachmentInfo struct {
-	ParentDatabaseID string `json:"parentDatabaseID"`
-	CloudFileName    string `json:"cloudFileName"`
-	OrigFileName     string `json:"origFileName"`
-}
 
 type UploadedAttachment struct {
 	Name           string         `json:"name"`
@@ -22,6 +17,8 @@ type UploadedAttachment struct {
 }
 
 type UploadedAttachmentResponse struct {
+	// Even though only a single file is uploaded at once, the jQuery File Upload plugin
+	// requires the return of upload information in an array.
 	Files []UploadedAttachment `json:"files"`
 }
 
@@ -42,12 +39,15 @@ func uploadAttachment(req *http.Request) (*UploadedAttachmentResponse, error) {
 	fileURL := GetAttachmentURL(cloudFileName)
 	parentDatabaseID := req.FormValue("parentDatabaseID")
 
-	// TODO - Add timestamp, current user
+	currUserID, userErr := userAuth.GetCurrentUserID(req)
+	if userErr != nil {
+		return nil, fmt.Errorf("uploadFile: Unable to get current user information: %v", userErr)
+	}
 
-	attachInfo := AttachmentInfo{
-		ParentDatabaseID: parentDatabaseID,
-		CloudFileName:    cloudFileName,
-		OrigFileName:     uploadInfo.FileName}
+	attachInfo := newAttachmentInfo(parentDatabaseID, currUserID, uploadInfo.FileName, cloudFileName)
+	if saveErr := saveAttachmentInfo(attachInfo); saveErr != nil {
+		return nil, fmt.Errorf("uploadFile: unable to save attachment information/metadata: %v", saveErr)
+	}
 
 	uploadedAttachment := UploadedAttachment{
 		Name:           cloudFileName,
