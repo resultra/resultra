@@ -2,8 +2,32 @@ function openManageAttachmentsDialog(configParams) {
 	var $dialog = $('#manageAttachmentsDialog')
 	
 	var currAttachments = configParams.attachmentList.slice(0)
+	var $attachmentList = $('#manageAttachmentsAttachmentList')
 	
-	var $addFilesButton = $('#manageAttachmentsAddFilesButton')
+	function populateOneAttachmentListItem(attachRef) {
+		var $listItem = $('#manageAttachmentsAttachmentListItemTemplate').clone()
+		$listItem.attr("id","")
+		
+		var $thumbnail = $listItem.find(".attachmentThumbnailImage")
+		$thumbnail.attr("src",attachRef.url)
+		$thumbnail.attr("alt",attachRef.attachmentInfo.origFileName)
+		
+		var $itemTitle = $listItem.find('.attachmentThumbnailTitle')
+		$itemTitle.val(attachRef.attachmentInfo.origFileName)
+		
+		var $thumbnailContainer = $listItem.find(".attachmentThumbnailContainer")
+		
+		$attachmentList.append($listItem)
+	}
+	
+	var getRefParams = { attachmentIDs: currAttachments }
+	jsonAPIRequest("attachment/getReferences", getRefParams, function(attachRefs) {
+		$attachmentList.empty()
+		for(var attachIndex=0; attachIndex<attachRefs.length; attachIndex++) {
+			var attachRef = attachRefs[attachIndex]
+			populateOneAttachmentListItem(attachRef)
+		}
+	})
 	
 	function addNewAttachments(newAttachments) {
 		console.log("New attachments added: " + JSON.stringify(newAttachments))
@@ -21,6 +45,7 @@ function openManageAttachmentsDialog(configParams) {
 		
 	}
 	
+	var $addFilesButton = $('#manageAttachmentsAddFilesButton')
 	var addAttachmentParams = {
 		parentDatabaseID: configParams.parentDatabaseID,
 		$addAttachmentInput: $addFilesButton,

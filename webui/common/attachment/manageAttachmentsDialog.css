@@ -1,0 +1,26 @@
+.attachmentThumbnailImage {
+	max-width: 100%;
+}
+
+#manageAttachmentsAttachmentList {
+	min-height: 250px;
+	max-height: 350px;
+	overflow-y: scroll;
+}
+
+.attachmentThumbnailContainer {
+	width: 128px;
+}
+
+.attachmentCaptionTextArea {
+	resize:vertical;
+	margin-bottom: 5px;
+}
+
+.attachmentThumbnailTitle {
+	width:100%;
+}
+
+#manageAttachmentsAttachmentList {
+	border: 1px;
+}

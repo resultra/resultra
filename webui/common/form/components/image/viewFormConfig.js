@@ -32,13 +32,25 @@ function loadRecordIntoImage(imageElem, recordRef) {
 				var attachRef = attachRefs[refIndex]
 				
 				var $imageContainer = imageGalleryThumbnailContainer(attachRef.url)
+				$imageContainer.data("attachRef",attachRef)
 				$imageInnerContainer.append($imageContainer)
 				
 			}
 			$imageInnerContainer.magnificPopup({
 				delegate: 'a',
 				type: 'image',
-				gallery: { enabled:true }
+				gallery: { enabled:true },
+				image: {
+					tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
+					titleSrc: function(item) {
+						var $imageContainer = $(item.el)
+						var attachRef = $imageContainer.data("attachRef")
+						
+						var label = '<label>' + attachRef.attachmentInfo.origFileName + "</label>"
+						
+						return label + '<small>TODO - Caption goes here</small>';
+					}
+				}
 			})
 		})
 	

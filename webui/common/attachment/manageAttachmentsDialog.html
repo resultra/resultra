@@ -4,14 +4,49 @@
 
 {{define "manageAttachmentsDialogBody"}}
 
-<label class="btn btn-default btn-file fileinput-button">
+<div id="manageAttachmentsAttachmentList" class="list-group">
+</div>
+
+<label class="btn btn-default btn-file fileinput-button marginTop5">
     Add Files... <input type="file" id="manageAttachmentsAddFilesButton" multiple style="display:none">
 </label>
 
 {{end}}
 
+{{define "manageAttachmentDialogTemplates"}}
+<div style="display:none">
+	
+	<div class="list-group-item" id="manageAttachmentsAttachmentListItemTemplate">
+		<div class="media" >
+			<div class="media-left">
+				<a href="#" class="attachmentThumbnailContainer thumbnail">
+					<img class="media-object attachmentThumbnailImage">
+				</a>
+			</div>
+			<div class="media-body">
+				<div class="form-group">
+					<label>Title</label>
+					<input type="text" class="attachmentThumbnailTitle"
+							class="form-control" placeholder="Title" required="" autofocus="">
+				</div>
+				<div class="form-group">
+					<label>Caption</label>
+					<textarea class="form-control attachmentCaptionTextArea" placeholder="Enter a caption" rows="2"></textarea>
+				</div>	
+			</div>
+			<div class="media-right">
+				TBD
+			</div>
+		</div>
+	</div>
+</div>
+{{end}}
+
 
 {{define "manageAttachmentsDialog"}}
+
+{{template "manageAttachmentDialogTemplates"}}
+
 
 <div class="modal fade manageAttachmentsDialog" id="manageAttachmentsDialog" tabindex="-1" role="document"
 						aria-labelledby="manageAttachmentsDialog">
