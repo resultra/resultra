@@ -15,19 +15,34 @@ function openManageAttachmentsDialog(configParams) {
 		var $itemTitle = $listItem.find('.attachmentThumbnailTitle')
 		$itemTitle.val(attachRef.attachmentInfo.origFileName)
 		
-		var $thumbnailContainer = $listItem.find(".attachmentThumbnailContainer")
-		
+		var $deleteButton = $listItem.find('.deleteAttachmentButton')
+		initButtonControlClickHandler($deleteButton,function() {
+			console.log("Deleting attachment: " + JSON.stringify(attachRef))
+			var attachmentsWithoutDeletedAttachment = []
+			for(var currAttachIndex = 0; currAttachIndex < currAttachments.length; currAttachIndex++) {
+				var attachID = currAttachments[currAttachIndex]
+				if (attachID != attachRef.attachmentInfo.attachmentID) {
+					attachmentsWithoutDeletedAttachment.push(attachID)
+				}
+			}
+			currAttachments = attachmentsWithoutDeletedAttachment
+			configParams.changeAttachmentsCallback(currAttachments)
+			$listItem.remove()
+		})
+				
 		$attachmentList.append($listItem)
 	}
 	
-	var getRefParams = { attachmentIDs: currAttachments }
-	jsonAPIRequest("attachment/getReferences", getRefParams, function(attachRefs) {
-		$attachmentList.empty()
-		for(var attachIndex=0; attachIndex<attachRefs.length; attachIndex++) {
-			var attachRef = attachRefs[attachIndex]
-			populateOneAttachmentListItem(attachRef)
-		}
-	})
+	function repopulateAttachmentList() {
+		var getRefParams = { attachmentIDs: currAttachments }
+		jsonAPIRequest("attachment/getReferences", getRefParams, function(attachRefs) {
+			$attachmentList.empty()
+			for(var attachIndex=0; attachIndex<attachRefs.length; attachIndex++) {
+				var attachRef = attachRefs[attachIndex]
+				populateOneAttachmentListItem(attachRef)
+			}
+		})
+	}
 	
 	function addNewAttachments(newAttachments) {
 		console.log("New attachments added: " + JSON.stringify(newAttachments))
@@ -42,6 +57,7 @@ function openManageAttachmentsDialog(configParams) {
 		currAttachments = attachmentList
 		
 		configParams.changeAttachmentsCallback(currAttachments)
+		repopulateAttachmentList()
 		
 	}
 	
@@ -51,6 +67,7 @@ function openManageAttachmentsDialog(configParams) {
 		$addAttachmentInput: $addFilesButton,
 		attachDoneCallback: addNewAttachments }
 	initAddAttachmentControl(addAttachmentParams)
-	
+		
+	repopulateAttachmentList()
 	$dialog.modal("show")
 }
