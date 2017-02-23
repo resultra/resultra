@@ -31,16 +31,20 @@ function loadRecordIntoImage(imageElem, recordRef) {
 				
 				var attachRef = attachRefs[refIndex]
 				
-				var $imageContainer = $(imageLinkHTML(imageContainerID,attachRef.url))
-				$imageContainer.magnificPopup({type:'image'})
+				var $imageContainer = imageGalleryThumbnailContainer(attachRef.url)
 				$imageInnerContainer.append($imageContainer)
 				
 			}
+			$imageInnerContainer.magnificPopup({
+				delegate: 'a',
+				type: 'image',
+				gallery: { enabled:true }
+			})
 		})
 	
 	} else {
 		// There's no value in the current record for this field, so clear the value in the container
-		$imageInnerContainer.html('')
+		$imageInnerContainer.empty()
 	}	
 		
 }

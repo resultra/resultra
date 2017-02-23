@@ -40,9 +40,11 @@ function imageLinkIDFromContainerElemID(imageElemID) {
 	return 	imageElemID + '_imageLink'
 }
 
-function imageLinkHTML(elementID, imageURL) {
-	var linkID = imageLinkIDFromContainerElemID(elementID)
-	return '<a href="' + imageURL + '" id="' + linkID + '">' + 
+function imageGalleryThumbnailContainer(imageURL) {
+	var thumbnailHTML =  '<a href="' + imageURL + '">' + 
 		'<img class="img-thumbnail imageContainerImage" src="' + imageURL + '">'+
 	'</a>'
+	
+	return $(thumbnailHTML)
+	
 }
