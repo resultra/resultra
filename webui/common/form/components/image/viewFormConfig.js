@@ -26,6 +26,7 @@ function loadRecordIntoImage(imageElem, recordRef) {
 		
 		var getRefParams = { attachmentIDs: fieldVal.attachments }
 		jsonAPIRequest("attachment/getReferences", getRefParams, function(attachRefs) {
+			$imageInnerContainer.empty()
 			for(var refIndex = 0; refIndex < attachRefs.length; refIndex++) {
 				
 				var attachRef = attachRefs[refIndex]
@@ -63,20 +64,9 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 		
 	var $imageUploadInput = imageUploadInputFromImageComponentContainer($imageContainer)
 	
-	function saveRecordUpdateWithNewAttachments(attachments) {
+	function saveRecordUpdateWithAttachmentListChanges(updatedAttachmentList) {
 		var currRecordRef = recordProxy.getRecordFunc()
-		
-		// Start with the current file list, then append the newly uploaded attachments.
-		var attachmentList = []
-		if(currRecordRef.fieldValues.hasOwnProperty(imageFieldID)) {
-			attachmentList = currRecordRef.fieldValues[imageFieldID].attachments
-		}
-		for(var currFileIndex = 0; currFileIndex < attachments.length; currFileIndex++) {
-			var newAttachment = attachments[currFileIndex]
-			attachmentList.push(newAttachment.attachmentID)
-		}
-		
-		
+				
 		var recordUpdateParams = {
 			parentDatabaseID:currRecordRef.parentDatabaseID,
 			fieldID: imageFieldID, 
@@ -84,7 +74,7 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 			changeSetID: recordProxy.changeSetID,
 			valueFormatContext: "image",
 			valueFormatFormat: "general",
-			attachments: attachmentList }
+			attachments: updatedAttachmentList }
 		console.log("Attachment: Setting file field value: " + JSON.stringify(recordUpdateParams))
 		jsonAPIRequest("recordUpdate/setFileFieldValue", recordUpdateParams, function(updatedRecord) {
 			console.log("Attachment: Done uploading file: updated record ref = " + JSON.stringify(updatedRecord))
@@ -92,11 +82,24 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 		})
 		
 	}
-	
-	var addAttachmentParams = {
-		parentDatabaseID: componentContext.databaseID,
-		$addAttachmentInput: $imageUploadInput,
-		attachDoneCallback: saveRecordUpdateWithNewAttachments }
-	initAddAttachmentControl(addAttachmentParams)
+			
+	var $manageAttachmentsButton = manageAttachmentsButtonFromImageComponentContainer($imageContainer)
+		initButtonControlClickHandler($manageAttachmentsButton,function() {
+			
+			var currRecordRef = recordProxy.getRecordFunc()
+		
+			// Start with the current file list, then append the newly uploaded attachments.
+			var attachmentList = []
+			if(currRecordRef.fieldValues.hasOwnProperty(imageFieldID)) {
+				attachmentList = currRecordRef.fieldValues[imageFieldID].attachments
+			}
+			
+			var manageAttachmentParams = {
+				parentDatabaseID: componentContext.databaseID,
+				attachmentList: attachmentList,
+				changeAttachmentsCallback: saveRecordUpdateWithAttachmentListChanges
+			}
+			openManageAttachmentsDialog(manageAttachmentParams)
+		})
 		
 }

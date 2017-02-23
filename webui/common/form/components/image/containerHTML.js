@@ -9,14 +9,13 @@ function imageUploadInputFromImageComponentContainer($image) {
 	return 	$image.find(".imageComponentUploadInput")
 }
 
-function fileNameLabelFromImageComponentContainer($image) {
-	return  $image.find(".imageComponentFileNameLabel")
-}
-
 function imageInnerContainerFromImageComponentContainer($image) {
 	return $image.find(".imageInnerContainer")
 }
 
+function manageAttachmentsButtonFromImageComponentContainer($image) {
+	return $image.find(".imageComponentManageAttachmentsButtton")
+}
 
 function imageContainerHTML(elementID)
 {		
@@ -27,8 +26,7 @@ function imageContainerHTML(elementID)
 	'<div class="ui-widget-content layoutContainer imageContainer draggable resizable">' +
 		'<div class="imageContainerHeader">' +
 			'<label class="imageContainerLabel">Image Label</label>' +
-			'<input class="imageComponentUploadInput" type="file" title=" " multiple>'+
-			'<label class="imageComponentFileNameLabel"></label>' +
+			'<button class="btn btn-default btn-sm clearButton imageComponentManageAttachmentsButtton"><span class="glyphicon glyphicon-paperclip"></span></button>' +
 		'</div>' +
 		'<div class="imageInnerContainer text-center"">'+
 		'</div>'+

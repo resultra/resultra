@@ -1,6 +1,7 @@
 package common
 
 import (
+	"resultra/datasheet/webui/common/attachment"
 	"resultra/datasheet/webui/common/breadCrumb"
 	"resultra/datasheet/webui/common/database"
 	"resultra/datasheet/webui/common/defaultValues"
@@ -17,6 +18,7 @@ func init() {
 
 	TemplateFileList = []string{"static/common/include.html"}
 
+	TemplateFileList = append(TemplateFileList, attachment.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, formulaEditor.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, breadCrumb.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, recordFilter.TemplateFileList...)

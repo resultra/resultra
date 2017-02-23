@@ -20,6 +20,15 @@
 	display:none;
 }
 
+.clearButton {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	outline: none;
+	border: 0;
+	background: transparent;
+}
+
 /* For adding space between Boostrap rows */
 .marginTop2 { margin-top:2px; }
 .marginTop5 { margin-top:5px; }
