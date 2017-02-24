@@ -11,6 +11,10 @@ function commentCommentListFromContainer($commentContainer) {
 	return 	$commentContainer.find(".commentComponentCommentList")
 }
 
+function commentAttachmentButtonFromContainer($commentContainer) {
+	return 	$commentContainer.find(".commentComponentAttachmentButton")
+	
+}
 
 function commentContainerHTML(elementID)
 {	
@@ -21,6 +25,7 @@ function commentContainerHTML(elementID)
 				'<div class="form-group">' + 
 					'<textarea class="form-control commentCommentEntryBox" rows="2"></textarea>' + 
 					'<button class="btn btn-primary btn-xs commentComponentAddCommentButton" type="submit">Add Comment</button>' +
+							attachmentButtonHTML("commentComponentAttachmentButton") + 
 				'</div>' + 
 		'</div>'+
 		'<div class="list-group commentComponentCommentList"></div>' +	

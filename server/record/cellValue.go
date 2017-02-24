@@ -31,6 +31,11 @@ type TextCellValue struct {
 	Val string `json:"val"`
 }
 
+type CommentCellValue struct {
+	CommentText string   `json:"commentText"`
+	Attachments []string `json:"attachments"`
+}
+
 func DecodeCellValue(fieldType string, encodedVal string) (interface{}, error) {
 	switch fieldType {
 	case field.FieldTypeText:
@@ -64,11 +69,11 @@ func DecodeCellValue(fieldType string, encodedVal string) (interface{}, error) {
 		}
 		return textVal.Val, nil
 	case field.FieldTypeComment:
-		var textVal TextCellValue
-		if err := generic.DecodeJSONString(encodedVal, &textVal); err != nil {
-			return nil, fmt.Errorf("DecodeCellValue: failure decoding long text value: %v", err)
+		var commentVal CommentCellValue
+		if err := generic.DecodeJSONString(encodedVal, &commentVal); err != nil {
+			return nil, fmt.Errorf("DecodeCellValue: failure decoding comment value: %v", err)
 		}
-		return textVal.Val, nil
+		return commentVal, nil
 	case field.FieldTypeFile:
 		var fileVal FileCellValue
 		if err := generic.DecodeJSONString(encodedVal, &fileVal); err != nil {

@@ -80,14 +80,17 @@ func (valParams SetRecordLongTextValueParams) getUpdateProperties() CellUpdatePr
 type SetRecordCommentValueParams struct {
 	RecordUpdateHeader
 	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
-	Value       string                `json:"value"`
+	CommentText string                `json:"commentText"`
+	Attachments []string              `json:"attachments"`
 }
 
 func (setValParams SetRecordCommentValueParams) fieldType() string { return field.FieldTypeComment }
 
 func (valParams SetRecordCommentValueParams) generateCellValue() (string, error) {
 
-	cellVal := TextCellValue{Val: valParams.Value}
+	cellVal := CommentCellValue{
+		CommentText: valParams.CommentText,
+		Attachments: valParams.Attachments}
 
 	return generic.EncodeJSONString(cellVal)
 }

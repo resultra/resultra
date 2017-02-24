@@ -26,7 +26,7 @@ function imageContainerHTML(elementID)
 	'<div class="ui-widget-content layoutContainer imageContainer draggable resizable">' +
 		'<div class="imageContainerHeader">' +
 			'<label class="imageContainerLabel">Image Label</label>' +
-			'<button class="btn btn-default btn-sm clearButton imageComponentManageAttachmentsButtton"><span class="glyphicon glyphicon-paperclip"></span></button>' +
+			attachmentButtonHTML("imageComponentManageAttachmentsButtton") + 
 		'</div>' +
 		'<div class="imageInnerContainer text-center"">'+
 		'</div>'+

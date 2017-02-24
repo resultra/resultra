@@ -1,9 +1,26 @@
+function clearNewCommentAttachmentList($commentContainer) {
+	$commentContainer.data("attachmentList",[])
+}
+
+function getNewCommentAttachmentList($commentContainer) {
+	return $commentContainer.data("attachmentList")
+}
+
+function setNewCommentAttachmentList($commentContainer,attachmentList) {
+	$commentContainer.data("attachmentList",attachmentList)
+}
+
+
 function loadRecordIntoCommentBox(commentElem, recordRef) {
 	
 	console.log("loadRecordIntoCommentBox: loading record into comment box: " + JSON.stringify(recordRef))
 	
 	var commentObjectRef = commentElem.data("objectRef")
 	var componentContext = commentElem.data("componentContext")
+	
+	// Clear any previous comments - TODO: is there any way to preserve the comments
+	// if the user switches items.
+	clearNewCommentAttachmentList(commentElem)
 
 	var $commentInput = commentInputFromContainer(commentElem)
 		
@@ -32,7 +49,7 @@ function loadRecordIntoCommentBox(commentElem, recordRef) {
 
 				var commentHTML =  '<div class="list-group-item">' +
 					'<div><small>' + formattedUserName  + ' - ' + formattedCreateDate + '</small></div>' +
-					'<div class="formTimelineComment">' + escapeHTML(valChange.updatedValue) + '</div>' +
+					'<div class="formTimelineComment">' + escapeHTML(valChange.updatedValue.commentText) + '</div>' +
 				'</div>';		
 		
 				return $(commentHTML)
@@ -63,13 +80,14 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 	var $addCommentButton = commentAddCommentButtonFromContainer($commentContainer)
 	var $commentInput = commentInputFromContainer($commentContainer)
 	
-	
 	initButtonControlClickHandler($addCommentButton,function() {
 		var commentVal = $commentInput.val()
 		
+		var newCommentAttachments = getNewCommentAttachmentList($commentContainer)
+		
 		var currRecordRef = recordProxy.getRecordFunc()
 				
-		if(nonEmptyStringVal(commentVal)) {
+		if(nonEmptyStringVal(commentVal) || (attachments.length > 0)) {
 			console.log("initCommentBoxRecordEditBehavior: Add comment:" + commentVal)
 			
 			
@@ -83,13 +101,16 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 				recordID:currRecordRef.recordID,
 				changeSetID: recordProxy.changeSetID,
 				fieldID:commentFieldID, 
-				value:commentVal,
-			valueFormat:commentValueFormat }
+				commentText:commentVal,
+				attachments:newCommentAttachments, 
+				valueFormat:commentValueFormat }
 		
 			console.log("Setting date value: " + JSON.stringify(setRecordValParams))
 		
 			jsonAPIRequest("recordUpdate/setCommentFieldValue",setRecordValParams,function(updatedRecordRef) {
 			
+				clearNewCommentAttachmentList($commentContainer)
+				
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached
 				// version of the record also needs to be updated.
@@ -101,6 +122,21 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 		$commentInput.val("")
 	})
 	
-	// TODO - Initialize edit behavior
+	var $attachmentButton = commentAttachmentButtonFromContainer($commentContainer)
+	$commentContainer.data("attachmentList",[])
+	initButtonControlClickHandler($attachmentButton,function() {
+				
+		function updateAttachmentList(newAttachments) {
+			setNewCommentAttachmentList($commentContainer,newAttachments)
+		}
+		
+		var manageAttachmentParams = {
+			parentDatabaseID: componentContext.databaseID,
+			attachmentList: getNewCommentAttachmentList($commentContainer),
+			changeAttachmentsCallback: updateAttachmentList
+		}
+		openManageAttachmentsDialog(manageAttachmentParams)
+	})
+	
 		
 }
