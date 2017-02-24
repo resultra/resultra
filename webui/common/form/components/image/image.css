@@ -34,8 +34,8 @@
 	overflow:auto;
 }
 
-/* Scale the actual image to fit the contents of its parent, while preserving its aspect ratio */
+/* Scale the image for constant width, but preserve the aspect ratio by letting the height scale
+   automatically. TODO - Support more options for scaling images */
 .imageContainerImage {
-	max-height:100%;
-	max-width:100%;
+	max-width:75px;
 }
