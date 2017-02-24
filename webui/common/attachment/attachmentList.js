@@ -24,7 +24,7 @@ function populateAttachmentList($attachmentListContainer,attachmentList) {
 				delegate: 'a',
 				type: 'image',
 				image: {
-					tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
+					tError: '<a href="The image could not be loaded.',
 					titleSrc: function(item) {
 						var $attachContainer = $(item.el)
 						var attachRef = $attachContainer.data("attachRef")
