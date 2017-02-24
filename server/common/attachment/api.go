@@ -17,6 +17,9 @@ func init() {
 	attachmentRouter.HandleFunc("/api/attachment/get/{fileName}", getAttachmentAPI)
 	attachmentRouter.HandleFunc("/api/attachment/getReferences", getAttachmentReferencesAPI)
 
+	attachmentRouter.HandleFunc("/api/attachment/setCaption", setCaptionAPI)
+	attachmentRouter.HandleFunc("/api/attachment/setTitle", setTitleAPI)
+
 	http.Handle("/api/attachment/", attachmentRouter)
 }
 
@@ -56,6 +59,39 @@ func getAttachmentReferencesAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, attachRefs)
+	}
+
+}
+
+func setCaptionAPI(w http.ResponseWriter, r *http.Request) {
+
+	params := SetCaptionParams{}
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	// TODO - include database ID in request.
+	if attachInfo, err := setCaption(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, attachInfo)
+	}
+
+}
+
+func setTitleAPI(w http.ResponseWriter, r *http.Request) {
+
+	params := SetTitleParams{}
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if attachInfo, err := setTitle(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, attachInfo)
 	}
 
 }

@@ -13,7 +13,26 @@ function openManageAttachmentsDialog(configParams) {
 		$thumbnail.attr("alt",attachRef.attachmentInfo.origFileName)
 		
 		var $itemTitle = $listItem.find('.attachmentThumbnailTitle')
-		$itemTitle.val(attachRef.attachmentInfo.origFileName)
+		$itemTitle.val(attachRef.attachmentInfo.title)
+		$itemTitle.bind("blur",function() {
+			var setTitleParams = {
+				attachmentID: attachRef.attachmentInfo.attachmentID,
+				title: $itemTitle.val()
+			}
+			jsonAPIRequest("attachment/setTitle", setTitleParams, function(updateAttachment) {
+			})
+		})
+		
+		var $itemCaption = $listItem.find(".attachmentCaptionTextArea")
+		$itemCaption.val(attachRef.attachmentInfo.caption)
+		$itemCaption.bind("blur",function() {
+			var setCaptionParams = {
+				attachmentID: attachRef.attachmentInfo.attachmentID,
+				caption: $itemCaption.val()
+			}
+			jsonAPIRequest("attachment/setCaption", setCaptionParams, function(updateAttachment) {
+			})
+		})
 		
 		var $deleteButton = $listItem.find('.deleteAttachmentButton')
 		initButtonControlClickHandler($deleteButton,function() {

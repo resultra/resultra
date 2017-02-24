@@ -4,5 +4,7 @@ CREATE TABLE attachments (
 	user_id text NOT NULL,
 	create_timestamp_utc timestamp NOT NULL,
 	orig_file_name text NOT NULL,
-	cloud_file_name text NOT NULL
+	cloud_file_name text NOT NULL,
+	title text,
+	caption text
 );

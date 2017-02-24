@@ -39,3 +39,7 @@
 .imageContainerImage {
 	max-width:75px;
 }
+
+.imageCaptionText {
+	white-space:pre-wrap;
+}
