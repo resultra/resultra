@@ -1,5 +1,7 @@
 function clearNewCommentAttachmentList($commentContainer) {
 	$commentContainer.data("attachmentList",[])
+	var $attachList = commentAttachmentListFromContainer($commentContainer)
+	$attachList.empty()
 }
 
 function getNewCommentAttachmentList($commentContainer) {
@@ -8,6 +10,10 @@ function getNewCommentAttachmentList($commentContainer) {
 
 function setNewCommentAttachmentList($commentContainer,attachmentList) {
 	$commentContainer.data("attachmentList",attachmentList)
+	
+	var $attachList = commentAttachmentListFromContainer($commentContainer)
+	
+	populateAttachmentList($attachList,attachmentList)
 }
 
 
@@ -50,9 +56,14 @@ function loadRecordIntoCommentBox(commentElem, recordRef) {
 				var commentHTML =  '<div class="list-group-item">' +
 					'<div><small>' + formattedUserName  + ' - ' + formattedCreateDate + '</small></div>' +
 					'<div class="formTimelineComment">' + escapeHTML(valChange.updatedValue.commentText) + '</div>' +
-				'</div>';		
+					'<div class="formTimelineCommentAttachments"></div>' + 
+				'</div>';
+				
+				var $commentContainer = $(commentHTML)
+				var $attachments = $commentContainer.find(".formTimelineCommentAttachments")
+				populateAttachmentList($attachments,valChange.updatedValue.attachments)
 		
-				return $(commentHTML)
+				return $commentContainer
 			}
 
 			var valChange = valChanges[valChangeIter]
@@ -128,6 +139,8 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 				
 		function updateAttachmentList(newAttachments) {
 			setNewCommentAttachmentList($commentContainer,newAttachments)
+			
+
 		}
 		
 		var manageAttachmentParams = {

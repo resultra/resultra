@@ -46,10 +46,7 @@ function loadRecordIntoImage(imageElem, recordRef) {
 						var $imageContainer = $(item.el)
 						var attachRef = $imageContainer.data("attachRef")
 						
-						var label = '<label>' + escapeHTML(attachRef.attachmentInfo.title) + "</label>"
-						
-						return label + '<small class="imageCaptionText">' 
-								+  escapeHTML(attachRef.attachmentInfo.caption) + '</small>';
+						return attachmentCaptionHTML(attachRef)
 					}
 				}
 			})
