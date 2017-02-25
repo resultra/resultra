@@ -37,5 +37,22 @@
 /* Scale the image for constant width, but preserve the aspect ratio by letting the height scale
    automatically. TODO - Support more options for scaling images */
 .imageContainerImage {
-	max-width:75px;
+	max-width:128px;
 }
+
+.galleryThumbnailHoverButtons {
+	position: absolute;
+	right: 0px;
+	top:0px;
+	display: none;
+}
+
+.attachGalleryThumbnailContainer {
+	position:relative; /* relative position is needed so the inner hover-buttons will float to their absolute position */
+	float: left; /* floating left prevents the div from tiling the containers vertically, but instead have a responsive */
+	max-width: 128px;
+}
+
+/*attachGalleryThumbnailContainer:hover .galleryThumbnailHoverButton {
+	display: block;
+}*/

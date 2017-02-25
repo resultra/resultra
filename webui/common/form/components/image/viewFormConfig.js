@@ -37,7 +37,7 @@ function loadRecordIntoImage(imageElem, recordRef) {
 				
 			}
 			$imageInnerContainer.magnificPopup({
-				delegate: 'a',
+				delegate: 'div.attachGalleryThumbnailContainer',
 				type: 'image',
 				gallery: { enabled:true },
 				image: {

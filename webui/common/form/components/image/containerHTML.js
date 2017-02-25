@@ -41,10 +41,28 @@ function imageLinkIDFromContainerElemID(imageElemID) {
 }
 
 function imageGalleryThumbnailContainer(imageURL) {
-	var thumbnailHTML =  '<a href="' + imageURL + '">' + 
-		'<img class="img-thumbnail imageContainerImage" src="' + imageURL + '">'+
-	'</a>'
 	
-	return $(thumbnailHTML)
+	var thumbnailHTML =  '' +
+			'<div class="attachGalleryThumbnailContainer"' + 
+				'<a class="" href="' + imageURL + '">' + 
+					'<img class="img-thumbnail imageContainerImage" src="' + imageURL + '">'+
+				'</a>'+
+				'<div class="galleryThumbnailHoverButtons">' + 
+					'<button class="btn btn-xs btn-default">Edit</button>' + 
+				'</div>'+
+			'</div>'
+	
+	var $thumbnail = $(thumbnailHTML)
+	
+	$thumbnail.hover(
+		function() { 
+			$(this).find(".galleryThumbnailHoverButtons").show()
+		}, 
+		function() { 
+			$(this).find(".galleryThumbnailHoverButtons").hide()
+		}
+	)
+	
+	return $thumbnail
 	
 }
