@@ -2,3 +2,30 @@
 	padding-top:2px;
 	padding-bottom:2px;
 }
+
+.attachmentListInlineItem {
+  position: relative;
+  background: white;
+  padding: 10px;
+  width: auto;
+  max-width: 400px;
+  min-height: 150px;
+  margin: 20px auto; 
+  text-align: center;
+}
+
+.attachmentListInlineItem .mfp-counter {
+	position: relative;
+	color: black;
+}
+
+.attachmentListLinkText {
+	display: block;
+	text-align:center;
+	font-size:18px;
+	line-height: 24px;
+}
+
+.attachDownloadLink {
+	text-decoration: none !important;
+}

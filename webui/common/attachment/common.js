@@ -11,6 +11,11 @@ function attachmentButtonHTML(className) {
 }
 
 function attachmentCaptionHTML(attachRef) {
+	return '<small class="attachCaptionText">' 
+		+  escapeHTML(attachRef.attachmentInfo.caption) + '</small>';
+}
+
+function attachmentTitleAndCaptionHTML(attachRef) {
 	var label = '<label>' + escapeHTML(attachRef.attachmentInfo.title) + "</label>"
 
 	return label + '<small class="attachCaptionText">' 

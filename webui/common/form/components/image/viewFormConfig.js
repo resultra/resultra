@@ -46,7 +46,7 @@ function loadRecordIntoImage(imageElem, recordRef) {
 						var $imageContainer = $(item.el)
 						var attachRef = $imageContainer.data("attachRef")
 						
-						return attachmentCaptionHTML(attachRef)
+						return attachmentTitleAndCaptionHTML(attachRef)
 					}
 				}
 			})
