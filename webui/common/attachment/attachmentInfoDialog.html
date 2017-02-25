@@ -1,0 +1,29 @@
+{{define "attachmentInfoDialogBody"}}
+	Attachment information goes here.
+{{end}}
+
+{{define "attachmentInfoDialogButtons"}}
+	<button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+{{end}}
+
+{{define "attachmentInfoDialog"}}
+
+<div class="modal fade" id="attachmentInfoDialog" tabindex="-1" role="document"
+						aria-labelledby="attachmentInfoLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="attachmentInfoLabel">Attachment Info</h4>
+      </div>
+      <div class="modal-body attachmentInfoDialogBody">
+		  {{template "attachmentInfoDialogBody"}}
+      </div>
+      <div class="modal-footer">
+		  {{template "attachmentInfoDialogButtons"}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}

@@ -27,6 +27,12 @@
 	outline: none;
 	border: 0;
 	background: transparent;
+	
+	/* Since there's no border, reduce the default padding */
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top:2px;
+	padding-bottom: 2px;
 }
 
 /* For adding space between Boostrap rows */
@@ -41,6 +47,7 @@
 .marginLeft20 { margin-left:20px;}
 .marginLeft30 { margin-left:30px;}
 
+.marginRight10 { margin-right:10px;}
 .marginRight30 { margin-right:30px;}
 
 .marginBottom0 { margin-bottom:0px;}
