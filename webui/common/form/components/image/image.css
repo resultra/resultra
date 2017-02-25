@@ -45,6 +45,8 @@
 	right: 0px;
 	top:0px;
 	display: none;
+	background-color: white;
+	padding: 2px;
 }
 
 .attachGalleryThumbnailContainer {

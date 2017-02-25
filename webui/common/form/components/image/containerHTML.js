@@ -49,6 +49,7 @@ function imageGalleryThumbnailContainer(imageURL) {
 				'</a>'+
 				'<div class="galleryThumbnailHoverButtons">' + 
 					'<button class="btn btn-xs btn-default">Edit</button>' + 
+					'<button type="button" class="close deleteAttachButton" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
 				'</div>'+
 			'</div>'
 	
@@ -62,6 +63,21 @@ function imageGalleryThumbnailContainer(imageURL) {
 			$(this).find(".galleryThumbnailHoverButtons").hide()
 		}
 	)
+	
+	var $deleteButton = $thumbnail.find(".deleteAttachButton")
+	initButtonControlClickHandler($deleteButton,function() {
+		openAttachmentConfirmDeleteDialog()
+	})
+	
+	// Prevent click-through from the buttons onto the thumbnail itself. This prevent the attachment from 
+	// being displayed when a button is pressed in the button area.
+	var $buttons = $thumbnail.find(".galleryThumbnailHoverButtons")
+	$buttons.click(function (event){
+		event.stopPropagation();
+   	 	//   ... your code here
+		return false;
+	});
+	
 	
 	return $thumbnail
 	
