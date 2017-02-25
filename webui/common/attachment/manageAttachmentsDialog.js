@@ -8,9 +8,21 @@ function openManageAttachmentsDialog(configParams) {
 		var $listItem = $('#manageAttachmentsAttachmentListItemTemplate').clone()
 		$listItem.attr("id","")
 		
-		var $thumbnail = $listItem.find(".attachmentThumbnailImage")
-		$thumbnail.attr("src",attachRef.url)
-		$thumbnail.attr("alt",attachRef.attachmentInfo.origFileName)
+		var $thumbnailContainer = $listItem.find(".attachmentThumbnailContainer")
+		var $thumbnailImage = $listItem.find(".attachmentThumbnailImage")
+		var $thumbnailIcon = $listItem.find(".attachmentThumbnailIcon")
+		var $thumbnailText = $listItem.find(".attachmentThumbnailText")
+		$thumbnailContainer.attr("href",attachRef.url)
+		if(attachRef.dataType === "image") {
+			$thumbnailImage.attr("src",attachRef.url)
+			$thumbnailImage.attr("alt",attachRef.attachmentInfo.origFileName)
+			$thumbnailIcon.hide()
+			$thumbnailText.hide()
+		} else {
+			$thumbnailImage.hide()
+			$thumbnailText.text(attachRef.extension)
+		}
+		
 		
 		var $itemTitle = $listItem.find('.attachmentThumbnailTitle')
 		$itemTitle.val(attachRef.attachmentInfo.title)

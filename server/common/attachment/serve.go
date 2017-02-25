@@ -2,7 +2,7 @@ package attachment
 
 import (
 	"fmt"
-	"path/filepath"
+	"path"
 	"strings"
 )
 
@@ -17,18 +17,19 @@ type AttachmentReference struct {
 	AttachmentInfo AttachmentInfo `json:"attachmentInfo"`
 	URL            string         `json:"url"`
 	DataType       string         `json:"dataType"`
+	Extension      string         `json:"extension"`
 }
 
-const extGIF string = "gif"
-const extJPG string = "jpg"
-const extPNG string = "png"
+const extGIF string = ".gif"
+const extJPG string = ".jpg"
+const extPNG string = ".png"
 
 const dataTypeImage string = "image"
 const dataTypeFile string = "file"
 
 func getAttachmentDataType(attachInfo *AttachmentInfo) string {
 
-	ext := filepath.Ext(attachInfo.OrigFileName)
+	ext := path.Ext(attachInfo.OrigFileName)
 	if strings.EqualFold(ext, extGIF) || strings.EqualFold(ext, extJPG) || strings.EqualFold(ext, extPNG) {
 		return dataTypeImage
 	} else {
@@ -45,11 +46,13 @@ func GetAttachmentReference(attachmentID string) (*AttachmentReference, error) {
 
 	url := GetAttachmentURL(attachInfo.CloudFileName)
 	dataType := getAttachmentDataType(attachInfo)
+	ext := strings.TrimPrefix(path.Ext(attachInfo.OrigFileName), ".")
 
 	attachRef := AttachmentReference{
 		AttachmentInfo: *attachInfo,
 		URL:            url,
-		DataType:       dataType}
+		DataType:       dataType,
+		Extension:      ext}
 
 	return &attachRef, nil
 

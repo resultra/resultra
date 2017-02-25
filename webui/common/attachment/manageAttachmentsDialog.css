@@ -10,6 +10,7 @@
 
 .attachmentThumbnailContainer {
 	width: 128px;
+	text-decoration: none !important;
 }
 
 .attachmentCaptionTextArea {
@@ -23,4 +24,19 @@
 
 #manageAttachmentsAttachmentList {
 	border: 1px;
+}
+
+.attachmentThumbnailIcon {
+	display: block;
+	text-align: center;
+	font-size: 40px;
+	line-height: 64px;
+}
+
+.attachmentThumbnailText {
+	display: block;
+	text-align:center;
+	font-size:18px;
+	line-height: 36px;
+	 text-transform: uppercase;
 }
