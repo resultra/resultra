@@ -17,6 +17,43 @@ function loadRecordIntoImage(imageElem, recordRef) {
 	var imageFieldID = imageObjectRef.properties.fieldID
 
 	console.log("loadRecordIntoImage: Field ID to load data:" + imageFieldID)
+	
+	
+	function saveRecordUpdateWithCurrentlyDisplayedAttachmentList() {
+		
+		// Build an up to date list of the currently displayed attachments from attachments displayed in
+		// the current gallery.
+		
+		var currentAttachmentIDs = []
+		$imageInnerContainer.find(".attachGalleryThumbnailContainer").each(function() {
+			var attachRef = $(this).data("attachRef")
+			currentAttachmentIDs.push(attachRef.attachmentInfo.attachmentID)
+		})
+		
+		console.log("Saving updated attachment list: " + JSON.stringify(currentAttachmentIDs))
+		
+		
+		// The record proxy is saved as part of initialization.
+		// TODO - Pass the record proxy into the load record functions.
+		var recordProxy = imageElem.data("viewFormConfig").recordProxy
+		var currRecordRef = recordProxy.getRecordFunc()
+				
+		var recordUpdateParams = {
+			parentDatabaseID:currRecordRef.parentDatabaseID,
+			fieldID: imageFieldID, 
+			recordID: currRecordRef.recordID,
+			changeSetID: recordProxy.changeSetID,
+			valueFormatContext: "image",
+			valueFormatFormat: "general",
+			attachments: currentAttachmentIDs }
+		console.log("Attachment: Setting file field value: " + JSON.stringify(recordUpdateParams))
+		jsonAPIRequest("recordUpdate/setFileFieldValue", recordUpdateParams, function(updatedRecord) {
+			console.log("Attachment: Done uploading file: updated record ref = " + JSON.stringify(updatedRecord))
+			recordProxy.updateRecordFunc(updatedRecord)
+		})
+		
+	}
+	
 
 	// Populate the "intersection" of field values in the record
 	// with the fields shown by the layout's containers.
@@ -30,10 +67,11 @@ function loadRecordIntoImage(imageElem, recordRef) {
 			for(var refIndex = 0; refIndex < attachRefs.length; refIndex++) {
 				
 				var attachRef = attachRefs[refIndex]
-				
-				var $imageContainer = imageGalleryThumbnailContainer(attachRef.url)
-				$imageContainer.data("attachRef",attachRef)
-				$imageInnerContainer.append($imageContainer)
+								
+				var $thumbnailContainer = attachmentGalleryThumbnailContainer(attachRef,
+								saveRecordUpdateWithCurrentlyDisplayedAttachmentList)
+				$thumbnailContainer.data("attachRef",attachRef)
+				$imageInnerContainer.append($thumbnailContainer)
 				
 			}
 			$imageInnerContainer.magnificPopup({
@@ -67,7 +105,8 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 	console.log("initImageRecordEditBehavior: container ID =  " +imageContainerID)
 	
 	$imageContainer.data("viewFormConfig", {
-		loadRecord: loadRecordIntoImage
+		loadRecord: loadRecordIntoImage,
+		recordProxy: recordProxy
 	})		
 	
 	var imageFieldID = imageObjectRef.properties.fieldID

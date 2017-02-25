@@ -40,12 +40,14 @@ function imageLinkIDFromContainerElemID(imageElemID) {
 	return 	imageElemID + '_imageLink'
 }
 
-function imageGalleryThumbnailContainer(imageURL) {
+function attachmentGalleryThumbnailContainer(attachRef,deleteAttachmentCallback) {
+	
+	var attachURL = attachRef.url
 	
 	var thumbnailHTML =  '' +
 			'<div class="attachGalleryThumbnailContainer"' + 
-				'<a class="" href="' + imageURL + '">' + 
-					'<img class="img-thumbnail imageContainerImage" src="' + imageURL + '">'+
+				'<a class="" href="' + attachURL + '">' + 
+					'<img class="img-thumbnail imageContainerImage" src="' + attachURL + '">'+
 				'</a>'+
 				'<div class="galleryThumbnailHoverButtons">' + 
 					'<button class="btn btn-xs btn-default">Edit</button>' + 
@@ -64,9 +66,14 @@ function imageGalleryThumbnailContainer(imageURL) {
 		}
 	)
 	
+	function deleteAttachmentInThumbnail() {
+		$thumbnail.remove()
+		deleteAttachmentCallback()
+	}
+	
 	var $deleteButton = $thumbnail.find(".deleteAttachButton")
 	initButtonControlClickHandler($deleteButton,function() {
-		openAttachmentConfirmDeleteDialog()
+		openAttachmentConfirmDeleteDialog(deleteAttachmentInThumbnail)
 	})
 	
 	// Prevent click-through from the buttons onto the thumbnail itself. This prevent the attachment from 
