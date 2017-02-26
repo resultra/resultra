@@ -1,11 +1,11 @@
-function openManageAttachmentsDialog(configParams) {
-	var $dialog = $('#manageAttachmentsDialog')
+function openAddAttachmentsDialog(configParams) {
+	var $dialog = $('#addAttachmentsDialog')
 	
 	var currAttachments = configParams.attachmentList.slice(0)
-	var $attachmentList = $('#manageAttachmentsAttachmentList')
+	var $attachmentList = $('#addAttachmentsAttachmentList')
 	
 	function populateOneAttachmentListItem(attachRef) {
-		var $listItem = $('#manageAttachmentsAttachmentListItemTemplate').clone()
+		var $listItem = $('#addAttachmentsAttachmentListItemTemplate').clone()
 		$listItem.attr("id","")
 		
 		initAttachmentInfo($listItem,attachRef)
@@ -56,7 +56,7 @@ function openManageAttachmentsDialog(configParams) {
 		
 	}
 	
-	var $addFilesButton = $('#manageAttachmentsAddFilesButton')
+	var $addFilesButton = $('#addAttachmentsAddFilesButton')
 	var addAttachmentParams = {
 		parentDatabaseID: configParams.parentDatabaseID,
 		$addAttachmentInput: $addFilesButton,

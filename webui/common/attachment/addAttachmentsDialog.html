@@ -1,22 +1,22 @@
-{{define "manageAttachmentsDialogButtons"}}
+{{define "addAttachmentsDialogButtons"}}
 	<button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
 {{end}}
 
-{{define "manageAttachmentsDialogBody"}}
+{{define "addAttachmentsDialogBody"}}
 
-<div id="manageAttachmentsAttachmentList" class="list-group">
+<div id="addAttachmentsAttachmentList" class="list-group">
 </div>
 
 <label class="btn btn-default btn-file fileinput-button marginTop5">
-    Add Files... <input type="file" id="manageAttachmentsAddFilesButton" multiple style="display:none">
+    Add Files... <input type="file" id="addAttachmentsAddFilesButton" multiple style="display:none">
 </label>
 
 {{end}}
 
-{{define "manageAttachmentDialogTemplates"}}
+{{define "addAttachmentDialogTemplates"}}
 <div style="display:none">
 	
-	<div class="list-group-item" id="manageAttachmentsAttachmentListItemTemplate">
+	<div class="list-group-item" id="addAttachmentsAttachmentListItemTemplate">
 		<div class="media" >
 			<div class="media-left">
 				{{template "attachmentThumbnailContainer"}}
@@ -36,24 +36,24 @@
 {{end}}
 
 
-{{define "manageAttachmentsDialog"}}
+{{define "addAttachmentsDialog"}}
 
-{{template "manageAttachmentDialogTemplates"}}
+{{template "addAttachmentDialogTemplates"}}
 
 
-<div class="modal fade manageAttachmentsDialog" id="manageAttachmentsDialog" tabindex="-1" role="document"
-						aria-labelledby="manageAttachmentsDialog">
+<div class="modal fade addAttachmentsDialog" id="addAttachmentsDialog" tabindex="-1" role="document"
+						aria-labelledby="addAttachmentsDialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="manageAttachmentsDialogLabel">Manage Attachments</h4>
+        <h4 class="modal-title" id="addAttachmentsDialogLabel">Add Attachments</h4>
       </div>
-      <div class="modal-body manageAttachmentsDialogBody">
-		  {{template "manageAttachmentsDialogBody"}}
+      <div class="modal-body addAttachmentsDialogBody">
+		  {{template "addAttachmentsDialogBody"}}
       </div>
       <div class="modal-footer">
-		  {{template "manageAttachmentsDialogButtons"}}
+		  {{template "addAttachmentsDialogButtons"}}
       </div>
     </div>
   </div>

@@ -152,7 +152,7 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 				attachmentList: attachmentList,
 				changeAttachmentsCallback: saveRecordUpdateWithAttachmentListChanges
 			}
-			openManageAttachmentsDialog(manageAttachmentParams)
+			openAddAttachmentsDialog(manageAttachmentParams)
 		})
 		
 }
