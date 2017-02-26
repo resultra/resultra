@@ -8,43 +8,7 @@ function openManageAttachmentsDialog(configParams) {
 		var $listItem = $('#manageAttachmentsAttachmentListItemTemplate').clone()
 		$listItem.attr("id","")
 		
-		var $thumbnailContainer = $listItem.find(".attachmentThumbnailContainer")
-		var $thumbnailImage = $listItem.find(".attachmentThumbnailImage")
-		var $thumbnailIcon = $listItem.find(".attachmentThumbnailIcon")
-		var $thumbnailText = $listItem.find(".attachmentThumbnailText")
-		$thumbnailContainer.attr("href",attachRef.url)
-		if(attachRef.dataType === "image") {
-			$thumbnailImage.attr("src",attachRef.url)
-			$thumbnailImage.attr("alt",attachRef.attachmentInfo.origFileName)
-			$thumbnailIcon.hide()
-			$thumbnailText.hide()
-		} else {
-			$thumbnailImage.hide()
-			$thumbnailText.text(attachRef.extension)
-		}
-		
-		
-		var $itemTitle = $listItem.find('.attachmentThumbnailTitle')
-		$itemTitle.val(attachRef.attachmentInfo.title)
-		$itemTitle.bind("blur",function() {
-			var setTitleParams = {
-				attachmentID: attachRef.attachmentInfo.attachmentID,
-				title: $itemTitle.val()
-			}
-			jsonAPIRequest("attachment/setTitle", setTitleParams, function(updateAttachment) {
-			})
-		})
-		
-		var $itemCaption = $listItem.find(".attachmentCaptionTextArea")
-		$itemCaption.val(attachRef.attachmentInfo.caption)
-		$itemCaption.bind("blur",function() {
-			var setCaptionParams = {
-				attachmentID: attachRef.attachmentInfo.attachmentID,
-				caption: $itemCaption.val()
-			}
-			jsonAPIRequest("attachment/setCaption", setCaptionParams, function(updateAttachment) {
-			})
-		})
+		initAttachmentInfo($listItem,attachRef)
 		
 		var $deleteButton = $listItem.find('.deleteAttachmentButton')
 		initButtonControlClickHandler($deleteButton,function() {

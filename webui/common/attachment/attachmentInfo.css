@@ -1,0 +1,38 @@
+
+
+.attachmentThumbnailContainer {
+	width: 128px;
+	text-decoration: none !important;
+}
+
+.attachmentThumbnailImage {
+	max-width: 100%;
+}
+
+.attachmentThumbnailIcon {
+	display: block;
+	text-align: center;
+	font-size: 40px;
+	line-height: 64px;
+}
+
+.attachmentThumbnailText {
+	display: block;
+	text-align:center;
+	font-size:18px;
+	line-height: 36px;
+	 text-transform: uppercase;
+}
+
+
+.attachmentCaptionTextArea {
+	resize:vertical;
+	margin-bottom: 5px;
+}
+
+.attachmentThumbnailTitle {
+	width:100%;
+}
+
+
+

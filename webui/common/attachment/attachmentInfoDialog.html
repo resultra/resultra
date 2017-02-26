@@ -1,5 +1,11 @@
 {{define "attachmentInfoDialogBody"}}
-	Attachment information goes here.
+
+	<div class="form-horizontal" style="padding:10px">
+		{{template "attachmentThumbnailContainer"}}
+		{{template "attachmentTitleInput"}}
+		{{template "attachmentCaptionInput"}}
+	</div>
+
 {{end}}
 
 {{define "attachmentInfoDialogButtons"}}

@@ -1,42 +1,9 @@
-.attachmentThumbnailImage {
-	max-width: 100%;
-}
 
 #manageAttachmentsAttachmentList {
 	min-height: 250px;
 	max-height: 350px;
 	overflow-y: scroll;
-}
-
-.attachmentThumbnailContainer {
-	width: 128px;
-	text-decoration: none !important;
-}
-
-.attachmentCaptionTextArea {
-	resize:vertical;
-	margin-bottom: 5px;
-}
-
-.attachmentThumbnailTitle {
-	width:100%;
-}
-
-#manageAttachmentsAttachmentList {
 	border: 1px;
 }
 
-.attachmentThumbnailIcon {
-	display: block;
-	text-align: center;
-	font-size: 40px;
-	line-height: 64px;
-}
 
-.attachmentThumbnailText {
-	display: block;
-	text-align:center;
-	font-size:18px;
-	line-height: 36px;
-	 text-transform: uppercase;
-}

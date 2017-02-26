@@ -4,4 +4,6 @@ function openAttachmentInfoDialog(attachRef) {
 	
 	$dialog.modal("show")
 	
+	initAttachmentInfo($dialog,attachRef)
+	
 }

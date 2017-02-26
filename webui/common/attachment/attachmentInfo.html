@@ -1,0 +1,30 @@
+
+
+{{define "attachmentThumbnailContainer"}}
+	<a href="#" target="new" class="attachmentThumbnailContainer thumbnail center-block">
+		<img class="media-object attachmentThumbnailImage">
+		<i class="attachmentThumbnailIcon glyphicon glyphicon-file"></i>
+		<span class="attachmentThumbnailText"></span>
+	</a>
+{{end}}
+
+
+{{define "attachmentTitleInput"}}
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Title</label>
+		<div class="col-sm-10">
+			<input type="text" class="attachmentThumbnailTitle form-control"
+				 placeholder="Enter a title" required="" autofocus="">
+		</div>
+	</div>
+{{end}}
+
+
+{{define "attachmentCaptionInput"}}
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Caption</label>
+		<div class="col-sm-10">
+			<textarea class="form-control attachmentCaptionTextArea" placeholder="Enter a caption" rows="3"></textarea>
+		</div>
+	</div>	
+{{end}}

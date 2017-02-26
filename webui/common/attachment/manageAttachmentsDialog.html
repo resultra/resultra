@@ -19,22 +19,11 @@
 	<div class="list-group-item" id="manageAttachmentsAttachmentListItemTemplate">
 		<div class="media" >
 			<div class="media-left">
-				<a href="#" target="new" class="attachmentThumbnailContainer thumbnail">
-					<img class="media-object attachmentThumbnailImage">
-					<i class="attachmentThumbnailIcon glyphicon glyphicon-file"></i>
-					<span class="attachmentThumbnailText">TBD</span>
-				</a>
+				{{template "attachmentThumbnailContainer"}}
 			</div>
-			<div class="media-body">
-				<div class="form-group">
-					<label>Title</label>
-					<input type="text" class="attachmentThumbnailTitle"
-							class="form-control" placeholder="Title" required="" autofocus="">
-				</div>
-				<div class="form-group">
-					<label>Caption</label>
-					<textarea class="form-control attachmentCaptionTextArea" placeholder="Enter a caption" rows="2"></textarea>
-				</div>	
+			<div class="media-body form-horizontal">
+				{{template "attachmentTitleInput"}}
+				{{template "attachmentCaptionInput"}}
 			</div>
 			<div class="media-right">
 				<button type="button" class="btn btn-xs btn-danger deleteAttachmentButton" aria-label="Close">
