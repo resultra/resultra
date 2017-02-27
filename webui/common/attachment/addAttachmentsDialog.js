@@ -1,7 +1,7 @@
 function openAddAttachmentsDialog(configParams) {
 	var $dialog = $('#addAttachmentsDialog')
 	
-	var currAttachments = configParams.attachmentList.slice(0)
+	var currAttachments = []
 	var $attachmentList = $('#addAttachmentsAttachmentList')
 	
 	function populateOneAttachmentListItem(attachRef) {
@@ -21,7 +21,6 @@ function openAddAttachmentsDialog(configParams) {
 				}
 			}
 			currAttachments = attachmentsWithoutDeletedAttachment
-			configParams.changeAttachmentsCallback(currAttachments)
 			$listItem.remove()
 		})
 				
@@ -51,10 +50,15 @@ function openAddAttachmentsDialog(configParams) {
 		}
 		currAttachments = attachmentList
 		
-		configParams.changeAttachmentsCallback(currAttachments)
 		repopulateAttachmentList()
 		
 	}
+	
+	var $doneButton = $("#addAttachmentsDoneButton")
+	initButtonControlClickHandler($doneButton,function() {
+		configParams.addAttachmentsCallback(currAttachments)
+		$dialog.modal("hide")
+	})
 	
 	var $addFilesButton = $('#addAttachmentsAddFilesButton')
 	var addAttachmentParams = {

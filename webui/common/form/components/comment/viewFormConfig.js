@@ -134,21 +134,22 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 	})
 	
 	var $attachmentButton = commentAttachmentButtonFromContainer($commentContainer)
+	
 	$commentContainer.data("attachmentList",[])
+	
 	initButtonControlClickHandler($attachmentButton,function() {
 				
-		function updateAttachmentList(newAttachments) {
-			setNewCommentAttachmentList($commentContainer,newAttachments)
-			
-
+		function addAttachmentsToAttachmentList(newAttachments) {
+			var currAttachments = getNewCommentAttachmentList($commentContainer)
+			currAttachments = $.merge(currAttachments,newAttachments)
+			setNewCommentAttachmentList($commentContainer,currAttachments)
 		}
 		
 		var manageAttachmentParams = {
 			parentDatabaseID: componentContext.databaseID,
-			attachmentList: getNewCommentAttachmentList($commentContainer),
-			changeAttachmentsCallback: updateAttachmentList
+			addAttachmentsCallback: addAttachmentsToAttachmentList
 		}
-		openManageAttachmentsDialog(manageAttachmentParams)
+		openAddAttachmentsDialog(manageAttachmentParams)
 	})
 	
 		
