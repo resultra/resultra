@@ -10,7 +10,8 @@ var paletteItemsEditConfig = {
 	paletteItemSelection: selectionDesignFormConfig,
 	paletteItemUserSelection: userSelectionDesignFormConfig,
 	paletteItemComment: commentDesignFormConfig,
-	paletteItemButton: formButtonDesignFormConfig
+	paletteItemButton: formButtonDesignFormConfig,
+	paletteItemProgress: progressDesignFormConfig
 }
 
 var formDesignCanvasSelector = "#layoutCanvas"
@@ -137,6 +138,10 @@ $(document).ready(function() {
 			var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
 			initFormComponentDesignBehavior($checkBox,componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig,designFormLayoutConfig)
 		},
+		initProgressFunc: function(componentContext,$progress,progressObjectRef) {
+			var componentIDs = { formID: formID, componentID: progressObjectRef.progressID }
+			initFormComponentDesignBehavior($progress,componentIDs,progressObjectRef,progressDesignFormConfig,designFormLayoutConfig)
+		},	
 		initCommentFunc: function(componentContext,$comment,commentObjectRef) {
 			var componentIDs = { formID: formID, componentID: commentObjectRef.commentID }
 			initFormComponentDesignBehavior($comment,componentIDs,commentObjectRef,commentDesignFormConfig,designFormLayoutConfig)

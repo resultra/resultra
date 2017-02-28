@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/form/components/header"
 	"resultra/datasheet/server/form/components/htmlEditor"
 	"resultra/datasheet/server/form/components/image"
+	"resultra/datasheet/server/form/components/progress"
 	"resultra/datasheet/server/form/components/rating"
 	"resultra/datasheet/server/form/components/selection"
 	"resultra/datasheet/server/form/components/textBox"
@@ -15,18 +16,19 @@ import (
 )
 
 type FormInfo struct {
-	Form           Form                          `json:"form"`
-	TextBoxes      []textBox.TextBox             `json:"textBoxes"`
-	CheckBoxes     []checkBox.CheckBox           `json:"checkBoxes"`
-	DatePickers    []datePicker.DatePicker       `json:"datePickers"`
-	HtmlEditors    []htmlEditor.HtmlEditor       `json:"htmlEditors"`
-	Ratings        []rating.Rating               `json:"ratings"`
-	Comments       []comment.Comment             `json:"comments"`
-	Images         []image.Image                 `json:"images"`
-	Headers        []header.Header               `json:"headers"`
-	FormButtons    []formButton.FormButton       `json:"formButtons"`
-	Selections     []selection.Selection         `json:"selections"`
-	UserSelections []userSelection.UserSelection `json:"userSelections"`
+	Form               Form                          `json:"form"`
+	TextBoxes          []textBox.TextBox             `json:"textBoxes"`
+	CheckBoxes         []checkBox.CheckBox           `json:"checkBoxes"`
+	DatePickers        []datePicker.DatePicker       `json:"datePickers"`
+	HtmlEditors        []htmlEditor.HtmlEditor       `json:"htmlEditors"`
+	Ratings            []rating.Rating               `json:"ratings"`
+	Comments           []comment.Comment             `json:"comments"`
+	Images             []image.Image                 `json:"images"`
+	Headers            []header.Header               `json:"headers"`
+	FormButtons        []formButton.FormButton       `json:"formButtons"`
+	Selections         []selection.Selection         `json:"selections"`
+	UserSelections     []userSelection.UserSelection `json:"userSelections"`
+	ProgressIndicators []progress.Progress           `json:"progressIndicators"`
 }
 
 type GetFormInfoParams struct {
@@ -95,19 +97,25 @@ func getFormInfo(params GetFormInfoParams) (*FormInfo, error) {
 		return nil, err
 	}
 
+	progressIndicators, err := progress.GetProgressIndicators(params.FormID)
+	if err != nil {
+		return nil, err
+	}
+
 	formInfo := FormInfo{
-		Form:           *form,
-		TextBoxes:      textBoxes,
-		CheckBoxes:     checkBoxes,
-		DatePickers:    datePickers,
-		HtmlEditors:    htmlEditors,
-		Images:         images,
-		Headers:        headers,
-		FormButtons:    formButtons,
-		Ratings:        ratings,
-		Comments:       comments,
-		Selections:     selections,
-		UserSelections: userSelections}
+		Form:               *form,
+		TextBoxes:          textBoxes,
+		CheckBoxes:         checkBoxes,
+		DatePickers:        datePickers,
+		HtmlEditors:        htmlEditors,
+		Images:             images,
+		Headers:            headers,
+		FormButtons:        formButtons,
+		Ratings:            ratings,
+		Comments:           comments,
+		Selections:         selections,
+		UserSelections:     userSelections,
+		ProgressIndicators: progressIndicators}
 
 	return &formInfo, nil
 }

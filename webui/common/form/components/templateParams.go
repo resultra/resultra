@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/datePicker"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
 	"resultra/datasheet/webui/common/form/components/image"
+	"resultra/datasheet/webui/common/form/components/progress"
 	"resultra/datasheet/webui/common/form/components/rating"
 	"resultra/datasheet/webui/common/form/components/selection"
 	"resultra/datasheet/webui/common/form/components/textBox"
@@ -22,6 +23,7 @@ type ComponentViewTemplateParams struct {
 	CommentParams       comment.CommentViewTemplateParams
 	SelectionParams     selection.SelectionViewTemplateParams
 	UserSelectionParams userSelection.UserSelectionViewTemplateParams
+	ProgressParams      progress.ProgressViewTemplateParams
 }
 
 //var DesignTemplateParams ComponentDesignTemplateParams
@@ -38,6 +40,7 @@ func init() {
 		RatingParams:        rating.ViewTemplateParams,
 		CommentParams:       comment.ViewTemplateParams,
 		SelectionParams:     selection.ViewTemplateParams,
-		UserSelectionParams: userSelection.ViewTemplateParams}
+		UserSelectionParams: userSelection.ViewTemplateParams,
+		ProgressParams:      progress.ViewTemplateParams}
 
 }

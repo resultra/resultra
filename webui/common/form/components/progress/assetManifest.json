@@ -1,0 +1,14 @@
+{
+    "cssFiles": ["progressComponent.css"], 
+    "htmlFiles": ["properties.html",
+		"viewProperties.html"], 
+    "jsFiles": ["newProgressDialog.js",
+		"properties.js",
+		"containerHTML.js",
+		"designFormConfig.js",
+		"viewProperties.js",
+		"viewFormConfig.js"
+    ],
+	"imageFiles":[],
+    "subDirs": []
+}

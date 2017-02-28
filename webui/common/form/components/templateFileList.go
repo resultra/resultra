@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/header"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
 	"resultra/datasheet/webui/common/form/components/image"
+	"resultra/datasheet/webui/common/form/components/progress"
 	"resultra/datasheet/webui/common/form/components/rating"
 	"resultra/datasheet/webui/common/form/components/selection"
 	"resultra/datasheet/webui/common/form/components/textBox"
@@ -36,5 +37,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, userSelection.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, comment.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, formButton.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, progress.TemplateFileList...)
 
 }

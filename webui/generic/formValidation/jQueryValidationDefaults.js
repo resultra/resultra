@@ -45,6 +45,36 @@ $(document).ready(function() {
 		console.log("validating positive number: " + value)
         return Number(value) > 0;
     }, 'Enter a positive number.');	
+	
+	$.validator.addMethod('greaterThan', function(value, element, otherValSelector) { 
+		console.log("validating positive number: " + value)
+		var $otherVal = $(otherValSelector)
+		
+		var currVal = Number(value)
+		var otherVal = Number($otherVal.val())
+		
+		if (isNaN(currVal) || isNaN(otherVal)) { 
+			return false
+		} else if(currVal <= otherVal) {
+			return false
+		} else {
+			return true
+		}
+    }, 'Value must be greater.');	
+	
+	
+	$.validator.addMethod('floatNumber',function (value) { 
+		console.log("validating floating point number: " + value)
+		if(isNaN(value)) {
+			console.log("validating floating point number: false")
+			return false
+		} else {
+			console.log("validating floating point number: true")
+			return true
+		}
+    }, 'Enter a number.');	
+	
+	
 })
 
 

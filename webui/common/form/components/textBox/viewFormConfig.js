@@ -152,7 +152,7 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 							// After updating the record, the local cache of records will
 							// be out of date. So after updating the record on the server, the locally cached
 							// version of the record also needs to be updated.
-							updateRecordFunc(replyData)
+							recordProxy.updateRecordFunc(replyData)
 							
 						}) // set record's number field value
 					}

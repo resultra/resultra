@@ -11,5 +11,6 @@
 		"formButton",
 		"rating",
 		"selection",
-		"userSelection"]
+		"userSelection",
+		"progress"]
 }

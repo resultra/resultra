@@ -165,6 +165,27 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 
 
 
+	function initProgressLayout($componentRow,progress) {
+		// Create an HTML block for the container
+		
+		var containerHTML = progressContainerHTML();
+		var $progressContainer = $(containerHTML)
+				
+		var componentLabel = getFieldRef(progress.properties.fieldID).name		
+		$progressContainer.find('label').text(componentLabel)
+		
+		// Position the object withing the #layoutCanvas div
+		$componentRow.append($progressContainer)
+		setElemDimensions($progressContainer,progress.properties.geometry)
+		
+		 // Store the newly created object reference in the DOM element. This is needed for follow-on
+		 // property setting, resizing, etc.
+		setContainerComponentInfo($progressContainer,progress,progress.progressID)
+		
+		// Callback for any specific initialization for either the form design or view mode 
+		loadFormConfig.initProgressFunc(componentContext,$progressContainer,progress)
+	}
+
 	function initCheckBoxLayout($componentRow,checkBox) {
 		// Create an HTML block for the container
 		
@@ -185,6 +206,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initCheckBoxFunc(componentContext,$checkboxContainer,checkBox)
 	}
+
 
 	function initRatingLayout($componentRow,rating) {
 		// Create an HTML block for the container
@@ -334,6 +356,17 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 			initFunc: initCheckBoxLayout
 		}		
 	}
+
+	for (var progressIter in formInfo.progressIndicators) {
+		var progressProps = formInfo.progressIndicators[progressIter]
+		console.log("loadFormComponents: initializing progress indicator: " + JSON.stringify(progressProps))
+		compenentIDComponentMap[progressProps.progressID] = {
+			componentInfo: progressProps,
+			initFunc: initProgressLayout
+		}		
+	}
+
+
 
 	for (var ratingIter in formInfo.ratings) {
 		var ratingProps = formInfo.ratings[ratingIter]

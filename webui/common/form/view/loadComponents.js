@@ -47,6 +47,12 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 			initFormComponentViewBehavior($checkBox,
 					checkBoxObjectRef.checkBoxID,initCheckBoxViewProperties)
 		},
+		initProgressFunc: function(componentContext,$progress,progressObjectRef) {
+			console.log("Init progress indicator in view form")
+			initProgressRecordEditBehavior($progress,componentContext,recordProxy,progressObjectRef)
+			initFormComponentViewBehavior($progress,
+					progressObjectRef.progressID,initProgressViewProperties)
+		},
 		initRatingFunc: function(componentContext,$rating,ratingObjectRef) {
 			console.log("Init rating in view form")
 			initRatingRecordEditBehavior($rating,componentContext,recordProxy,ratingObjectRef)
