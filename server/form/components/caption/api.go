@@ -12,6 +12,7 @@ func init() {
 	captionRouter.HandleFunc("/api/frm/caption/new", newCaption)
 	captionRouter.HandleFunc("/api/frm/caption/resize", resizeCaption)
 	captionRouter.HandleFunc("/api/frm/caption/setLabel", setCaptionLabel)
+	captionRouter.HandleFunc("/api/frm/caption/setCaption", setCaptionCaption)
 
 	http.Handle("/api/frm/caption/", captionRouter)
 }
@@ -47,6 +48,15 @@ func setCaptionLabel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processCaptionPropUpdate(w, r, labelParams)
+}
+
+func setCaptionCaption(w http.ResponseWriter, r *http.Request) {
+	var params CaptionCaptionParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processCaptionPropUpdate(w, r, params)
 }
 
 func resizeCaption(w http.ResponseWriter, r *http.Request) {

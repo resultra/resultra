@@ -80,3 +80,15 @@ func (updateParams CaptionResizeParams) updateProps(captionForUpdate *Caption) e
 
 	return nil
 }
+
+type CaptionCaptionParams struct {
+	CaptionIDHeader
+	Caption string `json:"caption"`
+}
+
+func (updateParams CaptionCaptionParams) updateProps(captionForUpdate *Caption) error {
+
+	captionForUpdate.Properties.Caption = updateParams.Caption
+
+	return nil
+}

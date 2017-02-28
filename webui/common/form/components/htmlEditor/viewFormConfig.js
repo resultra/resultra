@@ -40,6 +40,7 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 	$htmlEditor.data("htmlEditor",editor)
 
 	editor.on('blur', function(event) {
+		
 	    console.log("html editor blur")
 		
 		// Get the most recent copy of the object reference. It could have changed between

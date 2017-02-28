@@ -7,6 +7,7 @@ import (
 
 type CaptionProperties struct {
 	Label    string                         `json:"label"`
+	Caption  string                         `json:"caption"`
 	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 

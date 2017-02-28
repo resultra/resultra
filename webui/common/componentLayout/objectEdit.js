@@ -47,3 +47,8 @@ function initObjectGridEditBehavior($container, editConfig,layoutDesignConfig) {
 	})
 	
 }
+
+function disableObjectEditBehavior($container) {
+	$container.resizable('destroy')
+	$container.draggable('destroy')
+}
