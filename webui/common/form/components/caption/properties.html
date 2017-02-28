@@ -1,0 +1,30 @@
+{{define "formCaptionFormatProps"}}
+	Caption formatting properties go here
+{{end}}
+
+
+{{define "formCaptionCaptionProps"}}
+
+	<form id="captionTextPropertyPanelForm">
+		<div class="form-group marginBottom0">
+			<input type="text" id="captionTextCaptionInput" name="captionTextCaptionInput" class="form-control" placeholder="Caption text" required="" autofocus="">
+		</div>
+	</form>
+	
+{{end}}
+
+
+{{define "formCaptionProps"}}
+
+	<div id="formCaptionProps" class="propertyPanelToggleContainer">
+		
+		{{template "propertyPanelPrefix" .CaptionPanelParams}}
+			{{template "formCaptionCaptionProps"}}
+		{{template "propertyPanelSuffix"}}
+		
+		{{template "propertyPanelPrefix" .FormatPanelParams}}
+			{{template "formCaptionFormatProps"}}
+		{{template "propertyPanelSuffix"}}
+	</div>
+
+{{end}}

@@ -95,6 +95,10 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 		initHeaderFunc: function($header,componentContext,headerObjectRef) {
 			console.log("Init header in view form")
 			initHeaderRecordEditBehavior($header, componentContext,headerObjectRef)
+		},
+		initCaptionFunc: function($caption,componentContext,captionObjectRef) {
+			console.log("Init caption in view form")
+			initHeaderRecordEditBehavior($caption, componentContext,captionObjectRef)
 		}		
 	}
 	

@@ -2,6 +2,7 @@ package design
 
 import (
 	"resultra/datasheet/server/databaseController"
+	"resultra/datasheet/webui/common/form/components/caption"
 	"resultra/datasheet/webui/common/form/components/checkBox"
 	"resultra/datasheet/webui/common/form/components/comment"
 	"resultra/datasheet/webui/common/form/components/datePicker"
@@ -46,6 +47,7 @@ type DesignFormTemplateParams struct {
 	UserSelectionParams userSelection.UserSelectionDesignTemplateParams
 	ProgressParams      progress.ProgressDesignTemplateParams
 	HeaderParams        header.HeaderTemplateParams
+	CaptionParams       caption.CaptionTemplateParams
 	ButtonParams        formButton.ButtonTemplateParams
 	FormPropertyParams  FormPropertyTemplateParams
 }
@@ -84,6 +86,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		CommentParams:       comment.DesignTemplateParams,
 		RatingParams:        rating.DesignTemplateParams,
 		HeaderParams:        header.TemplateParams,
+		CaptionParams:       caption.TemplateParams,
 		ButtonParams:        formButton.TemplateParams,
 		FormPropertyParams:  formPropParams}
 

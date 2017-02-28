@@ -3,6 +3,7 @@ package form
 import (
 	"fmt"
 
+	"resultra/datasheet/server/form/components/caption"
 	"resultra/datasheet/server/form/components/checkBox"
 	"resultra/datasheet/server/form/components/comment"
 	"resultra/datasheet/server/form/components/datePicker"
@@ -66,6 +67,10 @@ func cloneFormComponents(remappedIDs uniqueID.UniqueIDRemapper, parentFormID str
 	}
 
 	if err := comment.CloneComments(remappedIDs, parentFormID); err != nil {
+		return fmt.Errorf("cloneFormComponents: %v", err)
+	}
+
+	if err := caption.CloneCaptions(remappedIDs, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 

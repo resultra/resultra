@@ -1,6 +1,7 @@
 package form
 
 import (
+	"resultra/datasheet/server/form/components/caption"
 	"resultra/datasheet/server/form/components/checkBox"
 	"resultra/datasheet/server/form/components/comment"
 	"resultra/datasheet/server/form/components/datePicker"
@@ -29,6 +30,7 @@ type FormInfo struct {
 	Selections         []selection.Selection         `json:"selections"`
 	UserSelections     []userSelection.UserSelection `json:"userSelections"`
 	ProgressIndicators []progress.Progress           `json:"progressIndicators"`
+	Captions           []caption.Caption             `json:"captions"`
 }
 
 type GetFormInfoParams struct {
@@ -102,6 +104,11 @@ func getFormInfo(params GetFormInfoParams) (*FormInfo, error) {
 		return nil, err
 	}
 
+	captions, err := caption.GetCaptions(params.FormID)
+	if err != nil {
+		return nil, err
+	}
+
 	formInfo := FormInfo{
 		Form:               *form,
 		TextBoxes:          textBoxes,
@@ -115,7 +122,8 @@ func getFormInfo(params GetFormInfoParams) (*FormInfo, error) {
 		Comments:           comments,
 		Selections:         selections,
 		UserSelections:     userSelections,
-		ProgressIndicators: progressIndicators}
+		ProgressIndicators: progressIndicators,
+		Captions:           captions}
 
 	return &formInfo, nil
 }

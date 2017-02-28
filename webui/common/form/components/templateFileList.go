@@ -1,6 +1,7 @@
 package components
 
 import (
+	"resultra/datasheet/webui/common/form/components/caption"
 	"resultra/datasheet/webui/common/form/components/checkBox"
 	"resultra/datasheet/webui/common/form/components/comment"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
@@ -38,5 +39,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, comment.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, formButton.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, progress.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, caption.TemplateFileList...)
 
 }

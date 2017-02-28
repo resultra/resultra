@@ -1,0 +1,11 @@
+.captionFormContainer {
+	min-width:180px;
+	min-height:45px;
+	width: 180px;
+	height: 45px;
+}
+
+.captionFormContainer .formCaption {
+	margin-top: 5px;
+	margin-bottom:5px;
+}

@@ -59,6 +59,28 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 	}
 
 
+	function initCaptionLayout($componentRow,caption) {
+		// Create an HTML block for the container
+		console.log("loadFormComponents: initializing caption: " + JSON.stringify(caption))
+	
+		var containerHTML = formCaptionContainerHTML(caption.captionID);
+		var $containerObj = $(containerHTML)
+		$containerObj.find(".formCaption").text(caption.properties.label)
+				
+		$componentRow.append($containerObj)
+		
+		setElemDimensions($containerObj,caption.properties.geometry)
+	
+		 // Store the newly created object reference in the DOM element. This is needed for follow-on
+		 // property setting, resizing, etc.
+		setContainerComponentInfo($containerObj,caption,caption.captionID)
+	
+		// Callback for any specific initialization for either the form design or view mode
+		loadFormConfig.initCaptionFunc($containerObj,componentContext,caption)
+		
+	}
+
+
 	function initFormButtonLayout($componentRow,formButton) {
 		// Create an HTML block for the container
 		console.log("loadFormComponents: initializing form button: " + JSON.stringify(formButton))
@@ -445,6 +467,19 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		}			
 
 	}		
+
+	for (var captionIter in formInfo.captions) {
+		var captionProps = formInfo.captions[captionIter]
+		console.log("loadFormComponents: initializing caption: " + JSON.stringify(captionProps))
+
+		compenentIDComponentMap[captionProps.captionID] = {
+			componentInfo: captionProps,
+			initFunc: initCaptionLayout
+		}			
+
+	}		
+
+
 	
 	var formLayout = formInfo.form.properties.layout
 	populateComponentLayout(formLayout,loadFormConfig.$parentFormLayout,compenentIDComponentMap)

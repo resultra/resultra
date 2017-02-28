@@ -1,0 +1,12 @@
+{
+    "cssFiles": ["caption.css"], 
+    "htmlFiles": ["properties.html"], 
+    "jsFiles": ["newFormCaptionDialog.js",
+		"properties.js",
+		"containerHTML.js",
+		"designFormConfig.js",
+		"viewFormConfig.js"
+    ],
+	"imageFiles":[],
+    "subDirs": []
+}

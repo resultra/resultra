@@ -11,7 +11,8 @@ var paletteItemsEditConfig = {
 	paletteItemUserSelection: userSelectionDesignFormConfig,
 	paletteItemComment: commentDesignFormConfig,
 	paletteItemButton: formButtonDesignFormConfig,
-	paletteItemProgress: progressDesignFormConfig
+	paletteItemProgress: progressDesignFormConfig,
+	paletteItemCaption: formCaptionDesignFormConfig,
 }
 
 var formDesignCanvasSelector = "#layoutCanvas"
@@ -172,6 +173,10 @@ $(document).ready(function() {
 		initHeaderFunc: function($header,componentContext,headerObjectRef) {
 			var componentIDs = { formID: formID, componentID: headerObjectRef.headerID }
 			initFormComponentDesignBehavior($header,componentIDs,headerObjectRef,formHeaderDesignFormConfig,designFormLayoutConfig)
+		},
+		initCaptionFunc: function($caption,componentContext,captionObjectRef) {
+			var componentIDs = { formID: formID, componentID: captionObjectRef.captionID }
+			initFormComponentDesignBehavior($caption,componentIDs,captionObjectRef,formCaptionDesignFormConfig,designFormLayoutConfig)
 		},
 		initFormButtonFunc: function(componentContext,$button,buttonObjectRef) {
 			var componentIDs = { formID: formID, componentID: buttonObjectRef.buttonID }
