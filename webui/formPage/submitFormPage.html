@@ -1,0 +1,78 @@
+
+{{define "submitFormPageBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-tasks" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">{{.FormName}}</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "submitFormPageHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "submitFormPageBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+
+{{define "submitFormPage"}}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- submitFormPageAssets:css -->
+	<!-- endinject -->
+	
+	<script>var submitFormPageContext = { formID:"{{.FormID}}",
+	 	databaseID: "{{.DatabaseID}}"} 
+	</script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- submitFormPageAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+	
+  <body>
+
+	<div id="layoutPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north" id="submitFormPageHeaderUILayout">
+			{{template "submitFormPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-center" id="submitFormPane">
+				<div id="submitFormPageLayoutCanvas"></div>
+				<button type="button" class="btn btn-primary" id="submitFormPageSubmitButton">Submit</button>
+		</div> <!-- center pane for entire page -->	
+		
+	</div> <!-- layout page -->
+	
+	{{template "submitFormDialog"}}
+	{{template "attachmentTemplates"}}
+	{{template "formButtonPopupFormDialog"}}
+
+	
+  </body>
+  	
+</html>
+
+{{end}}

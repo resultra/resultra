@@ -1,0 +1,11 @@
+{
+	"subDirs":["../generic",
+		"../common"],
+	"cssFiles": ["submitFormPage.css"],
+	"jsFiles": ["submitFormPage.js"],
+	"htmlFiles":["submitFormPage.html"],
+	"imageFiles":[],
+	"minCSSFile":"formPage/submitFormPage.min.css",
+	"minJSFile": "formPage/submitFormPage.min.js",
+	"injectPlaceholderName":"submitFormPageAssets"
+}
