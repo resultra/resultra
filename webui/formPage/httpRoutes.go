@@ -5,5 +5,5 @@ import (
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
-	mainRouter.HandleFunc("/submitForm/{formID}", submitFormPage)
+	mainRouter.HandleFunc("/submitForm/{sharedLinkID}", submitFormPage)
 }

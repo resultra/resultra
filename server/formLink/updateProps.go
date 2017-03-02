@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/stringValidation"
+	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/record"
 )
 
@@ -111,6 +112,32 @@ type FormLinkIncludeInSidebarParams struct {
 func (updateParams FormLinkIncludeInSidebarParams) updateProps(linkForUpdate *FormLink) error {
 
 	linkForUpdate.IncludeInSidebar = updateParams.IncludeInSidebar
+
+	return nil
+}
+
+type FormLinkEnableSharedLinkParams struct {
+	FormLinkIDHeader
+}
+
+func (updateParams FormLinkEnableSharedLinkParams) updateProps(linkForUpdate *FormLink) error {
+
+	if len(linkForUpdate.SharedLinkID) <= 0 {
+		// Generate a new shared link ID if there insn't one already (from previously enabling the shared link)
+		linkForUpdate.SharedLinkID = uniqueID.GenerateSnowflakeID()
+	}
+	linkForUpdate.SharedLinkEnabled = true
+
+	return nil
+}
+
+type FormLinkDisableSharedLinkParams struct {
+	FormLinkIDHeader
+}
+
+func (updateParams FormLinkDisableSharedLinkParams) updateProps(linkForUpdate *FormLink) error {
+
+	linkForUpdate.SharedLinkEnabled = false
 
 	return nil
 }

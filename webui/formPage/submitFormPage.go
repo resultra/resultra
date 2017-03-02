@@ -1,12 +1,14 @@
 package formPage
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"html/template"
 	"log"
 	"net/http"
 
 	"resultra/datasheet/server/databaseController"
+	"resultra/datasheet/server/formLink"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/userAuth"
 
@@ -37,7 +39,7 @@ type SubmitFormPageTemplateParams struct {
 func submitFormPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	formID := vars["formID"]
+	sharedLinkID := vars["sharedLinkID"]
 
 	_, authErr := userAuth.GetCurrentUserInfo(r)
 	if authErr != nil {
@@ -46,16 +48,27 @@ func submitFormPage(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	} else {
-		log.Println("Submit form: : formID = %v", formID)
+		log.Println("Submit form: : shared link ID = %v", sharedLinkID)
 
-		formDBInfo, getErr := databaseController.GetFormDatabaseInfo(formID)
+		formLink, getFormLinkErr := formLink.GetFormLinkFromSharedLinkID(sharedLinkID)
+		if getFormLinkErr != nil {
+			api.WriteErrorResponse(w, getFormLinkErr)
+			return
+		}
+
+		if !formLink.SharedLinkEnabled {
+			api.WriteErrorResponse(w, fmt.Errorf("Shared link disabled for form link"))
+			return
+		}
+
+		formDBInfo, getErr := databaseController.GetFormDatabaseInfo(formLink.FormID)
 		if getErr != nil {
 			api.WriteErrorResponse(w, getErr)
 			return
 		}
 
 		templParams := SubmitFormPageTemplateParams{Title: "Submit Form",
-			FormID:       formID,
+			FormID:       formLink.FormID,
 			FormName:     formDBInfo.FormName,
 			DatabaseID:   formDBInfo.DatabaseID,
 			DatabaseName: formDBInfo.DatabaseName}

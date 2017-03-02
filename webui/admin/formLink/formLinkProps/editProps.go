@@ -8,6 +8,8 @@ import (
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/formLink"
 
+	"resultra/datasheet/server/common/runtimeConfig"
+
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/defaultValues"
 	"resultra/datasheet/webui/generic"
@@ -34,6 +36,7 @@ type FormLinkTemplParams struct {
 	DatabaseName            string
 	LinkID                  string
 	LinkName                string
+	SiteBaseURL             string
 	DefaultValuePanelParams defaultValues.DefaultValuesPanelTemplateParams
 }
 
@@ -67,6 +70,7 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		DatabaseName:            formDBInfo.DatabaseName,
 		LinkID:                  linkID,
 		LinkName:                linkInfo.Name,
+		SiteBaseURL:             runtimeConfig.GetSiteBaseURL(),
 		DefaultValuePanelParams: defaultValues.NewDefaultValuesTemplateParams(elemPrefix)}
 
 	if err := formLinkTemplates.ExecuteTemplate(w, "editFormLinkPropsPage", templParams); err != nil {

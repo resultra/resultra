@@ -19,6 +19,9 @@ func init() {
 	formLinkRouter.HandleFunc("/api/formLink/setForm", setForm)
 	formLinkRouter.HandleFunc("/api/formLink/setIncludeInSidebar", setIncludeInSidebar)
 
+	formLinkRouter.HandleFunc("/api/formLink/enableSharedLink", enableSharedLink)
+	formLinkRouter.HandleFunc("/api/formLink/disableSharedLink", disableSharedLink)
+
 	http.Handle("/api/formLink/", formLinkRouter)
 }
 
@@ -110,6 +113,24 @@ func setForm(w http.ResponseWriter, r *http.Request) {
 
 func setIncludeInSidebar(w http.ResponseWriter, r *http.Request) {
 	var params FormLinkIncludeInSidebarParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFormLinkPropUpdate(w, r, params)
+}
+
+func enableSharedLink(w http.ResponseWriter, r *http.Request) {
+	var params FormLinkEnableSharedLinkParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFormLinkPropUpdate(w, r, params)
+}
+
+func disableSharedLink(w http.ResponseWriter, r *http.Request) {
+	var params FormLinkDisableSharedLinkParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

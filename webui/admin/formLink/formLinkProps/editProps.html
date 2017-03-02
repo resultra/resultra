@@ -74,6 +74,33 @@
 </tr>
 {{end}}
 
+{{define "adminFormLinkShareLinkProperty"}}
+
+<tr>
+	<td class="width200">
+		<label>Shareable link</label>
+		<div><small>Allow creation of new items with a shareable URL link to the form.</small></div>
+	</td>
+		
+	<td>
+		<form id="formLinkPropShareLinkForm">
+			  <div class="form-group">
+			      <div class="checkbox">
+			        <label><input type="checkbox" id="adminFormLinkShareLink">
+						Enabled shared link</label>
+			      </div>
+			   </div>
+				<div class="form-group" id="adminFormLinkShareLinkLinkFormGroup">
+					<label>Shareable link</label>
+					<input type="text" id="adminFormLinkShareLinkLink" name="adminFormLinkShareLinkLink" 
+							class="form-control maxWidth300" placeholder="Link URL" required="" autofocus="" disabled>
+				</div>
+		</form>
+	</td>
+</tr>
+{{end}}
+
+
 
 {{define "adminFormLinkDefaultValuesProperty"}}
 
@@ -96,6 +123,7 @@
 	{{template "adminFormLinkNameProperty" .}}
 	{{template "adminFormLinkFormProperty" .}}
 	{{template "adminFormLinkIncludeInSidebarProperty" .}}
+	{{template "adminFormLinkShareLinkProperty" .}}
 	{{template "adminFormLinkDefaultValuesProperty" .}}
 	
 </table>
@@ -115,7 +143,8 @@
 	
 	<script>var formLinkPropsContext = { 
 		linkID:"{{.LinkID}}",
-		 databaseID:"{{.DatabaseID}}"} 
+		 databaseID:"{{.DatabaseID}}",
+		siteBaseURL:"{{.SiteBaseURL}}"} 
 	</script>
 	
 	{{template "thirdPartyJS"}}

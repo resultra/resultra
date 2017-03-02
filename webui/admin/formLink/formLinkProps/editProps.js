@@ -1,5 +1,47 @@
 $(document).ready(function() {
 	
+	function initSharedLinkProperties(linkInfo) {
+		
+		function initSharedLinkPropertyControls(linkInfo) {
+			var $linkDisplay = $('#adminFormLinkShareLinkLink')
+			var $linkFormGroup = $('#adminFormLinkShareLinkLinkFormGroup')
+			
+			if(linkInfo.sharedLinkEnabled) {
+				$linkFormGroup.show()
+				var linkURL = formLinkPropsContext.siteBaseURL + "submitForm/" + linkInfo.sharedLinkID
+				$linkDisplay.val(linkURL)
+			} else {
+				$linkFormGroup.hide()
+				$linkDisplay.val("")
+			}
+		}
+				
+		initCheckboxChangeHandler('#adminFormLinkShareLink', 
+					linkInfo.sharedLinkEnabled, function(sharedLinkEnabled) {
+						
+			console.log("Form link shared link enabled: " + sharedLinkEnabled)
+						
+			if (sharedLinkEnabled) {
+				var enableSharedLinkParams = { formLinkID: linkInfo.linkID }
+				jsonAPIRequest("formLink/enableSharedLink",enableSharedLinkParams,function(updatedLinkInfo) {
+					console.log("Done setting form for formLink: " + JSON.stringify(updatedLinkInfo))
+					initSharedLinkPropertyControls(updatedLinkInfo)
+				})			
+			
+			} else {
+				var disableSharedLinkParams = { formLinkID: linkInfo.linkID }
+				jsonAPIRequest("formLink/disableSharedLink",disableSharedLinkParams,function(updatedLinkInfo) {
+					console.log("Done setting form for formLink: " + JSON.stringify(updatedLinkInfo))
+					initSharedLinkPropertyControls(updatedLinkInfo)
+				})			
+			
+			}
+	
+		})
+		initSharedLinkPropertyControls(linkInfo)
+		
+	}
+	
 	
 	function initFormLinkNameProperties(linkInfo) {
 	
@@ -115,6 +157,7 @@ $(document).ready(function() {
 			initFormLinkNameProperties(linkInfo)
 			initFormLinkFormProperties(linkInfo)
 			initIncludeInSidebarProperty(linkInfo)
+			initSharedLinkProperties(linkInfo)
 	
 			var defaultValPropParams = {
 				databaseID: formLinkPropsContext.databaseID,
