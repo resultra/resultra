@@ -1,0 +1,18 @@
+{
+    "cssFiles": [], 
+    "htmlFiles": [
+	    "registerDialog.html", 
+	    "signIn.html", 
+	    "signinDialog.html", 
+	    "userDropdownMenu.html"
+    ], 
+    "jsFiles": [
+	    "registerDialog.js", 
+	    "signIn.js", 
+	    "signinDialog.js", 
+	    "signOut.js",
+		"signinPage.js", 
+	    "userDropdownMenu.js"
+    ],
+	"imageFiles":[]
+}
