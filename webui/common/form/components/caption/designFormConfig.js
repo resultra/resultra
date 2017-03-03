@@ -5,52 +5,56 @@ function initCaptionDesignControlBehavior($captionContainer,captionObjectRef,ena
 	var $captionEditorControl = captionFromCaptionContainer($captionContainer)
 	$captionEditorControl.html(captionObjectRef.properties.caption)
 	
-	$captionEditorControl.dblclick(function(e) {
-	
-		e.stopPropagation()
+	function initializeCaptionInlineEditing() {
 		
-		var currentlyEditable = $captionEditorControl.attr("contenteditable")
-		if (currentlyEditable !== "true") {
+		$captionEditorControl.unbind("dblclick")
+		$captionEditorControl.dblclick(function(e) {
 			
-			// Disable drag-and-drop design behavior for this component. This interferes with
-			// selections, cut-and-paste, etc in the editor.
-			disableObjectEditBehavior($captionContainer)
+			console.log("Caption editor control area double clicked")
 			
-			$captionEditorControl.attr("contenteditable","true")
-			var captionEditorInputDomElem = $captionEditorControl.get(0)
-			var editor = CKEDITOR.inline( captionEditorInputDomElem )
-			
-			editor.setData($captionEditorControl.html())
-			
-			editor.on('blur', function(event) {
-				var editorInput = editor.getData();
+			e.stopPropagation()
 		
-				var setCaptionParams = {
-					parentFormID: captionObjectRef.parentFormID,
-					captionID: captionObjectRef.captionID,
-					caption: editorInput
-				}
-				console.log("Caption edit complete: " + JSON.stringify(setCaptionParams))
-				jsonAPIRequest("frm/caption/setCaption",setCaptionParams,function(updatedCaption) {
+			if (!inlineCKEditorEnabled($captionEditorControl)) {
+			
+				// Disable drag-and-drop design behavior for this component. This interferes with
+				// selections, cut-and-paste, etc in the editor.
+				disableObjectEditBehavior($captionContainer)
+			
+				console.log("Starting inline editor for caption")
+				var editor = enableInlineCKEditor($captionEditorControl)
+				
+				editor.setData($captionEditorControl.html())
+			
+				editor.on('blur', function(event) {
+					var editorInput = editor.getData();
+		
+					var setCaptionParams = {
+						parentFormID: captionObjectRef.parentFormID,
+						captionID: captionObjectRef.captionID,
+						caption: editorInput
+					}
+					console.log("Caption edit complete: " + JSON.stringify(setCaptionParams))
+					jsonAPIRequest("frm/caption/setCaption",setCaptionParams,function(updatedCaption) {
+					})
+				
+					disableInlineCKEditor($captionEditorControl,editor)
+				
+					// Re-enable design behavior for this component
+					enableDesignBehaviorCallback()
+				
 				})
-				
-				$captionEditorControl.attr("contenteditable","false")
-				editor.destroy()
-				
-				// Re-enable design behavior for this component
-				enableDesignBehaviorCallback()
-				
-			})
 			
-			
-			$captionEditorControl.focus()
-		}
-		console.log("editor control click")
+				editor.focus()
+			}
 				
-	}) 
+		}) 
+		
+	}
+	
+	initializeCaptionInlineEditing()
+	
+	
 
-	
-	
 }
 
 
