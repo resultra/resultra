@@ -13,7 +13,7 @@ function htmlEditorContainerHTML(elementID)
 			'<label>Editor Label</label>' +
 		'</div>' +
 		'<div class="htmlEditorContent">' +
-			'<div contenteditable="true" class="htmlEditorInput">'+
+			'<div class="htmlEditorInput">'+
 			'</div>' +
 		'</div>'+
 	'</div>';
