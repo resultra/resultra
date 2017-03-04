@@ -1,5 +1,5 @@
 
-function initRatingTooltipProperties(ratingRef) {
+function initRatingTooltipProperties($rating,ratingRef) {
 	
 	function getTooltipText() {
 		
@@ -39,7 +39,7 @@ function initRatingTooltipProperties(ratingRef) {
 		}
 			
 		jsonAPIRequest("frm/rating/setTooltips", tooltipParams, function(updateRating) {
-			setElemObjectRef(updateRating.ratingID,updateRating)
+			setContainerComponentInfo($rating,updateRating,updateRating.ratingID)
 		})	
 		
 	})

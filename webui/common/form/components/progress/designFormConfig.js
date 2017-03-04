@@ -8,7 +8,7 @@ function initDesignFormProgress() {
 
 function selectFormProgress($container,progressObjRef) {
 	console.log("Selected progress indicator: " + JSON.stringify(progressObjRef))
-	loadProgressProperties(progressObjRef)
+	loadProgressProperties($container,progressObjRef)
 }
 
 function resizeProgress($container,geometry) {

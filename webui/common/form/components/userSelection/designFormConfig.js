@@ -23,7 +23,7 @@ function resizeUserSelection($container,geometry) {
 	}
 	
 	jsonAPIRequest("frm/userSelection/resize", resizeParams, function(updatedObjRef) {
-		setElemObjectRef(userSelectionID,updatedObjRef)
+		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.userSelectionID)
 	})	
 }
 

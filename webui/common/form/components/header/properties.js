@@ -1,5 +1,5 @@
 
-function initHeaderTextProperties(headerRef) {
+function initHeaderTextProperties($header,headerRef) {
 	
 	$('#headerTextNameInput').val(headerRef.properties.label)
 	
@@ -38,7 +38,8 @@ function initHeaderTextProperties(headerRef) {
 			jsonAPIRequest("frm/header/setLabel",setLabelParams,function(updatedHeader) {
 				console.log("Done changing header label: " + validatedName)
 				
-				setElemObjectRef(updatedHeader.headerID,updatedHeader)	
+				setContainerComponentInfo($header,updatedHeader,updatedHeader.headerID)
+				
 				var $header = $('#'+updatedHeader.headerID)
 				$header.find(".formHeader").text(updatedHeader.properties.label)
 					
@@ -51,10 +52,10 @@ function initHeaderTextProperties(headerRef) {
 }
 
 
-function loadFormHeaderProperties(headerRef) {
+function loadFormHeaderProperties($header,headerRef) {
 	console.log("Loading header properties")
 	
-	initHeaderTextProperties(headerRef)
+	initHeaderTextProperties($header,headerRef)
 	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#formHeaderProps')

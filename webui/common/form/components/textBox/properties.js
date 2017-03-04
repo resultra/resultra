@@ -1,4 +1,4 @@
-function loadTextBoxProperties(textBoxRef) {
+function loadTextBoxProperties($textBox,textBoxRef) {
 	console.log("loading text box properties")
 	
 	var elemPrefix = "textBox_"
@@ -18,7 +18,7 @@ function loadTextBoxProperties(textBoxRef) {
 				valueFormat: newValueFormat
 			}
 			jsonAPIRequest("frm/textBox/setValueFormat", formatParams, function(updatedTextBox) {
-				setElemObjectRef(updatedTextBox.textBoxID,updatedTextBox)
+				setContainerComponentInfo($textBox,updatedTextBox,updatedTextBox.textBoxID)
 			})	
 			
 		}

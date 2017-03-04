@@ -6,7 +6,7 @@ function initDesignFormHeader() {
 
 function selectFormHeader($container,headerObjRef) {
 	console.log("Selected header: " + JSON.stringify(headerObjRef))
-	loadFormHeaderProperties(headerObjRef)
+	loadFormHeaderProperties($container,headerObjRef)
 }
 
 function resizeFormHeader($container,geometry) {

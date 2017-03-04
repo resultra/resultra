@@ -1,4 +1,4 @@
-function loadProgressProperties(progressRef) {
+function loadProgressProperties($progress,progressRef) {
 	console.log("Loading progress indicator properties")
 	
 	function initRangeProperties() {
@@ -42,7 +42,7 @@ function loadProgressProperties(progressRef) {
 				}
 				console.log("Setting progress range: " + JSON.stringify(setRangeParams))
 				jsonAPIRequest("frm/progress/setRange", setRangeParams, function(updatedProgress) {
-					setElemObjectRef(updatedProgress.progressID,updatedProgress)
+					setContainerComponentInfo($header,updatedProgress,updatedProgress.progressID)
 				})	
 				
 			}		

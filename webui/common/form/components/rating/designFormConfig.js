@@ -14,7 +14,7 @@ function initDesignFormRating() {
 }
 
 function selectFormRating($container,ratingObjRef) {
-	loadRatingProperties(ratingObjRef)
+	loadRatingProperties($container,ratingObjRef)
 }
 
 function resizeRating($container,geometry) {
