@@ -14,10 +14,13 @@ function selectFormSelection (selectionRef) {
 	loadSelectionProperties(selectionRef)
 }
 
-function resizeSelection(selectionID,geometry) {
+function resizeSelection($container,geometry) {
+	
+	var selectionRef = getContainerObjectRef($container)
+	
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
-		selectionID: selectionID,
+		selectionID: selectionRef.selectionID,
 		geometry: geometry
 	}
 	

@@ -9,15 +9,18 @@ function selectFormHeader(headerObjRef) {
 	loadFormHeaderProperties(headerObjRef)
 }
 
-function resizeFormHeader(headerID,geometry) {
+function resizeFormHeader($container,geometry) {
+	
+	var headerRef = getContainerObjectRef($container)
+	
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
-		headerID: headerID,
+		headerID: headerRef.headerID,
 		geometry: geometry
 	}
 	
 	jsonAPIRequest("frm/header/resize", resizeParams, function(updatedObjRef) {
-		setElemObjectRef(headerID,updatedObjRef)
+		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.headerID)
 	})	
 }
 

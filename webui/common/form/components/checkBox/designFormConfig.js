@@ -13,15 +13,19 @@ function selectFormCheckbox(checkboxObjRef) {
 	loadCheckboxProperties(checkboxObjRef)
 }
 
-function resizeCheckBox(checkBoxID,geometry) {
+function resizeCheckBox($container,geometry) {
+	
+	var checkboxRef = getContainerObjectRef($container)
+	
+	
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
-		checkBoxID: checkBoxID,
+		checkBoxID: checkboxRef.checkBoxID,
 		geometry: geometry
 	}
 	
 	jsonAPIRequest("frm/checkBox/resize", resizeParams, function(updatedObjRef) {
-		setElemObjectRef(checkBoxID,updatedObjRef)
+		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.checkBoxID)
 	})	
 }
 

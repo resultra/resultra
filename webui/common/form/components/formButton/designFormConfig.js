@@ -8,15 +8,18 @@ function selectFormButton(buttonObjRef) {
 	loadFormButtonProperties(buttonObjRef)
 }
 
-function resizeFormButton(buttonID,geometry) {
+function resizeFormButton($container,geometry) {
+	
+	var buttonRef = getContainerObjectRef($container)
+	
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
-		buttonID: buttonID,
+		buttonID: buttonRef.buttonID,
 		geometry: geometry
 	}
 	
 	jsonAPIRequest("frm/formButton/resize", resizeParams, function(updatedObjRef) {
-		setElemObjectRef(buttonID,updatedObjRef)
+		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.buttonID)
 	})	
 }
 

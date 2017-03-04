@@ -34,15 +34,12 @@ function initObjectGridEditBehavior($container, editConfig,layoutDesignConfig) {
 		minWidth: editConfig.resizeConstraints.minWidth,
 		grid: 20, // snap to grid during resize
 		stop: function(event, ui) {
-			var objectID = event.target.id  
-			// TODO - remot top and left from layout geometry since layout is now relative
 			var resizeGeometry = {
 				positionTop: 0,
 				positionLeft: 0,
 				sizeWidth: ui.size.width, 
 				sizeHeight: ui.size.height }
-			console.log("Object resize: component id = " + objectID + " geometry=" + JSON.stringify(resizeGeometry))
-			editConfig.resizeFunc(objectID,resizeGeometry)
+			editConfig.resizeFunc($container,resizeGeometry)
 		} // stop function
 	})
 	

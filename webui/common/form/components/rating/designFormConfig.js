@@ -17,15 +17,18 @@ function selectFormRating(ratingObjRef) {
 	loadRatingProperties(ratingObjRef)
 }
 
-function resizeRating(ratingID,geometry) {
+function resizeRating($container,geometry) {
+	
+	var ratingRef = getContainerObjectRef($container)
+	
 	var resizeParams = {
 		parentFormID: ratingObjectRef.parentFormID,
-		ratingID: ratingID,
+		ratingID: ratingRef.ratingID,
 		geometry: geometry
 	}
 	
 	jsonAPIRequest("frm/rating/resize", resizeParams, function(updatedObjRef) {
-		setElemObjectRef(ratingID,updatedObjRef)
+		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.ratingID)
 	})	
 }
 

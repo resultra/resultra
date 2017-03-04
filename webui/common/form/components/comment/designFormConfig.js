@@ -9,15 +9,18 @@ function selectFormComment(commentObjRef) {
 }
 
 
-function resizeCommentComponent(commentID,geometry) {
+function resizeCommentComponent($container,geometry) {
+	
+	var commentRef = getContainerObjectRef($container)
+	
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
-		commentID: commentID,
+		commentID: commentRef.commentID,
 		geometry: geometry
 	}
 	
 	jsonAPIRequest("frm/comment/resize", resizeParams, function(updatedObjRef) {
-		setElemObjectRef(commentID,updatedObjRef)
+		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.commentID)
 	})	
 }
 

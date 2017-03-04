@@ -28,9 +28,9 @@ function selectDashboardBarChart (barChartRef) {
 	
 }
 
-function resizeDashboardBarChart(barChartID,geometry) {
+function resizeDashboardBarChart($container,geometry) {
 	
-	var barChartRef = getElemObjectRef(barChartID)
+	var barChartRef = getContainerObjectRef($container)
 	
 	var resizeParams = {
 		parentDashboardID: barChartRef.parentDashboardID,

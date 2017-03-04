@@ -14,15 +14,18 @@ function selectFormTextBox (textBoxRef) {
 	loadTextBoxProperties(textBoxRef)
 }
 
-function resizeTextBox(textBoxID,geometry) {
+function resizeTextBox($container,geometry) {
+	
+	var textBoxRef = getContainerObjectRef($container)
+	
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
-		textBoxID: textBoxID,
+		textBoxID: textBoxRef.textBoxID,
 		geometry: geometry
 	}
 	
 	jsonAPIRequest("frm/textBox/resize", resizeParams, function(updatedObjRef) {
-		setElemObjectRef(textBoxID,updatedObjRef)
+		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.textBoxID)
 	})	
 }
 

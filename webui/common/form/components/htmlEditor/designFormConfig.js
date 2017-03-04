@@ -14,15 +14,18 @@ function selectFormHtmlEditor(htmlEditorObjRef) {
 }
 
 
-function resizeHtmlEditor(htmlEditorID,geometry) {
+function resizeHtmlEditor($container,geometry) {
+	
+	var editorRef = getContainerObjectRef($container)
+	
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
-		htmlEditorID: htmlEditorID,
+		htmlEditorID: editorRef.htmlEditorID,
 		geometry: geometry
 	}
 	
 	jsonAPIRequest("frm/htmlEditor/resize", resizeParams, function(updatedObjRef) {
-		setElemObjectRef(htmlEditorID,updatedObjRef)
+		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.htmlEditorID)
 	})	
 }
 

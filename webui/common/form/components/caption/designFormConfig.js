@@ -68,15 +68,18 @@ function selectFormCaption(captionObjRef) {
 	loadFormCaptionProperties(captionObjRef)
 }
 
-function resizeFormCaption(captionID,geometry) {
+function resizeFormCaption($container,geometry) {
+	
+	var captionRef = getContainerObjectRef($container)
+	
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
-		captionID: captionID,
+		captionID: captionRef.captionID,
 		geometry: geometry
 	}
 	
 	jsonAPIRequest("frm/caption/resize", resizeParams, function(updatedObjRef) {
-		setElemObjectRef(captionID,updatedObjRef)
+		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.captionID)
 	})	
 }
 

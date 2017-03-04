@@ -14,15 +14,18 @@ function selectFormImage(imageObjRef) {
 }
 
 
-function resizeImage(imageID,geometry) {
+function resizeImage($container,geometry) {
+	
+	var imageRef = getContainerObjectRef($container)
+	
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
-		imageID: imageID,
+		imageID: imageRef.imageID,
 		geometry: geometry
 	}
 	
 	jsonAPIRequest("frm/image/resize", resizeParams, function(updatedObjRef) {
-		setElemObjectRef(imageID,updatedObjRef)
+		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.imageID)
 	})	
 }
 

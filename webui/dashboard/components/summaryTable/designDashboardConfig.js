@@ -14,9 +14,9 @@ function selectDashboardSummaryTable(summaryTableRef) {
 	loadSummaryTableProperties(summaryTablePropertiesArgs)
 }
 
-function resizeDashboardSummaryTable(summaryTableID,geometry) {
+function resizeDashboardSummaryTable($container,geometry) {
 	
-	var summaryTableRef = getElemObjectRef(summaryTableID)
+	var summaryTableRef =  getContainerObjectRef($container)
 	
 	var resizeParams = {
 		parentDashboardID: summaryTableRef.parentDashboardID,
@@ -27,7 +27,7 @@ function resizeDashboardSummaryTable(summaryTableID,geometry) {
 	console.log("Resize summary table: " +  JSON.stringify(resizeParams))
 
 	jsonAPIRequest("dashboard/summaryTable/setDimensions", resizeParams, function(updatedObjRef) {
-		setElemObjectRef(updatedObjRef.summaryTableID,updatedObjRef)
+		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.summaryTableID)
 	})	
 }
 

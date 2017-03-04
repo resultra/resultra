@@ -14,15 +14,18 @@ function selectFormDatePicker(datePickerObjRef) {
 }
 
 
-function resizeDatePicker(datePickerID,geometry) {
+function resizeDatePicker($container,geometry) {
+	
+	var datePickerRef = getContainerObjectRef($container)
+	
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
-		datePickerID: datePickerID,
+		datePickerID: datePickerRef.datePickerID,
 		geometry: geometry
 	}
 	
 	jsonAPIRequest("frm/datePicker/resize", resizeParams, function(updatedObjRef) {
-		setElemObjectRef(datePickerID,updatedObjRef)
+		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.datePickerID)
 	})	
 }
 

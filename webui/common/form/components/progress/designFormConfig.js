@@ -11,15 +11,18 @@ function selectFormProgress(progressObjRef) {
 	loadProgressProperties(progressObjRef)
 }
 
-function resizeProgress(progressID,geometry) {
+function resizeProgress($container,geometry) {
+	
+	var progressRef = getContainerObjectRef($container)
+	 
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
-		progressID: progressID,
+		progressID: progressRef.progressID,
 		geometry: geometry
 	}
 	
 	jsonAPIRequest("frm/progress/resize", resizeParams, function(updatedObjRef) {
-		setElemObjectRef(progressID,updatedObjRef)
+		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.progressID)
 	})	
 }
 
