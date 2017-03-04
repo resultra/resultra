@@ -25,7 +25,7 @@ function openNewTextBoxDialog(databaseID,formID,containerParams)
 
 			  // Put a reference to the check box's reference object in the check box's DOM element.
 			  // This reference can be retrieved later for property setting, etc.
-			  setElemObjectRef(newTextBoxObjectRef.textBoxID,newTextBoxObjectRef)
+			  setContainerComponentInfo(containerParams.containerObj,newTextBoxObjectRef,newTextBoxObjectRef.textBoxID)
 		
 			  $parentDialog.modal("hide")
 			  

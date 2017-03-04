@@ -24,7 +24,7 @@ function openNewSelectionDialog(databaseID,formID,containerParams)
 
 			  // Put a reference to the check box's reference object in the check box's DOM element.
 			  // This reference can be retrieved later for property setting, etc.
-			  setElemObjectRef(newSelectionObjectRef.selectionID,newSelectionObjectRef)
+			  setContainerComponentInfo(containerParams.containerObj,newSelectionObjectRef,newSelectionObjectRef.selectionID)
 		
 			  $parentDialog.modal("hide")
 			  

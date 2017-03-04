@@ -26,7 +26,7 @@ function openNewCommentComponentDialog(databaseID,formID,containerParams)
 			  
 			  // Put a reference to the check box's reference object in the check box's DOM element.
 			  // This reference can be retrieved later for property setting, etc.
-			  setElemObjectRef(newCommentObjectRef.commentID,newCommentObjectRef)
+			  setContainerComponentInfo(containerParams.containerObj,newCommentObjectRef,newCommentObjectRef.commentID)
 			  				  
 			  $parentDialog.modal("hide")
 

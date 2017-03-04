@@ -21,7 +21,7 @@ function openNewImageDialog(databaseID,formID,containerParams)
 			  
 			  // Put a reference to the check box's reference object in the check box's DOM element.
 			  // This reference can be retrieved later for property setting, etc.
-			  setElemObjectRef(newImageObjectRef.imageID,newImageObjectRef)
+			  setContainerComponentInfo(containerParams.containerObj,newImageObjectRef,newImageObjectRef.imageID)
 			  
 			  $parentDialog.modal("hide")
 

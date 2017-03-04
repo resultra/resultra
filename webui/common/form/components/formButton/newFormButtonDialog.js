@@ -56,7 +56,7 @@ function openNewFormButtonDialog(databaseID,formID,containerParams) {
   
 						  // Put a reference to the check box's reference object in the check box's DOM element.
 						  // This reference can be retrieved later for property setting, etc.
-						  setElemObjectRef(newButtonObjectRef.buttonID,newButtonObjectRef)
+						  setContainerComponentInfo(containerParams.containerObj,newButtonObjectRef,newButtonObjectRef.buttonID)
 					  
 						  componentCreated = true
 						  $newFormButtonDialog.modal('hide')

@@ -20,7 +20,7 @@ function openNewFormCaptionDialog(databaseID,formID,containerParams) {
 	  
 		  // Put a reference to the caption's reference object in the check box's DOM element.
 		  // This reference can be retrieved later for property setting, etc.
-		  setElemObjectRef(newCaptionObjectRef.captionID,newCaptionObjectRef)
+		  setContainerComponentInfo(containerParams.containerObj,newCaptionObjectRef,newCaptionObjectRef.captionID)
 	  			  
        }) // newLayoutContainer API request
 	
