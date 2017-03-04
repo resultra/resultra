@@ -11,7 +11,7 @@ function initDesignFormSelection() {
 
 function selectFormSelection ($container,selectionRef) {
 	console.log("Select selection component: " + JSON.stringify(selectionRef))
-	loadSelectionProperties(selectionRef)
+	loadSelectionProperties($container,selectionRef)
 }
 
 function resizeSelection($container,geometry) {

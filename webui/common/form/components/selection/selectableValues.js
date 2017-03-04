@@ -30,7 +30,7 @@ function getSelectComponentSelectableValues() {
 	return selectableVals;
 }
 
-function saveSelectComponentSelectableValues(selectionRef) {
+function saveSelectComponentSelectableValues($selection,selectionRef) {
 	var selectableVals = getSelectComponentSelectableValues()
 	
 	var saveSelectableValueParams = {
@@ -40,13 +40,13 @@ function saveSelectComponentSelectableValues(selectionRef) {
 	}
 	
 	jsonAPIRequest("frm/selection/setSelectableVals",saveSelectableValueParams,function(updatedSelection) {
-		setElemObjectRef(updatedSelection.selectionID,updatedSelection)				
+		setContainerComponentInfo($selection,updatedSelection,updatedSelection.selectionID)			
 	})		
 	
 }
 
 
-function selectableValuesListItem(elemPrefix,selectionRef,selectableVal) {
+function selectableValuesListItem($selection,elemPrefix,selectionRef,selectableVal) {
 		
 	var listItemHTML = 	'<div class="list-group-item seletableValuesListItem" id="'+elemPrefix+'"></div>';
 	var $listItem = $(listItemHTML)
@@ -83,11 +83,11 @@ function selectableValuesListItem(elemPrefix,selectionRef,selectableVal) {
 	
 	$valueInput.blur(function() {
 		console.log("validating value input")
-		saveSelectComponentSelectableValues(selectionRef)
+		saveSelectComponentSelectableValues($selection,selectionRef)
 	})
 	$labelInput.blur(function() {
 		console.log("validating value input")
-		saveSelectComponentSelectableValues(selectionRef)
+		saveSelectComponentSelectableValues($selection,selectionRef)
 	})
 	
 	return $listItem
@@ -105,7 +105,7 @@ function generateSelectableValuePrefix() {
 
 
 
-function initSelectableValuesProperties(selectionRef) {
+function initSelectableValuesProperties($selection,selectionRef) {
 	
 	var $selectableValuesList = $('#selectableValuesList')
 	
@@ -114,7 +114,7 @@ function initSelectableValuesProperties(selectionRef) {
 	if(selectionRef.properties.selectableVals !== null) {
 		for(var selValIndex = 0; selValIndex < selectionRef.properties.selectableVals.length; selValIndex++) {
 			var selectableVal = selectionRef.properties.selectableVals[selValIndex]	
-			var $listItem = selectableValuesListItem(generateSelectableValuePrefix(),selectionRef,selectableVal)
+			var $listItem = selectableValuesListItem($selection,generateSelectableValuePrefix(),selectionRef,selectableVal)
 			$selectableValuesList.append($listItem)
 		}		
 	}
@@ -122,7 +122,7 @@ function initSelectableValuesProperties(selectionRef) {
 	initButtonClickHandler('#selectionAddSelectableValueButton',function(e) {
 		console.log("add selectable button clicked")
 		var initialEmptySelectableVal = { val:"", label:""}
-		var $listItem = selectableValuesListItem(generateSelectableValuePrefix(),selectionRef,initialEmptySelectableVal) 
+		var $listItem = selectableValuesListItem($selection,generateSelectableValuePrefix(),selectionRef,initialEmptySelectableVal) 
 		$selectableValuesList.append($listItem)
 	})
 	

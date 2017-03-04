@@ -1,8 +1,8 @@
-function loadSelectionProperties(selectionRef) {
+function loadSelectionProperties($selection,selectionRef) {
 	console.log("loading selection properties")
 	
 	
-	initSelectableValuesProperties(selectionRef)
+	initSelectableValuesProperties($selection,selectionRef)
 	
 	
 	// Toggle to the check box properties, hiding the other property panels
