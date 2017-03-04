@@ -8,11 +8,8 @@ function openNewFormHeaderDialog(databaseID,formID,containerParams) {
 	
 	jsonAPIRequest("frm/header/new",newHeaderParams,function(newHeaderObjectRef) {
           console.log("create new form header: Done getting new ID:response=" + JSON.stringify(newHeaderObjectRef));
-    			  
-		  var placeholderSelector = '#'+containerParams.containerID
 		  
-		  $(placeholderSelector).find('.formHeader').text(newHeaderObjectRef.properties.label)
-		  $(placeholderSelector).attr("id",newHeaderObjectRef.headerID)
+		  containerParams.containerObj.find('.formHeader').text(newHeaderObjectRef.properties.label)
   
 		  // Set up the newly created checkbox for resize, selection, etc.
 		  var componentIDs = { formID: formID, componentID:newHeaderObjectRef.headerID }

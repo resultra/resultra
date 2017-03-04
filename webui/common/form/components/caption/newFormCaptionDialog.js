@@ -8,12 +8,9 @@ function openNewFormCaptionDialog(databaseID,formID,containerParams) {
 	
 	jsonAPIRequest("frm/caption/new",newCaptionParams,function(newCaptionObjectRef) {
           console.log("create new form header: Done getting new ID:response=" + JSON.stringify(newHeaderObjectRef));
-    			  
-		  var placeholderSelector = '#'+containerParams.containerID
 		  
-		  $(placeholderSelector).find('.formCaption').text(newCaptionObjectRef.properties.label)
-		  $(placeholderSelector).attr("id",newCaptionObjectRef.captionID)
-  
+		  containerParams.containerObj.find('.formCaption').text(newCaptionObjectRef.properties.label)
+ 
 		  // Set up the newly created checkbox for resize, selection, etc.
 		  var componentIDs = { formID: formID, componentID:newCaptionObjectRef.captionID }
 		  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newCaptionObjectRef,formCaptionDesignFormConfig)

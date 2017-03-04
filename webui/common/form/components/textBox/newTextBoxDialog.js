@@ -7,14 +7,17 @@ function openNewTextBoxDialog(databaseID,formID,containerParams)
 		jsonAPIRequest("frm/textBox/new",newComponentParams,function(newTextBoxObjectRef) {
 	          console.log("saveNewTextBox: Done getting new ID:response=" + JSON.stringify(newTextBoxObjectRef));
 		  
+		  
+			  // Put a reference to the check box's reference object in the check box's DOM element.
+			  // This reference can be retrieved later for property setting, etc.
+			  setContainerComponentInfo(containerParams.containerObj,newTextBoxObjectRef,newTextBoxObjectRef.textBoxID)
+		  
 			  // The new text box has been saved on the server, but only a placeholder of the text box 
 			  // is currently shown in the layout. The following code is needed to update and finalize the placeholder
 			  // as a complete and fully-functional text box.
-
-			  var placeholderSelector = '#'+containerParams.containerID
 			  
 			  var fieldName = getFieldRef(newTextBoxObjectRef.properties.fieldID).name
-			  $(placeholderSelector).find('label').text(fieldName)			  	
+			  containerParams.containerObj.find('label').text(fieldName)			  	
 			  
 			  
 			  $(placeholderSelector).attr("id",newTextBoxObjectRef.textBoxID)
@@ -23,9 +26,6 @@ function openNewTextBoxDialog(databaseID,formID,containerParams)
 			  var componentIDs = { formID: formID, componentID: newTextBoxObjectRef.textBoxID}
 			  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newTextBoxObjectRef,textBoxDesignFormConfig)
 
-			  // Put a reference to the check box's reference object in the check box's DOM element.
-			  // This reference can be retrieved later for property setting, etc.
-			  setContainerComponentInfo(containerParams.containerObj,newTextBoxObjectRef,newTextBoxObjectRef.textBoxID)
 		
 			  $parentDialog.modal("hide")
 			  

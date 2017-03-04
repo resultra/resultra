@@ -7,12 +7,9 @@ function openNewCheckboxDialog(databaseID,formID,containerParams) {
 		
 		jsonAPIRequest("frm/checkBox/new",newComponentParams,function(newCheckBoxObjectRef) {
 	          console.log("createNewCheckbox: Done getting new ID:response=" + JSON.stringify(newCheckBoxObjectRef));
-	  	  
-			  var placeholderSelector = '#'+containerParams.containerID
-			  
-			  var componentLabel = getFieldRef(newCheckBoxObjectRef.properties.fieldID).name
-			  $(placeholderSelector).find('label').text(componentLabel)
-			  $(placeholderSelector).attr("id",newCheckBoxObjectRef.checkBoxID)
+	  	  			  
+			  var componentLabel = getFieldRef(newCheckBoxObjectRef.properties.fieldID).name			  
+			  containerParams.containerObj.find('span').text(componentLabel)
 	  
 			  // Set up the newly created checkbox for resize, selection, etc.
 			  var componentIDs = { formID: formID, componentID:newCheckBoxObjectRef.checkBoxID }

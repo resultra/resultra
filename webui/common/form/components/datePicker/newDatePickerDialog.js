@@ -6,11 +6,8 @@ function openNewDatePickerDialog(databaseID,formID,containerParams)
 		jsonAPIRequest("frm/datePicker/new",newComponentParams,function(newDatePickerObjectRef) {
 	          console.log("saveNewDatePicker: Done getting new ID:response=" + JSON.stringify(newDatePickerObjectRef));
 		  
-			  var placeholderSelector = '#'+containerParams.containerID
-	
 			  var componentLabel = getFieldRef(newDatePickerObjectRef.properties.fieldID).name
-			  $(placeholderSelector).find('label').text(componentLabel)
-			  $(placeholderSelector).attr("id",newDatePickerObjectRef.datePickerID)
+			  containerParams.containerObj.find('label').text(componentLabel)
 		  
 			  // Set up the newly created checkbox for resize, selection, etc.
 			  var componentIDs = { formID: formID, componentID:newDatePickerObjectRef.datePickerID }

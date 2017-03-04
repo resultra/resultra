@@ -8,13 +8,10 @@ function openNewUserSelectionDialog(databaseID,formID,containerParams) {
 		jsonAPIRequest("frm/userSelection/new",newComponentParams,function(newUserSelectionObjectRef) {
 	          console.log("createNewUserSelection: Done getting new ID:response=" + 
 						JSON.stringify(newUserSelectionObjectRef));
-	  	  			  
-			  var placeholderSelector = '#'+containerParams.containerID
 			  
 			  var componentLabel = getFieldRef(newUserSelectionObjectRef.properties.fieldID).name
-			  $(placeholderSelector).find('label').text(componentLabel)
-			  $(placeholderSelector).attr("id",newUserSelectionObjectRef.userSelectionID)
-	  
+			  containerParams.containerObj.find('label').text(componentLabel)
+
 			  // Set up the newly created checkbox for resize, selection, etc.
 			  var componentIDs = { formID: formID, 
 				  componentID:newUserSelectionObjectRef.userSelectionID }

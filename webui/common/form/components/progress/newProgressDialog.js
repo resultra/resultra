@@ -1,4 +1,4 @@
-function openNewCheckboxDialog(databaseID,formID,containerParams) {
+function openNewProgressDialog(databaseID,formID,containerParams) {
 	
 	function createNewProgressComponent($parentDialog, newComponentParams) {
 		
@@ -6,13 +6,9 @@ function openNewCheckboxDialog(databaseID,formID,containerParams) {
 	          console.log("createNewProgressComponent: Done getting new progress component:response=" 
 						+ JSON.stringify(newProgressObjectRef));
 	  	  
-		  			  /* TODO - Initialize the component label
-			  var placeholderSelector = '#'+containerParams.containerID
-			  
-			  var componentLabel = getFieldRef(newCheckBoxObjectRef.properties.fieldID).name
-			  $(placeholderSelector).find('label').text(componentLabel)
-			  $(placeholderSelector).attr("id",newCheckBoxObjectRef.checkBoxID)
-						*/
+				var componentLabel = getFieldRef(newProgressObjectRef.properties.fieldID).name		
+				containerParams.containerObj.find('label').text(componentLabel)
+						
 	  
 			  // Set up the newly created checkbox for resize, selection, etc.
 			  var componentIDs = { formID: formID, componentID:newProgressObjectRef.progressID }

@@ -6,15 +6,10 @@ function openNewImageDialog(databaseID,formID,containerParams)
 	function createNewImageComponent($parentDialog, newComponentParams) {
 		jsonAPIRequest("frm/image/new",newComponentParams,function(newImageObjectRef) {
 	          console.log("saveNewImage: Done getting new ID:response=" + JSON.stringify(newImageObjectRef));
-		  
-
-			  var placeholderSelector = '#'+containerParams.containerID
 
 			  var componentLabel = getFieldRef(newImageObjectRef.properties.fieldID).name
-			  $(placeholderSelector).find('label').text(fieldName)
-			  
-			  $(placeholderSelector).attr("id",newImageObjectRef.imageID)
-		  
+			  containerParams.containerObj.find('label').text(fieldName)
+			  		  
 			  // Set up the newly created editor for resize, selection, etc.
 			  var componentIDs = { formID: formID, componentID:newImageObjectRef.imageID }
 			  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newImageObjectRef,imageDesignFormConfig)

@@ -7,12 +7,9 @@ function openNewRatingDialog(databaseID,formID,containerParams) {
 		
 		jsonAPIRequest("frm/rating/new",newComponentParams,function(newRatingObjectRef) {
 	          console.log("createNewRating: Done getting new ID:response=" + JSON.stringify(newRatingObjectRef));
-	    			  
-			  var placeholderSelector = '#'+containerParams.containerID
-			  
+	    			  			  
 	  		  var componentLabel = getFieldRef(newRatingObjectRef.properties.fieldID).name
-			  $(placeholderSelector).find('label').text(componentLabel)
-			  $(placeholderSelector).attr("id",newRatingObjectRef.ratingID)
+			  containerParams.containerObj.find('label').text(componentLabel)
 	  
 			  // Set up the newly created checkbox for resize, selection, etc.
 			  var componentIDs = { formID: formID, 

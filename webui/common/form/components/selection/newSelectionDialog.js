@@ -10,14 +10,10 @@ function openNewSelectionDialog(databaseID,formID,containerParams)
 			  // The new text box has been saved on the server, but only a placeholder of the text box 
 			  // is currently shown in the layout. The following code is needed to update and finalize the placeholder
 			  // as a complete and fully-functional text box.
-
-			  var placeholderSelector = '#'+containerParams.containerID
 			  
 			  var fieldName = getFieldRef(newSelectionObjectRef.properties.fieldID).name
-			  $(placeholderSelector).find('label').text(fieldName)			  	
-				  			  
-			  $(placeholderSelector).attr("id",newSelectionObjectRef.selectionID)
-		  
+			  containerParams.containerObj.find('label').text(fieldName)			  	
+				  			  		  
 			  // Set up the newly created checkbox for resize, selection, etc.
 			  var componentIDs = { formID: formID, componentID: newSelectionObjectRef.selectionID}
 			  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newSelectionObjectRef,selectionDesignFormConfig)

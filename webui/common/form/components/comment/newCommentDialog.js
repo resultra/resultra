@@ -15,10 +15,7 @@ function openNewCommentComponentDialog(databaseID,formID,containerParams)
 			  var fieldID = newCommentObjectRef.properties.fieldID
 			  var componentLabel = getFieldRef(fieldID).name
 			  
-			  var placeholderSelector = '#'+containerParams.containerID
-	
-			  $(placeholderSelector).find('label').text(componentLabel)
-			  $(placeholderSelector).attr("id",newCommentObjectRef.commentID)
+			  containerParams.containerObj.find('label').text(componentLabel)
 		  
 			  // Set up the newly created checkbox for resize, selection, etc.
 			  var componentIDs = { formID: formID, componentID:newCommentObjectRef.commentID }

@@ -30,7 +30,7 @@ function resizeProgress($container,geometry) {
 var progressDesignFormConfig = {
 	draggableHTMLFunc:	progressContainerHTML,
 	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
-	createNewItemAfterDropFunc: openNewCheckboxDialog,
+	createNewItemAfterDropFunc: openNewProgressDialog,
 	resizeConstraints: elemResizeConstraints(100,640,30,30),
 	resizeFunc: resizeProgress,
 	initFunc: initDesignFormProgress,

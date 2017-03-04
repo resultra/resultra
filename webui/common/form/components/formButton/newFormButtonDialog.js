@@ -46,8 +46,7 @@ function openNewFormButtonDialog(databaseID,formID,containerParams) {
 					  var buttonLabel = "TBD - Button Label"
 					  
 					  jsonAPIRequest("frm/getFormInfo", { formID: newButtonObjectRef.properties.linkedFormID }, function(formInfo) {
-						  $(placeholderSelector).find(".formButton").text(formInfo.form.name)		
-						  $(placeholderSelector).attr("id",newButtonObjectRef.buttonID)
+						  containerParams.containerObj.find(".formButton").text(formInfo.form.name)		
 
 						  // Set up the newly created checkbox for resize, selection, etc.
 						  var componentIDs = { formID: formID, componentID:newButtonObjectRef.buttonID }
