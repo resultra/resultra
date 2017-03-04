@@ -95,7 +95,7 @@ $(document).ready(function() {
 				$parentDashboardCanvas,function(selectedComponentID) {
 			console.log("dashboard design object selected: " + selectedComponentID)
 			var selectedObjRef	= getElemObjectRef(selectedComponentID)
-			designDashboardConfig.selectionFunc(selectedObjRef)
+			designDashboardConfig.selectionFunc($component,selectedObjRef)
 		})
 		
 		

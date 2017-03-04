@@ -3,7 +3,7 @@ function initDesignFormComment() {
 	initNewCommentComponentDialog()
 }
 
-function selectFormComment(commentObjRef) {
+function selectFormComment($container,commentObjRef) {
 	console.log("Selected date picker: " + JSON.stringify(commentObjRef))
 	loadCommentComponentProperties(commentObjRef)
 }

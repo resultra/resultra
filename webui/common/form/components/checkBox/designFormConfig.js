@@ -8,7 +8,7 @@ function initDesignFormCheckBox() {
 	initNewCheckBoxDialog()
 }
 
-function selectFormCheckbox(checkboxObjRef) {
+function selectFormCheckbox($container,checkboxObjRef) {
 	console.log("Selected checkbox: " + JSON.stringify(checkboxObjRef))
 	loadCheckboxProperties(checkboxObjRef)
 }

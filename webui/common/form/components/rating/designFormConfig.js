@@ -13,7 +13,7 @@ function initDesignFormRating() {
 	initNewRatingDialog()
 }
 
-function selectFormRating(ratingObjRef) {
+function selectFormRating($container,ratingObjRef) {
 	loadRatingProperties(ratingObjRef)
 }
 

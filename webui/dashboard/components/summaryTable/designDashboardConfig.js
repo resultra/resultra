@@ -3,7 +3,7 @@ var summaryTableDashboardDesignConfig = {
 	
 }
 
-function selectDashboardSummaryTable(summaryTableRef) {
+function selectDashboardSummaryTable($container,summaryTableRef) {
 	console.log("Select summary table: " + summaryTableRef.summaryTableID)
 	
 	var summaryTablePropertiesArgs = {

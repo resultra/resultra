@@ -9,7 +9,7 @@ function initDesignFormSelection() {
 	initNewSelectionDialog()
 }
 
-function selectFormSelection (selectionRef) {
+function selectFormSelection ($container,selectionRef) {
 	console.log("Select selection component: " + JSON.stringify(selectionRef))
 	loadSelectionProperties(selectionRef)
 }
@@ -25,7 +25,7 @@ function resizeSelection($container,geometry) {
 	}
 	
 	jsonAPIRequest("frm/selection/resize", resizeParams, function(updatedObjRef) {
-		setElemObjectRef(selectionID,updatedObjRef)
+		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.selectionID)
 	})	
 }
 

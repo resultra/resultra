@@ -8,7 +8,7 @@ function initDesignFormImage() {
 	initNewImageDialog()
 }
 
-function selectFormImage(imageObjRef) {
+function selectFormImage($container,imageObjRef) {
 	console.log("Selected html editor: " + JSON.stringify(imageObjRef))
 	loadImageProperties(imageObjRef)
 }

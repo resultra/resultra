@@ -8,7 +8,7 @@ function initDesignFormUserSelection() {
 	initUserSelectionDialog()
 }
 
-function selectFormUserSelection(userSelectionObjectRef) {
+function selectFormUserSelection($container,userSelectionObjectRef) {
 	loadUserSelectionProperties(userSelectionObjectRef)
 }
 

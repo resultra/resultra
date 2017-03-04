@@ -21,7 +21,7 @@ function summaryTableViewDashboardConfig(summaryTableRef) {
 		
 	}
 	
-	function selectSummaryTable(updatedSummaryTableRef) {
+	function selectSummaryTable($container,updatedSummaryTableRef) {
 			console.log("Select summary table: " + updatedSummaryTableRef.summaryTableID)
 	
 	

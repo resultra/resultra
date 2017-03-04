@@ -6,7 +6,7 @@ function initDesignFormProgress() {
 	console.log("Init progress indicator design form behavior")
 }
 
-function selectFormProgress(progressObjRef) {
+function selectFormProgress($container,progressObjRef) {
 	console.log("Selected progress indicator: " + JSON.stringify(progressObjRef))
 	loadProgressProperties(progressObjRef)
 }

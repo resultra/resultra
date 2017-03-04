@@ -4,7 +4,7 @@ function initDesignFormHeader() {
 //	initNewCheckBoxDialog()
 }
 
-function selectFormHeader(headerObjRef) {
+function selectFormHeader($container,headerObjRef) {
 	console.log("Selected header: " + JSON.stringify(headerObjRef))
 	loadFormHeaderProperties(headerObjRef)
 }

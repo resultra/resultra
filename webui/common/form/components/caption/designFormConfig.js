@@ -63,7 +63,7 @@ function initDesignFormCaption() {
 //	initNewCheckBoxDialog()
 }
 
-function selectFormCaption(captionObjRef) {
+function selectFormCaption($container,captionObjRef) {
 	console.log("Selected caption: " + JSON.stringify(captionObjRef))
 	loadFormCaptionProperties(captionObjRef)
 }

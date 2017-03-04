@@ -3,7 +3,7 @@ function initDesignFormButton() {
 	console.log("Init button design form behavior")
 }
 
-function selectFormButton(buttonObjRef) {
+function selectFormButton($container,buttonObjRef) {
 	console.log("Selected button: " + JSON.stringify(buttonObjRef))
 	loadFormButtonProperties(buttonObjRef)
 }

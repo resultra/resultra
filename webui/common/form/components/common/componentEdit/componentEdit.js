@@ -12,7 +12,7 @@ function initFormComponentDesignBehavior($componentContainer, componentIDs, obje
 			$designFormParentCanvas,function(selectedCompenentID) {
 		console.log("form design object selected: " + selectedCompenentID)
 		var selectedObjRef	= getContainerObjectRef($componentContainer)
-		designFormConfig.selectionFunc(selectedObjRef)
+		designFormConfig.selectionFunc($componentContainer,selectedObjRef)
 	})
 		
 	

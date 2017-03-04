@@ -8,7 +8,7 @@ function initDesignFormDatePicker() {
 	initNewDatePickerDialog()
 }
 
-function selectFormDatePicker(datePickerObjRef) {
+function selectFormDatePicker($container,datePickerObjRef) {
 	console.log("Selected date picker: " + JSON.stringify(datePickerObjRef))
 	loadDatePickerProperties(datePickerObjRef)
 }

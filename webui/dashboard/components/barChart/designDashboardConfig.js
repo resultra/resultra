@@ -1,5 +1,5 @@
 
-function selectDashboardBarChart (barChartRef) {
+function selectDashboardBarChart ($container,barChartRef) {
 	console.log("Select bar chart: " + barChartRef.barChartID)
 	
 	var barChartPropsArgs = {

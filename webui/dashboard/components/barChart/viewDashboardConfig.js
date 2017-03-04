@@ -22,7 +22,7 @@ function barChartViewDashboardConfig(barChartRef) {
 		
 	}
 	
-	function selectBarChart(selectedBarChartRef) {
+	function selectBarChart($container,selectedBarChartRef) {
 			console.log("Select bar chart: " + selectedBarChartRef.barChartID)
 			// Toggle to the summary properties, hiding the other property panels
 			

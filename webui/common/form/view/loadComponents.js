@@ -14,6 +14,7 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 			var selectedObjRef	= getContainerObjectRef($component)
 					
 			var formViewComponentSelectionParams = {
+				$componentContainer: $component,
 				selectedObjRef: selectedObjRef,
 				getCurrentRecordFunc: recordProxy.getRecordFunc,
 				updateCurrentRecordFunc: recordProxy.updateRecordFunc
