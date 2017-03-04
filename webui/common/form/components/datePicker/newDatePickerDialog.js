@@ -9,13 +9,14 @@ function openNewDatePickerDialog(databaseID,formID,containerParams)
 			  var componentLabel = getFieldRef(newDatePickerObjectRef.properties.fieldID).name
 			  containerParams.containerObj.find('label').text(componentLabel)
 		  
-			  // Set up the newly created checkbox for resize, selection, etc.
-			  var componentIDs = { formID: formID, componentID:newDatePickerObjectRef.datePickerID }
-			  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newDatePickerObjectRef,datePickerDesignFormConfig)
-			  
-			  // Put a reference to the check box's reference object in the check box's DOM element.
-			  // This reference can be retrieved later for property setting, etc.
-			  setContainerComponentInfo(containerParams.containerObj,newDatePickerObjectRef,newDatePickerObjectRef.datePickerID)
+	  		  var newComponentSetupParams = {
+				  parentFormID: formID,
+	  		  	  $container: containerParams.containerObj,
+				  componentID: newDatePickerObjectRef.datePickerID,
+				  componentObjRef: newDatePickerObjectRef,
+				  designFormConfig: datePickerDesignFormConfig
+	  		  }
+			  setupNewlyCreatedFormComponentInfo(newComponentSetupParams)
 			  				  
 			  $parentDialog.modal("hide")
 

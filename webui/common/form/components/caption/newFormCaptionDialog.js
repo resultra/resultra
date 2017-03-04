@@ -11,13 +11,15 @@ function openNewFormCaptionDialog(databaseID,formID,containerParams) {
 		  
 		  containerParams.containerObj.find('.formCaption').text(newCaptionObjectRef.properties.label)
  
-		  // Set up the newly created checkbox for resize, selection, etc.
-		  var componentIDs = { formID: formID, componentID:newCaptionObjectRef.captionID }
-		  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newCaptionObjectRef,formCaptionDesignFormConfig)
-	  
-		  // Put a reference to the caption's reference object in the check box's DOM element.
-		  // This reference can be retrieved later for property setting, etc.
-		  setContainerComponentInfo(containerParams.containerObj,newCaptionObjectRef,newCaptionObjectRef.captionID)
+  		  var newComponentSetupParams = {
+			  parentFormID: formID,
+  		  	  $container: containerParams.containerObj,
+			  componentID: newCaptionObjectRef.captionID,
+			  componentObjRef: newCaptionObjectRef,
+			  designFormConfig: formCaptionDesignFormConfig
+  		  }
+		  setupNewlyCreatedFormComponentInfo(newComponentSetupParams)
+ 
 	  			  
        }) // newLayoutContainer API request
 	

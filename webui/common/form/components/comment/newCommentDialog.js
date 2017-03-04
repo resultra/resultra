@@ -14,17 +14,18 @@ function openNewCommentComponentDialog(databaseID,formID,containerParams)
 		  			  
 			  var fieldID = newCommentObjectRef.properties.fieldID
 			  var componentLabel = getFieldRef(fieldID).name
-			  
 			  containerParams.containerObj.find('label').text(componentLabel)
-		  
-			  // Set up the newly created checkbox for resize, selection, etc.
-			  var componentIDs = { formID: formID, componentID:newCommentObjectRef.commentID }
-			  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newCommentObjectRef,commentDesignFormConfig)
 			  
-			  // Put a reference to the check box's reference object in the check box's DOM element.
-			  // This reference can be retrieved later for property setting, etc.
-			  setContainerComponentInfo(containerParams.containerObj,newCommentObjectRef,newCommentObjectRef.commentID)
-			  				  
+			  
+	  		  var newComponentSetupParams = {
+				  parentFormID: formID,
+	  		  	  $container: containerParams.containerObj,
+				  componentID: newCommentObjectRef.commentID,
+				  componentObjRef: newCommentObjectRef,
+				  designFormConfig: commentDesignFormConfig
+	  		  }
+			  setupNewlyCreatedFormComponentInfo(newComponentSetupParams)
+			  			  				  
 			  $parentDialog.modal("hide")
 
 	       }) // newLayoutContainer API request

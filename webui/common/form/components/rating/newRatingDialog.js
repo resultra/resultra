@@ -10,16 +10,16 @@ function openNewRatingDialog(databaseID,formID,containerParams) {
 	    			  			  
 	  		  var componentLabel = getFieldRef(newRatingObjectRef.properties.fieldID).name
 			  containerParams.containerObj.find('label').text(componentLabel)
-	  
-			  // Set up the newly created checkbox for resize, selection, etc.
-			  var componentIDs = { formID: formID, 
-				  componentID:newRatingObjectRef.ratingID }
-			  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newRatingObjectRef,ratingDesignFormConfig)
-		  
-			  // Put a reference to the check box's reference object in the check box's DOM element.
-			  // This reference can be retrieved later for property setting, etc.
-			  setContainerComponentInfo(containerParams.containerObj,newRatingObjectRef,newRatingObjectRef.ratingID)
-		  			  
+			  
+  	  		  var newComponentSetupParams = {
+  				  parentFormID: formID,
+  	  		  	  $container: containerParams.containerObj,
+  				  componentID: newRatingObjectRef.ratingID,
+  				  componentObjRef: newRatingObjectRef,
+  				  designFormConfig: ratingDesignFormConfig
+  	  		  }
+  			  setupNewlyCreatedFormComponentInfo(newComponentSetupParams)
+			  		  			  
 			  $parentDialog.modal("hide")
 
 	       }) // newLayoutContainer API request

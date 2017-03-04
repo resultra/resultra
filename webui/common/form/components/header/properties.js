@@ -38,9 +38,7 @@ function initHeaderTextProperties($header,headerRef) {
 			jsonAPIRequest("frm/header/setLabel",setLabelParams,function(updatedHeader) {
 				console.log("Done changing header label: " + validatedName)
 				
-				setContainerComponentInfo($header,updatedHeader,updatedHeader.headerID)
-				
-				var $header = $('#'+updatedHeader.headerID)
+				setContainerComponentInfo($header,updatedHeader,updatedHeader.headerID)				
 				$header.find(".formHeader").text(updatedHeader.properties.label)
 					
 			})		

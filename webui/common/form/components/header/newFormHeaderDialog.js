@@ -11,13 +11,15 @@ function openNewFormHeaderDialog(databaseID,formID,containerParams) {
 		  
 		  containerParams.containerObj.find('.formHeader').text(newHeaderObjectRef.properties.label)
   
-		  // Set up the newly created checkbox for resize, selection, etc.
-		  var componentIDs = { formID: formID, componentID:newHeaderObjectRef.headerID }
-		  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newHeaderObjectRef,formHeaderDesignFormConfig)
-	  
-		  // Put a reference to the check box's reference object in the check box's DOM element.
-		  // This reference can be retrieved later for property setting, etc.
-		  setContainerComponentInfo(containerParams.containerObj,newHeaderObjectRef,newHeaderObjectRef.headerID)
+  		  var newComponentSetupParams = {
+			  parentFormID: formID,
+  		  	  $container: containerParams.containerObj,
+			  componentID: newHeaderObjectRef.headerID,
+			  componentObjRef: newHeaderObjectRef,
+			  designFormConfig: formHeaderDesignFormConfig
+  		  }
+		  setupNewlyCreatedFormComponentInfo(newComponentSetupParams)
+  
 	  			  
        }) // newLayoutContainer API request
 	

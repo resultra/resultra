@@ -12,15 +12,15 @@ function openNewUserSelectionDialog(databaseID,formID,containerParams) {
 			  var componentLabel = getFieldRef(newUserSelectionObjectRef.properties.fieldID).name
 			  containerParams.containerObj.find('label').text(componentLabel)
 
-			  // Set up the newly created checkbox for resize, selection, etc.
-			  var componentIDs = { formID: formID, 
-				  componentID:newUserSelectionObjectRef.userSelectionID }
-			  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newUserSelectionObjectRef,userSelectionDesignFormConfig)
-		  
-			  // Put a reference to the check box's reference object in the check box's DOM element.
-			  // This reference can be retrieved later for property setting, etc.
-			  setContainerComponentInfo(containerParams.containerObj,newUserSelectionObjectRef,newUserSelectionObjectRef.userSelectionID)
-		  			  
+	  		  var newComponentSetupParams = {
+				  parentFormID: formID,
+	  		  	  $container: containerParams.containerObj,
+				  componentID: newUserSelectionObjectRef.userSelectionID,
+				  componentObjRef: newUserSelectionObjectRef,
+				  designFormConfig: userSelectionDesignFormConfig
+	  		  }
+			  setupNewlyCreatedFormComponentInfo(newComponentSetupParams)
+			  		  			  
 			  $parentDialog.modal("hide")
 
 	       }) // newLayoutContainer API request

@@ -12,21 +12,19 @@ function openNewSelectionDialog(databaseID,formID,containerParams)
 			  // as a complete and fully-functional text box.
 			  
 			  var fieldName = getFieldRef(newSelectionObjectRef.properties.fieldID).name
-			  containerParams.containerObj.find('label').text(fieldName)			  	
-				  			  		  
-			  // Set up the newly created checkbox for resize, selection, etc.
-			  var componentIDs = { formID: formID, componentID: newSelectionObjectRef.selectionID}
-			  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newSelectionObjectRef,selectionDesignFormConfig)
-
-			  // Put a reference to the check box's reference object in the check box's DOM element.
-			  // This reference can be retrieved later for property setting, etc.
-			  setContainerComponentInfo(containerParams.containerObj,newSelectionObjectRef,newSelectionObjectRef.selectionID)
-		
+			  containerParams.containerObj.find('label').text(fieldName)
+			  
+  	  		  var newComponentSetupParams = {
+  				  parentFormID: formID,
+  	  		  	  $container: containerParams.containerObj,
+  				  componentID: newSelectionObjectRef.selectionID,
+  				  componentObjRef: newSelectionObjectRef,
+  				  designFormConfig: selectionDesignFormConfig
+  	  		  }
+  			  setupNewlyCreatedFormComponentInfo(newComponentSetupParams)
+			  			  			
 			  $parentDialog.modal("hide")
 			  
-			  // TODO -  Now that the text box has been finalized, the layout containing the text box needs to be saved as well.
-			  containerParams.finalizeLayoutIncludingNewComponentFunc()
-
 	       }) // newLayoutContainer API request
 	}
 	

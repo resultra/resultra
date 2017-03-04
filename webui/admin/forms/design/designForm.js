@@ -18,25 +18,7 @@ var paletteItemsEditConfig = {
 var formDesignCanvasSelector = "#layoutCanvas"
 
 
-function createFormLayoutDesignConfig() {
-	function saveUpdatedFormComponentLayout(updatedLayout) {
-		console.log("saveUpdatedFormComponentLayout: component layout = " + JSON.stringify(updatedLayout))		
-		var setLayoutParams = {
-			formID: designFormContext.formID,
-			layout: updatedLayout
-		}
-		jsonAPIRequest("frm/setLayout", setLayoutParams, function(formInfo) {
-		})
-	}		
-	
-	
-	var designFormLayoutConfig =  {
-		parentLayoutSelector: formDesignCanvasSelector,
-		saveLayoutFunc: saveUpdatedFormComponentLayout
-	}
-	
-	return designFormLayoutConfig
-}
+
 
 $(document).ready(function() {
 	
@@ -121,7 +103,7 @@ $(document).ready(function() {
 		hideEditorFunc:hideFormulaEditPanel
 	}
 		
-	var designFormLayoutConfig =  createFormLayoutDesignConfig()
+	var designFormLayoutConfig =  createFormLayoutDesignConfig(designFormContext.formID)
 	var $parentFormLayout = $(formDesignCanvasSelector)
 	
 	var loadFormConfig = {

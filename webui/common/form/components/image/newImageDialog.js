@@ -9,15 +9,16 @@ function openNewImageDialog(databaseID,formID,containerParams)
 
 			  var componentLabel = getFieldRef(newImageObjectRef.properties.fieldID).name
 			  containerParams.containerObj.find('label').text(fieldName)
-			  		  
-			  // Set up the newly created editor for resize, selection, etc.
-			  var componentIDs = { formID: formID, componentID:newImageObjectRef.imageID }
-			  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newImageObjectRef,imageDesignFormConfig)
-			  
-			  // Put a reference to the check box's reference object in the check box's DOM element.
-			  // This reference can be retrieved later for property setting, etc.
-			  setContainerComponentInfo(containerParams.containerObj,newImageObjectRef,newImageObjectRef.imageID)
-			  
+			   
+	  		  var newComponentSetupParams = {
+				  parentFormID: formID,
+	  		  	  $container: containerParams.containerObj,
+				  componentID: newImageObjectRef.imageID,
+				  componentObjRef: newImageObjectRef,
+				  designFormConfig: imageDesignFormConfig
+	  		  }
+			  setupNewlyCreatedFormComponentInfo(newComponentSetupParams)
+			  			  
 			  $parentDialog.modal("hide")
 
 	       }) // newLayoutContainer API request

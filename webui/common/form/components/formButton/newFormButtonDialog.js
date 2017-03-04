@@ -48,14 +48,16 @@ function openNewFormButtonDialog(databaseID,formID,containerParams) {
 					  jsonAPIRequest("frm/getFormInfo", { formID: newButtonObjectRef.properties.linkedFormID }, function(formInfo) {
 						  containerParams.containerObj.find(".formButton").text(formInfo.form.name)		
 
-						  // Set up the newly created checkbox for resize, selection, etc.
-						  var componentIDs = { formID: formID, componentID:newButtonObjectRef.buttonID }
 	  
-						  initFormComponentDesignBehavior(containerParams.containerObj,componentIDs,newButtonObjectRef,formButtonDesignFormConfig)
-  
-						  // Put a reference to the check box's reference object in the check box's DOM element.
-						  // This reference can be retrieved later for property setting, etc.
-						  setContainerComponentInfo(containerParams.containerObj,newButtonObjectRef,newButtonObjectRef.buttonID)
+				  		  var newComponentSetupParams = {
+							  parentFormID: formID,
+				  		  	  $container: containerParams.containerObj,
+							  componentID: newButtonObjectRef.buttonID,
+							  componentObjRef: newButtonObjectRef,
+							  designFormConfig: formButtonDesignFormConfig
+				  		  }
+						  setupNewlyCreatedFormComponentInfo(newComponentSetupParams)
+
 					  
 						  componentCreated = true
 						  $newFormButtonDialog.modal('hide')
