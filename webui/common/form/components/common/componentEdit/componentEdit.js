@@ -8,6 +8,10 @@ function initFormComponentDesignBehavior($componentContainer, componentIDs, obje
 	
 	var $designFormParentCanvas = $(formDesignCanvasSelector)
 	
+	// When the component is in design mode, add an additional class to surround the container
+	// with dotted lines.
+	$componentContainer.addClass("layoutDesignContainer")
+	
 	initObjectSelectionBehavior($componentContainer, 
 			$designFormParentCanvas,function(selectedCompenentID) {
 		console.log("form design object selected: " + selectedCompenentID)

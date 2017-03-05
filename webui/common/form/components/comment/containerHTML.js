@@ -24,7 +24,7 @@ function commentAttachmentListFromContainer($commentContainer) {
 function commentContainerHTML(elementID)
 {	
 	var containerHTML = ''+
-	'<div class="ui-widget-content layoutContainer commentContainer  draggable resizable">' +
+	'<div class=" layoutContainer commentContainer">' +
 		'<div class="field">'+
 			'<label>Comment Box Label</label>'+
 				'<div class="form-group">' + 

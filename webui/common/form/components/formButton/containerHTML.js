@@ -6,7 +6,7 @@ function buttonFromFormButtonContainer($formButton) {
 function formButtonContainerHTML(elementID)
 {	
 	var containerHTML = ''+
-		'<div class="ui-widget-content layoutContainer buttonFormContainer">' +
+		'<div class=" layoutContainer buttonFormContainer">' +
 			'<button type="button" class="btn btn-primary formButton">' + 
 			'Open Form' +
 			'</button>' +

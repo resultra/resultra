@@ -47,7 +47,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 				
 		$componentRow.append($containerObj)
 		
-		setElemDimensions($containerObj,header.properties.geometry)
+		setElemFixedWidthFlexibleHeight($containerObj,header.properties.geometry.sizeWidth)
 	
 		 // Store the newly created object reference in the DOM element. This is needed for follow-on
 		 // property setting, resizing, etc.

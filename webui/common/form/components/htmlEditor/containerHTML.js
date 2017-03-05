@@ -8,7 +8,7 @@ function htmlInputFromHTMLEditorContainer($htmlEditor) {
 function htmlEditorContainerHTML(elementID)
 {	
 	var containerHTML = ''+
-	'<div class="ui-widget-content layoutContainer htmlEditorContainer  draggable resizable">' +
+	'<div class=" layoutContainer htmlEditorContainer">' +
 		'<div class="htmlEditorHeader">' +
 			'<label>Editor Label</label>' +
 		'</div>' +

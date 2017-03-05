@@ -8,7 +8,7 @@ function getRatingControlFromRatingContainer($ratingContainer) {
 function ratingContainerHTML(elementID)
 {	
 	var containerHTML = ''+
-		'<div class="ui-widget-content layoutContainer ratingFormContainer">' +
+		'<div class=" layoutContainer ratingFormContainer">' +
 			'<label class="marginBottom0">Rating</label>' +
 			'<div class="formRatingControl">' +
 				'<input type="hidden" class="ratingFormComponentControl"/>' + // Rating control from Bootstrap Rating plugin

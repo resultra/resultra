@@ -9,7 +9,7 @@ function datePickerContainerHTML(elementID)
 {	
 	
 	var containerHTML = ''+
-	'<div class="ui-widget-content layoutContainer datePickerContainer  draggable resizable">' +
+	'<div class="layoutContainer datePickerContainer">' +
 		'<div class="field">'+
 			'<label>New Field</label>'+
 			'<input type="text" name="symbol"  class="layoutInput datePickerComponentInput" placeholder="Select a Date">'+

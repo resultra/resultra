@@ -11,7 +11,7 @@ function getCheckboxControlFromCheckboxContainer($checkboxContainer) {
 function checkBoxContainerHTML(elementID)
 {	
 	var containerHTML = ''+
-		'<div class="ui-widget-content layoutContainer checkBoxFormContainer draggable resizable">' +
+		'<div class=" layoutContainer checkBoxFormContainer">' +
 			'<div class="checkbox">' +
 				'<label>' + 
 				  		'<input type="checkbox" class="checkboxFormComponentControl"></input><span>Checkbox Label</span> ' +

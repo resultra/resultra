@@ -6,7 +6,7 @@ function userSelectionControlFromUserSelectionComponentContainer($userSelContain
 function userSelectionContainerHTML(elementID)
 {
 	var containerHTML = ''+
-		'<div class="ui-widget-content layoutContainer userSelectionFormContainer">' +
+		'<div class=" layoutContainer userSelectionFormContainer">' +
 			'<div class="form-group">'+
 				'<label>Select User</label>'+
 				'<div class="formUserSelectionControl">' + 

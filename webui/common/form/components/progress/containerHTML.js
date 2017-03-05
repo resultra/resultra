@@ -1,6 +1,6 @@
 function progressContainerHTML() {
 	return '' +
-		'<div class="ui-widget-content layoutContainer progressComponent draggable resizable">' +
+		'<div class="layoutContainer progressComponent">' +
 			'<label>Progress</label>' + 
 			'<div class="progress">' +
   				'<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">' +

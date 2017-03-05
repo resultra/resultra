@@ -23,7 +23,7 @@ function imageContainerHTML(elementID)
 	// plugin from displaying it's own messages.
 	
 	var containerHTML = ''+
-	'<div class="ui-widget-content layoutContainer imageContainer draggable resizable">' +
+	'<div class="layoutContainer imageContainer">' +
 		'<div class="imageContainerHeader">' +
 			'<label class="imageContainerLabel">Image Label</label>' +
 			attachmentButtonHTML("imageComponentManageAttachmentsButtton") + 

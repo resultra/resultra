@@ -62,6 +62,15 @@ function setElemDimensions(elem, geometry) {
 	});
 }
 
+function setElemFixedWidthFlexibleHeight(elem,sizeWidth) {
+	elem.css({
+		width: sizeWidth,
+		height: "auto",
+		position: "relative"
+	});
+	
+}
+
 function initButtonClickHandler(buttonSelector,handlerFunc) {
 	$(buttonSelector).unbind("click")
 	$(buttonSelector).click(function(e) {

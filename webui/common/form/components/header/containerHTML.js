@@ -6,7 +6,7 @@ function headerFromHeaderContainer($header) {
 function formHeaderContainerHTML(elementID)
 {	
 	var containerHTML = ''+
-		'<div class="ui-widget-content layoutContainer headerFormContainer" id="'+elementID+'">' +
+		'<div class="layoutContainer headerFormContainer" id="'+elementID+'">' +
 			'<h3 class="formHeader">' +
 			'New Header' +
 			'</h3>' +

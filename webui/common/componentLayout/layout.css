@@ -2,7 +2,6 @@
 {
     position: relative; 
 	padding: 5px;
-	border: 1px dashed gray;
 	margin-top:5px;
 	margin-bottom:5px;
 	margin-left:5px;
@@ -11,6 +10,11 @@
 	/* By default all layoutContainer's are aligned to the top
 	  of the row they are contained within */
 	vertical-align:top;
+}
+
+
+.layoutDesignContainer {
+	border: 1px dashed gray; 
 }
 
 
