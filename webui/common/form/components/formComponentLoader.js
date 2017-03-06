@@ -44,6 +44,8 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = formHeaderContainerHTML(header.headerID);
 		var $containerObj = $(containerHTML)
 		$containerObj.find(".formHeader").text(header.properties.label)
+		setHeaderFormComponentHeaderSize($containerObj,header.properties.headerSize)
+		setHeaderFormComponentUnderlined($containerObj,header.properties.underlined)
 				
 		$componentRow.append($containerObj)
 		

@@ -80,3 +80,29 @@ func (updateParams HeaderResizeParams) updateProps(headerForUpdate *Header) erro
 
 	return nil
 }
+
+type HeaderSizeParams struct {
+	HeaderIDHeader
+	Size string `json:"size"`
+}
+
+func (updateParams HeaderSizeParams) updateProps(headerForUpdate *Header) error {
+
+	// TODO - Validate size
+
+	headerForUpdate.Properties.HeaderSize = updateParams.Size
+
+	return nil
+}
+
+type HeaderUnderlinedParams struct {
+	HeaderIDHeader
+	Underlined bool `json:"underlined"`
+}
+
+func (updateParams HeaderUnderlinedParams) updateProps(headerForUpdate *Header) error {
+
+	headerForUpdate.Properties.Underlined = updateParams.Underlined
+
+	return nil
+}

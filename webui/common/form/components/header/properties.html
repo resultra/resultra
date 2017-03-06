@@ -1,5 +1,28 @@
 {{define "formHeaderFormatProps"}}
-	Header formatting properties go here
+
+     <form id="adminHeaderComponentFormatForm">
+	  <div class="form-group">
+       	  <label for="adminHeaderComponentSizeSelection">Header size</label>
+		  	<select class="form-control" id="adminHeaderComponentSizeSelection">
+		  		<option disabled selected value=""></option>
+		  		<option value="xlarge">Extra Large</option>
+		 		<option value="large">Large</option>
+		 		<option value="medium">Medium</option>
+		 		<option value="small">Small</option>
+		 		<option value="xsmall">Extra Small</option>
+			</select>
+	  </div>
+	  
+	  <div class="form-group">
+ 	      <div class="checkbox">
+	        <input type="checkbox" id="adminHeaderComponentUnderline">
+	        <label>Underline header</label>
+	      </div>
+	   </div>
+	  
+	  
+    </form>
+	
 {{end}}
 
 

@@ -40,8 +40,9 @@ func saveNewHeader(params NewHeaderParams) (*Header, error) {
 	}
 
 	properties := HeaderProperties{
-		Geometry: params.Geometry,
-		Label:    params.Label}
+		Geometry:   params.Geometry,
+		Label:      params.Label,
+		HeaderSize: headerSizeMedium}
 
 	newHeader := Header{ParentFormID: params.ParentFormID,
 		HeaderID:   uniqueID.GenerateSnowflakeID(),
@@ -59,7 +60,7 @@ func saveNewHeader(params NewHeaderParams) (*Header, error) {
 
 func getHeader(parentFormID string, headerID string) (*Header, error) {
 
-	headerProps := HeaderProperties{}
+	headerProps := newDefaultHeaderProperties()
 	if getErr := common.GetFormComponent(headerEntityKind, parentFormID, headerID, &headerProps); getErr != nil {
 		return nil, fmt.Errorf("getHeader: Unable to retrieve header: %v", getErr)
 	}
@@ -77,7 +78,7 @@ func GetHeaders(parentFormID string) ([]Header, error) {
 	headers := []Header{}
 	addHeader := func(datePickerID string, encodedProps string) error {
 
-		var headerProps HeaderProperties
+		headerProps := newDefaultHeaderProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &headerProps); decodeErr != nil {
 			return fmt.Errorf("GetHeaders: can't decode properties: %v", encodedProps)
 		}

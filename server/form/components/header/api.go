@@ -7,11 +7,14 @@ import (
 )
 
 func init() {
+
 	headerRouter := mux.NewRouter()
 
 	headerRouter.HandleFunc("/api/frm/header/new", newHeader)
 	headerRouter.HandleFunc("/api/frm/header/resize", resizeHeader)
 	headerRouter.HandleFunc("/api/frm/header/setLabel", setHeaderLabel)
+	headerRouter.HandleFunc("/api/frm/header/setUnderlined", setUnderlined)
+	headerRouter.HandleFunc("/api/frm/header/setSize", setSize)
 
 	http.Handle("/api/frm/header/", headerRouter)
 }
@@ -40,17 +43,35 @@ func processHeaderPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater
 	}
 }
 
-func setHeaderLabel(w http.ResponseWriter, r *http.Request) {
-	var labelParams HeaderLabelParams
-	if err := api.DecodeJSONRequest(r, &labelParams); err != nil {
+func resizeHeader(w http.ResponseWriter, r *http.Request) {
+	var params HeaderResizeParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
-	processHeaderPropUpdate(w, r, labelParams)
+	processHeaderPropUpdate(w, r, params)
 }
 
-func resizeHeader(w http.ResponseWriter, r *http.Request) {
-	var params HeaderResizeParams
+func setHeaderLabel(w http.ResponseWriter, r *http.Request) {
+	var params HeaderLabelParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processHeaderPropUpdate(w, r, params)
+}
+
+func setUnderlined(w http.ResponseWriter, r *http.Request) {
+	var params HeaderUnderlinedParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processHeaderPropUpdate(w, r, params)
+}
+
+func setSize(w http.ResponseWriter, r *http.Request) {
+	var params HeaderSizeParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
