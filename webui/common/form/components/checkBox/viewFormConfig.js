@@ -4,6 +4,7 @@ function loadRecordIntoCheckBox($checkboxContainer, recordRef) {
 	
 	var checkBoxObjectRef = getContainerObjectRef($checkboxContainer)
 	var $checkBoxControl = getCheckboxControlFromCheckboxContainer($checkboxContainer);
+	var $checkboxLabel = $checkboxContainer.find("label")
 	
 	var checkBoxFieldID = checkBoxObjectRef.properties.fieldID
 
@@ -15,12 +16,20 @@ function loadRecordIntoCheckBox($checkboxContainer, recordRef) {
 
 		var fieldVal = recordRef.fieldValues[checkBoxFieldID]
 
+		$checkboxLabel.removeClass("checkboxStrikethroughCompleted")
+
 		if(fieldVal == true)
 		{
 			$checkBoxControl.prop("indeterminate", false)
 			$checkBoxControl.prop("checked",true)
+			if(checkBoxObjectRef.properties.strikethroughCompleted) {
+				$checkboxLabel.addClass("checkboxStrikethroughCompleted")
+			} else {
+				$checkboxLabel.removeClass("checkboxStrikethroughCompleted")
+			}
 		}
 		else {
+			$checkboxLabel.removeClass("checkboxStrikethroughCompleted")
 			$checkBoxControl.prop("indeterminate", false)
 			$checkBoxControl.prop("checked",false)
 		}
@@ -29,6 +38,7 @@ function loadRecordIntoCheckBox($checkboxContainer, recordRef) {
 	else
 	{
 		$checkBoxControl.prop("indeterminate", true)
+		$checkboxLabel.removeClass("checkboxStrikethroughCompleted")
 	}	
 	
 }

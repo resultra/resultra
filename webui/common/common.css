@@ -1,3 +1,15 @@
+
+/* Override bootstrap formatting of labels inside checkboxes. After starting to use 
+   the awesome bootstrap checkboxes the left padding was 20px when it needs to be 5px */
+.checkbox label {
+	padding-left: 5px !important;
+}
+
+
+
+/* TODO - Move everything below to a generic.css file */
+
+
 /* Use to prevent text selection. This is applicable to elements in the layout
    which are there for resizing and moving around, not text selection. */
 .noselect {
@@ -34,6 +46,7 @@
 	padding-top:2px;
 	padding-bottom: 2px;
 }
+
 
 /* For adding space between Boostrap rows */
 .marginTop2 { margin-top:2px; }

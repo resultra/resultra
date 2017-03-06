@@ -3,10 +3,10 @@
    is initially dragged onto the canvas. Otherwise it
    can shrink as the field is dragged. */
 .checkBoxFormContainer {
-	min-width:180px;
+	min-width:100px;
 	min-height:30px;
 	width: 180px;
-	height: 30px;
+	height: auto;
 }
 
 /* Since the checkbox is inline, override the Bootstrap margins to eliminate 
@@ -14,4 +14,13 @@
 .checkBoxFormContainer > .checkbox {
 	margin-top: 0px;
 	margin-bottom:0px;
+}
+
+
+.checkBoxFormContainer .checkboxFormComponentLabel {
+	padding-left: 5px !important;
+}
+
+.checkboxStrikethroughCompleted {
+	text-decoration: line-through;
 }

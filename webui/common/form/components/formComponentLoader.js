@@ -215,12 +215,15 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var $checkboxContainer = $(containerHTML)
 				
 		var componentLabel = getFieldRef(checkBox.properties.fieldID).name		
-		$checkboxContainer.find('span').text(componentLabel)
+		$checkboxContainer.find('label').text(componentLabel)
+		var checkboxColorSchemeClass = "checkbox-"+checkBox.properties.colorScheme
+		$checkboxContainer.addClass(checkboxColorSchemeClass)
 		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append($checkboxContainer)
-		setElemDimensions($checkboxContainer,checkBox.properties.geometry)
 		
+		setElemFixedWidthFlexibleHeight($checkboxContainer,checkBox.properties.geometry.sizeWidth)
+				
 		 // Store the newly created object reference in the DOM element. This is needed for follow-on
 		 // property setting, resizing, etc.
 		setContainerComponentInfo($checkboxContainer,checkBox,checkBox.checkBoxID)

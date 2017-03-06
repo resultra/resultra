@@ -26,10 +26,8 @@ function openNewUserDialog(databaseID) {
 	
 		var roleCheckboxHTML = '' +
 			'<div class="checkbox list-group-item addRoleCheckboxListItem">' +
-				'<label>' +
 					'<input type="checkbox" id="' + roleCheckbox.id + '"></input>'+
-					'<span class="noselect">' + roleInfo.roleName + '</span>' +
-				'</label>' +
+					'<label><span class="noselect">' + roleInfo.roleName + '</span></label>' +
 			'</div>'
 		
 		var $roleCheckbox = $(roleCheckboxHTML)

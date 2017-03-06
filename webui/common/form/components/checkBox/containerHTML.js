@@ -13,9 +13,8 @@ function checkBoxContainerHTML(elementID)
 	var containerHTML = ''+
 		'<div class=" layoutContainer checkBoxFormContainer">' +
 			'<div class="checkbox">' +
-				'<label>' + 
-				  		'<input type="checkbox" class="checkboxFormComponentControl"></input><span>Checkbox Label</span> ' +
-				'</label>' +
+				'<input type="checkbox" class="checkboxFormComponentControl">' +
+				'<label class="checkboxFormComponentLabel"></label>' + 
 			'</div>' +
 		'</div><';
 				

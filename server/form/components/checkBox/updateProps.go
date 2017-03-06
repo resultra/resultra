@@ -63,3 +63,31 @@ func (updateParams CheckBoxResizeParams) updateProps(checkBox *CheckBox) error {
 
 	return nil
 }
+
+type CheckBoxColorSchemeParams struct {
+	CheckboxIDHeader
+	ColorScheme string `json:"colorScheme"`
+}
+
+func (updateParams CheckBoxColorSchemeParams) updateProps(checkBox *CheckBox) error {
+
+	// TODO - Validate against list of valid color schemes
+
+	checkBox.Properties.ColorScheme = updateParams.ColorScheme
+
+	return nil
+}
+
+type CheckBoxStrikethroughParams struct {
+	CheckboxIDHeader
+	StrikethroughCompleted bool `json:"strikethroughCompleted"`
+}
+
+func (updateParams CheckBoxStrikethroughParams) updateProps(checkBox *CheckBox) error {
+
+	// TODO - Validate against list of valid color schemes
+
+	checkBox.Properties.StrikethroughCompleted = updateParams.StrikethroughCompleted
+
+	return nil
+}

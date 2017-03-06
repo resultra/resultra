@@ -11,6 +11,8 @@ func init() {
 
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/new", newCheckBox)
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/resize", resizeCheckBox)
+	checkBoxRouter.HandleFunc("/api/frm/checkBox/setColorScheme", setColorScheme)
+	checkBoxRouter.HandleFunc("/api/frm/checkBox/setStrikethrough", setStrikethrough)
 
 	http.Handle("/api/frm/checkBox/", checkBoxRouter)
 }
@@ -46,4 +48,22 @@ func resizeCheckBox(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processCheckBoxPropUpdate(w, r, resizeParams)
+}
+
+func setColorScheme(w http.ResponseWriter, r *http.Request) {
+	var params CheckBoxColorSchemeParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processCheckBoxPropUpdate(w, r, params)
+}
+
+func setStrikethrough(w http.ResponseWriter, r *http.Request) {
+	var params CheckBoxStrikethroughParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processCheckBoxPropUpdate(w, r, params)
 }

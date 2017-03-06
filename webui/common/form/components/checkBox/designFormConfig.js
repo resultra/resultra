@@ -10,7 +10,7 @@ function initDesignFormCheckBox() {
 
 function selectFormCheckbox($container,checkboxObjRef) {
 	console.log("Selected checkbox: " + JSON.stringify(checkboxObjRef))
-	loadCheckboxProperties(checkboxObjRef)
+	loadCheckboxProperties($container,checkboxObjRef)
 }
 
 function resizeCheckBox($container,geometry) {

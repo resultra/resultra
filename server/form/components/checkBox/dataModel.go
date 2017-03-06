@@ -13,7 +13,7 @@ import (
 const checkBoxEntityKind string = "checkbox"
 
 type CheckBox struct {
-	ParentFormID string             `json:"parentID"`
+	ParentFormID string             `json:"parentFormID"`
 	CheckBoxID   string             `json:"checkBoxID"`
 	Properties   CheckBoxProperties `json:"properties"`
 }
@@ -51,8 +51,9 @@ func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 	}
 
 	properties := CheckBoxProperties{
-		FieldID:  params.FieldID,
-		Geometry: params.Geometry}
+		FieldID:     params.FieldID,
+		Geometry:    params.Geometry,
+		ColorScheme: CheckboxColorSchemeDefault}
 
 	newCheckBox := CheckBox{ParentFormID: params.ParentFormID,
 		CheckBoxID: uniqueID.GenerateSnowflakeID(),
@@ -70,7 +71,7 @@ func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 
 func getCheckBox(parentFormID string, checkBoxID string) (*CheckBox, error) {
 
-	checkBoxProps := CheckBoxProperties{}
+	checkBoxProps := newDefaultCheckBoxProperties()
 	if getErr := common.GetFormComponent(checkBoxEntityKind, parentFormID, checkBoxID, &checkBoxProps); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to retrieve check box: %v", getErr)
 	}
@@ -88,7 +89,7 @@ func GetCheckBoxes(parentFormID string) ([]CheckBox, error) {
 	checkBoxes := []CheckBox{}
 	addCheckbox := func(checkboxID string, encodedProps string) error {
 
-		var checkBoxProps CheckBoxProperties
+		checkBoxProps := newDefaultCheckBoxProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &checkBoxProps); decodeErr != nil {
 			return fmt.Errorf("GetCheckBoxes: can't decode properties: %v", encodedProps)
 		}

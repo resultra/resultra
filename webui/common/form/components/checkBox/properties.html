@@ -1,6 +1,31 @@
 
 {{define "checkBoxFormatProps"}}
-	Checkbox formatting properties go here
+     <form id="adminCheckboxComponentFormatForm">
+	  <div class="form-group">
+       	  <label for="adminCheckboxComponentColorSchemeSelection">Color scheme when checked</label>
+		  	<select class="form-control" id="adminCheckboxComponentColorSchemeSelection">
+		  		<option disabled selected value=""></option>
+		  		<option value="default">Default</option>
+		 		<option value="primary">Primary</option>
+		 		<option value="success">Success</option>
+		 		<option value="info">Info</option>
+		 		<option value="warning">Warning</option>
+		 		<option value="danger">Danger</option>
+			</select>
+	  </div>
+	  
+	  <div class="form-group">
+ 	      <div class="checkbox">
+	        <input type="checkbox" id="adminCheckboxComponentStrikethrough">
+	        <label>Strikethrough label when checked.</label>
+	      </div>
+	   </div>
+	  
+	  
+    </form>
+	
+	
+	
 {{end}}
 
 {{define "checkBoxProps"}}
