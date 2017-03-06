@@ -5,7 +5,7 @@ function initDesignFormButton() {
 
 function selectFormButton($container,buttonObjRef) {
 	console.log("Selected button: " + JSON.stringify(buttonObjRef))
-	loadFormButtonProperties(buttonObjRef)
+	loadFormButtonProperties($container,buttonObjRef)
 }
 
 function resizeFormButton($container,geometry) {
@@ -27,7 +27,7 @@ var formButtonDesignFormConfig = {
 	draggableHTMLFunc:	formButtonContainerHTML,
 	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewFormButtonDialog,
-	resizeConstraints: elemResizeConstraints(320,640,50,50),
+	resizeConstraints: elemResizeConstraints(50,640,50,50),
 	resizeFunc: resizeFormButton,
 	initFunc: initDesignFormButton,
 	selectionFunc: selectFormButton

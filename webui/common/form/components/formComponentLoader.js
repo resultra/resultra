@@ -89,6 +89,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 	
 		var containerHTML = formButtonContainerHTML(formButton.buttonID);
 		var $containerObj = $(containerHTML)
+		setFormButtonSize($containerObj,formButton.properties.size)
 		
 		
 		jsonAPIRequest("frm/getFormInfo", { formID: formButton.properties.linkedFormID }, function(formInfo) {
@@ -98,7 +99,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 				
 		$componentRow.append($containerObj)
 		
-		setElemDimensions($containerObj,formButton.properties.geometry)
+		setElemFixedWidthFlexibleHeight($containerObj,formButton.properties.geometry.sizeWidth)
 	
 		 // Store the newly created object reference in the DOM element. This is needed for follow-on
 		 // property setting, resizing, etc.

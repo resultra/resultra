@@ -99,3 +99,17 @@ func (updateParams ButtonDefaultValParams) updateProps(buttonForUpdate *FormButt
 
 	return nil
 }
+
+type ButtonSizeParams struct {
+	ButtonIDHeader
+	Size string `json:"size"`
+}
+
+func (updateParams ButtonSizeParams) updateProps(buttonForUpdate *FormButton) error {
+
+	// TODO - Validate valid size
+
+	buttonForUpdate.Properties.Size = updateParams.Size
+
+	return nil
+}

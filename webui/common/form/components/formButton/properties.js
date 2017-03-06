@@ -71,11 +71,32 @@ function initFormButtonPopupBehaviorProperties(buttonRef) {
 	
 }
 
-function loadFormButtonProperties(buttonRef) {
+function loadFormButtonProperties($button,buttonRef) {
 	
 	console.log("Loading button properties")
 	
 	initFormButtonPopupBehaviorProperties(buttonRef)
+	
+	
+	function initButtonSizeProperties() {
+		var $sizeSelection = $('#adminButtonComponentSizeSelection')
+		$sizeSelection.val(buttonRef.properties.size)
+		initSelectControlChangeHandler($sizeSelection,function(newSize) {
+		
+			var sizeParams = {
+				parentFormID: buttonRef.parentFormID,
+				buttonID: buttonRef.buttonID,
+				size: newSize
+			}
+			jsonAPIRequest("frm/formButton/setSize",sizeParams,function(updatedButton) {
+				setContainerComponentInfo($button,updatedButton,updatedButton.buttonID)	
+				setFormButtonSize($button,updatedButton.properties.size)
+			})
+		
+		})
+		
+	}
+	initButtonSizeProperties()
 	
 	var defaultValPropParams = {
 		databaseID: designFormContext.databaseID,
