@@ -11,6 +11,7 @@ import (
 const popupBehaviorModeless string = "modeless"
 const popupBehaviorModal string = "modal"
 const buttonSizeMedium string = "medium"
+const colorSchemeDefault string = "default"
 
 type ButtonPopupBehavior struct {
 	PopupMode            string                     `json:"popupMode"`
@@ -60,6 +61,7 @@ type ButtonProperties struct {
 	LinkedFormID  string                         `json:"linkedFormID"`
 	PopupBehavior ButtonPopupBehavior            `json:"popupBehavior"`
 	Size          string                         `json:"size"`
+	ColorScheme   string                         `json:"colorScheme"`
 }
 
 func (srcProps ButtonProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ButtonProperties, error) {
@@ -79,5 +81,8 @@ func (srcProps ButtonProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*
 
 func newDefaultButtonProperties() ButtonProperties {
 
-	return ButtonProperties{PopupBehavior: newDefaultPopupBehavior(), Size: buttonSizeMedium}
+	return ButtonProperties{
+		PopupBehavior: newDefaultPopupBehavior(),
+		Size:          buttonSizeMedium,
+		ColorScheme:   colorSchemeDefault}
 }

@@ -113,3 +113,17 @@ func (updateParams ButtonSizeParams) updateProps(buttonForUpdate *FormButton) er
 
 	return nil
 }
+
+type ButtonColorSchemeParams struct {
+	ButtonIDHeader
+	ColorScheme string `json:"colorScheme"`
+}
+
+func (updateParams ButtonColorSchemeParams) updateProps(buttonForUpdate *FormButton) error {
+
+	// TODO - Validate scheme name
+
+	buttonForUpdate.Properties.ColorScheme = updateParams.ColorScheme
+
+	return nil
+}

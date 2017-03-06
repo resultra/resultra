@@ -97,6 +97,28 @@ function loadFormButtonProperties($button,buttonRef) {
 		
 	}
 	initButtonSizeProperties()
+
+
+	function initColorSchemeProperties() {
+		var $schemeSelection = $('#adminButtonComponentColorSchemeSelection')
+		$schemeSelection.val(buttonRef.properties.colorScheme)
+		initSelectControlChangeHandler($schemeSelection,function(newScheme) {
+		
+			var sizeParams = {
+				parentFormID: buttonRef.parentFormID,
+				buttonID: buttonRef.buttonID,
+				colorScheme: newScheme
+			}
+			jsonAPIRequest("frm/formButton/setColorScheme",sizeParams,function(updatedButton) {
+				setContainerComponentInfo($button,updatedButton,updatedButton.buttonID)	
+				setFormButtonColorScheme($button,updatedButton.properties.colorScheme)
+			})
+		
+		})
+		
+	}
+	initColorSchemeProperties()
+
 	
 	var defaultValPropParams = {
 		databaseID: designFormContext.databaseID,
