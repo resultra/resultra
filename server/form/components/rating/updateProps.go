@@ -75,3 +75,17 @@ func (updateParams RatingTooltipParams) updateProps(rating *Rating) error {
 
 	return nil
 }
+
+type RatingIconParams struct {
+	RatingIDHeader
+	Icon string `json:"icon"`
+}
+
+func (updateParams RatingIconParams) updateProps(rating *Rating) error {
+
+	// TODO - Validate icon is a valid name
+
+	rating.Properties.Icon = updateParams.Icon
+
+	return nil
+}

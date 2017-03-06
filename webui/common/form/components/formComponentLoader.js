@@ -240,12 +240,11 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 	function initRatingLayout($componentRow,rating) {
 		// Create an HTML block for the container
 		
-		var containerHTML = ratingContainerHTML(rating.ratingID);
-		
+		var containerHTML = ratingContainerHTML(rating.ratingID);	
 		var $ratingContainer = $(containerHTML)
-		
 		var componentLabel = getFieldRef(rating.properties.fieldID).name		
 		$ratingContainer.find('label').text(componentLabel)
+		initRatingFormComponentControl($ratingContainer,rating)
 		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append($ratingContainer)

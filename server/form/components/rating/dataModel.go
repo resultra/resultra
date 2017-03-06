@@ -55,7 +55,8 @@ func saveNewRating(params NewRatingParams) (*Rating, error) {
 	properties := RatingProperties{
 		FieldID:  params.FieldID,
 		Geometry: params.Geometry,
-		Tooltips: []string{}}
+		Tooltips: []string{},
+		Icon:     ratingIconStar}
 
 	newRating := Rating{ParentFormID: params.ParentFormID,
 		RatingID:   uniqueID.GenerateSnowflakeID(),
@@ -73,7 +74,7 @@ func saveNewRating(params NewRatingParams) (*Rating, error) {
 
 func getRating(parentFormID string, ratingID string) (*Rating, error) {
 
-	ratingProps := RatingProperties{}
+	ratingProps := newDefaultRatingProperties()
 	if getErr := common.GetFormComponent(ratingEntityKind, parentFormID, ratingID, &ratingProps); getErr != nil {
 		return nil, fmt.Errorf("getRating: Unable to retrieve rating: %v", getErr)
 	}
@@ -91,7 +92,7 @@ func GetRatings(parentFormID string) ([]Rating, error) {
 	ratings := []Rating{}
 	addRating := func(ratingID string, encodedProps string) error {
 
-		var ratingProps RatingProperties
+		ratingProps := newDefaultRatingProperties()
 		ratingProps.Tooltips = []string{} // Default to empty set of tooltips
 		if decodeErr := generic.DecodeJSONString(encodedProps, &ratingProps); decodeErr != nil {
 			return fmt.Errorf("GetRatings: can't decode properties: %v", encodedProps)

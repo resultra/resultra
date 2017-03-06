@@ -21,3 +21,27 @@
 	text-align:left;
 	margin-bottom:0px;
 }
+
+.ratingIconEmptyBackground {
+	opacity: 0.25;
+}
+
+.ratingColorRed {
+	color: red;
+}
+
+.ratingColorFireRed {
+	color: #B22222;
+}
+
+.ratingColorStarYellow {
+	color: #ffd700;
+}
+
+.ratingColorMoney {
+	color: #339933;
+}
+
+.ratingColorBlack {
+	color: black;
+}

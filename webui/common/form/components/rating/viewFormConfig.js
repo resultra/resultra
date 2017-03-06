@@ -60,26 +60,9 @@ function initRatingRecordEditBehavior($ratingContainer,componentContext,recordPr
 		}) // set record's number field value
 		
 	}
-
-	$ratingControl.rating({
-		extendSymbol: function(rating) {
-			var ratingIndex = rating-1 // 0 based index
-			if(ratingObjectRef.properties.tooltips[ratingIndex] !== undefined) {
-				var tooltipText = ratingObjectRef.properties.tooltips[ratingIndex]
-				if(tooltipText.length > 0) {
-					var tooltipHTML = '<p class="ratingTooltip">' + escapeHTML(tooltipText) + '</p>'
-					$(this).tooltip({
-						container: 'body',
-						placement: 'bottom',
-						title: tooltipHTML,
-						html: true 
-					});
-					
-				}
-			}
-			
-		}
-	})
+	
+	// The rating control is initialized the same way for design and view mode, but in view mode
+	// the event handlers need to be setup for when the user changes a rating value.
 	$ratingControl.on('change', function() {
 		var ratingVal = Number($(this).val())
 		console.log('Rating changed: ' + ratingVal);
