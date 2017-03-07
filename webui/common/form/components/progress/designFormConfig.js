@@ -31,7 +31,7 @@ var progressDesignFormConfig = {
 	draggableHTMLFunc:	progressContainerHTML,
 	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewProgressDialog,
-	resizeConstraints: elemResizeConstraints(100,640,30,30),
+	resizeConstraints: elemResizeConstraints(75,640,30,30),
 	resizeFunc: resizeProgress,
 	initFunc: initDesignFormProgress,
 	selectionFunc: selectFormProgress
