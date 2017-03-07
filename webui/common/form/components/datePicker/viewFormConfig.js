@@ -33,15 +33,6 @@ function loadRecordIntoDatePicker($datePicker, recordRef) {
 	
 }
 
-function getDataPickerDateVal($datePicker) {
-	
-	var $datePickerInput = datePickerInputFromContainer($datePicker)
-	
-	var inputVal = $datePickerInput.val()
-	var dateVal = new Date(inputVal)
-	var dateParam = moment(dateVal).toISOString()
-	return dateParam
-}
 
 function initDatePickerFieldEditBehavior(componentContext,recordProxy, datePickerObjectRef,$datePickerContainer) {
 	
@@ -58,14 +49,22 @@ function initDatePickerFieldEditBehavior(componentContext,recordProxy, datePicke
 
 	// Bootstrap datetime control is not ready for integration - it's conflicting with Semantic UI
 	// $(datePickerSelector).on("dp.change", function(e) { }
+	
+	$datePickerContainer.find(".datePickerInputContainer").click(function(e) {
 		
-	$datePickerContainer.change(function () {
+		// This is important - if a click hits an object, then stop the propagation of the click
+		// to the parent div(s), including the canvas itself. If the parent canvas
+		// gets a click, it will deselect all the items (see initObjectCanvasSelectionBehavior)
+		e.stopPropagation();
+	})
+		
+	$datePickerInput.on('dp.change',function (e) {
 	    console.log("date picker changed dates")
 		// Get the most recent copy of the object reference. It could have changed between
 		// initialization time and the time the checkbox was changed.
 		var objectRef = getContainerObjectRef($datePickerContainer)
 				
-		var dateParam = getDataPickerDateVal($datePickerContainer)
+		var dateParam = e.date.toISOString()
 		
 		currRecordRef = recordProxy.getRecordFunc()
 		
@@ -98,10 +97,10 @@ function initDatePickerFieldEditBehavior(componentContext,recordProxy, datePicke
 function initDatePickerRecordEditBehavior($datePickerContainer, componentContext,recordProxy, datePickerObjectRef) {
 		
 	var $datePickerInput = datePickerInputFromContainer($datePickerContainer)
-	$datePickerInput.datepicker()
+	$datePickerInput.datetimepicker({
+		format: 'MM/DD/YYYY' // can be any moment format
+	})
 	
-	
-
 	$datePickerContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoDatePicker
 	})

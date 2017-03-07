@@ -8,3 +8,11 @@
 	width: 125px;
 	height: auto;
 }
+
+.datePickerContainer .form-group {
+	margin-bottom:0px;
+}
+
+.datePickerComponentInput {
+	width:100%;
+}
