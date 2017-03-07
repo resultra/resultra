@@ -72,6 +72,11 @@ function initRatingFormComponentControl($container,ratingObjectRef) {
 			},
 		}
 		
+		// Other possible icons: people, happy face, sad face, graducation cap, stop hand
+		// thumbs up, pig, money, dollar, bug, check mark, certificate, exclamation,
+		// diamond, cog, fill (circle), arrow?, book, bell, lock (privacy), lightening bolt,
+		// calculator, apple (rate a teacher), magnifying class (depth), stopwatch(urgency)
+		
 		var ratingIconClasses = ratingIconNameClassesMap[ratingObjectRef.properties.icon]
 		if (ratingIconClasses === undefined) {
 			ratingIconClasses = ratingIconNameClassesMap["star"]

@@ -11,9 +11,8 @@
 
 .ratingFormContainer {
 	min-width:160px;
-	min-height:60px;
 	width: 160px;
-	height: 60px;
+	height: auto
 }
 
 .ratingTooltip {

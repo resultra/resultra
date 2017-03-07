@@ -248,7 +248,8 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append($ratingContainer)
-		setElemDimensions($ratingContainer,rating.properties.geometry)
+		setElemFixedWidthFlexibleHeight($ratingContainer,
+					rating.properties.geometry.sizeWidth)
 	
 		 // Store the newly created object reference in the DOM element. This is needed for follow-on
 		 // property setting, resizing, etc.
