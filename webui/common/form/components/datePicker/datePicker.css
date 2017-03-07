@@ -4,8 +4,7 @@
    can shrink as the field is dragged. */
 .datePickerContainer
 {
-	min-width:150px;
-	min-height:75px;
-	width: 150px;
-	height: 75px;
+	min-width:75px;
+	width: 125px;
+	height: auto;
 }
