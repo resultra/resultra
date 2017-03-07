@@ -4,8 +4,15 @@
    can shrink as the field is dragged. */
 .progressComponent
 {
-	min-width:160px;
-	min-height:75px;
-	width: 160px;
-	height: 75px;
+	min-width:75px;
+	width: 120px;
+	height: auto;
+}
+
+.progressComponent .progress {
+	margin-bottom:0px;
+}
+
+.progressComponent label {
+	margin-bottom:2px;
 }

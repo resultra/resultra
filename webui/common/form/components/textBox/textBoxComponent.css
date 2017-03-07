@@ -4,8 +4,8 @@
    can shrink as the field is dragged. */
 .textBoxComponent
 {
-	min-width:80px;
-	width: 80px;
+	min-width:75px;
+	width: 150px;
 	height: auto;
 }
 

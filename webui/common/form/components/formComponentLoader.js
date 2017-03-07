@@ -203,7 +203,8 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append($progressContainer)
-		setElemDimensions($progressContainer,progress.properties.geometry)
+		setElemFixedWidthFlexibleHeight($progressContainer,
+					progress.properties.geometry.sizeWidth)
 		
 		 // Store the newly created object reference in the DOM element. This is needed for follow-on
 		 // property setting, resizing, etc.
