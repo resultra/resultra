@@ -15,6 +15,7 @@ func init() {
 	buttonRouter.HandleFunc("/api/frm/formButton/setDefaultVals", setDefaultVals)
 	buttonRouter.HandleFunc("/api/frm/formButton/setSize", setSize)
 	buttonRouter.HandleFunc("/api/frm/formButton/setColorScheme", setColorScheme)
+	buttonRouter.HandleFunc("/api/frm/formButton/setIcon", setIcon)
 
 	http.Handle("/api/frm/formButton/", buttonRouter)
 }
@@ -81,6 +82,15 @@ func setSize(w http.ResponseWriter, r *http.Request) {
 
 func setColorScheme(w http.ResponseWriter, r *http.Request) {
 	var params ButtonColorSchemeParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processButtonPropUpdate(w, r, params)
+}
+
+func setIcon(w http.ResponseWriter, r *http.Request) {
+	var params ButtonIconParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

@@ -127,3 +127,17 @@ func (updateParams ButtonColorSchemeParams) updateProps(buttonForUpdate *FormBut
 
 	return nil
 }
+
+type ButtonIconParams struct {
+	ButtonIDHeader
+	Icon string `json:"icon"`
+}
+
+func (updateParams ButtonIconParams) updateProps(buttonForUpdate *FormButton) error {
+
+	// TODO - Validate icon name
+
+	buttonForUpdate.Properties.Icon = updateParams.Icon
+
+	return nil
+}

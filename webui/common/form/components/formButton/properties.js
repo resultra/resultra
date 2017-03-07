@@ -118,6 +118,28 @@ function loadFormButtonProperties($button,buttonRef) {
 		
 	}
 	initColorSchemeProperties()
+	
+	
+	function initIconProperties() {
+		var $iconSelection = $('#adminButtonComponentIconSelection')
+		$iconSelection.val(buttonRef.properties.icon)
+		initSelectControlChangeHandler($iconSelection,function(newIcon) {
+		
+			var iconParams = {
+				parentFormID: buttonRef.parentFormID,
+				buttonID: buttonRef.buttonID,
+				icon: newIcon
+			}
+			jsonAPIRequest("frm/formButton/setIcon",iconParams,function(updatedButton) {
+				setContainerComponentInfo($button,updatedButton,updatedButton.buttonID)	
+				setFormButtonLabel($button,updatedButton)
+			})
+		
+		})
+		
+	}
+	initIconProperties()
+	
 
 	
 	var defaultValPropParams = {

@@ -57,3 +57,41 @@ function setFormButtonColorScheme($container,newScheme) {
 	}
 	
 }
+
+function setFormButtonLabel($container,buttonRef) {
+	
+	var iconNameClassMap = {
+		"none":undefined,
+		"check":"glyphicon glyphicon-check",
+		"option":"glyphicon glyphicon-option-horizontal",
+		"rchevron":"glyphicon glyphicon-chevron-right",
+		"enter":"glyphicon glyphicon-log-in",
+		"exit":"glyphicon glyphicon-log-out",
+		"comment":"glyphicon glyphicon-comment",
+		"zoom":"glyphicon glyphicon-zoom-in",
+		"time":"glyphicon glyphicon-time",
+		"cog":"glyphicon glyphicon-cog",
+		"calculator":"fa fa-calculator"
+	}
+	
+	jsonAPIRequest("frm/getFormInfo", { formID: buttonRef.properties.linkedFormID }, function(formInfo) {
+		
+		var $button = $container.find(".formButton")
+		
+		var iconClass = iconNameClassMap[buttonRef.properties.icon]
+		$button.empty()
+		
+		var $nameSpan = $('<span></span>')
+		$nameSpan.text(formInfo.form.name)
+		if(iconClass !== undefined) {
+			var $iconSpan = $('<span aria-hidden="true"></span>')
+			$iconSpan.addClass(iconClass)
+			$button.append($iconSpan)
+			$nameSpan.addClass("marginLeft5")
+			$button.append($nameSpan)
+		} else {
+			$button.append($nameSpan)			
+		}	
+	})
+	
+}

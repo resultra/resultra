@@ -91,11 +91,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var $containerObj = $(containerHTML)
 		setFormButtonSize($containerObj,formButton.properties.size)
 		setFormButtonColorScheme($containerObj,formButton.properties.colorScheme)
-		
-		
-		jsonAPIRequest("frm/getFormInfo", { formID: formButton.properties.linkedFormID }, function(formInfo) {
-			$containerObj.find(".formButton").text(formInfo.form.name)		
-		})
+		setFormButtonLabel($containerObj,formButton)
 		
 				
 		$componentRow.append($containerObj)
