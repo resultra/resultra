@@ -4,8 +4,15 @@
    can shrink as the field is dragged. */
 .textBoxComponent
 {
-	min-width:160px;
-	min-height:75px;
-	width: 160px;
-	height: 75px;
+	min-width:80px;
+	width: 80px;
+	height: auto;
+}
+
+.textBoxComponent .form-group {
+	margin-bottom:0px;
+}
+
+.textBoxComponent label {
+	margin-bottom: 2px !important;
 }
