@@ -12,7 +12,7 @@ function htmlEditorContainerHTML(elementID)
 		'<div class="htmlEditorHeader">' +
 			'<label>Editor Label</label>' +
 		'</div>' +
-		'<div class="htmlEditorContent">' +
+		'<div class="htmlEditorContent lightGreyBorder">' +
 			'<div class="htmlEditorInput inlineContent htmlEditorDefaultBackground">'+
 			'</div>' +
 		'</div>'+

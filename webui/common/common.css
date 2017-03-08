@@ -47,6 +47,10 @@
 	padding-bottom: 2px;
 }
 
+.lightGreyBorder {
+	border: 2px solid lightGrey;
+}
+
 
 /* For adding space between Boostrap rows */
 .marginTop2 { margin-top:2px; }

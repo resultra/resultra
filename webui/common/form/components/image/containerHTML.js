@@ -28,7 +28,7 @@ function imageContainerHTML(elementID)
 			'<label class="imageContainerLabel">Image Label</label>' +
 			attachmentButtonHTML("imageComponentManageAttachmentsButtton") + 
 		'</div>' +
-		'<div class="imageInnerContainer text-center"">'+
+		'<div class="imageInnerContainer lightGreyBorder text-center"">'+
 		'</div>'+
 	'</div>';
 	

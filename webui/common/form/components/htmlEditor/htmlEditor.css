@@ -30,8 +30,6 @@
 	 
      bottom: 0px; /* For some reason, the image overflows the bottom of the container without making this adjustement */
      width: 100%;
-	 
-	 border: 2px solid lightGrey;
 }
 
 .htmlEditorDefaultBackground {
