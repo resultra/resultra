@@ -49,6 +49,7 @@
 .formCaption p {
 	padding-right:9px;
 	padding-left:9px;
+	margin-bottom:5px;
 }
 /* By default the p element has a bottom margin of 10px. 
    Make it zero, so unwanted scroll bars don't appear */

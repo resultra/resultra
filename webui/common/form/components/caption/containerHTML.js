@@ -14,3 +14,25 @@ function formCaptionContainerHTML(elementID)
 						
 	return containerHTML
 }
+
+function setFormCaptionColorScheme($captionContainer,colorScheme) {
+	
+	var captionClassLookup = {
+		default:"",
+		info:"bg-info",
+		primary: "bg-primary",
+		success: "bg-success",
+		warning: "bg-warning",
+		danger:"bg-danger"
+	}
+	
+	var captionClass = captionClassLookup[colorScheme]
+	if (captionClass === undefined) {
+		captionClass = ""
+	}
+	
+	var $caption = $captionContainer.find(".formCaption")
+	$caption.removeClass("bg-info bg-primary bg-success bg-warning bg-danger")
+	$caption.addClass(captionClass)
+	
+}

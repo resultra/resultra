@@ -68,6 +68,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = formCaptionContainerHTML(caption.captionID);
 		var $containerObj = $(containerHTML)
 		$containerObj.find(".formCaption").text(caption.properties.label)
+		setFormCaptionColorScheme($containerObj,caption.properties.colorScheme)
 				
 		$componentRow.append($containerObj)
 		

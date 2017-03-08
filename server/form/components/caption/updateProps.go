@@ -92,3 +92,17 @@ func (updateParams CaptionCaptionParams) updateProps(captionForUpdate *Caption) 
 
 	return nil
 }
+
+type CaptionColorParams struct {
+	CaptionIDHeader
+	ColorScheme string `json:"colorScheme"`
+}
+
+func (updateParams CaptionColorParams) updateProps(captionForUpdate *Caption) error {
+
+	// TODO - Validate color scheme
+
+	captionForUpdate.Properties.ColorScheme = updateParams.ColorScheme
+
+	return nil
+}

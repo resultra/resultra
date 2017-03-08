@@ -40,8 +40,9 @@ func saveNewCaption(params NewCaptionParams) (*Caption, error) {
 	}
 
 	properties := CaptionProperties{
-		Geometry: params.Geometry,
-		Label:    params.Label}
+		Geometry:    params.Geometry,
+		Label:       params.Label,
+		ColorScheme: colorSchemeDefault}
 
 	newCaption := Caption{ParentFormID: params.ParentFormID,
 		CaptionID:  uniqueID.GenerateSnowflakeID(),
@@ -59,7 +60,7 @@ func saveNewCaption(params NewCaptionParams) (*Caption, error) {
 
 func getCaption(parentFormID string, captionID string) (*Caption, error) {
 
-	captionProps := CaptionProperties{}
+	captionProps := newDefaultCaptionProperties()
 	if getErr := common.GetFormComponent(captionEntityKind, parentFormID, captionID, &captionProps); getErr != nil {
 		return nil, fmt.Errorf("getCaption: Unable to retrieve caption: %v", getErr)
 	}
@@ -77,7 +78,7 @@ func GetCaptions(parentFormID string) ([]Caption, error) {
 	captions := []Caption{}
 	addCaption := func(datePickerID string, encodedProps string) error {
 
-		var captionProps CaptionProperties
+		captionProps := newDefaultCaptionProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &captionProps); decodeErr != nil {
 			return fmt.Errorf("GetCaptions: can't decode properties: %v", encodedProps)
 		}

@@ -65,7 +65,7 @@ function initDesignFormCaption() {
 
 function selectFormCaption($container,captionObjRef) {
 	console.log("Selected caption: " + JSON.stringify(captionObjRef))
-	loadFormCaptionProperties(captionObjRef)
+	loadFormCaptionProperties($container,captionObjRef)
 }
 
 function resizeFormCaption($container,geometry) {
