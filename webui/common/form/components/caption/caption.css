@@ -1,22 +1,70 @@
 .captionFormContainer {
-	min-width:200px;
-	min-height:200px;
+	min-width:125px;
+	min-height:50px;
 	width: 200px;
 	height: 200px;
 }
 
-.captionFormContainer .formCaption {
-	margin-top: 5px;
-	margin-bottom:5px;
+.formCaptionContent {
+	margin: 0px;
+	height:100%;
+	
+	/* The padding of the content needs to be 0. Otherwize, the scroll bar
+	   will look awkward and start below the top of the caption frame. This is compensated for
+	   by setting the padding for individual textual elements */
+	padding-top:0px;
+	padding-right:0px;	
+	padding-left:0px;
+	padding-bottom:0px;
 }
 
 .formCaption {
-	width:100%;
 	height: 100%;
+	width:100%;
 	overflow:auto;
+	/*padding:5px*/
 }
 
-.formCaptionContent {
-	width: 100%;
-	height: 100%;
+.formCaption mark {
+	background-color: yellow;
+}
+
+/* By default the p element has a bottom margin of 10px. 
+   Make it zero, so unwanted scroll bars don't appear */
+.formCaption p:last-child {
+	margin-bottom:0px;
+}
+
+/* The default margin for a top-most p element is by default 0px. */
+.formCaption p:first-child {
+	margin-top:9px;
+}
+
+/* The right padding of the whole caption content is set to 0 px, so the scroll-bar
+   will appear flush to the caption container. However, p elements have a default right
+   padding of 0px, so text can go all the way to the end of the container without wrapping.
+   Giving the p element some padding addresses this issue */ 
+.formCaption p {
+	padding-right:9px;
+	padding-left:9px;
+}
+
+/* Override the margins for headings. This is an inline caption so 
+  the layout of the text needs to be tighter than regular */
+.formCaption h1 {
+	margin-top:10px;
+	padding-right:9px;
+	padding-left:9px;
+}
+
+.formCaption h2 {
+	margin-top:10px;
+	padding-right:9px;
+	padding-left:9px;
+}
+
+.formCaption h3 {
+	margin-top:10px;
+	padding-right:9px;
+	padding-left:9px;
 }

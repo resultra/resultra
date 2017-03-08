@@ -87,7 +87,8 @@ var formCaptionDesignFormConfig = {
 	draggableHTMLFunc:	formCaptionContainerHTML,
 	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewFormCaptionDialog,
-	resizeConstraints: elemResizeConstraints(320,640,50,50),
+	resizeConstraints: elemResizeConstraints(125,1280,125,1280),
+	resizeHandles: 'e,s,se',
 	resizeFunc: resizeFormCaption,
 	initFunc: initDesignFormCaption,
 	selectionFunc: selectFormCaption

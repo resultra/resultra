@@ -5,6 +5,11 @@ function initObjectGridEditBehavior($container, editConfig,layoutDesignConfig) {
 	// While in edit mode, disable input on the container
 	$container.find('input').prop('disabled',true);
 	
+	var resizeHandles = 'e' // By default only resize horizontally
+	if (editConfig.hasOwnProperty('resizeHandles')) {
+		resizeHandles = editConfig.resizeHandles
+	}
+	
 	$container.draggable ({
 		cursor: "move",
 		helper:'clone',
@@ -29,10 +34,10 @@ function initObjectGridEditBehavior($container, editConfig,layoutDesignConfig) {
 		
 	$container.resizable({
 		aspectRatio: false,
-		handles: 'e', // Only allow resizing horizontally
+		handles: resizeHandles,
 		maxWidth: editConfig.resizeConstraints.maxWidth,
 		minWidth: editConfig.resizeConstraints.minWidth,
-		grid: 20, // snap to grid during resize
+		grid: 5, // snap to grid during resize
 		stop: function(event, ui) {
 			var resizeGeometry = {
 				positionTop: 0,
