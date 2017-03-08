@@ -8,7 +8,7 @@ function formCaptionContainerHTML(elementID)
 	var containerHTML = ''+
 		'<div class=" layoutContainer captionFormContainer" id="'+elementID+'">' +
 			'<div class="well well-sm formCaptionContent">' +
-				'<div class="formCaption bg-info"></div>' +
+				'<div class="formCaption inlineContent"></div>' +
 			'</div>' +
 		'</div><';
 						

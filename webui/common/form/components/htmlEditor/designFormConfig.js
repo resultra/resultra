@@ -34,7 +34,8 @@ var htmlEditorDesignFormConfig = {
 	draggableHTMLFunc:	htmlEditorContainerHTML,
 	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewHtmlEditorDialog,
-	resizeConstraints: elemResizeConstraints(100,640,100,500),
+	resizeConstraints: elemResizeConstraints(125,1280,125,1280),
+	resizeHandles: 'e,s,se',
 	resizeFunc: resizeHtmlEditor,
 	initFunc: initDesignFormHtmlEditor,
 	selectionFunc: selectFormHtmlEditor

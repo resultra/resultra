@@ -62,7 +62,9 @@ function enableInlineCKEditor($editorContainer) {
 	  	toolbar: toolbarConfig,
 	  	stylesSet: bootstrapStyles,
 	  	allowedContent: allowedContent,
-	  	format_tags: formats
+	  	format_tags: formats,
+		  removePlugins: 'magicline', // remove the red 'new page' control which by default appears at the bottom of the editing area.
+		  title:false // Disable the "Rich Text Editor" popup which appears by default when hovering over the editing area
 	  })
 	  
 	  return editor

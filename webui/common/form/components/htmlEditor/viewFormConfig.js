@@ -31,6 +31,15 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 	$htmlEditor.data("viewFormConfig", {
 		loadRecord: loadRecordIntoHtmlEditor
 	})
+	
+	$htmlEditor.find(".htmlEditorContent").click(function(e) {
+		
+		// This is important - if a click hits an object, then stop the propagation of the click
+		// to the parent div(s), including the canvas itself. If the parent canvas
+		// gets a click, it will deselect all the items (see initObjectCanvasSelectionBehavior)
+		e.stopPropagation();
+	})
+	
 
     CKEDITOR.disableAutoInline = true;
 	
