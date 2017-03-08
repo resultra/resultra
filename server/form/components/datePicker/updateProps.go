@@ -63,3 +63,17 @@ func (updateParams DatePickerResizeParams) updateProps(datePicker *DatePicker) e
 
 	return nil
 }
+
+type DatePickerFormatParams struct {
+	DatePickerIDHeader
+	DateFormat string `json:"dateFormat"`
+}
+
+func (updateParams DatePickerFormatParams) updateProps(datePicker *DatePicker) error {
+
+	// TODO - Validate format
+
+	datePicker.Properties.DateFormat = updateParams.DateFormat
+
+	return nil
+}

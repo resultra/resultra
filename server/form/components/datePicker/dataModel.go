@@ -53,8 +53,9 @@ func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 	}
 
 	properties := DatePickerProperties{
-		Geometry: params.Geometry,
-		FieldID:  params.FieldID}
+		Geometry:   params.Geometry,
+		FieldID:    params.FieldID,
+		DateFormat: dateFormatDefault}
 
 	newDatePicker := DatePicker{ParentFormID: params.ParentFormID,
 		DatePickerID: uniqueID.GenerateSnowflakeID(),
@@ -72,7 +73,7 @@ func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 
 func getDatePicker(parentFormID string, datePickerID string) (*DatePicker, error) {
 
-	datePickerProps := DatePickerProperties{}
+	datePickerProps := newDefaultDatePickerProperties()
 	if getErr := common.GetFormComponent(datePickerEntityKind, parentFormID, datePickerID, &datePickerProps); getErr != nil {
 		return nil, fmt.Errorf("getDatePicker: Unable to retrieve date picker: %v", getErr)
 	}
@@ -90,7 +91,7 @@ func GetDatePickers(parentFormID string) ([]DatePicker, error) {
 	datePickers := []DatePicker{}
 	addDatePicker := func(datePickerID string, encodedProps string) error {
 
-		var datePickerProps DatePickerProperties
+		datePickerProps := newDefaultDatePickerProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &datePickerProps); decodeErr != nil {
 			return fmt.Errorf("GetDatePickers: can't decode properties: %v", encodedProps)
 		}

@@ -7,9 +7,12 @@ import (
 )
 
 type DatePickerProperties struct {
-	FieldID  string                         `json:"fieldID"`
-	Geometry componentLayout.LayoutGeometry `json:"geometry"`
+	FieldID    string                         `json:"fieldID"`
+	Geometry   componentLayout.LayoutGeometry `json:"geometry"`
+	DateFormat string                         `json:"dateFormat"`
 }
+
+const dateFormatDefault string = "date"
 
 func (srcProps DatePickerProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*DatePickerProperties, error) {
 
@@ -22,4 +25,10 @@ func (srcProps DatePickerProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper
 	destProps.FieldID = remappedFieldID
 
 	return &destProps, nil
+}
+
+func newDefaultDatePickerProperties() DatePickerProperties {
+	props := DatePickerProperties{
+		DateFormat: dateFormatDefault}
+	return props
 }

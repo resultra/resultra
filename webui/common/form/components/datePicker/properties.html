@@ -1,6 +1,16 @@
 
 {{define "datePickerFormatProps"}}
-	Date picker formatting properties go here
+    <form id="adminDateComponentFormatForm">
+	  <div class="form-group">
+	      	  <label for="adminDateComponentFormatSelection">Date and time format</label>
+		  	<select class="form-control" id="adminDateComponentFormatSelection">
+		  		<option disabled selected value="">Select a date format</option>
+		 		<option value="date">Date</option>
+		 		<option value="dateTime">Date and time</option>
+		 		<option value="longDate">Long date</option>
+			</select>
+	  </div>
+	</form>
 {{end}}
 
 {{define "datePickerProps"}}

@@ -11,6 +11,7 @@ func init() {
 
 	datePickerRouter.HandleFunc("/api/frm/datePicker/new", newDatePicker)
 	datePickerRouter.HandleFunc("/api/frm/datePicker/resize", resizeDatePicker)
+	datePickerRouter.HandleFunc("/api/frm/datePicker/setFormat", setFormat)
 
 	http.Handle("/api/frm/datePicker/", datePickerRouter)
 }
@@ -46,4 +47,13 @@ func resizeDatePicker(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processDatePickerPropUpdate(w, r, resizeParams)
+}
+
+func setFormat(w http.ResponseWriter, r *http.Request) {
+	var params DatePickerFormatParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processDatePickerPropUpdate(w, r, params)
 }

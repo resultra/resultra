@@ -1,13 +1,6 @@
 
-function getDateComponentDateTimeFormat() {
-	// Populate with multiple formats which are selectable as an option for this component.
-	var formatMap = {
-		"dateOnly": 'MM/DD/YYYY',
-		"dateTime": 'YYYY-MM-DD hh:mma' // Date with 12 hour time
-	}
-	var dateTimeFormat = formatMap['dateTime']
-	return dateTimeFormat
-}
+
+
 
 function loadRecordIntoDatePicker($datePicker, recordRef) {
 	
@@ -27,15 +20,10 @@ function loadRecordIntoDatePicker($datePicker, recordRef) {
 		// If record has a value for the current container's associated field ID.
 		var fieldVal = recordRef.fieldValues[datePickerFieldID]
 	
-		// The jQuery UI date picker only supports dates. So, until the Bootstrap datetime picker can be
-		// integrated, only the date will be formatted and shown in the input field.
-		var dateVal = moment(fieldVal).format(getDateComponentDateTimeFormat())
+		// Values need to be set using the same format the date picker control was initialized with.
+		var dateVal = moment(fieldVal)
+		setDatePickerFormComponentDate($datePicker,datePickerObjectRef,dateVal)
 
-		var currDateVal = $datePickerInput.val()
-	
-		if(currDateVal != dateVal) {
-			$datePickerInput.val(dateVal)
-		}
 	
 	} else {
 		// There's no value in the current record for this field, so clear the value in the container
@@ -70,10 +58,7 @@ function initDatePickerFieldEditBehavior(componentContext,recordProxy, datePicke
 	})
 		
 	$datePickerInput.on('dp.change',function (e) {
-	    console.log("date picker changed dates")
-		// Get the most recent copy of the object reference. It could have changed between
-		// initialization time and the time the checkbox was changed.
-		
+	    console.log("date picker changed dates")		
 		// The date passed with the event will be false if the date has been cleared.
 		if(e.date !== false) {
 			var objectRef = getContainerObjectRef($datePickerContainer)
@@ -112,25 +97,7 @@ function initDatePickerFieldEditBehavior(componentContext,recordProxy, datePicke
 
 
 function initDatePickerRecordEditBehavior($datePickerContainer, componentContext,recordProxy, datePickerObjectRef) {
-		
-	var dateTimeFormat = getDateComponentDateTimeFormat()
-		
-		
-	var $datePickerInput = datePickerInputFromContainer($datePickerContainer)
-	$datePickerInput.datetimepicker({
-		format: dateTimeFormat, // moment format - time will be displayed if the format includes a time component
-		showTodayButton: true, // show the today button as a default
-		keepOpen: false, // keep the popup open after selecting a date
-	    daysOfWeekDisabled: [0,6], // Disable weekends
-		showClear:true, // Show the button to clear the date (trash icon)
-		sideBySide: false, // When editing both date and time, show the time side-by-side with the date.
-		inline: false, // Display the date & time picker inline without the need to of an input field
-		stepping: 5, // number of minutes the up and down arrows will step in clicking the up and down arrows.
-		useCurrent: false, // When the date picker is shown, set the picker to the current date/time
-		// daysOfWeekHighlighted: "1,2,3,4,5" // highlight weekdays
-		// 
-	})
-	
+			
 	$datePickerContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoDatePicker
 	})
