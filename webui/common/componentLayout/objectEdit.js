@@ -31,14 +31,15 @@ function initObjectGridEditBehavior($container, editConfig,layoutDesignConfig) {
 		 }
 	})
 
-	var gridSize = 10
+	var horizGridSize = 10
+	var vertGridSize = 5
 		
 	$container.resizable({
 		aspectRatio: false,
 		handles: resizeHandles,
 		maxWidth: editConfig.resizeConstraints.maxWidth,
 		minWidth: editConfig.resizeConstraints.minWidth,
-		grid: [ gridSize, gridSize ], // snap to grid during resize
+		grid: [ horizGridSize, vertGridSize ], // snap to grid during resize
 		resize: function(event,ui) {
 			// For some reason the resizable plugin doesn't snap to the grid
 			// based upon the grid size. The logic below will snap the width
@@ -48,7 +49,7 @@ function initObjectGridEditBehavior($container, editConfig,layoutDesignConfig) {
 			// is also snapped. In the case the container has 'auto' for height,
 			// or more specifically the 's' or 'se' resize handles are disabled,
 			// we don't want any resizing to take place.  
-			var snapWidth = Math.round(ui.size.width/gridSize)*gridSize
+			var snapWidth = Math.round(ui.size.width/horizGridSize)*horizGridSize
 //			var snapHeight = Math.round(ui.size.height/gridSize)*gridSize
 			ui.size.width = snapWidth
 //			ui.size.height = snapHeight
