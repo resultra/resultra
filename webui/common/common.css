@@ -1,10 +1,12 @@
 
-/* Override bootstrap formatting of labels inside checkboxes. After starting to use 
+/* Override bootstrap formatting of labels inside checkboxes and radio buttons. After starting to use 
    the awesome bootstrap checkboxes the left padding was 20px when it needs to be 5px */
 .checkbox label {
 	padding-left: 5px !important;
 }
-
+.radio label {
+	padding-left: 10px;
+}
 
 
 /* TODO - Move everything below to a generic.css file */
