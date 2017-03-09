@@ -3,7 +3,10 @@ function initCaptionDesignControlBehavior($captionContainer,captionObjectRef,ena
 	
 	CKEDITOR.disableAutoInline = true;
 	var $captionEditorControl = captionFromCaptionContainer($captionContainer)
-	$captionEditorControl.html(captionObjectRef.properties.caption)
+	
+	var $caption = $(captionObjectRef.properties.caption)
+	$caption.find('a').attr("target","_blank")
+	$captionEditorControl.html($caption)
 	
 	function initializeCaptionInlineEditing() {
 		
@@ -38,6 +41,11 @@ function initCaptionDesignControlBehavior($captionContainer,captionObjectRef,ena
 					})
 				
 					disableInlineCKEditor($captionEditorControl,editor)
+					
+					// Edit links in the caption to open a new window.
+					var $editorInput = $(editorInput)
+					$editorInput.find('a').attr("target","_blank")
+					$captionEditorControl.html($editorInput)
 				
 					// Re-enable design behavior for this component
 					enableDesignBehaviorCallback()
