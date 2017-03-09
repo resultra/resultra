@@ -120,28 +120,27 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 	function saveRecordUpdateWithAttachmentListAdditions(newAttachmentList) {
 		var currRecordRef = recordProxy.getRecordFunc()
 		
+		var updatedAttachmentList = []
 		if(currRecordRef.fieldValues.hasOwnProperty(imageFieldID)) {
-			
-			var updatedAttachmentList = currRecordRef.fieldValues[imageFieldID].attachments.slice(0)
-			updatedAttachmentList = $.merge(updatedAttachmentList,newAttachmentList)
-			
-			
-			var recordUpdateParams = {
-				parentDatabaseID:currRecordRef.parentDatabaseID,
-				fieldID: imageFieldID, 
-				recordID: currRecordRef.recordID,
-				changeSetID: recordProxy.changeSetID,
-				valueFormatContext: "image",
-				valueFormatFormat: "general",
-				attachments: updatedAttachmentList }
-			console.log("Attachment: Setting file field value: " + JSON.stringify(recordUpdateParams))
-			jsonAPIRequest("recordUpdate/setFileFieldValue", recordUpdateParams, function(updatedRecord) {
-				console.log("Attachment: Done uploading file: updated record ref = " + JSON.stringify(updatedRecord))
-				recordProxy.updateRecordFunc(updatedRecord)
-			})
+			// If there are existing attachments, merge with the list of existing attachments.
+			// Otherwise, use the new list of attachments to initially set the attachment list.
+			updatedAttachmentList = currRecordRef.fieldValues[imageFieldID].attachments.slice(0)
 		}
+		updatedAttachmentList = $.merge(updatedAttachmentList,newAttachmentList)
 		
-				
+		var recordUpdateParams = {
+			parentDatabaseID:currRecordRef.parentDatabaseID,
+			fieldID: imageFieldID, 
+			recordID: currRecordRef.recordID,
+			changeSetID: recordProxy.changeSetID,
+			valueFormatContext: "image",
+			valueFormatFormat: "general",
+			attachments: updatedAttachmentList }
+		console.log("Attachment: Setting file field value: " + JSON.stringify(recordUpdateParams))
+		jsonAPIRequest("recordUpdate/setFileFieldValue", recordUpdateParams, function(updatedRecord) {
+			console.log("Attachment: Done uploading file: updated record ref = " + JSON.stringify(updatedRecord))
+			recordProxy.updateRecordFunc(updatedRecord)
+		})
 		
 	}
 			
