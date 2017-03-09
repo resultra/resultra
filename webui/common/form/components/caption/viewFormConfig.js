@@ -11,7 +11,12 @@ function initCaptionRecordEditBehavior($captionContainer,componentContext,captio
 	
 	console.log("Initializing caption: " + JSON.stringify(captionObjectRef))
 	var $captionEditorControl = captionFromCaptionContainer($captionContainer)
-	$captionEditorControl.html(captionObjectRef.properties.caption)
+	
+	// When viewing a caption always open a new window for all links.
+	var $caption = $(captionObjectRef.properties.caption)
+	$caption.find('a').attr("target","_blank")
+	
+	$captionEditorControl.html($caption)
 	
 	
 }

@@ -75,7 +75,8 @@ function initButtonClickHandler(buttonSelector,handlerFunc) {
 	$(buttonSelector).unbind("click")
 	$(buttonSelector).click(function(e) {
 		$(this).blur(); // de-select the button after it's been clicked
-	    e.preventDefault();// prevent the default  functionality
+	    e.preventDefault() // prevent the default  functionality
+		e.stopPropagation() // In general, there's no need to propagate button clicks to their parent elements
 		handlerFunc()
 	})
 }
@@ -85,6 +86,7 @@ function initButtonControlClickHandler($button,handlerFunc) {
 	$button.click(function(e) {
 		$(this).blur(); // de-select the button after it's been clicked
 	    e.preventDefault();// prevent the default  functionality
+		e.stopPropagation() // In general, there's no need to propagate button clicks to their parent elements
 		handlerFunc()
 	})
 }
