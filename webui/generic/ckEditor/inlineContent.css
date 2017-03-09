@@ -44,6 +44,18 @@
 	margin-top:9px;
 }
 
+.inlineContent blockquote {
+	font-size:14px;
+	padding-left:10px;
+	margin-bottom:9px;
+	padding-top:0px;
+	padding-bottom:0px;
+}
+
+.inlineContent hr {
+	margin-top:10px;
+	margin-bottom:10px;
+}
 
 /* Override the margins for headings. This is an inline caption so 
   the layout of the text needs to be tighter than regular. Similar to

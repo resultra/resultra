@@ -21,10 +21,9 @@ function enableInlineCKEditor($editorContainer) {
 	
 	// Styles which will appear in the "Styles" menu
 	  var bootstrapStyles = [{
-	  		name: 'Marker',
+	  		name: 'Highlight',
 	  		element: 'mark'
 	  	},
-
 	  	{
 	  		name: 'Big',
 	  		element: 'big'
@@ -36,22 +35,19 @@ function enableInlineCKEditor($editorContainer) {
 
 	  var allowedContent = 'h1 h2 h3 h4 h5 h6;' +
 	  	'ol ul li;' +
-	  	's u p strong em mark big small blockquote del ins;' +
+	  	's u p strong em mark big small blockquote del ins hr;' +
 	  	'a[!href];'
 
-	  var toolbarConfig = [{
-	  	name: 'links',
-	  	items: ['Link', 'Unlink']
-	  }, {
-	  	name: 'paragraph',
-	  	items: ['Bold', 'Italic', 'Strike', 'Underline', '-', 'RemoveFormat']
-	  }, {
-	  	name: 'styles',
-	  	items: ['Styles', 'Format']
-	  }, {
-	  	name: 'paragraph',
-	  	items: ['NumberedList', 'BulletedList']
-	  }]
+	  var toolbarConfig = [
+		  { name: 'paragraph', items: ['NumberedList', 'BulletedList','-','Outdent','Indent','-','Blockquote']}, 
+		  { name: 'styles', items: ['Format','Styles'] },
+		  { name: 'insert', items: ['HorizontalRule']},
+	  	   '/', 
+		  { name: 'paragraph', items: ['Bold', 'Italic', 'Strike', 'Underline', '-', 'RemoveFormat'] }, 
+		  { name: 'links', items: ['Link', 'Unlink'] },
+		  { name: 'tools', items: ['Maximize']}
+	  ]
+
 
 	  // Styles which will appear in the 'Format" menu
 	  var formats = 'p;h1;h2;h3;h4;h5;h6;pre'
@@ -63,6 +59,8 @@ function enableInlineCKEditor($editorContainer) {
 	  	stylesSet: bootstrapStyles,
 	  	allowedContent: allowedContent,
 	  	format_tags: formats,
+		   // Override the default for removed buttons. Notably, this allows underline to appear.
+		  removeButtons: 'Subscript,Superscript',
 		  removePlugins: 'magicline', // remove the red 'new page' control which by default appears at the bottom of the editing area.
 		  title:false // Disable the "Rich Text Editor" popup which appears by default when hovering over the editing area
 	  })
