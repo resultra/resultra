@@ -89,7 +89,40 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 	var commentFieldID = commentObjectRef.properties.fieldID
 	
 	var $addCommentButton = commentAddCommentButtonFromContainer($commentContainer)
+	var $commentList = commentCommentListFromContainer($commentContainer)
+	
 	var $commentInput = commentInputFromContainer($commentContainer)
+	var $commentEntryControls = commentEntryControlsFromContainer($commentContainer)
+	var $entryContainer = commentEntryContainerFromOverallCommentContainer($commentContainer)
+	
+	// Prevent selection of the form component when clicking on the list or 
+	// comment entry controls.
+	$entryContainer.click(function (e) {
+		e.stopPropagation()
+	})
+	$commentList.click(function (e) {
+		e.stopPropagation()
+	})
+	
+	
+	// Dynamically resize the comment input and comment list when the user starts and 
+	// finishes entering comments.
+	function resizeCommentListToEntryControls() {	
+		var entryBottom = $entryContainer.position().top + $entryContainer.outerHeight(true);
+		var listTopPx = (entryBottom+5) + "px"
+		$commentList.css('top',listTopPx)
+	}
+	function resetAndMinimizeCommentEntry() {
+		$commentInput.val("")
+		$commentInput.height(20)
+		$commentEntryControls.hide()
+		resizeCommentListToEntryControls()
+	}
+	function expandCommentEntryAndControls() {
+		$commentInput.height(60)
+		$commentEntryControls.show()
+		resizeCommentListToEntryControls()
+	}
 	
 	initButtonControlClickHandler($addCommentButton,function() {
 		var commentVal = $commentInput.val()
@@ -100,8 +133,7 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 				
 		if(nonEmptyStringVal(commentVal) || (attachments.length > 0)) {
 			console.log("initCommentBoxRecordEditBehavior: Add comment:" + commentVal)
-			
-			
+						
 			var commentValueFormat = {
 				context:"commentBox",
 				format:"general"
@@ -130,7 +162,7 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 						
 				
 		}
-		$commentInput.val("")
+		resetAndMinimizeCommentEntry()
 	})
 	
 	var $attachmentButton = commentAttachmentButtonFromContainer($commentContainer)
@@ -150,6 +182,21 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 			addAttachmentsCallback: addAttachmentsToAttachmentList
 		}
 		openAddAttachmentsDialog(manageAttachmentParams)
+	})
+	
+	// Resize the text area dynamically when the user starts and finishes editing.
+	$commentInput.focus(function() {
+		expandCommentEntryAndControls()
+	})
+	$commentInput.blur(function() {
+		var commentInputVal = $commentInput.val()
+		if (commentInputVal.length === 0) {
+			resetAndMinimizeCommentEntry()
+		}
+	})
+	// If the user resizes the entry box, dynamically resize the comment list with it.
+	$commentInput.mousemove(function() {
+		resizeCommentListToEntryControls()
 	})
 	
 		

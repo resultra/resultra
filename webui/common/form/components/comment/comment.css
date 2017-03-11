@@ -9,7 +9,7 @@
 	width: 200px;
 	height: 200px;
 	
-	overflow-y: auto;
+	overflow-y: hidden;
 	overflow-x: hidden;
 }
 
@@ -17,4 +17,24 @@
 .commentCommentEntryBox {
 	resize:vertical;
 	margin-bottom: 5px;
+}
+
+.commentEntryContainer {
+	margin-bottom:5px;
+}
+
+.commentComponentCommentList {
+	overflow-x:hidden;
+	overflow-y:auto;
+	
+    position: absolute;
+    left: 5px;
+	 
+	 /* Start the variable height section for the image itself with after the imageContainerHeder. Keep this
+	    value the same as the height of imageContainerHeader */
+     top: 70px; 
+	 
+     bottom: 5px; /* For some reason, the image overflows the bottom of the container without making this adjustement */
+     right: 5px;
+	 margin-bottom:0px;
 }

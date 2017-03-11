@@ -21,22 +21,29 @@ function commentAttachmentListFromContainer($commentContainer) {
 	
 }
 
+function commentEntryControlsFromContainer($commentContainer) {
+	return $commentContainer.find(".commentEntryControls")
+}
+
+function commentEntryContainerFromOverallCommentContainer($commentContainer) {
+	return $commentContainer.find(".commentEntryContainer")
+}
+
+
 function commentContainerHTML(elementID)
 {	
 	var containerHTML = ''+
 	'<div class=" layoutContainer commentContainer">' +
-		'<div class="field">'+
-			'<label>Comment Box Label</label>'+
-				'<div class="form-group">' + 
-					'<textarea class="form-control commentCommentEntryBox" rows="2"></textarea>' + 
-					'<div class="newCommentAttachmentList"></div>' +
+	'<label>Comment Box Label</label>'+
+		'<div class="form-group commentEntryContainer">' + 
+			'<textarea class="form-control commentCommentEntryBox" rows="1" placeholder="Enter a comment..."></textarea>' + 
+			'<div class="commentEntryControls initiallyHidden">' +
+				'<div class="newCommentAttachmentList"></div>' +
 					'<button class="btn btn-primary btn-xs commentComponentAddCommentButton" type="submit">Add Comment</button>' +
-							attachmentButtonHTML("commentComponentAttachmentButton") + 
-				'</div>' +
-				
-		'</div>'+
-		'<div class="list-group commentComponentCommentList"></div>' +	
-	
+						attachmentButtonHTML("commentComponentAttachmentButton") + 
+			'</div>' +
+		'</div>' +				
+		'<div class="list-group commentComponentCommentList lightGreyBorder"></div>' +	
 	'</div>';
 		
 	return containerHTML
