@@ -104,24 +104,25 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 		e.stopPropagation()
 	})
 	
+	// In view mode, the height will be flexible. However, by placing a maximum width
+	// on the comment list (see below), the overall height set in the form designer
+	// will be preserved when the user is not editing a comment.
+	setElemFixedWidthFlexibleHeight($commentContainer,commentObjectRef.properties.geometry.sizeWidth)
 	
-	// Dynamically resize the comment input and comment list when the user starts and 
-	// finishes entering comments.
-	function resizeCommentListToEntryControls() {	
-		var entryBottom = $entryContainer.position().top + $entryContainer.outerHeight(true);
-		var listTopPx = (entryBottom+5) + "px"
-		$commentList.css('top',listTopPx)
-	}
+	// Set the maximum height of the comment area to be the remainder of the comment components
+	var entryBottom = $entryContainer.position().top + $entryContainer.outerHeight(true);
+	var listMaxHeightPx = (commentObjectRef.properties.geometry.sizeHeight - (entryBottom+5)) + "px"
+	$commentList.css('max-height',listMaxHeightPx)
+
+
 	function resetAndMinimizeCommentEntry() {
 		$commentInput.val("")
 		$commentInput.height(20)
 		$commentEntryControls.hide()
-		resizeCommentListToEntryControls()
 	}
 	function expandCommentEntryAndControls() {
 		$commentInput.height(60)
 		$commentEntryControls.show()
-		resizeCommentListToEntryControls()
 	}
 	
 	initButtonControlClickHandler($addCommentButton,function() {
@@ -193,11 +194,6 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 		if (commentInputVal.length === 0) {
 			resetAndMinimizeCommentEntry()
 		}
-	})
-	// If the user resizes the entry box, dynamically resize the comment list with it.
-	$commentInput.mousemove(function() {
-		resizeCommentListToEntryControls()
-	})
-	
+	})	
 		
 }

@@ -29,8 +29,9 @@ var commentDesignFormConfig = {
 	draggableHTMLFunc:	commentContainerHTML,
 	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewCommentComponentDialog,
-	resizeConstraints: elemResizeConstraints(100,640,30,30),
-	resizeFunc: resizeCommentComponent,
+	resizeConstraints: elemResizeConstraints(200,1280,200,1280),
+	resizeHandles: 'e,s,se',
+	resizeFunc:resizeCommentComponent,
 	initFunc: initDesignFormComment,
 	selectionFunc: selectFormComment
 }

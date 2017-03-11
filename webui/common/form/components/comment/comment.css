@@ -5,7 +5,11 @@
 .commentContainer
 {
 	min-width:200px;
-	min-height:200px;
+	/* The min-height for the comment container is less than the "resizable height"
+	   configured in designFormConfig.js. In view mode, this allows the height to be less than the
+	   height set in the form designer. However, the maximum height before comments will start 
+	   scrolling is still determinined by the minimum resizable height set in designFormConfig.js */
+	min-height:75px;
 	width: 200px;
 	height: 200px;
 	
@@ -25,16 +29,6 @@
 
 .commentComponentCommentList {
 	overflow-x:hidden;
-	overflow-y:auto;
-	
-    position: absolute;
-    left: 5px;
-	 
-	 /* Start the variable height section for the image itself with after the imageContainerHeder. Keep this
-	    value the same as the height of imageContainerHeader */
-     top: 70px; 
-	 
-     bottom: 5px; /* For some reason, the image overflows the bottom of the container without making this adjustement */
-     right: 5px;
-	 margin-bottom:0px;
+	overflow-y:auto;	
+	margin-bottom:0px;
 }
