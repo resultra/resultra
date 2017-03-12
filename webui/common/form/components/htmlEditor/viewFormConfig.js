@@ -12,9 +12,7 @@ function loadRecordIntoHtmlEditor($htmlEditor, recordRef) {
 	if(recordRef.fieldValues.hasOwnProperty(htmlEditorFieldID)) {
 
 		// If record has a value for the current container's associated field ID.
-		var $fieldVal = $(recordRef.fieldValues[htmlEditorFieldID])
-		$fieldVal.find('a').attr("target","_blank")
-		$htmlEditorInput.html($fieldVal)		
+		populateInlineDisplayContainerHTML($htmlEditorInput,recordRef.fieldValues[htmlEditorFieldID])		
 	
 	} else {
 		// There's no value in the current record for this field, so clear the value in the container

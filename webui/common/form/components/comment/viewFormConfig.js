@@ -53,13 +53,11 @@ function loadRecordIntoCommentBox(commentElem, recordRef) {
 		
 				var formattedCreateDate = moment(valChange.updateTime).calendar()
 
-				// Replace links with _blank target (like it's done in caption and note components)
-				var $commentText = $(valChange.updatedValue.commentText)
-				$commentText.find('a').attr("target","_blank")
+				var commentDisplayHTML = formatInlineContentHTMLDisplay(valChange.updatedValue.commentText)
 				
 				var commentHTML =  '<div class="list-group-item">' +
 					'<div><small>' + formattedUserName  + ' - ' + formattedCreateDate + '</small></div>' +
-					'<div class="inlineContent">' + $commentText.html() + '</div>' +
+					'<div class="inlineContent">' + commentDisplayHTML + '</div>' +
 					'<div class="formTimelineCommentAttachments"></div>' + 
 				'</div>';
 				
