@@ -107,7 +107,9 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 	$imageContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoImage,
 		recordProxy: recordProxy
-	})		
+	})
+	
+	initAttachmentFormComponentViewModeGeometry($imageContainer,imageObjectRef)
 	
 	var imageFieldID = imageObjectRef.properties.fieldID
 	

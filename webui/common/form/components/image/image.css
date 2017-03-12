@@ -4,16 +4,13 @@
    can shrink as the field is dragged. */
 .imageContainer
 {
-	min-width:200px;
-	min-height:200px;
+	min-width:150px;
+	min-height:125px;
 	width: 200px;
 	height: 200px;
 }
 
 .imageContainerHeader {
-    position: absolute;
-    left: 0;
-    top: 0;
     width: 100%;
     height: 30px; /* Fixed height header - keep the same as .imageInnerContainer top */
 	padding-left:5px;
@@ -22,16 +19,10 @@
 
 .imageInnerContainer
 {
-    position: absolute;
-     left: 0;
-	 
-	 /* Start the variable height section for the image itself with after the imageContainerHeder. Keep this
-	    value the same as the height of imageContainerHeader */
-     top: 30px; 
-	 
-     bottom: 5px; /* For some reason, the image overflows the bottom of the container without making this adjustement */
-     width: 100%;
-	overflow:auto;
+	overflow-x:hidden;
+	overflow-y:auto;	
+	margin-bottom:0px;
+	padding:5px;
 }
 
 /* Scale the image for constant width, but preserve the aspect ratio by letting the height scale
@@ -53,6 +44,7 @@
 	position:relative; /* relative position is needed so the inner hover-buttons will float to their absolute position */
 	float: left; /* floating left prevents the div from tiling the containers vertically, but instead have a responsive */
 	max-width: 128px;
+	margin: 2px;
 }
 
 /*attachGalleryThumbnailContainer:hover .galleryThumbnailHoverButton {

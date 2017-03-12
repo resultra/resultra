@@ -34,7 +34,8 @@ var imageDesignFormConfig = {
 	draggableHTMLFunc:	imageContainerHTML,
 	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewImageDialog,
-	resizeConstraints: elemResizeConstraints(100,640,100,500),
+	resizeConstraints: elemResizeConstraints(200,1280,125,1280),
+	resizeHandles: 'e,s,se',
 	resizeFunc: resizeImage,
 	initFunc: initDesignFormImage,
 	selectionFunc: selectFormImage

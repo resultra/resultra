@@ -36,8 +36,23 @@ function imageContainerHTML(elementID)
 	return containerHTML
 }
 
-function imageLinkIDFromContainerElemID(imageElemID) {
-	return 	imageElemID + '_imageLink'
+function initAttachmentFormComponentViewModeGeometry($container,attachRef) {
+	// In view mode, the height will be flexible, up the maximum set in the form designer.
+	// This ensures there isn't any "dead space" when there aren't enough attachments to
+	// fill up the attachment area below the header.
+	setElemFixedWidthFlexibleHeight($container,attachRef.properties.geometry.sizeWidth)
+	
+	var $header = $container.find(".imageContainerHeader")
+	
+	// Set the maximum height of the attachment area to be the remainder after the header
+	// is accounted for.
+	var headerBottom = $header.position().top + $header.outerHeight(true);
+	var attachMaxHeightPx = (attachRef.properties.geometry.sizeHeight - (headerBottom+5)) + "px"
+	
+	var $innerAttachmentContainer = imageInnerContainerFromImageComponentContainer($container)
+	
+	$innerAttachmentContainer.css('max-height',attachMaxHeightPx)
+	
 }
 
 function attachmentGalleryThumbnailContainer(attachRef,deleteAttachmentCallback) {
