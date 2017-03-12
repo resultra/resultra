@@ -55,7 +55,7 @@ function loadRecordIntoCommentBox(commentElem, recordRef) {
 
 				var commentHTML =  '<div class="list-group-item">' +
 					'<div><small>' + formattedUserName  + ' - ' + formattedCreateDate + '</small></div>' +
-					'<div class="formTimelineComment">' + escapeHTML(valChange.updatedValue.commentText) + '</div>' +
+					'<div class="inlineContent">' + valChange.updatedValue.commentText + '</div>' +
 					'<div class="formTimelineCommentAttachments"></div>' + 
 				'</div>';
 				
@@ -90,7 +90,6 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 	
 	var $addCommentButton = commentAddCommentButtonFromContainer($commentContainer)
 	var $commentList = commentCommentListFromContainer($commentContainer)
-	
 	var $commentInput = commentInputFromContainer($commentContainer)
 	var $commentEntryControls = commentEntryControlsFromContainer($commentContainer)
 	var $entryContainer = commentEntryContainerFromOverallCommentContainer($commentContainer)
@@ -116,61 +115,24 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 
 
 	function resetAndMinimizeCommentEntry() {
-		$commentInput.val("")
-		$commentInput.height(20)
+		$commentInput.html('<p class="commentPlaceholder">Enter a comment...</p>')
+		$commentInput.height(40)
 		$commentEntryControls.hide()
 	}
 	function expandCommentEntryAndControls() {
-		$commentInput.height(60)
+		$commentInput.find(".commentPlaceholder").remove()
+		$commentInput.height(80)
 		$commentEntryControls.show()
 	}
 	
-	initButtonControlClickHandler($addCommentButton,function() {
-		var commentVal = $commentInput.val()
-		
-		var newCommentAttachments = getNewCommentAttachmentList($commentContainer)
-		
-		var currRecordRef = recordProxy.getRecordFunc()
-				
-		if(nonEmptyStringVal(commentVal) || (attachments.length > 0)) {
-			console.log("initCommentBoxRecordEditBehavior: Add comment:" + commentVal)
-						
-			var commentValueFormat = {
-				context:"commentBox",
-				format:"general"
-			}
-			
-			var setRecordValParams = { 
-				parentDatabaseID:currRecordRef.parentDatabaseID,
-				recordID:currRecordRef.recordID,
-				changeSetID: recordProxy.changeSetID,
-				fieldID:commentFieldID, 
-				commentText:commentVal,
-				attachments:newCommentAttachments, 
-				valueFormat:commentValueFormat }
-		
-			console.log("Setting date value: " + JSON.stringify(setRecordValParams))
-		
-			jsonAPIRequest("recordUpdate/setCommentFieldValue",setRecordValParams,function(updatedRecordRef) {
-			
-				clearNewCommentAttachmentList($commentContainer)
-				
-				// After updating the record, the local cache of records in currentRecordSet will
-				// be out of date. So after updating the record on the server, the locally cached
-				// version of the record also needs to be updated.
-				recordProxy.updateRecordFunc(updatedRecordRef)
-			}) // set record's text field value
-						
-				
-		}
-		resetAndMinimizeCommentEntry()
-	})
 	
-	var $attachmentButton = commentAttachmentButtonFromContainer($commentContainer)
 	
 	$commentContainer.data("attachmentList",[])
 	
+	var $attachmentButton = commentAttachmentButtonFromContainer($commentContainer)
 	initButtonControlClickHandler($attachmentButton,function() {
+		
+		console.log("Attachment button clicked for comments")
 				
 		function addAttachmentsToAttachmentList(newAttachments) {
 			var currAttachments = getNewCommentAttachmentList($commentContainer)
@@ -185,15 +147,67 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 		openAddAttachmentsDialog(manageAttachmentParams)
 	})
 	
-	// Resize the text area dynamically when the user starts and finishes editing.
-	$commentInput.focus(function() {
-		expandCommentEntryAndControls()
-	})
-	$commentInput.blur(function() {
-		var commentInputVal = $commentInput.val()
-		if (commentInputVal.length === 0) {
-			resetAndMinimizeCommentEntry()
-		}
-	})	
+	$commentInput.click(function() {
+		if (!inlineCKEditorEnabled($commentInput)) {
+	
+			expandCommentEntryAndControls()
+			
+			var editor = enableInlineCKEditor($commentInput)
+			
+			$commentInput.focus()
+				
+			initButtonControlClickHandler($addCommentButton,function() {
 		
+				// Save the comment
+				var commentVal = editor.getData();
+				resetAndMinimizeCommentEntry()
+		
+				var newCommentAttachments = getNewCommentAttachmentList($commentContainer)
+		
+				var currRecordRef = recordProxy.getRecordFunc()
+				
+				if(nonEmptyStringVal(commentVal) || (newCommentAttachments.length > 0)) {
+					console.log("initCommentBoxRecordEditBehavior: Add comment:" + commentVal)
+						
+					var commentValueFormat = {
+						context:"commentBox",
+						format:"general"
+					}
+			
+					var setRecordValParams = { 
+						parentDatabaseID:currRecordRef.parentDatabaseID,
+						recordID:currRecordRef.recordID,
+						changeSetID: recordProxy.changeSetID,
+						fieldID:commentFieldID, 
+						commentText:commentVal,
+						attachments:newCommentAttachments, 
+						valueFormat:commentValueFormat }
+		
+					console.log("Setting date value: " + JSON.stringify(setRecordValParams))
+		
+					jsonAPIRequest("recordUpdate/setCommentFieldValue",setRecordValParams,function(updatedRecordRef) {
+			
+						clearNewCommentAttachmentList($commentContainer)
+				
+						// After updating the record, the local cache of records in currentRecordSet will
+						// be out of date. So after updating the record on the server, the locally cached
+						// version of the record also needs to be updated.
+						recordProxy.updateRecordFunc(updatedRecordRef)
+					}) // set record's text field value
+						
+				
+				}
+				disableInlineCKEditor($commentInput,editor)
+				resetAndMinimizeCommentEntry()
+			})
+			
+			var $cancelButton = commentCancelCommentButtonFromContainer($commentContainer)
+			initButtonControlClickHandler($cancelButton,function() {
+				disableInlineCKEditor($commentInput,editor)
+				clearNewCommentAttachmentList($commentContainer)
+				resetAndMinimizeCommentEntry()
+			})
+			
+		}
+	})		
 }

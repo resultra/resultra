@@ -21,6 +21,12 @@
 .commentCommentEntryBox {
 	resize:vertical;
 	margin-bottom: 5px;
+	min-height: 40px;
+	background-color:white;
+}
+
+.commentPlaceholder {
+	color: lightGrey;
 }
 
 .commentEntryContainer {
@@ -31,4 +37,11 @@
 	overflow-x:hidden;
 	overflow-y:auto;	
 	margin-bottom:0px;
+}
+
+.commentComponentCommentList .list-group-item {
+	padding-left: 7px;
+	padding-right:7px;
+	padding-bottom:5px;
+	padding-top:5px;
 }

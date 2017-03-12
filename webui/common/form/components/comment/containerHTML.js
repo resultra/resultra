@@ -29,6 +29,9 @@ function commentEntryContainerFromOverallCommentContainer($commentContainer) {
 	return $commentContainer.find(".commentEntryContainer")
 }
 
+function commentCancelCommentButtonFromContainer($commentContainer) {
+	return 	$commentContainer.find(".commentComponentCancelCommentButton")
+}
 
 function commentContainerHTML(elementID)
 {	
@@ -36,11 +39,14 @@ function commentContainerHTML(elementID)
 	'<div class=" layoutContainer commentContainer">' +
 	'<label>Comment Box Label</label>'+
 		'<div class="form-group commentEntryContainer">' + 
-			'<textarea class="form-control commentCommentEntryBox" rows="1" placeholder="Enter a comment..."></textarea>' + 
+			'<div class="commentCommentEntryBox inlineContent lightGreyBorder">'+
+				'<p class="commentPlaceholder">Enter a comment ...</p>' +
+			'</div>' +
 			'<div class="commentEntryControls initiallyHidden">' +
 				'<div class="newCommentAttachmentList"></div>' +
-					'<button class="btn btn-primary btn-xs commentComponentAddCommentButton" type="submit">Add Comment</button>' +
-						attachmentButtonHTML("commentComponentAttachmentButton") + 
+					'<button class="btn btn-default btn-xs commentComponentCancelCommentButton" type="submit">Cancel</button>' +
+					'<button class="btn btn-primary btn-xs marginLeft5 commentComponentAddCommentButton" type="submit">Add Comment</button>' +
+					attachmentButtonHTML("commentComponentAttachmentButton") + 
 			'</div>' +
 		'</div>' +				
 		'<div class="list-group commentComponentCommentList lightGreyBorder"></div>' +	
