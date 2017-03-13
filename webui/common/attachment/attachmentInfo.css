@@ -16,11 +16,26 @@
 	line-height: 64px;
 }
 
+.smallAttachmentThumbnailIcon {
+	display: block;
+	text-align: center;
+	font-size: 20px;
+	line-height: 32px;
+}
+
 .attachmentThumbnailText {
 	display: block;
 	text-align:center;
 	font-size:18px;
 	line-height: 36px;
+	 text-transform: uppercase;
+}
+
+.smallAttachmentThumbnailText {
+	display: block;
+	text-align:center;
+	font-size:14px;
+	line-height: 18px;
 	 text-transform: uppercase;
 }
 

@@ -44,6 +44,7 @@
 	position:relative; /* relative position is needed so the inner hover-buttons will float to their absolute position */
 	float: left; /* floating left prevents the div from tiling the containers vertically, but instead have a responsive */
 	max-width: 128px;
+	min-width: 96px; /* Needed for file attachments, which don't have a thumbnail image */
 	margin: 2px;
 }
 

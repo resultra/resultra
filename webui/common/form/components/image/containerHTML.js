@@ -60,10 +60,8 @@ function attachmentGalleryThumbnailContainer(attachRef,deleteAttachmentCallback)
 	var attachURL = attachRef.url
 	
 	var thumbnailHTML =  '' +
-			'<div class="attachGalleryThumbnailContainer"' + 
-				'<a class="" href="' + attachURL + '">' + 
-					'<img class="img-thumbnail imageContainerImage" src="' + attachURL + '">'+
-				'</a>'+
+			'<div class="attachGalleryThumbnailContainer thumbnail">' + 
+				'<a class="attachLink"></a>' + 
 				'<div class="galleryThumbnailHoverButtons">' + 
 					'<button class="btn btn-default btn-sm clearButton attachmentInfoButton marginRight10"><span class="glyphicon glyphicon-pencil"></span></button>' +
 					'<button type="button" class="close deleteAttachButton" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
@@ -71,6 +69,22 @@ function attachmentGalleryThumbnailContainer(attachRef,deleteAttachmentCallback)
 			'</div>'
 	
 	var $thumbnail = $(thumbnailHTML)
+	
+	// Initialize the link, depending upon if the data type is image or regular file.
+	var $attachLink = $thumbnail.find(".attachLink")
+	$attachLink.data("attachRef",attachRef)
+	if(attachRef.dataType === "image") {
+		$attachLink.attr("href",attachRef.url)
+		$attachLink.append('<img class="imageContainerImage" src="' + attachURL + '">')
+		$attachLink.addClass("mfp-image")
+	} else {
+		var $fileThumbnail = $('<div><i class="smallAttachmentThumbnailIcon glyphicon glyphicon-file"></i>' +
+				'<span class="smallAttachmentThumbnailText"></span></div>')
+		var $thumbnailText = $fileThumbnail.find(".smallAttachmentThumbnailText")
+		$thumbnailText.text(attachRef.extension)
+		$attachLink.append($fileThumbnail)
+		$attachLink.addClass("mfp-inline")
+	}	
 	
 	$thumbnail.hover(
 		function() { 

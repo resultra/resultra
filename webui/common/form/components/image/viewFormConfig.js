@@ -74,20 +74,7 @@ function loadRecordIntoImage(imageElem, recordRef) {
 				$imageInnerContainer.append($thumbnailContainer)
 				
 			}
-			$imageInnerContainer.magnificPopup({
-				delegate: 'div.attachGalleryThumbnailContainer',
-				type: 'image',
-				gallery: { enabled:true },
-				image: {
-					tError: '<a href="%url%">The image #%curr%</a> could not be loaded.',
-					titleSrc: function(item) {
-						var $imageContainer = $(item.el)
-						var attachRef = $imageContainer.data("attachRef")
-						
-						return attachmentTitleAndCaptionHTML(attachRef)
-					}
-				}
-			})
+			initAttachmentContainerPopupGallery($imageInnerContainer)
 		})
 	
 	} else {
