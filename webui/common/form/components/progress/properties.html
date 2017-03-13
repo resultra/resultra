@@ -15,6 +15,10 @@
   </form>
 {{end}}
 
+{{define "progressThresholdProps"}}
+	{{template "valueThresholdPropertyPanel" .ThresholdValueParams}}
+{{end}}
+
 
 {{define "progressProps"}}
 
@@ -27,6 +31,11 @@
 		{{template "propertyPanelPrefix" .RangePanelParams}}
 			{{template "progressRangeProps"}}
 		{{template "propertyPanelSuffix"}}
+
+		{{template "propertyPanelPrefix" .ThresholdPanelParams}}
+			{{template "progressThresholdProps" .}}
+		{{template "propertyPanelSuffix"}}
+
 		
 	</div>
 

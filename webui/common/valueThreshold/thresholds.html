@@ -1,0 +1,50 @@
+{{define "thresholdValuesList"}}
+	<div class="list-group thresholdValuesList" id="{{.}}ThresholdValuesList">
+	</div>	
+{{end}}
+
+{{define "thresholdColorSchemeSelection"}}
+
+	  <div class="form-group">
+       	  <label>Color scheme</label>
+		  	<select class="form-control thresholdColorSchemeSelection">
+		  		<option disabled selected value="">Select a color scheme</option>
+		 		<option value="success">Success</option>
+		 		<option value="info">Info</option>
+		 		<option value="warning">Warning</option>
+		 		<option value="danger">Danger</option>
+			</select>
+	  </div>
+
+{{end}}
+
+{{define "thresholdStartValueInput"}}
+		<div class="form-group">
+	    	<label>Starting value</label>
+	    	<input type="text" class="form-control thresholdStartingValInput">
+	  	</div>
+{{end}}
+
+
+
+{{define "thresholdValuesTemplates"}}
+
+<div style="display:none;">
+	
+	<div id="thresholdValuesPanelListItem" class="list-group-item thresholdValuesPanelListItem">
+			<div class="row">
+				<div class="col-sm-10">
+					{{template "thresholdStartValueInput"}}
+					{{template "thresholdColorSchemeSelection"}}
+				</div>
+				<div class="col-sm-2">
+					<button type="button" class="close thresholdValuesListItemDeleteThresholdButton">
+						<span aria-hidden="false">&times;</span>
+					</button>
+				</div>
+			</div>
+	</div>
+	
+</div>
+
+{{end}}

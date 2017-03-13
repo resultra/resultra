@@ -1,0 +1,14 @@
+{{define "valueThresholdPropertyPanel"}}
+
+	{{template "thresholdValuesList" .ElemPrefix}}
+	
+	<button type="button" class="btn btn-xs btn-default" 
+			id="{{.ElemPrefix}}ValueThresholdAddThresholdButton">
+		  <span class="glyphicon glyphicon-plus"></span>
+		  Add Threshold
+	</button>
+	
+	{{template "thresholdValuesTemplates"}}
+
+	
+{{end}}

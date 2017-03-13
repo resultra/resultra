@@ -2,6 +2,7 @@ package progress
 
 import (
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
+	"resultra/datasheet/webui/common/valueThreshold"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 
@@ -9,6 +10,8 @@ type ProgressDesignTemplateParams struct {
 	ElemPrefix               string
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
 	RangePanelParams         propertiesSidebar.PanelTemplateParams
+	ThresholdPanelParams     propertiesSidebar.PanelTemplateParams
+	ThresholdValueParams     valueThreshold.ThresholdValuesPanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 }
 
@@ -24,9 +27,11 @@ func init() {
 	elemPrefix := "progress_"
 
 	DesignTemplateParams = ProgressDesignTemplateParams{
-		ElemPrefix:        elemPrefix,
-		FormatPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "progressFormat"},
-		RangePanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Range", PanelID: "progressRange"},
+		ElemPrefix:           elemPrefix,
+		FormatPanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "progressFormat"},
+		RangePanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Range", PanelID: "progressRange"},
+		ThresholdPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Thresholds", PanelID: "progressThreshold"},
+		ThresholdValueParams: valueThreshold.NewThresholdValuesTemplateParams(elemPrefix),
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:         elemPrefix,
 			DialogTitle:        "New Progress Indicator",

@@ -57,6 +57,11 @@ function loadProgressProperties($progress,progressRef) {
 	
 	initRangeProperties()
 	
+	var thresholdParams = {
+		elemPrefix: "progress_"
+	}
+	initThresholdValuesPropertyPanel(thresholdParams)
+	
 	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#progressProps')

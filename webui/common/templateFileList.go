@@ -10,6 +10,7 @@ import (
 	"resultra/datasheet/webui/common/formulaEditor"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/common/recordSort"
+	"resultra/datasheet/webui/common/valueThreshold"
 )
 
 var TemplateFileList []string
@@ -27,5 +28,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, field.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, form.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, defaultValues.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, valueThreshold.TemplateFileList...)
 
 }
