@@ -12,6 +12,7 @@ func init() {
 	progressRouter.HandleFunc("/api/frm/progress/new", newProgress)
 	progressRouter.HandleFunc("/api/frm/progress/resize", resizeProgress)
 	progressRouter.HandleFunc("/api/frm/progress/setRange", setRange)
+	progressRouter.HandleFunc("/api/frm/progress/setThresholds", setThresholds)
 
 	http.Handle("/api/frm/progress/", progressRouter)
 }
@@ -51,6 +52,15 @@ func resizeProgress(w http.ResponseWriter, r *http.Request) {
 
 func setRange(w http.ResponseWriter, r *http.Request) {
 	var params SetRangeParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processProgressPropUpdate(w, r, params)
+}
+
+func setThresholds(w http.ResponseWriter, r *http.Request) {
+	var params SetThresholdsParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

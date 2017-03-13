@@ -26,6 +26,7 @@ function initThresholdValuesPropertyPanel(panelParams) {
 		}) // Each threshold item
 		thresholds.sort(function(a,b) { return a.startingVal-b.startingVal })
 		console.log("Saving thresholds: " + JSON.stringify(thresholds))
+		panelParams.saveThresholdsCallback(thresholds)
 	}
 	
 	function addThreshold() {

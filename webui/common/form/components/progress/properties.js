@@ -42,7 +42,7 @@ function loadProgressProperties($progress,progressRef) {
 				}
 				console.log("Setting progress range: " + JSON.stringify(setRangeParams))
 				jsonAPIRequest("frm/progress/setRange", setRangeParams, function(updatedProgress) {
-					setContainerComponentInfo($header,updatedProgress,updatedProgress.progressID)
+					setContainerComponentInfo($progress,updatedProgress,updatedProgress.progressID)
 				})	
 				
 			}		
@@ -57,8 +57,21 @@ function loadProgressProperties($progress,progressRef) {
 	
 	initRangeProperties()
 	
+	function saveProgressThresholds(newThresholdVals) {
+		var setThresholdParams = {
+			parentFormID: progressRef.parentFormID,
+			progressID: progressRef.progressID,
+			thresholdVals: newThresholdVals
+		}
+		jsonAPIRequest("frm/progress/setThresholds", setThresholdParams, function(updatedProgress) {
+			setContainerComponentInfo($progress,updatedProgress,updatedProgress.progressID)
+		})	
+		
+	}
+	
 	var thresholdParams = {
-		elemPrefix: "progress_"
+		elemPrefix: "progress_",
+		saveThresholdsCallback: saveProgressThresholds
 	}
 	initThresholdValuesPropertyPanel(thresholdParams)
 	

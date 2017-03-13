@@ -81,3 +81,15 @@ func (updateParams SetRangeParams) updateProps(progress *Progress) error {
 
 	return nil
 }
+
+type SetThresholdsParams struct {
+	ProgressIDHeader
+	ThresholdVals []ThresholdValues `json:"thresholdVals"`
+}
+
+func (updateParams SetThresholdsParams) updateProps(progress *Progress) error {
+
+	progress.Properties.ThresholdVals = updateParams.ThresholdVals
+
+	return nil
+}

@@ -6,18 +6,25 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
+type ThresholdValues struct {
+	StartingVal float64 `json:"startingVal"`
+	ColorScheme string  `json:"colorScheme"`
+}
+
 type ProgressProperties struct {
-	FieldID  string                         `json:"fieldID"`
-	Geometry componentLayout.LayoutGeometry `json:"geometry"`
-	MinVal   float64                        `json:"minVal"`
-	MaxVal   float64                        `json:"maxVal"`
+	FieldID       string                         `json:"fieldID"`
+	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
+	MinVal        float64                        `json:"minVal"`
+	MaxVal        float64                        `json:"maxVal"`
+	ThresholdVals []ThresholdValues              `json:"thresholdVals"`
 }
 
 func newDefaultProgressProperties() ProgressProperties {
 	props := ProgressProperties{
-		FieldID: "",
-		MinVal:  0.0,
-		MaxVal:  100.0}
+		FieldID:       "",
+		MinVal:        0.0,
+		MaxVal:        100.0,
+		ThresholdVals: []ThresholdValues{}}
 	return props
 
 }
