@@ -2,7 +2,9 @@ function initThresholdValuesPropertyPanel(panelParams) {
 		
 		
 	var $addThresholdButton = $(createPrefixedSelector(panelParams.elemPrefix,'ValueThresholdAddThresholdButton'))
+	
 	var $thresholdList = $(createPrefixedSelector(panelParams.elemPrefix,'ThresholdValuesList'))
+	$thresholdList.empty()
 	
 	function saveUpdatedThresholdValues() {
 		
