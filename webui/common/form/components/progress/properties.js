@@ -71,7 +71,8 @@ function loadProgressProperties($progress,progressRef) {
 	
 	var thresholdParams = {
 		elemPrefix: "progress_",
-		saveThresholdsCallback: saveProgressThresholds
+		saveThresholdsCallback: saveProgressThresholds,
+		initialThresholdVals: progressRef.properties.thresholdVals
 	}
 	initThresholdValuesPropertyPanel(thresholdParams)
 	

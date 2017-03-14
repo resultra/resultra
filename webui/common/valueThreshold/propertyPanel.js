@@ -29,7 +29,7 @@ function initThresholdValuesPropertyPanel(panelParams) {
 		panelParams.saveThresholdsCallback(thresholds)
 	}
 	
-	function addThreshold() {
+	function addThreshold(initialVal) {
 		var $thresholdItem = $('#thresholdValuesPanelListItem').clone()
 		$thresholdItem.attr("id","")
 		$thresholdList.append($thresholdItem)
@@ -42,20 +42,31 @@ function initThresholdValuesPropertyPanel(panelParams) {
 		})
 		
 		var $schemeSelection = $thresholdItem.find(".thresholdColorSchemeSelection")
+		if (initialVal != null) {
+			$schemeSelection.val(initialVal.colorScheme)
+		}
 		initSelectControlChangeHandler($schemeSelection,function(newScheme) {
 			console.log("new color scheme selected: " + newScheme)
 			saveUpdatedThresholdValues()
 		})
 		
 		var $startingVal = $thresholdItem.find(".thresholdStartingValInput")
+		if(initialVal != null) {
+			$startingVal.val(initialVal.startingVal)
+		}
 		$startingVal.unbind("blur")
 		$startingVal.blur(function() { saveUpdatedThresholdValues() })
 	}
 	
 	initButtonControlClickHandler($addThresholdButton,function() {
 		console.log("add threshold button clicked")
-		addThreshold()
+		addThreshold(null)
 	})
+	
+	for(var initialValIndex = 0; initialValIndex < panelParams.initialThresholdVals.length; initialValIndex++) {
+		var currThreshVal = panelParams.initialThresholdVals[initialValIndex]
+		addThreshold(currThreshVal)
+	}
 	
 		
 	initThresholdValuesList(panelParams)	
