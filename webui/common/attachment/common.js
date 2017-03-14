@@ -10,6 +10,18 @@ function attachmentButtonHTML(className) {
 	return buttonHTML
 }
 
+function attachmentLinkButtonHTML(className) {
+	
+	// className is to uniquely identify the button with other HTML elements,
+	// such that it can be found with jQuery's find() function.
+	
+	var buttonHTML = '<button class="btn btn-default btn-sm clearButton ' + 
+			className + 
+			'"><span class="glyphicon glyphicon-link"></span></button>'
+	
+	return buttonHTML
+}
+
 function attachmentCaptionHTML(attachRef) {
 	return '<small class="attachCaptionText">' 
 		+  escapeHTML(attachRef.attachmentInfo.caption) + '</small>';

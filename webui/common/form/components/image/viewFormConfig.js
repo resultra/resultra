@@ -151,4 +151,10 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 			openAddAttachmentsDialog(manageAttachmentParams)
 		})
 		
+	var $addLinkButton = addLinkButtonFromAttachmentComponentContainer($imageContainer)
+	initButtonControlClickHandler($addLinkButton,function() {
+		console.log("Add URL Link button clicked")
+		openAttachLinkDialog()
+	})
+		
 }

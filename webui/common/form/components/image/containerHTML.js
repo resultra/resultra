@@ -17,6 +17,13 @@ function manageAttachmentsButtonFromImageComponentContainer($image) {
 	return $image.find(".imageComponentManageAttachmentsButtton")
 }
 
+function addLinkButtonFromAttachmentComponentContainer($image) {
+	return $image.find(".attachmentComponentAddLinkButton")
+}
+
+
+
+
 function imageContainerHTML(elementID)
 {		
 	// Adding title=" " to the file input field prevents the jQuery File Upload
@@ -27,6 +34,7 @@ function imageContainerHTML(elementID)
 		'<div class="imageContainerHeader">' +
 			'<label class="imageContainerLabel">Image Label</label>' +
 			attachmentButtonHTML("imageComponentManageAttachmentsButtton") + 
+			attachmentLinkButtonHTML("attachmentComponentAddLinkButton") +
 		'</div>' +
 		'<div class="imageInnerContainer lightGreyBorder text-center"">'+
 		'</div>'+

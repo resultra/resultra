@@ -1,0 +1,37 @@
+{{define "attachLinkDialogBody"}}
+
+	<form id="attachLinkForm" class="form-horizontal">
+		<div style="padding:10px">
+			{{template "attachmentURLInput"}}
+			{{template "attachmentTitleInput"}}
+			{{template "attachmentCaptionInput"}}
+		</div>
+	</form>
+
+{{end}}
+
+{{define "attachLinkDialogButtons"}}
+	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	<button type="button" class="btn btn-primary" id="attachLinkSaveButton">Save</button>
+{{end}}
+
+{{define "attachLinkDialog"}}
+
+<div class="modal fade" id="attachLinkDialog" tabindex="-1" role="document" aria-labelledby="attachLinkLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="attachLinkLabel">Attach URL Link</h4>
+      </div>
+      <div class="modal-body attachLinkDialogBody">
+		  {{template "attachLinkDialogBody"}}
+      </div>
+      <div class="modal-footer">
+		  {{template "attachLinkDialogButtons"}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}

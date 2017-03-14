@@ -14,7 +14,7 @@
 		<label class="col-sm-2 control-label">Title</label>
 		<div class="col-sm-10">
 			<input type="text" class="attachmentThumbnailTitle form-control"
-				 placeholder="Enter a title" required="" autofocus="">
+				 placeholder="Enter a title (optional)">
 		</div>
 	</div>
 {{end}}
@@ -24,7 +24,17 @@
 	<div class="form-group">
 		<label class="col-sm-2 control-label">Caption</label>
 		<div class="col-sm-10">
-			<textarea class="form-control attachmentCaptionTextArea" placeholder="Enter a caption" rows="3"></textarea>
+			<textarea class="form-control attachmentCaptionTextArea" placeholder="Enter a caption (optional)" rows="3"></textarea>
+		</div>
+	</div>	
+{{end}}
+
+{{define "attachmentURLInput"}}
+	<div class="form-group">
+		<label class="col-sm-2 control-label">URL</label>
+		<div class="col-sm-10">
+			<input type="text" class="attachmentURLLink form-control" name="attachmentURLLink"
+				 placeholder="Paste an URL link">
 		</div>
 	</div>	
 {{end}}
