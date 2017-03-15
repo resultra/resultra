@@ -85,6 +85,13 @@ function attachmentGalleryThumbnailContainer(attachRef,deleteAttachmentCallback)
 		$attachLink.attr("href",attachRef.url)
 		$attachLink.append('<img class="imageContainerImage" src="' + attachURL + '">')
 		$attachLink.addClass("mfp-image")
+	} else if (attachRef.dataType === "link") {
+		var $linkThumbnail = $('<div><i class="smallAttachmentThumbnailIcon glyphicon glyphicon-link"></i>' +
+				'<span class="smallAttachmentThumbnailText"></span></div>')
+		var $thumbnailText = $linkThumbnail.find(".smallAttachmentThumbnailText")
+		$thumbnailText.text("link")
+		$attachLink.append($linkThumbnail)
+		$attachLink.addClass("mfp-inline")
 	} else {
 		var $fileThumbnail = $('<div><i class="smallAttachmentThumbnailIcon glyphicon glyphicon-file"></i>' +
 				'<span class="smallAttachmentThumbnailText"></span></div>')

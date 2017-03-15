@@ -14,6 +14,7 @@ func init() {
 	attachmentRouter := mux.NewRouter()
 
 	attachmentRouter.HandleFunc("/api/attachment/upload", uploadAttachmentAPI)
+	attachmentRouter.HandleFunc("/api/attachment/saveURL", saveURLAPI)
 	attachmentRouter.HandleFunc("/api/attachment/get/{fileName}", getAttachmentAPI)
 	attachmentRouter.HandleFunc("/api/attachment/getReferences", getAttachmentReferencesAPI)
 
@@ -29,6 +30,21 @@ func uploadAttachmentAPI(w http.ResponseWriter, req *http.Request) {
 		api.WriteErrorResponse(w, uploadErr)
 	} else {
 		api.WriteJSONResponse(w, *uploadResponse)
+	}
+
+}
+
+func saveURLAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params SaveURLParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	if attachInfo, saveErr := saveURL(r, params); saveErr != nil {
+		api.WriteErrorResponse(w, saveErr)
+	} else {
+		api.WriteJSONResponse(w, *attachInfo)
 	}
 
 }

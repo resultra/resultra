@@ -44,7 +44,7 @@ func uploadAttachment(req *http.Request) (*UploadedAttachmentResponse, error) {
 		return nil, fmt.Errorf("uploadFile: Unable to get current user information: %v", userErr)
 	}
 
-	attachInfo := newAttachmentInfo(parentDatabaseID, currUserID, uploadInfo.FileName, cloudFileName)
+	attachInfo := newAttachmentInfo(parentDatabaseID, currUserID, attachTypeFile, uploadInfo.FileName, cloudFileName)
 	if saveErr := saveAttachmentInfo(attachInfo); saveErr != nil {
 		return nil, fmt.Errorf("uploadFile: unable to save attachment information/metadata: %v", saveErr)
 	}

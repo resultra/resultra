@@ -2,17 +2,24 @@ package attachment
 
 import (
 	"fmt"
+	"net/http"
 	"path/filepath"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/generic/userAuth"
 	"time"
 )
+
+const attachTypeURL string = "url"
+const attachTypeFile string = "file"
+const cloudFileNameNone string = ""
 
 type AttachmentInfo struct {
 	AttachmentID       string    `json:"attachmentID"`
 	ParentDatabaseID   string    `json:"parentDatabaseID"`
 	UserID             string    `json:"userID"`
 	CreateTimestampUTC time.Time `json:"createTimestampUTC"`
+	Type               string    `json:"type"`
 	CloudFileName      string    `json:"cloudFileName"`
 	OrigFileName       string    `json:"origFileName"`
 	Title              string    `json:"title"`
@@ -23,12 +30,13 @@ func saveAttachmentInfo(attachInfo AttachmentInfo) error {
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
 		`INSERT INTO attachments (attachment_id, database_id, user_id, 
-						create_timestamp_utc, orig_file_name,cloud_file_name,title,caption) 
-			 VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+						create_timestamp_utc, type, orig_file_name,cloud_file_name,title,caption) 
+			 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
 		attachInfo.AttachmentID,
 		attachInfo.ParentDatabaseID,
 		attachInfo.UserID,
 		attachInfo.CreateTimestampUTC,
+		attachInfo.Type,
 		attachInfo.OrigFileName,
 		attachInfo.CloudFileName,
 		attachInfo.Title,
@@ -47,12 +55,13 @@ func defaultTitle(origFileName string) string {
 	return baseName
 }
 
-func newAttachmentInfo(parentDatabaseID string, userID string, origFileName string, cloudFileName string) AttachmentInfo {
+func newAttachmentInfo(parentDatabaseID string, userID string, attachmentType string, origFileName string, cloudFileName string) AttachmentInfo {
 
 	attachInfo := AttachmentInfo{
 		AttachmentID:       uniqueID.GenerateSnowflakeID(),
 		ParentDatabaseID:   parentDatabaseID,
 		UserID:             userID,
+		Type:               attachmentType,
 		CloudFileName:      cloudFileName,
 		OrigFileName:       origFileName,
 		CreateTimestampUTC: time.Now().UTC(),
@@ -67,13 +76,14 @@ func GetAttachmentInfo(attachmentID string) (*AttachmentInfo, error) {
 
 	attachInfo := AttachmentInfo{}
 	getErr := databaseWrapper.DBHandle().QueryRow(
-		`SELECT attachment_id, database_id, user_id, create_timestamp_utc, orig_file_name,cloud_file_name,title,caption
+		`SELECT attachment_id, database_id, user_id, create_timestamp_utc, type,orig_file_name,cloud_file_name,title,caption
 		 FROM attachments
 		 WHERE attachment_id=$1 LIMIT 1`, attachmentID).Scan(
 		&attachInfo.AttachmentID,
 		&attachInfo.ParentDatabaseID,
 		&attachInfo.UserID,
 		&attachInfo.CreateTimestampUTC,
+		&attachInfo.Type,
 		&attachInfo.OrigFileName,
 		&attachInfo.CloudFileName,
 		&attachInfo.Title,
@@ -119,4 +129,25 @@ func setTitle(params SetTitleParams) (*AttachmentInfo, error) {
 	}
 
 	return GetAttachmentInfo(params.AttachmentID)
+}
+
+type SaveURLParams struct {
+	ParentDatabaseID string `json:"parentDatabaseID"`
+	URL              string `json:"url"`
+}
+
+func saveURL(req *http.Request, params SaveURLParams) (*AttachmentInfo, error) {
+
+	currUserID, userErr := userAuth.GetCurrentUserID(req)
+	if userErr != nil {
+		return nil, fmt.Errorf("uploadFile: Unable to get current user information: %v", userErr)
+	}
+
+	attachInfo := newAttachmentInfo(params.ParentDatabaseID, currUserID, attachTypeURL, params.URL, cloudFileNameNone)
+	if saveErr := saveAttachmentInfo(attachInfo); saveErr != nil {
+		return nil, fmt.Errorf("uploadFile: unable to save attachment information/metadata: %v", saveErr)
+	}
+
+	return &attachInfo, nil
+
 }

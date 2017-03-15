@@ -1,4 +1,4 @@
-function openAttachLinkDialog() {
+function openAttachLinkDialog(params) {
 	
 	var $dialog = $('#attachLinkDialog')
 	
@@ -18,9 +18,22 @@ function openAttachLinkDialog() {
 	})
 	
 	var $saveButton = $('#attachLinkSaveButton')
+	
+	var $urlInput = $dialog.find(".attachmentURLLink")
+	
 	initButtonControlClickHandler($saveButton,function() {
 		console.log("Save attachment button clicked")
-		if($attachLinkForm.valid()) {	
+		if($attachLinkForm.valid()) {
+			
+			var saveURLParams = {
+				parentDatabaseID: params.parentDatabaseID,
+				url: $urlInput.val()
+			}
+			jsonAPIRequest("attachment/saveURL", saveURLParams, function(attachInfo) {
+				console.log("URL saved: " + JSON.stringify(attachInfo))
+				params.addLinkCallback(attachInfo.attachmentID)
+			})
+				
 			$dialog.modal("hide")
 		}
 	})
