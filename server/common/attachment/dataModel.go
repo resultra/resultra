@@ -134,6 +134,8 @@ func setTitle(params SetTitleParams) (*AttachmentInfo, error) {
 type SaveURLParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 	URL              string `json:"url"`
+	Title            string `json:"title"`
+	Caption          string `json:"caption"`
 }
 
 func saveURL(req *http.Request, params SaveURLParams) (*AttachmentInfo, error) {
@@ -144,6 +146,9 @@ func saveURL(req *http.Request, params SaveURLParams) (*AttachmentInfo, error) {
 	}
 
 	attachInfo := newAttachmentInfo(params.ParentDatabaseID, currUserID, attachTypeURL, params.URL, cloudFileNameNone)
+	attachInfo.Title = params.Title
+	attachInfo.Caption = params.Caption
+
 	if saveErr := saveAttachmentInfo(attachInfo); saveErr != nil {
 		return nil, fmt.Errorf("uploadFile: unable to save attachment information/metadata: %v", saveErr)
 	}

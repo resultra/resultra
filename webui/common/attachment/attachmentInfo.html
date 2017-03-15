@@ -13,7 +13,7 @@
 	<div class="form-group">
 		<label class="col-sm-2 control-label">Title</label>
 		<div class="col-sm-10">
-			<input type="text" class="attachmentThumbnailTitle form-control"
+			<input type="text" class="attachmentThumbnailTitle form-control" name="attachmentThumbnailTitle"
 				 placeholder="Enter a title (optional)">
 		</div>
 	</div>
@@ -24,7 +24,8 @@
 	<div class="form-group">
 		<label class="col-sm-2 control-label">Caption</label>
 		<div class="col-sm-10">
-			<textarea class="form-control attachmentCaptionTextArea" placeholder="Enter a caption (optional)" rows="3"></textarea>
+			<textarea class="form-control attachmentCaptionTextArea" name="attachmentCaptionTextArea"
+				placeholder="Enter a caption (optional)" rows="3" maxlength="256"></textarea>
 		</div>
 	</div>	
 {{end}}
