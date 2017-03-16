@@ -139,16 +139,13 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = selectionContainerHTML(selection.selectionID);
 		var containerObj = $(containerHTML)
 		
-		function setSelectionLabel($selectionContainer,label) {
-			$selectionContainer.find('label').text(label)
-		}
-	
-		var fieldName = getFieldRef(selection.properties.fieldID).name
-		setSelectionLabel(containerObj,fieldName)
+		
+		setSelectionComponentLabel(containerObj,selection)
 	
 		$componentRow.append(containerObj)
 		
-		setElemDimensions(containerObj,selection.properties.geometry)
+		setElemFixedWidthFlexibleHeight(containerObj,
+					selection.properties.geometry.sizeWidth)
 	
 		 // Store the newly created object reference in the DOM element. This is needed for follow-on
 		 // property setting, resizing, etc.

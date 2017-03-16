@@ -3,6 +3,7 @@ package selection
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 )
 
 type SelectionIDInterface interface {
@@ -72,6 +73,20 @@ type SelectionSelectableValsParams struct {
 func (updateParams SelectionSelectableValsParams) updateProps(selection *Selection) error {
 
 	selection.Properties.SelectableVals = updateParams.SelectableVals
+
+	return nil
+}
+
+type SelectionLabelFormatParams struct {
+	SelectionIDHeader
+	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+}
+
+func (updateParams SelectionLabelFormatParams) updateProps(selection *Selection) error {
+
+	// TODO - Validate format is well-formed.
+
+	selection.Properties.LabelFormat = updateParams.LabelFormat
 
 	return nil
 }

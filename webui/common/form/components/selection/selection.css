@@ -5,7 +5,7 @@
 .selectionFormComponent
 {
 	min-width:160px;
-	min-height:75px;
+	min-height:10px;
 	width: 160px;
 	height: 75px;
 }

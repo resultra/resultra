@@ -5,6 +5,9 @@
 {{define "selectionProps"}}
 
 	<div id="selectionProps" class="propertyPanelToggleContainer">
+
+		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
+
 		{{template "propertyPanelPrefix" .ValuesPanelParams}}
 			{{template "selectionValuesProps"}}
 		{{template "propertyPanelSuffix"}}

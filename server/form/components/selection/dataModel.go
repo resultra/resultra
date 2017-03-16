@@ -57,10 +57,9 @@ func saveNewSelection(params NewSelectionParams) (*Selection, error) {
 		return nil, fmt.Errorf("saveNewSelection: %v", compLinkErr)
 	}
 
-	properties := SelectionProperties{
-		Geometry:       params.Geometry,
-		FieldID:        params.FieldID,
-		SelectableVals: []SelectionSelectableVal{}}
+	properties := newDefaultSelectionProperties()
+	properties.Geometry = params.Geometry
+	properties.FieldID = params.FieldID
 
 	newSelection := Selection{ParentFormID: params.ParentFormID,
 		SelectionID: uniqueID.GenerateSnowflakeID(),
@@ -78,7 +77,7 @@ func saveNewSelection(params NewSelectionParams) (*Selection, error) {
 
 func getSelection(parentFormID string, selectionID string) (*Selection, error) {
 
-	selectionProps := SelectionProperties{}
+	selectionProps := newDefaultSelectionProperties()
 	if getErr := common.GetFormComponent(selectionEntityKind, parentFormID, selectionID, &selectionProps); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to retrieve text box: %v", getErr)
 	}
@@ -96,7 +95,7 @@ func GetSelections(parentFormID string) ([]Selection, error) {
 	selections := []Selection{}
 	addSelection := func(selectionID string, encodedProps string) error {
 
-		var selectionProps SelectionProperties
+		selectionProps := newDefaultSelectionProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &selectionProps); decodeErr != nil {
 			return fmt.Errorf("GetSelectiones: can't decode properties: %v", encodedProps)
 		}

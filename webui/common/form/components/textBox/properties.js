@@ -37,8 +37,6 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 			setContainerComponentInfo($textBox,updatedTextBox,updatedTextBox.textBoxID)
 		})	
 	}
-	
-	
 	var labelParams = {
 		elemPrefix: elemPrefix,
 		initialVal: textBoxRef.properties.labelFormat,

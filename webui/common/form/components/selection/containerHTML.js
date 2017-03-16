@@ -8,7 +8,7 @@ function selectionContainerHTML(elementID)
 {	
 	var containerHTML = ''+
 		'<div class=" layoutContainer selectionFormComponent" id="'+elementID+'">' +
-			'<div class="form-group">'+
+			'<div class="form-group marginBottom0">'+
 				'<label>Selection</label>'+
 				'<div class="selectionFormControl">' + 
 					'<select class="form-control selectionFormComponentSelection"></select>' +
@@ -16,4 +16,12 @@ function selectionContainerHTML(elementID)
 			'</div>'+
 		'</div>';
 	return containerHTML
+}
+
+function setSelectionComponentLabel($selection,selectionRef) {
+	var $label = $selection.find('label')
+	
+	setFormComponentLabel($label,selectionRef.properties.fieldID,
+			selectionRef.properties.labelFormat)	
+	
 }
