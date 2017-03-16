@@ -70,7 +70,4 @@ function initThresholdValuesPropertyPanel(panelParams) {
 		addThreshold(currThreshVal)
 	}
 	
-		
-	initThresholdValuesList(panelParams)	
-	
 }

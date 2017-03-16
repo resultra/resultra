@@ -3,6 +3,7 @@ package progress
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 )
 
 type ProgressIDInterface interface {
@@ -90,6 +91,20 @@ type SetThresholdsParams struct {
 func (updateParams SetThresholdsParams) updateProps(progress *Progress) error {
 
 	progress.Properties.ThresholdVals = updateParams.ThresholdVals
+
+	return nil
+}
+
+type ProgressLabelFormatParams struct {
+	ProgressIDHeader
+	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+}
+
+func (updateParams ProgressLabelFormatParams) updateProps(progress *Progress) error {
+
+	// TODO - Validate format is well-formed.
+
+	progress.Properties.LabelFormat = updateParams.LabelFormat
 
 	return nil
 }

@@ -9,3 +9,11 @@ function progressContainerHTML() {
   			'</div>' +
 		'</div>'
 }
+
+function setProgressComponentLabel($progressContainer, progressRef) {
+
+	var $label = $progressContainer.find('label')
+	
+	setFormComponentLabel($label,progressRef.properties.fieldID,
+			progressRef.properties.labelFormat)	
+}

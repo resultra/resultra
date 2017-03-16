@@ -69,12 +69,37 @@ function loadProgressProperties($progress,progressRef) {
 		
 	}
 	
+	var elemPrefix = "progress_"
+	
 	var thresholdParams = {
-		elemPrefix: "progress_",
+		elemPrefix: elemPrefix,
 		saveThresholdsCallback: saveProgressThresholds,
 		initialThresholdVals: progressRef.properties.thresholdVals
 	}
 	initThresholdValuesPropertyPanel(thresholdParams)
+	
+	
+	function saveLabelProps(updatedLabelProps) {
+		console.log("Saving label propeties for text box")
+		var formatParams = {
+			parentFormID: progressRef.parentFormID,
+			progressID: progressRef.progressID,
+			labelFormat: updatedLabelProps
+		}
+		jsonAPIRequest("frm/progress/setLabelFormat", formatParams, function(updatedProgress) {
+			setProgressComponentLabel($progress,updatedProgress)
+			setContainerComponentInfo($progress,updatedProgress,updatedProgress.progressID)
+		})	
+	}
+	
+	
+	var labelParams = {
+		elemPrefix: elemPrefix,
+		initialVal: progressRef.properties.labelFormat,
+		saveLabelPropsCallback: saveLabelProps
+	}
+	initComponentLabelPropertyPanel(labelParams)
+	
 	
 	
 	// Toggle to the check box properties, hiding the other property panels

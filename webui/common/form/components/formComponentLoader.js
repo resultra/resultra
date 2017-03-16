@@ -191,8 +191,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = progressContainerHTML();
 		var $progressContainer = $(containerHTML)
 				
-		var componentLabel = getFieldRef(progress.properties.fieldID).name		
-		$progressContainer.find('label').text(componentLabel)
+		setProgressComponentLabel($progressContainer,progress)
 		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append($progressContainer)
