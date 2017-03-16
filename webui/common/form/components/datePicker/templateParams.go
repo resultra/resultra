@@ -1,6 +1,7 @@
 package datePicker
 
 import (
+	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -9,6 +10,7 @@ type DatePickerDesignTemplateParams struct {
 	ElemPrefix               string
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
+	LabelPanelParams         label.LabelPropertyTemplateParams
 }
 
 type DatePickerViewTemplateParams struct {
@@ -26,6 +28,8 @@ func init() {
 	DesignTemplateParams = DatePickerDesignTemplateParams{
 		ElemPrefix:        elemPrefix,
 		FormatPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "datePickerFormat"},
+		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
+			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "datePickerLabel"}},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
 			DialogTitle: "New Date Picker",

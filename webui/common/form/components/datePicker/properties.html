@@ -16,6 +16,9 @@
 {{define "datePickerProps"}}
 
 	<div id="datePickerProps" class="propertyPanelToggleContainer">
+		
+		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
+		
 		{{template "propertyPanelPrefix" .FormatPanelParams}}
 			{{template "datePickerFormatProps"}}
 		{{template "propertyPanelSuffix"}}

@@ -3,13 +3,15 @@ package datePicker
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
 type DatePickerProperties struct {
-	FieldID    string                         `json:"fieldID"`
-	Geometry   componentLayout.LayoutGeometry `json:"geometry"`
-	DateFormat string                         `json:"dateFormat"`
+	FieldID     string                                `json:"fieldID"`
+	Geometry    componentLayout.LayoutGeometry        `json:"geometry"`
+	DateFormat  string                                `json:"dateFormat"`
+	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
 }
 
 const dateFormatDefault string = "date"
@@ -29,6 +31,7 @@ func (srcProps DatePickerProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper
 
 func newDefaultDatePickerProperties() DatePickerProperties {
 	props := DatePickerProperties{
-		DateFormat: dateFormatDefault}
+		LabelFormat: common.NewDefaultLabelFormatProperties(),
+		DateFormat:  dateFormatDefault}
 	return props
 }

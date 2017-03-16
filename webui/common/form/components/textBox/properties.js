@@ -41,7 +41,7 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 	
 	var labelParams = {
 		elemPrefix: elemPrefix,
-		initialVal: { labelType: "field", customLabel: "" },
+		initialVal: textBoxRef.properties.labelFormat,
 		saveLabelPropsCallback: saveLabelProps
 	}
 	initComponentLabelPropertyPanel(labelParams)

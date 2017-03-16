@@ -11,7 +11,7 @@ function datePickerContainerHTML(elementID)
 	var containerHTML = ''+
 	'<div class="layoutContainer datePickerContainer">' +
 		'<div class="form-group">'+
-			'<label>New Field</label>'+
+			'<label>Date Picker</label>'+
 			'<div class="datePickerInputContainer">' + 
 				'<input type="text" name="symbol"  class="form-control datePickerComponentInput" placeholder="Select a date">' +
 			'</div>'+
@@ -78,4 +78,11 @@ function setDatePickerFormComponentDate($datePicker, datePickerRef, momentDate) 
 	if(currDateVal !== formattedDate) {
 		$datePickerInput.val(formattedDate)
 	}
+}
+
+function setDatePickerComponentLabel($datePickerContainer,datePickerRef) {
+	var $label = $datePickerContainer.find('label')
+	
+	setFormComponentLabel($label,datePickerRef.properties.fieldID,
+			datePickerRef.properties.labelFormat)
 }

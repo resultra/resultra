@@ -27,6 +27,27 @@ function loadDatePickerProperties($container,datePickerRef) {
 	}
 	initFormatProperties()
 	
+	function saveLabelProps(updatedLabelProps) {
+		console.log("Saving label propeties for text box")
+		var formatParams = {
+				parentFormID: datePickerRef.parentFormID,
+				datePickerID: datePickerRef.datePickerID,
+			labelFormat: updatedLabelProps
+		}
+		jsonAPIRequest("frm/datePicker/setLabelFormat", formatParams, function(updatedDatePicker) {
+			setDatePickerComponentLabel($container,updatedDatePicker)
+			setContainerComponentInfo($container,updatedDatePicker,updatedDatePicker.datePickerID)	
+		})	
+	}
+	
+	var elemPrefix = "datePicker_"
+	
+	var labelParams = {
+		elemPrefix: elemPrefix,
+		initialVal: datePickerRef.properties.labelFormat,
+		saveLabelPropsCallback: saveLabelProps
+	}
+	initComponentLabelPropertyPanel(labelParams)
 	
 	toggleFormulaEditorForField(datePickerRef.properties.fieldID)
 	

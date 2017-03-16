@@ -3,6 +3,7 @@ package datePicker
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 )
 
 type DatePickerIDInterface interface {
@@ -74,6 +75,20 @@ func (updateParams DatePickerFormatParams) updateProps(datePicker *DatePicker) e
 	// TODO - Validate format
 
 	datePicker.Properties.DateFormat = updateParams.DateFormat
+
+	return nil
+}
+
+type DatePickerLabelFormatParams struct {
+	DatePickerIDHeader
+	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+}
+
+func (updateParams DatePickerLabelFormatParams) updateProps(datePicker *DatePicker) error {
+
+	// TODO - Validate format is well-formed.
+
+	datePicker.Properties.LabelFormat = updateParams.LabelFormat
 
 	return nil
 }

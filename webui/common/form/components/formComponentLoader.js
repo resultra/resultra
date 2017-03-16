@@ -284,8 +284,9 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = datePickerContainerHTML(datePicker.datePickerID);
 		var containerObj = $(containerHTML)
 		
-		var componentLabel = getFieldRef(datePicker.properties.fieldID).name
-		containerObj.find('label').text(componentLabel)
+		
+		setDatePickerComponentLabel(containerObj,datePicker)
+		
 		initDatePickerFormComponentInput(containerObj,datePicker)
 		
 		// Position the object withing the #layoutCanvas div
