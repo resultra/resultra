@@ -25,6 +25,19 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 	}
 	initNumberFormatSelection(formatSelectionParams)
 	
+	function saveLabelProps(updatedLabelProps) {
+		console.log("Saving label propeties for text box")
+	}
+	
+	
+	var labelParams = {
+		elemPrefix: elemPrefix,
+		initialVal: { labelType: "field", customLabel: "" },
+		saveLabelPropsCallback: saveLabelProps
+	}
+	initComponentLabelPropertyPanel(labelParams)
+	
+	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#textBoxProps')
 		

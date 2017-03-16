@@ -5,6 +5,10 @@ function createPrefixedSelector(elemPrefix, elemSuffix) {
 	return elemSelector
 }
 
+function createPrefixedContainerObj(elemPrefix, elemSuffix) {
+	return $(createPrefixedSelector(elemPrefix,elemSuffix))
+}
+
 // When the same HTML template appears on the same page, an element prefix must be used to distinguish
 // the id's of the 2 DOM elements. Given a previx and suffix, this function generates both the 
 // base id and selector for addressing these types of elements.

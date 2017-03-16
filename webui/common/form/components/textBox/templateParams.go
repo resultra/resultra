@@ -1,6 +1,7 @@
 package textBox
 
 import (
+	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -9,6 +10,7 @@ type TextboxDesignTemplateParams struct {
 	ElemPrefix               string
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
+	LabelPanelParams         label.LabelPropertyTemplateParams
 }
 
 type TextboxViewTemplateParams struct {
@@ -24,7 +26,9 @@ func init() {
 	elemPrefix := "textBox_"
 
 	DesignTemplateParams = TextboxDesignTemplateParams{
-		ElemPrefix:        elemPrefix,
+		ElemPrefix: elemPrefix,
+		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
+			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "textboxLabel"}},
 		FormatPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "textboxFormat"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,

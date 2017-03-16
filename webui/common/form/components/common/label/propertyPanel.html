@@ -1,0 +1,32 @@
+{{define "componentLabelProps"}}
+
+     <form id="{{.}}ComponentLabelPropsForm">
+	  
+		<div class="form-group">
+		  <label for="{{.}}ComponentLabelPropsLabelType">Label type</label>
+		  	<select class="form-control" id="{{.}}ComponentLabelPropsLabelType">
+		  		<option disabled selected value="">Label type</option>
+		  		<option value="none">No label</option>
+		 		<option value="field">Field's name</option>
+		 		<option value="custom">Custom label</option>
+			</select>
+		</div>
+
+		<div class="form-group initiallyHidden" id="{{.}}ComponentLabelCustomLabelFormGroup">
+		  <label for="{{.}}ComponentLabelPropsCustomLabel">Custom Label</label>
+		  <input type="text" id="{{.}}ComponentLabelPropsCustomLabelInput" 
+		  		name="{{.}}ComponentLabelPropsCustomLabelInput" 				
+				class="form-control" placeholder="Enter a label">
+		</div>
+	  
+	 </form>
+
+{{end}}
+
+{{define "componentLabelPropertyPanel"}}
+
+	{{template "propertyPanelPrefix" .PanelParams}}
+		{{template "componentLabelProps" .ElemPrefix}}
+	{{template "propertyPanelSuffix"}}
+
+{{end}}
