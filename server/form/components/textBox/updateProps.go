@@ -3,6 +3,7 @@ package textBox
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 )
 
 type TextBoxIDInterface interface {
@@ -72,6 +73,20 @@ type TextBoxValueFormatParams struct {
 func (updateParams TextBoxValueFormatParams) updateProps(textBox *TextBox) error {
 
 	textBox.Properties.ValueFormat = updateParams.ValueFormat
+
+	return nil
+}
+
+type TextBoxLabelFormatParams struct {
+	TextBoxIDHeader
+	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+}
+
+func (updateParams TextBoxLabelFormatParams) updateProps(textBox *TextBox) error {
+
+	// TODO - Validate format is well-formed.
+
+	textBox.Properties.LabelFormat = updateParams.LabelFormat
 
 	return nil
 }

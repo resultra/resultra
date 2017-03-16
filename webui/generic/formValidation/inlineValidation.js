@@ -31,11 +31,8 @@ function createInlineFormValidationSettings(specificRules) {
 	return settings
 }
 
-function initInlineInputValidationOnBlur(validator, inputSelector,
-				remoteValidationParams, validationSucceedFunc) {
-	
-	$(inputSelector).unbind("blur")
-	$(inputSelector).blur(function() {
+function validateRemoteInlineInput(validator, inputSelector,
+	remoteValidationParams, validationSucceedFunc) {
 		if(validator.element(inputSelector)) {
 		
 			var newVal = $(inputSelector).val()
@@ -51,6 +48,16 @@ function initInlineInputValidationOnBlur(validator, inputSelector,
 			})
 		
 		}
+		
+	}
+
+function initInlineInputValidationOnBlur(validator, inputSelector,
+				remoteValidationParams, validationSucceedFunc) {
+	
+	$(inputSelector).unbind("blur")
+	$(inputSelector).blur(function() {
+		validateRemoteInlineInput(validator, inputSelector,
+			remoteValidationParams, validationSucceedFunc)
 	})	
 	
 }

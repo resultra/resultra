@@ -53,11 +53,9 @@ func saveNewTextBox(params NewTextBoxParams) (*TextBox, error) {
 		return nil, fmt.Errorf("saveNewTextBox: %v", fieldErr)
 	}
 
-	defaultValueFormat := TextBoxValueFormatProperties{Format: "general"}
-	properties := TextBoxProperties{
-		Geometry:    params.Geometry,
-		FieldID:     params.FieldID,
-		ValueFormat: defaultValueFormat}
+	properties := newDefaultTextBoxProperties()
+	properties.Geometry = params.Geometry
+	properties.FieldID = params.FieldID
 
 	newTextBox := TextBox{ParentFormID: params.ParentFormID,
 		TextBoxID:  uniqueID.GenerateSnowflakeID(),
@@ -75,7 +73,7 @@ func saveNewTextBox(params NewTextBoxParams) (*TextBox, error) {
 
 func getTextBox(parentFormID string, textBoxID string) (*TextBox, error) {
 
-	textBoxProps := TextBoxProperties{}
+	textBoxProps := newDefaultTextBoxProperties()
 	if getErr := common.GetFormComponent(textBoxEntityKind, parentFormID, textBoxID, &textBoxProps); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to retrieve text box: %v", getErr)
 	}
@@ -93,7 +91,7 @@ func GetTextBoxes(parentFormID string) ([]TextBox, error) {
 	textBoxes := []TextBox{}
 	addTextBox := func(textBoxID string, encodedProps string) error {
 
-		var textBoxProps TextBoxProperties
+		textBoxProps := newDefaultTextBoxProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &textBoxProps); decodeErr != nil {
 			return fmt.Errorf("GetTextBoxes: can't decode properties: %v", encodedProps)
 		}

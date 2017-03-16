@@ -27,6 +27,14 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 	
 	function saveLabelProps(updatedLabelProps) {
 		console.log("Saving label propeties for text box")
+		var formatParams = {
+			parentFormID: textBoxRef.parentFormID,
+			textboxID: textBoxRef.textBoxID,
+			labelFormat: updatedLabelProps
+		}
+		jsonAPIRequest("frm/textBox/setLabelFormat", formatParams, function(updatedTextBox) {
+			setContainerComponentInfo($textBox,updatedTextBox,updatedTextBox.textBoxID)
+		})	
 	}
 	
 	
