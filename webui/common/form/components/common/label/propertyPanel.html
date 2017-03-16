@@ -1,21 +1,24 @@
 {{define "componentLabelProps"}}
 
-     <form id="{{.}}ComponentLabelPropsForm">
+     <form id="{{.ElemPrefix}}ComponentLabelPropsForm">
 	  
 		<div class="form-group">
-		  <label for="{{.}}ComponentLabelPropsLabelType">Label type</label>
-		  	<select class="form-control" id="{{.}}ComponentLabelPropsLabelType">
+		  <label for="{{.ElemPrefix}}ComponentLabelPropsLabelType">Label type</label>
+		  	<select class="form-control" id="{{.ElemPrefix}}ComponentLabelPropsLabelType">
 		  		<option disabled selected value="">Label type</option>
-		  		<option value="none">No label</option>
+				{{if .HideNoLabelOption}}
+				{{else}}
+		  			<option value="none">No label</option>
+				{{end}}
 		 		<option value="field">Field's name</option>
 		 		<option value="custom">Custom label</option>
 			</select>
 		</div>
 
-		<div class="form-group initiallyHidden" id="{{.}}ComponentLabelCustomLabelFormGroup">
-		  <label for="{{.}}ComponentLabelPropsCustomLabel">Custom Label</label>
-		  <input type="text" id="{{.}}ComponentLabelPropsCustomLabelInput" 
-		  		name="{{.}}ComponentLabelPropsCustomLabelInput" 				
+		<div class="form-group initiallyHidden" id="{{.ElemPrefix}}ComponentLabelCustomLabelFormGroup">
+		  <label for="{{.ElemPrefix}}ComponentLabelPropsCustomLabel">Custom Label</label>
+		  <input type="text" id="{{.ElemPrefix}}ComponentLabelPropsCustomLabelInput" 
+		  		name="{{.ElemPrefix}}ComponentLabelPropsCustomLabelInput" 				
 				class="form-control" placeholder="Enter a label">
 		</div>
 	  
@@ -26,7 +29,7 @@
 {{define "componentLabelPropertyPanel"}}
 
 	{{template "propertyPanelPrefix" .PanelParams}}
-		{{template "componentLabelProps" .ElemPrefix}}
+		{{template "componentLabelProps" .}}
 	{{template "propertyPanelSuffix"}}
 
 {{end}}

@@ -1,6 +1,7 @@
 package checkBox
 
 import (
+	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -9,6 +10,7 @@ type CheckboxDesignTemplateParams struct {
 	ElemPrefix               string
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
+	LabelPanelParams         label.LabelPropertyTemplateParams
 }
 
 type CheckboxViewTemplateParams struct {
@@ -24,7 +26,9 @@ func init() {
 	elemPrefix := "checkbox_"
 
 	DesignTemplateParams = CheckboxDesignTemplateParams{
-		ElemPrefix:        elemPrefix,
+		ElemPrefix: elemPrefix,
+		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix, HideNoLabelOption: true,
+			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "checkBoxLabel"}},
 		FormatPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "checkboxFormat"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,

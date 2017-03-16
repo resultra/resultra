@@ -40,4 +40,27 @@ function loadCheckboxProperties($container, checkBoxRef) {
 	})
 	
 	
+	var elemPrefix = "checkbox_"
+	
+	function saveLabelProps(updatedLabelProps) {
+		console.log("Saving label propeties for text box")
+		var formatParams = {
+			parentFormID: checkBoxRef.parentFormID,
+			checkBoxID: checkBoxRef.checkBoxID,
+			labelFormat: updatedLabelProps
+		}
+		jsonAPIRequest("frm/checkBox/setLabelFormat", formatParams, function(updatedCheckboxRef) {
+			setCheckBoxComponentLabel($container,updatedCheckboxRef)
+			setContainerComponentInfo($container,updatedCheckboxRef,updatedCheckboxRef.checkBoxID)		
+		})	
+	}
+	var labelParams = {
+		elemPrefix: elemPrefix,
+		initialVal: checkBoxRef.properties.labelFormat,
+		saveLabelPropsCallback: saveLabelProps
+	}
+	initComponentLabelPropertyPanel(labelParams)
+	
+	
+	
 }

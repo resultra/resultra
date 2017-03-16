@@ -27,9 +27,17 @@ function checkBoxContainerHTML(elementID)
 				'<input type="checkbox" id="'+uniqueID+'"class="checkboxFormComponentControl">' +
 				'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel"></label>' + 
 			'</div>' +
-		'</div><';
+		'</div>';
 				
 	console.log ("Checkbox HTML: " + containerHTML)
 		
 	return containerHTML
+}
+
+function setCheckBoxComponentLabel($checkboxContainer,checkboxRef) {
+	var $label = $checkboxContainer.find('.checkboxFormComponentLabel')
+	
+	setFormComponentLabel($label,checkboxRef.properties.fieldID,
+			checkboxRef.properties.labelFormat)	
+	
 }

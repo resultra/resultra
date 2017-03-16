@@ -31,6 +31,9 @@
 {{define "checkBoxProps"}}
 
 	<div id="checkBoxProps" class="propertyPanelToggleContainer">
+
+		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
+
 		{{template "propertyPanelPrefix" .FormatPanelParams}}
 			{{template "checkBoxFormatProps"}}
 		{{template "propertyPanelSuffix"}}

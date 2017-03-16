@@ -91,8 +91,6 @@ function loadProgressProperties($progress,progressRef) {
 			setContainerComponentInfo($progress,updatedProgress,updatedProgress.progressID)
 		})	
 	}
-	
-	
 	var labelParams = {
 		elemPrefix: elemPrefix,
 		initialVal: progressRef.properties.labelFormat,

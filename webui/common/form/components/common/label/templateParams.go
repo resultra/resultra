@@ -5,6 +5,7 @@ import (
 )
 
 type LabelPropertyTemplateParams struct {
-	PanelParams propertiesSidebar.PanelTemplateParams
-	ElemPrefix  string
+	PanelParams       propertiesSidebar.PanelTemplateParams
+	ElemPrefix        string
+	HideNoLabelOption bool
 }

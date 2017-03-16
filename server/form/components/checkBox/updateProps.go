@@ -3,6 +3,7 @@ package checkBox
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 )
 
 type CheckboxIDInterface interface {
@@ -88,6 +89,20 @@ func (updateParams CheckBoxStrikethroughParams) updateProps(checkBox *CheckBox) 
 	// TODO - Validate against list of valid color schemes
 
 	checkBox.Properties.StrikethroughCompleted = updateParams.StrikethroughCompleted
+
+	return nil
+}
+
+type CheckBoxLabelFormatParams struct {
+	CheckboxIDHeader
+	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+}
+
+func (updateParams CheckBoxLabelFormatParams) updateProps(checkBox *CheckBox) error {
+
+	// TODO - Validate format is well-formed.
+
+	checkBox.Properties.LabelFormat = updateParams.LabelFormat
 
 	return nil
 }
