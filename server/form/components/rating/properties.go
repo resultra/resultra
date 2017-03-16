@@ -3,16 +3,18 @@ package rating
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
 const ratingIconStar string = "star"
 
 type RatingProperties struct {
-	FieldID  string                         `json:"fieldID"`
-	Geometry componentLayout.LayoutGeometry `json:"geometry"`
-	Tooltips []string                       `json:"tooltips"`
-	Icon     string                         `json:"icon"`
+	FieldID     string                                `json:"fieldID"`
+	Geometry    componentLayout.LayoutGeometry        `json:"geometry"`
+	Tooltips    []string                              `json:"tooltips"`
+	Icon        string                                `json:"icon"`
+	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
 }
 
 func (srcProps RatingProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*RatingProperties, error) {
@@ -30,7 +32,8 @@ func (srcProps RatingProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*
 
 func newDefaultRatingProperties() RatingProperties {
 	props := RatingProperties{
-		Tooltips: []string{},
-		Icon:     ratingIconStar}
+		LabelFormat: common.NewDefaultLabelFormatProperties(),
+		Tooltips:    []string{},
+		Icon:        ratingIconStar}
 	return props
 }

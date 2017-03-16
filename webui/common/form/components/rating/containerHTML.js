@@ -120,3 +120,11 @@ function reInitRatingFormComponentControl($container,ratingObjectRef) {
 	$ratingControlContainer.append(ratingFormComponentRatingControlHTML())
 	initRatingFormComponentControl($container,ratingObjectRef)
 }
+
+function setRatingComponentLabel($rating,ratingRef) {
+	var $label = $rating.find('label')
+	
+	setFormComponentLabel($label,ratingRef.properties.fieldID,
+			ratingRef.properties.labelFormat)	
+	
+}

@@ -3,6 +3,7 @@ package rating
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 )
 
 type RatingIDInterface interface {
@@ -86,6 +87,20 @@ func (updateParams RatingIconParams) updateProps(rating *Rating) error {
 	// TODO - Validate icon is a valid name
 
 	rating.Properties.Icon = updateParams.Icon
+
+	return nil
+}
+
+type RatingLabelFormatParams struct {
+	RatingIDHeader
+	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+}
+
+func (updateParams RatingLabelFormatParams) updateProps(rating *Rating) error {
+
+	// TODO - Validate format is well-formed.
+
+	rating.Properties.LabelFormat = updateParams.LabelFormat
 
 	return nil
 }

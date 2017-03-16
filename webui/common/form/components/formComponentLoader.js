@@ -237,8 +237,9 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		var containerHTML = ratingContainerHTML(rating.ratingID);	
 		var $ratingContainer = $(containerHTML)
-		var componentLabel = getFieldRef(rating.properties.fieldID).name		
-		$ratingContainer.find('label').text(componentLabel)
+		
+		setRatingComponentLabel($ratingContainer,rating)
+		
 		initRatingFormComponentControl($ratingContainer,rating)
 		
 		// Position the object withing the #layoutCanvas div
