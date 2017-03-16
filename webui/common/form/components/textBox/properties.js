@@ -33,6 +33,7 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 			labelFormat: updatedLabelProps
 		}
 		jsonAPIRequest("frm/textBox/setLabelFormat", formatParams, function(updatedTextBox) {
+			setTextBoxComponentLabel($textBox,updatedTextBox)
 			setContainerComponentInfo($textBox,updatedTextBox,updatedTextBox.textBoxID)
 		})	
 	}

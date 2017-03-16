@@ -116,13 +116,8 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = textBoxContainerHTML(textBox.textBoxID);
 		var containerObj = $(containerHTML)
 		
-		function setTextBoxLabel($textBoxContainer,label) {
-			$textBoxContainer.find('label').text(label)
-		}
-	
-		var fieldName = getFieldRef(textBox.properties.fieldID).name
-		setTextBoxLabel(containerObj,fieldName)
-	
+		setTextBoxComponentLabel(containerObj,textBox)
+			
 		$componentRow.append(containerObj)
 		
 		setElemFixedWidthFlexibleHeight(containerObj,

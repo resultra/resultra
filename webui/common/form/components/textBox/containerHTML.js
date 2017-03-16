@@ -9,3 +9,12 @@ function textBoxContainerHTML(elementID)
 		'</div>';
 	return containerHTML
 }
+
+
+function setTextBoxComponentLabel($textBoxContainer, textBoxRef) {
+
+	var $label = $textBoxContainer.find('label')
+	
+	setFormComponentLabel($label,textBoxRef.properties.fieldID,
+			textBoxRef.properties.labelFormat)	
+}
