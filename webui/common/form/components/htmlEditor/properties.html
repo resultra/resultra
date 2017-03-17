@@ -6,9 +6,13 @@
 {{define "htmlEditorProps"}}
 
 	<div id="htmlEditorProps" class="propertyPanelToggleContainer">
+
+		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
+
 		{{template "propertyPanelPrefix" .FormatPanelParams}}
 			{{template "htmlEditorFormatProps"}}
 		{{template "propertyPanelSuffix"}}
+		
 	</div>
 
 {{end}}

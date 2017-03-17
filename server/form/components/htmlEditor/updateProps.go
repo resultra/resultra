@@ -3,6 +3,7 @@ package htmlEditor
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 )
 
 type HtmlEditorIDInterface interface {
@@ -60,6 +61,20 @@ func (updateParams HtmlEditorResizeParams) updateProps(htmlEditor *HtmlEditor) e
 	}
 
 	htmlEditor.Properties.Geometry = updateParams.Geometry
+
+	return nil
+}
+
+type EditorLabelFormatParams struct {
+	HtmlEditorIDHeader
+	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+}
+
+func (updateParams EditorLabelFormatParams) updateProps(htmlEditor *HtmlEditor) error {
+
+	// TODO - Validate format is well-formed.
+
+	htmlEditor.Properties.LabelFormat = updateParams.LabelFormat
 
 	return nil
 }

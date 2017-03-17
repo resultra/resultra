@@ -13,7 +13,7 @@ import (
 const htmlEditorEntityKind string = "html_editor"
 
 type HtmlEditor struct {
-	ParentFormID string               `json:"parentID"`
+	ParentFormID string               `json:"parentFormID"`
 	HtmlEditorID string               `json:"htmlEditorID"`
 	Properties   HtmlEditorProperties `json:"properties"`
 }
@@ -52,9 +52,9 @@ func saveNewHtmlEditor(params NewHtmlEditorParams) (*HtmlEditor, error) {
 		return nil, fmt.Errorf("saveNewCheckBox: %v", fieldErr)
 	}
 
-	properties := HtmlEditorProperties{
-		Geometry: params.Geometry,
-		FieldID:  params.FieldID}
+	properties := newDefaultEditorProperties()
+	properties.Geometry = params.Geometry
+	properties.FieldID = params.FieldID
 
 	newHtmlEditor := HtmlEditor{ParentFormID: params.ParentFormID,
 		HtmlEditorID: uniqueID.GenerateSnowflakeID(),
@@ -72,7 +72,7 @@ func saveNewHtmlEditor(params NewHtmlEditorParams) (*HtmlEditor, error) {
 
 func getHtmlEditor(parentFormID string, htmlEditorID string) (*HtmlEditor, error) {
 
-	editorProps := HtmlEditorProperties{}
+	editorProps := newDefaultEditorProperties()
 	if getErr := common.GetFormComponent(htmlEditorEntityKind, parentFormID, htmlEditorID, &editorProps); getErr != nil {
 		return nil, fmt.Errorf("getHtmlEditor: Unable to retrieve html editor: %v", getErr)
 	}
@@ -90,7 +90,7 @@ func GetHtmlEditors(parentFormID string) ([]HtmlEditor, error) {
 	htmlEditors := []HtmlEditor{}
 
 	addEditor := func(editorID string, encodedProps string) error {
-		var editorProps HtmlEditorProperties
+		editorProps := newDefaultEditorProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &editorProps); decodeErr != nil {
 			return fmt.Errorf("GetHtmlEditors: can't decode properties: %v", encodedProps)
 		}

@@ -11,6 +11,7 @@ func init() {
 
 	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/new", newHtmlEditor)
 	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/resize", resizeHtmlEditor)
+	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/setLabelFormat", setLabelFormat)
 
 	http.Handle("/api/frm/htmlEditor/", htmlEditorRouter)
 }
@@ -46,4 +47,13 @@ func resizeHtmlEditor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processHtmlEditorPropUpdate(w, r, resizeParams)
+}
+
+func setLabelFormat(w http.ResponseWriter, r *http.Request) {
+	var params EditorLabelFormatParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processHtmlEditorPropUpdate(w, r, params)
 }

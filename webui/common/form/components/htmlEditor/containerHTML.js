@@ -35,3 +35,12 @@ function htmlEditorContainerHTML(elementID)
 		
 	return containerHTML
 }
+
+
+function setEditorComponentLabel($editor,editorRef) {
+	var $label = $editor.find('label')
+	
+	setFormComponentLabel($label,editorRef.properties.fieldID,
+			editorRef.properties.labelFormat)	
+	
+}

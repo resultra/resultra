@@ -304,8 +304,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerObj = $(containerHTML)
 		
 		// Set the label to the field name		
-		var componentLabel = getFieldRef(htmlEditor.properties.fieldID).name			
-		containerObj.find('label').text(componentLabel)
+		setEditorComponentLabel(containerObj,htmlEditor)
 		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append(containerObj)

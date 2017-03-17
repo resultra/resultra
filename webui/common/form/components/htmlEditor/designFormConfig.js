@@ -10,7 +10,7 @@ function initDesignFormHtmlEditor() {
 
 function selectFormHtmlEditor($container,htmlEditorObjRef) {
 	console.log("Selected html editor: " + JSON.stringify(htmlEditorObjRef))
-	loadHtmlEditorProperties(htmlEditorObjRef)
+	loadHtmlEditorProperties($container,htmlEditorObjRef)
 }
 
 
