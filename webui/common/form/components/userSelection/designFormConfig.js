@@ -9,7 +9,7 @@ function initDesignFormUserSelection() {
 }
 
 function selectFormUserSelection($container,userSelectionObjectRef) {
-	loadUserSelectionProperties(userSelectionObjectRef)
+	loadUserSelectionProperties($container,userSelectionObjectRef)
 }
 
 function resizeUserSelection($container,geometry) {

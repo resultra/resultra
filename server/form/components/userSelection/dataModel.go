@@ -50,9 +50,9 @@ func saveNewUserSelection(params NewUserSelectionParams) (*UserSelection, error)
 		return nil, fmt.Errorf("saveNewUserSelection: %v", fieldErr)
 	}
 
-	properties := UserSelectionProperties{
-		FieldID:  params.FieldID,
-		Geometry: params.Geometry}
+	properties := newDefaultUserSelectionProperties()
+	properties.FieldID = params.FieldID
+	properties.Geometry = params.Geometry
 
 	newUserSelection := UserSelection{ParentFormID: params.ParentFormID,
 		UserSelectionID: uniqueID.GenerateSnowflakeID(),
@@ -70,7 +70,7 @@ func saveNewUserSelection(params NewUserSelectionParams) (*UserSelection, error)
 
 func getUserSelection(parentFormID string, userSelectionID string) (*UserSelection, error) {
 
-	userSelectionProps := UserSelectionProperties{}
+	userSelectionProps := newDefaultUserSelectionProperties()
 	if getErr := common.GetFormComponent(userSelectionEntityKind, parentFormID,
 		userSelectionID, &userSelectionProps); getErr != nil {
 		return nil, fmt.Errorf("getUserSelection: Unable to retrieve userSelection: %v", getErr)
@@ -89,7 +89,7 @@ func GetUserSelections(parentFormID string) ([]UserSelection, error) {
 	userSelections := []UserSelection{}
 	addUserSelection := func(userSelectionID string, encodedProps string) error {
 
-		var userSelectionProps UserSelectionProperties
+		userSelectionProps := newDefaultUserSelectionProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &userSelectionProps); decodeErr != nil {
 			return fmt.Errorf("GetUserSelections: can't decode properties: %v", encodedProps)
 		}

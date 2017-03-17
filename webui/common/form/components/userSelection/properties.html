@@ -5,6 +5,9 @@
 {{define "userSelectionProps"}}
 
 	<div id="userSelectionProps" class="propertyPanelToggleContainer">
+
+		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
+
 		{{template "propertyPanelPrefix" .FormatPanelParams}}
 			{{template "userSelectionFormatProps"}}
 		{{template "propertyPanelSuffix"}}

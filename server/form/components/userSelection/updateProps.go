@@ -3,6 +3,7 @@ package userSelection
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 )
 
 type UserSelectionIDInterface interface {
@@ -60,6 +61,20 @@ func (updateParams UserSelectionResizeParams) updateProps(userSelection *UserSel
 	}
 
 	userSelection.Properties.Geometry = updateParams.Geometry
+
+	return nil
+}
+
+type UserSelectionLabelFormatParams struct {
+	UserSelectionIDHeader
+	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+}
+
+func (updateParams UserSelectionLabelFormatParams) updateProps(userSelection *UserSelection) error {
+
+	// TODO - Validate format is well-formed.
+
+	userSelection.Properties.LabelFormat = updateParams.LabelFormat
 
 	return nil
 }

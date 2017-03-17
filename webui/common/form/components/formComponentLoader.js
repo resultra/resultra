@@ -259,12 +259,13 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		var containerObj = $(containerHTML)
 				
-		var componentLabel = getFieldRef(userSelection.properties.fieldID).name
-		containerObj.find('label').text(componentLabel)
+		setUserSelectionComponentLabel(containerObj,userSelection)
 		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append(containerObj)
-		setElemDimensions(containerObj,userSelection.properties.geometry)
+		
+		setElemFixedWidthFlexibleHeight(containerObj,
+					userSelection.properties.geometry.sizeWidth)
 	
 		 // Store the newly created object reference in the DOM element. This is needed for follow-on
 		 // property setting, resizing, etc.
