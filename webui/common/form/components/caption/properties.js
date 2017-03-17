@@ -25,11 +25,23 @@ function loadFormCaptionProperties($caption,captionRef) {
 	}
 	initColorSchemeProperties()
 	
+	function saveVisibilityConditions(updatedConditions) {
+		var params = {
+			parentFormID: captionRef.parentFormID,
+			captionID: captionRef.captionID,
+			visibilityConditions: updatedConditions
+		}
+		jsonAPIRequest("frm/caption/setVisibility",params,function(updatedCaption) {
+			setContainerComponentInfo($caption,updatedCaption,updatedCaption.captionID)	
+		})
+	}
+	
 	var visibilityParams = {
 		elemPrefix: elemPrefix,
 		// TODO - pass in database ID as part of the component's context, rather than reference a global.
 		databaseID: designFormContext.databaseID,
-		initialConditions: []
+		initialConditions: captionRef.properties.visibilityConditions,
+		saveVisibilityConditionsCallback:saveVisibilityConditions
 	}
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
 	

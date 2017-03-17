@@ -3,6 +3,7 @@ package caption
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/stringValidation"
 )
 
@@ -103,6 +104,20 @@ func (updateParams CaptionColorParams) updateProps(captionForUpdate *Caption) er
 	// TODO - Validate color scheme
 
 	captionForUpdate.Properties.ColorScheme = updateParams.ColorScheme
+
+	return nil
+}
+
+type CaptionVisibilityParams struct {
+	CaptionIDHeader
+	common.ComponentVisibilityProperties
+}
+
+func (updateParams CaptionVisibilityParams) updateProps(captionForUpdate *Caption) error {
+
+	// TODO - Validate conditions
+
+	captionForUpdate.Properties.VisibilityConditions = updateParams.VisibilityConditions
 
 	return nil
 }

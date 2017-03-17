@@ -14,6 +14,7 @@ func init() {
 	captionRouter.HandleFunc("/api/frm/caption/setLabel", setCaptionLabel)
 	captionRouter.HandleFunc("/api/frm/caption/setCaption", setCaptionCaption)
 	captionRouter.HandleFunc("/api/frm/caption/setColorScheme", setColorScheme)
+	captionRouter.HandleFunc("/api/frm/caption/setVisibility", setVisibility)
 
 	http.Handle("/api/frm/caption/", captionRouter)
 }
@@ -71,6 +72,15 @@ func resizeCaption(w http.ResponseWriter, r *http.Request) {
 
 func setColorScheme(w http.ResponseWriter, r *http.Request) {
 	var params CaptionColorParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processCaptionPropUpdate(w, r, params)
+}
+
+func setVisibility(w http.ResponseWriter, r *http.Request) {
+	var params CaptionVisibilityParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
