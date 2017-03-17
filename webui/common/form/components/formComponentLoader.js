@@ -326,11 +326,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		$componentRow.append(containerObj)
 		setElemDimensions(containerObj,image.properties.geometry)
 
-
-		// Set the label to the field name
-		var componentLabel = getFieldRef(image.properties.fieldID).name		
-		var $imageLabel = imageContainerLabelImageComponentContainer(containerObj)
-		$imageLabel.text(componentLabel)
+		setAttachmentComponentLabel(containerObj,image)
 		
 		 // Store the newly created object reference in the DOM element. This is needed for follow-on
 		 // property setting, resizing, etc.

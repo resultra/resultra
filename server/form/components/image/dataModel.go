@@ -52,9 +52,9 @@ func saveNewImage(params NewImageParams) (*Image, error) {
 		return nil, fmt.Errorf("saveNewTextBox: %v", fieldErr)
 	}
 
-	properties := ImageProperties{
-		Geometry: params.Geometry,
-		FieldID:  params.FieldID}
+	properties := newDefaultAttachmentProperties()
+	properties.Geometry = params.Geometry
+	properties.FieldID = params.FieldID
 
 	newImage := Image{ParentFormID: params.ParentFormID,
 		ImageID:    uniqueID.GenerateSnowflakeID(),
@@ -72,7 +72,7 @@ func saveNewImage(params NewImageParams) (*Image, error) {
 
 func getImage(parentFormID string, imageID string) (*Image, error) {
 
-	imageProps := ImageProperties{}
+	imageProps := newDefaultAttachmentProperties()
 	if getErr := common.GetFormComponent(imageEntityKind, parentFormID, imageID, &imageProps); getErr != nil {
 		return nil, fmt.Errorf("getImage: Unable to retrieve image form component: %v", getErr)
 	}
@@ -90,7 +90,7 @@ func GetImages(parentFormID string) ([]Image, error) {
 	images := []Image{}
 	addImage := func(imageID string, encodedProps string) error {
 
-		var imageProps ImageProperties
+		imageProps := newDefaultAttachmentProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &imageProps); decodeErr != nil {
 			return fmt.Errorf("GetImages: can't decode properties: %v", encodedProps)
 		}

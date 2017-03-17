@@ -3,6 +3,7 @@ package image
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 )
 
 type ImageIDInterface interface {
@@ -60,6 +61,20 @@ func (updateParams ImageResizeParams) updateProps(image *Image) error {
 	}
 
 	image.Properties.Geometry = updateParams.Geometry
+
+	return nil
+}
+
+type AttachmentLabelFormatParams struct {
+	ImageIDHeader
+	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+}
+
+func (updateParams AttachmentLabelFormatParams) updateProps(image *Image) error {
+
+	// TODO - Validate format is well-formed.
+
+	image.Properties.LabelFormat = updateParams.LabelFormat
 
 	return nil
 }

@@ -6,6 +6,9 @@
 {{define "imageProps"}}
 
 	<div id="imageProps" class="propertyPanelToggleContainer">
+
+		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
+
 		{{template "propertyPanelPrefix" .FormatPanelParams}}
 			{{template "imageFormatProps"}}
 		{{template "propertyPanelSuffix"}}

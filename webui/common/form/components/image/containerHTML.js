@@ -44,6 +44,15 @@ function imageContainerHTML(elementID)
 	return containerHTML
 }
 
+function setAttachmentComponentLabel($attachmentContainer,attachmentRef) {
+	var $label = $attachmentContainer.find('label')
+	
+	setFormComponentLabel($label,attachmentRef.properties.fieldID,
+			attachmentRef.properties.labelFormat)	
+	
+}
+
+
 function initAttachmentFormComponentViewModeGeometry($container,attachRef) {
 	// In view mode, the height will be flexible, up the maximum set in the form designer.
 	// This ensures there isn't any "dead space" when there aren't enough attachments to

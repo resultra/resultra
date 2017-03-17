@@ -11,6 +11,7 @@ func init() {
 
 	imageRouter.HandleFunc("/api/frm/image/new", newImage)
 	imageRouter.HandleFunc("/api/frm/image/resize", resizeImage)
+	imageRouter.HandleFunc("/api/frm/image/setLabelFormat", setLabelFormat)
 
 	http.Handle("/api/frm/image/", imageRouter)
 }
@@ -41,6 +42,15 @@ func processImagePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater 
 
 func resizeImage(w http.ResponseWriter, r *http.Request) {
 	var resizeParams ImageResizeParams
+	if err := api.DecodeJSONRequest(r, &resizeParams); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processImagePropUpdate(w, r, resizeParams)
+}
+
+func setLabelFormat(w http.ResponseWriter, r *http.Request) {
+	var resizeParams AttachmentLabelFormatParams
 	if err := api.DecodeJSONRequest(r, &resizeParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
