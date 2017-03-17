@@ -54,3 +54,11 @@ function commentContainerHTML(elementID)
 		
 	return containerHTML
 }
+
+function setCommentComponentLabel($comment,commentRef) {
+	var $label = $comment.find('label')
+	
+	setFormComponentLabel($label,commentRef.properties.fieldID,
+			commentRef.properties.labelFormat)	
+	
+}

@@ -52,9 +52,9 @@ func saveNewComment(params NewCommentParams) (*Comment, error) {
 		return nil, fmt.Errorf("saveNewComment: %v", fieldErr)
 	}
 
-	properties := CommentProperties{
-		FieldID:  params.FieldID,
-		Geometry: params.Geometry}
+	properties := newDefaultCommentProperties()
+	properties.FieldID = params.FieldID
+	properties.Geometry = params.Geometry
 
 	newComment := Comment{ParentFormID: params.ParentFormID,
 		CommentID:  uniqueID.GenerateSnowflakeID(),
@@ -72,7 +72,7 @@ func saveNewComment(params NewCommentParams) (*Comment, error) {
 
 func getComment(parentFormID string, commentID string) (*Comment, error) {
 
-	commentProps := CommentProperties{}
+	commentProps := newDefaultCommentProperties()
 	if getErr := common.GetFormComponent(commentEntityKind, parentFormID, commentID, &commentProps); getErr != nil {
 		return nil, fmt.Errorf("getComment: Unable to retrieve comment box: %v", getErr)
 	}
@@ -90,7 +90,7 @@ func GetComments(parentFormID string) ([]Comment, error) {
 	comments := []Comment{}
 	addComment := func(commentID string, encodedProps string) error {
 
-		var commentProps CommentProperties
+		commentProps := newDefaultCommentProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &commentProps); decodeErr != nil {
 			return fmt.Errorf("GetRatings: can't decode properties: %v", encodedProps)
 		}

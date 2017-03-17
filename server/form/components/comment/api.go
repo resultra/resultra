@@ -11,6 +11,7 @@ func init() {
 
 	commentRouter.HandleFunc("/api/frm/comment/new", newComment)
 	commentRouter.HandleFunc("/api/frm/comment/resize", resizeComment)
+	commentRouter.HandleFunc("/api/frm/comment/setLabelFormat", setLabelFormat)
 
 	http.Handle("/api/frm/comment/", commentRouter)
 }
@@ -46,4 +47,13 @@ func resizeComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processCommentPropUpdate(w, r, resizeParams)
+}
+
+func setLabelFormat(w http.ResponseWriter, r *http.Request) {
+	var params CommentLabelFormatParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processCommentPropUpdate(w, r, params)
 }

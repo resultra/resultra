@@ -163,9 +163,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = commentContainerHTML(comment.commentID);
 		var containerObj = $(containerHTML)
 		
-		var fieldID = comment.properties.fieldID			
-		var componentLabel = getFieldRef(fieldID).name		
-		containerObj.find('label').text(componentLabel)
+		setCommentComponentLabel(containerObj,comment)
 		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append(containerObj)

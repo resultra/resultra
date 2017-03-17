@@ -3,6 +3,7 @@ package comment
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 )
 
 type CommentIDInterface interface {
@@ -60,6 +61,20 @@ func (updateParams CommentResizeParams) updateProps(comment *Comment) error {
 	}
 
 	comment.Properties.Geometry = updateParams.Geometry
+
+	return nil
+}
+
+type CommentLabelFormatParams struct {
+	CommentIDHeader
+	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+}
+
+func (updateParams CommentLabelFormatParams) updateProps(comment *Comment) error {
+
+	// TODO - Validate format is well-formed.
+
+	comment.Properties.LabelFormat = updateParams.LabelFormat
 
 	return nil
 }

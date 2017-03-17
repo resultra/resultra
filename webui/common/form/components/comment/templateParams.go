@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -9,6 +10,7 @@ type CommentDesignTemplateParams struct {
 	ElemPrefix               string
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
+	LabelPanelParams         label.LabelPropertyTemplateParams
 }
 
 type CommentViewTemplateParams struct {
@@ -24,7 +26,9 @@ func init() {
 	elemPrefix := "comment_"
 
 	DesignTemplateParams = CommentDesignTemplateParams{
-		ElemPrefix:        elemPrefix,
+		ElemPrefix: elemPrefix,
+		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
+			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "commentLabel"}},
 		FormatPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "commentFormat"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
