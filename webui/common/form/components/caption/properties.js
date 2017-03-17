@@ -3,6 +3,8 @@
 function loadFormCaptionProperties($caption,captionRef) {
 	console.log("Loading caption properties")
 	
+	var elemPrefix = "caption_"
+	
 	function initColorSchemeProperties() {
 		var $schemeSelection = $('#adminCaptionComponentColorSchemeSelection')
 		$schemeSelection.val(captionRef.properties.colorScheme)
@@ -23,7 +25,13 @@ function loadFormCaptionProperties($caption,captionRef) {
 	}
 	initColorSchemeProperties()
 	
-	
+	var visibilityParams = {
+		elemPrefix: elemPrefix,
+		// TODO - pass in database ID as part of the component's context, rather than reference a global.
+		databaseID: designFormContext.databaseID,
+		initialConditions: []
+	}
+	initFormComponentVisibilityPropertyPanel(visibilityParams)
 	
 		
 	// Toggle to the check box properties, hiding the other property panels

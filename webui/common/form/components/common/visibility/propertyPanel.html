@@ -1,0 +1,15 @@
+{{define "componentVisibilityProps"}}
+	<div class="alert alert-info" role="alert">
+		Set filter conditions limiting when this form component will be visible. If no conditions are set, the component will always be shown in the form.
+	</div>
+	{{template "recordFilterPropertyPanel" .VisibilityFilterConditionPanelParams}}
+
+{{end}}
+
+{{define "componentVisibilityPropertyPanel"}}
+
+	{{template "propertyPanelPrefix" .PanelParams}}
+		{{template "componentVisibilityProps" .}}
+	{{template "propertyPanelSuffix"}}
+
+{{end}}
