@@ -35,7 +35,12 @@ func GetDatabaseFormComponentFilterMap(parentDatabaseID string) (FormComponentFi
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currCaption.CaptionID)
 			}
 		}
-		// currForm.FormID
+		for _, currEditor := range formInfo.HtmlEditors {
+			if len(currEditor.Properties.VisibilityConditions) > 0 {
+				compFilterMap[currEditor.HtmlEditorID] = currEditor.Properties.VisibilityConditions
+				log.Printf("Adding visibility filter to filter map for component ID = %v", currEditor.HtmlEditorID)
+			}
+		}
 	}
 
 	return compFilterMap, nil

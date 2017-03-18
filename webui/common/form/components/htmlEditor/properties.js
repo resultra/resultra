@@ -22,6 +22,29 @@ function loadHtmlEditorProperties($editor, htmlEditorRef) {
 		saveLabelPropsCallback: saveLabelProps
 	}
 	initComponentLabelPropertyPanel(labelParams)
+	
+	
+	function saveVisibilityConditions(updatedConditions) {
+		var params = {
+			parentFormID: htmlEditorRef.parentFormID,
+			htmlEditorID: htmlEditorRef.htmlEditorID,
+			visibilityConditions: updatedConditions
+		}
+		jsonAPIRequest("frm/htmlEditor/setVisibility",params,function(updatedEditor) {
+			setContainerComponentInfo($editor,updatedEditor,updatedEditor.htmlEditorID)	
+		})
+	}
+	var visibilityParams = {
+		elemPrefix: elemPrefix,
+		// TODO - pass in database ID as part of the component's context, rather than reference a global.
+		databaseID: designFormContext.databaseID,
+		initialConditions: htmlEditorRef.properties.visibilityConditions,
+		saveVisibilityConditionsCallback:saveVisibilityConditions
+	}
+	initFormComponentVisibilityPropertyPanel(visibilityParams)
+	
+	
+	
 
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#htmlEditorProps')

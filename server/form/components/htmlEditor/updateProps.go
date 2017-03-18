@@ -78,3 +78,17 @@ func (updateParams EditorLabelFormatParams) updateProps(htmlEditor *HtmlEditor) 
 
 	return nil
 }
+
+type EditorVisibilityParams struct {
+	HtmlEditorIDHeader
+	common.ComponentVisibilityProperties
+}
+
+func (updateParams EditorVisibilityParams) updateProps(editor *HtmlEditor) error {
+
+	// TODO - Validate conditions
+
+	editor.Properties.VisibilityConditions = updateParams.VisibilityConditions
+
+	return nil
+}

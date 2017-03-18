@@ -12,6 +12,7 @@ func init() {
 	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/new", newHtmlEditor)
 	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/resize", resizeHtmlEditor)
 	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/setLabelFormat", setLabelFormat)
+	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/setVisibility", setVisibility)
 
 	http.Handle("/api/frm/htmlEditor/", htmlEditorRouter)
 }
@@ -51,6 +52,15 @@ func resizeHtmlEditor(w http.ResponseWriter, r *http.Request) {
 
 func setLabelFormat(w http.ResponseWriter, r *http.Request) {
 	var params EditorLabelFormatParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processHtmlEditorPropUpdate(w, r, params)
+}
+
+func setVisibility(w http.ResponseWriter, r *http.Request) {
+	var params EditorVisibilityParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
