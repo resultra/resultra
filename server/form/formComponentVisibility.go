@@ -2,6 +2,7 @@ package form
 
 import (
 	"fmt"
+	"log"
 	"resultra/datasheet/server/recordFilter"
 )
 
@@ -27,13 +28,12 @@ func GetDatabaseFormComponentFilterMap(parentDatabaseID string) (FormComponentFi
 		if formInfoErr != nil {
 			return nil, fmt.Errorf("GetDatabaseFormComponentFilterMap: Error getting form info for form ID = %v: %v",
 				currForm.FormID, err)
-
-			for _, currCaption := range formInfo.Captions {
-				if len(currCaption.Properties.VisibilityConditions) > 0 {
-					compFilterMap[currCaption.CaptionID] = currCaption.Properties.VisibilityConditions
-				}
+		}
+		for _, currCaption := range formInfo.Captions {
+			if len(currCaption.Properties.VisibilityConditions) > 0 {
+				compFilterMap[currCaption.CaptionID] = currCaption.Properties.VisibilityConditions
+				log.Printf("Adding visibility filter to filter map for component ID = %v", currCaption.CaptionID)
 			}
-
 		}
 		// currForm.FormID
 	}

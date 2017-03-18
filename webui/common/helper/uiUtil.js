@@ -113,6 +113,14 @@ function initSelectionChangedHandler(selectionSelector, handlerFunc) {
 	
 }
 
+function elemIsDisplayed($elem) {
+	if ($elem.css('display') == 'none') { 
+		return false
+	} else {
+		return true
+	}
+}
+
 function initSelectControlChangeHandler($selectControl, handlerFunc) {
 	$selectControl.unbind("change")				
 	$selectControl.change(function(){

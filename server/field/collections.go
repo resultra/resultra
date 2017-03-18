@@ -92,8 +92,6 @@ func GetFieldRefIDIndex(params GetFieldListParams) (*FieldIDIndex, error) {
 				" found duplicate key for field = %+v", field)
 		}
 
-		log.Printf("GetFieldRefIDIndex: Indexed field: %+v", field)
-
 		fieldsByRefName[field.RefName] = field
 		fieldsByID[field.FieldID] = field
 

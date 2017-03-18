@@ -3,6 +3,7 @@ package recordFilter
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordValue"
 )
 
@@ -15,7 +16,7 @@ type filterRuleContext struct {
 	filterParams FilterFuncParams
 }
 
-func createFilterRuleContexts(filterRules []RecordFilterRule) ([]filterRuleContext, error) {
+func CreateFilterRuleContexts(filterRules []RecordFilterRule) ([]filterRuleContext, error) {
 
 	contexts := []filterRuleContext{}
 
@@ -49,11 +50,10 @@ func createFilterRuleContexts(filterRules []RecordFilterRule) ([]filterRuleConte
 	return contexts, nil
 }
 
-func matchOneRecord(filterContexts []filterRuleContext, recValResults recordValue.RecordValueResults) (bool, error) {
-
+func MatchOneRecordFromFieldValues(filterContexts []filterRuleContext, recordVals record.RecFieldValues) (bool, error) {
 	for _, currContext := range filterContexts {
 
-		recordIsFiltered, err := currContext.filterFunc(currContext.filterParams, recValResults.FieldValues)
+		recordIsFiltered, err := currContext.filterFunc(currContext.filterParams, recordVals)
 		if err != nil {
 			return false, fmt.Errorf("matchOneRecord: Error filtering: %v", err)
 		}
@@ -70,12 +70,17 @@ func matchOneRecord(filterContexts []filterRuleContext, recValResults recordValu
 	// then none of the filters have failed to match. The filtering logic will also get here if there are no filter rules,
 	// and there is by default a match.
 	return true, nil
+
+}
+
+func MatchOneRecord(filterContexts []filterRuleContext, recValResults recordValue.RecordValueResults) (bool, error) {
+	return MatchOneRecordFromFieldValues(filterContexts, recValResults.FieldValues)
 }
 
 func FilterRecordValues(filterRules []RecordFilterRule,
 	unfilteredRecordValues []recordValue.RecordValueResults) ([]recordValue.RecordValueResults, error) {
 
-	filterContexts, err := createFilterRuleContexts(filterRules)
+	filterContexts, err := CreateFilterRuleContexts(filterRules)
 	if err != nil {
 		return nil, fmt.Errorf("FilterRecordValues: Error setting up for filtering: %v", err)
 	}
@@ -83,7 +88,7 @@ func FilterRecordValues(filterRules []RecordFilterRule,
 	filteredRecords := []recordValue.RecordValueResults{}
 	for _, recValue := range unfilteredRecordValues {
 
-		isFiltered, filterErr := matchOneRecord(filterContexts, recValue)
+		isFiltered, filterErr := MatchOneRecord(filterContexts, recValue)
 
 		if filterErr != nil {
 			return nil, fmt.Errorf("FilterRecordValues: Error filtering record: %v", filterErr)
