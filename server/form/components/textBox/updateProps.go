@@ -90,3 +90,17 @@ func (updateParams TextBoxLabelFormatParams) updateProps(textBox *TextBox) error
 
 	return nil
 }
+
+type TextBoxVisibilityParams struct {
+	TextBoxIDHeader
+	common.ComponentVisibilityProperties
+}
+
+func (updateParams TextBoxVisibilityParams) updateProps(textBox *TextBox) error {
+
+	// TODO - Validate conditions
+
+	textBox.Properties.VisibilityConditions = updateParams.VisibilityConditions
+
+	return nil
+}

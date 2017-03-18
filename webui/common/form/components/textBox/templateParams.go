@@ -3,6 +3,7 @@ package textBox
 import (
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
+	"resultra/datasheet/webui/common/form/components/common/visibility"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 
@@ -11,6 +12,7 @@ type TextboxDesignTemplateParams struct {
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
+	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
 }
 
 type TextboxViewTemplateParams struct {
@@ -29,7 +31,8 @@ func init() {
 		ElemPrefix: elemPrefix,
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "textboxLabel"}},
-		FormatPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "textboxFormat"},
+		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "textboxFormat"},
+		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "textBoxVisibility"),
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
 			DialogTitle: "New Text Box",

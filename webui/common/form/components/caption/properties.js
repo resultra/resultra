@@ -35,7 +35,6 @@ function loadFormCaptionProperties($caption,captionRef) {
 			setContainerComponentInfo($caption,updatedCaption,updatedCaption.captionID)	
 		})
 	}
-	
 	var visibilityParams = {
 		elemPrefix: elemPrefix,
 		// TODO - pass in database ID as part of the component's context, rather than reference a global.

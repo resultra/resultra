@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/recordFilter"
 )
 
 type TextBoxValueFormatProperties struct {
@@ -20,6 +21,7 @@ type TextBoxProperties struct {
 	Geometry    componentLayout.LayoutGeometry        `json:"geometry"`
 	ValueFormat TextBoxValueFormatProperties          `json:"valueFormat"`
 	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+	common.ComponentVisibilityProperties
 }
 
 func (srcProps TextBoxProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*TextBoxProperties, error) {
@@ -32,12 +34,19 @@ func (srcProps TextBoxProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (
 	}
 	destProps.FieldID = remappedFieldID
 
+	destVisibilityConditions, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.VisibilityConditions)
+	if err != nil {
+		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
+	}
+	destProps.VisibilityConditions = destVisibilityConditions
+
 	return &destProps, nil
 }
 
 func newDefaultTextBoxProperties() TextBoxProperties {
 	props := TextBoxProperties{
-		LabelFormat: common.NewDefaultLabelFormatProperties(),
-		ValueFormat: defaultValueFormat()}
+		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
+		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
+		ValueFormat:                   defaultValueFormat()}
 	return props
 }

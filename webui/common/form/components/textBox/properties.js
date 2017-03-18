@@ -45,6 +45,27 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 	initComponentLabelPropertyPanel(labelParams)
 	
 	
+	function saveVisibilityConditions(updatedConditions) {
+		var params = {
+			parentFormID: textBoxRef.parentFormID,
+			textboxID: textBoxRef.textBoxID,
+			visibilityConditions: updatedConditions
+		}
+		jsonAPIRequest("frm/textBox/setVisibility",params,function(updatedTextBox) {
+			setContainerComponentInfo($textBox,updatedTextBox,updatedTextBox.textBoxID)
+		})
+	}
+	var visibilityParams = {
+		elemPrefix: elemPrefix,
+		// TODO - pass in database ID as part of the component's context, rather than reference a global.
+		databaseID: designFormContext.databaseID,
+		initialConditions: textBoxRef.properties.visibilityConditions,
+		saveVisibilityConditionsCallback:saveVisibilityConditions
+	}
+	initFormComponentVisibilityPropertyPanel(visibilityParams)
+	
+	
+	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#textBoxProps')
 		

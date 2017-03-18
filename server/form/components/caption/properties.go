@@ -26,7 +26,6 @@ func (srcProps CaptionProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (
 	if err != nil {
 		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
 	}
-
 	destProps.VisibilityConditions = destVisibilityConditions
 
 	return &destProps, nil
