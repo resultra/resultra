@@ -47,6 +47,12 @@ func GetDatabaseFormComponentFilterMap(parentDatabaseID string) (FormComponentFi
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currTextBox.TextBoxID)
 			}
 		}
+		for _, currCheckBox := range formInfo.CheckBoxes {
+			if len(currCheckBox.Properties.VisibilityConditions) > 0 {
+				compFilterMap[currCheckBox.CheckBoxID] = currCheckBox.Properties.VisibilityConditions
+				log.Printf("Adding visibility filter to filter map for component ID = %v", currCheckBox.CheckBoxID)
+			}
+		}
 	}
 
 	return compFilterMap, nil

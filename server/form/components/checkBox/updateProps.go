@@ -106,3 +106,17 @@ func (updateParams CheckBoxLabelFormatParams) updateProps(checkBox *CheckBox) er
 
 	return nil
 }
+
+type CheckBoxVisibilityParams struct {
+	CheckboxIDHeader
+	common.ComponentVisibilityProperties
+}
+
+func (updateParams CheckBoxVisibilityParams) updateProps(checkBox *CheckBox) error {
+
+	// TODO - Validate conditions
+
+	checkBox.Properties.VisibilityConditions = updateParams.VisibilityConditions
+
+	return nil
+}

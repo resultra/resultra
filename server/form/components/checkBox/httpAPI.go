@@ -14,6 +14,7 @@ func init() {
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/setColorScheme", setColorScheme)
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/setStrikethrough", setStrikethrough)
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/setLabelFormat", setLabelFormat)
+	checkBoxRouter.HandleFunc("/api/frm/checkBox/setVisibility", setVisibility)
 
 	http.Handle("/api/frm/checkBox/", checkBoxRouter)
 }
@@ -71,6 +72,15 @@ func setStrikethrough(w http.ResponseWriter, r *http.Request) {
 
 func setLabelFormat(w http.ResponseWriter, r *http.Request) {
 	var params CheckBoxLabelFormatParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processCheckBoxPropUpdate(w, r, params)
+}
+
+func setVisibility(w http.ResponseWriter, r *http.Request) {
+	var params CheckBoxVisibilityParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

@@ -25,7 +25,7 @@ function checkBoxContainerHTML(elementID)
 		'<div class=" layoutContainer checkBoxFormContainer">' +
 			'<div class="checkbox">' +
 				'<input type="checkbox" id="'+uniqueID+'"class="checkboxFormComponentControl">' +
-				'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel"></label>' + 
+				'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel">New Checkbox</label>' + 
 			'</div>' +
 		'</div>';
 				

@@ -61,6 +61,24 @@ function loadCheckboxProperties($container, checkBoxRef) {
 	}
 	initComponentLabelPropertyPanel(labelParams)
 	
+	function saveVisibilityConditions(updatedConditions) {
+		var params = {
+			parentFormID: checkBoxRef.parentFormID,
+			checkBoxID: checkBoxRef.checkBoxID,
+			visibilityConditions: updatedConditions
+		}
+		jsonAPIRequest("frm/checkBox/setVisibility",params,function(updatedCheckboxRef) {
+			setContainerComponentInfo($container,updatedCheckboxRef,updatedCheckboxRef.checkBoxID)		
+		})
+	}
+	var visibilityParams = {
+		elemPrefix: elemPrefix,
+		// TODO - pass in database ID as part of the component's context, rather than reference a global.
+		databaseID: designFormContext.databaseID,
+		initialConditions: checkBoxRef.properties.visibilityConditions,
+		saveVisibilityConditionsCallback:saveVisibilityConditions
+	}
+	initFormComponentVisibilityPropertyPanel(visibilityParams)
 	
 	
 }

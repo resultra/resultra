@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/recordFilter"
 )
 
 const CheckboxColorSchemeDefault string = "default"
@@ -15,6 +16,7 @@ type CheckBoxProperties struct {
 	ColorScheme            string                                `json:"colorScheme"`
 	StrikethroughCompleted bool                                  `json:"strikethroughCompleted"`
 	LabelFormat            common.ComponentLabelFormatProperties `json:"labelFormat"`
+	common.ComponentVisibilityProperties
 }
 
 func (srcProps CheckBoxProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*CheckBoxProperties, error) {
@@ -27,14 +29,21 @@ func (srcProps CheckBoxProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) 
 	}
 	destProps.FieldID = remappedFieldID
 
+	destVisibilityConditions, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.VisibilityConditions)
+	if err != nil {
+		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
+	}
+	destProps.VisibilityConditions = destVisibilityConditions
+
 	return &destProps, nil
 }
 
 func newDefaultCheckBoxProperties() CheckBoxProperties {
 
 	props := CheckBoxProperties{
-		LabelFormat:            common.NewDefaultLabelFormatProperties(),
-		ColorScheme:            CheckboxColorSchemeDefault,
-		StrikethroughCompleted: false}
+		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
+		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
+		ColorScheme:                   CheckboxColorSchemeDefault,
+		StrikethroughCompleted:        false}
 	return props
 }
