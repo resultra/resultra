@@ -1,6 +1,6 @@
 
 
-function loadRecordIntoCaption(headerElem, recordRef) {
+function loadRecordIntoCaption($captionContainer, recordRef) {
 	// no-op
 }
 

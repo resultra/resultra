@@ -97,7 +97,7 @@ func getFormInfoAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if formInfo, err := getFormInfo(params); err != nil {
+	if formInfo, err := GetFormInfo(params.FormID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *formInfo)

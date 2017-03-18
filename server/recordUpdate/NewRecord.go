@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordValue"
+	"resultra/datasheet/server/recordValueMappingController"
 )
 
 func newRecord(params record.NewRecordParams) (*recordValue.RecordValueResults, error) {
@@ -18,7 +19,7 @@ func newRecord(params record.NewRecordParams) (*recordValue.RecordValueResults, 
 	// needed by clients to record creation. Although no values have been set yet, some of the
 	// calculated fields may also have fixed values which don't depend on any values being set
 	// in the record.
-	updateRecordValResult, mapErr := recordValue.MapOneRecordUpdatesToFieldValues(
+	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
 		newRecord.ParentDatabaseID, newRecord.RecordID, record.FullyCommittedCellUpdatesChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(

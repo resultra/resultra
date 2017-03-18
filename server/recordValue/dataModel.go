@@ -16,7 +16,7 @@ type RecordValueResults struct {
 	UpdateTimestamp  time.Time             `json:"updateTimestamp"`
 }
 
-func saveRecordValueResults(recValResults RecordValueResults) error {
+func SaveRecordValueResults(recValResults RecordValueResults) error {
 
 	log.Printf("saveRecordValueResults: Saving results: %+v", recValResults)
 

@@ -2,6 +2,8 @@ function loadRecordIntoFormLayout($parentFormLayout, recordRef) {
 
 	console.log("Loading record into layout: record field values: " + JSON.stringify(recordRef.fieldValues))
 
+	// TODO - Conditionally show or hide the form components.
+
 	// Iterate through all the containers in the current layout (which may be a subset of the record's fields),
 	// and populate the container's value with the field's value from the record.
 	

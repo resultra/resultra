@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordValue"
+	"resultra/datasheet/server/recordValueMappingController"
 )
 
 func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*recordValue.RecordValueResults, error) {
@@ -23,7 +24,7 @@ func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*rec
 
 	// Since a change has occored to one of the record's values, a new set of mapped record
 	// values needs to be created.
-	updateRecordValResult, mapErr := recordValue.MapOneRecordUpdatesToFieldValues(
+	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
 		recordForUpdate.ParentDatabaseID, recordForUpdate.RecordID, recUpdater.GetChangeSetID())
 	if mapErr != nil {
 		return nil, fmt.Errorf(
@@ -52,7 +53,7 @@ func commitChangeSet(params CommitChangeSetParams) (*recordValue.RecordValueResu
 
 	// Temporary changes made under the given changeSetID have been made permanent, so
 	// a new set of mapped record values needs to be created.
-	updateRecordValResult, mapErr := recordValue.MapOneRecordUpdatesToFieldValues(
+	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
 		commitRecord.ParentDatabaseID, params.RecordID, record.FullyCommittedCellUpdatesChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(
@@ -74,7 +75,7 @@ func setDefaultValues(req *http.Request, params record.SetDefaultValsParams) (*r
 		return nil, fmt.Errorf("setDefaultValues: %v", setDefaultErr)
 	}
 
-	updateRecordValResult, mapErr := recordValue.MapOneRecordUpdatesToFieldValues(
+	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
 		params.ParentDatabaseID, params.RecordID, params.ChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(

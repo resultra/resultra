@@ -37,74 +37,74 @@ type GetFormInfoParams struct {
 	FormID string `json:"formID"`
 }
 
-func getFormInfo(params GetFormInfoParams) (*FormInfo, error) {
+func GetFormInfo(formID string) (*FormInfo, error) {
 
-	form, err := GetForm(params.FormID)
+	form, err := GetForm(formID)
 	if err != nil {
 		return nil, err
 	}
 
-	textBoxes, err := textBox.GetTextBoxes(params.FormID)
+	textBoxes, err := textBox.GetTextBoxes(formID)
 	if err != nil {
 		return nil, err
 	}
 
-	checkBoxes, err := checkBox.GetCheckBoxes(params.FormID)
+	checkBoxes, err := checkBox.GetCheckBoxes(formID)
 	if err != nil {
 		return nil, err
 	}
 
-	datePickers, err := datePicker.GetDatePickers(params.FormID)
+	datePickers, err := datePicker.GetDatePickers(formID)
 	if err != nil {
 		return nil, err
 	}
 
-	htmlEditors, err := htmlEditor.GetHtmlEditors(params.FormID)
+	htmlEditors, err := htmlEditor.GetHtmlEditors(formID)
 	if err != nil {
 		return nil, err
 	}
 
-	images, err := image.GetImages(params.FormID)
+	images, err := image.GetImages(formID)
 	if err != nil {
 		return nil, err
 	}
 
-	headers, err := header.GetHeaders(params.FormID)
+	headers, err := header.GetHeaders(formID)
 	if err != nil {
 		return nil, err
 	}
 
-	formButtons, err := formButton.GetButtons(params.FormID)
+	formButtons, err := formButton.GetButtons(formID)
 	if err != nil {
 		return nil, err
 	}
 
-	ratings, err := rating.GetRatings(params.FormID)
+	ratings, err := rating.GetRatings(formID)
 	if err != nil {
 		return nil, err
 	}
 
-	comments, err := comment.GetComments(params.FormID)
+	comments, err := comment.GetComments(formID)
 	if err != nil {
 		return nil, err
 	}
 
-	selections, err := selection.GetSelections(params.FormID)
+	selections, err := selection.GetSelections(formID)
 	if err != nil {
 		return nil, err
 	}
 
-	userSelections, err := userSelection.GetUserSelections(params.FormID)
+	userSelections, err := userSelection.GetUserSelections(formID)
 	if err != nil {
 		return nil, err
 	}
 
-	progressIndicators, err := progress.GetProgressIndicators(params.FormID)
+	progressIndicators, err := progress.GetProgressIndicators(formID)
 	if err != nil {
 		return nil, err
 	}
 
-	captions, err := caption.GetCaptions(params.FormID)
+	captions, err := caption.GetCaptions(formID)
 	if err != nil {
 		return nil, err
 	}
