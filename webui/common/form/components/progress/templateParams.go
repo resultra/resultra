@@ -3,6 +3,7 @@ package progress
 import (
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
+	"resultra/datasheet/webui/common/form/components/common/visibility"
 	"resultra/datasheet/webui/common/valueThreshold"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -15,6 +16,7 @@ type ProgressDesignTemplateParams struct {
 	ThresholdValueParams     valueThreshold.ThresholdValuesPanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
+	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
 }
 
 type ProgressViewTemplateParams struct {
@@ -32,10 +34,11 @@ func init() {
 		ElemPrefix: elemPrefix,
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "progressLabel"}},
-		FormatPanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "progressFormat"},
-		RangePanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Range", PanelID: "progressRange"},
-		ThresholdPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Thresholds", PanelID: "progressThreshold"},
-		ThresholdValueParams: valueThreshold.NewThresholdValuesTemplateParams(elemPrefix),
+		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "progressVisibility"),
+		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "progressFormat"},
+		RangePanelParams:      propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Range", PanelID: "progressRange"},
+		ThresholdPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Thresholds", PanelID: "progressThreshold"},
+		ThresholdValueParams:  valueThreshold.NewThresholdValuesTemplateParams(elemPrefix),
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:         elemPrefix,
 			DialogTitle:        "New Progress Indicator",

@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/recordFilter"
 )
 
 type ThresholdValues struct {
@@ -19,15 +20,17 @@ type ProgressProperties struct {
 	MaxVal        float64                               `json:"maxVal"`
 	ThresholdVals []ThresholdValues                     `json:"thresholdVals"`
 	LabelFormat   common.ComponentLabelFormatProperties `json:"labelFormat"`
+	common.ComponentVisibilityProperties
 }
 
 func newDefaultProgressProperties() ProgressProperties {
 	props := ProgressProperties{
-		FieldID:       "",
-		MinVal:        0.0,
-		MaxVal:        100.0,
-		ThresholdVals: []ThresholdValues{},
-		LabelFormat:   common.NewDefaultLabelFormatProperties()}
+		FieldID:                       "",
+		MinVal:                        0.0,
+		MaxVal:                        100.0,
+		ThresholdVals:                 []ThresholdValues{},
+		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
+		LabelFormat:                   common.NewDefaultLabelFormatProperties()}
 	return props
 
 }
@@ -41,6 +44,12 @@ func (srcProps ProgressProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) 
 		return nil, fmt.Errorf("Clone: %v", err)
 	}
 	destProps.FieldID = remappedFieldID
+
+	destVisibilityConditions, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.VisibilityConditions)
+	if err != nil {
+		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
+	}
+	destProps.VisibilityConditions = destVisibilityConditions
 
 	return &destProps, nil
 }

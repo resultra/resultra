@@ -108,3 +108,17 @@ func (updateParams ProgressLabelFormatParams) updateProps(progress *Progress) er
 
 	return nil
 }
+
+type ProgressVisibilityParams struct {
+	ProgressIDHeader
+	common.ComponentVisibilityProperties
+}
+
+func (updateParams ProgressVisibilityParams) updateProps(progress *Progress) error {
+
+	// TODO - Validate conditions
+
+	progress.Properties.VisibilityConditions = updateParams.VisibilityConditions
+
+	return nil
+}
