@@ -13,6 +13,7 @@ func init() {
 	datePickerRouter.HandleFunc("/api/frm/datePicker/resize", resizeDatePicker)
 	datePickerRouter.HandleFunc("/api/frm/datePicker/setFormat", setFormat)
 	datePickerRouter.HandleFunc("/api/frm/datePicker/setLabelFormat", setLabelFormat)
+	datePickerRouter.HandleFunc("/api/frm/datePicker/setVisibility", setVisibility)
 
 	http.Handle("/api/frm/datePicker/", datePickerRouter)
 }
@@ -61,6 +62,15 @@ func setFormat(w http.ResponseWriter, r *http.Request) {
 
 func setLabelFormat(w http.ResponseWriter, r *http.Request) {
 	var params DatePickerLabelFormatParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processDatePickerPropUpdate(w, r, params)
+}
+
+func setVisibility(w http.ResponseWriter, r *http.Request) {
+	var params DatePickerVisibilityParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

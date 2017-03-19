@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/recordFilter"
 )
 
 type DatePickerProperties struct {
@@ -12,6 +13,7 @@ type DatePickerProperties struct {
 	Geometry    componentLayout.LayoutGeometry        `json:"geometry"`
 	DateFormat  string                                `json:"dateFormat"`
 	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+	common.ComponentVisibilityProperties
 }
 
 const dateFormatDefault string = "date"
@@ -26,12 +28,19 @@ func (srcProps DatePickerProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper
 	}
 	destProps.FieldID = remappedFieldID
 
+	destVisibilityConditions, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.VisibilityConditions)
+	if err != nil {
+		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
+	}
+	destProps.VisibilityConditions = destVisibilityConditions
+
 	return &destProps, nil
 }
 
 func newDefaultDatePickerProperties() DatePickerProperties {
 	props := DatePickerProperties{
-		LabelFormat: common.NewDefaultLabelFormatProperties(),
-		DateFormat:  dateFormatDefault}
+		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
+		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
+		DateFormat:                    dateFormatDefault}
 	return props
 }

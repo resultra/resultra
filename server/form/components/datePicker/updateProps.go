@@ -92,3 +92,17 @@ func (updateParams DatePickerLabelFormatParams) updateProps(datePicker *DatePick
 
 	return nil
 }
+
+type DatePickerVisibilityParams struct {
+	DatePickerIDHeader
+	common.ComponentVisibilityProperties
+}
+
+func (updateParams DatePickerVisibilityParams) updateProps(datePicker *DatePicker) error {
+
+	// TODO - Validate conditions
+
+	datePicker.Properties.VisibilityConditions = updateParams.VisibilityConditions
+
+	return nil
+}

@@ -49,6 +49,28 @@ function loadDatePickerProperties($container,datePickerRef) {
 	}
 	initComponentLabelPropertyPanel(labelParams)
 	
+	
+	function saveVisibilityConditions(updatedConditions) {
+		var params = {
+			parentFormID: datePickerRef.parentFormID,
+			datePickerID: datePickerRef.datePickerID,
+			visibilityConditions: updatedConditions
+		}
+		jsonAPIRequest("frm/datePicker/setVisibility",params,function(updatedDatePicker) {
+			setContainerComponentInfo($container,updatedDatePicker,updatedDatePicker.datePickerID)	
+		})
+	}
+	var visibilityParams = {
+		elemPrefix: elemPrefix,
+		// TODO - pass in database ID as part of the component's context, rather than reference a global.
+		databaseID: designFormContext.databaseID,
+		initialConditions: datePickerRef.properties.visibilityConditions,
+		saveVisibilityConditionsCallback:saveVisibilityConditions
+	}
+	initFormComponentVisibilityPropertyPanel(visibilityParams)
+	
+	
+	
 	toggleFormulaEditorForField(datePickerRef.properties.fieldID)
 	
 }
