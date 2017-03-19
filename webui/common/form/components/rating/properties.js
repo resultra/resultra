@@ -46,6 +46,24 @@ function loadRatingProperties($rating,ratingRef) {
 	}
 	initComponentLabelPropertyPanel(labelParams)
 
+	function saveVisibilityConditions(updatedConditions) {
+		var params = {
+			parentFormID: ratingRef.parentFormID,
+			ratingID: ratingRef.ratingID,
+			visibilityConditions: updatedConditions
+		}
+		jsonAPIRequest("frm/rating/setVisibility",params,function(updatedRating) {
+			setContainerComponentInfo($rating,updatedRating,updatedRating.ratingID)
+		})
+	}
+	var visibilityParams = {
+		elemPrefix: elemPrefix,
+		// TODO - pass in database ID as part of the component's context, rather than reference a global.
+		databaseID: designFormContext.databaseID,
+		initialConditions: ratingRef.properties.visibilityConditions,
+		saveVisibilityConditionsCallback:saveVisibilityConditions
+	}
+	initFormComponentVisibilityPropertyPanel(visibilityParams)
 
 	
 	// Toggle to the check box properties, hiding the other property panels

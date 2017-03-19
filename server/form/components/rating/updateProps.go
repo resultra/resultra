@@ -104,3 +104,17 @@ func (updateParams RatingLabelFormatParams) updateProps(rating *Rating) error {
 
 	return nil
 }
+
+type RatingVisibilityParams struct {
+	RatingIDHeader
+	common.ComponentVisibilityProperties
+}
+
+func (updateParams RatingVisibilityParams) updateProps(rating *Rating) error {
+
+	// TODO - Validate conditions
+
+	rating.Properties.VisibilityConditions = updateParams.VisibilityConditions
+
+	return nil
+}

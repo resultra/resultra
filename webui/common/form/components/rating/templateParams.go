@@ -3,6 +3,7 @@ package rating
 import (
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
+	"resultra/datasheet/webui/common/form/components/common/visibility"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 
@@ -12,6 +13,7 @@ type RatingDesignTemplateParams struct {
 	TooltipPanelParams       propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
+	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
 }
 
 type RatingViewTemplateParams struct {
@@ -27,7 +29,8 @@ func init() {
 	elemPrefix := "rating_"
 
 	DesignTemplateParams = RatingDesignTemplateParams{
-		ElemPrefix: elemPrefix,
+		ElemPrefix:            elemPrefix,
+		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "ratingVisibility"),
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "ratingLabel"}},
 		FormatPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "ratingFormat"},

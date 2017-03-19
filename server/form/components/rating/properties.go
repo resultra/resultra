@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/recordFilter"
 )
 
 const ratingIconStar string = "star"
@@ -15,6 +16,7 @@ type RatingProperties struct {
 	Tooltips    []string                              `json:"tooltips"`
 	Icon        string                                `json:"icon"`
 	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+	common.ComponentVisibilityProperties
 }
 
 func (srcProps RatingProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*RatingProperties, error) {
@@ -27,13 +29,20 @@ func (srcProps RatingProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*
 	}
 	destProps.FieldID = remappedFieldID
 
+	destVisibilityConditions, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.VisibilityConditions)
+	if err != nil {
+		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
+	}
+	destProps.VisibilityConditions = destVisibilityConditions
+
 	return &destProps, nil
 }
 
 func newDefaultRatingProperties() RatingProperties {
 	props := RatingProperties{
-		LabelFormat: common.NewDefaultLabelFormatProperties(),
-		Tooltips:    []string{},
-		Icon:        ratingIconStar}
+		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
+		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
+		Tooltips:                      []string{},
+		Icon:                          ratingIconStar}
 	return props
 }
