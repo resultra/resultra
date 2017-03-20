@@ -77,6 +77,12 @@ func GetDatabaseFormComponentFilterMap(parentDatabaseID string) (FormComponentFi
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currButton.ButtonID)
 			}
 		}
+		for _, currHeader := range formInfo.Headers {
+			if len(currHeader.Properties.VisibilityConditions) > 0 {
+				compFilterMap[currHeader.HeaderID] = currHeader.Properties.VisibilityConditions
+				log.Printf("Adding visibility filter to filter map for component ID = %v", currHeader.HeaderID)
+			}
+		}
 	}
 
 	return compFilterMap, nil

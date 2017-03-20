@@ -15,6 +15,7 @@ func init() {
 	headerRouter.HandleFunc("/api/frm/header/setLabel", setHeaderLabel)
 	headerRouter.HandleFunc("/api/frm/header/setUnderlined", setUnderlined)
 	headerRouter.HandleFunc("/api/frm/header/setSize", setSize)
+	headerRouter.HandleFunc("/api/frm/header/setVisibility", setVisibility)
 
 	http.Handle("/api/frm/header/", headerRouter)
 }
@@ -72,6 +73,15 @@ func setUnderlined(w http.ResponseWriter, r *http.Request) {
 
 func setSize(w http.ResponseWriter, r *http.Request) {
 	var params HeaderSizeParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processHeaderPropUpdate(w, r, params)
+}
+
+func setVisibility(w http.ResponseWriter, r *http.Request) {
+	var params HeaderVisibilityParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

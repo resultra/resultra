@@ -3,6 +3,7 @@ package header
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/stringValidation"
 )
 
@@ -103,6 +104,20 @@ type HeaderUnderlinedParams struct {
 func (updateParams HeaderUnderlinedParams) updateProps(headerForUpdate *Header) error {
 
 	headerForUpdate.Properties.Underlined = updateParams.Underlined
+
+	return nil
+}
+
+type HeaderVisibilityParams struct {
+	HeaderIDHeader
+	common.ComponentVisibilityProperties
+}
+
+func (updateParams HeaderVisibilityParams) updateProps(headerForUpdate *Header) error {
+
+	// TODO - Validate conditions
+
+	headerForUpdate.Properties.VisibilityConditions = updateParams.VisibilityConditions
 
 	return nil
 }

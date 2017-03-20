@@ -91,6 +91,27 @@ function loadFormHeaderProperties($header,headerRef) {
 		
 	}
 	
+	var elemPrefix = "header_"
+	
+	function saveVisibilityConditions(updatedConditions) {
+		var params = {
+				parentFormID: headerRef.parentFormID,
+				headerID: headerRef.headerID,
+			visibilityConditions: updatedConditions
+		}
+		jsonAPIRequest("frm/header/setVisibility",params,function(updatedHeader) {
+			setContainerComponentInfo($header,updatedHeader,updatedHeader.headerID)	
+		})
+	}
+	var visibilityParams = {
+		elemPrefix: elemPrefix,
+		// TODO - pass in database ID as part of the component's context, rather than reference a global.
+		databaseID: designFormContext.databaseID,
+		initialConditions: headerRef.properties.visibilityConditions,
+		saveVisibilityConditionsCallback:saveVisibilityConditions
+	}
+	initFormComponentVisibilityPropertyPanel(visibilityParams)
+	
 	
 	
 	console.log("Loading header properties")
