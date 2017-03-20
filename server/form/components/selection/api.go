@@ -13,6 +13,7 @@ func init() {
 	selectionRouter.HandleFunc("/api/frm/selection/resize", resizeSelection)
 	selectionRouter.HandleFunc("/api/frm/selection/setSelectableVals", setSelectionSelectableVals)
 	selectionRouter.HandleFunc("/api/frm/selection/setLabelFormat", setLabelFormat)
+	selectionRouter.HandleFunc("/api/frm/selection/setVisibility", setVisibility)
 
 	http.Handle("/api/frm/selection/", selectionRouter)
 }
@@ -62,6 +63,16 @@ func setSelectionSelectableVals(w http.ResponseWriter, r *http.Request) {
 
 func setLabelFormat(w http.ResponseWriter, r *http.Request) {
 	var params SelectionLabelFormatParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processSelectionPropUpdate(w, r, params)
+
+}
+
+func setVisibility(w http.ResponseWriter, r *http.Request) {
+	var params SelectionVisibilityParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

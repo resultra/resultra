@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/recordFilter"
 )
 
 type SelectionProperties struct {
@@ -12,6 +13,7 @@ type SelectionProperties struct {
 	Geometry       componentLayout.LayoutGeometry        `json:"geometry"`
 	SelectableVals []SelectionSelectableVal              `json:"selectableVals"`
 	LabelFormat    common.ComponentLabelFormatProperties `json:"labelFormat"`
+	common.ComponentVisibilityProperties
 }
 
 func (srcProps SelectionProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*SelectionProperties, error) {
@@ -24,12 +26,19 @@ func (srcProps SelectionProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper)
 	}
 	destProps.FieldID = remappedFieldID
 
+	destVisibilityConditions, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.VisibilityConditions)
+	if err != nil {
+		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
+	}
+	destProps.VisibilityConditions = destVisibilityConditions
+
 	return &destProps, nil
 }
 
 func newDefaultSelectionProperties() SelectionProperties {
 	props := SelectionProperties{
-		SelectableVals: []SelectionSelectableVal{},
-		LabelFormat:    common.NewDefaultLabelFormatProperties()}
+		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
+		SelectableVals:                []SelectionSelectableVal{},
+		LabelFormat:                   common.NewDefaultLabelFormatProperties()}
 	return props
 }
