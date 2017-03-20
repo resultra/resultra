@@ -78,3 +78,17 @@ func (updateParams CommentLabelFormatParams) updateProps(comment *Comment) error
 
 	return nil
 }
+
+type CommentVisibilityParams struct {
+	CommentIDHeader
+	common.ComponentVisibilityProperties
+}
+
+func (updateParams CommentVisibilityParams) updateProps(comment *Comment) error {
+
+	// TODO - Validate conditions
+
+	comment.Properties.VisibilityConditions = updateParams.VisibilityConditions
+
+	return nil
+}

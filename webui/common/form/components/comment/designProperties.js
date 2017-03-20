@@ -22,7 +22,25 @@ function loadCommentComponentProperties($comment,commentRef) {
 	}
 	initComponentLabelPropertyPanel(labelParams)
 
-
+	function saveVisibilityConditions(updatedConditions) {
+		var params = {
+			parentFormID: commentRef.parentFormID,
+			commentID: commentRef.commentID,
+			visibilityConditions: updatedConditions
+		}
+		jsonAPIRequest("frm/comment/setVisibility",params,function(updatedComment) {
+			setContainerComponentInfo($comment,updatedComment,commentRef.commentID)
+		})
+	}
+	var visibilityParams = {
+		elemPrefix: elemPrefix,
+		// TODO - pass in database ID as part of the component's context, rather than reference a global.
+		databaseID: designFormContext.databaseID,
+		initialConditions: commentRef.properties.visibilityConditions,
+		saveVisibilityConditionsCallback:saveVisibilityConditions
+	}
+	initFormComponentVisibilityPropertyPanel(visibilityParams)
+	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#commentComponentProps')
 	
