@@ -22,7 +22,25 @@ function loadUserSelectionProperties($userSelection,userSelectionRef) {
 	}
 	initComponentLabelPropertyPanel(labelParams)
 	
-	
+	function saveVisibilityConditions(updatedConditions) {
+		var params = {
+			parentFormID: userSelectionRef.parentFormID,
+			userSelectionID: userSelectionRef.userSelectionID,
+			visibilityConditions: updatedConditions
+		}
+		jsonAPIRequest("frm/userSelection/setVisibility",params,function(updatedUserSelection) {
+			setContainerComponentInfo($userSelection,updatedUserSelection,updatedUserSelection.userSelectionID)
+		})
+	}
+	var visibilityParams = {
+		elemPrefix: elemPrefix,
+		// TODO - pass in database ID as part of the component's context, rather than reference a global.
+		databaseID: designFormContext.databaseID,
+		initialConditions: userSelectionRef.properties.visibilityConditions,
+		saveVisibilityConditionsCallback:saveVisibilityConditions
+	}
+	initFormComponentVisibilityPropertyPanel(visibilityParams)
+		
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#userSelectionProps')
 		

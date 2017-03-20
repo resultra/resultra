@@ -12,6 +12,7 @@ func init() {
 	userSelectionRouter.HandleFunc("/api/frm/userSelection/new", newUserSelection)
 	userSelectionRouter.HandleFunc("/api/frm/userSelection/resize", resizeUserSelection)
 	userSelectionRouter.HandleFunc("/api/frm/userSelection/setLabelFormat", setLabelFormat)
+	userSelectionRouter.HandleFunc("/api/frm/userSelection/setVisibility", setVisibility)
 
 	http.Handle("/api/frm/userSelection/", userSelectionRouter)
 }
@@ -51,6 +52,15 @@ func resizeUserSelection(w http.ResponseWriter, r *http.Request) {
 
 func setLabelFormat(w http.ResponseWriter, r *http.Request) {
 	var params UserSelectionLabelFormatParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processUserSelectionPropUpdate(w, r, params)
+}
+
+func setVisibility(w http.ResponseWriter, r *http.Request) {
+	var params UserSelectionVisibilityParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

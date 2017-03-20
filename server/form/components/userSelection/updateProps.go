@@ -78,3 +78,17 @@ func (updateParams UserSelectionLabelFormatParams) updateProps(userSelection *Us
 
 	return nil
 }
+
+type UserSelectionVisibilityParams struct {
+	UserSelectionIDHeader
+	common.ComponentVisibilityProperties
+}
+
+func (updateParams UserSelectionVisibilityParams) updateProps(userSelection *UserSelection) error {
+
+	// TODO - Validate conditions
+
+	userSelection.Properties.VisibilityConditions = updateParams.VisibilityConditions
+
+	return nil
+}

@@ -3,6 +3,7 @@ package userSelection
 import (
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
+	"resultra/datasheet/webui/common/form/components/common/visibility"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 
@@ -11,6 +12,7 @@ type UserSelectionDesignTemplateParams struct {
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
+	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
 }
 
 type UserSelectionViewTemplateParams struct {
@@ -26,7 +28,8 @@ func init() {
 	elemPrefix := "userSelection_"
 
 	DesignTemplateParams = UserSelectionDesignTemplateParams{
-		ElemPrefix: elemPrefix,
+		ElemPrefix:            elemPrefix,
+		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "userSelectionVisibility"),
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "userSelectionLabel"}},
 		FormatPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "userSelectionFormat"},
