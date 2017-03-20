@@ -61,10 +61,9 @@ func saveNewButton(params NewButtonParams) (*FormButton, error) {
 		return nil, validateErr
 	}
 
-	properties := ButtonProperties{
-		Geometry:      params.Geometry,
-		LinkedFormID:  params.LinkedFormID,
-		PopupBehavior: newDefaultPopupBehavior()}
+	properties := newDefaultButtonProperties()
+	properties.Geometry = params.Geometry
+	properties.LinkedFormID = params.LinkedFormID
 
 	newButton := FormButton{ParentFormID: params.ParentFormID,
 		ButtonID:   uniqueID.GenerateSnowflakeID(),
@@ -82,7 +81,7 @@ func saveNewButton(params NewButtonParams) (*FormButton, error) {
 
 func getButton(parentFormID string, buttonID string) (*FormButton, error) {
 
-	buttonProps := ButtonProperties{}
+	buttonProps := newDefaultButtonProperties()
 	if getErr := common.GetFormComponent(buttonEntityKind, parentFormID, buttonID, &buttonProps); getErr != nil {
 		return nil, fmt.Errorf("getButton: Unable to retrieve button: %v", getErr)
 	}

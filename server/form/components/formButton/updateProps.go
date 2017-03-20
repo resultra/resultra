@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/record"
 )
 
@@ -138,6 +139,20 @@ func (updateParams ButtonIconParams) updateProps(buttonForUpdate *FormButton) er
 	// TODO - Validate icon name
 
 	buttonForUpdate.Properties.Icon = updateParams.Icon
+
+	return nil
+}
+
+type ButtonVisibilityParams struct {
+	ButtonIDHeader
+	common.ComponentVisibilityProperties
+}
+
+func (updateParams ButtonVisibilityParams) updateProps(buttonForUpdate *FormButton) error {
+
+	// TODO - Validate conditions
+
+	buttonForUpdate.Properties.VisibilityConditions = updateParams.VisibilityConditions
 
 	return nil
 }

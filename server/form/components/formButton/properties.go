@@ -3,9 +3,11 @@ package formButton
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/record"
+	"resultra/datasheet/server/recordFilter"
 )
 
 const popupBehaviorModeless string = "modeless"
@@ -28,7 +30,6 @@ func (srcProps ButtonPopupBehavior) Clone(remappedIDs uniqueID.UniqueIDRemapper)
 	if cloneErr != nil {
 		return nil, fmt.Errorf("ButtonPopupBehavior.Clone: %v", cloneErr)
 	}
-
 	destProps.DefaultValues = destDefaultVals
 
 	return &destProps, nil
@@ -64,6 +65,7 @@ type ButtonProperties struct {
 	Size          string                         `json:"size"`
 	ColorScheme   string                         `json:"colorScheme"`
 	Icon          string                         `json:"icon"`
+	common.ComponentVisibilityProperties
 }
 
 func (srcProps ButtonProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ButtonProperties, error) {
@@ -78,14 +80,21 @@ func (srcProps ButtonProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*
 	}
 	destProps.PopupBehavior = *destPopupProps
 
+	destVisibilityConditions, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.VisibilityConditions)
+	if err != nil {
+		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
+	}
+	destProps.VisibilityConditions = destVisibilityConditions
+
 	return &destProps, nil
 }
 
 func newDefaultButtonProperties() ButtonProperties {
 
 	return ButtonProperties{
-		PopupBehavior: newDefaultPopupBehavior(),
-		Size:          buttonSizeMedium,
-		ColorScheme:   colorSchemeDefault,
-		Icon:          buttonIconNone}
+		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
+		PopupBehavior:                 newDefaultPopupBehavior(),
+		Size:                          buttonSizeMedium,
+		ColorScheme:                   colorSchemeDefault,
+		Icon:                          buttonIconNone}
 }

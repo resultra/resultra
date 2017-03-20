@@ -140,11 +140,11 @@ function loadFormButtonProperties($button,buttonRef) {
 	}
 	initIconProperties()
 	
-
+	var elemPrefix = "button_"
 	
 	var defaultValPropParams = {
 		databaseID: designFormContext.databaseID,
-		elemPrefix: "button_",
+		elemPrefix: elemPrefix,
 		defaultDefaultValues: buttonRef.properties.popupBehavior.defaultValues,
 		updateDefaultValues: function(updatedDefaultVals) {
 			console.log("Updateing default values for form button: " + JSON.stringify(updatedDefaultVals))
@@ -155,10 +155,33 @@ function loadFormButtonProperties($button,buttonRef) {
 				defaultValues: updatedDefaultVals }
 			
 			jsonAPIRequest("frm/formButton/setDefaultVals",setDefaultValsParams,function(updatedButtonRef) {
+					setContainerComponentInfo($button,updatedButtonRef,updatedButtonRef.buttonID)	
 			})
 		}
 	}
 	initDefaultValuesPropertyPanel(defaultValPropParams)
+	
+	var visibilityElemPrefix = "buttonVisibility_"
+	
+	function saveVisibilityConditions(updatedConditions) {
+		var params = {
+				parentFormID: buttonRef.parentFormID,
+				buttonID: buttonRef.buttonID,
+			visibilityConditions: updatedConditions
+		}
+		jsonAPIRequest("frm/formButton/setVisibility",params,function(updatedButtonRef) {
+			setContainerComponentInfo($button,updatedButtonRef,updatedButtonRef.buttonID)	
+		})
+	}
+	var visibilityParams = {
+		elemPrefix: visibilityElemPrefix,
+		// TODO - pass in database ID as part of the component's context, rather than reference a global.
+		databaseID: designFormContext.databaseID,
+		initialConditions: buttonRef.properties.visibilityConditions,
+		saveVisibilityConditionsCallback:saveVisibilityConditions
+	}
+	initFormComponentVisibilityPropertyPanel(visibilityParams)
+	
 		
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#formButtonProps')
