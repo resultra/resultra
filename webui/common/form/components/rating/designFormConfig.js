@@ -22,7 +22,7 @@ function resizeRating($container,geometry) {
 	var ratingRef = getContainerObjectRef($container)
 	
 	var resizeParams = {
-		parentFormID: ratingObjectRef.parentFormID,
+		parentFormID: ratingRef.parentFormID,
 		ratingID: ratingRef.ratingID,
 		geometry: geometry
 	}
