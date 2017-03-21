@@ -6,6 +6,7 @@ function selectDashboardBarChart ($container,barChartRef) {
 		databaseID: designDashboardContext.databaseID,
 		dashboardID: barChartRef.parentDashboardID,
 		barChartID: barChartRef.barChartID,
+		$barChart:$container,
 		
 		propertyUpdateComplete: function (updatedBarChartRef) {
 			
@@ -15,6 +16,7 @@ function selectDashboardBarChart ($container,barChartRef) {
 			var getDataParams = {
 				parentDashboardID:updatedBarChartRef.parentDashboardID,
 				barChartID:updatedBarChartRef.barChartID,
+				$barChart:$container,
 				filterRules: updatedBarChartRef.properties.defaultFilterRules
 			}
 			jsonAPIRequest("dashboardController/getBarChartData",getDataParams,function(updatedBarChartData) {

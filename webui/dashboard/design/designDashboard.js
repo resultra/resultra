@@ -55,6 +55,7 @@ $(document).ready(function() {
 			var componentParams = {
 				dashboardContext: designDashboardContext, 
 				geometry: droppedItemInfo.geometry,
+				$componentContainer: droppedItemInfo.droppedElem,
 				placeholderComponentID: droppedItemInfo.placeholderID,
 				finalizeLayoutIncludingNewComponentFunc: droppedItemInfo.finalizeLayoutIncludingNewComponentFunc
 			};
@@ -87,7 +88,7 @@ $(document).ready(function() {
 	function initDashboardComponentDesignDashboardEditBehavior($component,componentID, designDashboardConfig,layoutDesignConfig) {
 		console.log("initDashboardComponentDesignDashboardEditBehavior: component ID = " + componentID)
 	
-		initObjectGridEditBehavior($component,designDashboardConfig,layoutDesignConfig)
+		initObjectGridEditBehavior($component,designDashboardConfig,layoutDesignConfig)		
 	
 		// When in design mode, dashboard components need to have dotted lines as their border.
 		$component.addClass("layoutDesignContainer")
@@ -96,7 +97,7 @@ $(document).ready(function() {
 		initObjectSelectionBehavior($component, 
 				$parentDashboardCanvas,function(selectedComponentID) {
 			console.log("dashboard design object selected: " + selectedComponentID)
-			var selectedObjRef	= getElemObjectRef(selectedComponentID)
+			var selectedObjRef	= getContainerObjectRef($component)
 			designDashboardConfig.selectionFunc($component,selectedObjRef)
 		})
 		

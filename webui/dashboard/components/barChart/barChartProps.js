@@ -3,7 +3,7 @@
 function loadBarChartProperties(barChartPropsArgs) {
 	
 	var barChartContainer = $('#'+barChartPropsArgs.barChartID)
-	var barChartRef = getElemObjectRef(barChartPropsArgs.barChartID)
+	var barChartRef = getContainerObjectRef(barChartPropsArgs.$barChart)
 	var barChartElemPrefix = "barChart_"
 	
 	var filterPropertyPanelParams = {
@@ -19,7 +19,7 @@ function loadBarChartProperties(barChartPropsArgs) {
 			}
 			jsonAPIRequest("dashboard/barChart/setDefaultFilterRules",setDefaultFiltersParams,function(updatedBarChart) {
 				console.log(" Default filters updated")
-				setElemObjectRef(updatedBarChart.barChartID,updatedBarChart)
+				setContainerComponentInfo(barChartPropsArgs.$barChart,updateBarChart,updatedBarChart.barChartID)
 			}) // set record's number field value
 		}
 	}

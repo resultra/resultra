@@ -67,7 +67,7 @@ $(document).ready(function() {
 			initObjectSelectionBehavior($component, 
 					$parentDashboardCanvas,function(selectedComponentID) {
 				console.log("dashboard view object selected: " + selectedComponentID)
-				var selectedObjRef	= getElemObjectRef(selectedComponentID)
+				var selectedObjRef	= getContainerObjectRef($component)
 				viewDashboardConfig.selectionFunc($component,selectedObjRef)
 			})
 		}

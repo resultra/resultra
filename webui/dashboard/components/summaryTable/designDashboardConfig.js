@@ -9,7 +9,8 @@ function selectDashboardSummaryTable($container,summaryTableRef) {
 	var summaryTablePropertiesArgs = {
 		databaseID: designDashboardContext.databaseID,
 		dashboardID: summaryTableRef.parentDashboardID,
-		summaryTableID: summaryTableRef.summaryTableID
+		summaryTableID: summaryTableRef.summaryTableID,
+		$summaryTable: $container
 	}
 	loadSummaryTableProperties(summaryTablePropertiesArgs)
 }
@@ -20,7 +21,7 @@ function resizeDashboardSummaryTable($container,geometry) {
 	
 	var resizeParams = {
 		parentDashboardID: summaryTableRef.parentDashboardID,
-		summaryTableID: summaryTableID,
+		summaryTableID: summaryTableRef.summaryTableID,
 		geometry: geometry
 	}
 

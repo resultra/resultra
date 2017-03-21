@@ -1,19 +1,19 @@
 
 
-function barChartContainerHTML(barChartID) {
+function barChartContainerHTML() {
 	
 	// The actual chart is placed inside a "chartWrapper" div. The outer div is used by draggable and resizable to position 
 	// and resize the bar chart within the dashboard canvas. If the chart is placed directly within the out div, there
 	// is a conflict with the Google chart code disabling the resize behavor after the chart is refreshed.
 	var containerHTML = ''+
-	'<div class="layoutContainer dashboardBarChartComponent" id="'+ barChartID+'">' +
-		'<div id="' + barChartID+'_chart" class="dashboardChartWrapper"</div>'+
+	'<div class="layoutContainer dashboardBarChartComponent">' +
+		'<div class="dashboardChartWrapper"</div>'+
 	'</div>';
 	return containerHTML
 }
 
 
-function drawBarChart(barChartData) {
+function drawBarChart($barChart, barChartData) {
 	
 	var dataRows = [];
 	for(var dataIndex in barChartData.dataRows) {
@@ -41,7 +41,9 @@ function drawBarChart(barChartData) {
 	};
 	
 	// Place the chart in an inner div - see the comment in barChartContainerHTML()
-  	var chartContainerElem = document.getElementById(barChartData.barChartID+'_chart')
+	
+	var $chartWrapper = $barChart.find(".dashboardChartWrapper")
+  	var chartContainerElem = $chartWrapper.get(0)
 	var barChart = new google.visualization.ColumnChart(chartContainerElem);
 	
 	// Whenever new data is loaded into the bar chart and it is redrawn,
@@ -72,12 +74,9 @@ function drawDesignModeDummyBarChart(placeholderID) {
 }
 
 
-function initBarChartData(dashboardID,barChartData) {
+function initBarChartData(dashboardID,$barChart, barChartData) {
 	
-	drawBarChart(barChartData)
-	
-	setElemObjectRef(barChartData.barChart.barChartID,barChartData.barChart)
-	
+	drawBarChart($barChart, barChartData)
 }
 
 

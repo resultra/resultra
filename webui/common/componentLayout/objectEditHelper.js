@@ -26,18 +26,6 @@ function getContainerComponentID($container) {
 
 function getContainerObjectRef($container) {
 	var objectRef = $container.data("objectRef")
-	assert(objectRef !== undefined, "getElemObjectRef: Can't get object element reference")
+	assert(objectRef !== undefined, "getContainerObjectRef: Can't get object element reference")
 	return objectRef	
-}
-
-function setElemObjectRef(objectID, objectRef) {
-	$('#'+objectID).data("objectRef",objectRef)
-}
-
-
-function getElemObjectRef(objectID) {
-	
-	var objectRef = $('#'+objectID).data("objectRef")
-	assert(objectRef !== undefined, "getElemObjectRef: Can't get object element reference for object id = " + objectID)
-	return objectRef
 }

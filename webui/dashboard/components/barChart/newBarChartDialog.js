@@ -8,51 +8,47 @@ function initNewBarChartDialog(dashboardContext) {
 	newBarChartParams.progressDivID = '#newBarChartProgress'		
 }
 
-function saveNewBarChart($dialog) {
-	
-	console.log("Saving new bar chart: dashboard ID = " + newBarChartParams.dashboardID )
-			
-	var saveNewBarChartParams = {
-		parentDashboardID: newBarChartParams.dashboardID,
-		xAxisVals: getWizardDialogPanelVals($dialog,dashboardComponentValueGroupingPanelID), // xAxisVals
-		xAxisSortValues: "asc",
-		yAxisVals: getWizardDialogPanelVals($dialog,dashboardComponentValueSummaryPanelID), // yAxisVals
-		geometry: newBarChartParams.geometry
-	}
-	
-	
-	console.log("saveNewBarChart: new bar chart params:  " + JSON.stringify(saveNewBarChartParams) )
-	jsonAPIRequest("dashboard/barChart/new",saveNewBarChartParams,function(barChartRef) {
-		console.log("saveNewBarChart: bar chart saved: new bar chart ID = " + barChartRef.barChartID)
-		
-		// Replace the placholder ID with the instantiated bar chart's unique ID. In the case
-		// of a bar chart, 2 DOM elements are associated with the bar chart's ID. The first
-		// is the overall/wrapper container, and the 2nd is a child div for the bar chart itself.
-		// See the function barChartContainerHTML() to see how this is setup.
-		 $('#'+newBarChartParams.placeholderID).attr("id",barChartRef.barChartID)
-		 $('#'+newBarChartParams.placeholderID+"_chart").attr("id",barChartRef.barChartID+"_chart")
-
-		$dialog.modal("hide")
-		
-		var barChartDataParams = { 
-			parentDashboardID: newBarChartParams.dashboardID,
-			barChartID: barChartRef.barChartID,
-			filterRules: barChartRef.properties.defaultFilterRules
-		}
-		
-		setTimeout(function() {
-			jsonAPIRequest("dashboardController/getBarChartData",barChartDataParams,function(barChartData) {
-				initBarChartData(newBarChartParams.dashboardID,barChartData)
-			})		
-		}, 2000);
-		
-	})
-}
-
-
-
 
 function openNewBarChartDialog(barChartParams) {
+	
+	function saveNewBarChart($dialog) {
+	
+		console.log("Saving new bar chart: dashboard ID = " + newBarChartParams.dashboardID )
+			
+		var saveNewBarChartParams = {
+			parentDashboardID: newBarChartParams.dashboardID,
+			xAxisVals: getWizardDialogPanelVals($dialog,dashboardComponentValueGroupingPanelID), // xAxisVals
+			xAxisSortValues: "asc",
+			yAxisVals: getWizardDialogPanelVals($dialog,dashboardComponentValueSummaryPanelID), // yAxisVals
+			geometry: newBarChartParams.geometry
+		}
+		
+	
+	
+		console.log("saveNewBarChart: new bar chart params:  " + JSON.stringify(saveNewBarChartParams) )
+		jsonAPIRequest("dashboard/barChart/new",saveNewBarChartParams,function(barChartRef) {
+			console.log("saveNewBarChart: bar chart saved: new bar chart ID = " + barChartRef.barChartID)
+			
+			setContainerComponentInfo(barChartParams.$componentContainer,barChartRef,barChartRef.barChartID)
+			
+			$dialog.modal("hide")
+		
+			var barChartDataParams = { 
+				parentDashboardID: newBarChartParams.dashboardID,
+				barChartID: barChartRef.barChartID,
+				filterRules: barChartRef.properties.defaultFilterRules
+			}
+		
+			setTimeout(function() {
+				jsonAPIRequest("dashboardController/getBarChartData",barChartDataParams,function(barChartData) {
+					initBarChartData(newBarChartParams.dashboardID,barChartParams.$componentContainer, barChartData)
+				})		
+			}, 2000);
+		
+		})
+	}
+	
+	//
 		
 	newBarChartParams.placeholderID = barChartParams.placeholderComponentID
 	newBarChartParams.geometry = barChartParams.geometry

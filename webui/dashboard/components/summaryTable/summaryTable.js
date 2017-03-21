@@ -1,13 +1,9 @@
-function summaryTableTableElemID(summaryTableID) {
-	return summaryTableID + "_table"
-}
 
 function summaryTableComponentHTML(summaryTableID) {
 	
-	var tableElemID = summaryTableTableElemID(summaryTableID)
 	var containerHTML = ''+
-	'<div class="layoutContainer dashboardBarChartComponent" id="'+ summaryTableID+'">' +
-		'<table class="table table-hover table-bordered" id="' + tableElemID+'"></table>'+
+	'<div class="layoutContainer dashboardBarChartComponent">' +
+		'<table class="table table-hover table-bordered"></table>'+
 	'</div>';
 	return containerHTML
 }
@@ -58,11 +54,11 @@ function populateSummaryTableRows($summaryTable,summaryTableData) {
 }
 
 
-function initSummaryTableData(dashboardID,summaryTableData) {
+function initSummaryTableData(dashboardID,$summaryTable, summaryTableData) {
 	
-	var tableElemID = summaryTableTableElemID(summaryTableData.summaryTable.summaryTableID)
-	var $summaryTable = $('#'+tableElemID)
-	$summaryTable.empty()
+	
+	var $tableElem = $summaryTable.find(".table")
+	$tableElem.empty()
 
 
 	var tableTitle = summaryTableData.summaryTable.properties.title
@@ -71,11 +67,9 @@ function initSummaryTableData(dashboardID,summaryTableData) {
 		$summaryTable.append($tableTitle)	
 	}
 
-	populateSummaryTableHeader($summaryTable,summaryTableData)
-	populateSummaryTableRows($summaryTable,summaryTableData)
-	
-	setElemObjectRef(summaryTableData.summaryTableID,summaryTableData.summaryTable)
-	
+	populateSummaryTableHeader($tableElem,summaryTableData)
+	populateSummaryTableRows($tableElem,summaryTableData)
+		
 	$summaryTable.data("summaryTableRef",summaryTableData.summaryTable)
 	
 }

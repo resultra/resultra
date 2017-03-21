@@ -7,13 +7,16 @@ function loadDashboardData(loadDashboardConfig)
 	
 	function initBarChartLayout($componentRow,barChartData) {
 		
-		var barChartHTML = barChartContainerHTML(barChartData.barChartID);
+		
+		var barChartHTML = barChartContainerHTML();
 		var $barChartElem = $(barChartHTML)
+
+		setContainerComponentInfo($barChartElem,barChartData.barChart,barChartData.barChartID)
 		
 		$componentRow.append($barChartElem)
 		setElemDimensions($barChartElem,barChartData.barChart.properties.geometry)
 		
-		initBarChartData(dashboardID,barChartData);	
+		initBarChartData(dashboardID,$barChartElem, barChartData);	
 		
 		loadDashboardConfig.initBarChartComponent($barChartElem,barChartData.barChart)	
 	}
@@ -22,11 +25,13 @@ function loadDashboardData(loadDashboardConfig)
 		
 		var summaryTableHTML = summaryTableComponentHTML(summaryTableData.summaryTableID);
 		var $summaryTableElem = $(summaryTableHTML)
+	
+		setContainerComponentInfo($summaryTableElem,summaryTableData.summaryTable,summaryTableData.summaryTableID)
 		
 		$componentRow.append($summaryTableElem)
 		setElemDimensions($summaryTableElem,summaryTableData.summaryTable.properties.geometry)
 		
-		initSummaryTableData(dashboardID,summaryTableData)
+		initSummaryTableData(dashboardID,$summaryTableElem,summaryTableData)
 		
 		loadDashboardConfig.initSummaryTableComponent($summaryTableElem,summaryTableData.summaryTable)
 	}

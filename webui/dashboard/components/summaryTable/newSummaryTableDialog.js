@@ -34,12 +34,8 @@ function openNewSummaryTableDialog(summaryTableParams) {
 		
 			console.log("saveNewBarChart: bar chart saved: new bar chart ID = " + summaryTableRef.summaryTableID)
 		
-			// Replace the placholder ID with the instantiated bar chart's unique ID. In the case
-			// of a bar chart, 2 DOM elements are associated with the bar chart's ID. The first
-			// is the overall/wrapper container, and the 2nd is a child div for the bar chart itself.
-			// See the function barChartContainerHTML() to see how this is setup.
-			 $('#'+newBarChartParams.placeholderID).attr("id",summaryTableRef.summaryTableID)
-			 $('#'+newBarChartParams.placeholderID+"_table").attr("id",summaryTableRef.summaryTableID+"_table")
+			
+			setContainerComponentInfo(summaryTableParams.$componentContainer,summaryTableRef,summaryTableRef.summaryTableID)
 
 			newSummaryTableParams.summaryTableCreated = true
 			$dialog.modal("hide")
@@ -50,7 +46,7 @@ function openNewSummaryTableDialog(summaryTableParams) {
 				filterRules: []
 			}
 			jsonAPIRequest("dashboardController/getSummaryTableData",summaryTableDataParams,function(summaryTableData) {
-				initSummaryTableData(newSummaryTableParams.dashboardID,summaryTableData)
+				initSummaryTableData(newSummaryTableParams.dashboardID,summaryTableParams.$componentContainer,summaryTableData)
 			})			
 		})
 	}
