@@ -33,11 +33,13 @@ function imageContainerHTML(elementID)
 	'<div class="layoutContainer imageContainer">' +
 		'<div class="imageContainerHeader">' +
 			'<label class="imageContainerLabel">Image Label</label>' +
-			attachmentButtonHTML("imageComponentManageAttachmentsButtton") + 
-			attachmentLinkButtonHTML("attachmentComponentAddLinkButton") +
 		'</div>' +
 		'<div class="imageInnerContainer lightGreyBorder text-center"">'+
 		'</div>'+
+		'<div class="pull-right componentHoverFooter initiallyHidden">' +
+			attachmentButtonHTML("imageComponentManageAttachmentsButtton") + 
+			attachmentLinkButtonHTML("attachmentComponentAddLinkButton") +
+		'</div>' +
 	'</div>';
 	
 		

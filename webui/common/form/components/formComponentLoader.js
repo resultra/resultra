@@ -306,9 +306,11 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		// Set the label to the field name		
 		setEditorComponentLabel(containerObj,htmlEditor)
 		
+		initEditorFormComponentViewModeGeometry(containerObj,htmlEditor)
+		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append(containerObj)
-		setElemDimensions(containerObj,htmlEditor.properties.geometry)
+		
 		
 		 // Store the newly created object reference in the DOM element. This is needed for follow-on
 		 // property setting, resizing, etc.
