@@ -58,6 +58,12 @@ function initDesignPalette(paletteConfig,layoutDesignConfig) {
 			 var paletteItemID = $(this).attr('id')
 			 
 			 
+			 // When dragging the item from the palette, add a dotted border. This is used in
+			 // both the form and dashboard designer.
+			 $paletteContainer.addClass("layoutDesignContainer")
+			 
+			 
+			 
 			 // The startPaletteDrag function is called so any dynamic Javascript initialization
 			 // which needs to take place after the helper has been added can take place.
 			 paletteConfig.startPaletteDrag(placeholderID,paletteItemID,$paletteContainer)

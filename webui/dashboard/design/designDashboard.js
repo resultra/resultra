@@ -89,7 +89,9 @@ $(document).ready(function() {
 	
 		initObjectGridEditBehavior($component,designDashboardConfig,layoutDesignConfig)
 	
-	
+		// When in design mode, dashboard components need to have dotted lines as their border.
+		$component.addClass("layoutDesignContainer")
+		
 		var $parentDashboardCanvas = $(dashboardDesignCanvasSelector)
 		initObjectSelectionBehavior($component, 
 				$parentDashboardCanvas,function(selectedComponentID) {
