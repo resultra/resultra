@@ -2,5 +2,6 @@
     "subDirs": ["componentTitle",
 		"newComponentDialog",
 		"valueGrouping",
-		"valueSummary"]
+		"valueSummary",
+		"componentEdit"]
 }

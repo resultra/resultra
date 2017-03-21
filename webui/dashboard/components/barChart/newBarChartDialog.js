@@ -23,13 +23,18 @@ function openNewBarChartDialog(barChartParams) {
 			geometry: newBarChartParams.geometry
 		}
 		
-	
-	
 		console.log("saveNewBarChart: new bar chart params:  " + JSON.stringify(saveNewBarChartParams) )
 		jsonAPIRequest("dashboard/barChart/new",saveNewBarChartParams,function(barChartRef) {
 			console.log("saveNewBarChart: bar chart saved: new bar chart ID = " + barChartRef.barChartID)
 			
-			setContainerComponentInfo(barChartParams.$componentContainer,barChartRef,barChartRef.barChartID)
+		  var newComponentSetupParams = {
+			  parentDashboardID: newBarChartParams.dashboardID,
+		  	  $container: barChartParams.$componentContainer,
+			  componentID: barChartRef.barChartID,
+			  componentObjRef: barChartRef,
+			  designFormConfig: summaryTableDashboardDesignConfig
+		  }
+		  setupNewlyCreatedDashboardComponentInfo(newComponentSetupParams)
 			
 			$dialog.modal("hide")
 		

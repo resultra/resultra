@@ -57,7 +57,7 @@ function drawBarChart($barChart, barChartData) {
 }
 
 // Helper method for drawing the placholder bar chart when designing the dashboard.
-function drawDesignModeDummyBarChart(placeholderID) {
+function drawDesignModeDummyBarChart($barChart) {
 		
 	var dummyBarChartData = {
 		barChartID: placeholderID,
@@ -70,7 +70,7 @@ function drawDesignModeDummyBarChart(placeholderID) {
 	}
 
 	// Draw just the same as a real bar chart, but feedit dummy data
-   	drawBarChart(dummyBarChartData)
+   	drawBarChart($barChart,dummyBarChartData)
 }
 
 

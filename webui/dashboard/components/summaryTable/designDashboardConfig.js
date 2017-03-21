@@ -36,7 +36,7 @@ function initDesignDashboardSummaryTable() {
 	
 }
 
-function populatePlaceholderSummaryTableData(placeholderID) {
+function populatePlaceholderSummaryTableData($summaryTable) {
 }
 
 var summaryTableDashboardDesignConfig = {

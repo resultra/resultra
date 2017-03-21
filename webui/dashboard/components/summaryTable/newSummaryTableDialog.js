@@ -34,9 +34,15 @@ function openNewSummaryTableDialog(summaryTableParams) {
 		
 			console.log("saveNewBarChart: bar chart saved: new bar chart ID = " + summaryTableRef.summaryTableID)
 		
+			  var newComponentSetupParams = {
+				  parentDashboardID: newSummaryTableParams.dashboardID,
+			  	  $container: summaryTableParams.$componentContainer,
+				  componentID: summaryTableRef.summaryTableID,
+				  componentObjRef: summaryTableRef,
+				  designFormConfig: summaryTableDashboardDesignConfig
+			  }
+			  setupNewlyCreatedDashboardComponentInfo(newComponentSetupParams)
 			
-			setContainerComponentInfo(summaryTableParams.$componentContainer,summaryTableRef,summaryTableRef.summaryTableID)
-
 			newSummaryTableParams.summaryTableCreated = true
 			$dialog.modal("hide")
 		

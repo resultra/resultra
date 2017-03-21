@@ -52,8 +52,8 @@ function initDesignDashboardBarChart() {
 	
 }
 
-function populatePlaceholderBarchartData(placeholderID) {
-	drawDesignModeDummyBarChart(placeholderID);
+function populatePlaceholderBarchartData($barChart) {
+	drawDesignModeDummyBarChart($barChart);
 }
 
 var barChartDashboardDesignConfig = {

@@ -1,3 +1,4 @@
+var dashboardDesignCanvasSelector = "#dashboardCanvas"
 
 
 function initFormComponentDesignBehavior($componentContainer, componentIDs, objectRef, designFormConfig,layoutDesignConfig) {

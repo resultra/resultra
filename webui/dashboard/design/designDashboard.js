@@ -3,27 +3,6 @@ var dashboardPaletteItemsEditConfig = {
 	paletteItemSummaryTable: summaryTableDashboardDesignConfig
 }
 
-var dashboardDesignCanvasSelector = "#dashboardCanvas"
-
-
-function createDashboardLayoutDesignConfig() {
-	// TODO - Move to function for dragging items
-	function saveUpdatedDashboardComponentLayout(updatedLayout) {
-		console.log("saveUpdatedDashboardComponentLayout: component layout = " + JSON.stringify(updatedLayout))		
-		var setLayoutParams = {
-			dashboardID: designDashboardContext.dashboardID,
-			layout: updatedLayout
-		}
-		jsonAPIRequest("dashboard/setLayout", setLayoutParams, function(dashboardInfo) {})
-		
-	}
-	
-	var layoutDesignConfig = {
-		parentLayoutSelector: dashboardDesignCanvasSelector,
-		saveLayoutFunc: saveUpdatedDashboardComponentLayout
-	}
-	return layoutDesignConfig
-}
 
 $(document).ready(function() {
 	
@@ -44,10 +23,12 @@ $(document).ready(function() {
 			
 			var componentEditConfig = dashboardPaletteItemsEditConfig[droppedItemInfo.paletteItemID]
 			
+			var $componentContainer = droppedItemInfo.droppedElem
+			
 			setTimeout(function() {
 				// TODO - need to pass "layoutDesignConfig" parameter to initObjectGridEditBehavior
 				initObjectGridEditBehavior(droppedItemInfo.droppedElem,componentEditConfig)
-				componentEditConfig.populatePlaceholderData(droppedItemInfo.placeholderID)
+				componentEditConfig.populatePlaceholderData($componentContainer)
 			}, 50);
 			
 			// "repackage" the dropped item paramaters for creating a new dashboard component, adding
@@ -55,7 +36,7 @@ $(document).ready(function() {
 			var componentParams = {
 				dashboardContext: designDashboardContext, 
 				geometry: droppedItemInfo.geometry,
-				$componentContainer: droppedItemInfo.droppedElem,
+				$componentContainer: $componentContainer,
 				placeholderComponentID: droppedItemInfo.placeholderID,
 				finalizeLayoutIncludingNewComponentFunc: droppedItemInfo.finalizeLayoutIncludingNewComponentFunc
 			};
@@ -84,26 +65,7 @@ $(document).ready(function() {
 		west: fixedUILayoutPaneParams(200),
 		west__showOverflowOnHover:	true
 	})
-	
-	function initDashboardComponentDesignDashboardEditBehavior($component,componentID, designDashboardConfig,layoutDesignConfig) {
-		console.log("initDashboardComponentDesignDashboardEditBehavior: component ID = " + componentID)
-	
-		initObjectGridEditBehavior($component,designDashboardConfig,layoutDesignConfig)		
-	
-		// When in design mode, dashboard components need to have dotted lines as their border.
-		$component.addClass("layoutDesignContainer")
 		
-		var $parentDashboardCanvas = $(dashboardDesignCanvasSelector)
-		initObjectSelectionBehavior($component, 
-				$parentDashboardCanvas,function(selectedComponentID) {
-			console.log("dashboard design object selected: " + selectedComponentID)
-			var selectedObjRef	= getContainerObjectRef($component)
-			designDashboardConfig.selectionFunc($component,selectedObjRef)
-		})
-		
-		
-	}
-	
 	google.charts.setOnLoadCallback(function() {
 				
 		var layoutDesignConfig = createDashboardLayoutDesignConfig()
