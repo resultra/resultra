@@ -23,6 +23,10 @@ function loadRecordIntoProgressIndicator($progressContainer, recordRef) {
 				$progressBar.css('width',partialProgressPerc + "%")
 			}
 		})
+		
+		var $firstProgressBar = $progressBarContainer.find(".progress-bar").first()
+		var formattedVal = formatNumberValue(progressObjectRef.properties.valueFormat.format,val)
+		$firstProgressBar.text(formattedVal)
 	}
 	
 	// Populate the "intersection" of field values in the record

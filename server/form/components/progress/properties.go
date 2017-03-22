@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
+	"resultra/datasheet/server/generic/numberFormat"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/recordFilter"
 )
@@ -20,6 +21,7 @@ type ProgressProperties struct {
 	MaxVal        float64                               `json:"maxVal"`
 	ThresholdVals []ThresholdValues                     `json:"thresholdVals"`
 	LabelFormat   common.ComponentLabelFormatProperties `json:"labelFormat"`
+	ValueFormat   numberFormat.NumberFormatProperties   `json:"valueFormat"`
 	common.ComponentVisibilityProperties
 }
 
@@ -30,7 +32,8 @@ func newDefaultProgressProperties() ProgressProperties {
 		MaxVal:                        100.0,
 		ThresholdVals:                 []ThresholdValues{},
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
-		LabelFormat:                   common.NewDefaultLabelFormatProperties()}
+		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
+		ValueFormat:                   numberFormat.DefaultNumberFormatProperties()}
 	return props
 
 }

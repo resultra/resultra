@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
+	"resultra/datasheet/server/generic/numberFormat"
 )
 
 type ProgressIDInterface interface {
@@ -119,6 +120,18 @@ func (updateParams ProgressVisibilityParams) updateProps(progress *Progress) err
 	// TODO - Validate conditions
 
 	progress.Properties.VisibilityConditions = updateParams.VisibilityConditions
+
+	return nil
+}
+
+type ProgressValueFormatParams struct {
+	ProgressIDHeader
+	ValueFormat numberFormat.NumberFormatProperties `json:"valueFormat"`
+}
+
+func (updateParams ProgressValueFormatParams) updateProps(progress *Progress) error {
+
+	progress.Properties.ValueFormat = updateParams.ValueFormat
 
 	return nil
 }

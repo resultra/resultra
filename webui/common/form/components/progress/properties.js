@@ -130,7 +130,7 @@ function loadProgressProperties($progress,progressRef) {
 			}
 			var formatParams = {
 				parentFormID: progressRef.parentFormID,
-				textboxID: progressRef.progressID,
+				progressID: progressRef.progressID,
 				valueFormat: newValueFormat
 			}
 			jsonAPIRequest("frm/progress/setValueFormat", formatParams, function(updatedProgress) {
