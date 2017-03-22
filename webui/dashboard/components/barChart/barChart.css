@@ -1,9 +1,9 @@
 /* Bar chart specific style for outer container div */
 .dashboardBarChartComponent {
 	min-width:300px;
-	min-height:300px;
-	width: 400px;
-	height: 400px; 
+	min-height:100px;
+	width: 300px;
+	height: auto; 
 }
 
 

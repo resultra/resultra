@@ -14,7 +14,7 @@ function loadDashboardData(loadDashboardConfig)
 		setContainerComponentInfo($barChartElem,barChartData.barChart,barChartData.barChartID)
 		
 		$componentRow.append($barChartElem)
-		setElemDimensions($barChartElem,barChartData.barChart.properties.geometry)
+		setElemFixedWidthFlexibleHeight($barChartElem,barChartData.barChart.properties.geometry.sizeWidth)
 		
 		initBarChartData(dashboardID,$barChartElem, barChartData);	
 		

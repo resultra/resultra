@@ -60,7 +60,7 @@ var barChartDashboardDesignConfig = {
 	draggableHTMLFunc:	barChartContainerHTML,
 	populatePlaceholderData: populatePlaceholderBarchartData,
 	createNewComponentAfterDropFunc: openNewBarChartDialog,
-	resizeConstraints: elemResizeConstraints(100,600,400,400),
+	resizeConstraints: elemResizeConstraints(300,1200,300,300),
 	resizeFunc: resizeDashboardBarChart,
 	initFunc: initDesignDashboardBarChart,
 	selectionFunc: selectDashboardBarChart

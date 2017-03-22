@@ -32,9 +32,13 @@ function openNewBarChartDialog(barChartParams) {
 		  	  $container: barChartParams.$componentContainer,
 			  componentID: barChartRef.barChartID,
 			  componentObjRef: barChartRef,
-			  designFormConfig: summaryTableDashboardDesignConfig
+			  designFormConfig: barChartDashboardDesignConfig
 		  }
 		  setupNewlyCreatedDashboardComponentInfo(newComponentSetupParams)
+		  
+		  setElemFixedWidthFlexibleHeight(barChartParams.$componentContainer,
+			  		barChartRef.properties.geometry.sizeWidth)
+		  
 			
 			$dialog.modal("hide")
 		
