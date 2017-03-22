@@ -118,6 +118,31 @@ function loadProgressProperties($progress,progressRef) {
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
 	
 	
+	
+	var formatSelectionParams = {
+		elemPrefix: elemPrefix,
+		initialFormat: progressRef.properties.valueFormat.format,
+		formatChangedCallback: function (newFormat) {
+			console.log("Format changed for progress bar: " + newFormat)
+			
+			var newValueFormat = {
+				format: newFormat
+			}
+			var formatParams = {
+				parentFormID: progressRef.parentFormID,
+				textboxID: progressRef.progressID,
+				valueFormat: newValueFormat
+			}
+			jsonAPIRequest("frm/progress/setValueFormat", formatParams, function(updatedProgress) {
+				setContainerComponentInfo($progress,updatedProgress,updatedProgress.progressID)
+			})	
+			
+		}
+	}
+	initNumberFormatSelection(formatSelectionParams)
+	
+	
+	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#progressProps')
 		

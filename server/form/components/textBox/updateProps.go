@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
+	"resultra/datasheet/server/generic/numberFormat"
 )
 
 type TextBoxIDInterface interface {
@@ -67,7 +68,7 @@ func (updateParams TextBoxResizeParams) updateProps(textBox *TextBox) error {
 
 type TextBoxValueFormatParams struct {
 	TextBoxIDHeader
-	ValueFormat TextBoxValueFormatProperties `json:"valueFormat"`
+	ValueFormat numberFormat.NumberFormatProperties `json:"valueFormat"`
 }
 
 func (updateParams TextBoxValueFormatParams) updateProps(textBox *TextBox) error {

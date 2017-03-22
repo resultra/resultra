@@ -4,22 +4,16 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
+	"resultra/datasheet/server/generic/numberFormat"
 	"resultra/datasheet/server/generic/uniqueID"
+
 	"resultra/datasheet/server/recordFilter"
 )
-
-type TextBoxValueFormatProperties struct {
-	Format string `json:"format"`
-}
-
-func defaultValueFormat() TextBoxValueFormatProperties {
-	return TextBoxValueFormatProperties{Format: "general"}
-}
 
 type TextBoxProperties struct {
 	FieldID     string                                `json:"fieldID"`
 	Geometry    componentLayout.LayoutGeometry        `json:"geometry"`
-	ValueFormat TextBoxValueFormatProperties          `json:"valueFormat"`
+	ValueFormat numberFormat.NumberFormatProperties   `json:"valueFormat"`
 	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
 	common.ComponentVisibilityProperties
 }
@@ -47,6 +41,6 @@ func newDefaultTextBoxProperties() TextBoxProperties {
 	props := TextBoxProperties{
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
-		ValueFormat:                   defaultValueFormat()}
+		ValueFormat:                   numberFormat.DefaultNumberFormatProperties()}
 	return props
 }
