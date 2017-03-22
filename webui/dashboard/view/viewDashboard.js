@@ -59,51 +59,49 @@ $(document).ready(function() {
 	
 	initDatabaseTOC(tocConfig)
 	
-	google.charts.setOnLoadCallback(function() {
 		
-		function initDashboardComponentViewBehavior($component,componentID, viewDashboardConfig) {
+	function initDashboardComponentViewBehavior($component,componentID, viewDashboardConfig) {
+		
+		var $parentDashboardCanvas = $(viewDashboardCanvasSelector)	
+		initObjectSelectionBehavior($component, 
+				$parentDashboardCanvas,function(selectedComponentID) {
+			console.log("dashboard view object selected: " + selectedComponentID)
+			var selectedObjRef	= getContainerObjectRef($component)
+			viewDashboardConfig.selectionFunc($component,selectedObjRef)
+		})
+	}
+		
+	var loadDashboardConfig = {
+		dashboardContext: viewDashboardContext,
+		doneLoadingDashboardDataFunc: function() {
 			
-			var $parentDashboardCanvas = $(viewDashboardCanvasSelector)	
-			initObjectSelectionBehavior($component, 
-					$parentDashboardCanvas,function(selectedComponentID) {
-				console.log("dashboard view object selected: " + selectedComponentID)
-				var selectedObjRef	= getContainerObjectRef($component)
-				viewDashboardConfig.selectionFunc($component,selectedObjRef)
+			initObjectCanvasSelectionBehavior(viewDashboardCanvasSelector, function() {
+//				initViewDashboardProperties(viewDashboardContext.dashboardID)
+				hideSiblingsShowOne('#dashboardViewProps')
 			})
-		}
 			
-		var loadDashboardConfig = {
-			dashboardContext: viewDashboardContext,
-			doneLoadingDashboardDataFunc: function() {
-				
-				initObjectCanvasSelectionBehavior(viewDashboardCanvasSelector, function() {
-	//				initViewDashboardProperties(viewDashboardContext.dashboardID)
-					hideSiblingsShowOne('#dashboardViewProps')
-				})
-				
-				
-			},
-			initBarChartComponent: function($barChart,barChartRef) {
-				
-				var barChartViewConfig = barChartViewDashboardConfig(barChartRef)
-				
-				console.log("Init bar chart component")
-				initDashboardComponentViewBehavior($barChart,
-						barChartRef.barChartID,barChartViewConfig)
-			},
-			initSummaryTableComponent: function($summaryTable,summaryTableRef) {
-				
-				var summaryTableViewConfig = summaryTableViewDashboardConfig(summaryTableRef)
-				
-				console.log("Init summary table component")
-				initDashboardComponentViewBehavior($summaryTable,
-						summaryTableRef.summaryTableID,summaryTableViewConfig)
-				
-			}
+			
+		},
+		initBarChartComponent: function($barChart,barChartRef) {
+			
+			var barChartViewConfig = barChartViewDashboardConfig(barChartRef)
+			
+			console.log("Init bar chart component")
+			initDashboardComponentViewBehavior($barChart,
+					barChartRef.barChartID,barChartViewConfig)
+		},
+		initSummaryTableComponent: function($summaryTable,summaryTableRef) {
+			
+			var summaryTableViewConfig = summaryTableViewDashboardConfig(summaryTableRef)
+			
+			console.log("Init summary table component")
+			initDashboardComponentViewBehavior($summaryTable,
+					summaryTableRef.summaryTableID,summaryTableViewConfig)
+			
 		}
-		
-		loadDashboardData(loadDashboardConfig)
-	})
+	}
+	
+	loadDashboardData(loadDashboardConfig)
 		
 
 }); // document ready

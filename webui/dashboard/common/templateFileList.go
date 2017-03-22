@@ -1,3 +1,3 @@
 package common
 
-var TemplateFileList = []string{"static/dashboard/common/googleCharts.html"}
+var TemplateFileList = []string{"static/dashboard/common/include.html"}

@@ -7,7 +7,7 @@ function barChartContainerHTML() {
 	// is a conflict with the Google chart code disabling the resize behavor after the chart is refreshed.
 	var containerHTML = ''+
 	'<div class="layoutContainer dashboardBarChartComponent">' +
-		'<div class="dashboardChartWrapper"</div>'+
+		'<canvas class="dashboardChartWrapper"</canvas>'+
 	'</div>';
 	return containerHTML
 }
@@ -15,45 +15,49 @@ function barChartContainerHTML() {
 
 function drawBarChart($barChart, barChartData) {
 	
-	var dataRows = [];
+	
+	var $chart = $barChart.find(".dashboardChartWrapper")
+	
+	var chartLabels = []
+	var chartData = []
 	for(var dataIndex in barChartData.dataRows) {
 		var rowData = barChartData.dataRows[dataIndex]
 		console.log("Adding row: label=" + rowData.label + " val=" + rowData.value)
-		dataRows.push([rowData.label,rowData.value])
+		chartLabels.push(rowData.label)
+		chartData.push(rowData.value)
 	}
-	
-	var dataTable = new google.visualization.DataTable();
-	dataTable.addColumn('string',barChartData.xAxisTitle)
-	dataTable.addColumn('number',barChartData.yAxisTitle)
-	dataTable.addRows(dataRows)
-	
-	var barChartOptions = {
-		title: barChartData.title,
-		hAxis: {
-			title: barChartData.xAxisTitle,
-			minValue: 0
-		},
-		vAxis: {
-			title: barChartData.yAxisTitle
-		},
-		legend: { position: 'none' },
-		chartArea:{left:40,top:30,width:'85%',height:'75%'}
-	};
-	
-	// Place the chart in an inner div - see the comment in barChartContainerHTML()
-	
-	var $chartWrapper = $barChart.find(".dashboardChartWrapper")
-  	var chartContainerElem = $chartWrapper.get(0)
-	var barChart = new google.visualization.ColumnChart(chartContainerElem);
-	
-	// Whenever new data is loaded into the bar chart and it is redrawn,
-	// a new handler to redraw/refresh the chart is registered. This is needed
-	// in cases where the user resizes the bar chart.
-	$('#' + barChartData.barChartID).data("redrawFunc", function () {
-		barChart.draw(dataTable, barChartOptions);
-	})
 
-	barChart.draw(dataTable, barChartOptions);
+	var myChart = new Chart($chart, {
+	  type: 'bar',
+	  data: {
+	    labels: chartLabels,
+	    datasets: [{
+	      label: barChartData.xAxisTitle,
+	      data: chartData
+	    }]
+	  },
+	  options: {
+		  title: {
+		              display: true,
+		              text: barChartData.title
+		          },
+		  scales: {
+		    yAxes: [{
+		      scaleLabel: {
+		        display: true,
+		        labelString: barChartData.yAxisTitle
+		      }
+		    }],
+		    xAxes: [{
+		      scaleLabel: {
+		        display: true,
+		        labelString: barChartData.xAxisTitle
+		      }
+		    }]
+		  }
+	  }
+	});
+	
 }
 
 // Helper method for drawing the placholder bar chart when designing the dashboard.

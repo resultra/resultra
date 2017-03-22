@@ -65,32 +65,29 @@ $(document).ready(function() {
 		west: fixedUILayoutPaneParams(200),
 		west__showOverflowOnHover:	true
 	})
-		
-	google.charts.setOnLoadCallback(function() {
-				
-		var layoutDesignConfig = createDashboardLayoutDesignConfig()
-		
-		var loadDashboardConfig = {
-			dashboardContext: designDashboardContext,
-			doneLoadingDashboardDataFunc: function() {
-				initObjectCanvasSelectionBehavior(dashboardDesignCanvasSelector, function() {
-					initDesignDashboardProperties(designDashboardContext.dashboardID)
-					hideSiblingsShowOne('#dashboardProps')
-				})
-			},
-			initBarChartComponent: function($barChart,barChartRef) {
-				console.log("Init bar chart component")
-				initDashboardComponentDesignDashboardEditBehavior($barChart,
-						barChartRef.barChartID,barChartDashboardDesignConfig,layoutDesignConfig)
-			},
-			initSummaryTableComponent: function($summaryTable,summaryTableRef) {
-				console.log("Init summary table component")
-				initDashboardComponentDesignDashboardEditBehavior($summaryTable,
-						summaryTableRef.summaryTableID,summaryTableDashboardDesignConfig,layoutDesignConfig)
-			}
+						
+	var layoutDesignConfig = createDashboardLayoutDesignConfig()
+	
+	var loadDashboardConfig = {
+		dashboardContext: designDashboardContext,
+		doneLoadingDashboardDataFunc: function() {
+			initObjectCanvasSelectionBehavior(dashboardDesignCanvasSelector, function() {
+				initDesignDashboardProperties(designDashboardContext.dashboardID)
+				hideSiblingsShowOne('#dashboardProps')
+			})
+		},
+		initBarChartComponent: function($barChart,barChartRef) {
+			console.log("Init bar chart component")
+			initDashboardComponentDesignDashboardEditBehavior($barChart,
+					barChartRef.barChartID,barChartDashboardDesignConfig,layoutDesignConfig)
+		},
+		initSummaryTableComponent: function($summaryTable,summaryTableRef) {
+			console.log("Init summary table component")
+			initDashboardComponentDesignDashboardEditBehavior($summaryTable,
+					summaryTableRef.summaryTableID,summaryTableDashboardDesignConfig,layoutDesignConfig)
 		}
-		
-		loadDashboardData(loadDashboardConfig)
-	});
+	}
+	
+	loadDashboardData(loadDashboardConfig)
 	  
 });

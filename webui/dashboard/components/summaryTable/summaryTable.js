@@ -64,7 +64,7 @@ function initSummaryTableData(dashboardID,$summaryTable, summaryTableData) {
 	var tableTitle = summaryTableData.summaryTable.properties.title
 	if (tableTitle !== null && tableTitle.length >0) {
 		var $tableTitle = $("<caption>" + tableTitle + "</caption>")
-		$summaryTable.append($tableTitle)	
+		$tableElem.append($tableTitle)	
 	}
 
 	populateSummaryTableHeader($tableElem,summaryTableData)
