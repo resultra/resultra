@@ -2,7 +2,7 @@
 function summaryTableComponentHTML(summaryTableID) {
 	
 	var containerHTML = ''+
-	'<div class="layoutContainer dashboardBarChartComponent">' +
+	'<div class="layoutContainer dashboardSummaryTableComponent">' +
 		'<table class="table table-hover table-bordered"></table>'+
 	'</div>';
 	return containerHTML

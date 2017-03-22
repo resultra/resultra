@@ -87,6 +87,7 @@ $(document).ready(function() {
 			var barChartViewConfig = barChartViewDashboardConfig(barChartRef)
 			
 			console.log("Init bar chart component")
+			
 			initDashboardComponentViewBehavior($barChart,
 					barChartRef.barChartID,barChartViewConfig)
 		},
@@ -95,6 +96,12 @@ $(document).ready(function() {
 			var summaryTableViewConfig = summaryTableViewDashboardConfig(summaryTableRef)
 			
 			console.log("Init summary table component")
+			
+			// In design mode, the user can resize the table to fixed dimensions. However, in 
+			// view mode, the dimensions set in design mode determins the maximum height of the 
+			// table, after which the table will start scrolling.
+			setElemFixedWidthMaxHeight($summaryTable,summaryTableRef.properties.geometry)			
+			
 			initDashboardComponentViewBehavior($summaryTable,
 					summaryTableRef.summaryTableID,summaryTableViewConfig)
 			

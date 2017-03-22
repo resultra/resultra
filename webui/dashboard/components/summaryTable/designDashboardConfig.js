@@ -43,8 +43,9 @@ var summaryTableDashboardDesignConfig = {
 	draggableHTMLFunc:	summaryTableComponentHTML,
 	populatePlaceholderData: populatePlaceholderSummaryTableData,
 	createNewComponentAfterDropFunc: openNewSummaryTableDialog,
-	resizeConstraints: elemResizeConstraints(100,600,400,400),
+	resizeConstraints: elemResizeConstraints(100,1200,300,1200),
 	resizeFunc: resizeDashboardSummaryTable,
+	resizeHandles: 'e,s,se',
 	initFunc: initDesignDashboardSummaryTable,
 	selectionFunc: selectDashboardSummaryTable
 	

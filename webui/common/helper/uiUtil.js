@@ -66,13 +66,19 @@ function setElemDimensions(elem, geometry) {
 	});
 }
 
-function setElemFixedWidthFlexibleHeight(elem,sizeWidth) {
-	elem.css({
+function setElemFixedWidthFlexibleHeight($elem,sizeWidth) {
+	$elem.css({
 		width: sizeWidth,
 		height: "auto",
 		position: "relative"
 	});
 	
+}
+
+function setElemFixedWidthMaxHeight($elem,geometry) {
+	setElemFixedWidthFlexibleHeight($elem,geometry.sizeWidth)
+	var maxHeightPx = geometry.sizeHeight + "px"
+	$elem.css('max-height',maxHeightPx)
 }
 
 function initButtonClickHandler(buttonSelector,handlerFunc) {

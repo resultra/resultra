@@ -1,5 +1,5 @@
 {
-    "cssFiles": [], 
+    "cssFiles": ["summaryTable.css"], 
     "htmlFiles": ["newSummaryTableDialog.html",
 		"viewProperties.html",
 		"properties.html"], 

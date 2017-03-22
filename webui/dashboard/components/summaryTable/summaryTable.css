@@ -1,0 +1,10 @@
+.dashboardSummaryTableComponent {
+	min-width:300px;
+	min-height:100px;
+	width: 300px;
+	height: auto;
+}
+
+.dashboardSummaryTableComponent table {
+	margin-bottom: 0px;
+}
