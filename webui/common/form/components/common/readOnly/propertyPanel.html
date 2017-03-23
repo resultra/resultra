@@ -1,0 +1,24 @@
+{{define "componentReadOnlyProps"}}
+	<div class="alert alert-info" role="alert">
+		Set whether values can be modified in this form.
+	</div>
+	
+	<form id="{{.ElemPrefix}}FormComponentReadOnlyPropertyPanelForm">
+		<div class="form-group marginBottom0">
+			<div class="checkbox">
+			     <input type="checkbox" id="{{.ElemPrefix}}FormComponentReadOnlyProperty">
+			    <label for="{{.ElemPrefix}}FormComponentReadOnlyProperty"> Values in this form are read-only</label>
+			  </div>
+		</div>
+	</form>
+	
+
+{{end}}
+
+{{define "componentReadOnlyPropertyPanel"}}
+
+	{{template "propertyPanelPrefix" .PanelParams}}
+		{{template "componentReadOnlyProps" .}}
+	{{template "propertyPanelSuffix"}}
+
+{{end}}

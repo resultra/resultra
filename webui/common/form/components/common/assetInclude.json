@@ -3,5 +3,6 @@
 		"componentEdit",
 		"newFormElemDialog",
 		"label",
-		"visibility"]
+		"visibility",
+		"readOnly"]
 }

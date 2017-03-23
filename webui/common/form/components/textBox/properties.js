@@ -65,6 +65,15 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
 	
 	
+	var readOnlyParams = {
+		elemPrefix: elemPrefix,
+		initialVal: true,
+		readOnlyPropertyChangedCallback: function(updatedReadOnlyVal) {
+			console.log("read only value changed to: " + updatedReadOnlyVal )
+		}
+	}
+	initFormComponentReadOnlyPropertyPanel(readOnlyParams)
+	
 	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#textBoxProps')

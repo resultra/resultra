@@ -3,6 +3,7 @@ package common
 import (
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
+	"resultra/datasheet/webui/common/form/components/common/readOnly"
 	"resultra/datasheet/webui/common/form/components/common/visibility"
 )
 
@@ -15,5 +16,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, newFormElemDialog.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, label.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, visibility.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, readOnly.TemplateFileList...)
 
 }
