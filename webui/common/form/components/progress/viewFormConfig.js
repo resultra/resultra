@@ -24,6 +24,7 @@ function loadRecordIntoProgressIndicator($progressContainer, recordRef) {
 			}
 		})
 		
+		// Put the formatted value on the first progress bar.
 		var $firstProgressBar = $progressBarContainer.find(".progress-bar").first()
 		var formattedVal = formatNumberValue(progressObjectRef.properties.valueFormat.format,val)
 		$firstProgressBar.text(formattedVal)

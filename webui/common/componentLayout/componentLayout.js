@@ -19,6 +19,40 @@ function pruneComponentLayoutEmptyColsAndRows($parentLayout) {
 	
 }
 
+// Update column and row visibility to reflect child components. Rows and columns are 
+// only displayed if one or more child components (layoutContainers) are visible.
+// Note that the standard :visible jQuery selector can't be used, since this selector
+// will show the element being hidden if any of it's parents are hidden, even if the
+// individual element is not hidden; for this reason, the 'display:none' css property
+// needs to be individually queried.
+function propagateChildComponentVisibilityToParentComponentRowsAndCols($parentLayout) {
+	$parentLayout.find(".componentCol").each(function() {
+		var $col = $(this)
+		var visibleContainerCount = 0
+		$col.find(".layoutContainer").each(function() {
+			if(elemIsDisplayed($(this))) { visibleContainerCount++ }
+		})
+		if(visibleContainerCount > 0) {
+			$col.show()
+		} else {
+			$col.hide()
+		}
+	})
+	$parentLayout.find(".componentRow").each(function() {
+		var $row = $(this)
+		var visibleColCount = 0
+		$row.find(".componentCol").each(function() {
+			if(elemIsDisplayed($(this))) { visibleColCount++ }				
+		})
+		if(visibleColCount > 0) {
+			$row.show()
+		} else {
+			$row.hide()
+		}
+	})
+}
+
+
 
 // Reads the component layout from the DOM elements, using parentComponentLayoutSelector
 // as the parent div of the layout elements.
