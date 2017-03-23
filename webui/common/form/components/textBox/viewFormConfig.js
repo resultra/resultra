@@ -21,6 +21,13 @@ function loadRecordIntoTextBox($textBoxContainer, recordRef) {
 	var $textBoxInput = $textBoxContainer.find('input')
 	var componentContext = $textBoxContainer.data("componentContext")
 	
+	if(textBoxObjectRef.properties.readOnly) {
+		$textBoxInput.prop('disabled',true);
+	} else {
+		$textBoxInput.prop('disabled',false);
+		
+	}
+	
 	
 	function setRawInputVal(rawVal) { $textBoxInput.data("rawVal",rawVal) }
 

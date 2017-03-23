@@ -105,3 +105,15 @@ func (updateParams TextBoxVisibilityParams) updateProps(textBox *TextBox) error 
 
 	return nil
 }
+
+type TextBoxReadOnlyParams struct {
+	TextBoxIDHeader
+	ReadOnly bool `json:"readOnly"`
+}
+
+func (updateParams TextBoxReadOnlyParams) updateProps(textBox *TextBox) error {
+
+	textBox.Properties.ReadOnly = updateParams.ReadOnly
+
+	return nil
+}

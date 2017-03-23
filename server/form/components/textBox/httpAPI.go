@@ -14,6 +14,7 @@ func init() {
 	textBoxRouter.HandleFunc("/api/frm/textBox/setValueFormat", setValueFormat)
 	textBoxRouter.HandleFunc("/api/frm/textBox/setLabelFormat", setLabelFormat)
 	textBoxRouter.HandleFunc("/api/frm/textBox/setVisibility", setVisibility)
+	textBoxRouter.HandleFunc("/api/frm/textBox/setReadOnly", setReadOnly)
 
 	http.Handle("/api/frm/textBox/", textBoxRouter)
 }
@@ -68,8 +69,18 @@ func setLabelFormat(w http.ResponseWriter, r *http.Request) {
 	}
 	processTextBoxPropUpdate(w, r, params)
 }
+
 func setVisibility(w http.ResponseWriter, r *http.Request) {
 	var params TextBoxVisibilityParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processTextBoxPropUpdate(w, r, params)
+}
+
+func setReadOnly(w http.ResponseWriter, r *http.Request) {
+	var params TextBoxReadOnlyParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

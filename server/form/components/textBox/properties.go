@@ -15,6 +15,7 @@ type TextBoxProperties struct {
 	Geometry    componentLayout.LayoutGeometry        `json:"geometry"`
 	ValueFormat numberFormat.NumberFormatProperties   `json:"valueFormat"`
 	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+	ReadOnly    bool                                  `json:"readOnly"`
 	common.ComponentVisibilityProperties
 }
 
@@ -41,6 +42,7 @@ func newDefaultTextBoxProperties() TextBoxProperties {
 	props := TextBoxProperties{
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
-		ValueFormat:                   numberFormat.DefaultNumberFormatProperties()}
+		ValueFormat:                   numberFormat.DefaultNumberFormatProperties(),
+		ReadOnly:                      false}
 	return props
 }

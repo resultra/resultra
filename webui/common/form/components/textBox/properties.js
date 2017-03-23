@@ -67,12 +67,20 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 	
 	var readOnlyParams = {
 		elemPrefix: elemPrefix,
-		initialVal: true,
+		initialVal: textBoxRef.properties.readOnly,
 		readOnlyPropertyChangedCallback: function(updatedReadOnlyVal) {
-			console.log("read only value changed to: " + updatedReadOnlyVal )
+			var params = {
+				parentFormID: textBoxRef.parentFormID,
+				textboxID: textBoxRef.textBoxID,
+				readOnly: updatedReadOnlyVal
+			}
+			jsonAPIRequest("frm/textBox/setReadOnly",params,function(updatedTextBox) {
+				setContainerComponentInfo($textBox,updatedTextBox,updatedTextBox.textBoxID)
+			})
 		}
 	}
 	initFormComponentReadOnlyPropertyPanel(readOnlyParams)
+	
 	
 	
 	// Toggle to the check box properties, hiding the other property panels
