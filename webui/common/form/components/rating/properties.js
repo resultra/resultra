@@ -80,7 +80,7 @@ function loadRatingProperties($rating,ratingRef) {
 			})
 		}
 	}
-	initFormComponentReadOnlyPropertyPanel(readOnlyParams)
+	initFormComponentPermissionsPropertyPanel(readOnlyParams)
 	
 	
 	

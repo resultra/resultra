@@ -94,7 +94,7 @@ function loadCheckboxProperties($container, checkBoxRef) {
 			})
 		}
 	}
-	initFormComponentReadOnlyPropertyPanel(readOnlyParams)
+	initFormComponentPermissionsPropertyPanel(readOnlyParams)
 	
 	
 }

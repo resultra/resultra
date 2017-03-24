@@ -1,9 +1,9 @@
-{{define "componentReadOnlyProps"}}
+{{define "componentPermissionProps"}}
 	<div class="alert alert-info" role="alert">
 		Set whether values can be modified in this form.
 	</div>
 	
-	<form id="{{.ElemPrefix}}FormComponentReadOnlyPropertyPanelForm">
+	<form id="{{.ElemPrefix}}FormComponentPermissionsPropertyPanelForm">
 		<div class="form-group marginBottom0">
 			<div class="checkbox">
 			     <input type="checkbox" id="{{.ElemPrefix}}FormComponentReadOnlyProperty">
@@ -15,10 +15,10 @@
 
 {{end}}
 
-{{define "componentReadOnlyPropertyPanel"}}
+{{define "componentPermissionsPropertyPanel"}}
 
 	{{template "propertyPanelPrefix" .PanelParams}}
-		{{template "componentReadOnlyProps" .}}
+		{{template "componentPermissionProps" .}}
 	{{template "propertyPanelSuffix"}}
 
 {{end}}

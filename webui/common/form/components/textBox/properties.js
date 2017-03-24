@@ -79,7 +79,7 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 			})
 		}
 	}
-	initFormComponentReadOnlyPropertyPanel(readOnlyParams)
+	initFormComponentPermissionsPropertyPanel(readOnlyParams)
 	
 	
 	

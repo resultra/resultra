@@ -3,7 +3,7 @@ package textBox
 import (
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
-	"resultra/datasheet/webui/common/form/components/common/readOnly"
+	"resultra/datasheet/webui/common/form/components/common/permissions"
 	"resultra/datasheet/webui/common/form/components/common/visibility"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -14,7 +14,7 @@ type TextboxDesignTemplateParams struct {
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
-	ReadOnlyPanelParams      readOnly.ReadOnlyPropertyTemplateParams
+	PermissionPanelParams      permissions.PermissionsPropertyTemplateParams
 }
 
 type TextboxViewTemplateParams struct {
@@ -35,7 +35,7 @@ func init() {
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "textboxLabel"}},
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "textboxFormat"},
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "textBoxVisibility"),
-		ReadOnlyPanelParams:   readOnly.NewReadOnlyTemplateParams(elemPrefix, "textBoxReadOnly"),
+		PermissionPanelParams:   permissions.NewPermissionTemplateParams(elemPrefix, "textBoxPerms"),
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
 			DialogTitle: "New Text Box",

@@ -1,4 +1,4 @@
-function initFormComponentReadOnlyPropertyPanel(params) {
+function initFormComponentPermissionsPropertyPanel(params) {
 	
 	var checkboxSelector = '#' + params.elemPrefix + "FormComponentReadOnlyProperty"
 	

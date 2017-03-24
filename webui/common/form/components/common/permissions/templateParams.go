@@ -1,21 +1,21 @@
-package readOnly
+package permissions
 
 import (
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
 
-type ReadOnlyPropertyTemplateParams struct {
+type PermissionsPropertyTemplateParams struct {
 	PanelParams propertiesSidebar.PanelTemplateParams
 	ElemPrefix  string
 }
 
-func NewReadOnlyTemplateParams(elemPrefix string, panelID string) ReadOnlyPropertyTemplateParams {
+func NewPermissionTemplateParams(elemPrefix string, panelID string) PermissionsPropertyTemplateParams {
 
 	panelParams := propertiesSidebar.PanelTemplateParams{
 		PanelHeaderLabel: "Permissions",
 		PanelID:          panelID}
 
-	params := ReadOnlyPropertyTemplateParams{ElemPrefix: elemPrefix,
+	params := PermissionsPropertyTemplateParams{ElemPrefix: elemPrefix,
 		PanelParams: panelParams}
 
 	return params
