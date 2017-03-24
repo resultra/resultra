@@ -65,7 +65,7 @@ function initRatingRecordEditBehavior($ratingContainer,componentContext,recordPr
 		$ratingControl.prop('disabled',true);
 		
 	} else {
-		$ratingControl.prop('disabled',true);
+		$ratingControl.prop('disabled',false);
 		// The rating control is initialized the same way for design and view mode, but in view mode
 		// the event handlers need to be setup for when the user changes a rating value.
 		$ratingControl.on('change', function() {
