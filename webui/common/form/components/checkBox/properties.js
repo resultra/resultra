@@ -79,6 +79,22 @@ function loadCheckboxProperties($container, checkBoxRef) {
 		saveVisibilityConditionsCallback:saveVisibilityConditions
 	}
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
+
+	var readOnlyParams = {
+		elemPrefix: elemPrefix,
+		initialVal: checkBoxRef.properties.readOnly,
+		readOnlyPropertyChangedCallback: function(updatedReadOnlyVal) {
+			var params = {
+				parentFormID: checkBoxRef.parentFormID,
+				checkBoxID: checkBoxRef.checkBoxID,
+				readOnly: updatedReadOnlyVal
+			}
+			jsonAPIRequest("frm/checkBox/setReadOnly",params,function(updatedCheckboxRef) {
+				setContainerComponentInfo($container,updatedCheckboxRef,updatedCheckboxRef.checkBoxID)		
+			})
+		}
+	}
+	initFormComponentReadOnlyPropertyPanel(readOnlyParams)
 	
 	
 }

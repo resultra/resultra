@@ -3,6 +3,7 @@ package checkBox
 import (
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
+	"resultra/datasheet/webui/common/form/components/common/readOnly"
 	"resultra/datasheet/webui/common/form/components/common/visibility"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -13,6 +14,7 @@ type CheckboxDesignTemplateParams struct {
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
+	ReadOnlyPanelParams      readOnly.ReadOnlyPropertyTemplateParams
 }
 
 type CheckboxViewTemplateParams struct {
@@ -31,7 +33,8 @@ func init() {
 		ElemPrefix: elemPrefix,
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix, HideNoLabelOption: true,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "checkBoxLabel"}},
-		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "captionVisibility"),
+		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "checkBoxVisibility"),
+		ReadOnlyPanelParams:   readOnly.NewReadOnlyTemplateParams(elemPrefix, "checkBoxReadOnly"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "checkboxFormat"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
