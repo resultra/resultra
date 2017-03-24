@@ -23,6 +23,21 @@ function loadImageProperties($attachmentContainer, attachmentRef) {
 	}
 	initComponentLabelPropertyPanel(labelParams)
 
+	var permissionParams = {
+		elemPrefix: elemPrefix,
+		initialVal: attachmentRef.properties.permissions,
+		permissionsChangedCallback: function(updatedPermissions) {
+			var params = {
+				parentFormID: attachmentRef.parentFormID,
+				imageID: attachmentRef.imageID,
+				permissions: updatedPermissions
+			}
+			jsonAPIRequest("frm/image/setPermissions",params,function(updatedAttachment) {
+				setContainerComponentInfo($attachmentContainer,updatedAttachment,updatedAttachment.imageID)
+			})
+		}
+	}
+	initFormComponentPermissionsPropertyPanel(permissionParams)
 
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#imageProps')

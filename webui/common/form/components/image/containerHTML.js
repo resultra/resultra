@@ -74,7 +74,7 @@ function initAttachmentFormComponentViewModeGeometry($container,attachRef) {
 	
 }
 
-function attachmentGalleryThumbnailContainer(attachRef,deleteAttachmentCallback) {
+function attachmentGalleryThumbnailContainer(attachRef,deleteAttachmentCallback,isReadOnly) {
 	
 	var attachURL = attachRef.url
 	
@@ -127,14 +127,21 @@ function attachmentGalleryThumbnailContainer(attachRef,deleteAttachmentCallback)
 	}
 	
 	var $deleteButton = $thumbnail.find(".deleteAttachButton")
-	initButtonControlClickHandler($deleteButton,function() {
-		openAttachmentConfirmDeleteDialog(deleteAttachmentInThumbnail)
-	})
-	
 	var $infoButton = $thumbnail.find(".attachmentInfoButton")
-	initButtonControlClickHandler($infoButton,function() {
-		openAttachmentInfoDialog(attachRef)
-	})
+	
+	if(isReadOnly) {
+		$deleteButton.remove()
+		$infoButton.remove()
+		
+	} else {
+		initButtonControlClickHandler($infoButton,function() {
+			openAttachmentInfoDialog(attachRef)
+		})
+		initButtonControlClickHandler($deleteButton,function() {
+			openAttachmentConfirmDeleteDialog(deleteAttachmentInThumbnail)
+		})
+		
+	}
 	
 	// Prevent click-through from the buttons onto the thumbnail itself. This prevent the attachment from 
 	// being displayed when a button is pressed in the button area.

@@ -18,6 +18,16 @@ function loadRecordIntoImage(imageElem, recordRef) {
 
 	console.log("loadRecordIntoImage: Field ID to load data:" + imageFieldID)
 	
+	var componentIsReadOnly = formComponentIsReadOnly(imageObjectRef.properties.permissions)
+	
+	if(componentIsReadOnly) {
+		imageElem.find(".imageComponentManageAttachmentsButtton").hide()
+		imageElem.find(".attachmentComponentAddLinkButton").hide()
+	} else {
+		imageElem.find(".imageComponentManageAttachmentsButtton").show()
+		imageElem.find(".attachmentComponentAddLinkButton").show()
+	}
+	
 	
 	function saveRecordUpdateWithCurrentlyDisplayedAttachmentList() {
 		
@@ -69,7 +79,7 @@ function loadRecordIntoImage(imageElem, recordRef) {
 				var attachRef = attachRefs[refIndex]
 								
 				var $thumbnailContainer = attachmentGalleryThumbnailContainer(attachRef,
-								saveRecordUpdateWithCurrentlyDisplayedAttachmentList)
+								saveRecordUpdateWithCurrentlyDisplayedAttachmentList,componentIsReadOnly)
 				$thumbnailContainer.data("attachRef",attachRef)
 				$imageInnerContainer.append($thumbnailContainer)
 				

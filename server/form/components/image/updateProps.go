@@ -78,3 +78,15 @@ func (updateParams AttachmentLabelFormatParams) updateProps(image *Image) error 
 
 	return nil
 }
+
+type AttachmentPermissionParams struct {
+	ImageIDHeader
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
+}
+
+func (updateParams AttachmentPermissionParams) updateProps(image *Image) error {
+
+	image.Properties.Permissions = updateParams.Permissions
+
+	return nil
+}

@@ -8,9 +8,10 @@ import (
 )
 
 type ImageProperties struct {
-	FieldID     string                                `json:"fieldID"`
-	Geometry    componentLayout.LayoutGeometry        `json:"geometry"`
-	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+	FieldID     string                                     `json:"fieldID"`
+	Geometry    componentLayout.LayoutGeometry             `json:"geometry"`
+	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 }
 
 func (srcProps ImageProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ImageProperties, error) {
@@ -28,6 +29,7 @@ func (srcProps ImageProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*I
 
 func newDefaultAttachmentProperties() ImageProperties {
 	props := ImageProperties{
-		LabelFormat: common.NewDefaultLabelFormatProperties()}
+		LabelFormat: common.NewDefaultLabelFormatProperties(),
+		Permissions: common.NewDefaultComponentValuePermissionsProperties()}
 	return props
 }
