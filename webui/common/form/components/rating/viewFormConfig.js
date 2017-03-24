@@ -61,7 +61,7 @@ function initRatingRecordEditBehavior($ratingContainer,componentContext,recordPr
 		
 	}
 	
-	if(ratingObjectRef.properties.readOnly) {
+	if(formComponentIsReadOnly(ratingObjectRef.properties.permissions)) {
 		$ratingControl.prop('disabled',true);
 		
 	} else {

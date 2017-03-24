@@ -68,14 +68,14 @@ function loadRatingProperties($rating,ratingRef) {
 	
 	var readOnlyParams = {
 		elemPrefix: elemPrefix,
-		initialVal: ratingRef.properties.readOnly,
-		readOnlyPropertyChangedCallback: function(updatedReadOnlyVal) {
+		initialVal: ratingRef.properties.permissions,
+		permissionsChangedCallback: function(updatedPermissions) {
 			var params = {
 				parentFormID: ratingRef.parentFormID,
 				ratingID: ratingRef.ratingID,
-				readOnly: updatedReadOnlyVal
+				permissions: updatedPermissions
 			}
-			jsonAPIRequest("frm/rating/setReadOnly",params,function(updatedRating) {
+			jsonAPIRequest("frm/rating/setPermissions",params,function(updatedRating) {
 				setContainerComponentInfo($rating,updatedRating,updatedRating.ratingID)
 			})
 		}

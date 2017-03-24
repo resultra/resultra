@@ -67,14 +67,14 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 	
 	var readOnlyParams = {
 		elemPrefix: elemPrefix,
-		initialVal: textBoxRef.properties.readOnly,
-		readOnlyPropertyChangedCallback: function(updatedReadOnlyVal) {
+		initialVal: textBoxRef.properties.permissions,
+		permissionsChangedCallback: function(updatedPermissions) {
 			var params = {
 				parentFormID: textBoxRef.parentFormID,
 				textboxID: textBoxRef.textBoxID,
-				readOnly: updatedReadOnlyVal
+				permissions: updatedPermissions
 			}
-			jsonAPIRequest("frm/textBox/setReadOnly",params,function(updatedTextBox) {
+			jsonAPIRequest("frm/textBox/setPermissions",params,function(updatedTextBox) {
 				setContainerComponentInfo($textBox,updatedTextBox,updatedTextBox.textBoxID)
 			})
 		}

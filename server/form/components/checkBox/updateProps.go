@@ -121,16 +121,16 @@ func (updateParams CheckBoxVisibilityParams) updateProps(checkBox *CheckBox) err
 	return nil
 }
 
-type CheckBoxReadOnlyParams struct {
+type CheckBoxPermissionParams struct {
 	CheckboxIDHeader
-	ReadOnly bool `json:"readOnly"`
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 }
 
-func (updateParams CheckBoxReadOnlyParams) updateProps(checkBox *CheckBox) error {
+func (updateParams CheckBoxPermissionParams) updateProps(checkBox *CheckBox) error {
 
 	// TODO - Validate conditions
 
-	checkBox.Properties.ReadOnly = updateParams.ReadOnly
+	checkBox.Properties.Permissions = updateParams.Permissions
 
 	return nil
 }

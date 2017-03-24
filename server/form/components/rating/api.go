@@ -15,7 +15,7 @@ func init() {
 	ratingRouter.HandleFunc("/api/frm/rating/setIcon", setIcon)
 	ratingRouter.HandleFunc("/api/frm/rating/setLabelFormat", setLabelFormat)
 	ratingRouter.HandleFunc("/api/frm/rating/setVisibility", setVisibility)
-	ratingRouter.HandleFunc("/api/frm/rating/setReadOnly", setReadOnly)
+	ratingRouter.HandleFunc("/api/frm/rating/setPermissions", setPermissions)
 
 	http.Handle("/api/frm/rating/", ratingRouter)
 }
@@ -89,8 +89,8 @@ func setVisibility(w http.ResponseWriter, r *http.Request) {
 	processRatingPropUpdate(w, r, params)
 }
 
-func setReadOnly(w http.ResponseWriter, r *http.Request) {
-	var params RatingReadOnlyParams
+func setPermissions(w http.ResponseWriter, r *http.Request) {
+	var params RatingPermissionParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

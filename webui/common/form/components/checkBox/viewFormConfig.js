@@ -49,7 +49,7 @@ function initCheckBoxFieldEditBehavior($checkBox,componentContext,recordProxy, c
 		
 	var fieldID = checkBoxObjectRef.properties.fieldID
 	var fieldRef = getFieldRef(fieldID)
-	if(fieldRef.isCalcField || checkBoxObjectRef.properties.readOnly) {
+	if(fieldRef.isCalcField || formComponentIsReadOnly(checkBoxObjectRef.properties.permissions)) {
 		$checkboxControl.prop('disabled',true)
 		return;  // stop initialization, the check box is read only.
 	}

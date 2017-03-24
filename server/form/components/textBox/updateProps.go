@@ -106,14 +106,14 @@ func (updateParams TextBoxVisibilityParams) updateProps(textBox *TextBox) error 
 	return nil
 }
 
-type TextBoxReadOnlyParams struct {
+type TextBoxPermissionParams struct {
 	TextBoxIDHeader
-	ReadOnly bool `json:"readOnly"`
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 }
 
-func (updateParams TextBoxReadOnlyParams) updateProps(textBox *TextBox) error {
+func (updateParams TextBoxPermissionParams) updateProps(textBox *TextBox) error {
 
-	textBox.Properties.ReadOnly = updateParams.ReadOnly
+	textBox.Properties.Permissions = updateParams.Permissions
 
 	return nil
 }

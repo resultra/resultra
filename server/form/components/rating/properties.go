@@ -17,7 +17,7 @@ type RatingProperties struct {
 	Icon        string                                `json:"icon"`
 	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
 	common.ComponentVisibilityProperties
-	ReadOnly bool `json:"readOnly"`
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 }
 
 func (srcProps RatingProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*RatingProperties, error) {
@@ -45,6 +45,6 @@ func newDefaultRatingProperties() RatingProperties {
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
 		Tooltips:                      []string{},
 		Icon:                          ratingIconStar,
-		ReadOnly:                      false}
+		Permissions:                   common.NewDefaultComponentValuePermissionsProperties()}
 	return props
 }

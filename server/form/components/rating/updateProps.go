@@ -119,16 +119,16 @@ func (updateParams RatingVisibilityParams) updateProps(rating *Rating) error {
 	return nil
 }
 
-type RatingReadOnlyParams struct {
+type RatingPermissionParams struct {
 	RatingIDHeader
-	ReadOnly bool `json:"readOnly"`
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 }
 
-func (updateParams RatingReadOnlyParams) updateProps(rating *Rating) error {
+func (updateParams RatingPermissionParams) updateProps(rating *Rating) error {
 
 	// TODO - Validate conditions
 
-	rating.Properties.ReadOnly = updateParams.ReadOnly
+	rating.Properties.Permissions = updateParams.Permissions
 
 	return nil
 }

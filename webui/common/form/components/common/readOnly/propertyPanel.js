@@ -2,6 +2,24 @@ function initFormComponentReadOnlyPropertyPanel(params) {
 	
 	var checkboxSelector = '#' + params.elemPrefix + "FormComponentReadOnlyProperty"
 	
-	initCheckboxChangeHandler(checkboxSelector, params.initialVal, params.readOnlyPropertyChangedCallback)
+	var isReadOnly = true
+	if(params.initialVal.permissionMode === "readWrite") {
+		isReadOnly = false
+	}
+	
+	initCheckboxChangeHandler(checkboxSelector, isReadOnly, function(isReadOnly) {
+		
+		var permMode = "readWrite"
+		if(isReadOnly) {
+			permMode = "readOnly"
+		}
+		
+		var permissions = {
+			permissionMode: permMode
+		}
+		
+		params.permissionsChangedCallback(permissions)
+		
+	})
 	
 }

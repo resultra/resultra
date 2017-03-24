@@ -82,14 +82,14 @@ function loadCheckboxProperties($container, checkBoxRef) {
 
 	var readOnlyParams = {
 		elemPrefix: elemPrefix,
-		initialVal: checkBoxRef.properties.readOnly,
-		readOnlyPropertyChangedCallback: function(updatedReadOnlyVal) {
+		initialVal: checkBoxRef.properties.permissions,
+		permissionsChangedCallback: function(updatedPermissions) {
 			var params = {
 				parentFormID: checkBoxRef.parentFormID,
 				checkBoxID: checkBoxRef.checkBoxID,
-				readOnly: updatedReadOnlyVal
+				permissions: updatedPermissions
 			}
-			jsonAPIRequest("frm/checkBox/setReadOnly",params,function(updatedCheckboxRef) {
+			jsonAPIRequest("frm/checkBox/setPermissions",params,function(updatedCheckboxRef) {
 				setContainerComponentInfo($container,updatedCheckboxRef,updatedCheckboxRef.checkBoxID)		
 			})
 		}

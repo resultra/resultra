@@ -12,7 +12,7 @@ type ReadOnlyPropertyTemplateParams struct {
 func NewReadOnlyTemplateParams(elemPrefix string, panelID string) ReadOnlyPropertyTemplateParams {
 
 	panelParams := propertiesSidebar.PanelTemplateParams{
-		PanelHeaderLabel: "Read Only",
+		PanelHeaderLabel: "Permissions",
 		PanelID:          panelID}
 
 	params := ReadOnlyPropertyTemplateParams{ElemPrefix: elemPrefix,
