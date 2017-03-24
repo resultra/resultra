@@ -9,10 +9,11 @@ import (
 )
 
 type SelectionProperties struct {
-	FieldID        string                                `json:"fieldID"`
-	Geometry       componentLayout.LayoutGeometry        `json:"geometry"`
-	SelectableVals []SelectionSelectableVal              `json:"selectableVals"`
-	LabelFormat    common.ComponentLabelFormatProperties `json:"labelFormat"`
+	FieldID        string                                     `json:"fieldID"`
+	Geometry       componentLayout.LayoutGeometry             `json:"geometry"`
+	SelectableVals []SelectionSelectableVal                   `json:"selectableVals"`
+	LabelFormat    common.ComponentLabelFormatProperties      `json:"labelFormat"`
+	Permissions    common.ComponentValuePermissionsProperties `json:"permissions"`
 	common.ComponentVisibilityProperties
 }
 
@@ -39,6 +40,7 @@ func newDefaultSelectionProperties() SelectionProperties {
 	props := SelectionProperties{
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
 		SelectableVals:                []SelectionSelectableVal{},
-		LabelFormat:                   common.NewDefaultLabelFormatProperties()}
+		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
+		Permissions:                   common.NewDefaultComponentValuePermissionsProperties()}
 	return props
 }

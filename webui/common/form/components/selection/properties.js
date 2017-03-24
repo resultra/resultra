@@ -43,6 +43,22 @@ function loadSelectionProperties($selection,selectionRef) {
 		saveVisibilityConditionsCallback:saveVisibilityConditions
 	}
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
+
+	var permissionParams = {
+		elemPrefix: elemPrefix,
+		initialVal: selectionRef.properties.permissions,
+		permissionsChangedCallback: function(updatedPermissions) {
+			var params = {
+				parentFormID: selectionRef.parentFormID,
+				selectionID: selectionRef.selectionID,
+				permissions: updatedPermissions
+			}
+			jsonAPIRequest("frm/selection/setPermissions",params,function(updatedSelection) {
+				setContainerComponentInfo($selection,updatedSelection,updatedSelection.selectionID)	
+			})
+		}
+	}
+	initFormComponentPermissionsPropertyPanel(permissionParams)
 	
 	
 	// Toggle to the check box properties, hiding the other property panels

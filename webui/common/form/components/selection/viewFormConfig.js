@@ -2,7 +2,14 @@ function loadRecordIntoSelection(selectionElem, recordRef) {
 
 	var selectionObjectRef = selectionElem.data("objectRef")
 
-	var $selectionControl = selectionFormControlFromSelectionFormComponent(selectionElem)	
+	var $selectionControl = selectionFormControlFromSelectionFormComponent(selectionElem)
+	
+	if(formComponentIsReadOnly(selectionObjectRef.properties.permissions)) {
+		$selectionControl.prop('disabled',true);
+	} else {
+		$selectionControl.prop('disabled',false);
+		
+	}	
 	
 	var selectionFieldID = selectionObjectRef.properties.fieldID
 	console.log("loadRecordIntoSelection: Field ID to load data:" + selectionFieldID)	

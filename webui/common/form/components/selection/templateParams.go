@@ -3,6 +3,7 @@ package selection
 import (
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
+	"resultra/datasheet/webui/common/form/components/common/permissions"
 	"resultra/datasheet/webui/common/form/components/common/visibility"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -14,6 +15,7 @@ type SelectionDesignTemplateParams struct {
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
+	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
 }
 
 type SelectionViewTemplateParams struct {
@@ -34,6 +36,7 @@ func init() {
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "selectionFormat"},
 		ValuesPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Selectable Values", PanelID: "selectionValues"},
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "selectionVisibility"),
+		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "selectionPerms"),
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "selectionLabel"}},
 
