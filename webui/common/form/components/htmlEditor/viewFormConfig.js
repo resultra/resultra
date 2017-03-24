@@ -6,6 +6,16 @@ function loadRecordIntoHtmlEditor($htmlEditor, recordRef) {
 	
 	var $htmlEditorInput = htmlInputFromHTMLEditorContainer($htmlEditor)
 	
+	var $editButton = $htmlEditor.find(".startEditButton")
+	if(formComponentIsReadOnly(htmlEditorObjectRef.properties.permissions)) {
+		$editButton.prop('disabled',true);
+		$editButton.hide()
+	} else {
+		$editButton.prop('disabled',false);
+		$editButton.show()
+		
+	}
+	
 	var htmlEditorFieldID = htmlEditorObjectRef.properties.fieldID
 	// Populate the "intersection" of field values in the record
 	// with the fields shown by the layout's containers.

@@ -9,9 +9,10 @@ import (
 )
 
 type HtmlEditorProperties struct {
-	FieldID     string                                `json:"fieldID"`
-	Geometry    componentLayout.LayoutGeometry        `json:"geometry"`
-	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+	FieldID     string                                     `json:"fieldID"`
+	Geometry    componentLayout.LayoutGeometry             `json:"geometry"`
+	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 	common.ComponentVisibilityProperties
 }
 
@@ -37,6 +38,7 @@ func (srcProps HtmlEditorProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper
 func newDefaultEditorProperties() HtmlEditorProperties {
 	props := HtmlEditorProperties{
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
-		LabelFormat:                   common.NewDefaultLabelFormatProperties()}
+		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
+		Permissions:                   common.NewDefaultComponentValuePermissionsProperties()}
 	return props
 }

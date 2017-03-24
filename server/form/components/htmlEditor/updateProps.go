@@ -92,3 +92,15 @@ func (updateParams EditorVisibilityParams) updateProps(editor *HtmlEditor) error
 
 	return nil
 }
+
+type EditorPermissionParams struct {
+	HtmlEditorIDHeader
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
+}
+
+func (updateParams EditorPermissionParams) updateProps(editor *HtmlEditor) error {
+
+	editor.Properties.Permissions = updateParams.Permissions
+
+	return nil
+}

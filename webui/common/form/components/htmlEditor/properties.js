@@ -43,6 +43,21 @@ function loadHtmlEditorProperties($editor, htmlEditorRef) {
 	}
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
 	
+	var permissionParams = {
+		elemPrefix: elemPrefix,
+		initialVal: htmlEditorRef.properties.permissions,
+		permissionsChangedCallback: function(updatedPermissions) {
+			var params = {
+				parentFormID: htmlEditorRef.parentFormID,
+				htmlEditorID: htmlEditorRef.htmlEditorID,
+				permissions: updatedPermissions
+			}
+			jsonAPIRequest("frm/htmlEditor/setPermissions",params,function(updatedEditor) {
+				setContainerComponentInfo($editor,updatedEditor,updatedEditor.htmlEditorID)	
+			})
+		}
+	}
+	initFormComponentPermissionsPropertyPanel(permissionParams)
 	
 	
 
