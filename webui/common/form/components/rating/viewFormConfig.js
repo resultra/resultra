@@ -61,13 +61,20 @@ function initRatingRecordEditBehavior($ratingContainer,componentContext,recordPr
 		
 	}
 	
-	// The rating control is initialized the same way for design and view mode, but in view mode
-	// the event handlers need to be setup for when the user changes a rating value.
-	$ratingControl.on('change', function() {
-		var ratingVal = Number($(this).val())
-		console.log('Rating changed: ' + ratingVal);
-		setRatingValue(ratingVal)
-	});
+	if(ratingObjectRef.properties.readOnly) {
+		$ratingControl.prop('disabled',true);
+		
+	} else {
+		$ratingControl.prop('disabled',true);
+		// The rating control is initialized the same way for design and view mode, but in view mode
+		// the event handlers need to be setup for when the user changes a rating value.
+		$ratingControl.on('change', function() {
+			var ratingVal = Number($(this).val())
+			console.log('Rating changed: ' + ratingVal);
+			setRatingValue(ratingVal)
+		});
+		
+	}
 	
 	// When the user clicks on the control, prevent the click from propagating higher.
 	// This allows the user to change the rating without selecting the form component itself.

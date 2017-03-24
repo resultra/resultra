@@ -66,6 +66,24 @@ function loadRatingProperties($rating,ratingRef) {
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
 
 	
+	var readOnlyParams = {
+		elemPrefix: elemPrefix,
+		initialVal: ratingRef.properties.readOnly,
+		readOnlyPropertyChangedCallback: function(updatedReadOnlyVal) {
+			var params = {
+				parentFormID: ratingRef.parentFormID,
+				ratingID: ratingRef.ratingID,
+				readOnly: updatedReadOnlyVal
+			}
+			jsonAPIRequest("frm/rating/setReadOnly",params,function(updatedRating) {
+				setContainerComponentInfo($rating,updatedRating,updatedRating.ratingID)
+			})
+		}
+	}
+	initFormComponentReadOnlyPropertyPanel(readOnlyParams)
+	
+	
+	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#ratingProps')
 		

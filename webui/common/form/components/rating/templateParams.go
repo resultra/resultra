@@ -3,6 +3,7 @@ package rating
 import (
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
+	"resultra/datasheet/webui/common/form/components/common/readOnly"
 	"resultra/datasheet/webui/common/form/components/common/visibility"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -14,6 +15,7 @@ type RatingDesignTemplateParams struct {
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
+	ReadOnlyPanelParams      readOnly.ReadOnlyPropertyTemplateParams
 }
 
 type RatingViewTemplateParams struct {
@@ -33,8 +35,9 @@ func init() {
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "ratingVisibility"),
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "ratingLabel"}},
-		FormatPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "ratingFormat"},
-		TooltipPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Rating Descriptions", PanelID: "ratingTooltip"},
+		FormatPanelParams:   propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "ratingFormat"},
+		ReadOnlyPanelParams: readOnly.NewReadOnlyTemplateParams(elemPrefix, "ratingReadOnly"),
+		TooltipPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Rating Descriptions", PanelID: "ratingTooltip"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
 			DialogTitle: "New Rating",

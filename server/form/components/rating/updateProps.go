@@ -118,3 +118,17 @@ func (updateParams RatingVisibilityParams) updateProps(rating *Rating) error {
 
 	return nil
 }
+
+type RatingReadOnlyParams struct {
+	RatingIDHeader
+	ReadOnly bool `json:"readOnly"`
+}
+
+func (updateParams RatingReadOnlyParams) updateProps(rating *Rating) error {
+
+	// TODO - Validate conditions
+
+	rating.Properties.ReadOnly = updateParams.ReadOnly
+
+	return nil
+}
