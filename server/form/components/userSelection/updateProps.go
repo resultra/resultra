@@ -92,3 +92,15 @@ func (updateParams UserSelectionVisibilityParams) updateProps(userSelection *Use
 
 	return nil
 }
+
+type UserSelectionPermissionParams struct {
+	UserSelectionIDHeader
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
+}
+
+func (updateParams UserSelectionPermissionParams) updateProps(userSelection *UserSelection) error {
+
+	userSelection.Properties.Permissions = updateParams.Permissions
+
+	return nil
+}

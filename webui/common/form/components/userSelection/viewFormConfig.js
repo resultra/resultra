@@ -2,9 +2,16 @@ function loadRecordIntoUserSelection(userSelectionElem, recordRef) {
 	
 	
 	var userSelectionObjectRef = userSelectionElem.data("objectRef")
-	
 	var $userSelectionControl = userSelectionControlFromUserSelectionComponentContainer(userSelectionElem)
-	
+
+
+	if(formComponentIsReadOnly(userSelectionObjectRef.properties.permissions)) {
+		$userSelectionControl.prop('disabled',true);
+	} else {
+		$userSelectionControl.prop('disabled',false);
+		
+	}
+
 	var userSelectionFieldID = userSelectionObjectRef.properties.fieldID
 
 	console.log("loadRecordIntoUserSelection: Field ID to load data:" + userSelectionFieldID)

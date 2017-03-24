@@ -9,9 +9,10 @@ import (
 )
 
 type UserSelectionProperties struct {
-	FieldID     string                                `json:"fieldID"`
-	Geometry    componentLayout.LayoutGeometry        `json:"geometry"`
-	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+	FieldID     string                                     `json:"fieldID"`
+	Geometry    componentLayout.LayoutGeometry             `json:"geometry"`
+	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 	common.ComponentVisibilityProperties
 }
 
@@ -37,6 +38,7 @@ func (srcProps UserSelectionProperties) Clone(remappedIDs uniqueID.UniqueIDRemap
 func newDefaultUserSelectionProperties() UserSelectionProperties {
 	props := UserSelectionProperties{
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
-		LabelFormat:                   common.NewDefaultLabelFormatProperties()}
+		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
+		Permissions:                   common.NewDefaultComponentValuePermissionsProperties()}
 	return props
 }
