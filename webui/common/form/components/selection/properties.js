@@ -59,6 +59,15 @@ function loadSelectionProperties($selection,selectionRef) {
 		}
 	}
 	initFormComponentPermissionsPropertyPanel(permissionParams)
+
+	var deleteParams = {
+		elemPrefix: elemPrefix,
+		parentFormID: selectionRef.parentFormID,
+		componentID: selectionRef.selectionID,
+		componentLabel: 'selection',
+		$componentContainer: $selection
+	}
+	initDeleteFormComponentPropertyPanel(deleteParams)
 	
 	
 	// Toggle to the check box properties, hiding the other property panels
