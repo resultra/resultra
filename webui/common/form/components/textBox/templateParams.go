@@ -1,6 +1,7 @@
 package textBox
 
 import (
+	"resultra/datasheet/webui/common/form/components/common/delete"
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
 	"resultra/datasheet/webui/common/form/components/common/permissions"
@@ -14,7 +15,8 @@ type TextboxDesignTemplateParams struct {
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
-	PermissionPanelParams      permissions.PermissionsPropertyTemplateParams
+	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
+	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
 }
 
 type TextboxViewTemplateParams struct {
@@ -33,9 +35,10 @@ func init() {
 		ElemPrefix: elemPrefix,
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "textboxLabel"}},
+		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "textBoxDelete", "Delete Text Box"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "textboxFormat"},
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "textBoxVisibility"),
-		PermissionPanelParams:   permissions.NewPermissionTemplateParams(elemPrefix, "textBoxPerms"),
+		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "textBoxPerms"),
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
 			DialogTitle: "New Text Box",

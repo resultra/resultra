@@ -81,6 +81,14 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
 	
+	var deleteParams = {
+		elemPrefix: elemPrefix,
+		parentFormID: textBoxRef.parentFormID,
+		componentID: textBoxRef.textBoxID,
+		componentLabel: 'text box',
+		$componentContainer: $textBox
+	}
+	initDeleteFormComponentPropertyPanel(deleteParams)
 	
 	
 	// Toggle to the check box properties, hiding the other property panels
