@@ -140,6 +140,15 @@ function loadProgressProperties($progress,progressRef) {
 		}
 	}
 	initNumberFormatSelection(formatSelectionParams)
+
+	var deleteParams = {
+		elemPrefix: elemPrefix,
+		parentFormID: progressRef.parentFormID,
+		componentID: progressRef.progressID,
+		componentLabel: 'progress indicator',
+		$componentContainer: $progress
+	}
+	initDeleteFormComponentPropertyPanel(deleteParams)
 	
 	
 	

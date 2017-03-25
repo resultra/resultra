@@ -1,6 +1,7 @@
 package progress
 
 import (
+	"resultra/datasheet/webui/common/form/components/common/delete"
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
 	"resultra/datasheet/webui/common/form/components/common/visibility"
@@ -17,6 +18,7 @@ type ProgressDesignTemplateParams struct {
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
+	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
 }
 
 type ProgressViewTemplateParams struct {
@@ -34,6 +36,7 @@ func init() {
 		ElemPrefix: elemPrefix,
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "progressLabel"}},
+		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "progressDelete", "Delete Progress Indicator"),
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "progressVisibility"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "progressFormat"},
 		RangePanelParams:      propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Range", PanelID: "progressRange"},
