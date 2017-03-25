@@ -1,6 +1,7 @@
 package image
 
 import (
+	"resultra/datasheet/webui/common/form/components/common/delete"
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
 	"resultra/datasheet/webui/common/form/components/common/permissions"
@@ -13,6 +14,7 @@ type ImageDesignTemplateParams struct {
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
+	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
 }
 
 type ImageViewTemplateParams struct {
@@ -32,6 +34,7 @@ func init() {
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "attachmentLabel"}},
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "attachmentPerms"),
+		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "attachDelete", "Delete Attachment Box"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "imageFormat"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,

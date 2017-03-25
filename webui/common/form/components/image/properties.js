@@ -39,6 +39,17 @@ function loadImageProperties($attachmentContainer, attachmentRef) {
 	}
 	initFormComponentPermissionsPropertyPanel(permissionParams)
 
+
+	var deleteParams = {
+		elemPrefix: elemPrefix,
+		parentFormID: attachmentRef.parentFormID,
+		componentID: attachmentRef.imageID,
+		componentLabel: 'attachment box',
+		$componentContainer: $attachmentContainer
+	}
+	initDeleteFormComponentPropertyPanel(deleteParams)
+
+
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#imageProps')
 
