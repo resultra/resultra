@@ -112,6 +112,14 @@ function loadFormHeaderProperties($header,headerRef) {
 	}
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
 	
+	var deleteParams = {
+		elemPrefix: elemPrefix,
+		parentFormID: headerRef.parentFormID,
+		componentID: headerRef.headerID,
+		componentLabel: 'header',
+		$componentContainer: $header
+	}
+	initDeleteFormComponentPropertyPanel(deleteParams)
 	
 	
 	console.log("Loading header properties")
