@@ -1,6 +1,7 @@
 package checkBox
 
 import (
+	"resultra/datasheet/webui/common/form/components/common/delete"
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
 	"resultra/datasheet/webui/common/form/components/common/permissions"
@@ -15,6 +16,7 @@ type CheckboxDesignTemplateParams struct {
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
 	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
+	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
 }
 
 type CheckboxViewTemplateParams struct {
@@ -33,6 +35,7 @@ func init() {
 		ElemPrefix: elemPrefix,
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix, HideNoLabelOption: true,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "checkBoxLabel"}},
+		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "checkBoxDelete", "Delete Check Box"),
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "checkBoxVisibility"),
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "checkBoxPerms"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "checkboxFormat"},

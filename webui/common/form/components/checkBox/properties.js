@@ -2,10 +2,6 @@
 function loadCheckboxProperties($container, checkBoxRef) {
 	console.log("Loading checkbox properties")
 	
-	// Toggle to the check box properties, hiding the other property panels
-	hideSiblingsShowOne('#checkBoxProps')
-		
-	toggleFormulaEditorForField(checkBoxRef.properties.fieldID)
 	
 	var $colorSchemeSelection = $('#adminCheckboxComponentColorSchemeSelection')
 	$colorSchemeSelection.val(checkBoxRef.properties.colorScheme)
@@ -95,6 +91,21 @@ function loadCheckboxProperties($container, checkBoxRef) {
 		}
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
+	
+	var deleteParams = {
+		elemPrefix: elemPrefix,
+		parentFormID: checkBoxRef.parentFormID,
+		componentID: checkBoxRef.checkBoxID,
+		componentLabel: 'check box',
+		$componentContainer: $container
+	}
+	initDeleteFormComponentPropertyPanel(deleteParams)
+	
+	
+	// Toggle to the check box properties, hiding the other property panels
+	hideSiblingsShowOne('#checkBoxProps')
+		
+	toggleFormulaEditorForField(checkBoxRef.properties.fieldID)
 	
 	
 }
