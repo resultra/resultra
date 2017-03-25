@@ -2,6 +2,7 @@ package formButton
 
 import (
 	"resultra/datasheet/webui/common/defaultValues"
+	"resultra/datasheet/webui/common/form/components/common/delete"
 	"resultra/datasheet/webui/common/form/components/common/visibility"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -17,6 +18,7 @@ type ButtonTemplateParams struct {
 	PopupBehaviorPanelParams propertiesSidebar.PanelTemplateParams
 	PopupBehaviorPropParams  PopupBehaviorPropParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
+	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
 }
 
 var TemplateParams ButtonTemplateParams
@@ -32,6 +34,7 @@ func init() {
 	TemplateParams = ButtonTemplateParams{
 		ElemPrefix:               elemPrefix,
 		FormatPanelParams:        propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "buttonFormat"},
+		DeletePanelParams:        delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "buttonDelete", "Delete Form Button"),
 		LinkedFormPanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Linked Form", PanelID: "buttonForm"},
 		VisibilityPanelParams:    visibility.NewComponentVisibilityTempalteParams(visibilityElemPrefix, "buttonVisibility"),
 		PopupBehaviorPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Popup Form Behavior", PanelID: "buttonPopupForm"},

@@ -182,6 +182,14 @@ function loadFormButtonProperties($button,buttonRef) {
 	}
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
 	
+	var deleteParams = {
+		elemPrefix: elemPrefix,
+		parentFormID: buttonRef.parentFormID,
+		componentID: buttonRef.buttonID,
+		componentLabel: 'form button',
+		$componentContainer: $button
+	}
+	initDeleteFormComponentPropertyPanel(deleteParams)
 		
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#formButtonProps')
