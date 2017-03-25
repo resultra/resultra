@@ -4,5 +4,6 @@
 		"newFormElemDialog",
 		"label",
 		"visibility",
-		"permissions"]
+		"permissions",
+		"delete"]
 }

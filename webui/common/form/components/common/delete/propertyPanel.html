@@ -1,0 +1,14 @@
+{{define "componentDeleteProps"}}
+<div class="form-group">
+	<button class="btn btn-danger btn-sm" id="{{.ElemPrefix}}DeleteFormComponentButton">{{.DeleteButtonLabel}}</button>
+</div>
+{{end}}
+
+
+{{define "componentDeletePropertyPanel"}}
+
+	{{template "propertyPanelPrefix" .PanelParams}}
+		{{template "componentDeleteProps" .}}
+	{{template "propertyPanelSuffix"}}
+
+{{end}}

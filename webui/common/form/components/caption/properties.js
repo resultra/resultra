@@ -44,6 +44,13 @@ function loadFormCaptionProperties($caption,captionRef) {
 	}
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
 	
+	var deleteParams = {
+		elemPrefix: elemPrefix,
+		parentFormID: captionRef.parentFormID,
+		componentID: captionRef.captionID,
+		componentLabel: 'caption'
+	}
+	initDeleteFormComponentPropertyPanel(deleteParams)
 		
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#formCaptionProps')
