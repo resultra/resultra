@@ -82,6 +82,14 @@ function loadRatingProperties($rating,ratingRef) {
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
 	
+	var deleteParams = {
+		elemPrefix: elemPrefix,
+		parentFormID: ratingRef.parentFormID,
+		componentID: ratingRef.ratingID,
+		componentLabel: 'rating',
+		$componentContainer: $rating
+	}
+	initDeleteFormComponentPropertyPanel(deleteParams)
 	
 	
 	// Toggle to the check box properties, hiding the other property panels
