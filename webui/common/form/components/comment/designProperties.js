@@ -41,6 +41,24 @@ function loadCommentComponentProperties($comment,commentRef) {
 	}
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
 	
+	
+	var permissionParams = {
+		elemPrefix: elemPrefix,
+		initialVal: commentRef.properties.permissions,
+		permissionsChangedCallback: function(updatedPermissions) {
+			var params = {
+				parentFormID: commentRef.parentFormID,
+				commentID: commentRef.commentID,
+				permissions: updatedPermissions
+			}
+			jsonAPIRequest("frm/comment/setPermissions",params,function(updatedComment) {
+				setContainerComponentInfo($comment,updatedComment,commentRef.commentID)
+			})
+		}
+	}
+	initFormComponentPermissionsPropertyPanel(permissionParams)
+	
+	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#commentComponentProps')
 	

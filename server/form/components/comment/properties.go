@@ -13,6 +13,7 @@ type CommentProperties struct {
 	Geometry    componentLayout.LayoutGeometry        `json:"geometry"`
 	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
 	common.ComponentVisibilityProperties
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 }
 
 func (srcProps CommentProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*CommentProperties, error) {
@@ -37,6 +38,7 @@ func (srcProps CommentProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (
 func newDefaultCommentProperties() CommentProperties {
 	props := CommentProperties{
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
-		LabelFormat:                   common.NewDefaultLabelFormatProperties()}
+		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
+		Permissions:                   common.NewDefaultComponentValuePermissionsProperties()}
 	return props
 }

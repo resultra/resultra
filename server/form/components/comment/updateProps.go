@@ -92,3 +92,15 @@ func (updateParams CommentVisibilityParams) updateProps(comment *Comment) error 
 
 	return nil
 }
+
+type CommentPermissionParams struct {
+	CommentIDHeader
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
+}
+
+func (updateParams CommentPermissionParams) updateProps(comment *Comment) error {
+
+	comment.Properties.Permissions = updateParams.Permissions
+
+	return nil
+}

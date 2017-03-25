@@ -13,6 +13,7 @@ func init() {
 	commentRouter.HandleFunc("/api/frm/comment/resize", resizeComment)
 	commentRouter.HandleFunc("/api/frm/comment/setLabelFormat", setLabelFormat)
 	commentRouter.HandleFunc("/api/frm/comment/setVisibility", setVisibility)
+	commentRouter.HandleFunc("/api/frm/comment/setPermissions", setPermissions)
 
 	http.Handle("/api/frm/comment/", commentRouter)
 }
@@ -61,6 +62,15 @@ func setLabelFormat(w http.ResponseWriter, r *http.Request) {
 
 func setVisibility(w http.ResponseWriter, r *http.Request) {
 	var params CommentVisibilityParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processCommentPropUpdate(w, r, params)
+}
+
+func setPermissions(w http.ResponseWriter, r *http.Request) {
+	var params CommentPermissionParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

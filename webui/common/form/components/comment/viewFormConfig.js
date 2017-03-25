@@ -16,6 +16,22 @@ function setNewCommentAttachmentList($commentContainer,attachmentList) {
 	populateAttachmentList($attachList,attachmentList)
 }
 
+function resizeEntryAreaForCommentComponentPermissions($commentContainer,commentObjRef) {
+	var $entryContainer = commentEntryContainerFromOverallCommentContainer($commentContainer)
+	if(formComponentIsReadOnly(commentObjRef.properties.permissions)) {
+		$entryContainer.hide()
+	} else {
+		$entryContainer.show()
+		
+	}
+	// Set the maximum height of the comment area to be the remainder of the comment components
+	var entryBottom = $entryContainer.position().top + $entryContainer.outerHeight(true);
+	var listMaxHeightPx = (commentObjRef.properties.geometry.sizeHeight - (entryBottom+5)) + "px"
+	var $commentList = commentCommentListFromContainer($commentContainer)
+	$commentList.css('max-height',listMaxHeightPx)
+	
+}
+
 
 function loadRecordIntoCommentBox(commentElem, recordRef) {
 	
@@ -23,6 +39,9 @@ function loadRecordIntoCommentBox(commentElem, recordRef) {
 	
 	var commentObjectRef = commentElem.data("objectRef")
 	var componentContext = commentElem.data("componentContext")
+	
+	resizeEntryAreaForCommentComponentPermissions(commentElem,commentObjectRef)
+	
 	
 	// Clear any previous comments - TODO: is there any way to preserve the comments
 	// if the user switches items.
@@ -110,11 +129,7 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 	// will be preserved when the user is not editing a comment.
 	setElemFixedWidthFlexibleHeight($commentContainer,commentObjectRef.properties.geometry.sizeWidth)
 	
-	// Set the maximum height of the comment area to be the remainder of the comment components
-	var entryBottom = $entryContainer.position().top + $entryContainer.outerHeight(true);
-	var listMaxHeightPx = (commentObjectRef.properties.geometry.sizeHeight - (entryBottom+5)) + "px"
-	$commentList.css('max-height',listMaxHeightPx)
-
+	resizeEntryAreaForCommentComponentPermissions($commentContainer,commentObjectRef)
 
 	function resetAndMinimizeCommentEntry() {
 		$commentInput.html('<p class="commentPlaceholder">Enter a comment...</p>')
