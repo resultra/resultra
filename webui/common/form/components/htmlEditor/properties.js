@@ -59,6 +59,14 @@ function loadHtmlEditorProperties($editor, htmlEditorRef) {
 	}
 	initFormComponentPermissionsPropertyPanel(permissionParams)
 	
+	var deleteParams = {
+		elemPrefix: elemPrefix,
+		parentFormID: htmlEditorRef.parentFormID,
+		componentID: htmlEditorRef.htmlEditorID,
+		componentLabel: 'editor',
+		$componentContainer: $editor
+	}
+	initDeleteFormComponentPropertyPanel(deleteParams)
 	
 
 	// Toggle to the check box properties, hiding the other property panels
