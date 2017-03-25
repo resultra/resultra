@@ -24,6 +24,7 @@ func init() {
 	formRouter.HandleFunc("/api/frm/setName", setFormName)
 	formRouter.HandleFunc("/api/frm/setLayout", setLayout)
 	formRouter.HandleFunc("/api/frm/setAddNewFromForm", setAddNewItemFromForm)
+	formRouter.HandleFunc("/api/frm/deleteComponent", deleteComponentAPI)
 
 	formRouter.HandleFunc("/api/frm/validateFormName", validateFormNameAPI)
 	formRouter.HandleFunc("/api/frm/validateNewFormName", validateNewFormNameAPI)
@@ -101,6 +102,22 @@ func getFormInfoAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *formInfo)
+	}
+
+}
+
+func deleteComponentAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params DeleteComponentParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if err := deleteComponent(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, true)
 	}
 
 }

@@ -84,3 +84,12 @@ func UpdateFormComponent(componentType string, parentFormID string, componentID 
 	return nil
 
 }
+
+func DeleteFormComponent(parentFormID string, componentID string) error {
+	if _, deleteErr := databaseWrapper.DBHandle().Exec(`DELETE FROM form_components 
+				WHERE form_id=$1 AND component_id=$2`, parentFormID, componentID); deleteErr != nil {
+		return fmt.Errorf("DeleteFormComponent: Can't delete form component %v: error = %v",
+			componentID, deleteErr)
+	}
+	return nil
+}

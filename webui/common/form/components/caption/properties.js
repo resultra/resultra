@@ -48,7 +48,8 @@ function loadFormCaptionProperties($caption,captionRef) {
 		elemPrefix: elemPrefix,
 		parentFormID: captionRef.parentFormID,
 		componentID: captionRef.captionID,
-		componentLabel: 'caption'
+		componentLabel: 'caption',
+		$componentContainer: $caption
 	}
 	initDeleteFormComponentPropertyPanel(deleteParams)
 		
