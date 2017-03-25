@@ -57,6 +57,15 @@ function loadCommentComponentProperties($comment,commentRef) {
 		}
 	}
 	initFormComponentPermissionsPropertyPanel(permissionParams)
+
+	var deleteParams = {
+		elemPrefix: elemPrefix,
+		parentFormID: commentRef.parentFormID,
+		componentID: commentRef.commentID,
+		componentLabel: 'comment box',
+		$componentContainer: $comment
+	}
+	initDeleteFormComponentPropertyPanel(deleteParams)
 	
 	
 	// Toggle to the check box properties, hiding the other property panels
