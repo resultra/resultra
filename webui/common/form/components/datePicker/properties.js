@@ -69,6 +69,14 @@ function loadDatePickerProperties($container,datePickerRef) {
 	}
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
 	
+	var deleteParams = {
+		elemPrefix: elemPrefix,
+		parentFormID: datePickerRef.parentFormID,
+		componentID: datePickerRef.datePickerID,
+		componentLabel: 'date picker',
+		$componentContainer: $container
+	}
+	initDeleteFormComponentPropertyPanel(deleteParams)
 	
 	
 	toggleFormulaEditorForField(datePickerRef.properties.fieldID)
