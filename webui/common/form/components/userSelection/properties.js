@@ -57,6 +57,14 @@ function loadUserSelectionProperties($userSelection,userSelectionRef) {
 	}
 	initFormComponentPermissionsPropertyPanel(permissionParams)
 
+	var deleteParams = {
+		elemPrefix: elemPrefix,
+		parentFormID: userSelectionRef.parentFormID,
+		componentID: userSelectionRef.userSelectionID,
+		componentLabel: 'user selection',
+		$componentContainer: $userSelection
+	}
+	initDeleteFormComponentPropertyPanel(deleteParams)
 
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#userSelectionProps')
