@@ -24,7 +24,7 @@ type UserCellValue struct {
 }
 
 type TimeCellValue struct {
-	Val time.Time `json:"val"`
+	Val *time.Time `json:"val"`
 }
 
 type TextCellValue struct {
@@ -66,6 +66,11 @@ func DecodeCellValue(fieldType string, encodedVal string) (interface{}, error) {
 		var timeVal TimeCellValue
 		if err := generic.DecodeJSONString(encodedVal, &timeVal); err != nil {
 			return nil, fmt.Errorf("DecodeCellValue: failure decoding time value: %v", err)
+		}
+		if timeVal.Val == nil {
+			return nil, nil
+		} else {
+			return *(timeVal.Val), nil
 		}
 		return timeVal.Val, nil
 	case field.FieldTypeBool:

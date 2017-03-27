@@ -152,7 +152,7 @@ func (valParams SetRecordBoolValueParams) getUpdateProperties() CellUpdateProper
 type SetRecordTimeValueParams struct {
 	RecordUpdateHeader
 	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
-	Value       time.Time             `json:"value"`
+	Value       *time.Time            `json:"value"`
 }
 
 func (setValParams SetRecordTimeValueParams) fieldType() string { return field.FieldTypeTime }
