@@ -17,6 +17,9 @@ function ratingContainerHTML(elementID)
 			'<div class="formRatingControl">' +
 				ratingFormComponentRatingControlHTML() + // Rating control from Bootstrap Rating plugin
 			'</div>' +
+			'<div class="pull-right componentHoverFooter initiallyHidden">' +
+				smallClearDeleteButtonHTML("ratingComponentClearValueButton") + 
+			'</div>' +
 		'</div><';
 										
 	return containerHTML

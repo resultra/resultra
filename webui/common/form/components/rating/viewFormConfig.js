@@ -74,6 +74,11 @@ function initRatingRecordEditBehavior($ratingContainer,componentContext,recordPr
 			setRatingValue(ratingVal)
 		});
 		
+		var $clearValueButton = $ratingContainer.find(".ratingComponentClearValueButton")
+		initButtonControlClickHandler($clearValueButton,function() {
+				console.log("Clear value clicked for rating")
+		})
+		
 	}
 	
 	// When the user clicks on the control, prevent the click from propagating higher.
