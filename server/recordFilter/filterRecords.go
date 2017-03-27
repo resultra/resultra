@@ -50,31 +50,54 @@ func CreateFilterRuleContexts(filterRules []RecordFilterRule) ([]filterRuleConte
 	return contexts, nil
 }
 
-func MatchOneRecordFromFieldValues(filterContexts []filterRuleContext, recordVals record.RecFieldValues) (bool, error) {
-	for _, currContext := range filterContexts {
+func MatchOneRecordFromFieldValues(matchLogic string, filterContexts []filterRuleContext, recordVals record.RecFieldValues) (bool, error) {
 
-		recordIsFiltered, err := currContext.filterFunc(currContext.filterParams, recordVals)
-		if err != nil {
-			return false, fmt.Errorf("matchOneRecord: Error filtering: %v", err)
+	if matchLogic == RecordFilterMatchLogicAll {
+		for _, currContext := range filterContexts {
+
+			recordIsFiltered, err := currContext.filterFunc(currContext.filterParams, recordVals)
+			if err != nil {
+				return false, fmt.Errorf("matchOneRecord: Error filtering: %v", err)
+			}
+
+			// Return false if any of the rules fail to match. Filtering is done based upon a logical AND of
+			// all filter rules.
+			if !recordIsFiltered {
+				return false, nil
+			}
+
 		}
 
-		// Return false if any of the rules fail to match. Filtering is done based upon a logical AND of
-		// all filter rules.
-		if !recordIsFiltered {
-			return false, nil
-		}
+		// Matching a record is based upon a logical AND of all the results from the filters. If filtering gets to here,
+		// then none of the filters have failed to match. The filtering logic will also get here if there are no filter rules,
+		// and there is by default a match.
+		return true, nil
 
+	} else {
+		// Match any filtering condition.
+		for _, currContext := range filterContexts {
+
+			recordIsFiltered, err := currContext.filterFunc(currContext.filterParams, recordVals)
+			if err != nil {
+				return false, fmt.Errorf("matchOneRecord: Error filtering: %v", err)
+			}
+
+			// Return false if any of the rules fail to match. Filtering is done based upon a logical AND of
+			// all filter rules.
+			if recordIsFiltered {
+				return true, nil
+			}
+
+		}
+		// Matching is based upon a logical OR of the filtering rules. So, if matching over all the conditions
+		// hasn't matched at least one condition by now, the boolean OR is false.
+		return false, nil
 	}
-
-	// Matching a record is based upon a logical AND of all the results from the filters. If filtering gets to here,
-	// then none of the filters have failed to match. The filtering logic will also get here if there are no filter rules,
-	// and there is by default a match.
-	return true, nil
 
 }
 
-func MatchOneRecord(filterContexts []filterRuleContext, recValResults recordValue.RecordValueResults) (bool, error) {
-	return MatchOneRecordFromFieldValues(filterContexts, recValResults.FieldValues)
+func MatchOneRecord(matchLogic string, filterContexts []filterRuleContext, recValResults recordValue.RecordValueResults) (bool, error) {
+	return MatchOneRecordFromFieldValues(matchLogic, filterContexts, recValResults.FieldValues)
 }
 
 func FilterRecordValues(filterRules RecordFilterRuleSet,
@@ -88,7 +111,7 @@ func FilterRecordValues(filterRules RecordFilterRuleSet,
 	filteredRecords := []recordValue.RecordValueResults{}
 	for _, recValue := range unfilteredRecordValues {
 
-		isFiltered, filterErr := MatchOneRecord(filterContexts, recValue)
+		isFiltered, filterErr := MatchOneRecord(filterRules.MatchLogic, filterContexts, recValue)
 
 		if filterErr != nil {
 			return nil, fmt.Errorf("FilterRecordValues: Error filtering record: %v", filterErr)

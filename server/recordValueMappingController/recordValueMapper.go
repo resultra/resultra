@@ -23,7 +23,8 @@ func calculateHiddenFormComponents(parentDatabaseID string, recordVals record.Re
 		if contextErr != nil {
 			return nil, fmt.Errorf("CalculateHiddenFormComponents: %v", contextErr)
 		}
-		filterConditionsIndicateShowComponent, matchErr := recordFilter.MatchOneRecordFromFieldValues(filterContext, recordVals)
+		filterConditionsIndicateShowComponent, matchErr :=
+			recordFilter.MatchOneRecordFromFieldValues(filterConds.MatchLogic, filterContext, recordVals)
 		log.Printf("Calculating visibility filters for component = %v, filter conditions = %+v, filter result = %v",
 			componentID, filterConds, filterConditionsIndicateShowComponent)
 		if matchErr != nil {
