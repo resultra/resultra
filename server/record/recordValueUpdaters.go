@@ -11,7 +11,7 @@ import (
 type SetRecordTextValueParams struct {
 	RecordUpdateHeader
 	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
-	Value       string                `json:"value"`
+	Value       *string               `json:"value"`
 }
 
 func (setValParams SetRecordTextValueParams) fieldType() string { return field.FieldTypeText }
@@ -57,7 +57,7 @@ func (valParams SetRecordUserValueParams) getUpdateProperties() CellUpdateProper
 type SetRecordLongTextValueParams struct {
 	RecordUpdateHeader
 	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
-	Value       string                `json:"value"`
+	Value       *string               `json:"value"`
 }
 
 func (setValParams SetRecordLongTextValueParams) fieldType() string { return field.FieldTypeLongText }

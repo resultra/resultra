@@ -41,16 +41,22 @@ function loadRecordIntoTextBox($textBoxContainer, recordRef) {
 	if(recordRef.fieldValues.hasOwnProperty(textBoxFieldID)) {
 
 		var rawFieldVal = recordRef.fieldValues[textBoxFieldID]
-
-		console.log("loadRecordIntoTextBox: Load value into container: " + $(this).attr("id") + " field ID:" + 
-					textBoxFieldID + "  value:" + rawFieldVal)
 		
-		setRawInputVal(rawFieldVal)
+		if(rawFieldVal === null) {
+			$textBoxInput.val("")
+		} else {
+			console.log("loadRecordIntoTextBox: Load value into container: " + $(this).attr("id") + " field ID:" + 
+						textBoxFieldID + "  value:" + rawFieldVal)
 		
-		var formattedVal = formatTextBoxVal(textBoxFieldID,componentContext,
-				rawFieldVal,textBoxObjectRef.properties.valueFormat.format)
+			setRawInputVal(rawFieldVal)
+		
+			var formattedVal = formatTextBoxVal(textBoxFieldID,componentContext,
+					rawFieldVal,textBoxObjectRef.properties.valueFormat.format)
 
-		$textBoxInput.val(formattedVal)
+			$textBoxInput.val(formattedVal)
+			
+		}
+
 	} // If record has a value for the current container's associated field ID.
 	else
 	{
@@ -71,6 +77,70 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 	}
 	
 	var fieldType = fieldRef.type
+	
+	function setNumberVal(numberVal) {
+		var currRecordRef = recordProxy.getRecordFunc()
+		var textBoxNumberValueFormat = {
+			context:"textBox",
+			format:"general"
+		}
+		var setRecordValParams = { 
+			parentDatabaseID:currRecordRef.parentDatabaseID,
+			recordID:currRecordRef.recordID,
+			changeSetID: recordProxy.changeSetID,
+			fieldID:textBoxFieldID, 
+			value:numberVal,
+			valueFormat:textBoxNumberValueFormat
+		}
+		jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
+			// After updating the record, the local cache of records will
+			// be out of date. So after updating the record on the server, the locally cached
+			// version of the record also needs to be updated.
+			recordProxy.updateRecordFunc(replyData)
+		
+		}) // set record's number field value
+		
+	}
+	
+	function setTextVal(textVal) {
+		var textBoxTextValueFormat = {
+			context:"textBox",
+			format:"general"
+		}
+		var currRecordRef = recordProxy.getRecordFunc()
+		var setRecordValParams = { 
+			parentDatabaseID:currRecordRef.parentDatabaseID,
+			recordID:currRecordRef.recordID, 
+			changeSetID: recordProxy.changeSetID,
+			fieldID:textBoxFieldID, 
+			value:textVal,
+			valueFormat: textBoxTextValueFormat 
+		}
+		jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
+			// After updating the record, the local cache of records will
+			// be out of date. So after updating the record on the server, the locally cached
+			// version of the record also needs to be updated.
+			recordProxy.updateRecordFunc(replyData)
+			
+		}) // set record's text field value
+				
+	}
+	
+	
+	var $clearValueButton = $container.find(".textBoxComponentClearValueButton")
+	initButtonControlClickHandler($clearValueButton,function() {
+			console.log("Clear value clicked for text box")
+		
+		var currRecordRef = recordProxy.getRecordFunc()
+		
+		if(fieldType == fieldTypeNumber) {
+			setNumberVal(null)
+			$textBoxInput.data("rawVal","")
+		} else {
+			setTextVal(null)
+		}		
+	})
+	
 		
 	if(fieldType == fieldTypeNumber) {
 		$textBoxInput.focusin(function() {
@@ -115,61 +185,15 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 			if(currRecordRef.fieldValues[textBoxFieldID] != inputVal) {
 			
 				if(fieldType == fieldTypeText) {
-					currRecordRef.fieldValues[textBoxFieldID] = inputVal
-					
-					var textBoxTextValueFormat = {
-						context:"textBox",
-						format:"general"
-					}
-					
-					var setRecordValParams = { 
-						parentDatabaseID:currRecordRef.parentDatabaseID,
-						recordID:currRecordRef.recordID, 
-						changeSetID: recordProxy.changeSetID,
-						fieldID:fieldID, value:inputVal,
-						 valueFormat: textBoxTextValueFormat }
-					jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
-						// After updating the record, the local cache of records will
-						// be out of date. So after updating the record on the server, the locally cached
-						// version of the record also needs to be updated.
-						recordProxy.updateRecordFunc(replyData)
-						
-					}) // set record's text field value
-				
+					setTextVal(inputVal)
 				} else if (fieldType == fieldTypeNumber) {
 					var numberVal = Number(inputVal)
 					if(!isNaN(numberVal)) {
-						console.log("Change number val: "
-							+ "fieldID: " + textBoxFieldID
-						    + " ,number = " + numberVal)
-						currRecordRef.fieldValues[fieldID] = numberVal
-						var textBoxNumberValueFormat = {
-							context:"textBox",
-							format:"general"
-						}
-						var setRecordValParams = { 
-							parentDatabaseID:currRecordRef.parentDatabaseID,
-							recordID:currRecordRef.recordID,
-							changeSetID: recordProxy.changeSetID,
-							fieldID:textBoxFieldID, 
-							value:numberVal,
-							 valueFormat:textBoxNumberValueFormat
-						}
-						jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
-							// After updating the record, the local cache of records will
-							// be out of date. So after updating the record on the server, the locally cached
-							// version of the record also needs to be updated.
-							recordProxy.updateRecordFunc(replyData)
-							
-						}) // set record's number field value
+						setNumberVal(numberVal)						
 					}
 				
-				}
-			
-		
+				}		
 			} // if input value is different than currently cached value
-		
-		
 		}
 	
 	}) // focus out

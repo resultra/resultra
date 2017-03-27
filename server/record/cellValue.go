@@ -28,7 +28,7 @@ type TimeCellValue struct {
 }
 
 type TextCellValue struct {
-	Val string `json:"val"`
+	Val *string `json:"val"`
 }
 
 type CommentCellValue struct {
@@ -43,7 +43,11 @@ func DecodeCellValue(fieldType string, encodedVal string) (interface{}, error) {
 		if err := generic.DecodeJSONString(encodedVal, &textVal); err != nil {
 			return nil, fmt.Errorf("DecodeCellValue: failure decoding text value: %v", err)
 		}
-		return textVal.Val, nil
+		if textVal.Val == nil {
+			return nil, nil
+		} else {
+			return *(textVal.Val), nil
+		}
 	case field.FieldTypeNumber:
 		var numberVal NumberCellValue
 		if err := generic.DecodeJSONString(encodedVal, &numberVal); err != nil {
@@ -75,7 +79,11 @@ func DecodeCellValue(fieldType string, encodedVal string) (interface{}, error) {
 		if err := generic.DecodeJSONString(encodedVal, &textVal); err != nil {
 			return nil, fmt.Errorf("DecodeCellValue: failure decoding long text value: %v", err)
 		}
-		return textVal.Val, nil
+		if textVal.Val == nil {
+			return nil, nil
+		} else {
+			return *(textVal.Val), nil
+		}
 	case field.FieldTypeComment:
 		var commentVal CommentCellValue
 		if err := generic.DecodeJSONString(encodedVal, &commentVal); err != nil {
