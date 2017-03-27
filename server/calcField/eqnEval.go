@@ -77,6 +77,10 @@ func getTextRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*Equat
 		// user hasn't entered a value yet for the field.
 		log.Printf("GetTextRecordEqnResult: Undefined equation result for field: %v", fieldID)
 		return undefinedEqnResult(), nil
+	} else if val == nil {
+		// If the value is defined, but set to a nil value, this means the value has been cleared. For purposes
+		// of equation evaluation, this is the same as an undefined value.
+		return undefinedEqnResult(), nil
 	} else {
 		if textVal, foundText := val.(string); !foundText {
 			return nil, fmt.Errorf("Type mismatch retrieving value from record field id = %v:"+

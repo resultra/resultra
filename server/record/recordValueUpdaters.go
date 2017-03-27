@@ -130,7 +130,7 @@ func (valParams SetRecordNumberValueParams) getUpdateProperties() CellUpdateProp
 type SetRecordBoolValueParams struct {
 	RecordUpdateHeader
 	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
-	Value       bool                  `json:"value"`
+	Value       *bool                 `json:"value"`
 }
 
 func (setValParams SetRecordBoolValueParams) fieldType() string { return field.FieldTypeBool }

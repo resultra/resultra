@@ -12,7 +12,7 @@ type NumberCellValue struct {
 }
 
 type BoolCellValue struct {
-	Val bool `json:"val"`
+	Val *bool `json:"val"`
 }
 
 type FileCellValue struct {
@@ -73,7 +73,11 @@ func DecodeCellValue(fieldType string, encodedVal string) (interface{}, error) {
 		if err := generic.DecodeJSONString(encodedVal, &boolVal); err != nil {
 			return nil, fmt.Errorf("DecodeCellValue: failure decoding boolean value: %v", err)
 		}
-		return boolVal.Val, nil
+		if boolVal.Val == nil {
+			return nil, nil
+		} else {
+			return *(boolVal.Val), nil
+		}
 	case field.FieldTypeLongText:
 		var textVal TextCellValue
 		if err := generic.DecodeJSONString(encodedVal, &textVal); err != nil {

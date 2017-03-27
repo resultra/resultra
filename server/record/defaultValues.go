@@ -55,9 +55,11 @@ func init() {
 
 func setBoolTrueDefaultValue(currUserID string, recUpdateHeader RecordUpdateHeader, defaultVal DefaultFieldValue) (*Record, error) {
 
+	trueVal := true
+
 	setValParams := SetRecordBoolValueParams{
 		RecordUpdateHeader: recUpdateHeader,
-		Value:              true,
+		Value:              &trueVal,
 		ValueFormat:        defaultValCellUpdateValFormat}
 
 	return UpdateRecordValue(currUserID, setValParams)
@@ -65,9 +67,11 @@ func setBoolTrueDefaultValue(currUserID string, recUpdateHeader RecordUpdateHead
 
 func setBoolFalseDefaultValue(currUserID string, recUpdateHeader RecordUpdateHeader, defaultVal DefaultFieldValue) (*Record, error) {
 
+	falseVal := false
+
 	setValParams := SetRecordBoolValueParams{
 		RecordUpdateHeader: recUpdateHeader,
-		Value:              false,
+		Value:              &falseVal,
 		ValueFormat:        defaultValCellUpdateValFormat}
 
 	return UpdateRecordValue(currUserID, setValParams)
