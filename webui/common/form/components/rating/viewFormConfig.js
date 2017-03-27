@@ -14,15 +14,21 @@ function loadRecordIntoRating(ratingElem, recordRef) {
 
 		var fieldVal = recordRef.fieldValues[ratingFieldID]
 
-		console.log("loadRecordIntoTextBox: Load value into container: " + $(this).attr("id") + " field ID:" + 
+		console.log("loadRecordIntoRating: Load value into rating control: recordID: " + recordRef.recordID + " field ID:" + 
 					ratingFieldID + "  value:" + fieldVal)
 		
-		var maxRating = 5
-		if((fieldVal >= 0) && (fieldVal <= maxRating)) {
-			$ratingControl.rating('rate',fieldVal)	
+		if (fieldVal == null) {
+			// A null field value corresponds to a value which has been cleared by the user.
+			$ratingControl.rating('rate','')
 		} else {
-			$ratingControl.rating('rate','')		
+			var maxRating = 5
+			if((fieldVal >= 0) && (fieldVal <= maxRating)) {
+				$ratingControl.rating('rate',fieldVal)	
+			} else {
+				$ratingControl.rating('rate','')		
+			}		
 		}
+		
 		
 	} // If record has a value for the current container's associated field ID.
 	else
@@ -77,6 +83,7 @@ function initRatingRecordEditBehavior($ratingContainer,componentContext,recordPr
 		var $clearValueButton = $ratingContainer.find(".ratingComponentClearValueButton")
 		initButtonControlClickHandler($clearValueButton,function() {
 				console.log("Clear value clicked for rating")
+				setRatingValue(null)
 		})
 		
 	}
