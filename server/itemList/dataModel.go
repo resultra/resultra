@@ -72,7 +72,7 @@ func GetItemList(listID string) (*ItemList, error) {
 
 	listProps := newDefaultItemListProperties()
 	if decodeErr := generic.DecodeJSONString(encodedProps, &listProps); decodeErr != nil {
-		return nil, fmt.Errorf("GetItemList: can't decode properties: %v", encodedProps)
+		return nil, fmt.Errorf("GetItemList: can't decode properties: %v, err = %v", encodedProps, decodeErr)
 	}
 
 	retrievedList := ItemList{

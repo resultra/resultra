@@ -10,14 +10,14 @@ import (
 
 type GetFilteredSortedRecordsParams struct {
 	DatabaseID     string                               `json:"databaseID"`
-	PreFilterRules []recordFilter.RecordFilterRule      `json:"preFilterRules"`
-	FilterRules    []recordFilter.RecordFilterRule      `json:"filterRules"`
+	PreFilterRules recordFilter.RecordFilterRuleSet     `json:"preFilterRules"`
+	FilterRules    recordFilter.RecordFilterRuleSet     `json:"filterRules"`
 	SortRules      []recordSortDataModel.RecordSortRule `json:"sortRules"`
 }
 
 func NewDefaultGetFilteredSortedRecordsParams() GetFilteredSortedRecordsParams {
 	return GetFilteredSortedRecordsParams{
-		"", []recordFilter.RecordFilterRule{}, []recordFilter.RecordFilterRule{}, []recordSortDataModel.RecordSortRule{}}
+		"", recordFilter.NewDefaultRecordFilterRuleSet(), recordFilter.NewDefaultRecordFilterRuleSet(), []recordSortDataModel.RecordSortRule{}}
 
 }
 

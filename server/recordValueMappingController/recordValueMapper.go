@@ -19,7 +19,7 @@ func calculateHiddenFormComponents(parentDatabaseID string, recordVals record.Re
 		return nil, fmt.Errorf("CalculateHiddenFormComponents: %v", err)
 	}
 	for componentID, filterConds := range componentFilterCondMap {
-		filterContext, contextErr := recordFilter.CreateFilterRuleContexts(filterConds)
+		filterContext, contextErr := recordFilter.CreateFilterRuleContexts(filterConds.FilterRules)
 		if contextErr != nil {
 			return nil, fmt.Errorf("CalculateHiddenFormComponents: %v", contextErr)
 		}

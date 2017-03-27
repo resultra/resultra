@@ -7,7 +7,6 @@ import (
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/recordFilter"
 )
 
 const summaryTableEntityKind string = "SummaryTable"
@@ -66,12 +65,10 @@ func newSummaryTable(params NewSummaryTableParams) (*SummaryTable, error) {
 		return nil, fmt.Errorf("newSummaryTable: Invalid geometry for bar chart: %+v", params.Geometry)
 	}
 
-	summaryTableProps := SummaryTableProps{
-		RowGroupingVals:    *rowGrouping,
-		ColumnValSummaries: colSummaries,
-		Geometry:           params.Geometry,
-		Title:              "",
-		DefaultFilterRules: []recordFilter.RecordFilterRule{}}
+	summaryTableProps := newDefaultSummaryTableProps()
+	summaryTableProps.RowGroupingVals = *rowGrouping
+	summaryTableProps.ColumnValSummaries = colSummaries
+	summaryTableProps.Geometry = params.Geometry
 
 	newSummaryTable := SummaryTable{
 		ParentDashboardID: params.ParentDashboardID,
@@ -87,7 +84,7 @@ func newSummaryTable(params NewSummaryTableParams) (*SummaryTable, error) {
 
 func GetSummaryTable(parentDashboardID string, summaryTableID string) (*SummaryTable, error) {
 
-	summaryTableProps := SummaryTableProps{}
+	summaryTableProps := newDefaultSummaryTableProps()
 	if getErr := common.GetDashboardComponent(summaryTableEntityKind, parentDashboardID, summaryTableID, &summaryTableProps); getErr != nil {
 		return nil, fmt.Errorf("getBarChart: Unable to retrieve bar chart component: %v", getErr)
 	}
@@ -106,7 +103,7 @@ func GetSummaryTables(parentDashboardID string) ([]SummaryTable, error) {
 	summaryTables := []SummaryTable{}
 	addSummaryTable := func(summaryTableID string, encodedProps string) error {
 
-		var summaryTableProps SummaryTableProps
+		summaryTableProps := newDefaultSummaryTableProps()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &summaryTableProps); decodeErr != nil {
 			return fmt.Errorf("GetSummaryTables: can't decode properties: %v", encodedProps)
 		}

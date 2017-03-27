@@ -120,7 +120,7 @@ func (params SetRowGroupingParams) updateSummaryTableProps(summaryTable *Summary
 
 type SetSummaryTableDefaultFilterRulesParams struct {
 	SummaryTableUniqueIDHeader
-	DefaultFilterRules []recordFilter.RecordFilterRule `json:"defaultFilterRules"`
+	DefaultFilterRules recordFilter.RecordFilterRuleSet `json:"defaultFilterRules"`
 }
 
 func (params SetSummaryTableDefaultFilterRulesParams) updateSummaryTableProps(summaryTable *SummaryTable) error {

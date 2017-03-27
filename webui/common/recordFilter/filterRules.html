@@ -1,3 +1,18 @@
+
+{{define "recordFilterMatchLogic"}}
+	  <div class="form-group">
+       	  <label for="{{.}}RecordFilterMatchLogicSelection">Logic for matching conditions</label>
+		  	<select class="form-control maxWidth300" id="{{.}}RecordFilterMatchLogicSelection">
+		  		<option disabled selected value="">Match logic</option>
+		 		<option value="all">All conditions</option>
+		  		<option value="any">Any condition</option>
+			</select>
+	  </div>
+
+{{end}}
+
+
+
 {{define "recordFilterRuleList"}}
 	<div class="list-group recordFilterFilterRuleList" id="{{.}}RecordFilterFilterRuleList">
 	</div>	

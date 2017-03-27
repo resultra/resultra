@@ -45,6 +45,7 @@
 {{define "recordFilterPane"}}
 
 <div class="ui-layout-content noPadding">
+	{{template "recordFilterMatchLogic" .}}
 	{{template "filterRecordsPanelFilterList" .}}
 </div>
 <div class="ui-layout-footer">

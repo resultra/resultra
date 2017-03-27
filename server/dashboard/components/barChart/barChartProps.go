@@ -120,7 +120,7 @@ func (params SetYAxisSummaryParams) updateBarChartProps(barChart *BarChart) erro
 
 type SetDefaultFilterRulesParams struct {
 	BarChartUniqueIDHeader
-	DefaultFilterRules []recordFilter.RecordFilterRule `json:"defaultFilterRules"`
+	DefaultFilterRules recordFilter.RecordFilterRuleSet `json:"defaultFilterRules"`
 }
 
 func (params SetDefaultFilterRulesParams) updateBarChartProps(barChart *BarChart) error {

@@ -47,11 +47,14 @@ func editListPropsPage(w http.ResponseWriter, r *http.Request) {
 
 	listInfo, err := itemListDataModel.GetItemList(listID)
 	if err != nil {
+		log.Println("Error retrieving item list info:", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(listInfo.ParentDatabaseID)
 	if dbInfoErr != nil {
+		log.Println("Error retrieving item list database info:", dbInfoErr)
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
 	}
 
@@ -71,6 +74,7 @@ func editListPropsPage(w http.ResponseWriter, r *http.Request) {
 
 	if err := itemListTemplates.ExecuteTemplate(w, "editItemListPropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 }

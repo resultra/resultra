@@ -7,7 +7,6 @@ import (
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/recordFilter"
 )
 
 const barChartEntityKind string = "BarChart"
@@ -88,13 +87,11 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 		return nil, fmt.Errorf("NewBarChart: Invalid X axis sort order: %v", params.XAxisSortValues)
 	}
 
-	barChartProps := BarChartProps{
-		XAxisVals:          *valGrouping,
-		XAxisSortValues:    params.XAxisSortValues,
-		YAxisVals:          *valSummary,
-		Geometry:           params.Geometry,
-		Title:              "",
-		DefaultFilterRules: []recordFilter.RecordFilterRule{}}
+	barChartProps := newDefaultBarChartProps()
+	barChartProps.XAxisVals = *valGrouping
+	barChartProps.XAxisSortValues = params.XAxisSortValues
+	barChartProps.YAxisVals = *valSummary
+	barChartProps.Geometry = params.Geometry
 
 	newBarChart := BarChart{
 		ParentDashboardID: params.ParentDashboardID,
@@ -111,7 +108,7 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 
 func GetBarChart(parentDashboardID string, barChartID string) (*BarChart, error) {
 
-	barChartProps := BarChartProps{}
+	barChartProps := newDefaultBarChartProps()
 	if getErr := common.GetDashboardComponent(barChartEntityKind, parentDashboardID, barChartID, &barChartProps); getErr != nil {
 		return nil, fmt.Errorf("getBarChart: Unable to retrieve bar chart component: %v", getErr)
 	}
@@ -130,7 +127,7 @@ func GetBarCharts(parentDashboardID string) ([]BarChart, error) {
 	barCharts := []BarChart{}
 	addBarChart := func(barChartID string, encodedProps string) error {
 
-		var barChartProps BarChartProps
+		barChartProps := newDefaultBarChartProps()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &barChartProps); decodeErr != nil {
 			return fmt.Errorf("getBarCharts: can't decode properties: %v", encodedProps)
 		}

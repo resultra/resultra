@@ -50,10 +50,9 @@ func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 		return nil, fmt.Errorf("saveNewCheckBox: %v", fieldErr)
 	}
 
-	properties := CheckBoxProperties{
-		FieldID:     params.FieldID,
-		Geometry:    params.Geometry,
-		ColorScheme: CheckboxColorSchemeDefault}
+	properties := newDefaultCheckBoxProperties()
+	properties.FieldID = params.FieldID
+	properties.Geometry = params.Geometry
 
 	newCheckBox := CheckBox{ParentFormID: params.ParentFormID,
 		CheckBoxID: uniqueID.GenerateSnowflakeID(),

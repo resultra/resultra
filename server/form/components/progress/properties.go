@@ -6,7 +6,6 @@ import (
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/numberFormat"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/recordFilter"
 )
 
 type ThresholdValues struct {
@@ -48,11 +47,11 @@ func (srcProps ProgressProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) 
 	}
 	destProps.FieldID = remappedFieldID
 
-	destVisibilityConditions, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.VisibilityConditions)
+	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(remappedIDs)
 	if err != nil {
 		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
 	}
-	destProps.VisibilityConditions = destVisibilityConditions
+	destProps.VisibilityConditions = *destVisibilityConditions
 
 	return &destProps, nil
 }

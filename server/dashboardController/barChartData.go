@@ -23,7 +23,7 @@ type BarChartData struct {
 	DataRows   []BarChartDataRow `json:"dataRows"`
 }
 
-func getOneBarChartData(barChart *barChart.BarChart, filterRules []recordFilter.RecordFilterRule) (*BarChartData, error) {
+func getOneBarChartData(barChart *barChart.BarChart, filterRules recordFilter.RecordFilterRuleSet) (*BarChartData, error) {
 
 	parentDashboard, err := dashboard.GetDashboard(barChart.ParentDashboardID)
 	if err != nil {
@@ -33,7 +33,7 @@ func getOneBarChartData(barChart *barChart.BarChart, filterRules []recordFilter.
 	// TODO - Store the list of filters with the bar chart and include it in the query.
 	sortRules := []recordSortDataModel.RecordSortRule{}
 	// TODO - Fully support pre-filtering for bar charts instead of no prefiltering.
-	preFilterRules := []recordFilter.RecordFilterRule{}
+	preFilterRules := recordFilter.NewDefaultRecordFilterRuleSet()
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
 		DatabaseID:     parentDashboard.ParentDatabaseID,
 		PreFilterRules: preFilterRules,
@@ -68,9 +68,9 @@ func getOneBarChartData(barChart *barChart.BarChart, filterRules []recordFilter.
 }
 
 type GetBarChartDataParams struct {
-	ParentDashboardID string                          `json:"parentDashboardID"`
-	BarChartID        string                          `json:"barChartID"`
-	FilterRules       []recordFilter.RecordFilterRule `json:"filterRules"`
+	ParentDashboardID string                           `json:"parentDashboardID"`
+	BarChartID        string                           `json:"barChartID"`
+	FilterRules       recordFilter.RecordFilterRuleSet `json:"filterRules"`
 }
 
 func getBarChartData(params GetBarChartDataParams) (*BarChartData, error) {

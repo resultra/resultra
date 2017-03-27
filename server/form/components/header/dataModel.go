@@ -39,10 +39,9 @@ func saveNewHeader(params NewHeaderParams) (*Header, error) {
 		return nil, fmt.Errorf("Invalid form component layout parameters: %+v", params)
 	}
 
-	properties := HeaderProperties{
-		Geometry:   params.Geometry,
-		Label:      params.Label,
-		HeaderSize: headerSizeMedium}
+	properties := newDefaultHeaderProperties()
+	properties.Geometry = params.Geometry
+	properties.Label = params.Label
 
 	newHeader := Header{ParentFormID: params.ParentFormID,
 		HeaderID:   uniqueID.GenerateSnowflakeID(),
@@ -80,7 +79,7 @@ func GetHeaders(parentFormID string) ([]Header, error) {
 
 		headerProps := newDefaultHeaderProperties()
 		if decodeErr := generic.DecodeJSONString(encodedProps, &headerProps); decodeErr != nil {
-			return fmt.Errorf("GetHeaders: can't decode properties: %v", encodedProps)
+			return fmt.Errorf("GetHeaders: can't decode properties: %v, err=%v", encodedProps, decodeErr)
 		}
 
 		currHeader := Header{
@@ -92,7 +91,7 @@ func GetHeaders(parentFormID string) ([]Header, error) {
 		return nil
 	}
 	if getErr := common.GetFormComponents(headerEntityKind, parentFormID, addHeader); getErr != nil {
-		return nil, fmt.Errorf("GetHeaders: Can't get headers: %v")
+		return nil, fmt.Errorf("GetHeaders: Can't get headers: %v", getErr)
 	}
 
 	return headers, nil

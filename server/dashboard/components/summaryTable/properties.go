@@ -19,7 +19,7 @@ type SummaryTableProps struct {
 
 	ColumnValSummaries []values.ValSummary `json:"columnValSummaries"`
 
-	DefaultFilterRules []recordFilter.RecordFilterRule `json:"defaultFilterRules"`
+	DefaultFilterRules recordFilter.RecordFilterRuleSet `json:"defaultFilterRules"`
 }
 
 func (srcProps SummaryTableProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*SummaryTableProps, error) {
@@ -42,12 +42,19 @@ func (srcProps SummaryTableProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (
 	}
 	destProps.ColumnValSummaries = destColSummaries
 
-	clonedFilterRules, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.DefaultFilterRules)
+	clonedFilterRules, err := srcProps.DefaultFilterRules.Clone(remappedIDs)
 	if err != nil {
 		return nil, fmt.Errorf("BarChartProps.Clone: %v", err)
 	}
-	destProps.DefaultFilterRules = clonedFilterRules
+	destProps.DefaultFilterRules = *clonedFilterRules
 
 	return &destProps, nil
 
+}
+
+func newDefaultSummaryTableProps() SummaryTableProps {
+	props := SummaryTableProps{
+		Title:              "",
+		DefaultFilterRules: recordFilter.NewDefaultRecordFilterRuleSet()}
+	return props
 }

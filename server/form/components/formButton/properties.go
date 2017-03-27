@@ -7,7 +7,6 @@ import (
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/record"
-	"resultra/datasheet/server/recordFilter"
 )
 
 const popupBehaviorModeless string = "modeless"
@@ -80,11 +79,11 @@ func (srcProps ButtonProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*
 	}
 	destProps.PopupBehavior = *destPopupProps
 
-	destVisibilityConditions, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.VisibilityConditions)
+	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(remappedIDs)
 	if err != nil {
 		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
 	}
-	destProps.VisibilityConditions = destVisibilityConditions
+	destProps.VisibilityConditions = *destVisibilityConditions
 
 	return &destProps, nil
 }

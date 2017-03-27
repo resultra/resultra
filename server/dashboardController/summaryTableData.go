@@ -15,7 +15,7 @@ type SummaryTableData struct {
 	GroupedSummarizedVals GroupedSummarizedVals     `json:"groupedSummarizedVals"`
 }
 
-func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable, filterRules []recordFilter.RecordFilterRule) (*SummaryTableData, error) {
+func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable, filterRules recordFilter.RecordFilterRuleSet) (*SummaryTableData, error) {
 
 	parentDashboard, err := dashboard.GetDashboard(summaryTable.ParentDashboardID)
 	if err != nil {
@@ -24,7 +24,7 @@ func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable, filterRules
 
 	sortRules := []recordSortDataModel.RecordSortRule{}
 	// TODO - Fully support pre-filtering for summary tables instead of no prefiltering.
-	preFilterRules := []recordFilter.RecordFilterRule{}
+	preFilterRules := recordFilter.NewDefaultRecordFilterRuleSet()
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
 		DatabaseID:     parentDashboard.ParentDatabaseID,
 		PreFilterRules: preFilterRules,
@@ -55,9 +55,9 @@ func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable, filterRules
 }
 
 type GetSummaryTableDataParams struct {
-	ParentDashboardID string                          `json:"parentDashboardID"`
-	SummaryTableID    string                          `json:"summaryTableID"`
-	FilterRules       []recordFilter.RecordFilterRule `json:"filterRules"`
+	ParentDashboardID string                           `json:"parentDashboardID"`
+	SummaryTableID    string                           `json:"summaryTableID"`
+	FilterRules       recordFilter.RecordFilterRuleSet `json:"filterRules"`
 }
 
 func getSummaryTableData(params GetSummaryTableDataParams) (*SummaryTableData, error) {

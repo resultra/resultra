@@ -5,13 +5,13 @@ import (
 )
 
 type ComponentVisibilityProperties struct {
-	VisibilityConditions []recordFilter.RecordFilterRule `json:"visibilityConditions"`
+	VisibilityConditions recordFilter.RecordFilterRuleSet `json:"visibilityConditions"`
 }
 
 func NewDefaultComponentVisibilityProperties() ComponentVisibilityProperties {
 
 	props := ComponentVisibilityProperties{
-		VisibilityConditions: []recordFilter.RecordFilterRule{}}
+		VisibilityConditions: recordFilter.NewDefaultRecordFilterRuleSet()}
 
 	return props
 }

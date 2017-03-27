@@ -52,10 +52,9 @@ func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 		return nil, fmt.Errorf("saveNewDatePicker: %v", fieldErr)
 	}
 
-	properties := DatePickerProperties{
-		Geometry:   params.Geometry,
-		FieldID:    params.FieldID,
-		DateFormat: dateFormatDefault}
+	properties := newDefaultDatePickerProperties()
+	properties.Geometry = params.Geometry
+	properties.FieldID = params.FieldID
 
 	newDatePicker := DatePicker{ParentFormID: params.ParentFormID,
 		DatePickerID: uniqueID.GenerateSnowflakeID(),

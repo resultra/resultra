@@ -5,7 +5,6 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/recordFilter"
 )
 
 type UserSelectionProperties struct {
@@ -26,11 +25,11 @@ func (srcProps UserSelectionProperties) Clone(remappedIDs uniqueID.UniqueIDRemap
 	}
 	destProps.FieldID = remappedFieldID
 
-	destVisibilityConditions, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.VisibilityConditions)
+	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(remappedIDs)
 	if err != nil {
 		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
 	}
-	destProps.VisibilityConditions = destVisibilityConditions
+	destProps.VisibilityConditions = *destVisibilityConditions
 
 	return &destProps, nil
 }

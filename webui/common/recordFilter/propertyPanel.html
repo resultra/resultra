@@ -3,6 +3,8 @@
 
 {{define "recordFilterPropertyPanel"}}
 
+	{{template "recordFilterMatchLogic" .ElemPrefix}}
+
 	{{template "recordFilterRuleList" .ElemPrefix}}
 	
 	{{template "fieldSelectionDropdown" .FieldSelectionParams}}

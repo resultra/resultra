@@ -6,9 +6,7 @@ import (
 	"resultra/datasheet/server/recordFilter"
 )
 
-type RecordFilterRuleSet []recordFilter.RecordFilterRule
-
-type FormComponentFilterMap map[string]RecordFilterRuleSet
+type FormComponentFilterMap map[string]recordFilter.RecordFilterRuleSet
 
 // Build a map of component IDs to the filtering rules used to determine if the component is visible or not. This simplified
 // structure is used to filter individual records to determine if the components are visible for each individual record.
@@ -30,73 +28,73 @@ func GetDatabaseFormComponentFilterMap(parentDatabaseID string) (FormComponentFi
 				currForm.FormID, err)
 		}
 		for _, currCaption := range formInfo.Captions {
-			if len(currCaption.Properties.VisibilityConditions) > 0 {
+			if !currCaption.Properties.VisibilityConditions.IsEmptyRuleSet() {
 				compFilterMap[currCaption.CaptionID] = currCaption.Properties.VisibilityConditions
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currCaption.CaptionID)
 			}
 		}
 		for _, currEditor := range formInfo.HtmlEditors {
-			if len(currEditor.Properties.VisibilityConditions) > 0 {
+			if !currEditor.Properties.VisibilityConditions.IsEmptyRuleSet() {
 				compFilterMap[currEditor.HtmlEditorID] = currEditor.Properties.VisibilityConditions
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currEditor.HtmlEditorID)
 			}
 		}
 		for _, currTextBox := range formInfo.TextBoxes {
-			if len(currTextBox.Properties.VisibilityConditions) > 0 {
+			if !currTextBox.Properties.VisibilityConditions.IsEmptyRuleSet() {
 				compFilterMap[currTextBox.TextBoxID] = currTextBox.Properties.VisibilityConditions
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currTextBox.TextBoxID)
 			}
 		}
 		for _, currCheckBox := range formInfo.CheckBoxes {
-			if len(currCheckBox.Properties.VisibilityConditions) > 0 {
+			if !currCheckBox.Properties.VisibilityConditions.IsEmptyRuleSet() {
 				compFilterMap[currCheckBox.CheckBoxID] = currCheckBox.Properties.VisibilityConditions
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currCheckBox.CheckBoxID)
 			}
 		}
 		for _, currDatePicker := range formInfo.DatePickers {
-			if len(currDatePicker.Properties.VisibilityConditions) > 0 {
+			if !currDatePicker.Properties.VisibilityConditions.IsEmptyRuleSet() {
 				compFilterMap[currDatePicker.DatePickerID] = currDatePicker.Properties.VisibilityConditions
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currDatePicker.DatePickerID)
 			}
 		}
 		for _, currRating := range formInfo.Ratings {
-			if len(currRating.Properties.VisibilityConditions) > 0 {
+			if !currRating.Properties.VisibilityConditions.IsEmptyRuleSet() {
 				compFilterMap[currRating.RatingID] = currRating.Properties.VisibilityConditions
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currRating.RatingID)
 			}
 		}
 		for _, currProgress := range formInfo.ProgressIndicators {
-			if len(currProgress.Properties.VisibilityConditions) > 0 {
+			if !currProgress.Properties.VisibilityConditions.IsEmptyRuleSet() {
 				compFilterMap[currProgress.ProgressID] = currProgress.Properties.VisibilityConditions
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currProgress.ProgressID)
 			}
 		}
 		for _, currButton := range formInfo.FormButtons {
-			if len(currButton.Properties.VisibilityConditions) > 0 {
+			if !currButton.Properties.VisibilityConditions.IsEmptyRuleSet() {
 				compFilterMap[currButton.ButtonID] = currButton.Properties.VisibilityConditions
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currButton.ButtonID)
 			}
 		}
 		for _, currHeader := range formInfo.Headers {
-			if len(currHeader.Properties.VisibilityConditions) > 0 {
+			if !currHeader.Properties.VisibilityConditions.IsEmptyRuleSet() {
 				compFilterMap[currHeader.HeaderID] = currHeader.Properties.VisibilityConditions
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currHeader.HeaderID)
 			}
 		}
 		for _, currSelection := range formInfo.Selections {
-			if len(currSelection.Properties.VisibilityConditions) > 0 {
+			if !currSelection.Properties.VisibilityConditions.IsEmptyRuleSet() {
 				compFilterMap[currSelection.SelectionID] = currSelection.Properties.VisibilityConditions
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currSelection.SelectionID)
 			}
 		}
 		for _, currUserSelection := range formInfo.UserSelections {
-			if len(currUserSelection.Properties.VisibilityConditions) > 0 {
+			if !currUserSelection.Properties.VisibilityConditions.IsEmptyRuleSet() {
 				compFilterMap[currUserSelection.UserSelectionID] = currUserSelection.Properties.VisibilityConditions
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currUserSelection.UserSelectionID)
 			}
 		}
 		for _, currComment := range formInfo.Comments {
-			if len(currComment.Properties.VisibilityConditions) > 0 {
+			if !currComment.Properties.VisibilityConditions.IsEmptyRuleSet() {
 				compFilterMap[currComment.CommentID] = currComment.Properties.VisibilityConditions
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currComment.CommentID)
 			}

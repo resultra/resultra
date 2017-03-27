@@ -5,7 +5,6 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/recordFilter"
 )
 
 const colorSchemeDefault string = "default"
@@ -22,11 +21,11 @@ func (srcProps CaptionProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (
 
 	destProps := srcProps
 
-	destVisibilityConditions, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.VisibilityConditions)
+	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(remappedIDs)
 	if err != nil {
 		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
 	}
-	destProps.VisibilityConditions = destVisibilityConditions
+	destProps.VisibilityConditions = *destVisibilityConditions
 
 	return &destProps, nil
 }

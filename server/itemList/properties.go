@@ -9,20 +9,20 @@ import (
 
 type ItemListProperties struct {
 	DefaultRecordSortRules []recordSortDataModel.RecordSortRule `json:"defaultRecordSortRules"`
-	DefaultFilterRules     []recordFilter.RecordFilterRule      `json:"defaultFilterRules"`
-	PreFilterRules         []recordFilter.RecordFilterRule      `json:"preFilterRules"`
+	DefaultFilterRules     recordFilter.RecordFilterRuleSet     `json:"defaultFilterRules"`
+	PreFilterRules         recordFilter.RecordFilterRuleSet     `json:"preFilterRules"`
 	DefaultPageSize        int                                  `json:"defaultPageSize"`
 	AlternateForms         []string                             `json:"alternateForms"`
 }
 
 func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ItemListProperties, error) {
 
-	destFilterRules, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.DefaultFilterRules)
+	destFilterRules, err := srcProps.DefaultFilterRules.Clone(remappedIDs)
 	if err != nil {
 		return nil, fmt.Errorf("FormProperties.Clone: %v")
 	}
 
-	destPreFilterRules, err := recordFilter.CloneFilterRules(remappedIDs, srcProps.PreFilterRules)
+	destPreFilterRules, err := srcProps.PreFilterRules.Clone(remappedIDs)
 	if err != nil {
 		return nil, fmt.Errorf("FormProperties.Clone: %v")
 	}
@@ -36,8 +36,8 @@ func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) 
 
 	destProps := ItemListProperties{
 		DefaultRecordSortRules: destSortRules,
-		DefaultFilterRules:     destFilterRules,
-		PreFilterRules:         destPreFilterRules,
+		DefaultFilterRules:     *destFilterRules,
+		PreFilterRules:         *destPreFilterRules,
 		DefaultPageSize:        srcProps.DefaultPageSize,
 		AlternateForms:         destAlternateForms}
 
@@ -47,8 +47,8 @@ func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) 
 func newDefaultItemListProperties() ItemListProperties {
 	defaultProps := ItemListProperties{
 		DefaultRecordSortRules: []recordSortDataModel.RecordSortRule{},
-		DefaultFilterRules:     []recordFilter.RecordFilterRule{},
-		PreFilterRules:         []recordFilter.RecordFilterRule{},
+		DefaultFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet(),
+		PreFilterRules:         recordFilter.NewDefaultRecordFilterRuleSet(),
 		DefaultPageSize:        1,
 		AlternateForms:         []string{}}
 

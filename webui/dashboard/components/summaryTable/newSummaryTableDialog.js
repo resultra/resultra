@@ -49,7 +49,7 @@ function openNewSummaryTableDialog(summaryTableParams) {
 			var summaryTableDataParams = { 
 				parentDashboardID: newSummaryTableParams.dashboardID,
 				summaryTableID: summaryTableRef.summaryTableID,
-				filterRules: []
+				filterRules: summaryTableRef.properties.defaultFilterRules
 			}
 			jsonAPIRequest("dashboardController/getSummaryTableData",summaryTableDataParams,function(summaryTableData) {
 				initSummaryTableData(newSummaryTableParams.dashboardID,summaryTableParams.$componentContainer,summaryTableData)

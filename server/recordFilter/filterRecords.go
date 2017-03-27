@@ -77,10 +77,10 @@ func MatchOneRecord(filterContexts []filterRuleContext, recValResults recordValu
 	return MatchOneRecordFromFieldValues(filterContexts, recValResults.FieldValues)
 }
 
-func FilterRecordValues(filterRules []RecordFilterRule,
+func FilterRecordValues(filterRules RecordFilterRuleSet,
 	unfilteredRecordValues []recordValue.RecordValueResults) ([]recordValue.RecordValueResults, error) {
 
-	filterContexts, err := CreateFilterRuleContexts(filterRules)
+	filterContexts, err := CreateFilterRuleContexts(filterRules.FilterRules)
 	if err != nil {
 		return nil, fmt.Errorf("FilterRecordValues: Error setting up for filtering: %v", err)
 	}

@@ -16,15 +16,23 @@ function getRecordFilterRuleListRules(elemPrefix) {
 
 	console.log("filterRules rules: " + JSON.stringify(filterRules))
 	
-	return filterRules
+	var $matchLogic = $(createPrefixedSelector(elemPrefix,
+					'RecordFilterMatchLogicSelection'))
+	
+	var filterRuleSet = {
+		matchLogic: $matchLogic.val(),
+		filterRules: filterRules
+	}
+	
+	return filterRuleSet
 }
 
 
 function updateFilterRules(panelParams) {
 	
-	var filterRules = getRecordFilterRuleListRules(panelParams.elemPrefix)
-	
-	panelParams.updateFilterRules(filterRules)
+	var filterRuleSet = getRecordFilterRuleListRules(panelParams.elemPrefix)
+		
+	panelParams.updateFilterRules(filterRuleSet)
 }
 
 function createFilterListRuleListItem(panelParams,fieldName) {
@@ -393,17 +401,25 @@ function updateDefaultFilterRules(panelParams, updateDoneFunc) {
 						'RecordFilterFilterRuleList')
 		var $filterRuleList = $(filterRuleListSelector)		
 		$filterRuleList.empty()
+			
+		var ruleList = panelParams.defaultFilterRules.filterRules
+		var matchLogic = panelParams.defaultFilterRules.matchLogic
 		
 		for(var defaultRuleIndex = 0; 
-				defaultRuleIndex < panelParams.defaultFilterRules.length; defaultRuleIndex++) {
+				defaultRuleIndex < ruleList.length; defaultRuleIndex++) {
 					
-			var currRuleInfo = panelParams.defaultFilterRules[defaultRuleIndex]
+			var currRuleInfo = ruleList[defaultRuleIndex]
 			
 			var fieldInfo = fieldsByID[currRuleInfo.fieldID]
 					
 			$filterRuleList.append(createFilterRulePanelListItem(panelParams,fieldInfo,currRuleInfo))
 				
 		}
+		
+		var $matchLogic = $(createPrefixedSelector(panelParams.elemPrefix,
+						'RecordFilterMatchLogicSelection'))
+		$matchLogic.val(matchLogic)
+		
 		updateDoneFunc()
 	})
 	

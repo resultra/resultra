@@ -1,11 +1,11 @@
 
 
 function loadBarChartProperties(barChartPropsArgs) {
-	
+
 	var barChartContainer = $('#'+barChartPropsArgs.barChartID)
 	var barChartRef = getContainerObjectRef(barChartPropsArgs.$barChart)
 	var barChartElemPrefix = "barChart_"
-	
+
 	var filterPropertyPanelParams = {
 		elemPrefix: barChartElemPrefix,
 		databaseID: barChartPropsArgs.databaseID,
@@ -24,12 +24,12 @@ function loadBarChartProperties(barChartPropsArgs) {
 		}
 	}
 	initFilterPropertyPanel(filterPropertyPanelParams)
-	
+
 	var titlePropertyPanelParams = {
 		dashboardID: barChartPropsArgs.dashboardID,
 		title: barChartRef.properties.title,
 		setTitleFunc: function(newTitle) {
-			
+
 			var setTitleParams = {
 				parentDashboardID:barChartPropsArgs.dashboardID,
 				barChartID: barChartRef.barChartID,
@@ -38,12 +38,12 @@ function loadBarChartProperties(barChartPropsArgs) {
 			jsonAPIRequest("dashboard/barChart/setTitle",setTitleParams,function(updatedBarChart) {
 					barChartContainer.data("barChartRef",updatedBarChart)
 			})
-			
+
 		}
 	}
 	initDashboardComponentTitlePropertyPanel(barChartElemPrefix,titlePropertyPanelParams)
-	
-	
+
+
 	var xAxisPropertyPanelParams = {
 		elemPrefix: barChartElemPrefix,
 		databaseID: barChartPropsArgs.databaseID,
@@ -58,10 +58,10 @@ function loadBarChartProperties(barChartPropsArgs) {
 					barChartContainer.data("barChartRef",updatedBarChart)
 			})
 		}
-		
+
 	}
 	initDashboardValueGroupingPropertyPanel(xAxisPropertyPanelParams)
-	
+
 	var yAxisPropertyPanelParams = {
 		elemPrefix: barChartElemPrefix,
 		databaseID: barChartPropsArgs.databaseID,
@@ -76,12 +76,12 @@ function loadBarChartProperties(barChartPropsArgs) {
 								setYAxisSummaryParams,function(updatedBarChart) {
 				barChartContainer.data("barChartRef",updatedBarChart)
 			})
-			
+
 		}
 	}
 	initDashboardValueSummaryPropertyPanel(yAxisPropertyPanelParams)
-	
+
 	// Toggle to the bar chart properties, hiding the other property panels
 	hideSiblingsShowOne('#barChartProps')
-			
+
 }

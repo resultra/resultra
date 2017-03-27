@@ -59,7 +59,7 @@ func (updateParams SetItemListNameParams) updateProps(itemList *ItemList) error 
 
 type SetFilterRulesParams struct {
 	ItemListIDHeader
-	FilterRules []recordFilter.RecordFilterRule `json:"filterRules"`
+	FilterRules recordFilter.RecordFilterRuleSet `json:"filterRules"`
 }
 
 func (updateParams SetFilterRulesParams) updateProps(itemList *ItemList) error {
@@ -72,7 +72,7 @@ func (updateParams SetFilterRulesParams) updateProps(itemList *ItemList) error {
 
 type SetPreFilterRulesParams struct {
 	ItemListIDHeader
-	FilterRules []recordFilter.RecordFilterRule `json:"filterRules"`
+	FilterRules recordFilter.RecordFilterRuleSet `json:"filterRules"`
 }
 
 func (updateParams SetPreFilterRulesParams) updateProps(itemList *ItemList) error {

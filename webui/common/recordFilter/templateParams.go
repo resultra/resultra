@@ -13,7 +13,7 @@ func NewFilterPanelTemplateParams(elemPrefix string) FilterPanelTemplateParams {
 
 	fieldSelectionParams := field.FieldSelectionDropdownTemplateParams{
 		ElemPrefix:     elemPrefix,
-		ButtonTitle:    "Add Filter",
+		ButtonTitle:    "Add Filter Condition",
 		ButtonIconName: "glyphicon-plus"}
 
 	filterPanelParams := FilterPanelTemplateParams{
