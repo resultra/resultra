@@ -34,7 +34,44 @@ class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
             
         with self.assertRaises(AssertionError):
             self.setTimeRecordValue(self.databaseID,recordID,self.timeFieldID,"") # Invalid time format
-              
+
+
+
+class TestNumberRecordValues(unittest.TestCase,TestHelperMixin):
+    
+    def setUp(self):
+        self.createTestSession()
+        self.databaseID = self.newDatabase('TestNumberRecordValues: Test Database')
+        self.numberFieldID = self.newNumberField(self.databaseID,"TestNumberRecordValues - Number Field","numField") 
+        
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'Total','type':'number',
+                    'refName':'calcTest','formulaText':'[numField]*2'}
+        jsonResp = self.apiRequest('calcField/new',fieldParams)
+        self.calcFieldID = jsonResp[u'fieldID']
+           
+    
+    def testSimpleNumbers(self):
+        recordID = self.newRecord(self.databaseID)
+                         
+        recordRef = self.getRecord(self.databaseID,recordID) 
+        
+        numberVal = 25.2
+        calcFieldExpectedVal = numberVal * 2
+ 
+        self.setNumberRecordValue(self.databaseID,recordID,self.numberFieldID,numberVal)
+ 
+        # Get the record straight from the database
+        recordRef = self.getRecord(self.databaseID,recordID)
+        self.assertEquals(self.getRecordFieldVal(recordRef,self.numberFieldID),numberVal,"retrieved record has number value")
+        self.assertEquals(self.getRecordFieldVal(recordRef,
+                    self.calcFieldID),calcFieldExpectedVal,"calculated field has expected value")
+        
+        # Test what happens when clearing the value. This is done by setting the value to 'null'
+        self.setNumberRecordValue(self.databaseID,recordID,self.numberFieldID,None)
+        recordRef = self.getRecord(self.databaseID,recordID)
+        self.assertEquals(self.getRecordFieldVal(recordRef,self.numberFieldID),None,"retrieved record has null value")
+        self.verifyUndefinedFieldVal(recordRef,self.calcFieldID)
+                      
 
 class TestLongTextRecordValues(unittest.TestCase,TestHelperMixin):
     def setUp(self):

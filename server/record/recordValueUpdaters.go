@@ -106,7 +106,7 @@ func (valParams SetRecordCommentValueParams) getUpdateProperties() CellUpdatePro
 type SetRecordNumberValueParams struct {
 	RecordUpdateHeader
 	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
-	Value       float64               `json:"value"`
+	Value       *float64              `json:"value"`
 }
 
 func (setValParams SetRecordNumberValueParams) fieldType() string { return field.FieldTypeNumber }

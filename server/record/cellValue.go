@@ -8,7 +8,7 @@ import (
 )
 
 type NumberCellValue struct {
-	Val float64 `json:'val'`
+	Val *float64 `json:'val'`
 }
 
 type BoolCellValue struct {
@@ -49,7 +49,15 @@ func DecodeCellValue(fieldType string, encodedVal string) (interface{}, error) {
 		if err := generic.DecodeJSONString(encodedVal, &numberVal); err != nil {
 			return nil, fmt.Errorf("DecodeCellValue: failure decoding number value: %v", err)
 		}
-		return numberVal.Val, nil
+		// The value is stored using a pointer to a float64. This value format allows NULL
+		// values to be set when a number field's value is cleared. When retrieving the value,
+		// either a nil(null) or literal value must be returned. The nil value is interpreted
+		// as an undefined result in the calculated field evaluation.
+		if numberVal.Val == nil {
+			return nil, nil
+		} else {
+			return *(numberVal.Val), nil
+		}
 	case field.FieldTypeTime:
 		var timeVal TimeCellValue
 		if err := generic.DecodeJSONString(encodedVal, &timeVal); err != nil {

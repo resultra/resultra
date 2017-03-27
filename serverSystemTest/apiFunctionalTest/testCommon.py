@@ -117,7 +117,15 @@ class TestHelperMixin:
     def getRecordFieldVal(self,recordRef,fieldID):
         fieldValues = recordRef[u'fieldValues']
         value = fieldValues[fieldID]
-        return value   
+        return value
+        
+    def verifyUndefinedFieldVal(self,recordRef,fieldID):
+        fieldValues = recordRef[u'fieldValues']
+        if fieldID in fieldValues:
+            print "FAIL: verifyOneFormula: field ID should be undefined: ",fieldID
+            self.fail(msg="verifyUndefinedFieldVal")
+        else:
+            print "SUCCESS: verifyOneFormula: field ID not undefined: ",fieldID
            
     def setNumberRecordValue(self,parentDatabaseID,recordID,fieldID,numberVal):
         recordRef = self.apiRequest('recordUpdate/setNumberFieldValue',{'parentDatabaseID':parentDatabaseID,'recordID':recordID,'fieldID':fieldID,'value':numberVal})

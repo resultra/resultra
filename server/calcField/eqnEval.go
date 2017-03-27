@@ -41,6 +41,13 @@ func getNumberRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*Equ
 		// user hasn't entered a value yet for the field.
 		log.Printf("GetNumberRecordEqnResult: Undefined equation result for field: %v", fieldID)
 		return undefinedEqnResult(), nil
+
+	} else if val == nil {
+		log.Printf("GetNumberRecordEqnResult: Undefined equation result for field: %v", fieldID)
+		// If the value is defined, but set to a nil value, this means the value has been cleared. For purposes
+		// of equation evaluation, this is the same as an undefined value.
+		return undefinedEqnResult(), nil
+
 	} else {
 		if numberVal, foundNumber := val.(float64); !foundNumber {
 			return nil, fmt.Errorf("Type mismatch retrieving value from record field id = %v:"+
