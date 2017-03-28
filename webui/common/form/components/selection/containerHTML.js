@@ -14,6 +14,9 @@ function selectionContainerHTML(elementID)
 					'<select class="form-control selectionFormComponentSelection"></select>' +
 				'</div>' +
 			'</div>'+
+			'<div class="pull-right componentHoverFooter initiallyHidden">' +
+				smallClearDeleteButtonHTML("selectComponentClearValueButton") + 
+			'</div>' +
 		'</div>';
 	return containerHTML
 }

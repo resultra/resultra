@@ -19,11 +19,16 @@ function loadRecordIntoSelection(selectionElem, recordRef) {
 	if(recordRef.fieldValues.hasOwnProperty(selectionFieldID)) {
 
 		var fieldVal = recordRef.fieldValues[selectionFieldID]
+		
+		if (fieldVal === null) {
+			$selectionControl.val("")
+		} else {
+			console.log("loadRecordIntoSelection: Load value into container: " + " field ID:" + 
+						selectionFieldID + "  value:" + fieldVal)
 
-		console.log("loadRecordIntoSelection: Load value into container: " + " field ID:" + 
-					selectionFieldID + "  value:" + fieldVal)
+			$selectionControl.val(fieldVal.toString())
+		}
 
-		$selectionControl.val(fieldVal.toString())
 	} // If record has a value for the current container's associated field ID.
 	else
 	{
@@ -55,64 +60,75 @@ function initSelectionRecordEditBehavior($selectionContainer,componentContext,re
 		event.stopPropagation();
 		return false;
 	});
-
-
-
+	
 	var selectionFieldID = selectionObjectRef.properties.fieldID
+	var selectionFieldType = getFieldRef(selectionFieldID).type
+	
+	
+	function setTextVal(newValue) {
+		var currRecordRef = recordProxy.getRecordFunc()	
+		var setTextFieldValueFormat = {
+			context: "select",
+			format:"general" 
+		}
+		var setRecordValParams = { 
+			parentDatabaseID:currRecordRef.parentDatabaseID,
+			recordID:currRecordRef.recordID, 
+			changeSetID: recordProxy.changeSetID,
+			fieldID:selectionFieldID, 
+			value:newValue,
+			valueFormat:setTextFieldValueFormat}
+		jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
+			// After updating the record, the local cache of records in currentRecordSet will
+			// be out of date. So after updating the record on the server, the locally cached
+			// version of the record also needs to be updated.
+			recordProxy.updateRecordFunc(replyData)
+		}) // set record's text field value
+		
+	}
+	
+	function setNumberVal(numberVal) {
+		var currRecordRef = recordProxy.getRecordFunc()
+		var setNumberFieldValueFormat = {
+			context: "select",
+			format:"general" 
+		}			
+		var setRecordValParams = { 
+			parentDatabaseID:currRecordRef.parentDatabaseID,
+			recordID:currRecordRef.recordID, 
+			changeSetID: recordProxy.changeSetID,
+			fieldID:selectionFieldID, 
+			value:numberVal,
+			valueFormat:setNumberFieldValueFormat
+		}
+		jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
+			// After updating the record, the local cache of records will
+			// be out of date. So after updating the record on the server, the locally cached
+			// version of the record also needs to be updated.
+			recordProxy.updateRecordFunc(replyData)
+		}) // set record's number field value
+		
+	}
+	
+	var $clearValueButton = $selectionContainer.find(".selectComponentClearValueButton")
+	initButtonControlClickHandler($clearValueButton,function() {
+		console.log("Clear value clicked for text box")
+		if(selectionFieldType == fieldTypeNumber) {
+			setNumberVal(null)
+		} else {
+			setTextVal(null)
+		}		
+	})
 	
 	initSelectControlChangeHandler($selectionControl,function(newValue) {
-		
-		var currRecordRef = recordProxy.getRecordFunc()	
-		var fieldID = selectionFieldID
-		var fieldRef = getFieldRef(selectionFieldID)
-		var fieldType = fieldRef.type
-		if(fieldType == "text") {
-			currRecordRef.fieldValues[selectionFieldID] = newValue
-			var setTextFieldValueFormat = {
-				context: "select",
-				format:"general" 
-			}
-			var setRecordValParams = { 
-				parentDatabaseID:currRecordRef.parentDatabaseID,
-				recordID:currRecordRef.recordID, 
-				changeSetID: recordProxy.changeSetID,
-				fieldID:selectionFieldID, value:newValue,
-				 valueFormat:setTextFieldValueFormat}
-			jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
-				// After updating the record, the local cache of records in currentRecordSet will
-				// be out of date. So after updating the record on the server, the locally cached
-				// version of the record also needs to be updated.
-				recordProxy.updateRecordFunc(replyData)
-			}) // set record's text field value
-		
+		if(selectionFieldType == "text") {
+			setTextVal(newValue)
 		} else if (fieldType == "number") {
 			var numberVal = Number(newValue)
 			if(!isNaN(numberVal)) {
-				console.log("Change number val: "
-					+ "fieldID: " + fieldID
-				    + " ,number = " + numberVal)
-				currRecordRef.fieldValues[fieldID] = numberVal
-				var setNumberFieldValueFormat = {
-					context: "select",
-					format:"general" 
-				}			
-				var setRecordValParams = { 
-					parentDatabaseID:currRecordRef.parentDatabaseID,
-					recordID:currRecordRef.recordID, 
-					changeSetID: recordProxy.changeSetID,
-					fieldID:selectionFieldID, 
-					value:numberVal,
-					 valueFormat:setNumberFieldValueFormat}
-				jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
-					// After updating the record, the local cache of records will
-					// be out of date. So after updating the record on the server, the locally cached
-					// version of the record also needs to be updated.
-					recordProxy.updateRecordFunc(replyData)
-				}) // set record's number field value
-			}
-		
-		}
-				
+				setNumberVal(numberVal)
+			}		
+		}	
 	})
 	
 	
