@@ -20,7 +20,7 @@ type FileCellValue struct {
 }
 
 type UserCellValue struct {
-	UserID string `json:"userID"`
+	UserID *string `json:"userID"`
 }
 
 type TimeCellValue struct {
@@ -110,7 +110,11 @@ func DecodeCellValue(fieldType string, encodedVal string) (interface{}, error) {
 		if err := generic.DecodeJSONString(encodedVal, &userVal); err != nil {
 			return nil, fmt.Errorf("DecodeCellValue: failure decoding user value: %v", err)
 		}
-		return userVal.UserID, nil
+		if userVal.UserID == nil {
+			return nil, nil
+		} else {
+			return *(userVal.UserID), nil
+		}
 	default:
 		return nil, fmt.Errorf("DecodeCellValue: Unrecognized field type: %v", fieldType)
 

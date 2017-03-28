@@ -21,8 +21,11 @@ function loadRecordIntoUserSelection(userSelectionElem, recordRef) {
 	if(recordRef.fieldValues.hasOwnProperty(userSelectionFieldID)) {
 
 		var fieldVal = recordRef.fieldValues[userSelectionFieldID]
-
-		setUserSelectionControlVal($userSelectionControl,fieldVal)
+		if (fieldVal === null) {
+			clearUserSelectionControlVal($userSelectionControl)
+		} else {
+			setUserSelectionControlVal($userSelectionControl,fieldVal)		
+		}
 
 	} // If record has a value for the current container's associated field ID.
 	else
@@ -75,6 +78,13 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 	}
 	
 	initUserSelection(userSelectionParams)
+	
+	
+	var $clearValueButton = $userSelectionContainer.find(".userSelectionComponentClearValueButton")
+	initButtonControlClickHandler($clearValueButton,function() {
+		console.log("Clear value clicked for user selection")
+		setUserSelectionValue(null)
+	})
 
 	$userSelectionControl.on('change', function() {
 		var selectedUserID = $(this).val()
