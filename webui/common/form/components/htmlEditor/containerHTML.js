@@ -30,6 +30,7 @@ function htmlEditorContainerHTML(elementID)
 			'</div>' +
 		'</div>'+
 		'<div class="editorFooter pull-right componentHoverFooter initiallyHidden">' +
+			smallClearDeleteButtonHTML("editorComponentClearValueButton") + 
 			editButtonHTML() +
 		'</div>' +
 	

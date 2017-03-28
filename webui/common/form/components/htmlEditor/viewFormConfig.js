@@ -20,9 +20,16 @@ function loadRecordIntoHtmlEditor($htmlEditor, recordRef) {
 	// Populate the "intersection" of field values in the record
 	// with the fields shown by the layout's containers.
 	if(recordRef.fieldValues.hasOwnProperty(htmlEditorFieldID)) {
+		
+		var fieldVal = recordRef.fieldValues[htmlEditorFieldID]
+		
+		if (fieldVal === null) {
+			populateInlineDisplayContainerHTML($htmlEditorInput,"")
+		} else {
+			// If record has a value for the current container's associated field ID.
+			populateInlineDisplayContainerHTML($htmlEditorInput,fieldVal)					
+		}
 
-		// If record has a value for the current container's associated field ID.
-		populateInlineDisplayContainerHTML($htmlEditorInput,recordRef.fieldValues[htmlEditorFieldID])		
 	
 	} else {
 		// There's no value in the current record for this field, so clear the value in the container
@@ -49,6 +56,42 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 	
 	var $htmlEditorInput = htmlInputFromHTMLEditorContainer($htmlEditor)
 	
+	function setEditorValue(editorVal) {
+		
+		var currRecordRef = recordProxy.getRecordFunc()
+		var htmlEditorFieldID = htmlEditorObjectRef.properties.fieldID
+		
+		var textBoxTextValueFormat = {
+			context:"htmlEditor",
+			format:"general"
+		}
+
+		var setRecordValParams = { 
+			parentDatabaseID:currRecordRef.parentDatabaseID,
+			recordID:currRecordRef.recordID,
+			changeSetID: recordProxy.changeSetID,
+			fieldID:htmlEditorFieldID, 
+			value:editorVal,
+			valueFormat:textBoxTextValueFormat 
+		}
+		
+		jsonAPIRequest("recordUpdate/setLongTextFieldValue",setRecordValParams,function(updatedRecordRef) {
+
+			// After updating the record, the local cache of records in currentRecordSet will
+			// be out of date. So after updating the record on the server, the locally cached
+			// version of the record also needs to be updated.
+			recordProxy.updateRecordFunc(updatedRecordRef)
+		}) // set record's text field value
+		
+	}
+	
+	var $clearValueButton = $htmlEditor.find(".editorComponentClearValueButton")
+	initButtonControlClickHandler($clearValueButton,function() {
+		console.log("Clear value clicked for editor")
+		setEditorValue(null)
+	})
+	
+	
 	var $editButton = $htmlEditor.find(".startEditButton")
 	initButtonControlClickHandler($editButton,function() {
 		console.log("Starting inline editor")
@@ -59,34 +102,9 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 			var editor = enableInlineCKEditor($htmlEditorInput)
 		
 			editor.on('blur', function(event) {
-				var editorInput = editor.getData();
-				var currRecordRef = recordProxy.getRecordFunc()
-				var htmlEditorFieldID = htmlEditorObjectRef.properties.fieldID
 				var inputVal = editor.getData();
-			
-				var textBoxTextValueFormat = {
-					context:"htmlEditor",
-					format:"general"
-				}
-
-				var setRecordValParams = { 
-					parentDatabaseID:currRecordRef.parentDatabaseID,
-					recordID:currRecordRef.recordID,
-					changeSetID: recordProxy.changeSetID,
-					fieldID:htmlEditorFieldID, 
-					value:inputVal,
-				valueFormat:textBoxTextValueFormat }
-				
-				disableInlineCKEditor($htmlEditorInput,editor)
-			
-				jsonAPIRequest("recordUpdate/setLongTextFieldValue",setRecordValParams,function(updatedRecordRef) {
-		
-					// After updating the record, the local cache of records in currentRecordSet will
-					// be out of date. So after updating the record on the server, the locally cached
-					// version of the record also needs to be updated.
-					recordProxy.updateRecordFunc(updatedRecordRef)
-				}) // set record's text field value
-						
+				setEditorValue(inputVal)				
+				disableInlineCKEditor($htmlEditorInput,editor)	
 			})
 		
 			$htmlEditorInput.focus()
