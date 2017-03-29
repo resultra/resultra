@@ -4,6 +4,7 @@
 		"wizardDialog",
 		"formValidation",
 		"ckEditor",
+		"gauge",
 		"valueFormat",
 		"bootstrapDropdown"]
 }

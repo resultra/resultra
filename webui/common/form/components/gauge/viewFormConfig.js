@@ -5,7 +5,9 @@ function loadRecordIntoGauge($gaugeContainer, recordRef) {
 	var gaugeFieldID = gaugeObjectRef.properties.fieldID
 	
 	function setGaugeVal(gaugeVal) {
-		// TBD
+		
+		var gaugeControl = $gaugeContainer.data("gaugeControl")
+		gaugeControl.redraw(gaugeVal)
 	}
 		
 	// Populate the "intersection" of field values in the record
@@ -28,6 +30,25 @@ function initGaugeRecordEditBehavior($gauge,componentContext,recordProxy, gaugeO
 		loadRecord: loadRecordIntoGauge
 	})
 	
-    // TBD
+	var gaugeConfig = 
+	{
+		size: 120,
+		label: "TBD",
+		min: 0,
+		max: 100,
+		minorTicks: 5
+	}
+	
+	var range = gaugeConfig.max - gaugeConfig.min;
+	gaugeConfig.yellowZones = [{ from: gaugeConfig.min + range*0.75, to: gaugeConfig.min + range*0.9 }];
+	gaugeConfig.redZones = [{ from: gaugeConfig.min + range*0.9, to: gaugeConfig.max }];
+	
+	var $gaugeControlContainer = $gauge.find(".gaugeControl")
+	
+	var gaugeControl = new GaugeUIControl($gaugeControlContainer, gaugeConfig);
+	gaugeControl.render()
+	gaugeControl.redraw(0)
+	
+	$gauge.data("gaugeControl",gaugeControl) 
 	
 }

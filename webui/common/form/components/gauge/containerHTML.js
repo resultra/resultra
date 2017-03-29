@@ -3,7 +3,7 @@ function gaugeContainerHTML() {
 		'<div class="layoutContainer gaugeComponent">' +
 			'<label>Gauge</label>' + 
 			'<div class="formComponentGauge">' +
-				'GAUGE Control TBD' +
+				'<span class="gaugeControl"></span>'+
   			'</div>' +
 		'</div>'
 }
