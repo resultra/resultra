@@ -4,6 +4,9 @@
 
 function GaugeUIControl($gaugeContainer, configuration)
 {
+	
+	var valueBandClass = "valueBand"
+	
 //	this.placeholderName = placeholderName;
 	this.gaugeContainerElem = $gaugeContainer.get(0)
 	
@@ -32,44 +35,148 @@ function GaugeUIControl($gaugeContainer, configuration)
 		
 		this.config.transitionDuration = configuration.transitionDuration || 500;
 	}
-
-	this.render = function()
+	
+	this.valueToDegrees = function(value)
 	{
-		this.body = d3.select(this.gaugeContainerElem)
-							.append("svg:svg")
-							.attr("class", "gauge")
-							.attr("width", this.config.size)
-							.attr("height", this.config.size);
-							
+		// thanks @closealert
+		//return value / this.config.range * 270 - 45;
+		return value / this.config.range * 270 - (this.config.min / this.config.range * 270 + 45);
+	}
+	
+	this.valueToRadians = function(value)
+	{
+		return this.valueToDegrees(value) * Math.PI / 180;
+	}
+	
+	this.valueToPoint = function(value, factor)
+	{
+		return { 	x: this.config.cx - this.config.raduis * factor * Math.cos(this.valueToRadians(value)),
+					y: this.config.cy - this.config.raduis * factor * Math.sin(this.valueToRadians(value)) 		};
+	}
+	
+	this.valueToThresholdColor = function(value) {
+		
 		for (var index in this.config.greenZones)
 		{
-			this.drawBand(this.config.greenZones[index].from, this.config.greenZones[index].to, self.config.greenColor);
+			var range = this.config.greenZones[index]		
+			if (value >= range.from && value <= range.to) {
+				return self.config.greenColor
+			}
 		}
 		
 		for (var index in this.config.yellowZones)
 		{
-			this.drawBand(this.config.yellowZones[index].from, this.config.yellowZones[index].to, self.config.yellowColor);
+			var range = this.config.yellowZones[index]		
+			if (value >= range.from && value <= range.to) {
+				return self.config.yellowColor
+			}
 		}
 		
 		for (var index in this.config.redZones)
 		{
-			this.drawBand(this.config.redZones[index].from, this.config.redZones[index].to, self.config.redColor);
+			var range = this.config.redZones[index]		
+			if (value >= range.from && value <= range.to) {
+				return self.config.redColor
+			}
 		}
+		return self.config.greenColor
 		
-		if (undefined != this.config.label)
+	}
+	
+	this.createArc = function(startVal,endVal,innerBandRadiusPerc,outerBandRadiusPerc) {
+		var arc = d3.arc()
+			.startAngle(this.valueToRadians(startVal))
+			.endAngle(this.valueToRadians(endVal))
+			.innerRadius(innerBandRadiusPerc * this.config.raduis)
+			.outerRadius(outerBandRadiusPerc * this.config.raduis)
+		return arc
+		
+	}
+	
+	this.renderBand = function(startVal,endVal,color,innerBandRadiusPerc,outerBandRadiusPerc,arcOpacity,bandClass) {
+		
+		var arc = this.createArc(startVal,endVal,innerBandRadiusPerc,outerBandRadiusPerc)
+
+		this.body.append("svg:path")
+					.style("fill", color)
+					.style("opacity",arcOpacity)
+					.attr("d", arc)
+					.attr("class",bandClass)
+					.attr("transform", function() { return "translate(" + self.config.cx + ", " + self.config.cy + ") rotate(270)" });
+	}
+	
+	this.renderThresholdBand = function(startVal, endVal, color)
+	{
+		if (0 >= endVal - startVal) return;
+		
+		// Define the thickness of the bands.
+		var innerBandRadiusPerc = 0.50
+		var outerBandRadiusPerc = 0.95
+		
+		var arcOpacity = 0.1 // range is 0-1, with 0 being completely transparent, 1 being opaque
+		
+		var thresholdBandClass = "thresholdBand"
+		
+		this.renderBand(startVal,endVal,color,innerBandRadiusPerc,outerBandRadiusPerc,arcOpacity,thresholdBandClass)
+		
+	}
+	
+	this.renderThresholdBands = function() {
+		for (var index in this.config.greenZones)
 		{
-			var fontSize = Math.round(this.config.size / 9);
-			this.body.append("svg:text")
-						.attr("x", this.config.cx)
-						.attr("y", this.config.cy / 2 + fontSize / 2)
-						.attr("dy", fontSize / 2)
-						.attr("text-anchor", "middle")
-						.text(this.config.label)
-						.style("font-size", fontSize + "px")
-						.style("fill", "#333")
-						.style("stroke-width", "0px");
+			this.renderThresholdBand(this.config.greenZones[index].from, this.config.greenZones[index].to, self.config.greenColor);
 		}
 		
+		for (var index in this.config.yellowZones)
+		{
+			this.renderThresholdBand(this.config.yellowZones[index].from, this.config.yellowZones[index].to, self.config.yellowColor);
+		}
+		
+		for (var index in this.config.redZones)
+		{
+			this.renderThresholdBand(this.config.redZones[index].from, this.config.redZones[index].to, self.config.redColor);
+		}		
+	}
+
+	this.renderValueBand = function(startVal, endVal, color)
+	{
+		if ((endVal-startVal)<=0) return;
+		
+		// Define the thickness of the bands.
+		var innerBandRadiusPerc = 0.60
+		var outerBandRadiusPerc = 0.85
+		
+		// The actual value is fully opaque, but the inner and outer radius of the value band is smaller
+		// than the thresholds so the user can still see where the value is at in relation to thresholds.
+		var arcOpacity = 1.0
+		
+		var valueBandClass = "valueBand"
+		
+		this.renderBand(startVal,endVal,color,innerBandRadiusPerc,outerBandRadiusPerc,arcOpacity,valueBandClass)
+		
+	}
+	
+	this.redrawValueBand = function(newVal) {
+		
+		// Define the thickness of the bands.
+		var innerBandRadiusPerc = 0.60
+		var outerBandRadiusPerc = 0.85
+
+		var startVal = 0 // TODO - This can be specified by the user
+		
+		var newArc = this.createArc(startVal,newVal,innerBandRadiusPerc,outerBandRadiusPerc)
+		var newColor = this.valueToThresholdColor(newVal)
+
+
+		var valueBand = this.body.selectAll("."+valueBandClass)
+		// TODO - Transition the arc using attrTween
+		valueBand.attr("d",newArc)
+			.style("fill", newColor)
+			
+		
+	}
+	
+	this.renderMajorMinorTicks = function() {
 		var fontSize = Math.round(this.config.size / 16);
 		var majorDelta = this.config.range / (this.config.majorTicks - 1);
 		for (var major = this.config.min; major <= this.config.max; major += majorDelta)
@@ -123,6 +230,50 @@ function GaugeUIControl($gaugeContainer, configuration)
 			}
 		}
 		
+	}
+	
+	this.renderLabel = function() {
+		if (undefined != this.config.label)
+		{
+			var fontSize = Math.round(this.config.size / 9);
+			this.body.append("svg:text")
+						.attr("x", this.config.cx)
+						.attr("y", this.config.cy / 2 + fontSize / 2)
+						.attr("dy", fontSize / 2)
+						.attr("text-anchor", "middle")
+						.text(this.config.label)
+						.style("font-size", fontSize + "px")
+						.style("fill", "#333")
+						.style("stroke-width", "0px");
+		}
+	}
+	
+	this.buildPointerPath = function(value)
+	{
+		var delta = this.config.range / 13;
+		
+		var head = valueToPoint(value, 0.85);
+		var head1 = valueToPoint(value - delta, 0.12);
+		var head2 = valueToPoint(value + delta, 0.12);
+		
+		var tailValue = value - (this.config.range * (1/(270/360)) / 2);
+		var tail = valueToPoint(tailValue, 0.28);
+		var tail1 = valueToPoint(tailValue - delta, 0.12);
+		var tail2 = valueToPoint(tailValue + delta, 0.12);
+		
+		return [head, head1, tail2, tail, tail1, head2, head];
+		
+		function valueToPoint(value, factor)
+		{
+			var point = self.valueToPoint(value, factor);
+			point.x -= self.config.cx;
+			point.y -= self.config.cy;
+			return point;
+		}
+	}
+	
+	
+	this.renderPointer = function() {
 		var pointerContainer = this.body.append("svg:g").attr("class", "pointerContainer");
 		
 		var midValue = (this.config.min + this.config.max) / 2;
@@ -164,65 +315,17 @@ function GaugeUIControl($gaugeContainer, configuration)
 									.style("fill", "#000")
 									.style("stroke-width", "0px");
 		
-		this.redraw(this.config.min, 0);
 	}
 	
-	this.buildPointerPath = function(value)
-	{
-		var delta = this.config.range / 13;
+	this.redrawPointer = function(value) {
 		
-		var head = valueToPoint(value, 0.85);
-		var head1 = valueToPoint(value - delta, 0.12);
-		var head2 = valueToPoint(value + delta, 0.12);
-		
-		var tailValue = value - (this.config.range * (1/(270/360)) / 2);
-		var tail = valueToPoint(tailValue, 0.28);
-		var tail1 = valueToPoint(tailValue - delta, 0.12);
-		var tail2 = valueToPoint(tailValue + delta, 0.12);
-		
-		return [head, head1, tail2, tail, tail1, head2, head];
-		
-		function valueToPoint(value, factor)
-		{
-			var point = self.valueToPoint(value, factor);
-			point.x -= self.config.cx;
-			point.y -= self.config.cy;
-			return point;
-		}
-	}
-	
-	this.drawBand = function(start, end, color)
-	{
-		if (0 >= end - start) return;
-		
-		// Define the thickness of the bands.
-		var innerBandRadiusPerc = 0.50
-		var outerBandRadiusPerc = 0.95
-		
-		var arcOpacity = 0.25 // range is 0-1, with 0 being completely transparent, 1 being opaque
-		
-		var arc = d3.arc()
-			.startAngle(this.valueToRadians(start))
-			.endAngle(this.valueToRadians(end))
-			.innerRadius(innerBandRadiusPerc * this.config.raduis)
-			.outerRadius(outerBandRadiusPerc * this.config.raduis)
-		
-		this.body.append("svg:path")
-					.style("fill", color)
-					.style("opacity",arcOpacity)
-					.attr("d", arc)
-					.attr("transform", function() { return "translate(" + self.config.cx + ", " + self.config.cy + ") rotate(270)" });
-	}
-	
-	this.redraw = function(value, transitionDuration)
-	{
 		var pointerContainer = this.body.select(".pointerContainer");
 		
-		pointerContainer.selectAll("text").text(Math.round(value));
+		
 		
 		var pointer = pointerContainer.selectAll("path");
 		pointer.transition()
-					.duration(undefined != transitionDuration ? transitionDuration : this.config.transitionDuration)
+					.duration(this.config.transitionDuration)
 					.attrTween("transform", function()
 					{
 						var pointerValue = value;
@@ -238,25 +341,41 @@ function GaugeUIControl($gaugeContainer, configuration)
 							return "translate(" + self.config.cx + ", " + self.config.cy + ") rotate(" + rotation + ")"; 
 						}
 					});
+		
+	}
+
+	
+	this.render = function()
+	{
+		// Main container for the overall gauge
+		this.body = d3.select(this.gaugeContainerElem)
+							.append("svg:svg")
+							.attr("class", "gauge")
+							.attr("width", this.config.size)
+							.attr("height", this.config.size);
+							
+		
+		this.renderThresholdBands()
+		this.renderValueBand(0,40,self.config.yellowColor)
+		this.renderLabel()
+		this.renderMajorMinorTicks()
+		this.renderPointer()
+		
+		this.redraw(this.config.min, 0);
 	}
 	
-	this.valueToDegrees = function(value)
+	
+	
+	this.redraw = function(value, transitionDuration)
 	{
-		// thanks @closealert
-		//return value / this.config.range * 270 - 45;
-		return value / this.config.range * 270 - (this.config.min / this.config.range * 270 + 45);
+		var pointerContainer = this.body.select(".pointerContainer");
+		pointerContainer.selectAll("text").text(Math.round(value)); // update the value text
+		
+		this.redrawValueBand(value)
+		this.redrawPointer(value)
+		
 	}
 	
-	this.valueToRadians = function(value)
-	{
-		return this.valueToDegrees(value) * Math.PI / 180;
-	}
-	
-	this.valueToPoint = function(value, factor)
-	{
-		return { 	x: this.config.cx - this.config.raduis * factor * Math.cos(this.valueToRadians(value)),
-					y: this.config.cy - this.config.raduis * factor * Math.sin(this.valueToRadians(value)) 		};
-	}
 	
 	// initialization
 	this.configure(configuration);	
