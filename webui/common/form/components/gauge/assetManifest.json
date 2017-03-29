@@ -1,0 +1,14 @@
+{
+    "cssFiles": ["gaugeComponent.css"], 
+    "htmlFiles": ["properties.html",
+		"viewProperties.html"], 
+    "jsFiles": ["newGaugeDialog.js",
+		"properties.js",
+		"containerHTML.js",
+		"designFormConfig.js",
+		"viewProperties.js",
+		"viewFormConfig.js"
+    ],
+	"imageFiles":[],
+    "subDirs": []
+}

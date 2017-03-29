@@ -12,6 +12,7 @@ var paletteItemsEditConfig = {
 	paletteItemComment: commentDesignFormConfig,
 	paletteItemButton: formButtonDesignFormConfig,
 	paletteItemProgress: progressDesignFormConfig,
+	paletteItemGauge: gaugeDesignFormConfig,
 	paletteItemCaption: formCaptionDesignFormConfig,
 }
 
@@ -124,6 +125,10 @@ $(document).ready(function() {
 		initProgressFunc: function(componentContext,$progress,progressObjectRef) {
 			var componentIDs = { formID: formID, componentID: progressObjectRef.progressID }
 			initFormComponentDesignBehavior($progress,componentIDs,progressObjectRef,progressDesignFormConfig,designFormLayoutConfig)
+		},	
+		initGaugeFunc: function(componentContext,$gauge,gaugeObjectRef) {
+			var componentIDs = { formID: formID, componentID: gaugeObjectRef.gaugeID }
+			initFormComponentDesignBehavior($gauge,componentIDs,gaugeObjectRef,gaugeDesignFormConfig,designFormLayoutConfig)
 		},	
 		initCommentFunc: function(componentContext,$comment,commentObjectRef) {
 			var componentIDs = { formID: formID, componentID: commentObjectRef.commentID }

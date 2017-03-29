@@ -1,0 +1,14 @@
+/* Set the default and minimum width for progress components added
+   to the layout. This is important for when the component
+   is initially dragged onto the canvas. Otherwise it
+   can shrink as the field is dragged. */
+.gaugeComponent
+{
+	min-width:75px;
+	width: 120px;
+	height: auto;
+}
+
+.gaugeComponent label {
+	margin-bottom:2px;
+}

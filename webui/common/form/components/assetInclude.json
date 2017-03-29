@@ -13,5 +13,6 @@
 		"selection",
 		"userSelection",
 		"progress",
-		"caption"]
+		"caption",
+		"gauge"]
 }

@@ -4,6 +4,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/checkBox"
 	"resultra/datasheet/webui/common/form/components/comment"
 	"resultra/datasheet/webui/common/form/components/datePicker"
+	"resultra/datasheet/webui/common/form/components/gauge"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
 	"resultra/datasheet/webui/common/form/components/image"
 	"resultra/datasheet/webui/common/form/components/progress"
@@ -24,6 +25,7 @@ type ComponentViewTemplateParams struct {
 	SelectionParams     selection.SelectionViewTemplateParams
 	UserSelectionParams userSelection.UserSelectionViewTemplateParams
 	ProgressParams      progress.ProgressViewTemplateParams
+	GaugeParams         gauge.GaugeViewTemplateParams
 }
 
 //var DesignTemplateParams ComponentDesignTemplateParams
@@ -41,6 +43,7 @@ func init() {
 		CommentParams:       comment.ViewTemplateParams,
 		SelectionParams:     selection.ViewTemplateParams,
 		UserSelectionParams: userSelection.ViewTemplateParams,
-		ProgressParams:      progress.ViewTemplateParams}
+		ProgressParams:      progress.ViewTemplateParams,
+		GaugeParams:         gauge.ViewTemplateParams}
 
 }

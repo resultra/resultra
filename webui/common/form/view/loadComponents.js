@@ -61,6 +61,12 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 			initFormComponentViewBehavior($progress,
 					progressObjectRef.progressID,initProgressViewProperties)
 		},
+		initGaugeFunc: function(componentContext,$gauge,gaugeObjectRef) {
+			console.log("Init progress indicator in view form")
+			initGaugeRecordEditBehavior($gauge,componentContext,recordProxy,gaugeObjectRef)
+			initFormComponentViewBehavior($gauge,
+					gaugeObjectRef.gaugeID,initGaugeViewProperties)
+		},
 		initRatingFunc: function(componentContext,$rating,ratingObjectRef) {
 			console.log("Init rating in view form")
 			initRatingRecordEditBehavior($rating,componentContext,recordProxy,ratingObjectRef)

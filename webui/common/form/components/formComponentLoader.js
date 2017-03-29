@@ -201,6 +201,29 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		loadFormConfig.initProgressFunc(componentContext,$progressContainer,progress)
 	}
 
+
+	function initGaugeLayout($componentRow,gaugeRef) {
+		// Create an HTML block for the container
+		
+		var containerHTML = gaugeContainerHTML();
+		var $gaugeContainer = $(containerHTML)
+				
+		setGaugeComponentLabel($gaugeContainer,progress)
+		
+		// Position the object withing the #layoutCanvas div
+		$componentRow.append($gaugeContainer)
+		setElemFixedWidthFlexibleHeight($gaugeContainer,
+					gaugeRef.properties.geometry.sizeWidth)
+		
+		 // Store the newly created object reference in the DOM element. This is needed for follow-on
+		 // property setting, resizing, etc.
+		setContainerComponentInfo($gaugeContainer,gaugeContainer,gaugeContainer.gaugeID)
+		
+		// Callback for any specific initialization for either the form design or view mode 
+		loadFormConfig.initGaugeFunc(componentContext,$gaugeContainer,gaugeRef)
+	}
+
+
 	function initCheckBoxLayout($componentRow,checkBox) {
 		// Create an HTML block for the container
 		
@@ -384,8 +407,15 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 			initFunc: initProgressLayout
 		}		
 	}
-
-
+	
+	for (var gaugeIter in formInfo.gauges) {
+		var gaugeProps = formInfo.gauges[gaugeIter]
+		console.log("loadFormComponents: initializing gauge: " + JSON.stringify(gaugeProps))
+		compenentIDComponentMap[gaugeProps.gaugeID] = {
+			componentInfo: gaugeProps,
+			initFunc: initGaugeLayout
+		}		
+	}
 
 	for (var ratingIter in formInfo.ratings) {
 		var ratingProps = formInfo.ratings[ratingIter]
