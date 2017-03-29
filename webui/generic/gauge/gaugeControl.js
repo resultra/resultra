@@ -5,7 +5,15 @@
 function GaugeUIControl($gaugeContainer, configuration)
 {
 	
+	// Define the class name and thickness of the bands.
 	var valueBandClass = "valueBand"
+	var innerValueBandRadiusPerc = 0.60
+	var outerValueBandRadiusPerc = 0.85
+
+	// Define the thickness of the bands.
+	var innerThresholdBandRadiusPerc = 0.50
+	var outerThresholdBandRadiusPerc = 0.95
+	
 	
 //	this.placeholderName = placeholderName;
 	this.gaugeContainerElem = $gaugeContainer.get(0)
@@ -109,71 +117,60 @@ function GaugeUIControl($gaugeContainer, configuration)
 	{
 		if (0 >= endVal - startVal) return;
 		
-		// Define the thickness of the bands.
-		var innerBandRadiusPerc = 0.50
-		var outerBandRadiusPerc = 0.95
-		
 		var arcOpacity = 0.1 // range is 0-1, with 0 being completely transparent, 1 being opaque
 		
 		var thresholdBandClass = "thresholdBand"
 		
-		this.renderBand(startVal,endVal,color,innerBandRadiusPerc,outerBandRadiusPerc,arcOpacity,thresholdBandClass)
+		this.renderBand(startVal,endVal,color,
+				innerThresholdBandRadiusPerc,outerThresholdBandRadiusPerc,
+				arcOpacity,thresholdBandClass)
 		
 	}
 	
 	this.renderThresholdBands = function() {
-		for (var index in this.config.greenZones)
-		{
-			this.renderThresholdBand(this.config.greenZones[index].from, this.config.greenZones[index].to, self.config.greenColor);
+		for (var index in this.config.greenZones) {
+			this.renderThresholdBand(this.config.greenZones[index].from, 
+				this.config.greenZones[index].to, self.config.greenColor);
 		}
 		
-		for (var index in this.config.yellowZones)
-		{
-			this.renderThresholdBand(this.config.yellowZones[index].from, this.config.yellowZones[index].to, self.config.yellowColor);
+		for (var index in this.config.yellowZones) {
+			this.renderThresholdBand(this.config.yellowZones[index].from, 
+				this.config.yellowZones[index].to, self.config.yellowColor);
 		}
 		
-		for (var index in this.config.redZones)
-		{
-			this.renderThresholdBand(this.config.redZones[index].from, this.config.redZones[index].to, self.config.redColor);
+		for (var index in this.config.redZones) {
+			this.renderThresholdBand(this.config.redZones[index].from, 
+				this.config.redZones[index].to, self.config.redColor);
 		}		
 	}
 
 	this.renderValueBand = function(startVal, endVal, color)
 	{
 		if ((endVal-startVal)<=0) return;
-		
-		// Define the thickness of the bands.
-		var innerBandRadiusPerc = 0.60
-		var outerBandRadiusPerc = 0.85
-		
+				
 		// The actual value is fully opaque, but the inner and outer radius of the value band is smaller
 		// than the thresholds so the user can still see where the value is at in relation to thresholds.
 		var arcOpacity = 1.0
 		
 		var valueBandClass = "valueBand"
 		
-		this.renderBand(startVal,endVal,color,innerBandRadiusPerc,outerBandRadiusPerc,arcOpacity,valueBandClass)
+		this.renderBand(startVal,endVal,color,
+			innerValueBandRadiusPerc,outerValueBandRadiusPerc,arcOpacity,valueBandClass)
 		
 	}
 	
 	this.redrawValueBand = function(newVal) {
 		
-		// Define the thickness of the bands.
-		var innerBandRadiusPerc = 0.60
-		var outerBandRadiusPerc = 0.85
-
 		var startVal = 0 // TODO - This can be specified by the user
 		
-		var newArc = this.createArc(startVal,newVal,innerBandRadiusPerc,outerBandRadiusPerc)
+		var newArc = this.createArc(startVal,newVal,
+								innerValueBandRadiusPerc,outerValueBandRadiusPerc)
 		var newColor = this.valueToThresholdColor(newVal)
-
 
 		var valueBand = this.body.selectAll("."+valueBandClass)
 		// TODO - Transition the arc using attrTween
 		valueBand.attr("d",newArc)
 			.style("fill", newColor)
-			
-		
 	}
 	
 	this.renderMajorMinorTicks = function() {
@@ -277,11 +274,7 @@ function GaugeUIControl($gaugeContainer, configuration)
 		var pointerLine = d3.line()
 			.x(function(d) { return d.x })
 			.y(function(d) { return d.y })
-			
-		var triangle = d3.symbol()
-				.type(d3.symbolTriangle)
-            	.size(30)
-		
+					
 		pointerContainer.selectAll("path")
 							.data([pointerPath])
 							.enter()
@@ -310,8 +303,6 @@ function GaugeUIControl($gaugeContainer, configuration)
 		
 		var pointerContainer = this.body.select(".pointerContainer");
 		
-		
-		
 		var pointer = pointerContainer.selectAll("path");
 		pointer.transition()
 					.duration(this.config.transitionDuration)
@@ -334,8 +325,7 @@ function GaugeUIControl($gaugeContainer, configuration)
 	}
 
 	
-	this.render = function()
-	{
+	this.render = function() {
 		// Main container for the overall gauge
 		this.body = d3.select(this.gaugeContainerElem)
 							.append("svg:svg")
@@ -343,7 +333,6 @@ function GaugeUIControl($gaugeContainer, configuration)
 							.attr("width", this.config.size)
 							.attr("height", this.config.size);
 							
-		
 		this.renderThresholdBands()
 		this.renderValueBand(0,40,self.config.yellowColor)
 		this.renderLabel()
@@ -353,18 +342,13 @@ function GaugeUIControl($gaugeContainer, configuration)
 		this.redraw(this.config.min, 0);
 	}
 	
-	
-	
-	this.redraw = function(value, transitionDuration)
-	{
+	this.redraw = function(value, transitionDuration) {
 		var pointerContainer = this.body.select(".pointerContainer");
 		pointerContainer.selectAll("text").text(Math.round(value)); // update the value text
 		
 		this.redrawValueBand(value)
 		this.redrawPointer(value)
-		
 	}
-	
 	
 	// initialization
 	this.configure(configuration);	
