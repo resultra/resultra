@@ -9,6 +9,7 @@ function GaugeUIControl($gaugeContainer, configuration)
 	var valueBandClass = "valueBand"
 	var innerValueBandRadiusPerc = 0.60
 	var outerValueBandRadiusPerc = 0.85
+	var valueLabelClass = "valueLabel"
 
 	// Define the thickness of the bands.
 	var innerThresholdBandRadiusPerc = 0.50
@@ -26,7 +27,7 @@ function GaugeUIControl($gaugeContainer, configuration)
 		
 		this.config.size = this.config.size * 0.9;
 		
-		this.config.raduis = this.config.size * 0.97 / 2;
+		this.config.radius = this.config.size * 0.97 / 2;
 		this.config.cx = this.config.size / 2;
 		this.config.cy = this.config.size / 2;
 		
@@ -58,8 +59,8 @@ function GaugeUIControl($gaugeContainer, configuration)
 	
 	this.valueToPoint = function(value, factor)
 	{
-		return { 	x: this.config.cx - this.config.raduis * factor * Math.cos(this.valueToRadians(value)),
-					y: this.config.cy - this.config.raduis * factor * Math.sin(this.valueToRadians(value)) 		};
+		return { 	x: this.config.cx - this.config.radius * factor * Math.cos(this.valueToRadians(value)),
+					y: this.config.cy - this.config.radius * factor * Math.sin(this.valueToRadians(value)) 		};
 	}
 	
 	this.valueToThresholdColor = function(value) {
@@ -95,8 +96,8 @@ function GaugeUIControl($gaugeContainer, configuration)
 		var arc = d3.arc()
 			.startAngle(this.valueToRadians(startVal))
 			.endAngle(this.valueToRadians(endVal))
-			.innerRadius(innerBandRadiusPerc * this.config.raduis)
-			.outerRadius(outerBandRadiusPerc * this.config.raduis)
+			.innerRadius(innerBandRadiusPerc * this.config.radius)
+			.outerRadius(outerBandRadiusPerc * this.config.radius)
 		return arc
 		
 	}
@@ -229,19 +230,25 @@ function GaugeUIControl($gaugeContainer, configuration)
 		
 	}
 	
-	this.renderLabel = function() {
+	this.renderValueLabel = function() {
 		if (undefined != this.config.label)
 		{
-			var fontSize = Math.round(this.config.size / 9);
+			var fontSize = Math.round(this.config.size / 7);
 			this.body.append("svg:text")
 						.attr("x", this.config.cx)
 						.attr("y",this.config.cy + fontSize/3)
 						.attr("text-anchor", "middle")
+						.attr("class",valueLabelClass)
 						.text(this.config.label)
 						.style("font-size", fontSize + "px")
 						.style("fill", "#333")
 						.style("stroke-width", "0px");
 		}
+	}
+	
+	this.redrawValueLabel = function(value) {
+		var valueLabel = this.body.select("."+valueLabelClass)
+		valueLabel.text(Math.round(value))
 	}
 	
 	this.buildPointerPath = function(value)
@@ -283,20 +290,7 @@ function GaugeUIControl($gaugeContainer, configuration)
 									.style("fill", "#000")
 									.style("stroke", "#000")
 									.style("fill-opacity", 0.7)					
-		
-		var fontSize = Math.round(this.config.size / 10);
-		pointerContainer.selectAll("text")
-							.data([midValue])
-							.enter()
-								.append("svg:text")
-									.attr("x", this.config.cx)
-									.attr("y", this.config.size - this.config.cy / 4 - fontSize)
-									.attr("dy", fontSize / 2)
-									.attr("text-anchor", "middle")
-									.style("font-size", fontSize + "px")
-									.style("fill", "#000")
-									.style("stroke-width", "0px");
-		
+				
 	}
 	
 	this.redrawPointer = function(value) {
@@ -335,17 +329,16 @@ function GaugeUIControl($gaugeContainer, configuration)
 							
 		this.renderThresholdBands()
 		this.renderValueBand(0,40,self.config.yellowColor)
-		this.renderLabel()
+		this.renderValueLabel()
 		this.renderMajorMinorTicks()
 		this.renderPointer()
 		
 		this.redraw(this.config.min, 0);
 	}
 	
-	this.redraw = function(value, transitionDuration) {
-		var pointerContainer = this.body.select(".pointerContainer");
-		pointerContainer.selectAll("text").text(Math.round(value)); // update the value text
+	this.redraw = function(value, transitionDuration) {		
 		
+		this.redrawValueLabel(value)
 		this.redrawValueBand(value)
 		this.redrawPointer(value)
 	}
