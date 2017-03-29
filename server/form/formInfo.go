@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/form/components/comment"
 	"resultra/datasheet/server/form/components/datePicker"
 	"resultra/datasheet/server/form/components/formButton"
+	"resultra/datasheet/server/form/components/gauge"
 	"resultra/datasheet/server/form/components/header"
 	"resultra/datasheet/server/form/components/htmlEditor"
 	"resultra/datasheet/server/form/components/image"
@@ -30,6 +31,7 @@ type FormInfo struct {
 	Selections         []selection.Selection         `json:"selections"`
 	UserSelections     []userSelection.UserSelection `json:"userSelections"`
 	ProgressIndicators []progress.Progress           `json:"progressIndicators"`
+	Gauges             []gauge.Gauge                 `json:"gauges"`
 	Captions           []caption.Caption             `json:"captions"`
 }
 
@@ -109,6 +111,11 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		return nil, err
 	}
 
+	gauges, err := gauge.GetGauges(formID)
+	if err != nil {
+		return nil, err
+	}
+
 	formInfo := FormInfo{
 		Form:               *form,
 		TextBoxes:          textBoxes,
@@ -123,7 +130,8 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		Selections:         selections,
 		UserSelections:     userSelections,
 		ProgressIndicators: progressIndicators,
-		Captions:           captions}
+		Captions:           captions,
+		Gauges:             gauges}
 
 	return &formInfo, nil
 }

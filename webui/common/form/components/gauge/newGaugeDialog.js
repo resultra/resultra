@@ -6,7 +6,7 @@ function openNewGaugeDialog(databaseID,formID,containerParams) {
 	          console.log("openNewGaugeDialog: Done getting new gauge component:response=" 
 						+ JSON.stringify(newGaugeObjectRef));
 						
-				setGaugeComponentLabel(newGaugeObjectRef, newGaugeObjectRef)
+			setGaugeComponentLabel(containerParams.containerObj, newGaugeObjectRef)
 	  	  						 
   	  		  var newComponentSetupParams = {
   				  parentFormID: formID,

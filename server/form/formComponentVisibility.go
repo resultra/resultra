@@ -69,6 +69,12 @@ func GetDatabaseFormComponentFilterMap(parentDatabaseID string) (FormComponentFi
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currProgress.ProgressID)
 			}
 		}
+		for _, currGauge := range formInfo.Gauges {
+			if !currGauge.Properties.VisibilityConditions.IsEmptyRuleSet() {
+				compFilterMap[currGauge.GaugeID] = currGauge.Properties.VisibilityConditions
+				log.Printf("Adding visibility filter to filter map for component ID = %v", currGauge.GaugeID)
+			}
+		}
 		for _, currButton := range formInfo.FormButtons {
 			if !currButton.Properties.VisibilityConditions.IsEmptyRuleSet() {
 				compFilterMap[currButton.ButtonID] = currButton.Properties.VisibilityConditions

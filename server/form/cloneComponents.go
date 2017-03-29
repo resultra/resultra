@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/form/components/comment"
 	"resultra/datasheet/server/form/components/datePicker"
 	"resultra/datasheet/server/form/components/formButton"
+	"resultra/datasheet/server/form/components/gauge"
 	"resultra/datasheet/server/form/components/header"
 	"resultra/datasheet/server/form/components/htmlEditor"
 	"resultra/datasheet/server/form/components/image"
@@ -31,6 +32,10 @@ func cloneFormComponents(remappedIDs uniqueID.UniqueIDRemapper, parentFormID str
 	}
 
 	if err := progress.CloneProgressIndicators(remappedIDs, parentFormID); err != nil {
+		return fmt.Errorf("cloneFormComponents: %v", err)
+	}
+
+	if err := gauge.CloneGauges(remappedIDs, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 

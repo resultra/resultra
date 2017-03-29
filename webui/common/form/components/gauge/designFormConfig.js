@@ -7,7 +7,6 @@ function initDesignFormGauge() {
 }
 
 function selectFormGauge($container,gaugeObjRef) {
-	console.log("Selected gauge: " + JSON.stringify(gaugeObjRef))
 	loadGaugeProperties($container,gaugeObjRef)
 }
 
