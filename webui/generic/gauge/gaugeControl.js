@@ -238,8 +238,7 @@ function GaugeUIControl($gaugeContainer, configuration)
 			var fontSize = Math.round(this.config.size / 9);
 			this.body.append("svg:text")
 						.attr("x", this.config.cx)
-						.attr("y", this.config.cy / 2 + fontSize / 2)
-						.attr("dy", fontSize / 2)
+						.attr("y",this.config.cy + fontSize/3)
 						.attr("text-anchor", "middle")
 						.text(this.config.label)
 						.style("font-size", fontSize + "px")
@@ -250,18 +249,13 @@ function GaugeUIControl($gaugeContainer, configuration)
 	
 	this.buildPointerPath = function(value)
 	{
-		var delta = this.config.range / 13;
+		var delta = this.config.range / 25;
 		
-		var head = valueToPoint(value, 0.85);
-		var head1 = valueToPoint(value - delta, 0.12);
-		var head2 = valueToPoint(value + delta, 0.12);
+		var head = valueToPoint(value, 0.55);
+		var head1 = valueToPoint(value - delta, 0.45);
+		var head2 = valueToPoint(value + delta, 0.45);
 		
-		var tailValue = value - (this.config.range * (1/(270/360)) / 2);
-		var tail = valueToPoint(tailValue, 0.28);
-		var tail1 = valueToPoint(tailValue - delta, 0.12);
-		var tail2 = valueToPoint(tailValue + delta, 0.12);
-		
-		return [head, head1, tail2, tail, tail1, head2, head];
+		return [head, head1, head2]
 		
 		function valueToPoint(value, factor)
 		{
@@ -283,24 +277,19 @@ function GaugeUIControl($gaugeContainer, configuration)
 		var pointerLine = d3.line()
 			.x(function(d) { return d.x })
 			.y(function(d) { return d.y })
-			.curve(d3.curveBasis);
+			
+		var triangle = d3.symbol()
+				.type(d3.symbolTriangle)
+            	.size(30)
 		
 		pointerContainer.selectAll("path")
 							.data([pointerPath])
 							.enter()
 								.append("svg:path")
 									.attr("d", pointerLine)
-									.style("fill", "#dc3912")
-									.style("stroke", "#c63310")
-									.style("fill-opacity", 0.7)
-					
-		pointerContainer.append("svg:circle")
-							.attr("cx", this.config.cx)
-							.attr("cy", this.config.cy)
-							.attr("r", 0.12 * this.config.raduis)
-							.style("fill", "#4684EE")
-							.style("stroke", "#666")
-							.style("opacity", 1);
+									.style("fill", "#000")
+									.style("stroke", "#000")
+									.style("fill-opacity", 0.7)					
 		
 		var fontSize = Math.round(this.config.size / 10);
 		pointerContainer.selectAll("text")
