@@ -40,23 +40,7 @@ function GaugeUIControl($gaugeContainer, configuration)
 							.attr("class", "gauge")
 							.attr("width", this.config.size)
 							.attr("height", this.config.size);
-		
-		this.body.append("svg:circle")
-					.attr("cx", this.config.cx)
-					.attr("cy", this.config.cy)
-					.attr("r", this.config.raduis)
-					.style("fill", "#ccc")
-					.style("stroke", "#000")
-					.style("stroke-width", "0.5px");
-					
-		this.body.append("svg:circle")
-					.attr("cx", this.config.cx)
-					.attr("cy", this.config.cy)
-					.attr("r", 0.9 * this.config.raduis)
-					.style("fill", "#fff")
-					.style("stroke", "#e0e0e0")
-					.style("stroke-width", "2px");
-					
+							
 		for (var index in this.config.greenZones)
 		{
 			this.drawBand(this.config.greenZones[index].from, this.config.greenZones[index].to, self.config.greenColor);
@@ -93,8 +77,12 @@ function GaugeUIControl($gaugeContainer, configuration)
 			var minorDelta = majorDelta / this.config.minorTicks;
 			for (var minor = major + minorDelta; minor < Math.min(major + majorDelta, this.config.max); minor += minorDelta)
 			{
-				var point1 = this.valueToPoint(minor, 0.75);
-				var point2 = this.valueToPoint(minor, 0.85);
+				
+				var minorTicksInnerRadiusPerc = 0.8
+				var minorTicksOuterRadiusPerc = 0.95
+				
+				var point1 = this.valueToPoint(minor, minorTicksInnerRadiusPerc);
+				var point2 = this.valueToPoint(minor, minorTicksOuterRadiusPerc);
 				
 				this.body.append("svg:line")
 							.attr("x1", point1.x)
@@ -105,8 +93,11 @@ function GaugeUIControl($gaugeContainer, configuration)
 							.style("stroke-width", "1px");
 			}
 			
-			var point1 = this.valueToPoint(major, 0.7);
-			var point2 = this.valueToPoint(major, 0.85);	
+			var majorTicksInnerRadiusPerc = 0.7
+			var majorTicksOuterRadiusPerc = 0.95
+			
+			var point1 = this.valueToPoint(major, majorTicksInnerRadiusPerc);
+			var point2 = this.valueToPoint(major, majorTicksOuterRadiusPerc);	
 			
 			this.body.append("svg:line")
 						.attr("x1", point1.x)
@@ -204,14 +195,21 @@ function GaugeUIControl($gaugeContainer, configuration)
 	{
 		if (0 >= end - start) return;
 		
+		// Define the thickness of the bands.
+		var innerBandRadiusPerc = 0.50
+		var outerBandRadiusPerc = 0.95
+		
+		var arcOpacity = 0.25 // range is 0-1, with 0 being completely transparent, 1 being opaque
+		
 		var arc = d3.arc()
 			.startAngle(this.valueToRadians(start))
 			.endAngle(this.valueToRadians(end))
-			.innerRadius(0.65 * this.config.raduis)
-			.outerRadius(0.85 * this.config.raduis)
+			.innerRadius(innerBandRadiusPerc * this.config.raduis)
+			.outerRadius(outerBandRadiusPerc * this.config.raduis)
 		
 		this.body.append("svg:path")
 					.style("fill", color)
+					.style("opacity",arcOpacity)
 					.attr("d", arc)
 					.attr("transform", function() { return "translate(" + self.config.cx + ", " + self.config.cy + ") rotate(270)" });
 	}
@@ -225,9 +223,6 @@ function GaugeUIControl($gaugeContainer, configuration)
 		var pointer = pointerContainer.selectAll("path");
 		pointer.transition()
 					.duration(undefined != transitionDuration ? transitionDuration : this.config.transitionDuration)
-					//.delay(0)
-					//.ease("linear")
-					//.attr("transform", function(d) 
 					.attrTween("transform", function()
 					{
 						var pointerValue = value;

@@ -32,16 +32,17 @@ function initGaugeRecordEditBehavior($gauge,componentContext,recordProxy, gaugeO
 	
 	var gaugeConfig = 
 	{
-		size: 120,
+		size: gaugeObjectRef.properties.geometry.sizeWidth,
 		label: "TBD",
-		min: 0,
-		max: 100,
+		min: gaugeObjectRef.properties.minVal,
+		max: gaugeObjectRef.properties.maxVal,
 		minorTicks: 5
 	}
 	
 	var range = gaugeConfig.max - gaugeConfig.min;
-	gaugeConfig.yellowZones = [{ from: gaugeConfig.min + range*0.75, to: gaugeConfig.min + range*0.9 }];
-	gaugeConfig.redZones = [{ from: gaugeConfig.min + range*0.9, to: gaugeConfig.max }];
+	gaugeConfig.yellowZones = [{ from: 40, to: 60 }];
+	gaugeConfig.redZones = [{ from: 0, to: 40 }];
+	gaugeConfig.greenZones = [{ from: 60, to: 100 }];
 	
 	var $gaugeControlContainer = $gauge.find(".gaugeControl")
 	
