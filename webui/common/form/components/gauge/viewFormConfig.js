@@ -44,11 +44,26 @@ function initGaugeRecordEditBehavior($gauge,componentContext,recordProxy, gaugeO
 		valueFormatter: formatGaugeVal
 	}
 	
-	var range = gaugeConfig.max - gaugeConfig.min;
-	gaugeConfig.yellowZones = [{ from: 40, to: 60 }];
-	gaugeConfig.redZones = [{ from: 0, to: 40 }];
-	gaugeConfig.greenZones = [{ from: 60, to: 100 }];
-	
+	gaugeConfig.yellowZones = [];
+	gaugeConfig.redZones = [];
+	gaugeConfig.greenZones = [];
+	var thresholdZones = convertStartingThresholdsToZones(gaugeObjectRef.properties.thresholdVals,
+			gaugeObjectRef.properties.minVal,gaugeObjectRef.properties.maxVal)
+	for (var zoneIndex = 0; zoneIndex < thresholdZones.length; zoneIndex++) {
+		var currZone = thresholdZones[zoneIndex]
+		switch (currZone.colorScheme) {
+		case "warning":
+			gaugeConfig.yellowZones.push({from:currZone.min,to:currZone.max})
+			break
+		case "danger":
+			gaugeConfig.redZones.push({from:currZone.min,to:currZone.max})
+			break
+		case "success":
+			gaugeConfig.greenZones.push({from:currZone.min,to:currZone.max})
+			break
+		}
+	}
+		
 	var $gaugeControlContainer = $gauge.find(".gaugeControl")
 	
 	var gaugeControl = new GaugeUIControl($gaugeControlContainer, gaugeConfig);

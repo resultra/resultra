@@ -89,7 +89,7 @@ function GaugeUIControl($gaugeContainer, configuration)
 				return self.config.redColor
 			}
 		}
-		return self.config.greenColor
+		return "grey" // default to a grey color
 		
 	}
 	
