@@ -86,7 +86,7 @@ function loadGaugeProperties($gauge,gaugeRef) {
 			gaugeID: gaugeRef.gaugeID,
 			labelFormat: updatedLabelProps
 		}
-		jsonAPIRequest("frm/progress/setLabelFormat", formatParams, function(updatedGauge) {
+		jsonAPIRequest("frm/gauge/setLabelFormat", formatParams, function(updatedGauge) {
 			setProgressComponentLabel($gauge,updatedGauge)
 			setContainerComponentInfo($gauge,updatedGauge,updatedGauge.gaugeID)
 		})	
@@ -104,7 +104,7 @@ function loadGaugeProperties($gauge,gaugeRef) {
 			gaugeID: gaugeRef.gaugeID,
 			visibilityConditions: updatedConditions
 		}
-		jsonAPIRequest("frm/progress/setVisibility",params,function(updatedGauge) {
+		jsonAPIRequest("frm/gauge/setVisibility",params,function(updatedGauge) {
 			setContainerComponentInfo($gauge,updatedGauge,updatedGauge.gaugeID)
 		})
 	}
