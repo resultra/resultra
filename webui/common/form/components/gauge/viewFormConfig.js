@@ -30,13 +30,18 @@ function initGaugeRecordEditBehavior($gauge,componentContext,recordProxy, gaugeO
 		loadRecord: loadRecordIntoGauge
 	})
 	
+	function formatGaugeVal(val) {
+		var formattedVal = formatNumberValue(gaugeObjectRef.properties.valueFormat.format,val)
+		return formattedVal
+	}
+	
 	var gaugeConfig = 
 	{
 		size: gaugeObjectRef.properties.geometry.sizeWidth,
-		label: "TBD",
 		min: gaugeObjectRef.properties.minVal,
 		max: gaugeObjectRef.properties.maxVal,
-		minorTicks: 5
+		minorTicks: 5,
+		valueFormatter: formatGaugeVal
 	}
 	
 	var range = gaugeConfig.max - gaugeConfig.min;

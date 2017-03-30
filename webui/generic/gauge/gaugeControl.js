@@ -35,6 +35,10 @@ function GaugeUIControl($gaugeContainer, configuration)
 		this.config.max = undefined != configuration.max ? configuration.max : 100; 
 		this.config.range = this.config.max - this.config.min;
 		
+		if (this.config.valueFormatter === undefined) {
+			this.config.valueFormatter = function(val) { return Math.round(val) }
+		}
+		
 		this.config.majorTicks = configuration.majorTicks || 5;
 		this.config.minorTicks = configuration.minorTicks || 2;
 		
@@ -65,24 +69,21 @@ function GaugeUIControl($gaugeContainer, configuration)
 	
 	this.valueToThresholdColor = function(value) {
 		
-		for (var index in this.config.greenZones)
-		{
+		for (var index in this.config.greenZones) {
 			var range = this.config.greenZones[index]		
 			if (value >= range.from && value <= range.to) {
 				return self.config.greenColor
 			}
 		}
 		
-		for (var index in this.config.yellowZones)
-		{
+		for (var index in this.config.yellowZones) {
 			var range = this.config.yellowZones[index]		
 			if (value >= range.from && value <= range.to) {
 				return self.config.yellowColor
 			}
 		}
 		
-		for (var index in this.config.redZones)
-		{
+		for (var index in this.config.redZones) {
 			var range = this.config.redZones[index]		
 			if (value >= range.from && value <= range.to) {
 				return self.config.redColor
@@ -118,7 +119,7 @@ function GaugeUIControl($gaugeContainer, configuration)
 	{
 		if (0 >= endVal - startVal) return;
 		
-		var arcOpacity = 0.1 // range is 0-1, with 0 being completely transparent, 1 being opaque
+		var arcOpacity = 0.15 // range is 0-1, with 0 being completely transparent, 1 being opaque
 		
 		var thresholdBandClass = "thresholdBand"
 		
@@ -190,12 +191,12 @@ function GaugeUIControl($gaugeContainer, configuration)
 				var point2 = this.valueToPoint(minor, minorTicksOuterRadiusPerc);
 				
 				this.body.append("svg:line")
-							.attr("x1", point1.x)
-							.attr("y1", point1.y)
-							.attr("x2", point2.x)
-							.attr("y2", point2.y)
-							.style("stroke", "#666")
-							.style("stroke-width", "1px");
+					.attr("x1", point1.x)
+					.attr("y1", point1.y)
+					.attr("x2", point2.x)
+					.attr("y2", point2.y)
+					.style("stroke", "#666")
+					.style("stroke-width", "1px");
 			}
 			
 			var majorTicksInnerRadiusPerc = 0.7
@@ -205,54 +206,62 @@ function GaugeUIControl($gaugeContainer, configuration)
 			var point2 = this.valueToPoint(major, majorTicksOuterRadiusPerc);	
 			
 			this.body.append("svg:line")
-						.attr("x1", point1.x)
-						.attr("y1", point1.y)
-						.attr("x2", point2.x)
-						.attr("y2", point2.y)
-						.style("stroke", "#333")
-						.style("stroke-width", "2px");
+				.attr("x1", point1.x)
+				.attr("y1", point1.y)
+				.attr("x2", point2.x)
+				.attr("y2", point2.y)
+				.style("stroke", "#333")
+				.style("stroke-width", "2px");
 			
 			if (major == this.config.min || major == this.config.max)
 			{
-				var point = this.valueToPoint(major, 0.63);
+				var point = this.valueToPoint(major, 1.1);
+				
+				var formattedMajor = this.config.valueFormatter(major)
 				
 				this.body.append("svg:text")
-				 			.attr("x", point.x)
-				 			.attr("y", point.y)
-				 			.attr("dy", fontSize / 3)
-				 			.attr("text-anchor", major == this.config.min ? "start" : "end")
-				 			.text(major)
-				 			.style("font-size", fontSize + "px")
-							.style("fill", "#333")
-							.style("stroke-width", "0px");
+		 			.attr("x", point.x)
+		 			.attr("y", point.y)
+		 			.attr("dy", fontSize / 3)
+		 			.attr("text-anchor", major == this.config.min ? "start" : "end")
+		 			.text(formattedMajor)
+		 			.style("font-size", fontSize + "px")
+					.style("fill", "#333")
+					.style("stroke-width", "0px");
 			}
 		}
 		
 	}
 	
 	this.renderValueLabel = function() {
-		if (undefined != this.config.label)
-		{
-			var fontSize = Math.round(this.config.size / 7);
-			this.body.append("svg:text")
-						.attr("x", this.config.cx)
-						.attr("y",this.config.cy + fontSize/3)
-						.attr("text-anchor", "middle")
-						.attr("class",valueLabelClass)
-						.text(this.config.label)
-						.style("font-size", fontSize + "px")
-						.style("fill", "#333")
-						.style("stroke-width", "0px");
-		}
+		var fontSize = Math.round(this.config.size / 7);
+		this.body.append("svg:text")
+			.attr("x", this.config.cx)
+			.attr("y",this.config.cy + fontSize/3)
+			.attr("text-anchor", "middle")
+			.attr("class",valueLabelClass)
+			.text("")
+			.style("font-size", fontSize + "px")
+			.style("fill", "#333")
+			.style("stroke-width", "0px");
 	}
 	
 	this.redrawValueLabel = function(value) {
 		var valueLabel = this.body.select("."+valueLabelClass)
-		valueLabel.text(Math.round(value))
+		var formattedVal = this.config.valueFormatter(value)
+		valueLabel.text(formattedVal)
 	}
 	
 	this.buildPointerPath = function(value)
 	{
+		function valueToPoint(value, factor)
+		{
+			var point = self.valueToPoint(value, factor);
+			point.x -= self.config.cx;
+			point.y -= self.config.cy;
+			return point;
+		}
+
 		var delta = this.config.range / 25;
 		
 		var head = valueToPoint(value, 0.55);
@@ -261,13 +270,6 @@ function GaugeUIControl($gaugeContainer, configuration)
 		
 		return [head, head1, head2]
 		
-		function valueToPoint(value, factor)
-		{
-			var point = self.valueToPoint(value, factor);
-			point.x -= self.config.cx;
-			point.y -= self.config.cy;
-			return point;
-		}
 	}
 	
 	
@@ -283,13 +285,13 @@ function GaugeUIControl($gaugeContainer, configuration)
 			.y(function(d) { return d.y })
 					
 		pointerContainer.selectAll("path")
-							.data([pointerPath])
-							.enter()
-								.append("svg:path")
-									.attr("d", pointerLine)
-									.style("fill", "#000")
-									.style("stroke", "#000")
-									.style("fill-opacity", 0.7)					
+			.data([pointerPath])
+			.enter()
+			.append("svg:path")
+			.attr("d", pointerLine)
+			.style("fill", "#000")
+			.style("stroke", "#000")
+			.style("fill-opacity", 0.7)					
 				
 	}
 	
@@ -297,24 +299,34 @@ function GaugeUIControl($gaugeContainer, configuration)
 		
 		var pointerContainer = this.body.select(".pointerContainer");
 		
+		function adjustPointerValueWithOverflow(value) {
+			var pointerValue = value;
+			if (value > self.config.max) {
+				pointerValue = self.config.max + 0.02*self.config.range;
+			}
+			else if (value < self.config.min) {
+				pointerValue = self.config.min - 0.02*self.config.range; 
+			}
+			return pointerValue
+		}
+		
 		var pointer = pointerContainer.selectAll("path");
 		pointer.transition()
-					.duration(this.config.transitionDuration)
-					.attrTween("transform", function()
-					{
-						var pointerValue = value;
-						if (value > self.config.max) pointerValue = self.config.max + 0.02*self.config.range;
-						else if (value < self.config.min) pointerValue = self.config.min - 0.02*self.config.range;
-						var targetRotation = (self.valueToDegrees(pointerValue) - 90);
-						var currentRotation = self._currentRotation || targetRotation;
-						self._currentRotation = targetRotation;
-						
-						return function(step) 
-						{
-							var rotation = currentRotation + (targetRotation-currentRotation)*step;
-							return "translate(" + self.config.cx + ", " + self.config.cy + ") rotate(" + rotation + ")"; 
-						}
-					});
+			.duration(this.config.transitionDuration)
+			.attrTween("transform", function()
+			{
+				var pointerValue = adjustPointerValueWithOverflow(value);
+			
+				var targetRotation = (self.valueToDegrees(pointerValue) - 90);
+				var currentRotation = self._currentRotation || targetRotation;
+				self._currentRotation = targetRotation;
+				
+				return function(step) 
+				{
+					var rotation = currentRotation + (targetRotation-currentRotation)*step;
+					return "translate(" + self.config.cx + ", " + self.config.cy + ") rotate(" + rotation + ")"; 
+				}
+			});
 		
 	}
 
@@ -329,9 +341,9 @@ function GaugeUIControl($gaugeContainer, configuration)
 							
 		this.renderThresholdBands()
 		this.renderValueBand(0,40,self.config.yellowColor)
-		this.renderValueLabel()
 		this.renderMajorMinorTicks()
 		this.renderPointer()
+		this.renderValueLabel()
 		
 		this.redraw(this.config.min, 0);
 	}
