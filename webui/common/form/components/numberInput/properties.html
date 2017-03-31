@@ -1,0 +1,23 @@
+{{define "numberInputFormatProps"}}	
+	{{template "formatNumberSelection" "numberInput_"}}
+{{end}}
+
+{{define "numberInputProps"}}
+
+	<div id="numberInputProps" class="propertyPanelToggleContainer">
+
+		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
+
+		{{template "propertyPanelPrefix" .FormatPanelParams}}
+			{{template "numberInputFormatProps"}}
+		{{template "propertyPanelSuffix"}}
+
+		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}
+
+		{{template "componentPermissionsPropertyPanel" .PermissionPanelParams}}
+
+		{{template "componentDeletePropertyPanel" .DeletePanelParams}}
+
+	</div>
+
+{{end}}

@@ -33,7 +33,7 @@
 	<div class="row">
 		<div class= "col-md-6"  style="padding:5px">
 			<div class="draggable noselect paletteItem" id="paletteItemTextBox">
-					<i class="glyphicon glyphicon-search"></i>
+					<input class="form-control paletteItemControl" type="text" disabled placeholder="ABC">
 					<div>Text Box</div>
 			</div>			
 		</div> <!-- column -->
@@ -61,16 +61,16 @@
 	</div> <!-- row -->
 
 	<div class="row">
+		<div class= "col-md-6"  style="padding:5px">
+			<div class="draggable noselect paletteItem" id="paletteItemNumberInput">
+					<input class="form-control paletteItemControl" type="number" disabled placeholder="123">
+					<div>Number Input</div>
+			</div>			
+		</div> <!-- column -->
 		<div class= "col-md-6" style="padding:5px">
 			<div class="draggable noselect paletteItem" id="paletteItemHtmlEditor">
 					<i class="glyphicon glyphicon-align-justify"></i>
 					<div>Note Editor</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemHeader">
-					<i class="glyphicon glyphicon-header"></i>
-					<div>Header</div>
 			</div>			
 		</div> <!-- column -->
 	</div> <!-- row -->
@@ -84,7 +84,7 @@
 		</div> <!-- column -->
 		<div class= "col-md-6" style="padding:5px">
 			<div class="draggable noselect paletteItem" id="paletteItemSelection">
-					<select class="form-control" disabled></select>
+					<select class="form-control paletteItemControl" disabled></select>
 					<div>Selection</div>
 			</div>			
 		</div> <!-- column -->
@@ -106,13 +106,10 @@
 		</div> <!-- column -->
 	</div> <!-- row -->
 
-
-
-
 	<div class="row">
 		<div class= "col-md-6" style="padding:5px">
 			<div class="draggable noselect paletteItem" id="paletteItemButton">
-				<button type="button" class="btn btn-primary" disabled>Open</button>
+				<button type="button" class="btn btn-primary paletteItemControl" disabled>Open</button>
 				<div>Open Form</div>
 			</div>			
 		</div> <!-- column -->
@@ -140,6 +137,15 @@
 			<div class="draggable noselect paletteItem" id="paletteItemGauge">
 					<i class="glyphicon glyphicon-dashboard"></i>
 					<div>Gauge</div>
+			</div>			
+		</div> <!-- column -->
+	</div> <!-- row -->
+
+	<div class="row">
+		<div class= "col-md-6" style="padding:5px">
+			<div class="draggable noselect paletteItem"  id="paletteItemHeader">
+					<i class="glyphicon glyphicon-header"></i>
+					<div>Header</div>
 			</div>			
 		</div> <!-- column -->
 	</div> <!-- row -->

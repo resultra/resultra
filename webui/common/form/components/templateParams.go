@@ -7,6 +7,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/gauge"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
 	"resultra/datasheet/webui/common/form/components/image"
+	"resultra/datasheet/webui/common/form/components/numberInput"
 	"resultra/datasheet/webui/common/form/components/progress"
 	"resultra/datasheet/webui/common/form/components/rating"
 	"resultra/datasheet/webui/common/form/components/selection"
@@ -26,6 +27,7 @@ type ComponentViewTemplateParams struct {
 	UserSelectionParams userSelection.UserSelectionViewTemplateParams
 	ProgressParams      progress.ProgressViewTemplateParams
 	GaugeParams         gauge.GaugeViewTemplateParams
+	NumberInputParams   numberInput.NumberInputViewTemplateParams
 }
 
 //var DesignTemplateParams ComponentDesignTemplateParams
@@ -44,6 +46,7 @@ func init() {
 		SelectionParams:     selection.ViewTemplateParams,
 		UserSelectionParams: userSelection.ViewTemplateParams,
 		ProgressParams:      progress.ViewTemplateParams,
-		GaugeParams:         gauge.ViewTemplateParams}
+		GaugeParams:         gauge.ViewTemplateParams,
+		NumberInputParams:   numberInput.ViewTemplateParams}
 
 }

@@ -1,0 +1,16 @@
+{
+    "cssFiles": ["numberInputComponent.css"], 
+    "htmlFiles": [
+        "properties.html",
+		"viewProperties.html"
+    ], 
+    "jsFiles": [
+        "containerHTML.js", 
+        "newNumberInputDialog.js", 
+        "properties.js", 
+        "designFormConfig.js",
+		"viewProperties.js",
+        "viewFormConfig.js"
+    ],
+	"imageFiles":[]
+}

@@ -131,6 +131,29 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		loadFormConfig.initTextBoxFunc(componentContext,containerObj,textBox)
 		
 	}
+	
+	function initNumberInputLayout($componentRow,numberInput) {
+		// Create an HTML block for the container
+		console.log("loadFormComponents: initializing number input: " + JSON.stringify(numberInput))
+	
+		var containerHTML = numberInputContainerHTML(numberInput.numberInputID);
+		var containerObj = $(containerHTML)
+		
+		setTextBoxComponentLabel(containerObj,numberInput)
+			
+		$componentRow.append(containerObj)
+		
+		setElemFixedWidthFlexibleHeight(containerObj,
+					numberInput.properties.geometry.sizeWidth)
+	
+		 // Store the newly created object reference in the DOM element. This is needed for follow-on
+		 // property setting, resizing, etc.
+		setContainerComponentInfo(containerObj,numberInput,numberInput.numberInputID)
+	
+		// Callback for any specific initialization for either the form design or view mode
+		loadFormConfig.initNumberInputFunc(componentContext,containerObj,numberInput)
+		
+	}
 
 	function initSelectionLayout($componentRow,selection) {
 		// Create an HTML block for the container
@@ -377,6 +400,17 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		}			
 
 	} // for each text box
+
+
+	for (var numberInputIter in formInfo.numberInputs) {			
+		var numberInputProps = formInfo.numberInputs[numberInputIter]			
+		console.log("Form layout: text box component info=" + JSON.stringify(numberInputProps))
+		compenentIDComponentMap[numberInputProps.numberInputID] = {
+			componentInfo: numberInputProps,
+			initFunc: initNumberInputLayout
+		}			
+
+	} // for each number input
 
 
 	for (var selectionIter in formInfo.selections) {			

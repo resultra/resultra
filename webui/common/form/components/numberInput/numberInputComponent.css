@@ -1,0 +1,23 @@
+/* Set the default and minimum width for fields added
+   to the layout. This is important for when the field
+   is initially dragged onto the canvas. Otherwise it
+   can shrink as the field is dragged. */
+.numberInputComponent
+{
+	min-width:75px;
+	width: 150px;
+	height: auto;
+}
+
+.numberInputComponent .form-group {
+	margin-bottom:0px;
+}
+
+.numberInputComponent label {
+	margin-bottom: 2px !important;
+}
+
+.numberInputComponentInput {
+	padding-left: 5px;
+	padding-right: 5px;
+}

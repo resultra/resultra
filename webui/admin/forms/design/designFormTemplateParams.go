@@ -11,6 +11,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/header"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
 	"resultra/datasheet/webui/common/form/components/image"
+	"resultra/datasheet/webui/common/form/components/numberInput"
 	"resultra/datasheet/webui/common/form/components/progress"
 	"resultra/datasheet/webui/common/form/components/rating"
 	"resultra/datasheet/webui/common/form/components/selection"
@@ -40,6 +41,7 @@ type DesignFormTemplateParams struct {
 	CheckboxParams      checkBox.CheckboxDesignTemplateParams
 	DatePickerParams    datePicker.DatePickerDesignTemplateParams
 	TextBoxParams       textBox.TextboxDesignTemplateParams
+	NumberInputParams   numberInput.NumberInputDesignTemplateParams
 	SelectionParams     selection.SelectionDesignTemplateParams
 	HtmlEditorParams    htmlEditor.HTMLEditorDesignTemplateParams
 	ImageParams         image.ImageDesignTemplateParams
@@ -80,6 +82,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		CheckboxParams:      checkBox.DesignTemplateParams,
 		DatePickerParams:    datePicker.DesignTemplateParams,
 		TextBoxParams:       textBox.DesignTemplateParams,
+		NumberInputParams:   numberInput.DesignTemplateParams,
 		SelectionParams:     selection.DesignTemplateParams,
 		UserSelectionParams: userSelection.DesignTemplateParams,
 		ProgressParams:      progress.DesignTemplateParams,

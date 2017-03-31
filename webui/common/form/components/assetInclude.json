@@ -14,5 +14,6 @@
 		"userSelection",
 		"progress",
 		"caption",
-		"gauge"]
+		"gauge",
+		"numberInput"]
 }

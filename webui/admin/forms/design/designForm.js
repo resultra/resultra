@@ -14,6 +14,7 @@ var paletteItemsEditConfig = {
 	paletteItemProgress: progressDesignFormConfig,
 	paletteItemGauge: gaugeDesignFormConfig,
 	paletteItemCaption: formCaptionDesignFormConfig,
+	paletteItemNumberInput: numberInputDesignFormConfig,
 }
 
 var formDesignCanvasSelector = "#layoutCanvas"
@@ -113,6 +114,10 @@ $(document).ready(function() {
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {
 			var componentIDs = { formID: formID, componentID: textBoxObjectRef.textBoxID }
 			initFormComponentDesignBehavior($textBox,componentIDs,textBoxObjectRef,textBoxDesignFormConfig,designFormLayoutConfig)
+		},
+		initNumberInputFunc: function(componentContext,$numberInput,numberInputObjectRef) {
+			var componentIDs = { formID: formID, componentID: numberInputObjectRef.numberInputID }
+			initFormComponentDesignBehavior($numberInput,componentIDs,numberInputObjectRef,numberInputDesignFormConfig,designFormLayoutConfig)
 		},
 		initSelectionFunc: function(componentContext,$selection,selectionObjectRef) {
 			var componentIDs = { formID: formID, componentID: selectionObjectRef.selectionID }

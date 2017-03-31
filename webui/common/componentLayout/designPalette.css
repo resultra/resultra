@@ -92,3 +92,8 @@
 	font-size: 25px;
 	margin-bottom:10px;
 }
+
+.paletteItemControl {
+	max-width: 75px;
+	pointer-events:none;
+}
