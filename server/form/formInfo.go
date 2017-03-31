@@ -10,6 +10,7 @@ import (
 	"resultra/datasheet/server/form/components/header"
 	"resultra/datasheet/server/form/components/htmlEditor"
 	"resultra/datasheet/server/form/components/image"
+	"resultra/datasheet/server/form/components/numberInput"
 	"resultra/datasheet/server/form/components/progress"
 	"resultra/datasheet/server/form/components/rating"
 	"resultra/datasheet/server/form/components/selection"
@@ -20,6 +21,7 @@ import (
 type FormInfo struct {
 	Form               Form                          `json:"form"`
 	TextBoxes          []textBox.TextBox             `json:"textBoxes"`
+	NumberInputs       []numberInput.NumberInput     `json:"numberInputs"`
 	CheckBoxes         []checkBox.CheckBox           `json:"checkBoxes"`
 	DatePickers        []datePicker.DatePicker       `json:"datePickers"`
 	HtmlEditors        []htmlEditor.HtmlEditor       `json:"htmlEditors"`
@@ -47,6 +49,11 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 	}
 
 	textBoxes, err := textBox.GetTextBoxes(formID)
+	if err != nil {
+		return nil, err
+	}
+
+	numberInputs, err := numberInput.GetNumberInputs(formID)
 	if err != nil {
 		return nil, err
 	}
@@ -119,6 +126,7 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 	formInfo := FormInfo{
 		Form:               *form,
 		TextBoxes:          textBoxes,
+		NumberInputs:       numberInputs,
 		CheckBoxes:         checkBoxes,
 		DatePickers:        datePickers,
 		HtmlEditors:        htmlEditors,

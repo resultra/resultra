@@ -1,21 +1,21 @@
-function initTextBoxViewProperties(componentSelectionParams) {
-	console.log("Init text box properties panel")
+function initNumberInputViewProperties(componentSelectionParams) {
+	console.log("Init number input properties panel")
 
-	var textBoxRef = componentSelectionParams.selectedObjRef
+	var numberInputRef = componentSelectionParams.selectedObjRef
 	var currRecordRef = componentSelectionParams.getCurrentRecordFunc()		
 
-	var elemPrefix = "textBox_"
+	var elemPrefix = "numberInput_"
 
 	var timelineParams = {
 		elemPrefix: elemPrefix,
 		recordID: currRecordRef.recordID,
-		fieldID: textBoxRef.properties.fieldID
+		fieldID: numberInputRef.properties.fieldID
 	}
 	initFormComponentTimelinePane(timelineParams)
 
 	
 	// Toggle to the check box properties, hiding the other property panels
-	hideSiblingsShowOne('#textBoxViewProps')
+	hideSiblingsShowOne('#numberInputViewProps')
 	
 	
 }
