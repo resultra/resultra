@@ -1,16 +1,8 @@
-{{define "textBoxFormatProps"}}	
-	{{template "formatNumberSelection" "textBox_"}}
-{{end}}
-
 {{define "textBoxProps"}}
 
 	<div id="textBoxProps" class="propertyPanelToggleContainer">
 
 		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
-
-		{{template "propertyPanelPrefix" .FormatPanelParams}}
-			{{template "textBoxFormatProps"}}
-		{{template "propertyPanelSuffix"}}
 
 		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}
 

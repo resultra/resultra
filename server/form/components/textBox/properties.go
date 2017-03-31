@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/numberFormat"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
 type TextBoxProperties struct {
 	FieldID     string                                     `json:"fieldID"`
 	Geometry    componentLayout.LayoutGeometry             `json:"geometry"`
-	ValueFormat numberFormat.NumberFormatProperties        `json:"valueFormat"`
 	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
 	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 	common.ComponentVisibilityProperties
@@ -40,7 +38,6 @@ func newDefaultTextBoxProperties() TextBoxProperties {
 	props := TextBoxProperties{
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
-		ValueFormat:                   numberFormat.DefaultNumberFormatProperties(),
 		Permissions:                   common.NewDefaultComponentValuePermissionsProperties()}
 	return props
 }

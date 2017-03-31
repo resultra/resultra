@@ -11,7 +11,6 @@ func init() {
 
 	textBoxRouter.HandleFunc("/api/frm/textBox/new", newTextBox)
 	textBoxRouter.HandleFunc("/api/frm/textBox/resize", resizeTextBox)
-	textBoxRouter.HandleFunc("/api/frm/textBox/setValueFormat", setValueFormat)
 	textBoxRouter.HandleFunc("/api/frm/textBox/setLabelFormat", setLabelFormat)
 	textBoxRouter.HandleFunc("/api/frm/textBox/setVisibility", setVisibility)
 	textBoxRouter.HandleFunc("/api/frm/textBox/setPermissions", setPermissions)
@@ -50,15 +49,6 @@ func resizeTextBox(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processTextBoxPropUpdate(w, r, resizeParams)
-}
-
-func setValueFormat(w http.ResponseWriter, r *http.Request) {
-	var params TextBoxValueFormatParams
-	if err := api.DecodeJSONRequest(r, &params); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processTextBoxPropUpdate(w, r, params)
 }
 
 func setLabelFormat(w http.ResponseWriter, r *http.Request) {
