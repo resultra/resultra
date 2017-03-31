@@ -106,6 +106,29 @@ function initNumberInputFieldEditBehavior(componentContext, $container,$numberIn
 		
 	})
 	
+	var $addButton = $container.find(".addButton")
+	initButtonControlClickHandler($addButton,function() {
+			console.log("Clear value clicked for text box")
+		
+		var inputVal = $numberInputInput.data("rawVal")
+		var numberVal = Number(inputVal)
+		if(!isNaN(numberVal)) {
+			numberVal = numberVal + 1
+			setNumberVal(numberVal)						
+		}		
+	})
+	var $subButton = $container.find(".subButton")
+	initButtonControlClickHandler($subButton,function() {
+			console.log("Clear value clicked for text box")
+		
+		var inputVal = $numberInputInput.data("rawVal")
+		var numberVal = Number(inputVal)
+		if(!isNaN(numberVal)) {
+			numberVal = numberVal - 1
+			setNumberVal(numberVal)						
+		}		
+	})
+	
 		
 	if(fieldType == fieldTypeNumber) {
 		$numberInputInput.focusin(function() {
