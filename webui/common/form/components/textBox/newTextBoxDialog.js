@@ -32,7 +32,7 @@ function openNewTextBoxDialog(databaseID,formID,containerParams)
 		elemPrefix: "textBox_",
 		databaseID: databaseID,
 		formID: formID,
-		fieldTypes: [fieldTypeText,fieldTypeNumber],
+		fieldTypes: [fieldTypeText],
 		containerParams: containerParams,
 		createNewFormComponent: createNewTextBox
 	}

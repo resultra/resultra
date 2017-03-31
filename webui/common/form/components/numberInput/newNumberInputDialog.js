@@ -32,7 +32,7 @@ function openNewNumberInputDialog(databaseID,formID,containerParams)
 		elemPrefix: "numberInput_",
 		databaseID: databaseID,
 		formID: formID,
-		fieldTypes: [fieldTypeText,fieldTypeNumber],
+		fieldTypes: [fieldTypeNumber],
 		containerParams: containerParams,
 		createNewFormComponent: createNewNumberInput
 	}

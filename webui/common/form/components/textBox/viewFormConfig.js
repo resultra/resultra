@@ -1,18 +1,4 @@
 
-
-function formatTextBoxVal(fieldID, componentContext, rawInputVal, format) {
-
-	var fieldRef = getFieldRef(fieldID)
-	var fieldType = fieldRef.type
-	if(fieldType == fieldTypeNumber) {
-		return formatNumberValue(format,rawInputVal)
-	} else {
-		return rawInputVal
-	}
-}
-
-
-
 function loadRecordIntoTextBox($textBoxContainer, recordRef) {
 	
 	console.log("loadRecordIntoTextBox: loading record into text box: " + JSON.stringify(recordRef))
@@ -40,20 +26,12 @@ function loadRecordIntoTextBox($textBoxContainer, recordRef) {
 	// with the fields shown by the layout's containers.
 	if(recordRef.fieldValues.hasOwnProperty(textBoxFieldID)) {
 
-		var rawFieldVal = recordRef.fieldValues[textBoxFieldID]
+		var fieldVal = recordRef.fieldValues[textBoxFieldID]
 		
-		if(rawFieldVal === null) {
+		if(fieldVal === null) {
 			$textBoxInput.val("")
 		} else {
-			console.log("loadRecordIntoTextBox: Load value into container: " + $(this).attr("id") + " field ID:" + 
-						textBoxFieldID + "  value:" + rawFieldVal)
-		
-			setRawInputVal(rawFieldVal)
-		
-			var formattedVal = formatTextBoxVal(textBoxFieldID,componentContext,
-					rawFieldVal,textBoxObjectRef.properties.valueFormat.format)
-
-			$textBoxInput.val(formattedVal)
+			$textBoxInput.val(fieldVal)
 			
 		}
 
@@ -61,7 +39,6 @@ function loadRecordIntoTextBox($textBoxContainer, recordRef) {
 	else
 	{
 		$textBoxInput.val("") // clear the value in the container
-		setRawInputVal("")
 	}	
 	
 }
@@ -77,31 +54,7 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 	}
 	
 	var fieldType = fieldRef.type
-	
-	function setNumberVal(numberVal) {
-		var currRecordRef = recordProxy.getRecordFunc()
-		var textBoxNumberValueFormat = {
-			context:"textBox",
-			format:"general"
-		}
-		var setRecordValParams = { 
-			parentDatabaseID:currRecordRef.parentDatabaseID,
-			recordID:currRecordRef.recordID,
-			changeSetID: recordProxy.changeSetID,
-			fieldID:textBoxFieldID, 
-			value:numberVal,
-			valueFormat:textBoxNumberValueFormat
-		}
-		jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
-			// After updating the record, the local cache of records will
-			// be out of date. So after updating the record on the server, the locally cached
-			// version of the record also needs to be updated.
-			recordProxy.updateRecordFunc(replyData)
 		
-		}) // set record's number field value
-		
-	}
-	
 	function setTextVal(textVal) {
 		var textBoxTextValueFormat = {
 			context:"textBox",
@@ -132,67 +85,28 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 			console.log("Clear value clicked for text box")
 		
 		var currRecordRef = recordProxy.getRecordFunc()
+		setTextVal(null)
 		
-		if(fieldType == fieldTypeNumber) {
-			setNumberVal(null)
-			$textBoxInput.data("rawVal","")
-		} else {
-			setTextVal(null)
-		}		
 	})
-	
 		
-	if(fieldType == fieldTypeNumber) {
-		$textBoxInput.focusin(function() {
-			// When focusing on the text input box, replaced the formatted value with 
-			// the raw input value.
-			var rawInputVal = $textBoxInput.data("rawVal")
-			console.log("Focus in for number field: raw value for editing: " + rawInputVal)
-			$textBoxInput.val(rawInputVal)
-		})
-	}
-	
 
 	$textBoxInput.focusout(function () {
 
 		var currTextObjRef = getContainerObjectRef($container)		
-		var fieldID = textBoxFieldID
-		var fieldRef = getFieldRef(textBoxFieldID)
-		var fieldType = fieldRef.type
-		console.log("Text Box focus out:" 
-			+ " ,fieldID: " + textBoxFieldID
-		    + " ,fieldType: " + fieldType
-			+ " , inputval:" + inputVal)
 
 		// Retrieve the "raw input" value entered by the user and 
 		// update the "rawVal" data setting on the text box.
 		var inputVal = $textBoxInput.val()
-		$textBoxInput.data("rawVal",inputVal)
-		
-		// Now that entry of the raw value is complete, revert the 
-		// displayed value back to the format specified for the text box.
-		var formattedVal = formatTextBoxVal(textBoxFieldID,componentContext,
-						inputVal,currTextObjRef.properties.valueFormat.format)
-		$textBoxInput.val(formattedVal)
+		console.log("Text Box focus out:" + inputVal)
 		
 		var currRecordRef = recordProxy.getRecordFunc()
-			
-			
+					
 		if(currRecordRef != null) {
 		
 			// Only update the value if it has changed. Sometimes a user may focus on or tab
 			// through a field but not change it. In this case we don't need to update the record.
 			if(currRecordRef.fieldValues[textBoxFieldID] != inputVal) {
-			
-				if(fieldType == fieldTypeText) {
-					setTextVal(inputVal)
-				} else if (fieldType == fieldTypeNumber) {
-					var numberVal = Number(inputVal)
-					if(!isNaN(numberVal)) {
-						setNumberVal(numberVal)						
-					}
-				
-				}		
+					setTextVal(inputVal)			
 			} // if input value is different than currently cached value
 		}
 	

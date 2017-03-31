@@ -3,12 +3,7 @@
 function formatNumberInputVal(fieldID, componentContext, rawInputVal, format) {
 
 	var fieldRef = getFieldRef(fieldID)
-	var fieldType = fieldRef.type
-	if(fieldType == fieldTypeNumber) {
-		return formatNumberValue(format,rawInputVal)
-	} else {
-		return rawInputVal
-	}
+	return formatNumberValue(format,rawInputVal)
 }
 
 
@@ -27,7 +22,6 @@ function loadRecordIntoNumberInput($numberInputContainer, recordRef) {
 		$numberInputInput.prop('disabled',false);
 		
 	}
-	
 	
 	function setRawInputVal(rawVal) { $numberInputInput.data("rawVal",rawVal) }
 
@@ -100,45 +94,16 @@ function initNumberInputFieldEditBehavior(componentContext, $container,$numberIn
 		
 		}) // set record's number field value
 		
-	}
-	
-	function setTextVal(textVal) {
-		var numberInputTextValueFormat = {
-			context:"numberInput",
-			format:"general"
-		}
-		var currRecordRef = recordProxy.getRecordFunc()
-		var setRecordValParams = { 
-			parentDatabaseID:currRecordRef.parentDatabaseID,
-			recordID:currRecordRef.recordID, 
-			changeSetID: recordProxy.changeSetID,
-			fieldID:numberInputFieldID, 
-			value:textVal,
-			valueFormat: numberInputTextValueFormat 
-		}
-		jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
-			// After updating the record, the local cache of records will
-			// be out of date. So after updating the record on the server, the locally cached
-			// version of the record also needs to be updated.
-			recordProxy.updateRecordFunc(replyData)
-			
-		}) // set record's text field value
-				
-	}
-	
+	}	
 	
 	var $clearValueButton = $container.find(".numberInputComponentClearValueButton")
 	initButtonControlClickHandler($clearValueButton,function() {
 			console.log("Clear value clicked for text box")
 		
 		var currRecordRef = recordProxy.getRecordFunc()
+		setNumberVal(null)
+		$numberInputInput.data("rawVal","")
 		
-		if(fieldType == fieldTypeNumber) {
-			setNumberVal(null)
-			$numberInputInput.data("rawVal","")
-		} else {
-			setTextVal(null)
-		}		
 	})
 	
 		
@@ -183,16 +148,10 @@ function initNumberInputFieldEditBehavior(componentContext, $container,$numberIn
 			// Only update the value if it has changed. Sometimes a user may focus on or tab
 			// through a field but not change it. In this case we don't need to update the record.
 			if(currRecordRef.fieldValues[numberInputFieldID] != inputVal) {
-			
-				if(fieldType == fieldTypeText) {
-					setTextVal(inputVal)
-				} else if (fieldType == fieldTypeNumber) {
-					var numberVal = Number(inputVal)
-					if(!isNaN(numberVal)) {
-						setNumberVal(numberVal)						
-					}
-				
-				}		
+				var numberVal = Number(inputVal)
+				if(!isNaN(numberVal)) {
+					setNumberVal(numberVal)						
+				}			
 			} // if input value is different than currently cached value
 		}
 	
