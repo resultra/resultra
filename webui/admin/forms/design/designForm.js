@@ -88,7 +88,9 @@ $(document).ready(function() {
 	var formDesignLayout = $('#layoutPage').layout({
 		north: fixedUILayoutPaneParams(40),
 		east: fixedUILayoutPaneParams(300),
-		west: fixedUILayoutPaneParams(200),
+		// Normally the width is 200 for the design palette, However, since there are many 
+		// items to choose from, necessitating scrolling, an extra 20px is used to make room for the scrollbar.
+		west: fixedUILayoutPaneParams(220),
 		south: fixedInitiallyHiddenUILayoutPaneAutoSizeToFitContentsParams(),
 		// Important: The 'showOverflowOnHover' options give a higher
 		// z-index to sidebars and other panels with controls, etc. Otherwise

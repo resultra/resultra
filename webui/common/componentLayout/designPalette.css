@@ -4,7 +4,17 @@
 {
 	min-height: 100px;
 	padding: 0px;
-	overflow: visible; // don't overflow the content
+	overflow: visible; /* don't overflow the content */
+}
+
+/* paletteItems is a container for all the palette items. It is setup to
+   size with the overall palette, but be pinned to the bottom of the header
+   and bottom of the overall palette. */
+.paletteItems {
+	position:absolute;
+	overflow-y: auto !important;
+	top:35px; /* start at the bottom of the paletteHeader */
+	bottom:0px;
 }
 
 .paletteSidebar > .ui-layout-content {
@@ -53,7 +63,7 @@
 }
 
 .paletteHeader {
-	min-height: 30px;
+	height: 35px;
 	background-color:lightGrey;
 	vertical-align:middle;
 	margin-left: 0px; /* eliminate negative margins */
@@ -75,12 +85,6 @@
 {
 	min-height:8px;
 	height:8px;
-}
-
-.paletteSidebar {
-	min-height: 100px;
-	padding: 0px;
-	overflow: visible; // don't overflow the content
 }
 
 .paletteItem > .glyphicon {
