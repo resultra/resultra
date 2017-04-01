@@ -90,6 +90,46 @@ function loadNumberInputProperties($numberInput,numberInputRef) {
 	}
 	initDeleteFormComponentPropertyPanel(deleteParams)
 	
+	function initSpinnerButtonProps() {
+		
+		var $showSpinner = $('#numberInputShowValueSpinnerButtons')
+		initCheckboxControlChangeHandler($showSpinner,true,function(showSpinner) {
+			console.log("Update spinner buttons show/hide:" + showSpinner)
+		})
+		
+		var validationSettings = createInlineFormValidationSettings({
+			rules: {
+				numberInputSpinnerButtonStep: {
+					required: true,
+					positiveNumber: true
+				}
+			},
+			messages: {
+				numberInputSpinnerButtonStep: {
+					positiveNumber: "Step value must be a positive number.",
+					required: "Step value must be a positive number."
+				}
+			}
+		})	
+		var $form = $('#numberSpinnerPropsForm')
+		var validator = $form.validate(validationSettings)
+		
+		var $stepSizeInput = $('#numberInputSpinnerButtonStep')
+		function setStepSizeIfValid() {
+			if(validator.valid()) {
+				var stepSize = Number($stepSizeInput.val())
+				console.log("Setting step size:" + stepSize)
+			}
+		}
+		
+		$stepSizeInput.unbind("blur")
+		$stepSizeInput.blur(function() { setStepSizeIfValid() })
+		
+		
+	}
+	initSpinnerButtonProps()
+
+	
 	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#numberInputProps')

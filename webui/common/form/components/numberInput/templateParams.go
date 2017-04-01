@@ -12,6 +12,7 @@ import (
 type NumberInputDesignTemplateParams struct {
 	ElemPrefix               string
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
+	SpinnerPanelParams       propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
@@ -36,7 +37,8 @@ func init() {
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "numberInputLabel"}},
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "numberInputDelete", "Delete Text Box"),
-		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "numberInputFormat"},
+		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Number Format", PanelID: "numberInputFormat"},
+		SpinnerPanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Spinner Buttons", PanelID: "numberInputSpinner"},
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "numberInputVisibility"),
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "numberInputPerms"),
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
