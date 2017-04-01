@@ -25,11 +25,12 @@ function GaugeUIControl($gaugeContainer, configuration)
 	{
 		this.config = configuration;
 		
-		this.config.size = this.config.size * 0.9;
+		this.config.size = this.config.size * 0.95;
 		
 		this.config.radius = this.config.size * 0.97 / 2;
 		this.config.cx = this.config.size / 2;
 		this.config.cy = this.config.size / 2;
+		this.minMaxLabelFontSize =  Math.round(this.config.size / 16)
 		
 		this.config.min = undefined != configuration.min ? configuration.min : 0; 
 		this.config.max = undefined != configuration.max ? configuration.max : 100; 
@@ -51,9 +52,7 @@ function GaugeUIControl($gaugeContainer, configuration)
 	
 	this.valueToDegrees = function(value)
 	{
-		// thanks @closealert
-		//return value / this.config.range * 270 - 45;
-		return value / this.config.range * 270 - (this.config.min / this.config.range * 270 + 45);
+		return value / this.config.range * 180 - (this.config.min / this.config.range * 180);
 	}
 	
 	this.valueToRadians = function(value)
@@ -64,7 +63,7 @@ function GaugeUIControl($gaugeContainer, configuration)
 	this.valueToPoint = function(value, factor)
 	{
 		return { 	x: this.config.cx - this.config.radius * factor * Math.cos(this.valueToRadians(value)),
-					y: this.config.cy - this.config.radius * factor * Math.sin(this.valueToRadians(value)) 		};
+					y: this.config.cy - this.config.radius * factor * Math.sin(this.valueToRadians(value))};
 	}
 	
 	this.valueToThresholdColor = function(value) {
@@ -176,7 +175,6 @@ function GaugeUIControl($gaugeContainer, configuration)
 	}
 	
 	this.renderMajorMinorTicks = function() {
-		var fontSize = Math.round(this.config.size / 16);
 		var majorDelta = this.config.range / (this.config.majorTicks - 1);
 		for (var major = this.config.min; major <= this.config.max; major += majorDelta)
 		{
@@ -215,17 +213,15 @@ function GaugeUIControl($gaugeContainer, configuration)
 			
 			if (major == this.config.min || major == this.config.max)
 			{
-				var point = this.valueToPoint(major, 1.1);
-				
+				var point = this.valueToPoint(major, 0.9);
 				var formattedMajor = this.config.valueFormatter(major)
-				
+								
 				this.body.append("svg:text")
 		 			.attr("x", point.x)
-		 			.attr("y", point.y)
-		 			.attr("dy", fontSize / 3)
+		 			.attr("y", point.y+this.minMaxLabelFontSize )
 		 			.attr("text-anchor", major == this.config.min ? "start" : "end")
 		 			.text(formattedMajor)
-		 			.style("font-size", fontSize + "px")
+		 			.style("font-size", this.minMaxLabelFontSize  + "px")
 					.style("fill", "#333")
 					.style("stroke-width", "0px");
 			}
@@ -237,7 +233,7 @@ function GaugeUIControl($gaugeContainer, configuration)
 		var fontSize = Math.round(this.config.size / 7);
 		this.body.append("svg:text")
 			.attr("x", this.config.cx)
-			.attr("y",this.config.cy + fontSize/3)
+			.attr("y",this.config.cy - fontSize/3)
 			.attr("text-anchor", "middle")
 			.attr("class",valueLabelClass)
 			.text("")
@@ -329,16 +325,31 @@ function GaugeUIControl($gaugeContainer, configuration)
 			});
 		
 	}
-
 	
-	this.render = function() {
-		// Main container for the overall gauge
+	this.renderGaugeContainer = function() {
+		// Render the container for the overall gauge
+		// Since the main container is a semi-circle, the height only needs
+		// to be 1/2 the width. However, there needs to be space at the bottom
+		// for the labeling of the minimum and maximum value.
+		var containerHeight = Math.round(this.config.size/2.0 + this.minMaxLabelFontSize*1.2)
 		this.body = d3.select(this.gaugeContainerElem)
 							.append("svg:svg")
 							.attr("class", "gauge")
 							.attr("width", this.config.size)
-							.attr("height", this.config.size);
+							.attr("height", containerHeight);
+		
+	}
+
+	this.redraw = function(value, transitionDuration) {		
+		
+		this.redrawValueLabel(value)
+		this.redrawValueBand(value)
+		this.redrawPointer(value)
+	}
+
+	this.render = function() {
 							
+		this.renderGaugeContainer()
 		this.renderThresholdBands()
 		this.renderValueBand(0,40,self.config.yellowColor)
 		this.renderMajorMinorTicks()
@@ -348,12 +359,6 @@ function GaugeUIControl($gaugeContainer, configuration)
 		this.redraw(this.config.min, 0);
 	}
 	
-	this.redraw = function(value, transitionDuration) {		
-		
-		this.redrawValueLabel(value)
-		this.redrawValueBand(value)
-		this.redrawPointer(value)
-	}
 	
 	// initialization
 	this.configure(configuration);	
