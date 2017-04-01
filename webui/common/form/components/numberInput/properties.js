@@ -95,6 +95,14 @@ function loadNumberInputProperties($numberInput,numberInputRef) {
 		var $showSpinner = $('#numberInputShowValueSpinnerButtons')
 		initCheckboxControlChangeHandler($showSpinner,true,function(showSpinner) {
 			console.log("Update spinner buttons show/hide:" + showSpinner)
+			var params = {
+				parentFormID: numberInputRef.parentFormID,
+				numberInputID: numberInputRef.numberInputID,
+				showValueSpinner: showSpinner
+			}
+			jsonAPIRequest("frm/numberInput/setShowSpinner",params,function(updatedNumberInput) {
+				setContainerComponentInfo($numberInput,updatedNumberInput,updatedNumberInput.numberInputID)
+			})
 		})
 		
 		var validationSettings = createInlineFormValidationSettings({
@@ -115,10 +123,20 @@ function loadNumberInputProperties($numberInput,numberInputRef) {
 		var validator = $form.validate(validationSettings)
 		
 		var $stepSizeInput = $('#numberInputSpinnerButtonStep')
+		$stepSizeInput.val(numberInputRef.properties.valueSpinnerStepSize)
 		function setStepSizeIfValid() {
 			if(validator.valid()) {
 				var stepSize = Number($stepSizeInput.val())
 				console.log("Setting step size:" + stepSize)
+				var params = {
+					parentFormID: numberInputRef.parentFormID,
+					numberInputID: numberInputRef.numberInputID,
+					valueSpinnerStepSize: stepSize
+				}
+				jsonAPIRequest("frm/numberInput/setSpinnerStepSize",params,function(updatedNumberInput) {
+					setContainerComponentInfo($numberInput,updatedNumberInput,updatedNumberInput.numberInputID)
+				})
+				
 			}
 		}
 		

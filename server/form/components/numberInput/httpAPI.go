@@ -15,6 +15,8 @@ func init() {
 	numberInputRouter.HandleFunc("/api/frm/numberInput/setLabelFormat", setLabelFormat)
 	numberInputRouter.HandleFunc("/api/frm/numberInput/setVisibility", setVisibility)
 	numberInputRouter.HandleFunc("/api/frm/numberInput/setPermissions", setPermissions)
+	numberInputRouter.HandleFunc("/api/frm/numberInput/setShowSpinner", setShowSpinner)
+	numberInputRouter.HandleFunc("/api/frm/numberInput/setSpinnerStepSize", setSpinnerStepSize)
 
 	http.Handle("/api/frm/numberInput/", numberInputRouter)
 }
@@ -81,6 +83,24 @@ func setVisibility(w http.ResponseWriter, r *http.Request) {
 
 func setPermissions(w http.ResponseWriter, r *http.Request) {
 	var params NumberInputPermissionParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processNumberInputPropUpdate(w, r, params)
+}
+
+func setShowSpinner(w http.ResponseWriter, r *http.Request) {
+	var params ShowValueSpinnerParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processNumberInputPropUpdate(w, r, params)
+}
+
+func setSpinnerStepSize(w http.ResponseWriter, r *http.Request) {
+	var params ValueSpinnerStepSizeParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

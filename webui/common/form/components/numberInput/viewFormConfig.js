@@ -106,28 +106,35 @@ function initNumberInputFieldEditBehavior(componentContext, $container,$numberIn
 		
 	})
 	
-	var $addButton = $container.find(".addButton")
-	initButtonControlClickHandler($addButton,function() {
-			console.log("Clear value clicked for text box")
+	var $spinnerControls = $container.find(".numberInputSpinnerControls")
+	if(numberInputObjectRef.properties.showValueSpinner) {
+		$spinnerControls.show()
+		var $addButton = $container.find(".addButton")
+		initButtonControlClickHandler($addButton,function() {
+				console.log("Clear value clicked for text box")
 		
-		var inputVal = $numberInputInput.data("rawVal")
-		var numberVal = Number(inputVal)
-		if(!isNaN(numberVal)) {
-			numberVal = numberVal + 1
-			setNumberVal(numberVal)						
-		}		
-	})
-	var $subButton = $container.find(".subButton")
-	initButtonControlClickHandler($subButton,function() {
-			console.log("Clear value clicked for text box")
+			var inputVal = $numberInputInput.data("rawVal")
+			var numberVal = Number(inputVal)
+			if(!isNaN(numberVal)) {
+				numberVal = numberVal + numberInputObjectRef.properties.valueSpinnerStepSize
+				setNumberVal(numberVal)						
+			}		
+		})
+		var $subButton = $container.find(".subButton")
+		initButtonControlClickHandler($subButton,function() {
+				console.log("Clear value clicked for text box")
 		
-		var inputVal = $numberInputInput.data("rawVal")
-		var numberVal = Number(inputVal)
-		if(!isNaN(numberVal)) {
-			numberVal = numberVal - 1
-			setNumberVal(numberVal)						
-		}		
-	})
+			var inputVal = $numberInputInput.data("rawVal")
+			var numberVal = Number(inputVal)
+			if(!isNaN(numberVal)) {
+				numberVal = numberVal - numberInputObjectRef.properties.valueSpinnerStepSize
+				setNumberVal(numberVal)						
+			}		
+		})
+	} else {
+		$spinnerControls.hide()
+	}
+	
 	
 		
 	if(fieldType == fieldTypeNumber) {

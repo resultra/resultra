@@ -117,3 +117,31 @@ func (updateParams NumberInputPermissionParams) updateProps(numberInput *NumberI
 
 	return nil
 }
+
+type ShowValueSpinnerParams struct {
+	NumberInputIDHeader
+	ShowValueSpinner bool `json:"showValueSpinner"`
+}
+
+func (updateParams ShowValueSpinnerParams) updateProps(numberInput *NumberInput) error {
+
+	numberInput.Properties.ShowValueSpinner = updateParams.ShowValueSpinner
+
+	return nil
+}
+
+type ValueSpinnerStepSizeParams struct {
+	NumberInputIDHeader
+	ValueSpinnerStepSize float64 `json:"valueSpinnerStepSize"`
+}
+
+func (updateParams ValueSpinnerStepSizeParams) updateProps(numberInput *NumberInput) error {
+
+	if updateParams.ValueSpinnerStepSize <= 0.0 {
+		return fmt.Errorf("Invalid spinner step size %v, must be > 0.0", updateParams.ValueSpinnerStepSize)
+	}
+
+	numberInput.Properties.ValueSpinnerStepSize = updateParams.ValueSpinnerStepSize
+
+	return nil
+}
