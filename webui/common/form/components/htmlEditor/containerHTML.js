@@ -29,7 +29,7 @@ function htmlEditorContainerHTML(elementID)
 			'<div class="htmlEditorInput inlineContent htmlEditorDefaultBackground">'+
 			'</div>' +
 		'</div>'+
-		'<div class="editorFooter pull-right componentHoverFooter initiallyHidden">' +
+		'<div class="editorFooter componentHoverFooter">' +
 			smallClearDeleteButtonHTML("editorComponentClearValueButton") + 
 			editButtonHTML() +
 		'</div>' +

@@ -16,7 +16,7 @@ function datePickerContainerHTML(elementID)
 				'<input type="text" name="symbol"  class="form-control datePickerComponentInput" placeholder="Select a date">' +
 			'</div>'+
 		'</div>'+
-		'<div class="pull-right componentHoverFooter initiallyHidden">' +
+		'<div class="componentHoverFooter">' +
 			smallClearDeleteButtonHTML("datePickerComponentClearValueButton") + 
 		'</div>' +
 	'</div>';

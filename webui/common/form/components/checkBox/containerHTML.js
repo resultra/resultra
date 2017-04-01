@@ -27,7 +27,7 @@ function checkBoxContainerHTML(elementID)
 				'<input type="checkbox" id="'+uniqueID+'"class="checkboxFormComponentControl">' +
 				'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel">New Checkbox</label>' + 
 			'</div>' +
-			'<div class="pull-right componentHoverFooter initiallyHidden">' +
+			'<div class="componentHoverFooter">' +
 				smallClearDeleteButtonHTML("checkBoxComponentClearValueButton") + 
 			'</div>' +
 		'</div>';

@@ -15,7 +15,7 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 			// same div. There's a delay to give the user time to click on any buttons in the footer.
 			var hoverButtonBarTimer
 			var hoverDelay = 500
-			var $hoverFooter = $component.find(".componentHoverFooter")
+			var $hoverFooter = $component.find(".componentHoverFooter")			
 			$component.hover(function() {
 				console.log("Start hover in component footer")
 				clearTimeout(hoverButtonBarTimer)
