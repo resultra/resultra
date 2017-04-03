@@ -85,7 +85,7 @@ func getItemListListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if listList, err := GetAllItemLists(params.DatabaseID); err != nil {
+	if listList, err := GetAllSortedItemLists(params.DatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, listList)

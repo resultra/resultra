@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/itemList"
 )
 
 type DatabaseInfoParams struct {
@@ -55,20 +56,18 @@ func getDatabaseFormsInfo(params DatabaseInfoParams) ([]form.Form, error) {
 }
 
 func getDatabaseItemListInfo(params DatabaseInfoParams) ([]ItemListInfo, error) {
-	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT list_id, name FROM item_lists WHERE database_id=$1`,
-		params.DatabaseID)
-	if queryErr != nil {
-		return nil, fmt.Errorf("getDatabaseInfo: Failure querying database: %v", queryErr)
+
+	listInfo, getsListsErr := itemList.GetAllSortedItemLists(params.DatabaseID)
+	if getsListsErr != nil {
+		return nil, fmt.Errorf("getDatabaseItemListInfo: %v", getsListsErr)
 	}
 
 	listsInfo := []ItemListInfo{}
-	for rows.Next() {
-		var currListInfo ItemListInfo
-		if scanErr := rows.Scan(&currListInfo.ListID, &currListInfo.Name); scanErr != nil {
-			return nil, fmt.Errorf("getDatabaseInfo: Failure querying database: %v", scanErr)
-		}
-		listsInfo = append(listsInfo, currListInfo)
+	for _, currListInfo := range listInfo {
+		listInfo := ItemListInfo{
+			ListID: currListInfo.ListID,
+			Name:   currListInfo.Name}
+		listsInfo = append(listsInfo, listInfo)
 	}
 
 	return listsInfo, nil
@@ -83,6 +82,11 @@ type DatabaseContentsInfo struct {
 
 func getDatabaseInfo(params DatabaseInfoParams) (*DatabaseContentsInfo, error) {
 
+	db, getErr := database.GetDatabase(params.DatabaseID)
+	if getErr != nil {
+		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
+	}
+
 	formsInfo, formsErr := getDatabaseFormsInfo(params)
 	if formsErr != nil {
 		return nil, formsErr
@@ -96,11 +100,6 @@ func getDatabaseInfo(params DatabaseInfoParams) (*DatabaseContentsInfo, error) {
 	listsInfo, err := getDatabaseItemListInfo(params)
 	if err != nil {
 		return nil, err
-	}
-
-	db, getErr := database.GetDatabase(params.DatabaseID)
-	if getErr != nil {
-		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
 	}
 
 	dbInfo := DatabaseContentsInfo{

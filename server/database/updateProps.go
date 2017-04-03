@@ -56,3 +56,17 @@ func (updateParams SetDatabaseNameParams) updateProps(db *Database) error {
 
 	return nil
 }
+
+type SetListOrderParams struct {
+	DatabaseIDHeader
+	ListOrder []string `json:"listOrder"`
+}
+
+func (updateParams SetListOrderParams) updateProps(db *Database) error {
+
+	// TODO - Validate all lists are in the database/tracker
+
+	db.Properties.ListOrder = updateParams.ListOrder
+
+	return nil
+}

@@ -20,17 +20,26 @@ function addListToAdminItemListList(listInfo) {
 function initAdminListSettings(databaseID) {
 	
 	
-    $("#adminListList").sortable({
+	var $adminListList = $("#adminListList")
+	
+    $adminListList.sortable({
 		placeholder: "ui-state-highlight",
 		cursor:"move",
 		update: function( event, ui ) {
-			// Get the new sorted list of form IDs. The prefix needs to be stripped from the ID.
-	/*		var prefixRegexp = new RegExp('^' + adminFormListElemPrefix)
-			var sortedIDs =  $("#adminFormList").sortable("toArray").map(function(elem) {
-				return elem.replace(prefixRegexp,'')
+			
+			var sortedListIDs = []
+			$adminListList.find(".adminListListItem").each(function() {
+				var currListID = $(this).attr('data-listID')
+				sortedListIDs.push(currListID)
 			})
-			console.log("New sort order:" + JSON.stringify(sortedIDs))
-	*/
+			var setOrderParams = {
+				databaseID:databaseID,
+				listOrder: sortedListIDs
+			}
+			console.log("New list sort order:" + JSON.stringify(sortedListIDs))
+			jsonAPIRequest("database/setListOrder",setOrderParams,function(dbInfo) {
+				console.log("Done changing database listOrder")
+			})
 		}
     });
 	
@@ -39,7 +48,7 @@ function initAdminListSettings(databaseID) {
 	jsonAPIRequest("itemList/list",listsInfoParams,function(listsInfo) {
 		console.log("Got item lists info: " + JSON.stringify(listsInfo))
 		
-		$('#adminListList').empty()
+		$adminListList.empty()
 		for (var listInfoIndex = 0; listInfoIndex < listsInfo.length; listInfoIndex++) {
 			var listInfo = listsInfo[listInfoIndex]
 			addListToAdminItemListList(listInfo)

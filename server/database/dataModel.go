@@ -8,11 +8,6 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
-type DatabaseProperties struct {
-	FormsOrder      []string `json:"formsOrder"`
-	DashboardsOrder []string `json:"dashboardsOrder"`
-}
-
 type Database struct {
 	DatabaseID string             `json:"databaseID"`
 	Name       string             `json:"name"`
@@ -73,7 +68,7 @@ func SaveNewEmptyDatabase(params NewDatabaseParams) (*Database, error) {
 
 	databaseID := uniqueID.GenerateSnowflakeID()
 
-	dbProps := DatabaseProperties{}
+	dbProps := newDefaultDatabaseProperties()
 
 	newDatabase := Database{
 		DatabaseID: databaseID,
@@ -98,7 +93,7 @@ func GetDatabase(databaseID string) (*Database, error) {
 			databaseID, getErr)
 	}
 
-	var dbProps DatabaseProperties
+	dbProps := newDefaultDatabaseProperties()
 	if decodeErr := generic.DecodeJSONString(encodedProps, &dbProps); decodeErr != nil {
 		return nil, fmt.Errorf("getDatabase: can't decode properties: %v, err=%v", encodedProps, decodeErr)
 	}

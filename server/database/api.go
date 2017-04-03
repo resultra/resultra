@@ -23,6 +23,15 @@ func SetNameAPI(w http.ResponseWriter, r *http.Request) {
 	processDatabasePropUpdate(w, r, params)
 }
 
+func SetListOrderAPI(w http.ResponseWriter, r *http.Request) {
+	var params SetListOrderParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processDatabasePropUpdate(w, r, params)
+}
+
 func ValidateDatabaseNameAPI(w http.ResponseWriter, r *http.Request) {
 
 	databaseID := r.FormValue("databaseID")

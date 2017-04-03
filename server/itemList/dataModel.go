@@ -2,6 +2,7 @@ package itemList
 
 import (
 	"fmt"
+	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/stringValidation"
@@ -114,6 +115,47 @@ func GetAllItemLists(parentDatabaseID string) ([]ItemList, error) {
 
 	return itemLists, nil
 
+}
+
+func orderListsByManualListOrder(unorderedListInfo []ItemList, manualOrder []string) []ItemList {
+	// Map the listID -> ListInfo.
+	listInfoByID := map[string]ItemList{}
+	for _, currListInfo := range unorderedListInfo {
+		listInfoByID[currListInfo.ListID] = currListInfo
+	}
+	// Iterate throught the manually ordered list of ListIDs, pull items from listInfoByID in
+	// the order they are encountered in the ordered list, then re-append the ListInfo's into a
+	// new ordered list in the same order they are found.
+	orderedListInfo := []ItemList{}
+	for _, currListID := range manualOrder {
+		listInfo, foundListInfo := listInfoByID[currListID]
+		if foundListInfo {
+			orderedListInfo = append(orderedListInfo, listInfo)
+			delete(listInfoByID, currListID)
+		}
+	}
+	for _, currListInfo := range listInfoByID {
+		orderedListInfo = append(orderedListInfo, currListInfo)
+	}
+	return orderedListInfo
+
+}
+
+func GetAllSortedItemLists(parentDatabaseID string) ([]ItemList, error) {
+
+	unorderedLists, err := GetAllItemLists(parentDatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("GetAllSortedItemLists: %v")
+	}
+
+	db, getErr := database.GetDatabase(parentDatabaseID)
+	if getErr != nil {
+		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
+	}
+
+	orderedLists := orderListsByManualListOrder(unorderedLists, db.Properties.ListOrder)
+
+	return orderedLists, nil
 }
 
 func CloneItemLists(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID string) error {
