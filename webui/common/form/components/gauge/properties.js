@@ -43,6 +43,7 @@ function loadGaugeProperties($gauge,gaugeRef) {
 				console.log("Setting gauge range: " + JSON.stringify(setRangeParams))
 				jsonAPIRequest("frm/gauge/setRange", setRangeParams, function(updatedGauge) {
 					setContainerComponentInfo($gauge,updatedGauge,updatedGauge.gaugeID)
+					initGaugeComponentGaugeControl($gauge,updatedGauge)
 				})	
 				
 			}		
@@ -65,6 +66,7 @@ function loadGaugeProperties($gauge,gaugeRef) {
 		}
 		jsonAPIRequest("frm/gauge/setThresholds", setThresholdParams, function(updatedGauge) {
 			setContainerComponentInfo($gauge,updatedGauge,updatedGauge.gaugeID)
+			initGaugeComponentGaugeControl($gauge,updatedGauge)
 		})	
 		
 	}
@@ -133,6 +135,7 @@ function loadGaugeProperties($gauge,gaugeRef) {
 			}
 			jsonAPIRequest("frm/gauge/setValueFormat", formatParams, function(updatedGauge) {
 				setContainerComponentInfo($gauge,updatedGauge,updatedGauge.gaugeID)
+				initGaugeComponentGaugeControl($gauge,updatedGauge)
 			})	
 			
 		}

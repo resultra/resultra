@@ -25,10 +25,22 @@ function resizeGauge($container,geometry) {
 	})	
 }
 
+function initDummyGaugeControlForPaletteDrag(placeholderID,$paletteItemContainer) {
+	
+	var gaugeConfig = 
+	{
+		size: $paletteItemContainer.width(),
+		min: 0,
+		max: 100,
+		minorTicks: 5,
+	}
+	initGaugeComponentControl($paletteItemContainer,gaugeConfig)
+}
+
 
 var gaugeDesignFormConfig = {
 	draggableHTMLFunc:	gaugeContainerHTML,
-	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
+	startPaletteDrag: initDummyGaugeControlForPaletteDrag,
 	createNewItemAfterDropFunc: openNewGaugeDialog,
 	resizeConstraints: elemResizeConstraints(75,640,30,30),
 	resizeFunc: resizeGauge,

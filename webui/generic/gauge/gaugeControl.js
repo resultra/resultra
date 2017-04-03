@@ -16,8 +16,9 @@ function GaugeUIControl($gaugeContainer, configuration)
 	var outerThresholdBandRadiusPerc = 0.95
 	
 	
-//	this.placeholderName = placeholderName;
 	this.gaugeContainerElem = $gaugeContainer.get(0)
+	this.$gaugeContainer = $gaugeContainer
+	
 	
 	var self = this; // for internal d3 functions
 	
@@ -348,6 +349,8 @@ function GaugeUIControl($gaugeContainer, configuration)
 	}
 
 	this.render = function() {
+		
+		this.$gaugeContainer.empty() // Remove any existing elements. The gauge control owns the container.
 							
 		this.renderGaugeContainer()
 		this.renderThresholdBands()
