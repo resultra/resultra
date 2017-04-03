@@ -45,7 +45,12 @@ func CloneDatabase(remappedIDs uniqueID.UniqueIDRemapper, newName string, srcDat
 	dest := *srcDatabase
 	dest.DatabaseID = destDatabaseID
 	dest.Name = newName
-	// TODO - handle properties
+
+	destProps, err := srcDatabase.Properties.Clone(remappedIDs)
+	if err != nil {
+		return nil, fmt.Errorf("CloneDatabase: %v", err)
+	}
+	dest.Properties = *destProps
 
 	if err := SaveNewDatabase(dest); err != nil {
 		return nil, fmt.Errorf("Clone database: Can't save database: %v", err)

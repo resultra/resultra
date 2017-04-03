@@ -3,6 +3,7 @@ package dashboard
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/stringValidation"
@@ -124,6 +125,47 @@ func GetAllDashboards(parentDatabaseID string) ([]Dashboard, error) {
 	}
 
 	return dashboards, nil
+
+}
+
+func orderDashboardsByManualOrder(unorderedDashboards []Dashboard, manualOrder []string) []Dashboard {
+	// Map the listID -> ListInfo.
+	infoByID := map[string]Dashboard{}
+	for _, currInfo := range unorderedDashboards {
+		infoByID[currInfo.DashboardID] = currInfo
+	}
+	// Iterate throught the manually ordered list of ListIDs, pull items from listInfoByID in
+	// the order they are encountered in the ordered list, then re-append the ListInfo's into a
+	// new ordered list in the same order they are found.
+	orderedInfo := []Dashboard{}
+	for _, currID := range manualOrder {
+		dashboardInfo, foundInfo := infoByID[currID]
+		if foundInfo {
+			orderedInfo = append(orderedInfo, dashboardInfo)
+			delete(infoByID, currID)
+		}
+	}
+	for _, currInfo := range infoByID {
+		orderedInfo = append(orderedInfo, currInfo)
+	}
+	return orderedInfo
+
+}
+
+func GetAllSortedDashboard(parentDatabaseID string) ([]Dashboard, error) {
+	unorderedDashboards, err := GetAllDashboards(parentDatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("GetAllSortedItemLists: %v")
+	}
+
+	db, getErr := database.GetDatabase(parentDatabaseID)
+	if getErr != nil {
+		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
+	}
+
+	orderedDashboards := orderDashboardsByManualOrder(unorderedDashboards, db.Properties.DashboardOrder)
+
+	return orderedDashboards, nil
 
 }
 

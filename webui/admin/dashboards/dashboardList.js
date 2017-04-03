@@ -26,26 +26,40 @@ function addDashboardToAdminDashboardList(dashboardInfo) {
 	 
 	var dashboardListDashboardID = adminDashboardListElemPrefix + dashboardInfo.dashboardID
 	
-	var dashboardListItemHTML = '<li class="list-group-item" id="' + dashboardListDashboardID + '">' + 
+	var dashboardListItemHTML = '<li class="list-group-item dashboardListItem" id="' + dashboardListDashboardID + '">' + 
 		dashboardInfo.name +
 		adminDashboardListButtonsHTML(dashboardInfo) +
 	 '</li>'
 	
-	$('#adminDashboardList').append(dashboardListItemHTML)		
+	var $dashboardListItem = $(dashboardListItemHTML)
+	$dashboardListItem.attr('data-dashboardID',dashboardInfo.dashboardID)
+	
+	$('#adminDashboardList').append($dashboardListItem)		
 }
 
 function initAdminDashboardSettings(databaseID) {
 	
-    $("#adminDashboardList").sortable({
+	var $dashboardList =  $("#adminDashboardList")
+	
+    $dashboardList.sortable({
 		placeholder: "ui-state-highlight",
 		cursor:"move",
 		update: function( event, ui ) {
-			// Get the new sorted list of form IDs. The prefix needs to be stripped from the ID.
-			var prefixRegexp = new RegExp('^' + adminDashboardListElemPrefix)
-			var sortedIDs =  $("#adminDashboardList").sortable("toArray").map(function(elem) {
-				return elem.replace(prefixRegexp,'')
+			
+			var dashboardOrder = []
+			$dashboardList.find(".dashboardListItem").each( function() {
+				var dashboardID = $(this).attr('data-dashboardID')
+				dashboardOrder.push(dashboardID)
 			})
-			console.log("New sort order:" + JSON.stringify(sortedIDs))
+			var setOrderParams = {
+				databaseID:databaseID,
+				dashboardOrder: dashboardOrder
+			}
+			console.log("New dashboard sort order:" + JSON.stringify(dashboardOrder))
+			jsonAPIRequest("database/setDashboardOrder",setOrderParams,function(dbInfo) {
+				console.log("Done changing database dashboardOrder")
+			})
+			
 		}
     });
 	
@@ -54,7 +68,7 @@ function initAdminDashboardSettings(databaseID) {
 	jsonAPIRequest("database/getInfo",getDBInfoParams,function(dbInfo) {
 		console.log("Got database info: " + JSON.stringify(dbInfo))
 		
-		$('#adminDashboardList').empty()
+		$dashboardList.empty()
 		for (var dashboardInfoIndex = 0; dashboardInfoIndex < dbInfo.dashboardsInfo.length; dashboardInfoIndex++) {
 			var dashboardInfo = dbInfo.dashboardsInfo[dashboardInfoIndex]
 			addDashboardToAdminDashboardList(dashboardInfo)

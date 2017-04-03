@@ -70,3 +70,17 @@ func (updateParams SetListOrderParams) updateProps(db *Database) error {
 
 	return nil
 }
+
+type SetDashboardOrderParams struct {
+	DatabaseIDHeader
+	DashboardOrder []string `json:"dashboardOrder"`
+}
+
+func (updateParams SetDashboardOrderParams) updateProps(db *Database) error {
+
+	// TODO - Validate all lists are in the database/tracker
+
+	db.Properties.DashboardOrder = updateParams.DashboardOrder
+
+	return nil
+}

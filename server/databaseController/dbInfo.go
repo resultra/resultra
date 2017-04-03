@@ -2,6 +2,7 @@ package databaseController
 
 import (
 	"fmt"
+	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/databaseWrapper"
@@ -23,21 +24,17 @@ type ItemListInfo struct {
 }
 
 func getDatabaseDashboardsInfo(params DatabaseInfoParams) ([]DashboardInfo, error) {
-	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT dashboards.dashboard_id, dashboards.name FROM dashboards,databases WHERE 
-			databases.database_id=$1 AND 
-			dashboards.database_id = databases.database_id`,
-		params.DatabaseID)
-	if queryErr != nil {
-		return nil, fmt.Errorf("getDatabaseDashboardsInfo: Failure querying database: %v", queryErr)
+
+	dashboards, err := dashboard.GetAllSortedDashboard(params.DatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("getDatabaseDashboardsInfo: %v", err)
 	}
 
 	dashboardsInfo := []DashboardInfo{}
-	for rows.Next() {
-		var currDashboardInfo DashboardInfo
-		if scanErr := rows.Scan(&currDashboardInfo.DashboardID, &currDashboardInfo.Name); scanErr != nil {
-			return nil, fmt.Errorf("getDatabaseDashboardsInfo: Failure querying database: %v", scanErr)
-		}
+	for _, currDashboard := range dashboards {
+		currDashboardInfo := DashboardInfo{
+			DashboardID: currDashboard.DashboardID,
+			Name:        currDashboard.Name}
 		dashboardsInfo = append(dashboardsInfo, currDashboardInfo)
 	}
 
