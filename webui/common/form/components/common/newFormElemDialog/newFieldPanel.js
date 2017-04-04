@@ -59,6 +59,9 @@ function createNewFieldDialogPanelContextBootstrap(panelParams) {
 			var fieldName = $(fieldNameInput.selector).val()
 			var defaultFieldRefName = fieldName.replace(/[^0-9a-zA-Z]/g,"")
 			$(fieldRefNameInput.selector).val(defaultFieldRefName)
+			// Immediately trigger validation of the field reference name, based
+			// upon the default value.
+			$(fieldRefNameInput.selector).valid()
 		}
 	})
 	$(fieldRefNameInput.selector).change(function() {
