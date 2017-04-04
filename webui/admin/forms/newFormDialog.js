@@ -24,8 +24,10 @@ function openNewFormDialog(databaseID) {
 	})
 
 	validator.resetForm()
+	
+	var $newFormDialog = $('#newFormDialog')
 		
-	$('#newFormDialog').modal('show')
+	$newFormDialog.modal('show')
 	
 	initButtonClickHandler('#newFormSaveButton',function() {
 		console.log("New form save button clicked")
@@ -37,7 +39,10 @@ function openNewFormDialog(databaseID) {
 				name: $('#newFormNameInput').val() }
 			jsonAPIRequest("frm/new",newFormParams,function(newFormInfo) {
 				console.log("Created new form: " + JSON.stringify(newFormInfo))
-				$('#newFormDialog').modal('hide')
+				$newFormDialog.modal('hide')
+				// TODO - Include database ID in link
+				var formDesignUrl = '/admin/frm/' + newFormInfo.formID
+				window.location.href = formDesignUrl
 			})
 			
 

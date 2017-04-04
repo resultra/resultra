@@ -35,7 +35,9 @@ function addFormToAdminFormList(formInfo) {
 
 function initAdminFormSettings(databaseID) {
 	
-    $("#adminFormList").sortable({
+	var $adminFormList = $("#adminFormList")
+	
+    $adminFormList.sortable({
 		placeholder: "ui-state-highlight",
 		cursor:"move",
 		update: function( event, ui ) {
@@ -53,7 +55,7 @@ function initAdminFormSettings(databaseID) {
 	jsonAPIRequest("database/getInfo",getDBInfoParams,function(dbInfo) {
 		console.log("Got database info: " + JSON.stringify(dbInfo))
 		
-		$('#adminFormList').empty()
+		$adminFormList.empty()
 		for (var formInfoIndex = 0; formInfoIndex < dbInfo.formsInfo.length; formInfoIndex++) {
 			var formInfo = dbInfo.formsInfo[formInfoIndex]
 			addFormToAdminFormList(formInfo)
