@@ -44,8 +44,7 @@ function openNewFormDialog(databaseID) {
 				console.log("Created new form: " + JSON.stringify(newFormInfo))
 				$newFormDialog.modal('hide')
 				// TODO - Include database ID in link
-				var formDesignUrl = '/admin/frm/' + newFormInfo.formID
-				window.location.href = formDesignUrl
+				navigateToURL('/admin/frm/' + newFormInfo.formID)
 			})
 			
 

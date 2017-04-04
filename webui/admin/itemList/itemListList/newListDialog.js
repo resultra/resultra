@@ -1,6 +1,8 @@
 function openNewListDialog(databaseID) {
 	
 	var $newListDialogForm = $('#newListDialogForm')
+	var $formSelection = $('#newListFormSelection')
+	var $nameInput = $('#newListNameInput')
 	
 	var validator = $newListDialogForm.validate({
 		rules: {
@@ -24,6 +26,9 @@ function openNewListDialog(databaseID) {
 		}
 	})
 
+	resetFormValidationFeedback($newListDialogForm)
+	$formSelection.val("")
+	$nameInput.val("")
 	validator.resetForm()
 	
 	var selectFormParams = {
@@ -41,12 +46,13 @@ function openNewListDialog(databaseID) {
 			
 			var newListParams = { 
 				parentDatabaseID: databaseID,
-				formID: $('#newListFormSelection').val(),
-				name: $('#newListNameInput').val() }
+				formID: $formSelection.val(),
+				name: $nameInput.val() }
 			jsonAPIRequest("itemList/new",newListParams,function(newListInfo) {
 				console.log("Created new list: " + JSON.stringify(newListInfo))
 				addListToAdminItemListList(newListInfo)
 				$('#newListDialog').modal('hide')
+				navigateToURL('/admin/itemList/'+newListInfo.listID)
 			})
 			
 
