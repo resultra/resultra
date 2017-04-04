@@ -3,6 +3,11 @@ function resetFormValidationFeedback($form) {
 	$form.find(".form-control-feedback").remove()
 }
 
+function resetAllFormInputs($form) {
+	$form.find("input").val("")
+	$form.find("select").val("")
+}
+
 $(document).ready(function() {	
 	$.validator.setDefaults({
         highlight: function(element) {

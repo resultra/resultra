@@ -74,6 +74,9 @@ function createNewFieldDialogPanelContextBootstrap(panelParams) {
 	}
 	validationRules[fieldRefNameInput.id] = { required: true } 
 	var validator = $panelForm.validate({rules: validationRules })
+	
+	resetFormValidationFeedback($panelForm)
+	resetAllFormInputs($panelForm)
 	validator.resetForm()	
 	
 	$(refNameLabel.selector).tooltip()
