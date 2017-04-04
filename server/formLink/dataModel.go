@@ -2,9 +2,9 @@ package formLink
 
 import (
 	"fmt"
+	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
-	//	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
@@ -175,6 +175,48 @@ func getAllFormLinks(parentDatabaseID string) ([]FormLink, error) {
 	}
 
 	return links, nil
+
+}
+
+func sortFormLinksByManualOrder(unorderedLinks []FormLink, manualOrder []string) []FormLink {
+	// Map the listID -> ListInfo.
+	infoByID := map[string]FormLink{}
+	for _, currInfo := range unorderedLinks {
+		infoByID[currInfo.LinkID] = currInfo
+	}
+	// Iterate throught the manually ordered list of ListIDs, pull items from listInfoByID in
+	// the order they are encountered in the ordered list, then re-append the ListInfo's into a
+	// new ordered list in the same order they are found.
+	orderedInfo := []FormLink{}
+	for _, currID := range manualOrder {
+		linkInfo, foundInfo := infoByID[currID]
+		if foundInfo {
+			orderedInfo = append(orderedInfo, linkInfo)
+			delete(infoByID, currID)
+		}
+	}
+	for _, currInfo := range infoByID {
+		orderedInfo = append(orderedInfo, currInfo)
+	}
+	return orderedInfo
+
+}
+
+func getAllSortedFormLinks(parentDatabaseID string) ([]FormLink, error) {
+
+	unsortedLinks, err := getAllFormLinks(parentDatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("GetAllSortedFormLinks: %v", err)
+	}
+
+	db, getErr := database.GetDatabase(parentDatabaseID)
+	if getErr != nil {
+		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
+	}
+
+	sortedLinks := sortFormLinksByManualOrder(unsortedLinks, db.Properties.FormLinkOrder)
+
+	return sortedLinks, nil
 
 }
 

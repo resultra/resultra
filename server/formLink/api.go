@@ -67,7 +67,7 @@ func getFormLinksAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	presets, err := getAllFormLinks(params.ParentDatabaseID)
+	presets, err := getAllSortedFormLinks(params.ParentDatabaseID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {

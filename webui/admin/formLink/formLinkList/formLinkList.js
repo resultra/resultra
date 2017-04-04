@@ -1,5 +1,6 @@
 function initAdminNewItemPresetSettings(databaseID) {
 		
+	var $formLinkList = $('#adminFormLinkList')
 		
 	function addPresetToAdminPresetList(presetInfo) {
  
@@ -15,9 +16,31 @@ function initAdminNewItemPresetSettings(databaseID) {
 		var $nameLabel = $presetListItem.find(".adminFormLinkItemLabel")
 		$nameLabel.text(presetInfo.name)
 		 	
-		$('#adminFormLinkList').append($presetListItem)		
+		$formLinkList.append($presetListItem)		
 	}
 		
+    $formLinkList .sortable({
+		placeholder: "ui-state-highlight",
+		cursor:"move",
+		update: function( event, ui ) {
+			
+			var linkOrder = []
+			$formLinkList.find(".formLinkListItem").each( function() {
+				var linkID = $(this).attr('data-linkID')
+				linkOrder.push(linkID)
+			})
+			var setOrderParams = {
+				databaseID:databaseID,
+				formLinkOrder: linkOrder
+			}
+			console.log("New form link sort order:" + JSON.stringify(linkOrder))
+			jsonAPIRequest("database/setFormLinkOrder",setOrderParams,function(dbInfo) {
+				console.log("Done changing database form link order")
+			})
+			
+		}
+    });
+
 	// Retrieve presets from the server, populate the list of presets.
 	var presetParams = { parentDatabaseID: databaseID }
 	jsonAPIRequest("formLink/getList",presetParams,function(presetList) {

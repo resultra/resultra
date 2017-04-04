@@ -22,6 +22,7 @@ func init() {
 	databaseRouter.HandleFunc("/api/database/setName", database.SetNameAPI)
 	databaseRouter.HandleFunc("/api/database/setListOrder", database.SetListOrderAPI)
 	databaseRouter.HandleFunc("/api/database/setDashboardOrder", database.SetDashboardOrderAPI)
+	databaseRouter.HandleFunc("/api/database/setFormLinkOrder", database.SetFormLinkOrderAPI)
 
 	databaseRouter.HandleFunc("/api/database/validateDatabaseName", database.ValidateDatabaseNameAPI)
 	databaseRouter.HandleFunc("/api/database/validateNewTrackerName", database.ValidateNewTrackerNameAPI)

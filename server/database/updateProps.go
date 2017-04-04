@@ -84,3 +84,17 @@ func (updateParams SetDashboardOrderParams) updateProps(db *Database) error {
 
 	return nil
 }
+
+type SetFormLinkOrderParams struct {
+	DatabaseIDHeader
+	FormLinkOrder []string `json:"formLinkOrder"`
+}
+
+func (updateParams SetFormLinkOrderParams) updateProps(db *Database) error {
+
+	// TODO - Validate all lists are in the database/tracker
+
+	db.Properties.FormLinkOrder = updateParams.FormLinkOrder
+
+	return nil
+}
