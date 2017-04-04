@@ -2,3 +2,12 @@
 .newFormComponentDialogBody {
 	min-height:400px;
 }
+
+.newFormComponentNewFieldPanel .form-group {
+	margin-right:40px;
+	margin-left:40px;
+}
+
+.newFormComponentNewFieldPanel input {
+	max-width: 300px;
+}

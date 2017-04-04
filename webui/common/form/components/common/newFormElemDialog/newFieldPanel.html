@@ -7,9 +7,9 @@
 
 {{define "newFormElemDialogNewFieldPanel"}}
 
-	<div id="{{.ElemPrefix}}NewFieldPanel" class="wizardPanel">
+	<div id="{{.ElemPrefix}}NewFieldPanel" class="wizardPanel newFormComponentNewFieldPanel">
 			
-		<form class="form-inline" id="{{.ElemPrefix}}NewFieldForm">
+		<form id="{{.ElemPrefix}}NewFieldForm">
 			
 			<div class="alert alert-info">
 				{{.NewFieldInfoPrompt}}
@@ -36,11 +36,13 @@
 			
 			<h4>Calculated Field Settings</h4>
 			
-		      <div class="checkbox" id="{{.ElemPrefix}}NewFieldCalcFieldCheckbox">
-		        <input type="checkbox" id="{{.ElemPrefix}}NewFieldIsCalcFieldInput"
-					name="{{.ElemPrefix}}NewFieldIsCalcFieldInput">
-				<label>Values for this field are calculated from other fields.</label>
-		      </div>
+			<div class="form-group">
+				  <div class="checkbox" id="{{.ElemPrefix}}NewFieldCalcFieldCheckbox">
+					  <input type="checkbox" id="{{.ElemPrefix}}NewFieldIsCalcFieldInput"
+						name="{{.ElemPrefix}}NewFieldIsCalcFieldInput">
+						<label>Values for this field are calculated from other fields.</label>
+		    		</div>
+			</div> <!-- Field name field -->
 			
 			<!-- The use of "inline field" causes the field label to be displayed side-by-side 
 				with the input box. It also allows the help button to align horizontally with the 

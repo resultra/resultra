@@ -45,7 +45,7 @@ func init() {
 			ElemPrefix:         elemPrefix,
 			DialogTitle:        "New Number Input",
 			FieldInfoPrompt:    `Values from number inputs are stored in fields. Either a new field can be created, or an existing field can be used.`,
-			NewFieldInfoPrompt: `Enter the parameters for the new field to store this number input's values.'`}}
+			NewFieldInfoPrompt: `Enter the parameters for the new field to store this number input's values.`}}
 
 	ViewTemplateParams = NumberInputViewTemplateParams{
 		ElemPrefix:          elemPrefix,
