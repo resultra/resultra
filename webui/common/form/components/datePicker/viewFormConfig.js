@@ -47,12 +47,9 @@ function initDatePickerFieldEditBehavior(componentContext,recordProxy, datePicke
 	
 	var fieldRef = getFieldRef(fieldID)
 	if(fieldRef.isCalcField) {
-		$(datePickerSelector).data("DateTimePicker").disable()
+		$datePickerInput.prop("disabled",true)
 		return;  // stop initialization, the check box is read only.
 	}
-
-	// Bootstrap datetime control is not ready for integration - it's conflicting with Semantic UI
-	// $(datePickerSelector).on("dp.change", function(e) { }
 	
 	$datePickerContainer.find(".datePickerInputContainer").click(function(e) {
 		
