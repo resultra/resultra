@@ -1,6 +1,7 @@
 function openNewFormDialog(databaseID) {
 	
 	var $newFormDialogForm = $('#newFormDialogForm')
+	var $formNameInput = $('#newFormNameInput')
 	
 	var validator = $newFormDialogForm.validate({
 		rules: {
@@ -23,6 +24,8 @@ function openNewFormDialog(databaseID) {
 		}
 	})
 
+	resetFormValidationFeedback($newFormDialogForm)
+	$formNameInput.val("")
 	validator.resetForm()
 	
 	var $newFormDialog = $('#newFormDialog')
@@ -36,7 +39,7 @@ function openNewFormDialog(databaseID) {
 			
 			var newFormParams = { 
 				parentDatabaseID: databaseID, 
-				name: $('#newFormNameInput').val() }
+				name: $formNameInput.val() }
 			jsonAPIRequest("frm/new",newFormParams,function(newFormInfo) {
 				console.log("Created new form: " + JSON.stringify(newFormInfo))
 				$newFormDialog.modal('hide')
