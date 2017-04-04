@@ -36,10 +36,10 @@ function openNewFormComponentDialog(newComponentParams) {
 	openWizardDialog({
 		closeFunc: function() {
 			if(!componentCreated) {
-				var newComponentPlaceholderSelector = '#' + newComponentParams.containerParams.containerID
-				console.log("Cancel new component creation: removing placholder component = " 
-									+ newComponentPlaceholderSelector)
-				$(newComponentPlaceholderSelector).remove()				
+				console.log("Cancel new component creation: removing placeholder component")
+				var $componentContainer = newComponentParams.containerParams.containerObj
+				$componentContainer.remove()
+				pruneComponentLayoutEmptyColsAndRows($(formDesignCanvasSelector))
 			}
 			
       	},

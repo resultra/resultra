@@ -1,3 +1,5 @@
+var dashboardDesignCanvasSelector = "#dashboardCanvas"
+
 function initDashboardComponentDesignDashboardEditBehavior($component,componentID, designDashboardConfig,layoutDesignConfig) {
 	console.log("initDashboardComponentDesignDashboardEditBehavior: component ID = " + componentID)
 

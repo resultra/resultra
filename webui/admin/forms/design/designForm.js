@@ -17,10 +17,6 @@ var paletteItemsEditConfig = {
 	paletteItemNumberInput: numberInputDesignFormConfig,
 }
 
-var formDesignCanvasSelector = "#layoutCanvas"
-
-
-
 
 $(document).ready(function() {
 	
