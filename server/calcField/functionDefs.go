@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/field"
+	"time"
 )
 
 type FuncSemAnalysisParams struct {
@@ -111,6 +112,89 @@ func sumEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equati
 
 }
 
+const FuncNameDateAdd string = "DATEADD"
+
+func validDateAddArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
+
+	if len(params.funcArgs) != 2 {
+		// Even though there's an errors, based upon the function type we know it will return text. This
+		// allows semantic analysis to continue, even though there might be some errors.
+		errMsgs := []string{fmt.Sprintf("Expecting 2 arguments to function %v, ", params.funcName)}
+		return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeTime}, nil
+	}
+
+	argErrors := []string{}
+
+	arg1EqnNode := params.funcArgs[0]
+	arg1AnalyzeResult, analyzeErr := analyzeEqnNode(params.context, arg1EqnNode)
+	if analyzeErr != nil {
+		return nil, analyzeErr
+	}
+	if arg1AnalyzeResult.resultType != field.FieldTypeTime {
+		argErrors = append(
+			argErrors, fmt.Sprintf("Invalid argument type for argument 1 of function %v. Expecting date/time", params.funcName))
+	}
+
+	arg2EqnNode := params.funcArgs[1]
+	arg2AnalyzeResult, analyzeErr := analyzeEqnNode(params.context, arg2EqnNode)
+	if analyzeErr != nil {
+		return nil, analyzeErr
+	}
+	if arg2AnalyzeResult.resultType != field.FieldTypeNumber {
+		argErrors = append(
+			argErrors, fmt.Sprintf("Invalid argument type for argument 2 of function %v. Expecting a number", params.funcName))
+	}
+
+	return &semanticAnalysisResult{analyzeErrors: argErrors, resultType: field.FieldTypeTime}, nil
+}
+
+func dateAddEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	if len(funcArgs) != 2 {
+		return nil, fmt.Errorf("DATEADD() - Expecting 2 arguments, got %v", len(funcArgs))
+	}
+
+	arg1Eqn := funcArgs[0]
+	arg1Result, arg1Err := arg1Eqn.EvalEqn(evalContext)
+	if arg1Err != nil {
+		return nil, fmt.Errorf("DATEADD(): Error evaluating argument # %v: arg=%+v, error %v", arg1Eqn, arg1Err)
+	} else if arg1Result.IsUndefined() {
+		// If an undefined result is returned, return immediately and propogate the undefined
+		// result value up through the equation evaluation.
+		return arg1Result, nil
+	} else if timeResult, validateErr := arg1Result.GetTimeResult(); validateErr != nil {
+		return nil, fmt.Errorf("DATEADD(): Invalid result found while evaluating argument 1: arg=%+v, error = %v", arg1Eqn, validateErr)
+	} else {
+		arg2Eqn := funcArgs[1]
+		arg2Result, arg2Err := arg2Eqn.EvalEqn(evalContext)
+		if arg2Err != nil {
+			return nil, fmt.Errorf("DATEADD(): Error evaluating argument # 2: arg=%+v, error %v", arg2Eqn, arg2Err)
+		} else if arg2Result.IsUndefined() {
+			// If an undefined result is returned, return immediately and propogate the undefined
+			// result value up through the equation evaluation.
+			return arg2Result, nil
+		} else if numberResult, validateErr := arg2Result.GetNumberResult(); validateErr != nil {
+			return nil, fmt.Errorf("DATEADD(): Invalid result found while evaluating argument 2: arg=%+v, error = %v", arg2Eqn, validateErr)
+		} else {
+
+			roundToInt := func(num float64) int {
+				if num > 0.0 {
+					return int(num + 0.5)
+				} else {
+					return int(num - 0.5)
+				}
+			}
+
+			secsToAdd := roundToInt(numberResult * 86400.0)
+
+			timeAfterAdd := timeResult.Add(time.Second * time.Duration(secsToAdd))
+
+			return timeEqnResult(timeAfterAdd), nil
+
+		}
+	}
+}
+
 const FuncNameProduct string = "PRODUCT"
 
 func productEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
@@ -172,4 +256,5 @@ var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 	FuncNameSum:     FunctionInfo{FuncNameSum, field.FieldTypeNumber, sumEvalFunc, oneOrMoreNumberArgs},
 	FuncNameProduct: FunctionInfo{FuncNameProduct, field.FieldTypeNumber, productEvalFunc, oneOrMoreNumberArgs},
 	FuncNameConcat:  FunctionInfo{FuncNameConcat, field.FieldTypeText, concatEvalFunc, oneOrMoreTextArgs},
+	FuncNameDateAdd: FunctionInfo{FuncNameDateAdd, field.FieldTypeTime, dateAddEvalFunc, validDateAddArgs},
 }

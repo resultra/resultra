@@ -12,7 +12,18 @@ class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
     def setUp(self):
         self.createTestSession()
         self.databaseID = self.newDatabase('TestTimeRecordValues: Test Database')
-        self.timeFieldID = self.newTimeField(self.databaseID,"TestTimeRecordValues - Time Field","TimeField")    
+        self.timeFieldID = self.newTimeField(self.databaseID,"TestTimeRecordValues - Time Field","TimeField")
+        
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'Future','type':'time',
+              'refName':'calcTest','formulaText':'DATEADD([TimeField],1)'}
+        jsonResp = self.apiRequest('calcField/new',fieldParams)
+        self.calcFieldID = jsonResp[u'fieldID']
+  
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':'Past','type':'time',
+            'refName':'pastCalcTest','formulaText':'DATEADD([TimeField],-2)'}
+        jsonResp = self.apiRequest('calcField/new',fieldParams)
+        self.pastCalcFieldID = jsonResp[u'fieldID']
+            
     
     def testSimpleDates(self):
         recordID = self.newRecord(self.databaseID)
@@ -20,6 +31,8 @@ class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
         recordRef = self.getRecord(self.databaseID,recordID)
         
         timeVal = "2016-10-12T00:00:00Z" # RFC 3339 date & time format with Z at end for UTC
+        calcTimeVal = "2016-10-13T00:00:00Z" # Date is offset by 1 day
+        pastCalcTimeVal = "2016-10-10T00:00:00Z"
         
         recordRef = self.setTimeRecordValue(self.databaseID,recordID,self.timeFieldID,timeVal)
         # Round-trip comparison on the value set in the record.
@@ -28,6 +41,10 @@ class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
         # Get the record straight from the database
         recordRef = self.getRecord(self.databaseID,recordID)
         self.assertEquals(self.getRecordFieldVal(recordRef,self.timeFieldID),timeVal,"retrieved record has time value")
+        self.assertEquals(self.getRecordFieldVal(recordRef,self.calcFieldID),
+                    calcTimeVal,"retrieved record has calculated time value")
+        self.assertEquals(self.getRecordFieldVal(recordRef,self.pastCalcFieldID),
+                    pastCalcTimeVal,"retrieved record has calculated time value")
         
         with self.assertRaises(AssertionError):
             self.setTimeRecordValue(self.databaseID,recordID,self.timeFieldID,"ABC") # Invalid time format

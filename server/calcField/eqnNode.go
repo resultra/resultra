@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"time"
 )
 
 type EquationNode struct {
@@ -22,8 +23,9 @@ type EquationNode struct {
 	// empty strings or zero numbers in the values.
 	// If not using a string pointer, an empty string won't be
 	// omitted from JSON encoding output.
-	TextVal   *string  `json:"textVal,omitempty"`
-	NumberVal *float64 `json:"numberVal,omitempty"`
+	TextVal   *string    `json:"textVal,omitempty"`
+	NumberVal *float64   `json:"numberVal,omitempty"`
+	TimeVal   *time.Time `json:"timeVal,omitempty"`
 }
 
 func FieldRefEqnNode(fieldID string) *EquationNode {

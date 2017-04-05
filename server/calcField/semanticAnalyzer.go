@@ -179,6 +179,8 @@ func analyzeEqnNode(context *semanticAnalysisContext, eqnNode *EquationNode) (*s
 		return newTypedAnalysisResult(field.FieldTypeText), nil
 	} else if eqnNode.NumberVal != nil {
 		return newTypedAnalysisResult(field.FieldTypeNumber), nil
+	} else if eqnNode.TimeVal != nil {
+		return newTypedAnalysisResult(field.FieldTypeTime), nil
 	} else {
 		// If the EquationNode doesn't have any of it's properties defined, it is considered undefined.
 		// This corresponds to an empty formula, which will always return an undefined result.

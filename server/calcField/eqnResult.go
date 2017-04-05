@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"resultra/datasheet/server/field"
+	"time"
 )
 
 const eqnResultTypeUndefined string = "undefined"
@@ -13,6 +14,7 @@ type EquationResult struct {
 
 	TextVal   *string
 	NumberVal *float64
+	TimeVal   *time.Time
 }
 
 func (eqnResult EquationResult) IsUndefined() bool {
@@ -27,6 +29,16 @@ func (eqnResult EquationResult) validateTextResult() error {
 	if eqnResult.ResultType != field.FieldTypeText {
 		return fmt.Errorf("EquationResult: Invalid result - expecting %v, got %v", field.FieldTypeText, eqnResult.ResultType)
 	} else if eqnResult.TextVal == nil {
+		return fmt.Errorf("EquationResult: Malformed result - missing text value (value == nil)")
+	} else {
+		return nil
+	}
+}
+
+func (eqnResult EquationResult) validateTimeResult() error {
+	if eqnResult.ResultType != field.FieldTypeTime {
+		return fmt.Errorf("EquationResult: Invalid result - expecting %v, got %v", field.FieldTypeTime, eqnResult.ResultType)
+	} else if eqnResult.TimeVal == nil {
 		return fmt.Errorf("EquationResult: Malformed result - missing text value (value == nil)")
 	} else {
 		return nil
@@ -61,6 +73,16 @@ func (eqnResult EquationResult) GetNumberResult() (float64, error) {
 	}
 }
 
+func (eqnResult EquationResult) GetTimeResult() (time.Time, error) {
+	if validateErr := eqnResult.validateTimeResult(); validateErr != nil {
+		return time.Now().UTC(), validateErr
+	} else {
+		timeVal := *eqnResult.TimeVal
+		return timeVal, nil
+	}
+
+}
+
 func undefinedEqnResult() *EquationResult {
 	return &EquationResult{ResultType: eqnResultTypeUndefined}
 }
@@ -73,4 +95,9 @@ func numberEqnResult(val float64) *EquationResult {
 func textEqnResult(val string) *EquationResult {
 	theVal := val
 	return &EquationResult{ResultType: field.FieldTypeText, TextVal: &theVal}
+}
+
+func timeEqnResult(val time.Time) *EquationResult {
+	theVal := val
+	return &EquationResult{ResultType: field.FieldTypeTime, TimeVal: &theVal}
 }
