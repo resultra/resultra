@@ -5,7 +5,7 @@ import (
 	"regexp"
 )
 
-var itemLabelRegexp = regexp.MustCompile(`^[\p{L}0-9][\p{L}0-9 \'\.\-]{0,256}$`)
+var itemLabelRegexp = regexp.MustCompile(`^[\p{L}0-9][\p{L}0-9 \'\.\-\(\)]{0,128}$`)
 
 func WellFormedItemLabel(itemLabel string) bool {
 
