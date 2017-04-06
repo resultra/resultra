@@ -21,8 +21,6 @@ function getDefaultValListDefaultVals(elemPrefix) {
 
 
 function updateDefaultValues(panelParams) {
-	
-	
 	console.log("updateDefaultValues: " + JSON.stringify(panelParams))
 
 	var defaultVals = getDefaultValListDefaultVals(panelParams.elemPrefix)
@@ -157,13 +155,53 @@ function timeDefaultValueItem(panelParams,fieldInfo,defaultDefaultValInfo) {
 }
 
 
+function numberDefaultValueItem(panelParams,fieldInfo,defaultDefaultValInfo) {
+	
+	var $defaultValControls = $('#defaultValueNumberFieldListItem').clone()
+	$defaultValControls.attr("id","")
+
+	var $defaultValInput = $defaultValControls.find(".defaultValueInput")
+	if(defaultDefaultValInfo !== null) {
+		$defaultValInput.val(defaultDefaultValInfo.numberVal)
+	}	
+	
+		
+	$defaultValInput.blur(function() {
+		var defaultVal = Number($defaultValInput.val())
+		if(!isNaN(defaultVal)) {
+			updateDefaultValues(panelParams)	
+		}
+	})
+				
+	var $defaultValListItem = createDefaultValueListItem(panelParams,fieldInfo.name)
+		
+	$defaultValListItem.data("defaultValConfigFunc",function() {
+		var defaultValID = "specificVal"
+		var defaultVal = Number($defaultValInput.val())
+		if(!isNaN(defaultVal)) {
+			var defaultValConfig = { 
+				fieldID: fieldInfo.fieldID,
+				defaultValueID: "specificVal",
+				numberVal: defaultVal }
+			return defaultValConfig	
+		} else {
+			return null
+		}		
+	})
+		
+	$defaultValListItem.append($defaultValControls)
+		
+	return $defaultValListItem
+	
+}
+
+
 
 function createDefaultValuePanelListItem(panelParams, fieldInfo,defaultValueInfo) {
 	
 	switch (fieldInfo.type) {
 	case fieldTypeNumber:
-		console.log("createDefaultValuePanelListItem: Unsupported field type:  " + fieldInfo.type)
-		return $("")
+		return numberDefaultValueItem(panelParams, fieldInfo, defaultValueInfo)
 	case fieldTypeTime: 
 		return timeDefaultValueItem(panelParams, fieldInfo, defaultValueInfo)
 	case fieldTypeBool: 

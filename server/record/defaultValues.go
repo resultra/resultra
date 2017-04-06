@@ -11,8 +11,9 @@ const defaultValIDTrue string = "true"
 const defaultValIDFalse string = "false"
 
 type DefaultFieldValue struct {
-	FieldID        string `json:"fieldID"`
-	DefaultValueID string `json:"defaultValueID"`
+	FieldID        string   `json:"fieldID"`
+	DefaultValueID string   `json:"defaultValueID"`
+	NumberVal      *float64 `json:"numberVal,omitempty"`
 }
 
 func (srcDefaultVal DefaultFieldValue) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*DefaultFieldValue, error) {
@@ -100,6 +101,26 @@ func setCurrTimeDefaultValue(currUserID string, recUpdateHeader RecordUpdateHead
 var timeFieldDefaultValFuncs = DefaultValIDDefaultValFuncMap{
 	defaultValIDCurrTime: setCurrTimeDefaultValue}
 
+const defaultValIDSpecificVal string = "specificVal"
+
+func setSpecificNumberValDefaultValue(currUserID string, recUpdateHeader RecordUpdateHeader,
+	defaultVal DefaultFieldValue) (*Record, error) {
+
+	if defaultVal.NumberVal == nil {
+		return nil, fmt.Errorf("setSpecificNumberValDefaultValue: missing default value")
+	}
+
+	setValParams := SetRecordNumberValueParams{
+		RecordUpdateHeader: recUpdateHeader,
+		Value:              defaultVal.NumberVal,
+		ValueFormat:        defaultValCellUpdateValFormat}
+
+	return UpdateRecordValue(currUserID, setValParams)
+}
+
+var numFieldDefaultValFuncs = DefaultValIDDefaultValFuncMap{
+	defaultValIDSpecificVal: setSpecificNumberValDefaultValue}
+
 // Get the rule definition based upon the field type
 func getDefaultValFuncByFieldType(fieldType string, defaultVal DefaultFieldValue) (SetDefaultValFunc, error) {
 	switch fieldType {
@@ -117,6 +138,16 @@ func getDefaultValFuncByFieldType(fieldType string, defaultVal DefaultFieldValue
 		}
 	case field.FieldTypeTime:
 		defaultValFunc, funcFound := timeFieldDefaultValFuncs[defaultVal.DefaultValueID]
+		if !funcFound {
+			return nil, fmt.Errorf(
+				`getRuleDefByFieldType: Failed to retrieve function to set default value function for field type = %v, 
+					unrecognized default value ID = %v`,
+				fieldType, defaultVal.DefaultValueID)
+		} else {
+			return defaultValFunc, nil
+		}
+	case field.FieldTypeNumber:
+		defaultValFunc, funcFound := numFieldDefaultValFuncs[defaultVal.DefaultValueID]
 		if !funcFound {
 			return nil, fmt.Errorf(
 				`getRuleDefByFieldType: Failed to retrieve function to set default value function for field type = %v, 
