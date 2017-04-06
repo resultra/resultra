@@ -73,6 +73,24 @@ $(document).ready(function() {
 
 		})
 		
+		var formLinkParams = { formLinkID: submitFormPageContext.formLinkID }
+		jsonAPIRequest("formLink/get",formLinkParams,function(formLink) {
+			var defaultVals = formLink.properties.defaultValues
+			if (defaultVals.length > 0) {
+				// Apply the default values before loading the form.
+				var defaultValParams = {
+					parentDatabaseID: submitFormPageContext.databaseID,
+					recordID: newRecordRef.recordID,
+					changeSetID: MainLineFullyCommittedChangeSetID,
+					defaultVals: defaultVals }
+				jsonAPIRequest("recordUpdate/setDefaultValues",defaultValParams,function(updatedRecordRef) {				
+					updateCurrentRecord(updatedRecordRef)
+				})
+			}
+		})
+		
+		
+		
 
 		
 	}) // getRecord

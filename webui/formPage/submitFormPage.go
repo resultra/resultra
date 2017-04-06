@@ -31,6 +31,7 @@ func init() {
 type SubmitFormPageTemplateParams struct {
 	Title        string
 	FormID       string
+	FormLinkID   string
 	FormName     string
 	DatabaseID   string
 	DatabaseName string
@@ -71,6 +72,7 @@ func submitFormPage(w http.ResponseWriter, r *http.Request) {
 			FormID:       formLink.FormID,
 			FormName:     formDBInfo.FormName,
 			DatabaseID:   formDBInfo.DatabaseID,
+			FormLinkID:   formLink.LinkID,
 			DatabaseName: formDBInfo.DatabaseName}
 
 		if err := submitFormTemplates.ExecuteTemplate(w, "submitFormPage", templParams); err != nil {

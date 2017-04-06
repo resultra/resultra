@@ -53,6 +53,20 @@ function openSubmitFormDialog(viewFormContext) {
 
 		})
 		
+		var defaultVals = viewFormContext.formLink.properties.defaultValues
+		if (defaultVals.length > 0) {
+			// Apply the default values before loading the form.
+			var defaultValParams = {
+				parentDatabaseID: viewFormContext.databaseID,
+				recordID: newRecordRef.recordID,
+				changeSetID: MainLineFullyCommittedChangeSetID,
+				defaultVals: defaultVals }
+			jsonAPIRequest("recordUpdate/setDefaultValues",defaultValParams,function(updatedRecordRef) {				
+				updateCurrentRecord(updatedRecordRef)
+			})
+		}
+		
+		
 
 		
 	}) // getRecord

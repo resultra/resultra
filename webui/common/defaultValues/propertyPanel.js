@@ -3,7 +3,7 @@ function initDefaultValuesPropertyPanel(panelParams) {
 	var fieldSelectionDropdownParams = {
 		elemPrefix: panelParams.elemPrefix,
 		databaseID: panelParams.databaseID,
-		fieldTypes: [fieldTypeBool],
+		fieldTypes: [fieldTypeBool,fieldTypeNumber,fieldTypeTime,fieldTypeText],
 		fieldSelectionCallback: function(fieldInfo) {
 			
 			var defaultValuesListSelector = createPrefixedSelector(panelParams.elemPrefix,

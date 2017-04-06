@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/uniqueID"
+	"time"
 )
 
 const defaultValIDTrue string = "true"
@@ -81,14 +82,41 @@ var boolFieldDefaultValFuncs = DefaultValIDDefaultValFuncMap{
 	defaultValIDTrue:  setBoolTrueDefaultValue,
 	defaultValIDFalse: setBoolFalseDefaultValue}
 
+const defaultValIDCurrTime string = "currentTime"
+
+func setCurrTimeDefaultValue(currUserID string, recUpdateHeader RecordUpdateHeader,
+	defaultVal DefaultFieldValue) (*Record, error) {
+
+	currTime := time.Now().UTC()
+
+	setValParams := SetRecordTimeValueParams{
+		RecordUpdateHeader: recUpdateHeader,
+		Value:              &currTime,
+		ValueFormat:        defaultValCellUpdateValFormat}
+
+	return UpdateRecordValue(currUserID, setValParams)
+}
+
+var timeFieldDefaultValFuncs = DefaultValIDDefaultValFuncMap{
+	defaultValIDCurrTime: setCurrTimeDefaultValue}
+
 // Get the rule definition based upon the field type
 func getDefaultValFuncByFieldType(fieldType string, defaultVal DefaultFieldValue) (SetDefaultValFunc, error) {
 	switch fieldType {
 	// TODO	case field.FieldTypeText:
 	// TODO		case field.FieldTypeNumber:
-	// TODO		case field.FieldTypeTime:
 	case field.FieldTypeBool:
 		defaultValFunc, funcFound := boolFieldDefaultValFuncs[defaultVal.DefaultValueID]
+		if !funcFound {
+			return nil, fmt.Errorf(
+				`getRuleDefByFieldType: Failed to retrieve function to set default value function for field type = %v, 
+					unrecognized default value ID = %v`,
+				fieldType, defaultVal.DefaultValueID)
+		} else {
+			return defaultValFunc, nil
+		}
+	case field.FieldTypeTime:
+		defaultValFunc, funcFound := timeFieldDefaultValFuncs[defaultVal.DefaultValueID]
 		if !funcFound {
 			return nil, fmt.Errorf(
 				`getRuleDefByFieldType: Failed to retrieve function to set default value function for field type = %v, 

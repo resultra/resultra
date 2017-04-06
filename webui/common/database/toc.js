@@ -28,7 +28,8 @@ function addFormLinkToTOCList(tocConfig, linkInfo) {
 		
 		var viewFormContext = {
 			databaseID: tocConfig.databaseID,
-			formID: linkInfo.formID
+			formID: linkInfo.formID,
+			formLink: linkInfo
 		}
 		
 		tocConfig.newItemFormButtonFunc(viewFormContext)
