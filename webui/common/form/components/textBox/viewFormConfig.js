@@ -6,11 +6,15 @@ function loadRecordIntoTextBox($textBoxContainer, recordRef) {
 	var textBoxObjectRef = $textBoxContainer.data("objectRef")
 	var $textBoxInput = $textBoxContainer.find('input')
 	var componentContext = $textBoxContainer.data("componentContext")
+	var $clearValueButton = $textBoxContainer.find(".textBoxComponentClearValueButton")
+	
 	
 	if(formComponentIsReadOnly(textBoxObjectRef.properties.permissions)) {
 		$textBoxInput.prop('disabled',true);
+		$clearValueButton.hide()
 	} else {
 		$textBoxInput.prop('disabled',false);
+		$clearValueButton.show()
 		
 	}
 	
@@ -46,10 +50,12 @@ function loadRecordIntoTextBox($textBoxContainer, recordRef) {
 function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput,recordProxy, textFieldObjectRef) {
 	
 	var textBoxFieldID = textFieldObjectRef.properties.fieldID
+	var $clearValueButton = $container.find(".textBoxComponentClearValueButton")
 	
 	var fieldRef = getFieldRef(textBoxFieldID)
 	if(fieldRef.isCalcField) {
 		$textBoxInput.prop('disabled',true);
+		$clearValueButton.hide()
 		return;  // stop initialization, the text box is read only.
 	}
 	
@@ -80,7 +86,6 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 	}
 	
 	
-	var $clearValueButton = $container.find(".textBoxComponentClearValueButton")
 	initButtonControlClickHandler($clearValueButton,function() {
 			console.log("Clear value clicked for text box")
 		

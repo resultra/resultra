@@ -16,12 +16,6 @@ function loadRecordIntoNumberInput($numberInputContainer, recordRef) {
 	var $numberInputInput = $numberInputContainer.find('input')
 	var componentContext = $numberInputContainer.data("componentContext")
 	
-	if(formComponentIsReadOnly(numberInputObjectRef.properties.permissions)) {
-		$numberInputInput.prop('disabled',true);
-	} else {
-		$numberInputInput.prop('disabled',false);
-		
-	}
 	
 	function setRawInputVal(rawVal) { $numberInputInput.data("rawVal",rawVal) }
 
@@ -63,14 +57,27 @@ function loadRecordIntoNumberInput($numberInputContainer, recordRef) {
 function initNumberInputFieldEditBehavior(componentContext, $container,$numberInputInput,recordProxy, numberInputObjectRef) {
 	
 	var numberInputFieldID = numberInputObjectRef.properties.fieldID
+	var $spinnerControls = $container.find(".numberInputSpinnerControls")
+	var $clearValueButton = $container.find(".numberInputComponentClearValueButton")
 	
 	var fieldRef = getFieldRef(numberInputFieldID)
 	if(fieldRef.isCalcField) {
 		$numberInputInput.prop('disabled',true);
+		$spinnerControls.hide()
+		$clearValueButton.hide()
 		return;  // stop initialization, the text box is read only.
 	}
 	
 	var fieldType = fieldRef.type
+	
+	if(formComponentIsReadOnly(numberInputObjectRef.properties.permissions)) {
+		$numberInputInput.prop('disabled',true);
+		$clearValueButton.hide()
+	} else {
+		$numberInputInput.prop('disabled',false);
+		$clearValueButton.show()
+		
+	}
 	
 	function setNumberVal(numberVal) {
 		var currRecordRef = recordProxy.getRecordFunc()
@@ -96,7 +103,6 @@ function initNumberInputFieldEditBehavior(componentContext, $container,$numberIn
 		
 	}	
 	
-	var $clearValueButton = $container.find(".numberInputComponentClearValueButton")
 	initButtonControlClickHandler($clearValueButton,function() {
 			console.log("Clear value clicked for text box")
 		
@@ -106,7 +112,6 @@ function initNumberInputFieldEditBehavior(componentContext, $container,$numberIn
 		
 	})
 	
-	var $spinnerControls = $container.find(".numberInputSpinnerControls")
 	if(numberInputObjectRef.properties.showValueSpinner) {
 		$spinnerControls.show()
 		var $addButton = $container.find(".addButton")

@@ -42,12 +42,14 @@ function initDatePickerFieldEditBehavior(componentContext,recordProxy, datePicke
 	
 
 	var $datePickerInput = datePickerInputFromContainer($datePickerContainer)
+	var $clearValueButton = $datePickerContainer.find(".datePickerComponentClearValueButton")
 	
 	var fieldID = datePickerObjectRef.properties.fieldID
 	
 	var fieldRef = getFieldRef(fieldID)
 	if(fieldRef.isCalcField) {
 		$datePickerInput.prop("disabled",true)
+		$clearValueButton.hide()
 		return;  // stop initialization, the check box is read only.
 	}
 	
@@ -83,7 +85,6 @@ function initDatePickerFieldEditBehavior(componentContext,recordProxy, datePicke
 		}) // set record's text field value		
 	}
 	
-	var $clearValueButton = $datePickerContainer.find(".datePickerComponentClearValueButton")
 	initButtonControlClickHandler($clearValueButton,function() {
 			console.log("Clear value clicked for date picker")
 			setDateValue(null)
