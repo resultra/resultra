@@ -13,7 +13,7 @@ function htmlEditorContainerHTML(elementID)
 		// className is to uniquely identify the button with other HTML elements,
 		// such that it can be found with jQuery's find() function.
 	
-		var buttonHTML = '<button class="btn btn-default btn-sm clearButton ' + 
+		var buttonHTML = '<button tabindex="-1" class="btn btn-default btn-sm clearButton ' + 
 				'startEditButton' + 
 				'"><span class="glyphicon glyphicon-pencil"></span></button>'
 	

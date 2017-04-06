@@ -140,7 +140,7 @@ function smallClearButtonHTML(iconClass, className) {
 	// className is to uniquely identify the button with other HTML elements,
 	// such that it can be found with jQuery's find() function.
 	
-	var buttonHTML = '<button type="button" class="btn btn-default btn-sm clearButton ' + 
+	var buttonHTML = '<button type="button" tabindex="-1" class="btn btn-default btn-sm clearButton ' + 
 			className + 
 			'"><span class="'+iconClass+'"></span></button>'
 	
