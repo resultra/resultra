@@ -89,7 +89,7 @@ function resizeFormCaption($container,geometry) {
 
 var formCaptionDesignFormConfig = {
 	draggableHTMLFunc:	formCaptionContainerHTML,
-	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
+	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewFormCaptionDialog,
 	resizeConstraints: elemResizeConstraints(125,1280,125,1280),
 	resizeHandles: 'e,s,se',

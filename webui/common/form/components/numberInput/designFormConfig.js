@@ -32,7 +32,7 @@ function resizeNumberInput($container,geometry) {
 
 var numberInputDesignFormConfig = {
 	draggableHTMLFunc:	numberInputContainerHTML,
-	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
+	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewNumberInputDialog,
 	resizeConstraints: elemResizeConstraints(75,600,400,400),
 	resizeFunc: resizeNumberInput,

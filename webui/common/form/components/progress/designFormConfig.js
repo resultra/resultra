@@ -29,7 +29,7 @@ function resizeProgress($container,geometry) {
 
 var progressDesignFormConfig = {
 	draggableHTMLFunc:	progressContainerHTML,
-	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
+	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewProgressDialog,
 	resizeConstraints: elemResizeConstraints(75,640,30,30),
 	resizeFunc: resizeProgress,

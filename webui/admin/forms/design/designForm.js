@@ -28,12 +28,12 @@ $(document).ready(function() {
 			return paletteItemsEditConfig[paletteItemID].draggableHTMLFunc(placeholderID)
 		},
 		
-		startPaletteDrag: function(placeholderID,paletteItemID,$paletteItemContainer) {
+		initDummyDragAndDropComponentContainer: function(paletteItemID, $paletteItemContainer) {
 			// If a palette item needs to initialize the dragged item after it's been
-			// inserted into the DOM, then this is done in the startPaletteDrag function
-			return paletteItemsEditConfig[paletteItemID].startPaletteDrag(placeholderID,$paletteItemContainer)			
+			// inserted into the DOM, then this is done in the initDummyDragAndDropComponentContainer function
+			return paletteItemsEditConfig[paletteItemID].initDummyDragAndDropComponentContainer($paletteItemContainer)			
 		},
-		
+				
 		dropComplete: function(droppedItemInfo) {			
 			// After the drag operation is complete, the resizable
 			// properties need to be initialized.

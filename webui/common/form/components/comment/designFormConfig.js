@@ -27,7 +27,7 @@ function resizeCommentComponent($container,geometry) {
 
 var commentDesignFormConfig = {
 	draggableHTMLFunc:	commentContainerHTML,
-	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
+	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewCommentComponentDialog,
 	resizeConstraints: elemResizeConstraints(200,1280,200,1280),
 	resizeHandles: 'e,s,se',

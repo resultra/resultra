@@ -32,7 +32,7 @@ function resizeRating($container,geometry) {
 	})	
 }
 
-function startRatingPaletteDrag(placeholderID,$paletteItemContainer) {
+function startRatingPaletteDrag($paletteItemContainer) {
 	
 	var $ratingControl = getRatingControlFromRatingContainer($paletteItemContainer)
 	 $ratingControl.rating()
@@ -41,7 +41,7 @@ function startRatingPaletteDrag(placeholderID,$paletteItemContainer) {
 
 var ratingDesignFormConfig = {
 	draggableHTMLFunc:	ratingContainerHTML,
-	startPaletteDrag: startRatingPaletteDrag,
+	initDummyDragAndDropComponentContainer: startRatingPaletteDrag,
 	createNewItemAfterDropFunc: openNewRatingDialog,
 	resizeConstraints: elemResizeConstraints(100,640,30,30),
 	resizeFunc: resizeRating,

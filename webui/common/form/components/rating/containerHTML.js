@@ -131,3 +131,10 @@ function setRatingComponentLabel($rating,ratingRef) {
 			ratingRef.properties.labelFormat)	
 	
 }
+
+function initRatingFormComponentContainer($container,ratingObjectRef) {
+	setRatingComponentLabel($container,ratingObjectRef)		
+	initRatingFormComponentControl($container,ratingObjectRef)
+	setElemFixedWidthFlexibleHeight($container,
+				ratingObjectRef.properties.geometry.sizeWidth)
+}

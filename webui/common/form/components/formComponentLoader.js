@@ -279,14 +279,10 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = ratingContainerHTML(rating.ratingID);	
 		var $ratingContainer = $(containerHTML)
 		
-		setRatingComponentLabel($ratingContainer,rating)
-		
-		initRatingFormComponentControl($ratingContainer,rating)
-		
+		initRatingFormComponentContainer($ratingContainer,rating)
+				
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append($ratingContainer)
-		setElemFixedWidthFlexibleHeight($ratingContainer,
-					rating.properties.geometry.sizeWidth)
 	
 		 // Store the newly created object reference in the DOM element. This is needed for follow-on
 		 // property setting, resizing, etc.

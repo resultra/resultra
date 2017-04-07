@@ -34,7 +34,7 @@ function startUserSelectionPaletteDrag(placeholderID,$paletteItemContainer) {
 
 var userSelectionDesignFormConfig = {
 	draggableHTMLFunc:	userSelectionContainerHTML,
-	startPaletteDrag: startUserSelectionPaletteDrag,
+	initDummyDragAndDropComponentContainer: startUserSelectionPaletteDrag,
 	createNewItemAfterDropFunc: openNewUserSelectionDialog,
 	resizeConstraints: elemResizeConstraints(200,400,75,75),
 	resizeFunc: resizeUserSelection,

@@ -14,7 +14,7 @@ $(document).ready(function() {
 			return dashboardPaletteItemsEditConfig[paletteItemID].draggableHTMLFunc(placeholderID)
 		},
 		
-		startPaletteDrag: function(placeholderID,paletteItemID,$paletteItemContainer) {
+		initDummyDragAndDropComponentContainer: function(paletteItemID, $paletteItemContainer) {
 			// No-op - If a palette item needs to initialize the dragged item after it's
 			// been inserted into the DOM, then code for that would go here.			
 		},

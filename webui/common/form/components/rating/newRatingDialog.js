@@ -8,8 +8,10 @@ function openNewRatingDialog(databaseID,formID,containerParams) {
 		jsonAPIRequest("frm/rating/new",newComponentParams,function(newRatingObjectRef) {
 	          console.log("createNewRating: Done getting new ID:response=" + JSON.stringify(newRatingObjectRef));
 	    			  			  
-	  		  var componentLabel = getFieldRef(newRatingObjectRef.properties.fieldID).name
-			  containerParams.containerObj.find('label').text(componentLabel)
+			  var $ratingContainer 
+			  
+			  initRatingFormComponentContainer(containerParams.containerObj,
+				  	newRatingObjectRef)			  		  
 			  
   	  		  var newComponentSetupParams = {
   				  parentFormID: formID,

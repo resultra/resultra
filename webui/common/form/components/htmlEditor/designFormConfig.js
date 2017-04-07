@@ -32,7 +32,7 @@ function resizeHtmlEditor($container,geometry) {
 
 var htmlEditorDesignFormConfig = {
 	draggableHTMLFunc:	htmlEditorContainerHTML,
-	startPaletteDrag: function(placeholderID,$paletteItemContainer) {},
+	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewHtmlEditorDialog,
 	resizeConstraints: elemResizeConstraints(125,1280,125,1280),
 	resizeHandles: 'e,s,se',

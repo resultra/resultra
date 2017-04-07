@@ -64,9 +64,9 @@ function initDesignPalette(paletteConfig,layoutDesignConfig) {
 			 
 			 
 			 
-			 // The startPaletteDrag function is called so any dynamic Javascript initialization
+			 // The initDummyDragAndDropComponentContainer function is called so any dynamic Javascript initialization
 			 // which needs to take place after the helper has been added can take place.
-			 paletteConfig.startPaletteDrag(placeholderID,paletteItemID,$paletteContainer)
+			 paletteConfig.initDummyDragAndDropComponentContainer(paletteItemID,$paletteContainer)
 			 
 		 },
 		 
@@ -85,9 +85,12 @@ function initDesignPalette(paletteConfig,layoutDesignConfig) {
 					
 			var paletteConfig = $(ui.helper).data("paletteConfig")
 			var paletteItemID = $(ui.helper).data("paletteItemID")
-			var componentHTML = paletteConfig.draggableItemHTML(allocNextPaletteItemPlaceholderID(),paletteItemID)
 					
+			var componentHTML = paletteConfig.draggableItemHTML(allocNextPaletteItemPlaceholderID(),paletteItemID)
 			var $draggedPlaceholderComponent = $(componentHTML);
+			paletteConfig.initDummyDragAndDropComponentContainer(paletteItemID,$draggedPlaceholderComponent)
+			
+			
 			$draggedPlaceholderComponent.data("paletteConfig",paletteConfig)
 			$draggedPlaceholderComponent.data("paletteItemID",paletteItemID)
 				
@@ -124,7 +127,8 @@ function initDesignPalette(paletteConfig,layoutDesignConfig) {
 				paletteConfig.dropComplete(droppedObjInfo)
 		
 			}	
-			handleDropOnComponentLayoutPlaceholder(mouseOffset,layoutDesignConfig,$draggedPlaceholderComponent,newComponentDropComplete)
+			handleDropOnComponentLayoutPlaceholder(mouseOffset,layoutDesignConfig,
+					$draggedPlaceholderComponent,newComponentDropComplete)
 		 },
 		
 		 

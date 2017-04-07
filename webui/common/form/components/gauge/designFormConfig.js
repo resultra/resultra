@@ -25,11 +25,12 @@ function resizeGauge($container,geometry) {
 	})	
 }
 
-function initDummyGaugeControlForPaletteDrag(placeholderID,$paletteItemContainer) {
+function initDummyGaugeControlForPaletteDrag($paletteItemContainer) {
 	
+	console.log("initDummyGaugeControlForPaletteDrag")
 	var gaugeConfig = 
 	{
-		size: $paletteItemContainer.width(),
+		size: 120, // same as default width (from gaugeComponent.css) for the component's container
 		min: 0,
 		max: 100,
 		minorTicks: 5,
@@ -40,7 +41,7 @@ function initDummyGaugeControlForPaletteDrag(placeholderID,$paletteItemContainer
 
 var gaugeDesignFormConfig = {
 	draggableHTMLFunc:	gaugeContainerHTML,
-	startPaletteDrag: initDummyGaugeControlForPaletteDrag,
+	initDummyDragAndDropComponentContainer: initDummyGaugeControlForPaletteDrag,
 	createNewItemAfterDropFunc: openNewGaugeDialog,
 	resizeConstraints: elemResizeConstraints(75,640,30,30),
 	resizeFunc: resizeGauge,
