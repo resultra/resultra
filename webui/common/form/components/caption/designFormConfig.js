@@ -1,5 +1,5 @@
 
-function initCaptionDesignControlBehavior($captionContainer,captionObjectRef,enableDesignBehaviorCallback) {
+function initCaptionDesignInlineEditBehavior($captionContainer,captionObjectRef,enableDesignBehaviorCallback) {
 	
 	CKEDITOR.disableAutoInline = true;
 	var $captionEditorControl = captionFromCaptionContainer($captionContainer)
@@ -59,6 +59,17 @@ function initCaptionDesignControlBehavior($captionContainer,captionObjectRef,ena
 	
 	
 
+}
+
+function initCaptionDesignControlBehavior($caption, captionObjectRef) {
+  var formID = captionObjectRef.parentFormID
+  var designFormLayoutConfig =  createFormLayoutDesignConfig(formID)
+  var componentIDs = { formID: formID, componentID: captionObjectRef.captionID }
+  function enableDesignBehavior() {
+	  initFormComponentDesignBehavior($caption,componentIDs,
+			newCaptionObjectRef,formCaptionDesignFormConfig,designFormLayoutConfig)
+	  }
+  initCaptionDesignInlineEditBehavior($caption,captionObjectRef,enableDesignBehavior)
 }
 
 

@@ -7,7 +7,7 @@ function openNewFormCaptionDialog(databaseID,formID,containerParams) {
 		label: "New Caption"}
 	
 	jsonAPIRequest("frm/caption/new",newCaptionParams,function(newCaptionObjectRef) {
-          console.log("create new form header: Done getting new ID:response=" + JSON.stringify(newHeaderObjectRef));
+          console.log("create new form header: Done getting new ID:response=" + JSON.stringify(newCaptionObjectRef));
 		  
 		  containerParams.containerObj.find('.formCaption').text(newCaptionObjectRef.properties.label)
  
@@ -19,6 +19,9 @@ function openNewFormCaptionDialog(databaseID,formID,containerParams) {
 			  designFormConfig: formCaptionDesignFormConfig
   		  }
 		  setupNewlyCreatedFormComponentInfo(newComponentSetupParams)
+		  
+		  initCaptionDesignControlBehavior(containerParams.containerObj,newCaptionObjectRef)
+		  
  
 	  			  
        }) // newLayoutContainer API request

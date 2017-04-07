@@ -165,14 +165,7 @@ $(document).ready(function() {
 			initFormComponentDesignBehavior($header,componentIDs,headerObjectRef,formHeaderDesignFormConfig,designFormLayoutConfig)
 		},
 		initCaptionFunc: function($caption,componentContext,captionObjectRef) {
-			function enableDesignBehavior() {
-				initFormComponentDesignBehavior($caption,componentIDs,
-					captionObjectRef,formCaptionDesignFormConfig,designFormLayoutConfig)
-			}
-			initCaptionDesignControlBehavior($caption,captionObjectRef,enableDesignBehavior)
-			var componentIDs = { formID: formID, componentID: captionObjectRef.captionID }
-			enableDesignBehavior()
-			
+			initCaptionDesignControlBehavior($caption,captionObjectRef)			
 		},
 		initFormButtonFunc: function(componentContext,$button,buttonObjectRef) {
 			var componentIDs = { formID: formID, componentID: buttonObjectRef.buttonID }
