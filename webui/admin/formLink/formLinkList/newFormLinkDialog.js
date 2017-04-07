@@ -57,6 +57,7 @@ function openNewNewItemPresetDialog(databaseID) {
 			jsonAPIRequest("formLink/new",newFormLinkParams,function(newFormLinkInfo) {
 				console.log("Created new form link: " + JSON.stringify(newFormLinkInfo))
 				$newPresetDialog.modal('hide')
+				navigateToURL('/admin/formLink/' + newFormLinkInfo.linkID)
 			})
 			
 
