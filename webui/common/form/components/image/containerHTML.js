@@ -32,7 +32,7 @@ function imageContainerHTML(elementID)
 	var containerHTML = ''+
 	'<div class="layoutContainer imageContainer">' +
 		'<div class="imageContainerHeader">' +
-			'<label class="imageContainerLabel">Image Label</label>' +
+			'<label class="imageContainerLabel">Attachment(s)</label>' +
 		'</div>' +
 		'<div class="imageInnerContainer lightGreyBorder text-center"">'+
 		'</div>'+
