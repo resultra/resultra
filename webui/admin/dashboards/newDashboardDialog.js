@@ -1,6 +1,8 @@
 function openNewDashboardDialog(databaseID) {
 	
 	var $newDashboardDialogForm = $('#newDashboardDialogForm')
+	var $nameInput = $('#newDashboardNameInput')
+	var $newDashboardDialog = $('#newDashboardDialog')
 	
 	var validator = $newDashboardDialogForm.validate({
 		rules: {
@@ -11,7 +13,7 @@ function openNewDashboardDialog(databaseID) {
 					url: '/api/dashboard/validateNewDashboardName',
 					data: {
 						databaseID: databaseID,
-						dashboardName: function() { return $('#newDashboardNameInput').val(); }
+						dashboardName: function() { return $nameInput.val(); }
 					}
 				} // remote
 			}, // newFormNameInput
@@ -23,9 +25,11 @@ function openNewDashboardDialog(databaseID) {
 		}
 	})
 
+	resetFormValidationFeedback($newDashboardDialogForm)
+	$nameInput.val("")
 	validator.resetForm()
 		
-	$('#newDashboardDialog').modal('show')
+	$newDashboardDialog.modal('show')
 	
 	initButtonClickHandler('#newDashboardSaveButton',function() {
 		console.log("New dashboard save button clicked")
@@ -33,11 +37,12 @@ function openNewDashboardDialog(databaseID) {
 			
 			var newDashboardParams = { 
 				databaseID: databaseID,
-				name: $('#newDashboardNameInput').val()}
+				name: $nameInput.val()}
 				
 			jsonAPIRequest("dashboard/new",newDashboardParams,function(newDashboardInfo) {
 				console.log("Created new dashboard: " + JSON.stringify(newDashboardInfo))
-				$('#newDashboardDialog').modal('hide')
+				navigateToURL('/admin/dashboard/' + newDashboardInfo.dashboardID)
+				$newDashboardDialog.modal('hide')
 			})
 			
 
