@@ -35,6 +35,7 @@ function openNewCommentComponentDialog(databaseID,formID,containerParams)
 		elemPrefix: "comment_",
 		databaseID: databaseID,
 		formID: formID,
+		hideCreateCalcFieldCheckbox: true,
 		fieldTypes: [fieldTypeComment],
 		containerParams: containerParams,
 		createNewFormComponent: createNewCommentComponent

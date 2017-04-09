@@ -27,7 +27,8 @@ function openNewFormComponentDialog(newComponentParams) {
 	var newOrExistingFieldPanel = createNewOrExistingFieldPanelContextBootstrap(newOrExistingFieldPanelParams)
 		
 	var newFieldPanelParams = {
-		doneFunc:doneCreatingComponent
+		doneFunc:doneCreatingComponent,
+		hideCreateCalcFieldCheckbox: false
 	}
 	$.extend(newFieldPanelParams,newComponentParams)			
 	var newFieldPanel = createNewFieldDialogPanelContextBootstrap(newFieldPanelParams)

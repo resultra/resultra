@@ -29,6 +29,7 @@ function openNewHtmlEditorDialog(databaseID,formID,containerParams)
 		elemPrefix: "htmlEditor_",
 		databaseID: databaseID,
 		formID: formID,
+		hideCreateCalcFieldCheckbox: true,
 		fieldTypes: [fieldTypeLongText],
 		containerParams: containerParams,
 		createNewFormComponent: createNewHtmlEditor

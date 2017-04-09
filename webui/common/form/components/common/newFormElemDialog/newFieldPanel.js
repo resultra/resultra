@@ -23,6 +23,14 @@ function createNewFieldDialogPanelContextBootstrap(panelParams) {
 	
 	var dialogProgressSelector = "#" + elemPrefix + "NewFormElemDialogProgress"
 	
+	// Only show the checkbox to create a calculated field when the form component links to a type of field
+	// which can be a calculated field.
+	if(panelParams.hideCreateCalcFieldCheckbox) {
+		$(isCalcFieldField.selector).hide()
+	} else {
+		$(isCalcFieldField.selector).show()
+	}
+	
 	// Initialize the field type selection: If there is only 1 field type to choose from,
 	// this field type is set in singleFieldType and the form's selection for field type is
 	// disabled. 
