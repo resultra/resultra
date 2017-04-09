@@ -52,11 +52,9 @@ func saveNewRating(params NewRatingParams) (*Rating, error) {
 		return nil, fmt.Errorf("saveNewRating: %v", fieldErr)
 	}
 
-	properties := RatingProperties{
-		FieldID:  params.FieldID,
-		Geometry: params.Geometry,
-		Tooltips: []string{},
-		Icon:     ratingIconStar}
+	properties := newDefaultRatingProperties()
+	properties.FieldID = params.FieldID
+	properties.Geometry = params.Geometry
 
 	newRating := Rating{ParentFormID: params.ParentFormID,
 		RatingID:   uniqueID.GenerateSnowflakeID(),
