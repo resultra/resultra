@@ -4,7 +4,6 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/server/generic/cloudStorageWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
@@ -17,7 +16,6 @@ func init() {
 
 	recordRouter.HandleFunc("/api/record/allocateChangeSetID", allocateChangeSetIDAPI)
 
-	recordRouter.HandleFunc("/api/record/getFile/{fileName}", getRecordFileAPI)
 	recordRouter.HandleFunc("/api/record/getFieldValChangeInfo", getFieldValChangeInfoAPI)
 
 	http.Handle("/api/record/", recordRouter)
@@ -71,15 +69,6 @@ func setDraftStatusAPI(w http.ResponseWriter, r *http.Request) {
 	} else {
 		api.WriteJSONResponse(w, true)
 	}
-}
-
-func getRecordFileAPI(w http.ResponseWriter, r *http.Request) {
-
-	vars := mux.Vars(r)
-	fileName := vars["fileName"]
-
-	http.ServeFile(w, r, cloudStorageWrapper.LocalAttachmentFileUploadDir+fileName)
-
 }
 
 type changeSetIDAllocationResponse struct {

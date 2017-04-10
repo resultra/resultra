@@ -8,7 +8,7 @@ import (
 )
 
 func GetAttachmentURL(cloudFileName string) string {
-	fileURLSubPath := "api/record/getFile/" + cloudFileName
+	fileURLSubPath := "api/attachment/get/" + cloudFileName
 	return runtimeConfig.GetSiteResourceURL(fileURLSubPath)
 }
 

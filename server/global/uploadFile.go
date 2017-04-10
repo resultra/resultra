@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"resultra/datasheet/server/common/attachment"
 	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/server/generic/cloudStorageWrapper"
 )
 
 type UploadFile struct {
@@ -42,8 +42,8 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 		return nil, fmt.Errorf("uploadFile: Unable to read file contents: %v", uploadErr)
 	}
 
-	cloudFileName := cloudStorageWrapper.UniqueCloudFileNameFromUserFileName(uploadInfo.FileName)
-	if saveErr := cloudStorageWrapper.SaveCloudFile(cloudFileName, uploadInfo.FileData); saveErr != nil {
+	cloudFileName := attachment.UniqueAttachmentFileNameFromUserFileName(uploadInfo.FileName)
+	if saveErr := attachment.SaveAttachmentFile(cloudFileName, uploadInfo.FileData); saveErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to save file to cloud storage: %v", saveErr)
 	}
 

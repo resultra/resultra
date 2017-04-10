@@ -2,11 +2,40 @@ package attachment
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"path"
 	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/server/generic/cloudStorageWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"
 )
+
+const LocalAttachmentFileUploadDir string = `/private/tmp/`
+
+func SaveAttachmentFile(fileName string, fileData []byte) error {
+
+	writeErr := ioutil.WriteFile(LocalAttachmentFileUploadDir+fileName, fileData, 0644)
+	if writeErr != nil {
+		return fmt.Errorf("SaveCloudFile: Error writing file: filename = %v, error = %v", fileName, writeErr)
+	}
+
+	log.Printf("uploadFile: ... done uloading file to cloud: file name = %v", fileName)
+
+	return nil
+
+}
+
+func UniqueAttachmentFileNameFromUserFileName(userFileName string) string {
+
+	uniqueIDStr := uniqueID.GenerateUniqueID()
+
+	fileExt := path.Ext(userFileName)
+
+	cloudFileName := uniqueIDStr + fileExt
+
+	return cloudFileName
+}
 
 type UploadedAttachment struct {
 	Name           string         `json:"name"`
@@ -30,8 +59,8 @@ func uploadAttachment(req *http.Request) (*UploadedAttachmentResponse, error) {
 		return nil, fmt.Errorf("uploadAttachment: Unable to read file contents: %v", uploadErr)
 	}
 
-	cloudFileName := cloudStorageWrapper.UniqueCloudFileNameFromUserFileName(uploadInfo.FileName)
-	if saveErr := cloudStorageWrapper.SaveCloudFile(cloudFileName, uploadInfo.FileData); saveErr != nil {
+	cloudFileName := UniqueAttachmentFileNameFromUserFileName(uploadInfo.FileName)
+	if saveErr := SaveAttachmentFile(cloudFileName, uploadInfo.FileData); saveErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to save file to cloud storage: %v", saveErr)
 	}
 
