@@ -28,10 +28,16 @@ func verifyOneFormulaCompileVsExpected(t *testing.T, inputStr string, expectedJS
 
 func TestFormulaExpressionCompile(t *testing.T) {
 	verifyOneFormulaCompile(t, "42.5")
+	verifyOneFormulaCompile(t, " - 42.5")
 	verifyOneFormulaCompile(t, "10 + 20")
+	verifyOneFormulaCompile(t, "10 - 20")
 	verifyOneFormulaCompile(t, "10 + 20 + 30")
 	verifyOneFormulaCompile(t, "10 * 30")
 	verifyOneFormulaCompile(t, "10 + 20 * 30")
+
+	verifyOneFormulaCompile(t, "10 + 20 - 30")
+	verifyOneFormulaCompile(t, "10 + 20 / 30")
+	verifyOneFormulaCompile(t, "10 + (20 / 30)")
 }
 
 func TestFormulaFuncCompile(t *testing.T) {
@@ -103,7 +109,7 @@ func TestNumberParse(t *testing.T) {
 
 	verifyOneEqnParsingVsExpected(t, "25.2", `{"numberVal":25.2}`)
 	verifyOneEqnParsingVsExpected(t, "25", `{"numberVal":25}`)
-	verifyOneEqnParsingVsExpected(t, "-25", `{"numberVal":-25}`)
+	verifyOneEqnParsingVsExpected(t, "-25", `{"funcName":"PRODUCT","funcArgs":[{"numberVal":-1},{"numberVal":25}]}`)
 	verifyOneEqnParsingVsExpected(t, "10e-5", `{"numberVal":0.0001}`)
 	verifyOneEqnParsing(t, "10e5")
 	verifyOneEqnParseFail(t, `0x42`, "HEX numbers not yet supported") // TODO - Support hex numbers
@@ -153,7 +159,11 @@ func TestFunctionParse(t *testing.T) {
 	//	verifyOneEqnParsing(t, `SUM()`)
 	verifyOneEqnParsing(t, `SUM(1)`)
 	verifyOneEqnParsingVsExpected(t, `SUM(1,2)`, `{"funcName":"SUM","funcArgs":[{"numberVal":1},{"numberVal":2}]}`)
+	verifyOneEqnParsingVsExpected(t, `1+2`, `{"funcName":"SUM","funcArgs":[{"numberVal":1},{"numberVal":2}]}`)
+	verifyOneEqnParsingVsExpected(t, `1/2`, `{"funcName":"DIVIDE","funcArgs":[{"numberVal":1},{"numberVal":2}]}`)
+	verifyOneEqnParsingVsExpected(t, `1-2`, `{"funcName":"MINUS","funcArgs":[{"numberVal":1},{"numberVal":2}]}`)
+	verifyOneEqnParsingVsExpected(t, `1*2`, `{"funcName":"PRODUCT","funcArgs":[{"numberVal":1},{"numberVal":2}]}`)
 	verifyOneEqnParsing(t, `SUM(1,2,"arg three")`)
-	verifyOneEqnParsingVsExpected(t, `SUM(1,2,PRODUCT([FieldRef1],-2.5))`, `{"funcName":"SUM","funcArgs":[{"numberVal":1},{"numberVal":2},{"funcName":"PRODUCT","funcArgs":[{"fieldID":"FieldRef1"},{"numberVal":-2.5}]}]}`)
+	verifyOneEqnParsingVsExpected(t, `SUM(1,2,PRODUCT([FieldRef1],2.5))`, `{"funcName":"SUM","funcArgs":[{"numberVal":1},{"numberVal":2},{"funcName":"PRODUCT","funcArgs":[{"fieldID":"FieldRef1"},{"numberVal":2.5}]}]}`)
 	verifyOneEqnParseFail(t, `SUM(1,,2)`, "extra comma between arguments")
 }

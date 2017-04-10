@@ -57,6 +57,14 @@ func oneOrMoreNumberArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult,
 
 }
 
+func twoNumberArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
+	if len(params.funcArgs) != 2 {
+		errMsgs := []string{fmt.Sprintf("Expecting 2 numerical arguments to function %v", params.funcName)}
+		return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeNumber}, nil
+	}
+	return oneOrMoreNumberArgs(params)
+}
+
 func oneOrMoreTextArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
 
 	if len(params.funcArgs) <= 0 {
@@ -109,6 +117,86 @@ func sumEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equati
 	}
 
 	return numberEqnResult(sumResult), nil
+
+}
+
+const FuncNameMinus string = "MINUS"
+
+func minusEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	if len(funcArgs) != 2 {
+		return nil, fmt.Errorf("MINUS() - Expecting 2 arguments, got %v", len(funcArgs))
+	}
+
+	arg1Eqn := funcArgs[0]
+	arg1Result, arg1Err := arg1Eqn.EvalEqn(evalContext)
+	if arg1Err != nil {
+		return nil, fmt.Errorf("MINUS(): Error evaluating argument # %v: arg=%+v, error %v", arg1Eqn, arg1Err)
+	} else if arg1Result.IsUndefined() {
+		// If an undefined result is returned, return immediately and propogate the undefined
+		// result value up through the equation evaluation.
+		return arg1Result, nil
+	} else if arg1NumberResult, validateErr := arg1Result.GetNumberResult(); validateErr != nil {
+		return nil, fmt.Errorf("DATEADD(): Invalid result found while evaluating argument 1: arg=%+v, error = %v", arg1Eqn, validateErr)
+	} else {
+		arg2Eqn := funcArgs[1]
+		arg2Result, arg2Err := arg2Eqn.EvalEqn(evalContext)
+		if arg2Err != nil {
+			return nil, fmt.Errorf("MINUS(): Error evaluating argument # 2: arg=%+v, error %v", arg2Eqn, arg2Err)
+		} else if arg2Result.IsUndefined() {
+			// If an undefined result is returned, return immediately and propogate the undefined
+			// result value up through the equation evaluation.
+			return arg2Result, nil
+		} else if arg2NumberResult, validateErr := arg2Result.GetNumberResult(); validateErr != nil {
+			return nil, fmt.Errorf("MINUS(): Invalid result found while evaluating argument 2: arg=%+v, error = %v", arg2Eqn, validateErr)
+		} else {
+
+			return numberEqnResult(arg1NumberResult - arg2NumberResult), nil
+
+		}
+	}
+
+}
+
+const FuncNameDivide string = "DIVIDE"
+
+func divideEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	if len(funcArgs) != 2 {
+		return nil, fmt.Errorf("DIVIDE() - Expecting 2 arguments, got %v", len(funcArgs))
+	}
+
+	arg1Eqn := funcArgs[0]
+	arg1Result, arg1Err := arg1Eqn.EvalEqn(evalContext)
+	if arg1Err != nil {
+		return nil, fmt.Errorf("MINUS(): Error evaluating argument # %v: arg=%+v, error %v", arg1Eqn, arg1Err)
+	} else if arg1Result.IsUndefined() {
+		// If an undefined result is returned, return immediately and propogate the undefined
+		// result value up through the equation evaluation.
+		return arg1Result, nil
+	} else if arg1NumberResult, validateErr := arg1Result.GetNumberResult(); validateErr != nil {
+		return nil, fmt.Errorf("DIVIDE(): Invalid result found while evaluating argument 1: arg=%+v, error = %v", arg1Eqn, validateErr)
+	} else {
+		arg2Eqn := funcArgs[1]
+		arg2Result, arg2Err := arg2Eqn.EvalEqn(evalContext)
+		if arg2Err != nil {
+			return nil, fmt.Errorf("DIVIDE(): Error evaluating argument # 2: arg=%+v, error %v", arg2Eqn, arg2Err)
+		} else if arg2Result.IsUndefined() {
+			// If an undefined result is returned, return immediately and propogate the undefined
+			// result value up through the equation evaluation.
+			return arg2Result, nil
+		} else if arg2NumberResult, validateErr := arg2Result.GetNumberResult(); validateErr != nil {
+			return nil, fmt.Errorf("MINUS(): Invalid result found while evaluating argument 2: arg=%+v, error = %v", arg2Eqn, validateErr)
+		} else {
+
+			if arg2NumberResult == 0.0 {
+				return undefinedEqnResult(), nil
+			} else {
+				return numberEqnResult(arg1NumberResult / arg2NumberResult), nil
+			}
+
+		}
+	}
 
 }
 
@@ -208,7 +296,7 @@ func productEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Eq
 	for argIndex, argEqn := range funcArgs {
 		argResult, argErr := argEqn.EvalEqn(evalContext)
 		if argErr != nil {
-			return nil, fmt.Errorf("SUM(): Error evaluating argument # %v: arg=%+v, error %v",
+			return nil, fmt.Errorf("PRODUCT(): Error evaluating argument # %v: arg=%+v, error %v",
 				argIndex, argEqn, argErr)
 		} else if argResult.IsUndefined() {
 			// If an undefined result is returned, return immediately and propogate the undefined
@@ -254,6 +342,8 @@ func concatEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equ
 
 var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 	FuncNameSum:     FunctionInfo{FuncNameSum, field.FieldTypeNumber, sumEvalFunc, oneOrMoreNumberArgs},
+	FuncNameMinus:   FunctionInfo{FuncNameMinus, field.FieldTypeNumber, minusEvalFunc, twoNumberArgs},
+	FuncNameDivide:  FunctionInfo{FuncNameMinus, field.FieldTypeNumber, divideEvalFunc, twoNumberArgs},
 	FuncNameProduct: FunctionInfo{FuncNameProduct, field.FieldTypeNumber, productEvalFunc, oneOrMoreNumberArgs},
 	FuncNameConcat:  FunctionInfo{FuncNameConcat, field.FieldTypeText, concatEvalFunc, oneOrMoreTextArgs},
 	FuncNameDateAdd: FunctionInfo{FuncNameDateAdd, field.FieldTypeTime, dateAddEvalFunc, validDateAddArgs},

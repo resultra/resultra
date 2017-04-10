@@ -22,6 +22,8 @@ var tokenUUID = TokenDef{regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-f
 var tokenAssign = TokenDef{regexp.MustCompile("^="), TOK_ASSIGN}
 var tokenEqual = TokenDef{regexp.MustCompile("^=="), TOK_EQUAL}
 var tokenPlus = TokenDef{regexp.MustCompile("^\\+"), TOK_PLUS}
+var tokenMinus = TokenDef{regexp.MustCompile("^\\-"), TOK_MINUS}
+var tokenDivide = TokenDef{regexp.MustCompile("^\\/"), TOK_DIVIDE}
 var tokenTimes = TokenDef{regexp.MustCompile("^\\*"), TOK_TIMES}
 var tokenLParen = TokenDef{regexp.MustCompile("^\\("), TOK_LPAREN}
 var tokenRParen = TokenDef{regexp.MustCompile("^\\)"), TOK_RPAREN}
@@ -43,7 +45,9 @@ var tokenDefs = []TokenDef{
 	tokenIdent,
 	tokenEqual,
 	tokenPlus,
+	tokenMinus,
 	tokenTimes,
+	tokenDivide,
 	tokenAssign,
 	tokenLParen,
 	tokenRParen,

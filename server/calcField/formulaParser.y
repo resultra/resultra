@@ -20,7 +20,9 @@ import (
 
 %token<number> TOK_NUMBER
 %token TOK_PLUS
+%token TOK_MINUS
 %token TOK_TIMES
+%token TOK_DIVIDE
 %token TOK_WHITE
 %token<text> TOK_IDENT
 %token TOK_ASSIGN
@@ -36,8 +38,9 @@ import (
 %token TOK_COMMENT
 %token<text> TOK_TEXT
 
-%left TOK_PLUS
-%left TOK_TIMES
+%left TOK_PLUS TOK_MINUS
+%left TOK_TIMES TOK_DIVIDE
+%left NEG
 
 // Any non-terminal which returns a value needs a type. This type
 // needs to be one of the field names in the %union above.
@@ -69,10 +72,29 @@ expr :	expr TOK_PLUS expr
 			funcArgs := []*EquationNode{$1,$3}
 			$$  =  FuncEqnNode(FuncNameSum,funcArgs)
 		}
+		| expr TOK_MINUS expr 
+		{
+			funcArgs := []*EquationNode{$1,$3}			
+			$$  =  FuncEqnNode(FuncNameMinus,funcArgs)
+		}
 		| expr TOK_TIMES expr
 		{
 			funcArgs := []*EquationNode{$1,$3}
 			$$  =  FuncEqnNode(FuncNameProduct,funcArgs)
+		}
+		| expr TOK_DIVIDE expr
+		{
+			funcArgs := []*EquationNode{$1,$3}
+			$$  =  FuncEqnNode(FuncNameDivide,funcArgs)
+		}
+		| TOK_MINUS expr %prec NEG 
+		{
+			funcArgs := []*EquationNode{NumberEqnNode(-1.0),$2}
+			$$  =  FuncEqnNode(FuncNameProduct,funcArgs)
+		}
+		| TOK_LPAREN expr TOK_RPAREN
+		{
+			$$  =  $2
 		}
 		| fieldRef
 		{ 

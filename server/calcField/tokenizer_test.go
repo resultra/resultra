@@ -37,7 +37,7 @@ func TestTokens(t *testing.T) {
 		tokenIdent.ID, tokenComma.ID,
 		tokenIdent.ID, tokenComma.ID,
 		tokenBool.ID, tokenComma.ID,
-		tokenNumber.ID, tokenComma.ID,
+		tokenMinus.ID, tokenNumber.ID, tokenComma.ID,
 		tokenNumber.ID, tokenComma.ID,
 		tokenText.ID,
 		tokenRParen.ID,
