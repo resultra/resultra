@@ -9,3 +9,11 @@
 	width: 160px;
 	height: 75px;
 }
+
+.selectionFormComponent label {
+	margin-bottom:2px;
+}
+
+.selectionFormComponent .form-group {
+	margin-bottom:0px;
+}
