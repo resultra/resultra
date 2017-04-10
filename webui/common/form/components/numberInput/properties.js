@@ -75,6 +75,7 @@ function loadNumberInputProperties($numberInput,numberInputRef) {
 				permissions: updatedPermissions
 			}
 			jsonAPIRequest("frm/numberInput/setPermissions",params,function(updatedNumberInput) {
+				configureNumberInputButtonSpinner($numberInput,updatedNumberInput)
 				setContainerComponentInfo($numberInput,updatedNumberInput,updatedNumberInput.numberInputID)
 			})
 		}
@@ -93,7 +94,7 @@ function loadNumberInputProperties($numberInput,numberInputRef) {
 	function initSpinnerButtonProps() {
 		
 		var $showSpinner = $('#numberInputShowValueSpinnerButtons')
-		initCheckboxControlChangeHandler($showSpinner,true,function(showSpinner) {
+		initCheckboxControlChangeHandler($showSpinner,numberInputRef.properties.showValueSpinner,function(showSpinner) {
 			console.log("Update spinner buttons show/hide:" + showSpinner)
 			var params = {
 				parentFormID: numberInputRef.parentFormID,
@@ -101,6 +102,7 @@ function loadNumberInputProperties($numberInput,numberInputRef) {
 				showValueSpinner: showSpinner
 			}
 			jsonAPIRequest("frm/numberInput/setShowSpinner",params,function(updatedNumberInput) {
+				configureNumberInputButtonSpinner($numberInput,updatedNumberInput)
 				setContainerComponentInfo($numberInput,updatedNumberInput,updatedNumberInput.numberInputID)
 			})
 		})

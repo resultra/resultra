@@ -27,3 +27,34 @@ function setNumberInputComponentLabel($numberInputContainer, numberInputRef) {
 	setFormComponentLabel($label,numberInputRef.properties.fieldID,
 			numberInputRef.properties.labelFormat)	
 }
+
+function configureNumberInputButtonSpinner($numberInputContainer, numberInputRef) {
+	var $spinnerControls = $numberInputContainer.find(".numberInputSpinnerControls")
+	
+	function hideSpinnerControls() {
+		$spinnerControls.css("display","none")
+	}
+	
+	if (!numberInputRef.properties.showValueSpinner) {
+		hideSpinnerControls()
+		return
+	}
+	
+	var numberInputFieldID = numberInputRef.properties.fieldID
+	var fieldRef = getFieldRef(numberInputFieldID)
+	
+	if(fieldRef.isCalcField) {
+		hideSpinnerControls()
+		return
+	}
+	
+	if(formComponentIsReadOnly(numberInputRef.properties.permissions)) {
+		hideSpinnerControls()
+		return
+	}
+	
+	// The jQuery show() method will set the display to "block", which causes the controls to display on a
+	// new line.
+	$spinnerControls.css("display","")
+	
+}

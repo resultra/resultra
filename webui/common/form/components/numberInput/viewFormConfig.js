@@ -57,13 +57,11 @@ function loadRecordIntoNumberInput($numberInputContainer, recordRef) {
 function initNumberInputFieldEditBehavior(componentContext, $container,$numberInputInput,recordProxy, numberInputObjectRef) {
 	
 	var numberInputFieldID = numberInputObjectRef.properties.fieldID
-	var $spinnerControls = $container.find(".numberInputSpinnerControls")
 	var $clearValueButton = $container.find(".numberInputComponentClearValueButton")
 	
 	var fieldRef = getFieldRef(numberInputFieldID)
 	if(fieldRef.isCalcField) {
 		$numberInputInput.prop('disabled',true);
-		$spinnerControls.hide()
 		$clearValueButton.hide()
 		return;  // stop initialization, the text box is read only.
 	}
@@ -113,7 +111,6 @@ function initNumberInputFieldEditBehavior(componentContext, $container,$numberIn
 	})
 	
 	if(numberInputObjectRef.properties.showValueSpinner) {
-		$spinnerControls.show()
 		var $addButton = $container.find(".addButton")
 		initButtonControlClickHandler($addButton,function() {
 				console.log("Clear value clicked for text box")
@@ -136,8 +133,6 @@ function initNumberInputFieldEditBehavior(componentContext, $container,$numberIn
 				setNumberVal(numberVal)						
 			}		
 		})
-	} else {
-		$spinnerControls.hide()
 	}
 	
 	
