@@ -53,7 +53,7 @@ func getAttachmentAPI(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	fileName := vars["fileName"]
 
-	http.ServeFile(w, r, LocalAttachmentFileUploadDir+fileName)
+	http.ServeFile(w, r, fullyQualifiedAttachmentFileName(fileName))
 
 }
 

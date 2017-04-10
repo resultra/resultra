@@ -5,17 +5,32 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"path"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"
 )
 
-const LocalAttachmentFileUploadDir string = `/private/tmp/`
+const permsOwnerReadWriteOnly os.FileMode = 0700
+
+func fullyQualifiedAttachmentFileName(fileName string) string {
+	return runtimeConfig.CurrRuntimeConfig.AttachmentBasePath + fileName
+}
+
+func InitAttachmentBasePath() error {
+	err := os.MkdirAll(runtimeConfig.CurrRuntimeConfig.AttachmentBasePath, permsOwnerReadWriteOnly)
+	if err != nil {
+		return fmt.Errorf("Error initializing attachment directory %v: %v",
+			runtimeConfig.CurrRuntimeConfig.AttachmentBasePath, err)
+	}
+	return nil
+}
 
 func SaveAttachmentFile(fileName string, fileData []byte) error {
 
-	writeErr := ioutil.WriteFile(LocalAttachmentFileUploadDir+fileName, fileData, 0644)
+	writeErr := ioutil.WriteFile(runtimeConfig.CurrRuntimeConfig.AttachmentBasePath+fileName, fileData, permsOwnerReadWriteOnly)
 	if writeErr != nil {
 		return fmt.Errorf("SaveCloudFile: Error writing file: filename = %v, error = %v", fileName, writeErr)
 	}
