@@ -18,13 +18,17 @@ function drawBarChart($barChart, barChartData) {
 	
 	var $chart = $barChart.find(".dashboardChartWrapper")
 	
+	var summarizedVals = barChartData.groupedSummarizedVals
+	
+	
 	var chartLabels = []
 	var chartData = []
-	for(var dataIndex in barChartData.dataRows) {
-		var rowData = barChartData.dataRows[dataIndex]
+	for(var dataIndex in summarizedVals.groupedDataRows) {
+		var rowData = summarizedVals.groupedDataRows[dataIndex]
 		console.log("Adding row: label=" + rowData.label + " val=" + rowData.value)
-		chartLabels.push(rowData.label)
-		chartData.push(rowData.value)
+		chartLabels.push(rowData.groupLabel)
+		var summaryVal = rowData.summaryVals[0]
+		chartData.push(summaryVal)
 	}
 
 	var myChart = new Chart($chart, {
@@ -32,7 +36,7 @@ function drawBarChart($barChart, barChartData) {
 	  data: {
 	    labels: chartLabels,
 	    datasets: [{
-	      label: barChartData.xAxisTitle,
+	      label: summarizedVals.groupingLabel,
 	      data: chartData
 	    }]
 	  },
@@ -45,13 +49,21 @@ function drawBarChart($barChart, barChartData) {
 		    yAxes: [{
 		      scaleLabel: {
 		        display: true,
-		        labelString: barChartData.yAxisTitle
-		      }
+		        labelString: summarizedVals.summaryLabels[0]
+		      },
+			  ticks: {
+			      // Use custom labels on the Y Axis
+				  callback: function(value, index, values) {
+					  var numberFormat = "currency"
+					  return formatNumberValue(numberFormat,value)
+				  }
+			  	} // ticks
+			  
 		    }],
 		    xAxes: [{
 		      scaleLabel: {
 		        display: true,
-		        labelString: barChartData.xAxisTitle
+		        labelString: summarizedVals.groupingLabel
 		      }
 		    }]
 		  }

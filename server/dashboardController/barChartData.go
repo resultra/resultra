@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/dashboard/components/barChart"
+	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/recordReadController"
 )
@@ -15,12 +16,10 @@ type BarChartDataRow struct {
 }
 
 type BarChartData struct {
-	BarChartID string            `json:"barChartID"`
-	BarChart   barChart.BarChart `json:"barChart"`
-	Title      string            `json:"title"`
-	XAxisTitle string            `json:"xAxisTitle"`
-	YAxisTitle string            `json:"yAxisTitle"`
-	DataRows   []BarChartDataRow `json:"dataRows"`
+	BarChartID            string                `json:"barChartID"`
+	BarChart              barChart.BarChart     `json:"barChart"`
+	Title                 string                `json:"title"`
+	GroupedSummarizedVals GroupedSummarizedVals `json:"groupedSummarizedVals"`
 }
 
 func getOneBarChartData(barChart *barChart.BarChart, filterRules recordFilter.RecordFilterRuleSet) (*BarChartData, error) {
@@ -49,19 +48,18 @@ func getOneBarChartData(barChart *barChart.BarChart, filterRules recordFilter.Re
 		return nil, fmt.Errorf("GetBarChartData: Error grouping records for bar chart: %v", groupingErr)
 	}
 
-	dataRows := []BarChartDataRow{}
-	for _, valGroup := range valGroupingResult.ValGroups {
-		dataRows = append(dataRows,
-			BarChartDataRow{valGroup.GroupLabel, float64(len(valGroup.RecordsInGroup))})
+	summaries := []values.ValSummary{}
+	summaries = append(summaries, barChart.Properties.YAxisVals)
+	groupedSummarizedVals, summarizeErr := summarizeGroupedRecords(valGroupingResult, summaries)
+	if summarizeErr != nil {
+		return nil, fmt.Errorf("getOneBarChartData: Error grouping records for bar chart: %v", summarizeErr)
 	}
 
 	barChartData := BarChartData{
 		BarChartID: barChart.BarChartID,
 		BarChart:   *barChart,
 		Title:      barChart.Properties.Title,
-		XAxisTitle: valGroupingResult.GroupingLabel,
-		YAxisTitle: "Count",
-		DataRows:   dataRows}
+		GroupedSummarizedVals: *groupedSummarizedVals}
 
 	return &barChartData, nil
 
