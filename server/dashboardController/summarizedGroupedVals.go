@@ -18,14 +18,51 @@ type GroupedSummarizedVals struct {
 	SummaryLabels   []string       `json:"summaryLabels"`
 }
 
+func computeSummarySum(recordsInGroup []recordValue.RecordValueResults, fieldID string) (float64, error) {
+	sum := 0.0
+	for _, currRecordVal := range recordsInGroup {
+		numberVal, valFound := currRecordVal.FieldValues.GetNumberFieldValue(fieldID)
+		if valFound {
+			sum += numberVal
+		}
+	}
+	return sum, nil
+}
+
+func computeSummaryAvg(recordsInGroup []recordValue.RecordValueResults, fieldID string) (float64, error) {
+	sum := 0.0
+	numRecords := 0.0
+	for _, currRecordVal := range recordsInGroup {
+		numberVal, valFound := currRecordVal.FieldValues.GetNumberFieldValue(fieldID)
+		if valFound {
+			sum += numberVal
+			numRecords += 1.0
+		}
+	}
+	if numRecords > 0.0 {
+		avg := sum / numRecords
+		return avg, nil
+	} else {
+		return 0.0, nil
+	}
+	return sum, nil
+}
+
 func summarizeOneGroupedVal(recordsInGroup []recordValue.RecordValueResults, summary values.ValSummary) (float64, error) {
 	// TODO - Replace dummied up summary value with one computed for the
 	// specific ValSummary.
-	countOfRecords := float64(len(recordsInGroup))
-
-	summaryVal := countOfRecords
-
-	return summaryVal, nil
+	switch summary.SummarizeValsWith {
+	case values.ValSummaryCount:
+		countOfRecords := float64(len(recordsInGroup))
+		summaryVal := countOfRecords
+		return summaryVal, nil
+	case values.ValSummarySum:
+		return computeSummarySum(recordsInGroup, summary.SummarizeByFieldID)
+	case values.ValSummaryAvg:
+		return computeSummaryAvg(recordsInGroup, summary.SummarizeByFieldID)
+	default:
+		return 0.0, fmt.Errorf("Unsupported summary type = %v", summary.SummarizeValsWith)
+	}
 
 }
 

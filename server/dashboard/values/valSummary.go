@@ -6,9 +6,9 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
-const valSummaryCount string = "count"
-const valSummarySum string = "sum"
-const valSummaryAvg string = "average"
+const ValSummaryCount string = "count"
+const ValSummarySum string = "sum"
+const ValSummaryAvg string = "average"
 
 // DashboardValGrouping represents a grouping of field values for purposes of summarizing
 // values in bar charts, lines charts, pie charts, and summary tables.
@@ -50,9 +50,9 @@ type NewValSummaryParams struct {
 
 func validateFieldTypeWithSummary(fieldType string, summarizeValsWith string) error {
 	switch summarizeValsWith {
-	case valSummaryCount:
+	case ValSummaryCount:
 		return nil
-	case valSummarySum, valSummaryAvg:
+	case ValSummarySum, ValSummaryAvg:
 		if fieldType != field.FieldTypeNumber {
 			return fmt.Errorf("Invalid summary = %v for field type = %v", summarizeValsWith, fieldType)
 		}
@@ -92,12 +92,12 @@ func (valSummary ValSummary) SummaryLabel() (string, error) {
 	}
 
 	switch valSummary.SummarizeValsWith {
-	case valSummaryCount:
+	case ValSummaryCount:
 		return fmt.Sprintf(`Count of '%v'`, summaryField.Name), nil
-	case valSummaryAvg:
-		return "TBD", nil
-	case valSummarySum:
-		return "TBD", nil
+	case ValSummaryAvg:
+		return fmt.Sprintf(`Average of '%v'`, summaryField.Name), nil
+	case ValSummarySum:
+		return fmt.Sprintf(`Sum of '%v'`, summaryField.Name), nil
 	default:
 		return "", fmt.Errorf("Unable to generate value label: unexpected summary = %v", valSummary.SummarizeValsWith)
 	}
