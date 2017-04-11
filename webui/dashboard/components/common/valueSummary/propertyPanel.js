@@ -2,6 +2,7 @@ function initDashboardValueSummaryPropertyPanel(panelParams) {
 	
 	var summaryFieldSelectionElemInfo = createPrefixedTemplElemInfo(panelParams.elemPrefix,"SummaryFieldSelection")
 	var summarizeBySelectionElemInfo = createPrefixedTemplElemInfo(panelParams.elemPrefix,"SummarizeBySelection")
+	var summarizeNumberFormatElemInfo = createPrefixedTemplElemInfo(panelParams.elemPrefix,"SummarizeNumberFormat")
 
 
 	var saveChangesButtonElemInfo = createPrefixedTemplElemInfo(panelParams.elemPrefix,"ValSummaryPropertiesSaveChangesButton")
@@ -12,6 +13,7 @@ function initDashboardValueSummaryPropertyPanel(panelParams) {
 	var validationRules = {}	
 	validationRules[summaryFieldSelectionElemInfo.id] = { required: true }
 	validationRules[summarizeBySelectionElemInfo.id] = { required: true }
+	validationRules[summarizeNumberFormatElemInfo.id] = { required: true }
 	
 	var validationSettings = createInlineFormValidationSettings({rules: validationRules })	
 	var validator = $propertyForm.validate(validationSettings)
@@ -29,6 +31,9 @@ function initDashboardValueSummaryPropertyPanel(panelParams) {
 		populateSummarizeBySelection(summarizeBySelectionElemInfo.selector,existingFieldInfo.type)
 		$(summarizeBySelectionElemInfo.selector).val(panelParams.valSummaryProps.summarizeValsWith)
 		
+		populateNumberFormatSelection($(summarizeNumberFormatElemInfo.selector))
+		$(summarizeNumberFormatElemInfo.selector).val(panelParams.valSummaryProps.numberFormat)
+		
 		// Initially disable the save changes button, until the user makes a change
 		disableButton(saveChangesButtonElemInfo.selector)
 		
@@ -38,6 +43,12 @@ function initDashboardValueSummaryPropertyPanel(panelParams) {
 				fieldInfo = valueSummaryFieldsByID[fieldID]			
 				populateSummarizeBySelection(summarizeBySelectionElemInfo.selector,fieldInfo.type)
 				disableButton(saveChangesButtonElemInfo.selector)
+			}
+		})
+		
+		initSelectionChangedHandler(summarizeNumberFormatElemInfo.selector,function(summarizeBy) {
+			if($propertyForm.valid()) {
+				enableButton(saveChangesButtonElemInfo.selector)
 			}
 		})
 
@@ -50,6 +61,7 @@ function initDashboardValueSummaryPropertyPanel(panelParams) {
 				var newValSummaryParams = {
 					summarizeByFieldID: summaryFieldSelectionElemInfo.val(),
 					summarizeValsWith: summarizeBySelectionElemInfo.val(),
+					numberFormat: summarizeNumberFormatElemInfo.val()
 				}
 				console.log("Saving new value summary: " + JSON.stringify(newValSummaryParams))
 				panelParams.saveValueSummaryFunc(newValSummaryParams)

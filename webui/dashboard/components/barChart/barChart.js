@@ -20,6 +20,8 @@ function drawBarChart($barChart, barChartData) {
 	
 	var summarizedVals = barChartData.groupedSummarizedVals
 	
+	var numberFormat = summarizedVals.summaryNumberFormats[0]
+	
 	
 	var chartLabels = []
 	var chartData = []
@@ -54,7 +56,6 @@ function drawBarChart($barChart, barChartData) {
 			  ticks: {
 			      // Use custom labels on the Y Axis
 				  callback: function(value, index, values) {
-					  var numberFormat = "currency"
 					  return formatNumberValue(numberFormat,value)
 				  }
 			  	} // ticks
