@@ -43,19 +43,45 @@ function summarizeBySelectionHTML(elemPrefix) {
 		'</div>';
 }
 
+function summarizeByNumberFormatHTML(elemPrefix) {
+	
+	var selectionID = summarizeBySelectionID(elemPrefix)
+		
+	return '' + 
+		'<div class="row">' +
+			'<select class="form-control input-sm summarizeByFormat" id="'+ selectionID + '"></select>' +
+		'</div>';
+}
 
 
-function summaryColumnListItemHTML(elemPrefix) {
+
+
+function summaryColumnListItem(panelParams,valSummary,elemPrefix) {
 	
 	var listItemID = summaryColumnListItemID(elemPrefix)
 	
-	return '' +
+	var listItemHTML = '' +
 		'<div class="list-group-item summaryColumnsListItem" id="'+listItemID+'">' +
 			'<div class="container-fluid">' +
 				summaryFieldSelectionHTML(elemPrefix) +
 				summarizeBySelectionHTML(elemPrefix) +
+				summarizeByNumberFormatHTML(elemPrefix) +
 			'</div>' +
 		'</div>';
+		
+	var $listItem = $(listItemHTML)
+		
+	var $formatSelection = $listItem.find(".summarizeByFormat")
+	populateNumberFormatSelection($formatSelection)
+	if(valSummary != null) {
+		$formatSelection.val(valSummary.numberFormat)
+	}
+	$formatSelection.change(function() {
+		var valSummaries = getSummaryColumnValSummaries(panelParams.listElemPrefix)
+		panelParams.setColumnsFunc(valSummaries)
+	})
+		
+	return $listItem
 }
 
 function getSummaryColumnValSummaries(elemPrefix) {
@@ -66,11 +92,13 @@ function getSummaryColumnValSummaries(elemPrefix) {
 	$(".summaryColumnsListItem").each(function() {
 		var summaryFieldID = $(this).find(".summarizeByFieldSelection").first().val()
 		var summarizeBy = $(this).find(".summarizeBySelection").first().val()
+		var numberFormat = $(this).find(".summarizeByFormat").val()
 				
-		if((summarizeBy.length>0) && (summaryFieldID.length > 0)) {
+		if((summarizeBy.length>0) && (summaryFieldID.length > 0) && (numberFormat.length > 0)) {
 			valSummaries.push({
 				summarizeByFieldID: summaryFieldID,
-				summarizeValsWith: summarizeBy
+				summarizeValsWith: summarizeBy,
+				numberFormat: numberFormat
 			})
 			
 		}
@@ -144,7 +172,7 @@ function addColumnSummaryListItem(panelParams, valSummary, fieldsByID) {
 	var elemPrefix = generateValSummaryElemPrefix()
 	
 	var colsListSelector = summaryColListSelector(panelParams.listElemPrefix)
-	$(colsListSelector).append(summaryColumnListItemHTML(elemPrefix))
+	$(colsListSelector).append(summaryColumnListItem(panelParams,valSummary,elemPrefix))
 	
 	populateSummaryColFieldMenu(panelParams,elemPrefix,fieldsByID,valSummary.summarizeByFieldID)
 	var fieldInfo = fieldsByID[valSummary.summarizeByFieldID]
@@ -155,7 +183,7 @@ function addNewColumnSummaryListItem(panelParams, fieldsByID) {
 	var elemPrefix = generateValSummaryElemPrefix()
 
 	var colsListSelector = summaryColListSelector(panelParams.listElemPrefix)
-	$(colsListSelector).append(summaryColumnListItemHTML(elemPrefix))
+	$(colsListSelector).append(summaryColumnListItem(panelParams,null,elemPrefix))
 
 	populateSummaryColFieldMenu(panelParams,elemPrefix,fieldsByID,null)
 	populateSummarizeByMenu(panelParams,elemPrefix,fieldsByID,null,null)		

@@ -28,14 +28,16 @@ function populateSummaryTableHeader($summaryTable,summaryTableData) {
 	$summaryTable.append($tableHeader)
 }
 
-function populateSummaryTableRow($tableBody,dataRow) {
+function populateSummaryTableRow($tableBody,dataRow,numberFormats) {
 	
 	var $tableRow = $("<tr></tr>")
 	$tableRow.append("<td><strong>" + dataRow.groupLabel + "<strong></td>")
 	
 	for(var summaryValIndex = 0; summaryValIndex < dataRow.summaryVals.length; summaryValIndex++) {
 		var summaryVal = dataRow.summaryVals[summaryValIndex]
-		$tableRow.append("<td>" + summaryVal + "</td>")	
+		var colNumberFormat = numberFormats[summaryValIndex]
+		var formattedVal = formatNumberValue(colNumberFormat,summaryVal)
+		$tableRow.append("<td>" + formattedVal + "</td>")	
 	}
 	
 	$tableBody.append($tableRow)
@@ -48,7 +50,8 @@ function populateSummaryTableRows($summaryTable,summaryTableData) {
 	
 	var dataRows = summaryTableData.groupedSummarizedVals.groupedDataRows
 	for(var dataRowIndex = 0; dataRowIndex < dataRows.length; dataRowIndex++) {
-		populateSummaryTableRow($tableBody,dataRows[dataRowIndex])
+		var numberFormats = summaryTableData.groupedSummarizedVals.summaryNumberFormats
+		populateSummaryTableRow($tableBody,dataRows[dataRowIndex],numberFormats)
 	}
 		
 	$summaryTable.append($tableBody)

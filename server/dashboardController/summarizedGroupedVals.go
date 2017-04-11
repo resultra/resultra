@@ -13,9 +13,10 @@ type GroupDataRow struct {
 }
 
 type GroupedSummarizedVals struct {
-	GroupedDataRows []GroupDataRow `json:"groupedDataRows"`
-	GroupingLabel   string         `json:"groupingLabel"`
-	SummaryLabels   []string       `json:"summaryLabels"`
+	GroupedDataRows      []GroupDataRow `json:"groupedDataRows"`
+	GroupingLabel        string         `json:"groupingLabel"`
+	SummaryLabels        []string       `json:"summaryLabels"`
+	SummaryNumberFormats []string       `json:"summaryNumberFormats"`
 }
 
 func computeSummarySum(recordsInGroup []recordValue.RecordValueResults, fieldID string) (float64, error) {
@@ -92,6 +93,7 @@ func summarizeGroupedRecords(valGroupingResult *ValGroupingResult, summaries []v
 	}
 
 	summaryLabels := []string{}
+	summaryFormats := []string{}
 	for _, currValSummary := range summaries {
 
 		summaryLabel, err := currValSummary.SummaryLabel()
@@ -100,12 +102,15 @@ func summarizeGroupedRecords(valGroupingResult *ValGroupingResult, summaries []v
 		}
 
 		summaryLabels = append(summaryLabels, summaryLabel)
+
+		summaryFormats = append(summaryFormats, currValSummary.NumberFormat)
 	}
 
 	groupedSummarizedVals := GroupedSummarizedVals{
-		GroupedDataRows: groupDataRows,
-		GroupingLabel:   valGroupingResult.GroupingLabel,
-		SummaryLabels:   summaryLabels}
+		GroupedDataRows:      groupDataRows,
+		GroupingLabel:        valGroupingResult.GroupingLabel,
+		SummaryLabels:        summaryLabels,
+		SummaryNumberFormats: summaryFormats}
 
 	return &groupedSummarizedVals, nil
 }

@@ -27,6 +27,8 @@ type ValSummary struct {
 	// Text: count
 	// Bool: count
 	SummarizeValsWith string `json:"summarizeValsWith"`
+
+	NumberFormat string `json:"numberFormat"`
 }
 
 func (srcValSummary ValSummary) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ValSummary, error) {
@@ -78,7 +80,10 @@ func NewValSummary(params NewValSummaryParams) (*ValSummary, error) {
 		return nil, fmt.Errorf("NewValGrouping: Invalid value summary: %v", summarizeErr)
 	}
 
-	valSummary := ValSummary{summaryField.FieldID, params.SummarizeValsWith}
+	valSummary := ValSummary{
+		SummarizeByFieldID: summaryField.FieldID,
+		SummarizeValsWith:  params.SummarizeValsWith,
+		NumberFormat:       "generic"}
 
 	return &valSummary, nil
 
