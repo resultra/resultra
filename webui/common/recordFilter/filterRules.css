@@ -4,6 +4,7 @@
 	-moz-border-radius: 0 !important;
 	border-radius: 0 !important;
 	max-width: 300px;
+	margin-bottom:10px;
 }
 
 
@@ -34,4 +35,9 @@
 #filterRecordsPanelFilterList .list-group-item:last-child {
   border-bottom-right-radius: 0px !important;
   border-bottom-left-radius: 0px !important;
+}
+
+.recordFilterPanelSeparator {
+	margin-bottom:5px;
+	margin-top:10px;
 }

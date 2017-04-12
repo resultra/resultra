@@ -1,13 +1,17 @@
 
 {{define "recordFilterMatchLogic"}}
-	  <div class="form-group">
-       	  <label for="{{.}}RecordFilterMatchLogicSelection">Logic for matching conditions</label>
-		  	<select class="form-control maxWidth300" id="{{.}}RecordFilterMatchLogicSelection">
-		  		<option disabled selected value="">Match logic</option>
-		 		<option value="all">All conditions</option>
-		  		<option value="any">Any condition</option>
-			</select>
+	<div class="form-horizontal recordFilterMatchLogicSelection maxWidth300">
+	  <div class="form-group form-group-sm">
+		  <label class="col-sm-offset-1 col-sm-2 control-label" for="{{.}}RecordFilterMatchLogicSelection">Match</label>
+	      <div class="col-sm-9">
+			  	<select class="form-control maxWidth150" id="{{.}}RecordFilterMatchLogicSelection">
+			  		<option disabled selected value="">Match logic</option>
+			 		<option value="all">All conditions</option>
+			  		<option value="any">Any condition</option>
+				</select>
+	      </div>
 	  </div>
+	 </div>
 
 {{end}}
 

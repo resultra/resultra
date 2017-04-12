@@ -3,13 +3,21 @@
 
 {{define "recordFilterPropertyPanel"}}
 
-	{{template "recordFilterMatchLogic" .ElemPrefix}}
 
-	{{template "recordFilterRuleList" .ElemPrefix}}
+	<div class="maxWidth300">
+
+		{{template "recordFilterRuleList" .ElemPrefix}}
 	
-	{{template "fieldSelectionDropdown" .FieldSelectionParams}}
+		{{template "recordFilterMatchLogic" .ElemPrefix}}
+	
+		<hr class="recordFilterPanelSeparator">
+
+		{{template "fieldSelectionDropdown" .FieldSelectionParams}}
+	
+	</div>
 	
 	{{template "recordFilterRuleTemplates"}}
+	
 
 	
 {{end}}
