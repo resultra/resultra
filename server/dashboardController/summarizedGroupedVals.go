@@ -3,7 +3,6 @@ package dashboardController
 import (
 	"fmt"
 	"resultra/datasheet/server/dashboard/values"
-	//	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/recordValue"
 )
 
@@ -49,6 +48,64 @@ func computeSummaryAvg(recordsInGroup []recordValue.RecordValueResults, fieldID 
 	return sum, nil
 }
 
+func computePercTrue(recordsInGroup []recordValue.RecordValueResults, fieldID string) (float64, error) {
+	numTrue := 0.0
+	numRecords := 0.0
+	for _, currRecordVal := range recordsInGroup {
+		boolVal, valFound := currRecordVal.FieldValues.GetBoolFieldValue(fieldID)
+		if valFound {
+			numRecords += 1.0
+			if boolVal == true {
+				numTrue += 1.0
+			}
+		}
+	}
+	if numRecords > 0.0 {
+		percTrue := numTrue / numRecords
+		return percTrue, nil
+	} else {
+		return 0.0, nil
+	}
+}
+
+func computeCountTrue(recordsInGroup []recordValue.RecordValueResults, fieldID string) (float64, error) {
+	numTrue := 0.0
+	numRecords := 0.0
+	for _, currRecordVal := range recordsInGroup {
+		boolVal, valFound := currRecordVal.FieldValues.GetBoolFieldValue(fieldID)
+		if valFound {
+			numRecords += 1.0
+			if boolVal == true {
+				numTrue += 1.0
+			}
+		}
+	}
+	if numRecords > 0.0 {
+		return numTrue, nil
+	} else {
+		return 0.0, nil
+	}
+}
+
+func computeCountFalse(recordsInGroup []recordValue.RecordValueResults, fieldID string) (float64, error) {
+	numFalse := 0.0
+	numRecords := 0.0
+	for _, currRecordVal := range recordsInGroup {
+		boolVal, valFound := currRecordVal.FieldValues.GetBoolFieldValue(fieldID)
+		if valFound {
+			numRecords += 1.0
+			if boolVal == false {
+				numFalse += 1.0
+			}
+		}
+	}
+	if numRecords > 0.0 {
+		return numFalse, nil
+	} else {
+		return 0.0, nil
+	}
+}
+
 func summarizeOneGroupedVal(recordsInGroup []recordValue.RecordValueResults, summary values.ValSummary) (float64, error) {
 	// TODO - Replace dummied up summary value with one computed for the
 	// specific ValSummary.
@@ -61,6 +118,19 @@ func summarizeOneGroupedVal(recordsInGroup []recordValue.RecordValueResults, sum
 		return computeSummarySum(recordsInGroup, summary.SummarizeByFieldID)
 	case values.ValSummaryAvg:
 		return computeSummaryAvg(recordsInGroup, summary.SummarizeByFieldID)
+	case values.ValSummaryCountTrue:
+		return computeCountTrue(recordsInGroup, summary.SummarizeByFieldID)
+	case values.ValSummaryCountFalse:
+		return computeCountFalse(recordsInGroup, summary.SummarizeByFieldID)
+	case values.ValSummaryPercTrue:
+		return computePercTrue(recordsInGroup, summary.SummarizeByFieldID)
+	case values.ValSummaryPercFalse:
+		percTrue, err := computePercTrue(recordsInGroup, summary.SummarizeByFieldID)
+		if err != nil {
+			return 0.0, err
+		} else {
+			return (1.0 - percTrue), nil
+		}
 	default:
 		return 0.0, fmt.Errorf("Unsupported summary type = %v", summary.SummarizeValsWith)
 	}

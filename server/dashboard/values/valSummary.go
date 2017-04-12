@@ -9,6 +9,10 @@ import (
 const ValSummaryCount string = "count"
 const ValSummarySum string = "sum"
 const ValSummaryAvg string = "average"
+const ValSummaryPercTrue string = "percTrue"
+const ValSummaryPercFalse string = "percFalse"
+const ValSummaryCountFalse string = "countFalse"
+const ValSummaryCountTrue string = "countTrue"
 
 // DashboardValGrouping represents a grouping of field values for purposes of summarizing
 // values in bar charts, lines charts, pie charts, and summary tables.
@@ -103,6 +107,14 @@ func (valSummary ValSummary) SummaryLabel() (string, error) {
 		return fmt.Sprintf(`Average of '%v'`, summaryField.Name), nil
 	case ValSummarySum:
 		return fmt.Sprintf(`Sum of '%v'`, summaryField.Name), nil
+	case ValSummaryCountTrue:
+		return fmt.Sprintf(`Count true of '%v'`, summaryField.Name), nil
+	case ValSummaryCountFalse:
+		return fmt.Sprintf(`Count false of '%v'`, summaryField.Name), nil
+	case ValSummaryPercTrue:
+		return fmt.Sprintf(`Percent true of '%v'`, summaryField.Name), nil
+	case ValSummaryPercFalse:
+		return fmt.Sprintf(`Percent false of '%v'`, summaryField.Name), nil
 	default:
 		return "", fmt.Errorf("Unable to generate value label: unexpected summary = %v", valSummary.SummarizeValsWith)
 	}
