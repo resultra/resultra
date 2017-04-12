@@ -89,5 +89,9 @@ $(document).ready(function() {
 	}
 	
 	loadDashboardData(loadDashboardConfig)
+	
+	// When first loading the dashboard in design mode, show the properties for the dashboard as a whole.
+	initDesignDashboardProperties(designDashboardContext.dashboardID)
+	hideSiblingsShowOne('#dashboardProps')
 	  
 });
