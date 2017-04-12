@@ -34,7 +34,8 @@ import (
 %token TOK_LBRACKET
 %token TOK_RBRACKET
 %token TOK_COMMA
-%token TOK_BOOL
+%token TOK_TRUE
+%token TOK_FALSE
 %token TOK_COMMENT
 %token<text> TOK_TEXT
 
@@ -115,6 +116,14 @@ expr :	expr TOK_PLUS expr
 		| TOK_TEXT
 		{ 
 			$$ = TextEqnNode($1) 
+		}
+		| TOK_TRUE
+		{ 
+			$$ = BoolEqnNode(true) 
+		}
+		| TOK_FALSE
+		{ 
+			$$ = BoolEqnNode(false) 
 		}
 
 fieldRef : TOK_LBRACKET TOK_IDENT TOK_RBRACKET

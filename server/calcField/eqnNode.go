@@ -26,6 +26,7 @@ type EquationNode struct {
 	TextVal   *string    `json:"textVal,omitempty"`
 	NumberVal *float64   `json:"numberVal,omitempty"`
 	TimeVal   *time.Time `json:"timeVal,omitempty"`
+	BoolVal   *bool      `json:"boolVal,omitempty"`
 }
 
 func FieldRefEqnNode(fieldID string) *EquationNode {
@@ -50,6 +51,11 @@ func NumberEqnNode(numberVal float64) *EquationNode {
 func TextEqnNode(textVal string) *EquationNode {
 	theVal := textVal
 	return &EquationNode{TextVal: &theVal}
+}
+
+func BoolEqnNode(boolVal bool) *EquationNode {
+	theVal := boolVal
+	return &EquationNode{BoolVal: &theVal}
 }
 
 func EmptyEqnNode() *EquationNode {

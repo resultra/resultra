@@ -33,14 +33,16 @@ var tokenRBracket = TokenDef{regexp.MustCompile("^\\]"), TOK_RBRACKET}
 var tokenDoubleLBracket = TokenDef{regexp.MustCompile("^\\[\\["), TOK_DOUBLE_LBRACKET}
 var tokenDoubleRBracket = TokenDef{regexp.MustCompile("^\\]\\]"), TOK_DOUBLE_RBRACKET}
 var tokenComma = TokenDef{regexp.MustCompile("^\\,"), TOK_COMMA}
-var tokenBool = TokenDef{regexp.MustCompile("^(true)|(false)|(TRUE)|(FALSE)"), TOK_BOOL}
+var tokenTrue = TokenDef{regexp.MustCompile("^(true)|(TRUE)"), TOK_TRUE}
+var tokenFalse = TokenDef{regexp.MustCompile("^(false)|(FALSE)"), TOK_FALSE}
 var tokenNumber = TokenDef{regexp.MustCompile("^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?"), TOK_NUMBER}
 var tokenText = TokenDef{regexp.MustCompile(`"(?:[^"\\]|\\.)*"`), TOK_TEXT}
 
 var tokenDefs = []TokenDef{
 	tokenWhiteSpace,
 	tokenComment,
-	tokenBool,
+	tokenTrue,
+	tokenFalse,
 	tokenUUID,
 	tokenIdent,
 	tokenEqual,

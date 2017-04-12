@@ -59,6 +59,42 @@ func getNumberRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*Equ
 	} // else (if found a value for the given field ID)
 }
 
+func getBoolRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*EquationResult, error) {
+
+	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
+	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
+	allowCalcField := true
+	if fieldValidateErr := record.ValidateFieldForRecordValue(fieldID,
+		field.FieldTypeBool, allowCalcField); fieldValidateErr != nil {
+		return nil, fmt.Errorf("Can't get value from record with fieldID = %v: "+
+			"Can't validate field with value type: validation error = %v", fieldID, fieldValidateErr)
+	}
+
+	val, foundVal := (*evalContext.ResultFieldVals)[fieldID]
+	if !foundVal {
+		// Note this is the only place which will return an undefined equation result (along with the
+		// the similar function for other value types). This is because record values for non-calculated
+		// fields is the only place where an undefined (or blank) value could originate, because a
+		// user hasn't entered a value yet for the field.
+		log.Printf("getBoolRecordEqnResult: Undefined equation result for field: %v", fieldID)
+		return undefinedEqnResult(), nil
+
+	} else if val == nil {
+		log.Printf("getBoolRecordEqnResult: Undefined equation result for field: %v", fieldID)
+		// If the value is defined, but set to a nil value, this means the value has been cleared. For purposes
+		// of equation evaluation, this is the same as an undefined value.
+		return undefinedEqnResult(), nil
+
+	} else {
+		if boolVal, foundBool := val.(bool); !foundBool {
+			return nil, fmt.Errorf("getBoolRecordEqnResult: Type mismatch retrieving value from record field id = %v:"+
+				" expecting bool, got %v", fieldID, val)
+		} else {
+			return boolEqnResult(boolVal), nil
+		}
+	} // else (if found a value for the given field ID)
+}
+
 // Get the literal value from a text field, or undefined if it doesn't exist.
 func getTextRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*EquationResult, error) {
 
@@ -197,6 +233,8 @@ func EvalEqn(evalContext *EqnEvalContext, evalField field.Field) (*EquationResul
 			return getNumberRecordEqnResult(evalContext, evalField.FieldID)
 		case field.FieldTypeTime:
 			return getTimeRecordEqnResult(evalContext, evalField.FieldID)
+		case field.FieldTypeBool:
+			return getBoolRecordEqnResult(evalContext, evalField.FieldID)
 		default:
 			return nil, fmt.Errorf("Unknown field result type: %v", evalField.Type)
 
@@ -245,9 +283,10 @@ func (equation EquationNode) EvalEqn(evalContext *EqnEvalContext) (*EquationResu
 	} else if equation.NumberVal != nil {
 		// Number literal given directly in the equation itself (rather than a field value)
 		return numberEqnResult(*equation.NumberVal), nil
-
 	} else if equation.TimeVal != nil {
 		return timeEqnResult(*equation.TimeVal), nil
+	} else if equation.BoolVal != nil {
+		return boolEqnResult(*equation.BoolVal), nil
 	} else {
 		// The EquationNode corresponds to an empty formula. In this case, always return an
 		// undefined result.
@@ -320,6 +359,17 @@ func updateOneCalcFieldValue(evalContext *EqnEvalContext, evalField field.Field)
 		log.Printf("updateCalcFieldValues: Setting calculated field value: field=%v, value=%v", evalField.RefName, numberResult)
 		// TODO - encapsulate the actual setting of raw values into record.go
 		(*evalContext.ResultFieldVals)[evalField.FieldID] = numberResult
+		return nil
+
+	case field.FieldTypeBool:
+		boolResult, boolResultErr := fieldEqnResult.GetBoolResult()
+		if boolResultErr != nil {
+			return fmt.Errorf("Unexpected error evaluating equation for field=%v: eqn=%+v: error=%v "+
+				"unexpected error getting number result: raw result=%+v",
+				evalField.FieldID, rootFieldEqnNode, boolResultErr, fieldEqnResult)
+
+		}
+		(*evalContext.ResultFieldVals)[evalField.FieldID] = boolResult
 		return nil
 		// TODO case FieldTypeDate
 

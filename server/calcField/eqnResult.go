@@ -15,6 +15,7 @@ type EquationResult struct {
 	TextVal   *string
 	NumberVal *float64
 	TimeVal   *time.Time
+	BoolVal   *bool
 }
 
 func (eqnResult EquationResult) IsUndefined() bool {
@@ -40,6 +41,16 @@ func (eqnResult EquationResult) validateTimeResult() error {
 		return fmt.Errorf("EquationResult: Invalid result - expecting %v, got %v", field.FieldTypeTime, eqnResult.ResultType)
 	} else if eqnResult.TimeVal == nil {
 		return fmt.Errorf("EquationResult: Malformed result - missing text value (value == nil)")
+	} else {
+		return nil
+	}
+}
+
+func (eqnResult EquationResult) validateBoolResult() error {
+	if eqnResult.ResultType != field.FieldTypeBool {
+		return fmt.Errorf("EquationResult: Invalid result - expecting %v, got %v", field.FieldTypeBool, eqnResult.ResultType)
+	} else if eqnResult.BoolVal == nil {
+		return fmt.Errorf("EquationResult: Malformed result - missing boolean value (value == nil)")
 	} else {
 		return nil
 	}
@@ -83,6 +94,15 @@ func (eqnResult EquationResult) GetTimeResult() (time.Time, error) {
 
 }
 
+func (eqnResult EquationResult) GetBoolResult() (bool, error) {
+	if validateErr := eqnResult.validateBoolResult(); validateErr != nil {
+		return false, validateErr
+	} else {
+		boolVal := *eqnResult.BoolVal
+		return boolVal, nil
+	}
+}
+
 func undefinedEqnResult() *EquationResult {
 	return &EquationResult{ResultType: eqnResultTypeUndefined}
 }
@@ -100,4 +120,9 @@ func textEqnResult(val string) *EquationResult {
 func timeEqnResult(val time.Time) *EquationResult {
 	theVal := val
 	return &EquationResult{ResultType: field.FieldTypeTime, TimeVal: &theVal}
+}
+
+func boolEqnResult(val bool) *EquationResult {
+	theVal := val
+	return &EquationResult{ResultType: field.FieldTypeBool, BoolVal: &theVal}
 }

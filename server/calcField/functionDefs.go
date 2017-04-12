@@ -65,6 +65,15 @@ func twoNumberArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error
 	return oneOrMoreNumberArgs(params)
 }
 
+func twoNumberArgsBooleanResult(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
+	if len(params.funcArgs) != 2 {
+		errMsgs := []string{fmt.Sprintf("Expecting 2 numerical arguments to function %v", params.funcName)}
+		return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeBool}, nil
+	}
+	errMsgs := []string{}
+	return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeBool}, nil
+}
+
 func oneOrMoreTextArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
 
 	if len(params.funcArgs) <= 0 {
@@ -117,6 +126,75 @@ func sumEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equati
 	}
 
 	return numberEqnResult(sumResult), nil
+
+}
+
+const FuncNameIf string = "IF"
+
+func validIfArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
+
+	if len(params.funcArgs) != 3 {
+		// Even though there's an errors, based upon the function type we know it will return text. This
+		// allows semantic analysis to continue, even though there might be some errors.
+		errMsgs := []string{fmt.Sprintf("Expecting 3 arguments to function %v, ", params.funcName)}
+		return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeTime}, nil
+	}
+
+	argErrors := []string{}
+
+	arg1EqnNode := params.funcArgs[0]
+	arg1AnalyzeResult, analyzeErr := analyzeEqnNode(params.context, arg1EqnNode)
+	if analyzeErr != nil {
+		return nil, analyzeErr
+	}
+	if arg1AnalyzeResult.resultType != field.FieldTypeBool {
+		argErrors = append(
+			argErrors, fmt.Sprintf("Invalid argument type for argument 1 of function %v. Expecting boolean", params.funcName))
+	}
+
+	arg2EqnNode := params.funcArgs[1]
+	arg2AnalyzeResult, analyzeErr := analyzeEqnNode(params.context, arg2EqnNode)
+	if analyzeErr != nil {
+		return nil, analyzeErr
+	}
+
+	arg3EqnNode := params.funcArgs[2]
+	arg3AnalyzeResult, analyzeErr := analyzeEqnNode(params.context, arg3EqnNode)
+	if analyzeErr != nil {
+		return nil, analyzeErr
+	}
+
+	if arg2AnalyzeResult.resultType != arg3AnalyzeResult.resultType {
+		argErrors = append(
+			argErrors, fmt.Sprintf("Invalid argument types for function %v. 2nd and 3rd argument types must match", params.funcName))
+	}
+
+	return &semanticAnalysisResult{analyzeErrors: argErrors, resultType: field.FieldTypeTime}, nil
+}
+
+func ifEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	if len(funcArgs) != 3 {
+		return nil, fmt.Errorf("IF() - Expecting 3 arguments, got %v", len(funcArgs))
+	}
+
+	condEqn := funcArgs[0]
+	condResult, condErr := condEqn.EvalEqn(evalContext)
+	if condErr != nil {
+		return nil, fmt.Errorf("IF(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, condErr)
+	} else if condResult.IsUndefined() {
+		// If an undefined result is returned, return immediately and propogate the undefined
+		// result value up through the equation evaluation.
+		return condResult, nil
+	} else if condBoolResult, validateErr := condResult.GetBoolResult(); validateErr != nil {
+		return nil, fmt.Errorf("IF(): Invalid result found while evaluating argument 1: arg=%+v, error = %v", condEqn, validateErr)
+	} else {
+		if condBoolResult == true {
+			return funcArgs[1].EvalEqn(evalContext)
+		} else {
+			return funcArgs[2].EvalEqn(evalContext)
+		}
+	}
 
 }
 
@@ -193,6 +271,48 @@ func divideEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equ
 				return undefinedEqnResult(), nil
 			} else {
 				return numberEqnResult(arg1NumberResult / arg2NumberResult), nil
+			}
+
+		}
+	}
+
+}
+
+const FuncNameGreaterThan string = "GREATERTHAN"
+
+func greaterThanEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	if len(funcArgs) != 2 {
+		return nil, fmt.Errorf("GREATERTHAN() - Expecting 2 arguments, got %v", len(funcArgs))
+	}
+
+	arg1Eqn := funcArgs[0]
+	arg1Result, arg1Err := arg1Eqn.EvalEqn(evalContext)
+	if arg1Err != nil {
+		return nil, fmt.Errorf("GREATERTHAN(): Error evaluating argument # %v: arg=%+v, error %v", arg1Eqn, arg1Err)
+	} else if arg1Result.IsUndefined() {
+		// If an undefined result is returned, return immediately and propogate the undefined
+		// result value up through the equation evaluation.
+		return arg1Result, nil
+	} else if arg1NumberResult, validateErr := arg1Result.GetNumberResult(); validateErr != nil {
+		return nil, fmt.Errorf("GREATERTHAN(): Invalid result found while evaluating argument 1: arg=%+v, error = %v", arg1Eqn, validateErr)
+	} else {
+		arg2Eqn := funcArgs[1]
+		arg2Result, arg2Err := arg2Eqn.EvalEqn(evalContext)
+		if arg2Err != nil {
+			return nil, fmt.Errorf("DIVIDE(): Error evaluating argument # 2: arg=%+v, error %v", arg2Eqn, arg2Err)
+		} else if arg2Result.IsUndefined() {
+			// If an undefined result is returned, return immediately and propogate the undefined
+			// result value up through the equation evaluation.
+			return arg2Result, nil
+		} else if arg2NumberResult, validateErr := arg2Result.GetNumberResult(); validateErr != nil {
+			return nil, fmt.Errorf("GREATERTHAN(): Invalid result found while evaluating argument 2: arg=%+v, error = %v", arg2Eqn, validateErr)
+		} else {
+
+			if arg1NumberResult > arg2NumberResult {
+				return boolEqnResult(true), nil
+			} else {
+				return boolEqnResult(false), nil
 			}
 
 		}
@@ -341,10 +461,12 @@ func concatEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equ
 }
 
 var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
-	FuncNameSum:     FunctionInfo{FuncNameSum, field.FieldTypeNumber, sumEvalFunc, oneOrMoreNumberArgs},
-	FuncNameMinus:   FunctionInfo{FuncNameMinus, field.FieldTypeNumber, minusEvalFunc, twoNumberArgs},
-	FuncNameDivide:  FunctionInfo{FuncNameMinus, field.FieldTypeNumber, divideEvalFunc, twoNumberArgs},
-	FuncNameProduct: FunctionInfo{FuncNameProduct, field.FieldTypeNumber, productEvalFunc, oneOrMoreNumberArgs},
-	FuncNameConcat:  FunctionInfo{FuncNameConcat, field.FieldTypeText, concatEvalFunc, oneOrMoreTextArgs},
-	FuncNameDateAdd: FunctionInfo{FuncNameDateAdd, field.FieldTypeTime, dateAddEvalFunc, validDateAddArgs},
+	FuncNameSum:         FunctionInfo{FuncNameSum, field.FieldTypeNumber, sumEvalFunc, oneOrMoreNumberArgs},
+	FuncNameMinus:       FunctionInfo{FuncNameMinus, field.FieldTypeNumber, minusEvalFunc, twoNumberArgs},
+	FuncNameDivide:      FunctionInfo{FuncNameMinus, field.FieldTypeNumber, divideEvalFunc, twoNumberArgs},
+	FuncNameProduct:     FunctionInfo{FuncNameProduct, field.FieldTypeNumber, productEvalFunc, oneOrMoreNumberArgs},
+	FuncNameConcat:      FunctionInfo{FuncNameConcat, field.FieldTypeText, concatEvalFunc, oneOrMoreTextArgs},
+	FuncNameDateAdd:     FunctionInfo{FuncNameDateAdd, field.FieldTypeTime, dateAddEvalFunc, validDateAddArgs},
+	FuncNameGreaterThan: FunctionInfo{FuncNameGreaterThan, field.FieldTypeBool, greaterThanEvalFunc, twoNumberArgsBooleanResult},
+	FuncNameIf:          FunctionInfo{FuncNameIf, field.FieldTypeBool, ifEvalFunc, validIfArgs}, // TODO - Support other return types
 }
