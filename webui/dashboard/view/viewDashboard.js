@@ -10,14 +10,9 @@ function initDashboardUILayoutPanes()
 			size: 300,
 			resizable:false,
 			slidable: false,
-			spacing_open:16,
-			spacing_closed:16,
-			togglerClass:			"toggler",
-			togglerLength_open:	128,
-			togglerLength_closed: 128,
-			togglerAlign_closed: "middle",	// align to top of resizer
-			togglerAlign_open: "middle"		// align to top of resizer
-			
+			spacing_open:4,
+			spacing_closed:4,
+			initClosed:true // panel is initially closed				
 		},
 		west: {
 			size: 250,
@@ -40,12 +35,23 @@ function initDashboardUILayoutPanes()
 		mainLayout.toggle("west")
 	})
 	
+	var pageLayout = {
+		closePropertyPanel: function() {
+			mainLayout.close("east")
+		},
+		openPropertyPanel: function() {
+			mainLayout.open("east")
+		}
+	}
+	
+	return pageLayout
+	
 }
 
 
 $(document).ready(function() {	
 	 
-	initDashboardUILayoutPanes()
+	var pageLayout = initDashboardUILayoutPanes()
 			
 	initUserDropdownMenu()
 	
@@ -67,6 +73,7 @@ $(document).ready(function() {
 			console.log("dashboard view object selected: " + selectedComponentID)
 			var selectedObjRef	= getContainerObjectRef($component)
 			viewDashboardConfig.selectionFunc($component,selectedObjRef)
+			pageLayout.openPropertyPanel()
 		})
 	}
 		
@@ -75,7 +82,7 @@ $(document).ready(function() {
 		doneLoadingDashboardDataFunc: function() {
 			
 			initObjectCanvasSelectionBehavior(viewDashboardCanvasSelector, function() {
-//				initViewDashboardProperties(viewDashboardContext.dashboardID)
+				pageLayout.closePropertyPanel()
 				hideSiblingsShowOne('#dashboardViewProps')
 			})
 			
