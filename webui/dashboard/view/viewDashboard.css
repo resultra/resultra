@@ -21,7 +21,7 @@
 	padding: 0px;
 }
 
-#dashboardHeaderUILayout,#dashboardFooterUILayout
+#dashboardHeaderUILayout
 {
 	padding: 4px; /* override jQuery UI Layout padding */
 }

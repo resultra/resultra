@@ -31,7 +31,6 @@ function initDashboardUILayoutPanes()
 	
 	$('#dashboardPane').layout({
 		north: fixedUILayoutPaneAutoSizeToFitContentsParams(),
-		south: fixedUILayoutPaneAutoSizeToFitContentsParams(),
 		north__showOverflowOnHover:	true,
 		south__showOverflowOnHover:	true
 	})

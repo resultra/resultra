@@ -84,20 +84,6 @@
 	</div>
 {{end}}
 
-{{define "viewDashboardFooterControls"}}
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-sm-6">
-			TBD
-		</div>
-		<div class="col-sm-6">
-			<div class="pull-right">
-				TBD
-			</div>
-		</div>
-	</div>
-</div> <!-- record footer grid -->
-{{end}}
 
 {{define "viewDashboard"}}
 <!DOCTYPE html>
@@ -153,11 +139,7 @@
 				</div>	
 				
 			</div> <!-- ui-layout-center #recordHeader -->
-	
-			<div class=" ui-layout-south" id="dashboardFooterUILayout" >
-				{{ template "viewDashboardFooterControls"}}
-			</div>  <!-- #recordFooterUILayout ui-layout-south -->
-			
+				
 			<!-- The style is overridden on the #recordHeader and semantic UI
 			     grid divs to minimize the padding, so the buttons and selection
 				 will be relatively compact within the header.
