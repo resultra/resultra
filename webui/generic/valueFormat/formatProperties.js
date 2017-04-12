@@ -4,6 +4,8 @@ function populateNumberFormatSelection($selection) {
 	
 	$selection.append(selectOptionHTML("generic","General 1022.00"))
 	$selection.append(selectOptionHTML("percent","Percent 5.55%"))
+	$selection.append(selectOptionHTML("percent0","Percent 5%"))
+	$selection.append(selectOptionHTML("percent1","Percent 5.5%"))
 	$selection.append(selectOptionHTML("currency","Currency (USD) $1022.00"))
 	$selection.append(selectOptionHTML("currency0prec","Currency (USD) $1022"))
 		

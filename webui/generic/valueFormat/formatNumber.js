@@ -17,6 +17,10 @@ function formatNumberValue(format, rawVal) {
 	switch (format) {
 		case "percent":
 			return (Number(rawVal)*100.0).toFixed(2) + "%"
+		case "percent0":
+			return (Number(rawVal)*100.0).toFixed(0) + "%"
+		case "percent1":
+			return (Number(rawVal)*100.0).toFixed(1) + "%"
 		case "general":
 			if(isInt(rawVal)) {
 				return Number(rawVal)
