@@ -9,15 +9,14 @@ import (
 )
 
 type DashboardTemplateParams struct {
-	Title            string
-	DashboardID      string
-	DatabaseID       string
-	DatabaseName     string
-	DashboardName    string
-	NamePanelParams  propertiesSidebar.PanelTemplateParams
-	StylePanelParams propertiesSidebar.PanelTemplateParams
-	RolePanelParams  propertiesSidebar.PanelTemplateParams
-	ComponentParams  components.ComponentDesignTemplateParams
+	Title           string
+	DashboardID     string
+	DatabaseID      string
+	DatabaseName    string
+	DashboardName   string
+	NamePanelParams propertiesSidebar.PanelTemplateParams
+	RolePanelParams propertiesSidebar.PanelTemplateParams
+	ComponentParams components.ComponentDesignTemplateParams
 }
 
 func createDashboardTemplateParams(dashboardForDesign *dashboard.Dashboard) (*DashboardTemplateParams, error) {
@@ -28,15 +27,14 @@ func createDashboardTemplateParams(dashboardForDesign *dashboard.Dashboard) (*Da
 	}
 
 	templParams := DashboardTemplateParams{
-		Title:            "Design Dashboard",
-		DashboardID:      dashboardForDesign.DashboardID,
-		DatabaseID:       dashboardForDesign.ParentDatabaseID,
-		DatabaseName:     dashboardDB.Name,
-		DashboardName:    dashboardForDesign.Name,
-		NamePanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Dashboard Name", PanelID: "dashboardName"},
-		StylePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Style", PanelID: "dashboardStyle"},
-		RolePanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Roles & Privileges", PanelID: "dashboardRoles"},
-		ComponentParams:  components.DesignTemplateParams}
+		Title:           "Design Dashboard",
+		DashboardID:     dashboardForDesign.DashboardID,
+		DatabaseID:      dashboardForDesign.ParentDatabaseID,
+		DatabaseName:    dashboardDB.Name,
+		DashboardName:   dashboardForDesign.Name,
+		NamePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Dashboard Name", PanelID: "dashboardName"},
+		RolePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Roles & Privileges", PanelID: "dashboardRoles"},
+		ComponentParams: components.DesignTemplateParams}
 
 	return &templParams, nil
 }
