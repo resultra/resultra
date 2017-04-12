@@ -61,11 +61,18 @@ function summaryColumnListItem(panelParams,valSummary,elemPrefix) {
 	var listItemID = summaryColumnListItemID(elemPrefix)
 	
 	var listItemHTML = '' +
-		'<div class="list-group-item summaryColumnsListItem" id="'+listItemID+'">' +
-			'<div class="container-fluid">' +
-				summaryFieldSelectionHTML(elemPrefix) +
-				summarizeBySelectionHTML(elemPrefix) +
-				summarizeByNumberFormatHTML(elemPrefix) +
+		'<div class="list-group-item row summaryColumnsListItem" id="'+listItemID+'">' +
+			'<div class="col-sm-10">' + 
+				'<div class="container-fluid">' +
+					summaryFieldSelectionHTML(elemPrefix) +
+					summarizeBySelectionHTML(elemPrefix) +
+					summarizeByNumberFormatHTML(elemPrefix) +
+				'</div>' +
+			'</div>' +
+			'<div class="col-sm-2">' +
+				'<button type="button" class="close summaryColDeleteColButton">' +
+					'<span aria-hidden="true">&times;</span>' +
+				'</button>' +
 			'</div>' +
 		'</div>';
 		
@@ -79,6 +86,13 @@ function summaryColumnListItem(panelParams,valSummary,elemPrefix) {
 	$formatSelection.change(function() {
 		var valSummaries = getSummaryColumnValSummaries(panelParams.listElemPrefix)
 		panelParams.setColumnsFunc(valSummaries)
+	})
+	
+	var $deleteButton = $listItem.find(".summaryColDeleteColButton")
+	initButtonControlClickHandler($deleteButton, function() {
+		$listItem.remove()
+		var valSummaries = getSummaryColumnValSummaries(panelParams.listElemPrefix)
+		panelParams.setColumnsFunc(valSummaries)	
 	})
 		
 	return $listItem
