@@ -5,6 +5,19 @@ function loadBarChartProperties(barChartPropsArgs) {
 	var barChartContainer = $('#'+barChartPropsArgs.barChartID)
 	var barChartRef = getContainerObjectRef(barChartPropsArgs.$barChart)
 	var barChartElemPrefix = "barChart_"
+	
+	
+	function reloadBarChart(barChartRef) {
+		var barChartDataParams = { 
+			parentDashboardID: barChartRef.parentDashboardID,
+			barChartID: barChartRef.barChartID,
+			filterRules: barChartRef.properties.defaultFilterRules
+		}
+		jsonAPIRequest("dashboardController/getBarChartData",barChartDataParams,function(barChartData) {
+			initBarChartData(barChartRef.parentDashboardID,barChartPropsArgs.$barChart, barChartData)
+		})		
+	}
+	
 
 	var filterPropertyPanelParams = {
 		elemPrefix: barChartElemPrefix,
@@ -19,7 +32,8 @@ function loadBarChartProperties(barChartPropsArgs) {
 			}
 			jsonAPIRequest("dashboard/barChart/setDefaultFilterRules",setDefaultFiltersParams,function(updatedBarChart) {
 				console.log(" Default filters updated")
-				setContainerComponentInfo(barChartPropsArgs.$barChart,updateBarChart,updatedBarChart.barChartID)
+				reloadBarChart(updatedBarChart)
+				setContainerComponentInfo(barChartPropsArgs.$barChart,updatedBarChart,updatedBarChart.barChartID)
 			}) // set record's number field value
 		}
 	}
@@ -36,7 +50,8 @@ function loadBarChartProperties(barChartPropsArgs) {
 				newTitle:newTitle
 			}
 			jsonAPIRequest("dashboard/barChart/setTitle",setTitleParams,function(updatedBarChart) {
-					barChartContainer.data("barChartRef",updatedBarChart)
+				reloadBarChart(updatedBarChart)
+				setContainerComponentInfo(barChartPropsArgs.$barChart,updatedBarChart,updatedBarChart.barChartID)
 			})
 
 		}
@@ -55,7 +70,8 @@ function loadBarChartProperties(barChartPropsArgs) {
 				xAxisValueGrouping:newValueGroupingParams
 			}
 			jsonAPIRequest("dashboard/barChart/setXAxisValueGrouping",setXAxisValGroupingParams,function(updatedBarChart) {
-					barChartContainer.data("barChartRef",updatedBarChart)
+				reloadBarChart(updatedBarChart)
+				setContainerComponentInfo(barChartPropsArgs.$barChart,updatedBarChart,updatedBarChart.barChartID)
 			})
 		}
 
@@ -74,7 +90,8 @@ function loadBarChartProperties(barChartPropsArgs) {
 			}
 			jsonAPIRequest("dashboard/barChart/setYAxisSummaryVals",
 								setYAxisSummaryParams,function(updatedBarChart) {
-				barChartContainer.data("barChartRef",updatedBarChart)
+				reloadBarChart(updatedBarChart)
+				setContainerComponentInfo(barChartPropsArgs.$barChart,updatedBarChart,updatedBarChart.barChartID)
 			})
 
 		}

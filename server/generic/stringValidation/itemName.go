@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-var itemNameRegexp = regexp.MustCompile(`^[\p{L}0-9][\p{L}0-9 \'\.\-]{0,31}$`)
+var itemNameRegexp = regexp.MustCompile(`^[\p{L}0-9][\p{L}0-9 \'\.\-\&\(\)\%\$\#\/]{0,63}$`)
 
 func WellFormedItemName(itemName string) bool {
 

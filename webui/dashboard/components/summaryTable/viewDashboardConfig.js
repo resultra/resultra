@@ -7,7 +7,7 @@ function summaryTableViewDashboardConfig(summaryTableRef) {
 	// be modified there. 
 	var currFilterRules = summaryTableRef.properties.defaultFilterRules
 		
-	function reloadSummaryTable() {
+	function reloadSummaryTable($summaryTableContainer) {
 	
 		var getDataParams = {
 			parentDashboardID:summaryTableRef.parentDashboardID,
@@ -16,7 +16,7 @@ function summaryTableViewDashboardConfig(summaryTableRef) {
 		}
 		jsonAPIRequest("dashboardController/getSummaryTableData",getDataParams,function(updatedSummaryTableData) {
 			console.log("Repopulating summary table after changing filter selection")
-			initSummaryTableData(summaryTableRef.parentDashboardID,updatedSummaryTableData)
+			initSummaryTableData(summaryTableRef.parentDashboardID,$summaryTableContainer,updatedSummaryTableData)
 		})
 		
 	}
@@ -32,10 +32,10 @@ function summaryTableViewDashboardConfig(summaryTableRef) {
 				initDone: function () {},
 				updateFilterRules: function (updatedFilterRules) {
 					currFilterRules = updatedFilterRules
-					reloadSummaryTable()
+					reloadSummaryTable($container)
 				},
 				refilterWithCurrentFilterRules: function() {
-					reloadSummaryTable()
+					reloadSummaryTable($container)
 				}
 			}
 

@@ -5,6 +5,22 @@ function loadSummaryTableProperties(propArgs) {
 
 	var summaryTableRef = getContainerObjectRef(propArgs.$summaryTable)
 	var summaryTableElemPrefix = "summaryTable_"
+	
+	
+	function reloadSummaryTable(summaryTableRef) {
+	
+		var getDataParams = {
+			parentDashboardID:summaryTableRef.parentDashboardID,
+			summaryTableID:summaryTableRef.summaryTableID,
+			filterRules: summaryTableRef.properties.defaultFilterRules
+		}
+		jsonAPIRequest("dashboardController/getSummaryTableData",getDataParams,function(updatedSummaryTableData) {
+			console.log("Repopulating summary table after changing properties")
+			initSummaryTableData(summaryTableRef.parentDashboardID,propArgs.$summaryTable,updatedSummaryTableData)
+		})
+		
+	}
+	
 
 
 	var titlePropertyPanelParams = {
@@ -18,6 +34,7 @@ function loadSummaryTableProperties(propArgs) {
 				newTitle:newTitle
 			}
 			jsonAPIRequest("dashboard/summaryTable/setTitle",setTitleParams,function(updatedSummaryTable) {
+				reloadSummaryTable(updatedSummaryTable)
 				setContainerComponentInfo(propArgs.$summaryTable,updatedSummaryTable,updatedSummaryTable.summaryTableID)
 			})
 
@@ -37,6 +54,7 @@ function loadSummaryTableProperties(propArgs) {
 				rowValueGrouping:newValueGroupingParams
 			}
 			jsonAPIRequest("dashboard/summaryTable/setRowValueGrouping",setRowGroupingParams,function(updatedSummaryTable) {
+				reloadSummaryTable(updatedSummaryTable)
 				setContainerComponentInfo(propArgs.$summaryTable,updatedSummaryTable,updatedSummaryTable.summaryTableID)
 			})
 		}
@@ -58,6 +76,7 @@ function loadSummaryTableProperties(propArgs) {
 			}
 			jsonAPIRequest("dashboard/summaryTable/setDefaultFilterRules",setDefaultFiltersParams,function(updatedSummaryTable) {
 				console.log(" Default filters updated")
+				reloadSummaryTable(updatedSummaryTable)
 				setContainerComponentInfo(propArgs.$summaryTable,updatedSummaryTable,updatedSummaryTable.summaryTableID)
 			}) // set record's number field value
 
@@ -76,6 +95,7 @@ function loadSummaryTableProperties(propArgs) {
 				summaryTableID: summaryTableRef.summaryTableID,
 				columnValSummaries: newColumns }
 			jsonAPIRequest("dashboard/summaryTable/setColumns",setColumnParams,function(updatedSummaryTable) {
+				reloadSummaryTable(updatedSummaryTable)
 				setContainerComponentInfo(propArgs.$summaryTable,updatedSummaryTable,updatedSummaryTable.summaryTableID)
 			})
 		}
