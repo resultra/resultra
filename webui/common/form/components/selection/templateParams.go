@@ -48,7 +48,7 @@ func init() {
 			DialogTitle: "New Selection",
 			FieldInfoPrompt: `Values from selections are stored in fields. Either a new field can be created for this
 					selection, or an existing field can be used.`,
-			NewFieldInfoPrompt: `Enter the parameters for the new field to store this selection's values.'`}}
+			NewFieldInfoPrompt: `Enter the parameters for the new field to store this selection's values.`}}
 
 	ViewTemplateParams = SelectionViewTemplateParams{
 		ElemPrefix:          elemPrefix,
