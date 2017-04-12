@@ -210,6 +210,7 @@ function initDashboardComponentSummaryColsPropertyPanel(panelParams) {
 			function(valueSummaryFieldsByID) {
 		var listSelector = summaryColListSelector(panelParams.listElemPrefix)
 		$(listSelector).empty()
+		var $colList = $(listSelector)
 		var colValSummaries = panelParams.initialColumnValSummaries
 		for(var colIndex = 0; colIndex < colValSummaries.length; colIndex++) {
 			var colValSummary = colValSummaries[colIndex]
@@ -223,6 +224,16 @@ function initDashboardComponentSummaryColsPropertyPanel(panelParams) {
 			console.log("Adding summary column")
 			addNewColumnSummaryListItem(panelParams, valueSummaryFieldsByID)		
 		})
+		
+	    $colList .sortable({
+			placeholder: "ui-state-highlight",
+			cursor:"move",
+			update: function( event, ui ) {			
+				var valSummaries = getSummaryColumnValSummaries(panelParams.listElemPrefix)
+				panelParams.setColumnsFunc(valSummaries)
+			}
+	    });
+		
 		
 	})
 	
