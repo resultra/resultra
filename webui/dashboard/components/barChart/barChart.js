@@ -43,6 +43,12 @@ function drawBarChart($barChart, barChartData) {
 	    }]
 	  },
 	  options: {
+		  legend: {
+		              display: false
+		           },
+           tooltips: {
+              enabled: false
+           },
 		  title: {
 		              display: true,
 		              text: barChartData.title
