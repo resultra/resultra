@@ -13,6 +13,7 @@ import (
 
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/form/components"
+	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 	itemListCommon "resultra/datasheet/webui/itemList/common"
@@ -33,16 +34,17 @@ func init() {
 }
 
 type ViewListTemplateParams struct {
-	Title                string
-	FormID               string
-	ListID               string
-	DatabaseID           string
-	DatabaseName         string
-	ListName             string
-	DisplayPanelParams   propertiesSidebar.PanelTemplateParams
-	FilteringPanelParams propertiesSidebar.PanelTemplateParams
-	SortPanelParams      propertiesSidebar.PanelTemplateParams
-	ComponentParams      components.ComponentViewTemplateParams
+	Title                   string
+	FormID                  string
+	ListID                  string
+	DatabaseID              string
+	DatabaseName            string
+	ListName                string
+	DisplayPanelParams      propertiesSidebar.PanelTemplateParams
+	FilteringPanelParams    propertiesSidebar.PanelTemplateParams
+	SortPanelParams         propertiesSidebar.PanelTemplateParams
+	ComponentParams         components.ComponentViewTemplateParams
+	FilterConfigPanelParams recordFilter.FilterPanelTemplateParams
 }
 
 func ViewList(w http.ResponseWriter, r *http.Request) {
@@ -72,6 +74,8 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		elemPrefix := "form_"
+
 		templParams := ViewListTemplateParams{Title: "View List",
 			FormID:       formID,
 			ListID:       listID,
@@ -82,6 +86,7 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 				PanelID: "viewListDisplay"},
 			FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering",
 				PanelID: "viewFormFiltering"},
+			FilterConfigPanelParams: recordFilter.NewFilterPanelTemplateParams(elemPrefix),
 			SortPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Sorting",
 				PanelID: "viewFormSorting"},
 			ComponentParams: components.ViewTemplateParams}

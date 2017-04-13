@@ -4,9 +4,10 @@
 
 
 {{define "recordFilterRulesButtons"}}
-		<button type="button" class="btn btn-default btn-xs" id="{{.}}FilterRecordsResetFiltersButton">
+		<button type="button" class="btn btn-default btn-xs" id="{{.ElemPrefix}}FilterRecordsResetFiltersButton">
 		  <span class="fa fa-undo" aria-hidden="true"></span> Reset to Default
 		</button>		
+		{{template "fieldSelectionDropdown" .FieldSelectionParams}}
 {{end}}
 
 {{define "recordFilterPaneFooter"}}
@@ -26,7 +27,7 @@
 
 {{define "filterRecordsPanelFilterList"}}
 
-	{{template "recordFilterRuleList" .}}
+	{{template "recordFilterRuleList" .ElemPrefix}}
 	
 	{{template "recordFilterRuleTemplates"}}
 
@@ -36,7 +37,7 @@
 
 	<div class="noPadding noScroll">
 		{{template "filterRecordsPanelFilterList" .}}
-		{{template "recordFilterMatchLogic" .}}
+		{{template "recordFilterMatchLogic" .ElemPrefix}}
 		<hr class="recordFilterPanelSeparator">
 		{{template "recordFilterPaneFooter" .}}
 	</div>
