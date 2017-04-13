@@ -33,7 +33,7 @@ func groupRecords(valGrouping values.ValGrouping,
 	// group label.
 	groupLabelValGroupMap := map[string]*ValGroup{}
 	for _, currRecValResults := range recValResults {
-		groupLabel, lblErr := recordGroupLabel(*groupingField, currRecValResults)
+		groupLabel, lblErr := recordGroupLabel(valGrouping, *groupingField, currRecValResults)
 		if lblErr != nil {
 			return nil, fmt.Errorf("groupRecords: Error getting label to group records: error = %v", lblErr)
 		}
@@ -60,7 +60,32 @@ func groupRecords(valGrouping values.ValGrouping,
 		GroupingLabel: groupingLabel}, nil
 }
 
-func recordGroupLabel(fieldGroup field.Field, recValResults recordValue.RecordValueResults) (string, error) {
+func groupTimeFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Field,
+	recValResults recordValue.RecordValueResults) (string, error) {
+
+	if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
+		timeVal, valFound := recValResults.FieldValues.GetTimeFieldValue(fieldGroup.FieldID)
+		if !valFound {
+			return "", fmt.Errorf("groupTimeFieldRecordVal: Unabled to retrieve value for grouping label")
+		} else {
+			switch valGrouping.GroupValsBy {
+			case values.ValGroupByNone:
+				return "All Dates", nil
+			case values.ValGroupByDay:
+				return timeVal.Format("2006-01-02"), nil
+			case values.ValGroupByMonthYear:
+				return timeVal.Format("Jan 2006"), nil
+			default:
+				return "", fmt.Errorf("Invalid grouping = %v for time field type", valGrouping.GroupValsBy)
+			} // switch groupValsBy
+		}
+	} else {
+		return "BLANK", nil
+	}
+}
+
+func recordGroupLabel(valGrouping values.ValGrouping, fieldGroup field.Field,
+	recValResults recordValue.RecordValueResults) (string, error) {
 	switch fieldGroup.Type {
 	case field.FieldTypeText:
 		if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
@@ -76,7 +101,7 @@ func recordGroupLabel(fieldGroup field.Field, recValResults recordValue.RecordVa
 	case field.FieldTypeNumber:
 		return "All Numbers", nil // TODO - Group by number and/or bucket the values
 	case field.FieldTypeTime:
-		return "All Dates", nil // TODO - Group by date and/or bucket the values by day, month, etc.
+		return groupTimeFieldRecordVal(valGrouping, fieldGroup, recValResults)
 	}
 	return "", fmt.Errorf("recordGroupLabel: unsupported grouping: fieldRef = %+v", fieldGroup)
 }

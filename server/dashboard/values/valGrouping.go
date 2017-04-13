@@ -6,9 +6,10 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
-const valGroupByNone string = "none"
-const valGroupByDay string = "day"
-const valGroupByBucket string = "bucket"
+const ValGroupByNone string = "none"
+const ValGroupByDay string = "day"
+const ValGroupByMonthYear string = "monthYear"
+const ValGroupByBucket string = "bucket"
 
 // ValGrouping represents a grouping of field values for purposes of summarizing
 // in bar charts, lines charts, pie charts, and summary tables.
@@ -55,16 +56,16 @@ type NewValGroupingParams struct {
 
 func validateFieldTypeWithGrouping(fieldType string, groupValsBy string, bucketWidth float64) error {
 	switch groupValsBy {
-	case valGroupByNone:
+	case ValGroupByNone:
 		return nil
-	case valGroupByBucket:
+	case ValGroupByBucket:
 		if fieldType != field.FieldTypeNumber {
 			return fmt.Errorf("Invalid grouping = %v for field type = %v", groupValsBy, fieldType)
 		}
 		if bucketWidth <= 0.0 {
 			return fmt.Errorf("Invalid grouping = %v for field type = %v, bucket width must be > 0.0", groupValsBy, fieldType)
 		}
-	case valGroupByDay:
+	case ValGroupByDay, ValGroupByMonthYear:
 		if fieldType != field.FieldTypeTime {
 			return fmt.Errorf("Invalid grouping = %v for field type = %v", groupValsBy, fieldType)
 		}
@@ -101,11 +102,11 @@ func (valGrouping ValGrouping) GroupingLabel() (string, error) {
 	}
 
 	switch valGrouping.GroupValsBy {
-	case valGroupByNone:
+	case ValGroupByNone:
 		return groupingField.Name, nil
-	case valGroupByBucket:
+	case ValGroupByBucket:
 		return "TBD", nil
-	case valGroupByDay:
+	case ValGroupByDay, ValGroupByMonthYear:
 		return "TBD", nil
 	default:
 		return "", fmt.Errorf("GroupingLabel: unsupported grouping type: %v", valGrouping.GroupValsBy)

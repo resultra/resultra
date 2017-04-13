@@ -10,7 +10,8 @@ function populateDashboardValueGroupingSelection($selection,fieldType) {
 	}
 	else if (fieldType === fieldTypeTime) {
 		$selection.append(selectOptionHTML("none","Don't group values"))
-		$selection.append(selectOptionHTML("monthAndYear","Month and year"))	
+		$selection.append(selectOptionHTML("day","Day"))	
+		$selection.append(selectOptionHTML("monthYear","Month and year"))	
 	}
 	else {
 		console.log("unrecocognized field type: " + fieldType)
