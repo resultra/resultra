@@ -18,6 +18,28 @@ function loadBarChartProperties(barChartPropsArgs) {
 		})		
 	}
 	
+	var preFilterBarCharElemPrefix = "barChartPreFilter_"
+	var preFilterPropertyPanelParams = {
+		elemPrefix: preFilterBarCharElemPrefix,
+		databaseID: barChartPropsArgs.databaseID,
+		defaultFilterRules: barChartRef.properties.preFilterRules,
+		initDone: function () {},
+		updateFilterRules: function (updatedFilterRules) {
+			var setPreFiltersParams = {
+				parentDashboardID:barChartPropsArgs.dashboardID,
+				barChartID: barChartRef.barChartID,
+				preFilterRules: updatedFilterRules
+			}
+			jsonAPIRequest("dashboard/barChart/setPreFilterRules",setPreFiltersParams,function(updatedBarChart) {
+				console.log(" Default filters updated")
+				reloadBarChart(updatedBarChart)
+				setContainerComponentInfo(barChartPropsArgs.$barChart,updatedBarChart,updatedBarChart.barChartID)
+			}) 
+		}
+	}
+	initFilterPropertyPanel(preFilterPropertyPanelParams)
+	
+	
 
 	var filterPropertyPanelParams = {
 		elemPrefix: barChartElemPrefix,

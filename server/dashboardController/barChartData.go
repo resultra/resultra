@@ -31,11 +31,9 @@ func getOneBarChartData(barChart *barChart.BarChart, filterRules recordFilter.Re
 
 	// TODO - Store the list of filters with the bar chart and include it in the query.
 	sortRules := []recordSortDataModel.RecordSortRule{}
-	// TODO - Fully support pre-filtering for bar charts instead of no prefiltering.
-	preFilterRules := recordFilter.NewDefaultRecordFilterRuleSet()
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
 		DatabaseID:     parentDashboard.ParentDatabaseID,
-		PreFilterRules: preFilterRules,
+		PreFilterRules: barChart.Properties.PreFilterRules,
 		FilterRules:    filterRules,
 		SortRules:      sortRules}
 	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(getRecordParams)

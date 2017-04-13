@@ -129,3 +129,15 @@ func (params SetDefaultFilterRulesParams) updateBarChartProps(barChart *BarChart
 
 	return nil
 }
+
+type SetPreFilterRulesParams struct {
+	BarChartUniqueIDHeader
+	PreFilterRules recordFilter.RecordFilterRuleSet `json:"preFilterRules"`
+}
+
+func (params SetPreFilterRulesParams) updateBarChartProps(barChart *BarChart) error {
+
+	barChart.Properties.PreFilterRules = params.PreFilterRules
+
+	return nil
+}

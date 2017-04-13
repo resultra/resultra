@@ -27,6 +27,7 @@ type BarChartProps struct {
 	YAxisVals values.ValSummary `json:"yAxisValSummary"`
 
 	DefaultFilterRules recordFilter.RecordFilterRuleSet `json:"defaultFilterRules"`
+	PreFilterRules     recordFilter.RecordFilterRuleSet `json:"preFilterRules"`
 }
 
 func (srcProps BarChartProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*BarChartProps, error) {
@@ -51,6 +52,12 @@ func (srcProps BarChartProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*Bar
 	}
 	destProps.DefaultFilterRules = *clonedFilterRules
 
+	clonedPreFilterRules, err := srcProps.PreFilterRules.Clone(remappedIDs)
+	if err != nil {
+		return nil, fmt.Errorf("BarChartProps.Clone: %v", err)
+	}
+	destProps.PreFilterRules = *clonedPreFilterRules
+
 	return &destProps, nil
 
 }
@@ -59,7 +66,8 @@ func newDefaultBarChartProps() BarChartProps {
 
 	props := BarChartProps{
 		Title:              "",
-		DefaultFilterRules: recordFilter.NewDefaultRecordFilterRuleSet()}
+		DefaultFilterRules: recordFilter.NewDefaultRecordFilterRuleSet(),
+		PreFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet()}
 
 	return props
 }
