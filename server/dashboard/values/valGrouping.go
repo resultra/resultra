@@ -106,8 +106,10 @@ func (valGrouping ValGrouping) GroupingLabel() (string, error) {
 		return groupingField.Name, nil
 	case ValGroupByBucket:
 		return "TBD", nil
-	case ValGroupByDay, ValGroupByMonthYear:
-		return "TBD", nil
+	case ValGroupByDay:
+		return "Date", nil
+	case ValGroupByMonthYear:
+		return "Month and Year", nil
 	default:
 		return "", fmt.Errorf("GroupingLabel: unsupported grouping type: %v", valGrouping.GroupValsBy)
 	} // switch groupValsBy

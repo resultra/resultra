@@ -8,6 +8,9 @@ function populateDashboardValueGroupingSelection($selection,fieldType) {
 	else if (fieldType === fieldTypeText) {
 		$selection.append(selectOptionHTML("none","Don't group values"))
 	}
+	else if (fieldType === fieldTypeBool) {
+		$selection.append(selectOptionHTML("none","Group into true and false"))
+	}
 	else if (fieldType === fieldTypeTime) {
 		$selection.append(selectOptionHTML("none","Don't group values"))
 		$selection.append(selectOptionHTML("day","Day"))	
