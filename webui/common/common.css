@@ -29,6 +29,10 @@
 	padding: 0px; /* Override jQuery UI padding */
 }
 
+.noScroll {
+	overflow: none;
+}
+
 
 .initiallyHidden {
 	display:none;
