@@ -22,8 +22,9 @@ type BarChartDesignTemplateParams struct {
 
 // Template parameters when the summary table is in view mode
 type BarChartViewTemplateParams struct {
-	ElemPrefix           string
-	FilteringPanelParams propertiesSidebar.PanelTemplateParams
+	ElemPrefix              string
+	FilteringPanelParams    propertiesSidebar.PanelTemplateParams
+	FilterConfigPanelParams recordFilter.FilterPanelTemplateParams
 }
 
 var DesignTemplateParams BarChartDesignTemplateParams
@@ -55,7 +56,8 @@ func init() {
 		PreFilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(preFilterElemPrefix)}
 
 	ViewTemplateParams = BarChartViewTemplateParams{
-		ElemPrefix:           elemPrefix,
-		FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "barChartFiltering"}}
+		ElemPrefix:              elemPrefix,
+		FilteringPanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "barChartFiltering"},
+		FilterConfigPanelParams: recordFilter.NewFilterPanelTemplateParams(elemPrefix)}
 
 }

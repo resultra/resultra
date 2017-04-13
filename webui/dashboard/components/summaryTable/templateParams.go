@@ -23,8 +23,9 @@ type SummaryTableDesignTemplateParams struct {
 
 // Template parameters when the summary table is in view mode
 type SummaryTableViewTemplateParams struct {
-	ElemPrefix           string
-	FilteringPanelParams propertiesSidebar.PanelTemplateParams
+	ElemPrefix              string
+	FilteringPanelParams    propertiesSidebar.PanelTemplateParams
+	FilterConfigPanelParams recordFilter.FilterPanelTemplateParams
 }
 
 var DesignTemplateParams SummaryTableDesignTemplateParams
@@ -56,6 +57,7 @@ func init() {
 		PreFilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(preFilterElemPrefix)}
 
 	ViewTemplateParams = SummaryTableViewTemplateParams{
-		ElemPrefix:           elemPrefix,
-		FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "summaryTableFiltering"}}
+		ElemPrefix:              elemPrefix,
+		FilteringPanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "summaryTableFiltering"},
+		FilterConfigPanelParams: recordFilter.NewFilterPanelTemplateParams(elemPrefix)}
 }
