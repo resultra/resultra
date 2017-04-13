@@ -129,3 +129,15 @@ func (params SetSummaryTableDefaultFilterRulesParams) updateSummaryTableProps(su
 
 	return nil
 }
+
+type SetSummaryTablePreFilterRulesParams struct {
+	SummaryTableUniqueIDHeader
+	PreFilterRules recordFilter.RecordFilterRuleSet `json:"preFilterRules"`
+}
+
+func (params SetSummaryTablePreFilterRulesParams) updateSummaryTableProps(summaryTable *SummaryTable) error {
+
+	summaryTable.Properties.PreFilterRules = params.PreFilterRules
+
+	return nil
+}

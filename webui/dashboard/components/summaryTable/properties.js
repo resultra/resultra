@@ -62,6 +62,27 @@ function loadSummaryTableProperties(propArgs) {
 	}
 	initDashboardValueGroupingPropertyPanel(rowGroupingPropertyPanelParams)
 
+	var preFilterElemPrefix = "summaryTablePreFilter_"
+	var preFilterPropertyPanelParams = {
+		elemPrefix: preFilterElemPrefix,
+		databaseID: propArgs.databaseID,
+		defaultFilterRules: summaryTableRef.properties.preFilterRules,
+		initDone: function () {},
+		updateFilterRules: function (updatedFilterRules) {
+			var setDefaultFiltersParams = {
+				parentDashboardID:propArgs.dashboardID,
+				summaryTableID: summaryTableRef.summaryTableID,
+				preFilterRules: updatedFilterRules
+			}
+			jsonAPIRequest("dashboard/summaryTable/setPreFilterRules",setDefaultFiltersParams,function(updatedSummaryTable) {
+				console.log(" Default filters updated")
+				reloadSummaryTable(updatedSummaryTable)
+				setContainerComponentInfo(propArgs.$summaryTable,updatedSummaryTable,updatedSummaryTable.summaryTableID)
+			}) // set record's number field value
+
+		}
+	}
+	initFilterPropertyPanel(preFilterPropertyPanelParams)
 
 	var filterPropertyPanelParams = {
 		elemPrefix: summaryTableElemPrefix,
@@ -83,6 +104,10 @@ function loadSummaryTableProperties(propArgs) {
 		}
 	}
 	initFilterPropertyPanel(filterPropertyPanelParams)
+
+
+
+
 
 	var columnsPropertyPanelParams = {
 		listElemPrefix: summaryTableElemPrefix,

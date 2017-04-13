@@ -23,11 +23,9 @@ func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable, filterRules
 	}
 
 	sortRules := []recordSortDataModel.RecordSortRule{}
-	// TODO - Fully support pre-filtering for summary tables instead of no prefiltering.
-	preFilterRules := recordFilter.NewDefaultRecordFilterRuleSet()
 	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
 		DatabaseID:     parentDashboard.ParentDatabaseID,
-		PreFilterRules: preFilterRules,
+		PreFilterRules: summaryTable.Properties.PreFilterRules,
 		FilterRules:    filterRules,
 		SortRules:      sortRules}
 	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(getRecordParams)

@@ -19,6 +19,11 @@
 		{{template "propertyPanelPrefix" .TitlePanelParams}}
 			{{template "summaryTableTitleProps"}}	
 		{{template "propertyPanelSuffix"}}
+		
+		{{template "propertyPanelPrefix" .PreFilteringPanelParams}}
+			{{template "recordFilterPropertyPanel" .PreFilterPropPanelParams}}
+		{{template "propertyPanelSuffix"}}
+		
 
 		{{template "propertyPanelPrefix" .FilteringPanelParams}}
 			{{template "recordFilterPropertyPanel" .FilterPropPanelParams}}

@@ -9,14 +9,16 @@ import (
 
 // Template parameters when the summary table is in design mode
 type SummaryTableDesignTemplateParams struct {
-	ElemPrefix             string
-	RowValueGroupingParams newComponentDialog.ValueGroupingTemplateParams
-	ColValueSummaryParams  valueSummary.ValueSummaryTemplateParams
-	TitlePanelParams       propertiesSidebar.PanelTemplateParams
-	RowPanelParams         propertiesSidebar.PanelTemplateParams
-	ColPanelParams         propertiesSidebar.PanelTemplateParams
-	FilteringPanelParams   propertiesSidebar.PanelTemplateParams
-	FilterPropPanelParams  recordFilter.FilterPanelTemplateParams
+	ElemPrefix               string
+	RowValueGroupingParams   newComponentDialog.ValueGroupingTemplateParams
+	ColValueSummaryParams    valueSummary.ValueSummaryTemplateParams
+	TitlePanelParams         propertiesSidebar.PanelTemplateParams
+	RowPanelParams           propertiesSidebar.PanelTemplateParams
+	ColPanelParams           propertiesSidebar.PanelTemplateParams
+	FilteringPanelParams     propertiesSidebar.PanelTemplateParams
+	PreFilteringPanelParams  propertiesSidebar.PanelTemplateParams
+	FilterPropPanelParams    recordFilter.FilterPanelTemplateParams
+	PreFilterPropPanelParams recordFilter.FilterPanelTemplateParams
 }
 
 // Template parameters when the summary table is in view mode
@@ -31,6 +33,7 @@ var ViewTemplateParams SummaryTableViewTemplateParams
 func init() {
 
 	elemPrefix := "summaryTable_"
+	preFilterElemPrefix := "summaryTablePreFilter_"
 
 	rowGroupingParams := newComponentDialog.ValueGroupingTemplateParams{
 		elemPrefix, "Configure which field is used to group values into rows",
@@ -41,14 +44,16 @@ func init() {
 		"Field to summarize with", "Summarize values by"}
 
 	DesignTemplateParams = SummaryTableDesignTemplateParams{
-		ElemPrefix:             elemPrefix,
-		RowValueGroupingParams: rowGroupingParams,
-		ColValueSummaryParams:  valueSummaryParams,
-		TitlePanelParams:       propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "summaryTableTitle"},
-		RowPanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Rows", PanelID: "summaryTableRows"},
-		ColPanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Columns", PanelID: "summaryTableCols"},
-		FilteringPanelParams:   propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "summaryTableFiltering"},
-		FilterPropPanelParams:  recordFilter.NewFilterPanelTemplateParams(elemPrefix)}
+		ElemPrefix:               elemPrefix,
+		RowValueGroupingParams:   rowGroupingParams,
+		ColValueSummaryParams:    valueSummaryParams,
+		TitlePanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "summaryTableTitle"},
+		RowPanelParams:           propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Rows", PanelID: "summaryTableRows"},
+		ColPanelParams:           propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Columns", PanelID: "summaryTableCols"},
+		PreFilteringPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Pre-Filtering", PanelID: "summaryTablePreFiltering"},
+		FilteringPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Filtering", PanelID: "summaryTableFiltering"},
+		FilterPropPanelParams:    recordFilter.NewFilterPanelTemplateParams(elemPrefix),
+		PreFilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(preFilterElemPrefix)}
 
 	ViewTemplateParams = SummaryTableViewTemplateParams{
 		ElemPrefix:           elemPrefix,
