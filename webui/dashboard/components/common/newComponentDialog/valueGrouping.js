@@ -25,22 +25,7 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix,database
 		
 		return validationResults
 	}
-	
-	function populateValueGroupingSelection(fieldType) {
-		$(groupBySelection.selector).empty()
-		$(groupBySelection.selector).append(defaultSelectOptionPromptHTML("Select a grouping"))
-		if(fieldType == fieldTypeNumber) {
-			$(groupBySelection.selector).append(selectOptionHTML("none","Don't group values"))
-			$(groupBySelection.selector).append(selectOptionHTML("bucket","Bucket values"))
-		}
-		else if (fieldType == fieldTypeText) {
-			$(groupBySelection.selector).append(selectOptionHTML("none","Don't group values"))
-		}
-		else {
-			console.log("unrecocognized field type: " + fieldType)
-		}
-	}
-	
+		
 	function getPanelValues() {
 		var valGrouping = {
 			fieldID: groupedFieldSelection.val(),
@@ -110,7 +95,7 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix,database
 					if(fieldID in valueGroupingFieldsByID) {
 						fieldInfo = valueGroupingFieldsByID[fieldID]			
 			        	console.log("select field: field ID = " + fieldID  + " name = " + fieldInfo.name + " type = " + fieldInfo.type)
-						populateValueGroupingSelection(fieldInfo.type)
+						populateDashboardValueGroupingSelection($(groupBySelection.selector),fieldInfo.type)
 						$(groupBySelection.selector).attr("disabled",false)
 					}
 			    });

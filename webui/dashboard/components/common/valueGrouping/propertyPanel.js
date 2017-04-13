@@ -25,20 +25,6 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 		
 	validator.resetForm()	
 
-	function populateValueGroupingSelection(fieldType) {
-		$(groupBySelectionElemInfo.selector).empty()
-		$(groupBySelectionElemInfo.selector).append(defaultSelectOptionPromptHTML("Select a grouping"))
-		if(fieldType == fieldTypeNumber) {
-			$(groupBySelectionElemInfo.selector).append(selectOptionHTML("none","Don't group values"))
-			$(groupBySelectionElemInfo.selector).append(selectOptionHTML("bucket","Bucket values"))
-		}
-		else if (fieldType == fieldTypeText) {
-			$(groupBySelectionElemInfo.selector).append(selectOptionHTML("none","Don't group values"))
-		}
-		else {
-			console.log("unrecocognized field type: " + fieldType)
-		}
-	}
 	
 	function toggleBucketSizeForGrouping(grouping) {
 		if (grouping == "bucket") {
@@ -55,7 +41,8 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 		// Initialize the controls to the existing values
 		$(groupedFieldSelectionElemInfo.selector).val(panelParams.valGroupingProps.groupValsByFieldID)
 		var existingFieldInfo = valueGroupingFieldsByID[panelParams.valGroupingProps.groupValsByFieldID]
-		populateValueGroupingSelection(existingFieldInfo.type)
+		populateDashboardValueGroupingSelection($(groupBySelectionElemInfo.selector),existingFieldInfo.type)
+		
 		$(groupBySelectionElemInfo.selector).val(panelParams.valGroupingProps.groupValsBy)
 		disableButton(saveChangesButtonElemInfo.selector)
 		toggleBucketSizeForGrouping(panelParams.valGroupingProps.groupValsBy)
@@ -64,7 +51,7 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 			if(fieldID in valueGroupingFieldsByID) {
 				fieldInfo = valueGroupingFieldsByID[fieldID]			
 		    	console.log("select field: field ID = " + fieldID  + " name = " + fieldInfo.name + " type = " + fieldInfo.type)
-				populateValueGroupingSelection(fieldInfo.type)
+				populateDashboardValueGroupingSelection($(groupBySelectionElemInfo.selector),fieldInfo.type)
 				$(groupBySelectionElemInfo.selector).attr("disabled",false)
 				
 				// Disable the Save button until a "Group Values By" selection is also made
