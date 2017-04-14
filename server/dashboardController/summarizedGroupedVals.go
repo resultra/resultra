@@ -13,6 +13,7 @@ type GroupDataRow struct {
 
 type GroupedSummarizedVals struct {
 	GroupedDataRows      []GroupDataRow `json:"groupedDataRows"`
+	OverallDataRow       GroupDataRow   `json:"overallDataRow"`
 	GroupingLabel        string         `json:"groupingLabel"`
 	SummaryLabels        []string       `json:"summaryLabels"`
 	SummaryNumberFormats []string       `json:"summaryNumberFormats"`
@@ -137,29 +138,41 @@ func summarizeOneGroupedVal(recordsInGroup []recordValue.RecordValueResults, sum
 
 }
 
+func computeOneGroupSummarizedVals(valGroup ValGroup, summaries []values.ValSummary) (*GroupDataRow, error) {
+	summaryVals := []float64{}
+	for _, currValSummary := range summaries {
+
+		summaryVal, summaryErr := summarizeOneGroupedVal(valGroup.RecordsInGroup, currValSummary)
+		if summaryErr != nil {
+			return nil, fmt.Errorf("summarizeGroupedRecords: Error summarizing value: %v", summaryErr)
+		}
+
+		summaryVals = append(summaryVals, summaryVal)
+	}
+
+	groupDataRow := GroupDataRow{
+		GroupLabel:  valGroup.GroupLabel,
+		SummaryVals: summaryVals}
+
+	return &groupDataRow, nil
+
+}
+
 func summarizeGroupedRecords(valGroupingResult *ValGroupingResult, summaries []values.ValSummary) (*GroupedSummarizedVals, error) {
 
 	groupDataRows := []GroupDataRow{}
 
 	for _, currValGroup := range valGroupingResult.ValGroups {
-
-		summaryVals := []float64{}
-		for _, currValSummary := range summaries {
-
-			summaryVal, summaryErr := summarizeOneGroupedVal(currValGroup.RecordsInGroup, currValSummary)
-			if summaryErr != nil {
-				return nil, fmt.Errorf("summarizeGroupedRecords: Error summarizing value: %v", summaryErr)
-			}
-
-			summaryVals = append(summaryVals, summaryVal)
+		groupDataRow, err := computeOneGroupSummarizedVals(currValGroup, summaries)
+		if err != nil {
+			return nil, fmt.Errorf("summarizeGroupedRecords: Error summarizing value: %v", err)
 		}
+		groupDataRows = append(groupDataRows, *groupDataRow)
+	}
 
-		groupDataRow := GroupDataRow{
-			GroupLabel:  currValGroup.GroupLabel,
-			SummaryVals: summaryVals}
-
-		groupDataRows = append(groupDataRows, groupDataRow)
-
+	overallDataRow, overallErr := computeOneGroupSummarizedVals(valGroupingResult.OverallGroup, summaries)
+	if overallErr != nil {
+		return nil, fmt.Errorf("summarizeGroupedRecords: Error summarizing value: %v", overallErr)
 	}
 
 	summaryLabels := []string{}
@@ -180,6 +193,7 @@ func summarizeGroupedRecords(valGroupingResult *ValGroupingResult, summaries []v
 		GroupedDataRows:      groupDataRows,
 		GroupingLabel:        valGroupingResult.GroupingLabel,
 		SummaryLabels:        summaryLabels,
+		OverallDataRow:       *overallDataRow,
 		SummaryNumberFormats: summaryFormats}
 
 	return &groupedSummarizedVals, nil

@@ -24,12 +24,14 @@ function populateSummaryTableHeader($summaryTable,summaryTableData) {
 		$headerRow.append('<th>' + summaryLabels[summaryLabelIndex] + '</th>')
 	}
 	
+	
 	$tableHeader.append($headerRow)
+	$tableHeader.find("th").css("background-color","lightGrey")
+	
 	$summaryTable.append($tableHeader)
 }
 
-function populateSummaryTableRow($tableBody,dataRow,numberFormats) {
-	
+function createOneSummaryTableRow(dataRow,numberFormats) {
 	var $tableRow = $("<tr></tr>")
 	$tableRow.append("<td><strong>" + dataRow.groupLabel + "<strong></td>")
 	
@@ -39,7 +41,11 @@ function populateSummaryTableRow($tableBody,dataRow,numberFormats) {
 		var formattedVal = formatNumberValue(colNumberFormat,summaryVal)
 		$tableRow.append("<td>" + formattedVal + "</td>")	
 	}
-	
+	return $tableRow
+}
+
+function populateSummaryTableRow($tableBody,dataRow,numberFormats) {
+	var $tableRow = createOneSummaryTableRow(dataRow,numberFormats)
 	$tableBody.append($tableRow)
 }
 
@@ -48,11 +54,16 @@ function populateSummaryTableRows($summaryTable,summaryTableData) {
 	
 	var $tableBody = $("<tbody></tbody>")
 	
+	var numberFormats = summaryTableData.groupedSummarizedVals.summaryNumberFormats
+	
 	var dataRows = summaryTableData.groupedSummarizedVals.groupedDataRows
 	for(var dataRowIndex = 0; dataRowIndex < dataRows.length; dataRowIndex++) {
-		var numberFormats = summaryTableData.groupedSummarizedVals.summaryNumberFormats
 		populateSummaryTableRow($tableBody,dataRows[dataRowIndex],numberFormats)
 	}
+	
+	var $overallRow = createOneSummaryTableRow(summaryTableData.groupedSummarizedVals.overallDataRow,numberFormats)
+	$overallRow.find("td").css("background-color","lightGrey")
+	$tableBody.append($overallRow)
 		
 	$summaryTable.append($tableBody)
 	

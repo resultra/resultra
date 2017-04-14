@@ -18,6 +18,7 @@ type ValGroupingRecordVal struct {
 
 type ValGroupingResult struct {
 	ValGroups     []ValGroup
+	OverallGroup  ValGroup
 	GroupingLabel string
 }
 
@@ -56,8 +57,14 @@ func groupRecords(valGrouping values.ValGrouping,
 		return nil, fmt.Errorf("groupRecords: Error getting grouping label: error = %v", groupingLabelErr)
 	}
 
-	return &ValGroupingResult{ValGroups: valGroups,
-		GroupingLabel: groupingLabel}, nil
+	overallGroup := ValGroup{
+		GroupLabel:     "Overall",
+		RecordsInGroup: recValResults}
+
+	return &ValGroupingResult{
+		ValGroups:     valGroups,
+		GroupingLabel: groupingLabel,
+		OverallGroup:  overallGroup}, nil
 }
 
 func groupTimeFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Field,
