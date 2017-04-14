@@ -2,9 +2,11 @@ package dashboardController
 
 import (
 	"fmt"
+	"math"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/recordValue"
+	"time"
 )
 
 type ValGroup struct {
@@ -34,15 +36,15 @@ func groupRecords(valGrouping values.ValGrouping,
 	// group label.
 	groupLabelValGroupMap := map[string]*ValGroup{}
 	for _, currRecValResults := range recValResults {
-		groupLabel, lblErr := recordGroupLabel(valGrouping, *groupingField, currRecValResults)
+		groupLabelInfo, lblErr := recordGroupLabelInfo(valGrouping, *groupingField, currRecValResults)
 		if lblErr != nil {
 			return nil, fmt.Errorf("groupRecords: Error getting label to group records: error = %v", lblErr)
 		}
-		_, groupExists := groupLabelValGroupMap[groupLabel]
+		_, groupExists := groupLabelValGroupMap[groupLabelInfo.label]
 		if !groupExists {
-			groupLabelValGroupMap[groupLabel] = &ValGroup{groupLabel, []recordValue.RecordValueResults{}}
+			groupLabelValGroupMap[groupLabelInfo.label] = &ValGroup{groupLabelInfo.label, []recordValue.RecordValueResults{}}
 		}
-		valGroup := groupLabelValGroupMap[groupLabel]
+		valGroup := groupLabelValGroupMap[groupLabelInfo.label]
 		valGroup.RecordsInGroup = append(valGroup.RecordsInGroup, currRecValResults)
 	}
 
@@ -67,69 +69,105 @@ func groupRecords(valGrouping values.ValGrouping,
 		OverallGroup:  overallGroup}, nil
 }
 
+// valGroupLabelInfo is used as intermediate data to produce a "normalized" sort value
+// for use on the grouping column of data results.
+type valGroupLabelInfo struct {
+	label       string
+	textSortVal *string
+	numSortVal  *float64
+}
+
+func textGroupLabelInfo(label string) *valGroupLabelInfo {
+	sortVal := label
+	return &valGroupLabelInfo{
+		label:       label,
+		textSortVal: &sortVal}
+}
+
+func blankTextGroupLabelInfo(label string) *valGroupLabelInfo {
+	sortVal := ""
+	return &valGroupLabelInfo{
+		label:       label,
+		textSortVal: &sortVal}
+}
+
+func numberGroupLabelInfo(label string, numberSortVal float64) *valGroupLabelInfo {
+	sortVal := numberSortVal
+	return &valGroupLabelInfo{
+		label:      label,
+		numSortVal: &sortVal}
+}
+
+func timeGroupLabelInfo(label string, timeVal time.Time) *valGroupLabelInfo {
+	sortVal := float64(timeVal.UnixNano())
+	return &valGroupLabelInfo{
+		label:      label,
+		numSortVal: &sortVal}
+}
+
 func groupTimeFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Field,
-	recValResults recordValue.RecordValueResults) (string, error) {
+	recValResults recordValue.RecordValueResults) (*valGroupLabelInfo, error) {
 
 	if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
 		timeVal, valFound := recValResults.FieldValues.GetTimeFieldValue(fieldGroup.FieldID)
 		if !valFound {
-			return "", fmt.Errorf("groupTimeFieldRecordVal: Unabled to retrieve value for grouping label")
+			return nil, fmt.Errorf("groupTimeFieldRecordVal: Unabled to retrieve value for grouping label")
 		} else {
 			switch valGrouping.GroupValsBy {
 			case values.ValGroupByNone:
-				return "All Dates", nil
+				return numberGroupLabelInfo("All Dates", 0.0), nil
 			case values.ValGroupByDay:
-				return timeVal.Format("2006-01-02"), nil
+				return timeGroupLabelInfo(timeVal.Format("2006-01-02"), timeVal), nil
 			case values.ValGroupByMonthYear:
-				return timeVal.Format("Jan 2006"), nil
+				return timeGroupLabelInfo(timeVal.Format("Jan 2006"), timeVal), nil
 			default:
-				return "", fmt.Errorf("Invalid grouping = %v for time field type", valGrouping.GroupValsBy)
+				return nil, fmt.Errorf("Invalid grouping = %v for time field type", valGrouping.GroupValsBy)
 			} // switch groupValsBy
 		}
 	} else {
-		return "BLANK", nil
+		return numberGroupLabelInfo("BLANK", -1.0*math.MaxFloat64), nil
 	}
 }
 
 func groupBoolFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Field,
-	recValResults recordValue.RecordValueResults) (string, error) {
+	recValResults recordValue.RecordValueResults) (*valGroupLabelInfo, error) {
 
 	if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
 		boolVal, valFound := recValResults.FieldValues.GetBoolFieldValue(fieldGroup.FieldID)
 		if !valFound {
-			return "", fmt.Errorf("groupBoolFieldRecordVal: Unabled to retrieve value for grouping label")
+			return nil, fmt.Errorf("groupBoolFieldRecordVal: Unabled to retrieve value for grouping label")
 		} else {
 			if boolVal == true {
-				return "True", nil
+				return numberGroupLabelInfo("True", 1.0), nil
 			} else {
-				return "False", nil
+				return numberGroupLabelInfo("False", 0.0), nil
 			}
 		}
 	} else {
-		return "BLANK", nil
+		return numberGroupLabelInfo("BLANK", -1.0), nil
 	}
 }
 
-func recordGroupLabel(valGrouping values.ValGrouping, fieldGroup field.Field,
-	recValResults recordValue.RecordValueResults) (string, error) {
+func recordGroupLabelInfo(valGrouping values.ValGrouping, fieldGroup field.Field,
+	recValResults recordValue.RecordValueResults) (*valGroupLabelInfo, error) {
 	switch fieldGroup.Type {
 	case field.FieldTypeText:
 		if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
 			textVal, valErr := recValResults.FieldValues.GetTextFieldValue(fieldGroup.FieldID)
 			if valErr != nil {
-				return "", fmt.Errorf("recordGroupLabel: Unabled to retrieve value for grouping label: error = %v", valErr)
+				return nil, fmt.Errorf("recordGroupLabel: Unabled to retrieve value for grouping label: error = %v", valErr)
 			} else {
-				return textVal, nil
+				return textGroupLabelInfo(textVal), nil
 			}
 		} else {
-			return "BLANK", nil
+			return blankTextGroupLabelInfo("BLANK"), nil
 		}
 	case field.FieldTypeBool:
 		return groupBoolFieldRecordVal(valGrouping, fieldGroup, recValResults)
 	case field.FieldTypeNumber:
-		return "All Numbers", nil // TODO - Group by number and/or bucket the values
+		return numberGroupLabelInfo("All Numbers", 0.0), nil // TODO - Group by number and/or bucket the values
 	case field.FieldTypeTime:
 		return groupTimeFieldRecordVal(valGrouping, fieldGroup, recValResults)
 	}
-	return "", fmt.Errorf("recordGroupLabel: unsupported grouping: fieldRef = %+v", fieldGroup)
+	return nil, fmt.Errorf("recordGroupLabel: unsupported grouping: fieldRef = %+v", fieldGroup)
 }
