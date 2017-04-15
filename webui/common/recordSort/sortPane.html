@@ -10,21 +10,11 @@
 {{end}}
 
 
-{{define "sortPaneFooterButtons"}}
-	<button type="button" class="btn btn-primary btn-sm" id="sortPanelResortButton">
-	  <span class="glyphicon glyphicon-sort" aria-hidden="true"></span> Resort
-	</button>
-{{end}}
-
-
 {{define "recordSortPaneFooter"}}
 	<div id="sortPaneFooter">
 		<div class="container">
 			<div class="row">
 				{{template "sortPaneRulesActionsButtons"}}
-			</div>
-			<div class="row marginTop5">
-				{{template "sortPaneFooterButtons"}}
 			</div>
 		</div>
 	</div>
@@ -42,7 +32,7 @@
 	<div class="ui-layout-content" id="recordSortUILayout">
 		{{template "recordSortPaneSortSettings"}}
 	</div>
-
+	<hr class="sortPaneSeparator">
 	<div class="ui-layout-footer">
 		{{template "recordSortPaneFooter"}}
 	</div>
@@ -50,8 +40,10 @@
 {{end}}
 
 {{define "recordSortPropertiesPage"}}
-		{{template "recordSortPaneSortSettings"}}
-		
-		{{template "sortPaneRulesActionsButtons"}}
+		<div class="maxWidth300">
+			{{template "recordSortPaneSortSettings"}}
+			<hr class="sortPaneSeparator">
+			{{template "sortPaneRulesActionsButtons"}}
+		</div>
 		
 {{end}}
