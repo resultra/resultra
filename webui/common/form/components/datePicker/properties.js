@@ -69,6 +69,26 @@ function loadDatePickerProperties($container,datePickerRef) {
 	}
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
 	
+	
+	var readOnlyParams = {
+		elemPrefix: elemPrefix,
+		initialVal: datePickerRef.properties.permissions,
+		permissionsChangedCallback: function(updatedPermissions) {
+			var params = {
+				parentFormID: datePickerRef.parentFormID,
+				datePickerID: datePickerRef.datePickerID,
+				permissions: updatedPermissions
+			}
+			jsonAPIRequest("frm/datePicker/setPermissions",params,function(updatedDatePicker) {
+				setContainerComponentInfo($container,updatedDatePicker,updatedDatePicker.datePickerID)	
+			})
+		}
+	}
+	initFormComponentPermissionsPropertyPanel(readOnlyParams)
+	
+	
+	
+	
 	var deleteParams = {
 		elemPrefix: elemPrefix,
 		parentFormID: datePickerRef.parentFormID,

@@ -38,7 +38,8 @@ function loadRecordIntoDatePicker($datePicker, recordRef) {
 }
 
 
-function initDatePickerFieldEditBehavior(componentContext,recordProxy, datePickerObjectRef,$datePickerContainer) {
+function initDatePickerFieldEditBehavior(componentContext,recordProxy, 
+				datePickerObjectRef,$datePickerContainer) {
 	
 
 	var $datePickerInput = datePickerInputFromContainer($datePickerContainer)
@@ -51,6 +52,14 @@ function initDatePickerFieldEditBehavior(componentContext,recordProxy, datePicke
 		$datePickerInput.prop("disabled",true)
 		$clearValueButton.hide()
 		return;  // stop initialization, the check box is read only.
+	}
+	
+	if(formComponentIsReadOnly(datePickerObjectRef.properties.permissions)) {
+		$datePickerInput.prop('disabled',true);
+		$clearValueButton.hide()
+	} else {
+		$datePickerInput.prop('disabled',false);
+		$clearValueButton.show()
 	}
 	
 	$datePickerContainer.find(".datePickerInputContainer").click(function(e) {

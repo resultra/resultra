@@ -8,10 +8,11 @@ import (
 )
 
 type DatePickerProperties struct {
-	FieldID     string                                `json:"fieldID"`
-	Geometry    componentLayout.LayoutGeometry        `json:"geometry"`
-	DateFormat  string                                `json:"dateFormat"`
-	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+	FieldID     string                                     `json:"fieldID"`
+	Geometry    componentLayout.LayoutGeometry             `json:"geometry"`
+	DateFormat  string                                     `json:"dateFormat"`
+	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 	common.ComponentVisibilityProperties
 }
 
@@ -40,6 +41,7 @@ func newDefaultDatePickerProperties() DatePickerProperties {
 	props := DatePickerProperties{
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
+		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
 		DateFormat:                    dateFormatDefault}
 	return props
 }

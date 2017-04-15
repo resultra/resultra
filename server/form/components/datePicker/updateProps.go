@@ -106,3 +106,15 @@ func (updateParams DatePickerVisibilityParams) updateProps(datePicker *DatePicke
 
 	return nil
 }
+
+type DatePickerPermissionParams struct {
+	DatePickerIDHeader
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
+}
+
+func (updateParams DatePickerPermissionParams) updateProps(datePicker *DatePicker) error {
+
+	datePicker.Properties.Permissions = updateParams.Permissions
+
+	return nil
+}
