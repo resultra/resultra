@@ -6,8 +6,43 @@ import (
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/recordValue"
+	"sort"
+	"strings"
 	"time"
 )
+
+type IntermediateValGroup struct {
+	GroupLabelInfo valGroupLabelInfo
+	RecordsInGroup []recordValue.RecordValueResults
+}
+
+type ByGroupLabelSortOrder []IntermediateValGroup
+
+func (s ByGroupLabelSortOrder) Less(j, k int) bool {
+	jInfo := s[j].GroupLabelInfo
+	kInfo := s[k].GroupLabelInfo
+
+	if (jInfo.textSortVal != nil) && (kInfo.textSortVal != nil) {
+		compareVal := strings.Compare(*jInfo.textSortVal, *kInfo.textSortVal)
+		if compareVal > 0 {
+			return false
+		} else {
+			return true
+		}
+	} else if (jInfo.numSortVal != nil) && (kInfo.numSortVal != nil) {
+		return (*jInfo.numSortVal) < (*kInfo.numSortVal)
+	} else {
+		return false
+	}
+}
+
+func (s ByGroupLabelSortOrder) Len() int {
+	return len(s)
+}
+
+func (s ByGroupLabelSortOrder) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
 
 type ValGroup struct {
 	GroupLabel     string
@@ -34,7 +69,7 @@ func groupRecords(valGrouping values.ValGrouping,
 
 	// Use a map to group the values. Values are added to the same GroupVal if they have the same
 	// group label.
-	groupLabelValGroupMap := map[string]*ValGroup{}
+	groupLabelValGroupMap := map[string]*IntermediateValGroup{}
 	for _, currRecValResults := range recValResults {
 		groupLabelInfo, lblErr := recordGroupLabelInfo(valGrouping, *groupingField, currRecValResults)
 		if lblErr != nil {
@@ -42,16 +77,26 @@ func groupRecords(valGrouping values.ValGrouping,
 		}
 		_, groupExists := groupLabelValGroupMap[groupLabelInfo.label]
 		if !groupExists {
-			groupLabelValGroupMap[groupLabelInfo.label] = &ValGroup{groupLabelInfo.label, []recordValue.RecordValueResults{}}
+			groupLabelValGroupMap[groupLabelInfo.label] = &IntermediateValGroup{*groupLabelInfo, []recordValue.RecordValueResults{}}
 		}
 		valGroup := groupLabelValGroupMap[groupLabelInfo.label]
 		valGroup.RecordsInGroup = append(valGroup.RecordsInGroup, currRecValResults)
 	}
 
-	// Flatten the group values into an array
-	var valGroups []ValGroup
+	// Flatten the intermediate value groups into an array
+	intermValGroups := []IntermediateValGroup{}
 	for _, currValGroup := range groupLabelValGroupMap {
-		valGroups = append(valGroups, *currValGroup)
+		intermValGroups = append(intermValGroups, *currValGroup)
+	}
+
+	// Sort the intermediate value groups
+	sort.Sort(ByGroupLabelSortOrder(intermValGroups))
+
+	// Flatten the intermediate group values into an array finalized ValGroup(s)
+	var valGroups []ValGroup
+	for _, currValGroup := range intermValGroups {
+		valGroup := ValGroup{currValGroup.GroupLabelInfo.label, currValGroup.RecordsInGroup}
+		valGroups = append(valGroups, valGroup)
 	}
 
 	groupingLabel, groupingLabelErr := valGrouping.GroupingLabel()
