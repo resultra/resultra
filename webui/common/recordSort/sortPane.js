@@ -55,17 +55,33 @@ function sortPanelRuleListItemID(elemPrefix) {
 	return elemPrefix + "SortRuleListItem"
 }
 
-function sortPaneListItemHTML(elemPrefix) {
+function sortPaneListItem(sortPaneParams,elemPrefix) {
 	
 	var listItemID = sortPanelRuleListItemID(elemPrefix)
 	
-	return '' +
-		'<div class="list-group-item recordSortPaneRuleListItem" id="'+listItemID+'">' +
-			'<div class="container-fluid">' +
+	var listItemHTML =  '' +
+		'<div class="list-group-item row recordSortPaneRuleListItem" id="'+listItemID+'">' +
+			'<div class="col-sm-10">' +
 				sortFieldSelectionHTML(elemPrefix) +
 				sortDirectionButtonsHTML(elemPrefix) +
 			'</div>' +
+			'<div class="col-sm-2">' +
+				'<button type="button" class="close filterRuleListItemDeleteRuleButton">' +
+					'<span aria-hidden="true">&times;</span>'+
+				'</button>'+
+			'</div>' +
 		'</div>';
+		
+	var $listItem = $(listItemHTML)
+		
+	var $deleteSortRuleButton = $listItem.find(".filterRuleListItemDeleteRuleButton")
+	initButtonControlClickHandler($deleteSortRuleButton,function() {
+		$listItem.remove()
+		sortPaneRuleListChanged(sortPaneParams)
+		
+	})
+		
+	return $listItem
 	
 }
 
@@ -131,7 +147,7 @@ function addSortRuleListItem(sortPaneParams,elemPrefix,sortRule) {
 	
 	var fieldsByID = sortPaneParams.fieldByID
 	
-	$('#sortPaneSortRuleList').append(sortPaneListItemHTML(elemPrefix))
+	$('#sortPaneSortRuleList').append(sortPaneListItem(sortPaneParams, elemPrefix))
 	
 	populateSortByFieldMenu(sortPaneParams,elemPrefix,sortRule)
 	
