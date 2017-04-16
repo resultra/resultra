@@ -1,12 +1,16 @@
 
-{{define "sortPaneRulesActionsButtons"}}
-		<button type="button" class="btn btn-default btn-xs" id="sortRecordsClearRulesButton">
-		  <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Clear All Sorting Rules
-		</button>
-		
+{{define "sortPaneAddRuleButton"}}
 		<button type="button" class="btn btn-default btn-xs" id="sortRecordsAddRuleButton">
 		  <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Rule
-		</button>
+		</button>	
+{{end}}
+
+{{define "sortPaneRulesActionsButtons"}}
+		<button type="button" class="btn btn-default btn-xs" id="sortRecordResetButton">
+		  <span class="fa fa-undo" aria-hidden="true"></span> Reset to Default
+		</button>		
+		{{template "sortPaneAddRuleButton"}}
+		
 {{end}}
 
 
@@ -43,7 +47,7 @@
 		<div class="maxWidth300">
 			{{template "recordSortPaneSortSettings"}}
 			<hr class="sortPaneSeparator">
-			{{template "sortPaneRulesActionsButtons"}}
+			{{template "sortPaneAddRuleButton"}}
 		</div>
 		
 {{end}}

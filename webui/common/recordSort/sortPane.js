@@ -179,28 +179,31 @@ function generateSortRulePrefix() {
 	return "sortRule" + currRecordSortPaneID + "_"
 }
 
-function initSortRecordsPane(sortPaneParams) {
-	
-	$('#sortPaneSortRuleList').empty()
-	
-	loadFieldInfo(sortPaneParams.databaseID, 
-		[fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime], function(fieldsByID) {
-			
-			sortPaneParams.fieldsByID = fieldsByID
 
-			for (var sortRuleIndex = 0; sortRuleIndex < sortPaneParams.defaultSortRules.length; sortRuleIndex++) {
-				var sortRule = sortPaneParams.defaultSortRules[sortRuleIndex]
-				console.log("getFormSortRules: initializing sort rule: " + JSON.stringify(sortRule))
-				addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),sortRule)		
-			}
-			if(sortPaneParams.defaultSortRules.length ==0) {
-				// If no rules are already set add at least one uninitialized sort rule
-				addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),null)
-			}
-			sortPaneParams.initDoneFunc()
-	})
+
+
+function initSortRecordsPane(sortPaneParams) {
+		
+	function initDefaultSortPaneRules() {
+		loadFieldInfo(sortPaneParams.databaseID, 
+			[fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime], function(fieldsByID) {
 			
-	
+				sortPaneParams.fieldsByID = fieldsByID
+
+				$('#sortPaneSortRuleList').empty()
+				for (var sortRuleIndex = 0; sortRuleIndex < sortPaneParams.defaultSortRules.length; sortRuleIndex++) {
+					var sortRule = sortPaneParams.defaultSortRules[sortRuleIndex]
+					console.log("getFormSortRules: initializing sort rule: " + JSON.stringify(sortRule))
+					addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),sortRule)		
+				}
+				if(sortPaneParams.defaultSortRules.length ==0) {
+					// If no rules are already set add at least one uninitialized sort rule
+					addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),null)
+				}
+				sortPaneParams.initDoneFunc()
+		})		
+	}
+	initDefaultSortPaneRules()
 	
 	initButtonClickHandler('#sortRecordsAddRuleButton',function(e) {
 		console.log("add rule button clicked")
@@ -208,12 +211,12 @@ function initSortRecordsPane(sortPaneParams) {
 		addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),null)
 	})
 	
-
-	initButtonClickHandler('#sortRecordsClearRulesButton',function(e) {
-		console.log("reset rule button clicked")
-		$('#sortPaneSortRuleList').empty()
-		addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),null)
+	initButtonClickHandler('#sortRecordResetButton',function(e) {
+		console.log("reset to default button clicked")
+		initDefaultSortPaneRules()
 		sortPaneRuleListChanged(sortPaneParams)
 	})
+	
+	
 	
 }
