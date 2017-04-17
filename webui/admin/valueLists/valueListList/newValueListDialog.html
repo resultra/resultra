@@ -1,0 +1,47 @@
+{{define "newValueListDialogBody"}}	
+  <div class="form-group">
+  	  <label for="newValueListNameInput">Value List Name</label>
+  	  <input type="text" id="newValueListNameInput" name="newValueListNameInput" class="form-control" placeholder="Value list name" required autofocus>
+  </div>
+  	  
+  	<div class="form-group">
+  		<label>Type of value</label> 
+  		<select class="form-control" id="newValueListValueTypeSelection" name="newValueListValueTypeSelection">
+			  <option disabled selected value="">Select a value type</option>
+			  <option value="text">Text</option>
+			 <option value="number">Number</option>
+  		</select>
+  	</div>
+	
+{{end}}
+
+{{define "newValueListDialogButtons"}}
+	<button type="button" class="btn btn-default" id="newValueListCancelButton" data-dismiss="modal">Cancel</button>
+	<button type="button" class="btn btn-primary" id="newValueListSaveButton" type="submit">Save</button>
+{{end}}
+
+
+{{define "adminNewValueListDialog"}}
+
+    <form id="adminNewValueListDialogForm">
+		
+		<div class="modal fade" id="adminValueListDialog" tabindex="-1" role="dialog" aria-labelledby="newValueListLabel">
+		  <div class="modal-dialog modal-sm" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="newValueListLabel">Add Value List</h4>
+		      </div>
+		      <div class="modal-body">
+				  {{template "newValueListDialogBody"}}
+		      </div>
+		      <div class="modal-footer">
+				  {{template "newValueListDialogButtons"}}
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+	</form>
+
+{{end}}

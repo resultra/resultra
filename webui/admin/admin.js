@@ -36,6 +36,7 @@ $(document).ready(function() {
 	initAdminDashboardSettings(adminContext.databaseID)
 	initAdminGeneralProperties(adminContext.databaseID)
 	initAdminGlobals(adminContext.databaseID)
+	initAdminValueListListSettings(adminContext.databaseID)
 	initAdminNewItemPresetSettings(adminContext.databaseID)
 	
 })
