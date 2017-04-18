@@ -16,6 +16,7 @@ func init() {
 	valueListRouter.HandleFunc("/api/valueList/getList", getValueListsAPI)
 
 	valueListRouter.HandleFunc("/api/valueList/setName", setName)
+	valueListRouter.HandleFunc("/api/valueList/setValues", setValues)
 
 	http.Handle("/api/valueList/", valueListRouter)
 }
@@ -81,6 +82,15 @@ func processValueListPropUpdate(w http.ResponseWriter, r *http.Request, propUpda
 
 func setName(w http.ResponseWriter, r *http.Request) {
 	var params ValueListNameParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processValueListPropUpdate(w, r, params)
+}
+
+func setValues(w http.ResponseWriter, r *http.Request) {
+	var params ValueListValuesParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

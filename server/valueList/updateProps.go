@@ -58,3 +58,15 @@ func (updateParams ValueListNameParams) updateProps(valueListForUpdate *ValueLis
 
 	return nil
 }
+
+type ValueListValuesParams struct {
+	ValueListIDHeader
+	Values []ValueListValue `json:"values"`
+}
+
+func (updateParams ValueListValuesParams) updateProps(valueListForUpdate *ValueList) error {
+
+	valueListForUpdate.Properties.Values = updateParams.Values
+
+	return nil
+}

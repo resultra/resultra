@@ -5,9 +5,8 @@ import (
 )
 
 type ValueListValue struct {
-	NumValue   *float64 `json:"numValue:omitempty"`
-	TextValue  *string  `json:"textValue:omitempty"`
-	ValueLabel string   `json:"valueLabel"`
+	NumValue  *float64 `json:"numValue,omitempty"`
+	TextValue *string  `json:"textValue,omitempty"`
 }
 
 type ValueListProperties struct {
