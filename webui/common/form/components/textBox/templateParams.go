@@ -12,6 +12,7 @@ import (
 type TextboxDesignTemplateParams struct {
 	ElemPrefix               string
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
+	ValueListPanelParams     propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
@@ -37,6 +38,7 @@ func init() {
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "textboxLabel"}},
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "textBoxDelete", "Delete Text Box"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "textboxFormat"},
+		ValueListPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Values", PanelID: "textboxValueList"},
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "textBoxVisibility"),
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "textBoxPerms"),
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{

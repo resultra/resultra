@@ -104,3 +104,20 @@ func (updateParams TextBoxPermissionParams) updateProps(textBox *TextBox) error 
 
 	return nil
 }
+
+type TextBoxValueListParams struct {
+	TextBoxIDHeader
+	ValueListID *string `json:"valueListID"`
+}
+
+func (updateParams TextBoxValueListParams) updateProps(textBox *TextBox) error {
+
+	if updateParams.ValueListID != nil {
+		textBox.Properties.ValueListID = updateParams.ValueListID
+	} else {
+		textBox.Properties.ValueListID = nil
+
+	}
+
+	return nil
+}

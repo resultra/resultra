@@ -3,6 +3,11 @@
 	<div id="textBoxProps" class="propertyPanelToggleContainer">
 
 		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
+		
+		{{template "propertyPanelPrefix" .ValueListPanelParams}}
+			{{template "valueListSelectionPropertyPanel"}}
+		{{template "propertyPanelSuffix"}}
+		
 
 		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}
 

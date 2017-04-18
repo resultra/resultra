@@ -12,6 +12,7 @@ type TextBoxProperties struct {
 	Geometry    componentLayout.LayoutGeometry             `json:"geometry"`
 	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
 	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
+	ValueListID *string                                    `json:"valueListID,omitempty"`
 	common.ComponentVisibilityProperties
 }
 
@@ -30,6 +31,11 @@ func (srcProps TextBoxProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (
 		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
 	}
 	destProps.VisibilityConditions = *destVisibilityConditions
+
+	if srcProps.ValueListID != nil {
+		destValueListID := remappedIDs.AllocNewOrGetExistingRemappedID(*srcProps.ValueListID)
+		destProps.ValueListID = &destValueListID
+	}
 
 	return &destProps, nil
 }

@@ -2,6 +2,24 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 	console.log("loading text box properties")
 	
 	var elemPrefix = "textBox_"
+	
+	
+	function saveValueList(valueListID) {
+		var setValueListParams = {
+			parentFormID: textBoxRef.parentFormID,
+			textboxID: textBoxRef.textBoxID,
+			valueListID: valueListID
+		}
+		jsonAPIRequest("frm/textBox/setValueList", setValueListParams, function(updatedTextBox) {
+			setContainerComponentInfo($textBox,updatedTextBox,updatedTextBox.textBoxID)
+		})			
+	}
+	var valueListPropertyParams = {
+		databaseID: designFormContext.databaseID,
+		saveValueListCallback: saveValueList,
+		defaultValueListID: textBoxRef.properties.valueListID
+	}
+	initValueListSelectionPropertyPanel(valueListPropertyParams)
 		
 	function saveLabelProps(updatedLabelProps) {
 		console.log("Saving label propeties for text box")
