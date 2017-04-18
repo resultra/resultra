@@ -39,7 +39,18 @@
 				</div>
 		</form>
 	</td>
+</tr>
+{{end}}
 
+{{define "adminValueListValues"}}
+<tr>
+	<td class="width200"><label>Values</label></td>
+	<td>
+		{{template "adminValueListValueListProps"}}
+	</td>
+</tr>
+
+	
 {{end}}
 
 
@@ -49,6 +60,7 @@
 <table class="table">
 
 	{{template "adminValueListNameProperty" .}}
+	{{template "adminValueListValues"}}
 	
 </table>
 		

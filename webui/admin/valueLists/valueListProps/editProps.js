@@ -76,7 +76,7 @@ $(document).ready(function() {
 		jsonAPIRequest("valueList/get",getValueListParams,function(valueListInfo) {
 			
 			initValueListNameProperties(valueListInfo)
-	
+			initValueListValueListProperties(valueListInfo)
 	
 		})
 	

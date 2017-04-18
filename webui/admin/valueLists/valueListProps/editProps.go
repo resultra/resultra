@@ -17,7 +17,8 @@ var formLinkTemplates *template.Template
 
 func init() {
 
-	baseTemplateFiles := []string{"static/admin/valueLists/valueListProps/editProps.html"}
+	baseTemplateFiles := []string{"static/admin/valueLists/valueListProps/editProps.html",
+		"static/admin/valueLists/valueListProps/valueListProps.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,

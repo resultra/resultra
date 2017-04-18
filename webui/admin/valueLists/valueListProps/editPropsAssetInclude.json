@@ -3,8 +3,8 @@
 		"../../../common"
 	],
 	"cssFiles": ["editProps.css"],
-	"jsFiles": ["editProps.js"],
-	"htmlFiles":["editProps.html"],
+	"jsFiles": ["editProps.js","valueListProps.js"],
+	"htmlFiles":["editProps.html","valueListProps.html"],
 	"imageFiles":[],
 	"minCSSFile":"admin/valueList/valueListProps/editLinkProps.min.css",
 	"minJSFile": "admin/valueList/valueListProps/editLinkProps.min.js",
