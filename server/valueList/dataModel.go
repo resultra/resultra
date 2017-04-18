@@ -96,6 +96,7 @@ func getAllValueLists(parentDatabaseID string) ([]ValueList, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
 		`SELECT value_lists.value_list_id,value_lists.name,
+						value_lists.database_id,
 						value_lists.properties
 				FROM databases,value_lists WHERE 
 				databases.database_id=$1 AND value_lists.database_id=databases.database_id`,
