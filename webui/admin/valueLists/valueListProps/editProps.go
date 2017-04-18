@@ -1,0 +1,74 @@
+package valueListProps
+
+import (
+	"github.com/gorilla/mux"
+	"html/template"
+	"net/http"
+	"resultra/datasheet/server/databaseController"
+	"resultra/datasheet/server/valueList"
+
+	"resultra/datasheet/server/common/runtimeConfig"
+
+	"resultra/datasheet/webui/common"
+	"resultra/datasheet/webui/generic"
+)
+
+var formLinkTemplates *template.Template
+
+func init() {
+
+	baseTemplateFiles := []string{"static/admin/valueLists/valueListProps/editProps.html"}
+
+	templateFileLists := [][]string{
+		baseTemplateFiles,
+		generic.TemplateFileList,
+		common.TemplateFileList}
+
+	formLinkTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
+}
+
+type FormLinkTemplParams struct {
+	ElemPrefix    string
+	Title         string
+	DatabaseID    string
+	DatabaseName  string
+	ValueListID   string
+	ValueListName string
+	SiteBaseURL   string
+}
+
+func RegisterHTTPHandlers(mainRouter *mux.Router) {
+	mainRouter.HandleFunc("/admin/valueList/{valueListID}", editPropsPage)
+}
+
+func editPropsPage(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	valueListID := vars["valueListID"]
+
+	valueListInfo, err := valueList.GetValueList(valueListID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	dbInfo, err := databaseController.GetDatabaseInfo(valueListInfo.ParentDatabaseID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	elemPrefix := "valueList_"
+
+	templParams := FormLinkTemplParams{
+		ElemPrefix:    elemPrefix,
+		Title:         "Value List Settings",
+		DatabaseID:    dbInfo.DatabaseID,
+		DatabaseName:  dbInfo.DatabaseName,
+		ValueListID:   valueListID,
+		ValueListName: valueListInfo.Name,
+		SiteBaseURL:   runtimeConfig.GetSiteBaseURL()}
+
+	if err := formLinkTemplates.ExecuteTemplate(w, "editValueListPropsPage", templParams); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+}

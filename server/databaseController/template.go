@@ -10,6 +10,7 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/itemList"
+	"resultra/datasheet/server/valueList"
 )
 
 func cloneFields(remappedIDs uniqueID.UniqueIDRemapper, srcDatabaseID string) error {
@@ -111,6 +112,10 @@ func saveDatabaseToTemplate(params SaveTemplateParams) (*database.Database, erro
 	}
 
 	if err := formLink.CloneFormLinks(remappedIDs, params.SourceDatabaseID); err != nil {
+		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
+	}
+
+	if err := valueList.CloneValueLists(remappedIDs, params.SourceDatabaseID); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 

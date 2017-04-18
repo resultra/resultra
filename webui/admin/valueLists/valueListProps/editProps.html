@@ -1,0 +1,104 @@
+{{define "valueListBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-tasks" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
+	  {{template "breadCrumbSeparator"}}
+	  <a class="h4 breadCrumbText" href="/admin/{{.DatabaseID}}">Settings</a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Value List Settings</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">{{.ValueListName}}</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "valueListPropsHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "valueListBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "adminValueListNameProperty"}}
+<tr>
+	<td class="width200"><label>Value list name</label></td>
+	<td>
+		<form id="valueListNamePropertyForm">
+				<div class="form-group">
+					<input type="text" id="valueListPropsNameInput" name="valueListPropsNameInput" 
+							class="form-control maxWidth300" placeholder="List Name" required="" autofocus="">
+				</div>
+		</form>
+	</td>
+
+{{end}}
+
+
+
+{{define "valueListPropsBody"}}
+
+<table class="table">
+
+	{{template "adminValueListNameProperty" .}}
+	
+</table>
+		
+{{end}}
+
+{{define "editValueListPropsPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- valueListAssets:css -->
+	<!-- endinject -->
+	
+	<script>var valueListPropsContext = { 
+		valueListID:"{{.ValueListID}}",
+		 databaseID:"{{.DatabaseID}}",
+		siteBaseURL:"{{.SiteBaseURL}}"} 
+	</script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- valueListAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="editValueListPropsPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north" id="valueListPageHeaderUILayout">
+			{{template "valueListPropsHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west" id="valueListPageTocLayout">
+			{{template "databaseTOC" .}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center" id="valueListPageLayout">
+			{{template "valueListPropsBody" .}}
+		</div> <!-- center pane for entire page -->	
+		
+	</div> <!-- layout page -->	
+				
+  </body>
+  	
+</html>
+
+{{end}}

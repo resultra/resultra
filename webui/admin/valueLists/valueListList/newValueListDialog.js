@@ -44,18 +44,12 @@ function openNewValueListDialog(databaseID) {
 				parentDatabaseID: databaseID, 
 				name: $valueListNameInput.val(),
 				valueType: $valueTypeSelection.val() }
-				
-			$newValueListDialog.modal('hide')
-			/*
-			
-								
-			jsonAPIRequest("formLink/new",newFormLinkParams,function(newFormLinkInfo) {
-				console.log("Created new form link: " + JSON.stringify(newFormLinkInfo))
-				$newPresetDialog.modal('hide')
-				navigateToURL('/admin/formLink/' + newFormLinkInfo.linkID)
+						
+			jsonAPIRequest("valueList/new",newValueListParams,function(newValueListInfo) {
+				console.log("Created new value list: " + JSON.stringify(newValueListInfo))
+				$newValueListDialog.modal('hide')
+				navigateToURL('/admin/valueList/' + newValueListInfo.valueListID)
 			})
-			
-			*/
 			
 
 		}

@@ -1,0 +1,12 @@
+{
+	"subDirs":["../../../generic",
+		"../../../common"
+	],
+	"cssFiles": ["editProps.css"],
+	"jsFiles": ["editProps.js"],
+	"htmlFiles":["editProps.html"],
+	"imageFiles":[],
+	"minCSSFile":"admin/valueList/valueListProps/editLinkProps.min.css",
+	"minJSFile": "admin/valueList/valueListProps/editLinkProps.min.js",
+	"injectPlaceholderName":"valueListAssets"
+}
