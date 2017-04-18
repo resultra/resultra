@@ -5,19 +5,6 @@ function loadRecordIntoTextBox($textBoxContainer, recordRef) {
 	
 	var textBoxObjectRef = $textBoxContainer.data("objectRef")
 	var $textBoxInput = $textBoxContainer.find('input')
-	var componentContext = $textBoxContainer.data("componentContext")
-	var $clearValueButton = $textBoxContainer.find(".textBoxComponentClearValueButton")
-	
-	
-	if(formComponentIsReadOnly(textBoxObjectRef.properties.permissions)) {
-		$textBoxInput.prop('disabled',true);
-		$clearValueButton.hide()
-	} else {
-		$textBoxInput.prop('disabled',false);
-		$clearValueButton.show()
-		
-	}
-	
 	
 	function setRawInputVal(rawVal) { $textBoxInput.data("rawVal",rawVal) }
 
@@ -61,6 +48,17 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 		return;  // stop initialization, the text box is read only.
 	}
 	
+	var readOnlyTextBox = formComponentIsReadOnly(textFieldObjectRef.properties.permissions)
+	if(readOnlyTextBox) {
+		$textBoxInput.prop('disabled',true);
+		$clearValueButton.hide()
+		$valSelectionDropdown.hide()
+	} else {
+		$textBoxInput.prop('disabled',false);
+		$clearValueButton.show()
+		
+	}
+	
 	function createValueDropdownMenuItem(valueText) {
 		var $menuItem = $('<li><a href="#"></a></li>')
 		var $menuLink = $menuItem.find('a')
@@ -73,7 +71,7 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 	}
 	
 	var valueListID = textFieldObjectRef.properties.valueListID
-	if (valueListID !== undefined && valueListID !== null) {
+	if (readOnlyTextBox!==true && valueListID !== undefined && valueListID !== null) {
 		$valSelectionDropdown.show()
 		var getValListParams = { valueListID: valueListID }
 		jsonAPIRequest("valueList/get",getValListParams,function(valListInfo) {
