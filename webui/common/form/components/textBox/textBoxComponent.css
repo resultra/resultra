@@ -13,6 +13,10 @@
 	margin-bottom:0px;
 }
 
+.textBoxComponent .input-group {
+	width:100%;
+}
+
 .textBoxComponent label {
 	margin-bottom: 2px !important;
 }

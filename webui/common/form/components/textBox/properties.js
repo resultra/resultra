@@ -3,6 +3,7 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 	
 	var elemPrefix = "textBox_"
 	
+	function dummySetVal(dropdownVal) {}
 	
 	function saveValueList(valueListID) {
 		var setValueListParams = {
@@ -12,6 +13,7 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 		}
 		jsonAPIRequest("frm/textBox/setValueList", setValueListParams, function(updatedTextBox) {
 			setContainerComponentInfo($textBox,updatedTextBox,updatedTextBox.textBoxID)
+			configureTextBoxComponentValueListDropdown($textBox, updatedTextBox, dummySetVal)
 		})			
 	}
 	var valueListPropertyParams = {
@@ -72,6 +74,7 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 			}
 			jsonAPIRequest("frm/textBox/setPermissions",params,function(updatedTextBox) {
 				setContainerComponentInfo($textBox,updatedTextBox,updatedTextBox.textBoxID)
+				configureTextBoxComponentValueListDropdown($textBox, updatedTextBox, dummySetVal)
 			})
 		}
 	}
