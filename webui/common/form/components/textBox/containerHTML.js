@@ -6,11 +6,11 @@ function textBoxContainerHTML(elementID)
 				'<label>New Text Box</label>'+
 				'<div class="input-group">'+
 					'<input type="text" name="symbol" class="textBoxComponentInput form-control" placeholder="Enter">'+
-					'<div class="input-group-btn">'+
+					'<div class="input-group-btn valueSelectionDropdown">'+
 						'<button type="button" class="btn btn-default dropdown-toggle" ' + 
 								'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
 								'<span class="caret"></span></button>'+
-						'<ul class="dropdown-menu">' +
+						'<ul class="dropdown-menu valueDropdownMenu">' +
 						'</ul>'+
 					'</div>'+
 				'</div>'+

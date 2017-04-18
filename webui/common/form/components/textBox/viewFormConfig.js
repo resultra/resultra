@@ -51,12 +51,46 @@ function initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput
 	
 	var textBoxFieldID = textFieldObjectRef.properties.fieldID
 	var $clearValueButton = $container.find(".textBoxComponentClearValueButton")
+	var $valSelectionDropdown = $container.find(".valueSelectionDropdown")
 	
 	var fieldRef = getFieldRef(textBoxFieldID)
 	if(fieldRef.isCalcField) {
 		$textBoxInput.prop('disabled',true);
 		$clearValueButton.hide()
+		$valSelectionDropdown.hide()
 		return;  // stop initialization, the text box is read only.
+	}
+	
+	function createValueDropdownMenuItem(valueText) {
+		var $menuItem = $('<li><a href="#"></a></li>')
+		var $menuLink = $menuItem.find('a')
+		$menuLink.click(function(e) {
+			setTextVal($menuLink.text())
+			e.preventDefault()
+		})
+		$menuItem.find('a').text(valueText)
+		return $menuItem
+	}
+	
+	var valueListID = textFieldObjectRef.properties.valueListID
+	if (valueListID !== undefined && valueListID !== null) {
+		$valSelectionDropdown.show()
+		var getValListParams = { valueListID: valueListID }
+		jsonAPIRequest("valueList/get",getValListParams,function(valListInfo) {
+			console.log("Initializing text box with value list info: " + JSON.stringify(valListInfo))
+			var values = valListInfo.properties.values
+			var $valDropdownMenu = $container.find('.valueDropdownMenu')
+			$valDropdownMenu.empty()
+			var $header = $('<li class="dropdown-header"></li>')
+			$header.text(valListInfo.name)
+			$valDropdownMenu.append($header)
+			for(var valIndex = 0; valIndex < values.length; valIndex++) {
+				var val = values[valIndex]
+				$valDropdownMenu.append(createValueDropdownMenuItem(val.textValue))
+			}		
+		})
+	} else {
+		$valSelectionDropdown.hide()		
 	}
 	
 	var fieldType = fieldRef.type
