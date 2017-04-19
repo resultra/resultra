@@ -356,6 +356,18 @@ func validDateAddArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, er
 	return &semanticAnalysisResult{analyzeErrors: argErrors, resultType: field.FieldTypeTime}, nil
 }
 
+const FuncNameDaysBetween string = "DAYSBETWEEN"
+
+func daysBetweenEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+	evalFunc := func(startTime, endTime time.Time) (*EquationResult, error) {
+		elapsedDuration := endTime.Sub(startTime)
+		durationDays := elapsedDuration.Hours() / 24.0
+
+		return numberEqnResult(durationDays), nil
+	}
+	return evalTwoTimeArgFunc(evalContext, funcArgs, evalFunc)
+}
+
 func dateAddEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
 
 	if len(funcArgs) != 2 {
@@ -467,6 +479,7 @@ var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 	FuncNameProduct:     FunctionInfo{FuncNameProduct, field.FieldTypeNumber, productEvalFunc, oneOrMoreNumberArgs},
 	FuncNameConcat:      FunctionInfo{FuncNameConcat, field.FieldTypeText, concatEvalFunc, oneOrMoreTextArgs},
 	FuncNameDateAdd:     FunctionInfo{FuncNameDateAdd, field.FieldTypeTime, dateAddEvalFunc, validDateAddArgs},
+	FuncNameDaysBetween: FunctionInfo{FuncNameDaysBetween, field.FieldTypeNumber, daysBetweenEvalFunc, twoTimeArgsNumberResult},
 	FuncNameGreaterThan: FunctionInfo{FuncNameGreaterThan, field.FieldTypeBool, greaterThanEvalFunc, twoNumberArgsBooleanResult},
 	FuncNameIf:          FunctionInfo{FuncNameIf, field.FieldTypeBool, ifEvalFunc, validIfArgs}, // TODO - Support other return types
 }
