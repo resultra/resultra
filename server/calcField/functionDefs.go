@@ -3,7 +3,7 @@ package calcField
 import (
 	"bytes"
 	"fmt"
-	"log"
+	"math"
 	"resultra/datasheet/server/field"
 	"time"
 )
@@ -27,52 +27,6 @@ type FunctionInfo struct {
 type FuncNameFuncInfoMap map[string]FunctionInfo
 
 // Semantic analysis functions
-
-func oneOrMoreNumberArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
-
-	log.Printf("oneOrMoreNumberArgs: %v", params.funcName)
-
-	if len(params.funcArgs) <= 0 {
-		// Even though there's an errors, based upon the function type we know it will return a number. This
-		// allows semantic analysis to continue, even though there might be some errors.
-		errMsgs := []string{fmt.Sprintf("Not enough arguments to function %v, expecting at at least 1 argument", params.funcName)}
-		return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeNumber}, nil
-	}
-
-	argErrors := []string{}
-	for argIndex, argEqnNode := range params.funcArgs {
-		argNum := argIndex + 1
-		analyzeResult, analyzeErr := analyzeEqnNode(params.context, argEqnNode)
-		if analyzeErr != nil {
-			return nil, analyzeErr
-		}
-		argErrors = append(argErrors, analyzeResult.analyzeErrors...)
-		if analyzeResult.resultType != field.FieldTypeNumber {
-			argErrors = append(
-				argErrors, fmt.Sprintf("Invalid argument type for argument %v of function %v. Expecting a number", argNum, params.funcName))
-		}
-	}
-
-	return &semanticAnalysisResult{analyzeErrors: argErrors, resultType: field.FieldTypeNumber}, nil
-
-}
-
-func twoNumberArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
-	if len(params.funcArgs) != 2 {
-		errMsgs := []string{fmt.Sprintf("Expecting 2 numerical arguments to function %v", params.funcName)}
-		return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeNumber}, nil
-	}
-	return oneOrMoreNumberArgs(params)
-}
-
-func twoNumberArgsBooleanResult(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
-	if len(params.funcArgs) != 2 {
-		errMsgs := []string{fmt.Sprintf("Expecting 2 numerical arguments to function %v", params.funcName)}
-		return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeBool}, nil
-	}
-	errMsgs := []string{}
-	return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeBool}, nil
-}
 
 func oneOrMoreTextArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
 
@@ -127,6 +81,41 @@ func sumEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equati
 
 	return numberEqnResult(sumResult), nil
 
+}
+
+const FuncNameMinus string = "MINUS"
+
+func minusEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	evalFunc := func(num1, num2 float64) (*EquationResult, error) {
+		return numberEqnResult(num1 - num2), nil
+	}
+	return evalTwoNumberArgFunc(evalContext, funcArgs, evalFunc)
+}
+
+const FuncNameDivide string = "DIVIDE"
+
+func divideEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	evalFunc := func(num1, num2 float64) (*EquationResult, error) {
+		if num2 == 0.0 {
+			return undefinedEqnResult(), nil
+		} else {
+			return numberEqnResult(num1 / num2), nil
+		}
+
+	}
+	return evalTwoNumberArgFunc(evalContext, funcArgs, evalFunc)
+}
+
+const FuncNamePower string = "POWER"
+
+func powerEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	evalFunc := func(num1, num2 float64) (*EquationResult, error) {
+		return numberEqnResult(math.Pow(num1, num2)), nil
+	}
+	return evalTwoNumberArgFunc(evalContext, funcArgs, evalFunc)
 }
 
 const FuncNameIf string = "IF"
@@ -193,86 +182,6 @@ func ifEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equatio
 			return funcArgs[1].EvalEqn(evalContext)
 		} else {
 			return funcArgs[2].EvalEqn(evalContext)
-		}
-	}
-
-}
-
-const FuncNameMinus string = "MINUS"
-
-func minusEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
-
-	if len(funcArgs) != 2 {
-		return nil, fmt.Errorf("MINUS() - Expecting 2 arguments, got %v", len(funcArgs))
-	}
-
-	arg1Eqn := funcArgs[0]
-	arg1Result, arg1Err := arg1Eqn.EvalEqn(evalContext)
-	if arg1Err != nil {
-		return nil, fmt.Errorf("MINUS(): Error evaluating argument # %v: arg=%+v, error %v", arg1Eqn, arg1Err)
-	} else if arg1Result.IsUndefined() {
-		// If an undefined result is returned, return immediately and propogate the undefined
-		// result value up through the equation evaluation.
-		return arg1Result, nil
-	} else if arg1NumberResult, validateErr := arg1Result.GetNumberResult(); validateErr != nil {
-		return nil, fmt.Errorf("DATEADD(): Invalid result found while evaluating argument 1: arg=%+v, error = %v", arg1Eqn, validateErr)
-	} else {
-		arg2Eqn := funcArgs[1]
-		arg2Result, arg2Err := arg2Eqn.EvalEqn(evalContext)
-		if arg2Err != nil {
-			return nil, fmt.Errorf("MINUS(): Error evaluating argument # 2: arg=%+v, error %v", arg2Eqn, arg2Err)
-		} else if arg2Result.IsUndefined() {
-			// If an undefined result is returned, return immediately and propogate the undefined
-			// result value up through the equation evaluation.
-			return arg2Result, nil
-		} else if arg2NumberResult, validateErr := arg2Result.GetNumberResult(); validateErr != nil {
-			return nil, fmt.Errorf("MINUS(): Invalid result found while evaluating argument 2: arg=%+v, error = %v", arg2Eqn, validateErr)
-		} else {
-
-			return numberEqnResult(arg1NumberResult - arg2NumberResult), nil
-
-		}
-	}
-
-}
-
-const FuncNameDivide string = "DIVIDE"
-
-func divideEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
-
-	if len(funcArgs) != 2 {
-		return nil, fmt.Errorf("DIVIDE() - Expecting 2 arguments, got %v", len(funcArgs))
-	}
-
-	arg1Eqn := funcArgs[0]
-	arg1Result, arg1Err := arg1Eqn.EvalEqn(evalContext)
-	if arg1Err != nil {
-		return nil, fmt.Errorf("MINUS(): Error evaluating argument # %v: arg=%+v, error %v", arg1Eqn, arg1Err)
-	} else if arg1Result.IsUndefined() {
-		// If an undefined result is returned, return immediately and propogate the undefined
-		// result value up through the equation evaluation.
-		return arg1Result, nil
-	} else if arg1NumberResult, validateErr := arg1Result.GetNumberResult(); validateErr != nil {
-		return nil, fmt.Errorf("DIVIDE(): Invalid result found while evaluating argument 1: arg=%+v, error = %v", arg1Eqn, validateErr)
-	} else {
-		arg2Eqn := funcArgs[1]
-		arg2Result, arg2Err := arg2Eqn.EvalEqn(evalContext)
-		if arg2Err != nil {
-			return nil, fmt.Errorf("DIVIDE(): Error evaluating argument # 2: arg=%+v, error %v", arg2Eqn, arg2Err)
-		} else if arg2Result.IsUndefined() {
-			// If an undefined result is returned, return immediately and propogate the undefined
-			// result value up through the equation evaluation.
-			return arg2Result, nil
-		} else if arg2NumberResult, validateErr := arg2Result.GetNumberResult(); validateErr != nil {
-			return nil, fmt.Errorf("MINUS(): Invalid result found while evaluating argument 2: arg=%+v, error = %v", arg2Eqn, validateErr)
-		} else {
-
-			if arg2NumberResult == 0.0 {
-				return undefinedEqnResult(), nil
-			} else {
-				return numberEqnResult(arg1NumberResult / arg2NumberResult), nil
-			}
-
 		}
 	}
 
@@ -476,6 +385,7 @@ var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 	FuncNameSum:         FunctionInfo{FuncNameSum, field.FieldTypeNumber, sumEvalFunc, oneOrMoreNumberArgs},
 	FuncNameMinus:       FunctionInfo{FuncNameMinus, field.FieldTypeNumber, minusEvalFunc, twoNumberArgs},
 	FuncNameDivide:      FunctionInfo{FuncNameMinus, field.FieldTypeNumber, divideEvalFunc, twoNumberArgs},
+	FuncNamePower:       FunctionInfo{FuncNamePower, field.FieldTypeNumber, powerEvalFunc, twoNumberArgs},
 	FuncNameProduct:     FunctionInfo{FuncNameProduct, field.FieldTypeNumber, productEvalFunc, oneOrMoreNumberArgs},
 	FuncNameConcat:      FunctionInfo{FuncNameConcat, field.FieldTypeText, concatEvalFunc, oneOrMoreTextArgs},
 	FuncNameDateAdd:     FunctionInfo{FuncNameDateAdd, field.FieldTypeTime, dateAddEvalFunc, validDateAddArgs},
