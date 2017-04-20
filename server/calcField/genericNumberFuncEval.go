@@ -79,3 +79,36 @@ func evalTwoNumberArgFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode,
 	}
 
 }
+
+type oneOrMoreNumberArgFunc func(args []float64) (*EquationResult, error)
+
+func evalOneOrMoreNumberArgFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode,
+	numberEvalFunc oneOrMoreNumberArgFunc) (*EquationResult, error) {
+
+	if len(funcArgs) < 1 {
+		return nil, fmt.Errorf("Not enough arguments given to function")
+	}
+
+	numberArgs := []float64{}
+	for argIndex, argEqn := range funcArgs {
+		argResult, argErr := argEqn.EvalEqn(evalContext)
+		if argErr != nil {
+			return nil, fmt.Errorf("Error evaluating argument # %v: arg=%+v, error %v",
+				argIndex, argEqn, argErr)
+		} else if argResult.IsUndefined() {
+			// No-op - undefined results aren't passed along to the function for evaluation
+		} else if numberResult, validateErr := argResult.GetNumberResult(); validateErr != nil {
+			return nil, fmt.Errorf("Invalid result found while evaluating argument # %v: arg=%+v, error = %v",
+				argIndex, argEqn, validateErr)
+		} else {
+			numberArgs = append(numberArgs, numberResult)
+		}
+	}
+
+	if len(numberArgs) <= 0 {
+		return undefinedEqnResult(), nil
+	} else {
+		return numberEvalFunc(numberArgs)
+	}
+
+}

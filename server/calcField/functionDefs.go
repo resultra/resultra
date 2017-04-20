@@ -59,27 +59,29 @@ func oneOrMoreTextArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, e
 const FuncNameSum string = "SUM"
 
 func sumEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
-
-	var sumResult float64 = 0.0
-
-	for argIndex, argEqn := range funcArgs {
-		argResult, argErr := argEqn.EvalEqn(evalContext)
-		if argErr != nil {
-			return nil, fmt.Errorf("SUM(): Error evaluating argument # %v: arg=%+v, error %v",
-				argIndex, argEqn, argErr)
-		} else if argResult.IsUndefined() {
-			// If an undefined result is returned, return immediately and propogate the undefined
-			// result value up through the equation evaluation.
-			return argResult, nil
-		} else if numberResult, validateErr := argResult.GetNumberResult(); validateErr != nil {
-			return nil, fmt.Errorf("SUM(): Invalid result found while evaluating argument # %v: arg=%+v, error = %v",
-				argIndex, argEqn, validateErr)
-		} else {
-			sumResult += numberResult
+	evalFunc := func(args []float64) (*EquationResult, error) {
+		sumResult := 0.0
+		for _, arg := range args {
+			sumResult = sumResult + arg
 		}
+		return numberEqnResult(sumResult), nil
 	}
+	return evalOneOrMoreNumberArgFunc(evalContext, funcArgs, evalFunc)
 
-	return numberEqnResult(sumResult), nil
+}
+
+const FuncNameProduct string = "PRODUCT"
+
+func productEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	evalFunc := func(args []float64) (*EquationResult, error) {
+		prodResult := 1.0
+		for _, arg := range args {
+			prodResult = prodResult * arg
+		}
+		return numberEqnResult(prodResult), nil
+	}
+	return evalOneOrMoreNumberArgFunc(evalContext, funcArgs, evalFunc)
 
 }
 
@@ -254,37 +256,6 @@ func dateAddEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Eq
 	}
 }
 
-const FuncNameProduct string = "PRODUCT"
-
-func productEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
-
-	var prodResult float64 = 1.0
-
-	if len(funcArgs) < 1 {
-		return nil, fmt.Errorf("PRODUCT() - Not enough arguments given to function")
-	}
-
-	for argIndex, argEqn := range funcArgs {
-		argResult, argErr := argEqn.EvalEqn(evalContext)
-		if argErr != nil {
-			return nil, fmt.Errorf("PRODUCT(): Error evaluating argument # %v: arg=%+v, error %v",
-				argIndex, argEqn, argErr)
-		} else if argResult.IsUndefined() {
-			// If an undefined result is returned, return immediately and propogate the undefined
-			// result value up through the equation evaluation.
-			return argResult, nil
-		} else if numberResult, validateErr := argResult.GetNumberResult(); validateErr != nil {
-			return nil, fmt.Errorf("PRODUCT(): Invalid result found while evaluating argument # %v: arg=%+v, error = %v",
-				argIndex, argEqn, validateErr)
-		} else {
-			prodResult *= numberResult
-		}
-	}
-
-	return numberEqnResult(prodResult), nil
-
-}
-
 const FuncNameConcat string = "CONCATENATE"
 
 func concatEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
@@ -313,10 +284,10 @@ func concatEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equ
 
 var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 	FuncNameSum:         FunctionInfo{FuncNameSum, field.FieldTypeNumber, sumEvalFunc, oneOrMoreNumberArgs},
+	FuncNameProduct:     FunctionInfo{FuncNameProduct, field.FieldTypeNumber, productEvalFunc, oneOrMoreNumberArgs},
 	FuncNameMinus:       FunctionInfo{FuncNameMinus, field.FieldTypeNumber, minusEvalFunc, twoNumberArgs},
 	FuncNameDivide:      FunctionInfo{FuncNameMinus, field.FieldTypeNumber, divideEvalFunc, twoNumberArgs},
 	FuncNamePower:       FunctionInfo{FuncNamePower, field.FieldTypeNumber, powerEvalFunc, twoNumberArgs},
-	FuncNameProduct:     FunctionInfo{FuncNameProduct, field.FieldTypeNumber, productEvalFunc, oneOrMoreNumberArgs},
 	FuncNameConcat:      FunctionInfo{FuncNameConcat, field.FieldTypeText, concatEvalFunc, oneOrMoreTextArgs},
 	FuncNameDateAdd:     FunctionInfo{FuncNameDateAdd, field.FieldTypeTime, dateAddEvalFunc, validDateAddArgs},
 	FuncNameDaysBetween: FunctionInfo{FuncNameDaysBetween, field.FieldTypeNumber, daysBetweenEvalFunc, twoTimeArgsNumberResult},
