@@ -19,7 +19,6 @@ type FuncSemAnalyzeFunc func(semAnalysisParams FuncSemAnalysisParams) (*semantic
 
 type FunctionInfo struct {
 	funcName        string
-	resultType      string
 	evalFunc        EqnEvalFunc
 	semAnalysisFunc FuncSemAnalyzeFunc
 }
@@ -283,14 +282,14 @@ func concatEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equ
 }
 
 var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
-	FuncNameSum:         FunctionInfo{FuncNameSum, field.FieldTypeNumber, sumEvalFunc, oneOrMoreNumberArgs},
-	FuncNameProduct:     FunctionInfo{FuncNameProduct, field.FieldTypeNumber, productEvalFunc, oneOrMoreNumberArgs},
-	FuncNameMinus:       FunctionInfo{FuncNameMinus, field.FieldTypeNumber, minusEvalFunc, twoNumberArgs},
-	FuncNameDivide:      FunctionInfo{FuncNameMinus, field.FieldTypeNumber, divideEvalFunc, twoNumberArgs},
-	FuncNamePower:       FunctionInfo{FuncNamePower, field.FieldTypeNumber, powerEvalFunc, twoNumberArgs},
-	FuncNameConcat:      FunctionInfo{FuncNameConcat, field.FieldTypeText, concatEvalFunc, oneOrMoreTextArgs},
-	FuncNameDateAdd:     FunctionInfo{FuncNameDateAdd, field.FieldTypeTime, dateAddEvalFunc, validDateAddArgs},
-	FuncNameDaysBetween: FunctionInfo{FuncNameDaysBetween, field.FieldTypeNumber, daysBetweenEvalFunc, twoTimeArgsNumberResult},
-	FuncNameGreaterThan: FunctionInfo{FuncNameGreaterThan, field.FieldTypeBool, greaterThanEvalFunc, twoNumberArgsBooleanResult},
-	FuncNameIf:          FunctionInfo{FuncNameIf, field.FieldTypeBool, ifEvalFunc, validIfArgs}, // TODO - Support other return types
+	FuncNameSum:         FunctionInfo{FuncNameSum, sumEvalFunc, oneOrMoreNumberArgs},
+	FuncNameProduct:     FunctionInfo{FuncNameProduct, productEvalFunc, oneOrMoreNumberArgs},
+	FuncNameMinus:       FunctionInfo{FuncNameMinus, minusEvalFunc, twoNumberArgs},
+	FuncNameDivide:      FunctionInfo{FuncNameMinus, divideEvalFunc, twoNumberArgs},
+	FuncNamePower:       FunctionInfo{FuncNamePower, powerEvalFunc, twoNumberArgs},
+	FuncNameConcat:      FunctionInfo{FuncNameConcat, concatEvalFunc, oneOrMoreTextArgs},
+	FuncNameDateAdd:     FunctionInfo{FuncNameDateAdd, dateAddEvalFunc, validDateAddArgs},
+	FuncNameDaysBetween: FunctionInfo{FuncNameDaysBetween, daysBetweenEvalFunc, twoTimeArgsNumberResult},
+	FuncNameGreaterThan: FunctionInfo{FuncNameGreaterThan, greaterThanEvalFunc, twoNumberArgsBooleanResult},
+	FuncNameIf:          FunctionInfo{FuncNameIf, ifEvalFunc, validIfArgs}, // TODO - Support other return types
 }
