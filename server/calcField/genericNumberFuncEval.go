@@ -43,15 +43,6 @@ func twoNumberArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error
 	return oneOrMoreNumberArgs(params)
 }
 
-func twoNumberArgsBooleanResult(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
-	if len(params.funcArgs) != 2 {
-		errMsgs := []string{fmt.Sprintf("Expecting 2 numerical arguments to function %v", params.funcName)}
-		return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeBool}, nil
-	}
-	errMsgs := []string{}
-	return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeBool}, nil
-}
-
 type twoNumberArgEvalFunc func(number1, number2 float64) (*EquationResult, error)
 
 func evalTwoNumberArgFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode, numberEvalFunc twoNumberArgEvalFunc) (*EquationResult, error) {
