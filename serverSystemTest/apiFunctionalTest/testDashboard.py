@@ -30,6 +30,21 @@ class TestDashboard(unittest.TestCase,TestHelperMixin):
         self.setTextRecordValue(self.databaseID,recordID2,self.textFieldID,"Testing 1,2,3")     
         self.setNumberRecordValue(self.databaseID,recordID2,self.numberFieldID,42.5)
         
+        getRecordParams = {
+        	"databaseID": self.databaseID,
+        	"preFilterRules": {
+        		"matchLogic": "all",
+        		"filterRules": []
+        	},
+        	"filterRules": {
+        		"matchLogic": "all",
+        		"filterRules": []
+        	},
+        	"sortRules": []
+        }
+        jsonResp = self.apiRequest('recordRead/getFilteredSortedRecordValues',getRecordParams)
+        self.assertEquals(len(jsonResp),2,"Expecting 2 records in the database")
+        
         
         barChartParams = {
             'parentDashboardID':dashboardID,
@@ -53,6 +68,18 @@ class TestDashboard(unittest.TestCase,TestHelperMixin):
         jsonResp = self.apiRequest('dashboard/barChart/new',barChartParams)
         barChartID = jsonResp[u'barChartID']
         print "Created bar chart : ", barChartID 
+        
+        defaultDashboardDataParams = {
+            "dashboardID":dashboardID
+        }
+        jsonResp = self.apiRequest('dashboardController/getDefaultData',defaultDashboardDataParams)
+        barChartsData = jsonResp[u'barChartsData']
+        self.assertEquals(len(barChartsData),1,"Expecting data for 1 bar chart")
+        dataRows = barChartsData[0][u'groupedSummarizedVals'][u'groupedDataRows']
+        self.assertEquals(len(dataRows),2,"Expecting 2 data rows in the bar chart")
+        overallRow = barChartsData[0][u'groupedSummarizedVals'][u'overallDataRow']
+        summaryVal = overallRow[u'summaryVals'][0]
+        self.assertEquals(summaryVal,2,"Expecting overall summary val (count) to be 2")
         
         getDataParams = {'parentDashboardID':dashboardID, 'barChartID':barChartID}
         jsonResp = self.apiRequest('dashboardController/getBarChartData',getDataParams)
