@@ -71,7 +71,7 @@ root : expr
 expr :	expr TOK_PLUS expr
 		{ 
 			funcArgs := []*EquationNode{$1,$3}
-			$$  =  FuncEqnNode(FuncNameSum,funcArgs)
+			$$  =  FuncEqnNode(FuncNameAdd,funcArgs)
 		}
 		| expr TOK_MINUS expr 
 		{
@@ -81,7 +81,7 @@ expr :	expr TOK_PLUS expr
 		| expr TOK_TIMES expr
 		{
 			funcArgs := []*EquationNode{$1,$3}
-			$$  =  FuncEqnNode(FuncNameProduct,funcArgs)
+			$$  =  FuncEqnNode(FuncNameMultiply,funcArgs)
 		}
 		| expr TOK_DIVIDE expr
 		{
@@ -91,7 +91,8 @@ expr :	expr TOK_PLUS expr
 		| TOK_MINUS expr %prec NEG 
 		{
 			funcArgs := []*EquationNode{NumberEqnNode(-1.0),$2}
-			$$  =  FuncEqnNode(FuncNameProduct,funcArgs)
+			/* Unary result is obtained by multiplying the result by -1.0 */
+			$$  =  FuncEqnNode(FuncNameMultiply,funcArgs)
 		}
 		| TOK_LPAREN expr TOK_RPAREN
 		{

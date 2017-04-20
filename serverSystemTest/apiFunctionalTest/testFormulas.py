@@ -72,7 +72,7 @@ class TestFormulas(unittest.TestCase,TestHelperMixin):
         self.verifyFormula(self.numberCalcField,"52.5","simple number literal")
         self.verifyFormula(self.numberCalcField,"SUM(52.5)","number literal inside function call")
         self.verifyFormula(self.numberCalcField,"-1.5*SUM(52.5)","negative numbers")
-        self.verifyBadFormula(self.numberCalcField,"-SUM(52.5)","unary - not supported")
+        self.verifyFormula(self.numberCalcField,"-SUM(52.5)","unary supported")
         
     def testEmptyFormulas(self):
         self.verifyFormula(self.numberCalcField,"","empty number formula")

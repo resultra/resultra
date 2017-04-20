@@ -119,6 +119,24 @@ func powerEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equa
 	return evalTwoNumberArgFunc(evalContext, funcArgs, evalFunc)
 }
 
+const FuncNameMultiply string = "MULTIPLY"
+
+func multiplyEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+	evalFunc := func(num1, num2 float64) (*EquationResult, error) {
+		return numberEqnResult(num1 * num2), nil
+	}
+	return evalTwoNumberArgFunc(evalContext, funcArgs, evalFunc)
+}
+
+const FuncNameAdd string = "ADD"
+
+func addEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+	evalFunc := func(num1, num2 float64) (*EquationResult, error) {
+		return numberEqnResult(num1 + num2), nil
+	}
+	return evalTwoNumberArgFunc(evalContext, funcArgs, evalFunc)
+}
+
 const FuncNameIf string = "IF"
 
 func ifEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
@@ -283,13 +301,15 @@ func concatEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equ
 
 var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 	FuncNameSum:         FunctionInfo{FuncNameSum, sumEvalFunc, oneOrMoreNumberArgs},
+	FuncNameAdd:         FunctionInfo{FuncNameAdd, addEvalFunc, twoNumberArgs},
 	FuncNameProduct:     FunctionInfo{FuncNameProduct, productEvalFunc, oneOrMoreNumberArgs},
 	FuncNameMinus:       FunctionInfo{FuncNameMinus, minusEvalFunc, twoNumberArgs},
 	FuncNameDivide:      FunctionInfo{FuncNameMinus, divideEvalFunc, twoNumberArgs},
+	FuncNameMultiply:    FunctionInfo{FuncNameMultiply, multiplyEvalFunc, twoNumberArgs},
 	FuncNamePower:       FunctionInfo{FuncNamePower, powerEvalFunc, twoNumberArgs},
 	FuncNameConcat:      FunctionInfo{FuncNameConcat, concatEvalFunc, oneOrMoreTextArgs},
 	FuncNameDateAdd:     FunctionInfo{FuncNameDateAdd, dateAddEvalFunc, validDateAddArgs},
 	FuncNameDaysBetween: FunctionInfo{FuncNameDaysBetween, daysBetweenEvalFunc, twoTimeArgsNumberResult},
 	FuncNameGreaterThan: FunctionInfo{FuncNameGreaterThan, greaterThanEvalFunc, twoNumberArgsBooleanResult},
-	FuncNameIf:          FunctionInfo{FuncNameIf, ifEvalFunc, validIfArgs}, // TODO - Support other return types
+	FuncNameIf:          FunctionInfo{FuncNameIf, ifEvalFunc, validIfArgs},
 }

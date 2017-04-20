@@ -32,7 +32,7 @@ class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
         
         timeVal = "2016-10-12T00:00:00Z" # RFC 3339 date & time format with Z at end for UTC
         calcTimeVal = "2016-10-13T00:00:00Z" # Date is offset by 1 day
-        pastCalcTimeVal = "2016-10-10T00:00:00Z"
+        pastCalcTimeVal = "2016-10-10T00:00:00Z" # Date is offset by -2 days
         
         recordRef = self.setTimeRecordValue(self.databaseID,recordID,self.timeFieldID,timeVal)
         # Round-trip comparison on the value set in the record.
@@ -42,9 +42,9 @@ class TestTimeRecordValues(unittest.TestCase,TestHelperMixin):
         recordRef = self.getRecord(self.databaseID,recordID)
         self.assertEquals(self.getRecordFieldVal(recordRef,self.timeFieldID),timeVal,"retrieved record has time value")
         self.assertEquals(self.getRecordFieldVal(recordRef,self.calcFieldID),
-                    calcTimeVal,"retrieved record has calculated time value")
+                    calcTimeVal,"retrieved record has expected calculated time value for calcFieldID")
         self.assertEquals(self.getRecordFieldVal(recordRef,self.pastCalcFieldID),
-                    pastCalcTimeVal,"retrieved record has calculated time value")
+                    pastCalcTimeVal,"retrieved record has expected calculated time value for pastCalcFieldID")
         
         with self.assertRaises(AssertionError):
             self.setTimeRecordValue(self.databaseID,recordID,self.timeFieldID,"ABC") # Invalid time format
