@@ -34,6 +34,26 @@ function loadCheckboxProperties($container, checkBoxRef) {
 			setContainerComponentInfo($container,updatedCheckboxRef,updatedCheckboxRef.checkBoxID)		
 		})
 	})
+
+
+	initCheckboxChangeHandler('#adminCheckboxComponentValidationRequired', 
+				checkBoxRef.properties.validation.valueRequired, function (newVal) {
+				
+		var validationProps = {
+			valueRequired: newVal
+		}		
+				
+		var validationParams = {
+			parentFormID: checkBoxRef.parentFormID,
+			checkBoxID: checkBoxRef.checkBoxID,
+			validation: validationProps
+		}
+		console.log("Setting new validation settings: " + JSON.stringify(validationParams))
+
+		jsonAPIRequest("frm/checkBox/setValidation",validationParams,function(updatedCheckboxRef) {
+			setContainerComponentInfo($container,updatedCheckboxRef,updatedCheckboxRef.checkBoxID)		
+		})
+	})
 	
 	
 	var elemPrefix = "checkbox_"

@@ -9,6 +9,15 @@ import (
 
 const CheckboxColorSchemeDefault string = "default"
 
+type CheckBoxValidationProperties struct {
+	ValueRequired bool `json:"valueRequired"`
+}
+
+func newDefaultValidationProperties() CheckBoxValidationProperties {
+	return CheckBoxValidationProperties{
+		ValueRequired: true}
+}
+
 type CheckBoxProperties struct {
 	FieldID                string                                `json:"fieldID"`
 	Geometry               componentLayout.LayoutGeometry        `json:"geometry"`
@@ -17,6 +26,7 @@ type CheckBoxProperties struct {
 	LabelFormat            common.ComponentLabelFormatProperties `json:"labelFormat"`
 	common.ComponentVisibilityProperties
 	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
+	Validation  CheckBoxValidationProperties               `json:"validation"`
 }
 
 func (srcProps CheckBoxProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*CheckBoxProperties, error) {
@@ -45,6 +55,7 @@ func newDefaultCheckBoxProperties() CheckBoxProperties {
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
 		ColorScheme:                   CheckboxColorSchemeDefault,
 		StrikethroughCompleted:        false,
-		Permissions:                   common.NewDefaultComponentValuePermissionsProperties()}
+		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
+		Validation:                    newDefaultValidationProperties()}
 	return props
 }

@@ -10,20 +10,28 @@ function initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, 
 		}
 		
 		var currVal = getCurrentCheckboxComponentValue($checkBox)
-		if (currVal === null) {
-			$checkBox.popover({
-				html: 'true',
-				content: function() { return "<small>Please pick a value</small>"},
-				trigger: 'manual',
-				placement: 'auto left'
-			})
-			$checkBox.popover('show')
-			validationCompleteCallback(false)
-			
-		} else {
-			$checkBox.popover('destroy')
-			validationCompleteCallback(true)
+		var validationParams = {
+			parentFormID: checkBoxObjectRef.parentFormID,
+			checkBoxID: checkBoxObjectRef.checkBoxID,
+			inputVal: currVal
 		}
+		jsonAPIRequest("frm/checkBox/validateInput", validationParams, function(validationResult) {
+			if (validationResult.validationSucceeded) {
+				$checkBox.popover('destroy')
+				validationCompleteCallback(true)
+			} else {
+				$checkBox.popover({
+					html: 'true',
+					content: function() { return escapeHTML(validationResult.errorMsg) },
+					trigger: 'manual',
+					placement: 'auto left'
+				})
+				$checkBox.popover('show')
+				validationCompleteCallback(false)
+			}
+			
+		})	
+		
 	}
 	
 	

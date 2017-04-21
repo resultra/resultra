@@ -17,6 +17,9 @@ func init() {
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/setVisibility", setVisibility)
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/setPermissions", setPermissions)
 
+	checkBoxRouter.HandleFunc("/api/frm/checkBox/setValidation", setValidation)
+	checkBoxRouter.HandleFunc("/api/frm/checkBox/validateInput", validateInputAPI)
+
 	http.Handle("/api/frm/checkBox/", checkBoxRouter)
 }
 
@@ -34,6 +37,18 @@ func newCheckBox(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, *checkBoxRef)
 	}
 
+}
+
+func validateInputAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params CheckBoxValidateInputParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	validationResp := validateInput(params)
+	api.WriteJSONResponse(w, validationResp)
 }
 
 func processCheckBoxPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater CheckBoxPropUpdater) {
@@ -91,6 +106,15 @@ func setVisibility(w http.ResponseWriter, r *http.Request) {
 
 func setPermissions(w http.ResponseWriter, r *http.Request) {
 	var params CheckBoxPermissionParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processCheckBoxPropUpdate(w, r, params)
+}
+
+func setValidation(w http.ResponseWriter, r *http.Request) {
+	var params CheckBoxValidationParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

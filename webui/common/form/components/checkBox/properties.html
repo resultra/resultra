@@ -17,16 +17,24 @@
 	  <div class="form-group">
  	      <div class="checkbox">
 	        <input type="checkbox" id="adminCheckboxComponentStrikethrough">
-	        <label>Strikethrough label when checked.</label>
+	        <label for="adminCheckboxComponentStrikethrough">Strikethrough label when checked.</label>
 	      </div>
 	   </div>
-	  
-	  
-    </form>
-	
-	
-	
+    </form>	
 {{end}}
+
+
+{{define "checkBoxValidationProps"}}
+     <form id="adminCheckboxComponentValidationForm">	  
+	  <div class="form-group">
+ 	      <div class="checkbox">
+	        <input type="checkbox" id="adminCheckboxComponentValidationRequired">
+	        <label for="adminCheckboxComponentValidationRequired">Value is required</label>
+	      </div>
+	   </div>
+    </form>	
+{{end}}
+
 
 {{define "checkBoxProps"}}
 
@@ -37,7 +45,11 @@
 		{{template "propertyPanelPrefix" .FormatPanelParams}}
 			{{template "checkBoxFormatProps"}}
 		{{template "propertyPanelSuffix"}}
-		
+
+		{{template "propertyPanelPrefix" .ValidationPanelParams}}
+			{{template "checkBoxValidationProps"}}
+		{{template "propertyPanelSuffix"}}
+
 		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}
 
 		{{template "componentPermissionsPropertyPanel" .PermissionPanelParams}}

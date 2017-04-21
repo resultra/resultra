@@ -12,6 +12,7 @@ import (
 type CheckboxDesignTemplateParams struct {
 	ElemPrefix               string
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
+	ValidationPanelParams    propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
@@ -39,6 +40,7 @@ func init() {
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "checkBoxVisibility"),
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "checkBoxPerms"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "checkboxFormat"},
+		ValidationPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Validation", PanelID: "checkboxValidation"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
 			DialogTitle: "New Check Box",

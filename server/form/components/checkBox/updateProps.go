@@ -134,3 +134,15 @@ func (updateParams CheckBoxPermissionParams) updateProps(checkBox *CheckBox) err
 
 	return nil
 }
+
+type CheckBoxValidationParams struct {
+	CheckboxIDHeader
+	Validation CheckBoxValidationProperties `json:"validation"`
+}
+
+func (updateParams CheckBoxValidationParams) updateProps(checkBox *CheckBox) error {
+
+	checkBox.Properties.Validation = updateParams.Validation
+
+	return nil
+}
