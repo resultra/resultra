@@ -44,3 +44,21 @@ function setCheckBoxComponentLabel($checkboxContainer,checkboxRef) {
 			checkboxRef.properties.labelFormat)	
 	
 }
+
+function getCurrentCheckboxComponentValue($checkboxContainer) {
+	var $checkbox = $checkboxContainer.find(".checkboxFormComponentControl")
+	var isIndeterminate = $checkbox.prop("indeterminate")
+	if (isIndeterminate) {
+		return null
+	} else {
+		var isChecked = $checkbox.prop("checked")
+		return isChecked
+	}
+}
+
+function checkboxComponentIsDisabled($checkboxContainer) {
+	var $checkbox = $checkboxContainer.find(".checkboxFormComponentControl")
+	var disabled = $checkbox.prop("disabled")
+	return disabled
+	
+}

@@ -15,3 +15,14 @@
 	display: inline-block;
 
 }
+
+/* When component layouts (for forms & dashboards) are shown in dialogs, for example, 
+   Bootstrap popovers will sometimes be cut off when displayed next to the edge
+   of the layout. The solution/workaround below ensures the popovers are not hidden.
+   Another solution is to set the container property to 'body' on the popover itself.
+   See http://stackoverflow.com/questions/14025438/bootstrap-popover-not-showing-on-top-of-all-elements
+   for more background on this */
+.componentCol .popover {
+	z-index:9999999;
+	position:fixed;
+}

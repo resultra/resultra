@@ -27,6 +27,7 @@ function openSubmitFormDialog(viewFormContext) {
 		}
 		
 		function showDialogAfterFormComponentLoaded() {
+			loadRecordIntoFormLayout($submitFormViewCanvas,newRecord)
 			$dialog.modal('show')
 		}
 	
@@ -40,16 +41,24 @@ function openSubmitFormDialog(viewFormContext) {
 		loadFormViewComponents($submitFormViewCanvas,viewFormContext,recordProxy,showDialogAfterFormComponentLoaded)
 		
 		initButtonClickHandler('#submitFormSaveButton', function() {
-			console.log("Saving form results")
 			
-			var recordDraftParams = {
-				recordID: newRecord.recordID,
-				isDraftRecord: false
-			}
+			validateFormValues($submitFormViewCanvas,function(validationResult) {
+				if(validationResult === true) {
+					console.log("Form validation succeeded: Saving form results")
 			
-			jsonAPIRequest("record/setDraftStatus",recordDraftParams,function(response) {
-				$dialog.modal('hide')
+					var recordDraftParams = {
+						recordID: newRecord.recordID,
+						isDraftRecord: false
+					}
+			
+					jsonAPIRequest("record/setDraftStatus",recordDraftParams,function(response) {
+						$dialog.modal('hide')
+					})
+				} else {
+					console.log("Form validation failed: not saving form results")
+				}
 			})
+			
 
 		})
 		
