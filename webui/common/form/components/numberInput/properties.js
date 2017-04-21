@@ -3,6 +3,83 @@ function loadNumberInputProperties($numberInput,numberInputRef) {
 	
 	var elemPrefix = "numberInput_"
 	
+	function initValidationProperties() {
+		var $validationForm = $('#numberInputValidationPropsForm')
+		var $validationTypeSelection = $('#adminNumberInputValidationSelection')
+		var $valInputParams = $validationForm.find(".numberInputParam")
+		var $compareValInputParam = $validationForm.find(".numberInputCompareVal")
+		var $rangeParams = $validationForm.find(".numberInputRangeVal")
+		var $minParam = $validationForm.find(".numberInputMinVal")
+		var $maxParam = $validationForm.find(".numberInputMaxVal")
+		
+		function getValidationConfig() {
+			var validationType = $validationTypeSelection.val()
+			var validationConfig = null
+			switch(validationType) {
+			case "none":
+			case "required":
+				validationConfig = { rule: validationType }
+				break;
+			case "greater":
+				var compareVal = Number($compareValInputParam.val())
+				if (!isNaN(compareVal)) {
+					validationConfig = { rule: validationType, compareVal:compareVal }
+				}
+				break;
+			case "between":
+				var minVal = Number($minParam.val())
+				var maxVal = Number($maxParam.val())
+				if((!isNaN(minVal)) && (!isNaN(maxVal)) && maxVal > minVal) {
+					validationConfig = { rule: validationType, minVal: minVal, maxVal: maxVal }
+				}
+				break;
+			}
+			
+			console.log("Validation config: " + JSON.stringify(validationConfig))
+			
+			return validationConfig		
+			
+		}
+		
+		function configureControlsForValidationType(validationType) {
+			switch(validationType) {
+			case "none":
+				$valInputParams.hide()
+				break;
+			case "required":
+				$valInputParams.hide()
+				break;
+			case "greater":
+				$valInputParams.hide()
+				$compareValInputParam.val("")
+				$compareValInputParam.show()
+				break;
+			case "between":
+				$valInputParams.hide()
+				$rangeParams.val("")
+				$rangeParams.show()
+				break;
+			}			
+		}
+		
+		var defaultValidationType = "required"
+		$validationTypeSelection.val(defaultValidationType) // Set to the default
+		configureControlsForValidationType(defaultValidationType)
+		
+		
+		initSelectControlChangeHandler($validationTypeSelection,function(newValidationType) {
+			configureControlsForValidationType(newValidationType)
+			getValidationConfig()
+		})
+		
+		$valInputParams.unbind("blur")
+		$valInputParams.blur(function() {
+			getValidationConfig()
+		})
+	}
+	initValidationProperties()
+	
+	
 	var formatSelectionParams = {
 		elemPrefix: elemPrefix,
 		initialFormat: numberInputRef.properties.valueFormat.format,
