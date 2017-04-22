@@ -5,7 +5,19 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/uniqueID"
+	"time"
 )
+
+type DatePickerValidationProperties struct {
+	Rule        string     `json:"rule"`
+	StartDate   *time.Time `json:"startDate,omitempty"`
+	EndDate     *time.Time `json:"endDate,omitempty"`
+	CompareDate *time.Time `json:"compareDate,omitempty"`
+}
+
+func newDefaultDatePickerProps() DatePickerValidationProperties {
+	return DatePickerValidationProperties{Rule: "required"}
+}
 
 type DatePickerProperties struct {
 	FieldID     string                                     `json:"fieldID"`
@@ -14,6 +26,7 @@ type DatePickerProperties struct {
 	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
 	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 	common.ComponentVisibilityProperties
+	Validation DatePickerValidationProperties `json:"validation"`
 }
 
 const dateFormatDefault string = "date"
@@ -42,6 +55,7 @@ func newDefaultDatePickerProperties() DatePickerProperties {
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
 		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
-		DateFormat:                    dateFormatDefault}
+		DateFormat:                    dateFormatDefault,
+		Validation:                    newDefaultDatePickerProps()}
 	return props
 }

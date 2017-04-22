@@ -15,6 +15,8 @@ func init() {
 	datePickerRouter.HandleFunc("/api/frm/datePicker/setLabelFormat", setLabelFormat)
 	datePickerRouter.HandleFunc("/api/frm/datePicker/setVisibility", setVisibility)
 	datePickerRouter.HandleFunc("/api/frm/datePicker/setPermissions", setPermissions)
+	datePickerRouter.HandleFunc("/api/frm/datePicker/setValidation", setValidation)
+	datePickerRouter.HandleFunc("/api/frm/datePicker/validateInput", validateInputAPI)
 
 	http.Handle("/api/frm/datePicker/", datePickerRouter)
 }
@@ -32,6 +34,19 @@ func newDatePicker(w http.ResponseWriter, r *http.Request) {
 	} else {
 		api.WriteJSONResponse(w, *checkBoxRef)
 	}
+
+}
+
+func validateInputAPI(w http.ResponseWriter, r *http.Request) {
+
+	params := DatePickerValidateInputParams{}
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	validationResult := validateInput(params)
+	api.WriteJSONResponse(w, validationResult)
 
 }
 
@@ -81,6 +96,15 @@ func setVisibility(w http.ResponseWriter, r *http.Request) {
 
 func setPermissions(w http.ResponseWriter, r *http.Request) {
 	var params DatePickerPermissionParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processDatePickerPropUpdate(w, r, params)
+}
+
+func setValidation(w http.ResponseWriter, r *http.Request) {
+	var params DatePickerValidationParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

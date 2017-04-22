@@ -118,3 +118,15 @@ func (updateParams DatePickerPermissionParams) updateProps(datePicker *DatePicke
 
 	return nil
 }
+
+type DatePickerValidationParams struct {
+	DatePickerIDHeader
+	Validation DatePickerValidationProperties `json:"validation"`
+}
+
+func (updateParams DatePickerValidationParams) updateProps(datePicker *DatePicker) error {
+
+	datePicker.Properties.Validation = updateParams.Validation
+
+	return nil
+}
