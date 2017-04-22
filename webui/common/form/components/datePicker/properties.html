@@ -13,6 +13,40 @@
 	</form>
 {{end}}
 
+{{define "datePickerValidationProps"}}
+	<form id="datePickerValidationPropsForm">
+	  <div class="form-group">
+		  	<select class="form-control input-sm" id="datePickerValidationSelection">
+		  		<option disabled selected value="">Select a type of validation</option>
+		  		<option value="none">None (value is optional)</option>
+		  		<option value="required">Date is required</option>
+		 		<option value="future">In the future</option>
+		 		<option value="past">In the past</option>
+		 		<option value="before">After a specific date</option>
+		 		<option value="after">Before a specific date</option>
+		 		<option value="between">Between start and end dates</option>
+			</select>
+			
+			<div class="form-group datePickerValidationStartEndDateControls dateInputParam">
+		        <div class='input-group date datePickerValidationRangeStartInput'>
+		            <input type='text' class="form-control input-sm" placeholder="Start date"/>
+		            <span class="input-group-addon ">
+		                <span class="glyphicon glyphicon-calendar"></span>
+		            </span>
+		        </div>
+		        <div class='input-group date datePickerValidationRangeEndInput'>
+		            <input type='text' class="form-control input-sm" placeholder="End date"/>
+		            <span class="input-group-addon">
+		                <span class="glyphicon glyphicon-calendar"></span>
+		            </span>
+		        </div>
+			</div>	
+			
+			<input class="form-control input-sm dateInputParam dateCompareVal" type="text" placeholder="Enter a date">
+	  </div>
+	</form>
+{{end}}
+
 {{define "datePickerProps"}}
 
 	<div id="datePickerProps" class="propertyPanelToggleContainer">
@@ -22,6 +56,11 @@
 		{{template "propertyPanelPrefix" .FormatPanelParams}}
 			{{template "datePickerFormatProps"}}
 		{{template "propertyPanelSuffix"}}
+
+		{{template "propertyPanelPrefix" .ValidationPanelParams}}
+			{{template "datePickerValidationProps"}}
+		{{template "propertyPanelSuffix"}}
+
 		
 		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}
 
