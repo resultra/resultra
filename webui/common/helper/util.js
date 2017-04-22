@@ -114,3 +114,19 @@ function IDLookupTable(idList) {
 function navigateToURL(url) {
 	window.location.href = url
 }
+
+
+function convertStringToNumber(numberStr) {
+	var strForConv = numberStr + '' // make sure value passed in is already a string
+	if (/^\s*$/.test(strForConv)) {
+		return null
+	}
+	else {
+		var numberVal = Number(strForConv)
+		if (!isNaN(numberVal)) {
+			return numberVal
+		} else {
+			return null
+		}
+	} 
+}

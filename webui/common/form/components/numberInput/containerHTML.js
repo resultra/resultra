@@ -58,3 +58,10 @@ function configureNumberInputButtonSpinner($numberInputContainer, numberInputRef
 	$spinnerControls.css("display","")
 	
 }
+
+function numberInputComponentDisabled($numberInputContainer) {
+	
+	var $numberInput = $numberInputContainer.find(".numberInputComponentInput")
+	return $numberInput.prop("disabled")
+	
+}

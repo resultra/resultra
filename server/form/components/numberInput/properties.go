@@ -8,6 +8,17 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
+type NumberInputValidationProperties struct {
+	Rule       string   `json:"rule"`
+	MinVal     *float64 `json:"minVal,omitempty"`
+	MaxVal     *float64 `json:"maxVal,omitempty"`
+	CompareVal *float64 `json:"compareVal,omitempty"`
+}
+
+func newDefaultValidationProperties() NumberInputValidationProperties {
+	return NumberInputValidationProperties{Rule: "required"}
+}
+
 type NumberInputProperties struct {
 	FieldID              string                                     `json:"fieldID"`
 	Geometry             componentLayout.LayoutGeometry             `json:"geometry"`
@@ -17,6 +28,7 @@ type NumberInputProperties struct {
 	ShowValueSpinner     bool                                       `json:"showValueSpinner"`
 	ValueSpinnerStepSize float64                                    `json:"valueSpinnerStepSize"`
 	common.ComponentVisibilityProperties
+	Validation NumberInputValidationProperties `json:"validation"`
 }
 
 func (srcProps NumberInputProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*NumberInputProperties, error) {
@@ -45,6 +57,7 @@ func newDefaultNumberInputProperties() NumberInputProperties {
 		ValueFormat:                   numberFormat.DefaultNumberFormatProperties(),
 		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
 		ShowValueSpinner:              true,
-		ValueSpinnerStepSize:          1.0}
+		ValueSpinnerStepSize:          1.0,
+		Validation:                    newDefaultValidationProperties()}
 	return props
 }

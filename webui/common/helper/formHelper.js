@@ -134,7 +134,6 @@ function nonEmptyStringVal(val) {
 	
 }
 
-
 function smallClearButtonHTML(iconClass, className) {
 	
 	// className is to uniquely identify the button with other HTML elements,

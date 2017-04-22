@@ -10,29 +10,34 @@ function initNumberFormatSelection(params) {
 
 function formatNumberValue(format, rawVal) {
 	
+	var numberVal = convertStringToNumber(rawVal)
+	if (numberVal == null) {
+		return rawVal // Don't format the value if it is not a number
+	} 
+		
 	function isInt(val) {
 		return Number(val) % 1 === 0 // remainder non-zero with modulo arithmetic
 	}
 	
 	switch (format) {
 		case "percent":
-			return (Number(rawVal)*100.0).toFixed(2) + "%"
+			return (numberVal*100.0).toFixed(2) + "%"
 		case "percent0":
-			return (Number(rawVal)*100.0).toFixed(0) + "%"
+			return (numberVal*100.0).toFixed(0) + "%"
 		case "percent1":
-			return (Number(rawVal)*100.0).toFixed(1) + "%"
+			return (numberVal*100.0).toFixed(1) + "%"
 		case "general":
 			if(isInt(rawVal)) {
-				return Number(rawVal)
+				return numberVal
 				
 			} else {
-				return accounting.toFixed(rawVal,2)	
+				return accounting.toFixed(numberVal,2)	
 			}
 			
 		case "currency":
-			return accounting.formatMoney(rawVal)
+			return accounting.formatMoney(numberVal)
 		case "currency0prec":
-			return accounting.formatMoney(rawVal,{precision:0})
+			return accounting.formatMoney(numberVal,{precision:0})
 		default:
 			return rawVal
 	}

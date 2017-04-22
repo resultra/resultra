@@ -145,3 +145,15 @@ func (updateParams ValueSpinnerStepSizeParams) updateProps(numberInput *NumberIn
 
 	return nil
 }
+
+type NumberInputValidationParams struct {
+	NumberInputIDHeader
+	Validation NumberInputValidationProperties `json:"validation"`
+}
+
+func (updateParams NumberInputValidationParams) updateProps(numberInput *NumberInput) error {
+
+	numberInput.Properties.Validation = updateParams.Validation
+
+	return nil
+}

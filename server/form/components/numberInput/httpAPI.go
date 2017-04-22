@@ -18,6 +18,9 @@ func init() {
 	numberInputRouter.HandleFunc("/api/frm/numberInput/setShowSpinner", setShowSpinner)
 	numberInputRouter.HandleFunc("/api/frm/numberInput/setSpinnerStepSize", setSpinnerStepSize)
 
+	numberInputRouter.HandleFunc("/api/frm/numberInput/setValidation", setValidation)
+	numberInputRouter.HandleFunc("/api/frm/numberInput/validateInput", validateInputAPI)
+
 	http.Handle("/api/frm/numberInput/", numberInputRouter)
 }
 
@@ -35,6 +38,18 @@ func newNumberInput(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, *numberInputRef)
 	}
 
+}
+
+func validateInputAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params NumberInputValidateInputParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	validationResp := validateInput(params)
+	api.WriteJSONResponse(w, validationResp)
 }
 
 func processNumberInputPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater NumberInputPropUpdater) {
@@ -101,6 +116,15 @@ func setShowSpinner(w http.ResponseWriter, r *http.Request) {
 
 func setSpinnerStepSize(w http.ResponseWriter, r *http.Request) {
 	var params ValueSpinnerStepSizeParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processNumberInputPropUpdate(w, r, params)
+}
+
+func setValidation(w http.ResponseWriter, r *http.Request) {
+	var params NumberInputValidationParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
