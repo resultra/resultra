@@ -165,9 +165,9 @@ function initNumberInputRecordEditBehavior($container,componentContext,recordPro
 				console.log("Clear value clicked for text box")
 		
 			var currRecordRef = recordProxy.getRecordFunc()
-			setNumberVal(null)
 			setRawInputVal("")
 			$numberInputInput.val("")
+			setNumberVal(null)
 		})
 	
 		if(numberInputObjectRef.properties.showValueSpinner) {
