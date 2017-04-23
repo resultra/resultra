@@ -25,6 +25,8 @@ func validateInput(params NumberInputValidateInputParams) inputValidation.Valida
 	case "required":
 		if params.InputVal == nil {
 			return inputValidation.FailValidationResult("Value is required")
+		} else {
+			return inputValidation.SuccessValidationResult()
 		}
 	case "between":
 		if params.InputVal == nil {
@@ -64,6 +66,5 @@ func validateInput(params NumberInputValidateInputParams) inputValidation.Valida
 	default:
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
 	}
-	return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
 
 }
