@@ -83,9 +83,29 @@ function setDatePickerFormComponentDate($datePicker, datePickerRef, momentDate) 
 	}
 }
 
+function getDatePickerFormComponentUTCDate($datePicker) {
+	var $datePickerInput = datePickerInputFromContainer($datePicker)
+	var datePicker = $datePickerInput.data("DateTimePicker")
+	
+	var currDate =  datePicker.date()
+	if (currDate != null) {
+		var dateParam = currDate.toISOString()
+		return dateParam
+	} else {
+		return null
+	}
+}
+
 function setDatePickerComponentLabel($datePickerContainer,datePickerRef) {
 	var $label = $datePickerContainer.find('label')
 	
 	setFormComponentLabel($label,datePickerRef.properties.fieldID,
 			datePickerRef.properties.labelFormat)
+}
+
+function datePickerComponentIsDisabled($datePickerContainer) {
+	var $datePickerInput = datePickerInputFromContainer($datePickerContainer)
+	var disabled = $datePickerInput.prop("disabled")
+	return disabled
+	
 }
