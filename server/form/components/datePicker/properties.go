@@ -8,6 +8,14 @@ import (
 	"time"
 )
 
+const validationRuleNone string = "none"
+const validationRuleRequired string = "required"
+const validationRuleFuture string = "future"
+const validationRulePast string = "past"
+const validationRuleBefore string = "before"
+const validationRuleAfter string = "after"
+const validationRuleBetween string = "between"
+
 type DatePickerValidationProperties struct {
 	Rule        string     `json:"rule"`
 	StartDate   *time.Time `json:"startDate,omitempty"`
@@ -16,7 +24,7 @@ type DatePickerValidationProperties struct {
 }
 
 func newDefaultDatePickerProps() DatePickerValidationProperties {
-	return DatePickerValidationProperties{Rule: "required"}
+	return DatePickerValidationProperties{Rule: validationRuleRequired}
 }
 
 type DatePickerProperties struct {

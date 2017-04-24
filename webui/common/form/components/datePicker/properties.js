@@ -86,6 +86,15 @@ function loadDatePickerProperties($container,datePickerRef) {
 			var validationConfig = getValidationConfig()
 			if (validationConfig !== null) {
 				console.log("Validation config changed: " + JSON.stringify(validationConfig))
+				var validationParams = {
+					parentFormID: datePickerRef.parentFormID,
+					datePickerID: datePickerRef.datePickerID,
+					validation: validationConfig
+				}
+				jsonAPIRequest("frm/datePicker/setValidation", validationParams, function(updatedDatePicker) {
+					setContainerComponentInfo($container,updatedDatePicker,updatedDatePicker.datePickerID)
+				})	
+			
 			}
 		}
 		
@@ -189,7 +198,6 @@ function loadDatePickerProperties($container,datePickerRef) {
 	}
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
 	
-	
 	var readOnlyParams = {
 		elemPrefix: elemPrefix,
 		initialVal: datePickerRef.properties.permissions,
@@ -205,9 +213,6 @@ function loadDatePickerProperties($container,datePickerRef) {
 		}
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
-	
-	
-	
 	
 	var deleteParams = {
 		elemPrefix: elemPrefix,
