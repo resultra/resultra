@@ -132,3 +132,17 @@ func (updateParams RatingPermissionParams) updateProps(rating *Rating) error {
 
 	return nil
 }
+
+type RatingValidationParams struct {
+	RatingIDHeader
+	Validation RatingValidationProperties `json:"validation"`
+}
+
+func (updateParams RatingValidationParams) updateProps(rating *Rating) error {
+
+	// TODO - Validate conditions
+
+	rating.Properties.Validation = updateParams.Validation
+
+	return nil
+}

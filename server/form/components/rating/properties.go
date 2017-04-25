@@ -9,6 +9,15 @@ import (
 
 const ratingIconStar string = "star"
 
+type RatingValidationProperties struct {
+	ValueRequired bool `json:"valueRequired"`
+}
+
+func newDefaultValidationProperties() RatingValidationProperties {
+	return RatingValidationProperties{
+		ValueRequired: true}
+}
+
 type RatingProperties struct {
 	FieldID     string                                `json:"fieldID"`
 	Geometry    componentLayout.LayoutGeometry        `json:"geometry"`
@@ -17,6 +26,7 @@ type RatingProperties struct {
 	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
 	common.ComponentVisibilityProperties
 	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
+	Validation  RatingValidationProperties                 `json:"validation"`
 }
 
 func (srcProps RatingProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*RatingProperties, error) {
@@ -44,6 +54,7 @@ func newDefaultRatingProperties() RatingProperties {
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
 		Tooltips:                      []string{},
 		Icon:                          ratingIconStar,
-		Permissions:                   common.NewDefaultComponentValuePermissionsProperties()}
+		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
+		Validation:                    newDefaultValidationProperties()}
 	return props
 }

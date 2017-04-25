@@ -16,6 +16,8 @@ func init() {
 	ratingRouter.HandleFunc("/api/frm/rating/setLabelFormat", setLabelFormat)
 	ratingRouter.HandleFunc("/api/frm/rating/setVisibility", setVisibility)
 	ratingRouter.HandleFunc("/api/frm/rating/setPermissions", setPermissions)
+	ratingRouter.HandleFunc("/api/frm/rating/setValidation", setValidation)
+	ratingRouter.HandleFunc("/api/frm/rating/validateInput", validateInputAPI)
 
 	http.Handle("/api/frm/rating/", ratingRouter)
 }
@@ -34,6 +36,18 @@ func newRating(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, *ratingRef)
 	}
 
+}
+
+func validateInputAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params RatingValidateInputParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	validationResp := validateInput(params)
+	api.WriteJSONResponse(w, validationResp)
 }
 
 func processRatingPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater RatingPropUpdater) {
@@ -91,6 +105,15 @@ func setVisibility(w http.ResponseWriter, r *http.Request) {
 
 func setPermissions(w http.ResponseWriter, r *http.Request) {
 	var params RatingPermissionParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processRatingPropUpdate(w, r, params)
+}
+
+func setValidation(w http.ResponseWriter, r *http.Request) {
+	var params RatingValidationParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

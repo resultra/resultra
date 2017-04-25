@@ -138,3 +138,18 @@ function initRatingFormComponentContainer($container,ratingObjectRef) {
 	setElemFixedWidthFlexibleHeight($container,
 				ratingObjectRef.properties.geometry.sizeWidth)
 }
+
+function getRatingValFromContainer($ratingContainer) {
+	var $ratingControl = getRatingControlFromRatingContainer($ratingContainer)
+	var rawVal = $ratingControl.val()
+	if (rawVal.length == 0) {
+		return null
+	}
+	var numberVal = Number(rawVal)
+	if (!isNaN(numberVal)) {
+		return numberVal
+	} else {
+		return null
+	}
+}
+

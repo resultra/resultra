@@ -65,6 +65,24 @@ function loadRatingProperties($rating,ratingRef) {
 	}
 	initFormComponentVisibilityPropertyPanel(visibilityParams)
 
+	initCheckboxChangeHandler('#adminRatingComponentValidationRequired', 
+				ratingRef.properties.validation.valueRequired, function (newVal) {
+			
+		var validationProps = {
+			valueRequired: newVal
+		}		
+			
+		var validationParams = {
+			parentFormID: ratingRef.parentFormID,
+			ratingID: ratingRef.ratingID,
+			validation: validationProps
+		}
+		console.log("Setting new validation settings: " + JSON.stringify(validationParams))
+
+		jsonAPIRequest("frm/rating/setValidation",validationParams,function(updatedRating) {
+				setContainerComponentInfo($rating,updatedRating,updatedRating.ratingID)
+		})
+	})
 	
 	var readOnlyParams = {
 		elemPrefix: elemPrefix,

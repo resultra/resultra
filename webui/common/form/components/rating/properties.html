@@ -21,6 +21,17 @@
     </form>
 {{end}}
 
+{{define "ratingValidationProps"}}
+     <form id="adminRatingComponentValidationForm">	  
+	  <div class="form-group">
+ 	      <div class="checkbox">
+	        <input type="checkbox" id="adminRatingComponentValidationRequired">
+	        <label for="adminRatingComponentValidationRequired">Value is required</label>
+	      </div>
+	   </div>
+    </form>	
+{{end}}
+
 {{define "ratingProps"}}
 
 	<div id="ratingProps" class="propertyPanelToggleContainer">
@@ -29,6 +40,10 @@
 
 		{{template "propertyPanelPrefix" .FormatPanelParams}}
 			{{template "ratingFormatProps"}}
+		{{template "propertyPanelSuffix"}}
+		
+		{{template "propertyPanelPrefix" .ValidationPanelParams}}
+			{{template "ratingValidationProps"}}
 		{{template "propertyPanelSuffix"}}
 		
 		{{template "propertyPanelPrefix" .TooltipPanelParams}}
