@@ -7,12 +7,22 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
+type ValidationProperties struct {
+	ValueRequired bool `json:"valueRequired"`
+}
+
+func newDefaultValidationProperties() ValidationProperties {
+	return ValidationProperties{
+		ValueRequired: true}
+}
+
 type HtmlEditorProperties struct {
 	FieldID     string                                     `json:"fieldID"`
 	Geometry    componentLayout.LayoutGeometry             `json:"geometry"`
 	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
 	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 	common.ComponentVisibilityProperties
+	Validation ValidationProperties `json:"validation"`
 }
 
 func (srcProps HtmlEditorProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*HtmlEditorProperties, error) {
@@ -38,6 +48,7 @@ func newDefaultEditorProperties() HtmlEditorProperties {
 	props := HtmlEditorProperties{
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
-		Permissions:                   common.NewDefaultComponentValuePermissionsProperties()}
+		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
+		Validation:                    newDefaultValidationProperties()}
 	return props
 }

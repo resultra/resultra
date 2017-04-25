@@ -14,6 +14,8 @@ func init() {
 	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/setLabelFormat", setLabelFormat)
 	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/setVisibility", setVisibility)
 	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/setPermissions", setPermissions)
+	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/setValidation", setValidation)
+	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/validateInput", validateInputAPI)
 
 	http.Handle("/api/frm/htmlEditor/", htmlEditorRouter)
 }
@@ -32,6 +34,18 @@ func newHtmlEditor(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, *editorRef)
 	}
 
+}
+
+func validateInputAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params ValidateInputParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	validationResp := validateInput(params)
+	api.WriteJSONResponse(w, validationResp)
 }
 
 func processHtmlEditorPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater HtmlEditorPropUpdater) {
@@ -71,6 +85,15 @@ func setVisibility(w http.ResponseWriter, r *http.Request) {
 
 func setPermissions(w http.ResponseWriter, r *http.Request) {
 	var params EditorPermissionParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processHtmlEditorPropUpdate(w, r, params)
+}
+
+func setValidation(w http.ResponseWriter, r *http.Request) {
+	var params EditorValidationParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

@@ -3,6 +3,18 @@
 	HTML Editor formatting properties go here
 {{end}}
 
+{{define "htmlEditorValidationProps"}}
+     <form id="adminHtmlEditorComponentValidationForm">	  
+	  <div class="form-group">
+ 	      <div class="checkbox">
+	        <input type="checkbox" id="adminHtmlEditorComponentValidationRequired">
+	        <label for="adminHtmlEditorComponentValidationRequired">Value is required</label>
+	      </div>
+	   </div>
+    </form>	
+{{end}}
+
+
 {{define "htmlEditorProps"}}
 
 	<div id="htmlEditorProps" class="propertyPanelToggleContainer">
@@ -11,6 +23,10 @@
 
 		{{template "propertyPanelPrefix" .FormatPanelParams}}
 			{{template "htmlEditorFormatProps"}}
+		{{template "propertyPanelSuffix"}}
+		
+		{{template "propertyPanelPrefix" .ValidationPanelParams}}
+			{{template "htmlEditorValidationProps"}}
 		{{template "propertyPanelSuffix"}}
 
 		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}

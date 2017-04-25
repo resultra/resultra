@@ -59,6 +59,27 @@ function loadHtmlEditorProperties($editor, htmlEditorRef) {
 	}
 	initFormComponentPermissionsPropertyPanel(permissionParams)
 	
+	
+	initCheckboxChangeHandler('#adminHtmlEditorComponentValidationRequired', 
+				htmlEditorRef.properties.validation.valueRequired, function (newVal) {
+			
+		var validationProps = {
+			valueRequired: newVal
+		}		
+			
+		var validationParams = {
+			parentFormID: htmlEditorRef.parentFormID,
+			htmlEditorID: htmlEditorRef.htmlEditorID,
+			validation: validationProps
+		}
+		console.log("Setting new validation settings: " + JSON.stringify(validationParams))
+
+		jsonAPIRequest("frm/htmlEditor/setValidation",validationParams,function(updatedEditor) {
+				setContainerComponentInfo($editor,updatedEditor,updatedEditor.htmlEditorID)	
+		})
+	})
+	
+	
 	var deleteParams = {
 		elemPrefix: elemPrefix,
 		parentFormID: htmlEditorRef.parentFormID,

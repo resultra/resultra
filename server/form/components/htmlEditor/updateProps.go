@@ -104,3 +104,15 @@ func (updateParams EditorPermissionParams) updateProps(editor *HtmlEditor) error
 
 	return nil
 }
+
+type EditorValidationParams struct {
+	HtmlEditorIDHeader
+	Validation ValidationProperties `json:"validation"`
+}
+
+func (updateParams EditorValidationParams) updateProps(editor *HtmlEditor) error {
+
+	editor.Properties.Validation = updateParams.Validation
+
+	return nil
+}
