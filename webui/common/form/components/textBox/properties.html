@@ -1,8 +1,25 @@
+
+{{define "textBoxValidationProps"}}
+     <form id="adminTextBoxComponentValidationForm">	  
+	  <div class="form-group">
+ 	      <div class="checkbox">
+	        <input type="checkbox" id="adminTextBoxComponentValidationRequired">
+	        <label for="adminTextBoxComponentValidationRequired">Value is required</label>
+	      </div>
+	   </div>
+    </form>	
+{{end}}
+
 {{define "textBoxProps"}}
 
 	<div id="textBoxProps" class="propertyPanelToggleContainer">
 
 		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
+	
+		{{template "propertyPanelPrefix" .ValidationPanelParams}}
+			{{template "textBoxValidationProps"}}
+		{{template "propertyPanelSuffix"}}
+	
 		
 		{{template "propertyPanelPrefix" .ValueListPanelParams}}
 			{{template "valueListSelectionPropertyPanel"}}

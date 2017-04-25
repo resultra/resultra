@@ -7,6 +7,14 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
+type TextBoxValidationProperties struct {
+	ValueRequired bool `json:"valueRequired"`
+}
+
+func newDefaultTextBoxValidationProperties() TextBoxValidationProperties {
+	return TextBoxValidationProperties{false}
+}
+
 type TextBoxProperties struct {
 	FieldID     string                                     `json:"fieldID"`
 	Geometry    componentLayout.LayoutGeometry             `json:"geometry"`
@@ -14,6 +22,7 @@ type TextBoxProperties struct {
 	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 	ValueListID *string                                    `json:"valueListID,omitempty"`
 	common.ComponentVisibilityProperties
+	Validation TextBoxValidationProperties `json:"validation"`
 }
 
 func (srcProps TextBoxProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*TextBoxProperties, error) {
@@ -44,6 +53,7 @@ func newDefaultTextBoxProperties() TextBoxProperties {
 	props := TextBoxProperties{
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
-		Permissions:                   common.NewDefaultComponentValuePermissionsProperties()}
+		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
+		Validation:                    newDefaultTextBoxValidationProperties()}
 	return props
 }

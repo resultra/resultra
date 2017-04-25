@@ -15,6 +15,8 @@ func init() {
 	textBoxRouter.HandleFunc("/api/frm/textBox/setVisibility", setVisibility)
 	textBoxRouter.HandleFunc("/api/frm/textBox/setPermissions", setPermissions)
 	textBoxRouter.HandleFunc("/api/frm/textBox/setValueList", setValueList)
+	textBoxRouter.HandleFunc("/api/frm/textBox/setValidation", setValidation)
+	textBoxRouter.HandleFunc("/api/frm/textBox/validateInput", validateInputAPI)
 
 	http.Handle("/api/frm/textBox/", textBoxRouter)
 }
@@ -33,6 +35,18 @@ func newTextBox(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, *textBoxRef)
 	}
 
+}
+
+func validateInputAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params TextBoxValidateInputParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	validationResp := validateInput(params)
+	api.WriteJSONResponse(w, validationResp)
 }
 
 func processTextBoxPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater TextBoxPropUpdater) {
@@ -81,6 +95,15 @@ func setPermissions(w http.ResponseWriter, r *http.Request) {
 
 func setValueList(w http.ResponseWriter, r *http.Request) {
 	var params TextBoxValueListParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processTextBoxPropUpdate(w, r, params)
+}
+
+func setValidation(w http.ResponseWriter, r *http.Request) {
+	var params TextBoxValidationParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

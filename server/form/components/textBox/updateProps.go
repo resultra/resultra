@@ -121,3 +121,15 @@ func (updateParams TextBoxValueListParams) updateProps(textBox *TextBox) error {
 
 	return nil
 }
+
+type TextBoxValidationParams struct {
+	TextBoxIDHeader
+	Validation TextBoxValidationProperties `json:"validation"`
+}
+
+func (updateParams TextBoxValidationParams) updateProps(textBox *TextBox) error {
+
+	textBox.Properties.Validation = updateParams.Validation
+
+	return nil
+}
