@@ -2,6 +2,7 @@ package htmlEditor
 
 import (
 	"resultra/datasheet/server/generic/inputValidation"
+	"resultra/datasheet/server/generic/stringValidation"
 )
 
 type ValidateInputParams struct {
@@ -17,7 +18,7 @@ func validateInput(params ValidateInputParams) inputValidation.ValidationResult 
 	}
 
 	if editor.Properties.Validation.ValueRequired {
-		if params.InputVal == nil {
+		if params.InputVal == nil || stringValidation.StringAllWhitespace(*params.InputVal) {
 			return inputValidation.FailValidationResult("Value is required")
 		} else {
 			return inputValidation.SuccessValidationResult()
