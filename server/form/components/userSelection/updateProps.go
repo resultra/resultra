@@ -104,3 +104,15 @@ func (updateParams UserSelectionPermissionParams) updateProps(userSelection *Use
 
 	return nil
 }
+
+type UserSelectionValidationParams struct {
+	UserSelectionIDHeader
+	Validation ValidationProperties `json:"validation"`
+}
+
+func (updateParams UserSelectionValidationParams) updateProps(userSelection *UserSelection) error {
+
+	userSelection.Properties.Validation = updateParams.Validation
+
+	return nil
+}

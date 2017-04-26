@@ -57,6 +57,26 @@ function loadUserSelectionProperties($userSelection,userSelectionRef) {
 	}
 	initFormComponentPermissionsPropertyPanel(permissionParams)
 
+	initCheckboxChangeHandler('#adminUserSelectionComponentValidationRequired', 
+				userSelectionRef.properties.validation.valueRequired, function (newVal) {
+		
+		var validationProps = {
+			valueRequired: newVal
+		}		
+		
+		var validationParams = {
+			parentFormID: userSelectionRef.parentFormID,
+			userSelectionID: userSelectionRef.userSelectionID,
+			validation: validationProps
+		}
+		console.log("Setting new validation settings: " + JSON.stringify(validationParams))
+
+		jsonAPIRequest("frm/userSelection/setValidation",validationParams,function(updatedUserSelection) {
+			setContainerComponentInfo($userSelection,updatedUserSelection,updatedUserSelection.userSelectionID)
+		})
+	})
+
+
 	var deleteParams = {
 		elemPrefix: elemPrefix,
 		parentFormID: userSelectionRef.parentFormID,
