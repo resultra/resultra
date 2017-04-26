@@ -1,8 +1,4 @@
 
-{{define "imageFormatProps"}}
-	Image formatting properties go here
-{{end}}
-
 {{define "attachmentValidationProps"}}
      <form id="adminAttachmentComponentValidationForm">	  
 	  <div class="form-group">
@@ -19,16 +15,11 @@
 	<div id="imageProps" class="propertyPanelToggleContainer">
 
 		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
-
-		{{template "propertyPanelPrefix" .FormatPanelParams}}
-			{{template "imageFormatProps"}}
-		{{template "propertyPanelSuffix"}}
 		
 		{{template "propertyPanelPrefix" .ValidationPanelParams}}
 			{{template "attachmentValidationProps"}}
 		{{template "propertyPanelSuffix"}}
 	
-
 		{{template "componentPermissionsPropertyPanel" .PermissionPanelParams}}
 		
 		{{template "componentDeletePropertyPanel" .DeletePanelParams}}
