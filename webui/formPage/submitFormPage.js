@@ -56,20 +56,28 @@ $(document).ready(function() {
 		loadFormViewComponents($submitFormPageCanvas,formContext,recordProxy,finalizePageAfterFormComponentsLoaded)
 		
 		initButtonClickHandler('#submitFormPageSubmitButton', function() {
-			console.log("Saving form results")
 			
-			var recordDraftParams = {
-				recordID: newRecord.recordID,
-				isDraftRecord: false
-			}
 			
-			jsonAPIRequest("record/setDraftStatus",recordDraftParams,function(response) {
-				console.log("Submit form: form data submitted/saved")
-				// Reset the form and re-load a different record.
-				jsonAPIRequest("recordUpdate/newRecord",newRecordsParams,function(newRecordRef) {
-					updateCurrentRecord(newRecordRef)
-				})
-			})
+			validateFormValues($submitFormPageCanvas,function(validationResult) {
+				if(validationResult === true) {
+					console.log("Saving form results")
+			
+					var recordDraftParams = {
+						recordID: newRecord.recordID,
+						isDraftRecord: false
+					}
+			
+					jsonAPIRequest("record/setDraftStatus",recordDraftParams,function(response) {
+						console.log("Submit form: form data submitted/saved")
+						// Reset the form and re-load a different record.
+						jsonAPIRequest("recordUpdate/newRecord",newRecordsParams,function(newRecordRef) {
+							updateCurrentRecord(newRecordRef)
+						})
+					})
+				} else {
+					console.log("Form validation failed: not saving form results")
+				}
+			})	
 
 		})
 		
