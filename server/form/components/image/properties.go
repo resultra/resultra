@@ -7,11 +7,21 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
+type ValidationProperties struct {
+	ValueRequired bool `json:"valueRequired"`
+}
+
+func newDefaultValidationProperties() ValidationProperties {
+	return ValidationProperties{
+		ValueRequired: true}
+}
+
 type ImageProperties struct {
 	FieldID     string                                     `json:"fieldID"`
 	Geometry    componentLayout.LayoutGeometry             `json:"geometry"`
 	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
 	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
+	Validation  ValidationProperties                       `json:"validation"`
 }
 
 func (srcProps ImageProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ImageProperties, error) {
@@ -30,6 +40,7 @@ func (srcProps ImageProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*I
 func newDefaultAttachmentProperties() ImageProperties {
 	props := ImageProperties{
 		LabelFormat: common.NewDefaultLabelFormatProperties(),
-		Permissions: common.NewDefaultComponentValuePermissionsProperties()}
+		Permissions: common.NewDefaultComponentValuePermissionsProperties(),
+		Validation:  newDefaultValidationProperties()}
 	return props
 }

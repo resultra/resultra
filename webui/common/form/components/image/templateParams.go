@@ -11,6 +11,7 @@ import (
 type ImageDesignTemplateParams struct {
 	ElemPrefix               string
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
+	ValidationPanelParams    propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
@@ -36,6 +37,7 @@ func init() {
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "attachmentPerms"),
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "attachDelete", "Delete Attachment Box"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "imageFormat"},
+		ValidationPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Validation", PanelID: "attachmentValidation"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
 			DialogTitle: "New Image Area",

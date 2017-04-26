@@ -39,6 +39,23 @@ function loadImageProperties($attachmentContainer, attachmentRef) {
 	}
 	initFormComponentPermissionsPropertyPanel(permissionParams)
 
+	initCheckboxChangeHandler('#adminAttachmentComponentValidationRequired', 
+				attachmentRef.properties.validation.valueRequired, function (newVal) {
+		var validationProps = {
+			valueRequired: newVal
+		}		
+		var validationParams = {
+			parentFormID: attachmentRef.parentFormID,
+			imageID: attachmentRef.imageID,
+			validation: validationProps
+		}
+		console.log("Setting new validation settings: " + JSON.stringify(validationParams))
+
+		jsonAPIRequest("frm/image/setValidation",validationParams,function(updatedAttachment) {
+			setContainerComponentInfo($attachmentContainer,updatedAttachment,updatedAttachment.imageID)
+		})
+	})
+
 
 	var deleteParams = {
 		elemPrefix: elemPrefix,

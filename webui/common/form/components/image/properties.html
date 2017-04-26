@@ -3,6 +3,17 @@
 	Image formatting properties go here
 {{end}}
 
+{{define "attachmentValidationProps"}}
+     <form id="adminAttachmentComponentValidationForm">	  
+	  <div class="form-group">
+ 	      <div class="checkbox">
+	        <input type="checkbox" id="adminAttachmentComponentValidationRequired">
+	        <label for="adminAttachmentComponentValidationRequired">At least 1 attachment is required</label>
+	      </div>
+	   </div>
+    </form>	
+{{end}}
+
 {{define "imageProps"}}
 
 	<div id="imageProps" class="propertyPanelToggleContainer">
@@ -13,6 +24,11 @@
 			{{template "imageFormatProps"}}
 		{{template "propertyPanelSuffix"}}
 		
+		{{template "propertyPanelPrefix" .ValidationPanelParams}}
+			{{template "attachmentValidationProps"}}
+		{{template "propertyPanelSuffix"}}
+	
+
 		{{template "componentPermissionsPropertyPanel" .PermissionPanelParams}}
 		
 		{{template "componentDeletePropertyPanel" .DeletePanelParams}}

@@ -90,3 +90,15 @@ func (updateParams AttachmentPermissionParams) updateProps(image *Image) error {
 
 	return nil
 }
+
+type AttachmentValidationParams struct {
+	ImageIDHeader
+	Validation ValidationProperties `json:"validation"`
+}
+
+func (updateParams AttachmentValidationParams) updateProps(image *Image) error {
+
+	image.Properties.Validation = updateParams.Validation
+
+	return nil
+}
