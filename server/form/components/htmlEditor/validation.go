@@ -19,7 +19,7 @@ func validateInput(params ValidateInputParams) inputValidation.ValidationResult 
 
 	if editor.Properties.Validation.ValueRequired {
 		if params.InputVal == nil || stringValidation.StringAllWhitespace(*params.InputVal) {
-			return inputValidation.FailValidationResult("Value is required")
+			return inputValidation.FailValidationResult("Note is required")
 		} else {
 			return inputValidation.SuccessValidationResult()
 		}

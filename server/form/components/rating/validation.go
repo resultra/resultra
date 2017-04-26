@@ -18,7 +18,7 @@ func validateInput(params RatingValidateInputParams) inputValidation.ValidationR
 
 	if rating.Properties.Validation.ValueRequired {
 		if params.InputVal == nil {
-			return inputValidation.FailValidationResult("Value is required")
+			return inputValidation.FailValidationResult("Rating is required")
 		} else {
 			return inputValidation.SuccessValidationResult()
 		}

@@ -6,13 +6,50 @@
 function initImageRecordEditBehavior($imageContainer, componentContext,recordProxy,imageObjectRef) {
 	
 	var imageContainerID = imageObjectRef.imageID
+	var $imageInnerContainer = imageInnerContainerFromImageComponentContainer($imageContainer)
 
 	console.log("initImageRecordEditBehavior: container ID =  " +imageContainerID)
 	
-	$imageContainer.data("viewFormConfig", {
-		loadRecord: loadRecordIntoImage,
-		recordProxy: recordProxy
-	})
+	
+	var validateInput = function(validationCompleteCallback) {
+		
+		if(formComponentIsReadOnly(imageObjectRef.properties.permissions)) {
+			validationCompleteCallback(true)
+			return
+		}
+		var currentAttachmentIDs = getCurrentlyDisplayedAttachmentList()
+		var validationParams = {
+			parentFormID: imageObjectRef.parentFormID,
+			imageID: imageObjectRef.imageID,
+			attachments: currentAttachmentIDs
+		}
+		jsonAPIRequest("frm/image/validateInput", validationParams, function(validationResult) {
+			if (validationResult.validationSucceeded) {
+				$imageContainer.popover('destroy')
+				validationCompleteCallback(true)
+			} else {
+				$imageContainer.popover({
+					html: 'true',
+					content: function() { return escapeHTML(validationResult.errorMsg) },
+					trigger: 'manual',
+					placement: 'auto left'
+				})
+				$imageContainer.popover('show')
+				validationCompleteCallback(false)
+			}
+			
+		})	
+		
+	}
+	
+	var getCurrentlyDisplayedAttachmentList = function() {
+		var currentAttachmentIDs = []
+		$imageInnerContainer.find(".attachGalleryThumbnailContainer").each(function() {
+			var attachRef = $(this).data("attachRef")
+			currentAttachmentIDs.push(attachRef.attachmentInfo.attachmentID)
+		})
+		return currentAttachmentIDs
+	}
 
 	function loadRecordIntoImage(imageElem, recordRef) {
 	
@@ -20,9 +57,7 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 	
 		var imageObjectRef = imageElem.data("objectRef")
 		var imageContainerID = imageObjectRef.imageID
-	
-		var $imageInnerContainer = imageInnerContainerFromImageComponentContainer(imageElem)
-	
+		
 		function initImageContainer(imageURL) {
 		
 		}
@@ -43,37 +78,38 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 	
 	
 		function saveRecordUpdateWithCurrentlyDisplayedAttachmentList() {
+			
+			validateInput(function(inputIsValid) {
+				if(inputIsValid) {
+					// Build an up to date list of the currently displayed attachments from attachments displayed in
+					// the current gallery.
 		
-			// Build an up to date list of the currently displayed attachments from attachments displayed in
-			// the current gallery.
+					var currentAttachmentIDs = getCurrentlyDisplayedAttachmentList()
 		
-			var currentAttachmentIDs = []
-			$imageInnerContainer.find(".attachGalleryThumbnailContainer").each(function() {
-				var attachRef = $(this).data("attachRef")
-				currentAttachmentIDs.push(attachRef.attachmentInfo.attachmentID)
-			})
-		
-			console.log("Saving updated attachment list: " + JSON.stringify(currentAttachmentIDs))
+					console.log("Saving updated attachment list: " + JSON.stringify(currentAttachmentIDs))
 		
 		
-			// The record proxy is saved as part of initialization.
-			// TODO - Pass the record proxy into the load record functions.
-			var recordProxy = imageElem.data("viewFormConfig").recordProxy
-			var currRecordRef = recordProxy.getRecordFunc()
+					// The record proxy is saved as part of initialization.
+					// TODO - Pass the record proxy into the load record functions.
+					var recordProxy = imageElem.data("viewFormConfig").recordProxy
+					var currRecordRef = recordProxy.getRecordFunc()
 				
-			var recordUpdateParams = {
-				parentDatabaseID:currRecordRef.parentDatabaseID,
-				fieldID: imageFieldID, 
-				recordID: currRecordRef.recordID,
-				changeSetID: recordProxy.changeSetID,
-				valueFormatContext: "image",
-				valueFormatFormat: "general",
-				attachments: currentAttachmentIDs }
-			console.log("Attachment: Setting file field value: " + JSON.stringify(recordUpdateParams))
-			jsonAPIRequest("recordUpdate/setFileFieldValue", recordUpdateParams, function(updatedRecord) {
-				console.log("Attachment: Done uploading file: updated record ref = " + JSON.stringify(updatedRecord))
-				recordProxy.updateRecordFunc(updatedRecord)
+					var recordUpdateParams = {
+						parentDatabaseID:currRecordRef.parentDatabaseID,
+						fieldID: imageFieldID, 
+						recordID: currRecordRef.recordID,
+						changeSetID: recordProxy.changeSetID,
+						valueFormatContext: "image",
+						valueFormatFormat: "general",
+						attachments: currentAttachmentIDs }
+					console.log("Attachment: Setting file field value: " + JSON.stringify(recordUpdateParams))
+					jsonAPIRequest("recordUpdate/setFileFieldValue", recordUpdateParams, function(updatedRecord) {
+						console.log("Attachment: Done uploading file: updated record ref = " + JSON.stringify(updatedRecord))
+						recordProxy.updateRecordFunc(updatedRecord)
+					})
+				}
 			})
+		
 		
 		}
 	
@@ -179,6 +215,12 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 		
 	}
 	initAttachmentEditBehavior()
+	
+	$imageContainer.data("viewFormConfig", {
+		loadRecord: loadRecordIntoImage,
+		recordProxy: recordProxy,
+		validateValue: validateInput
+	})
 	
 		
 }
