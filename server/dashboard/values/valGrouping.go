@@ -33,7 +33,10 @@ type ValGrouping struct {
 
 	// GroupByValBucketWidth is used with the GroupValsBy "bucket" property to configure a threshold for
 	// grouping values.
-	GroupByValBucketWidth float64 `json:"groupValsByBucketWidth"`
+	GroupByValBucketWidth *float64 `json:"groupValsByBucketWidth,omitempty"`
+
+	BucketStart *float64 `json:"bucketStart,omitempty"`
+	BucketEnd   *float64 `json:"bucketEnd,omitempty"`
 }
 
 func (srcGrouping ValGrouping) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ValGrouping, error) {
@@ -49,12 +52,15 @@ func (srcGrouping ValGrouping) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*Va
 }
 
 type NewValGroupingParams struct {
-	FieldID               string  `json:"fieldID"`
-	GroupValsBy           string  `json:"groupValsBy"`
-	GroupByValBucketWidth float64 `json:"groupByValBucketWidth"`
+	FieldID               string   `json:"fieldID"`
+	GroupValsBy           string   `json:"groupValsBy"`
+	GroupByValBucketWidth *float64 `json:"groupByValBucketWidth,omitempty"`
+	BucketStart           *float64 `json:"bucketStart,omitempty"`
+	BucketEnd             *float64 `json:"bucketEnd,omitempty"`
 }
 
-func validateFieldTypeWithGrouping(fieldType string, groupValsBy string, bucketWidth float64) error {
+func validateFieldTypeWithGrouping(fieldType string, groupValsBy string,
+	bucketWidth *float64, bucketStart *float64, bucketEnd *float64) error {
 	switch groupValsBy {
 	case ValGroupByNone:
 		return nil
@@ -62,8 +68,18 @@ func validateFieldTypeWithGrouping(fieldType string, groupValsBy string, bucketW
 		if fieldType != field.FieldTypeNumber {
 			return fmt.Errorf("Invalid grouping = %v for field type = %v", groupValsBy, fieldType)
 		}
-		if bucketWidth <= 0.0 {
+		if bucketWidth == nil {
+			return fmt.Errorf("Invalid grouping = %v for field type = %v, bucket width missing", groupValsBy, fieldType)
+		}
+		if *bucketWidth <= 0.0 {
 			return fmt.Errorf("Invalid grouping = %v for field type = %v, bucket width must be > 0.0", groupValsBy, fieldType)
+		}
+		if bucketStart != nil && bucketEnd != nil {
+			if *bucketEnd < *bucketStart {
+				return fmt.Errorf("Invalid grouping = %v for field type = %v, bucket end must be greater than bucket start",
+					groupValsBy, fieldType)
+
+			}
 		}
 	case ValGroupByDay, ValGroupByMonthYear:
 		if fieldType != field.FieldTypeTime {
@@ -84,11 +100,16 @@ func NewValGrouping(params NewValGroupingParams) (*ValGrouping, error) {
 	}
 
 	if groupByErr := validateFieldTypeWithGrouping(groupingField.Type, params.GroupValsBy,
-		params.GroupByValBucketWidth); groupByErr != nil {
+		params.GroupByValBucketWidth, params.BucketStart, params.BucketEnd); groupByErr != nil {
 		return nil, fmt.Errorf("NewValGrouping: Invalid value grouping: %v", groupByErr)
 	}
 
-	valGrouping := ValGrouping{params.FieldID, params.GroupValsBy, params.GroupByValBucketWidth}
+	valGrouping := ValGrouping{
+		GroupValsByFieldID:    params.FieldID,
+		GroupValsBy:           params.GroupValsBy,
+		GroupByValBucketWidth: params.GroupByValBucketWidth,
+		BucketStart:           params.BucketStart,
+		BucketEnd:             params.BucketEnd}
 
 	return &valGrouping, nil
 

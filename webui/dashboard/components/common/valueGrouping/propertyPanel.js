@@ -23,6 +23,11 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 	var validationSettings = createInlineFormValidationSettings({rules: validationRules })	
 	var validator = $propertyForm.validate(validationSettings)
 		
+	var valGrouping = panelParams.valGroupingProps
+		
+	$bucketSize.val(valGrouping.groupValsByBucketWidth)	
+	$bucketStart.val(valGrouping.bucketStart)	
+	$bucketEnd.val(valGrouping.bucketEnd)	
 	validator.resetForm()	
 
 	
@@ -53,8 +58,8 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 					groupValsByFieldID: $fieldSelection.val(),
 					groupValsBy: $groupBySelection.val(),
 					groupValsByBucketWidth: convertStringToNumber($bucketSize.val()),
-					groupValsByBucketStart: convertStringToNumber($bucketStart.val()),
-					groupValsByBucketEnd: convertStringToNumber($bucketEnd.val())
+					bucketStart: convertStringToNumber($bucketStart.val()),
+					bucketEnd: convertStringToNumber($bucketEnd.val())
 				}
 				console.log("Saving new value grouping: " + JSON.stringify(newValGroupingParams))
 				panelParams.saveValueGroupingFunc(newValGroupingParams)
