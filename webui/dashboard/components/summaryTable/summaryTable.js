@@ -33,9 +33,16 @@ function populateSummaryTableHeader($summaryTable,summaryTableData) {
 }
 
 
-function createOneSummaryTableRow(dataRow,numberFormats) {
+function createOneSummaryTableRow(dataRow,numberFormats,dataRowIndex) {
 	var $tableRow = $("<tr></tr>")
-	$tableRow.append("<td><strong>" + dataRow.groupLabel + "<strong></td>")
+	
+	
+	var $groupTableCell = $("<td></td>")
+	$groupTableCell.attr("data-order",dataRowIndex)
+	$groupTableCell.append('<strong>' + dataRow.groupLabel + '</strong>')
+	
+	$tableRow.append($groupTableCell)
+	console.log("Initializing summary table grouping label: " + $tableRow.html())
 	
 	for(var summaryValIndex = 0; summaryValIndex < dataRow.summaryVals.length; summaryValIndex++) {
 		var summaryVal = dataRow.summaryVals[summaryValIndex]
@@ -46,12 +53,12 @@ function createOneSummaryTableRow(dataRow,numberFormats) {
 	return $tableRow
 }
 
-function populateSummaryTableFooter($summaryTable,summaryTableData) {
+function populateSummaryTableFooter($summaryTable,summaryTableData,dataRowIndex) {
 	var $tableFooter = $("<tfoot></tfoot>")
 	
 	var numberFormats = summaryTableData.groupedSummarizedVals.summaryNumberFormats
 	
-	var $footerRow = createOneSummaryTableRow(summaryTableData.groupedSummarizedVals.overallDataRow,numberFormats)
+	var $footerRow = createOneSummaryTableRow(summaryTableData.groupedSummarizedVals.overallDataRow,numberFormats,dataRowIndex)
 	$footerRow.find("td").css("background-color","lightGrey")
 	$tableFooter.append($footerRow)
 	
@@ -59,8 +66,8 @@ function populateSummaryTableFooter($summaryTable,summaryTableData) {
 	
 }
 
-function populateSummaryTableRow($tableBody,dataRow,numberFormats) {
-	var $tableRow = createOneSummaryTableRow(dataRow,numberFormats)
+function populateSummaryTableRow($tableBody,dataRow,numberFormats,dataRowIndex) {
+	var $tableRow = createOneSummaryTableRow(dataRow,numberFormats,dataRowIndex)
 	$tableBody.append($tableRow)
 }
 
@@ -72,7 +79,7 @@ function populateSummaryTableRows($summaryTable,summaryTableData) {
 	
 	var dataRows = summaryTableData.groupedSummarizedVals.groupedDataRows
 	for(var dataRowIndex = 0; dataRowIndex < dataRows.length; dataRowIndex++) {
-		populateSummaryTableRow($tableBody,dataRows[dataRowIndex],numberFormats)
+		populateSummaryTableRow($tableBody,dataRows[dataRowIndex],numberFormats,dataRowIndex)
 	}	
 	$summaryTable.append($tableBody)
 	
