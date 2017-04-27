@@ -107,7 +107,6 @@ $(document).ready(function() {
 			// view mode, the dimensions set in design mode determins the maximum height of the 
 			// table, after which the table will start scrolling.
 			setElemFixedWidthMaxHeight($summaryTable,summaryTableRef.properties.geometry)
-			$summaryTable.css("overflow-y","auto") // scroll if the table overflows the height			
 			
 			initDashboardComponentViewBehavior($summaryTable,
 					summaryTableRef.summaryTableID,summaryTableViewConfig)
