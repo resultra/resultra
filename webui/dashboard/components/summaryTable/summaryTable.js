@@ -53,12 +53,12 @@ function createOneSummaryTableRow(dataRow,numberFormats,dataRowIndex) {
 	return $tableRow
 }
 
-function populateSummaryTableFooter($summaryTable,summaryTableData,dataRowIndex) {
+function populateSummaryTableFooter($summaryTable,summaryTableData) {
 	var $tableFooter = $("<tfoot></tfoot>")
 	
 	var numberFormats = summaryTableData.groupedSummarizedVals.summaryNumberFormats
 	
-	var $footerRow = createOneSummaryTableRow(summaryTableData.groupedSummarizedVals.overallDataRow,numberFormats,dataRowIndex)
+	var $footerRow = createOneSummaryTableRow(summaryTableData.groupedSummarizedVals.overallDataRow,numberFormats,null)
 	$footerRow.find("td").css("background-color","lightGrey")
 	$tableFooter.append($footerRow)
 	
@@ -134,5 +134,16 @@ function initSummaryTableData(dashboardID,$summaryTable, summaryTableData) {
 	
 	$scrollBody.css('max-height', scrollBodyHeightPx);
 	dataTable.draw() // force redraw
+	
+	// $tableContainer wraps the table as a whole. By preventing clicks from propagating higher than
+	// $tableContainer, clicking on the table itself will not cause the overall dashboard component
+	// to be selected, which would be distracting. The table's header can be clicked on to select
+	// the table as a whole.
+	$tableContainer.click(function (event){
+		event.stopPropagation();
+   	 	//   ... your code here
+		return false;
+	});
+	
 	
 }
