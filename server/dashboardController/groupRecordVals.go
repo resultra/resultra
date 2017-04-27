@@ -193,6 +193,26 @@ func groupBoolFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Fi
 	}
 }
 
+func groupNumberFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Field,
+	recValResults recordValue.RecordValueResults) (*valGroupLabelInfo, error) {
+	if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
+		numberVal, valFound := recValResults.FieldValues.GetNumberFieldValue(fieldGroup.FieldID)
+		if !valFound {
+			return nil, fmt.Errorf("groupNumberFieldRecordVal: Unabled to retrieve value for grouping label")
+		} else {
+			switch valGrouping.GroupValsBy {
+			case values.ValGroupByNone:
+				return numberGroupLabelInfo(fmt.Sprintf("%v", numberVal), numberVal), nil
+			default:
+				return numberGroupLabelInfo("All Numbers", 0.0), nil
+			} // switch groupValsBy
+		}
+	} else {
+		return numberGroupLabelInfo("BLANK", -1.0), nil
+	}
+
+}
+
 func recordGroupLabelInfo(valGrouping values.ValGrouping, fieldGroup field.Field,
 	recValResults recordValue.RecordValueResults) (*valGroupLabelInfo, error) {
 	switch fieldGroup.Type {
@@ -210,7 +230,7 @@ func recordGroupLabelInfo(valGrouping values.ValGrouping, fieldGroup field.Field
 	case field.FieldTypeBool:
 		return groupBoolFieldRecordVal(valGrouping, fieldGroup, recValResults)
 	case field.FieldTypeNumber:
-		return numberGroupLabelInfo("All Numbers", 0.0), nil // TODO - Group by number and/or bucket the values
+		return groupNumberFieldRecordVal(valGrouping, fieldGroup, recValResults)
 	case field.FieldTypeTime:
 		return groupTimeFieldRecordVal(valGrouping, fieldGroup, recValResults)
 	}

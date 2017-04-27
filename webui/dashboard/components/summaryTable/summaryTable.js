@@ -1,11 +1,15 @@
 
+function summaryTableTableElem() {
+	return '<table class="table table-hover table-bordered display"></table>'
+}
+
 function summaryTableComponentHTML(summaryTableID) {
 	
 	var containerHTML = ''+
 	'<div class="layoutContainer dashboardSummaryTableComponent">' +
 		'<div class="summaryTableTitle"></div>'+
 		'<div class="tableContainer">' + 
-			'<table class="table table-hover table-bordered display"></table>'+
+			summaryTableTableElem() +
 		'</div>' +
 	'</div>';
 	return containerHTML
@@ -90,12 +94,16 @@ function initSummaryTableData(dashboardID,$summaryTable, summaryTableData) {
 	
 	var $tableContainer = $summaryTable.find(".tableContainer")
 	
+	$tableContainer.empty()
+	$tableContainer.append(summaryTableTableElem())
+	
 	var $tableElem = $summaryTable.find(".table")
 	$tableElem.empty()
 
 
 	var tableTitle = summaryTableData.summaryTable.properties.title
 	var $tableTitleDiv = $summaryTable.find(".summaryTableTitle")
+	$tableTitleDiv.empty()
 	if (tableTitle !== null && tableTitle.length >0) {
 		var $tableTitleLabel = $("<label>" + tableTitle + "</label>")
 		$tableTitleDiv.append($tableTitleLabel)	
