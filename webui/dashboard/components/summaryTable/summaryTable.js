@@ -81,6 +81,8 @@ function populateSummaryTableRows($summaryTable,summaryTableData) {
 
 function initSummaryTableData(dashboardID,$summaryTable, summaryTableData) {
 	
+	var $tableContainer = $summaryTable.find(".tableContainer")
+	
 	var $tableElem = $summaryTable.find(".table")
 	$tableElem.empty()
 
@@ -108,7 +110,6 @@ function initSummaryTableData(dashboardID,$summaryTable, summaryTableData) {
 		scrollCollapse:true,
 	})
 	
-	var $tableContainer = $summaryTable.find(".tableContainer")
 	var $scrollHead = $tableContainer.find(".dataTables_scrollHead")
 	var $scrollFoot = $tableContainer.find(".dataTables_scrollFoot")
 	var $scrollBody = $tableContainer.find(".dataTables_scrollBody")
@@ -124,7 +125,7 @@ function initSummaryTableData(dashboardID,$summaryTable, summaryTableData) {
 			$scrollHead.outerHeight() - $scrollFoot.outerHeight()
 	var scrollBodyHeightPx = scrollBodyHeight + 'px'
 	
-	$tableElem.closest('.dataTables_scrollBody').css('max-height', scrollBodyHeightPx);
-	dataTable.draw()
+	$scrollBody.css('max-height', scrollBodyHeightPx);
+	dataTable.draw() // force redraw
 	
 }
