@@ -1,25 +1,25 @@
 function initDashboardValueGroupingPropertyPanel(panelParams) {
-	
-	var groupedFieldSelectionElemInfo = createPrefixedTemplElemInfo(panelParams.elemPrefix,"GroupedFieldSelection")
-	var groupBySelectionElemInfo = createPrefixedTemplElemInfo(panelParams.elemPrefix,"GroupBySelection")
-	var bucketSizeInputElemInfo = createPrefixedTemplElemInfo(panelParams.elemPrefix,"BucketSizeInput")
-	var bucketSizeFormGroupSelector = createPrefixedSelector(panelParams.elemPrefix,"BucketSizeFormGroup")
-	var saveChangesButtonElemInfo = createPrefixedTemplElemInfo(panelParams.elemPrefix,"ValGroupingPropertiesSaveChangesButton")
-	
+		
 	var $propertyForm = $(createPrefixedSelector(panelParams.elemPrefix,"ValueGroupingPropertiesForm"))
+	var $bucketStart = $propertyForm.find("input[name=bucketStart]")	
+	var $bucketEnd = $propertyForm.find("input[name=bucketEnd]")
+	var $bucketSize = $propertyForm.find("input[name=bucketSize]")
+	var $selectionInputs = $propertyForm.find(".groupBySelectionInput")
+	var $bucketInputs = $propertyForm.find(".bucketInput")
+	var $bucketInputGroups = $propertyForm.find(".groupBucketInputs")
+	var $fieldSelection = $propertyForm.find("select[name=groupedFieldSelection]")
+	var $groupBySelection = $propertyForm.find("select[name=groupBySelection]")
 	
-	
-	var validationRules = {}	
-	validationRules[bucketSizeInputElemInfo.id] = { 
-		positiveNumber: {
-			depends: function(element) {
-				return groupBySelectionElemInfo.val() == "bucket"
-			}
-		} 
+	//var validationRules = {}
+	var validationRules = {
+		bucketSize: { 
+			positiveNumber: {
+				depends: function(element) { return $groupBySelection.val() === "bucket" }
+			}	
+		},
+		groupedFieldSelection: { required:true },
+		groupBySelection: { required: true }
 	}
-	validationRules[groupBySelectionElemInfo.id] = { required: true }
-	validationRules[groupedFieldSelectionElemInfo.id] = { required: true }
-	
 	var validationSettings = createInlineFormValidationSettings({rules: validationRules })	
 	var validator = $propertyForm.validate(validationSettings)
 		
@@ -28,57 +28,55 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 	
 	function toggleBucketSizeForGrouping(grouping) {
 		if (grouping == "bucket") {
-			$(bucketSizeFormGroupSelector).show()
+			$bucketInputGroups.show()
 		} else {
-			$(bucketSizeFormGroupSelector).hide()			
+			$bucketInputGroups.hide()		
 		}
 	}
 
 
 	loadFieldInfo(panelParams.databaseID,[fieldTypeAll],function(valueGroupingFieldsByID) {
-		populateFieldSelectionMenu(valueGroupingFieldsByID,groupedFieldSelectionElemInfo.selector)
+		populateFieldSelectionControlMenu(valueGroupingFieldsByID,$fieldSelection)
 	
 		// Initialize the controls to the existing values
-		$(groupedFieldSelectionElemInfo.selector).val(panelParams.valGroupingProps.groupValsByFieldID)
-		var existingFieldInfo = valueGroupingFieldsByID[panelParams.valGroupingProps.groupValsByFieldID]
-		populateDashboardValueGroupingSelection($(groupBySelectionElemInfo.selector),existingFieldInfo.type)
+		$fieldSelection.val(panelParams.valGroupingProps.groupValsByFieldID)
 		
-		$(groupBySelectionElemInfo.selector).val(panelParams.valGroupingProps.groupValsBy)
-		disableButton(saveChangesButtonElemInfo.selector)
+		var existingFieldInfo = valueGroupingFieldsByID[panelParams.valGroupingProps.groupValsByFieldID]
+		populateDashboardValueGroupingSelection($groupBySelection,existingFieldInfo.type)
+		
+		$groupBySelection.val(panelParams.valGroupingProps.groupValsBy)
 		toggleBucketSizeForGrouping(panelParams.valGroupingProps.groupValsBy)
 		
-		initSelectionChangedHandler(groupedFieldSelectionElemInfo.selector, function(fieldID) {
-			if(fieldID in valueGroupingFieldsByID) {
-				fieldInfo = valueGroupingFieldsByID[fieldID]			
-		    	console.log("select field: field ID = " + fieldID  + " name = " + fieldInfo.name + " type = " + fieldInfo.type)
-				populateDashboardValueGroupingSelection($(groupBySelectionElemInfo.selector),fieldInfo.type)
-				$(groupBySelectionElemInfo.selector).attr("disabled",false)
-				
-				// Disable the Save button until a "Group Values By" selection is also made
-				disableButton(saveChangesButtonElemInfo.selector)
-			}
-			
-		})
-
-		initSelectionChangedHandler(groupBySelectionElemInfo.selector, function(grouping) {		
-			enableButton(saveChangesButtonElemInfo.selector)
-			toggleBucketSizeForGrouping(grouping)
-		})
-
-		
-		initButtonClickHandler(saveChangesButtonElemInfo.selector, function() {
+		function saveGroupingIfValid() {
 			if($propertyForm.valid()) {
 				var newValGroupingParams = {
-					groupValsByFieldID: $(groupedFieldSelectionElemInfo.selector).val(),
-					groupValsBy: $(groupBySelectionElemInfo.selector).val(),
-					groupValsByBucketWidth: Number($(bucketSizeInputElemInfo.selector).val())
+					groupValsByFieldID: $fieldSelection.val(),
+					groupValsBy: $groupBySelection.val(),
+					groupValsByBucketWidth: convertStringToNumber($bucketSize.val()),
+					groupValsByBucketStart: convertStringToNumber($bucketStart.val()),
+					groupValsByBucketEnd: convertStringToNumber($bucketEnd.val())
 				}
 				console.log("Saving new value grouping: " + JSON.stringify(newValGroupingParams))
 				panelParams.saveValueGroupingFunc(newValGroupingParams)
-				disableButton(saveChangesButtonElemInfo.selector)
-				
 			}
+		}
+		
+		initSelectControlChangeHandler($fieldSelection, function(fieldID) {
+			if(fieldID in valueGroupingFieldsByID) {
+				fieldInfo = valueGroupingFieldsByID[fieldID]			
+		    	console.log("select field: field ID = " + fieldID  + " name = " + fieldInfo.name + " type = " + fieldInfo.type)
+				populateDashboardValueGroupingSelection($groupBySelection,fieldInfo.type)
+				$groupBySelection.attr("disabled",false)				
+			}
+			saveGroupingIfValid() 
 		})
+
+		initSelectControlChangeHandler($groupBySelection, function(grouping) {		
+			toggleBucketSizeForGrouping(grouping)
+			saveGroupingIfValid() 
+		})
+			
+		$bucketInputs.blur(function() { saveGroupingIfValid() })
 		
 	})
 	

@@ -90,16 +90,22 @@ function selectFieldHTML(fieldID, fieldName) {
  		fieldID + '">' + fieldName + '</option>'
 }
 
-function populateFieldSelectionMenu(fieldsByID, menuSelector) {
-	$(menuSelector).empty()
-	$(menuSelector).append(defaultSelectOptionPromptHTML("Select a Field"))
+function populateFieldSelectionControlMenu(fieldsByID, $menuSelector) {
+	$menuSelector.empty()
+	$menuSelector.append(defaultSelectOptionPromptHTML("Select a Field"))
 	
 	for (var fieldID in fieldsByID) {
 	  if (fieldsByID.hasOwnProperty(fieldID)) {
 		  var fieldInfo = fieldsByID[fieldID]	  	
-		  $(menuSelector).append(selectFieldHTML(fieldID, fieldInfo.name))		
+		  $menuSelector.append(selectFieldHTML(fieldID, fieldInfo.name))		
 	  }
 	}
+}
+
+function populateFieldSelectionMenu(fieldsByID, menuSelector) {
+	
+	var $menuSelector = $(menuSelector)
+	populateFieldSelectionControlMenu(fieldsByID,$menuSelector)
 }
 
 

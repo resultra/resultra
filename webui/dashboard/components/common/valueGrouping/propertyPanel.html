@@ -3,7 +3,7 @@
 		<form role="form" id="{{.ElemPrefix}}ValueGroupingPropertiesForm">
 			<div class="form-group">
 				<label>{{.ValueFieldLabel}}</label> 
-				<select class="form-control" id="{{.ElemPrefix}}GroupedFieldSelection" name="{{.ElemPrefix}}GroupedFieldSelection">
+				<select class="form-control groupBySelectionInput" name="groupedFieldSelection">
 					<option value="">
 						Select a field
 					</option>
@@ -11,18 +11,25 @@
 			</div>
 			<div class="form-group">
 				<label>{{.ValueGroupingLabel}}</label>
-				<select class="form-control" id="{{.ElemPrefix}}GroupBySelection" name="{{.ElemPrefix}}GroupBySelection">
+				<select class="form-control groupBySelectionInput" name="groupBySelection">
 					<option value="">
 						Select a grouping
 					</option>
 				</select>
 			</div>
-			<div class="form-group" id="{{.ElemPrefix}}BucketSizeFormGroup">
-			      <label>Grouping Bucket Size</label>
-			      <input type="text" id="{{.ElemPrefix}}BucketSizeInput" name="{{.ElemPrefix}}BucketSizeInput" placeholder="">
+			<div class="form-group groupBucketInputs">
+			      <label>Grouping bucket size</label>
+			      <input type="text" class="bucketInput" name="bucketSize" placeholder="">
+			</div> <!-- Bucket size -->
+			<div class="form-group groupBucketInputs">
+			      <label>Starting value</label>
+			      <input type="text" class="bucketInput" name="bucketStart" placeholder="">
+			</div> <!-- Bucket size -->
+			<div class="form-group groupBucketInputs">
+			      <label>Ending value</label>
+			      <input type="text" class="bucketInput" name="bucketEnd" placeholder="">
 			</div> <!-- Bucket size -->
 			
-			<button type="button" class="btn btn-default btn-sm " id="{{.ElemPrefix}}ValGroupingPropertiesSaveChangesButton" type="submit">Save Changes</button>
 		</form> <!-- form for panel -->
 
 
