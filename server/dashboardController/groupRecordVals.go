@@ -193,6 +193,31 @@ func groupBoolFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Fi
 	}
 }
 
+func bucketedNumberGroupLabelInfo(numberVal float64, valGrouping values.ValGrouping) *valGroupLabelInfo {
+
+	if (valGrouping.BucketStart) != nil && numberVal < (*valGrouping.BucketStart) {
+		return numberGroupLabelInfo(fmt.Sprintf("< %v", (*valGrouping.BucketStart)), numberVal)
+	}
+	if (valGrouping.BucketEnd) != nil && numberVal >= (*valGrouping.BucketEnd) {
+		return numberGroupLabelInfo(fmt.Sprintf(">= %v", (*valGrouping.BucketEnd)), numberVal)
+	}
+
+	var bucketWidth = 1.0
+	if valGrouping.GroupByValBucketWidth != nil && *valGrouping.GroupByValBucketWidth > 0.0 {
+		bucketWidth = *valGrouping.GroupByValBucketWidth
+	}
+
+	numBuckets := math.Trunc(numberVal / bucketWidth)
+	rem := math.Remainder(numberVal, bucketWidth)
+	start := bucketWidth * numBuckets
+	if numberVal < 0.0 && rem != 0.0 {
+		start = start - bucketWidth
+	}
+	end := start + bucketWidth
+
+	return numberGroupLabelInfo(fmt.Sprintf("%v to %v", start, end), numberVal)
+}
+
 func groupNumberFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Field,
 	recValResults recordValue.RecordValueResults) (*valGroupLabelInfo, error) {
 	if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
@@ -203,6 +228,8 @@ func groupNumberFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.
 			switch valGrouping.GroupValsBy {
 			case values.ValGroupByNone:
 				return numberGroupLabelInfo(fmt.Sprintf("%v", numberVal), numberVal), nil
+			case values.ValGroupByBucket:
+				return bucketedNumberGroupLabelInfo(numberVal, valGrouping), nil
 			default:
 				return numberGroupLabelInfo("All Numbers", 0.0), nil
 			} // switch groupValsBy
