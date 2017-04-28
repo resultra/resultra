@@ -9,6 +9,12 @@
 					</option>
 				</select>
 			</div>
+			<div class="form-group numberFieldFormatGroup">
+				<label>Number format for labels</label>
+				<select class="form-control" name="numberFormat">
+					{{template "formatNumberNumberSelectionOptions"}}
+				</select>
+			</div>
 			<div class="form-group">
 				<label>{{.ValueGroupingLabel}}</label>
 				<select class="form-control groupBySelectionInput" name="groupBySelection">
@@ -19,11 +25,11 @@
 			</div>
 			<div class="form-group groupBucketInputs">
 			      <label>Bucket size</label>
-			      <input type="text" class="bucketInput maxWidth50" name="bucketSize" placeholder="">
+			      <input type="text" class="bucketInput numberInput maxWidth50 " name="bucketSize" placeholder="">
 			</div> <!-- Bucket size -->
 			<div class="form-group groupBucketInputs">
 			      <label>Starting value</label>
-			      <input type="text" class="bucketInput maxWidth50" name="bucketStart" placeholder="">
+			      <input type="text" class="bucketInput numberInput maxWidth50" name="bucketStart" placeholder="">
 			</div> <!-- Bucket size -->
 			<div class="form-group groupBucketInputs">
 			      <label>Ending value</label>

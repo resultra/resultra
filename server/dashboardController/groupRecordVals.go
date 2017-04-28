@@ -5,6 +5,7 @@ import (
 	"math"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/numberFormat"
 	"resultra/datasheet/server/recordValue"
 	"sort"
 	"strings"
@@ -193,13 +194,23 @@ func groupBoolFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Fi
 	}
 }
 
+func formattedValGroupNumber(val float64, valGrouping values.ValGrouping) string {
+	if valGrouping.NumberFormat != nil {
+		return numberFormat.FormatNumber(val, *valGrouping.NumberFormat)
+	} else {
+		return numberFormat.FormatNumber(val, numberFormat.NumberFormatGeneral)
+	}
+}
+
 func bucketedNumberGroupLabelInfo(numberVal float64, valGrouping values.ValGrouping) *valGroupLabelInfo {
 
 	if (valGrouping.BucketStart) != nil && numberVal < (*valGrouping.BucketStart) {
-		return numberGroupLabelInfo(fmt.Sprintf("< %v", (*valGrouping.BucketStart)), numberVal)
+		formattedStart := formattedValGroupNumber((*valGrouping.BucketStart), valGrouping)
+		return numberGroupLabelInfo(fmt.Sprintf("< %v", formattedStart), numberVal)
 	}
 	if (valGrouping.BucketEnd) != nil && numberVal > (*valGrouping.BucketEnd) {
-		return numberGroupLabelInfo(fmt.Sprintf("> %v", (*valGrouping.BucketEnd)), numberVal)
+		formattedEnd := formattedValGroupNumber((*valGrouping.BucketEnd), valGrouping)
+		return numberGroupLabelInfo(fmt.Sprintf("> %v", formattedEnd), numberVal)
 	}
 
 	var bucketWidth = 1.0
@@ -215,7 +226,8 @@ func bucketedNumberGroupLabelInfo(numberVal float64, valGrouping values.ValGroup
 	}
 	end := start + bucketWidth
 
-	return numberGroupLabelInfo(fmt.Sprintf("%v to %v", start, end), numberVal)
+	return numberGroupLabelInfo(fmt.Sprintf("%v to %v",
+		formattedValGroupNumber(start, valGrouping), formattedValGroupNumber(end, valGrouping)), numberVal)
 }
 
 func groupNumberFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Field,
@@ -227,7 +239,8 @@ func groupNumberFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.
 		} else {
 			switch valGrouping.GroupValsBy {
 			case values.ValGroupByNone:
-				return numberGroupLabelInfo(fmt.Sprintf("%v", numberVal), numberVal), nil
+				formattedVal := formattedValGroupNumber(numberVal, valGrouping)
+				return numberGroupLabelInfo(formattedVal, numberVal), nil
 			case values.ValGroupByBucket:
 				return bucketedNumberGroupLabelInfo(numberVal, valGrouping), nil
 			default:

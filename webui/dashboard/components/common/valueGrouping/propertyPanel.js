@@ -9,6 +9,7 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 	var $bucketInputGroups = $propertyForm.find(".groupBucketInputs")
 	var $fieldSelection = $propertyForm.find("select[name=groupedFieldSelection]")
 	var $groupBySelection = $propertyForm.find("select[name=groupBySelection]")
+	var $numberFormatSelection = $propertyForm.find("select[name=numberFormat]")
 	
 	//var validationRules = {}
 	var validationRules = {
@@ -27,16 +28,27 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 		
 	$bucketSize.val(valGrouping.groupValsByBucketWidth)	
 	$bucketStart.val(valGrouping.bucketStart)	
-	$bucketEnd.val(valGrouping.bucketEnd)	
+	$bucketEnd.val(valGrouping.bucketEnd)
+	$numberFormatSelection.val(valGrouping.numberFormat)
 	validator.resetForm()	
 
 	
+	var $numberFormatGroup =  $propertyForm.find(".numberFieldFormatGroup")
 	function toggleBucketSizeForGrouping(grouping) {
 		if (grouping == "bucket") {
 			$bucketInputGroups.show()
 		} else {
 			$bucketInputGroups.hide()		
 		}
+	}
+	
+	function toggleNumberFormatForFieldType(fieldType) {
+		if (fieldType == fieldTypeNumber) {
+			$numberFormatGroup.show()
+		} else {
+			$numberFormatGroup.hide()
+		}
+		
 	}
 
 
@@ -47,6 +59,8 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 		$fieldSelection.val(panelParams.valGroupingProps.groupValsByFieldID)
 		
 		var existingFieldInfo = valueGroupingFieldsByID[panelParams.valGroupingProps.groupValsByFieldID]
+		toggleNumberFormatForFieldType(existingFieldInfo.type)
+		
 		populateDashboardValueGroupingSelection($groupBySelection,existingFieldInfo.type)
 		
 		$groupBySelection.val(panelParams.valGroupingProps.groupValsBy)
@@ -59,7 +73,8 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 					groupValsBy: $groupBySelection.val(),
 					groupValsByBucketWidth: convertStringToNumber($bucketSize.val()),
 					bucketStart: convertStringToNumber($bucketStart.val()),
-					bucketEnd: convertStringToNumber($bucketEnd.val())
+					bucketEnd: convertStringToNumber($bucketEnd.val()),
+					numberFormat: $numberFormatSelection.val()
 				}
 				console.log("Saving new value grouping: " + JSON.stringify(newValGroupingParams))
 				panelParams.saveValueGroupingFunc(newValGroupingParams)
@@ -71,10 +86,16 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 				fieldInfo = valueGroupingFieldsByID[fieldID]			
 		    	console.log("select field: field ID = " + fieldID  + " name = " + fieldInfo.name + " type = " + fieldInfo.type)
 				populateDashboardValueGroupingSelection($groupBySelection,fieldInfo.type)
-				$groupBySelection.attr("disabled",false)				
+				$groupBySelection.attr("disabled",false)		
+				toggleNumberFormatForFieldType(fieldInfo.type)
 			}
 			saveGroupingIfValid() 
 		})
+		
+		initSelectControlChangeHandler($numberFormatSelection, function(fieldID) {
+			saveGroupingIfValid()
+		})
+		
 
 		initSelectControlChangeHandler($groupBySelection, function(grouping) {		
 			toggleBucketSizeForGrouping(grouping)

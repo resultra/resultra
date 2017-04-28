@@ -37,6 +37,8 @@ type ValGrouping struct {
 
 	BucketStart *float64 `json:"bucketStart,omitempty"`
 	BucketEnd   *float64 `json:"bucketEnd,omitempty"`
+
+	NumberFormat *string `json:"numberFormat,omitempty"`
 }
 
 func (srcGrouping ValGrouping) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ValGrouping, error) {
