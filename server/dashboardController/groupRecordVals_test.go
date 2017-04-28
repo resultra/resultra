@@ -43,6 +43,7 @@ func TestNumberGroupings(t *testing.T) {
 	testOneLabelGrouping(t, valGrouping, -0.1, "-0.5 to 0")
 	testOneLabelGrouping(t, valGrouping, 0.0, "0 to 0.5")
 	testOneLabelGrouping(t, valGrouping, 0.6, "0.5 to 1")
-	testOneLabelGrouping(t, valGrouping, 2.0, ">= 2")
+	testOneLabelGrouping(t, valGrouping, 2.0, "2 to 2.5")
+	testOneLabelGrouping(t, valGrouping, 2.5, "> 2")
 
 }

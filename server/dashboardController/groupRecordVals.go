@@ -198,8 +198,8 @@ func bucketedNumberGroupLabelInfo(numberVal float64, valGrouping values.ValGroup
 	if (valGrouping.BucketStart) != nil && numberVal < (*valGrouping.BucketStart) {
 		return numberGroupLabelInfo(fmt.Sprintf("< %v", (*valGrouping.BucketStart)), numberVal)
 	}
-	if (valGrouping.BucketEnd) != nil && numberVal >= (*valGrouping.BucketEnd) {
-		return numberGroupLabelInfo(fmt.Sprintf(">= %v", (*valGrouping.BucketEnd)), numberVal)
+	if (valGrouping.BucketEnd) != nil && numberVal > (*valGrouping.BucketEnd) {
+		return numberGroupLabelInfo(fmt.Sprintf("> %v", (*valGrouping.BucketEnd)), numberVal)
 	}
 
 	var bucketWidth = 1.0
