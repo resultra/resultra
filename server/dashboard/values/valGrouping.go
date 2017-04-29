@@ -128,7 +128,7 @@ func (valGrouping ValGrouping) GroupingLabel() (string, error) {
 	case ValGroupByNone:
 		return groupingField.Name, nil
 	case ValGroupByBucket:
-		return "TBD", nil
+		return groupingField.Name, nil
 	case ValGroupByDay:
 		return "Date", nil
 	case ValGroupByMonthYear:
