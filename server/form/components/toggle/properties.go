@@ -19,10 +19,11 @@ func newDefaultValidationProperties() ToggleValidationProperties {
 }
 
 type ToggleProperties struct {
-	FieldID     string                                `json:"fieldID"`
-	Geometry    componentLayout.LayoutGeometry        `json:"geometry"`
-	ColorScheme string                                `json:"colorScheme"`
-	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
+	FieldID        string                                `json:"fieldID"`
+	Geometry       componentLayout.LayoutGeometry        `json:"geometry"`
+	OffColorScheme string                                `json:"offColorScheme"`
+	OnColorScheme  string                                `json:"onColorScheme"`
+	LabelFormat    common.ComponentLabelFormatProperties `json:"labelFormat"`
 	common.ComponentVisibilityProperties
 	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 	Validation  ToggleValidationProperties                 `json:"validation"`
@@ -52,7 +53,8 @@ func newDefaultToggleProperties() ToggleProperties {
 	props := ToggleProperties{
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
-		ColorScheme:                   ToggleColorSchemeDefault,
+		OffColorScheme:                ToggleColorSchemeDefault,
+		OnColorScheme:                 ToggleColorSchemeDefault,
 		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
 		Validation:                    newDefaultValidationProperties()}
 	return props

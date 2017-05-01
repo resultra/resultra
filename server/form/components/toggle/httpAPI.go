@@ -11,7 +11,10 @@ func init() {
 
 	toggleRouter.HandleFunc("/api/frm/toggle/new", newToggle)
 	toggleRouter.HandleFunc("/api/frm/toggle/resize", resizeToggle)
-	toggleRouter.HandleFunc("/api/frm/toggle/setColorScheme", setColorScheme)
+
+	toggleRouter.HandleFunc("/api/frm/toggle/setOffColorScheme", setOffColorScheme)
+	toggleRouter.HandleFunc("/api/frm/toggle/setOnColorScheme", setOnColorScheme)
+
 	toggleRouter.HandleFunc("/api/frm/toggle/setLabelFormat", setLabelFormat)
 	toggleRouter.HandleFunc("/api/frm/toggle/setVisibility", setVisibility)
 	toggleRouter.HandleFunc("/api/frm/toggle/setPermissions", setPermissions)
@@ -67,8 +70,17 @@ func resizeToggle(w http.ResponseWriter, r *http.Request) {
 	processTogglePropUpdate(w, r, resizeParams)
 }
 
-func setColorScheme(w http.ResponseWriter, r *http.Request) {
-	var params ToggleColorSchemeParams
+func setOffColorScheme(w http.ResponseWriter, r *http.Request) {
+	var params ToggleOffColorSchemeParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processTogglePropUpdate(w, r, params)
+}
+
+func setOnColorScheme(w http.ResponseWriter, r *http.Request) {
+	var params ToggleOnColorSchemeParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

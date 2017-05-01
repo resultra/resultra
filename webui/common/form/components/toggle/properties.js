@@ -1,10 +1,10 @@
 
 function loadToggleProperties($container, toggleRef) {
 	console.log("Loading toggle properties")
-		
-	var $colorSchemeSelection = $('#adminToggleComponentColorSchemeSelection')
-	$colorSchemeSelection.val(toggleRef.properties.colorScheme)
-	initSelectControlChangeHandler($colorSchemeSelection,function(newColorScheme) {
+	
+	var $toggleOffColorSchemeSelection = $('#adminToggleOffComponentColorSchemeSelection')
+	$toggleOffColorSchemeSelection.val(toggleRef.properties.offColorScheme)
+	initSelectControlChangeHandler($toggleOffColorSchemeSelection,function(newColorScheme) {
 		
 		var colorSchemeParams = {
 			parentFormID: toggleRef.parentFormID,
@@ -13,13 +13,31 @@ function loadToggleProperties($container, toggleRef) {
 		}
 		console.log("Setting new color scheme: " + JSON.stringify(colorSchemeParams))
 		
-		jsonAPIRequest("frm/toggle/setColorScheme",colorSchemeParams,function(updatedToggleRef) {
+		jsonAPIRequest("frm/toggle/setOffColorScheme",colorSchemeParams,function(updatedToggleRef) {
+			reInitToggleComponentControl($container,updatedToggleRef)
 			setContainerComponentInfo($container,updatedToggleRef,updatedToggleRef.toggleID)		
 		})
 		
 	})
+		
+	var $toggleOnColorSchemeSelection = $('#adminToggleOnComponentColorSchemeSelection')
+	$toggleOnColorSchemeSelection.val(toggleRef.properties.onColorScheme)
+	initSelectControlChangeHandler($toggleOnColorSchemeSelection,function(newColorScheme) {
+		
+		var colorSchemeParams = {
+			parentFormID: toggleRef.parentFormID,
+			toggleID: toggleRef.toggleID,
+			colorScheme: newColorScheme
+		}
+		console.log("Setting new color scheme: " + JSON.stringify(colorSchemeParams))
+		
+		jsonAPIRequest("frm/toggle/setOnColorScheme",colorSchemeParams,function(updatedToggleRef) {
+			reInitToggleComponentControl($container,updatedToggleRef)
+			setContainerComponentInfo($container,updatedToggleRef,updatedToggleRef.toggleID)	
+		})
+		
+	})
 	
-
 	initCheckboxChangeHandler('#adminToggleComponentValidationRequired', 
 				toggleRef.properties.validation.valueRequired, function (newVal) {
 				
@@ -50,7 +68,7 @@ function loadToggleProperties($container, toggleRef) {
 			labelFormat: updatedLabelProps
 		}
 		jsonAPIRequest("frm/toggle/setLabelFormat", formatParams, function(updatedToggleRef) {
-			setCheckBoxComponentLabel($container,updatedToggleRef)
+			setToggleComponentLabel($container,updatedToggleRef)
 			setContainerComponentInfo($container,updatedToggleRef,updatedToggleRef.toggleID)		
 		})	
 	}

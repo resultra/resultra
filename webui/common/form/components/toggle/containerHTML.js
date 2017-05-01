@@ -16,16 +16,18 @@ function generateUniqueToggleIDForLabel() {
 	return "toggleComponent_" + uniqueToggleIDForLabel
 }
 
+function toggleControlHTML() {
+	var uniqueID = generateUniqueToggleIDForLabel()
+	return 		'<input type="checkbox" id="'+uniqueID+'"class="toggleFormComponentControl">' +
+		'<label for="'+  uniqueID + '"class="toggleFormComponentLabel"> New Toggle</label>'
+}
+
 function toggleContainerHTML(elementID)
 {	
-	
-	var uniqueID = generateUniqueToggleIDForLabel()
-	
 	var containerHTML = ''+
 		'<div class=" layoutContainer toggleFormContainer">' +
-			'<div class="toggle">' +
-				'<input type="checkbox" id="'+uniqueID+'"class="toggleFormComponentControl">' +
-				'<label for="'+  uniqueID + '"class="toggleFormComponentLabel"> New Toggle</label>' + 
+			'<div class="toggleWrapper">' +
+				toggleControlHTML() + 
 			'</div>' +
 			'<div class="componentHoverFooter">' +
 				smallClearDeleteButtonHTML("toggleComponentClearValueButton") + 
@@ -45,6 +47,57 @@ function setToggleComponentLabel($toggleContainer,toggleRef) {
 	
 }
 
+function initDummyToggleControlForDragAndDrop($dummyToggleControlForDragAndDrop) {
+	var $toggleControl = getToggleControlFromToggleContainer($dummyToggleControlForDragAndDrop)
+
+	 $toggleControl.bootstrapSwitch({
+		handleWidth:40,
+		onText:'Yes',
+		offText:'No',
+		labelWidth:5 ,
+		 state: true,
+		onColor:'success',
+		offColor:'warning'
+});
+	
+}
+
+
+function initToggleComponentControl($toggleContainer,toggleRef) {
+	
+	var $toggleControl = getToggleControlFromToggleContainer($toggleContainer)
+
+	 $toggleControl.bootstrapSwitch({
+		handleWidth:40,
+		indeterminate:true,
+		onText:'Yes',
+		offText:'No',
+		labelWidth:5 ,
+		 animate:true,
+		onColor:toggleRef.properties.onColorScheme,
+		offColor:toggleRef.properties.offColorScheme
+	});
+
+}
+
+
+function reInitToggleComponentControl($toggleContainer,toggleRef) {
+	
+	// When manipulating the toggle in the form designer, the control may change
+	// colors or labels. Using the toggles 'destroy' method leaves the control
+	// inoperaable. However, clearing out and re-initializing the control's DOM
+	// elements works.
+	var $toggleWrapper = $toggleContainer.find(".toggleWrapper")
+	$toggleWrapper.empty()
+	$toggleWrapper.append(toggleControlHTML)
+	
+	initToggleComponentControl($toggleContainer,toggleRef)
+	setToggleComponentLabel($toggleContainer,toggleRef)
+	
+	
+}
+
+
 function getCurrentToggleComponentValue($toggleContainer) {
 	var $toggle = $toggleContainer.find(".toggleFormComponentControl")
 	var isIndeterminate = $toggle.bootstrapSwitch("indeterminate")
@@ -60,5 +113,5 @@ function toggleComponentIsDisabled($toggleContainer) {
 	var $toggle = $toggleContainer.find(".toggleFormComponentControl")
 	var disabled = $toggle.prop("disabled")
 	return disabled
-	
 }
+

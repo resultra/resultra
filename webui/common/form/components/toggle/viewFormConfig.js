@@ -81,24 +81,12 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 
 
 	function initToggleFieldEditBehavior($toggle,componentContext,recordProxy, toggleObjectRef) {
-	
-		var $toggleControl = getToggleControlFromToggleContainer($toggle)
-		
-		 $toggleControl.bootstrapSwitch({
-			handleWidth:40,
-			indeterminate:true,
-			onText:'Yes',
-			offText:'No',
-			labelWidth:5 ,
-			onColor:'success',
-			offColor:'warning'
-		});
-		
+			
 		var fieldID = toggleObjectRef.properties.fieldID
 		var fieldRef = getFieldRef(fieldID)
 		if(fieldRef.isCalcField || formComponentIsReadOnly(toggleObjectRef.properties.permissions)) {
 			$toggleControl.prop('disabled',true)
-			return;  // stop initialization, the check box is read only.
+			return;  // stop initialization, the toggle is read only.
 		}
 	
 		function setBoolValue(boolVal) {
@@ -141,6 +129,7 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 			setBoolValue(null)
 		})
 	
+		var $toggleControl = getToggleControlFromToggleContainer($toggle)
 		
 	  	$toggleControl.on('switchChange.bootstrapSwitch', function(event, state) {
 			var toggleVal = getCurrentToggleComponentValue($toggle)

@@ -65,16 +65,30 @@ func (updateParams ToggleResizeParams) updateProps(toggle *Toggle) error {
 	return nil
 }
 
-type ToggleColorSchemeParams struct {
+type ToggleOnColorSchemeParams struct {
 	ToggleIDHeader
 	ColorScheme string `json:"colorScheme"`
 }
 
-func (updateParams ToggleColorSchemeParams) updateProps(toggle *Toggle) error {
+func (updateParams ToggleOnColorSchemeParams) updateProps(toggle *Toggle) error {
 
 	// TODO - Validate against list of valid color schemes
 
-	toggle.Properties.ColorScheme = updateParams.ColorScheme
+	toggle.Properties.OnColorScheme = updateParams.ColorScheme
+
+	return nil
+}
+
+type ToggleOffColorSchemeParams struct {
+	ToggleIDHeader
+	ColorScheme string `json:"colorScheme"`
+}
+
+func (updateParams ToggleOffColorSchemeParams) updateProps(toggle *Toggle) error {
+
+	// TODO - Validate against list of valid color schemes
+
+	toggle.Properties.OffColorScheme = updateParams.ColorScheme
 
 	return nil
 }

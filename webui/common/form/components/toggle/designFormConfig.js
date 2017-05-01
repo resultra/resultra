@@ -32,7 +32,9 @@ function resizeToggle($container,geometry) {
 
 var toggleDesignFormConfig = {
 	draggableHTMLFunc:	toggleContainerHTML,
-	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
+	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {
+		initDummyToggleControlForDragAndDrop($paletteItemContainer)
+	},
 	createNewItemAfterDropFunc: openNewToggleDialog,
 	resizeConstraints: elemResizeConstraints(100,640,30,30),
 	resizeFunc: resizeToggle,
