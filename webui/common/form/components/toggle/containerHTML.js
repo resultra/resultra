@@ -51,7 +51,7 @@ function initDummyToggleControlForDragAndDrop($dummyToggleControlForDragAndDrop)
 	var $toggleControl = getToggleControlFromToggleContainer($dummyToggleControlForDragAndDrop)
 
 	 $toggleControl.bootstrapSwitch({
-		handleWidth:40,
+		handleWidth:'40px',
 		onText:'Yes',
 		offText:'No',
 		labelWidth:5 ,
@@ -68,15 +68,20 @@ function initToggleComponentControl($toggleContainer,toggleRef) {
 	var $toggleControl = getToggleControlFromToggleContainer($toggleContainer)
 
 	 $toggleControl.bootstrapSwitch({
-		handleWidth:40,
+		handleWidth:'40px',
 		indeterminate:true,
 		onText:escapeHTML(toggleRef.properties.onLabel),
 		 offText:escapeHTML(toggleRef.properties.offLabel),
-		labelWidth:5 ,
+		labelWidth:'5px',
 		 animate:true,
 		onColor:toggleRef.properties.onColorScheme,
 		offColor:toggleRef.properties.offColorScheme
 	});
+	
+	
+		 // TODO - Dynamically size the handleWidth based upon the length of the on
+	// and off labels: e.g.:	
+// 	$toggleControl.bootstrapSwitch('handleWidth','80px')
 
 }
 

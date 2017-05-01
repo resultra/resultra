@@ -20,7 +20,3 @@
 .toggleFormContainer .toggleFormComponentLabel {
 	padding-left: 5px !important;
 }
-
-.toggleStrikethroughCompleted {
-	text-decoration: line-through;
-}
