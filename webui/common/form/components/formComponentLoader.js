@@ -283,7 +283,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 				
 		setToggleComponentLabel($toggleContainer,toggle)
 		
-		var toggleColorSchemeClass = "checkbox-"+checkBox.properties.colorScheme
+		var toggleColorSchemeClass = "checkbox-"+toggle.properties.colorScheme
 		$toggleContainer.addClass(toggleColorSchemeClass)
 		
 		// Position the object withing the #layoutCanvas div

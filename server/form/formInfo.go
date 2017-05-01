@@ -15,6 +15,7 @@ import (
 	"resultra/datasheet/server/form/components/rating"
 	"resultra/datasheet/server/form/components/selection"
 	"resultra/datasheet/server/form/components/textBox"
+	"resultra/datasheet/server/form/components/toggle"
 	"resultra/datasheet/server/form/components/userSelection"
 )
 
@@ -23,6 +24,7 @@ type FormInfo struct {
 	TextBoxes          []textBox.TextBox             `json:"textBoxes"`
 	NumberInputs       []numberInput.NumberInput     `json:"numberInputs"`
 	CheckBoxes         []checkBox.CheckBox           `json:"checkBoxes"`
+	Toggles            []toggle.Toggle               `json:"toggles"`
 	DatePickers        []datePicker.DatePicker       `json:"datePickers"`
 	HtmlEditors        []htmlEditor.HtmlEditor       `json:"htmlEditors"`
 	Ratings            []rating.Rating               `json:"ratings"`
@@ -59,6 +61,11 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 	}
 
 	checkBoxes, err := checkBox.GetCheckBoxes(formID)
+	if err != nil {
+		return nil, err
+	}
+
+	toggles, err := toggle.GetToggles(formID)
 	if err != nil {
 		return nil, err
 	}
@@ -128,6 +135,7 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		TextBoxes:          textBoxes,
 		NumberInputs:       numberInputs,
 		CheckBoxes:         checkBoxes,
+		Toggles:            toggles,
 		DatePickers:        datePickers,
 		HtmlEditors:        htmlEditors,
 		Images:             images,

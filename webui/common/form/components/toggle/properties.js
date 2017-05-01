@@ -20,7 +20,7 @@ function loadToggleProperties($container, toggleRef) {
 	})
 	
 
-	initToggleChangeHandler('#adminToggleComponentValidationRequired', 
+	initCheckboxChangeHandler('#adminToggleComponentValidationRequired', 
 				toggleRef.properties.validation.valueRequired, function (newVal) {
 				
 		var validationProps = {

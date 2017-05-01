@@ -17,6 +17,7 @@ import (
 	"resultra/datasheet/server/form/components/rating"
 	"resultra/datasheet/server/form/components/selection"
 	"resultra/datasheet/server/form/components/textBox"
+	"resultra/datasheet/server/form/components/toggle"
 	"resultra/datasheet/server/form/components/userSelection"
 
 	"resultra/datasheet/server/generic/uniqueID"
@@ -45,6 +46,10 @@ func cloneFormComponents(remappedIDs uniqueID.UniqueIDRemapper, parentFormID str
 	}
 
 	if err := checkBox.CloneCheckBoxes(remappedIDs, parentFormID); err != nil {
+		return fmt.Errorf("cloneFormComponents: %v", err)
+	}
+
+	if err := toggle.CloneToggles(remappedIDs, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
