@@ -18,6 +18,11 @@
 				{{template "bootstrapColorSchemeSelections"}}
 			</select>
 	  </div>
+	  
+	<div class="form-group">
+	  <label>Label when toggled off</label>
+	  <input type="text" name="adminToggleOffComponentLabel" class="form-control" placeholder="Enter a label">
+	</div>
 
 	  <div class="form-group">
        	  <label for="adminToggleOnComponentColorSchemeSelection">Color scheme when toggled on</label>
@@ -25,6 +30,12 @@
 				{{template "bootstrapColorSchemeSelections"}}
 			</select>
 	  </div>
+
+	<div class="form-group">
+	  <label>Label when toggled on</label>
+	  <input type="text" name="adminToggleOnComponentLabel" class="form-control" placeholder="Enter a label">
+	</div>
+
 	   
     </form>	
 {{end}}

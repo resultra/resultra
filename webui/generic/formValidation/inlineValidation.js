@@ -51,13 +51,42 @@ function validateRemoteInlineInput(validator, inputSelector,
 		
 	}
 
-function initInlineInputValidationOnBlur(validator, inputSelector,
+
+function validateRemoteInlineInputControl(validator, $input,
+		remoteValidationParams, validationSucceedFunc) {
+	if(validator.element($input)) {
+
+		var newVal = $input.val()
+			
+		doubleCheckRemoteFormValidation(remoteValidationParams.url,remoteValidationParams.data, 
+					function(validationResult) {
+	
+			if(validationResult == true) {
+				validationSucceedFunc(newVal)
+			} else {
+				console.log("Remote validation failed: " + remoteValidationParams.url)
+			}
+		})
+
+	}
+		
+}
+
+
+function initInlineInputControlValidationOnBlur(validator, $input,
 				remoteValidationParams, validationSucceedFunc) {
 	
-	$(inputSelector).unbind("blur")
-	$(inputSelector).blur(function() {
-		validateRemoteInlineInput(validator, inputSelector,
+	$input.unbind("blur")
+	$input.blur(function() {
+		validateRemoteInlineInputControl(validator, $input,
 			remoteValidationParams, validationSucceedFunc)
 	})	
 	
+}
+
+function initInlineInputValidationOnBlur(validator, inputSelector,
+				remoteValidationParams, validationSucceedFunc) {
+	
+	initInlineInputControlValidationOnBlur(validator, $(inputSelector),
+				remoteValidationParams, validationSucceedFunc)	
 }

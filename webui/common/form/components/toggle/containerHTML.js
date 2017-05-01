@@ -70,8 +70,8 @@ function initToggleComponentControl($toggleContainer,toggleRef) {
 	 $toggleControl.bootstrapSwitch({
 		handleWidth:40,
 		indeterminate:true,
-		onText:'Yes',
-		offText:'No',
+		onText:escapeHTML(toggleRef.properties.onLabel),
+		 offText:escapeHTML(toggleRef.properties.offLabel),
 		labelWidth:5 ,
 		 animate:true,
 		onColor:toggleRef.properties.onColorScheme,

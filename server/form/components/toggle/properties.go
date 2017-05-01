@@ -23,6 +23,8 @@ type ToggleProperties struct {
 	Geometry       componentLayout.LayoutGeometry        `json:"geometry"`
 	OffColorScheme string                                `json:"offColorScheme"`
 	OnColorScheme  string                                `json:"onColorScheme"`
+	OffLabel       string                                `json:"offLabel"`
+	OnLabel        string                                `json:"onLabel"`
 	LabelFormat    common.ComponentLabelFormatProperties `json:"labelFormat"`
 	common.ComponentVisibilityProperties
 	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
@@ -56,6 +58,8 @@ func newDefaultToggleProperties() ToggleProperties {
 		OffColorScheme:                ToggleColorSchemeDefault,
 		OnColorScheme:                 ToggleColorSchemeDefault,
 		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
-		Validation:                    newDefaultValidationProperties()}
+		Validation:                    newDefaultValidationProperties(),
+		OffLabel:                      "No",
+		OnLabel:                       "Yes"}
 	return props
 }

@@ -14,6 +14,8 @@ func init() {
 
 	toggleRouter.HandleFunc("/api/frm/toggle/setOffColorScheme", setOffColorScheme)
 	toggleRouter.HandleFunc("/api/frm/toggle/setOnColorScheme", setOnColorScheme)
+	toggleRouter.HandleFunc("/api/frm/toggle/setOffLabel", setOffLabel)
+	toggleRouter.HandleFunc("/api/frm/toggle/setOnLabel", setOnLabel)
 
 	toggleRouter.HandleFunc("/api/frm/toggle/setLabelFormat", setLabelFormat)
 	toggleRouter.HandleFunc("/api/frm/toggle/setVisibility", setVisibility)
@@ -81,6 +83,24 @@ func setOffColorScheme(w http.ResponseWriter, r *http.Request) {
 
 func setOnColorScheme(w http.ResponseWriter, r *http.Request) {
 	var params ToggleOnColorSchemeParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processTogglePropUpdate(w, r, params)
+}
+
+func setOffLabel(w http.ResponseWriter, r *http.Request) {
+	var params ToggleOffLabelParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processTogglePropUpdate(w, r, params)
+}
+
+func setOnLabel(w http.ResponseWriter, r *http.Request) {
+	var params ToggleOnLabelParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

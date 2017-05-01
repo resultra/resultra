@@ -93,6 +93,34 @@ func (updateParams ToggleOffColorSchemeParams) updateProps(toggle *Toggle) error
 	return nil
 }
 
+type ToggleOffLabelParams struct {
+	ToggleIDHeader
+	Label string `json:"label"`
+}
+
+func (updateParams ToggleOffLabelParams) updateProps(toggle *Toggle) error {
+
+	// TODO - Validate against list of valid color schemes
+
+	toggle.Properties.OffLabel = updateParams.Label
+
+	return nil
+}
+
+type ToggleOnLabelParams struct {
+	ToggleIDHeader
+	Label string `json:"label"`
+}
+
+func (updateParams ToggleOnLabelParams) updateProps(toggle *Toggle) error {
+
+	// TODO - Validate against list of valid color schemes
+
+	toggle.Properties.OnLabel = updateParams.Label
+
+	return nil
+}
+
 type ToggleLabelFormatParams struct {
 	ToggleIDHeader
 	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
