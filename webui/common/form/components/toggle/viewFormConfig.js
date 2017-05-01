@@ -55,37 +55,25 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 			var fieldVal = recordRef.fieldValues[toggleFieldID]
 		
 			if (fieldVal === null) {
-					// Value has been cleared
-					$toggleLabel.removeClass("toggleStrikethroughCompleted")
-					$toggleControl.prop("indeterminate", true)
+				$toggleControl.bootstrapSwitch('indeterminate',true)
 			} else {
-				$toggleLabel.removeClass("toggleStrikethroughCompleted")
-
 				if(fieldVal == true)
 				{
-					$toggleControl.prop("indeterminate", false)
-					$toggleControl.prop("checked",true)
-					if(toggleObjectRef.properties.strikethroughCompleted) {
-						$toggleLabel.addClass("toggleStrikethroughCompleted")
-					} else {
-						$toggleLabel.removeClass("toggleStrikethroughCompleted")
-					}
+					$toggleControl.bootstrapSwitch('indeterminate',false)
+					$toggleControl.bootstrapSwitch('state',true)
 				}
 				else {
 					$toggleLabel.removeClass("toggleStrikethroughCompleted")
-					$toggleControl.prop("indeterminate", false)
-					$toggleControl.prop("checked",false)
+					$toggleControl.bootstrapSwitch('indeterminate',false)
+					$toggleControl.bootstrapSwitch('state',false)
 				}
 			
 			}
-
-
 		} // If record has a value for the current container's associated field ID.
 		else
 		{
 			// No value exits
-			$toggleControl.prop("indeterminate", true)
-			$toggleLabel.removeClass("toggleStrikethroughCompleted")
+			$toggleControl.bootstrapSwitch('indeterminate',true)
 		}	
 	
 	}
@@ -95,6 +83,16 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 	function initToggleFieldEditBehavior($toggle,componentContext,recordProxy, toggleObjectRef) {
 	
 		var $toggleControl = getToggleControlFromToggleContainer($toggle)
+		
+		 $toggleControl.bootstrapSwitch({
+			handleWidth:40,
+			indeterminate:true,
+			onText:'Yes',
+			offText:'No',
+			labelWidth:5 ,
+			onColor:'success',
+			offColor:'warning'
+		});
 		
 		var fieldID = toggleObjectRef.properties.fieldID
 		var fieldRef = getFieldRef(fieldID)
@@ -139,19 +137,14 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 		var $clearValueButton = $toggle.find(".toggleComponentClearValueButton")
 		initButtonControlClickHandler($clearValueButton,function() {
 			console.log("Clear value clicked for toggle")
+			$toggleControl.bootstrapSwitch('indeterminate',true)
 			setBoolValue(null)
 		})
 	
 		
-		$toggleControl.unbind("click")
-	  	$toggleControl.click( function () {
-			// Get the most recent copy of the object reference. It could have changed between
-			// initialization time and the time the toggle was changed.
-			var objectRef = getContainerObjectRef($toggle)
-		
-			var isChecked = $(this).prop("checked")
-	
-			setBoolValue(isChecked)	
+	  	$toggleControl.on('switchChange.bootstrapSwitch', function(event, state) {
+			var toggleVal = getCurrentToggleComponentValue($toggle)
+			setBoolValue(toggleVal)	
 		})
 	
 	}

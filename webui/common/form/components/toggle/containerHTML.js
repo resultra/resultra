@@ -47,11 +47,11 @@ function setToggleComponentLabel($toggleContainer,toggleRef) {
 
 function getCurrentToggleComponentValue($toggleContainer) {
 	var $toggle = $toggleContainer.find(".toggleFormComponentControl")
-	var isIndeterminate = $toggle.prop("indeterminate")
+	var isIndeterminate = $toggle.bootstrapSwitch("indeterminate")
 	if (isIndeterminate) {
 		return null
 	} else {
-		var isChecked = $toggle.prop("checked")
+		var isChecked = $toggle.bootstrapSwitch("state")
 		return isChecked
 	}
 }
