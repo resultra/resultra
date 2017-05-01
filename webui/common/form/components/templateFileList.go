@@ -16,6 +16,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/rating"
 	"resultra/datasheet/webui/common/form/components/selection"
 	"resultra/datasheet/webui/common/form/components/textBox"
+	"resultra/datasheet/webui/common/form/components/toggle"
 	"resultra/datasheet/webui/common/form/components/userSelection"
 )
 
@@ -31,6 +32,7 @@ func init() {
 	TemplateFileList = append(TemplateFileList, common.TemplateFileList...)
 
 	TemplateFileList = append(TemplateFileList, checkBox.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, toggle.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, datePicker.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, htmlEditor.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, image.TemplateFileList...)

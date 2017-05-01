@@ -12,11 +12,13 @@ import (
 	"resultra/datasheet/webui/common/form/components/rating"
 	"resultra/datasheet/webui/common/form/components/selection"
 	"resultra/datasheet/webui/common/form/components/textBox"
+	"resultra/datasheet/webui/common/form/components/toggle"
 	"resultra/datasheet/webui/common/form/components/userSelection"
 )
 
 type ComponentViewTemplateParams struct {
 	CheckBoxParams      checkBox.CheckboxViewTemplateParams
+	ToggleParams        toggle.ToggleViewTemplateParams
 	DatePickerParams    datePicker.DatePickerViewTemplateParams
 	TextBoxParams       textBox.TextboxViewTemplateParams
 	ImageParams         image.ImageViewTemplateParams
@@ -37,6 +39,7 @@ func init() {
 
 	ViewTemplateParams = ComponentViewTemplateParams{
 		CheckBoxParams:      checkBox.ViewTemplateParams,
+		ToggleParams:        toggle.ViewTemplateParams,
 		DatePickerParams:    datePicker.ViewTemplateParams,
 		TextBoxParams:       textBox.ViewTemplateParams,
 		ImageParams:         image.ViewTemplateParams,

@@ -1,0 +1,14 @@
+{
+    "cssFiles": ["toggle.css"], 
+    "htmlFiles": ["properties.html",
+		"viewProperties.html"], 
+    "jsFiles": ["newToggleDialog.js",
+		"properties.js",
+		"containerHTML.js",
+		"designFormConfig.js",
+		"viewProperties.js",
+		"viewFormConfig.js"
+    ],
+	"imageFiles":[],
+    "subDirs": []
+}

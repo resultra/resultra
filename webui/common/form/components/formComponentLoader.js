@@ -274,6 +274,30 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initCheckBoxFunc(componentContext,$checkboxContainer,checkBox)
 	}
+	
+	function initToggleLayout($componentRow,toggle) {
+		// Create an HTML block for the container
+		
+		var containerHTML = toggleContainerHTML(toggle.toggleID);
+		var $toggleContainer = $(containerHTML)
+				
+		setToggleComponentLabel($toggleContainer,toggle)
+		
+		var toggleColorSchemeClass = "checkbox-"+checkBox.properties.colorScheme
+		$toggleContainer.addClass(toggleColorSchemeClass)
+		
+		// Position the object withing the #layoutCanvas div
+		$componentRow.append($toggleContainer)
+		
+		setElemFixedWidthFlexibleHeight($toggleContainer,toggle.properties.geometry.sizeWidth)
+				
+		 // Store the newly created object reference in the DOM element. This is needed for follow-on
+		 // property setting, resizing, etc.
+		setContainerComponentInfo($toggleContainer,toggle,toggle.toggleID)
+		
+		// Callback for any specific initialization for either the form design or view mode 
+		loadFormConfig.initToggleFunc(componentContext,$toggleContainer,toggle)
+	}
 
 
 	function initRatingLayout($componentRow,rating) {
@@ -430,6 +454,15 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		compenentIDComponentMap[checkBoxProps.checkBoxID] = {
 			componentInfo: checkBoxProps,
 			initFunc: initCheckBoxLayout
+		}		
+	}
+	
+	for (var toggleIter in formInfo.toggles) {
+		var toggleProps = formInfo.toggles[toggleIter]
+		console.log("loadFormComponents: initializing toggle: " + JSON.stringify(toggleProps))
+		compenentIDComponentMap[toggleProps.toggleID] = {
+			componentInfo: toggleProps,
+			initFunc: initToggleLayout
 		}		
 	}
 

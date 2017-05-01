@@ -60,6 +60,12 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 			initFormComponentViewBehavior($checkBox,
 					checkBoxObjectRef.checkBoxID,initCheckBoxViewProperties)
 		},
+		initToggleFunc: function(componentContext,$toggle,toggleObjectRef) {
+			console.log("Init toggle in view form")
+			initToggleRecordEditBehavior($toggle,componentContext,recordProxy,toggleObjectRef)
+			initFormComponentViewBehavior($toggle,
+					toggleObjectRef.toggleID,initToggleViewProperties)
+		},
 		initProgressFunc: function(componentContext,$progress,progressObjectRef) {
 			console.log("Init progress indicator in view form")
 			initProgressRecordEditBehavior($progress,componentContext,recordProxy,progressObjectRef)

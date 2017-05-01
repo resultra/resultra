@@ -2,6 +2,7 @@
 var paletteItemsEditConfig = {
 	paletteItemTextBox: textBoxDesignFormConfig,
 	paletteItemCheckBox: checkBoxDesignFormConfig,
+	paletteItemToggle: toggleDesignFormConfig,
 	paletteItemDatePicker: datePickerDesignFormConfig,
 	paletteItemHtmlEditor: htmlEditorDesignFormConfig,
 	paletteItemImage: imageDesignFormConfig,
@@ -124,6 +125,11 @@ $(document).ready(function() {
 		initCheckBoxFunc: function(componentContext,$checkBox,checkBoxObjectRef) {
 			var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
 			initFormComponentDesignBehavior($checkBox,componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig,designFormLayoutConfig)
+		},
+		initToggleFunc: function(componentContext,$toggle,toggleObjectRef) {
+			var componentIDs = { formID: formID, componentID: toggleObjectRef.toggleID }
+			initFormComponentDesignBehavior($toggle,componentIDs,
+					toggleObjectRef,toggleDesignFormConfig,designFormLayoutConfig)
 		},
 		initProgressFunc: function(componentContext,$progress,progressObjectRef) {
 			var componentIDs = { formID: formID, componentID: progressObjectRef.progressID }

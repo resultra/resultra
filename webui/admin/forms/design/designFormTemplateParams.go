@@ -16,6 +16,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/rating"
 	"resultra/datasheet/webui/common/form/components/selection"
 	"resultra/datasheet/webui/common/form/components/textBox"
+	"resultra/datasheet/webui/common/form/components/toggle"
 	"resultra/datasheet/webui/common/form/components/userSelection"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
@@ -39,6 +40,7 @@ type DesignFormTemplateParams struct {
 	FormID              string
 	FormName            string
 	CheckboxParams      checkBox.CheckboxDesignTemplateParams
+	ToggleParams        toggle.ToggleDesignTemplateParams
 	DatePickerParams    datePicker.DatePickerDesignTemplateParams
 	TextBoxParams       textBox.TextboxDesignTemplateParams
 	NumberInputParams   numberInput.NumberInputDesignTemplateParams
@@ -80,6 +82,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		FormName:     formInfo.FormName,
 
 		CheckboxParams:      checkBox.DesignTemplateParams,
+		ToggleParams:        toggle.DesignTemplateParams,
 		DatePickerParams:    datePicker.DesignTemplateParams,
 		TextBoxParams:       textBox.DesignTemplateParams,
 		NumberInputParams:   numberInput.DesignTemplateParams,

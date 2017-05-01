@@ -1,0 +1,55 @@
+
+{{define "toggleFormatProps"}}
+     <form id="adminToggleComponentFormatForm">
+	  <div class="form-group">
+       	  <label for="adminToggleComponentColorSchemeSelection">Color scheme when checked</label>
+		  	<select class="form-control" id="adminToggleComponentColorSchemeSelection">
+		  		<option disabled selected value="">Select a color scheme</option>
+		  		<option value="default">Default</option>
+		 		<option value="primary">Primary</option>
+		 		<option value="success">Success</option>
+		 		<option value="info">Info</option>
+		 		<option value="warning">Warning</option>
+		 		<option value="danger">Danger</option>
+			</select>
+	  </div>
+	  
+    </form>	
+{{end}}
+
+
+{{define "toggleValidationProps"}}
+     <form id="adminToggleComponentValidationForm">	  
+	  <div class="form-group">
+ 	      <div class="checkbox">
+	        <input type="checkbox" id="adminToggleComponentValidationRequired">
+	        <label for="adminToggleComponentValidationRequired">Value is required</label>
+	      </div>
+	   </div>
+    </form>	
+{{end}}
+
+
+{{define "toggleProps"}}
+
+	<div id="toggleProps" class="propertyPanelToggleContainer">
+
+		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
+
+		{{template "propertyPanelPrefix" .FormatPanelParams}}
+			{{template "toggleFormatProps"}}
+		{{template "propertyPanelSuffix"}}
+
+		{{template "propertyPanelPrefix" .ValidationPanelParams}}
+			{{template "toggleValidationProps"}}
+		{{template "propertyPanelSuffix"}}
+
+		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}
+
+		{{template "componentPermissionsPropertyPanel" .PermissionPanelParams}}
+
+		{{template "componentDeletePropertyPanel" .DeletePanelParams}}
+
+	</div>
+
+{{end}}
