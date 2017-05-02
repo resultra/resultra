@@ -1,0 +1,15 @@
+
+{{define "dashboardHeaderTitleProps"}}
+	{{template "dashboardComponentTitlePropertyPanel" "header_"}}
+{{end}}
+
+{{define "dashboardHeaderProps"}}
+
+	<div id="dashboardHeaderProps" class="propertyPanelToggleContainer">
+		{{template "propertyPanelPrefix" .TitlePanelParams}}
+			{{template "dashboardHeaderTitleProps"}}	
+		{{template "propertyPanelSuffix"}}
+
+	</div>
+
+{{end}}

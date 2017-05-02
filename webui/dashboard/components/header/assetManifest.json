@@ -1,0 +1,14 @@
+{
+    "cssFiles": ["container.css"], 
+    "htmlFiles": [
+        "properties.html"
+    ], 
+    "jsFiles": [
+        "container.js", 
+        "properties.js", 
+		"newHeader.js",
+		"viewConfig.js",
+        "designConfig.js"
+    ],
+	"imageFiles":[]
+}

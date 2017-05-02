@@ -2,5 +2,6 @@
     "subDirs": [
 		"common",
 		"barChart",
+		"header",
 		"summaryTable"]
 }

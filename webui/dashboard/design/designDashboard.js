@@ -1,6 +1,7 @@
 var dashboardPaletteItemsEditConfig = {
 	paletteItemBarChart: barChartDashboardDesignConfig,
-	paletteItemSummaryTable: summaryTableDashboardDesignConfig
+	paletteItemSummaryTable: summaryTableDashboardDesignConfig,
+	paletteItemHeader: headerDashboardDesignConfig
 }
 
 
@@ -85,6 +86,11 @@ $(document).ready(function() {
 			console.log("Init summary table component")
 			initDashboardComponentDesignDashboardEditBehavior($summaryTable,
 					summaryTableRef.summaryTableID,summaryTableDashboardDesignConfig,layoutDesignConfig)
+		},
+		initHeaderComponent: function($header,headerRef) {
+			console.log("Init summary table component")
+			initDashboardComponentDesignDashboardEditBehavior($header,
+					headerRef.headerID,headerDashboardDesignConfig,layoutDesignConfig)
 		}
 	}
 	

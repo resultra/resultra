@@ -36,6 +36,22 @@ function loadDashboardData(loadDashboardConfig)
 		loadDashboardConfig.initSummaryTableComponent($summaryTableElem,summaryTableData.summaryTable)
 	}
 
+
+	function initHeaderLayout($componentRow,header) {
+		
+		var headerHTML = dashboardHeaderContainerHTML(header.headerID);
+		var $header = $(headerHTML)
+		
+		setHeaderDashboardComponentLabel($header,header)
+	
+		setContainerComponentInfo($header,header,header.headerID)
+		
+		$componentRow.append($header)
+		setElemFixedWidthFlexibleHeight($header,header.properties.geometry.sizeWidth)
+				
+		loadDashboardConfig.initHeaderComponent($header,header)
+	}
+
 	
 	// Load the dashboard data
 	var loadBarChartDataParams = { dashboardID: dashboardID }
@@ -57,6 +73,15 @@ function loadDashboardData(loadDashboardConfig)
 			compenentIDComponentMap[summaryTableData.summaryTableID] = {
 				componentInfo: summaryTableData,
 				initFunc: initSummaryTableLayout
+			}		
+		}
+
+		for (var headerIndex in dashboardData.headers) {
+			var header = dashboardData.headers[headerIndex]
+			console.log ("Loading header: id = " + header.headerID)
+			compenentIDComponentMap[header.headerID] = {
+				componentInfo: header,
+				initFunc: initHeaderLayout
 			}		
 		}
 		

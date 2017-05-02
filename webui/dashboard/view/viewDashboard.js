@@ -106,6 +106,16 @@ $(document).ready(function() {
 			initDashboardComponentViewBehavior($summaryTable,
 					summaryTableRef.summaryTableID,summaryTableViewConfig)
 			
+		},
+		initHeaderComponent: function($header,headerRef) {
+			
+			var viewConfig = headerViewDashboardConfig(headerRef)
+			
+			console.log("Init summary table component")
+						
+			initDashboardComponentViewBehavior($header,
+					headerRef.headerID,viewConfig)
+			
 		}
 	}
 	

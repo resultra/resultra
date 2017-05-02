@@ -2,12 +2,14 @@ package components
 
 import (
 	"resultra/datasheet/webui/dashboard/components/barChart"
+	"resultra/datasheet/webui/dashboard/components/header"
 	"resultra/datasheet/webui/dashboard/components/summaryTable"
 )
 
 type ComponentDesignTemplateParams struct {
 	BarChartParams     barChart.BarChartDesignTemplateParams
 	SummaryTableParams summaryTable.SummaryTableDesignTemplateParams
+	HeaderParams       header.HeaderDesignTemplateParams
 }
 
 type ComponentViewTemplateParams struct {
@@ -21,7 +23,8 @@ var ViewTemplateParams ComponentViewTemplateParams
 func init() {
 	DesignTemplateParams = ComponentDesignTemplateParams{
 		BarChartParams:     barChart.DesignTemplateParams,
-		SummaryTableParams: summaryTable.DesignTemplateParams}
+		SummaryTableParams: summaryTable.DesignTemplateParams,
+		HeaderParams:       header.DesignTemplateParams}
 
 	ViewTemplateParams = ComponentViewTemplateParams{
 		SummaryTableParams: summaryTable.ViewTemplateParams,
