@@ -63,12 +63,33 @@ function initDummyToggleControlForDragAndDrop($dummyToggleControlForDragAndDrop)
 }
 
 
+
 function initToggleComponentControl($toggleContainer,toggleRef) {
 	
 	var $toggleControl = getToggleControlFromToggleContainer($toggleContainer)
+	
+	function calcHandleWidth() {
+				
+		var labelPadding = 10
+		
+		// The proper way to calculate the width would be to use the jQuery width() method
+		// on a DOM element which has the same attributes as the labels inside the toggle.
+		// However, the following heuristic works fairly well for longer labels, and just
+		// find for typically short labels.
+		var widthPerChar = 9
+		var onWidth = toggleRef.properties.offLabel.length*widthPerChar + labelPadding
+		var offWidth = toggleRef.properties.offLabel.length*widthPerChar + labelPadding
 
+		var handleWidth = Math.max(40,onWidth,offWidth)
+		
+		var handleWidthPx = handleWidth + 'px'
+		
+		return handleWidthPx
+		
+	}
+	
 	 $toggleControl.bootstrapSwitch({
-		handleWidth:'40px',
+		handleWidth:calcHandleWidth(),
 		indeterminate:true,
 		onText:escapeHTML(toggleRef.properties.onLabel),
 		 offText:escapeHTML(toggleRef.properties.offLabel),
@@ -78,11 +99,6 @@ function initToggleComponentControl($toggleContainer,toggleRef) {
 		offColor:toggleRef.properties.offColorScheme
 	});
 	
-	
-		 // TODO - Dynamically size the handleWidth based upon the length of the on
-	// and off labels: e.g.:	
-// 	$toggleControl.bootstrapSwitch('handleWidth','80px')
-
 }
 
 
