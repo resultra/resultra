@@ -1,3 +1,29 @@
+{{define "dashboardHeaderFormatProps"}}
+
+     <form id="adminDashboardHeaderFormatForm">
+	  <div class="form-group">
+       	  <label for="adminDashboardHeaderSizeSelection">Header size</label>
+		  	<select class="form-control" id="adminDashboardHeaderSizeSelection">
+		  		<option disabled selected value="" placeholder="Select a size"></option>
+		  		<option value="xlarge">Extra Large</option>
+		 		<option value="large">Large</option>
+		 		<option value="medium">Medium</option>
+		 		<option value="small">Small</option>
+		 		<option value="xsmall">Extra Small</option>
+			</select>
+	  </div>
+	  
+	  <div class="form-group">
+ 	      <div class="checkbox">
+	        <input type="checkbox" id="adminDashboardHeaderUnderline">
+	        <label for="adminDashboardHeaderUnderline">Underline header</label>
+	      </div>
+	   </div>
+	  
+	  
+    </form>
+	
+{{end}}
 
 {{define "dashboardHeaderTitleProps"}}
 	{{template "dashboardComponentTitlePropertyPanel" "header_"}}
@@ -6,8 +32,13 @@
 {{define "dashboardHeaderProps"}}
 
 	<div id="dashboardHeaderProps" class="propertyPanelToggleContainer">
+		
 		{{template "propertyPanelPrefix" .TitlePanelParams}}
 			{{template "dashboardHeaderTitleProps"}}	
+		{{template "propertyPanelSuffix"}}
+		
+		{{template "propertyPanelPrefix" .FormatPanelParams}}
+			{{template "dashboardHeaderFormatProps"}}	
 		{{template "propertyPanelSuffix"}}
 
 	</div>

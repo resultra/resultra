@@ -91,3 +91,27 @@ func (params SetHeaderDimensionsParams) updateHeaderProps(header *Header) error 
 
 	return nil
 }
+
+type SetHeaderSizeParams struct {
+	HeaderUniqueIDHeader
+	Size string `json:"size"`
+}
+
+func (params SetHeaderSizeParams) updateHeaderProps(header *Header) error {
+
+	header.Properties.Size = params.Size
+
+	return nil
+}
+
+type SetHeaderUnderlineParams struct {
+	HeaderUniqueIDHeader
+	Underlined bool `json:"underlined"`
+}
+
+func (params SetHeaderUnderlineParams) updateHeaderProps(header *Header) error {
+
+	header.Properties.Underlined = params.Underlined
+
+	return nil
+}

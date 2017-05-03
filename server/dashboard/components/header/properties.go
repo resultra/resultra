@@ -6,8 +6,10 @@ import (
 )
 
 type HeaderProps struct {
-	Geometry componentLayout.LayoutGeometry `json:"geometry"`
-	Title    string                         `json:"title"`
+	Geometry   componentLayout.LayoutGeometry `json:"geometry"`
+	Title      string                         `json:"title"`
+	Size       string                         `json:"size"`
+	Underlined bool                           `json:"underlined"`
 }
 
 func (srcProps HeaderProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*HeaderProps, error) {
@@ -19,6 +21,8 @@ func (srcProps HeaderProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*Heade
 
 func newDefaultHeaderProps() HeaderProps {
 	props := HeaderProps{
-		Title: "Header"}
+		Title:      "Header",
+		Size:       "medium",
+		Underlined: false}
 	return props
 }

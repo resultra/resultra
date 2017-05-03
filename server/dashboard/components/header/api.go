@@ -14,6 +14,8 @@ func init() {
 
 	headerRouter.HandleFunc("/api/dashboard/header/setTitle", setHeaderTitle)
 	headerRouter.HandleFunc("/api/dashboard/header/setDimensions", setHeaderDimensions)
+	headerRouter.HandleFunc("/api/dashboard/header/setSize", setSize)
+	headerRouter.HandleFunc("/api/dashboard/header/setUnderlined", setUnderline)
 
 	http.Handle("/api/dashboard/header/", headerRouter)
 }
@@ -55,6 +57,26 @@ func setHeaderTitle(w http.ResponseWriter, r *http.Request) {
 func setHeaderDimensions(w http.ResponseWriter, r *http.Request) {
 
 	var params SetHeaderDimensionsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processHeaderPropUpdate(w, r, params)
+}
+
+func setSize(w http.ResponseWriter, r *http.Request) {
+
+	var params SetHeaderSizeParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processHeaderPropUpdate(w, r, params)
+}
+
+func setUnderline(w http.ResponseWriter, r *http.Request) {
+
+	var params SetHeaderUnderlineParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

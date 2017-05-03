@@ -32,15 +32,18 @@ function setHeaderDashboardComponentHeaderSize($container,headerSize) {
 
 function setHeaderDashboardComponentUnderlined($container,isUnderlined) {
 	
-	var $header = $container.find("span")
+	var $headerSpan = $container.find("span")
 	
-	$header.removeClass("underlinedFormHeader")
+	$headerSpan.removeClass("underlinedDashboardHeader")
 	if(isUnderlined) {
-		$header.addClass("underlinedFormHeader")
+		$headerSpan.addClass("underlinedDashboardHeader")
 	}
 }
 
 function setHeaderDashboardComponentLabel($container,headerRef) {
 	var $label = $container.find("span")
 	$label.text(headerRef.properties.title)
+	
+	setHeaderDashboardComponentHeaderSize($container,headerRef.properties.size)
+	setHeaderDashboardComponentUnderlined($container,headerRef.properties.underlined)
 }
