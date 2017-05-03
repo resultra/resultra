@@ -1,0 +1,15 @@
+{
+    "cssFiles": ["container.css"], 
+    "htmlFiles": [
+        "properties.html",
+		"newGaugeDialog.html"
+    ], 
+    "jsFiles": [
+        "container.js", 
+        "properties.js", 
+		"newGaugeDialog.js",
+		"viewConfig.js",
+        "designConfig.js"
+    ],
+	"imageFiles":[]
+}

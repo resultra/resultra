@@ -2,6 +2,7 @@
     "subDirs": [
 		"common",
 		"barChart",
+		"gauge",
 		"header",
 		"summaryTable"]
 }

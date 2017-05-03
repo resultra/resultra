@@ -37,7 +37,7 @@ function loadDashboardHeaderProperties($header,headerRef) {
 			}
 
 			jsonAPIRequest("dashboard/header/setUnderlined",underlinedParams,function(updatedHeader) {
-				setContainerComponentInfo($header,updatedHeader,updatedHeader.checkBoxID)
+				setContainerComponentInfo($header,updatedHeader,updatedHeader.headerID)
 				setHeaderDashboardComponentLabel($header,updatedHeader)			
 			})
 		})

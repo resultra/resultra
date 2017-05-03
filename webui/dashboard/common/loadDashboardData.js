@@ -52,6 +52,22 @@ function loadDashboardData(loadDashboardConfig)
 		loadDashboardConfig.initHeaderComponent($header,header)
 	}
 
+
+	function initGaugeLayout($componentRow,gauge) {
+		
+		var gaugeHTML = dashboardGaugeContainerHTML(gauge.gaugeID);
+		var $gauge = $(gaugeHTML)
+		
+		setGaugeDashboardComponentLabel($gauge,gauge)
+	
+		setContainerComponentInfo($gauge,gauge,gauge.gaugeID)
+		
+		$componentRow.append($gauge)
+		setElemFixedWidthFlexibleHeight($gauge,gauge.properties.geometry.sizeWidth)
+				
+		loadDashboardConfig.initGaugeComponent($gauge,gauge)
+	}
+
 	
 	// Load the dashboard data
 	var loadBarChartDataParams = { dashboardID: dashboardID }
@@ -75,6 +91,17 @@ function loadDashboardData(loadDashboardConfig)
 				initFunc: initSummaryTableLayout
 			}		
 		}
+
+
+		for (var gaugeDataIndex in dashboardData.GaugesData) {
+			var gaugeData = dashboardData.GaugesData[gaugeDataIndex]
+			console.log ("Loading summary table: id = " + gaugeData.gaugeID)
+			compenentIDComponentMap[gaugeData.gaugeID] = {
+				componentInfo: gaugeData,
+				initFunc: initGaugeLayout
+			}		
+		}
+
 
 		for (var headerIndex in dashboardData.headers) {
 			var header = dashboardData.headers[headerIndex]

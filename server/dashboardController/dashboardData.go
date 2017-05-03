@@ -14,6 +14,7 @@ type DashboardDataRef struct {
 	Dashboard         dashboard.Dashboard `json:"dashboard"`
 	BarChartsData     []BarChartData      `json:"barChartsData"`
 	SummaryTablesData []SummaryTableData  `json:"summaryTablesData"`
+	GaugesData        []GaugeData         `json:"gaugesData"`
 	Headers           []header.Header     `json:"headers"`
 }
 
@@ -39,10 +40,13 @@ func getDefaultDashboardData(params GetDashboardDataParams) (*DashboardDataRef, 
 		return nil, fmt.Errorf("GetDashboardData: Can't retrieve headers: error = %v", getTableErr)
 	}
 
+	gaugesData := []GaugeData{} // dummied up for now
+
 	dashboardDataRef := DashboardDataRef{
 		Dashboard:         *dashboard,
 		BarChartsData:     barChartData,
 		SummaryTablesData: summaryTablesData,
+		GaugesData:        gaugesData,
 		Headers:           headers}
 
 	return &dashboardDataRef, nil

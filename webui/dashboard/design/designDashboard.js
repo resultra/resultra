@@ -1,7 +1,8 @@
 var dashboardPaletteItemsEditConfig = {
 	paletteItemBarChart: barChartDashboardDesignConfig,
 	paletteItemSummaryTable: summaryTableDashboardDesignConfig,
-	paletteItemHeader: headerDashboardDesignConfig
+	paletteItemHeader: headerDashboardDesignConfig,
+	paletteItemGauge: gaugeDashboardDesignConfig
 }
 
 
@@ -88,9 +89,14 @@ $(document).ready(function() {
 					summaryTableRef.summaryTableID,summaryTableDashboardDesignConfig,layoutDesignConfig)
 		},
 		initHeaderComponent: function($header,headerRef) {
-			console.log("Init summary table component")
+			console.log("Init header component")
 			initDashboardComponentDesignDashboardEditBehavior($header,
 					headerRef.headerID,headerDashboardDesignConfig,layoutDesignConfig)
+		},
+		initGaugeComponent: function($gauge,gaugeRef) {
+			console.log("Init gauge component")
+			initDashboardComponentDesignDashboardEditBehavior($gauge,
+					gaugeRef.gaugeID,gaugeDashboardDesignConfig,layoutDesignConfig)
 		}
 	}
 	

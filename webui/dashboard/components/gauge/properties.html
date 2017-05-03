@@ -1,0 +1,25 @@
+{{define "dashboardGaugeFormatProps"}}
+
+TBD
+	
+{{end}}
+
+{{define "dashboardGaugeTitleProps"}}
+	{{template "dashboardComponentTitlePropertyPanel" "gauge_"}}
+{{end}}
+
+{{define "dashboardGaugeProps"}}
+
+	<div id="dashboardGaugeProps" class="propertyPanelToggleContainer">
+		
+		{{template "propertyPanelPrefix" .TitlePanelParams}}
+			{{template "dashboardGaugeTitleProps"}}	
+		{{template "propertyPanelSuffix"}}
+		
+		{{template "propertyPanelPrefix" .FormatPanelParams}}
+			{{template "dashboardGaugeFormatProps"}}	
+		{{template "propertyPanelSuffix"}}
+
+	</div>
+
+{{end}}

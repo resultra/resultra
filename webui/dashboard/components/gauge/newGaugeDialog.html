@@ -1,0 +1,39 @@
+
+{{define "newGaugeDialogBody"}}
+
+	{{template "wizardDialogProgress" . }}
+	
+	{{template "dashboardComponentValueSummaryPanel" .ValueSummaryParams}}
+	
+{{end}}
+
+
+{{define "newGaugeDialogButtons"}}
+	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	{{template "dashboardComponentValueSummaryPanelButtons" .ValueSummaryParams}}
+{{end}}
+
+
+{{define "newGaugeDialog"}}
+
+<div class="modal fade" id="newGaugeDialog"  tabindex="-1" role="document"
+						aria-labelledby="newGaugeLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="newGaugeLabel">New Gauge</h4>
+      </div>
+      <div class="modal-body newGaugeBody">
+		  <div>
+			  {{template "newGaugeDialogBody" . }}
+		</div>
+      </div>
+      <div class="modal-footer">
+		  {{template "newGaugeDialogButtons" .}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}

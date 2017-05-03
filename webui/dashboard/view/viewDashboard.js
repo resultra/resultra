@@ -111,10 +111,19 @@ $(document).ready(function() {
 			
 			var viewConfig = headerViewDashboardConfig(headerRef)
 			
-			console.log("Init summary table component")
+			console.log("Init header component")
 						
 			initDashboardComponentViewBehavior($header,
 					headerRef.headerID,viewConfig)
+			
+		},
+		initGaugeComponent: function($gauge,gaugeRef) {
+			
+			var viewConfig = gaugeViewDashboardConfig(gaugeRef)
+			
+			console.log("Init gauge component")
+						
+			initDashboardComponentViewBehavior($gauge,gaugeRef.gaugeID,viewConfig)
 			
 		}
 	}
