@@ -15,6 +15,11 @@ func init() {
 	gaugeRouter.HandleFunc("/api/dashboard/gauge/setTitle", setGaugeTitle)
 	gaugeRouter.HandleFunc("/api/dashboard/gauge/setDimensions", setGaugeDimensions)
 
+	gaugeRouter.HandleFunc("/api/dashboard/gauge/setValSummary", setValSummary)
+
+	gaugeRouter.HandleFunc("/api/dashboard/gauge/setDefaultFilterRules", setDefaultFilterRules)
+	gaugeRouter.HandleFunc("/api/dashboard/gauge/setPreFilterRules", setPreFilterRules)
+
 	http.Handle("/api/dashboard/gauge/", gaugeRouter)
 }
 
@@ -55,6 +60,33 @@ func setGaugeTitle(w http.ResponseWriter, r *http.Request) {
 func setGaugeDimensions(w http.ResponseWriter, r *http.Request) {
 
 	var params SetGaugeDimensionsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processGaugePropUpdate(w, r, params)
+}
+
+func setDefaultFilterRules(w http.ResponseWriter, r *http.Request) {
+	var params SetDefaultFilterRulesParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processGaugePropUpdate(w, r, params)
+}
+
+func setPreFilterRules(w http.ResponseWriter, r *http.Request) {
+	var params SetPreFilterRulesParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processGaugePropUpdate(w, r, params)
+}
+
+func setValSummary(w http.ResponseWriter, r *http.Request) {
+	var params SetValSummaryParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

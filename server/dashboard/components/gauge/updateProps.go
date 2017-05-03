@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/dashboard/values"
+	"resultra/datasheet/server/recordFilter"
 )
 
 // The BarChartPropertyUpdater interface along with UpdateBarChartProps() implement a harness for
@@ -88,6 +90,42 @@ func (params SetGaugeDimensionsParams) updateGaugeProps(gauge *Gauge) error {
 	}
 
 	gauge.Properties.Geometry = params.Geometry
+
+	return nil
+}
+
+type SetValSummaryParams struct {
+	GaugeUniqueIDGauge
+	ValSummary values.ValSummary `json:"valSummary"`
+}
+
+func (params SetValSummaryParams) updateGaugeProps(gauge *Gauge) error {
+
+	gauge.Properties.ValSummary = params.ValSummary
+
+	return nil
+}
+
+type SetDefaultFilterRulesParams struct {
+	GaugeUniqueIDGauge
+	DefaultFilterRules recordFilter.RecordFilterRuleSet `json:"defaultFilterRules"`
+}
+
+func (params SetDefaultFilterRulesParams) updateGaugeProps(gauge *Gauge) error {
+
+	gauge.Properties.DefaultFilterRules = params.DefaultFilterRules
+
+	return nil
+}
+
+type SetPreFilterRulesParams struct {
+	GaugeUniqueIDGauge
+	PreFilterRules recordFilter.RecordFilterRuleSet `json:"preFilterRules"`
+}
+
+func (params SetPreFilterRulesParams) updateGaugeProps(gauge *Gauge) error {
+
+	gauge.Properties.PreFilterRules = params.PreFilterRules
 
 	return nil
 }

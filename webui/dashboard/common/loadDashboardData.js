@@ -53,19 +53,23 @@ function loadDashboardData(loadDashboardConfig)
 	}
 
 
-	function initGaugeLayout($componentRow,gauge) {
+	function initGaugeLayout($componentRow,gaugeData) {
 		
-		var gaugeHTML = dashboardGaugeContainerHTML(gauge.gaugeID);
+		var gaugeHTML = dashboardGaugeContainerHTML(gaugeData.gaugeID);
 		var $gauge = $(gaugeHTML)
 		
-		setGaugeDashboardComponentLabel($gauge,gauge)
+		var gaugeRef = gaugeData.gauge
+		
+		setGaugeDashboardComponentLabel($gauge,gaugeRef)
 	
-		setContainerComponentInfo($gauge,gauge,gauge.gaugeID)
+		setContainerComponentInfo($gauge,gaugeRef,gaugeRef.gaugeID)
+		
+		initGaugeData(dashboardID,$gauge,gaugeData)
 		
 		$componentRow.append($gauge)
-		setElemFixedWidthFlexibleHeight($gauge,gauge.properties.geometry.sizeWidth)
+		setElemFixedWidthFlexibleHeight($gauge,gaugeRef.properties.geometry.sizeWidth)
 				
-		loadDashboardConfig.initGaugeComponent($gauge,gauge)
+		loadDashboardConfig.initGaugeComponent($gauge,gaugeRef)
 	}
 
 	
@@ -93,8 +97,8 @@ function loadDashboardData(loadDashboardConfig)
 		}
 
 
-		for (var gaugeDataIndex in dashboardData.GaugesData) {
-			var gaugeData = dashboardData.GaugesData[gaugeDataIndex]
+		for (var gaugeDataIndex in dashboardData.gaugesData) {
+			var gaugeData = dashboardData.gaugesData[gaugeDataIndex]
 			console.log ("Loading summary table: id = " + gaugeData.gaugeID)
 			compenentIDComponentMap[gaugeData.gaugeID] = {
 				componentInfo: gaugeData,

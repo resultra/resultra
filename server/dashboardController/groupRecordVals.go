@@ -60,6 +60,22 @@ type ValGroupingResult struct {
 	GroupingLabel string
 }
 
+func groupRecordsIntoSingleGroup(recValResults []recordValue.RecordValueResults) *ValGroupingResult {
+
+	overallGroup := ValGroup{
+		GroupLabel:     "Overall",
+		RecordsInGroup: recValResults}
+
+	valGroups := []ValGroup{}
+	valGroups = append(valGroups, overallGroup)
+
+	return &ValGroupingResult{
+		ValGroups:     valGroups,
+		GroupingLabel: "Overall",
+		OverallGroup:  overallGroup}
+
+}
+
 func groupRecords(valGrouping values.ValGrouping,
 	recValResults []recordValue.RecordValueResults) (*ValGroupingResult, error) {
 

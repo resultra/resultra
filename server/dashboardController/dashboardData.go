@@ -35,12 +35,15 @@ func getDefaultDashboardData(params GetDashboardDataParams) (*DashboardDataRef, 
 		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard summary tables data: error = %v", getTableErr)
 	}
 
+	gaugesData, getGaugeErr := getDefaultDashboardGaugesData(params.DashboardID)
+	if getGaugeErr != nil {
+		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard gauges data: error = %v", getGaugeErr)
+	}
+
 	headers, getHeaderErr := header.GetHeaders(params.DashboardID)
 	if getHeaderErr != nil {
 		return nil, fmt.Errorf("GetDashboardData: Can't retrieve headers: error = %v", getTableErr)
 	}
-
-	gaugesData := []GaugeData{} // dummied up for now
 
 	dashboardDataRef := DashboardDataRef{
 		Dashboard:         *dashboard,

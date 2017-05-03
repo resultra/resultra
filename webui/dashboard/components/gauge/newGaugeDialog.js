@@ -18,7 +18,7 @@ function openNewDashboardGaugeDialog(gaugeParams) {
 				
 		var saveNewGaugeParams = {
 			parentDashboardID: newGaugeParams.dashboardID,
-			valSummaries: getWizardDialogPanelVals($dialog,dashboardComponentValueSummaryPanelID),
+			valSummary: getWizardDialogPanelVals($dialog,dashboardComponentValueSummaryPanelID),
 			geometry: newGaugeParams.geometry
 		}
 	

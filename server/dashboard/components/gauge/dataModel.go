@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/dashboard/components/common"
+	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
 )
@@ -22,6 +23,8 @@ type Gauge struct {
 
 type NewGaugeParams struct {
 	ParentDashboardID string `json:"parentDashboardID"`
+
+	ValSummary values.NewValSummaryParams `json:"valSummary"`
 
 	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
@@ -46,12 +49,18 @@ func newGauge(params NewGaugeParams) (*Gauge, error) {
 		return nil, fmt.Errorf("newGauge: Invalid geometry for bar chart: %+v", params.Geometry)
 	}
 
+	valSummary, valSummaryErr := values.NewValSummary(params.ValSummary)
+	if valSummaryErr != nil {
+		return nil, fmt.Errorf("NewBarChart: Error creating summary values for bar chart: error = %v", valSummaryErr)
+	}
+
 	gaugeProps := newDefaultGaugeProps()
 	gaugeProps.Geometry = params.Geometry
+	gaugeProps.ValSummary = *valSummary
 
 	newGauge := Gauge{
 		ParentDashboardID: params.ParentDashboardID,
-		GaugeID:          uniqueID.GenerateSnowflakeID(),
+		GaugeID:           uniqueID.GenerateSnowflakeID(),
 		Properties:        gaugeProps}
 
 	if saveErr := saveGauge(newGauge); saveErr != nil {
@@ -70,7 +79,7 @@ func GetGauge(parentDashboardID string, gaugeID string) (*Gauge, error) {
 
 	gauge := Gauge{
 		ParentDashboardID: parentDashboardID,
-		GaugeID:          gaugeID,
+		GaugeID:           gaugeID,
 		Properties:        gaugeProps}
 
 	return &gauge, nil
@@ -89,7 +98,7 @@ func GetGauges(parentDashboardID string) ([]Gauge, error) {
 
 		currGauge := Gauge{
 			ParentDashboardID: parentDashboardID,
-			GaugeID:          gaugeID,
+			GaugeID:           gaugeID,
 			Properties:        gaugeProps}
 
 		gauges = append(gauges, currGauge)
@@ -129,7 +138,7 @@ func CloneGauges(remappedIDs uniqueID.UniqueIDRemapper, srcParentDashboardID str
 
 		destGauge := Gauge{
 			ParentDashboardID: remappedDashboardID,
-			GaugeID:          remappedGaugeID,
+			GaugeID:           remappedGaugeID,
 			Properties:        *clonedProps}
 
 		if err := saveGauge(destGauge); err != nil {

@@ -19,3 +19,7 @@ function setGaugeDashboardComponentLabel($container,gaugeRef) {
 	var $label = $container.find("span")
 	$label.text(gaugeRef.properties.title)	
 }
+
+
+function initGaugeData(dashboardID,$gauge, gaugeData) {
+}

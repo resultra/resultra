@@ -1,6 +1,13 @@
 function selectDashboardGauge ($container,gaugeRef) {
 	
-	loadDashboardGaugeProperties($container,gaugeRef)
+	var gaugePropsArgs = {		
+		databaseID: designDashboardContext.databaseID,
+		dashboardID: gaugeRef.parentDashboardID,
+		gaugeID: gaugeRef.gaugeID,
+		$gauge:$container
+	}
+	
+	loadDashboardGaugeProperties(gaugePropsArgs)
 	
 }
 
