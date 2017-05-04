@@ -13,6 +13,8 @@ type GaugeProps struct {
 	Title    string                         `json:"title"`
 
 	ValSummary values.ValSummary `json:"valSummary"`
+	MinVal     float64           `json:"minVal"`
+	MaxVal     float64           `json:"maxVal"`
 
 	DefaultFilterRules recordFilter.RecordFilterRuleSet `json:"defaultFilterRules"`
 	PreFilterRules     recordFilter.RecordFilterRuleSet `json:"preFilterRules"`
@@ -47,6 +49,8 @@ func (srcProps GaugeProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*GaugeP
 func newDefaultGaugeProps() GaugeProps {
 	props := GaugeProps{
 		Title:              "Gauge",
+		MinVal:             0.0,
+		MaxVal:             100.0,
 		DefaultFilterRules: recordFilter.NewDefaultRecordFilterRuleSet(),
 		PreFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet()}
 	return props

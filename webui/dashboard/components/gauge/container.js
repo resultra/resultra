@@ -45,17 +45,12 @@ function initGaugeData(dashboardID,$gauge, gaugeData) {
 		var formattedVal = formatNumberValue(numberFormat,val)
 		return formattedVal
 	}
-	
-//	var minVal = gaugeRef.properties.minVal
-	var minVal = 0
-// var maxVal = gaugeRef.properties.maxVal
-	var maxVal = 100
-		
+			
 	var gaugeConfig = 
 	{
 		size: gaugeRef.properties.geometry.sizeWidth,
-		min: minVal,
-		max: maxVal,
+		min: gaugeRef.properties.minVal,
+		max: gaugeRef.properties.maxVal,
 		minorTicks: 5,
 		valueFormatter: formatGaugeVal
 	}	

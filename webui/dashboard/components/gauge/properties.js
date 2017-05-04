@@ -7,10 +7,10 @@ function loadDashboardGaugeProperties(gaugePropsArgs) {
 	var gaugeRef = getContainerObjectRef(gaugePropsArgs.$gauge)
 	var $gauge = gaugePropsArgs.$gauge
 	
-	function reloadGauge(barChartRef) {
+	function reloadGauge(gaugeRef) {
 		var gaugeDataParams = { 
 			parentDashboardID: gaugeRef.parentDashboardID,
-			barChartID: gaugeRef.gaugeID,
+			gaugeID: gaugeRef.gaugeID,
 			filterRules: gaugeRef.properties.defaultFilterRules
 		}
 		jsonAPIRequest("dashboardController/getGaugeData",gaugeDataParams,function(gaugeData) {
@@ -38,6 +38,28 @@ function loadDashboardGaugeProperties(gaugePropsArgs) {
 		}
 	}
 	initDashboardComponentTitlePropertyPanel(gaugeElemPrefix,titlePropertyPanelParams)
+	
+	
+	function setGaugeRange(minVal,maxVal) {
+		var setRangeParams = {
+			parentDashboardID:gaugeRef.parentDashboardID,
+			gaugeID: gaugeRef.gaugeID,
+			minVal: minVal,
+			maxVal: maxVal
+		}
+		console.log("Setting gauge range: " + JSON.stringify(setRangeParams))
+		jsonAPIRequest("dashboard/gauge/setRange", setRangeParams, function(updatedGauge) {
+			reloadGauge(updatedGauge)
+			setContainerComponentInfo($gauge,updatedGauge,updatedGauge.gaugeID)
+		})
+	}
+	var gaugeRangeParams = {
+		defaultMinVal: gaugeRef.properties.minVal,
+		defaultMaxVal: gaugeRef.properties.maxVal,
+		setRangeCallback: setGaugeRange
+	}
+	initGaugeRangeProperties(gaugeRangeParams)
+	
 
 	var preFilterGaugeElemPrefix = "gaugePreFilter_"
 	var preFilterPropertyPanelParams = {

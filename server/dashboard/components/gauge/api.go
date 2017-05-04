@@ -16,6 +16,7 @@ func init() {
 	gaugeRouter.HandleFunc("/api/dashboard/gauge/setDimensions", setGaugeDimensions)
 
 	gaugeRouter.HandleFunc("/api/dashboard/gauge/setValSummary", setValSummary)
+	gaugeRouter.HandleFunc("/api/dashboard/gauge/setRange", setRange)
 
 	gaugeRouter.HandleFunc("/api/dashboard/gauge/setDefaultFilterRules", setDefaultFilterRules)
 	gaugeRouter.HandleFunc("/api/dashboard/gauge/setPreFilterRules", setPreFilterRules)
@@ -87,6 +88,15 @@ func setPreFilterRules(w http.ResponseWriter, r *http.Request) {
 
 func setValSummary(w http.ResponseWriter, r *http.Request) {
 	var params SetValSummaryParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processGaugePropUpdate(w, r, params)
+}
+
+func setRange(w http.ResponseWriter, r *http.Request) {
+	var params SetRangeParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

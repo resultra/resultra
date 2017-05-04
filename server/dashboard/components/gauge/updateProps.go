@@ -129,3 +129,21 @@ func (params SetPreFilterRulesParams) updateGaugeProps(gauge *Gauge) error {
 
 	return nil
 }
+
+type SetRangeParams struct {
+	GaugeUniqueIDGauge
+	MinVal float64 `json:"minVal"`
+	MaxVal float64 `json:"maxVal"`
+}
+
+func (updateParams SetRangeParams) updateGaugeProps(gauge *Gauge) error {
+
+	if updateParams.MaxVal <= updateParams.MinVal {
+		return fmt.Errorf("invalid gauge indicator range: %v %v", updateParams.MinVal, updateParams.MaxVal)
+	}
+
+	gauge.Properties.MinVal = updateParams.MinVal
+	gauge.Properties.MaxVal = updateParams.MaxVal
+
+	return nil
+}

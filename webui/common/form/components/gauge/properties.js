@@ -1,62 +1,25 @@
 function loadGaugeProperties($gauge,gaugeRef) {
 	console.log("Loading gauge properties")
 	
-	function initRangeProperties() {
-		var $form = $('#gaugeRangePropForm')
-		
-		var validationSettings = createInlineFormValidationSettings({
-			rules: {
-				progressRangeMinVal: {
-					required: true,
-					floatNumber: true
-				},
-				progressRangeMaxVal: {
-					required: true,
-					floatNumber:true,
-					greaterThan: '#progressRangeMinVal'
-				}
-			},
-			messages: {
-				progressRangeMaxVal: {
-					greaterThan: "Value must be greater than the minimum."
-				}
-			}
-		})	
-		var validator = $form.validate(validationSettings)
-		
-		var $minVal = $('#gaugeRangeMinVal')
-		$minVal.val(gaugeRef.properties.minVal)
-		var $maxVal = $('#gaugeRangeMaxVal')
-		$maxVal.val(gaugeRef.properties.maxVal)
-		
-		function setRangeIfValid() {
-			if(validator.valid()) {
-				var minVal = Number($minVal.val())
-				var maxVal = Number($maxVal.val())
-				
-				var setRangeParams = {
-					parentFormID: gaugeRef.parentFormID,
-					gaugeID: gaugeRef.gaugeID,
-					minVal: minVal,
-					maxVal: maxVal
-				}
-				console.log("Setting gauge range: " + JSON.stringify(setRangeParams))
-				jsonAPIRequest("frm/gauge/setRange", setRangeParams, function(updatedGauge) {
-					setContainerComponentInfo($gauge,updatedGauge,updatedGauge.gaugeID)
-					initGaugeComponentGaugeControl($gauge,updatedGauge)
-				})	
-				
-			}		
+	function setGaugeRange(minVal,maxVal) {
+		var setRangeParams = {
+			parentFormID: gaugeRef.parentFormID,
+			gaugeID: gaugeRef.gaugeID,
+			minVal: minVal,
+			maxVal: maxVal
 		}
-		
-		$minVal.unbind("blur")
-		$minVal.blur(function() { setRangeIfValid() })
-		$maxVal.unbind("blur")
-		$maxVal.blur(function() { setRangeIfValid() })
-		
+		console.log("Setting gauge range: " + JSON.stringify(setRangeParams))
+		jsonAPIRequest("frm/gauge/setRange", setRangeParams, function(updatedGauge) {
+			setContainerComponentInfo($gauge,updatedGauge,updatedGauge.gaugeID)
+			initGaugeComponentGaugeControl($gauge,updatedGauge)
+		})			
 	}
-	
-	initRangeProperties()
+	var gaugeRangeParams = {
+		defaultMinVal: gaugeRef.properties.minVal,
+		defaultMaxVal: gaugeRef.properties.maxVal,
+		setRangeCallback: setGaugeRange
+	}
+	initGaugeRangeProperties(gaugeRangeParams)
 	
 	function saveGaugeThresholds(newThresholdVals) {
 		var setThresholdParams = {

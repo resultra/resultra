@@ -20,6 +20,11 @@ TBD
 			{{template "dashboardGaugeFormatProps"}}	
 		{{template "propertyPanelSuffix"}}
 
+		{{template "propertyPanelPrefix" .RangePanelParams}}
+			{{template "gaugeRangeProps"}}
+		{{template "propertyPanelSuffix"}}
+
+
 		{{template "propertyPanelPrefix" .PreFilteringPanelParams}}
 			{{template "recordFilterPropertyPanel" .PreFilterPropPanelParams}}
 		{{template "propertyPanelSuffix"}}

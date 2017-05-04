@@ -10,6 +10,7 @@ type GaugeDesignTemplateParams struct {
 	ElemPrefix               string
 	TitlePanelParams         propertiesSidebar.PanelTemplateParams
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
+	RangePanelParams         propertiesSidebar.PanelTemplateParams
 	ValueSummaryParams       valueSummary.ValueSummaryTemplateParams
 	FilteringPanelParams     propertiesSidebar.PanelTemplateParams
 	FilterPropPanelParams    recordFilter.FilterPanelTemplateParams
@@ -33,6 +34,7 @@ func init() {
 		ValueSummaryParams:       valueSummaryParams,
 		TitlePanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "gaugeTitle"},
 		FormatPanelParams:        propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "gaugeFormat"},
+		RangePanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Range", PanelID: "gaugeRange"},
 		FilteringPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Filtering", PanelID: "gaugeFiltering"},
 		FilterPropPanelParams:    recordFilter.NewFilterPanelTemplateParams(elemPrefix),
 		PreFilteringPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Pre-Filtering", PanelID: "gaugePreFiltering"},
