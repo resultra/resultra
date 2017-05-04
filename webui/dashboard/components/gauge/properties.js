@@ -57,7 +57,28 @@ function loadDashboardGaugeProperties(gaugePropsArgs) {
 		defaultMaxVal: gaugeRef.properties.maxVal,
 		setRangeCallback: setGaugeRange
 	}
-	initGaugeRangeProperties(gaugeRangeParams)	
+	initGaugeRangeProperties(gaugeRangeParams)
+	
+	function saveGaugeThresholds(newThresholdVals) {
+		var setThresholdParams = {
+			parentDashboardID:gaugeRef.parentDashboardID,
+			gaugeID: gaugeRef.gaugeID,
+			thresholdVals: newThresholdVals
+		}
+		jsonAPIRequest("dashboard/gauge/setThresholds", setThresholdParams, function(updatedGauge) {
+			reloadGauge(updatedGauge)
+			setContainerComponentInfo($gauge,updatedGauge,updatedGauge.gaugeID)
+		})	
+	}
+	var thresholdParams = {
+		elemPrefix: gaugeElemPrefix,
+		saveThresholdsCallback: saveGaugeThresholds,
+		initialThresholdVals: gaugeRef.properties.thresholdVals
+	}
+	initThresholdValuesPropertyPanel(thresholdParams)
+	
+	
+		
 
 	var preFilterGaugeElemPrefix = "gaugePreFilter_"
 	var preFilterPropertyPanelParams = {

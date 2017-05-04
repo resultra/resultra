@@ -25,6 +25,26 @@ function GaugeUIControl($gaugeContainer, configuration)
 	this.configure = function(configuration)
 	{
 		this.config = configuration;
+			
+		this.config.yellowZones = [];
+		this.config.redZones = [];
+		this.config.greenZones = [];
+		var thresholdZones = convertStartingThresholdsToZones(configuration.thresholdVals,
+				configuration.min,configuration.max)
+		for (var zoneIndex = 0; zoneIndex < thresholdZones.length; zoneIndex++) {
+			var currZone = thresholdZones[zoneIndex]
+			switch (currZone.colorScheme) {
+			case "warning":
+				this.config.yellowZones.push({from:currZone.min,to:currZone.max})
+				break
+			case "danger":
+				this.config.redZones.push({from:currZone.min,to:currZone.max})
+				break
+			case "success":
+				this.config.greenZones.push({from:currZone.min,to:currZone.max})
+				break
+			}
+		}	
 		
 		this.config.size = this.config.size * 0.95;
 		

@@ -37,28 +37,8 @@ function initGaugeComponentGaugeControl($gauge,gaugeObjectRef) {
 		min: gaugeObjectRef.properties.minVal,
 		max: gaugeObjectRef.properties.maxVal,
 		minorTicks: 5,
-		valueFormatter: formatGaugeVal
-	}
-	
-	gaugeConfig.yellowZones = [];
-	gaugeConfig.redZones = [];
-	gaugeConfig.greenZones = [];
-	var thresholdZones = convertStartingThresholdsToZones(gaugeObjectRef.properties.thresholdVals,
-			gaugeObjectRef.properties.minVal,gaugeObjectRef.properties.maxVal)
-	for (var zoneIndex = 0; zoneIndex < thresholdZones.length; zoneIndex++) {
-		var currZone = thresholdZones[zoneIndex]
-		switch (currZone.colorScheme) {
-		case "warning":
-			gaugeConfig.yellowZones.push({from:currZone.min,to:currZone.max})
-			break
-		case "danger":
-			gaugeConfig.redZones.push({from:currZone.min,to:currZone.max})
-			break
-		case "success":
-			gaugeConfig.greenZones.push({from:currZone.min,to:currZone.max})
-			break
-		}
-	}
-	
+		valueFormatter: formatGaugeVal,
+		thresholdVals: gaugeObjectRef.properties.thresholdVals
+	}	
 	initGaugeComponentControl($gauge,gaugeConfig)
 }

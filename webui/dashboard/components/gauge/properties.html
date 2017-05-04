@@ -18,6 +18,10 @@
 			{{template "gaugeRangeProps"}}
 		{{template "propertyPanelSuffix"}}
 		
+		{{template "propertyPanelPrefix" .ThresholdPanelParams}}
+			{{template "gaugeThresholdProps" .}}
+		{{template "propertyPanelSuffix"}}
+		
 		{{template "propertyPanelPrefix" .ValueSummaryPanelParams}}
 			{{template "dashboardComponentValueSummaryPropertyPanel" .ValueSummaryParams}}
 		{{template "propertyPanelSuffix"}}
@@ -25,7 +29,7 @@
 		{{template "propertyPanelPrefix" .PreFilteringPanelParams}}
 			{{template "recordFilterPropertyPanel" .PreFilterPropPanelParams}}
 		{{template "propertyPanelSuffix"}}
-		
+
 		{{template "propertyPanelPrefix" .FilteringPanelParams}}
 			{{template "recordFilterPropertyPanel" .FilterPropPanelParams}}
 		{{template "propertyPanelSuffix"}}

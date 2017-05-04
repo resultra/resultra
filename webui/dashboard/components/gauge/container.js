@@ -51,7 +51,8 @@ function initGaugeData(dashboardID,$gauge, gaugeData) {
 		min: gaugeRef.properties.minVal,
 		max: gaugeRef.properties.maxVal,
 		minorTicks: 5,
-		valueFormatter: formatGaugeVal
+		valueFormatter: formatGaugeVal,
+		thresholdVals: gaugeRef.properties.thresholdVals
 	}	
 	gaugeConfig.yellowZones = [];
 	gaugeConfig.redZones = [];

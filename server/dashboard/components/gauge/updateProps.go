@@ -5,6 +5,7 @@ import (
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/dashboard/values"
+	"resultra/datasheet/server/generic/threshold"
 	"resultra/datasheet/server/recordFilter"
 )
 
@@ -144,6 +145,18 @@ func (updateParams SetRangeParams) updateGaugeProps(gauge *Gauge) error {
 
 	gauge.Properties.MinVal = updateParams.MinVal
 	gauge.Properties.MaxVal = updateParams.MaxVal
+
+	return nil
+}
+
+type SetThresholdsParams struct {
+	GaugeUniqueIDGauge
+	ThresholdVals []threshold.ThresholdValues `json:"thresholdVals"`
+}
+
+func (updateParams SetThresholdsParams) updateGaugeProps(gauge *Gauge) error {
+
+	gauge.Properties.ThresholdVals = updateParams.ThresholdVals
 
 	return nil
 }

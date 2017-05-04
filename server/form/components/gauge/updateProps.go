@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/numberFormat"
+	"resultra/datasheet/server/generic/threshold"
 )
 
 type GaugeIDInterface interface {
@@ -14,7 +15,7 @@ type GaugeIDInterface interface {
 
 type GaugeIDHeader struct {
 	ParentFormID string `json:"parentFormID"`
-	GaugeID   string `json:"gaugeID"`
+	GaugeID      string `json:"gaugeID"`
 }
 
 func (idHeader GaugeIDHeader) getGaugeID() string {
@@ -86,7 +87,7 @@ func (updateParams SetRangeParams) updateProps(gauge *Gauge) error {
 
 type SetThresholdsParams struct {
 	GaugeIDHeader
-	ThresholdVals []ThresholdValues `json:"thresholdVals"`
+	ThresholdVals []threshold.ThresholdValues `json:"thresholdVals"`
 }
 
 func (updateParams SetThresholdsParams) updateProps(gauge *Gauge) error {
