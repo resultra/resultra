@@ -57,32 +57,7 @@ function loadDashboardGaugeProperties(gaugePropsArgs) {
 		defaultMaxVal: gaugeRef.properties.maxVal,
 		setRangeCallback: setGaugeRange
 	}
-	initGaugeRangeProperties(gaugeRangeParams)
-	
-	
-	var formatSelectionParams = {
-		elemPrefix: gaugeElemPrefix,
-		initialFormat: gaugeRef.properties.valueFormat.format,
-		formatChangedCallback: function (newFormat) {
-			console.log("Format changed for gauge: " + newFormat)
-			
-			var newValueFormat = {
-				format: newFormat
-			}
-			var formatParams = {
-				parentDashboardID:gaugeRef.parentDashboardID,
-				gaugeID: gaugeRef.gaugeID,
-				valueFormat: newValueFormat
-			}
-			jsonAPIRequest("dashboard/gauge/setValueFormat", formatParams, function(updatedGauge) {
-				reloadGauge(updatedGauge)
-				setContainerComponentInfo($gauge,updatedGauge,updatedGauge.gaugeID)
-			})	
-			
-		}
-	}
-	initNumberFormatSelection(formatSelectionParams)
-	
+	initGaugeRangeProperties(gaugeRangeParams)	
 
 	var preFilterGaugeElemPrefix = "gaugePreFilter_"
 	var preFilterPropertyPanelParams = {

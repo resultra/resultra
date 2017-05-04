@@ -5,7 +5,6 @@ import (
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/dashboard/values"
-	"resultra/datasheet/server/generic/numberFormat"
 	"resultra/datasheet/server/recordFilter"
 )
 
@@ -145,18 +144,6 @@ func (updateParams SetRangeParams) updateGaugeProps(gauge *Gauge) error {
 
 	gauge.Properties.MinVal = updateParams.MinVal
 	gauge.Properties.MaxVal = updateParams.MaxVal
-
-	return nil
-}
-
-type ValueFormatParams struct {
-	GaugeUniqueIDGauge
-	ValueFormat numberFormat.NumberFormatProperties `json:"valueFormat"`
-}
-
-func (updateParams ValueFormatParams) updateGaugeProps(gauge *Gauge) error {
-
-	gauge.Properties.ValueFormat = updateParams.ValueFormat
 
 	return nil
 }
