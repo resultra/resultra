@@ -14,7 +14,6 @@ function loadDashboardGaugeProperties(gaugePropsArgs) {
 			filterRules: gaugeRef.properties.defaultFilterRules
 		}
 		jsonAPIRequest("dashboardController/getGaugeData",gaugeDataParams,function(gaugeData) {
-			// TODO - re-initialize gauge with new data
 			initGaugeData(gaugeRef.parentDashboardID,$gauge, gaugeData)
 		})		
 	}
@@ -106,7 +105,6 @@ function loadDashboardGaugeProperties(gaugePropsArgs) {
 	}
 	initFilterPropertyPanel(preFilterPropertyPanelParams)
 	
-	
 
 	var filterPropertyPanelParams = {
 		elemPrefix: gaugeElemPrefix,
@@ -127,6 +125,29 @@ function loadDashboardGaugeProperties(gaugePropsArgs) {
 		}
 	}
 	initFilterPropertyPanel(filterPropertyPanelParams)
+	
+	
+	var valSummaryPropertyPanelParams = {
+		elemPrefix: gaugeElemPrefix,
+		databaseID: gaugePropsArgs.databaseID,
+		valSummaryProps: gaugeRef.properties.valSummary,
+		saveValueSummaryFunc: function(newValSummaryParams) {
+			var setValSummaryParams = {
+				parentDashboardID:gaugePropsArgs.dashboardID,
+				gaugeID: gaugeRef.gaugeID,
+				valSummary:newValSummaryParams
+			}
+			jsonAPIRequest("dashboard/gauge/setValSummary",setValSummaryParams,function(updatedGauge) {
+				reloadGauge(updatedGauge)
+				setContainerComponentInfo($gauge,updatedGauge,updatedGauge.gaugeID)
+			})
+
+		}
+	}
+	initDashboardValueSummaryPropertyPanel(valSummaryPropertyPanelParams)
+	
+	
+	
 
 	// Toggle to the bar chart properties, hiding the other property panels
 	hideSiblingsShowOne('#dashboardGaugeProps')

@@ -21,7 +21,11 @@
 		{{template "propertyPanelPrefix" .RangePanelParams}}
 			{{template "gaugeRangeProps"}}
 		{{template "propertyPanelSuffix"}}
-
+		
+		{{template "propertyPanelPrefix" .ValueSummaryPanelParams}}
+			{{template "dashboardComponentValueSummaryPropertyPanel" .ValueSummaryParams}}
+		{{template "propertyPanelSuffix"}}
+		
 		{{template "propertyPanelPrefix" .PreFilteringPanelParams}}
 			{{template "recordFilterPropertyPanel" .PreFilterPropPanelParams}}
 		{{template "propertyPanelSuffix"}}
