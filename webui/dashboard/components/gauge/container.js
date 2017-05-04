@@ -40,8 +40,7 @@ function initGaugeData(dashboardID,$gauge, gaugeData) {
 	var gaugeVal = gaugeData.groupedSummarizedVals.overallDataRow.summaryVals[0]
 	
 	function formatGaugeVal(val) {
-		var numberFormat = "general"
-//		var numberFormat = gaugeRef.properties.valueFormat.format
+		var numberFormat = gaugeRef.properties.valueFormat.format
 		var formattedVal = formatNumberValue(numberFormat,val)
 		return formattedVal
 	}

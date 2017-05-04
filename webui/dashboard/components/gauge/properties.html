@@ -1,7 +1,5 @@
 {{define "dashboardGaugeFormatProps"}}
-
-TBD
-	
+	{{template "formatNumberSelection" "gauge_"}}	
 {{end}}
 
 {{define "dashboardGaugeTitleProps"}}
@@ -23,7 +21,6 @@ TBD
 		{{template "propertyPanelPrefix" .RangePanelParams}}
 			{{template "gaugeRangeProps"}}
 		{{template "propertyPanelSuffix"}}
-
 
 		{{template "propertyPanelPrefix" .PreFilteringPanelParams}}
 			{{template "recordFilterPropertyPanel" .PreFilterPropPanelParams}}

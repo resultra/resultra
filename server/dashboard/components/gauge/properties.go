@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/dashboard/values"
+	"resultra/datasheet/server/generic/numberFormat"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/recordFilter"
 )
@@ -12,9 +13,10 @@ type GaugeProps struct {
 	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 	Title    string                         `json:"title"`
 
-	ValSummary values.ValSummary `json:"valSummary"`
-	MinVal     float64           `json:"minVal"`
-	MaxVal     float64           `json:"maxVal"`
+	ValSummary  values.ValSummary                   `json:"valSummary"`
+	MinVal      float64                             `json:"minVal"`
+	MaxVal      float64                             `json:"maxVal"`
+	ValueFormat numberFormat.NumberFormatProperties `json:"valueFormat"`
 
 	DefaultFilterRules recordFilter.RecordFilterRuleSet `json:"defaultFilterRules"`
 	PreFilterRules     recordFilter.RecordFilterRuleSet `json:"preFilterRules"`
@@ -52,6 +54,7 @@ func newDefaultGaugeProps() GaugeProps {
 		MinVal:             0.0,
 		MaxVal:             100.0,
 		DefaultFilterRules: recordFilter.NewDefaultRecordFilterRuleSet(),
-		PreFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet()}
+		PreFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet(),
+		ValueFormat:        numberFormat.DefaultNumberFormatProperties()}
 	return props
 }
