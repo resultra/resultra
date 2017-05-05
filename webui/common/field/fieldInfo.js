@@ -56,6 +56,7 @@ function getFieldsByID() {
 function createFieldTypesFilterInfo(fieldTypes) {
 	var doLoadFieldByType = {}
 	var loadAllFieldTypes = false
+	var specificFieldTypes = []
 	for(var fieldTypeIndex = 0; fieldTypeIndex != fieldTypes.length; fieldTypeIndex++) {
 		var fieldType = fieldTypes[fieldTypeIndex]
 		if(fieldType == fieldTypeAll)
@@ -64,10 +65,17 @@ function createFieldTypesFilterInfo(fieldTypes) {
 			console.log("loadFieldInfo: loading field info for all field types")
 		}
 		else {
+			specificFieldTypes.push(fieldType)
 			doLoadFieldByType[fieldType] = true
 		}
 	}
-	return { loadAllFieldTypes: loadAllFieldTypes, doLoadFieldByType: doLoadFieldByType }
+	var filterInfo = {
+		loadAllFieldTypes: loadAllFieldTypes, 
+		doLoadFieldByType: doLoadFieldByType,
+		fieldTypes: specificFieldTypes
+	}
+	
+	return filterInfo
 }
 
 
@@ -198,4 +206,31 @@ function loadFieldInfo(parentDatabaseID,fieldTypes,fieldInfoCallback) {
 	jsonAPIRequest("field/getListByType", {parentDatabaseID:parentDatabaseID},processFieldInfo)
 	
 } // loadFieldInfo
+
+function loadSortedFieldInfo(parentDatabaseID,fieldTypes,sortedFieldListCallback) {
+	
+	
+	var filterInfo = createFieldTypesFilterInfo(fieldTypes)
+	
+	if (filterInfo.loadAllFieldTypes) {
+		var getFieldParams = {
+			parentDatabaseID: parentDatabaseID
+		}
+		
+		jsonAPIRequest("field/getAllSortedFields",getFieldParams,function(sortedFields) {
+			sortedFieldListCallback(sortedFields)
+		})
+	} else {
+		var getFieldParams = {
+			parentDatabaseID: parentDatabaseID,
+			fieldTypes: filterInfo.fieldTypes			
+		}
+		jsonAPIRequest("field/getSortedListByType",getFieldParams,function(sortedFields) {
+			sortedFieldListCallback(sortedFields)
+		})
+	}
+	
+	
+	
+}
 

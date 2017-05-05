@@ -3,6 +3,8 @@ package field
 import (
 	"fmt"
 	"log"
+	"sort"
+	"strings"
 )
 
 type FieldsByType struct {
@@ -98,5 +100,79 @@ func GetFieldRefIDIndex(params GetFieldListParams) (*FieldIDIndex, error) {
 	}
 
 	return &FieldIDIndex{fieldsByID, fieldsByRefName}, nil
+
+}
+
+type ByFieldName []Field
+
+func (s ByFieldName) Len() int {
+	return len(s)
+}
+func (s ByFieldName) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+// Sort in reverse chronological order; i.e. the most recent dates come first.
+func (s ByFieldName) Less(i, j int) bool {
+
+	if strings.Compare(s[i].Name, s[j].Name) < 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+type GetSortedFieldListParams struct {
+	ParentDatabaseID string   `json:"parentDatabaseID"`
+	FieldTypes       []string `json:"fieldTypes"`
+}
+
+func getSortedFieldsByType(params GetSortedFieldListParams) ([]Field, error) {
+
+	fieldsByType, getErr := GetFieldsByType(GetFieldListParams{ParentDatabaseID: params.ParentDatabaseID})
+	if getErr != nil {
+		return nil, fmt.Errorf("GetSortedFields: Unable to retrieve fields from datastore: datastore error =%v", getErr)
+	}
+
+	matchedFields := []Field{}
+
+	for _, currFieldType := range params.FieldTypes {
+		switch currFieldType {
+		case FieldTypeText:
+			matchedFields = append(matchedFields, fieldsByType.TextFields...)
+		case FieldTypeLongText:
+			matchedFields = append(matchedFields, fieldsByType.LongTextFields...)
+		case FieldTypeTime:
+			matchedFields = append(matchedFields, fieldsByType.TimeFields...)
+		case FieldTypeNumber:
+			matchedFields = append(matchedFields, fieldsByType.NumberFields...)
+		case FieldTypeBool:
+			matchedFields = append(matchedFields, fieldsByType.BoolFields...)
+		case FieldTypeUser:
+			matchedFields = append(matchedFields, fieldsByType.UserFields...)
+		case FieldTypeFile:
+			matchedFields = append(matchedFields, fieldsByType.FileFields...)
+		case FieldTypeComment:
+			matchedFields = append(matchedFields, fieldsByType.CommentFields...)
+		default:
+			return nil, fmt.Errorf("GetSortedFields: unsupported field type: %v", currFieldType)
+		}
+
+	}
+
+	sort.Sort(ByFieldName(matchedFields))
+
+	return matchedFields, nil
+
+}
+
+func getAllSortedFields(params GetFieldListParams) ([]Field, error) {
+	fields, getErr := GetAllFields(params)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetFieldRefIDIndex: Unable to retrieve fields from datastore: datastore error =%v", getErr)
+	}
+	sort.Sort(ByFieldName(fields))
+
+	return fields, nil
 
 }

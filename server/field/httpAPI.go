@@ -13,7 +13,11 @@ func init() {
 	fieldRouter := mux.NewRouter()
 
 	fieldRouter.HandleFunc("/api/field/new", newField)
+
 	fieldRouter.HandleFunc("/api/field/getListByType", getFieldsByType)
+	fieldRouter.HandleFunc("/api/field/getSortedListByType", getSortedFieldsByTypeAPI)
+	fieldRouter.HandleFunc("/api/field/getAllSortedFields", getAllSortedFieldsAPI)
+
 	fieldRouter.HandleFunc("/api/field/get", getField)
 
 	fieldRouter.HandleFunc("/api/field/validateExistingFieldName", validateExistingFieldNameAPI)
@@ -58,6 +62,38 @@ func getFieldsByType(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if fieldsByType, err := GetFieldsByType(fieldListParams); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, fieldsByType)
+	}
+
+}
+
+func getSortedFieldsByTypeAPI(w http.ResponseWriter, r *http.Request) {
+
+	var fieldListParams GetSortedFieldListParams
+	if err := api.DecodeJSONRequest(r, &fieldListParams); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if fieldsByType, err := getSortedFieldsByType(fieldListParams); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, fieldsByType)
+	}
+
+}
+
+func getAllSortedFieldsAPI(w http.ResponseWriter, r *http.Request) {
+
+	var fieldListParams GetFieldListParams
+	if err := api.DecodeJSONRequest(r, &fieldListParams); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if fieldsByType, err := getAllSortedFields(fieldListParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, fieldsByType)
