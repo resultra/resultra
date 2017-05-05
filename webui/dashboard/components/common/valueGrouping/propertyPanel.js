@@ -52,8 +52,11 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 	}
 
 
-	loadFieldInfo(panelParams.databaseID,[fieldTypeAll],function(valueGroupingFieldsByID) {
-		populateFieldSelectionControlMenu(valueGroupingFieldsByID,$fieldSelection)
+	loadSortedFieldInfo(panelParams.databaseID,[fieldTypeAll],function(sortedFields) {
+		
+		var valueGroupingFieldsByID = createFieldsByIDMap(sortedFields)
+		
+		populateSortedFieldSelectionMenu($fieldSelection,sortedFields)
 	
 		// Initialize the controls to the existing values
 		$fieldSelection.val(panelParams.valGroupingProps.groupValsByFieldID)

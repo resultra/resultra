@@ -38,12 +38,12 @@ function createNewOrExistingFieldPanelContextBootstrap(panelConfig) {
 		
 		// Populate the select field dialog box with a list of possible fields to
 		// connect the new form element to.
-		$(selectField.selector).dropdown()
-		loadFieldInfo(panelConfig.databaseID,panelConfig.fieldTypes,function(fieldsByID) {
-			populateFieldSelectionMenu(fieldsByID,selectField.selector)
+		var $fieldSelector = $(selectField.selector)
+		$fieldSelector.dropdown()
+		loadSortedFieldInfo(panelConfig.databaseID,panelConfig.fieldTypes,function(sortedFields) {
+			populateSortedFieldSelectionMenu($fieldSelector,sortedFields)
 		})
 		
-
 		// By default, the radio button to create a new field is selected.
 		setWizardDialogButtonSet("newFormComponentDlgNewFieldButtons")
 		disableFormControl(selectField.selector)			

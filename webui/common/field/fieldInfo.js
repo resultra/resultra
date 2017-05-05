@@ -110,10 +110,23 @@ function populateFieldSelectionControlMenu(fieldsByID, $menuSelector) {
 	}
 }
 
-function populateFieldSelectionMenu(fieldsByID, menuSelector) {
+function populateSortedFieldSelectionMenu($menuSelector,sortedFields) {
+	$menuSelector.empty()
+	$menuSelector.append(defaultSelectOptionPromptHTML("Select a Field"))
+	for(var fieldIndex in sortedFields) {
+		var fieldInfo = sortedFields[fieldIndex]
+		$menuSelector.append(selectFieldHTML(fieldInfo.fieldID, fieldInfo.name))		
+	}
+}
+
+function createFieldsByIDMap(fieldList) {
+	var fieldsByID = {}
+	for (var fieldIndex in fieldList) {
+		var fieldInfo = fieldList[fieldIndex]
+		fieldsByID[fieldInfo.fieldID] = fieldInfo
+	}
 	
-	var $menuSelector = $(menuSelector)
-	populateFieldSelectionControlMenu(fieldsByID,$menuSelector)
+	return fieldsByID
 }
 
 

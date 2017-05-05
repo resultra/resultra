@@ -72,11 +72,16 @@ function createNewDashboardComponentValueSummaryPanelConfig(elemPrefix,doneCallb
 
 			setWizardDialogButtonSet("newDashboardComponentValueSummaryButtons")
 			
-			loadFieldInfo(databaseID,[fieldTypeAll],function(valueSummaryFieldsByID) {
-				populateFieldSelectionMenu(valueSummaryFieldsByID,summaryFieldSelection.selector)
+			loadSortedFieldInfo(databaseID,[fieldTypeAll],function(sortedValueSummaryFields) {
 				
-				$(summaryFieldSelection.selector).unbind("change")		
-				$(summaryFieldSelection.selector).change(function(){
+				var valueSummaryFieldsByID = createFieldsByIDMap(sortedValueSummaryFields)
+				
+				var $summaryFieldSelection = $(summaryFieldSelection.selector)
+				
+				populateSortedFieldSelectionMenu($summaryFieldSelection,sortedValueSummaryFields)
+				
+				$summaryFieldSelection.unbind("change")		
+				$summaryFieldSelection.change(function(){
 					var fieldID = summaryFieldSelection.val()
 			        console.log("select field: " + fieldID )
 					if(fieldID in valueSummaryFieldsByID) {

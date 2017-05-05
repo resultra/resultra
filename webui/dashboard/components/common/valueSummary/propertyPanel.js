@@ -21,11 +21,15 @@ function initDashboardValueSummaryPropertyPanel(panelParams) {
 	validator.resetForm()	
 	disableButton(saveChangesButtonElemInfo.selector)
 	
-	loadFieldInfo(panelParams.databaseID,[fieldTypeAll],function(valueSummaryFieldsByID) {
+	loadSortedFieldInfo(panelParams.databaseID,[fieldTypeAll],function(sortedFields) {
+		
+		var valueSummaryFieldsByID = createFieldsByIDMap(sortedFields)
+		
+		var  $summaryFieldSelection = $(summaryFieldSelectionElemInfo.selector)
 		
 		// Initialize the field selection and "summarize with" selections with the existing values.
 		var existingFieldInfo = valueSummaryFieldsByID[panelParams.valSummaryProps.summarizeByFieldID]
-		populateFieldSelectionMenu(valueSummaryFieldsByID,summaryFieldSelectionElemInfo.selector)
+		populateSortedFieldSelectionMenu($summaryFieldSelection,sortedFields)
 		$(summaryFieldSelectionElemInfo.selector).val(panelParams.valSummaryProps.summarizeByFieldID)
 		
 		populateSummarizeBySelection(summarizeBySelectionElemInfo.selector,existingFieldInfo.type)

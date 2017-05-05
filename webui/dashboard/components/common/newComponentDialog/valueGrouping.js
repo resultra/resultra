@@ -83,14 +83,18 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix,database
 			
 			setWizardDialogButtonSet("newDashboardComponentValueGroupingButtons")				
 				
-			loadFieldInfo(databaseID,[fieldTypeAll],function(valueGroupingFieldsByID) {
+			loadSortedFieldInfo(databaseID,[fieldTypeAll],function(sortedGroupingFields) {
 				
-				populateFieldSelectionMenu(valueGroupingFieldsByID,groupedFieldSelection.selector)
+				var valueGroupingFieldsByID = createFieldsByIDMap(sortedGroupingFields)
+				
+				var  $groupedFieldSelection = $(groupedFieldSelection.selector)
+				
+				populateSortedFieldSelectionMenu($groupedFieldSelection,sortedGroupingFields)
 				$(groupBySelection.selector).attr("disabled",true)
 					
-				$(groupedFieldSelection.selector).unbind("change")				
-				$(groupedFieldSelection.selector).change(function(){
-					var fieldID = $(groupedFieldSelection.selector).val()
+				 $groupedFieldSelection.unbind("change")				
+				 $groupedFieldSelection.change(function(){
+					var fieldID =  $groupedFieldSelection.val()
 			        console.log("select field: " + fieldID )
 					if(fieldID in valueGroupingFieldsByID) {
 						fieldInfo = valueGroupingFieldsByID[fieldID]			
