@@ -1,6 +1,6 @@
 {{define "fieldSelectionDropdown"}}
 
-<div class="btn-group" role="group">
+<div class="btn-group dropup" role="group">
 	<button type="button" class="btn btn-xs btn-default dropdown-toggle" 
 			id="{{.ElemPrefix}}FieldSelectionDropdownMenuLabel"
 			data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -8,7 +8,7 @@
 		  {{.ButtonTitle}}
 	</button>
 	<ul id="{{.ElemPrefix}}FieldSelectionDropdownMenu"
-				class="dropdown-menu dropdown-menu-right"
+				class="dropdown-menu dropdown-menu-right fieldSelectionDropdown"
 				aria-labelledby="{{.ElemPrefix}}FieldSelectionDropdownMenu">
 	</ul>
 </div>

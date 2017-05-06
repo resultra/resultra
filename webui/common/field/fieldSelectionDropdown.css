@@ -1,0 +1,22 @@
+/* The following CSS will constrain the height of the field selection dropdown to 200px
+   and allow for scrolling of the dropdown menu, so it doesn't run off the page when
+   there are many fields. */
+
+.fieldSelectionDropdown {
+    height: auto;
+    max-height:200px !important;
+    overflow-x:hidden;
+	overflow-y:auto;
+}
+
+.fieldSelectionDropdown a {
+	padding-left: 5px !important;
+	padding-right: 5px !important;
+	font-size: 12px;
+	overflow-x:hidden;
+}
+
+.fieldSelectionDropdown li {
+	max-width: 100%;
+	overflow-x:none;
+}
