@@ -125,9 +125,11 @@ function populateSortByFieldMenu(sortPaneParams,elemPrefix,sortRule) {
 	
 	$(menuSelector).empty()
 	$(menuSelector).append(defaultSelectOptionPromptHTML("Sort By"))
-	$.each(sortPaneParams.fieldsByID, function(fieldID, fieldInfo) {
-		$(menuSelector).append(selectFieldHTML(fieldID, fieldInfo.name))		
-	})
+	
+	for(var fieldIndex in sortPaneParams.sortedFields) {
+		var fieldInfo = sortPaneParams.sortedFields[fieldIndex]
+		$(menuSelector).append(selectFieldHTML(fieldInfo.fieldID, fieldInfo.name))	
+	}
 	
 	// Initialize the menu to the field ID of the given sortRule
 	if(sortRule != null) {
@@ -185,10 +187,14 @@ function generateSortRulePrefix() {
 function initSortRecordsPane(sortPaneParams) {
 		
 	function initDefaultSortPaneRules() {
-		loadFieldInfo(sortPaneParams.databaseID, 
-			[fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime], function(fieldsByID) {
+		
+		var sortableFieldTypes = [fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime]
+		
+		loadSortedFieldInfo(sortPaneParams.databaseID, sortableFieldTypes, function(sortedFields) {
 			
+				var fieldsByID = createFieldsByIDMap(sortedFields)
 				sortPaneParams.fieldsByID = fieldsByID
+				sortPaneParams.sortedFields = sortedFields
 
 				$('#sortPaneSortRuleList').empty()
 				for (var sortRuleIndex = 0; sortRuleIndex < sortPaneParams.defaultSortRules.length; sortRuleIndex++) {
