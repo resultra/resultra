@@ -10,10 +10,10 @@ function populateFieldRefInsertionMenu(databaseID)
 	
 	$("#formulaFieldRefSelector").append('<option value="" disabled selected>Insert Field Reference</option>')
 		
-	loadFieldInfo(databaseID, [fieldTypeAll],function(fieldsByID) {
-		for (var fieldID in fieldsByID) {
+	loadSortedFieldInfo(databaseID, [fieldTypeAll],function(sortedFields) {
+		for (var fieldIndex in sortedFields) {
 	
-			var fieldInfo = fieldsByID[fieldID]		
+			var fieldInfo = sortedFields[fieldIndex]		
 	
 	 	   var menuItemHTML = '<option value="' + fieldInfo.refName + 
 				'">' + fieldInfo.name + '</option>'
