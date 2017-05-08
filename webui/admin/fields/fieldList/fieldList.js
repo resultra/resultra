@@ -32,7 +32,7 @@ function initAdminFieldSettings(databaseID) {
 	
 	initButtonClickHandler('#adminNewFieldButton',function() {
 		console.log("New field button clicked")
-		// TODO - Open new field dialog
+		openNewFieldDialog(databaseID)
 	})
 	
 	
