@@ -75,7 +75,9 @@ function openNewFieldDialog(databaseID) {
 	
 	initButtonClickHandler('#newFieldSaveButton',function() {
 		console.log("New field save button clicked")
-		if($newFieldDialogForm.valid()) {	
+		if($newFieldDialogForm.valid()) {
+			
+			var isCalcField = $isCalcField.prop("checked")
 			var newFieldParams = {
 				parentDatabaseID: databaseID,
 				name: $fieldName.val(),
@@ -83,13 +85,23 @@ function openNewFieldDialog(databaseID) {
 				isCalcField: $isCalcField.prop("checked"),
 				type: $fieldType.val()
 			}
+			if(isCalcField) {
+				jsonAPIRequest("calcField/new",newFieldParams,function(newField) {
+					console.log("new field created: " + JSON.stringify(newField))
+					$newFieldDialog.modal('hide')
+					navigateToURL('/admin/field/'+newField.fieldID)
+				})
+				
+			} else {
+				console.log("creating new field: params= " + JSON.stringify(newFieldParams))
+				jsonAPIRequest("field/new",newFieldParams,function(newField) {
+					console.log("new field created: " + JSON.stringify(newField))
+					$newFieldDialog.modal('hide')
+					navigateToURL('/admin/field/'+newField.fieldID)
+				})
+				
+			}
 			
-			console.log("creating new field: params= " + JSON.stringify(newFieldParams))
-			jsonAPIRequest("field/new",newFieldParams,function(newField) {
-				console.log("new field created: " + JSON.stringify(newField))
-				$newFieldDialog.modal('hide')
-				navigateToURL('/admin/field/'+newField.fieldID)
-			})
 
 		}
 	})
