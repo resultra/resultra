@@ -19,25 +19,29 @@
 
 {{end}}
 
-{{define "formulaEditHeaderControls"}}
-	<div class="row">
-		<div class="col-md-12">
+{{define "formulaEditButtons"}}
 			<button class="btn btn-default btn-xs" id="saveFormulaButton">
 			  Save Formula
 			</button>
 			<button class="btn btn-default btn-xs" id="checkFormulaButton" >
 			  Check Formula
 			</button>
-						
+
+{{end}}
+
+{{define "formulaEditHeaderControls"}}
+	<div class="row">
+		<div class="col-md-12">
+			{{template "formulaEditButtons"}}		
 		</div>
 	</div>
 {{end}}
 
 {{define "formulaEditPaneHeaderLayout"}}
 	<div class="container">
-	{{ template "formulaEditPaneHeader"}}
-	{{ template "formulaEditHeaderControls"}}
-</div>
+		{{ template "formulaEditPaneHeader"}}
+		{{ template "formulaEditHeaderControls"}}
+	</div>
 {{end}}
 
 {{define "formulaErrorPopup"}}
@@ -56,6 +60,20 @@
 
 {{end}}
 
+{{define "formulaEditorCodeEditor"}}
+		<div id="formulaEditorErrorPopup" data-toggle="popover" title="Formula Error" data-content="Formula error ...">
+   			<div id="formulaEditor">
+   			</div>
+		</div>
+{{end}}
+
+{{define "fieldPropsFormulaEditor"}}
+	<div class="maxWidth300">
+		{{template "formulaFieldRefSelector"}}
+		{{template "formulaEditorCodeEditor"}}
+		{{template "formulaEditButtons"}}
+	</div>
+{{end}}
 
 {{define "formulaEditor"}}
 
@@ -64,10 +82,7 @@
 	   {{template "formulaEditPaneHeaderLayout"}}
    </div>
  	<div class="col-md-6" id="centerFormulaEditColumn" style="min-width:250px;">
-		<div id="formulaEditorErrorPopup" data-toggle="popover" title="Formula Error" data-content="Formula error ...">
-   			<div id="formulaEditor">
-   			</div>
-		</div>
+		{{template "formulaEditorCodeEditor"}}
  	</div>
  	<div class="col-md-3">
 		{{template "formulaFieldRefSelector"}}
