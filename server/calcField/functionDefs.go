@@ -69,6 +69,40 @@ func sumEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equati
 
 }
 
+const FuncNameMax string = "MAX"
+
+func maxEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	evalFunc := func(args []float64) (*EquationResult, error) {
+		max := args[0]
+		for _, arg := range args {
+			if arg > max {
+				max = arg
+			}
+		}
+		return numberEqnResult(max), nil
+	}
+	return evalOneOrMoreNumberArgFunc(evalContext, funcArgs, evalFunc)
+
+}
+
+const FuncNameMin string = "MIN"
+
+func minEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	evalFunc := func(args []float64) (*EquationResult, error) {
+		min := args[0]
+		for _, arg := range args {
+			if arg < min {
+				min = arg
+			}
+		}
+		return numberEqnResult(min), nil
+	}
+	return evalOneOrMoreNumberArgFunc(evalContext, funcArgs, evalFunc)
+
+}
+
 const FuncNameProduct string = "PRODUCT"
 
 func productEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
@@ -300,9 +334,13 @@ func concatEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equ
 }
 
 var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
-	FuncNameSum:         FunctionInfo{FuncNameSum, sumEvalFunc, oneOrMoreNumberArgs},
-	FuncNameAdd:         FunctionInfo{FuncNameAdd, addEvalFunc, twoNumberArgs},
-	FuncNameProduct:     FunctionInfo{FuncNameProduct, productEvalFunc, oneOrMoreNumberArgs},
+	FuncNameSum: FunctionInfo{FuncNameSum, sumEvalFunc, oneOrMoreNumberArgs},
+	FuncNameAdd: FunctionInfo{FuncNameAdd, addEvalFunc, twoNumberArgs},
+
+	FuncNameProduct: FunctionInfo{FuncNameProduct, productEvalFunc, oneOrMoreNumberArgs},
+	FuncNameMax:     FunctionInfo{FuncNameMax, maxEvalFunc, oneOrMoreNumberArgs},
+	FuncNameMin:     FunctionInfo{FuncNameMin, minEvalFunc, oneOrMoreNumberArgs},
+
 	FuncNameMinus:       FunctionInfo{FuncNameMinus, minusEvalFunc, twoNumberArgs},
 	FuncNameDivide:      FunctionInfo{FuncNameMinus, divideEvalFunc, twoNumberArgs},
 	FuncNameMultiply:    FunctionInfo{FuncNameMultiply, multiplyEvalFunc, twoNumberArgs},
