@@ -1,22 +1,18 @@
 {{define "adminFieldTemplates"}}
 
 <div style="display:none;">
-	
-	<div id="adminFieldItemTemplate" class="list-group-item">
-			<label class="fieldNameLabel">Field Name Goes Here</label>
-			
-			<div class="pull-right adminFieldListButtons">
-	
-				<a class="btn btn-xs btn-default editFieldPropsButton" role="button">
-					<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>
-				</a> 
-  				<button class="btn btn-xs btn-danger deleteFieldButton">
-					<span class="glyphicon glyphicon-remove" style="padding-bottom:2px;"></span>
-				</button>
-			</div>
-			
-			
-	</div>
+
+	<table>
+		<tr id="adminFieldItemRowTemplate">
+				<td class="fieldNameCol"></td>
+				<td class="editCol">
+					<a class="btn btn-xs btn-default editFieldPropsButton" role="button">
+						<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>
+					</a> 
+				</td>
+		</tr>
+	</table>
+
 	
 </div>
 
@@ -28,13 +24,20 @@
 
 	{{template "adminFieldTemplates"}}
 
-	<div class="marginTop20">
-		<ul id="adminFieldList" class="list-group">
-		</ul>
-
+	<div class="adminFieldListWrapper marginTop20 marginBottom5">
+		<table id="adminFieldList">
+			<thead>
+				<tr>
+					<td>Field name</td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody id="adminFieldListBody">
+			</tbody>
+		</table>
+	</div>
 		<button type="button" class="btn btn-default btn-sm" id="adminNewFieldButton">
 		  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Field
 		</button>
-	</div>
 
 {{end}}

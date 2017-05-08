@@ -1,0 +1,7 @@
+/* Left-align the table showing all the fields */
+
+.adminFieldListWrapper .dataTables_wrapper {
+	width: 500px;
+	margin:; 0 auto;
+/*	float: left; */
+}
