@@ -5,6 +5,9 @@
 	<table>
 		<tr id="adminFieldItemRowTemplate">
 				<td class="fieldNameCol"></td>
+				<td class="fieldRefNameCol"></td>
+				<td class="fieldTypeCol"></td>
+				<td class="fieldCalcCol"></td>
 				<td class="editCol">
 					<a class="btn btn-xs btn-default editFieldPropsButton" role="button">
 						<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>
@@ -25,11 +28,14 @@
 	{{template "adminFieldTemplates"}}
 
 	<div class="adminFieldListWrapper marginTop20 marginBottom5">
-		<table id="adminFieldList">
+		<table id="adminFieldList" class="stripe cell-border">
 			<thead>
 				<tr>
-					<td>Field name</td>
-					<td></td>
+					<th>Field name</th>
+					<th>Formula reference name (calculated fields)</th>
+					<th>Value type</th>
+					<th>Calculated field?</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody id="adminFieldListBody">

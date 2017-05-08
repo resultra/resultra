@@ -15,6 +15,21 @@ function initAdminFieldSettings(databaseID) {
 		var $fieldNameCol = $fieldListRow.find(".fieldNameCol")
 		$fieldNameCol.text(fieldInfo.name)
 		
+		var $refNameCol = $fieldListRow.find(".fieldRefNameCol")
+		$refNameCol.text(fieldInfo.refName)
+		
+		
+		var $typeCol = $fieldListRow.find(".fieldTypeCol")
+		$typeCol.text(fieldTypeLabel(fieldInfo.type))
+
+		var $calcFieldCol = $fieldListRow.find(".fieldCalcCol")
+		var calcFieldLabel = "No"
+		if(fieldInfo.isCalcField) {
+			calcFieldLabel = "Yes"
+		}
+		$calcFieldCol.text(calcFieldLabel)
+
+		
 		console.log("field row info: " + $fieldListRow.html())
 	
 		$('#adminFieldListBody').append($fieldListRow)		
@@ -35,7 +50,7 @@ function initAdminFieldSettings(databaseID) {
 			//scrollCollapse:true,
 		
 			aoColumnDefs: [
-			          { bSortable: false, aTargets: [ 1 ] }
+			          { bSortable: false, aTargets: [ 4 ] }
 			       ]
 		
 		})
