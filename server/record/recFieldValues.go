@@ -2,7 +2,6 @@ package record
 
 import (
 	"fmt"
-	"log"
 	"time"
 )
 
@@ -33,15 +32,12 @@ func (recFieldVals RecFieldValues) GetNumberFieldValue(fieldID string) (float64,
 	rawVal, foundVal := recFieldVals[fieldID]
 
 	if !foundVal {
-		log.Printf("GetNumberFieldValue: value not found for fieldID = %v", fieldID)
 		return 0.0, false
 	}
 
 	if theNum, validType := rawVal.(float64); validType {
-		log.Printf("GetNumberFieldValue: got value for fieldID = %v, value = %v", fieldID, theNum)
 		return theNum, true
 	} else {
-		log.Printf("GetNumberFieldValue: invalid type for value for fieldID = %v, value = %v", fieldID, rawVal)
 		return 0.0, false
 	}
 }
@@ -51,15 +47,12 @@ func (recFieldVals RecFieldValues) GetBoolFieldValue(fieldID string) (bool, bool
 	rawVal, foundVal := recFieldVals[fieldID]
 
 	if !foundVal {
-		log.Printf("GetBoolFieldValue: value not found for fieldID = %v", fieldID)
 		return false, false
 	}
 
 	if theBool, validType := rawVal.(bool); validType {
-		log.Printf("GetNumberFieldValue: got value for fieldID = %v, value = %v", fieldID, theBool)
 		return theBool, true
 	} else {
-		log.Printf("GetBoolFieldValue: invalid type for value for fieldID = %v, value = %v", fieldID, rawVal)
 		return false, false
 	}
 }
@@ -74,19 +67,16 @@ func (recFieldVals RecFieldValues) GetTimeFieldValue(fieldID string) (time.Time,
 
 	rawVal, foundVal := recFieldVals[fieldID]
 	if !foundVal {
-		log.Printf("GetTimeFieldValue: rawVal not found for field = %v", fieldID)
 		return timeVal, false
 	}
 
 	timeStr, foundStrVal := rawVal.(string)
 	if !foundStrVal {
-		log.Printf("GetTimeFieldValue: string not found")
 		return timeVal, false
 	}
 
 	timeVal, parseErr := time.Parse(time.RFC3339, timeStr)
 	if parseErr != nil {
-		log.Printf("GetTimeFieldValue: parse failed")
 		return timeVal, false
 	}
 

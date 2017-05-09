@@ -2,7 +2,6 @@ package recordValue
 
 import (
 	"fmt"
-	"log"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/record"
@@ -18,8 +17,6 @@ type RecordValueResults struct {
 }
 
 func SaveRecordValueResults(recValResults RecordValueResults) error {
-
-	log.Printf("saveRecordValueResults: Saving results: %+v", recValResults)
 
 	encodedValues, encodeErr := generic.EncodeJSONString(recValResults.FieldValues)
 	if encodeErr != nil {

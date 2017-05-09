@@ -59,14 +59,10 @@ func GetRecord(recordID string) (*Record, error) {
 
 }
 
-type GetRecordsParams struct {
-	DatabaseID string `json:"databaseID"`
-}
-
-func GetRecords(params GetRecordsParams) ([]Record, error) {
+func GetRecords(parentDatabaseID string) ([]Record, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT database_id,record_id,is_draft_record,create_timestamp_utc FROM records WHERE database_id=$1`,
-		params.DatabaseID)
+		parentDatabaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRecords: Failure querying database: %v", queryErr)
 	}

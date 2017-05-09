@@ -40,11 +40,9 @@ func getNumberRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*Equ
 		// the similar function for other value types). This is because record values for non-calculated
 		// fields is the only place where an undefined (or blank) value could originate, because a
 		// user hasn't entered a value yet for the field.
-		log.Printf("GetNumberRecordEqnResult: Undefined equation result for field: %v", fieldID)
 		return undefinedEqnResult(), nil
 
 	} else if val == nil {
-		log.Printf("GetNumberRecordEqnResult: Undefined equation result for field: %v", fieldID)
 		// If the value is defined, but set to a nil value, this means the value has been cleared. For purposes
 		// of equation evaluation, this is the same as an undefined value.
 		return undefinedEqnResult(), nil
@@ -145,7 +143,6 @@ func getTimeRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*Equat
 		// the similar function for other value types). This is because record values for non-calculated
 		// fields is the only place where an undefined (or blank) value could originate, because a
 		// user hasn't entered a value yet for the field.
-		log.Printf("getDateRecordEqnResult: Undefined equation result for field: %v", fieldID)
 		return undefinedEqnResult(), nil
 	} else if val == nil {
 		// If the value is defined, but set to a nil value, this means the value has been cleared. For purposes
@@ -302,8 +299,6 @@ func updateOneCalcFieldValue(evalContext *EqnEvalContext, evalField field.Field)
 		return fmt.Errorf("updateOneCalcFieldValue: Calculated field expected: got non-calculated field = %v", evalField.RefName)
 	}
 
-	log.Printf("updateCalcFieldValues: Updating calculated field %v", evalField.RefName)
-
 	// The calculated field's equation is stored as regular JSON (since the datastore doesn't support
 	// recursive structures). So, before evaluating the equation, the equation must first be decoded
 	// into a (root) equation node.
@@ -318,7 +313,6 @@ func updateOneCalcFieldValue(evalContext *EqnEvalContext, evalField field.Field)
 		return fmt.Errorf("Unexpected error evaluating equation for field=%v: error=%+v",
 			evalField.RefName, evalErr)
 	} else if fieldEqnResult.IsUndefined() {
-		log.Printf("Undefined field eqn result for calculated field = %v", evalField.RefName)
 		// If the evaluation result is undefined, don't proceed to actually set the value for the
 		// calculated field (i.e., it will remain blank/undefined). An undefined value is a valid
 		// condition when not all the depended upon field's values are defined.
@@ -343,7 +337,6 @@ func updateOneCalcFieldValue(evalContext *EqnEvalContext, evalField field.Field)
 				evalField.FieldID, rootFieldEqnNode, textResultErr, fieldEqnResult)
 
 		}
-		log.Printf("updateCalcFieldValues: Setting calculated field value: field=%v, value=%v", evalField.RefName, textResult)
 		// TODO - encapsulate the actual setting of raw values into record.go
 		(*evalContext.ResultFieldVals)[evalField.FieldID] = textResult
 		return nil
@@ -356,7 +349,6 @@ func updateOneCalcFieldValue(evalContext *EqnEvalContext, evalField field.Field)
 				evalField.FieldID, rootFieldEqnNode, numberResultErr, fieldEqnResult)
 
 		}
-		log.Printf("updateCalcFieldValues: Setting calculated field value: field=%v, value=%v", evalField.RefName, numberResult)
 		// TODO - encapsulate the actual setting of raw values into record.go
 		(*evalContext.ResultFieldVals)[evalField.FieldID] = numberResult
 		return nil
@@ -381,7 +373,6 @@ func updateOneCalcFieldValue(evalContext *EqnEvalContext, evalField field.Field)
 				evalField.FieldID, rootFieldEqnNode, timeResultErr, fieldEqnResult)
 
 		}
-		log.Printf("updateCalcFieldValues: Setting calculated field value: field=%v, value=%v", evalField.RefName, timeResult)
 		// TODO - encapsulate the actual setting of raw values into record.go
 		(*evalContext.ResultFieldVals)[evalField.FieldID] = timeResult
 		return nil

@@ -2,7 +2,6 @@ package field
 
 import (
 	"fmt"
-	"log"
 	"sort"
 	"strings"
 )
@@ -77,8 +76,6 @@ func GetFieldRefIDIndex(params GetFieldListParams) (*FieldIDIndex, error) {
 	if getErr != nil {
 		return nil, fmt.Errorf("GetFieldRefIDIndex: Unable to retrieve fields from datastore: datastore error =%v", getErr)
 	}
-
-	log.Printf("GetFieldRefIDIndex: Indexing %v fields", len(fields))
 
 	fieldsByRefName := StringFieldMap{}
 	fieldsByID := StringFieldMap{}

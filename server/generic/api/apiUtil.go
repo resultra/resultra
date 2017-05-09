@@ -15,7 +15,6 @@ func DecodeJSONRequest(r *http.Request, decodedVal interface{}) error {
 	if err := json.NewDecoder(r.Body).Decode(decodedVal); err != nil {
 		return fmt.Errorf("DecodeJSONRequest:Error decoding server JSON request: decode error = %v", err)
 	} else {
-		log.Printf("INFO: API: Decoded JSON: %+v", decodedVal)
 		return nil
 	}
 }

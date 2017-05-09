@@ -25,7 +25,7 @@ func GetDatabaseFormComponentFilterMap(parentDatabaseID string) (FormComponentFi
 		formInfo, formInfoErr := GetFormInfo(currForm.FormID)
 		if formInfoErr != nil {
 			return nil, fmt.Errorf("GetDatabaseFormComponentFilterMap: Error getting form info for form ID = %v: %v",
-				currForm.FormID, err)
+				currForm.FormID, formInfoErr)
 		}
 		for _, currCaption := range formInfo.Captions {
 			if !currCaption.Properties.VisibilityConditions.IsEmptyRuleSet() {

@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/recordValue"
+	"time"
 )
 
 func calculateHiddenFormComponents(parentDatabaseID string, recordVals record.RecFieldValues) ([]string, error) {
@@ -86,4 +87,40 @@ func MapOneRecordUpdatesToFieldValues(parentDatabaseID string, recordID string, 
 	}
 
 	return &recValResults, nil
+}
+
+func mapOneRecordWorker(resultsChan chan error, parentDatabaseID string, recordID string) {
+	_, err := MapOneRecordUpdatesToFieldValues(parentDatabaseID, recordID, record.FullyCommittedCellUpdatesChangeSetID)
+	resultsChan <- err
+}
+
+func MapAllRecordUpdatesToFieldValues(parentDatabaseID string) error {
+
+	start := time.Now()
+
+	records, err := record.GetRecords(parentDatabaseID)
+	if err != nil {
+		return fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
+	}
+
+	resultsChan := make(chan error)
+
+	// Scatter: Map the results in goroutines
+	for _, currRecord := range records {
+		go mapOneRecordWorker(resultsChan, parentDatabaseID, currRecord.RecordID)
+	}
+
+	// Gather the results
+	for range records {
+		err := <-resultsChan
+		if err != nil {
+			return fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
+		}
+	}
+
+	elapsed := time.Since(start)
+	log.Printf("MapAllRecordUpdatesToFieldValues: elapsed time for %v records =  %s", len(records), elapsed)
+
+	return nil
+
 }
