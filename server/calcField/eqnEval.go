@@ -20,6 +20,8 @@ type EqnEvalContext struct {
 
 	GlobalVals  global.GlobalValues
 	GlobalIndex global.GlobalIDGlobalIndex
+
+	FieldsByID map[string]field.Field
 }
 
 // Get the literal value from a number field, or undefined if it doesn't exist.
@@ -262,14 +264,11 @@ func (equation EquationNode) EvalEqn(evalContext *EqnEvalContext) (*EquationResu
 		// spreadsheet references using a "reference name", but it is stored in the equation
 		// node as a unique field ID. This field reference could be a calculated field or a
 		// non-calculated field with literal values.
-		// TODO - Once the Field type has a parent, don't use an individual database
-		// lookup for each field (database only has strong consistency when
-		// entities have a parent.
-		field, err := field.GetField(equation.FieldID)
-		if err != nil {
-			return nil, fmt.Errorf("EvalEqn: failure retrieving referenced field: %+v", err)
+		field, foundField := evalContext.FieldsByID[equation.FieldID]
+		if !foundField {
+			return nil, fmt.Errorf("EvalEqn: failure retrieving referenced field: %v", equation.FieldID)
 		} else {
-			return EvalEqn(evalContext, *field)
+			return EvalEqn(evalContext, field)
 		}
 
 	} else if len(equation.GlobalID) > 0 {
@@ -385,34 +384,60 @@ func updateOneCalcFieldValue(evalContext *EqnEvalContext, evalField field.Field)
 	return nil
 }
 
-// UpdateCalcFieldValues is (currently) the top-most entry point into the calculated field
-// equation evaluation functionality. This is called after record updates (see recordUpdate package)
-// to refresh calculated values.
-func UpdateCalcFieldValues(parentDatabaseID string, resultFieldVals *record.RecFieldValues) error {
+type CalcFieldUpdateConfig struct {
+	ParentDatabaseID string
+	GlobalIndex      global.GlobalIDGlobalIndex
+	GlobalVals       global.GlobalValues
+	Fields           []field.Field
+	FieldsByID       map[string]field.Field
+}
 
+func CreateCalcFieldUpdateConfig(parentDatabaseID string) (*CalcFieldUpdateConfig, error) {
 	globalVals, globalValErr := global.GetGlobalValues(global.GetGlobalValuesParams{ParentDatabaseID: parentDatabaseID})
 	if globalValErr != nil {
-		return fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve global values: error =%v", globalValErr)
+		return nil, fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve global values: error =%v", globalValErr)
 	}
 
 	globalIndex, globalIndexErr := global.GetIndexedGlobals(parentDatabaseID)
 	if globalIndexErr != nil {
-		return fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve indexed globals: error =%v", globalIndexErr)
+		return nil, fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve indexed globals: error =%v", globalIndexErr)
 	}
-
-	eqnEvalContext := EqnEvalContext{
-		ParentDatabaseID: parentDatabaseID,
-		ResultFieldVals:  resultFieldVals,
-		DefinedFuncs:     CalcFieldDefinedFuncs,
-		GlobalVals:       *globalVals,
-		GlobalIndex:      globalIndex}
 
 	fields, getErr := field.GetAllFields(field.GetFieldListParams{ParentDatabaseID: parentDatabaseID})
 	if getErr != nil {
-		return fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve fields from datastore: datastore error =%v", getErr)
+		return nil, fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve fields from datastore: datastore error =%v", getErr)
 	}
 
+	fieldsByID := map[string]field.Field{}
 	for _, currField := range fields {
+		fieldsByID[currField.FieldID] = currField
+	}
+
+	config := CalcFieldUpdateConfig{
+		ParentDatabaseID: parentDatabaseID,
+		GlobalVals:       *globalVals,
+		GlobalIndex:      globalIndex,
+		Fields:           fields,
+		FieldsByID:       fieldsByID}
+
+	return &config, nil
+
+}
+
+// UpdateCalcFieldValues is (currently) the top-most entry point into the calculated field
+// equation evaluation functionality. This is called after record updates (see recordUpdate package)
+// to refresh calculated values.
+func UpdateCalcFieldValues(config *CalcFieldUpdateConfig, resultFieldVals *record.RecFieldValues) error {
+
+	eqnEvalContext := EqnEvalContext{
+		ParentDatabaseID: config.ParentDatabaseID,
+		ResultFieldVals:  resultFieldVals,
+		DefinedFuncs:     CalcFieldDefinedFuncs,
+		GlobalVals:       config.GlobalVals,
+		GlobalIndex:      config.GlobalIndex,
+		FieldsByID:       config.FieldsByID}
+
+	for _, currField := range config.Fields {
 
 		if currField.IsCalcField {
 			if calcErr := updateOneCalcFieldValue(&eqnEvalContext, currField); calcErr != nil {

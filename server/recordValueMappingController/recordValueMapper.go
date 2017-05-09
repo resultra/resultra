@@ -42,11 +42,10 @@ func calculateHiddenFormComponents(parentDatabaseID string, recordVals record.Re
 	return hiddenComponents, nil
 }
 
-// Re-map the series of value updates to "flattened" current (most recent) values for both calculated
-// and non-calculated fields.
-func MapOneRecordUpdatesToFieldValues(parentDatabaseID string, recordID string, changeSetID string) (*recordValue.RecordValueResults, error) {
+func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateConfig,
+	recordID string, changeSetID string) (*recordValue.RecordValueResults, error) {
 
-	cellUpdateFieldValIndex, indexErr := record.NewUpdateFieldValueIndex(parentDatabaseID, recordID, changeSetID)
+	cellUpdateFieldValIndex, indexErr := record.NewUpdateFieldValueIndex(config.ParentDatabaseID, recordID, changeSetID)
 	if indexErr != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", indexErr)
 	}
@@ -57,17 +56,17 @@ func MapOneRecordUpdatesToFieldValues(parentDatabaseID string, recordID string, 
 	// Now that all the non-calculated fields have been populated into latestFieldValues, all the calculated
 	// fields also need to be populated. The formulas for calculated field by refer to the latest value of non-calculated
 	// fields, so this set of values needs to be passed into UpdateCalcFieldValues as a starting point.
-	if calcErr := calcField.UpdateCalcFieldValues(parentDatabaseID, latestFieldValues); calcErr != nil {
+	if calcErr := calcField.UpdateCalcFieldValues(config, latestFieldValues); calcErr != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: Can't set value: Error calculating fields to reflect update: err = %v", calcErr)
 	}
 
-	hiddenComponents, hiddenCalcErr := calculateHiddenFormComponents(parentDatabaseID, *latestFieldValues)
+	hiddenComponents, hiddenCalcErr := calculateHiddenFormComponents(config.ParentDatabaseID, *latestFieldValues)
 	if hiddenCalcErr != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", hiddenCalcErr)
 	}
 
 	recValResults := recordValue.RecordValueResults{
-		ParentDatabaseID:     parentDatabaseID,
+		ParentDatabaseID:     config.ParentDatabaseID,
 		RecordID:             recordID,
 		FieldValues:          *latestFieldValues,
 		HiddenFormComponents: hiddenComponents}
@@ -87,16 +86,33 @@ func MapOneRecordUpdatesToFieldValues(parentDatabaseID string, recordID string, 
 	}
 
 	return &recValResults, nil
+
 }
 
-func mapOneRecordWorker(resultsChan chan error, parentDatabaseID string, recordID string) {
-	_, err := MapOneRecordUpdatesToFieldValues(parentDatabaseID, recordID, record.FullyCommittedCellUpdatesChangeSetID)
+// Re-map the series of value updates to "flattened" current (most recent) values for both calculated
+// and non-calculated fields.
+func MapOneRecordUpdatesToFieldValues(parentDatabaseID string, recordID string, changeSetID string) (*recordValue.RecordValueResults, error) {
+	updateConfig, err := calcField.CreateCalcFieldUpdateConfig(parentDatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", err)
+	}
+
+	return mapOneRecordUpdatesWithCalcFieldConfig(updateConfig, recordID, changeSetID)
+}
+
+func mapOneRecordWorker(resultsChan chan error, config *calcField.CalcFieldUpdateConfig, recordID string) {
+	_, err := mapOneRecordUpdatesWithCalcFieldConfig(config, recordID, record.FullyCommittedCellUpdatesChangeSetID)
 	resultsChan <- err
 }
 
 func MapAllRecordUpdatesToFieldValues(parentDatabaseID string) error {
 
 	start := time.Now()
+
+	updateConfig, err := calcField.CreateCalcFieldUpdateConfig(parentDatabaseID)
+	if err != nil {
+		return fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
+	}
 
 	records, err := record.GetRecords(parentDatabaseID)
 	if err != nil {
@@ -107,7 +123,7 @@ func MapAllRecordUpdatesToFieldValues(parentDatabaseID string) error {
 
 	// Scatter: Map the results in goroutines
 	for _, currRecord := range records {
-		go mapOneRecordWorker(resultsChan, parentDatabaseID, currRecord.RecordID)
+		go mapOneRecordWorker(resultsChan, updateConfig, currRecord.RecordID)
 	}
 
 	// Gather the results
