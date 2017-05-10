@@ -1,0 +1,74 @@
+
+{{define "fieldListAdminBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-tasks" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Settings</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Fields</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "fieldListAdminPageHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "fieldListAdminBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "fieldAdminPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- fieldAssets:css -->
+	<!-- endinject -->
+	
+	<script>var fieldListAdminContext = { databaseID:"{{.DatabaseID}}" } </script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- fieldAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="fieldAdminPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north" id="fieldAdminPageHeaderUILayout">
+			{{template "fieldListAdminPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west" id="adminPageTocLayout">
+			TBD
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center" id="adminPageLayout">
+        	{{template "adminFieldList"}}
+		</div> <!-- center pane for entire page -->	
+	</div> <!-- layout page -->	
+	
+	{{template "adminNewFieldDialog"}}	
+	
+  </body>
+  	
+</html>
+
+{{end}}

@@ -4,7 +4,6 @@
 		"userRole/userRoleList",
 		"users",
 		"forms",
-		"fields/fieldList",
 		"formLink/formLinkList",
 		"itemList/itemListList",
 		"valueLists/valueListList",

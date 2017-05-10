@@ -31,7 +31,6 @@
         <li class="nav active"><a href="#general" data-toggle="tab">General</a></li>
         <li class="nav"><a href="#lists" data-toggle="tab">Lists</a></li>
         <li class="nav"><a href="#forms" data-toggle="tab">Forms</a></li>
-        <li class="nav"><a href="#fields" data-toggle="tab">Fields</a></li>
         <li class="nav"><a href="#valueLists" data-toggle="tab">Value Lists</a></li>
         <li class="nav"><a href="#formLinks" data-toggle="tab">Form Links</a></li>
         <li class="nav"><a href="#dashboards" data-toggle="tab">Dashboards</a></li>
@@ -50,9 +49,6 @@
         </div>
         <div class="tab-pane fade" id="forms">
         	{{template "adminFormList"}}
-        </div>
-        <div class="tab-pane fade" id="fields">
-        	{{template "adminFieldList"}}
         </div>
         <div class="tab-pane fade" id="valueLists">
         	{{template "adminValueListList"}}
@@ -124,7 +120,6 @@
 	{{template "adminNewUserDialog"}}
 	{{template "adminNewFormLinkDialog"}}
 	{{template "adminNewValueListDialog"}}
-	{{template "adminNewFieldDialog"}}
 	
 	{{template "submitFormDialog"}}
 	{{template "formButtonPopupFormDialog"}}

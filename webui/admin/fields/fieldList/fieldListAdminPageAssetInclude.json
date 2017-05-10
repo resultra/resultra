@@ -1,0 +1,15 @@
+{
+	"subDirs":["../../../generic",
+		"../../../common"],
+	"cssFiles": ["fieldList.css","fieldListAdminPage.css"],
+	"jsFiles": ["fieldList.js",
+		"fieldListAdminPage.js",
+		"newFieldDialog.js"],
+	"htmlFiles":["fieldListAdminPage.html",
+				"fieldList.html",
+				"newFieldDialog.html"],
+	"imageFiles":[],
+	"minCSSFile":"admin/fields/fieldAdmin.min.css",
+	"minJSFile": "admin/fields/fieldAdmin.min.js",
+	"injectPlaceholderName":"fieldAssets"
+}
