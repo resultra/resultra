@@ -45,7 +45,8 @@ func (cellUpdateFieldValIndex CellUpdateFieldValueIndex) LatestNonCalcFieldValue
 	return &recFieldValues
 }
 
-func NewUpdateFieldValueIndex(parentDatabaseID string, recordID string, changeSetID string) (*CellUpdateFieldValueIndex, error) {
+func NewUpdateFieldValueIndex(parentDatabaseID string, fieldsByID map[string]field.Field,
+	recordID string, changeSetID string) (*CellUpdateFieldValueIndex, error) {
 
 	recCellUpdates, getErr := GetRecordCellUpdates(recordID, changeSetID)
 	if getErr != nil {
@@ -53,18 +54,13 @@ func NewUpdateFieldValueIndex(parentDatabaseID string, recordID string, changeSe
 			recordID, getErr)
 	}
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentDatabaseID: parentDatabaseID})
-	if indexErr != nil {
-		return nil, indexErr
-	}
-
 	// Populate the index with all the updates for the given recordID, broken down by FieldID.
 	fieldValSeriesMap := CellUpdateFieldValueIndex{}
 	for _, currUpdate := range recCellUpdates {
 
-		fieldInfo, fieldErr := fieldRefIndex.GetFieldRefByID(currUpdate.FieldID)
-		if fieldErr != nil {
-			return nil, fieldErr
+		fieldInfo, foundField := fieldsByID[currUpdate.FieldID]
+		if !foundField {
+			return nil, fmt.Errorf("NewUpdateFieldValueIndex: Unable to get field: %v", currUpdate.FieldID)
 		}
 
 		decodedCellVal, decodeErr := DecodeCellValue(fieldInfo.Type, currUpdate.CellValue)

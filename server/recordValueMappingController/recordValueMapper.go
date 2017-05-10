@@ -45,7 +45,8 @@ func calculateHiddenFormComponents(parentDatabaseID string, recordVals record.Re
 func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateConfig,
 	recordID string, changeSetID string) (*recordValue.RecordValueResults, error) {
 
-	cellUpdateFieldValIndex, indexErr := record.NewUpdateFieldValueIndex(config.ParentDatabaseID, recordID, changeSetID)
+	cellUpdateFieldValIndex, indexErr := record.NewUpdateFieldValueIndex(config.ParentDatabaseID, config.FieldsByID,
+		recordID, changeSetID)
 	if indexErr != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", indexErr)
 	}
