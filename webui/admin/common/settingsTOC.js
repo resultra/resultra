@@ -8,5 +8,8 @@ function initAdminSettingsTOC(databaseID) {
 	
 	var formsLink = "/admin/forms/" + databaseID
 	$('#settingsTOCForms').attr("href",formsLink)
+
+	var listsLink = "/admin/lists/" + databaseID
+	$('#settingsTOCLists').attr("href",listsLink)
 	
 }

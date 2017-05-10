@@ -29,7 +29,6 @@
 	<div class="row">
     <ul class="nav nav-tabs">
         <li class="nav active"><a href="#general" data-toggle="tab">General</a></li>
-        <li class="nav"><a href="#lists" data-toggle="tab">Lists</a></li>
          <li class="nav"><a href="#valueLists" data-toggle="tab">Value Lists</a></li>
         <li class="nav"><a href="#formLinks" data-toggle="tab">Form Links</a></li>
         <li class="nav"><a href="#dashboards" data-toggle="tab">Dashboards</a></li>
@@ -43,9 +42,6 @@
         <div class="tab-pane fade in active" id="general">
 			{{template "adminGeneralProperties"}}
 		</div>
-        <div class="tab-pane fade" id="lists">
-        	{{template "adminListList"}}
-        </div>
          <div class="tab-pane fade" id="valueLists">
         	{{template "adminValueListList"}}
         </div>
@@ -105,11 +101,11 @@
 
 		<div class="pane ui-layout-center" id="adminPageLayout">
 			{{template "adminPanes"}}
-		</div> <!-- center pane for entire page -->	
+		</div> <!-- center pane for entire page -->
+			
 	</div> <!-- layout page -->	
 	
 	{{template "newUserRoleDialog"}}
-	{{template "newListDialog"}}
 	{{template "newDashboardDialog"}}
 	{{template "adminNewGlobalDialog"}}
 	{{template "adminNewUserDialog"}}

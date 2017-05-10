@@ -1,0 +1,76 @@
+        	
+{{define "itemListAdminBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-tasks" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Settings</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Lists</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "itemListAdminPageHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "itemListAdminBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "itemListAdminPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- itemListAssets:css -->
+	<!-- endinject -->
+	
+	<script>var itemListAdminContext = { databaseID:"{{.DatabaseID}}" } </script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- itemListAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="itemListAdminPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north" id="fieldAdminPageHeaderUILayout">
+			{{template "itemListAdminPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west">
+			{{template "adminSettingsTOC"}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center">
+			<h4>List Settings</h4>
+        	{{template "adminListList"}}
+		</div> <!-- center pane for entire page -->	
+	</div> <!-- layout page -->	
+	
+	{{template "newListDialog"}}
+		
+	
+  </body>
+  	
+</html>
+
+{{end}}
