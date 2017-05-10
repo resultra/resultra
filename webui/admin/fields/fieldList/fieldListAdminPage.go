@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/databaseController"
 
+	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 )
@@ -23,6 +24,7 @@ func init() {
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
+		adminCommon.TemplateFileList,
 		common.TemplateFileList}
 
 	fieldListTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)

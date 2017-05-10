@@ -19,5 +19,5 @@ $(document).ready(function() {
 	initUserDropdownMenu()
 		
 	initAdminFieldSettings(fieldListAdminContext.databaseID)
-	
+	initAdminSettingsTOC(fieldListAdminContext.databaseID)
 })
