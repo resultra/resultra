@@ -28,7 +28,8 @@ func getFilteredSortedRecordsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if recordRefs, err := GetFilteredSortedRecords(params); err != nil {
+	// By default, recompute/refresh the record values before returning.
+	if recordRefs, err := GetRefreshedFilteredSortedRecords(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, recordRefs)

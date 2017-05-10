@@ -24,11 +24,6 @@ func NewDefaultGetFilteredSortedRecordsParams() GetFilteredSortedRecordsParams {
 
 func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordValue.RecordValueResults, error) {
 
-	mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(params.DatabaseID)
-	if mapErr != nil {
-		return nil, fmt.Errorf("GetFilteredRecords: Error updating records: %v", mapErr)
-	}
-
 	// The code below retrieve *all* the mapped record values. A more scalable approach would be to filter the
 	// record values in batches, then combine and sort them.
 	unfilteredRecordValues, getRecordErr := recordValue.GetAllRecordValueResults(params.DatabaseID)
@@ -51,4 +46,12 @@ func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordVa
 	}
 
 	return filteredRecords, nil
+}
+
+func GetRefreshedFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordValue.RecordValueResults, error) {
+	mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(params.DatabaseID)
+	if mapErr != nil {
+		return nil, fmt.Errorf("GetFilteredRecords: Error updating records: %v", mapErr)
+	}
+	return GetFilteredSortedRecords(params)
 }
