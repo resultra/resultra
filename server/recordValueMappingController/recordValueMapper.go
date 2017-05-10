@@ -11,14 +11,11 @@ import (
 	"time"
 )
 
-func calculateHiddenFormComponents(parentDatabaseID string, recordVals record.RecFieldValues) ([]string, error) {
+func calculateHiddenFormComponents(parentDatabaseID string, componentFilterCondMap form.FormComponentFilterMap,
+	recordVals record.RecFieldValues) ([]string, error) {
 
 	hiddenComponents := []string{}
 
-	componentFilterCondMap, err := form.GetDatabaseFormComponentFilterMap(parentDatabaseID)
-	if err != nil {
-		return nil, fmt.Errorf("CalculateHiddenFormComponents: %v", err)
-	}
 	for componentID, filterConds := range componentFilterCondMap {
 		filterContext, contextErr := recordFilter.CreateFilterRuleContexts(filterConds.FilterRules)
 		if contextErr != nil {
@@ -43,6 +40,7 @@ func calculateHiddenFormComponents(parentDatabaseID string, recordVals record.Re
 }
 
 func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateConfig,
+	componentFilterCondMap form.FormComponentFilterMap,
 	recordID string, changeSetID string) (*recordValue.RecordValueResults, error) {
 
 	cellUpdateFieldValIndex, indexErr := record.NewUpdateFieldValueIndex(config.ParentDatabaseID, config.FieldsByID,
@@ -61,7 +59,8 @@ func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateCon
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: Can't set value: Error calculating fields to reflect update: err = %v", calcErr)
 	}
 
-	hiddenComponents, hiddenCalcErr := calculateHiddenFormComponents(config.ParentDatabaseID, *latestFieldValues)
+	hiddenComponents, hiddenCalcErr := calculateHiddenFormComponents(config.ParentDatabaseID,
+		componentFilterCondMap, *latestFieldValues)
 	if hiddenCalcErr != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", hiddenCalcErr)
 	}
@@ -97,13 +96,22 @@ func MapOneRecordUpdatesToFieldValues(parentDatabaseID string, recordID string, 
 	if err != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", err)
 	}
+	componentFilterCondMap, err := form.GetDatabaseFormComponentFilterMap(parentDatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("CalculateHiddenFormComponents: %v", err)
+	}
 
-	return mapOneRecordUpdatesWithCalcFieldConfig(updateConfig, recordID, changeSetID)
+	return mapOneRecordUpdatesWithCalcFieldConfig(updateConfig, componentFilterCondMap, recordID, changeSetID)
 }
 
-func mapOneRecordWorker(resultsChan chan error, config *calcField.CalcFieldUpdateConfig, recordID string) {
-	_, err := mapOneRecordUpdatesWithCalcFieldConfig(config, recordID, record.FullyCommittedCellUpdatesChangeSetID)
+func mapOneRecordWorker(resultsChan chan error,
+	config *calcField.CalcFieldUpdateConfig, componentFilterCondMap form.FormComponentFilterMap,
+	recordID string) {
+
+	_, err := mapOneRecordUpdatesWithCalcFieldConfig(config, componentFilterCondMap,
+		recordID, record.FullyCommittedCellUpdatesChangeSetID)
 	resultsChan <- err
+
 }
 
 func MapAllRecordUpdatesToFieldValues(parentDatabaseID string) error {
@@ -111,6 +119,10 @@ func MapAllRecordUpdatesToFieldValues(parentDatabaseID string) error {
 	start := time.Now()
 
 	updateConfig, err := calcField.CreateCalcFieldUpdateConfig(parentDatabaseID)
+	if err != nil {
+		return fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
+	}
+	componentFilterCondMap, err := form.GetDatabaseFormComponentFilterMap(parentDatabaseID)
 	if err != nil {
 		return fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
@@ -124,7 +136,7 @@ func MapAllRecordUpdatesToFieldValues(parentDatabaseID string) error {
 
 	// Scatter: Map the results in goroutines
 	for _, currRecord := range records {
-		go mapOneRecordWorker(resultsChan, updateConfig, currRecord.RecordID)
+		go mapOneRecordWorker(resultsChan, updateConfig, componentFilterCondMap, currRecord.RecordID)
 	}
 
 	// Gather the results
