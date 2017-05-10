@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/pkg/profile"
 	"log"
 	"net/http"
 	"os"
@@ -26,6 +27,7 @@ func init() {
 func main() {
 
 	configFile := flag.String("config", "", "Configuration file")
+	enableProfiling := flag.Bool("profile", false, "Enable pprof performance profiling")
 	flag.Parse()
 
 	if (configFile != nil) && (len(*configFile) > 0) {
@@ -40,6 +42,11 @@ func main() {
 	}
 
 	runtimeConfig.PrintCurrentConfig()
+
+	if *enableProfiling {
+		log.Println("Profiling enabled (pprof)")
+		defer profile.Start().Stop()
+	}
 
 	// Serve static CSS, Javascript and image files from a common "static" directory.
 	http.Handle(staticSiteResourcesPrefix, http.StripPrefix(staticSiteResourcesPrefix,

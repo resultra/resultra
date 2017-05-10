@@ -2,6 +2,7 @@ package record
 
 import (
 	"fmt"
+	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/uniqueID"
 	"time"
 )
@@ -50,8 +51,13 @@ func UpdateRecordValue(currUserID string, recUpdater RecordUpdater) (*Record, er
 
 	recordID := recUpdater.recordID()
 
+	field, fieldGetErr := field.GetField(recUpdater.fieldID())
+	if fieldGetErr != nil {
+		return nil, fmt.Errorf("UpdateRecordValue: Error retrieving field for updating/setting value: err = %v", fieldGetErr)
+	}
+
 	if fieldValidateErr := ValidateFieldForRecordValue(
-		recUpdater.fieldID(), recUpdater.fieldType(), false); fieldValidateErr != nil {
+		*field, recUpdater.fieldType(), false); fieldValidateErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Can't set record value:"+
 			" Error validating record's field for update: %v", fieldValidateErr)
 	}

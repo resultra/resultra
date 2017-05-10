@@ -24,13 +24,24 @@ type EqnEvalContext struct {
 	FieldsByID map[string]field.Field
 }
 
+func validateEqnFieldForRecordValue(evalContext *EqnEvalContext, fieldID string,
+	expectedFieldType string, allowCalcField bool) error {
+
+	eqnField, foundField := evalContext.FieldsByID[fieldID]
+	if !foundField {
+		return fmt.Errorf("validateEqnFieldForRecordValue: Can't find field: %v", fieldID)
+	}
+	return record.ValidateFieldForRecordValue(eqnField, expectedFieldType, allowCalcField)
+
+}
+
 // Get the literal value from a number field, or undefined if it doesn't exist.
 func getNumberRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*EquationResult, error) {
 
 	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
 	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
 	allowCalcField := true
-	if fieldValidateErr := record.ValidateFieldForRecordValue(fieldID,
+	if fieldValidateErr := validateEqnFieldForRecordValue(evalContext, fieldID,
 		field.FieldTypeNumber, allowCalcField); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't get value from record with fieldID = %v: "+
 			"Can't validate field with value type: validation error = %v", fieldID, fieldValidateErr)
@@ -64,7 +75,7 @@ func getBoolRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*Equat
 	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
 	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
 	allowCalcField := true
-	if fieldValidateErr := record.ValidateFieldForRecordValue(fieldID,
+	if fieldValidateErr := validateEqnFieldForRecordValue(evalContext, fieldID,
 		field.FieldTypeBool, allowCalcField); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't get value from record with fieldID = %v: "+
 			"Can't validate field with value type: validation error = %v", fieldID, fieldValidateErr)
@@ -101,7 +112,7 @@ func getTextRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*Equat
 	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
 	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
 	allowCalcField := true
-	if fieldValidateErr := record.ValidateFieldForRecordValue(fieldID, field.FieldTypeText, allowCalcField); fieldValidateErr != nil {
+	if fieldValidateErr := validateEqnFieldForRecordValue(evalContext, fieldID, field.FieldTypeText, allowCalcField); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't get value from record with fieldID = %v: "+
 			"Can't validate field with value type: validation error = %v", fieldID, fieldValidateErr)
 	}
@@ -134,7 +145,7 @@ func getTimeRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*Equat
 	// Since the calculated field values are stored in the Record just the same as values directly entered by end-users,
 	// it is OK to retrieve the literal values from these fields just like non-calculated fields.
 	allowCalcField := true
-	if fieldValidateErr := record.ValidateFieldForRecordValue(fieldID, field.FieldTypeTime, allowCalcField); fieldValidateErr != nil {
+	if fieldValidateErr := validateEqnFieldForRecordValue(evalContext, fieldID, field.FieldTypeTime, allowCalcField); fieldValidateErr != nil {
 		return nil, fmt.Errorf("Can't get value from record with fieldID = %v: "+
 			"Can't validate field with value type: validation error = %v", fieldID, fieldValidateErr)
 	}

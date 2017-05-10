@@ -102,13 +102,9 @@ func setDraftStatus(params SetDraftStatusParams) error {
 // Validate the field is of the correct type and not a calculated field (if allowCalcField not true). This is for validating
 // the field when setting/getting values from regular "literal" fields which store values entered by end-users (as opposed to
 // calculated fields)
-func ValidateFieldForRecordValue(fieldID string, expectedFieldType string,
+func ValidateFieldForRecordValue(field field.Field, expectedFieldType string,
 	allowCalcField bool) error {
 
-	field, fieldGetErr := field.GetField(fieldID)
-	if fieldGetErr != nil {
-		return fmt.Errorf(" Error retrieving field for updating/setting value: err = %v", fieldGetErr)
-	}
 	if field.Type != expectedFieldType {
 		return fmt.Errorf("Can't update/set value:"+
 			" Type mismatch with field: expecting %v: got %v: field=%+v", expectedFieldType, field.Type, field)
