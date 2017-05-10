@@ -3,7 +3,6 @@
 		"../common",
 		"userRole/userRoleList",
 		"users",
-		"forms",
 		"formLink/formLinkList",
 		"itemList/itemListList",
 		"valueLists/valueListList",

@@ -6,4 +6,7 @@ function initAdminSettingsTOC(databaseID) {
 	var fieldsLink = '/admin/fields/' + databaseID
 	$('#settingsTOCFields').attr("href",fieldsLink)
 	
+	var formsLink = "/admin/forms/" + databaseID
+	$('#settingsTOCForms').attr("href",formsLink)
+	
 }
