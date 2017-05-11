@@ -29,6 +29,5 @@ $(document).ready(function() {
 		
 	// Initialize the different settings panels
 	initUserRoleSettings(adminContext.databaseID)
-	initUserListSettings(adminContext.databaseID)
 	
 })

@@ -28,14 +28,12 @@
 <div class="container-fluid">
 	<div class="row">
     <ul class="nav nav-tabs">
-        <li class="nav active"><a href="#users" data-toggle="tab">Collaborators</a></li>
-        <li class="nav"><a href="#roles" data-toggle="tab">Roles &amp; Privileges</a></li>
+        <li class="nav active"><a href="#roles" data-toggle="tab">Roles &amp; Privileges</a></li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
         <div class="tab-pane fade" id="users">
-        	{{template "userList"}}
         </div>
         <div class="tab-pane fade" id="roles">
         	{{template "userRoleList"}}
@@ -86,7 +84,6 @@
 	</div> <!-- layout page -->	
 	
 	{{template "newUserRoleDialog"}}
-	{{template "adminNewUserDialog"}}
 	
 	{{template "submitFormDialog"}}
 	{{template "formButtonPopupFormDialog"}}

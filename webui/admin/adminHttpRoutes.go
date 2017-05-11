@@ -25,6 +25,7 @@ import (
 	"resultra/datasheet/webui/admin/dashboards"
 
 	"resultra/datasheet/webui/admin/globals"
+	"resultra/datasheet/webui/admin/users"
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -52,4 +53,5 @@ func RegisterHTTPHandlers(mainRouter *mux.Router) {
 
 	dashboards.RegisterHTTPHandlers(mainRouter)
 	globals.RegisterHTTPHandlers(mainRouter)
+	users.RegisterHTTPHandlers(mainRouter)
 }

@@ -1,0 +1,81 @@
+
+
+
+
+
+        	
+{{define "userAdminBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-tasks" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Settings</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Collaborators</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "userAdminPageHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "userAdminBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "userAdminPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- userAssets:css -->
+	<!-- endinject -->
+	
+	<script>var userAdminPageContext = { databaseID:"{{.DatabaseID}}" } </script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- userAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="userAdminPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north" id="fieldAdminPageHeaderUILayout">
+			{{template "userAdminPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west">
+			{{template "adminSettingsTOC"}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center">
+			<h4>Collaborators</h4>
+       		{{template "userList"}}
+		</div> <!-- center pane for entire page -->	
+	</div> <!-- layout page -->			
+	
+	{{template "adminNewUserDialog"}}
+ 	
+	
+  </body>
+  	
+</html>
+
+{{end}}

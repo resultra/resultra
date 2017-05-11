@@ -1,0 +1,16 @@
+{
+	"subDirs":["../../generic",
+		"../../common",
+		"../common"],
+	"cssFiles": [],
+	"jsFiles": ["addUserDialog.js",
+		"userAdminPage.js",
+		"users.js"],
+	"htmlFiles":["userAdminPage.html",
+				"addUserDialog.html",
+				"users.html"],
+	"imageFiles":[],
+	"minCSSFile":"admin/users/userAdmin.min.css",
+	"minJSFile": "admin/users/userAdmin.min.js",
+	"injectPlaceholderName":"userAssets"
+}
