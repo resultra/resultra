@@ -15,10 +15,13 @@ import (
 	"resultra/datasheet/webui/admin/itemList/itemListProps"
 
 	"resultra/datasheet/webui/admin/userRole/userRoleProps"
+
+	"resultra/datasheet/webui/admin/valueLists/valueListList"
 	"resultra/datasheet/webui/admin/valueLists/valueListProps"
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
+
 	mainRouter.HandleFunc("/admin/{databaseID}", adminPage)
 
 	design.RegisterHTTPHandlers(mainRouter)
@@ -34,4 +37,6 @@ func RegisterHTTPHandlers(mainRouter *mux.Router) {
 	fieldList.RegisterHTTPHandlers(mainRouter)
 
 	valueListProps.RegisterHTTPHandlers(mainRouter)
+	valueListList.RegisterHTTPHandlers(mainRouter)
+
 }

@@ -1,0 +1,16 @@
+{
+	"subDirs":["../../../generic",
+		"../../../common",
+		"../../common"],
+	"cssFiles": [],
+	"jsFiles": ["valueListList.js",
+		"valueListAdminPage.js",
+		"newValueListDialog.js"],
+	"htmlFiles":["valueListAdminPage.html",
+				"valueListListList.html",
+				"newValueListDialog.html"],
+	"imageFiles":[],
+	"minCSSFile":"admin/valueList/valueListAdmin.min.css",
+	"minJSFile": "admin/valueList/valueListAdmin.min.js",
+	"injectPlaceholderName":"valueListAssets"
+}

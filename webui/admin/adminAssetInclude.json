@@ -4,7 +4,6 @@
 		"userRole/userRoleList",
 		"users",
 		"formLink/formLinkList",
-		"valueLists/valueListList",
 		"dashboards",
 		"general","globals"],
 	"cssFiles": ["admin.css"],

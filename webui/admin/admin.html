@@ -29,7 +29,6 @@
 	<div class="row">
     <ul class="nav nav-tabs">
         <li class="nav active"><a href="#general" data-toggle="tab">General</a></li>
-         <li class="nav"><a href="#valueLists" data-toggle="tab">Value Lists</a></li>
         <li class="nav"><a href="#formLinks" data-toggle="tab">Form Links</a></li>
         <li class="nav"><a href="#dashboards" data-toggle="tab">Dashboards</a></li>
         <li class="nav"><a href="#users" data-toggle="tab">Collaborators</a></li>
@@ -42,9 +41,6 @@
         <div class="tab-pane fade in active" id="general">
 			{{template "adminGeneralProperties"}}
 		</div>
-         <div class="tab-pane fade" id="valueLists">
-        	{{template "adminValueListList"}}
-        </div>
         <div class="tab-pane fade" id="formLinks">
         	{{template "adminFormLinkList"}}
         </div>
@@ -110,7 +106,6 @@
 	{{template "adminNewGlobalDialog"}}
 	{{template "adminNewUserDialog"}}
 	{{template "adminNewFormLinkDialog"}}
-	{{template "adminNewValueListDialog"}}
 	
 	{{template "submitFormDialog"}}
 	{{template "formButtonPopupFormDialog"}}
