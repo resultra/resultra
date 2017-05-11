@@ -3,7 +3,7 @@
 		"../common",
 		"userRole/userRoleList",
 		"users",
-		"general","globals"],
+		"globals"],
 	"cssFiles": ["admin.css"],
 	"jsFiles": ["admin.js"],
 	"htmlFiles":["admin.html"],

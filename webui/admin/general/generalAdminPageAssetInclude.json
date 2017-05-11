@@ -1,0 +1,14 @@
+{
+	"subDirs":["../../generic",
+		"../../common",
+		"../common"],
+	"cssFiles": [],
+	"jsFiles": ["generalProperties.js",
+		"generalAdminPage.js"],
+	"htmlFiles":["generalProperties.html",
+				"generalAdminPage.html"],
+	"imageFiles":[],
+	"minCSSFile":"admin/general/generalAdmin.min.css",
+	"minJSFile": "admin/general/generalAdmin.min.js",
+	"injectPlaceholderName":"generalAssets"
+}

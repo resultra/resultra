@@ -6,8 +6,6 @@
 	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-tasks" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
 	  {{template "breadCrumbSeparator"}}
 	  <span class="h4 breadCrumbText">Settings</span>
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">Form Links</span>
 	</div> <!-- breadcrumb header -->
 {{end}}
 
@@ -30,17 +28,13 @@
 <div class="container-fluid">
 	<div class="row">
     <ul class="nav nav-tabs">
-        <li class="nav active"><a href="#general" data-toggle="tab">General</a></li>
         <li class="nav"><a href="#users" data-toggle="tab">Collaborators</a></li>
         <li class="nav"><a href="#roles" data-toggle="tab">Roles &amp; Privileges</a></li>
-        <li class="nav"><a href="#globals" data-toggle="tab">Globals</a></li>
+        <li class="nav active"><a href="#globals" data-toggle="tab">Globals</a></li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div class="tab-pane fade in active" id="general">
-			{{template "adminGeneralProperties"}}
-		</div>
         <div class="tab-pane fade" id="globals">
         	{{template "adminGlobalsList"}}
         </div>

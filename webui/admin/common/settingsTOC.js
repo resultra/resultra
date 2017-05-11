@@ -1,6 +1,6 @@
 function initAdminSettingsTOC(databaseID) {
 
-	var generalLink = '/admin/' + databaseID
+	var generalLink = '/admin/general/' + databaseID
 	$('#settingsTOCGeneral').attr("href",generalLink)
 
 	var fieldsLink = '/admin/fields/' + databaseID
@@ -21,8 +21,5 @@ function initAdminSettingsTOC(databaseID) {
 
 	var dashboardLink = "/admin/dashboards/" + databaseID
 	$('#settingsTOCDashboards').attr("href",dashboardLink)
-	
-	
-	
 	
 }
