@@ -17,6 +17,7 @@ import (
 	"resultra/datasheet/webui/admin/itemList/itemListList"
 	"resultra/datasheet/webui/admin/itemList/itemListProps"
 
+	"resultra/datasheet/webui/admin/userRole/userRoleList"
 	"resultra/datasheet/webui/admin/userRole/userRoleProps"
 
 	"resultra/datasheet/webui/admin/valueLists/valueListList"
@@ -44,6 +45,7 @@ func RegisterHTTPHandlers(mainRouter *mux.Router) {
 	formLinkList.RegisterHTTPHandlers(mainRouter)
 
 	userRoleProps.RegisterHTTPHandlers(mainRouter)
+	userRoleList.RegisterHTTPHandlers(mainRouter)
 
 	fieldProps.RegisterHTTPHandlers(mainRouter)
 	fieldList.RegisterHTTPHandlers(mainRouter)
@@ -52,6 +54,8 @@ func RegisterHTTPHandlers(mainRouter *mux.Router) {
 	valueListList.RegisterHTTPHandlers(mainRouter)
 
 	dashboards.RegisterHTTPHandlers(mainRouter)
+
 	globals.RegisterHTTPHandlers(mainRouter)
+
 	users.RegisterHTTPHandlers(mainRouter)
 }

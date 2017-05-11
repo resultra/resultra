@@ -28,6 +28,5 @@ $(document).ready(function() {
 	initUserDropdownMenu()
 		
 	// Initialize the different settings panels
-	initUserRoleSettings(adminContext.databaseID)
 	
 })

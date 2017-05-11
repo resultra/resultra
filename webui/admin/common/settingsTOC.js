@@ -12,7 +12,6 @@ function initAdminSettingsTOC(databaseID) {
 	var listsLink = "/admin/lists/" + databaseID
 	$('#settingsTOCLists').attr("href",listsLink)
 
-
 	var valueListsLink = "/admin/valuelists/" + databaseID
 	$('#settingsTOCValueLists').attr("href",valueListsLink)
 	
@@ -27,5 +26,8 @@ function initAdminSettingsTOC(databaseID) {
 	
 	var userLink = "/admin/users/" + databaseID
 	$('#settingsTOCUsers').attr("href",userLink)
+
+	var roleLink = "/admin/roles/" + databaseID
+	$('#settingsTOCRoles').attr("href",roleLink)
 	
 }

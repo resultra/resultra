@@ -1,19 +1,21 @@
-
-{{define "adminBreadcrumbHeader"}}
+        	
+{{define "roleAdminBreadcrumbHeader"}}
 	<div class="marginTop2">
 	  {{template "homePageBreadcrumb"}}
 	  {{template "breadCrumbSeparator"}}
 	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-tasks" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
 	  {{template "breadCrumbSeparator"}}
 	  <span class="h4 breadCrumbText">Settings</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Roles</span>
 	</div> <!-- breadcrumb header -->
 {{end}}
 
-{{define "adminPageHeader"}}
+{{define "roleAdminPageHeader"}}
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-sm-8">
-				{{template "adminBreadcrumbHeader" .}}
+				{{template "roleAdminBreadcrumbHeader" .}}
 			</div>
 			<div class="col-sm-4">
 				<div class="pull-right">
@@ -24,21 +26,8 @@
 	</div>
 {{end}}
 
-{{define "adminPanes"}}
-<div class="container-fluid">
-	<div class="row">
-    <ul class="nav nav-tabs">
-    </ul>
 
-    <!-- Tab panes -->
-    <div class="tab-content">
-    </div>
-</div>
-</div>
-{{end}}
-
-
-{{define "adminPage"}}
+{{define "roleAdminPage"}}
 <!DOCTYPE html>
 <html>
   <head>
@@ -46,14 +35,14 @@
 	
 	{{template "thirdPartyCSS"}}
 	
-	<!-- adminAssets:css -->
+	<!-- roleAssets:css -->
 	<!-- endinject -->
 	
-	<script>var adminContext = { databaseID:"{{.DatabaseID}}" } </script>
+	<script>var roleAdminContext = { databaseID:"{{.DatabaseID}}" } </script>
 	
 	{{template "thirdPartyJS"}}
 	
-	<!-- adminAssets:js -->
+	<!-- roleAssets:js -->
 	<!-- endinject -->
 				
   </head>
@@ -61,26 +50,24 @@
  	
   <body>
 
-	<div id="adminPage" class="layoutPageDiv">
+	<div id="roleAdminPage" class="layoutPageDiv">
 		
-		<div class="pane ui-layout-north" id="adminPageHeaderUILayout">
-			{{template "adminPageHeader" .}}
+		<div class="pane ui-layout-north" id="fieldAdminPageHeaderUILayout">
+			{{template "roleAdminPageHeader" .}}
 		</div> <!-- ui layout north -->
 		
-		<div class="pane ui-layout-west" id="adminPageTocLayout">
-			{{template "databaseTOC" .}}
+		<div class="pane ui-layout-west">
+			{{template "adminSettingsTOC"}}
 		</div> <!-- ui layout north -->
 
-		<div class="pane ui-layout-center" id="adminPageLayout">
-			{{template "adminPanes"}}
-		</div> <!-- center pane for entire page -->
-			
+		<div class="pane ui-layout-center">
+			<h4>Roles</h4>
+			{{template "userRoleList"}}
+ 		</div> <!-- center pane for entire page -->	
 	</div> <!-- layout page -->	
 	
-	
-	{{template "submitFormDialog"}}
-	{{template "formButtonPopupFormDialog"}}
-	
+	{{template "newUserRoleDialog"}}
+		
 	
   </body>
   	
