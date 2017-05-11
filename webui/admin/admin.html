@@ -28,16 +28,12 @@
 <div class="container-fluid">
 	<div class="row">
     <ul class="nav nav-tabs">
-        <li class="nav"><a href="#users" data-toggle="tab">Collaborators</a></li>
+        <li class="nav active"><a href="#users" data-toggle="tab">Collaborators</a></li>
         <li class="nav"><a href="#roles" data-toggle="tab">Roles &amp; Privileges</a></li>
-        <li class="nav active"><a href="#globals" data-toggle="tab">Globals</a></li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div class="tab-pane fade" id="globals">
-        	{{template "adminGlobalsList"}}
-        </div>
         <div class="tab-pane fade" id="users">
         	{{template "userList"}}
         </div>
@@ -90,7 +86,6 @@
 	</div> <!-- layout page -->	
 	
 	{{template "newUserRoleDialog"}}
-	{{template "adminNewGlobalDialog"}}
 	{{template "adminNewUserDialog"}}
 	
 	{{template "submitFormDialog"}}

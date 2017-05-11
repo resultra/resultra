@@ -22,4 +22,7 @@ function initAdminSettingsTOC(databaseID) {
 	var dashboardLink = "/admin/dashboards/" + databaseID
 	$('#settingsTOCDashboards').attr("href",dashboardLink)
 	
+	var globalLink = "/admin/globals/" + databaseID
+	$('#settingsTOCGlobals').attr("href",globalLink)
+	
 }

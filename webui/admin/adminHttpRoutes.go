@@ -23,6 +23,8 @@ import (
 	"resultra/datasheet/webui/admin/valueLists/valueListProps"
 
 	"resultra/datasheet/webui/admin/dashboards"
+
+	"resultra/datasheet/webui/admin/globals"
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -49,5 +51,5 @@ func RegisterHTTPHandlers(mainRouter *mux.Router) {
 	valueListList.RegisterHTTPHandlers(mainRouter)
 
 	dashboards.RegisterHTTPHandlers(mainRouter)
-
+	globals.RegisterHTTPHandlers(mainRouter)
 }

@@ -1,0 +1,16 @@
+{
+	"subDirs":["../../generic",
+		"../../common",
+		"../common"],
+	"cssFiles": [],
+	"jsFiles": ["newGlobalDialog.js",
+		"globalAdminPage.js",
+		"globals.js"],
+	"htmlFiles":["globalAdminPage.html",
+				"newGlobalDialog.html",
+				"globals.html"],
+	"imageFiles":[],
+	"minCSSFile":"admin/globals/globalAdmin.min.css",
+	"minJSFile": "admin/globals/globalAdmin.min.js",
+	"injectPlaceholderName":"globalAssets"
+}
