@@ -1,4 +1,4 @@
-function initAdminNewItemPresetSettings(databaseID) {
+function initAdminFormLinkSettings(databaseID) {
 		
 	var $formLinkList = $('#adminFormLinkList')
 		

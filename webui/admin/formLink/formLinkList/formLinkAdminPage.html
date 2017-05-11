@@ -1,0 +1,77 @@
+        	
+{{define "formLinkAdminBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-tasks" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Settings</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Form Links</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "formLinkAdminPageHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "formLinkAdminBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "formLinkAdminPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- formLinkAssets:css -->
+	<!-- endinject -->
+	
+	<script>var formLinkAdminContext = { databaseID:"{{.DatabaseID}}" } </script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- formLinkAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="formLinkAdminPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north" id="fieldAdminPageHeaderUILayout">
+			{{template "formLinkAdminPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west">
+			{{template "adminSettingsTOC"}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center">
+			<h4>Form Links</h4>
+        	{{template "adminFormLinkList"}}
+        	
+		</div> <!-- center pane for entire page -->	
+	</div> <!-- layout page -->	
+	
+	{{template "adminNewFormLinkDialog"}}
+		
+	
+  </body>
+  	
+</html>
+
+{{end}}

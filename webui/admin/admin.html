@@ -6,6 +6,8 @@
 	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-tasks" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
 	  {{template "breadCrumbSeparator"}}
 	  <span class="h4 breadCrumbText">Settings</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Form Links</span>
 	</div> <!-- breadcrumb header -->
 {{end}}
 
@@ -29,7 +31,6 @@
 	<div class="row">
     <ul class="nav nav-tabs">
         <li class="nav active"><a href="#general" data-toggle="tab">General</a></li>
-        <li class="nav"><a href="#formLinks" data-toggle="tab">Form Links</a></li>
         <li class="nav"><a href="#dashboards" data-toggle="tab">Dashboards</a></li>
         <li class="nav"><a href="#users" data-toggle="tab">Collaborators</a></li>
         <li class="nav"><a href="#roles" data-toggle="tab">Roles &amp; Privileges</a></li>
@@ -41,10 +42,7 @@
         <div class="tab-pane fade in active" id="general">
 			{{template "adminGeneralProperties"}}
 		</div>
-        <div class="tab-pane fade" id="formLinks">
-        	{{template "adminFormLinkList"}}
-        </div>
-        <div class="tab-pane fade" id="dashboards">
+         <div class="tab-pane fade" id="dashboards">
         	{{template "adminDashboardList"}}
         </div>
         <div class="tab-pane fade" id="globals">
@@ -105,7 +103,6 @@
 	{{template "newDashboardDialog"}}
 	{{template "adminNewGlobalDialog"}}
 	{{template "adminNewUserDialog"}}
-	{{template "adminNewFormLinkDialog"}}
 	
 	{{template "submitFormDialog"}}
 	{{template "formButtonPopupFormDialog"}}

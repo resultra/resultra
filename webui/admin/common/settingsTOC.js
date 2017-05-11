@@ -16,4 +16,8 @@ function initAdminSettingsTOC(databaseID) {
 	var valueListsLink = "/admin/valuelists/" + databaseID
 	$('#settingsTOCValueLists').attr("href",valueListsLink)
 	
+	var formLinkLink = "/admin/formlink/" + databaseID
+	$('#settingsTOCFormLinks').attr("href",formLinkLink)
+	
+	
 }

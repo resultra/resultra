@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/webui/admin/fields/fieldList"
 	"resultra/datasheet/webui/admin/fields/fieldProps"
 
+	"resultra/datasheet/webui/admin/formLink/formLinkList"
 	"resultra/datasheet/webui/admin/formLink/formLinkProps"
 
 	"resultra/datasheet/webui/admin/forms/design"
@@ -31,6 +32,8 @@ func RegisterHTTPHandlers(mainRouter *mux.Router) {
 	itemListList.RegisterHTTPHandlers(mainRouter)
 
 	formLinkProps.RegisterHTTPHandlers(mainRouter)
+	formLinkList.RegisterHTTPHandlers(mainRouter)
+
 	userRoleProps.RegisterHTTPHandlers(mainRouter)
 
 	fieldProps.RegisterHTTPHandlers(mainRouter)
