@@ -3,8 +3,6 @@
 		"../common",
 		"userRole/userRoleList",
 		"users",
-		"formLink/formLinkList",
-		"dashboards",
 		"general","globals"],
 	"cssFiles": ["admin.css"],
 	"jsFiles": ["admin.js"],

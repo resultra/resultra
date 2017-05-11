@@ -18,6 +18,11 @@ function initAdminSettingsTOC(databaseID) {
 	
 	var formLinkLink = "/admin/formlink/" + databaseID
 	$('#settingsTOCFormLinks').attr("href",formLinkLink)
+
+	var dashboardLink = "/admin/dashboards/" + databaseID
+	$('#settingsTOCDashboards').attr("href",dashboardLink)
+	
+	
 	
 	
 }
