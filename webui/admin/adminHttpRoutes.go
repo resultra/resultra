@@ -31,8 +31,6 @@ import (
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
 
-	mainRouter.HandleFunc("/admin/{databaseID}", adminPage)
-
 	general.RegisterHTTPHandlers(mainRouter)
 
 	design.RegisterHTTPHandlers(mainRouter)

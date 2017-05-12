@@ -8,6 +8,8 @@ function addTrackerListItem(trackerInfo) {
 
 	var $nameLabel = $listItem.find(".nameLabel")
 	$nameLabel.text(trackerInfo.databaseName)
+	var openTrackerLink = '/main/' + trackerInfo.databaseID
+	$nameLabel.attr('href',openTrackerLink)
 	
 	var $settingsLink = $listItem.find(".adminEditPropsButton")
 	var editPropsLink = '/admin/' + trackerInfo.databaseID

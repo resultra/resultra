@@ -1,0 +1,11 @@
+{
+	"subDirs":["../generic",
+		"../common"],
+	"cssFiles": [],
+	"jsFiles": ["trackerMainPage.js"],
+	"htmlFiles":["trackerMainPage.html"],
+	"imageFiles":[],
+	"minCSSFile":"trackerMainPage/trackerMainPage.min.css",
+	"minJSFile": "trackerMainPage/trackerMainPage.min.js",
+	"injectPlaceholderName":"trackerMainPageAssets"
+}

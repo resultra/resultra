@@ -1,19 +1,17 @@
 
-{{define "adminBreadcrumbHeader"}}
+{{define "trackerBreadcrumbHeader"}}
 	<div class="marginTop2">
 	  {{template "homePageBreadcrumb"}}
 	  {{template "breadCrumbSeparator"}}
 	  <a href="/" class="h4 breadCrumbText"><i class="fa fa-tasks" aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">Settings</span>
 	</div> <!-- breadcrumb header -->
 {{end}}
 
-{{define "adminPageHeader"}}
+{{define "trackerPageHeader"}}
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-sm-8">
-				{{template "adminBreadcrumbHeader" .}}
+				{{template "trackerBreadcrumbHeader" .}}
 			</div>
 			<div class="col-sm-4">
 				<div class="pull-right">
@@ -24,21 +22,8 @@
 	</div>
 {{end}}
 
-{{define "adminPanes"}}
-<div class="container-fluid">
-	<div class="row">
-    <ul class="nav nav-tabs">
-    </ul>
 
-    <!-- Tab panes -->
-    <div class="tab-content">
-    </div>
-</div>
-</div>
-{{end}}
-
-
-{{define "adminPage"}}
+{{define "trackerMainPage"}}
 <!DOCTYPE html>
 <html>
   <head>
@@ -46,14 +31,14 @@
 	
 	{{template "thirdPartyCSS"}}
 	
-	<!-- adminAssets:css -->
+	<!-- trackerMainPageAssets:css -->
 	<!-- endinject -->
 	
-	<script>var adminContext = { databaseID:"{{.DatabaseID}}" } </script>
+	<script>var trackerContext = { databaseID:"{{.DatabaseID}}" } </script>
 	
 	{{template "thirdPartyJS"}}
 	
-	<!-- adminAssets:js -->
+	<!-- trackerMainPageAssets:js -->
 	<!-- endinject -->
 				
   </head>
@@ -61,26 +46,21 @@
  	
   <body>
 
-	<div id="adminPage" class="layoutPageDiv">
+	<div id="trackerMainPage" class="layoutPageDiv">
 		
-		<div class="pane ui-layout-north" id="adminPageHeaderUILayout">
-			{{template "adminPageHeader" .}}
+		<div class="pane ui-layout-north">
+			{{template "trackerPageHeader" .}}
 		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west" id="adminPageTocLayout">
+	
+		<div class="pane ui-layout-center">
 			{{template "databaseTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center" id="adminPageLayout">
-			{{template "adminPanes"}}
 		</div> <!-- center pane for entire page -->
 			
-	</div> <!-- layout page -->	
-	
-	
+	</div> <!-- layout page -->		
+
 	{{template "submitFormDialog"}}
 	{{template "formButtonPopupFormDialog"}}
-	
+
 	
   </body>
   	

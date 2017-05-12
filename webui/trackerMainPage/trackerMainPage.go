@@ -1,4 +1,4 @@
-package admin
+package trackerMainPage
 
 import (
 	"github.com/gorilla/mux"
@@ -10,25 +10,25 @@ import (
 	"resultra/datasheet/webui/generic"
 )
 
-var adminTemplates *template.Template
+var pageTemplates *template.Template
 
 func init() {
-	baseTemplateFiles := []string{"static/admin/admin.html"}
+	baseTemplateFiles := []string{"static/trackerMainPage/trackerMainPage.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
 		common.TemplateFileList}
-	adminTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
+	pageTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
-type AdminTemplParams struct {
+type TemplParams struct {
 	DatabaseID   string
 	DatabaseName string
 	Title        string
 }
 
-func adminPage(w http.ResponseWriter, r *http.Request) {
+func trackerMainPage(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	databaseID := vars["databaseID"]
@@ -39,12 +39,12 @@ func adminPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
 	}
 
-	templParams := AdminTemplParams{
-		Title:        "Tracker Settings",
+	templParams := TemplParams{
+		Title:        "Tracker Main Page",
 		DatabaseName: dbInfo.DatabaseName,
 		DatabaseID:   databaseID}
 
-	err := adminTemplates.ExecuteTemplate(w, "adminPage", templParams)
+	err := pageTemplates.ExecuteTemplate(w, "trackerMainPage", templParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
