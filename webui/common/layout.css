@@ -54,5 +54,12 @@ body,html {
    overflow: visible !important;
 }
 
+/* layoutPageDiv is the parent div for pages which have the site's
+   standard layout. Some overrides are needed in the header (north) pane */
+.layoutPageDiv .ui-layout-north {
+	padding-top:5px; /* override the default 10px padding */
+	overflow:hidden; /* disable scroll bars */
+}
+
 
 

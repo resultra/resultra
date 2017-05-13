@@ -1,7 +1,7 @@
 {
 	"subDirs":["../generic",
 		"../common"],
-	"cssFiles": ["submitFormPage.css"],
+	"cssFiles": [],
 	"jsFiles": ["submitFormPage.js"],
 	"htmlFiles":["submitFormPage.html"],
 	"imageFiles":[],

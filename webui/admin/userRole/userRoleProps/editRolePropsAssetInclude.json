@@ -1,7 +1,7 @@
 {
 	"subDirs":["../../../generic",
 		"../../../common"],
-	"cssFiles": ["editRoleProps.css"],
+	"cssFiles": [],
 	"jsFiles": ["editRoleProps.js",
 		"roleListPrivs.js",
 		"roleDashboardPrivs.js"],

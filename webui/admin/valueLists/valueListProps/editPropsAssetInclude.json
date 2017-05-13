@@ -2,7 +2,7 @@
 	"subDirs":["../../../generic",
 		"../../../common"
 	],
-	"cssFiles": ["editProps.css"],
+	"cssFiles": [],
 	"jsFiles": ["editProps.js","valueListProps.js"],
 	"htmlFiles":["editProps.html","valueListProps.html"],
 	"imageFiles":[],
