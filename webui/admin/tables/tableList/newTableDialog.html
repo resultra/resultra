@@ -1,0 +1,41 @@
+{{define "newTableDialogBody"}}
+
+		
+	  <div class="form-group">
+      	  <label for="newTableNameInput">Table name</label>
+      	  <input type="text" id="newFormNameInput" name="newTableNameInput" class="form-control" placeholder="Table name" required autofocus>
+	  </div>
+		
+
+{{end}}
+
+{{define "newTableDialogButtons"}}
+	<button type="button" class="btn btn-default" id="newTableCancelButton" data-dismiss="modal">Cancel</button>
+	<button type="button" class="btn btn-primary" id="newTableSaveButton" type="submit">Save</button>
+{{end}}
+
+
+{{define "newTableDialog"}}
+
+    <form id="newTableDialogForm">
+		
+		<div class="modal fade" id="newTableDialog" tabindex="-1" role="dialog" aria-labelledby="newTableLabel">
+		  <div class="modal-dialog modal-sm" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="newFormLabel">New Form</h4>
+		      </div>
+		      <div class="modal-body">
+				  {{template "newTableDialogBody"}}
+		      </div>
+		      <div class="modal-footer">
+				  {{template "newTableDialogButtons"}}
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+	</form>
+
+{{end}}

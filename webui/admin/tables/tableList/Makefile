@@ -12,5 +12,5 @@ prebuild:
 	
 package:
 	$(EXPORT_ASSETS)
-	$(BUILD_ASSET_INJECTION_LIST) formsAdminPageAssetInclude.json $(ASSET_BASE_PATH) > formsAdminPageAssets_gen.json
-	$(EXPORT_HTML_WITH_INJECTED_ASSETS) $(abspath ./formsAdminPageAssets_gen.json)
+	$(BUILD_ASSET_INJECTION_LIST) tableAdminPageAssetInclude.json $(ASSET_BASE_PATH) > tableAdminPageAssets_gen.json
+	$(EXPORT_HTML_WITH_INJECTED_ASSETS) $(abspath ./tableAdminPageAssets_gen.json)
