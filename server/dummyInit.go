@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/dashboardController"
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/databaseController"
+	"resultra/datasheet/server/displayTable"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/formLink"
 	"resultra/datasheet/server/global"
@@ -31,6 +32,7 @@ var dummyNewItemInfo = formLink.DummyStructForInclude{}
 var dummyUserRoleInfo = userRoleController.DummyStructForInclude{}
 var dummyAttachmentInfo = attachment.DummyStructForInclude{}
 var dummyValueListInfo = valueList.DummyStructForInclude{}
+var dummyDisplayTableInfo = displayTable.DummyStructForInclude{}
 
 func DummyFunctionForImportFromGoogleAppEngineProjectFolder() {
 	// This dummy function is needed so standaline packages inside

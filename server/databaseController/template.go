@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/database"
+	"resultra/datasheet/server/displayTable"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/formLink"
@@ -102,6 +103,10 @@ func saveDatabaseToTemplate(params SaveTemplateParams) (*database.Database, erro
 	}
 
 	if err := form.CloneForms(remappedIDs, params.SourceDatabaseID); err != nil {
+		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
+	}
+
+	if err := displayTable.CloneTables(remappedIDs, params.SourceDatabaseID); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
