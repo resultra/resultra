@@ -27,7 +27,7 @@ func saveTable(newTable DisplayTable) error {
 		return fmt.Errorf("saveTable: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO display_tables
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO table_views
 			 	(database_id,table_id,name,properties) VALUES ($1,$2,$3,$4)`,
 		newTable.ParentDatabaseID, newTable.TableID, newTable.Name, encodedTableProps); insertErr != nil {
 		return fmt.Errorf("saveTable: Can't create display table: error = %v", insertErr)
@@ -61,7 +61,7 @@ func GetTable(tableID string) (*DisplayTable, error) {
 	tableName := ""
 	encodedProps := ""
 	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT database_id,name,properties FROM tables
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT database_id,name,properties FROM table_views
 		 WHERE table_id=$1 LIMIT 1`, tableID).Scan(&databaseID, &tableName, &encodedProps)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetTable: Unabled to get table: table ID = %v: datastore err=%v",
@@ -86,10 +86,10 @@ type GetTableListParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
-func GetAllTables(parentDatabaseID string) ([]DisplayTable, error) {
+func getAllTables(parentDatabaseID string) ([]DisplayTable, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT database_id,table_id,name,properties FROM display_tables WHERE database_id = $1`,
+		`SELECT database_id,table_id,name,properties FROM table_views WHERE database_id = $1`,
 		parentDatabaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAllTables: Failure querying database: %v", queryErr)
@@ -124,7 +124,7 @@ func CloneTables(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID stri
 		return fmt.Errorf("CloneTableTables: Error getting remapped table ID: %v", err)
 	}
 
-	tables, err := GetAllTables(srcParentDatabaseID)
+	tables, err := getAllTables(srcParentDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneTables: Error getting tables for parent database ID = %v: %v",
 			srcParentDatabaseID, err)
@@ -168,7 +168,7 @@ func updateExistingTable(tableID string, updatedTable *DisplayTable) (*DisplayTa
 		return nil, fmt.Errorf("updateExistingTable: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE display_tables 
+	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE table_views 
 				SET properties=$1, name=$2
 				WHERE table_id=$3`,
 		encodedProps, updatedTable.Name, tableID); updateErr != nil {
@@ -202,11 +202,11 @@ func validateUniqueTableName(databaseID string, tableID string, tableName string
 	//    the name is considered valid if it is the same as its
 	//    existing name.
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT display_tables.table_id,display_tables.name 
-			FROM display_tables,databases
+		`SELECT table_views.table_id,table_views.name 
+			FROM table_views,databases
 			WHERE databases.database_id=$1 AND
-			display_tables.database_id=databases.database_id AND
-				display_tables.name=$2 AND display_tables.table_id<>$3`,
+			table_views.database_id=databases.database_id AND
+				table_views.name=$2 AND table_views.table_id<>$3`,
 		databaseID, tableName, tableID)
 	if queryErr != nil {
 		return fmt.Errorf("System error validating table name (%v)", queryErr)

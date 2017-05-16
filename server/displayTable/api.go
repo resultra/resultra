@@ -1,6 +1,7 @@
 package displayTable
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
@@ -15,10 +16,15 @@ func init() {
 
 	tableRouter := mux.NewRouter()
 
-	tableRouter.HandleFunc("/api/displayTable/new", newTableAPI)
-	tableRouter.HandleFunc("/api/frm/setName", setTableName)
+	tableRouter.HandleFunc("/api/tableView/new", newTableAPI)
+	tableRouter.HandleFunc("/api/tableView/setName", setTableName)
 
-	http.Handle("/api/displayTable/", tableRouter)
+	tableRouter.HandleFunc("/api/tableView/list", listTableAPI)
+
+	tableRouter.HandleFunc("/api/tableView/validateTableName", validateTableNameAPI)
+	tableRouter.HandleFunc("/api/tableView/validateNewTableName", validateNewTableNameAPI)
+
+	http.Handle("/api/tableView/", tableRouter)
 }
 
 func newTableAPI(w http.ResponseWriter, r *http.Request) {
@@ -40,6 +46,62 @@ func newTableAPI(w http.ResponseWriter, r *http.Request) {
 	} else {
 		api.WriteJSONResponse(w, *tableRef)
 	}
+
+}
+
+type ListTableParams struct {
+	ParentDatabaseID string `json:"parentDatabaseID"`
+}
+
+func listTableAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params ListTableParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+		r, params.ParentDatabaseID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if tableRefs, err := getAllTables(params.ParentDatabaseID); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, tableRefs)
+	}
+
+}
+
+func validateTableNameAPI(w http.ResponseWriter, r *http.Request) {
+
+	tableName := r.FormValue("tableName")
+	formID := r.FormValue("formID")
+
+	if err := validateTableName(formID, tableName); err != nil {
+		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
+		return
+	}
+
+	response := true
+	api.WriteJSONResponse(w, response)
+
+}
+
+func validateNewTableNameAPI(w http.ResponseWriter, r *http.Request) {
+
+	tableName := r.FormValue("tableName")
+	databaseID := r.FormValue("databaseID")
+
+	if err := validateNewTableName(databaseID, tableName); err != nil {
+		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
+		return
+	}
+
+	response := true
+	api.WriteJSONResponse(w, response)
 
 }
 
