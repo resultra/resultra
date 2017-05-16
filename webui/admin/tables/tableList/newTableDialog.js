@@ -41,7 +41,7 @@ function openNewTableDialog(databaseID) {
 				console.log("Created new table: " + JSON.stringify(newTableInfo))
 				$newTableDialog.modal('hide')
 				// TODO - Include database ID in link
-	//			navigateToURL('/admin/table/' + newTableInfo.tableID)
+				navigateToURL('/admin/table/' + newTableInfo.tableID)
 			})
 			
 

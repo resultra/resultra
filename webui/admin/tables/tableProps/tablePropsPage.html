@@ -1,0 +1,76 @@
+        	
+{{define "tablePropsAdminBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  {{template "trackerPageBreadcrumb" .}}
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Settings</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Tables</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">{{.TableName}}</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "tablePropsAdminPageHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "tablePropsAdminBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "tablePropsAdminPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- tablePropsAssets:css -->
+	<!-- endinject -->
+	
+	<script>var tablePropsAdminContext = { databaseID:"{{.DatabaseID}}",
+			tableID: "{{.TableID}}"} </script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- tablePropsAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="tablePropsAdminPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north">
+			{{template "tablePropsAdminPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west">
+			{{template "adminSettingsTOC"}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center">
+			TBD
+        	
+		</div> <!-- center pane for entire page -->	
+	</div> <!-- layout page -->	
+		
+  </body>
+  	
+</html>
+
+{{end}}
