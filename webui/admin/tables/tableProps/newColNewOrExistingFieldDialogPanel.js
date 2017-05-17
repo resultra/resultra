@@ -1,17 +1,57 @@
 var newTableColCreateNewOrExistingFieldDialogPanelID = "newOrExistingField"
 
-function createNewTableColNewOrExistingDialogPanelConfig() {
+function createNewTableColNewOrExistingDialogPanelConfig(panelParams) {
 	
 	
 	function initPanel($parentDialog) {
 		
 		var $panelForm = $('#newColNewOrExistingFieldPanelForm')
+		var $newOrExistingRadio = $panelForm.find("input[name=newOrExistingRadio]")
+		var $selectField = $panelForm.find("select[name=existingFieldSelection]")
+		
+		function newFieldSelected() {
+			var $checkedNewOrExistingRadio = $panelForm.find("input[name=newOrExistingRadio]:checked")
+			var checkedVal = $checkedNewOrExistingRadio.val()
+			if(checkedVal === 'newField') {
+				return true
+			} else {
+				return false
+			}	
+		}
 		
 		var validator = $panelForm.validate({
-			rules: {} 
+			rules: {
+				existingFieldSelection: {
+					required: {
+						depends: function(element) {
+							return !newFieldSelected()
+						}					
+					}
+				}
+			},
+			messages: {
+				existingFieldSelection: {
+					required: "Select an existing field"
+				}
+			}
 		})
 		
 		validator.resetForm()
+		
+			
+		$newOrExistingRadio.change(function() {
+			if(newFieldSelected()) {
+				$selectField.attr('disabled',true)
+			} else {
+				$selectField.attr('disabled',false)
+			}
+		})
+		
+		$selectField.dropdown()
+		loadSortedFieldInfo(panelParams.databaseID,[fieldTypeAll],function(sortedFields) {
+			populateSortedFieldSelectionMenu($selectField,sortedFields)
+		})
+		
 		
 		
 		initButtonClickHandler('#newTableColNextButton',function() {
@@ -23,7 +63,10 @@ function createNewTableColNewOrExistingDialogPanelConfig() {
 	}
 	
 	function getPanelValues() {
-		return {}
+		return {
+			isNewField: isNewField(),
+			selectedField: $selectField.val()
+		}
 	}
 	
 	var panelConfig = {
