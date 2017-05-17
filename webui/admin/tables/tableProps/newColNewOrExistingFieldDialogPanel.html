@@ -1,0 +1,46 @@
+{{define "newColDialogSelectFieldPanelButtons"}}
+	<button type="button" class="btn btn-primary wizardPanelButton newExistingFieldButtons" id="newTableColNextButton" type="submit">Next</button>
+{{end}}
+
+{{define "newColDialogSelectFieldPanel"}}
+
+	<div id="newColNewOrExistingFieldPanel" class="wizardPanel">
+		<form id="newColNewOrExistingFieldPanelForm">
+			
+			<div class="alert alert-info">
+					Values displayed or edited in table view columns reference fields. Select an existing
+					field for this table column or create a new field.
+			</div>
+			<div class="form-group">
+				<label>Field for table column</label>
+			</div>
+	
+			<div class="form-group">
+				<div class="radio">			
+					<input type="radio" id="newFieldRadio" name="newOrExistingRadio" value="newField" checked>
+					<label for="newFieldRadio">Create a new field </label>
+				</div>
+			</div>
+				
+			<div class="form-group">
+				<div class="radio">				
+					<input type="radio" id="existingFieldRadio" 
+								name="newOrExistingRadio" value="existingField">
+					<label for="existingFieldRadio">Use an existing field </label>
+				</div>			
+			</div>
+			
+			<div class="form-group">
+				<label class="marginLeft30">Existing fields</label> 
+				<select class="form-control marginLeft30" 
+								name="existingFieldSelection" style="width:80%" disabled>
+					<option value="">
+						Select a field
+					</option>
+				</select>
+			</div>
+
+			
+		</form> <!-- form for panel -->
+	</div> <!-- panel for selecting new field or choosing to create a new one -->
+{{end}}

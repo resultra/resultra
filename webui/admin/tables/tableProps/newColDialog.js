@@ -1,4 +1,13 @@
 function openNewTableColDialog() {
-	var $dialog = $('#newTableColDialog')
-	$dialog.modal("show")
+	
+	var newOrExistingPanel = createNewTableColNewOrExistingDialogPanelConfig()
+	var newFieldPanel = createNewTableColNewFieldDialogPanelConfig()
+		
+	openWizardDialog({
+		closeFunc: function() {},
+		dialogDivID: '#newTableColDialog',
+		panels: [newOrExistingPanel,newFieldPanel],
+		progressDivID: '#tableProps_WizardDialogProgress',
+	})
+	
 }

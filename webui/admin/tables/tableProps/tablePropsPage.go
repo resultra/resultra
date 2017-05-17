@@ -20,7 +20,9 @@ func init() {
 
 	baseTemplateFiles := []string{"static/admin/tables/tableProps/tablePropsPage.html",
 		"static/admin/tables/tableProps/tableCols.html",
-		"static/admin/tables/tableProps/newColDialog.html"}
+		"static/admin/tables/tableProps/newColDialog.html",
+		"static/admin/tables/tableProps/newColNewOrExistingFieldDialogPanel.html",
+		"static/admin/tables/tableProps/newColNewFieldDialogPanel.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,

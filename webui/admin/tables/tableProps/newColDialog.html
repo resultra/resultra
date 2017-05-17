@@ -1,5 +1,7 @@
 {{define "newTableColDialogButtons"}}
 	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	{{template "newColDialogSelectFieldPanelButtons"}}
+	{{template "newColDialogNewFieldPanelButtons"}}
 {{end}}
 
 
@@ -17,6 +19,8 @@
       <div class="modal-body newFormComponentDialogBody">
 		  <div>
 			  {{template "wizardDialogProgress" . }}
+			  {{template "newColDialogSelectFieldPanel"}}
+			  {{template "newColDialogNewFieldPanel"}}
 		</div>
       </div>
       <div class="modal-footer">
