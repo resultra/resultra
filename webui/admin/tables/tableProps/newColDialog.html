@@ -1,0 +1,29 @@
+{{define "newTableColDialogButtons"}}
+	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+{{end}}
+
+
+{{define "newTableColDialog"}}
+
+<div class="modal fade" id="newTableColDialog" tabindex="-1" role="document"
+						aria-labelledby="newTableColLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="newTableColLabel">New Table View Column</h4>
+      </div>
+      <div class="modal-body newFormComponentDialogBody">
+		  <div>
+			  {{template "wizardDialogProgress" . }}
+		</div>
+      </div>
+      <div class="modal-footer">
+		  {{template "newTableColDialogButtons" .}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}

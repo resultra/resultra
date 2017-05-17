@@ -18,7 +18,9 @@ var tablePropTemplates *template.Template
 
 func init() {
 
-	baseTemplateFiles := []string{"static/admin/tables/tableProps/tablePropsPage.html"}
+	baseTemplateFiles := []string{"static/admin/tables/tableProps/tablePropsPage.html",
+		"static/admin/tables/tableProps/tableCols.html",
+		"static/admin/tables/tableProps/newColDialog.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,

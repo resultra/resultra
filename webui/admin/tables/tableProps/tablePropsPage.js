@@ -57,6 +57,7 @@ $(document).ready(function() {
 	var getTableParams = { tableID: tablePropsAdminContext.tableID }
 	jsonAPIRequest("tableView/get",getTableParams,function(tableRef) {
 		initNameProperties(tableRef)
+		initTableViewColsProperties(tableRef)
 	})
 	
 			

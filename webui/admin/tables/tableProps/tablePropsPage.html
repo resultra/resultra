@@ -48,10 +48,15 @@
 
 {{end}}
 
+
+
+
 {{define "tablePropsBody"}}
 
+<h4>{{.TableName}}</h4>
 <table class="table">
 	{{template "adminTableNameProperty"}}	
+	{{template "adminTableColsProperty"}}	
 </table>
 
 {{end}}
@@ -95,6 +100,9 @@
 			{{template "tablePropsBody" .}}
 		</div> <!-- center pane for entire page -->	
 	</div> <!-- layout page -->	
+	
+	{{template "adminTableColsTemplates"}}
+	{{template "newTableColDialog"}}
 		
   </body>
   	
