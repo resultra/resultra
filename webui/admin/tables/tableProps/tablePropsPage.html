@@ -29,6 +29,34 @@
 {{end}}
 
 
+
+{{define "adminTableNameProperty"}}
+
+	<tr>
+		<td class="width200"><label>Table name:</label>
+		</td>
+
+		<td>
+			<form class="form-inline" id="tableNamePropertyForm">
+				<div class="form-group">
+					<input type="text" name="tableNameInput" 
+							class="form-control" placeholder="List Name" required="" autofocus="">
+				</div>
+			</form>
+		</td>
+	</tr>
+
+{{end}}
+
+{{define "tablePropsBody"}}
+
+<table class="table">
+	{{template "adminTableNameProperty"}}	
+</table>
+
+{{end}}
+
+
 {{define "tablePropsAdminPage"}}
 <!DOCTYPE html>
 <html>
@@ -64,8 +92,7 @@
 		</div> <!-- ui layout north -->
 
 		<div class="pane ui-layout-center">
-			TBD
-        	
+			{{template "tablePropsBody" .}}
 		</div> <!-- center pane for entire page -->	
 	</div> <!-- layout page -->	
 		
