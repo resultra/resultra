@@ -1,21 +1,16 @@
 var newTableColNewFieldDialogPanelID = "newField"
 
-function createNewTableColNewFieldDialogPanelConfig() {
+function createNewTableColNewFieldDialogPanelConfig(panelParams) {
 	
+	var newFieldPanel
 	
 	function initPanel($parentDialog) {
 		
 		var $panelForm = $('#newColNewFieldPanelForm')
-		
-		var validator = $panelForm.validate({
-			rules: {} 
-		})
-		
-		validator.resetForm()
-		
+		newFieldPanel = new NewFieldPanel(panelParams.databaseID,$panelForm)
 		
 		initButtonClickHandler('#newTableColNewFieldNextButton',function() {
-			if ($panelForm.valid()) {
+			if (newFieldPanel.validateNewFieldParams()) {
 				$parentDialog.modal("hide")
 //				transitionToNextWizardDlgPanelByID($parentDialog,newFieldDialogPanelID)
 			} // if validate form
@@ -24,7 +19,9 @@ function createNewTableColNewFieldDialogPanelConfig() {
 	}
 	
 	function getPanelValues() {
-		return {}
+		return {
+			newFieldPanel: newFieldPanel
+		}
 	}
 	
 	var panelConfig = {

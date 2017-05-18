@@ -1,32 +1,6 @@
 {{define "newFieldDialogBody"}}
 
-	  <div class="form-group">
-      	  <label for="newFieldNameInput">Field name</label>
-      	  <input type="text" name="newFieldNameInput" class="form-control maxWidth300" placeholder="Field name" required autofocus>
-	  </div>
-	  
-	<div class="form-group">
-		<label>Type of value</label>
-			<select class="form-control maxWidth300" name="newFieldTypeSelection">
-				<option value="">Select a field type</option>
-				<option value="number">Number</option>
-				<option value="text">Text</option>
-				<option value="user">User</option>
-			</select> 
-	</div> <!-- Value type field -->
-	  
-	<div class="form-group">
-		  <div class="checkbox" id="">
-			  <input type="checkbox" id="newFieldIsCalcField">
-			  <label for="newFieldIsCalcField">Values for this field are calculated from other fields.</label>
-    		</div>
-	</div> <!-- Field name field -->
-
-	<div class="form-group" >
-		<label>Reference name</label>
-		<input type="text" class="form-control maxWidth300" name="fieldRefName" placeholder="Enter a reference name">		
-	</div> <!-- reference name field -->
-
+	{{template "newFieldPanel"}}
 		
 {{end}}
 

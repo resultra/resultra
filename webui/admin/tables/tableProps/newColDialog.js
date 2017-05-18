@@ -20,7 +20,7 @@ function openNewTableColDialog(databaseID) {
 	
 	
 	var newOrExistingPanel = createNewTableColNewOrExistingDialogPanelConfig(panelConfig)
-	var newFieldPanel = createNewTableColNewFieldDialogPanelConfig()
+	var newFieldPanel = createNewTableColNewFieldDialogPanelConfig(panelConfig)
 		
 	openWizardDialog({
 		closeFunc: function() {},
