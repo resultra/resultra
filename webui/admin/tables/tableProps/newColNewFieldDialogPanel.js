@@ -14,6 +14,10 @@ function createNewTableColNewFieldDialogPanelConfig(panelParams) {
 				transitionToNextWizardDlgPanelByID($parentDialog,newTableColColTypeDialogPanelID)
 			} // if validate form
 		})
+		initButtonClickHandler('#newTableColNewFieldPrevButton',function() {
+			transitionToPrevWizardDlgPanelByPanelID(
+				$parentDialog,newTableColCreateNewOrExistingFieldDialogPanelID)
+		})
 		
 	}
 	

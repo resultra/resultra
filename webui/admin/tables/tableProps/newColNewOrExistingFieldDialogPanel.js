@@ -2,23 +2,23 @@ var newTableColCreateNewOrExistingFieldDialogPanelID = "newOrExistingField"
 
 function createNewTableColNewOrExistingDialogPanelConfig(panelParams) {
 	
+	var $panelForm = $('#newColNewOrExistingFieldPanelForm')
+	var $selectField = $panelForm.find("select[name=existingFieldSelection]")
 	
+	function newFieldSelected() {
+		var $checkedNewOrExistingRadio = $panelForm.find("input[name=newOrExistingRadio]:checked")
+		var checkedVal = $checkedNewOrExistingRadio.val()
+		if(checkedVal === 'newField') {
+			return true
+		} else {
+			return false
+		}	
+	}
+
 	function initPanel($parentDialog) {
 		
-		var $panelForm = $('#newColNewOrExistingFieldPanelForm')
 		var $newOrExistingRadio = $panelForm.find("input[name=newOrExistingRadio]")
-		var $selectField = $panelForm.find("select[name=existingFieldSelection]")
-		
-		function newFieldSelected() {
-			var $checkedNewOrExistingRadio = $panelForm.find("input[name=newOrExistingRadio]:checked")
-			var checkedVal = $checkedNewOrExistingRadio.val()
-			if(checkedVal === 'newField') {
-				return true
-			} else {
-				return false
-			}	
-		}
-		
+			
 		var validator = $panelForm.validate({
 			rules: {
 				existingFieldSelection: {
@@ -56,7 +56,11 @@ function createNewTableColNewOrExistingDialogPanelConfig(panelParams) {
 		
 		initButtonClickHandler('#newTableColNextButton',function() {
 			if ($panelForm.valid()) {
-				transitionToNextWizardDlgPanelByID($parentDialog,newTableColNewFieldDialogPanelID)
+				if(newFieldSelected()) {
+					transitionToNextWizardDlgPanelByID($parentDialog,newTableColNewFieldDialogPanelID)
+				} else {
+					transitionToNextWizardDlgPanelByID($parentDialog,newTableColColTypeDialogPanelID)
+				}
 			} // if validate form
 		})
 		
@@ -64,7 +68,7 @@ function createNewTableColNewOrExistingDialogPanelConfig(panelParams) {
 	
 	function getPanelValues() {
 		return {
-			isNewField: isNewField(),
+			isNewField: newFieldSelected(),
 			selectedField: $selectField.val()
 		}
 	}

@@ -9,6 +9,20 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 		initButtonClickHandler('#newTableColColTypeSaveButton',function() {
 			$parentDialog.modal("hide")
 		})
+		initButtonClickHandler('#newTableColColTypePrevButton',function() {
+			var newOrSelectedFieldPanelVals = getWizardDialogPanelVals(
+					$parentDialog,newTableColCreateNewOrExistingFieldDialogPanelID)
+				if(newOrSelectedFieldPanelVals.isNewField) {
+					transitionToPrevWizardDlgPanelByPanelID(
+						$parentDialog,newTableColNewFieldDialogPanelID)
+				} else {
+					transitionToPrevWizardDlgPanelByPanelID(
+							$parentDialog,newTableColCreateNewOrExistingFieldDialogPanelID)
+					
+				}
+		})
+		
+		
 		
 	}
 	
