@@ -21,11 +21,12 @@ function openNewTableColDialog(databaseID) {
 	
 	var newOrExistingPanel = createNewTableColNewOrExistingDialogPanelConfig(panelConfig)
 	var newFieldPanel = createNewTableColNewFieldDialogPanelConfig(panelConfig)
+	var colTypePanel = createNewTableColColTypeDialogPanelConfig(panelConfig)
 		
 	openWizardDialog({
 		closeFunc: function() {},
 		dialogDivID: '#newTableColDialog',
-		panels: [newOrExistingPanel,newFieldPanel],
+		panels: [newOrExistingPanel,newFieldPanel,colTypePanel],
 		progressDivID: '#tableProps_WizardDialogProgress',
 	})
 	

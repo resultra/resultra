@@ -1,0 +1,27 @@
+{{define "newColDialogColTypePanelButtons"}}
+	<button type="button" class="btn btn-primary wizardPanelButton colTypeButtons" 
+			id="newTableColColTypeSaveButton" type="submit">Save</button>
+{{end}}
+
+{{define "newColDialogColTypePanel"}}
+
+	<div id="newColColTypePanel" class="wizardPanel">
+		<form id="newColColTypePanelForm">
+			
+			<div class="alert alert-info">
+				Choose how the values will be displayed in table cells for
+				viewing and/or editing.
+			</div>
+			<div class="form-group">
+				<label>How to view or edit field values</label> 
+				<select class="form-control" 
+								name="editValsWithSelection" style="width:80%">
+					<option value="">
+						Select a method to view and edit
+					</option>
+				</select>
+			</div>
+				
+		</form> <!-- form for panel -->
+	</div> <!-- panel for selecting new field or choosing to create a new one -->
+{{end}}

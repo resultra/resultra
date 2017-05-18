@@ -11,8 +11,7 @@ function createNewTableColNewFieldDialogPanelConfig(panelParams) {
 		
 		initButtonClickHandler('#newTableColNewFieldNextButton',function() {
 			if (newFieldPanel.validateNewFieldParams()) {
-				$parentDialog.modal("hide")
-//				transitionToNextWizardDlgPanelByID($parentDialog,newFieldDialogPanelID)
+				transitionToNextWizardDlgPanelByID($parentDialog,newTableColColTypeDialogPanelID)
 			} // if validate form
 		})
 		
