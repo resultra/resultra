@@ -48,7 +48,7 @@ func saveNewHtmlEditor(params NewHtmlEditorParams) (*HtmlEditor, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := common.ValidateField(params.FieldID, validHtmlEditorFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(params.FieldID, validHtmlEditorFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewCheckBox: %v", fieldErr)
 	}
 

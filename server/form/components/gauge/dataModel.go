@@ -46,7 +46,7 @@ func saveNewGauge(params NewGaugeParams) (*Gauge, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := common.ValidateField(params.FieldID, validGaugeFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(params.FieldID, validGaugeFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewGauge: %v", fieldErr)
 	}
 

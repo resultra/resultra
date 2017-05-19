@@ -46,7 +46,7 @@ func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := common.ValidateField(params.FieldID, validCheckBoxFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(params.FieldID, validCheckBoxFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewCheckBox: %v", fieldErr)
 	}
 

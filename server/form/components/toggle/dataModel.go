@@ -46,7 +46,7 @@ func saveNewToggle(params NewToggleParams) (*Toggle, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := common.ValidateField(params.FieldID, validToggleFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(params.FieldID, validToggleFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewToggle: %v", fieldErr)
 	}
 

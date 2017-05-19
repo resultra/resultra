@@ -48,7 +48,7 @@ func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := common.ValidateField(params.FieldID, validDatePickerFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(params.FieldID, validDatePickerFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewDatePicker: %v", fieldErr)
 	}
 

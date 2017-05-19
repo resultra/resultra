@@ -53,7 +53,7 @@ func saveNewSelection(params NewSelectionParams) (*Selection, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if compLinkErr := common.ValidateField(params.FieldID, validSelectionFieldType); compLinkErr != nil {
+	if compLinkErr := field.ValidateField(params.FieldID, validSelectionFieldType); compLinkErr != nil {
 		return nil, fmt.Errorf("saveNewSelection: %v", compLinkErr)
 	}
 

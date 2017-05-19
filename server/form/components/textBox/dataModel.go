@@ -49,7 +49,7 @@ func saveNewTextBox(params NewTextBoxParams) (*TextBox, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := common.ValidateField(params.FieldID, validTextBoxFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(params.FieldID, validTextBoxFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewTextBox: %v", fieldErr)
 	}
 

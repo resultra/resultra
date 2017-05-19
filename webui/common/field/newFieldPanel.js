@@ -74,7 +74,7 @@ function NewFieldPanel(databaseID,$newFieldForm) {
 		fieldRefNameManuallyEdited = true
 	})
 	
-	function newFieldParams() {
+	var newFieldParams =  function() {
 		var newFieldParams = {
 			parentDatabaseID: databaseID,
 			name: $fieldName.val(),
@@ -89,16 +89,16 @@ function NewFieldPanel(databaseID,$newFieldForm) {
 		if($newFieldForm.valid()) {
 			
 			var isCalcField = $isCalcField.prop("checked")
-			var newFieldParams = newFieldParams()
+			var params = newFieldParams()
 			if(isCalcField) {
-				jsonAPIRequest("calcField/new",newFieldParams,function(newField) {
+				jsonAPIRequest("calcField/new",params,function(newField) {
 					console.log("new field created: " + JSON.stringify(newField))
 					newFieldCallback(newField)
 				})
 				
 			} else {
 				console.log("creating new field: params= " + JSON.stringify(newFieldParams))
-				jsonAPIRequest("field/new",newFieldParams,function(newField) {
+				jsonAPIRequest("field/new",params,function(newField) {
 					console.log("new field created: " + JSON.stringify(newField))
 					newFieldCallback(newField)
 				})

@@ -48,7 +48,7 @@ func saveNewRating(params NewRatingParams) (*Rating, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := common.ValidateField(params.FieldID, validRatingFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(params.FieldID, validRatingFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewRating: %v", fieldErr)
 	}
 

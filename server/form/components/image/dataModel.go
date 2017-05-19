@@ -48,7 +48,7 @@ func saveNewImage(params NewImageParams) (*Image, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := common.ValidateField(params.FieldID, validImageFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(params.FieldID, validImageFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewTextBox: %v", fieldErr)
 	}
 

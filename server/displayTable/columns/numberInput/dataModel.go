@@ -3,9 +3,8 @@ package numberInput
 import (
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
 )
@@ -13,21 +12,18 @@ import (
 const numberInputEntityKind string = "numberInput"
 
 type NumberInput struct {
-	ParentFormID  string                `json:"parentFormID"`
+	ParentTableID string                `json:"parentTableID"`
 	NumberInputID string                `json:"numberInputID"`
 	Properties    NumberInputProperties `json:"properties"`
 }
 
 type NewNumberInputParams struct {
-	ParentFormID string                         `json:"parentFormID"`
-	FieldID      string                         `json:"fieldID"`
-	Geometry     componentLayout.LayoutGeometry `json:"geometry"`
+	ParentTableID string `json:"parentFormID"`
+	FieldID       string `json:"fieldID"`
 }
 
 func validNumberInputFieldType(fieldType string) bool {
-	if fieldType == field.FieldTypeText {
-		return true
-	} else if fieldType == field.FieldTypeNumber {
+	if fieldType == field.FieldTypeNumber {
 		return true
 	} else {
 		return false
@@ -35,9 +31,10 @@ func validNumberInputFieldType(fieldType string) bool {
 }
 
 func saveNumberInput(newNumberInput NumberInput) error {
-	if saveErr := common.SaveNewFormComponent(numberInputEntityKind,
-		newNumberInput.ParentFormID, newNumberInput.NumberInputID, newNumberInput.Properties); saveErr != nil {
-		return fmt.Errorf("saveNumberInput: Unable to save text box: %v", saveErr)
+	if saveErr := common.SaveNewTableColumn(numberInputEntityKind,
+		newNumberInput.ParentTableID,
+		newNumberInput.NumberInputID, newNumberInput.Properties); saveErr != nil {
+		return fmt.Errorf("saveNumberInput: Unable to save number input: %v", saveErr)
 	}
 	return nil
 
@@ -45,19 +42,14 @@ func saveNumberInput(newNumberInput NumberInput) error {
 
 func saveNewNumberInput(params NewNumberInputParams) (*NumberInput, error) {
 
-	if !componentLayout.ValidGeometry(params.Geometry) {
-		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
-	}
-
 	if fieldErr := field.ValidateField(params.FieldID, validNumberInputFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewNumberInput: %v", fieldErr)
 	}
 
 	properties := newDefaultNumberInputProperties()
-	properties.Geometry = params.Geometry
 	properties.FieldID = params.FieldID
 
-	newNumberInput := NumberInput{ParentFormID: params.ParentFormID,
+	newNumberInput := NumberInput{ParentTableID: params.ParentTableID,
 		NumberInputID: uniqueID.GenerateSnowflakeID(),
 		Properties:    properties}
 
@@ -71,22 +63,22 @@ func saveNewNumberInput(params NewNumberInputParams) (*NumberInput, error) {
 
 }
 
-func getNumberInput(parentFormID string, numberInputID string) (*NumberInput, error) {
+func getNumberInput(parentTableID string, numberInputID string) (*NumberInput, error) {
 
 	numberInputProps := newDefaultNumberInputProperties()
-	if getErr := common.GetFormComponent(numberInputEntityKind, parentFormID, numberInputID, &numberInputProps); getErr != nil {
-		return nil, fmt.Errorf("getCheckBox: Unable to retrieve text box: %v", getErr)
+	if getErr := common.GetTableColumn(numberInputEntityKind, parentTableID, numberInputID, &numberInputProps); getErr != nil {
+		return nil, fmt.Errorf("getNumberInput: Unable to retrieve number input: %v", getErr)
 	}
 
 	numberInput := NumberInput{
-		ParentFormID:  parentFormID,
+		ParentTableID: parentTableID,
 		NumberInputID: numberInputID,
 		Properties:    numberInputProps}
 
 	return &numberInput, nil
 }
 
-func GetNumberInputs(parentFormID string) ([]NumberInput, error) {
+func GetNumberInputs(parentTableID string) ([]NumberInput, error) {
 
 	numberInputs := []NumberInput{}
 	addNumberInput := func(numberInputID string, encodedProps string) error {
@@ -97,14 +89,14 @@ func GetNumberInputs(parentFormID string) ([]NumberInput, error) {
 		}
 
 		currNumberInput := NumberInput{
-			ParentFormID:  parentFormID,
+			ParentTableID: parentTableID,
 			NumberInputID: numberInputID,
 			Properties:    numberInputProps}
 		numberInputs = append(numberInputs, currNumberInput)
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(numberInputEntityKind, parentFormID, addNumberInput); getErr != nil {
+	if getErr := common.GetTableColumns(numberInputEntityKind, parentTableID, addNumberInput); getErr != nil {
 		return nil, fmt.Errorf("GetNumberInputs: Can't get number inputs: %v")
 	}
 
@@ -112,16 +104,16 @@ func GetNumberInputs(parentFormID string) ([]NumberInput, error) {
 
 }
 
-func CloneNumberInputs(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func CloneNumberInputs(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) error {
 
-	srcNumberInputs, err := GetNumberInputs(parentFormID)
+	srcNumberInputs, err := GetNumberInputs(parentTableID)
 	if err != nil {
 		return fmt.Errorf("CloneNumberInputs: %v", err)
 	}
 
 	for _, srcNumberInput := range srcNumberInputs {
 		remappedNumberInputID := remappedIDs.AllocNewOrGetExistingRemappedID(srcNumberInput.NumberInputID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcNumberInput.ParentFormID)
+		remappedTableID, err := remappedIDs.GetExistingRemappedID(srcNumberInput.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneNumberInputs: %v", err)
 		}
@@ -130,7 +122,7 @@ func CloneNumberInputs(remappedIDs uniqueID.UniqueIDRemapper, parentFormID strin
 			return fmt.Errorf("CloneNumberInputs: %v", err)
 		}
 		destNumberInput := NumberInput{
-			ParentFormID:  remappedFormID,
+			ParentTableID: remappedTableID,
 			NumberInputID: remappedNumberInputID,
 			Properties:    *destProperties}
 		if err := saveNumberInput(destNumberInput); err != nil {
@@ -143,7 +135,7 @@ func CloneNumberInputs(remappedIDs uniqueID.UniqueIDRemapper, parentFormID strin
 
 func updateExistingNumberInput(numberInputID string, updatedNumberInput *NumberInput) (*NumberInput, error) {
 
-	if updateErr := common.UpdateFormComponent(numberInputEntityKind, updatedNumberInput.ParentFormID,
+	if updateErr := common.UpdateTableColumn(numberInputEntityKind, updatedNumberInput.ParentTableID,
 		updatedNumberInput.NumberInputID, updatedNumberInput.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingNumberInput: error updating existing number input component: %v", updateErr)
 	}

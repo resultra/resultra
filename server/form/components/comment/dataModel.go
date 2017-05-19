@@ -48,7 +48,7 @@ func saveNewComment(params NewCommentParams) (*Comment, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := common.ValidateField(params.FieldID, validCommentFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(params.FieldID, validCommentFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewComment: %v", fieldErr)
 	}
 

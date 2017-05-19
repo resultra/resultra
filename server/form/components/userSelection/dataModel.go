@@ -46,7 +46,7 @@ func saveNewUserSelection(params NewUserSelectionParams) (*UserSelection, error)
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := common.ValidateField(params.FieldID, validUserSelectionFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(params.FieldID, validUserSelectionFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewUserSelection: %v", fieldErr)
 	}
 

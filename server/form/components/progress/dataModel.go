@@ -46,7 +46,7 @@ func saveNewProgress(params NewProgressParams) (*Progress, error) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := common.ValidateField(params.FieldID, validProgressFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(params.FieldID, validProgressFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewProgress: %v", fieldErr)
 	}
 

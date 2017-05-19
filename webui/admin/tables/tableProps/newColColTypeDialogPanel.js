@@ -7,9 +7,54 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 		
 	function initPanel($parentDialog) {
 		
-		initButtonClickHandler('#newTableColColTypeSaveButton',function() {
-			$parentDialog.modal("hide")
+		var validator = $panelForm.validate({
+			rules: {
+				colTypeSelection: {
+					required: true
+				}
+			},
+			messages: {
+				colTypeSelection: {
+					required: "Column type is required"
+				}
+			}
 		})
+		validator.resetForm()
+		
+		
+		
+		initButtonClickHandler('#newTableColColTypeSaveButton',function() {
+			
+			
+			function createNewColumn(fieldInfo) {
+				console.log("Creating new column for field: " + JSON.stringify(fieldInfo))
+			}
+			
+			if ($panelForm.valid()) {
+				var newOrSelectedFieldPanelVals = getWizardDialogPanelVals(
+						$parentDialog,newTableColCreateNewOrExistingFieldDialogPanelID)
+					if(newOrSelectedFieldPanelVals.isNewField) {
+						var newFieldPanelVals = getWizardDialogPanelVals(
+							$parentDialog,newTableColNewFieldDialogPanelID)
+						newFieldPanelVals.newFieldPanel.createNewField(function(newFieldInfo) {
+							if(newFieldInfo !== null) {
+								createNewColumn(newFieldInfo)			
+							}
+						})
+					} else {
+						var selectedFieldID = newOrSelectedFieldPanelVals.selectedField				
+						var getFieldParams = { fieldID: selectedFieldID }
+						jsonAPIRequest("field/get",getFieldParams,function(existingFieldInfo) {
+							createNewColumn(existingFieldInfo)
+						})
+					}
+				
+				
+				
+				$parentDialog.modal("hide")
+			} // if validate form
+		})
+		
 		initButtonClickHandler('#newTableColColTypePrevButton',function() {
 			var newOrSelectedFieldPanelVals = getWizardDialogPanelVals(
 					$parentDialog,newTableColCreateNewOrExistingFieldDialogPanelID)
@@ -68,8 +113,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				console.log("Configuring column type panel for existing field: type = " + existingFieldType)
 				populateColTypeSelectionByFieldType(existingFieldType)
 			})
-		}
-		
+		}		
 		
 	}
 	
