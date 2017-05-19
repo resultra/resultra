@@ -18,7 +18,7 @@ type NumberInput struct {
 }
 
 type NewNumberInputParams struct {
-	ParentTableID string `json:"parentFormID"`
+	ParentTableID string `json:"parentTableID"`
 	FieldID       string `json:"fieldID"`
 }
 

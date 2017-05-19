@@ -1,4 +1,4 @@
-function openNewTableColDialog(databaseID) {
+function openNewTableColDialog(tableRef) {
 	
 	function saveNewTableCol($dialog) {
 		
@@ -15,7 +15,8 @@ function openNewTableColDialog(databaseID) {
 	}
 	
 	var panelConfig = {
-		databaseID: databaseID
+		databaseID: tableRef.parentDatabaseID,
+		tableID: tableRef.tableID
 	}
 	
 	

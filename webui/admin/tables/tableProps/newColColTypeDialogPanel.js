@@ -25,9 +25,26 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 		
 		initButtonClickHandler('#newTableColColTypeSaveButton',function() {
 			
-			
 			function createNewColumn(fieldInfo) {
+				
+				function createNumberInput(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/numberInput/new",params,function(numberInput) {
+						console.log("Number input column created: " + JSON.stringify(numberInput))
+					})
+					
+				}
+				
 				console.log("Creating new column for field: " + JSON.stringify(fieldInfo))
+				
+				switch (fieldInfo.type) {
+				case fieldTypeNumber:
+					createNumberInput(fieldInfo)
+					break
+				}
 			}
 			
 			if ($panelForm.valid()) {
