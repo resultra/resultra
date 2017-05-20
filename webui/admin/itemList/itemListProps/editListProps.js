@@ -103,22 +103,65 @@ $(document).ready(function() {
 	} // initItemListNameProperties
 
 	function initItemListFormProperties(listInfo) {
-		var selectFormParams = {
-			menuSelector: "#itemListDefaultFormSelection",
-			parentDatabaseID: itemListPropsContext.databaseID,
-			initialFormID: listInfo.formID
-		}
-		populateFormSelectionMenu(selectFormParams)
-		var $formSelection = $("#itemListDefaultFormSelection")
-		initSelectControlChangeHandler($formSelection, function(selectedFormID) {
-
-			var setFormParams = {
-				listID: listInfo.listID,
-				formID: selectedFormID
+		
+		var $formSelection = $("#itemListDefaultFormSelection")	
+		
+		function populateDefaultViewSelection() {
+			function populateTableViewList(doneCallback) {
+				var $tableOptGroup = $('#defaultTableSelectionOptGroup')
+				var getTableParams = { parentDatabaseID: itemListPropsContext.databaseID }
+				jsonAPIRequest("tableView/list",getTableParams,function(tableRefs) {
+					$tableOptGroup.empty()
+					$.each(tableRefs,function(index,tableRef) {
+						var $tableItem = $(selectOptionHTML(tableRef.tableID,tableRef.name))
+						$tableItem.attr('data-view-type','table')
+						$tableOptGroup.append($tableItem)	
+					})
+					doneCallback()
+				})
 			}
-			jsonAPIRequest("itemList/setForm",setFormParams,function(saveReply) {
-				console.log("Done setting form for list")
-			})
+			function populateFormList(doneCallback) {
+				var listParams =  { parentDatabaseID: itemListPropsContext.databaseID }
+				jsonAPIRequest("frm/list",listParams,function(formsInfo) {
+					var $formOptGroup = $('#defaultFormSelectionOptGroup')
+					$.each(formsInfo,function(index,formInfo) {
+						var $formItem = $(selectOptionHTML(formInfo.formID,formInfo.name))
+						$formItem.attr('data-view-type','form')
+						$formOptGroup.append($formItem)
+					})
+					doneCallback()
+				})
+			
+			}
+			var numOptGroupsRemaining = 2
+			function donePopulatingOptGroup() {
+				numOptGroupsRemaining--
+				if(numOptGroupsRemaining<=0) {
+					$formSelection.val(listInfo.formID)			
+				}
+			}
+			populateFormList(donePopulatingOptGroup)
+			populateTableViewList(donePopulatingOptGroup)
+		}
+		
+		populateDefaultViewSelection()
+		
+		initSelectControlChangeHandler($formSelection, function(selectedFormID) {
+			
+			var $selectedFormOrTable = $('#itemListDefaultFormSelection option:selected')
+			var viewerType = $selectedFormOrTable.attr('data-view-type')
+			console.log("Selected form or table: " + $selectedFormOrTable.text() + ' type = ' + viewerType)
+			if(viewerType === 'form') {
+				var setFormParams = {
+					listID: listInfo.listID,
+					formID: selectedFormID
+				}
+				jsonAPIRequest("itemList/setForm",setFormParams,function(saveReply) {
+					console.log("Done setting form for list")
+				})
+			} else {
+				// Set default table.
+			}
 		})
 
 	} // initItemListFormProperties

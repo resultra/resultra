@@ -50,13 +50,17 @@
 {{define "adminItemListDisplayProperty"}}
 
 	<tr>
-		<td class="width200"><label>Default form for viewing items:</label>
+		<td class="width200"><label>Default form or table view for viewing items:</label>
 		</td>
 
 		<td>
 			<form class="form-inline" id="itemListFormPropertyForm">
 					<div class="form-group">
-						<select class="form-control" id="itemListDefaultFormSelection"></select>
+						<select class="form-control" id="itemListDefaultFormSelection">
+							<option disabled selected value="">Select a form or table</option>
+							<optgroup id="defaultFormSelectionOptGroup" label="Forms"></optgroup>
+							<optgroup id="defaultTableSelectionOptGroup" label="Tables"></optgroup>
+						</select>
 					</div>
 			</form>
 		</td>

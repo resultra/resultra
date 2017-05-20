@@ -4,10 +4,17 @@ function populateFormSelectionMenu(params) {
 	if (params.hasOwnProperty("limitToFormIDs")) {
 		limitToFormsLookup = new IDLookupTable(params.limitToFormIDs)
 	}
+	var includeDefaultSelection = true
+	if (params.hasOwnProperty("includeDefaultSelection")) {
+		includeDefaultSelection = params.includeDefaultSelection
+	}
+	
 	
 	function populateSelectionMenuFormList(formsInfo, menuSelector) {
 		$(menuSelector).empty()		
-		$(menuSelector).append(defaultSelectOptionPromptHTML("Select a form"))
+		if(includeDefaultSelection) {
+			$(menuSelector).append(defaultSelectOptionPromptHTML("Select a form"))		
+		}
 		$.each(formsInfo, function(index, formInfo) {
 			
 			if (limitToFormsLookup !== null) {
