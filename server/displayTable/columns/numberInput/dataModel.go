@@ -14,6 +14,7 @@ const numberInputEntityKind string = "numberInput"
 type NumberInput struct {
 	ParentTableID string                `json:"parentTableID"`
 	NumberInputID string                `json:"numberInputID"`
+	ColType       string                `json:"colType"`
 	Properties    NumberInputProperties `json:"properties"`
 }
 
@@ -73,6 +74,7 @@ func getNumberInput(parentTableID string, numberInputID string) (*NumberInput, e
 	numberInput := NumberInput{
 		ParentTableID: parentTableID,
 		NumberInputID: numberInputID,
+		ColType:       numberInputEntityKind,
 		Properties:    numberInputProps}
 
 	return &numberInput, nil
@@ -91,6 +93,7 @@ func GetNumberInputs(parentTableID string) ([]NumberInput, error) {
 		currNumberInput := NumberInput{
 			ParentTableID: parentTableID,
 			NumberInputID: numberInputID,
+			ColType:       numberInputEntityKind,
 			Properties:    numberInputProps}
 		numberInputs = append(numberInputs, currNumberInput)
 
@@ -124,6 +127,7 @@ func CloneNumberInputs(remappedIDs uniqueID.UniqueIDRemapper, parentTableID stri
 		destNumberInput := NumberInput{
 			ParentTableID: remappedTableID,
 			NumberInputID: remappedNumberInputID,
+			ColType:       numberInputEntityKind,
 			Properties:    *destProperties}
 		if err := saveNumberInput(destNumberInput); err != nil {
 			return fmt.Errorf("CloneNumberInputs: %v", err)

@@ -22,6 +22,8 @@ func init() {
 	tableRouter.HandleFunc("/api/tableView/list", listTableAPI)
 	tableRouter.HandleFunc("/api/tableView/get", getTableAPI)
 
+	tableRouter.HandleFunc("/api/tableView/getColumns", getTableColsAPI)
+
 	tableRouter.HandleFunc("/api/tableView/validateTableName", validateTableNameAPI)
 	tableRouter.HandleFunc("/api/tableView/validateNewTableName", validateNewTableNameAPI)
 
@@ -100,6 +102,34 @@ func getTableAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	api.WriteJSONResponse(w, tableRef)
+
+}
+
+func getTableColsAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetTableParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	tableRef, err := GetTable(params.TableID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+		r, tableRef.ParentDatabaseID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	tableCols, err := getTableCols(params.TableID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+	}
+
+	api.WriteJSONResponse(w, tableCols)
 
 }
 
