@@ -7,12 +7,29 @@ import (
 	"resultra/datasheet/server/recordFilter"
 )
 
+type ItemListViewProperties struct {
+	FormID   *string `json:"formID,omitempty"`
+	TableID  *string `json:"tableID,omitempty"`
+	PageSize int     `json:"pageSize"`
+}
+
+func (viewProps ItemListViewProperties) validate() error {
+	// TODO - Retrieve the form or table to validate it exists
+	if viewProps.TableID != nil {
+		return nil
+	} else if viewProps.FormID != nil && viewProps.PageSize > 0 {
+		return nil
+	}
+	return fmt.Errorf("Invalid item list view properties: %+v", viewProps)
+}
+
 type ItemListProperties struct {
 	DefaultRecordSortRules []recordSortDataModel.RecordSortRule `json:"defaultRecordSortRules"`
 	DefaultFilterRules     recordFilter.RecordFilterRuleSet     `json:"defaultFilterRules"`
 	PreFilterRules         recordFilter.RecordFilterRuleSet     `json:"preFilterRules"`
 	DefaultPageSize        int                                  `json:"defaultPageSize"`
 	AlternateForms         []string                             `json:"alternateForms"`
+	DefaultView            ItemListViewProperties               `json:"defaultView"`
 }
 
 func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ItemListProperties, error) {

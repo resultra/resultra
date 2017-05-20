@@ -109,6 +109,24 @@ func (updateParams SetFormParams) updateProps(itemList *ItemList) error {
 	return nil
 }
 
+type SetDefaultViewParams struct {
+	ItemListIDHeader
+	View ItemListViewProperties `json:"view"`
+}
+
+func (updateParams SetDefaultViewParams) updateProps(itemList *ItemList) error {
+
+	// TODO - Validate  before saving
+
+	if err := updateParams.View.validate(); err != nil {
+		return err
+	}
+
+	itemList.Properties.DefaultView = updateParams.View
+
+	return nil
+}
+
 type SetPageSizeParams struct {
 	ItemListIDHeader
 	PageSize int `json:"pageSize"`

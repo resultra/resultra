@@ -146,7 +146,7 @@ $(document).ready(function() {
 		
 		populateDefaultViewSelection()
 		
-		initSelectControlChangeHandler($formSelection, function(selectedFormID) {
+		initSelectControlChangeHandler($formSelection, function(selectedID) {
 			
 			var $selectedFormOrTable = $('#itemListDefaultFormSelection option:selected')
 			var viewerType = $selectedFormOrTable.attr('data-view-type')
@@ -154,13 +154,32 @@ $(document).ready(function() {
 			if(viewerType === 'form') {
 				var setFormParams = {
 					listID: listInfo.listID,
-					formID: selectedFormID
+					formID: selectedID
 				}
 				jsonAPIRequest("itemList/setForm",setFormParams,function(saveReply) {
 					console.log("Done setting form for list")
 				})
+				var setViewParams = {
+					listID: listInfo.listID,
+					view: {
+						formID: selectedID,
+						pageSize: 1
+					}
+				}
+				jsonAPIRequest("itemList/setDefaultView",setViewParams,function(saveReply) {
+					console.log("Done setting default view for list (form)")
+				})
 			} else {
-				// Set default table.
+				var setViewParams = {
+					listID: listInfo.listID,
+					view: {
+						tableID: selectedID,
+						pageSize: 0
+					}
+				}
+				jsonAPIRequest("itemList/setDefaultView",setViewParams,function(saveReply) {
+					console.log("Done setting default view for list (table)")
+				})
 			}
 		})
 
