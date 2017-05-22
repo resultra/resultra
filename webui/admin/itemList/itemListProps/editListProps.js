@@ -106,83 +106,22 @@ $(document).ready(function() {
 		
 		var $formSelection = $("#itemListDefaultFormSelection")	
 		
-		function populateDefaultViewSelection() {
-			function populateTableViewList(doneCallback) {
-				var $tableOptGroup = $('#defaultTableSelectionOptGroup')
-				var getTableParams = { parentDatabaseID: itemListPropsContext.databaseID }
-				jsonAPIRequest("tableView/list",getTableParams,function(tableRefs) {
-					$tableOptGroup.empty()
-					$.each(tableRefs,function(index,tableRef) {
-						var $tableItem = $(selectOptionHTML(tableRef.tableID,tableRef.name))
-						$tableItem.attr('data-view-type','table')
-						$tableOptGroup.append($tableItem)	
-					})
-					doneCallback()
-				})
+		function setDefaultView(viewParams) {
+			var setDefaultViewParams = {
+				listID: listInfo.listID,
+				view: viewParams
 			}
-			function populateFormList(doneCallback) {
-				var listParams =  { parentDatabaseID: itemListPropsContext.databaseID }
-				jsonAPIRequest("frm/list",listParams,function(formsInfo) {
-					var $formOptGroup = $('#defaultFormSelectionOptGroup')
-					$.each(formsInfo,function(index,formInfo) {
-						var $formItem = $(selectOptionHTML(formInfo.formID,formInfo.name))
-						$formItem.attr('data-view-type','form')
-						$formOptGroup.append($formItem)
-					})
-					doneCallback()
-				})
-			
-			}
-			var numOptGroupsRemaining = 2
-			function donePopulatingOptGroup() {
-				numOptGroupsRemaining--
-				if(numOptGroupsRemaining<=0) {
-					$formSelection.val(listInfo.formID)			
-				}
-			}
-			populateFormList(donePopulatingOptGroup)
-			populateTableViewList(donePopulatingOptGroup)
+			jsonAPIRequest("itemList/setDefaultView",setDefaultViewParams,function(saveReply) {
+				console.log("Done setting default view for list (form)")
+			})
 		}
+		var defaultViewConfig = {
+			setViewCallback: setDefaultView,
+			databaseID: itemListPropsContext.databaseID,
+			initialView: listInfo.properties.defaultView
+		}
+		initItemListViewSelection(defaultViewConfig)
 		
-		populateDefaultViewSelection()
-		
-		initSelectControlChangeHandler($formSelection, function(selectedID) {
-			
-			var $selectedFormOrTable = $('#itemListDefaultFormSelection option:selected')
-			var viewerType = $selectedFormOrTable.attr('data-view-type')
-			console.log("Selected form or table: " + $selectedFormOrTable.text() + ' type = ' + viewerType)
-			if(viewerType === 'form') {
-				var setFormParams = {
-					listID: listInfo.listID,
-					formID: selectedID
-				}
-				jsonAPIRequest("itemList/setForm",setFormParams,function(saveReply) {
-					console.log("Done setting form for list")
-				})
-				var setViewParams = {
-					listID: listInfo.listID,
-					view: {
-						formID: selectedID,
-						pageSize: 1
-					}
-				}
-				jsonAPIRequest("itemList/setDefaultView",setViewParams,function(saveReply) {
-					console.log("Done setting default view for list (form)")
-				})
-			} else {
-				var setViewParams = {
-					listID: listInfo.listID,
-					view: {
-						tableID: selectedID,
-						pageSize: 0
-					}
-				}
-				jsonAPIRequest("itemList/setDefaultView",setViewParams,function(saveReply) {
-					console.log("Done setting default view for list (table)")
-				})
-			}
-		})
-
 	} // initItemListFormProperties
 
 
