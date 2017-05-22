@@ -1,8 +1,9 @@
 
 
-function ListItemController(defaultPageSize) {
+function ListItemController($parentContainer, defaultPageSize) {
 	
 	this.listItemsInfo = []
+	this.$parentContainer = $parentContainer
 	
 	// this isn't normally accessible from inner functions when this function
 	// is instantiated as an object. Below is a conventional work-around.
@@ -50,13 +51,13 @@ function ListItemController(defaultPageSize) {
 				recordProxy: recordProxy
 			}
 		
-			$('#layoutCanvas').append($listItemContainer)
+			listItemControllerSelf.$parentContainer.append($listItemContainer)
 			
 			return listItemInfo
 		}
 		
 		this.listItemsInfo = []
-		$('#layoutCanvas').empty()
+		this.$parentContainer.empty()
 		for(var listIndex = 0; listIndex < currRecordSetWindowSize; listIndex++) {
 			var listItemInfo = populateOneListItem(listIndex)
 			this.listItemsInfo.push(listItemInfo)

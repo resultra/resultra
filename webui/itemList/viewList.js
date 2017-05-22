@@ -54,7 +54,11 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 	
 		
 	var filterPanelElemPrefix = "form_"
-	var $formLayoutCanvas = $('#layoutCanvas')
+	var $formLayoutContainer = $('#formViewContainer')
+	
+	var $tableViewLayoutContainer = $('#tableViewContainer')
+	$tableViewLayoutContainer.hide()
+	
 				
 	function reloadSortedAndFilterRecords()
 	{
@@ -114,10 +118,12 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 		console.log("Updating item list view configuration: " + JSON.stringify(viewOptions))
 		if(viewOptions.formID !== undefined) {
 			listItemController.setFormAndPageSize(viewOptions.formID,viewOptions.pageSize)
-			 $formLayoutCanvas.show()
+			$formLayoutContainer.show()
+			$tableViewLayoutContainer.hide()
 		} else {
-			 $formLayoutCanvas.hide()
-			$formLayoutCanvas.empty()
+			$tableViewLayoutContainer.show()
+			$formLayoutContainer.hide()
+			$formLayoutContainer.empty()
 			
 		}
 	}
@@ -155,8 +161,10 @@ $(document).ready(function() {
 		listID: viewListContext.listID
 	}
 	
+	var $formViewContainer = $('#formViewContainer')
+	
 	jsonAPIRequest("itemList/get",getListParams,function(listInfo) {
-		listItemController = new ListItemController(listInfo.properties.defaultPageSize)
+		listItemController = new ListItemController($formViewContainer,listInfo.properties.defaultPageSize)
 		
 		
 		var defaultListContext = {
