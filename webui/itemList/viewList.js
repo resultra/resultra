@@ -109,8 +109,20 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 		listItemController.setForm(newFormID)
 	}
 
+	function updateViewConfig(viewOptions) {
+		console.log("Updating item list view configuration: " + JSON.stringify(viewOptions))
+	}
 	initItemListDisplayConfigPanel(listInfo,updatePageSize,updateForm)
 
+	var limitSelectionToFormIDs = listInfo.properties.alternateForms.slice(0)
+	limitSelectionToFormIDs.push(listInfo.formID)
+	var itemListViewConfig = {
+		setViewCallback: updateViewConfig,
+		databaseID: viewListContext.databaseID,
+		initialView: listInfo.properties.defaultView
+	}
+	initItemListViewSelection(itemListViewConfig)
+	
 
 }
 
