@@ -5,6 +5,7 @@
 var currGlobalVals
 
 var listItemController
+var tableViewController
 
 function initUILayoutPanes()
 {
@@ -124,6 +125,7 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 			$tableViewLayoutContainer.show()
 			$formLayoutContainer.hide()
 			$formLayoutContainer.empty()
+			tableViewController.setTable(viewOptions.tableID)
 			
 		}
 	}
@@ -162,9 +164,11 @@ $(document).ready(function() {
 	}
 	
 	var $formViewContainer = $('#formViewContainer')
+	var $tableViewContainer = $('#tableViewContainer')
 	
 	jsonAPIRequest("itemList/get",getListParams,function(listInfo) {
 		listItemController = new ListItemController($formViewContainer,listInfo.properties.defaultPageSize)
+		tableViewController = new ItemListTableViewController($tableViewContainer,viewListContext.databaseID)
 		
 		
 		var defaultListContext = {
