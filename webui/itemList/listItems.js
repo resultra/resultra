@@ -126,30 +126,6 @@ function ListItemController($parentContainer, defaultPageSize) {
 	}
 	
 	
-	function loadFormData(reloadRecordParams, formDataCallback) {
-		var numDataSetsRemainingToLoad = 2
-	
-		var formData =  {}
-	
-		function oneDataSetLoaded() {
-			numDataSetsRemainingToLoad -= 1
-			if(numDataSetsRemainingToLoad <= 0) {
-				formDataCallback(formData)
-			}
-		}
-	
-		jsonAPIRequest("recordRead/getFilteredSortedRecordValues",reloadRecordParams,function(recordsData) {
-			formData.recordData = recordsData
-			oneDataSetLoaded()
-		})
-	
-		var globalParams = { parentDatabaseID: viewListContext.databaseID }
-		jsonAPIRequest("global/getValues",globalParams,function(globalVals) {
-			formData.globalVals = globalVals
-			oneDataSetLoaded()
-		})
-	
-	}
 	
 	function enableRecordButtons(isEnabled)
 	{
@@ -165,26 +141,21 @@ function ListItemController($parentContainer, defaultPageSize) {
 		$('#newRecordButton').prop("disabled",false)
 	}
 	
-	this.reloadRecords =  function(reloadParams) {
+	this.setRecordData =  function(recordData) {
 		
-		currReloadParams = reloadParams
+		currRecordSet = new RecordSet(recordData,currRecordSetWindowSize);
+		if(currRecordSet.numRecords() > 0) {
+			reloadRecordsIntoContainers()		
+		}
 	
-		loadFormData(reloadParams,function(formData) {
-			currGlobalVals = formData.globalVals	
-			currRecordSet = new RecordSet(formData.recordData,currRecordSetWindowSize);
-			if(currRecordSet.numRecords() > 0) {
-				reloadRecordsIntoContainers()		
-			}
-		
-			// Enable the buttons to page through the records
-			if(currRecordSet.numRecords() > 0) {
-				enableRecordButtons(true)
-			}
-			else {
-				enableNewRecordButton() // just enable the "New Record" button
-			}
-		
-		})	
+		// Enable the buttons to page through the records
+		if(currRecordSet.numRecords() > 0) {
+			enableRecordButtons(true)
+		}
+		else {
+			enableNewRecordButton() // just enable the "New Record" button
+		}
+	
 	}
 	
 	

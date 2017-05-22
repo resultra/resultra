@@ -60,6 +60,32 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 	var $tableViewLayoutContainer = $('#tableViewContainer')
 	$tableViewLayoutContainer.hide()
 	
+	function loadFormData(reloadRecordParams, formDataCallback) {
+		var numDataSetsRemainingToLoad = 2
+	
+		var formData =  {}
+	
+		function oneDataSetLoaded() {
+			numDataSetsRemainingToLoad -= 1
+			if(numDataSetsRemainingToLoad <= 0) {
+				formDataCallback(formData)
+			}
+		}
+	
+		jsonAPIRequest("recordRead/getFilteredSortedRecordValues",reloadRecordParams,function(recordsData) {
+			formData.recordData = recordsData
+			oneDataSetLoaded()
+		})
+	
+		var globalParams = { parentDatabaseID: viewListContext.databaseID }
+		jsonAPIRequest("global/getValues",globalParams,function(globalVals) {
+			formData.globalVals = globalVals
+			oneDataSetLoaded()
+		})
+	
+	}
+	
+	
 				
 	function reloadSortedAndFilterRecords()
 	{
@@ -71,8 +97,12 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 			preFilterRules: listInfo.properties.preFilterRules,
 			filterRules: filterRules,		
 			sortRules: sortRules}
+			
+		loadFormData(getFilteredRecordsParams,function(formData) {
+			currGlobalVals = formData.globalVals	
+			listItemController.setRecordData(formData.recordData)
+		})
 
-		listItemController.reloadRecords(getFilteredRecordsParams)
 	}
 	
 	var panelInitRemaining = 2
