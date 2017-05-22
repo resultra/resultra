@@ -119,6 +119,11 @@ function ListItemController(defaultPageSize) {
 		})
 	}
 	
+	this.setFormAndPageSize = function(formID, pageSize) {
+		currRecordSetWindowSize = Number(pageSize)
+		this.setForm(formID)
+	}
+	
 	
 	function loadFormData(reloadRecordParams, formDataCallback) {
 		var numDataSetsRemainingToLoad = 2

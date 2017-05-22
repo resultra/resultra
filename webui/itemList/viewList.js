@@ -54,6 +54,7 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 	
 		
 	var filterPanelElemPrefix = "form_"
+	var $formLayoutCanvas = $('#layoutCanvas')
 				
 	function reloadSortedAndFilterRecords()
 	{
@@ -111,6 +112,14 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 
 	function updateViewConfig(viewOptions) {
 		console.log("Updating item list view configuration: " + JSON.stringify(viewOptions))
+		if(viewOptions.formID !== undefined) {
+			listItemController.setFormAndPageSize(viewOptions.formID,viewOptions.pageSize)
+			 $formLayoutCanvas.show()
+		} else {
+			 $formLayoutCanvas.hide()
+			$formLayoutCanvas.empty()
+			
+		}
 	}
 	initItemListDisplayConfigPanel(listInfo,updatePageSize,updateForm)
 
