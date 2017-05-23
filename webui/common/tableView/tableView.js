@@ -1,4 +1,4 @@
-function initItemListTableView($tableContainer, databaseID, tableID) {
+function initItemListTableView($tableContainer, databaseID, tableID,initDoneCallback) {
 	
 	function getTableInfo(tableInfoCallback) {
 		
@@ -51,6 +51,15 @@ function initItemListTableView($tableContainer, databaseID, tableID) {
 		$tableElem.append(tableHeader())
 		$tableContainer.append($tableElem)
 		
+		var dataCols = []
+		$.each(tableInfo.cols,function(index,colInfo) {
+			var colDataDef = {
+				data:'fieldValues.' + colInfo.properties.fieldID,
+				defaultContent:'' // used when there is null or undefined data
+			}
+			dataCols.push(colDataDef)
+		})
+		
 		var dataTable = $tableElem.DataTable({
 			destroy:true, // Destroy existing table before applying the options
 			searching:false, // Hide the search box
@@ -58,17 +67,29 @@ function initItemListTableView($tableContainer, databaseID, tableID) {
 			paging:false,
 			scrollY: '100px',
 			scrollCollapse:true,
+			columns:dataCols
 		})
 	
 		var $scrollHead = $tableContainer.find(".dataTables_scrollHead")
-		var $scrollFoot = $tableContainer.find(".dataTables_scrollFoot")
+// TODO - incorporate footer into the table.
+//		var $scrollFoot = $tableContainer.find(".dataTables_scrollFoot")
 		var $scrollBody = $tableContainer.find(".dataTables_scrollBody")
 	
 		// Set the color of the entire header and footer to match the color of
 		// of the individual header and footer cells. Otherwise, the scroll bar
 		// on the RHS of the table stands out.
-		$scrollFoot.css("background-color","lightGrey")
+//		$scrollFoot.css("background-color","lightGrey")
 		$scrollHead.css("background-color","lightGrey")
+		
+		var scrollBodyHeight = $tableContainer.outerHeight() -
+				$scrollHead.outerHeight() // - $scrollFoot.outerHeight()
+		var scrollBodyHeightPx = scrollBodyHeight + 'px'
+	
+		$scrollBody.css('max-height', scrollBodyHeightPx);
+		dataTable.draw() // force redraw
+		
+		
+		initDoneCallback(dataTable)
 		
 	}
 	

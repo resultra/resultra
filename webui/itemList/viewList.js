@@ -100,6 +100,7 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 			
 		loadFormData(getFilteredRecordsParams,function(formData) {
 			currGlobalVals = formData.globalVals	
+			tableViewController.setRecordData(formData.recordData)
 			listItemController.setRecordData(formData.recordData)
 		})
 
@@ -150,11 +151,14 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 		if(viewOptions.formID !== undefined) {
 			listItemController.setFormAndPageSize(viewOptions.formID,viewOptions.pageSize)
 			$formLayoutContainer.show()
-			$tableViewLayoutContainer.hide()
+//			$tableViewLayoutContainer.hide()
+			$tableViewLayoutContainer.css("display","none")
 		} else {
-			$tableViewLayoutContainer.show()
+//			$tableViewLayoutContainer.show()
+			$tableViewLayoutContainer.css("display","")
 			$formLayoutContainer.hide()
-			$formLayoutContainer.empty()
+	// TODO - Clear the form layout container
+	//		$formLayoutContainer.empty()
 			tableViewController.setTable(viewOptions.tableID)
 			
 		}
