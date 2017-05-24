@@ -9,14 +9,14 @@ import (
 func init() {
 	datePickerRouter := mux.NewRouter()
 
-	datePickerRouter.HandleFunc("/api/frm/datePicker/new", newDatePicker)
-	datePickerRouter.HandleFunc("/api/frm/datePicker/setFormat", setFormat)
-	datePickerRouter.HandleFunc("/api/frm/datePicker/setLabelFormat", setLabelFormat)
-	datePickerRouter.HandleFunc("/api/frm/datePicker/setPermissions", setPermissions)
-	datePickerRouter.HandleFunc("/api/frm/datePicker/setValidation", setValidation)
-	datePickerRouter.HandleFunc("/api/frm/datePicker/validateInput", validateInputAPI)
+	datePickerRouter.HandleFunc("/api/tableView/datePicker/new", newDatePicker)
+	datePickerRouter.HandleFunc("/api/tableView/datePicker/setFormat", setFormat)
+	datePickerRouter.HandleFunc("/api/tableView/datePicker/setLabelFormat", setLabelFormat)
+	datePickerRouter.HandleFunc("/api/tableView/datePicker/setPermissions", setPermissions)
+	datePickerRouter.HandleFunc("/api/tableView/datePicker/setValidation", setValidation)
+	datePickerRouter.HandleFunc("/api/tableView/datePicker/validateInput", validateInputAPI)
 
-	http.Handle("/api/frm/datePicker/", datePickerRouter)
+	http.Handle("/api/tableView/datePicker/", datePickerRouter)
 }
 
 func newDatePicker(w http.ResponseWriter, r *http.Request) {

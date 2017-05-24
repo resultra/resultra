@@ -80,6 +80,16 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		}
 		return createTableViewColDef(colInfo,fieldsByID,textBoxTableViewContainerHTML,initContainer)
 	}
+
+	function createDateInputColDef(colInfo,fieldsByID) {
+		
+		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+				setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
+				initDatePickerRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,fieldsByID,datePickerTableViewCellContainerHTML,initContainer)
+	}
+
 	
 	function createColDef(colInfo,fieldsByID) {
 		switch (colInfo.colType) {
@@ -87,6 +97,8 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 			return createNumberInputColDef(colInfo,fieldsByID)
 		case 'textInput':
 			return createTextInputColDef(colInfo,fieldsByID)
+		case 'datePicker':
+			return createDateInputColDef(colInfo,fieldsByID)
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,

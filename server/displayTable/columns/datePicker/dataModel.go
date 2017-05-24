@@ -9,7 +9,7 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
-const datePickerEntityKind string = "datepicker"
+const datePickerEntityKind string = "datePicker"
 
 type DatePicker struct {
 	ParentTableID string               `json:"parentTableID"`

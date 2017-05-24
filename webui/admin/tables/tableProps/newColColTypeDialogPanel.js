@@ -48,6 +48,17 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					
 				}
 				
+				function createDatePickerInput(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/datePicker/new",params,function(datePicker) {
+						console.log("Date picker column created: " + JSON.stringify(datePicker))
+					})
+					
+				}
+				
 				console.log("Creating new column for field: " + JSON.stringify(fieldInfo))
 				
 				switch (fieldInfo.type) {
@@ -56,6 +67,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					break
 				case fieldTypeText:
 					createTextInput(fieldInfo)
+					break
+				case fieldTypeTime:
+					createDatePickerInput(fieldInfo)
 					break
 				}
 			}
@@ -117,6 +131,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				break
 			case fieldTypeText:
 				$colTypeSelection.append(selectOptionHTML('textInput','Text input'))
+				break
+			case fieldTypeTime:
+				$colTypeSelection.append(selectOptionHTML('datePicker','Date picker'))
 				break
 			case fieldTypeBool:
 				$colTypeSelection.append(selectOptionHTML('checkBox','Checkbox'))
