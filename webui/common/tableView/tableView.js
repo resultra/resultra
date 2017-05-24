@@ -30,15 +30,14 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		this.updateRecordFunc = updateCurrentRecord
 	}
 	
-	
-	function createNumberInputColDef(colInfo,fieldsByID) {
+	function createTableViewColDef(colInfo,fieldsByID,renderCellHTMLFunc,initContainerFunc) {
 		var fieldID = colInfo.properties.fieldID
 		var colDef = {
 			data:'fieldValues.' + fieldID,
 			defaultContent:'', // used when there is null or undefined data
 			createdCell: function( cell, cellData, rowData, rowIndex, colIndex ) {
 				
-				var $numberInputContainer = $(cell).find('.layoutContainer')
+				var $cellContainer = $(cell).find('.layoutContainer')
 				
 				var recordProxy = new TableViewRecordProxy(rowData,$(cell))
 								
@@ -47,17 +46,14 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 					fieldsByID: fieldsByID
 				}
 				
-				var $numberInputContainer = $(cell).find('.layoutContainer')
-				setContainerComponentInfo($numberInputContainer,colInfo,colInfo.numberInputID)
-				initNumberInputTableRecordEditBehavior($numberInputContainer,componentContext,recordProxy, colInfo)
-				var viewConfig = $numberInputContainer.data("viewFormConfig")
-				viewConfig.loadRecord($numberInputContainer,recordProxy.getRecordFunc())
+				initContainerFunc(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext)
+								
+				var viewConfig = $cellContainer.data("viewFormConfig")
+				viewConfig.loadRecord($cellContainer,recordProxy.getRecordFunc())
 			},
 			render: function(data, type, row, meta) {
 				if (type==='display') {
-					return numberInputTableCellContainerHTML()
-				} else if (type==='filter') {
-					return data
+					return renderCellHTMLFunc()
 				} else {
 					return data
 				}
@@ -65,6 +61,26 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		}
 		return colDef
 	}
+	
+	
+	function createNumberInputColDef(colInfo,fieldsByID) {
+		
+		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+			setContainerComponentInfo($cellContainer,colInfo,colInfo.numberInputID)
+			initNumberInputTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,fieldsByID,numberInputTableCellContainerHTML,initContainer)
+	}
+
+	function createTextInputColDef(colInfo,fieldsByID) {
+		
+		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+				setContainerComponentInfo($cellContainer,colInfo,colInfo.textInputID)
+				initTextBoxRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,fieldsByID,textBoxTableViewContainerHTML,initContainer)
+	}
+
 	
 
 	function createTextInputColDef(colInfo,fieldsByID) {
