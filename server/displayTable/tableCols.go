@@ -2,6 +2,7 @@ package displayTable
 
 import (
 	"fmt"
+	"resultra/datasheet/server/displayTable/columns/datePicker"
 	"resultra/datasheet/server/displayTable/columns/numberInput"
 	"resultra/datasheet/server/displayTable/columns/textInput"
 )
@@ -25,6 +26,14 @@ func getTableCols(parentTableID string) (TableColsInfo, error) {
 		return nil, fmt.Errorf("getTableCols: %v", err)
 	}
 	for _, col := range textInputCols {
+		tableColData = append(tableColData, col)
+	}
+
+	datePickerCols, err := datePicker.GetDatePickers(parentTableID)
+	if err != nil {
+		return nil, fmt.Errorf("getTableCols: %v", err)
+	}
+	for _, col := range datePickerCols {
 		tableColData = append(tableColData, col)
 	}
 
