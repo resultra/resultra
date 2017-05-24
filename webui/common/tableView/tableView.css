@@ -1,0 +1,12 @@
+
+
+/* Tighten up the padding and margins for table cells and layoutContainer's displayed
+   in the table view */
+#tableViewContainer td {
+	padding: 2px;
+}
+
+#tableViewContainer .layoutContainer {
+	padding: 0px;
+	margin: 0px;
+}

@@ -1,5 +1,16 @@
 function initItemListTableView($tableContainer, databaseID, tableID,initDoneCallback) {
 	
+	function updateAllTableRowCells($cell,currRecord) {
+		// Get the parent row and update all cells in the same row as the given cell.
+		var $parentRow = $(cell).closest('tr')
+		$parentRow.find('.layoutContainer').each(function() {
+			var $cellContainer = $(this)
+			var viewConfig = $cellContainer.data("viewFormConfig")
+			viewConfig.loadRecord($cellContainer,currRecord)
+		})
+		
+	}
+	
 	function createColDef(colInfo,fieldsByID) {
 		if(colInfo.colType === 'numberInput') {
 			var fieldID = colInfo.properties.fieldID
@@ -8,7 +19,6 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 				defaultContent:'', // used when there is null or undefined data
 				createdCell: function( cell, cellData, rowData, rowIndex, colIndex ) {
 					
-		
 					var $numberInputContainer = $(cell).find('.layoutContainer')
 					
 					var currRecord = rowData
@@ -18,13 +28,7 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 	
 					function updateCurrentRecord(updatedRecordRef) {
 						currRecord = updatedRecordRef
-						// Get the parent row and update all cells in the row to the updated record.
-						var $parentRow = $(cell).closest('tr')
-						$parentRow.find('.layoutContainer').each(function() {
-							var $cellContainer = $(this)
-							var viewConfig = $cellContainer.data("viewFormConfig")
-							viewConfig.loadRecord($cellContainer,currRecord)
-						})
+						updateAllTableRowCells($(cell),currRecord)
 					}
 			
 					var recordProxy = {
@@ -112,7 +116,7 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		
 		$tableContainer.empty()
 		
-		var $tableElem = $('<table class="table table-hover table-bordered display"></table>')
+		var $tableElem = $('<table class="table table-hover table-bordered display tableView"></table>')
 		$tableElem.append(tableHeader())
 		$tableContainer.append($tableElem)
 		
