@@ -1,15 +1,35 @@
 function initItemListTableView($tableContainer, databaseID, tableID,initDoneCallback) {
 	
-	function updateAllTableRowCells($cell,currRecord) {
-		// Get the parent row and update all cells in the same row as the given cell.
-		var $parentRow = $cell.closest('tr')
-		$parentRow.find('.layoutContainer').each(function() {
-			var $cellContainer = $(this)
-			var viewConfig = $cellContainer.data("viewFormConfig")
-			viewConfig.loadRecord($cellContainer,currRecord)
-		})
+	function TableViewRecordProxy(initialRecord,$cell) {
 		
+		var currRecord = initialRecord
+		
+		function getCurrentRecord() {
+			return currRecord
+		}
+		
+		function updateAllTableRowCells(currRecord) {
+			// Get the parent row and update all cells in the same row as the given cell.
+			var $parentRow = $cell.closest('tr')
+			$parentRow.find('.layoutContainer').each(function() {
+				var $cellContainer = $(this)
+				var viewConfig = $cellContainer.data("viewFormConfig")
+				viewConfig.loadRecord($cellContainer,currRecord)
+			})
+		
+		}
+		
+		function updateCurrentRecord(updatedRecordRef) {
+			currRecord = updatedRecordRef
+			updateAllTableRowCells(currRecord)
+		}
+		
+		
+		this.changeSetID = MainLineFullyCommittedChangeSetID
+		this.getRecordFunc = getCurrentRecord
+		this.updateRecordFunc = updateCurrentRecord
 	}
+	
 	
 	function createNumberInputColDef(colInfo,fieldsByID) {
 		var fieldID = colInfo.properties.fieldID
@@ -20,23 +40,8 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 				
 				var $numberInputContainer = $(cell).find('.layoutContainer')
 				
-				var currRecord = rowData
-				function getCurrentRecord() {
-					return currRecord
-				}
-
-				function updateCurrentRecord(updatedRecordRef) {
-					currRecord = updatedRecordRef
-					updateAllTableRowCells($(cell),currRecord)
-				}
-		
-				var recordProxy = {
-					changeSetID: MainLineFullyCommittedChangeSetID,
-					getRecordFunc: getCurrentRecord,
-					updateRecordFunc: updateCurrentRecord
-				}
-				
-				
+				var recordProxy = new TableViewRecordProxy(rowData,$(cell))
+								
 				var componentContext = {
 					databaseID: databaseID,
 					fieldsByID: fieldsByID
@@ -46,7 +51,7 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 				setContainerComponentInfo($numberInputContainer,colInfo,colInfo.numberInputID)
 				initNumberInputTableRecordEditBehavior($numberInputContainer,componentContext,recordProxy, colInfo)
 				var viewConfig = $numberInputContainer.data("viewFormConfig")
-				viewConfig.loadRecord($numberInputContainer,currRecord)
+				viewConfig.loadRecord($numberInputContainer,recordProxy.getRecordFunc())
 			},
 			render: function(data, type, row, meta) {
 				if (type==='display') {
@@ -60,6 +65,7 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		}
 		return colDef
 	}
+	
 
 	function createTextInputColDef(colInfo,fieldsByID) {
 		var fieldID = colInfo.properties.fieldID
@@ -70,23 +76,8 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 				
 				var $numberInputContainer = $(cell).find('.layoutContainer')
 				
-				var currRecord = rowData
-				function getCurrentRecord() {
-					return currRecord
-				}
-
-				function updateCurrentRecord(updatedRecordRef) {
-					currRecord = updatedRecordRef
-					updateAllTableRowCells($(cell),currRecord)
-				}
-		
-				var recordProxy = {
-					changeSetID: MainLineFullyCommittedChangeSetID,
-					getRecordFunc: getCurrentRecord,
-					updateRecordFunc: updateCurrentRecord
-				}
-				
-				
+				var recordProxy = new TableViewRecordProxy(rowData,$(cell))
+					
 				var componentContext = {
 					databaseID: databaseID,
 					fieldsByID: fieldsByID
@@ -96,7 +87,7 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 				setContainerComponentInfo($textInputContainer,colInfo,colInfo.textInputID)
 				initTextBoxRecordEditBehavior($textInputContainer,componentContext,recordProxy, colInfo)
 				var viewConfig = $numberInputContainer.data("viewFormConfig")
-				viewConfig.loadRecord($numberInputContainer,currRecord)
+				viewConfig.loadRecord($numberInputContainer,recordProxy.getRecordFunc())
 			},
 			render: function(data, type, row, meta) {
 				if (type==='display') {
