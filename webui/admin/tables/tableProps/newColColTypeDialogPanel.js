@@ -37,12 +37,25 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					})
 					
 				}
+				function createTextInput(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/textInput/new",params,function(textInput) {
+						console.log("Text input column created: " + JSON.stringify(textInput))
+					})
+					
+				}
 				
 				console.log("Creating new column for field: " + JSON.stringify(fieldInfo))
 				
 				switch (fieldInfo.type) {
 				case fieldTypeNumber:
 					createNumberInput(fieldInfo)
+					break
+				case fieldTypeText:
+					createTextInput(fieldInfo)
 					break
 				}
 			}

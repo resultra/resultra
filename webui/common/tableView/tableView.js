@@ -2,7 +2,7 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 	
 	function updateAllTableRowCells($cell,currRecord) {
 		// Get the parent row and update all cells in the same row as the given cell.
-		var $parentRow = $(cell).closest('tr')
+		var $parentRow = $cell.closest('tr')
 		$parentRow.find('.layoutContainer').each(function() {
 			var $cellContainer = $(this)
 			var viewConfig = $cellContainer.data("viewFormConfig")
@@ -11,56 +11,114 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		
 	}
 	
-	function createColDef(colInfo,fieldsByID) {
-		if(colInfo.colType === 'numberInput') {
-			var fieldID = colInfo.properties.fieldID
-			var colDef = {
-				data:'fieldValues.' + fieldID,
-				defaultContent:'', // used when there is null or undefined data
-				createdCell: function( cell, cellData, rowData, rowIndex, colIndex ) {
-					
-					var $numberInputContainer = $(cell).find('.layoutContainer')
-					
-					var currRecord = rowData
-					function getCurrentRecord() {
-						return currRecord
-					}
-	
-					function updateCurrentRecord(updatedRecordRef) {
-						currRecord = updatedRecordRef
-						updateAllTableRowCells($(cell),currRecord)
-					}
-			
-					var recordProxy = {
-						changeSetID: MainLineFullyCommittedChangeSetID,
-						getRecordFunc: getCurrentRecord,
-						updateRecordFunc: updateCurrentRecord
-					}
-					
-					
-					var componentContext = {
-						databaseID: databaseID,
-						fieldsByID: fieldsByID
-					}
-					
-					var $numberInputContainer = $(cell).find('.layoutContainer')
-					setContainerComponentInfo($numberInputContainer,colInfo,colInfo.numberInputID)
-					initNumberInputTableRecordEditBehavior($numberInputContainer,componentContext,recordProxy, colInfo)
-					var viewConfig = $numberInputContainer.data("viewFormConfig")
-					viewConfig.loadRecord($numberInputContainer,currRecord)
-				},
-				render: function(data, type, row, meta) {
-					if (type==='display') {
-						return numberInputTableCellContainerHTML()
-					} else if (type==='filter') {
-						return data
-					} else {
-						return data
-					}
+	function createNumberInputColDef(colInfo,fieldsByID) {
+		var fieldID = colInfo.properties.fieldID
+		var colDef = {
+			data:'fieldValues.' + fieldID,
+			defaultContent:'', // used when there is null or undefined data
+			createdCell: function( cell, cellData, rowData, rowIndex, colIndex ) {
+				
+				var $numberInputContainer = $(cell).find('.layoutContainer')
+				
+				var currRecord = rowData
+				function getCurrentRecord() {
+					return currRecord
+				}
+
+				function updateCurrentRecord(updatedRecordRef) {
+					currRecord = updatedRecordRef
+					updateAllTableRowCells($(cell),currRecord)
+				}
+		
+				var recordProxy = {
+					changeSetID: MainLineFullyCommittedChangeSetID,
+					getRecordFunc: getCurrentRecord,
+					updateRecordFunc: updateCurrentRecord
+				}
+				
+				
+				var componentContext = {
+					databaseID: databaseID,
+					fieldsByID: fieldsByID
+				}
+				
+				var $numberInputContainer = $(cell).find('.layoutContainer')
+				setContainerComponentInfo($numberInputContainer,colInfo,colInfo.numberInputID)
+				initNumberInputTableRecordEditBehavior($numberInputContainer,componentContext,recordProxy, colInfo)
+				var viewConfig = $numberInputContainer.data("viewFormConfig")
+				viewConfig.loadRecord($numberInputContainer,currRecord)
+			},
+			render: function(data, type, row, meta) {
+				if (type==='display') {
+					return numberInputTableCellContainerHTML()
+				} else if (type==='filter') {
+					return data
+				} else {
+					return data
 				}
 			}
-			return colDef
-		} else {
+		}
+		return colDef
+	}
+
+	function createTextInputColDef(colInfo,fieldsByID) {
+		var fieldID = colInfo.properties.fieldID
+		var colDef = {
+			data:'fieldValues.' + fieldID,
+			defaultContent:'', // used when there is null or undefined data
+			createdCell: function( cell, cellData, rowData, rowIndex, colIndex ) {
+				
+				var $numberInputContainer = $(cell).find('.layoutContainer')
+				
+				var currRecord = rowData
+				function getCurrentRecord() {
+					return currRecord
+				}
+
+				function updateCurrentRecord(updatedRecordRef) {
+					currRecord = updatedRecordRef
+					updateAllTableRowCells($(cell),currRecord)
+				}
+		
+				var recordProxy = {
+					changeSetID: MainLineFullyCommittedChangeSetID,
+					getRecordFunc: getCurrentRecord,
+					updateRecordFunc: updateCurrentRecord
+				}
+				
+				
+				var componentContext = {
+					databaseID: databaseID,
+					fieldsByID: fieldsByID
+				}
+				
+				var $textInputContainer = $(cell).find('.layoutContainer')
+				setContainerComponentInfo($textInputContainer,colInfo,colInfo.textInputID)
+				initTextBoxRecordEditBehavior($textInputContainer,componentContext,recordProxy, colInfo)
+				var viewConfig = $numberInputContainer.data("viewFormConfig")
+				viewConfig.loadRecord($numberInputContainer,currRecord)
+			},
+			render: function(data, type, row, meta) {
+				if (type==='display') {
+					return textBoxTableViewContainerHTML(colInfo.textInputID)
+				} else if (type==='filter') {
+					return data
+				} else {
+					return data
+				}
+			}
+		}
+		return colDef
+	}
+
+	
+	function createColDef(colInfo,fieldsByID) {
+		switch (colInfo.colType) {
+		case 'numberInput':
+			return createNumberInputColDef(colInfo,fieldsByID)
+		case 'textInput':
+			return createTextInputColDef(colInfo,fieldsByID)
+		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,
 				defaultContent:'' // used when there is null or undefined data

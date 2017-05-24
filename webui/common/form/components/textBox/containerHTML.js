@@ -1,11 +1,6 @@
-function textBoxContainerHTML(elementID)
-{
-	var containerHTML = ''+
-		'<div class="layoutContainer textBoxComponent">' +
-			'<div class="form-group">'+
-				'<label>New Text Box</label>'+
-				'<div class="input-group">'+
-					'<input type="text" name="symbol" class="textBoxComponentInput form-control" placeholder="Enter">'+
+function textBoxContainerInputControl() {
+	return '<div class="input-group">'+
+					'<input type="text" name="symbol" class="textBoxComponentInput form-control" placeholder="">'+
 					'<div class="input-group-btn valueSelectionDropdown">'+
 						'<button type="button" class="btn btn-default dropdown-toggle" ' + 
 								'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
@@ -13,8 +8,28 @@ function textBoxContainerHTML(elementID)
 						'<ul class="dropdown-menu valueDropdownMenu">' +
 						'</ul>'+
 					'</div>'+
-				'</div>'+
+				'</div>'
+}
+
+function textBoxContainerHTML(elementID)
+{
+	var containerHTML = ''+
+		'<div class="layoutContainer textBoxComponent">' +
+			'<div class="form-group">'+
+				'<label>New Text Box</label>'+
+				textBoxContainerInputControl()
 			'</div>'+
+			'<div class="componentHoverFooter">' +
+				smallClearDeleteButtonHTML("textBoxComponentClearValueButton") + 
+			'</div>' +
+		'</div>';
+	return containerHTML
+}
+
+function textBoxTableViewContainerHTML() {
+	var containerHTML = ''+
+		'<div class="layoutContainer textBoxComponent">' +
+			textBoxContainerInputControl() +
 			'<div class="componentHoverFooter">' +
 				smallClearDeleteButtonHTML("textBoxComponentClearValueButton") + 
 			'</div>' +
