@@ -80,44 +80,6 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		}
 		return createTableViewColDef(colInfo,fieldsByID,textBoxTableViewContainerHTML,initContainer)
 	}
-
-	
-
-	function createTextInputColDef(colInfo,fieldsByID) {
-		var fieldID = colInfo.properties.fieldID
-		var colDef = {
-			data:'fieldValues.' + fieldID,
-			defaultContent:'', // used when there is null or undefined data
-			createdCell: function( cell, cellData, rowData, rowIndex, colIndex ) {
-				
-				var $numberInputContainer = $(cell).find('.layoutContainer')
-				
-				var recordProxy = new TableViewRecordProxy(rowData,$(cell))
-					
-				var componentContext = {
-					databaseID: databaseID,
-					fieldsByID: fieldsByID
-				}
-				
-				var $textInputContainer = $(cell).find('.layoutContainer')
-				setContainerComponentInfo($textInputContainer,colInfo,colInfo.textInputID)
-				initTextBoxRecordEditBehavior($textInputContainer,componentContext,recordProxy, colInfo)
-				var viewConfig = $numberInputContainer.data("viewFormConfig")
-				viewConfig.loadRecord($numberInputContainer,recordProxy.getRecordFunc())
-			},
-			render: function(data, type, row, meta) {
-				if (type==='display') {
-					return textBoxTableViewContainerHTML(colInfo.textInputID)
-				} else if (type==='filter') {
-					return data
-				} else {
-					return data
-				}
-			}
-		}
-		return colDef
-	}
-
 	
 	function createColDef(colInfo,fieldsByID) {
 		switch (colInfo.colType) {
