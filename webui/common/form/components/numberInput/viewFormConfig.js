@@ -2,7 +2,7 @@
 
 
 
-function initNumberInputRecordEditBehavior($container,componentContext,recordProxy, numberInputObjectRef) {
+function initNumberInputRecordEditBehavior($container,componentContext,recordProxy, numberInputObjectRef,remoteValidationFunc) {
 	
 	var $numberInputInput = $container.find('input')
 	var numberInputFieldID = numberInputObjectRef.properties.fieldID
@@ -37,12 +37,7 @@ function initNumberInputRecordEditBehavior($container,componentContext,recordPro
 			return
 		}	
 		var currVal = getRawInputNumberVal()
-		var validationParams = {
-			parentFormID: numberInputObjectRef.parentFormID,
-			numberInputID: numberInputObjectRef.numberInputID,
-			inputVal: currVal
-		}
-		jsonAPIRequest("frm/numberInput/validateInput", validationParams, function(validationResult) {
+		remoteValidationFunc(currVal,function(validationResult) {
 			if (validationResult.validationSucceeded) {
 				$container.popover('destroy')
 				validationCompleteCallback(true)
@@ -56,7 +51,8 @@ function initNumberInputRecordEditBehavior($container,componentContext,recordPro
 				$container.popover('show')
 				validationCompleteCallback(false)
 			}
-		})	
+			
+		})
 		
 	}
 	
@@ -246,4 +242,39 @@ function initNumberInputRecordEditBehavior($container,componentContext,recordPro
 	initNumberInputFieldEditBehavior(componentContext, $container,$numberInputInput,
 			recordProxy, numberInputObjectRef)
 	
+}
+
+
+function initNumberInputFormRecordEditBehavior($container,componentContext,recordProxy, numberInputObjectRef) {
+	
+	function validateFormNumberInput(inputVal,validationResultCallback) {
+		var validationParams = {
+			parentFormID: numberInputObjectRef.parentFormID,
+			numberInputID: numberInputObjectRef.numberInputID,
+			inputVal: inputVal
+		}
+		jsonAPIRequest("frm/numberInput/validateInput", validationParams, function(validationResult) {
+			validationResultCallback(validationResult)
+		})
+	}
+	
+	initNumberInputRecordEditBehavior($container,componentContext,recordProxy, numberInputObjectRef,validateFormNumberInput)
+}
+
+
+
+function initNumberInputTableRecordEditBehavior($container,componentContext,recordProxy, numberInputObjectRef) {
+	
+	function validateFormNumberInput(inputVal,validationResultCallback) {
+		var validationParams = {
+			parentTableID: numberInputObjectRef.parentTableID,
+			numberInputID: numberInputObjectRef.numberInputID,
+			inputVal: inputVal
+		}
+		jsonAPIRequest("tableView/numberInput/validateInput", validationParams, function(validationResult) {
+			validationResultCallback(validationResult)
+		})
+	}
+	
+	initNumberInputRecordEditBehavior($container,componentContext,recordProxy, numberInputObjectRef,validateFormNumberInput)
 }

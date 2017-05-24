@@ -20,6 +20,7 @@
 	min-height:300px;
 }
 
+/* #layoutPage needs to fill the entire center div */  
 #layoutPage {
 	position: absolute;
 	top: 0;

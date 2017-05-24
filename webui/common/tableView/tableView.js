@@ -1,5 +1,70 @@
 function initItemListTableView($tableContainer, databaseID, tableID,initDoneCallback) {
 	
+	function createColDef(colInfo,fieldsByID) {
+		if(colInfo.colType === 'numberInput') {
+			var fieldID = colInfo.properties.fieldID
+			var colDef = {
+				data:'fieldValues.' + fieldID,
+				defaultContent:'', // used when there is null or undefined data
+				createdCell: function( cell, cellData, rowData, rowIndex, colIndex ) {
+					
+		
+					var $numberInputContainer = $(cell).find('.layoutContainer')
+					
+					var currRecord = rowData
+					function getCurrentRecord() {
+						return currRecord
+					}
+	
+					function updateCurrentRecord(updatedRecordRef) {
+						currRecord = updatedRecordRef
+						// Get the parent row and update all cells in the row to the updated record.
+						var $parentRow = $(cell).closest('tr')
+						$parentRow.find('.layoutContainer').each(function() {
+							var $cellContainer = $(this)
+							var viewConfig = $cellContainer.data("viewFormConfig")
+							viewConfig.loadRecord($cellContainer,currRecord)
+						})
+					}
+			
+					var recordProxy = {
+						changeSetID: MainLineFullyCommittedChangeSetID,
+						getRecordFunc: getCurrentRecord,
+						updateRecordFunc: updateCurrentRecord
+					}
+					
+					
+					var componentContext = {
+						databaseID: databaseID,
+						fieldsByID: fieldsByID
+					}
+					
+					var $numberInputContainer = $(cell).find('.layoutContainer')
+					setContainerComponentInfo($numberInputContainer,colInfo,colInfo.numberInputID)
+					initNumberInputTableRecordEditBehavior($numberInputContainer,componentContext,recordProxy, colInfo)
+					var viewConfig = $numberInputContainer.data("viewFormConfig")
+					viewConfig.loadRecord($numberInputContainer,currRecord)
+				},
+				render: function(data, type, row, meta) {
+					if (type==='display') {
+						return numberInputTableCellContainerHTML()
+					} else if (type==='filter') {
+						return data
+					} else {
+						return data
+					}
+				}
+			}
+			return colDef
+		} else {
+			var colDef = {
+				data:'fieldValues.' + colInfo.properties.fieldID,
+				defaultContent:'' // used when there is null or undefined data
+			}
+			return colDef
+		}
+	}
+	
 	function getTableInfo(tableInfoCallback) {
 		
 		var numTableInfoRemaining = 2
@@ -53,10 +118,7 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		
 		var dataCols = []
 		$.each(tableInfo.cols,function(index,colInfo) {
-			var colDataDef = {
-				data:'fieldValues.' + colInfo.properties.fieldID,
-				defaultContent:'' // used when there is null or undefined data
-			}
+			var colDataDef = createColDef(colInfo,fieldsByID)
 			dataCols.push(colDataDef)
 		})
 		

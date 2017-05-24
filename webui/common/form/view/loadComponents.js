@@ -40,7 +40,7 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 					textBoxObjectRef.textBoxID,initTextBoxViewProperties)
 		},
 		initNumberInputFunc: function(componentContext,$numberInput,numberInputObjectRef) {			
-			initNumberInputRecordEditBehavior($numberInput,componentContext,recordProxy,numberInputObjectRef)
+			initNumberInputFormRecordEditBehavior($numberInput,componentContext,recordProxy,numberInputObjectRef)
 			initFormComponentViewBehavior($numberInput,
 					numberInputObjectRef.numberInputID,initNumberInputViewProperties)
 		},
