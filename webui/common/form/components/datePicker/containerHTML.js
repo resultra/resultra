@@ -77,9 +77,37 @@ function initDatePickerFormComponentInput($datePickerContainer, datePickerRef) {
 		inline: false, // Display the date & time picker inline without the need to of an input field
 		stepping: 5, // number of minutes the up and down arrows will step in clicking the up and down arrows.
 		useCurrent: false, // When the date picker is shown, set the picker to the current date/time
+		widgetParent: 'body',
+		widgetPositioning: {
+			horizontal: 'left',
+			vertical: 'bottom'
+		}
 		// daysOfWeekHighlighted: "1,2,3,4,5" // highlight weekdays
 		// 
 	})
+	
+	// To ensure the date/time picker shows on top of other parts of the page, it needs to be attached to the body and 
+	// repositioned near the input element. See: https://github.com/Eonasdan/bootstrap-datetimepicker/issues/790 
+	$datePickerInput.on('dp.show', function() {
+	      var datepicker = $('body').find('.bootstrap-datetimepicker-widget:last');
+	      if (datepicker.hasClass('bottom')) {
+	        var top = $(this).offset().top + $(this).outerHeight();
+	        var left = $(this).offset().left;
+	        datepicker.css({
+	          'top': top + 'px',
+	          'bottom': 'auto',
+	          'left': left + 'px'
+	        });
+	      } else if (datepicker.hasClass('top')) {
+	        var top = $(this).offset().top - datepicker.outerHeight();
+	        var left = $(this).offset().left;
+	        datepicker.css({
+	          'top': top + 'px',
+	          'bottom': 'auto',
+	          'left': left + 'px'
+	        });
+	      }
+	    });
 }
 
 function setDatePickerFormComponentDate($datePicker, datePickerRef, momentDate) {

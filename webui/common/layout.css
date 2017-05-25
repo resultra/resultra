@@ -7,6 +7,11 @@ body,html {
 	margin 0;
 }
 
+body {
+	/* Relative positio of the body is needed for the date/time picker, so it can be attached to the body */
+	position:relative;
+}
+
 
 .layoutPageDiv
 {
