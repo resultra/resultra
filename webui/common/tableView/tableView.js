@@ -84,8 +84,8 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 	function createDateInputColDef(colInfo,fieldsByID) {
 		
 		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
-				setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
-				initDatePickerRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+			setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
+			initTableViewDatePickerEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,fieldsByID,datePickerTableViewCellContainerHTML,initContainer)
 	}

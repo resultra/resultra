@@ -22,7 +22,7 @@ type DatePickerValidationProperties struct {
 	CompareDate *time.Time `json:"compareDate,omitempty"`
 }
 
-func newDefaultDatePickerProps() DatePickerValidationProperties {
+func newDefaultDatePickerValidationProps() DatePickerValidationProperties {
 	return DatePickerValidationProperties{Rule: validationRuleRequired}
 }
 
@@ -53,6 +53,7 @@ func newDefaultDatePickerProperties() DatePickerProperties {
 	props := DatePickerProperties{
 		LabelFormat: common.NewDefaultLabelFormatProperties(),
 		Permissions: common.NewDefaultComponentValuePermissionsProperties(),
-		DateFormat:  dateFormatDefault}
+		DateFormat:  dateFormatDefault,
+		Validation:  newDefaultDatePickerValidationProps()}
 	return props
 }

@@ -2,6 +2,7 @@ package datePicker
 
 import (
 	"fmt"
+	"log"
 	"resultra/datasheet/server/generic/inputValidation"
 	"time"
 )
@@ -15,6 +16,7 @@ func validateInput(params DatePickerValidateInputParams) inputValidation.Validat
 
 	datePicker, err := getDatePicker(params.getParentTableID(), params.getDatePickerID())
 	if err != nil {
+		log.Printf("System error validating date picker input: %v", err)
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
 	}
 
@@ -97,7 +99,8 @@ func validateInput(params DatePickerValidateInputParams) inputValidation.Validat
 		}
 
 	default:
-		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
+		log.Printf("System error validating date picker input: rule= %v", valProps.Rule)
+		return inputValidation.SuccessValidationResult()
 	}
 
 }

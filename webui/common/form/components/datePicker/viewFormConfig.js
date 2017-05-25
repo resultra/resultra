@@ -1,5 +1,5 @@
 
-function initDatePickerRecordEditBehavior($datePickerContainer, componentContext,recordProxy, datePickerObjectRef) {
+function initDatePickerRecordEditBehavior($datePickerContainer, componentContext,recordProxy, datePickerObjectRef,remoteValidationFunc) {
 
 	var validateDatePickerInput = function(validationCompleteCallback) {
 		
@@ -9,12 +9,7 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 		}
 		
 		var currVal = getDatePickerFormComponentUTCDate($datePickerContainer)
-		var validationParams = {
-			parentFormID: datePickerObjectRef.parentFormID,
-			datePickerID: datePickerObjectRef.datePickerID,
-			inputVal: currVal
-		}
-		jsonAPIRequest("frm/datePicker/validateInput", validationParams, function(validationResult) {
+		remoteValidationFunc(currVal,function(validationResult) {
 			if (validationResult.validationSucceeded) {
 				$datePickerContainer.popover('destroy')
 				validationCompleteCallback(true)
@@ -152,4 +147,37 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 	})
 	initDatePickerFieldEditBehavior(componentContext,recordProxy, datePickerObjectRef,$datePickerContainer)
 	
+}
+
+function initFormDatePickerEditBehavior($datePickerContainer, componentContext,recordProxy, datePickerObjectRef) {
+	function validateInput(inputVal,validationResultCallback) {
+		var validationParams = {
+			parentFormID: datePickerObjectRef.parentFormID,
+			datePickerID: datePickerObjectRef.datePickerID,
+			inputVal: inputVal
+		}
+		jsonAPIRequest("frm/datePicker/validateInput", validationParams, function(validationResult) {
+			validationResultCallback(validationResult)
+		})
+	}
+	initDatePickerRecordEditBehavior($datePickerContainer,componentContext,recordProxy, datePickerObjectRef,validateInput)
+}
+
+
+function initTableViewDatePickerEditBehavior($datePickerContainer, componentContext,recordProxy, datePickerObjectRef) {
+	
+	function validateInput(inputVal,validationResultCallback) {
+		var validationParams = {
+			parentTableID: datePickerObjectRef.parentTableID,
+			datePickerID: datePickerObjectRef.datePickerID,
+			inputVal: inputVal
+		}
+		jsonAPIRequest("tableView/datePicker/validateInput", validationParams, function(validationResult) {
+			validationResultCallback(validationResult)
+		})
+	}
+	
+	
+	initDatePickerFormComponentInput($datePickerContainer,datePickerObjectRef)
+	initDatePickerRecordEditBehavior($datePickerContainer,componentContext,recordProxy, datePickerObjectRef,validateInput)
 }

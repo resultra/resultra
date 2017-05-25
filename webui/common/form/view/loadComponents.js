@@ -101,7 +101,7 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 		},
 		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			console.log("Init date picker in view form")
-			initDatePickerRecordEditBehavior($datePicker,componentContext,recordProxy,datePickerObjectRef)
+			initFormDatePickerEditBehavior($datePicker,componentContext,recordProxy,datePickerObjectRef)
 			initFormComponentViewBehavior($datePicker,
 					datePickerObjectRef.datePickerID,initDatePickerViewProperties)
 		},
