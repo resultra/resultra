@@ -15,6 +15,7 @@ type DatePicker struct {
 	ParentTableID string               `json:"parentTableID"`
 	DatePickerID  string               `json:"datePickerID"`
 	ColType       string               `json:"colType"`
+	ColumnID      string               `json:"columnID"`
 	Properties    DatePickerProperties `json:"properties"`
 }
 
@@ -50,8 +51,10 @@ func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 	properties := newDefaultDatePickerProperties()
 	properties.FieldID = params.FieldID
 
+	datePickerID := uniqueID.GenerateSnowflakeID()
 	newDatePicker := DatePicker{ParentTableID: params.ParentTableID,
-		DatePickerID: uniqueID.GenerateSnowflakeID(),
+		DatePickerID: datePickerID,
+		ColumnID:     datePickerID,
 		ColType:      datePickerEntityKind,
 		Properties:   properties}
 
@@ -75,6 +78,7 @@ func getDatePicker(parentTableID string, datePickerID string) (*DatePicker, erro
 	datePicker := DatePicker{
 		ParentTableID: parentTableID,
 		DatePickerID:  datePickerID,
+		ColumnID:      datePickerID,
 		ColType:       datePickerEntityKind,
 		Properties:    datePickerProps}
 
@@ -94,6 +98,7 @@ func GetDatePickers(parentTableID string) ([]DatePicker, error) {
 		currDatePicker := DatePicker{
 			ParentTableID: parentTableID,
 			DatePickerID:  datePickerID,
+			ColumnID:      datePickerID,
 			ColType:       datePickerEntityKind,
 			Properties:    datePickerProps}
 		datePickers = append(datePickers, currDatePicker)
@@ -128,6 +133,7 @@ func CloneDatePickers(remappedIDs uniqueID.UniqueIDRemapper, parentTableID strin
 		destDatePicker := DatePicker{
 			ParentTableID: remappedFormID,
 			DatePickerID:  remappedDatePickerID,
+			ColumnID:      remappedDatePickerID,
 			ColType:       datePickerEntityKind,
 			Properties:    *destProperties}
 		if err := saveDatePicker(destDatePicker); err != nil {

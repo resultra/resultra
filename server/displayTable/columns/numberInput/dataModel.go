@@ -15,6 +15,7 @@ type NumberInput struct {
 	ParentTableID string                `json:"parentTableID"`
 	NumberInputID string                `json:"numberInputID"`
 	ColType       string                `json:"colType"`
+	ColumnID      string                `json:"columnID"`
 	Properties    NumberInputProperties `json:"properties"`
 }
 
@@ -50,8 +51,10 @@ func saveNewNumberInput(params NewNumberInputParams) (*NumberInput, error) {
 	properties := newDefaultNumberInputProperties()
 	properties.FieldID = params.FieldID
 
+	numberInputID := uniqueID.GenerateSnowflakeID()
 	newNumberInput := NumberInput{ParentTableID: params.ParentTableID,
-		NumberInputID: uniqueID.GenerateSnowflakeID(),
+		NumberInputID: numberInputID,
+		ColumnID:      numberInputID,
 		Properties:    properties}
 
 	if err := saveNumberInput(newNumberInput); err != nil {
@@ -75,6 +78,7 @@ func getNumberInput(parentTableID string, numberInputID string) (*NumberInput, e
 		ParentTableID: parentTableID,
 		NumberInputID: numberInputID,
 		ColType:       numberInputEntityKind,
+		ColumnID:      numberInputID,
 		Properties:    numberInputProps}
 
 	return &numberInput, nil
@@ -93,6 +97,7 @@ func GetNumberInputs(parentTableID string) ([]NumberInput, error) {
 		currNumberInput := NumberInput{
 			ParentTableID: parentTableID,
 			NumberInputID: numberInputID,
+			ColumnID:      numberInputID,
 			ColType:       numberInputEntityKind,
 			Properties:    numberInputProps}
 		numberInputs = append(numberInputs, currNumberInput)
@@ -127,6 +132,7 @@ func CloneNumberInputs(remappedIDs uniqueID.UniqueIDRemapper, parentTableID stri
 		destNumberInput := NumberInput{
 			ParentTableID: remappedTableID,
 			NumberInputID: remappedNumberInputID,
+			ColumnID:      remappedNumberInputID,
 			ColType:       numberInputEntityKind,
 			Properties:    *destProperties}
 		if err := saveNumberInput(destNumberInput); err != nil {

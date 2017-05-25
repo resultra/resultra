@@ -1,0 +1,12 @@
+{
+	"subDirs":["../../../generic",
+		"../../../common",
+		"../../common"],
+	"cssFiles": [],
+	"jsFiles": ["colPropsPage.js"],
+	"htmlFiles":["colPropsPage.html"],
+	"imageFiles":[],
+	"minCSSFile":"admin/tables/tableColPropsAdmin.min.css",
+	"minJSFile": "admin/tables/tableColPropsAdmin.min.js",
+	"injectPlaceholderName":"colPropsAssets"
+}

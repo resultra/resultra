@@ -15,6 +15,7 @@ type TextInput struct {
 	ParentTableID string              `json:"parentTableID"`
 	TextInputID   string              `json:"textInputID"`
 	ColType       string              `json:"colType"`
+	ColumnID      string              `json:"columnID"`
 	Properties    TextInputProperties `json:"properties"`
 }
 
@@ -49,8 +50,10 @@ func saveNewTextInput(params NewTextInputParams) (*TextInput, error) {
 	properties := newDefaultTextInputProperties()
 	properties.FieldID = params.FieldID
 
+	textInputID := uniqueID.GenerateSnowflakeID()
 	newTextInput := TextInput{ParentTableID: params.ParentTableID,
-		TextInputID: uniqueID.GenerateSnowflakeID(),
+		TextInputID: textInputID,
+		ColumnID:    textInputID,
 		Properties:  properties,
 		ColType:     textInputEntityKind}
 
@@ -74,6 +77,7 @@ func getTextInput(parentTableID string, textInputID string) (*TextInput, error) 
 	textInput := TextInput{
 		ParentTableID: parentTableID,
 		TextInputID:   textInputID,
+		ColumnID:      textInputID,
 		Properties:    textInputProps,
 		ColType:       textInputEntityKind}
 
@@ -93,6 +97,7 @@ func GetTextInputs(parentTableID string) ([]TextInput, error) {
 		currTextInput := TextInput{
 			ParentTableID: parentTableID,
 			TextInputID:   textInputID,
+			ColumnID:      textInputID,
 			Properties:    textInputProps,
 			ColType:       textInputEntityKind}
 		textInputs = append(textInputs, currTextInput)
@@ -127,6 +132,7 @@ func CloneTextInputs(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string)
 		destTextInput := TextInput{
 			ParentTableID: remappedFormID,
 			TextInputID:   remappedTextInputID,
+			ColumnID:      remappedTextInputID,
 			Properties:    *destProperties,
 			ColType:       textInputEntityKind}
 		if err := saveTextInput(destTextInput); err != nil {

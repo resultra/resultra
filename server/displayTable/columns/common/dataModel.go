@@ -94,3 +94,28 @@ func DeleteTableColumn(parentTableID string, columnID string) error {
 	}
 	return nil
 }
+
+type ColumnInfo struct {
+	ColumnID string
+	TableID  string
+	ColType  string
+}
+
+func GetTableColumnInfo(columnID string) (*ColumnInfo, error) {
+	colType := ""
+	tableID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT table_view_columns.type,table_views.table_id FROM table_view_columns,table_views
+		 WHERE table_view_columns.column_id=$1 AND table_view_columns.table_id=table_views.table_id LIMIT 1`,
+		columnID).Scan(&colType, &tableID)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetTableColumnInfo: Unabled to get table column info: id = %v: datastore err=%v", columnID, getErr)
+	}
+
+	colInfo := ColumnInfo{
+		ColumnID: columnID,
+		ColType:  colType,
+		TableID:  tableID}
+
+	return &colInfo, nil
+
+}

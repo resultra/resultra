@@ -1,0 +1,82 @@
+        	
+{{define "colPropsAdminBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  {{template "trackerPageBreadcrumb" .}}
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Settings</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Tables</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">{{.TableName}}</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "colPropsAdminPageHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "colPropsAdminBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "colPropsBody"}}
+
+<h4>TBD</h4>
+
+{{end}}
+
+
+{{define "colPropsAdminPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- colPropsAssets:css -->
+	<!-- endinject -->
+	
+	<script>var colPropsAdminContext = { databaseID:"{{.DatabaseID}}",
+			colID: "{{.ColID}}"} </script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- colPropsAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="colPropsAdminPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north">
+			{{template "colPropsAdminPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west">
+			{{template "adminSettingsTOC"}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center">
+			{{template "colPropsBody" .}}
+		</div> <!-- center pane for entire page -->	
+	</div> <!-- layout page -->	
+			
+  </body>
+  	
+</html>
+
+{{end}}

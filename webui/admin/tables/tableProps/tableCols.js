@@ -1,14 +1,18 @@
 function initTableViewColsProperties(tableRef) {
 	
 	
-	
 	loadFieldInfo(tableRef.parentDatabaseID,[fieldTypeAll],function(fieldsByID) {
 		
 		function populateOneTableColInTableColList(tableCol) {
 			var $colListItem = $('#tableColItemTemplate').clone()
 			$colListItem.attr("id","")
+			
 			var fieldName = fieldsByID[tableCol.properties.fieldID].name
 			$colListItem.find('label').text(fieldName)
+			
+			var editColLink = '/admin/tablecol/' + tableCol.columnID
+			$colListItem.find('.editTableColButton').attr("href",editColLink)
+			
 		
 			$('#tableColPropsColList').append($colListItem)
 		}
