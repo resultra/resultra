@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/admin/forms/design/properties"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/form/components"
@@ -26,6 +27,7 @@ func init() {
 		baseTemplateFiles,
 		generic.TemplateFileList,
 		common.TemplateFileList,
+		inputProperties.TemplateFileList,
 		components.TemplateFileList,
 		properties.TemplateFileList}
 	designFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)

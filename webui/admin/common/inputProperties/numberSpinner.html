@@ -1,0 +1,16 @@
+{{define "numberInputSpinnerProps"}}
+	<form id="numberSpinnerPropsForm">
+  	  <div class="form-group">
+   	      <div class="checkbox">
+  	        <input type="checkbox" id="numberInputShowValueSpinnerButtons">
+  	        <label for="numberInputShowValueSpinnerButtons">Show buttons to change value.</label>
+  	      </div>
+  	   </div>
+		<div class="form-group">
+				<label for="numberInputSpinnerButtonStep">Step size for each button press</label>
+		<input type="text" id="numberInputSpinnerButtonStep" name="numberInputSpinnerButtonStep" 
+				class="form-control maxWidth300" placeholder="Enter step size" required="" autofocus="">
+		</div>
+	</form>
+{{end}}
+

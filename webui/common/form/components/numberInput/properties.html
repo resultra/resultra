@@ -2,39 +2,6 @@
 	{{template "formatNumberSelection" "numberInput_"}}
 {{end}}
 
-{{define "numberInputSpinnerProps"}}
-	<form id="numberSpinnerPropsForm">
-  	  <div class="form-group">
-   	      <div class="checkbox">
-  	        <input type="checkbox" id="numberInputShowValueSpinnerButtons">
-  	        <label for="numberInputShowValueSpinnerButtons">Show buttons to change value.</label>
-  	      </div>
-  	   </div>
-		<div class="form-group">
-				<label for="numberInputSpinnerButtonStep">Step size for each button press</label>
-		<input type="text" id="numberInputSpinnerButtonStep" name="numberInputSpinnerButtonStep" 
-				class="form-control maxWidth300" placeholder="Enter step size" required="" autofocus="">
-		</div>
-	</form>
-{{end}}
-
-{{define "numberInputValidationProps"}}
-	<form id="numberInputValidationPropsForm">
-	  <div class="form-group">
-		  	<select class="form-control input-sm" id="adminNumberInputValidationSelection">
-		  		<option disabled selected value="">Select a type of validation</option>
-		  		<option value="none">None (value is optional)</option>
-		  		<option value="required">Value is required</option>
-		 		<option value="between">Value is between</option>
-		 		<option value="greater">Value greater than</option>
-			</select>
-			
-			<input class="form-control input-sm numberInputParam numberInputRangeVal numberInputMinVal" type="text" placeholder="Minimum value">
-			<input class="form-control input-sm numberInputParam numberInputRangeVal numberInputMaxVal" type="text" placeholder="Maximum value">
-			<input class="form-control input-sm numberInputParam numberInputCompareVal" type="text" placeholder="Enter a value">
-	  </div>
-	</form>
-{{end}}
 
 
 {{define "numberInputProps"}}

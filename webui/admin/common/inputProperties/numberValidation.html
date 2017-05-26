@@ -1,0 +1,17 @@
+{{define "numberInputValidationProps"}}
+	<form id="numberInputValidationPropsForm">
+	  <div class="form-group">
+		  	<select class="form-control input-sm" id="adminNumberInputValidationSelection">
+		  		<option disabled selected value="">Select a type of validation</option>
+		  		<option value="none">None (value is optional)</option>
+		  		<option value="required">Value is required</option>
+		 		<option value="between">Value is between</option>
+		 		<option value="greater">Value greater than</option>
+			</select>
+			
+			<input class="form-control input-sm numberInputParam numberInputRangeVal numberInputMinVal" type="text" placeholder="Minimum value">
+			<input class="form-control input-sm numberInputParam numberInputRangeVal numberInputMaxVal" type="text" placeholder="Maximum value">
+			<input class="form-control input-sm numberInputParam numberInputCompareVal" type="text" placeholder="Enter a value">
+	  </div>
+	</form>
+{{end}}
