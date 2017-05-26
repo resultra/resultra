@@ -15,6 +15,17 @@
 
 {{end}}
 
+{{define "tableViewColPermissionProps"}}
+	<form id="{{.ElemPrefix}}FormComponentPermissionsPropertyPanelForm">
+		<div class="form-group marginBottom0">
+			<div class="checkbox">
+			     <input type="checkbox" id="{{.ElemPrefix}}FormComponentReadOnlyProperty">
+			    <label for="{{.ElemPrefix}}FormComponentReadOnlyProperty"> Values in this column are read-only</label>
+			  </div>
+		</div>
+	</form>
+{{end}}
+
 {{define "componentPermissionsPropertyPanel"}}
 
 	{{template "propertyPanelPrefix" .PanelParams}}

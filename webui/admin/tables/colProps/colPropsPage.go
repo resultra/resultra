@@ -19,7 +19,8 @@ var tablePropTemplates *template.Template
 
 func init() {
 
-	baseTemplateFiles := []string{"static/admin/tables/colProps/colPropsPage.html"}
+	baseTemplateFiles := []string{"static/admin/tables/colProps/colPropsPage.html",
+		"static/admin/tables/colProps/numberInput.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
@@ -31,16 +32,17 @@ func init() {
 }
 
 type TemplParams struct {
-	ElemPrefix   string
-	Title        string
-	DatabaseID   string
-	DatabaseName string
-	TableID      string
-	TableName    string
-	ColID        string
-	ColType      string
-	ColName      string
-	SiteBaseURL  string
+	ElemPrefix        string
+	Title             string
+	DatabaseID        string
+	DatabaseName      string
+	TableID           string
+	TableName         string
+	ColID             string
+	ColType           string
+	ColName           string
+	SiteBaseURL       string
+	NumberInputParams NumberInputColPropsTemplateParams
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -70,16 +72,17 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 	elemPrefix := "colProps_"
 
 	templParams := TemplParams{
-		ElemPrefix:   elemPrefix,
-		Title:        "Column properties",
-		DatabaseID:   dbInfo.DatabaseID,
-		DatabaseName: dbInfo.DatabaseName,
-		TableID:      colInfo.TableID,
-		TableName:    tableInfo.Name,
-		ColID:        colID,
-		ColType:      colInfo.ColType,
-		ColName:      "TBD",
-		SiteBaseURL:  runtimeConfig.GetSiteBaseURL()}
+		ElemPrefix:        elemPrefix,
+		Title:             "Column properties",
+		DatabaseID:        dbInfo.DatabaseID,
+		DatabaseName:      dbInfo.DatabaseName,
+		TableID:           colInfo.TableID,
+		TableName:         tableInfo.Name,
+		ColID:             colID,
+		ColType:           colInfo.ColType,
+		ColName:           "TBD",
+		SiteBaseURL:       runtimeConfig.GetSiteBaseURL(),
+		NumberInputParams: newNumberInputTemplateParams()}
 
 	if err := tablePropTemplates.ExecuteTemplate(w, "colPropsAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

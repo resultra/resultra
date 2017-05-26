@@ -10,6 +10,9 @@ func init() {
 	numberInputRouter := mux.NewRouter()
 
 	numberInputRouter.HandleFunc("/api/tableView/numberInput/new", newNumberInput)
+
+	numberInputRouter.HandleFunc("/api/tableView/numberInput/get", getNumberInputAPI)
+
 	numberInputRouter.HandleFunc("/api/tableView/numberInput/setValueFormat", setValueFormat)
 	numberInputRouter.HandleFunc("/api/tableView/numberInput/setLabelFormat", setLabelFormat)
 	numberInputRouter.HandleFunc("/api/tableView/numberInput/setPermissions", setPermissions)
@@ -36,6 +39,27 @@ func newNumberInput(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, *numberInputRef)
 	}
 
+}
+
+type GetNumberInputParams struct {
+	ParentTableID string `json:"parentTableID"`
+	NumberInputID string `json:"numberInputID"`
+}
+
+func getNumberInputAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetNumberInputParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	numberInput, err := getNumberInput(params.ParentTableID, params.NumberInputID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	api.WriteJSONResponse(w, *numberInput)
 }
 
 func validateInputAPI(w http.ResponseWriter, r *http.Request) {

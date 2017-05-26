@@ -31,7 +31,10 @@
 
 {{define "colPropsBody"}}
 
-<h4>TBD</h4>
+<h4 id="colPropsColHeader"></h4>
+<div id="colPropPanels">
+	{{template "numberInputColProperties" .NumberInputParams}}
+</div>
 
 {{end}}
 
@@ -48,7 +51,9 @@
 	<!-- endinject -->
 	
 	<script>var colPropsAdminContext = { databaseID:"{{.DatabaseID}}",
-			colID: "{{.ColID}}"} </script>
+		tableID: "{{.TableID}}",
+			columnID: "{{.ColID}}",
+			colType: "{{.ColType}}"} </script>
 	
 	{{template "thirdPartyJS"}}
 	

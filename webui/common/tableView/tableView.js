@@ -142,8 +142,10 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 	
 			$.each(tableInfo.cols,function(index,colInfo) {
 				var $header = $('<th></th>')
-				var fieldName = fieldsByID[colInfo.properties.fieldID].name
-				$header.text(fieldName)
+				
+				setFormComponentLabel($header,colInfo.properties.fieldID,
+						colInfo.properties.labelFormat)
+				
 				$headerRow.append($header)
 			})
 		
