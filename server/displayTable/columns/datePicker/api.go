@@ -10,10 +10,14 @@ func init() {
 	datePickerRouter := mux.NewRouter()
 
 	datePickerRouter.HandleFunc("/api/tableView/datePicker/new", newDatePicker)
+
+	datePickerRouter.HandleFunc("/api/tableView/datePicker/get", getDatePickerAPI)
+
 	datePickerRouter.HandleFunc("/api/tableView/datePicker/setFormat", setFormat)
 	datePickerRouter.HandleFunc("/api/tableView/datePicker/setLabelFormat", setLabelFormat)
 	datePickerRouter.HandleFunc("/api/tableView/datePicker/setPermissions", setPermissions)
 	datePickerRouter.HandleFunc("/api/tableView/datePicker/setValidation", setValidation)
+
 	datePickerRouter.HandleFunc("/api/tableView/datePicker/validateInput", validateInputAPI)
 
 	http.Handle("/api/tableView/datePicker/", datePickerRouter)
@@ -33,6 +37,27 @@ func newDatePicker(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, *checkBoxRef)
 	}
 
+}
+
+type GetDatePickerParams struct {
+	ParentTableID string `json:"parentTableID"`
+	DatePickerID  string `json:"datePickerID"`
+}
+
+func getDatePickerAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetDatePickerParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	datePicker, err := getDatePicker(params.ParentTableID, params.DatePickerID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	api.WriteJSONResponse(w, *datePicker)
 }
 
 func validateInputAPI(w http.ResponseWriter, r *http.Request) {

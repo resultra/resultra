@@ -23,6 +23,10 @@ $(document).ready(function() {
 			break
 		case 'textInput':
 			initTextInputColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			break
+		case 'datePicker':
+			initDatePickerColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			break
 		default:
 			console.log("Unknown column type: " + colPropsAdminContext.colType)
 		}

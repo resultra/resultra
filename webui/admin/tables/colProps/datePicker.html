@@ -1,6 +1,6 @@
-{{define "numberInputColProperties"}}
+{{define "datePickerColProperties"}}
 
-<table id="numberInputColProps" class="table initiallyHidden" style="width:500px">
+<table id="datePickerColProps" class="table initiallyHidden" style="width:500px">
 	
 	<tr>
 		<td class="width200"><label>Column header</label><BR>
@@ -11,17 +11,7 @@
 			{{template "componentLabelProps" .LabelPanelParams}}
 		</td>
 	</tr>
-	
-	<tr>
-		<td class="width200"><label>Number format</label><BR>
-			<small>Configure how numbers are displayed.</small>
-		</td>
-
-		<td class="maxWidth300">
-			{{template "formatNumberSelection" "numberInput_"}}
-		</td>
-	</tr>
-	
+		
 	<tr>
 		<td class="width200"><label>Permissions</label><BR>
 			<small>Set whether values can be modified in this column.</small>
