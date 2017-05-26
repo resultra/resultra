@@ -3,6 +3,7 @@ function initNumberInputColPropertiesImpl(numberInputCol) {
 	setColPropsHeader(numberInputCol)
 	
 	var elemPrefix = "numberInput_"
+	hideSiblingsShowOne("#numberInputColProps")
 	
 	var formatSelectionParams = {
 		elemPrefix: elemPrefix,

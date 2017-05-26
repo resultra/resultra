@@ -10,10 +10,14 @@ func init() {
 	textInputRouter := mux.NewRouter()
 
 	textInputRouter.HandleFunc("/api/tableView/textInput/new", newTextInput)
+
+	textInputRouter.HandleFunc("/api/tableView/textInput/get", getTextInputAPI)
+
 	textInputRouter.HandleFunc("/api/tableView/textInput/setLabelFormat", setLabelFormat)
 	textInputRouter.HandleFunc("/api/tableView/textInput/setPermissions", setPermissions)
 	textInputRouter.HandleFunc("/api/tableView/textInput/setValueList", setValueList)
 	textInputRouter.HandleFunc("/api/tableView/textInput/setValidation", setValidation)
+
 	textInputRouter.HandleFunc("/api/tableView/textInput/validateInput", validateInputAPI)
 
 	http.Handle("/api/tableView/textInput/", textInputRouter)
@@ -33,6 +37,27 @@ func newTextInput(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, *textInputRef)
 	}
 
+}
+
+type GetTextInputParams struct {
+	ParentTableID string `json:"parentTableID"`
+	TextInputID   string `json:"textInputID"`
+}
+
+func getTextInputAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetTextInputParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	textInput, err := getTextInput(params.ParentTableID, params.TextInputID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	api.WriteJSONResponse(w, *textInput)
 }
 
 func validateInputAPI(w http.ResponseWriter, r *http.Request) {

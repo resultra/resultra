@@ -3,27 +3,24 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 	
 	var elemPrefix = "textBox_"
 	
-	function initValidationProperties() {
-			initCheckboxChangeHandler('#adminTextBoxComponentValidationRequired', 
-						textBoxRef.properties.validation.valueRequired, function (newVal) {
-			
-				var validationProps = {
-					valueRequired: newVal
-				}		
-			
-				var validationParams = {
-					parentFormID: textBoxRef.parentFormID,
-					textboxID: textBoxRef.textBoxID,
-					validation: validationProps
-				}
-				console.log("Setting new validation settings: " + JSON.stringify(validationParams))
+	
+	var validationParams = {
+		initialValidationProps: textBoxRef.properties.validation,
+		setValidation: function(validationProps) {
+			var validationParams = {
+				parentFormID: textBoxRef.parentFormID,
+				textboxID: textBoxRef.textBoxID,
+				validation: validationProps
+			}
+			console.log("Setting new validation settings: " + JSON.stringify(validationParams))
 
-				jsonAPIRequest("frm/textBox/setValidation",validationParams,function(updatedCheckboxRef) {
-					setContainerComponentInfo($textBox,updatedCheckboxRef,updatedCheckboxRef.textBoxID)
-				})
+			jsonAPIRequest("frm/textBox/setValidation",validationParams,function(updatedCheckboxRef) {
+				setContainerComponentInfo($textBox,updatedCheckboxRef,updatedCheckboxRef.textBoxID)
 			})
+		
+		}
 	}
-	initValidationProperties()
+	initTextInputValidationProperties(validationParams)
 	
 	
 	function dummySetVal(dropdownVal) {}

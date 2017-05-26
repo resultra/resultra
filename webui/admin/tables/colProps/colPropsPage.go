@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/displayTable"
 	colCommon "resultra/datasheet/server/displayTable/columns/common"
 	adminCommon "resultra/datasheet/webui/admin/common"
+	"resultra/datasheet/webui/admin/common/inputProperties"
 
 	"resultra/datasheet/server/common/runtimeConfig"
 
@@ -20,13 +21,15 @@ var tablePropTemplates *template.Template
 func init() {
 
 	baseTemplateFiles := []string{"static/admin/tables/colProps/colPropsPage.html",
-		"static/admin/tables/colProps/numberInput.html"}
+		"static/admin/tables/colProps/numberInput.html",
+		"static/admin/tables/colProps/textInput.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
 		adminCommon.TemplateFileList,
-		common.TemplateFileList}
+		common.TemplateFileList,
+		inputProperties.TemplateFileList}
 
 	tablePropTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
@@ -43,6 +46,7 @@ type TemplParams struct {
 	ColName           string
 	SiteBaseURL       string
 	NumberInputParams NumberInputColPropsTemplateParams
+	TextInputParams   TextInputColPropsTemplateParams
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -82,7 +86,8 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		ColType:           colInfo.ColType,
 		ColName:           "TBD",
 		SiteBaseURL:       runtimeConfig.GetSiteBaseURL(),
-		NumberInputParams: newNumberInputTemplateParams()}
+		NumberInputParams: newNumberInputTemplateParams(),
+		TextInputParams:   newTextInputTemplateParams()}
 
 	if err := tablePropTemplates.ExecuteTemplate(w, "colPropsAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

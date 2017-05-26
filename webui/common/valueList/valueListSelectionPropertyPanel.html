@@ -1,8 +1,19 @@
-{{define "valueListSelectionPropertyPanel"}}
-	<div class="form-group">
-	  <label for="valueListPropertyValueListSelection">Value list</label>
+{{define "valueListSelectionPropertySelection"}}
 	  	<select class="form-control" id="valueListPropertyValueListSelection">
 	  		<option selected value="">Don't select from value list</option>
 		</select>
+{{end}}
+
+
+{{define "valueListSelectionPropertyPanel"}}
+	<div class="form-group">
+	  <label for="valueListPropertyValueListSelection">Value list</label>
+	  {{template "valueListSelectionPropertySelection"}}
+	</div>
+{{end}}
+
+{{define "valueListSelectionPropertyPanelNoLabel"}}
+	<div class="form-group">
+	  {{template "valueListSelectionPropertySelection"}}
 	</div>
 {{end}}
