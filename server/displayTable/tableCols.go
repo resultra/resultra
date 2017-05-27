@@ -2,6 +2,7 @@ package displayTable
 
 import (
 	"fmt"
+	"resultra/datasheet/server/displayTable/columns/checkBox"
 	"resultra/datasheet/server/displayTable/columns/datePicker"
 	"resultra/datasheet/server/displayTable/columns/numberInput"
 	"resultra/datasheet/server/displayTable/columns/textInput"
@@ -34,6 +35,14 @@ func getTableCols(parentTableID string) (TableColsInfo, error) {
 		return nil, fmt.Errorf("getTableCols: %v", err)
 	}
 	for _, col := range datePickerCols {
+		tableColData = append(tableColData, col)
+	}
+
+	checkBoxCols, err := checkBox.GetCheckBoxes(parentTableID)
+	if err != nil {
+		return nil, fmt.Errorf("getTableCols: %v", err)
+	}
+	for _, col := range checkBoxCols {
 		tableColData = append(tableColData, col)
 	}
 

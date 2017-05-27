@@ -2,6 +2,7 @@ package displayTable
 
 import (
 	"fmt"
+	"resultra/datasheet/server/displayTable/columns/checkBox"
 	"resultra/datasheet/server/displayTable/columns/datePicker"
 	"resultra/datasheet/server/displayTable/columns/numberInput"
 	"resultra/datasheet/server/displayTable/columns/textInput"
@@ -19,6 +20,10 @@ func cloneTableCols(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string)
 	}
 
 	if err := datePicker.CloneDatePickers(remappedIDs, parentTableID); err != nil {
+		return fmt.Errorf("cloneTableCols: %v", err)
+	}
+
+	if err := checkBox.CloneCheckBoxes(remappedIDs, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
