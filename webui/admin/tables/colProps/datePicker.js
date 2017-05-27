@@ -39,6 +39,37 @@ function initNumberDatePickerColPropertiesImpl(datePickerCol) {
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
 	
+	var formatParams = {
+		initialFormat: datePickerCol.properties.dateFormat,
+		setFormat: function(newFormat) {
+			var formatParams = {
+				parentTableID: datePickerCol.parentTableID,
+				datePickerID: datePickerCol.datePickerID,
+				dateFormat: newFormat
+			}
+			jsonAPIRequest("tableView/datePicker/setFormat",formatParams,function(updatedDatePicker) {
+			})
+		}
+	}
+	initDateFormatProperties(formatParams)
+	
+	
+	var validationParams = {
+		setValidationConfig: function(validationConfig) {
+			var validationParams = {
+				parentTableID: datePickerCol.parentTableID,
+				datePickerID: datePickerCol.datePickerID,
+				validation: validationConfig
+			}
+			jsonAPIRequest("tableView/datePicker/setValidation", validationParams, function(updatedDatePicker) {
+			})			
+		}
+	
+	}
+	initDateValidationProperties(validationParams)
+	
+	
+	
 }
 
 
