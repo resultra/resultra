@@ -27,6 +27,9 @@ $(document).ready(function() {
 		case 'datePicker':
 			initDatePickerColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
 			break
+		case 'checkbox':
+			initCheckBoxColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			break
 		default:
 			console.log("Unknown column type: " + colPropsAdminContext.colType)
 		}
