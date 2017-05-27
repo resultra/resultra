@@ -56,7 +56,7 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 		},
 		initCheckBoxFunc: function(componentContext,$checkBox,checkBoxObjectRef) {
 			console.log("Init check box in view form")
-			initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy,checkBoxObjectRef)
+			initFormCheckboxEditBehavior($checkBox,componentContext,recordProxy,checkBoxObjectRef)
 			initFormComponentViewBehavior($checkBox,
 					checkBoxObjectRef.checkBoxID,initCheckBoxViewProperties)
 		},

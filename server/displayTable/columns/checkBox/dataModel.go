@@ -14,7 +14,9 @@ const checkBoxEntityKind string = "checkbox"
 type CheckBox struct {
 	ParentTableID string             `json:"parentTableID"`
 	CheckBoxID    string             `json:"checkBoxID"`
+	ColumnID      string             `json:"columnID"`
 	Properties    CheckBoxProperties `json:"properties"`
+	ColType       string             `json:"colType"`
 }
 
 type NewCheckBoxParams struct {
@@ -47,9 +49,12 @@ func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 	properties := newDefaultCheckBoxProperties()
 	properties.FieldID = params.FieldID
 
+	checkBoxID := uniqueID.GenerateSnowflakeID()
 	newCheckBox := CheckBox{ParentTableID: params.ParentTableID,
-		CheckBoxID: uniqueID.GenerateSnowflakeID(),
-		Properties: properties}
+		CheckBoxID: checkBoxID,
+		ColumnID:   checkBoxID,
+		Properties: properties,
+		ColType:    checkBoxEntityKind}
 
 	if err := saveCheckbox(newCheckBox); err != nil {
 		return nil, fmt.Errorf("saveNewCheckBox: Unable to save bar chart with params=%+v: error = %v", params, err)
@@ -71,7 +76,9 @@ func getCheckBox(parentTableID string, checkBoxID string) (*CheckBox, error) {
 	checkBox := CheckBox{
 		ParentTableID: parentTableID,
 		CheckBoxID:    checkBoxID,
-		Properties:    checkBoxProps}
+		ColumnID:      checkBoxID,
+		Properties:    checkBoxProps,
+		ColType:       checkBoxEntityKind}
 
 	return &checkBox, nil
 }
@@ -89,7 +96,9 @@ func GetCheckBoxes(parentTableID string) ([]CheckBox, error) {
 		currCheckBox := CheckBox{
 			ParentTableID: parentTableID,
 			CheckBoxID:    checkboxID,
-			Properties:    checkBoxProps}
+			ColumnID:      checkboxID,
+			Properties:    checkBoxProps,
+			ColType:       checkBoxEntityKind}
 		checkBoxes = append(checkBoxes, currCheckBox)
 
 		return nil
@@ -121,7 +130,9 @@ func CloneCheckBoxes(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string
 		destCheckBox := CheckBox{
 			ParentTableID: remappedFormID,
 			CheckBoxID:    remappedCheckBoxID,
-			Properties:    *destProperties}
+			ColumnID:      remappedCheckBoxID,
+			Properties:    *destProperties,
+			ColType:       checkBoxEntityKind}
 		if err := saveCheckbox(destCheckBox); err != nil {
 			return fmt.Errorf("CloneCheckBoxes: %v", err)
 		}

@@ -90,6 +90,15 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		return createTableViewColDef(colInfo,fieldsByID,datePickerTableViewCellContainerHTML,initContainer)
 	}
 
+	function createCheckboxColDef(colInfo,fieldsByID) {
+		
+		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+			setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
+			initTableViewCheckboxEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,fieldsByID,checkBoxTableViewCellContainerHTML,initContainer)
+	}
+
 	
 	function createColDef(colInfo,fieldsByID) {
 		switch (colInfo.colType) {
@@ -99,6 +108,8 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 			return createTextInputColDef(colInfo,fieldsByID)
 		case 'datePicker':
 			return createDateInputColDef(colInfo,fieldsByID)
+		case 'checkbox':
+			return createCheckboxColDef(colInfo,fieldsByID)
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,

@@ -16,6 +16,10 @@ function generateUniqueCheckboxIDForLabel() {
 	return "checkboxComponent_" + uniqueCheckboxIDForLabel
 }
 
+function checkBoxContainerControlHTML() {
+	
+}
+
 function checkBoxContainerHTML(elementID)
 {	
 	
@@ -24,7 +28,7 @@ function checkBoxContainerHTML(elementID)
 	var containerHTML = ''+
 		'<div class=" layoutContainer checkBoxFormContainer">' +
 			'<div class="checkbox">' +
-				'<input type="checkbox" id="'+uniqueID+'"class="checkboxFormComponentControl">' +
+				'<input type="checkbox" id="'+uniqueID+'" class="checkboxFormComponentControl">' +
 				'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel">New Checkbox</label>' + 
 			'</div>' +
 			'<div class="componentHoverFooter">' +
@@ -35,6 +39,23 @@ function checkBoxContainerHTML(elementID)
 	console.log ("Checkbox HTML: " + containerHTML)
 		
 	return containerHTML
+}
+
+function checkBoxTableViewCellContainerHTML() {
+	
+	var uniqueID = generateUniqueCheckboxIDForLabel()
+	
+	return 	''+
+		'<div class=" layoutContainer checkBoxFormContainer">' +
+			'<div class="checkbox marginLeft10 marginTop5">' +
+				'<input type="checkbox" id="'+uniqueID+'" class="checkboxTableCellControl checkboxFormComponentControl">' +
+				'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel"></label>'
+			'</div>' +
+			'<div class="componentHoverFooter">' +
+				smallClearDeleteButtonHTML("checkBoxComponentClearValueButton") + 
+			'</div>'
+		'</div>';
+
 }
 
 function setCheckBoxComponentLabel($checkboxContainer,checkboxRef) {

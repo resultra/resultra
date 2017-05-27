@@ -1,6 +1,6 @@
 
 
-function initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, checkBoxObjectRef) {
+function initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, checkBoxObjectRef,validateInput) {
 	
 	var validateCheckBoxInput = function(validationCompleteCallback) {
 		
@@ -10,12 +10,7 @@ function initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, 
 		}
 		
 		var currVal = getCurrentCheckboxComponentValue($checkBox)
-		var validationParams = {
-			parentFormID: checkBoxObjectRef.parentFormID,
-			checkBoxID: checkBoxObjectRef.checkBoxID,
-			inputVal: currVal
-		}
-		jsonAPIRequest("frm/checkBox/validateInput", validationParams, function(validationResult) {
+		validateInput(currVal,function(validationResult) {
 			if (validationResult.validationSucceeded) {
 				$checkBox.popover('destroy')
 				validationCompleteCallback(true)
@@ -29,8 +24,7 @@ function initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, 
 				$checkBox.popover('show')
 				validationCompleteCallback(false)
 			}
-			
-		})	
+		})
 		
 	}
 	
@@ -163,5 +157,34 @@ function initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, 
 		validateValue: validateCheckBoxInput
 	})
 	initCheckBoxFieldEditBehavior($checkBox,componentContext,recordProxy, checkBoxObjectRef)
+	
+}
+
+function initFormCheckboxEditBehavior($checkBox,componentContext,recordProxy, checkBoxObjectRef) {
+	function validateInput(currVal,validationResultCallback) {
+		var validationParams = {
+			parentFormID: checkBoxObjectRef.parentFormID,
+			checkBoxID: checkBoxObjectRef.checkBoxID,
+			inputVal: currVal
+		}
+		jsonAPIRequest("frm/checkBox/validateInput", validationParams, function(validationResult) {
+			validationResultCallback(validationResult)
+		})
+	}
+	initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, checkBoxObjectRef,validateInput)
+}
+
+function initTableViewCheckboxEditBehavior($checkBox,componentContext,recordProxy, checkBoxObjectRef) {
+	function validateInput(currVal,validationResultCallback) {
+		var validationParams = {
+			parentTableID: checkBoxObjectRef.parentTableID,
+			checkBoxID: checkBoxObjectRef.checkBoxID,
+			inputVal: currVal
+		}
+		jsonAPIRequest("tableView/checkBox/validateInput", validationParams, function(validationResult) {
+			validationResultCallback(validationResult)
+		})
+	}
+	initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, checkBoxObjectRef,validateInput)
 	
 }

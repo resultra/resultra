@@ -58,6 +58,18 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					})
 					
 				}
+
+				function createCheckBoxInput(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/checkBox/new",params,function(checkBox) {
+						console.log("Check box column created: " + JSON.stringify(datePicker))
+					})
+					
+				}
+
 				
 				console.log("Creating new column for field: " + JSON.stringify(fieldInfo))
 				
@@ -70,6 +82,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					break
 				case fieldTypeTime:
 					createDatePickerInput(fieldInfo)
+					break
+				case fieldTypeBool:
+					createCheckBoxInput(fieldInfo)
 					break
 				}
 			}
