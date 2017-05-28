@@ -3,37 +3,36 @@ function loadCheckboxProperties($container, checkBoxRef) {
 	console.log("Loading checkbox properties")
 	
 	
-	var $colorSchemeSelection = $('#adminCheckboxComponentColorSchemeSelection')
-	$colorSchemeSelection.val(checkBoxRef.properties.colorScheme)
-	initSelectControlChangeHandler($colorSchemeSelection,function(newColorScheme) {
-		
-		var colorSchemeParams = {
-			parentFormID: checkBoxRef.parentFormID,
-			checkBoxID: checkBoxRef.checkBoxID,
-			colorScheme: newColorScheme
-		}
-		console.log("Setting new color scheme: " + JSON.stringify(colorSchemeParams))
-		
-		jsonAPIRequest("frm/checkBox/setColorScheme",colorSchemeParams,function(updatedCheckboxRef) {
-			setContainerComponentInfo($container,updatedCheckboxRef,updatedCheckboxRef.checkBoxID)		
-		})
-		
-	})
 	
-	initCheckboxChangeHandler('#adminCheckboxComponentStrikethrough', 
-				checkBoxRef.properties.strikethroughCompleted, function (newVal) {
-					
-		var strikethroughParams = {
-			parentFormID: checkBoxRef.parentFormID,
-			checkBoxID: checkBoxRef.checkBoxID,
-			strikethroughCompleted: newVal
-		}
-		console.log("Setting new strikethrough settings: " + JSON.stringify(strikethroughParams))
+	var formatParams = {
+		initialColorScheme: checkBoxRef.properties.colorScheme,
+		setColorScheme: function(newColorScheme) {
+			var colorSchemeParams = {
+				parentFormID: checkBoxRef.parentFormID,
+				checkBoxID: checkBoxRef.checkBoxID,
+				colorScheme: newColorScheme
+			}
+			console.log("Setting new color scheme: " + JSON.stringify(colorSchemeParams))
+	
+			jsonAPIRequest("frm/checkBox/setColorScheme",colorSchemeParams,function(updatedCheckboxRef) {
+				setContainerComponentInfo($container,updatedCheckboxRef,updatedCheckboxRef.checkBoxID)		
+			})
+		},
+		initialStrikethrough: checkBoxRef.properties.strikethroughCompleted,
+		setStrikethrough: function(strikethroughCompleted) {
+			var strikethroughParams = {
+				parentFormID: checkBoxRef.parentFormID,
+				checkBoxID: checkBoxRef.checkBoxID,
+				strikethroughCompleted: newVal
+			}
+			console.log("Setting new strikethrough settings: " + JSON.stringify(strikethroughParams))
 
-		jsonAPIRequest("frm/checkBox/setStrikethrough",strikethroughParams,function(updatedCheckboxRef) {
-			setContainerComponentInfo($container,updatedCheckboxRef,updatedCheckboxRef.checkBoxID)		
-		})
-	})
+			jsonAPIRequest("frm/checkBox/setStrikethrough",strikethroughParams,function(updatedCheckboxRef) {
+				setContainerComponentInfo($container,updatedCheckboxRef,updatedCheckboxRef.checkBoxID)		
+			})
+		}
+	}
+	initCheckBoxFormatProps(formatParams)
 
 
 	initCheckboxChangeHandler('#adminCheckboxComponentValidationRequired', 

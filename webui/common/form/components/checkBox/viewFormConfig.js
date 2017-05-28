@@ -2,6 +2,11 @@
 
 function initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, checkBoxObjectRef,validateInput) {
 	
+	var checkboxColorSchemeClass = "checkbox-"+checkBoxObjectRef.properties.colorScheme
+	$checkBox.addClass(checkboxColorSchemeClass)
+	
+	
+	
 	var validateCheckBoxInput = function(validationCompleteCallback) {
 		
 		if(checkboxComponentIsDisabled($checkBox)) {
@@ -59,6 +64,7 @@ function initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, 
 				{
 					$checkBoxControl.prop("indeterminate", false)
 					$checkBoxControl.prop("checked",true)
+					$checkBox.addClass(checkboxColorSchemeClass)
 					if(checkBoxObjectRef.properties.strikethroughCompleted) {
 						$checkboxLabel.addClass("checkboxStrikethroughCompleted")
 					} else {
@@ -69,6 +75,7 @@ function initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, 
 					$checkboxLabel.removeClass("checkboxStrikethroughCompleted")
 					$checkBoxControl.prop("indeterminate", false)
 					$checkBoxControl.prop("checked",false)
+					$checkBox.removeClass(checkboxColorSchemeClass)
 				}
 			
 			}
@@ -80,6 +87,8 @@ function initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, 
 			// No value exits
 			$checkBoxControl.prop("indeterminate", true)
 			$checkboxLabel.removeClass("checkboxStrikethroughCompleted")
+			$checkBox.removeClass(checkboxColorSchemeClass)
+			$checkBoxControl.prop("checked",false)
 		}	
 	
 	}

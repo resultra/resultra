@@ -40,6 +40,27 @@ function initCheckBoxColPropertiesImpl(checkBoxCol) {
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
 	
+	
+	
+	var formatParams = {
+		initialColorScheme: checkBoxCol.properties.colorScheme,
+		setColorScheme: function(newColorScheme) {
+			var colorSchemeParams = {
+				parentTableID: checkBoxCol.parentTableID,
+				checkBoxID: checkBoxCol.checkBoxID,
+				colorScheme: newColorScheme
+			}
+			console.log("Setting new color scheme: " + JSON.stringify(colorSchemeParams))
+	
+			jsonAPIRequest("tableView/checkBox/setColorScheme",colorSchemeParams,function(updatedCheckboxRef) {
+			})
+		},
+		initialStrikethrough: false,
+		setStrikethrough: function(strikethroughCompleted) {  } // no-op
+	}
+	initCheckBoxFormatProps(formatParams)
+	
+	
 }
 
 
