@@ -1,6 +1,6 @@
 
 
-function initRatingRecordEditBehavior($ratingContainer,componentContext,recordProxy, ratingObjectRef) {
+function initRatingRecordEditBehavior($ratingContainer,componentContext,recordProxy, ratingObjectRef,remoteValidateInput) {
 
 	var $ratingControl = getRatingControlFromRatingContainer($ratingContainer)
 	var $clearValueButton = $ratingContainer.find(".ratingComponentClearValueButton")
@@ -12,14 +12,8 @@ function initRatingRecordEditBehavior($ratingContainer,componentContext,recordPr
 			return
 		}
 		
-		
 		var currVal = getRatingValFromContainer($ratingContainer)
-		var validationParams = {
-			parentFormID: ratingObjectRef.parentFormID,
-			ratingID: ratingObjectRef.ratingID,
-			inputVal: currVal
-		}
-		jsonAPIRequest("frm/rating/validateInput", validationParams, function(validationResult) {
+		remoteValidateInput(currVal,function(validationResult) {
 			if (validationResult.validationSucceeded) {
 				$ratingContainer.popover('destroy')
 				validationCompleteCallback(true)
@@ -152,4 +146,37 @@ function initRatingRecordEditBehavior($ratingContainer,componentContext,recordPr
 	})
 	
 
+}
+
+function initRatingFormRecordEditBehavior($ratingContainer,componentContext,recordProxy, ratingObjectRef) {
+	
+	function validateInput(inputVal,validationResultCallback) {
+		var validationParams = {
+			parentFormID: ratingObjectRef.parentFormID,
+			ratingID: ratingObjectRef.ratingID,
+			inputVal: inputVal
+		}
+		jsonAPIRequest("frm/rating/validateInput", validationParams, function(validationResult) {
+			validationResultCallback(validationResult)
+		})
+	}
+	
+	initRatingRecordEditBehavior($ratingContainer,componentContext,recordProxy, ratingObjectRef,validateInput)
+}
+
+function initRatingTableCellRecordEditBehavior($ratingContainer,componentContext,recordProxy, ratingObjectRef) {
+	
+	function validateInput(inputVal,validationResultCallback) {
+		var validationParams = {
+			parentTableID: ratingObjectRef.parentTableID,
+			ratingID: ratingObjectRef.ratingID,
+			inputVal: inputVal
+		}
+		jsonAPIRequest("tableView/rating/validateInput", validationParams, function(validationResult) {
+			validationResultCallback(validationResult)
+		})
+	}
+	
+	
+	initRatingRecordEditBehavior($ratingContainer,componentContext,recordProxy, ratingObjectRef,validateInput)
 }

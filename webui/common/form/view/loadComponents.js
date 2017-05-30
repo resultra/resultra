@@ -80,7 +80,7 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 		},
 		initRatingFunc: function(componentContext,$rating,ratingObjectRef) {
 			console.log("Init rating in view form")
-			initRatingRecordEditBehavior($rating,componentContext,recordProxy,ratingObjectRef)
+			initRatingFormRecordEditBehavior($rating,componentContext,recordProxy,ratingObjectRef)
 			initFormComponentViewBehavior($rating,
 					ratingObjectRef.ratingID,initRatingViewProperties)
 		},

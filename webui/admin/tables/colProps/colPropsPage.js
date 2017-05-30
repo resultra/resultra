@@ -21,6 +21,9 @@ $(document).ready(function() {
 		case 'numberInput':
 			initNumberInputColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
 			break
+		case 'rating':
+			initRatingColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			break
 		case 'textInput':
 			initTextInputColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
 			break

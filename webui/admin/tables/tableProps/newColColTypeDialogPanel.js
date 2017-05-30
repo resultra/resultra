@@ -37,6 +37,18 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					})
 					
 				}
+
+				function createRating(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/rating/new",params,function(rating) {
+						console.log("Number rating column created: " + JSON.stringify(rating))
+					})
+					
+				}
+
 				function createTextInput(fieldInfo) {
 					var params = {
 						parentTableID: panelParams.tableID,
@@ -73,9 +85,17 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				
 				console.log("Creating new column for field: " + JSON.stringify(fieldInfo))
 				
+				var colType = $colTypeSelection.val()
+				
 				switch (fieldInfo.type) {
 				case fieldTypeNumber:
-					createNumberInput(fieldInfo)
+					if (colType==='numberInput') {
+						createNumberInput(fieldInfo)	
+					} else if (colType === 'rating'){
+						createRating(fieldInfo)
+					} else {
+						console.log("Unknown column type for number field : " + colType)
+					}
 					break
 				case fieldTypeText:
 					createTextInput(fieldInfo)

@@ -99,6 +99,15 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		return createTableViewColDef(colInfo,fieldsByID,checkBoxTableViewCellContainerHTML,initContainer)
 	}
 
+	function createRatingColDef(colInfo,fieldsByID) {
+		
+		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+			setContainerComponentInfo($cellContainer,colInfo,colInfo.ratingID)
+			initRatingTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,fieldsByID,ratingTableCellContainerHTML,initContainer)
+	}
+
 	
 	function createColDef(colInfo,fieldsByID) {
 		switch (colInfo.colType) {
@@ -110,6 +119,8 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 			return createDateInputColDef(colInfo,fieldsByID)
 		case 'checkbox':
 			return createCheckboxColDef(colInfo,fieldsByID)
+		case 'rating':
+			return createRatingColDef(colInfo,fieldsByID)
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,

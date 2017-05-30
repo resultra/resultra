@@ -11,7 +11,7 @@ func init() {
 
 	ratingRouter.HandleFunc("/api/tableView/rating/new", newRating)
 
-	ratingRouter.HandleFunc("/api/tableView/textInput/get", getRatingAPI)
+	ratingRouter.HandleFunc("/api/tableView/rating/get", getRatingAPI)
 
 	ratingRouter.HandleFunc("/api/tableView/rating/setTooltips", setTooltips)
 	ratingRouter.HandleFunc("/api/tableView/rating/setIcon", setIcon)
