@@ -61,6 +61,25 @@ function initCheckBoxColPropertiesImpl(checkBoxCol) {
 	initCheckBoxFormatProps(formatParams)
 	
 	
+	var validationParams = {
+		initialValidationConfig: checkBoxCol.properties.validation,
+		setValidation: function(validationConfig) {
+			var validationParams = {
+				parentTableID: checkBoxCol.parentTableID,
+				checkBoxID: checkBoxCol.checkBoxID,
+				validation: validationConfig
+			}
+			console.log("Setting new validation settings: " + JSON.stringify(validationParams))
+
+			jsonAPIRequest("tableView/checkBox/setValidation",validationParams,function(updatedCheckboxRef) {
+			})
+		
+		}
+	}
+	initCheckBoxValidationProps(validationParams)	
+	
+	
+	
 }
 
 
