@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/displayTable/columns/checkBox"
 	"resultra/datasheet/server/displayTable/columns/datePicker"
 	"resultra/datasheet/server/displayTable/columns/numberInput"
+	"resultra/datasheet/server/displayTable/columns/rating"
 	"resultra/datasheet/server/displayTable/columns/textInput"
 )
 
@@ -43,6 +44,14 @@ func getTableCols(parentTableID string) (TableColsInfo, error) {
 		return nil, fmt.Errorf("getTableCols: %v", err)
 	}
 	for _, col := range checkBoxCols {
+		tableColData = append(tableColData, col)
+	}
+
+	ratingCols, err := rating.GetRatings(parentTableID)
+	if err != nil {
+		return nil, fmt.Errorf("getTableCols: %v", err)
+	}
+	for _, col := range ratingCols {
 		tableColData = append(tableColData, col)
 	}
 
