@@ -1,5 +1,6 @@
 
-function initRatingTooltipProperties($rating,ratingRef) {
+
+function initRatingTooltipProperties(params) {
 	
 	function getTooltipText() {
 		
@@ -19,8 +20,8 @@ function initRatingTooltipProperties($rating,ratingRef) {
 	for(var ratingIndex = 0; ratingIndex < numRatings; ratingIndex++) {
 		var tooltipInputHTML = '<textarea class="form-control ratingTooltipText" rows="2"></textarea>'
 		var $tooltipInput = $(tooltipInputHTML)
-		if(ratingRef.properties.tooltips[ratingIndex] != undefined) {
-			var ratingText = ratingRef.properties.tooltips[ratingIndex]
+		if(params.initialTooltips[ratingIndex] != undefined) {
+			var ratingText = params.initialTooltips[ratingIndex]
 			$tooltipInput.val(ratingText)
 		}
 		$('#ratingTooltipPropertiesFormGroup').append($tooltipInput)
@@ -31,16 +32,7 @@ function initRatingTooltipProperties($rating,ratingRef) {
 		
 		var updatedTooltips = getTooltipText()
 		console.log("Tooltip text changed: " + updatedTooltips)
-		
-		var tooltipParams = {
-			parentFormID: ratingRef.parentFormID,
-			ratingID: ratingRef.ratingID,
-			tooltips: updatedTooltips
-		}
-			
-		jsonAPIRequest("frm/rating/setTooltips", tooltipParams, function(updateRating) {
-			setContainerComponentInfo($rating,updateRating,updateRating.ratingID)
-		})	
+		params.setTooltips(updatedTooltips)
 		
 	})
 }

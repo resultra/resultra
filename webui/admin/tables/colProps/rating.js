@@ -41,6 +41,37 @@ function initRatingColPropertiesImpl(ratingCol) {
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
 	
 	
+	var iconParams = {
+		initialIcon: ratingCol.properties.icon,
+		setIcon: function(newIcon) {
+			var iconParams = {
+				parentTableID: ratingCol.parentTableID,
+				ratingID: ratingCol.ratingID,
+				icon: newIcon
+			}
+			jsonAPIRequest("tableView/rating/setIcon",iconParams,function(updatedRating) {
+			})
+		}
+	}
+	initRatingIconProps(iconParams)
+	
+	var tooltipParams = {
+		initialTooltips: ratingCol.properties.tooltips,
+		setTooltips: function(updatedTooltips) {
+			var tooltipParams = {
+				parentTableID: ratingCol.parentTableID,
+				ratingID: ratingCol.ratingID,
+				tooltips: updatedTooltips
+			}
+			
+			jsonAPIRequest("tableView/rating/setTooltips", tooltipParams, function(updateRating) {
+			})	
+		}
+	}
+	initRatingTooltipProperties(tooltipParams)
+	
+	
+	
 	
 }
 

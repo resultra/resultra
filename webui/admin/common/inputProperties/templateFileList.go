@@ -6,4 +6,6 @@ var TemplateFileList = []string{"static/admin/common/inputProperties/numberSpinn
 	"static/admin/common/inputProperties/dateValidation.html",
 	"static/admin/common/inputProperties/dateFormat.html",
 	"static/admin/common/inputProperties/checkBoxFormat.html",
-	"static/admin/common/inputProperties/checkBoxValidation.html"}
+	"static/admin/common/inputProperties/checkBoxValidation.html",
+	"static/admin/common/inputProperties/ratingFormat.html",
+	"static/admin/common/inputProperties/ratingTooltip.html"}

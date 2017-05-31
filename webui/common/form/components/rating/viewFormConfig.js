@@ -177,6 +177,8 @@ function initRatingTableCellRecordEditBehavior($ratingContainer,componentContext
 		})
 	}
 	
+	initRatingFormComponentControl($ratingContainer,ratingObjectRef)
+	
 	
 	initRatingRecordEditBehavior($ratingContainer,componentContext,recordProxy, ratingObjectRef,validateInput)
 }

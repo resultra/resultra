@@ -1,11 +1,9 @@
 function loadRatingProperties($rating,ratingRef) {
 	console.log("Loading rating properties")
 	
-	function initIconProps() {
-		var $iconSelection = $('#adminRatingComponentIconSelection')
-		$iconSelection.val(ratingRef.properties.icon)
-		initSelectControlChangeHandler($iconSelection,function(newIcon) {
-		
+	var iconParams = {
+		initialIcon: ratingRef.properties.icon,
+		setIcon: function(newIcon) {
 			var iconParams = {
 				parentFormID: ratingRef.parentFormID,
 				ratingID: ratingRef.ratingID,
@@ -15,13 +13,26 @@ function loadRatingProperties($rating,ratingRef) {
 				setContainerComponentInfo($rating,updatedRating,updatedRating.ratingID)
 				reInitRatingFormComponentControl($rating,updatedRating)
 			})
-		
-		})
-		
+		}
 	}
+	initRatingIconProps(iconParams)
 	
-	initRatingTooltipProperties($rating,ratingRef)
-	initIconProps()
+	
+	var tooltipParams = {
+		initialTooltips: ratingRef.properties.tooltips,
+		setTooltips: function(updatedTooltips) {
+			var tooltipParams = {
+				parentFormID: ratingRef.parentFormID,
+				ratingID: ratingRef.ratingID,
+				tooltips: updatedTooltips
+			}
+			
+			jsonAPIRequest("frm/rating/setTooltips", tooltipParams, function(updateRating) {
+				setContainerComponentInfo($rating,updateRating,updateRating.ratingID)
+			})	
+		}
+	}
+	initRatingTooltipProperties(tooltipParams)
 
 
 	var elemPrefix = "rating_"
