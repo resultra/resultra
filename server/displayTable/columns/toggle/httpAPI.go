@@ -9,22 +9,22 @@ import (
 func init() {
 	toggleRouter := mux.NewRouter()
 
-	toggleRouter.HandleFunc("/api/frm/toggle/new", newToggle)
+	toggleRouter.HandleFunc("/api/tableView/toggle/new", newToggle)
 
-	toggleRouter.HandleFunc("/api/frm/toggle/get", getToggleAPI)
+	toggleRouter.HandleFunc("/api/tableView/toggle/get", getToggleAPI)
 
-	toggleRouter.HandleFunc("/api/frm/toggle/setOffColorScheme", setOffColorScheme)
-	toggleRouter.HandleFunc("/api/frm/toggle/setOnColorScheme", setOnColorScheme)
-	toggleRouter.HandleFunc("/api/frm/toggle/setOffLabel", setOffLabel)
-	toggleRouter.HandleFunc("/api/frm/toggle/setOnLabel", setOnLabel)
+	toggleRouter.HandleFunc("/api/tableView/toggle/setOffColorScheme", setOffColorScheme)
+	toggleRouter.HandleFunc("/api/tableView/toggle/setOnColorScheme", setOnColorScheme)
+	toggleRouter.HandleFunc("/api/tableView/toggle/setOffLabel", setOffLabel)
+	toggleRouter.HandleFunc("/api/tableView/toggle/setOnLabel", setOnLabel)
 
-	toggleRouter.HandleFunc("/api/frm/toggle/setLabelFormat", setLabelFormat)
-	toggleRouter.HandleFunc("/api/frm/toggle/setPermissions", setPermissions)
+	toggleRouter.HandleFunc("/api/tableView/toggle/setLabelFormat", setLabelFormat)
+	toggleRouter.HandleFunc("/api/tableView/toggle/setPermissions", setPermissions)
 
-	toggleRouter.HandleFunc("/api/frm/toggle/setValidation", setValidation)
-	toggleRouter.HandleFunc("/api/frm/toggle/validateInput", validateInputAPI)
+	toggleRouter.HandleFunc("/api/tableView/toggle/setValidation", setValidation)
+	toggleRouter.HandleFunc("/api/tableView/toggle/validateInput", validateInputAPI)
 
-	http.Handle("/api/frm/toggle/", toggleRouter)
+	http.Handle("/api/tableView/toggle/", toggleRouter)
 }
 
 func newToggle(w http.ResponseWriter, r *http.Request) {

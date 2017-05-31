@@ -62,7 +62,7 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 		},
 		initToggleFunc: function(componentContext,$toggle,toggleObjectRef) {
 			console.log("Init toggle in view form")
-			initToggleRecordEditBehavior($toggle,componentContext,recordProxy,toggleObjectRef)
+			initToggleFormRecordEditBehavior($toggle,componentContext,recordProxy,toggleObjectRef)
 			initFormComponentViewBehavior($toggle,
 					toggleObjectRef.toggleID,initToggleViewProperties)
 		},

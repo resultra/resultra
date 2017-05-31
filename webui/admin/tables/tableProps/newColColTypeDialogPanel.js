@@ -79,10 +79,18 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					jsonAPIRequest("tableView/checkBox/new",params,function(checkBox) {
 						console.log("Check box column created: " + JSON.stringify(datePicker))
 					})
-					
+				}
+				
+				function createToggle(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/toggle/new",params,function(toggle) {
+						console.log("Toggle column created: " + JSON.stringify(toggle))
+					})
 				}
 
-				
 				console.log("Creating new column for field: " + JSON.stringify(fieldInfo))
 				
 				var colType = $colTypeSelection.val()
@@ -104,7 +112,13 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					createDatePickerInput(fieldInfo)
 					break
 				case fieldTypeBool:
-					createCheckBoxInput(fieldInfo)
+					if(colType==='checkbox') {
+						createCheckBoxInput(fieldInfo)
+					} else if (colType==="toggle") {
+						createToggle(fieldInfo)
+					} else {
+						console.log("Unknown column type for boolean field : " + colType)
+					}
 					break
 				}
 			}

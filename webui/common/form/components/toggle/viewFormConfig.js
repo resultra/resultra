@@ -1,6 +1,7 @@
 
 
-function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, toggleObjectRef) {
+
+function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, toggleObjectRef,remoteValidate) {
 	
 	var validateToggleInput = function(validationCompleteCallback) {
 		
@@ -10,12 +11,7 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 		}
 		
 		var currVal = getCurrentToggleComponentValue($toggle)
-		var validationParams = {
-			parentFormID: toggleObjectRef.parentFormID,
-			toggleID: toggleObjectRef.toggleID,
-			inputVal: currVal
-		}
-		jsonAPIRequest("frm/toggle/validateInput", validationParams, function(validationResult) {
+		remoteValidate(currVal,function(validationResult) {			
 			if (validationResult.validationSucceeded) {
 				$toggle.popover('destroy')
 				validationCompleteCallback(true)
@@ -147,3 +143,42 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 	initToggleFieldEditBehavior($toggle,componentContext,recordProxy, toggleObjectRef)
 	
 }
+
+
+function initToggleFormRecordEditBehavior($toggle,componentContext,recordProxy, toggleObjectRef) {
+	function validatInput(currVal, validateResultsCallback) {
+		var validationParams = {
+			parentFormID: toggleObjectRef.parentFormID,
+			toggleID: toggleObjectRef.toggleID,
+			inputVal: currVal
+		}
+		jsonAPIRequest("frm/toggle/validateInput", validationParams, function(validationResult) {
+			validateResultsCallback(validationResult)
+		})
+	}
+	initToggleRecordEditBehavior($toggle,componentContext,recordProxy, toggleObjectRef,validatInput)
+}
+
+
+
+function initToggleTableCellRecordEditBehavior($toggle,componentContext,recordProxy, toggleObjectRef) {
+	function validatInput(currVal, validateResultsCallback) {
+		var validationParams = {
+			parentTableID: toggleObjectRef.parentTableID,
+			toggleID: toggleObjectRef.toggleID,
+			inputVal: currVal
+		}
+		jsonAPIRequest("tableView/toggle/validateInput", validationParams, function(validationResult) {
+			validateResultsCallback(validationResult)
+		})
+	}
+	
+		initToggleComponentControl($toggle,toggleObjectRef)
+		
+		var toggleColorSchemeClass = "checkbox-"+toggleObjectRef.properties.colorScheme
+		$toggle.addClass(toggleColorSchemeClass)
+	
+	
+	initToggleRecordEditBehavior($toggle,componentContext,recordProxy, toggleObjectRef,validatInput)
+}
+

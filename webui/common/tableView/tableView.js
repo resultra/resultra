@@ -99,6 +99,16 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		return createTableViewColDef(colInfo,fieldsByID,checkBoxTableViewCellContainerHTML,initContainer)
 	}
 
+	function createToggleColDef(colInfo,fieldsByID) {
+		
+		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+			setContainerComponentInfo($cellContainer,colInfo,colInfo.toggleID)
+			initToggleTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,fieldsByID,toggleTableCellContainerHTML,initContainer)
+	}
+
+
 	function createRatingColDef(colInfo,fieldsByID) {
 		
 		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
@@ -121,6 +131,8 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 			return createCheckboxColDef(colInfo,fieldsByID)
 		case 'rating':
 			return createRatingColDef(colInfo,fieldsByID)
+		case 'toggle':
+			return createToggleColDef(colInfo,fieldsByID)
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,

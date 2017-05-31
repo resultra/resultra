@@ -39,6 +39,26 @@ function toggleContainerHTML(elementID)
 	return containerHTML
 }
 
+function toggleControlHTMLNoLabel() {
+	return 		'<input type="checkbox"class="toggleFormComponentControl">'
+}
+
+
+function toggleTableCellContainerHTML() {
+	var containerHTML = ''+
+		'<div class=" layoutContainer toggleFormContainer">' +
+			'<div class="toggleWrapper">' +
+				toggleControlHTMLNoLabel() + 
+			'</div>' +
+			'<div class="componentHoverFooter">' +
+				smallClearDeleteButtonHTML("toggleComponentClearValueButton") + 
+			'</div>' +
+		'</div>';
+					
+	return containerHTML
+	
+}
+
 function setToggleComponentLabel($toggleContainer,toggleRef) {
 	var $label = $toggleContainer.find('.toggleFormComponentLabel')
 	
