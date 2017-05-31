@@ -33,6 +33,9 @@ $(document).ready(function() {
 		case 'checkbox':
 			initCheckBoxColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
 			break
+		case 'toggle':
+			initToggleColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			break
 		default:
 			console.log("Unknown column type: " + colPropsAdminContext.colType)
 		}

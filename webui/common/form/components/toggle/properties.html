@@ -1,44 +1,5 @@
 
-{{define "bootstrapColorSchemeSelections"}}
-	<option disabled selected value="">Select a color scheme</option>
-	<option value="default">Default</option>
-	<option value="primary">Primary</option>
-	<option value="success">Success</option>
-	<option value="info">Info</option>
-	<option value="warning">Warning</option>
-	<option value="danger">Danger</option>
-{{end}}
 
-{{define "toggleFormatProps"}}
-     <form id="adminToggleComponentFormatForm">
-		 
-	  <div class="form-group">
-       	  <label for="adminToggleOffComponentColorSchemeSelection">Color scheme when toggled off</label>
-		  	<select class="form-control" id="adminToggleOffComponentColorSchemeSelection">
-				{{template "bootstrapColorSchemeSelections"}}
-			</select>
-	  </div>
-	  
-	<div class="form-group">
-	  <label>Label when toggled off</label>
-	  <input type="text" name="adminToggleOffComponentLabel" class="form-control" placeholder="Enter a label">
-	</div>
-
-	  <div class="form-group">
-       	  <label for="adminToggleOnComponentColorSchemeSelection">Color scheme when toggled on</label>
-		  	<select class="form-control" id="adminToggleOnComponentColorSchemeSelection">
-				{{template "bootstrapColorSchemeSelections"}}
-			</select>
-	  </div>
-
-	<div class="form-group">
-	  <label>Label when toggled on</label>
-	  <input type="text" name="adminToggleOnComponentLabel" class="form-control" placeholder="Enter a label">
-	</div>
-
-	   
-    </form>	
-{{end}}
 
 
 {{define "toggleValidationProps"}}

@@ -81,7 +81,8 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 		var fieldID = toggleObjectRef.properties.fieldID
 		var fieldRef = getFieldRef(fieldID)
 		if(fieldRef.isCalcField || formComponentIsReadOnly(toggleObjectRef.properties.permissions)) {
-			$toggleControl.prop('disabled',true)
+			var $toggleControl = getToggleControlFromToggleContainer($toggle)
+			$toggleControl.bootstrapSwitch("disabled",true)
 			return;  // stop initialization, the toggle is read only.
 		}
 	
