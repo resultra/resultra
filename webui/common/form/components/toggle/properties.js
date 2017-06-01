@@ -3,6 +3,8 @@ function loadToggleProperties($container, toggleRef) {
 	console.log("Loading toggle properties")
 	
 	var formatParams = {
+		initialVals: toggleRef.properties,
+		
 		setOffLabel: function(newLabel) {	
 			var labelParams = {
 				parentFormID: toggleRef.parentFormID,

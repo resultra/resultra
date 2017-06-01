@@ -1,53 +1,3 @@
-var formatParams = {
-	setOffLabel: function(newLabel) {	
-		var labelParams = {
-			parentFormID: toggleRef.parentFormID,
-			toggleID: toggleRef.toggleID,
-			label: newLabel
-		}
-		jsonAPIRequest("frm/toggle/setOffLabel",labelParams,function(updatedToggleRef) {
-			reInitToggleComponentControl($container,updatedToggleRef)
-			setContainerComponentInfo($container,updatedToggleRef,updatedToggleRef.toggleID)		
-		})
-	},
-	setOnLabel: function(newLabel) {
-		var labelParams = {
-			parentFormID: toggleRef.parentFormID,
-			toggleID: toggleRef.toggleID,
-			label: newLabel
-		}
-		jsonAPIRequest("frm/toggle/setOnLabel",labelParams,function(updatedToggleRef) {
-			reInitToggleComponentControl($container,updatedToggleRef)
-			setContainerComponentInfo($container,updatedToggleRef,updatedToggleRef.toggleID)		
-		})
-	},
-	setOffColorScheme: function(newColorScheme) {
-		var colorSchemeParams = {
-			parentFormID: toggleRef.parentFormID,
-			toggleID: toggleRef.toggleID,
-			colorScheme: newColorScheme
-		}
-		console.log("Setting new color scheme: " + JSON.stringify(colorSchemeParams))
-	
-		jsonAPIRequest("frm/toggle/setOffColorScheme",colorSchemeParams,function(updatedToggleRef) {
-			reInitToggleComponentControl($container,updatedToggleRef)
-			setContainerComponentInfo($container,updatedToggleRef,updatedToggleRef.toggleID)		
-		})
-	},
-	setOnColorScheme: function(newColorScheme) {
-		var colorSchemeParams = {
-			parentFormID: toggleRef.parentFormID,
-			toggleID: toggleRef.toggleID,
-			colorScheme: newColorScheme
-		}
-		console.log("Setting new color scheme: " + JSON.stringify(colorSchemeParams))
-	
-		jsonAPIRequest("frm/toggle/setOnColorScheme",colorSchemeParams,function(updatedToggleRef) {
-			reInitToggleComponentControl($container,updatedToggleRef)
-			setContainerComponentInfo($container,updatedToggleRef,updatedToggleRef.toggleID)	
-		})		
-	}
-}
 
 
 function initToggleFormatProperties(params) {
@@ -55,7 +5,7 @@ function initToggleFormatProperties(params) {
 	var $form = $('#adminToggleComponentFormatForm')
 	
 	var $offLabel = $form.find("input[name=adminToggleOffComponentLabel]")
-	$offLabel.val(toggleRef.properties.offLabel)
+	$offLabel.val(params.initialVals.offLabel)
 	var validationOffLabelParams = {
 		url: '/api/generic/stringValidation/validateItemLabel',
 		data: { label: function() { return $offLabel.val(); } }
@@ -66,7 +16,7 @@ function initToggleFormatProperties(params) {
 	}
 
 	var $onLabel = $form.find("input[name=adminToggleOnComponentLabel]")
-	$onLabel.val(toggleRef.properties.onLabel)
+	$onLabel.val(params.initialVals.onLabel)
 	var validationOnLabelParams = {
 		url: '/api/generic/stringValidation/validateItemLabel',
 		data: { label: function() { return $onLabel.val(); } }
@@ -89,13 +39,13 @@ function initToggleFormatProperties(params) {
 
 	
 	var $toggleOffColorSchemeSelection = $('#adminToggleOffComponentColorSchemeSelection')
-	$toggleOffColorSchemeSelection.val(toggleRef.properties.offColorScheme)
+	$toggleOffColorSchemeSelection.val(params.initialVals.offColorScheme)
 	initSelectControlChangeHandler($toggleOffColorSchemeSelection,function(newColorScheme) {
 		params.setOffColorScheme(newColorScheme)
 	})
 	
 	var $toggleOnColorSchemeSelection = $('#adminToggleOnComponentColorSchemeSelection')
-	$toggleOnColorSchemeSelection.val(toggleRef.properties.onColorScheme)
+	$toggleOnColorSchemeSelection.val(params.initialVals.onColorScheme)
 	initSelectControlChangeHandler($toggleOnColorSchemeSelection,function(newColorScheme) {
 		params.setOnColorScheme(newColorScheme)
 	})

@@ -40,6 +40,49 @@ function initToggleColPropertiesImpl(toggleCol) {
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
 	
+	
+	var formatParams = {
+		initialVals: toggleCol.properties,
+		setOffLabel: function(newLabel) {	
+			var labelParams = {
+				parentTableID: toggleCol.parentTableID,
+				toggleID: toggleCol.toggleID,
+				label: newLabel
+			}
+			jsonAPIRequest("tableView/toggle/setOffLabel",labelParams,function(updatedToggleRef) {
+			})
+		},
+		setOnLabel: function(newLabel) {
+			var labelParams = {
+				parentTableID: toggleCol.parentTableID,
+				toggleID: toggleCol.toggleID,
+				label: newLabel
+			}
+			jsonAPIRequest("tableView/toggle/setOnLabel",labelParams,function(updatedToggleRef) {
+			})
+		},
+		setOffColorScheme: function(newColorScheme) {
+			var colorSchemeParams = {
+				parentTableID: toggleCol.parentTableID,
+				toggleID: toggleCol.toggleID,
+				colorScheme: newColorScheme
+			}
+			jsonAPIRequest("tableView/toggle/setOffColorScheme",colorSchemeParams,function(updatedToggleRef) {
+			})
+		},
+		setOnColorScheme: function(newColorScheme) {
+			var colorSchemeParams = {
+				parentTableID: toggleCol.parentTableID,
+				toggleID: toggleCol.toggleID,
+				colorScheme: newColorScheme
+			}
+			jsonAPIRequest("tableView/toggle/setOnColorScheme",colorSchemeParams,function(updatedToggleRef) {
+			})		
+		}
+	}
+	initToggleFormatProperties(formatParams)
+	
+	
 }
 
 
