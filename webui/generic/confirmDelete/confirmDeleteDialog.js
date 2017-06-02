@@ -1,13 +1,13 @@
-function openFormComponentConfirmDeleteDialog(componentLabel,deleteCallback) {
+function openConfirmDeleteDialog(componentLabel,deleteCallback) {
 	
-	var $dialog = $('#formComponentConfirmDeleteDialog')
+	var $dialog = $('#confirmDeleteDialog')
 	
 	var $whatLabel = $dialog.find(".confirmDeleteWhatLabel")
 	$whatLabel.text(componentLabel)
 	
 	$dialog.modal("show")
 	
-	var $confirmDeleteButton = $dialog.find(".formComponentConfirmDeleteButton")
+	var $confirmDeleteButton = $dialog.find(".confirmDeleteButton")
 	
 	initButtonControlClickHandler($confirmDeleteButton,function() {
 		deleteCallback()

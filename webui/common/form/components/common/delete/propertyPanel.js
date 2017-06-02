@@ -4,7 +4,7 @@ function initDeleteFormComponentPropertyPanel(params) {
 	
 	initButtonControlClickHandler($deleteButton,function() {
 		console.log("Delete component button clicked")
-		openFormComponentConfirmDeleteDialog(params.componentLabel,function() {
+		openConfirmDeleteDialog(params.componentLabel,function() {
 			
 			var deleteParams = {
 				parentFormID: params.parentFormID,

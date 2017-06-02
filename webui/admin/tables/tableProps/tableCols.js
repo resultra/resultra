@@ -20,7 +20,7 @@ function initTableViewColsProperties(tableRef) {
 			var $deleteColButton = $colListItem.find('.deleteTableColButton')
 			
 			initButtonControlClickHandler($deleteColButton,function() {
-				openFormComponentConfirmDeleteDialog("column",function() {
+				openConfirmDeleteDialog("column",function() {
 					console.log("column deletion confirmed")
 					var deleteParams = {
 						parentTableID: tableCol.parentTableID,
