@@ -1,11 +1,38 @@
 function initTableViewColsProperties(tableRef) {
 	
+	var $columnList = $('#tableColPropsColList')
+	
+	function saveUpdatedColumnOrder() {
+		console.log("Saving updated columns: " + tableRef.tableID)
+		
+		var columns = []
+		
+		$columnList.find('.list-group-item').each(function() {
+			var columnID = $(this).attr('data-column-id')
+			columns.push(columnID)
+		})
+		
+		console.log("savedUpdatedColumnOrder: " + JSON.stringify(columns))
+		
+		var setColsParams = {
+			tableID: tableRef.tableID,
+			orderedColumns: columns
+		}
+		jsonAPIRequest("tableView/setOrderedCols",setColsParams,function(replyStatus) {
+			
+		})
+	}
+	
+    $columnList.sortable({
+		placeholder: "ui-state-highlight",
+		cursor:"move",
+		update: function( event, ui ) {
+			saveUpdatedColumnOrder(tableRef.tableID)
+		}
+    });
+	
 	
 	loadFieldInfo(tableRef.parentDatabaseID,[fieldTypeAll],function(fieldsByID) {
-		
-		function savedUpdatedColumnOrder(tableID) {
-			console.log("Saving updated columns: " + tableID)
-		}
 		
 		function populateOneTableColInTableColList(tableCol) {
 			var $colListItem = $('#tableColItemTemplate').clone()
@@ -16,6 +43,8 @@ function initTableViewColsProperties(tableRef) {
 			
 			var editColLink = '/admin/tablecol/' + tableCol.columnID
 			$colListItem.find('.editTableColButton').attr("href",editColLink)
+			
+			$colListItem.attr('data-column-id',tableCol.columnID)
 			
 			var $deleteColButton = $colListItem.find('.deleteTableColButton')
 			
@@ -29,20 +58,21 @@ function initTableViewColsProperties(tableRef) {
 					jsonAPIRequest("tableView/deleteColumn",deleteParams,function(replyStatus) {
 						$colListItem.remove()
 						console.log("Delete confirmed")
-						savedUpdatedColumnOrder(tableCol.parentTableID)
+						saveUpdatedColumnOrder()
 					})
 					
 				})				
 			})
 			
 		
-			$('#tableColPropsColList').append($colListItem)
+			$columnList.append($colListItem)
 		}
 		
 		var params = { tableID: tableRef.tableID }	
 		jsonAPIRequest("tableView/getColumns",params,function(tableCols) {
 			console.log("Loading table column properties: " + JSON.stringify(tableCols))
 		
+			$columnList.empty()
 			$.each(tableCols,function(colIndex,tableCol) {
 				populateOneTableColInTableColList(tableCol)
 			})

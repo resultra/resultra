@@ -23,6 +23,8 @@ func init() {
 	tableRouter.HandleFunc("/api/tableView/list", listTableAPI)
 	tableRouter.HandleFunc("/api/tableView/get", getTableAPI)
 
+	tableRouter.HandleFunc("/api/tableView/setOrderedCols", setOrderedCols)
+
 	tableRouter.HandleFunc("/api/tableView/deleteColumn", deleteColumnAPI)
 
 	tableRouter.HandleFunc("/api/tableView/getColumns", getTableColsAPI)
@@ -128,12 +130,12 @@ func getTableColsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tableCols, err := getTableCols(params.TableID)
+	tableColInfo, err := getTableDisplayInfo(params.TableID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	}
 
-	api.WriteJSONResponse(w, tableCols)
+	api.WriteJSONResponse(w, tableColInfo.Cols)
 
 }
 
@@ -237,6 +239,15 @@ func processTablePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater 
 
 func setTableName(w http.ResponseWriter, r *http.Request) {
 	var params SetTableNameParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processTablePropUpdate(w, r, params)
+}
+
+func setOrderedCols(w http.ResponseWriter, r *http.Request) {
+	var params SetOrderedColParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

@@ -54,3 +54,17 @@ func (updateParams SetTableNameParams) updateProps(table *DisplayTable) error {
 
 	return nil
 }
+
+type SetOrderedColParams struct {
+	TableIDHeader
+	OrderedColumns []string `json:"orderedColumns"`
+}
+
+func (updateParams SetOrderedColParams) updateProps(table *DisplayTable) error {
+
+	// TODO - Validate each ID
+
+	table.Properties.OrderedColumns = updateParams.OrderedColumns
+
+	return nil
+}
