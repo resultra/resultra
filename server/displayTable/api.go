@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/userRole"
 )
@@ -21,6 +22,8 @@ func init() {
 
 	tableRouter.HandleFunc("/api/tableView/list", listTableAPI)
 	tableRouter.HandleFunc("/api/tableView/get", getTableAPI)
+
+	tableRouter.HandleFunc("/api/tableView/deleteColumn", deleteColumnAPI)
 
 	tableRouter.HandleFunc("/api/tableView/getColumns", getTableColsAPI)
 	tableRouter.HandleFunc("/api/tableView/getTableDisplayInfo", getTableDisplayInfoAPI)
@@ -131,6 +134,38 @@ func getTableColsAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	api.WriteJSONResponse(w, tableCols)
+
+}
+
+type DeleteTableColParams struct {
+	ParentTableID string `json:"parentTableID"`
+	ColumnID      string `json:"columnID"`
+}
+
+func deleteColumnAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params DeleteTableColParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	tableRef, err := GetTable(params.ParentTableID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+		r, tableRef.ParentDatabaseID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if err := common.DeleteTableColumn(params.ParentTableID, params.ColumnID); err != nil {
+		api.WriteErrorResponse(w, err)
+	}
+
+	api.WriteJSONResponse(w, true)
 
 }
 

@@ -6,5 +6,6 @@
 		"ckEditor",
 		"gauge",
 		"valueFormat",
-		"bootstrapDropdown"]
+		"bootstrapDropdown",
+		"confirmDelete"]
 }

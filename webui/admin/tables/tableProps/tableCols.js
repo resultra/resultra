@@ -3,6 +3,10 @@ function initTableViewColsProperties(tableRef) {
 	
 	loadFieldInfo(tableRef.parentDatabaseID,[fieldTypeAll],function(fieldsByID) {
 		
+		function savedUpdatedColumnOrder(tableID) {
+			console.log("Saving updated columns: " + tableID)
+		}
+		
 		function populateOneTableColInTableColList(tableCol) {
 			var $colListItem = $('#tableColItemTemplate').clone()
 			$colListItem.attr("id","")
@@ -12,6 +16,24 @@ function initTableViewColsProperties(tableRef) {
 			
 			var editColLink = '/admin/tablecol/' + tableCol.columnID
 			$colListItem.find('.editTableColButton').attr("href",editColLink)
+			
+			var $deleteColButton = $colListItem.find('.deleteTableColButton')
+			
+			initButtonControlClickHandler($deleteColButton,function() {
+				openFormComponentConfirmDeleteDialog("column",function() {
+					console.log("column deletion confirmed")
+					var deleteParams = {
+						parentTableID: tableCol.parentTableID,
+						columnID: tableCol.columnID
+					}
+					jsonAPIRequest("tableView/deleteColumn",deleteParams,function(replyStatus) {
+						$colListItem.remove()
+						console.log("Delete confirmed")
+						savedUpdatedColumnOrder(tableCol.parentTableID)
+					})
+					
+				})				
+			})
 			
 		
 			$('#tableColPropsColList').append($colListItem)

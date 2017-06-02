@@ -89,7 +89,7 @@ func UpdateTableColumn(columnType string, parentTableID string, columnID string,
 func DeleteTableColumn(parentTableID string, columnID string) error {
 	if _, deleteErr := databaseWrapper.DBHandle().Exec(`DELETE FROM table_view_columns 
 				WHERE table_id=$1 AND column_id=$2`, parentTableID, columnID); deleteErr != nil {
-		return fmt.Errorf("DeleteTableViewColumn: Can't delete form component %v: error = %v",
+		return fmt.Errorf("DeleteTableViewColumn: Can't delete table view column %v: error = %v",
 			columnID, deleteErr)
 	}
 	return nil

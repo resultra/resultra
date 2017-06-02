@@ -1,6 +1,7 @@
 package generic
 
 import (
+	"resultra/datasheet/webui/generic/confirmDelete"
 	"resultra/datasheet/webui/generic/gauge"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 	"resultra/datasheet/webui/generic/userAuth"
@@ -19,5 +20,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, userAuth.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, gauge.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, valueFormat.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, confirmDelete.TemplateFileList...)
 
 }
