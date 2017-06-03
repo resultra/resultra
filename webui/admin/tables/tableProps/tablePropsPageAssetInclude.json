@@ -2,7 +2,7 @@
 	"subDirs":["../../../generic",
 		"../../../common",
 		"../../common"],
-	"cssFiles": [],
+	"cssFiles": ["tableCols.css"],
 	"jsFiles": ["tablePropsPage.js",
 		"tableCols.js",
 		"newColDialog.js",

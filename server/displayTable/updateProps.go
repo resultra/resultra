@@ -68,3 +68,17 @@ func (updateParams SetOrderedColParams) updateProps(table *DisplayTable) error {
 
 	return nil
 }
+
+type SetColWidthParams struct {
+	TableIDHeader
+	ColWidths map[string]float64 `json:"colWidths"`
+}
+
+func (updateParams SetColWidthParams) updateProps(table *DisplayTable) error {
+
+	// TODO - Validate each ID
+
+	table.Properties.ColWidths = updateParams.ColWidths
+
+	return nil
+}

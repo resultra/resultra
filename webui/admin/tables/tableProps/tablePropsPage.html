@@ -48,6 +48,19 @@
 
 {{end}}
 
+{{define "adminTablePreviewProperty"}}
+
+	<tr>
+		<td class="width200"><label>Table preview:</label><BR>
+			<small>Use this preview to change the order of columns and to set the relative width of different columns.</small>
+		</td>
+		<td>
+			<table id="tablePreview"></table>
+		</td>
+	</tr>
+
+{{end}}
+
 
 
 
@@ -56,7 +69,8 @@
 <h4>{{.TableName}}</h4>
 <table class="table">
 	{{template "adminTableNameProperty"}}	
-	{{template "adminTableColsProperty"}}	
+	{{template "adminTableColsProperty"}}
+	{{template "adminTablePreviewProperty"}}
 </table>
 
 {{end}}

@@ -34,6 +34,58 @@ function initTableViewColsProperties(tableRef) {
 	
 	loadFieldInfo(tableRef.parentDatabaseID,[fieldTypeAll],function(fieldsByID) {
 		
+		function populateTablePreview(tableInfo) {
+			var $tablePreview = $('#tablePreview')
+			
+			var $tableHeader = $("<thead></thead>")
+			var $headerRow = $("<tr></tr>")
+	
+			$.each(tableInfo.cols,function(index,colInfo) {
+				var $header = $('<th></th>')
+				
+				var colWidths = tableInfo.table.properties.colWidths
+				
+				if(colWidths.hasOwnProperty(colInfo.columnID))
+				{
+					var colWidth = colWidths[colInfo.columnID]
+					$header.css("width",colWidth + 'px')
+				}
+				
+				$header.attr('data-col-id',colInfo.columnID)
+				
+				setFormComponentLabel($header,colInfo.properties.fieldID,
+						colInfo.properties.labelFormat)
+				
+				$headerRow.append($header)
+			})
+		
+			$tableHeader.append($headerRow)
+			$tableHeader.find("th").css("background-color","lightGrey")
+			
+			$tablePreview.append($tableHeader)
+			
+			$tablePreview.find('th').resizable({
+				handles:'e',
+				stop: function(event,ui) {
+					var widthsByID = {}
+					$tablePreview.find('th').each(function() {
+						var columnID = $(this).attr('data-col-id')
+						var width = $(this).outerWidth()
+						widthsByID[columnID] = width
+					})
+					console.log("Updated column widths: " + JSON.stringify(widthsByID))
+					var widthParams = {
+						tableID: tableRef.tableID,
+						colWidths: widthsByID
+					}
+					jsonAPIRequest("tableView/setColWidths",widthParams,function(replyStatus) {
+					})
+				}
+			})
+			
+		}
+		
+		
 		function populateOneTableColInTableColList(tableCol) {
 			var $colListItem = $('#tableColItemTemplate').clone()
 			$colListItem.attr("id","")
@@ -69,13 +121,15 @@ function initTableViewColsProperties(tableRef) {
 		}
 		
 		var params = { tableID: tableRef.tableID }	
-		jsonAPIRequest("tableView/getColumns",params,function(tableCols) {
-			console.log("Loading table column properties: " + JSON.stringify(tableCols))
+		jsonAPIRequest("tableView/getTableDisplayInfo",params,function(tableInfo) {
+			console.log("Loading table column properties: " + JSON.stringify(tableInfo))
 		
 			$columnList.empty()
-			$.each(tableCols,function(colIndex,tableCol) {
+			$.each(tableInfo.cols,function(colIndex,tableCol) {
 				populateOneTableColInTableColList(tableCol)
 			})
+			
+			populateTablePreview(tableInfo)
 		})
 		
 	})
