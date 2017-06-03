@@ -30,7 +30,8 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		this.updateRecordFunc = updateCurrentRecord
 	}
 	
-	function createTableViewColDef(colInfo,fieldsByID,renderCellHTMLFunc,initContainerFunc) {
+	function createTableViewColDef(colInfo,fieldsByID,
+				renderCellHTMLFunc,initContainerFunc,percColWidths) {
 		var fieldID = colInfo.properties.fieldID
 		var colDef = {
 			data:'fieldValues.' + fieldID,
@@ -59,80 +60,90 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 				}
 			}
 		}
+		
+		if(percColWidths.hasOwnProperty(colInfo.columnID)) {
+			colDef.width = percColWidths[colInfo.columnID]
+		}
 		return colDef
 	}
 	
 	
-	function createNumberInputColDef(colInfo,fieldsByID) {
+	function createNumberInputColDef(colInfo,fieldsByID,percColWidths) {
 		
 		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.numberInputID)
 			initNumberInputTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,numberInputTableCellContainerHTML,initContainer)
+		return createTableViewColDef(colInfo,fieldsByID,
+				numberInputTableCellContainerHTML,initContainer,percColWidths)
 	}
 
-	function createTextInputColDef(colInfo,fieldsByID) {
+	function createTextInputColDef(colInfo,fieldsByID,percColWidths) {
 		
 		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
 				setContainerComponentInfo($cellContainer,colInfo,colInfo.textInputID)
 				initTextBoxRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,textBoxTableViewContainerHTML,initContainer)
+		return createTableViewColDef(colInfo,fieldsByID,
+				textBoxTableViewContainerHTML,initContainer,percColWidths)
 	}
 
-	function createDateInputColDef(colInfo,fieldsByID) {
+	function createDateInputColDef(colInfo,fieldsByID,percColWidths) {
 		
 		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
 			initTableViewDatePickerEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,datePickerTableViewCellContainerHTML,initContainer)
+		return createTableViewColDef(colInfo,fieldsByID,
+				datePickerTableViewCellContainerHTML,initContainer,percColWidths)
 	}
 
-	function createCheckboxColDef(colInfo,fieldsByID) {
+	function createCheckboxColDef(colInfo,fieldsByID,percColWidths) {
 		
 		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
 			initTableViewCheckboxEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,checkBoxTableViewCellContainerHTML,initContainer)
+		return createTableViewColDef(colInfo,fieldsByID,
+				checkBoxTableViewCellContainerHTML,initContainer,percColWidths)
 	}
 
-	function createToggleColDef(colInfo,fieldsByID) {
+	function createToggleColDef(colInfo,fieldsByID,percColWidths) {
 		
 		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.toggleID)
 			initToggleTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,toggleTableCellContainerHTML,initContainer)
+		return createTableViewColDef(colInfo,fieldsByID,
+				toggleTableCellContainerHTML,initContainer,percColWidths)
 	}
 
 
-	function createRatingColDef(colInfo,fieldsByID) {
+	function createRatingColDef(colInfo,fieldsByID,percColWidths) {
 		
 		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.ratingID)
 			initRatingTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,ratingTableCellContainerHTML,initContainer)
+		return createTableViewColDef(colInfo,fieldsByID,
+				ratingTableCellContainerHTML,initContainer,percColWidths)
 	}
 
 	
-	function createColDef(colInfo,fieldsByID) {
+	function createColDef(colInfo,fieldsByID,percColWidths) {
 		switch (colInfo.colType) {
 		case 'numberInput':
-			return createNumberInputColDef(colInfo,fieldsByID)
+			return createNumberInputColDef(colInfo,fieldsByID,percColWidths)
 		case 'textInput':
-			return createTextInputColDef(colInfo,fieldsByID)
+			return createTextInputColDef(colInfo,fieldsByID,percColWidths)
 		case 'datePicker':
-			return createDateInputColDef(colInfo,fieldsByID)
+			return createDateInputColDef(colInfo,fieldsByID,percColWidths)
 		case 'checkbox':
-			return createCheckboxColDef(colInfo,fieldsByID)
+			return createCheckboxColDef(colInfo,fieldsByID,percColWidths)
 		case 'rating':
-			return createRatingColDef(colInfo,fieldsByID)
+			return createRatingColDef(colInfo,fieldsByID,percColWidths)
 		case 'toggle':
-			return createToggleColDef(colInfo,fieldsByID)
+			return createToggleColDef(colInfo,fieldsByID,percColWidths)
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,
@@ -169,6 +180,19 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 	}
 	
 	function populateTable(tableInfo,fieldsByID) {
+		
+		// When displaying the table, use percentage widths instead of pixel widths. This allows
+		// the column widths to scale up naturally as the table view is expanded.
+		var percColWidths = {}
+		var overallWidth = 0.0
+		$.each(tableInfo.table.properties.colWidths,function(colID,width) {
+			overallWidth += width
+		})
+		$.each(tableInfo.table.properties.colWidths,function(colID,width) {
+			percColWidths[colID] = (width/overallWidth * 100).toFixed(2) + '%'
+		})
+		
+		
 		function tableHeader() {
 	
 			var $tableHeader = $("<thead></thead>")
@@ -176,6 +200,10 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 	
 			$.each(tableInfo.cols,function(index,colInfo) {
 				var $header = $('<th></th>')
+				
+				if(percColWidths.hasOwnProperty(colInfo.columnID)) {
+					$header.css("width",percColWidths[colInfo.columnID])
+				}
 				
 				setFormComponentLabel($header,colInfo.properties.fieldID,
 						colInfo.properties.labelFormat)
@@ -197,7 +225,7 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		
 		var dataCols = []
 		$.each(tableInfo.cols,function(index,colInfo) {
-			var colDataDef = createColDef(colInfo,fieldsByID)
+			var colDataDef = createColDef(colInfo,fieldsByID,percColWidths)
 			dataCols.push(colDataDef)
 		})
 		
