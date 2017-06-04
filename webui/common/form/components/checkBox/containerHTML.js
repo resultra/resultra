@@ -58,6 +58,12 @@ function checkBoxTableViewCellContainerHTML() {
 
 }
 
+function initCheckBoxControl($checkbox,checkBoxObjectRef) {
+	var checkboxColorSchemeClass = "checkbox-"+checkBoxObjectRef.properties.colorScheme
+	$checkbox.addClass(checkboxColorSchemeClass)
+	
+}
+
 function setCheckBoxComponentLabel($checkboxContainer,checkboxRef) {
 	var $label = $checkboxContainer.find('.checkboxFormComponentLabel')
 	

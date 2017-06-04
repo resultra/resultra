@@ -1,11 +1,10 @@
 
 
+
 function initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, checkBoxObjectRef,validateInput) {
 	
 	var checkboxColorSchemeClass = "checkbox-"+checkBoxObjectRef.properties.colorScheme
-	$checkBox.addClass(checkboxColorSchemeClass)
-	
-	
+	initCheckBoxControl($checkBox,checkBoxObjectRef)
 	
 	var validateCheckBoxInput = function(validationCompleteCallback) {
 		

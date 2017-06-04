@@ -1,4 +1,33 @@
 #tablePreview th {
 	border: 2px solid black;
-	padding: 5px;
+	padding: 2px;
+}
+
+#tablePreview td {
+	border: 2px solid black;
+	padding: 2px;
+}
+
+#tablePreview .layoutContainer {
+	padding: 0px;
+	margin:0px;
+}
+
+#tablePreview .numberInputComponent {
+	min-width: 20px;
+	width:100%;
+}
+
+#tablePreview .textBoxComponent {
+	min-width: 75px;
+	width:100%;
+}
+
+#tablePreview .datePickerContainer {
+	width:100%;
+}
+
+#tablePreview .checkBoxFormContainer {
+	min-width: 15px;
+	width: 15px;
 }

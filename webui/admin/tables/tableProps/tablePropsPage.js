@@ -48,11 +48,15 @@ $(document).ready(function() {
 
 	} // initItemListNameProperties
 	
-	var getTableParams = { tableID: tablePropsAdminContext.tableID }
-	jsonAPIRequest("tableView/get",getTableParams,function(tableRef) {
-		initNameProperties(tableRef)
-		initTableViewColsProperties(tableRef)
+	initFieldInfo(tablePropsAdminContext.databaseID, function() {
+		var getTableParams = { tableID: tablePropsAdminContext.tableID }
+		jsonAPIRequest("tableView/get",getTableParams,function(tableRef) {
+			initNameProperties(tableRef)
+			initTableViewColsProperties(tableRef)
+		})
+		
 	})
+	
 	
 			
 //	initAdminTableListSettings(tableAdminContext.databaseID)

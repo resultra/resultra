@@ -64,6 +64,59 @@ function initTableViewColsProperties(tableRef) {
 			
 			$tablePreview.append($tableHeader)
 			
+			var componentContext = {
+				databaseID: tableRef.parentDatabaseID,
+				fieldsByID: fieldsByID
+			}
+			var recordProxy = {
+				changeSetID: MainLineFullyCommittedChangeSetID,
+				getRecordFunc: function() { return nil },
+				updateRecordFunc: function(updatedRecordRef) {}
+			}
+				
+			var $tableBody = $("<tbody></tbody>")
+			var $previewRow= $("<tr></tr>")
+			$.each(tableInfo.cols,function(index,colInfo) {
+				var $column = $('<td></td>')				
+				switch (colInfo.colType) {
+				case 'numberInput':
+					var $cellContainer = $(numberInputTableCellContainerHTML())
+					$column.append($cellContainer)
+					break
+				case 'textInput':
+					var $cellContainer = $(textBoxTableViewContainerHTML())
+					$column.append($cellContainer)
+					break					
+				case 'datePicker':
+					var $cellContainer = $(datePickerTableViewCellContainerHTML())
+					initDatePickerFormComponentInput($cellContainer,colInfo)
+					$column.append($cellContainer)
+					break
+				case 'checkbox':
+					var $cellContainer = $(checkBoxTableViewCellContainerHTML())
+					initCheckBoxControl($cellContainer,colInfo)
+					$column.append($cellContainer)
+					break
+				case 'rating':
+					var $cellContainer = $(ratingTableCellContainerHTML())
+					initRatingFormComponentControl($cellContainer,colInfo)
+					$column.append($cellContainer)
+					break
+				case 'toggle':
+					var $cellContainer = $(toggleTableCellContainerHTML())
+					initToggleComponentControl($cellContainer,colInfo)
+					$column.append($cellContainer)
+					break
+				default:
+					
+				}
+							
+				$previewRow.append($column)
+			})
+			$tableBody.append($previewRow)
+			$tablePreview.append($tableBody)
+			
+			
 			$tablePreview.find('th').resizable({
 				handles:'e',
 				stop: function(event,ui) {

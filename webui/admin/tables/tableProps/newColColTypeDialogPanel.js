@@ -77,7 +77,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 						fieldID: fieldInfo.fieldID 
 					}
 					jsonAPIRequest("tableView/checkBox/new",params,function(checkBox) {
-						console.log("Check box column created: " + JSON.stringify(datePicker))
+						console.log("Check box column created: " + JSON.stringify(checkBox))
 					})
 				}
 				
@@ -185,7 +185,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				$colTypeSelection.append(selectOptionHTML('datePicker','Date picker'))
 				break
 			case fieldTypeBool:
-				$colTypeSelection.append(selectOptionHTML('checkBox','Checkbox'))
+				$colTypeSelection.append(selectOptionHTML('checkbox','Checkbox'))
 				$colTypeSelection.append(selectOptionHTML('toggle','Toggle'))
 				break
 			}
