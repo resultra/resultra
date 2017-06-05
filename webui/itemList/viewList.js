@@ -15,6 +15,16 @@ function initUILayoutPanes(resizeCallback)
 	var mainLayout = $('#layoutPage').layout({
 		inset: zeroPaddingInset,
 		north: fixedUILayoutPaneParams(40),
+		onopen_end: function(pane, $pane, paneState, paneOptions) {
+			if (pane === 'west' || pane === 'east') {
+				resizeCallback()				
+			}
+		},
+		onclose_end: function(pane, $pane, paneState, paneOptions) {
+			if (pane === 'west' || pane === 'east') {
+				resizeCallback()				
+			}
+		},
 		east: {
 			size: 300,
 			resizable:false,
