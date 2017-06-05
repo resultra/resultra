@@ -7,7 +7,7 @@ var currGlobalVals
 var listItemController
 var tableViewController
 
-function initUILayoutPanes()
+function initUILayoutPanes(resizeCallback)
 {
 	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
 	
@@ -39,6 +39,14 @@ function initUILayoutPanes()
 	})
 	
 	$('#recordsPane').layout({
+		onresize_end: function(pane, $pane, paneState, paneOptions) {
+			if(pane === 'center'){
+				// only propagate the resize event for the center/content pane
+				console.log("resize triggered")
+				resizeCallback()
+			}
+			
+		},
 		north: fixedUILayoutPaneAutoSizeToFitContentsParams(),
 		south: fixedUILayoutPaneAutoSizeToFitContentsParams(),
 		north__showOverflowOnHover:	true,
@@ -180,7 +188,15 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 
 $(document).ready(function() {	
 	 
-	initUILayoutPanes()
+	function resizeListView() {
+		console.log("Resizing list view")
+		if (tableViewController !== undefined) {
+			tableViewController.refresh()
+		}
+	}
+	 
+	 
+	initUILayoutPanes(resizeListView)
 				
 	initUserDropdownMenu()
 	

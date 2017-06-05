@@ -235,6 +235,10 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 			bInfo:false, // Hide the "Showing 1 of N Entries" below the footer
 			paging:false,
 			scrollY: '100px',
+// TODO - Evaluation the use of horizontal scrolling through the scrollX option
+// and possible other options. Currently the headers don't scroll with the body of
+// table when horizontal scrolling is enabled.
+//			scrollX:true,
 			scrollCollapse:true,
 			columns:dataCols
 		})
@@ -250,15 +254,17 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 //		$scrollFoot.css("background-color","lightGrey")
 		$scrollHead.css("background-color","lightGrey")
 		
-		var scrollBodyHeight = $tableContainer.outerHeight() -
-				$scrollHead.outerHeight() // - $scrollFoot.outerHeight()
-		var scrollBodyHeightPx = scrollBodyHeight + 'px'
+		function resizeToContainerHeight() {
+			var scrollBodyHeight = $tableContainer.outerHeight() -
+					$scrollHead.outerHeight() // TODO: after adding footer, also subtract footer height: - $scrollFoot.outerHeight()
+			var scrollBodyHeightPx = scrollBodyHeight + 'px'
 	
-		$scrollBody.css('max-height', scrollBodyHeightPx);
-		dataTable.draw() // force redraw
+			$scrollBody.css('max-height', scrollBodyHeightPx);
+			dataTable.draw() // force redraw
+		}
+		resizeToContainerHeight()
 		
-		
-		initDoneCallback(dataTable)
+		initDoneCallback(dataTable,resizeToContainerHeight)
 		
 	}
 	
