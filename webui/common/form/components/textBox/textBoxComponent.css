@@ -1,12 +1,15 @@
-/* Set the default and minimum width for fields added
-   to the layout. This is important for when the field
-   is initially dragged onto the canvas. Otherwise it
-   can shrink as the field is dragged. */
-.textBoxComponent
+
+.textBoxFormComponent 
 {
 	min-width:75px;
 	width: 150px;
 	height: auto;
+}
+
+.textBoxTableCellComponent
+{
+	min-width: 75px;
+	width:100%;
 }
 
 .textBoxComponent .form-group {

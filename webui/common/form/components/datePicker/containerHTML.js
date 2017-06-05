@@ -13,7 +13,7 @@ function datePickerControlHTML() {
 function datePickerContainerHTML(elementID)
 {	
 	var containerHTML = ''+
-	'<div class="layoutContainer datePickerContainer">' +
+	'<div class="layoutContainer datePickerContainer datePickerFormContainer">' +
 		'<div class="form-group">'+
 			'<label>Date Picker</label>'+
 			datePickerControlHTML() +
@@ -28,7 +28,7 @@ function datePickerContainerHTML(elementID)
 
 function datePickerTableViewCellContainerHTML() {
 	return ''+
-		'<div class="layoutContainer datePickerContainer">' +
+		'<div class="layoutContainer datePickerContainer datePickerTableCellContainer">' +
 			datePickerControlHTML() +
 			'<div class="componentHoverFooter">' +
 				smallClearDeleteButtonHTML("datePickerComponentClearValueButton") + 

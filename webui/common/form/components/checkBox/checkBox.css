@@ -9,6 +9,21 @@
 	height: auto;
 }
 
+/* When the checkbox is displayed in table cell without the label,
+   the width can be smaller */
+.checkBoxTableCellContainer {
+	min-width:15px;
+	min-height:10px;
+	width: 15px;
+	height: auto;
+}
+
+.checkBoxTableCellContainer .checkbox {
+	margin-top: 3px;
+	margin-bottom: 0px;
+	margin-left:10px;
+}
+
 /* Since the checkbox is inline, override the Bootstrap margins to eliminate 
   extra space around the checkbox */
 .checkBoxFormContainer > .checkbox {
@@ -21,7 +36,7 @@
 }
 
 
-.checkBoxFormContainer .checkboxFormComponentLabel {
+.checkBoxContainer .checkboxFormComponentLabel {
 	padding-left: 5px !important;
 }
 

@@ -12,22 +12,3 @@
 	padding: 0px;
 	margin:0px;
 }
-
-#tablePreview .numberInputComponent {
-	min-width: 20px;
-	width:100%;
-}
-
-#tablePreview .textBoxComponent {
-	min-width: 75px;
-	width:100%;
-}
-
-#tablePreview .datePickerContainer {
-	width:100%;
-}
-
-#tablePreview .checkBoxFormContainer {
-	min-width: 15px;
-	width: 15px;
-}

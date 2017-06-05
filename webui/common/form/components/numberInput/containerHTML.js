@@ -13,7 +13,7 @@ function numberInputControlHTML() {
 function numberInputContainerHTML(elementID)
 {
 	var containerHTML = ''+
-		'<div class="layoutContainer numberInputComponent">' +
+		'<div class="layoutContainer numberInputComponent numberInputFormContainer">' +
 			'<div class="form-group">'+
 				'<label>New Number Input</label>'+
 				numberInputControlHTML() +
@@ -27,7 +27,7 @@ function numberInputContainerHTML(elementID)
 
 function numberInputTableCellContainerHTML() {
 	var containerHTML = ''+
-		'<div class="layoutContainer numberInputComponent">' +
+		'<div class="layoutContainer numberInputComponent numberInputTableCellContainer">' +
 					numberInputControlHTML() +
 			'<div class="pull-right componentHoverFooter initiallyHidden">' +
 				smallClearDeleteButtonHTML("numberInputComponentClearValueButton") + 

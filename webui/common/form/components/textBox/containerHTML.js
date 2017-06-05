@@ -14,7 +14,7 @@ function textBoxContainerInputControl() {
 function textBoxContainerHTML(elementID)
 {
 	var containerHTML = ''+
-		'<div class="layoutContainer textBoxComponent">' +
+		'<div class="layoutContainer textBoxComponent textBoxFormComponent">' +
 			'<div class="form-group">'+
 				'<label>New Text Box</label>'+
 				textBoxContainerInputControl()
@@ -28,7 +28,7 @@ function textBoxContainerHTML(elementID)
 
 function textBoxTableViewContainerHTML() {
 	var containerHTML = ''+
-		'<div class="layoutContainer textBoxComponent">' +
+		'<div class="layoutContainer textBoxComponent textBoxTableCellComponent">' +
 			textBoxContainerInputControl() +
 			'<div class="componentHoverFooter">' +
 				smallClearDeleteButtonHTML("textBoxComponentClearValueButton") + 

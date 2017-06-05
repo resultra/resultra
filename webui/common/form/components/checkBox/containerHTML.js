@@ -26,7 +26,7 @@ function checkBoxContainerHTML(elementID)
 	var uniqueID = generateUniqueCheckboxIDForLabel()
 	
 	var containerHTML = ''+
-		'<div class=" layoutContainer checkBoxFormContainer">' +
+		'<div class=" layoutContainer checkBoxContainer checkBoxFormContainer">' +
 			'<div class="checkbox">' +
 				'<input type="checkbox" id="'+uniqueID+'" class="checkboxFormComponentControl">' +
 				'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel">New Checkbox</label>' + 
@@ -46,8 +46,8 @@ function checkBoxTableViewCellContainerHTML() {
 	var uniqueID = generateUniqueCheckboxIDForLabel()
 	
 	return 	''+
-		'<div class=" layoutContainer checkBoxFormContainer">' +
-			'<div class="checkbox marginLeft10 marginTop5">' +
+		'<div class=" layoutContainer checkBoxContainer checkBoxTableCellContainer">' +
+			'<div class="checkbox">' +
 				'<input type="checkbox" id="'+uniqueID+'" class="checkboxTableCellControl checkboxFormComponentControl">' +
 				'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel"></label>'
 			'</div>' +
