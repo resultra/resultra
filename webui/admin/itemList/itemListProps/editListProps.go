@@ -19,7 +19,8 @@ var itemListTemplates *template.Template
 func init() {
 	//	designFormTemplateFiles := []string{}
 
-	baseTemplateFiles := []string{"static/admin/itemList/itemListProps/editListProps.html"}
+	baseTemplateFiles := []string{"static/admin/itemList/itemListProps/editListProps.html",
+		"static/admin/itemList/itemListProps/alternateViews.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
