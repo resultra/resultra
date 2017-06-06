@@ -3,7 +3,7 @@ function initItemListViewSelection(config) {
 	
 	var $viewSelection = $('#itemListViewSelection')
 	var $pageSizeSelection = $('#itemListPageSizeSelection')
-	
+	var $formPageSizeSelectionFormGroup = $('#formPageSizeSelectionFormGroup')
 	
 	function populateViewSelection() {
 		function populateTableViewList(doneCallback) {
@@ -40,9 +40,13 @@ function initItemListViewSelection(config) {
 					if(config.initialView.formID !== undefined) {
 						$viewSelection.val(config.initialView.formID)
 						$pageSizeSelection.val(config.initialView.pageSize)
+						$formPageSizeSelectionFormGroup.show()
 					} else if (config.initialView.tableID !== undefined) {
 						$viewSelection.val(config.initialView.tableID)					
+						$formPageSizeSelectionFormGroup.hide()
 					}
+				} else {
+					$formPageSizeSelectionFormGroup.hide()
 				}		
 			}
 		}
@@ -60,12 +64,14 @@ function initItemListViewSelection(config) {
 			console.log("Selected form or table: " + 
 					$selectedFormOrTable.text() + ' type = ' + viewerType)
 			if(viewerType === 'form') {
+				$formPageSizeSelectionFormGroup.show()
 				var viewParams = {
 					formID: selectedID,
 					pageSize: convertStringToNumber($pageSizeSelection.val())
 				}
 				config.setViewCallback(viewParams)
 			} else { // viewerType === 'table'
+				$formPageSizeSelectionFormGroup.hide()
 				var viewParams = {
 					tableID: selectedID,
 					pageSize: 0
