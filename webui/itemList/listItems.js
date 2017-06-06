@@ -11,11 +11,9 @@ function ListItemController($parentContainer, defaultPageSize) {
 	
 	var currRecordSet = null
 	var currRecordSetWindowSize = defaultPageSize
-	var currListContext = null
+	var currListContext = viewListContext
 	
 	this.populateListViewWithListItemContainers = function (viewListContext,populationDoneCallback) {
-		
-		currListContext = viewListContext
 		
 		function populateOneListItem(itemWindowIndex) {
 			var $listItemContainer = $('<div class="listItemContainer"></div>')
@@ -116,7 +114,9 @@ function ListItemController($parentContainer, defaultPageSize) {
 		}
 		// Re-initialize the list view, then repopulate it with the records.
 		listItemControllerSelf.populateListViewWithListItemContainers(newViewContext,function() {
-			reloadRecordsIntoContainers()
+			if (currRecordSet !== null) {
+				reloadRecordsIntoContainers()	
+			}
 		})
 	}
 	

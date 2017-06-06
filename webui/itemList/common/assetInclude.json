@@ -1,4 +1,3 @@
 {
-    "subDirs": ["display",
-		"timeline"]
+    "subDirs": ["timeline"]
 }

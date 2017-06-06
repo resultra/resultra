@@ -9,7 +9,7 @@ var tableViewController
 var itemListLayout
 
 
-function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
+function initItemListView(listInfo) {
 	
 		
 	var filterPanelElemPrefix = "form_"
@@ -96,13 +96,6 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 	}
 	initSortRecordsPane(recordSortPaneParams)
 
-	function updatePageSize(newPageSize) {
-		listItemController.setPageSize(newPageSize)
-	}
-	
-	function updateForm(newFormID) {
-		listItemController.setForm(newFormID)
-	}
 
 	function updateViewConfig(viewOptions) {
 		console.log("Updating item list view configuration: " + JSON.stringify(viewOptions))
@@ -123,7 +116,6 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 			
 		}
 	}
-	initItemListDisplayConfigPanel(listInfo,updatePageSize,updateForm)
 
 	var limitSelectionToFormIDs = listInfo.properties.alternateForms.slice(0)
 	limitSelectionToFormIDs.push(listInfo.formID)
@@ -133,6 +125,9 @@ function initAfterViewFormComponentsAlreadyLoaded(listInfo) {
 		initialView: listInfo.properties.defaultView
 	}
 	initItemListViewSelection(itemListViewConfig)
+	
+	// Perform an initial update of the view, based upon the default view.
+	updateViewConfig(listInfo.properties.defaultView)
 	
 
 }
@@ -155,33 +150,22 @@ $(document).ready(function() {
 	var tocConfig = {
 		databaseID: viewListContext.databaseID,
 		newItemFormButtonFunc: openSubmitFormDialog
-	}
-	
+	}	
 	initDatabaseTOC(tocConfig)
 	
 	hideSiblingsShowOne('#listViewProps')
 	
-	var getListParams = {
-		listID: viewListContext.listID
-	}
-	
 	var $formViewContainer = $('#formViewContainer')
 	var $tableViewContainer = $('#tableViewContainer')
 	
-	jsonAPIRequest("itemList/get",getListParams,function(listInfo) {
-		listItemController = new ListItemController($formViewContainer,listInfo.properties.defaultPageSize)
-		tableViewController = new ItemListTableViewController($tableViewContainer,viewListContext.databaseID)
+	initFieldInfo(viewListContext.databaseID, function() {
+		var getListParams = { listID: viewListContext.listID }
+		jsonAPIRequest("itemList/get",getListParams,function(listInfo) {
+			listItemController = new ListItemController($formViewContainer,listInfo.properties.defaultPageSize)
+			tableViewController = new ItemListTableViewController($tableViewContainer,viewListContext.databaseID)
+			initItemListView(listInfo)		
+		})	
 		
-		
-		var defaultListContext = {
-			databaseID: listInfo.parentDatabaseID,
-			formID: listInfo.formID,
-			listID: listInfo.listID
-		}
-		listItemController.populateListViewWithListItemContainers(defaultListContext,function() {
-			initAfterViewFormComponentsAlreadyLoaded(listInfo)
-		})
-		
-	})	
+	})
 				
 }); // document ready
