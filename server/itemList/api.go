@@ -21,7 +21,6 @@ func init() {
 	itemListRouter.HandleFunc("/api/itemList/setDefaultFilterRules", setDefaultFilterRules)
 	itemListRouter.HandleFunc("/api/itemList/setPreFilterRules", setPreFilterRules)
 
-	itemListRouter.HandleFunc("/api/itemList/setDefaultPageSize", setDefaultPageSize)
 	itemListRouter.HandleFunc("/api/itemList/setAlternateForms", setAlternateForms)
 
 	itemListRouter.HandleFunc("/api/itemList/setDefaultView", setDefaultView)
@@ -131,15 +130,6 @@ func setPreFilterRules(w http.ResponseWriter, r *http.Request) {
 
 func setDefaultSortRules(w http.ResponseWriter, r *http.Request) {
 	var params SetDefaultSortRulesParams
-	if err := api.DecodeJSONRequest(r, &params); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processItemListPropUpdate(w, r, params)
-}
-
-func setDefaultPageSize(w http.ResponseWriter, r *http.Request) {
-	var params SetPageSizeParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

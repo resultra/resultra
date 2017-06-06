@@ -161,7 +161,7 @@ $(document).ready(function() {
 	initFieldInfo(viewListContext.databaseID, function() {
 		var getListParams = { listID: viewListContext.listID }
 		jsonAPIRequest("itemList/get",getListParams,function(listInfo) {
-			listItemController = new ListItemController($formViewContainer,listInfo.properties.defaultPageSize)
+			listItemController = new ListItemController($formViewContainer)
 			tableViewController = new ItemListTableViewController($tableViewContainer,viewListContext.databaseID)
 			initItemListView(listInfo)		
 		})	

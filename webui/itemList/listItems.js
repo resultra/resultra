@@ -1,6 +1,6 @@
 
 
-function ListItemController($parentContainer, defaultPageSize) {
+function ListItemController($parentContainer) {
 	
 	this.listItemsInfo = []
 	this.$parentContainer = $parentContainer
@@ -10,7 +10,7 @@ function ListItemController($parentContainer, defaultPageSize) {
 	var listItemControllerSelf = this
 	
 	var currRecordSet = null
-	var currRecordSetWindowSize = defaultPageSize
+	var currRecordSetWindowSize = 1
 	var currListContext = viewListContext
 	
 	this.populateListViewWithListItemContainers = function (viewListContext,populationDoneCallback) {
@@ -122,6 +122,9 @@ function ListItemController($parentContainer, defaultPageSize) {
 	
 	this.setFormAndPageSize = function(formID, pageSize) {
 		currRecordSetWindowSize = Number(pageSize)
+		if(currRecordSet != null) {
+			currRecordSet.setWindowSize(currRecordSetWindowSize)
+		}
 		this.setForm(formID)
 	}
 	

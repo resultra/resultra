@@ -114,18 +114,6 @@ func (updateParams SetDefaultViewParams) updateProps(itemList *ItemList) error {
 	return nil
 }
 
-type SetPageSizeParams struct {
-	ItemListIDHeader
-	PageSize int `json:"pageSize"`
-}
-
-func (updateParams SetPageSizeParams) updateProps(itemList *ItemList) error {
-
-	itemList.Properties.DefaultPageSize = updateParams.PageSize
-
-	return nil
-}
-
 type SetAlternateFormsParams struct {
 	ItemListIDHeader
 	AlternateForms []string `json:"alternateForms"`

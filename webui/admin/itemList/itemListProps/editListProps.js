@@ -214,20 +214,6 @@ $(document).ready(function() {
 				saveUpdatedSortRulesFunc: saveDefaultListSortRules}
 
 
-			var $pageSizeSelection = $('#adminItemListPageSizeSelection')
-			$pageSizeSelection.val(listInfo.properties.defaultPageSize)
-			initNumberSelectionChangeHandler($pageSizeSelection,function(newPageSize) {
-				var savePageSizeParams = {
-					listID:listInfo.listID,
-					pageSize: newPageSize
-				}
-
-				jsonAPIRequest("itemList/setDefaultPageSize",savePageSizeParams,function(saveReply) {
-					console.log("Done saving default page size")
-				})
-
-			})
-
 			initListRolePrivProperties(listInfo.listID)
 
 
