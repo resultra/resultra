@@ -24,7 +24,6 @@ func init() {
 	itemListRouter.HandleFunc("/api/itemList/setDefaultPageSize", setDefaultPageSize)
 	itemListRouter.HandleFunc("/api/itemList/setAlternateForms", setAlternateForms)
 
-	itemListRouter.HandleFunc("/api/itemList/setForm", setForm)
 	itemListRouter.HandleFunc("/api/itemList/setDefaultView", setDefaultView)
 
 	itemListRouter.HandleFunc("/api/itemList/validateListName", validateListNameAPI)
@@ -150,15 +149,6 @@ func setDefaultPageSize(w http.ResponseWriter, r *http.Request) {
 
 func setAlternateForms(w http.ResponseWriter, r *http.Request) {
 	var params SetAlternateFormsParams
-	if err := api.DecodeJSONRequest(r, &params); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processItemListPropUpdate(w, r, params)
-}
-
-func setForm(w http.ResponseWriter, r *http.Request) {
-	var params SetFormParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

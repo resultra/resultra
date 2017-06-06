@@ -1,8 +1,8 @@
 function openNewListDialog(databaseID) {
 	
 	var $newListDialogForm = $('#newListDialogForm')
-	var $formSelection = $('#newListFormSelection')
 	var $nameInput = $('#newListNameInput')
+	var currViewConfig = null
 	
 	var validator = $newListDialogForm.validate({
 		rules: {
@@ -17,17 +17,31 @@ function openNewListDialog(databaseID) {
 					}
 				} // remote
 			}, // newListNameInput
-			newListFormSelection: { required:true }
+			itemListViewSelection: { required:true }
 		},
 		messages: {
 			newListNameInput: {
 				required: "List name is required"
+			},
+			itemListViewSelection: { 
+				required: "Select a form or table"
 			}
 		}
 	})
+	
+	function updateViewConfig(viewOptions) {
+		console.log("Setting view options for list: " + JSON.stringify(viewOptions))
+		currViewConfig = viewOptions
+	}
+	
+	var itemListViewConfig = {
+		setViewCallback: updateViewConfig,
+		databaseID: databaseID
+	}
+	initItemListViewSelection(itemListViewConfig)
+	
 
 	resetFormValidationFeedback($newListDialogForm)
-	$formSelection.val("")
 	$nameInput.val("")
 	validator.resetForm()
 	
@@ -41,12 +55,10 @@ function openNewListDialog(databaseID) {
 	
 	initButtonClickHandler('#newListSaveButton',function() {
 		console.log("New list save button clicked")
-		if($newListDialogForm.valid()) {	
-			console.log("table selection: " + $('#newListTableSelection').val() )
-			
+		if($newListDialogForm.valid() && currViewConfig != null) {				
 			var newListParams = { 
 				parentDatabaseID: databaseID,
-				formID: $formSelection.val(),
+				defaultView: currViewConfig,
 				name: $nameInput.val() }
 			jsonAPIRequest("itemList/new",newListParams,function(newListInfo) {
 				console.log("Created new list: " + JSON.stringify(newListInfo))

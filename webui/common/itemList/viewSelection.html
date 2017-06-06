@@ -1,10 +1,8 @@
-{{define "itemListViewSelection"}}
-
-<form id="itemListViewSelectionForm">
+{{define "itemListViewSelectionInput"}}
 
 	<div class="form-group">
 	  	<label for="itemListViewSelection">How to view list: </label>
-		<select class="form-control maxWidth300" id="itemListViewSelection">
+		<select class="form-control maxWidth300" id="itemListViewSelection" name="itemListViewSelection">
 			<option disabled selected value="">Select a form or table</option>
 			<optgroup id="itemListFormSelectionOptGroup" label="Forms"></optgroup>
 			<optgroup id="itemListTableSelectionOptGroup" label="Tables"></optgroup>
@@ -21,7 +19,14 @@
 	 		<option value="50">50</option>
 		</select>
 	</div>
+	
+{{end}}
 
+
+{{define "itemListViewSelection"}}
+
+<form id="itemListViewSelectionForm">
+	{{template "itemListViewSelectionInput"}}
 </form>
 
 {{end}}

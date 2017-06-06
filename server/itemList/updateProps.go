@@ -96,19 +96,6 @@ func (updateParams SetDefaultSortRulesParams) updateProps(itemList *ItemList) er
 	return nil
 }
 
-type SetFormParams struct {
-	ItemListIDHeader
-	FormID string `json:"formID"`
-}
-
-func (updateParams SetFormParams) updateProps(itemList *ItemList) error {
-
-	// TODO - Validate sort rules before saving
-	itemList.FormID = updateParams.FormID
-
-	return nil
-}
-
 type SetDefaultViewParams struct {
 	ItemListIDHeader
 	View ItemListViewProperties `json:"view"`

@@ -35,7 +35,6 @@ func init() {
 
 type ViewListTemplateParams struct {
 	Title                   string
-	FormID                  string
 	ListID                  string
 	DatabaseID              string
 	DatabaseName            string
@@ -59,16 +58,15 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	} else {
-		log.Println("view list: : listID ID = %v", listID)
+		log.Println("view list: listID ID = %v", listID)
 
 		listInfo, err := itemList.GetItemList(listID)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			api.WriteErrorResponse(w, err)
+			return
 		}
 
-		formID := listInfo.FormID
-
-		formDBInfo, getErr := databaseController.GetFormDatabaseInfo(formID)
+		dbInfo, getErr := databaseController.GetDatabaseInfo(listInfo.ParentDatabaseID)
 		if getErr != nil {
 			api.WriteErrorResponse(w, getErr)
 			return
@@ -77,10 +75,9 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 		elemPrefix := "form_"
 
 		templParams := ViewListTemplateParams{Title: "View List",
-			FormID:       formID,
 			ListID:       listID,
-			DatabaseID:   formDBInfo.DatabaseID,
-			DatabaseName: formDBInfo.DatabaseName,
+			DatabaseID:   dbInfo.DatabaseID,
+			DatabaseName: dbInfo.DatabaseName,
 			ListName:     listInfo.Name,
 			DisplayPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Display",
 				PanelID: "viewListDisplay"},
@@ -92,7 +89,7 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 			ComponentParams: components.ViewTemplateParams}
 
 		if err := viewListTemplates.ExecuteTemplate(w, "viewList", templParams); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			api.WriteErrorResponse(w, err)
 		}
 
 	}
