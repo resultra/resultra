@@ -81,10 +81,13 @@ function initTableViewColsProperties(tableRef) {
 				switch (colInfo.colType) {
 				case 'numberInput':
 					var $cellContainer = $(numberInputTableCellContainerHTML())
+					configureNumberInputButtonSpinner($cellContainer,colInfo)
 					$column.append($cellContainer)
 					break
 				case 'textInput':
 					var $cellContainer = $(textBoxTableViewContainerHTML())
+					function noOpValueList(newVal) {}
+					configureTextBoxComponentValueListDropdown($cellContainer,colInfo,noOpValueList)
 					$column.append($cellContainer)
 					break					
 				case 'datePicker':

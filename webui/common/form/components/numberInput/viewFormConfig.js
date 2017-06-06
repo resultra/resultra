@@ -276,5 +276,7 @@ function initNumberInputTableRecordEditBehavior($container,componentContext,reco
 		})
 	}
 	
+	configureNumberInputButtonSpinner($container, numberInputObjectRef)
+	
 	initNumberInputRecordEditBehavior($container,componentContext,recordProxy, numberInputObjectRef,validateFormNumberInput)
 }

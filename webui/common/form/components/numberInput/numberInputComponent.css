@@ -20,6 +20,11 @@
 	margin-bottom: 2px !important;
 }
 
+.numberInputComponent .input-group {
+	width:100%;
+}
+
+
 .numberInputComponentInput {
 	padding-left: 5px;
 	padding-right: 5px;
