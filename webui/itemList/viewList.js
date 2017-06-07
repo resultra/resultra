@@ -117,12 +117,11 @@ function initItemListView(listInfo) {
 		}
 	}
 
-	var limitSelectionToFormIDs = listInfo.properties.alternateForms.slice(0)
-	limitSelectionToFormIDs.push(listInfo.formID)
 	var itemListViewConfig = {
 		setViewCallback: updateViewConfig,
 		databaseID: viewListContext.databaseID,
-		initialView: listInfo.properties.defaultView
+		initialView: listInfo.properties.defaultView,
+		alternateViews: listInfo.properties.alternateViews
 	}
 	initItemListViewSelection(itemListViewConfig)
 	

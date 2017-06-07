@@ -5,6 +5,29 @@ function initItemListViewSelection(config) {
 	var $pageSizeSelection = $('#itemListPageSizeSelection')
 	var $formPageSizeSelectionFormGroup = $('#formPageSizeSelectionFormGroup')
 	
+	var alternateViewLookup = null
+	if(config.alternateViews !== undefined) {
+		alternateViewLookup = createAlternateViewLookupTable(config.alternateViews)
+	}
+	function showView(viewID) {
+		if (config.initialView !== undefined) {
+			if (config.initialView.formID === viewID) {
+				return true
+			} else if (config.initialView.tableID === viewID) {
+				return true
+			}
+		}
+		if (alternateViewLookup ===null) {
+			return true
+		} else {
+			if(alternateViewLookup.hasOwnProperty(viewID)) {
+				return true
+			} else {
+				return false
+			}
+		}
+	}
+	
 	function populateViewSelection() {
 		function populateTableViewList(doneCallback) {
 			var $tableOptGroup = $('#itemListTableSelectionOptGroup')
@@ -24,9 +47,11 @@ function initItemListViewSelection(config) {
 			jsonAPIRequest("frm/list",listParams,function(formsInfo) {
 				var $formOptGroup = $('#itemListFormSelectionOptGroup')
 				$.each(formsInfo,function(index,formInfo) {
-					var $formItem = $(selectOptionHTML(formInfo.formID,formInfo.name))
-					$formItem.attr('data-view-type','form')
-					$formOptGroup.append($formItem)
+					if(showView(formInfo.formID)) {
+						var $formItem = $(selectOptionHTML(formInfo.formID,formInfo.name))
+						$formItem.attr('data-view-type','form')
+						$formOptGroup.append($formItem)	
+					}
 				})
 				doneCallback()
 			})
@@ -82,7 +107,15 @@ function initItemListViewSelection(config) {
 		
 	}
 	
-	initSelectControlChangeHandler($viewSelection, function(selectedID) { setView() })	
+	initSelectControlChangeHandler($viewSelection, function(selectedID) {
+		if(alternateViewLookup != null) {
+			var altView = alternateViewLookup[selectedID]
+			if (altView !== undefined) {
+				$pageSizeSelection.val(altView.pageSize)
+			}
+		}
+		setView() 
+	})	
 	initNumberSelectionChangeHandler($pageSizeSelection, function(pageSize) { setView() })
 	
 

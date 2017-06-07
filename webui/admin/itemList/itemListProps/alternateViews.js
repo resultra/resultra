@@ -72,22 +72,10 @@ function initAlternateFormsProperties(listInfo) {
 
 	}
 	
-	function createAlternateViewLookupTable(listInfo) {
-		var altViewLookup = {}
-		var altViews = listInfo.properties.alternateViews
-		$.each(altViews,function(index,altView) {
-			if (altView.formID != null) {
-				altViewLookup[altView.formID] = altView
-			} else if (altView.tableID != null) {
-				altViewLookup[altView.tableID] = altView
-			}
-		})
-		return altViewLookup
-	}
 
 	var formListParams =  { parentDatabaseID: listInfo.parentDatabaseID }
 	jsonAPIRequest("frm/list",formListParams,function(formsInfo) {
-		var altViewLookup = createAlternateViewLookupTable(listInfo)
+		var altViewLookup = createAlternateViewLookupTable(listInfo.properties.alternateViews)
 		$.each(formsInfo, function(index, formInfo) {
 			populateOneFormCheckbox(formInfo,altViewLookup)
 		})
