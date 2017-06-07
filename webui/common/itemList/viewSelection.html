@@ -1,3 +1,12 @@
+
+{{define "itemListViewFormPageSizeOptions"}}
+	   		<option value="1">1</option>
+	 		<option value="5">5</option>
+	 		<option value="10">10</option>
+	 		<option value="25">25</option>
+	 		<option value="50">50</option>
+{{end}}
+
 {{define "itemListViewSelectionInput"}}
 
 	<div class="form-group">
@@ -12,11 +21,7 @@
 	<div class="form-group initiallyHidden" id="formPageSizeSelectionFormGroup">
 	  	<label for="itemListPageSizeSelection">Items per page: </label>
 	  	<select class="form-control maxWidth50" id="itemListPageSizeSelection" name="itemListPageSizeSelection">
-	   		<option value="1">1</option>
-	 		<option value="5">5</option>
-	 		<option value="10">10</option>
-	 		<option value="25">25</option>
-	 		<option value="50">50</option>
+			{{template "itemListViewFormPageSizeOptions"}}
 		</select>
 	</div>
 	

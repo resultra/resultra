@@ -3,6 +3,7 @@ function initAlternateFormsProperties(listInfo) {
 	function populateOneFormCheckbox(formInfo,altFormsLookup) {
 
 		var $propertyCell = $('#adminItemListAlternateFormListPropertyCell')
+		
 
 		var $formItemCheckboxContainer = $('#adminItemListAlternateFormCheckboxTemplate').clone()
 		$formItemCheckboxContainer.attr("id","")
@@ -11,17 +12,18 @@ function initAlternateFormsProperties(listInfo) {
 		$nameLabel.text(formInfo.name)
 
 		var $formCheckbox = $formItemCheckboxContainer.find("input")
+		var $itemsPerPageFormGroup = $formItemCheckboxContainer.find('.itemsPerPageFormGroup')
+		var $itemsPerPageFormSelection = $formItemCheckboxContainer.find('.itemsPerPageSelection')
 
 		if (altFormsLookup.hasID(formInfo.formID)) {
 			$formCheckbox.prop("checked",true)
+			$itemsPerPageFormGroup.show()
 		} else {
 			$formCheckbox.prop("checked",false)
+			$itemsPerPageFormGroup.hide()				
 		}
-
-		$formCheckbox.change(function() {
-				var formIsChecked = $formCheckbox.prop("checked")
-				console.log("checkbox changed: " + formInfo.name + " - " + formIsChecked)
-
+		
+		function updateAlternateForms() {
 			var alternateForms = []
 			$propertyCell.find(".alternateFormCheckboxContainer").each(function() {
 				var formID = $(this).attr("data-formID")
@@ -38,8 +40,26 @@ function initAlternateFormsProperties(listInfo) {
 			}
 			jsonAPIRequest("itemList/setAlternateForms",altFormsParams,function(updatedListInfo) {
 			})
+			
+		}
 
+		$formCheckbox.change(function() {
+			var formIsChecked = $formCheckbox.prop("checked")
+			console.log("checkbox changed: " + formInfo.name + " - " + formIsChecked)
+			
+			if(formIsChecked) {
+				$itemsPerPageFormGroup.show()
+				$itemsPerPageFormSelection.val("1")
+			} else {
+				$itemsPerPageFormGroup.hide()				
+			}
+			updateAlternateForms()
 		})
+		
+		$itemsPerPageFormSelection.change(function() {
+			updateAlternateForms()
+		})
+		
 
 		$propertyCell.append($formItemCheckboxContainer)
 

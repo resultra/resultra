@@ -10,12 +10,23 @@
 {{end}}
 
 {{define "adminItemListFormDisplayPropertyTemplates"}}
-			<div style="display:none">
-  			  <div class="form-group alternateFormCheckboxContainer" id="adminItemListAlternateFormCheckboxTemplate">
-  			      <div class="checkbox">
-  			        <input type="checkbox">
-					<label><span>Form name goes here.</span></label>
-  			      </div>
-  			   </div>
+	<div style="display:none">
+		<div id="adminItemListAlternateFormCheckboxTemplate" class="alternateFormCheckboxContainer">
+			
+			<div class="form-group">
+		      <div class="checkbox">
+		        <input type="checkbox">
+				<label><span>Form name goes here.</span></label>
+		      </div>
+		  	</div>
+			
+			<div class="form-group initiallyHidden marginLeft40 itemsPerPageFormGroup">
+			  	<label>Items per page: </label>
+			  	<select class="form-control maxWidth50 itemsPerPageSelection">
+					{{template "itemListViewFormPageSizeOptions"}}
+				</select>
 			</div>
+			
+		</div>
+	</div>
 {{end}}
