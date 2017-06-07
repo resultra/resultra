@@ -1,10 +1,9 @@
 function initAlternateFormsProperties(listInfo) {
 
-	function populateOneFormCheckbox(formInfo,altFormsLookup) {
+	function populateOneFormCheckbox(formInfo,altViewsLookup) {
 
 		var $propertyCell = $('#adminItemListAlternateFormListPropertyCell')
 		
-
 		var $formItemCheckboxContainer = $('#adminItemListAlternateFormCheckboxTemplate').clone()
 		$formItemCheckboxContainer.attr("id","")
 		$formItemCheckboxContainer.attr("data-formID",formInfo.formID)
@@ -15,8 +14,10 @@ function initAlternateFormsProperties(listInfo) {
 		var $itemsPerPageFormGroup = $formItemCheckboxContainer.find('.itemsPerPageFormGroup')
 		var $itemsPerPageFormSelection = $formItemCheckboxContainer.find('.itemsPerPageSelection')
 
-		if (altFormsLookup.hasID(formInfo.formID)) {
+		if (altViewsLookup.hasOwnProperty(formInfo.formID)) {
+			var altView = altViewsLookup[formInfo.formID]
 			$formCheckbox.prop("checked",true)
+			$itemsPerPageFormSelection.val(altView.pageSize)
 			$itemsPerPageFormGroup.show()
 		} else {
 			$formCheckbox.prop("checked",false)
@@ -24,21 +25,27 @@ function initAlternateFormsProperties(listInfo) {
 		}
 		
 		function updateAlternateForms() {
-			var alternateForms = []
+			var alternateViews = []
 			$propertyCell.find(".alternateFormCheckboxContainer").each(function() {
 				var formID = $(this).attr("data-formID")
 				var $checkbox = $(this).find("input")
+				var $pageSizeSelection = $(this).find('.itemsPerPageSelection')
+				var pageSize = Number($pageSizeSelection.val())
 				var isChecked = $checkbox.prop("checked")
 				if (isChecked) {
-					alternateForms.push(formID)
+					var altView = {
+						formID: formID,
+						pageSize: pageSize
+					}
+					alternateViews.push(altView)
 				}
 				console.log("form checkbox: " + formID + " " + isChecked)
 			})
-			var altFormsParams = {
+			var altViewsParams = {
 				listID:listInfo.listID,
-				alternateForms: alternateForms
+				alternateViews: alternateViews
 			}
-			jsonAPIRequest("itemList/setAlternateForms",altFormsParams,function(updatedListInfo) {
+			jsonAPIRequest("itemList/setAlternateViews",altViewsParams,function(updatedListInfo) {
 			})
 			
 		}
@@ -64,12 +71,25 @@ function initAlternateFormsProperties(listInfo) {
 		$propertyCell.append($formItemCheckboxContainer)
 
 	}
+	
+	function createAlternateViewLookupTable(listInfo) {
+		var altViewLookup = {}
+		var altViews = listInfo.properties.alternateViews
+		$.each(altViews,function(index,altView) {
+			if (altView.formID != null) {
+				altViewLookup[altView.formID] = altView
+			} else if (altView.tableID != null) {
+				altViewLookup[altView.tableID] = altView
+			}
+		})
+		return altViewLookup
+	}
 
 	var formListParams =  { parentDatabaseID: listInfo.parentDatabaseID }
 	jsonAPIRequest("frm/list",formListParams,function(formsInfo) {
-		var altFormsLookup = new IDLookupTable(listInfo.properties.alternateForms)
+		var altViewLookup = createAlternateViewLookupTable(listInfo)
 		$.each(formsInfo, function(index, formInfo) {
-			populateOneFormCheckbox(formInfo,altFormsLookup)
+			populateOneFormCheckbox(formInfo,altViewLookup)
 		})
 	})
 

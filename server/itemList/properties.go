@@ -27,8 +27,8 @@ type ItemListProperties struct {
 	DefaultRecordSortRules []recordSortDataModel.RecordSortRule `json:"defaultRecordSortRules"`
 	DefaultFilterRules     recordFilter.RecordFilterRuleSet     `json:"defaultFilterRules"`
 	PreFilterRules         recordFilter.RecordFilterRuleSet     `json:"preFilterRules"`
-	AlternateForms         []string                             `json:"alternateForms"`
 	DefaultView            ItemListViewProperties               `json:"defaultView"`
+	AlternateViews         []ItemListViewProperties             `json:"alternateViews"`
 }
 
 func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ItemListProperties, error) {
@@ -48,13 +48,25 @@ func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) 
 		return nil, fmt.Errorf("FormProperties.Clone: %v")
 	}
 
-	destAlternateForms := uniqueID.CloneIDList(remappedIDs, srcProps.AlternateForms)
+	destAltViews := []ItemListViewProperties{}
+	for _, srcAltView := range srcProps.AlternateViews {
+		destAltView := ItemListViewProperties{}
+		destAltView.PageSize = srcAltView.PageSize
+		if srcAltView.FormID != nil {
+			remappedID := remappedIDs.AllocNewOrGetExistingRemappedID(*srcAltView.FormID)
+			destAltView.FormID = &remappedID
+		} else if srcAltView.TableID != nil {
+			remappedID := remappedIDs.AllocNewOrGetExistingRemappedID(*srcAltView.TableID)
+			destAltView.TableID = &remappedID
+		}
+		destAltViews = append(destAltViews, destAltView)
+	}
 
 	destProps := ItemListProperties{
 		DefaultRecordSortRules: destSortRules,
 		DefaultFilterRules:     *destFilterRules,
 		PreFilterRules:         *destPreFilterRules,
-		AlternateForms:         destAlternateForms}
+		AlternateViews:         destAltViews}
 
 	return &destProps, nil
 }
@@ -64,7 +76,7 @@ func newDefaultItemListProperties() ItemListProperties {
 		DefaultRecordSortRules: []recordSortDataModel.RecordSortRule{},
 		DefaultFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet(),
 		PreFilterRules:         recordFilter.NewDefaultRecordFilterRuleSet(),
-		AlternateForms:         []string{}}
+		AlternateViews:         []ItemListViewProperties{}}
 
 	return defaultProps
 }

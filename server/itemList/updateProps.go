@@ -114,14 +114,20 @@ func (updateParams SetDefaultViewParams) updateProps(itemList *ItemList) error {
 	return nil
 }
 
-type SetAlternateFormsParams struct {
+type SetAlternateViewsParams struct {
 	ItemListIDHeader
-	AlternateForms []string `json:"alternateForms"`
+	AlternateViews []ItemListViewProperties `json:"alternateViews"`
 }
 
-func (updateParams SetAlternateFormsParams) updateProps(itemList *ItemList) error {
+func (updateParams SetAlternateViewsParams) updateProps(itemList *ItemList) error {
 
-	itemList.Properties.AlternateForms = updateParams.AlternateForms
+	for _, altView := range updateParams.AlternateViews {
+		if err := altView.validate(); err != nil {
+			return fmt.Errorf("updateProps (item list): %v", err)
+		}
+	}
+
+	itemList.Properties.AlternateViews = updateParams.AlternateViews
 
 	return nil
 }
