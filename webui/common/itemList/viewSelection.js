@@ -35,9 +35,11 @@ function initItemListViewSelection(config) {
 			jsonAPIRequest("tableView/list",getTableParams,function(tableRefs) {
 				$tableOptGroup.empty()
 				$.each(tableRefs,function(index,tableRef) {
-					var $tableItem = $(selectOptionHTML(tableRef.tableID,tableRef.name))
-					$tableItem.attr('data-view-type','table')
-					$tableOptGroup.append($tableItem)	
+					if(showView(tableRef.tableID)) {
+						var $tableItem = $(selectOptionHTML(tableRef.tableID,tableRef.name))
+						$tableItem.attr('data-view-type','table')
+						$tableOptGroup.append($tableItem)						
+					}
 				})
 				doneCallback()
 			})
