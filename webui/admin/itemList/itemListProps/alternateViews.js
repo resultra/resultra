@@ -1,8 +1,48 @@
 function initAlternateFormsProperties(listInfo) {
+	
+	var $propertyCell = $('#adminItemListAlternateFormListPropertyCell')
+	var $alternateTablesContainer = $('#adminItemListAlternateTableList')
+	
+	function updateAlternateForms() {
+		var alternateViews = []
+		$propertyCell.find(".alternateFormCheckboxContainer").each(function() {
+			var formID = $(this).attr("data-formID")
+			var $checkbox = $(this).find("input")
+			var $pageSizeSelection = $(this).find('.itemsPerPageSelection')
+			var pageSize = Number($pageSizeSelection.val())
+			var isChecked = $checkbox.prop("checked")
+			if (isChecked) {
+				var altView = {
+					formID: formID,
+					pageSize: pageSize
+				}
+				alternateViews.push(altView)
+			}
+			console.log("form checkbox: " + formID + " " + isChecked)
+		})
+		$alternateTablesContainer.find(".alternateTableCheckboxContainer").each(function() {
+			var tableID = $(this).attr("data-tableID")
+			var $checkbox = $(this).find("input")
+			var isChecked = $checkbox.prop("checked")
+			if(isChecked) {
+				var altView = {
+					tableID: tableID,
+					pageSize: 1
+				}
+				alternateViews.push(altView)				
+			}
+		})
+		var altViewsParams = {
+			listID:listInfo.listID,
+			alternateViews: alternateViews
+		}
+		jsonAPIRequest("itemList/setAlternateViews",altViewsParams,function(updatedListInfo) {
+		})
+		
+	}
 
 	function populateOneFormCheckbox(formInfo,altViewsLookup) {
 
-		var $propertyCell = $('#adminItemListAlternateFormListPropertyCell')
 		
 		var $formItemCheckboxContainer = $('#adminItemListAlternateFormCheckboxTemplate').clone()
 		$formItemCheckboxContainer.attr("id","")
@@ -24,31 +64,6 @@ function initAlternateFormsProperties(listInfo) {
 			$itemsPerPageFormGroup.hide()				
 		}
 		
-		function updateAlternateForms() {
-			var alternateViews = []
-			$propertyCell.find(".alternateFormCheckboxContainer").each(function() {
-				var formID = $(this).attr("data-formID")
-				var $checkbox = $(this).find("input")
-				var $pageSizeSelection = $(this).find('.itemsPerPageSelection')
-				var pageSize = Number($pageSizeSelection.val())
-				var isChecked = $checkbox.prop("checked")
-				if (isChecked) {
-					var altView = {
-						formID: formID,
-						pageSize: pageSize
-					}
-					alternateViews.push(altView)
-				}
-				console.log("form checkbox: " + formID + " " + isChecked)
-			})
-			var altViewsParams = {
-				listID:listInfo.listID,
-				alternateViews: alternateViews
-			}
-			jsonAPIRequest("itemList/setAlternateViews",altViewsParams,function(updatedListInfo) {
-			})
-			
-		}
 
 		$formCheckbox.change(function() {
 			var formIsChecked = $formCheckbox.prop("checked")
@@ -72,13 +87,46 @@ function initAlternateFormsProperties(listInfo) {
 
 	}
 	
+	function populateOneTableCheckbox(tableRef,altViewLookup) {
+		
+		var $tableCheckboxItem = $('#adminItemListAlternateTableCheckboxTemplate').clone()
+		$tableCheckboxItem.attr("id","")
+		
+		$tableCheckboxItem.attr("data-tableID",tableRef.tableID)
+		
+		var $nameLabel = $tableCheckboxItem.find("span")
+		$nameLabel.text(tableRef.name)
+		
+		var $tableCheckbox = $tableCheckboxItem.find("input")
+		if (altViewLookup.hasOwnProperty(tableRef.tableID)) {
+			$tableCheckbox.prop("checked",true)
+		} else {
+			$tableCheckbox.prop("checked",false)
+		}
+		
+		$tableCheckbox.change(function() {
+			updateAlternateForms()		
+		})
+		
+		$alternateTablesContainer.append($tableCheckboxItem)
+		
+	}
+
+	var altViewLookup = createAlternateViewLookupTable(listInfo.properties.alternateViews)
 
 	var formListParams =  { parentDatabaseID: listInfo.parentDatabaseID }
 	jsonAPIRequest("frm/list",formListParams,function(formsInfo) {
-		var altViewLookup = createAlternateViewLookupTable(listInfo.properties.alternateViews)
 		$.each(formsInfo, function(index, formInfo) {
 			populateOneFormCheckbox(formInfo,altViewLookup)
 		})
 	})
+	
+	var getTableParams = { parentDatabaseID: listInfo.parentDatabaseID }
+	jsonAPIRequest("tableView/list",getTableParams,function(tableRefs) {
+		$.each(tableRefs,function(index,tableRef) {
+			populateOneTableCheckbox(tableRef,altViewLookup)
+		})
+	})
+	
 
 }

@@ -1,10 +1,14 @@
 {{define "adminItemListFormDisplayProperty"}}
 	<tr>
-		<td class="width200"><label>Alternate forms:</label>
-			<div><small>In addition to the default form, optionally select other forms which can be used to display items in the list.</small></div>
+		<td class="width200"><label>Alternate forms and tables:</label>
+			<div><small>Select other forms or tables which can optionally be used to display items in the list.</small></div>
 		</td>
 
-		<td id="adminItemListAlternateFormListPropertyCell">
+		<td>
+			<label>Alternate forms:</label>
+			<div id="adminItemListAlternateFormListPropertyCell"></div>
+			<label>Alternate tables:</label>
+			<div id="adminItemListAlternateTableList"></div>
 		</td>
 	</tr>
 {{end}}
@@ -21,12 +25,21 @@
 		  	</div>
 			
 			<div class="form-group initiallyHidden marginLeft40 itemsPerPageFormGroup">
-			  	<label>Items per page: </label>
+			  	<label>Items per page when displaying this form: </label>
 			  	<select class="form-control maxWidth50 itemsPerPageSelection">
 					{{template "itemListViewFormPageSizeOptions"}}
 				</select>
 			</div>
 			
 		</div>
+		
+		
+		<div class="form-group alternateTableCheckboxContainer" id="adminItemListAlternateTableCheckboxTemplate">
+	      <div class="checkbox">
+	        <input type="checkbox">
+			<label><span>Table name goes here.</span></label>
+	      </div>
+	  	</div>		
+		
 	</div>
 {{end}}
