@@ -33,6 +33,25 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 	function createTableViewColDef(colInfo,fieldsByID,
 				renderCellHTMLFunc,initContainerFunc,percColWidths) {
 		var fieldID = colInfo.properties.fieldID
+					
+		function columnSortType(fieldID,fieldsByID) {
+			var fieldInfo = fieldsByID[fieldID]
+			switch(fieldInfo.type) {
+			case fieldTypeNumber:
+				return 'custom-num'
+			case fieldTypeText:
+				return 'string'
+			case fieldTypeBool:
+				return 'custom-bool'
+			case fieldTypeTime:
+				return 'date'
+			default:
+				return 'string'
+			}							
+		}
+		
+		var colType = columnSortType(fieldID,fieldsByID)
+								
 		var colDef = {
 			data:'fieldValues.' + fieldID,
 			defaultContent:'', // used when there is null or undefined data
@@ -52,6 +71,7 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 				var viewConfig = $cellContainer.data("viewFormConfig")
 				viewConfig.loadRecord($cellContainer,recordProxy.getRecordFunc())
 			},
+			type: colType,
 			render: function(data, type, row, meta) {
 				if (type==='display') {
 					return renderCellHTMLFunc()

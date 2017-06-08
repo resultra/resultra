@@ -146,6 +146,8 @@ $(document).ready(function() {
 				
 	initUserDropdownMenu()
 	
+	registerTableViewCustomSortFuncs()
+	
 	var tocConfig = {
 		databaseID: viewListContext.databaseID,
 		newItemFormButtonFunc: openSubmitFormDialog
