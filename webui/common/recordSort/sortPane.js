@@ -185,9 +185,8 @@ function generateSortRulePrefix() {
 
 
 function initSortRecordsPane(sortPaneParams) {
-		
-	function initDefaultSortPaneRules() {
-		
+	
+	function setSortRules(sortRules,initDoneFunc) {
 		var sortableFieldTypes = [fieldTypeNumber,fieldTypeText,fieldTypeBool,fieldTypeTime]
 		
 		loadSortedFieldInfo(sortPaneParams.databaseID, sortableFieldTypes, function(sortedFields) {
@@ -197,19 +196,30 @@ function initSortRecordsPane(sortPaneParams) {
 				sortPaneParams.sortedFields = sortedFields
 
 				$('#sortPaneSortRuleList').empty()
-				for (var sortRuleIndex = 0; sortRuleIndex < sortPaneParams.defaultSortRules.length; sortRuleIndex++) {
-					var sortRule = sortPaneParams.defaultSortRules[sortRuleIndex]
+				for (var sortRuleIndex = 0; sortRuleIndex < sortRules.length; sortRuleIndex++) {
+					var sortRule = sortRules[sortRuleIndex]
 					console.log("getFormSortRules: initializing sort rule: " + JSON.stringify(sortRule))
 					addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),sortRule)		
 				}
-				if(sortPaneParams.defaultSortRules.length ==0) {
+				if(sortRules.length ==0) {
 					// If no rules are already set add at least one uninitialized sort rule
 					addSortRuleListItem(sortPaneParams,generateSortRulePrefix(),null)
 				}
-				sortPaneParams.initDoneFunc()
+				if(initDoneFunc != null) {
+					initDoneFunc()
+				}
 		})		
+		
 	}
-	initDefaultSortPaneRules()
+	
+	function updateSortRules(sortRules) {
+		setSortRules(sortRules,null)
+	}
+		
+	function initDefaultSortPaneRules(initDoneFunc) {
+		setSortRules(sortPaneParams.defaultSortRules,initDoneFunc)
+	}
+	initDefaultSortPaneRules(sortPaneParams.initDoneFunc)
 	
 	initButtonClickHandler('#sortRecordsAddRuleButton',function(e) {
 		console.log("add rule button clicked")
@@ -219,10 +229,10 @@ function initSortRecordsPane(sortPaneParams) {
 	
 	initButtonClickHandler('#sortRecordResetButton',function(e) {
 		console.log("reset to default button clicked")
-		initDefaultSortPaneRules()
+		initDefaultSortPaneRules(null)
 		sortPaneRuleListChanged(sortPaneParams)
 	})
 	
-	
+	this.updateSortRules = updateSortRules
 	
 }

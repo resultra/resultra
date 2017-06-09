@@ -4,16 +4,34 @@
 // and access to global values.
 var currGlobalVals
 
-var listItemController
-var tableViewController
-var itemListLayout
-
-
 function initItemListView(listInfo) {
 	
 		
 	var filterPanelElemPrefix = "form_"
 	var $formLayoutContainer = $('#formViewContainer')
+	var $formViewContainer = $('#formViewContainer')
+	var $tableViewContainer = $('#tableViewContainer')
+	
+	function updateSortRulesFromTable(sortRules) {
+		console.log("updateSortRulesFromTable: " + JSON.stringify(sortRules))
+		if(sortPane !== undefined) {
+			sortPane.updateSortRules(sortRules)	
+		}
+	}
+	
+	function resizeListView() {
+		console.log("Resizing list view")
+		if (tableViewController !== undefined) {
+			tableViewController.refresh()
+		}
+	}
+	var itemListLayout = new ItemListLayout(resizeListView)
+	
+	
+	var listItemController = new ListItemController($formViewContainer)
+	var tableViewController = new ItemListTableViewController($tableViewContainer,
+		viewListContext.databaseID,updateSortRulesFromTable)
+	
 	
 	var $tableViewLayoutContainer = $('#tableViewContainer')
 	$tableViewLayoutContainer.hide()
@@ -94,7 +112,7 @@ function initItemListView(listInfo) {
 		initDoneFunc: decrementRemainingPanelInitCount,
 		saveUpdatedSortRulesFunc: function(sortRules) {} // no-op
 	}
-	initSortRecordsPane(recordSortPaneParams)
+	var sortPane = new initSortRecordsPane(recordSortPaneParams)
 
 
 	function updateViewConfig(viewOptions) {
@@ -134,15 +152,6 @@ function initItemListView(listInfo) {
 
 $(document).ready(function() {	
 	 
-	function resizeListView() {
-		console.log("Resizing list view")
-		if (tableViewController !== undefined) {
-			tableViewController.refresh()
-		}
-	}
-	 
-	 
-	itemListLayout = new ItemListLayout(resizeListView)
 				
 	initUserDropdownMenu()
 	
@@ -156,14 +165,9 @@ $(document).ready(function() {
 	
 	hideSiblingsShowOne('#listViewProps')
 	
-	var $formViewContainer = $('#formViewContainer')
-	var $tableViewContainer = $('#tableViewContainer')
-	
 	initFieldInfo(viewListContext.databaseID, function() {
 		var getListParams = { listID: viewListContext.listID }
 		jsonAPIRequest("itemList/get",getListParams,function(listInfo) {
-			listItemController = new ListItemController($formViewContainer)
-			tableViewController = new ItemListTableViewController($tableViewContainer,viewListContext.databaseID)
 			initItemListView(listInfo)		
 		})	
 		

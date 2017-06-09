@@ -1,6 +1,6 @@
 
 
-function ItemListTableViewController($parentContainer,databaseID) {
+function ItemListTableViewController($parentContainer,databaseID,resortCallback) {
 	
 	var dataTable
 	var currRecordData
@@ -27,7 +27,8 @@ function ItemListTableViewController($parentContainer,databaseID) {
 			$tableContainer: $parentContainer,
 			databaseID: databaseID,
 			tableID: tableID,
-			initDoneCallback: initTableDoneCallback
+			initDoneCallback: initTableDoneCallback,
+			resortCallback:resortCallback
 		}
 		initItemListTableView(tableViewParams)
 	}

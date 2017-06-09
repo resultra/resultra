@@ -264,26 +264,40 @@ function initItemListTableView(params) {
 			columns:dataCols
 		})
 		
+		
+		// The order.dt event can be triggered when a table is redrawn. However, we only
+		// want to propagate the order.dt event when the end-user clicks on a table 
+		// header to re-sort the table.
+		var drawInProgress = true
+		$tableElem.on('draw.dt',function() {
+			drawInProgress = false
+		})
+		
+		
+		
 		// If the table is reordered by the end-user, then synchronize the sort order with the side-bar's
 		// sorting preferences.
-		$tableElem.on('order.dt',function() {
-			var order = dataTable.order();
-			console.log("Table reordered: " + JSON.stringify(order))
-			var sortRules = []
-			$.each(order,function(index,orderInfo) {
-				var colIndex = orderInfo[0]
-				var sortDirection = orderInfo[1]
-				var tableColInfo = tableInfo.cols[colIndex]
-				var fieldID = tableColInfo.properties.fieldID
-				sortRules.push({
-					direction:sortDirection,
-					fieldID: fieldID
-				})
+		$tableElem.on('order.dt',function(e,settings) {
+			if (!drawInProgress) {
+				var order = dataTable.order();
+				console.log("Table reordered: " + JSON.stringify(order))
+				var sortRules = []
+				$.each(order,function(index,orderInfo) {
+					var colIndex = orderInfo[0]
+					var sortDirection = orderInfo[1]
+					var tableColInfo = tableInfo.cols[colIndex]
+					var fieldID = tableColInfo.properties.fieldID
+					sortRules.push({
+						direction:sortDirection,
+						fieldID: fieldID
+					})
 				
-			})
-			console.log("Table reordered: " + JSON.stringify(sortRules))
-			
+				})
+				console.log("Table reordered: " + JSON.stringify(sortRules))
+				params.resortCallback(sortRules)	
+			}
 		})
+		
 		
 	
 		var $scrollHead = params.$tableContainer.find(".dataTables_scrollHead")
@@ -303,6 +317,7 @@ function initItemListTableView(params) {
 			var scrollBodyHeightPx = scrollBodyHeight + 'px'
 	
 			$scrollBody.css('max-height', scrollBodyHeightPx);
+			drawInProgress = true
 			dataTable.draw() // force redraw
 		}
 		resizeToContainerHeight()
