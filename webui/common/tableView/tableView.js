@@ -1,4 +1,5 @@
-function initItemListTableView($tableContainer, databaseID, tableID,initDoneCallback) {
+
+function initItemListTableView(params) {
 	
 	function TableViewRecordProxy(initialRecord,$cell) {
 		
@@ -62,7 +63,7 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 				var recordProxy = new TableViewRecordProxy(rowData,$(cell))
 								
 				var componentContext = {
-					databaseID: databaseID,
+					databaseID: params.databaseID,
 					fieldsByID: fieldsByID
 				}
 				
@@ -186,13 +187,13 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 			}
 		}
 		
-		var tableInfoParams = { tableID: tableID }
+		var tableInfoParams = { tableID: params.tableID }
 		jsonAPIRequest("tableView/getTableDisplayInfo",tableInfoParams,function(info) {
 			tableInfo = info
 			tableInfoReceived()
 		})
 		
-		loadFieldInfo(databaseID,[fieldTypeAll],function(retrievedFieldsByID) {
+		loadFieldInfo(params.databaseID,[fieldTypeAll],function(retrievedFieldsByID) {
 			fieldsByID = retrievedFieldsByID
 			tableInfoReceived()
 		})
@@ -237,11 +238,11 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 			return $tableHeader
 		}
 		
-		$tableContainer.empty()
+		params.$tableContainer.empty()
 		
 		var $tableElem = $('<table class="table table-hover table-bordered display tableView"></table>')
 		$tableElem.append(tableHeader())
-		$tableContainer.append($tableElem)
+		params.$tableContainer.append($tableElem)
 		
 		var dataCols = []
 		$.each(tableInfo.cols,function(index,colInfo) {
@@ -262,11 +263,33 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 			scrollCollapse:true,
 			columns:dataCols
 		})
+		
+		// If the table is reordered by the end-user, then synchronize the sort order with the side-bar's
+		// sorting preferences.
+		$tableElem.on('order.dt',function() {
+			var order = dataTable.order();
+			console.log("Table reordered: " + JSON.stringify(order))
+			var sortRules = []
+			$.each(order,function(index,orderInfo) {
+				var colIndex = orderInfo[0]
+				var sortDirection = orderInfo[1]
+				var tableColInfo = tableInfo.cols[colIndex]
+				var fieldID = tableColInfo.properties.fieldID
+				sortRules.push({
+					direction:sortDirection,
+					fieldID: fieldID
+				})
+				
+			})
+			console.log("Table reordered: " + JSON.stringify(sortRules))
+			
+		})
+		
 	
-		var $scrollHead = $tableContainer.find(".dataTables_scrollHead")
+		var $scrollHead = params.$tableContainer.find(".dataTables_scrollHead")
 // TODO - incorporate footer into the table.
-//		var $scrollFoot = $tableContainer.find(".dataTables_scrollFoot")
-		var $scrollBody = $tableContainer.find(".dataTables_scrollBody")
+//		var $scrollFoot = params.$tableContainer.find(".dataTables_scrollFoot")
+		var $scrollBody = params.$tableContainer.find(".dataTables_scrollBody")
 	
 		// Set the color of the entire header and footer to match the color of
 		// of the individual header and footer cells. Otherwise, the scroll bar
@@ -275,7 +298,7 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		$scrollHead.css("background-color","lightGrey")
 		
 		function resizeToContainerHeight() {
-			var scrollBodyHeight = $tableContainer.outerHeight() -
+			var scrollBodyHeight = params.$tableContainer.outerHeight() -
 					$scrollHead.outerHeight() // TODO: after adding footer, also subtract footer height: - $scrollFoot.outerHeight()
 			var scrollBodyHeightPx = scrollBodyHeight + 'px'
 	
@@ -284,7 +307,7 @@ function initItemListTableView($tableContainer, databaseID, tableID,initDoneCall
 		}
 		resizeToContainerHeight()
 		
-		initDoneCallback(dataTable,resizeToContainerHeight)
+		params.initDoneCallback(dataTable,resizeToContainerHeight)
 		
 	}
 	

@@ -16,11 +16,20 @@ function ItemListTableViewController($parentContainer,databaseID) {
 	
 	this.setTable = function(tableID) {
 		console.log("ItemListTableViewController: setting table: " + tableID)
-		initItemListTableView($parentContainer,databaseID,tableID, function (tableViewDataTable,resizeFunc) {
+		
+		function initTableDoneCallback(tableViewDataTable,resizeFunc) {
 			dataTable = tableViewDataTable
 			resizeTableFunc = resizeFunc
 			updateDataTableData()
-		})
+		}
+		
+		var tableViewParams = {
+			$tableContainer: $parentContainer,
+			databaseID: databaseID,
+			tableID: tableID,
+			initDoneCallback: initTableDoneCallback
+		}
+		initItemListTableView(tableViewParams)
 	}
 	
 	this.setRecordData = function(recordData) {
