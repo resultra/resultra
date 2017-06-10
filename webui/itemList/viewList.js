@@ -76,7 +76,7 @@ function initItemListView(listInfo) {
 			
 		loadFormData(getFilteredRecordsParams,function(formData) {
 			currGlobalVals = formData.globalVals	
-			tableViewController.setRecordData(formData.recordData)
+			tableViewController.setRecordData(formData.recordData,sortRules)
 			listItemController.setRecordData(formData.recordData)
 		})
 
@@ -129,7 +129,8 @@ function initItemListView(listInfo) {
 			$formLayoutContainer.hide()
 	// TODO - Clear the form layout container
 	//		$formLayoutContainer.empty()
-			tableViewController.setTable(viewOptions.tableID)
+			var sortRules = getSortPaneSortRules()
+			tableViewController.setTable(viewOptions.tableID,sortRules)
 			itemListLayout.hideFooterLayout()
 			
 		}

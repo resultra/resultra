@@ -322,7 +322,49 @@ function initItemListTableView(params) {
 		}
 		resizeToContainerHeight()
 		
-		params.initDoneCallback(dataTable,resizeToContainerHeight)
+		function setSortOrder(sortRules) {
+			var dataTableSortRules = []
+			$.each(sortRules,function(index,sortRule) {
+				var colIndex = 0
+				$.each(tableInfo.cols,function(index,colInfo) {
+					if(sortRule.fieldID === colInfo.properties.fieldID) {
+						var dataTableSortRule = [colIndex,sortRule.direction]
+						dataTableSortRules.push(dataTableSortRule)
+					}
+					colIndex++
+				})
+			})
+			// If there is a 1-1 match between each sort rule and a column in the table,
+			// then setting the order will accurately reflect the given sort order from the side-bar.
+			// However, if there are sort fields in the sidebar which are not columns, it's not possible
+			// to map the side-bars sort rules accurately onto the table; in this case the table is 
+			// shown unordered. 
+			if(dataTableSortRules.length === sortRules.length) {
+				console.log("Setting table view sort rules: " + JSON.stringify(sortRules) + 
+						" -> " + JSON.stringify(dataTableSortRules))
+				dataTable.order(dataTableSortRules)
+			} else {
+				dataTable.order([])
+			}
+		}
+		
+		function updateData(recordData,sortRules) {
+			drawInProgress = true
+			dataTable.clear()
+			setSortOrder(sortRules)
+			dataTable.rows.add(recordData)
+			dataTable.draw()
+		}
+		
+		
+		var tableContext = {
+			resizeTable: resizeToContainerHeight,
+			dataTable: dataTable,
+			updateData: updateData,
+			setSortOrder: setSortOrder
+		}
+		
+		params.initDoneCallback(tableContext)
 		
 	}
 	

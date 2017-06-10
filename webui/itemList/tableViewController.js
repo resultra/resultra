@@ -2,25 +2,22 @@
 
 function ItemListTableViewController($parentContainer,databaseID,resortCallback) {
 	
-	var dataTable
 	var currRecordData
-	var resizeTableFunc
 	
-	function updateDataTableData() {
-		if (dataTable !== undefined && currRecordData !== undefined) {
-			dataTable.clear()
-			dataTable.rows.add(currRecordData)
-			dataTable.draw()
+	var tableViewContext
+	
+	function updateDataTableData(sortRules) {
+		if (tableViewContext !== undefined && currRecordData !== undefined) {
+			tableViewContext.updateData(currRecordData,sortRules)
 		}
 	}
 	
-	this.setTable = function(tableID) {
+	this.setTable = function(tableID,sortRules) {
 		console.log("ItemListTableViewController: setting table: " + tableID)
 		
-		function initTableDoneCallback(tableViewDataTable,resizeFunc) {
-			dataTable = tableViewDataTable
-			resizeTableFunc = resizeFunc
-			updateDataTableData()
+		function initTableDoneCallback(tableContext) {
+			tableViewContext = tableContext
+			updateDataTableData(sortRules)
 		}
 		
 		var tableViewParams = {
@@ -33,14 +30,14 @@ function ItemListTableViewController($parentContainer,databaseID,resortCallback)
 		initItemListTableView(tableViewParams)
 	}
 	
-	this.setRecordData = function(recordData) {
+	this.setRecordData = function(recordData,sortRules) {
 		currRecordData = recordData
-		updateDataTableData()
+		updateDataTableData(sortRules)
 	}
 	
 	this.refresh = function() {
-		if (resizeTableFunc !== undefined) {
-			resizeTableFunc()
+		if (tableViewContext !== undefined) {
+			tableViewContext.resizeTable()
 		}
 		
 	}
