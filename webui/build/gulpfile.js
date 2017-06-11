@@ -4,6 +4,7 @@ var uglify = require('gulp-uglify')
 var minifyCSS = require("gulp-minify-css")
 var inject = require("gulp-inject")
 var gutil = require("gulp-util")
+var stripDebug = require("gulp-strip-debug")
 var args   = require('yargs').argv;
 
 // The current working directory (cwd) will be the directory with the 
@@ -43,7 +44,10 @@ gulp.task('exportMinifiedAssets', function() {
 	
 	gulp.src(assets.jsFiles,{base:assets.basePath})
       .pipe(concat(assets.minJSFile))
-      .pipe(uglify())
+	  .pipe(stripDebug()) // strip out console.log() debug messages.
+      .pipe(uglify(
+		  {mangle: {toplevel: true}} // mange top-level names as well as names within functions
+      ))
       .pipe(gulp.dest(distDir))
 
   // A single CSS file for release builds

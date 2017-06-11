@@ -7,3 +7,4 @@ prebuild:
 	npm install --save-dev gulp-inject
 	npm install --save-dev yargs
 	npm install --save-dev gulp-util
+	npm install --save-dev gulp-strip-debug

@@ -4,18 +4,32 @@
 # Within each build phase, make is run on each directory in no particular order. So,
 # the build process from each directory is expected to not depend on other directories 
 # within a a given phase.
+#
+# By default a debug build is performed. However to perform a release build, pass the --release
+# option on the command line.
 
 import os
 import sys
+import argparse
+
+parser = argparse.ArgumentParser(description='Main build script.')
+parser.add_argument('--release',default=False,action='store_true',
+                    help='perform a release build')
+args = parser.parse_args()
 
 failedDirs = []
+
+debugBuild = 1
+if(args.release):
+    debugBuild = 0
+    
 
 def runMakePhase(makeTargetName):
     for root, dirs, files in os.walk(".."):
         for file in files:
             if (file == 'Makefile') and (not root.startswith("../webui/build")):
                 print os.path.join(root,file)
-                retCode = os.system("make -C %s %s" % (root, makeTargetName))
+                retCode = os.system("make -C %s DEBUG=%s %s" % (root, debugBuild, makeTargetName))
                 if retCode != 0:
                     failedDirs.append(makeTargetName + ":" + root)
 
