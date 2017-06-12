@@ -81,6 +81,16 @@ gulp.task('injectHTMLFilesWithIndividualPkgAssets', function() {
 	// absFileToLinkFile is needed to map the absolute file names from the source
 	// stream to the script/link reference.
 	var absFileToLinkFile = {}
+	function populateLinkFileRefs(pkgInfo,pkgName,absFileRefs) {
+		for (var absFileIndex in absFileRefs) {
+			var absFileName = absFileRefs[absFileIndex]
+			var linkPath = absFileName.replace(basePath,'') // remove the base path
+			linkPath = linkPath.replace(pkgInfo.pkgPrefix,pkgName) // replace package prefix with just the package name
+			linkPath = 'static' + linkPath // prepend the static reference.
+			absFileToLinkFile[absFileName] = linkPath
+		}
+		
+	}
 	function transformJSPkgFileForInjection(filepath, file, index, length, targetFile) {
 		return '<script src="' + absFileToLinkFile[file.path] + '"></script>'
 	}
@@ -91,6 +101,7 @@ gulp.task('injectHTMLFilesWithIndividualPkgAssets', function() {
 	
 	
 	var allPkgJSFileRefSrcs = merge(); // Create an empty stream
+	var allPkgCSSFileRefSrcs = merge(); // Create an empty stream
 	for(var pkgName in pkgAssets.packages) {
 		
 		gutil.log("Injecting package assets: package name = " + pkgName)
@@ -102,26 +113,25 @@ gulp.task('injectHTMLFilesWithIndividualPkgAssets', function() {
 	  	var absFiles = prefixFilesWithPathPrefix(pkgInfo.pkgPrefix,pkgInfo.jsFiles)
 	  	var fileRefs = prefixFilesWithPathPrefix(pathPrefix,absFiles)
 		gutil.log("Injecting package assets: files  = " + JSON.stringify(fileRefs))
-		
-		// Populate absFileToLinkFile for each individual file reference (see above for details).
-		for (var absFileIndex in fileRefs) {
-			var absFileName = fileRefs[absFileIndex]
-			var linkJSPath = absFileName.replace(basePath,'') // remove the base path
-			linkJSPath = linkJSPath.replace(pkgInfo.pkgPrefix,pkgName) // replace package prefix with just the package name
-			linkJSPath = 'static' + linkJSPath // prepend the static reference.
-			absFileToLinkFile[absFileName] = linkJSPath
-		}
-		
+		populateLinkFileRefs(pkgInfo,pkgName,fileRefs)
+				
 		// Merge the file source streams for individual packages into a merged stream 
 		// to be used for injection into the HTML file(s)
 		var fileRefSrcs = gulp.src(fileRefs,{read: false}) 
 		allPkgJSFileRefSrcs.add(fileRefSrcs)
-						
+		
+		
+		var cssFiles = prefixFilesWithPathPrefix(pkgInfo.pkgPrefix,pkgInfo.cssFiles)
+		cssFiles = prefixFilesWithPathPrefix(pathPrefix,cssFiles)
+		populateLinkFileRefs(pkgInfo,pkgName,cssFiles)
+		var cssFileSrc = gulp.src(cssFiles,{read:false})
+		allPkgCSSFileRefSrcs.add(cssFileSrc)		
 	}
 	
 	gutil.log("Mapping from package file to JS link:" + JSON.stringify(absFileToLinkFile))
 	
 	htmlTarget.pipe(inject(allPkgJSFileRefSrcs,{name: pkgAssets.injectPlaceholderName, transform: transformJSPkgFileForInjection}))
+		.pipe(inject(allPkgCSSFileRefSrcs,{name: pkgAssets.injectPlaceholderName, transform: transformCSSPkgFileForInjection}))
 	    .pipe(gulp.dest(distDir))
 				
 });

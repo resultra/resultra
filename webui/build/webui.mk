@@ -21,16 +21,13 @@ ifeq ($(DEBUG),1)
 	EXPORT_ASSETS = $(GULP) exportIndividualAssets  --assets $(abspath ./assetManifest_gen.json)
 	EXPORT_PKG_ASSETS = $(GULP) exportIndividualPackageAssets  --assets $(abspath ./assetManifest_gen.json)
 	INJECT_GULP_TARGETS = injectHTMLFilesWithIndividualAssets
-	INJECT_PKG_GULP_TARGETS = injectHTMLFilesWithIndividualPkgAssets
 else 
 	EXPORT_ASSETS = echo "Export assets: Release build: no individual assets exported"
 	EXPORT_PKG_ASSETS = echo "Export assets: Release build: no individual assets exported"
 	INJECT_GULP_TARGETS = exportMinifiedAssets injectHTMLFilesWithMinifiedAssets
-	INJECT_PKG_GULP_TARGETS = exportMinifiedAssets injectHTMLFilesWithMinifiedAssets
 endif
 
 
 EXPORT_HTML_WITH_INJECTED_ASSETS = $(GULP) $(INJECT_GULP_TARGETS) --assets
-EXPORT_PKG_HTML_WITH_INJECTED_ASSETS = $(GULP) $(INJECT_PKG_GULP_TARGETS) --assets
 
 EXPORT_THIRD_PARTY_ASSETS = $(THIRD_PARTY_GULP) exportThirdPartyAssets injectHTMLFilesWithIndividualPkgAssets --pathprefix ${CURDIR} --pkgassets $(abspath ./pkg_assets.json)
