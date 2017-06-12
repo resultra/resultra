@@ -1,5 +1,9 @@
 {
 	"packages" : {
+		"jquery": {
+			"pkgPrefix": "node_modules/jquery/dist",
+			"jsFiles": [ "jquery.min.js" ]
+		},
 		"bootstrap": {
 			"pkgPrefix": "node_modules/bootstrap/dist",
 			"jsFiles": [ "js/bootstrap.min.js" ],
