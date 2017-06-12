@@ -44,14 +44,18 @@
 
 
 {{define "thirdPartyCSS"}}
-	<!-- thirdPartyAssets:css -->
-	<!-- endinject -->
-	
+
+	<!-- There is an ordering conflict between the following 2 style sheets and bootstrap. The following
+		 2 style sheets need to come before bootstrap for Bootstrap styles not to be overridden.  -->
 	<link rel="stylesheet" type="text/css" class="ui" 
-		href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+		href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">  
 		
 	<link rel="stylesheet" type="text/css" class="ui" 
 		href="https://cdnjs.cloudflare.com/ajax/libs/jquery-layout/1.4.3/layout-default.min.css">
+
+	<!-- thirdPartyAssets:css -->
+	<!-- endinject -->
+	
 		
 	<link rel="stylesheet" type="text/css" class="ui" 
 		href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css">
