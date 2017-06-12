@@ -1,0 +1,18 @@
+{
+	"packages" : {
+		"bootstrap": {
+			"pkgPrefix": "node_modules/bootstrap/dist",
+			"jsFiles": [ "js/bootstrap.min.js" ],
+			"cssFiles": ["css/bootstrap.min.css"],
+			"fontFiles": ["fonts/**"]
+		},
+		"datatables": {
+			"pkgPrefix": "node_modules/datatables/media",
+			"jsFiles": [ "js/jquery.dataTables.min.js" ],
+			"cssFiles": ["css/jquery.dataTables.min.css"],
+			"imageFiles": ["images/**"]		
+		}
+	},
+	"htmlFiles": ["thirdParty.html"],
+	"injectPlaceholderName": "thirdPartyAssets"
+}

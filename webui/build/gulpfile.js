@@ -17,6 +17,7 @@ var cwdAbsPath = __dirname
 gutil.log("Loading asset list from file: " + args.assets)
 var assets = require(args.assets);
 
+
 gulp.task('exportIndividualAssets', function() {
 
 	gutil.log("Exporting individual javascript files from asset list: # files = " + assets.jsFiles.length)
@@ -201,3 +202,5 @@ gulp.task('injectHTMLFilesWithIndividualPkgAssets', function() {
 		.pipe(gulp.dest(distDir))
 				
 });
+
+
