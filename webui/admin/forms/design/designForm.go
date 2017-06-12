@@ -12,6 +12,7 @@ import (
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/form/components"
 	"resultra/datasheet/webui/generic"
+	"resultra/datasheet/webui/thirdParty"
 )
 
 // Parse all the HTML templates at once. Individual templates can then
@@ -26,6 +27,7 @@ func init() {
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
+		thirdParty.TemplateFileList,
 		common.TemplateFileList,
 		inputProperties.TemplateFileList,
 		components.TemplateFileList,

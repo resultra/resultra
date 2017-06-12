@@ -17,6 +17,7 @@ import (
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 	itemListCommon "resultra/datasheet/webui/itemList/common"
+	"resultra/datasheet/webui/thirdParty"
 )
 
 var viewListTemplates *template.Template
@@ -27,6 +28,7 @@ func init() {
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
+		thirdParty.TemplateFileList,
 		generic.TemplateFileList,
 		common.TemplateFileList,
 		itemListCommon.TemplateFileList}

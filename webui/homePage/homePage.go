@@ -7,6 +7,7 @@ import (
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
+	"resultra/datasheet/webui/thirdParty"
 )
 
 var homePageTemplates *template.Template
@@ -20,6 +21,7 @@ func init() {
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
+		thirdParty.TemplateFileList,
 		common.TemplateFileList}
 	homePageTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }

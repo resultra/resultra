@@ -86,7 +86,7 @@ gulp.task('injectHTMLFilesWithIndividualPkgAssets', function() {
 			var absFileName = absFileRefs[absFileIndex]
 			var linkPath = absFileName.replace(basePath,'') // remove the base path
 			linkPath = linkPath.replace(pkgInfo.pkgPrefix,pkgName) // replace package prefix with just the package name
-			linkPath = 'static' + linkPath // prepend the static reference.
+			linkPath = '/static' + linkPath // prepend the static reference.
 			absFileToLinkFile[absFileName] = linkPath
 		}
 		

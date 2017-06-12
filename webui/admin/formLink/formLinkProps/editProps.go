@@ -13,6 +13,7 @@ import (
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/defaultValues"
 	"resultra/datasheet/webui/generic"
+	"resultra/datasheet/webui/thirdParty"
 )
 
 var formLinkTemplates *template.Template
@@ -24,6 +25,7 @@ func init() {
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
+		thirdParty.TemplateFileList,
 		common.TemplateFileList}
 
 	formLinkTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)

@@ -12,6 +12,7 @@ import (
 	"resultra/datasheet/webui/dashboard/components"
 	"resultra/datasheet/webui/dashboard/design/properties"
 	"resultra/datasheet/webui/generic"
+	"resultra/datasheet/webui/thirdParty"
 )
 
 var designDashboardTemplates *template.Template
@@ -24,6 +25,7 @@ func init() {
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
+		thirdParty.TemplateFileList,
 		common.TemplateFileList,
 		dashboardCommon.TemplateFileList,
 		components.TemplateFileList,

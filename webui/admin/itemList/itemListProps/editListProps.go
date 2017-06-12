@@ -12,6 +12,7 @@ import (
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/generic"
+	"resultra/datasheet/webui/thirdParty"
 )
 
 var itemListTemplates *template.Template
@@ -25,6 +26,7 @@ func init() {
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
+		thirdParty.TemplateFileList,
 		common.TemplateFileList,
 		userRole.TemplateFileList}
 

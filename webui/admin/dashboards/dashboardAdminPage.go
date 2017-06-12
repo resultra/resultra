@@ -9,6 +9,7 @@ import (
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
+	"resultra/datasheet/webui/thirdParty"
 )
 
 var formsTemplates *template.Template
@@ -22,6 +23,7 @@ func init() {
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
+		thirdParty.TemplateFileList,
 		generic.TemplateFileList,
 		adminCommon.TemplateFileList,
 		common.TemplateFileList}

@@ -10,6 +10,7 @@ import (
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
+	"resultra/datasheet/webui/thirdParty"
 )
 
 var fieldTemplates *template.Template
@@ -22,6 +23,7 @@ func init() {
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
+		thirdParty.TemplateFileList,
 		common.TemplateFileList}
 
 	fieldTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)

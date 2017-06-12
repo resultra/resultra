@@ -14,6 +14,7 @@ import (
 
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
+	"resultra/datasheet/webui/thirdParty"
 )
 
 var submitFormTemplates *template.Template
@@ -24,6 +25,7 @@ func init() {
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
+		thirdParty.TemplateFileList,
 		common.TemplateFileList}
 	submitFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }

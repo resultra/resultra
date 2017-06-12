@@ -19,7 +19,7 @@ var TemplateFileList []string
 
 func init() {
 
-	TemplateFileList = []string{"static/common/include.html"}
+	TemplateFileList = []string{}
 
 	TemplateFileList = append(TemplateFileList, attachment.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, formulaEditor.TemplateFileList...)
