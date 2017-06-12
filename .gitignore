@@ -12,6 +12,7 @@ build/dest/*
 # Locally installed Node.js modules used to support building finalized
 # HTML, JS and CSS files. 
 webui/build/node_modules/*
+webui/thirdParty/node_modules/*
 
 # Executable file
 serverMain/datasheetServer

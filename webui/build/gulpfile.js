@@ -3,6 +3,7 @@ var concat = require('gulp-concat')
 var uglify = require('gulp-uglify')
 var minifyCSS = require("gulp-minify-css")
 var inject = require("gulp-inject")
+var rename = require("gulp-rename")
 var gutil = require("gulp-util")
 var stripDebug = require("gulp-strip-debug")
 var args   = require('yargs').argv;
@@ -124,4 +125,79 @@ gulp.task('injectHTMLFilesWithMinifiedAssets', function() {
 		.pipe(inject(cssSource,{name: assets.injectPlaceholderName, transform: transformCSSFileForInjection}))
 		.pipe(gulp.dest(distDir))
 		
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Tasks for exporting and injecting third party package files from a node_modules directory
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+function flattenPackagePathName(pathName) {
+  // Flatten the file name to strip out 'node_modules' up to and including the 'dist' in the 
+  // directory path. Assuming the package follows the convention and stores all files underneath
+  // the 'dist' folder, this will preserve any local folders under dist, but strip out extraneous
+  // path information.
+  var flattenedPathName = pathName.replace(/node_modules\/([^\/]+)\/.*dist(.*$)$/,"$1$2")
+
+  gutil.log("flattenPackagePathName: " + pathName + " --> " + flattenedPathName )
+	
+	return flattenedPathName
+}
+
+gulp.task('exportIndividualPackageAssets',function() {
+	gulp.src(assets.jsFiles,{base:assets.basePath})
+	  .pipe(rename(function(path) {
+		  path.dirname = flattenPackagePathName(path.dirname)
+		  return path
+	  }))
+      .pipe(gulp.dest(distDir))
+	  
+	gulp.src(assets.cssFiles,{base:assets.basePath})
+	  .pipe(rename(function(path) {
+		  path.dirname = flattenPackagePathName(path.dirname)
+		  return path
+	  }))
+      .pipe(gulp.dest(distDir))
+})
+
+function transformJSPkgFileForInjection(filepath, file, index, length, targetFile) {
+	
+	gutil.log("transformJSPkgFileForInjection: file:" + file.path)
+	var newJSPath = '/static' + file.path.replace(assets.basePath,"")	
+	gutil.log("transformJSFileForInjection: transformed path: " + newJSPath)
+	return '<script src="' + newJSPath  + '"></script>'
+}
+
+function transformCSSPkgFileForInjection(filepath, file, index, length, targetFile) {
+	var newCSSPath = '/static' + file.path.replace(assets.basePath,"")
+	gutil.log("transformCSSFileForInjection: CSS filepath: " + JSON.stringify(file.path) 
+			+ " target HTML file: " + JSON.stringify(targetFile.path))
+	gutil.log("transformCSSFileForInjection: transformed path: " + newCSSPath)
+	return '<link rel="stylesheet" href="' + newCSSPath  + '">'
+}
+
+
+
+gulp.task('injectHTMLFilesWithIndividualPkgAssets', function() {
+
+	var htmlTarget = gulp.src(assets.htmlFiles,{base:assets.basePath})
+
+	gutil.log("Injecting HTML files with minified JS and CSS references: html files = " + assets.htmlFiles.length 
+		+ ", inject placholder name = " + assets.injectPlaceholderName)
+
+	var jsSources = gulp.src(assets.jsFiles, {read: false,base:assets.basePath}) 
+  		.pipe(rename(function(path) {
+		  path.dirname = flattenPackagePathName(path.dirname)
+	  	  return path
+  	  	})) 
+	
+	var cssSources = gulp.src(assets.cssFiles,{read:false, base:assets.basePath})
+  		.pipe(rename(function(path) {
+		  path.dirname = flattenPackagePathName(path.dirname)
+	  	  return path
+  	  	})) 
+	
+	htmlTarget.pipe(inject(jsSources,{name: assets.injectPlaceholderName, transform: transformJSPkgFileForInjection}))
+		.pipe(inject(cssSources,{name: assets.injectPlaceholderName, transform: transformCSSPkgFileForInjection}))
+		.pipe(gulp.dest(distDir))
+				
 });
