@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "accounting": "^0.4.1",
+    "blueimp-file-upload": "^9.18.0",
     "bootstrap": "3.3.6",
+    "ckeditor": "4.5.8",
     "d3": "4.7.4",
     "datatables": "^1.10.13",
     "font-awesome": "^4.7.0",
