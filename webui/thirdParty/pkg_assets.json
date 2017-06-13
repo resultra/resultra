@@ -41,6 +41,10 @@
 			"jsFiles": [ "js/select2.full.min.js" ],
 			"cssFiles": ["css/select2.min.css"]		
 		},
+		"awesome-bootstrap-checkbox": {
+			"pkgPrefix": "node_modules/awesome-bootstrap-checkbox",
+			"cssFiles": ["awesome-bootstrap-checkbox.css"]		
+		},
 		"moment": {
 			"pkgPrefix": "node_modules/moment/min",
 			"jsFiles": [ "moment.min.js" ]	
