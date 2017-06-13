@@ -49,6 +49,11 @@
 			"pkgPrefix": "node_modules/moment/min",
 			"jsFiles": [ "moment.min.js" ]	
 		},
+		"datetimepicker": {
+			"pkgPrefix": "node_modules/eonasdan-bootstrap-datetimepicker/build",
+			"jsFiles": [ "js/bootstrap-datetimepicker.min.js" ],
+			"cssFiles": ["css/bootstrap-datetimepicker.min.css"]		
+		},
 		"accounting": {
 			"pkgPrefix": "node_modules/accounting",
 			"jsFiles": [ "accounting.min.js" ]	
