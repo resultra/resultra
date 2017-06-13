@@ -7,7 +7,7 @@
 		"valueListAdminPage.js",
 		"newValueListDialog.js"],
 	"htmlFiles":["valueListAdminPage.html",
-				"valueListListList.html",
+				"valueListList.html",
 				"newValueListDialog.html"],
 	"imageFiles":[],
 	"minCSSFile":"admin/valueList/valueListAdmin.min.css",
