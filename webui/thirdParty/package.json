@@ -4,6 +4,7 @@
     "datatables": "^1.10.13",
     "font-awesome": "^4.7.0",
     "jquery": "2.2.2",
+    "magnific-popup": "1.1.0",
     "moment": "^2.18.1"
   }
 }

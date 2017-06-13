@@ -15,6 +15,11 @@
 			"jsFiles": [ "js/jquery.dataTables.min.js" ],
 			"cssFiles": ["css/jquery.dataTables.min.css"],
 			"imageFiles": ["images/**"]		
+		},
+		"magnific-popup": {
+			"pkgPrefix": "node_modules/magnific-popup/dist",
+			"jsFiles": [ "jquery.magnific-popup.min.js" ],
+			"cssFiles": ["magnific-popup.css"]		
 		}
 	},
 	"htmlFiles": ["thirdParty.html"],
