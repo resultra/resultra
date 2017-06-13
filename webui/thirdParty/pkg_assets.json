@@ -30,6 +30,10 @@
 			"pkgPrefix": "node_modules/moment/min",
 			"jsFiles": [ "moment.min.js" ]	
 		},
+		"jquery-validation": {
+			"pkgPrefix": "node_modules/jquery-validation/dist",
+			"jsFiles": [ "jquery.validate.min.js" ]	
+		},
 		"d3": {
 			"pkgPrefix": "node_modules/d3/build",
 			"jsFiles": [ "d3.min.js" ]	

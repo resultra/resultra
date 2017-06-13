@@ -244,7 +244,13 @@ jquery-ui@1.12.1:
   version "1.12.1"
   resolved "https://registry.yarnpkg.com/jquery-ui/-/jquery-ui-1.12.1.tgz#bcb4045c8dd0539c134bc1488cdd3e768a7a9e51"
 
-jquery@2.2.2, jquery@>=1.7:
+jquery-validation@^1.16.0:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/jquery-validation/-/jquery-validation-1.16.0.tgz#b6e5277ebbd67c1fabab213eb4454eea8a3095ca"
+  dependencies:
+    jquery "^1.7 || ^2.0 || ^3.1"
+
+jquery@2.2.2, jquery@>=1.7, "jquery@^1.7 || ^2.0 || ^3.1":
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.2.tgz#3e302dc61eb329a21e9efac937d731f061134c59"
 
