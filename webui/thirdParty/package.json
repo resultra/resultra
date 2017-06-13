@@ -4,6 +4,7 @@
     "blueimp-file-upload": "^9.18.0",
     "bootstrap": "3.3.6",
     "bootstrap-rating": "https://github.com/dreyescat/bootstrap-rating.git",
+    "bootstrap-switch": "^3.3.4",
     "ckeditor": "4.5.8",
     "d3": "4.7.4",
     "datatables": "^1.10.13",
