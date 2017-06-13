@@ -16,6 +16,11 @@
 			"cssFiles": ["css/jquery.dataTables.min.css"],
 			"imageFiles": ["images/**"]		
 		},
+		"jquery-ui-layout": {
+			"pkgPrefix": "manual_downloads/jquery-ui-layout-1.4.4",
+			"jsFiles": [ "jquery.layout-latest.js" ],
+			"cssFiles": ["layout-default-latest.css"]	
+		},
 		"font-awesome": {
 			"pkgPrefix": "node_modules/font-awesome",
 			"cssFiles": ["css/font-awesome.min.css"],
