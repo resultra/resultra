@@ -30,6 +30,10 @@
 			"pkgPrefix": "node_modules/moment/min",
 			"jsFiles": [ "moment.min.js" ]	
 		},
+		"accounting": {
+			"pkgPrefix": "node_modules/accounting",
+			"jsFiles": [ "accounting.min.js" ]	
+		},
 		"jquery-validation": {
 			"pkgPrefix": "node_modules/jquery-validation/dist",
 			"jsFiles": [ "jquery.validate.min.js" ]	
