@@ -26,6 +26,11 @@
 			"jsFiles": [ "jquery.magnific-popup.min.js" ],
 			"cssFiles": ["magnific-popup.css"]		
 		},
+		"bootstrap-rating": {
+			"pkgPrefix": "node_modules/bootstrap-rating",
+			"jsFiles": [ "bootstrap-rating.min.js" ],
+			"cssFiles": ["bootstrap-rating.css"]		
+		},
 		"moment": {
 			"pkgPrefix": "node_modules/moment/min",
 			"jsFiles": [ "moment.min.js" ]	
