@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "bootstrap": "3.3.6",
+    "d3": "4.7.4",
     "datatables": "^1.10.13",
     "font-awesome": "^4.7.0",
     "jquery": "2.2.2",
