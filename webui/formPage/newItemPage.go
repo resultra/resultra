@@ -18,7 +18,8 @@ import (
 var newItemFormTemplates *template.Template
 
 func init() {
-	baseTemplateFiles := []string{"static/formPage/newItemPage.html", "static/formPage/common.html"}
+	baseTemplateFiles := []string{"static/formPage/newItemPage.html",
+		"static/formPage/common.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
@@ -53,14 +54,14 @@ func newItemFormPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		templParams := SubmitFormPageTemplateParams{Title: "Submit Form",
+		templParams := SubmitFormPageTemplateParams{Title: "New Item - " + formDBInfo.FormName,
 			FormID:       formLink.FormID,
 			FormName:     formDBInfo.FormName,
 			DatabaseID:   formDBInfo.DatabaseID,
 			FormLinkID:   formLink.LinkID,
 			DatabaseName: formDBInfo.DatabaseName}
 
-		if err := submitFormTemplates.ExecuteTemplate(w, "newItemFormPage", templParams); err != nil {
+		if err := newItemFormTemplates.ExecuteTemplate(w, "newItemFormPage", templParams); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 

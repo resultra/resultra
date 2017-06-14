@@ -16,26 +16,9 @@ function addItemListLinkToTOCList(listInfo) {
 
 function addFormLinkToTOCList(tocConfig, linkInfo) {
 	
-	var formLinkHTML = '<div class="row marginTop5">' + 
-			'<div class="col-md-12">' +
-				'<button type="button" class="btn btn-default btn-sm formLinkButton">' + linkInfo.name + '</button>' +
-			'</div>' +
-		'</div>';
-	var $formLinkButton = $(formLinkHTML)
-	
-	initButtonControlClickHandler($formLinkButton,function() {
-		console.log("Form button clicked: " + JSON.stringify(linkInfo))
-		
-		var viewFormContext = {
-			databaseID: tocConfig.databaseID,
-			formID: linkInfo.formID,
-			formLink: linkInfo
-		}
-		
-		tocConfig.newItemFormButtonFunc(viewFormContext)
-	})
-	
-	$('#tocFormList').append($formLinkButton)
+	var formLinkListItemHTML = '<a href="/newItem/' + linkInfo.linkID 
+			+ '" class="list-group-item">' + linkInfo.name + '</a>'
+	$('#tocFormList').append(formLinkListItemHTML)
 }
 
 
