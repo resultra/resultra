@@ -1,0 +1,11 @@
+{
+	"subDirs":["../generic",
+		"../common"],
+	"cssFiles": [],
+	"jsFiles": ["common.js","newItemPage.js"],
+	"htmlFiles":["newItemPage.html","common.html"],
+	"imageFiles":[],
+	"minCSSFile":"formPage/newItemPage.min.css",
+	"minJSFile": "formPage/newItemPage.min.js",
+	"injectPlaceholderName":"newItemPageAssets"
+}

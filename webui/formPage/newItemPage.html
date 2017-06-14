@@ -1,0 +1,54 @@
+
+{{define "newItemFormPage"}}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- newItemFormPageAssets:css -->
+	<!-- endinject -->
+	
+	<script>var submitFormPageContext = { formID:"{{.FormID}}",
+	 	databaseID: "{{.DatabaseID}}",
+		formLinkID: "{{.FormLinkID}}"} 
+	</script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- newItemFormPageAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+  <body>
+
+	<div id="layoutPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north">
+			{{template "submitFormPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-center" id="submitFormPane">
+				<h2>{{.FormName}}</h2>
+				<hr>
+				<div id="newItemFormPageLayoutCanvas"></div>
+				<hr>
+				<button type="button" class="btn btn-primary" 
+						id="submitFormPageSubmitButton">Submit</button>
+		</div> <!-- center pane for entire page -->	
+		
+	</div> <!-- layout page -->
+	
+	{{template "submitFormDialog"}}
+	{{template "attachmentTemplates"}}
+	{{template "formButtonPopupFormDialog"}}
+
+	
+  </body>
+  	
+</html>
+
+{{end}}
