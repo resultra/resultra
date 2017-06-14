@@ -1,31 +1,4 @@
 
-{{define "submitFormPageBreadcrumbHeader"}}
-	<div class="marginTop2">
-	  {{template "homePageBreadcrumb"}}
-	  {{template "breadCrumbSeparator"}}
-	  {{template "trackerPageBreadcrumb" .}}
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">{{.FormName}}</span>
-	</div> <!-- breadcrumb header -->
-{{end}}
-
-{{define "submitFormPageHeader"}}
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-sm-8">
-				{{template "submitFormPageBreadcrumbHeader" .}}
-			</div>
-			<div class="col-sm-4">
-				<div class="pull-right">
-					{{template "userDropdownMenu"}}
-				</div>
-			</div>
-		</div>
-	</div>
-{{end}}
-
-
-
 {{define "submitFormPage"}}
 
 <!DOCTYPE html>
@@ -49,8 +22,6 @@
 	<!-- endinject -->
 				
   </head>
-	
- 	
 	
   <body>
 

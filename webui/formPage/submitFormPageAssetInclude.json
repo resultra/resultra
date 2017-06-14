@@ -3,7 +3,7 @@
 		"../common"],
 	"cssFiles": [],
 	"jsFiles": ["submitFormPage.js"],
-	"htmlFiles":["submitFormPage.html"],
+	"htmlFiles":["submitFormPage.html","common.html"],
 	"imageFiles":[],
 	"minCSSFile":"formPage/submitFormPage.min.css",
 	"minJSFile": "formPage/submitFormPage.min.js",

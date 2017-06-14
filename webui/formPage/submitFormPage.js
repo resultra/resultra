@@ -97,10 +97,6 @@ $(document).ready(function() {
 			}
 		})
 		
-		
-		
-
-		
 	}) // getRecord
 	
 	

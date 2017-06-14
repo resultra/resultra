@@ -1,10 +1,8 @@
 package formPage
 
 import (
-	"fmt"
 	"github.com/gorilla/mux"
 	"html/template"
-	"log"
 	"net/http"
 
 	"resultra/datasheet/server/databaseController"
@@ -17,41 +15,35 @@ import (
 	"resultra/datasheet/webui/thirdParty"
 )
 
-var submitFormTemplates *template.Template
+var newItemFormTemplates *template.Template
 
 func init() {
-	baseTemplateFiles := []string{"static/formPage/submitFormPage.html", "static/formPage/common.html"}
+	baseTemplateFiles := []string{"static/formPage/newItemPage.html", "static/formPage/common.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
 		thirdParty.TemplateFileList,
 		common.TemplateFileList}
-	submitFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
+	newItemFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
-func submitFormPage(w http.ResponseWriter, r *http.Request) {
+func newItemFormPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	sharedLinkID := vars["sharedLinkID"]
+	formLinkID := vars["formLinkID"]
 
 	_, authErr := userAuth.GetCurrentUserInfo(r)
 	if authErr != nil {
-		err := submitFormTemplates.ExecuteTemplate(w, "userSignInPage", nil)
+		err := newItemFormTemplates.ExecuteTemplate(w, "userSignInPage", nil)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	} else {
-		log.Println("Submit form: : shared link ID = %v", sharedLinkID)
 
-		formLink, getFormLinkErr := formLink.GetFormLinkFromSharedLinkID(sharedLinkID)
+		formLink, getFormLinkErr := formLink.GetFormLink(formLinkID)
 		if getFormLinkErr != nil {
 			api.WriteErrorResponse(w, getFormLinkErr)
-			return
-		}
-
-		if !formLink.SharedLinkEnabled {
-			api.WriteErrorResponse(w, fmt.Errorf("Shared link disabled for form link"))
 			return
 		}
 
@@ -68,7 +60,7 @@ func submitFormPage(w http.ResponseWriter, r *http.Request) {
 			FormLinkID:   formLink.LinkID,
 			DatabaseName: formDBInfo.DatabaseName}
 
-		if err := submitFormTemplates.ExecuteTemplate(w, "submitFormPage", templParams); err != nil {
+		if err := submitFormTemplates.ExecuteTemplate(w, "newItemFormPage", templParams); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
