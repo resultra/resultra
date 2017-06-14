@@ -1,4 +1,24 @@
 
+{{define "newItemPageHeaderControls"}}
+<div class="container-fluid" id="recordHeaderGrid">
+	<div class="row">
+		<div class= "col-sm-2">
+			<button type="button" class="btn btn-default btn-sm" id="viewTableOfContentsMenuButton">
+			  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+			</button>
+		</div> <!-- column -->
+		<div class= "col-sm-8"  id="newItemPageNameHeaderCol">
+			<h4 id="newItemPageNameHeader">{{.FormName}}</h4>
+		</div> <!-- column -->
+		<div class= "col-sm-2">
+			<div class="pull-right">
+			</div>
+		</div> <!-- column -->
+	</div> <!-- row -->
+</div> <!-- #recordHeaderGrid  -->
+{{end}}
+
+
 {{define "newItemFormPage"}}
 
 <!DOCTYPE html>
@@ -23,23 +43,34 @@
 				
   </head>
 	
-  <body>
-
+  <body>  
+  
 	<div id="layoutPage" class="layoutPageDiv">
 		
 		<div class="pane ui-layout-north">
 			{{template "submitFormPageHeader" .}}
 		</div> <!-- ui layout north -->
 		
-		<div class="pane ui-layout-center" id="submitFormPane">
-				<h2>{{.FormName}}</h2>
-				<hr>
+		<div class="pane ui-layout-west" id="viewFormTocLayout">
+			{{template "databaseTOC" .}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center" id="newItemFormPane">
+			
+			<div class="ui-layout-center">
+				
 				<div id="newItemFormPageLayoutCanvas"></div>
 				<hr>
 				<button type="button" class="btn btn-primary" 
 						id="submitFormPageSubmitButton">Submit</button>
+				
+			</div> <!-- ui-layout-center  -->
+				
+			<div class="ui-layout-north" id="newItemPageHeaderUILayout">
+				{{template "newItemPageHeaderControls" .}}
+			</div> <!-- ui-layout-north #recordHeaderUILayout -->
+				
 		</div> <!-- center pane for entire page -->	
-		
 	</div> <!-- layout page -->
 	
 	{{template "submitFormDialog"}}

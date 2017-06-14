@@ -1,0 +1,17 @@
+#newItemPageNameHeader {
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+#newItemPageNameHeaderCol {
+	 text-align:center;
+}
+
+#newItemFormPane {
+	padding: 0px;
+}
+
+#newItemPageHeaderUILayout
+{
+	padding: 4px; /* override jQuery UI Layout padding */
+}

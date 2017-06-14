@@ -1,7 +1,7 @@
 {
 	"subDirs":["../generic",
 		"../common"],
-	"cssFiles": [],
+	"cssFiles": ["newItemPage.css"],
 	"jsFiles": ["common.js","newItemPage.js"],
 	"htmlFiles":["newItemPage.html","common.html"],
 	"imageFiles":[],
