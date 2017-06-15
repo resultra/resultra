@@ -253,14 +253,10 @@ function initItemListTableView(params) {
 		var dataTable = $tableElem.DataTable({
 			destroy:true, // Destroy existing table before applying the options
 			searching:false, // Hide the search box
-			bInfo:false, // Hide the "Showing 1 of N Entries" below the footer
-			paging:false,
-			scrollY: '100px',
-// TODO - Evaluation the use of horizontal scrolling through the scrollX option
-// and possible other options. Currently the headers don't scroll with the body of
-// table when horizontal scrolling is enabled.
-//			scrollX:true,
-			scrollCollapse:true,
+			paging:true, // pagination must be enabled for pageResize plug-in
+			pageResize:true, // enable plug-in for vertical page resizing
+			lengthChange:true, // needed for pageResize plug-in
+			deferRender:true, // only create elements when required (needed with paging)
 			columns:dataCols
 		})
 		
@@ -272,8 +268,6 @@ function initItemListTableView(params) {
 		$tableElem.on('draw.dt',function() {
 			drawInProgress = false
 		})
-		
-		
 		
 		// If the table is reordered by the end-user, then synchronize the sort order with the side-bar's
 		// sorting preferences.
@@ -301,22 +295,9 @@ function initItemListTableView(params) {
 		
 	
 		var $scrollHead = params.$tableContainer.find(".dataTables_scrollHead")
-// TODO - incorporate footer into the table.
-//		var $scrollFoot = params.$tableContainer.find(".dataTables_scrollFoot")
-		var $scrollBody = params.$tableContainer.find(".dataTables_scrollBody")
-	
-		// Set the color of the entire header and footer to match the color of
-		// of the individual header and footer cells. Otherwise, the scroll bar
-		// on the RHS of the table stands out.
-//		$scrollFoot.css("background-color","lightGrey")
 		$scrollHead.css("background-color","lightGrey")
 		
 		function resizeToContainerHeight() {
-			var scrollBodyHeight = params.$tableContainer.outerHeight() -
-					$scrollHead.outerHeight() // TODO: after adding footer, also subtract footer height: - $scrollFoot.outerHeight()
-			var scrollBodyHeightPx = scrollBodyHeight + 'px'
-	
-			$scrollBody.css('max-height', scrollBodyHeightPx);
 			drawInProgress = true
 			dataTable.draw() // force redraw
 		}

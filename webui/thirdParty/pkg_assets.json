@@ -16,6 +16,10 @@
 			"cssFiles": ["css/jquery.dataTables.min.css"],
 			"imageFiles": ["images/**"]		
 		},
+		"datatables-resize": {
+			"pkgPrefix": "manual_downloads/DataTables-ResizePlugin",
+			"jsFiles": [ "dataTables.pageResize.min.js" ]
+		},
 		"jquery-ui-layout": {
 			"pkgPrefix": "manual_downloads/jquery-ui-layout-1.4.4",
 			"jsFiles": [ "jquery.layout-latest.js" ],

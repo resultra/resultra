@@ -10,3 +10,19 @@
 	padding: 0px;
 	margin: 0px;
 }
+
+/* Hide the length control - Since the resizePlugin is being used,
+   the page length is automatically reconfigured */
+#tableViewContainer .dataTables_length {
+	display:none;
+}
+
+/* #tableViewContainer needs to fill the entire center div. This has to do with the DataTables resize plugin
+   which in-turn resizes the table fit it's entire prent div.  */  
+#tableViewContainer {
+	position: absolute;
+	top: 0;
+	bottom:0;
+	left:0;
+	right:0;
+}

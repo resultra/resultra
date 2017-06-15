@@ -15,10 +15,6 @@
 	padding: 0px;
 }
 
-#tableViewContainer {
-	height: 100%;
-	min-height:300px;
-}
 
 /* #layoutPage needs to fill the entire center div */  
 #layoutPage {
