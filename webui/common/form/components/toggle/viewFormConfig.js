@@ -134,8 +134,6 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 		})
 	
 	}
-		
-	
 			
 	$toggle.data("viewFormConfig", {
 		loadRecord: loadRecordIntoToggle,

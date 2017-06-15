@@ -16,7 +16,22 @@
 	margin-bottom:0px;
 }
 
+.toggleTableCellContainer > .checkbox {
+	margin-top: 0px;
+	margin-bottom:0px;
+}
+
+
 
 .toggleFormContainer .toggleFormComponentLabel {
 	padding-left: 5px !important;
 }
+
+.toggleTableCellContainer {
+	width:100%;
+	height:auto;
+	min-width:100px;
+	min-height:30px;
+	margin-left:10px !important;
+}
+

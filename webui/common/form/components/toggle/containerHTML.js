@@ -46,7 +46,7 @@ function toggleControlHTMLNoLabel() {
 
 function toggleTableCellContainerHTML() {
 	var containerHTML = ''+
-		'<div class=" layoutContainer toggleFormContainer">' +
+		'<div class=" layoutContainer toggleTableCellContainer">' +
 			'<div class="toggleWrapper">' +
 				toggleControlHTMLNoLabel() + 
 			'</div>' +
