@@ -8,15 +8,32 @@
 			</button>
 		</div> <!-- column -->
 		<div class= "col-sm-8"  id="newItemPageNameHeaderCol">
-			<h4 id="newItemPageNameHeader">{{.FormName}}</h4>
+			<h4 id="newItemPageNameHeader">{{.LinkName}}</h4>
+		</div> <!-- column -->
+		<div class= "col-sm-2">
+			<!-- TODO - Put a 'more' drop-down menu to share a link to the form -->
+		</div> <!-- column -->
+	</div> <!-- row -->
+</div> <!-- #recordHeaderGrid  -->
+{{end}}
+
+{{define "newItemPageFooterControls"}}
+<div class="container-fluid">
+	<div class="row">
+		<div class= "col-sm-2">
+		</div> <!-- column -->
+		<div class= "col-sm-8"  id="newItemPageNameHeaderCol">
 		</div> <!-- column -->
 		<div class= "col-sm-2">
 			<div class="pull-right">
+				<button type="button" class="btn btn-primary" 
+						id="submitFormPageSubmitButton">Save</button>
 			</div>
 		</div> <!-- column -->
 	</div> <!-- row -->
 </div> <!-- #recordHeaderGrid  -->
 {{end}}
+
 
 
 {{define "newItemFormPage"}}
@@ -60,16 +77,18 @@
 			<div class="ui-layout-center">
 				
 				<div id="newItemFormPageLayoutCanvas"></div>
-				<hr>
-				<button type="button" class="btn btn-primary" 
-						id="submitFormPageSubmitButton">Submit</button>
-				
+			
 			</div> <!-- ui-layout-center  -->
+
+			<div class="ui-layout-south" id="newItemPageFooterUILayout">
+				{{template "newItemPageFooterControls" .}}
+			</div> <!-- ui-layout-north #recordHeaderUILayout -->
+
 				
 			<div class="ui-layout-north" id="newItemPageHeaderUILayout">
 				{{template "newItemPageHeaderControls" .}}
 			</div> <!-- ui-layout-north #recordHeaderUILayout -->
-				
+			
 		</div> <!-- center pane for entire page -->	
 	</div> <!-- layout page -->
 	

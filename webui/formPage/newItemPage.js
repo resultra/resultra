@@ -18,7 +18,9 @@ function initNewItemPageLayout()
 		
 	var formLayout = $('#newItemFormPane').layout({
 		north: fixedUILayoutPaneAutoSizeToFitContentsParams(),
-		north__showOverflowOnHover:	true
+		south: fixedUILayoutPaneAutoSizeToFitContentsParams(),
+		north__showOverflowOnHover:	true,
+		south__showOverflowOnHover:	true
 	})
 	
 	initButtonClickHandler("#viewTableOfContentsMenuButton", function() {

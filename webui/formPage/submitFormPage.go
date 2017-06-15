@@ -64,6 +64,7 @@ func submitFormPage(w http.ResponseWriter, r *http.Request) {
 		templParams := SubmitFormPageTemplateParams{Title: "Submit Form",
 			FormID:       formLink.FormID,
 			FormName:     formDBInfo.FormName,
+			LinkName:     formLink.Name,
 			DatabaseID:   formDBInfo.DatabaseID,
 			FormLinkID:   formLink.LinkID,
 			DatabaseName: formDBInfo.DatabaseName}

@@ -11,7 +11,7 @@
 	padding: 0px;
 }
 
-#newItemPageHeaderUILayout
+#newItemPageHeaderUILayout,#newItemPageFooterUILayout
 {
 	padding: 4px; /* override jQuery UI Layout padding */
 }

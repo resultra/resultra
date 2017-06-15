@@ -59,6 +59,7 @@ func newItemFormPage(w http.ResponseWriter, r *http.Request) {
 			FormName:     formDBInfo.FormName,
 			DatabaseID:   formDBInfo.DatabaseID,
 			FormLinkID:   formLink.LinkID,
+			LinkName:     formLink.Name,
 			DatabaseName: formDBInfo.DatabaseName}
 
 		if err := newItemFormTemplates.ExecuteTemplate(w, "newItemFormPage", templParams); err != nil {
