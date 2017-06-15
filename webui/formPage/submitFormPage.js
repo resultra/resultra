@@ -12,6 +12,13 @@ $(document).ready(function() {
 		formLinkID: submitFormPageContext.formLinkID,
 		formID: submitFormPageContext.formID
 	}
+	
+	var $addAnotherButton = $('#newItemPageAddAnotherButton')
+	initButtonControlClickHandler($addAnotherButton, function() {
+		initFormPageSubmitForm(submitFormParams)
+	})
+	
+	
 	initFormPageSubmitForm(submitFormParams)
 					
 }); // document ready

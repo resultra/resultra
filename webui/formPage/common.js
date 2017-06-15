@@ -13,6 +13,16 @@ function initSubmitFormUILayoutPanes()
 
 function initFormPageSubmitForm(params) {
 	
+	var $submitButton = $('#submitFormPageSubmitButton')
+	var $saveConfirmation = $('#newItemSaveConfirmation')
+	
+	// The form may be re-initialized in the case of a user who submits one form,
+	// then chooses to submit another immediately thereafter.
+	params.$parentFormCanvas.empty()	
+	$saveConfirmation.hide()
+	params.$parentFormCanvas.show()
+	$submitButton.prop('disabled', false);
+	
 	var newRecordsParams = {
 		parentDatabaseID:params.databaseID,
 		isDraftRecord:true
@@ -49,11 +59,14 @@ function initFormPageSubmitForm(params) {
 		loadFormViewComponents(params.$parentFormCanvas,formContext,recordProxy,
 						finalizePageAfterFormComponentsLoaded)
 		
-		initButtonClickHandler('#submitFormPageSubmitButton', function() {
+		
+		initButtonControlClickHandler($submitButton, function() {
 					
 			validateFormValues(params.$parentFormCanvas,function(validationResult) {
 				if(validationResult === true) {
 					console.log("Saving form results")
+					
+					 $submitButton.prop('disabled', true);
 			
 					var recordDraftParams = {
 						recordID: newRecord.recordID,
@@ -65,6 +78,9 @@ function initFormPageSubmitForm(params) {
 						// Reset the form and re-load a different record.
 						jsonAPIRequest("recordUpdate/newRecord",newRecordsParams,function(newRecordRef) {
 							updateCurrentRecord(newRecordRef)
+							
+							params.$parentFormCanvas.hide()
+							$saveConfirmation.show()
 						})
 					})
 				} else {

@@ -22,3 +22,25 @@
 		</div>
 	</div>
 {{end}}
+
+{{define "submitFormSaveConfirmation"}}
+	<div id="newItemSaveConfirmation" class="initiallyHidden">				
+		<div class="container-fluid marginTop20">
+			<div class="row">
+				<div class="col-md-3"></div>
+				<div class="col-md-6">
+					<div class="jumbotron">
+						<div class="alert alert-success">
+					  	  <h4><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Item Saved</h4>
+						</div>
+					  	<p>
+							<button type="button" class="btn btn-primary" 
+									id="newItemPageAddAnotherButton">Add Another</button>
+					 	 </p>
+					</div>
+				</div>
+				<div class="col-md-3"></div>
+			</div>
+		</div>
+	</div>
+{{end}}

@@ -43,13 +43,18 @@ $(document).ready(function() {
 	}	
 	initDatabaseTOC(tocConfig)
 	
-	
 	var submitFormParams = {
 		databaseID: submitFormPageContext.databaseID,
 		$parentFormCanvas: $('#newItemFormPageLayoutCanvas'),
 		formLinkID: submitFormPageContext.formLinkID,
 		formID: submitFormPageContext.formID
 	}
+	
+	var $addAnotherButton = $('#newItemPageAddAnotherButton')
+	initButtonControlClickHandler($addAnotherButton, function() {
+		initFormPageSubmitForm(submitFormParams)
+	})
+	
 	initFormPageSubmitForm(submitFormParams)
 					
 }); // document ready
