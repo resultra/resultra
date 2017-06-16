@@ -11,6 +11,8 @@ func init() {
 
 	userSelectionRouter.HandleFunc("/api/tableView/userSelection/new", newUserSelection)
 
+	userSelectionRouter.HandleFunc("/api/tableView/userSelection/get", getUserSelectionAPI)
+
 	userSelectionRouter.HandleFunc("/api/tableView/userSelection/setLabelFormat", setLabelFormat)
 
 	userSelectionRouter.HandleFunc("/api/tableView/userSelection/setPermissions", setPermissions)
@@ -34,6 +36,27 @@ func newUserSelection(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, *userSelectionRef)
 	}
 
+}
+
+type GetUserSelectionParams struct {
+	ParentTableID   string `json:"parentTableID"`
+	UserSelectionID string `json:"userSelectionID"`
+}
+
+func getUserSelectionAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetUserSelectionParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	textInput, err := getUserSelection(params.ParentTableID, params.UserSelectionID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	api.WriteJSONResponse(w, *textInput)
 }
 
 func validateInputAPI(w http.ResponseWriter, r *http.Request) {

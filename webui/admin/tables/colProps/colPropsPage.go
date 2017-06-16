@@ -27,7 +27,8 @@ func init() {
 		"static/admin/tables/colProps/datePicker.html",
 		"static/admin/tables/colProps/checkBox.html",
 		"static/admin/tables/colProps/rating.html",
-		"static/admin/tables/colProps/toggle.html"}
+		"static/admin/tables/colProps/toggle.html",
+		"static/admin/tables/colProps/userSelection.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
@@ -41,22 +42,23 @@ func init() {
 }
 
 type TemplParams struct {
-	ElemPrefix        string
-	Title             string
-	DatabaseID        string
-	DatabaseName      string
-	TableID           string
-	TableName         string
-	ColID             string
-	ColType           string
-	ColName           string
-	SiteBaseURL       string
-	NumberInputParams NumberInputColPropsTemplateParams
-	TextInputParams   TextInputColPropsTemplateParams
-	DatePickerParams  DatePickerColPropsTemplateParams
-	CheckBoxParams    CheckBoxColPropsTemplateParams
-	RatingParams      RatingColPropsTemplateParams
-	ToggleParams      ToggleColPropsTemplateParams
+	ElemPrefix          string
+	Title               string
+	DatabaseID          string
+	DatabaseName        string
+	TableID             string
+	TableName           string
+	ColID               string
+	ColType             string
+	ColName             string
+	SiteBaseURL         string
+	NumberInputParams   NumberInputColPropsTemplateParams
+	TextInputParams     TextInputColPropsTemplateParams
+	DatePickerParams    DatePickerColPropsTemplateParams
+	CheckBoxParams      CheckBoxColPropsTemplateParams
+	RatingParams        RatingColPropsTemplateParams
+	ToggleParams        ToggleColPropsTemplateParams
+	UserSelectionParams UserSelectionColPropsTemplateParams
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -86,22 +88,23 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 	elemPrefix := "colProps_"
 
 	templParams := TemplParams{
-		ElemPrefix:        elemPrefix,
-		Title:             "Column properties",
-		DatabaseID:        dbInfo.DatabaseID,
-		DatabaseName:      dbInfo.DatabaseName,
-		TableID:           colInfo.TableID,
-		TableName:         tableInfo.Name,
-		ColID:             colID,
-		ColType:           colInfo.ColType,
-		ColName:           "TBD",
-		SiteBaseURL:       runtimeConfig.GetSiteBaseURL(),
-		NumberInputParams: newNumberInputTemplateParams(),
-		TextInputParams:   newTextInputTemplateParams(),
-		DatePickerParams:  newDatePickerTemplateParams(),
-		CheckBoxParams:    newCheckBoxTemplateParams(),
-		RatingParams:      newRatingTemplateParams(),
-		ToggleParams:      newToggleTemplateParams()}
+		ElemPrefix:          elemPrefix,
+		Title:               "Column properties",
+		DatabaseID:          dbInfo.DatabaseID,
+		DatabaseName:        dbInfo.DatabaseName,
+		TableID:             colInfo.TableID,
+		TableName:           tableInfo.Name,
+		ColID:               colID,
+		ColType:             colInfo.ColType,
+		ColName:             "TBD",
+		SiteBaseURL:         runtimeConfig.GetSiteBaseURL(),
+		NumberInputParams:   newNumberInputTemplateParams(),
+		TextInputParams:     newTextInputTemplateParams(),
+		DatePickerParams:    newDatePickerTemplateParams(),
+		CheckBoxParams:      newCheckBoxTemplateParams(),
+		RatingParams:        newRatingTemplateParams(),
+		ToggleParams:        newToggleTemplateParams(),
+		UserSelectionParams: newUserSelectionTemplateParams()}
 
 	if err := tablePropTemplates.ExecuteTemplate(w, "colPropsAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
