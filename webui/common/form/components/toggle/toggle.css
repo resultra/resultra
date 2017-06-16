@@ -28,7 +28,15 @@
 }
 
 .toggleTableCellContainer {
-	width:100%;
+	
+	/* Bootstrap uses negative margins and has invisible parts of the toggle overrun
+	   100% of the parent's size. By allowing the size to be larger than the cell, the
+	   toggle will not unnessessarily lessen it's width and expand the height of the table cell. 
+	
+	   See the following for more background on this: https://github.com/Bttstrp/bootstrap-switch/issues/419
+	
+	*/
+	width: 150%;
 	height:auto;
 	min-width:100px;
 	min-height:30px;

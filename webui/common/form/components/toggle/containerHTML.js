@@ -111,6 +111,7 @@ function initToggleComponentControl($toggleContainer,toggleRef) {
 	 $toggleControl.bootstrapSwitch({
 		handleWidth:calcHandleWidth(),
 		indeterminate:true,
+		 size:'normal',
 		onText:escapeHTML(toggleRef.properties.onLabel),
 		 offText:escapeHTML(toggleRef.properties.offLabel),
 		labelWidth:'5px',
