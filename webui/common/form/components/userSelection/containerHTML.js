@@ -16,9 +16,26 @@ function userSelectionContainerHTML(elementID)
 			'<div class="componentHoverFooter">' +
 				smallClearDeleteButtonHTML("userSelectionComponentClearValueButton") + 
 			'</div>' +
-		'</div><';
+		'</div>';
 										
 	return containerHTML
+}
+
+function userSelectionTableCellContainerHTML() {
+	var containerHTML = ''+
+		'<div class=" layoutContainer userSelectionTableCellContainer">' +
+			'<div class="form-group marginBottom0">'+
+				'<div class="formUserSelectionControl">' + 
+					'<select class="form-control userSelectionCompSelectionControl"></select>' +
+				'</div>' +
+			'</div>'+
+			'<div class="componentHoverFooter">' +
+				smallClearDeleteButtonHTML("userSelectionComponentClearValueButton") + 
+			'</div>' +
+		'</div>';
+									
+	return containerHTML
+	
 }
 
 function setUserSelectionComponentLabel($userSelection,userSelection) {

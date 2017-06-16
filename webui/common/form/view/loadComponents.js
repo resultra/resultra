@@ -95,7 +95,7 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 		},
 		initUserSelectionFunc: function(componentContext,$userSelection,userSelectionObjectRef) {
 			console.log("Init user selection in view form")
-			initUserSelectionRecordEditBehavior($userSelection,componentContext,recordProxy,userSelectionObjectRef)
+			initUserSelectionFormRecordEditBehavior($userSelection,componentContext,recordProxy,userSelectionObjectRef)
 			initFormComponentViewBehavior($userSelection,
 					userSelectionObjectRef.userSelectionID,initUserSelectionViewProperties)
 		},

@@ -95,6 +95,11 @@ function initTableViewColsProperties(tableRef) {
 					initDatePickerFormComponentInput($cellContainer,colInfo)
 					$column.append($cellContainer)
 					break
+				case 'userSelection':
+					var $cellContainer = $(userSelectionTableCellContainerHTML())
+					initDatePickerFormComponentInput($cellContainer,colInfo)
+					$column.append($cellContainer)
+					break
 				case 'checkbox':
 					var $cellContainer = $(checkBoxTableViewCellContainerHTML())
 					initCheckBoxControl($cellContainer,colInfo)
@@ -111,7 +116,7 @@ function initTableViewColsProperties(tableRef) {
 					$column.append($cellContainer)
 					break
 				default:
-					
+					console.log("Missing preview info for column: " + JSON.stringify(colInfo))
 				}
 							
 				$previewRow.append($column)

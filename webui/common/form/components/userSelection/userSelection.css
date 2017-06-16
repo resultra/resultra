@@ -5,3 +5,22 @@
 	width: 200px;
 	height: 75px;
 }
+
+.userSelectionTableCellContainer {
+	min-width:200px;
+	min-height:10px;
+	width: 200px;
+	height: auto;
+}
+
+/* Adjust the sizing of the selection control to closely match Bootstrap */
+.userSelectionTableCellContainer .select2-selection {
+	display: block!important;
+	height: 34px!important;
+	white-space: nowrap!important;
+	line-height: 30px!important;
+}
+
+.userSelectionTableCellContainer span {
+	line-height: 32px !important;
+}

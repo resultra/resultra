@@ -60,6 +60,17 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					
 				}
 				
+				function createUserInput(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/userSelection/new",params,function(userSelection) {
+						console.log("User selection input column created: " + JSON.stringify(userSelection))
+					})
+					
+				}
+				
 				function createDatePickerInput(fieldInfo) {
 					var params = {
 						parentTableID: panelParams.tableID,
@@ -104,6 +115,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					} else {
 						console.log("Unknown column type for number field : " + colType)
 					}
+					break
+				case fieldTypeUser:
+					createUserInput(fieldInfo)
 					break
 				case fieldTypeText:
 					createTextInput(fieldInfo)
@@ -183,6 +197,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				break
 			case fieldTypeTime:
 				$colTypeSelection.append(selectOptionHTML('datePicker','Date picker'))
+				break
+			case fieldTypeUser:
+				$colTypeSelection.append(selectOptionHTML('userSelection','User selection'))
 				break
 			case fieldTypeBool:
 				$colTypeSelection.append(selectOptionHTML('checkbox','Checkbox'))

@@ -27,7 +27,7 @@ function initUserSelection(selectionParams) {
 	$.extend(configParams,selectionParams)
 	
 	configParams.selectionInput.select2({
-		placeholder: "Select a user",
+		placeholder: "", // TODO - Allow a property to configure the placeholder.
 		dropdownParent: configParams.dropdownParent,
 		minimumInputLength: 2,
 		width: configParams.width,

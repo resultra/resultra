@@ -1,6 +1,7 @@
 
 
-function initUserSelectionRecordEditBehavior($userSelectionContainer, componentContext,recordProxy, userSelectionObjectRef) {
+function initUserSelectionRecordEditBehavior($userSelectionContainer, componentContext,
+		recordProxy, userSelectionObjectRef, controlWidth, validateInputFunc) {
 
 	var selectionFieldID = userSelectionObjectRef.properties.fieldID
 		
@@ -12,12 +13,7 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 			return
 		}
 		var currVal = $userSelectionControl.val()
-		var validationParams = {
-			parentFormID: userSelectionObjectRef.parentFormID,
-			userSelectionID: userSelectionObjectRef.userSelectionID,
-			inputVal: currVal
-		}
-		jsonAPIRequest("frm/userSelection/validateInput", validationParams, function(validationResult) {
+		validateInputFunc(currVal,function(validationResult) {
 			if (validationResult.validationSucceeded) {
 				$userSelectionContainer.popover('destroy')
 				validationCompleteCallback(true)
@@ -101,7 +97,7 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 			})
 		}
 	
-		var selectionWidth = (userSelectionObjectRef.properties.geometry.sizeWidth - 15).toString() + "px"
+		var selectionWidth = controlWidth.toString() + "px"
 		var userSelectionParams = {
 			selectionInput: $userSelectionControl,
 			dropdownParent: $userSelectionContainer,
@@ -145,3 +141,47 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 	
 
 }
+
+
+function initUserSelectionFormRecordEditBehavior($container,componentContext,recordProxy, userSelectionObjectRef) {
+	
+	function validateInput(inputVal,validationResultCallback) {
+		var validationParams = {
+			parentFormID: userSelectionObjectRef.parentFormID,
+			userSelectionID: userSelectionObjectRef.userSelectionID,
+			inputVal: inputVal
+		}
+		jsonAPIRequest("frm/userSelection/validateInput", validationParams, function(validationResult) {
+			validationResultCallback(validationResult)
+		})
+	}
+	
+	var selectionWidth = userSelectionObjectRef.properties.geometry.sizeWidth - 15
+	
+	initUserSelectionRecordEditBehavior($container,componentContext,recordProxy, 
+			userSelectionObjectRef,selectionWidth, validateInput)
+}
+
+
+
+function initUserSelectionTableRecordEditBehavior($container,componentContext,recordProxy, userSelectionObjectRef) {
+	
+	function validateInput(inputVal,validationResultCallback) {
+		var validationParams = {
+			parentTableID: userSelectionObjectRef.parentTableID,
+			userSelectionID: userSelectionObjectRef.userSelectionID,
+			inputVal: inputVal
+		}
+		jsonAPIRequest("tableView/userSelection/validateInput", validationParams, function(validationResult) {
+			validationResultCallback(validationResult)
+		})
+	}
+	
+	var selectionWidth = 200 // TBD - Calculate width
+	
+		
+	initUserSelectionRecordEditBehavior($container,componentContext,recordProxy, 
+			userSelectionObjectRef,selectionWidth, validateInput)
+}
+
+

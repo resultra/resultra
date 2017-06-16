@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/displayTable/columns/rating"
 	"resultra/datasheet/server/displayTable/columns/textInput"
 	"resultra/datasheet/server/displayTable/columns/toggle"
+	"resultra/datasheet/server/displayTable/columns/userSelection"
 )
 
 type TableColsInfo []interface{}
@@ -68,6 +69,15 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
 	for _, col := range toggleCols {
+		tableColData = append(tableColData, col)
+		tableColsByID[col.ColumnID] = col
+	}
+
+	userSelectionCols, err := userSelection.GetUserSelections(parentTableID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("getTableCols: %v", err)
+	}
+	for _, col := range userSelectionCols {
 		tableColData = append(tableColData, col)
 		tableColsByID[col.ColumnID] = col
 	}

@@ -99,6 +99,18 @@ function initItemListTableView(params) {
 				numberInputTableCellContainerHTML,initContainer,percColWidths)
 	}
 
+
+	function createUserSelectionColDef(colInfo,fieldsByID,percColWidths) {
+		
+		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+			setContainerComponentInfo($cellContainer,colInfo,colInfo.numberInputID)
+			initUserSelectionTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,fieldsByID,
+				userSelectionTableCellContainerHTML,initContainer,percColWidths)
+	}
+
+
 	function createTextInputColDef(colInfo,fieldsByID,percColWidths) {
 		
 		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
@@ -165,6 +177,8 @@ function initItemListTableView(params) {
 			return createRatingColDef(colInfo,fieldsByID,percColWidths)
 		case 'toggle':
 			return createToggleColDef(colInfo,fieldsByID,percColWidths)
+		case 'userSelection':
+			return createUserSelectionColDef(colInfo,fieldsByID,percColWidths)
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,
