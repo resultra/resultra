@@ -40,6 +40,25 @@ function initUserSelectionColPropertiesImpl(userSelectionInputCol) {
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
 	
+	
+	var validationParams = {
+		initialValidationProps: userSelectionInputCol.properties.validation,
+		setValidation: function(validationProps) {
+			var validationParams = {
+				parentTableID: userSelectionInputCol.parentTableID,
+				userSelectionID: userSelectionInputCol.userSelectionID,
+				validation: validationProps
+			}
+			console.log("Setting new validation settings: " + JSON.stringify(validationParams))
+
+			jsonAPIRequest("tableView/userSelection/setValidation",validationParams,function(updatedUserSelection) {
+			})
+		
+		}
+	}
+	initUserSelectionValidationProperties(validationParams)
+	
+	
 }
 
 function initUserSelectionColProperties(tableID,columnID) {
