@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/displayTable/columns/checkBox"
 	"resultra/datasheet/server/displayTable/columns/datePicker"
+	"resultra/datasheet/server/displayTable/columns/note"
 	"resultra/datasheet/server/displayTable/columns/numberInput"
 	"resultra/datasheet/server/displayTable/columns/rating"
 	"resultra/datasheet/server/displayTable/columns/textInput"
@@ -78,6 +79,15 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
 	for _, col := range userSelectionCols {
+		tableColData = append(tableColData, col)
+		tableColsByID[col.ColumnID] = col
+	}
+
+	noteCols, err := note.GetNotes(parentTableID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("getTableCols: %v", err)
+	}
+	for _, col := range noteCols {
 		tableColData = append(tableColData, col)
 		tableColsByID[col.ColumnID] = col
 	}
