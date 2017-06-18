@@ -4,22 +4,22 @@ function htmlInputFromHTMLEditorContainer($htmlEditor) {
 	return 	$htmlEditor.find(".htmlEditorInput")
 }
 
+function noteEditButtonHTML() {
+
+	// className is to uniquely identify the button with other HTML elements,
+	// such that it can be found with jQuery's find() function.
+
+	var buttonHTML = '<button tabindex="-1" class="btn btn-default btn-sm clearButton ' + 
+			'startEditButton' + 
+			'"><span class="glyphicon glyphicon-pencil"></span></button>'
+
+	return buttonHTML
+}
+
+
 
 function htmlEditorContainerHTML(elementID)
-{
-	
-	function editButtonHTML() {
-	
-		// className is to uniquely identify the button with other HTML elements,
-		// such that it can be found with jQuery's find() function.
-	
-		var buttonHTML = '<button tabindex="-1" class="btn btn-default btn-sm clearButton ' + 
-				'startEditButton' + 
-				'"><span class="glyphicon glyphicon-pencil"></span></button>'
-	
-		return buttonHTML
-	}
-		
+{	
 	var containerHTML = ''+
 	'<div class=" layoutContainer htmlEditorContainer">' +
 		'<div class="htmlEditorHeader">' +
@@ -31,13 +31,32 @@ function htmlEditorContainerHTML(elementID)
 		'</div>'+
 		'<div class="editorFooter componentHoverFooter">' +
 			smallClearDeleteButtonHTML("editorComponentClearValueButton") + 
-			editButtonHTML() +
-		'</div>' +
-	
+			noteEditButtonHTML() +
+		'</div>' +	
 	'</div>';
-	
-		
+			
 	return containerHTML
+}
+
+function noteEditorTableViewContainerHTML() {
+	var containerHTML = ''+
+	'<div class=" layoutContainer htmlEditorContainer">' +
+		'<div class="htmlEditorContent lightGreyBorder">' +
+			'<div class="htmlEditorInput inlineContent htmlEditorDefaultBackground">'+
+			'</div>' +
+		'</div>'+
+		'<div class="editorFooter componentHoverFooter">' +
+			smallClearDeleteButtonHTML("editorComponentClearValueButton") + 
+			noteEditButtonHTML() +
+		'</div>' +	
+	'</div>';
+			
+	return containerHTML
+	
+}
+
+function noteEditorTableViewCellContainerHTML() {
+	return '<div class="layoutContainer noteEditTableCell">TBD - Needs a popup</div>'
 }
 
 function initEditorFormComponentViewModeGeometry($container,editorRef) {

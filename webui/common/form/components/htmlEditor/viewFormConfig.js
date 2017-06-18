@@ -1,6 +1,6 @@
 
 
-function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordProxy,htmlEditorObjectRef) {
+function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordProxy,htmlEditorObjectRef,remoteValidationFunc) {
 	
 	var $htmlEditorInput = htmlInputFromHTMLEditorContainer($htmlEditor)
 	
@@ -16,12 +16,7 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 		// of what's in the editor. This will strip out any HTML elements, leaving only actual non-whitespace
 		// characters.
 		var currInputValText = $htmlEditorInput.text()
-		var validationParams = {
-			parentFormID: htmlEditorObjectRef.parentFormID,
-			htmlEditorID: htmlEditorObjectRef.htmlEditorID,
-			inputVal: currInputValText
-		}
-		jsonAPIRequest("frm/htmlEditor/validateInput", validationParams, function(validationResult) {
+		remoteValidationFunc(currentInputValText,function(validationResult) {
 			if (validationResult.validationSucceeded) {
 				$htmlEditor.popover('destroy')
 				validationCompleteCallback(true)
@@ -34,9 +29,8 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 				})
 				$htmlEditor.popover('show')
 				validationCompleteCallback(false)
-			}
-			
-		})	
+			}			
+		})
 		
 	}
 	
@@ -162,5 +156,60 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 	
 
 	
+	
+}
+
+function initNoteEditorFormRecordEditBehavior($container,componentContext,recordProxy, noteEditorObjectRef) {
+	
+	function validateInput(inputVal,validationResultCallback) {
+		var validationParams = {
+			parentFormID: noteEditorObjectRef.parentFormID,
+			htmlEditorID: noteEditorObjectRef.htmlEditorID,
+			inputVal: inputVal
+		}
+		jsonAPIRequest("frm/numberInput/validateInput", validationParams, function(validationResult) {
+			validationResultCallback(validationResult)
+		})
+	}
+	
+	initHtmlEditorRecordEditBehavior($container,componentContext,recordProxy, 
+			noteEditorObjectRef,validateInput)
+}
+
+function initNoteEditorTableRecordEditBehavior($container,componentContext,recordProxy, noteEditorObjectRef) {
+	
+	function validateInput(inputVal,validationResultCallback) {
+		var validationParams = {
+			parentTableID: noteEditorObjectRef.parentTableID,
+			noteID: noteEditorObjectRef.noteID,
+			inputVal: inputVal
+		}
+		jsonAPIRequest("tableView/note/validateInput", validationParams, function(validationResult) {
+			validationResultCallback(validationResult)
+		})
+	}
+		
+	initHtmlEditorRecordEditBehavior($container,componentContext,recordProxy, 
+			noteEditorObjectRef,validateInput)
+}
+
+
+function initNoteEditorTableCellEditBehavior($container,componentContext,recordProxy, noteEditorObjectRef) {
+
+	// TBD - Needs a popup to display the editor.
+	var validateInput = function(validationCompleteCallback) {
+			validationCompleteCallback(true)
+	}
+	
+	function loadRecordIntoHtmlEditor($htmlEditor, recordRef) {
+		// no-op
+	}
+	
+	console.log("Note editor table cell container: " + $container.html())
+	
+	$container.data("viewFormConfig", {
+		loadRecord: loadRecordIntoHtmlEditor,
+		validateValue: validateInput
+	})
 	
 }

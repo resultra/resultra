@@ -9,16 +9,16 @@ import (
 func init() {
 	noteRouter := mux.NewRouter()
 
-	noteRouter.HandleFunc("/api/frm/note/new", newNote)
+	noteRouter.HandleFunc("/api/tableView/note/new", newNote)
 
-	noteRouter.HandleFunc("/api/frm/note/get", getNoteAPI)
+	noteRouter.HandleFunc("/api/tableView/note/get", getNoteAPI)
 
-	noteRouter.HandleFunc("/api/frm/note/setLabelFormat", setLabelFormat)
-	noteRouter.HandleFunc("/api/frm/note/setPermissions", setPermissions)
-	noteRouter.HandleFunc("/api/frm/note/setValidation", setValidation)
-	noteRouter.HandleFunc("/api/frm/note/validateInput", validateInputAPI)
+	noteRouter.HandleFunc("/api/tableView/note/setLabelFormat", setLabelFormat)
+	noteRouter.HandleFunc("/api/tableView/note/setPermissions", setPermissions)
+	noteRouter.HandleFunc("/api/tableView/note/setValidation", setValidation)
+	noteRouter.HandleFunc("/api/tableView/note/validateInput", validateInputAPI)
 
-	http.Handle("/api/frm/note/", noteRouter)
+	http.Handle("/api/tableView/note/", noteRouter)
 }
 
 func newNote(w http.ResponseWriter, r *http.Request) {

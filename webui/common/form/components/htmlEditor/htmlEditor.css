@@ -23,3 +23,8 @@
 .htmlEditorDefaultBackground {
 	background-color:white;
 }
+
+.noteEditTableCell {
+	min-width: 200px;
+	height: auto;
+}

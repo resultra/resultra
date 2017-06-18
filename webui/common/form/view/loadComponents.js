@@ -107,7 +107,7 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 		},
 		initHtmlEditorFunc: function(componentContext,$htmlEditor,htmlEditorObjectRef) {
 			console.log("Init html editor in view form")
-			initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordProxy,htmlEditorObjectRef)
+			initNoteEditorFormRecordEditBehavior($htmlEditor,componentContext,recordProxy,htmlEditorObjectRef)
 			initFormComponentViewBehavior($htmlEditor,
 					htmlEditorObjectRef.htmlEditorID,initHTMLEditorViewProperties)
 		},

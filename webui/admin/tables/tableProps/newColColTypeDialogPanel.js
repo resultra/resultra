@@ -60,6 +60,17 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					
 				}
 				
+				function createNoteEditorInput(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/note/new",params,function(noteEditor) {
+						console.log("Note editor input column created: " + JSON.stringify(noteEditor))
+					})
+					
+				}
+				
 				function createUserInput(fieldInfo) {
 					var params = {
 						parentTableID: panelParams.tableID,
@@ -121,6 +132,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					break
 				case fieldTypeText:
 					createTextInput(fieldInfo)
+					break
+				case fieldTypeLongText:
+					createNoteEditorInput(fieldInfo)
 					break
 				case fieldTypeTime:
 					createDatePickerInput(fieldInfo)
@@ -194,6 +208,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				break
 			case fieldTypeText:
 				$colTypeSelection.append(selectOptionHTML('textInput','Text input'))
+				break
+			case fieldTypeLongText:
+				$colTypeSelection.append(selectOptionHTML('noteEditor','Note editor'))
 				break
 			case fieldTypeTime:
 				$colTypeSelection.append(selectOptionHTML('datePicker','Date picker'))

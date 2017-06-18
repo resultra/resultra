@@ -121,6 +121,17 @@ function initItemListTableView(params) {
 				textBoxTableViewContainerHTML,initContainer,percColWidths)
 	}
 
+	function createNoteColDef(colInfo,fieldsByID,percColWidths) {
+		
+		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+				setContainerComponentInfo($cellContainer,colInfo,colInfo.noteID)
+				initNoteEditorTableCellEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,fieldsByID,
+				noteEditorTableViewCellContainerHTML,initContainer,percColWidths)
+	}
+
+
 	function createDateInputColDef(colInfo,fieldsByID,percColWidths) {
 		
 		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
@@ -179,6 +190,8 @@ function initItemListTableView(params) {
 			return createToggleColDef(colInfo,fieldsByID,percColWidths)
 		case 'userSelection':
 			return createUserSelectionColDef(colInfo,fieldsByID,percColWidths)
+		case 'note':
+			return createNoteColDef(colInfo,fieldsByID,percColWidths)
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,
