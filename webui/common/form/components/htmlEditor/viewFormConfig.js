@@ -167,7 +167,7 @@ function initNoteEditorFormRecordEditBehavior($container,componentContext,record
 			htmlEditorID: noteEditorObjectRef.htmlEditorID,
 			inputVal: inputVal
 		}
-		jsonAPIRequest("frm/numberInput/validateInput", validationParams, function(validationResult) {
+		jsonAPIRequest("frm/htmlEditor/validateInput", validationParams, function(validationResult) {
 			validationResultCallback(validationResult)
 		})
 	}
