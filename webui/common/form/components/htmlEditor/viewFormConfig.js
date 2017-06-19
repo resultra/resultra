@@ -16,7 +16,7 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 		// of what's in the editor. This will strip out any HTML elements, leaving only actual non-whitespace
 		// characters.
 		var currInputValText = $htmlEditorInput.text()
-		remoteValidationFunc(currentInputValText,function(validationResult) {
+		remoteValidationFunc(currInputValText,function(validationResult) {
 			if (validationResult.validationSucceeded) {
 				$htmlEditor.popover('destroy')
 				validationCompleteCallback(true)
@@ -188,6 +188,8 @@ function initNoteEditorTableRecordEditBehavior($container,componentContext,recor
 			validationResultCallback(validationResult)
 		})
 	}
+	
+	setContainerComponentInfo($container,noteEditorObjectRef,noteEditorObjectRef.noteID)
 		
 	initHtmlEditorRecordEditBehavior($container,componentContext,recordProxy, 
 			noteEditorObjectRef,validateInput)
@@ -201,11 +203,42 @@ function initNoteEditorTableCellEditBehavior($container,componentContext,recordP
 			validationCompleteCallback(true)
 	}
 	
+	var currRecordRef = null
 	function loadRecordIntoHtmlEditor($htmlEditor, recordRef) {
-		// no-op
+		currRecordRef = recordRef
 	}
 	
 	console.log("Note editor table cell container: " + $container.html())
+	
+	var $notePopupLink = $container.find(".noteEditPopop")
+	
+	$notePopupLink.popover({
+		html: 'true',
+		content: function() { return noteEditorTableViewContainerHTML() },
+		trigger: 'click',
+		placement: 'auto left'
+	})
+	
+	$notePopupLink.on('shown.bs.popover', function()
+	{
+	    //get the actual shown popover
+	    var $popover = $(this).data('bs.popover').tip();
+		
+		console.log("Popover html: " + $popover.html())
+		
+		var $noteEditorContainer = $popover.find(".noteEditorPopupContainer")
+		
+		initHTMLEditorTextCellComponentViewModeGeometry($noteEditorContainer)
+		
+		
+		console.log("Popover html: " + $noteEditorContainer.html())
+		initNoteEditorTableRecordEditBehavior($noteEditorContainer,componentContext,recordProxy, noteEditorObjectRef)
+		if(currRecordRef != null) {
+			var viewConfig = $noteEditorContainer.data("viewFormConfig")
+			viewConfig.loadRecord($noteEditorContainer,currRecordRef)
+		}
+
+	});
 	
 	$container.data("viewFormConfig", {
 		loadRecord: loadRecordIntoHtmlEditor,

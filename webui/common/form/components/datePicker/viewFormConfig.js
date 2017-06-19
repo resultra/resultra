@@ -17,7 +17,7 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 				$datePickerContainer.popover({
 					html: 'true',
 					content: function() { return escapeHTML(validationResult.errorMsg) },
-					trigger: 'manual',
+					trigger: 'hover',
 					placement: 'auto left'
 				})
 				$datePickerContainer.popover('show')

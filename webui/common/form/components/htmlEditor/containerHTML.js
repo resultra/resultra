@@ -40,12 +40,12 @@ function htmlEditorContainerHTML(elementID)
 
 function noteEditorTableViewContainerHTML() {
 	var containerHTML = ''+
-	'<div class=" layoutContainer htmlEditorContainer">' +
-		'<div class="htmlEditorContent lightGreyBorder">' +
+	'<div class="noteEditorPopupContainer">' +
+		'<div class="htmlEditorContent lightGreyBorder marginTop5">' +
 			'<div class="htmlEditorInput inlineContent htmlEditorDefaultBackground">'+
 			'</div>' +
 		'</div>'+
-		'<div class="editorFooter componentHoverFooter">' +
+		'<div class="editorFooter">' +
 			smallClearDeleteButtonHTML("editorComponentClearValueButton") + 
 			noteEditButtonHTML() +
 		'</div>' +	
@@ -56,23 +56,24 @@ function noteEditorTableViewContainerHTML() {
 }
 
 function noteEditorTableViewCellContainerHTML() {
-	return '<div class="layoutContainer noteEditTableCell">TBD - Needs a popup</div>'
+	return '<div class="layoutContainer noteEditTableCell">' +
+			'<div>' +
+				'<a class="btn noteEditPopop">Show note</a>'+
+			'</div>' +
+		'</div>'
 }
 
-function initEditorFormComponentViewModeGeometry($container,editorRef) {
-	// In view mode, the height will be flexible, up the maximum set in the form designer.
-	// This ensures there isn't any "dead space" when there aren't enough attachments to
-	// fill up the attachment area below the header.
-	setElemFixedWidthFlexibleHeight($container,editorRef.properties.geometry.sizeWidth)
+
+function initHTMLEditorTextCellComponentViewModeGeometry($container) {
 	
-	var $header = $container.find(".htmlEditorHeader")
+	var width = 200
+	var height = 180
 	
-	// Set the maximum height of the attachment area to be the remainder after the header
-	// is accounted for.
-	var headerBottom = $header.position().top + $header.outerHeight(true);
+	setElemFixedWidthFlexibleHeight($container,width)
+	var headerBottom = 5
 	
-	var containerHeightPx = (editorRef.properties.geometry.sizeHeight - headerBottom) + "px"
-	var editorHeightPx = (editorRef.properties.geometry.sizeHeight - headerBottom - 4) + "px"
+	var containerHeightPx = height + "px"
+	var editorHeightPx = (height - 4) + "px"
 	
 	var $contentContainer = $container.find(".htmlEditorContent")
 	var $editorContainer = $container.find(".htmlEditorInput")
@@ -80,6 +81,39 @@ function initEditorFormComponentViewModeGeometry($container,editorRef) {
 	$contentContainer.css('height',containerHeightPx)
 	$editorContainer.css('height',editorHeightPx)
 	
+}
+
+function initHTMLEditorComponentViewModeGeometry($container,width,height) {
+	// In view mode, the height will be flexible, up the maximum set in the form designer.
+	// This ensures there isn't any "dead space" when there aren't enough attachments to
+	// fill up the attachment area below the header.
+	setElemFixedWidthFlexibleHeight($container,width)
+	
+	var $header = $container.find(".htmlEditorHeader")
+	
+	// Set the maximum height of the attachment area to be the remainder after the header
+	// is accounted for.
+	var headerBottom = $header.position().top + $header.outerHeight(true);
+	
+	var containerHeightPx = (height - headerBottom) + "px"
+	var editorHeightPx = (height - headerBottom - 4) + "px"
+	
+	var $contentContainer = $container.find(".htmlEditorContent")
+	var $editorContainer = $container.find(".htmlEditorInput")
+	
+	$contentContainer.css('height',containerHeightPx)
+	$editorContainer.css('height',editorHeightPx)
+	
+}
+
+
+function initEditorFormComponentViewModeGeometry($container,editorRef) {
+	
+	var width = editorRef.properties.geometry.sizeWidth
+	var height = editorRef.properties.geometry.sizeHeight
+	
+	initHTMLEditorComponentViewModeGeometry($container,width,height)
+		
 }
 
 

@@ -28,3 +28,10 @@
 	min-width: 200px;
 	height: auto;
 }
+
+.noteEditorPopupContainer {
+	width:100%;
+	/* A minimum width & height constrains the overall popup to be at least this size */
+	min-width: 200px;
+	min-height: 200px;
+}
