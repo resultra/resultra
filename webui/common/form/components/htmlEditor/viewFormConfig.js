@@ -216,7 +216,8 @@ function initNoteEditorTableCellEditBehavior($container,componentContext,recordP
 		html: 'true',
 		content: function() { return noteEditorTableViewContainerHTML() },
 		trigger: 'click',
-		placement: 'auto left'
+		placement: 'auto left',
+		container: "body"
 	})
 	
 	$notePopupLink.on('shown.bs.popover', function()
@@ -224,11 +225,20 @@ function initNoteEditorTableCellEditBehavior($container,componentContext,recordP
 	    //get the actual shown popover
 	    var $popover = $(this).data('bs.popover').tip();
 		
+		// By default the popover takes on the maximum size of it's containing
+		// element. Overridding this size allows the size to grow as needed.
+		$popover.css("max-width","300px")
+		$popover.css("max-height","300px")
 		console.log("Popover html: " + $popover.html())
 		
 		var $noteEditorContainer = $popover.find(".noteEditorPopupContainer")
 		
 		initHTMLEditorTextCellComponentViewModeGeometry($noteEditorContainer)
+		
+		var $closePopupButton = $noteEditorContainer.find(".closeEditorPopup")
+		initButtonControlClickHandler($closePopupButton,function() {
+			$notePopupLink.popover('hide')
+		})
 		
 		
 		console.log("Popover html: " + $noteEditorContainer.html())

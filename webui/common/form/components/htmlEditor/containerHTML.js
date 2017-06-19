@@ -41,6 +41,9 @@ function htmlEditorContainerHTML(elementID)
 function noteEditorTableViewContainerHTML() {
 	var containerHTML = ''+
 	'<div class="noteEditorPopupContainer">' +
+		'<div class="htmlEditorHeader">' +
+			'<button type="button" class="close closeEditorPopup" data-dismiss="modal" aria-hidden="true">x</button>' +
+		'</div>' +
 		'<div class="htmlEditorContent lightGreyBorder marginTop5">' +
 			'<div class="htmlEditorInput inlineContent htmlEditorDefaultBackground">'+
 			'</div>' +
@@ -66,14 +69,16 @@ function noteEditorTableViewCellContainerHTML() {
 
 function initHTMLEditorTextCellComponentViewModeGeometry($container) {
 	
-	var width = 200
-	var height = 180
+	var width = 250
+	var height = 230
 	
 	setElemFixedWidthFlexibleHeight($container,width)
-	var headerBottom = 5
 	
-	var containerHeightPx = height + "px"
-	var editorHeightPx = (height - 4) + "px"
+	var $header = $container.find(".htmlEditorHeader")
+	var headerBottom = $header.position().top + $header.outerHeight(true);
+	
+	var containerHeightPx = (height - headerBottom) + "px"
+	var editorHeightPx = (height - headerBottom - 4) + "px"
 	
 	var $contentContainer = $container.find(".htmlEditorContent")
 	var $editorContainer = $container.find(".htmlEditorInput")

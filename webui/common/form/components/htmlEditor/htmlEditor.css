@@ -13,6 +13,7 @@
     width: 100%;
 	padding-left:5px;
 	padding-top:5px;
+	min-height:25px;
 	
 }
 
@@ -25,13 +26,13 @@
 }
 
 .noteEditTableCell {
-	min-width: 200px;
+	min-width: 250px;
 	height: auto;
 }
 
 .noteEditorPopupContainer {
 	width:100%;
 	/* A minimum width & height constrains the overall popup to be at least this size */
-	min-width: 200px;
-	min-height: 200px;
+	min-width: 250px;
+	min-height: 250px;
 }
