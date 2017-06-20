@@ -2,6 +2,7 @@ package displayTable
 
 import (
 	"fmt"
+	"resultra/datasheet/server/displayTable/columns/attachment"
 	"resultra/datasheet/server/displayTable/columns/checkBox"
 	"resultra/datasheet/server/displayTable/columns/comment"
 	"resultra/datasheet/server/displayTable/columns/datePicker"
@@ -49,6 +50,10 @@ func cloneTableCols(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string)
 	}
 
 	if err := comment.CloneComments(remappedIDs, parentTableID); err != nil {
+		return fmt.Errorf("cloneTableCols: %v", err)
+	}
+
+	if err := attachment.CloneAttachments(remappedIDs, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 

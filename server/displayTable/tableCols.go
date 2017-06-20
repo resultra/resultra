@@ -2,6 +2,7 @@ package displayTable
 
 import (
 	"fmt"
+	"resultra/datasheet/server/displayTable/columns/attachment"
 	"resultra/datasheet/server/displayTable/columns/checkBox"
 	"resultra/datasheet/server/displayTable/columns/comment"
 	"resultra/datasheet/server/displayTable/columns/datePicker"
@@ -98,6 +99,15 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
 	for _, col := range commentCols {
+		tableColData = append(tableColData, col)
+		tableColsByID[col.ColumnID] = col
+	}
+
+	attachCols, err := attachment.GetAttachments(parentTableID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("getTableCols: %v", err)
+	}
+	for _, col := range attachCols {
 		tableColData = append(tableColData, col)
 		tableColsByID[col.ColumnID] = col
 	}
