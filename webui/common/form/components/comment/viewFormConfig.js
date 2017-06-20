@@ -248,8 +248,12 @@ function initCommentBoxTableViewRecordEditBehavior($commentContainer, componentC
 	}
 	
 	var currRecordRef = null
+	var loadRecordIntoPopupCommentEditor = null
 	function loadRecordIntoCommentEditor($commentContainer, recordRef) {
 		currRecordRef = recordRef
+		if(loadRecordIntoPopupCommentEditor != null) {
+			loadRecordIntoPopupCommentEditor()
+		}
 	}
 		
 	var $commentPopupLink = $commentContainer.find(".commentEditPopop")
@@ -286,18 +290,26 @@ function initCommentBoxTableViewRecordEditBehavior($commentContainer, componentC
 		var $closePopupButton = $commentEditorContainer.find(".closeEditorPopup")
 		initButtonControlClickHandler($closePopupButton,function() {
 			$commentPopupLink.popover('hide')
+			loadRecordIntoPopupCommentEditor = null
 		})
 		
 		
 		console.log("Popover html: " + $commentEditorContainer.html())
 		
-		var commentBoxHeight = 250
-		
-		initCommentBoxRecordEditBehavior($commentEditorContainer, componentContext,recordProxy, commentObjectRef,commentBoxHeight)
-		if(currRecordRef != null) {
-			var viewConfig = $commentEditorContainer.data("viewFormConfig")
-			viewConfig.loadRecord($commentEditorContainer,currRecordRef)
+		function loadCurrentRecordIntoPopup() {
+			if(currRecordRef != null) {
+				var viewConfig = $commentEditorContainer.data("viewFormConfig")
+				viewConfig.loadRecord($commentEditorContainer,currRecordRef)
+			}			
 		}
+				
+		var commentBoxHeight = 250
+		initCommentBoxRecordEditBehavior($commentEditorContainer, componentContext,recordProxy, commentObjectRef,commentBoxHeight)
+		loadCurrentRecordIntoPopup()
+		
+		// Save the function pointer to load the record into the popup. If the comment is updated, this is needed, so to 
+		// list of comments can be indirectly updated in the popup. 
+		loadRecordIntoPopupCommentEditor = loadCurrentRecordIntoPopup
 
 	});
 	
