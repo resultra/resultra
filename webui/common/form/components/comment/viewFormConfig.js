@@ -276,7 +276,9 @@ function initCommentBoxTableViewRecordEditBehavior($commentContainer, componentC
 		// By default the popover takes on the maximum size of it's containing
 		// element. Overridding this size allows the size to grow as needed.
 		$popover.css("max-width","300px")
-		$popover.css("max-height","300px")
+		// The max-height needs to be large enough to allow the comment box to
+		// expand somewhat.
+		$popover.css("max-height","600px")
 		console.log("Popover html: " + $popover.html())
 		
 		var $commentEditorContainer = $popover.find(".commentEditorPopupContainer")

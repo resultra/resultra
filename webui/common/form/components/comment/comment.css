@@ -25,6 +25,13 @@
 	background-color:white;
 }
 
+/* When editing in the popup window for the table view, there
+  needs to be a maximum height on the comment entry box so 
+  the popup container can also be constrained to a reasonable height. */
+.commentEditorPopupContainer .commentCommentEntryBox {
+	max-height: 150px;
+}
+
 .commentPlaceholder {
 	color: lightGrey;
 }
