@@ -16,7 +16,7 @@ func init() {
 	commentRouter.HandleFunc("/api/tableView/comment/setLabelFormat", setLabelFormat)
 	commentRouter.HandleFunc("/api/tableView/comment/setPermissions", setPermissions)
 
-	http.Handle("/api/frm/comment/", commentRouter)
+	http.Handle("/api/tableView/comment/", commentRouter)
 }
 
 func newComment(w http.ResponseWriter, r *http.Request) {

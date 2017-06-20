@@ -16,92 +16,93 @@ function setNewCommentAttachmentList($commentContainer,attachmentList) {
 	populateAttachmentList($attachList,attachmentList)
 }
 
-function resizeEntryAreaForCommentComponentPermissions($commentContainer,commentObjRef) {
-	var $entryContainer = commentEntryContainerFromOverallCommentContainer($commentContainer)
-	if(formComponentIsReadOnly(commentObjRef.properties.permissions)) {
-		$entryContainer.hide()
-	} else {
-		$entryContainer.show()
-		
-	}
-	// Set the maximum height of the comment area to be the remainder of the comment components
-	var entryBottom = $entryContainer.position().top + $entryContainer.outerHeight(true);
-	var listMaxHeightPx = (commentObjRef.properties.geometry.sizeHeight - (entryBottom+5)) + "px"
-	var $commentList = commentCommentListFromContainer($commentContainer)
-	$commentList.css('max-height',listMaxHeightPx)
-	
-}
 
 
-function loadRecordIntoCommentBox(commentElem, recordRef) {
-	
-	console.log("loadRecordIntoCommentBox: loading record into comment box: " + JSON.stringify(recordRef))
-	
-	var commentObjectRef = commentElem.data("objectRef")
-	var componentContext = commentElem.data("componentContext")
-	
-	resizeEntryAreaForCommentComponentPermissions(commentElem,commentObjectRef)
-	
-	
-	// Clear any previous comments - TODO: is there any way to preserve the comments
-	// if the user switches items.
-	clearNewCommentAttachmentList(commentElem)
-
-	var $commentInput = commentInputFromContainer(commentElem)
-		
-	var changeInfoParams = {
-		recordID: recordRef.recordID,
-		fieldID: commentObjectRef.properties.fieldID
-	}
-	
-	jsonAPIRequest("record/getFieldValChangeInfo",changeInfoParams,function(valChanges) {
-		
-		console.log("loadRecordIntoCommentBox: retrieved comment info: " + JSON.stringify(valChanges))
-		
-		var $commentList = commentCommentListFromContainer(commentElem)
-		$commentList.empty()
-		
-		for(var valChangeIter = 0; valChangeIter < valChanges.length; valChangeIter++) {
-			
-			function createOneCommentValDisplay(valChange) {
-		
-				var formattedUserName = "@" + valChange.userName
-				if(valChange.isCurrentUser) {
-						formattedUserName = formattedUserName + ' (you)'
-				}
-		
-				var formattedCreateDate = moment(valChange.updateTime).calendar()
-
-				var commentDisplayHTML = formatInlineContentHTMLDisplay(valChange.updatedValue.commentText)
-				
-				var commentHTML =  '<div class="list-group-item">' +
-					'<div><small>' + formattedUserName  + ' - ' + formattedCreateDate + '</small></div>' +
-					'<div class="inlineContent">' + commentDisplayHTML + '</div>' +
-					'<div class="formTimelineCommentAttachments"></div>' + 
-				'</div>';
-				
-				var $commentContainer = $(commentHTML)
-				var $attachments = $commentContainer.find(".formTimelineCommentAttachments")
-				populateAttachmentList($attachments,valChange.updatedValue.attachments)
-		
-				return $commentContainer
-			}
-
-			var valChange = valChanges[valChangeIter]
-			
-			$commentList.append(createOneCommentValDisplay(valChange))
-			
-		}
-		
-	}) // set record's text field value
-	
-	
-}
-
-
-function initCommentBoxRecordEditBehavior($commentContainer, componentContext,recordProxy, commentObjectRef) {
+function initCommentBoxRecordEditBehavior($commentContainer, componentContext,recordProxy, commentObjectRef,commentBoxHeight) {
 				
 	$commentContainer.data("componentContext",componentContext)
+
+
+	function resizeEntryAreaForCommentComponentPermissions() {
+	
+		var $entryContainer = commentEntryContainerFromOverallCommentContainer($commentContainer)
+		if(formComponentIsReadOnly(commentObjectRef.properties.permissions)) {
+			$entryContainer.hide()
+		} else {
+			$entryContainer.show()
+		
+		}
+	
+		// Set the maximum height of the comment area to be the remainder of the comment components
+		var entryBottom = $entryContainer.position().top + $entryContainer.outerHeight(true);
+		var listMaxHeightPx = (commentBoxHeight - (entryBottom+5)) + "px"
+		var $commentList = commentCommentListFromContainer($commentContainer)
+		$commentList.css('max-height',listMaxHeightPx)
+	
+	}
+
+
+	function loadRecordIntoCommentBox(commentElem, recordRef) {
+	
+		console.log("loadRecordIntoCommentBox: loading record into comment box: " + JSON.stringify(recordRef))
+		
+		resizeEntryAreaForCommentComponentPermissions()
+	
+		// Clear any previous comments - TODO: is there any way to preserve the comments
+		// if the user switches items.
+		clearNewCommentAttachmentList(commentElem)
+
+		var $commentInput = commentInputFromContainer(commentElem)
+		
+		var changeInfoParams = {
+			recordID: recordRef.recordID,
+			fieldID: commentObjectRef.properties.fieldID
+		}
+	
+		jsonAPIRequest("record/getFieldValChangeInfo",changeInfoParams,function(valChanges) {
+		
+			console.log("loadRecordIntoCommentBox: retrieved comment info: " + JSON.stringify(valChanges))
+		
+			var $commentList = commentCommentListFromContainer(commentElem)
+			$commentList.empty()
+		
+			for(var valChangeIter = 0; valChangeIter < valChanges.length; valChangeIter++) {
+			
+				function createOneCommentValDisplay(valChange) {
+		
+					var formattedUserName = "@" + valChange.userName
+					if(valChange.isCurrentUser) {
+							formattedUserName = formattedUserName + ' (you)'
+					}
+		
+					var formattedCreateDate = moment(valChange.updateTime).calendar()
+
+					var commentDisplayHTML = formatInlineContentHTMLDisplay(valChange.updatedValue.commentText)
+				
+					var commentHTML =  '<div class="list-group-item">' +
+						'<div><small>' + formattedUserName  + ' - ' + formattedCreateDate + '</small></div>' +
+						'<div class="inlineContent">' + commentDisplayHTML + '</div>' +
+						'<div class="formTimelineCommentAttachments"></div>' + 
+					'</div>';
+				
+					var $commentContainer = $(commentHTML)
+					var $attachments = $commentContainer.find(".formTimelineCommentAttachments")
+					populateAttachmentList($attachments,valChange.updatedValue.attachments)
+		
+					return $commentContainer
+				}
+
+				var valChange = valChanges[valChangeIter]
+			
+				$commentList.append(createOneCommentValDisplay(valChange))
+			
+			}
+		
+		}) // set record's text field value
+	
+	
+	}
+
 	
 	$commentContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoCommentBox
@@ -124,12 +125,8 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 		e.stopPropagation()
 	})
 	
-	// In view mode, the height will be flexible. However, by placing a maximum width
-	// on the comment list (see below), the overall height set in the form designer
-	// will be preserved when the user is not editing a comment.
-	setElemFixedWidthFlexibleHeight($commentContainer,commentObjectRef.properties.geometry.sizeWidth)
 	
-	resizeEntryAreaForCommentComponentPermissions($commentContainer,commentObjectRef)
+	resizeEntryAreaForCommentComponentPermissions()
 
 	function resetAndMinimizeCommentEntry() {
 		$commentInput.html('<p class="commentPlaceholder">Enter a comment...</p>')
@@ -227,4 +224,87 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 			
 		}
 	})		
+}
+
+function initCommentBoxFormRecordEditBehavior($commentContainer, componentContext,recordProxy, commentObjectRef) {
+	// In view mode, the height will be flexible. However, by placing a maximum width
+	// on the comment list (see below), the overall height set in the form designer
+	// will be preserved when the user is not editing a comment.
+	setElemFixedWidthFlexibleHeight($commentContainer,commentObjectRef.properties.geometry.sizeWidth)
+	
+	var commentBoxHeight = commentObjRef.properties.geometry.sizeHeight
+
+	initCommentBoxRecordEditBehavior($commentContainer, componentContext,recordProxy, commentObjectRef,commentBoxHeight)
+	
+}
+
+
+function initCommentBoxTableViewRecordEditBehavior($commentContainer, componentContext,recordProxy, commentObjectRef) {
+	
+	
+	// TBD - Needs a popup to display the editor.
+	var validateInput = function(validationCompleteCallback) {
+			validationCompleteCallback(true)
+	}
+	
+	var currRecordRef = null
+	function loadRecordIntoCommentEditor($commentContainer, recordRef) {
+		currRecordRef = recordRef
+	}
+		
+	var $commentPopupLink = $commentContainer.find(".commentEditPopop")
+	
+	console.log("Comment table view cell: " + $commentContainer.html())
+	
+	$commentPopupLink.popover({
+		html: 'true',
+		content: function() { return commentBoxTableViewEditContainerHTML() },
+		trigger: 'click',
+		placement: 'auto left',
+		container: "body"
+	})
+	
+	$commentPopupLink.on('shown.bs.popover', function()
+	{
+	    //get the actual shown popover
+	    var $popover = $(this).data('bs.popover').tip();
+		
+		// By default the popover takes on the maximum size of it's containing
+		// element. Overridding this size allows the size to grow as needed.
+		$popover.css("max-width","300px")
+		$popover.css("max-height","300px")
+		console.log("Popover html: " + $popover.html())
+		
+		var $commentEditorContainer = $popover.find(".commentEditorPopupContainer")
+		
+		var commentEditorWidth = 250
+		setElemFixedWidthFlexibleHeight($commentEditorContainer,commentEditorWidth)
+		
+		
+//		initHTMLEditorTextCellComponentViewModeGeometry($noteEditorContainer)
+		
+		var $closePopupButton = $commentEditorContainer.find(".closeEditorPopup")
+		initButtonControlClickHandler($closePopupButton,function() {
+			$commentPopupLink.popover('hide')
+		})
+		
+		
+		console.log("Popover html: " + $commentEditorContainer.html())
+		
+		var commentBoxHeight = 250
+		
+		initCommentBoxRecordEditBehavior($commentEditorContainer, componentContext,recordProxy, commentObjectRef,commentBoxHeight)
+		if(currRecordRef != null) {
+			var viewConfig = $commentEditorContainer.data("viewFormConfig")
+			viewConfig.loadRecord($commentEditorContainer,currRecordRef)
+		}
+
+	});
+	
+	$commentContainer.data("viewFormConfig", {
+		loadRecord: loadRecordIntoCommentEditor,
+		validateValue: validateInput
+	})
+	
+	
 }

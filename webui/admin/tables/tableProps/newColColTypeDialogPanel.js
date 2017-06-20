@@ -59,6 +59,17 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					})
 					
 				}
+
+				function createCommentInput(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/comment/new",params,function(commentInput) {
+						console.log("Comment input column created: " + JSON.stringify(commentInput))
+					})
+					
+				}
 				
 				function createNoteEditorInput(fieldInfo) {
 					var params = {
@@ -132,6 +143,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					break
 				case fieldTypeText:
 					createTextInput(fieldInfo)
+					break
+				case fieldTypeComment:
+					createCommentInput(fieldInfo)
 					break
 				case fieldTypeLongText:
 					createNoteEditorInput(fieldInfo)
@@ -208,6 +222,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				break
 			case fieldTypeText:
 				$colTypeSelection.append(selectOptionHTML('textInput','Text input'))
+				break
+			case fieldTypeComment:
+				$colTypeSelection.append(selectOptionHTML('comment','Comment box'))
 				break
 			case fieldTypeLongText:
 				$colTypeSelection.append(selectOptionHTML('noteEditor','Note editor'))

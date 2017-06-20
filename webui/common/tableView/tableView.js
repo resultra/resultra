@@ -131,6 +131,16 @@ function initItemListTableView(params) {
 				noteEditorTableViewCellContainerHTML,initContainer,percColWidths)
 	}
 
+	function createCommentColDef(colInfo,fieldsByID,percColWidths) {
+		
+		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+				setContainerComponentInfo($cellContainer,colInfo,colInfo.noteID)
+				initCommentBoxTableViewRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,fieldsByID,
+				commentBoxTableViewContainerHTML,initContainer,percColWidths)
+	}
+
 
 	function createDateInputColDef(colInfo,fieldsByID,percColWidths) {
 		
@@ -192,6 +202,8 @@ function initItemListTableView(params) {
 			return createUserSelectionColDef(colInfo,fieldsByID,percColWidths)
 		case 'note':
 			return createNoteColDef(colInfo,fieldsByID,percColWidths)
+		case 'comment':
+			return createCommentColDef(colInfo,fieldsByID,percColWidths)
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,

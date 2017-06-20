@@ -33,11 +33,8 @@ function commentCancelCommentButtonFromContainer($commentContainer) {
 	return 	$commentContainer.find(".commentComponentCancelCommentButton")
 }
 
-function commentContainerHTML(elementID)
-{	
-	var containerHTML = ''+
-	'<div class=" layoutContainer commentContainer">' +
-	'<label>Comment Box Label</label>'+
+function commentBoxContainerBodyHTML() {
+	return 		'' +
 		'<div class="form-group commentEntryContainer">' + 
 			'<div class="commentCommentEntryBox inlineContent lightGreyBorder">'+
 				'<p class="commentPlaceholder">Enter a comment ...</p>' +
@@ -49,10 +46,37 @@ function commentContainerHTML(elementID)
 					attachmentButtonHTML("commentComponentAttachmentButton") + 
 			'</div>' +
 		'</div>' +				
-		'<div class="list-group commentComponentCommentList lightGreyBorder"></div>' +	
+		'<div class="list-group commentComponentCommentList lightGreyBorder"></div>'
+
+}
+
+function commentContainerHTML(elementID)
+{	
+	var containerHTML = ''+
+	'<div class=" layoutContainer commentContainer">' +
+	'<label>Comment Box Label</label>'+
+		commentBoxContainerBodyHTML() +
 	'</div>';
 		
 	return containerHTML
+}
+
+function commentBoxTableViewEditContainerHTML() {
+	return '<div class="commentEditorPopupContainer">' +
+		'<div class="commentEditorHeader">' +
+			'<button type="button" class="close closeEditorPopup" data-dismiss="modal" aria-hidden="true">x</button>' +
+		'</div>' +
+		commentBoxContainerBodyHTML() +
+	'</div>';
+	
+}
+
+function commentBoxTableViewContainerHTML() {
+	return '<div class="layoutContainer commentEditTableCell">' +
+			'<div>' +
+				'<a class="btn commentEditPopop">Show comments</a>'+
+			'</div>' +
+		'</div>'
 }
 
 function setCommentComponentLabel($comment,commentRef) {

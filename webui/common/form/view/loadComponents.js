@@ -50,7 +50,7 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 					selectionObjectRef.selectionID,initSelectionViewProperties)
 		},
 		initCommentFunc: function(componentContext,$comment,commentObjectRef) {			
-			initCommentBoxRecordEditBehavior($comment,componentContext,recordProxy,commentObjectRef)
+			initCommentBoxFormRecordEditBehavior($comment,componentContext,recordProxy,commentObjectRef)
 			initFormComponentViewBehavior($comment,
 					commentObjectRef.commentID,initCommentViewProperties)
 		},
