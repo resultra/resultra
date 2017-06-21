@@ -3,13 +3,9 @@
 
 
 
-function initImageRecordEditBehavior($imageContainer, componentContext,recordProxy,imageObjectRef) {
+function initAttachmentRecordEditBehavior($imageContainer, componentContext,recordProxy,imageObjectRef,remoteValidationFunc) {
 	
-	var imageContainerID = imageObjectRef.imageID
 	var $imageInnerContainer = imageInnerContainerFromImageComponentContainer($imageContainer)
-
-	console.log("initImageRecordEditBehavior: container ID =  " +imageContainerID)
-	
 	
 	var validateInput = function(validationCompleteCallback) {
 		
@@ -18,12 +14,7 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 			return
 		}
 		var currentAttachmentIDs = getCurrentlyDisplayedAttachmentList()
-		var validationParams = {
-			parentFormID: imageObjectRef.parentFormID,
-			imageID: imageObjectRef.imageID,
-			attachments: currentAttachmentIDs
-		}
-		jsonAPIRequest("frm/image/validateInput", validationParams, function(validationResult) {
+		remoteValidationFunc(currentAttachmentIDs,function(validationResult) {
 			if (validationResult.validationSucceeded) {
 				$imageContainer.popover('destroy')
 				validationCompleteCallback(true)
@@ -54,10 +45,7 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 	function loadRecordIntoImage(imageElem, recordRef) {
 	
 		console.log("loadRecordIntoImage: loading record into html editor: " + JSON.stringify(recordRef))
-	
-		var imageObjectRef = imageElem.data("objectRef")
-		var imageContainerID = imageObjectRef.imageID
-		
+			
 		function initImageContainer(imageURL) {
 		
 		}
@@ -145,7 +133,7 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 
 	
 	function initAttachmentEditBehavior() {
-		initAttachmentFormComponentViewModeGeometry($imageContainer,imageObjectRef)
+		
 	
 		var imageFieldID = imageObjectRef.properties.fieldID
 	
@@ -224,3 +212,115 @@ function initImageRecordEditBehavior($imageContainer, componentContext,recordPro
 	
 		
 }
+
+function initAttachmentFormRecordEditBehavior($imageContainer, componentContext,recordProxy,imageObjectRef) {
+	
+	function validateInput(inputVal,validationResultCallback) {
+		
+		var validationParams = {
+			parentFormID: imageObjectRef.parentFormID,
+			imageID: imageObjectRef.imageID,
+			attachments: inputVal
+		}
+		jsonAPIRequest("frm/image/validateInput", validationParams, function(validationResult) {
+			validationResultCallback(validationResult)
+		})
+	}
+	
+	initAttachmentFormComponentViewModeGeometry($imageContainer,imageObjectRef)
+	
+	initAttachmentRecordEditBehavior($imageContainer, componentContext,recordProxy,imageObjectRef,validateInput)
+}
+
+
+function initAttachmentTableViewRecordEditBehavior($attachContainer, componentContext,recordProxy,attachObjectRef) {
+	
+	
+	function validateInput(inputVal,validationResultCallback) {
+		
+		var validationParams = {
+			parentTableID: attachObjectRef.parentTableID,
+			attachmentID: attachObjectRef.attachmentID,
+			attachments: inputVal
+		}
+		jsonAPIRequest("tableView/attachment/validateInput", validationParams, function(validationResult) {
+			validationResultCallback(validationResult)
+		})
+	}
+	
+	var currRecordRef = null
+	var loadRecordIntoPopupAttachmentEditor = null
+	function loadRecordIntoAttachmentEditor($attachContainer, recordRef) {
+		currRecordRef = recordRef
+		if(loadRecordIntoPopupAttachmentEditor != null) {
+			loadRecordIntoPopupAttachmentEditor()
+		}
+	}
+		
+	var $attachmentPopupLink = $attachContainer.find(".attachmentEditPopop")
+		
+	$attachmentPopupLink.popover({
+		html: 'true',
+		content: function() { return attachmentTableViewPopupEditContainerHTML() },
+		trigger: 'click',
+		placement: 'auto left',
+		container: "body"
+	})
+	
+	$attachmentPopupLink.on('shown.bs.popover', function()
+	{
+	    //get the actual shown popover
+	    var $popover = $(this).data('bs.popover').tip();
+		
+		// By default the popover takes on the maximum size of it's containing
+		// element. Overridding this size allows the size to grow as needed.
+		$popover.css("max-width","300px")
+		// The max-height needs to be large enough to allow the comment box to
+		// expand somewhat.
+		$popover.css("max-height","600px")
+		
+		// Override the popover's default z-index to be less than the popup used to display the
+		// attachments and the dialog box used to add new attachments.
+		$popover.css("z-index","550")
+		
+		console.log("Popover html: " + $popover.html())
+		
+		var $attachmentEditorContainer = $popover.find(".attachmentEditorPopupContainer")
+		
+		initAttachmentTableCellComponentViewModeGeometry($attachmentEditorContainer)
+				
+		var $closePopupButton = $attachmentEditorContainer.find(".closeEditorPopup")
+		initButtonControlClickHandler($closePopupButton,function() {
+			$attachmentPopupLink.popover('hide')
+			loadRecordIntoPopupAttachmentEditor = null
+		})
+		
+		
+		console.log("Popover html: " + $attachmentEditorContainer.html())
+		
+		function loadCurrentRecordIntoPopup() {
+			if(currRecordRef != null) {
+				var viewConfig = $attachmentEditorContainer.data("viewFormConfig")
+				viewConfig.loadRecord($attachmentEditorContainer,currRecordRef)
+			}			
+		}
+				
+		initAttachmentRecordEditBehavior($attachmentEditorContainer, componentContext,
+					recordProxy, attachObjectRef,validateInput)
+		loadCurrentRecordIntoPopup()
+		
+		// Save the function pointer to load the record into the popup. If the comment is updated, this is needed, so to 
+		// list of comments can be indirectly updated in the popup. 
+		loadRecordIntoPopupAttachmentEditor = loadCurrentRecordIntoPopup
+
+	});
+	
+	$attachContainer.data("viewFormConfig", {
+		loadRecord: loadRecordIntoAttachmentEditor,
+		validateValue: validateInput
+	})
+	
+	
+}
+
+

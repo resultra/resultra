@@ -1,7 +1,7 @@
 var fieldTypeNumber = "number"
 var fieldTypeText = "text"
 var fieldTypeLongText = "longText"
-var fieldTypeFile = "file"
+var fieldTypeAttachment = "file"
 var fieldTypeBool = "bool"
 var fieldTypeTime = "time"
 var fieldTypeUser = "user"
@@ -15,7 +15,7 @@ function fieldTypeLabel(fieldType) {
 	case fieldTypeTime: return "Date and/or Time"
 	case fieldTypeUser: return "User"
 	case fieldTypeBool: return "True or False (Boolean)"
-	case fieldTypeFile: return "File"
+	case fieldTypeAttachment: return "File"
 	case fieldTypeLongText: return "Long Text"
 	case fieldTypeComment: return "Comment"
 	default: return "Unknown field type"
@@ -194,7 +194,7 @@ function loadFieldInfo(parentDatabaseID,fieldTypes,fieldInfoCallback) {
 			} // for each long text field
 		}
 	
-		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeFile]==true) {
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeAttachment]==true) {
 			var fileFields = fieldsByType.fileFields
 			for (fileFieldIter in fileFields) {		
 				var fileField = fileFields[fileFieldIter]			

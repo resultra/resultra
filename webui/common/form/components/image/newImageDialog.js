@@ -28,7 +28,7 @@ function openNewImageDialog(databaseID,formID,containerParams)
 		databaseID: databaseID,
 		formID: formID,
 		hideCreateCalcFieldCheckbox: true,
-		fieldTypes: [fieldTypeFile],
+		fieldTypes: [fieldTypeAttachment],
 		containerParams: containerParams,
 		createNewFormComponent: createNewImageComponent
 	}

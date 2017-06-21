@@ -113,7 +113,7 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 		},
 		initImageFunc: function(componentContext,$image,imageObjectRef) {
 			console.log("Init image in view form")
-			initImageRecordEditBehavior($image,componentContext,recordProxy,imageObjectRef)
+			initAttachmentFormRecordEditBehavior($image,componentContext,recordProxy,imageObjectRef)
 			initFormComponentViewBehavior($image,
 					imageObjectRef.imageID,initImageViewProperties)
 		},

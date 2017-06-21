@@ -13,7 +13,7 @@ const attachmentEntityKind string = "attachment"
 
 type Attachment struct {
 	ParentTableID string               `json:"parentTableID"`
-	AttachmentID  string               `json:"imageID"`
+	AttachmentID  string               `json:"attachmentID"`
 	ColumnID      string               `json:"columnID"`
 	ColType       string               `json:"colType"`
 	Properties    AttachmentProperties `json:"properties"`

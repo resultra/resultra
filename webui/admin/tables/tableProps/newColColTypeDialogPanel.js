@@ -82,6 +82,17 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					
 				}
 				
+				function createAttachmentInput(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/attachment/new",params,function(attachmentRef) {
+						console.log("Attachment column created: " + JSON.stringify(attachmentRef))
+					})
+					
+				}
+				
 				function createUserInput(fieldInfo) {
 					var params = {
 						parentTableID: panelParams.tableID,
@@ -146,6 +157,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					break
 				case fieldTypeComment:
 					createCommentInput(fieldInfo)
+					break
+				case fieldTypeAttachment:
+					createAttachmentInput(fieldInfo)
 					break
 				case fieldTypeLongText:
 					createNoteEditorInput(fieldInfo)
@@ -225,6 +239,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				break
 			case fieldTypeComment:
 				$colTypeSelection.append(selectOptionHTML('comment','Comment box'))
+				break
+			case fieldTypeAttachment:
+				$colTypeSelection.append(selectOptionHTML('attachment','Attachments'))
 				break
 			case fieldTypeLongText:
 				$colTypeSelection.append(selectOptionHTML('noteEditor','Note editor'))

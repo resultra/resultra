@@ -142,6 +142,16 @@ function initItemListTableView(params) {
 	}
 
 
+	function createAttachmentColDef(colInfo,fieldsByID,percColWidths) {
+		
+		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+				setContainerComponentInfo($cellContainer,colInfo,colInfo.noteID)
+				initAttachmentTableViewRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,fieldsByID,
+				attachmentTableViewContainerHTML,initContainer,percColWidths)
+	}
+	
 	function createDateInputColDef(colInfo,fieldsByID,percColWidths) {
 		
 		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
@@ -204,6 +214,8 @@ function initItemListTableView(params) {
 			return createNoteColDef(colInfo,fieldsByID,percColWidths)
 		case 'comment':
 			return createCommentColDef(colInfo,fieldsByID,percColWidths)
+		case 'attachment':
+			return createAttachmentColDef(colInfo,fieldsByID,percColWidths)
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,

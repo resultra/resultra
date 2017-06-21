@@ -22,6 +22,15 @@ function addLinkButtonFromAttachmentComponentContainer($image) {
 }
 
 
+function attachmentContainerBodyHTML() {
+	return '' +		
+		'<div class="imageInnerContainer lightGreyBorder text-center"">'+
+		'</div>'+
+		'<div class="pull-right componentHoverFooter initiallyHidden">' +
+			attachmentButtonHTML("imageComponentManageAttachmentsButtton") + 
+			attachmentLinkButtonHTML("attachmentComponentAddLinkButton") +
+		'</div>'
+}
 
 
 function imageContainerHTML(elementID)
@@ -34,16 +43,40 @@ function imageContainerHTML(elementID)
 		'<div class="imageContainerHeader">' +
 			'<label class="imageContainerLabel">Attachment(s)</label>' +
 		'</div>' +
-		'<div class="imageInnerContainer lightGreyBorder text-center"">'+
-		'</div>'+
-		'<div class="pull-right componentHoverFooter initiallyHidden">' +
-			attachmentButtonHTML("imageComponentManageAttachmentsButtton") + 
-			attachmentLinkButtonHTML("attachmentComponentAddLinkButton") +
-		'</div>' +
+		attachmentContainerBodyHTML() +
 	'</div>';
 	
 		
 	return containerHTML
+}
+
+function attachmentContainerPopupBodyHTML() {
+	return '' +		
+		'<div class="imageInnerContainer lightGreyBorder text-center"">'+
+		'</div>'+
+		'<div class="pull-right">' +
+			attachmentButtonHTML("imageComponentManageAttachmentsButtton") + 
+			attachmentLinkButtonHTML("attachmentComponentAddLinkButton") +
+		'</div>'
+}
+
+
+function attachmentTableViewPopupEditContainerHTML() {
+	return '' +
+		'<div class="attachmentEditorPopupContainer">' +
+			'<div class="attachmentEditorHeader">' +
+				'<button type="button" class="close closeEditorPopup" data-dismiss="modal" aria-hidden="true">x</button>' +
+			'</div>' +
+			attachmentContainerPopupBodyHTML() +
+		'</div>'
+}
+
+function attachmentTableViewContainerHTML() {
+	return '<div class="layoutContainer attachmentEditTableCell">' +
+			'<div>' +
+				'<a class="btn attachmentEditPopop">Show attachments</a>'+
+			'</div>' +
+		'</div>'
 }
 
 function setAttachmentComponentLabel($attachmentContainer,attachmentRef) {
@@ -61,7 +94,7 @@ function initAttachmentFormComponentViewModeGeometry($container,attachRef) {
 	// fill up the attachment area below the header.
 	setElemFixedWidthFlexibleHeight($container,attachRef.properties.geometry.sizeWidth)
 	
-	var $header = $container.find(".imageContainerHeader")
+	var $header = $container.find(".attachmentEditorHeader")
 	
 	// Set the maximum height of the attachment area to be the remainder after the header
 	// is accounted for.
@@ -73,6 +106,31 @@ function initAttachmentFormComponentViewModeGeometry($container,attachRef) {
 	$innerAttachmentContainer.css('max-height',attachMaxHeightPx)
 	
 }
+
+function initAttachmentTableCellComponentViewModeGeometry($container) {
+
+
+	// In view mode, the height will be flexible, up the maximum set in the form designer.
+	// This ensures there isn't any "dead space" when there aren't enough attachments to
+	// fill up the attachment area below the header.	
+	var attachmentPopupWidth = 250
+	var attachmentPopupHeight = 250
+	
+	setElemFixedWidthFlexibleHeight($container,attachmentPopupWidth)
+	
+	var $header = $container.find(".attachmentEditorHeader")
+	
+	// Set the maximum height of the attachment area to be the remainder after the header
+	// is accounted for.
+	var headerBottom = $header.position().top + $header.outerHeight(true);
+	var attachMaxHeightPx = (attachmentPopupHeight - (headerBottom+5)) + "px"
+	
+	var $innerAttachmentContainer = imageInnerContainerFromImageComponentContainer($container)
+	
+	$innerAttachmentContainer.css('max-height',attachMaxHeightPx)
+	
+}
+
 
 function attachmentGalleryThumbnailContainer(attachRef,deleteAttachmentCallback,isReadOnly) {
 	

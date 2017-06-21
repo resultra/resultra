@@ -48,6 +48,15 @@
 	margin: 2px;
 }
 
+.attachmentEditorPopupContainer {
+	min-width:250px;
+	min-height: 120px;
+}
+
+.attachmentEditorHeader {
+	min-height: 25px;
+}
+
 /*attachGalleryThumbnailContainer:hover .galleryThumbnailHoverButton {
 	display: block;
 }*/
