@@ -280,6 +280,11 @@ function initCommentBoxTableViewRecordEditBehavior($commentContainer, componentC
 		// expand somewhat.
 		$popover.css("max-height","600px")
 		console.log("Popover html: " + $popover.html())
+	
+		// Override the popover's default z-index to be less than the popup used to display the
+		// attachments and the dialog box used to add new attachments.
+		$popover.css("z-index","550")
+	
 		
 		var $commentEditorContainer = $popover.find(".commentEditorPopupContainer")
 		
