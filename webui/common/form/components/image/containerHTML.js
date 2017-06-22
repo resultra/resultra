@@ -40,7 +40,7 @@ function imageContainerHTML(elementID)
 	
 	var containerHTML = ''+
 	'<div class="layoutContainer imageContainer">' +
-		'<div class="imageContainerHeader">' +
+		'<div class="attachmentEditorHeader">' +
 			'<label class="imageContainerLabel">Attachment(s)</label>' +
 		'</div>' +
 		attachmentContainerBodyHTML() +
@@ -113,8 +113,8 @@ function initAttachmentTableCellComponentViewModeGeometry($container) {
 	// In view mode, the height will be flexible, up the maximum set in the form designer.
 	// This ensures there isn't any "dead space" when there aren't enough attachments to
 	// fill up the attachment area below the header.	
-	var attachmentPopupWidth = 250
-	var attachmentPopupHeight = 250
+	var attachmentPopupWidth = 230
+	var attachmentPopupHeight = 180
 	
 	setElemFixedWidthFlexibleHeight($container,attachmentPopupWidth)
 	
@@ -128,6 +128,7 @@ function initAttachmentTableCellComponentViewModeGeometry($container) {
 	var $innerAttachmentContainer = imageInnerContainerFromImageComponentContainer($container)
 	
 	$innerAttachmentContainer.css('max-height',attachMaxHeightPx)
+	$innerAttachmentContainer.css('min-height',attachMaxHeightPx)
 	
 }
 

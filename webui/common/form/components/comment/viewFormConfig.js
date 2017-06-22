@@ -232,7 +232,7 @@ function initCommentBoxFormRecordEditBehavior($commentContainer, componentContex
 	// will be preserved when the user is not editing a comment.
 	setElemFixedWidthFlexibleHeight($commentContainer,commentObjectRef.properties.geometry.sizeWidth)
 	
-	var commentBoxHeight = commentObjRef.properties.geometry.sizeHeight
+	var commentBoxHeight = commentObjectRef.properties.geometry.sizeHeight
 
 	initCommentBoxRecordEditBehavior($commentContainer, componentContext,recordProxy, commentObjectRef,commentBoxHeight)
 	
