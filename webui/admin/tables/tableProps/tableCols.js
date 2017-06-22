@@ -53,8 +53,12 @@ function initTableViewColsProperties(tableRef) {
 				
 				$header.attr('data-col-id',colInfo.columnID)
 				
-				setFormComponentLabel($header,colInfo.properties.fieldID,
-						colInfo.properties.labelFormat)
+				if(colInfo.colType !== 'button') {
+					setFormComponentLabel($header,colInfo.properties.fieldID,
+							colInfo.properties.labelFormat)					
+				} else {
+					$header.text("TBD - Header for button")
+				}
 				
 				$headerRow.append($header)
 			})
@@ -115,6 +119,12 @@ function initTableViewColsProperties(tableRef) {
 					initToggleComponentControl($cellContainer,colInfo)
 					$column.append($cellContainer)
 					break
+				case 'button':
+//					var $cellContainer = $(toggleTableCellContainerHTML())
+//					initToggleComponentControl($cellContainer,colInfo)
+					var $cellContainer = $('<div>TBD</div')
+					$column.append($cellContainer)
+					break
 				default:
 					console.log("Missing preview info for column: " + JSON.stringify(colInfo))
 				}
@@ -151,8 +161,12 @@ function initTableViewColsProperties(tableRef) {
 			var $colListItem = $('#tableColItemTemplate').clone()
 			$colListItem.attr("id","")
 			
-			var fieldName = fieldsByID[tableCol.properties.fieldID].name
-			$colListItem.find('label').text(fieldName)
+			if (tableCol.colType !== 'button') {
+				var fieldName = fieldsByID[tableCol.properties.fieldID].name
+				$colListItem.find('label').text(fieldName)
+			} else {
+				$colListItem.find('label').text("Button Label TBD")
+			}
 			
 			var editColLink = '/admin/tablecol/' + tableCol.columnID
 			$colListItem.find('.editTableColButton').attr("href",editColLink)
@@ -199,5 +213,11 @@ function initTableViewColsProperties(tableRef) {
 		console.log("New table column button clicked")
 		openNewTableColDialog(tableRef)
 	})
+	
+	initButtonClickHandler('#adminNewFormButtonColButton',function() {
+		console.log("New table column button clicked")
+		openNewButtonTableColDialog(tableRef)
+	})
+	
 	
 }

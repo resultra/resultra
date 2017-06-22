@@ -5,6 +5,7 @@
 	"cssFiles": ["tableCols.css"],
 	"jsFiles": ["tablePropsPage.js",
 		"tableCols.js",
+		"newFormButtonColDialog.js",
 		"newColDialog.js",
 		"newColNewOrExistingFieldDialogPanel.js",
 		"newColNewFieldDialogPanel.js",

@@ -24,7 +24,8 @@ func init() {
 		"static/admin/tables/tableProps/newColDialog.html",
 		"static/admin/tables/tableProps/newColNewOrExistingFieldDialogPanel.html",
 		"static/admin/tables/tableProps/newColNewFieldDialogPanel.html",
-		"static/admin/tables/tableProps/newColColTypeDialogPanel.html"}
+		"static/admin/tables/tableProps/newColColTypeDialogPanel.html",
+		"static/admin/tables/tableProps/newFormButtonColDialog.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,

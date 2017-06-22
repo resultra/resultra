@@ -1,0 +1,32 @@
+{{define "adminNewFormButtonColDialog"}}
+
+<div class="modal fade" id="newButtonTableColDialog" tabindex="-1" role="document"
+						aria-labelledby="newTableColLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="newTableColLabel">New Table View Column</h4>
+      </div>
+      <div class="modal-body">
+		  <div>
+			  <form id="newButtonTableColForm">
+				<div class="form-group">
+					<label for="newButtonColFormLinkSelection">Form to show when button pressed</label> 
+					<select class="form-control" id="newButtonColFormLinkSelection" name="newButtonColFormLinkSelection">
+					</select>
+				</div>	
+			</form>	
+			  	
+		</div>
+      </div>
+      <div class="modal-footer">
+	 		<button type="button" class="btn btn-default" id="newButtonColCancelButton" data-dismiss="modal">Cancel</button>
+	 		<button type="button" class="btn btn-primary" id="newButtonColSaveButton" type="submit">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}

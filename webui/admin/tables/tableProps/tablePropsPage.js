@@ -57,8 +57,4 @@ $(document).ready(function() {
 		
 	})
 	
-	
-			
-//	initAdminTableListSettings(tableAdminContext.databaseID)
-	
 })
