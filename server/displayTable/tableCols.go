@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/displayTable/columns/checkBox"
 	"resultra/datasheet/server/displayTable/columns/comment"
 	"resultra/datasheet/server/displayTable/columns/datePicker"
+	"resultra/datasheet/server/displayTable/columns/formButton"
 	"resultra/datasheet/server/displayTable/columns/note"
 	"resultra/datasheet/server/displayTable/columns/numberInput"
 	"resultra/datasheet/server/displayTable/columns/rating"
@@ -108,6 +109,15 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
 	for _, col := range attachCols {
+		tableColData = append(tableColData, col)
+		tableColsByID[col.ColumnID] = col
+	}
+
+	buttonCols, err := formButton.GetButtons(parentTableID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("getTableCols: %v", err)
+	}
+	for _, col := range buttonCols {
 		tableColData = append(tableColData, col)
 		tableColsByID[col.ColumnID] = col
 	}
