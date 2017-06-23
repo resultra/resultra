@@ -193,6 +193,10 @@ function initItemListTableView(params) {
 		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
 			
+			setFormButtonSize($cellContainer,colInfo.properties.size)
+			setFormButtonColorScheme($cellContainer,colInfo.properties.colorScheme)
+			setFormButtonLabel($cellContainer,colInfo)
+			
 			// The loadFormViewComponents and loadRecordIntoFormLayout functions
 			// need to be passed to initFormButtonRecordEditBehavior in order
 			// to avoid a cyclical package dependency.

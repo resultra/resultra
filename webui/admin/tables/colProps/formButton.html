@@ -1,0 +1,38 @@
+{{define "formButtonColProperties"}}
+
+<table id="formButtonColProps" class="table initiallyHidden" style="width:500px">
+	
+	<tr>
+		<td class="width200"><label>Button color scheme</label><BR>
+			<small>Configure the color of the popup button.</small>
+		</td>
+
+		<td class="maxWidth300">
+			{{template "formButtonColorSchemeProps"}}
+		</td>
+	</tr>
+
+	<tr>
+		<td class="width200"><label>Button icon</label><BR>
+			<small>Icon for the popup button.</small>
+		</td>
+
+		<td class="maxWidth300">
+			{{template "formButtonIconProps"}}
+		</td>
+	</tr>
+
+	<tr>
+		<td class="width200"><label>Button size</label><BR>
+			<small>Size of the popup button.</small>
+		</td>
+
+		<td class="maxWidth300">
+			{{template "formButtonSizeProps"}}
+		</td>
+	</tr>
+		
+</table>
+
+
+{{end}}

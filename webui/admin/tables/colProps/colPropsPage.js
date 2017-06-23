@@ -39,6 +39,9 @@ $(document).ready(function() {
 		case 'toggle':
 			initToggleColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
 			break
+		case 'button':
+			initFormButtonColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			break
 		default:
 			console.log("Unknown column type: " + colPropsAdminContext.colType)
 		}

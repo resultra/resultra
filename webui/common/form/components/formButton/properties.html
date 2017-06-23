@@ -1,16 +1,5 @@
-{{define "formButtonFormatProps"}}
-     <form id="adminButtonComponentFormatForm">
-	  <div class="form-group">
-       	  <label for="adminButtonComponentSizeSelection">Button size</label>
-		  	<select class="form-control" id="adminButtonComponentSizeSelection">
-		  		<option disabled selected value="">Select a size</option>
-		 		<option value="large">Large</option>
-		 		<option value="medium">Medium</option>
-		 		<option value="small">Small</option>
-		 		<option value="xsmall">Extra Small</option>
-			</select>
-	  </div>
-	  
+
+{{define "formButtonColorSchemeProps"}}
 	  <div class="form-group">
        	  <label for="adminButtonComponentColorSchemeSelection">Color scheme</label>
 		  	<select class="form-control" id="adminButtonComponentColorSchemeSelection">
@@ -24,8 +13,9 @@
 		 		<option value="link">Link</option>
 			</select>
 	  </div>
+{{end}}
 
-
+{{define "formButtonIconProps"}}
 	  <div class="form-group">
        	  <label for="adminButtonComponentIconSelection">Icon</label>
 		  	<select class="form-control" id="adminButtonComponentIconSelection">
@@ -43,7 +33,29 @@
 		 		<option value="rchevron">Right Chevron</option>
 			</select>
 	  </div>
+{{end}}
 
+{{define "formButtonSizeProps"}}
+	  <div class="form-group">
+       	  <label for="adminButtonComponentSizeSelection">Button size</label>
+		  	<select class="form-control" id="adminButtonComponentSizeSelection">
+		  		<option disabled selected value="">Select a size</option>
+		 		<option value="large">Large</option>
+		 		<option value="medium">Medium</option>
+		 		<option value="small">Small</option>
+		 		<option value="xsmall">Extra Small</option>
+			</select>
+	  </div>
+{{end}}
+
+
+{{define "formButtonFormatProps"}}
+     <form id="adminButtonComponentFormatForm">
+		 
+	  
+	  {{template "formButtonSizeProps"}}
+	  {{template "formButtonColorSchemeProps"}}
+	  {{template "formButtonIconProps"}}
 	  
     </form>
 {{end}}

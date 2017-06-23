@@ -11,6 +11,8 @@ func init() {
 
 	buttonRouter.HandleFunc("/api/tableView/formButton/new", newButton)
 
+	buttonRouter.HandleFunc("/api/tableView/formButton/get", getButtonAPI)
+
 	buttonRouter.HandleFunc("/api/tableView/formButton/setPopupBehavior", setPopupBehavior)
 
 	buttonRouter.HandleFunc("/api/tableView/formButton/setDefaultVals", setDefaultVals)
@@ -42,7 +44,7 @@ type GetButtonParams struct {
 	ButtonID      string `json:"buttonID"`
 }
 
-func getNoteAPI(w http.ResponseWriter, r *http.Request) {
+func getButtonAPI(w http.ResponseWriter, r *http.Request) {
 
 	var params GetButtonParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
