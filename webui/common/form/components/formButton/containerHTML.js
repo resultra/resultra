@@ -3,14 +3,14 @@ function buttonFromFormButtonContainer($formButton) {
 }
 
 
-function formButtonContainerHTML(elementID)
+function formButtonContainerHTML()
 {	
 	var containerHTML = ''+
 		'<div class=" layoutContainer buttonFormContainer">' +
 			'<button type="button" class="btn btn-primary formButton">' + 
 			'Open Form' +
 			'</button>' +
-		'</div><';
+		'</div>';
 						
 	return containerHTML
 }
@@ -92,6 +92,15 @@ function setFormButtonLabel($container,buttonRef) {
 		} else {
 			$button.append($nameSpan)			
 		}	
+	})
+	
+}
+
+function setFormButtonHeader($container,buttonRef) {
+	jsonAPIRequest("frm/getFormInfo", { formID: buttonRef.properties.linkedFormID }, function(formInfo) {
+		var $nameSpan = $('<span></span>')
+		$nameSpan.text(formInfo.form.name)
+		$container.append($nameSpan)
 	})
 	
 }

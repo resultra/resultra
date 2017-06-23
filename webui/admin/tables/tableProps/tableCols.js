@@ -57,7 +57,7 @@ function initTableViewColsProperties(tableRef) {
 					setFormComponentLabel($header,colInfo.properties.fieldID,
 							colInfo.properties.labelFormat)					
 				} else {
-					$header.text("TBD - Header for button")
+					setFormButtonHeader($header,colInfo)
 				}
 				
 				$headerRow.append($header)
@@ -120,9 +120,7 @@ function initTableViewColsProperties(tableRef) {
 					$column.append($cellContainer)
 					break
 				case 'button':
-//					var $cellContainer = $(toggleTableCellContainerHTML())
-//					initToggleComponentControl($cellContainer,colInfo)
-					var $cellContainer = $('<div>TBD</div')
+					var $cellContainer = $(formButtonContainerHTML())
 					$column.append($cellContainer)
 					break
 				default:

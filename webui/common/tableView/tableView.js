@@ -33,28 +33,44 @@ function initItemListTableView(params) {
 	
 	function createTableViewColDef(colInfo,fieldsByID,
 				renderCellHTMLFunc,initContainerFunc,percColWidths) {
-		var fieldID = colInfo.properties.fieldID
 					
-		function columnSortType(fieldID,fieldsByID) {
-			var fieldInfo = fieldsByID[fieldID]
-			switch(fieldInfo.type) {
-			case fieldTypeNumber:
-				return 'custom-num'
-			case fieldTypeText:
+		function columnSortType(colInfo,fieldsByID) {	
+			function dataColSortType(colInfo,fieldsByID) {
+				var fieldID = colInfo.properties.fieldID
+				var fieldInfo = fieldsByID[fieldID]
+				switch(fieldInfo.type) {
+				case fieldTypeNumber:
+					return 'custom-num'
+				case fieldTypeText:
+					return 'string'
+				case fieldTypeBool:
+					return 'custom-bool'
+				case fieldTypeTime:
+					return 'date'
+				default:
+					return 'string'
+				}								
+			}
+			if (colInfo.colType === 'button') {
 				return 'string'
-			case fieldTypeBool:
-				return 'custom-bool'
-			case fieldTypeTime:
-				return 'date'
-			default:
-				return 'string'
-			}							
+			} else {
+				return dataColSortType(colInfo,fieldsByID)
+			}
 		}
 		
-		var colType = columnSortType(fieldID,fieldsByID)
+		var colType = columnSortType(colInfo,fieldsByID)
+		
+		function columnDataKey(colInfo) {
+			if (colInfo.colType === 'button') {
+				return null
+			} else {
+				var fieldID = colInfo.properties.fieldID
+				return 'fieldValues.' + fieldID
+			}
+		}
 								
 		var colDef = {
-			data:'fieldValues.' + fieldID,
+			data:columnDataKey(colInfo),
 			defaultContent:'', // used when there is null or undefined data
 			createdCell: function( cell, cellData, rowData, rowIndex, colIndex ) {
 				
@@ -172,6 +188,23 @@ function initItemListTableView(params) {
 				checkBoxTableViewCellContainerHTML,initContainer,percColWidths)
 	}
 
+	function createFormButtonColDef(colInfo,fieldsByID,percColWidths) {
+		
+		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+			setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
+			
+			// The loadFormViewComponents and loadRecordIntoFormLayout functions
+			// need to be passed to initFormButtonRecordEditBehavior in order
+			// to avoid a cyclical package dependency.
+			initFormButtonRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo,
+					loadFormViewComponents,loadRecordIntoFormLayout)
+		}
+		return createTableViewColDef(colInfo,fieldsByID,
+				formButtonContainerHTML,initContainer,percColWidths)
+	}
+
+
+
 	function createToggleColDef(colInfo,fieldsByID,percColWidths) {
 		
 		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
@@ -216,6 +249,8 @@ function initItemListTableView(params) {
 			return createCommentColDef(colInfo,fieldsByID,percColWidths)
 		case 'attachment':
 			return createAttachmentColDef(colInfo,fieldsByID,percColWidths)
+		case 'button':
+			return createFormButtonColDef(colInfo,fieldsByID,percColWidths)
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,
@@ -277,8 +312,12 @@ function initItemListTableView(params) {
 					$header.css("width",percColWidths[colInfo.columnID])
 				}
 				
-				setFormComponentLabel($header,colInfo.properties.fieldID,
-						colInfo.properties.labelFormat)
+				if (colInfo.colType !== 'button') {
+					setFormComponentLabel($header,colInfo.properties.fieldID,
+							colInfo.properties.labelFormat)					
+				} else {
+					setFormButtonHeader($header,colInfo)
+				}
 				
 				$headerRow.append($header)
 			})

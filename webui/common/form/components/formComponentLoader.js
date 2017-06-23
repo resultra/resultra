@@ -88,7 +88,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		// Create an HTML block for the container
 		console.log("loadFormComponents: initializing form button: " + JSON.stringify(formButton))
 	
-		var containerHTML = formButtonContainerHTML(formButton.buttonID);
+		var containerHTML = formButtonContainerHTML();
 		var $containerObj = $(containerHTML)
 		setFormButtonSize($containerObj,formButton.properties.size)
 		setFormButtonColorScheme($containerObj,formButton.properties.colorScheme)
