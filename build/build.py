@@ -12,6 +12,8 @@ import os
 import sys
 import argparse
 
+from multiprocessing import Pool
+
 parser = argparse.ArgumentParser(description='Main build script.')
 parser.add_argument('--release',default=False,action='store_true',
                     help='perform a release build')
@@ -23,16 +25,46 @@ debugBuild = 1
 if(args.release):
     debugBuild = 0
     
-
+    
+class buildDirResult:
+    def __repr__(self):
+        return "(dir = %s, err = %d) " % (self.dirName,self.errCode)
+        
+    def __init__(self, dirName,errCode):
+        self.dirName = dirName
+        self.errCode = errCode
+    
+    
+class buildDirSpec:
+    def __init__(self, dirName,targetName,debugBuild):
+        self.dirName = dirName
+        self.targetName = targetName
+        self.debugBuild = debugBuild
+    
+    
+def buildOneDir(buildSpec):
+    print "Building: dir=", buildSpec.dirName, " phase=", buildSpec.targetName, " debug=", buildSpec.debugBuild
+    retCode = os.system("make -C %s DEBUG=%s %s" % (buildSpec.dirName, buildSpec.debugBuild, buildSpec.targetName))
+    return buildDirResult(buildSpec.dirName,retCode)
+  
 def runMakePhase(makeTargetName):
+        
+    print "Build: Starting phase = ", makeTargetName
+    makeDirs = []
     for root, dirs, files in os.walk(".."):
         for file in files:
             if (file == 'Makefile') and (not root.startswith("../webui/build")):
-                print os.path.join(root,file)
-                retCode = os.system("make -C %s DEBUG=%s %s" % (root, debugBuild, makeTargetName))
-                if retCode != 0:
-                    failedDirs.append(makeTargetName + ":" + root)
-
+                makeDirs.append(buildDirSpec(root,makeTargetName,debugBuild))
+    buildPool = Pool(processes=6)
+    results = buildPool.map(buildOneDir,makeDirs)
+    buildPool.close()
+    buildPool.join()
+    print "Build: Done with phase = ", makeTargetName, " results = ",results
+    for res in results:
+        if res.errCode != 0:
+            failedDirs.append(makeTargetName + ":" + res.dirName)
+    
+            
 runMakePhase("prebuild")
 runMakePhase("build")
 runMakePhase("package")
