@@ -60,6 +60,26 @@ function initFormButtonColPropertiesImpl(formButtonCol) {
 	initButtonSizeProperties()
 	
 	
+	var elemPrefix = "button_"
+	
+	var defaultValPropParams = {
+		databaseID: colPropsAdminContext.databaseID,
+		elemPrefix: elemPrefix,
+		defaultDefaultValues: formButtonCol.properties.popupBehavior.defaultValues,
+		updateDefaultValues: function(updatedDefaultVals) {
+			console.log("Updating default values for form button: " + JSON.stringify(updatedDefaultVals))
+			
+			var setDefaultValsParams = {
+				parentTableID: formButtonCol.parentTableID,
+				buttonID: formButtonCol.buttonID,
+				defaultValues: updatedDefaultVals }
+			
+			jsonAPIRequest("tableView/formButton/setDefaultVals",setDefaultValsParams,function(updatedButtonRef) {
+			})
+		}
+	}
+	initDefaultValuesPropertyPanel(defaultValPropParams)
+	
 	
 }
 
