@@ -41,10 +41,9 @@ func calculateHiddenFormComponents(parentDatabaseID string, componentFilterCondM
 
 func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateConfig,
 	componentFilterCondMap form.FormComponentFilterMap,
-	recordID string, changeSetID string) (*recordValue.RecordValueResults, error) {
+	recCellUpdates *record.RecordCellUpdates, changeSetID string) (*recordValue.RecordValueResults, error) {
 
-	cellUpdateFieldValIndex, indexErr := record.NewUpdateFieldValueIndex(config.ParentDatabaseID, config.FieldsByID,
-		recordID, changeSetID)
+	cellUpdateFieldValIndex, indexErr := record.NewUpdateFieldValueIndexForCellUpdates(recCellUpdates, config.FieldsByID)
 	if indexErr != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", indexErr)
 	}
@@ -67,7 +66,7 @@ func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateCon
 
 	recValResults := recordValue.RecordValueResults{
 		ParentDatabaseID:     config.ParentDatabaseID,
-		RecordID:             recordID,
+		RecordID:             recCellUpdates.RecordID,
 		FieldValues:          *latestFieldValues,
 		HiddenFormComponents: hiddenComponents}
 
@@ -91,7 +90,9 @@ func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateCon
 
 // Re-map the series of value updates to "flattened" current (most recent) values for both calculated
 // and non-calculated fields.
-func MapOneRecordUpdatesToFieldValues(parentDatabaseID string, recordID string, changeSetID string) (*recordValue.RecordValueResults, error) {
+func MapOneRecordUpdatesToFieldValues(parentDatabaseID string, recCellUpdates *record.RecordCellUpdates,
+	changeSetID string) (*recordValue.RecordValueResults, error) {
+
 	updateConfig, err := calcField.CreateCalcFieldUpdateConfig(parentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", err)
@@ -101,15 +102,15 @@ func MapOneRecordUpdatesToFieldValues(parentDatabaseID string, recordID string, 
 		return nil, fmt.Errorf("CalculateHiddenFormComponents: %v", err)
 	}
 
-	return mapOneRecordUpdatesWithCalcFieldConfig(updateConfig, componentFilterCondMap, recordID, changeSetID)
+	return mapOneRecordUpdatesWithCalcFieldConfig(updateConfig, componentFilterCondMap, recCellUpdates, changeSetID)
 }
 
 func mapOneRecordWorker(resultsChan chan error,
 	config *calcField.CalcFieldUpdateConfig, componentFilterCondMap form.FormComponentFilterMap,
-	recordID string) {
+	recCellUpdates *record.RecordCellUpdates) {
 
 	_, err := mapOneRecordUpdatesWithCalcFieldConfig(config, componentFilterCondMap,
-		recordID, record.FullyCommittedCellUpdatesChangeSetID)
+		recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
 	resultsChan <- err
 
 }
@@ -127,7 +128,7 @@ func MapAllRecordUpdatesToFieldValues(parentDatabaseID string) error {
 		return fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
 
-	records, err := record.GetRecords(parentDatabaseID)
+	recordCellUpdateMap, err := record.GetAllCellUpdates(parentDatabaseID, record.FullyCommittedCellUpdatesChangeSetID)
 	if err != nil {
 		return fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
@@ -135,12 +136,12 @@ func MapAllRecordUpdatesToFieldValues(parentDatabaseID string) error {
 	resultsChan := make(chan error)
 
 	// Scatter: Map the results in goroutines
-	for _, currRecord := range records {
-		go mapOneRecordWorker(resultsChan, updateConfig, componentFilterCondMap, currRecord.RecordID)
+	for _, currRecCellUpdates := range recordCellUpdateMap {
+		go mapOneRecordWorker(resultsChan, updateConfig, componentFilterCondMap, currRecCellUpdates)
 	}
 
 	// Gather the results
-	for range records {
+	for range recordCellUpdateMap {
 		err := <-resultsChan
 		if err != nil {
 			return fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
@@ -148,7 +149,7 @@ func MapAllRecordUpdatesToFieldValues(parentDatabaseID string) error {
 	}
 
 	elapsed := time.Since(start)
-	log.Printf("MapAllRecordUpdatesToFieldValues: elapsed time for %v records =  %s", len(records), elapsed)
+	log.Printf("MapAllRecordUpdatesToFieldValues: elapsed time for %v records =  %s", len(recordCellUpdateMap), elapsed)
 
 	return nil
 

@@ -62,7 +62,7 @@ func SaveCellUpdate(cellUpdate CellUpdate) error {
 }
 
 // GetCellUpdates retrieves a list of cell updates for all the fields in the given record.
-func GetRecordCellUpdates(recordID string, changeSetID string) ([]CellUpdate, error) {
+func GetRecordCellUpdates(recordID string, changeSetID string) (*RecordCellUpdates, error) {
 
 	selectFields := `SELECT update_id,user_id,database_id,record_id,field_id,update_timestamp_utc,value,properties
 							FROM cell_updates`
@@ -110,7 +110,97 @@ func GetRecordCellUpdates(recordID string, changeSetID string) ([]CellUpdate, er
 		cellUpdates = append(cellUpdates, currCellUpdate)
 	}
 
-	return cellUpdates, nil
+	recCellUpdates := RecordCellUpdates{
+		RecordID:    recordID,
+		CellUpdates: cellUpdates}
+
+	return &recCellUpdates, nil
+}
+
+type RecordCellUpdates struct {
+	RecordID    string
+	CellUpdates []CellUpdate
+}
+
+func NewRecordCellUpdates(recordID string) *RecordCellUpdates {
+	recCellUpdates := RecordCellUpdates{
+		RecordID:    recordID,
+		CellUpdates: []CellUpdate{}}
+	return &recCellUpdates
+}
+
+type RecordCellUpdateMap map[string]*RecordCellUpdates
+
+func GetAllCellUpdates(databaseID string, changeSetID string) (RecordCellUpdateMap, error) {
+
+	// Pre-populate the map of record ID to the cell updates structure. This ensures the structure
+	// is populated, even for record IDs without any cell updates yet.
+	records, err := GetRecords(databaseID)
+	if err != nil {
+		return nil, fmt.Errorf("GetAllCellUpdates: %v", err)
+	}
+	recordCellUpdateMap := RecordCellUpdateMap{}
+	for _, currRecord := range records {
+		cellUpdates := RecordCellUpdates{RecordID: currRecord.RecordID,
+			CellUpdates: []CellUpdate{}}
+		recordCellUpdateMap[currRecord.RecordID] = &cellUpdates
+	}
+
+	selectFields := `SELECT update_id,user_id,database_id,record_id,field_id,update_timestamp_utc,value,properties
+							FROM cell_updates`
+	matchDatabaseQuery := ` database_id = $1 `
+
+	// Build up the query depending on whether or not the changeSetID is empty or not.
+	changeSetIDMatch := ""
+	changeIDQuery := ` (change_set_id is null OR change_set_id = $2)`
+	if len(changeSetID) > 0 {
+		// match a specific change_set_id
+		// TODO - Get the cell updates for changes without a changeSetID (i.e., baseline/main values)
+		// and with the given changeSetID
+		changeIDQuery = ` (change_set_id is null OR change_set_id = '' OR change_set_id = $2)`
+		changeSetIDMatch = changeSetID
+	}
+
+	cellUpdatesQuery := selectFields + ` WHERE ` + matchDatabaseQuery + ` AND ` + changeIDQuery
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(cellUpdatesQuery, databaseID, changeSetIDMatch)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetAllCellUpdates: Failure querying database = %v for cell updates: %v", databaseID, queryErr)
+	}
+
+	for rows.Next() {
+		var currCellUpdate CellUpdate
+		var encodedProps string
+		if scanErr := rows.Scan(
+			&currCellUpdate.UpdateID,
+			&currCellUpdate.UserID,
+			&currCellUpdate.ParentDatabaseID,
+			&currCellUpdate.RecordID,
+			&currCellUpdate.FieldID,
+			&currCellUpdate.UpdateTimeStamp,
+			&currCellUpdate.CellValue,
+			&encodedProps); scanErr != nil {
+			return nil, fmt.Errorf("GetRecordCellUpdates: Failure scanning database row: %v", scanErr)
+
+		}
+		cellUpdateProps := newDefaultCellUpdateProperties()
+		if decodeErr := generic.DecodeJSONString(encodedProps, &cellUpdateProps); decodeErr != nil {
+			return nil, fmt.Errorf("GetRecordCellUpdates: can't decode properties: %v", encodedProps)
+		}
+		currCellUpdate.Properties = cellUpdateProps
+
+		var recCellUpdates *RecordCellUpdates
+		recCellUpdates, found := recordCellUpdateMap[currCellUpdate.RecordID]
+		if !found {
+			cellUpdates := RecordCellUpdates{RecordID: currCellUpdate.RecordID,
+				CellUpdates: []CellUpdate{}}
+			recCellUpdates = &cellUpdates
+			recordCellUpdateMap[currCellUpdate.RecordID] = recCellUpdates
+		}
+		recCellUpdates.CellUpdates = append(recCellUpdates.CellUpdates, currCellUpdate)
+	}
+
+	return recordCellUpdateMap, nil
 }
 
 // GetCellUpdates retrieves a list of cell updates for all the fields in the given record.

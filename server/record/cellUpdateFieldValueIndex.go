@@ -45,18 +45,10 @@ func (cellUpdateFieldValIndex CellUpdateFieldValueIndex) LatestNonCalcFieldValue
 	return &recFieldValues
 }
 
-func NewUpdateFieldValueIndex(parentDatabaseID string, fieldsByID map[string]field.Field,
-	recordID string, changeSetID string) (*CellUpdateFieldValueIndex, error) {
-
-	recCellUpdates, getErr := GetRecordCellUpdates(recordID, changeSetID)
-	if getErr != nil {
-		return nil, fmt.Errorf("NewFieldValueIndex: failure retrieving cell updates for record = %v: error = %v",
-			recordID, getErr)
-	}
-
+func NewUpdateFieldValueIndexForCellUpdates(recCellUpdates *RecordCellUpdates, fieldsByID map[string]field.Field) (*CellUpdateFieldValueIndex, error) {
 	// Populate the index with all the updates for the given recordID, broken down by FieldID.
 	fieldValSeriesMap := CellUpdateFieldValueIndex{}
-	for _, currUpdate := range recCellUpdates {
+	for _, currUpdate := range recCellUpdates.CellUpdates {
 
 		fieldInfo, foundField := fieldsByID[currUpdate.FieldID]
 		if !foundField {
@@ -82,4 +74,18 @@ func NewUpdateFieldValueIndex(parentDatabaseID string, fieldsByID map[string]fie
 	}
 
 	return &fieldValSeriesMap, nil
+
+}
+
+func NewUpdateFieldValueIndex(parentDatabaseID string, fieldsByID map[string]field.Field,
+	recordID string, changeSetID string) (*CellUpdateFieldValueIndex, error) {
+
+	recCellUpdates, getErr := GetRecordCellUpdates(recordID, changeSetID)
+	if getErr != nil {
+		return nil, fmt.Errorf("NewFieldValueIndex: failure retrieving cell updates for record = %v: error = %v",
+			recordID, getErr)
+	}
+
+	return NewUpdateFieldValueIndexForCellUpdates(recCellUpdates, fieldsByID)
+
 }

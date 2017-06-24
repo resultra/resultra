@@ -22,10 +22,15 @@ func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*rec
 		return nil, fmt.Errorf("updateRecordValue: Can't set record value: err = %v", writeErr)
 	}
 
+	recCellUpdates, cellUpdatesErr := record.GetRecordCellUpdates(recordForUpdate.RecordID, recUpdater.GetChangeSetID())
+	if cellUpdatesErr != nil {
+		return nil, fmt.Errorf("updateRecordValue: Can't get cell updates: err = %v", cellUpdatesErr)
+	}
+
 	// Since a change has occored to one of the record's values, a new set of mapped record
 	// values needs to be created.
 	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
-		recordForUpdate.ParentDatabaseID, recordForUpdate.RecordID, recUpdater.GetChangeSetID())
+		recordForUpdate.ParentDatabaseID, recCellUpdates, recUpdater.GetChangeSetID())
 	if mapErr != nil {
 		return nil, fmt.Errorf(
 			"updateRecordValue: Error mapping field values: err = %v", mapErr)
@@ -51,10 +56,15 @@ func commitChangeSet(params CommitChangeSetParams) (*recordValue.RecordValueResu
 		return nil, fmt.Errorf("commitChangeSet: error committing changes : %v", commitErr)
 	}
 
+	recCellUpdates, cellUpdatesErr := record.GetRecordCellUpdates(params.RecordID, record.FullyCommittedCellUpdatesChangeSetID)
+	if cellUpdatesErr != nil {
+		return nil, fmt.Errorf("updateRecordValue: Can't get cell updates: err = %v", cellUpdatesErr)
+	}
+
 	// Temporary changes made under the given changeSetID have been made permanent, so
 	// a new set of mapped record values needs to be created.
 	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
-		commitRecord.ParentDatabaseID, params.RecordID, record.FullyCommittedCellUpdatesChangeSetID)
+		commitRecord.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(
 			"updateRecordValue: Error mapping field values: err = %v", mapErr)
@@ -75,8 +85,13 @@ func setDefaultValues(req *http.Request, params record.SetDefaultValsParams) (*r
 		return nil, fmt.Errorf("setDefaultValues: %v", setDefaultErr)
 	}
 
+	recCellUpdates, cellUpdatesErr := record.GetRecordCellUpdates(params.RecordID, params.ChangeSetID)
+	if cellUpdatesErr != nil {
+		return nil, fmt.Errorf("updateRecordValue: Can't get cell updates: err = %v", cellUpdatesErr)
+	}
+
 	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
-		params.ParentDatabaseID, params.RecordID, params.ChangeSetID)
+		params.ParentDatabaseID, recCellUpdates, params.ChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(
 			"updateRecordValue: Error mapping field values: err = %v", mapErr)
