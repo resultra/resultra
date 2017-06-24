@@ -110,7 +110,7 @@ class TestHelperMixin:
         return recordID
     
     def getRecord(self,parentDatabaseID,recordID):
-        recordRef = self.apiRequest('recordValue/getRecordValueResults',
+        recordRef = self.apiRequest('recordRead/getRecordValueResults',
                 {'parentDatabaseID':parentDatabaseID,'recordID':recordID})
         return recordRef
         

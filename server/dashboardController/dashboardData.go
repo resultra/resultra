@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/dashboard/components/header"
-	"resultra/datasheet/server/recordValueMappingController"
 )
 
 type GetDashboardDataParams struct {
@@ -24,11 +23,6 @@ func getDefaultDashboardData(params GetDashboardDataParams) (*DashboardDataRef, 
 	dashboard, err := dashboard.GetDashboard(params.DashboardID)
 	if err != nil {
 		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard: error = %v", err)
-	}
-
-	mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(dashboard.ParentDatabaseID)
-	if mapErr != nil {
-		return nil, fmt.Errorf("GetFilteredRecords: Error updating records: %v", mapErr)
 	}
 
 	barChartData, getBarChartsErr := getDefaultDashboardBarChartsData(params.DashboardID)

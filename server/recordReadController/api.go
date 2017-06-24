@@ -15,6 +15,8 @@ func init() {
 
 	recordReadRouter.HandleFunc("/api/recordRead/getFilteredSortedRecordValues", getFilteredSortedRecordsAPI)
 
+	recordReadRouter.HandleFunc("/api/recordRead/getRecordValueResults", getRecordValueResultAPI)
+
 	http.Handle("/api/recordRead/", recordReadRouter)
 }
 
@@ -29,10 +31,27 @@ func getFilteredSortedRecordsAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// By default, recompute/refresh the record values before returning.
-	if recordRefs, err := GetRefreshedFilteredSortedRecords(params); err != nil {
+	if recordRefs, err := GetFilteredSortedRecords(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, recordRefs)
+	}
+
+}
+
+func getRecordValueResultAPI(w http.ResponseWriter, r *http.Request) {
+
+	params := GetRecordValResultParams{}
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	recordValResults, err := getRecordValueResults(params)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, *recordValResults)
 	}
 
 }

@@ -57,9 +57,6 @@ func (recFieldVals RecFieldValues) GetBoolFieldValue(fieldID string) (bool, bool
 	}
 }
 
-// TODO (Important) - Save time values as time.Time. When saved then restored from an interface{} value, time values get restored as
-// strings rather than dates. This makes it necessary to decode the strings after the fact. A more type safe way to store the
-// values would be to have a different map of values for each type; i.e. bool, time, etc.
 func (recFieldVals RecFieldValues) GetTimeFieldValue(fieldID string) (time.Time, bool) {
 	// Time fields are stored as strings when serialized using the RecFieldValues
 	// To return the actual date, the string needs to be deserialized into a time.Time type.
@@ -70,16 +67,10 @@ func (recFieldVals RecFieldValues) GetTimeFieldValue(fieldID string) (time.Time,
 		return timeVal, false
 	}
 
-	timeStr, foundStrVal := rawVal.(string)
-	if !foundStrVal {
+	valAsTime, timeValFound := rawVal.(time.Time)
+	if timeValFound {
+		return valAsTime, true
+	} else {
 		return timeVal, false
 	}
-
-	timeVal, parseErr := time.Parse(time.RFC3339, timeStr)
-	if parseErr != nil {
-		return timeVal, false
-	}
-
-	return timeVal, true
-
 }

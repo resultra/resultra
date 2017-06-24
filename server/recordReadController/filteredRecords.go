@@ -3,6 +3,7 @@ package recordReadController
 import (
 	"fmt"
 	"resultra/datasheet/server/common/recordSortDataModel"
+	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/recordSort"
 	"resultra/datasheet/server/recordValue"
@@ -26,9 +27,9 @@ func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordVa
 
 	// The code below retrieve *all* the mapped record values. A more scalable approach would be to filter the
 	// record values in batches, then combine and sort them.
-	unfilteredRecordValues, getRecordErr := recordValue.GetAllRecordValueResults(params.DatabaseID)
-	if getRecordErr != nil {
-		return nil, fmt.Errorf("GetFilteredRecords: Error retrieving records: %v", getRecordErr)
+	unfilteredRecordValues, mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(params.DatabaseID)
+	if mapErr != nil {
+		return nil, fmt.Errorf("GetFilteredRecords: Error updating records: %v", mapErr)
 	}
 
 	preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(params.PreFilterRules, unfilteredRecordValues)
@@ -48,10 +49,25 @@ func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordVa
 	return filteredRecords, nil
 }
 
-func GetRefreshedFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordValue.RecordValueResults, error) {
-	mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(params.DatabaseID)
-	if mapErr != nil {
-		return nil, fmt.Errorf("GetFilteredRecords: Error updating records: %v", mapErr)
+type GetRecordValResultParams struct {
+	ParentDatabaseID string `json:"parentDatabaseID"`
+	RecordID         string `json:"recordID"`
+}
+
+func getRecordValueResults(params GetRecordValResultParams) (*recordValue.RecordValueResults, error) {
+
+	recCellUpdates, cellUpdatesErr := record.GetRecordCellUpdates(params.RecordID, record.FullyCommittedCellUpdatesChangeSetID)
+	if cellUpdatesErr != nil {
+		return nil, fmt.Errorf("updateRecordValue: Can't get cell updates: err = %v", cellUpdatesErr)
 	}
-	return GetFilteredSortedRecords(params)
+
+	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
+		params.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
+	if mapErr != nil {
+		return nil, fmt.Errorf(
+			"updateRecordValue: Error mapping field values: err = %v", mapErr)
+	}
+
+	return updateRecordValResult, nil
+
 }
