@@ -1,5 +1,10 @@
 
 ASSET_BASE_PATH = $(DEPTH)/webui
+
+# IMPORTANT NOTE: Makefile rules with BUILD_ASSET_INJECTION_LIST need to come in the 'build' or 'package' 
+# target of the Makefile. Specifically, it needs to come after any rules with GEN_ASSET_MANIFEST. This
+# is because GEN_ASSET_MANIFEST generates the manifest files in the sub-directories which BUILD_ASSET_INJECTION_LIST
+# depends upon.
 BUILD_ASSET_INJECTION_LIST = $(DEPTH)/webui/build/buildAssetList.py
 
 GEN_ASSET_MANFIEST = $(DEPTH)/webui/build/genAssetManifest.py

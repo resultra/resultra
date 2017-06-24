@@ -44,7 +44,11 @@ class buildDirSpec:
     
 def buildOneDir(buildSpec):
     print "Building: dir=", buildSpec.dirName, " phase=", buildSpec.targetName, " debug=", buildSpec.debugBuild
-    retCode = os.system("make -C %s DEBUG=%s %s" % (buildSpec.dirName, buildSpec.debugBuild, buildSpec.targetName))
+    bldCmd = "make -C %s DEBUG=%s %s" % (buildSpec.dirName, buildSpec.debugBuild, buildSpec.targetName)
+    print "Build cmd: %s " % (bldCmd)
+    retCode = os.system(bldCmd)
+    if retCode != 0:
+        print "FAIL: failure building dir = %s, target= %s, err = %d" % (buildSpec.dirName,buildSpec.targetName,retCode)
     return buildDirResult(buildSpec.dirName,retCode)
   
 def runMakePhase(makeTargetName):
@@ -59,7 +63,7 @@ def runMakePhase(makeTargetName):
     results = buildPool.map(buildOneDir,makeDirs)
     buildPool.close()
     buildPool.join()
-    print "Build: Done with phase = ", makeTargetName, " results = ",results
+    print "Build: Done with phase = ", makeTargetName
     for res in results:
         if res.errCode != 0:
             failedDirs.append(makeTargetName + ":" + res.dirName)

@@ -2,7 +2,7 @@ DEPTH = ../../..
 include $(DEPTH)/build/common.mk
 include $(DEPTH)/webui/build/webui.mk
 
-all: prebuild package
+all: prebuild build package
 	
 # This pacakge includes a hand-written AssetManifest.json, since the HTML template for the sign in page, signInPage.html,
 # needs to be excluded from the standard $(EXPORT_ASSETS) rule. 
@@ -16,6 +16,8 @@ clean:
 	
 prebuild:
 	$(GEN_ASSET_MANIFEST)
+
+build:
 	$(BUILD_ASSET_INJECTION_LIST) signinPageAssetInclude.json $(ASSET_BASE_PATH) > signinPageAssetInclude_gen.json
 	
 		
