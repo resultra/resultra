@@ -11,12 +11,15 @@
 import os
 import sys
 import argparse
+import time
 
 from multiprocessing import Pool
 
 parser = argparse.ArgumentParser(description='Main build script.')
 parser.add_argument('--release',default=False,action='store_true',
                     help='perform a release build')
+parser.add_argument('--procs',default=4,type=int,
+                    help='number of processors(cores) to run parallel build on (default = 4)')
 args = parser.parse_args()
 
 failedDirs = []
@@ -59,7 +62,7 @@ def runMakePhase(makeTargetName):
         for file in files:
             if (file == 'Makefile') and (not root.startswith("../webui/build")):
                 makeDirs.append(buildDirSpec(root,makeTargetName,debugBuild))
-    buildPool = Pool(processes=6)
+    buildPool = Pool(processes=args.procs)
     results = buildPool.map(buildOneDir,makeDirs)
     buildPool.close()
     buildPool.join()
@@ -68,10 +71,19 @@ def runMakePhase(makeTargetName):
         if res.errCode != 0:
             failedDirs.append(makeTargetName + ":" + res.dirName)
     
+    
+startTime = time.time()    
             
 runMakePhase("prebuild")
 runMakePhase("build")
 runMakePhase("package")
+
+endTime = time.time()
+
+print "\n\n--------------------------------------------------------"
+
+
+print "Build complete: parallel procs = %d, elapse time = %d secs " % (args.procs, endTime-startTime)
                 
 print "\nBuild Results:\n"
 
