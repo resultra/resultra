@@ -23,13 +23,35 @@ func NewDefaultGetFilteredSortedRecordsParams() GetFilteredSortedRecordsParams {
 
 }
 
+func getCachedOrRemappedRecordValues(databaseID string) ([]recordValue.RecordValueResults, error) {
+
+	cachedValues, valuesFound := recordValue.ResultsCache.Get(databaseID)
+	if valuesFound {
+		var validType bool
+		recordValues, validType := cachedValues.([]recordValue.RecordValueResults)
+		if validType {
+			return recordValues, nil
+		} else {
+			return nil, fmt.Errorf("getCachedOrRemappedRecordValues: unexpected type from results cache")
+		}
+	} else {
+		recordValues, mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(databaseID)
+		if mapErr != nil {
+			return nil, fmt.Errorf("GetFilteredRecords: Error updating records: %v", mapErr)
+		}
+		recordValue.ResultsCache.Add(databaseID, recordValues)
+		return recordValues, nil
+	}
+
+}
+
 func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordValue.RecordValueResults, error) {
 
 	// The code below retrieve *all* the mapped record values. A more scalable approach would be to filter the
 	// record values in batches, then combine and sort them.
-	unfilteredRecordValues, mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(params.DatabaseID)
-	if mapErr != nil {
-		return nil, fmt.Errorf("GetFilteredRecords: Error updating records: %v", mapErr)
+	unfilteredRecordValues, getRecordsErr := getCachedOrRemappedRecordValues(params.DatabaseID)
+	if getRecordsErr != nil {
+		return nil, fmt.Errorf("GetFilteredRecords: Error updating records: %v", getRecordsErr)
 	}
 
 	preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(params.PreFilterRules, unfilteredRecordValues)

@@ -28,6 +28,9 @@ func newRecord(params record.NewRecordParams) (*recordValue.RecordValueResults, 
 			"newRecord: Error mapping field values: err = %v", mapErr)
 	}
 
+	// Force a recalculation of results the next time results are loaded.
+	recordValue.ResultsCache.Remove(params.ParentDatabaseID)
+
 	return updateRecordValResult, nil
 
 }

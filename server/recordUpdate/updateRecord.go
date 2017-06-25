@@ -36,6 +36,9 @@ func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*rec
 			"updateRecordValue: Error mapping field values: err = %v", mapErr)
 	}
 
+	// Force a recalculation of results the next time results are loaded.
+	recordValue.ResultsCache.Remove(recordForUpdate.ParentDatabaseID)
+
 	return updateRecordValResult, nil
 
 }
@@ -70,6 +73,9 @@ func commitChangeSet(params CommitChangeSetParams) (*recordValue.RecordValueResu
 			"updateRecordValue: Error mapping field values: err = %v", mapErr)
 	}
 
+	// Force a recalculation of results the next time results are loaded.
+	recordValue.ResultsCache.Remove(commitRecord.ParentDatabaseID)
+
 	return updateRecordValResult, nil
 
 }
@@ -96,6 +102,9 @@ func setDefaultValues(req *http.Request, params record.SetDefaultValsParams) (*r
 		return nil, fmt.Errorf(
 			"updateRecordValue: Error mapping field values: err = %v", mapErr)
 	}
+
+	// Force a recalculation of results the next time results are loaded.
+	recordValue.ResultsCache.Remove(params.ParentDatabaseID)
 
 	return updateRecordValResult, nil
 
