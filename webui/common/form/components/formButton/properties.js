@@ -5,9 +5,11 @@ function initFormButtonPopupBehaviorProperties(buttonRef) {
 	
 	var $behaviorSelection = $('#formButtonPopupBehaviorSelection')
 	var $customModalSaveLabelInput = $('#formButtonCustomModalSaveLabelInput')
+	var $whereShowFormSelection = $('#formButtonWhereShowFormSelection')
 			
 	$behaviorSelection.val(buttonRef.properties.popupBehavior.popupMode)
 	$customModalSaveLabelInput.val(buttonRef.properties.popupBehavior.customLabelModalSave)
+	$whereShowFormSelection.val(buttonRef.properties.popupBehavior.whereShowForm)
 	
 	function updateModelLabelVisibility(popupMode) {
 		var $modalLabelFormGroup = $('#formButtonCustomModalSaveLabelFormGroup')
@@ -20,16 +22,14 @@ function initFormButtonPopupBehaviorProperties(buttonRef) {
 	
 	updateModelLabelVisibility(buttonRef.properties.popupBehavior.popupMode)
 	
-	
-	
-	
 	function savePropertiesFromControls() {
 		var setPopupBehaviorParams = { 
 			parentFormID: buttonRef.parentFormID,
 			buttonID: buttonRef.buttonID,
 			popupBehavior: {
 				popupMode: $behaviorSelection.val(),
-				customLabelModalSave: $customModalSaveLabelInput.val()
+				customLabelModalSave: $customModalSaveLabelInput.val(),
+				whereShowForm: $whereShowFormSelection.val()
 			}
 		}
 		jsonAPIRequest("frm/formButton/setPopupBehavior",setPopupBehaviorParams,function(updatedButtonRef) {
@@ -39,6 +39,10 @@ function initFormButtonPopupBehaviorProperties(buttonRef) {
 	}
 	
 	initSelectControlChangeHandler($behaviorSelection, function() {
+		console.log("Popup behavior changed: " + $behaviorSelection.val())
+		savePropertiesFromControls()
+	})
+	initSelectControlChangeHandler($whereShowFormSelection, function() {
 		console.log("Popup behavior changed: " + $behaviorSelection.val())
 		savePropertiesFromControls()
 	})
@@ -145,7 +149,7 @@ function loadFormButtonProperties($button,buttonRef) {
 	var defaultValPropParams = {
 		databaseID: designFormContext.databaseID,
 		elemPrefix: elemPrefix,
-		defaultDefaultValues: buttonRef.properties.popupBehavior.defaultValues,
+		defaultDefaultValues: buttonRef.properties.defaultValues,
 		updateDefaultValues: function(updatedDefaultVals) {
 			console.log("Updateing default values for form button: " + JSON.stringify(updatedDefaultVals))
 			

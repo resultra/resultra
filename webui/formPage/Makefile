@@ -17,3 +17,5 @@ package:
 	$(EXPORT_HTML_WITH_INJECTED_ASSETS) $(abspath ./submitFormPageAssets_gen.json)
 	$(BUILD_ASSET_INJECTION_LIST) newItemPageAssetInclude.json $(ASSET_BASE_PATH) > newItemPageAssets_gen.json
 	$(EXPORT_HTML_WITH_INJECTED_ASSETS) $(abspath ./newItemPageAssets_gen.json)
+	$(BUILD_ASSET_INJECTION_LIST) viewFormPageAssetInclude.json $(ASSET_BASE_PATH) > viewFormPageAssets_gen.json
+	$(EXPORT_HTML_WITH_INJECTED_ASSETS) $(abspath ./viewFormPageAssets_gen.json)

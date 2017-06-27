@@ -2,7 +2,7 @@ package formButton
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic/stringValidation"
+	"resultra/datasheet/server/common/inputProps"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/record"
 )
@@ -13,54 +13,13 @@ const buttonSizeMedium string = "medium"
 const colorSchemeDefault string = "default"
 const buttonIconNone string = "none"
 
-type ButtonPopupBehavior struct {
-	PopupMode            string                     `json:"popupMode"`
-	CustomLabelModalSave string                     `json:"customLabelModalSave"`
-	DefaultValues        []record.DefaultFieldValue `json:"defaultValues"`
-}
-
-func (srcProps ButtonPopupBehavior) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ButtonPopupBehavior, error) {
-
-	destProps := srcProps
-
-	destDefaultVals, cloneErr := record.CloneDefaultFieldValues(remappedIDs, srcProps.DefaultValues)
-	if cloneErr != nil {
-		return nil, fmt.Errorf("ButtonPopupBehavior.Clone: %v", cloneErr)
-	}
-	destProps.DefaultValues = destDefaultVals
-
-	return &destProps, nil
-
-}
-
-func newDefaultPopupBehavior() ButtonPopupBehavior {
-	defaultPopupBehavior := ButtonPopupBehavior{
-		PopupMode:            popupBehaviorModeless,
-		CustomLabelModalSave: "",
-		DefaultValues:        []record.DefaultFieldValue{}}
-	return defaultPopupBehavior
-}
-
-func (buttonPopupBehavior ButtonPopupBehavior) validateWellFormed() error {
-
-	if !(buttonPopupBehavior.PopupMode == popupBehaviorModeless ||
-		buttonPopupBehavior.PopupMode == popupBehaviorModal) {
-		return fmt.Errorf("Invalid form popup mode: %v", buttonPopupBehavior.PopupMode)
-	}
-
-	if validLabelErr := stringValidation.ValidateOptionalItemLabel(buttonPopupBehavior.CustomLabelModalSave); validLabelErr != nil {
-		return validLabelErr
-	}
-
-	return nil
-}
-
 type ButtonProperties struct {
-	LinkedFormID  string              `json:"linkedFormID"`
-	PopupBehavior ButtonPopupBehavior `json:"popupBehavior"`
-	Size          string              `json:"size"`
-	ColorScheme   string              `json:"colorScheme"`
-	Icon          string              `json:"icon"`
+	LinkedFormID  string                         `json:"linkedFormID"`
+	PopupBehavior inputProps.ButtonPopupBehavior `json:"popupBehavior"`
+	Size          string                         `json:"size"`
+	ColorScheme   string                         `json:"colorScheme"`
+	Icon          string                         `json:"icon"`
+	DefaultValues []record.DefaultFieldValue     `json:"defaultValues"`
 }
 
 func (srcProps ButtonProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ButtonProperties, error) {
@@ -75,14 +34,21 @@ func (srcProps ButtonProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*
 	}
 	destProps.PopupBehavior = *destPopupProps
 
+	destDefaultVals, cloneErr := record.CloneDefaultFieldValues(remappedIDs, srcProps.DefaultValues)
+	if cloneErr != nil {
+		return nil, fmt.Errorf("ButtonPopupBehavior.Clone: %v", cloneErr)
+	}
+	destProps.DefaultValues = destDefaultVals
+
 	return &destProps, nil
 }
 
 func newDefaultButtonProperties() ButtonProperties {
 
 	return ButtonProperties{
-		PopupBehavior: newDefaultPopupBehavior(),
+		PopupBehavior: inputProps.NewDefaultPopupBehavior(),
 		Size:          buttonSizeMedium,
 		ColorScheme:   colorSchemeDefault,
-		Icon:          buttonIconNone}
+		Icon:          buttonIconNone,
+		DefaultValues: []record.DefaultFieldValue{}}
 }

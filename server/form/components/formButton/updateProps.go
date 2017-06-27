@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/inputProps"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/record"
 )
@@ -69,12 +70,12 @@ func (updateParams ButtonResizeParams) updateProps(buttonForUpdate *FormButton) 
 
 type ButtonBehaviorParams struct {
 	ButtonIDHeader
-	PopupBehavior ButtonPopupBehavior `json:"popupBehavior"`
+	PopupBehavior inputProps.ButtonPopupBehavior `json:"popupBehavior"`
 }
 
 func (updateParams ButtonBehaviorParams) updateProps(buttonForUpdate *FormButton) error {
 
-	if err := updateParams.PopupBehavior.validateWellFormed(); err != nil {
+	if err := updateParams.PopupBehavior.ValidateWellFormed(); err != nil {
 		return err
 	}
 
@@ -96,7 +97,7 @@ func (updateParams ButtonDefaultValParams) updateProps(buttonForUpdate *FormButt
 
 	log.Printf("Setting default values: %+v", updateParams.DefaultValues)
 
-	buttonForUpdate.Properties.PopupBehavior.DefaultValues = updateParams.DefaultValues
+	buttonForUpdate.Properties.DefaultValues = updateParams.DefaultValues
 
 	return nil
 }

@@ -67,23 +67,40 @@
 	
 {{end}}
 
+{{define "formButtonWhereShowFormProps"}}
+		<div class="form-group">
+	
+			<label for="formButtonPopupBehaviorSelection">Where to display form:</label>
+			
+			<select class="form-control" id="formButtonWhereShowFormSelection">
+				<option disabled selected value="">Select</option>
+				<option value="popup">Popup window on same page</option>
+				<option value="newPage">Stand-alone page in new tab or window</option>
+				<option value="page">Stand-alone page</option>
+			</select>
+			
+		</div>
+{{end}}
+
 {{define "formButtonPopupBehaviorProps"}}
 	
-	<form class="form-inline" id="formButtonPopupBehaviorForm">
+	<form id="formButtonPopupBehaviorForm">
+		
+		{{template "formButtonWhereShowFormProps"}}
 			
 		<div class="form-group">
 	
-			<label for="formButtonPopupBehaviorSelection">When to save changes made in popup form:</label>
+			<label for="formButtonPopupBehaviorSelection">When to save changes:</label>
 
 			<select class="form-control" id="formButtonPopupBehaviorSelection">
 				<option disabled selected value="">Select a behavior</option>
-				<option value="modeless">Save changes immediately</option>
-				<option value="modal">Save changes when popup closes</option>
+				<option value="modeless">Save immediately</option>
+				<option value="modal">Only when save button pressed</option>
 			</select>
 		</div>
 	
 	    <div class="form-group marginTop5" id="formButtonCustomModalSaveLabelFormGroup">
-	      <label for="">Custom button label to save changes and close popup (optional):</label>
+	      <label for="">Custom button label to save changes (optional):</label>
 	      <input type="text" class="form-control" id="formButtonCustomModalSaveLabelInput" name="formButtonCustomModalSaveLabelInput">
 	    </div>
 	
@@ -91,7 +108,7 @@
 
 	<hr>
 
-      <label>Default values to set when opening popup form:</label>
+      <label>Default values to set when opening form:</label>
 		{{template "defaultValuesPropertyPanel" .DefaultValuePanelParams}}
 
 	

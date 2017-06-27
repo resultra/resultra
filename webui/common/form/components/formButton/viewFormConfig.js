@@ -18,11 +18,9 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 	var popupMode = buttonObjectRef.properties.popupBehavior.popupMode
 	
 	var $formButton = buttonFromFormButtonContainer($buttonContainer)
-			
-	initButtonControlClickHandler($formButton, function() {
-		console.log("Form button clicked: " + JSON.stringify(buttonObjectRef))
-		
-		// Editing of the record in the popup is done with the parent form's current record.
+	
+	
+	function showRecordInPopupView() {
 		var currRecord = parentRecordProxy.getRecordFunc()
 
 		var $popupFormViewCanvas = $('#formButtonPopupFormCanvas')
@@ -143,8 +141,32 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 			loadFormViewComponentFunc($popupFormViewCanvas, viewFormContext, recordProxy,
 				 showDialogAfterFormComponentLoaded)
 		}
-			
 		
+	}
+	
+	function viewFormURL() {
+		var currRecord = parentRecordProxy.getRecordFunc()
+		return '/viewItem/' + buttonObjectRef.properties.linkedFormID + '/' + currRecord.recordID
+	}
+	
+	function showRecordInNewPage() {
+		var win = window.open(viewFormURL(),"_blank")
+		win.focus()
+	}
+	
+	function showRecordInPage() {
+		navigateToURL(viewFormURL())
+	}
+			
+	initButtonControlClickHandler($formButton, function() {
+		var showFormDest = buttonObjectRef.properties.popupBehavior.whereShowForm
+		if(showFormDest === 'popup') {
+			showRecordInPopupView()	
+		} else if (showFormDest === 'page'){
+			showRecordInPage()
+		} else if (showFormDest === 'newPage') {
+			showRecordInNewPage()
+		}
 	})
 	
 	
