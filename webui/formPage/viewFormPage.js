@@ -4,7 +4,7 @@ $(document).ready(function() {
 				
 	initUserDropdownMenu()
 	
-	function initRecordFormView(recordRef,changeSetID) {
+	function initRecordFormView(pageConfig,recordRef,changeSetID) {
 		
 		var $formViewCanvas = $('#viewFormPageLayoutCanvas')
 		$formViewCanvas.empty()
@@ -44,29 +44,25 @@ $(document).ready(function() {
 					loadRecordIntoFormLayout($formViewCanvas,recordRef)
 				}
 			}
+			loadRecordWithDefaultVals(pageConfig.defaultVals)
 			
-			if(viewFormPageContext.srcColumnID.length > 0) {
-				// Get the default values from the column used to open the form. 
-				var getButtonParams = {
-					buttonID: viewFormPageContext.srcColumnID
-				}
-				jsonAPIRequest("tableView/formButton/getFromButtonID",getButtonParams,function(buttonRef) {
-					var defaultVals = buttonRef.properties.defaultValues
-					loadRecordWithDefaultVals(defaultVals)
+			var $saveButton = $("#viewFormPageSaveButton")
+			if(pageConfig.saveMode === FormViewModeSave) {
+				$saveButton.show()
+				initButtonControlClickHandler($saveButton, function() {					
+					var commitChangeParams = {
+						recordID: getFormRecordFunc().recordID,
+						changeSetID: changeSetID }
+					jsonAPIRequest("recordUpdate/commitChangeSet",commitChangeParams,function(updatedRecordRef) {
+						// If the popup form is modal, the parent form's record is not updated until the "Save Changes" button
+						// is pressed.
+						updateFormRecordFunc(updatedRecordRef)
+					})
 				})
-			} else if(viewFormPageContext.srcFrmButtonID.length > 0) {
-				var getButtonParams = {
-					buttonID: viewFormPageContext.srcFrmButtonID
-				}
-				jsonAPIRequest("frm/formButton/get",getButtonParams,function(buttonRef) {
-					var defaultVals = buttonRef.properties.defaultValues
-					loadRecordWithDefaultVals(defaultVals)
-				})
-					
 			} else {
-				// Load without default values.
-				loadRecordIntoFormLayout($formViewCanvas,recordRef)		
+				$saveButton.hide()
 			}
+			
 	
 		}
 
@@ -83,16 +79,16 @@ $(document).ready(function() {
 	
 	var FormViewModeModeless = "modeless"
 	var FormViewModeSave = "modal"
-	var formViewMode = FormViewModeModeless
 	
-	function getRecordRefAndChangeSetID(doneCallback) {
+	function getRecordRefAndChangeSetID(pageConfig,doneCallback) {
+		
 		var recordRef
 		var changeSetID		
 		var callsRemaining = 2
 		function processOneCall() {
 			callsRemaining--
 			if (callsRemaining <= 0) {
-				doneCallback(recordRef,changeSetID)
+				doneCallback(pageConfig,recordRef,changeSetID)
 			}
 		}
 		
@@ -105,23 +101,9 @@ $(document).ready(function() {
 			processOneCall()
 		})
 		
-		if (formViewMode === FormViewModeSave) {					
+		if (pageConfig.saveMode === FormViewModeSave) {					
 			jsonAPIRequest("record/allocateChangeSetID",{},function(changeSetIDResp) {
 				changeSetID = changeSetIDResp.changeSetID
-				
-				initButtonClickHandler('#viewFormPageSaveButton', function() {
-					console.log("Modal Save changes button clicked: " + JSON.stringify(buttonObjectRef))
-					// TODO - Remove the temporary changes set ID for any changes made while editing the record.
-					
-					var commitChangeParams = {
-						recordID: getFormRecordFunc().recordID,
-						changeSetID: changeSetIDResp.changeSetID }
-					jsonAPIRequest("recordUpdate/commitChangeSet",commitChangeParams,function(updatedRecordRef) {
-						// If the popup form is modal, the parent form's record is not updated until the "Save Changes" button
-						// is pressed.
-						console.log("Form changes saved")
-					})
-				})
 				processOneCall()
 			})
 		} else {
@@ -133,6 +115,42 @@ $(document).ready(function() {
 		}
 	}
 	
-	getRecordRefAndChangeSetID(initRecordFormView)
+	function getPageConfig(pageConfigDoneCallback) {
+		
+		var pageConfig = {}
+		
+		if(viewFormPageContext.srcColumnID.length > 0) {
+			// Get the default values from the column used to open the form. 
+			var getButtonParams = {
+				buttonID: viewFormPageContext.srcColumnID
+			}
+			jsonAPIRequest("tableView/formButton/getFromButtonID",getButtonParams,function(buttonRef) {
+				pageConfig.defaultVals = buttonRef.properties.defaultValues
+				pageConfig.saveMode = buttonRef.properties.popupBehavior.popupMode
+				pageConfigDoneCallback(pageConfig)	
+			})
+		} else if(viewFormPageContext.srcFrmButtonID.length > 0) {
+			var getButtonParams = {
+				buttonID: viewFormPageContext.srcFrmButtonID
+			}
+			jsonAPIRequest("frm/formButton/get",getButtonParams,function(buttonRef) {
+				pageConfig.defaultVals = buttonRef.properties.defaultValues
+				pageConfig.saveMode = buttonRef.properties.popupBehavior.popupMode
+				pageConfigDoneCallback(pageConfig)	
+			})
+				
+		} else {
+			// Load without default values.
+			pageConfig.defaultVals = []
+			pageConfig.saveMode = FormViewModeSave
+			pageConfigDoneCallback(pageConfig)	
+		}
+		
+	}
+	
+	getPageConfig(function(pageConfig) {
+		getRecordRefAndChangeSetID(pageConfig,initRecordFormView)
+	})
+	
 					
 }); // document ready
