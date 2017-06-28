@@ -4,75 +4,102 @@ $(document).ready(function() {
 				
 	initUserDropdownMenu()
 	
-	function initRecordFormView(recordRef) {
+	function initRecordFormView(recordRef,changeSetID) {
 		
 		var $formViewCanvas = $('#viewFormPageLayoutCanvas')
 		$formViewCanvas.empty()
-		
+	
 		var currRecord = recordRef
 		function getFormRecordFunc() { return currRecord }
 		function updateFormRecordFunc(updatedRecordRef) {
 			currRecord = updatedRecordRef
 			loadRecordIntoFormLayout($formViewCanvas,updatedRecordRef)
 		}
-		function loadRecordIntoFormViewAfterFormComponentsLoaded() {
-			loadRecordIntoFormLayout($formViewCanvas,recordRef)
-		}		
+	
 		var viewFormContext = {
 			databaseID: viewFormPageContext.databaseID,
 			formID: viewFormPageContext.formID
 		}
 		
-		var FormViewModeModeless = "modeless"
-		var FormViewModeSave = "modal"
-		var formViewMode = FormViewModeModeless
-				
-		if (formViewMode === FormViewModeSave) {			
+		function loadRecordIntoFormViewAfterFormComponentsLoaded() {
 			
-			jsonAPIRequest("record/allocateChangeSetID",{},function(changeSetIDResp) {
-				
-				var recordProxy = {
-					changeSetID: changeSetIDResp.changeSetID,
-					getRecordFunc: getFormRecordFunc,
-					updateRecordFunc: updateFormRecordFunc
-				}
-				loadFormViewComponents($formViewCanvas,viewFormContext,recordProxy,
-						loadRecordIntoFormViewAfterFormComponentsLoaded)
-					
-					if(viewFormPageContext.srcColumnID.length > 0) {
-						
-					}
-	
-	/*			
-				var defaultVals = buttonObjectRef.properties.popupBehavior.defaultValues
-				
+			function loadRecordWithDefaultVals(defaultVals) {
 				if (defaultVals.length > 0) {
 					// Apply the default values before loading the form.
-					var defaultValRecord = getPopupFormRecordFunc()
+					var defaultValRecord = getFormRecordFunc()
 					var defaultValParams = {
 						parentDatabaseID: componentContext.databaseID,
 						recordID: defaultValRecord.recordID,
-						changeSetID: changeSetIDResp.changeSetID,
+						changeSetID: changeSetID,
 						defaultVals: defaultVals }
 					jsonAPIRequest("recordUpdate/setDefaultValues",defaultValParams,function(updatedRecordRef) {
-						
+			
+						// Update the current record to include default values
 						currRecord = updatedRecordRef
-						
-						// loadFormViewComponentFunc is passed in as a parameter, since the loadFormViewComponents 
-						// function is in 
-						// a package which has a dependency on this package.
-									 
-						loadFormViewComponentFunc($popupFormViewCanvas, viewFormContext, recordProxy,
-							 showDialogAfterFormComponentLoaded)
-					})
-					
-					
+											 
+						loadRecordIntoFormLayout($formViewCanvas,recordRef)
+					})			
 				} else {
-					loadFormViewComponentFunc($popupFormViewCanvas, viewFormContext, recordProxy,
-						 showDialogAfterFormComponentLoaded)
+					// load without default values
+					loadRecordIntoFormLayout($formViewCanvas,recordRef)
 				}
-	   */		
-					
+			}
+			
+			if(viewFormPageContext.srcColumnID.length > 0) {
+				// Get the default values from the column used to open the form. 
+				var getButtonParams = {
+					buttonID: viewFormPageContext.srcColumnID
+				}
+				jsonAPIRequest("tableView/formButton/getFromButtonID",getButtonParams,function(buttonRef) {
+					var defaultVals = buttonRef.properties.defaultValues
+					loadRecordWithDefaultVals(defaultVals)
+				})
+			} else {
+				// Load without default values.
+				loadRecordIntoFormLayout($formViewCanvas,recordRef)		
+			}
+	
+		}
+
+		var recordProxy = {
+			changeSetID: changeSetID,
+			getRecordFunc: getFormRecordFunc,
+			updateRecordFunc: updateFormRecordFunc
+		}
+		loadFormViewComponents($formViewCanvas,viewFormContext,recordProxy,
+				loadRecordIntoFormViewAfterFormComponentsLoaded)
+				
+		
+	}
+	
+	var FormViewModeModeless = "modeless"
+	var FormViewModeSave = "modal"
+	var formViewMode = FormViewModeModeless
+	
+	function getRecordRefAndChangeSetID(doneCallback) {
+		var recordRef
+		var changeSetID		
+		var callsRemaining = 2
+		function processOneCall() {
+			callsRemaining--
+			if (callsRemaining <= 0) {
+				doneCallback(recordRef,changeSetID)
+			}
+		}
+		
+		var getRecordParams = {
+			parentDatabaseID: viewFormPageContext.databaseID,
+			recordID: viewFormPageContext.recordID
+		}
+		jsonAPIRequest("recordRead/getRecordValueResults",getRecordParams,function(existingRecordRef) {
+			recordRef = existingRecordRef
+			processOneCall()
+		})
+		
+		if (formViewMode === FormViewModeSave) {					
+			jsonAPIRequest("record/allocateChangeSetID",{},function(changeSetIDResp) {
+				changeSetID = changeSetIDResp.changeSetID
+				
 				initButtonClickHandler('#viewFormPageSaveButton', function() {
 					console.log("Modal Save changes button clicked: " + JSON.stringify(buttonObjectRef))
 					// TODO - Remove the temporary changes set ID for any changes made while editing the record.
@@ -86,50 +113,17 @@ $(document).ready(function() {
 						console.log("Form changes saved")
 					})
 				})
-			
+				processOneCall()
 			})
-			
-		} else { // Form shown in modeless mode
-			
-			
+		} else {
+			var immediatelyCommitChangesChangeSetID = ""
+			changeSetID = immediatelyCommitChangesChangeSetID
 			$("#viewFormPageSaveButton").hide()
 			
-			var immediatelyCommitChangesChangeSetID = ""
-			var recordProxy = {
-				changeSetID: immediatelyCommitChangesChangeSetID,
-				getRecordFunc: getFormRecordFunc,
-				updateRecordFunc: updateFormRecordFunc
-			}
-	
-			loadFormViewComponents($formViewCanvas,viewFormContext,recordProxy,
-					loadRecordIntoFormViewAfterFormComponentsLoaded)
-			
+			processOneCall()
 		}
-		
 	}
 	
-	var getRecordParams = {
-		parentDatabaseID: viewFormPageContext.databaseID,
-		recordID: viewFormPageContext.recordID
-	}
-	jsonAPIRequest("recordRead/getRecordValueResults",getRecordParams,function(recordRef) {
-		initRecordFormView(recordRef)
-	})
-	
-/*	var submitFormParams = {
-		databaseID: submitFormPageContext.databaseID,
-		$parentFormCanvas: $('#submitFormPageLayoutCanvas'),
-		formLinkID: submitFormPageContext.formLinkID,
-		formID: submitFormPageContext.formID
-	}
-	
-	var $addAnotherButton = $('#newItemPageAddAnotherButton')
-	initButtonControlClickHandler($addAnotherButton, function() {
-		initFormPageSubmitForm(submitFormParams)
-	})
-	
-	
-	initFormPageSubmitForm(submitFormParams)
-	*/
+	getRecordRefAndChangeSetID(initRecordFormView)
 					
 }); // document ready

@@ -12,6 +12,7 @@ func init() {
 	buttonRouter.HandleFunc("/api/tableView/formButton/new", newButton)
 
 	buttonRouter.HandleFunc("/api/tableView/formButton/get", getButtonAPI)
+	buttonRouter.HandleFunc("/api/tableView/formButton/getFromButtonID", getButtonFromIDAPI)
 
 	buttonRouter.HandleFunc("/api/tableView/formButton/setPopupBehavior", setPopupBehavior)
 
@@ -53,6 +54,26 @@ func getButtonAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	formButton, err := getButton(params.ParentTableID, params.ButtonID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	api.WriteJSONResponse(w, *formButton)
+}
+
+type GetButtonFromIDParams struct {
+	ButtonID string `json:"buttonID"`
+}
+
+func getButtonFromIDAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetButtonFromIDParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	formButton, err := getButtonFromButtonID(params.ButtonID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return

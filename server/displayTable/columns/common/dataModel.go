@@ -41,6 +41,40 @@ func GetTableColumn(columnType string, parentTableID string, columnID string, pr
 	return nil
 }
 
+func GetTableColumnTableID(columnID string) (string, error) {
+
+	tableID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT table_id FROM table_view_columns
+		 WHERE column_id=$1 LIMIT 1`,
+		columnID).Scan(&tableID)
+	if getErr != nil {
+		return "", fmt.Errorf("GetTableColumnTable: Unabled to get table id for column: id = %v: datastore err=%v",
+			columnID, getErr)
+	}
+	return tableID, nil
+
+}
+
+func GetTableColumnAndTable(columnType string, parentTableID string, columnID string, properties interface{}) error {
+
+	encodedProps := ""
+	tableID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT table_id,properties FROM table_view_columns
+		 WHERE column_id=$1 AND type=$2 LIMIT 1`,
+		columnID, columnType).Scan(&tableID, &encodedProps)
+	if getErr != nil {
+		return fmt.Errorf("GetTableViewColumn: Unabled to get table column %v: id = %v: datastore err=%v",
+			columnType, columnID, getErr)
+	}
+
+	if decodeErr := generic.DecodeJSONString(encodedProps, properties); decodeErr != nil {
+		return fmt.Errorf("GetTableViewColumn: Unabled to decode properties: encoded properties = %v: datastore err=%v",
+			encodedProps, decodeErr)
+	}
+
+	return nil
+}
+
 type addColumnCallbackFunc func(string, string) error
 
 func GetTableColumns(columnType string, parentTableID string, addColumnFunc addColumnCallbackFunc) error {

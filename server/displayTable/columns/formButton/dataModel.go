@@ -94,6 +94,15 @@ func getButton(parentTableID string, buttonID string) (*FormButton, error) {
 	return &button, nil
 }
 
+func getButtonFromButtonID(buttonID string) (*FormButton, error) {
+
+	parentTableID, err := common.GetTableColumnTableID(buttonID)
+	if err != nil {
+		return nil, fmt.Errorf("getButtonFromButtonID: Unable to retrieve button: %v", err)
+	}
+	return getButton(parentTableID, buttonID)
+}
+
 func GetButtons(parentTableID string) ([]FormButton, error) {
 
 	buttons := []FormButton{}
