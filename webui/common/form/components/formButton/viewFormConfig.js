@@ -5,7 +5,7 @@ function loadRecordIntoButton(buttonElem, recordRef) {
 }
 
 function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
-			parentRecordProxy,buttonObjectRef,
+			parentRecordProxy,buttonObjectRef,defaultValSrc,
 		loadFormViewComponentFunc,loadRecordIntoFormLayoutFunc) {
 	
 	
@@ -146,7 +146,8 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 	
 	function viewFormURL() {
 		var currRecord = parentRecordProxy.getRecordFunc()
-		return '/viewItem/' + buttonObjectRef.properties.linkedFormID + '/' + currRecord.recordID
+		return '/viewItem/' + buttonObjectRef.properties.linkedFormID + 
+				'/' + currRecord.recordID + '?' + defaultValSrc
 	}
 	
 	function showRecordInNewPage() {

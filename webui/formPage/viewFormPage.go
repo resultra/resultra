@@ -15,12 +15,14 @@ import (
 )
 
 type ViewFormPageTemplateParams struct {
-	Title        string
-	FormID       string
-	FormName     string
-	DatabaseID   string
-	DatabaseName string
-	RecordID     string
+	Title           string
+	FormID          string
+	FormName        string
+	DatabaseID      string
+	DatabaseName    string
+	RecordID        string
+	SrcFormButtonID string
+	SrcButtonColID  string
 }
 
 var viewFormTemplates *template.Template
@@ -42,6 +44,15 @@ func viewFormPage(w http.ResponseWriter, r *http.Request) {
 	formID := vars["formID"]
 	recordID := vars["recordID"]
 
+	srcColID, colFound := vars["col"]
+	if !colFound {
+		srcColID = ""
+	}
+	srcFrmButtonID, buttonFound := vars["frm"]
+	if !buttonFound {
+		srcFrmButtonID = ""
+	}
+
 	_, authErr := userAuth.GetCurrentUserInfo(r)
 	if authErr != nil {
 		err := submitFormTemplates.ExecuteTemplate(w, "userSignInPage", nil)
@@ -57,11 +68,13 @@ func viewFormPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		templParams := ViewFormPageTemplateParams{Title: "View Form",
-			FormID:       formDBInfo.FormID,
-			FormName:     formDBInfo.FormName,
-			DatabaseID:   formDBInfo.DatabaseID,
-			DatabaseName: formDBInfo.DatabaseName,
-			RecordID:     recordID}
+			FormID:          formDBInfo.FormID,
+			FormName:        formDBInfo.FormName,
+			DatabaseID:      formDBInfo.DatabaseID,
+			DatabaseName:    formDBInfo.DatabaseName,
+			RecordID:        recordID,
+			SrcFormButtonID: srcFrmButtonID,
+			SrcButtonColID:  srcColID}
 
 		if err := viewFormTemplates.ExecuteTemplate(w, "viewFormPage", templParams); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

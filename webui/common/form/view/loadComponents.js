@@ -90,7 +90,8 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 			// The loadFormViewComponents and loadRecordIntoFormLayout functions
 			// need to be passed to initFormButtonRecordEditBehavior in order
 			// to avoid a cyclical package dependency.
-			initFormButtonRecordEditBehavior($button,componentContext,recordProxy,buttonObjectRef,
+			var defaultValSrc = "frm=" + buttonObjectRef.buttonID
+			initFormButtonRecordEditBehavior($button,componentContext,recordProxy,buttonObjectRef,defaultValSrc,
 					loadFormViewComponents,loadRecordIntoFormLayout)
 		},
 		initUserSelectionFunc: function(componentContext,$userSelection,userSelectionObjectRef) {

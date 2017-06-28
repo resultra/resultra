@@ -38,6 +38,10 @@ $(document).ready(function() {
 				}
 				loadFormViewComponents($formViewCanvas,viewFormContext,recordProxy,
 						loadRecordIntoFormViewAfterFormComponentsLoaded)
+					
+					if(viewFormPageContext.srcColumnID.length > 0) {
+						
+					}
 	
 	/*			
 				var defaultVals = buttonObjectRef.properties.popupBehavior.defaultValues

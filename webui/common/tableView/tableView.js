@@ -200,7 +200,9 @@ function initItemListTableView(params) {
 			// The loadFormViewComponents and loadRecordIntoFormLayout functions
 			// need to be passed to initFormButtonRecordEditBehavior in order
 			// to avoid a cyclical package dependency.
-			initFormButtonRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo,
+			var defaultValSrc = "col="+colInfo.columnID
+			
+			initFormButtonRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo,defaultValSrc,
 					loadFormViewComponents,loadRecordIntoFormLayout)
 		}
 		return createTableViewColDef(colInfo,fieldsByID,
@@ -213,6 +215,7 @@ function initItemListTableView(params) {
 		
 		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.toggleID)
+			
 			initToggleTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,fieldsByID,
