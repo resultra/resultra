@@ -10,6 +10,9 @@ func init() {
 	buttonRouter := mux.NewRouter()
 
 	buttonRouter.HandleFunc("/api/frm/formButton/new", newButton)
+
+	buttonRouter.HandleFunc("/api/frm/formButton/get", getButtonAPI)
+
 	buttonRouter.HandleFunc("/api/frm/formButton/resize", resizeButton)
 	buttonRouter.HandleFunc("/api/frm/formButton/setPopupBehavior", setPopupBehavior)
 	buttonRouter.HandleFunc("/api/frm/formButton/setDefaultVals", setDefaultVals)
@@ -33,6 +36,26 @@ func newButton(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *headerRef)
+	}
+
+}
+
+type GetButtonParams struct {
+	ButtonID string `json:"buttonID"`
+}
+
+func getButtonAPI(w http.ResponseWriter, r *http.Request) {
+
+	params := GetButtonParams{}
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if buttonRef, err := getButtonFromButtonID(params.ButtonID); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, *buttonRef)
 	}
 
 }

@@ -54,6 +54,15 @@ $(document).ready(function() {
 					var defaultVals = buttonRef.properties.defaultValues
 					loadRecordWithDefaultVals(defaultVals)
 				})
+			} else if(viewFormPageContext.srcFrmButtonID.length > 0) {
+				var getButtonParams = {
+					buttonID: viewFormPageContext.srcFrmButtonID
+				}
+				jsonAPIRequest("frm/formButton/get",getButtonParams,function(buttonRef) {
+					var defaultVals = buttonRef.properties.defaultValues
+					loadRecordWithDefaultVals(defaultVals)
+				})
+					
 			} else {
 				// Load without default values.
 				loadRecordIntoFormLayout($formViewCanvas,recordRef)		

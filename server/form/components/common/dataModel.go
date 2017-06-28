@@ -21,6 +21,20 @@ func SaveNewFormComponent(componentType string, parentForm string, componentID s
 	return nil
 }
 
+func GetFormComponentFormID(componentID string) (string, error) {
+
+	formID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT form_id FROM form_components
+		 WHERE component_id=$1 LIMIT 1`,
+		componentID).Scan(&formID)
+	if getErr != nil {
+		return "", fmt.Errorf("GetFormComponentFormID: Unabled to get table id for column: id = %v: datastore err=%v",
+			componentID, getErr)
+	}
+	return formID, nil
+
+}
+
 func GetFormComponent(componentType string, parentFormID string, componentID string, properties interface{}) error {
 
 	encodedProps := ""

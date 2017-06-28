@@ -79,6 +79,15 @@ func saveNewButton(params NewButtonParams) (*FormButton, error) {
 
 }
 
+func getButtonFromButtonID(buttonID string) (*FormButton, error) {
+
+	parentFormID, err := common.GetFormComponentFormID(buttonID)
+	if err != nil {
+		return nil, fmt.Errorf("getButtonFromButtonID: Unable to retrieve button: %v", err)
+	}
+	return getButton(parentFormID, buttonID)
+}
+
 func getButton(parentFormID string, buttonID string) (*FormButton, error) {
 
 	buttonProps := newDefaultButtonProperties()
