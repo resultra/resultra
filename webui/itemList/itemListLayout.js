@@ -16,13 +16,9 @@ function ItemListLayout(resizeCallback)
 			size: 300,
 			resizable:false,
 			slidable: false,
-			spacing_open:16,
-			spacing_closed:16,
-			togglerClass:			"toggler",
-			togglerLength_open:	128,
-			togglerLength_closed: 128,
-			togglerAlign_closed: "middle",	// align to top of resizer
-			togglerAlign_open: "middle"		// align to top of resizer
+			spacing_open:4,
+			spacing_closed:4,
+			initClosed:true
 			
 		},
 		west: {
@@ -59,6 +55,23 @@ function ItemListLayout(resizeCallback)
 		console.log("TOC button clicked")
 		mainLayout.toggle("west")
 	})
+	
+	var $viewListOptionsToggleButton = $("#viewListOptionsButton")
+	initButtonControlClickHandler($viewListOptionsToggleButton, function() {
+		var layoutState = mainLayout.state
+		var $iconSpan = $viewListOptionsToggleButton.find("span")
+		if (layoutState.east.isClosed) {
+			$iconSpan.removeClass("fa-toggle-left")
+			$iconSpan.addClass("fa-toggle-right")
+		} else {
+			$iconSpan.removeClass("fa-toggle-right")
+			$iconSpan.addClass("fa-toggle-left")
+		}
+		console.log("List options button clicked")
+		mainLayout.toggle("east")
+	})
+	
+	
 	
 	function hideFooterLayout() {
 		recordLayout.close("south")

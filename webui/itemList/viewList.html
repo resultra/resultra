@@ -26,15 +26,20 @@
 {{define "viewListHeaderControls"}}
 <div class="container-fluid" id="recordHeaderGrid">
 	<div class="row">
-		<div class= "col-sm-4">
+		<div class= "col-sm-2">
 			<button type="button" class="btn btn-default btn-sm" id="viewTableOfContentsMenuButton">
 			  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 			</button>
 		</div> <!-- column -->
-		<div class= "col-sm-4"  id="listNameHeaderCol">
+		<div class= "col-sm-8"  id="listNameHeaderCol">
 			<h4 id="listNameHeader">{{.ListName}}</h4>
 		</div> <!-- column -->
-		<div class= "col-sm-4">
+		<div class= "col-sm-2">
+			<div class="pull-right">
+				<button type="button" class="btn btn-default btn-sm" id="viewListOptionsButton">
+				  <span class="fa fa-toggle-left fa-lg" aria-hidden="true"></span>
+				</button>
+			</div>
 		</div> <!-- column -->
 	</div> <!-- row -->
 </div> <!-- #recordHeaderGrid  -->
@@ -74,7 +79,7 @@
 
 {{define "listViewProps"}}
 
-	{{template "sidebarHeader" "List Tools"}}
+	{{template "sidebarHeader" "List Options"}}
 		
 	<div class="ui-layout-content noPadding">
 			{{template "propertyPanelGroupPrefix"}}
