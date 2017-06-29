@@ -23,22 +23,6 @@
 	</div>
 {{end}}
 
-{{define "viewListMoreMenuListItems"}}
-  <li role="separator" class="divider"></li>
-  <li><a href="#" id="viewFormMoreMenuDeleteRecord">Delete Record</a></li>
-{{end}}
-
-{{define "viewListMoreMenu"}}
-<div class="btn-group" role="group">
-	<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		  <span class="glyphicon glyphicon-option-horizontal"> </span>
-	</button>
-	<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu4">
-		{{template "viewListMoreMenuListItems" .}}
-	</ul>
-</div>
-{{end}}
-
 {{define "viewListHeaderControls"}}
 <div class="container-fluid" id="recordHeaderGrid">
 	<div class="row">
@@ -51,9 +35,6 @@
 			<h4 id="listNameHeader">{{.ListName}}</h4>
 		</div> <!-- column -->
 		<div class= "col-sm-4">
-			<div class="pull-right">
-				{{template "viewListMoreMenu" .}}
-			</div>
 		</div> <!-- column -->
 	</div> <!-- row -->
 </div> <!-- #recordHeaderGrid  -->
@@ -64,13 +45,8 @@
 {{define "viewListFooterControls"}}
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-sm-6">
+		<div class="col-sm-12">
 			{{template "itemListPagingControls"}}
-		</div>
-		<div class="col-sm-6">
-			<div class="pull-right">
-				<button class="btn-primary btn-sm" id="newRecordButton">New Record</button>
-			</div>
 		</div>
 	</div>
 </div> <!-- record footer grid -->
@@ -98,7 +74,7 @@
 
 {{define "listViewProps"}}
 
-	{{template "propertiesSidebarHeader"}}
+	{{template "sidebarHeader" "List Tools"}}
 		
 	<div class="ui-layout-content noPadding">
 			{{template "propertyPanelGroupPrefix"}}

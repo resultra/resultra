@@ -136,14 +136,8 @@ function ListItemController($parentContainer) {
 		if(isEnabled) { isDisabled=false }
 		$('#prevRecordButton').prop("disabled",isDisabled)
 		$('#nextRecordButton').prop("disabled",isDisabled)
-		$('#newRecordButton').prop("disabled",isDisabled)
 	}
-	
-	function enableNewRecordButton()
-	{
-		$('#newRecordButton').prop("disabled",false)
-	}
-	
+		
 	this.setRecordData =  function(recordData) {
 		
 		currRecordSet = new RecordSet(recordData,currRecordSetWindowSize);
@@ -154,9 +148,6 @@ function ListItemController($parentContainer) {
 		// Enable the buttons to page through the records
 		if(currRecordSet.numRecords() > 0) {
 			enableRecordButtons(true)
-		}
-		else {
-			enableNewRecordButton() // just enable the "New Record" button
 		}
 	
 	}
@@ -180,20 +171,5 @@ function ListItemController($parentContainer) {
 			 	reloadRecordsIntoContainers()
 			 } 
 	});
-	
-	function createNewRecord() {
-		var newRecordsParams = {parentDatabaseID:viewListContext.databaseID}
-		jsonAPIRequest("recordUpdate/newRecord",newRecordsParams,function(newRecordRef) {
-			currRecordSet.appendNewRecord(newRecordRef);
-			currRecordSet.jumpToRecord(newRecordRef.recordID)
-			reloadRecordsIntoContainers()
-		}) // getRecord
-	
-	}
-	
-	$('#newRecordButton').click(function(e){ createNewRecord() });
-	
-	
-	
-	
+		
 }

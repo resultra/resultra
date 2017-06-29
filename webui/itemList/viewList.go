@@ -81,7 +81,7 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 			DatabaseID:   dbInfo.DatabaseID,
 			DatabaseName: dbInfo.DatabaseName,
 			ListName:     listInfo.Name,
-			DisplayPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Display",
+			DisplayPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "View",
 				PanelID: "viewListDisplay"},
 			FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering",
 				PanelID: "viewFormFiltering"},

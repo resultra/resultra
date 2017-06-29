@@ -7,14 +7,20 @@
 {{end}}
 
 
-{{define "propertiesSidebarHeader"}}
+
+{{define "sidebarHeader"}}
 	<div class="container-fluid">
 		<div class="row propertiesSidebarHeader">
-			<div class= "col-md-12 text-center h5"><span>Properties</span></div>
+			<div class= "col-md-12 text-center h5"><span>{{.}}</span></div>
 		</div>
 	</div>
-
 {{end}}
+
+{{define "propertiesSidebarHeader"}}
+	{{template "sidebarHeader" "Properties"}}
+{{end}}
+
+
 
 <!-- #propertyPanelAccordion is a unique ID, so there can (currently) only be one property panel per page. -->
 {{define "propertiesSidebarAccordionHeader"}}
