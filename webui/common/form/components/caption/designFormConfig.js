@@ -65,11 +65,16 @@ function initCaptionDesignControlBehavior($caption, captionObjectRef) {
   var formID = captionObjectRef.parentFormID
   var designFormLayoutConfig =  createFormLayoutDesignConfig(formID)
   var componentIDs = { formID: formID, componentID: captionObjectRef.captionID }
+  
+  // Call-back to enable design behavior. This is called initially when the caption is
+  // created. It is also called when the caption exits edit mode in the form designer.
   function enableDesignBehavior() {
 	  initFormComponentDesignBehavior($caption,componentIDs,
-			newCaptionObjectRef,formCaptionDesignFormConfig,designFormLayoutConfig)
+			captionObjectRef,formCaptionDesignFormConfig,designFormLayoutConfig)
 	  }
   initCaptionDesignInlineEditBehavior($caption,captionObjectRef,enableDesignBehavior)
+	  
+  enableDesignBehavior() // initially enable design behavior
 }
 
 
