@@ -23,37 +23,18 @@
 	</div>
 {{end}}
 
-{{define "viewDashboardMoreMenuListItems"}}
-  <li><a href="/admin/dashboard/{{.DashboardID}}" class="item">Edit Dashboard Design</a></li>
-  <li role="separator" class="divider"></li>
-{{end}}
-
-{{define "viewDashboardMoreMenu"}}
-<div class="btn-group" role="group">
-	<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		  <span class="glyphicon glyphicon-option-horizontal"> </span>
-	</button>
-	<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu4">
-		{{template "viewDashboardMoreMenuListItems" .}}
-	</ul>
-</div>
-{{end}}
-
 {{define "viewDashboardHeaderControls"}}
 <div class="container-fluid" id="recordHeaderGrid">
 	<div class="row">
-		<div class= "col-sm-4">
+		<div class= "col-sm-2">
 			<button type="button" class="btn btn-default btn-sm" id="viewTableOfContentsMenuButton">
 			  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 			</button>
 		</div> <!-- column -->
-		<div class= "col-sm-4"  id="dashboardNameHeaderCol">
+		<div class= "col-sm-8"  id="dashboardNameHeaderCol">
 			<h4 id="dashboardNameHeader">{{.DashboardName}}</h4>
 		</div> <!-- column -->
-		<div class= "col-sm-4">
-			<div class="pull-right">
-				{{template "viewDashboardMoreMenu" .}}
-			</div>
+		<div class= "col-sm-2">
 		</div> <!-- column -->
 	</div> <!-- row -->
 </div> <!-- #recordHeaderGrid  -->
