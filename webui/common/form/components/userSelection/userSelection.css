@@ -21,6 +21,19 @@
 	line-height: 30px!important;
 }
 
+.userSelectionFormContainer label {
+	margin-bottom: 2px !important;
+}
+
+/* Adjust the sizing of the selection control to closely match Bootstrap */
+.userSelectionFormContainer .select2-selection {
+	display: block!important;
+	height: 34px!important;
+	white-space: nowrap!important;
+	line-height: 30px!important;
+}
+
+
 .userSelectionTableCellContainer span {
 	line-height: 32px !important;
 }
