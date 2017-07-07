@@ -198,19 +198,43 @@ function initNoteEditorTableRecordEditBehavior($container,componentContext,recor
 
 function initNoteEditorTableCellEditBehavior($container,componentContext,recordProxy, noteEditorObjectRef) {
 
+	var $notePopupLink = $container.find(".noteEditPopop")
+
 	// TBD - Needs a popup to display the editor.
 	var validateInput = function(validationCompleteCallback) {
 			validationCompleteCallback(true)
 	}
 	
+	function formatNotePopupLinkText(recordRef) {
+		var fieldID = noteEditorObjectRef.properties.fieldID
+		var noteExists = recordRef.fieldValues.hasOwnProperty(fieldID)
+		
+		if(formComponentIsReadOnly(noteEditorObjectRef.properties.permissions)) {
+			if (noteExists) {
+				$notePopupLink.show()
+				$notePopupLink.text("View note")
+			} else {
+				$notePopupLink.hide()
+				$notePopupLink.text("")
+			}
+		} else {
+			$notePopupLink.show()
+			if (noteExists) {
+				$notePopupLink.text("Edit note")
+			} else {
+				$notePopupLink.text("Add note")
+			}
+		}
+	}
+	
 	var currRecordRef = null
 	function loadRecordIntoHtmlEditor($htmlEditor, recordRef) {
 		currRecordRef = recordRef
+		formatNotePopupLinkText(recordRef)
 	}
 	
 	console.log("Note editor table cell container: " + $container.html())
 	
-	var $notePopupLink = $container.find(".noteEditPopop")
 	
 	$notePopupLink.popover({
 		html: 'true',

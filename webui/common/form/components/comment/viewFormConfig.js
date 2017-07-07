@@ -259,6 +259,7 @@ function initCommentBoxTableViewRecordEditBehavior($commentContainer, componentC
 		jsonAPIRequest("record/getFieldValChangeInfo",changeInfoParams,function(valChanges) {
 			if(formComponentIsReadOnly(commentObjectRef.properties.permissions)) {
 				if (valChanges.length > 0) {
+					$commentPopupLink.show()
 					$commentPopupLink.text("View comments")
 				} else {
 					$commentPopupLink.text("")
