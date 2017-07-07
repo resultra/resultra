@@ -260,7 +260,7 @@ function initCommentBoxTableViewRecordEditBehavior($commentContainer, componentC
 			if(formComponentIsReadOnly(commentObjectRef.properties.permissions)) {
 				if (valChanges.length > 0) {
 					$commentPopupLink.css("display","")
-					$commentPopupLink.text("View comments")
+					$commentPopupLink.text("View comments ("+valChanges.length+")")
 				} else {
 					$commentPopupLink.text("")
 					$commentPopupLink.css("display","none")
@@ -269,7 +269,7 @@ function initCommentBoxTableViewRecordEditBehavior($commentContainer, componentC
 			} else {
 				$commentPopupLink.css("display","")
 				if (valChanges.length > 0) {
-					$commentPopupLink.text("Edit comments")
+					$commentPopupLink.text("Edit comments ("+valChanges.length+")")
 				} else {
 					$commentPopupLink.text("Add comment")
 				}

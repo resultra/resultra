@@ -265,7 +265,7 @@ function initAttachmentTableViewRecordEditBehavior($attachContainer, componentCo
 		if(formComponentIsReadOnly(attachObjectRef.properties.permissions)) {
 			if (attachmentCount > 0) {
 				$attachmentPopupLink.css("display","")
-				$attachmentPopupLink.text("View attachments")
+				$attachmentPopupLink.text("View attachments (" + attachmentCount + ")")
 			} else {
 				$attachmentPopupLink.css("display","none")
 				$attachmentPopupLink.text("")
@@ -273,7 +273,7 @@ function initAttachmentTableViewRecordEditBehavior($attachContainer, componentCo
 		} else {
 			$attachmentPopupLink.css("display","")
 			if (attachmentCount > 0) {
-				$attachmentPopupLink.text("Edit attachments")
+				$attachmentPopupLink.text("Edit attachments (" + attachmentCount + ")")
 			} else {
 				$attachmentPopupLink.text("Add attachment")
 			}
