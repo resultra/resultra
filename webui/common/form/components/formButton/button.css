@@ -12,3 +12,9 @@
 .formButton {
 	width: 100%;
 }
+
+
+/* Vertically center the button when shown in a table view */
+td .buttonFormContainer {
+	line-height: 34px;
+}

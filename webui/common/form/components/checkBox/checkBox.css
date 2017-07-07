@@ -16,10 +16,11 @@
 	min-height:10px;
 	width: 15px;
 	height: auto;
+	line-height:34px; /* vertically center in table cell */
 }
 
 .checkBoxTableCellContainer .checkbox {
-	margin-top: 3px;
+	margin-top: 0px;
 	margin-bottom: 0px;
 	margin-left:10px;
 }
