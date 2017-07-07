@@ -264,14 +264,14 @@ function initAttachmentTableViewRecordEditBehavior($attachContainer, componentCo
 		var attachmentCount = getAttachmentCount(recordRef)
 		if(formComponentIsReadOnly(attachObjectRef.properties.permissions)) {
 			if (attachmentCount > 0) {
-				$attachmentPopupLink.show()
+				$attachmentPopupLink.css("display","")
 				$attachmentPopupLink.text("View attachments")
 			} else {
-				$attachmentPopupLink.hide()
+				$attachmentPopupLink.css("display","none")
 				$attachmentPopupLink.text("")
 			}
 		} else {
-			$attachmentPopupLink.show()
+			$attachmentPopupLink.css("display","")
 			if (attachmentCount > 0) {
 				$attachmentPopupLink.text("Edit attachments")
 			} else {

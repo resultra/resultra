@@ -211,14 +211,14 @@ function initNoteEditorTableCellEditBehavior($container,componentContext,recordP
 		
 		if(formComponentIsReadOnly(noteEditorObjectRef.properties.permissions)) {
 			if (noteExists) {
-				$notePopupLink.show()
+				$notePopupLink.css("display","")
 				$notePopupLink.text("View note")
 			} else {
-				$notePopupLink.hide()
+				$notePopupLink.css("display","none")
 				$notePopupLink.text("")
 			}
 		} else {
-			$notePopupLink.show()
+			$notePopupLink.css("display","")
 			if (noteExists) {
 				$notePopupLink.text("Edit note")
 			} else {

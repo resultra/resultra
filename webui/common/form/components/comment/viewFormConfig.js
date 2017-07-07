@@ -259,15 +259,15 @@ function initCommentBoxTableViewRecordEditBehavior($commentContainer, componentC
 		jsonAPIRequest("record/getFieldValChangeInfo",changeInfoParams,function(valChanges) {
 			if(formComponentIsReadOnly(commentObjectRef.properties.permissions)) {
 				if (valChanges.length > 0) {
-					$commentPopupLink.show()
+					$commentPopupLink.css("display","")
 					$commentPopupLink.text("View comments")
 				} else {
 					$commentPopupLink.text("")
-					$commentPopupLink.hide()
+					$commentPopupLink.css("display","none")
 				}
 				
 			} else {
-				$commentPopupLink.show()
+				$commentPopupLink.css("display","")
 				if (valChanges.length > 0) {
 					$commentPopupLink.text("Edit comments")
 				} else {
