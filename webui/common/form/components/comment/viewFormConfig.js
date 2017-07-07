@@ -242,9 +242,40 @@ function initCommentBoxFormRecordEditBehavior($commentContainer, componentContex
 function initCommentBoxTableViewRecordEditBehavior($commentContainer, componentContext,recordProxy, commentObjectRef) {
 	
 	
+	var $commentPopupLink = $commentContainer.find(".commentEditPopop")
+	
+	
 	// TBD - Needs a popup to display the editor.
 	var validateInput = function(validationCompleteCallback) {
 			validationCompleteCallback(true)
+	}
+	
+	function formatCommentLink(recordRef) {
+		var changeInfoParams = {
+			recordID: recordRef.recordID,
+			fieldID: commentObjectRef.properties.fieldID
+		}
+	
+		jsonAPIRequest("record/getFieldValChangeInfo",changeInfoParams,function(valChanges) {
+			if(formComponentIsReadOnly(commentObjectRef.properties.permissions)) {
+				if (valChanges.length > 0) {
+					$commentPopupLink.text("View comments")
+				} else {
+					$commentPopupLink.text("")
+					$commentPopupLink.hide()
+				}
+				
+			} else {
+				$commentPopupLink.show()
+				if (valChanges.length > 0) {
+					$commentPopupLink.text("Edit comments")
+				} else {
+					$commentPopupLink.text("Add comment")
+				}
+				
+			}
+		})
+		
 	}
 	
 	var currRecordRef = null
@@ -254,9 +285,9 @@ function initCommentBoxTableViewRecordEditBehavior($commentContainer, componentC
 		if(loadRecordIntoPopupCommentEditor != null) {
 			loadRecordIntoPopupCommentEditor()
 		}
+		formatCommentLink(recordRef)
 	}
 		
-	var $commentPopupLink = $commentContainer.find(".commentEditPopop")
 	
 	console.log("Comment table view cell: " + $commentContainer.html())
 	
@@ -290,10 +321,7 @@ function initCommentBoxTableViewRecordEditBehavior($commentContainer, componentC
 		
 		var commentEditorWidth = 250
 		setElemFixedWidthFlexibleHeight($commentEditorContainer,commentEditorWidth)
-		
-		
-//		initHTMLEditorTextCellComponentViewModeGeometry($noteEditorContainer)
-		
+				
 		var $closePopupButton = $commentEditorContainer.find(".closeEditorPopup")
 		initButtonControlClickHandler($closePopupButton,function() {
 			$commentPopupLink.popover('hide')
