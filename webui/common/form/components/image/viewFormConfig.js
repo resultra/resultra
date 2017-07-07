@@ -235,6 +235,7 @@ function initAttachmentFormRecordEditBehavior($imageContainer, componentContext,
 
 function initAttachmentTableViewRecordEditBehavior($attachContainer, componentContext,recordProxy,attachObjectRef) {
 	
+	var $attachmentPopupLink = $attachContainer.find(".attachmentEditPopop")
 	
 	function validateInput(inputVal,validationResultCallback) {
 		
@@ -248,6 +249,38 @@ function initAttachmentTableViewRecordEditBehavior($attachContainer, componentCo
 		})
 	}
 	
+	function formatAttachmentPopupLink(recordRef) {
+		
+		function getAttachmentCount(recordRef) {
+			var fieldID = attachObjectRef.properties.fieldID
+			if(recordRef.fieldValues.hasOwnProperty(fieldID)) {
+				var fieldVal = recordRef.fieldValues[fieldID]
+				var attachmentCount = fieldVal.attachments.length
+				return attachmentCount
+			} else {
+				return 0
+			}
+		}	
+		var attachmentCount = getAttachmentCount(recordRef)
+		if(formComponentIsReadOnly(attachObjectRef.properties.permissions)) {
+			if (attachmentCount > 0) {
+				$attachmentPopupLink.show()
+				$attachmentPopupLink.text("View attachments")
+			} else {
+				$attachmentPopupLink.hide()
+				$attachmentPopupLink.text("")
+			}
+		} else {
+			$attachmentPopupLink.show()
+			if (attachmentCount > 0) {
+				$attachmentPopupLink.text("Edit attachments")
+			} else {
+				$attachmentPopupLink.text("Add attachment")
+			}
+		}
+		
+	}
+	
 	var currRecordRef = null
 	var loadRecordIntoPopupAttachmentEditor = null
 	function loadRecordIntoAttachmentEditor($attachContainer, recordRef) {
@@ -255,9 +288,9 @@ function initAttachmentTableViewRecordEditBehavior($attachContainer, componentCo
 		if(loadRecordIntoPopupAttachmentEditor != null) {
 			loadRecordIntoPopupAttachmentEditor()
 		}
+		formatAttachmentPopupLink(recordRef)
 	}
 		
-	var $attachmentPopupLink = $attachContainer.find(".attachmentEditPopop")
 		
 	$attachmentPopupLink.popover({
 		html: 'true',
