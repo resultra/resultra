@@ -19,8 +19,9 @@ type DashboardInfo struct {
 }
 
 type ItemListInfo struct {
-	ListID string `json:"listID"`
-	Name   string `json:"name"`
+	ListID   string            `json:"listID"`
+	Name     string            `json:"name"`
+	ListInfo itemList.ItemList `json:"listInfo"`
 }
 
 func getDatabaseDashboardsInfo(params DatabaseInfoParams) ([]DashboardInfo, error) {
@@ -52,29 +53,20 @@ func getDatabaseFormsInfo(params DatabaseInfoParams) ([]form.Form, error) {
 	return formsInfo, nil
 }
 
-func getDatabaseItemListInfo(params DatabaseInfoParams) ([]ItemListInfo, error) {
+func getDatabaseItemListInfo(params DatabaseInfoParams) ([]itemList.ItemList, error) {
 
 	listInfo, getsListsErr := itemList.GetAllSortedItemLists(params.DatabaseID)
 	if getsListsErr != nil {
 		return nil, fmt.Errorf("getDatabaseItemListInfo: %v", getsListsErr)
 	}
-
-	listsInfo := []ItemListInfo{}
-	for _, currListInfo := range listInfo {
-		listInfo := ItemListInfo{
-			ListID: currListInfo.ListID,
-			Name:   currListInfo.Name}
-		listsInfo = append(listsInfo, listInfo)
-	}
-
-	return listsInfo, nil
+	return listInfo, nil
 }
 
 type DatabaseContentsInfo struct {
-	DatabaseInfo   database.Database `json:"databaseInfo"`
-	FormsInfo      []form.Form       `json:"formsInfo"`
-	ListsInfo      []ItemListInfo    `json:"listsInfo"`
-	DashboardsInfo []DashboardInfo   `json:"dashboardsInfo"`
+	DatabaseInfo   database.Database   `json:"databaseInfo"`
+	FormsInfo      []form.Form         `json:"formsInfo"`
+	ListsInfo      []itemList.ItemList `json:"listsInfo"`
+	DashboardsInfo []DashboardInfo     `json:"dashboardsInfo"`
 }
 
 func getDatabaseInfo(params DatabaseInfoParams) (*DatabaseContentsInfo, error) {

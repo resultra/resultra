@@ -7,10 +7,31 @@ function addDashboardLinkToTOCList(dashboardInfo) {
 	$('#tocDashboardList').append(dashboardListItemHTML)		
 }
 
-function addItemListLinkToTOCList(listInfo) {
-	var itemListItemHTML = '<a href="/viewList/' + listInfo.listID 
-			+ '" class="list-group-item">' + listInfo.name + '</a>'
-	$('#tocListList').append(itemListItemHTML)		
+function addItemListLinkToTOCList(tocConfig, listInfo) {
+	var itemListItemHTML = '' + 
+		'<a href="/viewList/' + listInfo.listID 
+			+ '" class="list-group-item">' + 
+				listInfo.name + 
+			'<span class="badge"></span>' +
+		'</a>'
+	var $itemListItem = $(itemListItemHTML)
+	
+	var listCountParams = {
+		databaseID: tocConfig.databaseID,
+		preFilterRules: listInfo.properties.preFilterRules,
+	}
+	
+	jsonAPIRequest("recordRead/getFilteredRecordCount",listCountParams,function(listCount) {
+		var $listCount = $itemListItem.find("span")
+		if (listCount > 0) {
+			$listCount.text(listCount)
+		} else {
+			$listCount.hide()
+		}
+	})
+	
+	
+	$('#tocListList').append($itemListItem)		
 	
 }
 
@@ -44,7 +65,7 @@ function initDatabaseTOC(tocConfig) {
 		$('#tocListList').empty()
 		for(var listInfoIndex = 0; listInfoIndex < dbInfo.listsInfo.length; listInfoIndex++) {
 			var listInfo = dbInfo.listsInfo[listInfoIndex]
-			addItemListLinkToTOCList(listInfo)
+			addItemListLinkToTOCList(tocConfig,listInfo)
 		}
 
 		$('#tocDashboardList').empty()

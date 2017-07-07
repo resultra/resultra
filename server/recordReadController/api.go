@@ -15,6 +15,8 @@ func init() {
 
 	recordReadRouter.HandleFunc("/api/recordRead/getFilteredSortedRecordValues", getFilteredSortedRecordsAPI)
 
+	recordReadRouter.HandleFunc("/api/recordRead/getFilteredRecordCount", getFilteredRecordCountAPI)
+
 	recordReadRouter.HandleFunc("/api/recordRead/getRecordValueResults", getRecordValueResultAPI)
 
 	http.Handle("/api/recordRead/", recordReadRouter)
@@ -52,6 +54,23 @@ func getRecordValueResultAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *recordValResults)
+	}
+
+}
+
+func getFilteredRecordCountAPI(w http.ResponseWriter, r *http.Request) {
+
+	params := GetFilteredRecordCountParams{}
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	countResults, err := getFilteredRecordCount(params)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, countResults)
 	}
 
 }

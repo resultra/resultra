@@ -71,6 +71,26 @@ func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordVa
 	return filteredRecords, nil
 }
 
+type GetFilteredRecordCountParams struct {
+	DatabaseID     string                           `json:"databaseID"`
+	PreFilterRules recordFilter.RecordFilterRuleSet `json:"preFilterRules"`
+}
+
+func getFilteredRecordCount(params GetFilteredRecordCountParams) (int, error) {
+	unfilteredRecordValues, getRecordsErr := getCachedOrRemappedRecordValues(params.DatabaseID)
+	if getRecordsErr != nil {
+		return -1, fmt.Errorf("GetFilteredRecords: Error updating records: %v", getRecordsErr)
+	}
+
+	preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(params.PreFilterRules, unfilteredRecordValues)
+	if preFilterErr != nil {
+		return -1, fmt.Errorf("GetFilteredRecords: Error pre-filtering records: %v", preFilterErr)
+	}
+
+	return len(preFilteredRecords), nil
+
+}
+
 type GetRecordValResultParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 	RecordID         string `json:"recordID"`
