@@ -19,6 +19,9 @@ function formatNumberValue(format, rawVal) {
 		return Number(val) % 1 === 0 // remainder non-zero with modulo arithmetic
 	}
 	
+	// Use a custom format for numbers.
+	var currencyFormat = { neg:"-%s%v",pos:"%s%v",zero:"%s%v" }
+
 	switch (format) {
 		case "percent":
 			return (numberVal*100.0).toFixed(2) + "%"
@@ -35,9 +38,9 @@ function formatNumberValue(format, rawVal) {
 			}
 			
 		case "currency":
-			return accounting.formatMoney(numberVal)
+			return accounting.formatMoney(numberVal,{format:currencyFormat})
 		case "currency0prec":
-			return accounting.formatMoney(numberVal,{precision:0})
+			return accounting.formatMoney(numberVal,{precision:0,format:currencyFormat})
 		default:
 			return rawVal
 	}
