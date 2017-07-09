@@ -124,7 +124,7 @@ func MapAllRecordUpdatesToFieldValues(parentDatabaseID string) ([]recordValue.Re
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
 
-	recordCellUpdateMap, err := record.GetAllCellUpdates(parentDatabaseID, record.FullyCommittedCellUpdatesChangeSetID)
+	recordCellUpdateMap, err := record.GetAllNonDraftCellUpdates(parentDatabaseID, record.FullyCommittedCellUpdatesChangeSetID)
 	if err != nil {
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}

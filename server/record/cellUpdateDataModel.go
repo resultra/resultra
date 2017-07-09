@@ -131,11 +131,13 @@ func NewRecordCellUpdates(recordID string) *RecordCellUpdates {
 
 type RecordCellUpdateMap map[string]*RecordCellUpdates
 
-func GetAllCellUpdates(databaseID string, changeSetID string) (RecordCellUpdateMap, error) {
+// Get all cell updates for records which have been fully committed. This excludes records for forms which were
+// opened up in a form, but the results were never saved.
+func GetAllNonDraftCellUpdates(databaseID string, changeSetID string) (RecordCellUpdateMap, error) {
 
 	// Pre-populate the map of record ID to the cell updates structure. This ensures the structure
 	// is populated, even for record IDs without any cell updates yet.
-	records, err := GetRecords(databaseID)
+	records, err := GetNonDraftRecords(databaseID)
 	if err != nil {
 		return nil, fmt.Errorf("GetAllCellUpdates: %v", err)
 	}
@@ -146,9 +148,12 @@ func GetAllCellUpdates(databaseID string, changeSetID string) (RecordCellUpdateM
 		recordCellUpdateMap[currRecord.RecordID] = &cellUpdates
 	}
 
-	selectFields := `SELECT update_id,user_id,database_id,record_id,field_id,update_timestamp_utc,value,properties
-							FROM cell_updates`
-	matchDatabaseQuery := ` database_id = $1 `
+	selectFields := `SELECT 
+			cell_updates.update_id,cell_updates.user_id,cell_updates.database_id,
+			cell_updates.record_id,cell_updates.field_id,cell_updates.update_timestamp_utc,
+			cell_updates.value,cell_updates.properties
+		FROM records, cell_updates `
+	matchDatabaseQuery := ` records.is_draft_record=false AND cell_updates.database_id=$1 AND cell_updates.record_id=records.record_id  `
 
 	// Build up the query depending on whether or not the changeSetID is empty or not.
 	changeSetIDMatch := ""
@@ -191,13 +196,9 @@ func GetAllCellUpdates(databaseID string, changeSetID string) (RecordCellUpdateM
 
 		var recCellUpdates *RecordCellUpdates
 		recCellUpdates, found := recordCellUpdateMap[currCellUpdate.RecordID]
-		if !found {
-			cellUpdates := RecordCellUpdates{RecordID: currCellUpdate.RecordID,
-				CellUpdates: []CellUpdate{}}
-			recCellUpdates = &cellUpdates
-			recordCellUpdateMap[currCellUpdate.RecordID] = recCellUpdates
+		if found {
+			recCellUpdates.CellUpdates = append(recCellUpdates.CellUpdates, currCellUpdate)
 		}
-		recCellUpdates.CellUpdates = append(recCellUpdates.CellUpdates, currCellUpdate)
 	}
 
 	return recordCellUpdateMap, nil
