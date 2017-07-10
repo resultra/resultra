@@ -15,6 +15,7 @@ type RecordUpdater interface {
 	generateCellValue() (string, error)
 	getUpdateProperties() CellUpdateProperties
 	GetChangeSetID() string
+	doCollapseRecentValues() bool
 }
 
 // RecordUpdateHeader is a common header for all record value updates. It also implements
@@ -90,7 +91,7 @@ func UpdateRecordValue(currUserID string, recUpdater RecordUpdater) (*Record, er
 		ChangeSetID:      recUpdater.GetChangeSetID(),
 		Properties:       updateProps}
 
-	if saveErr := SaveCellUpdate(cellUpdate); saveErr != nil {
+	if saveErr := SaveCellUpdate(cellUpdate, recUpdater.doCollapseRecentValues()); saveErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Error saving cell update: %v", saveErr)
 	}
 

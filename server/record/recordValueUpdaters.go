@@ -16,6 +16,8 @@ type SetRecordTextValueParams struct {
 
 func (setValParams SetRecordTextValueParams) fieldType() string { return field.FieldTypeText }
 
+func (setValParams SetRecordTextValueParams) doCollapseRecentValues() bool { return true }
+
 func (valParams SetRecordTextValueParams) generateCellValue() (string, error) {
 
 	cellVal := TextCellValue{Val: valParams.Value}
@@ -38,6 +40,8 @@ type SetRecordUserValueParams struct {
 }
 
 func (setValParams SetRecordUserValueParams) fieldType() string { return field.FieldTypeUser }
+
+func (setValParams SetRecordUserValueParams) doCollapseRecentValues() bool { return true }
 
 func (valParams SetRecordUserValueParams) generateCellValue() (string, error) {
 
@@ -62,6 +66,8 @@ type SetRecordLongTextValueParams struct {
 
 func (setValParams SetRecordLongTextValueParams) fieldType() string { return field.FieldTypeLongText }
 
+func (setValParams SetRecordLongTextValueParams) doCollapseRecentValues() bool { return true }
+
 func (valParams SetRecordLongTextValueParams) generateCellValue() (string, error) {
 
 	cellVal := TextCellValue{Val: valParams.Value}
@@ -85,6 +91,8 @@ type SetRecordCommentValueParams struct {
 }
 
 func (setValParams SetRecordCommentValueParams) fieldType() string { return field.FieldTypeComment }
+
+func (setValParams SetRecordCommentValueParams) doCollapseRecentValues() bool { return false }
 
 func (valParams SetRecordCommentValueParams) generateCellValue() (string, error) {
 
@@ -111,6 +119,8 @@ type SetRecordNumberValueParams struct {
 
 func (setValParams SetRecordNumberValueParams) fieldType() string { return field.FieldTypeNumber }
 
+func (setValParams SetRecordNumberValueParams) doCollapseRecentValues() bool { return true }
+
 func (valParams SetRecordNumberValueParams) generateCellValue() (string, error) {
 
 	cellVal := NumberCellValue{Val: valParams.Value}
@@ -135,6 +145,8 @@ type SetRecordBoolValueParams struct {
 
 func (setValParams SetRecordBoolValueParams) fieldType() string { return field.FieldTypeBool }
 
+func (setValParams SetRecordBoolValueParams) doCollapseRecentValues() bool { return true }
+
 func (valParams SetRecordBoolValueParams) generateCellValue() (string, error) {
 
 	cellVal := BoolCellValue{Val: valParams.Value}
@@ -157,6 +169,8 @@ type SetRecordTimeValueParams struct {
 
 func (setValParams SetRecordTimeValueParams) fieldType() string { return field.FieldTypeTime }
 
+func (setValParams SetRecordTimeValueParams) doCollapseRecentValues() bool { return true }
+
 func (valParams SetRecordTimeValueParams) generateCellValue() (string, error) {
 
 	cellVal := TimeCellValue{Val: valParams.Value}
@@ -177,6 +191,8 @@ type SetRecordFileValueParams struct {
 }
 
 func (setValParams SetRecordFileValueParams) fieldType() string { return field.FieldTypeFile }
+
+func (setValParams SetRecordFileValueParams) doCollapseRecentValues() bool { return true }
 
 func (valParams SetRecordFileValueParams) generateCellValue() (string, error) {
 

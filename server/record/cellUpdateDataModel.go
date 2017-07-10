@@ -36,7 +36,7 @@ type CellUpdate struct {
 
 const FullyCommittedCellUpdatesChangeSetID string = ""
 
-func SaveCellUpdate(cellUpdate CellUpdate) error {
+func SaveCellUpdate(cellUpdate CellUpdate, doCollapseRecentValues bool) error {
 
 	encodedProps, err := generic.EncodeJSONString(cellUpdate.Properties)
 	if err != nil {
@@ -57,6 +57,29 @@ func SaveCellUpdate(cellUpdate CellUpdate) error {
 		cellUpdate.ChangeSetID); insertErr != nil {
 		return fmt.Errorf("saveCellUpdate: insert failed: update = %+v, error = %v", cellUpdate, insertErr)
 	}
+
+	if doCollapseRecentValues {
+		// Delete any cell updates which were committed within the last minute. This is intended to collapse the editing
+		// of values, so there isn't superfulous updates. For example, if a spinner is used to select a number, then
+		// there is no need to keep all the intermediate values, only the last value.
+		collapseUpdatesStart := cellUpdate.UpdateTimeStamp.Add(-1 * time.Minute)
+
+		if _, deleteRecentErr := databaseWrapper.DBHandle().Exec(
+			`DELETE FROM cell_updates
+				 WHERE record_id=$1 AND field_id=$2 AND user_id=$3 AND change_set_id=$4
+				 AND update_timestamp_utc<$5 AND update_timestamp_utc>$6 AND update_id<>$7`,
+			cellUpdate.RecordID,
+			cellUpdate.FieldID,
+			cellUpdate.UserID,
+			cellUpdate.ChangeSetID,
+			cellUpdate.UpdateTimeStamp,
+			collapseUpdatesStart,
+			cellUpdate.UpdateID); deleteRecentErr != nil {
+			return fmt.Errorf("saveCellUpdate: deletion of recent records failed: update = %+v, error = %v", cellUpdate, deleteRecentErr)
+		}
+
+	}
+
 	return nil
 
 }
