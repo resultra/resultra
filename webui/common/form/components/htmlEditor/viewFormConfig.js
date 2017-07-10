@@ -244,9 +244,15 @@ function initNoteEditorTableCellEditBehavior($container,componentContext,recordP
 	$notePopupLink.popover({
 		html: 'true',
 		content: function() { return noteEditorTableViewContainerHTML() },
-		trigger: 'click',
+		trigger: 'manual',
 		placement: 'auto left'
 	})
+	
+	$notePopupLink.click(function(e) {
+		$(this).popover('toggle')
+		e.stopPropagation()
+	})
+	
 	
 	$notePopupLink.on('shown.bs.popover', function()
 	{
