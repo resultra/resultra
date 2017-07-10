@@ -42,12 +42,17 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 	
 	
 		var $editButton = $htmlEditor.find(".startEditButton")
+		var $clearValButton = $htmlEditor.find(".editorComponentClearValueButton")
 		if(formComponentIsReadOnly(htmlEditorObjectRef.properties.permissions)) {
 			$editButton.prop('disabled',true);
 			$editButton.hide()
+			$clearValButton.prop('disabled',true);
+			$clearValButton.hide()
 		} else {
 			$editButton.prop('disabled',false);
 			$editButton.show()
+			$clearValButton.prop('disabled',false);
+			$clearValButton.show()
 		
 		}
 	
