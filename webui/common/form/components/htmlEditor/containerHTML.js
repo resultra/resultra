@@ -61,7 +61,7 @@ function noteEditorTableViewContainerHTML() {
 function noteEditorTableViewCellContainerHTML() {
 	return '<div class="layoutContainer noteEditTableCell">' +
 			'<div>' +
-				'<a class="btn noteEditPopop">Show note</a>'+
+				'<a class="btn noteEditPopop"></a>'+
 			'</div>' +
 		'</div>'
 }

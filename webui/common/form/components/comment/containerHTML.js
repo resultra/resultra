@@ -74,7 +74,7 @@ function commentBoxTableViewEditContainerHTML() {
 function commentBoxTableViewContainerHTML() {
 	return '<div class="layoutContainer commentEditTableCell">' +
 			'<div>' +
-				'<a class="btn commentEditPopop">Show comments</a>'+
+				'<a class="btn commentEditPopop"></a>'+
 			'</div>' +
 		'</div>'
 }

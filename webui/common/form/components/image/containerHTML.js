@@ -74,7 +74,7 @@ function attachmentTableViewPopupEditContainerHTML() {
 function attachmentTableViewContainerHTML() {
 	return '<div class="layoutContainer attachmentEditTableCell">' +
 			'<div>' +
-				'<a class="btn attachmentEditPopop">Show attachments</a>'+
+				'<a class="btn attachmentEditPopop"></a>'+
 			'</div>' +
 		'</div>'
 }
