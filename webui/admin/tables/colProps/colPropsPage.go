@@ -29,7 +29,8 @@ func init() {
 		"static/admin/tables/colProps/rating.html",
 		"static/admin/tables/colProps/toggle.html",
 		"static/admin/tables/colProps/userSelection.html",
-		"static/admin/tables/colProps/formButton.html"}
+		"static/admin/tables/colProps/formButton.html",
+		"static/admin/tables/colProps/attachment.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
@@ -61,6 +62,7 @@ type TemplParams struct {
 	ToggleParams        ToggleColPropsTemplateParams
 	UserSelectionParams UserSelectionColPropsTemplateParams
 	FormButtonParams    FormButtonColPropsTemplateParams
+	AttachmentParams    AttachmentColPropsTemplateParams
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -107,7 +109,8 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		RatingParams:        newRatingTemplateParams(),
 		ToggleParams:        newToggleTemplateParams(),
 		UserSelectionParams: newUserSelectionTemplateParams(),
-		FormButtonParams:    newFormButtonTemplateParams()}
+		FormButtonParams:    newFormButtonTemplateParams(),
+		AttachmentParams:    newAttachmentTemplateParams()}
 
 	if err := tablePropTemplates.ExecuteTemplate(w, "colPropsAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

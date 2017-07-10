@@ -42,6 +42,9 @@ $(document).ready(function() {
 		case 'button':
 			initFormButtonColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
 			break
+		case 'attachment':
+			initAttachmentColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			break
 		default:
 			console.log("Unknown column type: " + colPropsAdminContext.colType)
 		}
