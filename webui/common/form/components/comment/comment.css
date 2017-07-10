@@ -17,6 +17,11 @@
 	overflow-x: hidden;
 }
 
+/* A minimum height on the header ensures the close button is on it's own
+   at the top of a popover used to display the comment(s) */
+.commentEditorHeader {
+	min-height: 25px;
+}
 
 .commentCommentEntryBox {
 	resize:vertical;
