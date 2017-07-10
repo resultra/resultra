@@ -296,8 +296,7 @@ function initCommentBoxTableViewRecordEditBehavior($commentContainer, componentC
 		html: 'true',
 		content: function() { return commentBoxTableViewEditContainerHTML() },
 		trigger: 'click',
-		placement: 'auto left',
-		container: "body"
+		placement: 'auto left'
 	})
 	
 	$commentPopupLink.on('shown.bs.popover', function()

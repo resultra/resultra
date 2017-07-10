@@ -296,8 +296,7 @@ function initAttachmentTableViewRecordEditBehavior($attachContainer, componentCo
 		html: 'true',
 		content: function() { return attachmentTableViewPopupEditContainerHTML() },
 		trigger: 'click',
-		placement: 'auto left',
-		container: "body"
+		placement: 'auto left'
 	})
 	
 	$attachmentPopupLink.on('shown.bs.popover', function()
