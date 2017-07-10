@@ -45,6 +45,9 @@ $(document).ready(function() {
 		case 'attachment':
 			initAttachmentColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
 			break
+		case 'note':
+			initNoteColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			break
 		default:
 			console.log("Unknown column type: " + colPropsAdminContext.colType)
 		}
