@@ -48,6 +48,9 @@ $(document).ready(function() {
 		case 'note':
 			initNoteColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
 			break
+		case 'comment':
+			initCommentColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			break
 		default:
 			console.log("Unknown column type: " + colPropsAdminContext.colType)
 		}
