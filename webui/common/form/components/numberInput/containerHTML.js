@@ -6,6 +6,9 @@ function numberInputControlHTML() {
       					'<button class="btn btn-default addButton" type="button" tabindex="-1"><i class="fa fa-caret-up"></i></button>'+
       					'<button class="btn btn-default subButton" type="button" tabindex="-1"><i class="fa fa-caret-down"></i></button>'+
    	 				'</div>' +
+    				'<div>' +
+      					clearValueButtonHTML("numberInputComponentClearValueButton") +
+   	 				'</div>' +
 				'</div>'
 
 }
@@ -18,9 +21,6 @@ function numberInputContainerHTML(elementID)
 				'<label>New Number Input</label>'+
 				numberInputControlHTML() +
 			'</div>'+
-			'<div class="pull-right componentHoverFooter initiallyHidden">' +
-				smallClearDeleteButtonHTML("numberInputComponentClearValueButton") + 
-			'</div>' +
 		'</div>';
 	return containerHTML
 }
@@ -28,10 +28,7 @@ function numberInputContainerHTML(elementID)
 function numberInputTableCellContainerHTML() {
 	var containerHTML = ''+
 		'<div class="layoutContainer numberInputComponent numberInputTableCellContainer">' +
-					numberInputControlHTML() +
-			'<div class="pull-right componentHoverFooter initiallyHidden">' +
-				smallClearDeleteButtonHTML("numberInputComponentClearValueButton") + 
-			'</div>' +
+			numberInputControlHTML() +
 		'</div>';
 	return containerHTML
 	
