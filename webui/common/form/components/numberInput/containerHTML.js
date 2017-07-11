@@ -6,10 +6,8 @@ function numberInputControlHTML() {
       					'<button class="btn btn-default addButton" type="button" tabindex="-1"><i class="fa fa-caret-up"></i></button>'+
       					'<button class="btn btn-default subButton" type="button" tabindex="-1"><i class="fa fa-caret-down"></i></button>'+
    	 				'</div>' +
-    				'<div>' +
-      					clearValueButtonHTML("numberInputComponentClearValueButton") +
-   	 				'</div>' +
-				'</div>'
+       				clearValueButtonHTML("numberInputComponentClearValueButton") +
+ 				'</div>'
 
 }
 
