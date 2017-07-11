@@ -3,19 +3,24 @@ function userSelectionControlFromUserSelectionComponentContainer($userSelContain
 	return $userSelContainer.find(".userSelectionCompSelectionControl")
 }
 
+function userSelectionControlContainerHTML() {
+	return '<div class="input-group">'+
+				'<div class="formUserSelectionControl">' + 
+					'<select class="form-control userSelectionCompSelectionControl"></select>' +
+				'</div>' +
+				clearValueButtonHTML("userSelectionComponentClearValueButton") +
+			'</div>'
+	
+}
+
 function userSelectionContainerHTML(elementID)
 {
 	var containerHTML = ''+
 		'<div class=" layoutContainer userSelectionFormContainer">' +
 			'<div class="form-group marginBottom0">'+
-				'<label>Select User</label>'+
-				'<div class="formUserSelectionControl">' + 
-					'<select class="form-control userSelectionCompSelectionControl"></select>' +
-				'</div>' +
+				'<label>New Text Box</label>'+
+				userSelectionControlContainerHTML() +
 			'</div>'+
-			'<div class="componentHoverFooter">' +
-				smallClearDeleteButtonHTML("userSelectionComponentClearValueButton") + 
-			'</div>' +
 		'</div>';
 										
 	return containerHTML
@@ -24,16 +29,8 @@ function userSelectionContainerHTML(elementID)
 function userSelectionTableCellContainerHTML() {
 	var containerHTML = ''+
 		'<div class=" layoutContainer userSelectionTableCellContainer">' +
-			'<div class="form-group marginBottom0">'+
-				'<div class="formUserSelectionControl">' + 
-					'<select class="form-control userSelectionCompSelectionControl"></select>' +
-				'</div>' +
-			'</div>'+
-			'<div class="componentHoverFooter">' +
-				smallClearDeleteButtonHTML("userSelectionComponentClearValueButton") + 
-			'</div>' +
-		'</div>';
-									
+			userSelectionControlContainerHTML() +
+		'</div>';									
 	return containerHTML
 	
 }

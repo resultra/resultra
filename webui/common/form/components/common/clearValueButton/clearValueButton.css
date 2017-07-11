@@ -1,8 +1,6 @@
 .clearValueButton {
-	position: absolute;
+	position: relative;
 	padding-left:2px;
 	padding-right:2px;
-	/* Stretch the button to the top and bottom of containing div */
-	top:0;
-	bottom:0;
+	height:34px;
 }

@@ -37,3 +37,8 @@
 .userSelectionTableCellContainer span {
 	line-height: 32px !important;
 }
+
+.userSelectionClearValueWrapper {
+	position:relative;
+	min-height:34px;
+}

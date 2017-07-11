@@ -8,6 +8,7 @@ function textBoxContainerInputControl() {
 						'<ul class="dropdown-menu valueDropdownMenu">' +
 						'</ul>'+
 					'</div>'+
+					clearValueButtonHTML("textBoxComponentClearValueButton") +
 				'</div>'
 }
 
@@ -15,13 +16,10 @@ function textBoxContainerHTML(elementID)
 {
 	var containerHTML = ''+
 		'<div class="layoutContainer textBoxComponent textBoxFormComponent">' +
-			'<div class="form-group">'+
+//			'<div class="form-group">'+
 				'<label>New Text Box</label>'+
-				textBoxContainerInputControl()
-			'</div>'+
-			'<div class="componentHoverFooter">' +
-				smallClearDeleteButtonHTML("textBoxComponentClearValueButton") + 
-			'</div>' +
+				textBoxContainerInputControl() +
+//			'</div>'+
 		'</div>';
 	return containerHTML
 }
@@ -30,9 +28,6 @@ function textBoxTableViewContainerHTML() {
 	var containerHTML = ''+
 		'<div class="layoutContainer textBoxComponent textBoxTableCellComponent">' +
 			textBoxContainerInputControl() +
-			'<div class="componentHoverFooter">' +
-				smallClearDeleteButtonHTML("textBoxComponentClearValueButton") + 
-			'</div>' +
 		'</div>';
 	return containerHTML
 }

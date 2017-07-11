@@ -30,7 +30,6 @@ function htmlEditorContainerHTML(elementID)
 			'</div>' +
 		'</div>'+
 		'<div class="editorFooter componentHoverFooter">' +
-			smallClearDeleteButtonHTML("editorComponentClearValueButton") + 
 			noteEditButtonHTML() +
 		'</div>' +	
 	'</div>';
@@ -49,7 +48,6 @@ function noteEditorTableViewContainerHTML() {
 			'</div>' +
 		'</div>'+
 		'<div class="editorFooter">' +
-			smallClearDeleteButtonHTML("editorComponentClearValueButton") + 
 			noteEditButtonHTML() +
 		'</div>' +	
 	'</div>';

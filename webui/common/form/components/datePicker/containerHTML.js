@@ -5,9 +5,12 @@ function datePickerInputFromContainer($datePickerContainer) {
 }
 
 function datePickerControlHTML() {
-	return '<div class="datePickerInputContainer">' + 
-				'<input type="text" name="symbol"  class="form-control datePickerComponentInput" placeholder="">' +
-	'</div>';
+	return '<div class="input-group">'+
+				'<div class="datePickerInputContainer">' + 
+					'<input type="text" name="symbol"  class="form-control datePickerComponentInput" placeholder="">' +
+				'</div>'+
+				clearValueButtonHTML("datePickerComponentClearValueButton") +
+			'</div>';
 }
 
 function datePickerContainerHTML(elementID)
@@ -18,9 +21,6 @@ function datePickerContainerHTML(elementID)
 			'<label>Date Picker</label>'+
 			datePickerControlHTML() +
 		'</div>'+
-		'<div class="componentHoverFooter">' +
-			smallClearDeleteButtonHTML("datePickerComponentClearValueButton") + 
-		'</div>' +
 	'</div>';
 	
 	return containerHTML
@@ -30,10 +30,7 @@ function datePickerTableViewCellContainerHTML() {
 	return ''+
 		'<div class="layoutContainer datePickerContainer datePickerTableCellContainer">' +
 			datePickerControlHTML() +
-			'<div class="componentHoverFooter">' +
-				smallClearDeleteButtonHTML("datePickerComponentClearValueButton") + 
-			'</div>' +
-	'</div>';
+		'</div>';
 }
 
 
