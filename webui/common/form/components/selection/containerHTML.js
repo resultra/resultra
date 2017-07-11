@@ -10,13 +10,13 @@ function selectionContainerHTML(elementID)
 		'<div class=" layoutContainer selectionFormComponent" id="'+elementID+'">' +
 			'<div class="form-group marginBottom0">'+
 				'<label>Selection</label>'+
-				'<div class="selectionFormControl">' + 
-					'<select class="form-control selectionFormComponentSelection"></select>' +
-				'</div>' +
+				'<div class="input-group">'+
+					'<div class="selectionFormControl">' + 
+						'<select class="form-control selectionFormComponentSelection"></select>' +
+					'</div>' +
+					clearValueButtonHTML("selectComponentClearValueButton") +
+				'</div>'+
 			'</div>'+
-			'<div class="pull-right componentHoverFooter initiallyHidden">' +
-				smallClearDeleteButtonHTML("selectComponentClearValueButton") + 
-			'</div>' +
 		'</div>';
 	return containerHTML
 }

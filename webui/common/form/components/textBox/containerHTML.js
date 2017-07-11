@@ -16,10 +16,8 @@ function textBoxContainerHTML(elementID)
 {
 	var containerHTML = ''+
 		'<div class="layoutContainer textBoxComponent textBoxFormComponent">' +
-//			'<div class="form-group">'+
 				'<label>New Text Box</label>'+
 				textBoxContainerInputControl() +
-//			'</div>'+
 		'</div>';
 	return containerHTML
 }
