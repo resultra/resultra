@@ -33,8 +33,11 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 					datePickerObjectRef,$datePickerContainer) {
 	
 
-		var $datePickerInput = datePickerInputFromContainer($datePickerContainer)
+		var $datePickerControl = datePickerInputFromContainer($datePickerContainer)
 		var $clearValueButton = $datePickerContainer.find(".datePickerComponentClearValueButton")
+		var $calendarIcon = $datePickerContainer.find(".datePickerCalendarButton")
+		var $datePickerInput = $datePickerContainer.find("input")
+
 	
 		var fieldID = datePickerObjectRef.properties.fieldID
 	
@@ -42,15 +45,18 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 		if(fieldRef.isCalcField) {
 			$datePickerInput.prop("disabled",true)
 			$clearValueButton.hide()
+			$calendarIcon.css("display","none")
 			return;  // stop initialization, the check box is read only.
 		}
 	
 		if(formComponentIsReadOnly(datePickerObjectRef.properties.permissions)) {
 			$datePickerInput.prop('disabled',true);
 			$clearValueButton.hide()
+			$calendarIcon.css("display","none")
 		} else {
 			$datePickerInput.prop('disabled',false);
 			$clearValueButton.show()
+			$calendarIcon.css("display","")
 		}
 	
 		$datePickerContainer.find(".datePickerInputContainer").click(function(e) {
@@ -94,7 +100,7 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 		})
 	
 		
-		$datePickerInput.on('dp.change',function (e) {
+		$datePickerControl.on('dp.change',function (e) {
 		    console.log("date picker changed dates")		
 			// The date passed with the event will be false if the date has been cleared.
 			if(e.date !== false) {
@@ -127,7 +133,7 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 			var fieldVal = recordRef.fieldValues[datePickerFieldID]
 		
 			if (fieldVal === null) {
-				$datePickerInput.val("")
+				$datePickerInput.data("DateTimePicker").clear()
 			} else {
 				// Values need to be set using the same format the date picker control was initialized with.
 				var dateVal = moment(fieldVal)
@@ -135,7 +141,7 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 			}
 		} else {
 			// There's no value in the current record for this field, so clear the value in the container
-			$datePickerInput.val("") 
+			$datePickerInput.data("DateTimePicker").clear()
 		}
 	
 	}

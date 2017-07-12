@@ -10,7 +10,7 @@
 }
 
 .datePickerTableCellContainer {
-	min-width 75px;
+	min-width 100px;
 	width: 100%;
 	height: auto;
 }
@@ -19,12 +19,25 @@
 	margin-bottom:0px;
 }
 
-.datePickerComponentInput {
-	width:100%;
+.datePickerContainer input {
 	padding-left:5px;
 	padding-right:5px;
+	min-width:100px;
+	
+}
+
+.datePickerComponentInput {
+	width:100%;
+	padding-left:2px;
+	padding-right:2px;
 }
 
 .datePickerContainer label {
 	margin-bottom:2px;
+}
+
+.datePickerCalendarButton {
+	background-color: white;
+	padding-left:5px !important;
+	padding-right:5px !important;
 }

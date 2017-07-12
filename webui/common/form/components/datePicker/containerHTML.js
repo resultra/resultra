@@ -5,11 +5,14 @@ function datePickerInputFromContainer($datePickerContainer) {
 }
 
 function datePickerControlHTML() {
-	return '<div class="input-group">'+
-				'<div class="datePickerInputContainer">' + 
-					'<input type="text" name="symbol"  class="form-control datePickerComponentInput" placeholder="">' +
+	return '<div class="datePickerInputContainer">'+
+				'<div class="input-group date datePickerComponentInput">' +
+					'<input type="text" name="symbol"  class="form-control " placeholder="">' +
+					'<span class="input-group-addon datePickerCalendarButton">' +
+                 	   '<span class=" glyphicon glyphicon-calendar"></span>' +
+                	'</span>' +
+					clearValueButtonHTML("datePickerComponentClearValueButton") +
 				'</div>'+
-				clearValueButtonHTML("datePickerComponentClearValueButton") +
 			'</div>';
 }
 
@@ -29,7 +32,9 @@ function datePickerContainerHTML(elementID)
 function datePickerTableViewCellContainerHTML() {
 	return ''+
 		'<div class="layoutContainer datePickerContainer datePickerTableCellContainer">' +
-			datePickerControlHTML() +
+			'<div class="form-group">' +
+				datePickerControlHTML() +
+			'</div>'+
 		'</div>';
 }
 
@@ -65,6 +70,7 @@ function initDatePickerFormComponentInput($datePickerContainer, datePickerRef) {
 	}
 	
 	$datePickerInput.datetimepicker({
+		allowInputToggle:false,
 		format: momentFormat, // moment format - time will be displayed if the format includes a time component
 		showTodayButton: true, // show the today button as a default
 		keepOpen: false, // keep the popup open after selecting a date
@@ -82,6 +88,8 @@ function initDatePickerFormComponentInput($datePickerContainer, datePickerRef) {
 		// daysOfWeekHighlighted: "1,2,3,4,5" // highlight weekdays
 		// 
 	})
+	
+	
 	
 	// To ensure the date/time picker shows on top of other parts of the page, it needs to be attached to the body and 
 	// repositioned near the input element. See: https://github.com/Eonasdan/bootstrap-datetimepicker/issues/790 
@@ -109,15 +117,8 @@ function initDatePickerFormComponentInput($datePickerContainer, datePickerRef) {
 
 function setDatePickerFormComponentDate($datePicker, datePickerRef, momentDate) {
 	
-	var $datePickerInput = datePickerInputFromContainer($datePicker)
-	
-	var dateFormat = getDateComponentDateTimeMomentFormat(datePickerRef.properties.dateFormat)
-	var formattedDate = momentDate.format(dateFormat)
-	
-	var currDateVal = $datePickerInput.val()
-	if(currDateVal !== formattedDate) {
-		$datePickerInput.val(formattedDate)
-	}
+	var $datePickerInput = datePickerInputFromContainer($datePicker)	
+	$datePickerInput.data("DateTimePicker").date(momentDate)
 }
 
 function getDatePickerFormComponentUTCDate($datePicker) {
