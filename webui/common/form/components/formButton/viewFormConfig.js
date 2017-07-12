@@ -1,4 +1,4 @@
-
+var FormButtonPopupBehaviorModal = "modal"
 
 function loadRecordIntoButton(buttonElem, recordRef) {	
 	// no-op

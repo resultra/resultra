@@ -1,4 +1,4 @@
-var FormButtonPopupBehaviorModal = "modal"
+
 
 function initFormButtonBehaviorProperties(buttonRef,saveBehaviorCallback) {
 	

@@ -101,7 +101,8 @@ function initDatePickerFormComponentInput($datePickerContainer, datePickerRef) {
 	        datepicker.css({
 	          'top': top + 'px',
 	          'bottom': 'auto',
-	          'left': left + 'px'
+	          'left': left + 'px',
+			   'z-index': 99999999 // needed for when date picker shown in bootstrap dialog or popup
 	        });
 	      } else if (datepicker.hasClass('top')) {
 	        var top = $(this).offset().top - datepicker.outerHeight();
@@ -109,10 +110,15 @@ function initDatePickerFormComponentInput($datePickerContainer, datePickerRef) {
 	        datepicker.css({
 	          'top': top + 'px',
 	          'bottom': 'auto',
-	          'left': left + 'px'
+	          'left': left + 'px',
+			  'z-index': 99999999
 	        });
-	      }
-	    });
+	      } 
+		  
+		  $datePickerInput.resize(function() {
+			  console.log("Date picker resized/moved")
+		  })
+	  });
 }
 
 function setDatePickerFormComponentDate($datePicker, datePickerRef, momentDate) {
