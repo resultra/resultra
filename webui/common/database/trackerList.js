@@ -15,6 +15,8 @@ function addTrackerListItem(trackerInfo) {
 	var editPropsLink = '/admin/' + trackerInfo.databaseID
 	$settingsLink.attr('href',editPropsLink)
 	
+	$settingsLink.tooltip()
+	
 
 	$trackerList.append($listItem)
 	
