@@ -93,32 +93,50 @@ function initDatePickerFormComponentInput($datePickerContainer, datePickerRef) {
 	
 	// To ensure the date/time picker shows on top of other parts of the page, it needs to be attached to the body and 
 	// repositioned near the input element. See: https://github.com/Eonasdan/bootstrap-datetimepicker/issues/790 
+	var datePickerShown = false
 	$datePickerInput.on('dp.show', function() {
 	      var datepicker = $('body').find('.bootstrap-datetimepicker-widget:last');
-	      if (datepicker.hasClass('bottom')) {
-	        var top = $(this).offset().top + $(this).outerHeight();
-	        var left = $(this).offset().left;
-	        datepicker.css({
-	          'top': top + 'px',
-	          'bottom': 'auto',
-	          'left': left + 'px',
-			   'z-index': 99999999 // needed for when date picker shown in bootstrap dialog or popup
-	        });
-	      } else if (datepicker.hasClass('top')) {
-	        var top = $(this).offset().top - datepicker.outerHeight();
-	        var left = $(this).offset().left;
-	        datepicker.css({
-	          'top': top + 'px',
-	          'bottom': 'auto',
-	          'left': left + 'px',
-			  'z-index': 99999999
-	        });
-	      } 
+		  datePickerShown = true
 		  
-		  $datePickerInput.resize(function() {
-			  console.log("Date picker resized/moved")
-		  })
+		  function repositionDatePickerNearControl() {
+		      if (datepicker.hasClass('bottom')) {
+		        var top = $datePickerInput.offset().top + $datePickerInput.outerHeight();
+		        var left = $datePickerInput.offset().left;
+		        datepicker.css({
+		          'top': top + 'px',
+		          'bottom': 'auto',
+		          'left': left + 'px',
+				   'z-index': 99999999 // needed for when date picker shown in bootstrap dialog or popup
+		        });
+		      } else if (datepicker.hasClass('top')) {
+		        var top = $datePickerInput.offset().top - datepicker.outerHeight();
+		        var left = $datePickerInput.offset().left;
+		        datepicker.css({
+		          'top': top + 'px',
+		          'bottom': 'auto',
+		          'left': left + 'px',
+				  'z-index': 99999999
+		        });
+		      } 
+		  }
+		 repositionDatePickerNearControl()
+		 function repositionWhileOpen() {
+  			setTimeout(function() {
+  				// This is a simple polling loop to update the absolute position of the
+				// date picker while it is open. This is a workaround to account for scenarios where the
+				// date picker is shown next to an input which is scrolled.
+				if(datePickerShown) {
+					repositionDatePickerNearControl()
+					repositionWhileOpen()
+				}
+  			}, 100);		  		
+		  }
+		  repositionWhileOpen()
 	  });
+	  
+  	$datePickerInput.on('dp.hide', function() {
+		datePickerShown = false
+	})
 }
 
 function setDatePickerFormComponentDate($datePicker, datePickerRef, momentDate) {
