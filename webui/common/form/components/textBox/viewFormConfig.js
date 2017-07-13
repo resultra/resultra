@@ -98,30 +98,44 @@ function initTextBoxRecordEditBehavior($container,componentContext,recordProxy, 
 		var fieldType = fieldRef.type
 		
 		function setTextVal(textVal) {
-			var textBoxTextValueFormat = {
-				context:"textBox",
-				format:"general"
-			}
-			var currRecordRef = recordProxy.getRecordFunc()
-			var setRecordValParams = { 
-				parentDatabaseID:currRecordRef.parentDatabaseID,
-				recordID:currRecordRef.recordID, 
-				changeSetID: recordProxy.changeSetID,
-				fieldID:textBoxFieldID, 
-				value:textVal,
-				valueFormat: textBoxTextValueFormat 
-			}
-			jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
-				// After updating the record, the local cache of records will
-				// be out of date. So after updating the record on the server, the locally cached
-				// version of the record also needs to be updated.
-				recordProxy.updateRecordFunc(replyData)
 			
-			}) // set record's text field value
+			
+			validateTextBoxInput(function(inputIsValid) {
+				if (inputIsValid) {
+					var textBoxTextValueFormat = {
+						context:"textBox",
+						format:"general"
+					}
+					var currRecordRef = recordProxy.getRecordFunc()
+					var setRecordValParams = { 
+						parentDatabaseID:currRecordRef.parentDatabaseID,
+						recordID:currRecordRef.recordID, 
+						changeSetID: recordProxy.changeSetID,
+						fieldID:textBoxFieldID, 
+						value:textVal,
+						valueFormat: textBoxTextValueFormat 
+					}
+					jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
+						// After updating the record, the local cache of records will
+						// be out of date. So after updating the record on the server, the locally cached
+						// version of the record also needs to be updated.
+						recordProxy.updateRecordFunc(replyData)
+			
+					}) // set record's text field value
+					
+				} // inputIsValid
+				
+			})
 				
 		}
+		
+		function setTextBoxValueListValue(textVal) {
+			var $textBoxInput = $container.find('input')
+			$textBoxInput.val(textVal)
+			setTextVal(textVal)
+		}
 	
-		configureTextBoxComponentValueListDropdown($container,textFieldObjectRef,setTextVal)
+		configureTextBoxComponentValueListDropdown($container,textFieldObjectRef,setTextBoxValueListValue)
 	
 		initButtonControlClickHandler($clearValueButton,function() {
 				console.log("Clear value clicked for text box")

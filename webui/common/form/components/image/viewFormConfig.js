@@ -7,14 +7,12 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 	
 	var $imageInnerContainer = imageInnerContainerFromImageComponentContainer($imageContainer)
 	
-	var validateInput = function(validationCompleteCallback) {
-		
+	var validateInputWithAttachmentList = function(attachmentIDList, validationCompleteCallback) {
 		if(formComponentIsReadOnly(imageObjectRef.properties.permissions)) {
 			validationCompleteCallback(true)
 			return
 		}
-		var currentAttachmentIDs = getCurrentlyDisplayedAttachmentList()
-		remoteValidationFunc(currentAttachmentIDs,function(validationResult) {
+		remoteValidationFunc(attachmentIDList,function(validationResult) {
 			if (validationResult.validationSucceeded) {
 				$imageContainer.popover('destroy')
 				validationCompleteCallback(true)
@@ -32,6 +30,14 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 		})	
 		
 	}
+
+	var validateInput = function(validationCompleteCallback) {
+		
+		var currentAttachmentIDs = getCurrentlyDisplayedAttachmentList()
+		validateInputWithAttachmentList(currentAttachmentIDs,validationCompleteCallback)
+		
+	}
+	
 	
 	var getCurrentlyDisplayedAttachmentList = function() {
 		var currentAttachmentIDs = []
@@ -144,30 +150,35 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 		var $imageUploadInput = imageUploadInputFromImageComponentContainer($imageContainer)
 	
 		function saveRecordUpdateWithAttachmentListAdditions(newAttachmentList) {
-			var currRecordRef = recordProxy.getRecordFunc()
+			
+			validateInputWithAttachmentList(newAttachmentList,function(inputIsValid) {
+				if(inputIsValid) {
+					var currRecordRef = recordProxy.getRecordFunc()
 		
-			var updatedAttachmentList = []
-			if(currRecordRef.fieldValues.hasOwnProperty(imageFieldID)) {
-				// If there are existing attachments, merge with the list of existing attachments.
-				// Otherwise, use the new list of attachments to initially set the attachment list.
-				updatedAttachmentList = currRecordRef.fieldValues[imageFieldID].attachments.slice(0)
-			}
-			updatedAttachmentList = $.merge(updatedAttachmentList,newAttachmentList)
+					var updatedAttachmentList = []
+					if(currRecordRef.fieldValues.hasOwnProperty(imageFieldID)) {
+						// If there are existing attachments, merge with the list of existing attachments.
+						// Otherwise, use the new list of attachments to initially set the attachment list.
+						updatedAttachmentList = currRecordRef.fieldValues[imageFieldID].attachments.slice(0)
+					}
+					updatedAttachmentList = $.merge(updatedAttachmentList,newAttachmentList)
 		
-			var recordUpdateParams = {
-				parentDatabaseID:currRecordRef.parentDatabaseID,
-				fieldID: imageFieldID, 
-				recordID: currRecordRef.recordID,
-				changeSetID: recordProxy.changeSetID,
-				valueFormatContext: "image",
-				valueFormatFormat: "general",
-				attachments: updatedAttachmentList }
-			console.log("Attachment: Setting file field value: " + JSON.stringify(recordUpdateParams))
-			jsonAPIRequest("recordUpdate/setFileFieldValue", recordUpdateParams, function(updatedRecord) {
-				console.log("Attachment: Done uploading file: updated record ref = " + JSON.stringify(updatedRecord))
-				recordProxy.updateRecordFunc(updatedRecord)
+					var recordUpdateParams = {
+						parentDatabaseID:currRecordRef.parentDatabaseID,
+						fieldID: imageFieldID, 
+						recordID: currRecordRef.recordID,
+						changeSetID: recordProxy.changeSetID,
+						valueFormatContext: "image",
+						valueFormatFormat: "general",
+						attachments: updatedAttachmentList }
+					console.log("Attachment: Setting file field value: " + JSON.stringify(recordUpdateParams))
+					jsonAPIRequest("recordUpdate/setFileFieldValue", recordUpdateParams, function(updatedRecord) {
+						console.log("Attachment: Done uploading file: updated record ref = " + JSON.stringify(updatedRecord))
+						recordProxy.updateRecordFunc(updatedRecord)
+					})
+				}
 			})
-		
+			
 		}
 			
 		var $manageAttachmentsButton = manageAttachmentsButtonFromImageComponentContainer($imageContainer)

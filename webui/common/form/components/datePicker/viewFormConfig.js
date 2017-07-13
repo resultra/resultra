@@ -17,7 +17,7 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 				$datePickerContainer.popover({
 					html: 'true',
 					content: function() { return escapeHTML(validationResult.errorMsg) },
-					trigger: 'hover',
+					trigger: 'manual',
 					placement: 'auto left'
 				})
 				$datePickerContainer.popover('show')
@@ -70,27 +70,30 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 	
 		function setDateValue(dateVal) {
 			validateDatePickerInput(function(inputIsValid) {
-				var currRecordRef = recordProxy.getRecordFunc()
-				var dateValueFormat = {
-					context: "datePicker",
-					format: "date"
-				}
-				var setRecordValParams = {
-					parentDatabaseID:currRecordRef.parentDatabaseID,
-					recordID:currRecordRef.recordID, 
-					changeSetID: recordProxy.changeSetID,
-					fieldID:fieldID, 
-					value:dateVal,
-					 valueFormat: dateValueFormat}
-				console.log("Setting date value: " + JSON.stringify(setRecordValParams))
+				if(inputIsValid) {
+					var currRecordRef = recordProxy.getRecordFunc()
+					var dateValueFormat = {
+						context: "datePicker",
+						format: "date"
+					}
+					var setRecordValParams = {
+						parentDatabaseID:currRecordRef.parentDatabaseID,
+						recordID:currRecordRef.recordID, 
+						changeSetID: recordProxy.changeSetID,
+						fieldID:fieldID, 
+						value:dateVal,
+						 valueFormat: dateValueFormat}
+					console.log("Setting date value: " + JSON.stringify(setRecordValParams))
 	
-				jsonAPIRequest("recordUpdate/setTimeFieldValue",setRecordValParams,function(updatedRecordRef) {
+					jsonAPIRequest("recordUpdate/setTimeFieldValue",setRecordValParams,function(updatedRecordRef) {
 		
-					// After updating the record, the local cache of records in currentRecordSet will
-					// be out of date. So after updating the record on the server, the locally cached
-					// version of the record also needs to be updated.
-					recordProxy.updateRecordFunc(updatedRecordRef)
-				}) // set record's text field value		
+						// After updating the record, the local cache of records in currentRecordSet will
+						// be out of date. So after updating the record on the server, the locally cached
+						// version of the record also needs to be updated.
+						recordProxy.updateRecordFunc(updatedRecordRef)
+					}) // set record's text field value		
+					
+				} // inputIsValid
 			})
 		}
 	
