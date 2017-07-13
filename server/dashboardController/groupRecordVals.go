@@ -173,7 +173,7 @@ func groupTimeFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Fi
 	if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
 		timeVal, valFound := recValResults.FieldValues.GetTimeFieldValue(fieldGroup.FieldID)
 		if !valFound {
-			return nil, fmt.Errorf("groupTimeFieldRecordVal: Unabled to retrieve value for grouping label")
+			return numberGroupLabelInfo("BLANK", 0.0), nil
 		} else {
 			switch valGrouping.GroupValsBy {
 			case values.ValGroupByNone:
@@ -197,7 +197,7 @@ func groupBoolFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Fi
 	if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
 		boolVal, valFound := recValResults.FieldValues.GetBoolFieldValue(fieldGroup.FieldID)
 		if !valFound {
-			return nil, fmt.Errorf("groupBoolFieldRecordVal: Unabled to retrieve value for grouping label")
+			return numberGroupLabelInfo("BLANK", 0.0), nil
 		} else {
 			if boolVal == true {
 				return numberGroupLabelInfo("True", 1.0), nil
