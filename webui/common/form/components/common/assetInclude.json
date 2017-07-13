@@ -6,5 +6,6 @@
 		"visibility",
 		"permissions",
 		"delete",
-		"clearValueButton"]
+		"clearValueButton",
+		"validation"]
 }

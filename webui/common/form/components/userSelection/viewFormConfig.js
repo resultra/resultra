@@ -14,19 +14,7 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 		}
 		var currVal = $userSelectionControl.val()
 		validateInputFunc(currVal,function(validationResult) {
-			if (validationResult.validationSucceeded) {
-				$userSelectionContainer.popover('destroy')
-				validationCompleteCallback(true)
-			} else {
-				$userSelectionContainer.popover({
-					html: 'true',
-					content: function() { return escapeHTML(validationResult.errorMsg) },
-					trigger: 'manual',
-					placement: 'auto left'
-				})
-				$userSelectionContainer.popover('show')
-				validationCompleteCallback(false)
-			}
+			setupFormComponentValidationPrompt($userSelectionContainer,validationResult,validationCompleteCallback)			
 		})	
 	}
 

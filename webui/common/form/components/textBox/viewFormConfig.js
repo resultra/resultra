@@ -20,20 +20,7 @@ function initTextBoxRecordEditBehavior($container,componentContext,recordProxy, 
 			inputVal: currVal
 		}
 		jsonAPIRequest("frm/textBox/validateInput", validationParams, function(validationResult) {
-			if (validationResult.validationSucceeded) {
-				$container.popover('destroy')
-				validationCompleteCallback(true)
-			} else {
-				$container.popover({
-					html: 'true',
-					content: function() { return escapeHTML(validationResult.errorMsg) },
-					trigger: 'manual',
-					placement: 'auto left'
-				})
-				$container.popover('show')
-				validationCompleteCallback(false)
-			}
-			
+			setupFormComponentValidationPrompt($container,validationResult,validationCompleteCallback)			
 		})	
 		
 	}

@@ -17,19 +17,7 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 		// characters.
 		var currInputValText = $htmlEditorInput.text()
 		remoteValidationFunc(currInputValText,function(validationResult) {
-			if (validationResult.validationSucceeded) {
-				$htmlEditor.popover('destroy')
-				validationCompleteCallback(true)
-			} else {
-				$htmlEditor.popover({
-					html: 'true',
-					content: function() { return escapeHTML(validationResult.errorMsg) },
-					trigger: 'manual',
-					placement: 'auto left'
-				})
-				$htmlEditor.popover('show')
-				validationCompleteCallback(false)
-			}			
+			setupFormComponentValidationPrompt($htmlEditor,validationResult,validationCompleteCallback)			
 		})
 		
 	}

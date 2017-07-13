@@ -15,19 +15,7 @@ function initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, 
 		
 		var currVal = getCurrentCheckboxComponentValue($checkBox)
 		validateInput(currVal,function(validationResult) {
-			if (validationResult.validationSucceeded) {
-				$checkBox.popover('destroy')
-				validationCompleteCallback(true)
-			} else {
-				$checkBox.popover({
-					html: 'true',
-					content: function() { return escapeHTML(validationResult.errorMsg) },
-					trigger: 'manual',
-					placement: 'auto left'
-				})
-				$checkBox.popover('show')
-				validationCompleteCallback(false)
-			}
+			setupFormComponentValidationPrompt($checkBox,validationResult,validationCompleteCallback)			
 		})
 		
 	}

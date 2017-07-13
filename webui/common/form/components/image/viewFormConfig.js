@@ -13,20 +13,7 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 			return
 		}
 		remoteValidationFunc(attachmentIDList,function(validationResult) {
-			if (validationResult.validationSucceeded) {
-				$imageContainer.popover('destroy')
-				validationCompleteCallback(true)
-			} else {
-				$imageContainer.popover({
-					html: 'true',
-					content: function() { return escapeHTML(validationResult.errorMsg) },
-					trigger: 'manual',
-					placement: 'auto left'
-				})
-				$imageContainer.popover('show')
-				validationCompleteCallback(false)
-			}
-			
+			setupFormComponentValidationPrompt($imageContainer,validationResult,validationCompleteCallback)			
 		})	
 		
 	}

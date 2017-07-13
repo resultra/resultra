@@ -14,20 +14,7 @@ function initRatingRecordEditBehavior($ratingContainer,componentContext,recordPr
 		
 		var currVal = getRatingValFromContainer($ratingContainer)
 		remoteValidateInput(currVal,function(validationResult) {
-			if (validationResult.validationSucceeded) {
-				$ratingContainer.popover('destroy')
-				validationCompleteCallback(true)
-			} else {
-				$ratingContainer.popover({
-					html: 'true',
-					content: function() { return escapeHTML(validationResult.errorMsg) },
-					trigger: 'manual',
-					placement: 'auto left'
-				})
-				$ratingContainer.popover('show')
-				validationCompleteCallback(false)
-			}
-			
+			setupFormComponentValidationPrompt($ratingContainer,validationResult,validationCompleteCallback)			
 		})	
 		
 	}

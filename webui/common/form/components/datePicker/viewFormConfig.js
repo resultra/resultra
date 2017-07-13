@@ -1,4 +1,7 @@
 
+
+
+
 function initDatePickerRecordEditBehavior($datePickerContainer, componentContext,recordProxy, datePickerObjectRef,remoteValidationFunc) {
 
 	var validateDatePickerInput = function(validationCompleteCallback) {
@@ -10,20 +13,7 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 		
 		var currVal = getDatePickerFormComponentUTCDate($datePickerContainer)
 		remoteValidationFunc(currVal,function(validationResult) {
-			if (validationResult.validationSucceeded) {
-				$datePickerContainer.popover('destroy')
-				validationCompleteCallback(true)
-			} else {
-				$datePickerContainer.popover({
-					html: 'true',
-					content: function() { return escapeHTML(validationResult.errorMsg) },
-					trigger: 'manual',
-					placement: 'auto left'
-				})
-				$datePickerContainer.popover('show')
-				validationCompleteCallback(false)
-			}
-			
+			setupFormComponentValidationPrompt($datePickerContainer,validationResult,validationCompleteCallback)			
 		})	
 		
 	}

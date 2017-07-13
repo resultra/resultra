@@ -11,21 +11,8 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 		}
 		
 		var currVal = getCurrentToggleComponentValue($toggle)
-		remoteValidate(currVal,function(validationResult) {			
-			if (validationResult.validationSucceeded) {
-				$toggle.popover('destroy')
-				validationCompleteCallback(true)
-			} else {
-				$toggle.popover({
-					html: 'true',
-					content: function() { return escapeHTML(validationResult.errorMsg) },
-					trigger: 'manual',
-					placement: 'auto left'
-				})
-				$toggle.popover('show')
-				validationCompleteCallback(false)
-			}
-			
+		remoteValidate(currVal,function(validationResult) {
+			setupFormComponentValidationPrompt($toggle,validationResult,validationCompleteCallback)			
 		})	
 		
 	}
