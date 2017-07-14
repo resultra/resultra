@@ -17,6 +17,8 @@ func init() {
 	numberInputRouter.HandleFunc("/api/tableView/numberInput/setLabelFormat", setLabelFormat)
 	numberInputRouter.HandleFunc("/api/tableView/numberInput/setPermissions", setPermissions)
 	numberInputRouter.HandleFunc("/api/tableView/numberInput/setShowSpinner", setShowSpinner)
+	numberInputRouter.HandleFunc("/api/tableView/numberInput/setClearValueSupported", setClearValueSupported)
+
 	numberInputRouter.HandleFunc("/api/tableView/numberInput/setSpinnerStepSize", setSpinnerStepSize)
 
 	numberInputRouter.HandleFunc("/api/tableView/numberInput/setValidation", setValidation)
@@ -129,6 +131,15 @@ func setSpinnerStepSize(w http.ResponseWriter, r *http.Request) {
 
 func setValidation(w http.ResponseWriter, r *http.Request) {
 	var params NumberInputValidationParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processNumberInputPropUpdate(w, r, params)
+}
+
+func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
+	var params NumberInputClearValueSupportedParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

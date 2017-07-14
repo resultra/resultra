@@ -62,6 +62,22 @@ function initNumberInputColPropertiesImpl(numberInputCol) {
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
 	
+	var clearValueParams = {
+		initialVal: numberInputCol.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentTableID: numberInputCol.parentTableID,
+				numberInputID: numberInputCol.numberInputID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("tableView/numberInput/setClearValueSupported",formatParams,function(updatedNumberInput) {
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
+	
+	
 	
 	
 }

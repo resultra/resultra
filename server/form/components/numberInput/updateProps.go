@@ -157,3 +157,15 @@ func (updateParams NumberInputValidationParams) updateProps(numberInput *NumberI
 
 	return nil
 }
+
+type NumberInputClearValueSupportedParams struct {
+	NumberInputIDHeader
+	ClearValueSupported bool `json:"clearValueSupported"`
+}
+
+func (updateParams NumberInputClearValueSupportedParams) updateProps(numberInput *NumberInput) error {
+
+	numberInput.Properties.ClearValueSupported = updateParams.ClearValueSupported
+
+	return nil
+}

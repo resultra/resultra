@@ -91,6 +91,7 @@ function loadNumberInputProperties($numberInput,numberInputRef) {
 			}
 			jsonAPIRequest("frm/numberInput/setPermissions",params,function(updatedNumberInput) {
 				configureNumberInputButtonSpinner($numberInput,updatedNumberInput)
+				configureNumberInputClearValueButton($numberInput, updatedNumberInput)			
 				setContainerComponentInfo($numberInput,updatedNumberInput,updatedNumberInput.numberInputID)
 			})
 		}
@@ -133,6 +134,24 @@ function loadNumberInputProperties($numberInput,numberInputRef) {
 		}
 	}
 	initSpinnerButtonProps(spinnerParams)
+
+
+	var clearValueParams = {
+		initialVal: numberInputRef.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentFormID: numberInputRef.parentFormID,
+				numberInputID: numberInputRef.numberInputID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("frm/numberInput/setClearValueSupported",formatParams,function(updatedNumberInput) {
+				setContainerComponentInfo($numberInput,updatedNumberInput,updatedNumberInput.numberInputID)
+				configureNumberInputClearValueButton($numberInput, updatedNumberInput)			
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
 
 	
 	

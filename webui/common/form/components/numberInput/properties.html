@@ -28,6 +28,12 @@
 		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}
 
 		{{template "componentPermissionProps" .PermissionPanelParams}}
+		
+		{{template "propertyPanelPrefix" .ClearValuePanelParams}}
+			{{template "clearValueProps" .ElemPrefix}}
+		{{template "propertyPanelSuffix"}}
+		
+		
 
 		{{template "componentDeletePropertyPanel" .DeletePanelParams}}
 

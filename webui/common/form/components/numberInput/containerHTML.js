@@ -72,6 +72,42 @@ function configureNumberInputButtonSpinner($numberInputContainer, numberInputRef
 	
 }
 
+function configureNumberInputClearValueButton($numberInputContainer, numberInputRef) {
+	
+	var $clearValueButton = $numberInputContainer.find(".numberInputComponentClearValueButton")
+	
+	function hideButton() {
+		$clearValueButton.css("display","none")
+		$clearValueButton.prop("disabled",true)
+	}
+	
+	function showButton() {
+		$clearValueButton.css("display","")
+		$clearValueButton.prop("disabled",false)
+		
+	}
+
+	var numberInputFieldID = numberInputRef.properties.fieldID
+	var fieldRef = getFieldRef(numberInputFieldID)
+	
+	if(fieldRef.isCalcField) {
+		hideButton()
+		return
+	}
+	
+	
+	if(formComponentIsReadOnly(numberInputRef.properties.permissions)) {
+		hideButton()
+	} else {
+		if(numberInputRef.properties.clearValueSupported) {
+			showButton()
+		} else {
+			hideButton()	
+		}
+	}
+	
+}
+
 function numberInputComponentDisabled($numberInputContainer) {
 	
 	var $numberInput = $numberInputContainer.find(".numberInputComponentInput")

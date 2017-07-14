@@ -143,6 +143,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		setNumberInputComponentLabel(containerObj,numberInput)
 		configureNumberInputButtonSpinner(containerObj,numberInput)
+		configureNumberInputClearValueButton(containerObj,numberInput)
 			
 		$componentRow.append(containerObj)
 		

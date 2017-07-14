@@ -26,6 +26,7 @@ type NumberInputProperties struct {
 	ShowValueSpinner     bool                                       `json:"showValueSpinner"`
 	ValueSpinnerStepSize float64                                    `json:"valueSpinnerStepSize"`
 	Validation           NumberInputValidationProperties            `json:"validation"`
+	ClearValueSupported  bool                                       `json:"clearValueSupported"`
 }
 
 func (srcProps NumberInputProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*NumberInputProperties, error) {
@@ -48,6 +49,7 @@ func newDefaultNumberInputProperties() NumberInputProperties {
 		Permissions:          common.NewDefaultComponentValuePermissionsProperties(),
 		ShowValueSpinner:     true,
 		ValueSpinnerStepSize: 1.0,
-		Validation:           newDefaultValidationProperties()}
+		Validation:           newDefaultValidationProperties(),
+		ClearValueSupported:  false}
 	return props
 }

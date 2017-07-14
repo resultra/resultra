@@ -98,14 +98,12 @@ function initNumberInputRecordEditBehavior($container,componentContext,recordPro
 		}
 	
 		var fieldType = fieldRef.type
+		
 	
 		if(formComponentIsReadOnly(numberInputObjectRef.properties.permissions)) {
 			$numberInputInput.prop('disabled',true);
-			$clearValueButton.hide()
 		} else {
-			$numberInputInput.prop('disabled',false);
-			$clearValueButton.show()
-		
+			$numberInputInput.prop('disabled',false);		
 		}
 	
 		function setNumberVal(numberVal) {
@@ -264,6 +262,7 @@ function initNumberInputTableRecordEditBehavior($container,componentContext,reco
 	}
 	
 	configureNumberInputButtonSpinner($container, numberInputObjectRef)
+	configureNumberInputClearValueButton($container,numberInputObjectRef)
 	
 	initNumberInputRecordEditBehavior($container,componentContext,recordProxy, numberInputObjectRef,validateFormNumberInput)
 }
