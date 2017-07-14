@@ -91,11 +91,31 @@ function loadDatePickerProperties($container,datePickerRef) {
 				permissions: updatedPermissions
 			}
 			jsonAPIRequest("frm/datePicker/setPermissions",params,function(updatedDatePicker) {
+				initDatePickerAddonControls($container,updatedDatePicker)	
 				setContainerComponentInfo($container,updatedDatePicker,updatedDatePicker.datePickerID)	
 			})
 		}
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
+	
+	
+	var clearValueParams = {
+		initialVal: datePickerRef.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentFormID: datePickerRef.parentFormID,
+				datePickerID: datePickerRef.datePickerID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("frm/datePicker/setClearValueSupported",formatParams,function(updatedDatePicker) {
+				setContainerComponentInfo($container,updatedDatePicker,updatedDatePicker.datePickerID)
+				initDatePickerAddonControls($container,updatedDatePicker)	
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
+	
 	
 	var deleteParams = {
 		elemPrefix: elemPrefix,

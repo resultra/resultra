@@ -34,7 +34,8 @@ type DatePickerProperties struct {
 	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
 	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 	common.ComponentVisibilityProperties
-	Validation DatePickerValidationProperties `json:"validation"`
+	Validation          DatePickerValidationProperties `json:"validation"`
+	ClearValueSupported bool                           `json:"clearValueSupported"`
 }
 
 const dateFormatDefault string = "date"
@@ -64,6 +65,7 @@ func newDefaultDatePickerProperties() DatePickerProperties {
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
 		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
 		DateFormat:                    dateFormatDefault,
-		Validation:                    newDefaultDatePickerProps()}
+		Validation:                    newDefaultDatePickerProps(),
+		ClearValueSupported:           false}
 	return props
 }

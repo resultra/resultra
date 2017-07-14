@@ -34,26 +34,13 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 		var fieldRef = getFieldRef(fieldID)
 		if(fieldRef.isCalcField) {
 			$datePickerInput.prop("disabled",true)
-			$clearValueButton.hide()
+			$clearValueButton.css("display","none")
 			$calendarIcon.css("display","none")
 			return;  // stop initialization, the check box is read only.
 		}
-	
-		if(formComponentIsReadOnly(datePickerObjectRef.properties.permissions)) {
-			$datePickerInput.prop('disabled',true);
-			$clearValueButton.hide()
-			$clearValueButton.css("display","none")
-			$calendarIcon.css("display","none")
-		} else {
-			$datePickerInput.prop('disabled',false);
-			if(datePickerObjectRef.properties.clearValueSupported) {
-				$clearValueButton.css("display","")
-			} else {
-				$clearValueButton.css("display","none")		
-			}
-			$calendarIcon.css("display","")
-		}
-	
+		
+		initDatePickerAddonControls($datePickerContainer,datePickerObjectRef)
+		
 		$datePickerContainer.find(".datePickerInputContainer").click(function(e) {
 		
 			// This is important - if a click hits an object, then stop the propagation of the click

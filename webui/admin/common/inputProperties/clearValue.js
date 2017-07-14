@@ -1,6 +1,8 @@
 function initClearValueProps(params) {
 	
-	initCheckboxChangeHandler('#adminClearValueSupported', 
+	var checkboxSelector = '#' + params.elemPrefix + 'adminClearValueSupported'
+	
+	initCheckboxChangeHandler(checkboxSelector, 
 				params.initialVal, function (newVal) {
 			
 		params.setClearValueSupported(newVal)

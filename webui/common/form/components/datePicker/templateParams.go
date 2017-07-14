@@ -18,6 +18,7 @@ type DatePickerDesignTemplateParams struct {
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
 	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
 	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
+	ClearValuePanelParams    propertiesSidebar.PanelTemplateParams
 }
 
 type DatePickerViewTemplateParams struct {
@@ -36,6 +37,7 @@ func init() {
 		ElemPrefix:            elemPrefix,
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "datePickerFormat"},
 		ValidationPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Input Validation", PanelID: "datePickerValidation"},
+		ClearValuePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Clear Values", PanelID: "datePickerClearValue"},
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "datePickerVisibility"),
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "datePickerLabel"}},

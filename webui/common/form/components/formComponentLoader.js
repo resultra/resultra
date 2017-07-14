@@ -353,8 +353,9 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		
 		setDatePickerComponentLabel(containerObj,datePicker)
-		
 		initDatePickerFormComponentInput(containerObj,datePicker)
+		initDatePickerAddonControls(containerObj,datePicker)
+		
 		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append(containerObj)

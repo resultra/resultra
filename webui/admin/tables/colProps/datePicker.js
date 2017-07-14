@@ -71,6 +71,7 @@ function initNumberDatePickerColPropertiesImpl(datePickerCol) {
 	
 	var clearValueParams = {
 		initialVal: datePickerCol.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
 		setClearValueSupported: function(clearValueSupported) {
 			var formatParams = {
 				parentTableID: datePickerCol.parentTableID,
