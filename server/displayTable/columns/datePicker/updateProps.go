@@ -99,3 +99,15 @@ func (updateParams DatePickerValidationParams) updateProps(datePicker *DatePicke
 
 	return nil
 }
+
+type DatePickerClearValueSupportedParams struct {
+	DatePickerIDHeader
+	ClearValueSupported bool `json:"clearValueSupported"`
+}
+
+func (updateParams DatePickerClearValueSupportedParams) updateProps(datePicker *DatePicker) error {
+
+	datePicker.Properties.ClearValueSupported = updateParams.ClearValueSupported
+
+	return nil
+}

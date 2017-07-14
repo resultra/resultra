@@ -17,6 +17,7 @@ func init() {
 	datePickerRouter.HandleFunc("/api/tableView/datePicker/setLabelFormat", setLabelFormat)
 	datePickerRouter.HandleFunc("/api/tableView/datePicker/setPermissions", setPermissions)
 	datePickerRouter.HandleFunc("/api/tableView/datePicker/setValidation", setValidation)
+	datePickerRouter.HandleFunc("/api/tableView/datePicker/setClearValueSupported", setClearValueSupported)
 
 	datePickerRouter.HandleFunc("/api/tableView/datePicker/validateInput", validateInputAPI)
 
@@ -110,6 +111,15 @@ func setPermissions(w http.ResponseWriter, r *http.Request) {
 
 func setValidation(w http.ResponseWriter, r *http.Request) {
 	var params DatePickerValidationParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processDatePickerPropUpdate(w, r, params)
+}
+
+func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
+	var params DatePickerClearValueSupportedParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

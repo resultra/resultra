@@ -27,11 +27,12 @@ func newDefaultDatePickerValidationProps() DatePickerValidationProperties {
 }
 
 type DatePickerProperties struct {
-	FieldID     string                                     `json:"fieldID"`
-	DateFormat  string                                     `json:"dateFormat"`
-	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
-	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
-	Validation  DatePickerValidationProperties             `json:"validation"`
+	FieldID             string                                     `json:"fieldID"`
+	DateFormat          string                                     `json:"dateFormat"`
+	LabelFormat         common.ComponentLabelFormatProperties      `json:"labelFormat"`
+	Permissions         common.ComponentValuePermissionsProperties `json:"permissions"`
+	Validation          DatePickerValidationProperties             `json:"validation"`
+	ClearValueSupported bool                                       `json:"clearValueSupported"`
 }
 
 const dateFormatDefault string = "date"
@@ -51,9 +52,10 @@ func (srcProps DatePickerProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper
 
 func newDefaultDatePickerProperties() DatePickerProperties {
 	props := DatePickerProperties{
-		LabelFormat: common.NewDefaultLabelFormatProperties(),
-		Permissions: common.NewDefaultComponentValuePermissionsProperties(),
-		DateFormat:  dateFormatDefault,
-		Validation:  newDefaultDatePickerValidationProps()}
+		LabelFormat:         common.NewDefaultLabelFormatProperties(),
+		Permissions:         common.NewDefaultComponentValuePermissionsProperties(),
+		DateFormat:          dateFormatDefault,
+		Validation:          newDefaultDatePickerValidationProps(),
+		ClearValueSupported: false}
 	return props
 }

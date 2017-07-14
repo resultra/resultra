@@ -69,6 +69,22 @@ function initNumberDatePickerColPropertiesImpl(datePickerCol) {
 	initDateValidationProperties(validationParams)
 	
 	
+	var clearValueParams = {
+		initialVal: datePickerCol.properties.clearValueSupported,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentTableID: datePickerCol.parentTableID,
+				datePickerID: datePickerCol.datePickerID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("tableView/datePicker/setClearValueSupported",formatParams,function(updatedDatePicker) {
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
+	
+	
+	
 	
 }
 

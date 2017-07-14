@@ -42,10 +42,15 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 		if(formComponentIsReadOnly(datePickerObjectRef.properties.permissions)) {
 			$datePickerInput.prop('disabled',true);
 			$clearValueButton.hide()
+			$clearValueButton.css("display","none")
 			$calendarIcon.css("display","none")
 		} else {
 			$datePickerInput.prop('disabled',false);
-			$clearValueButton.show()
+			if(datePickerObjectRef.properties.clearValueSupported) {
+				$clearValueButton.css("display","")
+			} else {
+				$clearValueButton.css("display","none")		
+			}
 			$calendarIcon.css("display","")
 		}
 	
