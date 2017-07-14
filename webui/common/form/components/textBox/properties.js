@@ -95,10 +95,29 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 			jsonAPIRequest("frm/textBox/setPermissions",params,function(updatedTextBox) {
 				setContainerComponentInfo($textBox,updatedTextBox,updatedTextBox.textBoxID)
 				configureTextBoxComponentValueListDropdown($textBox, updatedTextBox, dummySetVal)
+				initTextBoxClearValueControl($textBox,updatedTextBox)
 			})
 		}
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
+	
+	var clearValueParams = {
+		initialVal: textBoxRef.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentFormID: textBoxRef.parentFormID,
+				textboxID: textBoxRef.textBoxID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("frm/textBox/setClearValueSupported",formatParams,function(updatedTextBox) {
+				setContainerComponentInfo($textBox,updatedTextBox,updatedTextBox.textBoxID)
+				initTextBoxClearValueControl($textBox,updatedTextBox)
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
+	
 	
 	var deleteParams = {
 		elemPrefix: elemPrefix,

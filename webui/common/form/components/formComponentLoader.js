@@ -119,6 +119,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		setTextBoxComponentLabel(containerObj,textBox)
 		function dummySetVal(dropdownVal) {}
 		configureTextBoxComponentValueListDropdown(containerObj, textBox,dummySetVal)
+		initTextBoxClearValueControl(containerObj, textBox)
 			
 		$componentRow.append(containerObj)
 		

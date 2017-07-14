@@ -16,6 +16,8 @@ func init() {
 	textBoxRouter.HandleFunc("/api/frm/textBox/setPermissions", setPermissions)
 	textBoxRouter.HandleFunc("/api/frm/textBox/setValueList", setValueList)
 	textBoxRouter.HandleFunc("/api/frm/textBox/setValidation", setValidation)
+	textBoxRouter.HandleFunc("/api/frm/textBox/setClearValueSupported", setClearValueSupported)
+
 	textBoxRouter.HandleFunc("/api/frm/textBox/validateInput", validateInputAPI)
 
 	http.Handle("/api/frm/textBox/", textBoxRouter)
@@ -104,6 +106,15 @@ func setValueList(w http.ResponseWriter, r *http.Request) {
 
 func setValidation(w http.ResponseWriter, r *http.Request) {
 	var params TextBoxValidationParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processTextBoxPropUpdate(w, r, params)
+}
+
+func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
+	var params TextBoxClearValueSupportedParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

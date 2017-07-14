@@ -19,6 +19,10 @@
 		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}
 
 		{{template "componentPermissionsPropertyPanel" .PermissionPanelParams}}
+		
+		{{template "propertyPanelPrefix" .ClearValuePanelParams}}
+			{{template "clearValueProps" .ElemPrefix}}
+		{{template "propertyPanelSuffix"}}
 
 		{{template "componentDeletePropertyPanel" .DeletePanelParams}}
 

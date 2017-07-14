@@ -17,6 +17,7 @@ func init() {
 	textInputRouter.HandleFunc("/api/tableView/textInput/setPermissions", setPermissions)
 	textInputRouter.HandleFunc("/api/tableView/textInput/setValueList", setValueList)
 	textInputRouter.HandleFunc("/api/tableView/textInput/setValidation", setValidation)
+	textInputRouter.HandleFunc("/api/tableView/textInput/setClearValueSupported", setClearValueSupported)
 
 	textInputRouter.HandleFunc("/api/tableView/textInput/validateInput", validateInputAPI)
 
@@ -109,6 +110,15 @@ func setValueList(w http.ResponseWriter, r *http.Request) {
 
 func setValidation(w http.ResponseWriter, r *http.Request) {
 	var params TextInputValidationParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processTextInputPropUpdate(w, r, params)
+}
+
+func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
+	var params TextInputClearValueSupportedParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

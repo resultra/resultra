@@ -74,6 +74,21 @@ function initTextInputColPropertiesImpl(textInputCol) {
 	}
 	initTextInputValidationProperties(validationParams)
 	
+	var clearValueParams = {
+		initialVal: textInputCol.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentTableID: textInputCol.parentTableID,
+				textInputID: textInputCol.textInputID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("tableView/textInput/setClearValueSupported",formatParams,function(updatedTextInput) {
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
+	
 	
 	
 }

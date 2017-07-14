@@ -15,11 +15,12 @@ func newDefaultTextInputValidationProperties() TextInputValidationProperties {
 }
 
 type TextInputProperties struct {
-	FieldID     string                                     `json:"fieldID"`
-	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
-	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
-	ValueListID *string                                    `json:"valueListID,omitempty"`
-	Validation  TextInputValidationProperties              `json:"validation"`
+	FieldID             string                                     `json:"fieldID"`
+	LabelFormat         common.ComponentLabelFormatProperties      `json:"labelFormat"`
+	Permissions         common.ComponentValuePermissionsProperties `json:"permissions"`
+	ValueListID         *string                                    `json:"valueListID,omitempty"`
+	Validation          TextInputValidationProperties              `json:"validation"`
+	ClearValueSupported bool                                       `json:"clearValueSupported"`
 }
 
 func (srcProps TextInputProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*TextInputProperties, error) {
@@ -42,8 +43,9 @@ func (srcProps TextInputProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper)
 
 func newDefaultTextInputProperties() TextInputProperties {
 	props := TextInputProperties{
-		LabelFormat: common.NewDefaultLabelFormatProperties(),
-		Permissions: common.NewDefaultComponentValuePermissionsProperties(),
-		Validation:  newDefaultTextInputValidationProperties()}
+		LabelFormat:         common.NewDefaultLabelFormatProperties(),
+		Permissions:         common.NewDefaultComponentValuePermissionsProperties(),
+		Validation:          newDefaultTextInputValidationProperties(),
+		ClearValueSupported: false}
 	return props
 }

@@ -39,6 +39,40 @@ function setTextBoxComponentLabel($textBoxContainer, textBoxRef) {
 			textBoxRef.properties.labelFormat)	
 }
 
+function initTextBoxClearValueControl($textBoxContainer, textBoxRef) {
+	
+	var $clearValueButton = $textBoxContainer.find(".textBoxComponentClearValueButton")
+	var textBoxFieldID = textBoxRef.properties.fieldID
+	
+	function hideClearValueButton() {
+		$clearValueButton.css("display","none")
+	}
+	
+	function showClearValueButton() {
+		$clearValueButton.css("display","")
+	}
+	
+	
+	var fieldRef = getFieldRef(textBoxFieldID)
+	if(fieldRef.isCalcField) {
+		hideClearValueButton()
+		return
+	}
+	
+	if(formComponentIsReadOnly(textBoxRef.properties.permissions)) {
+		hideClearValueButton()
+	} else {
+		if(textBoxRef.properties.clearValueSupported) {
+			showClearValueButton()
+		} else {
+			hideClearValueButton()
+		}
+	}
+	
+	
+	
+}
+
 function configureTextBoxComponentValueListDropdown($textBoxContainer, textBoxRef, setValueCallback) {
 	
 	var $valSelectionDropdown = $textBoxContainer.find(".valueSelectionDropdown")

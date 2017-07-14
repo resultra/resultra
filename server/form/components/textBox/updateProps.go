@@ -133,3 +133,15 @@ func (updateParams TextBoxValidationParams) updateProps(textBox *TextBox) error 
 
 	return nil
 }
+
+type TextBoxClearValueSupportedParams struct {
+	TextBoxIDHeader
+	ClearValueSupported bool `json:"clearValueSupported"`
+}
+
+func (updateParams TextBoxClearValueSupportedParams) updateProps(textBox *TextBox) error {
+
+	textBox.Properties.ClearValueSupported = updateParams.ClearValueSupported
+
+	return nil
+}

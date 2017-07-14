@@ -69,16 +69,15 @@ function initTextBoxRecordEditBehavior($container,componentContext,recordProxy, 
 		var fieldRef = getFieldRef(textBoxFieldID)
 		if(fieldRef.isCalcField) {
 			$textBoxInput.prop('disabled',true);
-			$clearValueButton.hide()
 			return;  // stop initialization, the text box is read only.
 		}
+		
+		initTextBoxClearValueControl($container,textFieldObjectRef)
 	
 		if(formComponentIsReadOnly(textFieldObjectRef.properties.permissions)) {
 			$textBoxInput.prop('disabled',true);
-			$clearValueButton.hide()
 		} else {
 			$textBoxInput.prop('disabled',false);
-			$clearValueButton.show()		
 		}
 	
 		
