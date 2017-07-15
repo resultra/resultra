@@ -167,7 +167,8 @@ function initUserSelectionTableRecordEditBehavior($container,componentContext,re
 	
 	var selectionWidth = 200 // TBD - Calculate width
 	
-		
+	initUserSelectionClearValueButton($container,userSelectionObjectRef)
+	
 	initUserSelectionRecordEditBehavior($container,componentContext,recordProxy, 
 			userSelectionObjectRef,selectionWidth, validateInput)
 }

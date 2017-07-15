@@ -85,3 +85,15 @@ func (updateParams UserSelectionValidationParams) updateProps(userSelection *Use
 
 	return nil
 }
+
+type UserSelectionClearValueSupportedParams struct {
+	UserSelectionIDHeader
+	ClearValueSupported bool `json:"clearValueSupported"`
+}
+
+func (updateParams UserSelectionClearValueSupportedParams) updateProps(userSelection *UserSelection) error {
+
+	userSelection.Properties.ClearValueSupported = updateParams.ClearValueSupported
+
+	return nil
+}

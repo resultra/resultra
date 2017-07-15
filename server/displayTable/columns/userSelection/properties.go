@@ -15,10 +15,11 @@ func newDefaultValidationProperties() ValidationProperties {
 }
 
 type UserSelectionProperties struct {
-	FieldID     string                                     `json:"fieldID"`
-	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
-	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
-	Validation  ValidationProperties                       `json:"validation"`
+	FieldID             string                                     `json:"fieldID"`
+	LabelFormat         common.ComponentLabelFormatProperties      `json:"labelFormat"`
+	Permissions         common.ComponentValuePermissionsProperties `json:"permissions"`
+	Validation          ValidationProperties                       `json:"validation"`
+	ClearValueSupported bool                                       `json:"clearValueSupported"`
 }
 
 func (srcProps UserSelectionProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*UserSelectionProperties, error) {
@@ -36,8 +37,9 @@ func (srcProps UserSelectionProperties) Clone(remappedIDs uniqueID.UniqueIDRemap
 
 func newDefaultUserSelectionProperties() UserSelectionProperties {
 	props := UserSelectionProperties{
-		LabelFormat: common.NewDefaultLabelFormatProperties(),
-		Permissions: common.NewDefaultComponentValuePermissionsProperties(),
-		Validation:  newDefaultValidationProperties()}
+		LabelFormat:         common.NewDefaultLabelFormatProperties(),
+		Permissions:         common.NewDefaultComponentValuePermissionsProperties(),
+		Validation:          newDefaultValidationProperties(),
+		ClearValueSupported: false}
 	return props
 }

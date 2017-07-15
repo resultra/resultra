@@ -59,6 +59,22 @@ function initUserSelectionColPropertiesImpl(userSelectionInputCol) {
 	initUserSelectionValidationProperties(validationParams)
 	
 	
+	var clearValueParams = {
+		initialVal: userSelectionInputCol.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentTableID: userSelectionInputCol.parentTableID,
+				userSelectionID: userSelectionInputCol.userSelectionID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("tableView/userSelection/setClearValueSupported",formatParams,function(updatedDatePicker) {
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
+	
+	
 }
 
 function initUserSelectionColProperties(tableID,columnID) {

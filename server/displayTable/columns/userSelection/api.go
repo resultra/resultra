@@ -14,6 +14,7 @@ func init() {
 	userSelectionRouter.HandleFunc("/api/tableView/userSelection/get", getUserSelectionAPI)
 
 	userSelectionRouter.HandleFunc("/api/tableView/userSelection/setLabelFormat", setLabelFormat)
+	userSelectionRouter.HandleFunc("/api/tableView/userSelection/setClearValueSupported", setClearValueSupported)
 
 	userSelectionRouter.HandleFunc("/api/tableView/userSelection/setPermissions", setPermissions)
 	userSelectionRouter.HandleFunc("/api/tableView/userSelection/setValidation", setValidation)
@@ -99,6 +100,15 @@ func setPermissions(w http.ResponseWriter, r *http.Request) {
 
 func setValidation(w http.ResponseWriter, r *http.Request) {
 	var params UserSelectionValidationParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processUserSelectionPropUpdate(w, r, params)
+}
+
+func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
+	var params UserSelectionClearValueSupportedParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

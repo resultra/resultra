@@ -52,10 +52,29 @@ function loadUserSelectionProperties($userSelection,userSelectionRef) {
 			}
 			jsonAPIRequest("frm/userSelection/setPermissions",params,function(updatedUserSelection) {
 				setContainerComponentInfo($userSelection,updatedUserSelection,updatedUserSelection.userSelectionID)
+				initUserSelectionClearValueButton($userSelection,updatedUserSelection)
 			})
 		}
 	}
 	initFormComponentPermissionsPropertyPanel(permissionParams)
+	
+	var clearValueParams = {
+		initialVal: userSelectionRef.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentFormID: userSelectionRef.parentFormID,
+				userSelectionID: userSelectionRef.userSelectionID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("frm/userSelection/setClearValueSupported",formatParams,function(updatedUserSelection) {
+					setContainerComponentInfo($userSelection,updatedUserSelection,updatedUserSelection.userSelectionID)
+					initUserSelectionClearValueButton($userSelection,updatedUserSelection)
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
+	
 
 	initCheckboxChangeHandler('#adminUserSelectionComponentValidationRequired', 
 				userSelectionRef.properties.validation.valueRequired, function (newVal) {

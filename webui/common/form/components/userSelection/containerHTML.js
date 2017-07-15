@@ -42,3 +42,36 @@ function setUserSelectionComponentLabel($userSelection,userSelection) {
 			userSelection.properties.labelFormat)	
 	
 }
+
+function initUserSelectionClearValueButton($userSelection,userSelection) {
+	
+	var $clearValueButton = $userSelection.find(".userSelectionComponentClearValueButton")
+	
+	var fieldID = userSelection.properties.fieldID
+	
+	function hideClearValueButton() {
+		$clearValueButton.css("display","none")
+	}
+	
+	function showClearValueButton() {
+		$clearValueButton.css("display","")
+	}
+	
+	
+	var fieldRef = getFieldRef(fieldID)
+	if(fieldRef.isCalcField) {
+		hideClearValueButton()
+		return
+	}
+	
+	if(formComponentIsReadOnly(userSelection.properties.permissions)) {
+		hideClearValueButton()
+	} else {
+		if(userSelection.properties.clearValueSupported) {
+			showClearValueButton()
+		} else {
+			hideClearValueButton()
+		}
+	}
+	
+}
