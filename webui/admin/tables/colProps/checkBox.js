@@ -78,6 +78,20 @@ function initCheckBoxColPropertiesImpl(checkBoxCol) {
 	}
 	initCheckBoxValidationProps(validationParams)	
 	
+	var clearValueParams = {
+		initialVal: checkBoxCol.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentTableID: checkBoxCol.parentTableID,
+				checkBoxID: checkBoxCol.checkBoxID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("tableView/checkBox/setClearValueSupported",formatParams,function(updatedCheckboxRef) {
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
 	
 	
 }

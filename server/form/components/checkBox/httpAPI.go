@@ -16,6 +16,7 @@ func init() {
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/setLabelFormat", setLabelFormat)
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/setVisibility", setVisibility)
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/setPermissions", setPermissions)
+	checkBoxRouter.HandleFunc("/api/frm/checkBox/setClearValueSupported", setClearValueSupported)
 
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/setValidation", setValidation)
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/validateInput", validateInputAPI)
@@ -115,6 +116,15 @@ func setPermissions(w http.ResponseWriter, r *http.Request) {
 
 func setValidation(w http.ResponseWriter, r *http.Request) {
 	var params CheckBoxValidationParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processCheckBoxPropUpdate(w, r, params)
+}
+
+func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
+	var params CheckBoxClearValueSupportedParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

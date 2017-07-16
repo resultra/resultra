@@ -181,6 +181,9 @@ function initTableViewCheckboxEditBehavior($checkBox,componentContext,recordProx
 			validationResultCallback(validationResult)
 		})
 	}
+	
+	initCheckBoxClearValueControl($checkBox,checkBoxObjectRef)
+	
 	initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, checkBoxObjectRef,validateInput)
 	
 }

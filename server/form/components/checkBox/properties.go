@@ -25,8 +25,9 @@ type CheckBoxProperties struct {
 	StrikethroughCompleted bool                                  `json:"strikethroughCompleted"`
 	LabelFormat            common.ComponentLabelFormatProperties `json:"labelFormat"`
 	common.ComponentVisibilityProperties
-	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
-	Validation  CheckBoxValidationProperties               `json:"validation"`
+	Permissions         common.ComponentValuePermissionsProperties `json:"permissions"`
+	Validation          CheckBoxValidationProperties               `json:"validation"`
+	ClearValueSupported bool                                       `json:"clearValueSupported"`
 }
 
 func (srcProps CheckBoxProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*CheckBoxProperties, error) {
@@ -56,6 +57,7 @@ func newDefaultCheckBoxProperties() CheckBoxProperties {
 		ColorScheme:                   CheckboxColorSchemeDefault,
 		StrikethroughCompleted:        false,
 		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
-		Validation:                    newDefaultValidationProperties()}
+		Validation:                    newDefaultValidationProperties(),
+		ClearValueSupported:           false}
 	return props
 }

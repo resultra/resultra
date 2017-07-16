@@ -72,6 +72,13 @@ function setCheckBoxComponentLabel($checkboxContainer,checkboxRef) {
 	
 }
 
+
+
+function initCheckBoxClearValueControl($checkboxContainer,checkboxRef) {
+	initClearValueControl($checkboxContainer,checkboxRef,".checkBoxComponentClearValueButton")
+}
+
+
 function getCurrentCheckboxComponentValue($checkboxContainer) {
 	var $checkbox = $checkboxContainer.find(".checkboxFormComponentControl")
 	var isIndeterminate = $checkbox.prop("indeterminate")

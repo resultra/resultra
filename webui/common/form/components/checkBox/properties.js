@@ -104,10 +104,29 @@ function loadCheckboxProperties($container, checkBoxRef) {
 			}
 			jsonAPIRequest("frm/checkBox/setPermissions",params,function(updatedCheckboxRef) {
 				setContainerComponentInfo($container,updatedCheckboxRef,updatedCheckboxRef.checkBoxID)		
+				initCheckBoxClearValueControl($container,updatedCheckboxRef)		
 			})
 		}
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
+	
+	var clearValueParams = {
+		initialVal: checkBoxRef.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentFormID: checkBoxRef.parentFormID,
+				checkBoxID: checkBoxRef.checkBoxID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("frm/checkBox/setClearValueSupported",formatParams,function(updatedCheckboxRef) {
+				setContainerComponentInfo($container,updatedCheckboxRef,updatedCheckboxRef.checkBoxID)
+				initCheckBoxClearValueControl($container,updatedCheckboxRef)		
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
+	
 	
 	var deleteParams = {
 		elemPrefix: elemPrefix,

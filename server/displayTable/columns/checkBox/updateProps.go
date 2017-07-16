@@ -115,3 +115,15 @@ func (updateParams CheckBoxValidationParams) updateProps(checkBox *CheckBox) err
 
 	return nil
 }
+
+type CheckBoxClearValueSupportedParams struct {
+	CheckboxIDHeader
+	ClearValueSupported bool `json:"clearValueSupported"`
+}
+
+func (updateParams CheckBoxClearValueSupportedParams) updateProps(checkBox *CheckBox) error {
+
+	checkBox.Properties.ClearValueSupported = updateParams.ClearValueSupported
+
+	return nil
+}
