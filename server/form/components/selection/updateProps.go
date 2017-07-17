@@ -116,3 +116,15 @@ func (updateParams SelectionPermissionParams) updateProps(selection *Selection) 
 
 	return nil
 }
+
+type SelectionClearValueSupportedParams struct {
+	SelectionIDHeader
+	ClearValueSupported bool `json:"clearValueSupported"`
+}
+
+func (updateParams SelectionClearValueSupportedParams) updateProps(selection *Selection) error {
+
+	selection.Properties.ClearValueSupported = updateParams.ClearValueSupported
+
+	return nil
+}

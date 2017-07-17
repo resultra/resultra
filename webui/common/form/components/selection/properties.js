@@ -55,10 +55,30 @@ function loadSelectionProperties($selection,selectionRef) {
 			}
 			jsonAPIRequest("frm/selection/setPermissions",params,function(updatedSelection) {
 				setContainerComponentInfo($selection,updatedSelection,updatedSelection.selectionID)	
+				initSelectionComponentClearValueButton($selection,updatedSelection)
 			})
 		}
 	}
 	initFormComponentPermissionsPropertyPanel(permissionParams)
+
+
+	var clearValueParams = {
+		initialVal: selectionRef.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentFormID: selectionRef.parentFormID,
+				selectionID: selectionRef.selectionID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("frm/selection/setClearValueSupported",formatParams,function(updatedSelection) {
+				setContainerComponentInfo($selection,updatedSelection,updatedSelection.selectionID)	
+				initSelectionComponentClearValueButton($selection,updatedSelection)
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
+
 
 	var deleteParams = {
 		elemPrefix: elemPrefix,

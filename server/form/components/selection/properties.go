@@ -14,6 +14,7 @@ type SelectionProperties struct {
 	LabelFormat    common.ComponentLabelFormatProperties      `json:"labelFormat"`
 	Permissions    common.ComponentValuePermissionsProperties `json:"permissions"`
 	common.ComponentVisibilityProperties
+	ClearValueSupported bool `json:"clearValueSupported"`
 }
 
 func (srcProps SelectionProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*SelectionProperties, error) {
@@ -40,6 +41,7 @@ func newDefaultSelectionProperties() SelectionProperties {
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
 		SelectableVals:                []SelectionSelectableVal{},
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
-		Permissions:                   common.NewDefaultComponentValuePermissionsProperties()}
+		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
+		ClearValueSupported:           false}
 	return props
 }

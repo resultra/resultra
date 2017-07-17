@@ -13,6 +13,8 @@ func init() {
 	selectionRouter.HandleFunc("/api/frm/selection/resize", resizeSelection)
 	selectionRouter.HandleFunc("/api/frm/selection/setSelectableVals", setSelectionSelectableVals)
 	selectionRouter.HandleFunc("/api/frm/selection/setLabelFormat", setLabelFormat)
+	selectionRouter.HandleFunc("/api/frm/selection/setClearValueSupported", setClearValueSupported)
+
 	selectionRouter.HandleFunc("/api/frm/selection/setVisibility", setVisibility)
 	selectionRouter.HandleFunc("/api/frm/selection/setPermissions", setPermissions)
 
@@ -90,4 +92,13 @@ func setPermissions(w http.ResponseWriter, r *http.Request) {
 	}
 	processSelectionPropUpdate(w, r, params)
 
+}
+
+func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
+	var params SelectionClearValueSupportedParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processSelectionPropUpdate(w, r, params)
 }

@@ -21,10 +21,20 @@ function selectionContainerHTML(elementID)
 	return containerHTML
 }
 
+function initSelectionComponentClearValueButton($selection,selectionRef) {
+	initClearValueControl($selection,selectionRef,".selectComponentClearValueButton")
+}
+
+
 function setSelectionComponentLabel($selection,selectionRef) {
 	var $label = $selection.find('label')
 	
 	setFormComponentLabel($label,selectionRef.properties.fieldID,
 			selectionRef.properties.labelFormat)	
 	
+}
+
+function initSelectionComponentContainer($selection,selectionRef) {
+	setSelectionComponentLabel($selection,selectionRef)
+	initSelectionComponentClearValueButton($selection,selectionRef)
 }
