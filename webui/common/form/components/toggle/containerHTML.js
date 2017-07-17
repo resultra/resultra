@@ -82,6 +82,9 @@ function initDummyToggleControlForDragAndDrop($dummyToggleControlForDragAndDrop)
 	
 }
 
+function initToggleComponentClearValueButton($toggleContainer,toggleRef) {
+	initClearValueControl($toggleContainer,toggleRef,".toggleComponentClearValueButton")
+}
 
 
 function initToggleComponentControl($toggleContainer,toggleRef) {
@@ -120,6 +123,12 @@ function initToggleComponentControl($toggleContainer,toggleRef) {
 		offColor:toggleRef.properties.offColorScheme
 	});
 	
+}
+
+function initToggleComponentFormComponentContainer($toggleContainer,toggleRef) {
+	initToggleComponentControl($toggleContainer,toggleRef)
+	setToggleComponentLabel($toggleContainer,toggleRef)
+	initToggleComponentClearValueButton($toggleContainer,toggleRef)
 }
 
 

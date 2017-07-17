@@ -18,14 +18,15 @@ func newDefaultValidationProperties() ToggleValidationProperties {
 }
 
 type ToggleProperties struct {
-	FieldID        string                                     `json:"fieldID"`
-	OffColorScheme string                                     `json:"offColorScheme"`
-	OnColorScheme  string                                     `json:"onColorScheme"`
-	OffLabel       string                                     `json:"offLabel"`
-	OnLabel        string                                     `json:"onLabel"`
-	LabelFormat    common.ComponentLabelFormatProperties      `json:"labelFormat"`
-	Permissions    common.ComponentValuePermissionsProperties `json:"permissions"`
-	Validation     ToggleValidationProperties                 `json:"validation"`
+	FieldID             string                                     `json:"fieldID"`
+	OffColorScheme      string                                     `json:"offColorScheme"`
+	OnColorScheme       string                                     `json:"onColorScheme"`
+	OffLabel            string                                     `json:"offLabel"`
+	OnLabel             string                                     `json:"onLabel"`
+	LabelFormat         common.ComponentLabelFormatProperties      `json:"labelFormat"`
+	Permissions         common.ComponentValuePermissionsProperties `json:"permissions"`
+	Validation          ToggleValidationProperties                 `json:"validation"`
+	ClearValueSupported bool                                       `json:"clearValueSupported"`
 }
 
 func (srcProps ToggleProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ToggleProperties, error) {
@@ -44,12 +45,13 @@ func (srcProps ToggleProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*
 func newDefaultToggleProperties() ToggleProperties {
 
 	props := ToggleProperties{
-		LabelFormat:    common.NewDefaultLabelFormatProperties(),
-		OffColorScheme: ToggleColorSchemeDefault,
-		OnColorScheme:  ToggleColorSchemeDefault,
-		Permissions:    common.NewDefaultComponentValuePermissionsProperties(),
-		Validation:     newDefaultValidationProperties(),
-		OffLabel:       "No",
-		OnLabel:        "Yes"}
+		LabelFormat:         common.NewDefaultLabelFormatProperties(),
+		OffColorScheme:      ToggleColorSchemeDefault,
+		OnColorScheme:       ToggleColorSchemeDefault,
+		Permissions:         common.NewDefaultComponentValuePermissionsProperties(),
+		Validation:          newDefaultValidationProperties(),
+		OffLabel:            "No",
+		OnLabel:             "Yes",
+		ClearValueSupported: false}
 	return props
 }

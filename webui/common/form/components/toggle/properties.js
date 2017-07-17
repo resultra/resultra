@@ -128,10 +128,30 @@ function loadToggleProperties($container, toggleRef) {
 			}
 			jsonAPIRequest("frm/toggle/setPermissions",params,function(updatedToggleRef) {
 				setContainerComponentInfo($container,updatedToggleRef,updatedToggleRef.toggleID)		
+				initToggleComponentClearValueButton($container,updatedToggleRef)		
 			})
 		}
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
+	
+	
+	var clearValueParams = {
+		initialVal: toggleRef.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentFormID: toggleRef.parentFormID,
+				toggleID: toggleRef.toggleID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("frm/toggle/setClearValueSupported",formatParams,function(updatedToggleRef) {
+				setContainerComponentInfo($container,updatedToggleRef,updatedToggleRef.toggleID)
+				initToggleComponentClearValueButton($container,updatedToggleRef)		
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
+	
 	
 	var deleteParams = {
 		elemPrefix: elemPrefix,

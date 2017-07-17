@@ -18,6 +18,7 @@ type ToggleDesignTemplateParams struct {
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
 	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
 	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
+	ClearValuePanelParams    propertiesSidebar.PanelTemplateParams
 }
 
 type ToggleViewTemplateParams struct {
@@ -36,6 +37,7 @@ func init() {
 		ElemPrefix: elemPrefix,
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix, HideNoLabelOption: true,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "toggleLabel"}},
+		ClearValuePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Clear Values", PanelID: "toggleClearValue"},
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "toggleDelete", "Delete Toggle"),
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "toggleVisibility"),
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "togglePerms"),

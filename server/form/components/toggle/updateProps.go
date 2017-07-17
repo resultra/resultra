@@ -174,3 +174,15 @@ func (updateParams ToggleValidationParams) updateProps(toggle *Toggle) error {
 
 	return nil
 }
+
+type ToggleClearValueSupportedParams struct {
+	ToggleIDHeader
+	ClearValueSupported bool `json:"clearValueSupported"`
+}
+
+func (updateParams ToggleClearValueSupportedParams) updateProps(toggle *Toggle) error {
+
+	toggle.Properties.ClearValueSupported = updateParams.ClearValueSupported
+
+	return nil
+}

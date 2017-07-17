@@ -159,7 +159,7 @@ function initToggleTableCellRecordEditBehavior($toggle,componentContext,recordPr
 		})
 	}
 	
-		initToggleComponentControl($toggle,toggleObjectRef)
+		initToggleComponentFormComponentContainer($toggle,toggleObjectRef)
 		
 		var toggleColorSchemeClass = "checkbox-"+toggleObjectRef.properties.colorScheme
 		$toggle.addClass(toggleColorSchemeClass)

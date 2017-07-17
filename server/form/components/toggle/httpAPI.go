@@ -16,6 +16,7 @@ func init() {
 	toggleRouter.HandleFunc("/api/frm/toggle/setOnColorScheme", setOnColorScheme)
 	toggleRouter.HandleFunc("/api/frm/toggle/setOffLabel", setOffLabel)
 	toggleRouter.HandleFunc("/api/frm/toggle/setOnLabel", setOnLabel)
+	toggleRouter.HandleFunc("/api/frm/toggle/setClearValueSupported", setClearValueSupported)
 
 	toggleRouter.HandleFunc("/api/frm/toggle/setLabelFormat", setLabelFormat)
 	toggleRouter.HandleFunc("/api/frm/toggle/setVisibility", setVisibility)
@@ -137,6 +138,15 @@ func setPermissions(w http.ResponseWriter, r *http.Request) {
 
 func setValidation(w http.ResponseWriter, r *http.Request) {
 	var params ToggleValidationParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processTogglePropUpdate(w, r, params)
+}
+
+func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
+	var params ToggleClearValueSupportedParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

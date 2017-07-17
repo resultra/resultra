@@ -40,6 +40,21 @@ function initToggleColPropertiesImpl(toggleCol) {
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
 	
+	var clearValueParams = {
+		initialVal: toggleCol.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentTableID: toggleCol.parentTableID,
+				toggleID: toggleCol.toggleID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("tableView/toggle/setClearValueSupported",formatParams,function(updatedToggle) {
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
+	
 	
 	var formatParams = {
 		initialVals: toggleCol.properties,

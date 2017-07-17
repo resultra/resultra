@@ -284,8 +284,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = toggleContainerHTML(toggle.toggleID);
 		var $toggleContainer = $(containerHTML)
 				
-		setToggleComponentLabel($toggleContainer,toggle)
-		initToggleComponentControl($toggleContainer,toggle)
+		initToggleComponentFormComponentContainer($toggleContainer,toggle)
 		
 		var toggleColorSchemeClass = "checkbox-"+toggle.properties.colorScheme
 		$toggleContainer.addClass(toggleColorSchemeClass)

@@ -27,8 +27,9 @@ type ToggleProperties struct {
 	OnLabel        string                                `json:"onLabel"`
 	LabelFormat    common.ComponentLabelFormatProperties `json:"labelFormat"`
 	common.ComponentVisibilityProperties
-	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
-	Validation  ToggleValidationProperties                 `json:"validation"`
+	Permissions         common.ComponentValuePermissionsProperties `json:"permissions"`
+	Validation          ToggleValidationProperties                 `json:"validation"`
+	ClearValueSupported bool                                       `json:"clearValueSupported"`
 }
 
 func (srcProps ToggleProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ToggleProperties, error) {
@@ -60,6 +61,7 @@ func newDefaultToggleProperties() ToggleProperties {
 		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
 		Validation:                    newDefaultValidationProperties(),
 		OffLabel:                      "No",
-		OnLabel:                       "Yes"}
+		OnLabel:                       "Yes",
+		ClearValueSupported:           false}
 	return props
 }
