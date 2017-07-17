@@ -70,6 +70,20 @@ function initRatingColPropertiesImpl(ratingCol) {
 	}
 	initRatingTooltipProperties(tooltipParams)
 	
+	var clearValueParams = {
+		initialVal: ratingCol.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentTableID: ratingCol.parentTableID,
+				ratingID: ratingCol.ratingID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("tableView/rating/setClearValueSupported",formatParams,function(updateRating) {
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
 	
 	
 	

@@ -18,12 +18,13 @@ func newDefaultValidationProperties() RatingValidationProperties {
 }
 
 type RatingProperties struct {
-	FieldID     string                                     `json:"fieldID"`
-	Tooltips    []string                                   `json:"tooltips"`
-	Icon        string                                     `json:"icon"`
-	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
-	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
-	Validation  RatingValidationProperties                 `json:"validation"`
+	FieldID             string                                     `json:"fieldID"`
+	Tooltips            []string                                   `json:"tooltips"`
+	Icon                string                                     `json:"icon"`
+	LabelFormat         common.ComponentLabelFormatProperties      `json:"labelFormat"`
+	Permissions         common.ComponentValuePermissionsProperties `json:"permissions"`
+	Validation          RatingValidationProperties                 `json:"validation"`
+	ClearValueSupported bool                                       `json:"clearValueSupported"`
 }
 
 func (srcProps RatingProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*RatingProperties, error) {
@@ -41,10 +42,11 @@ func (srcProps RatingProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*
 
 func newDefaultRatingProperties() RatingProperties {
 	props := RatingProperties{
-		LabelFormat: common.NewDefaultLabelFormatProperties(),
-		Tooltips:    []string{},
-		Icon:        ratingIconStar,
-		Permissions: common.NewDefaultComponentValuePermissionsProperties(),
-		Validation:  newDefaultValidationProperties()}
+		LabelFormat:         common.NewDefaultLabelFormatProperties(),
+		Tooltips:            []string{},
+		Icon:                ratingIconStar,
+		Permissions:         common.NewDefaultComponentValuePermissionsProperties(),
+		Validation:          newDefaultValidationProperties(),
+		ClearValueSupported: false}
 	return props
 }

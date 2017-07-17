@@ -19,6 +19,7 @@ type RatingDesignTemplateParams struct {
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
 	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
 	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
+	ClearValuePanelParams    propertiesSidebar.PanelTemplateParams
 }
 
 type RatingViewTemplateParams struct {
@@ -38,6 +39,7 @@ func init() {
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "ratingVisibility"),
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "ratingLabel"}},
+		ClearValuePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Clear Values", PanelID: "ratingClearValue"},
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "ratingDelete", "Delete Rating"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "ratingFormat"},
 		ValidationPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Input Validation", PanelID: "ratingValidation"},

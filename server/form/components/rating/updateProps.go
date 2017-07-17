@@ -146,3 +146,15 @@ func (updateParams RatingValidationParams) updateProps(rating *Rating) error {
 
 	return nil
 }
+
+type RatingClearValueSupportedParams struct {
+	RatingIDHeader
+	ClearValueSupported bool `json:"clearValueSupported"`
+}
+
+func (updateParams RatingClearValueSupportedParams) updateProps(rating *Rating) error {
+
+	rating.Properties.ClearValueSupported = updateParams.ClearValueSupported
+
+	return nil
+}

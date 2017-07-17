@@ -111,6 +111,24 @@ function loadRatingProperties($rating,ratingRef) {
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
 	
+	
+	var clearValueParams = {
+		initialVal: ratingRef.properties.clearValueSupported,
+		elemPrefix: elemPrefix,
+		setClearValueSupported: function(clearValueSupported) {
+			var formatParams = {
+				parentFormID: ratingRef.parentFormID,
+				ratingID: ratingRef.ratingID,
+				clearValueSupported: clearValueSupported
+			}
+			jsonAPIRequest("frm/rating/setClearValueSupported",formatParams,function(updatedRating) {
+				setContainerComponentInfo($rating,updatedRating,updatedRating.ratingID)
+			})
+		}
+	}
+	initClearValueProps(clearValueParams)
+	
+	
 	var deleteParams = {
 		elemPrefix: elemPrefix,
 		parentFormID: ratingRef.parentFormID,

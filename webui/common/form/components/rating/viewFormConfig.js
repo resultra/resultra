@@ -92,11 +92,8 @@ function initRatingRecordEditBehavior($ratingContainer,componentContext,recordPr
 	
 		if(formComponentIsReadOnly(ratingObjectRef.properties.permissions)) {
 			$ratingControl.prop('disabled',true);
-			$clearValueButton.hide()
-		
 		} else {
 			$ratingControl.prop('disabled',false);
-			$clearValueButton.show()
 			// The rating control is initialized the same way for design and view mode, but in view mode
 			// the event handlers need to be setup for when the user changes a rating value.
 			$ratingControl.on('change', function() {
@@ -165,7 +162,6 @@ function initRatingTableCellRecordEditBehavior($ratingContainer,componentContext
 	}
 	
 	initRatingFormComponentControl($ratingContainer,ratingObjectRef)
-	
 	
 	initRatingRecordEditBehavior($ratingContainer,componentContext,recordProxy, ratingObjectRef,validateInput)
 }

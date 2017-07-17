@@ -146,6 +146,10 @@ function setRatingComponentLabel($rating,ratingRef) {
 function initRatingFormComponentContainer($container,ratingObjectRef) {
 	setRatingComponentLabel($container,ratingObjectRef)		
 	initRatingFormComponentControl($container,ratingObjectRef)
+	
+	initClearValueControl($container,ratingObjectRef,".ratingComponentClearValueButton")
+	
+	
 	setElemFixedWidthFlexibleHeight($container,
 				ratingObjectRef.properties.geometry.sizeWidth)
 }
