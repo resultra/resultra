@@ -27,13 +27,17 @@ function checkBoxContainerHTML(elementID)
 	
 	var containerHTML = ''+
 		'<div class=" layoutContainer checkBoxContainer checkBoxFormContainer">' +
-			'<div class="checkbox">' +
-				'<input type="checkbox" id="'+uniqueID+'" class="checkboxFormComponentControl">' +
-				'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel">New Checkbox</label>' + 
-			'</div>' +
-			'<div class="componentHoverFooter">' +
-				smallClearDeleteButtonHTML("checkBoxComponentClearValueButton") + 
-			'</div>' +
+			'<div class="row">' +
+				'<div class="col-xs-11">' +
+					'<div class="checkbox">' +
+						'<input type="checkbox" id="'+uniqueID+'" class="checkboxFormComponentControl">' +
+						'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel">New Checkbox</label>' +
+					'</div>' +
+				'</div>' +
+				'<div class="col-xs-1">' +
+					smallClearDeleteButtonHTML("checkBoxComponentClearValueButton") + 
+				'</div>' +
+			'</div>' +	
 		'</div>';
 				
 	console.log ("Checkbox HTML: " + containerHTML)
@@ -45,16 +49,24 @@ function checkBoxTableViewCellContainerHTML() {
 	
 	var uniqueID = generateUniqueCheckboxIDForLabel()
 	
-	return 	''+
+	var checkboxTableCellHTML =  ''+
 		'<div class=" layoutContainer checkBoxContainer checkBoxTableCellContainer">' +
-			'<div class="checkbox">' +
-				'<input type="checkbox" id="'+uniqueID+'" class="checkboxTableCellControl checkboxFormComponentControl">' +
-				'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel"></label>'
+			'<div class="row">' +
+				'<div class="col-xs-11">' +
+					'<div class="checkbox">' +
+						'<input type="checkbox" id="'+uniqueID+'" class="checkboxTableCellControl checkboxFormComponentControl">' +
+						'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel"></label>' +
+					'</div>' +
+				'</div>' +
+				'<div class="col-xs-1">' +
+					smallClearDeleteButtonHTML("checkBoxComponentClearValueButton") + 
+				'</div>' +
 			'</div>' +
-			'<div class="componentHoverFooter">' +
-				smallClearDeleteButtonHTML("checkBoxComponentClearValueButton") + 
-			'</div>'
 		'</div>';
+		
+	console.log("Checkbox table cell HTML: " + checkboxTableCellHTML)
+		
+	return checkboxTableCellHTML
 
 }
 

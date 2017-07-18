@@ -27,12 +27,16 @@ function ratingContainerHTML(elementID)
 
 function ratingTableCellContainerHTML() {
 	return '' +
-		'<div class=" layoutContainer ratingFormContainer">' +
-			'<div class="formRatingControl">' +
-				ratingFormComponentRatingControlHTML() + // Rating control from Bootstrap Rating plugin
-			'</div>' +
-			'<div class="pull-right componentHoverFooter initiallyHidden">' +
-				smallClearDeleteButtonHTML("ratingComponentClearValueButton") + 
+		'<div class=" layoutContainer ratingFormContainer ratingTableCellContainer">' +
+			'<div class="row">' +
+				'<div class="col-xs-11">' +
+					'<div class="formRatingControl">' +
+						ratingFormComponentRatingControlHTML() + // Rating control from Bootstrap Rating plugin
+					'</div>' +
+				'</div>' +
+				'<div class="col-xs-1">' +
+					smallClearDeleteButtonHTML("ratingComponentClearValueButton") + 
+				'</div>' +
 			'</div>' +
 		'</div>';
 }

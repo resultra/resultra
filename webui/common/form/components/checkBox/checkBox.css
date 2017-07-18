@@ -44,3 +44,12 @@
 	text-decoration: line-through;
 }
 
+.checkBoxTableCellContainer .col-xs-11 {
+	padding-right:5px;
+	padding-left:10px;
+}
+
+.checkBoxTableCellContainer .col-xs-1 {
+	padding-right:0px;
+	padding-left:0px;
+}

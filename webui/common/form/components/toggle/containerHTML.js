@@ -47,11 +47,15 @@ function toggleControlHTMLNoLabel() {
 function toggleTableCellContainerHTML() {
 	var containerHTML = ''+
 		'<div class=" layoutContainer toggleTableCellContainer">' +
-			'<div class="toggleWrapper">' +
-				toggleControlHTMLNoLabel() + 
-			'</div>' +
-			'<div class="componentHoverFooter">' +
-				smallClearDeleteButtonHTML("toggleComponentClearValueButton") + 
+			'<div class="row">' +
+				'<div class="col-xs-11" style="width:auto">' +
+					'<div class="toggleWrapper">' +
+						toggleControlHTMLNoLabel() + 
+					'</div>' +
+				'</div>' +
+				'<div class="col-xs-1">' +
+					smallClearDeleteButtonHTML("toggleComponentClearValueButton") + 
+				'</div>' +
 			'</div>' +
 		'</div>';
 					
@@ -74,7 +78,7 @@ function initDummyToggleControlForDragAndDrop($dummyToggleControlForDragAndDrop)
 		handleWidth:'40px',
 		onText:'Yes',
 		offText:'No',
-		labelWidth:5 ,
+		labelWidth:5,
 		 state: true,
 		onColor:'success',
 		offColor:'warning'

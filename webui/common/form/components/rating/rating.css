@@ -44,3 +44,13 @@
 .ratingColorBlack {
 	color: black;
 }
+
+.ratingTableCellContainer .col-xs-11 {
+	padding-right:0px;
+	padding-left:15px;
+}
+
+.ratingTableCellContainer .col-xs-1 {
+	padding-right:0px;
+	padding-left:0px;
+}
