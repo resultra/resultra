@@ -77,7 +77,7 @@ func groupRecordsIntoSingleGroup(recValResults []recordValue.RecordValueResults)
 }
 
 func groupRecords(valGrouping values.ValGrouping,
-	recValResults []recordValue.RecordValueResults) (*ValGroupingResult, error) {
+	recValResults []recordValue.RecordValueResults, includeBlankResults bool) (*ValGroupingResult, error) {
 
 	groupingField, fieldErr := field.GetField(valGrouping.GroupValsByFieldID)
 	if fieldErr != nil {
@@ -87,17 +87,32 @@ func groupRecords(valGrouping values.ValGrouping,
 	// Use a map to group the values. Values are added to the same GroupVal if they have the same
 	// group label.
 	groupLabelValGroupMap := map[string]*IntermediateValGroup{}
+	overallRecordValResults := []recordValue.RecordValueResults{}
+	appendRecordToResults := func(recValResults recordValue.RecordValueResults, groupLabelInfo valGroupLabelInfo) {
+		_, groupExists := groupLabelValGroupMap[groupLabelInfo.label]
+		if !groupExists {
+			groupLabelValGroupMap[groupLabelInfo.label] = &IntermediateValGroup{groupLabelInfo, []recordValue.RecordValueResults{}}
+		}
+		valGroup := groupLabelValGroupMap[groupLabelInfo.label]
+		valGroup.RecordsInGroup = append(valGroup.RecordsInGroup, recValResults)
+
+		overallRecordValResults = append(overallRecordValResults, recValResults)
+	}
+
 	for _, currRecValResults := range recValResults {
 		groupLabelInfo, lblErr := recordGroupLabelInfo(valGrouping, *groupingField, currRecValResults)
 		if lblErr != nil {
 			return nil, fmt.Errorf("groupRecords: Error getting label to group records: error = %v", lblErr)
 		}
-		_, groupExists := groupLabelValGroupMap[groupLabelInfo.label]
-		if !groupExists {
-			groupLabelValGroupMap[groupLabelInfo.label] = &IntermediateValGroup{*groupLabelInfo, []recordValue.RecordValueResults{}}
+
+		if groupLabelInfo.isBlank {
+			if includeBlankResults {
+				appendRecordToResults(currRecValResults, *groupLabelInfo)
+			}
+		} else {
+			appendRecordToResults(currRecValResults, *groupLabelInfo)
 		}
-		valGroup := groupLabelValGroupMap[groupLabelInfo.label]
-		valGroup.RecordsInGroup = append(valGroup.RecordsInGroup, currRecValResults)
+
 	}
 
 	// Flatten the intermediate value groups into an array
@@ -123,7 +138,7 @@ func groupRecords(valGrouping values.ValGrouping,
 
 	overallGroup := ValGroup{
 		GroupLabel:     "Overall",
-		RecordsInGroup: recValResults}
+		RecordsInGroup: overallRecordValResults}
 
 	return &ValGroupingResult{
 		ValGroups:     valGroups,
@@ -135,6 +150,7 @@ func groupRecords(valGrouping values.ValGrouping,
 // for use on the grouping column of data results.
 type valGroupLabelInfo struct {
 	label       string
+	isBlank     bool
 	textSortVal *string
 	numSortVal  *float64
 }
@@ -143,28 +159,35 @@ func textGroupLabelInfo(label string) *valGroupLabelInfo {
 	sortVal := label
 	return &valGroupLabelInfo{
 		label:       label,
-		textSortVal: &sortVal}
+		textSortVal: &sortVal,
+		isBlank:     false}
 }
 
-func blankTextGroupLabelInfo(label string) *valGroupLabelInfo {
-	sortVal := ""
+func blankGroupLabelInfo() *valGroupLabelInfo {
+	textSortVal := ""
+	label := ""
+	numSortVal := -1.0 * math.MaxFloat64
 	return &valGroupLabelInfo{
 		label:       label,
-		textSortVal: &sortVal}
+		textSortVal: &textSortVal,
+		numSortVal:  &numSortVal,
+		isBlank:     true}
 }
 
 func numberGroupLabelInfo(label string, numberSortVal float64) *valGroupLabelInfo {
 	sortVal := numberSortVal
 	return &valGroupLabelInfo{
 		label:      label,
-		numSortVal: &sortVal}
+		numSortVal: &sortVal,
+		isBlank:    false}
 }
 
 func timeGroupLabelInfo(label string, timeVal time.Time) *valGroupLabelInfo {
 	sortVal := float64(timeVal.UnixNano())
 	return &valGroupLabelInfo{
 		label:      label,
-		numSortVal: &sortVal}
+		numSortVal: &sortVal,
+		isBlank:    false}
 }
 
 func groupTimeFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Field,
@@ -173,7 +196,7 @@ func groupTimeFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Fi
 	if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
 		timeVal, valFound := recValResults.FieldValues.GetTimeFieldValue(fieldGroup.FieldID)
 		if !valFound {
-			return numberGroupLabelInfo("BLANK", 0.0), nil
+			return blankGroupLabelInfo(), nil
 		} else {
 			switch valGrouping.GroupValsBy {
 			case values.ValGroupByNone:
@@ -197,7 +220,7 @@ func groupBoolFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Fi
 	if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
 		boolVal, valFound := recValResults.FieldValues.GetBoolFieldValue(fieldGroup.FieldID)
 		if !valFound {
-			return numberGroupLabelInfo("BLANK", 0.0), nil
+			return blankGroupLabelInfo(), nil
 		} else {
 			if boolVal == true {
 				return numberGroupLabelInfo("True", 1.0), nil
@@ -206,7 +229,7 @@ func groupBoolFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Fi
 			}
 		}
 	} else {
-		return numberGroupLabelInfo("BLANK", -1.0), nil
+		return blankGroupLabelInfo(), nil
 	}
 }
 
@@ -281,7 +304,7 @@ func recordGroupLabelInfo(valGrouping values.ValGrouping, fieldGroup field.Field
 				return textGroupLabelInfo(textVal), nil
 			}
 		} else {
-			return blankTextGroupLabelInfo("BLANK"), nil
+			return blankGroupLabelInfo(), nil
 		}
 	case field.FieldTypeBool:
 		return groupBoolFieldRecordVal(valGrouping, fieldGroup, recValResults)
