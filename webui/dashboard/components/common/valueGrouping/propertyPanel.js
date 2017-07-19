@@ -11,6 +11,8 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 	var $groupBySelection = $propertyForm.find("select[name=groupBySelection]")
 	var $numberFormatSelection = $propertyForm.find("select[name=numberFormat]")
 	
+	var $includeBlankCheckbox = $propertyForm.find(".includeBlankValuesCheckbox")
+	
 	//var validationRules = {}
 	var validationRules = {
 		bucketSize: { 
@@ -77,7 +79,8 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 					groupValsByBucketWidth: convertStringToNumber($bucketSize.val()),
 					bucketStart: convertStringToNumber($bucketStart.val()),
 					bucketEnd: convertStringToNumber($bucketEnd.val()),
-					numberFormat: $numberFormatSelection.val()
+					numberFormat: $numberFormatSelection.val(),
+					includeBlank: $includeBlankCheckbox.prop("checked")
 				}
 				console.log("Saving new value grouping: " + JSON.stringify(newValGroupingParams))
 				panelParams.saveValueGroupingFunc(newValGroupingParams)
@@ -103,6 +106,10 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 		initSelectControlChangeHandler($groupBySelection, function(grouping) {		
 			toggleBucketSizeForGrouping(grouping)
 			saveGroupingIfValid() 
+		})
+		
+		initCheckboxControlChangeHandler($includeBlankCheckbox,valGrouping.includeBlank,function(includeBlank) {
+			saveGroupingIfValid()			
 		})
 			
 		$bucketInputs.blur(function() { saveGroupingIfValid() })

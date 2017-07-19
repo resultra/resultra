@@ -33,9 +33,7 @@ func getOneSummaryTableData(summaryTable *summaryTable.SummaryTable, filterRules
 		return nil, fmt.Errorf("getOneSummaryTableData: Error retrieving records for summary table: %v", getRecErr)
 	}
 
-	includeBlankResults := false
-
-	valGroupingResult, groupingErr := groupRecords(summaryTable.Properties.RowGroupingVals, recordRefs, includeBlankResults)
+	valGroupingResult, groupingErr := groupRecords(summaryTable.Properties.RowGroupingVals, recordRefs)
 	if groupingErr != nil {
 		return nil, fmt.Errorf("getOneSummaryTableData: Error grouping records for summary table: %v", groupingErr)
 	}

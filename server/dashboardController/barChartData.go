@@ -41,9 +41,7 @@ func getOneBarChartData(barChart *barChart.BarChart, filterRules recordFilter.Re
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
 	}
 
-	includeBlankResults := false
-
-	valGroupingResult, groupingErr := groupRecords(barChart.Properties.XAxisVals, recordRefs, includeBlankResults)
+	valGroupingResult, groupingErr := groupRecords(barChart.Properties.XAxisVals, recordRefs)
 	if groupingErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error grouping records for bar chart: %v", groupingErr)
 	}

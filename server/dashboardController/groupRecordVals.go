@@ -77,7 +77,7 @@ func groupRecordsIntoSingleGroup(recValResults []recordValue.RecordValueResults)
 }
 
 func groupRecords(valGrouping values.ValGrouping,
-	recValResults []recordValue.RecordValueResults, includeBlankResults bool) (*ValGroupingResult, error) {
+	recValResults []recordValue.RecordValueResults) (*ValGroupingResult, error) {
 
 	groupingField, fieldErr := field.GetField(valGrouping.GroupValsByFieldID)
 	if fieldErr != nil {
@@ -106,7 +106,7 @@ func groupRecords(valGrouping values.ValGrouping,
 		}
 
 		if groupLabelInfo.isBlank {
-			if includeBlankResults {
+			if valGrouping.IncludeBlank {
 				appendRecordToResults(currRecValResults, *groupLabelInfo)
 			}
 		} else {

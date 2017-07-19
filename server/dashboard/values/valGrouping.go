@@ -39,6 +39,8 @@ type ValGrouping struct {
 	BucketEnd   *float64 `json:"bucketEnd,omitempty"`
 
 	NumberFormat *string `json:"numberFormat,omitempty"`
+
+	IncludeBlank bool `json:"includeBlank"`
 }
 
 func (srcGrouping ValGrouping) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ValGrouping, error) {
@@ -111,7 +113,8 @@ func NewValGrouping(params NewValGroupingParams) (*ValGrouping, error) {
 		GroupValsBy:           params.GroupValsBy,
 		GroupByValBucketWidth: params.GroupByValBucketWidth,
 		BucketStart:           params.BucketStart,
-		BucketEnd:             params.BucketEnd}
+		BucketEnd:             params.BucketEnd,
+		IncludeBlank:          false}
 
 	return &valGrouping, nil
 
