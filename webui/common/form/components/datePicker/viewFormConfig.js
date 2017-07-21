@@ -83,6 +83,7 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 				console.log("Clear value clicked for date picker")
 				setDateValue(null)
 		})
+		
 	
 		
 		$datePickerControl.on('dp.change',function (e) {
@@ -168,7 +169,7 @@ function initTableViewDatePickerEditBehavior($datePickerContainer, componentCont
 		})
 	}
 	
+	initDatePickerContainerControls($datePickerContainer,datePickerObjectRef)
 	
-	initDatePickerFormComponentInput($datePickerContainer,datePickerObjectRef)
 	initDatePickerRecordEditBehavior($datePickerContainer,componentContext,recordProxy, datePickerObjectRef,validateInput)
 }

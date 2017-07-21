@@ -89,6 +89,12 @@ function initDatePickerFormComponentInput($datePickerContainer, datePickerRef) {
 		// 
 	})
 	
+	if(formComponentIsReadOnly(datePickerRef.properties.permissions)) {
+		$datePickerInput.data("DateTimePicker").disable()
+	} else {
+		$datePickerInput.data("DateTimePicker").enable()
+	}
+	
 	
 	
 	// To ensure the date/time picker shows on top of other parts of the page, it needs to be attached to the body and 
@@ -178,6 +184,12 @@ function initDatePickerAddonControls($datePickerContainer,datePickerRef) {
 		$calendarIcon.css("display","")
 	}
 	
+}
+
+function initDatePickerContainerControls($container,datePicker) {
+	setDatePickerComponentLabel($container,datePicker)
+	initDatePickerFormComponentInput($container,datePicker)
+	initDatePickerAddonControls($container,datePicker)
 }
 
 function setDatePickerComponentLabel($datePickerContainer,datePickerRef) {

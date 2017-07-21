@@ -354,12 +354,8 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		// Create an HTML block for the container			
 		var containerHTML = datePickerContainerHTML(datePicker.datePickerID);
 		var containerObj = $(containerHTML)
-		
-		
-		setDatePickerComponentLabel(containerObj,datePicker)
-		initDatePickerFormComponentInput(containerObj,datePicker)
-		initDatePickerAddonControls(containerObj,datePicker)
-		
+			
+		initDatePickerContainerControls(containerObj,datePicker)
 		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append(containerObj)
