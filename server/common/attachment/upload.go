@@ -15,11 +15,12 @@ import (
 
 const permsOwnerReadWriteOnly os.FileMode = 0700
 
-func fullyQualifiedAttachmentFileName(fileName string) string {
-	return runtimeConfig.CurrRuntimeConfig.AttachmentBasePath + fileName
+func fullyQualifiedAttachmentFileName(databaseID string, fileName string) string {
+	return runtimeConfig.CurrRuntimeConfig.AttachmentBasePath + databaseID + "/" + fileName
 }
 
 func InitAttachmentBasePath() error {
+
 	err := os.MkdirAll(runtimeConfig.CurrRuntimeConfig.AttachmentBasePath, permsOwnerReadWriteOnly)
 	if err != nil {
 		return fmt.Errorf("Error initializing attachment directory %v: %v",
@@ -28,9 +29,17 @@ func InitAttachmentBasePath() error {
 	return nil
 }
 
-func SaveAttachmentFile(fileName string, fileData []byte) error {
+func SaveAttachmentFile(databaseID string, fileName string, fileData []byte) error {
 
-	writeErr := ioutil.WriteFile(runtimeConfig.CurrRuntimeConfig.AttachmentBasePath+fileName, fileData, permsOwnerReadWriteOnly)
+	fullyQualifiedPath := runtimeConfig.CurrRuntimeConfig.AttachmentBasePath + databaseID + "/"
+
+	err := os.MkdirAll(fullyQualifiedPath, permsOwnerReadWriteOnly)
+	if err != nil {
+		return fmt.Errorf("Error initializing attachment directory %v: %v",
+			fullyQualifiedPath, err)
+	}
+
+	writeErr := ioutil.WriteFile(fullyQualifiedPath+fileName, fileData, permsOwnerReadWriteOnly)
 	if writeErr != nil {
 		return fmt.Errorf("SaveCloudFile: Error writing file: filename = %v, error = %v", fileName, writeErr)
 	}
@@ -68,6 +77,8 @@ type UploadedAttachmentResponse struct {
 
 func uploadAttachment(req *http.Request) (*UploadedAttachmentResponse, error) {
 
+	parentDatabaseID := req.FormValue("parentDatabaseID")
+
 	// The string "uploadFile" matches the parameter name used in clients.
 	uploadInfo, uploadErr := api.ReadUploadFile(req, "uploadFile")
 	if uploadErr != nil {
@@ -75,13 +86,12 @@ func uploadAttachment(req *http.Request) (*UploadedAttachmentResponse, error) {
 	}
 
 	cloudFileName := UniqueAttachmentFileNameFromUserFileName(uploadInfo.FileName)
-	if saveErr := SaveAttachmentFile(cloudFileName, uploadInfo.FileData); saveErr != nil {
+	if saveErr := SaveAttachmentFile(parentDatabaseID, cloudFileName, uploadInfo.FileData); saveErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to save file to cloud storage: %v", saveErr)
 	}
 
 	// Generate an URL for the newly saved file
-	fileURL := GetAttachmentURL(cloudFileName)
-	parentDatabaseID := req.FormValue("parentDatabaseID")
+	fileURL := GetAttachmentURL(parentDatabaseID, cloudFileName)
 
 	currUserID, userErr := userAuth.GetCurrentUserID(req)
 	if userErr != nil {

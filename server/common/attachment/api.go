@@ -14,7 +14,7 @@ func init() {
 
 	attachmentRouter.HandleFunc("/api/attachment/upload", uploadAttachmentAPI)
 	attachmentRouter.HandleFunc("/api/attachment/saveURL", saveURLAPI)
-	attachmentRouter.HandleFunc("/api/attachment/get/{cloudFileName}", getAttachmentAPI)
+	attachmentRouter.HandleFunc("/api/attachment/get/{databaseID}/{cloudFileName}", getAttachmentAPI)
 	attachmentRouter.HandleFunc("/api/attachment/getReferences", getAttachmentReferencesAPI)
 
 	attachmentRouter.HandleFunc("/api/attachment/setCaption", setCaptionAPI)
@@ -51,6 +51,7 @@ func saveURLAPI(w http.ResponseWriter, r *http.Request) {
 func getAttachmentAPI(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
+	databaseID := vars["databaseID"]
 	cloudFileName := vars["cloudFileName"]
 
 	origFileName, err := getOrigFilenameFromCloudFileName(cloudFileName)
@@ -61,7 +62,7 @@ func getAttachmentAPI(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Disposition", "attachment;filename="+origFileName)
 
-	http.ServeFile(w, r, fullyQualifiedAttachmentFileName(cloudFileName))
+	http.ServeFile(w, r, fullyQualifiedAttachmentFileName(databaseID, cloudFileName))
 
 }
 

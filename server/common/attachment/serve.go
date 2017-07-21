@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-func GetAttachmentURL(cloudFileName string) string {
-	fileURLSubPath := "api/attachment/get/" + cloudFileName
+func GetAttachmentURL(databaseID string, cloudFileName string) string {
+	fileURLSubPath := "api/attachment/get/" + databaseID + "/" + cloudFileName
 	return runtimeConfig.GetSiteResourceURL(fileURLSubPath)
 }
 
@@ -59,7 +59,7 @@ func GetAttachmentReference(attachmentID string) (*AttachmentReference, error) {
 
 	var url string
 	if attachInfo.Type == attachTypeFile {
-		url = GetAttachmentURL(attachInfo.CloudFileName)
+		url = GetAttachmentURL(attachInfo.ParentDatabaseID, attachInfo.CloudFileName)
 	} else {
 		url = attachInfo.OrigFileName
 	}
