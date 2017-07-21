@@ -169,6 +169,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		
 		setSelectionComponentLabel(containerObj,selection)
+		initSelectionComponentClearValueButton(containerObj,selection)
 	
 		$componentRow.append(containerObj)
 		

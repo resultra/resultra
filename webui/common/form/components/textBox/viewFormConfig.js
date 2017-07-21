@@ -72,7 +72,6 @@ function initTextBoxRecordEditBehavior($container,componentContext,recordProxy, 
 			return;  // stop initialization, the text box is read only.
 		}
 		
-		initTextBoxClearValueControl($container,textFieldObjectRef)
 	
 		if(formComponentIsReadOnly(textFieldObjectRef.properties.permissions)) {
 			$textBoxInput.prop('disabled',true);

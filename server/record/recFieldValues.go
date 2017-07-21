@@ -11,9 +11,15 @@ import (
 type RecFieldValues map[string]interface{}
 
 func (recFieldVals RecFieldValues) ValueIsSet(fieldID string) bool {
-	_, valueExists := recFieldVals[fieldID]
+	theVal, valueExists := recFieldVals[fieldID]
 	if valueExists {
-		return true
+		// The value will be set to nil if it is cleared within the UI. This is the same as it not being set
+		// in the first place.
+		if theVal == nil {
+			return false
+		} else {
+			return true
+		}
 	} else {
 		return false
 	}
