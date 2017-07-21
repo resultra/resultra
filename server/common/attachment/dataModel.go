@@ -95,6 +95,23 @@ func GetAttachmentInfo(attachmentID string) (*AttachmentInfo, error) {
 	return &attachInfo, nil
 }
 
+func getOrigFilenameFromCloudFileName(cloudFileName string) (string, error) {
+
+	origFileName := ""
+
+	getErr := databaseWrapper.DBHandle().QueryRow(
+		`SELECT orig_file_name
+		 FROM attachments
+		 WHERE cloud_file_name=$1 LIMIT 1`, cloudFileName).Scan(
+		&origFileName)
+	if getErr != nil {
+		return "", fmt.Errorf("GetOrigFilenameFromCloudFileName: cloud file name = %v: datastore err=%v",
+			cloudFileName, getErr)
+	}
+	return origFileName, nil
+
+}
+
 type SetCaptionParams struct {
 	AttachmentID string `json:"attachmentID"`
 	Caption      string `json:"caption"`
