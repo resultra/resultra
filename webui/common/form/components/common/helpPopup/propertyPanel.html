@@ -1,0 +1,22 @@
+{{define "componentHelpPopupProps"}}
+
+	<div class="alert alert-info" role="alert">
+		Configure a help message to be shown in a popup window.
+	</div>
+	
+	<div class="marginButtom5" id="{{.ElemPrefix}}ComponentHelpPopupProps">
+		<div class="helpPopupContent lightGreyBorder">
+			<div class="helpPopupInput inlineContent"></div>
+		</div>
+	</div>
+	
+		
+{{end}}
+
+{{define "componentHelpPopupPropertyPanel"}}
+
+	{{template "propertyPanelPrefix" .PanelParams}}
+		{{template "componentHelpPopupProps" .}}
+	{{template "propertyPanelSuffix"}}
+
+{{end}}

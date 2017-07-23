@@ -104,6 +104,7 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 			    CKEDITOR.disableAutoInline = true;
 	
 				var editor = enableInlineCKEditor($htmlEditorInput)
+				editor.focus()
 		
 				editor.on('blur', function(event) {
 					var inputVal = editor.getData();

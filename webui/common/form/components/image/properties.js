@@ -65,6 +65,20 @@ function loadImageProperties($attachmentContainer, attachmentRef) {
 		$componentContainer: $attachmentContainer
 	}
 	initDeleteFormComponentPropertyPanel(deleteParams)
+	
+	var helpPopupParams = {
+		initialMsg: "Hello world",
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentFormID: attachmentRef.parentFormID,
+				imageID: attachmentRef.imageID,
+				popupMsg: popupMsg
+			}
+			console.log("Setting popup message: " + JSON.stringify(popupMsg))
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 
 
 	// Toggle to the check box properties, hiding the other property panels
