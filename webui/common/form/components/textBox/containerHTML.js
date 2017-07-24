@@ -16,7 +16,7 @@ function textBoxContainerHTML(elementID)
 {
 	var containerHTML = ''+
 		'<div class="layoutContainer textBoxComponent textBoxFormComponent">' +
-				'<label>New Text Box</label>'+
+				'<label>New Text Box</label>'+ componentHelpPopupButtonHTML() +
 				textBoxContainerInputControl() +
 		'</div>';
 	return containerHTML
@@ -42,6 +42,16 @@ function setTextBoxComponentLabel($textBoxContainer, textBoxRef) {
 function initTextBoxClearValueControl($textBoxContainer, textBoxRef) {
 	initClearValueControl($textBoxContainer,textBoxRef,".textBoxComponentClearValueButton")	
 }
+
+function initTextBoxFormComponentContainer($container,textBoxRef) {
+	setTextBoxComponentLabel($container,textBoxRef)
+	function dummySetVal(dropdownVal) {}
+	configureTextBoxComponentValueListDropdown($container, textBoxRef,dummySetVal)
+	initTextBoxClearValueControl($container, textBoxRef)
+	initComponentHelpPopupButton($container, textBoxRef)
+}
+
+
 
 function configureTextBoxComponentValueListDropdown($textBoxContainer, textBoxRef, setValueCallback) {
 	

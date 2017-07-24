@@ -1,6 +1,7 @@
 package textBox
 
 import (
+	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common/form/components/common/delete"
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
@@ -20,6 +21,7 @@ type TextboxDesignTemplateParams struct {
 	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
 	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
 	ClearValuePanelParams    propertiesSidebar.PanelTemplateParams
+	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
 }
 
 type TextboxViewTemplateParams struct {
@@ -39,6 +41,7 @@ func init() {
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "textboxLabel"}},
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "textBoxDelete", "Delete Text Box"),
+		HelpPopupParams:       inputProperties.NewHelpPopupTemplateParams(elemPrefix, "textBoxHelp"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "textboxFormat"},
 		ClearValuePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Clear Values", PanelID: "textboxClearValue"},
 		ValidationPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Input Validation", PanelID: "textboxValidation"},

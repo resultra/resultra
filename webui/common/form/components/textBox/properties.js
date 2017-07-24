@@ -118,6 +118,22 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 	}
 	initClearValueProps(clearValueParams)
 	
+	var helpPopupParams = {
+		initialMsg: textBoxRef.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentFormID: textBoxRef.parentFormID,
+				textboxID: textBoxRef.textBoxID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("frm/textBox/setHelpPopupMsg",params,function(updatedTextBox) {
+				setContainerComponentInfo($textBox,updatedTextBox,updatedTextBox.textBoxID)
+				updateComponentHelpPopupMsg($textBox, updatedTextBox)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
 	var deleteParams = {
 		elemPrefix: elemPrefix,

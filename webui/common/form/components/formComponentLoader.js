@@ -116,11 +116,8 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = textBoxContainerHTML(textBox.textBoxID);
 		var containerObj = $(containerHTML)
 		
-		setTextBoxComponentLabel(containerObj,textBox)
-		function dummySetVal(dropdownVal) {}
-		configureTextBoxComponentValueListDropdown(containerObj, textBox,dummySetVal)
-		initTextBoxClearValueControl(containerObj, textBox)
-			
+		initTextBoxFormComponentContainer(containerObj,textBox)
+					
 		$componentRow.append(containerObj)
 		
 		setElemFixedWidthFlexibleHeight(containerObj,

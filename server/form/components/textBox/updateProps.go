@@ -145,3 +145,15 @@ func (updateParams TextBoxClearValueSupportedParams) updateProps(textBox *TextBo
 
 	return nil
 }
+
+type HelpPopupMsgParams struct {
+	TextBoxIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (updateParams HelpPopupMsgParams) updateProps(textBox *TextBox) error {
+
+	textBox.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}

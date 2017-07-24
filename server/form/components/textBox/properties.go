@@ -24,6 +24,7 @@ type TextBoxProperties struct {
 	common.ComponentVisibilityProperties
 	Validation          TextBoxValidationProperties `json:"validation"`
 	ClearValueSupported bool                        `json:"clearValueSupported"`
+	HelpPopupMsg        string                      `json:"helpPopupMsg"`
 }
 
 func (srcProps TextBoxProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*TextBoxProperties, error) {
@@ -56,6 +57,7 @@ func newDefaultTextBoxProperties() TextBoxProperties {
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
 		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
 		Validation:                    newDefaultTextBoxValidationProperties(),
-		ClearValueSupported:           false}
+		ClearValueSupported:           false,
+		HelpPopupMsg:                  ""}
 	return props
 }
