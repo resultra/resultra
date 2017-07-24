@@ -78,6 +78,24 @@ function loadHtmlEditorProperties($editor, htmlEditorRef) {
 				setContainerComponentInfo($editor,updatedEditor,updatedEditor.htmlEditorID)	
 		})
 	})
+
+
+	var helpPopupParams = {
+		initialMsg: htmlEditorRef.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentFormID: htmlEditorRef.parentFormID,
+				htmlEditorID: htmlEditorRef.htmlEditorID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("frm/htmlEditor/setHelpPopupMsg",params,function(updatedEditor) {
+				setContainerComponentInfo($editor,updatedEditor,updatedEditor.htmlEditorID)	
+				updateComponentHelpPopupMsg($editor, updatedEditor)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
 	
 	var deleteParams = {

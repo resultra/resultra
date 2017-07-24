@@ -16,6 +16,7 @@ func init() {
 	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/setPermissions", setPermissions)
 	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/setValidation", setValidation)
 	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/validateInput", validateInputAPI)
+	htmlEditorRouter.HandleFunc("/api/frm/htmlEditor/setHelpPopupMsg", setHelpPopupMsg)
 
 	http.Handle("/api/frm/htmlEditor/", htmlEditorRouter)
 }
@@ -94,6 +95,15 @@ func setPermissions(w http.ResponseWriter, r *http.Request) {
 
 func setValidation(w http.ResponseWriter, r *http.Request) {
 	var params EditorValidationParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processHtmlEditorPropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params HelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

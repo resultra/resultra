@@ -22,7 +22,8 @@ type HtmlEditorProperties struct {
 	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
 	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 	common.ComponentVisibilityProperties
-	Validation ValidationProperties `json:"validation"`
+	Validation   ValidationProperties `json:"validation"`
+	HelpPopupMsg string               `json:"helpPopupMsg"`
 }
 
 func (srcProps HtmlEditorProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*HtmlEditorProperties, error) {
@@ -49,6 +50,7 @@ func newDefaultEditorProperties() HtmlEditorProperties {
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
 		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
-		Validation:                    newDefaultValidationProperties()}
+		Validation:                    newDefaultValidationProperties(),
+		HelpPopupMsg:                  ""}
 	return props
 }

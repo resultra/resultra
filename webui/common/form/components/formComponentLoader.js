@@ -377,6 +377,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Set the label to the field name		
 		setEditorComponentLabel(containerObj,htmlEditor)
+		initComponentHelpPopupButton(containerObj, htmlEditor)
 		
 		initEditorFormComponentViewModeGeometry(containerObj,htmlEditor)
 		

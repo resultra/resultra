@@ -1,6 +1,7 @@
 package htmlEditor
 
 import (
+	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common/form/components/common/delete"
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
@@ -18,6 +19,7 @@ type HTMLEditorDesignTemplateParams struct {
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
 	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
 	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
+	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
 }
 
 type HTMLEditorViewTemplateParams struct {
@@ -37,6 +39,7 @@ func init() {
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "htmlEditorLabel"}},
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "editorDelete", "Delete Editor"),
+		HelpPopupParams:       inputProperties.NewHelpPopupTemplateParams(elemPrefix, "htmlEditorHelp"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "htmlEditorFormat"},
 		ValidationPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Input Validation", PanelID: "htmlEditorValidation"},
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "editorVisibility"),

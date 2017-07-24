@@ -116,3 +116,15 @@ func (updateParams EditorValidationParams) updateProps(editor *HtmlEditor) error
 
 	return nil
 }
+
+type HelpPopupMsgParams struct {
+	HtmlEditorIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (updateParams HelpPopupMsgParams) updateProps(editor *HtmlEditor) error {
+
+	editor.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}
