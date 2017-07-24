@@ -153,6 +153,22 @@ function loadNumberInputProperties($numberInput,numberInputRef) {
 	}
 	initClearValueProps(clearValueParams)
 
+	var helpPopupParams = {
+		initialMsg: numberInputRef.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentFormID: numberInputRef.parentFormID,
+				numberInputID: numberInputRef.numberInputID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("frm/numberInput/setHelpPopupMsg",params,function(updatedNumberInput) {
+				setContainerComponentInfo($numberInput,updatedNumberInput,updatedNumberInput.numberInputID)
+				updateComponentHelpPopupMsg($numberInput, updatedNumberInput)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
 	
 	// Toggle to the check box properties, hiding the other property panels

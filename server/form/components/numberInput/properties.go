@@ -30,6 +30,7 @@ type NumberInputProperties struct {
 	common.ComponentVisibilityProperties
 	Validation          NumberInputValidationProperties `json:"validation"`
 	ClearValueSupported bool                            `json:"clearValueSupported"`
+	HelpPopupMsg        string                          `json:"helpPopupMsg"`
 }
 
 func (srcProps NumberInputProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*NumberInputProperties, error) {
@@ -60,6 +61,7 @@ func newDefaultNumberInputProperties() NumberInputProperties {
 		ShowValueSpinner:              true,
 		ValueSpinnerStepSize:          1.0,
 		Validation:                    newDefaultValidationProperties(),
-		ClearValueSupported:           false}
+		ClearValueSupported:           false,
+		HelpPopupMsg:                  ""}
 	return props
 }

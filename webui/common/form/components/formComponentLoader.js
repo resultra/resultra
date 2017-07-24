@@ -142,9 +142,8 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = numberInputContainerHTML(numberInput.numberInputID);
 		var containerObj = $(containerHTML)
 		
-		setNumberInputComponentLabel(containerObj,numberInput)
-		configureNumberInputButtonSpinner(containerObj,numberInput)
-		configureNumberInputClearValueButton(containerObj,numberInput)
+		initNumberInputFormContainer(containerObj,numberInput)
+		
 			
 		$componentRow.append(containerObj)
 		

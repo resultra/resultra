@@ -16,7 +16,7 @@ function numberInputContainerHTML(elementID)
 	var containerHTML = ''+
 		'<div class="layoutContainer numberInputComponent numberInputFormContainer">' +
 			'<div class="form-group">'+
-				'<label>New Number Input</label>'+
+				'<label>New Number Input</label>' +  componentHelpPopupButtonHTML() +
 				numberInputControlHTML() +
 			'</div>'+
 		'</div>';
@@ -112,5 +112,13 @@ function numberInputComponentDisabled($numberInputContainer) {
 	
 	var $numberInput = $numberInputContainer.find(".numberInputComponentInput")
 	return $numberInput.prop("disabled")
+	
+}
+
+function initNumberInputFormContainer($container,numberInput) {
+		setNumberInputComponentLabel($container,numberInput)
+		configureNumberInputButtonSpinner($container,numberInput)
+		configureNumberInputClearValueButton($container,numberInput)
+		initComponentHelpPopupButton($container, numberInput)
 	
 }

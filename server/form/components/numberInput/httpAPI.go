@@ -18,6 +18,7 @@ func init() {
 	numberInputRouter.HandleFunc("/api/frm/numberInput/setShowSpinner", setShowSpinner)
 	numberInputRouter.HandleFunc("/api/frm/numberInput/setSpinnerStepSize", setSpinnerStepSize)
 	numberInputRouter.HandleFunc("/api/frm/numberInput/setClearValueSupported", setClearValueSupported)
+	numberInputRouter.HandleFunc("/api/frm/numberInput/setHelpPopupMsg", setHelpPopupMsg)
 
 	numberInputRouter.HandleFunc("/api/frm/numberInput/setValidation", setValidation)
 	numberInputRouter.HandleFunc("/api/frm/numberInput/validateInput", validateInputAPI)
@@ -135,6 +136,15 @@ func setValidation(w http.ResponseWriter, r *http.Request) {
 
 func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
 	var params NumberInputClearValueSupportedParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processNumberInputPropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params HelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
