@@ -41,7 +41,7 @@ function imageContainerHTML(elementID)
 	var containerHTML = ''+
 	'<div class="layoutContainer imageContainer">' +
 		'<div class="attachmentEditorHeader">' +
-			'<label class="imageContainerLabel">Attachment(s)</label>' +
+			'<label class="imageContainerLabel">Attachment(s)</label>'  + componentHelpPopupButtonHTML() +
 		'</div>' +
 		attachmentContainerBodyHTML() +
 	'</div>';

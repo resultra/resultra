@@ -23,7 +23,7 @@ function htmlEditorContainerHTML(elementID)
 	var containerHTML = ''+
 	'<div class=" layoutContainer htmlEditorContainer">' +
 		'<div class="htmlEditorHeader">' +
-			'<label>Editor Label</label>' +
+			'<label>Editor Label</label>' + componentHelpPopupButtonHTML() +
 		'</div>' +
 		'<div class="htmlEditorContent lightGreyBorder">' +
 			'<div class="htmlEditorInput inlineContent htmlEditorDefaultBackground">'+

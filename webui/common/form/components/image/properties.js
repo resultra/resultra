@@ -67,7 +67,7 @@ function loadImageProperties($attachmentContainer, attachmentRef) {
 	initDeleteFormComponentPropertyPanel(deleteParams)
 	
 	var helpPopupParams = {
-		initialMsg: "Hello world",
+		initialMsg: attachmentRef.properties.helpPopupMsg,
 		elemPrefix: elemPrefix,	
 		setMsg: function(popupMsg) {
 			var params = {
@@ -75,7 +75,10 @@ function loadImageProperties($attachmentContainer, attachmentRef) {
 				imageID: attachmentRef.imageID,
 				popupMsg: popupMsg
 			}
-			console.log("Setting popup message: " + JSON.stringify(popupMsg))
+			jsonAPIRequest("frm/image/setHelpPopupMsg",params,function(updatedAttachment) {
+				setContainerComponentInfo($attachmentContainer,updatedAttachment,updatedAttachment.imageID)
+				updateComponentHelpPopupMsg($attachmentContainer, updatedAttachment)
+			})
 		}	
 	}
 	initComponentHelpPopupPropertyPanel(helpPopupParams)

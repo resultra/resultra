@@ -15,6 +15,7 @@ func init() {
 	imageRouter.HandleFunc("/api/frm/image/setPermissions", setPermissions)
 	imageRouter.HandleFunc("/api/frm/image/setValidation", setValidation)
 	imageRouter.HandleFunc("/api/frm/image/validateInput", validateInputAPI)
+	imageRouter.HandleFunc("/api/frm/image/setHelpPopupMsg", setHelpPopupMsg)
 
 	http.Handle("/api/frm/image/", imageRouter)
 }
@@ -89,4 +90,13 @@ func setValidation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processImagePropUpdate(w, r, resizeParams)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params HelpPopupMsgParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processImagePropUpdate(w, r, params)
 }

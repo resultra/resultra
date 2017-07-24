@@ -401,6 +401,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		setElemDimensions(containerObj,image.properties.geometry)
 
 		setAttachmentComponentLabel(containerObj,image)
+		initComponentHelpPopupButton(containerObj, image)
 		
 		 // Store the newly created object reference in the DOM element. This is needed for follow-on
 		 // property setting, resizing, etc.

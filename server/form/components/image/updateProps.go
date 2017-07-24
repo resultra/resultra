@@ -102,3 +102,15 @@ func (updateParams AttachmentValidationParams) updateProps(image *Image) error {
 
 	return nil
 }
+
+type HelpPopupMsgParams struct {
+	ImageIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (updateParams HelpPopupMsgParams) updateProps(image *Image) error {
+
+	image.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}
