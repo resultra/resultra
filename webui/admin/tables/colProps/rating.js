@@ -85,6 +85,20 @@ function initRatingColPropertiesImpl(ratingCol) {
 	}
 	initClearValueProps(clearValueParams)
 	
+	var helpPopupParams = {
+		initialMsg: ratingCol.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentTableID: ratingCol.parentTableID,
+				ratingID: ratingCol.ratingID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("tableView/rating/setHelpPopupMsg",params,function(updateRating) {
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
 	
 }

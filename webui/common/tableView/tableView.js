@@ -321,10 +321,16 @@ function initItemListTableView(params) {
 				
 				if (colInfo.colType !== 'button') {
 					setFormComponentLabel($header,colInfo.properties.fieldID,
-							colInfo.properties.labelFormat)					
+							colInfo.properties.labelFormat)
+						
 				} else {
 					setFormButtonHeader($header,colInfo)
 				}
+				// TODO - Add support for other column types
+				if(colInfo.properties.helpPopupMsg !== undefined) {
+					$header.append(componentHelpPopupButtonHTML())
+					initComponentHelpPopupButton($header,colInfo,"auto bottom")
+				}					
 				
 				$headerRow.append($header)
 			})

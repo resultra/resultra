@@ -33,18 +33,23 @@ function updateComponentHelpPopupMsg($container, componentRef) {
 	
 }
 
-function initComponentHelpPopupButton($container, componentRef) {
+function initComponentHelpPopupButton($container, componentRef, placement) {
 	
 	var $popupButton = $container.find(".componentHelpPopupButton")
+	
+	var popoverPlacement = 'auto top'
+	if (placement !== null) {
+		popoverPlacement = placement
+	}
 	
 	updateComponentHelpPopupMsg($container,componentRef)
 	
 	$popupButton.popover({
 		html: 'true',
-		delay: { "show": 100, "hide": 3000 },
+		delay: { "show": 200, "hide": 2000 },
 		content: function() { return $popupButton.data('componentPopupMsg') },
 		trigger: 'click hover',
-		placement: 'auto top'
+		placement: popoverPlacement
 	})
 	
 }

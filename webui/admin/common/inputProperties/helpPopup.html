@@ -1,13 +1,17 @@
+
+{{define "componentHelpPopupPropsInput"}}
+	<div class="marginButtom5" id="{{.}}ComponentHelpPopupProps">
+		<div class="lightGreyBorder helpPopupInput inlineContent"></div>
+	</div>
+{{end}}
+
 {{define "componentHelpPopupProps"}}
 
 	<div class="alert alert-info" role="alert">
 		Configure a help message to be shown in a popup window.
 	</div>
 	
-	<div class="marginButtom5" id="{{.ElemPrefix}}ComponentHelpPopupProps">
-		<div class="lightGreyBorder helpPopupInput inlineContent"></div>
-	</div>
-	
+	{{template "componentHelpPopupPropsInput" .ElemPrefix}}
 		
 {{end}}
 
@@ -16,5 +20,21 @@
 	{{template "propertyPanelPrefix" .PanelParams}}
 		{{template "componentHelpPopupProps" .}}
 	{{template "propertyPanelSuffix"}}
+
+{{end}}
+
+
+{{define "componentHelpPopupColumnProps"}}
+
+	<tr>
+		<td class="width200"><label>Help Popup Message</label><BR>
+			<small>Configure a help message to be shown in a popup window. This popup window is shown next to the column header</small>
+		</td>
+
+		<td class="maxWidth300">
+			{{template "componentHelpPopupPropsInput" .}}
+		</td>
+	</tr>
+
 
 {{end}}
