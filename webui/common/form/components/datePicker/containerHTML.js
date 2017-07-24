@@ -21,7 +21,7 @@ function datePickerContainerHTML(elementID)
 	var containerHTML = ''+
 	'<div class="layoutContainer datePickerContainer datePickerFormContainer">' +
 		'<div class="form-group">'+
-			'<label>Date Picker</label>'+
+			'<label>Date Picker</label>' + componentHelpPopupButtonHTML() +
 			datePickerControlHTML() +
 		'</div>'+
 	'</div>';
@@ -190,6 +190,9 @@ function initDatePickerContainerControls($container,datePicker) {
 	setDatePickerComponentLabel($container,datePicker)
 	initDatePickerFormComponentInput($container,datePicker)
 	initDatePickerAddonControls($container,datePicker)
+	
+	initComponentHelpPopupButton($container, datePicker)
+	
 }
 
 function setDatePickerComponentLabel($datePickerContainer,datePickerRef) {

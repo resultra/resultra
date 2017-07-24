@@ -116,6 +116,22 @@ function loadDatePickerProperties($container,datePickerRef) {
 	}
 	initClearValueProps(clearValueParams)
 	
+	var helpPopupParams = {
+		initialMsg: datePickerRef.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentFormID: datePickerRef.parentFormID,
+				datePickerID: datePickerRef.datePickerID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("frm/datePicker/setHelpPopupMsg",params,function(updatedDatePicker) {
+				setContainerComponentInfo($container,updatedDatePicker,updatedDatePicker.datePickerID)
+				updateComponentHelpPopupMsg($container, updatedDatePicker)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
 	var deleteParams = {
 		elemPrefix: elemPrefix,

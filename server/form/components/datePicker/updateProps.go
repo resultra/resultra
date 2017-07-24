@@ -142,3 +142,15 @@ func (updateParams DatePickerClearValueSupportedParams) updateProps(datePicker *
 
 	return nil
 }
+
+type HelpPopupMsgParams struct {
+	DatePickerIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (updateParams HelpPopupMsgParams) updateProps(datePicker *DatePicker) error {
+
+	datePicker.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}
