@@ -13,7 +13,7 @@ function ratingContainerHTML(elementID)
 {	
 	var containerHTML = ''+
 		'<div class=" layoutContainer ratingFormContainer">' +
-			'<label class="marginBottom0">Rating</label>' +
+			'<label class="marginBottom0">Rating</label>' + componentHelpPopupButtonHTML() +
 			'<div class="formRatingControl">' +
 				ratingFormComponentRatingControlHTML() + // Rating control from Bootstrap Rating plugin
 			'</div>' +
@@ -148,11 +148,12 @@ function setRatingComponentLabel($rating,ratingRef) {
 }
 
 function initRatingFormComponentContainer($container,ratingObjectRef) {
-	setRatingComponentLabel($container,ratingObjectRef)		
+	setRatingComponentLabel($container,ratingObjectRef)
+	initComponentHelpPopupButton($container, ratingObjectRef)
+	
 	initRatingFormComponentControl($container,ratingObjectRef)
 	
 	initClearValueControl($container,ratingObjectRef,".ratingComponentClearValueButton")
-	
 	
 	setElemFixedWidthFlexibleHeight($container,
 				ratingObjectRef.properties.geometry.sizeWidth)

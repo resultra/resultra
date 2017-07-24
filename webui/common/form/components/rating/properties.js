@@ -128,6 +128,23 @@ function loadRatingProperties($rating,ratingRef) {
 	}
 	initClearValueProps(clearValueParams)
 	
+	var helpPopupParams = {
+		initialMsg: ratingRef.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentFormID: ratingRef.parentFormID,
+				ratingID: ratingRef.ratingID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("frm/rating/setHelpPopupMsg",params,function(updatedRating) {
+				setContainerComponentInfo($rating,updatedRating,updatedRating.ratingID)
+				updateComponentHelpPopupMsg($rating, updatedRating)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
+	
 	
 	var deleteParams = {
 		elemPrefix: elemPrefix,
