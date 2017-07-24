@@ -127,3 +127,15 @@ func (updateParams RatingClearValueSupportedParams) updateProps(rating *Rating) 
 
 	return nil
 }
+
+type HelpPopupMsgParams struct {
+	RatingIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (updateParams HelpPopupMsgParams) updateProps(rating *Rating) error {
+
+	rating.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}

@@ -1,8 +1,8 @@
 package image
 
 import (
+	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common/form/components/common/delete"
-	"resultra/datasheet/webui/common/form/components/common/helpPopup"
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
 	"resultra/datasheet/webui/common/form/components/common/permissions"
@@ -16,7 +16,7 @@ type ImageDesignTemplateParams struct {
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
 	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
-	HelpPopupParams          helpPopup.HelpPopupPropertyTemplateParams
+	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
 }
 
 type ImageViewTemplateParams struct {
@@ -36,7 +36,7 @@ func init() {
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "attachmentLabel"}},
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "attachmentPerms"),
-		HelpPopupParams:       helpPopup.NewHelpPopupTemplateParams(elemPrefix, "attachmentHelp"),
+		HelpPopupParams:       inputProperties.NewHelpPopupTemplateParams(elemPrefix, "attachmentHelp"),
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "attachDelete", "Delete Attachment Box"),
 		ValidationPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Validation", PanelID: "attachmentValidation"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{

@@ -17,6 +17,7 @@ func init() {
 	ratingRouter.HandleFunc("/api/tableView/rating/setIcon", setIcon)
 	ratingRouter.HandleFunc("/api/tableView/rating/setLabelFormat", setLabelFormat)
 	ratingRouter.HandleFunc("/api/tableView/rating/setClearValueSupported", setClearValueSupported)
+	ratingRouter.HandleFunc("/api/tableView/rating/setHelpPopupMsg", setHelpPopupMsg)
 
 	ratingRouter.HandleFunc("/api/tableView/rating/setPermissions", setPermissions)
 	ratingRouter.HandleFunc("/api/tableView/rating/setValidation", setValidation)
@@ -129,6 +130,15 @@ func setValidation(w http.ResponseWriter, r *http.Request) {
 
 func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
 	var params RatingClearValueSupportedParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processRatingPropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params HelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

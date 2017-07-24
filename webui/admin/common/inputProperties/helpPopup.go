@@ -1,4 +1,4 @@
-package helpPopup
+package inputProperties
 
 import (
 	"resultra/datasheet/webui/generic/propertiesSidebar"

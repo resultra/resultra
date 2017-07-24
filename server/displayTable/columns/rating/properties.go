@@ -25,6 +25,7 @@ type RatingProperties struct {
 	Permissions         common.ComponentValuePermissionsProperties `json:"permissions"`
 	Validation          RatingValidationProperties                 `json:"validation"`
 	ClearValueSupported bool                                       `json:"clearValueSupported"`
+	HelpPopupMsg        string                                     `json:"helpPopupMsg"`
 }
 
 func (srcProps RatingProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*RatingProperties, error) {
@@ -47,6 +48,7 @@ func newDefaultRatingProperties() RatingProperties {
 		Icon:                ratingIconStar,
 		Permissions:         common.NewDefaultComponentValuePermissionsProperties(),
 		Validation:          newDefaultValidationProperties(),
-		ClearValueSupported: false}
+		ClearValueSupported: false,
+		HelpPopupMsg:        ""}
 	return props
 }
