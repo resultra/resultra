@@ -54,7 +54,7 @@ function commentContainerHTML(elementID)
 {	
 	var containerHTML = ''+
 	'<div class=" layoutContainer commentContainer">' +
-	'<label>Comment Box Label</label>'+
+	'<label>Comment Box Label</label>'+ componentHelpPopupButtonHTML() +
 		commentBoxContainerBodyHTML() +
 	'</div>';
 		

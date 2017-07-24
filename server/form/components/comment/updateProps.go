@@ -104,3 +104,15 @@ func (updateParams CommentPermissionParams) updateProps(comment *Comment) error 
 
 	return nil
 }
+
+type HelpPopupMsgParams struct {
+	CommentIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (updateParams HelpPopupMsgParams) updateProps(comment *Comment) error {
+
+	comment.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}

@@ -58,6 +58,24 @@ function loadCommentComponentProperties($comment,commentRef) {
 	}
 	initFormComponentPermissionsPropertyPanel(permissionParams)
 
+	var helpPopupParams = {
+		initialMsg: commentRef.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentFormID: commentRef.parentFormID,
+				commentID: commentRef.commentID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("frm/comment/setHelpPopupMsg",params,function(updatedComment) {
+				setContainerComponentInfo($comment,updatedComment,commentRef.commentID)
+				updateComponentHelpPopupMsg($comment, updatedComment)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
+
+
 	var deleteParams = {
 		elemPrefix: elemPrefix,
 		parentFormID: commentRef.parentFormID,

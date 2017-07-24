@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common/form/components/common/delete"
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
@@ -17,6 +18,7 @@ type CommentDesignTemplateParams struct {
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
 	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
 	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
+	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
 }
 
 type CommentViewTemplateParams struct {
@@ -37,6 +39,7 @@ func init() {
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "commentLabel"}},
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "commentDelete", "Delete Comment Box"),
+		HelpPopupParams:       inputProperties.NewHelpPopupTemplateParams(elemPrefix, "commentHelp"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "commentFormat"},
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "commentPerms"),
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{

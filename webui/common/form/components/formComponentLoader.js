@@ -189,6 +189,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerObj = $(containerHTML)
 		
 		setCommentComponentLabel(containerObj,comment)
+		initComponentHelpPopupButton(containerObj, comment)
 		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append(containerObj)
