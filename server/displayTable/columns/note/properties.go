@@ -16,10 +16,11 @@ func newDefaultValidationProperties() ValidationProperties {
 }
 
 type NoteProperties struct {
-	FieldID     string                                     `json:"fieldID"`
-	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
-	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
-	Validation  ValidationProperties                       `json:"validation"`
+	FieldID      string                                     `json:"fieldID"`
+	LabelFormat  common.ComponentLabelFormatProperties      `json:"labelFormat"`
+	Permissions  common.ComponentValuePermissionsProperties `json:"permissions"`
+	Validation   ValidationProperties                       `json:"validation"`
+	HelpPopupMsg string                                     `json:"helpPopupMsg"`
 }
 
 func (srcProps NoteProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*NoteProperties, error) {
@@ -37,8 +38,9 @@ func (srcProps NoteProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*No
 
 func newDefaultEditorProperties() NoteProperties {
 	props := NoteProperties{
-		LabelFormat: common.NewDefaultLabelFormatProperties(),
-		Permissions: common.NewDefaultComponentValuePermissionsProperties(),
-		Validation:  newDefaultValidationProperties()}
+		LabelFormat:  common.NewDefaultLabelFormatProperties(),
+		Permissions:  common.NewDefaultComponentValuePermissionsProperties(),
+		Validation:   newDefaultValidationProperties(),
+		HelpPopupMsg: ""}
 	return props
 }

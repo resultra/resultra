@@ -33,6 +33,7 @@ type DatePickerProperties struct {
 	Permissions         common.ComponentValuePermissionsProperties `json:"permissions"`
 	Validation          DatePickerValidationProperties             `json:"validation"`
 	ClearValueSupported bool                                       `json:"clearValueSupported"`
+	HelpPopupMsg        string                                     `json:"helpPopupMsg"`
 }
 
 const dateFormatDefault string = "date"
@@ -56,6 +57,7 @@ func newDefaultDatePickerProperties() DatePickerProperties {
 		Permissions:         common.NewDefaultComponentValuePermissionsProperties(),
 		DateFormat:          dateFormatDefault,
 		Validation:          newDefaultDatePickerValidationProps(),
-		ClearValueSupported: false}
+		ClearValueSupported: false,
+		HelpPopupMsg:        ""}
 	return props
 }

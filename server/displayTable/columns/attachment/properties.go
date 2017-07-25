@@ -16,10 +16,11 @@ func newDefaultValidationProperties() ValidationProperties {
 }
 
 type AttachmentProperties struct {
-	FieldID     string                                     `json:"fieldID"`
-	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
-	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
-	Validation  ValidationProperties                       `json:"validation"`
+	FieldID      string                                     `json:"fieldID"`
+	LabelFormat  common.ComponentLabelFormatProperties      `json:"labelFormat"`
+	Permissions  common.ComponentValuePermissionsProperties `json:"permissions"`
+	Validation   ValidationProperties                       `json:"validation"`
+	HelpPopupMsg string                                     `json:"helpPopupMsg"`
 }
 
 func (srcProps AttachmentProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*AttachmentProperties, error) {
@@ -37,8 +38,9 @@ func (srcProps AttachmentProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper
 
 func newDefaultAttachmentProperties() AttachmentProperties {
 	props := AttachmentProperties{
-		LabelFormat: common.NewDefaultLabelFormatProperties(),
-		Permissions: common.NewDefaultComponentValuePermissionsProperties(),
-		Validation:  newDefaultValidationProperties()}
+		LabelFormat:  common.NewDefaultLabelFormatProperties(),
+		Permissions:  common.NewDefaultComponentValuePermissionsProperties(),
+		Validation:   newDefaultValidationProperties(),
+		HelpPopupMsg: ""}
 	return props
 }

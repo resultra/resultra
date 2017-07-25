@@ -7,9 +7,10 @@ import (
 )
 
 type CommentProperties struct {
-	FieldID     string                                     `json:"fieldID"`
-	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
-	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
+	FieldID      string                                     `json:"fieldID"`
+	LabelFormat  common.ComponentLabelFormatProperties      `json:"labelFormat"`
+	Permissions  common.ComponentValuePermissionsProperties `json:"permissions"`
+	HelpPopupMsg string                                     `json:"helpPopupMsg"`
 }
 
 func (srcProps CommentProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*CommentProperties, error) {
@@ -27,7 +28,8 @@ func (srcProps CommentProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (
 
 func newDefaultCommentProperties() CommentProperties {
 	props := CommentProperties{
-		LabelFormat: common.NewDefaultLabelFormatProperties(),
-		Permissions: common.NewDefaultComponentValuePermissionsProperties()}
+		LabelFormat:  common.NewDefaultLabelFormatProperties(),
+		Permissions:  common.NewDefaultComponentValuePermissionsProperties(),
+		HelpPopupMsg: ""}
 	return props
 }
