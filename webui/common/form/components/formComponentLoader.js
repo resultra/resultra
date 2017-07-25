@@ -233,9 +233,10 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		var containerHTML = gaugeContainerHTML();
 		var $gaugeContainer = $(containerHTML)
+		
+		initGaugeFormComponentContainer($gaugeContainer,gaugeRef)
 				
-		setGaugeComponentLabel($gaugeContainer,gaugeRef)
-		initGaugeComponentGaugeControl($gaugeContainer,gaugeRef)
+		
 		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append($gaugeContainer)

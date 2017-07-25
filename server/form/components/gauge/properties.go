@@ -18,6 +18,7 @@ type GaugeProperties struct {
 	LabelFormat   common.ComponentLabelFormatProperties `json:"labelFormat"`
 	ValueFormat   numberFormat.NumberFormatProperties   `json:"valueFormat"`
 	common.ComponentVisibilityProperties
+	HelpPopupMsg string `json:"helpPopupMsg"`
 }
 
 func newDefaultGaugeProperties() GaugeProperties {
@@ -28,7 +29,8 @@ func newDefaultGaugeProperties() GaugeProperties {
 		ThresholdVals:                 []threshold.ThresholdValues{},
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
-		ValueFormat:                   numberFormat.DefaultNumberFormatProperties()}
+		ValueFormat:                   numberFormat.DefaultNumberFormatProperties(),
+		HelpPopupMsg:                  ""}
 	return props
 
 }

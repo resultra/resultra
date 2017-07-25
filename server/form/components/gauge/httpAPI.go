@@ -16,6 +16,7 @@ func init() {
 	gaugeRouter.HandleFunc("/api/frm/gauge/setLabelFormat", setLabelFormat)
 	gaugeRouter.HandleFunc("/api/frm/gauge/setVisibility", setVisibility)
 	gaugeRouter.HandleFunc("/api/frm/gauge/setValueFormat", setValueFormat)
+	gaugeRouter.HandleFunc("/api/frm/gauge/setHelpPopupMsg", setHelpPopupMsg)
 
 	http.Handle("/api/frm/gauge/", gaugeRouter)
 }
@@ -91,6 +92,15 @@ func setVisibility(w http.ResponseWriter, r *http.Request) {
 
 func setValueFormat(w http.ResponseWriter, r *http.Request) {
 	var params GaugeValueFormatParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processGaugePropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params HelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

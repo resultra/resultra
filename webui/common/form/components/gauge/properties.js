@@ -105,6 +105,24 @@ function loadGaugeProperties($gauge,gaugeRef) {
 	}
 	initNumberFormatSelection(formatSelectionParams)
 
+	var helpPopupParams = {
+		initialMsg: gaugeRef.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentFormID: gaugeRef.parentFormID,
+				gaugeID: gaugeRef.gaugeID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("frm/gauge/setHelpPopupMsg",params,function(updatedGauge) {
+				setContainerComponentInfo($gauge,updatedGauge,updatedGauge.gaugeID)
+				updateComponentHelpPopupMsg($gauge, updatedGauge)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
+
+
 	var deleteParams = {
 		elemPrefix: elemPrefix,
 		parentFormID: gaugeRef.parentFormID,

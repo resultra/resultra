@@ -1,7 +1,7 @@
 function gaugeContainerHTML() {
 	return '' +
 		'<div class="layoutContainer gaugeComponent">' +
-			'<label>Gauge</label>' + 
+			'<label>Gauge</label>' + componentHelpPopupButtonHTML() +
 			'<div class="formComponentGauge">' +
 				'<span class="gaugeControl"></span>'+
   			'</div>' +
@@ -41,4 +41,10 @@ function initGaugeComponentGaugeControl($gauge,gaugeObjectRef) {
 		thresholdVals: gaugeObjectRef.properties.thresholdVals
 	}	
 	initGaugeComponentControl($gauge,gaugeConfig)
+}
+
+function initGaugeFormComponentContainer($gauge, gaugeRef) {
+	setGaugeComponentLabel($gauge,gaugeRef)
+	initGaugeComponentGaugeControl($gauge,gaugeRef)
+	initComponentHelpPopupButton($gauge, gaugeRef)
 }

@@ -125,6 +125,18 @@ func (updateParams GaugeVisibilityParams) updateProps(gauge *Gauge) error {
 	return nil
 }
 
+type HelpPopupMsgParams struct {
+	GaugeIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (updateParams HelpPopupMsgParams) updateProps(gauge *Gauge) error {
+
+	gauge.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}
+
 type GaugeValueFormatParams struct {
 	GaugeIDHeader
 	ValueFormat numberFormat.NumberFormatProperties `json:"valueFormat"`
