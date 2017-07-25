@@ -84,6 +84,20 @@ function initNumberDatePickerColPropertiesImpl(datePickerCol) {
 	}
 	initClearValueProps(clearValueParams)
 	
+	var helpPopupParams = {
+		initialMsg: datePickerCol.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentTableID: datePickerCol.parentTableID,
+				datePickerID: datePickerCol.datePickerID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("tableView/datePicker/setHelpPopupMsg",params,function(updateCol) {
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
 	
 	

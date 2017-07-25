@@ -77,6 +77,20 @@ function initNumberInputColPropertiesImpl(numberInputCol) {
 	}
 	initClearValueProps(clearValueParams)
 	
+	var helpPopupParams = {
+		initialMsg: numberInputCol.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentTableID: numberInputCol.parentTableID,
+				numberInputID: numberInputCol.numberInputID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("tableView/numberInput/setHelpPopupMsg",params,function(updateCol) {
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
 	
 	

@@ -34,11 +34,27 @@ function initAttachmentColPropertiesImpl(attachmentCol) {
 			attachmentID: attachmentCol.attachmentID,
 				permissions: updatedPermissions
 			}
-			jsonAPIRequest("tableView/attachment/setPermissions",params,function(updatedCheckBox) {
+			jsonAPIRequest("tableView/attachment/setPermissions",params,function(updatedAttachment) {
 			})
 		}
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
+
+	var helpPopupParams = {
+		initialMsg: attachmentCol.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentTableID: attachmentCol.parentTableID,
+				attachmentID: attachmentCol.attachmentID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("tableView/attachment/setHelpPopupMsg",params,function(updatedAttachment) {
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
+
 	
 }
 

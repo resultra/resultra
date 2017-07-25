@@ -97,6 +97,20 @@ function initToggleColPropertiesImpl(toggleCol) {
 	}
 	initToggleFormatProperties(formatParams)
 	
+	var helpPopupParams = {
+		initialMsg: toggleCol.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentTableID: toggleCol.parentTableID,
+				toggleID: toggleCol.toggleID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("tableView/toggle/setHelpPopupMsg",params,function(updateCol) {
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
 }
 

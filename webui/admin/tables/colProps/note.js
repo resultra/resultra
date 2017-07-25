@@ -39,6 +39,22 @@ function initNoteColPropertiesImpl(noteCol) {
 		}
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
+
+	var helpPopupParams = {
+		initialMsg: noteCol.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentTableID: noteCol.parentTableID,
+				noteID: noteCol.noteID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("tableView/note/setHelpPopupMsg",params,function(updateCol) {
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
+
 	
 }
 

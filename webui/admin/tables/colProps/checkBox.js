@@ -93,6 +93,21 @@ function initCheckBoxColPropertiesImpl(checkBoxCol) {
 	}
 	initClearValueProps(clearValueParams)
 	
+	var helpPopupParams = {
+		initialMsg: checkBoxCol.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentTableID: checkBoxCol.parentTableID,
+				checkBoxID: checkBoxCol.checkBoxID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("tableView/checkBox/setHelpPopupMsg",params,function(updatedCheckboxRef) {
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
+	
 	
 }
 

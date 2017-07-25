@@ -74,6 +74,20 @@ function initUserSelectionColPropertiesImpl(userSelectionInputCol) {
 	}
 	initClearValueProps(clearValueParams)
 	
+	var helpPopupParams = {
+		initialMsg: userSelectionInputCol.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentTableID: userSelectionInputCol.parentTableID,
+				userSelectionID: userSelectionInputCol.userSelectionID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("tableView/userSelection/setHelpPopupMsg",params,function(updateCol) {
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
 }
 

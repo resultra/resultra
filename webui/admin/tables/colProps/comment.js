@@ -38,6 +38,22 @@ function initCommentColPropertiesImpl(commentCol) {
 		}
 	}
 	initFormComponentPermissionsPropertyPanel(readOnlyParams)
+
+
+	var helpPopupParams = {
+		initialMsg: commentCol.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentTableID: commentCol.parentTableID,
+				commentID: commentCol.commentID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("tableView/comment/setHelpPopupMsg",params,function(updateCol) {
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
 }
 

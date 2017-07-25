@@ -89,6 +89,20 @@ function initTextInputColPropertiesImpl(textInputCol) {
 	}
 	initClearValueProps(clearValueParams)
 	
+	var helpPopupParams = {
+		initialMsg: textInputCol.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentTableID: textInputCol.parentTableID,
+				textInputID: textInputCol.textInputID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("tableView/textInput/setHelpPopupMsg",params,function(updateCol) {
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
 	
 }
