@@ -15,6 +15,8 @@ func init() {
 
 	noteRouter.HandleFunc("/api/tableView/note/setLabelFormat", setLabelFormat)
 	noteRouter.HandleFunc("/api/tableView/note/setPermissions", setPermissions)
+	noteRouter.HandleFunc("/api/tableView/note/setHelpPopupMsg", setHelpPopupMsg)
+
 	noteRouter.HandleFunc("/api/tableView/note/setValidation", setValidation)
 	noteRouter.HandleFunc("/api/tableView/note/validateInput", validateInputAPI)
 
@@ -98,6 +100,15 @@ func setPermissions(w http.ResponseWriter, r *http.Request) {
 
 func setValidation(w http.ResponseWriter, r *http.Request) {
 	var params EditorValidationParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processNotePropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params HelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

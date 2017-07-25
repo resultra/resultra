@@ -114,3 +114,15 @@ func (updateParams TextInputClearValueSupportedParams) updateProps(textInput *Te
 
 	return nil
 }
+
+type HelpPopupMsgParams struct {
+	TextInputIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (updateParams HelpPopupMsgParams) updateProps(textInput *TextInput) error {
+
+	textInput.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}

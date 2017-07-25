@@ -97,3 +97,15 @@ func (updateParams UserSelectionClearValueSupportedParams) updateProps(userSelec
 
 	return nil
 }
+
+type HelpPopupMsgParams struct {
+	UserSelectionIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (updateParams HelpPopupMsgParams) updateProps(userSelection *UserSelection) error {
+
+	userSelection.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}

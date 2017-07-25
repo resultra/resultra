@@ -21,6 +21,7 @@ type TextInputProperties struct {
 	ValueListID         *string                                    `json:"valueListID,omitempty"`
 	Validation          TextInputValidationProperties              `json:"validation"`
 	ClearValueSupported bool                                       `json:"clearValueSupported"`
+	HelpPopupMsg        string                                     `json:"helpPopupMsg"`
 }
 
 func (srcProps TextInputProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*TextInputProperties, error) {
@@ -46,6 +47,7 @@ func newDefaultTextInputProperties() TextInputProperties {
 		LabelFormat:         common.NewDefaultLabelFormatProperties(),
 		Permissions:         common.NewDefaultComponentValuePermissionsProperties(),
 		Validation:          newDefaultTextInputValidationProperties(),
-		ClearValueSupported: false}
+		ClearValueSupported: false,
+		HelpPopupMsg:        ""}
 	return props
 }

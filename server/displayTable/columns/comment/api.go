@@ -15,6 +15,7 @@ func init() {
 
 	commentRouter.HandleFunc("/api/tableView/comment/setLabelFormat", setLabelFormat)
 	commentRouter.HandleFunc("/api/tableView/comment/setPermissions", setPermissions)
+	commentRouter.HandleFunc("/api/tableView/comment/setHelpPopupMsg", setHelpPopupMsg)
 
 	http.Handle("/api/tableView/comment/", commentRouter)
 }
@@ -75,6 +76,15 @@ func setLabelFormat(w http.ResponseWriter, r *http.Request) {
 
 func setPermissions(w http.ResponseWriter, r *http.Request) {
 	var params CommentPermissionParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processCommentPropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params HelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

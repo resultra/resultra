@@ -16,6 +16,7 @@ func init() {
 	attachRouter.HandleFunc("/api/tableView/attachment/setLabelFormat", setLabelFormat)
 	attachRouter.HandleFunc("/api/tableView/attachment/setPermissions", setPermissions)
 	attachRouter.HandleFunc("/api/tableView/attachment/setValidation", setValidation)
+	attachRouter.HandleFunc("/api/tableView/attachment/setHelpPopupMsg", setHelpPopupMsg)
 
 	attachRouter.HandleFunc("/api/tableView/attachment/validateInput", validateInputAPI)
 
@@ -104,4 +105,13 @@ func setValidation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processAttachmentPropUpdate(w, r, resizeParams)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params HelpPopupMsgParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processAttachmentPropUpdate(w, r, params)
 }

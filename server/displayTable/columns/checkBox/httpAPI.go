@@ -18,6 +18,7 @@ func init() {
 	checkBoxRouter.HandleFunc("/api/tableView/checkBox/setLabelFormat", setLabelFormat)
 	checkBoxRouter.HandleFunc("/api/tableView/checkBox/setPermissions", setPermissions)
 	checkBoxRouter.HandleFunc("/api/tableView/checkBox/setClearValueSupported", setClearValueSupported)
+	checkBoxRouter.HandleFunc("/api/tableView/checkBox/setHelpPopupMsg", setHelpPopupMsg)
 
 	checkBoxRouter.HandleFunc("/api/tableView/checkBox/setValidation", setValidation)
 	checkBoxRouter.HandleFunc("/api/tableView/checkBox/validateInput", validateInputAPI)
@@ -129,6 +130,15 @@ func setValidation(w http.ResponseWriter, r *http.Request) {
 
 func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
 	var params CheckBoxClearValueSupportedParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processCheckBoxPropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params HelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

@@ -138,3 +138,15 @@ func (updateParams NumberInputClearValueSupportedParams) updateProps(numberInput
 
 	return nil
 }
+
+type HelpPopupMsgParams struct {
+	NumberInputIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (updateParams HelpPopupMsgParams) updateProps(numberInput *NumberInput) error {
+
+	numberInput.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}

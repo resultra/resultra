@@ -85,3 +85,15 @@ func (updateParams AttachmentValidationParams) updateProps(attachment *Attachmen
 
 	return nil
 }
+
+type HelpPopupMsgParams struct {
+	AttachmentIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (updateParams HelpPopupMsgParams) updateProps(attachment *Attachment) error {
+
+	attachment.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}
