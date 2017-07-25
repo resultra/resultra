@@ -31,7 +31,8 @@ function checkBoxContainerHTML(elementID)
 				'<div class="col-xs-11">' +
 					'<div class="checkbox">' +
 						'<input type="checkbox" id="'+uniqueID+'" class="checkboxFormComponentControl">' +
-						'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel">New Checkbox</label>' +
+						'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel">New Checkbox</label>' + 
+							componentHelpPopupButtonHTML() +
 					'</div>' +
 				'</div>' +
 				'<div class="col-xs-1">' +
@@ -107,4 +108,10 @@ function checkboxComponentIsDisabled($checkboxContainer) {
 	var disabled = $checkbox.prop("disabled")
 	return disabled
 	
+}
+
+function initCheckboxComponentFormContainer($checkbox, checkboxRef) {
+	setCheckBoxComponentLabel($checkbox,checkboxRef)
+	initCheckBoxClearValueControl($checkbox,checkboxRef)
+	initComponentHelpPopupButton($checkbox, checkboxRef)
 }

@@ -158,3 +158,15 @@ func (updateParams CheckBoxClearValueSupportedParams) updateProps(checkBox *Chec
 
 	return nil
 }
+
+type HelpPopupMsgParams struct {
+	CheckboxIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (updateParams HelpPopupMsgParams) updateProps(checkBox *CheckBox) error {
+
+	checkBox.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}

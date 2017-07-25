@@ -126,6 +126,23 @@ function loadCheckboxProperties($container, checkBoxRef) {
 		}
 	}
 	initClearValueProps(clearValueParams)
+
+	var helpPopupParams = {
+		initialMsg: checkBoxRef.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentFormID: checkBoxRef.parentFormID,
+				checkBoxID: checkBoxRef.checkBoxID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("frm/checkBox/setHelpPopupMsg",params,function(updatedCheckboxRef) {
+				setContainerComponentInfo($container,updatedCheckboxRef,updatedCheckboxRef.checkBoxID)
+				updateComponentHelpPopupMsg($container, updatedCheckboxRef)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
 	
 	var deleteParams = {

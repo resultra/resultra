@@ -28,6 +28,7 @@ type CheckBoxProperties struct {
 	Permissions         common.ComponentValuePermissionsProperties `json:"permissions"`
 	Validation          CheckBoxValidationProperties               `json:"validation"`
 	ClearValueSupported bool                                       `json:"clearValueSupported"`
+	HelpPopupMsg        string                                     `json:"helpPopupMsg"`
 }
 
 func (srcProps CheckBoxProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*CheckBoxProperties, error) {
@@ -58,6 +59,7 @@ func newDefaultCheckBoxProperties() CheckBoxProperties {
 		StrikethroughCompleted:        false,
 		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
 		Validation:                    newDefaultValidationProperties(),
-		ClearValueSupported:           false}
+		ClearValueSupported:           false,
+		HelpPopupMsg:                  ""}
 	return props
 }

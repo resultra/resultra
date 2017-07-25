@@ -17,6 +17,7 @@ func init() {
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/setVisibility", setVisibility)
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/setPermissions", setPermissions)
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/setClearValueSupported", setClearValueSupported)
+	checkBoxRouter.HandleFunc("/api/frm/checkBox/setHelpPopupMsg", setHelpPopupMsg)
 
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/setValidation", setValidation)
 	checkBoxRouter.HandleFunc("/api/frm/checkBox/validateInput", validateInputAPI)
@@ -125,6 +126,15 @@ func setValidation(w http.ResponseWriter, r *http.Request) {
 
 func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
 	var params CheckBoxClearValueSupportedParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processCheckBoxPropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params HelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

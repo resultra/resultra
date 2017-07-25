@@ -257,8 +257,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = checkBoxContainerHTML(checkBox.checkBoxID);
 		var $checkboxContainer = $(containerHTML)
 				
-		setCheckBoxComponentLabel($checkboxContainer,checkBox)
-		initCheckBoxClearValueControl($checkboxContainer,checkBox)
+		initCheckboxComponentFormContainer($checkboxContainer,checkBox)		
 		
 		var checkboxColorSchemeClass = "checkbox-"+checkBox.properties.colorScheme
 		$checkboxContainer.addClass(checkboxColorSchemeClass)
