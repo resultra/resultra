@@ -94,6 +94,23 @@ function loadUserSelectionProperties($userSelection,userSelectionRef) {
 			setContainerComponentInfo($userSelection,updatedUserSelection,updatedUserSelection.userSelectionID)
 		})
 	})
+	
+	var helpPopupParams = {
+		initialMsg: userSelectionRef.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentFormID: userSelectionRef.parentFormID,
+				userSelectionID: userSelectionRef.userSelectionID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("frm/userSelection/setHelpPopupMsg",params,function(updatedUserSelection) {
+				setContainerComponentInfo($userSelection,updatedUserSelection,updatedUserSelection.userSelectionID)
+				updateComponentHelpPopupMsg($userSelection, updatedUserSelection)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 
 
 	var deleteParams = {

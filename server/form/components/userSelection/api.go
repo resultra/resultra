@@ -15,6 +15,7 @@ func init() {
 	userSelectionRouter.HandleFunc("/api/frm/userSelection/setVisibility", setVisibility)
 	userSelectionRouter.HandleFunc("/api/frm/userSelection/setPermissions", setPermissions)
 	userSelectionRouter.HandleFunc("/api/frm/userSelection/setClearValueSupported", setClearValueSupported)
+	userSelectionRouter.HandleFunc("/api/frm/userSelection/setHelpPopupMsg", setHelpPopupMsg)
 
 	userSelectionRouter.HandleFunc("/api/frm/userSelection/setValidation", setValidation)
 	userSelectionRouter.HandleFunc("/api/frm/userSelection/validateInput", validateInputAPI)
@@ -105,6 +106,15 @@ func setValidation(w http.ResponseWriter, r *http.Request) {
 
 func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
 	var params UserSelectionClearValueSupportedParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processUserSelectionPropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params HelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

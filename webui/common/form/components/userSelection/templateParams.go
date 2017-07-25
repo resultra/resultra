@@ -1,6 +1,7 @@
 package userSelection
 
 import (
+	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common/form/components/common/delete"
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
@@ -19,6 +20,7 @@ type UserSelectionDesignTemplateParams struct {
 	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
 	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
 	ClearValuePanelParams    propertiesSidebar.PanelTemplateParams
+	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
 }
 
 type UserSelectionViewTemplateParams struct {
@@ -38,6 +40,7 @@ func init() {
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "userSelectionVisibility"),
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "userSelectionPerms"),
 		ClearValuePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Clear Values", PanelID: "userClearValue"},
+		HelpPopupParams:       inputProperties.NewHelpPopupTemplateParams(elemPrefix, "htmlSelectionHelp"),
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "userSelectionDelete", "Delete User Selection"),
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "userSelectionLabel"}},

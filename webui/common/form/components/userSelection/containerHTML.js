@@ -18,7 +18,7 @@ function userSelectionContainerHTML(elementID)
 	var containerHTML = ''+
 		'<div class=" layoutContainer userSelectionFormContainer">' +
 			'<div class="form-group marginBottom0">'+
-				'<label>New Text Box</label>'+
+				'<label>New Text Box</label>' + componentHelpPopupButtonHTML() +
 				userSelectionControlContainerHTML() +
 			'</div>'+
 		'</div>';
@@ -73,5 +73,13 @@ function initUserSelectionClearValueButton($userSelection,userSelection) {
 			hideClearValueButton()
 		}
 	}
+	
+}
+
+
+function initUserSelectionFormComponentContainer($container,userSelection) {
+		setUserSelectionComponentLabel($container,userSelection)
+		initUserSelectionClearValueButton($container,userSelection)
+		initComponentHelpPopupButton($container, userSelection)
 	
 }

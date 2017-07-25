@@ -328,8 +328,8 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		var containerObj = $(containerHTML)
 				
-		setUserSelectionComponentLabel(containerObj,userSelection)
-		initUserSelectionClearValueButton(containerObj,userSelection)
+				
+		initUserSelectionFormComponentContainer(containerObj,userSelection)
 		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append(containerObj)
