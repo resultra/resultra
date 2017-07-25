@@ -22,6 +22,7 @@ type ProgressProperties struct {
 	LabelFormat   common.ComponentLabelFormatProperties `json:"labelFormat"`
 	ValueFormat   numberFormat.NumberFormatProperties   `json:"valueFormat"`
 	common.ComponentVisibilityProperties
+	HelpPopupMsg string `json:"helpPopupMsg"`
 }
 
 func newDefaultProgressProperties() ProgressProperties {
@@ -32,7 +33,8 @@ func newDefaultProgressProperties() ProgressProperties {
 		ThresholdVals:                 []ThresholdValues{},
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
-		ValueFormat:                   numberFormat.DefaultNumberFormatProperties()}
+		ValueFormat:                   numberFormat.DefaultNumberFormatProperties(),
+		HelpPopupMsg:                  ""}
 	return props
 
 }

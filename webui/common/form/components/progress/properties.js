@@ -141,6 +141,24 @@ function loadProgressProperties($progress,progressRef) {
 	}
 	initNumberFormatSelection(formatSelectionParams)
 
+	var helpPopupParams = {
+		initialMsg: progressRef.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentFormID: progressRef.parentFormID,
+				progressID: progressRef.progressID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("frm/progress/setHelpPopupMsg",params,function(updatedProgress) {
+				setContainerComponentInfo($progress,updatedProgress,updatedProgress.progressID)
+				updateComponentHelpPopupMsg($progress, updatedProgress)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
+
+
 	var deleteParams = {
 		elemPrefix: elemPrefix,
 		parentFormID: progressRef.parentFormID,

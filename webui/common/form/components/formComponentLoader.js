@@ -212,7 +212,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = progressContainerHTML();
 		var $progressContainer = $(containerHTML)
 				
-		setProgressComponentLabel($progressContainer,progress)
+		initProgressFormComponentContainer($progressContainer,progress)
 		
 		// Position the object withing the #layoutCanvas div
 		$componentRow.append($progressContainer)

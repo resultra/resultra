@@ -1,7 +1,7 @@
 function progressContainerHTML() {
 	return '' +
 		'<div class="layoutContainer progressComponent">' +
-			'<label>Progress</label>' + 
+			'<label>Progress</label>' + componentHelpPopupButtonHTML() +
 			'<div class="progress">' +
   				'<div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">' +
     				'<span class="sr-only">60% Complete</span>' +
@@ -16,4 +16,9 @@ function setProgressComponentLabel($progressContainer, progressRef) {
 	
 	setFormComponentLabel($label,progressRef.properties.fieldID,
 			progressRef.properties.labelFormat)	
+}
+
+function initProgressFormComponentContainer($container,progressRef) {
+	setProgressComponentLabel($container,progressRef)
+	initComponentHelpPopupButton($container, progressRef)
 }

@@ -16,6 +16,7 @@ func init() {
 	progressRouter.HandleFunc("/api/frm/progress/setLabelFormat", setLabelFormat)
 	progressRouter.HandleFunc("/api/frm/progress/setVisibility", setVisibility)
 	progressRouter.HandleFunc("/api/frm/progress/setValueFormat", setValueFormat)
+	progressRouter.HandleFunc("/api/frm/progress/setHelpPopupMsg", setHelpPopupMsg)
 
 	http.Handle("/api/frm/progress/", progressRouter)
 }
@@ -91,6 +92,15 @@ func setVisibility(w http.ResponseWriter, r *http.Request) {
 
 func setValueFormat(w http.ResponseWriter, r *http.Request) {
 	var params ProgressValueFormatParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processProgressPropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params HelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

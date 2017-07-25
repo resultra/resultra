@@ -135,3 +135,15 @@ func (updateParams ProgressValueFormatParams) updateProps(progress *Progress) er
 
 	return nil
 }
+
+type HelpPopupMsgParams struct {
+	ProgressIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (updateParams HelpPopupMsgParams) updateProps(progress *Progress) error {
+
+	progress.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}
