@@ -186,3 +186,15 @@ func (updateParams ToggleClearValueSupportedParams) updateProps(toggle *Toggle) 
 
 	return nil
 }
+
+type HelpPopupMsgParams struct {
+	ToggleIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (updateParams HelpPopupMsgParams) updateProps(toggle *Toggle) error {
+
+	toggle.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}

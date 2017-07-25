@@ -1,6 +1,7 @@
 package toggle
 
 import (
+	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common/form/components/common/delete"
 	"resultra/datasheet/webui/common/form/components/common/label"
 	"resultra/datasheet/webui/common/form/components/common/newFormElemDialog"
@@ -19,6 +20,7 @@ type ToggleDesignTemplateParams struct {
 	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
 	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
 	ClearValuePanelParams    propertiesSidebar.PanelTemplateParams
+	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
 }
 
 type ToggleViewTemplateParams struct {
@@ -39,6 +41,7 @@ func init() {
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "toggleLabel"}},
 		ClearValuePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Clear Values", PanelID: "toggleClearValue"},
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "toggleDelete", "Delete Toggle"),
+		HelpPopupParams:       inputProperties.NewHelpPopupTemplateParams(elemPrefix, "toggleHelp"),
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "toggleVisibility"),
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "togglePerms"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "toggleFormat"},

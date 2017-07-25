@@ -17,6 +17,7 @@ func init() {
 	toggleRouter.HandleFunc("/api/frm/toggle/setOffLabel", setOffLabel)
 	toggleRouter.HandleFunc("/api/frm/toggle/setOnLabel", setOnLabel)
 	toggleRouter.HandleFunc("/api/frm/toggle/setClearValueSupported", setClearValueSupported)
+	toggleRouter.HandleFunc("/api/frm/toggle/setHelpPopupMsg", setHelpPopupMsg)
 
 	toggleRouter.HandleFunc("/api/frm/toggle/setLabelFormat", setLabelFormat)
 	toggleRouter.HandleFunc("/api/frm/toggle/setVisibility", setVisibility)
@@ -147,6 +148,15 @@ func setValidation(w http.ResponseWriter, r *http.Request) {
 
 func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
 	var params ToggleClearValueSupportedParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processTogglePropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params HelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

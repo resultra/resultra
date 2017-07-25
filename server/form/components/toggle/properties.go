@@ -30,6 +30,7 @@ type ToggleProperties struct {
 	Permissions         common.ComponentValuePermissionsProperties `json:"permissions"`
 	Validation          ToggleValidationProperties                 `json:"validation"`
 	ClearValueSupported bool                                       `json:"clearValueSupported"`
+	HelpPopupMsg        string                                     `json:"helpPopupMsg"`
 }
 
 func (srcProps ToggleProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ToggleProperties, error) {
@@ -62,6 +63,7 @@ func newDefaultToggleProperties() ToggleProperties {
 		Validation:                    newDefaultValidationProperties(),
 		OffLabel:                      "No",
 		OnLabel:                       "Yes",
-		ClearValueSupported:           false}
+		ClearValueSupported:           false,
+		HelpPopupMsg:                  ""}
 	return props
 }

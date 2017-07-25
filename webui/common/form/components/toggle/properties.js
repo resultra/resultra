@@ -152,6 +152,24 @@ function loadToggleProperties($container, toggleRef) {
 	}
 	initClearValueProps(clearValueParams)
 	
+
+	var helpPopupParams = {
+		initialMsg: toggleRef.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentFormID: toggleRef.parentFormID,
+				toggleID: toggleRef.toggleID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("frm/toggle/setHelpPopupMsg",params,function(updatedToggleRef) {
+				setContainerComponentInfo($container,updatedToggleRef,updatedToggleRef.toggleID)
+				updateComponentHelpPopupMsg($container, updatedToggleRef)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
+
 	
 	var deleteParams = {
 		elemPrefix: elemPrefix,

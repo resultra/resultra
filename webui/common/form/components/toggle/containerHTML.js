@@ -27,7 +27,7 @@ function toggleContainerHTML(elementID)
 	var containerHTML = ''+
 		'<div class=" layoutContainer toggleFormContainer">' +
 			'<div class="toggleWrapper">' +
-				toggleControlHTML() + 
+				toggleControlHTML() + componentHelpPopupButtonHTML() +
 			'</div>' +
 			'<div class="componentHoverFooter">' +
 				smallClearDeleteButtonHTML("toggleComponentClearValueButton") + 
@@ -133,6 +133,7 @@ function initToggleComponentFormComponentContainer($toggleContainer,toggleRef) {
 	initToggleComponentControl($toggleContainer,toggleRef)
 	setToggleComponentLabel($toggleContainer,toggleRef)
 	initToggleComponentClearValueButton($toggleContainer,toggleRef)
+	initComponentHelpPopupButton($toggleContainer, toggleRef)
 }
 
 
