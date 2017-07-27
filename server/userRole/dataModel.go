@@ -331,6 +331,17 @@ func GetCustomRoleInfo(databaseID string) ([]CustomRoleInfo, error) {
 
 	}
 
+	// Get a complete list of all roles for the database. This will
+	// include roles with no users, no dashboard priviliges
+	// or no list privileges.
+	allRoles, allRolesErr := GetDatabaseRoles(databaseID)
+	if allRolesErr != nil {
+		return nil, fmt.Errorf("GetCustomRoleInfo: %v", allRolesErr)
+	}
+	for _, roleInfo := range allRoles {
+		getOrAllocRoleInfo(roleInfo.RoleID, roleInfo.RoleName)
+	}
+
 	customListInfo, listErr := GetCustomRoleListInfo(databaseID)
 	if listErr != nil {
 		return nil, fmt.Errorf("GetCustomRoleInfo: %v", listErr)
