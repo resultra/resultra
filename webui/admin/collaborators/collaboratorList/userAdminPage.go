@@ -1,4 +1,4 @@
-package users
+package collaboratorList
 
 import (
 	"github.com/gorilla/mux"
@@ -17,9 +17,9 @@ var userTemplates *template.Template
 func init() {
 
 	baseTemplateFiles := []string{
-		"static/admin/users/userAdminPage.html",
-		"static/admin/users/users.html",
-		"static/admin/users/addUserDialog.html"}
+		"static/admin/collaborators/collaboratorList/userAdminPage.html",
+		"static/admin/collaborators/collaboratorList/users.html",
+		"static/admin/collaborators/collaboratorList/addUserDialog.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
@@ -48,7 +48,7 @@ func userAdminPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	templParams := TemplParams{
-		Title:        "Global Values",
+		Title:        "Collaborators",
 		DatabaseID:   databaseID,
 		DatabaseName: dbInfo.DatabaseName}
 

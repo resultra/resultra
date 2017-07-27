@@ -30,7 +30,8 @@ import (
 	"resultra/datasheet/webui/admin/dashboards"
 
 	"resultra/datasheet/webui/admin/globals"
-	"resultra/datasheet/webui/admin/users"
+
+	"resultra/datasheet/webui/admin/collaborators/collaboratorList"
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -63,5 +64,5 @@ func RegisterHTTPHandlers(mainRouter *mux.Router) {
 
 	globals.RegisterHTTPHandlers(mainRouter)
 
-	users.RegisterHTTPHandlers(mainRouter)
+	collaboratorList.RegisterHTTPHandlers(mainRouter)
 }

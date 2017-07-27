@@ -1,7 +1,7 @@
 {
-	"subDirs":["../../generic",
-		"../../common",
-		"../common"],
+	"subDirs":["../../../generic",
+		"../../../common",
+		"../../common"],
 	"cssFiles": [],
 	"jsFiles": ["addUserDialog.js",
 		"userAdminPage.js",

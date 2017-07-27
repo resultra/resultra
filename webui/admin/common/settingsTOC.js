@@ -28,7 +28,7 @@ function initAdminSettingsTOC(databaseID) {
 	var globalLink = "/admin/globals/" + databaseID
 	$('#settingsTOCGlobals').attr("href",globalLink)
 	
-	var userLink = "/admin/users/" + databaseID
+	var userLink = "/admin/collaborators/" + databaseID
 	$('#settingsTOCUsers').attr("href",userLink)
 
 	var roleLink = "/admin/roles/" + databaseID

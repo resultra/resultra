@@ -1,4 +1,4 @@
-DEPTH = ../../..
+DEPTH = ../../../..
 include $(DEPTH)/build/common.mk
 include $(DEPTH)/webui/build/webui.mk
 
