@@ -57,7 +57,7 @@ func validateRoleNameAPI(w http.ResponseWriter, r *http.Request) {
 
 func newRoleAPI(w http.ResponseWriter, r *http.Request) {
 
-	var params userRole.NewDatabaseRoleWithPrivsParams
+	var params userRole.NewDatabaseRoleParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -68,11 +68,10 @@ func newRoleAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if newErr := userRole.NewDatabaseRoleWithPrivs(params); newErr != nil {
+	if newRole, newErr := userRole.NewDatabaseRole(params); newErr != nil {
 		api.WriteErrorResponse(w, newErr)
 	} else {
-		successResponse := true
-		api.WriteJSONResponse(w, successResponse)
+		api.WriteJSONResponse(w, newRole)
 	}
 
 }

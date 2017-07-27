@@ -1,18 +1,26 @@
 {{define "newUserRoleDialogBody"}}
 
-		{{template "newUserRoleDialogRoleNamePanel"}}
-		{{template "newUserRoleDialogFormPrivsPanel"}}
-		{{template "newUserRoleDialogDashboardPrivsPanel"}}
-		
+		<form id="newUserRoleDialogRoleNameForm">
+			<div class="alert alert-info">
+				Enter a name for the user role.
+			</div>
+
+			<div class="form-group">
+	        	<label for="newUserRoleDialogRoleName" class="sr-only">Role Name</label>
+	        	<input type="text" id="newRoleNameInput" name="newRoleNameInput" class="form-control" 
+							placeholder="Role Name" required autofocus>
+			</div>
+						
+			
+		</form> <!-- form for panel -->
+
 {{end}}
 
 
 {{define "newUserRoleDialogButtons"}}
 
 	<button type="button" class="btn btn-default" id="newUserRoleCancelButton" data-dismiss="modal">Cancel</button>
-	{{template "newUserRoleDialogRoleNamePanelButtons"}}
-	{{template "newUserRoleDialogFormPrivsPanelButtons"}}
-	{{template "newUserRoleDialogDashboardPrivsPanelButtons"}}
+	<button type="button" class="btn btn-primary" id="newRoleSaveButton" type="submit">Save</button>
 {{end}}
 
 
@@ -26,7 +34,6 @@
         <h4 class="modal-title" id="newUserRoleLabel">New Role</h4>
       </div>
       <div class="modal-body">
-			  {{template "wizardDialogProgressParamIsPrefix" "userRole"}}
 			  {{template "newUserRoleDialogBody"}}
       </div>
       <div class="modal-footer">

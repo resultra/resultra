@@ -13,8 +13,6 @@
 			"userRole.js"],
 	"htmlFiles":["dashboardPrivs.html",
 		"formPrivs.html",
-		"newRoleDashboardPrivsDialogPanel.html",
-		"newRoleFormPrivsDialogPanel.html",
 		"newRoleRoleNameDialogPanel.html",
 		"newUserRoleDialog.html",
 		"roleAdminPage.html",

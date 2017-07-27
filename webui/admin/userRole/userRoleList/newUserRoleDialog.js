@@ -1,47 +1,44 @@
 
-var newUserRoleDialogProgressSelector = "#" + "userRole" + "WizardDialogProgress"
-
 function openNewUserRoleDialog(databaseID) {
 
-
-	function saveNewUserRole($dialog) {
-		
-		var newUserRoleParams = {
-			databaseID: databaseID,
-			roleName: getWizardDialogPanelVals($dialog,newRoleRoleNameDialogPanelID),
-			formPrivs: getWizardDialogPanelVals($dialog,newRoleFormPrivsDialogPanelID),
-			dashboardPrivs: getWizardDialogPanelVals($dialog,newRoleDashboardPrivsDialogPanelID)
-		} 
-		console.log("Saving new user role: params=" + JSON.stringify(newUserRoleParams))
-		
-		jsonAPIRequest("userRole/newRole",newUserRoleParams,function(response) {
-		
-			$('#newUserRoleDialog').modal('hide')	
-		
-		})
-		
-		
-	}
-
-	var dbInfoParams = { databaseID: databaseID }
-	jsonAPIRequest("database/getInfo",dbInfoParams,function(databaseInfo) {
+	var $roleNameInput = $('#newRoleNameInput')
+	var $newRoleDialog = $('#newUserRoleDialog')
 	
-		var dialogSelector = '#newUserRoleDialog'
-		var roleNamePanel = createNewRoleRoleNamePanelContext()
-		var formPrivsPanel = createNewRoleFormPrivsPanelContext(databaseInfo.formsInfo)
-		var dashboardPrivsPanel = createNewRoleDashboardPrivsPanelContext(saveNewUserRole,databaseInfo.dashboardsInfo)
+	var $newRoleRoleNamePanelForm = $('#newUserRoleDialogRoleNameForm')
 	
-		openWizardDialog({
-			closeFunc: function() {
-				console.log("Close dialog")
-	      	},
-			dialogDivID: dialogSelector,
-			panels: [roleNamePanel,formPrivsPanel,dashboardPrivsPanel],
-			progressDivID: newUserRoleDialogProgressSelector,
-			minBodyHeight:'350px'
-		})
-	
+	var validator = $newRoleRoleNamePanelForm.validate({
+		rules: {
+			newRoleNameInput: {
+				minlength: 3,
+				required: true,
+				remote: {
+					url: '/api/userRole/validateRoleName',
+					data: {
+						roleName: function() { return $roleNameInput.val(); }
+					}
+				} // remote
+			} // newRoleNameInput
+		},
 	})
 	
+	$newRoleDialog.modal('show')
+	
+	initButtonClickHandler('#newRoleSaveButton',function() {
+		console.log("Save button clicked")
+		if($newRoleRoleNamePanelForm.valid()) {
+			var newRoleParams = {
+				databaseID: databaseID,
+				roleName: $roleNameInput.val()
+			}
+			console.log("Saving new user role: params=" + JSON.stringify(newRoleParams))
+		
+			jsonAPIRequest("userRole/newRole",newRoleParams,function(newRoleInfo) {
+		
+				$newRoleDialog.modal('hide')	
+				navigateToURL('/admin/userRole/' + newRoleInfo.roleID)
+		
+			})
+		}
+	})
 		
 }

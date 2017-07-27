@@ -117,47 +117,22 @@ func updateExistingRole(roleID string, updatedRole *DatabaseRoleInfo) (*Database
 
 }
 
-type NewDatabaseRoleWithPrivsParams struct {
-	DatabaseID     string            `json:"databaseID"`
-	RoleName       string            `json:"roleName"`
-	ListPrivs      map[string]string `json:"listPrivs"`      // Map of list ID to privilege
-	DashboardPrivs map[string]string `json:"dashboardPrivs"` // Map of dashboard ID to privilege
+type NewDatabaseRoleParams struct {
+	DatabaseID string `json:"databaseID"`
+	RoleName   string `json:"roleName"`
 }
 
-func NewDatabaseRoleWithPrivs(params NewDatabaseRoleWithPrivsParams) error {
-	log.Printf("newDatabaseRoleWithPrivs: %+v", params)
+func NewDatabaseRole(params NewDatabaseRoleParams) (*DatabaseRole, error) {
+	log.Printf("NewDatabaseRole: %+v", params)
 
 	// TODO Wrap all the database writes from this function into a transaction.
 
 	newRole, newRoleErr := addDatabaseRole(params.DatabaseID, params.RoleName)
 	if newRoleErr != nil {
-		return fmt.Errorf("newDatabaseRoleWithPrivs: %v", newRoleErr)
+		return nil, fmt.Errorf("NewDatabaseRole: %v", newRoleErr)
 	}
 
-	for listID, priv := range params.ListPrivs {
-
-		params := SetListRolePrivsParams{
-			ListID: listID,
-			RoleID: newRole.RoleID,
-			Privs:  priv}
-		if listPrivErr := SetListRolePrivs(params); listPrivErr != nil {
-			return fmt.Errorf("newDatabaseRoleWithPrivs: %v", listPrivErr)
-		}
-	}
-
-	for dashboardID, priv := range params.DashboardPrivs {
-
-		setPrivParams := SetDashboardRolePrivsParams{
-			DashboardID: dashboardID,
-			RoleID:      newRole.RoleID,
-			Privs:       priv}
-
-		if dashboardPrivErr := SetDashboardRolePrivs(setPrivParams); dashboardPrivErr != nil {
-			return fmt.Errorf("newDatabaseRoleWithPrivs: %v", dashboardPrivErr)
-		}
-	}
-
-	return nil
+	return newRole, nil
 }
 
 func AddUserRole(roleID string, userID string) error {
