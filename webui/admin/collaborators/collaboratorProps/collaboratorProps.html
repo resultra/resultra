@@ -1,0 +1,117 @@
+{{define "collabBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  {{template "trackerPageBreadcrumb" .}}
+	  {{template "breadCrumbSeparator"}}
+	  <a class="h4 breadCrumbText" href="/admin/{{.DatabaseID}}">Settings</a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Collaborators</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">{{.UserName}}</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "collabPropsHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "collabBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "adminCollaboratorNameProperty"}}
+
+
+	<tr>
+		<td class="width200"><label>Collaborator:</label>
+		</td>
+
+		<td>TBD
+		</td>
+	</tr>
+
+{{end}}
+
+{{define "adminCollaboratorRolesProperty"}}
+
+
+	<tr>
+		<td class="width200"><label>Roles:</label>
+			<div><small>Configure which roles this collaborator belongs to.</small></div>
+		</td>
+
+		<td>
+			<div class="list-group" id="adminCollabRolesList">
+			</div>		
+		</td>
+	</tr>
+
+{{end}}
+
+
+{{define "collabPropsBody"}}
+
+<table class="table">
+	{{template "adminCollaboratorNameProperty"}}
+	{{template "adminCollaboratorRolesProperty"}}	
+</table>
+
+
+{{end}}
+
+{{define "collabPropsPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- collabPropsAssets:css -->
+	<!-- endinject -->
+	
+	<script>var collabPropsContext = { 
+		userID:"{{.UserID}}",
+		databaseID:"{{.DatabaseID}}"} 
+	</script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- collabPropsAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="collabPropsPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north">
+			{{template "collabPropsHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west" id="rolePageTocLayout">
+			{{template "adminSettingsTOC"}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center" id="rolePageLayout">
+			{{template "collabPropsBody" .}}
+		</div> <!-- center pane for entire page -->	
+		
+	</div> <!-- layout page -->	
+				
+  </body>
+  	
+</html>
+
+{{end}}

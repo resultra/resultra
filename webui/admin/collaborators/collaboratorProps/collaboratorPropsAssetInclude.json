@@ -1,0 +1,12 @@
+{
+	"subDirs":["../../../generic",
+		"../../../common",
+		"../../common"],
+	"cssFiles": [],
+	"jsFiles": ["collaboratorProps.js"],
+	"htmlFiles":["collaboratorProps.html"],
+	"imageFiles":[],
+	"minCSSFile":"admin/collaborators/collaboratorProps/collaboratorProps.min.css",
+	"minJSFile": "admin/collaborators/collaboratorProps/collaboratorProps.min.js",
+	"injectPlaceholderName":"collabPropsAssets"
+}

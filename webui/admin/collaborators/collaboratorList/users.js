@@ -1,11 +1,15 @@
-function userListItemButtonsHTML() {
+function userListItemButtonsHTML(databaseID, userID) {
+	
+	
+		var editCollabPropsURL = '/admin/collaborator/' + databaseID + '/' + userID
+	
 return '' +
 			'<div class="pull-right userListItemButtons">' + 
 	
-  			'<button class="btn btn-xs editUserRoleButton">' + 
+  			'<a class="btn btn-xs editUserRoleButton" href="'+  editCollabPropsURL + '" role="button">' + 
 				// padding-bottom: 2px makes the button image vertically line up better.
 				'<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>' +
-			'</button>' +
+			'</a>' +
   			'<button class="btn btn-xs btn-danger deleteUserRoleButton">' + 
 				// padding-bottom: 2px makes the button image vertically line up better.
 				'<span class="glyphicon glyphicon-remove" style="padding-bottom:2px;"></span>' +
@@ -16,7 +20,7 @@ return '' +
 	
 }
 
-function userListTableRowHTML(userRoleInfo) {
+function userListTableRowHTML(databaseID,userRoleInfo) {
 	
 	var roles = ""
 	if(userRoleInfo.isAdmin) {
@@ -34,7 +38,7 @@ function userListTableRowHTML(userRoleInfo) {
 	var userNameDisplay = '@' + userInfo.userName + 
 		" (" + userInfo.firstName + " " + userInfo.lastName + ")"
 	
-	var buttonsHTML = userListItemButtonsHTML()
+	var buttonsHTML = userListItemButtonsHTML(databaseID,userRoleInfo.userInfo.userID)
 	
 	return '' +
 		'<tr class="userListRow">' +
@@ -55,7 +59,7 @@ function initUserListSettings(databaseID) {
 		for (var userRoleIndex = 0; userRoleIndex < userRoleInfo.length; userRoleIndex++) {
 			var currUserRole = userRoleInfo[userRoleIndex]
 			console.log("appending user role")
-			$('#userListTableBody').append(userListTableRowHTML(currUserRole))
+			$('#userListTableBody').append(userListTableRowHTML(databaseID,currUserRole))
 		}
 
 		
