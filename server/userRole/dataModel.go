@@ -417,11 +417,21 @@ func GetUserRoleInfo(databaseID string, userID string) (*UserRoleInfo, error) {
 		if scanErr := rows.Scan(&currUserID, &currRoleInfo.RoleID, &currRoleInfo.RoleName); scanErr != nil {
 			return nil, fmt.Errorf("GetAllUsersRoleInfo: Failure querying database: %v", scanErr)
 		}
+		currRoleInfo.ParentDatabaseID = databaseID
 		userRoleInfo.RoleInfo = append(userRoleInfo.RoleInfo, currRoleInfo)
 	}
 
 	return &userRoleInfo, nil
 
+}
+
+type GetUserRoleInfoParams struct {
+	UserID     string `json:"userID"`
+	DatabaseID string `json:"databaseID"`
+}
+
+func GetUserRoleInfoAPI(params GetUserRoleInfoParams) (*UserRoleInfo, error) {
+	return GetUserRoleInfo(params.DatabaseID, params.UserID)
 }
 
 // Aggregate the role information by user.

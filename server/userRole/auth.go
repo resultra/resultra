@@ -23,7 +23,7 @@ func VerifyCurrUserIsDatabaseAdmin(req *http.Request, databaseID string) error {
 	if getErr != nil {
 		return fmt.Errorf(
 			"verifyCurrUserIsDatabaseAdmin: can't validate user = %v as admin for database = %v: err=%v",
-			databaseID, currUserID, getErr)
+			currUserID, databaseID, getErr)
 	}
 
 	return nil
