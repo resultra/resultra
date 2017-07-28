@@ -17,9 +17,19 @@ $(document).ready(function() {
 		
 		var $roleCheckbox = $(roleCheckboxHTML)
 		$roleCheckbox.find('.roleNameLabel').text(roleInfo.roleName)
-		if(isMemberOfRole) {
-			$roleCheckbox.find("input").prop("checked",true)
-		}
+		
+		var $checkboxInput = $roleCheckbox.find("input")
+		initCheckboxControlChangeHandler($checkboxInput,isMemberOfRole,function(newVal) {
+			
+			var roleParams = {
+				userID: collabPropsContext.userID,
+				databaseID: collabPropsContext.databaseID,
+				roleID: roleInfo.roleID,
+				memberOfRole: $checkboxInput.prop("checked")
+			}			
+			jsonAPIRequest("admin/setUserRoleInfo",roleParams,function(userRoles) {
+			})
+		})
 		
 	
 		$('#adminCollabRolesList').append($roleCheckbox)	

@@ -19,6 +19,7 @@ func init() {
 	adminRouter.HandleFunc("/api/admin/getRoleInfo", getRoleInfoAPI)
 	adminRouter.HandleFunc("/api/admin/addCollaborator", addCollaboratorAPI)
 	adminRouter.HandleFunc("/api/admin/getSingleUserRoleInfo", getSingleUserRoleInfoAPI)
+	adminRouter.HandleFunc("/api/admin/setUserRoleInfo", setUserRoleInfoAPI)
 
 	http.Handle("/api/admin/", adminRouter)
 }
@@ -97,6 +98,29 @@ func getSingleUserRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, userRolesInfo)
+
+	}
+
+}
+
+func setUserRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params userRole.SetUserRoleInfoParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if err := userRole.SetUserRoleInfo(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		successResult := true
+		api.WriteJSONResponse(w, successResult)
 
 	}
 

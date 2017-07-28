@@ -434,6 +434,26 @@ func GetUserRoleInfoAPI(params GetUserRoleInfoParams) (*UserRoleInfo, error) {
 	return GetUserRoleInfo(params.DatabaseID, params.UserID)
 }
 
+type SetUserRoleInfoParams struct {
+	UserID       string `json:"userID"`
+	DatabaseID   string `json:"databaseID"`
+	RoleID       string `json:"roleID"`
+	MemberOfRole bool   `json:"memberOfRole"`
+}
+
+func SetUserRoleInfo(params SetUserRoleInfoParams) error {
+	if _, deleteErr := databaseWrapper.DBHandle().Exec(`DELETE FROM user_roles 
+				WHERE role_id=$1 AND user_id = $2`, params.RoleID, params.UserID); deleteErr != nil {
+		return fmt.Errorf("SetUserRoleInfo: Can't update role properties %+v: error = %v",
+			params, deleteErr)
+	}
+	if params.MemberOfRole {
+		return AddUserRole(params.RoleID, params.UserID)
+	}
+	return nil
+
+}
+
 // Aggregate the role information by user.
 func GetAllUsersRoleInfo(databaseID string) ([]UserRoleInfo, error) {
 
