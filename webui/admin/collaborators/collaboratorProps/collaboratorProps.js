@@ -84,6 +84,14 @@ $(document).ready(function() {
 			addRoleToRoleCheckboxList(currRoleInfo,roleMemberLookup.hasID(currRoleInfo.roleID))
 		}
 		
+		var userInfo = userRoleInfo.userInfo
+		var userNameDisplay = '@' + userInfo.userName + 
+			" (" + userInfo.firstName + " " + userInfo.lastName + ")"
+		$("#collabNameTableCell").text(userNameDisplay)
+		
 	})	
+	
+	
+	
 				
 })
