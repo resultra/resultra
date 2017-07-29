@@ -611,3 +611,18 @@ func GetAllUsersRoleInfo(databaseID string) ([]UserRoleInfo, error) {
 
 	return usersRoleInfo, nil
 }
+
+type DeleteCollaboratorParams struct {
+	DatabaseID     string `json:"databaseID"`
+	CollaboratorID string `json:"collaboratorID"`
+}
+
+func DeleteCollaborator(params DeleteCollaboratorParams) error {
+	if _, deleteErr := databaseWrapper.DBHandle().Exec(`DELETE FROM collaborators 
+				WHERE database_id=$1 AND collaborator_id=$2`,
+		params.DatabaseID, params.CollaboratorID); deleteErr != nil {
+		return fmt.Errorf("DeleteCollaborator: Can't update collaborator %+v: error = %v",
+			params, deleteErr)
+	}
+	return nil
+}

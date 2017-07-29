@@ -20,6 +20,7 @@ func init() {
 	adminRouter.HandleFunc("/api/admin/addCollaborator", addCollaboratorAPI)
 	adminRouter.HandleFunc("/api/admin/getSingleUserRoleInfo", getSingleUserRoleInfoAPI)
 	adminRouter.HandleFunc("/api/admin/setUserRoleInfo", setUserRoleInfoAPI)
+	adminRouter.HandleFunc("/api/admin/deleteCollaborator", deleteCollaboratorAPI)
 
 	http.Handle("/api/admin/", adminRouter)
 }
@@ -117,6 +118,29 @@ func setUserRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := userRole.SetCollaboratorRoleInfo(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		successResult := true
+		api.WriteJSONResponse(w, successResult)
+
+	}
+
+}
+
+func deleteCollaboratorAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params userRole.DeleteCollaboratorParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if err := userRole.DeleteCollaborator(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		successResult := true

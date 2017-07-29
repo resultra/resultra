@@ -1,9 +1,9 @@
 function userListItemButtonsHTML(databaseID, collaboratorID) {
 	
 	
-		var editCollabPropsURL = '/admin/collaborator/' + databaseID + '/' + collaboratorID
+	var editCollabPropsURL = '/admin/collaborator/' + databaseID + '/' + collaboratorID
 	
-return '' +
+	var buttonsHTML = '' +
 			'<div class="pull-right userListItemButtons">' + 
 	
   			'<a class="btn btn-xs editUserRoleButton" href="'+  editCollabPropsURL + '" role="button">' + 
@@ -16,11 +16,32 @@ return '' +
 			'</button>';
 
 			'</div>'
+	
+	var $buttons = $(buttonsHTML)
+	var $deleteButton = $buttons.find(".deleteUserRoleButton")
 
 	
+	initButtonControlClickHandler($deleteButton,function() {
+		console.log("Remove collaborator button clicked")
+		openConfirmDeleteDialog("collaborator",function() {
+	
+			var deleteParams = {
+				collaboratorID: collaboratorID,
+				databaseID: databaseID
+			}
+			jsonAPIRequest("admin/deleteCollaborator",deleteParams,function(replyStatus) {
+				$buttons.closest("tr").remove()
+				console.log("Delete confirmed")
+			})
+	
+	
+		})
+	})
+			
+	return $buttons
 }
 
-function userListTableRowHTML(databaseID,userRoleInfo) {
+function userListTableRow(databaseID,userRoleInfo) {
 	
 	var roles = ""
 	if(userRoleInfo.isAdmin) {
@@ -38,14 +59,19 @@ function userListTableRowHTML(databaseID,userRoleInfo) {
 	var userNameDisplay = '@' + userInfo.userName + 
 		" (" + userInfo.firstName + " " + userInfo.lastName + ")"
 	
-	var buttonsHTML = userListItemButtonsHTML(databaseID,userRoleInfo.collaboratorID)
+	var $buttons = userListItemButtonsHTML(databaseID,userRoleInfo.collaboratorID)
 	
-	return '' +
+	var userRowHTML = '' +
 		'<tr class="userListRow">' +
 	         '<td>' + userNameDisplay +  '</td>' +
 	         '<td>' + roles +  '</td>' +
-	         '<td class="userListButtonCell">' + buttonsHTML + '</td>' +
+	         '<td class="userListButtonCell"></td>' +
 	     '</tr>'
+	
+	var $userRow = $(userRowHTML)
+	$userRow.find(".userListButtonCell").append($buttons)
+	
+	return $userRow
 	
 }
 
@@ -59,7 +85,7 @@ function initUserListSettings(databaseID) {
 		for (var userRoleIndex = 0; userRoleIndex < userRoleInfo.length; userRoleIndex++) {
 			var currUserRole = userRoleInfo[userRoleIndex]
 			console.log("appending user role")
-			$('#userListTableBody').append(userListTableRowHTML(databaseID,currUserRole))
+			$('#userListTableBody').append(userListTableRow(databaseID,currUserRole))
 		}
 
 		
