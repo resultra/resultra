@@ -5,5 +5,5 @@ import (
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
-	mainRouter.HandleFunc("/admin/collaborator/{databaseID}/{userID}", editCollabPropsPage)
+	mainRouter.HandleFunc("/admin/collaborator/{databaseID}/{collaboratorID}", editCollabPropsPage)
 }

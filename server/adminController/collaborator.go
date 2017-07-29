@@ -13,21 +13,27 @@ type AddCollaboratorParams struct {
 
 func addCollaborator(params AddCollaboratorParams) (*UserRoleInfo, error) {
 
+	collabInfo, err := userRole.AddCollaborator(params.DatabaseID, params.UserID)
+	if err != nil {
+		return nil, fmt.Errorf("addCollaborator: %v", err)
+	}
+
 	for _, currRoleID := range params.RoleIDs {
-		if err := userRole.AddUserRole(currRoleID, params.UserID); err != nil {
+		if err := userRole.AddCollaboratorRole(currRoleID, collabInfo.CollaboratorID); err != nil {
 			return nil, fmt.Errorf("addCollaborator: Error adding role for collaborator: %v", err)
 		}
 	}
 
-	collabUserRoleInfo, err := userRole.GetUserRoleInfo(params.DatabaseID, params.UserID)
+	collabUserRoleInfo, err := userRole.GetCollaboratorRoleInfo(params.DatabaseID, collabInfo.CollaboratorID)
 	if err != nil {
 		return nil, fmt.Errorf("addCollaborator: Error adding updated role info for collaborator: %v", err)
 	}
 
 	userRoleInfo := UserRoleInfo{
-		UserInfo:    collabUserRoleInfo.UserInfo,
-		IsAdmin:     false,
-		CustomRoles: collabUserRoleInfo.RoleInfo}
+		UserInfo:       collabUserRoleInfo.UserInfo,
+		IsAdmin:        false,
+		CollaboratorID: collabInfo.CollaboratorID,
+		CustomRoles:    collabUserRoleInfo.RoleInfo}
 
 	return &userRoleInfo, nil
 }

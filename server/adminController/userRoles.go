@@ -8,9 +8,10 @@ import (
 )
 
 type UserRoleInfo struct {
-	UserInfo    userAuth.UserInfo           `json:"userInfo"`
-	IsAdmin     bool                        `json:"isAdmin"`
-	CustomRoles []userRole.DatabaseRoleInfo `json:"customRoles"`
+	UserInfo       userAuth.UserInfo           `json:"userInfo"`
+	IsAdmin        bool                        `json:"isAdmin"`
+	CollaboratorID string                      `json:"collaboratorID"`
+	CustomRoles    []userRole.DatabaseRoleInfo `json:"customRoles"`
 }
 
 type GetUserRolesParams struct {
@@ -37,9 +38,10 @@ func getUserRolesInfo(params GetUserRolesParams) ([]UserRoleInfo, error) {
 	}
 	for _, currRoleInfo := range usersRoleInfo {
 		currInfo := UserRoleInfo{
-			UserInfo:    currRoleInfo.UserInfo,
-			IsAdmin:     false,
-			CustomRoles: currRoleInfo.RoleInfo}
+			UserInfo:       currRoleInfo.UserInfo,
+			IsAdmin:        false,
+			CollaboratorID: currRoleInfo.CollaboratorID,
+			CustomRoles:    currRoleInfo.RoleInfo}
 		userRoles = append(userRoles, currInfo)
 	}
 

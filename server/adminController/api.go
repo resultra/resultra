@@ -83,7 +83,7 @@ func addCollaboratorAPI(w http.ResponseWriter, r *http.Request) {
 
 func getSingleUserRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
 
-	var params userRole.GetUserRoleInfoParams
+	var params userRole.GetCollaboratorRoleInfoParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -94,7 +94,7 @@ func getSingleUserRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if userRolesInfo, err := userRole.GetUserRoleInfoAPI(params); err != nil {
+	if userRolesInfo, err := userRole.GetCollaboratorRoleInfoAPI(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, userRolesInfo)
@@ -105,7 +105,7 @@ func getSingleUserRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
 
 func setUserRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
 
-	var params userRole.SetUserRoleInfoParams
+	var params userRole.SetCollaboratorRoleInfoParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -116,7 +116,7 @@ func setUserRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := userRole.SetUserRoleInfo(params); err != nil {
+	if err := userRole.SetCollaboratorRoleInfo(params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		successResult := true

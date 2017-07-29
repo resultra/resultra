@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/userRole"
 	adminCommon "resultra/datasheet/webui/admin/common"
 
 	"resultra/datasheet/webui/common"
@@ -30,20 +31,28 @@ func init() {
 }
 
 type UserRoleTemplParams struct {
-	Title        string
-	DatabaseID   string
-	DatabaseName string
-	UserID       string
-	UserName     string
+	Title          string
+	DatabaseID     string
+	DatabaseName   string
+	UserID         string
+	CollaboratorID string
+	UserName       string
 }
 
 func editCollabPropsPage(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
-	userID := vars["userID"]
+	collaboratorID := vars["collaboratorID"]
 	databaseID := vars["databaseID"]
 
-	userInfo, err := userAuth.GetUserInfoByID(userID)
+	collabInfo, collabErr := userRole.GetCollaboratorByID(collaboratorID)
+	if collabErr != nil {
+		http.Error(w, collabErr.Error(), http.StatusInternalServerError)
+		return
+
+	}
+
+	userInfo, err := userAuth.GetUserInfoByID(collabInfo.UserID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -57,11 +66,12 @@ func editCollabPropsPage(w http.ResponseWriter, r *http.Request) {
 
 	//	elemPrefix := "userRole_"
 	templParams := UserRoleTemplParams{
-		Title:        "Collaborator Settings",
-		DatabaseID:   dbInfo.DatabaseID,
-		DatabaseName: dbInfo.DatabaseName,
-		UserID:       userID,
-		UserName:     userInfo.UserName}
+		Title:          "Collaborator Settings",
+		DatabaseID:     dbInfo.DatabaseID,
+		DatabaseName:   dbInfo.DatabaseName,
+		UserID:         collabInfo.UserID,
+		CollaboratorID: collaboratorID,
+		UserName:       userInfo.UserName}
 
 	if err := userRoleTemplates.ExecuteTemplate(w, "collabPropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

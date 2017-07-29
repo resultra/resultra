@@ -1,7 +1,7 @@
-function userListItemButtonsHTML(databaseID, userID) {
+function userListItemButtonsHTML(databaseID, collaboratorID) {
 	
 	
-		var editCollabPropsURL = '/admin/collaborator/' + databaseID + '/' + userID
+		var editCollabPropsURL = '/admin/collaborator/' + databaseID + '/' + collaboratorID
 	
 return '' +
 			'<div class="pull-right userListItemButtons">' + 
@@ -38,7 +38,7 @@ function userListTableRowHTML(databaseID,userRoleInfo) {
 	var userNameDisplay = '@' + userInfo.userName + 
 		" (" + userInfo.firstName + " " + userInfo.lastName + ")"
 	
-	var buttonsHTML = userListItemButtonsHTML(databaseID,userRoleInfo.userInfo.userID)
+	var buttonsHTML = userListItemButtonsHTML(databaseID,userRoleInfo.collaboratorID)
 	
 	return '' +
 		'<tr class="userListRow">' +

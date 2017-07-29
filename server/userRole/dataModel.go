@@ -23,6 +23,100 @@ func AddDatabaseAdmin(databaseID string, userID string) error {
 
 }
 
+func AddCollaborator(databaseID string, userID string) (*CollaboratorInfo, error) {
+
+	if existingCollab, err := getCollaborator(databaseID, userID); err == nil {
+		return existingCollab, nil
+	}
+
+	collabID := uniqueID.GenerateSnowflakeID()
+
+	if _, insertErr := databaseWrapper.DBHandle().Exec(
+		`INSERT INTO collaborators (collaborator_id,database_id,user_id) VALUES ($1,$2,$3)
+			ON CONFLICT DO NOTHING`,
+		collabID, databaseID, userID); insertErr != nil {
+		return nil, fmt.Errorf("AddCollaborator: Can't add collaborator with user ID = %v to database with ID = %v: error = %v",
+			userID, databaseID, insertErr)
+	}
+
+	newCollabInfo := &CollaboratorInfo{
+		CollaboratorID: collabID,
+		UserID:         userID,
+		DatabaseID:     databaseID}
+
+	return newCollabInfo, nil
+
+}
+
+type CollaboratorInfo struct {
+	CollaboratorID string
+	UserID         string
+	DatabaseID     string
+}
+
+func getCollaborator(databaseID string, userID string) (*CollaboratorInfo, error) {
+
+	collabID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT collaborator_id FROM collaborators
+		 WHERE user_id=$1 AND database_id=$2 LIMIT 1`, databaseID, userID).Scan(&collabID)
+	if getErr != nil {
+		return nil, fmt.Errorf("getCollaborator: Unabled to get collaborator with databaseID = %v, userID = %v: datastore err=%v",
+			databaseID, userID, getErr)
+	}
+
+	collabInfo := CollaboratorInfo{
+		CollaboratorID: collabID,
+		UserID:         userID,
+		DatabaseID:     databaseID}
+
+	return &collabInfo, nil
+
+}
+
+func getAllCollaborators(databaseID string) ([]CollaboratorInfo, error) {
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT collaborator_id, user_id FROM collaborators
+				WHERE database_id=$1`, databaseID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetDatabaseRoles: Failure querying database: %v", queryErr)
+	}
+
+	collabs := []CollaboratorInfo{}
+	for rows.Next() {
+
+		currCollabInfo := CollaboratorInfo{}
+		if scanErr := rows.Scan(&currCollabInfo.CollaboratorID, &currCollabInfo.UserID); scanErr != nil {
+			return nil, fmt.Errorf("GetDatabaseRoles: Failure querying database: %v", scanErr)
+		}
+		currCollabInfo.DatabaseID = databaseID
+		collabs = append(collabs, currCollabInfo)
+	}
+
+	return collabs, nil
+
+}
+
+func GetCollaboratorByID(collaboratorID string) (*CollaboratorInfo, error) {
+
+	userID := ""
+	databaseID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT user_id,database_id FROM collaborators
+		 WHERE collaborator_id=$1 LIMIT 1`, collaboratorID).Scan(&userID, &databaseID)
+	if getErr != nil {
+		return nil, fmt.Errorf("getCollaboratorByID: Unabled to get collaborator with ID = %v: datastore err=%v",
+			collaboratorID, getErr)
+	}
+
+	collabInfo := CollaboratorInfo{
+		CollaboratorID: collaboratorID,
+		UserID:         userID,
+		DatabaseID:     databaseID}
+
+	return &collabInfo, nil
+
+}
+
 type DatabaseRole struct {
 	DatabaseID string `json:"databaseID"`
 	RoleID     string `json:"roleID"`
@@ -135,14 +229,15 @@ func NewDatabaseRole(params NewDatabaseRoleParams) (*DatabaseRole, error) {
 	return newRole, nil
 }
 
-func AddUserRole(roleID string, userID string) error {
+func AddCollaboratorRole(roleID string, collaboratorID string) error {
 	// TODO verify the current user has permissions to add the user as an admin.
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO user_roles (role_id,user_id) VALUES ($1,$2)`,
-		roleID, userID); insertErr != nil {
-		return fmt.Errorf("addUserRole: Can't add user with ID = %v to role with ID = %v: error = %v",
-			userID, roleID, insertErr)
+		`INSERT INTO collaborator_roles (role_id,collaborator_id) VALUES ($1,$2)
+			ON CONFLICT DO NOTHING`,
+		roleID, collaboratorID); insertErr != nil {
+		return fmt.Errorf("AddCollaboratorRole: Can't add collaborator with ID = %v to role with ID = %v: error = %v",
+			collaboratorID, roleID, insertErr)
 	}
 
 	return nil
@@ -385,29 +480,35 @@ func GetCustomRoleInfo(databaseID string) ([]CustomRoleInfo, error) {
 }
 
 type UserRoleInfo struct {
-	UserInfo userAuth.UserInfo  `json:"userInfo"`
-	RoleInfo []DatabaseRoleInfo `json:"roleInfo"`
+	UserInfo       userAuth.UserInfo  `json:"userInfo"`
+	CollaboratorID string             `json:"collaboratorID"`
+	RoleInfo       []DatabaseRoleInfo `json:"roleInfo"`
 }
 
-func GetUserRoleInfo(databaseID string, userID string) (*UserRoleInfo, error) {
+func GetCollaboratorRoleInfo(databaseID string, collaboratorID string) (*UserRoleInfo, error) {
+
+	collabInfo, collabErr := GetCollaboratorByID(collaboratorID)
+	if collabErr != nil {
+		return nil, fmt.Errorf("GetCollaboratorRoleInfo: Failure querying database: %v", collabErr)
+	}
+	userInfo, err := userAuth.GetUserInfoByID(collabInfo.UserID)
+	if err != nil {
+		return nil, fmt.Errorf("GetCollaboratorRoleInfo: Failure getting user info: userID=%v, error = %v", collabInfo.UserID, err)
+	}
+	userRoleInfo := UserRoleInfo{UserInfo: *userInfo,
+		CollaboratorID: collabInfo.CollaboratorID,
+		RoleInfo:       []DatabaseRoleInfo{}}
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT user_roles.user_id, database_roles.role_id,database_roles.name
-				FROM database_roles,user_roles
+		`SELECT collaborators.user_id, database_roles.role_id,database_roles.name
+				FROM collaborators,database_roles,collaborator_roles
 				WHERE database_roles.database_id=$1
-				   AND database_roles.role_id=user_roles.role_id
-				   AND user_roles.user_id=$2
-				   ORDER BY user_roles.user_id`, databaseID, userID)
+				   AND database_roles.role_id=collaborator_roles.role_id
+				   AND collaborator_roles.collaborator_id=$2
+				   AND collaborators.collaborator_id=collaborator_roles.collaborator_id`, databaseID, collaboratorID)
 	if queryErr != nil {
-		return nil, fmt.Errorf("GetUserRoleInfo: Failure querying database: %v", queryErr)
+		return nil, fmt.Errorf("GetCollaboratorRoleInfo: Failure querying database: %v", queryErr)
 	}
-
-	userInfo, err := userAuth.GetUserInfoByID(userID)
-	if err != nil {
-		return nil, fmt.Errorf("GetUserRoleInfo: Failure getting user info: userID=%v, error = %v", userID, err)
-	}
-
-	userRoleInfo := UserRoleInfo{UserInfo: *userInfo, RoleInfo: []DatabaseRoleInfo{}}
 
 	for rows.Next() {
 
@@ -415,7 +516,7 @@ func GetUserRoleInfo(databaseID string, userID string) (*UserRoleInfo, error) {
 		var currRoleInfo DatabaseRoleInfo
 
 		if scanErr := rows.Scan(&currUserID, &currRoleInfo.RoleID, &currRoleInfo.RoleName); scanErr != nil {
-			return nil, fmt.Errorf("GetAllUsersRoleInfo: Failure querying database: %v", scanErr)
+			return nil, fmt.Errorf("GetCollaboratorRoleInfo: Failure querying database: %v", scanErr)
 		}
 		currRoleInfo.ParentDatabaseID = databaseID
 		userRoleInfo.RoleInfo = append(userRoleInfo.RoleInfo, currRoleInfo)
@@ -425,30 +526,31 @@ func GetUserRoleInfo(databaseID string, userID string) (*UserRoleInfo, error) {
 
 }
 
-type GetUserRoleInfoParams struct {
-	UserID     string `json:"userID"`
-	DatabaseID string `json:"databaseID"`
+type GetCollaboratorRoleInfoParams struct {
+	CollaboratorID string `json:"collaboratorID"`
+	DatabaseID     string `json:"databaseID"`
 }
 
-func GetUserRoleInfoAPI(params GetUserRoleInfoParams) (*UserRoleInfo, error) {
-	return GetUserRoleInfo(params.DatabaseID, params.UserID)
+func GetCollaboratorRoleInfoAPI(params GetCollaboratorRoleInfoParams) (*UserRoleInfo, error) {
+	return GetCollaboratorRoleInfo(params.DatabaseID, params.CollaboratorID)
 }
 
-type SetUserRoleInfoParams struct {
-	UserID       string `json:"userID"`
-	DatabaseID   string `json:"databaseID"`
-	RoleID       string `json:"roleID"`
-	MemberOfRole bool   `json:"memberOfRole"`
+type SetCollaboratorRoleInfoParams struct {
+	CollaboratorID string `json:"collaboratorID"`
+	UserID         string `json:"userID"`
+	DatabaseID     string `json:"databaseID"`
+	RoleID         string `json:"roleID"`
+	MemberOfRole   bool   `json:"memberOfRole"`
 }
 
-func SetUserRoleInfo(params SetUserRoleInfoParams) error {
-	if _, deleteErr := databaseWrapper.DBHandle().Exec(`DELETE FROM user_roles 
-				WHERE role_id=$1 AND user_id = $2`, params.RoleID, params.UserID); deleteErr != nil {
+func SetCollaboratorRoleInfo(params SetCollaboratorRoleInfoParams) error {
+	if _, deleteErr := databaseWrapper.DBHandle().Exec(`DELETE FROM collaborator_roles 
+				WHERE role_id=$1 AND collaborator_id = $2`, params.RoleID, params.CollaboratorID); deleteErr != nil {
 		return fmt.Errorf("SetUserRoleInfo: Can't update role properties %+v: error = %v",
 			params, deleteErr)
 	}
 	if params.MemberOfRole {
-		return AddUserRole(params.RoleID, params.UserID)
+		return AddCollaboratorRole(params.RoleID, params.CollaboratorID)
 	}
 	return nil
 
@@ -457,17 +559,33 @@ func SetUserRoleInfo(params SetUserRoleInfoParams) error {
 // Aggregate the role information by user.
 func GetAllUsersRoleInfo(databaseID string) ([]UserRoleInfo, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT user_roles.user_id, database_roles.role_id,database_roles.name
-				FROM database_roles,user_roles
-				WHERE database_roles.database_id=$1
-				   AND database_roles.role_id=user_roles.role_id
-				   ORDER BY user_roles.user_id`, databaseID)
-	if queryErr != nil {
-		return nil, fmt.Errorf("GetAllUsersRoleInfo: Failure querying database: %v", queryErr)
+	collabs, collabErr := getAllCollaborators(databaseID)
+	if collabErr != nil {
+		return nil, fmt.Errorf("GetAllUsersRoleInfo: Failure querying database: %v", collabErr)
 	}
 
 	roleInfoByUserID := map[string]*UserRoleInfo{}
+	for _, currCollab := range collabs {
+		userInfo, err := userAuth.GetUserInfoByID(currCollab.UserID)
+		if err != nil {
+			return nil, fmt.Errorf("GetAllUsersRoleInfo: Failure getting user info: userID=%v, error = %v", currCollab.UserID, err)
+		}
+
+		userRoleInfo := &UserRoleInfo{UserInfo: *userInfo,
+			CollaboratorID: currCollab.CollaboratorID,
+			RoleInfo:       []DatabaseRoleInfo{}}
+		roleInfoByUserID[currCollab.UserID] = userRoleInfo
+	}
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT collaborators.user_id, database_roles.role_id,database_roles.name
+				FROM collaborators,database_roles,collaborator_roles
+				WHERE collaborators.database_id=$1
+				   AND database_roles.role_id=collaborator_roles.role_id 
+				   AND collaborator_roles.collaborator_id = collaborators.collaborator_id`, databaseID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetAllUsersRoleInfo: Failure querying database: %v", queryErr)
+	}
 
 	for rows.Next() {
 
@@ -481,17 +599,9 @@ func GetAllUsersRoleInfo(databaseID string) ([]UserRoleInfo, error) {
 		var userRoleInfo *UserRoleInfo
 		userRoleInfo, foundInfo := roleInfoByUserID[currUserID]
 		if !foundInfo {
-			userInfo, err := userAuth.GetUserInfoByID(currUserID)
-			if err != nil {
-				return nil, fmt.Errorf("GetAllUsersRoleInfo: Failure getting user info: userID=%v, error = %v", currUserID, err)
-			}
-
-			userRoleInfo = &UserRoleInfo{UserInfo: *userInfo, RoleInfo: []DatabaseRoleInfo{}}
-			roleInfoByUserID[currUserID] = userRoleInfo
+			return nil, fmt.Errorf("GetAllUsersRoleInfo: Failure getting collaborator info: userID=%v", currUserID)
 		}
-
 		userRoleInfo.RoleInfo = append(userRoleInfo.RoleInfo, currRoleInfo)
-
 	}
 
 	usersRoleInfo := []UserRoleInfo{}

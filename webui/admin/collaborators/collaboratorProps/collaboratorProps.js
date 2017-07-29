@@ -24,6 +24,7 @@ $(document).ready(function() {
 			var roleParams = {
 				userID: collabPropsContext.userID,
 				databaseID: collabPropsContext.databaseID,
+				collaboratorID: collabPropsContext.collaboratorID,
 				roleID: roleInfo.roleID,
 				memberOfRole: $checkboxInput.prop("checked")
 			}			
@@ -60,6 +61,7 @@ $(document).ready(function() {
 		
 		var userRolesParams = {
 			userID: collabPropsContext.userID,
+			collaboratorID: collabPropsContext.collaboratorID,
 			databaseID: collabPropsContext.databaseID
 		}
 		jsonAPIRequest("admin/getSingleUserRoleInfo",userRolesParams,function(userRoles) {
