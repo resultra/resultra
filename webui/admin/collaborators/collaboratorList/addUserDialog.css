@@ -1,12 +1,19 @@
 #adminNewUserRoleList {
-	max-height:110px;
+	max-height:150px;
 	overflow-y:scroll;
 	border: 1px solid gray;
 	margin-bottom:0px;
 }
 
-.addRoleCheckboxListItem {
+#adminNewUserRoleList .list-group-item {
+	padding-bottom: 4px;
+	padding-top:4px;
+	border:0px;
+}
+
+#adminNewUserRoleList .checkbox{
 	padding-top:5px;
 	margin-top:0px;
+	margin-bottom:0px;
 	padding-bottom:5px;
 }

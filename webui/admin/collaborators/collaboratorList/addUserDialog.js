@@ -25,12 +25,15 @@ function openNewUserDialog(databaseID) {
 		var roleCheckbox = createIDWithSelector(elemPrefix + roleInfo.roleID)
 	
 		var roleCheckboxHTML = '' +
-			'<div class="checkbox list-group-item addRoleCheckboxListItem">' +
+			'<div class="list-group-item">' +
+				'<div class="checkbox">' +
 					'<input type="checkbox" id="' + roleCheckbox.id + '"></input>'+
-					'<label><span class="noselect">' + roleInfo.roleName + '</span></label>' +
+					'<label for="'+ roleCheckbox.id +'"><span class="noselect"></span></label>' +
+				'</div>' +
 			'</div>'
 		
 		var $roleCheckbox = $(roleCheckboxHTML)
+		$roleCheckbox.find("span").text(roleInfo.roleName)
 		
 	
 		$('#adminNewUserRoleList').append($roleCheckbox)	
