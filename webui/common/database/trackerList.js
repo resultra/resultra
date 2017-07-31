@@ -12,12 +12,15 @@ function addTrackerListItem(trackerInfo) {
 	$nameLabel.attr('href',openTrackerLink)
 	
 	var $settingsLink = $listItem.find(".adminEditPropsButton")
-	var editPropsLink = '/admin/' + trackerInfo.databaseID
-	$settingsLink.attr('href',editPropsLink)
 	
-	$settingsLink.tooltip()
+	if (trackerInfo.isAdmin) {
+		var editPropsLink = '/admin/' + trackerInfo.databaseID
+		$settingsLink.attr('href',editPropsLink)
+		$settingsLink.tooltip()
+	} else {
+		$settingsLink.hide()
+	}
 	
-
 	$trackerList.append($listItem)
 	
 }
