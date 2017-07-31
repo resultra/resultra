@@ -68,12 +68,12 @@ function initDatabaseTOC(tocConfig) {
 		}
 	})
 	
-	jsonAPIRequest("database/getInfo",getDBInfoParams,function(dbInfo) {
-		console.log("Got database info: " + JSON.stringify(dbInfo))		
+	jsonAPIRequest("itemList/getUserItemListList",getDBInfoParams,function(listsInfo) {
+		console.log("Got database info: " + JSON.stringify(listsInfo))		
 		
 		$('#tocListList').empty()
-		for(var listInfoIndex = 0; listInfoIndex < dbInfo.listsInfo.length; listInfoIndex++) {
-			var listInfo = dbInfo.listsInfo[listInfoIndex]
+		for(var listInfoIndex = 0; listInfoIndex < listsInfo.length; listInfoIndex++) {
+			var listInfo = listsInfo[listInfoIndex]
 			addItemListLinkToTOCList(tocConfig,listInfo)
 		}
 		

@@ -141,3 +141,31 @@ func GetRoleListPrivs(roleID string) ([]RoleListPriv, error) {
 
 	return roleListPrivs, nil
 }
+
+func GetItemListsWithUserPrivs(databaseID string, userID string) (map[string]bool, error) {
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT list_role_privs.list_id, list_role_privs.privs
+				FROM list_role_privs,database_roles,collaborator_roles,collaborators
+				WHERE database_roles.database_id=$1
+					AND list_role_privs.role_id=database_roles.role_id
+					AND database_roles.role_id=collaborator_roles.role_id
+					AND collaborator_roles.collaborator_id=collaborators.collaborator_id
+					AND collaborators.user_id=$2`, databaseID, userID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetItemListsWithUserPrivs: Failure querying database: %v", queryErr)
+	}
+
+	visibleLists := map[string]bool{}
+	for rows.Next() {
+		listID := ""
+		privs := ""
+		if scanErr := rows.Scan(&listID, &privs); scanErr != nil {
+			return nil, fmt.Errorf("GetCustomRoleDashboardInfo: Failure querying database: %v", scanErr)
+		}
+		if privs != ListRolePrivsNone {
+			visibleLists[listID] = true
+		}
+	}
+
+	return visibleLists, nil
+}

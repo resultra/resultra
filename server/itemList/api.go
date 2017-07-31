@@ -14,7 +14,9 @@ func init() {
 
 	itemListRouter.HandleFunc("/api/itemList/new", newListAPI)
 	itemListRouter.HandleFunc("/api/itemList/get", getListAPI)
+
 	itemListRouter.HandleFunc("/api/itemList/list", getItemListListAPI)
+	itemListRouter.HandleFunc("/api/itemList/getUserItemListList", getUserItemListListAPI)
 
 	itemListRouter.HandleFunc("/api/itemList/setName", setItemListName)
 	itemListRouter.HandleFunc("/api/itemList/setDefaultSortRules", setDefaultSortRules)
@@ -86,6 +88,22 @@ func getItemListListAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if listList, err := GetAllSortedItemLists(params.DatabaseID); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, listList)
+	}
+
+}
+
+func getUserItemListListAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetItemListLIstParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if listList, err := GetAllUserSortedItemLists(r, params.DatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, listList)

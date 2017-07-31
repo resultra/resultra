@@ -2,11 +2,14 @@ package itemList
 
 import (
 	"fmt"
+	"net/http"
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/userRole"
 )
 
 type ItemList struct {
@@ -155,6 +158,39 @@ func GetAllSortedItemLists(parentDatabaseID string) ([]ItemList, error) {
 	orderedLists := orderListsByManualListOrder(unorderedLists, db.Properties.ListOrder)
 
 	return orderedLists, nil
+}
+
+func GetAllUserSortedItemLists(req *http.Request, parentDatabaseID string) ([]ItemList, error) {
+
+	allLists, err := GetAllSortedItemLists(parentDatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("GetAllSortedItemLists: can't verify user: %v", err)
+	}
+
+	if userRole.CurrUserIsDatabaseAdmin(req, parentDatabaseID) {
+		return allLists, nil
+	}
+
+	currUserID, userErr := userAuth.GetCurrentUserID(req)
+	if userErr != nil {
+		return nil, fmt.Errorf("getUserDashboards: can't verify user: %v", userErr)
+	}
+
+	userListPrivs, userListErr := userRole.GetItemListsWithUserPrivs(parentDatabaseID, currUserID)
+	if userListErr != nil {
+		return nil, fmt.Errorf("GetAllUserSortedItemLists: %v", userListErr)
+	}
+
+	userLists := []ItemList{}
+	for _, currList := range allLists {
+		_, foundPriv := userListPrivs[currList.ListID]
+		if foundPriv {
+			userLists = append(userLists, currList)
+		}
+	}
+
+	return userLists, nil
+
 }
 
 func CloneItemLists(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID string) error {
