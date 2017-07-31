@@ -17,6 +17,7 @@ func init() {
 	dashboardRouter.HandleFunc("/api/dashboard/getProperties", getDashboardPropsAPI)
 	dashboardRouter.HandleFunc("/api/dashboard/setName", setNameAPI)
 	dashboardRouter.HandleFunc("/api/dashboard/setLayout", setLayoutAPI)
+	dashboardRouter.HandleFunc("/api/dashboard/getUserDashboardList", getUserDashboardListAPI)
 
 	dashboardRouter.HandleFunc("/api/dashboard/validateNewDashboardName", validateNewDashboardNameAPI)
 	dashboardRouter.HandleFunc("/api/dashboard/validateDashboardName", validateDashboardNameAPI)
@@ -130,4 +131,17 @@ func setLayoutAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processDashboardPropUpdate(w, r, params)
+}
+
+func getUserDashboardListAPI(w http.ResponseWriter, r *http.Request) {
+	var params GetUserDashboardListParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	if dashboards, err := getUserDashboards(r, params.DatabaseID); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, dashboards)
+	}
 }

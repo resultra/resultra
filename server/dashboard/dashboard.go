@@ -2,12 +2,15 @@ package dashboard
 
 import (
 	"fmt"
+	"net/http"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/userRole"
 )
 
 type Dashboard struct {
@@ -126,6 +129,42 @@ func GetAllDashboards(parentDatabaseID string) ([]Dashboard, error) {
 
 	return dashboards, nil
 
+}
+
+type GetUserDashboardListParams struct {
+	DatabaseID string `json:"databaseID"`
+}
+
+func getUserDashboards(req *http.Request, databaseID string) ([]Dashboard, error) {
+
+	allDashboards, err := GetAllDashboards(databaseID)
+	if err != nil {
+		return nil, fmt.Errorf("getUserDashboards: %v", err)
+	}
+
+	if userRole.CurrUserIsDatabaseAdmin(req, databaseID) {
+		return allDashboards, nil
+	}
+
+	currUserID, userErr := userAuth.GetCurrentUserID(req)
+	if userErr != nil {
+		return nil, fmt.Errorf("getUserDashboards: can't verify user: %v", userErr)
+	}
+
+	viewableDashboards, privsErr := userRole.GetDashboardsWithUserViewPrivs(databaseID, currUserID)
+	if privsErr != nil {
+		return nil, fmt.Errorf("getUserDashboards: can't verify user: %v", privsErr)
+	}
+
+	userDashboards := []Dashboard{}
+	for _, currDashboard := range allDashboards {
+		_, foundPriv := viewableDashboards[currDashboard.DashboardID]
+		if foundPriv {
+			userDashboards = append(userDashboards, currDashboard)
+		}
+	}
+
+	return userDashboards, nil
 }
 
 func orderDashboardsByManualOrder(unorderedDashboards []Dashboard, manualOrder []string) []Dashboard {

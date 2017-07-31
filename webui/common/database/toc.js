@@ -59,6 +59,15 @@ function initDatabaseTOC(tocConfig) {
 	
 	
 	var getDBInfoParams = { databaseID: tocConfig.databaseID }
+	jsonAPIRequest("dashboard/getUserDashboardList",getDBInfoParams,function(dashboardsInfo) {
+		console.log("Got dashboard info: " + JSON.stringify(dashboardsInfo))		
+		$('#tocDashboardList').empty()
+		for (var dashboardInfoIndex = 0; dashboardInfoIndex < dashboardsInfo.length; dashboardInfoIndex++) {
+			var dashboardInfo = dashboardsInfo[dashboardInfoIndex]
+			addDashboardLinkToTOCList(dashboardInfo)
+		}
+	})
+	
 	jsonAPIRequest("database/getInfo",getDBInfoParams,function(dbInfo) {
 		console.log("Got database info: " + JSON.stringify(dbInfo))		
 		
@@ -67,13 +76,6 @@ function initDatabaseTOC(tocConfig) {
 			var listInfo = dbInfo.listsInfo[listInfoIndex]
 			addItemListLinkToTOCList(tocConfig,listInfo)
 		}
-
-		$('#tocDashboardList').empty()
-		for (var dashboardInfoIndex = 0; dashboardInfoIndex < dbInfo.dashboardsInfo.length; dashboardInfoIndex++) {
-			var dashboardInfo = dbInfo.dashboardsInfo[dashboardInfoIndex]
-			addDashboardLinkToTOCList(dashboardInfo)
-		}
-
 		
 	}) // getRecord
 	

@@ -25,7 +25,7 @@ func AddDatabaseAdmin(databaseID string, userID string) error {
 
 func AddCollaborator(databaseID string, userID string) (*CollaboratorInfo, error) {
 
-	if existingCollab, err := getCollaborator(databaseID, userID); err == nil {
+	if existingCollab, err := GetCollaborator(databaseID, userID); err == nil {
 		return existingCollab, nil
 	}
 
@@ -54,7 +54,7 @@ type CollaboratorInfo struct {
 	DatabaseID     string
 }
 
-func getCollaborator(databaseID string, userID string) (*CollaboratorInfo, error) {
+func GetCollaborator(databaseID string, userID string) (*CollaboratorInfo, error) {
 
 	collabID := ""
 	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT collaborator_id FROM collaborators
@@ -338,6 +338,36 @@ type DashboardPrivInfo struct {
 	DashboardID   string `json:"dashboardID"`
 	DashboardName string `json:"dashboardName"`
 	Privs         string `json:"privs"`
+}
+
+// Query the database to build a lookup table of dashboardIDs for which the user has
+// view permissions on the dashboard.
+func GetDashboardsWithUserViewPrivs(databaseID string, userID string) (map[string]bool, error) {
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT dashboard_role_privs.dashboard_id, dashboard_role_privs.privs
+				FROM dashboard_role_privs,database_roles,collaborator_roles,collaborators
+				WHERE database_roles.database_id=$1
+					AND dashboard_role_privs.role_id=database_roles.role_id
+					AND database_roles.role_id=collaborator_roles.role_id
+					AND collaborator_roles.collaborator_id=collaborators.collaborator_id
+					AND collaborators.user_id=$2`, databaseID, userID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetCustomRoleInfo: Failure querying database: %v", queryErr)
+	}
+
+	visibleDashboards := map[string]bool{}
+	for rows.Next() {
+		dashboardID := ""
+		privs := ""
+		if scanErr := rows.Scan(&dashboardID, &privs); scanErr != nil {
+			return nil, fmt.Errorf("GetCustomRoleDashboardInfo: Failure querying database: %v", scanErr)
+		}
+		if privs == DashboardRolePrivsView {
+			visibleDashboards[dashboardID] = true
+		}
+	}
+
+	return visibleDashboards, nil
 }
 
 type CustomRoleDashboardInfo struct {

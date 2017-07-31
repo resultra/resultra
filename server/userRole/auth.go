@@ -29,6 +29,15 @@ func VerifyCurrUserIsDatabaseAdmin(req *http.Request, databaseID string) error {
 	return nil
 }
 
+func CurrUserIsDatabaseAdmin(req *http.Request, databaseID string) bool {
+	verifyCurrUserAdminErr := VerifyCurrUserIsDatabaseAdmin(req, databaseID)
+	if verifyCurrUserAdminErr != nil {
+		return false
+	} else {
+		return true
+	}
+}
+
 func getFormDatabaseID(formID string) (string, error) {
 
 	databaseID := ""
