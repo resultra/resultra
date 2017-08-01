@@ -2,7 +2,9 @@ package userRole
 
 import (
 	"fmt"
+	"net/http"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/userAuth"
 )
 
 const ListRolePrivsNone string = "none"
@@ -168,4 +170,51 @@ func GetItemListsWithUserPrivs(databaseID string, userID string) (map[string]boo
 	}
 
 	return visibleLists, nil
+}
+
+func GetCurrentUserItemListPrivs(req *http.Request,
+	databaseID string, listID string) (string, error) {
+
+	privs := ListRolePrivsNone // default
+
+	if CurrUserIsDatabaseAdmin(req, databaseID) {
+		privs = ListRolePrivsEdit
+		return privs, nil
+	}
+
+	currUserID, userErr := userAuth.GetCurrentUserID(req)
+	if userErr != nil {
+		return "", fmt.Errorf("verifyCurrUserIsDatabaseAdmin: can't verify user: %v", userErr)
+	}
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT list_role_privs.privs
+				FROM list_role_privs,database_roles,collaborator_roles,collaborators
+				WHERE database_roles.database_id=$1
+					AND list_role_privs.list_id=$2
+					AND list_role_privs.role_id=database_roles.role_id
+					AND database_roles.role_id=collaborator_roles.role_id
+					AND collaborator_roles.collaborator_id=collaborators.collaborator_id
+					AND collaborators.user_id=$3`, databaseID, listID, currUserID)
+	if queryErr != nil {
+		return "", fmt.Errorf("GetCurrentUserItemListPrivs: Failure querying database: %v", queryErr)
+	}
+
+	for rows.Next() {
+		rolePrivs := ""
+		if scanErr := rows.Scan(&rolePrivs); scanErr != nil {
+			return "", fmt.Errorf("GetCurrentUserItemListPrivs: Failure querying database: %v", scanErr)
+		}
+		switch rolePrivs {
+		case ListRolePrivsView:
+			if privs == ListRolePrivsNone {
+				privs = rolePrivs
+			}
+		case ListRolePrivsEdit:
+			privs = ListRolePrivsEdit
+		}
+	}
+
+	return privs, nil
+
 }

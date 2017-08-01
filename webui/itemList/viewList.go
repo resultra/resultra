@@ -1,6 +1,7 @@
 package itemList
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"html/template"
 	"log"
@@ -10,6 +11,7 @@ import (
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/itemList"
+	"resultra/datasheet/server/userRole"
 
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/form/components"
@@ -41,6 +43,7 @@ type ViewListTemplateParams struct {
 	DatabaseID              string
 	DatabaseName            string
 	ListName                string
+	ListPrivileges          string
 	DisplayPanelParams      propertiesSidebar.PanelTemplateParams
 	FilteringPanelParams    propertiesSidebar.PanelTemplateParams
 	SortPanelParams         propertiesSidebar.PanelTemplateParams
@@ -68,6 +71,16 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		listPrivs, privsErr := userRole.GetCurrentUserItemListPrivs(r, listInfo.ParentDatabaseID, listID)
+		if privsErr != nil {
+			api.WriteErrorResponse(w, privsErr)
+			return
+		}
+		if listPrivs == userRole.ListRolePrivsNone {
+			api.WriteErrorResponse(w, fmt.Errorf("Invalid permissions loading page. No permissions to view or edit this list."))
+			return
+		}
+
 		dbInfo, getErr := databaseController.GetDatabaseInfo(listInfo.ParentDatabaseID)
 		if getErr != nil {
 			api.WriteErrorResponse(w, getErr)
@@ -77,10 +90,11 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 		elemPrefix := "form_"
 
 		templParams := ViewListTemplateParams{Title: "View List",
-			ListID:       listID,
-			DatabaseID:   dbInfo.DatabaseID,
-			DatabaseName: dbInfo.DatabaseName,
-			ListName:     listInfo.Name,
+			ListID:         listID,
+			DatabaseID:     dbInfo.DatabaseID,
+			DatabaseName:   dbInfo.DatabaseName,
+			ListName:       listInfo.Name,
+			ListPrivileges: listPrivs,
 			DisplayPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "View",
 				PanelID: "viewListDisplay"},
 			FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering",

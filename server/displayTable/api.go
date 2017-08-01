@@ -71,11 +71,13 @@ func listTableAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	/* TODO - Restore authentication for or refactor to get a list to only include table views shown for a given item list
 	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
 		r, params.ParentDatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
+	*/
 
 	if tableRefs, err := getAllTables(params.ParentDatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
@@ -180,6 +182,7 @@ func getTableDisplayInfoAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	/* TODO - Restore authentication for or refactor to get a list to only include table views shown for a given item list
 	tableRef, err := GetTable(params.TableID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
@@ -189,7 +192,7 @@ func getTableDisplayInfoAPI(w http.ResponseWriter, r *http.Request) {
 		r, tableRef.ParentDatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
-	}
+	} */
 
 	displayInfo, err := getTableDisplayInfo(params.TableID)
 	if err != nil {
