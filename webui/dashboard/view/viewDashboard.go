@@ -1,12 +1,14 @@
 package view
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"html/template"
 	"log"
 	"net/http"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/common"
 	dashboardCommon "resultra/datasheet/webui/dashboard/common"
 	"resultra/datasheet/webui/dashboard/components"
@@ -50,6 +52,16 @@ func ViewDashboard(w http.ResponseWriter, r *http.Request) {
 	dashboardDbInfo, getErr := databaseController.GetDashboardDatabaseInfo(dashboardID)
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
+		return
+	}
+
+	hasViewPrivs, privsErr := userRole.CurrentUserHasDashboardViewPrivs(r, dashboardDbInfo.DatabaseID, dashboardID)
+	if privsErr != nil {
+		api.WriteErrorResponse(w, privsErr)
+		return
+	}
+	if !hasViewPrivs {
+		api.WriteErrorResponse(w, fmt.Errorf("ERROR: No permissions to view this dashboard"))
 		return
 	}
 

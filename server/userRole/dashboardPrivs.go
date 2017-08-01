@@ -2,7 +2,9 @@ package userRole
 
 import (
 	"fmt"
+	"net/http"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/userAuth"
 )
 
 const DashboardRolePrivsNone string = "none"
@@ -146,4 +148,46 @@ func GetDashboardsWithUserViewPrivs(databaseID string, userID string) (map[strin
 	}
 
 	return visibleDashboards, nil
+}
+
+func CurrentUserHasDashboardViewPrivs(req *http.Request,
+	databaseID string, dashboardID string) (bool, error) {
+
+	privs := false
+
+	if CurrUserIsDatabaseAdmin(req, databaseID) {
+		return true, nil
+	}
+
+	currUserID, userErr := userAuth.GetCurrentUserID(req)
+	if userErr != nil {
+		return false, fmt.Errorf("verifyCurrUserIsDatabaseAdmin: can't verify user: %v", userErr)
+	}
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT dashboard_role_privs.privs
+					FROM dashboard_role_privs,database_roles,collaborator_roles,collaborators
+					WHERE database_roles.database_id=$1
+					AND dashboard_role_privs.dashboard_id=$2
+						AND dashboard_role_privs.role_id=database_roles.role_id
+						AND database_roles.role_id=collaborator_roles.role_id
+						AND collaborator_roles.collaborator_id=collaborators.collaborator_id
+						AND collaborators.user_id=$3`, databaseID, dashboardID, currUserID)
+	if queryErr != nil {
+		return false, fmt.Errorf("GetCustomRoleInfo: Failure querying database: %v", queryErr)
+	}
+
+	for rows.Next() {
+		rolePrivs := ""
+		if scanErr := rows.Scan(&rolePrivs); scanErr != nil {
+			return false, fmt.Errorf("GetCustomRoleDashboardInfo: Failure querying database: %v", scanErr)
+		}
+		// If the user's privileges under any role are to view the dashboard, then set the privileges to view
+		if rolePrivs == DashboardRolePrivsView {
+			privs = true
+		}
+	}
+
+	return privs, nil
+
 }
