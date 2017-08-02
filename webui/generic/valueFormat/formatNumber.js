@@ -36,7 +36,8 @@ function formatNumberValue(format, rawVal) {
 			} else {
 				return accounting.toFixed(numberVal,2)	
 			}
-			
+		case "integer":
+			return Math.round(numberVal)	
 		case "currency":
 			return accounting.formatMoney(numberVal,{format:currencyFormat})
 		case "currency0prec":
