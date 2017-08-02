@@ -297,9 +297,9 @@ func recordGroupLabelInfo(valGrouping values.ValGrouping, fieldGroup field.Field
 	switch fieldGroup.Type {
 	case field.FieldTypeText:
 		if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
-			textVal, valErr := recValResults.FieldValues.GetTextFieldValue(fieldGroup.FieldID)
-			if valErr != nil {
-				return nil, fmt.Errorf("recordGroupLabel: Unabled to retrieve value for grouping label: error = %v", valErr)
+			textVal, foundVal := recValResults.FieldValues.GetTextFieldValue(fieldGroup.FieldID)
+			if !foundVal {
+				return nil, fmt.Errorf("recordGroupLabel: Unabled to retrieve value for grouping label")
 			} else {
 				return textGroupLabelInfo(textVal), nil
 			}

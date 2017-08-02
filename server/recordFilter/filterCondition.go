@@ -48,3 +48,14 @@ func (condMap FilterConditionMap) getNumberConditionParam(conditionID string) *f
 	return cond.NumberParam
 
 }
+
+func (condMap FilterConditionMap) getTextConditionParam(conditionID string) *string {
+
+	cond, condFound := condMap[conditionID]
+	if !condFound {
+		return nil
+	}
+
+	return cond.TextParam
+
+}

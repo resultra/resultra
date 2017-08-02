@@ -1,7 +1,6 @@
 package record
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -25,12 +24,17 @@ func (recFieldVals RecFieldValues) ValueIsSet(fieldID string) bool {
 	}
 }
 
-func (recFieldVals RecFieldValues) GetTextFieldValue(fieldID string) (string, error) {
-	rawVal := recFieldVals[fieldID]
+func (recFieldVals RecFieldValues) GetTextFieldValue(fieldID string) (string, bool) {
+	rawVal, foundVal := recFieldVals[fieldID]
+
+	if !foundVal {
+		return "", false
+	}
+
 	if theStr, validType := rawVal.(string); validType {
-		return theStr, nil
+		return theStr, true
 	} else {
-		return "", fmt.Errorf("Type mismatch retrieving text field value from record: field ID = %v, raw value = %v", fieldID, rawVal)
+		return "", false
 	}
 }
 

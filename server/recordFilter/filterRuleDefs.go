@@ -5,6 +5,7 @@ import (
 	"log"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/record"
+	"strings"
 )
 
 type FilterFuncParams struct {
@@ -25,11 +26,13 @@ const filterRuleTrue string = "true"
 const filterRuleNotTrue string = "notTrue"
 const filterRuleFalse string = "false"
 const filterRuleNotFalse string = "notFalse"
+const filterRuleIDContains string = "contains"
 
 const conditionDateRangeMinDate string = "minDate"
 const conditionDateRangeMaxDate string = "maxDate"
 const conditionGreater string = "greater"
 const conditionLess string = "less"
+const conditionTextContains string = "contains"
 
 func filterBlankField(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
 
@@ -184,11 +187,33 @@ func filterNotFalse(filterParams FilterFuncParams, recFieldVals record.RecFieldV
 	}
 }
 
+func filterTextContains(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+
+	textVal, valFound := recFieldVals.GetTextFieldValue(filterParams.FieldID)
+	if !valFound {
+		return false, nil
+	}
+
+	matchParam := filterParams.ConditionMap.getTextConditionParam(conditionTextContains)
+
+	if matchParam == nil {
+		return false, nil
+	} else {
+		if strings.Contains(textVal, *matchParam) {
+			return true, nil
+		} else {
+			return false, nil
+		}
+	}
+
+}
+
 type RuleIDFilterFuncMap map[string]FilterRuleFunc
 
 var textFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDNotBlank: filterNonBlankField,
-	filterRuleIDBlank:    filterBlankField}
+	filterRuleIDBlank:    filterBlankField,
+	filterRuleIDContains: filterTextContains}
 
 var numberFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDAny:      filterAny,
