@@ -35,7 +35,9 @@
 	</div>
 	
 	<div id="databaseTOCFooter">
-		<a href="/admin/{{.DatabaseID}}">Tracker Settings</a>
+		{{if .CurrUserIsAdmin}}
+			<a href="/admin/{{.DatabaseID}}">Tracker Settings</a>
+		{{ end}}
 	</div>
 	
 </div>

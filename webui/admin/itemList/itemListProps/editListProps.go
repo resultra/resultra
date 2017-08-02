@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/databaseController"
 	itemListDataModel "resultra/datasheet/server/itemList"
+	adminCommon "resultra/datasheet/webui/admin/common"
 
 	"resultra/datasheet/webui/admin/itemList/itemListProps/userRole"
 	"resultra/datasheet/webui/common"
@@ -26,6 +27,7 @@ func init() {
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
+		adminCommon.TemplateFileList,
 		thirdParty.TemplateFileList,
 		common.TemplateFileList,
 		userRole.TemplateFileList}

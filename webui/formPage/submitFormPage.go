@@ -11,6 +11,7 @@ import (
 	"resultra/datasheet/server/formLink"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/userRole"
 
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
@@ -61,13 +62,16 @@ func submitFormPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		isAdmin := userRole.CurrUserIsDatabaseAdmin(r, formDBInfo.DatabaseID)
+
 		templParams := SubmitFormPageTemplateParams{Title: "Submit Form",
-			FormID:       formLink.FormID,
-			FormName:     formDBInfo.FormName,
-			LinkName:     formLink.Name,
-			DatabaseID:   formDBInfo.DatabaseID,
-			FormLinkID:   formLink.LinkID,
-			DatabaseName: formDBInfo.DatabaseName}
+			FormID:          formLink.FormID,
+			FormName:        formDBInfo.FormName,
+			LinkName:        formLink.Name,
+			DatabaseID:      formDBInfo.DatabaseID,
+			CurrUserIsAdmin: isAdmin,
+			FormLinkID:      formLink.LinkID,
+			DatabaseName:    formDBInfo.DatabaseName}
 
 		if err := submitFormTemplates.ExecuteTemplate(w, "submitFormPage", templParams); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)

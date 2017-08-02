@@ -42,6 +42,7 @@ type ViewListTemplateParams struct {
 	ListID                  string
 	DatabaseID              string
 	DatabaseName            string
+	CurrUserIsAdmin         bool
 	ListName                string
 	ListPrivileges          string
 	DisplayPanelParams      propertiesSidebar.PanelTemplateParams
@@ -89,12 +90,15 @@ func ViewList(w http.ResponseWriter, r *http.Request) {
 
 		elemPrefix := "form_"
 
+		isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
+
 		templParams := ViewListTemplateParams{Title: "View List",
-			ListID:         listID,
-			DatabaseID:     dbInfo.DatabaseID,
-			DatabaseName:   dbInfo.DatabaseName,
-			ListName:       listInfo.Name,
-			ListPrivileges: listPrivs,
+			ListID:          listID,
+			DatabaseID:      dbInfo.DatabaseID,
+			DatabaseName:    dbInfo.DatabaseName,
+			CurrUserIsAdmin: isAdmin,
+			ListName:        listInfo.Name,
+			ListPrivileges:  listPrivs,
 			DisplayPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "View",
 				PanelID: "viewListDisplay"},
 			FilteringPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering",

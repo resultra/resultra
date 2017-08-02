@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"resultra/datasheet/server/databaseController"
+	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
@@ -25,9 +26,10 @@ func init() {
 }
 
 type TemplParams struct {
-	DatabaseID   string
-	DatabaseName string
-	Title        string
+	DatabaseID      string
+	DatabaseName    string
+	CurrUserIsAdmin bool
+	Title           string
 }
 
 func trackerMainPage(w http.ResponseWriter, r *http.Request) {
@@ -41,10 +43,13 @@ func trackerMainPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
 	}
 
+	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
+
 	templParams := TemplParams{
-		Title:        "Tracker Main Page",
-		DatabaseName: dbInfo.DatabaseName,
-		DatabaseID:   databaseID}
+		Title:           "Tracker Main Page",
+		CurrUserIsAdmin: isAdmin,
+		DatabaseName:    dbInfo.DatabaseName,
+		DatabaseID:      databaseID}
 
 	err := pageTemplates.ExecuteTemplate(w, "trackerMainPage", templParams)
 	if err != nil {

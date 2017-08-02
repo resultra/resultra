@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/formLink"
+	adminCommon "resultra/datasheet/webui/admin/common"
 
 	"resultra/datasheet/server/common/runtimeConfig"
 
@@ -24,6 +25,7 @@ func init() {
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
+		adminCommon.TemplateFileList,
 		generic.TemplateFileList,
 		thirdParty.TemplateFileList,
 		common.TemplateFileList}

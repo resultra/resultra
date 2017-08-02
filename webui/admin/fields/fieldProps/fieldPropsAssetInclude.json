@@ -1,6 +1,7 @@
 {
 	"subDirs":["../../../generic",
-		"../../../common"],
+		"../../../common",
+		"../../common"],
 	"cssFiles": [],
 	"jsFiles": ["fieldProps.js"],
 	"htmlFiles":["fieldProps.html"],

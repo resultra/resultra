@@ -63,11 +63,7 @@ $(document).ready(function() {
 			}
 		})
 		
-	var tocConfig = {
-		databaseID: rolePropsContext.databaseID,
-		newItemFormButtonFunc: openSubmitFormDialog
-	}
-	initDatabaseTOC(tocConfig)
+	initAdminSettingsTOC(rolePropsContext.databaseID)
 		
 	initUserDropdownMenu()
 		

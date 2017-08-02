@@ -62,11 +62,7 @@ $(document).ready(function() {
 			}
 		})
 		
-	var tocConfig = {
-		databaseID: valueListPropsContext.databaseID,
-		newItemFormButtonFunc: openSubmitFormDialog
-	}
-	initDatabaseTOC(tocConfig)
+	initAdminSettingsTOC(valueListPropsContext.databaseID)
 		
 	initUserDropdownMenu()
 		

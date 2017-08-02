@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/userRole"
 
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
@@ -20,6 +21,7 @@ type ViewFormPageTemplateParams struct {
 	FormName        string
 	DatabaseID      string
 	DatabaseName    string
+	CurrUserIsAdmin bool
 	RecordID        string
 	SrcFormButtonID string
 	SrcButtonColID  string
@@ -67,11 +69,14 @@ func viewFormPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		isAdmin := userRole.CurrUserIsDatabaseAdmin(r, formDBInfo.DatabaseID)
+
 		templParams := ViewFormPageTemplateParams{Title: "View Form",
 			FormID:          formDBInfo.FormID,
 			FormName:        formDBInfo.FormName,
 			DatabaseID:      formDBInfo.DatabaseID,
 			DatabaseName:    formDBInfo.DatabaseName,
+			CurrUserIsAdmin: isAdmin,
 			RecordID:        recordID,
 			SrcFormButtonID: srcFrmButtonID,
 			SrcButtonColID:  srcColID}

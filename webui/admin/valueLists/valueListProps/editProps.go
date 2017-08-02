@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/valueList"
 
 	"resultra/datasheet/server/common/runtimeConfig"
+	adminCommon "resultra/datasheet/webui/admin/common"
 
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
@@ -22,6 +23,7 @@ func init() {
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
+		adminCommon.TemplateFileList,
 		generic.TemplateFileList,
 		common.TemplateFileList}
 

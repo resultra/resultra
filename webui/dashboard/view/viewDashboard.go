@@ -39,6 +39,7 @@ type ViewDashboardTemplateParams struct {
 	DatabaseName    string
 	DashboardID     string
 	DashboardName   string
+	CurrUserIsAdmin bool
 	Title           string
 	ComponentParams components.ComponentViewTemplateParams
 }
@@ -65,11 +66,14 @@ func ViewDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dashboardDbInfo.DatabaseID)
+
 	templParams := ViewDashboardTemplateParams{
 		DatabaseID:      dashboardDbInfo.DatabaseID,
 		DatabaseName:    dashboardDbInfo.DatabaseName,
 		DashboardID:     dashboardDbInfo.DashboardID,
 		DashboardName:   dashboardDbInfo.DashboardName,
+		CurrUserIsAdmin: isAdmin,
 		Title:           "View Dashboard",
 		ComponentParams: components.ViewTemplateParams}
 

@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/server/formLink"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/userRole"
 
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
@@ -54,13 +55,16 @@ func newItemFormPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		isAdmin := userRole.CurrUserIsDatabaseAdmin(r, formDBInfo.DatabaseID)
+
 		templParams := SubmitFormPageTemplateParams{Title: "New Item - " + formDBInfo.FormName,
-			FormID:       formLink.FormID,
-			FormName:     formDBInfo.FormName,
-			DatabaseID:   formDBInfo.DatabaseID,
-			FormLinkID:   formLink.LinkID,
-			LinkName:     formLink.Name,
-			DatabaseName: formDBInfo.DatabaseName}
+			FormID:          formLink.FormID,
+			FormName:        formDBInfo.FormName,
+			DatabaseID:      formDBInfo.DatabaseID,
+			CurrUserIsAdmin: isAdmin,
+			FormLinkID:      formLink.LinkID,
+			LinkName:        formLink.Name,
+			DatabaseName:    formDBInfo.DatabaseName}
 
 		if err := newItemFormTemplates.ExecuteTemplate(w, "newItemFormPage", templParams); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
