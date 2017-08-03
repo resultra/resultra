@@ -2,10 +2,13 @@ package formLink
 
 import (
 	"fmt"
+	"net/http"
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/userRole"
 )
 
 type NewFormLinkParams struct {
@@ -175,6 +178,39 @@ func getAllFormLinks(parentDatabaseID string) ([]FormLink, error) {
 	}
 
 	return links, nil
+
+}
+
+func getUserSortedFormLinks(req *http.Request, databaseID string) ([]FormLink, error) {
+
+	allLinks, err := getAllFormLinks(databaseID)
+	if err != nil {
+		return nil, fmt.Errorf("getUserSortedFormLinks: %v", err)
+	}
+
+	if userRole.CurrUserIsDatabaseAdmin(req, databaseID) {
+		return allLinks, nil
+	}
+
+	currUserID, userErr := userAuth.GetCurrentUserID(req)
+	if userErr != nil {
+		return nil, fmt.Errorf("getUserSortedFormLinks: %v", userErr)
+	}
+
+	visibleLinks, privsErr := userRole.GetNewItemLinksWithUserPrivs(databaseID, currUserID)
+	if privsErr != nil {
+		return nil, fmt.Errorf("getUserSortedFormLinks: %v", privsErr)
+	}
+
+	userLinks := []FormLink{}
+	for _, currLink := range allLinks {
+		_, foundVisiblePriv := visibleLinks[currLink.LinkID]
+		if foundVisiblePriv {
+			userLinks = append(userLinks, currLink)
+		}
+	}
+
+	return userLinks, nil
 
 }
 

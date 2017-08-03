@@ -13,7 +13,10 @@ func init() {
 
 	formLinkRouter.HandleFunc("/api/formLink/new", newFormLinkAPI)
 	formLinkRouter.HandleFunc("/api/formLink/get", getFormLinkAPI)
+
 	formLinkRouter.HandleFunc("/api/formLink/getList", getFormLinksAPI)
+	formLinkRouter.HandleFunc("/api/formLink/getUserList", getUserFormLinksAPI)
+
 	formLinkRouter.HandleFunc("/api/formLink/setDefaultVals", setDefaultVals)
 	formLinkRouter.HandleFunc("/api/formLink/setName", setName)
 	formLinkRouter.HandleFunc("/api/formLink/setForm", setForm)
@@ -68,6 +71,23 @@ func getFormLinksAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	presets, err := getAllSortedFormLinks(params.ParentDatabaseID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, presets)
+	}
+
+}
+
+func getUserFormLinksAPI(w http.ResponseWriter, r *http.Request) {
+
+	params := GetFormLinkListParams{}
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	presets, err := getUserSortedFormLinks(r, params.ParentDatabaseID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {

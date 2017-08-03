@@ -108,3 +108,28 @@ func GetNewItemPrivs(roleID string) ([]RoleNewItemPriv, error) {
 
 	return roleNewItemPrivs, nil
 }
+
+func GetNewItemLinksWithUserPrivs(databaseID string, userID string) (map[string]bool, error) {
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT new_item_form_link_role_privs.link_id
+				FROM new_item_form_link_role_privs,database_roles,collaborator_roles,collaborators
+				WHERE database_roles.database_id=$1
+					AND new_item_form_link_role_privs.role_id=database_roles.role_id
+					AND database_roles.role_id=collaborator_roles.role_id
+					AND collaborator_roles.collaborator_id=collaborators.collaborator_id
+					AND collaborators.user_id=$2`, databaseID, userID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetItemListsWithUserPrivs: Failure querying database: %v", queryErr)
+	}
+
+	visibleLinks := map[string]bool{}
+	for rows.Next() {
+		linkID := ""
+		if scanErr := rows.Scan(&linkID); scanErr != nil {
+			return nil, fmt.Errorf("GetNewItemLinksWithUserPrivs: Failure querying database: %v", scanErr)
+		}
+		visibleLinks[linkID] = true
+	}
+
+	return visibleLinks, nil
+}

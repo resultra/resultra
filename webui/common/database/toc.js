@@ -48,7 +48,7 @@ function initDatabaseTOC(tocConfig) {
 	
 	$('#tocFormList').empty()
 	var linkParams = { parentDatabaseID: tocConfig.databaseID }
-	jsonAPIRequest("formLink/getList",linkParams,function(linkList) {
+	jsonAPIRequest("formLink/getUserList",linkParams,function(linkList) {
 		for(var linkIndex = 0; linkIndex < linkList.length; linkIndex++) {
 			var currLink = linkList[linkIndex]
 			if(currLink.includeInSidebar) {
