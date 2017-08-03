@@ -24,6 +24,9 @@ func init() {
 	roleRouter.HandleFunc("/api/userRole/getListRolePrivs", getListRolePrivsAPI)
 	roleRouter.HandleFunc("/api/userRole/setListRolePrivs", setListRolePrivsAPI)
 
+	roleRouter.HandleFunc("/api/userRole/getNewItemRolePrivs", getNewItemRolePrivsAPI)
+	roleRouter.HandleFunc("/api/userRole/setNewItemRolePrivs", setNewItemRolePrivsAPI)
+
 	roleRouter.HandleFunc("/api/userRole/getRoleListPrivs", getRoleListPrivsAPI)
 	roleRouter.HandleFunc("/api/userRole/getRoleDashboardPrivs", getRoleDashboardPrivsAPI)
 
@@ -155,6 +158,49 @@ func setListRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 		successResponse := true
 		api.WriteJSONResponse(w, successResponse)
 	}
+}
+
+func setNewItemRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params userRole.SetNewItemFormLinkRolePrivsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForNewItemLink(r, params.LinkID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if err := userRole.SetNewItemFormLinkRolePrivs(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		successResponse := true
+		api.WriteJSONResponse(w, successResponse)
+	}
+}
+
+func getNewItemRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params userRole.GetNewItemPrivParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForUserRole(r, params.RoleID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if roleNewItemPrivs, err := userRole.GetNewItemPrivs(params.RoleID); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, roleNewItemPrivs)
+
+	}
+
 }
 
 func getRoleListPrivsAPI(w http.ResponseWriter, r *http.Request) {

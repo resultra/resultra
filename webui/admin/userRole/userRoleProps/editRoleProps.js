@@ -69,10 +69,11 @@ $(document).ready(function() {
 		
 	var getRoleParams = { roleID: rolePropsContext.roleID }
 	jsonAPIRequest("userRole/get",getRoleParams,function(roleInfo) {
-		initUserRoleNameProperties(roleInfo)
-		
-		initRoleListPrivProperties(rolePropsContext.roleID)
-		initRoleDashboardPrivProperties(rolePropsContext.roleID)
+		initUserRoleNameProperties(roleInfo)		
 	}) // set record's number field value
+	
+	initRoleListPrivProperties(rolePropsContext.roleID)
+	initRoleDashboardPrivProperties(rolePropsContext.roleID)
+	initRoleNewItemPrivs(rolePropsContext.roleID)
 	
 })

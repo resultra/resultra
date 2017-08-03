@@ -80,11 +80,26 @@
 {{end}}
 
 
+{{define "adminRoleNewItemLinkPrivsProperty"}}
+	<tr>
+		<td class="width200"><label>New item link privileges</label>
+			<div><small>For users belonging to this role, configure which links can be used to create new items.</small></div>
+		</td>
+
+		<td>
+			<div class="list-group" id="adminNewItemLinkRolesPrivilegesList">
+			</div>		
+		</td>
+	</tr>
+{{end}}
+
+
 
 {{define "rolePropsBody"}}
 
 <table class="table">
 	{{template "adminRoleNameProperty"}}
+	{{template "adminRoleNewItemLinkPrivsProperty"}}	
 	{{template "adminRoleListPrivsProperty"}}	
 	{{template "adminRoleDashboardPrivsProperty"}}
 </table>

@@ -134,6 +134,40 @@ func VerifyCurrUserIsDatabaseAdminForItemList(req *http.Request, listID string) 
 	return nil
 }
 
+func getNewItemLinkDatabaseID(linkID string) (string, error) {
+
+	databaseID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(
+		`SELECT forms.database_id 
+			FROM forms,form_links 
+			WHERE form_links.link_id=$1 
+				AND form_links.form_id=forms.form_id
+			LIMIT 1`,
+		linkID).Scan(&databaseID)
+	if getErr != nil {
+		return "", fmt.Errorf(
+			"getNewItemLinkDatabaseID: can't get database for new item form link = %v: err=%v",
+			linkID, getErr)
+	}
+
+	return databaseID, nil
+
+}
+
+func VerifyCurrUserIsDatabaseAdminForNewItemLink(req *http.Request, linkID string) error {
+
+	databaseID, err := getNewItemLinkDatabaseID(linkID)
+	if err != nil {
+		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForItemList: %v", err)
+	}
+
+	if err := VerifyCurrUserIsDatabaseAdmin(req, databaseID); err != nil {
+		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForItemList: %v", err)
+	}
+
+	return nil
+}
+
 func GetUserRoleDatabaseID(roleID string) (string, error) {
 	databaseID := ""
 	getErr := databaseWrapper.DBHandle().QueryRow(

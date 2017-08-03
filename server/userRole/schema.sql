@@ -35,3 +35,8 @@ CREATE TABLE dashboard_role_privs (
 	role_id text REFERENCES database_roles(role_id) ON DELETE CASCADE,
 	privs text NOT NULL
 );
+
+CREATE TABLE new_item_form_link_role_privs (
+	link_id text REFERENCES form_links(link_id) ON DELETE CASCADE, 
+	role_id text REFERENCES database_roles(role_id) ON DELETE CASCADE
+);
