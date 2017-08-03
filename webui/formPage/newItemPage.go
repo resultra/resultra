@@ -1,6 +1,8 @@
 package formPage
 
 import (
+	"fmt"
+
 	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
@@ -52,6 +54,16 @@ func newItemFormPage(w http.ResponseWriter, r *http.Request) {
 		formDBInfo, getErr := databaseController.GetFormDatabaseInfo(formLink.FormID)
 		if getErr != nil {
 			api.WriteErrorResponse(w, getErr)
+			return
+		}
+
+		hasPrivs, privsErr := userRole.CurrentUserHasNewItemLinkPrivs(r, formDBInfo.DatabaseID, formLinkID)
+		if privsErr != nil {
+			api.WriteErrorResponse(w, getErr)
+			return
+		}
+		if !hasPrivs {
+			api.WriteErrorResponse(w, fmt.Errorf("ERROR: No permissions to add new items with this page"))
 			return
 		}
 

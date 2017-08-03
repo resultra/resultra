@@ -2,7 +2,9 @@ package userRole
 
 import (
 	"fmt"
+	"net/http"
 	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/generic/userAuth"
 )
 
 type SetNewItemFormLinkRolePrivsParams struct {
@@ -132,4 +134,44 @@ func GetNewItemLinksWithUserPrivs(databaseID string, userID string) (map[string]
 	}
 
 	return visibleLinks, nil
+}
+
+func CurrentUserHasNewItemLinkPrivs(req *http.Request,
+	databaseID string, linkID string) (bool, error) {
+
+	if CurrUserIsDatabaseAdmin(req, databaseID) {
+		return true, nil
+	}
+
+	currUserID, userErr := userAuth.GetCurrentUserID(req)
+	if userErr != nil {
+		return false, fmt.Errorf("verifyCurrUserIsDatabaseAdmin: can't verify user: %v", userErr)
+	}
+
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT new_item_form_link_role_privs.link_id
+					FROM new_item_form_link_role_privs,database_roles,collaborator_roles,collaborators
+					WHERE database_roles.database_id=$1
+					AND new_item_form_link_role_privs.link_id=$2
+						AND new_item_form_link_role_privs.role_id=database_roles.role_id
+						AND database_roles.role_id=collaborator_roles.role_id
+						AND collaborator_roles.collaborator_id=collaborators.collaborator_id
+						AND collaborators.user_id=$3`, databaseID, linkID, currUserID)
+	if queryErr != nil {
+		return false, fmt.Errorf("CurrentUserHasNewItemLinkPrivs: Failure querying database: %v", queryErr)
+	}
+
+	// Default to false (no priveleges) unless there's privileges set in the database.
+	privs := false
+
+	for rows.Next() {
+		linkIDWithPrivs := ""
+		if scanErr := rows.Scan(&linkIDWithPrivs); scanErr != nil {
+			return false, fmt.Errorf("CurrentUserHasNewItemLinkPrivs: Failure querying database: %v", scanErr)
+		}
+		privs = true
+	}
+
+	return privs, nil
+
 }
