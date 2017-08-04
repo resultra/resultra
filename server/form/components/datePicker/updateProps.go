@@ -3,6 +3,7 @@ package datePicker
 import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/inputProps"
 	"resultra/datasheet/server/form/components/common"
 )
 
@@ -151,6 +152,18 @@ type HelpPopupMsgParams struct {
 func (updateParams HelpPopupMsgParams) updateProps(datePicker *DatePicker) error {
 
 	datePicker.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}
+
+type ConditionalFormatParams struct {
+	DatePickerIDHeader
+	ConditionalFormats []inputProps.DateConditionalFormat `json:"conditionalFormats"`
+}
+
+func (updateParams ConditionalFormatParams) updateProps(datePicker *DatePicker) error {
+
+	datePicker.Properties.ConditionalFormats = updateParams.ConditionalFormats
 
 	return nil
 }

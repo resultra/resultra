@@ -2,6 +2,7 @@ package datePicker
 
 import (
 	"fmt"
+	"resultra/datasheet/server/common/inputProps"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/uniqueID"
 	"time"
@@ -34,6 +35,7 @@ type DatePickerProperties struct {
 	Validation          DatePickerValidationProperties             `json:"validation"`
 	ClearValueSupported bool                                       `json:"clearValueSupported"`
 	HelpPopupMsg        string                                     `json:"helpPopupMsg"`
+	ConditionalFormats  []inputProps.DateConditionalFormat         `json:"conditionalFormats"`
 }
 
 const dateFormatDefault string = "date"
@@ -58,6 +60,7 @@ func newDefaultDatePickerProperties() DatePickerProperties {
 		DateFormat:          dateFormatDefault,
 		Validation:          newDefaultDatePickerValidationProps(),
 		ClearValueSupported: false,
-		HelpPopupMsg:        ""}
+		HelpPopupMsg:        "",
+		ConditionalFormats:  []inputProps.DateConditionalFormat{}}
 	return props
 }

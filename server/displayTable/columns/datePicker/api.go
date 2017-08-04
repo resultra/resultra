@@ -19,6 +19,7 @@ func init() {
 	datePickerRouter.HandleFunc("/api/tableView/datePicker/setValidation", setValidation)
 	datePickerRouter.HandleFunc("/api/tableView/datePicker/setClearValueSupported", setClearValueSupported)
 	datePickerRouter.HandleFunc("/api/tableView/datePicker/setHelpPopupMsg", setHelpPopupMsg)
+	datePickerRouter.HandleFunc("/api/tableView/datePicker/setConditionalFormats", setConditionalFormats)
 
 	datePickerRouter.HandleFunc("/api/tableView/datePicker/validateInput", validateInputAPI)
 
@@ -130,6 +131,15 @@ func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
 
 func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
 	var params HelpPopupMsgParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processDatePickerPropUpdate(w, r, params)
+}
+
+func setConditionalFormats(w http.ResponseWriter, r *http.Request) {
+	var params ConditionalFormatParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
