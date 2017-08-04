@@ -92,6 +92,20 @@ function initNumberInputColPropertiesImpl(numberInputCol) {
 	}
 	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
+	var conditionalFormatParams = {
+		initialFormats: numberInputCol.properties.conditionalFormats,
+		setConditionalFormats: function(formats) {
+			var params = {
+				parentTableID: numberInputCol.parentTableID,
+				numberInputID: numberInputCol.numberInputID,
+				conditionalFormats: formats
+			}
+			jsonAPIRequest("tableView/numberInput/setConditionalFormats",params,function(updateCol) {
+			})	
+		}
+	}
+	initNumberConditionalFormatPropertyPanel(conditionalFormatParams)
+	
 	
 	
 }

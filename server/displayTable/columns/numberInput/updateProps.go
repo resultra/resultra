@@ -2,6 +2,7 @@ package numberInput
 
 import (
 	"fmt"
+	"resultra/datasheet/server/common/inputProps"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/numberFormat"
 )
@@ -147,6 +148,18 @@ type HelpPopupMsgParams struct {
 func (updateParams HelpPopupMsgParams) updateProps(numberInput *NumberInput) error {
 
 	numberInput.Properties.HelpPopupMsg = updateParams.PopupMsg
+
+	return nil
+}
+
+type ConditionalFormatParams struct {
+	NumberInputIDHeader
+	ConditionalFormats []inputProps.NumberConditionalFormat `json:"conditionalFormats"`
+}
+
+func (updateParams ConditionalFormatParams) updateProps(numberInput *NumberInput) error {
+
+	numberInput.Properties.ConditionalFormats = updateParams.ConditionalFormats
 
 	return nil
 }
