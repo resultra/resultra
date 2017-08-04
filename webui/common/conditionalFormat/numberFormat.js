@@ -1,4 +1,4 @@
-function initNumberConditionalFormatPropertyPanel() {
+function initNumberConditionalFormatPropertyPanel(config) {
 	
 	var $ruleList = $("#numberConditionFormatRuleList")
 	$ruleList.empty()
@@ -14,20 +14,21 @@ function initNumberConditionalFormatPropertyPanel() {
 		})
 		console.log("Number conditional format: " + JSON.stringify(conditions))
 		
-		return conditions
+		config.setConditionalFormats(conditions)
+		
 	}
 	
-	function addConditionRule() {
+	function addConditionRule(initialFormat) {
 		
 		var ruleInfoByRuleID = {
 			blank: {
 				hasParam:false
 			},
 			negative: {
-				hasParam:true
+				hasParam:false
 			},
 			positive: {
-				hasParam:true
+				hasParam:false
 			},
 			greater: {
 				hasParam:true
@@ -44,15 +45,30 @@ function initNumberConditionalFormatPropertyPanel() {
 		var $colorSchemeSelection = $ruleListItem.find(".conditionColorScheme")
 		var $paramInput = $ruleListItem.find(".conditionParam")
 		
-		
-		initSelectControlChangeHandler($condSelection,function(newVal) {
-			var ruleInfo = ruleInfoByRuleID[newVal]
+		function resetParamInput(conditionVal) {
+			var ruleInfo = ruleInfoByRuleID[conditionVal]
 			if (ruleInfo.hasParam) {
 				$paramInput.show()
 				$paramInput.val("") // reset the value
 			} else {
 				$paramInput.hide()
 			}
+			
+		}
+		
+		if (initialFormat != null) {
+			resetParamInput(initialFormat.condition)
+			$condSelection.val(initialFormat.condition)
+			$colorSchemeSelection.val(initialFormat.colorScheme)
+			$paramInput.val(initialFormat.param)
+		} else {
+			$paramInput.val("")
+			$paramInput.hide()
+		}
+		
+		
+		initSelectControlChangeHandler($condSelection,function(newVal) {
+			resetParamInput(newVal)
 			updateConditionProperties()
 		})
 
@@ -95,8 +111,13 @@ function initNumberConditionalFormatPropertyPanel() {
 		$ruleList.append($ruleListItem)
 	}
 	
+	for (var formatIndex = 0; formatIndex < config.initialFormats.length; formatIndex++) {
+		var currFormat = config.initialFormats[formatIndex]
+		addConditionRule(currFormat)
+	}
+	
 	var $addConditionButton = $('#conditionalNumberFormatAddConditionButton')
 	initButtonControlClickHandler($addConditionButton,function() {
-		addConditionRule()
+		addConditionRule(null)
 	})
 }

@@ -170,7 +170,20 @@ function loadNumberInputProperties($numberInput,numberInputRef) {
 	}
 	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
-	initNumberConditionalFormatPropertyPanel()
+	var conditionalFormatParams = {
+		initialFormats: numberInputRef.properties.conditionalFormats,
+		setConditionalFormats: function(formats) {
+			var params = {
+				parentFormID: numberInputRef.parentFormID,
+				numberInputID: numberInputRef.numberInputID,
+				conditionalFormats: formats
+			}
+			jsonAPIRequest("frm/numberInput/setConditionalFormats",params,function(updatedNumberInput) {
+				setContainerComponentInfo($numberInput,updatedNumberInput,updatedNumberInput.numberInputID)
+			})	
+		}
+	}
+	initNumberConditionalFormatPropertyPanel(conditionalFormatParams)
 	
 	
 	// Toggle to the check box properties, hiding the other property panels
