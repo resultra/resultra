@@ -2,6 +2,7 @@ package numberInput
 
 import (
 	"fmt"
+	"resultra/datasheet/server/common/inputProps"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/numberFormat"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -28,6 +29,7 @@ type NumberInputProperties struct {
 	Validation           NumberInputValidationProperties            `json:"validation"`
 	ClearValueSupported  bool                                       `json:"clearValueSupported"`
 	HelpPopupMsg         string                                     `json:"helpPopupMsg"`
+	ConditionalFormats   []inputProps.NumberConditionalFormat       `json:"conditionalFormats"`
 }
 
 func (srcProps NumberInputProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*NumberInputProperties, error) {
@@ -52,6 +54,7 @@ func newDefaultNumberInputProperties() NumberInputProperties {
 		ValueSpinnerStepSize: 1.0,
 		Validation:           newDefaultValidationProperties(),
 		ClearValueSupported:  false,
-		HelpPopupMsg:         ""}
+		HelpPopupMsg:         "",
+		ConditionalFormats:   []inputProps.NumberConditionalFormat{}}
 	return props
 }

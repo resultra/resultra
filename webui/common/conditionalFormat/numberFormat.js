@@ -121,3 +121,77 @@ function initNumberConditionalFormatPropertyPanel(config) {
 		addConditionRule(null)
 	})
 }
+
+function getNumberConditionalFormatBackgroundColorClassForValue(conditionalFormats, numberVal) {
+	
+	function colorClassByColorScheme(colorScheme) {
+		var classLookup = {
+			default:"",
+			info:"numFormat-info",
+			primary: "numFormat-primary",
+			success: "numFormat-success",
+			warning: "numFormat-warning",
+			danger:"numFormat-danger"
+		}
+	
+		var bgClass = classLookup[colorScheme]
+		if (bgClass === undefined) {
+			bgClass = null
+		}
+		return bgClass
+	}
+	
+	var formatFuncByCondition = {
+		blank: function(format, val) {
+			if (val===null) {
+				return format.colorScheme
+			}
+			return null // no formatting
+		},
+		negative: function(format, val) {
+			if((val !==null) && (val < 0.0)) {
+				return format.colorScheme
+			}
+			return null
+		},
+		positive:function(format, val) {
+			if((val !==null) && (val > 0.0)) {
+				return format.colorScheme
+			}
+			return null
+		},
+		greater: function(format, val) {
+			if((val !==null) && (val > format.param)) {
+				return format.colorScheme
+			}
+			return null
+		},
+		less: function(format, val) {
+			if((val !==null) && (val < format.param)) {
+				return format.colorScheme
+			}
+			return null
+		}
+	}
+	
+	
+	var formatColorScheme = null
+	for(var formatIndex = 0; formatIndex < conditionalFormats.length; formatIndex++) {
+		var currFormat = conditionalFormats[formatIndex]
+		var formatFunc = formatFuncByCondition[currFormat.condition]
+		var condFormatColor = formatFunc(currFormat,numberVal)
+		if (condFormatColor !== null) {
+			formatColorScheme = condFormatColor
+		}
+	}
+	return colorClassByColorScheme(formatColorScheme)
+}
+
+function setBackgroundConditionalNumberFormat($container,conditionalFormats,numberVal) {
+	$container.removeClass("numFormat-info numFormat-primary numFormat-success numFormat-warning numFormat-danger")
+	
+	var condFormatClass = getNumberConditionalFormatBackgroundColorClassForValue(conditionalFormats,numberVal)
+	if (condFormatClass !== null) {
+		$container.addClass(condFormatClass)
+	}
+}

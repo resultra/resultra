@@ -50,11 +50,21 @@ function initNumberInputRecordEditBehavior($container,componentContext,recordPro
 		var numberInputObjectRef = $numberInputContainer.data("objectRef")
 		var $numberInputInput = $numberInputContainer.find('input')
 		var componentContext = $numberInputContainer.data("componentContext")
-
+		
 		// text box is linked to a field value
 		var numberInputFieldID = numberInputObjectRef.properties.fieldID
 
 		console.log("loadRecordIntoNumberInput: Field ID to load data:" + numberInputFieldID)
+		
+		function setConditionalFormat() {
+			var rawFieldVal = null
+			if(recordRef.fieldValues.hasOwnProperty(numberInputFieldID)) {
+				rawFieldVal = recordRef.fieldValues[numberInputFieldID]
+			}
+			setBackgroundConditionalNumberFormat($numberInputInput,
+					numberInputObjectRef.properties.conditionalFormats,rawFieldVal)
+		}
+		setConditionalFormat()
 
 		// In other words, we are populating the "intersection" of field values in the record
 		// with the fields shown by the layout's containers.
