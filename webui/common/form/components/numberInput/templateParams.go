@@ -15,6 +15,7 @@ type NumberInputDesignTemplateParams struct {
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
 	ValidationPanelParams    propertiesSidebar.PanelTemplateParams
 	SpinnerPanelParams       propertiesSidebar.PanelTemplateParams
+	CondFormatPanelParams    propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
@@ -42,6 +43,7 @@ func init() {
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "numberInputLabel"}},
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "numberInputDelete", "Delete Text Box"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Number Format", PanelID: "numberInputFormat"},
+		CondFormatPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Conditional Format", PanelID: "condNumberInputFormat"},
 		ClearValuePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Clear Values", PanelID: "numberInputClearValue"},
 		HelpPopupParams:       inputProperties.NewHelpPopupTemplateParams(elemPrefix, "numberInputHelp"),
 		ValidationPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Input Validation", PanelID: "numberInputValidation"},

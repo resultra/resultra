@@ -170,6 +170,8 @@ function loadNumberInputProperties($numberInput,numberInputRef) {
 	}
 	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
+	initNumberConditionalFormatPropertyPanel()
+	
 	
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#numberInputProps')

@@ -18,5 +18,6 @@
 		"field",
 		"valueList",
 		"itemList",
-		"tableView"]
+		"tableView",
+		"conditionalFormat"]
 }

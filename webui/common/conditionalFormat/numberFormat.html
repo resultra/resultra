@@ -1,0 +1,71 @@
+{{define "conditionalNumberFormatTemplates"}}
+
+<div style="display:none;">
+		
+	<div id="numberConditionalFormatRuleListItem" class="list-group-item numberConditionalFormatRuleListItem">
+		<label class="conditionLabel"></label>
+		
+		<button type="button" class="close conditionDeleteRuleButton">
+			<span aria-hidden="true">&times;</span>
+		</button>
+		
+		<select class="form-control input-sm conditionTypeSelection marginBottom5 marginTop5">
+			<option disabled selected value="">Select a condition</option>
+			<option value="negative">Negative value</option>
+			<option value="positive">Positive value</option>
+			<option value="greater">Greater than</option>
+			<option value="less">Less than</option>
+		</select>
+		
+	     <input class="form-control input-sm conditionParam marginBottom5" type="text" placeholder="Enter a value">
+		 
+		 <select class="form-control input-sm conditionColorScheme">
+			<option disabled selected value="">Select a color scheme</option>
+			<option value="default">Default</option>
+			<option value="primary">Primary</option>
+			<option value="success">Success</option>
+			<option value="info">Info</option>
+			<option value="warning">Warning</option>
+			<option value="danger">Danger</option>
+		 </select>
+	</div> <!-- Field name field -->
+
+</div>
+
+{{end}}
+
+{{define "conditionalNumberFormatAddConditionButton"}}
+	<button type="button" class="btn btn-default btn-xs" id="conditionalNumberFormatAddConditionButton">
+	  <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Condition
+	</button>	
+{{end}}
+
+{{define "conditionalNumberFormatPaneFooter"}}
+	<div id="numberConditionPaneFooter">
+		<div class="container">
+			<div class="row">
+				{{template "conditionalNumberFormatAddConditionButton"}}
+			</div>
+		</div>
+	</div>
+{{end}}
+
+{{define "numberConditionFormatPaneSettings"}}
+	<div class="list-group" id="numberConditionFormatRuleList">
+	</div>	
+{{end}}
+
+{{define "numberConditionalFormatPane"}}
+
+   {{template "conditionalNumberFormatTemplates"}}
+
+	<div class="numberConditionalFormatPaneListOuterContainer">
+		{{template "numberConditionFormatPaneSettings"}}
+	</div>
+	<hr class="numberConditionPaneSeparator">
+	<div>
+		{{template "conditionalNumberFormatPaneFooter"}}
+	</div>
+
+{{end}}
+

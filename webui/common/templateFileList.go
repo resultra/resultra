@@ -3,6 +3,7 @@ package common
 import (
 	"resultra/datasheet/webui/common/attachment"
 	"resultra/datasheet/webui/common/breadCrumb"
+	"resultra/datasheet/webui/common/conditionalFormat"
 	"resultra/datasheet/webui/common/database"
 	"resultra/datasheet/webui/common/defaultValues"
 	"resultra/datasheet/webui/common/field"
@@ -33,5 +34,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, valueThreshold.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, valueList.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, itemList.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, conditionalFormat.TemplateFileList...)
 
 }
