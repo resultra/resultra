@@ -27,10 +27,25 @@
 			<option value="blank">Value not set (blank)</option>
 			<option value="past">Date is in the past</option>
 			<option value="future">Date is in the future</option>
+			<option value="before">Before a specific date</option>
 			<option value="after">After a specific date</option>
 		</select>
 		
 	     <input class="form-control input-sm conditionParam marginBottom5" type="text" placeholder="Enter a value">
+		 
+	        <div class='input-group date dateCondFilterStartDateInput  marginBottom5'>
+	            <input type='text' class="form-control input-sm" placeholder="Start date"/>
+	            <span class="input-group-addon ">
+	                <span class="glyphicon glyphicon-calendar"></span>
+	            </span>
+	        </div>
+			
+	        <div class='input-group date dateCondFilterEndDateInput  marginBottom5'>
+	            <input type='text' class="form-control input-sm" placeholder="End date"/>
+	            <span class="input-group-addon">
+	                <span class="glyphicon glyphicon-calendar"></span>
+	            </span>
+	        </div>
 		 
 		 {{template "conditonalFormatColorSchemeSelection"}}
 		 

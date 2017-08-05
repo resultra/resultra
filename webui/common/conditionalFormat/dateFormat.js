@@ -22,16 +22,29 @@ function initDateConditionalFormatPropertyPanel(config) {
 		
 		var ruleInfoByRuleID = {
 			blank: {
-				hasParam:false
+				hasParam:false,
+				hasEndDate:false,
+				hasStartDate:false
 			},
 			past: {
-				hasParam:false
+				hasParam:false,
+				hasEndDate:false,
+				hasStartDate:false
 			},
 			future: {
-				hasParam:false
+				hasParam:false,
+				hasEndDate:false,
+				hasStartDate:false
 			},
 			after: {
-				hasParam:true
+				hasParam:false,
+				hasEndDate:false,
+				hasStartDate:true
+			},
+			before: {
+				hasParam:false,
+				hasEndDate:true,
+				hasStartDate:false
 			}
 		}
 		
@@ -42,30 +55,86 @@ function initDateConditionalFormatPropertyPanel(config) {
 		var $colorSchemeSelection = $ruleListItem.find(".conditionColorScheme")
 		var $paramInput = $ruleListItem.find(".conditionParam")
 		
-		function resetParamInput(conditionVal) {
-			var ruleInfo = ruleInfoByRuleID[conditionVal]
+		var $startDatePicker = $ruleListItem.find(".dateCondFilterStartDateInput")
+		$startDatePicker.datetimepicker()
+
+		var $endDatePicker = $ruleListItem.find(".dateCondFilterEndDateInput")
+		$endDatePicker.datetimepicker()
+		
+		function resetParamInputsForCondition(conditionVal) {
+			var ruleInfo
+			if (conditionVal === null) {
+				ruleInfo = {
+					hasParam:false,
+					hasStartDate:false,
+					hasEndDate:false
+				}
+			} else {
+				ruleInfo = ruleInfoByRuleID[conditionVal]
+			}
+			
+			$paramInput.val("") // reset the value
 			if (ruleInfo.hasParam) {
 				$paramInput.show()
-				$paramInput.val("") // reset the value
 			} else {
 				$paramInput.hide()
 			}
 			
+			$startDatePicker.data("DateTimePicker").date(null)
+			if (ruleInfo.hasStartDate) {
+				$startDatePicker.css("display","")
+			} else {
+				$startDatePicker.css("display","none")
+			}
+			
+			$startDatePicker.data("DateTimePicker").date(null)
+			if (ruleInfo.hasEndDate) {
+				$endDatePicker.css("display","")
+			} else {
+				$endDatePicker.css("display","none")
+			}
+			
 		}
 		
+				
 		if (initialFormat != null) {
-			resetParamInput(initialFormat.condition)
+			resetParamInputsForCondition(initialFormat.condition)
+			
 			$condSelection.val(initialFormat.condition)
+			
+			var ruleInfo = ruleInfoByRuleID[initialFormat.condition]
+			if(ruleInfo.hasParam) {
+				$paramInput.val(initialFormat.param)
+			}
+			if(ruleInfo.hasStartDate) {
+				var startDateMoment = moment(initialFormat.startDate)
+				$startDatePicker.data("DateTimePicker").date(startDateMoment)
+			}
+			if(ruleInfo.hasEndDate) {
+				var endDateMoment = moment(initialFormat.endDate)
+				$endDatePicker.data("DateTimePicker").date(endDateMoment)			
+			}
+			
 			$colorSchemeSelection.val(initialFormat.colorScheme)
-			$paramInput.val(initialFormat.param)
+			
+			
 		} else {
-			$paramInput.val("")
-			$paramInput.hide()
+			resetParamInputsForCondition(null)
 		}
 		
+	    $startDatePicker.on("dp.change", function (e) {
+			console.log("Custom start date changed: " + e.date)
+	        $endDatePicker.data("DateTimePicker").minDate(e.date);
+			updateConditionProperties()
+	    });
+	    $endDatePicker.on("dp.change", function (e) {
+			console.log("Custom end date changed: " + e.date)
+	        $startDatePicker.data("DateTimePicker").maxDate(e.date);
+			updateConditionProperties()
+	    });
 		
 		initSelectControlChangeHandler($condSelection,function(newVal) {
-			resetParamInput(newVal)
+			resetParamInputsForCondition(newVal)
 			updateConditionProperties()
 		})
 
@@ -95,6 +164,7 @@ function initDateConditionalFormatPropertyPanel(config) {
 				colorScheme: scheme
 			}
 			var ruleInfo = ruleInfoByRuleID[cond]
+			
 			if (ruleInfo.hasParam) {
 				var numberVal = convertStringToNumber($paramInput.val())
 				if(numberVal === null) {
@@ -102,6 +172,23 @@ function initDateConditionalFormatPropertyPanel(config) {
 				}
 				props.param = numberVal
 			}
+				
+			if (ruleInfo.hasStartDate) {
+				var dateVal = $startDatePicker.data("DateTimePicker").date()
+				if (dateVal == null) {
+					return null
+				}
+				props.startDate = dateVal.utc()
+			}
+			
+			if (ruleInfo.hasEndDate) {
+				var dateVal = $startDatePicker.data("DateTimePicker").date()
+				if (dateVal == null) {
+					return null
+				}
+				props.endDate = dateVal.utc()
+			}
+					
 			return props
 		})
 		
@@ -143,7 +230,15 @@ function getDateConditionalFormatBackgroundColorClassForValue(conditionalFormats
 			return null
 		},
 		after: function(format, val) {
-			if((val !==null) && (val > format.param)) {
+			var momentStartDate = moment(format.startDate)
+			if((val !==null) && (val > momentStartDate.toDate()) ) {
+				return format.colorScheme
+			}
+			return null
+		},
+		before: function(format, val) {
+			var momentEndDate = moment(format.endDate)
+			if((val !==null) && (val < momentEndDate.toDate()) ) {
 				return format.colorScheme
 			}
 			return null
