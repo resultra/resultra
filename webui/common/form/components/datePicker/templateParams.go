@@ -16,6 +16,7 @@ type DatePickerDesignTemplateParams struct {
 	ValidationPanelParams    propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
+	CondFormatPanelParams    propertiesSidebar.PanelTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
 	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
 	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
@@ -41,6 +42,7 @@ func init() {
 		ValidationPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Input Validation", PanelID: "datePickerValidation"},
 		ClearValuePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Clear Values", PanelID: "datePickerClearValue"},
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "datePickerVisibility"),
+		CondFormatPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Conditional Format", PanelID: "condDateInputFormat"},
 		HelpPopupParams:       inputProperties.NewHelpPopupTemplateParams(elemPrefix, "datePickerHelp"),
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "datePickerLabel"}},

@@ -132,6 +132,23 @@ function loadDatePickerProperties($container,datePickerRef) {
 		}	
 	}
 	initComponentHelpPopupPropertyPanel(helpPopupParams)
+
+
+	var conditionalFormatParams = {
+		initialFormats: datePickerRef.properties.conditionalFormats,
+		setConditionalFormats: function(formats) {
+			var params = {
+				parentFormID: datePickerRef.parentFormID,
+				datePickerID: datePickerRef.datePickerID,
+				conditionalFormats: formats
+			}
+			jsonAPIRequest("frm/datePicker/setConditionalFormats",params,function(updatedDatePicker) {
+				setContainerComponentInfo($container,updatedDatePicker,updatedDatePicker.datePickerID)
+			})	
+		}
+	}
+	initDateConditionalFormatPropertyPanel(conditionalFormatParams)
+
 	
 	var deleteParams = {
 		elemPrefix: elemPrefix,

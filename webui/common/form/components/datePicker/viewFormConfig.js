@@ -112,6 +112,19 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 		console.log("loadRecordIntoDatePicker: Field ID to load data:" + datePickerFieldID)
 
 		var $datePickerInput = datePickerInputFromContainer($datePicker)
+		var $datePickerInputField = $datePicker.find(".datePickerInputField")
+		
+		function setConditionalFormat() {
+			var rawFieldVal = null
+			if(recordRef.fieldValues.hasOwnProperty(datePickerFieldID)) {
+				var unformattedVal = recordRef.fieldValues[datePickerFieldID]
+				rawFieldVal = moment(unformattedVal).toDate()
+			}
+			setBackgroundConditionalDateFormat($datePickerInputField,
+					datePickerObjectRef.properties.conditionalFormats,rawFieldVal)
+		}
+		setConditionalFormat()
+		
 
 		if(recordRef.fieldValues.hasOwnProperty(datePickerFieldID)) {
 

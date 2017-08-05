@@ -1,0 +1,25 @@
+/* The standard bootstrap bg-* color classes don't work with form controls
+   (see https://stackoverflow.com/questions/37863405/how-to-add-bootstrap-bg-x-e-g-bg-danger-classes-to-input-textboxes)
+   So, what is needed is a set of formatting classes which accomplish the same/similar thing. The color codes are 
+   duplicated from the bootstrap.css file from the bg-* css classes. */
+
+.condFormat-info {
+	background-color:#afd9ee !important;
+}
+
+.condFormat-primary  {
+    color: #fff;
+    background-color: #337ab7 !important;
+}
+
+.condFormat-success  {
+	background-color:#dff0d8 !important;
+}
+
+.condFormat-warning  {
+	background-color:#f7ecb5 !important;
+}
+
+.condFormat-danger {
+	background-color:#e4b9b9 !important;
+}

@@ -1,11 +1,11 @@
-function initNumberConditionalFormatPropertyPanel(config) {
+function initDateConditionalFormatPropertyPanel(config) {
 	
-	var $ruleList = $("#numberConditionFormatRuleList")
+	var $ruleList = $("#dateConditionFormatRuleList")
 	$ruleList.empty()
 	
 	function updateConditionProperties() {
 		var conditions = []
-		$ruleList.find(".numberConditionalFormatRuleListItem").each(function() {
+		$ruleList.find(".dateConditionalFormatRuleListItem").each(function() {
 			var condFunc = $(this).data("getConditionPropsFunc")
 			var condProp = condFunc()
 			if (condProp != null) {
@@ -24,22 +24,19 @@ function initNumberConditionalFormatPropertyPanel(config) {
 			blank: {
 				hasParam:false
 			},
-			negative: {
+			past: {
 				hasParam:false
 			},
-			positive: {
+			future: {
 				hasParam:false
 			},
-			greater: {
-				hasParam:true
-			},
-			less: {
+			after: {
 				hasParam:true
 			}
 		}
 		
 		
-		var $ruleListItem = $('#numberConditionalFormatRuleListItem').clone()
+		var $ruleListItem = $('#dateConditionalFormatRuleListItem').clone()
 		$ruleListItem.attr("id","")
 		var $condSelection = $ruleListItem.find(".conditionTypeSelection")
 		var $colorSchemeSelection = $ruleListItem.find(".conditionColorScheme")
@@ -116,14 +113,14 @@ function initNumberConditionalFormatPropertyPanel(config) {
 		addConditionRule(currFormat)
 	}
 	
-	var $addConditionButton = $('#conditionalNumberFormatAddConditionButton')
+	var $addConditionButton = $('#conditionalDateFormatAddConditionButton')
 	initButtonControlClickHandler($addConditionButton,function() {
 		addConditionRule(null)
 	})
 }
 
-function getNumberConditionalFormatBackgroundColorClassForValue(conditionalFormats, numberVal) {
-		
+function getDateConditionalFormatBackgroundColorClassForValue(conditionalFormats, dateVal) {
+	
 	var formatFuncByCondition = {
 		blank: function(format, val) {
 			if (val===null) {
@@ -131,26 +128,22 @@ function getNumberConditionalFormatBackgroundColorClassForValue(conditionalForma
 			}
 			return null // no formatting
 		},
-		negative: function(format, val) {
-			if((val !==null) && (val < 0.0)) {
+		past: function(format, val) {
+			var now = new Date()
+			if((val !==null) && (val < now)) {
 				return format.colorScheme
 			}
 			return null
 		},
-		positive:function(format, val) {
-			if((val !==null) && (val > 0.0)) {
+		future:function(format, val) {
+			var now = new Date()
+			if((val !==null) && (val > now)) {
 				return format.colorScheme
 			}
 			return null
 		},
-		greater: function(format, val) {
+		after: function(format, val) {
 			if((val !==null) && (val > format.param)) {
-				return format.colorScheme
-			}
-			return null
-		},
-		less: function(format, val) {
-			if((val !==null) && (val < format.param)) {
 				return format.colorScheme
 			}
 			return null
@@ -162,7 +155,7 @@ function getNumberConditionalFormatBackgroundColorClassForValue(conditionalForma
 	for(var formatIndex = 0; formatIndex < conditionalFormats.length; formatIndex++) {
 		var currFormat = conditionalFormats[formatIndex]
 		var formatFunc = formatFuncByCondition[currFormat.condition]
-		var condFormatColor = formatFunc(currFormat,numberVal)
+		var condFormatColor = formatFunc(currFormat,dateVal)
 		if (condFormatColor !== null) {
 			formatColorScheme = condFormatColor
 		}
@@ -170,11 +163,12 @@ function getNumberConditionalFormatBackgroundColorClassForValue(conditionalForma
 	return colorClassByColorScheme(formatColorScheme)
 }
 
-function setBackgroundConditionalNumberFormat($container,conditionalFormats,numberVal) {
+
+function setBackgroundConditionalDateFormat($container,conditionalFormats,dateVal) {
 	
 	removeConditionalFormatClasses($container)
 	
-	var condFormatClass = getNumberConditionalFormatBackgroundColorClassForValue(conditionalFormats,numberVal)
+	var condFormatClass = getDateConditionalFormatBackgroundColorClassForValue(conditionalFormats,dateVal)
 	if (condFormatClass !== null) {
 		$container.addClass(condFormatClass)
 	}

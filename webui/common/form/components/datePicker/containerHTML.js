@@ -7,7 +7,7 @@ function datePickerInputFromContainer($datePickerContainer) {
 function datePickerControlHTML() {
 	return '<div class="datePickerInputContainer">'+
 				'<div class="input-group date datePickerComponentInput">' +
-					'<input type="text" name="symbol"  class="form-control " placeholder="">' +
+					'<input type="text" name="symbol"  class="form-control datePickerInputField " placeholder="">' +
 					'<span class="input-group-addon datePickerCalendarButton">' +
                  	   '<span class=" glyphicon glyphicon-calendar"></span>' +
                 	'</span>' +

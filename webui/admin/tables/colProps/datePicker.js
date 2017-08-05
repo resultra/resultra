@@ -99,6 +99,19 @@ function initNumberDatePickerColPropertiesImpl(datePickerCol) {
 	}
 	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
+	var conditionalFormatParams = {
+		initialFormats: datePickerCol.properties.conditionalFormats,
+		setConditionalFormats: function(formats) {
+			var params = {
+				parentTableID: datePickerCol.parentTableID,
+				datePickerID: datePickerCol.datePickerID,
+				conditionalFormats: formats
+			}
+			jsonAPIRequest("tableView/datePicker/setConditionalFormats",params,function(updateCol) {
+			})	
+		}
+	}
+	initDateConditionalFormatPropertyPanel(conditionalFormatParams)
 	
 	
 }

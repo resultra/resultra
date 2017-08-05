@@ -11,6 +11,10 @@
 			{{template "datePickerFormatProps"}}
 		{{template "propertyPanelSuffix"}}
 
+		{{template "propertyPanelPrefix" .CondFormatPanelParams}}
+			{{template "dateConditionalFormatPane"}}
+		{{template "propertyPanelSuffix"}}
+
 		{{template "propertyPanelPrefix" .ValidationPanelParams}}
 			{{template "datePickerValidationProps"}}
 		{{template "propertyPanelSuffix"}}

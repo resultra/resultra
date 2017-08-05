@@ -1,0 +1,77 @@
+{{define "conditonalFormatColorSchemeSelection"}} 
+		 <select class="form-control input-sm conditionColorScheme">
+			<option disabled selected value="">Select a color scheme</option>
+			<option value="default">Default</option>
+			<option value="primary">Primary</option>
+			<option value="success">Success</option>
+			<option value="info">Info</option>
+			<option value="warning">Warning</option>
+			<option value="danger">Danger</option>
+		 </select>
+{{end}}
+
+
+{{define "conditionalDateFormatTemplates"}}
+
+<div style="display:none;">
+		
+	<div id="dateConditionalFormatRuleListItem" class="list-group-item dateConditionalFormatRuleListItem">
+		<label class="conditionLabel"></label>
+		
+		<button type="button" class="close conditionDeleteRuleButton">
+			<span aria-hidden="true">&times;</span>
+		</button>
+		
+		<select class="form-control input-sm conditionTypeSelection marginBottom5 marginTop5">
+			<option disabled selected value="">Select a condition</option>
+			<option value="blank">Value not set (blank)</option>
+			<option value="past">Date is in the past</option>
+			<option value="future">Date is in the future</option>
+			<option value="after">After a specific date</option>
+		</select>
+		
+	     <input class="form-control input-sm conditionParam marginBottom5" type="text" placeholder="Enter a value">
+		 
+		 {{template "conditonalFormatColorSchemeSelection"}}
+		 
+	</div> <!-- Field name field -->
+
+</div>
+
+{{end}}
+
+{{define "conditionalDateFormatAddConditionButton"}}
+	<button type="button" class="btn btn-default btn-xs" id="conditionalDateFormatAddConditionButton">
+	  <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add Condition
+	</button>	
+{{end}}
+
+{{define "conditionalDateFormatPaneFooter"}}
+	<div id="dateConditionPaneFooter">
+		<div class="container">
+			<div class="row">
+				{{template "conditionalDateFormatAddConditionButton"}}
+			</div>
+		</div>
+	</div>
+{{end}}
+
+{{define "dateConditionFormatPaneSettings"}}
+	<div class="list-group" id="dateConditionFormatRuleList">
+	</div>	
+{{end}}
+
+{{define "dateConditionalFormatPane"}}
+
+   {{template "conditionalDateFormatTemplates"}}
+
+	<div class="dateConditionalFormatPaneListOuterContainer">
+		{{template "dateConditionFormatPaneSettings"}}
+	</div>
+	<hr class="dateConditionPaneSeparator">
+	<div>
+		{{template "conditionalDateFormatPaneFooter"}}
+	</div>
+
+{{end}}
+
