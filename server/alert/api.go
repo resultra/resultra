@@ -23,7 +23,7 @@ func init() {
 	alertRouter.HandleFunc("/api/alert/setName", setAlertName)
 
 	alertRouter.HandleFunc("/api/alert/validateFormName", validateAlertNameAPI)
-	alertRouter.HandleFunc("/api/alert/validateNewFormName", validateNewAlertNameAPI)
+	alertRouter.HandleFunc("/api/alert/validateNewAlertName", validateNewAlertNameAPI)
 
 	//	alertRouter.HandleFunc("/api/alert/delete", deleteAlertAPI)
 

@@ -1,4 +1,29 @@
+{{define "adminAlertListTemplates"}}
+
+<div style="display:none;">
+	
+	<div id="alertListItemTemplate" class="list-group-item alertListItem">
+			<label class="adminAlertListItemLabel">Alert name goes here</label>
+			
+			<div class="pull-right">
+	
+				<a class="btn btn-xs btn-default editAlertPropsButton" role="button">
+					<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>
+				</a> 
+  				<button class="btn btn-xs btn-danger deleteAlertButton">
+					<span class="glyphicon glyphicon-remove" style="padding-bottom:2px;"></span>
+				</button>
+			</div>
+	</div>
+	
+</div>
+
+{{end}}
+
+
 {{define "adminAlertList"}}
+
+	{{template "adminAlertListTemplates"}}
 
 	<div class="marginTop20">
 		<ul id="adminAlertList" class="list-group maxWidth600">
