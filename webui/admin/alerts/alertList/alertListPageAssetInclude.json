@@ -1,0 +1,16 @@
+{
+	"subDirs":["../../../generic",
+		"../../../common",
+		"../../common"],
+	"cssFiles": [],
+	"jsFiles": ["alertList.js",
+		"alertListPage.js",
+		"newAlertDialog.js"],
+	"htmlFiles":["alertListPage.html",
+				"alertList.html",
+				"newalertDialog.html"],
+	"imageFiles":[],
+	"minCSSFile":"admin/alerts/alertsAdmin.min.css",
+	"minJSFile": "admin/alerts/alertsAdmin.min.js",
+	"injectPlaceholderName":"alertListAssets"
+}

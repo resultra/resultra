@@ -1,0 +1,76 @@
+        	
+{{define "alertListAdminBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  {{template "trackerPageBreadcrumb" .}}
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Settings</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Alerts</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "alertListAdminPageHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "alertListAdminBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "alertListAdminPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- alertListAssets:css -->
+	<!-- endinject -->
+	
+	<script>var alertListAdminContext = { databaseID:"{{.DatabaseID}}" } </script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- alertListAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="alertListAdminPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north">
+			{{template "alertListAdminPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west">
+			{{template "adminSettingsTOC"}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center">
+			<h4>Alerts</h4>
+        	{{template "adminAlertList"}}
+		</div> <!-- center pane for entire page -->	
+	</div> <!-- layout page -->	
+	
+	{{template "newAlertDialog"}}
+		
+	
+  </body>
+  	
+</html>
+
+{{end}}

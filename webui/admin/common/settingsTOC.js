@@ -34,4 +34,8 @@ function initAdminSettingsTOC(databaseID) {
 	var roleLink = "/admin/roles/" + databaseID
 	$('#settingsTOCRoles').attr("href",roleLink)
 	
+	var alertLink = "/admin/alerts/" + databaseID
+	$('#settingsTOCAlerts').attr("href",alertLink)
+	
+	
 }
