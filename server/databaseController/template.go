@@ -2,6 +2,7 @@ package databaseController
 
 import (
 	"fmt"
+	"resultra/datasheet/server/alert"
 	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/displayTable"
@@ -121,6 +122,10 @@ func saveDatabaseToTemplate(params SaveTemplateParams) (*database.Database, erro
 	}
 
 	if err := valueList.CloneValueLists(remappedIDs, params.SourceDatabaseID); err != nil {
+		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
+	}
+
+	if err := alert.CloneAlerts(remappedIDs, params.SourceDatabaseID); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
