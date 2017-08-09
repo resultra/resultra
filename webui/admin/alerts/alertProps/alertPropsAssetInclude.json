@@ -1,0 +1,12 @@
+{
+	"subDirs":["../../../generic",
+		"../../../common",
+		"../../common"],
+	"cssFiles": ["alertProps.css"],
+	"jsFiles": ["alertProps.js"],
+	"htmlFiles":["alertProps.html"],
+	"imageFiles":[],
+	"minCSSFile":"admin/alerts/alertProps/alertPropsProps.min.css",
+	"minJSFile": "admin/alerts/alertProps/alertPropsProps.min.js",
+	"injectPlaceholderName":"alertPropsAssets"
+}

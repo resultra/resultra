@@ -64,7 +64,7 @@ func getAlertAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if alert, err := getAlert(params.AlertID); err != nil {
+	if alert, err := GetAlert(params.AlertID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *alert)

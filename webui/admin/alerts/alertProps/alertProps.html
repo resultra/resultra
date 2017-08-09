@@ -1,0 +1,100 @@
+{{define "alertBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  {{template "trackerPageBreadcrumb" .}}
+	  {{template "breadCrumbSeparator"}}
+	  <a class="h4 breadCrumbText" href="/admin/{{.DatabaseID}}">Settings</a>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Alerts</span>
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">{{.AlertName}}</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "alertPropsHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "alertBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "adminAlertNameProperty"}}
+	<tr>
+		<td class="width200"><label>Alert name</label>
+		</td>
+
+		<td id="alertNameTableCell">TBD
+		</td>
+	</tr>
+
+{{end}}
+
+
+
+{{define "alertPropsBody"}}
+
+<table class="table">
+	{{template "adminAlertNameProperty"}}
+</table>
+
+
+{{end}}
+
+{{define "alertPropsPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- alertPropsAssets:css -->
+	<!-- endinject -->
+	
+	<script>var alertPropsContext = { 
+		databaseID:"{{.DatabaseID}}",
+		alertID:"{{.AlertID}}"}
+	</script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- alertPropsAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="alertPropsPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north">
+			{{template "alertPropsHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west" id="rolePageTocLayout">
+			{{template "adminSettingsTOC"}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center" id="rolePageLayout">
+			{{template "alertPropsBody" .}}
+		</div> <!-- center pane for entire page -->	
+		
+	</div> <!-- layout page -->	
+
+				
+  </body>
+  	
+</html>
+
+{{end}}

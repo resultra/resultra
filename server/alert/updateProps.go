@@ -24,7 +24,7 @@ type AlertPropUpdater interface {
 func updateAlertProps(propUpdater AlertPropUpdater) (*Alert, error) {
 
 	// Retrieve the bar chart from the data store
-	alertForUpdate, getErr := getAlert(propUpdater.getAlertID())
+	alertForUpdate, getErr := GetAlert(propUpdater.getAlertID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateAlertProps: Unable to get existing alert: %v", getErr)
 	}

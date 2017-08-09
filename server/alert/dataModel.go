@@ -56,7 +56,7 @@ func newAlert(params NewAlertParams) (*Alert, error) {
 	return &newAlert, nil
 }
 
-func getAlert(alertID string) (*Alert, error) {
+func GetAlert(alertID string) (*Alert, error) {
 
 	alertName := ""
 	encodedProps := ""
@@ -176,7 +176,7 @@ func updateExistingAlert(alertID string, updatedAlert *Alert) (*Alert, error) {
 
 func getAlertDatabaseID(alertID string) (string, error) {
 
-	theAlert, err := getAlert(alertID)
+	theAlert, err := GetAlert(alertID)
 	if err != nil {
 		return "", nil
 	}

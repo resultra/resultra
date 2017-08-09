@@ -35,6 +35,7 @@ import (
 	"resultra/datasheet/webui/admin/collaborators/collaboratorProps"
 
 	"resultra/datasheet/webui/admin/alerts/alertList"
+	"resultra/datasheet/webui/admin/alerts/alertProps"
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -71,4 +72,5 @@ func RegisterHTTPHandlers(mainRouter *mux.Router) {
 	collaboratorProps.RegisterHTTPHandlers(mainRouter)
 
 	alertList.RegisterHTTPHandlers(mainRouter)
+	alertProps.RegisterHTTPHandlers(mainRouter)
 }
