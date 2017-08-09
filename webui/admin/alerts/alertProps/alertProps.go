@@ -9,6 +9,7 @@ import (
 	adminCommon "resultra/datasheet/webui/admin/common"
 
 	"resultra/datasheet/webui/common"
+	"resultra/datasheet/webui/common/field"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
 )
@@ -17,7 +18,8 @@ var alertTemplates *template.Template
 
 func init() {
 
-	baseTemplateFiles := []string{"static/admin/alerts/alertProps/alertProps.html"}
+	baseTemplateFiles := []string{"static/admin/alerts/alertProps/alertProps.html",
+		"static/admin/alerts/alertProps/conditions.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
@@ -29,12 +31,13 @@ func init() {
 	alertTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
-type UserRoleTemplParams struct {
-	Title        string
-	DatabaseID   string
-	DatabaseName string
-	AlertID      string
-	AlertName    string
+type AlertTemplParams struct {
+	Title                string
+	DatabaseID           string
+	DatabaseName         string
+	AlertID              string
+	AlertName            string
+	FieldSelectionParams field.FieldSelectionDropdownTemplateParams
 }
 
 func editAlertPropsPage(w http.ResponseWriter, r *http.Request) {
@@ -55,13 +58,19 @@ func editAlertPropsPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fieldSelectionParams := field.FieldSelectionDropdownTemplateParams{
+		ElemPrefix:     "alertCondition_",
+		ButtonTitle:    "Add Condition",
+		ButtonIconName: "glyphicon-plus-sign"}
+
 	//	elemPrefix := "userRole_"
-	templParams := UserRoleTemplParams{
-		Title:        "Alert Settings",
-		DatabaseID:   dbInfo.DatabaseID,
-		DatabaseName: dbInfo.DatabaseName,
-		AlertID:      alertInfo.AlertID,
-		AlertName:    alertInfo.Name}
+	templParams := AlertTemplParams{
+		Title:                "Alert Settings",
+		DatabaseID:           dbInfo.DatabaseID,
+		DatabaseName:         dbInfo.DatabaseName,
+		AlertID:              alertInfo.AlertID,
+		AlertName:            alertInfo.Name,
+		FieldSelectionParams: fieldSelectionParams}
 
 	if err := alertTemplates.ExecuteTemplate(w, "alertPropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

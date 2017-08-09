@@ -1,0 +1,68 @@
+{{define "alertConditionTemplates"}}
+
+<div style="display:none;">
+	
+	<div id="alertConditionListItem" class="list-group-item alertConditionListItem">
+			<label class="alertConditionItemLabel"></label>
+			<button type="button" class="close alertConditionDeleteButton">
+				<span aria-hidden="true">&times;</span>
+			</button>
+	</div>
+	
+	
+	<div id="alertDateFieldConditionProps">
+		
+		<div class="form-group">
+			<select class="form-control input-sm alertConditionDateModeSelection"></select>
+		</div> <!-- Field name field -->
+		
+		<div class="form-group filterCustomStartEndDateControls">
+	        <div class='input-group date filterDateRangeStartInput'>
+	            <input type='text' class="form-control input-sm" placeholder="Enter a start date"/>
+	            <span class="input-group-addon ">
+	                <span class="glyphicon glyphicon-calendar"></span>
+	            </span>
+	        </div>
+	        <div class='input-group date filterDateRangeEndInput'>
+	            <input type='text' class="form-control input-sm" placeholder="Enter an end date"/>
+	            <span class="input-group-addon">
+	                <span class="glyphicon glyphicon-calendar"></span>
+	            </span>
+	        </div>
+		
+		</div> <!-- Field name field -->	
+	</div>
+</div>
+
+{{end}}
+
+{{define "adminAlertNameProperty"}}
+
+{{end}}
+
+
+{{define "alertConditionProps"}}
+
+	{{template "alertConditionTemplates"}}
+	
+	<tr>
+		<td class="width200"><label>Conditions and events which trigger the alert</label>
+		</td>
+
+		<td id="alertConditionTableCell">
+			<div class="maxWidth300">
+
+				<div class="list-group alertConditionList" id="alertConditionList">
+				</div>	
+	
+				<hr class="conditionPanelSeparator">
+
+				{{template "fieldSelectionDropdown" .FieldSelectionParams}}
+	
+			</div>
+		</td>
+	</tr>
+	
+
+
+{{end}}
