@@ -54,3 +54,17 @@ func (updateParams SetAlertNameParams) updateProps(alert *Alert) error {
 
 	return nil
 }
+
+type SetConditionsParams struct {
+	AlertIDHeader
+	Conditions []AlertCondition `json:"conditions"`
+}
+
+func (updateParams SetConditionsParams) updateProps(alert *Alert) error {
+
+	// TODO - Validate conditions
+
+	alert.Properties.Conditions = updateParams.Conditions
+
+	return nil
+}

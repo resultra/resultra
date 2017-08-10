@@ -1,6 +1,27 @@
 
 function updateAlertConditions(panelParams) {
+	console.log("Updating alert conditions ...")
 	
+	var $alertConditionList = $("#alertConditionList")
+	var conditions = []
+	$alertConditionList.find(".alertConditionListItem").each(function() {
+		var condFunc = $(this).data("alertCondDefFunc")
+		var condProp = condFunc()
+		if (condProp != null) {
+			conditions.push(condProp)
+		}
+	})
+	console.log("alert conditions: " + JSON.stringify(conditions))
+	
+	var setConditionParams = { 
+		alertID: panelParams.alertID,
+		conditions: conditions
+	}
+	jsonAPIRequest("alert/setConditions",setConditionParams,function(alerts) {		
+	})	
+	
+	
+//	config.setConditionalFormats(conditions)
 }
 
 function createAlertConditionListItem(panelParams,fieldName) {
@@ -14,7 +35,7 @@ function createAlertConditionListItem(panelParams,fieldName) {
 	var $deleteButton = $listItem.find(".alertConditionDeleteButton")
 	initButtonControlClickHandler($deleteButton,function() {
 		$listItem.remove()
-		updateFilterRules(panelParams)
+		updateAlertConditions(panelParams)
 	})
 
 	return $listItem
@@ -26,6 +47,131 @@ function dateAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo) 
 	
 	var $alertProps = $("#alertDateFieldConditionProps").clone()
 	$alertProps.attr("id","")
+	var $dateParamInput = $alertProps.find(".condDateParamInput")
+		$dateParamInput.datetimepicker()
+	
+	var $numParamInput = $alertProps.find(".condNumParamInput")
+	
+	
+	var alertCondDefs = {
+		"past": {
+			label: "Date has passed",
+			hasDateParam: false,
+			hasNumberParam: false
+		},
+		"changed": {
+			label: "Date changed",
+			hasDateParam: false,
+			hasNumberParam: false
+		},
+		"cleared": {
+			label: "Date cleared",
+			hasDateParam: false,
+			hasNumberParam: false
+		},
+	}
+	
+	
+	
+	function initConditionDef(condDefID) {
+		
+		var condDef
+		if (condDefID !== null) {
+			condDef = alertCondDefs[condDefID]
+		} else {
+			condDef = {
+				hasDateParam:false,
+				hasNumberParam:false
+			} 			
+		}
+		
+		if (condDef.hasDateParam) {
+			$dateParamInput.css("display","")
+		} else {
+			$dateParamInput.css("display","none")
+		}
+		
+		if (condDef.hasNumberParam) {
+			$numParamInput.show()
+		} else {
+			$numParamInput.hide()
+		}
+		
+	}
+	
+	var $modeSelection = $alertProps.find(".alertConditionDateModeSelection")
+	$modeSelection.empty()
+	$modeSelection.append(defaultSelectOptionPromptHTML("Select a condition"))
+	for(var condID in alertCondDefs) {
+	 	var selectCondHTML = selectOptionHTML(condID, alertCondDefs[condID].label)
+	 	$modeSelection.append(selectCondHTML)				
+	}
+	
+	if (defaultConditionInfo !== null) {
+		initConditionDef(defaultConditionInfo.conditionID)
+		var condDef = alertCondDefs[defaultConditionInfo.conditionID]
+		
+		$modeSelection.val(defaultConditionInfo.conditionID)
+		
+		if (condDef.hasDateParam) {
+			var dateMoment = moment(defaultConditionInfo.dateParam)
+			$dateParamInput.data("DateTimePicker").date(dateMoment)			
+		} else {
+			$dateParamInput.data("DateTimePicker").date(null)
+		}
+		if (condDef.hasNumberParam) {
+			$numParamInput.val(defaultConditionInfo.numberParam)
+		} else {
+			$numParamInput.val(null)
+		}
+	} else {
+		initConditionDef(null)
+		$dateParamInput.data("DateTimePicker").date(null)
+		$numParamInput.val(null)
+	}
+	
+	initSelectControlChangeHandler($modeSelection,function(conditionID) {
+		initConditionDef(conditionID)
+		updateAlertConditions(propsParams)
+	})
+	
+    $dateParamInput.on("dp.change", function (e) {
+		updateAlertConditions(propsParams)
+    });
+	$numParamInput.blur(function() {
+		updateConditionProperties()			
+	})
+	
+	$listItem.data("alertCondDefFunc",function() {
+		var condID = $modeSelection.val()
+		
+		if(condID === null || condID.length <= 0) {
+			return null
+		}
+		var condDef = { fieldID: fieldInfo.fieldID,
+			conditionID: condID }	
+		
+		var condInfo = alertCondDefs[condID]
+		
+		if (condInfo.hasNumberParam) {
+			var numberVal = convertStringToNumber($numParamInput.val())
+			if(numberVal === null) {
+				return null	
+			}
+			condDef.numberParam = numberVal
+		}
+			
+		if (condInfo.hasStartDate) {
+			var dateVal = $dateParamInput.data("DateTimePicker").date()
+			if (dateVal == null) {
+				return null
+			}
+			condDef.dateParam = dateVal.utc()
+		}
+		
+		return condDef
+	})
+	
 	
 	
 	$listItem.append($alertProps)
@@ -50,11 +196,40 @@ function createAlertPropsConditionItem(propsParams,fieldInfo,defaultConditionInf
 }
 
 function initAlertConditionProps(params) {
+	
+	var conditionFieldTypes = [fieldTypeTime]
+	
+	function loadDefaultConditions() {
+		loadFieldInfo(params.databaseID,conditionFieldTypes,function(fieldsByID) {
+			
+			var getAlertParams = { 
+				alertID: params.alertID
+			}
+			jsonAPIRequest("alert/get",getAlertParams,function(alertInfo) {		
+				var $alertConditionList = $("#alertConditionList")
+				var conditions = alertInfo.properties.conditions
+				
+				for(var condIndex = 0; 
+						condIndex < conditions.length; condIndex++) {
+					
+					var currCond = conditions[condIndex]
+			
+					var fieldInfo = fieldsByID[currCond.fieldID]
+					
+					$alertConditionList.append(createAlertPropsConditionItem(params,fieldInfo,currCond))
+				
+				}
+			})			
+		})
+	
+	}
+	loadDefaultConditions()
+	
 			
 	var fieldSelectionDropdownParams = {
 		elemPrefix: "alertCondition_",
 		databaseID: params.databaseID,
-		fieldTypes: [fieldTypeTime],
+		fieldTypes: conditionFieldTypes,
 		fieldSelectionCallback: function(fieldInfo) {
 			
 			var $alertConditionList = $("#alertConditionList")

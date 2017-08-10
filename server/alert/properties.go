@@ -1,22 +1,46 @@
 package alert
 
 import (
+	"fmt"
 	"resultra/datasheet/server/generic/uniqueID"
+	"time"
 )
 
+type AlertCondition struct {
+	FieldID     string     `json:"fieldID"`
+	ConditionID string     `json:"conditionID"`
+	DateParam   *time.Time `json:"dateParam,omitempty"`
+	NumberParam *float64   `json:"numberParam,omitempty"`
+}
+
 type AlertProperties struct {
-	DummyProp bool `json:"dummyProp"`
+	Conditions []AlertCondition `json:"conditions"`
 }
 
 func (srcProps AlertProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*AlertProperties, error) {
 
 	destProps := AlertProperties{}
 
+	destConditions := []AlertCondition{}
+	for _, srcCondition := range srcProps.Conditions {
+		destCondition := srcCondition
+
+		remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcCondition.FieldID)
+		if err != nil {
+			return nil, fmt.Errorf("AlertProperties.Clone: %v", err)
+		}
+		destCondition.FieldID = remappedFieldID
+
+		destConditions = append(destConditions, destCondition)
+	}
+	destProps.Conditions = destConditions
+
 	return &destProps, nil
 }
 
 func newDefaultAlertProperties() AlertProperties {
-	defaultProps := AlertProperties{}
+	defaultProps := AlertProperties{
+		Conditions: []AlertCondition{}}
 
 	return defaultProps
 }
