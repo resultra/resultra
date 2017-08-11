@@ -14,6 +14,25 @@ type FieldValueUpdate struct {
 
 type FieldValueUpdateSeries []FieldValueUpdate
 
+func (series FieldValueUpdateSeries) valueAsOf(asOfTime time.Time) interface{} {
+
+	var theVal interface{}
+	theVal = nil
+	for i := len(series) - 1; i >= 0; i-- {
+		valUpdateTime := series[i].UpdateTimeStamp
+		if valUpdateTime.Before(asOfTime) {
+			theVal = series[i].CellValue
+		} else if valUpdateTime.Equal(asOfTime) {
+			theVal = series[i].CellValue
+		} else {
+			// Update time is after 'asOfTime' => we've moved past asOfTime in the
+			// series, so return whatever was the last value before this value.
+			return theVal
+		}
+	}
+	return theVal
+}
+
 // Custom sort function for the FieldValueUpate
 type ByUpdateTime []FieldValueUpdate
 
@@ -34,6 +53,7 @@ type CellUpdateFieldValueIndex map[string]FieldValueUpdateSeries
 // There will only be cell updates in the datastore for non-calculated fields. For these fields,
 // this function returns the latest (most recent) values.
 func (cellUpdateFieldValIndex CellUpdateFieldValueIndex) LatestNonCalcFieldValues() *RecFieldValues {
+
 	recFieldValues := RecFieldValues{}
 
 	for fieldID, updateSeries := range cellUpdateFieldValIndex {
@@ -43,6 +63,22 @@ func (cellUpdateFieldValIndex CellUpdateFieldValueIndex) LatestNonCalcFieldValue
 	}
 
 	return &recFieldValues
+}
+
+func (cellUpdateFieldValIndex CellUpdateFieldValueIndex) NonCalcFieldValuesAsOf(asOfTime time.Time) RecFieldValues {
+
+	recFieldValues := RecFieldValues{}
+
+	for fieldID, updateSeries := range cellUpdateFieldValIndex {
+		if len(updateSeries) > 0 {
+			asOfVal := updateSeries.valueAsOf(asOfTime)
+			if asOfVal != nil {
+				recFieldValues[fieldID] = asOfVal
+			}
+		}
+	}
+
+	return recFieldValues
 }
 
 func NewUpdateFieldValueIndexForCellUpdates(recCellUpdates *RecordCellUpdates, fieldsByID map[string]field.Field) (*CellUpdateFieldValueIndex, error) {

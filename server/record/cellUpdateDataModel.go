@@ -34,6 +34,21 @@ type CellUpdate struct {
 	Properties       CellUpdateProperties // Properties encoded as JSON
 }
 
+// Custom sort function for the FieldValueUpate
+type CellUpdateByUpdateTime []CellUpdate
+
+func (s CellUpdateByUpdateTime) Len() int {
+	return len(s)
+}
+func (s CellUpdateByUpdateTime) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+// Sort in  chronological order; i.e. the most recent dates come first.
+func (s CellUpdateByUpdateTime) Less(i, j int) bool {
+	return s[i].UpdateTimeStamp.Before(s[j].UpdateTimeStamp)
+}
+
 const FullyCommittedCellUpdatesChangeSetID string = ""
 
 func SaveCellUpdate(cellUpdate CellUpdate, doCollapseRecentValues bool) error {

@@ -3,6 +3,7 @@ package recordUpdate
 import (
 	"fmt"
 	"net/http"
+	"resultra/datasheet/server/alert"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordValue"
@@ -35,6 +36,9 @@ func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*rec
 		return nil, fmt.Errorf(
 			"updateRecordValue: Error mapping field values: err = %v", mapErr)
 	}
+
+	// (re)generate any alerts which may have been triggered by the current update
+	alert.GenerateRecordAlerts(recordForUpdate.ParentDatabaseID, recordForUpdate.RecordID)
 
 	// Force a recalculation of results the next time results are loaded.
 	recordValue.ResultsCache.Remove(recordForUpdate.ParentDatabaseID)
