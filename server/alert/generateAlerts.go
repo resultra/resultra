@@ -9,8 +9,9 @@ import (
 )
 
 type AlertProcessingResult struct {
-	Error    error
-	RecordID string
+	Error         error
+	RecordID      string
+	Notifications []AlertNotification
 }
 
 type RecordAlertProcessingConfig struct {
@@ -22,7 +23,7 @@ type RecordAlertProcessingConfig struct {
 
 // generateOneRecordAlertsFromConfig is the internal (lower level) implementation function for
 // generating alerts for a single record.
-func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessingConfig) error {
+func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessingConfig) ([]AlertNotification, error) {
 
 	// Cell updates need to be in chronological order to be processed for alerts
 	sort.Sort(record.CellUpdateByUpdateTime(recProcessingConfig.RecCellUpdates.CellUpdates))
@@ -30,11 +31,13 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 	cellUpdateFieldValIndex, indexErr := record.NewUpdateFieldValueIndexForCellUpdates(recProcessingConfig.RecCellUpdates,
 		recProcessingConfig.CalcFieldConfig.FieldsByID)
 	if indexErr != nil {
-		return fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", indexErr)
+		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", indexErr)
 	}
 
 	// For non-calculated fields, get the latest (most recent) field values.
 	prevFieldValues := record.RecFieldValues{}
+
+	alertNotifications := []AlertNotification{}
 
 	// Iterate through the record's cell updates. This provides a "tick by tick" iteration of the changes
 	// for the given record. Then, each time there is a cell update, recalculate the calculated field
@@ -47,7 +50,7 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 		// This allows alerts which trigger from calculated field values to be processed just like
 		// non calculated fields.
 		if calcErr := calcField.UpdateCalcFieldValues(recProcessingConfig.CalcFieldConfig, &currFieldValues); calcErr != nil {
-			return fmt.Errorf("GenerateRecordAlerts: : err = %v", calcErr)
+			return nil, fmt.Errorf("GenerateRecordAlerts: : err = %v", calcErr)
 		}
 
 		for _, currAlert := range recProcessingConfig.Alerts {
@@ -58,47 +61,56 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 				CurrFieldVals:   currFieldValues,
 				ProcessedAlert:  currAlert}
 
-			processAlert(context)
+			alertNotification, processAlertErr := processAlert(context)
+			if processAlertErr != nil {
+				return nil, fmt.Errorf("generateOneRecordAlertsFromConfig: : err = %v", processAlertErr)
+			} else if alertNotification != nil {
+				alertNotifications = append(alertNotifications, *alertNotification)
+			}
 		}
 		prevFieldValues = currFieldValues
 	}
 
-	return nil
+	return alertNotifications, nil
 }
 
 func processOneRecordAlertsWorker(resultsChan chan AlertProcessingResult,
 	recAlertProcessingConfig RecordAlertProcessingConfig) {
 
-	err := generateOneRecordAlertsFromConfig(recAlertProcessingConfig)
+	alertNotifications, err := generateOneRecordAlertsFromConfig(recAlertProcessingConfig)
 
 	result := AlertProcessingResult{
-		Error:    err,
-		RecordID: recAlertProcessingConfig.RecordID}
+		Error:         err,
+		RecordID:      recAlertProcessingConfig.RecordID,
+		Notifications: alertNotifications}
 
 	resultsChan <- result
 
 }
 
-func GenerateAllAlerts(databaseID string) error {
+// GenerateAllAlerts regenerates all alerts for all records. This is the top-level function to re-generate all the
+// alert notifications at once.
+func GenerateAllAlerts(databaseID string) ([]AlertNotification, error) {
 
 	// Create a config/context object used for calculating the calculated fields for alert generation. This same
 	// config can be reused by the alert generation for all the records.
 	calcFieldUpdateConfig, err := calcField.CreateCalcFieldUpdateConfig(databaseID)
 	if err != nil {
-		return fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
+		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
 
 	// Get all cell updates at once for the given tracking databse. This is much faster than doing a database call for each and every record.
 	recordCellUpdateMap, err := record.GetAllNonDraftCellUpdates(databaseID, record.FullyCommittedCellUpdatesChangeSetID)
 	if err != nil {
-		return fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
+		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
 
 	alerts, alertErr := getAllAlerts(databaseID)
 	if alertErr != nil {
-		return fmt.Errorf("GenerateRecordAlerts: Error getting alerts: %v", alertErr)
+		return nil, fmt.Errorf("GenerateRecordAlerts: Error getting alerts: %v", alertErr)
 	}
 
+	alertNotifications := []AlertNotification{}
 	resultsChan := make(chan AlertProcessingResult)
 
 	for currRecordID, currRecCellUpdates := range recordCellUpdateMap {
@@ -116,35 +128,37 @@ func GenerateAllAlerts(databaseID string) error {
 	for range recordCellUpdateMap {
 		result := <-resultsChan
 		if result.Error != nil {
-			return fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", result.Error)
+			return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", result.Error)
+		} else if result.Notifications != nil {
+			alertNotifications = append(alertNotifications, result.Notifications...)
 		}
 	}
 
-	return nil
+	return alertNotifications, nil
 
 }
 
 // GenerateOneRecordAlerts is a top-level entry point for regenerating the alerts for an entire
 // tracker, but a single recordID
-func GenerateOneRecordAlerts(databaseID string, recordID string) error {
+func GenerateOneRecordAlerts(databaseID string, recordID string) ([]AlertNotification, error) {
 
 	log.Printf("Regenerating alerts ...")
 
 	calcFieldUpdateConfig, err := calcField.CreateCalcFieldUpdateConfig(databaseID)
 	if err != nil {
-		return fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
+		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
 
 	// Retrieve a list of sorted record updates.
 	recCellUpdates, getErr := record.GetRecordCellUpdates(recordID, record.FullyCommittedCellUpdatesChangeSetID)
 	if getErr != nil {
-		return fmt.Errorf("GenerateRecordAlerts: failure retrieving cell updates for record = %v: error = %v",
+		return nil, fmt.Errorf("GenerateRecordAlerts: failure retrieving cell updates for record = %v: error = %v",
 			recordID, getErr)
 	}
 
 	alerts, alertErr := getAllAlerts(databaseID)
 	if alertErr != nil {
-		return fmt.Errorf("GenerateRecordAlerts: Error getting alerts: %v", alertErr)
+		return nil, fmt.Errorf("GenerateRecordAlerts: Error getting alerts: %v", alertErr)
 	}
 
 	alertProcessConfig := RecordAlertProcessingConfig{
