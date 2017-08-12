@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/webui/admin"
+	"resultra/datasheet/webui/alertPage"
 	"resultra/datasheet/webui/dashboard"
 	"resultra/datasheet/webui/formPage"
 	"resultra/datasheet/webui/homePage"
@@ -21,6 +22,7 @@ func init() {
 	admin.RegisterHTTPHandlers(router)
 	trackerMainPage.RegisterHTTPHandlers(router)
 	formPage.RegisterHTTPHandlers(router)
+	alertPage.RegisterHTTPHandlers(router)
 
 	http.Handle("/", router)
 }

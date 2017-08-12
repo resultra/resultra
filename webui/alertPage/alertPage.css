@@ -1,0 +1,17 @@
+#alertPageNameHeader {
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+#alertPageHeaderCol {
+	 text-align:center;
+}
+
+#alertsPane {
+	padding: 0px;
+}
+
+#alertPageHeaderUILayout
+{
+	padding: 4px; /* override jQuery UI Layout padding */
+}

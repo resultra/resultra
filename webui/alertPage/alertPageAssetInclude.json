@@ -1,0 +1,11 @@
+{
+	"subDirs":["../generic",
+		"../common"],
+	"cssFiles": ["alertPage.css"],
+	"jsFiles": ["alertPage.js"],
+	"htmlFiles":["alertPage.html"],
+	"imageFiles":[],
+	"minCSSFile":"alertPage/alertPage.min.css",
+	"minJSFile": "alertPage/alertPage.min.js",
+	"injectPlaceholderName":"alertPageAssets"
+}

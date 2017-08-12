@@ -1,0 +1,106 @@
+{{define "alertPageBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  {{template "trackerPageBreadcrumb" .}}
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Alerts</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "alertPageHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "alertPageBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "alertPageHeaderControls"}}
+<div class="container-fluid" id="recordHeaderGrid">
+	<div class="row">
+		<div class= "col-sm-2">
+			<button type="button" class="btn btn-default btn-sm" id="viewTableOfContentsMenuButton">
+			  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+			</button>
+		</div> <!-- column -->
+		<div class= "col-sm-8"  id="alertPageHeaderCol">
+			<h4 id="alertPageNameHeader">Alerts</h4>
+		</div> <!-- column -->
+		<div class= "col-sm-2">
+			<!-- TODO - Put a 'more' drop-down menu to share a link to the form -->
+		</div> <!-- column -->
+	</div> <!-- row -->
+</div> <!-- #recordHeaderGrid  -->
+{{end}}
+
+
+{{define "alertPage"}}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- alertPageAssets:css -->
+	<!-- endinject -->
+	
+	<script>var alertPageContext = { databaseID: "{{.DatabaseID}}" } 
+		var GlobalFormPagePrivs = "edit"
+	</script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- alertPageAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+  <body>  
+  
+	<div id="layoutPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north">
+			{{template "alertPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west" id="viewFormTocLayout">
+			{{template "databaseTOC" .}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center" id="alertsPane">
+			
+			<div class="ui-layout-center">
+				
+				<div id="alertPageLayoutCanvas">TBD - Alert List</div>
+				
+			</div> <!-- ui-layout-center  -->
+				
+			<div class="ui-layout-north" id="alertPageHeaderUILayout">
+				{{template "alertPageHeaderControls" .}}
+			</div> <!-- ui-layout-north #recordHeaderUILayout -->
+			
+				
+		</div> <!-- center pane for entire page -->	
+	</div> <!-- layout page -->
+	
+	{{template "submitFormDialog"}}
+	{{template "attachmentTemplates"}}
+	{{template "formButtonPopupFormDialog"}}
+
+	
+  </body>
+  	
+</html>
+
+{{end}}
