@@ -38,7 +38,7 @@ func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*rec
 	}
 
 	// (re)generate any alerts which may have been triggered by the current update
-	alert.GenerateRecordAlerts(recordForUpdate.ParentDatabaseID, recordForUpdate.RecordID)
+	alert.GenerateOneRecordAlerts(recordForUpdate.ParentDatabaseID, recordForUpdate.RecordID)
 
 	// Force a recalculation of results the next time results are loaded.
 	recordValue.ResultsCache.Remove(recordForUpdate.ParentDatabaseID)
