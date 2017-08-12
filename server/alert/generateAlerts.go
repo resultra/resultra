@@ -92,6 +92,8 @@ type RecordAlertProcessingConfig struct {
 	Alerts          []Alert
 }
 
+// generateOneRecordAlertsFromConfig is the internal (lower level) implementation function for
+// generating alerts for a single record.
 func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessingConfig) error {
 
 	// Cell updates need to be in chronological order to be processed for alerts
@@ -194,6 +196,8 @@ func GenerateAllAlerts(databaseID string) error {
 
 }
 
+// GenerateOneRecordAlerts is a top-level entry point for regenerating the alerts for an entire
+// tracker, but a single recordID
 func GenerateOneRecordAlerts(databaseID string, recordID string) error {
 
 	log.Printf("Regenerating alerts ...")
