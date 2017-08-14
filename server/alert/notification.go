@@ -12,7 +12,7 @@ type AlertNotification struct {
 	DateAfter  *time.Time `json:"dateAfter,omitempty"`
 }
 
-// Custom sort function for the FieldValueUpate
+// Custom sort function
 type NotificationByTime []AlertNotification
 
 func (s NotificationByTime) Len() int {

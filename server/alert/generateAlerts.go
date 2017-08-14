@@ -90,9 +90,14 @@ func processOneRecordAlertsWorker(resultsChan chan AlertProcessingResult,
 
 }
 
+type AlertGenerationResult struct {
+	AlertsByID    map[string]Alert    `json:"alertsByID"`
+	Notifications []AlertNotification `json:"notifications"`
+}
+
 // GenerateAllAlerts regenerates all alerts for all records. This is the top-level function to re-generate all the
 // alert notifications at once.
-func generateAllAlerts(databaseID string) ([]AlertNotification, error) {
+func generateAllAlerts(databaseID string) (*AlertGenerationResult, error) {
 
 	// Create a config/context object used for calculating the calculated fields for alert generation. This same
 	// config can be reused by the alert generation for all the records.
@@ -110,6 +115,10 @@ func generateAllAlerts(databaseID string) ([]AlertNotification, error) {
 	alerts, alertErr := getAllAlerts(databaseID)
 	if alertErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: Error getting alerts: %v", alertErr)
+	}
+	alertsByID := map[string]Alert{}
+	for _, currAlert := range alerts {
+		alertsByID[currAlert.AlertID] = currAlert
 	}
 
 	alertNotifications := []AlertNotification{}
@@ -139,7 +148,11 @@ func generateAllAlerts(databaseID string) ([]AlertNotification, error) {
 	// Sort in reverse chronological order
 	sort.Sort(NotificationByTime(alertNotifications))
 
-	return alertNotifications, nil
+	alertGenResults := AlertGenerationResult{
+		AlertsByID:    alertsByID,
+		Notifications: alertNotifications}
+
+	return &alertGenResults, nil
 
 }
 
