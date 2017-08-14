@@ -20,6 +20,8 @@ func init() {
 	alertRouter.HandleFunc("/api/alert/get", getAlertAPI)
 	alertRouter.HandleFunc("/api/alert/list", getAlertListAPI)
 
+	alertRouter.HandleFunc("/api/alert/getNotificationList", getAlertNotificationListAPI)
+
 	alertRouter.HandleFunc("/api/alert/setName", setAlertName)
 	alertRouter.HandleFunc("/api/alert/setConditions", setConditions)
 
@@ -85,6 +87,22 @@ func getAlertListAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, alerts)
+	}
+
+}
+
+func getAlertNotificationListAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetAlertListParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if notifications, err := generateAllAlerts(params.ParentDatabaseID); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, notifications)
 	}
 
 }

@@ -57,6 +57,8 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 
 			context := AlertProcessingContext{
 				CalcFieldConfig: recProcessingConfig.CalcFieldConfig,
+				RecordID:        recProcessingConfig.RecordID,
+				UpdateTimestamp: currCellUpdate.UpdateTimeStamp,
 				PrevFieldVals:   prevFieldValues,
 				CurrFieldVals:   currFieldValues,
 				ProcessedAlert:  currAlert}
@@ -90,7 +92,7 @@ func processOneRecordAlertsWorker(resultsChan chan AlertProcessingResult,
 
 // GenerateAllAlerts regenerates all alerts for all records. This is the top-level function to re-generate all the
 // alert notifications at once.
-func GenerateAllAlerts(databaseID string) ([]AlertNotification, error) {
+func generateAllAlerts(databaseID string) ([]AlertNotification, error) {
 
 	// Create a config/context object used for calculating the calculated fields for alert generation. This same
 	// config can be reused by the alert generation for all the records.
@@ -133,6 +135,9 @@ func GenerateAllAlerts(databaseID string) ([]AlertNotification, error) {
 			alertNotifications = append(alertNotifications, result.Notifications...)
 		}
 	}
+
+	// Sort in reverse chronological order
+	sort.Sort(NotificationByTime(alertNotifications))
 
 	return alertNotifications, nil
 

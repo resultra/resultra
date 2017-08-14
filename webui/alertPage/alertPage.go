@@ -18,7 +18,8 @@ import (
 var alertPageTemplates *template.Template
 
 func init() {
-	baseTemplateFiles := []string{"static/alertPage/alertPage.html"}
+	baseTemplateFiles := []string{"static/alertPage/alertPage.html",
+		"static/alertPage/notificationList.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,

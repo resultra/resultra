@@ -41,5 +41,6 @@ $(document).ready(function() {
 	}	
 	initDatabaseTOC(tocConfig)
 	
+	initAlertNotificationList(alertPageContext.databaseID)
 						
 }); // document ready

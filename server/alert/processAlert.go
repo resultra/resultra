@@ -6,22 +6,19 @@ import (
 	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/record"
+	"time"
 )
 
 type AlertProcessingContext struct {
 	CalcFieldConfig *calcField.CalcFieldUpdateConfig
+	RecordID        string
+	UpdateTimestamp time.Time
 	PrevFieldVals   record.RecFieldValues
 	CurrFieldVals   record.RecFieldValues
 	ProcessedAlert  Alert
 }
 
 const alertCondChange string = "changed"
-
-type AlertNotification struct {
-	AlertInfo Alert       `json:"alertInfo"`
-	ValBefore interface{} `json:"valBefore"`
-	ValAfter  interface{} `json:"valAfter"`
-}
 
 func processTimeFieldAlert(context AlertProcessingContext, cond AlertCondition) (*AlertNotification, error) {
 
@@ -38,17 +35,21 @@ func processTimeFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 			log.Printf("processTimeFieldAlert: change - value defined: %v", valAfter)
 
 			alertNofify := AlertNotification{
-				AlertInfo: context.ProcessedAlert,
-				ValBefore: valBefore,
-				ValAfter:  valAfter}
+				AlertID:    context.ProcessedAlert.AlertID,
+				RecordID:   context.RecordID,
+				Timestamp:  context.UpdateTimestamp,
+				DateBefore: &valBefore,
+				DateAfter:  &valAfter}
 
 			return &alertNofify, nil
 		} else if (foundValBefore == true) && (foundValAfter == false) {
 			log.Printf("processTimeFieldAlert: change - time value cleared: cleared val = %v", valBefore)
 			alertNofify := AlertNotification{
-				AlertInfo: context.ProcessedAlert,
-				ValBefore: valBefore,
-				ValAfter:  valAfter}
+				AlertID:    context.ProcessedAlert.AlertID,
+				RecordID:   context.RecordID,
+				Timestamp:  context.UpdateTimestamp,
+				DateBefore: &valBefore,
+				DateAfter:  &valAfter}
 			return &alertNofify, nil
 		} else { // value found bother before and after update => compare the actual dates
 			if valBefore.Equal(valAfter) {
@@ -57,9 +58,11 @@ func processTimeFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 			} else {
 				log.Printf("processTimeFieldAlert: change - time values changed: %v -> %v", valBefore, valAfter)
 				alertNofify := AlertNotification{
-					AlertInfo: context.ProcessedAlert,
-					ValBefore: valBefore,
-					ValAfter:  valAfter}
+					AlertID:    context.ProcessedAlert.AlertID,
+					RecordID:   context.RecordID,
+					Timestamp:  context.UpdateTimestamp,
+					DateBefore: &valBefore,
+					DateAfter:  &valAfter}
 				return &alertNofify, nil
 			}
 		}
