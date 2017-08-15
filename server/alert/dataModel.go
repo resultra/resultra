@@ -20,6 +20,7 @@ type Alert struct {
 type NewAlertParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 	Name             string `json:"name"`
+	FormID           string `json:"formID"`
 }
 
 func saveAlert(newAlert Alert) error {
@@ -44,10 +45,13 @@ func newAlert(params NewAlertParams) (*Alert, error) {
 		return nil, sanitizeErr
 	}
 
+	newAlertProps := newDefaultAlertProperties()
+	newAlertProps.FormID = params.FormID
+
 	newAlert := Alert{ParentDatabaseID: params.ParentDatabaseID,
 		AlertID:    uniqueID.GenerateSnowflakeID(),
 		Name:       sanitizedName,
-		Properties: newDefaultAlertProperties()}
+		Properties: newAlertProps}
 
 	if err := saveAlert(newAlert); err != nil {
 		return nil, fmt.Errorf("newAlert: error saving form: %v", err)

@@ -16,13 +16,28 @@ function openNewAlertDialog(databaseID) {
 					}
 				} // remote
 			}, // newAlertNameInput
+			newAlertFormSelection: {
+				required:true,
+			}
 		},
 		messages: {
 			newAlertNameInput: {
 				required: "Alert name is required"
+			},
+			newAlertFormSelection: {
+				required: "Form selection is required"
 			}
 		}
 	})
+	
+	var selectFormParams = {
+		menuSelector: "#newAlertFormSelection",
+		parentDatabaseID: databaseID,
+		initialFormID: null
+	}	
+	populateFormSelectionMenu(selectFormParams)
+	var $formSelection = $("#newAlertFormSelection")
+	
 
 	resetFormValidationFeedback($newAlertDialogForm)
 	$alertNameInput.val("")
@@ -37,7 +52,8 @@ function openNewAlertDialog(databaseID) {
 		if($newAlertDialogForm.valid()) {	
 			var newAlertParams = { 
 				parentDatabaseID: databaseID, 
-				name: $alertNameInput.val() }
+				name: $alertNameInput.val(),
+				formID: $formSelection.val() }
 			jsonAPIRequest("alert/new",newAlertParams,function(newAlertInfo) {
 				console.log("Created new alert: " + JSON.stringify(newAlertInfo))
 				$newAlertDialog.modal('hide')
