@@ -23,6 +23,8 @@ func init() {
 	alertRouter.HandleFunc("/api/alert/getNotificationList", getAlertNotificationListAPI)
 
 	alertRouter.HandleFunc("/api/alert/setName", setAlertName)
+	alertRouter.HandleFunc("/api/alert/setForm", setForm)
+
 	alertRouter.HandleFunc("/api/alert/setConditions", setConditions)
 
 	alertRouter.HandleFunc("/api/alert/validateFormName", validateAlertNameAPI)
@@ -126,6 +128,15 @@ func setAlertName(w http.ResponseWriter, r *http.Request) {
 
 func setConditions(w http.ResponseWriter, r *http.Request) {
 	var params SetConditionsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processAlertPropUpdate(w, r, params)
+}
+
+func setForm(w http.ResponseWriter, r *http.Request) {
+	var params SetFormParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

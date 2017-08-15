@@ -68,3 +68,17 @@ func (updateParams SetConditionsParams) updateProps(alert *Alert) error {
 
 	return nil
 }
+
+type SetFormParams struct {
+	AlertIDHeader
+	FormID string `json:"formID"`
+}
+
+func (updateParams SetFormParams) updateProps(alert *Alert) error {
+
+	// TODO - Validate conditions
+
+	alert.Properties.FormID = updateParams.FormID
+
+	return nil
+}

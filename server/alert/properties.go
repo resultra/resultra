@@ -14,6 +14,7 @@ type AlertCondition struct {
 }
 
 type AlertProperties struct {
+	FormID     string           `json:"formID"`
 	Conditions []AlertCondition `json:"conditions"`
 }
 
@@ -34,6 +35,12 @@ func (srcProps AlertProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*A
 		destConditions = append(destConditions, destCondition)
 	}
 	destProps.Conditions = destConditions
+
+	destFormID, formIDErr := remappedIDs.GetExistingRemappedID(srcProps.FormID)
+	if formIDErr != nil {
+		return nil, fmt.Errorf("AlertProperties.Clone: %v", formIDErr)
+	}
+	destProps.FormID = destFormID
 
 	return &destProps, nil
 }

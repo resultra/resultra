@@ -1,11 +1,36 @@
 function initAlertNotificationList(databaseID) {
 	
-	var getAlertListParams = {
-		parentDatabaseID: databaseID
+	
+	function loadNotificaitonListInfo(loadDoneCallback) {
+		var loadsRemaining = 2
+		
+		var notificationList
+		var formsByID
+		
+		function oneLoadComplete() {
+			loadsRemaining--
+			if (loadsRemaining <= 0) {
+				loadDoneCallback(notificationList,formsByID)
+			}
+		}
+		
+		var getAlertListParams = { parentDatabaseID: databaseID }
+		jsonAPIRequest("alert/getNotificationList",getAlertListParams,function(notListReply) {
+			notificationList = notListReply
+			oneLoadComplete()
+		})
+
+		var getFormsParams = { parentDatabaseID: databaseID }
+		jsonAPIRequest("frm/formsByID",getFormsParams,function(formsByIDReply) {
+			formsByID = formsByIDReply
+			oneLoadComplete()
+		})
+		
+		
 	}
 	
-	jsonAPIRequest("alert/getNotificationList",getAlertListParams,function(notificationList) {
-		
+	loadNotificaitonListInfo(function(notificationList,formsByID) {
+			
 		var $notificationListTable = $('#notificationListTable')
 		
 		var timeDataCol = {
@@ -27,7 +52,28 @@ function initAlertNotificationList(databaseID) {
 			type:'string'
 		}
 		
-		var dataCols = [timeDataCol,alertNameDataCol]
+		var formLinkCol = {
+			data: 'formName',
+			type:'date',
+			createdCell: function( cell, cellData, rowData, rowIndex, colIndex ) {
+				var $formLink = $(cell).find('a')
+				$formLink.text(rowData.formName())
+				
+				var viewFormLink = '/viewItem/' + rowData.formID() + '/' + rowData.recordID()
+				$formLink .attr("href",viewFormLink)
+			},
+			render: function(data, type, row, meta) {
+				if (type==='display') {
+					return '<a href="">Link goes here</a>'
+				} else {
+					return data
+				}
+			},			
+			defaultContent: ''
+			
+		}
+		
+		var dataCols = [timeDataCol,alertNameDataCol,formLinkCol]
 		
 		function AlertDisplayData(rawDataIndex) {
 			
@@ -41,6 +87,21 @@ function initAlertNotificationList(databaseID) {
 			
 			this.timestamp = function() {
 				return moment(this.notification.timestamp).toDate()
+			}
+			
+			this.formName = function() {
+				var formID = this.alert.properties.formID
+				if (formID.length > 0) {
+					return formsByID[formID].name
+				}
+				return ""
+			}
+			this.formID = function() {
+				return this.alert.properties.formID
+			}
+			
+			this.recordID = function() {
+				return this.notification.recordID
 			}
 		}
 		

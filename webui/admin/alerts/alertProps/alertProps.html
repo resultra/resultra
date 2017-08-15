@@ -39,12 +39,34 @@
 
 {{end}}
 
+{{define "adminAlertFormProperty"}}
+	<tr>
+		<td class="width200"><label>Form for notification</label>
+			<div><small>Configure which form is shown with the alert's notification.</small></div>
+		</td>
+
+		<td id="adminAlertFormTableCell">
+			<div class="maxWidth300">
+
+				<form id="alertFormPropFormForm">
+						<div class="form-group">
+							<select class="form-control maxWidth300" id="alertPropFormSelection"></select>
+						</div>
+				</form>
+	
+			</div>
+		</td>
+	</tr>
+{{end}}
+
+
 
 
 {{define "alertPropsBody"}}
 
 <table class="table">
 	{{template "adminAlertNameProperty"}}
+	{{template "adminAlertFormProperty"}}
 	{{template "alertConditionProps" .}}
 </table>
 
