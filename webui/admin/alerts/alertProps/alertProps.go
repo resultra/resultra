@@ -60,7 +60,7 @@ func editAlertPropsPage(w http.ResponseWriter, r *http.Request) {
 
 	fieldSelectionParams := field.FieldSelectionDropdownTemplateParams{
 		ElemPrefix:     "alertCondition_",
-		ButtonTitle:    "Add Condition",
+		ButtonTitle:    "Add Trigger Event",
 		ButtonIconName: "glyphicon-plus-sign"}
 
 	//	elemPrefix := "userRole_"
