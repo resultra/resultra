@@ -27,11 +27,41 @@ $(document).ready(function() {
 		
 	} // initItemListFormProperties
 	
+	function initAlertFieldProperties(alertInfo) {
+		var $fieldSelection = $('#alertPropFieldSelection')
+		
+		loadSortedFieldInfo(alertPropsContext.databaseID,[fieldTypeText],function(sortedFields) {
+			
+			populateSortedFieldSelectionMenu($fieldSelection,sortedFields)
+			$fieldSelection.val(alertInfo.properties.summaryFieldID)
+			
+			initSelectControlChangeHandler($fieldSelection, function(selectedFieldID) {
+
+				var setFieldParams = {
+					alertID: alertInfo.alertID,
+					summaryFieldID: selectedFieldID
+				}	
+
+				jsonAPIRequest("alert/setSummaryField",setFieldParams,function(setFieldParams) {
+					console.log("Done setting field for alert")
+				}) 
+			
+			})
+			
+		})
+		
+		
+	}
+	
+	
+	
+	
 	var getAlertParams = { 
 		alertID: alertPropsContext.alertID
 	}
 	jsonAPIRequest("alert/get",getAlertParams,function(alertInfo) {
 		initAlertFormProperties(alertInfo)
+		initAlertFieldProperties(alertInfo)
 	}) 
 	
 	var conditionPropsParams = {

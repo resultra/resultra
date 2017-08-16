@@ -82,3 +82,17 @@ func (updateParams SetFormParams) updateProps(alert *Alert) error {
 
 	return nil
 }
+
+type SetSummaryFieldParams struct {
+	AlertIDHeader
+	SummaryFieldID string `json:"summaryFieldID"`
+}
+
+func (updateParams SetSummaryFieldParams) updateProps(alert *Alert) error {
+
+	// TODO - Validate field ID
+
+	alert.Properties.SummaryFieldID = updateParams.SummaryFieldID
+
+	return nil
+}
