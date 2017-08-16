@@ -1,16 +1,17 @@
 function initAlertNotificationList(databaseID) {
 	
 	
-	function loadNotificaitonListInfo(loadDoneCallback) {
-		var loadsRemaining = 2
+	function loadNotificationListInfo(loadDoneCallback) {
+		var loadsRemaining = 3
 		
 		var notificationList
 		var formsByID
+		var fieldsByID
 		
 		function oneLoadComplete() {
 			loadsRemaining--
 			if (loadsRemaining <= 0) {
-				loadDoneCallback(notificationList,formsByID)
+				loadDoneCallback(notificationList,formsByID,fieldsByID)
 			}
 		}
 		
@@ -26,10 +27,14 @@ function initAlertNotificationList(databaseID) {
 			oneLoadComplete()
 		})
 		
+		loadFieldInfo(databaseID,[fieldTypeAll],function(fieldsByIDReply) {
+			fieldsByID = fieldsByIDReply
+			oneLoadComplete()			
+		})		
 		
 	}
 	
-	loadNotificaitonListInfo(function(notificationList,formsByID) {
+	loadNotificationListInfo(function(notificationList,formsByID,fieldsByID) {
 			
 		var $notificationListTable = $('#notificationListTable')
 		
@@ -48,6 +53,18 @@ function initAlertNotificationList(databaseID) {
 		
 		var alertNameDataCol = {
 			data: 'alertName', 
+			defaultContent: '',
+			type:'string'
+		}
+		
+		var itemSummaryCol = {
+			data: 'itemSummary', 
+			defaultContent: '',
+			type:'string'
+		}
+		
+		var notificationSummaryCol = {
+			data: 'notificationSummary', 
 			defaultContent: '',
 			type:'string'
 		}
@@ -73,7 +90,7 @@ function initAlertNotificationList(databaseID) {
 			
 		}
 		
-		var dataCols = [timeDataCol,alertNameDataCol,formLinkCol]
+		var dataCols = [timeDataCol,alertNameDataCol,itemSummaryCol,notificationSummaryCol, formLinkCol]
 		
 		function AlertDisplayData(rawDataIndex) {
 			
@@ -102,6 +119,14 @@ function initAlertNotificationList(databaseID) {
 			
 			this.recordID = function() {
 				return this.notification.recordID
+			}
+			
+			this.itemSummary = function() {
+				return this.notification.itemSummary
+			}
+			
+			this.notificationSummary = function() {
+				return formatNotificationSummary(fieldsByID,this.notification,this.alert)				
 			}
 		}
 		

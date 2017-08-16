@@ -5,11 +5,13 @@ import (
 )
 
 type AlertNotification struct {
-	AlertID    string     `json:"alertID"`
-	RecordID   string     `json:"recordID"`
-	Timestamp  time.Time  `json:"timestamp"`
-	DateBefore *time.Time `json:"dateBefore,omitempty"`
-	DateAfter  *time.Time `json:"dateAfter,omitempty"`
+	AlertID          string         `json:"alertID"`
+	RecordID         string         `json:"recordID"`
+	Timestamp        time.Time      `json:"timestamp"`
+	ItemSummary      string         `json:"itemSummary"`
+	DateBefore       *time.Time     `json:"dateBefore,omitempty"`
+	DateAfter        *time.Time     `json:"dateAfter,omitempty"`
+	TriggerCondition AlertCondition `json:"triggerCondition"`
 }
 
 // Custom sort function

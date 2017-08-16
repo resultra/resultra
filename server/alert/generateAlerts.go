@@ -39,6 +39,15 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 
 	alertNotifications := []AlertNotification{}
 
+	// Build up a set of field values for current time (latest). This is needed for the summary
+	// item/record information which is presented alongside the alert notification. In particular,
+	// each alert has an associated summary field which is selected to identify a record/item
+	// in the context of an alert notification.
+	latestFieldValues := cellUpdateFieldValIndex.LatestNonCalcFieldValues()
+	if calcErr := calcField.UpdateCalcFieldValues(recProcessingConfig.CalcFieldConfig, latestFieldValues); calcErr != nil {
+		return nil, fmt.Errorf("GenerateRecordAlerts: : err = %v", calcErr)
+	}
+
 	// Iterate through the record's cell updates. This provides a "tick by tick" iteration of the changes
 	// for the given record. Then, each time there is a cell update, recalculate the calculated field
 	// values for the record. Finally, process each of the alerts and generate an alert notification if needed.
@@ -55,12 +64,20 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 
 		for _, currAlert := range recProcessingConfig.Alerts {
 
+			itemSummaryFieldVal, foundSummary := latestFieldValues.GetTextFieldValue(currAlert.Properties.SummaryFieldID)
+			itemSummary := ""
+			if foundSummary {
+				itemSummary = itemSummaryFieldVal
+			}
+
 			context := AlertProcessingContext{
 				CalcFieldConfig: recProcessingConfig.CalcFieldConfig,
 				RecordID:        recProcessingConfig.RecordID,
 				UpdateTimestamp: currCellUpdate.UpdateTimeStamp,
 				PrevFieldVals:   prevFieldValues,
 				CurrFieldVals:   currFieldValues,
+				LatestFieldVals: *latestFieldValues,
+				ItemSummary:     itemSummary,
 				ProcessedAlert:  currAlert}
 
 			alertNotification, processAlertErr := processAlert(context)

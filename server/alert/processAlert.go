@@ -15,6 +15,8 @@ type AlertProcessingContext struct {
 	UpdateTimestamp time.Time
 	PrevFieldVals   record.RecFieldValues
 	CurrFieldVals   record.RecFieldValues
+	LatestFieldVals record.RecFieldValues
+	ItemSummary     string
 	ProcessedAlert  Alert
 }
 
@@ -35,21 +37,25 @@ func processTimeFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 			log.Printf("processTimeFieldAlert: change - value defined: %v", valAfter)
 
 			alertNofify := AlertNotification{
-				AlertID:    context.ProcessedAlert.AlertID,
-				RecordID:   context.RecordID,
-				Timestamp:  context.UpdateTimestamp,
-				DateBefore: &valBefore,
-				DateAfter:  &valAfter}
+				AlertID:          context.ProcessedAlert.AlertID,
+				RecordID:         context.RecordID,
+				Timestamp:        context.UpdateTimestamp,
+				ItemSummary:      context.ItemSummary,
+				TriggerCondition: cond,
+				DateBefore:       &valBefore,
+				DateAfter:        &valAfter}
 
 			return &alertNofify, nil
 		} else if (foundValBefore == true) && (foundValAfter == false) {
 			log.Printf("processTimeFieldAlert: change - time value cleared: cleared val = %v", valBefore)
 			alertNofify := AlertNotification{
-				AlertID:    context.ProcessedAlert.AlertID,
-				RecordID:   context.RecordID,
-				Timestamp:  context.UpdateTimestamp,
-				DateBefore: &valBefore,
-				DateAfter:  &valAfter}
+				AlertID:          context.ProcessedAlert.AlertID,
+				RecordID:         context.RecordID,
+				Timestamp:        context.UpdateTimestamp,
+				ItemSummary:      context.ItemSummary,
+				TriggerCondition: cond,
+				DateBefore:       &valBefore,
+				DateAfter:        &valAfter}
 			return &alertNofify, nil
 		} else { // value found bother before and after update => compare the actual dates
 			if valBefore.Equal(valAfter) {
@@ -58,11 +64,13 @@ func processTimeFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 			} else {
 				log.Printf("processTimeFieldAlert: change - time values changed: %v -> %v", valBefore, valAfter)
 				alertNofify := AlertNotification{
-					AlertID:    context.ProcessedAlert.AlertID,
-					RecordID:   context.RecordID,
-					Timestamp:  context.UpdateTimestamp,
-					DateBefore: &valBefore,
-					DateAfter:  &valAfter}
+					AlertID:          context.ProcessedAlert.AlertID,
+					RecordID:         context.RecordID,
+					Timestamp:        context.UpdateTimestamp,
+					ItemSummary:      context.ItemSummary,
+					TriggerCondition: cond,
+					DateBefore:       &valBefore,
+					DateAfter:        &valAfter}
 				return &alertNofify, nil
 			}
 		}
