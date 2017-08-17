@@ -29,7 +29,7 @@ function initRoleAlertPrivs(roleID) {
 		
 	}
 	
-	jsonAPIRequest("userRole/getAlertRolePrivs", { roleID: roleID }, function(roleAlertPrivs) {
+	jsonAPIRequest("userRole/getRoleAlertPrivs", { roleID: roleID }, function(roleAlertPrivs) {
 		
 		var $privList = $('#adminAlertRolesPrivilegesList')
 		

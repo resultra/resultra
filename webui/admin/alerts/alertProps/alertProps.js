@@ -62,6 +62,7 @@ $(document).ready(function() {
 	jsonAPIRequest("alert/get",getAlertParams,function(alertInfo) {
 		initAlertFormProperties(alertInfo)
 		initAlertFieldProperties(alertInfo)
+		initAlertRecipientProps(alertInfo)
 	}) 
 	
 	var conditionPropsParams = {

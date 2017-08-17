@@ -27,7 +27,9 @@ func init() {
 	roleRouter.HandleFunc("/api/userRole/getNewItemRolePrivs", getNewItemRolePrivsAPI)
 	roleRouter.HandleFunc("/api/userRole/setNewItemRolePrivs", setNewItemRolePrivsAPI)
 
+	roleRouter.HandleFunc("/api/userRole/getRoleAlertPrivs", getRoleAlertPrivsAPI)
 	roleRouter.HandleFunc("/api/userRole/getAlertRolePrivs", getAlertRolePrivsAPI)
+
 	roleRouter.HandleFunc("/api/userRole/setAlertRolePrivs", setAlertRolePrivsAPI)
 
 	roleRouter.HandleFunc("/api/userRole/getRoleListPrivs", getRoleListPrivsAPI)
@@ -227,9 +229,9 @@ func setAlertRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getAlertRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
+func getRoleAlertPrivsAPI(w http.ResponseWriter, r *http.Request) {
 
-	var params userRole.GetAlertPrivParams
+	var params userRole.GetRoleAlertPrivParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -240,10 +242,32 @@ func getAlertRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if roleAlertPrivs, err := userRole.GetAlertPrivs(params.RoleID); err != nil {
+	if roleAlertPrivs, err := userRole.GetRoleAlertPrivs(params.RoleID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, roleAlertPrivs)
+
+	}
+
+}
+
+func getAlertRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params userRole.GetAlertRolePrivParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForAlert(r, params.AlertID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if alertRolePrivs, err := userRole.GetAlertRolePrivs(params.AlertID); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, alertRolePrivs)
 
 	}
 

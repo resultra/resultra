@@ -33,7 +33,7 @@ func SetAlertRolePrivs(params SetAlertRolePrivsParams) error {
 
 }
 
-type GetAlertPrivParams struct {
+type GetRoleAlertPrivParams struct {
 	RoleID string `json:"roleID"`
 }
 
@@ -66,7 +66,7 @@ func getDefaultAlertPrivs(databaseID string) ([]RoleAlertPriv, error) {
 }
 
 // For a given role, get the list of roles with privileges
-func GetAlertPrivs(roleID string) ([]RoleAlertPriv, error) {
+func GetRoleAlertPrivs(roleID string) ([]RoleAlertPriv, error) {
 
 	roleDatabaseID, roleDBErr := GetUserRoleDatabaseID(roleID)
 	if roleDBErr != nil {
@@ -111,6 +111,67 @@ func GetAlertPrivs(roleID string) ([]RoleAlertPriv, error) {
 	}
 
 	return roleAlertPrivs, nil
+}
+
+type GetAlertRolePrivParams struct {
+	AlertID string `json:"alertID"`
+}
+
+type AlertRolePriv struct {
+	RoleID       string `json:"roleID"`
+	RoleName     string `json:"roleName"`
+	AlertEnabled bool   `json:"alertEnabled"`
+}
+
+func GetAlertRolePrivs(alertID string) ([]AlertRolePriv, error) {
+
+	alertDatabaseID, alertDBErr := getAlertDatabaseID(alertID)
+	if alertDBErr != nil {
+		return nil, fmt.Errorf("GetAlertPrivs: Failure querying database: %v", alertDBErr)
+	}
+
+	allRoles, getRoleErr := GetDatabaseRoles(alertDatabaseID)
+	if getRoleErr != nil {
+		return nil, fmt.Errorf("GetAlertPrivs: Failure querying database: %v", getRoleErr)
+	}
+
+	// Initially set privilieges to false for all alerts
+	privsByRoleID := map[string]AlertRolePriv{}
+	for _, role := range allRoles {
+		defaultPriv := AlertRolePriv{
+			RoleID:       role.RoleID,
+			RoleName:     role.RoleName,
+			AlertEnabled: false}
+		privsByRoleID[defaultPriv.RoleID] = defaultPriv
+	}
+
+	// Retrieve alerts for which the privileges have been explicitely set.
+	rows, queryErr := databaseWrapper.DBHandle().Query(
+		`SELECT database_roles.role_id,database_roles.name
+			FROM alert_role_privs,database_roles
+			WHERE alert_role_privs.alert_id=$1 AND
+				alert_role_privs.role_id = database_roles.role_id`, alertID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetAlertRolePrivs: Failure querying database: %v", queryErr)
+	}
+
+	for rows.Next() {
+		currPrivInfo := AlertRolePriv{}
+		currPrivInfo.AlertEnabled = true // presence in the database means the link is enabled
+
+		if scanErr := rows.Scan(&currPrivInfo.RoleID, &currPrivInfo.RoleName); scanErr != nil {
+			return nil, fmt.Errorf("GetAlertPrivs: Failure querying database: %v", scanErr)
+		}
+		privsByRoleID[currPrivInfo.RoleID] = currPrivInfo
+	}
+
+	// Flatten the privileges back down to a list.
+	alertRolePrivs := []AlertRolePriv{}
+	for _, currPrivInfo := range privsByRoleID {
+		alertRolePrivs = append(alertRolePrivs, currPrivInfo)
+	}
+
+	return alertRolePrivs, nil
 }
 
 func GetAlertsWithUserPrivs(databaseID string, userID string) (map[string]bool, error) {
