@@ -4,9 +4,3 @@ CREATE TABLE  alerts (
 	name text NOT NULL,
 	properties text NOT NULL
 ); 
-
-CREATE TABLE alert_notifications {
-	alert_id REFERENCES alerts(alert_id) ON DELETE CASCADE,
-	update_id REFERENCES cell_updates(update_id) ON DELETE CASCADE,
-	UNIQUE(alert_id,update_id)
-}

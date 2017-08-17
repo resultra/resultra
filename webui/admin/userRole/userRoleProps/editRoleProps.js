@@ -75,5 +75,6 @@ $(document).ready(function() {
 	initRoleListPrivProperties(rolePropsContext.roleID)
 	initRoleDashboardPrivProperties(rolePropsContext.roleID)
 	initRoleNewItemPrivs(rolePropsContext.roleID)
+	initRoleAlertPrivs(rolePropsContext.roleID)
 	
 })

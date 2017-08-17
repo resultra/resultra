@@ -1,0 +1,28 @@
+{{define "alertRecipientTemplates"}}
+{{end}}
+
+
+{{define "alertRecipientProps"}}
+
+	{{template "alertRecipientTemplates"}}
+	
+	<tr>
+		<td class="width200"><label>Recipients of alert notifications</label>
+			<div>
+				<small>Configure which roles will receive alert notifications. Users belonging to the selected roles will receive notifications.</small>
+			</div>
+		</td>
+
+		<td id="alertRecipientTableCell">
+			<div class="maxWidth300">
+
+				<div class="list-group alertRecipientList" id="alertRecipientList">
+				</div>	
+	
+			</div>
+		</td>
+	</tr>
+	
+
+
+{{end}}

@@ -93,6 +93,20 @@
 	</tr>
 {{end}}
 
+{{define "adminRoleAlertPrivsProperty"}}
+	<tr>
+		<td class="width200"><label>Alert notifications</label>
+			<div><small>For users belonging to this role, configure the alert notifications which will be received.</small></div>
+		</td>
+
+		<td>
+			<div class="list-group" id="adminAlertRolesPrivilegesList">
+			</div>		
+		</td>
+	</tr>
+{{end}}
+
+
 
 
 {{define "rolePropsBody"}}
@@ -102,6 +116,9 @@
 	{{template "adminRoleNewItemLinkPrivsProperty"}}	
 	{{template "adminRoleListPrivsProperty"}}	
 	{{template "adminRoleDashboardPrivsProperty"}}
+	{{template "adminRoleAlertPrivsProperty"}}
+
+
 </table>
 
 

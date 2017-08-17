@@ -168,6 +168,39 @@ func VerifyCurrUserIsDatabaseAdminForNewItemLink(req *http.Request, linkID strin
 	return nil
 }
 
+func getAlertDatabaseID(alertID string) (string, error) {
+
+	databaseID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(
+		`SELECT alerts.database_id 
+			FROM alerts 
+			WHERE alerts.alert_id=$1 
+			LIMIT 1`,
+		alertID).Scan(&databaseID)
+	if getErr != nil {
+		return "", fmt.Errorf(
+			"getAlertDatabaseID: can't get database for alert = %v: err=%v",
+			alertID, getErr)
+	}
+
+	return databaseID, nil
+
+}
+
+func VerifyCurrUserIsDatabaseAdminForAlert(req *http.Request, alertID string) error {
+
+	databaseID, err := getAlertDatabaseID(alertID)
+	if err != nil {
+		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForAlert: %v", err)
+	}
+
+	if err := VerifyCurrUserIsDatabaseAdmin(req, databaseID); err != nil {
+		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForAlert: %v", err)
+	}
+
+	return nil
+}
+
 func GetUserRoleDatabaseID(roleID string) (string, error) {
 	databaseID := ""
 	getErr := databaseWrapper.DBHandle().QueryRow(

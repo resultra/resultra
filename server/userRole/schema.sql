@@ -40,3 +40,9 @@ CREATE TABLE new_item_form_link_role_privs (
 	link_id text REFERENCES form_links(link_id) ON DELETE CASCADE, 
 	role_id text REFERENCES database_roles(role_id) ON DELETE CASCADE
 );
+
+CREATE TABLE alert_role_privs (
+	alert_id text REFERENCES alerts(alert_id) ON DELETE CASCADE, 
+	role_id text REFERENCES database_roles(role_id) ON DELETE CASCADE
+);
+
