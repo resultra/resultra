@@ -5,6 +5,7 @@ import (
 	"log"
 	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/record"
+	"resultra/datasheet/server/userRole"
 	"sort"
 )
 
@@ -112,9 +113,32 @@ type AlertGenerationResult struct {
 	Notifications []AlertNotification `json:"notifications"`
 }
 
+func getAlertsWithUserNotification(databaseID string, userID string) ([]Alert, error) {
+
+	allAlerts, alertErr := getAllAlerts(databaseID)
+	if alertErr != nil {
+		return nil, fmt.Errorf("getAlertsWithUserNotification: Error getting alerts: %v", alertErr)
+	}
+	userAlertByID, privsErr := userRole.GetAlertsWithUserPrivs(databaseID, userID)
+	if privsErr != nil {
+		return nil, fmt.Errorf("getAlertsWithUserNotification: Error getting user alert notifications: %v", privsErr)
+	}
+
+	userAlerts := []Alert{}
+	for _, currAlert := range allAlerts {
+		_, userAlertFound := userAlertByID[currAlert.AlertID]
+		if userAlertFound {
+			userAlerts = append(userAlerts, currAlert)
+		}
+	}
+
+	return userAlerts, nil
+
+}
+
 // GenerateAllAlerts regenerates all alerts for all records. This is the top-level function to re-generate all the
 // alert notifications at once.
-func generateAllAlerts(databaseID string) (*AlertGenerationResult, error) {
+func generateAllAlerts(databaseID string, userID string) (*AlertGenerationResult, error) {
 
 	// Create a config/context object used for calculating the calculated fields for alert generation. This same
 	// config can be reused by the alert generation for all the records.
@@ -129,7 +153,7 @@ func generateAllAlerts(databaseID string) (*AlertGenerationResult, error) {
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
 
-	alerts, alertErr := getAllAlerts(databaseID)
+	alerts, alertErr := getAlertsWithUserNotification(databaseID, userID)
 	if alertErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: Error getting alerts: %v", alertErr)
 	}
@@ -175,7 +199,7 @@ func generateAllAlerts(databaseID string) (*AlertGenerationResult, error) {
 
 // GenerateOneRecordAlerts is a top-level entry point for regenerating the alerts for an entire
 // tracker, but a single recordID
-func GenerateOneRecordAlerts(databaseID string, recordID string) ([]AlertNotification, error) {
+func GenerateOneRecordAlerts(databaseID string, recordID string, userID string) ([]AlertNotification, error) {
 
 	log.Printf("Regenerating alerts ...")
 
@@ -191,7 +215,7 @@ func GenerateOneRecordAlerts(databaseID string, recordID string) ([]AlertNotific
 			recordID, getErr)
 	}
 
-	alerts, alertErr := getAllAlerts(databaseID)
+	alerts, alertErr := getAlertsWithUserNotification(databaseID, userID)
 	if alertErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: Error getting alerts: %v", alertErr)
 	}

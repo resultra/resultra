@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
 )
 
@@ -102,7 +103,13 @@ func getAlertNotificationListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if notifications, err := generateAllAlerts(params.ParentDatabaseID); err != nil {
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteJSONResponse(w, fmt.Errorf("Can't verify user authentication"))
+		return
+	}
+
+	if notifications, err := generateAllAlerts(params.ParentDatabaseID, currUserID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, notifications)
