@@ -524,3 +524,12 @@ function updateDefaultFilterRules(panelParams, updateDoneFunc) {
 function initDefaultFilterRules(panelParams) {
 	updateDefaultFilterRules(panelParams,panelParams.initDone)	
 }
+
+function initMatchLogicSelection(panelParams) {
+	var $matchLogicSelection = $(createPrefixedSelector(panelParams.elemPrefix,'RecordFilterMatchLogicSelection'))
+	initSelectControlChangeHandler($matchLogicSelection,function(selectedLogic) {
+		updateFilterRules(panelParams)
+	})			
+	
+}
+

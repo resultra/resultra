@@ -53,6 +53,26 @@ $(document).ready(function() {
 		
 	}
 	
+	function initTriggerConditionProps(alertInfo) {
+		var alertConditionPrefix = "alertTriggerCondition_"
+		var alertConditionPropertyPanelParams = {
+			elemPrefix: alertConditionPrefix,
+			databaseID: alertPropsContext.databaseID,
+			defaultFilterRules: alertInfo.properties.triggerConditions,
+			initDone: function () {},
+			updateFilterRules: function (updatedFilterRules) {
+				var setConditionParams = {
+					alertID: alertInfo.alertID,
+					triggerConditions: updatedFilterRules
+				}
+				jsonAPIRequest("alert/setTriggerConditions",setConditionParams,function(updatedAlert) {
+					console.log("Trigger conditions updated")
+				}) // set record's number field value
+			}
+		}
+		initFilterPropertyPanel(alertConditionPropertyPanelParams)
+		
+	}
 	
 	
 	
@@ -63,6 +83,7 @@ $(document).ready(function() {
 		initAlertFormProperties(alertInfo)
 		initAlertFieldProperties(alertInfo)
 		initAlertRecipientProps(alertInfo)
+		initTriggerConditionProps(alertInfo)
 	}) 
 	
 	var conditionPropsParams = {

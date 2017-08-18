@@ -1,5 +1,6 @@
 
 
+
 function initFilterPropertyPanel(panelParams) {
 		
 	var fieldSelectionDropdownParams = {
@@ -18,6 +19,9 @@ function initFilterPropertyPanel(panelParams) {
 		}
 	}
 	initFieldSelectionDropdown(fieldSelectionDropdownParams)
+	
+	initMatchLogicSelection(panelParams)
+	
 	
 	initDefaultFilterRules(panelParams, function() {})	
 	

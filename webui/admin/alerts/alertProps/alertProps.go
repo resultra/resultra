@@ -10,6 +10,7 @@ import (
 
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/field"
+	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
 )
@@ -33,12 +34,13 @@ func init() {
 }
 
 type AlertTemplParams struct {
-	Title                string
-	DatabaseID           string
-	DatabaseName         string
-	AlertID              string
-	AlertName            string
-	FieldSelectionParams field.FieldSelectionDropdownTemplateParams
+	Title                           string
+	DatabaseID                      string
+	DatabaseName                    string
+	AlertID                         string
+	AlertName                       string
+	FieldSelectionParams            field.FieldSelectionDropdownTemplateParams
+	TriggerConditionPropPanelParams recordFilter.FilterPanelTemplateParams
 }
 
 func editAlertPropsPage(w http.ResponseWriter, r *http.Request) {
@@ -64,14 +66,15 @@ func editAlertPropsPage(w http.ResponseWriter, r *http.Request) {
 		ButtonTitle:    "Add Trigger Event",
 		ButtonIconName: "glyphicon-plus-sign"}
 
-	//	elemPrefix := "userRole_"
+	triggerConditionElemPrefix_ := "alertTriggerCondition_"
 	templParams := AlertTemplParams{
-		Title:                "Alert Settings",
-		DatabaseID:           dbInfo.DatabaseID,
-		DatabaseName:         dbInfo.DatabaseName,
-		AlertID:              alertInfo.AlertID,
-		AlertName:            alertInfo.Name,
-		FieldSelectionParams: fieldSelectionParams}
+		Title:                           "Alert Settings",
+		DatabaseID:                      dbInfo.DatabaseID,
+		DatabaseName:                    dbInfo.DatabaseName,
+		AlertID:                         alertInfo.AlertID,
+		AlertName:                       alertInfo.Name,
+		FieldSelectionParams:            fieldSelectionParams,
+		TriggerConditionPropPanelParams: recordFilter.NewFilterPanelTemplateParams(triggerConditionElemPrefix_)}
 
 	if err := alertTemplates.ExecuteTemplate(w, "alertPropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -80,6 +80,17 @@
 	</tr>
 {{end}}
 
+{{define "alertConditionProps"}}
+	<tr>
+		<td class="width200"><label>Conditions for triggering the alert</label>
+			<div><small>Set conditions to limit when the alert is triggered.</small></div>
+		</td>
+
+		<td>
+			{{template "recordFilterPropertyPanel" .}}
+		</td>
+	</tr>
+{{end}}
 
 
 
@@ -87,7 +98,8 @@
 
 <table class="table">
 	{{template "adminAlertNameProperty"}}
-	{{template "alertConditionProps" .}}
+	{{template "alertEventProps" .}}
+	{{template "alertConditionProps" .TriggerConditionPropPanelParams}}
 	{{template "alertRecipientProps"}}
 	{{template "adminAlertFormProperty"}}
 	{{template "adminAlertFieldProperty"}}

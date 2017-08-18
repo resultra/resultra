@@ -2,6 +2,7 @@ package alert
 
 import (
 	"fmt"
+	"resultra/datasheet/server/recordFilter"
 )
 
 type AlertIDInterface interface {
@@ -93,6 +94,19 @@ func (updateParams SetSummaryFieldParams) updateProps(alert *Alert) error {
 	// TODO - Validate field ID
 
 	alert.Properties.SummaryFieldID = updateParams.SummaryFieldID
+
+	return nil
+}
+
+type SetTriggerConditionsParams struct {
+	AlertIDHeader
+	TriggerConditions recordFilter.RecordFilterRuleSet `json:"triggerConditions"`
+}
+
+func (updateParams SetTriggerConditionsParams) updateProps(alert *Alert) error {
+
+	// TODO - Validate filter rules before saving
+	alert.Properties.TriggerConditions = updateParams.TriggerConditions
 
 	return nil
 }

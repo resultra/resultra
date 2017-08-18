@@ -3,6 +3,7 @@ package alert
 import (
 	"fmt"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/recordFilter"
 	"time"
 )
 
@@ -14,14 +15,21 @@ type AlertCondition struct {
 }
 
 type AlertProperties struct {
-	FormID         string           `json:"formID"`
-	SummaryFieldID string           `json:"summaryFieldID"`
-	Conditions     []AlertCondition `json:"conditions"`
+	FormID            string                           `json:"formID"`
+	SummaryFieldID    string                           `json:"summaryFieldID"`
+	Conditions        []AlertCondition                 `json:"conditions"`
+	TriggerConditions recordFilter.RecordFilterRuleSet `json:"triggerConditions"`
 }
 
 func (srcProps AlertProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*AlertProperties, error) {
 
 	destProps := AlertProperties{}
+
+	destTriggerConditions, err := srcProps.TriggerConditions.Clone(remappedIDs)
+	if err != nil {
+		return nil, fmt.Errorf("AlertProperties.Clone: %v")
+	}
+	destProps.TriggerConditions = *destTriggerConditions
 
 	destConditions := []AlertCondition{}
 	for _, srcCondition := range srcProps.Conditions {
@@ -54,7 +62,8 @@ func (srcProps AlertProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*A
 
 func newDefaultAlertProperties() AlertProperties {
 	defaultProps := AlertProperties{
-		Conditions: []AlertCondition{}}
+		Conditions:        []AlertCondition{},
+		TriggerConditions: recordFilter.NewDefaultRecordFilterRuleSet()}
 
 	return defaultProps
 }
