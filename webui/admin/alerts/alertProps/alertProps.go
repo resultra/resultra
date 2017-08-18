@@ -19,7 +19,7 @@ var alertTemplates *template.Template
 func init() {
 
 	baseTemplateFiles := []string{"static/admin/alerts/alertProps/alertProps.html",
-		"static/admin/alerts/alertProps/conditions.html",
+		"static/admin/alerts/alertProps/events.html",
 		"static/admin/alerts/alertProps/recipients.html"}
 
 	templateFileLists := [][]string{
