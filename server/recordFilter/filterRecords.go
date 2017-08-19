@@ -10,15 +10,15 @@ import (
 // A filterRuleContext includes all the runtime information which is common for each filter and
 // can be reused for filtering different records. For efficiency, these filterRuleContext's are set up once, then
 // reused for all the records being filtered.
-type filterRuleContext struct {
+type FilterRuleContext struct {
 	filterRule   RecordFilterRule
 	filterFunc   FilterRuleFunc
 	filterParams FilterFuncParams
 }
 
-func CreateFilterRuleContexts(filterRules []RecordFilterRule) ([]filterRuleContext, error) {
+func CreateFilterRuleContexts(filterRules []RecordFilterRule) ([]FilterRuleContext, error) {
 
-	contexts := []filterRuleContext{}
+	contexts := []FilterRuleContext{}
 
 	for _, currFilterRule := range filterRules {
 		ruleField, fieldErr := field.GetField(currFilterRule.FieldID)
@@ -39,7 +39,7 @@ func CreateFilterRuleContexts(filterRules []RecordFilterRule) ([]filterRuleConte
 			Conditions:   currFilterRule.Conditions,
 			ConditionMap: conditionMap}
 
-		context := filterRuleContext{
+		context := FilterRuleContext{
 			filterRule:   currFilterRule,
 			filterFunc:   filterFunc,
 			filterParams: filterParams}
@@ -50,7 +50,7 @@ func CreateFilterRuleContexts(filterRules []RecordFilterRule) ([]filterRuleConte
 	return contexts, nil
 }
 
-func MatchOneRecordFromFieldValues(matchLogic string, filterContexts []filterRuleContext, recordVals record.RecFieldValues) (bool, error) {
+func MatchOneRecordFromFieldValues(matchLogic string, filterContexts []FilterRuleContext, recordVals record.RecFieldValues) (bool, error) {
 
 	if matchLogic == RecordFilterMatchLogicAll {
 		for _, currContext := range filterContexts {
@@ -96,7 +96,7 @@ func MatchOneRecordFromFieldValues(matchLogic string, filterContexts []filterRul
 
 }
 
-func MatchOneRecord(matchLogic string, filterContexts []filterRuleContext, recValResults recordValue.RecordValueResults) (bool, error) {
+func MatchOneRecord(matchLogic string, filterContexts []FilterRuleContext, recValResults recordValue.RecordValueResults) (bool, error) {
 	return MatchOneRecordFromFieldValues(matchLogic, filterContexts, recValResults.FieldValues)
 }
 

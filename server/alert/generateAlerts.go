@@ -5,6 +5,7 @@ import (
 	"log"
 	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/record"
+	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/userRole"
 	"sort"
 )
@@ -15,11 +16,16 @@ type AlertProcessingResult struct {
 	Notifications []AlertNotification
 }
 
+type AlertGenerationContext struct {
+	Alert                         Alert
+	TriggerConditionFilterContext []recordFilter.FilterRuleContext
+}
+
 type RecordAlertProcessingConfig struct {
 	RecordID        string
 	CalcFieldConfig *calcField.CalcFieldUpdateConfig
 	RecCellUpdates  *record.RecordCellUpdates
-	Alerts          []Alert
+	AlertContexts   []AlertGenerationContext
 }
 
 // generateOneRecordAlertsFromConfig is the internal (lower level) implementation function for
@@ -63,7 +69,9 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 			return nil, fmt.Errorf("GenerateRecordAlerts: : err = %v", calcErr)
 		}
 
-		for _, currAlert := range recProcessingConfig.Alerts {
+		for _, currAlertContext := range recProcessingConfig.AlertContexts {
+
+			currAlert := currAlertContext.Alert
 
 			itemSummaryFieldVal, foundSummary := latestFieldValues.GetTextFieldValue(currAlert.Properties.SummaryFieldID)
 			itemSummary := ""
@@ -71,22 +79,34 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 				itemSummary = itemSummaryFieldVal
 			}
 
-			context := AlertProcessingContext{
-				CalcFieldConfig: recProcessingConfig.CalcFieldConfig,
-				RecordID:        recProcessingConfig.RecordID,
-				UpdateTimestamp: currCellUpdate.UpdateTimeStamp,
-				PrevFieldVals:   prevFieldValues,
-				CurrFieldVals:   currFieldValues,
-				LatestFieldVals: *latestFieldValues,
-				ItemSummary:     itemSummary,
-				ProcessedAlert:  currAlert}
-
-			alertNotification, processAlertErr := processAlert(context)
-			if processAlertErr != nil {
-				return nil, fmt.Errorf("generateOneRecordAlertsFromConfig: : err = %v", processAlertErr)
-			} else if alertNotification != nil {
-				alertNotifications = append(alertNotifications, *alertNotification)
+			// Test for a match on the trigger conditions  record's field values "as of" the date of the
+			// value update.
+			recMatchesTriggerCond, condErr := recordFilter.MatchOneRecordFromFieldValues(
+				currAlert.Properties.TriggerConditions.MatchLogic, currAlertContext.TriggerConditionFilterContext, currFieldValues)
+			if condErr != nil {
+				return nil, fmt.Errorf("GenerateRecordAlerts: : err = %v", condErr)
 			}
+
+			if recMatchesTriggerCond {
+				context := AlertProcessingContext{
+					CalcFieldConfig: recProcessingConfig.CalcFieldConfig,
+					RecordID:        recProcessingConfig.RecordID,
+					UpdateTimestamp: currCellUpdate.UpdateTimeStamp,
+					PrevFieldVals:   prevFieldValues,
+					CurrFieldVals:   currFieldValues,
+					LatestFieldVals: *latestFieldValues,
+					ItemSummary:     itemSummary,
+					ProcessedAlert:  currAlert}
+
+				alertNotification, processAlertErr := processAlert(context)
+				if processAlertErr != nil {
+					return nil, fmt.Errorf("generateOneRecordAlertsFromConfig: : err = %v", processAlertErr)
+				} else if alertNotification != nil {
+					alertNotifications = append(alertNotifications, *alertNotification)
+				}
+
+			}
+
 		}
 		prevFieldValues = currFieldValues
 	}
@@ -136,6 +156,21 @@ func getAlertsWithUserNotification(databaseID string, userID string) ([]Alert, e
 
 }
 
+func createAlertGenerationContexts(alerts []Alert) ([]AlertGenerationContext, error) {
+	alertContexts := []AlertGenerationContext{}
+	for _, currAlert := range alerts {
+		triggerCondContext, condErr := recordFilter.CreateFilterRuleContexts(currAlert.Properties.TriggerConditions.FilterRules)
+		if condErr != nil {
+			return nil, fmt.Errorf("GenerateRecordAlerts: error setting up trigger condition filter contexts: %v", condErr)
+		}
+		alertContext := AlertGenerationContext{
+			Alert: currAlert,
+			TriggerConditionFilterContext: triggerCondContext}
+		alertContexts = append(alertContexts, alertContext)
+	}
+	return alertContexts, nil
+}
+
 // GenerateAllAlerts regenerates all alerts for all records. This is the top-level function to re-generate all the
 // alert notifications at once.
 func generateAllAlerts(databaseID string, userID string) (*AlertGenerationResult, error) {
@@ -161,6 +196,11 @@ func generateAllAlerts(databaseID string, userID string) (*AlertGenerationResult
 	for _, currAlert := range alerts {
 		alertsByID[currAlert.AlertID] = currAlert
 	}
+	alertContexts, contextErr := createAlertGenerationContexts(alerts)
+	if contextErr != nil {
+		return nil, fmt.Errorf("GenerateRecordAlerts: Error setting up alert contexts: %v", contextErr)
+
+	}
 
 	alertNotifications := []AlertNotification{}
 	resultsChan := make(chan AlertProcessingResult)
@@ -171,7 +211,7 @@ func generateAllAlerts(databaseID string, userID string) (*AlertGenerationResult
 			RecordID:        currRecordID,
 			CalcFieldConfig: calcFieldUpdateConfig,
 			RecCellUpdates:  currRecCellUpdates,
-			Alerts:          alerts}
+			AlertContexts:   alertContexts}
 
 		go processOneRecordAlertsWorker(resultsChan, alertProcessConfig)
 	}
@@ -219,12 +259,17 @@ func GenerateOneRecordAlerts(databaseID string, recordID string, userID string) 
 	if alertErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: Error getting alerts: %v", alertErr)
 	}
+	alertContexts, contextErr := createAlertGenerationContexts(alerts)
+	if contextErr != nil {
+		return nil, fmt.Errorf("GenerateRecordAlerts: Error setting up alert contexts: %v", contextErr)
+
+	}
 
 	alertProcessConfig := RecordAlertProcessingConfig{
 		RecordID:        recordID,
 		CalcFieldConfig: calcFieldUpdateConfig,
 		RecCellUpdates:  recCellUpdates,
-		Alerts:          alerts}
+		AlertContexts:   alertContexts}
 
 	return generateOneRecordAlertsFromConfig(alertProcessConfig)
 }
