@@ -27,17 +27,20 @@
 	</div>
 {{end}}
 
-
 {{define "adminAlertNameProperty"}}
-	<tr>
-		<td class="width200"><label>Alert name</label>
-		</td>
-
-		<td id="alertNameTableCell">TBD
-		</td>
-	</tr>
+<tr>
+	<td class="width200"><label>Alert name</label></td>
+	<td>
+		<form id="alertPropsNameForm">
+				<div class="form-group">
+					<input type="text" id="alertPropsNameInput" name="alertPropsNameInput" 
+							class="form-control maxWidth300" placeholder="Alert name" required="" autofocus="" tabindex="-1">
+				</div>
+		</form>
+	</td>
 
 {{end}}
+
 
 {{define "adminAlertFormProperty"}}
 	<tr>

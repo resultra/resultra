@@ -75,6 +75,53 @@ $(document).ready(function() {
 	}
 	
 	
+	function initNameProperties(alertInfo) {
+	
+		var $nameInput = $('#alertPropsNameInput')
+	
+		var $nameForm = $('#alertPropsNameForm')
+		
+		$nameInput.val(alertInfo.name)
+		
+		
+		var remoteValidationParams = {
+			url: '/api/generic/stringValidation/validateItemLabel',
+			data: {
+				label: function() { return $nameInput.val(); }
+			}
+		}
+	
+		var validationSettings = createInlineFormValidationSettings({
+			rules: {
+				itemListPropsNameInput: {
+					minlength: 3,
+					required: true,
+					remote: remoteValidationParams
+				}
+			}
+		})	
+	
+	
+		var validator = $nameForm.validate(validationSettings)
+	
+		initInlineInputValidationOnBlur(validator,'#alertPropsNameInput',
+			remoteValidationParams, function(validatedName) {		
+				var setNameParams = {
+					alertID: alertPropsContext.alertID,
+					alertName:validatedName
+				}
+				jsonAPIRequest("alert/setName",setNameParams,function(updatedAlertInfo) {
+					console.log("Done changing alert name: " + validatedName)
+				})
+		})	
+
+		validator.resetForm()
+	
+	
+	} // initFormLinkNameProperties
+	
+	
+	
 	
 	var getAlertParams = { 
 		alertID: alertPropsContext.alertID
@@ -84,6 +131,7 @@ $(document).ready(function() {
 		initAlertFieldProperties(alertInfo)
 		initAlertRecipientProps(alertInfo)
 		initTriggerConditionProps(alertInfo)
+		initNameProperties(alertInfo)
 	}) 
 	
 	var conditionPropsParams = {
