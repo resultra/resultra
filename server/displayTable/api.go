@@ -24,7 +24,6 @@ func init() {
 	tableRouter.HandleFunc("/api/tableView/get", getTableAPI)
 
 	tableRouter.HandleFunc("/api/tableView/setOrderedCols", setOrderedCols)
-	tableRouter.HandleFunc("/api/tableView/setColWidths", setColWidths)
 
 	tableRouter.HandleFunc("/api/tableView/deleteColumn", deleteColumnAPI)
 
@@ -252,15 +251,6 @@ func setTableName(w http.ResponseWriter, r *http.Request) {
 
 func setOrderedCols(w http.ResponseWriter, r *http.Request) {
 	var params SetOrderedColParams
-	if err := api.DecodeJSONRequest(r, &params); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processTablePropUpdate(w, r, params)
-}
-
-func setColWidths(w http.ResponseWriter, r *http.Request) {
-	var params SetColWidthParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

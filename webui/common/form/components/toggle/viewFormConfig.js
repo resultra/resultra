@@ -148,6 +148,7 @@ function initToggleFormRecordEditBehavior($toggle,componentContext,recordProxy, 
 
 
 function initToggleTableCellRecordEditBehavior($toggle,componentContext,recordProxy, toggleObjectRef) {
+	
 	function validatInput(currVal, validateResultsCallback) {
 		var validationParams = {
 			parentTableID: toggleObjectRef.parentTableID,
@@ -159,10 +160,8 @@ function initToggleTableCellRecordEditBehavior($toggle,componentContext,recordPr
 		})
 	}
 	
-		initToggleComponentFormComponentContainer($toggle,toggleObjectRef)
+		initToggleComponentTableViewComponentContainer($toggle,toggleObjectRef)
 		
-		var toggleColorSchemeClass = "checkbox-"+toggleObjectRef.properties.colorScheme
-		$toggle.addClass(toggleColorSchemeClass)
 	
 	
 	initToggleRecordEditBehavior($toggle,componentContext,recordProxy, toggleObjectRef,validatInput)
