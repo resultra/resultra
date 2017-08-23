@@ -165,7 +165,9 @@ function initUserSelectionTableRecordEditBehavior($container,componentContext,re
 		})
 	}
 	
-	var selectionWidth = 200 // TBD - Calculate width
+	/* The min-width for the table cell is 200. So, the width is set to 180 to allow 
+		for the clear value button on the RHS of the table cell. */
+	var selectionWidth = 180 // TBD - Calculate width
 	
 	initUserSelectionClearValueButton($container,userSelectionObjectRef)
 	
