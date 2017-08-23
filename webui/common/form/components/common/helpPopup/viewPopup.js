@@ -25,6 +25,7 @@ function updateComponentHelpPopupMsg($container, componentRef) {
 		$popupButton.hide()
 	}
 	
+	
 	// Bootstrap's popover uses an asyncrhonous call to destroy the popup. Therefore,
 	// it's not possible to reliably destroy and re-initialize the popup just for puprposes
 	// of changing the HTML to be displayed. So, to dynamically change the popup's HTML, we
@@ -44,12 +45,21 @@ function initComponentHelpPopupButton($container, componentRef, placement) {
 	
 	updateComponentHelpPopupMsg($container,componentRef)
 	
+	
+	
 	$popupButton.popover({
 		html: 'true',
 		delay: { "show": 200, "hide": 2000 },
 		content: function() { return $popupButton.data('componentPopupMsg') },
-		trigger: 'click hover',
+		trigger: 'hover manual',
 		placement: popoverPlacement
+	})
+	
+	$popupButton.click(function(e) {
+		e.preventDefault();// prevent the button from submitting the form	
+		e.stopPropagation()	
+		$popupButton.blur()
+		$popupButton.popover("show")
 	})
 	
 }
