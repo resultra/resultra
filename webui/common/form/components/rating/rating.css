@@ -45,6 +45,24 @@
 	color: black;
 }
 
+.ratingTableCellContainer {
+	min-width:165px;
+	width: 165px;
+	height: auto
+}
+
+
+.ratingTableCellContainer .formRatingControl {
+	display:inline-block;	
+}
+
+.ratingTableCellContainer .ratingClearButtonContainer {
+	display:inline-block;
+	vertical-align: top;
+}
+
+
+
 .ratingTableCellContainer .col-xs-11 {
 	padding-right:0px;
 	padding-left:15px;
