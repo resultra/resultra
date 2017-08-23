@@ -6,8 +6,7 @@ import (
 )
 
 type FormProperties struct {
-	Layout             componentLayout.ComponentLayout `json:"layout"`
-	AddNewItemFromForm bool                            `json:"addNewItemFromForm"`
+	Layout componentLayout.ComponentLayout `json:"layout"`
 }
 
 func (srcProps FormProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*FormProperties, error) {
@@ -20,8 +19,7 @@ func (srcProps FormProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*Fo
 
 func newDefaultFormProperties() FormProperties {
 	defaultProps := FormProperties{
-		Layout:             componentLayout.ComponentLayout{},
-		AddNewItemFromForm: false}
+		Layout: componentLayout.ComponentLayout{}}
 
 	return defaultProps
 }

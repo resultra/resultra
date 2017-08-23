@@ -67,15 +67,3 @@ func (updateParams SetLayoutParams) updateProps(form *Form) error {
 
 	return nil
 }
-
-type SetAddNewParams struct {
-	FormIDHeader
-	AddNewItemFromForm bool `json:"addNewItemFromForm"`
-}
-
-func (updateParams SetAddNewParams) updateProps(form *Form) error {
-
-	form.Properties.AddNewItemFromForm = updateParams.AddNewItemFromForm
-
-	return nil
-}

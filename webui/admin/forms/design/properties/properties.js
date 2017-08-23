@@ -9,8 +9,6 @@ function initDesignFormProperties(formID) {
 		
 		var formElemPrefix = "form_"
 		
-		initFormPropertiesFormName(formInfo)
-		initFormPropertiesNewItem(formInfo)
-				
+		initFormPropertiesFormName(formInfo)				
 	})
 }
