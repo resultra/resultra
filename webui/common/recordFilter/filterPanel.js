@@ -24,6 +24,7 @@ function initRecordFilterViewPanel(filterPaneParams) {
 			// creating new rules, but will not be when re-loading the rules.
 			var defaultRuleInfo = null
 			$filterRuleList.append(createFilterRulePanelListItem(filterPaneParams,fieldInfo,defaultRuleInfo))
+			updateMatchLogicSelectionVisibility(filterPaneParams)
 		}
 	}
 	initFieldSelectionDropdown(fieldSelectionDropdownParams)

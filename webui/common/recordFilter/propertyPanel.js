@@ -16,6 +16,7 @@ function initFilterPropertyPanel(panelParams) {
 			// creating new rules, but will not be when re-loading the rules.
 			var defaultRuleInfo = null
 			$filterRuleList.append(createFilterRulePanelListItem(panelParams,fieldInfo,defaultRuleInfo))
+			updateMatchLogicSelectionVisibility(panelParams)
 		}
 	}
 	initFieldSelectionDropdown(fieldSelectionDropdownParams)

@@ -46,6 +46,7 @@ function createFilterListRuleListItem(panelParams,fieldName) {
 	var $deleteButton = $filterRuleListItem.find(".filterRuleListItemDeleteRuleButton")
 	initButtonControlClickHandler($deleteButton,function() {
 		$filterRuleListItem.remove()
+		updateMatchLogicSelectionVisibility(panelParams)
 		updateFilterRules(panelParams)
 	})
 
@@ -515,6 +516,8 @@ function updateDefaultFilterRules(panelParams, updateDoneFunc) {
 		var $matchLogic = $(createPrefixedSelector(panelParams.elemPrefix,
 						'RecordFilterMatchLogicSelection'))
 		$matchLogic.val(matchLogic)
+			
+		updateMatchLogicSelectionVisibility(panelParams)
 		
 		updateDoneFunc()
 	})
@@ -525,7 +528,25 @@ function initDefaultFilterRules(panelParams) {
 	updateDefaultFilterRules(panelParams,panelParams.initDone)	
 }
 
+// The match logic selection only needs to be visible if there are more than 1 filter rules visible. Otherwise, it
+// it doesn't matter if the filter rules are AND'ed or OR'd together.
+function updateMatchLogicSelectionVisibility(panelParams) {
+	
+	var $filterRuleList = $(createPrefixedSelector(panelParams.elemPrefix,'RecordFilterFilterRuleList'))
+	var $matchLogicSelectionControls = $(createPrefixedSelector(panelParams.elemPrefix,'RecordFilterMatchLogicSelectionControls'))
+	
+	var numFilterRules = $filterRuleList.find(".recordFilterPanelRuleListItem").length
+	
+	if(numFilterRules >= 2) {
+		$matchLogicSelectionControls.show()
+	} else {
+		$matchLogicSelectionControls.hide()
+	}
+	
+}
+
 function initMatchLogicSelection(panelParams) {
+	
 	var $matchLogicSelection = $(createPrefixedSelector(panelParams.elemPrefix,'RecordFilterMatchLogicSelection'))
 	initSelectControlChangeHandler($matchLogicSelection,function(selectedLogic) {
 		updateFilterRules(panelParams)
