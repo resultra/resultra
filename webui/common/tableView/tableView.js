@@ -339,8 +339,8 @@ function initItemListTableView(params) {
 			destroy:true, // Destroy existing table before applying the options
 			searching:false, // Hide the search box
 			paging:true, // pagination must be enabled for pageResize plug-in
-			pageResize:true, // enable plug-in for vertical page resizing
-			lengthChange:true, // needed for pageResize plug-in
+			pageLength:1,
+			lengthChange:true,  // needed for pageResize plug-in
 			deferRender:true, // only create elements when required (needed with paging)
 			columns:dataCols
 		})
@@ -384,9 +384,42 @@ function initItemListTableView(params) {
 		
 		function resizeToContainerHeight() {
 			drawInProgress = true
+			
+			// To dynamically resize, the header and footer need to subtracted from
+			// the parent container's height, then the number of rows needs to be recalculated
+			// and set to the page length. 
+			//
+			// The approach below basically resizes the table by setting the page length
+			// to a number of elements which will fit within the table's parent container.
+			// Another approach was to use the 'scrollY' option for DataTables, but this
+			// caused the table header and content to be split up, so that the header
+			// wouldn't horizontally scroll with the table body.
+			var headerHeight = params.$tableContainer.find("thead").height()
+			var contentHeight = params.$tableContainer.find(".dataTables_scroll").height()
+			var overallHeight = $tableElem.height()
+			var containerHeight = params.$tableContainer.height()
+			
+			// There's no single div to surround all footer elements. However, the following
+			// number "rounds up" the expected height for any footer elements.
+			var footerHeight = 40
+			
+			
+			var scrollHeight = containerHeight - footerHeight - headerHeight
+			
+			var rowHeight = 40
+			
+			// Dynamically set the page length, based upon the current scroll height. We want 
+			// the number of rows to fill the visible page, but not cause scroll bars to enable.
+			// So, the page length is adjusted downwards by 1 if there is minimal remaining space
+			// below the table rows which fully fit within the scroll body.
+			var rowsRemainder = scrollHeight % rowHeight
+			var pageLen = Math.floor(scrollHeight / rowHeight)
+			if (rowsRemainder <= 10) { pageLen-- }
+			dataTable.page.len(pageLen)
+			
+			
 			dataTable.draw() // force redraw
 		}
-		resizeToContainerHeight()
 		
 		function setSortOrder(sortRules) {
 			var dataTableSortRules = []
@@ -429,7 +462,7 @@ function initItemListTableView(params) {
 			updateData: updateData,
 			setSortOrder: setSortOrder
 		}
-		
+				
 		params.initDoneCallback(tableContext)
 		
 	}
