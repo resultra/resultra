@@ -1,10 +1,6 @@
 function loadSelectionProperties($selection,selectionRef) {
 	console.log("loading selection properties")
-	
-	
-	initSelectableValuesProperties($selection,selectionRef)
-	
-	
+		
 	var elemPrefix = "selection_"
 	function saveLabelProps(updatedLabelProps) {
 		console.log("Saving label propeties for text box")
@@ -60,6 +56,25 @@ function loadSelectionProperties($selection,selectionRef) {
 		}
 	}
 	initFormComponentPermissionsPropertyPanel(permissionParams)
+
+	function saveValueList(valueListID) {
+		var setValueListParams = {
+			parentFormID: selectionRef.parentFormID,
+			selectionID: selectionRef.selectionID,
+			valueListID: valueListID
+		}
+		jsonAPIRequest("frm/selection/setValueList", setValueListParams, function(updatedSelection) {
+			setContainerComponentInfo($selection,updatedSelection,updatedSelection.selectionID)	
+		})			
+	}
+	var valueListPropertyParams = {
+		elemPrefix: elemPrefix,
+		databaseID: designFormContext.databaseID,
+		saveValueListCallback: saveValueList,
+		defaultValueListID: selectionRef.properties.valueListID
+	}
+	initValueListSelectionPropertyPanel(valueListPropertyParams)
+
 
 
 	var clearValueParams = {

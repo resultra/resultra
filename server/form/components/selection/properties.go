@@ -8,11 +8,11 @@ import (
 )
 
 type SelectionProperties struct {
-	FieldID        string                                     `json:"fieldID"`
-	Geometry       componentLayout.LayoutGeometry             `json:"geometry"`
-	SelectableVals []SelectionSelectableVal                   `json:"selectableVals"`
-	LabelFormat    common.ComponentLabelFormatProperties      `json:"labelFormat"`
-	Permissions    common.ComponentValuePermissionsProperties `json:"permissions"`
+	FieldID     string                                     `json:"fieldID"`
+	Geometry    componentLayout.LayoutGeometry             `json:"geometry"`
+	LabelFormat common.ComponentLabelFormatProperties      `json:"labelFormat"`
+	ValueListID *string                                    `json:"valueListID,omitempty"`
+	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 	common.ComponentVisibilityProperties
 	ClearValueSupported bool `json:"clearValueSupported"`
 }
@@ -33,13 +33,17 @@ func (srcProps SelectionProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper)
 	}
 	destProps.VisibilityConditions = *destVisibilityConditions
 
+	if srcProps.ValueListID != nil {
+		destValueListID := remappedIDs.AllocNewOrGetExistingRemappedID(*srcProps.ValueListID)
+		destProps.ValueListID = &destValueListID
+	}
+
 	return &destProps, nil
 }
 
 func newDefaultSelectionProperties() SelectionProperties {
 	props := SelectionProperties{
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
-		SelectableVals:                []SelectionSelectableVal{},
 		LabelFormat:                   common.NewDefaultLabelFormatProperties(),
 		Permissions:                   common.NewDefaultComponentValuePermissionsProperties(),
 		ClearValueSupported:           false}

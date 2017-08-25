@@ -11,8 +11,8 @@ import (
 
 type SelectionDesignTemplateParams struct {
 	ElemPrefix               string
-	FormatPanelParams        propertiesSidebar.PanelTemplateParams
 	ValuesPanelParams        propertiesSidebar.PanelTemplateParams
+	ValueListPanelParams     propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
@@ -36,8 +36,8 @@ func init() {
 	DesignTemplateParams = SelectionDesignTemplateParams{
 		ElemPrefix: elemPrefix,
 
-		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "selectionFormat"},
 		ValuesPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Selectable Values", PanelID: "selectionValues"},
+		ValueListPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Selectable Values", PanelID: "valueList"},
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "selectionVisibility"),
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "selectionDelete", "Delete Selection"),
 		ClearValuePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Clear Values", PanelID: "selectionClearValue"},

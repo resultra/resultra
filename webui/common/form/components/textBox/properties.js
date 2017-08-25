@@ -37,6 +37,7 @@ function loadTextBoxProperties($textBox,textBoxRef) {
 		})			
 	}
 	var valueListPropertyParams = {
+		elemPrefix: elemPrefix,
 		databaseID: designFormContext.databaseID,
 		saveValueListCallback: saveValueList,
 		defaultValueListID: textBoxRef.properties.valueListID

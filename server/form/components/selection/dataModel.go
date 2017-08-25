@@ -12,11 +12,6 @@ import (
 
 const selectionEntityKind string = "selection"
 
-type SelectionSelectableVal struct {
-	Val   string `json:"val"`
-	Label string `json:"label"`
-}
-
 type Selection struct {
 	ParentFormID string              `json:"parentFormID"`
 	SelectionID  string              `json:"selectionID"`

@@ -11,8 +11,9 @@ func init() {
 
 	selectionRouter.HandleFunc("/api/frm/selection/new", newSelection)
 	selectionRouter.HandleFunc("/api/frm/selection/resize", resizeSelection)
-	selectionRouter.HandleFunc("/api/frm/selection/setSelectableVals", setSelectionSelectableVals)
 	selectionRouter.HandleFunc("/api/frm/selection/setLabelFormat", setLabelFormat)
+	selectionRouter.HandleFunc("/api/frm/selection/setValueList", setValueList)
+
 	selectionRouter.HandleFunc("/api/frm/selection/setClearValueSupported", setClearValueSupported)
 
 	selectionRouter.HandleFunc("/api/frm/selection/setVisibility", setVisibility)
@@ -54,16 +55,6 @@ func resizeSelection(w http.ResponseWriter, r *http.Request) {
 	processSelectionPropUpdate(w, r, resizeParams)
 }
 
-func setSelectionSelectableVals(w http.ResponseWriter, r *http.Request) {
-	var params SelectionSelectableValsParams
-	if err := api.DecodeJSONRequest(r, &params); err != nil {
-		api.WriteErrorResponse(w, err)
-		return
-	}
-	processSelectionPropUpdate(w, r, params)
-
-}
-
 func setLabelFormat(w http.ResponseWriter, r *http.Request) {
 	var params SelectionLabelFormatParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
@@ -101,4 +92,14 @@ func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processSelectionPropUpdate(w, r, params)
+}
+
+func setValueList(w http.ResponseWriter, r *http.Request) {
+	var params SelectionValueListParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processSelectionPropUpdate(w, r, params)
+
 }

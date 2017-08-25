@@ -2,7 +2,7 @@
 
 
 function initValueListSelectionPropertyPanel(panelParams) {
-	var $valListSelection = $('#valueListPropertyValueListSelection')
+	var $valListSelection = $('#' + panelParams.elemPrefix + 'ValueListPropertyValueListSelection')
 	
 	var getValueListsParams = {
 		parentDatabaseID: panelParams.databaseID

@@ -1,21 +1,14 @@
-{{define "selectionFormatProps"}}
-	Selection formatting properties go here
-{{end}}
 
 {{define "selectionProps"}}
 
 	<div id="selectionProps" class="propertyPanelToggleContainer">
 
 		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
-
-		{{template "propertyPanelPrefix" .ValuesPanelParams}}
-			{{template "selectionValuesProps"}}
+		
+		{{template "propertyPanelPrefix" .ValueListPanelParams}}
+			{{template "valueListSelectionPropertyPanel" .ElemPrefix}}
 		{{template "propertyPanelSuffix"}}
 		
-		{{template "propertyPanelPrefix" .FormatPanelParams}}
-			{{template "selectionFormatProps"}}
-		{{template "propertyPanelSuffix"}}
-
 		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}
 
 		{{template "componentPermissionsPropertyPanel" .PermissionPanelParams}}

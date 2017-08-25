@@ -65,18 +65,6 @@ func (updateParams SelectionResizeParams) updateProps(selection *Selection) erro
 	return nil
 }
 
-type SelectionSelectableValsParams struct {
-	SelectionIDHeader
-	SelectableVals []SelectionSelectableVal `json:"selectableVals"`
-}
-
-func (updateParams SelectionSelectableValsParams) updateProps(selection *Selection) error {
-
-	selection.Properties.SelectableVals = updateParams.SelectableVals
-
-	return nil
-}
-
 type SelectionLabelFormatParams struct {
 	SelectionIDHeader
 	LabelFormat common.ComponentLabelFormatProperties `json:"labelFormat"`
@@ -125,6 +113,23 @@ type SelectionClearValueSupportedParams struct {
 func (updateParams SelectionClearValueSupportedParams) updateProps(selection *Selection) error {
 
 	selection.Properties.ClearValueSupported = updateParams.ClearValueSupported
+
+	return nil
+}
+
+type SelectionValueListParams struct {
+	SelectionIDHeader
+	ValueListID *string `json:"valueListID"`
+}
+
+func (updateParams SelectionValueListParams) updateProps(selection *Selection) error {
+
+	if updateParams.ValueListID != nil {
+		selection.Properties.ValueListID = updateParams.ValueListID
+	} else {
+		selection.Properties.ValueListID = nil
+
+	}
 
 	return nil
 }

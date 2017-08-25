@@ -45,11 +45,20 @@ function initSelectionRecordEditBehavior($selectionContainer,componentContext,re
 	
 	var $selectionControl = selectionFormControlFromSelectionFormComponent($selectionContainer)
 	
-	
+		
+	// Populate the selection with values from the value list.
+	$selectionControl.empty()
 	$selectionControl.append(defaultSelectOptionPromptHTML("Select a Value"))
-	for(var selValIndex = 0; selValIndex < selectionObjectRef.properties.selectableVals.length; selValIndex++) {
-		var selectableVal = selectionObjectRef.properties.selectableVals[selValIndex]	
-		$selectionControl.append(selectOptionHTML(selectableVal.val,selectableVal.label))
+	var valueListID = selectionObjectRef.properties.valueListID
+	if (valueListID !== undefined && valueListID !== null) {
+		var getValListParams = { valueListID: valueListID }
+		jsonAPIRequest("valueList/get",getValListParams,function(valListInfo) {
+			var values = valListInfo.properties.values
+			for(var valIndex = 0; valIndex < values.length; valIndex++) {
+				var val = values[valIndex]
+				$selectionControl.append(selectOptionHTML(val.textValue,val.textValue))
+			}					
+		})
 	}
 	
 	// When the user clicks on the control, prevent the click from propagating higher.
