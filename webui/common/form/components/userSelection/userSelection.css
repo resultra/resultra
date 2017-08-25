@@ -13,29 +13,47 @@
 	height: auto;
 }
 
+
 /* Adjust the sizing of the selection control to closely match Bootstrap */
-.userSelectionTableCellContainer .select2-selection {
+.userSelectionTableCellContainer .select2-selection,
+.userSelectionFormContainer .select2-selection
+{
 	display: block!important;
 	height: 34px!important;
 	white-space: nowrap!important;
-	line-height: 30px!important;
+  	overflow-y: auto;
+	font-size:12px;
+}
+
+.userSelectionTableCellContainer .select2-selection__choice, 
+.userSelectionTableCellContainer .select2-search,
+.userSelectionFormContainer .select2-selection__choice,
+.userSelectionFormContainer .select2-search {
+	display: flex !important;
+	height: 24px!important;
+	white-space: nowrap!important;
+	align-items:center;
+	justify-content:center;
+	font-size:14px;
+	margin-top:2px !important;
+}
+
+.userSelectionTableCellContainer .select2-search__field {
+	margin-top:2px !important;
+}
+
+
+
+.userSelectionFormContainer .select2-selection {
+	display: block!important;
+	height: 30px!important;
+	white-space: nowrap!important;
+	line-height: 26px!important;
+    overflow: auto;
 }
 
 .userSelectionFormContainer label {
 	margin-bottom: 2px !important;
-}
-
-/* Adjust the sizing of the selection control to closely match Bootstrap */
-.userSelectionFormContainer .select2-selection {
-	display: block!important;
-	height: 34px!important;
-	white-space: nowrap!important;
-	line-height: 30px!important;
-}
-
-
-.userSelectionTableCellContainer span {
-	line-height: 32px !important;
 }
 
 .userSelectionClearValueWrapper {

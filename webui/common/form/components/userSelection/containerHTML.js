@@ -6,7 +6,7 @@ function userSelectionControlFromUserSelectionComponentContainer($userSelContain
 function userSelectionControlContainerHTML() {
 	return '<div class="input-group">'+
 				'<div class="formUserSelectionControl">' + 
-					'<select class="form-control userSelectionCompSelectionControl"></select>' +
+					'<select class="form-control userSelectionCompSelectionControl" multiple></select>' +
 				'</div>' +
 				clearValueButtonHTML("userSelectionComponentClearValueButton") +
 			'</div>'

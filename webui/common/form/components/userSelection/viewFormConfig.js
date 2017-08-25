@@ -55,7 +55,7 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 
 
 	function initUserSelectionEditBehavior() {
-		function setUserSelectionValue(selectedUserID) {
+		function setUserSelectionValue(selectedUserIDs) {
 		
 			validateInput(function(inputIsValid) {
 				if (inputIsValid) {
@@ -72,7 +72,7 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 						recordID:currRecordRef.recordID,
 						changeSetID: recordProxy.changeSetID, 
 						fieldID:userFieldID, 
-						userID:selectedUserID,
+						userIDs:selectedUserIDs,
 						valueFormat:userValueFormat}
 					jsonAPIRequest("recordUpdate/setUserFieldValue",setRecordValParams,function(updatedFieldVal) {
 						// After updating the record, the local cache of records in currentRecordSet will

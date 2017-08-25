@@ -1,14 +1,19 @@
-function setUserSelectionControlVal($userSelectionControl,userID) {
+function setUserSelectionControlVal($userSelectionControl,userIDs) {
 	
 	// Setting the value for a select2 selection menu involves putting an
 	// option inside the select element then setting the value to the value
 	// of this option.
-	var getUserInfoParams = { userID: userID }
-	jsonRequest("/auth/getUserInfo",getUserInfoParams,function(userInfo) {
-		var userLabel = "@" + userInfo.userName
+	var getUserInfoParams = { userIDs: userIDs }
+	jsonRequest("/auth/getUsersInfo",getUserInfoParams,function(usersInfo) {
+		
 		$userSelectionControl.empty()
-		$userSelectionControl.append('<option value="'+userID+'">'+userLabel+'</option')
-		$userSelectionControl.val(userID)
+		for (var userIndex = 0; userIndex < usersInfo.length; userIndex++) {
+			var userInfo = usersInfo[userIndex]
+			var userLabel = "@" + userInfo.userName
+			$userSelectionControl.append('<option value="'+userInfo.userID+'">'+userLabel+'</option')
+		}
+		
+		$userSelectionControl.val(userIDs)
 	})
 	
 }

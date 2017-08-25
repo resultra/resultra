@@ -51,27 +51,35 @@ func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal str
 			return nil, fmt.Errorf("DecodeTimelineCellValue: failure decoding user value: %v", err)
 		}
 
-		if userVal.UserID == nil {
+		userTimelineVals := []UserTimelineVal{}
+		if userVal.UserIDs == nil {
 			userTimelineVal := UserTimelineVal{
 				UserName:      "none", // TODO - figure out what to return when user value is cleared and userID == nil
 				IsCurrentUser: false}
-			return userTimelineVal, nil
+			userTimelineVals = append(userTimelineVals, userTimelineVal)
+
+			return userTimelineVals, nil
 		} else {
-			userInfo, err := userAuth.GetUserInfoByID(*userVal.UserID)
-			if err != nil {
-				return nil, fmt.Errorf("DecodeTimelineCellValue: %v", err)
+
+			for _, currUserID := range userVal.UserIDs {
+				userInfo, err := userAuth.GetUserInfoByID(currUserID)
+				if err != nil {
+					return nil, fmt.Errorf("DecodeTimelineCellValue: %v", err)
+				}
+
+				isCurrentUser := false
+				if currUserID == currUserID {
+					isCurrentUser = true
+				}
+				userTimelineVal := UserTimelineVal{
+					UserName:      userInfo.UserName,
+					IsCurrentUser: isCurrentUser}
+
+				userTimelineVals = append(userTimelineVals, userTimelineVal)
+
 			}
 
-			isCurrentUser := false
-			if currUserID == *(userVal.UserID) {
-				isCurrentUser = true
-			}
-
-			userTimelineVal := UserTimelineVal{
-				UserName:      userInfo.UserName,
-				IsCurrentUser: isCurrentUser}
-
-			return userTimelineVal, nil
+			return userTimelineVals, nil
 
 		}
 

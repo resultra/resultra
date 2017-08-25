@@ -36,7 +36,7 @@ func (valParams SetRecordTextValueParams) getUpdateProperties() CellUpdateProper
 type SetRecordUserValueParams struct {
 	RecordUpdateHeader
 	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
-	UserID      *string               `json:"userID"`
+	UserIDs     []string              `json:"userIDs"`
 }
 
 func (setValParams SetRecordUserValueParams) fieldType() string { return field.FieldTypeUser }
@@ -45,7 +45,7 @@ func (setValParams SetRecordUserValueParams) doCollapseRecentValues() bool { ret
 
 func (valParams SetRecordUserValueParams) generateCellValue() (string, error) {
 
-	cellVal := UserCellValue{UserID: valParams.UserID}
+	cellVal := UserCellValue{UserIDs: valParams.UserIDs}
 
 	return generic.EncodeJSONString(cellVal)
 }
