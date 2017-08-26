@@ -140,3 +140,17 @@ func (updateParams HelpPopupMsgParams) updateProps(userSelection *UserSelection)
 
 	return nil
 }
+
+type SelectableRoleParams struct {
+	UserSelectionIDHeader
+	SelectableRoles []string `json:"selectableRoles"`
+}
+
+func (updateParams SelectableRoleParams) updateProps(userSelection *UserSelection) error {
+
+	// TODO - Validate the role list
+
+	userSelection.Properties.SelectableRoles = updateParams.SelectableRoles
+
+	return nil
+}

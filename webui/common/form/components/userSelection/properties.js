@@ -122,7 +122,21 @@ function loadUserSelectionProperties($userSelection,userSelectionRef) {
 	}
 	initDeleteFormComponentPropertyPanel(deleteParams)
 	
-	initUserSelectionRoleProps(designFormContext.databaseID,userSelectionRef)
+	var selectRoleProps = {
+		databaseID: designFormContext.databaseID,
+		initialRoles: userSelectionRef.properties.selectableRoles,
+		setRolesCallback: function(selectableRoles) {
+			var params = {
+				parentFormID: userSelectionRef.parentFormID,
+				userSelectionID: userSelectionRef.userSelectionID,
+				selectableRoles: selectableRoles
+			}
+			jsonAPIRequest("frm/userSelection/setSelectableRoles",params,function(updatedUserSelection) {
+				setContainerComponentInfo($userSelection,updatedUserSelection,updatedUserSelection.userSelectionID)
+			})
+		}
+	}
+	initUserSelectionRoleProps(selectRoleProps)
 
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#userSelectionProps')
