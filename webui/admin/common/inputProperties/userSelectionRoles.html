@@ -1,0 +1,34 @@
+
+{{define "adminUserSelectionRoleProps"}}
+	<div class="list-group adminUserSelectionRoleList" id="adminUserSelectionRoleList">
+	</div>	
+{{end}}
+
+{{define "adminUserSelectionRolePropertyPanel"}}
+	
+	<tr>
+		<td class="width200"><label>Selectable roles</label>
+			<div>
+				<small>Configure role(s) whose members can be selected from a drop-down menu.</small>
+			</div>
+		</td>
+
+		<td id="userSelectionRoleTableCell">
+			<div class="maxWidth300">
+				{{template "adminUserSelectionRoleProps"}}
+			</div>
+		</td>
+	</tr>
+
+{{end}}
+
+{{define "adminUserSelectionRolePropertySidebarPane"}}
+
+	<div>
+		<label>Roles whose members can be selected<label>
+	</div>
+	<div>
+		{{template "adminUserSelectionRoleProps"}}
+	</div>
+
+{{end}}

@@ -121,6 +121,8 @@ function loadUserSelectionProperties($userSelection,userSelectionRef) {
 		$componentContainer: $userSelection
 	}
 	initDeleteFormComponentPropertyPanel(deleteParams)
+	
+	initUserSelectionRoleProps(designFormContext.databaseID,userSelectionRef)
 
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#userSelectionProps')

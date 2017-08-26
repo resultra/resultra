@@ -11,16 +11,16 @@ import (
 )
 
 type UserSelectionDesignTemplateParams struct {
-	ElemPrefix               string
-	FormatPanelParams        propertiesSidebar.PanelTemplateParams
-	ValidationPanelParams    propertiesSidebar.PanelTemplateParams
-	NewComponentDialogParams newFormElemDialog.TemplateParams
-	LabelPanelParams         label.LabelPropertyTemplateParams
-	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
-	PermissionPanelParams    permissions.PermissionsPropertyTemplateParams
-	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
-	ClearValuePanelParams    propertiesSidebar.PanelTemplateParams
-	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
+	ElemPrefix                string
+	ValidationPanelParams     propertiesSidebar.PanelTemplateParams
+	NewComponentDialogParams  newFormElemDialog.TemplateParams
+	LabelPanelParams          label.LabelPropertyTemplateParams
+	VisibilityPanelParams     visibility.VisibilityPropertyTemplateParams
+	PermissionPanelParams     permissions.PermissionsPropertyTemplateParams
+	SelectableUserPanelParams propertiesSidebar.PanelTemplateParams
+	DeletePanelParams         delete.DeletePropertyPanelTemplateParams
+	ClearValuePanelParams     propertiesSidebar.PanelTemplateParams
+	HelpPopupParams           inputProperties.HelpPopupPropertyTemplateParams
 }
 
 type UserSelectionViewTemplateParams struct {
@@ -44,8 +44,8 @@ func init() {
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "userSelectionDelete", "Delete User Selection"),
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "userSelectionLabel"}},
-		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "userSelectionFormat"},
-		ValidationPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Input Validation", PanelID: "userSelectionValidation"},
+		ValidationPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Input Validation", PanelID: "userSelectionValidation"},
+		SelectableUserPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Selectable Users", PanelID: "userSelectionSelectableUsers"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
 			DialogTitle: "New User Selection",

@@ -1,0 +1,10 @@
+#adminUserSelectionRoleList .list-group-item {
+	padding-bottom: 2px;
+	padding-top:2px;
+	border:0px;
+}
+
+#adminUserSelectionRoleList .checkbox {
+	margin-top:2px;
+	margin-bottom:2px;
+}
