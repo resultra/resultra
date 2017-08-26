@@ -91,9 +91,20 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 			dropdownParent: $userSelectionContainer,
 			width: selectionWidth
 		}
-	
 		initUserSelection(userSelectionParams)
-	
+		
+		function setSelectedUserFromDropdownMenu(userInfo) {
+			var userIDSelection = [userInfo.userID]
+			// For the selected user to be displayed in the selection,
+			// it needs to be added as an option.
+			var newOption = new Option('@'+userInfo.userID, userInfo.userID, true, true);
+			$userSelectionControl.append(newOption)
+			$userSelectionControl.val(userIDSelection)
+			setUserSelectionValue(userIDSelection)
+		}
+		configureUserSelectionDropdown(componentContext,$userSelectionContainer,
+					userSelectionObjectRef,setSelectedUserFromDropdownMenu)
+		
 	
 		var $clearValueButton = $userSelectionContainer.find(".userSelectionComponentClearValueButton")
 		initButtonControlClickHandler($clearValueButton,function() {

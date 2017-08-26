@@ -56,7 +56,7 @@ function setUserSelectionComponentLabel($userSelection,userSelection) {
 	
 }
 
-function configureUserSelectionDropdown(componentContext,$userSelection,userSelection) {
+function configureUserSelectionDropdown(componentContext,$userSelection,userSelection,setValueCallback) {
 	
 	var $userSelectionDropdown = $userSelection.find(".userSelectionDropdown")
 	var userSelFieldID = userSelection.properties.fieldID
@@ -87,6 +87,7 @@ function configureUserSelectionDropdown(componentContext,$userSelection,userSele
 		var $menuLink = $menuItem.find('a')
 		$menuLink.click(function(e) {
 			console.log("User selected: " + JSON.stringify(userInfo))
+			setValueCallback(userInfo)
 			e.preventDefault()
 		})
 		var userNameDisplay = '@' + userInfo.userName
@@ -167,6 +168,11 @@ function initUserSelectionClearValueButton($userSelection,userSelection) {
 function initUserSelectionFormComponentContainer(componentContext,$container,userSelection) {
 	setUserSelectionComponentLabel($container,userSelection)
 	initUserSelectionClearValueButton($container,userSelection)
-	configureUserSelectionDropdown(componentContext,$container,userSelection)
+	
+	
+	function dummySetVal(userID) {}
+	configureUserSelectionDropdown(componentContext,$container,userSelection,dummySetVal)
+	
+	
 	initComponentHelpPopupButton($container, userSelection)	
 }
