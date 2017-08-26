@@ -612,6 +612,33 @@ func GetAllUsersRoleInfo(databaseID string) ([]UserRoleInfo, error) {
 	return usersRoleInfo, nil
 }
 
+type RoleUserInfo struct {
+	RoleID    string              `json:"roleID"`
+	RoleName  string              `json:"roleName"`
+	RoleUsers []userAuth.UserInfo `json:"roleUsers"`
+}
+
+func GetRoleUserInfoByRoleID(databaseID string) (map[string]RoleUserInfo, error) {
+
+	roleInfo, roleInfoErr := GetCustomRoleInfo(databaseID)
+	if roleInfoErr != nil {
+		return nil, fmt.Errorf("GetRoleUserInfo: Failure querying database: %v", roleInfoErr)
+	}
+
+	roleUserInfoByRoleID := map[string]RoleUserInfo{}
+
+	for _, currRoleInfo := range roleInfo {
+		roleUserInfo := RoleUserInfo{
+			RoleID:    currRoleInfo.RoleID,
+			RoleName:  currRoleInfo.RoleName,
+			RoleUsers: currRoleInfo.RoleUsers}
+		roleUserInfoByRoleID[currRoleInfo.RoleID] = roleUserInfo
+	}
+
+	return roleUserInfoByRoleID, nil
+
+}
+
 type DeleteCollaboratorParams struct {
 	DatabaseID     string `json:"databaseID"`
 	CollaboratorID string `json:"collaboratorID"`

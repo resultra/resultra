@@ -35,6 +35,8 @@ func init() {
 	roleRouter.HandleFunc("/api/userRole/getRoleListPrivs", getRoleListPrivsAPI)
 	roleRouter.HandleFunc("/api/userRole/getRoleDashboardPrivs", getRoleDashboardPrivsAPI)
 
+	roleRouter.HandleFunc("/api/userRole/getUsersByRole", getUsersByRoleAPI)
+
 	roleRouter.HandleFunc("/api/userRole/getDatabaseRoles", getDatabaseRolesAPI)
 
 	roleRouter.HandleFunc("/api/userRole/getDashboardRolePrivs", getDashboardRolePrivsAPI)
@@ -381,6 +383,28 @@ func getDatabaseRolesAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, roles)
+
+	}
+
+}
+
+func getUsersByRoleAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params userRole.DatabaseRolesParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if usersByRole, err := userRole.GetRoleUserInfoByRoleID(params.DatabaseID); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, usersByRole)
 
 	}
 
