@@ -154,3 +154,15 @@ func (updateParams SelectableRoleParams) updateProps(userSelection *UserSelectio
 
 	return nil
 }
+
+type CurrUserSelectableParams struct {
+	UserSelectionIDHeader
+	CurrUserSelectable bool `json:"currUserSelectable"`
+}
+
+func (updateParams CurrUserSelectableParams) updateProps(userSelection *UserSelection) error {
+
+	userSelection.Properties.CurrUserSelectable = updateParams.CurrUserSelectable
+
+	return nil
+}

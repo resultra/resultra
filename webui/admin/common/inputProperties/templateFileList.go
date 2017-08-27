@@ -15,4 +15,5 @@ var TemplateFileList = []string{"static/admin/common/inputProperties/numberSpinn
 	"static/admin/common/inputProperties/formButtonBehavior.html",
 	"static/admin/common/inputProperties/clearValue.html",
 	"static/admin/common/inputProperties/helpPopup.html",
-	"static/admin/common/inputProperties/userSelectionRoles.html"}
+	"static/admin/common/inputProperties/userSelectionRoles.html",
+	"static/admin/common/inputProperties/userSelectionCurrUser.html"}

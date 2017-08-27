@@ -82,7 +82,7 @@ function configureUserSelectionDropdown(componentContext,$userSelection,userSele
 		return		
 	}
 	
-	function createDropdownMenuItem(userInfo) {
+	function createDropdownMenuItem(currUserInfo,userInfo) {
 		var $menuItem = $('<li><a href="#"></a></li>')
 		var $menuLink = $menuItem.find('a')
 		$menuLink.click(function(e) {
@@ -91,23 +91,66 @@ function configureUserSelectionDropdown(componentContext,$userSelection,userSele
 			e.preventDefault()
 		})
 		var userNameDisplay = '@' + userInfo.userName
+		if (currUserInfo.userID === userInfo.userID) {
+			userNameDisplay = userNameDisplay + ' (me)'
+		}
 		$menuItem.find('a').text(userNameDisplay)
 		return $menuItem
 	}
 	
-	var selectableRoles = userSelection.properties.selectableRoles
-	if (selectableRoles !== undefined && selectableRoles.length > 0) {
-		showDropdownControls()
+	function getDropdownMenuInfo(infoCallback) {
+		var callsRemaining = 2
+		
+		var usersByRole
+		var currUserInfo
+		
+		function processInfo() {
+			callsRemaining--
+			if(callsRemaining <= 0) {
+				infoCallback(usersByRole,currUserInfo)
+			}
+		}
+		
 		var getUsersByRoleParams = { databaseID: componentContext.databaseID }
-		jsonAPIRequest("userRole/getUsersByRole",getUsersByRoleParams,function(usersByRole) {
-			
+		jsonAPIRequest("userRole/getUsersByRole",getUsersByRoleParams,function(usersByRoleResp) {
+			usersByRole = usersByRoleResp
+			processInfo()
+		})
+		
+		var getUserInfoParams = {}
+		jsonRequest("/auth/getCurrentUserInfo",getUserInfoParams,function(userInfoResp) {
+			currUserInfo = userInfoResp
+			processInfo()
+		})
+		
+	}
+	
+	var selectableRoles = userSelection.properties.selectableRoles
+	if (userSelection.properties.currUserSelectable || (selectableRoles !== undefined && selectableRoles.length > 0)) {
+		showDropdownControls()
+		
+		getDropdownMenuInfo(function(usersByRole,currUserInfo) {
 			var $valDropdownMenu = $userSelection.find('.valueDropdownMenu')
 			$valDropdownMenu.empty()
+			
+			if(userSelection.properties.currUserSelectable) {
+				$valDropdownMenu.append(createDropdownMenuItem(currUserInfo,currUserInfo))
+			}
+			
+			var firstRoleUserAppended = false
+			
 			for (var roleIndex = 0; roleIndex < selectableRoles.length ; roleIndex++) {
 				var currSelectableRole = selectableRoles[roleIndex]
 				var roleUserInfo = usersByRole[currSelectableRole]
-
+				
+	
 				if ((roleUserInfo !== null) && (roleUserInfo.roleUsers.length >0)) {
+					
+					if(userSelection.properties.currUserSelectable && (firstRoleUserAppended===false)) {
+						$valDropdownMenu.append('<li role="separator" class="divider"></li>')						
+					}
+					firstRoleUserAppended = true
+					
 					
 					var $header = $('<li class="dropdown-header"></li>')
 					$header.text(roleUserInfo.roleName)
@@ -115,11 +158,17 @@ function configureUserSelectionDropdown(componentContext,$userSelection,userSele
 
 					for(var userInfoIndex=0; userInfoIndex<roleUserInfo.roleUsers.length;userInfoIndex++) {
 						var currRoleUser = roleUserInfo.roleUsers[userInfoIndex]
-						$valDropdownMenu.append(createDropdownMenuItem(currRoleUser))
+						$valDropdownMenu.append(createDropdownMenuItem(currUserInfo,currRoleUser))
 					}		
 					
 				}
 			}
+			
+		})
+		
+		var getUsersByRoleParams = { databaseID: componentContext.databaseID }
+		jsonAPIRequest("userRole/getUsersByRole",getUsersByRoleParams,function(usersByRole) {
+			
 		})
 	} else {
 		hideDropdownControls()

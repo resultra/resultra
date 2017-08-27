@@ -122,6 +122,21 @@ function loadUserSelectionProperties($userSelection,userSelectionRef) {
 	}
 	initDeleteFormComponentPropertyPanel(deleteParams)
 	
+	var currUserParams = {
+		currUserSelectable: userSelectionRef.properties.currUserSelectable,
+		setCurrUserSelectable: function(isSelectable) {
+			var params = {
+				parentFormID: userSelectionRef.parentFormID,
+				userSelectionID: userSelectionRef.userSelectionID,
+				currUserSelectable: isSelectable
+			}
+			jsonAPIRequest("frm/userSelection/setCurrUserSelectable",params,function(updatedUserSelection) {
+				setContainerComponentInfo($userSelection,updatedUserSelection,updatedUserSelection.userSelectionID)
+			})	
+		}
+	}
+	initSelectionCurrUserProperties(currUserParams)
+	
 	var selectRoleProps = {
 		databaseID: designFormContext.databaseID,
 		initialRoles: userSelectionRef.properties.selectableRoles,

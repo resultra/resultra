@@ -25,6 +25,7 @@ type UserSelectionProperties struct {
 	ClearValueSupported bool                 `json:"clearValueSupported"`
 	HelpPopupMsg        string               `json:"helpPopupMsg"`
 	SelectableRoles     []string             `json:"selectableRoles"`
+	CurrUserSelectable  bool                 `json:"currUserSelectable"`
 }
 
 func (srcProps UserSelectionProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*UserSelectionProperties, error) {
@@ -56,6 +57,7 @@ func newDefaultUserSelectionProperties() UserSelectionProperties {
 		Validation:                    newDefaultValidationProperties(),
 		ClearValueSupported:           false,
 		HelpPopupMsg:                  "",
-		SelectableRoles:               []string{}}
+		SelectableRoles:               []string{},
+		CurrUserSelectable:            false}
 	return props
 }
