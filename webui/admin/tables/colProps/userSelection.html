@@ -31,7 +31,18 @@
 			{{template "clearValueProps" .ElemPrefix}}
 		</td>
 	</tr>
-	
+
+	<tr>
+		<td class="width200"><label>Selectable users</label><BR>
+			<small>Configure which users can be selected from a drop-down menu.</small>
+		</td>
+
+		<td class="maxWidth300">
+			{{template "userSelectionCurrUserSelectableProps"}}
+			<hr>
+			{{template "adminUserSelectionRolePropertySidebarPane"}}
+		</td>
+	</tr>	
 	
 	<tr>
 		<td class="width200"><label>Validation</label><BR>

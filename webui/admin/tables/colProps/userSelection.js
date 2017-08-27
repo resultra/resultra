@@ -89,6 +89,38 @@ function initUserSelectionColPropertiesImpl(userSelectionInputCol) {
 	}
 	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
+	
+	
+	var currUserParams = {
+		currUserSelectable: userSelectionInputCol.properties.currUserSelectable,
+		setCurrUserSelectable: function(isSelectable) {
+			var params = {
+				parentTableID: userSelectionInputCol.parentTableID,
+				userSelectionID: userSelectionInputCol.userSelectionID,
+				currUserSelectable: isSelectable
+			}
+			jsonAPIRequest("tableView/userSelection/setCurrUserSelectable",params,function(updateCol) {
+			})	
+		}
+	}
+	initSelectionCurrUserProperties(currUserParams)
+	
+	var selectRoleProps = {
+		databaseID: colPropsAdminContext.databaseID,
+		initialRoles: userSelectionInputCol.properties.selectableRoles,
+		setRolesCallback: function(selectableRoles) {
+			var params = {
+				parentTableID: userSelectionInputCol.parentTableID,
+				userSelectionID: userSelectionInputCol.userSelectionID,
+				selectableRoles: selectableRoles
+			}
+			jsonAPIRequest("tableView/userSelection/setSelectableRoles",params,function(updateCol) {
+			})
+		}
+	}
+	initUserSelectionRoleProps(selectRoleProps)
+	
+	
 }
 
 function initUserSelectionColProperties(tableID,columnID) {

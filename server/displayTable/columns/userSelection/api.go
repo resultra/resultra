@@ -17,6 +17,9 @@ func init() {
 	userSelectionRouter.HandleFunc("/api/tableView/userSelection/setClearValueSupported", setClearValueSupported)
 	userSelectionRouter.HandleFunc("/api/tableView/userSelection/setHelpPopupMsg", setHelpPopupMsg)
 
+	userSelectionRouter.HandleFunc("/api/tableView/userSelection/setSelectableRoles", setSelectableRoles)
+	userSelectionRouter.HandleFunc("/api/tableView/userSelection/setCurrUserSelectable", setCurrUserSelectable)
+
 	userSelectionRouter.HandleFunc("/api/tableView/userSelection/setPermissions", setPermissions)
 	userSelectionRouter.HandleFunc("/api/tableView/userSelection/setValidation", setValidation)
 	userSelectionRouter.HandleFunc("/api/tableView/userSelection/validateInput", validateInputAPI)
@@ -119,6 +122,24 @@ func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
 
 func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
 	var params HelpPopupMsgParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processUserSelectionPropUpdate(w, r, params)
+}
+
+func setSelectableRoles(w http.ResponseWriter, r *http.Request) {
+	var params SelectableRoleParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processUserSelectionPropUpdate(w, r, params)
+}
+
+func setCurrUserSelectable(w http.ResponseWriter, r *http.Request) {
+	var params CurrUserSelectableParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

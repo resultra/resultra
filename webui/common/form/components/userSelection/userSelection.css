@@ -7,7 +7,7 @@
 }
 
 .userSelectionTableCellContainer {
-	min-width:200px;
+	min-width:220px;
 	min-height:10px;
 	width: 200px;
 	height: auto;
@@ -59,4 +59,10 @@
 .userSelectionClearValueWrapper {
 	position:relative;
 	min-height:34px;
+}
+
+
+.userSelectionDropdown .dropdown-toggle {
+	padding-left: 5px;
+	padding-right:5px;
 }
