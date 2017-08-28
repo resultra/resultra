@@ -23,6 +23,8 @@ function initFilterPropertyPanel(panelParams) {
 	
 	initMatchLogicSelection(panelParams)
 	
+	initFilterFieldSelection(panelParams)
+	
 	
 	initDefaultFilterRules(panelParams, function() {})	
 	
