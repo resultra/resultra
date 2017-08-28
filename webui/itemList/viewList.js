@@ -94,6 +94,7 @@ function initItemListView(listInfo) {
 		elemPrefix: filterPanelElemPrefix,
 		databaseID: viewListContext.databaseID,
 		defaultFilterRules: listInfo.properties.defaultFilterRules,
+		limitToFieldList:listInfo.properties.defaultFilterFields,
 		initDone: decrementRemainingPanelInitCount,
 		updateFilterRules: function (updatedFilterRules) {
 			console.log("View form: filters changed - updating filtering")

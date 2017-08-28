@@ -15,6 +15,7 @@ function initRecordFilterViewPanel(filterPaneParams) {
 		elemPrefix: filterPaneParams.elemPrefix,
 		databaseID: filterPaneParams.databaseID,
 		fieldTypes: [fieldTypeAll],
+		limitToFieldList: filterPaneParams.limitToFieldList,
 		fieldSelectionCallback: function(fieldInfo) {
 			var filterRuleListSelector = createPrefixedSelector(filterPaneParams.elemPrefix,
 							'RecordFilterFilterRuleList')

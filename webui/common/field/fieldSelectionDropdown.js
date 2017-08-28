@@ -38,6 +38,21 @@ function initFieldSelectionDropdown(params) {
 	}
 	
 	loadSortedFieldInfo(params.databaseID,params.fieldTypes,function(sortedFields) {
-		populateAddFilterDropdownMenu(sortedFields)
+		
+		if((params.limitToFieldList !== undefined) && (params.limitToFieldList.length>0)) {
+			var sortedLimitedFields = []
+			var fieldLookup = new IDLookupTable(params.limitToFieldList)
+			for(var fieldIndex in sortedFields) {
+				var currField = sortedFields[fieldIndex]
+				if (fieldLookup.hasID(currField.fieldID)) {
+					sortedLimitedFields.push(currField)
+				}
+			}
+			populateAddFilterDropdownMenu(sortedLimitedFields)
+		} else {
+			populateAddFilterDropdownMenu(sortedFields)
+			
+		}
+		
 	})
 }
