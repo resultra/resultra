@@ -2,6 +2,8 @@ function initFilterFieldSelection(params) {
 	
 	var $fieldSelectionList = $('#' + params.elemPrefix + 'AdminFilterFieldSelection')
 	
+	var defaultFilterFieldsLookup = new IDLookupTable(params.defaultFilterFields)
+	
 	function addFieldSelection(fieldInfo) {
 			
 		var fieldSelectionHTML = '' +
@@ -24,7 +26,7 @@ function initFilterFieldSelection(params) {
 		$selectionCheckbox.attr("id",inputID)
 		$fieldSelection.find("label").attr("for",inputID)
 		
-		var fieldEnabled = false
+		var fieldEnabled = defaultFilterFieldsLookup.hasID(fieldInfo.fieldID)
 		initCheckboxControlChangeHandler($selectionCheckbox,fieldEnabled,function(isEnabled) {
 			
 			var checkedFields = []
@@ -35,8 +37,7 @@ function initFilterFieldSelection(params) {
 				}
 			})
 			console.log("checked fields: " + JSON.stringify(checkedFields))
-//			params.setRolesCallback(checkedRoles)
-			
+			params.setFilterFieldsCallback(checkedFields)
 		})
 		
 		$fieldSelectionList.append($fieldSelection)

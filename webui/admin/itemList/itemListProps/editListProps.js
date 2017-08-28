@@ -93,6 +93,7 @@ $(document).ready(function() {
 
 		var getItemListParams = { listID: itemListPropsContext.listID }
 		jsonAPIRequest("itemList/get",getItemListParams,function(listInfo) {
+			
 			var filterPropertyPanelParams = {
 				elemPrefix: listElemPrefix,
 				databaseID: itemListPropsContext.databaseID,
@@ -111,6 +112,23 @@ $(document).ready(function() {
 
 			}
 			initFilterPropertyPanel(filterPropertyPanelParams)
+			
+			var filterFieldParams = {
+				elemPrefix: listElemPrefix,
+				databaseID: itemListPropsContext.databaseID,
+				defaultFilterFields: listInfo.properties.defaultFilterFields,
+				setFilterFieldsCallback: function(fields) {
+					var setFieldsParams = {
+						listID: listInfo.listID,
+						defaultFilterFields: fields
+					}
+					jsonAPIRequest("itemList/setDefaultFilterFields",setFieldsParams,function(updatedList) {
+						console.log(" Default filters updated")
+					}) // set record's number field value
+					
+				}
+			}
+			initFilterFieldSelection(filterFieldParams)
 
 
 			var preFilterElemPrefix = "itemListPreFilter_"

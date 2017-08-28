@@ -26,6 +26,7 @@ func (viewProps ItemListViewProperties) validate() error {
 type ItemListProperties struct {
 	DefaultRecordSortRules []recordSortDataModel.RecordSortRule `json:"defaultRecordSortRules"`
 	DefaultFilterRules     recordFilter.RecordFilterRuleSet     `json:"defaultFilterRules"`
+	DefaultFilterFields    []string                             `json:"defaultFilterFields"`
 	PreFilterRules         recordFilter.RecordFilterRuleSet     `json:"preFilterRules"`
 	DefaultView            ItemListViewProperties               `json:"defaultView"`
 	AlternateViews         []ItemListViewProperties             `json:"alternateViews"`
@@ -42,6 +43,8 @@ func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) 
 	if err != nil {
 		return nil, fmt.Errorf("FormProperties.Clone: %v")
 	}
+
+	destFilterFields := uniqueID.CloneIDList(remappedIDs, srcProps.DefaultFilterFields)
 
 	destSortRules, err := recordSortDataModel.CloneSortRules(remappedIDs, srcProps.DefaultRecordSortRules)
 	if err != nil {
@@ -65,6 +68,7 @@ func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) 
 	destProps := ItemListProperties{
 		DefaultRecordSortRules: destSortRules,
 		DefaultFilterRules:     *destFilterRules,
+		DefaultFilterFields:    destFilterFields,
 		PreFilterRules:         *destPreFilterRules,
 		AlternateViews:         destAltViews}
 
@@ -75,6 +79,7 @@ func newDefaultItemListProperties() ItemListProperties {
 	defaultProps := ItemListProperties{
 		DefaultRecordSortRules: []recordSortDataModel.RecordSortRule{},
 		DefaultFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet(),
+		DefaultFilterFields:    []string{},
 		PreFilterRules:         recordFilter.NewDefaultRecordFilterRuleSet(),
 		AlternateViews:         []ItemListViewProperties{}}
 

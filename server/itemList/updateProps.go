@@ -131,3 +131,17 @@ func (updateParams SetAlternateViewsParams) updateProps(itemList *ItemList) erro
 
 	return nil
 }
+
+type SetDefaultFilterFieldsParams struct {
+	ItemListIDHeader
+	DefaultFieldFields []string `json:"defaultFilterFields"`
+}
+
+func (updateParams SetDefaultFilterFieldsParams) updateProps(itemList *ItemList) error {
+
+	// TODO - Validate fields
+
+	itemList.Properties.DefaultFilterFields = updateParams.DefaultFieldFields
+
+	return nil
+}

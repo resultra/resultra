@@ -21,10 +21,7 @@ function initFilterPropertyPanel(panelParams) {
 	}
 	initFieldSelectionDropdown(fieldSelectionDropdownParams)
 	
-	initMatchLogicSelection(panelParams)
-	
-	initFilterFieldSelection(panelParams)
-	
+	initMatchLogicSelection(panelParams)	
 	
 	initDefaultFilterRules(panelParams, function() {})	
 	
