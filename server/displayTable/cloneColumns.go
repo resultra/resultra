@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/server/displayTable/columns/formButton"
 	"resultra/datasheet/server/displayTable/columns/note"
 	"resultra/datasheet/server/displayTable/columns/numberInput"
+	"resultra/datasheet/server/displayTable/columns/progress"
 	"resultra/datasheet/server/displayTable/columns/rating"
 	"resultra/datasheet/server/displayTable/columns/textInput"
 	"resultra/datasheet/server/displayTable/columns/toggle"
@@ -59,6 +60,10 @@ func cloneTableCols(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string)
 	}
 
 	if err := formButton.CloneButtons(remappedIDs, parentTableID); err != nil {
+		return fmt.Errorf("cloneTableCols: %v", err)
+	}
+
+	if err := progress.CloneProgressIndicators(remappedIDs, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 

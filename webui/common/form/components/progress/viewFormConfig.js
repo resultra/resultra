@@ -51,8 +51,6 @@ function initProgressRecordEditBehavior($progress,componentContext,recordProxy, 
 		loadRecord: loadRecordIntoProgressIndicator
 	})
 	
-	
-	
 	function populateStackedProgressBars($progressBarContainer,minVal,maxVal,thresholdVals) {
 		
 		// make sure the given threshold values are sorted. The algorithm to populate the 

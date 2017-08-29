@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/server/displayTable/columns/formButton"
 	"resultra/datasheet/server/displayTable/columns/note"
 	"resultra/datasheet/server/displayTable/columns/numberInput"
+	"resultra/datasheet/server/displayTable/columns/progress"
 	"resultra/datasheet/server/displayTable/columns/rating"
 	"resultra/datasheet/server/displayTable/columns/textInput"
 	"resultra/datasheet/server/displayTable/columns/toggle"
@@ -28,6 +29,15 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
 	for _, col := range numberInputCols {
+		tableColData = append(tableColData, col)
+		tableColsByID[col.ColumnID] = col
+	}
+
+	progressCols, err := progress.GetProgressIndicators(parentTableID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("getTableCols: %v", err)
+	}
+	for _, col := range progressCols {
 		tableColData = append(tableColData, col)
 		tableColsByID[col.ColumnID] = col
 	}

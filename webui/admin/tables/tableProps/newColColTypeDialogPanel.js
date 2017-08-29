@@ -48,6 +48,17 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					})
 					
 				}
+				
+				function createProgress(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/progress/new",params,function(progress) {
+						console.log("Progress indicator column created: " + JSON.stringify(progress))
+					})
+					
+				}
 
 				function createTextInput(fieldInfo) {
 					var params = {
@@ -145,6 +156,8 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 						createNumberInput(fieldInfo)	
 					} else if (colType === 'rating'){
 						createRating(fieldInfo)
+					} else if (colType === 'progress'){
+						createProgress(fieldInfo)
 					} else {
 						console.log("Unknown column type for number field : " + colType)
 					}
@@ -233,6 +246,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 			case fieldTypeNumber:
 				$colTypeSelection.append(selectOptionHTML('numberInput','Number input'))
 				$colTypeSelection.append(selectOptionHTML('rating','Rating'))
+				$colTypeSelection.append(selectOptionHTML('progress','Progress Indicator'))
 				break
 			case fieldTypeText:
 				$colTypeSelection.append(selectOptionHTML('textInput','Text input'))

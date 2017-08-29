@@ -229,6 +229,16 @@ function initItemListTableView(params) {
 		return createTableViewColDef(colInfo,fieldsByID,
 				ratingTableCellContainerHTML,initContainer)
 	}
+	
+	
+	function createProgressColDef(colInfo,fieldsByID) {
+		
+		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+			setContainerComponentInfo($cellContainer,colInfo,colInfo.progressID)
+			initProgressRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,fieldsByID,progressTableCellContainerHTML,initContainer)
+	}
 
 	
 	function createColDef(colInfo,fieldsByID) {
@@ -255,6 +265,8 @@ function initItemListTableView(params) {
 			return createAttachmentColDef(colInfo,fieldsByID)
 		case 'button':
 			return createFormButtonColDef(colInfo,fieldsByID)
+		case 'progress':
+			return createProgressColDef(colInfo,fieldsByID)
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,

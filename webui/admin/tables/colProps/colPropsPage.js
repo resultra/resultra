@@ -51,6 +51,9 @@ $(document).ready(function() {
 		case 'comment':
 			initCommentColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
 			break
+		case 'progress':
+			initProgressColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			break
 		default:
 			console.log("Unknown column type: " + colPropsAdminContext.colType)
 		}

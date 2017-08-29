@@ -16,3 +16,17 @@
 .progressComponent label {
 	margin-bottom:2px;
 }
+
+.progressTableCell .progress {
+	margin-bottom:0px;
+	margin-top:0px;
+}
+
+.progressTableCell
+{
+	min-width:120px;
+	height: 34px;
+    vertical-align: middle;
+    display: table-cell;
+	
+}
