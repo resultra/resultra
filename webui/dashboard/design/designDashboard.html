@@ -40,6 +40,7 @@
 			{{template "summaryTableProps" .ComponentParams.SummaryTableParams}}
 			{{template "dashboardHeaderProps" .ComponentParams.HeaderParams}}
 			{{template "dashboardGaugeProps" .ComponentParams.GaugeParams}}			
+			{{template "dashboardSummaryValProps" .ComponentParams.SummaryValParams}}			
 			{{template "dashboardProps" .}}
 		{{template "propertyPanelGroupSuffix"}}
 		
@@ -97,6 +98,7 @@
 	{{template "newBarChartDialog" .ComponentParams.BarChartParams}}      
 	{{template "newSummaryTableDialog" .ComponentParams.SummaryTableParams}}
 	{{template "newGaugeDialog" .ComponentParams.GaugeParams}}
+	{{template "newSummaryValDialog" .ComponentParams.SummaryValParams}}
 	   
   </body>
   

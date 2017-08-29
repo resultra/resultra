@@ -72,6 +72,24 @@ function loadDashboardData(loadDashboardConfig)
 		loadDashboardConfig.initGaugeComponent($gauge,gaugeRef)
 	}
 
+	function initSummaryValLayout($componentRow,summaryValData) {
+		
+		var summaryValHTML = dashboardSummaryValContainerHTML(summaryValData.summaryValID);
+		var $summaryVal = $(summaryValHTML)
+		
+		var summaryValRef = summaryValData.summaryVal
+		
+		setGaugeDashboardComponentLabel($summaryVal,summaryValRef)
+	
+		setContainerComponentInfo($summaryVal,summaryValRef,summaryValRef.summaryValID)
+		
+		initSummaryValData(dashboardID,$summaryVal,summaryValData)
+		
+		$componentRow.append($summaryVal)
+		setElemFixedWidthFlexibleHeight($summaryVal,summaryValRef.properties.geometry.sizeWidth)
+				
+		loadDashboardConfig.initSummaryValComponent($summaryVal,summaryValRef)
+	}
 	
 	// Load the dashboard data
 	var loadBarChartDataParams = { dashboardID: dashboardID }
@@ -103,6 +121,15 @@ function loadDashboardData(loadDashboardConfig)
 			compenentIDComponentMap[gaugeData.gaugeID] = {
 				componentInfo: gaugeData,
 				initFunc: initGaugeLayout
+			}		
+		}
+
+		for (var summaryValDataIndex in dashboardData.summaryValsData) {
+			var summaryValData = dashboardData.summaryValsData[summaryValDataIndex]
+			console.log ("Loading summary table: id = " + gaugeData.gaugeID)
+			compenentIDComponentMap[summaryValData.summaryValID] = {
+				componentInfo: summaryValData,
+				initFunc: initSummaryValLayout
 			}		
 		}
 

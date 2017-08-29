@@ -1,0 +1,39 @@
+
+{{define "newSummaryValDialogBody"}}
+
+	{{template "wizardDialogProgress" . }}
+	
+	{{template "dashboardComponentValueSummaryPanel" .ValueSummaryParams}}
+	
+{{end}}
+
+
+{{define "newSummaryValDialogButtons"}}
+	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	{{template "dashboardComponentValueSummaryPanelButtons" .ValueSummaryParams}}
+{{end}}
+
+
+{{define "newSummaryValDialog"}}
+
+<div class="modal fade" id="newSummaryValDialog"  tabindex="-1" role="document"
+						aria-labelledby="newSummaryValLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="newSummaryValLabel">New Summary Value</h4>
+      </div>
+      <div class="modal-body newGaugeBody">
+		  <div>
+			  {{template "newSummaryValDialogBody" . }}
+		</div>
+      </div>
+      <div class="modal-footer">
+		  {{template "newSummaryValDialogButtons" .}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}

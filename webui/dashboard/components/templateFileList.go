@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/webui/dashboard/components/gauge"
 	"resultra/datasheet/webui/dashboard/components/header"
 	"resultra/datasheet/webui/dashboard/components/summaryTable"
+	"resultra/datasheet/webui/dashboard/components/summaryValue"
 )
 
 var TemplateFileList []string
@@ -19,5 +20,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, summaryTable.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, gauge.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, common.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, summaryValue.TemplateFileList...)
 
 }

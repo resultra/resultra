@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/dashboard/components/gauge"
 	"resultra/datasheet/server/dashboard/components/header"
 	"resultra/datasheet/server/dashboard/components/summaryTable"
+	"resultra/datasheet/server/dashboard/components/summaryValue"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
@@ -24,6 +25,10 @@ func cloneDashboardComponents(remappedIDs uniqueID.UniqueIDRemapper, srcParentDa
 	}
 
 	if err := gauge.CloneGauges(remappedIDs, srcParentDashboard); err != nil {
+		return fmt.Errorf("cloneDashboardComponents: %v", err)
+	}
+
+	if err := summaryValue.CloneSummaryVals(remappedIDs, srcParentDashboard); err != nil {
 		return fmt.Errorf("cloneDashboardComponents: %v", err)
 	}
 

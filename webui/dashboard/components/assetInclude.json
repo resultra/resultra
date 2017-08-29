@@ -4,5 +4,6 @@
 		"barChart",
 		"gauge",
 		"header",
-		"summaryTable"]
+		"summaryTable",
+		"summaryValue"]
 }

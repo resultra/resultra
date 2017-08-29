@@ -1,0 +1,10 @@
+.dashboardSummaryValContainer {
+	min-width:50px;
+	width: 180px;
+	height: auto;
+}
+
+.dashboardSummaryValContainer .dashboardSummaryVal {
+	margin-top: 2px;
+	margin-bottom:2px;
+}

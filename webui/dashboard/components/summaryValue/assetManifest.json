@@ -1,0 +1,15 @@
+{
+    "cssFiles": ["container.css"], 
+    "htmlFiles": [
+        "properties.html",
+		"newSummaryValDialog.html"
+    ], 
+    "jsFiles": [
+        "container.js", 
+        "properties.js", 
+		"newSummaryValDialog.js",
+		"viewConfig.js",
+        "designConfig.js"
+    ],
+	"imageFiles":[]
+}

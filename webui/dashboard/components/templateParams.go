@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/webui/dashboard/components/gauge"
 	"resultra/datasheet/webui/dashboard/components/header"
 	"resultra/datasheet/webui/dashboard/components/summaryTable"
+	"resultra/datasheet/webui/dashboard/components/summaryValue"
 )
 
 type ComponentDesignTemplateParams struct {
@@ -12,6 +13,7 @@ type ComponentDesignTemplateParams struct {
 	SummaryTableParams summaryTable.SummaryTableDesignTemplateParams
 	HeaderParams       header.HeaderDesignTemplateParams
 	GaugeParams        gauge.GaugeDesignTemplateParams
+	SummaryValParams   summaryValue.SummaryValDesignTemplateParams
 }
 
 type ComponentViewTemplateParams struct {
@@ -27,7 +29,8 @@ func init() {
 		BarChartParams:     barChart.DesignTemplateParams,
 		SummaryTableParams: summaryTable.DesignTemplateParams,
 		HeaderParams:       header.DesignTemplateParams,
-		GaugeParams:        gauge.DesignTemplateParams}
+		GaugeParams:        gauge.DesignTemplateParams,
+		SummaryValParams:   summaryValue.DesignTemplateParams}
 
 	ViewTemplateParams = ComponentViewTemplateParams{
 		SummaryTableParams: summaryTable.ViewTemplateParams,

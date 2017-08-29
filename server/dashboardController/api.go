@@ -17,6 +17,7 @@ func init() {
 	dashboardControllerRouter.HandleFunc("/api/dashboardController/getBarChartData", getBarChartDataAPI)
 	dashboardControllerRouter.HandleFunc("/api/dashboardController/getSummaryTableData", getSummaryTableDataAPI)
 	dashboardControllerRouter.HandleFunc("/api/dashboardController/getGaugeData", getGaugeDataAPI)
+	dashboardControllerRouter.HandleFunc("/api/dashboardController/getSummaryValData", getSummaryValDataAPI)
 
 	http.Handle("/api/dashboardController/", dashboardControllerRouter)
 }
@@ -81,6 +82,22 @@ func getGaugeDataAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, gaugeData)
+	}
+
+}
+
+func getSummaryValDataAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetSummaryValDataParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if summaryValData, err := getSummaryValData(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, summaryValData)
 	}
 
 }
