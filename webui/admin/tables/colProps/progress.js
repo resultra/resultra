@@ -24,8 +24,46 @@ function initProgressColPropertiesImpl(progressCol) {
 		saveLabelPropsCallback: saveLabelProps
 	}
 	initComponentLabelPropertyPanel(labelParams)
-		
 
+
+	var formatSelectionParams = {
+		elemPrefix: elemPrefix,
+		initialFormat: progressCol.properties.valueFormat.format,
+		formatChangedCallback: function (newFormat) {
+			console.log("Format changed for progress bar: " + newFormat)
+			
+			var newValueFormat = {
+				format: newFormat
+			}
+			var formatParams = {
+				parentTableID: progressCol.parentTableID,
+				progressID: progressCol.progressID,
+				valueFormat: newValueFormat
+			}
+			jsonAPIRequest("tableView/progress/setValueFormat", formatParams, function(updatedProgress) {
+			})	
+			
+		}
+	}
+	initNumberFormatSelection(formatSelectionParams)
+	
+	
+	function saveProgressThresholds(newThresholdVals) {
+		var setThresholdParams = {
+			parentTableID: progressCol.parentTableID,
+			progressID: progressCol.progressID,
+			thresholdVals: newThresholdVals
+		}
+		jsonAPIRequest("tableView/progress/setThresholds", setThresholdParams, function(updatedProgress) {
+		})	
+	}	
+	var thresholdParams = {
+		elemPrefix: elemPrefix,
+		saveThresholdsCallback: saveProgressThresholds,
+		initialThresholdVals: progressCol.properties.thresholdVals
+	}
+	initThresholdValuesPropertyPanel(thresholdParams)
+	
 	var helpPopupParams = {
 		initialMsg: progressCol.properties.helpPopupMsg,
 		elemPrefix: elemPrefix,	

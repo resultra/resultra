@@ -11,8 +11,29 @@
 			{{template "componentLabelProps" .LabelPanelParams}}
 		</td>
 	</tr>
-		
-	
+
+
+	<tr>
+		<td class="width200"><label>Number format</label><BR>
+			<small>Configure the format of the number displayed on the progress indicator.</small>
+		</td>
+
+		<td class="maxWidth300">
+			{{template "formatNumberSelection" "progress_"}}
+		</td>
+	</tr>
+
+
+	<tr>
+		<td class="width200"><label>Value Thresholds</label><BR>
+			<small>Configure thresholds used to change the color of the progress indicator.</small>
+		</td>
+
+		<td class="maxWidth300">
+			{{template "valueThresholdPropertyPanel" .ThresholdValueParams}}
+		</td>
+	</tr>
+
 	{{template "componentHelpPopupColumnProps" .ElemPrefix}}
 	
 	
