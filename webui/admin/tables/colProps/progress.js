@@ -64,6 +64,26 @@ function initProgressColPropertiesImpl(progressCol) {
 	}
 	initThresholdValuesPropertyPanel(thresholdParams)
 	
+	
+	function setProgressRange(minVal,maxVal) {
+		var setRangeParams = {
+			parentTableID: progressCol.parentTableID,
+			progressID: progressCol.progressID,
+			minVal: minVal,
+			maxVal: maxVal
+		}
+		jsonAPIRequest("tableView/progress/setRange", setRangeParams, function(updatedProgress) {
+		})	
+	}
+	var progressRangeParams = {
+		setRangeCallback: setProgressRange,
+		initialMinVal: progressCol.properties.minVal,
+		initialMaxVal: progressCol.properties.maxVal
+	}
+	initProgressRangeProperties(progressRangeParams)
+	
+	
+	
 	var helpPopupParams = {
 		initialMsg: progressCol.properties.helpPopupMsg,
 		elemPrefix: elemPrefix,	
