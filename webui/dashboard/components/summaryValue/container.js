@@ -8,7 +8,7 @@ function dashboardSummaryValContainerHTML(elementID)
 	var containerHTML = ''+
 		'<div class="layoutContainer dashboardSummaryValContainer" id="'+elementID+'">' +
 			'<label class="summaryValLabel">' + 'New Summary Val' + '</label>' +
-			'<div class="dashboardSummaryVal">' +
+			'<div class="dashboardSummaryVal alert defaultAlertBackground" role="alert">' +
 				'<span class="summaryValControl"></span>'+
   			'</div>' +
 		'</div><';
@@ -25,13 +25,20 @@ function initSummaryValDashboardComponentControl($summaryVal,summaryValConfig,su
 	
 	var $summaryValControlContainer = $summaryVal.find(".summaryValControl")
 	
-	var summaryValControl = new GaugeUIControl($summaryValControlContainer, summaryValConfig);
-	summaryValControl.render()
-	summaryValControl.redraw(0.0)
-	$summaryVal.data("summaryValControl",summaryValControl) 
+	var formattedVal = summaryValConfig.valueFormatter(summaryVal)
+	$summaryValControlContainer.text(formattedVal)
 	
-	summaryValControl.redraw(summaryVal)
+	var colorScheme = getThresholdColorScheme(summaryValConfig.thresholdVals,summaryVal)
+	var colorClass = "defaultAlertBackground"
+	if (colorScheme !== colorThresholdSchemeDefault) {
+		colorClass = "alert-" + colorScheme
+	}
+		
+	var $summaryValValContainer = $summaryVal.find(".dashboardSummaryVal")
+	$summaryValValContainer.removeClass("defaultAlertBackground alert-success alert-danger alert-info alert-warning")
+	$summaryValValContainer.addClass(colorClass)
 	
+
 }
 
 

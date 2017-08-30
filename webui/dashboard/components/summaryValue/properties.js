@@ -46,7 +46,7 @@ function loadDashboardSummaryValProperties(summaryValPropsArgs) {
 			thresholdVals: newThresholdVals
 		}
 		jsonAPIRequest("dashboard/summaryVal/setThresholds", setThresholdParams, function(updatedSummaryVal) {
-			reloadGauge(updatedSummaryVal)
+			reloadSummaryVal(updatedSummaryVal)
 			setContainerComponentInfo($summaryVal,updatedSummaryVal,updatedSummaryVal.summaryValID)
 		})	
 	}
@@ -72,7 +72,7 @@ function loadDashboardSummaryValProperties(summaryValPropsArgs) {
 			}
 			jsonAPIRequest("dashboard/summaryVal/setPreFilterRules",setPreFiltersParams,function(updatedSummaryVal) {
 				console.log(" Pre filters updated")
-				reloadGauge(updatedSummaryVal)
+				reloadSummaryVal(updatedSummaryVal)
 				setContainerComponentInfo($summaryVal,updatedSummaryVal,updatedSummaryVal.summaryValID)
 			}) 
 		}

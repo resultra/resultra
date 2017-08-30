@@ -1,3 +1,5 @@
+var colorThresholdSchemeDefault = 'default'
+
 // Given a list of threshold values, convert these thresholds into zones for each color scheme. This is useful drawing 
 // controls from a minimum and maximum threshold value, rather than just a minimum. 
 function convertStartingThresholdsToZones(thresholdVals, minVal, maxVal) {
