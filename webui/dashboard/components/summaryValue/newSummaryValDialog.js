@@ -40,7 +40,7 @@ function openNewDashboardSummaryValDialog(summaryValParams) {
 				filterRules: summaryValRef.properties.defaultFilterRules
 			}
 			jsonAPIRequest("dashboardController/getSummaryValData",summaryValDataParams,function(summaryValData) {
-				initSummaryValData(newGaugeParams.dashboardID,summaryValParams.$componentContainer,summaryValData)
+				initSummaryValData(newSummaryValParams.dashboardID,summaryValParams.$componentContainer,summaryValData)
 			})			
 		})
 	}

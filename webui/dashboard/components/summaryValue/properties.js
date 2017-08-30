@@ -31,7 +31,7 @@ function loadDashboardSummaryValProperties(summaryValPropsArgs) {
 			}
 			jsonAPIRequest("dashboard/summaryVal/setTitle",setTitleParams,function(updatedSummaryVal) {
 				setContainerComponentInfo($summaryVal,updatedSummaryVal,updatedSummaryVal.summaryValID)
-				setGaugeDashboardComponentLabel($summaryVal,updatedSummaryVal)
+				setSummaryValDashboardComponentLabel($summaryVal,updatedSummaryVal)
 			})
 
 		}

@@ -125,7 +125,17 @@ $(document).ready(function() {
 						
 			initDashboardComponentViewBehavior($gauge,gaugeRef.gaugeID,viewConfig)
 			
+		},
+		initSummaryValComponent: function($summaryVal,summaryValRef) {
+			
+			var viewConfig = summaryValViewDashboardConfig(summaryValRef)
+			
+			console.log("Init gauge component")
+						
+			initDashboardComponentViewBehavior($summaryVal,summaryValRef.summaryValID,viewConfig)
+			
 		}
+		
 	}
 	
 	loadDashboardData(loadDashboardConfig)

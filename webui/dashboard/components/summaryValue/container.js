@@ -38,7 +38,6 @@ function initSummaryValDashboardComponentControl($summaryVal,summaryValConfig,su
 	$summaryValValContainer.removeClass("defaultAlertBackground alert-success alert-danger alert-info alert-warning")
 	$summaryValValContainer.addClass(colorClass)
 	
-
 }
 
 
@@ -55,16 +54,9 @@ function initSummaryValData(dashboardID,$summaryVal, summaryValData) {
 			
 	var summaryValConfig = 
 	{
-		size: summaryValRef.properties.geometry.sizeWidth,
-		min: 0.0,
-		max: 100.0,
-		minorTicks: 5,
 		valueFormatter: formatSummaryValVal,
 		thresholdVals: summaryValRef.properties.thresholdVals
 	}	
-	summaryValConfig.yellowZones = [];
-	summaryValConfig.redZones = [];
-	summaryValConfig.greenZones = [];
 	
 	initSummaryValDashboardComponentControl($summaryVal,summaryValConfig,summaryValVal)
 	

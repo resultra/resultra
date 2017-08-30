@@ -84,6 +84,7 @@ function loadDashboardData(loadDashboardConfig)
 		setContainerComponentInfo($summaryVal,summaryValRef,summaryValRef.summaryValID)
 		
 		initSummaryValData(dashboardID,$summaryVal,summaryValData)
+		setSummaryValDashboardComponentLabel($summaryVal,summaryValRef)
 		
 		$componentRow.append($summaryVal)
 		setElemFixedWidthFlexibleHeight($summaryVal,summaryValRef.properties.geometry.sizeWidth)
