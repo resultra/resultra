@@ -1,5 +1,5 @@
 function getFormComponentContext(formContext, contextLoadCompleteCallback) {
-	var contextPartsRemaining = 4;
+	var contextPartsRemaining = 5;
 	var context = {}
 	
 	context.formID = formContext.formID
@@ -30,6 +30,13 @@ function getFormComponentContext(formContext, contextLoadCompleteCallback) {
 		context.formInfo = formInfo
 		completeOneContextPart()
 	})
+	
+	var getUserInfoParams = {}
+	jsonRequest("/auth/getCurrentUserInfo",getUserInfoParams,function(currUserInfo) {
+		context.currUserInfo = currUserInfo
+		completeOneContextPart()
+	})	
+	
 	
 }
 

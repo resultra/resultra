@@ -38,72 +38,90 @@ function socialButtonTableCellContainerHTML() {
 }
 
 
+function getSocialButtonIconClasses(socialButtonObjectRef) {
+	var socialButtonIconNameClassesMap = {
+		"heart": {
+			filled: 'glyphicon glyphicon-heart socialButtonColorFireRed',
+			empty: 'glyphicon glyphicon-heart socialButtonIconEmptyBackground'
+		},
+		"star": {
+			filled: 'glyphicon glyphicon-star socialButtonColorStarYellow fa-lg',
+			empty: 'glyphicon glyphicon-star socialButtonIconEmptyBackground fa-lg'
+		},
+		"eyeball": {
+			filled: 'glyphicon glyphicon-eye-open',
+			empty: 'glyphicon glyphicon-eye-open socialButtonIconEmptyBackground'
+		},
+		"warning": {
+			filled: 'glyphicon glyphicon-warning-sign',
+			empty: 'glyphicon glyphicon-warning-sign socialButtonIconEmptyBackground'
+		},
+		"fire": {
+			filled: 'glyphicon glyphicon-fire socialButtonColorFireRed',
+			empty: 'glyphicon glyphicon-fire socialButtonIconEmptyBackground'
+		},
+		"redFlag": {
+			filled: 'glyphicon glyphicon-flag socialButtonColorFireRed',
+			empty: 'glyphicon glyphicon-flag socialButtonIconEmptyBackground'
+		},
+		"blackFlag": {
+			filled: 'glyphicon glyphicon-flag socialButtonColorBlack',
+			empty: 'glyphicon glyphicon-flag socialButtonIconEmptyBackground'
+		},
+		"yellowFlag": {
+			filled: 'glyphicon glyphicon-flag socialButtonColorStarYellow',
+			empty: 'glyphicon glyphicon-flag socialButtonIconEmptyBackground'
+		},
+		"trash": {
+			filled: 'glyphicon glyphicon-trash',
+			empty: 'glyphicon glyphicon-trash socialButtonIconEmptyBackground'
+		},
+		"time": {
+			filled: 'glyphicon glyphicon-time',
+			empty: 'glyphicon glyphicon-time socialButtonIconEmptyBackground'
+		},
+	}
+	
+	// Other possible icons: people, happy face, sad face, graducation cap, stop hand
+	// thumbs up, pig, money, dollar, bug, check mark, certificate, exclamation,
+	// diamond, cog, fill (circle), arrow?, book, bell, lock (privacy), lightening bolt,
+	// calculator, apple (rate a teacher), magnifying class (depth), stopwatch(urgency)
+	
+	var socialButtonIconClasses = socialButtonIconNameClassesMap[socialButtonObjectRef.properties.icon]
+	if (socialButtonIconClasses === undefined) {
+		socialButtonIconClasses = socialButtonIconNameClassesMap["star"]
+	}
+	return socialButtonIconClasses
+	
+}
+
 function initSocialButtonFormComponentControl($container,socialButtonObjectRef) {
 	
 	var $socialButtonControl = getSocialButtonControlFromContainer($container)
 	
-	function getRatingIconClasses() {
-		var socialButtonIconNameClassesMap = {
-			"heart": {
-				filled: 'glyphicon glyphicon-heart socialButtonColorFireRed',
-				empty: 'glyphicon glyphicon-heart socialButtonIconEmptyBackground'
-			},
-			"star": {
-				filled: 'glyphicon glyphicon-star socialButtonColorStarYellow',
-				empty: 'glyphicon glyphicon-star socialButtonIconEmptyBackground'
-			},
-			"eyeball": {
-				filled: 'glyphicon glyphicon-eye-open',
-				empty: 'glyphicon glyphicon-eye-open socialButtonIconEmptyBackground'
-			},
-			"warning": {
-				filled: 'glyphicon glyphicon-warning-sign',
-				empty: 'glyphicon glyphicon-warning-sign socialButtonIconEmptyBackground'
-			},
-			"fire": {
-				filled: 'glyphicon glyphicon-fire socialButtonColorFireRed',
-				empty: 'glyphicon glyphicon-fire socialButtonIconEmptyBackground'
-			},
-			"redFlag": {
-				filled: 'glyphicon glyphicon-flag socialButtonColorFireRed',
-				empty: 'glyphicon glyphicon-flag socialButtonIconEmptyBackground'
-			},
-			"blackFlag": {
-				filled: 'glyphicon glyphicon-flag socialButtonColorBlack',
-				empty: 'glyphicon glyphicon-flag socialButtonIconEmptyBackground'
-			},
-			"yellowFlag": {
-				filled: 'glyphicon glyphicon-flag socialButtonColorStarYellow',
-				empty: 'glyphicon glyphicon-flag socialButtonIconEmptyBackground'
-			},
-			"trash": {
-				filled: 'glyphicon glyphicon-trash',
-				empty: 'glyphicon glyphicon-trash socialButtonIconEmptyBackground'
-			},
-			"time": {
-				filled: 'glyphicon glyphicon-time',
-				empty: 'glyphicon glyphicon-time socialButtonIconEmptyBackground'
-			},
-		}
-		
-		// Other possible icons: people, happy face, sad face, graducation cap, stop hand
-		// thumbs up, pig, money, dollar, bug, check mark, certificate, exclamation,
-		// diamond, cog, fill (circle), arrow?, book, bell, lock (privacy), lightening bolt,
-		// calculator, apple (rate a teacher), magnifying class (depth), stopwatch(urgency)
-		
-		var socialButtonIconClasses = socialButtonIconNameClassesMap[socialButtonObjectRef.properties.icon]
-		if (socialButtonIconClasses === undefined) {
-			socialButtonIconClasses = socialButtonIconNameClassesMap["star"]
-		}
-		return socialButtonIconClasses
-	}
 	
-	var socialButtonIconClasses = getRatingIconClasses()
+	var socialButtonIconClasses = getSocialButtonIconClasses(socialButtonObjectRef)
 	
 	var $iconSpan = $container.find(".controlIcon")
 	$iconSpan.addClass(socialButtonIconClasses.filled)
 	$iconSpan.addClass("controlIcon")
 	
+}
+
+function setSocialButtonButtonIcon(iconIsSet,$container,socialButtonObjectRef) {
+	
+	var $iconSpan = $container.find(".controlIcon")
+	$iconSpan.removeClass()
+	$iconSpan.addClass("controlIcon")
+	
+	var socialButtonIconClasses = getSocialButtonIconClasses(socialButtonObjectRef)
+	if(iconIsSet) {
+		$iconSpan.addClass(socialButtonIconClasses.filled)
+		
+	} else {
+		$iconSpan.addClass(socialButtonIconClasses.empty)
+		
+	}
 }
 
 
