@@ -1,26 +1,16 @@
 
 
 function initSocialButtonRecordEditBehavior($socialButtonContainer,componentContext,recordProxy,
-		 	socialButtonObjectRef,remoteValidateInput) {
+		 	socialButtonObjectRef) {
 
 	var $socialButtonControl = getSocialButtonControlFromContainer($socialButtonContainer)
 	
 	var validateInput = function(validationCompleteCallback) {
-		
-		if($socialButtonControl.prop('disabled')) {
-			validationCompleteCallback(true)
-			return
-		}
-		
-		var currVal = getRatingValFromContainer($socialButtonContainer)
-		remoteValidateInput(currVal,function(validationResult) {
-			setupFormComponentValidationPrompt($socialButtonContainer,validationResult,validationCompleteCallback)			
-		})	
-		
+		validationCompleteCallback(true) // validation is a no-op		
 	}
 	
 	
-	function loadRecordIntoRating(socialButtonElem, recordRef) {
+	function loadRecordIntoSocialButton(socialButtonElem, recordRef) {
 	
 		var socialButtonObjectRef = getContainerObjectRef(socialButtonElem)
 		var $socialButtonControl = getSocialButtonControlFromContainer(socialButtonElem)
@@ -34,91 +24,111 @@ function initSocialButtonRecordEditBehavior($socialButtonContainer,componentCont
 		if(recordRef.fieldValues.hasOwnProperty(socialButtonFieldID)) {
 
 			var fieldVal = recordRef.fieldValues[socialButtonFieldID]
-
-			console.log("loadRecordIntoRating: Load value into social button control: recordID: " + recordRef.recordID + " field ID:" + 
-						socialButtonFieldID + "  value:" + fieldVal)
 		
 			if (fieldVal == null) {
 				// A null field value corresponds to a value which has been cleared by the user.
-				$socialButtonControl.rating('rate','')
+				console.log("loadRecordIntoSocialButton: clearing social button value for null field value")
 			} else {
-				var maxRating = 1
-				if((fieldVal >= 0) && (fieldVal <= maxRating)) {
-					$socialButtonControl.rating('rate',fieldVal)	
-				} else {
-					$socialButtonControl.rating('rate','')		
-				}		
+				console.log("loadRecordIntoSocialButton: setting social button value for field value: " + JSON.stringify(fieldVal))
 			}
 		
 		
 		} // If record has a value for the current container's associated field ID.
 		else
 		{
-			$socialButtonControl.rating('rate','')
+			console.log("loadRecordIntoSocialButton: clearing social button value for undefined field value")
 		}
 		
 	
 	}
 	
-	function initRatingEditBehavior() {
-		function setRatingValue(ratingVal) {
+	function initSocialButtonEditBehavior() {
+		
+		function toggleCurrUserSocialButtonVal(selectedUsersCallback) {
 			
-			validateInput(function(inputIsValid) {
-				if (inputIsValid) {
-					currRecordRef = recordProxy.getRecordFunc()
-					var socialButtonFieldID = socialButtonObjectRef.properties.fieldID
-
-					var valueFormat = { context: "social", format: "button" }
-					var setRecordValParams = { 
-						parentDatabaseID:currRecordRef.parentDatabaseID,
-						recordID:currRecordRef.recordID,
-						changeSetID: recordProxy.changeSetID,
-						fieldID:socialButtonFieldID, 
-						value:ratingVal,
-						valueFormat: valueFormat}
-					jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
-						// After updating the record, the local cache of records in currentRecordSet will
-						// be out of date. So after updating the record on the server, the locally cached
-						// version of the record also needs to be updated.
-						recordProxy.updateRecordFunc(replyData)
-	
-					}) // set record's number field value
+			
+			function getToggledSocialButtonVal(selectedUsersCallback) {
+				
+				var getUserInfoParams = {}
+				jsonRequest("/auth/getCurrentUserInfo",getUserInfoParams,function(currUserInfo) {
 					
-				}
+					var currRecordRef = recordProxy.getRecordFunc()
+					var socialButtonFieldID = socialButtonObjectRef.properties.fieldID
+						
+					if(currRecordRef.fieldValues.hasOwnProperty(socialButtonFieldID)) {
+
+						var fieldVal = currRecordRef.fieldValues[socialButtonFieldID]
+		
+						if (fieldVal == null) {
+							// A null field value corresponds to a value which has been cleared by the user.
+							console.log("getToggledSocialButtonVal: null field value: adding user via button toggle")
+							var selectedUserIDs = [currUserInfo.userID]
+							selectedUsersCallback(selectedUserIDs)
+							
+						} else {
+							console.log("getToggledSocialButtonVal: setting social button value for field value: " + JSON.stringify(fieldVal))
+							var selectedUserIDLookup = new IDLookupTable(fieldVal)
+							if (selectedUserIDLookup.hasID(currUserInfo.userID)) {
+								selectedUserIDLookup.removeID(currUserInfo.userID)
+								var selectedUserIDs = selectedUserIDLookup.getIDList()
+								selectedUsersCallback(selectedUserIDs)
+							} else {
+								var selectedUserIDs = fieldVal
+								selectedUserIDs.push(currUserInfo.userID)
+								selectedUsersCallback(selectedUserIDs)
+							}
+						}
+		
+		
+					} // If record has a value for the current container's associated field ID.
+					else
+					{
+						console.log("getToggledSocialButtonVal: undefined field value: adding user via button toggle")
+						var selectedUserIDs = [currUserInfo.userID]
+						selectedUsersCallback(selectedUserIDs)
+					}
+				})
+				
+			} // getToggledSocialButtonVal
+			
+			getToggledSocialButtonVal(function(selectedUserIDs) {
+				var currRecordRef = recordProxy.getRecordFunc()
+				var socialButtonFieldID = socialButtonObjectRef.properties.fieldID
+				var userValueFormat = { context: "social", format: "button" }
+				var setRecordValParams = { 
+					parentDatabaseID:currRecordRef.parentDatabaseID,
+					recordID:currRecordRef.recordID,
+					changeSetID: recordProxy.changeSetID, 
+					fieldID:socialButtonFieldID, 
+					userIDs:selectedUserIDs,
+					valueFormat:userValueFormat}
+				jsonAPIRequest("recordUpdate/setUserFieldValue",setRecordValParams,function(updatedFieldVal) {
+					// After updating the record, the local cache of records in currentRecordSet will
+					// be out of date. So after updating the record on the server, the locally cached
+					// version of the record also needs to be updated.
+					recordProxy.updateRecordFunc(updatedFieldVal)
+
+				}) // set record's number field value
+				
 			})
-		
-		
-		}
+
+		} // toggleCurrUserSocialButtonVal	
 	
 		if(formComponentIsReadOnly(socialButtonObjectRef.properties.permissions)) {
 			$socialButtonControl.prop('disabled',true);
 		} else {
 			$socialButtonControl.prop('disabled',false);
-			// The rating control is initialized the same way for design and view mode, but in view mode
-			// the event handlers need to be setup for when the user changes a rating value.
-			$socialButtonControl.on('change', function() {
-				var ratingVal = getRatingValFromContainer($socialButtonContainer)
-				console.log('Rating changed: ' + ratingVal);
-				setRatingValue(ratingVal)
-			});		
+			initButtonControlClickHandler($socialButtonControl,function() {
+				console.log('Toggling social button values');
+				toggleCurrUserSocialButtonVal()
+			})
 		}
 		
 	}
-	initRatingEditBehavior()
-
-	
-	// When the user clicks on the control, prevent the click from propagating higher.
-	// This allows the user to change the rating without selecting the form component itself.
-	// The user can still select the component by clicking on the label or anywwhere outside
-	// the control.
-	$socialButtonContainer.find(".socialButtonControl").click(function (event){
-		event.stopPropagation();
-   	 	//   ... your code here
-		return false;
-	});
+	initSocialButtonEditBehavior()
 		
 	$socialButtonContainer.data("viewFormConfig", {
-		loadRecord: loadRecordIntoRating,
+		loadRecord: loadRecordIntoSocialButton,
 		validateValue: validateInput
 	})
 	
@@ -126,35 +136,13 @@ function initSocialButtonRecordEditBehavior($socialButtonContainer,componentCont
 }
 
 function initSocialButtonFormRecordEditBehavior($socialButtonContainer,componentContext,recordProxy, socialButtonObjectRef) {
-	
-	function validateInput(inputVal,validationResultCallback) {
-		var validationParams = {
-			parentFormID: socialButtonObjectRef.parentFormID,
-			socialButtonID: socialButtonObjectRef.socialButtonID,
-			inputVal: inputVal
-		}
-		jsonAPIRequest("frm/socialButton/validateInput", validationParams, function(validationResult) {
-			validationResultCallback(validationResult)
-		})
-	}
-	
-	initRatingRecordEditBehavior($socialButtonContainer,componentContext,recordProxy, socialButtonObjectRef,validateInput)
+		
+	initSocialButtonRecordEditBehavior($socialButtonContainer,componentContext,recordProxy, socialButtonObjectRef)
 }
 
 function initSocialButtonTableCellRecordEditBehavior($socialButtonContainer,componentContext,recordProxy, socialButtonObjectRef) {
-	
-	function validateInput(inputVal,validationResultCallback) {
-		var validationParams = {
-			parentTableID: socialButtonObjectRef.parentTableID,
-			socialButtonID: socialButtonObjectRef.socialButtonID,
-			inputVal: inputVal
-		}
-		jsonAPIRequest("tableView/socialButton/validateInput", validationParams, function(validationResult) {
-			validationResultCallback(validationResult)
-		})
-	}
-	
+		
 	initSocialButtonFormComponentControl($socialButtonContainer,socialButtonObjectRef)
 	
-	initSocialButtonRecordEditBehavior($socialButtonContainer,componentContext,recordProxy, socialButtonObjectRef,validateInput)
+	initSocialButtonRecordEditBehavior($socialButtonContainer,componentContext,recordProxy, socialButtonObjectRef)
 }

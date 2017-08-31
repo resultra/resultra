@@ -109,6 +109,19 @@ function IDLookupTable(idList) {
 			return false
 		}
 	}
+	
+	this.removeID = function(id) {
+		delete this.idLookup[id]
+	}
+	
+	this.getIDList = function() {
+		var idList = []
+		for(var currID in this.idLookup) {
+			idList.push(currID) 
+		}
+		return idList
+	}
+	
 }
 
 function navigateToURL(url) {
