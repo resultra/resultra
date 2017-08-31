@@ -320,6 +320,23 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		loadFormConfig.initRatingFunc(componentContext,$ratingContainer,rating)
 	}
 
+	function initSocialButtonLayout($componentRow,socialButton) {
+		
+		var containerHTML = socialButtonContainerHTML(socialButton.socialButtonID);	
+		var $socialButtonContainer = $(containerHTML)
+		
+		initSocialButtonFormComponentContainer($socialButtonContainer,socialButton)
+				
+		// Position the object withing the #layoutCanvas div
+		$componentRow.append($socialButtonContainer)
+	
+		 // Store the newly created object reference in the DOM element. This is needed for follow-on
+		 // property setting, resizing, etc.
+		setContainerComponentInfo($socialButtonContainer,socialButton,socialButton.socialButtonID)
+		
+		// Callback for any specific initialization for either the form design or view mode 
+		loadFormConfig.initSocialButtonFunc(componentContext,$socialButtonContainer,socialButton)
+	}
 
 	function initUserSelectionLayout($componentRow,userSelection) {
 		// Create an HTML block for the container
@@ -344,7 +361,6 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initUserSelectionFunc(componentContext,containerObj,userSelection)
 	}
-
 
 	
 	function initDatePickerLayout($componentRow,datePicker) {
@@ -491,6 +507,15 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		compenentIDComponentMap[ratingProps.ratingID] = {
 			componentInfo: ratingProps,
 			initFunc: initRatingLayout
+		}		
+	}
+	
+	for (var socialButtonIter in formInfo.socialButtons) {
+		var socialButtonProps = formInfo.socialButtons[socialButtonIter]
+		console.log("loadFormComponents: initializing rating: " + JSON.stringify(socialButtonProps))
+		compenentIDComponentMap[socialButtonProps.socialButtonID] = {
+			componentInfo: socialButtonProps,
+			initFunc: initSocialButtonLayout
 		}		
 	}
 

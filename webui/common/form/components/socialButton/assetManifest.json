@@ -1,0 +1,17 @@
+{
+    "cssFiles": ["container.css",
+			"tooltipProperties.css"], 
+    "htmlFiles": ["properties.html",
+		"tooltipProperties.html",
+		"viewProperties.html"], 
+    "jsFiles": ["newComponentDialog.js",
+		"tooltipProperties.js",
+		"properties.js",
+		"container.js",
+		"designFormConfig.js",
+		"viewProperties.js",
+		"viewFormConfig.js"
+    ],
+	"imageFiles":[],
+    "subDirs": []
+}

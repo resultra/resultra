@@ -14,6 +14,7 @@ import (
 	"resultra/datasheet/server/form/components/progress"
 	"resultra/datasheet/server/form/components/rating"
 	"resultra/datasheet/server/form/components/selection"
+	"resultra/datasheet/server/form/components/socialButton"
 	"resultra/datasheet/server/form/components/textBox"
 	"resultra/datasheet/server/form/components/toggle"
 	"resultra/datasheet/server/form/components/userSelection"
@@ -37,6 +38,7 @@ type FormInfo struct {
 	ProgressIndicators []progress.Progress           `json:"progressIndicators"`
 	Gauges             []gauge.Gauge                 `json:"gauges"`
 	Captions           []caption.Caption             `json:"captions"`
+	SocialButtons      []socialButton.SocialButton   `json:"socialButtons"`
 }
 
 type GetFormInfoParams struct {
@@ -130,6 +132,11 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		return nil, err
 	}
 
+	socialButtons, err := socialButton.GetSocialButtons(formID)
+	if err != nil {
+		return nil, err
+	}
+
 	formInfo := FormInfo{
 		Form:               *form,
 		TextBoxes:          textBoxes,
@@ -147,7 +154,8 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		UserSelections:     userSelections,
 		ProgressIndicators: progressIndicators,
 		Captions:           captions,
-		Gauges:             gauges}
+		Gauges:             gauges,
+		SocialButtons:      socialButtons}
 
 	return &formInfo, nil
 }

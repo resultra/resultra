@@ -1,0 +1,26 @@
+
+
+{{define "socialButtonProps"}}
+
+	<div id="socialButtonProps" class="propertyPanelToggleContainer">
+
+		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
+
+		{{template "propertyPanelPrefix" .FormatPanelParams}}
+		<!--	{{template "ratingFormatProps"}} -->
+		{{template "propertyPanelSuffix"}}
+				
+		{{template "propertyPanelPrefix" .TooltipPanelParams}}
+		<!--	{{template "ratingTooltipProps"}} -->
+		{{template "propertyPanelSuffix"}}
+		
+		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}
+		
+		{{template "componentPermissionsPropertyPanel" .PermissionPanelParams}}
+
+		{{template "componentHelpPopupPropertyPanel" .HelpPopupParams}}
+
+		{{template "componentDeletePropertyPanel" .DeletePanelParams}}
+	</div>
+
+{{end}}

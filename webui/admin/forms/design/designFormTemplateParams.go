@@ -15,6 +15,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/progress"
 	"resultra/datasheet/webui/common/form/components/rating"
 	"resultra/datasheet/webui/common/form/components/selection"
+	"resultra/datasheet/webui/common/form/components/socialButton"
 	"resultra/datasheet/webui/common/form/components/textBox"
 	"resultra/datasheet/webui/common/form/components/toggle"
 	"resultra/datasheet/webui/common/form/components/userSelection"
@@ -55,6 +56,7 @@ type DesignFormTemplateParams struct {
 	HeaderParams        header.HeaderTemplateParams
 	CaptionParams       caption.CaptionTemplateParams
 	ButtonParams        formButton.ButtonTemplateParams
+	SocialButtonParams  socialButton.SocialButtonDesignTemplateParams
 	FormPropertyParams  FormPropertyTemplateParams
 }
 
@@ -94,6 +96,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		ImageParams:         image.DesignTemplateParams,
 		CommentParams:       comment.DesignTemplateParams,
 		RatingParams:        rating.DesignTemplateParams,
+		SocialButtonParams:  socialButton.DesignTemplateParams,
 		HeaderParams:        header.TemplateParams,
 		CaptionParams:       caption.TemplateParams,
 		ButtonParams:        formButton.TemplateParams,

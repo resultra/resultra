@@ -84,6 +84,12 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 			initFormComponentViewBehavior($rating,
 					ratingObjectRef.ratingID,initRatingViewProperties)
 		},
+		initSocialButtonFunc: function(componentContext,$socialButton,socialButtonObjectRef) {
+			console.log("Init rating in view form")
+			initSocialButtonFormRecordEditBehavior($socialButton,componentContext,recordProxy,socialButtonObjectRef)
+			initFormComponentViewBehavior($socialButton,
+					socialButtonObjectRef.socialButtonID,initSocialButtonViewProperties)
+		},
 		initFormButtonFunc: function(componentContext,$button,buttonObjectRef) {
 			console.log("Init form button in view form")
 			

@@ -1,0 +1,74 @@
+
+
+/* Resize the glyphicon used for the star rating. 
+   rating-symbol is the class used internally by the Bootstrap rating
+   plugin.
+*/
+.layoutContainer .rating-symbol {
+    font-size: 2.0em;
+	height: 30px;
+}
+
+.socialButtonFormContainer {
+	min-width:145px;
+	width: 145px;
+	height: auto
+}
+
+.socialButtonTooltip {
+	white-space:pre-wrap;
+	text-align:left;
+	margin-bottom:0px;
+}
+
+.socialButtonIconEmptyBackground {
+	opacity: 0.25;
+}
+
+.socialButtonColorRed {
+	color: red;
+}
+
+.socialButtonColorFireRed {
+	color: #B22222;
+}
+
+.socialButtonColorStarYellow {
+	color: #ffd700;
+}
+
+.socialButtonColorMoney {
+	color: #339933;
+}
+
+.socialButtonColorBlack {
+	color: black;
+}
+
+.socialButtonTableCellContainer {
+	min-width:165px;
+	width: 165px;
+	height: auto
+}
+
+
+.socialButtonTableCellContainer .socialButtonControl {
+	display:inline-block;	
+}
+
+.socialButtonTableCellContainer .ratingClearButtonContainer {
+	display:inline-block;
+	vertical-align: top;
+}
+
+
+
+.socialButtonTableCellContainer .col-xs-11 {
+	padding-right:0px;
+	padding-left:15px;
+}
+
+.socialButtonTableCellContainer .col-xs-1 {
+	padding-right:0px;
+	padding-left:0px;
+}

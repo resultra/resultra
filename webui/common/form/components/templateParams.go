@@ -11,6 +11,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/progress"
 	"resultra/datasheet/webui/common/form/components/rating"
 	"resultra/datasheet/webui/common/form/components/selection"
+	"resultra/datasheet/webui/common/form/components/socialButton"
 	"resultra/datasheet/webui/common/form/components/textBox"
 	"resultra/datasheet/webui/common/form/components/toggle"
 	"resultra/datasheet/webui/common/form/components/userSelection"
@@ -30,6 +31,7 @@ type ComponentViewTemplateParams struct {
 	ProgressParams      progress.ProgressViewTemplateParams
 	GaugeParams         gauge.GaugeViewTemplateParams
 	NumberInputParams   numberInput.NumberInputViewTemplateParams
+	SocialButtonParams  socialButton.SocialButtonViewTemplateParams
 }
 
 //var DesignTemplateParams ComponentDesignTemplateParams
@@ -50,6 +52,7 @@ func init() {
 		UserSelectionParams: userSelection.ViewTemplateParams,
 		ProgressParams:      progress.ViewTemplateParams,
 		GaugeParams:         gauge.ViewTemplateParams,
-		NumberInputParams:   numberInput.ViewTemplateParams}
+		NumberInputParams:   numberInput.ViewTemplateParams,
+		SocialButtonParams:  socialButton.ViewTemplateParams}
 
 }

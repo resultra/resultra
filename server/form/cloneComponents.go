@@ -16,6 +16,7 @@ import (
 	"resultra/datasheet/server/form/components/progress"
 	"resultra/datasheet/server/form/components/rating"
 	"resultra/datasheet/server/form/components/selection"
+	"resultra/datasheet/server/form/components/socialButton"
 	"resultra/datasheet/server/form/components/textBox"
 	"resultra/datasheet/server/form/components/toggle"
 	"resultra/datasheet/server/form/components/userSelection"
@@ -86,6 +87,10 @@ func cloneFormComponents(remappedIDs uniqueID.UniqueIDRemapper, parentFormID str
 	}
 
 	if err := caption.CloneCaptions(remappedIDs, parentFormID); err != nil {
+		return fmt.Errorf("cloneFormComponents: %v", err)
+	}
+
+	if err := socialButton.CloneSocialButtons(remappedIDs, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
