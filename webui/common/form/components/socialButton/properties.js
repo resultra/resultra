@@ -1,4 +1,4 @@
-function loadRatingProperties($socialButton,socialButtonRef) {
+function loadSocialButtonProperties($socialButton,socialButtonRef) {
 	console.log("Loading rating properties")
 	
 	var iconParams = {
@@ -11,29 +11,12 @@ function loadRatingProperties($socialButton,socialButtonRef) {
 			}
 			jsonAPIRequest("frm/socialButton/setIcon",iconParams,function(updatedSocialButton) {
 				setContainerComponentInfo($socialButton,updatedSocialButton,updatedSocialButton.socialButtonID)
-				reInitRatingFormComponentControl($socialButton,updatedSocialButton)
+				setSocialButtonButtonIcon(true,$socialButton,updatedSocialButton)
 			})
 		}
 	}
-	initRatingIconProps(iconParams)
+	initSocialButtonIconProps(iconParams)
 	
-	
-	var tooltipParams = {
-		initialTooltips: socialButtonRef.properties.tooltips,
-		setTooltips: function(updatedTooltips) {
-			var tooltipParams = {
-				parentFormID: socialButtonRef.parentFormID,
-				socialButtonID: socialButtonRef.socialButtonID,
-				tooltips: updatedTooltips
-			}
-			
-			jsonAPIRequest("frm/socialButton/setTooltips", tooltipParams, function(updateRating) {
-				setContainerComponentInfo($socialButton,updateRating,updateRating.ratingID)
-			})	
-		}
-	}
-	initRatingTooltipProperties(tooltipParams)
-
 
 	var elemPrefix = "socialButton_"
 	function saveLabelProps(updatedLabelProps) {
@@ -44,8 +27,8 @@ function loadRatingProperties($socialButton,socialButtonRef) {
 			labelFormat: updatedLabelProps
 		}
 		jsonAPIRequest("frm/socialButton/setLabelFormat", formatParams, function(updatedSocialButton) {
-			setRatingComponentLabel($socialButton,updatedSocialButton)
 			setContainerComponentInfo($socialButton,updatedSocialButton,updatedSocialButton.socialButtonID)
+			setSocialButtonComponentLabel($socialButton,updatedSocialButton)
 		})	
 	}
 	

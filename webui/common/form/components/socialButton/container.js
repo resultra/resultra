@@ -80,6 +80,18 @@ function getSocialButtonIconClasses(socialButtonObjectRef) {
 			filled: 'glyphicon glyphicon-time',
 			empty: 'glyphicon glyphicon-time socialButtonIconEmptyBackground'
 		},
+		"thumbsUp": {
+			filled: 'glyphicon glyphicon-thumbs-up  fa-lg',
+			empty: 'glyphicon glyphicon-thumbs-up socialButtonIconEmptyBackground  fa-lg'
+		},
+		"greenCheck": {
+			filled: 'glyphicon glyphicon-ok socialButtonColorGreen fa-lg',
+			empty: 'glyphicon glyphicon-ok socialButtonIconEmptyBackground  fa-lg'
+		},
+		"greenForward": {
+			filled: 'glyphicon glyphicon-circle-arrow-right socialButtonColorGreen fa-lg',
+			empty: 'glyphicon glyphicon-circle-arrow-right socialButtonIconEmptyBackground  fa-lg'
+		},
 	}
 	
 	// Other possible icons: people, happy face, sad face, graducation cap, stop hand

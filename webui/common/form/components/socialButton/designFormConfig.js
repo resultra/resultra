@@ -1,21 +1,18 @@
 
 function initSocialButtonDesignControlBehavior($socialButtonContainer,socialButtonObjectRef) {
-	
-	
 	var $socialButtonControl = getSocialButtonControlFromContainer($socialButtonContainer)
-	
 }
 
 
-function initDesignFormRating() {
+function initDesignFormSocialButton() {
 	initNewSocialButtonDialog()
 }
 
-function selectFormRating($container,ratingObjRef) {
-	loadRatingProperties($container,ratingObjRef)
+function selectFormSocialButton($container,socialButtonObjRef) {
+	loadSocialButtonProperties($container,socialButtonObjRef)
 }
 
-function resizeRating($container,geometry) {
+function resizeSocialButton($container,geometry) {
 	
 	var socialButtonRef = getContainerObjectRef($container)
 	
@@ -42,7 +39,7 @@ var socialButtonDesignFormConfig = {
 	initDummyDragAndDropComponentContainer: startSocialButtonPaletteDrag,
 	createNewItemAfterDropFunc: openNewSocialButtonDialog,
 	resizeConstraints: elemResizeConstraints(100,640,30,30),
-	resizeFunc: resizeRating,
-	initFunc: initDesignFormRating,
-	selectionFunc: selectFormRating
+	resizeFunc: resizeSocialButton,
+	initFunc: initDesignFormSocialButton,
+	selectionFunc: selectFormSocialButton
 }

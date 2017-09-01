@@ -13,7 +13,6 @@ import (
 type SocialButtonDesignTemplateParams struct {
 	ElemPrefix               string
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
-	TooltipPanelParams       propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
@@ -42,7 +41,6 @@ func init() {
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "socialButtonDelete", "Delete Button"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "socialButtonFormat"},
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "socialButtonPerms"),
-		TooltipPanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Rating Descriptions", PanelID: "socialButtonTooltip"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
 			DialogTitle: "New Social Button",
