@@ -152,6 +152,6 @@ function initSocialButtonFormRecordEditBehavior($socialButtonContainer,component
 function initSocialButtonTableCellRecordEditBehavior($socialButtonContainer,componentContext,recordProxy, socialButtonObjectRef) {
 		
 	initSocialButtonFormComponentControl($socialButtonContainer,socialButtonObjectRef)
-	initSocialButtonRecordEditBehavior($socialButtonContainer,componentContext,recordProxy, socialButtonObjectRef,currUserInfo)
+	initSocialButtonRecordEditBehavior($socialButtonContainer,componentContext,recordProxy, socialButtonObjectRef)
 		
 }

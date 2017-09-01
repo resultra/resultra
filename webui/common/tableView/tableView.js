@@ -31,7 +31,7 @@ function initItemListTableView(params) {
 		this.updateRecordFunc = updateCurrentRecord
 	}
 	
-	function createTableViewColDef(colInfo,fieldsByID,
+	function createTableViewColDef(colInfo,tableContext,
 				renderCellHTMLFunc,initContainerFunc) {
 					
 		function columnSortType(colInfo,fieldsByID) {	
@@ -54,11 +54,11 @@ function initItemListTableView(params) {
 			if (colInfo.colType === 'button') {
 				return 'string'
 			} else {
-				return dataColSortType(colInfo,fieldsByID)
+				return dataColSortType(colInfo,tableContext.fieldsByID)
 			}
 		}
 		
-		var colType = columnSortType(colInfo,fieldsByID)
+		var colType = columnSortType(colInfo,tableContext.fieldsByID)
 		
 		function columnDataKey(colInfo) {
 			if (colInfo.colType === 'button') {
@@ -80,10 +80,11 @@ function initItemListTableView(params) {
 								
 				var componentContext = {
 					databaseID: params.databaseID,
-					fieldsByID: fieldsByID
+					fieldsByID: tableContext.fieldsByID,
+					currUserInfo: tableContext.currUserInfo
 				}
 				
-				initContainerFunc(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext)
+				initContainerFunc(colInfo, $cellContainer, tableContext,recordProxy,componentContext)
 								
 				var viewConfig = $cellContainer.data("viewFormConfig")
 				viewConfig.loadRecord($cellContainer,recordProxy.getRecordFunc())
@@ -102,92 +103,101 @@ function initItemListTableView(params) {
 	}
 	
 	
-	function createNumberInputColDef(colInfo,fieldsByID) {
+	function createNumberInputColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.numberInputID)
 			initNumberInputTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,
+		return createTableViewColDef(colInfo,tableContext,
 				numberInputTableCellContainerHTML,initContainer)
 	}
 
 
-	function createUserSelectionColDef(colInfo,fieldsByID) {
+	function createUserSelectionColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.numberInputID)
 			initUserSelectionTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,
+		return createTableViewColDef(colInfo,tableContext,
 				userSelectionTableCellContainerHTML,initContainer)
 	}
 
-
-	function createTextInputColDef(colInfo,fieldsByID) {
+	function createSocialButtonColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+			setContainerComponentInfo($cellContainer,colInfo,colInfo.socialButtonID)
+			initSocialButtonTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,tableContext,
+				socialButtonTableCellContainerHTML,initContainer)
+	}
+
+	function createTextInputColDef(colInfo,tableContext) {
+		
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
 				setContainerComponentInfo($cellContainer,colInfo,colInfo.textInputID)
 				initTextBoxRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,
+		return createTableViewColDef(colInfo,tableContext,
 				textBoxTableViewContainerHTML,initContainer)
 	}
 
-	function createNoteColDef(colInfo,fieldsByID) {
+	function createNoteColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
 				setContainerComponentInfo($cellContainer,colInfo,colInfo.noteID)
 				initNoteEditorTableCellEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,
+		return createTableViewColDef(colInfo,tableContext,
 				noteEditorTableViewCellContainerHTML,initContainer)
 	}
 
-	function createCommentColDef(colInfo,fieldsByID) {
+	function createCommentColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
 				setContainerComponentInfo($cellContainer,colInfo,colInfo.noteID)
 				initCommentBoxTableViewRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,
+		return createTableViewColDef(colInfo,tableContext,
 				commentBoxTableViewContainerHTML,initContainer)
 	}
 
 
-	function createAttachmentColDef(colInfo,fieldsByID) {
+	function createAttachmentColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
 				setContainerComponentInfo($cellContainer,colInfo,colInfo.noteID)
 				initAttachmentTableViewRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,
+		return createTableViewColDef(colInfo,tableContext,
 				attachmentTableViewContainerHTML,initContainer)
 	}
 	
-	function createDateInputColDef(colInfo,fieldsByID) {
+	function createDateInputColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
 			initTableViewDatePickerEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,
+		return createTableViewColDef(colInfo,tableContext,
 				datePickerTableViewCellContainerHTML,initContainer)
 	}
 
-	function createCheckboxColDef(colInfo,fieldsByID) {
+	function createCheckboxColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
 			initTableViewCheckboxEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,
+		return createTableViewColDef(colInfo,tableContext,
 				checkBoxTableViewCellContainerHTML,initContainer)
 	}
 
-	function createFormButtonColDef(colInfo,fieldsByID) {
+	function createFormButtonColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
 			
 			setFormButtonSize($cellContainer,colInfo.properties.size)
@@ -202,71 +212,73 @@ function initItemListTableView(params) {
 			initFormButtonRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo,defaultValSrc,
 					loadFormViewComponents,loadRecordIntoFormLayout)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,
+		return createTableViewColDef(colInfo,tableContext,
 				formButtonContainerHTML,initContainer)
 	}
 
 
 
-	function createToggleColDef(colInfo,fieldsByID) {
+	function createToggleColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.toggleID)
 			
 			initToggleTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,
+		return createTableViewColDef(colInfo,tableContext,
 				toggleTableCellContainerHTML,initContainer)
 	}
 
 
-	function createRatingColDef(colInfo,fieldsByID) {
+	function createRatingColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.ratingID)
 			initRatingTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,
+		return createTableViewColDef(colInfo,tableContext,
 				ratingTableCellContainerHTML,initContainer)
 	}
 	
 	
-	function createProgressColDef(colInfo,fieldsByID) {
+	function createProgressColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, fieldsByID,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.progressID)
 			initProgressRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,fieldsByID,progressTableCellContainerHTML,initContainer)
+		return createTableViewColDef(colInfo,tableContext,progressTableCellContainerHTML,initContainer)
 	}
 
 	
-	function createColDef(colInfo,fieldsByID) {
+	function createColDef(colInfo,tableContext) {
 		switch (colInfo.colType) {
 		case 'numberInput':
-			return createNumberInputColDef(colInfo,fieldsByID)
+			return createNumberInputColDef(colInfo,tableContext)
 		case 'textInput':
-			return createTextInputColDef(colInfo,fieldsByID)
+			return createTextInputColDef(colInfo,tableContext)
 		case 'datePicker':
-			return createDateInputColDef(colInfo,fieldsByID)
+			return createDateInputColDef(colInfo,tableContext)
 		case 'checkbox':
-			return createCheckboxColDef(colInfo,fieldsByID)
+			return createCheckboxColDef(colInfo,tableContext)
 		case 'rating':
-			return createRatingColDef(colInfo,fieldsByID)
+			return createRatingColDef(colInfo,tableContext)
 		case 'toggle':
-			return createToggleColDef(colInfo,fieldsByID)
+			return createToggleColDef(colInfo,tableContext)
 		case 'userSelection':
-			return createUserSelectionColDef(colInfo,fieldsByID)
+			return createUserSelectionColDef(colInfo,tableContext)
 		case 'note':
-			return createNoteColDef(colInfo,fieldsByID)
+			return createNoteColDef(colInfo,tableContext)
 		case 'comment':
-			return createCommentColDef(colInfo,fieldsByID)
+			return createCommentColDef(colInfo,tableContext)
 		case 'attachment':
-			return createAttachmentColDef(colInfo,fieldsByID)
+			return createAttachmentColDef(colInfo,tableContext)
 		case 'button':
-			return createFormButtonColDef(colInfo,fieldsByID)
+			return createFormButtonColDef(colInfo,tableContext)
 		case 'progress':
-			return createProgressColDef(colInfo,fieldsByID)
+			return createProgressColDef(colInfo,tableContext)
+		case 'socialButton':
+			return createSocialButtonColDef(colInfo,tableContext)
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,
@@ -278,31 +290,38 @@ function initItemListTableView(params) {
 	
 	function getTableInfo(tableInfoCallback) {
 		
-		var numTableInfoRemaining = 2
-		var tableInfo
-		var fieldsByID
+		var numTableInfoRemaining = 3
 		
+		var tableContext = {}
+				
 		function tableInfoReceived() {
 			numTableInfoRemaining--
 			if(numTableInfoRemaining <= 0) {
-				tableInfoCallback(tableInfo,fieldsByID)
+				tableInfoCallback(tableContext)
 			}
 		}
 		
 		var tableInfoParams = { tableID: params.tableID }
 		jsonAPIRequest("tableView/getTableDisplayInfo",tableInfoParams,function(info) {
-			tableInfo = info
+			tableContext.tableInfo = info
 			tableInfoReceived()
 		})
 		
 		loadFieldInfo(params.databaseID,[fieldTypeAll],function(retrievedFieldsByID) {
-			fieldsByID = retrievedFieldsByID
+			tableContext.fieldsByID = retrievedFieldsByID
 			tableInfoReceived()
 		})
 		
+		var getUserInfoParams = {}
+		jsonRequest("/auth/getCurrentUserInfo",getUserInfoParams,function(currUserInfoResp) {
+			tableContext.currUserInfo = currUserInfoResp
+			tableInfoReceived()
+		})	
+		
+		
 	}
 	
-	function populateTable(tableInfo,fieldsByID) {
+	function populateTable(tableContext) {
 				
 		
 		function tableHeader() {
@@ -310,7 +329,7 @@ function initItemListTableView(params) {
 			var $tableHeader = $("<thead></thead>")
 			var $headerRow = $("<tr></tr>")
 	
-			$.each(tableInfo.cols,function(index,colInfo) {
+			$.each(tableContext.tableInfo.cols,function(index,colInfo) {
 				var $header = $('<th></th>')
 								
 				if (colInfo.colType !== 'button') {
@@ -342,8 +361,8 @@ function initItemListTableView(params) {
 		params.$tableContainer.append($tableElem)
 		
 		var dataCols = []
-		$.each(tableInfo.cols,function(index,colInfo) {
-			var colDataDef = createColDef(colInfo,fieldsByID)
+		$.each(tableContext.tableInfo.cols,function(index,colInfo) {
+			var colDataDef = createColDef(colInfo,tableContext)
 			dataCols.push(colDataDef)
 		})
 		
@@ -376,7 +395,7 @@ function initItemListTableView(params) {
 				$.each(order,function(index,orderInfo) {
 					var colIndex = orderInfo[0]
 					var sortDirection = orderInfo[1]
-					var tableColInfo = tableInfo.cols[colIndex]
+					var tableColInfo = tableContext.tableInfo.cols[colIndex]
 					var fieldID = tableColInfo.properties.fieldID
 					sortRules.push({
 						direction:sortDirection,
@@ -437,7 +456,7 @@ function initItemListTableView(params) {
 			var dataTableSortRules = []
 			$.each(sortRules,function(index,sortRule) {
 				var colIndex = 0
-				$.each(tableInfo.cols,function(index,colInfo) {
+				$.each(tableContext.tableInfo.cols,function(index,colInfo) {
 					if(sortRule.fieldID === colInfo.properties.fieldID) {
 						var dataTableSortRule = [colIndex,sortRule.direction]
 						dataTableSortRules.push(dataTableSortRule)
@@ -468,14 +487,14 @@ function initItemListTableView(params) {
 		}
 		
 		
-		var tableContext = {
+		var tablePopulationDoneContext = {
 			resizeTable: resizeToContainerHeight,
 			dataTable: dataTable,
 			updateData: updateData,
 			setSortOrder: setSortOrder
 		}
 				
-		params.initDoneCallback(tableContext)
+		params.initDoneCallback(tablePopulationDoneContext)
 		
 	}
 	

@@ -17,4 +17,5 @@ var TemplateFileList = []string{"static/admin/common/inputProperties/numberSpinn
 	"static/admin/common/inputProperties/helpPopup.html",
 	"static/admin/common/inputProperties/userSelectionRoles.html",
 	"static/admin/common/inputProperties/userSelectionCurrUser.html",
-	"static/admin/common/inputProperties/progressRange.html"}
+	"static/admin/common/inputProperties/progressRange.html",
+	"static/admin/common/inputProperties/socialButtonFormat.html"}

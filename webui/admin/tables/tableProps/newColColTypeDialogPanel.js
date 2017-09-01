@@ -114,6 +114,16 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					})
 					
 				}
+				function createSocialButton(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/socialButton/new",params,function(socialButton) {
+						console.log("Social button column created: " + JSON.stringify(userSelection))
+					})
+					
+				}
 				
 				function createDatePickerInput(fieldInfo) {
 					var params = {
@@ -163,7 +173,14 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					break
 				case fieldTypeUser:
-					createUserInput(fieldInfo)
+					
+					if (colType==='userSelection') {
+						createUserInput(fieldInfo)
+					} else if (colType === 'socialButton'){
+						createSocialButton(fieldInfo)
+					} else {
+						console.log("Unknown column type for number field : " + colType)
+					}
 					break
 				case fieldTypeText:
 					createTextInput(fieldInfo)
@@ -265,6 +282,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				break
 			case fieldTypeUser:
 				$colTypeSelection.append(selectOptionHTML('userSelection','User selection'))
+				$colTypeSelection.append(selectOptionHTML('socialButton','Social button'))
 				break
 			case fieldTypeBool:
 				$colTypeSelection.append(selectOptionHTML('checkbox','Checkbox'))

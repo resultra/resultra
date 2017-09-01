@@ -54,6 +54,9 @@ $(document).ready(function() {
 		case 'progress':
 			initProgressColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
 			break
+		case 'socialButton':
+			initSocialButtonColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			break
 		default:
 			console.log("Unknown column type: " + colPropsAdminContext.colType)
 		}

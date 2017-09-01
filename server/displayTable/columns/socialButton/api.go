@@ -2,6 +2,7 @@ package socialButton
 
 import (
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
 )
@@ -9,12 +10,18 @@ import (
 func init() {
 	socialButtonRouter := mux.NewRouter()
 
-	socialButtonRouter.HandleFunc("api/tableView/socialButton/new", newSocialButton)
-	socialButtonRouter.HandleFunc("api/tableView/socialButton/setIcon", setIcon)
-	socialButtonRouter.HandleFunc("api/tableView/socialButton/setLabelFormat", setLabelFormat)
-	socialButtonRouter.HandleFunc("api/tableView/socialButton/setHelpPopupMsg", setHelpPopupMsg)
+	socialButtonRouter.HandleFunc("/api/tableView/socialButton/new", newSocialButton)
 
-	http.Handle("api/tableView/socialButton/", socialButtonRouter)
+	socialButtonRouter.HandleFunc("/api/tableView/socialButton/get", getSocialButtonAPI)
+
+	socialButtonRouter.HandleFunc("/api/tableView/socialButton/setIcon", setIcon)
+	socialButtonRouter.HandleFunc("/api/tableView/socialButton/setPermissions", setPermissions)
+	socialButtonRouter.HandleFunc("/api/tableView/socialButton/setLabelFormat", setLabelFormat)
+	socialButtonRouter.HandleFunc("/api/tableView/socialButton/setHelpPopupMsg", setHelpPopupMsg)
+
+	log.Printf("Initializing social button API")
+
+	http.Handle("/api/tableView/socialButton/", socialButtonRouter)
 }
 
 func newSocialButton(w http.ResponseWriter, r *http.Request) {
@@ -31,6 +38,27 @@ func newSocialButton(w http.ResponseWriter, r *http.Request) {
 		api.WriteJSONResponse(w, *socialButtonRef)
 	}
 
+}
+
+type GetSocialButtonParams struct {
+	ParentTableID  string `json:"parentTableID"`
+	SocialButtonID string `json:"socialButtonID"`
+}
+
+func getSocialButtonAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetSocialButtonParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	rating, err := getSocialButton(params.ParentTableID, params.SocialButtonID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	api.WriteJSONResponse(w, *rating)
 }
 
 func processSocialButtonPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater SocialButtonPropUpdater) {
