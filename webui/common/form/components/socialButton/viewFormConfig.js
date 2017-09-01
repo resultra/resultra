@@ -141,8 +141,8 @@ function initSocialButtonRecordEditBehavior($socialButtonContainer,componentCont
 }
 
 function initSocialButtonFormRecordEditBehavior($socialButtonContainer,componentContext,recordProxy, socialButtonObjectRef) {
-		
-	var getUserInfoParams = {}
+			
+	initSocialButtonFormComponentControl($socialButtonContainer,socialButtonObjectRef)
 	
 	initSocialButtonRecordEditBehavior($socialButtonContainer,componentContext,recordProxy, socialButtonObjectRef)
 		
@@ -150,8 +150,8 @@ function initSocialButtonFormRecordEditBehavior($socialButtonContainer,component
 }
 
 function initSocialButtonTableCellRecordEditBehavior($socialButtonContainer,componentContext,recordProxy, socialButtonObjectRef) {
+	setSocialButtonComponentLabel($socialButtonContainer,socialButtonObjectRef)
 		
-	initSocialButtonFormComponentControl($socialButtonContainer,socialButtonObjectRef)
 	initSocialButtonRecordEditBehavior($socialButtonContainer,componentContext,recordProxy, socialButtonObjectRef)
 		
 }
