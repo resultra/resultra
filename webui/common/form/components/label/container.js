@@ -65,6 +65,8 @@ function initLabelSelectionControl($container, labelRef,labelWidth) {
 		placeholder: "Enter labels", // TODO - Allow a property to configure the placeholder.
 		width: labelWidth,
 		tags:true,
+		minimumInputLength: 1,
+		maximumInputLength:24,
 		tokenSeparators: [',']
 	});
 

@@ -40,15 +40,29 @@ function initLabelRecordEditBehavior($labelContainer, componentContext,
 
 			var fieldVal = recordRef.fieldValues[labelFieldID]
 			if (fieldVal === null) {
-				$labelControl.val([])
+				$labelControl.empty()
+				$labelControl.val(null)
 			} else {
+				
+				$labelControl.empty()
+				var tagAdded = {}
+				for(var tagIndex in fieldVal) {
+					var currTag = fieldVal[tagIndex]
+					if(tagAdded[currTag] === undefined) { // don't add duplicates
+						var newOption = new Option(currTag,currTag);
+						tagAdded[currTag] = true
+						$labelControl.append(newOption)					
+					}
+				}
+				
 				$labelControl.val(fieldVal)
 			}
 
 		} // If record has a value for the current container's associated field ID.
 		else
 		{
-			$labelControl.val([])
+				$labelControl.empty()
+			$labelControl.val(null)
 		}
 		
 	}
