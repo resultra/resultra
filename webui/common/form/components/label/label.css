@@ -14,6 +14,12 @@
 }
 
 
+.labelFormContainer .select2-selection--multiple {
+	overflow-y: auto;
+	min-height: 34px;
+}
+
+
 /* Adjust the sizing of the selection control to closely match Bootstrap */
 .labelTableCellContainer .select2-selection,
 .labelFormContainer .select2-selection
@@ -35,7 +41,7 @@
 	align-items:center;
 	justify-content:center;
 	font-size:14px;
-	margin-top:2px !important;
+	margin-top:5px !important;
 }
 
 .labelTableCellContainer .select2-search__field {

@@ -369,8 +369,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerHTML = userSelectionContainerHTML(userSelection.userSelectionID);
 		
 		var containerObj = $(containerHTML)
-				
-				
+							
 		initUserSelectionFormComponentContainer(componentContext,containerObj,userSelection)
 		
 		// Position the object withing the #layoutCanvas div

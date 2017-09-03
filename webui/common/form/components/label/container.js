@@ -2,12 +2,9 @@
 
 function labelControlContainerHTML() {
 		
-	return '<div class="input-group">'+
-				'<div class="formLabelControl">' + 
+	return  '<div class="formLabelControl">' + 
 					'<select class="form-control labelCompSelectionControl" multiple="multiple"></select>' +
-				'</div>' + 
-			'</div>'
-	
+				'</div>'
 }
 
 function labelContainerHTML(elementID)
@@ -15,7 +12,10 @@ function labelContainerHTML(elementID)
 	var containerHTML = ''+
 		'<div class=" layoutContainer labelFormContainer">' +
 			'<div class="form-group marginBottom0">'+
-				'<label>New Label</label>' + componentHelpPopupButtonHTML() +
+				'<div class="labelHeader">' +
+					'<label class="componentLabel">New Label</label>' + 
+					componentHelpPopupButtonHTML() +
+				'</div>' +
 				labelControlContainerHTML() +
 			'</div>'+
 		'</div>';
@@ -42,61 +42,36 @@ function initLabelSelectionControl($container, labelRef) {
 	var labelWidth = labelRef.properties.geometry.sizeWidth - 15
 	var $labelControl = labelControlFromLabelComponentContainer($container)
 	
-	
 	$labelControl.select2({
 		placeholder: "Enter labels", // TODO - Allow a property to configure the placeholder.
 		width: labelWidth,
 		tags:true,
 		tokenSeparators: [',']
-		/*
-		ajax: {
-			dataType: 'json',
-			url: '/auth/searchUsers',
-			delay: 250,
-			data: function (params) {
-				var queryParams = {
-				  searchTerm: params.term, // search term
-				  page: params.page
-				}
-	      	  return queryParams
-		  	},
-			processResults: function (data, params) {
-			      // parse the results into the format expected by Select2
-			      // since we are using custom formatting functions we do not need to
-			      // alter the remote JSON data, except to indicate that infinite
-			      // scrolling can be used
-			      params.page = params.page || 1;
-				  
-				  var select2results = []
-				  for(var matchIndex = 0; matchIndex < data.matchedUserInfo.length; matchIndex++) {
-					  var currMatch = data.matchedUserInfo[matchIndex]
-					  var select2result = {
-						  id:currMatch.userID,
-						  text:'@'+currMatch.userName
-					  }
-					  select2results.push(select2result)
-				  }
-
-			      return {
-			        results: select2results,
-			        pagination: {
-			          more: (params.page * 30) < data.matchedUserInfo.length
-			        }
-			      };
-			  },
-			cache: true	
-		}
-		*/
 	});
+	
+	
+	var overallHeight = labelRef.properties.geometry.sizeHeight
+	var overallWidth = labelRef.properties.geometry.sizeWidth
+	
+	$container.css('height',overallHeight + "px")
+	$container.css('width', overallWidth + 'px')
+	
+	var $labelContainer = $container.find(".select2-selection--multiple")
+	
+	var headerHeight = 35
+	var labelControlHeightPx = (overallHeight - headerHeight) + "px"
+	$labelContainer.css('min-height',labelControlHeightPx)
+	$labelContainer.css('max-height',labelControlHeightPx)
+	
 
 }	
 	
 	
 
 function setLabelComponentLabel($label,label) {
-	var $label = $label.find('label')
+	var $compLabel = $label.find('.componentLabel')
 	
-	setFormComponentLabel($label,label.properties.fieldID,
+	setFormComponentLabel($compLabel,label.properties.fieldID,
 			label.properties.labelFormat)	
 	
 }
@@ -106,8 +81,8 @@ function initLabelFormComponentContainer($container,label) {
 	initComponentHelpPopupButton($container, label)	
 	initLabelSelectionControl($container, label)
 	
-	setElemFixedWidthFlexibleHeight($container,
-				label.properties.geometry.sizeWidth)
+	/* setElemFixedWidthFlexibleHeight($container,
+				label.properties.geometry.sizeWidth) */
 	
 }
 
