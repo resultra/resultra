@@ -1,0 +1,23 @@
+
+{{define "labelProps"}}
+
+	<div id="labelProps" class="propertyPanelToggleContainer">
+
+		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
+		
+		{{template "propertyPanelPrefix" .ValidationPanelParams}}
+			{{template "labelValidationProps"}}
+		{{template "propertyPanelSuffix"}}
+
+		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}
+
+		{{template "componentPermissionsPropertyPanel" .PermissionPanelParams}}
+				
+		{{template "componentHelpPopupPropertyPanel" .HelpPopupParams}}
+	
+		
+		{{template "componentDeletePropertyPanel" .DeletePanelParams}}
+
+	</div>
+
+{{end}}

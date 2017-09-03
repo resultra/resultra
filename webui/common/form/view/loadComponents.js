@@ -131,6 +131,11 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 		initCaptionFunc: function($caption,componentContext,captionObjectRef) {
 			console.log("Init caption in view form")
 			initCaptionRecordEditBehavior($caption, componentContext,captionObjectRef)
+		},	
+		initLabelFunc: function(componentContext,$label,labelObjectRef) {
+			initLabelFormRecordEditBehavior($label,componentContext,recordProxy,labelObjectRef)
+			initFormComponentViewBehavior($label,
+					labelObjectRef.labelID,initLabelViewProperties)
 		}		
 	}
 	

@@ -12,6 +12,7 @@ import (
 	"resultra/datasheet/server/form/components/header"
 	"resultra/datasheet/server/form/components/htmlEditor"
 	"resultra/datasheet/server/form/components/image"
+	"resultra/datasheet/server/form/components/label"
 	"resultra/datasheet/server/form/components/numberInput"
 	"resultra/datasheet/server/form/components/progress"
 	"resultra/datasheet/server/form/components/rating"
@@ -91,6 +92,10 @@ func cloneFormComponents(remappedIDs uniqueID.UniqueIDRemapper, parentFormID str
 	}
 
 	if err := socialButton.CloneSocialButtons(remappedIDs, parentFormID); err != nil {
+		return fmt.Errorf("cloneFormComponents: %v", err)
+	}
+
+	if err := label.CloneLabels(remappedIDs, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 

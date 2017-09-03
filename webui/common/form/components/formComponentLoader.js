@@ -344,6 +344,24 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initSocialButtonFunc(componentContext,$socialButtonContainer,socialButton)
 	}
+	
+	function initLabelLayout($componentRow,label) {
+		
+		var containerHTML = labelContainerHTML(label.labelID);	
+		var $labelContainer = $(containerHTML)
+		
+		initLabelFormComponentContainer($labelContainer,label)
+				
+		// Position the object withing the #layoutCanvas div
+		$componentRow.append($labelContainer)
+	
+		 // Store the newly created object reference in the DOM element. This is needed for follow-on
+		 // property setting, resizing, etc.
+		setContainerComponentInfo($labelContainer,label,label.labelID)
+		
+		// Callback for any specific initialization for either the form design or view mode 
+		loadFormConfig.initLabelFunc(componentContext,$labelContainer,label)
+	}
 
 	function initUserSelectionLayout($componentRow,userSelection) {
 		// Create an HTML block for the container
@@ -602,6 +620,19 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		compenentIDComponentMap[captionProps.captionID] = {
 			componentInfo: captionProps,
 			initFunc: initCaptionLayout
+		}			
+
+	}		
+	
+	
+	for (var labelIter in formInfo.labels) {
+		var labelProps = formInfo.labels[labelIter]
+		
+		console.log("loadFormComponents: initializing caption: " + JSON.stringify(labelProps))
+
+		compenentIDComponentMap[labelProps.labelID] = {
+			componentInfo: labelProps,
+			initFunc: initLabelLayout
 		}			
 
 	}		

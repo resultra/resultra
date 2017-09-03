@@ -11,6 +11,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/header"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
 	"resultra/datasheet/webui/common/form/components/image"
+	"resultra/datasheet/webui/common/form/components/label"
 	"resultra/datasheet/webui/common/form/components/numberInput"
 	"resultra/datasheet/webui/common/form/components/progress"
 	"resultra/datasheet/webui/common/form/components/rating"
@@ -49,5 +50,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, gauge.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, numberInput.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, socialButton.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, label.TemplateFileList...)
 
 }

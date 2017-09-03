@@ -123,6 +123,12 @@ func GetDatabaseFormComponentFilterMap(parentDatabaseID string) (FormComponentFi
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currSocialButton.SocialButtonID)
 			}
 		}
+		for _, currLabel := range formInfo.Labels {
+			if !currLabel.Properties.VisibilityConditions.IsEmptyRuleSet() {
+				compFilterMap[currLabel.LabelID] = currLabel.Properties.VisibilityConditions
+				log.Printf("Adding visibility filter to filter map for component ID = %v", currLabel.LabelID)
+			}
+		}
 	}
 
 	return compFilterMap, nil

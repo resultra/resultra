@@ -11,6 +11,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/header"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
 	"resultra/datasheet/webui/common/form/components/image"
+	"resultra/datasheet/webui/common/form/components/label"
 	"resultra/datasheet/webui/common/form/components/numberInput"
 	"resultra/datasheet/webui/common/form/components/progress"
 	"resultra/datasheet/webui/common/form/components/rating"
@@ -57,6 +58,7 @@ type DesignFormTemplateParams struct {
 	CaptionParams       caption.CaptionTemplateParams
 	ButtonParams        formButton.ButtonTemplateParams
 	SocialButtonParams  socialButton.SocialButtonDesignTemplateParams
+	LabelParams         label.LabelDesignTemplateParams
 	FormPropertyParams  FormPropertyTemplateParams
 }
 
@@ -100,6 +102,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		HeaderParams:        header.TemplateParams,
 		CaptionParams:       caption.TemplateParams,
 		ButtonParams:        formButton.TemplateParams,
+		LabelParams:         label.DesignTemplateParams,
 		FormPropertyParams:  formPropParams}
 
 	return templParams

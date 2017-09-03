@@ -206,3 +206,26 @@ func (valParams SetRecordFileValueParams) getUpdateProperties() CellUpdateProper
 
 	return props
 }
+
+type SetRecordLabelValueParams struct {
+	RecordUpdateHeader
+	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
+	Labels      []string              `json:"labels"`
+}
+
+func (setValParams SetRecordLabelValueParams) fieldType() string { return field.FieldTypeLabel }
+
+func (setValParams SetRecordLabelValueParams) doCollapseRecentValues() bool { return true }
+
+func (valParams SetRecordLabelValueParams) generateCellValue() (string, error) {
+
+	cellValue := LabelCellValue{Labels: valParams.Labels}
+
+	return generic.EncodeJSONString(cellValue)
+}
+
+func (valParams SetRecordLabelValueParams) getUpdateProperties() CellUpdateProperties {
+	props := CellUpdateProperties{valParams.ValueFormat}
+
+	return props
+}

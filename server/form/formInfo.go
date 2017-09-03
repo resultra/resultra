@@ -10,6 +10,7 @@ import (
 	"resultra/datasheet/server/form/components/header"
 	"resultra/datasheet/server/form/components/htmlEditor"
 	"resultra/datasheet/server/form/components/image"
+	"resultra/datasheet/server/form/components/label"
 	"resultra/datasheet/server/form/components/numberInput"
 	"resultra/datasheet/server/form/components/progress"
 	"resultra/datasheet/server/form/components/rating"
@@ -39,6 +40,7 @@ type FormInfo struct {
 	Gauges             []gauge.Gauge                 `json:"gauges"`
 	Captions           []caption.Caption             `json:"captions"`
 	SocialButtons      []socialButton.SocialButton   `json:"socialButtons"`
+	Labels             []label.Label                 `json:"labels"`
 }
 
 type GetFormInfoParams struct {
@@ -137,6 +139,11 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		return nil, err
 	}
 
+	labels, err := label.GetLabels(formID)
+	if err != nil {
+		return nil, err
+	}
+
 	formInfo := FormInfo{
 		Form:               *form,
 		TextBoxes:          textBoxes,
@@ -155,7 +162,8 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		ProgressIndicators: progressIndicators,
 		Captions:           captions,
 		Gauges:             gauges,
-		SocialButtons:      socialButtons}
+		SocialButtons:      socialButtons,
+		Labels:             labels}
 
 	return &formInfo, nil
 }

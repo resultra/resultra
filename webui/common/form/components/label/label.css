@@ -1,0 +1,57 @@
+
+.labelFormContainer {
+	min-width:200px;
+	min-height:10px;
+	width: 200px;
+	height: 75px;
+}
+
+.labelTableCellContainer {
+	min-width:220px;
+	min-height:10px;
+	width: 200px;
+	height: auto;
+}
+
+
+/* Adjust the sizing of the selection control to closely match Bootstrap */
+.labelTableCellContainer .select2-selection,
+.labelFormContainer .select2-selection
+{
+	display: block!important;
+	height: 34px!important;
+	white-space: nowrap!important;
+  	overflow-y: auto;
+	font-size:12px;
+}
+
+.labelTableCellContainer .select2-selection__choice, 
+.labelTableCellContainer .select2-search,
+.labelFormContainer .select2-selection__choice,
+.labelFormContainer .select2-search {
+	display: flex !important;
+	height: 24px!important;
+	white-space: nowrap!important;
+	align-items:center;
+	justify-content:center;
+	font-size:14px;
+	margin-top:2px !important;
+}
+
+.labelTableCellContainer .select2-search__field {
+	margin-top:2px !important;
+}
+
+
+
+.labelFormContainer .select2-selection {
+	display: block!important;
+	height: 30px!important;
+	white-space: nowrap!important;
+	line-height: 26px!important;
+    overflow: auto;
+}
+
+.labelFormContainer label {
+	margin-bottom: 2px !important;
+}

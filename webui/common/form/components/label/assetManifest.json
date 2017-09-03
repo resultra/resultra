@@ -1,0 +1,14 @@
+{
+    "cssFiles": ["label.css"], 
+    "htmlFiles": ["properties.html",
+		"viewProperties.html"], 
+    "jsFiles": ["newLabelDialog.js",
+		"properties.js",
+		"container.js",
+		"designFormConfig.js",
+		"viewProperties.js",
+		"viewFormConfig.js"
+    ],
+	"imageFiles":[],
+    "subDirs": []
+}

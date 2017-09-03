@@ -17,5 +17,6 @@
 		"caption",
 		"gauge",
 		"numberInput",
-		"socialButton"]
+		"socialButton",
+		"label"]
 }

@@ -15,6 +15,7 @@ type FieldsByType struct {
 	FileFields     []Field `json:"fileFields"`
 	UserFields     []Field `json:"userFields"`
 	CommentFields  []Field `json:"commentFields"`
+	LabelFields    []Field `json:"labelFields"`
 }
 
 func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
@@ -44,6 +45,8 @@ func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
 			fieldsByType.FileFields = append(fieldsByType.FileFields, currField)
 		case FieldTypeComment:
 			fieldsByType.CommentFields = append(fieldsByType.CommentFields, currField)
+		case FieldTypeLabel:
+			fieldsByType.LabelFields = append(fieldsByType.LabelFields, currField)
 		default:
 			return nil, fmt.Errorf(
 				"GetFieldsByType: Unable to retrieve fields from datastore: Invalid field type %v",
@@ -151,6 +154,8 @@ func getSortedFieldsByType(params GetSortedFieldListParams) ([]Field, error) {
 			matchedFields = append(matchedFields, fieldsByType.FileFields...)
 		case FieldTypeComment:
 			matchedFields = append(matchedFields, fieldsByType.CommentFields...)
+		case FieldTypeLabel:
+			matchedFields = append(matchedFields, fieldsByType.LabelFields...)
 		default:
 			return nil, fmt.Errorf("GetSortedFields: unsupported field type: %v", currFieldType)
 		}

@@ -7,6 +7,7 @@ var fieldTypeTime = "time"
 var fieldTypeUser = "user"
 var fieldTypeAll = "all"
 var fieldTypeComment = "comment"
+var fieldTypeLabel = "label"
 
 function fieldTypeLabel(fieldType) {
 	switch (fieldType) {
@@ -18,6 +19,7 @@ function fieldTypeLabel(fieldType) {
 	case fieldTypeAttachment: return "File"
 	case fieldTypeLongText: return "Long Text"
 	case fieldTypeComment: return "Comment"
+	case fieldTypeLabel: return "Label"
 	default: return "Unknown field type"
 	}
 }
@@ -209,6 +211,15 @@ function loadFieldInfo(parentDatabaseID,fieldTypes,fieldInfoCallback) {
 				var commentField = commentFields[commentFieldIter]			
 				console.log("comment field: " + commentField.name)
 				fieldsByID[commentField.fieldID] = commentField
+			} // for each file field
+		}
+		
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeLabel]==true) {
+			var labelFields = fieldsByType.labelFields
+			for (labelFieldIter in labelFields) {		
+				var labelField = labelFields[labelFieldIter]			
+				console.log("comment field: " + labelField.name)
+				fieldsByID[labelField.fieldID] = labelField
 			} // for each file field
 		}
 	

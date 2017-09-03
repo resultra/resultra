@@ -7,6 +7,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/gauge"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
 	"resultra/datasheet/webui/common/form/components/image"
+	"resultra/datasheet/webui/common/form/components/label"
 	"resultra/datasheet/webui/common/form/components/numberInput"
 	"resultra/datasheet/webui/common/form/components/progress"
 	"resultra/datasheet/webui/common/form/components/rating"
@@ -32,6 +33,7 @@ type ComponentViewTemplateParams struct {
 	GaugeParams         gauge.GaugeViewTemplateParams
 	NumberInputParams   numberInput.NumberInputViewTemplateParams
 	SocialButtonParams  socialButton.SocialButtonViewTemplateParams
+	LabelParams         label.LabelViewTemplateParams
 }
 
 //var DesignTemplateParams ComponentDesignTemplateParams
@@ -53,6 +55,7 @@ func init() {
 		ProgressParams:      progress.ViewTemplateParams,
 		GaugeParams:         gauge.ViewTemplateParams,
 		NumberInputParams:   numberInput.ViewTemplateParams,
-		SocialButtonParams:  socialButton.ViewTemplateParams}
+		SocialButtonParams:  socialButton.ViewTemplateParams,
+		LabelParams:         label.ViewTemplateParams}
 
 }

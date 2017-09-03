@@ -16,7 +16,8 @@ var paletteItemsEditConfig = {
 	paletteItemGauge: gaugeDesignFormConfig,
 	paletteItemCaption: formCaptionDesignFormConfig,
 	paletteItemNumberInput: numberInputDesignFormConfig,
-	paletteItemSocialButton: socialButtonDesignFormConfig
+	paletteItemSocialButton: socialButtonDesignFormConfig,
+	paletteItemLabel:labelDesignFormConfig
 }
 
 
@@ -153,6 +154,11 @@ $(document).ready(function() {
 			initSocialButtonDesignControlBehavior($socialButton,socialButtonObjectRef)
 			var componentIDs = { formID: formID, componentID: socialButtonObjectRef.socialButtonID }
 			initFormComponentDesignBehavior($socialButton,componentIDs,socialButtonObjectRef,socialButtonDesignFormConfig,designFormLayoutConfig)
+		},
+		initLabelFunc: function(componentContext,$label,labelRef) {
+			initLabelDesignControlBehavior($label,labelRef)
+			var componentIDs = { formID: formID, componentID: labelRef.labelID }
+			initFormComponentDesignBehavior($label,componentIDs,labelRef,labelDesignFormConfig,designFormLayoutConfig)
 		},
 		initUserSelectionFunc: function(componentContext,$userSelection,userSelectionObjectRef) {
 			initUserSelectionDesignControlBehavior(userSelectionObjectRef)
