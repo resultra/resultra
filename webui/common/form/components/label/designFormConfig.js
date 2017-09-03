@@ -37,7 +37,8 @@ var labelDesignFormConfig = {
 	draggableHTMLFunc:	labelContainerHTML,
 	initDummyDragAndDropComponentContainer: startLabelPaletteDrag,
 	createNewItemAfterDropFunc: openNewLabelDialog,
-	resizeConstraints: elemResizeConstraints(200,400,75,75),
+	resizeConstraints: elemResizeConstraints(200,800,75,400),
+	resizeHandles: 'e,s,se',
 	resizeFunc: resizeLabel,
 	initFunc: initDesignFormLabel,
 	selectionFunc: selectFormLabel
