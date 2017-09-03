@@ -37,18 +37,9 @@ function labelTableCellContainerHTML() {
 	
 }
 
-function initLabelSelectionControl($container, labelRef) {
-		
-	var labelWidth = labelRef.properties.geometry.sizeWidth - 15
+function initSelectionControlFormDimensions($container, labelRef) {
+	
 	var $labelControl = labelControlFromLabelComponentContainer($container)
-	
-	$labelControl.select2({
-		placeholder: "Enter labels", // TODO - Allow a property to configure the placeholder.
-		width: labelWidth,
-		tags:true,
-		tokenSeparators: [',']
-	});
-	
 	
 	var overallHeight = labelRef.properties.geometry.sizeHeight
 	var overallWidth = labelRef.properties.geometry.sizeWidth
@@ -63,6 +54,19 @@ function initLabelSelectionControl($container, labelRef) {
 	$labelContainer.css('min-height',labelControlHeightPx)
 	$labelContainer.css('max-height',labelControlHeightPx)
 	
+}
+
+function initLabelSelectionControl($container, labelRef,labelWidth) {
+		
+	var $labelControl = labelControlFromLabelComponentContainer($container)
+	
+
+	$labelControl.select2({
+		placeholder: "Enter labels", // TODO - Allow a property to configure the placeholder.
+		width: labelWidth,
+		tags:true,
+		tokenSeparators: [',']
+	});
 
 }	
 	
@@ -80,6 +84,11 @@ function initLabelFormComponentContainer($container,label) {
 	setLabelComponentLabel($container,label)
 	initComponentHelpPopupButton($container, label)	
 	initLabelSelectionControl($container, label)
+	
+	
+	var labelWidth = labelRef.properties.geometry.sizeWidth - 15
+	
+	initSelectionControlFormDimensions($container, label,labelWidth)
 	
 	/* setElemFixedWidthFlexibleHeight($container,
 				label.properties.geometry.sizeWidth) */

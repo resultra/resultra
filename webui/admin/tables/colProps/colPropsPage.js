@@ -57,6 +57,9 @@ $(document).ready(function() {
 		case 'socialButton':
 			initSocialButtonColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
 			break
+		case 'tag':
+			initTagColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			break
 		default:
 			console.log("Unknown column type: " + colPropsAdminContext.colType)
 		}

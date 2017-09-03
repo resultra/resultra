@@ -1,0 +1,42 @@
+{{define "tagColProps"}}
+
+<table id="tagColProps" class="table initiallyHidden" style="width:500px">
+	
+	<tr>
+		<td class="width200"><label>Column header</label><BR>
+			<small>Configure the label used for the column's header.</small>
+		</td>
+
+		<td class="maxWidth300">
+			{{template "componentLabelProps" .LabelPanelParams}}
+		</td>
+	</tr>
+		
+	<tr>
+		<td class="width200"><label>Permissions</label><BR>
+			<small>Set whether values can be modified in this column.</small>
+		</td>
+
+		<td class="maxWidth300">
+			{{template "tableViewColPermissionProps" .PermissionPanelParams}}
+		</td>
+	</tr>	
+	
+	
+	<tr>
+		<td class="width200"><label>Validation</label><BR>
+			<small>Validation of input values.</small>
+		</td>
+
+		<td class="maxWidth300">
+			{{template "labelValidationProps"}}
+		</td>
+	</tr>
+	
+	{{template "componentHelpPopupColumnProps" .ElemPrefix}}
+		
+	
+	
+</table>
+
+{{end}}

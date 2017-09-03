@@ -125,6 +125,17 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					
 				}
 				
+				function createTagInput(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/tag/new",params,function(tag) {
+						console.log("Tag column created: " + JSON.stringify(tag))
+					})
+					
+				}
+				
 				function createDatePickerInput(fieldInfo) {
 					var params = {
 						parentTableID: panelParams.tableID,
@@ -184,6 +195,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					break
 				case fieldTypeText:
 					createTextInput(fieldInfo)
+					break
+				case fieldTypeLabel:
+					createTagInput(fieldInfo)
 					break
 				case fieldTypeComment:
 					createCommentInput(fieldInfo)
@@ -279,6 +293,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				break
 			case fieldTypeTime:
 				$colTypeSelection.append(selectOptionHTML('datePicker','Date picker'))
+				break
+			case fieldTypeLabel:
+				$colTypeSelection.append(selectOptionHTML('label','Tags'))
 				break
 			case fieldTypeUser:
 				$colTypeSelection.append(selectOptionHTML('userSelection','User selection'))

@@ -124,6 +124,19 @@ function initItemListTableView(params) {
 				userSelectionTableCellContainerHTML,initContainer)
 	}
 
+
+	function createTagColDef(colInfo,tableContext) {
+		
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+			setContainerComponentInfo($cellContainer,colInfo,colInfo.tagID)
+			initLabelTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,tableContext,
+				labelTableCellContainerHTML,initContainer)
+	}
+	
+	
+
 	function createSocialButtonColDef(colInfo,tableContext) {
 		
 		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
@@ -267,6 +280,8 @@ function initItemListTableView(params) {
 			return createToggleColDef(colInfo,tableContext)
 		case 'userSelection':
 			return createUserSelectionColDef(colInfo,tableContext)
+		case 'tag':
+			return createTagColDef(colInfo,tableContext)
 		case 'note':
 			return createNoteColDef(colInfo,tableContext)
 		case 'comment':

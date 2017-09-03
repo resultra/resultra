@@ -138,14 +138,17 @@ function initLabelTableRecordEditBehavior($container,componentContext,recordProx
 	function validateInput(inputVal,validationResultCallback) {
 		var validationParams = {
 			parentTableID: labelObjectRef.parentTableID,
-			labelID: labelObjectRef.labelID,
+			tagID: labelObjectRef.tagID,
 			inputVal: inputVal
 		}
-		jsonAPIRequest("tableView/label/validateInput", validationParams, function(validationResult) {
+		jsonAPIRequest("tableView/tag/validateInput", validationParams, function(validationResult) {
 			validationResultCallback(validationResult)
 		})
 	}
 		
+	var labelWidth = 200
+	initLabelSelectionControl($container, labelObjectRef,labelWidth)
+			
 	initLabelRecordEditBehavior($container,componentContext,recordProxy, 
 			labelObjectRef,validateInput)
 }
