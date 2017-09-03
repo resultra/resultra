@@ -37,32 +37,15 @@ function labelTableCellContainerHTML() {
 	
 }
 
-function setLabelComponentLabel($label,label) {
-	var $label = $label.find('label')
+function initLabelSelectionControl($container, labelRef) {
+		
+	var labelWidth = labelRef.properties.geometry.sizeWidth - 15
+	var $labelControl = labelControlFromLabelComponentContainer($container)
 	
-	setFormComponentLabel($label,label.properties.fieldID,
-			label.properties.labelFormat)	
 	
-}
-
-function initLabelFormComponentContainer($container,label) {
-	setLabelComponentLabel($container,label)
-	initComponentHelpPopupButton($container, label)	
-}
-
-
-function initLabelSelectionControl(selectionParams) {
-	
-	var configParams = {
-		width: '250px'
-	}
-	$.extend(configParams,selectionParams)
-	
-	configParams.selectionInput.select2({
+	$labelControl.select2({
 		placeholder: "Enter labels", // TODO - Allow a property to configure the placeholder.
-	//	dropdownParent: configParams.dropdownParent,
-	//	minimumInputLength: 2,
-		width: configParams.width,
+		width: labelWidth,
 		tags:true,
 		tokenSeparators: [',']
 		/*
@@ -105,7 +88,27 @@ function initLabelSelectionControl(selectionParams) {
 		}
 		*/
 	});
+
+}	
 	
 	
+
+function setLabelComponentLabel($label,label) {
+	var $label = $label.find('label')
+	
+	setFormComponentLabel($label,label.properties.fieldID,
+			label.properties.labelFormat)	
 	
 }
+
+function initLabelFormComponentContainer($container,label) {
+	setLabelComponentLabel($container,label)
+	initComponentHelpPopupButton($container, label)	
+	initLabelSelectionControl($container, label)
+	
+	setElemFixedWidthFlexibleHeight($container,
+				label.properties.geometry.sizeWidth)
+	
+}
+
+

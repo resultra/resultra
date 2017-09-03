@@ -1,7 +1,7 @@
 
 
 function initLabelRecordEditBehavior($labelContainer, componentContext,
-		recordProxy, labelObjectRef, controlWidth, validateInputFunc) {
+		recordProxy, labelObjectRef, validateInputFunc) {
 
 	var labelFieldID = labelObjectRef.properties.fieldID
 		
@@ -84,14 +84,6 @@ function initLabelRecordEditBehavior($labelContainer, componentContext,
 				}
 			})
 		}
-	
-		var selectionWidth = controlWidth.toString() + "px"
-		var labelParams = {
-			selectionInput: $labelControl,
-			dropdownParent: $labelContainer,
-			width: selectionWidth
-		}
-		initLabelSelectionControl(labelParams)
 				
 		$labelControl.on('change', function() {
 			var selectedLabels = $(this).val()
@@ -135,10 +127,8 @@ function initLabelFormRecordEditBehavior($container,componentContext,recordProxy
 		})
 	}
 	
-	var labelWidth = labelObjectRef.properties.geometry.sizeWidth - 15
-	
 	initLabelRecordEditBehavior($container,componentContext,recordProxy, 
-			labelObjectRef,labelWidth, validateInput)
+			labelObjectRef,validateInput)
 }
 
 
@@ -155,13 +145,9 @@ function initLabelTableRecordEditBehavior($container,componentContext,recordProx
 			validationResultCallback(validationResult)
 		})
 	}
-	
-	/* The min-width for the table cell is 200. So, the width is set to 180 to allow 
-		for the clear value button on the RHS of the table cell. */
-	var labelWidth = 180 // TBD - Calculate width
-	
+		
 	initLabelRecordEditBehavior($container,componentContext,recordProxy, 
-			labelObjectRef,labelWidth, validateInput)
+			labelObjectRef,validateInput)
 }
 
 
