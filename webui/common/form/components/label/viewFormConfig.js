@@ -20,7 +20,6 @@ function initLabelRecordEditBehavior($labelContainer, componentContext,
 
 	function loadRecordIntoLabel(labelElem, recordRef) {
 
-		var labelObjectRef = labelElem.data("objectRef")
 		var $labelControl = labelControlFromLabelComponentContainer(labelElem)
 
 		if(formComponentIsReadOnly(labelObjectRef.properties.permissions)) {
@@ -147,7 +146,7 @@ function initLabelFormRecordEditBehavior($container,componentContext,recordProxy
 
 
 
-function initLabelTableRecordEditBehavior($container,componentContext,recordProxy, labelObjectRef) {
+function initTagTablePopupRecordEditBehavior($container,componentContext,recordProxy, labelObjectRef) {
 	
 	function validateInput(inputVal,validationResultCallback) {
 		var validationParams = {
@@ -160,11 +159,99 @@ function initLabelTableRecordEditBehavior($container,componentContext,recordProx
 		})
 	}
 		
-	var labelWidth = 200
+	var labelWidth = 250
 	initLabelSelectionControl($container, labelObjectRef,labelWidth)
+	initTagTablePopupDimensions($container)
 			
 	initLabelRecordEditBehavior($container,componentContext,recordProxy, 
 			labelObjectRef,validateInput)
 }
 
+
+
+function initLabelTableRecordEditBehavior($container,componentContext,recordProxy, tagObjectRef) {
+
+	var $tagPopupLink = $container.find(".tagEditPopop")
+
+	// TBD - Needs a popup to display the editor.
+	var validateInput = function(validationCompleteCallback) {
+			validationCompleteCallback(true)
+	}
+	
+	function formatTagPopupLinkText(recordRef) {
+		var fieldID = tagObjectRef.properties.fieldID
+		var tagsExist = recordRef.fieldValues.hasOwnProperty(fieldID)
+		
+		if(formComponentIsReadOnly(tagObjectRef.properties.permissions)) {
+			if (tagsExist) {
+				$tagPopupLink.css("display","")
+				$tagPopupLink.text("View tags")
+			} else {
+				$tagPopupLink.css("display","none")
+				$tagPopupLink.text("")
+			}
+		} else {
+			$tagPopupLink.css("display","")
+			if (tagsExist) {
+				$tagPopupLink.text("Edit tags")
+			} else {
+				$tagPopupLink.text("Add tag")
+			}
+		}
+	}
+	
+	var currRecordRef = null
+	function loadRecordIntoHtmlEditor($htmlEditor, recordRef) {
+		currRecordRef = recordRef
+		formatTagPopupLinkText(recordRef)
+	}
+	
+	
+	$tagPopupLink.popover({
+		html: 'true',
+		content: function() { return labelTablePopupViewContainerHTML() },
+		trigger: 'manual',
+		placement: 'auto left'
+	})
+	
+	$tagPopupLink.click(function(e) {
+		$(this).popover('toggle')
+		e.stopPropagation()
+	})
+	
+	
+	$tagPopupLink.on('shown.bs.popover', function()
+	{
+	    //get the actual shown popover
+	    var $popover = $(this).data('bs.popover').tip();
+		
+		// By default the popover takes on the maximum size of it's containing
+		// element. Overridding this size allows the size to grow as needed.
+		$popover.css("max-width","300px")
+		$popover.css("max-height","200px")
+		
+		var $tagEditorContainer = $popover.find(".labelTableCellContainer")
+		
+//		initHTMLEditorTextCellComponentViewModeGeometry($noteEditorContainer)
+		
+		var $closePopupButton = $tagEditorContainer.find(".closeTagEditorPopup")
+		initButtonControlClickHandler($closePopupButton,function() {
+			$tagPopupLink.popover('hide')
+		})
+			
+		initTagTablePopupRecordEditBehavior($tagEditorContainer,componentContext,recordProxy, tagObjectRef)
+
+		if(currRecordRef != null) {
+			var viewConfig = $tagEditorContainer.data("viewFormConfig")
+			viewConfig.loadRecord($tagEditorContainer,currRecordRef)
+		}
+
+	});
+	
+	$container.data("viewFormConfig", {
+		loadRecord: loadRecordIntoHtmlEditor,
+		validateValue: validateInput
+	})
+	
+}
 

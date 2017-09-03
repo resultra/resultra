@@ -28,21 +28,32 @@ function labelControlFromLabelComponentContainer($labelContainer) {
 }
 
 
-function labelTableCellContainerHTML() {
+function labelTablePopupViewContainerHTML() {
 	var containerHTML = ''+
-		'<div class=" layoutContainer labelTableCellContainer">' +
-			labelControlContainerHTML() +
+		'<div class=" layoutContainer labelTableCellContainer tagPopupContainer">' +
+			'<div class="tagEditorHeader">' +
+				'<button type="button" class="close closeTagEditorPopup" data-dismiss="modal" aria-hidden="true">x</button>' +
+			'</div>' +
+			'<div class="marginTop5">' +
+				labelControlContainerHTML() +
+			'</div>' +
 		'</div>';									
 	return containerHTML
 	
 }
 
-function initSelectionControlFormDimensions($container, labelRef) {
-	
-	var $labelControl = labelControlFromLabelComponentContainer($container)
-	
-	var overallHeight = labelRef.properties.geometry.sizeHeight
-	var overallWidth = labelRef.properties.geometry.sizeWidth
+
+
+
+function labelTableCellContainerHTML() {
+	return '<div class="layoutContainer tagEditTableCell">' +
+			'<div>' +
+				'<a class="btn tagEditPopop"></a>'+
+			'</div>' +
+		'</div>'
+}
+
+function initTagContainerDimensions($container,overallWidth,overallHeight) {
 	
 	$container.css('height',overallHeight + "px")
 	$container.css('width', overallWidth + 'px')
@@ -56,17 +67,34 @@ function initSelectionControlFormDimensions($container, labelRef) {
 	
 }
 
+function initTagTablePopupDimensions($container) {
+	initTagContainerDimensions($container,250,150)
+}
+
+function initSelectionControlFormDimensions($container, labelRef) {
+	
+	var $labelControl = labelControlFromLabelComponentContainer($container)
+	
+	var overallHeight = labelRef.properties.geometry.sizeHeight
+	var overallWidth = labelRef.properties.geometry.sizeWidth
+	
+	initTagContainerDimensions($labelControl,overallWidth,overallHeight)
+	
+	$container.css('height',overallHeight + "px")
+	$container.css('width', overallWidth + 'px')
+	
+}
+
 function initLabelSelectionControl($container, labelRef,labelWidth) {
 		
 	var $labelControl = labelControlFromLabelComponentContainer($container)
 	
-
 	$labelControl.select2({
 		placeholder: "Enter labels", // TODO - Allow a property to configure the placeholder.
 		width: labelWidth,
 		tags:true,
 		minimumInputLength: 1,
-		maximumInputLength:24,
+		maximumInputLength:32,
 		tokenSeparators: [',']
 	});
 
