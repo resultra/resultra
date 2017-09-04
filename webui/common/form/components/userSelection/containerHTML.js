@@ -3,35 +3,46 @@ function userSelectionControlFromUserSelectionComponentContainer($userSelContain
 	return $userSelContainer.find(".userSelectionCompSelectionControl")
 }
 
+
+function userSelectionInputButtonsContainerHTML() {
+		
+	var userSelectionDropdownHTML = '' +
+		'<div class="userSelectionDropdown">'+
+			'<button type="button" class="btn btn-default btn-sm dropdown-toggle clearButton" ' + 
+					'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+					'<span class="caret"></span></button>'+
+			'<ul class="dropdown-menu valueDropdownMenu">' +
+			'</ul>'+
+		'</div>'
+	
+	var  clearValButtonHTML = '<button type="button" class="btn btn-default btn-sm clearButton userSelectionComponentClearValueButton" >' + 
+				'<small><i class="glyphicon glyphicon-remove"></i></small>' +
+		'</button>'
+	
+	return userSelectionDropdownHTML + clearValButtonHTML
+}
+
 function userSelectionControlContainerHTML() {
 	
-	
-	var userSelectionDropdown = '' +
-					'<div class="input-group-btn userSelectionDropdown">'+
-						'<button type="button" class="btn btn-default dropdown-toggle" ' + 
-								'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
-								'<span class="caret"></span></button>'+
-						'<ul class="dropdown-menu valueDropdownMenu">' +
-						'</ul>'+
-					'</div>'
-
-	
-	return '<div class="input-group">'+
-				'<div class="formUserSelectionControl">' + 
+	return   '<div class="formUserSelectionControl">' + 
 					'<select class="form-control userSelectionCompSelectionControl" multiple></select>' +
-				'</div>' +
-				userSelectionDropdown +
-				clearValueButtonHTML("userSelectionComponentClearValueButton") +
-			'</div>'
-	
+				'</div>'
 }
 
 function userSelectionContainerHTML(elementID)
 {
 	var containerHTML = ''+
 		'<div class=" layoutContainer userSelectionFormContainer">' +
+			'<div class="row">' +
+				'<div class="col-sm-8">' +
+					'<label>New User Selection</label>' + 
+				'</div>' +
+				'<div class="col-sm-4 userSelectionButtons">' +
+					userSelectionInputButtonsContainerHTML() + 
+					componentHelpPopupButtonHTML() +
+				'</div>' +
+			'</div>' +
 			'<div class="form-group marginBottom0">'+
-				'<label>New Text Box</label>' + componentHelpPopupButtonHTML() +
 				userSelectionControlContainerHTML() +
 			'</div>'+
 		'</div>';
@@ -44,6 +55,7 @@ function userSelectionTablePopupEditorContainerHTML() {
 		'<div class=" layoutContainer userSelectionTableCellContainer userSelectionPopupEditorContainer">' +
 			'<div class="userEditorHeader">' +
 				'<button type="button" class="close closeEditorPopup" data-dismiss="modal" aria-hidden="true">x</button>' +
+				userSelectionInputButtonsContainerHTML() +
 			'</div>' +
 			'<div class="marginTop5">' +
 				userSelectionControlContainerHTML() +
