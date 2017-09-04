@@ -114,7 +114,7 @@ function initLabelFormComponentContainer($container,label) {
 	initLabelSelectionControl($container, label)
 	
 	
-	var labelWidth = labelRef.properties.geometry.sizeWidth - 15
+	var labelWidth = label.properties.geometry.sizeWidth - 15
 	
 	initSelectionControlFormDimensions($container, label,labelWidth)
 	
