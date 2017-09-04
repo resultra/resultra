@@ -43,8 +43,6 @@ function labelTablePopupViewContainerHTML() {
 }
 
 
-
-
 function labelTableCellContainerHTML() {
 	return '<div class="layoutContainer tagEditTableCell">' +
 			'<div>' +

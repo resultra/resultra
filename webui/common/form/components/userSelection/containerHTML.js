@@ -39,13 +39,27 @@ function userSelectionContainerHTML(elementID)
 	return containerHTML
 }
 
-function userSelectionTableCellContainerHTML() {
+function userSelectionTablePopupEditorContainerHTML() {
 	var containerHTML = ''+
-		'<div class=" layoutContainer userSelectionTableCellContainer">' +
-			userSelectionControlContainerHTML() +
+		'<div class=" layoutContainer userSelectionTableCellContainer userSelectionPopupEditorContainer">' +
+			'<div class="userEditorHeader">' +
+				'<button type="button" class="close closeEditorPopup" data-dismiss="modal" aria-hidden="true">x</button>' +
+			'</div>' +
+			'<div class="marginTop5">' +
+				userSelectionControlContainerHTML() +
+			'</div>' +
 		'</div>';									
 	return containerHTML
 	
+}
+
+
+function userSelectionTableCellContainerHTML() {
+	return '<div class="layoutContainer userSelectionEditTableCell">' +
+			'<div>' +
+				'<a class="btn userSelectionEditPopop"></a>'+
+			'</div>' +
+		'</div>'
 }
 
 function setUserSelectionComponentLabel($userSelection,userSelection) {
