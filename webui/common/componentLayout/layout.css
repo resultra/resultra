@@ -32,3 +32,10 @@
 	right:0px;
 	display:none; /* initially hidden */
 }
+
+.componentHeaderButtons
+{
+	display:inline-flex;
+	justify-content:flex-end;
+	
+}

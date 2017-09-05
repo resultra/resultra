@@ -18,6 +18,7 @@ type SummaryValProps struct {
 
 	DefaultFilterRules recordFilter.RecordFilterRuleSet `json:"defaultFilterRules"`
 	PreFilterRules     recordFilter.RecordFilterRuleSet `json:"preFilterRules"`
+	HelpPopupMsg       string                           `json:"helpPopupMsg"`
 }
 
 func (srcProps SummaryValProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*SummaryValProps, error) {
@@ -51,6 +52,7 @@ func newDefaultSummaryValProps() SummaryValProps {
 		Title:              "SummaryVal",
 		ThresholdVals:      []threshold.ThresholdValues{},
 		DefaultFilterRules: recordFilter.NewDefaultRecordFilterRuleSet(),
-		PreFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet()}
+		PreFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet(),
+		HelpPopupMsg:       ""}
 	return props
 }

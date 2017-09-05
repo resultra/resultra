@@ -120,6 +120,26 @@ function loadDashboardSummaryValProperties(summaryValPropsArgs) {
 	}
 	initDashboardValueSummaryPropertyPanel(valSummaryPropertyPanelParams)
 	
+	
+	var helpPopupParams = {
+		initialMsg: summaryValRef.properties.helpPopupMsg,
+		elemPrefix: elemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentDashboardID:summaryValPropsArgs.dashboardID,
+				summaryValID: summaryValRef.summaryValID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("dashboard/summaryVal/setHelpPopupMsg",params,function(updatedSummaryVal) {
+				setContainerComponentInfo($summaryVal,updatedSummaryVal,updatedSummaryVal.summaryValID)
+				updateComponentHelpPopupMsg($summaryVal, updatedSummaryVal)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
+	
+	
+	
 	// Toggle to the bar chart properties, hiding the other property panels
 	hideSiblingsShowOne('#dashboardSummaryValProps')
 

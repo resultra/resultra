@@ -20,6 +20,7 @@ func init() {
 
 	summaryValRouter.HandleFunc("/api/dashboard/summaryVal/setDefaultFilterRules", setDefaultFilterRules)
 	summaryValRouter.HandleFunc("/api/dashboard/summaryVal/setPreFilterRules", setPreFilterRules)
+	summaryValRouter.HandleFunc("/api/dashboard/summaryVal/setHelpPopupMsg", setHelpPopupMsg)
 
 	http.Handle("/api/dashboard/summaryVal/", summaryValRouter)
 }
@@ -97,6 +98,15 @@ func setValSummary(w http.ResponseWriter, r *http.Request) {
 
 func setThresholds(w http.ResponseWriter, r *http.Request) {
 	var params SetThresholdsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processSummaryValPropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params SetHelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

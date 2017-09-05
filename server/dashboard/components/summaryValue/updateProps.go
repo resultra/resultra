@@ -142,3 +142,15 @@ func (updateParams SetThresholdsParams) updateSummaryValProps(summaryVal *Summar
 
 	return nil
 }
+
+type SetHelpPopupMsgParams struct {
+	SummaryValUniqueIDSummaryVal
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (params SetHelpPopupMsgParams) updateSummaryValProps(summaryVal *SummaryVal) error {
+
+	summaryVal.Properties.HelpPopupMsg = params.PopupMsg
+
+	return nil
+}

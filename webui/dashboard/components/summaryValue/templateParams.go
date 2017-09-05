@@ -1,6 +1,7 @@
 package summaryValue
 
 import (
+	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/common/valueThreshold"
 	"resultra/datasheet/webui/dashboard/components/common/valueSummary"
@@ -19,6 +20,7 @@ type SummaryValDesignTemplateParams struct {
 	FilterPropPanelParams    recordFilter.FilterPanelTemplateParams
 	PreFilteringPanelParams  propertiesSidebar.PanelTemplateParams
 	PreFilterPropPanelParams recordFilter.FilterPanelTemplateParams
+	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
 }
 
 var DesignTemplateParams SummaryValDesignTemplateParams
@@ -36,6 +38,7 @@ func init() {
 		ElemPrefix:               elemPrefix,
 		ValueSummaryParams:       valueSummaryParams,
 		TitlePanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "summaryValTitle"},
+		HelpPopupParams:          inputProperties.NewHelpPopupTemplateParams(elemPrefix, "summaryValHelp"),
 		FormatPanelParams:        propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "summaryValFormat"},
 		FilteringPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Filtering", PanelID: "summaryValFiltering"},
 		ThresholdPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Thresholds", PanelID: "summaryValThreshold"},

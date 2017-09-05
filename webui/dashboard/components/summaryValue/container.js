@@ -7,7 +7,14 @@ function dashboardSummaryValContainerHTML(elementID)
 {	
 	var containerHTML = ''+
 		'<div class="layoutContainer dashboardSummaryValContainer" id="'+elementID+'">' +
-			'<label class="summaryValLabel">' + 'New Summary Val' + '</label>' +
+			'<div class="row">' +
+				'<div class="col-sm-8">' +
+					'<label class="summaryValLabel">' + 'New Summary Val' + '</label>' +
+				'</div>' +
+				'<div class="col-sm-4 componentHeaderButtons">' +
+					componentHelpPopupButtonHTML() +
+				'</div>' +
+			'</div>' +
 			'<div class="dashboardSummaryVal alert defaultAlertBackground" role="alert">' +
 				'<span class="summaryValControl"></span>'+
   			'</div>' +

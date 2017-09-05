@@ -79,13 +79,12 @@ function loadDashboardData(loadDashboardConfig)
 		var $summaryVal = $(summaryValHTML)
 		
 		var summaryValRef = summaryValData.summaryVal
-		
-		setGaugeDashboardComponentLabel($summaryVal,summaryValRef)
-	
+			
 		setContainerComponentInfo($summaryVal,summaryValRef,summaryValRef.summaryValID)
 		
 		initSummaryValData(dashboardID,$summaryVal,summaryValData)
 		setSummaryValDashboardComponentLabel($summaryVal,summaryValRef)
+		initComponentHelpPopupButton($summaryVal, summaryValRef)	
 		
 		$componentRow.append($summaryVal)
 		setElemFixedWidthFlexibleHeight($summaryVal,summaryValRef.properties.geometry.sizeWidth)
