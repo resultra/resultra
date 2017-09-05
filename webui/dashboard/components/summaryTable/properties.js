@@ -106,9 +106,6 @@ function loadSummaryTableProperties(propArgs) {
 	initFilterPropertyPanel(filterPropertyPanelParams)
 
 
-
-
-
 	var columnsPropertyPanelParams = {
 		listElemPrefix: summaryTableElemPrefix,
 		databaseID: propArgs.databaseID,
@@ -126,6 +123,26 @@ function loadSummaryTableProperties(propArgs) {
 		}
 	}
 	initDashboardComponentSummaryColsPropertyPanel(columnsPropertyPanelParams)
+	
+	
+	var helpPopupParams = {
+		initialMsg: summaryTableRef.properties.helpPopupMsg,
+		elemPrefix: summaryTableElemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentDashboardID:propArgs.dashboardID,
+				summaryTableID: summaryTableRef.summaryTableID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("dashboard/summaryTable/setHelpPopupMsg",params,function(updatedSummaryTable) {
+				setContainerComponentInfo(propArgs.$summaryTable,updatedSummaryTable,
+								updatedSummaryTable.summaryTableID)
+				updateComponentHelpPopupMsg(propArgs.$summaryTable, updatedSummaryTable)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
+	
 
 	// Toggle to the summary properties, hiding the other property panels
 	hideSiblingsShowOne('#summaryTableProps')

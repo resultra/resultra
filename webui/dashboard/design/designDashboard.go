@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common"
 	dashboardCommon "resultra/datasheet/webui/dashboard/common"
 	"resultra/datasheet/webui/dashboard/components"
@@ -28,6 +29,7 @@ func init() {
 		thirdParty.TemplateFileList,
 		common.TemplateFileList,
 		dashboardCommon.TemplateFileList,
+		inputProperties.TemplateFileList,
 		components.TemplateFileList,
 		properties.TemplateFileList}
 	designDashboardTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)

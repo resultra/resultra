@@ -1,6 +1,7 @@
 package summaryTable
 
 import (
+	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/dashboard/components/common/newComponentDialog"
 	"resultra/datasheet/webui/dashboard/components/common/valueSummary"
@@ -19,6 +20,7 @@ type SummaryTableDesignTemplateParams struct {
 	PreFilteringPanelParams  propertiesSidebar.PanelTemplateParams
 	FilterPropPanelParams    recordFilter.FilterPanelTemplateParams
 	PreFilterPropPanelParams recordFilter.FilterPanelTemplateParams
+	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
 }
 
 // Template parameters when the summary table is in view mode
@@ -49,6 +51,7 @@ func init() {
 		RowValueGroupingParams:   rowGroupingParams,
 		ColValueSummaryParams:    valueSummaryParams,
 		TitlePanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "summaryTableTitle"},
+		HelpPopupParams:          inputProperties.NewHelpPopupTemplateParams(elemPrefix, "summaryTableHelp"),
 		RowPanelParams:           propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Rows", PanelID: "summaryTableRows"},
 		ColPanelParams:           propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Columns", PanelID: "summaryTableCols"},
 		PreFilteringPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Pre-Filtering", PanelID: "summaryTablePreFiltering"},

@@ -19,6 +19,8 @@ func init() {
 	summaryTableRouter.HandleFunc("/api/dashboard/summaryTable/setDefaultFilterRules", setDefaultFilterRules)
 	summaryTableRouter.HandleFunc("/api/dashboard/summaryTable/setPreFilterRules", setPreFilterRules)
 
+	summaryTableRouter.HandleFunc("/api/dashboard/summaryTable/setHelpPopupMsg", setHelpPopupMsg)
+
 	summaryTableRouter.HandleFunc("/api/dashboard/summaryTable/setRowValueGrouping", setRowValueGrouping)
 
 	http.Handle("/api/dashboard/summaryTable/", summaryTableRouter)
@@ -97,6 +99,15 @@ func setDefaultFilterRules(w http.ResponseWriter, r *http.Request) {
 
 func setPreFilterRules(w http.ResponseWriter, r *http.Request) {
 	var params SetSummaryTablePreFilterRulesParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processSummaryTablePropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params SetHelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

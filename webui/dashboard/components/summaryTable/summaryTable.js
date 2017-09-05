@@ -7,7 +7,14 @@ function summaryTableComponentHTML(summaryTableID) {
 	
 	var containerHTML = ''+
 	'<div class="layoutContainer dashboardSummaryTableComponent">' +
-		'<div class="summaryTableTitle"></div>'+
+		'<div class="row">' +
+			'<div class="col-sm-8">' +
+				'<div class="summaryTableTitle"></div>'+
+			'</div>' +
+			'<div class="col-sm-4 summaryTableButtons">' +
+				componentHelpPopupButtonHTML() +
+			'</div>' +
+		'</div>' +
 		'<div class="tableContainer">' + 
 			summaryTableTableElem() +
 		'</div>' +

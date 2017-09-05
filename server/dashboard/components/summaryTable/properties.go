@@ -21,6 +21,8 @@ type SummaryTableProps struct {
 
 	DefaultFilterRules recordFilter.RecordFilterRuleSet `json:"defaultFilterRules"`
 	PreFilterRules     recordFilter.RecordFilterRuleSet `json:"preFilterRules"`
+
+	HelpPopupMsg string `json:"helpPopupMsg"`
 }
 
 func (srcProps SummaryTableProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*SummaryTableProps, error) {
@@ -63,6 +65,7 @@ func newDefaultSummaryTableProps() SummaryTableProps {
 	props := SummaryTableProps{
 		Title:              "",
 		DefaultFilterRules: recordFilter.NewDefaultRecordFilterRuleSet(),
-		PreFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet()}
+		PreFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet(),
+		HelpPopupMsg:       ""}
 	return props
 }

@@ -32,6 +32,7 @@ function loadDashboardData(loadDashboardConfig)
 		setElemDimensions($summaryTableElem,summaryTableData.summaryTable.properties.geometry)
 		
 		initSummaryTableData(dashboardID,$summaryTableElem,summaryTableData)
+		initComponentHelpPopupButton($summaryTableElem, summaryTableData.summaryTable)	
 		
 		loadDashboardConfig.initSummaryTableComponent($summaryTableElem,summaryTableData.summaryTable)
 	}

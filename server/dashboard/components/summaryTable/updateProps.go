@@ -141,3 +141,15 @@ func (params SetSummaryTablePreFilterRulesParams) updateSummaryTableProps(summar
 
 	return nil
 }
+
+type SetHelpPopupMsgParams struct {
+	SummaryTableUniqueIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (params SetHelpPopupMsgParams) updateSummaryTableProps(summaryTable *SummaryTable) error {
+
+	summaryTable.Properties.HelpPopupMsg = params.PopupMsg
+
+	return nil
+}

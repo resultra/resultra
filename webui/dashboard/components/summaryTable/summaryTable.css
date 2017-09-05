@@ -21,3 +21,8 @@
 .dashboardSummaryTableComponent table {
 	margin-bottom: 0px;
 }
+
+.summaryTableButtons {
+	display:inline-flex;
+	justify-content:flex-end;
+}

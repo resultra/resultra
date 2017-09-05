@@ -1,6 +1,7 @@
 {
 	"subDirs":["../../generic",
 				"../../common",
+				"../../admin/common/inputProperties",
 				"../common",
 				"../components",
 				"properties"],
