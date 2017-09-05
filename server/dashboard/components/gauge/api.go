@@ -18,6 +18,7 @@ func init() {
 	gaugeRouter.HandleFunc("/api/dashboard/gauge/setValSummary", setValSummary)
 	gaugeRouter.HandleFunc("/api/dashboard/gauge/setRange", setRange)
 	gaugeRouter.HandleFunc("/api/dashboard/gauge/setThresholds", setThresholds)
+	gaugeRouter.HandleFunc("/api/dashboard/gauge/setHelpPopupMsg", setHelpPopupMsg)
 
 	gaugeRouter.HandleFunc("/api/dashboard/gauge/setDefaultFilterRules", setDefaultFilterRules)
 	gaugeRouter.HandleFunc("/api/dashboard/gauge/setPreFilterRules", setPreFilterRules)
@@ -107,6 +108,15 @@ func setRange(w http.ResponseWriter, r *http.Request) {
 
 func setThresholds(w http.ResponseWriter, r *http.Request) {
 	var params SetThresholdsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processGaugePropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params SetHelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

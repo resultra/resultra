@@ -160,3 +160,15 @@ func (updateParams SetThresholdsParams) updateGaugeProps(gauge *Gauge) error {
 
 	return nil
 }
+
+type SetHelpPopupMsgParams struct {
+	GaugeUniqueIDGauge
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (params SetHelpPopupMsgParams) updateGaugeProps(gauge *Gauge) error {
+
+	gauge.Properties.HelpPopupMsg = params.PopupMsg
+
+	return nil
+}

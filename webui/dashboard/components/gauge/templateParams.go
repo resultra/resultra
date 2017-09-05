@@ -1,6 +1,7 @@
 package gauge
 
 import (
+	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/common/valueThreshold"
 	"resultra/datasheet/webui/dashboard/components/common/valueSummary"
@@ -20,6 +21,7 @@ type GaugeDesignTemplateParams struct {
 	FilterPropPanelParams    recordFilter.FilterPanelTemplateParams
 	PreFilteringPanelParams  propertiesSidebar.PanelTemplateParams
 	PreFilterPropPanelParams recordFilter.FilterPanelTemplateParams
+	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
 }
 
 var DesignTemplateParams GaugeDesignTemplateParams
@@ -37,6 +39,7 @@ func init() {
 		ElemPrefix:               elemPrefix,
 		ValueSummaryParams:       valueSummaryParams,
 		TitlePanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "gaugeTitle"},
+		HelpPopupParams:          inputProperties.NewHelpPopupTemplateParams(elemPrefix, "gaugeHelp"),
 		FormatPanelParams:        propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "gaugeFormat"},
 		RangePanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Range", PanelID: "gaugeRange"},
 		FilteringPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Filtering", PanelID: "gaugeFiltering"},

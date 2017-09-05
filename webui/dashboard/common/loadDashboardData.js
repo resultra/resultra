@@ -62,6 +62,7 @@ function loadDashboardData(loadDashboardConfig)
 		var gaugeRef = gaugeData.gauge
 		
 		setGaugeDashboardComponentLabel($gauge,gaugeRef)
+		initComponentHelpPopupButton($gauge, gaugeRef)	
 	
 		setContainerComponentInfo($gauge,gaugeRef,gaugeRef.gaugeID)
 		

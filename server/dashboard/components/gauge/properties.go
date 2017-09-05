@@ -20,6 +20,7 @@ type GaugeProps struct {
 
 	DefaultFilterRules recordFilter.RecordFilterRuleSet `json:"defaultFilterRules"`
 	PreFilterRules     recordFilter.RecordFilterRuleSet `json:"preFilterRules"`
+	HelpPopupMsg       string                           `json:"helpPopupMsg"`
 }
 
 func (srcProps GaugeProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*GaugeProps, error) {
@@ -55,6 +56,7 @@ func newDefaultGaugeProps() GaugeProps {
 		MaxVal:             100.0,
 		ThresholdVals:      []threshold.ThresholdValues{},
 		DefaultFilterRules: recordFilter.NewDefaultRecordFilterRuleSet(),
-		PreFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet()}
+		PreFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet(),
+		HelpPopupMsg:       ""}
 	return props
 }

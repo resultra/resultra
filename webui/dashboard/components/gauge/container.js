@@ -7,7 +7,14 @@ function dashboardGaugeContainerHTML(elementID)
 {	
 	var containerHTML = ''+
 		'<div class="layoutContainer dashboardGaugeFormContainer" id="'+elementID+'">' +
-			'<label class="gaugeLabel">' + 'New Gauge' + '</label>' +
+			'<div class="row">' +
+				'<div class="col-sm-8">' +
+					'<label class="gaugeLabel">' + 'New Gauge' + '</label>' +
+				'</div>' +
+				'<div class="col-sm-4 componentHeaderButtons">' +
+					componentHelpPopupButtonHTML() +
+				'</div>' +
+			'</div>' +
 			'<div class="dashboardGauge">' +
 				'<span class="gaugeControl"></span>'+
   			'</div>' +

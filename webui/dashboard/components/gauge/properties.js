@@ -142,6 +142,22 @@ function loadDashboardGaugeProperties(gaugePropsArgs) {
 	}
 	initDashboardValueSummaryPropertyPanel(valSummaryPropertyPanelParams)
 	
+	var helpPopupParams = {
+		initialMsg: gaugeRef.properties.helpPopupMsg,
+		elemPrefix: gaugeElemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentDashboardID:gaugePropsArgs.dashboardID,
+				gaugeID: gaugeRef.gaugeID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("dashboard/gauge/setHelpPopupMsg",params,function(updatedGauge) {
+				setContainerComponentInfo($gauge,updatedGauge,updatedGauge.gaugeID)
+				updateComponentHelpPopupMsg($gauge, updatedGauge)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
 	
 
