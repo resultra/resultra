@@ -19,5 +19,6 @@
 		"valueList",
 		"itemList",
 		"tableView",
-		"conditionalFormat"]
+		"conditionalFormat",
+		"helpPopup"]
 }
