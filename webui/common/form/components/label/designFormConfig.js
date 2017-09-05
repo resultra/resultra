@@ -24,7 +24,8 @@ function resizeLabel($container,geometry) {
 	
 	jsonAPIRequest("frm/label/resize", resizeParams, function(updatedObjRef) {
 		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.labelID)
-		initLabelSelectionControl($container, updatedObjRef)
+		var labelWidth = updatedObjRef.properties.geometry.sizeWidth - 15
+		initLabelSelectionControl($container, updatedObjRef,labelWidth)
 	})	
 }
 

@@ -109,18 +109,16 @@ function setLabelComponentLabel($label,label) {
 }
 
 function initLabelFormComponentContainer($container,label) {
+	
 	setLabelComponentLabel($container,label)
 	initComponentHelpPopupButton($container, label)	
-	initLabelSelectionControl($container, label)
-	
 	
 	var labelWidth = label.properties.geometry.sizeWidth - 15
+
+	initLabelSelectionControl($container, label,labelWidth)
 	
 	initSelectionControlFormDimensions($container, label,labelWidth)
-	
-	/* setElemFixedWidthFlexibleHeight($container,
-				label.properties.geometry.sizeWidth) */
-	
+		
 }
 
 
