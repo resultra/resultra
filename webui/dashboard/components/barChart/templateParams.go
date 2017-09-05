@@ -1,6 +1,7 @@
 package barChart
 
 import (
+	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/dashboard/components/common/newComponentDialog"
 	"resultra/datasheet/webui/dashboard/components/common/valueSummary"
@@ -18,6 +19,7 @@ type BarChartDesignTemplateParams struct {
 	FilterPropPanelParams    recordFilter.FilterPanelTemplateParams
 	PreFilteringPanelParams  propertiesSidebar.PanelTemplateParams
 	PreFilterPropPanelParams recordFilter.FilterPanelTemplateParams
+	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
 }
 
 // Template parameters when the summary table is in view mode
@@ -48,6 +50,7 @@ func init() {
 		ValueGroupingParams:      valueGroupingParams,
 		ValueSummaryParams:       valueSummaryParams,
 		TitlePanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "barChartTitle"},
+		HelpPopupParams:          inputProperties.NewHelpPopupTemplateParams(elemPrefix, "barChartHelp"),
 		XAxisPanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "X Axis", PanelID: "barChartXAxis"},
 		YAxisPanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Y Axis", PanelID: "barChartYAxis"},
 		FilteringPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Filtering", PanelID: "barChartFiltering"},

@@ -12,6 +12,7 @@ function loadDashboardData(loadDashboardConfig)
 		var $barChartElem = $(barChartHTML)
 
 		setContainerComponentInfo($barChartElem,barChartData.barChart,barChartData.barChartID)
+		initComponentHelpPopupButton($barChartElem,barChartData.barChart)	
 		
 		$componentRow.append($barChartElem)
 		setElemFixedWidthFlexibleHeight($barChartElem,barChartData.barChart.properties.geometry.sizeWidth)

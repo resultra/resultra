@@ -120,6 +120,24 @@ function loadBarChartProperties(barChartPropsArgs) {
 	}
 	initDashboardValueSummaryPropertyPanel(yAxisPropertyPanelParams)
 
+	var helpPopupParams = {
+		initialMsg: barChartRef.properties.helpPopupMsg,
+		elemPrefix: barChartElemPrefix,	
+		setMsg: function(popupMsg) {
+			var params = {
+				parentDashboardID:barChartPropsArgs.dashboardID,
+				barChartID: barChartRef.barChartID,
+				popupMsg: popupMsg
+			}
+			jsonAPIRequest("dashboard/barChart/setHelpPopupMsg",params,function(updatedBarChart) {
+				setContainerComponentInfo(barChartPropsArgs.$barChart,updatedBarChart,updatedBarChart.barChartID)
+				updateComponentHelpPopupMsg(barChartPropsArgs.$barChart, updatedBarChart)
+			})
+		}	
+	}
+	initComponentHelpPopupPropertyPanel(helpPopupParams)
+
+
 	// Toggle to the bar chart properties, hiding the other property panels
 	hideSiblingsShowOne('#barChartProps')
 

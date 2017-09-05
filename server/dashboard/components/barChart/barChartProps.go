@@ -141,3 +141,15 @@ func (params SetPreFilterRulesParams) updateBarChartProps(barChart *BarChart) er
 
 	return nil
 }
+
+type SetHelpPopupMsgParams struct {
+	BarChartUniqueIDHeader
+	PopupMsg string `json:"popupMsg"`
+}
+
+func (params SetHelpPopupMsgParams) updateBarChartProps(barChart *BarChart) error {
+
+	barChart.Properties.HelpPopupMsg = params.PopupMsg
+
+	return nil
+}

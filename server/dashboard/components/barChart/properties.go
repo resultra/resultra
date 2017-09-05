@@ -28,6 +28,7 @@ type BarChartProps struct {
 
 	DefaultFilterRules recordFilter.RecordFilterRuleSet `json:"defaultFilterRules"`
 	PreFilterRules     recordFilter.RecordFilterRuleSet `json:"preFilterRules"`
+	HelpPopupMsg       string                           `json:"helpPopupMsg"`
 }
 
 func (srcProps BarChartProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*BarChartProps, error) {
@@ -67,7 +68,8 @@ func newDefaultBarChartProps() BarChartProps {
 	props := BarChartProps{
 		Title:              "",
 		DefaultFilterRules: recordFilter.NewDefaultRecordFilterRuleSet(),
-		PreFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet()}
+		PreFilterRules:     recordFilter.NewDefaultRecordFilterRuleSet(),
+		HelpPopupMsg:       ""}
 
 	return props
 }

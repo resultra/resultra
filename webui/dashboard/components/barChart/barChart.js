@@ -7,6 +7,14 @@ function barChartContainerHTML() {
 	// is a conflict with the Google chart code disabling the resize behavor after the chart is refreshed.
 	var containerHTML = ''+
 	'<div class="layoutContainer dashboardBarChartComponent">' +
+		'<div class="row">' +
+			'<div class="col-sm-8">' +
+				'<label class="barChartTitle">' + 'New Bar Chart' + '</label>' +
+			'</div>' +
+			'<div class="col-sm-4 componentHeaderButtons">' +
+				componentHelpPopupButtonHTML() +
+			'</div>' +
+		'</div>' +	
 		'<canvas class="dashboardChartWrapper"</canvas>'+
 	'</div>';
 	return containerHTML
@@ -17,6 +25,9 @@ function drawBarChart($barChart, barChartData) {
 	
 	
 	var $chart = $barChart.find(".dashboardChartWrapper")
+	
+	var $title = $barChart.find(".barChartTitle")
+	$title.text(barChartData.title)
 	
 	var summarizedVals = barChartData.groupedSummarizedVals
 	
@@ -50,8 +61,7 @@ function drawBarChart($barChart, barChartData) {
               enabled: false
            },
 		  title: {
-		              display: true,
-		              text: barChartData.title
+		              display: false
 		          },
 		  scales: {
 		    yAxes: [{
@@ -84,7 +94,6 @@ function drawDesignModeDummyBarChart($barChart) {
 		
 	var dummyBarChartData = {
 		barChartID: placeholderID,
-		title:"Chart Title",
 		xAxisTitle:"Grouped Field",
 		yAxisTitle:"Summarized Field",
 		dataRows:[

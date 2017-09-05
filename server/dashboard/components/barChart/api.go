@@ -15,6 +15,7 @@ func init() {
 	barChartRouter.HandleFunc("/api/dashboard/barChart/setDimensions", setBarChartDimensions)
 	barChartRouter.HandleFunc("/api/dashboard/barChart/setXAxisValueGrouping", setXAxisValueGrouping)
 	barChartRouter.HandleFunc("/api/dashboard/barChart/setYAxisSummaryVals", setYAxisSummaryVals)
+	barChartRouter.HandleFunc("/api/dashboard/barChart/setHelpPopupMsg", setHelpPopupMsg)
 
 	barChartRouter.HandleFunc("/api/dashboard/barChart/setDefaultFilterRules", setDefaultFilterRules)
 	barChartRouter.HandleFunc("/api/dashboard/barChart/setPreFilterRules", setPreFilterRules)
@@ -101,6 +102,16 @@ func setDefaultFilterRules(w http.ResponseWriter, r *http.Request) {
 
 func setPreFilterRules(w http.ResponseWriter, r *http.Request) {
 	var params SetPreFilterRulesParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processBarChartPropUpdate(w, r, params)
+
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params SetHelpPopupMsgParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
