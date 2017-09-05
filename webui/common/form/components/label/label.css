@@ -17,6 +17,7 @@
 .labelFormContainer .select2-selection--multiple {
 	overflow-y: auto;
 	min-height: 34px;
+	height:auto;
 }
 
 
@@ -25,7 +26,6 @@
 .labelFormContainer .select2-selection
 {
 	display: block!important;
-	height: 34px!important;
 	white-space: nowrap!important;
   	overflow-y: auto;
 	font-size:12px;
@@ -52,7 +52,6 @@
 
 .labelFormContainer .select2-selection {
 	display: block!important;
-	height: 30px!important;
 	white-space: nowrap!important;
 	line-height: 26px!important;
     overflow: auto;

@@ -231,9 +231,7 @@ function initLabelTableRecordEditBehavior($container,componentContext,recordProx
 		$popover.css("max-height","200px")
 		
 		var $tagEditorContainer = $popover.find(".labelTableCellContainer")
-		
-//		initHTMLEditorTextCellComponentViewModeGeometry($noteEditorContainer)
-		
+				
 		var $closePopupButton = $tagEditorContainer.find(".closeTagEditorPopup")
 		initButtonControlClickHandler($closePopupButton,function() {
 			$tagPopupLink.popover('hide')

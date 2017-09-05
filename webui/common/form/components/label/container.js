@@ -117,7 +117,7 @@ function initLabelFormComponentContainer($container,label) {
 
 	initLabelSelectionControl($container, label,labelWidth)
 	
-	initSelectionControlFormDimensions($container, label,labelWidth)
+	//initSelectionControlFormDimensions($container, label,labelWidth)
 		
 }
 

@@ -39,7 +39,6 @@ var labelDesignFormConfig = {
 	initDummyDragAndDropComponentContainer: startLabelPaletteDrag,
 	createNewItemAfterDropFunc: openNewLabelDialog,
 	resizeConstraints: elemResizeConstraints(200,800,75,400),
-	resizeHandles: 'e,s,se',
 	resizeFunc: resizeLabel,
 	initFunc: initDesignFormLabel,
 	selectionFunc: selectFormLabel
