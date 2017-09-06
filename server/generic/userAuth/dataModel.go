@@ -62,7 +62,7 @@ func saveNewUser(rawParams NewUserParams) *AuthResponse {
 	}
 
 	sanitizedEmail := strings.TrimSpace(params.EmailAddr)
-	emailResp := validateWellFormedEmailAddr(sanitizedEmail)
+	emailResp := ValidateWellFormedEmailAddr(sanitizedEmail)
 	if !emailResp.Success {
 		return emailResp
 	}

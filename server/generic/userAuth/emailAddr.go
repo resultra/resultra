@@ -65,7 +65,7 @@ func init() {
 
 const invalidEmailAddressMsg string = "Invalid email address"
 
-func validateWellFormedEmailAddr(emailAddr string) *AuthResponse {
+func ValidateWellFormedEmailAddr(emailAddr string) *AuthResponse {
 
 	if !sanityCheckEmailAddrRegexp.MatchString(emailAddr) {
 		return newAuthResponse(false, invalidEmailAddressMsg)

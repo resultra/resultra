@@ -121,10 +121,7 @@ function initEmailAddrRecordEditBehavior($container,componentContext,recordProxy
 		
 		initButtonControlClickHandler($clearValueButton,function() {
 				console.log("Clear value clicked for text box")
-		
-			var currRecordRef = recordProxy.getRecordFunc()
-			setEmailAddrVal(null)
-		
+			setEmailAddrVal(null)	
 		})
 		
 
@@ -133,17 +130,7 @@ function initEmailAddrRecordEditBehavior($container,componentContext,recordProxy
 			// update the "rawVal" data setting on the text box.
 			var inputVal = $emailAddrInput.val()
 			console.log("Text Box focus out:" + inputVal)
-		
-			var currRecordRef = recordProxy.getRecordFunc()
-					
-			if(currRecordRef != null) {
-		
-				// Only update the value if it has changed. Sometimes a user may focus on or tab
-				// through a field but not change it. In this case we don't need to update the record.
-				if(currRecordRef.fieldValues[emailAddrFieldID] !== inputVal) {
-						setEmailAddrVal(inputVal)			
-				} // if input value is different than currently cached value
-			}
+			setEmailAddrVal(inputVal)			
 	
 		}) // focus out
 	

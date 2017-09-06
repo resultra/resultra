@@ -5,7 +5,7 @@ import (
 )
 
 func verifyOneWellFormedEmailAddr(t *testing.T, emailAddr string, whatVerify string) {
-	validateResp := validateWellFormedEmailAddr(emailAddr)
+	validateResp := ValidateWellFormedEmailAddr(emailAddr)
 	if !validateResp.Success {
 		t.Errorf("FAIL: Expecting validation of well-formed email address: %v (%v): error msg = %v",
 			emailAddr, whatVerify, validateResp.Msg)
@@ -15,7 +15,7 @@ func verifyOneWellFormedEmailAddr(t *testing.T, emailAddr string, whatVerify str
 }
 
 func verifyOneMalFormedEmailAddr(t *testing.T, emailAddr string, whatVerify string) {
-	validateResp := validateWellFormedEmailAddr(emailAddr)
+	validateResp := ValidateWellFormedEmailAddr(emailAddr)
 	if validateResp.Success {
 		t.Errorf("FAIL: Address expected to be invalid but it was accepted as valid: %v (%v)",
 			emailAddr, whatVerify)
