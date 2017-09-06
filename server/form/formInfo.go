@@ -19,6 +19,7 @@ import (
 	"resultra/datasheet/server/form/components/socialButton"
 	"resultra/datasheet/server/form/components/textBox"
 	"resultra/datasheet/server/form/components/toggle"
+	"resultra/datasheet/server/form/components/urlLink"
 	"resultra/datasheet/server/form/components/userSelection"
 )
 
@@ -43,6 +44,7 @@ type FormInfo struct {
 	SocialButtons      []socialButton.SocialButton   `json:"socialButtons"`
 	Labels             []label.Label                 `json:"labels"`
 	EmailAddrs         []emailAddr.EmailAddr         `json:"emailAddrs"`
+	UrlLinks           []urlLink.UrlLink             `json:"urlLinks"`
 }
 
 type GetFormInfoParams struct {
@@ -151,6 +153,11 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		return nil, err
 	}
 
+	urlLinks, err := urlLink.GetUrlLinks(formID)
+	if err != nil {
+		return nil, err
+	}
+
 	formInfo := FormInfo{
 		Form:               *form,
 		TextBoxes:          textBoxes,
@@ -171,7 +178,8 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		Gauges:             gauges,
 		SocialButtons:      socialButtons,
 		Labels:             labels,
-		EmailAddrs:         emailAddrs}
+		EmailAddrs:         emailAddrs,
+		UrlLinks:           urlLinks}
 
 	return &formInfo, nil
 }

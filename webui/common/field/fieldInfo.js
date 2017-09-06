@@ -9,6 +9,7 @@ var fieldTypeAll = "all"
 var fieldTypeComment = "comment"
 var fieldTypeLabel = "label"
 var fieldTypeEmail = "email"
+var fieldTypeURL = "url"
 
 function fieldTypeLabel(fieldType) {
 	switch (fieldType) {
@@ -22,6 +23,7 @@ function fieldTypeLabel(fieldType) {
 	case fieldTypeComment: return "Comment"
 	case fieldTypeLabel: return "Label"
 	case fieldTypeEmail: return "Email Address"
+	case fieldTypeURL: return "URL link"
 	default: return "Unknown field type"
 	}
 }
@@ -230,6 +232,14 @@ function loadFieldInfo(parentDatabaseID,fieldTypes,fieldInfoCallback) {
 			for (var emailFieldIter in emailFields) {		
 				var emailField = emailFields[emailFieldIter]			
 				fieldsByID[emailField.fieldID] = emailField
+			} // for each file field
+		}
+		
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeURL]==true) {
+			var urlFields = fieldsByType.urlFields
+			for (var urlFieldIter in urlFields) {		
+				var urlField = urlFields[urlFieldIter]			
+				fieldsByID[urlField.fieldID] = urlField
 			} // for each file field
 		}
 		

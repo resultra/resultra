@@ -1,0 +1,30 @@
+
+.urlLinkFormComponent 
+{
+	min-width:150px;
+	width: 150px;
+	height: auto;
+}
+
+.urlLinkTableCellComponent
+{
+	min-width: 150px;
+	width:100%;
+}
+
+.urlLinkComponent .form-group {
+	margin-bottom:0px;
+}
+
+.urlLinkComponent .input-group {
+	width:100%;
+}
+
+.urlLinkComponent label {
+	margin-bottom: 2px !important;
+}
+
+.urlLinkComponentInput {
+	padding-left: 5px;
+	padding-right: 5px;
+}

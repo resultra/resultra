@@ -21,6 +21,7 @@ import (
 	"resultra/datasheet/server/form/components/socialButton"
 	"resultra/datasheet/server/form/components/textBox"
 	"resultra/datasheet/server/form/components/toggle"
+	"resultra/datasheet/server/form/components/urlLink"
 	"resultra/datasheet/server/form/components/userSelection"
 
 	"resultra/datasheet/server/generic/uniqueID"
@@ -101,6 +102,10 @@ func cloneFormComponents(remappedIDs uniqueID.UniqueIDRemapper, parentFormID str
 	}
 
 	if err := emailAddr.CloneEmailAddrs(remappedIDs, parentFormID); err != nil {
+		return fmt.Errorf("cloneFormComponents: %v", err)
+	}
+
+	if err := urlLink.CloneUrlLinks(remappedIDs, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 

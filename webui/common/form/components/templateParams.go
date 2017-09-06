@@ -16,6 +16,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/socialButton"
 	"resultra/datasheet/webui/common/form/components/textBox"
 	"resultra/datasheet/webui/common/form/components/toggle"
+	"resultra/datasheet/webui/common/form/components/urlLink"
 	"resultra/datasheet/webui/common/form/components/userSelection"
 )
 
@@ -36,6 +37,7 @@ type ComponentViewTemplateParams struct {
 	SocialButtonParams  socialButton.SocialButtonViewTemplateParams
 	LabelParams         label.LabelViewTemplateParams
 	EmailAddrParams     emailAddr.EmailAddrViewTemplateParams
+	UrlLinkParams       urlLink.UrlLinkViewTemplateParams
 }
 
 //var DesignTemplateParams ComponentDesignTemplateParams
@@ -59,6 +61,7 @@ func init() {
 		NumberInputParams:   numberInput.ViewTemplateParams,
 		SocialButtonParams:  socialButton.ViewTemplateParams,
 		LabelParams:         label.ViewTemplateParams,
-		EmailAddrParams:     emailAddr.ViewTemplateParams}
+		EmailAddrParams:     emailAddr.ViewTemplateParams,
+		UrlLinkParams:       urlLink.ViewTemplateParams}
 
 }

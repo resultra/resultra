@@ -160,6 +160,30 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		loadFormConfig.initEmailAddrFunc(componentContext,containerObj,emailAddr)
 		
 	}
+	
+	
+	
+	function initUrlLinkLayout($componentRow,urlLink) {
+		// Create an HTML block for the container
+	
+		var containerHTML = urlLinkContainerHTML(urlLink.urlLinkID);
+		var containerObj = $(containerHTML)
+		
+		initUrlLinkFormComponentContainer(containerObj,urlLink)
+					
+		$componentRow.append(containerObj)
+		
+		setElemFixedWidthFlexibleHeight(containerObj,
+					urlLink.properties.geometry.sizeWidth)
+	
+		 // Store the newly created object reference in the DOM element. This is needed for follow-on
+		 // property setting, resizing, etc.
+		setContainerComponentInfo(containerObj,urlLink,urlLink.urlLinkID)
+	
+		// Callback for any specific initialization for either the form design or view mode
+		loadFormConfig.initUrlLinkFunc(componentContext,containerObj,urlLink)
+		
+	}
 
 	
 	function initNumberInputLayout($componentRow,numberInput) {
@@ -170,8 +194,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		var containerObj = $(containerHTML)
 		
 		initNumberInputFormContainer(containerObj,numberInput)
-		
-			
+				
 		$componentRow.append(containerObj)
 		
 		setElemFixedWidthFlexibleHeight(containerObj,
@@ -499,6 +522,15 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		compenentIDComponentMap[emailAddrProps.emailAddrID] = {
 			componentInfo: emailAddrProps,
 			initFunc: initEmailAddrLayout
+		}			
+
+	} // for each email address input
+	
+	for (var urlLinkAddrIter in formInfo.urlLinks) {			
+		var urlLinkProps = formInfo.urlLinks[urlLinkAddrIter]			
+		compenentIDComponentMap[urlLinkProps.urlLinkID] = {
+			componentInfo: urlLinkProps,
+			initFunc: initUrlLinkLayout
 		}			
 
 	} // for each email address input

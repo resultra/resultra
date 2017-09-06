@@ -20,6 +20,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/socialButton"
 	"resultra/datasheet/webui/common/form/components/textBox"
 	"resultra/datasheet/webui/common/form/components/toggle"
+	"resultra/datasheet/webui/common/form/components/urlLink"
 	"resultra/datasheet/webui/common/form/components/userSelection"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
@@ -61,6 +62,7 @@ type DesignFormTemplateParams struct {
 	SocialButtonParams  socialButton.SocialButtonDesignTemplateParams
 	LabelParams         label.LabelDesignTemplateParams
 	EmailAddrParams     emailAddr.EmailAddrDesignTemplateParams
+	UrlLinkParams       urlLink.UrlLinkDesignTemplateParams
 	FormPropertyParams  FormPropertyTemplateParams
 }
 
@@ -106,6 +108,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		ButtonParams:        formButton.TemplateParams,
 		LabelParams:         label.DesignTemplateParams,
 		EmailAddrParams:     emailAddr.DesignTemplateParams,
+		UrlLinkParams:       urlLink.DesignTemplateParams,
 		FormPropertyParams:  formPropParams}
 
 	return templParams

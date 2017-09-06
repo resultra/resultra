@@ -134,6 +134,11 @@ func GetDatabaseFormComponentFilterMap(parentDatabaseID string) (FormComponentFi
 				compFilterMap[currEmailAddr.EmailAddrID] = currEmailAddr.Properties.VisibilityConditions
 			}
 		}
+		for _, currLink := range formInfo.UrlLinks {
+			if !currLink.Properties.VisibilityConditions.IsEmptyRuleSet() {
+				compFilterMap[currLink.UrlLinkID] = currLink.Properties.VisibilityConditions
+			}
+		}
 	}
 
 	return compFilterMap, nil

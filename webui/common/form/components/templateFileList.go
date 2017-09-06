@@ -20,6 +20,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/socialButton"
 	"resultra/datasheet/webui/common/form/components/textBox"
 	"resultra/datasheet/webui/common/form/components/toggle"
+	"resultra/datasheet/webui/common/form/components/urlLink"
 	"resultra/datasheet/webui/common/form/components/userSelection"
 )
 
@@ -53,5 +54,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, socialButton.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, label.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, emailAddr.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, urlLink.TemplateFileList...)
 
 }
