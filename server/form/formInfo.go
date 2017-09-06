@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/form/components/checkBox"
 	"resultra/datasheet/server/form/components/comment"
 	"resultra/datasheet/server/form/components/datePicker"
+	"resultra/datasheet/server/form/components/emailAddr"
 	"resultra/datasheet/server/form/components/formButton"
 	"resultra/datasheet/server/form/components/gauge"
 	"resultra/datasheet/server/form/components/header"
@@ -41,6 +42,7 @@ type FormInfo struct {
 	Captions           []caption.Caption             `json:"captions"`
 	SocialButtons      []socialButton.SocialButton   `json:"socialButtons"`
 	Labels             []label.Label                 `json:"labels"`
+	EmailAddrs         []emailAddr.EmailAddr         `json:"emailAddrs"`
 }
 
 type GetFormInfoParams struct {
@@ -144,6 +146,11 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		return nil, err
 	}
 
+	emailAddrs, err := emailAddr.GetEmailAddrs(formID)
+	if err != nil {
+		return nil, err
+	}
+
 	formInfo := FormInfo{
 		Form:               *form,
 		TextBoxes:          textBoxes,
@@ -163,7 +170,8 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		Captions:           captions,
 		Gauges:             gauges,
 		SocialButtons:      socialButtons,
-		Labels:             labels}
+		Labels:             labels,
+		EmailAddrs:         emailAddrs}
 
 	return &formInfo, nil
 }

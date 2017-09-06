@@ -229,3 +229,26 @@ func (valParams SetRecordLabelValueParams) getUpdateProperties() CellUpdatePrope
 
 	return props
 }
+
+type SetRecordEmailAddrValueParams struct {
+	RecordUpdateHeader
+	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
+	Value       *string               `json:"value"`
+}
+
+func (setValParams SetRecordEmailAddrValueParams) fieldType() string { return field.FieldTypeEmail }
+
+func (setValParams SetRecordEmailAddrValueParams) doCollapseRecentValues() bool { return true }
+
+func (valParams SetRecordEmailAddrValueParams) generateCellValue() (string, error) {
+
+	cellVal := EmailAddrCellValue{Val: valParams.Value}
+
+	return generic.EncodeJSONString(cellVal)
+}
+
+func (valParams SetRecordEmailAddrValueParams) getUpdateProperties() CellUpdateProperties {
+	props := CellUpdateProperties{valParams.ValueFormat}
+
+	return props
+}

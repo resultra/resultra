@@ -17,7 +17,8 @@ var paletteItemsEditConfig = {
 	paletteItemCaption: formCaptionDesignFormConfig,
 	paletteItemNumberInput: numberInputDesignFormConfig,
 	paletteItemSocialButton: socialButtonDesignFormConfig,
-	paletteItemLabel:labelDesignFormConfig
+	paletteItemLabel:labelDesignFormConfig,
+	paletteItemEmailAddr: emailAddrDesignFormConfig
 }
 
 
@@ -115,6 +116,10 @@ $(document).ready(function() {
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {
 			var componentIDs = { formID: formID, componentID: textBoxObjectRef.textBoxID }
 			initFormComponentDesignBehavior($textBox,componentIDs,textBoxObjectRef,textBoxDesignFormConfig,designFormLayoutConfig)
+		},
+		initEmailAddrFunc: function(componentContext,$emailAddr,emailAddrObjectRef) {
+			var componentIDs = { formID: formID, componentID: emailAddrObjectRef.emailAddrID }
+			initFormComponentDesignBehavior($emailAddr,componentIDs,emailAddrObjectRef,emailAddrDesignFormConfig,designFormLayoutConfig)
 		},
 		initNumberInputFunc: function(componentContext,$numberInput,numberInputObjectRef) {
 			var componentIDs = { formID: formID, componentID: numberInputObjectRef.numberInputID }

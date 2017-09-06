@@ -8,6 +8,7 @@ var fieldTypeUser = "user"
 var fieldTypeAll = "all"
 var fieldTypeComment = "comment"
 var fieldTypeLabel = "label"
+var fieldTypeEmail = "email"
 
 function fieldTypeLabel(fieldType) {
 	switch (fieldType) {
@@ -20,6 +21,7 @@ function fieldTypeLabel(fieldType) {
 	case fieldTypeLongText: return "Long Text"
 	case fieldTypeComment: return "Comment"
 	case fieldTypeLabel: return "Label"
+	case fieldTypeEmail: return "Email Address"
 	default: return "Unknown field type"
 	}
 }
@@ -223,6 +225,13 @@ function loadFieldInfo(parentDatabaseID,fieldTypes,fieldInfoCallback) {
 			} // for each file field
 		}
 	
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeEmail]==true) {
+			var emailFields = fieldsByType.emailAddrFields
+			for (var emailFieldIter in emailFields) {		
+				var emailField = emailFields[emailFieldIter]			
+				fieldsByID[emailField.fieldID] = emailField
+			} // for each file field
+		}
 		
 		fieldInfoCallback(fieldsByID)
 	}

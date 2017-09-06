@@ -35,6 +35,10 @@ type TextCellValue struct {
 	Val *string `json:"val"`
 }
 
+type EmailAddrCellValue struct {
+	Val *string `json:"val"`
+}
+
 type CommentCellValue struct {
 	CommentText string   `json:"commentText"`
 	Attachments []string `json:"attachments"`
@@ -51,6 +55,16 @@ func DecodeCellValue(fieldType string, encodedVal string) (interface{}, error) {
 			return nil, nil
 		} else {
 			return *(textVal.Val), nil
+		}
+	case field.FieldTypeEmail:
+		var addrVal EmailAddrCellValue
+		if err := generic.DecodeJSONString(encodedVal, &addrVal); err != nil {
+			return nil, fmt.Errorf("DecodeCellValue: failure decoding text value: %v", err)
+		}
+		if addrVal.Val == nil {
+			return nil, nil
+		} else {
+			return *(addrVal.Val), nil
 		}
 	case field.FieldTypeNumber:
 		var numberVal NumberCellValue

@@ -138,6 +138,29 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		loadFormConfig.initTextBoxFunc(componentContext,containerObj,textBox)
 		
 	}
+
+	function initEmailAddrLayout($componentRow,emailAddr) {
+		// Create an HTML block for the container
+	
+		var containerHTML = emailAddrContainerHTML(emailAddr.emailAddrID);
+		var containerObj = $(containerHTML)
+		
+		initEmailAddrFormComponentContainer(containerObj,emailAddr)
+					
+		$componentRow.append(containerObj)
+		
+		setElemFixedWidthFlexibleHeight(containerObj,
+					emailAddr.properties.geometry.sizeWidth)
+	
+		 // Store the newly created object reference in the DOM element. This is needed for follow-on
+		 // property setting, resizing, etc.
+		setContainerComponentInfo(containerObj,emailAddr,emailAddr.emailAddrID)
+	
+		// Callback for any specific initialization for either the form design or view mode
+		loadFormConfig.initEmailAddrFunc(componentContext,containerObj,emailAddr)
+		
+	}
+
 	
 	function initNumberInputLayout($componentRow,numberInput) {
 		// Create an HTML block for the container
@@ -469,6 +492,16 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		}			
 
 	} // for each text box
+
+
+	for (var emailAddrIter in formInfo.emailAddrs) {			
+		var emailAddrProps = formInfo.emailAddrs[emailAddrIter]			
+		compenentIDComponentMap[emailAddrProps.emailAddrID] = {
+			componentInfo: emailAddrProps,
+			initFunc: initEmailAddrLayout
+		}			
+
+	} // for each email address input
 
 
 	for (var numberInputIter in formInfo.numberInputs) {			

@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/comment"
 	"resultra/datasheet/webui/common/form/components/common"
 	"resultra/datasheet/webui/common/form/components/datePicker"
+	"resultra/datasheet/webui/common/form/components/emailAddr"
 	"resultra/datasheet/webui/common/form/components/formButton"
 	"resultra/datasheet/webui/common/form/components/gauge"
 	"resultra/datasheet/webui/common/form/components/header"
@@ -51,5 +52,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, numberInput.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, socialButton.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, label.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, emailAddr.TemplateFileList...)
 
 }

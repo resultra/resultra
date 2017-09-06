@@ -7,15 +7,16 @@ import (
 )
 
 type FieldsByType struct {
-	TextFields     []Field `json:"textFields"`
-	LongTextFields []Field `json:"longTextFields"`
-	TimeFields     []Field `json:"timeFields"`
-	NumberFields   []Field `json:"numberFields"`
-	BoolFields     []Field `json:"boolFields"`
-	FileFields     []Field `json:"fileFields"`
-	UserFields     []Field `json:"userFields"`
-	CommentFields  []Field `json:"commentFields"`
-	LabelFields    []Field `json:"labelFields"`
+	TextFields      []Field `json:"textFields"`
+	LongTextFields  []Field `json:"longTextFields"`
+	TimeFields      []Field `json:"timeFields"`
+	NumberFields    []Field `json:"numberFields"`
+	BoolFields      []Field `json:"boolFields"`
+	FileFields      []Field `json:"fileFields"`
+	UserFields      []Field `json:"userFields"`
+	CommentFields   []Field `json:"commentFields"`
+	LabelFields     []Field `json:"labelFields"`
+	EmailAddrFields []Field `json:"emailAddrFields"`
 }
 
 func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
@@ -47,6 +48,8 @@ func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
 			fieldsByType.CommentFields = append(fieldsByType.CommentFields, currField)
 		case FieldTypeLabel:
 			fieldsByType.LabelFields = append(fieldsByType.LabelFields, currField)
+		case FieldTypeEmail:
+			fieldsByType.EmailAddrFields = append(fieldsByType.EmailAddrFields, currField)
 		default:
 			return nil, fmt.Errorf(
 				"GetFieldsByType: Unable to retrieve fields from datastore: Invalid field type %v",
@@ -156,6 +159,8 @@ func getSortedFieldsByType(params GetSortedFieldListParams) ([]Field, error) {
 			matchedFields = append(matchedFields, fieldsByType.CommentFields...)
 		case FieldTypeLabel:
 			matchedFields = append(matchedFields, fieldsByType.LabelFields...)
+		case FieldTypeEmail:
+			matchedFields = append(matchedFields, fieldsByType.EmailAddrFields...)
 		default:
 			return nil, fmt.Errorf("GetSortedFields: unsupported field type: %v", currFieldType)
 		}

@@ -4,6 +4,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/checkBox"
 	"resultra/datasheet/webui/common/form/components/comment"
 	"resultra/datasheet/webui/common/form/components/datePicker"
+	"resultra/datasheet/webui/common/form/components/emailAddr"
 	"resultra/datasheet/webui/common/form/components/gauge"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
 	"resultra/datasheet/webui/common/form/components/image"
@@ -34,6 +35,7 @@ type ComponentViewTemplateParams struct {
 	NumberInputParams   numberInput.NumberInputViewTemplateParams
 	SocialButtonParams  socialButton.SocialButtonViewTemplateParams
 	LabelParams         label.LabelViewTemplateParams
+	EmailAddrParams     emailAddr.EmailAddrViewTemplateParams
 }
 
 //var DesignTemplateParams ComponentDesignTemplateParams
@@ -56,6 +58,7 @@ func init() {
 		GaugeParams:         gauge.ViewTemplateParams,
 		NumberInputParams:   numberInput.ViewTemplateParams,
 		SocialButtonParams:  socialButton.ViewTemplateParams,
-		LabelParams:         label.ViewTemplateParams}
+		LabelParams:         label.ViewTemplateParams,
+		EmailAddrParams:     emailAddr.ViewTemplateParams}
 
 }

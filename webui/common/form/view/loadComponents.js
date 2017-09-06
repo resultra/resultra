@@ -39,6 +39,11 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 			initFormComponentViewBehavior($textBox,
 					textBoxObjectRef.textBoxID,initTextBoxViewProperties)
 		},
+		initEmailAddrFunc: function(componentContext,$emailAddr,emailAddrObjectRef) {			
+			initEmailAddrRecordEditBehavior($emailAddr,componentContext,recordProxy,emailAddrObjectRef)
+			initFormComponentViewBehavior($emailAddr,
+					emailAddrObjectRef.emailAddrID,initEmailAddrViewProperties)
+		},
 		initNumberInputFunc: function(componentContext,$numberInput,numberInputObjectRef) {			
 			initNumberInputFormRecordEditBehavior($numberInput,componentContext,recordProxy,numberInputObjectRef)
 			initFormComponentViewBehavior($numberInput,

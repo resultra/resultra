@@ -7,6 +7,7 @@ import (
 	"resultra/datasheet/server/form/components/checkBox"
 	"resultra/datasheet/server/form/components/comment"
 	"resultra/datasheet/server/form/components/datePicker"
+	"resultra/datasheet/server/form/components/emailAddr"
 	"resultra/datasheet/server/form/components/formButton"
 	"resultra/datasheet/server/form/components/gauge"
 	"resultra/datasheet/server/form/components/header"
@@ -96,6 +97,10 @@ func cloneFormComponents(remappedIDs uniqueID.UniqueIDRemapper, parentFormID str
 	}
 
 	if err := label.CloneLabels(remappedIDs, parentFormID); err != nil {
+		return fmt.Errorf("cloneFormComponents: %v", err)
+	}
+
+	if err := emailAddr.CloneEmailAddrs(remappedIDs, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 

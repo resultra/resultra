@@ -129,6 +129,11 @@ func GetDatabaseFormComponentFilterMap(parentDatabaseID string) (FormComponentFi
 				log.Printf("Adding visibility filter to filter map for component ID = %v", currLabel.LabelID)
 			}
 		}
+		for _, currEmailAddr := range formInfo.EmailAddrs {
+			if !currEmailAddr.Properties.VisibilityConditions.IsEmptyRuleSet() {
+				compFilterMap[currEmailAddr.EmailAddrID] = currEmailAddr.Properties.VisibilityConditions
+			}
+		}
 	}
 
 	return compFilterMap, nil
