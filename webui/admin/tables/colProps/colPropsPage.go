@@ -36,7 +36,8 @@ func init() {
 		"static/admin/tables/colProps/progress.html",
 		"static/admin/tables/colProps/socialButton.html",
 		"static/admin/tables/colProps/tag.html",
-		"static/admin/tables/colProps/emailAddr.html"}
+		"static/admin/tables/colProps/emailAddr.html",
+		"static/admin/tables/colProps/urlLink.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
@@ -75,6 +76,7 @@ type TemplParams struct {
 	SocialButtonParams  SocialButtonColPropsTemplateParams
 	TagParams           TagColPropsTemplateParams
 	EmailAddrParams     EmailAddrColPropsTemplateParams
+	UrlLinkParams       UrlLinkColPropsTemplateParams
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -128,7 +130,8 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		ProgressParams:      newProgressTemplateParams(),
 		SocialButtonParams:  newSocialButtonTemplateParams(),
 		TagParams:           newTagTemplateParams(),
-		EmailAddrParams:     newEmailAddrTemplateParams()}
+		EmailAddrParams:     newEmailAddrTemplateParams(),
+		UrlLinkParams:       newUrlLinkTemplateParams()}
 
 	if err := tablePropTemplates.ExecuteTemplate(w, "colPropsAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

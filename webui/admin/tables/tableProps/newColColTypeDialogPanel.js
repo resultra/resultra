@@ -81,6 +81,16 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					})
 					
 				}
+				
+				function createUrlLinkInput(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/urlLink/new",params,function(urlLink) {
+						console.log("Email URL link created: " + JSON.stringify(urlLink))
+					})	
+				}
 
 				function createCommentInput(fieldInfo) {
 					var params = {
@@ -225,6 +235,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				case fieldTypeEmail:
 					createEmailAddrInput(fieldInfo)
 					break
+				case fieldTypeURL:
+					createUrlLinkInput(fieldInfo)
+					break
 				case fieldTypeBool:
 					if(colType==='checkbox') {
 						createCheckBoxInput(fieldInfo)
@@ -313,6 +326,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				break
 			case fieldTypeEmail:
 				$colTypeSelection.append(selectOptionHTML('email','Email address input'))
+				break
+			case fieldTypeURL:
+				$colTypeSelection.append(selectOptionHTML('url','URL link input'))
 				break
 			case fieldTypeUser:
 				$colTypeSelection.append(selectOptionHTML('userSelection','User selection'))

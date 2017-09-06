@@ -16,6 +16,7 @@ import (
 	"resultra/datasheet/server/displayTable/columns/tag"
 	"resultra/datasheet/server/displayTable/columns/textInput"
 	"resultra/datasheet/server/displayTable/columns/toggle"
+	"resultra/datasheet/server/displayTable/columns/urlLink"
 	"resultra/datasheet/server/displayTable/columns/userSelection"
 )
 
@@ -158,6 +159,15 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
 	for _, col := range emailAddrCols {
+		tableColData = append(tableColData, col)
+		tableColsByID[col.ColumnID] = col
+	}
+
+	urlLinkCols, err := urlLink.GetUrlLinks(parentTableID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("getTableCols: %v", err)
+	}
+	for _, col := range urlLinkCols {
 		tableColData = append(tableColData, col)
 		tableColsByID[col.ColumnID] = col
 	}

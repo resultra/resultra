@@ -63,6 +63,9 @@ $(document).ready(function() {
 		case 'emailAddr':
 			initEmailAddrColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
 			break
+		case 'urlLink':
+			initUrlLinkColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			break
 		default:
 			console.log("Unknown column type: " + colPropsAdminContext.colType)
 		}

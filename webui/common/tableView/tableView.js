@@ -167,6 +167,16 @@ function initItemListTableView(params) {
 		return createTableViewColDef(colInfo,tableContext,
 				emailAddrTableViewContainerHTML,initContainer)
 	}
+	
+	function createUrlLinkColDef(colInfo,tableContext) {
+		
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+				setContainerComponentInfo($cellContainer,colInfo,colInfo.urlLinkID)
+				initUrlLinkTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,tableContext,
+				emailAddrTableViewContainerHTML,initContainer)
+	}
 
 
 	function createNoteColDef(colInfo,tableContext) {
@@ -307,7 +317,9 @@ function initItemListTableView(params) {
 		case 'socialButton':
 			return createSocialButtonColDef(colInfo,tableContext)
 		case 'emailAddr':
-			return createEmailAddrColDef(colInfo,tableContext)		
+			return createEmailAddrColDef(colInfo,tableContext)
+		case 'urlLink':
+			return createUrlLinkColDef(colInfo,tableContext)		
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,
