@@ -1,9 +1,10 @@
 
 
 
-function initEmailAddrRecordEditBehavior($container,componentContext,recordProxy, emailAddrObjRef) {
+function initEmailAddrRecordEditBehavior($container,componentContext,recordProxy, emailAddrObjRef,remoteValidationCallback) {
 	
 	var validateEmailAddrInput = function(validationCompleteCallback) {
+		
 		
 		if(checkboxComponentIsDisabled($container)) {
 			validationCompleteCallback(true)
@@ -11,16 +12,12 @@ function initEmailAddrRecordEditBehavior($container,componentContext,recordProxy
 		}
 		
 		var $emailAddrInput = $container.find('input')
-		
 		var currVal = $emailAddrInput.val()
-		var validationParams = {
-			parentFormID: emailAddrObjRef.parentFormID,
-			emailAddrID: emailAddrObjRef.emailAddrID,
-			inputVal: currVal
-		}
-		jsonAPIRequest("frm/emailAddr/validateInput", validationParams, function(validationResult) {
-			setupFormComponentValidationPrompt($container,validationResult,validationCompleteCallback)			
-		})	
+		
+		remoteValidationCallback(currVal, function(validationResult) {
+			setupFormComponentValidationPrompt($container,validationResult,validationCompleteCallback)	
+		}) 
+				
 		
 	}
 
@@ -82,7 +79,6 @@ function initEmailAddrRecordEditBehavior($container,componentContext,recordProxy
 		var fieldType = fieldRef.type
 		
 		function setEmailAddrVal(emailAddrVal) {
-			
 			
 			validateEmailAddrInput(function(inputIsValid) {
 				if (inputIsValid) {
@@ -157,5 +153,43 @@ function initEmailAddrRecordEditBehavior($container,componentContext,recordProxy
 	});
 	initEmailAddrFieldEditBehavior(componentContext, $container,$emailAddrInput,
 			recordProxy, emailAddrObjRef)
+	
+}
+
+
+function initEmailAddrFormRecordEditBehavior($container,componentContext,recordProxy, emailAddrObjRef) {
+		
+	var validateEmailAddrInput = function(inputVal, validationCompleteCallback) {
+		
+		var validationParams = {
+			parentFormID: emailAddrObjRef.parentFormID,
+			emailAddrID: emailAddrObjRef.emailAddrID,
+			inputVal: inputVal
+		}
+		jsonAPIRequest("frm/emailAddr/validateInput", validationParams, function(validationResult) {
+			validationCompleteCallback(validationResult)
+		})	
+		
+	}
+	initEmailAddrRecordEditBehavior($container,componentContext,recordProxy, emailAddrObjRef,validateEmailAddrInput)
+	
+}
+
+
+function initEmailAddrTableRecordEditBehavior($container,componentContext,recordProxy, emailAddrObjRef) {
+		
+	var validateEmailAddrInput = function(inputVal, validationCompleteCallback) {
+		
+		var validationParams = {
+			parentTableID: emailAddrObjRef.parentTableID,
+			emailAddrID: emailAddrObjRef.emailAddrID,
+			inputVal: inputVal
+		}
+		jsonAPIRequest("tableView/emailAddr/validateInput", validationParams, function(validationResult) {
+			validationCompleteCallback(validationResult)
+		})	
+		
+	}
+	initEmailAddrRecordEditBehavior($container,componentContext,recordProxy, emailAddrObjRef,validateEmailAddrInput)
 	
 }

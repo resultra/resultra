@@ -40,7 +40,7 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 					textBoxObjectRef.textBoxID,initTextBoxViewProperties)
 		},
 		initEmailAddrFunc: function(componentContext,$emailAddr,emailAddrObjectRef) {			
-			initEmailAddrRecordEditBehavior($emailAddr,componentContext,recordProxy,emailAddrObjectRef)
+			initEmailAddrFormRecordEditBehavior($emailAddr,componentContext,recordProxy,emailAddrObjectRef)
 			initFormComponentViewBehavior($emailAddr,
 					emailAddrObjectRef.emailAddrID,initEmailAddrViewProperties)
 		},

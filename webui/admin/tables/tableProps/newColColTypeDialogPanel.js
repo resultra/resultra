@@ -70,6 +70,17 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					})
 					
 				}
+				
+				function createEmailAddrInput(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/emailAddr/new",params,function(emailAddr) {
+						console.log("Email address column created: " + JSON.stringify(emailAddr))
+					})
+					
+				}
 
 				function createCommentInput(fieldInfo) {
 					var params = {
@@ -211,6 +222,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				case fieldTypeTime:
 					createDatePickerInput(fieldInfo)
 					break
+				case fieldTypeEmail:
+					createEmailAddrInput(fieldInfo)
+					break
 				case fieldTypeBool:
 					if(colType==='checkbox') {
 						createCheckBoxInput(fieldInfo)
@@ -296,6 +310,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				break
 			case fieldTypeLabel:
 				$colTypeSelection.append(selectOptionHTML('label','Tags'))
+				break
+			case fieldTypeEmail:
+				$colTypeSelection.append(selectOptionHTML('email','Email address input'))
 				break
 			case fieldTypeUser:
 				$colTypeSelection.append(selectOptionHTML('userSelection','User selection'))

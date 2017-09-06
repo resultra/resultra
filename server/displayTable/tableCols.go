@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/displayTable/columns/checkBox"
 	"resultra/datasheet/server/displayTable/columns/comment"
 	"resultra/datasheet/server/displayTable/columns/datePicker"
+	"resultra/datasheet/server/displayTable/columns/emailAddr"
 	"resultra/datasheet/server/displayTable/columns/formButton"
 	"resultra/datasheet/server/displayTable/columns/note"
 	"resultra/datasheet/server/displayTable/columns/numberInput"
@@ -148,6 +149,15 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
 	for _, col := range tagCols {
+		tableColData = append(tableColData, col)
+		tableColsByID[col.ColumnID] = col
+	}
+
+	emailAddrCols, err := emailAddr.GetEmailAddrs(parentTableID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("getTableCols: %v", err)
+	}
+	for _, col := range emailAddrCols {
 		tableColData = append(tableColData, col)
 		tableColsByID[col.ColumnID] = col
 	}

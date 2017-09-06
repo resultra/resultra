@@ -157,6 +157,18 @@ function initItemListTableView(params) {
 				textBoxTableViewContainerHTML,initContainer)
 	}
 
+
+	function createEmailAddrColDef(colInfo,tableContext) {
+		
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+				setContainerComponentInfo($cellContainer,colInfo,colInfo.emailAddrID)
+				initEmailAddrTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,tableContext,
+				emailAddrTableViewContainerHTML,initContainer)
+	}
+
+
 	function createNoteColDef(colInfo,tableContext) {
 		
 		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
@@ -294,6 +306,8 @@ function initItemListTableView(params) {
 			return createProgressColDef(colInfo,tableContext)
 		case 'socialButton':
 			return createSocialButtonColDef(colInfo,tableContext)
+		case 'emailAddr':
+			return createEmailAddrColDef(colInfo,tableContext)		
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,

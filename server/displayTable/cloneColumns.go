@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/displayTable/columns/checkBox"
 	"resultra/datasheet/server/displayTable/columns/comment"
 	"resultra/datasheet/server/displayTable/columns/datePicker"
+	"resultra/datasheet/server/displayTable/columns/emailAddr"
 	"resultra/datasheet/server/displayTable/columns/formButton"
 	"resultra/datasheet/server/displayTable/columns/note"
 	"resultra/datasheet/server/displayTable/columns/numberInput"
@@ -74,6 +75,10 @@ func cloneTableCols(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string)
 	}
 
 	if err := tag.CloneTags(remappedIDs, parentTableID); err != nil {
+		return fmt.Errorf("cloneTableCols: %v", err)
+	}
+
+	if err := emailAddr.CloneEmailAddrs(remappedIDs, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
