@@ -15,14 +15,10 @@ function initEmailAddrRecordEditBehavior($container,componentContext,recordProxy
 		}
 	}
 	
-	var validateEmailAddrInput = function(validationCompleteCallback) {
-			
-		
+	var validateEmailAddrInput = function(validationCompleteCallback) {	
 		remoteValidationCallback(getCurrentEmailAddrVal(), function(validationResult) {
 			setupFormComponentValidationPrompt($container,validationResult,validationCompleteCallback)	
 		}) 
-				
-		
 	}
 
 	function loadRecordIntoEmailAddr($emailAddrContainer, recordRef) {
@@ -137,13 +133,14 @@ function initEmailAddrRecordEditBehavior($container,componentContext,recordProxy
 				var $emailAddrInput = $popover.find(".emailAddrComponentInput")
 				$emailAddrInput.val(getCurrentEmailAddrVal())
 				
-				$emailAddrInput.focusout(function () {
+				$emailAddrInput.blur(function () {
 					// Retrieve the "raw input" value entered by the user and 
 					// update the "rawVal" data setting on the text box.
 					var inputVal = $emailAddrInput.val()
 					remoteValidationCallback(inputVal, function(validationResult) {
 						if(validationResult.validationSucceeded) {
 							setEmailAddrVal(inputVal)				
+							clearFormComponentValidationPrompt($container)
 						}
 					}) 
 					

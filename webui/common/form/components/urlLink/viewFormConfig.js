@@ -16,13 +16,7 @@ function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, 
 	}
 	
 	var validateUrlLinkInput = function(validationCompleteCallback) {
-		
-		if(checkboxComponentIsDisabled($container)) {
-			validationCompleteCallback(true)
-			return
-		}
-		var currVal = getCurrentUrlLinkVal()
-		
+		var currVal = getCurrentUrlLinkVal()	
 		remoteValidationCallback(currVal, function(validationResult) {
 			setupFormComponentValidationPrompt($container,validationResult,validationCompleteCallback)	
 		}) 
@@ -141,6 +135,7 @@ function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, 
 					remoteValidationCallback(inputVal, function(validationResult) {
 						if(validationResult.validationSucceeded) {
 							setUrlLinkVal(inputVal)
+							clearFormComponentValidationPrompt($container)
 						}
 					}) 
 	

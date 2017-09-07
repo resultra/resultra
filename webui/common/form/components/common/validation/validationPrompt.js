@@ -1,10 +1,16 @@
-function setupFormComponentValidationPrompt($container,validationResult,validationCompleteCallback) {
-	if (validationResult.validationSucceeded) {
+
+function clearFormComponentValidationPrompt($container) {
 		$container.popover('destroy')
 		
 		$container.css({ border:"" })
 		$container.find("label").css("color","")
 		$container.css('background-color', '')
+	
+}
+
+function setupFormComponentValidationPrompt($container,validationResult,validationCompleteCallback) {
+	if (validationResult.validationSucceeded) {
+		clearFormComponentValidationPrompt($container)
 		
 		validationCompleteCallback(true)
 	} else {
