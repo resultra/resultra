@@ -3,21 +3,29 @@
 
 function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, urlLinkObjRef,remoteValidationCallback) {
 	
+	
+	function getCurrentUrlLinkVal() {
+		var urlLinkFieldID = urlLinkObjRef.properties.fieldID
+		var currRecordRef = recordProxy.getRecordFunc()
+		var fieldVal = currRecordRef.fieldValues[urlLinkFieldID]
+		if(fieldVal === undefined || fieldVal === null) {
+			return null
+		} else {
+			return fieldVal
+		}
+	}
+	
 	var validateUrlLinkInput = function(validationCompleteCallback) {
 		
 		if(checkboxComponentIsDisabled($container)) {
 			validationCompleteCallback(true)
 			return
 		}
-		
-		var $urlLinkInput = $container.find('input')
-		var currVal = $urlLinkInput.val()
+		var currVal = getCurrentUrlLinkVal()
 		
 		remoteValidationCallback(currVal, function(validationResult) {
 			setupFormComponentValidationPrompt($container,validationResult,validationCompleteCallback)	
 		}) 
-				
-		
 	}
 
 	function loadRecordIntoUrlLink($urlLinkContainer, recordRef) {
@@ -43,8 +51,36 @@ function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, 
 		}	
 	
 	}
+	
+	function setUrlLinkVal(urlLinkVal) {
+		
+		var urlLinkTextValueFormat = {
+			context:"urlLink",
+			format:"general"
+		}
+		var currRecordRef = recordProxy.getRecordFunc()
+		var urlLinkFieldID = urlLinkObjRef.properties.fieldID
+		var setRecordValParams = { 
+			parentDatabaseID:currRecordRef.parentDatabaseID,
+			recordID:currRecordRef.recordID, 
+			changeSetID: recordProxy.changeSetID,
+			fieldID:urlLinkFieldID, 
+			value:urlLinkVal,
+			valueFormat: urlLinkTextValueFormat 
+		}
+		jsonAPIRequest("recordUpdate/setUrlLinkFieldValue",setRecordValParams,function(replyData) {
+			// After updating the record, the local cache of records will
+			// be out of date. So after updating the record on the server, the locally cached
+			// version of the record also needs to be updated.
+			recordProxy.updateRecordFunc(replyData)
 
-	function initUrlLinkFieldEditBehavior(componentContext, $container,$urlLinkInput,
+		}) // set record's text field value
+				
+			
+	}
+	
+
+	function initUrlLinkFieldEditBehavior(componentContext, $container,
 					recordProxy, urlLinkObjRef) {
 	
 		var urlLinkFieldID = urlLinkObjRef.properties.fieldID
@@ -95,17 +131,18 @@ function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, 
 				})
 			
 				var $urlLinkInput = $popover.find(".urlLinkComponentInput")
-				var currRecordRef = recordProxy.getRecordFunc()
-				var fieldVal = currRecordRef.fieldValues[urlLinkFieldID]
-				$urlLinkInput.val(fieldVal)
+				$urlLinkInput.val(getCurrentUrlLinkVal())
 				
 				
 				$urlLinkInput.focusout(function () {
 					// Retrieve the "raw input" value entered by the user and 
 					// update the "rawVal" data setting on the text box.
 					var inputVal = $urlLinkInput.val()
-					console.log("Text Box focus out:" + inputVal)
-					setUrlLinkVal(inputVal)			
+					remoteValidationCallback(inputVal, function(validationResult) {
+						if(validationResult.validationSucceeded) {
+							setUrlLinkVal(inputVal)
+						}
+					}) 
 	
 				}) // focus out
 				
@@ -114,73 +151,21 @@ function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, 
 		}
 		initEditLinkPopup()
 		
-		
-		
-	
 		if(formComponentIsReadOnly(urlLinkObjRef.properties.permissions)) {
-			$urlLinkInput.prop('disabled',true);
+	//		$urlLinkInput.prop('disabled',true);
 		} else {
-			$urlLinkInput.prop('disabled',false);
+	//		$urlLinkInput.prop('disabled',false);
 		}
 	
-		
-		var fieldType = fieldRef.type
-		
-		function setUrlLinkVal(urlLinkVal) {
 			
-			validateUrlLinkInput(function(inputIsValid) {
-				if (inputIsValid) {
-					var urlLinkTextValueFormat = {
-						context:"urlLink",
-						format:"general"
-					}
-					var currRecordRef = recordProxy.getRecordFunc()
-					var setRecordValParams = { 
-						parentDatabaseID:currRecordRef.parentDatabaseID,
-						recordID:currRecordRef.recordID, 
-						changeSetID: recordProxy.changeSetID,
-						fieldID:urlLinkFieldID, 
-						value:urlLinkVal,
-						valueFormat: urlLinkTextValueFormat 
-					}
-					jsonAPIRequest("recordUpdate/setUrlLinkFieldValue",setRecordValParams,function(replyData) {
-						// After updating the record, the local cache of records will
-						// be out of date. So after updating the record on the server, the locally cached
-						// version of the record also needs to be updated.
-						recordProxy.updateRecordFunc(replyData)
-			
-					}) // set record's text field value
-					
-				} // inputIsValid
 				
-			})
-				
-		}
-		
-		function setUrlLinkValueListValue(textVal) {
-			var $urlLinkInput = $container.find('input')
-			$urlLinkInput.val(textVal)
-			setUrlLinkVal(textVal)
-		}
-		
 		initButtonControlClickHandler($clearValueButton,function() {
 				console.log("Clear value clicked for text box")
 			setUrlLinkVal(null)	
 		})
-		
-
-		$urlLinkInput.focusout(function () {
-			// Retrieve the "raw input" value entered by the user and 
-			// update the "rawVal" data setting on the text box.
-			var inputVal = $urlLinkInput.val()
-			console.log("Text Box focus out:" + inputVal)
-			setUrlLinkVal(inputVal)			
-	
-		}) // focus out
-	
+			
 	}	
 	
-	var $urlLinkInput = $container.find("input")
 
 	$container.data("viewFormConfig", {
 		loadRecord: loadRecordIntoUrlLink,
@@ -190,16 +175,7 @@ function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, 
 	$container.data("componentContext",componentContext)
 	
 	
-	// When the user clicks on the text box input control, prevent the click from propagating higher.
-	// This allows the user to change the values without selecting the form component itself.
-	// The user can still select the component by clicking on the label or anywwhere outside
-	// the input control.
-	$urlLinkInput.click(function (event){
-		event.stopPropagation();
-   	 	//   ... your code here
-		return false;
-	});
-	initUrlLinkFieldEditBehavior(componentContext, $container,$urlLinkInput,
+	initUrlLinkFieldEditBehavior(componentContext, $container,
 			recordProxy, urlLinkObjRef)
 	
 }
