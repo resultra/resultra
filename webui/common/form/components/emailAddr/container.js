@@ -1,8 +1,16 @@
 function emailAddrContainerInputControl() {
+
 	return '<div class="input-group">'+
-					'<input type="text" name="symbol" class="emailAddrComponentInput form-control" placeholder="">'+
-					clearValueButtonHTML("emailAddrComponentClearValueButton") +
-				'</div>'
+				'<div class="form-control-static emailAddrDisplayContainer">' +
+					'<a class="emailAddrDisplay"></a>' +
+				'</div>' + 
+				'<span class="input-group-addon emailAddrEditLinkButton">' +
+             	   '<span class="glyphicon glyphicon-envelope"></span>' +
+            	'</span>' +
+				clearValueButtonHTML("emailAddrComponentClearValueButton") +
+			'</div>'
+
+
 }
 
 function emailAddrContainerHTML(elementID)
@@ -24,6 +32,23 @@ function emailAddrTableViewContainerHTML() {
 }
 
 
+function emailAddrEditPopupViewContainerHTML() {
+	var containerHTML = ''+
+		'<div class="emailAddrPopupContainer">' +
+			'<div class="emailAddrEditorHeader">' +
+				'<button type="button" class="close closeEmailAddrEditorPopup" data-dismiss="modal" aria-hidden="true">x</button>' +
+			'</div>' +
+			'<div class="marginTop5">' +
+				'<label>Email address</label>' + 
+				'<input type="text" name="symbol" class="emailAddrComponentInput form-control" placeholder="">'+
+			'</div>' +
+		'</div>'
+	return containerHTML
+	
+}
+
+
+
 function setEmailAddrComponentLabel($emailAddrContainer, emailAddrRef) {
 
 	var $label = $emailAddrContainer.find('label')
@@ -36,8 +61,21 @@ function initEmailAddrClearValueControl($emailAddrContainer, emailAddrRef) {
 	initClearValueControl($emailAddrContainer,emailAddrRef,".emailAddrComponentClearValueButton")	
 }
 
+function initEmailAddrEditAddrControl($emailAddrContainer, emailAddrRef) {
+	
+	var $editAddrButton = $emailAddrContainer.find(".emailAddrEditLinkButton")
+	
+	if(formComponentIsReadOnly(emailAddrRef.properties.permissions)) {
+		$editAddrButton.css("display","none")
+	} else {
+		$editAddrButton.css("display","")
+	}
+	
+}
+
 function initEmailAddrFormComponentContainer($container,emailAddrRef) {
 	setEmailAddrComponentLabel($container,emailAddrRef)
 	initEmailAddrClearValueControl($container, emailAddrRef)
 	initComponentHelpPopupButton($container, emailAddrRef)
+	initEmailAddrEditAddrControl($container,emailAddrRef)
 }
