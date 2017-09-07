@@ -62,12 +62,60 @@ function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, 
 		var $clearValueButton = $container.find(".urlLinkComponentClearValueButton")
 	
 		var fieldRef = getFieldRef(urlLinkFieldID)
+						
 		if(fieldRef.isCalcField) {
 			$urlLinkInput.prop('disabled',true);
 			return;  // stop initialization, the text box is read only.
 		}
 		
 		initUrlLinkClearValueControl($container,urlLinkObjRef)
+		
+		
+		function initEditLinkPopup() {
+			var $urlLink = $container.find(".urlLinkEditLinkButton")
+			$urlLink.popover({
+				html: 'true',
+				content: function() { return urlLinkEditPopupViewContainerHTML() },
+				trigger: 'manual',
+				placement: 'auto right'
+			})
+
+			$urlLink.click(function(e) {
+				$(this).popover('toggle')
+				e.stopPropagation()
+			})
+			$urlLink.on('shown.bs.popover', function()
+			{
+			    //get the actual shown popover
+			    var $popover = $(this).data('bs.popover').tip();
+		
+				var $closePopupButton = $popover.find(".closeLinkEditorPopup")
+				initButtonControlClickHandler($closePopupButton,function() {
+					$urlLink.popover('hide')
+				})
+			
+				var $urlLinkInput = $popover.find(".urlLinkComponentInput")
+				var currRecordRef = recordProxy.getRecordFunc()
+				var fieldVal = currRecordRef.fieldValues[urlLinkFieldID]
+				$urlLinkInput.val(fieldVal)
+				
+				
+				$urlLinkInput.focusout(function () {
+					// Retrieve the "raw input" value entered by the user and 
+					// update the "rawVal" data setting on the text box.
+					var inputVal = $urlLinkInput.val()
+					console.log("Text Box focus out:" + inputVal)
+					setUrlLinkVal(inputVal)			
+	
+				}) // focus out
+				
+			});
+			
+		}
+		initEditLinkPopup()
+		
+		
+		
 	
 		if(formComponentIsReadOnly(urlLinkObjRef.properties.permissions)) {
 			$urlLinkInput.prop('disabled',true);

@@ -28,3 +28,12 @@
 	padding-left: 5px;
 	padding-right: 5px;
 }
+
+.linkEditorHeader {
+	min-height:25px;
+}
+
+.urlLinkEditLinkButton {
+	padding-left:6px;
+	padding-right:6px;
+}
