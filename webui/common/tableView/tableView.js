@@ -175,7 +175,7 @@ function initItemListTableView(params) {
 				initUrlLinkTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				emailAddrTableViewContainerHTML,initContainer)
+				urlLinkTableViewContainerHTML,initContainer)
 	}
 
 

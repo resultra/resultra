@@ -5,7 +5,6 @@ function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, 
 	
 	var validateUrlLinkInput = function(validationCompleteCallback) {
 		
-		
 		if(checkboxComponentIsDisabled($container)) {
 			validationCompleteCallback(true)
 			return
@@ -25,35 +24,25 @@ function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, 
 	
 		console.log("loadRecordIntoUrlLink: loading record into text box: " + JSON.stringify(recordRef))
 	
-		var $urlLinkInput = $urlLinkContainer.find('input')
+		function setUrlDisplay(url) {
+			var $urlLinkDisplay = $urlLinkContainer.find('.urlLinkDisplay')
+			$urlLinkDisplay.text(url)
+			$urlLinkDisplay.attr("href",url)
+		}
 	
-		// text box is linked to a field value
-		var urlLinkFieldID = urlLinkObjRef.properties.fieldID
-
-		console.log("loadRecordIntoUrlLink: Field ID to load data:" + urlLinkFieldID)
-
 		// In other words, we are populating the "intersection" of field values in the record
 		// with the fields shown by the layout's containers.
-		if(recordRef.fieldValues.hasOwnProperty(urlLinkFieldID)) {
-
-			var fieldVal = recordRef.fieldValues[urlLinkFieldID]
-		
-			if(fieldVal === null) {
-				$urlLinkInput.val("")
-			} else {
-				$urlLinkInput.val(fieldVal)
-			
-			}
-
+		var urlLinkFieldID = urlLinkObjRef.properties.fieldID
+		var fieldVal = recordRef.fieldValues[urlLinkFieldID]
+		if(fieldVal === undefined || fieldVal === null) {
+			setUrlDisplay(null)
 		} // If record has a value for the current container's associated field ID.
 		else
 		{
-			$urlLinkInput.val("") // clear the value in the container
+			setUrlDisplay(fieldVal)
 		}	
 	
 	}
-
-
 
 	function initUrlLinkFieldEditBehavior(componentContext, $container,$urlLinkInput,
 					recordProxy, urlLinkObjRef) {
@@ -77,7 +66,8 @@ function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, 
 				html: 'true',
 				content: function() { return urlLinkEditPopupViewContainerHTML() },
 				trigger: 'manual',
-				placement: 'auto right'
+				placement: 'auto',
+				container:'body'
 			})
 
 			$urlLink.click(function(e) {
@@ -88,6 +78,16 @@ function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, 
 			{
 			    //get the actual shown popover
 			    var $popover = $(this).data('bs.popover').tip();
+				
+				// If there's a click outside the popover, hide the popover.
+				// This solution is described here:
+				//    https://stackoverflow.com/questions/152975/how-do-i-detect-a-click-outside-an-element
+				$popover.click(function(e) {
+					e.stopPropagation()	
+				})
+				$('html').click(function() {
+					$urlLink.popover('hide')	
+				})
 		
 				var $closePopupButton = $popover.find(".closeLinkEditorPopup")
 				initButtonControlClickHandler($closePopupButton,function() {
