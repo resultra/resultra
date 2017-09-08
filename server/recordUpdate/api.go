@@ -234,7 +234,7 @@ func setCommentFieldValue(w http.ResponseWriter, r *http.Request) {
 
 func setFileFieldValue(w http.ResponseWriter, r *http.Request) {
 
-	setValParams := record.SetRecordFileValueParams{}
+	setValParams := record.SetRecordAttachmentValueParams{}
 	if err := api.DecodeJSONRequest(r, &setValParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

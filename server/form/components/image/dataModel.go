@@ -25,7 +25,7 @@ type NewImageParams struct {
 }
 
 func validImageFieldType(fieldType string) bool {
-	if fieldType == field.FieldTypeFile {
+	if fieldType == field.FieldTypeAttachment {
 		return true
 	} else {
 		return false

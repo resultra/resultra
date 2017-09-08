@@ -83,9 +83,9 @@ func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal str
 
 		}
 
-	} else if fieldType == field.FieldTypeFile {
+	} else if fieldType == field.FieldTypeAttachment {
 
-		var fileVal FileCellValue
+		var fileVal AttachmentCellValue
 		if err := generic.DecodeJSONString(encodedVal, &fileVal); err != nil {
 			return nil, fmt.Errorf("DecodeTimelineCellValue: failure decoding file value: %v", err)
 		}

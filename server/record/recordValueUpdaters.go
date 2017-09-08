@@ -184,24 +184,26 @@ func (valParams SetRecordTimeValueParams) getUpdateProperties() CellUpdateProper
 	return props
 }
 
-type SetRecordFileValueParams struct {
+type SetRecordAttachmentValueParams struct {
 	RecordUpdateHeader
 	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
 	Attachments []string              `json:"attachments"`
 }
 
-func (setValParams SetRecordFileValueParams) fieldType() string { return field.FieldTypeFile }
+func (setValParams SetRecordAttachmentValueParams) fieldType() string {
+	return field.FieldTypeAttachment
+}
 
-func (setValParams SetRecordFileValueParams) doCollapseRecentValues() bool { return true }
+func (setValParams SetRecordAttachmentValueParams) doCollapseRecentValues() bool { return true }
 
-func (valParams SetRecordFileValueParams) generateCellValue() (string, error) {
+func (valParams SetRecordAttachmentValueParams) generateCellValue() (string, error) {
 
-	cellValue := FileCellValue{Attachments: valParams.Attachments}
+	cellValue := AttachmentCellValue{Attachments: valParams.Attachments}
 
 	return generic.EncodeJSONString(cellValue)
 }
 
-func (valParams SetRecordFileValueParams) getUpdateProperties() CellUpdateProperties {
+func (valParams SetRecordAttachmentValueParams) getUpdateProperties() CellUpdateProperties {
 	props := CellUpdateProperties{valParams.ValueFormat}
 
 	return props

@@ -25,7 +25,7 @@ type NewAttachmentParams struct {
 }
 
 func validAttachmentFieldType(fieldType string) bool {
-	if fieldType == field.FieldTypeFile {
+	if fieldType == field.FieldTypeAttachment {
 		return true
 	} else {
 		return false

@@ -15,7 +15,7 @@ type BoolCellValue struct {
 	Val *bool `json:"val"`
 }
 
-type FileCellValue struct {
+type AttachmentCellValue struct {
 	Attachments []string `json:"attachments"`
 }
 
@@ -131,8 +131,8 @@ func DecodeCellValue(fieldType string, encodedVal string) (interface{}, error) {
 			return nil, fmt.Errorf("DecodeCellValue: failure decoding comment value: %v", err)
 		}
 		return commentVal, nil
-	case field.FieldTypeFile:
-		var fileVal FileCellValue
+	case field.FieldTypeAttachment:
+		var fileVal AttachmentCellValue
 		if err := generic.DecodeJSONString(encodedVal, &fileVal); err != nil {
 			return nil, fmt.Errorf("DecodeCellValue: failure decoding file value: %v", err)
 		}

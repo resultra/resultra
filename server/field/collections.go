@@ -43,7 +43,7 @@ func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
 			fieldsByType.BoolFields = append(fieldsByType.BoolFields, currField)
 		case FieldTypeUser:
 			fieldsByType.UserFields = append(fieldsByType.UserFields, currField)
-		case FieldTypeFile:
+		case FieldTypeAttachment:
 			fieldsByType.FileFields = append(fieldsByType.FileFields, currField)
 		case FieldTypeComment:
 			fieldsByType.CommentFields = append(fieldsByType.CommentFields, currField)
@@ -156,7 +156,7 @@ func getSortedFieldsByType(params GetSortedFieldListParams) ([]Field, error) {
 			matchedFields = append(matchedFields, fieldsByType.BoolFields...)
 		case FieldTypeUser:
 			matchedFields = append(matchedFields, fieldsByType.UserFields...)
-		case FieldTypeFile:
+		case FieldTypeAttachment:
 			matchedFields = append(matchedFields, fieldsByType.FileFields...)
 		case FieldTypeComment:
 			matchedFields = append(matchedFields, fieldsByType.CommentFields...)
