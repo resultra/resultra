@@ -5,6 +5,7 @@ function loadUrlLinkProperties($urlLink,urlLinkRef) {
 	
 	
 	var validationParams = {
+		elemPrefix:elemPrefix,
 		initialValidationProps: urlLinkRef.properties.validation,
 		setValidation: function(validationProps) {
 			var validationParams = {
@@ -20,7 +21,7 @@ function loadUrlLinkProperties($urlLink,urlLinkRef) {
 		
 		}
 	}
-	initTextInputValidationProperties(validationParams)
+	initValueRequiredValidationProperties(validationParams)
 	
 	
 		

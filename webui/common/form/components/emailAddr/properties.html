@@ -7,7 +7,7 @@
 		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
 	
 		{{template "propertyPanelPrefix" .ValidationPanelParams}}
-			{{template "textInputValidationProps"}}
+			{{template "adminRequiredValidationProps" .ElemPrefix}}
 		{{template "propertyPanelSuffix"}}
 	
 		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}

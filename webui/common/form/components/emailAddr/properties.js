@@ -5,6 +5,7 @@ function loadEmailAddrProperties($emailAddr,emailAddrRef) {
 	
 	
 	var validationParams = {
+		elemPrefix: elemPrefix,
 		initialValidationProps: emailAddrRef.properties.validation,
 		setValidation: function(validationProps) {
 			var validationParams = {
@@ -20,7 +21,7 @@ function loadEmailAddrProperties($emailAddr,emailAddrRef) {
 		
 		}
 	}
-	initTextInputValidationProperties(validationParams)
+	initValueRequiredValidationProperties(validationParams)
 	
 	
 		
