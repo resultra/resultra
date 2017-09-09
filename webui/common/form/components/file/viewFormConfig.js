@@ -104,33 +104,20 @@ function initFileRecordEditBehavior($container,componentContext,recordProxy, fil
 				
 		}
 		
-		
 		function initFileEditPopup() {
 			var $fileButton = $container.find(".fileEditLinkButton")
-			
-			
+
 			$fileButton.click(function(e) {
-				var currRecordRef = recordProxy.getRecordFunc()
-		
-				var attachmentID = currRecordRef.fieldValues[fileFieldID]
-				if(attachmentID !== undefined && attachmentID != null) {
-					var getRefParams = { attachmentID: attachmentID }
-					jsonAPIRequest("attachment/getReference", getRefParams, function(attachRef) {
-						openAttachmentInfoDialog(attachRef)
-					})
-				} else {
-					
-					function setAttachmentFromDialog(newAttachmentID) {
-						setFileVal(newAttachmentID)
-					}
-					
-					var manageAttachmentParams = {
-						parentDatabaseID: componentContext.databaseID,
-						setAttachmentCallback: setAttachmentFromDialog
-					}
-					openSingleAttachmentDialog(manageAttachmentParams)
+				var currAttachmentID = getCurrentFileVal()
+				function setAttachmentFromDialog(newAttachmentID) {
+					setFileVal(newAttachmentID)
 				}
-							
+				var attachmentParams = {
+					attachmentID: currAttachmentID,
+					parentDatabaseID: componentContext.databaseID,
+					setAttachmentCallback: setAttachmentFromDialog
+				}
+				openSingleAttachmentDialog(attachmentParams)							
 			})
 			
 		}

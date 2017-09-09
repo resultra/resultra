@@ -10,6 +10,7 @@ function initAddAttachmentControl(params) {
 		// paramName corresponds to the name given to the file when it is sent to the server. 
 		// This name needs to match the name given to the FormFile() function on the server.
 		paramName: "uploadFile",
+		
 		url: uploadImageURL,
 
 		start: function(e) {
