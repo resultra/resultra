@@ -44,6 +44,11 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 			initFormComponentViewBehavior($emailAddr,
 					emailAddrObjectRef.emailAddrID,initEmailAddrViewProperties)
 		},
+		initFileFunc: function(componentContext,$file,fileObjectRef) {			
+			initFileFormRecordEditBehavior($file,componentContext,recordProxy,fileObjectRef)
+			initFormComponentViewBehavior($file,
+					fileObjectRef.fileID,initFileViewProperties)
+		},
 		initUrlLinkFunc: function(componentContext,$urlLink,urlLinkObjectRef) {			
 			initUrlLinkFormRecordEditBehavior($urlLink,componentContext,recordProxy,urlLinkObjectRef)
 			initFormComponentViewBehavior($urlLink,

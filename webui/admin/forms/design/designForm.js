@@ -19,7 +19,8 @@ var paletteItemsEditConfig = {
 	paletteItemSocialButton: socialButtonDesignFormConfig,
 	paletteItemLabel:labelDesignFormConfig,
 	paletteItemEmailAddr: emailAddrDesignFormConfig,
-	paletteItemUrlLink: urlLinkDesignFormConfig
+	paletteItemUrlLink: urlLinkDesignFormConfig,
+	paletteItemFile: fileDesignFormConfig
 }
 
 
@@ -121,6 +122,10 @@ $(document).ready(function() {
 		initEmailAddrFunc: function(componentContext,$emailAddr,emailAddrObjectRef) {
 			var componentIDs = { formID: formID, componentID: emailAddrObjectRef.emailAddrID }
 			initFormComponentDesignBehavior($emailAddr,componentIDs,emailAddrObjectRef,emailAddrDesignFormConfig,designFormLayoutConfig)
+		},
+		initFileFunc: function(componentContext,$file,fileObjectRef) {
+			var componentIDs = { formID: formID, componentID: fileObjectRef.fileID }
+			initFormComponentDesignBehavior($file,componentIDs,fileObjectRef,fileDesignFormConfig,designFormLayoutConfig)
 		},
 		initUrlLinkFunc: function(componentContext,$urlLink,urlLinkObjectRef) {
 			var componentIDs = { formID: formID, componentID: urlLinkObjectRef.urlLinkID }

@@ -7,6 +7,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/common"
 	"resultra/datasheet/webui/common/form/components/datePicker"
 	"resultra/datasheet/webui/common/form/components/emailAddr"
+	"resultra/datasheet/webui/common/form/components/file"
 	"resultra/datasheet/webui/common/form/components/formButton"
 	"resultra/datasheet/webui/common/form/components/gauge"
 	"resultra/datasheet/webui/common/form/components/header"
@@ -55,5 +56,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, label.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, emailAddr.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, urlLink.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, file.TemplateFileList...)
 
 }

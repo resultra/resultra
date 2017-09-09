@@ -20,5 +20,6 @@
 		"socialButton",
 		"label",
 		"emailAddr",
-		"urlLink"]
+		"urlLink",
+		"file"]
 }

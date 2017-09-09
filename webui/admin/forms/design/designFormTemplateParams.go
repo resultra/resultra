@@ -7,6 +7,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/comment"
 	"resultra/datasheet/webui/common/form/components/datePicker"
 	"resultra/datasheet/webui/common/form/components/emailAddr"
+	"resultra/datasheet/webui/common/form/components/file"
 	"resultra/datasheet/webui/common/form/components/formButton"
 	"resultra/datasheet/webui/common/form/components/gauge"
 	"resultra/datasheet/webui/common/form/components/header"
@@ -63,6 +64,7 @@ type DesignFormTemplateParams struct {
 	LabelParams         label.LabelDesignTemplateParams
 	EmailAddrParams     emailAddr.EmailAddrDesignTemplateParams
 	UrlLinkParams       urlLink.UrlLinkDesignTemplateParams
+	FileParams          file.FileDesignTemplateParams
 	FormPropertyParams  FormPropertyTemplateParams
 }
 
@@ -109,6 +111,7 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		LabelParams:         label.DesignTemplateParams,
 		EmailAddrParams:     emailAddr.DesignTemplateParams,
 		UrlLinkParams:       urlLink.DesignTemplateParams,
+		FileParams:          file.DesignTemplateParams,
 		FormPropertyParams:  formPropParams}
 
 	return templParams

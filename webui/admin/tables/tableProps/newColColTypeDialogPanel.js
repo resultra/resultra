@@ -157,6 +157,17 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					
 				}
 				
+				function createFileInput(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/file/new",params,function(tag) {
+						console.log("File column created: " + JSON.stringify(tag))
+					})
+					
+				}
+				
 				function createDatePickerInput(fieldInfo) {
 					var params = {
 						parentTableID: panelParams.tableID,
@@ -234,6 +245,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					break
 				case fieldTypeEmail:
 					createEmailAddrInput(fieldInfo)
+					break
+				case fieldTypeFile:
+					createFileInput(fieldInfo)
 					break
 				case fieldTypeURL:
 					createUrlLinkInput(fieldInfo)
@@ -326,6 +340,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				break
 			case fieldTypeEmail:
 				$colTypeSelection.append(selectOptionHTML('email','Email address input'))
+				break
+			case fieldTypeFile:
+				$colTypeSelection.append(selectOptionHTML('file','Single file attachment'))
 				break
 			case fieldTypeURL:
 				$colTypeSelection.append(selectOptionHTML('url','URL link input'))

@@ -7,17 +7,18 @@ import (
 )
 
 type FieldsByType struct {
-	TextFields      []Field `json:"textFields"`
-	LongTextFields  []Field `json:"longTextFields"`
-	TimeFields      []Field `json:"timeFields"`
-	NumberFields    []Field `json:"numberFields"`
-	BoolFields      []Field `json:"boolFields"`
-	FileFields      []Field `json:"fileFields"`
-	UserFields      []Field `json:"userFields"`
-	CommentFields   []Field `json:"commentFields"`
-	LabelFields     []Field `json:"labelFields"`
-	EmailAddrFields []Field `json:"emailAddrFields"`
-	UrlFields       []Field `json:"urlFields"`
+	TextFields       []Field `json:"textFields"`
+	LongTextFields   []Field `json:"longTextFields"`
+	TimeFields       []Field `json:"timeFields"`
+	NumberFields     []Field `json:"numberFields"`
+	BoolFields       []Field `json:"boolFields"`
+	AttachmentFields []Field `json:"attachmentFields"`
+	UserFields       []Field `json:"userFields"`
+	CommentFields    []Field `json:"commentFields"`
+	LabelFields      []Field `json:"labelFields"`
+	EmailAddrFields  []Field `json:"emailAddrFields"`
+	UrlFields        []Field `json:"urlFields"`
+	FileFields       []Field `json:"fileFields"`
 }
 
 func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
@@ -44,13 +45,15 @@ func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
 		case FieldTypeUser:
 			fieldsByType.UserFields = append(fieldsByType.UserFields, currField)
 		case FieldTypeAttachment:
-			fieldsByType.FileFields = append(fieldsByType.FileFields, currField)
+			fieldsByType.AttachmentFields = append(fieldsByType.AttachmentFields, currField)
 		case FieldTypeComment:
 			fieldsByType.CommentFields = append(fieldsByType.CommentFields, currField)
 		case FieldTypeLabel:
 			fieldsByType.LabelFields = append(fieldsByType.LabelFields, currField)
 		case FieldTypeEmail:
 			fieldsByType.EmailAddrFields = append(fieldsByType.EmailAddrFields, currField)
+		case FieldTypeFile:
+			fieldsByType.FileFields = append(fieldsByType.FileFields, currField)
 		case FieldTypeURL:
 			fieldsByType.UrlFields = append(fieldsByType.UrlFields, currField)
 		default:
@@ -157,13 +160,15 @@ func getSortedFieldsByType(params GetSortedFieldListParams) ([]Field, error) {
 		case FieldTypeUser:
 			matchedFields = append(matchedFields, fieldsByType.UserFields...)
 		case FieldTypeAttachment:
-			matchedFields = append(matchedFields, fieldsByType.FileFields...)
+			matchedFields = append(matchedFields, fieldsByType.AttachmentFields...)
 		case FieldTypeComment:
 			matchedFields = append(matchedFields, fieldsByType.CommentFields...)
 		case FieldTypeLabel:
 			matchedFields = append(matchedFields, fieldsByType.LabelFields...)
 		case FieldTypeEmail:
 			matchedFields = append(matchedFields, fieldsByType.EmailAddrFields...)
+		case FieldTypeFile:
+			matchedFields = append(matchedFields, fieldsByType.FileFields...)
 		case FieldTypeURL:
 			matchedFields = append(matchedFields, fieldsByType.UrlFields...)
 		default:

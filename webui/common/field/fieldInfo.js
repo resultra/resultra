@@ -10,6 +10,7 @@ var fieldTypeComment = "comment"
 var fieldTypeLabel = "label"
 var fieldTypeEmail = "email"
 var fieldTypeURL = "url"
+var fieldTypeFile = "file"
 
 function fieldTypeLabel(fieldType) {
 	switch (fieldType) {
@@ -19,6 +20,7 @@ function fieldTypeLabel(fieldType) {
 	case fieldTypeUser: return "User"
 	case fieldTypeBool: return "True or False (Boolean)"
 	case fieldTypeAttachment: return "Attachment(s)"
+	case fieldTypeFile: return "File"
 	case fieldTypeLongText: return "Long Text"
 	case fieldTypeComment: return "Comment"
 	case fieldTypeLabel: return "Label"
@@ -201,11 +203,11 @@ function loadFieldInfo(parentDatabaseID,fieldTypes,fieldInfoCallback) {
 		}
 	
 		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeAttachment]==true) {
-			var fileFields = fieldsByType.fileFields
-			for (fileFieldIter in fileFields) {		
-				var fileField = fileFields[fileFieldIter]			
-				console.log("file field: " + fileField.name)
-				fieldsByID[fileField.fieldID] = fileField
+			var attachFields = fieldsByType.attachmentFields
+			for (attachFieldIter in attachFields) {		
+				var attachField = attachFields[attachFieldIter]			
+				console.log("file field: " + attachField.name)
+				fieldsByID[attachField.fieldID] = attachField
 			} // for each file field
 		}
 
@@ -242,6 +244,16 @@ function loadFieldInfo(parentDatabaseID,fieldTypes,fieldInfoCallback) {
 				fieldsByID[urlField.fieldID] = urlField
 			} // for each file field
 		}
+
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeFile]==true) {
+			var fileFields = fieldsByType.fileFields
+			for (var fileFieldIter in fileFields) {		
+				var fileField = fileFields[fileFieldIter]			
+				fieldsByID[fileField.fieldID] = fileField
+			} // for each file field
+		}
+
+
 		
 		fieldInfoCallback(fieldsByID)
 	}

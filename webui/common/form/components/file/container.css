@@ -1,0 +1,65 @@
+
+.fileFormComponent 
+{
+	min-width:150px;
+	width: 150px;
+	height: auto;
+}
+
+.fileTableCellComponent
+{
+	min-width: 150px;
+	width:100%;
+}
+
+.fileComponent .form-group {
+	margin-bottom:0px;
+}
+
+.fileComponent .input-group {
+	width:100%;
+}
+
+.fileComponent label {
+	margin-bottom: 2px !important;
+}
+
+.fileComponentInput {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.fileEditLinkButton {
+	padding-left:4px;
+	padding-right:4px;
+}
+
+.fileDisplayContainer {
+	max-width:325px;
+	overflow:hidden;
+	border: 1px solid lightGrey;
+	background-color: white;
+}
+
+/* Limit URL text to one line and hide the overflow.
+   This is needed for table view columns which must be a fixed height.
+   Uses this solution: https://stackoverflow.com/questions/1318108/css-limit-element-to-1-line
+ */ 
+.fileDisplayContainer a {
+	padding-left:5px;
+	padding-right:5px;
+	white-space:nowrap;
+	display:block;
+	overflow:hidden;
+	text-overflow: ellipsis;
+}
+
+
+
+.filePopupContainer {
+	width:100%;
+	
+	/* The Bootstrap popover will resize around these constraints */
+	min-width:250px;
+	min-height:100px;
+}

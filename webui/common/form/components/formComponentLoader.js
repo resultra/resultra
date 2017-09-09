@@ -161,6 +161,27 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 	}
 	
+	function initFileLayout($componentRow,fileRef) {
+		// Create an HTML block for the container
+	
+		var containerHTML = fileContainerHTML(fileRef.fileID);
+		var containerObj = $(containerHTML)
+		
+		initFileFormComponentContainer(containerObj,fileRef)
+					
+		$componentRow.append(containerObj)
+		
+		setElemFixedWidthFlexibleHeight(containerObj,
+					fileRef.properties.geometry.sizeWidth)
+	
+		 // Store the newly created object reference in the DOM element. This is needed for follow-on
+		 // property setting, resizing, etc.
+		setContainerComponentInfo(containerObj,fileRef,fileRef.fileID)
+	
+		// Callback for any specific initialization for either the form design or view mode
+		loadFormConfig.initFileFunc(componentContext,containerObj,fileRef)
+		
+	}
 	
 	
 	function initUrlLinkLayout($componentRow,urlLink) {
@@ -705,6 +726,17 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 
 	}		
 
+	for (var fileIter in formInfo.files) {
+		var fileProps = formInfo.files[fileIter]
+		
+		console.log("loadFormComponents: initializing file component: " + JSON.stringify(fileProps))
+
+		compenentIDComponentMap[fileProps.fileID] = {
+			componentInfo: fileProps,
+			initFunc: initFileLayout
+		}			
+
+	}		
 
 	
 	var formLayout = formInfo.form.properties.layout

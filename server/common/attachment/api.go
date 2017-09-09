@@ -16,6 +16,7 @@ func init() {
 	attachmentRouter.HandleFunc("/api/attachment/saveURL", saveURLAPI)
 	attachmentRouter.HandleFunc("/api/attachment/get/{databaseID}/{cloudFileName}", getAttachmentAPI)
 	attachmentRouter.HandleFunc("/api/attachment/getReferences", getAttachmentReferencesAPI)
+	attachmentRouter.HandleFunc("/api/attachment/getReference", getAttachmentReferenceAPI)
 
 	attachmentRouter.HandleFunc("/api/attachment/setCaption", setCaptionAPI)
 	attachmentRouter.HandleFunc("/api/attachment/setTitle", setTitleAPI)
@@ -80,6 +81,27 @@ func getAttachmentReferencesAPI(w http.ResponseWriter, r *http.Request) {
 
 	// TODO - include database ID in request.
 	if attachRefs, err := getAttachmentReferences(params.AttachmentIDs); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, attachRefs)
+	}
+
+}
+
+type GetAttachmentReferenceParams struct {
+	AttachmentID string `json:"attachmentID"`
+}
+
+func getAttachmentReferenceAPI(w http.ResponseWriter, r *http.Request) {
+
+	params := GetAttachmentReferenceParams{}
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	// TODO - include database ID in request.
+	if attachRefs, err := GetAttachmentReference(params.AttachmentID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, attachRefs)

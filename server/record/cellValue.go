@@ -19,6 +19,10 @@ type AttachmentCellValue struct {
 	Attachments []string `json:"attachments"`
 }
 
+type FileCellValue struct {
+	Attachment *string `json:"attachment"`
+}
+
 type UserCellValue struct {
 	UserIDs []string `json:"userIDs"`
 }
@@ -137,6 +141,16 @@ func DecodeCellValue(fieldType string, encodedVal string) (interface{}, error) {
 			return nil, fmt.Errorf("DecodeCellValue: failure decoding file value: %v", err)
 		}
 		return fileVal, nil
+	case field.FieldTypeFile:
+		var fileVal FileCellValue
+		if err := generic.DecodeJSONString(encodedVal, &fileVal); err != nil {
+			return nil, fmt.Errorf("DecodeCellValue: failure decoding file value: %v", err)
+		}
+		if fileVal.Attachment == nil {
+			return nil, nil
+		} else {
+			return fileVal.Attachment, nil
+		}
 	case field.FieldTypeUser:
 		var userVal UserCellValue
 		if err := generic.DecodeJSONString(encodedVal, &userVal); err != nil {

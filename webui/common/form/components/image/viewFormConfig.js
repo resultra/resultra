@@ -84,7 +84,7 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 						valueFormatFormat: "general",
 						attachments: currentAttachmentIDs }
 					console.log("Attachment: Setting file field value: " + JSON.stringify(recordUpdateParams))
-					jsonAPIRequest("recordUpdate/setFileFieldValue", recordUpdateParams, function(updatedRecord) {
+					jsonAPIRequest("recordUpdate/setAttachmentFieldValue", recordUpdateParams, function(updatedRecord) {
 						console.log("Attachment: Done uploading file: updated record ref = " + JSON.stringify(updatedRecord))
 						recordProxy.updateRecordFunc(updatedRecord)
 					})
@@ -159,7 +159,7 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 						valueFormatFormat: "general",
 						attachments: updatedAttachmentList }
 					console.log("Attachment: Setting file field value: " + JSON.stringify(recordUpdateParams))
-					jsonAPIRequest("recordUpdate/setFileFieldValue", recordUpdateParams, function(updatedRecord) {
+					jsonAPIRequest("recordUpdate/setAttachmentFieldValue", recordUpdateParams, function(updatedRecord) {
 						console.log("Attachment: Done uploading file: updated record ref = " + JSON.stringify(updatedRecord))
 						recordProxy.updateRecordFunc(updatedRecord)
 					})

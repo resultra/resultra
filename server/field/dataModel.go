@@ -16,6 +16,7 @@ const FieldTypeTime string = "time"
 const FieldTypeBool string = "bool"
 const FieldTypeLongText string = "longText"
 const FieldTypeAttachment string = "attachment"
+const FieldTypeFile string = "file"
 const FieldTypeUser string = "user"
 const FieldTypeComment string = "comment"
 const FieldTypeLabel string = "label"
@@ -65,6 +66,8 @@ func validFieldType(fieldType string) bool {
 	case FieldTypeLabel:
 		return true
 	case FieldTypeEmail:
+		return true
+	case FieldTypeFile:
 		return true
 	case FieldTypeURL:
 		return true

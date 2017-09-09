@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/comment"
 	"resultra/datasheet/webui/common/form/components/datePicker"
 	"resultra/datasheet/webui/common/form/components/emailAddr"
+	"resultra/datasheet/webui/common/form/components/file"
 	"resultra/datasheet/webui/common/form/components/gauge"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
 	"resultra/datasheet/webui/common/form/components/image"
@@ -38,6 +39,7 @@ type ComponentViewTemplateParams struct {
 	LabelParams         label.LabelViewTemplateParams
 	EmailAddrParams     emailAddr.EmailAddrViewTemplateParams
 	UrlLinkParams       urlLink.UrlLinkViewTemplateParams
+	FileParams          file.FileViewTemplateParams
 }
 
 //var DesignTemplateParams ComponentDesignTemplateParams
@@ -62,6 +64,7 @@ func init() {
 		SocialButtonParams:  socialButton.ViewTemplateParams,
 		LabelParams:         label.ViewTemplateParams,
 		EmailAddrParams:     emailAddr.ViewTemplateParams,
-		UrlLinkParams:       urlLink.ViewTemplateParams}
+		UrlLinkParams:       urlLink.ViewTemplateParams,
+		FileParams:          file.ViewTemplateParams}
 
 }

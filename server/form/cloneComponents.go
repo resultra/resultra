@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/form/components/comment"
 	"resultra/datasheet/server/form/components/datePicker"
 	"resultra/datasheet/server/form/components/emailAddr"
+	"resultra/datasheet/server/form/components/file"
 	"resultra/datasheet/server/form/components/formButton"
 	"resultra/datasheet/server/form/components/gauge"
 	"resultra/datasheet/server/form/components/header"
@@ -106,6 +107,10 @@ func cloneFormComponents(remappedIDs uniqueID.UniqueIDRemapper, parentFormID str
 	}
 
 	if err := urlLink.CloneUrlLinks(remappedIDs, parentFormID); err != nil {
+		return fmt.Errorf("cloneFormComponents: %v", err)
+	}
+
+	if err := file.CloneFiles(remappedIDs, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 

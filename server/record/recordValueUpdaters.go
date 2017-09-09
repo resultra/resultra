@@ -277,3 +277,26 @@ func (valParams SetRecordUrlValueParams) getUpdateProperties() CellUpdatePropert
 
 	return props
 }
+
+type SetRecordFileAddrValueParams struct {
+	RecordUpdateHeader
+	ValueFormat CellUpdateValueFormat `json:"valueFormat"`
+	Attachment  *string               `json:"attachment"`
+}
+
+func (setValParams SetRecordFileAddrValueParams) fieldType() string { return field.FieldTypeFile }
+
+func (setValParams SetRecordFileAddrValueParams) doCollapseRecentValues() bool { return true }
+
+func (valParams SetRecordFileAddrValueParams) generateCellValue() (string, error) {
+
+	cellVal := FileCellValue{Attachment: valParams.Attachment}
+
+	return generic.EncodeJSONString(cellVal)
+}
+
+func (valParams SetRecordFileAddrValueParams) getUpdateProperties() CellUpdateProperties {
+	props := CellUpdateProperties{valParams.ValueFormat}
+
+	return props
+}

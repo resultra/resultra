@@ -6,6 +6,7 @@ import (
 	"resultra/datasheet/server/form/components/comment"
 	"resultra/datasheet/server/form/components/datePicker"
 	"resultra/datasheet/server/form/components/emailAddr"
+	"resultra/datasheet/server/form/components/file"
 	"resultra/datasheet/server/form/components/formButton"
 	"resultra/datasheet/server/form/components/gauge"
 	"resultra/datasheet/server/form/components/header"
@@ -45,6 +46,7 @@ type FormInfo struct {
 	Labels             []label.Label                 `json:"labels"`
 	EmailAddrs         []emailAddr.EmailAddr         `json:"emailAddrs"`
 	UrlLinks           []urlLink.UrlLink             `json:"urlLinks"`
+	Files              []file.File                   `json:"files"`
 }
 
 type GetFormInfoParams struct {
@@ -158,6 +160,11 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		return nil, err
 	}
 
+	files, err := file.GetFiles(formID)
+	if err != nil {
+		return nil, err
+	}
+
 	formInfo := FormInfo{
 		Form:               *form,
 		TextBoxes:          textBoxes,
@@ -179,7 +186,8 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		SocialButtons:      socialButtons,
 		Labels:             labels,
 		EmailAddrs:         emailAddrs,
-		UrlLinks:           urlLinks}
+		UrlLinks:           urlLinks,
+		Files:              files}
 
 	return &formInfo, nil
 }
