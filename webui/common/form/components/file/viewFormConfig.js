@@ -108,28 +108,32 @@ function initFileRecordEditBehavior($container,componentContext,recordProxy, fil
 		function initFileEditPopup() {
 			var $fileButton = $container.find(".fileEditLinkButton")
 			
-			function saveRecordUpdateWithAttachmentListAdditions(newAttachmentList) {
-				console.log("Got attachments for file component: " + JSON.stringify(newAttachmentList))
-				if(newAttachmentList.length > 0) {
-					setFileVal(newAttachmentList[0])
-				}
-			}
 			
 			$fileButton.click(function(e) {
 				var currRecordRef = recordProxy.getRecordFunc()
 		
-				// Start with the current file list, then append the newly uploaded attachments.
-				var attachmentList = []
-				var attachmentID = currRecordRef.fieldValues.hasOwnProperty(fileFieldID)
+				var attachmentID = currRecordRef.fieldValues[fileFieldID]
 				if(attachmentID !== undefined && attachmentID != null) {
-					attachmentList.push(attachmentID)
+					var getRefParams = { attachmentID: attachmentID }
+					jsonAPIRequest("attachment/getReference", getRefParams, function(attachRef) {
+						openAttachmentInfoDialog(attachRef)
+					})
+				} else {
+					
+					function saveRecordUpdateWithAttachmentListAdditions(newAttachmentList) {
+						console.log("Got attachments for file component: " + JSON.stringify(newAttachmentList))
+						if(newAttachmentList.length > 0) {
+							setFileVal(newAttachmentList[0])
+						}
+					}
+					
+					var manageAttachmentParams = {
+						parentDatabaseID: componentContext.databaseID,
+						addAttachmentsCallback: saveRecordUpdateWithAttachmentListAdditions
+					}
+					openAddAttachmentsDialog(manageAttachmentParams)
 				}
-			
-				var manageAttachmentParams = {
-					parentDatabaseID: componentContext.databaseID,
-					addAttachmentsCallback: saveRecordUpdateWithAttachmentListAdditions
-				}
-				openAddAttachmentsDialog(manageAttachmentParams)
+							
 			})
 			
 		}
