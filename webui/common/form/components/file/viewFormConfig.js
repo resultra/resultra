@@ -120,18 +120,15 @@ function initFileRecordEditBehavior($container,componentContext,recordProxy, fil
 					})
 				} else {
 					
-					function saveRecordUpdateWithAttachmentListAdditions(newAttachmentList) {
-						console.log("Got attachments for file component: " + JSON.stringify(newAttachmentList))
-						if(newAttachmentList.length > 0) {
-							setFileVal(newAttachmentList[0])
-						}
+					function setAttachmentFromDialog(newAttachmentID) {
+						setFileVal(newAttachmentID)
 					}
 					
 					var manageAttachmentParams = {
 						parentDatabaseID: componentContext.databaseID,
-						addAttachmentsCallback: saveRecordUpdateWithAttachmentListAdditions
+						setAttachmentCallback: setAttachmentFromDialog
 					}
-					openAddAttachmentsDialog(manageAttachmentParams)
+					openSingleAttachmentDialog(manageAttachmentParams)
 				}
 							
 			})

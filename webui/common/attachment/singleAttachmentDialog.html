@@ -1,0 +1,42 @@
+{{define "singleAttachmentDialogButtons"}}
+	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+	<button type="button" class="btn btn-primary" id="singleAttachmentDoneButton">Done</button>
+{{end}}
+
+{{define "singleAttachmentDialogBody"}}
+
+	<div class="form-horizontal" id="singleAttachmentAttachmentItem">
+		{{template "attachmentThumbnailContainer"}}
+		{{template "attachmentTitleInput"}}
+		{{template "attachmentCaptionInput"}}
+	</div>
+
+<label class="btn btn-default btn-file fileinput-button marginTop5">
+    Replace... <input type="file" id="singleAttachmentReplaceFileButton" multiple style="display:none">
+</label>
+
+{{end}}
+
+
+
+{{define "singleAttachmentDialog"}}
+
+<div class="modal fade singleAttachmentDialog" id="singleAttachmentDialog" tabindex="-1" role="document"
+						aria-labelledby="singleAttachmentDialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="singleAttachmentDialogLabel">Attachment</h4>
+      </div>
+      <div class="modal-body addAttachmentsDialogBody">
+		  {{template "singleAttachmentDialogBody"}}
+      </div>
+      <div class="modal-footer">
+		  {{template "singleAttachmentDialogButtons"}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}
