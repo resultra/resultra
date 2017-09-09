@@ -50,3 +50,28 @@ function openSingleAttachmentDialog(configParams) {
 	}
 
 }
+
+function initAddAttachmentThenOpenInfoDialogButton(configParams) {
+	
+	function addNewAttachments(newAttachments) {
+		console.log("New attachments added: " + JSON.stringify(newAttachments))
+		
+		if(newAttachments.length > 0) {
+			var firstAttach = newAttachments[0]			
+			var attachInfoParams = {
+				parentDatabaseID: configParams.parentDatabaseID,
+				setAttachmentCallback: configParams.setAttachmentCallback,
+				attachmentID: firstAttach.attachmentID
+			}
+			openSingleAttachmentDialog(attachInfoParams)
+		}	
+	}
+	
+	
+	var addAttachmentParams = {
+		parentDatabaseID: configParams.parentDatabaseID,
+		$addAttachmentInput: configParams.$addAttachmentInput,
+		attachDoneCallback: addNewAttachments }
+	initAddAttachmentControl(addAttachmentParams)
+	
+}

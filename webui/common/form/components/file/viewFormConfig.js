@@ -3,6 +3,8 @@
 
 function initFileRecordEditBehavior($container,componentContext,recordProxy, fileObjRef,remoteValidationCallback) {
 	
+	var fileFieldID = fileObjRef.properties.fieldID
+	
 	
 	function getCurrentFileVal() {
 		var currRecordRef = recordProxy.getRecordFunc()
@@ -13,6 +15,79 @@ function initFileRecordEditBehavior($container,componentContext,recordProxy, fil
 		} else {
 			return fieldVal
 		}
+	}
+	
+	function setFileVal(fileVal) {
+		
+		// Validation is done in the popup.
+		var fileTextValueFormat = {
+			context:"file",
+			format:"general"
+		}
+		var currRecordRef = recordProxy.getRecordFunc()
+		var setRecordValParams = { 
+			parentDatabaseID:currRecordRef.parentDatabaseID,
+			recordID:currRecordRef.recordID, 
+			changeSetID: recordProxy.changeSetID,
+			fieldID:fileFieldID, 
+			attachment:fileVal,
+			valueFormat: fileTextValueFormat 
+		}
+		jsonAPIRequest("recordUpdate/setFileFieldValue",setRecordValParams,function(replyData) {
+			// After updating the record, the local cache of records will
+			// be out of date. So after updating the record on the server, the locally cached
+			// version of the record also needs to be updated.
+			recordProxy.updateRecordFunc(replyData)
+
+		}) // set record's text field value
+				
+			
+	}
+	
+	
+	function initFileEditPopup(attachmentID) {
+		
+		var $fileButton = $container.find(".fileEditLinkButton")
+		
+		$fileButton.unbind("click")
+		$fileButton.find("input").remove()
+		
+		function initFileButtonForAddingFile() {
+			
+			var $addAttachmentInput = $('<input class="uploadInput" type="file">')
+			$fileButton.append($addAttachmentInput)
+			
+			function setAttachmentFromDialog(newAttachmentID) {
+				setFileVal(newAttachmentID)
+			}		
+			var addAttachmentParams = {
+				parentDatabaseID: componentContext.databaseID,
+				setAttachmentCallback: setAttachmentFromDialog,
+				$addAttachmentInput: $addAttachmentInput
+			}
+			initAddAttachmentThenOpenInfoDialogButton(addAttachmentParams)
+		}
+		
+		function initFileButtonForEditingExistingFile(attachmentID) {
+					
+			$fileButton.click(function(e) {			
+				var attachmentParams = {
+					attachmentID: attachmentID,
+					parentDatabaseID: componentContext.databaseID,
+					setAttachmentCallback: setFileVal
+				}
+				openSingleAttachmentDialog(attachmentParams)							
+			})
+		}
+		
+		// Initialize the button to either add a new file or 
+		// edit/replace the existing one.
+		if(attachmentID === null) {
+			initFileButtonForAddingFile()
+		} else {
+			initFileButtonForEditingExistingFile(attachmentID)
+		}
+		
 	}
 	
 	var validateFileInput = function(validationCompleteCallback) {	
@@ -42,7 +117,6 @@ function initFileRecordEditBehavior($container,componentContext,recordProxy, fil
 		}
 	
 		// text box is linked to a field value
-		var fileFieldID = fileObjRef.properties.fieldID
 
 		console.log("loadRecordIntoFile: Field ID to load data:" + fileFieldID)
 
@@ -52,6 +126,7 @@ function initFileRecordEditBehavior($container,componentContext,recordProxy, fil
 		} else {
 			setFileDisplay(fieldVal)
 		}
+		initFileEditPopup(fieldVal)
 	
 	}
 
@@ -77,58 +152,16 @@ function initFileRecordEditBehavior($container,componentContext,recordProxy, fil
 			//$fileInput.prop('disabled',false);
 		}
 			
-		function setFileVal(fileVal) {
-			
-			// Validation is done in the popup.
-			var fileTextValueFormat = {
-				context:"file",
-				format:"general"
-			}
-			var currRecordRef = recordProxy.getRecordFunc()
-			var setRecordValParams = { 
-				parentDatabaseID:currRecordRef.parentDatabaseID,
-				recordID:currRecordRef.recordID, 
-				changeSetID: recordProxy.changeSetID,
-				fieldID:fileFieldID, 
-				attachment:fileVal,
-				valueFormat: fileTextValueFormat 
-			}
-			jsonAPIRequest("recordUpdate/setFileFieldValue",setRecordValParams,function(replyData) {
-				// After updating the record, the local cache of records will
-				// be out of date. So after updating the record on the server, the locally cached
-				// version of the record also needs to be updated.
-				recordProxy.updateRecordFunc(replyData)
-	
-			}) // set record's text field value
 					
-				
-		}
-		
-		function initFileEditPopup() {
-			var $fileButton = $container.find(".fileEditLinkButton")
-
-			$fileButton.click(function(e) {
-				var currAttachmentID = getCurrentFileVal()
-				function setAttachmentFromDialog(newAttachmentID) {
-					setFileVal(newAttachmentID)
-				}
-				var attachmentParams = {
-					attachmentID: currAttachmentID,
-					parentDatabaseID: componentContext.databaseID,
-					setAttachmentCallback: setAttachmentFromDialog
-				}
-				openSingleAttachmentDialog(attachmentParams)							
-			})
-			
-		}
-		initFileEditPopup()
-			
 		initButtonControlClickHandler($clearValueButton,function() {
 				console.log("Clear value clicked for text box")
 			setFileVal(null)	
 		})
 			
 	}	// initFileFieldEditBehavior
+	
+	
+	initFileEditPopup(null)
 	
 	$container.data("viewFormConfig", {
 		loadRecord: loadRecordIntoFile,

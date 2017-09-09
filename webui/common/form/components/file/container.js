@@ -4,8 +4,9 @@ function fileContainerInputControl() {
 				'<div class="form-control-static fileDisplayContainer">' +
 					'<a class="fileDisplay"></a>' +
 				'</div>' + 
-				'<span class="input-group-addon fileEditLinkButton">' +
+				'<span class="btn btn-default input-group-addon fileinput-button fileEditLinkButton">' +
              	   '<span class="glyphicon glyphicon-file"></span>' +
+				   '<input class="uploadInput" type="file">' + 
             	'</span>' +
 				clearValueButtonHTML("fileComponentClearValueButton") +
 			'</div>'
