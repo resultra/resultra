@@ -101,7 +101,7 @@ function initFileRecordEditBehavior($container,componentContext,recordProxy, fil
 		console.log("loadRecordIntoFile: loading record into text box: " + JSON.stringify(recordRef))
 	
 		function setFileDisplay(attachmentID) {
-			$fileDisplay = $fileContainer.find('.fileDisplay')
+			var $fileDisplay = $fileContainer.find('.fileDisplay')
 
 			if(attachmentID != null) {
 				var getRefParams = { attachmentID: attachmentID }
@@ -123,10 +123,11 @@ function initFileRecordEditBehavior($container,componentContext,recordProxy, fil
 		var fieldVal = recordRef.fieldValues[fileFieldID]
 		if(fieldVal===undefined || fieldVal===null) {
 			setFileDisplay(null)
+			initFileEditPopup(null)
 		} else {
 			setFileDisplay(fieldVal)
+			initFileEditPopup(fieldVal)
 		}
-		initFileEditPopup(fieldVal)
 	
 	}
 

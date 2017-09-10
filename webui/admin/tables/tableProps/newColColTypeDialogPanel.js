@@ -81,6 +81,17 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					})
 					
 				}
+
+				function createFileInput(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/file/new",params,function(fileColInfo) {
+						console.log("File column created: " + JSON.stringify(fileColInfo))
+					})
+					
+				}
 				
 				function createUrlLinkInput(fieldInfo) {
 					var params = {
@@ -251,6 +262,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					break
 				case fieldTypeURL:
 					createUrlLinkInput(fieldInfo)
+					break
+				case fieldTypeFile:
+					createFileInput(fieldInfo)
 					break
 				case fieldTypeBool:
 					if(colType==='checkbox') {

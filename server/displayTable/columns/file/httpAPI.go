@@ -1,0 +1,127 @@
+package file
+
+import (
+	"github.com/gorilla/mux"
+	"net/http"
+	"resultra/datasheet/server/generic/api"
+)
+
+func init() {
+	fileRouter := mux.NewRouter()
+
+	fileRouter.HandleFunc("/api/tableView/file/new", newFile)
+
+	fileRouter.HandleFunc("/api/tableView/file/get", getFileAPI)
+
+	fileRouter.HandleFunc("/api/tableView/file/setLabelFormat", setLabelFormat)
+	fileRouter.HandleFunc("/api/tableView/file/setPermissions", setPermissions)
+	fileRouter.HandleFunc("/api/tableView/file/setValidation", setValidation)
+	fileRouter.HandleFunc("/api/tableView/file/setClearValueSupported", setClearValueSupported)
+	fileRouter.HandleFunc("/api/tableView/file/setHelpPopupMsg", setHelpPopupMsg)
+
+	fileRouter.HandleFunc("/api/tableView/file/validateInput", validateInputAPI)
+
+	http.Handle("/api/tableView/file/", fileRouter)
+}
+
+func newFile(w http.ResponseWriter, r *http.Request) {
+
+	fileParams := NewFileParams{}
+	if err := api.DecodeJSONRequest(r, &fileParams); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if fileRef, err := saveNewFile(fileParams); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, *fileRef)
+	}
+
+}
+
+type GetFileParams struct {
+	ParentTableID string `json:"parentTableID"`
+	FileID   string `json:"fileID"`
+}
+
+func getFileAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetFileParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	file, err := getFile(params.ParentTableID, params.FileID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	api.WriteJSONResponse(w, *file)
+}
+
+func validateInputAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params FileValidateInputParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	validationResp := validateInput(params)
+	api.WriteJSONResponse(w, validationResp)
+}
+
+func processFilePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater FilePropUpdater) {
+	if fileRef, err := updateFileProps(propUpdater); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, fileRef)
+	}
+}
+
+func setLabelFormat(w http.ResponseWriter, r *http.Request) {
+	var params FileLabelFormatParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFilePropUpdate(w, r, params)
+}
+
+func setPermissions(w http.ResponseWriter, r *http.Request) {
+	var params FilePermissionParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFilePropUpdate(w, r, params)
+}
+
+func setValidation(w http.ResponseWriter, r *http.Request) {
+	var params FileValidationParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFilePropUpdate(w, r, params)
+}
+
+func setClearValueSupported(w http.ResponseWriter, r *http.Request) {
+	var params FileClearValueSupportedParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFilePropUpdate(w, r, params)
+}
+
+func setHelpPopupMsg(w http.ResponseWriter, r *http.Request) {
+	var params HelpPopupMsgParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processFilePropUpdate(w, r, params)
+}

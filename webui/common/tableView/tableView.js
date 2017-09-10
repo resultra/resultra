@@ -168,6 +168,16 @@ function initItemListTableView(params) {
 				emailAddrTableViewContainerHTML,initContainer)
 	}
 	
+	function createFileColDef(colInfo,tableContext) {
+		
+		function initContainer(colInfo, $file, tableContext,recordProxy,componentContext) {
+				setContainerComponentInfo($file,colInfo,colInfo.fileID)
+				initFileTableRecordEditBehavior($file,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,tableContext,
+				fileTableViewContainerHTML,initContainer)
+	}
+	
 	function createUrlLinkColDef(colInfo,tableContext) {
 		
 		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
@@ -320,6 +330,8 @@ function initItemListTableView(params) {
 			return createEmailAddrColDef(colInfo,tableContext)
 		case 'urlLink':
 			return createUrlLinkColDef(colInfo,tableContext)		
+		case 'file':
+			return createFileColDef(colInfo,tableContext)		
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,
