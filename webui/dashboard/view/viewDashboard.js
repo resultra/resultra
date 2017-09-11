@@ -54,6 +54,7 @@ $(document).ready(function() {
 	var pageLayout = initDashboardUILayoutPanes()
 			
 	initUserDropdownMenu()
+	initAlertHeader(viewDashboardContext.databaseID)
 	
 	var viewDashboardCanvasSelector = '#dashboardCanvas'
 	

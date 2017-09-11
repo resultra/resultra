@@ -107,6 +107,7 @@ $(document).ready(function() {
 	initAdminSettingsTOC(fieldPropsContext.databaseID)
 		
 	initUserDropdownMenu()
+	initAlertHeader(fieldPropsContext.databaseID)
 		
 	var getFieldParams = { fieldID: fieldPropsContext.fieldID }
 	jsonAPIRequest("field/get",getFieldParams,function(fieldInfo) {

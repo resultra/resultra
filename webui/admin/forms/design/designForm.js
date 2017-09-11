@@ -28,6 +28,8 @@ $(document).ready(function() {
 	
 	initUserDropdownMenu()
 	
+	initAlertHeader(designFormContext.databaseID)
+	
 					
 	var paletteConfig = {
 		draggableItemHTML: function(placeholderID,paletteItemID) {

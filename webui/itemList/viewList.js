@@ -156,6 +156,7 @@ $(document).ready(function() {
 	 
 				
 	initUserDropdownMenu()
+	initAlertHeader(viewListContext.databaseID)
 	
 	registerTableViewCustomSortFuncs()
 	

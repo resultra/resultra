@@ -36,6 +36,7 @@ $(document).ready(function() {
 	initNewItemPageLayout()
 				
 	initUserDropdownMenu()
+	initAlertHeader(submitFormPageContext.databaseID)
 	
 	var tocConfig = {
 		databaseID: submitFormPageContext.databaseID,

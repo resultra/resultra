@@ -1,7 +1,10 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#alertPropsPage'))	
+	
 	initUserDropdownMenu()
+	initAlertHeader(alertPropsContext.databaseID)
+	
 	initAdminSettingsTOC(alertPropsContext.databaseID)
 	
 	function initAlertFormProperties(alertInfo) {

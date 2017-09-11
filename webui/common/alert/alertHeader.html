@@ -1,0 +1,23 @@
+{{define "alertListMenuItems"}}
+
+  <li><a href="#">Alert 1</a></li>
+  <li><a href="#">Alert 2</a></li>
+  <li role="separator" class="divider"></li>
+  <li><a href="/alerts/{{.DatabaseID}}" id="alertMenuSeeAllLink">See all</a></li>
+    
+{{end}}
+
+{{define "alertHeader"}}
+
+<div class="btn-group" role="group">
+	<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		  <span class="glyphicon glyphicon-bell"> </span>
+		  <span>Alerts</span>
+	      <span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu4">
+		{{template "alertListMenuItems" .}}
+	</ul>
+</div>
+
+{{end}}

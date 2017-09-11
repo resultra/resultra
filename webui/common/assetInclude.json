@@ -20,5 +20,6 @@
 		"itemList",
 		"tableView",
 		"conditionalFormat",
-		"helpPopup"]
+		"helpPopup",
+		"alert"]
 }

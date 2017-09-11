@@ -1,6 +1,7 @@
 package common
 
 import (
+	"resultra/datasheet/webui/common/alert"
 	"resultra/datasheet/webui/common/attachment"
 	"resultra/datasheet/webui/common/breadCrumb"
 	"resultra/datasheet/webui/common/conditionalFormat"
@@ -37,5 +38,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, itemList.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, conditionalFormat.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, helpPopup.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, alert.TemplateFileList...)
 
 }

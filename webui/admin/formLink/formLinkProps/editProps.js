@@ -143,6 +143,8 @@ $(document).ready(function() {
 		
 	initAdminSettingsTOC(formLinkPropsContext.databaseID)
 		
+	initAlertHeader(formLinkPropsContext.databaseID)
+		
 	initUserDropdownMenu()
 		
 		var formLinkElemPrefix = "formLink_"

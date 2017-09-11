@@ -15,5 +15,6 @@ $(document).ready(function() {
 	initDatabaseTOC(tocConfig)
 		
 	initUserDropdownMenu()
+	initAlertHeader(trackerContext.databaseID)
 			
 })

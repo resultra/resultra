@@ -3,6 +3,7 @@ $(document).ready(function() {
 	initSubmitFormUILayoutPanes()
 				
 	initUserDropdownMenu()
+	initAlertHeader(viewFormPageContext.databaseID)
 	
 	function initRecordFormView(pageConfig,recordRef,changeSetID) {
 		
