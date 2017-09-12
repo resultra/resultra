@@ -1,0 +1,17 @@
+
+
+#alertPageHeaderMenu .badge {
+	padding-top:2px;
+	padding-bottom:2px;
+	padding-left:4px;
+	padding-right:4px;
+}
+
+#alertPageHeaderMenu .dropdown-menu {
+	white-space:normal;
+}
+
+
+a.alertFormLink {
+	white-space:normal !important;
+}
