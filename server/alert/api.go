@@ -27,6 +27,7 @@ func init() {
 	alertRouter.HandleFunc("/api/alert/setForm", setForm)
 	alertRouter.HandleFunc("/api/alert/setSummaryField", setSummaryField)
 	alertRouter.HandleFunc("/api/alert/setTriggerConditions", setTriggerConditions)
+	alertRouter.HandleFunc("/api/alert/setCaptionMessage", setCaptionMessage)
 
 	alertRouter.HandleFunc("/api/alert/setConditions", setConditions)
 
@@ -164,6 +165,15 @@ func setSummaryField(w http.ResponseWriter, r *http.Request) {
 
 func setTriggerConditions(w http.ResponseWriter, r *http.Request) {
 	var params SetTriggerConditionsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processAlertPropUpdate(w, r, params)
+}
+
+func setCaptionMessage(w http.ResponseWriter, r *http.Request) {
+	var params SetCaptionMessageParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

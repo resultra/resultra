@@ -110,3 +110,17 @@ func (updateParams SetTriggerConditionsParams) updateProps(alert *Alert) error {
 
 	return nil
 }
+
+type SetCaptionMessageParams struct {
+	AlertIDHeader
+	CaptionMessage string `json:"captionMessage"`
+}
+
+func (updateParams SetCaptionMessageParams) updateProps(alert *Alert) error {
+
+	// TODO - Validate field ID
+
+	alert.Properties.CaptionMessage = updateParams.CaptionMessage
+
+	return nil
+}

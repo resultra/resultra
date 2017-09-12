@@ -123,7 +123,62 @@ $(document).ready(function() {
 	
 	} // initFormLinkNameProperties
 	
+	function initCaptionMessageProperty(alertInfo) {
+		var editor = ace.edit("alertCaptionMessageEditor")
 	
+		// Address a console warning message on scrolling
+		editor.$blockScrolling = Infinity;
+		editor.setTheme("ace/theme/tomorrow_night")
+		editor.setShowPrintMargin(false);
+		editor.setValue(alertInfo.properties.captionMessage)
+		editor.setHighlightActiveLine(false);
+		
+		
+		function populateFieldReferenceDropdown() {
+			
+			var $fieldSelection = $("#alertFieldRefSelection")
+	 	    $fieldSelection.empty()
+			$fieldSelection.append('<option value="" disabled selected>Insert Field Reference</option>')
+			
+			loadSortedFieldInfo(alertInfo.parentDatabaseID, [fieldTypeAll],function(sortedFields) {
+				for (var fieldIndex in sortedFields) {
+	
+					var fieldInfo = sortedFields[fieldIndex]		
+	
+			 	   var menuItemHTML = '<option value="' + fieldInfo.refName + 
+						'">' + fieldInfo.name + '</option>'
+		
+					console.log("Adding selection to insert formula menu:" + menuItemHTML)
+			
+				 	$fieldSelection.append(menuItemHTML)			
+
+				} // for each  field
+			})
+	
+			$fieldSelection.on('change',function() {
+				var fieldRefName = $(this).find("option:selected").val();
+				if(fieldRefName.length > 0) {
+					editor.insert("[" + fieldRefName + "]")	
+					$fieldSelection.prop('selectedIndex',0);
+				}
+			})
+			
+		}
+		populateFieldReferenceDropdown()
+		
+		editor.on("blur",function() {
+			var newCaptionMsg = editor.getValue()
+			console.log("Caption message changed: " + newCaptionMsg)
+			var setCaptionParams = {
+				alertID: alertPropsContext.alertID,
+				captionMessage:newCaptionMsg
+			}
+			jsonAPIRequest("alert/setCaptionMessage",setCaptionParams,function(updatedAlertInfo) {
+				console.log("Done changing alert caption: " + updatedAlertInfo)
+			})
+		})
+		
+	}
 	
 	
 	var getAlertParams = { 
@@ -135,6 +190,7 @@ $(document).ready(function() {
 		initAlertRecipientProps(alertInfo)
 		initTriggerConditionProps(alertInfo)
 		initNameProperties(alertInfo)
+		initCaptionMessageProperty(alertInfo)
 	}) 
 	
 	var conditionPropsParams = {

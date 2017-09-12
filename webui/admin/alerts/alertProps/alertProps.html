@@ -96,12 +96,31 @@
 	</tr>
 {{end}}
 
+{{define "adminAlertCaptionTemplate"}}
+
+	<tr id="adminAlertCaptionTemplate">
+		<td class="width200"><label>Alert caption messsage</label>
+			<div><small>Enter a short message to accompany this alert's notifications. This message can include references to fields. When the alert is triggered, the actual values from fields will be substituted (merged) into the message.</small></div>
+		</td>
+
+		<td>
+			<div class="maxWidth400">
+				<div id="alertCaptionMessageEditor"></div>
+				<select class="form-control input-sm" data-live-search="true" 
+					data-width="fit" id="alertFieldRefSelection"></select>
+			</div>
+		</td>
+	</tr>
+
+{{end}}
+
 
 
 {{define "alertPropsBody"}}
 
 <table class="table">
 	{{template "adminAlertNameProperty"}}
+	{{template "adminAlertCaptionTemplate"}}
 	{{template "alertEventProps" .}}
 	{{template "alertConditionProps" .TriggerConditionPropPanelParams}}
 	{{template "alertRecipientProps"}}

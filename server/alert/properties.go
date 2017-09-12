@@ -18,6 +18,7 @@ type AlertProperties struct {
 	FormID            string                           `json:"formID"`
 	SummaryFieldID    string                           `json:"summaryFieldID"`
 	Conditions        []AlertCondition                 `json:"conditions"`
+	CaptionMessage    string                           `json:"captionMessage"`
 	TriggerConditions recordFilter.RecordFilterRuleSet `json:"triggerConditions"`
 }
 
