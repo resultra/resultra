@@ -11,7 +11,18 @@
 	white-space:normal;
 }
 
+div.alertHeader {
+	margin-top:5px !important;
+	margin-bottom:5px !important;
+}
+
 
 a.alertFormLink {
 	white-space:normal !important;
+	padding-left:10px !important;
+	padding-right:10px !important;
+}
+
+.notificationListItem {
+	border-bottom: 1px solid lightGrey;
 }
