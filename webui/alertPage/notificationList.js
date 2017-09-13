@@ -92,7 +92,7 @@ function initAlertNotificationList(databaseID) {
 			}
 			
 			this.notificationSummary = function() {
-				return formatNotificationSummary(fieldsByID,this.notification,this.alert)				
+				return this.notification.caption			
 			}
 		}
 		

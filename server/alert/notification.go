@@ -9,6 +9,7 @@ type AlertNotification struct {
 	RecordID         string         `json:"recordID"`
 	Timestamp        time.Time      `json:"timestamp"`
 	ItemSummary      string         `json:"itemSummary"`
+	Caption          string         `json:"caption"`
 	DateBefore       *time.Time     `json:"dateBefore,omitempty"`
 	DateAfter        *time.Time     `json:"dateAfter,omitempty"`
 	TriggerCondition AlertCondition `json:"triggerCondition"`

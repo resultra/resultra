@@ -36,7 +36,7 @@ function initAlertHeader(databaseID) {
 			$alertLink.append($alertName)
 			
 			var $summary = $("<div></div>")
-			var summaryText = formatNotificationSummary(fieldsByID,currNotification,currAlert)
+			var summaryText = currNotification.caption
 			$summary.text(summaryText)
 			$alertLink.append($summary)
 			

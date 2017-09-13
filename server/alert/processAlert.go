@@ -3,6 +3,7 @@ package alert
 import (
 	"fmt"
 	"log"
+	"regexp"
 	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/record"
@@ -22,9 +23,54 @@ type AlertProcessingContext struct {
 
 const alertCondChange string = "changed"
 
+func generateAlertNotificationCaption(context AlertProcessingContext) (string, error) {
+
+	preprocessedCaption := []byte(context.ProcessedAlert.Properties.CaptionMessage)
+
+	fieldReplSearch := regexp.MustCompile(`\[[a-zA-Z0-9_]+\]`)
+
+	formatFieldValue := func(fieldRefName string) string {
+		for _, currFieldInfo := range context.CalcFieldConfig.Fields {
+			if fieldRefName == currFieldInfo.RefName {
+				switch currFieldInfo.Type {
+				//			case field.FieldTypeText:
+				//			case field.FieldTypeNumber:
+				//			case field.FieldTypeBool:
+				case field.FieldTypeTime:
+					val, foundVal := context.CurrFieldVals.GetTimeFieldValue(currFieldInfo.FieldID)
+					if !foundVal {
+						return "(no date)"
+					} else {
+						return val.Format("01/02/2006")
+					}
+				default:
+					return fieldRefName
+				} // switch
+
+			}
+		}
+		return fieldRefName
+	}
+
+	replaceFieldRefWithFieldVal := func(s []byte) []byte {
+		fieldRefName := string(s[1 : len(s)-1])
+		log.Printf("generateAlertNotificationCaption: found field %v", fieldRefName)
+		return []byte(formatFieldValue(fieldRefName))
+	}
+
+	mergedCaption := fieldReplSearch.ReplaceAllFunc(preprocessedCaption, replaceFieldRefWithFieldVal)
+
+	return string(mergedCaption), nil
+}
+
 func processTimeFieldAlert(context AlertProcessingContext, cond AlertCondition) (*AlertNotification, error) {
 
 	log.Printf("Processing time field alert: %+v", cond)
+
+	captionMsg, err := generateAlertNotificationCaption(context)
+	if err != nil {
+		return nil, fmt.Errorf("processTimeFieldAlert: %v", err)
+	}
 
 	switch cond.ConditionID {
 	case alertCondChange:
@@ -41,6 +87,7 @@ func processTimeFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 				RecordID:         context.RecordID,
 				Timestamp:        context.UpdateTimestamp,
 				ItemSummary:      context.ItemSummary,
+				Caption:          captionMsg,
 				TriggerCondition: cond,
 				DateBefore:       &valBefore,
 				DateAfter:        &valAfter}
@@ -53,6 +100,7 @@ func processTimeFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 				RecordID:         context.RecordID,
 				Timestamp:        context.UpdateTimestamp,
 				ItemSummary:      context.ItemSummary,
+				Caption:          captionMsg,
 				TriggerCondition: cond,
 				DateBefore:       &valBefore,
 				DateAfter:        &valAfter}
@@ -68,6 +116,7 @@ func processTimeFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 					RecordID:         context.RecordID,
 					Timestamp:        context.UpdateTimestamp,
 					ItemSummary:      context.ItemSummary,
+					Caption:          captionMsg,
 					TriggerCondition: cond,
 					DateBefore:       &valBefore,
 					DateAfter:        &valAfter}
