@@ -3,7 +3,6 @@ package alert
 import (
 	"fmt"
 	"log"
-	"regexp"
 	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/record"
@@ -27,11 +26,9 @@ func generateAlertNotificationCaption(context AlertProcessingContext) (string, e
 
 	preprocessedCaption := []byte(context.ProcessedAlert.Properties.CaptionMessage)
 
-	fieldReplSearch := regexp.MustCompile(`\[[a-zA-Z0-9_]+\]`)
-
-	formatFieldValue := func(fieldRefName string) string {
+	formatFieldValue := func(fieldIDRef string) (string, bool) {
 		for _, currFieldInfo := range context.CalcFieldConfig.Fields {
-			if fieldRefName == currFieldInfo.RefName {
+			if fieldIDRef == currFieldInfo.FieldID {
 				switch currFieldInfo.Type {
 				//			case field.FieldTypeText:
 				//			case field.FieldTypeNumber:
@@ -39,26 +36,31 @@ func generateAlertNotificationCaption(context AlertProcessingContext) (string, e
 				case field.FieldTypeTime:
 					val, foundVal := context.CurrFieldVals.GetTimeFieldValue(currFieldInfo.FieldID)
 					if !foundVal {
-						return "(no date)"
+						return "(no date)", true
 					} else {
-						return val.Format("01/02/2006")
+						return val.Format("01/02/2006"), true
 					}
 				default:
-					return fieldRefName
+					return "", false
 				} // switch
 
 			}
 		}
-		return fieldRefName
+		return "", false
 	}
 
 	replaceFieldRefWithFieldVal := func(s []byte) []byte {
-		fieldRefName := string(s[1 : len(s)-1])
-		log.Printf("generateAlertNotificationCaption: found field %v", fieldRefName)
-		return []byte(formatFieldValue(fieldRefName))
+
+		fieldIDRef := string(s[1 : len(s)-1])
+		fieldRefVal, valFound := formatFieldValue(fieldIDRef)
+		if valFound {
+			return []byte(fieldRefVal)
+		} else {
+			return s // no replacement
+		}
 	}
 
-	mergedCaption := fieldReplSearch.ReplaceAllFunc(preprocessedCaption, replaceFieldRefWithFieldVal)
+	mergedCaption := msgTemplateFieldRefPattern.ReplaceAllFunc(preprocessedCaption, replaceFieldRefWithFieldVal)
 
 	return string(mergedCaption), nil
 }

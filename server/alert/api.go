@@ -28,6 +28,7 @@ func init() {
 	alertRouter.HandleFunc("/api/alert/setSummaryField", setSummaryField)
 	alertRouter.HandleFunc("/api/alert/setTriggerConditions", setTriggerConditions)
 	alertRouter.HandleFunc("/api/alert/setCaptionMessage", setCaptionMessage)
+	alertRouter.HandleFunc("/api/alert/getDecodedCaptionMessage", getDecodedCaptionMessage)
 
 	alertRouter.HandleFunc("/api/alert/setConditions", setConditions)
 
@@ -179,6 +180,34 @@ func setCaptionMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processAlertPropUpdate(w, r, params)
+}
+
+type GetDecodedCaptionMessageParams struct {
+	AlertID string `json:"alertID"`
+}
+
+func getDecodedCaptionMessage(w http.ResponseWriter, r *http.Request) {
+
+	var params GetDecodedCaptionMessageParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	alert, err := GetAlert(params.AlertID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	decodedMsg, err := replaceFieldIDWithFieldRef(alert.Properties.CaptionMessage, alert.ParentDatabaseID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	api.WriteJSONResponse(w, decodedMsg)
+
 }
 
 func validateAlertNameAPI(w http.ResponseWriter, r *http.Request) {

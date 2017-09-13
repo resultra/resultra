@@ -118,9 +118,14 @@ type SetCaptionMessageParams struct {
 
 func (updateParams SetCaptionMessageParams) updateProps(alert *Alert) error {
 
-	// TODO - Validate field ID
+	// For internal storage, replace occurences of field references with the immutable field ID.
+	// This allows the field reference name to change without affecting the caption template.
+	encodedCaptionMsg, err := replaceFieldRefWithFieldID(updateParams.CaptionMessage, alert.ParentDatabaseID)
+	if err != nil {
+		return fmt.Errorf("SetCaptionMessageParams.updateProps: %v", err)
+	}
 
-	alert.Properties.CaptionMessage = updateParams.CaptionMessage
+	alert.Properties.CaptionMessage = encodedCaptionMsg
 
 	return nil
 }

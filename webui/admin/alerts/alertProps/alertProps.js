@@ -130,7 +130,12 @@ $(document).ready(function() {
 		editor.$blockScrolling = Infinity;
 		editor.setTheme("ace/theme/tomorrow_night")
 		editor.setShowPrintMargin(false);
-		editor.setValue(alertInfo.properties.captionMessage)
+		
+		var getDecodedCaptionParams = { alertID: alertInfo.alertID }
+		jsonAPIRequest("alert/getDecodedCaptionMessage",getDecodedCaptionParams,function(decodedMsg) {
+			editor.setValue(decodedMsg)
+		})
+		
 		editor.setHighlightActiveLine(false);
 		
 		
