@@ -69,18 +69,13 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 					var currRecordRef = recordProxy.getRecordFunc()
 					var htmlEditorFieldID = htmlEditorObjectRef.properties.fieldID
 		
-					var textBoxTextValueFormat = {
-						context:"htmlEditor",
-						format:"general"
-					}
-
+	
 					var setRecordValParams = { 
 						parentDatabaseID:currRecordRef.parentDatabaseID,
 						recordID:currRecordRef.recordID,
 						changeSetID: recordProxy.changeSetID,
 						fieldID:htmlEditorFieldID, 
-						value:editorVal,
-						valueFormat:textBoxTextValueFormat 
+						value:editorVal
 					}
 		
 					jsonAPIRequest("recordUpdate/setLongTextFieldValue",setRecordValParams,function(updatedRecordRef) {

@@ -79,17 +79,12 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 				
 				if(inputIsValid) {
 					var currRecordRef = recordProxy.getRecordFunc()
-					var toggleValueFormat = {
-						context: "toggle",
-						format: "toggle"
-					}
 					var setRecordValParams = {
 						parentDatabaseID:currRecordRef.parentDatabaseID,
 						recordID:currRecordRef.recordID,
 						changeSetID: recordProxy.changeSetID,
 						fieldID:fieldID, 
-						value:boolVal,
-						 valueFormat: toggleValueFormat }
+						value:boolVal}
 					console.log("Setting boolean value (record): " + JSON.stringify(setRecordValParams))
 					jsonAPIRequest("recordUpdate/setBoolFieldValue",setRecordValParams,function(updatedRecordRef) {
 			

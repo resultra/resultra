@@ -182,11 +182,6 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 				
 				if(nonEmptyStringVal(commentVal) || (newCommentAttachments.length > 0)) {
 					console.log("initCommentBoxRecordEditBehavior: Add comment:" + commentVal)
-						
-					var commentValueFormat = {
-						context:"commentBox",
-						format:"general"
-					}
 			
 					var setRecordValParams = { 
 						parentDatabaseID:currRecordRef.parentDatabaseID,
@@ -194,8 +189,7 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 						changeSetID: recordProxy.changeSetID,
 						fieldID:commentFieldID, 
 						commentText:commentVal,
-						attachments:newCommentAttachments, 
-						valueFormat:commentValueFormat }
+						attachments:newCommentAttachments }
 		
 					console.log("Setting date value: " + JSON.stringify(setRecordValParams))
 		

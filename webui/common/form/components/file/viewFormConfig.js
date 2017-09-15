@@ -30,8 +30,7 @@ function initFileRecordEditBehavior($container,componentContext,recordProxy, fil
 			recordID:currRecordRef.recordID, 
 			changeSetID: recordProxy.changeSetID,
 			fieldID:fileFieldID, 
-			attachment:fileVal,
-			valueFormat: fileTextValueFormat 
+			attachment:fileVal 
 		}
 		jsonAPIRequest("recordUpdate/setFileFieldValue",setRecordValParams,function(replyData) {
 			// After updating the record, the local cache of records will

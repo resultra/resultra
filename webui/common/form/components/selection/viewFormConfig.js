@@ -76,17 +76,12 @@ function initSelectionRecordEditBehavior($selectionContainer,componentContext,re
 	
 	function setTextVal(newValue) {
 		var currRecordRef = recordProxy.getRecordFunc()	
-		var setTextFieldValueFormat = {
-			context: "select",
-			format:"general" 
-		}
 		var setRecordValParams = { 
 			parentDatabaseID:currRecordRef.parentDatabaseID,
 			recordID:currRecordRef.recordID, 
 			changeSetID: recordProxy.changeSetID,
 			fieldID:selectionFieldID, 
-			value:newValue,
-			valueFormat:setTextFieldValueFormat}
+			value:newValue}
 		jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
 			// After updating the record, the local cache of records in currentRecordSet will
 			// be out of date. So after updating the record on the server, the locally cached
@@ -98,17 +93,12 @@ function initSelectionRecordEditBehavior($selectionContainer,componentContext,re
 	
 	function setNumberVal(numberVal) {
 		var currRecordRef = recordProxy.getRecordFunc()
-		var setNumberFieldValueFormat = {
-			context: "select",
-			format:"general" 
-		}			
 		var setRecordValParams = { 
 			parentDatabaseID:currRecordRef.parentDatabaseID,
 			recordID:currRecordRef.recordID, 
 			changeSetID: recordProxy.changeSetID,
 			fieldID:selectionFieldID, 
-			value:numberVal,
-			valueFormat:setNumberFieldValueFormat
+			value:numberVal
 		}
 		jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
 			// After updating the record, the local cache of records will

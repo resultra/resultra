@@ -68,14 +68,12 @@ function initRatingRecordEditBehavior($ratingContainer,componentContext,recordPr
 					currRecordRef = recordProxy.getRecordFunc()
 					var ratingFieldID = ratingObjectRef.properties.fieldID
 
-					var ratingValueFormat = { context: "rating", format: "star" }
 					var setRecordValParams = { 
 						parentDatabaseID:currRecordRef.parentDatabaseID,
 						recordID:currRecordRef.recordID,
 						changeSetID: recordProxy.changeSetID,
 						fieldID:ratingFieldID, 
-						value:ratingVal,
-						valueFormat: ratingValueFormat}
+						value:ratingVal}
 					jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
 						// After updating the record, the local cache of records in currentRecordSet will
 						// be out of date. So after updating the record on the server, the locally cached

@@ -88,18 +88,13 @@ function initTextBoxRecordEditBehavior($container,componentContext,recordProxy, 
 			
 			validateTextBoxInput(function(inputIsValid) {
 				if (inputIsValid) {
-					var textBoxTextValueFormat = {
-						context:"textBox",
-						format:"general"
-					}
 					var currRecordRef = recordProxy.getRecordFunc()
 					var setRecordValParams = { 
 						parentDatabaseID:currRecordRef.parentDatabaseID,
 						recordID:currRecordRef.recordID, 
 						changeSetID: recordProxy.changeSetID,
 						fieldID:textBoxFieldID, 
-						value:textVal,
-						valueFormat: textBoxTextValueFormat 
+						value:textVal
 					}
 					jsonAPIRequest("recordUpdate/setTextFieldValue",setRecordValParams,function(replyData) {
 						// After updating the record, the local cache of records will

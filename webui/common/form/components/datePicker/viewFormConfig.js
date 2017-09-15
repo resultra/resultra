@@ -54,17 +54,12 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 			validateDatePickerInput(function(inputIsValid) {
 				if(inputIsValid) {
 					var currRecordRef = recordProxy.getRecordFunc()
-					var dateValueFormat = {
-						context: "datePicker",
-						format: "date"
-					}
 					var setRecordValParams = {
 						parentDatabaseID:currRecordRef.parentDatabaseID,
 						recordID:currRecordRef.recordID, 
 						changeSetID: recordProxy.changeSetID,
 						fieldID:fieldID, 
-						value:dateVal,
-						 valueFormat: dateValueFormat}
+						value:dateVal}
 					console.log("Setting date value: " + JSON.stringify(setRecordValParams))
 	
 					jsonAPIRequest("recordUpdate/setTimeFieldValue",setRecordValParams,function(updatedRecordRef) {

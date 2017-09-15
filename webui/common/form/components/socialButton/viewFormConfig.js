@@ -99,14 +99,12 @@ function initSocialButtonRecordEditBehavior($socialButtonContainer,componentCont
 		
 			var currRecordRef = recordProxy.getRecordFunc()
 			var socialButtonFieldID = socialButtonObjectRef.properties.fieldID
-			var userValueFormat = { context: "social", format: "button" }
 			var setRecordValParams = { 
 				parentDatabaseID:currRecordRef.parentDatabaseID,
 				recordID:currRecordRef.recordID,
 				changeSetID: recordProxy.changeSetID, 
 				fieldID:socialButtonFieldID, 
-				userIDs:selectedUserIDs,
-				valueFormat:userValueFormat}
+				userIDs:selectedUserIDs}
 			jsonAPIRequest("recordUpdate/setUserFieldValue",setRecordValParams,function(updatedFieldVal) {
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached

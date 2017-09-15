@@ -80,8 +80,7 @@ function initEmailAddrRecordEditBehavior($container,componentContext,recordProxy
 				recordID:currRecordRef.recordID, 
 				changeSetID: recordProxy.changeSetID,
 				fieldID:emailAddrFieldID, 
-				value:emailAddrVal,
-				valueFormat: emailAddrTextValueFormat 
+				value:emailAddrVal 
 			}
 			jsonAPIRequest("recordUpdate/setEmailAddrFieldValue",setRecordValParams,function(replyData) {
 				// After updating the record, the local cache of records will

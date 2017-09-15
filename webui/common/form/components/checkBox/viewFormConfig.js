@@ -99,17 +99,12 @@ function initCheckBoxRecordEditBehavior($checkBox,componentContext,recordProxy, 
 				
 				if(inputIsValid) {
 					var currRecordRef = recordProxy.getRecordFunc()
-					var checkboxValueFormat = {
-						context: "checkbox",
-						format: "check"
-					}
 					var setRecordValParams = {
 						parentDatabaseID:currRecordRef.parentDatabaseID,
 						recordID:currRecordRef.recordID,
 						changeSetID: recordProxy.changeSetID,
 						fieldID:fieldID, 
-						value:boolVal,
-						 valueFormat: checkboxValueFormat }
+						value:boolVal }
 					console.log("Setting boolean value (record): " + JSON.stringify(setRecordValParams))
 					jsonAPIRequest("recordUpdate/setBoolFieldValue",setRecordValParams,function(updatedRecordRef) {
 			

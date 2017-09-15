@@ -47,22 +47,13 @@ func CloneDefaultFieldValues(remappedIDs uniqueID.UniqueIDRemapper, srcDefaultVa
 type SetDefaultValFunc func(currUserID string, recUpdateHeader RecordUpdateHeader, defaultVal DefaultFieldValue) (*Record, error)
 type DefaultValIDDefaultValFuncMap map[string]SetDefaultValFunc
 
-var defaultValCellUpdateValFormat CellUpdateValueFormat
-
-func init() {
-
-	defaultValCellUpdateValFormat = CellUpdateValueFormat{"defaultVal", "general"}
-
-}
-
 func setBoolTrueDefaultValue(currUserID string, recUpdateHeader RecordUpdateHeader, defaultVal DefaultFieldValue) (*Record, error) {
 
 	trueVal := true
 
 	setValParams := SetRecordBoolValueParams{
 		RecordUpdateHeader: recUpdateHeader,
-		Value:              &trueVal,
-		ValueFormat:        defaultValCellUpdateValFormat}
+		Value:              &trueVal}
 
 	return UpdateRecordValue(currUserID, setValParams)
 }
@@ -73,8 +64,7 @@ func setBoolFalseDefaultValue(currUserID string, recUpdateHeader RecordUpdateHea
 
 	setValParams := SetRecordBoolValueParams{
 		RecordUpdateHeader: recUpdateHeader,
-		Value:              &falseVal,
-		ValueFormat:        defaultValCellUpdateValFormat}
+		Value:              &falseVal}
 
 	return UpdateRecordValue(currUserID, setValParams)
 }
@@ -92,8 +82,7 @@ func setCurrTimeDefaultValue(currUserID string, recUpdateHeader RecordUpdateHead
 
 	setValParams := SetRecordTimeValueParams{
 		RecordUpdateHeader: recUpdateHeader,
-		Value:              &currTime,
-		ValueFormat:        defaultValCellUpdateValFormat}
+		Value:              &currTime}
 
 	return UpdateRecordValue(currUserID, setValParams)
 }
@@ -112,8 +101,7 @@ func setSpecificNumberValDefaultValue(currUserID string, recUpdateHeader RecordU
 
 	setValParams := SetRecordNumberValueParams{
 		RecordUpdateHeader: recUpdateHeader,
-		Value:              defaultVal.NumberVal,
-		ValueFormat:        defaultValCellUpdateValFormat}
+		Value:              defaultVal.NumberVal}
 
 	return UpdateRecordValue(currUserID, setValParams)
 }

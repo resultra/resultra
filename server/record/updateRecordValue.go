@@ -13,7 +13,6 @@ type RecordUpdater interface {
 	recordID() string
 	parentDatabaseID() string
 	generateCellValue() (string, error)
-	getUpdateProperties() CellUpdateProperties
 	GetChangeSetID() string
 	doCollapseRecentValues() bool
 }
@@ -76,7 +75,6 @@ func UpdateRecordValue(currUserID string, recUpdater RecordUpdater) (*Record, er
 		return nil, fmt.Errorf("UpdateRecordValue: Error generating value for cell update: %v", cellErr)
 	}
 
-	updateProps := recUpdater.getUpdateProperties()
 	uniqueUpdateID := uniqueID.GenerateSnowflakeID()
 	updateTimestamp := time.Now().UTC()
 
@@ -88,8 +86,7 @@ func UpdateRecordValue(currUserID string, recUpdater RecordUpdater) (*Record, er
 		RecordID:         recUpdater.recordID(),
 		CellValue:        cellValue,
 		UpdateTimeStamp:  updateTimestamp,
-		ChangeSetID:      recUpdater.GetChangeSetID(),
-		Properties:       updateProps}
+		ChangeSetID:      recUpdater.GetChangeSetID()}
 
 	if saveErr := SaveCellUpdate(cellUpdate, recUpdater.doCollapseRecentValues()); saveErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Error saving cell update: %v", saveErr)

@@ -48,10 +48,6 @@ function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, 
 	
 	function setUrlLinkVal(urlLinkVal) {
 		
-		var urlLinkTextValueFormat = {
-			context:"urlLink",
-			format:"general"
-		}
 		var currRecordRef = recordProxy.getRecordFunc()
 		var urlLinkFieldID = urlLinkObjRef.properties.fieldID
 		var setRecordValParams = { 
@@ -59,8 +55,7 @@ function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, 
 			recordID:currRecordRef.recordID, 
 			changeSetID: recordProxy.changeSetID,
 			fieldID:urlLinkFieldID, 
-			value:urlLinkVal,
-			valueFormat: urlLinkTextValueFormat 
+			value:urlLinkVal 
 		}
 		jsonAPIRequest("recordUpdate/setUrlLinkFieldValue",setRecordValParams,function(replyData) {
 			// After updating the record, the local cache of records will

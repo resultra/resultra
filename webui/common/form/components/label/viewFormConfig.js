@@ -76,17 +76,12 @@ function initLabelRecordEditBehavior($labelContainer, componentContext,
 
 					var userFieldID = labelFieldID
 
-					var userValueFormat = {
-						context: "selectUser",
-						format: "general"
-					}
 					var setRecordValParams = { 
 						parentDatabaseID:currRecordRef.parentDatabaseID,
 						recordID:currRecordRef.recordID,
 						changeSetID: recordProxy.changeSetID, 
 						fieldID:userFieldID, 
-						labels:selectedLabels,
-						valueFormat:userValueFormat}
+						labels:selectedLabels}
 					jsonAPIRequest("recordUpdate/setLabelFieldValue",setRecordValParams,function(updatedFieldVal) {
 						// After updating the record, the local cache of records in currentRecordSet will
 						// be out of date. So after updating the record on the server, the locally cached

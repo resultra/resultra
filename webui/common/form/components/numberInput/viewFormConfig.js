@@ -123,17 +123,12 @@ function initNumberInputRecordEditBehavior($container,componentContext,recordPro
 					var currSavedVal = getCurrentFieldValue()
 					if (currSavedVal != numberVal) {
 						var currRecordRef = recordProxy.getRecordFunc()
-						var numberInputNumberValueFormat = {
-							context:"numberInput",
-							format:"general"
-						}
 						var setRecordValParams = { 
 							parentDatabaseID:currRecordRef.parentDatabaseID,
 							recordID:currRecordRef.recordID,
 							changeSetID: recordProxy.changeSetID,
 							fieldID:numberInputFieldID, 
-							value:numberVal,
-							valueFormat:numberInputNumberValueFormat
+							value:numberVal
 						}
 						jsonAPIRequest("recordUpdate/setNumberFieldValue",setRecordValParams,function(replyData) {
 							// After updating the record, the local cache of records will
