@@ -16,13 +16,10 @@ CREATE TABLE collaborators (
 	UNIQUE(user_id,database_id)
 );
 
-/* Records in user_roles define which database roles a given users belongs to */
 CREATE TABLE collaborator_roles (
 	collaborator_id text REFERENCES collaborators(collaborator_id) ON DELETE CASCADE, 
 	role_id text REFERENCES database_roles(role_id) ON DELETE CASCADE
 );
-
-
 
 
 CREATE TABLE list_role_privs (

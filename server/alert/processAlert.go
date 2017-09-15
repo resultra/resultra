@@ -30,9 +30,31 @@ func generateAlertNotificationCaption(context AlertProcessingContext) (string, e
 		for _, currFieldInfo := range context.CalcFieldConfig.Fields {
 			if fieldIDRef == currFieldInfo.FieldID {
 				switch currFieldInfo.Type {
-				//			case field.FieldTypeText:
-				//			case field.FieldTypeNumber:
-				//			case field.FieldTypeBool:
+				case field.FieldTypeText:
+					val, foundVal := context.CurrFieldVals.GetTextFieldValue(currFieldInfo.FieldID)
+					if !foundVal {
+						return "(no value)", true
+					} else {
+						return val, true
+					}
+				case field.FieldTypeNumber:
+					val, foundVal := context.CurrFieldVals.GetNumberFieldValue(currFieldInfo.FieldID)
+					if !foundVal {
+						return "(no value)", true
+					} else {
+						return fmt.Sprintf("%v", val), true
+					}
+				case field.FieldTypeBool:
+					val, foundVal := context.CurrFieldVals.GetBoolFieldValue(currFieldInfo.FieldID)
+					if !foundVal {
+						return "(no value)", true
+					} else {
+						if val == true {
+							return "true", true
+						} else {
+							return "false", true
+						}
+					}
 				case field.FieldTypeTime:
 					val, foundVal := context.CurrFieldVals.GetTimeFieldValue(currFieldInfo.FieldID)
 					if !foundVal {
