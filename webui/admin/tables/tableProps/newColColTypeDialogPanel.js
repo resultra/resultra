@@ -239,7 +239,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				case fieldTypeText:
 					createTextInput(fieldInfo)
 					break
-				case fieldTypeLabel:
+				case fieldTypeTag:
 					createTagInput(fieldInfo)
 					break
 				case fieldTypeComment:
@@ -349,7 +349,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 			case fieldTypeTime:
 				$colTypeSelection.append(selectOptionHTML('datePicker','Date picker'))
 				break
-			case fieldTypeLabel:
+			case fieldTypeTag:
 				$colTypeSelection.append(selectOptionHTML('label','Tags'))
 				break
 			case fieldTypeEmail:

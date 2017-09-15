@@ -28,7 +28,7 @@ function openNewLabelDialog(databaseID,formID,containerParams) {
 		elemPrefix: "label_",
 		databaseID: databaseID,
 		formID: formID,
-		fieldTypes: [fieldTypeLabel],
+		fieldTypes: [fieldTypeTag],
 		containerParams: containerParams,
 		createNewFormComponent: createNewLabel
 	}

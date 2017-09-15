@@ -7,7 +7,7 @@ var fieldTypeTime = "time"
 var fieldTypeUser = "user"
 var fieldTypeAll = "all"
 var fieldTypeComment = "comment"
-var fieldTypeLabel = "label"
+var fieldTypeTag = "label"
 var fieldTypeEmail = "email"
 var fieldTypeURL = "url"
 var fieldTypeFile = "file"
@@ -23,7 +23,7 @@ function fieldTypeLabel(fieldType) {
 	case fieldTypeFile: return "File"
 	case fieldTypeLongText: return "Long Text"
 	case fieldTypeComment: return "Comment"
-	case fieldTypeLabel: return "Label"
+	case fieldTypeTag: return "Tag"
 	case fieldTypeEmail: return "Email Address"
 	case fieldTypeURL: return "URL link"
 	default: return "Unknown field type"
@@ -220,7 +220,7 @@ function loadFieldInfo(parentDatabaseID,fieldTypes,fieldInfoCallback) {
 			} // for each file field
 		}
 		
-		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeLabel]==true) {
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeTag]==true) {
 			var labelFields = fieldsByType.labelFields
 			for (labelFieldIter in labelFields) {		
 				var labelField = labelFields[labelFieldIter]			

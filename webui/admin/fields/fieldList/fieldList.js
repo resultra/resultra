@@ -19,8 +19,9 @@ function initAdminFieldSettings(databaseID) {
 		$refNameCol.text(fieldInfo.refName)
 		
 		
+		var fieldLabel = fieldTypeLabel(fieldInfo.type)
 		var $typeCol = $fieldListRow.find(".fieldTypeCol")
-		$typeCol.text(fieldTypeLabel(fieldInfo.type))
+		$typeCol.text(fieldLabel)
 
 		var $calcFieldCol = $fieldListRow.find(".fieldCalcCol")
 		var calcFieldLabel = "No"
