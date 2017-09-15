@@ -33,21 +33,21 @@ func generateAlertNotificationCaption(context AlertProcessingContext) (string, e
 				case field.FieldTypeText:
 					val, foundVal := context.CurrFieldVals.GetTextFieldValue(currFieldInfo.FieldID)
 					if !foundVal {
-						return "(no value)", true
+						return "[no value]", true
 					} else {
 						return val, true
 					}
 				case field.FieldTypeNumber:
 					val, foundVal := context.CurrFieldVals.GetNumberFieldValue(currFieldInfo.FieldID)
 					if !foundVal {
-						return "(no value)", true
+						return "[no value]", true
 					} else {
 						return fmt.Sprintf("%v", val), true
 					}
 				case field.FieldTypeBool:
 					val, foundVal := context.CurrFieldVals.GetBoolFieldValue(currFieldInfo.FieldID)
 					if !foundVal {
-						return "(no value)", true
+						return "[no value]", true
 					} else {
 						if val == true {
 							return "true", true
@@ -58,7 +58,7 @@ func generateAlertNotificationCaption(context AlertProcessingContext) (string, e
 				case field.FieldTypeTime:
 					val, foundVal := context.CurrFieldVals.GetTimeFieldValue(currFieldInfo.FieldID)
 					if !foundVal {
-						return "(no date)", true
+						return "[no date]", true
 					} else {
 						return val.Format("01/02/2006"), true
 					}
