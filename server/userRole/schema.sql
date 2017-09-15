@@ -9,18 +9,20 @@ CREATE TABLE database_roles (
 	name text NOT NULL
 );
 
+CREATE TABLE collaborators (
+	collaborator_id text PRIMARY KEY,
+	user_id text REFERENCES users(user_id), 
+	database_id text REFERENCES databases(database_id),
+	UNIQUE(user_id,database_id)
+);
+
 /* Records in user_roles define which database roles a given users belongs to */
 CREATE TABLE collaborator_roles (
 	collaborator_id text REFERENCES collaborators(collaborator_id) ON DELETE CASCADE, 
 	role_id text REFERENCES database_roles(role_id) ON DELETE CASCADE
 );
 
-CREATE TABLE collaborators (
-	collaborator_id text PRIMARY KEY,
-	user_id text REFERENCES users(user_id), 
-	database_id text REFERENCES databases(database_id),
-	UNIQUE(user_id,database_id)
-)
+
 
 
 CREATE TABLE list_role_privs (

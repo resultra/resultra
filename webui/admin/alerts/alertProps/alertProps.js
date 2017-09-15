@@ -125,11 +125,14 @@ $(document).ready(function() {
 	
 	function initCaptionMessageProperty(alertInfo) {
 		var editor = ace.edit("alertCaptionMessageEditor")
-	
+			
 		// Address a console warning message on scrolling
 		editor.$blockScrolling = Infinity;
 		editor.setTheme("ace/theme/tomorrow_night")
 		editor.setShowPrintMargin(false);
+		editor.getSession().setOption('indentedSoftWrap', false); // disable indent on subsequent lines
+		editor.getSession().setUseWrapMode(true); // enable line wrapping.
+		editor.renderer.setShowGutter(false);
 		
 		var getDecodedCaptionParams = { alertID: alertInfo.alertID }
 		jsonAPIRequest("alert/getDecodedCaptionMessage",getDecodedCaptionParams,function(decodedMsg) {
