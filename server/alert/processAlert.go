@@ -21,6 +21,9 @@ type AlertProcessingContext struct {
 }
 
 const alertCondChange string = "changed"
+const alertCondFalse string = "false"
+const alertCondTrue string = "true"
+const alertCondCleared string = "cleared"
 
 func generateAlertNotificationCaption(context AlertProcessingContext) (string, error) {
 
@@ -154,6 +157,73 @@ func processTimeFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 	return nil, nil
 }
 
+func processBoolFieldAlert(context AlertProcessingContext, cond AlertCondition) (*AlertNotification, error) {
+
+	log.Printf("Processing bool field alert: %+v", cond)
+
+	valBefore, foundValBefore := context.PrevFieldVals.GetBoolFieldValue(cond.FieldID)
+	valAfter, foundValAfter := context.CurrFieldVals.GetBoolFieldValue(cond.FieldID)
+
+	valChanged := func() bool {
+		if (foundValBefore == false) && (foundValAfter == false) {
+			return false
+		} else if (foundValBefore == false) && (foundValAfter == true) {
+			return true
+		} else if (foundValBefore == true) && (foundValAfter == false) {
+			return true
+		} else { // value found bothe before and after update => compare the actual values
+			if valBefore == valAfter {
+				return false
+			} else {
+				return true
+			}
+		}
+
+	}
+
+	generateNotification := func() (*AlertNotification, error) {
+
+		captionMsg, err := generateAlertNotificationCaption(context)
+		if err != nil {
+			return nil, fmt.Errorf("processTimeFieldAlert: %v", err)
+		}
+
+		alertNofify := AlertNotification{
+			AlertID:          context.ProcessedAlert.AlertID,
+			RecordID:         context.RecordID,
+			Timestamp:        context.UpdateTimestamp,
+			ItemSummary:      context.ItemSummary,
+			Caption:          captionMsg,
+			TriggerCondition: cond}
+
+		return &alertNofify, nil
+
+	}
+
+	switch cond.ConditionID {
+	case alertCondChange:
+		if valChanged() {
+			return generateNotification()
+		}
+	case alertCondFalse:
+		if valChanged() && foundValAfter && (valAfter == false) {
+			return generateNotification()
+		}
+	case alertCondTrue:
+		if valChanged() && foundValAfter && (valAfter == true) {
+			return generateNotification()
+		}
+	case alertCondCleared:
+		if valChanged() && (!foundValAfter) {
+			return generateNotification()
+		}
+	default:
+		return nil, nil
+	}
+
+	return nil, nil
+}
+
 // processAlert processs a single alert for a single set of previous and current (before and after)
 // field values (including calculated fields).
 func processAlert(context AlertProcessingContext) (*AlertNotification, error) {
@@ -170,6 +240,15 @@ func processAlert(context AlertProcessingContext) (*AlertNotification, error) {
 		//			case field.FieldTypeBool:
 		case field.FieldTypeTime:
 			alertNotification, genErr := processTimeFieldAlert(context, currAlertCond)
+			if genErr != nil {
+				return nil, fmt.Errorf("processAlert:  %v", genErr)
+			} else if alertNotification != nil {
+				log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
+					context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
+				return alertNotification, nil // No need to process after matching the first condition
+			}
+		case field.FieldTypeBool:
+			alertNotification, genErr := processBoolFieldAlert(context, currAlertCond)
 			if genErr != nil {
 				return nil, fmt.Errorf("processAlert:  %v", genErr)
 			} else if alertNotification != nil {

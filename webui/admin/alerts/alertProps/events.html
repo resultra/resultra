@@ -30,6 +30,16 @@
 		</div> <!-- Field name field -->
 			
 	</div>
+
+	<div id="alertBoolFieldConditionProps">
+		
+		<div class="form-group">
+			<select class="form-control input-sm alertConditionBoolModeSelection"></select>
+		</div> <!-- Field name field -->
+					
+	</div>
+
+
 </div>
 
 {{end}}
@@ -44,7 +54,7 @@
 	{{template "alertEventTemplates"}}
 	
 	<tr>
-		<td class="width200"><label>Events which trigger the alert</label>
+		<td class="width200"><label>Event(s) which trigger the alert</label>
 			<div>
 				<small>Add one or more events which will trigger the alert. If any one of the events occurs, the alert will be triggered.</small>
 			</div>

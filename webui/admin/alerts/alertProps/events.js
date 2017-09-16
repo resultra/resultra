@@ -179,25 +179,103 @@ function dateAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo) 
 	return $listItem
 }
 
+function boolAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo) {
+	
+	var $listItem = createAlertConditionListItem(propsParams,fieldInfo.name)
+	
+	var $alertProps = $("#alertBoolFieldConditionProps").clone()
+	$alertProps.attr("id","")
+		
+	
+	var alertCondDefs = {
+		"true": {
+			label: "Value set to true"
+		},
+		"false": {
+			label: "Value set to false"
+		},
+		"cleared": {
+			label: "Value cleared"
+		},
+		"changed": {
+			label: "Value changed"
+		}
+	}
+	
+	function initConditionDef(condDefID) {
+		
+		var condDef
+		if (condDefID !== null) {
+			condDef = alertCondDefs[condDefID]
+		} else {
+			condDef = {} 			
+		}
+				
+	}
+	
+	var $modeSelection = $alertProps.find(".alertConditionBoolModeSelection")
+	$modeSelection.empty()
+	$modeSelection.append(defaultSelectOptionPromptHTML("Select a condition"))
+	for(var condID in alertCondDefs) {
+	 	var selectCondHTML = selectOptionHTML(condID, alertCondDefs[condID].label)
+	 	$modeSelection.append(selectCondHTML)				
+	}
+	
+	if (defaultConditionInfo !== null) {
+		initConditionDef(defaultConditionInfo.conditionID)
+		var condDef = alertCondDefs[defaultConditionInfo.conditionID]
+		
+		$modeSelection.val(defaultConditionInfo.conditionID)
+		
+	} else {
+		initConditionDef(null)
+	}
+	
+	initSelectControlChangeHandler($modeSelection,function(conditionID) {
+		initConditionDef(conditionID)
+		updateAlertConditions(propsParams)
+	})
+		
+	$listItem.data("alertCondDefFunc",function() {
+		var condID = $modeSelection.val()
+		
+		if(condID === null || condID.length <= 0) {
+			return null
+		}
+		var condDef = { fieldID: fieldInfo.fieldID,
+			conditionID: condID }	
+		
+		var condInfo = alertCondDefs[condID]
+				
+		return condDef
+	})
+
+	$listItem.append($alertProps)
+	
+	return $listItem
+}
+
+
+
 function createAlertPropsConditionItem(propsParams,fieldInfo,defaultConditionInfo) {
 
 	switch (fieldInfo.type) {
 	case fieldTypeTime: 
 		return dateAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo)
+	case fieldTypeBool: 
+		return boolAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo)
 	case fieldTypeText:
 	case fieldTypeNumber:
-	case fieldTypeBool: 
 	default:
 		console.log("createFilterRulePanelListItem: Unsupported field type:  " + fieldInfo.type)
 		return $("<div>TBD</div>")
 	}
 	
-	
 }
 
 function initAlertConditionProps(params) {
 	
-	var conditionFieldTypes = [fieldTypeTime]
+	var conditionFieldTypes = [fieldTypeTime,fieldTypeBool]
 	
 	function loadDefaultConditions() {
 		loadFieldInfo(params.databaseID,conditionFieldTypes,function(fieldsByID) {
