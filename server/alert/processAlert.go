@@ -96,61 +96,61 @@ func processTimeFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 
 	log.Printf("Processing time field alert: %+v", cond)
 
-	captionMsg, err := generateAlertNotificationCaption(context)
-	if err != nil {
-		return nil, fmt.Errorf("processTimeFieldAlert: %v", err)
+	valBefore, foundValBefore := context.PrevFieldVals.GetTimeFieldValue(cond.FieldID)
+	valAfter, foundValAfter := context.CurrFieldVals.GetTimeFieldValue(cond.FieldID)
+
+	valChanged := func() bool {
+		if (foundValBefore == false) && (foundValAfter == false) {
+			return false
+		} else if (foundValBefore == false) && (foundValAfter == true) {
+			return true
+		} else if (foundValBefore == true) && (foundValAfter == false) {
+			return true
+		} else { // value found bothe before and after update => compare the actual values
+			if valBefore.Equal(valAfter) {
+				return false
+			} else {
+				return true
+			}
+		}
+
+	}
+
+	generateNotification := func() (*AlertNotification, error) {
+
+		captionMsg, err := generateAlertNotificationCaption(context)
+		if err != nil {
+			return nil, fmt.Errorf("processTimeFieldAlert: %v", err)
+		}
+
+		alertNofify := AlertNotification{
+			AlertID:          context.ProcessedAlert.AlertID,
+			RecordID:         context.RecordID,
+			Timestamp:        context.UpdateTimestamp,
+			ItemSummary:      context.ItemSummary,
+			Caption:          captionMsg,
+			TriggerCondition: cond}
+
+		return &alertNofify, nil
+
 	}
 
 	switch cond.ConditionID {
 	case alertCondChange:
-		valBefore, foundValBefore := context.PrevFieldVals.GetTimeFieldValue(cond.FieldID)
-		valAfter, foundValAfter := context.CurrFieldVals.GetTimeFieldValue(cond.FieldID)
-		if (foundValBefore == false) && (foundValAfter == false) {
-			log.Printf("processTimeFieldAlert: no change - both vals undefined")
-			return nil, nil
-		} else if (foundValBefore == false) && (foundValAfter == true) {
-			log.Printf("processTimeFieldAlert: change - value defined: %v", valAfter)
-
-			alertNofify := AlertNotification{
-				AlertID:          context.ProcessedAlert.AlertID,
-				RecordID:         context.RecordID,
-				Timestamp:        context.UpdateTimestamp,
-				ItemSummary:      context.ItemSummary,
-				Caption:          captionMsg,
-				TriggerCondition: cond,
-				DateBefore:       &valBefore,
-				DateAfter:        &valAfter}
-
-			return &alertNofify, nil
-		} else if (foundValBefore == true) && (foundValAfter == false) {
-			log.Printf("processTimeFieldAlert: change - time value cleared: cleared val = %v", valBefore)
-			alertNofify := AlertNotification{
-				AlertID:          context.ProcessedAlert.AlertID,
-				RecordID:         context.RecordID,
-				Timestamp:        context.UpdateTimestamp,
-				ItemSummary:      context.ItemSummary,
-				Caption:          captionMsg,
-				TriggerCondition: cond,
-				DateBefore:       &valBefore,
-				DateAfter:        &valAfter}
-			return &alertNofify, nil
-		} else { // value found bother before and after update => compare the actual dates
-			if valBefore.Equal(valAfter) {
-				log.Printf("processTimeFieldAlert: no change - values equal %v", valBefore)
-				return nil, nil // no change
-			} else {
-				log.Printf("processTimeFieldAlert: change - time values changed: %v -> %v", valBefore, valAfter)
-				alertNofify := AlertNotification{
-					AlertID:          context.ProcessedAlert.AlertID,
-					RecordID:         context.RecordID,
-					Timestamp:        context.UpdateTimestamp,
-					ItemSummary:      context.ItemSummary,
-					Caption:          captionMsg,
-					TriggerCondition: cond,
-					DateBefore:       &valBefore,
-					DateAfter:        &valAfter}
-				return &alertNofify, nil
-			}
+		if valChanged() {
+			return generateNotification()
+		}
+	case alertCondCleared:
+		if valChanged() && (!foundValAfter) {
+			return generateNotification()
+		}
+	case alertCondIncreased:
+		if foundValBefore && foundValAfter && (valAfter.After(valBefore)) {
+			return generateNotification()
+		}
+	case alertCondDecreased:
+		if foundValBefore && foundValAfter && (valAfter.Before(valBefore)) {
+			return generateNotification()
 		}
 	default:
 		return nil, nil

@@ -54,8 +54,13 @@ function dateAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo) 
 	
 	
 	var alertCondDefs = {
-		"past": {
-			label: "Date has passed",
+		"increased": {
+			label: "Date pushed out",
+			hasDateParam: false,
+			hasNumberParam: false
+		},
+		"decreased": {
+			label: "Date pulled in",
 			hasDateParam: false,
 			hasNumberParam: false
 		},

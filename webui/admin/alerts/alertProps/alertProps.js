@@ -148,7 +148,7 @@ $(document).ready(function() {
 	 	    $fieldSelection.empty()
 			$fieldSelection.append('<option value="" disabled selected>Insert Field Reference</option>')
 			
-			var supportedFieldReferenceTypes = [fieldTypeNumber,fieldTypeBool,fieldTypeText]
+			var supportedFieldReferenceTypes = [fieldTypeNumber,fieldTypeBool,fieldTypeText,fieldTypeTime]
 			loadSortedFieldInfo(alertInfo.parentDatabaseID, supportedFieldReferenceTypes,function(sortedFields) {
 				for (var fieldIndex in sortedFields) {
 	
