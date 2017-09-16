@@ -255,6 +255,111 @@ function boolAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo) 
 	return $listItem
 }
 
+function numberAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo) {
+	
+	var $listItem = createAlertConditionListItem(propsParams,fieldInfo.name)
+	
+	var $alertProps = $("#alertNumberFieldConditionProps").clone()
+	$alertProps.attr("id","")
+	
+	var $numParamInput = $alertProps.find(".condNumParamInput")
+	
+	
+	var alertCondDefs = {
+		"increased": {
+			label: "Value increased",
+			hasNumberParam: false
+		},
+		"decreased": {
+			label: "Value decreased",
+			hasNumberParam: false
+		},
+		"changed": {
+			label: "Value changed",
+			hasNumberParam: false
+		},
+		"cleared": {
+			label: "Value cleared",
+			hasNumberParam: false
+		},
+	}
+	
+	
+	
+	function initConditionDef(condDefID) {
+		
+		var condDef
+		if (condDefID !== null) {
+			condDef = alertCondDefs[condDefID]
+		} else {
+			condDef = {
+				hasNumberParam:false
+			} 			
+		}
+				
+		if (condDef.hasNumberParam) {
+			$numParamInput.show()
+		} else {
+			$numParamInput.hide()
+		}
+		
+	}
+	
+	var $modeSelection = $alertProps.find(".alertConditionModeSelection")
+	$modeSelection.empty()
+	$modeSelection.append(defaultSelectOptionPromptHTML("Select a condition"))
+	for(var condID in alertCondDefs) {
+	 	var selectCondHTML = selectOptionHTML(condID, alertCondDefs[condID].label)
+	 	$modeSelection.append(selectCondHTML)				
+	}
+	
+	if (defaultConditionInfo !== null) {
+		initConditionDef(defaultConditionInfo.conditionID)
+		var condDef = alertCondDefs[defaultConditionInfo.conditionID]
+		
+		$modeSelection.val(defaultConditionInfo.conditionID)
+		
+		if (condDef.hasNumberParam) {
+			$numParamInput.val(defaultConditionInfo.numberParam)
+		} else {
+			$numParamInput.val(null)
+		}
+	} else {
+		initConditionDef(null)
+		$numParamInput.val(null)
+	}
+	
+	initSelectControlChangeHandler($modeSelection,function(conditionID) {
+		initConditionDef(conditionID)
+		updateAlertConditions(propsParams)
+	})
+		
+	$listItem.data("alertCondDefFunc",function() {
+		var condID = $modeSelection.val()
+		
+		if(condID === null || condID.length <= 0) {
+			return null
+		}
+		var condDef = { fieldID: fieldInfo.fieldID,
+			conditionID: condID }	
+		
+		var condInfo = alertCondDefs[condID]
+		
+		if (condInfo.hasNumberParam) {
+			var numberVal = convertStringToNumber($numParamInput.val())
+			if(numberVal === null) {
+				return null	
+			}
+			condDef.numberParam = numberVal
+		}
+					
+		return condDef
+	})
+	
+	$listItem.append($alertProps)
+	
+	return $listItem
+}
 
 
 function createAlertPropsConditionItem(propsParams,fieldInfo,defaultConditionInfo) {
@@ -264,8 +369,9 @@ function createAlertPropsConditionItem(propsParams,fieldInfo,defaultConditionInf
 		return dateAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo)
 	case fieldTypeBool: 
 		return boolAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo)
-	case fieldTypeText:
 	case fieldTypeNumber:
+		return numberAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo)
+	case fieldTypeText:
 	default:
 		console.log("createFilterRulePanelListItem: Unsupported field type:  " + fieldInfo.type)
 		return $("<div>TBD</div>")
@@ -275,7 +381,7 @@ function createAlertPropsConditionItem(propsParams,fieldInfo,defaultConditionInf
 
 function initAlertConditionProps(params) {
 	
-	var conditionFieldTypes = [fieldTypeTime,fieldTypeBool]
+	var conditionFieldTypes = [fieldTypeTime,fieldTypeBool,fieldTypeNumber]
 	
 	function loadDefaultConditions() {
 		loadFieldInfo(params.databaseID,conditionFieldTypes,function(fieldsByID) {
