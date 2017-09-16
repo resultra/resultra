@@ -9,7 +9,10 @@ function initAlertNotificationList(databaseID) {
 			type:'date',
 			render: function(data, type, row, meta) {
 				if (type==='display') {
-					return moment(row.timestamp()).format('MM/DD/YYYY')
+					var alertMoment = moment(row.timestamp())
+					var alertTime = alertMoment.calendar() + 
+							" (" + alertMoment.fromNow() + ")"
+					return alertTime
 				} else {
 					return data
 				}
