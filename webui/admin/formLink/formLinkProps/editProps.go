@@ -11,6 +11,7 @@ import (
 
 	"resultra/datasheet/server/common/runtimeConfig"
 
+	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/defaultValues"
 	"resultra/datasheet/webui/generic"
@@ -38,6 +39,7 @@ type FormLinkTemplParams struct {
 	Title                   string
 	DatabaseID              string
 	DatabaseName            string
+	CurrUserIsAdmin         bool
 	LinkID                  string
 	LinkName                string
 	SiteBaseURL             string
@@ -67,6 +69,8 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 
 	elemPrefix := "formLink_"
 
+	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, formDBInfo.DatabaseID)
+
 	templParams := FormLinkTemplParams{
 		ElemPrefix:              elemPrefix,
 		Title:                   "Form Link Settings",
@@ -74,6 +78,7 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		DatabaseName:            formDBInfo.DatabaseName,
 		LinkID:                  linkID,
 		LinkName:                linkInfo.Name,
+		CurrUserIsAdmin:         isAdmin,
 		SiteBaseURL:             runtimeConfig.GetSiteBaseURL(),
 		DefaultValuePanelParams: defaultValues.NewDefaultValuesTemplateParams(elemPrefix)}
 

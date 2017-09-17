@@ -1,7 +1,9 @@
 package design
 
 import (
+	"net/http"
 	"resultra/datasheet/server/databaseController"
+	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/common/form/components/caption"
 	"resultra/datasheet/webui/common/form/components/checkBox"
 	"resultra/datasheet/webui/common/form/components/comment"
@@ -44,6 +46,7 @@ type DesignFormTemplateParams struct {
 	DatabaseName        string
 	FormID              string
 	FormName            string
+	CurrUserIsAdmin     bool
 	CheckboxParams      checkBox.CheckboxDesignTemplateParams
 	ToggleParams        toggle.ToggleDesignTemplateParams
 	DatePickerParams    datePicker.DatePickerDesignTemplateParams
@@ -70,7 +73,7 @@ type DesignFormTemplateParams struct {
 
 var designFormTemplateParams DesignFormTemplateParams
 
-func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInfo) DesignFormTemplateParams {
+func createDesignFormTemplateParams(r *http.Request, formInfo *databaseController.FormDatabaseInfo) DesignFormTemplateParams {
 
 	elemPrefix := "form_"
 
@@ -84,12 +87,15 @@ func createDesignFormTemplateParams(formInfo *databaseController.FormDatabaseInf
 		SortPanelParams:       propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Sorting", PanelID: "formSort"},
 		FilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(elemPrefix)}
 
+	currUserIsAdmin := userRole.CurrUserIsDatabaseAdmin(r, formInfo.DatabaseID)
+
 	templParams := DesignFormTemplateParams{
-		Title:        "Design Form",
-		DatabaseID:   formInfo.DatabaseID,
-		DatabaseName: formInfo.DatabaseName,
-		FormID:       formInfo.FormID,
-		FormName:     formInfo.FormName,
+		Title:           "Design Form",
+		DatabaseID:      formInfo.DatabaseID,
+		DatabaseName:    formInfo.DatabaseName,
+		FormID:          formInfo.FormID,
+		FormName:        formInfo.FormName,
+		CurrUserIsAdmin: currUserIsAdmin,
 
 		CheckboxParams:      checkBox.DesignTemplateParams,
 		ToggleParams:        toggle.DesignTemplateParams,

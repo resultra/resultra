@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/databaseController"
 
+	"resultra/datasheet/server/userRole"
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
@@ -32,9 +33,10 @@ func init() {
 }
 
 type TemplParams struct {
-	Title        string
-	DatabaseID   string
-	DatabaseName string
+	Title           string
+	DatabaseID      string
+	DatabaseName    string
+	CurrUserIsAdmin bool
 }
 
 func dashboardAdminPage(w http.ResponseWriter, r *http.Request) {
@@ -47,10 +49,13 @@ func dashboardAdminPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
 	}
 
+	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
+
 	templParams := TemplParams{
-		Title:        "Dashboards",
-		DatabaseID:   databaseID,
-		DatabaseName: dbInfo.DatabaseName}
+		Title:           "Dashboards",
+		DatabaseID:      databaseID,
+		DatabaseName:    dbInfo.DatabaseName,
+		CurrUserIsAdmin: isAdmin}
 
 	if err := formsTemplates.ExecuteTemplate(w, "dashboardAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

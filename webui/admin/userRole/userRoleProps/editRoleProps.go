@@ -32,11 +32,12 @@ func init() {
 }
 
 type UserRoleTemplParams struct {
-	Title        string
-	DatabaseID   string
-	DatabaseName string
-	RoleID       string
-	RoleName     string
+	Title           string
+	DatabaseID      string
+	DatabaseName    string
+	RoleID          string
+	RoleName        string
+	CurrUserIsAdmin bool
 }
 
 func editRolePropsPage(w http.ResponseWriter, r *http.Request) {
@@ -58,13 +59,16 @@ func editRolePropsPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
 	}
 
+	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
+
 	//	elemPrefix := "userRole_"
 	templParams := UserRoleTemplParams{
-		Title:        "User Role Settings",
-		DatabaseID:   roleInfo.ParentDatabaseID,
-		DatabaseName: dbInfo.DatabaseName,
-		RoleID:       roleID,
-		RoleName:     roleInfo.RoleName}
+		Title:           "User Role Settings",
+		DatabaseID:      roleInfo.ParentDatabaseID,
+		DatabaseName:    dbInfo.DatabaseName,
+		RoleID:          roleID,
+		RoleName:        roleInfo.RoleName,
+		CurrUserIsAdmin: isAdmin}
 
 	if err := userRoleTemplates.ExecuteTemplate(w, "editUserRolePropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

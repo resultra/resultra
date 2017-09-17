@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/databaseController"
 
+	"resultra/datasheet/server/userRole"
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
@@ -31,9 +32,10 @@ func init() {
 }
 
 type TemplParams struct {
-	Title        string
-	DatabaseID   string
-	DatabaseName string
+	Title           string
+	DatabaseID      string
+	DatabaseName    string
+	CurrUserIsAdmin bool
 }
 
 func generalAdminPage(w http.ResponseWriter, r *http.Request) {
@@ -46,10 +48,13 @@ func generalAdminPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
 	}
 
+	currUserIsAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
+
 	templParams := TemplParams{
-		Title:        "General Settings",
-		DatabaseID:   databaseID,
-		DatabaseName: dbInfo.DatabaseName}
+		Title:           "General Settings",
+		DatabaseID:      databaseID,
+		DatabaseName:    dbInfo.DatabaseName,
+		CurrUserIsAdmin: currUserIsAdmin}
 
 	if err := generalTemplates.ExecuteTemplate(w, "generalAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

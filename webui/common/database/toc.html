@@ -35,13 +35,15 @@
 		{{template "databaseTOCContents" .}}
 	</div>
 	
-	<div id="databaseTOCFooter">
-		{{if .CurrUserIsAdmin}}
-			<a href="/admin/{{.DatabaseID}}">Tracker Settings</a>
-		{{ end}}
-	</div>
 	
 </div>
 
+{{end}}
 
+{{define "adminSettingsButton"}}
+		{{if .CurrUserIsAdmin}}
+			<a href="/admin/{{.DatabaseID}}" type="button" class="btn btn-sm btn-default">
+			  <span class="glyphicon glyphicon-cog"> </span>
+			</a>
+		{{ end}}
 {{end}}

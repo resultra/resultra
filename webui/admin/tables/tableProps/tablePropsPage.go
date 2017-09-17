@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/displayTable"
+	"resultra/datasheet/server/userRole"
 	adminCommon "resultra/datasheet/webui/admin/common"
 
 	"resultra/datasheet/server/common/runtimeConfig"
@@ -38,13 +39,14 @@ func init() {
 }
 
 type TemplParams struct {
-	ElemPrefix   string
-	Title        string
-	DatabaseID   string
-	DatabaseName string
-	TableID      string
-	TableName    string
-	SiteBaseURL  string
+	ElemPrefix      string
+	Title           string
+	DatabaseID      string
+	DatabaseName    string
+	TableID         string
+	TableName       string
+	SiteBaseURL     string
+	CurrUserIsAdmin bool
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -67,15 +69,17 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	elemPrefix := "tableProps_"
+	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
 	templParams := TemplParams{
-		ElemPrefix:   elemPrefix,
-		Title:        "Table view properties",
-		DatabaseID:   dbInfo.DatabaseID,
-		DatabaseName: dbInfo.DatabaseName,
-		TableID:      tableID,
-		TableName:    tableInfo.Name,
-		SiteBaseURL:  runtimeConfig.GetSiteBaseURL()}
+		ElemPrefix:      elemPrefix,
+		Title:           "Table view properties",
+		DatabaseID:      dbInfo.DatabaseID,
+		DatabaseName:    dbInfo.DatabaseName,
+		TableID:         tableID,
+		TableName:       tableInfo.Name,
+		SiteBaseURL:     runtimeConfig.GetSiteBaseURL(),
+		CurrUserIsAdmin: isAdmin}
 
 	if err := tablePropTemplates.ExecuteTemplate(w, "tablePropsAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

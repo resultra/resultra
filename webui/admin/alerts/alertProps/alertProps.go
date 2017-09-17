@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/databaseController"
 	adminCommon "resultra/datasheet/webui/admin/common"
 
+	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/field"
 	"resultra/datasheet/webui/common/recordFilter"
@@ -39,6 +40,7 @@ type AlertTemplParams struct {
 	DatabaseName                    string
 	AlertID                         string
 	AlertName                       string
+	CurrUserIsAdmin                 bool
 	FieldSelectionParams            field.FieldSelectionDropdownTemplateParams
 	TriggerConditionPropPanelParams recordFilter.FilterPanelTemplateParams
 }
@@ -66,6 +68,8 @@ func editAlertPropsPage(w http.ResponseWriter, r *http.Request) {
 		ButtonTitle:    "Add Trigger Event",
 		ButtonIconName: "glyphicon-plus-sign"}
 
+	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
+
 	triggerConditionElemPrefix_ := "alertTriggerCondition_"
 	templParams := AlertTemplParams{
 		Title:                           "Alert Settings",
@@ -73,6 +77,7 @@ func editAlertPropsPage(w http.ResponseWriter, r *http.Request) {
 		DatabaseName:                    dbInfo.DatabaseName,
 		AlertID:                         alertInfo.AlertID,
 		AlertName:                       alertInfo.Name,
+		CurrUserIsAdmin:                 isAdmin,
 		FieldSelectionParams:            fieldSelectionParams,
 		TriggerConditionPropPanelParams: recordFilter.NewFilterPanelTemplateParams(triggerConditionElemPrefix_)}
 

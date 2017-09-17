@@ -47,7 +47,7 @@ func DesignDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templParams, templErr := createDashboardTemplateParams(dashboardForDesign)
+	templParams, templErr := createDashboardTemplateParams(r, dashboardForDesign)
 	if templErr != nil {
 		api.WriteErrorResponse(w, templErr)
 		return

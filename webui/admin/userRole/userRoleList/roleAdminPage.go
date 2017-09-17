@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/databaseController"
 
+	"resultra/datasheet/server/userRole"
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
@@ -34,9 +35,10 @@ func init() {
 }
 
 type FieldTemplParams struct {
-	Title        string
-	DatabaseID   string
-	DatabaseName string
+	Title           string
+	DatabaseID      string
+	DatabaseName    string
+	CurrUserIsAdmin bool
 }
 
 func roleAdminPage(w http.ResponseWriter, r *http.Request) {
@@ -49,10 +51,13 @@ func roleAdminPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
 	}
 
+	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
+
 	templParams := FieldTemplParams{
-		Title:        "Forms",
-		DatabaseID:   databaseID,
-		DatabaseName: dbInfo.DatabaseName}
+		Title:           "Forms",
+		DatabaseID:      databaseID,
+		DatabaseName:    dbInfo.DatabaseName,
+		CurrUserIsAdmin: isAdmin}
 
 	if err := roleTemplates.ExecuteTemplate(w, "roleAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -47,7 +47,7 @@ func DesignForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templParams := createDesignFormTemplateParams(formDBInfo)
+	templParams := createDesignFormTemplateParams(r, formDBInfo)
 
 	err := designFormTemplates.ExecuteTemplate(w, "designForm", templParams)
 	if err != nil {

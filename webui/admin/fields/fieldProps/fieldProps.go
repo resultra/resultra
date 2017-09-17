@@ -9,6 +9,7 @@ import (
 	adminCommon "resultra/datasheet/webui/admin/common"
 
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
@@ -32,11 +33,12 @@ func init() {
 }
 
 type FieldTemplParams struct {
-	Title        string
-	DatabaseID   string
-	DatabaseName string
-	FieldID      string
-	FieldName    string
+	Title           string
+	DatabaseID      string
+	DatabaseName    string
+	FieldID         string
+	FieldName       string
+	CurrUserIsAdmin bool
 }
 
 func editFieldPropsPage(w http.ResponseWriter, r *http.Request) {
@@ -56,13 +58,16 @@ func editFieldPropsPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
 	}
 
+	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
+
 	//	elemPrefix := "userRole_"
 	templParams := FieldTemplParams{
-		Title:        "Field Settings",
-		DatabaseID:   fieldInfo.ParentDatabaseID,
-		DatabaseName: dbInfo.DatabaseName,
-		FieldID:      fieldID,
-		FieldName:    fieldInfo.Name}
+		Title:           "Field Settings",
+		DatabaseID:      fieldInfo.ParentDatabaseID,
+		DatabaseName:    dbInfo.DatabaseName,
+		FieldID:         fieldID,
+		FieldName:       fieldInfo.Name,
+		CurrUserIsAdmin: isAdmin}
 
 	if err := fieldTemplates.ExecuteTemplate(w, "editFieldPropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

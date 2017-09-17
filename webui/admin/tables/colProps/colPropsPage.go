@@ -12,6 +12,7 @@ import (
 
 	"resultra/datasheet/server/common/runtimeConfig"
 
+	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
@@ -62,6 +63,7 @@ type TemplParams struct {
 	ColType             string
 	ColName             string
 	SiteBaseURL         string
+	CurrUserIsAdmin     bool
 	NumberInputParams   NumberInputColPropsTemplateParams
 	TextInputParams     TextInputColPropsTemplateParams
 	DatePickerParams    DatePickerColPropsTemplateParams
@@ -106,12 +108,14 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	elemPrefix := "colProps_"
+	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
 	templParams := TemplParams{
 		ElemPrefix:          elemPrefix,
 		Title:               "Column properties",
 		DatabaseID:          dbInfo.DatabaseID,
 		DatabaseName:        dbInfo.DatabaseName,
+		CurrUserIsAdmin:     isAdmin,
 		TableID:             colInfo.TableID,
 		TableName:           tableInfo.Name,
 		ColID:               colID,

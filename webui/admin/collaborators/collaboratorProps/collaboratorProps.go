@@ -31,12 +31,13 @@ func init() {
 }
 
 type UserRoleTemplParams struct {
-	Title          string
-	DatabaseID     string
-	DatabaseName   string
-	UserID         string
-	CollaboratorID string
-	UserName       string
+	Title           string
+	DatabaseID      string
+	DatabaseName    string
+	UserID          string
+	CollaboratorID  string
+	UserName        string
+	CurrUserIsAdmin bool
 }
 
 func editCollabPropsPage(w http.ResponseWriter, r *http.Request) {
@@ -64,14 +65,17 @@ func editCollabPropsPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
+
 	//	elemPrefix := "userRole_"
 	templParams := UserRoleTemplParams{
-		Title:          "Collaborator Settings",
-		DatabaseID:     dbInfo.DatabaseID,
-		DatabaseName:   dbInfo.DatabaseName,
-		UserID:         collabInfo.UserID,
-		CollaboratorID: collaboratorID,
-		UserName:       userInfo.UserName}
+		Title:           "Collaborator Settings",
+		DatabaseID:      dbInfo.DatabaseID,
+		DatabaseName:    dbInfo.DatabaseName,
+		UserID:          collabInfo.UserID,
+		CollaboratorID:  collaboratorID,
+		UserName:        userInfo.UserName,
+		CurrUserIsAdmin: isAdmin}
 
 	if err := userRoleTemplates.ExecuteTemplate(w, "collabPropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
