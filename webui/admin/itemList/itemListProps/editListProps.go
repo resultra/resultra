@@ -9,6 +9,8 @@ import (
 	itemListDataModel "resultra/datasheet/server/itemList"
 	adminCommon "resultra/datasheet/webui/admin/common"
 
+	overallUserRole "resultra/datasheet/server/userRole"
+
 	"resultra/datasheet/webui/admin/itemList/itemListProps/userRole"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/recordFilter"
@@ -41,6 +43,7 @@ type ItemListTemplParams struct {
 	DatabaseName             string
 	ListID                   string
 	ListName                 string
+	CurrUserIsAdmin          bool
 	FilterPropPanelParams    recordFilter.FilterPanelTemplateParams
 	PreFilterPropPanelParams recordFilter.FilterPanelTemplateParams
 }
@@ -67,12 +70,16 @@ func editListPropsPage(w http.ResponseWriter, r *http.Request) {
 
 	elemPrefix := "itemList_"
 	preFilterElemPrefix := "itemListPreFilter_"
+
+	currUserIsAdmin := overallUserRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
+
 	templParams := ItemListTemplParams{
 		Title:                    "Item List Settings",
 		DatabaseID:               listInfo.ParentDatabaseID,
 		DatabaseName:             dbInfo.DatabaseName,
 		ListID:                   listID,
 		ListName:                 listInfo.Name,
+		CurrUserIsAdmin:          currUserIsAdmin,
 		FilterPropPanelParams:    recordFilter.NewFilterPanelTemplateParams(elemPrefix),
 		PreFilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(preFilterElemPrefix),
 	}
