@@ -70,6 +70,9 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	var $startEndDateControls = $ruleControls.find(".filterCustomStartEndDateControls")
 	$startEndDateControls.hide()
 	
+	var $startDateInput = $ruleControls.find(".filterDateRangeStartInput")
+	var $endDateInput = $ruleControls.find(".filterDateRangeEndInput")
+	
 	var $dateFilterModeSelection = $ruleControls.find(".filterDateRuleModeSelection")
 	$dateFilterModeSelection.empty()
 	$dateFilterModeSelection.append(defaultSelectOptionPromptHTML("Filter for"))
@@ -126,9 +129,69 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 				$startEndDateControls.hide()			
 			}
 		},
+		"after": {
+			label: "After",
+			modeSelected: function() {
+				$startDateInput.show()
+				$endDateInput.hide()
+				$startEndDateControls.show()
+				updateFilterRules(panelParams)
+			},
+			modeConfig: function() {
+				var startDate = $startDatePicker.data("DateTimePicker").date()
+				if (startDate === null) { return null }
+				var startDateUTC = startDate.utc()
+				var conditions = [
+					{ operatorID: "minDate", dateParam: startDateUTC }
+				]
+				var ruleConfig = { fieldID: fieldInfo.fieldID, 
+					ruleID: "after", 
+					conditions: conditions }
+				return ruleConfig
+			}, 
+			initDefaultVals: function(ruleInfo) {
+				var ruleConditions = mapRuleConditionsByOperatorID(ruleInfo)
+				$startDateInput.show()
+				$endDateInput.hide()
+				$startEndDateControls.show()
+				var startDate = moment(ruleConditions["minDate"].dateParam)
+				$startDatePicker.data("DateTimePicker").date(startDate)
+			}
+		},
+		"before": {
+			label: "Before",
+			modeSelected: function() {
+				$startDateInput.hide()
+				$endDateInput.show()
+				$startEndDateControls.show()
+				updateFilterRules(panelParams)
+			},
+			modeConfig: function() {
+				var endDate = $endDatePicker.data("DateTimePicker").date()
+				if (endDate === null) { return null }
+				var endDateUTC = endDate.utc()
+				var conditions = [
+					{ operatorID: "maxDate", dateParam: endDateUTC }
+				]
+				var ruleConfig = { fieldID: fieldInfo.fieldID, 
+					ruleID: "before", 
+					conditions: conditions }
+				return ruleConfig
+			}, 
+			initDefaultVals: function(ruleInfo) {
+				var ruleConditions = mapRuleConditionsByOperatorID(ruleInfo)
+				$startDateInput.hide()
+				$endDateInput.show()
+				$startEndDateControls.show()
+				var endDate = moment(ruleConditions["maxDate"].dateParam)
+				$endDatePicker.data("DateTimePicker").date(endDate)
+			}
+		},
 		"dateRange": {
 			label: "Custom date range",
 			modeSelected: function() {
+				$startDateInput.show()
+				$endDateInput.show()
 				$startEndDateControls.show()
 				updateFilterRules(panelParams)
 			},
@@ -150,6 +213,8 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 			}, 
 			initDefaultVals: function(ruleInfo) {
 				var ruleConditions = mapRuleConditionsByOperatorID(ruleInfo)
+				$startDateInput.show()
+				$endDateInput.show()
 				$startEndDateControls.show()
 				var startDate = moment(ruleConditions["minDate"].dateParam)
 				$startDatePicker.data("DateTimePicker").date(startDate)

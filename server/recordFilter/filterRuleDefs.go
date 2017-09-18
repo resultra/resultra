@@ -27,6 +27,8 @@ const filterRuleNotTrue string = "notTrue"
 const filterRuleFalse string = "false"
 const filterRuleNotFalse string = "notFalse"
 const filterRuleIDContains string = "contains"
+const filterRuleAfter string = "after"
+const filterRuleBefore string = "before"
 
 const conditionDateRangeMinDate string = "minDate"
 const conditionDateRangeMaxDate string = "maxDate"
@@ -121,6 +123,52 @@ func filterCustomDateRange(filterParams FilterFuncParams, recFieldVals record.Re
 	log.Printf("date range filter: date val = %v", timeVal)
 
 	if timeVal.After(*startDate) && timeVal.Before(*endDate) {
+		return true, nil
+	} else {
+		return false, nil
+	}
+
+	return true, nil // stubbed out
+}
+
+func filterBefore(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+
+	endDate := filterParams.ConditionMap.getDateConditionParam(conditionDateRangeMaxDate)
+	if endDate == nil {
+		return false, nil
+	}
+
+	timeVal, valFound := recFieldVals.GetTimeFieldValue(filterParams.FieldID)
+	if !valFound {
+		return false, nil
+	}
+
+	log.Printf("date range filter: date val = %v", timeVal)
+
+	if timeVal.Before(*endDate) {
+		return true, nil
+	} else {
+		return false, nil
+	}
+
+	return true, nil // stubbed out
+}
+
+func filterAfter(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+
+	startDate := filterParams.ConditionMap.getDateConditionParam(conditionDateRangeMinDate)
+	if startDate == nil {
+		return false, nil
+	}
+
+	timeVal, valFound := recFieldVals.GetTimeFieldValue(filterParams.FieldID)
+	if !valFound {
+		return false, nil
+	}
+
+	log.Printf("date range filter: date val = %v", timeVal)
+
+	if timeVal.After(*startDate) {
 		return true, nil
 	} else {
 		return false, nil
@@ -224,6 +272,8 @@ var numberFieldFilterRuleDefs = RuleIDFilterFuncMap{
 
 var timeFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDCustomDateRange: filterCustomDateRange,
+	filterRuleAfter:             filterAfter,
+	filterRuleBefore:            filterBefore,
 	filterRuleIDAny:             filterAny,
 	filterRuleIDNotBlank:        filterNonBlankField,
 	filterRuleIDBlank:           filterBlankField}
