@@ -18,9 +18,20 @@ type FilterRuleFunc func(filterParams FilterFuncParams, recFieldVals record.RecF
 
 const filterRuleIDNotBlank string = "notBlank"
 const filterRuleIDBlank string = "isBlank"
+
 const filterRuleIDCustomDateRange string = "dateRange"
+
 const filterRuleIDGreater string = "greater"
+const filterRuleIDGreaterEqual string = "greaterEqual"
 const filterRuleIDLess string = "less"
+const filterRuleIDLessEqual string = "lessEqual"
+const filterRuleIDEqual string = "equal"
+const conditionGreater string = "greater"
+const conditionLess string = "less"
+const conditionGreaterEqual string = "greaterEqual"
+const conditionLessEqual string = "lessEqual"
+const conditionEqual string = "equal"
+
 const filterRuleIDAny string = "any"
 const filterRuleTrue string = "true"
 const filterRuleNotTrue string = "notTrue"
@@ -32,8 +43,6 @@ const filterRuleBefore string = "before"
 
 const conditionDateRangeMinDate string = "minDate"
 const conditionDateRangeMaxDate string = "maxDate"
-const conditionGreater string = "greater"
-const conditionLess string = "less"
 const conditionTextContains string = "contains"
 
 func filterBlankField(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
@@ -81,6 +90,29 @@ func filterGreater(filterParams FilterFuncParams, recFieldVals record.RecFieldVa
 
 }
 
+func filterGreaterEqual(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+
+	greaterComparisonVal := filterParams.ConditionMap.getNumberConditionParam(conditionGreaterEqual)
+	if greaterComparisonVal == nil {
+		return false, nil
+	}
+
+	log.Printf("filterGreater: comparison value = %v", *greaterComparisonVal)
+
+	numberVal, valFound := recFieldVals.GetNumberFieldValue(filterParams.FieldID)
+	if !valFound {
+		return false, nil
+	}
+	log.Printf("filterGreater: value = %v", numberVal)
+
+	if numberVal >= *greaterComparisonVal {
+		return true, nil
+	} else {
+		return false, nil
+	}
+
+}
+
 func filterLess(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
 	lessComparisonVal := filterParams.ConditionMap.getNumberConditionParam(conditionLess)
 	if lessComparisonVal == nil {
@@ -96,6 +128,45 @@ func filterLess(filterParams FilterFuncParams, recFieldVals record.RecFieldValue
 	log.Printf("filterLess: value = %v", numberVal)
 
 	if numberVal < *lessComparisonVal {
+		return true, nil
+	} else {
+		return false, nil
+	}
+}
+
+func filterLessEqual(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+	lessComparisonVal := filterParams.ConditionMap.getNumberConditionParam(conditionLessEqual)
+	if lessComparisonVal == nil {
+		return false, nil
+	}
+
+	log.Printf("filterLess: comparison value = %v", *lessComparisonVal)
+
+	numberVal, valFound := recFieldVals.GetNumberFieldValue(filterParams.FieldID)
+	if !valFound {
+		return false, nil
+	}
+	log.Printf("filterLess: value = %v", numberVal)
+
+	if numberVal <= *lessComparisonVal {
+		return true, nil
+	} else {
+		return false, nil
+	}
+}
+
+func filterEqual(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+	equalComparisonVal := filterParams.ConditionMap.getNumberConditionParam(conditionEqual)
+	if equalComparisonVal == nil {
+		return false, nil
+	}
+
+	numberVal, valFound := recFieldVals.GetNumberFieldValue(filterParams.FieldID)
+	if !valFound {
+		return false, nil
+	}
+
+	if numberVal == *equalComparisonVal {
 		return true, nil
 	} else {
 		return false, nil
@@ -264,11 +335,14 @@ var textFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDContains: filterTextContains}
 
 var numberFieldFilterRuleDefs = RuleIDFilterFuncMap{
-	filterRuleIDAny:      filterAny,
-	filterRuleIDNotBlank: filterNonBlankField,
-	filterRuleIDBlank:    filterBlankField,
-	filterRuleIDGreater:  filterGreater,
-	filterRuleIDLess:     filterLess}
+	filterRuleIDAny:          filterAny,
+	filterRuleIDNotBlank:     filterNonBlankField,
+	filterRuleIDBlank:        filterBlankField,
+	filterRuleIDGreater:      filterGreater,
+	filterRuleIDGreaterEqual: filterGreaterEqual,
+	filterRuleIDLess:         filterLess,
+	filterRuleIDLessEqual:    filterLessEqual,
+	filterRuleIDEqual:        filterEqual}
 
 var timeFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDCustomDateRange: filterCustomDateRange,

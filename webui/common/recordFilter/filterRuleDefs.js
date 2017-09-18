@@ -37,10 +37,25 @@ var filterRulesNumber = {
 		hasParam: true,
 		paramLabel: "Filter if greater than"
 	},
+	"greaterEqual": {
+		label: "Value greater or equal to",
+		hasParam: true,
+		paramLabel: "Enter value"
+	},
 	"less": {
 		label: "Value less than",
 		hasParam: true,
 		paramLabel: "Filter if less than"
+	},
+	"lessEqual": {
+		label: "Value less than or equal",
+		hasParam: true,
+		paramLabel: "Enter value"
+	},
+	"equal": {
+		label: "Value equal",
+		hasParam: true,
+		paramLabel: "Enter value"
 	}
 }
 
