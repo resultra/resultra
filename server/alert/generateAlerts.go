@@ -23,6 +23,7 @@ type AlertGenerationContext struct {
 
 type RecordAlertProcessingConfig struct {
 	RecordID        string
+	Record          record.Record
 	CalcFieldConfig *calcField.CalcFieldUpdateConfig
 	RecCellUpdates  *record.RecordCellUpdates
 	AlertContexts   []AlertGenerationContext
@@ -51,7 +52,8 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 	// each alert has an associated summary field which is selected to identify a record/item
 	// in the context of an alert notification.
 	latestFieldValues := cellUpdateFieldValIndex.LatestNonCalcFieldValues()
-	if calcErr := calcField.UpdateCalcFieldValues(recProcessingConfig.CalcFieldConfig, latestFieldValues); calcErr != nil {
+	if calcErr := calcField.UpdateCalcFieldValues(recProcessingConfig.CalcFieldConfig,
+		recProcessingConfig.Record, latestFieldValues); calcErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: : err = %v", calcErr)
 	}
 
@@ -65,7 +67,8 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 		// Populate calculated field values into currFieldValues at the time of currCellUpdates's timestamp.
 		// This allows alerts which trigger from calculated field values to be processed just like
 		// non calculated fields.
-		if calcErr := calcField.UpdateCalcFieldValues(recProcessingConfig.CalcFieldConfig, &currFieldValues); calcErr != nil {
+		if calcErr := calcField.UpdateCalcFieldValues(recProcessingConfig.CalcFieldConfig,
+			recProcessingConfig.Record, &currFieldValues); calcErr != nil {
 			return nil, fmt.Errorf("GenerateRecordAlerts: : err = %v", calcErr)
 		}
 
@@ -202,13 +205,24 @@ func generateAllAlerts(databaseID string, userID string) (*AlertGenerationResult
 
 	}
 
+	recordIDRecordMap, err := record.GetNonDraftRecordIDRecordMap(databaseID)
+	if err != nil {
+		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
+	}
+
 	alertNotifications := []AlertNotification{}
 	resultsChan := make(chan AlertProcessingResult)
 
 	for currRecordID, currRecCellUpdates := range recordCellUpdateMap {
 
+		currRecord, recFound := recordIDRecordMap[currRecordID]
+		if !recFound {
+			return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
+		}
+
 		alertProcessConfig := RecordAlertProcessingConfig{
 			RecordID:        currRecordID,
+			Record:          currRecord,
 			CalcFieldConfig: calcFieldUpdateConfig,
 			RecCellUpdates:  currRecCellUpdates,
 			AlertContexts:   alertContexts}

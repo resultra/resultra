@@ -107,6 +107,21 @@ func GetNonDraftRecords(parentDatabaseID string) ([]Record, error) {
 	return records, nil
 }
 
+func GetNonDraftRecordIDRecordMap(parentDatabaseID string) (map[string]Record, error) {
+
+	records, err := GetNonDraftRecords(parentDatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("GetNonDraftRecordIDRecordMap: %v", err)
+	}
+
+	recordIDRecordMap := map[string]Record{}
+	for _, currRecord := range records {
+		recordIDRecordMap[currRecord.RecordID] = currRecord
+	}
+
+	return recordIDRecordMap, nil
+}
+
 type SetDraftStatusParams struct {
 	RecordID      string `json:"recordID"`
 	IsDraftRecord bool   `json:"isDraftRecord"`

@@ -333,7 +333,16 @@ func concatEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equ
 	return textEqnResult(concatBuf.String()), nil
 }
 
+const FuncNameSequenceNum = "SEQUENCENUM"
+
+func sequenceNumFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+	return numberEqnResult(float64(evalContext.Record.SequenceNum)), nil
+}
+
 var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
+
+	FuncNameSequenceNum: FunctionInfo{FuncNameSequenceNum, sequenceNumFunc, zeroNumberArgs},
+
 	FuncNameSum: FunctionInfo{FuncNameSum, sumEvalFunc, oneOrMoreNumberArgs},
 	FuncNameAdd: FunctionInfo{FuncNameAdd, addEvalFunc, twoNumberArgs},
 

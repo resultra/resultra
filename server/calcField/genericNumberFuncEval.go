@@ -6,6 +6,16 @@ import (
 	"resultra/datasheet/server/field"
 )
 
+func zeroNumberArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
+	if len(params.funcArgs) != 0 {
+		errMsgs := []string{fmt.Sprintf("Expecting 0 arguments to function %v", params.funcName)}
+		return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeNumber}, nil
+	}
+
+	errMsgs := []string{}
+	return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeNumber}, nil
+}
+
 func oneOrMoreNumberArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
 
 	log.Printf("oneOrMoreNumberArgs: %v", params.funcName)

@@ -41,6 +41,7 @@ func calculateHiddenFormComponents(parentDatabaseID string, componentFilterCondM
 
 func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateConfig,
 	componentFilterCondMap form.FormComponentFilterMap,
+	mappedRecord record.Record,
 	recCellUpdates *record.RecordCellUpdates, changeSetID string) (*recordValue.RecordValueResults, error) {
 
 	cellUpdateFieldValIndex, indexErr := record.NewUpdateFieldValueIndexForCellUpdates(recCellUpdates, config.FieldsByID)
@@ -54,7 +55,7 @@ func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateCon
 	// Now that all the non-calculated fields have been populated into latestFieldValues, all the calculated
 	// fields also need to be populated. The formulas for calculated field by refer to the latest value of non-calculated
 	// fields, so this set of values needs to be passed into UpdateCalcFieldValues as a starting point.
-	if calcErr := calcField.UpdateCalcFieldValues(config, latestFieldValues); calcErr != nil {
+	if calcErr := calcField.UpdateCalcFieldValues(config, mappedRecord, latestFieldValues); calcErr != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: Can't set value: Error calculating fields to reflect update: err = %v", calcErr)
 	}
 
@@ -85,10 +86,15 @@ func MapOneRecordUpdatesToFieldValues(parentDatabaseID string, recCellUpdates *r
 	}
 	componentFilterCondMap, err := form.GetDatabaseFormComponentFilterMap(parentDatabaseID)
 	if err != nil {
-		return nil, fmt.Errorf("CalculateHiddenFormComponents: %v", err)
+		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", err)
 	}
 
-	return mapOneRecordUpdatesWithCalcFieldConfig(updateConfig, componentFilterCondMap, recCellUpdates, changeSetID)
+	currRecord, err := record.GetRecord(recCellUpdates.RecordID)
+	if err != nil {
+		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", err)
+	}
+
+	return mapOneRecordUpdatesWithCalcFieldConfig(updateConfig, componentFilterCondMap, *currRecord, recCellUpdates, changeSetID)
 }
 
 type RecordMappingResult struct {
@@ -98,10 +104,11 @@ type RecordMappingResult struct {
 
 func mapOneRecordWorker(resultsChan chan RecordMappingResult,
 	config *calcField.CalcFieldUpdateConfig, componentFilterCondMap form.FormComponentFilterMap,
+	mappedRecord record.Record,
 	recCellUpdates *record.RecordCellUpdates) {
 
 	recValResults, err := mapOneRecordUpdatesWithCalcFieldConfig(config, componentFilterCondMap,
-		recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
+		mappedRecord, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
 
 	result := RecordMappingResult{
 		Error:         err,
@@ -129,11 +136,20 @@ func MapAllRecordUpdatesToFieldValues(parentDatabaseID string) ([]recordValue.Re
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
 
+	recordIDRecordMap, err := record.GetNonDraftRecordIDRecordMap(parentDatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
+	}
+
 	resultsChan := make(chan RecordMappingResult)
 
 	// Scatter: Map the results in goroutines
 	for _, currRecCellUpdates := range recordCellUpdateMap {
-		go mapOneRecordWorker(resultsChan, updateConfig, componentFilterCondMap, currRecCellUpdates)
+		currRec, recFound := recordIDRecordMap[currRecCellUpdates.RecordID]
+		if !recFound {
+			return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
+		}
+		go mapOneRecordWorker(resultsChan, updateConfig, componentFilterCondMap, currRec, currRecCellUpdates)
 	}
 
 	recValResults := []recordValue.RecordValueResults{}

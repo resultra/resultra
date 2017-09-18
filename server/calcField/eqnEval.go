@@ -10,6 +10,10 @@ import (
 )
 
 type EqnEvalContext struct {
+
+	// The record/item for which the calculated field equations are being evaluated.
+	Record record.Record
+
 	DefinedFuncs FuncNameFuncInfoMap
 
 	ParentDatabaseID string
@@ -438,10 +442,11 @@ func CreateCalcFieldUpdateConfig(parentDatabaseID string) (*CalcFieldUpdateConfi
 // UpdateCalcFieldValues is (currently) the top-most entry point into the calculated field
 // equation evaluation functionality. This is called after record updates (see recordUpdate package)
 // to refresh calculated values.
-func UpdateCalcFieldValues(config *CalcFieldUpdateConfig, resultFieldVals *record.RecFieldValues) error {
+func UpdateCalcFieldValues(config *CalcFieldUpdateConfig, calcRecord record.Record, resultFieldVals *record.RecFieldValues) error {
 
 	eqnEvalContext := EqnEvalContext{
 		ParentDatabaseID: config.ParentDatabaseID,
+		Record:           calcRecord,
 		ResultFieldVals:  resultFieldVals,
 		DefinedFuncs:     CalcFieldDefinedFuncs,
 		GlobalVals:       config.GlobalVals,
