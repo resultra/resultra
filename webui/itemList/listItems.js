@@ -141,9 +141,7 @@ function ListItemController($parentContainer) {
 	this.setRecordData =  function(recordData) {
 		
 		currRecordSet = new RecordSet(recordData,currRecordSetWindowSize);
-		if(currRecordSet.numRecords() > 0) {
-			reloadRecordsIntoContainers()		
-		}
+		reloadRecordsIntoContainers()		
 	
 		// Enable the buttons to page through the records
 		if(currRecordSet.numRecords() > 0) {
