@@ -307,6 +307,12 @@ func dateAddEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Eq
 	}
 }
 
+const FuncNameCreated = "CREATED"
+
+func createdFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+	return timeEqnResult(evalContext.Record.CreateTimestampUTC), nil
+}
+
 const FuncNameConcat string = "CONCATENATE"
 
 func concatEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
@@ -342,6 +348,7 @@ func sequenceNumFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Eq
 var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 
 	FuncNameSequenceNum: FunctionInfo{FuncNameSequenceNum, sequenceNumFunc, zeroNumberArgs},
+	FuncNameCreated:     FunctionInfo{FuncNameCreated, createdFunc, zeroTimeArgsTimeResult},
 
 	FuncNameSum: FunctionInfo{FuncNameSum, sumEvalFunc, oneOrMoreNumberArgs},
 	FuncNameAdd: FunctionInfo{FuncNameAdd, addEvalFunc, twoNumberArgs},

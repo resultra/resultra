@@ -6,6 +6,16 @@ import (
 	"time"
 )
 
+func zeroTimeArgsTimeResult(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
+	if len(params.funcArgs) != 0 {
+		errMsgs := []string{fmt.Sprintf("Expecting 0 arguments to function %v", params.funcName)}
+		return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeTime}, nil
+	}
+
+	errMsgs := []string{}
+	return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeTime}, nil
+}
+
 func oneOrMoreTimeArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
 
 	if len(params.funcArgs) <= 0 {
