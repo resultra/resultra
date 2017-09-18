@@ -5,14 +5,18 @@ import (
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
+	"sync"
 	"time"
 )
+
+var newRecordMutex = &sync.Mutex{}
 
 type Record struct {
 	ParentDatabaseID   string    `json:"parentDatabaseID"`
 	RecordID           string    `json:"recordID"`
 	IsDraftRecord      bool      `json:"isDraftRecord"`
 	CreateTimestampUTC time.Time `json:"createTimestampUTC"`
+	SequenceNum        int       `json:"sequenceNum"`
 }
 
 type NewRecordParams struct {
@@ -22,6 +26,11 @@ type NewRecordParams struct {
 
 func NewRecord(params NewRecordParams) (*Record, error) {
 
+	// Use a mutex when creating records. This is necessary, since a new sequence number is allocated for the record when it is
+	// created. This also means only a single process can interact with the database for the purposes of creating records.
+	newRecordMutex.Lock()
+	defer newRecordMutex.Unlock()
+
 	createTimestamp := time.Now().UTC()
 
 	newRecord := Record{ParentDatabaseID: params.ParentDatabaseID,
@@ -29,12 +38,23 @@ func NewRecord(params NewRecordParams) (*Record, error) {
 		IsDraftRecord:      params.IsDraftRecord,
 		CreateTimestampUTC: createTimestamp}
 
+	// Allocate the next sequence number, using the coalesce syntax.
+	// Solution based upon the following: https://stackoverflow.com/questions/7452501/postgresql-turn-null-into-zero
+	nextSequenceNum := 0
+	if getErr := databaseWrapper.DBHandle().QueryRow(
+		`SELECT coalesce(max(sequence_num), 0)+1 as next_sequence_num FROM records WHERE database_id=$1`, params.ParentDatabaseID).Scan(
+		&nextSequenceNum); getErr != nil {
+		return nil, fmt.Errorf("NewRecord: Unabled to allocate sequence number: database id = %v: datastore err=%v",
+			params.ParentDatabaseID, getErr)
+	}
+
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO records (database_id, record_id,is_draft_record,create_timestamp_utc) VALUES ($1,$2,$3,$4)`,
+		`INSERT INTO records (database_id, record_id,is_draft_record,create_timestamp_utc,sequence_num) VALUES ($1,$2,$3,$4,$5)`,
 		newRecord.ParentDatabaseID,
 		newRecord.RecordID,
 		newRecord.IsDraftRecord,
-		newRecord.CreateTimestampUTC); insertErr != nil {
+		newRecord.CreateTimestampUTC,
+		nextSequenceNum); insertErr != nil {
 		return nil, fmt.Errorf("NewRecord: Can't create record: unable to create record: error = %v", insertErr)
 	}
 
@@ -47,11 +67,13 @@ func GetRecord(recordID string) (*Record, error) {
 	getRecord := Record{}
 
 	if getErr := databaseWrapper.DBHandle().QueryRow(
-		`SELECT database_id,record_id,is_draft_record,create_timestamp_utc FROM records WHERE record_id=$1 LIMIT 1`, recordID).Scan(
+		`SELECT database_id,record_id,is_draft_record,create_timestamp_utc,sequence_num
+			 	FROM records WHERE record_id=$1 LIMIT 1`, recordID).Scan(
 		&getRecord.ParentDatabaseID,
 		&getRecord.RecordID,
 		&getRecord.IsDraftRecord,
-		&getRecord.CreateTimestampUTC); getErr != nil {
+		&getRecord.CreateTimestampUTC,
+		&getRecord.SequenceNum); getErr != nil {
 		return nil, fmt.Errorf("GetRecord: Unabled to get record: id = %v: datastore err=%v", recordID, getErr)
 	}
 
@@ -62,7 +84,7 @@ func GetRecord(recordID string) (*Record, error) {
 func GetNonDraftRecords(parentDatabaseID string) ([]Record, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
-		`SELECT database_id,record_id,is_draft_record,create_timestamp_utc FROM records 
+		`SELECT database_id,record_id,is_draft_record,create_timestamp_utc,sequence_num FROM records 
 		WHERE database_id=$1 AND is_draft_record=false`,
 		parentDatabaseID)
 	if queryErr != nil {
@@ -74,7 +96,8 @@ func GetNonDraftRecords(parentDatabaseID string) ([]Record, error) {
 		if scanErr := rows.Scan(&currRecord.ParentDatabaseID,
 			&currRecord.RecordID,
 			&currRecord.IsDraftRecord,
-			&currRecord.CreateTimestampUTC); scanErr != nil {
+			&currRecord.CreateTimestampUTC,
+			&currRecord.SequenceNum); scanErr != nil {
 			return nil, fmt.Errorf("GetRecords: Failure querying database: %v", scanErr)
 
 		}
