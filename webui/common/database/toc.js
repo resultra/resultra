@@ -51,8 +51,13 @@ function initDatabaseTOC(tocConfig) {
 	jsonAPIRequest("formLink/getUserList",linkParams,function(linkList) {
 		for(var linkIndex = 0; linkIndex < linkList.length; linkIndex++) {
 			var currLink = linkList[linkIndex]
+			var numLinksInSidebar = 0
 			if(currLink.includeInSidebar) {
+				numLinksInSidebar++
 				addFormLinkToTOCList(tocConfig,currLink)		
+			}
+			if(numLinksInSidebar === 0) {
+				$('#tocNewItemContainer').hide()
 			}
 		}
 	})
@@ -66,6 +71,9 @@ function initDatabaseTOC(tocConfig) {
 			var dashboardInfo = dashboardsInfo[dashboardInfoIndex]
 			addDashboardLinkToTOCList(dashboardInfo)
 		}
+		if(dashboardsInfo.length === 0) {
+			$('#tocDashboardsContainer').hide()
+		}
 	})
 	
 	jsonAPIRequest("itemList/getUserItemListList",getDBInfoParams,function(listsInfo) {
@@ -75,6 +83,9 @@ function initDatabaseTOC(tocConfig) {
 		for(var listInfoIndex = 0; listInfoIndex < listsInfo.length; listInfoIndex++) {
 			var listInfo = listsInfo[listInfoIndex]
 			addItemListLinkToTOCList(tocConfig,listInfo)
+		}
+		if (listsInfo.length === 0) {
+			$('#tocListsContainer').hide()
 		}
 		
 	}) // getRecord
