@@ -49,7 +49,7 @@ function addAdminRoleTableRow(adminUsers) {
 		adminUserDispl.push(userNameDisplay)
 	}
 
-	var buttonsHTML = userRoleItemButtonsHTML()
+	// TBD - Put controls to configure the admin user in the roleListButtonCell
 
 	var privs = "<strong>Full Access</strong>"
 	
@@ -59,7 +59,7 @@ function addAdminRoleTableRow(adminUsers) {
 	         '<td>' + adminUserDispl.join(", ") +  '</td>' +
 	         '<td>' + privs +  '</td>' +
 	         '<td>' + privs +  '</td>' +
-	         '<td class="roleListButtonCell">' + buttonsHTML + '</td>' +
+	         '<td class="roleListButtonCell"></td>' +
 	     '</tr>'
 	
 	$('#userRoleTableBody').append(rowHTML)
