@@ -34,13 +34,18 @@ function initItemListViewSelection(config) {
 			var getTableParams = { parentDatabaseID: config.databaseID }
 			jsonAPIRequest("tableView/list",getTableParams,function(tableRefs) {
 				$tableOptGroup.empty()
+				var numTablesShown = 0
 				$.each(tableRefs,function(index,tableRef) {
 					if(showView(tableRef.tableID)) {
+						numTablesShown++
 						var $tableItem = $(selectOptionHTML(tableRef.tableID,tableRef.name))
 						$tableItem.attr('data-view-type','table')
 						$tableOptGroup.append($tableItem)						
 					}
 				})
+				if (numTablesShown === 0) {
+					$tableOptGroup.hide()
+				}
 				doneCallback()
 			})
 		}
@@ -48,13 +53,18 @@ function initItemListViewSelection(config) {
 			var listParams =  { parentDatabaseID: config.databaseID }
 			jsonAPIRequest("frm/list",listParams,function(formsInfo) {
 				var $formOptGroup = $('#itemListFormSelectionOptGroup')
+				var numFormsShown = 0
 				$.each(formsInfo,function(index,formInfo) {
 					if(showView(formInfo.formID)) {
+						numFormsShown++
 						var $formItem = $(selectOptionHTML(formInfo.formID,formInfo.name))
 						$formItem.attr('data-view-type','form')
 						$formOptGroup.append($formItem)	
 					}
 				})
+				if (numFormsShown === 0) {
+					$formOptGroup.hide()
+				}
 				doneCallback()
 			})
 	
