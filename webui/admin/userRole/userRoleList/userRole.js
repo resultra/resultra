@@ -57,8 +57,6 @@ function addAdminRoleTableRow(adminUsers) {
 		'<tr class="userListRow">' +
 	         '<td>' + "<strong>Administrator<strong>" +  '</td>' +
 	         '<td>' + adminUserDispl.join(", ") +  '</td>' +
-	         '<td>' + privs +  '</td>' +
-	         '<td>' + privs +  '</td>' +
 	         '<td class="roleListButtonCell"></td>' +
 	     '</tr>'
 	
@@ -67,21 +65,6 @@ function addAdminRoleTableRow(adminUsers) {
 
 function addCustomRoleTableRow(customRoleInfo) {
 	
-	var listPrivDisplay = []
-	for(var listPrivIndex = 0; listPrivIndex < customRoleInfo.listPrivs.length; listPrivIndex++) {
-		var listPrivInfo = customRoleInfo.listPrivs[listPrivIndex]
-		var privDisplay = listPrivInfo.listName + 
-			" (" + listPrivInfo.privs + ")"
-		listPrivDisplay.push(privDisplay)
-	}
-
-	var dashPrivDisplay = []
-	for(var dashPrivIndex = 0; dashPrivIndex < customRoleInfo.dashboardPrivs.length; dashPrivIndex++) {
-		var dashPrivInfo = customRoleInfo.dashboardPrivs[dashPrivIndex]
-		var privDisplay = dashPrivInfo.dashboardName + 
-			" (" + dashPrivInfo.privs + ")"
-		dashPrivDisplay.push(privDisplay)
-	}
 	
 	var roleUsersDisplay = []
 	for(var userInfoIndex = 0; userInfoIndex < customRoleInfo.roleUsers.length; userInfoIndex++) {
@@ -99,8 +82,6 @@ function addCustomRoleTableRow(customRoleInfo) {
 		'<tr class="userListRow">' +
 	         '<td>' + customRoleInfo.roleName +  '</td>' +
 	         '<td>' + roleUsersDisplay.join(", ") +  '</td>' +
-	         '<td>' + listPrivDisplay.join(", ") + '</td>' +
-		 	'<td>' +  dashPrivDisplay.join(", ") + '</td>' +
 	         '<td class="roleListButtonCell">' + buttonsHTML + '</td>' +
 	     '</tr>'
 	
