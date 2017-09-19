@@ -11,6 +11,7 @@ type FilterRuleCondition struct {
 	OperatorID  string     `json:"operatorID"`
 	TextParam   *string    `json:"textParam,omitempty"`
 	NumberParam *float64   `json:"numberParam,omitempty"`
+	TagsParam   []string   `json:"tagsParam,omitempty"`
 	DateParam   *time.Time `json:"dateParam,omitempty"`
 }
 
@@ -57,5 +58,16 @@ func (condMap FilterConditionMap) getTextConditionParam(conditionID string) *str
 	}
 
 	return cond.TextParam
+
+}
+
+func (condMap FilterConditionMap) getTagsConditionParam(conditionID string) []string {
+
+	cond, condFound := condMap[conditionID]
+	if !condFound {
+		return nil
+	}
+
+	return cond.TagsParam
 
 }

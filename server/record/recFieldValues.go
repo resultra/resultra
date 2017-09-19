@@ -84,3 +84,18 @@ func (recFieldVals RecFieldValues) GetTimeFieldValue(fieldID string) (time.Time,
 		return timeVal, false
 	}
 }
+
+func (recFieldVals RecFieldValues) GetTagsFieldValue(fieldID string) ([]string, bool) {
+
+	rawVal, foundVal := recFieldVals[fieldID]
+
+	if !foundVal {
+		return nil, false
+	}
+
+	if theVals, validType := rawVal.([]string); validType {
+		return theVals, true
+	} else {
+		return nil, false
+	}
+}

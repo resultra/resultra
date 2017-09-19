@@ -88,7 +88,7 @@ function initLabelSelectionControl($container, labelRef,labelWidth) {
 	var $labelControl = labelControlFromLabelComponentContainer($container)
 	
 	$labelControl.select2({
-		placeholder: "Enter labels", // TODO - Allow a property to configure the placeholder.
+		placeholder: "Enter tags", // TODO - Allow a property to configure the placeholder.
 		width: labelWidth,
 		tags:true,
 		minimumInputLength: 1,

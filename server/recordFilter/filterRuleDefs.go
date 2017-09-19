@@ -19,6 +19,9 @@ type FilterRuleFunc func(filterParams FilterFuncParams, recFieldVals record.RecF
 const filterRuleIDNotBlank string = "notBlank"
 const filterRuleIDBlank string = "isBlank"
 
+const filterRuleIDTags string = "tags"
+const conditionMatchTags string = "tags"
+
 const filterRuleIDCustomDateRange string = "dateRange"
 
 const filterRuleIDGreater string = "greater"
@@ -327,6 +330,36 @@ func filterTextContains(filterParams FilterFuncParams, recFieldVals record.RecFi
 
 }
 
+func filterTags(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+
+	matchTags := filterParams.ConditionMap.getTagsConditionParam(conditionMatchTags)
+	if matchTags == nil {
+		return false, nil
+	} else if len(matchTags) == 0 {
+		// If there are no tags to match against, match all items
+		return true, nil
+	}
+
+	tagVals, valFound := recFieldVals.GetTagsFieldValue(filterParams.FieldID)
+	if !valFound || tagVals == nil {
+		return false, nil
+	}
+
+	matchAnyTag := func() bool {
+		for _, currTagVal := range tagVals {
+			for _, currMatchTagVal := range matchTags {
+				if currTagVal == currMatchTagVal {
+					return true
+				}
+			}
+		}
+		return false
+	}
+
+	return matchAnyTag(), nil
+
+}
+
 type RuleIDFilterFuncMap map[string]FilterRuleFunc
 
 var textFieldFilterRuleDefs = RuleIDFilterFuncMap{
@@ -361,6 +394,9 @@ var boolFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleFalse:      filterFalse,
 	filterRuleNotFalse:   filterNotFalse}
 
+var tagFieldFilterRuleDefs = RuleIDFilterFuncMap{
+	filterRuleIDTags: filterTags}
+
 // Get the rule definition based upon the field type
 func getFilterFuncByFieldType(fieldType string, ruleID string) (FilterRuleFunc, error) {
 	switch fieldType {
@@ -393,6 +429,15 @@ func getFilterFuncByFieldType(fieldType string, ruleID string) (FilterRuleFunc, 
 		}
 	case field.FieldTypeBool:
 		filterFunc, funcFound := boolFieldFilterRuleDefs[ruleID]
+		if !funcFound {
+			return nil, fmt.Errorf(
+				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
+				fieldType, ruleID)
+		} else {
+			return filterFunc, nil
+		}
+	case field.FieldTypeLabel:
+		filterFunc, funcFound := tagFieldFilterRuleDefs[ruleID]
 		if !funcFound {
 			return nil, fmt.Errorf(
 				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",

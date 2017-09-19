@@ -539,6 +539,77 @@ function textFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 }
 
 
+function tagFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
+	
+	var $ruleControls = $('#recordFilterTagFieldRuleListItem').clone()
+	$ruleControls.attr("id","")
+		var ruleID = "tags"
+	
+	var $tagSelection = $ruleControls.find(".recordFilterTagSelections")
+	
+				
+	var $filterListItem = createFilterListRuleListItem(panelParams,fieldInfo.name)
+	
+	function populateTagControl(tags) {
+		$tagSelection.empty()
+		var tagAdded = {}
+		for(var tagIndex in tags) {
+			var currTag = tags[tagIndex]
+			if(tagAdded[currTag] === undefined) { // don't add duplicates
+				var newOption = new Option(currTag,currTag);
+				tagAdded[currTag] = true
+				$tagSelection.append(newOption)					
+			}
+		}
+		
+	}
+	
+	
+	if(defaultRuleInfo !== null) {
+		var ruleConditions = mapRuleConditionsByOperatorID(defaultRuleInfo)
+		var defaultTagList = ruleConditions[ruleID].tagsParam
+		populateTagControl(defaultTagList)
+		
+		$tagSelection.val(defaultTagList)
+	} 
+	
+		
+	$filterListItem.data("filterRuleConfigFunc",function() {
+		var selectedTags = $tagSelection.val()
+		if (selectedTags !== null && selectedTags.length > 0) {
+			
+			var conditions = []
+			conditions.push({operatorID:ruleID, tagsParam: selectedTags })
+			var ruleConfig = { fieldID: fieldInfo.fieldID,
+				ruleID: ruleID,
+				conditions: conditions }	
+			return ruleConfig
+			
+		} else {
+			return null;			
+		}
+	})
+	
+	$tagSelection.select2({
+		placeholder: "Enter tags", // TODO - Allow a property to configure the placeholder.
+		width: 250,
+		tags:true,
+		minimumInputLength: 1,
+		maximumInputLength:32,
+		tokenSeparators: [',']
+	});
+	
+	$tagSelection.on('change', function() {
+		updateFilterRules(panelParams)
+	});
+	
+	$filterListItem.append($ruleControls)
+		
+	return $filterListItem
+	
+}
+
+
 
 
 function createFilterRulePanelListItem(panelParams, fieldInfo,defaultRuleInfo) {
@@ -552,6 +623,8 @@ function createFilterRulePanelListItem(panelParams, fieldInfo,defaultRuleInfo) {
 		return boolFilterPanelRuleItem(panelParams, fieldInfo, defaultRuleInfo)
 	case fieldTypeText:
 		return textFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo)
+	case fieldTypeTag:
+		return tagFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo)
 	default:
 		console.log("createFilterRulePanelListItem: Unsupported field type:  " + fieldInfo.type)
 		return $("")
