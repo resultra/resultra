@@ -69,7 +69,10 @@ function userListTableRow(databaseID,userRoleInfo) {
 	     '</tr>'
 	
 	var $userRow = $(userRowHTML)
-	$userRow.find(".userListButtonCell").append($buttons)
+	
+	if(!userRoleInfo.isAdmin) {
+		$userRow.find(".userListButtonCell").append($buttons)	
+	}
 	
 	return $userRow
 	
@@ -87,8 +90,6 @@ function initUserListSettings(databaseID) {
 			console.log("appending user role")
 			$('#userListTableBody').append(userListTableRow(databaseID,currUserRole))
 		}
-
-		
 	})
 	
 	initButtonClickHandler('#addUserButton',function() {
