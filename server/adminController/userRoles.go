@@ -12,6 +12,7 @@ type UserRoleInfo struct {
 	IsAdmin        bool                        `json:"isAdmin"`
 	CollaboratorID string                      `json:"collaboratorID"`
 	CustomRoles    []userRole.DatabaseRoleInfo `json:"customRoles"`
+	RoleMembership map[string]bool             `json:"roleMembership"`
 }
 
 type GetUserRolesParams struct {

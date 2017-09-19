@@ -108,6 +108,18 @@
 	</tr>
 {{end}}
 
+{{define "adminRoleCollaboratorsProperty"}}
+	<tr>
+		<td class="width200"><label>Collaborators</label>
+			<div><small>Select users to belong to this role and have the associated privileges.</small></div>
+		</td>
+
+		<td>
+			<div class="list-group" id="adminRoleCollaboratorList">
+			</div>		
+		</td>
+	</tr>
+{{end}}
 
 
 
@@ -119,7 +131,7 @@
 	{{template "adminRoleListPrivsProperty"}}	
 	{{template "adminRoleDashboardPrivsProperty"}}
 	{{template "adminRoleAlertPrivsProperty"}}
-
+	{{template "adminRoleCollaboratorsProperty"}}
 
 </table>
 

@@ -17,6 +17,8 @@ func init() {
 
 	adminRouter.HandleFunc("/api/admin/getUserRoleInfo", getUserRoleInfoAPI)
 	adminRouter.HandleFunc("/api/admin/getRoleInfo", getRoleInfoAPI)
+	adminRouter.HandleFunc("/api/admin/getRoleCollaborators", getRoleCollaboratorAPI)
+
 	adminRouter.HandleFunc("/api/admin/addCollaborator", addCollaboratorAPI)
 	adminRouter.HandleFunc("/api/admin/getSingleUserRoleInfo", getSingleUserRoleInfoAPI)
 	adminRouter.HandleFunc("/api/admin/setUserRoleInfo", setUserRoleInfoAPI)
@@ -39,6 +41,22 @@ func getUserRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, userRoleInfo)
+	}
+
+}
+
+func getRoleCollaboratorAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params userRole.GetRoleCollaboratorsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if roleCollabInfo, err := userRole.GetRoleCollaborators(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, roleCollabInfo)
 	}
 
 }

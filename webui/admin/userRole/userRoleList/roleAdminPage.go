@@ -54,7 +54,7 @@ func roleAdminPage(w http.ResponseWriter, r *http.Request) {
 	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
 	templParams := FieldTemplParams{
-		Title:           "Forms",
+		Title:           "Role",
 		DatabaseID:      databaseID,
 		DatabaseName:    dbInfo.DatabaseName,
 		CurrUserIsAdmin: isAdmin}

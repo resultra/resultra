@@ -612,6 +612,42 @@ func GetAllUsersRoleInfo(databaseID string) ([]UserRoleInfo, error) {
 	return usersRoleInfo, nil
 }
 
+type RoleCollaboratorInfo struct {
+	UserInfo       userAuth.UserInfo `json:"userInfo"`
+	CollaboratorID string            `json:"collaboratorID"`
+	IsMemberOfRole bool              `json:"isMemberOfRole"`
+}
+
+type GetRoleCollaboratorsParams struct {
+	DatabaseID string `json:"databaseID"`
+	RoleID     string `json:"roleID"`
+}
+
+func GetRoleCollaborators(params GetRoleCollaboratorsParams) ([]RoleCollaboratorInfo, error) {
+	allUserRoleInfo, err := GetAllUsersRoleInfo(params.DatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("GetRoleCollaborators: %v", err)
+	}
+
+	roleCollabInfo := []RoleCollaboratorInfo{}
+	for _, currUserRoleInfo := range allUserRoleInfo {
+		memberOfRole := func() bool {
+			for _, currRoleInfo := range currUserRoleInfo.RoleInfo {
+				if currRoleInfo.RoleID == params.RoleID {
+					return true
+				}
+			}
+			return false
+		}
+		currUserRoleCollabInfo := RoleCollaboratorInfo{
+			UserInfo:       currUserRoleInfo.UserInfo,
+			CollaboratorID: currUserRoleInfo.CollaboratorID,
+			IsMemberOfRole: memberOfRole()}
+		roleCollabInfo = append(roleCollabInfo, currUserRoleCollabInfo)
+	}
+	return roleCollabInfo, nil
+}
+
 type RoleUserInfo struct {
 	RoleID    string              `json:"roleID"`
 	RoleName  string              `json:"roleName"`
