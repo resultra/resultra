@@ -50,7 +50,7 @@ function getDateComponentDateTimeMomentFormat(dateFormat) {
 	
 	var dateTimeFormat = formatMap[dateFormat]
 	if (dateFormat === undefined) {
-		return formatMap["dateOnly"]
+		return formatMap["date"]
 	}
 	
 	return dateTimeFormat

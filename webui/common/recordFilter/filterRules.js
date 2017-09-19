@@ -233,14 +233,17 @@ function dateFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 		modeInfo.modeSelected()
 	})
 	
+	var dateTimePickerOptions = {
+		format: getDateComponentDateTimeMomentFormat("date"),
+		useCurrent: false //Important! See issue #1075
+	}
+	
 	// Initialize the start and end date controls
 	var $startDatePicker = $ruleControls.find(".filterDateRangeStartInput")
-	$startDatePicker.datetimepicker()
+	$startDatePicker.datetimepicker(dateTimePickerOptions)
 	
 	var $endDatePicker = $ruleControls.find(".filterDateRangeEndInput")
-	$endDatePicker.datetimepicker({
-            useCurrent: false //Important! See issue #1075
-        });
+	$endDatePicker.datetimepicker(dateTimePickerOptions);
 		
 		
 		
