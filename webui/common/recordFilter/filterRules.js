@@ -543,9 +543,12 @@ function tagFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	
 	var $ruleControls = $('#recordFilterTagFieldRuleListItem').clone()
 	$ruleControls.attr("id","")
-		var ruleID = "tags"
+	
+	var ruleID = "tags"
 	
 	var $tagSelection = $ruleControls.find(".recordFilterTagSelections")
+	
+	var $matchLogicSelection = $ruleControls.find(".recordFilterMatchLogicSelection")
 	
 				
 	var $filterListItem = createFilterListRuleListItem(panelParams,fieldInfo.name)
@@ -578,8 +581,11 @@ function tagFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 		var selectedTags = $tagSelection.val()
 		if (selectedTags !== null && selectedTags.length > 0) {
 			
+			var matchLogicConditionID = "logic"
+			
 			var conditions = []
 			conditions.push({operatorID:ruleID, tagsParam: selectedTags })
+			conditions.push({operatorID:matchLogicConditionID, textParam: $matchLogicSelection.val()})
 			var ruleConfig = { fieldID: fieldInfo.fieldID,
 				ruleID: ruleID,
 				conditions: conditions }	
@@ -600,6 +606,9 @@ function tagFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	});
 	
 	$tagSelection.on('change', function() {
+		updateFilterRules(panelParams)
+	});
+	$matchLogicSelection.on('change', function() {
 		updateFilterRules(panelParams)
 	});
 	

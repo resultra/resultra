@@ -21,6 +21,9 @@ const filterRuleIDBlank string = "isBlank"
 
 const filterRuleIDTags string = "tags"
 const conditionMatchTags string = "tags"
+const conditionMatchLogic string = "logic"
+const matchLogicAll string = "all"
+const matchLogicAny string = "any"
 
 const filterRuleIDCustomDateRange string = "dateRange"
 
@@ -345,18 +348,42 @@ func filterTags(filterParams FilterFuncParams, recFieldVals record.RecFieldValue
 		return false, nil
 	}
 
-	matchAnyTag := func() bool {
+	matchOneTag := func(matchTag string) bool {
 		for _, currTagVal := range tagVals {
-			for _, currMatchTagVal := range matchTags {
-				if currTagVal == currMatchTagVal {
-					return true
-				}
+			if currTagVal == matchTag {
+				return true
 			}
 		}
 		return false
 	}
 
-	return matchAnyTag(), nil
+	matchAnyTag := func() bool {
+		// Test if any tag in the filter matches a value in the current record
+		for _, currMatchTagVal := range matchTags {
+			if matchOneTag(currMatchTagVal) {
+				return true
+			}
+		}
+		return false
+	}
+
+	matchAllTags := func() bool {
+		// Test if every tag in the filter matches a value in the current record
+		for _, currMatchTagVal := range matchTags {
+			if !matchOneTag(currMatchTagVal) {
+				return false
+			}
+		}
+		return true
+	}
+
+	matchLogic := filterParams.ConditionMap.getTextConditionParam(conditionMatchLogic)
+
+	if (matchLogic == nil) || (*matchLogic == matchLogicAny) {
+		return matchAnyTag(), nil
+	} else {
+		return matchAllTags(), nil
+	}
 
 }
 
