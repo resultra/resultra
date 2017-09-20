@@ -618,6 +618,103 @@ function tagFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	
 }
 
+function userFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
+	
+	var $ruleControls = $('#recordFilterUserFieldRuleListItem').clone()
+	$ruleControls.attr("id","")
+	
+	var userSelectionConditionID = "users"
+		
+	var filterRulesUser = {
+		"currentUser": {
+			label: "Current user",
+			hasUserSelectionParam: false,
+		},
+		"specificUsers": {
+			label: "Specific collaborators",
+			hasUserSelectionParam: true,
+		}
+	}
+	var $ruleSelection = $ruleControls.find(".recordFilterRuleSelection")
+	$ruleSelection.empty()
+	$ruleSelection.append(defaultSelectOptionPromptHTML("Filter for"))
+	for(var ruleID in filterRulesUser) {
+	 	var selectRuleHTML = selectOptionHTML(ruleID, filterRulesUser[ruleID].label)
+	 	$ruleSelection.append(selectRuleHTML)				
+	}
+	
+	
+	var $userSelectionContainer = $ruleControls.find(".userSelectionContainer")
+	var $userSelectionParam = 	$ruleControls.find(".recordFilterUserSelections")
+	var userSelectionParams = {
+		selectionInput: $userSelectionParam,
+		dropdownParent: null
+	}
+	initUserSelection(userSelectionParams)
+	
+	if(defaultRuleInfo !== null) {
+		var ruleInfo = filterRulesUser[defaultRuleInfo.ruleID]
+		$ruleSelection.val(defaultRuleInfo.ruleID)
+		if (ruleInfo.hasUserSelectionParam) {
+			$userSelectionContainer.show()
+			var ruleConditions = mapRuleConditionsByOperatorID(defaultRuleInfo)
+			var defaultUserList = ruleConditions[userSelectionConditionID].usersParam
+			setUserSelectionControlVal($userSelectionParam,defaultUserList)
+		} else {
+			$userSelectionContainer.hide()
+		}
+	} else {
+		// Parameter input initially hidden until a filtering rule is selected
+		$userSelectionContainer.hide()		
+	}	
+		
+	initSelectControlChangeHandler($ruleSelection,function(ruleID) {
+		var ruleInfo = filterRulesUser[ruleID]
+		console.log("Rule selection change: " + ruleID)
+		if (ruleInfo.hasUserSelectionParam) {
+			$userSelectionContainer.show()
+		} else {
+			$userSelectionContainer.hide()
+		}
+		updateFilterRules(panelParams)
+	})
+	$userSelectionParam.on('change', function() {
+		updateFilterRules(panelParams)
+	});
+	
+				
+	var $filterListItem = createFilterListRuleListItem(panelParams,fieldInfo.name)
+		
+	$filterListItem.data("filterRuleConfigFunc",function() {
+		var ruleID = $ruleSelection.val()
+		if(ruleID !== null && ruleID.length > 0) {
+			var ruleInfo = filterRulesUser[ruleID]
+			var conditions = []
+			if(ruleInfo.hasUserSelectionParam) {
+				var paramVal = $userSelectionParam.val()
+				if (paramVal === null || paramVal.length === 0) {
+					return null // no filtering if no users are selected
+				}
+				conditions.push({ operatorID: userSelectionConditionID, usersParam: paramVal })				
+			}
+			
+			var ruleConfig = { fieldID: fieldInfo.fieldID,
+				ruleID: ruleID,
+				conditions: conditions }	
+			return ruleConfig
+		} else {
+			return null
+		}
+	})
+		
+	$filterListItem.append($ruleControls)
+		
+	return $filterListItem
+	
+}
+
+
+
 
 
 
@@ -634,6 +731,8 @@ function createFilterRulePanelListItem(panelParams, fieldInfo,defaultRuleInfo) {
 		return textFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo)
 	case fieldTypeTag:
 		return tagFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo)
+	case fieldTypeUser:
+		return userFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo)
 	default:
 		console.log("createFilterRulePanelListItem: Unsupported field type:  " + fieldInfo.type)
 		return $("")
