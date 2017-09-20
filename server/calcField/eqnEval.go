@@ -404,10 +404,11 @@ type CalcFieldUpdateConfig struct {
 	GlobalIndex      global.GlobalIDGlobalIndex
 	GlobalVals       global.GlobalValues
 	Fields           []field.Field
+	CurrUserID       string
 	FieldsByID       map[string]field.Field
 }
 
-func CreateCalcFieldUpdateConfig(parentDatabaseID string) (*CalcFieldUpdateConfig, error) {
+func CreateCalcFieldUpdateConfig(currUserID string, parentDatabaseID string) (*CalcFieldUpdateConfig, error) {
 	globalVals, globalValErr := global.GetGlobalValues(global.GetGlobalValuesParams{ParentDatabaseID: parentDatabaseID})
 	if globalValErr != nil {
 		return nil, fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve global values: error =%v", globalValErr)
@@ -432,6 +433,7 @@ func CreateCalcFieldUpdateConfig(parentDatabaseID string) (*CalcFieldUpdateConfi
 		ParentDatabaseID: parentDatabaseID,
 		GlobalVals:       *globalVals,
 		GlobalIndex:      globalIndex,
+		CurrUserID:       currUserID,
 		Fields:           fields,
 		FieldsByID:       fieldsByID}
 

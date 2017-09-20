@@ -12,6 +12,7 @@ type FilterFuncParams struct {
 	Conditions   []FilterRuleCondition
 	FieldID      string
 	ConditionMap FilterConditionMap
+	CurrUserID   string
 }
 
 type FilterRuleFunc func(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error)
@@ -24,6 +25,10 @@ const conditionMatchTags string = "tags"
 const conditionMatchLogic string = "logic"
 const matchLogicAll string = "all"
 const matchLogicAny string = "any"
+
+const filterRuleIDCurrentUser string = "currentUser"
+const filterRuleIDSpecificUsers string = "specificUsers"
+const conditionUsers string = "users"
 
 const filterRuleIDCustomDateRange string = "dateRange"
 
@@ -387,6 +392,60 @@ func filterTags(filterParams FilterFuncParams, recFieldVals record.RecFieldValue
 
 }
 
+func filterSpecificUsers(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+
+	matchUsers := filterParams.ConditionMap.getUsersConditionParam(conditionUsers)
+	if matchUsers == nil {
+		return false, nil
+	} else if len(matchUsers) == 0 {
+		// If there are no tags to match against, match all items
+		return true, nil
+	}
+
+	userVals, valFound := recFieldVals.GetUsersFieldValue(filterParams.FieldID)
+	if !valFound || userVals == nil {
+		return false, nil
+	}
+
+	matchOneUser := func(matchUserID string) bool {
+		for _, currUserIDVal := range userVals {
+			if currUserIDVal == matchUserID {
+				return true
+			}
+		}
+		return false
+	}
+
+	matchAnyUser := func() bool {
+		// Test if any tag in the filter matches a value in the current record
+		for _, currMatchUserID := range matchUsers {
+			if matchOneUser(currMatchUserID) {
+				return true
+			}
+		}
+		return false
+	}
+
+	return matchAnyUser(), nil
+
+}
+
+func filterCurrentUser(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+
+	userVals, valFound := recFieldVals.GetUsersFieldValue(filterParams.FieldID)
+	if !valFound || userVals == nil {
+		return false, nil
+	}
+
+	for _, currUserIDVal := range userVals {
+		if currUserIDVal == filterParams.CurrUserID {
+			return true, nil
+		}
+	}
+	return false, nil
+
+}
+
 type RuleIDFilterFuncMap map[string]FilterRuleFunc
 
 var textFieldFilterRuleDefs = RuleIDFilterFuncMap{
@@ -423,6 +482,10 @@ var boolFieldFilterRuleDefs = RuleIDFilterFuncMap{
 
 var tagFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDTags: filterTags}
+
+var userFieldFilterRuleDefs = RuleIDFilterFuncMap{
+	filterRuleIDSpecificUsers: filterSpecificUsers,
+	filterRuleIDCurrentUser:   filterCurrentUser}
 
 // Get the rule definition based upon the field type
 func getFilterFuncByFieldType(fieldType string, ruleID string) (FilterRuleFunc, error) {
@@ -465,6 +528,15 @@ func getFilterFuncByFieldType(fieldType string, ruleID string) (FilterRuleFunc, 
 		}
 	case field.FieldTypeLabel:
 		filterFunc, funcFound := tagFieldFilterRuleDefs[ruleID]
+		if !funcFound {
+			return nil, fmt.Errorf(
+				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
+				fieldType, ruleID)
+		} else {
+			return filterFunc, nil
+		}
+	case field.FieldTypeUser:
+		filterFunc, funcFound := userFieldFilterRuleDefs[ruleID]
 		if !funcFound {
 			return nil, fmt.Errorf(
 				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",

@@ -159,10 +159,10 @@ func getAlertsWithUserNotification(databaseID string, userID string) ([]Alert, e
 
 }
 
-func createAlertGenerationContexts(alerts []Alert) ([]AlertGenerationContext, error) {
+func createAlertGenerationContexts(currUserID string, alerts []Alert) ([]AlertGenerationContext, error) {
 	alertContexts := []AlertGenerationContext{}
 	for _, currAlert := range alerts {
-		triggerCondContext, condErr := recordFilter.CreateFilterRuleContexts(currAlert.Properties.TriggerConditions.FilterRules)
+		triggerCondContext, condErr := recordFilter.CreateFilterRuleContexts(currUserID, currAlert.Properties.TriggerConditions.FilterRules)
 		if condErr != nil {
 			return nil, fmt.Errorf("GenerateRecordAlerts: error setting up trigger condition filter contexts: %v", condErr)
 		}
@@ -176,11 +176,11 @@ func createAlertGenerationContexts(alerts []Alert) ([]AlertGenerationContext, er
 
 // GenerateAllAlerts regenerates all alerts for all records. This is the top-level function to re-generate all the
 // alert notifications at once.
-func generateAllAlerts(databaseID string, userID string) (*AlertGenerationResult, error) {
+func generateAllAlerts(currUserID string, databaseID string, userID string) (*AlertGenerationResult, error) {
 
 	// Create a config/context object used for calculating the calculated fields for alert generation. This same
 	// config can be reused by the alert generation for all the records.
-	calcFieldUpdateConfig, err := calcField.CreateCalcFieldUpdateConfig(databaseID)
+	calcFieldUpdateConfig, err := calcField.CreateCalcFieldUpdateConfig(currUserID, databaseID)
 	if err != nil {
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
@@ -199,7 +199,7 @@ func generateAllAlerts(databaseID string, userID string) (*AlertGenerationResult
 	for _, currAlert := range alerts {
 		alertsByID[currAlert.AlertID] = currAlert
 	}
-	alertContexts, contextErr := createAlertGenerationContexts(alerts)
+	alertContexts, contextErr := createAlertGenerationContexts(currUserID, alerts)
 	if contextErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: Error setting up alert contexts: %v", contextErr)
 
@@ -253,11 +253,11 @@ func generateAllAlerts(databaseID string, userID string) (*AlertGenerationResult
 
 // GenerateOneRecordAlerts is a top-level entry point for regenerating the alerts for an entire
 // tracker, but a single recordID
-func GenerateOneRecordAlerts(databaseID string, recordID string, userID string) ([]AlertNotification, error) {
+func GenerateOneRecordAlerts(currUserID string, databaseID string, recordID string, userID string) ([]AlertNotification, error) {
 
 	log.Printf("Regenerating alerts ...")
 
-	calcFieldUpdateConfig, err := calcField.CreateCalcFieldUpdateConfig(databaseID)
+	calcFieldUpdateConfig, err := calcField.CreateCalcFieldUpdateConfig(currUserID, databaseID)
 	if err != nil {
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
@@ -273,7 +273,7 @@ func GenerateOneRecordAlerts(databaseID string, recordID string, userID string) 
 	if alertErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: Error getting alerts: %v", alertErr)
 	}
-	alertContexts, contextErr := createAlertGenerationContexts(alerts)
+	alertContexts, contextErr := createAlertGenerationContexts(currUserID, alerts)
 	if contextErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: Error setting up alert contexts: %v", contextErr)
 

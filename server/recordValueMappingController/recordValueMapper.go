@@ -11,13 +11,13 @@ import (
 	"time"
 )
 
-func calculateHiddenFormComponents(parentDatabaseID string, componentFilterCondMap form.FormComponentFilterMap,
+func calculateHiddenFormComponents(currUserID string, parentDatabaseID string, componentFilterCondMap form.FormComponentFilterMap,
 	recordVals record.RecFieldValues) ([]string, error) {
 
 	hiddenComponents := []string{}
 
 	for componentID, filterConds := range componentFilterCondMap {
-		filterContext, contextErr := recordFilter.CreateFilterRuleContexts(filterConds.FilterRules)
+		filterContext, contextErr := recordFilter.CreateFilterRuleContexts(currUserID, filterConds.FilterRules)
 		if contextErr != nil {
 			return nil, fmt.Errorf("CalculateHiddenFormComponents: %v", contextErr)
 		}
@@ -59,7 +59,7 @@ func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateCon
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: Can't set value: Error calculating fields to reflect update: err = %v", calcErr)
 	}
 
-	hiddenComponents, hiddenCalcErr := calculateHiddenFormComponents(config.ParentDatabaseID,
+	hiddenComponents, hiddenCalcErr := calculateHiddenFormComponents(config.CurrUserID, config.ParentDatabaseID,
 		componentFilterCondMap, *latestFieldValues)
 	if hiddenCalcErr != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", hiddenCalcErr)
@@ -77,10 +77,10 @@ func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateCon
 
 // Re-map the series of value updates to "flattened" current (most recent) values for both calculated
 // and non-calculated fields.
-func MapOneRecordUpdatesToFieldValues(parentDatabaseID string, recCellUpdates *record.RecordCellUpdates,
+func MapOneRecordUpdatesToFieldValues(currUserID string, parentDatabaseID string, recCellUpdates *record.RecordCellUpdates,
 	changeSetID string) (*recordValue.RecordValueResults, error) {
 
-	updateConfig, err := calcField.CreateCalcFieldUpdateConfig(parentDatabaseID)
+	updateConfig, err := calcField.CreateCalcFieldUpdateConfig(currUserID, parentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", err)
 	}
@@ -118,11 +118,11 @@ func mapOneRecordWorker(resultsChan chan RecordMappingResult,
 
 }
 
-func MapAllRecordUpdatesToFieldValues(parentDatabaseID string) ([]recordValue.RecordValueResults, error) {
+func MapAllRecordUpdatesToFieldValues(currUserID string, parentDatabaseID string) ([]recordValue.RecordValueResults, error) {
 
 	start := time.Now()
 
-	updateConfig, err := calcField.CreateCalcFieldUpdateConfig(parentDatabaseID)
+	updateConfig, err := calcField.CreateCalcFieldUpdateConfig(currUserID, parentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}

@@ -1,9 +1,11 @@
 package dashboardController
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/generic/userAuth"
 )
 
 type DummyStructForInclude struct{ Val int64 }
@@ -30,7 +32,13 @@ func getDefaultDashboardDataAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if dashboardData, err := getDefaultDashboardData(dashboardParams); err != nil {
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteJSONResponse(w, fmt.Errorf("Can't verify user authentication"))
+		return
+	}
+
+	if dashboardData, err := getDefaultDashboardData(currUserID, dashboardParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *dashboardData)
@@ -46,7 +54,13 @@ func getSummaryTableDataAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if summaryTableData, err := getSummaryTableData(params); err != nil {
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteJSONResponse(w, fmt.Errorf("Can't verify user authentication"))
+		return
+	}
+
+	if summaryTableData, err := getSummaryTableData(currUserID, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, summaryTableData)
@@ -62,7 +76,13 @@ func getBarChartDataAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if barChartData, err := getBarChartData(barChartParams); err != nil {
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteJSONResponse(w, fmt.Errorf("Can't verify user authentication"))
+		return
+	}
+
+	if barChartData, err := getBarChartData(currUserID, barChartParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, barChartData)
@@ -78,7 +98,13 @@ func getGaugeDataAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if gaugeData, err := getGaugeData(params); err != nil {
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteJSONResponse(w, fmt.Errorf("Can't verify user authentication"))
+		return
+	}
+
+	if gaugeData, err := getGaugeData(currUserID, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, gaugeData)
@@ -94,7 +120,13 @@ func getSummaryValDataAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if summaryValData, err := getSummaryValData(params); err != nil {
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteJSONResponse(w, fmt.Errorf("Can't verify user authentication"))
+		return
+	}
+
+	if summaryValData, err := getSummaryValData(currUserID, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, summaryValData)

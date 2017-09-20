@@ -31,14 +31,14 @@ func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*rec
 	// Since a change has occored to one of the record's values, a new set of mapped record
 	// values needs to be created.
 	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
-		recordForUpdate.ParentDatabaseID, recCellUpdates, recUpdater.GetChangeSetID())
+		currUserID, recordForUpdate.ParentDatabaseID, recCellUpdates, recUpdater.GetChangeSetID())
 	if mapErr != nil {
 		return nil, fmt.Errorf(
 			"updateRecordValue: Error mapping field values: err = %v", mapErr)
 	}
 
 	// (re)generate any alerts which may have been triggered by the current update
-	alert.GenerateOneRecordAlerts(recordForUpdate.ParentDatabaseID, recordForUpdate.RecordID, currUserID)
+	alert.GenerateOneRecordAlerts(currUserID, recordForUpdate.ParentDatabaseID, recordForUpdate.RecordID, currUserID)
 
 	// Force a recalculation of results the next time results are loaded.
 	recordValue.ResultsCache.Remove(recordForUpdate.ParentDatabaseID)
@@ -52,7 +52,7 @@ type CommitChangeSetParams struct {
 	ChangeSetID string `json:"changeSetID"`
 }
 
-func commitChangeSet(params CommitChangeSetParams) (*recordValue.RecordValueResults, error) {
+func commitChangeSet(currUserID string, params CommitChangeSetParams) (*recordValue.RecordValueResults, error) {
 
 	commitRecord, err := record.GetRecord(params.RecordID)
 	if err != nil {
@@ -71,7 +71,7 @@ func commitChangeSet(params CommitChangeSetParams) (*recordValue.RecordValueResu
 	// Temporary changes made under the given changeSetID have been made permanent, so
 	// a new set of mapped record values needs to be created.
 	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
-		commitRecord.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
+		currUserID, commitRecord.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(
 			"updateRecordValue: Error mapping field values: err = %v", mapErr)
@@ -101,7 +101,7 @@ func setDefaultValues(req *http.Request, params record.SetDefaultValsParams) (*r
 	}
 
 	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
-		params.ParentDatabaseID, recCellUpdates, params.ChangeSetID)
+		currUserID, params.ParentDatabaseID, recCellUpdates, params.ChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(
 			"updateRecordValue: Error mapping field values: err = %v", mapErr)

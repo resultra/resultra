@@ -16,7 +16,7 @@ type FilterRuleContext struct {
 	filterParams FilterFuncParams
 }
 
-func CreateFilterRuleContexts(filterRules []RecordFilterRule) ([]FilterRuleContext, error) {
+func CreateFilterRuleContexts(currUserID string, filterRules []RecordFilterRule) ([]FilterRuleContext, error) {
 
 	contexts := []FilterRuleContext{}
 
@@ -37,7 +37,8 @@ func CreateFilterRuleContexts(filterRules []RecordFilterRule) ([]FilterRuleConte
 		filterParams := FilterFuncParams{
 			FieldID:      currFilterRule.FieldID,
 			Conditions:   currFilterRule.Conditions,
-			ConditionMap: conditionMap}
+			ConditionMap: conditionMap,
+			CurrUserID:   currUserID}
 
 		context := FilterRuleContext{
 			filterRule:   currFilterRule,
@@ -100,10 +101,10 @@ func MatchOneRecord(matchLogic string, filterContexts []FilterRuleContext, recVa
 	return MatchOneRecordFromFieldValues(matchLogic, filterContexts, recValResults.FieldValues)
 }
 
-func FilterRecordValues(filterRules RecordFilterRuleSet,
+func FilterRecordValues(currUserID string, filterRules RecordFilterRuleSet,
 	unfilteredRecordValues []recordValue.RecordValueResults) ([]recordValue.RecordValueResults, error) {
 
-	filterContexts, err := CreateFilterRuleContexts(filterRules.FilterRules)
+	filterContexts, err := CreateFilterRuleContexts(currUserID, filterRules.FilterRules)
 	if err != nil {
 		return nil, fmt.Errorf("FilterRecordValues: Error setting up for filtering: %v", err)
 	}

@@ -99,3 +99,18 @@ func (recFieldVals RecFieldValues) GetTagsFieldValue(fieldID string) ([]string, 
 		return nil, false
 	}
 }
+
+func (recFieldVals RecFieldValues) GetUsersFieldValue(fieldID string) ([]string, bool) {
+
+	rawVal, foundVal := recFieldVals[fieldID]
+
+	if !foundVal {
+		return nil, false
+	}
+
+	if theVals, validType := rawVal.([]string); validType {
+		return theVals, true
+	} else {
+		return nil, false
+	}
+}

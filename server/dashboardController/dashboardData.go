@@ -19,29 +19,29 @@ type DashboardDataRef struct {
 	Headers           []header.Header     `json:"headers"`
 }
 
-func getDefaultDashboardData(params GetDashboardDataParams) (*DashboardDataRef, error) {
+func getDefaultDashboardData(currUserID string, params GetDashboardDataParams) (*DashboardDataRef, error) {
 
 	dashboard, err := dashboard.GetDashboard(params.DashboardID)
 	if err != nil {
 		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard: error = %v", err)
 	}
 
-	barChartData, getBarChartsErr := getDefaultDashboardBarChartsData(params.DashboardID)
+	barChartData, getBarChartsErr := getDefaultDashboardBarChartsData(currUserID, params.DashboardID)
 	if getBarChartsErr != nil {
 		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard barchart data: error = %v", getBarChartsErr)
 	}
 
-	summaryTablesData, getTableErr := getDefaultDashboardSummaryTablesData(params.DashboardID)
+	summaryTablesData, getTableErr := getDefaultDashboardSummaryTablesData(currUserID, params.DashboardID)
 	if getTableErr != nil {
 		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard summary tables data: error = %v", getTableErr)
 	}
 
-	gaugesData, getGaugeErr := getDefaultDashboardGaugesData(params.DashboardID)
+	gaugesData, getGaugeErr := getDefaultDashboardGaugesData(currUserID, params.DashboardID)
 	if getGaugeErr != nil {
 		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard gauges data: error = %v", getGaugeErr)
 	}
 
-	summaryValsData, getSummaryValsErr := getDefaultDashboardSummaryValsData(params.DashboardID)
+	summaryValsData, getSummaryValsErr := getDefaultDashboardSummaryValsData(currUserID, params.DashboardID)
 	if getSummaryValsErr != nil {
 		return nil, fmt.Errorf("GetDashboardData: Can't retrieve dashboard gauges data: error = %v", getSummaryValsErr)
 	}

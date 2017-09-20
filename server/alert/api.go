@@ -112,7 +112,7 @@ func getAlertNotificationListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if notifications, err := generateAllAlerts(params.ParentDatabaseID, currUserID); err != nil {
+	if notifications, err := generateAllAlerts(currUserID, params.ParentDatabaseID, currUserID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, notifications)

@@ -17,7 +17,7 @@ type SummaryValData struct {
 	GroupedSummarizedVals GroupedSummarizedVals   `json:"groupedSummarizedVals"`
 }
 
-func getOneSummaryValData(summaryVal *summaryValue.SummaryVal,
+func getOneSummaryValData(currUserID string, summaryVal *summaryValue.SummaryVal,
 	filterRules recordFilter.RecordFilterRuleSet) (*SummaryValData, error) {
 
 	parentDashboard, err := dashboard.GetDashboard(summaryVal.ParentDashboardID)
@@ -32,7 +32,7 @@ func getOneSummaryValData(summaryVal *summaryValue.SummaryVal,
 		PreFilterRules: summaryVal.Properties.PreFilterRules,
 		FilterRules:    filterRules,
 		SortRules:      sortRules}
-	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(getRecordParams)
+	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(currUserID, getRecordParams)
 	if getRecErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
 	}
@@ -62,7 +62,7 @@ type GetSummaryValDataParams struct {
 	FilterRules       recordFilter.RecordFilterRuleSet `json:"filterRules"`
 }
 
-func getSummaryValData(params GetSummaryValDataParams) (*SummaryValData, error) {
+func getSummaryValData(currUserID string, params GetSummaryValDataParams) (*SummaryValData, error) {
 
 	summaryVal, getErr := summaryValue.GetSummaryVal(params.ParentDashboardID, params.SummaryValID)
 	if getErr != nil {
@@ -70,7 +70,7 @@ func getSummaryValData(params GetSummaryValDataParams) (*SummaryValData, error) 
 			params, getErr)
 	}
 
-	summaryValData, dataErr := getOneSummaryValData(summaryVal, params.FilterRules)
+	summaryValData, dataErr := getOneSummaryValData(currUserID, summaryVal, params.FilterRules)
 	if dataErr != nil {
 		return nil, fmt.Errorf("getSummaryValData: Error retrieving summaryVal data: %v", dataErr)
 	}
@@ -79,7 +79,7 @@ func getSummaryValData(params GetSummaryValDataParams) (*SummaryValData, error) 
 
 }
 
-func getDefaultDashboardSummaryValsData(parentDashboardID string) ([]SummaryValData, error) {
+func getDefaultDashboardSummaryValsData(currUserID string, parentDashboardID string) ([]SummaryValData, error) {
 
 	summaryVals, err := summaryValue.GetSummaryVals(parentDashboardID)
 	if err != nil {
@@ -89,7 +89,7 @@ func getDefaultDashboardSummaryValsData(parentDashboardID string) ([]SummaryValD
 	var summaryValsData []SummaryValData
 	for _, summaryVal := range summaryVals {
 
-		summaryValData, dataErr := getOneSummaryValData(&summaryVal, summaryVal.Properties.DefaultFilterRules)
+		summaryValData, dataErr := getOneSummaryValData(currUserID, &summaryVal, summaryVal.Properties.DefaultFilterRules)
 		if dataErr != nil {
 			return nil, fmt.Errorf("getDefaultDashboardSummaryValsData: Error retrieving summaryVal data: %v", dataErr)
 		}

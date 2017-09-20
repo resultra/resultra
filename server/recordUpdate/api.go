@@ -1,9 +1,11 @@
 package recordUpdate
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/record"
 )
 
@@ -43,7 +45,13 @@ func newRecordAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newRecordRef, err := newRecord(params)
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteJSONResponse(w, fmt.Errorf("Can't verify user authentication"))
+		return
+	}
+
+	newRecordRef, err := newRecord(currUserID, params)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
@@ -276,7 +284,13 @@ func commitChangeSetAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if updatedRecordRef, err := commitChangeSet(params); err != nil {
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteJSONResponse(w, fmt.Errorf("Can't verify user authentication"))
+		return
+	}
+
+	if updatedRecordRef, err := commitChangeSet(currUserID, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, updatedRecordRef)

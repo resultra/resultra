@@ -23,7 +23,7 @@ func NewDefaultGetFilteredSortedRecordsParams() GetFilteredSortedRecordsParams {
 
 }
 
-func getCachedOrRemappedRecordValues(databaseID string) ([]recordValue.RecordValueResults, error) {
+func getCachedOrRemappedRecordValues(currUserID string, databaseID string) ([]recordValue.RecordValueResults, error) {
 
 	cachedValues, valuesFound := recordValue.ResultsCache.Get(databaseID)
 	if valuesFound {
@@ -35,7 +35,7 @@ func getCachedOrRemappedRecordValues(databaseID string) ([]recordValue.RecordVal
 			return nil, fmt.Errorf("getCachedOrRemappedRecordValues: unexpected type from results cache")
 		}
 	} else {
-		recordValues, mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(databaseID)
+		recordValues, mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(currUserID, databaseID)
 		if mapErr != nil {
 			return nil, fmt.Errorf("GetFilteredRecords: Error updating records: %v", mapErr)
 		}
@@ -45,21 +45,21 @@ func getCachedOrRemappedRecordValues(databaseID string) ([]recordValue.RecordVal
 
 }
 
-func GetFilteredSortedRecords(params GetFilteredSortedRecordsParams) ([]recordValue.RecordValueResults, error) {
+func GetFilteredSortedRecords(currUserID string, params GetFilteredSortedRecordsParams) ([]recordValue.RecordValueResults, error) {
 
 	// The code below retrieve *all* the mapped record values. A more scalable approach would be to filter the
 	// record values in batches, then combine and sort them.
-	unfilteredRecordValues, getRecordsErr := getCachedOrRemappedRecordValues(params.DatabaseID)
+	unfilteredRecordValues, getRecordsErr := getCachedOrRemappedRecordValues(currUserID, params.DatabaseID)
 	if getRecordsErr != nil {
 		return nil, fmt.Errorf("GetFilteredRecords: Error updating records: %v", getRecordsErr)
 	}
 
-	preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(params.PreFilterRules, unfilteredRecordValues)
+	preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(currUserID, params.PreFilterRules, unfilteredRecordValues)
 	if preFilterErr != nil {
 		return nil, fmt.Errorf("GetFilteredRecords: Error pre-filtering records: %v", preFilterErr)
 	}
 
-	filteredRecords, err := recordFilter.FilterRecordValues(params.FilterRules, preFilteredRecords)
+	filteredRecords, err := recordFilter.FilterRecordValues(currUserID, params.FilterRules, preFilteredRecords)
 	if err != nil {
 		return nil, fmt.Errorf("GetFilteredRecords: Error filtering records: %v", err)
 	}
@@ -76,13 +76,13 @@ type GetFilteredRecordCountParams struct {
 	PreFilterRules recordFilter.RecordFilterRuleSet `json:"preFilterRules"`
 }
 
-func getFilteredRecordCount(params GetFilteredRecordCountParams) (int, error) {
-	unfilteredRecordValues, getRecordsErr := getCachedOrRemappedRecordValues(params.DatabaseID)
+func getFilteredRecordCount(currUserID string, params GetFilteredRecordCountParams) (int, error) {
+	unfilteredRecordValues, getRecordsErr := getCachedOrRemappedRecordValues(currUserID, params.DatabaseID)
 	if getRecordsErr != nil {
 		return -1, fmt.Errorf("GetFilteredRecords: Error updating records: %v", getRecordsErr)
 	}
 
-	preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(params.PreFilterRules, unfilteredRecordValues)
+	preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(currUserID, params.PreFilterRules, unfilteredRecordValues)
 	if preFilterErr != nil {
 		return -1, fmt.Errorf("GetFilteredRecords: Error pre-filtering records: %v", preFilterErr)
 	}
@@ -96,7 +96,7 @@ type GetRecordValResultParams struct {
 	RecordID         string `json:"recordID"`
 }
 
-func getRecordValueResults(params GetRecordValResultParams) (*recordValue.RecordValueResults, error) {
+func getRecordValueResults(currUserID string, params GetRecordValResultParams) (*recordValue.RecordValueResults, error) {
 
 	recCellUpdates, cellUpdatesErr := record.GetRecordCellUpdates(params.RecordID, record.FullyCommittedCellUpdatesChangeSetID)
 	if cellUpdatesErr != nil {
@@ -104,7 +104,7 @@ func getRecordValueResults(params GetRecordValResultParams) (*recordValue.Record
 	}
 
 	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
-		params.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
+		currUserID, params.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(
 			"updateRecordValue: Error mapping field values: err = %v", mapErr)

@@ -7,7 +7,7 @@ import (
 	"resultra/datasheet/server/recordValueMappingController"
 )
 
-func newRecord(params record.NewRecordParams) (*recordValue.RecordValueResults, error) {
+func newRecord(currUserID string, params record.NewRecordParams) (*recordValue.RecordValueResults, error) {
 
 	// Perform the low-level datastore record creation
 	newRecord, newErr := record.NewRecord(params)
@@ -22,7 +22,7 @@ func newRecord(params record.NewRecordParams) (*recordValue.RecordValueResults, 
 	// calculated fields may also have fixed values which don't depend on any values being set
 	// in the record.
 	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
-		newRecord.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
+		currUserID, newRecord.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(
 			"newRecord: Error mapping field values: err = %v", mapErr)
