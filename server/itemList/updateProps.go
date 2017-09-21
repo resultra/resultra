@@ -145,3 +145,17 @@ func (updateParams SetDefaultFilterFieldsParams) updateProps(itemList *ItemList)
 
 	return nil
 }
+
+type SetDefaultSortFieldsParams struct {
+	ItemListIDHeader
+	DefaultSortFields []string `json:"defaultSortFields"`
+}
+
+func (updateParams SetDefaultSortFieldsParams) updateProps(itemList *ItemList) error {
+
+	// TODO - Validate fields
+
+	itemList.Properties.DefaultSortFields = updateParams.DefaultSortFields
+
+	return nil
+}

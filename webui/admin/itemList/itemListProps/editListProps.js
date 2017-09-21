@@ -171,12 +171,26 @@ $(document).ready(function() {
 				resortFunc: function() {}, // no-op
 				initDoneFunc: function() {}, // no-op
 				saveUpdatedSortRulesFunc: saveDefaultListSortRules}
-
-
-			initListRolePrivProperties(listInfo.listID)
-
-
 			initSortRecordsPane(sortPaneParams)
+				
+			var sortFieldParams = {
+				elemPrefix: "itemListSortFields_",
+				label: "Limit sorting to selected fields",
+				databaseID: itemListPropsContext.databaseID,
+				defaultFields: listInfo.properties.defaultSortFields,
+				setFieldsCallback: function(fields) {
+					var setFieldsParams = {
+						listID: listInfo.listID,
+						defaultSortFields: fields
+					}
+					jsonAPIRequest("itemList/setDefaultSortFields",setFieldsParams,function(updatedList) {
+						console.log(" Default filters updated")
+					}) // set record's number field value
+				}
+			}
+			initFieldSelectionChecklist(sortFieldParams)
+			
+			initListRolePrivProperties(listInfo.listID)
 
 			initItemListNameProperties(listInfo)
 

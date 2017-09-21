@@ -20,6 +20,8 @@ func init() {
 
 	itemListRouter.HandleFunc("/api/itemList/setName", setItemListName)
 	itemListRouter.HandleFunc("/api/itemList/setDefaultSortRules", setDefaultSortRules)
+	itemListRouter.HandleFunc("/api/itemList/setDefaultSortFields", setDefaultSortFields)
+
 	itemListRouter.HandleFunc("/api/itemList/setDefaultFilterRules", setDefaultFilterRules)
 	itemListRouter.HandleFunc("/api/itemList/setDefaultFilterFields", setDefaultFilterFields)
 
@@ -177,6 +179,15 @@ func setDefaultView(w http.ResponseWriter, r *http.Request) {
 
 func setDefaultFilterFields(w http.ResponseWriter, r *http.Request) {
 	var params SetDefaultFilterFieldsParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processItemListPropUpdate(w, r, params)
+}
+
+func setDefaultSortFields(w http.ResponseWriter, r *http.Request) {
+	var params SetDefaultSortFieldsParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
