@@ -78,3 +78,39 @@ function initUserSelection(selectionParams) {
 	
 	
 }
+
+
+function initCollaboratorUserSelection(params) {
+	
+	var configParams = {
+		width: '250px'
+	}
+	$.extend(configParams,params)
+	
+	
+	var getCollaboratorsParams = {
+		databaseID: params.databaseID
+	}
+	
+	jsonAPIRequest("admin/getAllCollaboratorInfo",getCollaboratorsParams,function(collabUserInfo) {
+		
+		params.$selectionInput.empty()
+		
+		$.each(collabUserInfo,function(index,userInfo) {
+			var newOption = new Option('@'+userInfo.userID, userInfo.userID);
+			params.$selectionInput.append(newOption)
+		})
+		
+		params.$selectionInput.select2({
+			placeholder: "Select a collaborator", // TODO - Allow a property to configure the placeholder.
+			width: params.width,
+		});
+		
+	})
+	
+	
+	
+	
+}
+
+

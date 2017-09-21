@@ -647,10 +647,11 @@ function userFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	var $userSelectionContainer = $ruleControls.find(".userSelectionContainer")
 	var $userSelectionParam = 	$ruleControls.find(".recordFilterUserSelections")
 	var userSelectionParams = {
-		selectionInput: $userSelectionParam,
-		dropdownParent: null
+		$selectionInput: $userSelectionParam,
+		databaseID: panelParams.databaseID,
+		width:'260px'
 	}
-	initUserSelection(userSelectionParams)
+	initCollaboratorUserSelection(userSelectionParams)
 	
 	if(defaultRuleInfo !== null) {
 		var ruleInfo = filterRulesUser[defaultRuleInfo.ruleID]

@@ -81,11 +81,11 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 	
 		var selectionWidth = controlWidth.toString() + "px"
 		var userSelectionParams = {
-			selectionInput: $userSelectionControl,
-			dropdownParent: $userSelectionContainer,
+			$selectionInput: $userSelectionControl,
+			databaseID: componentContext.databaseID,
 			width: selectionWidth
 		}
-		initUserSelection(userSelectionParams)
+		initCollaboratorUserSelection(userSelectionParams)
 		
 		function setSelectedUserFromDropdownMenu(userInfo) {
 			var userIDSelection = [userInfo.userID]

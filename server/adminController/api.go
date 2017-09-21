@@ -20,6 +20,8 @@ func init() {
 	adminRouter.HandleFunc("/api/admin/getRoleCollaborators", getRoleCollaboratorAPI)
 
 	adminRouter.HandleFunc("/api/admin/addCollaborator", addCollaboratorAPI)
+	adminRouter.HandleFunc("/api/admin/getAllCollaboratorInfo", getAllCollaboratorInfoAPI)
+
 	adminRouter.HandleFunc("/api/admin/getSingleUserRoleInfo", getSingleUserRoleInfoAPI)
 	adminRouter.HandleFunc("/api/admin/setUserRoleInfo", setUserRoleInfoAPI)
 	adminRouter.HandleFunc("/api/admin/deleteCollaborator", deleteCollaboratorAPI)
@@ -57,6 +59,22 @@ func getRoleCollaboratorAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, roleCollabInfo)
+	}
+
+}
+
+func getAllCollaboratorInfoAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params userRole.GetAllCollaborUserInfoParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if collabInfo, err := userRole.GetAllCollaboratorUserInfo(params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, collabInfo)
 	}
 
 }

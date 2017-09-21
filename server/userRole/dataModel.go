@@ -97,6 +97,31 @@ func getAllCollaborators(databaseID string) ([]CollaboratorInfo, error) {
 
 }
 
+type GetAllCollaborUserInfoParams = struct {
+	DatabaseID string `json:"databaseID"`
+}
+
+func GetAllCollaboratorUserInfo(params GetAllCollaborUserInfoParams) ([]userAuth.UserInfo, error) {
+
+	collabInfo, err := getAllCollaborators(params.DatabaseID)
+	if err != nil {
+		return nil, fmt.Errorf("getAllCollaboratorUserInfo: %v", err)
+	}
+
+	collabUserInfo := []userAuth.UserInfo{}
+	for _, currCollab := range collabInfo {
+
+		// TODo - Put a cache behind userAuth.GetUserInfoByID
+		userInfo, err := userAuth.GetUserInfoByID(currCollab.UserID)
+		if err != nil {
+			return nil, fmt.Errorf("GetAllUsersRoleInfo: Failure getting user info: userID=%v, error = %v", currCollab.UserID, err)
+		}
+		collabUserInfo = append(collabUserInfo, *userInfo)
+	}
+	return collabUserInfo, nil
+
+}
+
 func GetCollaboratorByID(collaboratorID string) (*CollaboratorInfo, error) {
 
 	userID := ""
