@@ -120,19 +120,43 @@ function sortPaneRuleListChanged(sortPaneParams) {
 
 function populateSortByFieldMenu(sortPaneParams,elemPrefix,sortRule) {
 	
+	
+	var specificSortableFields = null
+	if(sortPaneParams.limitToFieldList.length > 0) {
+		specificSortableFields = new IDLookupTable(sortPaneParams.limitToFieldList)
+	}
+	
 	var selectionID = sortFunctionSelectionID(elemPrefix)
 	var menuSelector = '#' + selectionID
 	
 	$(menuSelector).empty()
 	$(menuSelector).append(defaultSelectOptionPromptHTML("Sort By"))
 	
-	for(var fieldIndex in sortPaneParams.sortedFields) {
+	function includeFieldInFieldMenu(fieldID) {
+		if (specificSortableFields === null) {
+			// Include all fields.
+			return true
+		} else if (specificSortableFields.hasID(fieldID)) {
+			return true
+		} else if ((sortRule !== null)  && (sortRule.fieldID === fieldID)){
+			// Even if the field is not in the list of specific fields to allow sorting on,
+			// but it is the field being selected for sorting, include the field in the list
+			// of sortable fields. This can happen if sorting takes place on a table column,
+			// and the table column isn't in the specific list of fields to be sortable.
+			return true
+		}
+		return false
+	}
+	
+	for(var fieldIndex in sortPaneParams.sortedFields) {	
 		var fieldInfo = sortPaneParams.sortedFields[fieldIndex]
-		$(menuSelector).append(selectFieldHTML(fieldInfo.fieldID, fieldInfo.name))	
+		if(includeFieldInFieldMenu(fieldInfo.fieldID)) {
+			$(menuSelector).append(selectFieldHTML(fieldInfo.fieldID, fieldInfo.name))			
+		}
 	}
 	
 	// Initialize the menu to the field ID of the given sortRule
-	if(sortRule != null) {
+	if(sortRule !== null) {
 		$(menuSelector).val(sortRule.fieldID)	
 	}
 	

@@ -108,6 +108,7 @@ function initItemListView(listInfo) {
 					
 	var recordSortPaneParams = {
 		defaultSortRules: listInfo.properties.defaultRecordSortRules,
+		limitToFieldList:listInfo.properties.defaultSortFields,
 		databaseID: viewListContext.databaseID,
 		resortFunc: reloadSortedAndFilterRecords,
 		initDoneFunc: decrementRemainingPanelInitCount,
