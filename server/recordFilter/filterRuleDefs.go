@@ -430,6 +430,24 @@ func filterSpecificUsers(filterParams FilterFuncParams, recFieldVals record.RecF
 
 }
 
+func filterBlankUserField(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+
+	userVals, valFound := recFieldVals.GetUsersFieldValue(filterParams.FieldID)
+	if !valFound || userVals == nil {
+		return true, nil
+	} else if len(userVals) == 0 {
+		return true, nil
+	} else {
+		return false, nil
+	}
+
+}
+
+func filterNonBlankUserField(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+	isBlank, err := filterBlankUserField(filterParams, recFieldVals)
+	return !isBlank, err
+}
+
 func filterCurrentUser(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
 
 	userVals, valFound := recFieldVals.GetUsersFieldValue(filterParams.FieldID)
@@ -485,7 +503,9 @@ var tagFieldFilterRuleDefs = RuleIDFilterFuncMap{
 
 var userFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDSpecificUsers: filterSpecificUsers,
-	filterRuleIDCurrentUser:   filterCurrentUser}
+	filterRuleIDCurrentUser:   filterCurrentUser,
+	filterRuleIDNotBlank:      filterNonBlankUserField,
+	filterRuleIDBlank:         filterBlankUserField}
 
 // Get the rule definition based upon the field type
 func getFilterFuncByFieldType(fieldType string, ruleID string) (FilterRuleFunc, error) {

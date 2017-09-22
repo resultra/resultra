@@ -633,7 +633,15 @@ function userFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 		"specificUsers": {
 			label: "Specific collaborators",
 			hasUserSelectionParam: true,
-		}
+		},
+		"isBlank": {
+			label: "User not set (blank)",
+			hasUserSelectionParam: false,
+		},
+		"notBlank": {
+			label: "User is set (not blank)",
+			hasUserSelectionParam: false,
+		},
 	}
 	var $ruleSelection = $ruleControls.find(".recordFilterRuleSelection")
 	$ruleSelection.empty()
