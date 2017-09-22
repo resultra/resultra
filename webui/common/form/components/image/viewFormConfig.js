@@ -220,7 +220,7 @@ function initAttachmentFormRecordEditBehavior($imageContainer, componentContext,
 			imageID: imageObjectRef.imageID,
 			attachments: inputVal
 		}
-		jsonAPIRequest("frm/image/validateInput", validationParams, function(validationResult) {
+		jsonAPIRequest("frm/attachment/validateInput", validationParams, function(validationResult) {
 			validationResultCallback(validationResult)
 		})
 	}

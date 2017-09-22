@@ -1,6 +1,7 @@
 package form
 
 import (
+	"resultra/datasheet/server/form/components/attachment"
 	"resultra/datasheet/server/form/components/caption"
 	"resultra/datasheet/server/form/components/checkBox"
 	"resultra/datasheet/server/form/components/comment"
@@ -11,7 +12,6 @@ import (
 	"resultra/datasheet/server/form/components/gauge"
 	"resultra/datasheet/server/form/components/header"
 	"resultra/datasheet/server/form/components/htmlEditor"
-	"resultra/datasheet/server/form/components/image"
 	"resultra/datasheet/server/form/components/label"
 	"resultra/datasheet/server/form/components/numberInput"
 	"resultra/datasheet/server/form/components/progress"
@@ -34,7 +34,7 @@ type FormInfo struct {
 	HtmlEditors        []htmlEditor.HtmlEditor       `json:"htmlEditors"`
 	Ratings            []rating.Rating               `json:"ratings"`
 	Comments           []comment.Comment             `json:"comments"`
-	Images             []image.Image                 `json:"images"`
+	Images             []attachment.Image            `json:"images"`
 	Headers            []header.Header               `json:"headers"`
 	FormButtons        []formButton.FormButton       `json:"formButtons"`
 	Selections         []selection.Selection         `json:"selections"`
@@ -90,7 +90,7 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		return nil, err
 	}
 
-	images, err := image.GetImages(formID)
+	images, err := attachment.GetImages(formID)
 	if err != nil {
 		return nil, err
 	}

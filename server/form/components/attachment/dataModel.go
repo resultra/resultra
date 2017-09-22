@@ -1,4 +1,4 @@
-package image
+package attachment
 
 import (
 	"fmt"
@@ -10,7 +10,8 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
-const imageEntityKind string = "image"
+// TODO - Finish refactoring
+const imageEntityKind string = "attachment"
 
 type Image struct {
 	ParentFormID string          `json:"parentFormID"`

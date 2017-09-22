@@ -3,6 +3,7 @@ package form
 import (
 	"fmt"
 
+	"resultra/datasheet/server/form/components/attachment"
 	"resultra/datasheet/server/form/components/caption"
 	"resultra/datasheet/server/form/components/checkBox"
 	"resultra/datasheet/server/form/components/comment"
@@ -13,7 +14,6 @@ import (
 	"resultra/datasheet/server/form/components/gauge"
 	"resultra/datasheet/server/form/components/header"
 	"resultra/datasheet/server/form/components/htmlEditor"
-	"resultra/datasheet/server/form/components/image"
 	"resultra/datasheet/server/form/components/label"
 	"resultra/datasheet/server/form/components/numberInput"
 	"resultra/datasheet/server/form/components/progress"
@@ -70,7 +70,7 @@ func cloneFormComponents(remappedIDs uniqueID.UniqueIDRemapper, parentFormID str
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := image.CloneImages(remappedIDs, parentFormID); err != nil {
+	if err := attachment.CloneImages(remappedIDs, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 

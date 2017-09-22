@@ -11,7 +11,7 @@ function loadImageProperties($attachmentContainer, attachmentRef) {
 			imageID: attachmentRef.imageID,
 			labelFormat: updatedLabelProps
 		}
-		jsonAPIRequest("frm/image/setLabelFormat", formatParams, function(updatedAttachment) {
+		jsonAPIRequest("frm/attachment/setLabelFormat", formatParams, function(updatedAttachment) {
 			setAttachmentComponentLabel($attachmentContainer,updatedAttachment)
 			setContainerComponentInfo($attachmentContainer,updatedAttachment,updatedAttachment.imageID)
 		})	
@@ -32,7 +32,7 @@ function loadImageProperties($attachmentContainer, attachmentRef) {
 				imageID: attachmentRef.imageID,
 				permissions: updatedPermissions
 			}
-			jsonAPIRequest("frm/image/setPermissions",params,function(updatedAttachment) {
+			jsonAPIRequest("frm/attachment/setPermissions",params,function(updatedAttachment) {
 				setContainerComponentInfo($attachmentContainer,updatedAttachment,updatedAttachment.imageID)
 			})
 		}
@@ -51,7 +51,7 @@ function loadImageProperties($attachmentContainer, attachmentRef) {
 		}
 		console.log("Setting new validation settings: " + JSON.stringify(validationParams))
 
-		jsonAPIRequest("frm/image/setValidation",validationParams,function(updatedAttachment) {
+		jsonAPIRequest("frm/attachment/setValidation",validationParams,function(updatedAttachment) {
 			setContainerComponentInfo($attachmentContainer,updatedAttachment,updatedAttachment.imageID)
 		})
 	})
@@ -75,7 +75,7 @@ function loadImageProperties($attachmentContainer, attachmentRef) {
 				imageID: attachmentRef.imageID,
 				popupMsg: popupMsg
 			}
-			jsonAPIRequest("frm/image/setHelpPopupMsg",params,function(updatedAttachment) {
+			jsonAPIRequest("frm/attachment/setHelpPopupMsg",params,function(updatedAttachment) {
 				setContainerComponentInfo($attachmentContainer,updatedAttachment,updatedAttachment.imageID)
 				updateComponentHelpPopupMsg($attachmentContainer, updatedAttachment)
 			})

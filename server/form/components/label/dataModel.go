@@ -10,7 +10,7 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
-const labelEntityKind string = "label"
+const labelEntityKind string = "tags"
 
 type Label struct {
 	ParentFormID string          `json:"parentFormID"`

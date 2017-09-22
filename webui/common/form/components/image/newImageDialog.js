@@ -4,7 +4,7 @@ function openNewImageDialog(databaseID,formID,containerParams)
 {
 			
 	function createNewImageComponent($parentDialog, newComponentParams) {
-		jsonAPIRequest("frm/image/new",newComponentParams,function(newImageObjectRef) {
+		jsonAPIRequest("frm/attachment/new",newComponentParams,function(newImageObjectRef) {
 	          console.log("saveNewImage: Done getting new ID:response=" + JSON.stringify(newImageObjectRef));
 			  
 			  setAttachmentComponentLabel(containerParams.containerObj,newImageObjectRef)

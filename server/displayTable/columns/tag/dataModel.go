@@ -9,7 +9,7 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
-const tagEntityKind string = "tag"
+const tagEntityKind string = "tags"
 
 type Tag struct {
 	ParentTableID string        `json:"parentTableID"`

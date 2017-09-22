@@ -24,7 +24,7 @@ function resizeImage($container,geometry) {
 		geometry: geometry
 	}
 	
-	jsonAPIRequest("frm/image/resize", resizeParams, function(updatedObjRef) {
+	jsonAPIRequest("frm/attachment/resize", resizeParams, function(updatedObjRef) {
 		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.imageID)
 	})	
 }
