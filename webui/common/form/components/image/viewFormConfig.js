@@ -53,7 +53,7 @@ function initImageRecordEditBehavior($container,componentContext,recordProxy, im
 		
 		function initImageButtonForAddingImage() {
 			
-			var $addAttachmentInput = $('<input class="uploadInput" type="image">')
+			var $addAttachmentInput = $('<input class="uploadInput" type="file">')
 			$imageButton.append($addAttachmentInput)
 			
 			function setAttachmentFromDialog(newAttachmentID) {
