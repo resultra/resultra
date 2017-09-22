@@ -1,6 +1,7 @@
 package components
 
 import (
+	"resultra/datasheet/webui/common/form/components/attachment"
 	"resultra/datasheet/webui/common/form/components/checkBox"
 	"resultra/datasheet/webui/common/form/components/comment"
 	"resultra/datasheet/webui/common/form/components/datePicker"
@@ -8,7 +9,6 @@ import (
 	"resultra/datasheet/webui/common/form/components/file"
 	"resultra/datasheet/webui/common/form/components/gauge"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
-	"resultra/datasheet/webui/common/form/components/image"
 	"resultra/datasheet/webui/common/form/components/label"
 	"resultra/datasheet/webui/common/form/components/numberInput"
 	"resultra/datasheet/webui/common/form/components/progress"
@@ -26,7 +26,7 @@ type ComponentViewTemplateParams struct {
 	ToggleParams        toggle.ToggleViewTemplateParams
 	DatePickerParams    datePicker.DatePickerViewTemplateParams
 	TextBoxParams       textBox.TextboxViewTemplateParams
-	ImageParams         image.ImageViewTemplateParams
+	AttachmentParams    attachment.ImageViewTemplateParams
 	HTMLEditorParams    htmlEditor.HTMLEditorViewTemplateParams
 	RatingParams        rating.RatingViewTemplateParams
 	CommentParams       comment.CommentViewTemplateParams
@@ -52,7 +52,7 @@ func init() {
 		ToggleParams:        toggle.ViewTemplateParams,
 		DatePickerParams:    datePicker.ViewTemplateParams,
 		TextBoxParams:       textBox.ViewTemplateParams,
-		ImageParams:         image.ViewTemplateParams,
+		AttachmentParams:    attachment.ViewTemplateParams,
 		HTMLEditorParams:    htmlEditor.ViewTemplateParams,
 		RatingParams:        rating.ViewTemplateParams,
 		CommentParams:       comment.ViewTemplateParams,

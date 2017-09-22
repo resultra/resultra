@@ -1,6 +1,7 @@
 package components
 
 import (
+	"resultra/datasheet/webui/common/form/components/attachment"
 	"resultra/datasheet/webui/common/form/components/caption"
 	"resultra/datasheet/webui/common/form/components/checkBox"
 	"resultra/datasheet/webui/common/form/components/comment"
@@ -12,7 +13,6 @@ import (
 	"resultra/datasheet/webui/common/form/components/gauge"
 	"resultra/datasheet/webui/common/form/components/header"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
-	"resultra/datasheet/webui/common/form/components/image"
 	"resultra/datasheet/webui/common/form/components/label"
 	"resultra/datasheet/webui/common/form/components/numberInput"
 	"resultra/datasheet/webui/common/form/components/progress"
@@ -40,7 +40,7 @@ func init() {
 	TemplateFileList = append(TemplateFileList, toggle.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, datePicker.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, htmlEditor.TemplateFileList...)
-	TemplateFileList = append(TemplateFileList, image.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, attachment.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, textBox.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, header.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, rating.TemplateFileList...)

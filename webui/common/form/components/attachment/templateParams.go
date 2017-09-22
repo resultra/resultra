@@ -1,4 +1,4 @@
-package image
+package attachment
 
 import (
 	"resultra/datasheet/webui/admin/common/inputProperties"
