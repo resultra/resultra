@@ -544,13 +544,11 @@ function tagFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	var $ruleControls = $('#recordFilterTagFieldRuleListItem').clone()
 	$ruleControls.attr("id","")
 	
-	var ruleID = "tags"
-	
 	var $tagSelection = $ruleControls.find(".recordFilterTagSelections")
-	
 	var $matchLogicSelection = $ruleControls.find(".recordFilterMatchLogicSelection")
+	var $tagParamsContainer = $ruleControls.find(".tagParamsContainer")
+	var selectedTagsConditionID = "tags"
 	
-				
 	var $filterListItem = createFilterListRuleListItem(panelParams,fieldInfo.name)
 	
 	function populateTagControl(tags) {
@@ -564,36 +562,73 @@ function tagFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 				$tagSelection.append(newOption)					
 			}
 		}
-		
 	}
 	
+	var filterRulesTags = {
+		"tags": {
+			label: "Specific tags",
+			hasTagParams: true,
+		},
+		"isBlank": {
+			label: "No tags",
+			hasTagParams: false,
+		},
+		"notBlank": {
+			label: "Has tag(s)",
+			hasTagParams: false,
+		},
+	}
+	var $ruleSelection = $ruleControls.find(".recordFilterRuleSelection")
+	$ruleSelection.empty()
+	$ruleSelection.append(defaultSelectOptionPromptHTML("Filter for"))
+	for(var ruleID in filterRulesTags) {
+	 	var selectRuleHTML = selectOptionHTML(ruleID, filterRulesTags[ruleID].label)
+	 	$ruleSelection.append(selectRuleHTML)				
+	}
 	
 	if(defaultRuleInfo !== null) {
-		var ruleConditions = mapRuleConditionsByOperatorID(defaultRuleInfo)
-		var defaultTagList = ruleConditions[ruleID].tagsParam
-		populateTagControl(defaultTagList)
-		
-		$tagSelection.val(defaultTagList)
-	} 
+		var ruleInfo = filterRulesTags[defaultRuleInfo.ruleID]
+		$ruleSelection.val(defaultRuleInfo.ruleID)
+		if(ruleInfo.hasTagParams) {
+			var ruleConditions = mapRuleConditionsByOperatorID(defaultRuleInfo)
+			
+			var defaultTagList = ruleConditions[selectedTagsConditionID].tagsParam
+			populateTagControl(defaultTagList)
+			$tagSelection.val(defaultTagList)	
+			
+			var matchLogic = ruleConditions[matchLogicConditionID].textParam
+			$matchLogicSelection.val(matchLogic)
+			
+			$tagParamsContainer.show()
+		} else {
+			$tagParamsContainer.hide()
+		}
+	} else {
+			$tagParamsContainer.hide()		
+	}
 	
 		
 	$filterListItem.data("filterRuleConfigFunc",function() {
-		var selectedTags = $tagSelection.val()
-		if (selectedTags !== null && selectedTags.length > 0) {
-			
-			var matchLogicConditionID = "logic"
-			
-			var conditions = []
-			conditions.push({operatorID:ruleID, tagsParam: selectedTags })
-			conditions.push({operatorID:matchLogicConditionID, textParam: $matchLogicSelection.val()})
-			var ruleConfig = { fieldID: fieldInfo.fieldID,
-				ruleID: ruleID,
-				conditions: conditions }	
-			return ruleConfig
-			
-		} else {
-			return null;			
+		var ruleID = $ruleSelection.val()
+		if((ruleID===null)||(ruleID.length<=0)) {
+			return null
 		}
+		var ruleInfo = filterRulesTags[ruleID]
+		var conditions = []
+		if(ruleInfo.hasTagParams) {
+			var selectedTags = $tagSelection.val()
+			if (selectedTags !== null && selectedTags.length > 0) {			
+				var matchLogicConditionID = "logic"
+				conditions.push({operatorID:selectedTagsConditionID, tagsParam: selectedTags })
+				conditions.push({operatorID:matchLogicConditionID, textParam: $matchLogicSelection.val()})
+			} else {
+				return null;			
+			}
+		}
+		var ruleConfig = { fieldID: fieldInfo.fieldID,
+			ruleID: ruleID,
+			conditions: conditions }	
+		return ruleConfig
 	})
 	
 	$tagSelection.select2({
@@ -605,6 +640,16 @@ function tagFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 		tokenSeparators: [',']
 	});
 	
+	initSelectControlChangeHandler($ruleSelection,function(ruleID) {
+		var ruleInfo = filterRulesTags[ruleID]
+		console.log("Rule selection change: " + ruleID)
+		if (ruleInfo.hasTagParams) {
+			$tagParamsContainer.show()
+		} else {
+			$tagParamsContainer.hide()
+		}
+		updateFilterRules(panelParams)
+	})
 	$tagSelection.on('change', function() {
 		updateFilterRules(panelParams)
 	});

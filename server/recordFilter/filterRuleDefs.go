@@ -392,6 +392,24 @@ func filterTags(filterParams FilterFuncParams, recFieldVals record.RecFieldValue
 
 }
 
+func filterBlankTagField(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+
+	tagVals, valFound := recFieldVals.GetTagsFieldValue(filterParams.FieldID)
+	if !valFound || tagVals == nil {
+		return true, nil
+	} else if len(tagVals) == 0 {
+		return true, nil
+	} else {
+		return false, nil
+	}
+
+}
+
+func filterNonBlankTagField(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
+	isBlank, err := filterBlankTagField(filterParams, recFieldVals)
+	return !isBlank, err
+}
+
 func filterSpecificUsers(filterParams FilterFuncParams, recFieldVals record.RecFieldValues) (bool, error) {
 
 	matchUsers := filterParams.ConditionMap.getUsersConditionParam(conditionUsers)
@@ -499,7 +517,9 @@ var boolFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleNotFalse:   filterNotFalse}
 
 var tagFieldFilterRuleDefs = RuleIDFilterFuncMap{
-	filterRuleIDTags: filterTags}
+	filterRuleIDTags:     filterTags,
+	filterRuleIDNotBlank: filterNonBlankTagField,
+	filterRuleIDBlank:    filterBlankTagField}
 
 var userFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDSpecificUsers: filterSpecificUsers,
