@@ -49,6 +49,11 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 			initFormComponentViewBehavior($file,
 					fileObjectRef.fileID,initFileViewProperties)
 		},
+		initImageFunc: function(componentContext,$image,imageObjectRef) {			
+			initImageFormRecordEditBehavior($image,componentContext,recordProxy,imageObjectRef)
+			initFormComponentViewBehavior($image,
+					imageObjectRef.imageID,initImageViewProperties)
+		},
 		initUrlLinkFunc: function(componentContext,$urlLink,urlLinkObjectRef) {			
 			initUrlLinkFormRecordEditBehavior($urlLink,componentContext,recordProxy,urlLinkObjectRef)
 			initFormComponentViewBehavior($urlLink,
@@ -133,7 +138,7 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 			initFormComponentViewBehavior($htmlEditor,
 					htmlEditorObjectRef.htmlEditorID,initHTMLEditorViewProperties)
 		},
-		initImageFunc: function(componentContext,$image,imageObjectRef) {
+		initAttachmentFunc: function(componentContext,$image,imageObjectRef) {
 			console.log("Init image in view form")
 			initAttachmentFormRecordEditBehavior($image,componentContext,recordProxy,imageObjectRef)
 			initFormComponentViewBehavior($image,

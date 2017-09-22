@@ -3,9 +3,9 @@
 
 
 
-function initAttachmentRecordEditBehavior($imageContainer, componentContext,recordProxy,imageObjectRef,remoteValidationFunc) {
+function initAttachmentRecordEditBehavior($attachmentContainer, componentContext,recordProxy,imageObjectRef,remoteValidationFunc) {
 	
-	var $imageInnerContainer = imageInnerContainerFromImageComponentContainer($imageContainer)
+	var $attachmentInnerContainer = attachmentInnerContainerFromImageComponentContainer($attachmentContainer)
 	
 	var validateInputWithAttachmentList = function(attachmentIDList, validationCompleteCallback) {
 		if(formComponentIsReadOnly(imageObjectRef.properties.permissions)) {
@@ -13,7 +13,7 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 			return
 		}
 		remoteValidationFunc(attachmentIDList,function(validationResult) {
-			setupFormComponentValidationPrompt($imageContainer,validationResult,validationCompleteCallback)			
+			setupFormComponentValidationPrompt($attachmentContainer,validationResult,validationCompleteCallback)			
 		})	
 		
 	}
@@ -28,7 +28,7 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 	
 	var getCurrentlyDisplayedAttachmentList = function() {
 		var currentAttachmentIDs = []
-		$imageInnerContainer.find(".attachGalleryThumbnailContainer").each(function() {
+		$attachmentInnerContainer.find(".attachGalleryThumbnailContainer").each(function() {
 			var attachRef = $(this).data("attachRef")
 			currentAttachmentIDs.push(attachRef.attachmentInfo.attachmentID)
 		})
@@ -103,7 +103,7 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 		
 			var getRefParams = { attachmentIDs: fieldVal.attachments }
 			jsonAPIRequest("attachment/getReferences", getRefParams, function(attachRefs) {
-				$imageInnerContainer.empty()
+				$attachmentInnerContainer.empty()
 				for(var refIndex = 0; refIndex < attachRefs.length; refIndex++) {
 				
 					var attachRef = attachRefs[refIndex]
@@ -111,15 +111,15 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 					var $thumbnailContainer = attachmentGalleryThumbnailContainer(attachRef,
 									saveRecordUpdateWithCurrentlyDisplayedAttachmentList,componentIsReadOnly)
 					$thumbnailContainer.data("attachRef",attachRef)
-					$imageInnerContainer.append($thumbnailContainer)
+					$attachmentInnerContainer.append($thumbnailContainer)
 				
 				}
-				initAttachmentContainerPopupGallery($imageInnerContainer)
+				initAttachmentContainerPopupGallery($attachmentInnerContainer)
 			})
 	
 		} else {
 			// There's no value in the current record for this field, so clear the value in the container
-			$imageInnerContainer.empty()
+			$attachmentInnerContainer.empty()
 		}	
 		
 	}
@@ -134,7 +134,7 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 	
 		var uploadedFileResults = []
 		
-		var $imageUploadInput = imageUploadInputFromImageComponentContainer($imageContainer)
+		var $imageUploadInput = imageUploadInputFromImageComponentContainer($attachmentContainer)
 	
 		function saveRecordUpdateWithAttachmentListAdditions(newAttachmentList) {
 			
@@ -168,7 +168,7 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 			
 		}
 			
-		var $manageAttachmentsButton = manageAttachmentsButtonFromImageComponentContainer($imageContainer)
+		var $manageAttachmentsButton = manageAttachmentsButtonFromImageComponentContainer($attachmentContainer)
 			initButtonControlClickHandler($manageAttachmentsButton,function() {
 			
 				var currRecordRef = recordProxy.getRecordFunc()
@@ -186,7 +186,7 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 				openAddAttachmentsDialog(manageAttachmentParams)
 			})
 		
-		var $addLinkButton = addLinkButtonFromAttachmentComponentContainer($imageContainer)
+		var $addLinkButton = addLinkButtonFromAttachmentComponentContainer($attachmentContainer)
 		initButtonControlClickHandler($addLinkButton,function() {
 			console.log("Add URL Link button clicked")
 			var attachLinkParams = {
@@ -202,7 +202,7 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 	}
 	initAttachmentEditBehavior()
 	
-	$imageContainer.data("viewFormConfig", {
+	$attachmentContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoImage,
 		recordProxy: recordProxy,
 		validateValue: validateInput
@@ -211,7 +211,7 @@ function initAttachmentRecordEditBehavior($imageContainer, componentContext,reco
 		
 }
 
-function initAttachmentFormRecordEditBehavior($imageContainer, componentContext,recordProxy,imageObjectRef) {
+function initAttachmentFormRecordEditBehavior($attachmentContainer, componentContext,recordProxy,imageObjectRef) {
 	
 	function validateInput(inputVal,validationResultCallback) {
 		
@@ -225,9 +225,9 @@ function initAttachmentFormRecordEditBehavior($imageContainer, componentContext,
 		})
 	}
 	
-	initAttachmentFormComponentViewModeGeometry($imageContainer,imageObjectRef)
+	initAttachmentFormComponentViewModeGeometry($attachmentContainer,imageObjectRef)
 	
-	initAttachmentRecordEditBehavior($imageContainer, componentContext,recordProxy,imageObjectRef,validateInput)
+	initAttachmentRecordEditBehavior($attachmentContainer, componentContext,recordProxy,imageObjectRef,validateInput)
 }
 
 

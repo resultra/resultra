@@ -19,6 +19,7 @@ type FieldsByType struct {
 	EmailAddrFields  []Field `json:"emailAddrFields"`
 	UrlFields        []Field `json:"urlFields"`
 	FileFields       []Field `json:"fileFields"`
+	ImageFields      []Field `json:"imageFields"`
 }
 
 func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
@@ -54,6 +55,8 @@ func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
 			fieldsByType.EmailAddrFields = append(fieldsByType.EmailAddrFields, currField)
 		case FieldTypeFile:
 			fieldsByType.FileFields = append(fieldsByType.FileFields, currField)
+		case FieldTypeImage:
+			fieldsByType.ImageFields = append(fieldsByType.ImageFields, currField)
 		case FieldTypeURL:
 			fieldsByType.UrlFields = append(fieldsByType.UrlFields, currField)
 		default:
@@ -169,6 +172,8 @@ func getSortedFieldsByType(params GetSortedFieldListParams) ([]Field, error) {
 			matchedFields = append(matchedFields, fieldsByType.EmailAddrFields...)
 		case FieldTypeFile:
 			matchedFields = append(matchedFields, fieldsByType.FileFields...)
+		case FieldTypeImage:
+			matchedFields = append(matchedFields, fieldsByType.ImageFields...)
 		case FieldTypeURL:
 			matchedFields = append(matchedFields, fieldsByType.UrlFields...)
 		default:

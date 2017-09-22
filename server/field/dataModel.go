@@ -22,6 +22,7 @@ const FieldTypeComment string = "comment"
 const FieldTypeLabel string = "label"
 const FieldTypeEmail string = "email"
 const FieldTypeURL string = "url"
+const FieldTypeImage string = "image"
 
 type Field struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
@@ -70,6 +71,8 @@ func validFieldType(fieldType string) bool {
 	case FieldTypeFile:
 		return true
 	case FieldTypeURL:
+		return true
+	case FieldTypeImage:
 		return true
 	default:
 		return false

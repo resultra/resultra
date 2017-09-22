@@ -5,6 +5,7 @@ var paletteItemsEditConfig = {
 	paletteItemToggle: toggleDesignFormConfig,
 	paletteItemDatePicker: datePickerDesignFormConfig,
 	paletteItemHtmlEditor: htmlEditorDesignFormConfig,
+	paletteItemAttachment: attachmentDesignFormConfig,
 	paletteItemImage: imageDesignFormConfig,
 	paletteItemHeader: formHeaderDesignFormConfig,
 	paletteItemRating: ratingDesignFormConfig,
@@ -190,6 +191,10 @@ $(document).ready(function() {
 		initHtmlEditorFunc: function(componentContext,$htmlEditor,htmlEditorObjectRef) {
 			var componentIDs = { formID: formID, componentID: htmlEditorObjectRef.htmlEditorID }
 			initFormComponentDesignBehavior($htmlEditor,componentIDs,htmlEditorObjectRef,htmlEditorDesignFormConfig,designFormLayoutConfig)
+		},
+		initAttachmentFunc: function(componentContext,$image,imageObjectRef) {
+			var componentIDs = { formID: formID, componentID: imageObjectRef.imageID }
+			initFormComponentDesignBehavior($image,componentIDs,imageObjectRef,attachmentDesignFormConfig,designFormLayoutConfig)
 		},
 		initImageFunc: function(componentContext,$image,imageObjectRef) {
 			var componentIDs = { formID: formID, componentID: imageObjectRef.imageID }

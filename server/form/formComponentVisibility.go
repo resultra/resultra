@@ -144,6 +144,11 @@ func GetDatabaseFormComponentFilterMap(parentDatabaseID string) (FormComponentFi
 				compFilterMap[currFile.FileID] = currFile.Properties.VisibilityConditions
 			}
 		}
+		for _, currImage := range formInfo.Images {
+			if !currImage.Properties.VisibilityConditions.IsEmptyRuleSet() {
+				compFilterMap[currImage.ImageID] = currImage.Properties.VisibilityConditions
+			}
+		}
 	}
 
 	return compFilterMap, nil

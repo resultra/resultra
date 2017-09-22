@@ -11,6 +11,7 @@ var fieldTypeTag = "label"
 var fieldTypeEmail = "email"
 var fieldTypeURL = "url"
 var fieldTypeFile = "file"
+var fieldTypeImage = "image"
 
 function fieldTypeLabel(fieldType) {
 	switch (fieldType) {
@@ -26,6 +27,7 @@ function fieldTypeLabel(fieldType) {
 	case fieldTypeTag: return "Tag"
 	case fieldTypeEmail: return "Email Address"
 	case fieldTypeURL: return "URL link"
+	case fieldTypeImage: return "Image"
 	default: return "Unknown field type"
 	}
 }
@@ -250,6 +252,14 @@ function loadFieldInfo(parentDatabaseID,fieldTypes,fieldInfoCallback) {
 			for (var fileFieldIter in fileFields) {		
 				var fileField = fileFields[fileFieldIter]			
 				fieldsByID[fileField.fieldID] = fileField
+			} // for each file field
+		}
+		
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeImage]==true) {
+			var imageFields = fieldsByType.imageFields
+			for (var imageFieldIter in imageFields) {		
+				var imageField = imageFields[imageFieldIter]			
+				fieldsByID[imageField.fieldID] = imageField
 			} // for each file field
 		}
 

@@ -1,0 +1,65 @@
+
+.imageFormComponent 
+{
+	min-width:150px;
+	width: 150px;
+	height: auto;
+}
+
+.imageTableCellComponent
+{
+	min-width: 150px;
+	width:100%;
+}
+
+.imageComponent .form-group {
+	margin-bottom:0px;
+}
+
+.imageComponent .input-group {
+	width:100%;
+}
+
+.imageComponent label {
+	margin-bottom: 2px !important;
+}
+
+.imageComponentInput {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.imageEditLinkButton {
+	padding-left:4px;
+	padding-right:4px;
+}
+
+.imageDisplayContainer {
+	max-width:325px;
+	overflow:hidden;
+	border: 1px solid lightGrey;
+	background-color: white;
+}
+
+/* Limit URL text to one line and hide the overflow.
+   This is needed for table view columns which must be a fixed height.
+   Uses this solution: https://stackoverflow.com/questions/1318108/css-limit-element-to-1-line
+ */ 
+.imageDisplayContainer a {
+	padding-left:5px;
+	padding-right:5px;
+	white-space:nowrap;
+	display:block;
+	overflow:hidden;
+	text-overflow: ellipsis;
+}
+
+
+
+.imagePopupContainer {
+	width:100%;
+	
+	/* The Bootstrap popover will resize around these constraints */
+	min-width:250px;
+	min-height:100px;
+}

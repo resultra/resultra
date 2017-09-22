@@ -1,5 +1,5 @@
 
-function loadImageProperties($attachmentContainer, attachmentRef) {
+function loadAttachmentProperties($attachmentContainer, attachmentRef) {
 	console.log("Loading html editor properties")
 	
 	var elemPrefix = "image_"

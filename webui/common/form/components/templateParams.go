@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/file"
 	"resultra/datasheet/webui/common/form/components/gauge"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
+	"resultra/datasheet/webui/common/form/components/image"
 	"resultra/datasheet/webui/common/form/components/label"
 	"resultra/datasheet/webui/common/form/components/numberInput"
 	"resultra/datasheet/webui/common/form/components/progress"
@@ -40,6 +41,7 @@ type ComponentViewTemplateParams struct {
 	EmailAddrParams     emailAddr.EmailAddrViewTemplateParams
 	UrlLinkParams       urlLink.UrlLinkViewTemplateParams
 	FileParams          file.FileViewTemplateParams
+	ImageParams         image.ImageViewTemplateParams
 }
 
 //var DesignTemplateParams ComponentDesignTemplateParams
@@ -65,6 +67,7 @@ func init() {
 		LabelParams:         label.ViewTemplateParams,
 		EmailAddrParams:     emailAddr.ViewTemplateParams,
 		UrlLinkParams:       urlLink.ViewTemplateParams,
-		FileParams:          file.ViewTemplateParams}
+		FileParams:          file.ViewTemplateParams,
+		ImageParams:         image.ViewTemplateParams}
 
 }

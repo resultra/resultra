@@ -21,5 +21,6 @@
 		"label",
 		"emailAddr",
 		"urlLink",
-		"file"]
+		"file",
+		"image"]
 }

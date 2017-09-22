@@ -1,0 +1,27 @@
+
+
+{{define "imageProps"}}
+
+	<div id="imageProps" class="propertyPanelToggleContainer">
+
+		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
+	
+		{{template "propertyPanelPrefix" .ValidationPanelParams}}
+			{{template "adminRequiredValidationProps" .ElemPrefix}}
+		{{template "propertyPanelSuffix"}}
+	
+		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}
+
+		{{template "componentPermissionsPropertyPanel" .PermissionPanelParams}}
+		
+		{{template "propertyPanelPrefix" .ClearValuePanelParams}}
+			{{template "clearValueProps" .ElemPrefix}}
+		{{template "propertyPanelSuffix"}}
+
+		{{template "componentHelpPopupPropertyPanel" .HelpPopupParams}}
+
+		{{template "componentDeletePropertyPanel" .DeletePanelParams}}
+
+	</div>
+
+{{end}}

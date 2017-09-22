@@ -1,16 +1,16 @@
 
 
 
-function imageContainerLabelImageComponentContainer($image) {
-	return 	$image.find(".imageContainerLabel")
+function attachmentContainerLabelImageComponentContainer($image) {
+	return 	$image.find(".attachmentContainerLabel")
 }
 
 function imageUploadInputFromImageComponentContainer($image) {
 	return 	$image.find(".imageComponentUploadInput")
 }
 
-function imageInnerContainerFromImageComponentContainer($image) {
-	return $image.find(".imageInnerContainer")
+function attachmentInnerContainerFromImageComponentContainer($image) {
+	return $image.find(".attachmentInnerContainer")
 }
 
 function manageAttachmentsButtonFromImageComponentContainer($image) {
@@ -24,7 +24,7 @@ function addLinkButtonFromAttachmentComponentContainer($image) {
 
 function attachmentContainerBodyHTML() {
 	return '' +		
-		'<div class="imageInnerContainer lightGreyBorder text-center"">'+
+		'<div class="attachmentInnerContainer lightGreyBorder text-center"">'+
 		'</div>'+
 		'<div class="pull-right componentHoverFooter initiallyHidden">' +
 			attachmentButtonHTML("imageComponentManageAttachmentsButtton") + 
@@ -33,15 +33,15 @@ function attachmentContainerBodyHTML() {
 }
 
 
-function imageContainerHTML(elementID)
+function attachmentContainerHTML(elementID)
 {		
 	// Adding title=" " to the file input field prevents the jQuery File Upload
 	// plugin from displaying it's own messages.
 	
 	var containerHTML = ''+
-	'<div class="layoutContainer imageContainer">' +
+	'<div class="layoutContainer attachmentContainer">' +
 		'<div class="attachmentEditorHeader">' +
-			'<label class="imageContainerLabel">Attachment(s)</label>'  + componentHelpPopupButtonHTML() +
+			'<label class="attachmentContainerLabel">Attachment(s)</label>'  + componentHelpPopupButtonHTML() +
 		'</div>' +
 		attachmentContainerBodyHTML() +
 	'</div>';
@@ -52,7 +52,7 @@ function imageContainerHTML(elementID)
 
 function attachmentContainerPopupBodyHTML() {
 	return '' +		
-		'<div class="imageInnerContainer lightGreyBorder text-center"">'+
+		'<div class="attachmentInnerContainer lightGreyBorder text-center"">'+
 		'</div>'+
 		'<div class="pull-right">' +
 			attachmentButtonHTML("imageComponentManageAttachmentsButtton") + 
@@ -101,7 +101,7 @@ function initAttachmentFormComponentViewModeGeometry($container,attachRef) {
 	var headerBottom = $header.position().top + $header.outerHeight(true);
 	var attachMaxHeightPx = (attachRef.properties.geometry.sizeHeight - (headerBottom+5)) + "px"
 	
-	var $innerAttachmentContainer = imageInnerContainerFromImageComponentContainer($container)
+	var $innerAttachmentContainer = attachmentInnerContainerFromImageComponentContainer($container)
 	
 	$innerAttachmentContainer.css('max-height',attachMaxHeightPx)
 	
@@ -125,7 +125,7 @@ function initAttachmentTableCellComponentViewModeGeometry($container) {
 	var headerBottom = $header.position().top + $header.outerHeight(true);
 	var attachMaxHeightPx = (attachmentPopupHeight - (headerBottom+5)) + "px"
 	
-	var $innerAttachmentContainer = imageInnerContainerFromImageComponentContainer($container)
+	var $innerAttachmentContainer = attachmentInnerContainerFromImageComponentContainer($container)
 	
 	$innerAttachmentContainer.css('max-height',attachMaxHeightPx)
 	$innerAttachmentContainer.css('min-height',attachMaxHeightPx)
@@ -153,7 +153,7 @@ function attachmentGalleryThumbnailContainer(attachRef,deleteAttachmentCallback,
 	$attachLink.data("attachRef",attachRef)
 	if(attachRef.dataType === "image") {
 		$attachLink.attr("href",attachRef.url)
-		$attachLink.append('<img class="imageContainerImage" src="' + attachURL + '">')
+		$attachLink.append('<img class="attachmentContainerImage" src="' + attachURL + '">')
 		$attachLink.addClass("mfp-image")
 	} else if (attachRef.dataType === "link") {
 		var $linkThumbnail = $('<div><i class="smallAttachmentThumbnailIcon glyphicon glyphicon-link"></i>' +

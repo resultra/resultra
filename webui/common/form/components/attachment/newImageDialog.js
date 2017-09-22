@@ -14,7 +14,7 @@ function openNewImageDialog(databaseID,formID,containerParams)
 	  		  	  $container: containerParams.containerObj,
 				  componentID: newImageObjectRef.imageID,
 				  componentObjRef: newImageObjectRef,
-				  designFormConfig: imageDesignFormConfig
+				  designFormConfig: attachmentDesignFormConfig
 	  		  }
 			  setupNewlyCreatedFormComponentInfo(newComponentSetupParams)
 			  			  

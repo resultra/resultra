@@ -15,6 +15,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/gauge"
 	"resultra/datasheet/webui/common/form/components/header"
 	"resultra/datasheet/webui/common/form/components/htmlEditor"
+	"resultra/datasheet/webui/common/form/components/image"
 	"resultra/datasheet/webui/common/form/components/label"
 	"resultra/datasheet/webui/common/form/components/numberInput"
 	"resultra/datasheet/webui/common/form/components/progress"
@@ -55,6 +56,7 @@ type DesignFormTemplateParams struct {
 	SelectionParams     selection.SelectionDesignTemplateParams
 	HtmlEditorParams    htmlEditor.HTMLEditorDesignTemplateParams
 	AttachmentParams    attachment.ImageDesignTemplateParams
+	ImageParams         image.ImageDesignTemplateParams
 	CommentParams       comment.CommentDesignTemplateParams
 	RatingParams        rating.RatingDesignTemplateParams
 	UserSelectionParams userSelection.UserSelectionDesignTemplateParams
@@ -108,6 +110,7 @@ func createDesignFormTemplateParams(r *http.Request, formInfo *databaseControlle
 		GaugeParams:         gauge.DesignTemplateParams,
 		HtmlEditorParams:    htmlEditor.DesignTemplateParams,
 		AttachmentParams:    attachment.DesignTemplateParams,
+		ImageParams:         image.DesignTemplateParams,
 		CommentParams:       comment.DesignTemplateParams,
 		RatingParams:        rating.DesignTemplateParams,
 		SocialButtonParams:  socialButton.DesignTemplateParams,

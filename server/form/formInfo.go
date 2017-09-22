@@ -12,6 +12,7 @@ import (
 	"resultra/datasheet/server/form/components/gauge"
 	"resultra/datasheet/server/form/components/header"
 	"resultra/datasheet/server/form/components/htmlEditor"
+	"resultra/datasheet/server/form/components/image"
 	"resultra/datasheet/server/form/components/label"
 	"resultra/datasheet/server/form/components/numberInput"
 	"resultra/datasheet/server/form/components/progress"
@@ -34,7 +35,7 @@ type FormInfo struct {
 	HtmlEditors        []htmlEditor.HtmlEditor       `json:"htmlEditors"`
 	Ratings            []rating.Rating               `json:"ratings"`
 	Comments           []comment.Comment             `json:"comments"`
-	Images             []attachment.Image            `json:"images"`
+	Attachments        []attachment.Image            `json:"attachments"`
 	Headers            []header.Header               `json:"headers"`
 	FormButtons        []formButton.FormButton       `json:"formButtons"`
 	Selections         []selection.Selection         `json:"selections"`
@@ -47,6 +48,7 @@ type FormInfo struct {
 	EmailAddrs         []emailAddr.EmailAddr         `json:"emailAddrs"`
 	UrlLinks           []urlLink.UrlLink             `json:"urlLinks"`
 	Files              []file.File                   `json:"files"`
+	Images             []image.Image                 `json:"images"`
 }
 
 type GetFormInfoParams struct {
@@ -90,7 +92,7 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		return nil, err
 	}
 
-	images, err := attachment.GetImages(formID)
+	attachments, err := attachment.GetImages(formID)
 	if err != nil {
 		return nil, err
 	}
@@ -165,6 +167,11 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		return nil, err
 	}
 
+	images, err := image.GetImages(formID)
+	if err != nil {
+		return nil, err
+	}
+
 	formInfo := FormInfo{
 		Form:               *form,
 		TextBoxes:          textBoxes,
@@ -173,7 +180,7 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		Toggles:            toggles,
 		DatePickers:        datePickers,
 		HtmlEditors:        htmlEditors,
-		Images:             images,
+		Attachments:        attachments,
 		Headers:            headers,
 		FormButtons:        formButtons,
 		Ratings:            ratings,
@@ -187,7 +194,8 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		Labels:             labels,
 		EmailAddrs:         emailAddrs,
 		UrlLinks:           urlLinks,
-		Files:              files}
+		Files:              files,
+		Images:             images}
 
 	return &formInfo, nil
 }

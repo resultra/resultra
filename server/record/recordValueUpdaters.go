@@ -214,3 +214,19 @@ func (valParams SetRecordFileAddrValueParams) generateCellValue() (string, error
 
 	return generic.EncodeJSONString(cellVal)
 }
+
+type SetRecordImageValueParams struct {
+	RecordUpdateHeader
+	Attachment *string `json:"attachment"`
+}
+
+func (setValParams SetRecordImageValueParams) fieldType() string { return field.FieldTypeImage }
+
+func (setValParams SetRecordImageValueParams) doCollapseRecentValues() bool { return true }
+
+func (valParams SetRecordImageValueParams) generateCellValue() (string, error) {
+
+	cellVal := ImageCellValue{Attachment: valParams.Attachment}
+
+	return generic.EncodeJSONString(cellVal)
+}

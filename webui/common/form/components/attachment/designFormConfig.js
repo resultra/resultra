@@ -10,7 +10,7 @@ function initDesignFormImage() {
 
 function selectFormImage($container,attachmentObjRef) {
 	console.log("Selected attachment form component: " + JSON.stringify(attachmentObjRef))
-	loadImageProperties($container,attachmentObjRef)
+	loadAttachmentProperties($container,attachmentObjRef)
 }
 
 
@@ -30,8 +30,8 @@ function resizeImage($container,geometry) {
 }
 
 
-var imageDesignFormConfig = {
-	draggableHTMLFunc:	imageContainerHTML,
+var attachmentDesignFormConfig = {
+	draggableHTMLFunc:	attachmentContainerHTML,
 	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewImageDialog,
 	resizeConstraints: elemResizeConstraints(200,1280,125,1280),

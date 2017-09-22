@@ -182,6 +182,28 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		loadFormConfig.initFileFunc(componentContext,containerObj,fileRef)
 		
 	}
+
+	function initImageLayout($componentRow,imageRef) {
+		// Create an HTML block for the container
+	
+		var containerHTML = imageContainerHTML(imageRef.imageID);
+		var containerObj = $(containerHTML)
+		
+		initImageFormComponentContainer(containerObj,imageRef)
+					
+		$componentRow.append(containerObj)
+		
+		setElemFixedWidthFlexibleHeight(containerObj,
+					imageRef.properties.geometry.sizeWidth)
+	
+		 // Store the newly created object reference in the DOM element. This is needed for follow-on
+		 // property setting, resizing, etc.
+		setContainerComponentInfo(containerObj,imageRef,imageRef.imageID)
+	
+		// Callback for any specific initialization for either the form design or view mode
+		loadFormConfig.initImageFunc(componentContext,containerObj,imageRef)
+		
+	}
 	
 	
 	function initUrlLinkLayout($componentRow,urlLink) {
@@ -501,8 +523,8 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		loadFormConfig.initHtmlEditorFunc(componentContext,containerObj,htmlEditor)
 	}
 	
-	function initImageEditorLayout($componentRow,image) {
-		var containerHTML = imageContainerHTML(image.imageID);
+	function initAttachmentEditorLayout($componentRow,image) {
+		var containerHTML = attachmentContainerHTML(image.imageID);
 		var containerObj = $(containerHTML)
 		
 		// Position the object withing the #layoutCanvas div
@@ -517,7 +539,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		setContainerComponentInfo(containerObj,image,image.imageID)
 		
 		// Callback for any specific initialization for either the form design or view mode
-		loadFormConfig.initImageFunc(componentContext,containerObj,image)
+		loadFormConfig.initAttachmentFunc(componentContext,containerObj,image)
 		
 	}
 
@@ -691,16 +713,29 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		}			
 	}
 
+	for (var attachmentIter in formInfo.attachments) {
+		var attachmentProps = formInfo.attachments[attachmentIter]
+		console.log("loadFormComponents: initializing attachment editor: " + JSON.stringify(attachmentProps))
+
+		compenentIDComponentMap[attachmentProps.imageID] = {
+			componentInfo: attachmentProps,
+			initFunc: initAttachmentEditorLayout
+		}			
+
+	}		
+
 	for (var imageIter in formInfo.images) {
 		var imageProps = formInfo.images[imageIter]
 		console.log("loadFormComponents: initializing image editor: " + JSON.stringify(imageProps))
 
 		compenentIDComponentMap[imageProps.imageID] = {
 			componentInfo: imageProps,
-			initFunc: initImageEditorLayout
+			initFunc: initImageLayout
 		}			
 
 	}		
+
+
 
 	for (var captionIter in formInfo.captions) {
 		var captionProps = formInfo.captions[captionIter]
