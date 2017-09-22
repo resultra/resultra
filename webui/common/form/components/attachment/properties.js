@@ -84,8 +84,8 @@ function loadAttachmentProperties($attachmentContainer, attachmentRef) {
 	initComponentHelpPopupPropertyPanel(helpPopupParams)
 
 
-	// Toggle to the check box properties, hiding the other property panels
-	hideSiblingsShowOne('#imageProps')
+	// Toggle to the properties, hiding the other property panels
+	hideSiblingsShowOne('#attachmentProps')
 
 	toggleFormulaEditorForField(attachmentRef.properties.fieldID)
 	
