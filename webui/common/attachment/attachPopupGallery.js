@@ -50,3 +50,22 @@ function initAttachmentContainerPopupGallery($attachContainer) {
 	
 
 }
+
+
+function initSingleAttachmentImagePopupLink($parentContainer,$link,attachmentID) {
+	if (attachmentID !== null) {
+		var getRefParams = { attachmentID: attachmentID }
+		jsonAPIRequest("attachment/getReference", getRefParams, function(attachRef) {
+			$link.text(attachRef.attachmentInfo.title)
+			$link.attr("href",attachRef.url)
+			$link.data("attachRef",attachRef)
+			$link.addClass("mfp-image")
+			initAttachmentContainerPopupGallery($parentContainer)
+		})		
+	} else {
+		$link.text("")
+		$link.attr("href","")
+		$link.attr("attachRef",null)	
+	}
+	
+}

@@ -101,18 +101,7 @@ function initImageRecordEditBehavior($container,componentContext,recordProxy, im
 	
 		function setImageDisplay(attachmentID) {
 			var $imageDisplay = $imageContainer.find('.imageDisplay')
-
-			if(attachmentID != null) {
-				var getRefParams = { attachmentID: attachmentID }
-				jsonAPIRequest("attachment/getReference", getRefParams, function(attachRef) {
-					$imageDisplay.text(attachRef.attachmentInfo.title)
-					$imageDisplay.attr("href",attachRef.url)
-				})
-			} else {
-				$imageDisplay.text("")
-				$imageDisplay.attr("href","")
-			}	
-			
+			initSingleAttachmentImagePopupLink($imageContainer,$imageDisplay,attachmentID)			
 		}
 	
 		// text box is linked to a field value
