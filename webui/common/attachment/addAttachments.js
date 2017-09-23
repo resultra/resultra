@@ -1,9 +1,16 @@
 
-function initAddAttachmentControl(params) {
+function initAddAttachmentControl(userParams) {
 	
 	var uploadImageURL = "/api/attachment/upload"
 	
+	var defaultParams = {
+		acceptedFileTypes: ".gif,.jpg,.jpeg,.png,.doc,.docx,.pdf,.rtf,.xls"
+	}
+	var params = $.extend({},defaultParams,userParams)
+	
 	var uploadedFileResults = []
+	
+	params.$addAttachmentInput.attr("accept",params.acceptedFileTypes)
 		
 	params.$addAttachmentInput.fileupload({
 		dataType: 'json',

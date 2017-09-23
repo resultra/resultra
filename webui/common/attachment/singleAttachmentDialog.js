@@ -39,7 +39,8 @@ function openSingleAttachmentDialog(configParams) {
 	var addAttachmentParams = {
 		parentDatabaseID: configParams.parentDatabaseID,
 		$addAttachmentInput: $replaceButton,
-		attachDoneCallback: addNewAttachments }
+		attachDoneCallback: addNewAttachments,
+		 acceptedFileTypes: configParams.acceptedFileTypes }
 	initAddAttachmentControl(addAttachmentParams)
 		
 	if(configParams.attachmentID !== null) {
@@ -71,7 +72,8 @@ function initAddAttachmentThenOpenInfoDialogButton(configParams) {
 	var addAttachmentParams = {
 		parentDatabaseID: configParams.parentDatabaseID,
 		$addAttachmentInput: configParams.$addAttachmentInput,
-		attachDoneCallback: addNewAttachments }
+		attachDoneCallback: addNewAttachments,
+		acceptedFileTypes: configParams.acceptedFileTypes }
 	initAddAttachmentControl(addAttachmentParams)
 	
 }

@@ -51,6 +51,9 @@ function initImageRecordEditBehavior($container,componentContext,recordProxy, im
 		$imageButton.unbind("click")
 		$imageButton.find("input").remove()
 		
+		// Limit accepted file types to images
+		var acceptedFileTypes = ".gif,.jpg,.jpeg,.png"
+		
 		function initImageButtonForAddingImage() {
 			
 			var $addAttachmentInput = $('<input class="uploadInput" type="file">')
@@ -62,7 +65,8 @@ function initImageRecordEditBehavior($container,componentContext,recordProxy, im
 			var addAttachmentParams = {
 				parentDatabaseID: componentContext.databaseID,
 				setAttachmentCallback: setAttachmentFromDialog,
-				$addAttachmentInput: $addAttachmentInput
+				$addAttachmentInput: $addAttachmentInput,
+				acceptedFileTypes: acceptedFileTypes
 			}
 			initAddAttachmentThenOpenInfoDialogButton(addAttachmentParams)
 		}
@@ -73,7 +77,8 @@ function initImageRecordEditBehavior($container,componentContext,recordProxy, im
 				var attachmentParams = {
 					attachmentID: attachmentID,
 					parentDatabaseID: componentContext.databaseID,
-					setAttachmentCallback: setImageVal
+					setAttachmentCallback: setImageVal,
+					acceptedFileTypes: acceptedFileTypes
 				}
 				openSingleAttachmentDialog(attachmentParams)							
 			})
