@@ -179,6 +179,17 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					
 				}
 				
+				function createImageInput(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/image/new",params,function(tag) {
+						console.log("Image column created: " + JSON.stringify(tag))
+					})
+					
+				}
+				
 				function createDatePickerInput(fieldInfo) {
 					var params = {
 						parentTableID: panelParams.tableID,
@@ -265,6 +276,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					break
 				case fieldTypeFile:
 					createFileInput(fieldInfo)
+					break
+				case fieldTypeImage:
+					createImageInput(fieldInfo)
 					break
 				case fieldTypeBool:
 					if(colType==='checkbox') {
@@ -357,6 +371,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				break
 			case fieldTypeFile:
 				$colTypeSelection.append(selectOptionHTML('file','Single file attachment'))
+				break
+			case fieldTypeImage:
+				$colTypeSelection.append(selectOptionHTML('image','Single image'))
 				break
 			case fieldTypeURL:
 				$colTypeSelection.append(selectOptionHTML('url','URL link input'))

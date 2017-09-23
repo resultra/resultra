@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/server/displayTable/columns/emailAddr"
 	"resultra/datasheet/server/displayTable/columns/file"
 	"resultra/datasheet/server/displayTable/columns/formButton"
+	"resultra/datasheet/server/displayTable/columns/image"
 	"resultra/datasheet/server/displayTable/columns/note"
 	"resultra/datasheet/server/displayTable/columns/numberInput"
 	"resultra/datasheet/server/displayTable/columns/progress"
@@ -89,6 +90,10 @@ func cloneTableCols(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string)
 	}
 
 	if err := file.CloneFiles(remappedIDs, parentTableID); err != nil {
+		return fmt.Errorf("cloneTableCols: %v", err)
+	}
+
+	if err := image.CloneImages(remappedIDs, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 

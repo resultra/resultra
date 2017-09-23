@@ -178,6 +178,16 @@ function initItemListTableView(params) {
 				fileTableViewContainerHTML,initContainer)
 	}
 	
+	function createImageColDef(colInfo,tableContext) {
+		
+		function initContainer(colInfo, $image, tableContext,recordProxy,componentContext) {
+				setContainerComponentInfo($image,colInfo,colInfo.imageID)
+				initImageTableRecordEditBehavior($image,componentContext,recordProxy, colInfo)
+		}
+		return createTableViewColDef(colInfo,tableContext,
+				imageTableViewContainerHTML,initContainer)
+	}
+	
 	function createUrlLinkColDef(colInfo,tableContext) {
 		
 		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
@@ -332,6 +342,8 @@ function initItemListTableView(params) {
 			return createUrlLinkColDef(colInfo,tableContext)		
 		case 'file':
 			return createFileColDef(colInfo,tableContext)		
+		case 'image':
+			return createImageColDef(colInfo,tableContext)		
 		default:
 			var colDef = {
 				data:'fieldValues.' + colInfo.properties.fieldID,

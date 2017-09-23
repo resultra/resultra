@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/server/displayTable/columns/emailAddr"
 	"resultra/datasheet/server/displayTable/columns/file"
 	"resultra/datasheet/server/displayTable/columns/formButton"
+	"resultra/datasheet/server/displayTable/columns/image"
 	"resultra/datasheet/server/displayTable/columns/note"
 	"resultra/datasheet/server/displayTable/columns/numberInput"
 	"resultra/datasheet/server/displayTable/columns/progress"
@@ -178,6 +179,15 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
 	for _, col := range fileCols {
+		tableColData = append(tableColData, col)
+		tableColsByID[col.ColumnID] = col
+	}
+
+	imageCols, err := image.GetImages(parentTableID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("getTableCols: %v", err)
+	}
+	for _, col := range imageCols {
 		tableColData = append(tableColData, col)
 		tableColsByID[col.ColumnID] = col
 	}
