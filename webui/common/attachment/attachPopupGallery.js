@@ -59,13 +59,40 @@ function initSingleAttachmentImagePopupLink($parentContainer,$link,attachmentID)
 			$link.text(attachRef.attachmentInfo.title)
 			$link.attr("href",attachRef.url)
 			$link.data("attachRef",attachRef)
-			$link.addClass("mfp-image")
+			$link.addClass("mfp-image")	
 			initAttachmentContainerPopupGallery($parentContainer)
 		})		
 	} else {
 		$link.text("")
 		$link.attr("href","")
 		$link.attr("attachRef",null)	
+	}
+	
+}
+
+
+function initSingleAttachmentImagePopupThumbnail($parentContainer,$link,attachmentID) {
+	if (attachmentID !== null) {
+		var getRefParams = { attachmentID: attachmentID }
+		jsonAPIRequest("attachment/getReference", getRefParams, function(attachRef) {
+			$link.attr("href",attachRef.url)
+			$link.data("attachRef",attachRef)
+			$link.addClass("mfp-image")
+			
+			var $thumbnailImage = $('<img class="attachmentContainerImage">')
+			$thumbnailImage.attr("src",attachRef.url)
+
+			$link.find('img').remove()
+			$link.append($thumbnailImage )
+			
+			initAttachmentContainerPopupGallery($parentContainer)
+		})		
+	} else {
+		$link.text("")
+		$link.attr("href","")
+		$link.attr("attachRef",null)	
+		
+		$link.find('img').remove()
 	}
 	
 }

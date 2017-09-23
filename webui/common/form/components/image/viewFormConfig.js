@@ -1,7 +1,7 @@
 
 
 
-function initImageRecordEditBehavior($container,componentContext,recordProxy, imageObjRef,remoteValidationCallback) {
+function initImageRecordEditBehavior($container,componentContext,recordProxy, imageObjRef,remoteValidationCallback,displayThumbnail) {
 	
 	var imageFieldID = imageObjRef.properties.fieldID
 	
@@ -106,7 +106,11 @@ function initImageRecordEditBehavior($container,componentContext,recordProxy, im
 	
 		function setImageDisplay(attachmentID) {
 			var $imageDisplay = $imageContainer.find('.imageDisplay')
-			initSingleAttachmentImagePopupLink($imageContainer,$imageDisplay,attachmentID)			
+			if(displayThumbnail) {
+				initSingleAttachmentImagePopupThumbnail($imageContainer,$imageDisplay,attachmentID)	
+			} else {
+				initSingleAttachmentImagePopupLink($imageContainer,$imageDisplay,attachmentID)							
+			}
 		}
 	
 		// text box is linked to a field value
@@ -185,7 +189,8 @@ function initImageFormRecordEditBehavior($container,componentContext,recordProxy
 		})	
 		
 	}
-	initImageRecordEditBehavior($container,componentContext,recordProxy, imageObjRef,validateImageInput)
+	var displayThumbnail = true
+	initImageRecordEditBehavior($container,componentContext,recordProxy, imageObjRef,validateImageInput,displayThumbnail)
 	
 }
 
@@ -204,6 +209,7 @@ function initImageTableRecordEditBehavior($container,componentContext,recordProx
 		})	
 		
 	}
-	initImageRecordEditBehavior($container,componentContext,recordProxy, imageObjRef,validateImageInput)
+	var displayThumbnail = false
+	initImageRecordEditBehavior($container,componentContext,recordProxy, imageObjRef,validateImageInput,displayThumbnail)
 	
 }
