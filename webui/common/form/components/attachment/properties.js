@@ -2,7 +2,7 @@
 function loadAttachmentProperties($attachmentContainer, attachmentRef) {
 	console.log("Loading html editor properties")
 	
-	var elemPrefix = "image_"
+	var elemPrefix = "attachment_"
 	
 	function saveLabelProps(updatedLabelProps) {
 		console.log("Saving label propeties for attachment form component")

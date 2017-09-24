@@ -1,34 +1,51 @@
-function imageContainerInputControl() {
 
-	return '<div class="input-group">'+
-				'<div class="form-control-static imageDisplayContainer">' +
-					'<a class="imageDisplay"></a>' +
-				'</div>' + 
-				'<span class="btn btn-default input-group-addon fileinput-button imageEditLinkButton">' +
-             	   '<span class="glyphicon glyphicon-picture"></span>' +
-				   '<input class="uploadInput" type="file">' + 
-            	'</span>' +
-				clearValueButtonHTML("imageComponentClearValueButton") +
+function imageContainerImageDisplayContainerHTML() {
+	return '<div class="form-control-static imageDisplayContainer">' +
+				'<a class="imageDisplay"></a>' +
 			'</div>'
-
-
 }
 
 function imageContainerHTML(elementID)
 {
-	var containerHTML = ''+
+	
+	var imageButton = '<span class="btn btn-default clearButton pull-right fileinput-button imageEditLinkButton">' +
+             	   '<span class="glyphicon glyphicon-picture"></span>' +
+				   '<input class="uploadInput" type="file">' + 
+            	'</span>'
+	
+	var containerHTML = '' +
 		'<div class="layoutContainer imageComponent imageFormComponent">' +
-				'<label>New Image</label>'+ componentHelpPopupButtonHTML() +
-				imageContainerInputControl() +
+			'<div class="row">' +
+				'<div class="col-xs-7 formImageLabelCol">' +
+					'<label>New Image</label>' +
+				'</div>' +
+				'<div class="col-xs-5 formImageButtons">' +
+					imageButton +
+					componentHelpPopupButtonHTML() +
+				'</div>' +
+			'</div>' +
+			imageContainerImageDisplayContainerHTML() + 
+			clearValueButtonHTML("imageComponentClearValueButton") +
 		'</div>';
 	return containerHTML
 }
 
 function imageTableViewContainerHTML() {
+	
+	var imageButton = '<span class="btn btn-default input-group-addon fileinput-button imageEditLinkButton">' +
+             	   '<span class="glyphicon glyphicon-picture"></span>' +
+				   '<input class="uploadInput" type="file">' + 
+            	'</span>'
+	
 	var containerHTML = ''+
 		'<div class="layoutContainer imageComponent imageTableCellComponent">' +
-			imageContainerInputControl() +
-		'</div>';
+			'<div class="input-group">'+
+				imageContainerImageDisplayContainerHTML() + 
+				imageButton + 
+				clearValueButtonHTML("imageComponentClearValueButton") +
+			'</div>' +
+		'</div>'
+		
 	return containerHTML
 }
 

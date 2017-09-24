@@ -63,3 +63,13 @@
 	min-width:250px;
 	min-height:100px;
 }
+
+.formImageButtons {
+	display:inline-flex;
+	justify-content:flex-end;
+	padding-left:0px;
+}
+
+.formImageLabelCol {
+	padding-right:0px;
+}

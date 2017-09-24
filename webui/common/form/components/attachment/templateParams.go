@@ -29,7 +29,7 @@ var ViewTemplateParams ImageViewTemplateParams
 
 func init() {
 
-	elemPrefix := "image_"
+	elemPrefix := "attachment_"
 
 	DesignTemplateParams = ImageDesignTemplateParams{
 		ElemPrefix: elemPrefix,

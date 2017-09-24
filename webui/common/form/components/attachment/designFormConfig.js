@@ -8,7 +8,7 @@ function initDesignFormImage() {
 	initNewImageDialog()
 }
 
-function selectFormImage($container,attachmentObjRef) {
+function selectFormAttachment($container,attachmentObjRef) {
 	console.log("Selected attachment form component: " + JSON.stringify(attachmentObjRef))
 	loadAttachmentProperties($container,attachmentObjRef)
 }
@@ -38,5 +38,5 @@ var attachmentDesignFormConfig = {
 	resizeHandles: 'e,s,se',
 	resizeFunc: resizeImage,
 	initFunc: initDesignFormImage,
-	selectionFunc: selectFormImage
+	selectionFunc: selectFormAttachment
 }
