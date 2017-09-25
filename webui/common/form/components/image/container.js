@@ -11,10 +11,10 @@ function imageContainerHTML(elementID)
 	var containerHTML = '' +
 		'<div class="layoutContainer imageComponent imageFormComponent">' +
 			'<div class="row">' +
-				'<div class="col-xs-7 formImageLabelCol">' +
+				'<div class="col-xs-7 componentHeaderLabelCol">' +
 					'<label>New Image</label>' +
 				'</div>' +
-				'<div class="col-xs-5 formImageButtons">' +
+				'<div class="col-xs-5 componentHeaderButtonCol">' +
 					smallClearComponentValHeaderButton("imageComponentClearValueButton") +
 					imageButton +
 					componentHelpPopupButtonHTML() +

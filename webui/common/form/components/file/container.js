@@ -18,8 +18,15 @@ function fileContainerHTML(elementID)
 {
 	var containerHTML = ''+
 		'<div class="layoutContainer fileComponent fileFormComponent">' +
-				'<label>New File</label>'+ componentHelpPopupButtonHTML() +
-				fileContainerInputControl() +
+			'<div class="row">' +
+				'<div class="col-xs-9 componentHeaderLabelCol">' +
+					'<label>New File</label>' +
+				'</div>' +
+				'<div class="col-xs-3 componentHeaderButtonCol">' +
+					componentHelpPopupButtonHTML() +
+				'</div>' +
+			'</div>' +
+			fileContainerInputControl() +
 		'</div>';
 	return containerHTML
 }

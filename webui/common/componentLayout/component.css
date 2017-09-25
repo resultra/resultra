@@ -26,3 +26,17 @@
 	z-index:9999999;
 	position:fixed;
 }
+
+
+/* The header for different components is layed out using Bootstraps grid system.
+   To keep the layout tight, minimize the padding of the label and button columns. */
+
+.componentHeaderLabelCol {
+	padding-right:0px;
+}
+
+.componentHeaderButtonCol {
+	display:inline-flex;
+	justify-content:flex-end;
+	padding-left:0px;
+}
