@@ -1,6 +1,6 @@
 
 function imageContainerImageDisplayContainerHTML() {
-	return '<div class="form-control-static imageDisplayContainer">' +
+	return '<div class="imageDisplayContainer">' +
 				'<a class="imageDisplay"></a>' +
 			'</div>'
 }
