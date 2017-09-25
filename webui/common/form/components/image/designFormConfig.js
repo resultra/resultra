@@ -32,7 +32,7 @@ var imageDesignFormConfig = {
 	draggableHTMLFunc:	imageContainerHTML,
 	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewImageDialog,
-	resizeConstraints: elemResizeConstraints(75,1280,250,1280),
+	resizeConstraints: elemResizeConstraints(100,1280,100,1280),
 	resizeFunc: resizeImageComponent,
 	resizeHandles: 'e,s,se',
 	initFunc: initDesignFormImage,

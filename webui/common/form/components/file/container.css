@@ -35,8 +35,6 @@
 }
 
 .fileDisplayContainer {
-	max-width:325px;
-	overflow:hidden;
 	border: 1px solid lightGrey;
 	background-color: white;
 }

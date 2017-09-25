@@ -2,7 +2,8 @@
 .imageFormComponent 
 {
 	min-width:150px;
-	width: 150px;
+	width: 200px;
+	min-height:125px;
 	height: auto;
 }
 

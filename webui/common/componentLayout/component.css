@@ -33,10 +33,12 @@
 
 .componentHeaderLabelCol {
 	padding-right:0px;
+	padding-left:0px;
 }
 
 .componentHeaderButtonCol {
 	display:inline-flex;
 	justify-content:flex-end;
 	padding-left:0px;
+	padding-right:0px;
 }
