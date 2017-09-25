@@ -13,7 +13,7 @@ function labelContainerHTML(elementID)
 		'<div class=" layoutContainer labelFormContainer">' +
 			'<div class="form-group marginBottom0">'+
 				'<div class="labelHeader">' +
-					'<label class="componentLabel">New Label</label>' + 
+					'<label class="componentLabel">Tags</label>' + 
 					componentHelpPopupButtonHTML() +
 				'</div>' +
 				labelControlContainerHTML() +
@@ -83,13 +83,13 @@ function initSelectionControlFormDimensions($container, labelRef) {
 	
 }
 
-function initLabelSelectionControl($container, labelRef,labelWidth) {
+function initLabelSelectionControl($container) {
 		
 	var $labelControl = labelControlFromLabelComponentContainer($container)
 	
 	$labelControl.select2({
 		placeholder: "Enter tags", // TODO - Allow a property to configure the placeholder.
-		width: labelWidth,
+		width: '100%',
 		tags:true,
 		minimumInputLength: 1,
 		maximumInputLength:32,
@@ -115,7 +115,7 @@ function initLabelFormComponentContainer($container,label) {
 	
 	var labelWidth = label.properties.geometry.sizeWidth - 15
 
-	initLabelSelectionControl($container, label,labelWidth)
+	initLabelSelectionControl($container)
 	
 	//initSelectionControlFormDimensions($container, label,labelWidth)
 		

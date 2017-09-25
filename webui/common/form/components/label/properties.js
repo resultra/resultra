@@ -1,7 +1,7 @@
 function loadLabelProperties($label,labelRef) {
 	console.log("Loading user selection properties")
 	
-	var elemPrefix = "label_"
+	var elemPrefix = "tag_"
 	
 	function saveLabelProps(updatedLabelProps) {
 		console.log("Saving label propeties for user selection")

@@ -29,8 +29,8 @@ function resizeLabel($container,geometry) {
 	})	
 }
 
-function startLabelPaletteDrag(placeholderID,$paletteItemContainer) {
-// no-op
+function startLabelPaletteDrag($paletteItemContainer) {
+	initLabelSelectionControl($paletteItemContainer)
 }
 
 

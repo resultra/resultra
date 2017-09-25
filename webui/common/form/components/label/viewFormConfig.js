@@ -154,8 +154,7 @@ function initTagTablePopupRecordEditBehavior($container,componentContext,recordP
 		})
 	}
 		
-	var labelWidth = 250
-	initLabelSelectionControl($container, labelObjectRef,labelWidth)
+	initLabelSelectionControl($container)
 	initTagTablePopupDimensions($container)
 			
 	initLabelRecordEditBehavior($container,componentContext,recordProxy, 

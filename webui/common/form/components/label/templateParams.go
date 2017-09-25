@@ -30,23 +30,23 @@ var ViewTemplateParams LabelViewTemplateParams
 
 func init() {
 
-	elemPrefix := "label_"
+	elemPrefix := "tag_"
 
 	DesignTemplateParams = LabelDesignTemplateParams{
 		ElemPrefix:            elemPrefix,
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "labelVisibility"),
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "labelPerms"),
 		HelpPopupParams:       inputProperties.NewHelpPopupTemplateParams(elemPrefix, "htmlSelectionHelp"),
-		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "labelDelete", "Delete label"),
+		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "tagDelete", "Delete Tagging Control"),
 		LabelPanelParams: label.LabelPropertyTemplateParams{ElemPrefix: elemPrefix,
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "labelLabel"}},
 		ValidationPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Input Validation", PanelID: "labelValidation"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
-			DialogTitle: "New Label",
-			FieldInfoPrompt: `Labels are stored in fields. Either a new field can be created to store the labels, 
+			DialogTitle: "New Tagging Control",
+			FieldInfoPrompt: `Tags are stored in fields. Either a new field can be created to store the tags, 
 					or an existing field can be used.`,
-			NewFieldInfoPrompt: `Enter the parameters for the new field to store the labels.`}}
+			NewFieldInfoPrompt: `Enter the parameters for the new field to store the tags.`}}
 
 	ViewTemplateParams = LabelViewTemplateParams{
 		ElemPrefix: elemPrefix}
