@@ -28,9 +28,7 @@ function resizeSocialButton($container,geometry) {
 }
 
 function startSocialButtonPaletteDrag($paletteItemContainer) {
-	
-	var $socialButtonControl = getSocialButtonControlFromContainer($paletteItemContainer)
-	 $socialButtonControl.rating()
+	initDummySocialButtonFormComponentControl($paletteItemContainer)
 }
 
 
