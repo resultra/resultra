@@ -187,21 +187,24 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		// Create an HTML block for the container
 	
 		var containerHTML = imageContainerHTML(imageRef.imageID);
-		var containerObj = $(containerHTML)
+		var $containerObj = $(containerHTML)
 		
-		initImageFormComponentContainer(containerObj,imageRef)
+		initImageFormComponentContainer($containerObj,imageRef)
 					
-		$componentRow.append(containerObj)
+		$componentRow.append($containerObj)
 		
-		setElemFixedWidthFlexibleHeight(containerObj,
-					imageRef.properties.geometry.sizeWidth)
+		// By default the dimensions of the image form component are set to whatever the
+		// actual geometry is. However, when viewing images, the size of the container
+		// is set to a fixed width and variable height, with the maximum height of the
+		// image set to the height in the geometry.
+		setElemDimensions($containerObj,imageRef.properties.geometry)
 	
 		 // Store the newly created object reference in the DOM element. This is needed for follow-on
 		 // property setting, resizing, etc.
-		setContainerComponentInfo(containerObj,imageRef,imageRef.imageID)
+		setContainerComponentInfo($containerObj,imageRef,imageRef.imageID)
 	
 		// Callback for any specific initialization for either the form design or view mode
-		loadFormConfig.initImageFunc(componentContext,containerObj,imageRef)
+		loadFormConfig.initImageFunc(componentContext,$containerObj,imageRef)
 		
 	}
 	

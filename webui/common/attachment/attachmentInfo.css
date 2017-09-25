@@ -6,7 +6,20 @@
 }
 
 .attachmentThumbnailImage {
-	max-width: 100%;
+	/* Allow the thumbnail to resize to the given proportions, but keep the aspect ratio, per the following
+	 https://stackoverflow.com/questions/12991351/css-force-image-resize-and-keep-aspect-ratio
+	
+	Also center based upon the following: https://stackoverflow.com/questions/7055393/center-image-using-text-align-center
+	
+	max-width and max-height can be overridden
+	
+	 */
+	display:block;
+	max-width: 125px;
+	max-height:125px;
+	width:auto;
+	height:auto;
+	margin:0 auto;
 }
 
 .attachmentThumbnailIcon {
@@ -48,6 +61,8 @@
 .attachmentThumbnailTitle {
 	width:100%;
 }
+
+.attachment
 
 
 

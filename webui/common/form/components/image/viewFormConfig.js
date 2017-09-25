@@ -107,7 +107,8 @@ function initImageRecordEditBehavior($container,componentContext,recordProxy, im
 		function setImageDisplay(attachmentID) {
 			var $imageDisplay = $imageContainer.find('.imageDisplay')
 			if(displayThumbnail) {
-				initSingleAttachmentImagePopupThumbnail($imageContainer,$imageDisplay,attachmentID)	
+				initSingleAttachmentImagePopupThumbnail($imageContainer,$imageDisplay,attachmentID,
+					imageObjRef.properties.geometry.sizeWidth,imageObjRef.properties.geometry.sizeHeight)	
 			} else {
 				initSingleAttachmentImagePopupLink($imageContainer,$imageDisplay,attachmentID)							
 			}
@@ -190,6 +191,10 @@ function initImageFormRecordEditBehavior($container,componentContext,recordProxy
 		
 	}
 	var displayThumbnail = true
+	
+	// When in view mode, allow the height to adjust based upon the actual image. 
+	setElemFixedWidthFlexibleHeight($container,imageObjRef.properties.geometry.sizeWidth)
+	
 	initImageRecordEditBehavior($container,componentContext,recordProxy, imageObjRef,validateImageInput,displayThumbnail)
 	
 }

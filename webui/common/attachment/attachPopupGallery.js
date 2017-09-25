@@ -71,7 +71,7 @@ function initSingleAttachmentImagePopupLink($parentContainer,$link,attachmentID)
 }
 
 
-function initSingleAttachmentImagePopupThumbnail($parentContainer,$link,attachmentID) {
+function initSingleAttachmentImagePopupThumbnail($parentContainer,$link,attachmentID,maxWidth,maxHeight) {
 	if (attachmentID !== null) {
 		var getRefParams = { attachmentID: attachmentID }
 		jsonAPIRequest("attachment/getReference", getRefParams, function(attachRef) {
@@ -79,8 +79,14 @@ function initSingleAttachmentImagePopupThumbnail($parentContainer,$link,attachme
 			$link.data("attachRef",attachRef)
 			$link.addClass("mfp-image")
 			
-			var $thumbnailImage = $('<img class="attachmentContainerImage">')
+			var $thumbnailImage = $('<img class="attachmentThumbnailImage">')
 			$thumbnailImage.attr("src",attachRef.url)
+			
+			// Allow the thumbnail to resize to the given proportions, but keep the aspect ratio.
+			// https://stackoverflow.com/questions/12991351/css-force-image-resize-and-keep-aspect-ratio
+			// Other CSS for thumbnail sizing and positino is set on the attachmentThumbnailImage class.
+			$thumbnailImage.css("max-width",maxWidth+"px")
+			$thumbnailImage.css("max-height",maxHeight+"px")			
 
 			$link.find('img').remove()
 			$link.append($thumbnailImage )
