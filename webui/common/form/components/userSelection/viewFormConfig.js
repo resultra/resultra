@@ -1,7 +1,7 @@
 
 
 function initUserSelectionRecordEditBehavior($userSelectionContainer, componentContext,
-		recordProxy, userSelectionObjectRef, controlWidth, validateInputFunc) {
+		recordProxy, userSelectionObjectRef, validateInputFunc) {
 
 	var selectionFieldID = userSelectionObjectRef.properties.fieldID
 		
@@ -79,11 +79,9 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 			})
 		}
 	
-		var selectionWidth = controlWidth.toString() + "px"
 		var userSelectionParams = {
 			$selectionInput: $userSelectionControl,
 			databaseID: componentContext.databaseID,
-			width: selectionWidth
 		}
 		initCollaboratorUserSelection(userSelectionParams)
 		
@@ -152,7 +150,7 @@ function initUserSelectionFormRecordEditBehavior($container,componentContext,rec
 	var selectionWidth = userSelectionObjectRef.properties.geometry.sizeWidth - 15
 	
 	initUserSelectionRecordEditBehavior($container,componentContext,recordProxy, 
-			userSelectionObjectRef,selectionWidth, validateInput)
+			userSelectionObjectRef, validateInput)
 }
 
 
@@ -171,13 +169,11 @@ function initUserSelectionTableRecordPopupEditBehavior($container,componentConte
 	}
 	
 	// The width of the select2 control is setup during the controls initialization. However, the height
-	// is configured via CSS. See the CSS file for corresponding CSS to configure the height.
-	var selectionWidth = 250
-	
+	// is configured via CSS. See the CSS file for corresponding CSS to configure the height.	
 	initUserSelectionClearValueButton($container,userSelectionObjectRef)
 	
 	initUserSelectionRecordEditBehavior($container,componentContext,recordProxy, 
-			userSelectionObjectRef,selectionWidth, validateInput)
+			userSelectionObjectRef, validateInput)
 }
 
 
