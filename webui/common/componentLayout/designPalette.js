@@ -148,7 +148,7 @@ function initDesignPalette(paletteConfig,layoutDesignConfig) {
 		// described above.
 		stack: "div",
 		appendTo: 'body',
-		zIndex: 999
+		zIndex: 9999999 // A high z-index is needed to ensure the item is above all others
 	
 	});
 	
