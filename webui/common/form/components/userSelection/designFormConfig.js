@@ -12,9 +12,12 @@ function selectFormUserSelection($container,userSelectionObjectRef) {
 	loadUserSelectionProperties($container,userSelectionObjectRef)
 }
 
+
 function resizeUserSelection($container,geometry) {
 	
 	var userSelRef = getContainerObjectRef($container)
+	
+	initDummiedUpUserSelectionControl($container,geometry.sizeWidth)
 	
 	var resizeParams = {
 		parentFormID: designFormContext.formID,
@@ -27,8 +30,8 @@ function resizeUserSelection($container,geometry) {
 	})	
 }
 
-function startUserSelectionPaletteDrag(placeholderID,$paletteItemContainer) {
-// no-op
+function startUserSelectionPaletteDrag($paletteItemContainer) {
+	initDummiedUpUserSelectionControl($paletteItemContainer,250)
 }
 
 

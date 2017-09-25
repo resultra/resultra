@@ -464,22 +464,22 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		var containerHTML = userSelectionContainerHTML(userSelection.userSelectionID);
 		
-		var containerObj = $(containerHTML)
+		var $containerObj = $(containerHTML)
 							
-		initUserSelectionFormComponentContainer(componentContext,containerObj,userSelection)
+		initUserSelectionFormComponentContainer(componentContext,$containerObj,userSelection)
 		
 		// Position the object withing the #layoutCanvas div
-		$componentRow.append(containerObj)
+		$componentRow.append($containerObj)
 		
-		setElemFixedWidthFlexibleHeight(containerObj,
+		setElemFixedWidthFlexibleHeight($containerObj,
 					userSelection.properties.geometry.sizeWidth)
 	
 		 // Store the newly created object reference in the DOM element. This is needed for follow-on
 		 // property setting, resizing, etc.
-		setContainerComponentInfo(containerObj,userSelection,userSelection.userSelectionID)
+		setContainerComponentInfo($containerObj,userSelection,userSelection.userSelectionID)
 		
 		// Callback for any specific initialization for either the form design or view mode 
-		loadFormConfig.initUserSelectionFunc(componentContext,containerObj,userSelection)
+		loadFormConfig.initUserSelectionFunc(componentContext,$containerObj,userSelection)
 	}
 
 	

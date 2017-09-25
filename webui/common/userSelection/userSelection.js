@@ -83,7 +83,7 @@ function initUserSelection(selectionParams) {
 function initCollaboratorUserSelection(params) {
 	
 	var configParams = {
-		width: '250px'
+		width: '100%'
 	}
 	$.extend(configParams,params)
 	

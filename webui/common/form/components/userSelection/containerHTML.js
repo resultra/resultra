@@ -239,6 +239,17 @@ function initUserSelectionClearValueButton($userSelection,userSelection) {
 	
 }
 
+function initDummiedUpUserSelectionControl($container) {
+	// When dragging and dropping the control, a dummied-up select2 control needs to be initialized.
+	// This ensures the geometry of the control is similar to what it will look like when fully functional.
+	var $userSelectionControl = userSelectionControlFromUserSelectionComponentContainer($container)
+	$userSelectionControl.select2({
+		placeholder: "Select a collaborator",
+		width:'100%'
+	})
+}
+
+
 
 function initUserSelectionFormComponentContainer(componentContext,$container,userSelection) {
 	setUserSelectionComponentLabel($container,userSelection)
@@ -247,6 +258,15 @@ function initUserSelectionFormComponentContainer(componentContext,$container,use
 	
 	function dummySetVal(userID) {}
 	configureUserSelectionDropdown(componentContext,$container,userSelection,dummySetVal)
+	
+	var $userSelectionControl = userSelectionControlFromUserSelectionComponentContainer($container)
+	
+	var userSelectionParams = {
+		$selectionInput: $userSelectionControl,
+		databaseID: componentContext.databaseID,
+	}
+	initCollaboratorUserSelection(userSelectionParams)
+	
 	
 	
 	initComponentHelpPopupButton($container, userSelection)	
