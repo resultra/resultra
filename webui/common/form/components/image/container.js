@@ -1,14 +1,9 @@
 
-function imageContainerImageDisplayContainerHTML() {
-	return '<div class="imageDisplayContainer">' +
-				'<a class="imageDisplay"></a>' +
-			'</div>'
-}
 
 function imageContainerHTML(elementID)
 {
 	
-	var imageButton = '<span class="btn btn-default clearButton pull-right fileinput-button imageEditLinkButton">' +
+	var imageButton = '<span class="btn btn-default btn-sm clearButton pull-right fileinput-button imageEditLinkButton">' +
              	   '<span class="glyphicon glyphicon-picture"></span>' +
 				   '<input class="uploadInput" type="file">' + 
             	'</span>'
@@ -20,12 +15,14 @@ function imageContainerHTML(elementID)
 					'<label>New Image</label>' +
 				'</div>' +
 				'<div class="col-xs-5 formImageButtons">' +
+					smallClearComponentValHeaderButton("imageComponentClearValueButton") +
 					imageButton +
 					componentHelpPopupButtonHTML() +
 				'</div>' +
 			'</div>' +
-			imageContainerImageDisplayContainerHTML() + 
-			clearValueButtonHTML("imageComponentClearValueButton") +
+			'<div class="imageDisplayContainer">' +
+				'<a class="imageDisplay"></a>' +
+			'</div>' +
 		'</div>';
 	return containerHTML
 }
@@ -40,7 +37,9 @@ function imageTableViewContainerHTML() {
 	var containerHTML = ''+
 		'<div class="layoutContainer imageComponent imageTableCellComponent">' +
 			'<div class="input-group">'+
-				imageContainerImageDisplayContainerHTML() + 
+				'<div class="form-control-static imageDisplayContainer">' +
+					'<a class="imageDisplay"></a>' +
+				'</div>' +
 				imageButton + 
 				clearValueButtonHTML("imageComponentClearValueButton") +
 			'</div>' +

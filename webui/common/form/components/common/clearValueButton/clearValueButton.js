@@ -1,17 +1,3 @@
-function clearValueButtonHTML(className) {
-	
-	// className is to uniquely identify the button with other HTML elements,
-	// such that it can be found with jQuery's find() function.
-	
-	var buttonHTML = '' +
-		'<span class="input-group-btn">' +
-			'<button type="button" tabindex="-1" class="btn btn-default btn-sm clearValueButton ' + className + '">' + 
-				'<small><i class="glyphicon glyphicon-remove"></i></small>' +
-			'</button>' +
-	    '</span'
-	
-	return buttonHTML
-}
 
 
 function smallClearButtonHTML(iconClass, className) {
@@ -29,6 +15,31 @@ function smallClearButtonHTML(iconClass, className) {
 function smallClearDeleteButtonHTML(className) {
 	return smallClearButtonHTML("glyphicon glyphicon-remove",className)
 }
+
+function clearValueButtonHTML(className) {
+	
+	// className is to uniquely identify the button with other HTML elements,
+	// such that it can be found with jQuery's find() function.
+	
+	var buttonHTML = '' +
+		'<span class="input-group-btn">' +
+			'<button type="button" tabindex="-1" class="btn btn-default btn-sm clearValueButton ' + className + '">' + 
+				'<small><i class="glyphicon glyphicon-remove"></i></small>' +
+			'</button>' +
+	    '</span'
+	
+	return buttonHTML
+}
+
+function smallClearComponentValHeaderButton(className) {
+	
+	var buttonHTML = '<button tabindex="-1" class="btn btn-default btn-sm clearButton pull-right ' + 
+			className + '"><span class="glyphicon glyphicon-remove"></span></button>'
+
+	return buttonHTML
+}
+
+
 
 
 function initClearValueControl($container,controlRef,buttonClassName) {

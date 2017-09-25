@@ -53,6 +53,9 @@
 	text-overflow: ellipsis;
 }
 
+.imageEditLinkButton .span {
+	line-height:1;
+}
 
 
 .imagePopupContainer {
