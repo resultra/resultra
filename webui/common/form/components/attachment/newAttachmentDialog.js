@@ -1,6 +1,6 @@
 
 
-function openNewImageDialog(databaseID,formID,containerParams)
+function openNewAttachmentDialog(databaseID,formID,containerParams)
 {
 			
 	function createNewImageComponent($parentDialog, newComponentParams) {
@@ -37,5 +37,5 @@ function openNewImageDialog(databaseID,formID,containerParams)
 		
 } // newLayoutContainer
 
-function initNewImageDialog() {
+function initNewAttachmentDialog() {
 }

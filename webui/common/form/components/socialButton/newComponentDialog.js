@@ -32,6 +32,7 @@ function openNewSocialButtonDialog(databaseID,formID,containerParams) {
 		elemPrefix: "socialButton_",
 		databaseID: databaseID,
 		formID: formID,
+		hideCreateCalcFieldCheckbox: true,
 		fieldTypes: [fieldTypeUser],
 		containerParams: containerParams,
 		createNewFormComponent: createNewSocialButton

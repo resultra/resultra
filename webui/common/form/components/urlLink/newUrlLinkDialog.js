@@ -33,6 +33,7 @@ function openNewUrlLinkDialog(databaseID,formID,containerParams)
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeURL],
+		hideCreateCalcFieldCheckbox: true,
 		containerParams: containerParams,
 		createNewFormComponent: createNewUrlLink
 	}

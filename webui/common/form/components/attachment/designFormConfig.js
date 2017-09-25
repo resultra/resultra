@@ -5,7 +5,7 @@
 
 function initDesignFormImage() {
 	console.log("Init html editor design form behavior")
-	initNewImageDialog()
+	initNewAttachmentDialog()
 }
 
 function selectFormAttachment($container,attachmentObjRef) {
@@ -33,7 +33,7 @@ function resizeImage($container,geometry) {
 var attachmentDesignFormConfig = {
 	draggableHTMLFunc:	attachmentContainerHTML,
 	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
-	createNewItemAfterDropFunc: openNewImageDialog,
+	createNewItemAfterDropFunc: openNewAttachmentDialog,
 	resizeConstraints: elemResizeConstraints(200,1280,125,1280),
 	resizeHandles: 'e,s,se',
 	resizeFunc: resizeImage,

@@ -46,7 +46,7 @@ func init() {
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "editorPerms"),
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
-			DialogTitle: "New HTML Editor",
+			DialogTitle: "New Editor",
 			FieldInfoPrompt: `Content provided in an editor is stored in fields. Either a new field can be created for this
 					editor, or an existing field can be used.`,
 			NewFieldInfoPrompt: `Enter the parameters for the new field to store this editor's content.`}}

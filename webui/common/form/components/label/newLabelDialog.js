@@ -25,9 +25,10 @@ function openNewLabelDialog(databaseID,formID,containerParams) {
 	}
 	
 	var newFormComponentDialogParams = {
-		elemPrefix: "label_",
+		elemPrefix: "tag_",
 		databaseID: databaseID,
 		formID: formID,
+		hideCreateCalcFieldCheckbox: true,
 		fieldTypes: [fieldTypeTag],
 		containerParams: containerParams,
 		createNewFormComponent: createNewLabel

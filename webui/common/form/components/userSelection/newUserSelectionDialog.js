@@ -32,6 +32,7 @@ function openNewUserSelectionDialog(databaseID,formID,containerParams) {
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeUser],
+		hideCreateCalcFieldCheckbox: true,
 		containerParams: containerParams,
 		createNewFormComponent: createNewUserSelection
 	}

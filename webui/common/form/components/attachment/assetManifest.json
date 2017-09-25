@@ -1,6 +1,6 @@
 {
     "cssFiles": [
-        "image.css"
+        "attachment.css"
     ], 
     "htmlFiles": [
         "properties.html",
@@ -8,7 +8,7 @@
     ], 
     "jsFiles": [
         "containerHTML.js", 
-        "newImageDialog.js", 
+        "newAttachmentDialog.js", 
         "properties.js",
 		"viewProperties.js", 
         "designFormConfig.js", 
