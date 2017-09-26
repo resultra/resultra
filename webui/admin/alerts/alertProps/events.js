@@ -386,9 +386,87 @@ function commentAlertConditionListItem(propsParams,fieldInfo,defaultConditionInf
 		if (condDefID !== null) {
 			condDef = alertCondDefs[condDefID]
 		} else {
-			condDef = {
-				hasNumberParam:false
-			} 			
+			condDef = {} 			
+		}		
+	}
+	
+	var $modeSelection = $alertProps.find(".alertConditionModeSelection")
+	$modeSelection.empty()
+	$modeSelection.append(defaultSelectOptionPromptHTML("Select a condition"))
+	for(var condID in alertCondDefs) {
+	 	var selectCondHTML = selectOptionHTML(condID, alertCondDefs[condID].label)
+	 	$modeSelection.append(selectCondHTML)				
+	}
+	
+	if (defaultConditionInfo !== null) {
+		initConditionDef(defaultConditionInfo.conditionID)
+		var condDef = alertCondDefs[defaultConditionInfo.conditionID]
+		
+		$modeSelection.val(defaultConditionInfo.conditionID)
+		
+	} else {
+		initConditionDef(null)
+	}
+	
+	initSelectControlChangeHandler($modeSelection,function(conditionID) {
+		initConditionDef(conditionID)
+		updateAlertConditions(propsParams)
+	})
+		
+	$listItem.data("alertCondDefFunc",function() {
+		var condID = $modeSelection.val()
+		
+		if(condID === null || condID.length <= 0) {
+			return null
+		}
+		var condDef = { fieldID: fieldInfo.fieldID,
+			conditionID: condID }	
+		
+		var condInfo = alertCondDefs[condID]
+							
+		return condDef
+	})
+	
+	$listItem.append($alertProps)
+	
+	return $listItem
+}
+
+function userAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo) {
+	
+	var $listItem = createAlertConditionListItem(propsParams,fieldInfo.name)
+	
+	var $alertProps = $("#alertUserFieldConditionProps").clone()
+	$alertProps.attr("id","")
+	
+	var alertCondDefs = {
+		"added": {
+			label: "New user(s) added",
+		},
+		"currUserAdded": {
+			label: "Current user added",
+		},
+		"increased": {
+			label: "Number of users increased",
+		},
+		"decreased": {
+			label: "Number of users decreased",
+		},
+		"changed": {
+			label: "Users changed",
+		},
+		"cleared": {
+			label: "Users cleared",
+		},
+	}
+
+	function initConditionDef(condDefID) {
+		
+		var condDef
+		if (condDefID !== null) {
+			condDef = alertCondDefs[condDefID]
+		} else {
+			condDef = {} 			
 		}		
 	}
 	
@@ -435,6 +513,7 @@ function commentAlertConditionListItem(propsParams,fieldInfo,defaultConditionInf
 }
 
 
+
 function createAlertPropsConditionItem(propsParams,fieldInfo,defaultConditionInfo) {
 
 	switch (fieldInfo.type) {
@@ -446,6 +525,8 @@ function createAlertPropsConditionItem(propsParams,fieldInfo,defaultConditionInf
 		return numberAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo)
 	case fieldTypeComment:
 		return commentAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo)
+	case fieldTypeUser:
+		return userAlertConditionListItem(propsParams,fieldInfo,defaultConditionInfo)
 	case fieldTypeText:
 	default:
 		console.log("createFilterRulePanelListItem: Unsupported field type:  " + fieldInfo.type)
@@ -456,7 +537,7 @@ function createAlertPropsConditionItem(propsParams,fieldInfo,defaultConditionInf
 
 function initAlertConditionProps(params) {
 	
-	var conditionFieldTypes = [fieldTypeTime,fieldTypeBool,fieldTypeNumber,fieldTypeComment]
+	var conditionFieldTypes = [fieldTypeTime,fieldTypeBool,fieldTypeNumber,fieldTypeComment,fieldTypeUser]
 	
 	function loadDefaultConditions() {
 		loadFieldInfo(params.databaseID,conditionFieldTypes,function(fieldsByID) {
