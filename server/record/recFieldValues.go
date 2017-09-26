@@ -114,3 +114,18 @@ func (recFieldVals RecFieldValues) GetUsersFieldValue(fieldID string) ([]string,
 		return nil, false
 	}
 }
+
+func (recFieldVals RecFieldValues) GetCommentFieldValue(fieldID string) (*CommentCellValue, bool) {
+
+	rawVal, foundVal := recFieldVals[fieldID]
+
+	if !foundVal {
+		return nil, false
+	}
+
+	if theVal, validType := rawVal.(CommentCellValue); validType {
+		return &theVal, true
+	} else {
+		return nil, false
+	}
+}

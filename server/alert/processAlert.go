@@ -26,6 +26,7 @@ const alertCondTrue string = "true"
 const alertCondCleared string = "cleared"
 const alertCondIncreased string = "increased"
 const alertCondDecreased string = "decreased"
+const alertCondAdded string = "added"
 
 func generateAlertNotificationCaption(context AlertProcessingContext) (string, error) {
 
@@ -293,6 +294,69 @@ func processNumberFieldAlert(context AlertProcessingContext, cond AlertCondition
 	return nil, nil
 }
 
+func processCommentFieldAlert(context AlertProcessingContext, cond AlertCondition) (*AlertNotification, error) {
+
+	log.Printf("Processing comment field alert: %+v", cond)
+
+	valBefore, foundValBefore := context.PrevFieldVals.GetCommentFieldValue(cond.FieldID)
+	valAfter, foundValAfter := context.CurrFieldVals.GetCommentFieldValue(cond.FieldID)
+
+	log.Printf("Processing comment field alert: found before=%v before=%+v found after=%v after=%+v",
+		foundValBefore, valBefore, foundValAfter, valAfter)
+
+	valAdded := func() bool {
+		if (foundValBefore == false) && (foundValAfter == false) {
+			return false
+		} else if (foundValBefore == false) && (foundValAfter == true) {
+			return true
+		} else if (foundValBefore == true) && (foundValAfter == false) {
+			return false
+		} else { // value found both before and after update => compare the actual values
+
+			// TBD - The follownig isn't really a good measure if a comment has been added. In particular,
+			// it doesn't handle the case where the same comment is added over and over. For example,
+			// If someone posts a comment like 'reply with "yes" if you agree' What is needed is to
+			// also check the timestamps on the 2 values.
+			if valAfter.CommentText != valBefore.CommentText {
+				return true
+			} else {
+				return false
+			}
+		}
+
+	}
+
+	generateNotification := func() (*AlertNotification, error) {
+
+		captionMsg, err := generateAlertNotificationCaption(context)
+		if err != nil {
+			return nil, fmt.Errorf("processTimeFieldAlert: %v", err)
+		}
+
+		alertNofify := AlertNotification{
+			AlertID:          context.ProcessedAlert.AlertID,
+			RecordID:         context.RecordID,
+			Timestamp:        context.UpdateTimestamp,
+			ItemSummary:      context.ItemSummary,
+			Caption:          captionMsg,
+			TriggerCondition: cond}
+
+		return &alertNofify, nil
+
+	}
+
+	switch cond.ConditionID {
+	case alertCondAdded:
+		if valAdded() {
+			return generateNotification()
+		}
+	default:
+		return nil, nil
+	}
+
+	return nil, nil
+}
+
 // processAlert processs a single alert for a single set of previous and current (before and after)
 // field values (including calculated fields).
 func processAlert(context AlertProcessingContext) (*AlertNotification, error) {
@@ -326,6 +390,15 @@ func processAlert(context AlertProcessingContext) (*AlertNotification, error) {
 			}
 		case field.FieldTypeBool:
 			alertNotification, genErr := processBoolFieldAlert(context, currAlertCond)
+			if genErr != nil {
+				return nil, fmt.Errorf("processAlert:  %v", genErr)
+			} else if alertNotification != nil {
+				log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
+					context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
+				return alertNotification, nil // No need to process after matching the first condition
+			}
+		case field.FieldTypeComment:
+			alertNotification, genErr := processCommentFieldAlert(context, currAlertCond)
 			if genErr != nil {
 				return nil, fmt.Errorf("processAlert:  %v", genErr)
 			} else if alertNotification != nil {
