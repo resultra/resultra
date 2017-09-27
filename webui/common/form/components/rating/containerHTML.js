@@ -13,12 +13,19 @@ function ratingContainerHTML(elementID)
 {	
 	var containerHTML = ''+
 		'<div class=" layoutContainer ratingFormContainer">' +
-			'<label class="marginBottom0">Rating</label>' + componentHelpPopupButtonHTML() +
+			'<div class="container-fluid componentHeader">' + 
+				'<div class="row">' +
+					'<div class="col-xs-9 componentHeaderLabelCol">' +
+						'<label class="marginBottom0">Rating</label>' +
+					'</div>' +
+					'<div class="col-xs-3 componentHeaderButtonCol">' +
+						smallClearComponentValHeaderButton("ratingComponentClearValueButton") + 
+						componentHelpPopupButtonHTML() +
+					'</div>' +
+				'</div>' +
+			'</div>' +
 			'<div class="formRatingControl">' +
 				ratingFormComponentRatingControlHTML() + // Rating control from Bootstrap Rating plugin
-			'</div>' +
-			'<div class="pull-right componentHoverFooter initiallyHidden">' +
-				smallClearDeleteButtonHTML("ratingComponentClearValueButton") + 
 			'</div>' +
 		'</div><';
 										
