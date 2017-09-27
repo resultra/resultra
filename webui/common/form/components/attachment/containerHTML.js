@@ -25,10 +25,6 @@ function addLinkButtonFromAttachmentComponentContainer($image) {
 function attachmentContainerBodyHTML() {
 	return '' +		
 		'<div class="attachmentInnerContainer lightGreyBorder text-center"">'+
-		'</div>'+
-		'<div class="pull-right componentHoverFooter initiallyHidden">' +
-			attachmentButtonHTML("imageComponentManageAttachmentsButtton") + 
-			attachmentLinkButtonHTML("attachmentComponentAddLinkButton") +
 		'</div>'
 }
 
@@ -40,8 +36,17 @@ function attachmentContainerHTML(elementID)
 	
 	var containerHTML = ''+
 	'<div class="layoutContainer attachmentContainer">' +
-		'<div class="attachmentEditorHeader">' +
-			'<label class="attachmentContainerLabel">Attachment(s)</label>'  + componentHelpPopupButtonHTML() +
+		'<div class="container-fluid attachmentEditorHeader componentHeader">' + 
+			'<div class="row">' +
+				'<div class="col-xs-9 componentHeaderLabelCol">' +
+					'<label class="attachmentContainerLabel">Attachment(s)</label>'  +
+				'</div>' +
+				'<div class="col-xs-3 componentHeaderButtonCol">' +
+					attachmentButtonHTML("imageComponentManageAttachmentsButtton") + 
+					attachmentLinkButtonHTML("attachmentComponentAddLinkButton") +
+					componentHelpPopupButtonHTML() +
+				'</div>' +
+			'</div>' +
 		'</div>' +
 		attachmentContainerBodyHTML() +
 	'</div>';
