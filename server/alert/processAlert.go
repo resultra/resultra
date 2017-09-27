@@ -470,65 +470,68 @@ func processUserFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 // processAlert processs a single alert for a single set of previous and current (before and after)
 // field values (including calculated fields).
 func processAlert(context AlertProcessingContext) (*AlertNotification, error) {
-	for _, currAlertCond := range context.ProcessedAlert.Properties.Conditions {
 
-		condFieldID := currAlertCond.FieldID
-		fieldInfo, fieldInfoFound := context.CalcFieldConfig.FieldsByID[condFieldID]
-		if !fieldInfoFound {
-			return nil, fmt.Errorf("GenerateRecordAlerts: missing field info for field id = %v", condFieldID)
-		}
-		switch fieldInfo.Type {
-		//			case field.FieldTypeText:
-		//			case field.FieldTypeNumber:
-		case field.FieldTypeTime:
-			alertNotification, genErr := processTimeFieldAlert(context, currAlertCond)
-			if genErr != nil {
-				return nil, fmt.Errorf("processAlert:  %v", genErr)
-			} else if alertNotification != nil {
-				log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
-					context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
-				return alertNotification, nil // No need to process after matching the first condition
-			}
-		case field.FieldTypeNumber:
-			alertNotification, genErr := processNumberFieldAlert(context, currAlertCond)
-			if genErr != nil {
-				return nil, fmt.Errorf("processAlert:  %v", genErr)
-			} else if alertNotification != nil {
-				log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
-					context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
-				return alertNotification, nil // No need to process after matching the first condition
-			}
-		case field.FieldTypeBool:
-			alertNotification, genErr := processBoolFieldAlert(context, currAlertCond)
-			if genErr != nil {
-				return nil, fmt.Errorf("processAlert:  %v", genErr)
-			} else if alertNotification != nil {
-				log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
-					context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
-				return alertNotification, nil // No need to process after matching the first condition
-			}
-		case field.FieldTypeComment:
-			alertNotification, genErr := processCommentFieldAlert(context, currAlertCond)
-			if genErr != nil {
-				return nil, fmt.Errorf("processAlert:  %v", genErr)
-			} else if alertNotification != nil {
-				log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
-					context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
-				return alertNotification, nil // No need to process after matching the first condition
-			}
-		case field.FieldTypeUser:
-			alertNotification, genErr := processUserFieldAlert(context, currAlertCond)
-			if genErr != nil {
-				return nil, fmt.Errorf("processAlert:  %v", genErr)
-			} else if alertNotification != nil {
-				log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
-					context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
-				return alertNotification, nil // No need to process after matching the first condition
-			}
-		default:
-			return nil, fmt.Errorf("processAlert: Unsupported field type for alert: %v", fieldInfo.Type)
-		} // switch
-
+	if context.ProcessedAlert.Properties.Condition == nil {
+		return nil, nil
 	}
+	currAlertCond := *context.ProcessedAlert.Properties.Condition
+
+	condFieldID := currAlertCond.FieldID
+	fieldInfo, fieldInfoFound := context.CalcFieldConfig.FieldsByID[condFieldID]
+	if !fieldInfoFound {
+		return nil, fmt.Errorf("GenerateRecordAlerts: missing field info for field id = %v", condFieldID)
+	}
+	switch fieldInfo.Type {
+	//			case field.FieldTypeText:
+	//			case field.FieldTypeNumber:
+	case field.FieldTypeTime:
+		alertNotification, genErr := processTimeFieldAlert(context, currAlertCond)
+		if genErr != nil {
+			return nil, fmt.Errorf("processAlert:  %v", genErr)
+		} else if alertNotification != nil {
+			log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
+				context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
+			return alertNotification, nil // No need to process after matching the first condition
+		}
+	case field.FieldTypeNumber:
+		alertNotification, genErr := processNumberFieldAlert(context, currAlertCond)
+		if genErr != nil {
+			return nil, fmt.Errorf("processAlert:  %v", genErr)
+		} else if alertNotification != nil {
+			log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
+				context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
+			return alertNotification, nil // No need to process after matching the first condition
+		}
+	case field.FieldTypeBool:
+		alertNotification, genErr := processBoolFieldAlert(context, currAlertCond)
+		if genErr != nil {
+			return nil, fmt.Errorf("processAlert:  %v", genErr)
+		} else if alertNotification != nil {
+			log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
+				context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
+			return alertNotification, nil // No need to process after matching the first condition
+		}
+	case field.FieldTypeComment:
+		alertNotification, genErr := processCommentFieldAlert(context, currAlertCond)
+		if genErr != nil {
+			return nil, fmt.Errorf("processAlert:  %v", genErr)
+		} else if alertNotification != nil {
+			log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
+				context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
+			return alertNotification, nil // No need to process after matching the first condition
+		}
+	case field.FieldTypeUser:
+		alertNotification, genErr := processUserFieldAlert(context, currAlertCond)
+		if genErr != nil {
+			return nil, fmt.Errorf("processAlert:  %v", genErr)
+		} else if alertNotification != nil {
+			log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
+				context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
+			return alertNotification, nil // No need to process after matching the first condition
+		}
+	default:
+		return nil, fmt.Errorf("processAlert: Unsupported field type for alert: %v", fieldInfo.Type)
+	} // switch
+
 	return nil, nil
 }

@@ -17,7 +17,7 @@ type AlertCondition struct {
 type AlertProperties struct {
 	FormID            string                           `json:"formID"`
 	SummaryFieldID    string                           `json:"summaryFieldID"`
-	Conditions        []AlertCondition                 `json:"conditions"`
+	Condition         *AlertCondition                  `json:"condition"`
 	CaptionMessage    string                           `json:"captionMessage"`
 	TriggerConditions recordFilter.RecordFilterRuleSet `json:"triggerConditions"`
 }
@@ -32,19 +32,20 @@ func (srcProps AlertProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*A
 	}
 	destProps.TriggerConditions = *destTriggerConditions
 
-	destConditions := []AlertCondition{}
-	for _, srcCondition := range srcProps.Conditions {
-		destCondition := srcCondition
+	// TODO - Remap the any field references within the caption message.
 
+	srcCondition := srcProps.Condition
+	if srcCondition != nil {
 		remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcCondition.FieldID)
 		if err != nil {
 			return nil, fmt.Errorf("AlertProperties.Clone: %v", err)
 		}
+		destCondition := *srcCondition
 		destCondition.FieldID = remappedFieldID
-
-		destConditions = append(destConditions, destCondition)
+		destProps.Condition = &destCondition
+	} else {
+		destProps.Condition = nil
 	}
-	destProps.Conditions = destConditions
 
 	destFormID, formIDErr := remappedIDs.GetExistingRemappedID(srcProps.FormID)
 	if formIDErr != nil {
@@ -63,7 +64,6 @@ func (srcProps AlertProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*A
 
 func newDefaultAlertProperties() AlertProperties {
 	defaultProps := AlertProperties{
-		Conditions:        []AlertCondition{},
 		TriggerConditions: recordFilter.NewDefaultRecordFilterRuleSet()}
 
 	return defaultProps

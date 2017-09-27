@@ -3,10 +3,6 @@
 <div style="display:none;">
 	
 	<div id="alertConditionListItem" class="list-group-item alertConditionListItem">
-			<label class="alertConditionItemLabel"></label>
-			<button type="button" class="close alertConditionDeleteButton">
-				<span aria-hidden="true">&times;</span>
-			</button>
 	</div>
 	
 	
@@ -82,21 +78,27 @@
 	{{template "alertEventTemplates"}}
 	
 	<tr>
-		<td class="width200"><label>Event(s) which trigger the alert</label>
+		<td class="width200"><label>Triggering the alert</label>
 			<div>
-				<small>Add one or more events which will trigger the alert. If any one of the events occurs, the alert will be triggered.</small>
+				<small>Configure which field and event triggers the alert.</small>
 			</div>
 		</td>
 
 		<td id="alertConditionTableCell">
 			<div class="maxWidth300">
-
-				<div class="list-group alertConditionList" id="alertConditionList">
-				</div>	
-	
-				<hr class="conditionPanelSeparator">
-
-				{{template "fieldSelectionDropdown" .FieldSelectionParams}}
+				
+				<div class="form-group">
+					<label>Field which triggers the alert</label> 
+					<select class="form-control " id="adminAlertTriggerFieldSelection"
+						 name="adminAlertTriggerFieldSelection">
+					</select>
+				</div>
+				
+				<div class="form-group">
+					<label>Event which triggers the alert</label> 
+					<div class="list-group alertConditionList" id="alertConditionList">
+					</div>	
+				</div>
 	
 			</div>
 		</td>

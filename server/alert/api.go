@@ -30,7 +30,7 @@ func init() {
 	alertRouter.HandleFunc("/api/alert/setCaptionMessage", setCaptionMessage)
 	alertRouter.HandleFunc("/api/alert/getDecodedCaptionMessage", getDecodedCaptionMessage)
 
-	alertRouter.HandleFunc("/api/alert/setConditions", setConditions)
+	alertRouter.HandleFunc("/api/alert/setCondition", setCondition)
 
 	alertRouter.HandleFunc("/api/alert/validateFormName", validateAlertNameAPI)
 	alertRouter.HandleFunc("/api/alert/validateNewAlertName", validateNewAlertNameAPI)
@@ -137,8 +137,8 @@ func setAlertName(w http.ResponseWriter, r *http.Request) {
 	processAlertPropUpdate(w, r, params)
 }
 
-func setConditions(w http.ResponseWriter, r *http.Request) {
-	var params SetConditionsParams
+func setCondition(w http.ResponseWriter, r *http.Request) {
+	var params SetConditionParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

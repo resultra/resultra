@@ -13,30 +13,21 @@ function updateAlertConditions(panelParams) {
 	})
 	console.log("alert conditions: " + JSON.stringify(conditions))
 	
-	var setConditionParams = { 
-		alertID: panelParams.alertID,
-		conditions: conditions
+	if(conditions.length > 0) {
+		var setConditionParams = { 
+			alertID: panelParams.alertID,
+			conditions: conditions[0]
+		}
+		jsonAPIRequest("alert/setCondition",setConditionParams,function(response) {		
+		})	
 	}
-	jsonAPIRequest("alert/setConditions",setConditionParams,function(alerts) {		
-	})	
-	
-	
-//	config.setConditionalFormats(conditions)
+
 }
 
 function createAlertConditionListItem(panelParams,fieldName) {
 	
 	var $listItem = $('#alertConditionListItem').clone()
 	$listItem.attr("id","")
-	
-	var $fieldLabel = $listItem.find(".alertConditionItemLabel")
-	$fieldLabel.text(fieldName)
-	
-	var $deleteButton = $listItem.find(".alertConditionDeleteButton")
-	initButtonControlClickHandler($deleteButton,function() {
-		$listItem.remove()
-		updateAlertConditions(panelParams)
-	})
 
 	return $listItem
 }
@@ -537,50 +528,33 @@ function createAlertPropsConditionItem(propsParams,fieldInfo,defaultConditionInf
 
 function initAlertConditionProps(params) {
 	
-	var conditionFieldTypes = [fieldTypeTime,fieldTypeBool,fieldTypeNumber,fieldTypeComment,fieldTypeUser]
+	var conditionFieldTypes = [fieldTypeTime,fieldTypeBool,fieldTypeNumber,fieldTypeComment,fieldTypeUser]	
+	var $alertConditionList = $("#alertConditionList")
 	
-	function loadDefaultConditions() {
-		loadFieldInfo(params.databaseID,conditionFieldTypes,function(fieldsByID) {
-			
-			var getAlertParams = { 
-				alertID: params.alertID
-			}
-			jsonAPIRequest("alert/get",getAlertParams,function(alertInfo) {		
-				var $alertConditionList = $("#alertConditionList")
-				var conditions = alertInfo.properties.conditions
-				
-				for(var condIndex = 0; 
-						condIndex < conditions.length; condIndex++) {
-					
-					var currCond = conditions[condIndex]
-			
-					var fieldInfo = fieldsByID[currCond.fieldID]
-					
-					$alertConditionList.append(createAlertPropsConditionItem(params,fieldInfo,currCond))
-				
-				}
-			})			
-		})
-	
-	}
-	loadDefaultConditions()
-	
-			
-	var fieldSelectionDropdownParams = {
-		elemPrefix: "alertCondition_",
-		databaseID: params.databaseID,
-		fieldTypes: conditionFieldTypes,
-		fieldSelectionCallback: function(fieldInfo) {
-			
-			var $alertConditionList = $("#alertConditionList")
-			
+	var $triggerFieldSelection = $('#adminAlertTriggerFieldSelection')
+	loadSortedFieldInfo(params.databaseID,conditionFieldTypes,function(sortedFields) {
+		var fieldsByID = createFieldsByIDMap(sortedFields)
+		populateSortedFieldSelectionMenu($triggerFieldSelection,sortedFields)
+		
+		initSelectControlChangeHandler($triggerFieldSelection,function(fieldID) {
+			var fieldInfo = fieldsByID[fieldID]
+			$alertConditionList.empty()
 			// Use null to signify no default condition information. This is true when
 			// creating new rules, but will not be when re-loading the rules.
 			var defaultConditionInfo = null
-			$alertConditionList.append(createAlertPropsConditionItem(params,fieldInfo,defaultConditionInfo))
-		}
-	}
-	initFieldSelectionDropdown(fieldSelectionDropdownParams)
-	
+			$alertConditionList.append(createAlertPropsConditionItem(params,fieldInfo,defaultConditionInfo))	
+		})
+		
+		var getAlertParams = { alertID: params.alertID }
+		jsonAPIRequest("alert/get",getAlertParams,function(alertInfo) {		
+			var condition = alertInfo.properties.condition
+			if (condition !== undefined && condition !== null) {
+				var fieldInfo = fieldsByID[condition.fieldID]
+				$triggerFieldSelection.val(condition.fieldID)		
+				$alertConditionList.append(createAlertPropsConditionItem(params,fieldInfo,condition))				
+			}
+		})			
+		
+	})	
 	
 }
