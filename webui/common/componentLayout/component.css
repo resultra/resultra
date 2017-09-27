@@ -31,14 +31,18 @@
 /* The header for different components is layed out using Bootstraps grid system.
    To keep the layout tight, minimize the padding of the label and button columns. */
 
+
+.componentHeader {
+	/* Override the padding for the .container-fluid which by default has a 15px padding */
+	padding:0px;
+}
+
 .componentHeaderLabelCol {
 	padding-right:0px;
-	padding-left:0px;
 }
 
 .componentHeaderButtonCol {
 	display:inline-flex;
 	justify-content:flex-end;
 	padding-left:0px;
-	padding-right:0px;
 }

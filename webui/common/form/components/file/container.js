@@ -18,7 +18,7 @@ function fileContainerHTML(elementID)
 {
 	var containerHTML = ''+
 		'<div class="layoutContainer fileComponent fileFormComponent">' +
-			'<div class="container-fluid">' + 
+			'<div class="container-fluid componentHeader">' + 
 				'<div class="row">' +
 					'<div class="col-xs-9 componentHeaderLabelCol">' +
 						'<label>New File</label>' +

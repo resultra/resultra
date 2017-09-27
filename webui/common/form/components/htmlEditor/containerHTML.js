@@ -22,16 +22,21 @@ function htmlEditorContainerHTML(elementID)
 {	
 	var containerHTML = ''+
 	'<div class=" layoutContainer htmlEditorContainer">' +
-		'<div class="htmlEditorHeader">' +
-			'<label>Editor Label</label>' + componentHelpPopupButtonHTML() +
+		'<div class="container-fluid htmlEditorHeader componentHeader">' + 
+			'<div class="row">' +
+				'<div class="col-xs-9 componentHeaderLabelCol">' +
+					'<label>Editor Label</label>' +
+				'</div>' +
+				'<div class="col-xs-3 componentHeaderButtonCol">' +
+					noteEditButtonHTML() +
+					componentHelpPopupButtonHTML() +
+				'</div>' +
+			'</div>' +
 		'</div>' +
 		'<div class="htmlEditorContent lightGreyBorder">' +
 			'<div class="htmlEditorInput inlineContent htmlEditorDefaultBackground">'+
 			'</div>' +
 		'</div>'+
-		'<div class="editorFooter componentHoverFooter">' +
-			noteEditButtonHTML() +
-		'</div>' +	
 	'</div>';
 			
 	return containerHTML

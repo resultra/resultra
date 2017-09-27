@@ -10,7 +10,7 @@ function imageContainerHTML(elementID)
 	
 	var containerHTML = '' +
 		'<div class="layoutContainer imageComponent imageFormComponent">' +
-			'<div class="container-fluid">' + 
+			'<div class="container-fluid componentHeader">' + 
 				'<div class="row">' +
 					'<div class="col-xs-7 componentHeaderLabelCol">' +
 						'<label>New Image</label>' +
