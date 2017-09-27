@@ -1,15 +1,9 @@
-{{define "commentFormatProps"}}
-	Comment formatting properties go here
-{{end}}
+
 
 {{define "commentComponentProps"}}
 
 	<div id="commentComponentProps" class="propertyPanelToggleContainer">
 		{{template "componentLabelPropertyPanel" .LabelPanelParams}}
-
-		{{template "propertyPanelPrefix" .FormatPanelParams}}
-			{{template "commentFormatProps"}}
-		{{template "propertyPanelSuffix"}}
 		
 		{{template "componentVisibilityPropertyPanel" .VisibilityPanelParams}}
 

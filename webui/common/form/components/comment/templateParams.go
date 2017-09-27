@@ -12,7 +12,6 @@ import (
 
 type CommentDesignTemplateParams struct {
 	ElemPrefix               string
-	FormatPanelParams        propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
@@ -40,7 +39,6 @@ func init() {
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "commentLabel"}},
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "commentDelete", "Delete Comment Box"),
 		HelpPopupParams:       inputProperties.NewHelpPopupTemplateParams(elemPrefix, "commentHelp"),
-		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "commentFormat"},
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "commentPerms"),
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
