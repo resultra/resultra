@@ -18,9 +18,6 @@ function openNewAlertDialog(databaseID) {
 			}, // newAlertNameInput
 			newAlertFormSelection: {
 				required:true,
-			},
-			newAlertFieldSelection: {
-				required:true,
 			}
 		},
 		messages: {
@@ -29,9 +26,6 @@ function openNewAlertDialog(databaseID) {
 			},
 			newAlertFormSelection: {
 				required: "Form selection is required"
-			},
-			newAlertFieldSelection: {
-				required: "Field selection is required"
 			}
 		}
 	})
@@ -43,12 +37,7 @@ function openNewAlertDialog(databaseID) {
 	}	
 	populateFormSelectionMenu(selectFormParams)
 	var $formSelection = $("#newAlertFormSelection")
-	
-	var $fieldSelection = $('#newAlertFieldSelection')
-	loadSortedFieldInfo(databaseID,[fieldTypeText],function(sortedFields) {
-		populateSortedFieldSelectionMenu($fieldSelection,sortedFields)
-	})
-	
+		
 	resetFormValidationFeedback($newAlertDialogForm)
 	$alertNameInput.val("")
 	validator.resetForm()
@@ -63,8 +52,7 @@ function openNewAlertDialog(databaseID) {
 			var newAlertParams = { 
 				parentDatabaseID: databaseID, 
 				name: $alertNameInput.val(),
-				formID: $formSelection.val(),
-				summaryFieldID: $fieldSelection.val() }
+				formID: $formSelection.val()}
 			jsonAPIRequest("alert/new",newAlertParams,function(newAlertInfo) {
 				console.log("Created new alert: " + JSON.stringify(newAlertInfo))
 				$newAlertDialog.modal('hide')

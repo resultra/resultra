@@ -17,7 +17,6 @@ type AlertProcessingContext struct {
 	PrevFieldVals   record.RecFieldValues
 	CurrFieldVals   record.RecFieldValues
 	LatestFieldVals record.RecFieldValues
-	ItemSummary     string
 	ProcessedAlert  Alert
 }
 
@@ -131,7 +130,6 @@ func processTimeFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 			AlertID:          context.ProcessedAlert.AlertID,
 			RecordID:         context.RecordID,
 			Timestamp:        context.UpdateTimestamp,
-			ItemSummary:      context.ItemSummary,
 			Caption:          captionMsg,
 			TriggerCondition: cond}
 
@@ -198,7 +196,6 @@ func processBoolFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 			AlertID:          context.ProcessedAlert.AlertID,
 			RecordID:         context.RecordID,
 			Timestamp:        context.UpdateTimestamp,
-			ItemSummary:      context.ItemSummary,
 			Caption:          captionMsg,
 			TriggerCondition: cond}
 
@@ -265,7 +262,6 @@ func processNumberFieldAlert(context AlertProcessingContext, cond AlertCondition
 			AlertID:          context.ProcessedAlert.AlertID,
 			RecordID:         context.RecordID,
 			Timestamp:        context.UpdateTimestamp,
-			ItemSummary:      context.ItemSummary,
 			Caption:          captionMsg,
 			TriggerCondition: cond}
 
@@ -340,7 +336,6 @@ func processCommentFieldAlert(context AlertProcessingContext, cond AlertConditio
 			AlertID:          context.ProcessedAlert.AlertID,
 			RecordID:         context.RecordID,
 			Timestamp:        context.UpdateTimestamp,
-			ItemSummary:      context.ItemSummary,
 			Caption:          captionMsg,
 			TriggerCondition: cond}
 
@@ -428,7 +423,6 @@ func processUserFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 			AlertID:          context.ProcessedAlert.AlertID,
 			RecordID:         context.RecordID,
 			Timestamp:        context.UpdateTimestamp,
-			ItemSummary:      context.ItemSummary,
 			Caption:          captionMsg,
 			TriggerCondition: cond}
 

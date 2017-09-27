@@ -65,26 +65,6 @@
 {{end}}
 
 
-{{define "adminAlertFieldProperty"}}
-	<tr>
-		<td class="width200"><label>Summary field</label>
-			<div><small>Select a field to uniquely identify the item in the alert's notification.</small></div>
-		</td>
-
-		<td id="adminAlertFieldTableCell">
-			<div class="maxWidth300">
-
-				<form id="alertFieldPropFormForm">
-						<div class="form-group">
-							<select class="form-control maxWidth300" id="alertPropFieldSelection"></select>
-						</div>
-				</form>
-	
-			</div>
-		</td>
-	</tr>
-{{end}}
-
 {{define "alertConditionProps"}}
 	<tr>
 		<td class="width200"><label>Conditions for triggering the alert</label>
@@ -121,12 +101,11 @@
 
 <table class="table">
 	{{template "adminAlertNameProperty"}}
+	{{template "adminAlertFormProperty"}}
 	{{template "adminAlertCaptionTemplate"}}
 	{{template "alertEventProps" .}}
 	{{template "alertConditionProps" .TriggerConditionPropPanelParams}}
 	{{template "alertRecipientProps"}}
-	{{template "adminAlertFormProperty"}}
-	{{template "adminAlertFieldProperty"}}
 </table>
 
 

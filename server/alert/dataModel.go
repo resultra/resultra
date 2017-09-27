@@ -21,7 +21,6 @@ type NewAlertParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 	Name             string `json:"name"`
 	FormID           string `json:"formID"`
-	SummaryFieldID   string `json:"summaryFieldID"`
 }
 
 func saveAlert(newAlert Alert) error {
@@ -47,9 +46,8 @@ func newAlert(params NewAlertParams) (*Alert, error) {
 	}
 
 	newAlertProps := newDefaultAlertProperties()
-	// TODO - Verify both form ID and summary field ID are valid
+	// TODO - Verify form ID is valid
 	newAlertProps.FormID = params.FormID
-	newAlertProps.SummaryFieldID = params.SummaryFieldID
 
 	newAlert := Alert{ParentDatabaseID: params.ParentDatabaseID,
 		AlertID:    uniqueID.GenerateSnowflakeID(),

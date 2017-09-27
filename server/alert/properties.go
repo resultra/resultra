@@ -16,7 +16,6 @@ type AlertCondition struct {
 
 type AlertProperties struct {
 	FormID            string                           `json:"formID"`
-	SummaryFieldID    string                           `json:"summaryFieldID"`
 	Condition         *AlertCondition                  `json:"condition"`
 	CaptionMessage    string                           `json:"captionMessage"`
 	TriggerConditions recordFilter.RecordFilterRuleSet `json:"triggerConditions"`
@@ -52,12 +51,6 @@ func (srcProps AlertProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*A
 		return nil, fmt.Errorf("AlertProperties.Clone: %v", formIDErr)
 	}
 	destProps.FormID = destFormID
-
-	destFieldID, fieldIDErr := remappedIDs.GetExistingRemappedID(srcProps.SummaryFieldID)
-	if fieldIDErr != nil {
-		return nil, fmt.Errorf("AlertProperties.Clone: %v", fieldIDErr)
-	}
-	destProps.SummaryFieldID = destFieldID
 
 	return &destProps, nil
 }

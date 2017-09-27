@@ -76,12 +76,6 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 
 			currAlert := currAlertContext.Alert
 
-			itemSummaryFieldVal, foundSummary := latestFieldValues.GetTextFieldValue(currAlert.Properties.SummaryFieldID)
-			itemSummary := ""
-			if foundSummary {
-				itemSummary = itemSummaryFieldVal
-			}
-
 			// Test for a match on the trigger conditions  record's field values "as of" the date of the
 			// value update.
 			recMatchesTriggerCond, condErr := recordFilter.MatchOneRecordFromFieldValues(
@@ -98,7 +92,6 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 					PrevFieldVals:   prevFieldValues,
 					CurrFieldVals:   currFieldValues,
 					LatestFieldVals: *latestFieldValues,
-					ItemSummary:     itemSummary,
 					ProcessedAlert:  currAlert}
 
 				alertNotification, processAlertErr := processAlert(context)

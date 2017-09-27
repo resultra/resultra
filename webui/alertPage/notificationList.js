@@ -25,13 +25,7 @@ function initAlertNotificationList(databaseID) {
 			defaultContent: '',
 			type:'string'
 		}
-		
-		var itemSummaryCol = {
-			data: 'itemSummary', 
-			defaultContent: '',
-			type:'string'
-		}
-		
+				
 		var notificationSummaryCol = {
 			data: 'notificationSummary', 
 			defaultContent: '',
@@ -59,7 +53,7 @@ function initAlertNotificationList(databaseID) {
 			
 		}
 		
-		var dataCols = [timeDataCol,alertNameDataCol,itemSummaryCol,notificationSummaryCol, formLinkCol]
+		var dataCols = [alertNameDataCol,notificationSummaryCol,timeDataCol,formLinkCol]
 		
 		function AlertDisplayData(rawDataIndex) {
 			
@@ -88,10 +82,6 @@ function initAlertNotificationList(databaseID) {
 			
 			this.recordID = function() {
 				return this.notification.recordID
-			}
-			
-			this.itemSummary = function() {
-				return this.notification.itemSummary
 			}
 			
 			this.notificationSummary = function() {
