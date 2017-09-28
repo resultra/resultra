@@ -106,13 +106,12 @@ function calcToggleTableCellHandleWidthPx(toggleRef) {
 }
 
 
-function initToggleComponentControl($toggleContainer,toggleRef) {
+function initToggleComponentControl($toggleContainer,toggleRef,handleWidth) {
 		
 	var $toggleControl = getToggleControlFromToggleContainer($toggleContainer)
-		
-		
+				
 	 $toggleControl.bootstrapSwitch({
-		handleWidth:calcToggleTableCellHandleWidthPx(toggleRef),
+		handleWidth:handleWidth,
 		indeterminate:true,
 		 size:'normal',
 		onText:escapeHTML(toggleRef.properties.onLabel),
@@ -125,8 +124,58 @@ function initToggleComponentControl($toggleContainer,toggleRef) {
 	
 }
 
+function initToggleFormComponentControl($toggleContainer,toggleRef) {
+	
+	// We want to the switch to extend to the size of the 
+	// $toggleContainer.
+	// 
+	// The Bootstrap Switch control allocates 12px of padding on 
+	// both the LHS and RHS of each handle and the label.
+	//
+	// At any given time, only a single handle and the label
+	// is visible: i.e.:
+	//
+	// (12px + handleWidth + 12px) + (12px + labelWidth + 12px)
+	// So assuming the labelWidth is 5px, the total non-handle
+	// space is 4*12+5 = 53px.
+	//
+	// There is also a total of 12px padding and border
+	// on the LHS and RHS $toggleContainer.
+	//
+	// So, to calculate the handleWidth for the Bootstrap Switch
+	// (around which all the other calculations take place), 65
+	// is subtracted from the size of the container.
+	//
+	// Finally, for aesthetic reasons the toggle control looks 
+	// better if the RHS isn't flush with the RHS of the $toggleContainer's
+	// perimeter. For this reason, an extra 5px is added to the total
+	// "non handleWidth" space.
+	// 	
+	var nonHandleWidthFixedSpaceForPadding = 70
+	var handleWidth = (toggleRef.properties.geometry.sizeWidth - 
+				nonHandleWidthFixedSpaceForPadding) + 'px'
+	
+	// Similar to the negative margin used with the table cell, negative
+    // margin is needed when the toggle is displayed in the form to give
+	// the toggle room to expand beyond the length of the $toggleContainer.
+    // For some reason, the Bootstrap Switch calculates enough negative
+	// margin on the LHS but not the RHS.
+	var negMargin = (-1 * toggleRef.properties.geometry.sizeWidth) + 'px'
+	$toggleContainer.find(".toggleWrapper").css("margin-right",negMargin)
+	
+//	handleWidth = calcToggleTableCellHandleWidthPx(toggleRef)
+	initToggleComponentControl($toggleContainer,toggleRef,handleWidth)
+}
+
+function initToggleTableComponentControl($toggleContainer,toggleRef) {
+	var handleWidth = calcToggleTableCellHandleWidthPx(toggleRef)
+	initToggleComponentControl($toggleContainer,toggleRef,handleWidth)
+}
+
 function initToggleComponentFormComponentContainer($toggleContainer,toggleRef) {
-	initToggleComponentControl($toggleContainer,toggleRef)
+	
+	initToggleFormComponentControl($toggleContainer,toggleRef)
+	
 	setToggleComponentLabel($toggleContainer,toggleRef)
 	initToggleComponentClearValueButton($toggleContainer,toggleRef)
 	initComponentHelpPopupButton($toggleContainer, toggleRef)
@@ -134,7 +183,9 @@ function initToggleComponentFormComponentContainer($toggleContainer,toggleRef) {
 
 
 function initToggleComponentTableViewComponentContainer($toggleContainer,toggleRef) {
-	initToggleComponentControl($toggleContainer,toggleRef)
+	
+	initToggleTableComponentControl($toggleContainer,toggleRef)
+	
 	initToggleComponentClearValueButton($toggleContainer,toggleRef)
 
 	var toggleColorSchemeClass = "checkbox-"+toggleRef.properties.colorScheme
@@ -175,7 +226,8 @@ function reInitToggleComponentControl($toggleContainer,toggleRef) {
 	$toggleWrapper.empty()
 	$toggleWrapper.append(toggleControlHTML())
 	
-	initToggleComponentControl($toggleContainer,toggleRef)
+	initToggleFormComponentControl($toggleContainer,toggleRef)
+	
 	setToggleComponentLabel($toggleContainer,toggleRef)
 	
 	
