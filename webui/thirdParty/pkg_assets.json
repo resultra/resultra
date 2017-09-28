@@ -4,6 +4,12 @@
 			"pkgPrefix": "node_modules/jquery/dist",
 			"jsFiles": [ "jquery.min.js" ]
 		},
+		"ckeditor": {
+			"pkgPrefix": "node_modules/ckeditor",
+			"jsFiles": [ "*.js","lang/*.js"],
+			"cssFiles": ["*.css","skins/moono/*.css" ],
+			"imageFiles": ["skins/moono/*.png","skins/moono/images/**"]		
+		},
 		"bootstrap": {
 			"pkgPrefix": "node_modules/bootstrap/dist",
 			"jsFiles": [ "js/bootstrap.min.js" ],
