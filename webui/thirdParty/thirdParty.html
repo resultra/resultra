@@ -1,13 +1,7 @@
 {{define "thirdPartyCSS"}}
 
-	<!-- There is an ordering conflict between the following 2 style sheets and bootstrap. The following
+	<!-- There is an ordering conflict between the the jQuery UI and blueimp file upload style sheets and bootstrap. The following
 		 2 style sheets need to come before bootstrap for Bootstrap styles not to be overridden.  -->
-	<link rel="stylesheet" type="text/css" class="ui" 
-		href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">  
-		
-	<link rel="stylesheet" type="text/css" class="ui" 
-		href="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.12.1/css/jquery.fileupload.css">  
-		
 		
 	<!-- thirdPartyAssets:css -->
 	<!-- endinject -->	
@@ -15,14 +9,10 @@
 
 {{define "thirdPartyJS"}}
 
+
 	<!-- thirdPartyAssets:js -->
-	<!-- endinject -->
-		
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-	
-	<!-- Use jQuery file upload library for image and file uploading -->	
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.12.1/js/jquery.fileupload.min.js"></script>	
-											
+	<!-- endinject -->		
+												
 {{end}}
 
 

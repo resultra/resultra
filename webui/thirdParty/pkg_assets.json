@@ -10,6 +10,18 @@
 			"cssFiles": ["*.css","skins/moono/*.css" ],
 			"imageFiles": ["skins/moono/*.png","skins/moono/images/**"]		
 		},
+		"blueimp-file-upload": {
+			"pkgPrefix": "node_modules/blueimp-file-upload",
+			"jsFiles": [ "js/vendor/jquery.ui.widget.js","js/jquery.fileupload.js"],
+			"cssFiles": ["css/jquery.fileupload.css"],
+			"imageFiles": ["img/*.gif"]		
+		},
+		"jquery-ui": {
+			"pkgPrefix": "node_modules/jquery-ui-dist",
+			"jsFiles": [ "jquery-ui.min.js"],
+			"cssFiles": ["jquery-ui.min.css"],
+			"imageFiles": ["images/*.png"]		
+		},
 		"bootstrap": {
 			"pkgPrefix": "node_modules/bootstrap/dist",
 			"jsFiles": [ "js/bootstrap.min.js" ],
