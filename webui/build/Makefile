@@ -10,4 +10,4 @@ prebuild:
 	npm install --save-dev gulp-strip-debug
 	npm install --save-dev gulp-rename
 	npm install --save-dev merge-stream
-	
+	npm install --save-dev glob

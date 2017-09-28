@@ -5,6 +5,7 @@ var rename = require("gulp-rename")
 var gutil = require("gulp-util")
 var merge = require('merge-stream');
 var args   = require('yargs').argv;
+var glob = require('glob')
 
 // The current working directory (cwd) will be the directory with the 
 // gulp build-related files, so the distribution/export path is based upon this directory.
@@ -83,15 +84,26 @@ gulp.task('injectHTMLFilesWithIndividualPkgAssets', function() {
 	var absFileToLinkFile = {}
 	function populateLinkFileRefs(pkgInfo,pkgName,absFileRefs) {
 		for (var absFileIndex in absFileRefs) {
-			var absFileName = absFileRefs[absFileIndex]
-			var linkPath = absFileName.replace(basePath,'') // remove the base path
-			linkPath = linkPath.replace(pkgInfo.pkgPrefix,pkgName) // replace package prefix with just the package name
-			linkPath = '/static' + linkPath // prepend the static reference.
-			absFileToLinkFile[absFileName] = linkPath
+			var fileNamePattern = absFileRefs[absFileIndex]
+			
+			// Files can be given as glob patterns. So, before setting up the mapping, this
+			// glob pattern needs to be expanded.
+			var globbedFiles = glob.sync(fileNamePattern)
+			
+			for (var fileIndex = 0; fileIndex < globbedFiles.length; fileIndex++) {
+				var absFileName = globbedFiles[fileIndex]
+				var linkPath = absFileName.replace(basePath,'') // remove the base path
+				linkPath = linkPath.replace(pkgInfo.pkgPrefix,pkgName) // replace package prefix with just the package name
+				linkPath = '/static' + linkPath // prepend the static reference.
+				gutil.log("Setting up link file reference for absolute file: " + absFileName)
+				absFileToLinkFile[absFileName] = linkPath
+			}
+			
 		}
 		
 	}
 	function transformJSPkgFileForInjection(filepath, file, index, length, targetFile) {
+		gutil.log("Transforming js file for script reference: file  = " + file.path + " -> " + absFileToLinkFile[file.path])
 		return '<script src="' + absFileToLinkFile[file.path] + '"></script>'
 	}
 	

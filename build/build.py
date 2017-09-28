@@ -60,7 +60,7 @@ def runMakePhase(makeTargetName):
     makeDirs = []
     for root, dirs, files in os.walk(".."):
         for file in files:
-            if (file == 'Makefile') and (not root.startswith("../webui/build")):
+            if (file == 'Makefile') and (not root.startswith("../webui/build") and (not "node_modules" in root)):
                 makeDirs.append(buildDirSpec(root,makeTargetName,debugBuild))
     buildPool = Pool(processes=args.procs)
     results = buildPool.map(buildOneDir,makeDirs)

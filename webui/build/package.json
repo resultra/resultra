@@ -9,9 +9,10 @@
   "author": "Resultra, LLC",
   "license": "ISC",
   "devDependencies": {
+    "glob": "^7.1.2",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
-    "gulp-inject": "^4.2.0",
+    "gulp-inject": "^4.3.0",
     "gulp-minify-css": "^1.2.4",
     "gulp-rename": "^1.2.2",
     "gulp-strip-debug": "^1.1.0",
@@ -19,5 +20,6 @@
     "gulp-util": "^3.0.8",
     "merge-stream": "^1.0.1",
     "yargs": "^4.8.1"
-  }
+  },
+  "dependencies": {}
 }
