@@ -25,6 +25,7 @@ function resizeToggle($container,geometry) {
 	}
 	
 	jsonAPIRequest("frm/toggle/resize", resizeParams, function(updatedObjRef) {
+		reInitToggleComponentControl($container,updatedObjRef)
 		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.toggleID)
 	})	
 }
