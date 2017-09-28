@@ -7,40 +7,32 @@ function getToggleControlFromToggleContainer($toggleContainer) {
 
 
 
-// Support the generation of unique IDs for each individual toggle. This isn't used
-// to idenfity which field the toggle is connected to, but to connect the toggle
-// to its label, so clicking on the label will check/uncheck the toggle as well.
-var uniqueToggleIDForLabel = 1
-function generateUniqueToggleIDForLabel() {
-	uniqueToggleIDForLabel++
-	return "toggleComponent_" + uniqueToggleIDForLabel
-}
 
 function toggleControlHTML() {
-	var uniqueID = generateUniqueToggleIDForLabel()
-	return 		'<input type="checkbox" id="'+uniqueID+'"class="toggleFormComponentControl">' +
-		'<label for="'+  uniqueID + '"class="toggleFormComponentLabel"> New Toggle</label>'
+	return '<input type="checkbox" class="toggleFormComponentControl">'		
 }
 
 function toggleContainerHTML(elementID)
 {	
 	var containerHTML = ''+
 		'<div class=" layoutContainer toggleFormContainer">' +
-			'<div class="toggleWrapper">' +
-				toggleControlHTML() + componentHelpPopupButtonHTML() +
+			'<div class="container-fluid componentHeader">' + 
+				'<div class="row">' +
+					'<div class="col-xs-9 componentHeaderLabelCol">' +
+						'<label class="toggleFormComponentLabel marginBottom0">New Toggle</label>' +
+					'</div>' +
+					'<div class="col-xs-3 componentHeaderButtonCol">' +
+						smallClearComponentValHeaderButton("toggleComponentClearValueButton") + 
+						componentHelpPopupButtonHTML() +
+					'</div>' +
+				'</div>' +
 			'</div>' +
-			'<div class="componentHoverFooter">' +
-				smallClearDeleteButtonHTML("toggleComponentClearValueButton") + 
+			'<div class="toggleWrapper">' +
+				toggleControlHTML() + 
 			'</div>' +
 		'</div>';
-				
-	console.log ("Toggle HTML: " + containerHTML)
-		
+						
 	return containerHTML
-}
-
-function toggleControlHTMLNoLabel() {
-	return 		'<input type="checkbox"class="toggleFormComponentControl">'
 }
 
 
@@ -50,7 +42,7 @@ function toggleTableCellContainerHTML() {
 			'<div class="row">' +
 				'<div class="col-xs-11" style="width:auto">' +
 					'<div class="toggleWrapper">' +
-						toggleControlHTMLNoLabel() + 
+						toggleControlHTML() + 
 					'</div>' +
 				'</div>' +
 				'<div class="col-xs-1">' +
@@ -181,7 +173,7 @@ function reInitToggleComponentControl($toggleContainer,toggleRef) {
 	// elements works.
 	var $toggleWrapper = $toggleContainer.find(".toggleWrapper")
 	$toggleWrapper.empty()
-	$toggleWrapper.append(toggleControlHTML)
+	$toggleWrapper.append(toggleControlHTML())
 	
 	initToggleComponentControl($toggleContainer,toggleRef)
 	setToggleComponentLabel($toggleContainer,toggleRef)

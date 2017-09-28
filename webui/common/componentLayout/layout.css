@@ -25,13 +25,6 @@
 	overflow: auto; // if the content overflows, show a scrollbar
 }
 
-.componentHoverFooter
-{
-	position:absolute;
-	bottom:-18px; /* position below the parent layout container, so it doesn't obstruct the control itself */
-	right:0px;
-	display:none; /* initially hidden */
-}
 
 .componentHeaderButtons
 {

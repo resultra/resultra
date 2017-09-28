@@ -8,27 +8,6 @@ var MainLineFullyCommittedChangeSetID = ""
 function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext, recordProxy,componentContext) {
 	
 	function initFormComponentViewBehavior($component,componentID, selectionFunc) {	
-		
-		function initComponentFooterButtonBarHoverBehavior($component) {
-			// Initialize hover behavior on the container, whereby hovering in will display
-			// the div with class componentHoaverFooter, and hovering out will hide this
-			// same div. There's a delay to give the user time to click on any buttons in the footer.
-			var hoverButtonBarTimer
-			var hoverDelay = 500
-			var $hoverFooter = $component.find(".componentHoverFooter")			
-			$component.hover(function() {
-				console.log("Start hover in component footer")
-				clearTimeout(hoverButtonBarTimer)
-				$hoverFooter.delay(hoverDelay).show()
-			}, function() {
-				console.log("End hover in component footer")
-				hoverButtonBarTimer = setTimeout(function(){
-	      		  	$hoverFooter.delay(hoverDelay).hide();
-	    		},hoverDelay);
-			});
-			
-		}
-		initComponentFooterButtonBarHoverBehavior($component)
 	}
 	
 	var loadFormConfig = {
