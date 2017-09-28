@@ -17,7 +17,7 @@
 			"imageFiles": ["img/*.gif"]		
 		},
 		"jquery-ui": {
-			"pkgPrefix": "node_modules/jquery-ui-dist",
+			"pkgPrefix": "manual_downloads/jquery-ui-1.12.1",
 			"jsFiles": [ "jquery-ui.min.js"],
 			"cssFiles": ["jquery-ui.min.css"],
 			"imageFiles": ["images/*.png"]		
