@@ -85,14 +85,14 @@ function initRatingColPropertiesImpl(ratingCol) {
 			minVal: minVal,
 			maxVal: maxVal
 		}
-		jsonAPIRequest("frm/rating/setRange", formatParams, function(updatedRating) {
+		jsonAPIRequest("tableView/rating/setRange", formatParams, function(updatedRating) {
 			initRatingTooltipProperties(createTooltipParams(updatedRating))
 		})	
 	}
 	var ratingRangeParams = {
 		setRangeCallback: setRatingRange,
-		initialMinVal: ratingRef.properties.minVal,
-		initialMaxVal: ratingRef.properties.maxVal
+		initialMinVal: ratingCol.properties.minVal,
+		initialMaxVal: ratingCol.properties.maxVal
 	}
 	initRatingRangeProperties(ratingRangeParams)
 	
