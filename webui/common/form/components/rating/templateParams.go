@@ -13,6 +13,7 @@ import (
 type RatingDesignTemplateParams struct {
 	ElemPrefix               string
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
+	RangePanelParams         propertiesSidebar.PanelTemplateParams
 	ValidationPanelParams    propertiesSidebar.PanelTemplateParams
 	TooltipPanelParams       propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
@@ -45,6 +46,7 @@ func init() {
 		HelpPopupParams:       inputProperties.NewHelpPopupTemplateParams(elemPrefix, "ratingHelp"),
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "ratingDelete", "Delete Rating"),
 		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "ratingFormat"},
+		RangePanelParams:      propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Range", PanelID: "ratingRange"},
 		ValidationPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Input Validation", PanelID: "ratingValidation"},
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "ratingPerms"),
 		TooltipPanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Rating Descriptions", PanelID: "ratingTooltip"},

@@ -79,6 +79,22 @@ $(document).ready(function() {
 		}
     }, 'Enter a number.');	
 	
+	$.validator.addMethod('intNumber',function (value) { 
+		console.log("validating integer  number: " + value)
+		if(isNaN(value)) {
+			console.log("validating integer number: false")
+			return false
+		} else {
+			if(/^-?\d+$/.test(value)) {
+				return true
+				console.log("validating integer number: true")
+			} else {
+				console.log("validating integer number: false")
+				return false
+			}
+		}
+    }, 'Enter a round (integer) number.');	
+	
 	
 })
 

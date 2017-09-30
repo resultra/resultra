@@ -127,7 +127,9 @@ function initRatingFormComponentControl($container,ratingObjectRef) {
 		},
 		filled: ratingIconClasses.filled,
   	  	empty: ratingIconClasses.empty,
-		fractions: 2
+		fractions: 2,
+		start:ratingObjectRef.properties.minVal,
+		stop:ratingObjectRef.properties.maxVal,
 	})
 	
 }

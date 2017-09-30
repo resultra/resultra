@@ -20,6 +20,11 @@
 			{{template "ratingFormatProps"}}
 		{{template "propertyPanelSuffix"}}
 		
+		{{template "propertyPanelPrefix" .RangePanelParams}}
+			{{template "ratingRangeProps"}}
+		{{template "propertyPanelSuffix"}}
+		
+		
 		{{template "propertyPanelPrefix" .ValidationPanelParams}}
 			{{template "ratingValidationProps"}}
 		{{template "propertyPanelSuffix"}}

@@ -18,22 +18,51 @@ function loadRatingProperties($rating,ratingRef) {
 	initRatingIconProps(iconParams)
 	
 	
-	var tooltipParams = {
-		initialTooltips: ratingRef.properties.tooltips,
-		setTooltips: function(updatedTooltips) {
+	function createTooltipParams(ratingRef) {
+		
+		function updateTooltips(updatedTooltips) {
 			var tooltipParams = {
 				parentFormID: ratingRef.parentFormID,
 				ratingID: ratingRef.ratingID,
-				tooltips: updatedTooltips
+				tooltips: updatedTooltips,
 			}
-			
+		
 			jsonAPIRequest("frm/rating/setTooltips", tooltipParams, function(updateRating) {
 				setContainerComponentInfo($rating,updateRating,updateRating.ratingID)
-			})	
+			})
 		}
+		
+		var tooltipParams = {
+			initialTooltips: ratingRef.properties.tooltips,
+			minVal: ratingRef.properties.minVal,
+			maxVal: ratingRef.properties.maxVal,
+			setTooltips: updateTooltips
+		}
+		return tooltipParams
 	}
-	initRatingTooltipProperties(tooltipParams)
+	
+	initRatingTooltipProperties(createTooltipParams(ratingRef))
 
+	function setRatingRange(minVal,maxVal) {
+		console.log("Saving range propeties rating")
+		var formatParams = {
+			parentFormID: ratingRef.parentFormID,
+			ratingID: ratingRef.ratingID,
+			minVal: minVal,
+			maxVal: maxVal
+		}
+		jsonAPIRequest("frm/rating/setRange", formatParams, function(updatedRating) {
+			setContainerComponentInfo($rating,updatedRating,updatedRating.ratingID)
+			reInitRatingFormComponentControl($rating,updatedRating)
+			initRatingTooltipProperties(createTooltipParams(updatedRating))
+		})	
+	}
+	var ratingRangeParams = {
+		setRangeCallback: setRatingRange,
+		initialMinVal: ratingRef.properties.minVal,
+		initialMaxVal: ratingRef.properties.maxVal
+	}
+	initRatingRangeProperties(ratingRangeParams)
 
 	var elemPrefix = "rating_"
 	function saveLabelProps(updatedLabelProps) {
@@ -56,6 +85,8 @@ function loadRatingProperties($rating,ratingRef) {
 		saveLabelPropsCallback: saveLabelProps
 	}
 	initComponentLabelPropertyPanel(labelParams)
+	
+	
 
 	function saveVisibilityConditions(updatedConditions) {
 		var params = {

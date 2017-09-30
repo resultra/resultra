@@ -55,20 +55,47 @@ function initRatingColPropertiesImpl(ratingCol) {
 	}
 	initRatingIconProps(iconParams)
 	
-	var tooltipParams = {
-		initialTooltips: ratingCol.properties.tooltips,
-		setTooltips: function(updatedTooltips) {
-			var tooltipParams = {
-				parentTableID: ratingCol.parentTableID,
-				ratingID: ratingCol.ratingID,
-				tooltips: updatedTooltips
-			}
+	function createTooltipParams(ratingCol) {
+		var tooltipParams = {
+			initialTooltips: ratingCol.properties.tooltips,
+			minVal: ratingCol.properties.minVal,
+			maxVal: ratingCol.properties.maxVal,
+			setTooltips: function(updatedTooltips) {
+				var tooltipParams = {
+					parentTableID: ratingCol.parentTableID,
+					ratingID: ratingCol.ratingID,
+					tooltips: updatedTooltips
+				}
 			
-			jsonAPIRequest("tableView/rating/setTooltips", tooltipParams, function(updateRating) {
-			})	
+				jsonAPIRequest("tableView/rating/setTooltips", tooltipParams, function(updateRating) {
+				})	
+			}
 		}
+		return tooltipParams
 	}
-	initRatingTooltipProperties(tooltipParams)
+	
+	initRatingTooltipProperties(createTooltipParams(ratingCol))
+	
+	
+	function setRatingRange(minVal,maxVal) {
+		console.log("Saving range propeties rating")
+		var formatParams = {
+			parentTableID: ratingCol.parentTableID,
+			ratingID: ratingCol.ratingID,
+			minVal: minVal,
+			maxVal: maxVal
+		}
+		jsonAPIRequest("frm/rating/setRange", formatParams, function(updatedRating) {
+			initRatingTooltipProperties(createTooltipParams(updatedRating))
+		})	
+	}
+	var ratingRangeParams = {
+		setRangeCallback: setRatingRange,
+		initialMinVal: ratingRef.properties.minVal,
+		initialMaxVal: ratingRef.properties.maxVal
+	}
+	initRatingRangeProperties(ratingRangeParams)
+	
 	
 	var clearValueParams = {
 		initialVal: ratingCol.properties.clearValueSupported,

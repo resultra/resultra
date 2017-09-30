@@ -139,3 +139,22 @@ func (updateParams HelpPopupMsgParams) updateProps(rating *Rating) error {
 
 	return nil
 }
+
+type RangeParams struct {
+	RatingIDHeader
+	MinVal int `json:"minVal"`
+	MaxVal int `json:"maxVal"`
+}
+
+func (updateParams RangeParams) updateProps(rating *Rating) error {
+
+	if updateParams.MinVal >= updateParams.MaxVal {
+		return fmt.Errorf("Error setting rating range: min = %v, max = %v",
+			updateParams.MinVal, updateParams.MaxVal)
+	}
+
+	rating.Properties.MinVal = updateParams.MinVal
+	rating.Properties.MaxVal = updateParams.MaxVal
+
+	return nil
+}

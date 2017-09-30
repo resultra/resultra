@@ -15,14 +15,14 @@ function initRatingTooltipProperties(params) {
 	
 	// Populate the property panel with text boxes for each rating and initialize the text boxes
 	// with any tooltips already in the properties of ratingRef.
-	var numRatings = 5
+	var numRatings = params.maxVal-params.minVal
 	$('#ratingTooltipPropertiesFormGroup').empty()
 	for(var ratingIndex = 0; ratingIndex < numRatings; ratingIndex++) {
 		var tooltipInputHTML = '<textarea class="form-control ratingTooltipText" rows="2"></textarea>'
 		var $tooltipInput = $(tooltipInputHTML)
 		if(params.initialTooltips[ratingIndex] != undefined) {
 			var ratingText = params.initialTooltips[ratingIndex]
-			$tooltipInput.val(ratingText)
+			$tooltipInput.text(ratingText)
 		}
 		$('#ratingTooltipPropertiesFormGroup').append($tooltipInput)
 	}
