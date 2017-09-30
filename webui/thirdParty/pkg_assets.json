@@ -7,7 +7,7 @@
 		"ckeditor": {
 			"pkgPrefix": "node_modules/ckeditor",
 			"jsFiles": [ "*.js","lang/*.js"],
-			"cssFiles": ["*.css","skins/moono/*.css" ],
+			"cssFiles": ["skins/moono/*.css" ],
 			"imageFiles": ["skins/moono/*.png","skins/moono/images/**"]		
 		},
 		"blueimp-file-upload": {
