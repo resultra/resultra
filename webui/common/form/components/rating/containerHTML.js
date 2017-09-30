@@ -109,7 +109,7 @@ function initRatingFormComponentControl($container,ratingObjectRef) {
 	
 	$ratingControl.rating({
 		extendSymbol: function(rating) {
-			var ratingIndex = rating-1 // 0 based index
+			var ratingIndex = rating-ratingObjectRef.properties.minVal-1 // 0 based index
 			if(ratingObjectRef.properties.tooltips[ratingIndex] !== undefined) {
 				var tooltipText = ratingObjectRef.properties.tooltips[ratingIndex]
 				if(tooltipText.length > 0) {
