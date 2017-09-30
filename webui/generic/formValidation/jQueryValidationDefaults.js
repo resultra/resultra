@@ -67,6 +67,23 @@ $(document).ready(function() {
 		}
     }, 'Value must be greater.');	
 	
+	$.validator.addMethod('maxRange', function(value, element, args) { 
+		
+		console.log("validating positive number: " + value)
+		var $otherVal = $(args.otherValSelector)
+		
+		var currVal = Number(value)
+		var otherVal = Number($otherVal.val())
+		
+		if (isNaN(currVal) || isNaN(otherVal)) { 
+			return false
+		} else if((currVal - otherVal) > args.maxRange) {
+			return false
+		} else {
+			return true
+		}
+    }, 'Value must be within specific range.');	
+	
 	
 	$.validator.addMethod('floatNumber',function (value) { 
 		console.log("validating floating point number: " + value)

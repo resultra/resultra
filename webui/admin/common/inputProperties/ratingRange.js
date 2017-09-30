@@ -1,6 +1,11 @@
 function initRatingRangeProperties(params) {
 	var $form = $('#ratingRangePropForm')
 	
+	var maxRangeArgs = {
+		otherValSelector: '#ratingRangeMinVal',
+		maxRange: 100
+	}
+	
 	var validationSettings = createInlineFormValidationSettings({
 		rules: {
 			ratingRangeMinVal: {
@@ -10,12 +15,14 @@ function initRatingRangeProperties(params) {
 			ratingRangeMaxVal: {
 				required: true,
 				intNumber:true,
-				greaterThan: '#ratingRangeMinVal'
+				greaterThan: '#ratingRangeMinVal',
+				maxRange: maxRangeArgs
 			}
 		},
 		messages: {
 			ratingRangeMaxVal: {
-				greaterThan: "Value must be greater than the minimum."
+				greaterThan: "Value must be greater than the minimum.",
+				maxRange: "Maximum range of values is 100."
 			}
 		}
 	})	
