@@ -146,6 +146,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					})
 					
 				}
+				
 				function createSocialButton(fieldInfo) {
 					var params = {
 						parentTableID: panelParams.tableID,
@@ -153,6 +154,17 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/socialButton/new",params,function(socialButton) {
 						console.log("Social button column created: " + JSON.stringify(userSelection))
+					})
+					
+				}
+				
+				function createUserTag(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/userTag/new",params,function(socialButton) {
+						console.log("User tag column created: " + JSON.stringify(userSelection))
 					})
 					
 				}
@@ -241,8 +253,16 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					
 					if (colType==='userSelection') {
 						createUserInput(fieldInfo)
-					} else if (colType === 'socialButton'){
-						createSocialButton(fieldInfo)
+					} else {
+						console.log("Unknown column type for number field : " + colType)
+					}
+					break
+				case fieldTypeUsers:
+					
+					if (colType==='userSelection') {
+						createUserInput(fieldInfo)
+					} else if (colType === 'userTag'){
+						createUserTag(fieldInfo)
 					} else {
 						console.log("Unknown column type for number field : " + colType)
 					}
@@ -380,6 +400,9 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 				break
 			case fieldTypeUser:
 				$colTypeSelection.append(selectOptionHTML('userSelection','User selection'))
+				break
+			case fieldTypeUsers:
+				$colTypeSelection.append(selectOptionHTML('userTag','Tag users'))
 				$colTypeSelection.append(selectOptionHTML('socialButton','Social button'))
 				break
 			case fieldTypeBool:

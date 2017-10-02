@@ -115,6 +115,21 @@ func (recFieldVals RecFieldValues) GetUsersFieldValue(fieldID string) ([]string,
 	}
 }
 
+func (recFieldVals RecFieldValues) GetUserFieldValue(fieldID string) (string, bool) {
+
+	rawVal, foundVal := recFieldVals[fieldID]
+
+	if !foundVal {
+		return "", false
+	}
+
+	if theVal, validType := rawVal.(string); validType {
+		return theVal, true
+	} else {
+		return "", false
+	}
+}
+
 func (recFieldVals RecFieldValues) GetCommentFieldValue(fieldID string) (*CommentCellValue, bool) {
 
 	rawVal, foundVal := recFieldVals[fieldID]

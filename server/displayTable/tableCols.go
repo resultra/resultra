@@ -20,6 +20,7 @@ import (
 	"resultra/datasheet/server/displayTable/columns/toggle"
 	"resultra/datasheet/server/displayTable/columns/urlLink"
 	"resultra/datasheet/server/displayTable/columns/userSelection"
+	"resultra/datasheet/server/displayTable/columns/userTag"
 )
 
 type TableColsInfo []interface{}
@@ -98,6 +99,15 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
 	for _, col := range userSelectionCols {
+		tableColData = append(tableColData, col)
+		tableColsByID[col.ColumnID] = col
+	}
+
+	userTagCols, err := userTag.GetUserTags(parentTableID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("getTableCols: %v", err)
+	}
+	for _, col := range userTagCols {
 		tableColData = append(tableColData, col)
 		tableColsByID[col.ColumnID] = col
 	}

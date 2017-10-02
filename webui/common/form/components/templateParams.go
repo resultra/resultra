@@ -20,6 +20,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/toggle"
 	"resultra/datasheet/webui/common/form/components/urlLink"
 	"resultra/datasheet/webui/common/form/components/userSelection"
+	"resultra/datasheet/webui/common/form/components/userTag"
 )
 
 type ComponentViewTemplateParams struct {
@@ -33,6 +34,7 @@ type ComponentViewTemplateParams struct {
 	CommentParams       comment.CommentViewTemplateParams
 	SelectionParams     selection.SelectionViewTemplateParams
 	UserSelectionParams userSelection.UserSelectionViewTemplateParams
+	UserTagParams       userTag.UserTagViewTemplateParams
 	ProgressParams      progress.ProgressViewTemplateParams
 	GaugeParams         gauge.GaugeViewTemplateParams
 	NumberInputParams   numberInput.NumberInputViewTemplateParams
@@ -60,6 +62,7 @@ func init() {
 		CommentParams:       comment.ViewTemplateParams,
 		SelectionParams:     selection.ViewTemplateParams,
 		UserSelectionParams: userSelection.ViewTemplateParams,
+		UserTagParams:       userTag.ViewTemplateParams,
 		ProgressParams:      progress.ViewTemplateParams,
 		GaugeParams:         gauge.ViewTemplateParams,
 		NumberInputParams:   numberInput.ViewTemplateParams,

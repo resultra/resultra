@@ -14,6 +14,7 @@ type FieldsByType struct {
 	BoolFields       []Field `json:"boolFields"`
 	AttachmentFields []Field `json:"attachmentFields"`
 	UserFields       []Field `json:"userFields"`
+	UsersFields      []Field `json:"usersFields"`
 	CommentFields    []Field `json:"commentFields"`
 	LabelFields      []Field `json:"labelFields"`
 	EmailAddrFields  []Field `json:"emailAddrFields"`
@@ -45,6 +46,8 @@ func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
 			fieldsByType.BoolFields = append(fieldsByType.BoolFields, currField)
 		case FieldTypeUser:
 			fieldsByType.UserFields = append(fieldsByType.UserFields, currField)
+		case FieldTypeUsers:
+			fieldsByType.UsersFields = append(fieldsByType.UsersFields, currField)
 		case FieldTypeAttachment:
 			fieldsByType.AttachmentFields = append(fieldsByType.AttachmentFields, currField)
 		case FieldTypeComment:
@@ -162,6 +165,8 @@ func getSortedFieldsByType(params GetSortedFieldListParams) ([]Field, error) {
 			matchedFields = append(matchedFields, fieldsByType.BoolFields...)
 		case FieldTypeUser:
 			matchedFields = append(matchedFields, fieldsByType.UserFields...)
+		case FieldTypeUsers:
+			matchedFields = append(matchedFields, fieldsByType.UsersFields...)
 		case FieldTypeAttachment:
 			matchedFields = append(matchedFields, fieldsByType.AttachmentFields...)
 		case FieldTypeComment:

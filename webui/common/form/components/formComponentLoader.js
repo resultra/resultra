@@ -481,6 +481,29 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initUserSelectionFunc(componentContext,$containerObj,userSelection)
 	}
+	
+	function initUserTagLayout($componentRow,userTag) {
+		// Create an HTML block for the container
+		
+		var containerHTML = userTagContainerHTML(userTag.userTagID);
+		
+		var $containerObj = $(containerHTML)
+							
+		initUserTagFormComponentContainer(componentContext,$containerObj,userTag)
+		
+		// Position the object withing the #layoutCanvas div
+		$componentRow.append($containerObj)
+		
+		setElemFixedWidthFlexibleHeight($containerObj,
+					userTag.properties.geometry.sizeWidth)
+	
+		 // Store the newly created object reference in the DOM element. This is needed for follow-on
+		 // property setting, resizing, etc.
+		setContainerComponentInfo($containerObj,userTag,userTag.userTagID)
+		
+		// Callback for any specific initialization for either the form design or view mode 
+		loadFormConfig.initUserTagFunc(componentContext,$containerObj,userTag)
+	}
 
 	
 	function initDatePickerLayout($componentRow,datePicker) {
@@ -673,6 +696,15 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		compenentIDComponentMap[userSelProps.userSelectionID] = {
 			componentInfo: userSelProps,
 			initFunc: initUserSelectionLayout
+		}		
+	}
+	
+	for (var userTagIter in formInfo.userTags) {
+		var userTagProps = formInfo.userTags[userTagIter]
+		console.log("loadFormComponents: initializing user tag: " + JSON.stringify(userTagProps))
+		compenentIDComponentMap[userTagProps.userTagID] = {
+			componentInfo: userTagProps,
+			initFunc: initUserTagLayout
 		}		
 	}
 

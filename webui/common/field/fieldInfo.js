@@ -19,6 +19,7 @@ function fieldTypeLabel(fieldType) {
 	case fieldTypeText: return "Text"
 	case fieldTypeTime: return "Date and/or Time"
 	case fieldTypeUser: return "User"
+	case fieldTypeUsers: return "Users"
 	case fieldTypeBool: return "True or False (Boolean)"
 	case fieldTypeAttachment: return "Attachment(s)"
 	case fieldTypeFile: return "File"
@@ -173,6 +174,15 @@ function loadFieldInfo(parentDatabaseID,fieldTypes,fieldInfoCallback) {
 				var userField = userFields[userFieldIter]
 				console.log("User field: " + userField.name)
 				fieldsByID[userField.fieldID] = userField
+			} // for each number field
+		}
+		
+		if(filterInfo.loadAllFieldTypes || filterInfo.doLoadFieldByType[fieldTypeUsers]==true) {
+			var usersFields = fieldsByType.usersFields
+			for (usersFieldIter in usersFields) {		
+				var usersField = usersFields[usersFieldIter]
+				console.log("Users field: " + usersField.name)
+				fieldsByID[usersField.fieldID] = usersField
 			} // for each number field
 		}
 

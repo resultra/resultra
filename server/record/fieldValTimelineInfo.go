@@ -44,8 +44,8 @@ type FileTimelineValue struct {
 
 func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal string) (interface{}, error) {
 
-	if fieldType == field.FieldTypeUser {
-		var userVal UserCellValue
+	if fieldType == field.FieldTypeUsers {
+		var userVal UsersCellValue
 		if err := generic.DecodeJSONString(encodedVal, &userVal); err != nil {
 			return nil, fmt.Errorf("DecodeTimelineCellValue: failure decoding user value: %v", err)
 		}

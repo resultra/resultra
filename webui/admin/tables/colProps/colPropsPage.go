@@ -30,6 +30,7 @@ func init() {
 		"static/admin/tables/colProps/rating.html",
 		"static/admin/tables/colProps/toggle.html",
 		"static/admin/tables/colProps/userSelection.html",
+		"static/admin/tables/colProps/userTag.html",
 		"static/admin/tables/colProps/formButton.html",
 		"static/admin/tables/colProps/attachment.html",
 		"static/admin/tables/colProps/note.html",
@@ -72,6 +73,7 @@ type TemplParams struct {
 	RatingParams        RatingColPropsTemplateParams
 	ToggleParams        ToggleColPropsTemplateParams
 	UserSelectionParams UserSelectionColPropsTemplateParams
+	UserTagParams       UserTagColPropsTemplateParams
 	FormButtonParams    FormButtonColPropsTemplateParams
 	AttachmentParams    AttachmentColPropsTemplateParams
 	NoteParams          NoteColPropsTemplateParams
@@ -131,6 +133,7 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		RatingParams:        newRatingTemplateParams(),
 		ToggleParams:        newToggleTemplateParams(),
 		UserSelectionParams: newUserSelectionTemplateParams(),
+		UserTagParams:       newUserTagTemplateParams(),
 		FormButtonParams:    newFormButtonTemplateParams(),
 		AttachmentParams:    newAttachmentTemplateParams(),
 		NoteParams:          newNoteTemplateParams(),

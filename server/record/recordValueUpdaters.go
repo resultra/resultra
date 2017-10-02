@@ -28,7 +28,7 @@ func (valParams SetRecordTextValueParams) generateCellValue() (string, error) {
 
 type SetRecordUserValueParams struct {
 	RecordUpdateHeader
-	UserIDs []string `json:"userIDs"`
+	UserID string `json:"userID"`
 }
 
 func (setValParams SetRecordUserValueParams) fieldType() string { return field.FieldTypeUser }
@@ -37,7 +37,23 @@ func (setValParams SetRecordUserValueParams) doCollapseRecentValues() bool { ret
 
 func (valParams SetRecordUserValueParams) generateCellValue() (string, error) {
 
-	cellVal := UserCellValue{UserIDs: valParams.UserIDs}
+	cellVal := UserCellValue{UserID: valParams.UserID}
+
+	return generic.EncodeJSONString(cellVal)
+}
+
+type SetRecordUsersValueParams struct {
+	RecordUpdateHeader
+	UserIDs []string `json:"userIDs"`
+}
+
+func (setValParams SetRecordUsersValueParams) fieldType() string { return field.FieldTypeUsers }
+
+func (setValParams SetRecordUsersValueParams) doCollapseRecentValues() bool { return true }
+
+func (valParams SetRecordUsersValueParams) generateCellValue() (string, error) {
+
+	cellVal := UsersCellValue{UserIDs: valParams.UserIDs}
 
 	return generic.EncodeJSONString(cellVal)
 }

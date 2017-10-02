@@ -105,6 +105,12 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 			initFormComponentViewBehavior($userSelection,
 					userSelectionObjectRef.userSelectionID,initUserSelectionViewProperties)
 		},
+		initUserTagFunc: function(componentContext,$userTag,userTagObjectRef) {
+			console.log("Init user selection in view form")
+			initUserTagFormRecordEditBehavior($userTag,componentContext,recordProxy,userTagObjectRef)
+			initFormComponentViewBehavior($userTag,
+					userTagObjectRef.userTagID,initUserTagViewProperties)
+		},
 		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			console.log("Init date picker in view form")
 			initFormDatePickerEditBehavior($datePicker,componentContext,recordProxy,datePickerObjectRef)

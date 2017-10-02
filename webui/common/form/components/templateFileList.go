@@ -24,6 +24,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/toggle"
 	"resultra/datasheet/webui/common/form/components/urlLink"
 	"resultra/datasheet/webui/common/form/components/userSelection"
+	"resultra/datasheet/webui/common/form/components/userTag"
 )
 
 var TemplateFileList []string
@@ -59,5 +60,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, urlLink.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, file.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, image.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, userTag.TemplateFileList...)
 
 }

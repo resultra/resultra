@@ -24,6 +24,7 @@ func init() {
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/setTimeFieldValue", setTimeFieldValue)
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/setLongTextFieldValue", setLongTextFieldValue)
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/setUserFieldValue", setUserFieldValue)
+	recordUpdateRouter.HandleFunc("/api/recordUpdate/setUsersFieldValue", setUsersFieldValue)
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/setFileFieldValue", setFileFieldValue)
 	recordUpdateRouter.HandleFunc("/api/recordUpdate/setImageFieldValue", setImageFieldValue)
 
@@ -120,6 +121,24 @@ func setNumberFieldValue(w http.ResponseWriter, r *http.Request) {
 func setUserFieldValue(w http.ResponseWriter, r *http.Request) {
 
 	setValParams := record.SetRecordUserValueParams{}
+	if err := api.DecodeJSONRequest(r, &setValParams); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	updatedRecordRef, setErr := updateRecordValue(r, setValParams)
+	if setErr != nil {
+		api.WriteErrorResponse(w, setErr)
+		return
+	} else {
+		api.WriteJSONResponse(w, updatedRecordRef)
+	}
+
+}
+
+func setUsersFieldValue(w http.ResponseWriter, r *http.Request) {
+
+	setValParams := record.SetRecordUsersValueParams{}
 	if err := api.DecodeJSONRequest(r, &setValParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

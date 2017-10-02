@@ -105,7 +105,7 @@ function initSocialButtonRecordEditBehavior($socialButtonContainer,componentCont
 				changeSetID: recordProxy.changeSetID, 
 				fieldID:socialButtonFieldID, 
 				userIDs:selectedUserIDs}
-			jsonAPIRequest("recordUpdate/setUserFieldValue",setRecordValParams,function(updatedFieldVal) {
+			jsonAPIRequest("recordUpdate/setUsersFieldValue",setRecordValParams,function(updatedFieldVal) {
 				// After updating the record, the local cache of records in currentRecordSet will
 				// be out of date. So after updating the record on the server, the locally cached
 				// version of the record also needs to be updated.

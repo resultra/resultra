@@ -11,6 +11,7 @@ var paletteItemsEditConfig = {
 	paletteItemRating: ratingDesignFormConfig,
 	paletteItemSelection: selectionDesignFormConfig,
 	paletteItemUserSelection: userSelectionDesignFormConfig,
+	paletteItemUserTag: userTagDesignFormConfig,
 	paletteItemComment: commentDesignFormConfig,
 	paletteItemButton: formButtonDesignFormConfig,
 	paletteItemProgress: progressDesignFormConfig,
@@ -183,6 +184,12 @@ $(document).ready(function() {
 			var componentIDs = { formID: formID, componentID: userSelectionObjectRef.userSelectionID }
 			initFormComponentDesignBehavior($userSelection,componentIDs,userSelectionObjectRef,
 						userSelectionDesignFormConfig,designFormLayoutConfig)
+		},
+		initUserTagFunc: function(componentContext,$userTag,userTagObjectRef) {
+			initUserTagDesignControlBehavior(userTagObjectRef)
+			var componentIDs = { formID: formID, componentID: userTagObjectRef.userTagID }
+			initFormComponentDesignBehavior($userTag,componentIDs,userTagObjectRef,
+						userTagDesignFormConfig,designFormLayoutConfig)
 		},
 		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
 			var componentIDs = { formID: formID, componentID: datePickerObjectRef.datePickerID }

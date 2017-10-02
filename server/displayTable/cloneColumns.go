@@ -20,6 +20,7 @@ import (
 	"resultra/datasheet/server/displayTable/columns/toggle"
 	"resultra/datasheet/server/displayTable/columns/urlLink"
 	"resultra/datasheet/server/displayTable/columns/userSelection"
+	"resultra/datasheet/server/displayTable/columns/userTag"
 	"resultra/datasheet/server/generic/uniqueID"
 )
 
@@ -50,6 +51,10 @@ func cloneTableCols(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string)
 	}
 
 	if err := userSelection.CloneUserSelections(remappedIDs, parentTableID); err != nil {
+		return fmt.Errorf("cloneTableCols: %v", err)
+	}
+
+	if err := userTag.CloneUserTags(remappedIDs, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 

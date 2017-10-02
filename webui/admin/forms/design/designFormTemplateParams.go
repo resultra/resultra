@@ -26,6 +26,7 @@ import (
 	"resultra/datasheet/webui/common/form/components/toggle"
 	"resultra/datasheet/webui/common/form/components/urlLink"
 	"resultra/datasheet/webui/common/form/components/userSelection"
+	"resultra/datasheet/webui/common/form/components/userTag"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -60,6 +61,7 @@ type DesignFormTemplateParams struct {
 	CommentParams       comment.CommentDesignTemplateParams
 	RatingParams        rating.RatingDesignTemplateParams
 	UserSelectionParams userSelection.UserSelectionDesignTemplateParams
+	UserTagParams       userTag.UserTagDesignTemplateParams
 	ProgressParams      progress.ProgressDesignTemplateParams
 	GaugeParams         gauge.GaugeDesignTemplateParams
 	HeaderParams        header.HeaderTemplateParams
@@ -106,6 +108,7 @@ func createDesignFormTemplateParams(r *http.Request, formInfo *databaseControlle
 		NumberInputParams:   numberInput.DesignTemplateParams,
 		SelectionParams:     selection.DesignTemplateParams,
 		UserSelectionParams: userSelection.DesignTemplateParams,
+		UserTagParams:       userTag.DesignTemplateParams,
 		ProgressParams:      progress.DesignTemplateParams,
 		GaugeParams:         gauge.DesignTemplateParams,
 		HtmlEditorParams:    htmlEditor.DesignTemplateParams,

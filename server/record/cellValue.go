@@ -28,6 +28,10 @@ type ImageCellValue struct {
 }
 
 type UserCellValue struct {
+	UserID string `json:"userID"`
+}
+
+type UsersCellValue struct {
 	UserIDs []string `json:"userIDs"`
 }
 
@@ -167,6 +171,16 @@ func DecodeCellValue(fieldType string, encodedVal string) (interface{}, error) {
 		}
 	case field.FieldTypeUser:
 		var userVal UserCellValue
+		if err := generic.DecodeJSONString(encodedVal, &userVal); err != nil {
+			return nil, fmt.Errorf("DecodeCellValue: failure decoding user value: %v", err)
+		}
+		if len(userVal.UserID) == 0 {
+			return nil, nil
+		} else {
+			return userVal.UserID, nil
+		}
+	case field.FieldTypeUsers:
+		var userVal UsersCellValue
 		if err := generic.DecodeJSONString(encodedVal, &userVal); err != nil {
 			return nil, fmt.Errorf("DecodeCellValue: failure decoding user value: %v", err)
 		}

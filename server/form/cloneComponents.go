@@ -25,6 +25,7 @@ import (
 	"resultra/datasheet/server/form/components/toggle"
 	"resultra/datasheet/server/form/components/urlLink"
 	"resultra/datasheet/server/form/components/userSelection"
+	"resultra/datasheet/server/form/components/userTag"
 
 	"resultra/datasheet/server/generic/uniqueID"
 )
@@ -84,6 +85,10 @@ func cloneFormComponents(remappedIDs uniqueID.UniqueIDRemapper, parentFormID str
 	}
 
 	if err := userSelection.CloneUserSelections(remappedIDs, parentFormID); err != nil {
+		return fmt.Errorf("cloneFormComponents: %v", err)
+	}
+
+	if err := userTag.CloneUserTags(remappedIDs, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 

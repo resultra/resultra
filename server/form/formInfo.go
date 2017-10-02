@@ -23,6 +23,7 @@ import (
 	"resultra/datasheet/server/form/components/toggle"
 	"resultra/datasheet/server/form/components/urlLink"
 	"resultra/datasheet/server/form/components/userSelection"
+	"resultra/datasheet/server/form/components/userTag"
 )
 
 type FormInfo struct {
@@ -49,6 +50,7 @@ type FormInfo struct {
 	UrlLinks           []urlLink.UrlLink             `json:"urlLinks"`
 	Files              []file.File                   `json:"files"`
 	Images             []image.Image                 `json:"images"`
+	UserTags           []userTag.UserTag             `json:"userTags"`
 }
 
 type GetFormInfoParams struct {
@@ -127,6 +129,11 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		return nil, err
 	}
 
+	userTags, err := userTag.GetUserTags(formID)
+	if err != nil {
+		return nil, err
+	}
+
 	progressIndicators, err := progress.GetProgressIndicators(formID)
 	if err != nil {
 		return nil, err
@@ -187,6 +194,7 @@ func GetFormInfo(formID string) (*FormInfo, error) {
 		Comments:           comments,
 		Selections:         selections,
 		UserSelections:     userSelections,
+		UserTags:           userTags,
 		ProgressIndicators: progressIndicators,
 		Captions:           captions,
 		Gauges:             gauges,
