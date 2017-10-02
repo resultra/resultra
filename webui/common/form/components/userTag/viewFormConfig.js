@@ -39,15 +39,15 @@ function initUserTagRecordEditBehavior($userTagContainer, componentContext,
 
 			var fieldVal = recordRef.fieldValues[userTagFieldID]
 			if (fieldVal === null) {
-				clearUserTagControlVal($userTagControl)
+				clearUserSelectionControlVal($userTagControl)
 			} else {
-				setUserTagControlVal($userTagControl,fieldVal)		
+				setUserSelectionControlVal($userTagControl,fieldVal)		
 			}
 
 		} // If record has a value for the current container's associated field ID.
 		else
 		{
-			clearUserTagControlVal($userTagControl)
+			clearUserSelectionControlVal($userTagControl)
 		}
 		
 	}
@@ -83,7 +83,7 @@ function initUserTagRecordEditBehavior($userTagContainer, componentContext,
 			$selectionInput: $userTagControl,
 			databaseID: componentContext.databaseID,
 		}
-		initCollaboratorUserTag(userTagParams)
+		initCollaboratorUserSelection(userTagParams)
 		
 		function setSelectedUserFromDropdownMenu(userInfo) {
 			var userIDSelection = [userInfo.userID]
