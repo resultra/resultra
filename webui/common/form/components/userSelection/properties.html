@@ -14,9 +14,9 @@
 		{{template "componentPermissionsPropertyPanel" .PermissionPanelParams}}
 		
 		{{template "propertyPanelPrefix" .SelectableUserPanelParams}}
-			{{template "userSelectionCurrUserSelectableProps"}}
+			{{template "userSelectionCurrUserSelectableProps" .ElemPrefix}}
 			<hr>
-			{{template "adminUserSelectionRolePropertySidebarPane"}}
+			{{template "adminUserSelectionRolePropertySidebarPane" .ElemPrefix}}
 		{{template "propertyPanelSuffix"}}
 		
 		{{template "propertyPanelPrefix" .ClearValuePanelParams}}

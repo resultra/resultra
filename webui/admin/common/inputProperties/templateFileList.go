@@ -21,4 +21,5 @@ var TemplateFileList = []string{"static/admin/common/inputProperties/numberSpinn
 	"static/admin/common/inputProperties/socialButtonFormat.html",
 	"static/admin/common/inputProperties/labelValidation.html",
 	"static/admin/common/inputProperties/valueRequired.html",
-	"static/admin/common/inputProperties/ratingRange.html"}
+	"static/admin/common/inputProperties/ratingRange.html",
+	"static/admin/common/inputProperties/userTagValidation.html"}

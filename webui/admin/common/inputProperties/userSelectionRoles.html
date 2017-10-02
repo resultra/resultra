@@ -1,6 +1,6 @@
 
 {{define "adminUserSelectionRoleProps"}}
-	<div class="list-group adminUserSelectionRoleList" id="adminUserSelectionRoleList">
+	<div class="list-group adminUserSelectionRoleList" id="{{.}}AdminUserSelectionRoleList">
 	</div>	
 {{end}}
 
@@ -15,7 +15,7 @@
 
 		<td id="userSelectionRoleTableCell">
 			<div class="maxWidth300">
-				{{template "adminUserSelectionRoleProps"}}
+				{{template "adminUserSelectionRoleProps" .}}
 			</div>
 		</td>
 	</tr>
@@ -28,7 +28,7 @@
 		<label>Roles whose members can be selected<label>
 	</div>
 	<div>
-		{{template "adminUserSelectionRoleProps"}}
+		{{template "adminUserSelectionRoleProps" .}}
 	</div>
 
 {{end}}

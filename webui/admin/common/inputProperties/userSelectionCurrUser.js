@@ -2,7 +2,7 @@
 
 function initSelectionCurrUserProperties(params) {
 	
-		initCheckboxChangeHandler('#adminUserSelectionCurrUserSelectable', 
+		initCheckboxChangeHandler('#' + params.elemPrefix + 'AdminUserSelectionCurrUserSelectable', 
 					params.currUserSelectable, function (newVal) {
 		
 			params.setCurrUserSelectable(newVal)		

@@ -123,6 +123,7 @@ function loadUserTagProperties($userTag,userTagRef) {
 	initDeleteFormComponentPropertyPanel(deleteParams)
 	
 	var currUserParams = {
+		elemPrefix: elemPrefix,
 		currUserSelectable: userTagRef.properties.currUserSelectable,
 		setCurrUserSelectable: function(isSelectable) {
 			var params = {
@@ -138,6 +139,7 @@ function loadUserTagProperties($userTag,userTagRef) {
 	initSelectionCurrUserProperties(currUserParams)
 	
 	var selectRoleProps = {
+		elemPrefix: elemPrefix,
 		databaseID: designFormContext.databaseID,
 		initialRoles: userTagRef.properties.selectableRoles,
 		setRolesCallback: function(selectableRoles) {
@@ -151,7 +153,7 @@ function loadUserTagProperties($userTag,userTagRef) {
 			})
 		}
 	}
-	initUserTagRoleProps(selectRoleProps)
+	initUserSelectionRoleProps(selectRoleProps)
 
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#userTagProps')

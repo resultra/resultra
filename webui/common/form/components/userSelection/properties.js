@@ -123,6 +123,7 @@ function loadUserSelectionProperties($userSelection,userSelectionRef) {
 	initDeleteFormComponentPropertyPanel(deleteParams)
 	
 	var currUserParams = {
+		elemPrefix: elemPrefix,
 		currUserSelectable: userSelectionRef.properties.currUserSelectable,
 		setCurrUserSelectable: function(isSelectable) {
 			var params = {
@@ -138,6 +139,7 @@ function loadUserSelectionProperties($userSelection,userSelectionRef) {
 	initSelectionCurrUserProperties(currUserParams)
 	
 	var selectRoleProps = {
+		elemPrefix: elemPrefix,
 		databaseID: designFormContext.databaseID,
 		initialRoles: userSelectionRef.properties.selectableRoles,
 		setRolesCallback: function(selectableRoles) {

@@ -1,6 +1,6 @@
 function initUserSelectionRoleProps(params) {
 	
-	var $roleList = $('#adminUserSelectionRoleList')
+	var $roleList = $('#'+ params.elemPrefix + 'AdminUserSelectionRoleList')
 	var initiallySelectedRoles = new IDLookupTable(params.initialRoles)
 	
 	
@@ -48,7 +48,7 @@ function initUserSelectionRoleProps(params) {
 		
 
 		console.log("Got roles info: " + JSON.stringify(rolesInfo))
-		$('#adminNewUserRoleList').empty()
+		$roleList.empty()
 		for(var roleInfoIndex = 0; roleInfoIndex<rolesInfo.length; roleInfoIndex++) {
 			var currRoleInfo = rolesInfo[roleInfoIndex]
 			$roleList.append(roleListItem(currRoleInfo))

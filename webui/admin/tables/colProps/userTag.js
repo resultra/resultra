@@ -92,6 +92,7 @@ function initUserTagColPropertiesImpl(userTagInputCol) {
 	
 	
 	var currUserParams = {
+		elemPrefix: elemPrefix,	
 		currUserSelectable: userTagInputCol.properties.currUserSelectable,
 		setCurrUserSelectable: function(isSelectable) {
 			var params = {
@@ -106,6 +107,7 @@ function initUserTagColPropertiesImpl(userTagInputCol) {
 	initSelectionCurrUserProperties(currUserParams)
 	
 	var selectRoleProps = {
+		elemPrefix: elemPrefix,	
 		databaseID: colPropsAdminContext.databaseID,
 		initialRoles: userTagInputCol.properties.selectableRoles,
 		setRolesCallback: function(selectableRoles) {
