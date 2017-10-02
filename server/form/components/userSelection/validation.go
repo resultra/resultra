@@ -6,7 +6,7 @@ import (
 
 type ValidateInputParams struct {
 	UserSelectionIDHeader
-	InputVal []string `json:"inputVal"`
+	InputVal string `json:"inputVal"`
 }
 
 func validateInput(params ValidateInputParams) inputValidation.ValidationResult {
@@ -16,8 +16,9 @@ func validateInput(params ValidateInputParams) inputValidation.ValidationResult 
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
 	}
 
+	// TODO - Validate the given string is an actual user ID
 	if userSel.Properties.Validation.ValueRequired {
-		if params.InputVal == nil {
+		if len(params.InputVal) == 0 {
 			return inputValidation.FailValidationResult("Selection is required")
 		} else if len(params.InputVal) == 0 {
 			return inputValidation.FailValidationResult("Selection is required")

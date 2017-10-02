@@ -41,7 +41,7 @@ function initUserTagRecordEditBehavior($userTagContainer, componentContext,
 			if (fieldVal === null) {
 				clearUserSelectionControlVal($userTagControl)
 			} else {
-				setUserSelectionControlVal($userTagControl,fieldVal)		
+				setMultipleUserSelectionControlVal($userTagControl,fieldVal)		
 			}
 
 		} // If record has a value for the current container's associated field ID.
@@ -79,19 +79,19 @@ function initUserTagRecordEditBehavior($userTagContainer, componentContext,
 			})
 		}
 	
-		var userTagParams = {
+	/*	var userTagParams = {
 			$selectionInput: $userTagControl,
 			databaseID: componentContext.databaseID,
 		}
 		initCollaboratorUserSelection(userTagParams)
-		
+	*/
+			
 		function setSelectedUserFromDropdownMenu(userInfo) {
 			var userIDSelection = [userInfo.userID]
 			// For the selected user to be displayed in the selection,
 			// it needs to be added as an option.
-			var newOption = new Option('@'+userInfo.userID, userInfo.userID, true, true);
-			$userTagControl.append(newOption)
-			$userTagControl.val(userIDSelection)
+	//		$userTagControl.append(createUserSelectionOption(userInfo))
+			$userTagControl.val(userIDSelection).trigger("change")
 			setUserTagValue(userIDSelection)
 		}
 		configureUserTagDropdown(componentContext,$userTagContainer,
@@ -101,11 +101,11 @@ function initUserTagRecordEditBehavior($userTagContainer, componentContext,
 		var $clearValueButton = $userTagContainer.find(".userTagComponentClearValueButton")
 		initButtonControlClickHandler($clearValueButton,function() {
 			console.log("Clear value clicked for user selection")
-			clearUserTagControlVal($userTagControl)
+			clearUserSelectionControlVal($userTagControl)
 			setUserTagValue(null)
 		})
 
-		$userTagControl.on('change', function() {
+		$userTagControl.on('select2:select', function(e) {
 			var selectedUserID = $(this).val()
 			console.log('User selection changed: ' + selectedUserID);
 			setUserTagValue(selectedUserID)

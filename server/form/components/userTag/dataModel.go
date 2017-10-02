@@ -13,9 +13,9 @@ import (
 const userTagEntityKind string = "userTag"
 
 type UserTag struct {
-	ParentFormID    string                  `json:"parentFormID"`
-	UserTagID string                  `json:"userTagID"`
-	Properties      UserTagProperties `json:"properties"`
+	ParentFormID string            `json:"parentFormID"`
+	UserTagID    string            `json:"userTagID"`
+	Properties   UserTagProperties `json:"properties"`
 }
 
 type NewUserTagParams struct {
@@ -25,7 +25,7 @@ type NewUserTagParams struct {
 }
 
 func validUserTagFieldType(fieldType string) bool {
-	if fieldType == field.FieldTypeUser {
+	if fieldType == field.FieldTypeUsers {
 		return true
 	} else {
 		return false
@@ -55,8 +55,8 @@ func saveNewUserTag(params NewUserTagParams) (*UserTag, error) {
 	properties.Geometry = params.Geometry
 
 	newUserTag := UserTag{ParentFormID: params.ParentFormID,
-		UserTagID: uniqueID.GenerateSnowflakeID(),
-		Properties:      properties}
+		UserTagID:  uniqueID.GenerateSnowflakeID(),
+		Properties: properties}
 
 	if saveErr := saveUserTag(newUserTag); saveErr != nil {
 		return nil, fmt.Errorf("saveNewUserTag: Unable to save userTag with params=%+v: error = %v", params, saveErr)
@@ -77,9 +77,9 @@ func getUserTag(parentFormID string, userTagID string) (*UserTag, error) {
 	}
 
 	userTag := UserTag{
-		ParentFormID:    parentFormID,
-		UserTagID: userTagID,
-		Properties:      userTagProps}
+		ParentFormID: parentFormID,
+		UserTagID:    userTagID,
+		Properties:   userTagProps}
 
 	return &userTag, nil
 }
@@ -95,9 +95,9 @@ func GetUserTags(parentFormID string) ([]UserTag, error) {
 		}
 
 		currUserTag := UserTag{
-			ParentFormID:    parentFormID,
-			UserTagID: userTagID,
-			Properties:      userTagProps}
+			ParentFormID: parentFormID,
+			UserTagID:    userTagID,
+			Properties:   userTagProps}
 		userTags = append(userTags, currUserTag)
 
 		return nil
@@ -127,9 +127,9 @@ func CloneUserTags(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) e
 			return fmt.Errorf("CloneUserTags: %v", err)
 		}
 		destUserTag := UserTag{
-			ParentFormID:    remappedFormID,
-			UserTagID: remappedUserTagID,
-			Properties:      *destProperties}
+			ParentFormID: remappedFormID,
+			UserTagID:    remappedUserTagID,
+			Properties:   *destProperties}
 		if err := saveUserTag(destUserTag); err != nil {
 			return fmt.Errorf("CloneUserTags: %v", err)
 		}

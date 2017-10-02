@@ -31,7 +31,7 @@ function openNewUserTagDialog(databaseID,formID,containerParams) {
 		elemPrefix: "userTag_",
 		databaseID: databaseID,
 		formID: formID,
-		fieldTypes: [fieldTypeUser],
+		fieldTypes: [fieldTypeUsers],
 		hideCreateCalcFieldCheckbox: true,
 		containerParams: containerParams,
 		createNewFormComponent: createNewUserTag

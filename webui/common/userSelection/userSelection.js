@@ -1,4 +1,37 @@
-function setUserSelectionControlVal($userSelectionControl,userIDs) {
+
+function userSelectionNameDisplay(userInfo) {
+	var userNameDisplay = userInfo.firstName + ' ' + userInfo.lastName + ' (@' + userInfo.userName + ')'
+	return userNameDisplay
+}
+
+function createUserSelectionOption(userInfo) {
+	var newOption = new Option(userSelectionNameDisplay(userInfo), userInfo.userID);
+	return newOption
+}
+
+function addUserInfoSelectionOptionIfNotExists($userSelectionControl,userInfo) {
+	return
+	
+	function optionExists() {
+		
+		var optionExists = false
+		$userSelectionControl.find('option').each(function() {
+			var optionUserVal = $(this).val()
+			if (optionUserVal === userInfo.userID) {
+				optionExists = true
+			}
+		})
+		return optionExists
+	}
+	
+	if(!optionExists()) {
+		$userSelectionControl.append(createUserSelectionOption(userInfo))
+	}
+	
+}
+
+
+function setMultipleUserSelectionControlVal($userSelectionControl,userIDs) {
 	
 	// Setting the value for a select2 selection menu involves putting an
 	// option inside the select element then setting the value to the value
@@ -9,18 +42,29 @@ function setUserSelectionControlVal($userSelectionControl,userIDs) {
 		$userSelectionControl.empty()
 		for (var userIndex = 0; userIndex < usersInfo.length; userIndex++) {
 			var userInfo = usersInfo[userIndex]
-			var userLabel = "@" + userInfo.userName
-			$userSelectionControl.append('<option value="'+userInfo.userID+'">'+userLabel+'</option')
-		}
-		
-		$userSelectionControl.val(userIDs)
+			addUserInfoSelectionOptionIfNotExists($userSelectionControl,userInfo)
+		}	
+		$userSelectionControl.val(userIDs).trigger("change")
 	})
 	
 }
 
+function setSingleUserSelectionControlVal($userSelectionControl,userID) {
+	
+	// Setting the value for a select2 selection menu involves putting an
+	// option inside the select element then setting the value to the value
+	// of this option.
+	var getUserInfoParams = { userID: userID }
+	jsonRequest("/auth/getUserInfo",getUserInfoParams,function(userInfo) {
+		addUserInfoSelectionOptionIfNotExists($userSelectionControl,userInfo)
+		$userSelectionControl.val(userID).trigger("change")
+	})
+	
+}
+
+
 function clearUserSelectionControlVal($userSelectionControl) {
-	$userSelectionControl.empty()
-	$userSelectionControl.val("")
+	$userSelectionControl.val('').trigger("change")
 }
 
 
@@ -80,6 +124,7 @@ function initUserSelection(selectionParams) {
 }
 
 
+
 function initCollaboratorUserSelection(params) {
 	
 	var configParams = {
@@ -93,17 +138,20 @@ function initCollaboratorUserSelection(params) {
 	}
 	
 	jsonAPIRequest("admin/getAllCollaboratorInfo",getCollaboratorsParams,function(collabUserInfo) {
-		
-		params.$selectionInput.empty()
-		
+					
+		var selectionOptions = []
 		$.each(collabUserInfo,function(index,userInfo) {
-			var newOption = new Option('@'+userInfo.userID, userInfo.userID);
-			params.$selectionInput.append(newOption)
+			var currOption = {
+				id: userInfo.userID,
+				text: userSelectionNameDisplay(userInfo)
+			}
+			selectionOptions.push(currOption)
 		})
-		
+				
 		params.$selectionInput.select2({
 			placeholder: "Select a collaborator", // TODO - Allow a property to configure the placeholder.
 			width: params.width,
+			data:selectionOptions
 		});
 		
 	})

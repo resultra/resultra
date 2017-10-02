@@ -12,11 +12,11 @@ import (
 const userTagEntityKind string = "userTag"
 
 type UserTag struct {
-	ParentTableID   string                  `json:"parentTableID"`
-	UserTagID string                  `json:"userTagID"`
-	ColumnID        string                  `json:"columnID"`
-	ColType         string                  `json:"colType"`
-	Properties      UserTagProperties `json:"properties"`
+	ParentTableID string            `json:"parentTableID"`
+	UserTagID     string            `json:"userTagID"`
+	ColumnID      string            `json:"columnID"`
+	ColType       string            `json:"colType"`
+	Properties    UserTagProperties `json:"properties"`
 }
 
 type NewUserTagParams struct {
@@ -25,7 +25,7 @@ type NewUserTagParams struct {
 }
 
 func validUserTagFieldType(fieldType string) bool {
-	if fieldType == field.FieldTypeUser {
+	if fieldType == field.FieldTypeUsers {
 		return true
 	} else {
 		return false
@@ -51,10 +51,10 @@ func saveNewUserTag(params NewUserTagParams) (*UserTag, error) {
 
 	userTagID := uniqueID.GenerateSnowflakeID()
 	newUserTag := UserTag{ParentTableID: params.ParentTableID,
-		UserTagID: userTagID,
-		ColumnID:        userTagID,
-		ColType:         userTagEntityKind,
-		Properties:      properties}
+		UserTagID:  userTagID,
+		ColumnID:   userTagID,
+		ColType:    userTagEntityKind,
+		Properties: properties}
 
 	if saveErr := saveUserTag(newUserTag); saveErr != nil {
 		return nil, fmt.Errorf("saveNewUserTag: Unable to save userTag with params=%+v: error = %v", params, saveErr)
@@ -75,11 +75,11 @@ func getUserTag(parentTableID string, userTagID string) (*UserTag, error) {
 	}
 
 	userTag := UserTag{
-		ParentTableID:   parentTableID,
-		UserTagID: userTagID,
-		ColumnID:        userTagID,
-		ColType:         userTagEntityKind,
-		Properties:      userTagProps}
+		ParentTableID: parentTableID,
+		UserTagID:     userTagID,
+		ColumnID:      userTagID,
+		ColType:       userTagEntityKind,
+		Properties:    userTagProps}
 
 	return &userTag, nil
 }
@@ -95,11 +95,11 @@ func GetUserTags(parentTableID string) ([]UserTag, error) {
 		}
 
 		currUserTag := UserTag{
-			ParentTableID:   parentTableID,
-			UserTagID: userTagID,
-			ColumnID:        userTagID,
-			ColType:         userTagEntityKind,
-			Properties:      userTagProps}
+			ParentTableID: parentTableID,
+			UserTagID:     userTagID,
+			ColumnID:      userTagID,
+			ColType:       userTagEntityKind,
+			Properties:    userTagProps}
 		userTags = append(userTags, currUserTag)
 
 		return nil
@@ -129,11 +129,11 @@ func CloneUserTags(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) 
 			return fmt.Errorf("CloneUserTags: %v", err)
 		}
 		destUserTag := UserTag{
-			ParentTableID:   remappedFormID,
-			UserTagID: remappedUserTagID,
-			ColumnID:        remappedUserTagID,
-			ColType:         userTagEntityKind,
-			Properties:      *destProperties}
+			ParentTableID: remappedFormID,
+			UserTagID:     remappedUserTagID,
+			ColumnID:      remappedUserTagID,
+			ColType:       userTagEntityKind,
+			Properties:    *destProperties}
 		if err := saveUserTag(destUserTag); err != nil {
 			return fmt.Errorf("CloneUserTags: %v", err)
 		}

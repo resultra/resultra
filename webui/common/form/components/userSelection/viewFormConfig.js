@@ -41,7 +41,7 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 			if (fieldVal === null) {
 				clearUserSelectionControlVal($userSelectionControl)
 			} else {
-				setUserSelectionControlVal($userSelectionControl,fieldVal)		
+				setSingleUserSelectionControlVal($userSelectionControl,fieldVal)		
 			}
 
 		} // If record has a value for the current container's associated field ID.
@@ -54,6 +54,7 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 
 
 	function initUserSelectionEditBehavior() {
+		
 		function setUserSelectionValue(selectedUserID) {
 		
 			validateInput(function(inputIsValid) {
@@ -86,12 +87,11 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 		initCollaboratorUserSelection(userSelectionParams)
 		
 		function setSelectedUserFromDropdownMenu(userInfo) {
-			var userIDSelection = [userInfo.userID]
+			var userIDSelection = userInfo.userID
 			// For the selected user to be displayed in the selection,
 			// it needs to be added as an option.
-			var newOption = new Option('@'+userInfo.userID, userInfo.userID, true, true);
-			$userSelectionControl.append(newOption)
-			$userSelectionControl.val(userIDSelection)
+			addUserInfoSelectionOptionIfNotExists($userSelectionControl,userInfo)
+			$userSelectionControl.val(userIDSelection).trigger("change")
 			setUserSelectionValue(userIDSelection)
 		}
 		configureUserSelectionDropdown(componentContext,$userSelectionContainer,
@@ -105,8 +105,8 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 			setUserSelectionValue(null)
 		})
 
-		$userSelectionControl.on('change', function() {
-			var selectedUserID = $(this).val()
+		$userSelectionControl.on('select2:select', function(e) {
+			var selectedUserID = e.params.data.id
 			console.log('User selection changed: ' + selectedUserID);
 			setUserSelectionValue(selectedUserID)
 		});

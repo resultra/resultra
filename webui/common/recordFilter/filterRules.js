@@ -713,7 +713,7 @@ function userFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 			$userSelectionContainer.show()
 			var ruleConditions = mapRuleConditionsByOperatorID(defaultRuleInfo)
 			var defaultUserList = ruleConditions[userSelectionConditionID].usersParam
-			setUserSelectionControlVal($userSelectionParam,defaultUserList)
+			setMultipleUserSelectionControlVal($userSelectionParam,defaultUserList)
 		} else {
 			$userSelectionContainer.hide()
 		}
