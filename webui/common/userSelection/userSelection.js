@@ -9,9 +9,7 @@ function createUserSelectionOption(userInfo) {
 	return newOption
 }
 
-function addUserInfoSelectionOptionIfNotExists($userSelectionControl,userInfo) {
-	return
-	
+function addUserInfoSelectionOptionIfNotExists($userSelectionControl,userInfo) {	
 	function optionExists() {
 		
 		var optionExists = false
