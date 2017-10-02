@@ -25,7 +25,7 @@ function userSelectionInputButtonsContainerHTML() {
 function userSelectionControlContainerHTML() {
 	
 	return   '<div class="formUserSelectionControl">' + 
-					'<select class="form-control userSelectionCompSelectionControl" multiple></select>' +
+					'<select class="form-control userSelectionCompSelectionControl"></select>' +
 				'</div>'
 }
 

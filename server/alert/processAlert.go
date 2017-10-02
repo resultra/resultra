@@ -386,7 +386,7 @@ func valMemberOfValSet(val string, vals []string) bool {
 	return false
 }
 
-func processUserFieldAlert(context AlertProcessingContext, cond AlertCondition) (*AlertNotification, error) {
+func processUsersFieldAlert(context AlertProcessingContext, cond AlertCondition) (*AlertNotification, error) {
 
 	log.Printf("Processing user field alert: %+v", cond)
 
@@ -461,6 +461,66 @@ func processUserFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 	return nil, nil
 }
 
+func processUserFieldAlert(context AlertProcessingContext, cond AlertCondition) (*AlertNotification, error) {
+
+	log.Printf("Processing user field alert: %+v", cond)
+
+	valBefore, foundValBefore := context.PrevFieldVals.GetUserFieldValue(cond.FieldID)
+	valAfter, foundValAfter := context.CurrFieldVals.GetUserFieldValue(cond.FieldID)
+	log.Printf("Processing user field alert: found before=%v before=%+v found after=%v after=%+v",
+		foundValBefore, valBefore, foundValAfter, valAfter)
+
+	valChanged := func() bool {
+		if (foundValBefore == false) && (foundValAfter == false) {
+			return false
+		} else if (foundValBefore == false) && (foundValAfter == true) {
+			return true
+		} else if (foundValBefore == true) && (foundValAfter == false) {
+			return true
+		} else { // value found both before and after update => compare the actual values
+			if valBefore != valAfter {
+				return true
+			} else {
+				return false
+			}
+		}
+
+	}
+
+	generateNotification := func() (*AlertNotification, error) {
+
+		captionMsg, err := generateAlertNotificationCaption(context)
+		if err != nil {
+			return nil, fmt.Errorf("processTimeFieldAlert: %v", err)
+		}
+
+		alertNofify := AlertNotification{
+			AlertID:          context.ProcessedAlert.AlertID,
+			RecordID:         context.RecordID,
+			Timestamp:        context.UpdateTimestamp,
+			Caption:          captionMsg,
+			TriggerCondition: cond}
+
+		return &alertNofify, nil
+
+	}
+
+	switch cond.ConditionID {
+	case alertCondChange:
+		if valChanged() {
+			return generateNotification()
+		}
+	case alertCondCleared:
+		if valChanged() && (len(valAfter) == 0) {
+			return generateNotification()
+		}
+	default:
+		return nil, nil
+	}
+
+	return nil, nil
+}
+
 // processAlert processs a single alert for a single set of previous and current (before and after)
 // field values (including calculated fields).
 func processAlert(context AlertProcessingContext) (*AlertNotification, error) {
@@ -516,6 +576,15 @@ func processAlert(context AlertProcessingContext) (*AlertNotification, error) {
 		}
 	case field.FieldTypeUser:
 		alertNotification, genErr := processUserFieldAlert(context, currAlertCond)
+		if genErr != nil {
+			return nil, fmt.Errorf("processAlert:  %v", genErr)
+		} else if alertNotification != nil {
+			log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
+				context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
+			return alertNotification, nil // No need to process after matching the first condition
+		}
+	case field.FieldTypeUsers:
+		alertNotification, genErr := processUsersFieldAlert(context, currAlertCond)
 		if genErr != nil {
 			return nil, fmt.Errorf("processAlert:  %v", genErr)
 		} else if alertNotification != nil {

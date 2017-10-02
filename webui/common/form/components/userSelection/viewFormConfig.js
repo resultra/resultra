@@ -54,7 +54,7 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 
 
 	function initUserSelectionEditBehavior() {
-		function setUserSelectionValue(selectedUserIDs) {
+		function setUserSelectionValue(selectedUserID) {
 		
 			validateInput(function(inputIsValid) {
 				if (inputIsValid) {
@@ -67,7 +67,7 @@ function initUserSelectionRecordEditBehavior($userSelectionContainer, componentC
 						recordID:currRecordRef.recordID,
 						changeSetID: recordProxy.changeSetID, 
 						fieldID:userFieldID, 
-						userIDs:selectedUserIDs}
+						userID:selectedUserID}
 					jsonAPIRequest("recordUpdate/setUserFieldValue",setRecordValParams,function(updatedFieldVal) {
 						// After updating the record, the local cache of records in currentRecordSet will
 						// be out of date. So after updating the record on the server, the locally cached
