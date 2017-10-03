@@ -5,7 +5,7 @@ function userSelectionNameDisplay(userInfo) {
 }
 
 function createUserSelectionOption(userInfo) {
-	var newOption = new Option(userSelectionNameDisplay(userInfo), userInfo.userID);
+	var newOption = new Option(userSelectionNameDisplay(userInfo), userInfo.userID,false,false);
 	return newOption
 }
 
@@ -135,22 +135,35 @@ function initCollaboratorUserSelection(params) {
 		databaseID: params.databaseID
 	}
 	
+	params.$selectionInput.select2({
+		placeholder: "Select a collaborator", // TODO - Allow a property to configure the placeholder.
+		width: configParams.width,
+//		data:selectionOptions
+	});
+	
+	
 	jsonAPIRequest("admin/getAllCollaboratorInfo",getCollaboratorsParams,function(collabUserInfo) {
 					
 		var selectionOptions = []
+		
+		var emptyOption = { id:'', text:'' }
+		selectionOptions.push(emptyOption)
+		
 		$.each(collabUserInfo,function(index,userInfo) {
+			// TODO - The following code initializes the control asynchronously with the value
+			// being set by loading the record. This causes an incorrect value to be displayed.
+			// Either the values need to be retrieved dynamically, or somehow populated in a way
+			// which doesn't change the current value.
 			var currOption = {
 				id: userInfo.userID,
 				text: userSelectionNameDisplay(userInfo)
 			}
-			selectionOptions.push(currOption)
+			selectionOptions.push(currOption) 
+	//		addUserInfoSelectionOptionIfNotExists(params.$selectionInput,userInfo)
 		})
+		
+//		params.$selectionInput.select2('data',selectionOptions)
 				
-		params.$selectionInput.select2({
-			placeholder: "Select a collaborator", // TODO - Allow a property to configure the placeholder.
-			width: params.width,
-			data:selectionOptions
-		});
 		
 	})
 	
