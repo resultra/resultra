@@ -155,7 +155,7 @@ function initUserSelectionFormRecordEditBehavior($container,componentContext,rec
 
 
 
-function initUserSelectionTableRecordPopupEditBehavior($container,componentContext,recordProxy, userSelectionObjectRef) {
+function initUserSelectionTableRecordEditBehavior($container,componentContext,recordProxy, userSelectionObjectRef) {
 	
 	function validateInput(inputVal,validationResultCallback) {
 		var validationParams = {
@@ -175,94 +175,4 @@ function initUserSelectionTableRecordPopupEditBehavior($container,componentConte
 	initUserSelectionRecordEditBehavior($container,componentContext,recordProxy, 
 			userSelectionObjectRef, validateInput)
 }
-
-
-function initUserSelectionTableRecordEditBehavior($container,componentContext,recordProxy, userSelectionObjectRef) {
-
-	var $userPopupLink = $container.find(".userSelectionEditPopop")
-
-	// TBD - Needs a popup to display the editor.
-	var validateInput = function(validationCompleteCallback) {
-			validationCompleteCallback(true)
-	}
-	
-	function formatPopupLinkText(recordRef) {
-		
-		var fieldID = userSelectionObjectRef.properties.fieldID
-		var usersExist = recordRef.fieldValues.hasOwnProperty(fieldID)
-		
-		if(formComponentIsReadOnly(userSelectionObjectRef.properties.permissions)) {
-			if (usersExist) {
-				$userPopupLink.css("display","")
-				$userPopupLink.text("View tags")
-			} else {
-				$userPopupLink.css("display","none")
-				$userPopupLink.text("")
-			}
-		} else {
-			$userPopupLink.css("display","")
-			if (usersExist) {
-				$userPopupLink.text("Edit users")
-			} else {
-				$userPopupLink.text("Add user")
-			}
-		}
-	}
-	
-	var currRecordRef = null
-	function loadRecordIntoHtmlEditor($htmlEditor, recordRef) {
-		currRecordRef = recordRef
-		formatPopupLinkText(recordRef)
-	}
-	
-	
-	$userPopupLink.popover({
-		html: 'true',
-		content: function() { return userSelectionTablePopupEditorContainerHTML() },
-		trigger: 'manual',
-		placement: 'auto left'
-	})
-	
-	$userPopupLink.click(function(e) {
-		$(this).popover('toggle')
-		e.stopPropagation()
-	})
-	
-	
-	$userPopupLink.on('shown.bs.popover', function()
-	{
-	    //get the actual shown popover
-	    var $popover = $(this).data('bs.popover').tip();
-		
-		// By default the popover takes on the maximum size of it's containing
-		// element. Overridding this size allows the size to grow as needed.
-		$popover.css("max-width","300px")
-		$popover.css("max-height","200px")
-		
-		var $userEditorContainer = $popover.find(".userSelectionTableCellContainer")
-		
-//		initHTMLEditorTextCellComponentViewModeGeometry($noteEditorContainer)
-		
-		var $closePopupButton = $userEditorContainer.find(".closeEditorPopup")
-		initButtonControlClickHandler($closePopupButton,function() {
-			$userPopupLink.popover('hide')
-		})
-			
-		initUserSelectionTableRecordPopupEditBehavior($userEditorContainer,componentContext,
-					recordProxy, userSelectionObjectRef)
-
-		if(currRecordRef != null) {
-			var viewConfig = $userEditorContainer.data("viewFormConfig")
-			viewConfig.loadRecord($userEditorContainer,currRecordRef)
-		}
-
-	});
-	
-	$container.data("viewFormConfig", {
-		loadRecord: loadRecordIntoHtmlEditor,
-		validateValue: validateInput
-	})
-	
-}
-
 

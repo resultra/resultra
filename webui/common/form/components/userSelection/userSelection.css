@@ -48,9 +48,23 @@
     overflow: auto;
 }
 
-.userSelectionFormContainer .select2-selection--single {
+.userSelectionFormContainer .select2-selection--single
+{
 	min-height: 30px;
 	height: auto;
+}
+
+.userSelectionTableCellContainer  .select2-selection--single
+{
+	min-height: 34px;
+	height: auto;
+	
+}
+
+.userSelectionTableCellContainer .input-group-addon
+{
+	padding-left:4px;
+	padding-right:4px;
 }
 
 .userSelectionFormContainer label {

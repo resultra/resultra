@@ -22,6 +22,26 @@ function userSelectionInputButtonsContainerHTML() {
 	return userSelectionDropdownHTML + clearValButtonHTML
 }
 
+function userSelectionTableCellInputButtonsContainerHTML() {
+	var userSelectionDropdownHTML = '' +
+		'<div class="userSelectionDropdown input-group-addon">'+
+			'<button type="button" class="btn btn-default btn-sm dropdown-toggle clearButton" ' + 
+					'data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+					'<span class="caret"></span></button>'+
+			'<ul class="dropdown-menu valueDropdownMenu">' +
+			'</ul>'+
+		'</div>'
+	
+	var  clearValButtonHTML = clearValueButtonHTML("userSelectionComponentClearValueButton")
+	
+/*	'<button type="button" class="btn btn-default btn-sm clearButton input-group-addon " >' + 
+				'<small><i class="glyphicon glyphicon-remove"></i></small>' +
+		'</button>' */
+	
+	return userSelectionDropdownHTML + clearValButtonHTML
+	
+}
+
 function userSelectionControlContainerHTML() {
 	
 	return   '<div class="formUserSelectionControl">' + 
@@ -50,26 +70,16 @@ function userSelectionContainerHTML(elementID)
 	return containerHTML
 }
 
-function userSelectionTablePopupEditorContainerHTML() {
-	var containerHTML = ''+
-		'<div class=" layoutContainer userSelectionTableCellContainer userSelectionPopupEditorContainer">' +
-			'<div class="userEditorHeader">' +
-				'<button type="button" class="close closeEditorPopup" data-dismiss="modal" aria-hidden="true">x</button>' +
-				userSelectionInputButtonsContainerHTML() +
-			'</div>' +
-			'<div class="marginTop5">' +
-				userSelectionControlContainerHTML() +
-			'</div>' +
-		'</div>';									
-	return containerHTML
-	
-}
-
-
 function userSelectionTableCellContainerHTML() {
-	return '<div class="layoutContainer userSelectionEditTableCell">' +
+	
+	var inputControlHTML =  '<div class="input-group">'+
+				userSelectionControlContainerHTML() +
+				userSelectionTableCellInputButtonsContainerHTML() +
+			'</div>'
+	
+	return '<div class="layoutContainer userSelectionEditTableCell userSelectionTableCellContainer">' +
 			'<div>' +
-				'<a class="btn userSelectionEditPopop"></a>'+
+				inputControlHTML +
 			'</div>' +
 		'</div>'
 }
