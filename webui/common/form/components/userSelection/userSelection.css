@@ -9,7 +9,8 @@
 .userSelectionTableCellContainer {
 	min-width:220px;
 	min-height:10px;
-	width: 200px;
+	max-width:300px;
+	width: 300px;
 	height: auto;
 }
 
