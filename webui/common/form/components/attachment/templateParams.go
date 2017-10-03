@@ -44,7 +44,7 @@ func init() {
 			DialogTitle: "New Image Area",
 			FieldInfoPrompt: `Images are stored in fields. Either a new field can be created to store the images, 
 					or an existing field can be used.`,
-			NewFieldInfoPrompt: `Enter the parameters for the new field to store the images.`}}
+			NewFieldInfoPrompt: `Enter the parameters for the new field to store the attachments.`}}
 
 	ViewTemplateParams = ImageViewTemplateParams{
 		ElemPrefix:          elemPrefix,

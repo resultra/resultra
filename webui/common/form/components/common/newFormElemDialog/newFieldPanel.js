@@ -106,10 +106,18 @@ function createNewFieldDialogPanelContextBootstrap(panelParams) {
 	
 	function initNewFieldPanel($parentDialog) {
 		
+		
 		var prevButtonSelector = createPrefixedSelector(elemPrefix,'NewFormComponentSelectFieldPrevButton')
-		initButtonClickHandler(prevButtonSelector, function() {
-			transitionToPrevWizardDlgPanelByPanelID($parentDialog,createNewOrExistingFieldDialogPanelID)	
-		})
+		if(panelParams.existingFieldsToChooseFrom) {
+			$(prevButtonSelector).show()
+			initButtonClickHandler(prevButtonSelector, function() {
+				transitionToPrevWizardDlgPanelByPanelID($parentDialog,createNewOrExistingFieldDialogPanelID)	
+			})
+		} else {
+			$(prevButtonSelector).hide()
+		}
+		
+		
 		var doneButtonSelector = createPrefixedSelector(elemPrefix,'NewFormComponentCreateNewFieldDoneButton')
 		initButtonClickHandler(doneButtonSelector, function() {
 			console.log("New field done")

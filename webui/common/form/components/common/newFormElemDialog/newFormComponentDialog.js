@@ -17,36 +17,59 @@ function openNewFormComponentDialog(newComponentParams) {
 		$parentDialog.modal("hide")
 	}
 	
+	
+	loadSortedFieldInfo(newComponentParams.databaseID,newComponentParams.fieldTypes,function(sortedFields) {
+		
+		var existingFieldsToChooseFrom = true
+		if (sortedFields.length === 0) {
+			// If there's no existing fields to select from, immediately prompt the user to create a new field.
+			existingFieldsToChooseFrom = false
+		}
+		
+		
+		var newOrExistingFieldPanelParams = {
+			doneIfSelectExistingField:true,
+			doneFunc:doneCreatingComponent
+		}
+		$.extend(newOrExistingFieldPanelParams,newComponentParams)
+		var newOrExistingFieldPanel = createNewOrExistingFieldPanelContextBootstrap(newOrExistingFieldPanelParams)
+		
+		var newFieldPanelParams = {
+			doneFunc:doneCreatingComponent,
+			hideCreateCalcFieldCheckbox: false,
+			existingFieldsToChooseFrom: existingFieldsToChooseFrom
+		}
+		$.extend(newFieldPanelParams,newComponentParams)			
+		var newFieldPanel = createNewFieldDialogPanelContextBootstrap(newFieldPanelParams)
+		
+		
+		var createComponentPanels = [newOrExistingFieldPanel,newFieldPanel]
+		if (sortedFields.length === 0) {
+			// If there's no existing fields to select from, immediately prompt the user to create a new field.
+			createComponentPanels = [newFieldPanel]
+		}
+		
+		openWizardDialog({
+			closeFunc: function() {
+				if(!componentCreated) {
+					console.log("Cancel new component creation: removing placeholder component")
+					var $componentContainer = newComponentParams.containerParams.containerObj
+					$componentContainer.remove()
+					pruneComponentLayoutEmptyColsAndRows($(formDesignCanvasSelector))
+				}
+			
+	      	},
+			dialogDivID: dialogSelector,
+			panels: createComponentPanels,
+			progressDivID: progressSelector,
+		})
+		
+	})
+	
+	
 	// Create the wizard dialog panels
 	
-	var newOrExistingFieldPanelParams = {
-		doneIfSelectExistingField:true,
-		doneFunc:doneCreatingComponent
-	}
-	$.extend(newOrExistingFieldPanelParams,newComponentParams)
-	var newOrExistingFieldPanel = createNewOrExistingFieldPanelContextBootstrap(newOrExistingFieldPanelParams)
-		
-	var newFieldPanelParams = {
-		doneFunc:doneCreatingComponent,
-		hideCreateCalcFieldCheckbox: false
-	}
-	$.extend(newFieldPanelParams,newComponentParams)			
-	var newFieldPanel = createNewFieldDialogPanelContextBootstrap(newFieldPanelParams)
 		
 		
-	openWizardDialog({
-		closeFunc: function() {
-			if(!componentCreated) {
-				console.log("Cancel new component creation: removing placeholder component")
-				var $componentContainer = newComponentParams.containerParams.containerObj
-				$componentContainer.remove()
-				pruneComponentLayoutEmptyColsAndRows($(formDesignCanvasSelector))
-			}
-			
-      	},
-		dialogDivID: dialogSelector,
-		panels: [newOrExistingFieldPanel,newFieldPanel],
-		progressDivID: progressSelector,
-	})
 		
 }

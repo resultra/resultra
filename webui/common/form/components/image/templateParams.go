@@ -49,7 +49,7 @@ func init() {
 			ElemPrefix:         elemPrefix,
 			DialogTitle:        "New Email Address Input",
 			FieldInfoPrompt:    `Image attachments are stored in fields. Either a new field can be created, or an existing field can be used.`,
-			NewFieldInfoPrompt: `Enter the parameters for the new field to store the image.'`}}
+			NewFieldInfoPrompt: `Enter the parameters for the new field to store the image.`}}
 
 	ViewTemplateParams = ImageViewTemplateParams{
 		ElemPrefix: elemPrefix}
