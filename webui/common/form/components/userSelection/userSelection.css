@@ -63,8 +63,10 @@
 
 .userSelectionTableCellContainer .input-group-addon
 {
-	padding-left:4px;
-	padding-right:4px;
+	padding-left:2px;
+	padding-right:2px;
+	padding-top:0px;
+	padding-bottom:0px;
 }
 
 .userSelectionFormContainer label {
