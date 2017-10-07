@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"log"
 
-	_ "github.com/lib/pq"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var dbHandle *sql.DB
@@ -12,14 +12,12 @@ var dbHandle *sql.DB
 func init() {
 
 	var err error
-	dbHandle, err = sql.Open("postgres", "user=devuser dbname=datasheet password=here4dev sslmode=disable")
+	dbHandle, err = sql.Open("sqlite3", "./tracker.db")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Configure the maximum number of open connections to be less than the limit supported by Postgres
-	// If postgress supports 100, then 75 allows for a value which is safely below the maximum and also
-	// allow connections from other clients (e.g., for administration)
+	// Configure the maximum number of open connections.
 	dbHandle.SetMaxOpenConns(75)
 
 	// Open doesn't directly open the database connection. To verify the connection, the Ping() function

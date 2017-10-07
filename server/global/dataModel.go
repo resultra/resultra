@@ -214,7 +214,7 @@ func getValUpdates(parentDatabaseID string) ([]GlobalValUpdate, error) {
 	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT update_id,global_updates.global_id,update_timestamp_utc,value
 			FROM globals,global_updates
 			WHERE globals.database_id=$1 and globals.global_id=global_updates.global_id
-			ORDER BY global_id,update_timestamp_utc`,
+			ORDER BY globals.global_id,update_timestamp_utc`,
 		parentDatabaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("getValUpdates: Failure querying database: %v", queryErr)
