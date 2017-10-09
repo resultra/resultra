@@ -3,7 +3,7 @@ package userRole
 import (
 	"fmt"
 	"log"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"

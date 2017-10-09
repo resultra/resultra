@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
-	//	"resultra/datasheet/server/generic/databaseWrapper"
+	//	"resultra/datasheet/server/common/databaseWrapper"
 )
 
 type UserRoleInfo struct {

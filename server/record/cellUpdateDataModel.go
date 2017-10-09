@@ -2,7 +2,7 @@ package record
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"time"
 )
 

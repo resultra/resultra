@@ -3,7 +3,7 @@ package userRole
 import (
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
 )
 

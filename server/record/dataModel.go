@@ -3,7 +3,7 @@ package record
 import (
 	"fmt"
 	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 	"sync"
 	"time"

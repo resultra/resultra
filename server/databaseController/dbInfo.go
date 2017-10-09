@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/form"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/itemList"
 	"resultra/datasheet/server/trackerDatabase"
 )

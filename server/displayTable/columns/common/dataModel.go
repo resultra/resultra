@@ -3,7 +3,7 @@ package common
 import (
 	"fmt"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/common/databaseWrapper"
 )
 
 func SaveNewTableColumn(columnType string, parentTableID string, columnID string, properties interface{}) error {

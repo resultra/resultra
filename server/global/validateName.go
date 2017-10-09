@@ -2,7 +2,7 @@ package global
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/stringValidation"
 )
 

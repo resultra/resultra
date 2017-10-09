@@ -3,7 +3,7 @@ package field
 import (
 	"fmt"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/stringValidation"
 )
 

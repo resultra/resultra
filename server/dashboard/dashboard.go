@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"

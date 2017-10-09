@@ -3,7 +3,7 @@ package common
 import (
 	"fmt"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/databaseWrapper"
+	"resultra/datasheet/server/common/databaseWrapper"
 )
 
 func SaveNewFormComponent(componentType string, parentForm string, componentID string, properties interface{}) error {
