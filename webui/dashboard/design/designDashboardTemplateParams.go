@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/dashboard"
-	"resultra/datasheet/server/database"
+	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/dashboard/components"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
@@ -24,7 +24,7 @@ type DashboardTemplateParams struct {
 
 func createDashboardTemplateParams(r *http.Request, dashboardForDesign *dashboard.Dashboard) (*DashboardTemplateParams, error) {
 
-	dashboardDB, err := database.GetDatabase(dashboardForDesign.ParentDatabaseID)
+	dashboardDB, err := trackerDatabase.GetDatabase(dashboardForDesign.ParentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("createDashboardTemplateParams: %v", err)
 	}

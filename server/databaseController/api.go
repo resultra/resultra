@@ -3,8 +3,8 @@ package databaseController
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type DummyStructForInclude struct {
@@ -19,13 +19,13 @@ func init() {
 
 	databaseRouter.HandleFunc("/api/database/getList", getDatabaseListAPI)
 
-	databaseRouter.HandleFunc("/api/database/setName", database.SetNameAPI)
-	databaseRouter.HandleFunc("/api/database/setListOrder", database.SetListOrderAPI)
-	databaseRouter.HandleFunc("/api/database/setDashboardOrder", database.SetDashboardOrderAPI)
-	databaseRouter.HandleFunc("/api/database/setFormLinkOrder", database.SetFormLinkOrderAPI)
+	databaseRouter.HandleFunc("/api/database/setName", trackerDatabase.SetNameAPI)
+	databaseRouter.HandleFunc("/api/database/setListOrder", trackerDatabase.SetListOrderAPI)
+	databaseRouter.HandleFunc("/api/database/setDashboardOrder", trackerDatabase.SetDashboardOrderAPI)
+	databaseRouter.HandleFunc("/api/database/setFormLinkOrder", trackerDatabase.SetFormLinkOrderAPI)
 
-	databaseRouter.HandleFunc("/api/database/validateDatabaseName", database.ValidateDatabaseNameAPI)
-	databaseRouter.HandleFunc("/api/database/validateNewTrackerName", database.ValidateNewTrackerNameAPI)
+	databaseRouter.HandleFunc("/api/database/validateDatabaseName", trackerDatabase.ValidateDatabaseNameAPI)
+	databaseRouter.HandleFunc("/api/database/validateNewTrackerName", trackerDatabase.ValidateNewTrackerNameAPI)
 
 	databaseRouter.HandleFunc("/api/database/saveAsTemplate", saveAsTemplate)
 
@@ -51,7 +51,7 @@ func getDatabaseInfoAPI(w http.ResponseWriter, r *http.Request) {
 
 func newDatabase(w http.ResponseWriter, r *http.Request) {
 
-	var dbParams database.NewDatabaseParams
+	var dbParams trackerDatabase.NewDatabaseParams
 	if err := api.DecodeJSONRequest(r, &dbParams); err != nil {
 		api.WriteErrorResponse(w, err)
 		return

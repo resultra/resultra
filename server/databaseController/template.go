@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"resultra/datasheet/server/alert"
 	"resultra/datasheet/server/calcField"
-	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/displayTable"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form"
@@ -12,6 +11,7 @@ import (
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/itemList"
+	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/valueList"
 )
 
@@ -86,11 +86,11 @@ type SaveTemplateParams struct {
 	NewTemplateName  string `json:"newTemplateName"`
 }
 
-func saveDatabaseToTemplate(params SaveTemplateParams) (*database.Database, error) {
+func saveDatabaseToTemplate(params SaveTemplateParams) (*trackerDatabase.Database, error) {
 
 	remappedIDs := uniqueID.UniqueIDRemapper{}
 
-	templateDB, err := database.CloneDatabase(remappedIDs, params.NewTemplateName, params.SourceDatabaseID)
+	templateDB, err := trackerDatabase.CloneDatabase(remappedIDs, params.NewTemplateName, params.SourceDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}

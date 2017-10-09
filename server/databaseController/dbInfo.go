@@ -3,10 +3,10 @@ package databaseController
 import (
 	"fmt"
 	"resultra/datasheet/server/dashboard"
-	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/itemList"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type DatabaseInfoParams struct {
@@ -44,15 +44,15 @@ func getDatabaseItemListInfo(params DatabaseInfoParams) ([]itemList.ItemList, er
 }
 
 type DatabaseContentsInfo struct {
-	DatabaseInfo   database.Database     `json:"databaseInfo"`
-	FormsInfo      []form.Form           `json:"formsInfo"`
-	ListsInfo      []itemList.ItemList   `json:"listsInfo"`
-	DashboardsInfo []dashboard.Dashboard `json:"dashboardsInfo"`
+	DatabaseInfo   trackerDatabase.Database `json:"databaseInfo"`
+	FormsInfo      []form.Form              `json:"formsInfo"`
+	ListsInfo      []itemList.ItemList      `json:"listsInfo"`
+	DashboardsInfo []dashboard.Dashboard    `json:"dashboardsInfo"`
 }
 
 func getDatabaseInfo(params DatabaseInfoParams) (*DatabaseContentsInfo, error) {
 
-	db, getErr := database.GetDatabase(params.DatabaseID)
+	db, getErr := trackerDatabase.GetDatabase(params.DatabaseID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
 	}

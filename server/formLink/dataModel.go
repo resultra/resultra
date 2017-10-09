@@ -3,11 +3,11 @@ package formLink
 import (
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/userRole"
 )
 
@@ -245,7 +245,7 @@ func getAllSortedFormLinks(parentDatabaseID string) ([]FormLink, error) {
 		return nil, fmt.Errorf("GetAllSortedFormLinks: %v", err)
 	}
 
-	db, getErr := database.GetDatabase(parentDatabaseID)
+	db, getErr := trackerDatabase.GetDatabase(parentDatabaseID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
 	}

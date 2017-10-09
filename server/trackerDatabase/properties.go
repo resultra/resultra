@@ -1,4 +1,4 @@
-package database
+package trackerDatabase
 
 import (
 	"resultra/datasheet/server/generic/uniqueID"

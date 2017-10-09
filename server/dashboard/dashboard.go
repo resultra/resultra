@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/databaseWrapper"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/userRole"
 )
 
@@ -197,7 +197,7 @@ func GetAllSortedDashboard(parentDatabaseID string) ([]Dashboard, error) {
 		return nil, fmt.Errorf("GetAllSortedItemLists: %v")
 	}
 
-	db, getErr := database.GetDatabase(parentDatabaseID)
+	db, getErr := trackerDatabase.GetDatabase(parentDatabaseID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
 	}

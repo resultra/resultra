@@ -2,19 +2,19 @@ package databaseController
 
 import (
 	"net/http"
-	"resultra/datasheet/server/database"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/userRole"
 )
 
-func createNewDatabase(req *http.Request, dbParams database.NewDatabaseParams) (*UserTrackingDatabaseInfo, error) {
+func createNewDatabase(req *http.Request, dbParams trackerDatabase.NewDatabaseParams) (*UserTrackingDatabaseInfo, error) {
 
 	userID, userErr := userAuth.GetCurrentUserID(req)
 	if userErr != nil {
 		return nil, userErr
 	}
 
-	newDB, newDBErr := database.SaveNewEmptyDatabase(dbParams)
+	newDB, newDBErr := trackerDatabase.SaveNewEmptyDatabase(dbParams)
 	if newDBErr != nil {
 		return nil, newDBErr
 	}
