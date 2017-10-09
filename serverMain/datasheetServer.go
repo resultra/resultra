@@ -32,12 +32,12 @@ func main() {
 
 	if (configFile != nil) && (len(*configFile) > 0) {
 		if err := runtimeConfig.InitConfig(*configFile); err != nil {
-			log.Println("Error setting configuration: %v", err)
+			log.Printf("Error setting configuration: %v\n", err)
 			os.Exit(255)
 		}
 	}
 	if err := attachment.InitAttachmentBasePath(); err != nil {
-		log.Println("Error initializing attachment directory: %v", err)
+		log.Printf("Error initializing attachment directory: %v\n", err)
 		os.Exit(255)
 	}
 

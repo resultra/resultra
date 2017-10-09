@@ -16,22 +16,22 @@ import (
 const permsOwnerReadWriteOnly os.FileMode = 0700
 
 func fullyQualifiedAttachmentFileName(databaseID string, fileName string) string {
-	return runtimeConfig.CurrRuntimeConfig.AttachmentBasePath + databaseID + "/" + fileName
+	return runtimeConfig.CurrRuntimeConfig.AttachmentBasePath() + "/" + databaseID + "/" + fileName
 }
 
 func InitAttachmentBasePath() error {
 
-	err := os.MkdirAll(runtimeConfig.CurrRuntimeConfig.AttachmentBasePath, permsOwnerReadWriteOnly)
+	err := os.MkdirAll(runtimeConfig.CurrRuntimeConfig.AttachmentBasePath(), permsOwnerReadWriteOnly)
 	if err != nil {
 		return fmt.Errorf("Error initializing attachment directory %v: %v",
-			runtimeConfig.CurrRuntimeConfig.AttachmentBasePath, err)
+			runtimeConfig.CurrRuntimeConfig.AttachmentBasePath(), err)
 	}
 	return nil
 }
 
 func SaveAttachmentFile(databaseID string, fileName string, fileData []byte) error {
 
-	fullyQualifiedPath := runtimeConfig.CurrRuntimeConfig.AttachmentBasePath + databaseID + "/"
+	fullyQualifiedPath := runtimeConfig.CurrRuntimeConfig.AttachmentBasePath() + "/" + databaseID + "/"
 
 	err := os.MkdirAll(fullyQualifiedPath, permsOwnerReadWriteOnly)
 	if err != nil {
