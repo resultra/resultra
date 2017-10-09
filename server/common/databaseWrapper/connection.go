@@ -2,19 +2,23 @@ package databaseWrapper
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	_ "github.com/mattn/go-sqlite3"
+	"resultra/datasheet/server/common/runtimeConfig"
 )
 
 var dbHandle *sql.DB
 
-func init() {
+func InitDatabaseConnection() error {
 
 	var err error
-	dbHandle, err = sql.Open("sqlite3", "./tracker.db")
+
+	databaseFileName := runtimeConfig.CurrRuntimeConfig.TrackerDatabaseFileName()
+	dbHandle, err = sql.Open("sqlite3", databaseFileName)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("can't establish connection to database: %v", err)
 	}
 
 	// Configure the maximum number of open connections.
@@ -23,10 +27,12 @@ func init() {
 	// Open doesn't directly open the database connection. To verify the connection, the Ping() function
 	// is needed.
 	if err := dbHandle.Ping(); err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("can't establish connection to database: %v", err)
 	}
 
-	log.Printf("Database connection established")
+	log.Printf("Database connection established: %v", databaseFileName)
+
+	return nil
 }
 
 func DBHandle() *sql.DB {

@@ -30,6 +30,13 @@ func (config RuntimeConfig) AttachmentBasePath() string {
 	return (*config.DatabaseBasePath) + `/attachments`
 }
 
+func (config RuntimeConfig) TrackerDatabaseFileName() string {
+	if err := config.validateWellFormedDatabaseBasePath(); err != nil {
+		panic(fmt.Sprintf("runtime config: tried to database path from invalid config: %v", err))
+	}
+	return (*config.DatabaseBasePath) + `/trackers.db`
+}
+
 func newDefaultRuntimeConfig() RuntimeConfig {
 	config := RuntimeConfig{}
 	return config
