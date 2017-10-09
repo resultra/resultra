@@ -11,6 +11,8 @@ type RuntimeConfig struct {
 	DatabaseBasePath *string `json:"databaseBasePath"`
 }
 
+const permsOwnerReadWriteOnly os.FileMode = 0700
+
 func (config RuntimeConfig) validateWellFormedDatabaseBasePath() error {
 
 	if config.DatabaseBasePath == nil {
@@ -48,6 +50,20 @@ func init() {
 	CurrRuntimeConfig = newDefaultRuntimeConfig()
 }
 
+func (config RuntimeConfig) initDatabaseBasePath() error {
+
+	if err := config.validateWellFormedDatabaseBasePath(); err != nil {
+		return fmt.Errorf("runtime config: tried to database path from invalid config: %v", err)
+	}
+
+	err := os.MkdirAll(*config.DatabaseBasePath, permsOwnerReadWriteOnly)
+	if err != nil {
+		return fmt.Errorf("Error initializing tracker directory %v: %v",
+			config.DatabaseBasePath, err)
+	}
+	return nil
+}
+
 func InitConfig(configFileName string) error {
 
 	configFile, openErr := os.Open(configFileName)
@@ -65,7 +81,9 @@ func InitConfig(configFileName string) error {
 	if err := config.validateWellFormedDatabaseBasePath(); err != nil {
 		return fmt.Errorf("invalid runtime config: %v: %v", configFileName, err)
 	}
-
+	if err := config.initDatabaseBasePath(); err != nil {
+		return fmt.Errorf("configuration error: unable to create path for tracker database: %v: %v", configFileName, err)
+	}
 	CurrRuntimeConfig = config
 
 	return nil
