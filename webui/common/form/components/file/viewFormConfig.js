@@ -191,6 +191,21 @@ function initFileFormRecordEditBehavior($container,componentContext,recordProxy,
 		})	
 		
 	}
+	
+	
+	function setMaxFileNameDisplayWidthVsOuterContainer() {
+		// Ensure the file name display doesn't overload the container itself.
+		// If it ends up being smaller, then shorten the name and show ellipses (see .css file)
+		// TBD - there might be more elegant ways to do this in CSS.
+		var fileUploadButtonWidth = 24
+		var containerMargin = 10
+		var fileDisplayWidth = fileObjRef.properties.geometry.sizeWidth - fileUploadButtonWidth - containerMargin
+		var maxWidthPx =  fileDisplayWidth + 'px'
+		var $fileDisplay = $container.find(".fileDisplay")
+		$fileDisplay.css("max-width",maxWidthPx)		
+	}
+	setMaxFileNameDisplayWidthVsOuterContainer()
+	
 	initFileRecordEditBehavior($container,componentContext,recordProxy, fileObjRef,validateFileInput)
 	
 }
