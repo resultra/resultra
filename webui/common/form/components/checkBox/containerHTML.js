@@ -27,18 +27,14 @@ function checkBoxContainerHTML(elementID)
 	
 	var containerHTML = ''+
 		'<div class=" layoutContainer checkBoxContainer checkBoxFormContainer">' +
-			'<div class="row">' +
-				'<div class="col-xs-11">' +
-					'<div class="checkbox">' +
-						'<input type="checkbox" id="'+uniqueID+'" class="checkboxFormComponentControl">' +
-						'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel">New Checkbox</label>' + 
-							componentHelpPopupButtonHTML() +
-					'</div>' +
-				'</div>' +
-				'<div class="col-xs-1">' +
-					smallClearDeleteButtonHTML("checkBoxComponentClearValueButton") + 
-				'</div>' +
-			'</div>' +	
+			'<div class="pull-right">' +
+				componentHelpPopupButtonHTML() +
+				smallClearDeleteButtonHTML("checkBoxComponentClearValueButton") + 
+			'</div>' + 
+			'<div class="checkbox">' +
+				'<input type="checkbox" id="'+uniqueID+'" class="checkboxFormComponentControl">' +
+				'<label for="'+  uniqueID + '"class="checkboxFormComponentLabel">New Checkbox</label>' + 
+			'</div>' +
 		'</div>';
 				
 	console.log ("Checkbox HTML: " + containerHTML)
