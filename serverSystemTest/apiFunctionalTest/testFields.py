@@ -26,6 +26,24 @@ class fieldTest(unittest.TestCase,TestHelperMixin):
         with self.assertRaises(AssertionError):
             fieldParams = {'parentDatabaseID':self.databaseID,'name':'Quantity2','type':'number','refName':fieldRefName}
             jsonResp = self.apiRequest('field/new',fieldParams) 
+
+
+    def duplicateFieldName(self):
+        
+        self.createTestSession()
+        
+        jsonResp = self.apiRequest('database/new',{'name': 'Test Database'})
+        self.databaseID = jsonResp[u'databaseID']
+        print "populateSimpleDB: Database ID: ",self.databaseID
+
+        fieldName = 'Quantity'
+
+        fieldParams = {'parentDatabaseID':self.databaseID,'name':fieldName,'type':'number','refName':'qty'}
+        jsonResp = self.apiRequest('field/new',fieldParams)
+              
+        with self.assertRaises(AssertionError):
+            fieldParams = {'parentDatabaseID':self.databaseID,'name':fieldName,'type':'number','refName':'qty2'}
+            jsonResp = self.apiRequest('field/new',fieldParams) 
        
         
 if __name__ == '__main__':

@@ -27,7 +27,7 @@ func validateUniqueFieldName(databaseID string, fieldID string, fieldName string
 
 	existingFieldNameUsedByAnotherField := rows.Next()
 	if existingFieldNameUsedByAnotherField {
-		return fmt.Errorf("Invalid field name - names must be unique")
+		return fmt.Errorf("invalid field name - names must be unique: found existing field with name = %v", fieldName)
 	}
 
 	return nil
@@ -55,7 +55,7 @@ func validateExistingFieldName(fieldID string, fieldName string) error {
 func validateNewFieldName(databaseID string, fieldName string) error {
 
 	if !stringValidation.WellFormedItemName(fieldName) {
-		return fmt.Errorf("Invalid field name")
+		return fmt.Errorf("mal-formed field name: %v", fieldName)
 	}
 
 	// No field will have an empty formID, so this will cause test for unique
@@ -88,7 +88,7 @@ func validateUniqueFieldRefName(databaseID string, fieldID string, refName strin
 
 	existingFieldNameUsedByAnotherField := rows.Next()
 	if existingFieldNameUsedByAnotherField {
-		return fmt.Errorf("Invalid field reference name - names must be unique: found existing field with reference name = %v", refName)
+		return fmt.Errorf("invalid field reference name - names must be unique: found existing field with reference name = %v", refName)
 	}
 
 	return nil
