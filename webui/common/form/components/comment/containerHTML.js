@@ -46,9 +46,23 @@ function commentBoxContainerBodyHTML() {
 					attachmentButtonHTML("commentComponentAttachmentButton") + 
 			'</div>' +
 		'</div>' +				
-		'<div class="list-group commentComponentCommentList lightGreyBorder"></div>'
+		'<div class="list-group commentComponentCommentList lightGreyBorder initiallyHidden"></div>' +
+		'<div class="commentComponentNoCommentsPlaceholder lightGreyBorder text-center">' +
+			'<small>No comments</small>' +
+		'</div>'
 
 }
+
+function updateCommentComponentCommentsAreaVisibility($container,hasComments) {
+	if (hasComments === true) {
+		$container.find(".commentComponentCommentList").show()
+		$container.find(".commentComponentNoCommentsPlaceholder").hide()
+	} else {
+		$container.find(".commentComponentCommentList").hide()
+		$container.find(".commentComponentNoCommentsPlaceholder").show()
+	}
+}
+
 
 function commentContainerHTML(elementID)
 {	

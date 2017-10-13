@@ -65,38 +65,46 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 		
 			var $commentList = commentCommentListFromContainer(commentElem)
 			$commentList.empty()
-		
-			for(var valChangeIter = 0; valChangeIter < valChanges.length; valChangeIter++) {
 			
-				function createOneCommentValDisplay(valChange) {
+			
+			if (valChanges.length > 0) {
+				updateCommentComponentCommentsAreaVisibility($commentContainer,true)
+				for(var valChangeIter = 0; valChangeIter < valChanges.length; valChangeIter++) {
+			
+					function createOneCommentValDisplay(valChange) {
 		
-					var formattedUserName = "@" + valChange.userName
-					if(valChange.isCurrentUser) {
-							formattedUserName = formattedUserName + ' (you)'
+						var formattedUserName = "@" + valChange.userName
+						if(valChange.isCurrentUser) {
+								formattedUserName = formattedUserName + ' (you)'
+						}
+		
+						var formattedCreateDate = moment(valChange.updateTime).calendar()
+
+						var commentDisplayHTML = formatInlineContentHTMLDisplay(valChange.updatedValue.commentText)
+				
+						var commentHTML =  '<div class="list-group-item">' +
+							'<div><small>' + formattedUserName  + ' - ' + formattedCreateDate + '</small></div>' +
+							'<div class="inlineContent">' + commentDisplayHTML + '</div>' +
+							'<div class="formTimelineCommentAttachments"></div>' + 
+						'</div>';
+				
+						var $commentContainer = $(commentHTML)
+						var $attachments = $commentContainer.find(".formTimelineCommentAttachments")
+						populateAttachmentList($attachments,valChange.updatedValue.attachments)
+		
+						return $commentContainer
 					}
-		
-					var formattedCreateDate = moment(valChange.updateTime).calendar()
 
-					var commentDisplayHTML = formatInlineContentHTMLDisplay(valChange.updatedValue.commentText)
-				
-					var commentHTML =  '<div class="list-group-item">' +
-						'<div><small>' + formattedUserName  + ' - ' + formattedCreateDate + '</small></div>' +
-						'<div class="inlineContent">' + commentDisplayHTML + '</div>' +
-						'<div class="formTimelineCommentAttachments"></div>' + 
-					'</div>';
-				
-					var $commentContainer = $(commentHTML)
-					var $attachments = $commentContainer.find(".formTimelineCommentAttachments")
-					populateAttachmentList($attachments,valChange.updatedValue.attachments)
-		
-					return $commentContainer
+					var valChange = valChanges[valChangeIter]
+			
+					$commentList.append(createOneCommentValDisplay(valChange))
+			
 				}
-
-				var valChange = valChanges[valChangeIter]
-			
-				$commentList.append(createOneCommentValDisplay(valChange))
-			
+				
+			} else {
+				updateCommentComponentCommentsAreaVisibility($commentContainer,false)
 			}
+		
 		
 		}) // set record's text field value
 	
