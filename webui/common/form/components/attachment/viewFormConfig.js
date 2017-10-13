@@ -100,25 +100,34 @@ function initAttachmentRecordEditBehavior($attachmentContainer, componentContext
 		if(recordRef.fieldValues.hasOwnProperty(imageFieldID)) {
 		
 			var fieldVal = recordRef.fieldValues[imageFieldID]
-		
-			var getRefParams = { attachmentIDs: fieldVal.attachments }
-			jsonAPIRequest("attachment/getReferences", getRefParams, function(attachRefs) {
-				$attachmentInnerContainer.empty()
-				for(var refIndex = 0; refIndex < attachRefs.length; refIndex++) {
+			
+			if ((fieldVal !== null) && (fieldVal.attachments.length > 0)) {
+				initAttachmentAttachmentAreas(imageElem,true)
+				var getRefParams = { attachmentIDs: fieldVal.attachments }
+				jsonAPIRequest("attachment/getReferences", getRefParams, function(attachRefs) {
+					$attachmentInnerContainer.empty()
+					for(var refIndex = 0; refIndex < attachRefs.length; refIndex++) {
 				
-					var attachRef = attachRefs[refIndex]
+						var attachRef = attachRefs[refIndex]
 								
-					var $thumbnailContainer = attachmentGalleryThumbnailContainer(attachRef,
-									saveRecordUpdateWithCurrentlyDisplayedAttachmentList,componentIsReadOnly)
-					$thumbnailContainer.data("attachRef",attachRef)
-					$attachmentInnerContainer.append($thumbnailContainer)
+						var $thumbnailContainer = attachmentGalleryThumbnailContainer(attachRef,
+										saveRecordUpdateWithCurrentlyDisplayedAttachmentList,componentIsReadOnly)
+						$thumbnailContainer.data("attachRef",attachRef)
+						$attachmentInnerContainer.append($thumbnailContainer)
 				
-				}
-				initAttachmentContainerPopupGallery($attachmentInnerContainer)
-			})
+					}
+					initAttachmentContainerPopupGallery($attachmentInnerContainer)
+				})
+				
+			} else {
+				initAttachmentAttachmentAreas(imageElem,false)
+				$attachmentInnerContainer.empty()
+			}
+		
 	
 		} else {
 			// There's no value in the current record for this field, so clear the value in the container
+			initAttachmentAttachmentAreas(imageElem,false)
 			$attachmentInnerContainer.empty()
 		}	
 		

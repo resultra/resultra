@@ -24,7 +24,10 @@ function addLinkButtonFromAttachmentComponentContainer($image) {
 
 function attachmentContainerBodyHTML() {
 	return '' +		
-		'<div class="attachmentInnerContainer lightGreyBorder text-center"">'+
+		'<div class="attachmentInnerContainer lightGreyBorder text-center initiallyHidden">'+
+		'</div>' + 
+		'<div class="attachmentNoAttachmentPlaceholder lightGreyBorder text-center">' +
+			'<small>No attachments</small>' +
 		'</div>'
 }
 
@@ -90,6 +93,16 @@ function setAttachmentComponentLabel($attachmentContainer,attachmentRef) {
 	setFormComponentLabel($label,attachmentRef.properties.fieldID,
 			attachmentRef.properties.labelFormat)	
 	
+}
+
+function initAttachmentAttachmentAreas($container, hasAttachments) {
+	if (hasAttachments === true) {
+		$container.find(".attachmentNoAttachmentPlaceholder").hide()
+		$container.find(".attachmentInnerContainer").show()
+	} else {
+		$container.find(".attachmentNoAttachmentPlaceholder").show()
+		$container.find(".attachmentInnerContainer").hide()		
+	}
 }
 
 
