@@ -100,11 +100,11 @@ func CreateNewFieldFromRawInputs(newField Field) (*Field, error) {
 	}
 
 	if err := validateNewFieldRefName(newField.ParentDatabaseID, newField.RefName); err != nil {
-		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: duplicate formula reference name: '%v'", err)
+		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: invalid formula reference name: '%v'", err)
 	}
 
 	if err := validateNewFieldName(newField.ParentDatabaseID, newField.Name); err != nil {
-		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: duplicate formula reference name: '%v'", err)
+		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: invalid field name: '%v'", err)
 	}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
