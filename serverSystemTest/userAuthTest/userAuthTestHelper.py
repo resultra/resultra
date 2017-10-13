@@ -3,7 +3,7 @@ import json
 
 class UserAuthTestHelperMixin:
     def authRequest(self, apiPath,jsonArgs):
-        baseURL = 'http://localhost:8080/auth/'
+        baseURL = 'http://localhost:43410/auth/'
         fullURL = baseURL + apiPath
         print "UserAuthTestHelperMixin: Request: ",apiPath,": args=",json.dumps(jsonArgs)
         resp = requests.post(fullURL,json=jsonArgs)

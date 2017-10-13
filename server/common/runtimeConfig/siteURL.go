@@ -1,7 +1,9 @@
 package runtimeConfig
 
+import "fmt"
+
 func GetSiteBaseURL() string {
-	return "http://localhost:8080/"
+	return fmt.Sprintf("http://localhost:%v/", CurrRuntimeConfig.PortNumber)
 }
 
 func GetSiteResourceURL(resourceSuffix string) string {

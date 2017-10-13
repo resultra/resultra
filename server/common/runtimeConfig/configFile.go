@@ -7,8 +7,11 @@ import (
 	"os"
 )
 
+var defaultPortNum int = 43400
+
 type RuntimeConfig struct {
 	DatabaseBasePath *string `json:"databaseBasePath"`
+	PortNumber       int     `json:"portNumber"`
 }
 
 const permsOwnerReadWriteOnly os.FileMode = 0700
@@ -40,7 +43,8 @@ func (config RuntimeConfig) TrackerDatabaseFileName() string {
 }
 
 func newDefaultRuntimeConfig() RuntimeConfig {
-	config := RuntimeConfig{}
+	config := RuntimeConfig{
+		PortNumber: defaultPortNum}
 	return config
 }
 

@@ -8,7 +8,7 @@ class TestHelperMixin:
         self.session = requests.session()
     
     def authRequest(self, apiPath,jsonArgs):
-        baseURL = 'http://localhost:8080/auth/'
+        baseURL = 'http://localhost:43410/auth/'
         fullURL = baseURL + apiPath
         print "TestHelperMixin: Request: ",apiPath,": args=",json.dumps(jsonArgs)
         resp = self.session.post(fullURL,json=jsonArgs)
@@ -21,7 +21,7 @@ class TestHelperMixin:
     
     
     def apiRequest(self, apiPath,jsonArgs):
-        baseURL = 'http://localhost:8080/api/'
+        baseURL = 'http://localhost:43410/api/'
         fullURL = baseURL + apiPath
         print "TestHelperMixin: API Request: ",apiPath,": args=",json.dumps(jsonArgs)
         resp = self.session.post(fullURL,json=jsonArgs)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/pkg/profile"
 	"log"
 	"net/http"
@@ -59,8 +60,8 @@ func main() {
 	http.Handle(staticSiteResourcesPrefix, http.StripPrefix(staticSiteResourcesPrefix,
 		http.FileServer(http.Dir("./static"))))
 
-	log.Println("Server started: listening on port 8080")
-
-	http.ListenAndServe(":8080", nil)
+	log.Printf("Server started: listening on port: %v", runtimeConfig.CurrRuntimeConfig.PortNumber)
+	portNumString := fmt.Sprintf(":%v", runtimeConfig.CurrRuntimeConfig.PortNumber)
+	http.ListenAndServe(portNumString, nil)
 
 }
