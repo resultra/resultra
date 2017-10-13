@@ -3,9 +3,9 @@ package field
 import (
 	"fmt"
 	"log"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
+	"sync"
 )
 
 const FieldEntityKind string = "Field"
@@ -82,24 +82,30 @@ func validFieldType(fieldType string) bool {
 	}
 }
 
+var newFieldMutex = &sync.Mutex{}
+
 // Internal function for creating new fields given raw inputs. Should only be called by
 // other "NewField" functions with well-formed parameters for either a regular (non-calculated)
 // or calculated field.
 func CreateNewFieldFromRawInputs(newField Field) (*Field, error) {
 
-	// TODO Validate field name
+	// Use a mutex when creating fields. This is necessary, so the validation of field properties against existing
+	// fields can complete before inserting the new record with validated properties (notably a unique name and
+	// formula reference name).
+	newFieldMutex.Lock()
+	defer newFieldMutex.Unlock()
 
 	if !validFieldType(newField.Type) {
 		return nil, fmt.Errorf("Can't create new field: invalid field type: '%v'", newField.Type)
 	}
 
-	if !generic.WellFormedFormulaReferenceName(newField.RefName) {
-		return nil, fmt.Errorf("Invalid formula reference name: '%v' Cannot be empty and must only contain letters, numbers and underscores",
-			newField.RefName)
-
+	if err := validateNewFieldRefName(newField.ParentDatabaseID, newField.RefName); err != nil {
+		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: duplicate formula reference name: '%v'", err)
 	}
 
-	// TODO: Validate the reference name is unique versus the other names field names already in use.
+	if err := validateNewFieldName(newField.ParentDatabaseID, newField.Name); err != nil {
+		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: duplicate formula reference name: '%v'", err)
+	}
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
 		`INSERT INTO fields (database_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text) 

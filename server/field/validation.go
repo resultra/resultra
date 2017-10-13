@@ -2,8 +2,8 @@ package field
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/stringValidation"
 )
 
@@ -88,7 +88,7 @@ func validateUniqueFieldRefName(databaseID string, fieldID string, refName strin
 
 	existingFieldNameUsedByAnotherField := rows.Next()
 	if existingFieldNameUsedByAnotherField {
-		return fmt.Errorf("Invalid field reference name - names must be unique")
+		return fmt.Errorf("Invalid field reference name - names must be unique: found existing field with reference name = %v", refName)
 	}
 
 	return nil
@@ -122,7 +122,7 @@ func validateNewFieldRefName(databaseID string, refName string) error {
 	// No field will have an empty fieldID, so this will cause test for unique
 	// form names to return true if any form already has the given formName.
 	fieldID := ""
-	if uniqueErr := validateUniqueFieldName(databaseID, fieldID, refName); uniqueErr != nil {
+	if uniqueErr := validateUniqueFieldRefName(databaseID, fieldID, refName); uniqueErr != nil {
 		return uniqueErr
 	}
 

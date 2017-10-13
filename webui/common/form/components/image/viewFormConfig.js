@@ -120,9 +120,11 @@ function initImageRecordEditBehavior($container,componentContext,recordProxy, im
 
 		var fieldVal = recordRef.fieldValues[imageFieldID]
 		if(fieldVal===undefined || fieldVal===null) {
+			updateImageComponentImageAreaVisibility($imageContainer,false)
 			setImageDisplay(null)
-			initImageEditPopup(null)
+			initImageEditPopup(null)		
 		} else {
+			updateImageComponentImageAreaVisibility($imageContainer,true)
 			setImageDisplay(fieldVal)
 			initImageEditPopup(fieldVal)
 		}

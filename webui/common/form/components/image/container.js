@@ -22,12 +22,26 @@ function imageContainerHTML(elementID)
 					'</div>' +
 				'</div>' +
 			'</div>' +
-			'<div class="imageDisplayContainer">' +
+			'<div class="imageDisplayContainer initiallyHidden">' +
 				'<a class="imageDisplay"></a>' +
+			'</div>' +
+			'<div class="imageComponentNoImagePlaceholder lightGreyBorder text-center">' +
+				'<small>No image</small>' +
 			'</div>' +
 		'</div>';
 	return containerHTML
 }
+
+function updateImageComponentImageAreaVisibility($container,hasImage) {
+	if (hasImage === true) {
+		$container.find(".imageDisplayContainer").show()
+		$container.find(".imageComponentNoImagePlaceholder").hide()
+	} else {
+		$container.find(".imageDisplayContainer").hide()
+		$container.find(".imageComponentNoImagePlaceholder").show()
+	}
+}
+
 
 function imageTableViewContainerHTML() {
 	
