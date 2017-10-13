@@ -32,6 +32,22 @@
 
 
 {{define "designFormPaletteItems" }}
+
+	<div class="row">
+		<div class= "col-md-6" style="padding:5px">
+			<div class="draggable noselect paletteItem"  id="paletteItemHeader">
+					<i class="glyphicon glyphicon-header"></i>
+					<div>Header</div>
+			</div>			
+		</div> <!-- column -->
+		<div class= "col-md-6" style="padding:5px">
+			<div class="draggable noselect paletteItem" id="paletteItemCaption">
+					<i class="glyphicon glyphicon-font"></i>
+					<div>Caption</div>
+			</div>			
+		</div> <!-- column -->
+	</div> <!-- row -->
+
 	<div class="row">
 		<div class= "col-md-6"  style="padding:5px">
 			<div class="draggable noselect paletteItem" id="paletteItemTextBox">
@@ -39,10 +55,10 @@
 					<div>Text Box</div>
 			</div>			
 		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemCheckBox">
-					<i class="glyphicon glyphicon-check"></i>
-					<div>Check Box</div>
+		<div class= "col-md-6"  style="padding:5px">
+			<div class="draggable noselect paletteItem" id="paletteItemNumberInput">
+					<input class="form-control paletteItemControl" type="number" disabled placeholder="123">
+					<div>Number Input</div>
 			</div>			
 		</div> <!-- column -->
 	</div> <!-- row -->
@@ -55,24 +71,9 @@
 			</div>			
 		</div> <!-- column -->
 		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemAttachment">
-					<i class="glyphicon glyphicon-paperclip"></i>
-					<div class="marginTop10">Attachment</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-
-	<div class="row">
-		<div class= "col-md-6"  style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemNumberInput">
-					<input class="form-control paletteItemControl" type="number" disabled placeholder="123">
-					<div>Number Input</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemHtmlEditor">
-					<i class="glyphicon glyphicon-align-justify"></i>
-					<div>Note Editor</div>
+			<div class="draggable noselect paletteItem" id="paletteItemCheckBox">
+					<i class="glyphicon glyphicon-check"></i>
+					<div>Check Box</div>
 			</div>			
 		</div> <!-- column -->
 	</div> <!-- row -->
@@ -92,12 +93,11 @@
 		</div> <!-- column -->
 	</div> <!-- row -->
 
-
 	<div class="row">
 		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemUserSelection">
-					<i class="glyphicon glyphicon-user"></i>
-					<div>Select User</div>
+			<div class="draggable noselect paletteItem" id="paletteItemHtmlEditor">
+					<i class="glyphicon glyphicon-align-justify"></i>
+					<div>Note Editor</div>
 			</div>			
 		</div> <!-- column -->
 		<div class= "col-md-6" style="padding:5px">
@@ -108,13 +108,53 @@
 		</div> <!-- column -->
 	</div> <!-- row -->
 
+
 	<div class="row">
 		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemButton">
-				<button type="button" class="btn btn-primary paletteItemControl" disabled>Open</button>
-				<div>Open Form</div>
+			<div class="draggable noselect paletteItem"  id="paletteItemAttachment">
+					<i class="glyphicon glyphicon-paperclip"></i>
+					<div class="marginTop10"><small>Attachments</small></div>
 			</div>			
 		</div> <!-- column -->
+		<div class= "col-md-6" style="padding:5px">
+			<div class="draggable noselect paletteItem"  id="paletteItemImage">
+					<i class="glyphicon glyphicon-picture"></i>
+					<div>Image</div>
+			</div>			
+		</div> <!-- column -->
+	</div> <!-- row -->
+
+	<div class="row">
+		<div class= "col-md-6" style="padding:5px">
+			<div class="draggable noselect paletteItem" id="paletteItemUserSelection">
+					<i class="glyphicon glyphicon-user"></i>
+					<div>Select User</div>
+			</div>			
+		</div> <!-- column -->
+		<div class= "col-md-6" style="padding:5px">
+			<div class="draggable noselect paletteItem"  id="paletteItemSocialButton">
+					<i class="glyphicon glyphicon-thumbs-up"></i>
+					<div>Tag User Button</div>
+			</div>			
+		</div> <!-- column -->
+	</div> <!-- row -->
+
+	<div class="row">
+		<div class= "col-md-6" style="padding:5px">
+			<div class="draggable noselect paletteItem"  id="paletteItemUserTag">
+					<i class="fa fa-users fa-2x"></i>
+					<div>Tag Users</div>
+			</div>			
+		</div> <!-- column -->
+		<div class= "col-md-6" style="padding:5px">
+			<div class="draggable noselect paletteItem"  id="paletteItemLabel">
+					<i class="glyphicon glyphicon-tags"></i>
+					<div>Tags</div>
+			</div>			
+		</div> <!-- column -->
+	</div> <!-- row -->
+
+	<div class="row">
 		<div class= "col-md-6" style="padding:5px">
 			<div class="draggable noselect paletteItem" id="paletteItemProgress">
 					<div class="progress">
@@ -124,15 +164,6 @@
 					  </div>
 					</div>
 					<div>Progress</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemCaption">
-					<i class="glyphicon glyphicon-font"></i>
-					<div>Caption</div>
 			</div>			
 		</div> <!-- column -->
 		<div class= "col-md-6" style="padding:5px">
@@ -145,30 +176,15 @@
 
 	<div class="row">
 		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemHeader">
-					<i class="glyphicon glyphicon-header"></i>
-					<div>Header</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
 			<div class="draggable noselect paletteItem" id="paletteItemToggle">
 					<i class="fa fa-toggle-on"></i>
 					<div>Toggle</div>
 			</div>			
 		</div> <!-- column -->
-	</div> <!-- row -->
-
-	<div class="row">
 		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemSocialButton">
-					<i class="glyphicon glyphicon-thumbs-up"></i>
-					<div>Social Button</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemLabel">
-					<i class="glyphicon glyphicon-tags"></i>
-					<div>Tags</div>
+			<div class="draggable noselect paletteItem" id="paletteItemButton">
+				<button type="button" class="btn btn-primary paletteItemControl" disabled>Open</button>
+				<div>Open Form</div>
 			</div>			
 		</div> <!-- column -->
 	</div> <!-- row -->
@@ -196,22 +212,8 @@
 					<div>File</div>
 			</div>			
 		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemImage">
-					<i class="glyphicon glyphicon-picture"></i>
-					<div>Image</div>
-			</div>			
-		</div> <!-- column -->
 	</div> <!-- row -->
 
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemUserTag">
-					<i class="fa fa-users fa-2x"></i>
-					<div>Tag Users</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
 
 
 {{end}}
