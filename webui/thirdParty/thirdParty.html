@@ -1,3 +1,19 @@
+{{define "electronImportPrefix"}}
+
+	<!-- This script is needed at the top of every page to distinguish between
+	     a page loading in electron vs. a regular browser: see the following for details:
+		https://stackoverflow.com/questions/32621988/electron-jquery-is-not-defined
+	-->
+	<script>
+			if (typeof module === 'object') {
+				window.module = module; module = undefined;
+			}
+	</script>
+
+
+{{end}}
+
+
 {{define "thirdPartyCSS"}}
 
 	<!-- There is an ordering conflict between the the jQuery UI and blueimp file upload style sheets and bootstrap. The following
