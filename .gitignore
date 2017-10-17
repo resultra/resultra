@@ -13,6 +13,7 @@ build/dest/*
 # HTML, JS and CSS files. 
 webui/build/node_modules/*
 webui/thirdParty/node_modules/*
+electronClient/node_modules/*
 
 # Executable file
 serverMain/datasheetServer

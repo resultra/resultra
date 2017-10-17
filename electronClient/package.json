@@ -1,0 +1,18 @@
+{
+  "name": "Resultra",
+  "version": "1.0.0",
+  "description": "Resultra personal edition",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Resultra"
+  ],
+  "author": "GitHub",
+  "license": "Commercial",
+  "devDependencies": {
+    "electron": "~1.7.8"
+  }
+}
