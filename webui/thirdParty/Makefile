@@ -16,5 +16,6 @@ prebuild:
 	npm install
 			
 package:
-	$(EXPORT_THIRD_PARTY_ASSETS)
+	$(EXPORT_THIRD_PARTY_ASSETS) $(abspath ./thirdPartyAssets.json)
+	$(EXPORT_THIRD_PARTY_ASSETS) $(abspath ./aceAssets.json)
 	

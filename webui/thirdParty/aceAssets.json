@@ -1,0 +1,10 @@
+{
+	"packages" : {
+		"ace": {
+			"pkgPrefix": "node_modules/ace-builds",
+			"jsFiles": [ "src-min/*.js" ]
+		}
+	},
+	"htmlFiles": ["ace.html"],
+	"injectPlaceholderName": "aceThirdPartyAssets"
+}
