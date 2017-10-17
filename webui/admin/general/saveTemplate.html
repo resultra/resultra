@@ -1,0 +1,51 @@
+{{define "saveTemplateDialogBody"}}
+
+		
+	  <div class="form-group">
+      	  <label for="saveTemplateNameInput">Template Name</label>
+      	  <input type="text" id="saveTemplateNameInput" name="saveTemplateNameInput" class="form-control" placeholder="Template Name" required autofocus>
+	  </div>
+		
+
+{{end}}
+
+{{define "saveTemplateDialogButtons"}}
+	<button type="button" class="btn btn-default" id="saveTemplateCancelButton" data-dismiss="modal">Cancel</button>
+	<button type="button" class="btn btn-primary" id="saveTemplateSaveButton" type="submit">Save</button>
+{{end}}
+
+
+{{define "saveTemplateDialog"}}
+
+    <form id="saveTemplateDialogForm">
+		
+		<div class="modal fade" id="saveTemplateDialog" tabindex="-1" role="dialog" aria-labelledby="saveTemplateLabel">
+		  <div class="modal-dialog modal-sm" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="newFormLabel">Save as Template</h4>
+		      </div>
+		      <div class="modal-body">
+				  {{template "saveTemplateDialogBody"}}
+		      </div>
+		      <div class="modal-footer">
+				  {{template "saveTemplateDialogButtons"}}
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+	</form>
+
+{{end}}
+
+{{define "adminSaveTemplateProperties"}}
+
+	<div class="marginTop20">
+		<button type="button" class="btn btn-default btn-sm" id="adminSaveTemplateButton">
+		  <span class="glyphicon glyphicon-save" aria-hidden="true"></span> Save as Template
+		</button>
+	</div>
+
+{{end}}
