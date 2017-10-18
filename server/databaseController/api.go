@@ -67,13 +67,13 @@ func newDatabase(w http.ResponseWriter, r *http.Request) {
 
 func saveAsTemplate(w http.ResponseWriter, r *http.Request) {
 
-	var params SaveTemplateParams
+	var params SaveAsTemplateParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	if templateDB, err := saveDatabaseToTemplate(params); err != nil {
+	if templateDB, err := saveExistingDatabaseAsTemplate(r, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *templateDB)

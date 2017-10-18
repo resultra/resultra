@@ -19,15 +19,18 @@ func createNewDatabase(req *http.Request, dbParams trackerDatabase.NewDatabasePa
 
 	if (dbParams.TemplateDatabaseID != nil) && (len(*dbParams.TemplateDatabaseID) > 0) {
 
-		newDBFromTemplateParams := SaveTemplateParams{
+		newDBFromTemplateParams := trackerDatabase.CloneDatabaseParams{
 			SourceDatabaseID: *dbParams.TemplateDatabaseID,
-			NewTemplateName:  dbParams.Name,
-		}
-		newDB, newDBErr = saveDatabaseToTemplate(newDBFromTemplateParams)
+			NewName:          dbParams.Name,
+			IsTemplate:       false,
+			CreatedByUserID:  userID}
+		newDB, newDBErr = cloneIntoNewTrackerDatabase(newDBFromTemplateParams)
 		if newDBErr != nil {
 			return nil, newDBErr
 		}
 	} else {
+		dbParams.CreatedByUserID = userID
+		dbParams.IsTemplate = false
 		newDB, newDBErr = trackerDatabase.SaveNewEmptyDatabase(dbParams)
 		if newDBErr != nil {
 			return nil, newDBErr

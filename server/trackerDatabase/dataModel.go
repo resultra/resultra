@@ -9,9 +9,12 @@ import (
 )
 
 type Database struct {
-	DatabaseID string             `json:"databaseID"`
-	Name       string             `json:"name"`
-	Properties DatabaseProperties `json:"properties"`
+	DatabaseID      string             `json:"databaseID"`
+	Name            string             `json:"name"`
+	Properties      DatabaseProperties `json:"properties"`
+	IsTemplate      bool               `json:"isTemplate"`
+	Description     *string            `json:"description"`
+	CreatedByUserID string             `json:"createdByUserID"`
 }
 
 func SaveNewDatabase(newDatabase Database) error {
@@ -21,8 +24,9 @@ func SaveNewDatabase(newDatabase Database) error {
 		return fmt.Errorf("SaveNewDatabase: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO databases VALUES ($1,$2,$3)`,
-		newDatabase.DatabaseID, newDatabase.Name, encodedProps); insertErr != nil {
+	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO databases VALUES ($1,$2,$3,$4,$5,$6)`,
+		newDatabase.DatabaseID, newDatabase.Name, encodedProps,
+		newDatabase.Description, newDatabase.IsTemplate, newDatabase.CreatedByUserID); insertErr != nil {
 		return fmt.Errorf("saveNewDatabase: insert failed: error = %v", insertErr)
 	}
 
@@ -30,21 +34,30 @@ func SaveNewDatabase(newDatabase Database) error {
 
 }
 
-func CloneDatabase(remappedIDs uniqueID.UniqueIDRemapper, newName string, srcDatabaseID string) (*Database, error) {
+type CloneDatabaseParams struct {
+	NewName          string
+	CreatedByUserID  string
+	IsTemplate       bool
+	SourceDatabaseID string
+}
 
-	srcDatabase, err := GetDatabase(srcDatabaseID)
+func CloneDatabase(remappedIDs uniqueID.UniqueIDRemapper, cloneParams CloneDatabaseParams) (*Database, error) {
+
+	srcDatabase, err := GetDatabase(cloneParams.SourceDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("CloneDatabase: %v", err)
 	}
 
-	destDatabaseID, err := remappedIDs.AllocNewRemappedID(srcDatabaseID)
+	destDatabaseID, err := remappedIDs.AllocNewRemappedID(cloneParams.SourceDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("CloneDatabase: %v", err)
 	}
 
 	dest := *srcDatabase
 	dest.DatabaseID = destDatabaseID
-	dest.Name = newName
+	dest.Name = cloneParams.NewName
+	dest.CreatedByUserID = cloneParams.CreatedByUserID
+	dest.IsTemplate = cloneParams.IsTemplate
 
 	destProps, err := srcDatabase.Properties.Clone(remappedIDs)
 	if err != nil {
@@ -63,6 +76,8 @@ func CloneDatabase(remappedIDs uniqueID.UniqueIDRemapper, newName string, srcDat
 type NewDatabaseParams struct {
 	Name               string  `json:"name"`
 	TemplateDatabaseID *string `json:"templateDatabaseID"`
+	CreatedByUserID    string  `json:"createdByUserID"`
+	IsTemplate         bool
 }
 
 func SaveNewEmptyDatabase(params NewDatabaseParams) (*Database, error) {
@@ -77,9 +92,11 @@ func SaveNewEmptyDatabase(params NewDatabaseParams) (*Database, error) {
 	dbProps := newDefaultDatabaseProperties()
 
 	newDatabase := Database{
-		DatabaseID: databaseID,
-		Name:       sanitizedDbName,
-		Properties: dbProps}
+		DatabaseID:      databaseID,
+		Name:            sanitizedDbName,
+		IsTemplate:      params.IsTemplate,
+		CreatedByUserID: params.CreatedByUserID,
+		Properties:      dbProps}
 
 	if err := SaveNewDatabase(newDatabase); err != nil {
 		return nil, fmt.Errorf("SaveNewEmptyDatabase: %v", err)
