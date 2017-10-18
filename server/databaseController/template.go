@@ -46,11 +46,9 @@ func cloneFields(remappedIDs uniqueID.UniqueIDRemapper, srcDatabaseID string) er
 		clonedField := currField
 		clonedField.ParentDatabaseID = remappedDatabaseID
 
-		remappedFieldID, err := remappedIDs.GetExistingRemappedID(currField.FieldID)
-		if err != nil {
-			return fmt.Errorf("cloneFields: Missing mapping for field ID = %v (err=%v)",
-				currField.FieldID, err)
-		}
+		// There's no guarantee regarding the order of fields IDs being re-mapped.
+		// So, the re-mapped field ID just needs to be remapped if it isn't already created.
+		remappedFieldID := remappedIDs.AllocNewOrGetExistingRemappedID(currField.FieldID)
 		clonedField.FieldID = remappedFieldID
 
 		if currField.IsCalcField {

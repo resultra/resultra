@@ -3,6 +3,7 @@ package calcField
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
 	"time"
@@ -78,28 +79,24 @@ func decodeEquation(encodedEqn string) (*EquationNode, error) {
 // is used when copying an existing database to a template or copying a template to create a new database.
 func remapEquationToClonedIDs(remappedIDs uniqueID.UniqueIDRemapper, eqnNode *EquationNode) error {
 
+	// There's no guarantee regarding the order of fields IDs being re-mapped.
+	// So, the re-mapped field ID just needs to be remapped if it isn't already created.
 	if len(eqnNode.FieldID) > 0 {
-
-		remappedFieldID, err := remappedIDs.GetExistingRemappedID(eqnNode.FieldID)
-		if err != nil {
-			return fmt.Errorf("RemapEquationNodeToClonedIDs: Can't find remapped ID for field ID = %v", eqnNode.FieldID)
-		}
-
+		remappedFieldID := remappedIDs.AllocNewOrGetExistingRemappedID(eqnNode.FieldID)
 		eqnNode.FieldID = remappedFieldID
 	}
 
 	if len(eqnNode.GlobalID) > 0 {
-
-		remappedGlobalID, err := remappedIDs.GetExistingRemappedID(eqnNode.GlobalID)
-		if err != nil {
-			return fmt.Errorf("RemapEquationNodeToClonedIDs: Can't find remapped ID for global ID = %v", eqnNode.GlobalID)
-		}
+		remappedGlobalID := remappedIDs.AllocNewOrGetExistingRemappedID(eqnNode.GlobalID)
 		eqnNode.GlobalID = remappedGlobalID
-
 	}
 
-	for eqnNode.FuncArgs != nil {
+	if eqnNode.FuncArgs != nil {
+
+		log.Printf("remapEquationToClonedIDs: cloning function args: len = %v", len(eqnNode.FuncArgs))
+
 		for _, currArg := range eqnNode.FuncArgs {
+
 			if err := remapEquationToClonedIDs(remappedIDs, currArg); err != nil {
 				return fmt.Errorf("RemapEquationNodeToClonedIDs: %v", err)
 			}
@@ -116,6 +113,9 @@ func CloneEquation(remappedIDs uniqueID.UniqueIDRemapper, encodedEqn string) (st
 	if err != nil {
 		return "", fmt.Errorf("CloneEquation: failure decoding source equation: %v", err)
 	}
+
+	// TODO - Do some kind of sanity check to make sure there aren't any loops in the equation.
+	// A loop would cause an infinite recursion.
 
 	if err := remapEquationToClonedIDs(remappedIDs, rootEqnNode); err != nil {
 		return "", fmt.Errorf("CloneEquation: %v", err)
