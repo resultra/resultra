@@ -11,7 +11,6 @@ import (
 	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/recordReadController"
 	"resultra/datasheet/server/recordUpdate"
-	"resultra/datasheet/server/templateController"
 	"resultra/datasheet/server/timelineController"
 	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/userRoleController"
@@ -34,7 +33,6 @@ var dummyUserRoleInfo = userRoleController.DummyStructForInclude{}
 var dummyAttachmentInfo = attachment.DummyStructForInclude{}
 var dummyValueListInfo = valueList.DummyStructForInclude{}
 var dummyDisplayTableInfo = displayTable.DummyStructForInclude{}
-var dummyDisplayTemplateInfo = templateController.DummyStructForInclude{}
 
 func DummyFunctionForImportFromGoogleAppEngineProjectFolder() {
 	// This dummy function is needed so standaline packages inside

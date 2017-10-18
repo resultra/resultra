@@ -14,9 +14,24 @@ func createNewDatabase(req *http.Request, dbParams trackerDatabase.NewDatabasePa
 		return nil, userErr
 	}
 
-	newDB, newDBErr := trackerDatabase.SaveNewEmptyDatabase(dbParams)
-	if newDBErr != nil {
-		return nil, newDBErr
+	var newDB *trackerDatabase.Database
+	var newDBErr error
+
+	if (dbParams.TemplateDatabaseID != nil) && (len(*dbParams.TemplateDatabaseID) > 0) {
+
+		newDBFromTemplateParams := SaveTemplateParams{
+			SourceDatabaseID: *dbParams.TemplateDatabaseID,
+			NewTemplateName:  dbParams.Name,
+		}
+		newDB, newDBErr = saveDatabaseToTemplate(newDBFromTemplateParams)
+		if newDBErr != nil {
+			return nil, newDBErr
+		}
+	} else {
+		newDB, newDBErr = trackerDatabase.SaveNewEmptyDatabase(dbParams)
+		if newDBErr != nil {
+			return nil, newDBErr
+		}
 	}
 
 	if adminErr := userRole.AddDatabaseAdmin(newDB.DatabaseID, userID); adminErr != nil {

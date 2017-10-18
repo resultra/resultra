@@ -13,6 +13,20 @@ type ItemListViewProperties struct {
 	PageSize int     `json:"pageSize"`
 }
 
+func (srcProps ItemListViewProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) ItemListViewProperties {
+
+	destProps := srcProps
+
+	if srcProps.FormID != nil {
+		destFormID := remappedIDs.AllocNewOrGetExistingRemappedID(*srcProps.FormID)
+		destProps.FormID = &destFormID
+	} else if srcProps.TableID != nil {
+		destTableID := remappedIDs.AllocNewOrGetExistingRemappedID(*srcProps.TableID)
+		destProps.TableID = &destTableID
+	}
+	return destProps
+}
+
 func (viewProps ItemListViewProperties) validate() error {
 	// TODO - Retrieve the form or table to validate it exists
 	if viewProps.TableID != nil {
@@ -67,7 +81,10 @@ func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) 
 		destAltViews = append(destAltViews, destAltView)
 	}
 
+	destDefaultView := srcProps.DefaultView.Clone(remappedIDs)
+
 	destProps := ItemListProperties{
+		DefaultView:            destDefaultView,
 		DefaultRecordSortRules: destSortRules,
 		DefaultFilterRules:     *destFilterRules,
 		DefaultFilterFields:    destFilterFields,

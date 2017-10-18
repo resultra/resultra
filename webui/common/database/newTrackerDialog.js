@@ -1,6 +1,7 @@
 function openNewTrackerDialog() {
 	
 	var $newTrackerDialogForm = $('#newTrackerDialogForm')
+	var $templateSelection = $('#newTrackerTemplateSelection')
 	
 	var validator = $newTrackerDialogForm.validate({
 		rules: {
@@ -23,6 +24,22 @@ function openNewTrackerDialog() {
 	})
 
 	validator.resetForm()
+	
+	var getDBListParams = {} // no parameters necessary - gets the tracker list for the currently signed in user
+	
+	jsonAPIRequest("database/getList",getDBListParams,function(trackerList) {
+		
+		$templateSelection.empty()
+		
+		for (var trackerIndex=0; trackerIndex<trackerList.length; trackerIndex++) {	
+			var trackerInfo = trackerList[trackerIndex]
+			$templateSelection.append(selectOptionHTML(trackerInfo.databaseID,trackerInfo.databaseName))
+		}
+			
+	})
+	
+	
+	
 		
 	$('#newTrackerDialog').modal('show')
 	
@@ -30,7 +47,10 @@ function openNewTrackerDialog() {
 		console.log("New Tracker save button clicked")
 		if($newTrackerDialogForm.valid()) {	
 			
-			var newTrackerParams = {  name: $('#newTrackerNameInput').val() }
+			var newTrackerParams = {  
+				name: $('#newTrackerNameInput').val(),
+				templateDatabaseID: $templateSelection.val()
+			}
 			jsonAPIRequest("database/new",newTrackerParams,function(newTrackerInfo) {
 				console.log("Created new tracker: " + JSON.stringify(newTrackerInfo))
 				addTrackerListItem(newTrackerInfo)	

@@ -2,8 +2,8 @@ package trackerDatabase
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 )
@@ -61,7 +61,8 @@ func CloneDatabase(remappedIDs uniqueID.UniqueIDRemapper, newName string, srcDat
 }
 
 type NewDatabaseParams struct {
-	Name string `json:"name"`
+	Name               string  `json:"name"`
+	TemplateDatabaseID *string `json:"templateDatabaseID"`
 }
 
 func SaveNewEmptyDatabase(params NewDatabaseParams) (*Database, error) {

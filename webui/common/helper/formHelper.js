@@ -90,6 +90,7 @@ function emptyOptionHTML(prompt) {
 }
 
 function selectOptionHTML(selItemVal, selItemText) {
+	// TODO - Setup as jQuery object and use the text() method to set the text, rather than concatenating HTML
 	var selOptionHTML = '<option value="' + selItemVal + '">' + selItemText + '</option>'
 	return selOptionHTML
 }
