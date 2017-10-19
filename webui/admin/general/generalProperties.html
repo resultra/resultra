@@ -1,21 +1,36 @@
 {{define "adminDatabaseNameProperty"}}
-	<form class="form-inline" id="databaseNamePropertyForm">
-		<div class="container-fluid">
-			<div class="form-group">
-				<label for="databasePropsNameInput">Tracker Name</label>
-				<input type="text" id="databasePropsNameInput" name="databasePropsNameInput" class="form-control" placeholder="Database Name" required="" autofocus="">
-			</div>
-		</div>
-	</form>
+
+
+	<tr>
+		<td class="width200"><label for="databasePropsNameInput">Tracker name</label>
+			<div><small></small></div>
+		</td>
+
+		<td>
+			<form id="databaseNamePropertyForm">
+					<div class="form-group maxWidth400">
+						<input type="text" id="databasePropsNameInput" name="databasePropsNameInput" class="form-control" placeholder="Database Name" required="" autofocus="">
+					</div>
+			</form>
+		</td>
+	</tr>
+
+
+
 {{end}}
 
 
 {{define "adminGeneralProperties"}}
 
-	<div class="marginTop20">
-		{{template "adminDatabaseNameProperty"}}
-	</div>
+
+<table class="table">
+
+	{{template "adminDatabaseNameProperty"}}
 	
 	{{template "adminSaveTemplateProperties"}}
+	
+</table>
+
+
 
 {{end}}
