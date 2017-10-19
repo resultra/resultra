@@ -3,8 +3,8 @@ package formLink
 import (
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/trackerDatabase"
@@ -264,13 +264,14 @@ func updateExistingFormLink(updatedFormLink *FormLink) (*FormLink, error) {
 	}
 
 	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE form_links 
-				SET properties=$1,name=$2,include_in_sidebar=$3,shared_link_enabled=$4,shared_link_id=$5
-				WHERE link_id=$6`,
+				SET properties=$1,name=$2,include_in_sidebar=$3,shared_link_enabled=$4,shared_link_id=$5,form_id=$6
+				WHERE link_id=$7`,
 		encodedProps,
 		updatedFormLink.Name,
 		updatedFormLink.IncludeInSidebar,
 		updatedFormLink.SharedLinkEnabled,
 		updatedFormLink.SharedLinkID,
+		updatedFormLink.FormID,
 		updatedFormLink.LinkID); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingFormLink: Can't update form link properties %v: error = %v",
 			updatedFormLink.LinkID, updateErr)

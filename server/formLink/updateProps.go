@@ -92,11 +92,11 @@ func (updateParams FormLinkFormParams) updateProps(linkForUpdate *FormLink) erro
 
 	oldForm, getErr := form.GetForm(linkForUpdate.FormID)
 	if getErr != nil {
-		return fmt.Errorf("Update form properties: Unable to get form specified as new form: %v", getErr)
+		return fmt.Errorf("FormLinkFormParams.updateProps: Unable to get existing form before setting new form: %v", getErr)
 	}
 
 	if newForm.ParentDatabaseID != oldForm.ParentDatabaseID {
-		return fmt.Errorf("Update form properties: Database mismatch for new form: %v", newForm.ParentDatabaseID)
+		return fmt.Errorf("FormLinkFormParams.updateProps: Database mismatch for new form: %v", newForm.ParentDatabaseID)
 	}
 
 	linkForUpdate.FormID = updateParams.FormID
