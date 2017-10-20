@@ -35,4 +35,4 @@ endif
 
 EXPORT_HTML_WITH_INJECTED_ASSETS = $(GULP) $(INJECT_GULP_TARGETS) --assets
 
-EXPORT_THIRD_PARTY_ASSETS = $(THIRD_PARTY_GULP) exportThirdPartyAssets injectHTMLFilesWithIndividualPkgAssets --pathprefix ${CURDIR} --pkgassets
+EXPORT_THIRD_PARTY_ASSETS = $(THIRD_PARTY_GULP) exportThirdPartyAssets injectHTMLFilesWithIndividualPkgAssets --pathprefix ${CURDIR} --basepath $(abspath ${ASSET_BASE_PATH}) --pkgassets

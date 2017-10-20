@@ -19,6 +19,9 @@ var pkgAssets = require(args.pkgassets)
 var pathPrefix = args.pathprefix
 gutil.log("Path prefix: " + pathPrefix)
 
+var basePath = args.basepath
+gutil.log("Base path: " + basePath)
+
 function prefixFilesWithPathPrefix(prefix, fileList) {
 	var absFiles = []
 	for(var f in fileList) {
@@ -46,9 +49,7 @@ gulp.task('exportThirdPartyAssets',function() {
 	  		// directory name must be pre-pended.
 	  		var absFiles = prefixFilesWithPathPrefix(pkgInfo.pkgPrefix,pkgFiles)
 	  		absFiles = prefixFilesWithPathPrefix(pathPrefix,absFiles)
-		
-	  	  	var basePath = "/Users/sroehling/Development/go/src/resultra/datasheet/webui"
-	
+			
 	  	  	gulp.src(absFiles, {base:basePath})
 	  	  	  .pipe(rename(function(path) {
 				  	  			  // Replace the package prefix (package directory location relative
@@ -74,7 +75,6 @@ gulp.task('injectHTMLFilesWithIndividualPkgAssets', function() {
 	var absHTMLFiles = prefixFilesWithPathPrefix(pathPrefix,pkgAssets.htmlFiles)
 	gutil.log("Injecting package assets: html files  = " + JSON.stringify(absHTMLFiles))
 	
-	var basePath = "/Users/sroehling/Development/go/src/resultra/datasheet/webui"
 	var htmlTarget = gulp.src(absHTMLFiles,{base:basePath})	
 	
 	// The files for individual packages are merged into a single stream, then
