@@ -97,7 +97,7 @@ func getAllCollaborators(databaseID string) ([]CollaboratorInfo, error) {
 
 }
 
-type GetAllCollaborUserInfoParams = struct {
+type GetAllCollaborUserInfoParams struct {
 	DatabaseID string `json:"databaseID"`
 }
 
