@@ -6,7 +6,7 @@
 		},
 		"ckeditor": {
 			"pkgPrefix": "node_modules/ckeditor",
-			"jsFiles": [ "*.js","lang/*.js"],
+			"jsFiles": [ "*.js","lang/en.js"],
 			"cssFiles": ["skins/moono/*.css" ],
 			"imageFiles": ["skins/moono/*.png","skins/moono/images/**"]		
 		},
