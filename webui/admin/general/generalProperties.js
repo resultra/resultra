@@ -45,6 +45,7 @@ function initAdminGeneralProperties(databaseID) {
 	var getDBInfoParams = { databaseID: databaseID }
 	jsonAPIRequest("database/getInfo",getDBInfoParams,function(dbInfo) {
 		initDatabaseNameProperties(dbInfo.databaseInfo)
+		initTrackerDescriptionPropertyPanel(dbInfo.databaseInfo)
 	})
 	initSaveTemplateProperties(databaseID)
 	

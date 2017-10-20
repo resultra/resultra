@@ -98,3 +98,15 @@ func (updateParams SetFormLinkOrderParams) updateProps(db *Database) error {
 
 	return nil
 }
+
+type SetDescriptionParams struct {
+	DatabaseIDHeader
+	Description *string `json:"description"`
+}
+
+func (updateParams SetDescriptionParams) updateProps(db *Database) error {
+
+	db.Description = updateParams.Description
+
+	return nil
+}

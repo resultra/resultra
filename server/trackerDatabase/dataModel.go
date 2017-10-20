@@ -109,8 +109,12 @@ func GetDatabase(databaseID string) (*Database, error) {
 
 	dbName := ""
 	encodedProps := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT name,properties FROM databases
-		 WHERE database_id=$1 LIMIT 1`, databaseID).Scan(&dbName, &encodedProps)
+	var desc *string
+	isTemplate := false
+	createdByUserID := ""
+	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT name,properties,description,is_template,created_by_user_id 
+		FROM databases
+		 WHERE database_id=$1 LIMIT 1`, databaseID).Scan(&dbName, &encodedProps, &desc, &isTemplate, &createdByUserID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getDatabase: Unabled to get database: db ID = %v: datastore err=%v",
 			databaseID, getErr)
@@ -122,9 +126,12 @@ func GetDatabase(databaseID string) (*Database, error) {
 	}
 
 	getDb := Database{
-		DatabaseID: databaseID,
-		Name:       dbName,
-		Properties: dbProps}
+		DatabaseID:      databaseID,
+		Name:            dbName,
+		Description:     desc,
+		Properties:      dbProps,
+		CreatedByUserID: createdByUserID,
+		IsTemplate:      isTemplate}
 
 	return &getDb, nil
 }
@@ -137,9 +144,9 @@ func updateExistingDatabase(databaseID string, updatedDB *Database) (*Database, 
 	}
 
 	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE databases 
-				SET properties=$1, name=$2
-				WHERE database_id=$3`,
-		encodedProps, updatedDB.Name, databaseID); updateErr != nil {
+				SET properties=$1, name=$2, description=$3
+				WHERE database_id=$4`,
+		encodedProps, updatedDB.Name, updatedDB.Description, databaseID); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingDatabase: Can't update database properties %v: error = %v",
 			databaseID, updateErr)
 	}

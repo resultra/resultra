@@ -20,7 +20,8 @@ func init() {
 	baseTemplateFiles := []string{
 		"static/admin/general/generalAdminPage.html",
 		"static/admin/general/generalProperties.html",
-		"static/admin/general/saveTemplate.html"}
+		"static/admin/general/saveTemplate.html",
+		"static/admin/general/trackerDescription.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
