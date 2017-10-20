@@ -2,7 +2,8 @@
     "cssFiles": [], 
     "htmlFiles": [
 	    "registerDialog.html", 
-	    "signIn.html", 
+	    "signIn.html",
+		"signInPage.html", 
 	    "signinDialog.html", 
 	    "userDropdownMenu.html"
     ], 
