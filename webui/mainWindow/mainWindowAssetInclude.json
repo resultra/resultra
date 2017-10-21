@@ -1,0 +1,12 @@
+{
+	"subDirs":["../generic",
+		"../common"],
+	"cssFiles": ["mainWindow.css"],
+	"jsFiles": ["mainWindow.js",
+		"mainWindowLayout.js"],
+	"htmlFiles":["mainWindow.html"],
+	"imageFiles":[],
+	"minCSSFile":"mainWindow/mainWindow.min.css",
+	"minJSFile": "mainWindow/mainWindow.min.js",
+	"injectPlaceholderName":"mainWindowAssets"
+}

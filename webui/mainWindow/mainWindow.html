@@ -1,0 +1,172 @@
+{{define "mainWindowBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  {{template "trackerPageBreadcrumb" .}}
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Final breadcrumb TBD</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "mainWindowPageHeader"}}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "mainWindowBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "alertHeader" .}}
+					{{template "userDropdownMenu"}}
+					{{template "adminSettingsButton" .}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+
+
+
+{{define "mainWindowMainProps"}}
+	<div id="mainWindowProps" class="propertyPanelToggleContainer">		
+		TBD
+	</div>
+{{end}}
+
+{{define "mainWindowProps"}}
+
+	{{template "sidebarHeader" "Main Window Sidebar"}}
+		
+	<div class="ui-layout-content noPadding">
+			{{template "propertyPanelGroupPrefix"}}
+				{{template "mainWindowMainProps" .}}
+			{{template "propertyPanelGroupSuffix"}}	
+	</div>
+
+{{end}}
+
+{{define "mainWindowHeaderControls"}}
+<div class="container-fluid" id="recordHeaderGrid">
+	<div class="row">
+		<div class= "col-sm-2">
+			<button type="button" class="btn btn-default btn-sm" id="viewTableOfContentsMenuButton">
+			  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+			</button>
+		</div> <!-- column -->
+		<div class= "col-sm-8"  id="mainWindowCenterContentHeaderCol">
+			<h4 id="mainWindowCenterContentHeader">Main Window Content Subtitle (TBD)</h4>
+		</div> <!-- column -->
+		<div class= "col-sm-2">
+			<div class="pull-right">
+				<button type="button" class="btn btn-default btn-sm" id="viewListOptionsButton">
+				  <span class="fa fa-toggle-left fa-lg" aria-hidden="true"></span>
+				</button>
+			</div>
+		</div> <!-- column -->
+	</div> <!-- row -->
+</div> <!-- #recordHeaderGrid  -->
+{{end}}
+
+
+{{define "mainWindowFooterControls"}}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-sm-12">
+			<!-- TODO include footer controls for content -->
+		</div>
+	</div>
+</div> <!-- record footer grid -->
+{{end}}
+
+
+
+
+{{define "mainWindow"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "electronImportPrefix"}}
+	{{template "thirdPartyCSS"}}
+	
+	<!-- mainWindowAssets:css -->
+	<!-- endinject -->
+	
+	<script>var mainWindowContext = {
+	 	databaseID: "{{.DatabaseID}}"} 
+	</script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- mainWindowAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+  <body>
+
+	<div id="layoutPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north">
+			{{template "mainWindowPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west" id="viewFormTocLayout">
+			{{template "databaseTOC" .}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-east noPadding">
+			
+			{{template "mainWindowProps" .}}
+					
+		</div> <!-- east filter & sort pane for entire page -->
+
+
+		<div class="pane ui-layout-center" id="mainWindowContentPane">
+
+			<div class="ui-layout-center" id="recordViewPane">
+				
+				<form class="ui form" id="editLayoutForm" name="editLayoutForm">
+					<div class="layoutPageDiv" id="layoutPage">
+						<div id="formViewContainer"></div>
+						<div id="tableViewContainer"></div>
+					</div>	
+				</form>
+				
+			</div> <!-- ui-layout-center #recordHeader -->
+	
+			<div class=" ui-layout-south" id="mainWindowContentFooterUILayout" >
+				{{ template "mainWindowFooterControls"}}
+			</div>  <!-- #recordFooterUILayout ui-layout-south -->
+			
+			<!-- The style is overridden on the #recordHeader and semantic UI
+			     grid divs to minimize the padding, so the buttons and selection
+				 will be relatively compact within the header.
+				
+				It's also important for the ui-layout-north pane to come *last*
+				in the HTML. This ensures the Z-order is setup so the menues in 
+				the header can overflow the panes below it. See the jQuery UI
+				layout documentation for more discussion on this.
+				
+				http://layout.jquery-dev.com/documentation.cfm#Drop-Downs	
+			-->
+			<div class="ui-layout-north" id="mainWindowContentHeaderUILayout">
+				{{template "mainWindowHeaderControls"}}
+			</div> <!-- ui-layout-north #recordHeaderUILayout -->
+
+		</div> <!-- center pane for entire page -->	
+	</div> <!-- layout page -->
+	
+	{{template "submitFormDialog"}}
+	{{template "attachmentTemplates"}}
+	{{template "formButtonPopupFormDialog"}}
+
+	
+  </body>
+  	
+</html>
+
+{{end}}

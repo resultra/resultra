@@ -1,0 +1,19 @@
+#mainWindowCenterContentHeaderCol {
+	 text-align:center;
+}
+
+#mainWindowCenterContentHeader {
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+#mainWindowContentPane
+{
+	padding: 0px;
+}
+
+
+#mainWindowContentHeaderUILayout,#mainWindowContentFooterUILayout
+{
+	padding: 4px; /* override jQuery UI Layout padding */
+}
