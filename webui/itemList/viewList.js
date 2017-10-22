@@ -9,8 +9,12 @@ function initItemListView(itemListLayout, listInfo) {
 		
 	var filterPanelElemPrefix = "form_"
 	var $formLayoutContainer = $('#formViewContainer')
+	
 	var $formViewContainer = $('#formViewContainer')
+	$formViewContainer.empty()
+	
 	var $tableViewContainer = $('#tableViewContainer')
+	$tableViewContainer.empty()
 	
 	function updateSortRulesFromTable(sortRules) {
 		console.log("updateSortRulesFromTable: " + JSON.stringify(sortRules))
