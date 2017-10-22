@@ -121,6 +121,7 @@
 		<div class="pane ui-layout-east noPadding">
 			
 			{{template "mainWindowProps" .}}
+			{{template "listViewProps" .ItemListParams}}
 					
 		</div> <!-- east filter & sort pane for entire page -->
 
@@ -140,6 +141,7 @@
 	
 			<div class=" ui-layout-south" id="mainWindowContentFooterUILayout" >
 				{{ template "mainWindowFooterControls"}}
+				{{ template "viewListFooterControls"}}
 			</div>  <!-- #recordFooterUILayout ui-layout-south -->
 			
 			<!-- The style is overridden on the #recordHeader and semantic UI

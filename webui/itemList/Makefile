@@ -13,5 +13,3 @@ prebuild:
 		
 package:
 	$(EXPORT_ASSETS)
-	$(BUILD_ASSET_INJECTION_LIST) viewListAssetInclude.json $(ASSET_BASE_PATH) > viewListAssets_gen.json
-	$(EXPORT_HTML_WITH_INJECTED_ASSETS) $(abspath ./viewListAssets_gen.json)

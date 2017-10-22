@@ -1,6 +1,7 @@
 {
 	"subDirs":["../generic",
-		"../common"],
+		"../common",
+		"../itemList"],
 	"cssFiles": ["mainWindow.css"],
 	"jsFiles": ["mainWindow.js",
 		"mainWindowLayout.js"],

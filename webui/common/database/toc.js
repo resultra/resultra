@@ -9,12 +9,21 @@ function addDashboardLinkToTOCList(dashboardInfo) {
 
 function addItemListLinkToTOCList(tocConfig, listInfo) {
 	var itemListItemHTML = '' + 
-		'<a href="/viewList/' + listInfo.listID 
-			+ '" class="list-group-item">' + 
+		'<a href="" class="list-group-item">' + 
 				listInfo.name + 
 			'<span class="badge"></span>' +
 		'</a>'
 	var $itemListItem = $(itemListItemHTML)
+	
+	$itemListItem.click(function(e) {
+		e.preventDefault()
+		console.log("Item list TOC item clicked: list id = " + listInfo.listID)
+		$itemListItem.blur()
+		
+		if(tocConfig.itemListClickedCallback !== undefined) {
+			tocConfig.itemListClickedCallback(listInfo.listID)
+		}
+	})
 	
 	var listCountParams = {
 		databaseID: tocConfig.databaseID,

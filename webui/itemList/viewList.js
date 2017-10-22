@@ -4,7 +4,7 @@
 // and access to global values.
 var currGlobalVals
 
-function initItemListView(listInfo) {
+function initItemListView(itemListLayout, listInfo) {
 	
 		
 	var filterPanelElemPrefix = "form_"
@@ -25,7 +25,7 @@ function initItemListView(listInfo) {
 			tableViewController.refresh()
 		}
 	}
-	var itemListLayout = new ItemListLayout(resizeListView)
+//	var itemListLayout = new ItemListLayout(resizeListView)
 	
 	
 	var listItemController = new ListItemController($formViewContainer)
@@ -152,29 +152,19 @@ function initItemListView(listInfo) {
 
 }
 
-
-$(document).ready(function() {	
-	 
-				
-	initUserDropdownMenu()
-	initAlertHeader(viewListContext.databaseID)
-	
-	registerTableViewCustomSortFuncs()
-	
-	var tocConfig = {
-		databaseID: viewListContext.databaseID,
-		newItemFormButtonFunc: openSubmitFormDialog
-	}	
-	initDatabaseTOC(tocConfig)
-	
+function loadItemListView(itemListLayout,databaseID, listID) {
 	hideSiblingsShowOne('#listViewProps')
+	
+	viewListContext = {
+			listID:listID,
+		 	databaseID: databaseID}
+	GlobalFormPagePrivs = "edit" // TODO - Load from the server
 	
 	initFieldInfo(viewListContext.databaseID, function() {
 		var getListParams = { listID: viewListContext.listID }
 		jsonAPIRequest("itemList/get",getListParams,function(listInfo) {
-			initItemListView(listInfo)		
+			initItemListView(itemListLayout,listInfo)		
 		})	
-		
 	})
-				
-}); // document ready
+	
+}

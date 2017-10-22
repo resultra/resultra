@@ -12,6 +12,7 @@ import (
 
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
+	"resultra/datasheet/webui/itemList"
 	"resultra/datasheet/webui/thirdParty"
 )
 
@@ -24,7 +25,9 @@ func init() {
 		baseTemplateFiles,
 		thirdParty.TemplateFileList,
 		generic.TemplateFileList,
-		common.TemplateFileList}
+		common.TemplateFileList,
+		itemList.TemplateFileList}
+
 	mainWindowTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
@@ -33,6 +36,7 @@ type MainWindowTemplateParams struct {
 	DatabaseID      string
 	DatabaseName    string
 	CurrUserIsAdmin bool
+	ItemListParams  itemList.ViewListTemplateParams
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -63,7 +67,8 @@ func viewMainWindow(w http.ResponseWriter, r *http.Request) {
 		templParams := MainWindowTemplateParams{Title: "Main Window",
 			DatabaseID:      dbInfo.DatabaseID,
 			DatabaseName:    dbInfo.DatabaseName,
-			CurrUserIsAdmin: isAdmin}
+			CurrUserIsAdmin: isAdmin,
+			ItemListParams:  itemList.ViewListTemplParams}
 
 		if err := mainWindowTemplates.ExecuteTemplate(w, "mainWindow", templParams); err != nil {
 			api.WriteErrorResponse(w, err)

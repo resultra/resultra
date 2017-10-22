@@ -3,12 +3,6 @@ $(document).ready(function() {
 				
 	initUserDropdownMenu()
 	initAlertHeader(mainWindowContext.databaseID)
-		
-	var tocConfig = {
-		databaseID: mainWindowContext.databaseID,
-		newItemFormButtonFunc: openSubmitFormDialog
-	}	
-	initDatabaseTOC(tocConfig)
 	
 	function resizeMainWindow() {
 		console.log("Resizing list view")
@@ -17,6 +11,21 @@ $(document).ready(function() {
 		} */
 	}
 	var mainWinLayout = new MainWindowLayout(resizeMainWindow)
+	
+	
+	function itemListClicked(listID) {
+		console.log("Main window: item list clicked: " + listID)
+		loadItemListView(mainWinLayout,mainWindowContext.databaseID,listID)
+	}
+	
+		
+	var tocConfig = {
+		databaseID: mainWindowContext.databaseID,
+		newItemFormButtonFunc: openSubmitFormDialog,
+		itemListClickedCallback: itemListClicked
+	}	
+	initDatabaseTOC(tocConfig)
+	
 	
 	
 //	hideSiblingsShowOne('#listViewProps')
