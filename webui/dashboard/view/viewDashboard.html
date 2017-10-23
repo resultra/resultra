@@ -10,16 +10,19 @@
 
 {{define "dashboardViewSidebar"}}
 
-	{{template "propertiesSidebarHeader"}}
+	<div id="dashboardViewSidebarProps">
+		{{template "sidebarHeader" "Dashboard Options"}}
 	
-	<div class="ui-layout-content" id="viewDashboardSidebarContent">
+		<div class="ui-layout-content" id="viewDashboardSidebarContent">
 		
-		{{template "propertyPanelGroupPrefix"}}
-			{{template "summaryTableViewProps" .ComponentParams.SummaryTableParams}}
-			{{template "barChartViewProps" .ComponentParams.BarChartParams}}	
-			{{template "dashboardViewProps" .}}
+			{{template "propertyPanelGroupPrefix"}}
+				{{template "summaryTableViewProps" .ComponentParams.SummaryTableParams}}
+				{{template "barChartViewProps" .ComponentParams.BarChartParams}}	
+				{{template "dashboardViewProps" .}}
 		
-		{{template "propertyPanelGroupSuffix"}}
+			{{template "propertyPanelGroupSuffix"}}
 		
+		</div>
 	</div>
+
 {{end}}

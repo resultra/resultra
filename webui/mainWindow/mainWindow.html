@@ -26,27 +26,6 @@
 {{end}}
 
 
-
-
-
-{{define "mainWindowMainProps"}}
-	<div id="mainWindowProps" class="propertyPanelToggleContainer">		
-		TBD
-	</div>
-{{end}}
-
-{{define "mainWindowProps"}}
-
-	{{template "sidebarHeader" "Main Window Sidebar"}}
-		
-	<div class="ui-layout-content noPadding">
-			{{template "propertyPanelGroupPrefix"}}
-				{{template "mainWindowMainProps" .}}
-			{{template "propertyPanelGroupSuffix"}}	
-	</div>
-
-{{end}}
-
 {{define "mainWindowHeaderControls"}}
 <div class="container-fluid" id="recordHeaderGrid">
 	<div class="row">
@@ -119,11 +98,8 @@
 		</div> <!-- ui layout north -->
 
 		<div class="pane ui-layout-east noPadding">
-			
-			{{template "mainWindowProps" .}}
 			{{template "listViewProps" .ItemListParams}}
 			{{template "dashboardViewSidebar" .DashboardParams}}
-					
 		</div> <!-- east filter & sort pane for entire page -->
 
 

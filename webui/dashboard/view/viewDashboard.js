@@ -2,6 +2,10 @@
 
 function loadDashboardView(pageLayout,databaseID, dashboardID) {
 
+
+	hideSiblingsShowOne('#dashboardViewSidebarProps')
+	
+
 	var viewDashboardCanvasSelector = '#dashboardCanvas'
 	
 	pageLayout.clearCenterContentArea()

@@ -22,7 +22,6 @@
 {{define "listViewMainProps"}}
 	<div id="listViewProps" class="propertyPanelToggleContainer">
 		
-		
 		{{template "propertyPanelPrefix" .DisplayPanelParams}}
 			{{template "itemListViewSelection"}}
 		{{template "propertyPanelSuffix"}}
@@ -41,23 +40,26 @@
 
 {{define "listViewProps"}}
 
-	{{template "sidebarHeader" "List Options"}}
+	<div id="listViewPropsSidebar">
+		{{template "sidebarHeader" "List Options"}}
 		
-	<div class="ui-layout-content noPadding">
-			{{template "propertyPanelGroupPrefix"}}
-				{{template "listViewMainProps" .}}
-				{{template "checkBoxViewProps" .ComponentParams.CheckBoxParams}}
-				{{template "gaugeViewProps" .ComponentParams.GaugeParams}}
-				{{template "ratingViewProps" .ComponentParams.RatingParams}}
-				{{template "userSelectionViewProps" .ComponentParams.UserSelectionParams}}
-				{{template "datePickerViewProps" .ComponentParams.DatePickerParams}}
-				{{template "commentViewProps" .ComponentParams.CommentParams}}
-				{{template "textBoxViewProps" .ComponentParams.TextBoxParams}}
-				{{template "selectionViewProps" .ComponentParams.SelectionParams}}
-				{{template "attachmentViewProps" .ComponentParams.AttachmentParams}}
-				{{template "htmlEditorViewProps" .ComponentParams.HTMLEditorParams}}
-			{{template "propertyPanelGroupSuffix"}}	
+		<div class="ui-layout-content noPadding">
+				{{template "propertyPanelGroupPrefix"}}
+					{{template "listViewMainProps" .}}
+					{{template "checkBoxViewProps" .ComponentParams.CheckBoxParams}}
+					{{template "gaugeViewProps" .ComponentParams.GaugeParams}}
+					{{template "ratingViewProps" .ComponentParams.RatingParams}}
+					{{template "userSelectionViewProps" .ComponentParams.UserSelectionParams}}
+					{{template "datePickerViewProps" .ComponentParams.DatePickerParams}}
+					{{template "commentViewProps" .ComponentParams.CommentParams}}
+					{{template "textBoxViewProps" .ComponentParams.TextBoxParams}}
+					{{template "selectionViewProps" .ComponentParams.SelectionParams}}
+					{{template "attachmentViewProps" .ComponentParams.AttachmentParams}}
+					{{template "htmlEditorViewProps" .ComponentParams.HTMLEditorParams}}
+				{{template "propertyPanelGroupSuffix"}}	
+		</div>
 	</div>
+
 
 {{end}}
 
