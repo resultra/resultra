@@ -59,7 +59,21 @@ function addFormLinkToTOCList(tocConfig, linkInfo) {
 	
 	var formLinkListItemHTML = '<a href="/newItem/' + linkInfo.linkID 
 			+ '" class="list-group-item">' + linkInfo.name + '</a>'
-	$('#tocFormList').append(formLinkListItemHTML)
+	var $formLinkListItem = $(formLinkListItemHTML)
+	
+	
+	$formLinkListItem.click(function(e) {
+		e.preventDefault()
+		console.log("Form link clicked: link id = " + linkInfo.linkID)
+		$formLinkListItem.blur()
+		
+		if(tocConfig.newItemLinkClickedCallback !== undefined) {
+			tocConfig.newItemLinkClickedCallback(linkInfo.linkID)
+		}
+	})
+	
+	
+	$('#tocFormList').append($formLinkListItem)
 }
 
 

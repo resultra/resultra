@@ -16,6 +16,7 @@ import (
 	dashboardView "resultra/datasheet/webui/dashboard/view"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/itemList"
+	"resultra/datasheet/webui/newItem"
 	"resultra/datasheet/webui/thirdParty"
 )
 
@@ -32,7 +33,8 @@ func init() {
 		itemList.TemplateFileList,
 		dashboardComponents.TemplateFileList,
 		dashboardCommon.TemplateFileList,
-		dashboardView.TemplateFileList}
+		dashboardView.TemplateFileList,
+		newItem.TemplateFileList}
 
 	mainWindowTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }

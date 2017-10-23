@@ -17,6 +17,8 @@ func init() {
 	formLinkRouter.HandleFunc("/api/formLink/getList", getFormLinksAPI)
 	formLinkRouter.HandleFunc("/api/formLink/getUserList", getUserFormLinksAPI)
 
+	formLinkRouter.HandleFunc("/api/formLink/getNewItemInfo", getNewItemInfoAPI)
+
 	formLinkRouter.HandleFunc("/api/formLink/setDefaultVals", setDefaultVals)
 	formLinkRouter.HandleFunc("/api/formLink/setName", setName)
 	formLinkRouter.HandleFunc("/api/formLink/setForm", setForm)
@@ -156,4 +158,25 @@ func disableSharedLink(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	processFormLinkPropUpdate(w, r, params)
+}
+
+type GetNewItemInfoParams struct {
+	FormLinkID string `json:"formLinkID"`
+}
+
+func getNewItemInfoAPI(w http.ResponseWriter, r *http.Request) {
+
+	params := GetNewItemInfoParams{}
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	presets, err := getNewItemInfo(r, params.FormLinkID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, presets)
+	}
+
 }

@@ -47,7 +47,14 @@ function MainWindowLayout(resizeCallback)
 			}
 		},
 		north: fixedUILayoutPaneAutoSizeToFitContentsParams(),
-		south: fixedUILayoutPaneAutoSizeToFitContentsParams(),
+		south: {
+			size: 44,
+			resizable:false,
+			slidable: false,
+			spacing_open:0,
+			spacing_closed:0,
+			initClosed:true // panel is initially closed	
+		},
 		north__showOverflowOnHover:	true,
 		south__showOverflowOnHover:	true
 	})
@@ -92,7 +99,7 @@ function MainWindowLayout(resizeCallback)
 	}
 	
 	function clearCenterContentArea() {
-		$('#contentLayoutContainer').find("div").empty()
+		$('#contentLayoutContainer').find(".clearableViewContent").empty()
 	}
 	
 	this.hideFooterLayout = hideFooterLayout

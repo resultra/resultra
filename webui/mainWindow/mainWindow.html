@@ -109,9 +109,11 @@
 				
 				<form class="ui form" id="editLayoutForm" name="editLayoutForm">
 					<div class="layoutPageDiv" id="contentLayoutContainer">
-						<div id="formViewContainer"></div>
-						<div id="tableViewContainer"></div>
-						<div id="dashboardCanvas"></div>				
+						<div id="formViewContainer" class="clearableViewContent"></div>
+						<div id="tableViewContainer" class="clearableViewContent"></div>
+						<div id="dashboardCanvas" class="clearableViewContent"></div>				
+						<div id="newItemFormPageLayoutCanvas"></div>
+						{{template "submitFormSaveConfirmation"}}
 					</div>	
 				</form>
 				
@@ -120,6 +122,7 @@
 			<div class=" ui-layout-south" id="mainWindowContentFooterUILayout" >
 				{{ template "mainWindowFooterControls"}}
 				{{ template "viewListFooterControls"}}
+				{{ template "newItemPageFooterControls"}}
 			</div>  <!-- #recordFooterUILayout ui-layout-south -->
 			
 			<!-- The style is overridden on the #recordHeader and semantic UI
