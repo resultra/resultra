@@ -11,6 +11,9 @@ import (
 	"resultra/datasheet/server/userRole"
 
 	"resultra/datasheet/webui/common"
+	dashboardCommon "resultra/datasheet/webui/dashboard/common"
+	dashboardComponents "resultra/datasheet/webui/dashboard/components"
+	dashboardView "resultra/datasheet/webui/dashboard/view"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/itemList"
 	"resultra/datasheet/webui/thirdParty"
@@ -26,7 +29,10 @@ func init() {
 		thirdParty.TemplateFileList,
 		generic.TemplateFileList,
 		common.TemplateFileList,
-		itemList.TemplateFileList}
+		itemList.TemplateFileList,
+		dashboardComponents.TemplateFileList,
+		dashboardCommon.TemplateFileList,
+		dashboardView.TemplateFileList}
 
 	mainWindowTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
@@ -37,6 +43,7 @@ type MainWindowTemplateParams struct {
 	DatabaseName    string
 	CurrUserIsAdmin bool
 	ItemListParams  itemList.ViewListTemplateParams
+	DashboardParams dashboardView.ViewDashboardTemplateParams
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -68,7 +75,8 @@ func viewMainWindow(w http.ResponseWriter, r *http.Request) {
 			DatabaseID:      dbInfo.DatabaseID,
 			DatabaseName:    dbInfo.DatabaseName,
 			CurrUserIsAdmin: isAdmin,
-			ItemListParams:  itemList.ViewListTemplParams}
+			ItemListParams:  itemList.ViewListTemplParams,
+			DashboardParams: dashboardView.ViewTemplateParams}
 
 		if err := mainWindowTemplates.ExecuteTemplate(w, "mainWindow", templParams); err != nil {
 			api.WriteErrorResponse(w, err)

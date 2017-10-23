@@ -1,0 +1,7 @@
+{
+	"subDirs":[],
+    "cssFiles": [ "viewDashboard.css" ], 
+    "htmlFiles": [ "viewDashboard.html"], 
+    "imageFiles": [], 
+    "jsFiles": [ "viewDashboard.js" ] 
+}

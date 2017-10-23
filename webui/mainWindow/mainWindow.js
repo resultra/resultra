@@ -18,11 +18,17 @@ $(document).ready(function() {
 		loadItemListView(mainWinLayout,mainWindowContext.databaseID,listID)
 	}
 	
+	function dashboardClicked(dashboardID) {
+		console.log("Main window: dashboard navigation clicked: " + dashboardID)
+		loadDashboardView(mainWinLayout,mainWindowContext.databaseID, dashboardID)
+	}
+	
 		
 	var tocConfig = {
 		databaseID: mainWindowContext.databaseID,
 		newItemFormButtonFunc: openSubmitFormDialog,
-		itemListClickedCallback: itemListClicked
+		itemListClickedCallback: itemListClicked,
+		dashboardClickedCallback: dashboardClicked
 	}	
 	initDatabaseTOC(tocConfig)
 	

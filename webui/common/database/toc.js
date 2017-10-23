@@ -1,10 +1,21 @@
 
 
-function addDashboardLinkToTOCList(dashboardInfo) {
+function addDashboardLinkToTOCList(tocConfig,dashboardInfo) {
 	// TODO - Link to "dashboard view" page instead of dashboard design page (view page isn't implemented yet)
-	var dashboardListItemHTML = '<a href="/viewDashboard/' + dashboardInfo.dashboardID 
-			+ '" class="list-group-item">' + dashboardInfo.name + '</a>'
-	$('#tocDashboardList').append(dashboardListItemHTML)		
+	var dashboardListItemHTML = '<a href="" class="list-group-item">' + dashboardInfo.name + '</a>'
+	var $dashboardListItem = $(dashboardListItemHTML)
+
+	$dashboardListItem.click(function(e) {
+		e.preventDefault()
+		console.log("Item list TOC item clicked: dashboard id = " + dashboardInfo.dashboardID)
+		$dashboardListItem.blur()
+		
+		if(tocConfig.dashboardClickedCallback !== undefined) {
+			tocConfig.dashboardClickedCallback(dashboardInfo.dashboardID)
+		}
+	})
+	
+	$('#tocDashboardList').append($dashboardListItem)		
 }
 
 function addItemListLinkToTOCList(tocConfig, listInfo) {
@@ -78,7 +89,7 @@ function initDatabaseTOC(tocConfig) {
 		$('#tocDashboardList').empty()
 		for (var dashboardInfoIndex = 0; dashboardInfoIndex < dashboardsInfo.length; dashboardInfoIndex++) {
 			var dashboardInfo = dashboardsInfo[dashboardInfoIndex]
-			addDashboardLinkToTOCList(dashboardInfo)
+			addDashboardLinkToTOCList(tocConfig,dashboardInfo)
 		}
 		if(dashboardsInfo.length === 0) {
 			$('#tocDashboardsContainer').hide()

@@ -83,7 +83,23 @@ function MainWindowLayout(resizeCallback)
 		contentLayout.open("south")
 	}
 	
+	function closePropertyPanel() {
+		contentLayout.close("east")
+	}
+	
+	function openPropertyPanel() {
+		contentLayout.open("east")
+	}
+	
+	function clearCenterContentArea() {
+		$('#contentLayoutContainer').find("div").empty()
+	}
+	
 	this.hideFooterLayout = hideFooterLayout
 	this.showFooterLayout = showFooterLayout
+	
+	this.closePropertyPanel = closePropertyPanel
+	this.openPropertyPanel = openPropertyPanel	
+	this.clearCenterContentArea = clearCenterContentArea
 	
 }

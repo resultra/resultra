@@ -1,7 +1,10 @@
 {
 	"subDirs":["../generic",
 		"../common",
-		"../itemList"],
+		"../itemList",
+		"../dashboard/common",
+		"../dashboard/components",
+		"../dashboard/view"],
 	"cssFiles": ["mainWindow.css"],
 	"jsFiles": ["mainWindow.js",
 		"mainWindowLayout.js"],

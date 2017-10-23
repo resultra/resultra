@@ -2,39 +2,13 @@ package view
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
-	"html/template"
-	"log"
 	"net/http"
 	"resultra/datasheet/server/databaseController"
-	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/userRole"
-	"resultra/datasheet/webui/common"
-	dashboardCommon "resultra/datasheet/webui/dashboard/common"
 	"resultra/datasheet/webui/dashboard/components"
-	"resultra/datasheet/webui/dashboard/design/properties"
-	"resultra/datasheet/webui/generic"
-	"resultra/datasheet/webui/thirdParty"
 )
 
-var viewDashboardTemplates *template.Template
-
-func init() {
-
-	baseTemplateFiles := []string{"static/dashboard/view/viewDashboard.html"}
-
-	templateFileLists := [][]string{
-		baseTemplateFiles,
-		generic.TemplateFileList,
-		thirdParty.TemplateFileList,
-		common.TemplateFileList,
-		dashboardCommon.TemplateFileList,
-		components.TemplateFileList,
-		properties.TemplateFileList}
-	viewDashboardTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
-}
-
-type ViewDashboardTemplateParams struct {
+type ViewDashboardInfo struct {
 	DatabaseID      string
 	DatabaseName    string
 	DashboardID     string
@@ -44,42 +18,30 @@ type ViewDashboardTemplateParams struct {
 	ComponentParams components.ComponentViewTemplateParams
 }
 
-func ViewDashboard(w http.ResponseWriter, r *http.Request) {
-
-	vars := mux.Vars(r)
-	dashboardID := vars["dashboardID"]
-	log.Println("ViewDashboard: viewing dashboard with params = %+v", vars)
+func getViewDashboardInfo(r *http.Request, dashboardID string) (*ViewDashboardInfo, error) {
 
 	dashboardDbInfo, getErr := databaseController.GetDashboardDatabaseInfo(dashboardID)
 	if getErr != nil {
-		api.WriteErrorResponse(w, getErr)
-		return
+		return nil, getErr
 	}
 
 	hasViewPrivs, privsErr := userRole.CurrentUserHasDashboardViewPrivs(r, dashboardDbInfo.DatabaseID, dashboardID)
 	if privsErr != nil {
-		api.WriteErrorResponse(w, privsErr)
-		return
+		return nil, privsErr
 	}
 	if !hasViewPrivs {
-		api.WriteErrorResponse(w, fmt.Errorf("ERROR: No permissions to view this dashboard"))
-		return
+		return nil, fmt.Errorf("ERROR: No permissions to view this dashboard")
 	}
 
 	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dashboardDbInfo.DatabaseID)
 
-	templParams := ViewDashboardTemplateParams{
+	dashboardInfo := ViewDashboardInfo{
 		DatabaseID:      dashboardDbInfo.DatabaseID,
 		DatabaseName:    dashboardDbInfo.DatabaseName,
 		DashboardID:     dashboardDbInfo.DashboardID,
 		DashboardName:   dashboardDbInfo.DashboardName,
-		CurrUserIsAdmin: isAdmin,
-		Title:           "View Dashboard",
-		ComponentParams: components.ViewTemplateParams}
+		CurrUserIsAdmin: isAdmin}
 
-	err := viewDashboardTemplates.ExecuteTemplate(w, "viewDashboard", templParams)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	return &dashboardInfo, nil
 
 }

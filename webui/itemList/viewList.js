@@ -157,6 +157,8 @@ function initItemListView(itemListLayout, listInfo) {
 }
 
 function loadItemListView(itemListLayout,databaseID, listID) {
+	
+	itemListLayout.clearCenterContentArea()
 	hideSiblingsShowOne('#listViewProps')
 	
 	viewListContext = {
