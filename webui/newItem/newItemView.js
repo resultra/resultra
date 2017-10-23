@@ -12,6 +12,9 @@ function loadNewItemView(pageLayout,databaseID,formLinkID) {
 	var getNewItemInfoParams = { formLinkID: formLinkID }	
 
 	jsonAPIRequest("formLink/getNewItemInfo",getNewItemInfoParams,function(newItemInfo) {
+		
+		pageLayout.setCenterContentHeader(newItemInfo.linkName)		
+			
 		var submitFormParams = {
 			databaseID: databaseID,
 			$parentFormCanvas: $('#newItemFormPageLayoutCanvas'),

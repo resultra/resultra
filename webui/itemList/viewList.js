@@ -174,7 +174,8 @@ function loadItemListView(itemListLayout,databaseID, listID) {
 	initFieldInfo(viewListContext.databaseID, function() {
 		var getListParams = { listID: viewListContext.listID }
 		jsonAPIRequest("itemList/get",getListParams,function(listInfo) {
-			initItemListView(itemListLayout,listInfo)		
+			initItemListView(itemListLayout,listInfo)
+			itemListLayout.setCenterContentHeader(listInfo.name)		
 		})	
 	})
 	

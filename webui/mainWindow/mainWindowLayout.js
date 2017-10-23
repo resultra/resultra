@@ -102,11 +102,17 @@ function MainWindowLayout(resizeCallback)
 		$('#contentLayoutContainer').find(".clearableViewContent").empty()
 	}
 	
+	function setCenterContentHeader(header) {
+		var $header = $('#mainWindowCenterContentHeader')
+		$header.text(header)
+	}
+	
 	this.hideFooterLayout = hideFooterLayout
 	this.showFooterLayout = showFooterLayout
 	
 	this.closePropertyPanel = closePropertyPanel
 	this.openPropertyPanel = openPropertyPanel	
 	this.clearCenterContentArea = clearCenterContentArea
+	this.setCenterContentHeader = setCenterContentHeader
 	
 }

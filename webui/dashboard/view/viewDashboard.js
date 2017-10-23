@@ -18,6 +18,14 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 		 		databaseID: databaseID} 
 				
 				
+	
+	var getDashboardParams = { dashboardID: dashboardID }	
+
+	jsonAPIRequest("dashboard/getProperties",getDashboardParams,function(dashboardInfo) {
+		pageLayout.setCenterContentHeader(dashboardInfo.name)		
+	})
+				
+				
 	function initDashboardComponentViewBehavior($component,componentID, viewDashboardConfig) {
 
 		var $parentDashboardCanvas = $(viewDashboardCanvasSelector)	
