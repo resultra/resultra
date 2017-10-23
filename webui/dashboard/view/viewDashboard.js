@@ -11,6 +11,7 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 	
 	pageLayout.clearCenterContentArea()
 	pageLayout.hideFooterLayout()
+	pageLayout.enablePropertySidebar()
 	
 
 	viewDashboardContext = { 

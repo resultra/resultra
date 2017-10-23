@@ -65,6 +65,8 @@ function MainWindowLayout(resizeCallback)
 	})
 	
 	
+	
+	
 	var $viewListOptionsToggleButton = $("#viewListOptionsButton")
 	initButtonControlClickHandler($viewListOptionsToggleButton, function() {
 		var layoutState = mainLayout.state
@@ -107,6 +109,17 @@ function MainWindowLayout(resizeCallback)
 		$header.text(header)
 	}
 	
+	function disablePropertySidebar() {
+		mainLayout.hide("east")
+		$viewListOptionsToggleButton.hide()
+	}
+
+	function enablePropertySidebar() {
+		mainLayout.show("east",false)
+		$viewListOptionsToggleButton.show()
+	}
+
+	
 	this.hideFooterLayout = hideFooterLayout
 	this.showFooterLayout = showFooterLayout
 	
@@ -114,5 +127,7 @@ function MainWindowLayout(resizeCallback)
 	this.openPropertyPanel = openPropertyPanel	
 	this.clearCenterContentArea = clearCenterContentArea
 	this.setCenterContentHeader = setCenterContentHeader
+	this.enablePropertySidebar = enablePropertySidebar
+	this.disablePropertySidebar = disablePropertySidebar
 	
 }

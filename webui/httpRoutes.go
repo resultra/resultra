@@ -10,7 +10,6 @@ import (
 	"resultra/datasheet/webui/homePage"
 	"resultra/datasheet/webui/itemList"
 	"resultra/datasheet/webui/mainWindow"
-	"resultra/datasheet/webui/trackerMainPage"
 )
 
 func init() {
@@ -21,7 +20,6 @@ func init() {
 	dashboard.RegisterHTTPHandlers(router)
 	homePage.RegisterHTTPHandlers(router)
 	admin.RegisterHTTPHandlers(router)
-	trackerMainPage.RegisterHTTPHandlers(router)
 	formPage.RegisterHTTPHandlers(router)
 	alertPage.RegisterHTTPHandlers(router)
 	mainWindow.RegisterHTTPHandlers(router)

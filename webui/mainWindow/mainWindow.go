@@ -49,7 +49,7 @@ type MainWindowTemplateParams struct {
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
-	mainRouter.HandleFunc("/mainWindow/{databaseID}", viewMainWindow)
+	mainRouter.HandleFunc("/main/{databaseID}", viewMainWindow)
 }
 
 func viewMainWindow(w http.ResponseWriter, r *http.Request) {

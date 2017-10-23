@@ -164,7 +164,7 @@ function loadItemListView(itemListLayout,databaseID, listID) {
 	hideSiblingsShowOne('#formViewContainer')
 	hideSiblingsShowOne("#viewListFooterControls")
 	itemListLayout.showFooterLayout()
-	
+	itemListLayout.enablePropertySidebar()
 	
 	viewListContext = {
 			listID:listID,
