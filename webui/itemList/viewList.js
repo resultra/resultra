@@ -159,6 +159,7 @@ function initItemListView(itemListLayout, listInfo) {
 function loadItemListView(itemListLayout,databaseID, listID) {
 	
 	itemListLayout.clearCenterContentArea()
+	itemListLayout.showFooterLayout()
 	hideSiblingsShowOne('#listViewPropsSidebar')
 	hideSiblingsShowOne('#listViewProps')
 	

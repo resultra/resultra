@@ -9,6 +9,7 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 	var viewDashboardCanvasSelector = '#dashboardCanvas'
 	
 	pageLayout.clearCenterContentArea()
+	pageLayout.hideFooterLayout()
 
 	viewDashboardContext = { 
 				dashboardID:dashboardID,
