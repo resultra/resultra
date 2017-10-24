@@ -87,7 +87,6 @@ $(document).ready(function() {
 
 	initAdminSettingsTOC(itemListPropsContext.databaseID)
 
-	initAlertHeader(itemListPropsContext.databaseID)
 	initUserDropdownMenu()
 
 		var listElemPrefix = "itemList_"

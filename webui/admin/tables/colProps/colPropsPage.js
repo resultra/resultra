@@ -15,7 +15,6 @@ $(document).ready(function() {
 		
 		initAdminSettingsPageLayout($('#colPropsAdminPage'))	
 		initUserDropdownMenu()
-		initAlertHeader(colPropsAdminContext.databaseID)
 		initAdminSettingsTOC(colPropsAdminContext.databaseID)
 		
 		switch (colPropsAdminContext.colType) {

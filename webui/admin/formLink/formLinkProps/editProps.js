@@ -143,7 +143,6 @@ $(document).ready(function() {
 		
 	initAdminSettingsTOC(formLinkPropsContext.databaseID)
 		
-	initAlertHeader(formLinkPropsContext.databaseID)
 		
 	initUserDropdownMenu()
 		

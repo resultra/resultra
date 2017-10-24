@@ -10,6 +10,7 @@ import (
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
 
+	"resultra/datasheet/webui/alertListView"
 	"resultra/datasheet/webui/common"
 	dashboardCommon "resultra/datasheet/webui/dashboard/common"
 	dashboardComponents "resultra/datasheet/webui/dashboard/components"
@@ -34,6 +35,7 @@ func init() {
 		dashboardComponents.TemplateFileList,
 		dashboardCommon.TemplateFileList,
 		dashboardView.TemplateFileList,
+		alertListView.TemplateFileList,
 		newItem.TemplateFileList}
 
 	mainWindowTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)

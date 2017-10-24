@@ -5,7 +5,6 @@ $(document).ready(function() {
 	initUserDropdownMenu()
 	initAdminSettingsTOC(userAdminPageContext.databaseID)
 	
-	initAlertHeader(userAdminPageContext.databaseID)
 
 	initUserListSettings(userAdminPageContext.databaseID)
 

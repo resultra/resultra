@@ -1,8 +1,19 @@
-function initAlertNotificationList(databaseID) {
+function initAlertNotificationList(pageLayout, databaseID) {
+	
+	pageLayout.clearCenterContentArea()
+	hideSiblingsShowOne("#alertPageLayoutCanvas")
+	pageLayout.hideFooterLayout()
+	pageLayout.disablePropertySidebar()
+	pageLayout.setCenterContentHeader("Alerts")		
+	
+	var $alertLayoutCanvas = $('#alertPageLayoutCanvas')
+	$alertLayoutCanvas.empty()
 	
 	loadNotificationListInfo(databaseID, function(notificationList,formsByID,fieldsByID) {
 			
-		var $notificationListTable = $('#notificationListTable')
+		var $notificationListTable = $('#notificationListTableTemplate').clone()
+		$notificationListTable.attr("id","notificationListTable")
+		$alertLayoutCanvas.append($notificationListTable)
 		
 		var timeDataCol = {
 			data: 'timestamp',

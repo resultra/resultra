@@ -2,7 +2,6 @@ $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#collabPropsPage'))	
 	initUserDropdownMenu()
-	initAlertHeader(collabPropsContext.databaseID)
 	initAdminSettingsTOC(collabPropsContext.databaseID)
 	
 	

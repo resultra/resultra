@@ -1,8 +1,6 @@
 $(document).ready(function() {	
 	 
 				
-	initUserDropdownMenu()
-	initAlertHeader(mainWindowContext.databaseID)
 	
 	function resizeMainWindow() {
 		console.log("Resizing list view")
@@ -28,6 +26,10 @@ $(document).ready(function() {
 		loadNewItemView(mainWinLayout,mainWindowContext.databaseID,linkID)
 	}
 	
+	function seeAllAlertsClicked() {
+		initAlertNotificationList(mainWinLayout,mainWindowContext.databaseID)
+	}
+	
 		
 	var tocConfig = {
 		databaseID: mainWindowContext.databaseID,
@@ -38,6 +40,8 @@ $(document).ready(function() {
 	}	
 	initDatabaseTOC(tocConfig)
 	
+	initUserDropdownMenu()
+	initAlertHeader(mainWindowContext.databaseID,seeAllAlertsClicked)
 	
 	
 //	hideSiblingsShowOne('#listViewProps')

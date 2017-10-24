@@ -10,7 +10,6 @@ var dashboardPaletteItemsEditConfig = {
 $(document).ready(function() {
 	
 	initUserDropdownMenu()
-	initAlertHeader(designDashboardContext.databaseID)
 	
 							
 	var paletteConfig = {

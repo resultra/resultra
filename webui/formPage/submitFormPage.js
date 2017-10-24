@@ -5,7 +5,6 @@ $(document).ready(function() {
 	initSubmitFormUILayoutPanes()
 				
 	initUserDropdownMenu()
-	initAlertHeader(submitFormPageContext.databaseID)
 	
 	var submitFormParams = {
 		databaseID: submitFormPageContext.databaseID,

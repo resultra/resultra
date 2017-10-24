@@ -64,7 +64,6 @@ $(document).ready(function() {
 		
 	initAdminSettingsTOC(valueListPropsContext.databaseID)
 		
-	initAlertHeader(valueListPropsContext.databaseID)
 	initUserDropdownMenu()
 		
 		var formLinkElemPrefix = "valueList_"

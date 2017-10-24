@@ -1,4 +1,4 @@
-function initAlertHeader(databaseID) {
+function initAlertHeader(databaseID,seeAllAlertsCallback) {
 	
 	var $header = $('#alertPageHeaderMenu')
 	
@@ -60,8 +60,15 @@ function initAlertHeader(databaseID) {
 			
 		var $sellAllListItem = $('<li><a>See all alerts</a></li>')
 		var seeAllUrl = "/alerts/" + databaseID
-		$sellAllListItem.find("a").attr("href",seeAllUrl)
+		var $seeAllLink = $sellAllListItem.find("a")
 		$alertList.append($sellAllListItem)
+		
+		$seeAllLink.click(function(e) {
+			e.preventDefault()
+			if(seeAllAlertsCallback !== undefined) {
+				seeAllAlertsCallback()
+			}
+		})
 		
 		initAlertCountBadge()
 		
