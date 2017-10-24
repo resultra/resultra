@@ -107,6 +107,8 @@ function MainWindowLayout(resizeCallback)
 	function setCenterContentHeader(header) {
 		var $header = $('#mainWindowCenterContentHeader')
 		$header.text(header)
+		var $breadcrumb = $('#trackerLocationBreadcrumb')
+		$breadcrumb.text(header)
 	}
 	
 	function disablePropertySidebar() {
