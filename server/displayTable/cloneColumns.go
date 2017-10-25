@@ -21,84 +21,84 @@ import (
 	"resultra/datasheet/server/displayTable/columns/urlLink"
 	"resultra/datasheet/server/displayTable/columns/userSelection"
 	"resultra/datasheet/server/displayTable/columns/userTag"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
-func cloneTableCols(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) error {
+func cloneTableCols(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
 
-	if err := numberInput.CloneNumberInputs(remappedIDs, parentTableID); err != nil {
+	if err := numberInput.CloneNumberInputs(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := textInput.CloneTextInputs(remappedIDs, parentTableID); err != nil {
+	if err := textInput.CloneTextInputs(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := datePicker.CloneDatePickers(remappedIDs, parentTableID); err != nil {
+	if err := datePicker.CloneDatePickers(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := checkBox.CloneCheckBoxes(remappedIDs, parentTableID); err != nil {
+	if err := checkBox.CloneCheckBoxes(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := rating.CloneRatings(remappedIDs, parentTableID); err != nil {
+	if err := rating.CloneRatings(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := toggle.CloneToggles(remappedIDs, parentTableID); err != nil {
+	if err := toggle.CloneToggles(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := userSelection.CloneUserSelections(remappedIDs, parentTableID); err != nil {
+	if err := userSelection.CloneUserSelections(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := userTag.CloneUserTags(remappedIDs, parentTableID); err != nil {
+	if err := userTag.CloneUserTags(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := note.CloneNotes(remappedIDs, parentTableID); err != nil {
+	if err := note.CloneNotes(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := comment.CloneComments(remappedIDs, parentTableID); err != nil {
+	if err := comment.CloneComments(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := attachment.CloneAttachments(remappedIDs, parentTableID); err != nil {
+	if err := attachment.CloneAttachments(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := formButton.CloneButtons(remappedIDs, parentTableID); err != nil {
+	if err := formButton.CloneButtons(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := progress.CloneProgressIndicators(remappedIDs, parentTableID); err != nil {
+	if err := progress.CloneProgressIndicators(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := socialButton.CloneSocialButtons(remappedIDs, parentTableID); err != nil {
+	if err := socialButton.CloneSocialButtons(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := tag.CloneTags(remappedIDs, parentTableID); err != nil {
+	if err := tag.CloneTags(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := emailAddr.CloneEmailAddrs(remappedIDs, parentTableID); err != nil {
+	if err := emailAddr.CloneEmailAddrs(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := urlLink.CloneUrlLinks(remappedIDs, parentTableID); err != nil {
+	if err := urlLink.CloneUrlLinks(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := file.CloneFiles(remappedIDs, parentTableID); err != nil {
+	if err := file.CloneFiles(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 
-	if err := image.CloneImages(remappedIDs, parentTableID); err != nil {
+	if err := image.CloneImages(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 

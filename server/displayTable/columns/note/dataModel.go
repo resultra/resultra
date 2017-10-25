@@ -1,12 +1,15 @@
 package note
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const noteEntityKind string = "note"
@@ -32,9 +35,9 @@ func validNoteFieldType(fieldType string) bool {
 	}
 }
 
-func saveNote(newNote Note) error {
+func saveNote(destDBHandle *sql.DB, newNote Note) error {
 
-	if saveErr := common.SaveNewTableColumn(noteEntityKind,
+	if saveErr := common.SaveNewTableColumn(destDBHandle, noteEntityKind,
 		newNote.ParentTableID, newNote.NoteID, newNote.Properties); saveErr != nil {
 		return fmt.Errorf("saveNewNote: Unable to save html editor: error = %v", saveErr)
 	}
@@ -58,7 +61,7 @@ func saveNewNote(params NewNoteParams) (*Note, error) {
 		ColType:    noteEntityKind,
 		Properties: properties}
 
-	if err := saveNote(newNote); err != nil {
+	if err := saveNote(databaseWrapper.DBHandle(), newNote); err != nil {
 		return nil, fmt.Errorf("saveNewNote: Unable to save html editor with params=%+v: error = %v", params, err)
 	}
 
@@ -85,7 +88,7 @@ func getNote(parentTableID string, noteID string) (*Note, error) {
 	return &note, nil
 }
 
-func GetNotes(parentTableID string) ([]Note, error) {
+func getNotesFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Note, error) {
 
 	notes := []Note{}
 
@@ -106,7 +109,7 @@ func GetNotes(parentTableID string) ([]Note, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(noteEntityKind, parentTableID, addEditor); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, noteEntityKind, parentTableID, addEditor); getErr != nil {
 		return nil, fmt.Errorf("GetNotes: Can't get html editors: %v")
 	}
 
@@ -114,20 +117,24 @@ func GetNotes(parentTableID string) ([]Note, error) {
 
 }
 
-func CloneNotes(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) error {
+func GetNotes(parentTableID string) ([]Note, error) {
+	return getNotesFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcNotes, err := GetNotes(parentTableID)
+func CloneNotes(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
+
+	srcNotes, err := getNotesFromSrc(cloneParams.SrcDBHandle, parentTableID)
 	if err != nil {
 		return fmt.Errorf("CloneHTMLEditors: %v", err)
 	}
 
 	for _, srcNote := range srcNotes {
-		remappedNoteID := remappedIDs.AllocNewOrGetExistingRemappedID(srcNote.NoteID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcNote.ParentTableID)
+		remappedNoteID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcNote.NoteID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcNote.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneHTMLEditors: %v", err)
 		}
-		destProperties, err := srcNote.Properties.Clone(remappedIDs)
+		destProperties, err := srcNote.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneHTMLEditors: %v", err)
 		}
@@ -137,7 +144,7 @@ func CloneNotes(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) err
 			ColumnID:      remappedNoteID,
 			ColType:       noteEntityKind,
 			Properties:    *destProperties}
-		if err := saveNote(destNote); err != nil {
+		if err := saveNote(cloneParams.DestDBHandle, destNote); err != nil {
 			return fmt.Errorf("CloneHTMLEditors: %v", err)
 		}
 	}

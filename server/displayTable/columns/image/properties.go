@@ -3,7 +3,7 @@ package image
 import (
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type ImageValidationProperties struct {
@@ -18,16 +18,16 @@ type ImageProperties struct {
 	FieldID             string                                     `json:"fieldID"`
 	LabelFormat         common.ComponentLabelFormatProperties      `json:"labelFormat"`
 	Permissions         common.ComponentValuePermissionsProperties `json:"permissions"`
-	Validation          ImageValidationProperties              `json:"validation"`
+	Validation          ImageValidationProperties                  `json:"validation"`
 	ClearValueSupported bool                                       `json:"clearValueSupported"`
 	HelpPopupMsg        string                                     `json:"helpPopupMsg"`
 }
 
-func (srcProps ImageProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ImageProperties, error) {
+func (srcProps ImageProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*ImageProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}

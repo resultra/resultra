@@ -1,12 +1,15 @@
 package socialButton
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const socialButtonEntityKind string = "socialButton"
@@ -32,9 +35,9 @@ func validateSocialButtonFieldType(fieldType string) bool {
 	}
 }
 
-func saveSocialButton(newSocialButton SocialButton) error {
+func saveSocialButton(destDBHandle *sql.DB, newSocialButton SocialButton) error {
 
-	if saveErr := common.SaveNewTableColumn(socialButtonEntityKind,
+	if saveErr := common.SaveNewTableColumn(destDBHandle, socialButtonEntityKind,
 		newSocialButton.ParentTableID, newSocialButton.SocialButtonID, newSocialButton.Properties); saveErr != nil {
 		return fmt.Errorf("saveSocialButton: Unable to save socialButton: error = %v", saveErr)
 	}
@@ -58,7 +61,7 @@ func saveNewSocialButton(params NewSocialButtonParams) (*SocialButton, error) {
 		ColType:        socialButtonEntityKind,
 		Properties:     properties}
 
-	if saveErr := saveSocialButton(newSocialButton); saveErr != nil {
+	if saveErr := saveSocialButton(databaseWrapper.DBHandle(), newSocialButton); saveErr != nil {
 		return nil, fmt.Errorf("saveNewSocialButton: Unable to save socialButton with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -85,7 +88,7 @@ func getSocialButton(parentTableID string, socialButtonID string) (*SocialButton
 	return &socialButton, nil
 }
 
-func GetSocialButtons(parentTableID string) ([]SocialButton, error) {
+func getSocialButtonsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]SocialButton, error) {
 
 	socialButtons := []SocialButton{}
 	addSocialButton := func(socialButtonID string, encodedProps string) error {
@@ -105,27 +108,31 @@ func GetSocialButtons(parentTableID string) ([]SocialButton, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(socialButtonEntityKind, parentTableID, addSocialButton); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, socialButtonEntityKind, parentTableID, addSocialButton); getErr != nil {
 		return nil, fmt.Errorf("GetSocialButtons: Can't get socialButtons: %v")
 	}
 
 	return socialButtons, nil
 }
 
-func CloneSocialButtons(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) error {
+func GetSocialButtons(parentTableID string) ([]SocialButton, error) {
+	return getSocialButtonsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcSocialButtons, err := GetSocialButtons(parentTableID)
+func CloneSocialButtons(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
+
+	srcSocialButtons, err := getSocialButtonsFromSrc(cloneParams.SrcDBHandle, parentTableID)
 	if err != nil {
 		return fmt.Errorf("CloneSocialButtons: %v", err)
 	}
 
 	for _, srcSocialButton := range srcSocialButtons {
-		remappedSocialButtonID := remappedIDs.AllocNewOrGetExistingRemappedID(srcSocialButton.SocialButtonID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcSocialButton.ParentTableID)
+		remappedSocialButtonID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcSocialButton.SocialButtonID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcSocialButton.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneSocialButtons: %v", err)
 		}
-		destProperties, err := srcSocialButton.Properties.Clone(remappedIDs)
+		destProperties, err := srcSocialButton.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneSocialButtons: %v", err)
 		}
@@ -135,7 +142,7 @@ func CloneSocialButtons(remappedIDs uniqueID.UniqueIDRemapper, parentTableID str
 			ColumnID:       remappedSocialButtonID,
 			ColType:        socialButtonEntityKind,
 			Properties:     *destProperties}
-		if err := saveSocialButton(destSocialButton); err != nil {
+		if err := saveSocialButton(cloneParams.DestDBHandle, destSocialButton); err != nil {
 			return fmt.Errorf("CloneSocialButtons: %v", err)
 		}
 	}

@@ -1,12 +1,15 @@
 package summaryTable
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/dashboard/components/common"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const summaryTableEntityKind string = "SummaryTable"
@@ -31,9 +34,9 @@ type NewSummaryTableParams struct {
 	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
-func saveSummaryTable(newSummaryTable SummaryTable) error {
+func saveSummaryTable(destDBHandle *sql.DB, newSummaryTable SummaryTable) error {
 
-	if saveErr := common.SaveNewDashboardComponent(summaryTableEntityKind,
+	if saveErr := common.SaveNewDashboardComponent(destDBHandle, summaryTableEntityKind,
 		newSummaryTable.ParentDashboardID, newSummaryTable.SummaryTableID, newSummaryTable.Properties); saveErr != nil {
 		return fmt.Errorf("newSummaryTable: Unable to save summary table component: error = %v", saveErr)
 	}
@@ -75,7 +78,7 @@ func newSummaryTable(params NewSummaryTableParams) (*SummaryTable, error) {
 		SummaryTableID:    uniqueID.GenerateSnowflakeID(),
 		Properties:        summaryTableProps}
 
-	if saveErr := saveSummaryTable(newSummaryTable); saveErr != nil {
+	if saveErr := saveSummaryTable(databaseWrapper.DBHandle(), newSummaryTable); saveErr != nil {
 		return nil, fmt.Errorf("newSummaryTable: Unable to save summary component with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -98,7 +101,7 @@ func GetSummaryTable(parentDashboardID string, summaryTableID string) (*SummaryT
 
 }
 
-func GetSummaryTables(parentDashboardID string) ([]SummaryTable, error) {
+func getSummaryTablesFromSrc(srcDBHandle *sql.DB, parentDashboardID string) ([]SummaryTable, error) {
 
 	summaryTables := []SummaryTable{}
 	addSummaryTable := func(summaryTableID string, encodedProps string) error {
@@ -117,33 +120,37 @@ func GetSummaryTables(parentDashboardID string) ([]SummaryTable, error) {
 
 		return nil
 	}
-	if getErr := common.GetDashboardComponents(summaryTableEntityKind, parentDashboardID, addSummaryTable); getErr != nil {
+	if getErr := common.GetDashboardComponents(srcDBHandle, summaryTableEntityKind, parentDashboardID, addSummaryTable); getErr != nil {
 		return nil, fmt.Errorf("getBarCharts: Can't get bar chart components: %v")
 	}
 
 	return summaryTables, nil
 }
 
-func CloneSummaryTables(remappedIDs uniqueID.UniqueIDRemapper, srcParentDashboardID string) error {
+func GetSummaryTables(parentDashboardID string) ([]SummaryTable, error) {
+	return getSummaryTablesFromSrc(databaseWrapper.DBHandle(), parentDashboardID)
+}
 
-	remappedDashboardID, err := remappedIDs.GetExistingRemappedID(srcParentDashboardID)
+func CloneSummaryTables(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentDashboardID string) error {
+
+	remappedDashboardID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcParentDashboardID)
 	if err != nil {
 		return fmt.Errorf("CloneSummaryTables: %v", err)
 	}
 
-	summaryTables, err := GetSummaryTables(srcParentDashboardID)
+	summaryTables, err := getSummaryTablesFromSrc(cloneParams.SrcDBHandle, srcParentDashboardID)
 	if err != nil {
 		return fmt.Errorf("CloneSummaryTables: %v", err)
 	}
 
 	for _, srcSummaryTable := range summaryTables {
 
-		remappedSummaryTableID, err := remappedIDs.AllocNewRemappedID(srcSummaryTable.SummaryTableID)
+		remappedSummaryTableID, err := cloneParams.IDRemapper.AllocNewRemappedID(srcSummaryTable.SummaryTableID)
 		if err != nil {
 			return fmt.Errorf("CloneSummaryTables: %v", err)
 		}
 
-		clonedProps, err := srcSummaryTable.Properties.Clone(remappedIDs)
+		clonedProps, err := srcSummaryTable.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneSummaryTables: %v", err)
 		}
@@ -153,7 +160,7 @@ func CloneSummaryTables(remappedIDs uniqueID.UniqueIDRemapper, srcParentDashboar
 			SummaryTableID:    remappedSummaryTableID,
 			Properties:        *clonedProps}
 
-		if err := saveSummaryTable(destSummaryTable); err != nil {
+		if err := saveSummaryTable(cloneParams.DestDBHandle, destSummaryTable); err != nil {
 			return fmt.Errorf("CloneSummaryTables: %v", err)
 		}
 	}

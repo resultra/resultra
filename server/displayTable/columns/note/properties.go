@@ -3,7 +3,7 @@ package note
 import (
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type ValidationProperties struct {
@@ -23,11 +23,11 @@ type NoteProperties struct {
 	HelpPopupMsg string                                     `json:"helpPopupMsg"`
 }
 
-func (srcProps NoteProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*NoteProperties, error) {
+func (srcProps NoteProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*NoteProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}

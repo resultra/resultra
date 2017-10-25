@@ -1,12 +1,15 @@
 package rating
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const ratingEntityKind string = "rating"
@@ -32,9 +35,9 @@ func validRatingFieldType(fieldType string) bool {
 	}
 }
 
-func saveRating(newRating Rating) error {
+func saveRating(destDBHandle *sql.DB, newRating Rating) error {
 
-	if saveErr := common.SaveNewTableColumn(ratingEntityKind,
+	if saveErr := common.SaveNewTableColumn(destDBHandle, ratingEntityKind,
 		newRating.ParentTableID, newRating.RatingID, newRating.Properties); saveErr != nil {
 		return fmt.Errorf("saveRating: Unable to save rating: error = %v", saveErr)
 	}
@@ -58,7 +61,7 @@ func saveNewRating(params NewRatingParams) (*Rating, error) {
 		ColType:    ratingEntityKind,
 		Properties: properties}
 
-	if saveErr := saveRating(newRating); saveErr != nil {
+	if saveErr := saveRating(databaseWrapper.DBHandle(), newRating); saveErr != nil {
 		return nil, fmt.Errorf("saveNewRating: Unable to save rating with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -85,7 +88,7 @@ func getRating(parentTableID string, ratingID string) (*Rating, error) {
 	return &rating, nil
 }
 
-func GetRatings(parentTableID string) ([]Rating, error) {
+func getRatingsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Rating, error) {
 
 	ratings := []Rating{}
 	addRating := func(ratingID string, encodedProps string) error {
@@ -106,27 +109,31 @@ func GetRatings(parentTableID string) ([]Rating, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(ratingEntityKind, parentTableID, addRating); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, ratingEntityKind, parentTableID, addRating); getErr != nil {
 		return nil, fmt.Errorf("GetRatings: Can't get ratings: %v")
 	}
 
 	return ratings, nil
 }
 
-func CloneRatings(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) error {
+func GetRatings(parentTableID string) ([]Rating, error) {
+	return getRatingsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcRatings, err := GetRatings(parentTableID)
+func CloneRatings(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
+
+	srcRatings, err := getRatingsFromSrc(cloneParams.SrcDBHandle, parentTableID)
 	if err != nil {
 		return fmt.Errorf("CloneRatings: %v", err)
 	}
 
 	for _, srcRating := range srcRatings {
-		remappedRatingID := remappedIDs.AllocNewOrGetExistingRemappedID(srcRating.RatingID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcRating.ParentTableID)
+		remappedRatingID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcRating.RatingID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcRating.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneRatings: %v", err)
 		}
-		destProperties, err := srcRating.Properties.Clone(remappedIDs)
+		destProperties, err := srcRating.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneRatings: %v", err)
 		}
@@ -136,7 +143,7 @@ func CloneRatings(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) e
 			ColumnID:      remappedRatingID,
 			ColType:       ratingEntityKind,
 			Properties:    *destProperties}
-		if err := saveRating(destRating); err != nil {
+		if err := saveRating(cloneParams.DestDBHandle, destRating); err != nil {
 			return fmt.Errorf("CloneRatings: %v", err)
 		}
 	}

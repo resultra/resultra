@@ -1,13 +1,16 @@
 package socialButton
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const socialButtonEntityKind string = "socialButton"
@@ -32,9 +35,9 @@ func validateSocialButtonFieldType(fieldType string) bool {
 	}
 }
 
-func saveSocialButton(newSocialButton SocialButton) error {
+func saveSocialButton(destDBHandle *sql.DB, newSocialButton SocialButton) error {
 
-	if saveErr := common.SaveNewFormComponent(socialButtonEntityKind,
+	if saveErr := common.SaveNewFormComponent(destDBHandle, socialButtonEntityKind,
 		newSocialButton.ParentFormID, newSocialButton.SocialButtonID, newSocialButton.Properties); saveErr != nil {
 		return fmt.Errorf("saveSocialButton: Unable to save socialButton: error = %v", saveErr)
 	}
@@ -60,7 +63,7 @@ func saveNewSocialButton(params NewSocialButtonParams) (*SocialButton, error) {
 		SocialButtonID: uniqueID.GenerateSnowflakeID(),
 		Properties:     properties}
 
-	if saveErr := saveSocialButton(newSocialButton); saveErr != nil {
+	if saveErr := saveSocialButton(databaseWrapper.DBHandle(), newSocialButton); saveErr != nil {
 		return nil, fmt.Errorf("saveNewSocialButton: Unable to save socialButton with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -85,7 +88,7 @@ func getSocialButton(parentFormID string, socialButtonID string) (*SocialButton,
 	return &socialButton, nil
 }
 
-func GetSocialButtons(parentFormID string) ([]SocialButton, error) {
+func getSocialButtonsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]SocialButton, error) {
 
 	socialButtons := []SocialButton{}
 	addSocialButton := func(socialButtonID string, encodedProps string) error {
@@ -104,27 +107,31 @@ func GetSocialButtons(parentFormID string) ([]SocialButton, error) {
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(socialButtonEntityKind, parentFormID, addSocialButton); getErr != nil {
+	if getErr := common.GetFormComponents(srcDBHandle, socialButtonEntityKind, parentFormID, addSocialButton); getErr != nil {
 		return nil, fmt.Errorf("GetSocialButtons: Can't get socialButtons: %v")
 	}
 
 	return socialButtons, nil
 }
 
-func CloneSocialButtons(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetSocialButtons(parentFormID string) ([]SocialButton, error) {
+	return getSocialButtonsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+}
 
-	srcSocialButtons, err := GetSocialButtons(parentFormID)
+func CloneSocialButtons(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcSocialButtons, err := getSocialButtonsFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneSocialButtons: %v", err)
 	}
 
 	for _, srcSocialButton := range srcSocialButtons {
-		remappedSocialButtonID := remappedIDs.AllocNewOrGetExistingRemappedID(srcSocialButton.SocialButtonID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcSocialButton.ParentFormID)
+		remappedSocialButtonID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcSocialButton.SocialButtonID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcSocialButton.ParentFormID)
 		if err != nil {
 			return fmt.Errorf("CloneSocialButtons: %v", err)
 		}
-		destProperties, err := srcSocialButton.Properties.Clone(remappedIDs)
+		destProperties, err := srcSocialButton.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneSocialButtons: %v", err)
 		}
@@ -132,7 +139,7 @@ func CloneSocialButtons(remappedIDs uniqueID.UniqueIDRemapper, parentFormID stri
 			ParentFormID:   remappedFormID,
 			SocialButtonID: remappedSocialButtonID,
 			Properties:     *destProperties}
-		if err := saveSocialButton(destSocialButton); err != nil {
+		if err := saveSocialButton(cloneParams.DestDBHandle, destSocialButton); err != nil {
 			return fmt.Errorf("CloneSocialButtons: %v", err)
 		}
 	}

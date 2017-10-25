@@ -1,6 +1,7 @@
 package trackerDatabase
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic"
@@ -39,16 +40,19 @@ type CloneDatabaseParams struct {
 	CreatedByUserID  string
 	IsTemplate       bool
 	SourceDatabaseID string
+	SrcDBHandle      *sql.DB
+	DestDBHandle     *sql.DB
+	IDRemapper       uniqueID.UniqueIDRemapper
 }
 
-func CloneDatabase(remappedIDs uniqueID.UniqueIDRemapper, cloneParams CloneDatabaseParams) (*Database, error) {
+func CloneDatabase(cloneParams *CloneDatabaseParams) (*Database, error) {
 
 	srcDatabase, err := GetDatabase(cloneParams.SourceDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("CloneDatabase: %v", err)
 	}
 
-	destDatabaseID, err := remappedIDs.AllocNewRemappedID(cloneParams.SourceDatabaseID)
+	destDatabaseID, err := cloneParams.IDRemapper.AllocNewRemappedID(cloneParams.SourceDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("CloneDatabase: %v", err)
 	}
@@ -59,7 +63,7 @@ func CloneDatabase(remappedIDs uniqueID.UniqueIDRemapper, cloneParams CloneDatab
 	dest.CreatedByUserID = cloneParams.CreatedByUserID
 	dest.IsTemplate = cloneParams.IsTemplate
 
-	destProps, err := srcDatabase.Properties.Clone(remappedIDs)
+	destProps, err := srcDatabase.Properties.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("CloneDatabase: %v", err)
 	}

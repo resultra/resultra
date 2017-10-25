@@ -1,13 +1,16 @@
 package emailAddr
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const emailAddrEntityKind string = "emailAddr"
@@ -32,8 +35,8 @@ func validEmailAddrFieldType(fieldType string) bool {
 	}
 }
 
-func saveEmailAddr(newEmailAddr EmailAddr) error {
-	if saveErr := common.SaveNewFormComponent(emailAddrEntityKind,
+func saveEmailAddr(destDBHandle *sql.DB, newEmailAddr EmailAddr) error {
+	if saveErr := common.SaveNewFormComponent(destDBHandle, emailAddrEntityKind,
 		newEmailAddr.ParentFormID, newEmailAddr.EmailAddrID, newEmailAddr.Properties); saveErr != nil {
 		return fmt.Errorf("saveEmailAddr: Unable to save text box: %v", saveErr)
 	}
@@ -59,7 +62,7 @@ func saveNewEmailAddr(params NewEmailAddrParams) (*EmailAddr, error) {
 		EmailAddrID: uniqueID.GenerateSnowflakeID(),
 		Properties:  properties}
 
-	if err := saveEmailAddr(newEmailAddr); err != nil {
+	if err := saveEmailAddr(databaseWrapper.DBHandle(), newEmailAddr); err != nil {
 		return nil, fmt.Errorf("saveNewEmailAddr: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -84,7 +87,7 @@ func getEmailAddr(parentFormID string, emailAddrID string) (*EmailAddr, error) {
 	return &emailAddr, nil
 }
 
-func GetEmailAddrs(parentFormID string) ([]EmailAddr, error) {
+func getEmailAddrsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]EmailAddr, error) {
 
 	emailAddres := []EmailAddr{}
 	addEmailAddr := func(emailAddrID string, encodedProps string) error {
@@ -102,7 +105,7 @@ func GetEmailAddrs(parentFormID string) ([]EmailAddr, error) {
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(emailAddrEntityKind, parentFormID, addEmailAddr); getErr != nil {
+	if getErr := common.GetFormComponents(srcDBHandle, emailAddrEntityKind, parentFormID, addEmailAddr); getErr != nil {
 		return nil, fmt.Errorf("GetCheckBoxes: Can't get text boxes: %v")
 	}
 
@@ -110,20 +113,24 @@ func GetEmailAddrs(parentFormID string) ([]EmailAddr, error) {
 
 }
 
-func CloneEmailAddrs(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetEmailAddrs(parentFormID string) ([]EmailAddr, error) {
+	return getEmailAddrsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+}
 
-	srcEmailAddr, err := GetEmailAddrs(parentFormID)
+func CloneEmailAddrs(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcEmailAddr, err := getEmailAddrsFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneEmailAddr: %v", err)
 	}
 
 	for _, srcEmailAddr := range srcEmailAddr {
-		remappedEmailAddrID := remappedIDs.AllocNewOrGetExistingRemappedID(srcEmailAddr.EmailAddrID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcEmailAddr.ParentFormID)
+		remappedEmailAddrID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcEmailAddr.EmailAddrID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcEmailAddr.ParentFormID)
 		if err != nil {
 			return fmt.Errorf("CloneEmailAddr: %v", err)
 		}
-		destProperties, err := srcEmailAddr.Properties.Clone(remappedIDs)
+		destProperties, err := srcEmailAddr.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneEmailAddr: %v", err)
 		}
@@ -131,7 +138,7 @@ func CloneEmailAddrs(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string)
 			ParentFormID: remappedFormID,
 			EmailAddrID:  remappedEmailAddrID,
 			Properties:   *destProperties}
-		if err := saveEmailAddr(destEmailAddr); err != nil {
+		if err := saveEmailAddr(cloneParams.DestDBHandle, destEmailAddr); err != nil {
 			return fmt.Errorf("CloneEmailAddr: %v", err)
 		}
 	}

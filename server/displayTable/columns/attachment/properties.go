@@ -3,7 +3,7 @@ package attachment
 import (
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type ValidationProperties struct {
@@ -23,11 +23,11 @@ type AttachmentProperties struct {
 	HelpPopupMsg string                                     `json:"helpPopupMsg"`
 }
 
-func (srcProps AttachmentProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*AttachmentProperties, error) {
+func (srcProps AttachmentProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*AttachmentProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}

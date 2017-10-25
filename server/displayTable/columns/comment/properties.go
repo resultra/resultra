@@ -3,7 +3,7 @@ package comment
 import (
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type CommentProperties struct {
@@ -13,11 +13,11 @@ type CommentProperties struct {
 	HelpPopupMsg string                                     `json:"helpPopupMsg"`
 }
 
-func (srcProps CommentProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*CommentProperties, error) {
+func (srcProps CommentProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*CommentProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("CommentProperties.Clone: %v", err)
 	}

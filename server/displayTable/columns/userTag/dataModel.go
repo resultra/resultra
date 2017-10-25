@@ -1,12 +1,15 @@
 package userTag
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const userTagEntityKind string = "userTag"
@@ -32,8 +35,8 @@ func validUserTagFieldType(fieldType string) bool {
 	}
 }
 
-func saveUserTag(newUserTag UserTag) error {
-	if saveErr := common.SaveNewTableColumn(userTagEntityKind,
+func saveUserTag(destDBHandle *sql.DB, newUserTag UserTag) error {
+	if saveErr := common.SaveNewTableColumn(destDBHandle, userTagEntityKind,
 		newUserTag.ParentTableID, newUserTag.UserTagID, newUserTag.Properties); saveErr != nil {
 		return fmt.Errorf("saveNewUserTag: Unable to save userTag: error = %v", saveErr)
 	}
@@ -56,7 +59,7 @@ func saveNewUserTag(params NewUserTagParams) (*UserTag, error) {
 		ColType:    userTagEntityKind,
 		Properties: properties}
 
-	if saveErr := saveUserTag(newUserTag); saveErr != nil {
+	if saveErr := saveUserTag(databaseWrapper.DBHandle(), newUserTag); saveErr != nil {
 		return nil, fmt.Errorf("saveNewUserTag: Unable to save userTag with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -84,7 +87,7 @@ func getUserTag(parentTableID string, userTagID string) (*UserTag, error) {
 	return &userTag, nil
 }
 
-func GetUserTags(parentTableID string) ([]UserTag, error) {
+func getUserTagsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]UserTag, error) {
 
 	userTags := []UserTag{}
 	addUserTag := func(userTagID string, encodedProps string) error {
@@ -104,27 +107,31 @@ func GetUserTags(parentTableID string) ([]UserTag, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(userTagEntityKind, parentTableID, addUserTag); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, userTagEntityKind, parentTableID, addUserTag); getErr != nil {
 		return nil, fmt.Errorf("GetUserTags: Can't get userTags: %v")
 	}
 
 	return userTags, nil
 }
 
-func CloneUserTags(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) error {
+func GetUserTags(parentTableID string) ([]UserTag, error) {
+	return getUserTagsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcUserTags, err := GetUserTags(parentTableID)
+func CloneUserTags(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
+
+	srcUserTags, err := getUserTagsFromSrc(cloneParams.SrcDBHandle, parentTableID)
 	if err != nil {
 		return fmt.Errorf("CloneUserTags: %v", err)
 	}
 
 	for _, srcUserTag := range srcUserTags {
-		remappedUserTagID := remappedIDs.AllocNewOrGetExistingRemappedID(srcUserTag.UserTagID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcUserTag.ParentTableID)
+		remappedUserTagID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcUserTag.UserTagID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcUserTag.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneUserTags: %v", err)
 		}
-		destProperties, err := srcUserTag.Properties.Clone(remappedIDs)
+		destProperties, err := srcUserTag.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneUserTags: %v", err)
 		}
@@ -134,7 +141,7 @@ func CloneUserTags(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) 
 			ColumnID:      remappedUserTagID,
 			ColType:       userTagEntityKind,
 			Properties:    *destProperties}
-		if err := saveUserTag(destUserTag); err != nil {
+		if err := saveUserTag(cloneParams.DestDBHandle, destUserTag); err != nil {
 			return fmt.Errorf("CloneUserTags: %v", err)
 		}
 	}

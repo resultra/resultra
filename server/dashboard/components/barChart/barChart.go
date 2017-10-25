@@ -1,12 +1,15 @@
 package barChart
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/dashboard/components/common"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const barChartEntityKind string = "BarChart"
@@ -55,8 +58,8 @@ func validBarChartSortXAxisProp(xAxisSortVal string) bool {
 	}
 }
 
-func saveBarChart(newBarChart BarChart) error {
-	if saveErr := common.SaveNewDashboardComponent(barChartEntityKind,
+func saveBarChart(destDBHandle *sql.DB, newBarChart BarChart) error {
+	if saveErr := common.SaveNewDashboardComponent(destDBHandle, barChartEntityKind,
 		newBarChart.ParentDashboardID, newBarChart.BarChartID, newBarChart.Properties); saveErr != nil {
 		return fmt.Errorf("NewBarChart: Unable to save bar chart component: error = %v", saveErr)
 	}
@@ -98,7 +101,7 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 		BarChartID:        uniqueID.GenerateSnowflakeID(),
 		Properties:        barChartProps}
 
-	if saveErr := saveBarChart(newBarChart); saveErr != nil {
+	if saveErr := saveBarChart(databaseWrapper.DBHandle(), newBarChart); saveErr != nil {
 		return nil, fmt.Errorf("NewBarChart: Unable to save bar chart component with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -122,7 +125,7 @@ func GetBarChart(parentDashboardID string, barChartID string) (*BarChart, error)
 
 }
 
-func GetBarCharts(parentDashboardID string) ([]BarChart, error) {
+func getBarChartsFromSrc(srcDBHandle *sql.DB, parentDashboardID string) ([]BarChart, error) {
 
 	barCharts := []BarChart{}
 	addBarChart := func(barChartID string, encodedProps string) error {
@@ -140,33 +143,37 @@ func GetBarCharts(parentDashboardID string) ([]BarChart, error) {
 
 		return nil
 	}
-	if getErr := common.GetDashboardComponents(barChartEntityKind, parentDashboardID, addBarChart); getErr != nil {
+	if getErr := common.GetDashboardComponents(srcDBHandle, barChartEntityKind, parentDashboardID, addBarChart); getErr != nil {
 		return nil, fmt.Errorf("getBarCharts: Can't get bar chart components: %v")
 	}
 
 	return barCharts, nil
 }
 
-func CloneBarCharts(remappedIDs uniqueID.UniqueIDRemapper, srcParentDashboardID string) error {
+func GetBarCharts(parentDashboardID string) ([]BarChart, error) {
+	return getBarChartsFromSrc(databaseWrapper.DBHandle(), parentDashboardID)
+}
 
-	remappedDashboardID, err := remappedIDs.GetExistingRemappedID(srcParentDashboardID)
+func CloneBarCharts(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentDashboardID string) error {
+
+	remappedDashboardID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcParentDashboardID)
 	if err != nil {
 		return fmt.Errorf("CloneBarCharts: %v", err)
 	}
 
-	barCharts, err := GetBarCharts(srcParentDashboardID)
+	barCharts, err := getBarChartsFromSrc(cloneParams.SrcDBHandle, srcParentDashboardID)
 	if err != nil {
 		return fmt.Errorf("CloneBarCharts: %v", err)
 	}
 
 	for _, srcBarChart := range barCharts {
 
-		remappedBarChartID, err := remappedIDs.AllocNewRemappedID(srcBarChart.BarChartID)
+		remappedBarChartID, err := cloneParams.IDRemapper.AllocNewRemappedID(srcBarChart.BarChartID)
 		if err != nil {
 			return fmt.Errorf("CloneBarCharts: %v", err)
 		}
 
-		clonedProps, err := srcBarChart.Properties.Clone(remappedIDs)
+		clonedProps, err := srcBarChart.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneBarCharts: %v", err)
 		}
@@ -176,7 +183,7 @@ func CloneBarCharts(remappedIDs uniqueID.UniqueIDRemapper, srcParentDashboardID 
 			BarChartID:        remappedBarChartID,
 			Properties:        *clonedProps}
 
-		if err := saveBarChart(destBarChart); err != nil {
+		if err := saveBarChart(cloneParams.DestDBHandle, destBarChart); err != nil {
 			return fmt.Errorf("CloneBarCharts: %v", err)
 		}
 	}

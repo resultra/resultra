@@ -1,13 +1,16 @@
 package textBox
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const textBoxEntityKind string = "textbox"
@@ -34,8 +37,8 @@ func validTextBoxFieldType(fieldType string) bool {
 	}
 }
 
-func saveTextBox(newTextBox TextBox) error {
-	if saveErr := common.SaveNewFormComponent(textBoxEntityKind,
+func saveTextBox(destDBHandle *sql.DB, newTextBox TextBox) error {
+	if saveErr := common.SaveNewFormComponent(destDBHandle, textBoxEntityKind,
 		newTextBox.ParentFormID, newTextBox.TextBoxID, newTextBox.Properties); saveErr != nil {
 		return fmt.Errorf("saveTextBox: Unable to save text box: %v", saveErr)
 	}
@@ -61,7 +64,7 @@ func saveNewTextBox(params NewTextBoxParams) (*TextBox, error) {
 		TextBoxID:  uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveTextBox(newTextBox); err != nil {
+	if err := saveTextBox(databaseWrapper.DBHandle(), newTextBox); err != nil {
 		return nil, fmt.Errorf("saveNewTextBox: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -86,7 +89,7 @@ func getTextBox(parentFormID string, textBoxID string) (*TextBox, error) {
 	return &textBox, nil
 }
 
-func GetTextBoxes(parentFormID string) ([]TextBox, error) {
+func getTextBoxesFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]TextBox, error) {
 
 	textBoxes := []TextBox{}
 	addTextBox := func(textBoxID string, encodedProps string) error {
@@ -104,7 +107,7 @@ func GetTextBoxes(parentFormID string) ([]TextBox, error) {
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(textBoxEntityKind, parentFormID, addTextBox); getErr != nil {
+	if getErr := common.GetFormComponents(srcDBHandle, textBoxEntityKind, parentFormID, addTextBox); getErr != nil {
 		return nil, fmt.Errorf("GetCheckBoxes: Can't get text boxes: %v")
 	}
 
@@ -112,20 +115,24 @@ func GetTextBoxes(parentFormID string) ([]TextBox, error) {
 
 }
 
-func CloneTextBoxes(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetTextBoxes(parentFormID string) ([]TextBox, error) {
+	return getTextBoxesFromSrc(databaseWrapper.DBHandle(), parentFormID)
+}
 
-	srcTextBoxes, err := GetTextBoxes(parentFormID)
+func CloneTextBoxes(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcTextBoxes, err := getTextBoxesFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneTextBoxes: %v", err)
 	}
 
 	for _, srcTextBox := range srcTextBoxes {
-		remappedTextBoxID := remappedIDs.AllocNewOrGetExistingRemappedID(srcTextBox.TextBoxID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcTextBox.ParentFormID)
+		remappedTextBoxID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcTextBox.TextBoxID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcTextBox.ParentFormID)
 		if err != nil {
 			return fmt.Errorf("CloneTextBoxes: %v", err)
 		}
-		destProperties, err := srcTextBox.Properties.Clone(remappedIDs)
+		destProperties, err := srcTextBox.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneTextBoxes: %v", err)
 		}
@@ -133,7 +140,7 @@ func CloneTextBoxes(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) 
 			ParentFormID: remappedFormID,
 			TextBoxID:    remappedTextBoxID,
 			Properties:   *destProperties}
-		if err := saveTextBox(destTextBox); err != nil {
+		if err := saveTextBox(cloneParams.DestDBHandle, destTextBox); err != nil {
 			return fmt.Errorf("CloneTextBoxes: %v", err)
 		}
 	}

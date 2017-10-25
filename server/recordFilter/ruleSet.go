@@ -2,7 +2,7 @@ package recordFilter
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const RecordFilterMatchLogicAny string = "any"
@@ -20,9 +20,9 @@ func NewDefaultRecordFilterRuleSet() RecordFilterRuleSet {
 	return ruleSet
 }
 
-func (srcRuleSet RecordFilterRuleSet) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*RecordFilterRuleSet, error) {
+func (srcRuleSet RecordFilterRuleSet) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*RecordFilterRuleSet, error) {
 
-	destRules, err := CloneFilterRules(remappedIDs, srcRuleSet.FilterRules)
+	destRules, err := CloneFilterRules(cloneParams, srcRuleSet.FilterRules)
 	if err != nil {
 		return nil, fmt.Errorf("RecordFilterRuleSet.Clone: %v", err)
 	}

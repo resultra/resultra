@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/numberFormat"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type ThresholdValues struct {
@@ -35,11 +35,11 @@ func newDefaultProgressProperties() ProgressProperties {
 
 }
 
-func (srcProps ProgressProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ProgressProperties, error) {
+func (srcProps ProgressProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*ProgressProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}

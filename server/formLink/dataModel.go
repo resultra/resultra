@@ -1,6 +1,7 @@
 package formLink
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
@@ -29,14 +30,14 @@ type FormLink struct {
 
 const FormLinkDisabledSharedLink string = ""
 
-func saveNewFormLink(newLink FormLink) error {
+func saveNewFormLink(destDBHandle *sql.DB, newLink FormLink) error {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(newLink.Properties)
 	if encodeErr != nil {
 		return fmt.Errorf("saveNewFormLink: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO form_links 
+	if _, insertErr := destDBHandle.Exec(`INSERT INTO form_links 
 				(link_id,form_id,name,include_in_sidebar,shared_link_enabled,shared_link_id,properties) 
 				VALUES ($1,$2,$3,$4,$5,$6,$7)`,
 		newLink.LinkID,
@@ -65,7 +66,7 @@ func newFormLink(params NewFormLinkParams) (*FormLink, error) {
 		SharedLinkID:      FormLinkDisabledSharedLink,
 		Properties:        newProps}
 
-	if saveErr := saveNewFormLink(newLink); saveErr != nil {
+	if saveErr := saveNewFormLink(databaseWrapper.DBHandle(), newLink); saveErr != nil {
 		return nil, fmt.Errorf("newFormLink: %v", saveErr)
 	}
 
@@ -138,9 +139,9 @@ type GetFormLinkListParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
-func getAllFormLinks(parentDatabaseID string) ([]FormLink, error) {
+func getAllFormLinksFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]FormLink, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := srcDBHandle.Query(
 		`SELECT form_links.link_id,form_links.name,form_links.form_id,
 						form_links.include_in_sidebar,
 						form_links.shared_link_enabled,
@@ -179,6 +180,10 @@ func getAllFormLinks(parentDatabaseID string) ([]FormLink, error) {
 
 	return links, nil
 
+}
+
+func getAllFormLinks(parentDatabaseID string) ([]FormLink, error) {
+	return getAllFormLinksFromSrc(databaseWrapper.DBHandle(), parentDatabaseID)
 }
 
 func getUserSortedFormLinks(req *http.Request, databaseID string) ([]FormLink, error) {
@@ -281,25 +286,25 @@ func updateExistingFormLink(updatedFormLink *FormLink) (*FormLink, error) {
 
 }
 
-func CloneFormLinks(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID string) error {
+func CloneFormLinks(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
-	links, err := getAllFormLinks(srcParentDatabaseID)
+	links, err := getAllFormLinksFromSrc(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneFormLinks: Error getting form links for parent database ID = %v: %v",
-			srcParentDatabaseID, err)
+			cloneParams.SourceDatabaseID, err)
 	}
 
 	for _, currLink := range links {
 
 		destLink := currLink
 
-		destLinkID, err := remappedIDs.AllocNewRemappedID(currLink.LinkID)
+		destLinkID, err := cloneParams.IDRemapper.AllocNewRemappedID(currLink.LinkID)
 		if err != nil {
 			return fmt.Errorf("CloneTableForms: %v", err)
 		}
 		destLink.LinkID = destLinkID
 
-		destFormID, err := remappedIDs.GetExistingRemappedID(currLink.FormID)
+		destFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(currLink.FormID)
 		if err != nil {
 			return fmt.Errorf("CloneTableForms: %v", err)
 		}
@@ -311,13 +316,13 @@ func CloneFormLinks(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID s
 			destLink.SharedLinkID = uniqueID.GenerateSnowflakeID()
 		}
 
-		destProps, err := currLink.Properties.Clone(remappedIDs)
+		destProps, err := currLink.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneFormLinks: %v", err)
 		}
 		destLink.Properties = *destProps
 
-		if err := saveNewFormLink(destLink); err != nil {
+		if err := saveNewFormLink(cloneParams.DestDBHandle, destLink); err != nil {
 			return fmt.Errorf("CloneFormLinks: %v", err)
 		}
 

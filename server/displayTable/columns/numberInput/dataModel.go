@@ -1,12 +1,15 @@
 package numberInput
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const numberInputEntityKind string = "numberInput"
@@ -32,8 +35,8 @@ func validNumberInputFieldType(fieldType string) bool {
 	}
 }
 
-func saveNumberInput(newNumberInput NumberInput) error {
-	if saveErr := common.SaveNewTableColumn(numberInputEntityKind,
+func saveNumberInput(destDBHandle *sql.DB, newNumberInput NumberInput) error {
+	if saveErr := common.SaveNewTableColumn(destDBHandle, numberInputEntityKind,
 		newNumberInput.ParentTableID,
 		newNumberInput.NumberInputID, newNumberInput.Properties); saveErr != nil {
 		return fmt.Errorf("saveNumberInput: Unable to save number input: %v", saveErr)
@@ -57,7 +60,7 @@ func saveNewNumberInput(params NewNumberInputParams) (*NumberInput, error) {
 		ColumnID:      numberInputID,
 		Properties:    properties}
 
-	if err := saveNumberInput(newNumberInput); err != nil {
+	if err := saveNumberInput(databaseWrapper.DBHandle(), newNumberInput); err != nil {
 		return nil, fmt.Errorf("saveNewNumberInput: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -84,7 +87,7 @@ func getNumberInput(parentTableID string, numberInputID string) (*NumberInput, e
 	return &numberInput, nil
 }
 
-func GetNumberInputs(parentTableID string) ([]NumberInput, error) {
+func getNumberInputsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]NumberInput, error) {
 
 	numberInputs := []NumberInput{}
 	addNumberInput := func(numberInputID string, encodedProps string) error {
@@ -104,7 +107,7 @@ func GetNumberInputs(parentTableID string) ([]NumberInput, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(numberInputEntityKind, parentTableID, addNumberInput); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, numberInputEntityKind, parentTableID, addNumberInput); getErr != nil {
 		return nil, fmt.Errorf("GetNumberInputs: Can't get number inputs: %v")
 	}
 
@@ -112,20 +115,24 @@ func GetNumberInputs(parentTableID string) ([]NumberInput, error) {
 
 }
 
-func CloneNumberInputs(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) error {
+func GetNumberInputs(parentTableID string) ([]NumberInput, error) {
+	return getNumberInputsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcNumberInputs, err := GetNumberInputs(parentTableID)
+func CloneNumberInputs(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
+
+	srcNumberInputs, err := getNumberInputsFromSrc(cloneParams.SrcDBHandle, parentTableID)
 	if err != nil {
 		return fmt.Errorf("CloneNumberInputs: %v", err)
 	}
 
 	for _, srcNumberInput := range srcNumberInputs {
-		remappedNumberInputID := remappedIDs.AllocNewOrGetExistingRemappedID(srcNumberInput.NumberInputID)
-		remappedTableID, err := remappedIDs.GetExistingRemappedID(srcNumberInput.ParentTableID)
+		remappedNumberInputID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcNumberInput.NumberInputID)
+		remappedTableID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcNumberInput.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneNumberInputs: %v", err)
 		}
-		destProperties, err := srcNumberInput.Properties.Clone(remappedIDs)
+		destProperties, err := srcNumberInput.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneNumberInputs: %v", err)
 		}
@@ -135,7 +142,7 @@ func CloneNumberInputs(remappedIDs uniqueID.UniqueIDRemapper, parentTableID stri
 			ColumnID:      remappedNumberInputID,
 			ColType:       numberInputEntityKind,
 			Properties:    *destProperties}
-		if err := saveNumberInput(destNumberInput); err != nil {
+		if err := saveNumberInput(cloneParams.DestDBHandle, destNumberInput); err != nil {
 			return fmt.Errorf("CloneNumberInputs: %v", err)
 		}
 	}

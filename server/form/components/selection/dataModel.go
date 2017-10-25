@@ -1,13 +1,16 @@
 package selection
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const selectionEntityKind string = "selection"
@@ -34,8 +37,8 @@ func validSelectionFieldType(fieldType string) bool {
 	}
 }
 
-func saveSelection(newSelection Selection) error {
-	if saveErr := common.SaveNewFormComponent(selectionEntityKind,
+func saveSelection(destDBHandle *sql.DB, newSelection Selection) error {
+	if saveErr := common.SaveNewFormComponent(destDBHandle, selectionEntityKind,
 		newSelection.ParentFormID, newSelection.SelectionID, newSelection.Properties); saveErr != nil {
 		return fmt.Errorf("saveNewSelection: Unable to save selection: error = %v", saveErr)
 	}
@@ -60,7 +63,7 @@ func saveNewSelection(params NewSelectionParams) (*Selection, error) {
 		SelectionID: uniqueID.GenerateSnowflakeID(),
 		Properties:  properties}
 
-	if saveErr := saveSelection(newSelection); saveErr != nil {
+	if saveErr := saveSelection(databaseWrapper.DBHandle(), newSelection); saveErr != nil {
 		return nil, fmt.Errorf("saveNewSelection: Unable to save text box with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -85,7 +88,7 @@ func getSelection(parentFormID string, selectionID string) (*Selection, error) {
 	return &selection, nil
 }
 
-func GetSelections(parentFormID string) ([]Selection, error) {
+func getSelectionsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Selection, error) {
 
 	selections := []Selection{}
 	addSelection := func(selectionID string, encodedProps string) error {
@@ -103,7 +106,7 @@ func GetSelections(parentFormID string) ([]Selection, error) {
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(selectionEntityKind, parentFormID, addSelection); getErr != nil {
+	if getErr := common.GetFormComponents(srcDBHandle, selectionEntityKind, parentFormID, addSelection); getErr != nil {
 		return nil, fmt.Errorf("GetCheckBoxes: Can't get text boxes: %v")
 	}
 
@@ -111,20 +114,24 @@ func GetSelections(parentFormID string) ([]Selection, error) {
 
 }
 
-func CloneSelections(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetSelections(parentFormID string) ([]Selection, error) {
+	return getSelectionsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+}
 
-	srcSelections, err := GetSelections(parentFormID)
+func CloneSelections(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcSelections, err := getSelectionsFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneSelections: %v", err)
 	}
 
 	for _, srcSelection := range srcSelections {
-		remappedSelectionID := remappedIDs.AllocNewOrGetExistingRemappedID(srcSelection.SelectionID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcSelection.ParentFormID)
+		remappedSelectionID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcSelection.SelectionID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcSelection.ParentFormID)
 		if err != nil {
 			return fmt.Errorf("CloneSelections: %v", err)
 		}
-		destProperties, err := srcSelection.Properties.Clone(remappedIDs)
+		destProperties, err := srcSelection.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneSelections: %v", err)
 		}
@@ -132,7 +139,7 @@ func CloneSelections(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string)
 			ParentFormID: remappedFormID,
 			SelectionID:  remappedSelectionID,
 			Properties:   *destProperties}
-		if err := saveSelection(destSelection); err != nil {
+		if err := saveSelection(cloneParams.DestDBHandle, destSelection); err != nil {
 			return fmt.Errorf("CloneSelections: %v", err)
 		}
 	}

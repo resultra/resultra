@@ -5,8 +5,8 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/common/inputProps"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/record"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const buttonSizeMedium string = "medium"
@@ -24,25 +24,25 @@ type ButtonProperties struct {
 	common.ComponentVisibilityProperties
 }
 
-func (srcProps ButtonProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ButtonProperties, error) {
+func (srcProps ButtonProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*ButtonProperties, error) {
 
 	destProps := srcProps
 
-	destProps.LinkedFormID = remappedIDs.AllocNewOrGetExistingRemappedID(srcProps.LinkedFormID)
+	destProps.LinkedFormID = cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcProps.LinkedFormID)
 
-	destPopupProps, cloneErr := srcProps.PopupBehavior.Clone(remappedIDs)
+	destPopupProps, cloneErr := srcProps.PopupBehavior.Clone(cloneParams.IDRemapper)
 	if cloneErr != nil {
 		return nil, fmt.Errorf("ButtonProperties.Clone: %v", cloneErr)
 	}
 	destProps.PopupBehavior = *destPopupProps
 
-	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(remappedIDs)
+	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
 	}
 	destProps.VisibilityConditions = *destVisibilityConditions
 
-	destDefaultVals, cloneErr := record.CloneDefaultFieldValues(remappedIDs, srcProps.DefaultValues)
+	destDefaultVals, cloneErr := record.CloneDefaultFieldValues(cloneParams.IDRemapper, srcProps.DefaultValues)
 	if cloneErr != nil {
 		return nil, fmt.Errorf("ButtonPopupBehavior.Clone: %v", cloneErr)
 	}

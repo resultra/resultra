@@ -3,7 +3,7 @@ package emailAddr
 import (
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type EmailAddrValidationProperties struct {
@@ -23,11 +23,11 @@ type EmailAddrProperties struct {
 	HelpPopupMsg        string                                     `json:"helpPopupMsg"`
 }
 
-func (srcProps EmailAddrProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*EmailAddrProperties, error) {
+func (srcProps EmailAddrProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*EmailAddrProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}

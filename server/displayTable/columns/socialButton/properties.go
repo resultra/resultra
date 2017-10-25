@@ -3,7 +3,7 @@ package socialButton
 import (
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const socialButtonIconStar string = "star"
@@ -16,11 +16,11 @@ type SocialButtonProperties struct {
 	HelpPopupMsg string                                     `json:"helpPopupMsg"`
 }
 
-func (srcProps SocialButtonProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*SocialButtonProperties, error) {
+func (srcProps SocialButtonProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*SocialButtonProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}

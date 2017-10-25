@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"resultra/datasheet/server/alert"
 	"resultra/datasheet/server/calcField"
+	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/displayTable"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form"
@@ -17,10 +19,10 @@ import (
 	"resultra/datasheet/server/valueList"
 )
 
-func cloneFields(remappedIDs uniqueID.UniqueIDRemapper, srcDatabaseID string) error {
+func cloneFields(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
-	getFieldParams := field.GetFieldListParams{ParentDatabaseID: srcDatabaseID}
-	fields, err := field.GetAllFields(getFieldParams)
+	getFieldParams := field.GetFieldListParams{ParentDatabaseID: cloneParams.SourceDatabaseID}
+	fields, err := field.GetAllFieldsFromSrc(cloneParams.SrcDBHandle, getFieldParams)
 	if err != nil {
 		return fmt.Errorf("cloneFields: %v", err)
 	}
@@ -29,14 +31,14 @@ func cloneFields(remappedIDs uniqueID.UniqueIDRemapper, srcDatabaseID string) er
 	// requires a 2-pass algorithm to first remap just the field IDs, then clnoe the
 	// the fields themselves with the remapped IDs already in place.
 	for _, currField := range fields {
-		_, err := remappedIDs.AllocNewRemappedID(currField.FieldID)
+		_, err := cloneParams.IDRemapper.AllocNewRemappedID(currField.FieldID)
 		if err != nil {
 			return fmt.Errorf("cloneFields: Duplicate mapping for field ID = %v (err=%v)",
 				currField.FieldID, err)
 		}
 	}
 
-	remappedDatabaseID, err := remappedIDs.GetExistingRemappedID(srcDatabaseID)
+	remappedDatabaseID, err := cloneParams.IDRemapper.GetExistingRemappedID(cloneParams.SourceDatabaseID)
 	if err != nil {
 		return fmt.Errorf("cloneFields: %v", err)
 	}
@@ -48,29 +50,29 @@ func cloneFields(remappedIDs uniqueID.UniqueIDRemapper, srcDatabaseID string) er
 
 		// There's no guarantee regarding the order of fields IDs being re-mapped.
 		// So, the re-mapped field ID just needs to be remapped if it isn't already created.
-		remappedFieldID := remappedIDs.AllocNewOrGetExistingRemappedID(currField.FieldID)
+		remappedFieldID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(currField.FieldID)
 		clonedField.FieldID = remappedFieldID
 
 		if currField.IsCalcField {
-			clonedEqn, err := calcField.CloneEquation(remappedIDs, currField.CalcFieldEqn)
+			clonedEqn, err := calcField.CloneEquation(cloneParams.IDRemapper, currField.CalcFieldEqn)
 			if err != nil {
 				return fmt.Errorf("cloneFields: %v", err)
 			}
 			clonedField.CalcFieldEqn = clonedEqn
 
-			clonedFormulaText, err := calcField.ClonePreprocessedFormula(srcDatabaseID,
-				remappedIDs, currField.PreprocessedFormulaText)
+			clonedFormulaText, err := calcField.ClonePreprocessedFormula(cloneParams.SourceDatabaseID,
+				cloneParams.IDRemapper, currField.PreprocessedFormulaText)
 			if err != nil {
 				return fmt.Errorf("cloneFields: %v", err)
 			}
 			clonedField.PreprocessedFormulaText = clonedFormulaText
 
-			if _, err := field.CreateNewFieldFromRawInputs(clonedField); err != nil {
+			if _, err := field.CreateNewFieldFromRawInputs(cloneParams.DestDBHandle, clonedField); err != nil {
 				return fmt.Errorf("cloneFields: failure saving cloned field: %v", err)
 			}
 
 		} else {
-			if _, err := field.CreateNewFieldFromRawInputs(clonedField); err != nil {
+			if _, err := field.CreateNewFieldFromRawInputs(cloneParams.DestDBHandle, clonedField); err != nil {
 				return fmt.Errorf("cloneFields: failure saving cloned field: %v", err)
 			}
 		}
@@ -81,46 +83,48 @@ func cloneFields(remappedIDs uniqueID.UniqueIDRemapper, srcDatabaseID string) er
 
 }
 
-func cloneIntoNewTrackerDatabase(cloneParams trackerDatabase.CloneDatabaseParams) (*trackerDatabase.Database, error) {
+func cloneIntoNewTrackerDatabase(cloneParams *trackerDatabase.CloneDatabaseParams) (*trackerDatabase.Database, error) {
 
-	remappedIDs := uniqueID.UniqueIDRemapper{}
-
-	clonedDB, err := trackerDatabase.CloneDatabase(remappedIDs, cloneParams)
+	clonedDB, err := trackerDatabase.CloneDatabase(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
-	if err := global.CloneGlobals(remappedIDs, cloneParams.SourceDatabaseID); err != nil {
+	if err := global.CloneGlobals(cloneParams); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
-	if err := cloneFields(remappedIDs, cloneParams.SourceDatabaseID); err != nil {
+	if err := cloneFields(cloneParams); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
-	if err := form.CloneForms(remappedIDs, cloneParams.SourceDatabaseID); err != nil {
+	if err := form.CloneForms(cloneParams); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
-	if err := displayTable.CloneTables(remappedIDs, cloneParams.SourceDatabaseID); err != nil {
+	if err := dashboard.CloneDashboards(cloneParams); err != nil {
+		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
+	}
+
+	if err := displayTable.CloneTables(cloneParams); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
 	// Item lists have a form as a property, so they must be cloned after the forms, ensuring
 	// the form IDs have already been remapped.
-	if err := itemList.CloneItemLists(remappedIDs, cloneParams.SourceDatabaseID); err != nil {
+	if err := itemList.CloneItemLists(cloneParams); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
-	if err := formLink.CloneFormLinks(remappedIDs, cloneParams.SourceDatabaseID); err != nil {
+	if err := formLink.CloneFormLinks(cloneParams); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
-	if err := valueList.CloneValueLists(remappedIDs, cloneParams.SourceDatabaseID); err != nil {
+	if err := valueList.CloneValueLists(cloneParams); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
-	if err := alert.CloneAlerts(remappedIDs, cloneParams.SourceDatabaseID); err != nil {
+	if err := alert.CloneAlerts(cloneParams); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 
@@ -142,7 +146,10 @@ func saveExistingDatabaseAsTemplate(req *http.Request, params SaveAsTemplatePara
 		SourceDatabaseID: params.SourceDatabaseID,
 		NewName:          params.NewTemplateName,
 		IsTemplate:       true,
-		CreatedByUserID:  userID}
-	return cloneIntoNewTrackerDatabase(cloneParams)
+		CreatedByUserID:  userID,
+		SrcDBHandle:      databaseWrapper.DBHandle(),
+		DestDBHandle:     databaseWrapper.DBHandle(),
+		IDRemapper:       uniqueID.UniqueIDRemapper{}}
+	return cloneIntoNewTrackerDatabase(&cloneParams)
 
 }

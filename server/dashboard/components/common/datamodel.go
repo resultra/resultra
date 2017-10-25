@@ -1,19 +1,21 @@
 package common
 
 import (
+	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/generic"
 )
 
-func SaveNewDashboardComponent(componentType string, parentDashboard string, componentID string, properties interface{}) error {
+func SaveNewDashboardComponent(destDBHandle *sql.DB, componentType string, parentDashboard string,
+	componentID string, properties interface{}) error {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(properties)
 	if encodeErr != nil {
 		return fmt.Errorf("SaveNewDashboardComponent: Unable to save %v: error = %v", componentType, encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO dashboard_components (dashboard_id,component_id,type,properties) 
+	if _, insertErr := destDBHandle.Exec(`INSERT INTO dashboard_components (dashboard_id,component_id,type,properties) 
 				VALUES ($1,$2,$3,$4)`,
 		parentDashboard, componentID, componentType, encodedProps); insertErr != nil {
 		return fmt.Errorf("SaveNewDashboardComponent: Can't save %v: error = %v", componentType, insertErr)
@@ -22,7 +24,8 @@ func SaveNewDashboardComponent(componentType string, parentDashboard string, com
 	return nil
 }
 
-func GetDashboardComponent(componentType string, parentDashboardID string, componentID string, properties interface{}) error {
+func GetDashboardComponent(componentType string, parentDashboardID string,
+	componentID string, properties interface{}) error {
 
 	encodedProps := ""
 	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT properties FROM dashboard_components
@@ -43,9 +46,9 @@ func GetDashboardComponent(componentType string, parentDashboardID string, compo
 
 type addComponentCallbackFunc func(string, string) error
 
-func GetDashboardComponents(componentType string, parentDashboardID string, addComponentFunc addComponentCallbackFunc) error {
+func GetDashboardComponents(srcDBHandle *sql.DB, componentType string, parentDashboardID string, addComponentFunc addComponentCallbackFunc) error {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT component_id,properties
+	rows, queryErr := srcDBHandle.Query(`SELECT component_id,properties
 			FROM dashboard_components 
 			WHERE dashboard_id=$1 AND type=$2`,
 		parentDashboardID, componentType)

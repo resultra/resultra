@@ -1,11 +1,14 @@
 package header
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/dashboard/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const headerEntityKind string = "header"
@@ -26,9 +29,9 @@ type NewHeaderParams struct {
 	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
-func saveHeader(newHeader Header) error {
+func saveHeader(destDBHandle *sql.DB, newHeader Header) error {
 
-	if saveErr := common.SaveNewDashboardComponent(headerEntityKind,
+	if saveErr := common.SaveNewDashboardComponent(destDBHandle, headerEntityKind,
 		newHeader.ParentDashboardID, newHeader.HeaderID, newHeader.Properties); saveErr != nil {
 		return fmt.Errorf("newHeader: Unable to save header component: error = %v", saveErr)
 	}
@@ -54,7 +57,7 @@ func newHeader(params NewHeaderParams) (*Header, error) {
 		HeaderID:          uniqueID.GenerateSnowflakeID(),
 		Properties:        headerProps}
 
-	if saveErr := saveHeader(newHeader); saveErr != nil {
+	if saveErr := saveHeader(databaseWrapper.DBHandle(), newHeader); saveErr != nil {
 		return nil, fmt.Errorf("newHeader: Unable to save summary component with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -77,7 +80,7 @@ func GetHeader(parentDashboardID string, headerID string) (*Header, error) {
 
 }
 
-func GetHeaders(parentDashboardID string) ([]Header, error) {
+func getHeadersFromSrc(srcDBHandle *sql.DB, parentDashboardID string) ([]Header, error) {
 
 	headers := []Header{}
 	addHeader := func(headerID string, encodedProps string) error {
@@ -96,33 +99,37 @@ func GetHeaders(parentDashboardID string) ([]Header, error) {
 
 		return nil
 	}
-	if getErr := common.GetDashboardComponents(headerEntityKind, parentDashboardID, addHeader); getErr != nil {
+	if getErr := common.GetDashboardComponents(srcDBHandle, headerEntityKind, parentDashboardID, addHeader); getErr != nil {
 		return nil, fmt.Errorf("getBarCharts: Can't get bar chart components: %v")
 	}
 
 	return headers, nil
 }
 
-func CloneHeaders(remappedIDs uniqueID.UniqueIDRemapper, srcParentDashboardID string) error {
+func GetHeaders(parentDashboardID string) ([]Header, error) {
+	return getHeadersFromSrc(databaseWrapper.DBHandle(), parentDashboardID)
+}
 
-	remappedDashboardID, err := remappedIDs.GetExistingRemappedID(srcParentDashboardID)
+func CloneHeaders(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentDashboardID string) error {
+
+	remappedDashboardID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcParentDashboardID)
 	if err != nil {
 		return fmt.Errorf("CloneHeaders: %v", err)
 	}
 
-	headers, err := GetHeaders(srcParentDashboardID)
+	headers, err := getHeadersFromSrc(cloneParams.SrcDBHandle, srcParentDashboardID)
 	if err != nil {
 		return fmt.Errorf("CloneHeaders: %v", err)
 	}
 
 	for _, srcHeader := range headers {
 
-		remappedHeaderID, err := remappedIDs.AllocNewRemappedID(srcHeader.HeaderID)
+		remappedHeaderID, err := cloneParams.IDRemapper.AllocNewRemappedID(srcHeader.HeaderID)
 		if err != nil {
 			return fmt.Errorf("CloneHeaders: %v", err)
 		}
 
-		clonedProps, err := srcHeader.Properties.Clone(remappedIDs)
+		clonedProps, err := srcHeader.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneHeaders: %v", err)
 		}
@@ -132,7 +139,7 @@ func CloneHeaders(remappedIDs uniqueID.UniqueIDRemapper, srcParentDashboardID st
 			HeaderID:          remappedHeaderID,
 			Properties:        *clonedProps}
 
-		if err := saveHeader(destHeader); err != nil {
+		if err := saveHeader(cloneParams.DestDBHandle, destHeader); err != nil {
 			return fmt.Errorf("CloneHeaders: %v", err)
 		}
 	}

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/dashboard/values"
-	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/recordFilter"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type SummaryTableProps struct {
@@ -25,11 +25,11 @@ type SummaryTableProps struct {
 	HelpPopupMsg string `json:"helpPopupMsg"`
 }
 
-func (srcProps SummaryTableProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*SummaryTableProps, error) {
+func (srcProps SummaryTableProps) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*SummaryTableProps, error) {
 
 	destProps := srcProps
 
-	rowGroupingVals, err := srcProps.RowGroupingVals.Clone(remappedIDs)
+	rowGroupingVals, err := srcProps.RowGroupingVals.Clone(cloneParams.IDRemapper)
 	if err != nil {
 		return nil, fmt.Errorf("BarChartProps.Clone: %v", err)
 	}
@@ -37,7 +37,7 @@ func (srcProps SummaryTableProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (
 
 	destColSummaries := []values.ValSummary{}
 	for _, srcColSummary := range srcProps.ColumnValSummaries {
-		destColSummary, err := srcColSummary.Clone(remappedIDs)
+		destColSummary, err := srcColSummary.Clone(cloneParams.IDRemapper)
 		if err != nil {
 			return nil, fmt.Errorf("BarChartProps.Clone: %v", err)
 		}
@@ -45,13 +45,13 @@ func (srcProps SummaryTableProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (
 	}
 	destProps.ColumnValSummaries = destColSummaries
 
-	clonedFilterRules, err := srcProps.DefaultFilterRules.Clone(remappedIDs)
+	clonedFilterRules, err := srcProps.DefaultFilterRules.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("BarChartProps.Clone: %v", err)
 	}
 	destProps.DefaultFilterRules = *clonedFilterRules
 
-	clonedPreFilterRules, err := srcProps.PreFilterRules.Clone(remappedIDs)
+	clonedPreFilterRules, err := srcProps.PreFilterRules.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("BarChartProps.Clone: %v", err)
 	}

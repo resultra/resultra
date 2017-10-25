@@ -1,13 +1,16 @@
 package urlLink
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const urlLinkEntityKind string = "urlLink"
@@ -32,8 +35,8 @@ func validUrlLinkFieldType(fieldType string) bool {
 	}
 }
 
-func saveUrlLink(newUrlLink UrlLink) error {
-	if saveErr := common.SaveNewFormComponent(urlLinkEntityKind,
+func saveUrlLink(destDBHandle *sql.DB, newUrlLink UrlLink) error {
+	if saveErr := common.SaveNewFormComponent(destDBHandle, urlLinkEntityKind,
 		newUrlLink.ParentFormID, newUrlLink.UrlLinkID, newUrlLink.Properties); saveErr != nil {
 		return fmt.Errorf("saveUrlLink: Unable to save text box: %v", saveErr)
 	}
@@ -59,7 +62,7 @@ func saveNewUrlLink(params NewUrlLinkParams) (*UrlLink, error) {
 		UrlLinkID:  uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveUrlLink(newUrlLink); err != nil {
+	if err := saveUrlLink(databaseWrapper.DBHandle(), newUrlLink); err != nil {
 		return nil, fmt.Errorf("saveNewUrlLink: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -84,7 +87,7 @@ func getUrlLink(parentFormID string, urlLinkID string) (*UrlLink, error) {
 	return &urlLink, nil
 }
 
-func GetUrlLinks(parentFormID string) ([]UrlLink, error) {
+func getUrlLinksFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]UrlLink, error) {
 
 	urlLinkes := []UrlLink{}
 	addUrlLink := func(urlLinkID string, encodedProps string) error {
@@ -102,7 +105,7 @@ func GetUrlLinks(parentFormID string) ([]UrlLink, error) {
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(urlLinkEntityKind, parentFormID, addUrlLink); getErr != nil {
+	if getErr := common.GetFormComponents(srcDBHandle, urlLinkEntityKind, parentFormID, addUrlLink); getErr != nil {
 		return nil, fmt.Errorf("GetCheckBoxes: Can't get text boxes: %v")
 	}
 
@@ -110,20 +113,24 @@ func GetUrlLinks(parentFormID string) ([]UrlLink, error) {
 
 }
 
-func CloneUrlLinks(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetUrlLinks(parentFormID string) ([]UrlLink, error) {
+	return getUrlLinksFromSrc(databaseWrapper.DBHandle(), parentFormID)
+}
 
-	srcUrlLink, err := GetUrlLinks(parentFormID)
+func CloneUrlLinks(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcUrlLink, err := getUrlLinksFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneUrlLink: %v", err)
 	}
 
 	for _, srcUrlLink := range srcUrlLink {
-		remappedUrlLinkID := remappedIDs.AllocNewOrGetExistingRemappedID(srcUrlLink.UrlLinkID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcUrlLink.ParentFormID)
+		remappedUrlLinkID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcUrlLink.UrlLinkID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcUrlLink.ParentFormID)
 		if err != nil {
 			return fmt.Errorf("CloneUrlLink: %v", err)
 		}
-		destProperties, err := srcUrlLink.Properties.Clone(remappedIDs)
+		destProperties, err := srcUrlLink.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneUrlLink: %v", err)
 		}
@@ -131,7 +138,7 @@ func CloneUrlLinks(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) e
 			ParentFormID: remappedFormID,
 			UrlLinkID:    remappedUrlLinkID,
 			Properties:   *destProperties}
-		if err := saveUrlLink(destUrlLink); err != nil {
+		if err := saveUrlLink(cloneParams.DestDBHandle, destUrlLink); err != nil {
 			return fmt.Errorf("CloneUrlLink: %v", err)
 		}
 	}

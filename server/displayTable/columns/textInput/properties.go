@@ -3,7 +3,7 @@ package textInput
 import (
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type TextInputValidationProperties struct {
@@ -24,18 +24,18 @@ type TextInputProperties struct {
 	HelpPopupMsg        string                                     `json:"helpPopupMsg"`
 }
 
-func (srcProps TextInputProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*TextInputProperties, error) {
+func (srcProps TextInputProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*TextInputProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}
 	destProps.FieldID = remappedFieldID
 
 	if srcProps.ValueListID != nil {
-		destValueListID := remappedIDs.AllocNewOrGetExistingRemappedID(*srcProps.ValueListID)
+		destValueListID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(*srcProps.ValueListID)
 		destProps.ValueListID = &destValueListID
 	}
 

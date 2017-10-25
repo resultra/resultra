@@ -1,13 +1,16 @@
 package numberInput
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const numberInputEntityKind string = "numberInput"
@@ -34,8 +37,8 @@ func validNumberInputFieldType(fieldType string) bool {
 	}
 }
 
-func saveNumberInput(newNumberInput NumberInput) error {
-	if saveErr := common.SaveNewFormComponent(numberInputEntityKind,
+func saveNumberInput(destDBHandle *sql.DB, newNumberInput NumberInput) error {
+	if saveErr := common.SaveNewFormComponent(destDBHandle, numberInputEntityKind,
 		newNumberInput.ParentFormID, newNumberInput.NumberInputID, newNumberInput.Properties); saveErr != nil {
 		return fmt.Errorf("saveNumberInput: Unable to save text box: %v", saveErr)
 	}
@@ -61,7 +64,7 @@ func saveNewNumberInput(params NewNumberInputParams) (*NumberInput, error) {
 		NumberInputID: uniqueID.GenerateSnowflakeID(),
 		Properties:    properties}
 
-	if err := saveNumberInput(newNumberInput); err != nil {
+	if err := saveNumberInput(databaseWrapper.DBHandle(), newNumberInput); err != nil {
 		return nil, fmt.Errorf("saveNewNumberInput: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -86,7 +89,7 @@ func getNumberInput(parentFormID string, numberInputID string) (*NumberInput, er
 	return &numberInput, nil
 }
 
-func GetNumberInputs(parentFormID string) ([]NumberInput, error) {
+func getNumberInputsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]NumberInput, error) {
 
 	numberInputs := []NumberInput{}
 	addNumberInput := func(numberInputID string, encodedProps string) error {
@@ -104,7 +107,7 @@ func GetNumberInputs(parentFormID string) ([]NumberInput, error) {
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(numberInputEntityKind, parentFormID, addNumberInput); getErr != nil {
+	if getErr := common.GetFormComponents(srcDBHandle, numberInputEntityKind, parentFormID, addNumberInput); getErr != nil {
 		return nil, fmt.Errorf("GetNumberInputs: Can't get number inputs: %v")
 	}
 
@@ -112,20 +115,24 @@ func GetNumberInputs(parentFormID string) ([]NumberInput, error) {
 
 }
 
-func CloneNumberInputs(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetNumberInputs(parentFormID string) ([]NumberInput, error) {
+	return getNumberInputsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+}
 
-	srcNumberInputs, err := GetNumberInputs(parentFormID)
+func CloneNumberInputs(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcNumberInputs, err := getNumberInputsFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneNumberInputs: %v", err)
 	}
 
 	for _, srcNumberInput := range srcNumberInputs {
-		remappedNumberInputID := remappedIDs.AllocNewOrGetExistingRemappedID(srcNumberInput.NumberInputID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcNumberInput.ParentFormID)
+		remappedNumberInputID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcNumberInput.NumberInputID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcNumberInput.ParentFormID)
 		if err != nil {
 			return fmt.Errorf("CloneNumberInputs: %v", err)
 		}
-		destProperties, err := srcNumberInput.Properties.Clone(remappedIDs)
+		destProperties, err := srcNumberInput.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneNumberInputs: %v", err)
 		}
@@ -133,7 +140,7 @@ func CloneNumberInputs(remappedIDs uniqueID.UniqueIDRemapper, parentFormID strin
 			ParentFormID:  remappedFormID,
 			NumberInputID: remappedNumberInputID,
 			Properties:    *destProperties}
-		if err := saveNumberInput(destNumberInput); err != nil {
+		if err := saveNumberInput(cloneParams.DestDBHandle, destNumberInput); err != nil {
 			return fmt.Errorf("CloneNumberInputs: %v", err)
 		}
 	}

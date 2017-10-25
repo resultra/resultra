@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const ratingIconStar string = "star"
@@ -33,17 +33,17 @@ type RatingProperties struct {
 	MaxVal              int                                        `json:"maxVal"`
 }
 
-func (srcProps RatingProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*RatingProperties, error) {
+func (srcProps RatingProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*RatingProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}
 	destProps.FieldID = remappedFieldID
 
-	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(remappedIDs)
+	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
 	}

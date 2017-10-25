@@ -1,19 +1,20 @@
 package common
 
 import (
+	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/generic"
 )
 
-func SaveNewTableColumn(columnType string, parentTableID string, columnID string, properties interface{}) error {
+func SaveNewTableColumn(destDBHandle *sql.DB, columnType string, parentTableID string, columnID string, properties interface{}) error {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(properties)
 	if encodeErr != nil {
 		return fmt.Errorf("SaveNewTableViewColumn: Unable to save %v: error = %v", columnType, encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(
+	if _, insertErr := destDBHandle.Exec(
 		`INSERT INTO table_view_columns (table_id,column_id,type,properties) VALUES ($1,$2,$3,$4)`,
 		parentTableID, columnID, columnType, encodedProps); insertErr != nil {
 		return fmt.Errorf("SaveNewTableViewColumn: Can't save %v: error = %v", columnType, insertErr)
@@ -77,9 +78,9 @@ func GetTableColumnAndTable(columnType string, parentTableID string, columnID st
 
 type addColumnCallbackFunc func(string, string) error
 
-func GetTableColumns(columnType string, parentTableID string, addColumnFunc addColumnCallbackFunc) error {
+func GetTableColumns(srcDBHandle *sql.DB, columnType string, parentTableID string, addColumnFunc addColumnCallbackFunc) error {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT column_id,properties
+	rows, queryErr := srcDBHandle.Query(`SELECT column_id,properties
 			FROM table_view_columns 
 			WHERE table_id=$1 AND type=$2`,
 		parentTableID, columnType)

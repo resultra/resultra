@@ -1,12 +1,15 @@
 package progress
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const progressEntityKind string = "progress"
@@ -32,8 +35,8 @@ func validProgressFieldType(fieldType string) bool {
 	}
 }
 
-func saveProgress(newProgress Progress) error {
-	if saveErr := common.SaveNewTableColumn(progressEntityKind,
+func saveProgress(destDBHandle *sql.DB, newProgress Progress) error {
+	if saveErr := common.SaveNewTableColumn(destDBHandle, progressEntityKind,
 		newProgress.ParentTableID, newProgress.ProgressID, newProgress.Properties); saveErr != nil {
 		return fmt.Errorf("saveProgress: Unable to save progress indicator with error = %v", saveErr)
 	}
@@ -56,7 +59,7 @@ func saveNewProgress(params NewProgressParams) (*Progress, error) {
 		ColType:    progressEntityKind,
 		Properties: properties}
 
-	if err := saveProgress(newProgress); err != nil {
+	if err := saveProgress(databaseWrapper.DBHandle(), newProgress); err != nil {
 		return nil, fmt.Errorf("saveNewProgress: Unable to save progress indicator with params=%+v: error = %v", params, err)
 	}
 
@@ -83,7 +86,7 @@ func getProgress(parentTableID string, progressID string) (*Progress, error) {
 	return &progress, nil
 }
 
-func GetProgressIndicators(parentTableID string) ([]Progress, error) {
+func getProgressIndicatorsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Progress, error) {
 
 	progressIndicators := []Progress{}
 	addProgress := func(progressID string, encodedProps string) error {
@@ -103,27 +106,31 @@ func GetProgressIndicators(parentTableID string) ([]Progress, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(progressEntityKind, parentTableID, addProgress); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, progressEntityKind, parentTableID, addProgress); getErr != nil {
 		return nil, fmt.Errorf("GetProgressIndicators: Can't get progress indicators: %v")
 	}
 
 	return progressIndicators, nil
 }
 
-func CloneProgressIndicators(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) error {
+func GetProgressIndicators(parentTableID string) ([]Progress, error) {
+	return getProgressIndicatorsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcProgressIndicators, err := GetProgressIndicators(parentTableID)
+func CloneProgressIndicators(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
+
+	srcProgressIndicators, err := getProgressIndicatorsFromSrc(cloneParams.SrcDBHandle, parentTableID)
 	if err != nil {
 		return fmt.Errorf("CloneProgressIndicators: %v", err)
 	}
 
 	for _, srcProgress := range srcProgressIndicators {
-		remappedProgressID := remappedIDs.AllocNewOrGetExistingRemappedID(srcProgress.ProgressID)
-		remappedTableID, err := remappedIDs.GetExistingRemappedID(srcProgress.ParentTableID)
+		remappedProgressID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcProgress.ProgressID)
+		remappedTableID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProgress.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneProgressIndicators: %v", err)
 		}
-		destProperties, err := srcProgress.Properties.Clone(remappedIDs)
+		destProperties, err := srcProgress.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneProgressIndicators: %v", err)
 		}
@@ -133,7 +140,7 @@ func CloneProgressIndicators(remappedIDs uniqueID.UniqueIDRemapper, parentTableI
 			ColumnID:      remappedProgressID,
 			ColType:       progressEntityKind,
 			Properties:    *destProperties}
-		if err := saveProgress(destProgress); err != nil {
+		if err := saveProgress(cloneParams.DestDBHandle, destProgress); err != nil {
 			return fmt.Errorf("CloneProgressIndicators: %v", err)
 		}
 	}

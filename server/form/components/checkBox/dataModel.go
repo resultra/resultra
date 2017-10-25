@@ -1,13 +1,16 @@
 package checkBox
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const checkBoxEntityKind string = "checkbox"
@@ -32,8 +35,8 @@ func validCheckBoxFieldType(fieldType string) bool {
 	}
 }
 
-func saveCheckbox(newCheckBox CheckBox) error {
-	if saveErr := common.SaveNewFormComponent(checkBoxEntityKind,
+func saveCheckbox(destDBHandle *sql.DB, newCheckBox CheckBox) error {
+	if saveErr := common.SaveNewFormComponent(destDBHandle, checkBoxEntityKind,
 		newCheckBox.ParentFormID, newCheckBox.CheckBoxID, newCheckBox.Properties); saveErr != nil {
 		return fmt.Errorf("saveCheckbox: Unable to save bar chart with error = %v", saveErr)
 	}
@@ -58,7 +61,7 @@ func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 		CheckBoxID: uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveCheckbox(newCheckBox); err != nil {
+	if err := saveCheckbox(databaseWrapper.DBHandle(), newCheckBox); err != nil {
 		return nil, fmt.Errorf("saveNewCheckBox: Unable to save bar chart with params=%+v: error = %v", params, err)
 	}
 
@@ -83,7 +86,7 @@ func getCheckBox(parentFormID string, checkBoxID string) (*CheckBox, error) {
 	return &checkBox, nil
 }
 
-func GetCheckBoxes(parentFormID string) ([]CheckBox, error) {
+func getCheckBoxesFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]CheckBox, error) {
 
 	checkBoxes := []CheckBox{}
 	addCheckbox := func(checkboxID string, encodedProps string) error {
@@ -101,27 +104,31 @@ func GetCheckBoxes(parentFormID string) ([]CheckBox, error) {
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(checkBoxEntityKind, parentFormID, addCheckbox); getErr != nil {
+	if getErr := common.GetFormComponents(srcDBHandle, checkBoxEntityKind, parentFormID, addCheckbox); getErr != nil {
 		return nil, fmt.Errorf("GetCheckBoxes: Can't get checkboxes: %v")
 	}
 
 	return checkBoxes, nil
 }
 
-func CloneCheckBoxes(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetCheckBoxes(parentFormID string) ([]CheckBox, error) {
+	return getCheckBoxesFromSrc(databaseWrapper.DBHandle(), parentFormID)
+}
 
-	srcCheckBoxes, err := GetCheckBoxes(parentFormID)
+func CloneCheckBoxes(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcCheckBoxes, err := getCheckBoxesFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneCheckBoxes: %v", err)
 	}
 
 	for _, srcCheckBox := range srcCheckBoxes {
-		remappedCheckBoxID := remappedIDs.AllocNewOrGetExistingRemappedID(srcCheckBox.CheckBoxID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcCheckBox.ParentFormID)
+		remappedCheckBoxID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcCheckBox.CheckBoxID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcCheckBox.ParentFormID)
 		if err != nil {
 			return fmt.Errorf("CloneCheckBoxes: %v", err)
 		}
-		destProperties, err := srcCheckBox.Properties.Clone(remappedIDs)
+		destProperties, err := srcCheckBox.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneCheckBoxes: %v", err)
 		}
@@ -129,7 +136,7 @@ func CloneCheckBoxes(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string)
 			ParentFormID: remappedFormID,
 			CheckBoxID:   remappedCheckBoxID,
 			Properties:   *destProperties}
-		if err := saveCheckbox(destCheckBox); err != nil {
+		if err := saveCheckbox(cloneParams.DestDBHandle, destCheckBox); err != nil {
 			return fmt.Errorf("CloneCheckBoxes: %v", err)
 		}
 	}

@@ -1,13 +1,16 @@
 package attachment
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 // TODO - Finish refactoring
@@ -33,9 +36,9 @@ func validImageFieldType(fieldType string) bool {
 	}
 }
 
-func saveImage(newImage Image) error {
+func saveImage(destDBHandle *sql.DB, newImage Image) error {
 
-	if saveErr := common.SaveNewFormComponent(imageEntityKind,
+	if saveErr := common.SaveNewFormComponent(destDBHandle, imageEntityKind,
 		newImage.ParentFormID, newImage.ImageID, newImage.Properties); saveErr != nil {
 		return fmt.Errorf("saveNewImage: Unable to save image form component: error = %v", saveErr)
 	}
@@ -61,7 +64,7 @@ func saveNewImage(params NewImageParams) (*Image, error) {
 		ImageID:    uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if saveErr := saveImage(newImage); saveErr != nil {
+	if saveErr := saveImage(databaseWrapper.DBHandle(), newImage); saveErr != nil {
 		return nil, fmt.Errorf("saveNewImage: Unable to save image form component with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -86,7 +89,7 @@ func getImage(parentFormID string, imageID string) (*Image, error) {
 	return &image, nil
 }
 
-func GetImages(parentFormID string) ([]Image, error) {
+func GetImagesFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Image, error) {
 
 	images := []Image{}
 	addImage := func(imageID string, encodedProps string) error {
@@ -104,7 +107,7 @@ func GetImages(parentFormID string) ([]Image, error) {
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(imageEntityKind, parentFormID, addImage); getErr != nil {
+	if getErr := common.GetFormComponents(srcDBHandle, imageEntityKind, parentFormID, addImage); getErr != nil {
 		return nil, fmt.Errorf("GetCheckBoxes: Can't get image form components: %v")
 	}
 
@@ -112,20 +115,24 @@ func GetImages(parentFormID string) ([]Image, error) {
 
 }
 
-func CloneImages(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetImages(parentFormID string) ([]Image, error) {
+	return GetImagesFromSrc(databaseWrapper.DBHandle(), parentFormID)
+}
 
-	srcImages, err := GetImages(parentFormID)
+func CloneImages(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcImages, err := GetImagesFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneImages: %v", err)
 	}
 
 	for _, srcImage := range srcImages {
-		remappedImageID := remappedIDs.AllocNewOrGetExistingRemappedID(srcImage.ImageID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcImage.ParentFormID)
+		remappedImageID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcImage.ImageID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcImage.ParentFormID)
 		if err != nil {
 			return fmt.Errorf("CloneImages: %v", err)
 		}
-		destProperties, err := srcImage.Properties.Clone(remappedIDs)
+		destProperties, err := srcImage.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneImages: %v", err)
 		}
@@ -133,7 +140,7 @@ func CloneImages(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) err
 			ParentFormID: remappedFormID,
 			ImageID:      remappedImageID,
 			Properties:   *destProperties}
-		if err := saveImage(destImage); err != nil {
+		if err := saveImage(cloneParams.DestDBHandle, destImage); err != nil {
 			return fmt.Errorf("CloneImages: %v", err)
 		}
 	}

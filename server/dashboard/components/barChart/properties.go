@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/dashboard/values"
-	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/recordFilter"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const xAxisSortAsc string = "asc"
@@ -31,29 +31,29 @@ type BarChartProps struct {
 	HelpPopupMsg       string                           `json:"helpPopupMsg"`
 }
 
-func (srcProps BarChartProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*BarChartProps, error) {
+func (srcProps BarChartProps) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*BarChartProps, error) {
 
 	destProps := srcProps
 
-	xAxisVals, err := srcProps.XAxisVals.Clone(remappedIDs)
+	xAxisVals, err := srcProps.XAxisVals.Clone(cloneParams.IDRemapper)
 	if err != nil {
 		return nil, fmt.Errorf("BarChartProps.Clone: %v", err)
 	}
 	destProps.XAxisVals = *xAxisVals
 
-	yAxisVals, err := srcProps.YAxisVals.Clone(remappedIDs)
+	yAxisVals, err := srcProps.YAxisVals.Clone(cloneParams.IDRemapper)
 	if err != nil {
 		return nil, fmt.Errorf("BarChartProps.Clone: %v", err)
 	}
 	destProps.YAxisVals = *yAxisVals
 
-	clonedFilterRules, err := srcProps.DefaultFilterRules.Clone(remappedIDs)
+	clonedFilterRules, err := srcProps.DefaultFilterRules.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("BarChartProps.Clone: %v", err)
 	}
 	destProps.DefaultFilterRules = *clonedFilterRules
 
-	clonedPreFilterRules, err := srcProps.PreFilterRules.Clone(remappedIDs)
+	clonedPreFilterRules, err := srcProps.PreFilterRules.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("BarChartProps.Clone: %v", err)
 	}

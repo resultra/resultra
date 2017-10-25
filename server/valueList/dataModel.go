@@ -1,10 +1,12 @@
 package valueList
 
 import (
+	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type NewValueListParams struct {
@@ -20,14 +22,14 @@ type ValueList struct {
 	Properties       ValueListProperties `json:"properties"`
 }
 
-func saveNewValueList(newValueList ValueList) error {
+func saveNewValueList(destDBHandle *sql.DB, newValueList ValueList) error {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(newValueList.Properties)
 	if encodeErr != nil {
 		return fmt.Errorf("saveNewValueList: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO value_lists 
+	if _, insertErr := destDBHandle.Exec(`INSERT INTO value_lists 
 				(value_list_id,database_id,name,properties) 
 				VALUES ($1,$2,$3,$4)`,
 		newValueList.ValueListID,
@@ -50,7 +52,7 @@ func newValueList(params NewValueListParams) (*ValueList, error) {
 		ParentDatabaseID: params.ParentDatabaseID,
 		Properties:       newProps}
 
-	if saveErr := saveNewValueList(newValueList); saveErr != nil {
+	if saveErr := saveNewValueList(databaseWrapper.DBHandle(), newValueList); saveErr != nil {
 		return nil, fmt.Errorf("newValueList: %v", saveErr)
 	}
 
@@ -92,9 +94,9 @@ type GetValueListsParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
-func getAllValueLists(parentDatabaseID string) ([]ValueList, error) {
+func getAllValueListsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]ValueList, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := srcDBHandle.Query(
 		`SELECT value_lists.value_list_id,value_lists.name,
 						value_lists.database_id,
 						value_lists.properties
@@ -130,6 +132,10 @@ func getAllValueLists(parentDatabaseID string) ([]ValueList, error) {
 
 }
 
+func getAllValueLists(parentDatabaseID string) ([]ValueList, error) {
+	return getAllValueListsFromSrc(databaseWrapper.DBHandle(), parentDatabaseID)
+}
+
 func updateExistingValueList(updatedValueList *ValueList) (*ValueList, error) {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(updatedValueList.Properties)
@@ -151,37 +157,37 @@ func updateExistingValueList(updatedValueList *ValueList) (*ValueList, error) {
 
 }
 
-func CloneValueLists(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID string) error {
+func CloneValueLists(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
-	valueLists, err := getAllValueLists(srcParentDatabaseID)
+	valueLists, err := getAllValueListsFromSrc(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneValueLists: Error getting form links for parent database ID = %v: %v",
-			srcParentDatabaseID, err)
+			cloneParams.SourceDatabaseID, err)
 	}
 
 	for _, currValueList := range valueLists {
 
 		destValueList := currValueList
 
-		destValueListID, err := remappedIDs.AllocNewRemappedID(currValueList.ValueListID)
+		destValueListID, err := cloneParams.IDRemapper.AllocNewRemappedID(currValueList.ValueListID)
 		if err != nil {
 			return fmt.Errorf("CloneValueLists: %v", err)
 		}
 		destValueList.ValueListID = destValueListID
 
-		destDatabaseID, err := remappedIDs.GetExistingRemappedID(currValueList.ParentDatabaseID)
+		destDatabaseID, err := cloneParams.IDRemapper.GetExistingRemappedID(currValueList.ParentDatabaseID)
 		if err != nil {
 			return fmt.Errorf("CloneValueLists: %v", err)
 		}
 		destValueList.ParentDatabaseID = destDatabaseID
 
-		destProps, err := currValueList.Properties.Clone(remappedIDs)
+		destProps, err := currValueList.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneFormLinks: %v", err)
 		}
 		destValueList.Properties = *destProps
 
-		if err := saveNewValueList(destValueList); err != nil {
+		if err := saveNewValueList(cloneParams.DestDBHandle, destValueList); err != nil {
 			return fmt.Errorf("CloneFormLinks: %v", err)
 		}
 

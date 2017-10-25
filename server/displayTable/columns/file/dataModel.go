@@ -1,12 +1,15 @@
 package file
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const fileEntityKind string = "file"
@@ -32,8 +35,8 @@ func validFileFieldType(fieldType string) bool {
 	}
 }
 
-func saveFile(newFile File) error {
-	if saveErr := common.SaveNewTableColumn(fileEntityKind,
+func saveFile(destDBHandle *sql.DB, newFile File) error {
+	if saveErr := common.SaveNewTableColumn(destDBHandle, fileEntityKind,
 		newFile.ParentTableID, newFile.FileID, newFile.Properties); saveErr != nil {
 		return fmt.Errorf("saveFile: Unable to save text box: %v", saveErr)
 	}
@@ -57,7 +60,7 @@ func saveNewFile(params NewFileParams) (*File, error) {
 		Properties: properties,
 		ColType:    fileEntityKind}
 
-	if err := saveFile(newFile); err != nil {
+	if err := saveFile(databaseWrapper.DBHandle(), newFile); err != nil {
 		return nil, fmt.Errorf("saveNewFile: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -84,7 +87,7 @@ func getFile(parentTableID string, fileID string) (*File, error) {
 	return &file, nil
 }
 
-func GetFiles(parentTableID string) ([]File, error) {
+func getFilesFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]File, error) {
 
 	files := []File{}
 	addFile := func(fileID string, encodedProps string) error {
@@ -104,7 +107,7 @@ func GetFiles(parentTableID string) ([]File, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(fileEntityKind, parentTableID, addFile); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, fileEntityKind, parentTableID, addFile); getErr != nil {
 		return nil, fmt.Errorf("GetFiles: Can't get text boxes: %v")
 	}
 
@@ -112,20 +115,24 @@ func GetFiles(parentTableID string) ([]File, error) {
 
 }
 
-func CloneFiles(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetFiles(parentTableID string) ([]File, error) {
+	return getFilesFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcFilees, err := GetFiles(parentFormID)
+func CloneFiles(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcFilees, err := getFilesFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneFilees: %v", err)
 	}
 
 	for _, srcFile := range srcFilees {
-		remappedFileID := remappedIDs.AllocNewOrGetExistingRemappedID(srcFile.FileID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcFile.ParentTableID)
+		remappedFileID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcFile.FileID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcFile.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneFiles: %v", err)
 		}
-		destProperties, err := srcFile.Properties.Clone(remappedIDs)
+		destProperties, err := srcFile.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneFiles: %v", err)
 		}
@@ -135,7 +142,7 @@ func CloneFiles(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) erro
 			ColumnID:      remappedFileID,
 			Properties:    *destProperties,
 			ColType:       fileEntityKind}
-		if err := saveFile(destFile); err != nil {
+		if err := saveFile(cloneParams.DestDBHandle, destFile); err != nil {
 			return fmt.Errorf("CloneFiles: %v", err)
 		}
 	}

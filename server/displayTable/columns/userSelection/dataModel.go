@@ -1,12 +1,15 @@
 package userSelection
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const userSelectionEntityKind string = "userSelection"
@@ -32,8 +35,8 @@ func validUserSelectionFieldType(fieldType string) bool {
 	}
 }
 
-func saveUserSelection(newUserSelection UserSelection) error {
-	if saveErr := common.SaveNewTableColumn(userSelectionEntityKind,
+func saveUserSelection(destDBHandle *sql.DB, newUserSelection UserSelection) error {
+	if saveErr := common.SaveNewTableColumn(destDBHandle, userSelectionEntityKind,
 		newUserSelection.ParentTableID, newUserSelection.UserSelectionID, newUserSelection.Properties); saveErr != nil {
 		return fmt.Errorf("saveNewUserSelection: Unable to save userSelection: error = %v", saveErr)
 	}
@@ -56,7 +59,7 @@ func saveNewUserSelection(params NewUserSelectionParams) (*UserSelection, error)
 		ColType:         userSelectionEntityKind,
 		Properties:      properties}
 
-	if saveErr := saveUserSelection(newUserSelection); saveErr != nil {
+	if saveErr := saveUserSelection(databaseWrapper.DBHandle(), newUserSelection); saveErr != nil {
 		return nil, fmt.Errorf("saveNewUserSelection: Unable to save userSelection with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -84,7 +87,7 @@ func getUserSelection(parentTableID string, userSelectionID string) (*UserSelect
 	return &userSelection, nil
 }
 
-func GetUserSelections(parentTableID string) ([]UserSelection, error) {
+func getUserSelectionsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]UserSelection, error) {
 
 	userSelections := []UserSelection{}
 	addUserSelection := func(userSelectionID string, encodedProps string) error {
@@ -104,27 +107,31 @@ func GetUserSelections(parentTableID string) ([]UserSelection, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(userSelectionEntityKind, parentTableID, addUserSelection); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, userSelectionEntityKind, parentTableID, addUserSelection); getErr != nil {
 		return nil, fmt.Errorf("GetUserSelections: Can't get userSelections: %v")
 	}
 
 	return userSelections, nil
 }
 
-func CloneUserSelections(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) error {
+func GetUserSelections(parentTableID string) ([]UserSelection, error) {
+	return getUserSelectionsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcUserSelections, err := GetUserSelections(parentTableID)
+func CloneUserSelections(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
+
+	srcUserSelections, err := getUserSelectionsFromSrc(cloneParams.SrcDBHandle, parentTableID)
 	if err != nil {
 		return fmt.Errorf("CloneUserSelections: %v", err)
 	}
 
 	for _, srcUserSelection := range srcUserSelections {
-		remappedUserSelectionID := remappedIDs.AllocNewOrGetExistingRemappedID(srcUserSelection.UserSelectionID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcUserSelection.ParentTableID)
+		remappedUserSelectionID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcUserSelection.UserSelectionID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcUserSelection.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneUserSelections: %v", err)
 		}
-		destProperties, err := srcUserSelection.Properties.Clone(remappedIDs)
+		destProperties, err := srcUserSelection.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneUserSelections: %v", err)
 		}
@@ -134,7 +141,7 @@ func CloneUserSelections(remappedIDs uniqueID.UniqueIDRemapper, parentTableID st
 			ColumnID:        remappedUserSelectionID,
 			ColType:         userSelectionEntityKind,
 			Properties:      *destProperties}
-		if err := saveUserSelection(destUserSelection); err != nil {
+		if err := saveUserSelection(cloneParams.DestDBHandle, destUserSelection); err != nil {
 			return fmt.Errorf("CloneUserSelections: %v", err)
 		}
 	}

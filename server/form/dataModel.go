@@ -1,11 +1,13 @@
 package form
 
 import (
+	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const formEntityKind string = "Form"
@@ -22,13 +24,13 @@ type NewFormParams struct {
 	Name             string `json:"name"`
 }
 
-func saveForm(newForm Form) error {
+func saveForm(destDBHandle *sql.DB, newForm Form) error {
 	encodedFormProps, encodeErr := generic.EncodeJSONString(newForm.Properties)
 	if encodeErr != nil {
 		return fmt.Errorf("saveForm: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO forms (database_id,form_id,name,properties) VALUES ($1,$2,$3,$4)`,
+	if _, insertErr := destDBHandle.Exec(`INSERT INTO forms (database_id,form_id,name,properties) VALUES ($1,$2,$3,$4)`,
 		newForm.ParentDatabaseID, newForm.FormID, newForm.Name, encodedFormProps); insertErr != nil {
 		return fmt.Errorf("saveForm: Can't create form: error = %v", insertErr)
 	}
@@ -48,7 +50,7 @@ func newForm(params NewFormParams) (*Form, error) {
 		Name:       sanitizedName,
 		Properties: newDefaultFormProperties()}
 
-	if err := saveForm(newForm); err != nil {
+	if err := saveForm(databaseWrapper.DBHandle(), newForm); err != nil {
 		return nil, fmt.Errorf("newForm: error saving form: %v", err)
 	}
 
@@ -85,9 +87,9 @@ type GetFormListParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
-func GetAllForms(parentDatabaseID string) ([]Form, error) {
+func getAllFormsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Form, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := srcDBHandle.Query(
 		`SELECT database_id,form_id,name,properties FROM forms WHERE database_id = $1`,
 		parentDatabaseID)
 	if queryErr != nil {
@@ -116,17 +118,21 @@ func GetAllForms(parentDatabaseID string) ([]Form, error) {
 
 }
 
-func CloneForms(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID string) error {
+func GetAllForms(parentDatabaseID string) ([]Form, error) {
+	return getAllFormsFromSrc(databaseWrapper.DBHandle(), parentDatabaseID)
+}
 
-	remappedDatabaseID, err := remappedIDs.GetExistingRemappedID(srcParentDatabaseID)
+func CloneForms(cloneParams *trackerDatabase.CloneDatabaseParams) error {
+
+	remappedDatabaseID, err := cloneParams.IDRemapper.GetExistingRemappedID(cloneParams.SourceDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneTableForms: Error getting remapped table ID: %v", err)
 	}
 
-	forms, err := GetAllForms(srcParentDatabaseID)
+	forms, err := GetAllForms(cloneParams.SourceDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneTableForms: Error getting forms for parent database ID = %v: %v",
-			srcParentDatabaseID, err)
+			cloneParams.SourceDatabaseID, err)
 	}
 
 	for _, currForm := range forms {
@@ -134,23 +140,23 @@ func CloneForms(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID strin
 		destForm := currForm
 		destForm.ParentDatabaseID = remappedDatabaseID
 
-		destFormID, err := remappedIDs.AllocNewRemappedID(currForm.FormID)
+		destFormID, err := cloneParams.IDRemapper.AllocNewRemappedID(currForm.FormID)
 		if err != nil {
 			return fmt.Errorf("CloneTableForms: %v", err)
 		}
 		destForm.FormID = destFormID
 
-		destProps, err := currForm.Properties.Clone(remappedIDs)
+		destProps, err := currForm.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneTableForms: %v", err)
 		}
 		destForm.Properties = *destProps
 
-		if err := saveForm(destForm); err != nil {
+		if err := saveForm(cloneParams.DestDBHandle, destForm); err != nil {
 			return fmt.Errorf("CloneTableForms: %v", err)
 		}
 
-		if err := cloneFormComponents(remappedIDs, currForm.FormID); err != nil {
+		if err := cloneFormComponents(cloneParams, currForm.FormID); err != nil {
 			return fmt.Errorf("CloneTableForms: %v", err)
 		}
 

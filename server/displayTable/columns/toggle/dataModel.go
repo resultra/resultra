@@ -1,12 +1,15 @@
 package toggle
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const toggleEntityKind string = "toggle"
@@ -32,8 +35,8 @@ func validToggleFieldType(fieldType string) bool {
 	}
 }
 
-func saveToggle(newToggle Toggle) error {
-	if saveErr := common.SaveNewTableColumn(toggleEntityKind,
+func saveToggle(destDBHandle *sql.DB, newToggle Toggle) error {
+	if saveErr := common.SaveNewTableColumn(destDBHandle, toggleEntityKind,
 		newToggle.ParentTableID, newToggle.ToggleID, newToggle.Properties); saveErr != nil {
 		return fmt.Errorf("saveToggle: Unable to save bar chart with error = %v", saveErr)
 	}
@@ -56,7 +59,7 @@ func saveNewToggle(params NewToggleParams) (*Toggle, error) {
 		ColType:    toggleEntityKind,
 		Properties: properties}
 
-	if err := saveToggle(newToggle); err != nil {
+	if err := saveToggle(databaseWrapper.DBHandle(), newToggle); err != nil {
 		return nil, fmt.Errorf("saveNewToggle: Unable to save bar chart with params=%+v: error = %v", params, err)
 	}
 
@@ -83,7 +86,7 @@ func getToggle(parentTableID string, toggleID string) (*Toggle, error) {
 	return &toggle, nil
 }
 
-func GetToggles(parentTableID string) ([]Toggle, error) {
+func getTogglesFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Toggle, error) {
 
 	toggles := []Toggle{}
 	addToggle := func(toggleID string, encodedProps string) error {
@@ -103,27 +106,31 @@ func GetToggles(parentTableID string) ([]Toggle, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(toggleEntityKind, parentTableID, addToggle); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, toggleEntityKind, parentTableID, addToggle); getErr != nil {
 		return nil, fmt.Errorf("GetTogglees: Can't get togglees: %v")
 	}
 
 	return toggles, nil
 }
 
-func CloneToggles(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) error {
+func GetToggles(parentTableID string) ([]Toggle, error) {
+	return getTogglesFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcTogglees, err := GetToggles(parentTableID)
+func CloneToggles(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
+
+	srcTogglees, err := getTogglesFromSrc(cloneParams.SrcDBHandle, parentTableID)
 	if err != nil {
 		return fmt.Errorf("CloneTogglees: %v", err)
 	}
 
 	for _, srcToggle := range srcTogglees {
-		remappedToggleID := remappedIDs.AllocNewOrGetExistingRemappedID(srcToggle.ToggleID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcToggle.ParentTableID)
+		remappedToggleID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcToggle.ToggleID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcToggle.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneTogglees: %v", err)
 		}
-		destProperties, err := srcToggle.Properties.Clone(remappedIDs)
+		destProperties, err := srcToggle.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneTogglees: %v", err)
 		}
@@ -133,7 +140,7 @@ func CloneToggles(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) e
 			ColumnID:      remappedToggleID,
 			ColType:       toggleEntityKind,
 			Properties:    *destProperties}
-		if err := saveToggle(destToggle); err != nil {
+		if err := saveToggle(cloneParams.DestDBHandle, destToggle); err != nil {
 			return fmt.Errorf("CloneTogglees: %v", err)
 		}
 	}

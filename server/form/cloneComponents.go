@@ -27,100 +27,100 @@ import (
 	"resultra/datasheet/server/form/components/userSelection"
 	"resultra/datasheet/server/form/components/userTag"
 
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
-func cloneFormComponents(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func cloneFormComponents(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
 
-	if err := textBox.CloneTextBoxes(remappedIDs, parentFormID); err != nil {
+	if err := textBox.CloneTextBoxes(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := numberInput.CloneNumberInputs(remappedIDs, parentFormID); err != nil {
+	if err := numberInput.CloneNumberInputs(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := datePicker.CloneDatePickers(remappedIDs, parentFormID); err != nil {
+	if err := datePicker.CloneDatePickers(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := progress.CloneProgressIndicators(remappedIDs, parentFormID); err != nil {
+	if err := progress.CloneProgressIndicators(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := gauge.CloneGauges(remappedIDs, parentFormID); err != nil {
+	if err := gauge.CloneGauges(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := checkBox.CloneCheckBoxes(remappedIDs, parentFormID); err != nil {
+	if err := checkBox.CloneCheckBoxes(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := toggle.CloneToggles(remappedIDs, parentFormID); err != nil {
+	if err := toggle.CloneToggles(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := header.CloneHeaders(remappedIDs, parentFormID); err != nil {
+	if err := header.CloneHeaders(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := formButton.CloneButtons(remappedIDs, parentFormID); err != nil {
+	if err := formButton.CloneButtons(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := htmlEditor.CloneHTMLEditors(remappedIDs, parentFormID); err != nil {
+	if err := htmlEditor.CloneHTMLEditors(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := attachment.CloneImages(remappedIDs, parentFormID); err != nil {
+	if err := attachment.CloneImages(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := rating.CloneRatings(remappedIDs, parentFormID); err != nil {
+	if err := rating.CloneRatings(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := selection.CloneSelections(remappedIDs, parentFormID); err != nil {
+	if err := selection.CloneSelections(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := userSelection.CloneUserSelections(remappedIDs, parentFormID); err != nil {
+	if err := userSelection.CloneUserSelections(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := userTag.CloneUserTags(remappedIDs, parentFormID); err != nil {
+	if err := userTag.CloneUserTags(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := comment.CloneComments(remappedIDs, parentFormID); err != nil {
+	if err := comment.CloneComments(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := caption.CloneCaptions(remappedIDs, parentFormID); err != nil {
+	if err := caption.CloneCaptions(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := socialButton.CloneSocialButtons(remappedIDs, parentFormID); err != nil {
+	if err := socialButton.CloneSocialButtons(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := label.CloneLabels(remappedIDs, parentFormID); err != nil {
+	if err := label.CloneLabels(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := emailAddr.CloneEmailAddrs(remappedIDs, parentFormID); err != nil {
+	if err := emailAddr.CloneEmailAddrs(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := urlLink.CloneUrlLinks(remappedIDs, parentFormID); err != nil {
+	if err := urlLink.CloneUrlLinks(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := file.CloneFiles(remappedIDs, parentFormID); err != nil {
+	if err := file.CloneFiles(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 
-	if err := image.CloneImages(remappedIDs, parentFormID); err != nil {
+	if err := image.CloneImages(cloneParams, parentFormID); err != nil {
 		return fmt.Errorf("cloneFormComponents: %v", err)
 	}
 

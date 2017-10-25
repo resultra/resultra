@@ -3,8 +3,8 @@ package formButton
 import (
 	"fmt"
 	"resultra/datasheet/server/common/inputProps"
-	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/record"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const popupBehaviorModeless string = "modeless"
@@ -22,19 +22,19 @@ type ButtonProperties struct {
 	DefaultValues []record.DefaultFieldValue     `json:"defaultValues"`
 }
 
-func (srcProps ButtonProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ButtonProperties, error) {
+func (srcProps ButtonProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*ButtonProperties, error) {
 
 	destProps := srcProps
 
-	destProps.LinkedFormID = remappedIDs.AllocNewOrGetExistingRemappedID(srcProps.LinkedFormID)
+	destProps.LinkedFormID = cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcProps.LinkedFormID)
 
-	destPopupProps, cloneErr := srcProps.PopupBehavior.Clone(remappedIDs)
+	destPopupProps, cloneErr := srcProps.PopupBehavior.Clone(cloneParams.IDRemapper)
 	if cloneErr != nil {
 		return nil, fmt.Errorf("ButtonProperties.Clone: %v", cloneErr)
 	}
 	destProps.PopupBehavior = *destPopupProps
 
-	destDefaultVals, cloneErr := record.CloneDefaultFieldValues(remappedIDs, srcProps.DefaultValues)
+	destDefaultVals, cloneErr := record.CloneDefaultFieldValues(cloneParams.IDRemapper, srcProps.DefaultValues)
 	if cloneErr != nil {
 		return nil, fmt.Errorf("ButtonPopupBehavior.Clone: %v", cloneErr)
 	}

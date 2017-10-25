@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type UrlLinkValidationProperties struct {
@@ -22,21 +22,21 @@ type UrlLinkProperties struct {
 	Permissions common.ComponentValuePermissionsProperties `json:"permissions"`
 	common.ComponentVisibilityProperties
 	Validation          UrlLinkValidationProperties `json:"validation"`
-	ClearValueSupported bool                          `json:"clearValueSupported"`
-	HelpPopupMsg        string                        `json:"helpPopupMsg"`
+	ClearValueSupported bool                        `json:"clearValueSupported"`
+	HelpPopupMsg        string                      `json:"helpPopupMsg"`
 }
 
-func (srcProps UrlLinkProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*UrlLinkProperties, error) {
+func (srcProps UrlLinkProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*UrlLinkProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}
 	destProps.FieldID = remappedFieldID
 
-	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(remappedIDs)
+	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
 	}

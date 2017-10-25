@@ -2,7 +2,7 @@ package recordFilter
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type RecordFilterRule struct {
@@ -11,9 +11,9 @@ type RecordFilterRule struct {
 	Conditions []FilterRuleCondition `json:"conditions"`
 }
 
-func (srcRule RecordFilterRule) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*RecordFilterRule, error) {
+func (srcRule RecordFilterRule) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*RecordFilterRule, error) {
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcRule.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcRule.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("RecordFilterRule.Clone: %v", err)
 	}
@@ -25,12 +25,12 @@ func (srcRule RecordFilterRule) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*R
 
 }
 
-func CloneFilterRules(remappedIDs uniqueID.UniqueIDRemapper, srcRules []RecordFilterRule) ([]RecordFilterRule, error) {
+func CloneFilterRules(cloneParams *trackerDatabase.CloneDatabaseParams, srcRules []RecordFilterRule) ([]RecordFilterRule, error) {
 
 	destRules := []RecordFilterRule{}
 
 	for _, srcRule := range srcRules {
-		destRule, err := srcRule.Clone(remappedIDs)
+		destRule, err := srcRule.Clone(cloneParams)
 		if err != nil {
 			return nil, fmt.Errorf("CloneFilterRules: %v")
 		}

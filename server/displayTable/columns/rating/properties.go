@@ -3,7 +3,7 @@ package rating
 import (
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const ratingIconStar string = "star"
@@ -30,11 +30,11 @@ type RatingProperties struct {
 	MaxVal              int                                        `json:"maxVal"`
 }
 
-func (srcProps RatingProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*RatingProperties, error) {
+func (srcProps RatingProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*RatingProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}

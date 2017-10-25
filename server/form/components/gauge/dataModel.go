@@ -1,13 +1,16 @@
 package gauge
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const gaugeEntityKind string = "gauge"
@@ -32,8 +35,8 @@ func validGaugeFieldType(fieldType string) bool {
 	}
 }
 
-func saveGauge(newGauge Gauge) error {
-	if saveErr := common.SaveNewFormComponent(gaugeEntityKind,
+func saveGauge(destDBHandle *sql.DB, newGauge Gauge) error {
+	if saveErr := common.SaveNewFormComponent(destDBHandle, gaugeEntityKind,
 		newGauge.ParentFormID, newGauge.GaugeID, newGauge.Properties); saveErr != nil {
 		return fmt.Errorf("saveGauge: Unable to save gauge indicator with error = %v", saveErr)
 	}
@@ -58,7 +61,7 @@ func saveNewGauge(params NewGaugeParams) (*Gauge, error) {
 		GaugeID:    uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveGauge(newGauge); err != nil {
+	if err := saveGauge(databaseWrapper.DBHandle(), newGauge); err != nil {
 		return nil, fmt.Errorf("saveNewGauge: Unable to save gauge indicator with params=%+v: error = %v", params, err)
 	}
 
@@ -83,7 +86,7 @@ func getGauge(parentFormID string, gaugeID string) (*Gauge, error) {
 	return &gauge, nil
 }
 
-func GetGauges(parentFormID string) ([]Gauge, error) {
+func getGaugesFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Gauge, error) {
 
 	gaugeIndicators := []Gauge{}
 	addGauge := func(gaugeID string, encodedProps string) error {
@@ -101,14 +104,18 @@ func GetGauges(parentFormID string) ([]Gauge, error) {
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(gaugeEntityKind, parentFormID, addGauge); getErr != nil {
+	if getErr := common.GetFormComponents(srcDBHandle, gaugeEntityKind, parentFormID, addGauge); getErr != nil {
 		return nil, fmt.Errorf("GetGaugeIndicators: Can't get gauge indicators: %v")
 	}
 
 	return gaugeIndicators, nil
 }
 
-func CloneGauges(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetGauges(parentFormID string) ([]Gauge, error) {
+	return getGaugesFromSrc(databaseWrapper.DBHandle(), parentFormID)
+}
+
+func CloneGauges(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
 
 	srcGaugeIndicators, err := GetGauges(parentFormID)
 	if err != nil {
@@ -116,12 +123,12 @@ func CloneGauges(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) err
 	}
 
 	for _, srcGauge := range srcGaugeIndicators {
-		remappedGaugeID := remappedIDs.AllocNewOrGetExistingRemappedID(srcGauge.GaugeID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcGauge.ParentFormID)
+		remappedGaugeID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcGauge.GaugeID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcGauge.ParentFormID)
 		if err != nil {
 			return fmt.Errorf("CloneGauges: %v", err)
 		}
-		destProperties, err := srcGauge.Properties.Clone(remappedIDs)
+		destProperties, err := srcGauge.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneGauges: %v", err)
 		}
@@ -129,7 +136,7 @@ func CloneGauges(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) err
 			ParentFormID: remappedFormID,
 			GaugeID:      remappedGaugeID,
 			Properties:   *destProperties}
-		if err := saveGauge(destGauge); err != nil {
+		if err := saveGauge(cloneParams.DestDBHandle, destGauge); err != nil {
 			return fmt.Errorf("CloneGauges: %v", err)
 		}
 	}

@@ -1,12 +1,15 @@
 package image
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const imageEntityKind string = "image"
@@ -32,8 +35,8 @@ func validImageFieldType(fieldType string) bool {
 	}
 }
 
-func saveImage(newImage Image) error {
-	if saveErr := common.SaveNewTableColumn(imageEntityKind,
+func saveImage(destDBHandle *sql.DB, newImage Image) error {
+	if saveErr := common.SaveNewTableColumn(destDBHandle, imageEntityKind,
 		newImage.ParentTableID, newImage.ImageID, newImage.Properties); saveErr != nil {
 		return fmt.Errorf("saveImage: Unable to save text box: %v", saveErr)
 	}
@@ -57,7 +60,7 @@ func saveNewImage(params NewImageParams) (*Image, error) {
 		Properties: properties,
 		ColType:    imageEntityKind}
 
-	if err := saveImage(newImage); err != nil {
+	if err := saveImage(databaseWrapper.DBHandle(), newImage); err != nil {
 		return nil, fmt.Errorf("saveNewImage: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -84,7 +87,7 @@ func getImage(parentTableID string, imageID string) (*Image, error) {
 	return &image, nil
 }
 
-func GetImages(parentTableID string) ([]Image, error) {
+func getImagesFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Image, error) {
 
 	images := []Image{}
 	addImage := func(imageID string, encodedProps string) error {
@@ -104,7 +107,7 @@ func GetImages(parentTableID string) ([]Image, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(imageEntityKind, parentTableID, addImage); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, imageEntityKind, parentTableID, addImage); getErr != nil {
 		return nil, fmt.Errorf("GetImages: Can't get text boxes: %v")
 	}
 
@@ -112,20 +115,24 @@ func GetImages(parentTableID string) ([]Image, error) {
 
 }
 
-func CloneImages(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetImages(parentTableID string) ([]Image, error) {
+	return getImagesFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcImagees, err := GetImages(parentFormID)
+func CloneImages(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcImagees, err := getImagesFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneImagees: %v", err)
 	}
 
 	for _, srcImage := range srcImagees {
-		remappedImageID := remappedIDs.AllocNewOrGetExistingRemappedID(srcImage.ImageID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcImage.ParentTableID)
+		remappedImageID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcImage.ImageID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcImage.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneImages: %v", err)
 		}
-		destProperties, err := srcImage.Properties.Clone(remappedIDs)
+		destProperties, err := srcImage.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneImages: %v", err)
 		}
@@ -135,7 +142,7 @@ func CloneImages(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) err
 			ColumnID:      remappedImageID,
 			Properties:    *destProperties,
 			ColType:       imageEntityKind}
-		if err := saveImage(destImage); err != nil {
+		if err := saveImage(cloneParams.DestDBHandle, destImage); err != nil {
 			return fmt.Errorf("CloneImages: %v", err)
 		}
 	}

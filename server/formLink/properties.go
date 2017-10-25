@@ -2,8 +2,8 @@ package formLink
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/record"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type FormLinkProperties struct {
@@ -16,11 +16,11 @@ func newDefaultNewItemProperties() FormLinkProperties {
 	return defaultProps
 }
 
-func (srcProps FormLinkProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*FormLinkProperties, error) {
+func (srcProps FormLinkProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*FormLinkProperties, error) {
 
 	destProps := srcProps
 
-	destDefaultVals, cloneErr := record.CloneDefaultFieldValues(remappedIDs, srcProps.DefaultValues)
+	destDefaultVals, cloneErr := record.CloneDefaultFieldValues(cloneParams.IDRemapper, srcProps.DefaultValues)
 	if cloneErr != nil {
 		return nil, fmt.Errorf("FormLinkProperties.Clone: %v", cloneErr)
 	}

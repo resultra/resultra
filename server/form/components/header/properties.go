@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const headerSizeMedium string = "medium"
@@ -17,11 +17,11 @@ type HeaderProperties struct {
 	common.ComponentVisibilityProperties
 }
 
-func (srcProps HeaderProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*HeaderProperties, error) {
+func (srcProps HeaderProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*HeaderProperties, error) {
 
 	destProps := srcProps
 
-	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(remappedIDs)
+	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
 	}

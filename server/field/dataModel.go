@@ -1,6 +1,7 @@
 package field
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/databaseWrapper"
@@ -87,7 +88,7 @@ var newFieldMutex = &sync.Mutex{}
 // Internal function for creating new fields given raw inputs. Should only be called by
 // other "NewField" functions with well-formed parameters for either a regular (non-calculated)
 // or calculated field.
-func CreateNewFieldFromRawInputs(newField Field) (*Field, error) {
+func CreateNewFieldFromRawInputs(destDBHandle *sql.DB, newField Field) (*Field, error) {
 
 	// Use a mutex when creating fields. This is necessary, so the validation of field properties against existing
 	// fields can complete before inserting the new record with validated properties (notably a unique name and
@@ -107,7 +108,7 @@ func CreateNewFieldFromRawInputs(newField Field) (*Field, error) {
 		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: invalid field name: '%v'", err)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(
+	if _, insertErr := destDBHandle.Exec(
 		`INSERT INTO fields (database_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text) 
 				VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
 		newField.ParentDatabaseID,
@@ -146,7 +147,7 @@ func NewNonCalcField(fieldParams NewNonCalcFieldParams) (*Field, error) {
 		PreprocessedFormulaText: "",
 		IsCalcField:             false} // always set calculated field to false
 
-	return CreateNewFieldFromRawInputs(newField)
+	return CreateNewFieldFromRawInputs(databaseWrapper.DBHandle(), newField)
 }
 
 // Getting an individual field doesn't require the table ID, since the field ID is unique.
@@ -195,9 +196,9 @@ type GetFieldListParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
-func GetAllFields(params GetFieldListParams) ([]Field, error) {
+func GetAllFieldsFromSrc(srcDBHandle *sql.DB, params GetFieldListParams) ([]Field, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := srcDBHandle.Query(
 		`SELECT database_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text 
 		FROM fields WHERE database_id=$1`, params.ParentDatabaseID)
 	if queryErr != nil {
@@ -221,4 +222,8 @@ func GetAllFields(params GetFieldListParams) ([]Field, error) {
 	}
 
 	return allFields, nil
+}
+
+func GetAllFields(params GetFieldListParams) ([]Field, error) {
+	return GetAllFieldsFromSrc(databaseWrapper.DBHandle(), params)
 }

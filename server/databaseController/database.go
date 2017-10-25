@@ -2,6 +2,8 @@ package databaseController
 
 import (
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/userRole"
@@ -23,8 +25,11 @@ func createNewDatabase(req *http.Request, dbParams trackerDatabase.NewDatabasePa
 			SourceDatabaseID: *dbParams.TemplateDatabaseID,
 			NewName:          dbParams.Name,
 			IsTemplate:       false,
-			CreatedByUserID:  userID}
-		newDB, newDBErr = cloneIntoNewTrackerDatabase(newDBFromTemplateParams)
+			CreatedByUserID:  userID,
+			SrcDBHandle:      databaseWrapper.DBHandle(),
+			DestDBHandle:     databaseWrapper.DBHandle(),
+			IDRemapper:       uniqueID.UniqueIDRemapper{}}
+		newDB, newDBErr = cloneIntoNewTrackerDatabase(&newDBFromTemplateParams)
 		if newDBErr != nil {
 			return nil, newDBErr
 		}

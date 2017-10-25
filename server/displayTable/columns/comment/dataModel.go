@@ -1,12 +1,15 @@
 package comment
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const commentEntityKind string = "comment"
@@ -32,9 +35,9 @@ func validCommentFieldType(fieldType string) bool {
 	}
 }
 
-func saveComment(newComment Comment) error {
+func saveComment(destDBHandle *sql.DB, newComment Comment) error {
 
-	if saveErr := common.SaveNewTableColumn(commentEntityKind,
+	if saveErr := common.SaveNewTableColumn(destDBHandle, commentEntityKind,
 		newComment.ParentTableID, newComment.CommentID, newComment.Properties); saveErr != nil {
 		return fmt.Errorf("saveComment: Unable to save comment box: error = %v", saveErr)
 	}
@@ -58,7 +61,7 @@ func saveNewComment(params NewCommentParams) (*Comment, error) {
 		ColType:    commentEntityKind,
 		Properties: properties}
 
-	if saveErr := saveComment(newComment); saveErr != nil {
+	if saveErr := saveComment(databaseWrapper.DBHandle(), newComment); saveErr != nil {
 		return nil, fmt.Errorf("saveNewComment: Unable to save comment box with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -85,7 +88,7 @@ func getComment(parentTableID string, commentID string) (*Comment, error) {
 	return &comment, nil
 }
 
-func GetComments(parentTableID string) ([]Comment, error) {
+func getCommentsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Comment, error) {
 
 	comments := []Comment{}
 	addComment := func(commentID string, encodedProps string) error {
@@ -105,27 +108,31 @@ func GetComments(parentTableID string) ([]Comment, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(commentEntityKind, parentTableID, addComment); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, commentEntityKind, parentTableID, addComment); getErr != nil {
 		return nil, fmt.Errorf("GetComments: Can't get comment boxes: %v")
 	}
 
 	return comments, nil
 }
 
-func CloneComments(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) error {
+func GetComments(parentTableID string) ([]Comment, error) {
+	return getCommentsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcComments, err := GetComments(parentTableID)
+func CloneComments(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
+
+	srcComments, err := getCommentsFromSrc(cloneParams.SrcDBHandle, parentTableID)
 	if err != nil {
 		return fmt.Errorf("CloneComments: %v", err)
 	}
 
 	for _, srcComment := range srcComments {
-		remappedCommentID := remappedIDs.AllocNewOrGetExistingRemappedID(srcComment.CommentID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcComment.ParentTableID)
+		remappedCommentID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcComment.CommentID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcComment.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneComments: %v", err)
 		}
-		destProperties, err := srcComment.Properties.Clone(remappedIDs)
+		destProperties, err := srcComment.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneComments: %v", err)
 		}
@@ -135,7 +142,7 @@ func CloneComments(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) 
 			ColumnID:      remappedCommentID,
 			ColType:       commentEntityKind,
 			Properties:    *destProperties}
-		if err := saveComment(destComment); err != nil {
+		if err := saveComment(cloneParams.DestDBHandle, destComment); err != nil {
 			return fmt.Errorf("CloneComments: %v", err)
 		}
 	}

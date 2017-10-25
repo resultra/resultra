@@ -5,7 +5,7 @@ import (
 	"resultra/datasheet/server/common/inputProps"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/numberFormat"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type NumberInputValidationProperties struct {
@@ -32,11 +32,11 @@ type NumberInputProperties struct {
 	ConditionalFormats   []inputProps.NumberConditionalFormat       `json:"conditionalFormats"`
 }
 
-func (srcProps NumberInputProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*NumberInputProperties, error) {
+func (srcProps NumberInputProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*NumberInputProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}

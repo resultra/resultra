@@ -1,12 +1,15 @@
 package summaryValue
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/dashboard/components/common"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const summaryValEntityKind string = "summaryVal"
@@ -29,9 +32,9 @@ type NewSummaryValParams struct {
 	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
-func saveSummaryVal(newSummaryVal SummaryVal) error {
+func saveSummaryVal(destDBHandle *sql.DB, newSummaryVal SummaryVal) error {
 
-	if saveErr := common.SaveNewDashboardComponent(summaryValEntityKind,
+	if saveErr := common.SaveNewDashboardComponent(destDBHandle, summaryValEntityKind,
 		newSummaryVal.ParentDashboardID, newSummaryVal.SummaryValID, newSummaryVal.Properties); saveErr != nil {
 		return fmt.Errorf("newSummaryVal: Unable to save summaryVal component: error = %v", saveErr)
 	}
@@ -63,7 +66,7 @@ func newSummaryVal(params NewSummaryValParams) (*SummaryVal, error) {
 		SummaryValID:      uniqueID.GenerateSnowflakeID(),
 		Properties:        summaryValProps}
 
-	if saveErr := saveSummaryVal(newSummaryVal); saveErr != nil {
+	if saveErr := saveSummaryVal(databaseWrapper.DBHandle(), newSummaryVal); saveErr != nil {
 		return nil, fmt.Errorf("newSummaryVal: Unable to save summary component with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -86,7 +89,7 @@ func GetSummaryVal(parentDashboardID string, summaryValID string) (*SummaryVal, 
 
 }
 
-func GetSummaryVals(parentDashboardID string) ([]SummaryVal, error) {
+func getSummaryValsFromSrc(srcDBHandle *sql.DB, parentDashboardID string) ([]SummaryVal, error) {
 
 	summaryVals := []SummaryVal{}
 	addSummaryVal := func(summaryValID string, encodedProps string) error {
@@ -105,33 +108,37 @@ func GetSummaryVals(parentDashboardID string) ([]SummaryVal, error) {
 
 		return nil
 	}
-	if getErr := common.GetDashboardComponents(summaryValEntityKind, parentDashboardID, addSummaryVal); getErr != nil {
+	if getErr := common.GetDashboardComponents(srcDBHandle, summaryValEntityKind, parentDashboardID, addSummaryVal); getErr != nil {
 		return nil, fmt.Errorf("getBarCharts: Can't get bar chart components: %v")
 	}
 
 	return summaryVals, nil
 }
 
-func CloneSummaryVals(remappedIDs uniqueID.UniqueIDRemapper, srcParentDashboardID string) error {
+func GetSummaryVals(parentDashboardID string) ([]SummaryVal, error) {
+	return getSummaryValsFromSrc(databaseWrapper.DBHandle(), parentDashboardID)
+}
 
-	remappedDashboardID, err := remappedIDs.GetExistingRemappedID(srcParentDashboardID)
+func CloneSummaryVals(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentDashboardID string) error {
+
+	remappedDashboardID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcParentDashboardID)
 	if err != nil {
 		return fmt.Errorf("CloneSummaryVals: %v", err)
 	}
 
-	summaryVals, err := GetSummaryVals(srcParentDashboardID)
+	summaryVals, err := getSummaryValsFromSrc(cloneParams.SrcDBHandle, srcParentDashboardID)
 	if err != nil {
 		return fmt.Errorf("CloneSummaryVals: %v", err)
 	}
 
 	for _, srcSummaryVal := range summaryVals {
 
-		remappedSummaryValID, err := remappedIDs.AllocNewRemappedID(srcSummaryVal.SummaryValID)
+		remappedSummaryValID, err := cloneParams.IDRemapper.AllocNewRemappedID(srcSummaryVal.SummaryValID)
 		if err != nil {
 			return fmt.Errorf("CloneSummaryVals: %v", err)
 		}
 
-		clonedProps, err := srcSummaryVal.Properties.Clone(remappedIDs)
+		clonedProps, err := srcSummaryVal.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneSummaryVals: %v", err)
 		}
@@ -141,7 +148,7 @@ func CloneSummaryVals(remappedIDs uniqueID.UniqueIDRemapper, srcParentDashboardI
 			SummaryValID:      remappedSummaryValID,
 			Properties:        *clonedProps}
 
-		if err := saveSummaryVal(destSummaryVal); err != nil {
+		if err := saveSummaryVal(cloneParams.DestDBHandle, destSummaryVal); err != nil {
 			return fmt.Errorf("CloneSummaryVals: %v", err)
 		}
 	}

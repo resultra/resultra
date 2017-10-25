@@ -1,13 +1,16 @@
 package label
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const labelEntityKind string = "tags"
@@ -32,8 +35,8 @@ func validLabelFieldType(fieldType string) bool {
 	}
 }
 
-func saveLabel(newLabel Label) error {
-	if saveErr := common.SaveNewFormComponent(labelEntityKind,
+func saveLabel(destDBHandle *sql.DB, newLabel Label) error {
+	if saveErr := common.SaveNewFormComponent(destDBHandle, labelEntityKind,
 		newLabel.ParentFormID, newLabel.LabelID, newLabel.Properties); saveErr != nil {
 		return fmt.Errorf("saveNewLabel: Unable to save label: error = %v", saveErr)
 	}
@@ -58,7 +61,7 @@ func saveNewLabel(params NewLabelParams) (*Label, error) {
 		LabelID:    uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if saveErr := saveLabel(newLabel); saveErr != nil {
+	if saveErr := saveLabel(databaseWrapper.DBHandle(), newLabel); saveErr != nil {
 		return nil, fmt.Errorf("saveNewLabel: Unable to save label with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -84,7 +87,7 @@ func getLabel(parentFormID string, labelID string) (*Label, error) {
 	return &label, nil
 }
 
-func GetLabels(parentFormID string) ([]Label, error) {
+func getLabelsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Label, error) {
 
 	labels := []Label{}
 	addLabel := func(labelID string, encodedProps string) error {
@@ -102,27 +105,31 @@ func GetLabels(parentFormID string) ([]Label, error) {
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(labelEntityKind, parentFormID, addLabel); getErr != nil {
+	if getErr := common.GetFormComponents(srcDBHandle, labelEntityKind, parentFormID, addLabel); getErr != nil {
 		return nil, fmt.Errorf("GetLabels: Can't get labels: %v")
 	}
 
 	return labels, nil
 }
 
-func CloneLabels(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetLabels(parentFormID string) ([]Label, error) {
+	return getLabelsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+}
 
-	srcLabels, err := GetLabels(parentFormID)
+func CloneLabels(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcLabels, err := getLabelsFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneLabels: %v", err)
 	}
 
 	for _, srcLabel := range srcLabels {
-		remappedLabelID := remappedIDs.AllocNewOrGetExistingRemappedID(srcLabel.LabelID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcLabel.ParentFormID)
+		remappedLabelID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcLabel.LabelID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcLabel.ParentFormID)
 		if err != nil {
 			return fmt.Errorf("CloneLabels: %v", err)
 		}
-		destProperties, err := srcLabel.Properties.Clone(remappedIDs)
+		destProperties, err := srcLabel.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneLabels: %v", err)
 		}
@@ -130,7 +137,7 @@ func CloneLabels(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) err
 			ParentFormID: remappedFormID,
 			LabelID:      remappedLabelID,
 			Properties:   *destProperties}
-		if err := saveLabel(destLabel); err != nil {
+		if err := saveLabel(cloneParams.DestDBHandle, destLabel); err != nil {
 			return fmt.Errorf("CloneLabels: %v", err)
 		}
 	}

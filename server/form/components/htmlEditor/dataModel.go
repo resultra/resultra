@@ -1,13 +1,16 @@
 package htmlEditor
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const htmlEditorEntityKind string = "html_editor"
@@ -32,9 +35,9 @@ func validHtmlEditorFieldType(fieldType string) bool {
 	}
 }
 
-func saveHtmlEditor(newHtmlEditor HtmlEditor) error {
+func saveHtmlEditor(destDBHandle *sql.DB, newHtmlEditor HtmlEditor) error {
 
-	if saveErr := common.SaveNewFormComponent(htmlEditorEntityKind,
+	if saveErr := common.SaveNewFormComponent(destDBHandle, htmlEditorEntityKind,
 		newHtmlEditor.ParentFormID, newHtmlEditor.HtmlEditorID, newHtmlEditor.Properties); saveErr != nil {
 		return fmt.Errorf("saveNewHtmlEditor: Unable to save html editor: error = %v", saveErr)
 	}
@@ -60,7 +63,7 @@ func saveNewHtmlEditor(params NewHtmlEditorParams) (*HtmlEditor, error) {
 		HtmlEditorID: uniqueID.GenerateSnowflakeID(),
 		Properties:   properties}
 
-	if err := saveHtmlEditor(newHtmlEditor); err != nil {
+	if err := saveHtmlEditor(databaseWrapper.DBHandle(), newHtmlEditor); err != nil {
 		return nil, fmt.Errorf("saveNewHtmlEditor: Unable to save html editor with params=%+v: error = %v", params, err)
 	}
 
@@ -85,7 +88,7 @@ func getHtmlEditor(parentFormID string, htmlEditorID string) (*HtmlEditor, error
 	return &htmlEditor, nil
 }
 
-func GetHtmlEditors(parentFormID string) ([]HtmlEditor, error) {
+func getHtmlEditorsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]HtmlEditor, error) {
 
 	htmlEditors := []HtmlEditor{}
 
@@ -104,7 +107,7 @@ func GetHtmlEditors(parentFormID string) ([]HtmlEditor, error) {
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(htmlEditorEntityKind, parentFormID, addEditor); getErr != nil {
+	if getErr := common.GetFormComponents(srcDBHandle, htmlEditorEntityKind, parentFormID, addEditor); getErr != nil {
 		return nil, fmt.Errorf("GetHtmlEditors: Can't get html editors: %v")
 	}
 
@@ -112,20 +115,24 @@ func GetHtmlEditors(parentFormID string) ([]HtmlEditor, error) {
 
 }
 
-func CloneHTMLEditors(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetHtmlEditors(parentFormID string) ([]HtmlEditor, error) {
+	return getHtmlEditorsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+}
 
-	srcHtmlEditors, err := GetHtmlEditors(parentFormID)
+func CloneHTMLEditors(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcHtmlEditors, err := getHtmlEditorsFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneHTMLEditors: %v", err)
 	}
 
 	for _, srcHtmlEditor := range srcHtmlEditors {
-		remappedHtmlEditorID := remappedIDs.AllocNewOrGetExistingRemappedID(srcHtmlEditor.HtmlEditorID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcHtmlEditor.ParentFormID)
+		remappedHtmlEditorID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcHtmlEditor.HtmlEditorID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcHtmlEditor.ParentFormID)
 		if err != nil {
 			return fmt.Errorf("CloneHTMLEditors: %v", err)
 		}
-		destProperties, err := srcHtmlEditor.Properties.Clone(remappedIDs)
+		destProperties, err := srcHtmlEditor.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneHTMLEditors: %v", err)
 		}
@@ -133,7 +140,7 @@ func CloneHTMLEditors(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string
 			ParentFormID: remappedFormID,
 			HtmlEditorID: remappedHtmlEditorID,
 			Properties:   *destProperties}
-		if err := saveHtmlEditor(destHtmlEditor); err != nil {
+		if err := saveHtmlEditor(cloneParams.DestDBHandle, destHtmlEditor); err != nil {
 			return fmt.Errorf("CloneHTMLEditors: %v", err)
 		}
 	}

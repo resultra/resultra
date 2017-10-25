@@ -5,8 +5,8 @@ import (
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic/threshold"
-	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/recordFilter"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type SummaryValProps struct {
@@ -21,23 +21,23 @@ type SummaryValProps struct {
 	HelpPopupMsg       string                           `json:"helpPopupMsg"`
 }
 
-func (srcProps SummaryValProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*SummaryValProps, error) {
+func (srcProps SummaryValProps) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*SummaryValProps, error) {
 
 	destProps := srcProps
 
-	valSummary, err := srcProps.ValSummary.Clone(remappedIDs)
+	valSummary, err := srcProps.ValSummary.Clone(cloneParams.IDRemapper)
 	if err != nil {
 		return nil, fmt.Errorf("SummaryValProps.Clone: %v", err)
 	}
 	destProps.ValSummary = *valSummary
 
-	clonedFilterRules, err := srcProps.DefaultFilterRules.Clone(remappedIDs)
+	clonedFilterRules, err := srcProps.DefaultFilterRules.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("SummaryValProps.Clone: %v", err)
 	}
 	destProps.DefaultFilterRules = *clonedFilterRules
 
-	clonedPreFilterRules, err := srcProps.PreFilterRules.Clone(remappedIDs)
+	clonedPreFilterRules, err := srcProps.PreFilterRules.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("SummaryValProps.Clone: %v", err)
 	}

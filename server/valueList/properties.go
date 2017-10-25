@@ -1,7 +1,7 @@
 package valueList
 
 import (
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type ValueListValue struct {
@@ -19,7 +19,7 @@ func newDefaultValueListProperties() ValueListProperties {
 	return defaultProps
 }
 
-func (srcProps ValueListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ValueListProperties, error) {
+func (srcProps ValueListProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*ValueListProperties, error) {
 
 	destProps := srcProps
 

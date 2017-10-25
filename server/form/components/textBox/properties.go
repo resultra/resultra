@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type TextBoxValidationProperties struct {
@@ -27,24 +27,24 @@ type TextBoxProperties struct {
 	HelpPopupMsg        string                      `json:"helpPopupMsg"`
 }
 
-func (srcProps TextBoxProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*TextBoxProperties, error) {
+func (srcProps TextBoxProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*TextBoxProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}
 	destProps.FieldID = remappedFieldID
 
-	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(remappedIDs)
+	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
 	}
 	destProps.VisibilityConditions = *destVisibilityConditions
 
 	if srcProps.ValueListID != nil {
-		destValueListID := remappedIDs.AllocNewOrGetExistingRemappedID(*srcProps.ValueListID)
+		destValueListID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(*srcProps.ValueListID)
 		destProps.ValueListID = &destValueListID
 	}
 

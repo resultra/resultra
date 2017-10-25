@@ -2,7 +2,7 @@ package header
 
 import (
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type HeaderProps struct {
@@ -12,7 +12,7 @@ type HeaderProps struct {
 	Underlined bool                           `json:"underlined"`
 }
 
-func (srcProps HeaderProps) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*HeaderProps, error) {
+func (srcProps HeaderProps) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*HeaderProps, error) {
 
 	destProps := srcProps
 	return &destProps, nil

@@ -1,10 +1,11 @@
 package itemList
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"
@@ -19,13 +20,13 @@ type ItemList struct {
 	Properties       ItemListProperties `json:"properties"`
 }
 
-func saveItemList(newList ItemList) error {
+func saveItemList(destDBHandle *sql.DB, newList ItemList) error {
 	encodedProps, encodeErr := generic.EncodeJSONString(newList.Properties)
 	if encodeErr != nil {
 		return fmt.Errorf("saveItemList: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO item_lists (database_id,list_id,name,properties) 
+	if _, insertErr := destDBHandle.Exec(`INSERT INTO item_lists (database_id,list_id,name,properties) 
 					VALUES ($1,$2,$3,$4)`,
 		newList.ParentDatabaseID, newList.ListID, newList.Name, encodedProps); insertErr != nil {
 		return fmt.Errorf("saveItemList: Can't create list: error = %v", insertErr)
@@ -55,7 +56,7 @@ func newItemList(params NewItemListParams) (*ItemList, error) {
 		Name:       sanitizedName,
 		Properties: props}
 
-	if err := saveItemList(newList); err != nil {
+	if err := saveItemList(databaseWrapper.DBHandle(), newList); err != nil {
 		return nil, fmt.Errorf("newItemList: error saving list: %v", err)
 	}
 
@@ -88,7 +89,7 @@ func GetItemList(listID string) (*ItemList, error) {
 	return &retrievedList, nil
 }
 
-func GetAllItemLists(parentDatabaseID string) ([]ItemList, error) {
+func getAllItemListsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]ItemList, error) {
 
 	rows, queryErr := databaseWrapper.DBHandle().Query(
 		`SELECT database_id,list_id,name,properties FROM item_lists WHERE database_id = $1`,
@@ -117,6 +118,10 @@ func GetAllItemLists(parentDatabaseID string) ([]ItemList, error) {
 
 	return itemLists, nil
 
+}
+
+func GetAllItemLists(parentDatabaseID string) ([]ItemList, error) {
+	return getAllItemListsFromSrc(databaseWrapper.DBHandle(), parentDatabaseID)
 }
 
 func orderListsByManualListOrder(unorderedListInfo []ItemList, manualOrder []string) []ItemList {
@@ -193,14 +198,14 @@ func GetAllUserSortedItemLists(req *http.Request, parentDatabaseID string) ([]It
 
 }
 
-func CloneItemLists(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID string) error {
+func CloneItemLists(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
-	remappedDatabaseID, err := remappedIDs.GetExistingRemappedID(srcParentDatabaseID)
+	remappedDatabaseID, err := cloneParams.IDRemapper.GetExistingRemappedID(cloneParams.SourceDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneTableLists: Error getting remapped database ID: %v", err)
 	}
 
-	lists, err := GetAllItemLists(srcParentDatabaseID)
+	lists, err := getAllItemListsFromSrc(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneTableLists: $v", err)
 	}
@@ -210,19 +215,19 @@ func CloneItemLists(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID s
 		destList := currList
 		destList.ParentDatabaseID = remappedDatabaseID
 
-		destListID, err := remappedIDs.AllocNewRemappedID(currList.ListID)
+		destListID, err := cloneParams.IDRemapper.AllocNewRemappedID(currList.ListID)
 		if err != nil {
 			return fmt.Errorf("CloneTableForms: %v", err)
 		}
 		destList.ListID = destListID
 
-		destProps, err := currList.Properties.Clone(remappedIDs)
+		destProps, err := currList.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneTableLists: %v", err)
 		}
 		destList.Properties = *destProps
 
-		if err := saveItemList(destList); err != nil {
+		if err := saveItemList(cloneParams.DestDBHandle, destList); err != nil {
 			return fmt.Errorf("CloneTableLists: %v", err)
 		}
 

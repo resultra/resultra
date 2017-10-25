@@ -1,10 +1,12 @@
 package global
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 	"time"
 )
 
@@ -23,9 +25,9 @@ type NewGlobalParams struct {
 	Type             string `json:"type"`
 }
 
-func saveNewGlobal(newGlobal Global) error {
+func saveNewGlobal(destDBHandle *sql.DB, newGlobal Global) error {
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(
+	if _, insertErr := destDBHandle.Exec(
 		`INSERT INTO globals (database_id,global_id,name,ref_name,type) VALUES ($1,$2,$3,$4,$5)`,
 		newGlobal.ParentDatabaseID, newGlobal.GlobalID, newGlobal.Name, newGlobal.RefName, newGlobal.Type); insertErr != nil {
 		return fmt.Errorf("newGlobal: Can't create global: error = %v", insertErr)
@@ -57,7 +59,7 @@ func newGlobal(params NewGlobalParams) (*Global, error) {
 		RefName:  params.RefName,
 		Type:     params.Type}
 
-	if err := saveNewGlobal(newGlobal); err != nil {
+	if err := saveNewGlobal(databaseWrapper.DBHandle(), newGlobal); err != nil {
 		return nil, fmt.Errorf("newGlobal: Can't create global: error = %v", err)
 	}
 
@@ -89,9 +91,9 @@ type GetGlobalsParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
-func GetGlobals(parentDatabaseID string) ([]Global, error) {
+func getGlobalsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Global, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := srcDBHandle.Query(
 		`SELECT global_id,name,ref_name,type FROM globals WHERE database_id = $1`,
 		parentDatabaseID)
 	if queryErr != nil {
@@ -116,28 +118,32 @@ func GetGlobals(parentDatabaseID string) ([]Global, error) {
 
 }
 
-func CloneGlobals(remappedIDs uniqueID.UniqueIDRemapper, srcDatabaseID string) error {
+func GetGlobals(parentDatabaseID string) ([]Global, error) {
+	return getGlobalsFromSrc(databaseWrapper.DBHandle(), parentDatabaseID)
+}
 
-	destDatabaseID, err := remappedIDs.GetExistingRemappedID(srcDatabaseID)
+func CloneGlobals(cloneParams *trackerDatabase.CloneDatabaseParams) error {
+
+	destDatabaseID, err := cloneParams.IDRemapper.GetExistingRemappedID(cloneParams.SourceDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneGlobals: Unable to get mapped ID for source database: %v", err)
 	}
 
-	globals, err := GetGlobals(srcDatabaseID)
+	globals, err := getGlobalsFromSrc(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneGlobals: Unable to retrieve globals: databaseID=%v, error=%v ",
-			srcDatabaseID, err)
+			cloneParams.SourceDatabaseID, err)
 	}
 	for _, currGlobal := range globals {
 
 		remappedID := uniqueID.GenerateSnowflakeID()
-		remappedIDs[currGlobal.GlobalID] = remappedID
+		cloneParams.IDRemapper[currGlobal.GlobalID] = remappedID
 
 		destGlobal := currGlobal
 		destGlobal.ParentDatabaseID = destDatabaseID
 		destGlobal.GlobalID = remappedID
 
-		if err := saveNewGlobal(destGlobal); err != nil {
+		if err := saveNewGlobal(cloneParams.DestDBHandle, destGlobal); err != nil {
 			return fmt.Errorf("CloneGlobals: Can't create global: error = %v", err)
 		}
 	}

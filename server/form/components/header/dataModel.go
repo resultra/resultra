@@ -1,12 +1,15 @@
 package header
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const headerEntityKind string = "header"
@@ -23,9 +26,9 @@ type NewHeaderParams struct {
 	Label        string                         `json:"label"`
 }
 
-func saveHeader(newHeader Header) error {
+func saveHeader(destDBHandle *sql.DB, newHeader Header) error {
 
-	if saveErr := common.SaveNewFormComponent(headerEntityKind,
+	if saveErr := common.SaveNewFormComponent(destDBHandle, headerEntityKind,
 		newHeader.ParentFormID, newHeader.HeaderID, newHeader.Properties); saveErr != nil {
 		return fmt.Errorf("saveHeader: Unable to save header: error = %v", saveErr)
 	}
@@ -47,7 +50,7 @@ func saveNewHeader(params NewHeaderParams) (*Header, error) {
 		HeaderID:   uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveHeader(newHeader); err != nil {
+	if err := saveHeader(databaseWrapper.DBHandle(), newHeader); err != nil {
 		return nil, fmt.Errorf("saveNewHeader: Unable to save header with params=%+v: error = %v", params, err)
 	}
 
@@ -72,7 +75,7 @@ func getHeader(parentFormID string, headerID string) (*Header, error) {
 	return &header, nil
 }
 
-func GetHeaders(parentFormID string) ([]Header, error) {
+func getHeadersFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Header, error) {
 
 	headers := []Header{}
 	addHeader := func(datePickerID string, encodedProps string) error {
@@ -90,7 +93,7 @@ func GetHeaders(parentFormID string) ([]Header, error) {
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(headerEntityKind, parentFormID, addHeader); getErr != nil {
+	if getErr := common.GetFormComponents(srcDBHandle, headerEntityKind, parentFormID, addHeader); getErr != nil {
 		return nil, fmt.Errorf("GetHeaders: Can't get headers: %v", getErr)
 	}
 
@@ -98,20 +101,24 @@ func GetHeaders(parentFormID string) ([]Header, error) {
 
 }
 
-func CloneHeaders(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetHeaders(parentFormID string) ([]Header, error) {
+	return getHeadersFromSrc(databaseWrapper.DBHandle(), parentFormID)
+}
 
-	srcHeaders, err := GetHeaders(parentFormID)
+func CloneHeaders(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcHeaders, err := getHeadersFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneHeaders: %v", err)
 	}
 
 	for _, srcHeader := range srcHeaders {
-		remappedHeaderID := remappedIDs.AllocNewOrGetExistingRemappedID(srcHeader.HeaderID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcHeader.ParentFormID)
+		remappedHeaderID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcHeader.HeaderID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcHeader.ParentFormID)
 		if err != nil {
 			return fmt.Errorf("CloneHeaders: %v", err)
 		}
-		destProperties, err := srcHeader.Properties.Clone(remappedIDs)
+		destProperties, err := srcHeader.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneHeaders: %v", err)
 		}
@@ -119,7 +126,7 @@ func CloneHeaders(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) er
 			ParentFormID: remappedFormID,
 			HeaderID:     remappedHeaderID,
 			Properties:   *destProperties}
-		if err := saveHeader(destHeader); err != nil {
+		if err := saveHeader(cloneParams.DestDBHandle, destHeader); err != nil {
 			return fmt.Errorf("CloneHeaders: %v", err)
 		}
 	}

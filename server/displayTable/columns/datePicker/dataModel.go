@@ -1,12 +1,15 @@
 package datePicker
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const datePickerEntityKind string = "datePicker"
@@ -32,9 +35,9 @@ func validDatePickerFieldType(fieldType string) bool {
 	}
 }
 
-func saveDatePicker(newDatePicker DatePicker) error {
+func saveDatePicker(destDBHandle *sql.DB, newDatePicker DatePicker) error {
 
-	if saveErr := common.SaveNewTableColumn(datePickerEntityKind,
+	if saveErr := common.SaveNewTableColumn(destDBHandle, datePickerEntityKind,
 		newDatePicker.ParentTableID, newDatePicker.DatePickerID, newDatePicker.Properties); saveErr != nil {
 		return fmt.Errorf("saveNewDatePicker: Unable to save date picker: error = %v", saveErr)
 	}
@@ -58,7 +61,7 @@ func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 		ColType:      datePickerEntityKind,
 		Properties:   properties}
 
-	if err := saveDatePicker(newDatePicker); err != nil {
+	if err := saveDatePicker(databaseWrapper.DBHandle(), newDatePicker); err != nil {
 		return nil, fmt.Errorf("saveNewDatePicker: %v", err)
 	}
 
@@ -85,7 +88,7 @@ func getDatePicker(parentTableID string, datePickerID string) (*DatePicker, erro
 	return &datePicker, nil
 }
 
-func GetDatePickers(parentTableID string) ([]DatePicker, error) {
+func getDatePickersFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]DatePicker, error) {
 
 	datePickers := []DatePicker{}
 	addDatePicker := func(datePickerID string, encodedProps string) error {
@@ -105,7 +108,7 @@ func GetDatePickers(parentTableID string) ([]DatePicker, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(datePickerEntityKind, parentTableID, addDatePicker); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, datePickerEntityKind, parentTableID, addDatePicker); getErr != nil {
 		return nil, fmt.Errorf("GetDatePickers: Can't get date pickers: %v")
 	}
 
@@ -113,20 +116,24 @@ func GetDatePickers(parentTableID string) ([]DatePicker, error) {
 
 }
 
-func CloneDatePickers(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) error {
+func GetDatePickers(parentTableID string) ([]DatePicker, error) {
+	return getDatePickersFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcDatePickers, err := GetDatePickers(parentTableID)
+func CloneDatePickers(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
+
+	srcDatePickers, err := getDatePickersFromSrc(cloneParams.SrcDBHandle, parentTableID)
 	if err != nil {
 		return fmt.Errorf("CloneDatePickers: %v", err)
 	}
 
 	for _, srcDatePicker := range srcDatePickers {
-		remappedDatePickerID := remappedIDs.AllocNewOrGetExistingRemappedID(srcDatePicker.DatePickerID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcDatePicker.ParentTableID)
+		remappedDatePickerID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcDatePicker.DatePickerID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcDatePicker.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneDatePickers: %v", err)
 		}
-		destProperties, err := srcDatePicker.Properties.Clone(remappedIDs)
+		destProperties, err := srcDatePicker.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneDatePickers: %v", err)
 		}
@@ -136,7 +143,7 @@ func CloneDatePickers(remappedIDs uniqueID.UniqueIDRemapper, parentTableID strin
 			ColumnID:      remappedDatePickerID,
 			ColType:       datePickerEntityKind,
 			Properties:    *destProperties}
-		if err := saveDatePicker(destDatePicker); err != nil {
+		if err := saveDatePicker(cloneParams.DestDBHandle, destDatePicker); err != nil {
 			return fmt.Errorf("CloneDatePickers: %v", err)
 		}
 	}

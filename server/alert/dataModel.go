@@ -1,11 +1,13 @@
 package alert
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const formEntityKind string = "Form"
@@ -23,14 +25,14 @@ type NewAlertParams struct {
 	FormID           string `json:"formID"`
 }
 
-func saveAlert(newAlert Alert) error {
+func saveAlert(destDBHandle *sql.DB, newAlert Alert) error {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(newAlert.Properties)
 	if encodeErr != nil {
 		return fmt.Errorf("saveAlert: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO alerts (database_id,alert_id,name,properties) VALUES ($1,$2,$3,$4)`,
+	if _, insertErr := destDBHandle.Exec(`INSERT INTO alerts (database_id,alert_id,name,properties) VALUES ($1,$2,$3,$4)`,
 		newAlert.ParentDatabaseID, newAlert.AlertID, newAlert.Name, encodedProps); insertErr != nil {
 		return fmt.Errorf("saveForm: Can't create form: error = %v", insertErr)
 	}
@@ -54,7 +56,7 @@ func newAlert(params NewAlertParams) (*Alert, error) {
 		Name:       sanitizedName,
 		Properties: newAlertProps}
 
-	if err := saveAlert(newAlert); err != nil {
+	if err := saveAlert(databaseWrapper.DBHandle(), newAlert); err != nil {
 		return nil, fmt.Errorf("newAlert: error saving form: %v", err)
 	}
 
@@ -91,9 +93,9 @@ type GetAlertListParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
-func getAllAlerts(parentDatabaseID string) ([]Alert, error) {
+func getAllAlertsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Alert, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := srcDBHandle.Query(
 		`SELECT database_id,alert_id,name,properties FROM alerts WHERE database_id = $1`,
 		parentDatabaseID)
 	if queryErr != nil {
@@ -122,17 +124,21 @@ func getAllAlerts(parentDatabaseID string) ([]Alert, error) {
 
 }
 
-func CloneAlerts(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID string) error {
+func getAllAlerts(parentDatabaseID string) ([]Alert, error) {
+	return getAllAlertsFromSrc(databaseWrapper.DBHandle(), parentDatabaseID)
+}
 
-	remappedDatabaseID, err := remappedIDs.GetExistingRemappedID(srcParentDatabaseID)
+func CloneAlerts(cloneParams *trackerDatabase.CloneDatabaseParams) error {
+
+	remappedDatabaseID, err := cloneParams.IDRemapper.GetExistingRemappedID(cloneParams.SourceDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneTableForms: Error getting remapped table ID: %v", err)
 	}
 
-	alerts, err := getAllAlerts(srcParentDatabaseID)
+	alerts, err := getAllAlertsFromSrc(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneAlerts: Error getting alerts for parent database ID = %v: %v",
-			srcParentDatabaseID, err)
+			cloneParams.SourceDatabaseID, err)
 	}
 
 	for _, currAlert := range alerts {
@@ -140,19 +146,19 @@ func CloneAlerts(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID stri
 		destAlert := currAlert
 		destAlert.ParentDatabaseID = remappedDatabaseID
 
-		destAlertID, err := remappedIDs.AllocNewRemappedID(currAlert.AlertID)
+		destAlertID, err := cloneParams.IDRemapper.AllocNewRemappedID(currAlert.AlertID)
 		if err != nil {
 			return fmt.Errorf("CloneAlerts: %v", err)
 		}
 		destAlert.AlertID = destAlertID
 
-		destProps, err := currAlert.Properties.Clone(remappedIDs)
+		destProps, err := currAlert.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneAlerts: %v", err)
 		}
 		destAlert.Properties = *destProps
 
-		if err := saveAlert(destAlert); err != nil {
+		if err := saveAlert(cloneParams.DestDBHandle, destAlert); err != nil {
 			return fmt.Errorf("CloneAlerts: %v", err)
 		}
 	}

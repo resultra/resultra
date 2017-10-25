@@ -18,13 +18,13 @@ func newDefaultDatabaseProperties() DatabaseProperties {
 	return props
 }
 
-func (srcProps DatabaseProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*DatabaseProperties, error) {
+func (srcProps DatabaseProperties) Clone(cloneParams *CloneDatabaseParams) (*DatabaseProperties, error) {
 
 	destProps := srcProps
 
-	destProps.ListOrder = uniqueID.CloneIDList(remappedIDs, srcProps.ListOrder)
-	destProps.DashboardOrder = uniqueID.CloneIDList(remappedIDs, srcProps.DashboardOrder)
-	destProps.FormLinkOrder = uniqueID.CloneIDList(remappedIDs, srcProps.FormLinkOrder)
+	destProps.ListOrder = uniqueID.CloneIDList(cloneParams.IDRemapper, srcProps.ListOrder)
+	destProps.DashboardOrder = uniqueID.CloneIDList(cloneParams.IDRemapper, srcProps.DashboardOrder)
+	destProps.FormLinkOrder = uniqueID.CloneIDList(cloneParams.IDRemapper, srcProps.FormLinkOrder)
 
 	return &destProps, nil
 }

@@ -5,6 +5,7 @@ import (
 	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/recordFilter"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type ItemListViewProperties struct {
@@ -47,41 +48,41 @@ type ItemListProperties struct {
 	AlternateViews         []ItemListViewProperties             `json:"alternateViews"`
 }
 
-func (srcProps ItemListProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ItemListProperties, error) {
+func (srcProps ItemListProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*ItemListProperties, error) {
 
-	destFilterRules, err := srcProps.DefaultFilterRules.Clone(remappedIDs)
+	destFilterRules, err := srcProps.DefaultFilterRules.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("FormProperties.Clone: %v")
 	}
 
-	destPreFilterRules, err := srcProps.PreFilterRules.Clone(remappedIDs)
+	destPreFilterRules, err := srcProps.PreFilterRules.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("FormProperties.Clone: %v")
 	}
 
-	destFilterFields := uniqueID.CloneIDList(remappedIDs, srcProps.DefaultFilterFields)
+	destFilterFields := uniqueID.CloneIDList(cloneParams.IDRemapper, srcProps.DefaultFilterFields)
 
-	destSortRules, err := recordSortDataModel.CloneSortRules(remappedIDs, srcProps.DefaultRecordSortRules)
+	destSortRules, err := recordSortDataModel.CloneSortRules(cloneParams.IDRemapper, srcProps.DefaultRecordSortRules)
 	if err != nil {
 		return nil, fmt.Errorf("FormProperties.Clone: %v")
 	}
-	destSortFields := uniqueID.CloneIDList(remappedIDs, srcProps.DefaultSortFields)
+	destSortFields := uniqueID.CloneIDList(cloneParams.IDRemapper, srcProps.DefaultSortFields)
 
 	destAltViews := []ItemListViewProperties{}
 	for _, srcAltView := range srcProps.AlternateViews {
 		destAltView := ItemListViewProperties{}
 		destAltView.PageSize = srcAltView.PageSize
 		if srcAltView.FormID != nil {
-			remappedID := remappedIDs.AllocNewOrGetExistingRemappedID(*srcAltView.FormID)
+			remappedID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(*srcAltView.FormID)
 			destAltView.FormID = &remappedID
 		} else if srcAltView.TableID != nil {
-			remappedID := remappedIDs.AllocNewOrGetExistingRemappedID(*srcAltView.TableID)
+			remappedID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(*srcAltView.TableID)
 			destAltView.TableID = &remappedID
 		}
 		destAltViews = append(destAltViews, destAltView)
 	}
 
-	destDefaultView := srcProps.DefaultView.Clone(remappedIDs)
+	destDefaultView := srcProps.DefaultView.Clone(cloneParams.IDRemapper)
 
 	destProps := ItemListProperties{
 		DefaultView:            destDefaultView,

@@ -2,6 +2,7 @@ package calcField
 
 import (
 	"fmt"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/uniqueID"
 )
@@ -48,5 +49,5 @@ func newCalcField(calcFieldParams NewCalcFieldParams) (*field.Field, error) {
 		PreprocessedFormulaText: compileResult.preprocessedFormula,
 		IsCalcField:             true}
 
-	return field.CreateNewFieldFromRawInputs(newField)
+	return field.CreateNewFieldFromRawInputs(databaseWrapper.DBHandle(), newField)
 }

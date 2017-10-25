@@ -1,12 +1,15 @@
 package gauge
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/dashboard/components/common"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const gaugeEntityKind string = "gauge"
@@ -29,9 +32,9 @@ type NewGaugeParams struct {
 	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
-func saveGauge(newGauge Gauge) error {
+func saveGauge(destDBHandle *sql.DB, newGauge Gauge) error {
 
-	if saveErr := common.SaveNewDashboardComponent(gaugeEntityKind,
+	if saveErr := common.SaveNewDashboardComponent(destDBHandle, gaugeEntityKind,
 		newGauge.ParentDashboardID, newGauge.GaugeID, newGauge.Properties); saveErr != nil {
 		return fmt.Errorf("newGauge: Unable to save gauge component: error = %v", saveErr)
 	}
@@ -63,7 +66,7 @@ func newGauge(params NewGaugeParams) (*Gauge, error) {
 		GaugeID:           uniqueID.GenerateSnowflakeID(),
 		Properties:        gaugeProps}
 
-	if saveErr := saveGauge(newGauge); saveErr != nil {
+	if saveErr := saveGauge(databaseWrapper.DBHandle(), newGauge); saveErr != nil {
 		return nil, fmt.Errorf("newGauge: Unable to save summary component with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -86,7 +89,7 @@ func GetGauge(parentDashboardID string, gaugeID string) (*Gauge, error) {
 
 }
 
-func GetGauges(parentDashboardID string) ([]Gauge, error) {
+func getGaugesFromSrc(srcDBHandle *sql.DB, parentDashboardID string) ([]Gauge, error) {
 
 	gauges := []Gauge{}
 	addGauge := func(gaugeID string, encodedProps string) error {
@@ -105,33 +108,37 @@ func GetGauges(parentDashboardID string) ([]Gauge, error) {
 
 		return nil
 	}
-	if getErr := common.GetDashboardComponents(gaugeEntityKind, parentDashboardID, addGauge); getErr != nil {
+	if getErr := common.GetDashboardComponents(srcDBHandle, gaugeEntityKind, parentDashboardID, addGauge); getErr != nil {
 		return nil, fmt.Errorf("getBarCharts: Can't get bar chart components: %v")
 	}
 
 	return gauges, nil
 }
 
-func CloneGauges(remappedIDs uniqueID.UniqueIDRemapper, srcParentDashboardID string) error {
+func GetGauges(parentDashboardID string) ([]Gauge, error) {
+	return getGaugesFromSrc(databaseWrapper.DBHandle(), parentDashboardID)
+}
 
-	remappedDashboardID, err := remappedIDs.GetExistingRemappedID(srcParentDashboardID)
+func CloneGauges(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentDashboardID string) error {
+
+	remappedDashboardID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcParentDashboardID)
 	if err != nil {
 		return fmt.Errorf("CloneGauges: %v", err)
 	}
 
-	gauges, err := GetGauges(srcParentDashboardID)
+	gauges, err := getGaugesFromSrc(cloneParams.SrcDBHandle, srcParentDashboardID)
 	if err != nil {
 		return fmt.Errorf("CloneGauges: %v", err)
 	}
 
 	for _, srcGauge := range gauges {
 
-		remappedGaugeID, err := remappedIDs.AllocNewRemappedID(srcGauge.GaugeID)
+		remappedGaugeID, err := cloneParams.IDRemapper.AllocNewRemappedID(srcGauge.GaugeID)
 		if err != nil {
 			return fmt.Errorf("CloneGauges: %v", err)
 		}
 
-		clonedProps, err := srcGauge.Properties.Clone(remappedIDs)
+		clonedProps, err := srcGauge.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneGauges: %v", err)
 		}
@@ -141,7 +148,7 @@ func CloneGauges(remappedIDs uniqueID.UniqueIDRemapper, srcParentDashboardID str
 			GaugeID:           remappedGaugeID,
 			Properties:        *clonedProps}
 
-		if err := saveGauge(destGauge); err != nil {
+		if err := saveGauge(cloneParams.DestDBHandle, destGauge); err != nil {
 			return fmt.Errorf("CloneGauges: %v", err)
 		}
 	}

@@ -1,12 +1,15 @@
 package caption
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const captionEntityKind string = "caption"
@@ -23,9 +26,9 @@ type NewCaptionParams struct {
 	Label        string                         `json:"label"`
 }
 
-func saveCaption(newCaption Caption) error {
+func saveCaption(destDBHandle *sql.DB, newCaption Caption) error {
 
-	if saveErr := common.SaveNewFormComponent(captionEntityKind,
+	if saveErr := common.SaveNewFormComponent(destDBHandle, captionEntityKind,
 		newCaption.ParentFormID, newCaption.CaptionID, newCaption.Properties); saveErr != nil {
 		return fmt.Errorf("saveCaption: Unable to save caption: error = %v", saveErr)
 	}
@@ -48,7 +51,7 @@ func saveNewCaption(params NewCaptionParams) (*Caption, error) {
 		CaptionID:  uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveCaption(newCaption); err != nil {
+	if err := saveCaption(databaseWrapper.DBHandle(), newCaption); err != nil {
 		return nil, fmt.Errorf("saveNewCaption: Unable to save caption with params=%+v: error = %v", params, err)
 	}
 
@@ -73,7 +76,7 @@ func getCaption(parentFormID string, captionID string) (*Caption, error) {
 	return &caption, nil
 }
 
-func GetCaptions(parentFormID string) ([]Caption, error) {
+func getCaptionsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Caption, error) {
 
 	captions := []Caption{}
 	addCaption := func(datePickerID string, encodedProps string) error {
@@ -91,7 +94,7 @@ func GetCaptions(parentFormID string) ([]Caption, error) {
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(captionEntityKind, parentFormID, addCaption); getErr != nil {
+	if getErr := common.GetFormComponents(srcDBHandle, captionEntityKind, parentFormID, addCaption); getErr != nil {
 		return nil, fmt.Errorf("GetCaptions: Can't get captions: %v")
 	}
 
@@ -99,20 +102,24 @@ func GetCaptions(parentFormID string) ([]Caption, error) {
 
 }
 
-func CloneCaptions(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetCaptions(parentFormID string) ([]Caption, error) {
+	return getCaptionsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+}
 
-	srcCaptions, err := GetCaptions(parentFormID)
+func CloneCaptions(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcCaptions, err := getCaptionsFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneCaptions: %v", err)
 	}
 
 	for _, srcCaption := range srcCaptions {
-		remappedCaptionID := remappedIDs.AllocNewOrGetExistingRemappedID(srcCaption.CaptionID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcCaption.ParentFormID)
+		remappedCaptionID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcCaption.CaptionID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcCaption.ParentFormID)
 		if err != nil {
 			return fmt.Errorf("CloneCaptions: %v", err)
 		}
-		destProperties, err := srcCaption.Properties.Clone(remappedIDs)
+		destProperties, err := srcCaption.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneCaptions: %v", err)
 		}
@@ -120,7 +127,7 @@ func CloneCaptions(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) e
 			ParentFormID: remappedFormID,
 			CaptionID:    remappedCaptionID,
 			Properties:   *destProperties}
-		if err := saveCaption(destCaption); err != nil {
+		if err := saveCaption(cloneParams.DestDBHandle, destCaption); err != nil {
 			return fmt.Errorf("CloneCaptions: %v", err)
 		}
 	}

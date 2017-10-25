@@ -1,19 +1,21 @@
 package common
 
 import (
+	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/generic"
 )
 
-func SaveNewFormComponent(componentType string, parentForm string, componentID string, properties interface{}) error {
+func SaveNewFormComponent(destDBHandle *sql.DB,
+	componentType string, parentForm string, componentID string, properties interface{}) error {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(properties)
 	if encodeErr != nil {
 		return fmt.Errorf("saveNewCheckBox: Unable to save %v: error = %v", componentType, encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO form_components (form_id,component_id,type,properties) VALUES ($1,$2,$3,$4)`,
+	if _, insertErr := destDBHandle.Exec(`INSERT INTO form_components (form_id,component_id,type,properties) VALUES ($1,$2,$3,$4)`,
 		parentForm, componentID, componentType, encodedProps); insertErr != nil {
 		return fmt.Errorf("saveNewFormComponent: Can't save %v: error = %v", componentType, insertErr)
 	}
@@ -56,9 +58,9 @@ func GetFormComponent(componentType string, parentFormID string, componentID str
 
 type addComponentCallbackFunc func(string, string) error
 
-func GetFormComponents(componentType string, parentFormID string, addComponentFunc addComponentCallbackFunc) error {
+func GetFormComponents(srcDBHandle *sql.DB, componentType string, parentFormID string, addComponentFunc addComponentCallbackFunc) error {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT component_id,properties
+	rows, queryErr := srcDBHandle.Query(`SELECT component_id,properties
 			FROM form_components 
 			WHERE form_id=$1 AND type=$2`,
 		parentFormID, componentType)

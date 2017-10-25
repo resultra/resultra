@@ -2,8 +2,8 @@ package alert
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/recordFilter"
+	"resultra/datasheet/server/trackerDatabase"
 	"time"
 )
 
@@ -21,11 +21,11 @@ type AlertProperties struct {
 	TriggerConditions recordFilter.RecordFilterRuleSet `json:"triggerConditions"`
 }
 
-func (srcProps AlertProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*AlertProperties, error) {
+func (srcProps AlertProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*AlertProperties, error) {
 
 	destProps := AlertProperties{}
 
-	destTriggerConditions, err := srcProps.TriggerConditions.Clone(remappedIDs)
+	destTriggerConditions, err := srcProps.TriggerConditions.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("AlertProperties.Clone: %v")
 	}
@@ -35,7 +35,7 @@ func (srcProps AlertProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*A
 
 	srcCondition := srcProps.Condition
 	if srcCondition != nil {
-		remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcCondition.FieldID)
+		remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcCondition.FieldID)
 		if err != nil {
 			return nil, fmt.Errorf("AlertProperties.Clone: %v", err)
 		}
@@ -46,7 +46,7 @@ func (srcProps AlertProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*A
 		destProps.Condition = nil
 	}
 
-	destFormID, formIDErr := remappedIDs.GetExistingRemappedID(srcProps.FormID)
+	destFormID, formIDErr := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FormID)
 	if formIDErr != nil {
 		return nil, fmt.Errorf("AlertProperties.Clone: %v", formIDErr)
 	}

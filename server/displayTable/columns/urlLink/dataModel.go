@@ -1,12 +1,15 @@
 package urlLink
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const urlLinkEntityKind string = "urlLink"
@@ -32,8 +35,8 @@ func validUrlLinkFieldType(fieldType string) bool {
 	}
 }
 
-func saveUrlLink(newUrlLink UrlLink) error {
-	if saveErr := common.SaveNewTableColumn(urlLinkEntityKind,
+func saveUrlLink(destDBHandle *sql.DB, newUrlLink UrlLink) error {
+	if saveErr := common.SaveNewTableColumn(destDBHandle, urlLinkEntityKind,
 		newUrlLink.ParentTableID, newUrlLink.UrlLinkID, newUrlLink.Properties); saveErr != nil {
 		return fmt.Errorf("saveUrlLink: Unable to save url link: %v", saveErr)
 	}
@@ -57,7 +60,7 @@ func saveNewUrlLink(params NewUrlLinkParams) (*UrlLink, error) {
 		Properties: properties,
 		ColType:    urlLinkEntityKind}
 
-	if err := saveUrlLink(newUrlLink); err != nil {
+	if err := saveUrlLink(databaseWrapper.DBHandle(), newUrlLink); err != nil {
 		return nil, fmt.Errorf("saveNewUrlLink: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -84,7 +87,7 @@ func getUrlLink(parentTableID string, urlLinkID string) (*UrlLink, error) {
 	return &urlLink, nil
 }
 
-func GetUrlLinks(parentTableID string) ([]UrlLink, error) {
+func getUrlLinksFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]UrlLink, error) {
 
 	urlLinks := []UrlLink{}
 	addUrlLink := func(urlLinkID string, encodedProps string) error {
@@ -104,7 +107,7 @@ func GetUrlLinks(parentTableID string) ([]UrlLink, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(urlLinkEntityKind, parentTableID, addUrlLink); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, urlLinkEntityKind, parentTableID, addUrlLink); getErr != nil {
 		return nil, fmt.Errorf("GetUrlLinks: Can't get text boxes: %v")
 	}
 
@@ -112,20 +115,24 @@ func GetUrlLinks(parentTableID string) ([]UrlLink, error) {
 
 }
 
-func CloneUrlLinks(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetUrlLinks(parentTableID string) ([]UrlLink, error) {
+	return getUrlLinksFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcUrlLinkes, err := GetUrlLinks(parentFormID)
+func CloneUrlLinks(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcUrlLinkes, err := getUrlLinksFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneUrlLinkes: %v", err)
 	}
 
 	for _, srcUrlLink := range srcUrlLinkes {
-		remappedUrlLinkID := remappedIDs.AllocNewOrGetExistingRemappedID(srcUrlLink.UrlLinkID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcUrlLink.ParentTableID)
+		remappedUrlLinkID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcUrlLink.UrlLinkID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcUrlLink.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneUrlLinks: %v", err)
 		}
-		destProperties, err := srcUrlLink.Properties.Clone(remappedIDs)
+		destProperties, err := srcUrlLink.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneUrlLinks: %v", err)
 		}
@@ -135,7 +142,7 @@ func CloneUrlLinks(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) e
 			ColumnID:      remappedUrlLinkID,
 			Properties:    *destProperties,
 			ColType:       urlLinkEntityKind}
-		if err := saveUrlLink(destUrlLink); err != nil {
+		if err := saveUrlLink(cloneParams.DestDBHandle, destUrlLink); err != nil {
 			return fmt.Errorf("CloneUrlLinks: %v", err)
 		}
 	}

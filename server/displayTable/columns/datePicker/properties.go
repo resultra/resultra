@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/common/inputProps"
 	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 	"time"
 )
 
@@ -40,11 +40,11 @@ type DatePickerProperties struct {
 
 const dateFormatDefault string = "date"
 
-func (srcProps DatePickerProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*DatePickerProperties, error) {
+func (srcProps DatePickerProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*DatePickerProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}

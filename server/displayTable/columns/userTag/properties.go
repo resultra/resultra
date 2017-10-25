@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type ValidationProperties struct {
@@ -25,17 +26,17 @@ type UserTagProperties struct {
 	CurrUserSelectable  bool                                       `json:"currUserSelectable"`
 }
 
-func (srcProps UserTagProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*UserTagProperties, error) {
+func (srcProps UserTagProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*UserTagProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}
 	destProps.FieldID = remappedFieldID
 
-	destProps.SelectableRoles = uniqueID.CloneIDList(remappedIDs, srcProps.SelectableRoles)
+	destProps.SelectableRoles = uniqueID.CloneIDList(cloneParams.IDRemapper, srcProps.SelectableRoles)
 
 	return &destProps, nil
 }

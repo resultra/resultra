@@ -1,13 +1,15 @@
 package formButton
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const buttonEntityKind string = "formButton"
@@ -24,9 +26,9 @@ type NewButtonParams struct {
 	LinkedFormID string                         `json:"linkedFormID"`
 }
 
-func saveButton(newButton FormButton) error {
+func saveButton(destDBHandle *sql.DB, newButton FormButton) error {
 
-	if saveErr := common.SaveNewFormComponent(buttonEntityKind,
+	if saveErr := common.SaveNewFormComponent(destDBHandle, buttonEntityKind,
 		newButton.ParentFormID, newButton.ButtonID, newButton.Properties); saveErr != nil {
 		return fmt.Errorf("saveButton: Unable to save button: error = %v", saveErr)
 	}
@@ -69,7 +71,7 @@ func saveNewButton(params NewButtonParams) (*FormButton, error) {
 		ButtonID:   uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveButton(newButton); err != nil {
+	if err := saveButton(databaseWrapper.DBHandle(), newButton); err != nil {
 		return nil, fmt.Errorf("saveNewButton: Unable to save button with params=%+v: error = %v", params, err)
 	}
 
@@ -103,7 +105,7 @@ func getButton(parentFormID string, buttonID string) (*FormButton, error) {
 	return &button, nil
 }
 
-func GetButtons(parentFormID string) ([]FormButton, error) {
+func getButtonsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]FormButton, error) {
 
 	buttons := []FormButton{}
 	addButton := func(datePickerID string, encodedProps string) error {
@@ -121,7 +123,7 @@ func GetButtons(parentFormID string) ([]FormButton, error) {
 
 		return nil
 	}
-	if getErr := common.GetFormComponents(buttonEntityKind, parentFormID, addButton); getErr != nil {
+	if getErr := common.GetFormComponents(srcDBHandle, buttonEntityKind, parentFormID, addButton); getErr != nil {
 		return nil, fmt.Errorf("GetButtons: Can't get buttons: %v")
 	}
 
@@ -129,20 +131,24 @@ func GetButtons(parentFormID string) ([]FormButton, error) {
 
 }
 
-func CloneButtons(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetButtons(parentFormID string) ([]FormButton, error) {
+	return getButtonsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+}
 
-	srcButtons, err := GetButtons(parentFormID)
+func CloneButtons(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcButtons, err := getButtonsFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneButtons: %v", err)
 	}
 
 	for _, srcButton := range srcButtons {
-		remappedButtonID := remappedIDs.AllocNewOrGetExistingRemappedID(srcButton.ButtonID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcButton.ParentFormID)
+		remappedButtonID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcButton.ButtonID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcButton.ParentFormID)
 		if err != nil {
 			return fmt.Errorf("CloneButtons: %v", err)
 		}
-		destProperties, err := srcButton.Properties.Clone(remappedIDs)
+		destProperties, err := srcButton.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneButtons: %v", err)
 		}
@@ -150,7 +156,7 @@ func CloneButtons(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) er
 			ParentFormID: remappedFormID,
 			ButtonID:     remappedButtonID,
 			Properties:   *destProperties}
-		if err := saveButton(destButton); err != nil {
+		if err := saveButton(cloneParams.DestDBHandle, destButton); err != nil {
 			return fmt.Errorf("CloneButtons: %v", err)
 		}
 	}

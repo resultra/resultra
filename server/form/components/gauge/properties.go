@@ -6,7 +6,7 @@ import (
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/numberFormat"
 	"resultra/datasheet/server/generic/threshold"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type GaugeProperties struct {
@@ -35,17 +35,17 @@ func newDefaultGaugeProperties() GaugeProperties {
 
 }
 
-func (srcProps GaugeProperties) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*GaugeProperties, error) {
+func (srcProps GaugeProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*GaugeProperties, error) {
 
 	destProps := srcProps
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcProps.FieldID)
+	remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcProps.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("Clone: %v", err)
 	}
 	destProps.FieldID = remappedFieldID
 
-	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(remappedIDs)
+	destVisibilityConditions, err := srcProps.VisibilityConditions.Clone(cloneParams)
 	if err != nil {
 		return nil, fmt.Errorf("CaptionProperties.Clone: %v")
 	}

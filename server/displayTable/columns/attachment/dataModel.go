@@ -1,12 +1,15 @@
 package attachment
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const attachmentEntityKind string = "attachment"
@@ -32,9 +35,9 @@ func validAttachmentFieldType(fieldType string) bool {
 	}
 }
 
-func saveAttachment(newAttachment Attachment) error {
+func saveAttachment(destDBHandle *sql.DB, newAttachment Attachment) error {
 
-	if saveErr := common.SaveNewTableColumn(attachmentEntityKind,
+	if saveErr := common.SaveNewTableColumn(destDBHandle, attachmentEntityKind,
 		newAttachment.ParentTableID, newAttachment.AttachmentID, newAttachment.Properties); saveErr != nil {
 		return fmt.Errorf("saveNewAttachment: Unable to save image form component: error = %v", saveErr)
 	}
@@ -58,7 +61,7 @@ func saveNewAttachment(params NewAttachmentParams) (*Attachment, error) {
 		ColType:      attachmentEntityKind,
 		Properties:   properties}
 
-	if saveErr := saveAttachment(newAttachment); saveErr != nil {
+	if saveErr := saveAttachment(databaseWrapper.DBHandle(), newAttachment); saveErr != nil {
 		return nil, fmt.Errorf("saveNewAttachment: Unable to save image form component with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -85,7 +88,7 @@ func getAttachment(parentTableID string, attachmentID string) (*Attachment, erro
 	return &attachment, nil
 }
 
-func GetAttachments(parentTableID string) ([]Attachment, error) {
+func getAttachmentsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Attachment, error) {
 
 	attachments := []Attachment{}
 	addAttachment := func(attachmentID string, encodedProps string) error {
@@ -105,7 +108,7 @@ func GetAttachments(parentTableID string) ([]Attachment, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(attachmentEntityKind, parentTableID, addAttachment); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, attachmentEntityKind, parentTableID, addAttachment); getErr != nil {
 		return nil, fmt.Errorf("GetCheckBoxes: Can't get image form components: %v")
 	}
 
@@ -113,20 +116,24 @@ func GetAttachments(parentTableID string) ([]Attachment, error) {
 
 }
 
-func CloneAttachments(remappedIDs uniqueID.UniqueIDRemapper, parentTableID string) error {
+func GetAttachments(parentTableID string) ([]Attachment, error) {
+	return getAttachmentsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcAttachments, err := GetAttachments(parentTableID)
+func CloneAttachments(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
+
+	srcAttachments, err := getAttachmentsFromSrc(cloneParams.SrcDBHandle, parentTableID)
 	if err != nil {
 		return fmt.Errorf("CloneAttachments: %v", err)
 	}
 
 	for _, srcAttachment := range srcAttachments {
-		remappedAttachmentID := remappedIDs.AllocNewOrGetExistingRemappedID(srcAttachment.AttachmentID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcAttachment.ParentTableID)
+		remappedAttachmentID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcAttachment.AttachmentID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcAttachment.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneAttachments: %v", err)
 		}
-		destProperties, err := srcAttachment.Properties.Clone(remappedIDs)
+		destProperties, err := srcAttachment.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneAttachments: %v", err)
 		}
@@ -136,7 +143,7 @@ func CloneAttachments(remappedIDs uniqueID.UniqueIDRemapper, parentTableID strin
 			ColumnID:      remappedAttachmentID,
 			ColType:       attachmentEntityKind,
 			Properties:    *destProperties}
-		if err := saveAttachment(destAttachment); err != nil {
+		if err := saveAttachment(cloneParams.DestDBHandle, destAttachment); err != nil {
 			return fmt.Errorf("CloneAttachments: %v", err)
 		}
 	}

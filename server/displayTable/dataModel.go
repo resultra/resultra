@@ -1,11 +1,13 @@
 package displayTable
 
 import (
+	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type NewTableParams struct {
@@ -20,14 +22,14 @@ type DisplayTable struct {
 	Properties       DisplayTableProperties `json:"properties"`
 }
 
-func saveTable(newTable DisplayTable) error {
+func saveTable(destDBHandle *sql.DB, newTable DisplayTable) error {
 
 	encodedTableProps, encodeErr := generic.EncodeJSONString(newTable.Properties)
 	if encodeErr != nil {
 		return fmt.Errorf("saveTable: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO table_views
+	if _, insertErr := destDBHandle.Exec(`INSERT INTO table_views
 			 	(database_id,table_id,name,properties) VALUES ($1,$2,$3,$4)`,
 		newTable.ParentDatabaseID, newTable.TableID, newTable.Name, encodedTableProps); insertErr != nil {
 		return fmt.Errorf("saveTable: Can't create display table: error = %v", insertErr)
@@ -49,7 +51,7 @@ func newTable(params NewTableParams) (*DisplayTable, error) {
 		Name:             sanitizedName,
 		Properties:       newDefaultDisplayTableProperties()}
 
-	if err := saveTable(newTable); err != nil {
+	if err := saveTable(databaseWrapper.DBHandle(), newTable); err != nil {
 		return nil, fmt.Errorf("newTable: error saving table: %v", err)
 	}
 
@@ -86,9 +88,9 @@ type GetTableListParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
-func getAllTables(parentDatabaseID string) ([]DisplayTable, error) {
+func getAllTablesFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]DisplayTable, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := srcDBHandle.Query(
 		`SELECT database_id,table_id,name,properties FROM table_views WHERE database_id = $1`,
 		parentDatabaseID)
 	if queryErr != nil {
@@ -117,17 +119,21 @@ func getAllTables(parentDatabaseID string) ([]DisplayTable, error) {
 
 }
 
-func CloneTables(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID string) error {
+func getAllTables(parentDatabaseID string) ([]DisplayTable, error) {
+	return getAllTablesFromSrc(databaseWrapper.DBHandle(), parentDatabaseID)
+}
 
-	remappedDatabaseID, err := remappedIDs.GetExistingRemappedID(srcParentDatabaseID)
+func CloneTables(cloneParams *trackerDatabase.CloneDatabaseParams) error {
+
+	remappedDatabaseID, err := cloneParams.IDRemapper.GetExistingRemappedID(cloneParams.SourceDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneTableTables: Error getting remapped table ID: %v", err)
 	}
 
-	tables, err := getAllTables(srcParentDatabaseID)
+	tables, err := getAllTablesFromSrc(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneTables: Error getting tables for parent database ID = %v: %v",
-			srcParentDatabaseID, err)
+			cloneParams.SourceDatabaseID, err)
 	}
 
 	for _, currTable := range tables {
@@ -135,23 +141,23 @@ func CloneTables(remappedIDs uniqueID.UniqueIDRemapper, srcParentDatabaseID stri
 		destTable := currTable
 		destTable.ParentDatabaseID = remappedDatabaseID
 
-		destTableID, err := remappedIDs.AllocNewRemappedID(currTable.TableID)
+		destTableID, err := cloneParams.IDRemapper.AllocNewRemappedID(currTable.TableID)
 		if err != nil {
 			return fmt.Errorf("CloneTableTables: %v", err)
 		}
 		destTable.TableID = destTableID
 
-		destProps, err := currTable.Properties.Clone(remappedIDs)
+		destProps, err := currTable.Properties.Clone(cloneParams.IDRemapper)
 		if err != nil {
 			return fmt.Errorf("CloneTableTables: %v", err)
 		}
 		destTable.Properties = *destProps
 
-		if err := saveTable(destTable); err != nil {
+		if err := saveTable(cloneParams.DestDBHandle, destTable); err != nil {
 			return fmt.Errorf("CloneTableTables: %v", err)
 		}
 
-		if err := cloneTableCols(remappedIDs, currTable.TableID); err != nil {
+		if err := cloneTableCols(cloneParams, currTable.TableID); err != nil {
 			return fmt.Errorf("Clone tables: %v", err)
 		}
 

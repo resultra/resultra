@@ -1,12 +1,15 @@
 package textInput
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const textInputEntityKind string = "textInput"
@@ -32,8 +35,8 @@ func validTextInputFieldType(fieldType string) bool {
 	}
 }
 
-func saveTextInput(newTextInput TextInput) error {
-	if saveErr := common.SaveNewTableColumn(textInputEntityKind,
+func saveTextInput(destDBHandle *sql.DB, newTextInput TextInput) error {
+	if saveErr := common.SaveNewTableColumn(destDBHandle, textInputEntityKind,
 		newTextInput.ParentTableID, newTextInput.TextInputID, newTextInput.Properties); saveErr != nil {
 		return fmt.Errorf("saveTextInput: Unable to save text box: %v", saveErr)
 	}
@@ -57,7 +60,7 @@ func saveNewTextInput(params NewTextInputParams) (*TextInput, error) {
 		Properties:  properties,
 		ColType:     textInputEntityKind}
 
-	if err := saveTextInput(newTextInput); err != nil {
+	if err := saveTextInput(databaseWrapper.DBHandle(), newTextInput); err != nil {
 		return nil, fmt.Errorf("saveNewTextInput: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -84,7 +87,7 @@ func getTextInput(parentTableID string, textInputID string) (*TextInput, error) 
 	return &textInput, nil
 }
 
-func GetTextInputs(parentTableID string) ([]TextInput, error) {
+func getTextInputsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]TextInput, error) {
 
 	textInputs := []TextInput{}
 	addTextInput := func(textInputID string, encodedProps string) error {
@@ -104,7 +107,7 @@ func GetTextInputs(parentTableID string) ([]TextInput, error) {
 
 		return nil
 	}
-	if getErr := common.GetTableColumns(textInputEntityKind, parentTableID, addTextInput); getErr != nil {
+	if getErr := common.GetTableColumns(srcDBHandle, textInputEntityKind, parentTableID, addTextInput); getErr != nil {
 		return nil, fmt.Errorf("GetTextInputs: Can't get text boxes: %v")
 	}
 
@@ -112,20 +115,24 @@ func GetTextInputs(parentTableID string) ([]TextInput, error) {
 
 }
 
-func CloneTextInputs(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string) error {
+func GetTextInputs(parentTableID string) ([]TextInput, error) {
+	return getTextInputsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+}
 
-	srcTextInputes, err := GetTextInputs(parentFormID)
+func CloneTextInputs(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
+
+	srcTextInputes, err := getTextInputsFromSrc(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneTextInputes: %v", err)
 	}
 
 	for _, srcTextInput := range srcTextInputes {
-		remappedTextInputID := remappedIDs.AllocNewOrGetExistingRemappedID(srcTextInput.TextInputID)
-		remappedFormID, err := remappedIDs.GetExistingRemappedID(srcTextInput.ParentTableID)
+		remappedTextInputID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcTextInput.TextInputID)
+		remappedFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcTextInput.ParentTableID)
 		if err != nil {
 			return fmt.Errorf("CloneTextInputs: %v", err)
 		}
-		destProperties, err := srcTextInput.Properties.Clone(remappedIDs)
+		destProperties, err := srcTextInput.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneTextInputs: %v", err)
 		}
@@ -135,7 +142,7 @@ func CloneTextInputs(remappedIDs uniqueID.UniqueIDRemapper, parentFormID string)
 			ColumnID:      remappedTextInputID,
 			Properties:    *destProperties,
 			ColType:       textInputEntityKind}
-		if err := saveTextInput(destTextInput); err != nil {
+		if err := saveTextInput(cloneParams.DestDBHandle, destTextInput); err != nil {
 			return fmt.Errorf("CloneTextInputs: %v", err)
 		}
 	}
