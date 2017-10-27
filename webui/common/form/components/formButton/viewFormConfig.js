@@ -158,18 +158,24 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 	}
 	
 	function showRecordInPage() {
-		// TODO - Use main window view-port to show the form, instead of 
-		// navigating to the URL.
-		var currRecord = parentRecordProxy.getRecordFunc()
-		var viewFormParams = {
-			formID: buttonObjectRef.properties.linkedFormID,
-			databaseID: componentContext.databaseID,
-			recordID: currRecord.recordID,
-			defaultVals: buttonObjectRef.properties.defaultValues,
-			saveMode: buttonObjectRef.properties.popupBehavior.popupMode	
-		}
-		console.log("Form button pressed: navigating to view form: " + JSON.stringify(viewFormParams))
-		$buttonContainer.trigger(viewFormInViewportEventName,viewFormParams)
+		
+		var getFormInfoParams = { formID: buttonObjectRef.properties.linkedFormID }
+		
+		jsonAPIRequest("frm/getFormInfo", getFormInfoParams, function(formInfo) {
+			var currRecord = parentRecordProxy.getRecordFunc()
+			var viewFormParams = {
+				formID: buttonObjectRef.properties.linkedFormID,
+				databaseID: componentContext.databaseID,
+				title: formInfo.form.name,
+				recordID: currRecord.recordID,
+				defaultVals: buttonObjectRef.properties.defaultValues,
+				saveMode: buttonObjectRef.properties.popupBehavior.popupMode	
+			}
+			console.log("Form button pressed: navigating to view form: " + JSON.stringify(viewFormParams))
+			$buttonContainer.trigger(viewFormInViewportEventName,viewFormParams)
+		})
+		
+		
 	//	navigateToURL(viewFormURL())
 	}
 			

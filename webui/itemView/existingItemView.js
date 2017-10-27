@@ -8,7 +8,7 @@ function loadExistingItemView(pageLayout,databaseID,viewItemConfig) {
 	pageLayout.showFooterLayout()
 	pageLayout.disablePropertySidebar()
 	
-	pageLayout.setCenterContentHeader("Header TBD for Item View")
+	pageLayout.setCenterContentHeader(viewItemConfig.title)
 	
 	getRecordRefAndChangeSetID(viewItemConfig,initRecordFormView)
 	

@@ -14,7 +14,6 @@ type PopupBehaviorPropParams struct {
 type ButtonTemplateParams struct {
 	ElemPrefix               string
 	FormatPanelParams        propertiesSidebar.PanelTemplateParams
-	LinkedFormPanelParams    propertiesSidebar.PanelTemplateParams
 	PopupBehaviorPanelParams propertiesSidebar.PanelTemplateParams
 	PopupBehaviorPropParams  PopupBehaviorPropParams
 	VisibilityPanelParams    visibility.VisibilityPropertyTemplateParams
@@ -35,7 +34,6 @@ func init() {
 		ElemPrefix:               elemPrefix,
 		FormatPanelParams:        propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "buttonFormat"},
 		DeletePanelParams:        delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "buttonDelete", "Delete Form Button"),
-		LinkedFormPanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Linked Form", PanelID: "buttonForm"},
 		VisibilityPanelParams:    visibility.NewComponentVisibilityTempalteParams(visibilityElemPrefix, "buttonVisibility"),
 		PopupBehaviorPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Form Behavior", PanelID: "buttonPopupForm"},
 		PopupBehaviorPropParams:  popupBehaviorParams}
