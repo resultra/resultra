@@ -5,7 +5,7 @@
 		"../dashboard/common",
 		"../dashboard/components",
 		"../dashboard/view",
-		"../newItem",
+		"../itemView",
 		"../alertListView"],
 	"cssFiles": ["mainWindow.css"],
 	"jsFiles": ["mainWindow.js",
