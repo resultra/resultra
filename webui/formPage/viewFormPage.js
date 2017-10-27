@@ -41,5 +41,10 @@ $(document).ready(function() {
 		getRecordRefAndChangeSetID(pageConfig,initRecordFormView)
 	})
 	
+	var $closeItemViewButton = $('#viewFormPageCloseButton')
+	initButtonControlClickHandler($closeItemViewButton,function(e) {
+		window.close()
+	})
+	
 					
 }); // document ready
