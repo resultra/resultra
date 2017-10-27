@@ -48,6 +48,8 @@ $(document).ready(function() {
 	$('#formViewContainer').on(viewFormInViewportEventName,function(e,params) {
 		e.stopPropagation()
 		console.log("Got event in main window: " + JSON.stringify(params))
+		
+		mainWinLayout.clearSidebarNavigationSelection()
 		loadExistingItemView(mainWinLayout,mainWindowContext.databaseID,params)
 		
 	})

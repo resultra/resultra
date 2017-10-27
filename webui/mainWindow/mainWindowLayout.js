@@ -104,6 +104,10 @@ function MainWindowLayout(resizeCallback)
 		$('#contentLayoutContainer').find(".clearableViewContent").empty()
 	}
 	
+	function clearSidebarNavigationSelection() {
+		$('#viewFormTocLayout').find('li').removeClass("active")
+	}
+	
 	function setCenterContentHeader(header) {
 		var $header = $('#mainWindowCenterContentHeader')
 		$header.text(header)
@@ -131,5 +135,7 @@ function MainWindowLayout(resizeCallback)
 	this.setCenterContentHeader = setCenterContentHeader
 	this.enablePropertySidebar = enablePropertySidebar
 	this.disablePropertySidebar = disablePropertySidebar
+	
+	this.clearSidebarNavigationSelection = clearSidebarNavigationSelection
 	
 }
