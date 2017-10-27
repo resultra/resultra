@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{.Title}}</title>
+    <title>{{.FormName}}</title>
 
 	{{template "electronImportPrefix"}}
 
@@ -31,23 +31,14 @@
 	
   <body>
 
-	<div id="layoutPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north">
-			{{template "submitFormPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-center" id="submitFormPane">
-				<h2>{{.FormName}}</h2>
-				<hr>
-				<div id="viewFormPageLayoutCanvas"></div>
-				<hr>
-				<button type="button" class="btn btn-primary" 
-						id="viewFormPageSaveButton">Save</button>
-				
-		</div> <!-- center pane for entire page -->	
-		
-	</div> <!-- layout page -->
+	<div style="padding:20px">
+		<h2>{{.FormName}}</h2>
+		<hr>
+		<div id="viewFormPageLayoutCanvas"></div>
+		<hr>
+		<button type="button" class="btn btn-primary" 
+				id="viewFormPageSaveButton">Save</button>
+	</div>
 	
 	{{template "submitFormDialog"}}
 	{{template "attachmentTemplates"}}

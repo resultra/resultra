@@ -1,9 +1,5 @@
 $(document).ready(function() {	
 	 
-	initSubmitFormUILayoutPanes()
-				
-	initUserDropdownMenu()
-		
 	function getPageConfig(pageConfigDoneCallback) {
 		
 		var pageConfig = {}
