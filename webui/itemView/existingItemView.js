@@ -1,36 +1,16 @@
-function loadExistingItemView(pageLayout,databaseID,itemParams) {
+function loadExistingItemView(pageLayout,databaseID,viewItemConfig) {
 		
 	GlobalFormPagePrivs = "edit"
 	
 	pageLayout.clearCenterContentArea()
 	hideSiblingsShowOne("#existingItemViewFooterControls")
-	hideSiblingsShowOne("#existingItemFormPageLayoutCanvas")
+	hideSiblingsShowOne("#viewFormPageLayoutCanvas")
 	pageLayout.showFooterLayout()
 	pageLayout.disablePropertySidebar()
 	
-	$('#existingItemFormPageLayoutCanvas').text("Content TBD")
 	pageLayout.setCenterContentHeader("Header TBD for Item View")
 	
-/*	var getNewItemInfoParams = { formLinkID: formLinkID }	
-
-	jsonAPIRequest("formLink/getNewItemInfo",getNewItemInfoParams,function(newItemInfo) {
-		
-		pageLayout.setCenterContentHeader(newItemInfo.linkName)		
-			
-		var submitFormParams = {
-			databaseID: databaseID,
-			$parentFormCanvas: $('#newItemFormPageLayoutCanvas'),
-			formLinkID: formLinkID,
-			formID: newItemInfo.formID
-		}
+	getRecordRefAndChangeSetID(viewItemConfig,initRecordFormView)
 	
-		var $addAnotherButton = $('#newItemPageAddAnotherButton')
-		initButtonControlClickHandler($addAnotherButton, function() {
-			initFormPageSubmitForm(submitFormParams)
-		})
-	
-		initFormPageSubmitForm(submitFormParams)
-	}) 
-*/
 	
 }

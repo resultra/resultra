@@ -163,7 +163,10 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 		var currRecord = parentRecordProxy.getRecordFunc()
 		var viewFormParams = {
 			formID: buttonObjectRef.properties.linkedFormID,
-			recordID: currRecord.recordID
+			databaseID: componentContext.databaseID,
+			recordID: currRecord.recordID,
+			defaultVals: buttonObjectRef.properties.defaultValues,
+			saveMode: buttonObjectRef.properties.popupBehavior.popupMode	
 		}
 		console.log("Form button pressed: navigating to view form: " + JSON.stringify(viewFormParams))
 		$buttonContainer.trigger(viewFormInViewportEventName,viewFormParams)
