@@ -17,3 +17,7 @@
 {
 	padding: 4px; /* override jQuery UI Layout padding */
 }
+
+#mainWindowContentFooterUILayout,#mainWindowPageHeader,#mainWindowContentHeaderUILayout {
+	background-color: #EEEEEE;
+}
