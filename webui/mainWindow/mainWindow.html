@@ -9,12 +9,12 @@
 {{end}}
 
 {{define "mainWindowPageHeader"}}
-	<div class="container-fluid">
+	<div class="container-fluid paddingRight5 paddingLeft5">
 		<div class="row">
-			<div class="col-sm-8">
+			<div class="col-sm-6 paddingLeft5">
 				{{template "mainWindowBreadcrumbHeader" .}}
 			</div>
-			<div class="col-sm-4">
+			<div class="col-sm-6 paddingRight5">
 				<div class="pull-right">
 					{{template "alertHeader" .}}
 					{{template "userDropdownMenu"}}
@@ -29,7 +29,7 @@
 {{define "mainWindowHeaderControls"}}
 <div class="container-fluid" id="recordHeaderGrid">
 	<div class="row">
-		<div class= "col-sm-2">
+		<div class= "col-sm-2 paddingLeft5">
 			<button type="button" class="btn btn-default btn-sm" id="viewTableOfContentsMenuButton">
 			  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 			</button>
@@ -37,7 +37,7 @@
 		<div class= "col-sm-8"  id="mainWindowCenterContentHeaderCol">
 			<h4 id="mainWindowCenterContentHeader"></h4>
 		</div> <!-- column -->
-		<div class= "col-sm-2">
+		<div class= "col-sm-2 paddingRight5">
 			<div class="pull-right">
 				<button type="button" class="btn btn-default btn-sm" id="viewListOptionsButton">
 				  <span class="fa fa-toggle-left fa-lg" aria-hidden="true"></span>
