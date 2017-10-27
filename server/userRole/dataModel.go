@@ -13,7 +13,7 @@ func AddDatabaseAdmin(databaseID string, userID string) error {
 	// TODO verify the current user has permissions to add the user as an admin.
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO database_admins (database_id,user_id) VALUES ($1,$2)`,
+		`INSERT INTO database_admins (database_id,user_id) VALUES ($1,$2) ON CONFLICT IGNORE`,
 		databaseID, userID); insertErr != nil {
 		return fmt.Errorf("addDatabaseAdmin: Can't add database admin user ID = %v to database with ID = %v: error = %v",
 			userID, databaseID, insertErr)
@@ -32,8 +32,7 @@ func AddCollaborator(databaseID string, userID string) (*CollaboratorInfo, error
 	collabID := uniqueID.GenerateSnowflakeID()
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO collaborators (collaborator_id,database_id,user_id) VALUES ($1,$2,$3)
-			ON CONFLICT DO NOTHING`,
+		`INSERT INTO collaborators (collaborator_id,database_id,user_id) VALUES ($1,$2,$3)`,
 		collabID, databaseID, userID); insertErr != nil {
 		return nil, fmt.Errorf("AddCollaborator: Can't add collaborator with user ID = %v to database with ID = %v: error = %v",
 			userID, databaseID, insertErr)
@@ -258,8 +257,7 @@ func AddCollaboratorRole(roleID string, collaboratorID string) error {
 	// TODO verify the current user has permissions to add the user as an admin.
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO collaborator_roles (role_id,collaborator_id) VALUES ($1,$2)
-			ON CONFLICT DO NOTHING`,
+		`INSERT INTO collaborator_roles (role_id,collaborator_id) VALUES ($1,$2)`,
 		roleID, collaboratorID); insertErr != nil {
 		return fmt.Errorf("AddCollaboratorRole: Can't add collaborator with ID = %v to role with ID = %v: error = %v",
 			collaboratorID, roleID, insertErr)

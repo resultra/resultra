@@ -61,6 +61,18 @@ function initRecordFormView(pageConfig,recordRef,changeSetID) {
 			$saveButton.hide()
 		}
 		
+		// If a call-back is passed in for going back to the previous view, then call it when the back
+		// button is pressed.
+		var $backButton = $("#viewFormPageBackButton")
+		if(pageConfig.loadLastViewCallback !== null) {
+			$backButton.show()
+			initButtonControlClickHandler($backButton, function() {
+				pageConfig.loadLastViewCallback()					
+			})
+		} else {
+			$backButton.hide()
+		}
+		
 
 	}
 

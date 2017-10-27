@@ -10,15 +10,25 @@ $(document).ready(function() {
 	}
 	var mainWinLayout = new MainWindowLayout(resizeMainWindow)
 	
+	var loadLastViewCallback = null
+	
 	
 	function itemListClicked(listID) {
+		function loadView() {
+			loadItemListView(mainWinLayout,mainWindowContext.databaseID,listID)
+		}
 		console.log("Main window: item list clicked: " + listID)
-		loadItemListView(mainWinLayout,mainWindowContext.databaseID,listID)
+		loadView()
+		loadLastViewCallback = loadView
 	}
 	
 	function dashboardClicked(dashboardID) {
 		console.log("Main window: dashboard navigation clicked: " + dashboardID)
-		loadDashboardView(mainWinLayout,mainWindowContext.databaseID, dashboardID)
+		function loadView() {
+			loadDashboardView(mainWinLayout,mainWindowContext.databaseID, dashboardID)	
+		}
+		loadView()
+		loadLastViewCallback = loadView
 	}
 	
 	function newItemClicked(linkID) {
@@ -27,7 +37,12 @@ $(document).ready(function() {
 	}
 	
 	function seeAllAlertsClicked() {
-		initAlertNotificationList(mainWinLayout,mainWindowContext.databaseID)
+		function loadView() {
+			mainWinLayout.clearSidebarNavigationSelection()
+			initAlertNotificationList(mainWinLayout,mainWindowContext.databaseID)			
+		}
+		loadView()
+		loadLastViewCallback = loadView
 	}
 	
 		
@@ -48,6 +63,8 @@ $(document).ready(function() {
 	$('#formViewContainer').on(viewFormInViewportEventName,function(e,params) {
 		e.stopPropagation()
 		console.log("Got event in main window: " + JSON.stringify(params))
+		
+		params.loadLastViewCallback = loadLastViewCallback
 		
 		mainWinLayout.clearSidebarNavigationSelection()
 		loadExistingItemView(mainWinLayout,mainWindowContext.databaseID,params)

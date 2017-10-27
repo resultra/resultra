@@ -50,8 +50,14 @@ function initAlertNotificationList(pageLayout, databaseID) {
 				var $formLink = $(cell).find('a')
 				$formLink.text(rowData.formName())
 				
-				var viewFormLink = '/viewItem/' + rowData.formID() + '/' + rowData.recordID()
-				$formLink .attr("href",viewFormLink)
+				
+				$formLink.click(function(e) {
+					e.preventDefault()
+					var viewFormLink = '/viewItem/' + rowData.formID() + '/' + rowData.recordID()
+					 win = window.open(viewFormLink,"_blank")
+					win.focus()
+					
+				})
 			},
 			render: function(data, type, row, meta) {
 				if (type==='display') {

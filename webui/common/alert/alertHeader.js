@@ -25,11 +25,17 @@ function initAlertHeader(databaseID,seeAllAlertsCallback) {
 			
 			var $alertListItem = $('<li><a class="alertFormLink notificationListItem"></a></li>')
 						
-			var viewFormLink = '/viewItem/' + currAlert.properties.formID + '/' + currNotification.recordID
+			
 			
 			var $alertLink = $alertListItem.find("a")
 			
-			$alertLink.attr("href",viewFormLink)
+			$alertLink.click(function(e) {
+				e.preventDefault()
+				var viewFormLink = '/viewItem/' + currAlert.properties.formID + '/' + currNotification.recordID
+				 win = window.open(viewFormLink,"_blank")
+				win.focus()
+				
+			})
 			
 			var $alertName = $('<div class="h5 alertHeader"></div>')
 			$alertName.text(currAlert.name)	
