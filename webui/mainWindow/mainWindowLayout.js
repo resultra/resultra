@@ -27,7 +27,7 @@ function MainWindowLayout(resizeCallback)
 			slidable: false,
 			spacing_open:4,
 			spacing_closed:4,
-			initClosed:true // panel is initially closed	
+			initClosed:false // TOC sidebar initially open	
 		}
 	})
 
