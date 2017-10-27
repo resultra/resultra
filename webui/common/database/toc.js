@@ -2,14 +2,23 @@
 
 function addDashboardLinkToTOCList(tocConfig,dashboardInfo) {
 	// TODO - Link to "dashboard view" page instead of dashboard design page (view page isn't implemented yet)
-	var dashboardListItemHTML = '<a href="" class="list-group-item">' + dashboardInfo.name + '</a>'
+	var dashboardListItemHTML = '' +
+		'<li>' + 
+			'<a href="#" class="">' + 
+					dashboardInfo.name + 
+			'</a>'
+		'</li>'
 	var $dashboardListItem = $(dashboardListItemHTML)
+	var $dashboardLink = $dashboardListItem.find("a")
 
-	$dashboardListItem.click(function(e) {
+	$dashboardLink.click(function(e) {
 		e.preventDefault()
 		console.log("Item list TOC item clicked: dashboard id = " + dashboardInfo.dashboardID)
-		$dashboardListItem.blur()
-		
+		$dashboardLink.blur()
+
+		$('#tocWrapper').find("li").removeClass("active")
+		$dashboardListItem.addClass("active")
+
 		if(tocConfig.dashboardClickedCallback !== undefined) {
 			tocConfig.dashboardClickedCallback(dashboardInfo.dashboardID)
 		}
@@ -20,16 +29,23 @@ function addDashboardLinkToTOCList(tocConfig,dashboardInfo) {
 
 function addItemListLinkToTOCList(tocConfig, listInfo) {
 	var itemListItemHTML = '' + 
-		'<a href="" class="list-group-item">' + 
-				listInfo.name + 
-			'<span class="badge"></span>' +
-		'</a>'
+		'<li>' + 
+			'<a href="#">' + 
+					listInfo.name + 
+					'<span class="badge pull-right"></span>' +
+			'</a>' +
+		'</li>'
 	var $itemListItem = $(itemListItemHTML)
 	
-	$itemListItem.click(function(e) {
+	var $itemListLink = $itemListItem.find("a")
+	
+	$itemListLink.click(function(e) {
 		e.preventDefault()
 		console.log("Item list TOC item clicked: list id = " + listInfo.listID)
-		$itemListItem.blur()
+		$itemListLink.blur()
+		
+		$('#tocWrapper').find("li").removeClass("active")
+		$itemListItem.addClass("active")
 		
 		if(tocConfig.itemListClickedCallback !== undefined) {
 			tocConfig.itemListClickedCallback(listInfo.listID)
@@ -57,16 +73,23 @@ function addItemListLinkToTOCList(tocConfig, listInfo) {
 
 function addFormLinkToTOCList(tocConfig, linkInfo) {
 	
-	var formLinkListItemHTML = '<a href="/newItem/' + linkInfo.linkID 
-			+ '" class="list-group-item">' + linkInfo.name + '</a>'
+	var formLinkListItemHTML = 
+		'<li>' + 
+			'<a href="#"></a>' +
+		'</li>'
 	var $formLinkListItem = $(formLinkListItemHTML)
+	var $formLinkLink = $formLinkListItem.find("a")
+	$formLinkLink.text(linkInfo.name)
 	
 	
-	$formLinkListItem.click(function(e) {
+	$formLinkLink.click(function(e) {
 		e.preventDefault()
 		console.log("Form link clicked: link id = " + linkInfo.linkID)
-		$formLinkListItem.blur()
-		
+		$formLinkLink.blur()
+
+		$('#tocWrapper').find("li").removeClass("active")
+		$formLinkListItem.addClass("active")
+	
 		if(tocConfig.newItemLinkClickedCallback !== undefined) {
 			tocConfig.newItemLinkClickedCallback(linkInfo.linkID)
 		}

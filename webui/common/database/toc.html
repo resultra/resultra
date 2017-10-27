@@ -1,28 +1,32 @@
 {{define "databaseTOCContents"}}
 
-	<div id="tocNewItemContainer" class="container-fluid databaseTOCContainer">
-		<div class="row"  >
-			<label>Add New Item</label>
-			<div id="tocFormList" class="list-group maxWidth600">
+	<div id="tocWrapper">
+
+		<div id="tocNewItemContainer" class="container-fluid databaseTOCContainer">
+			<div class="row"  >
+				<label>Add New Item</label>
+				<ul id="tocFormList" class="nav nav-pills nav-stacked">
+				</ul>
 			</div>
 		</div>
-	</div>
 
 
-	<div id="tocListsContainer" class="container-fluid databaseTOCContainer marginTop5">
-		<div class="row"  >
-			<label>Lists</label>
-			<div class="list-group maxWidth600" id="tocListList">
+		<div id="tocListsContainer" class="container-fluid databaseTOCContainer marginTop10">
+			<div class="row"  >
+				<label>Lists</label>
+				<ul class="nav nav-pills nav-stacked" id="tocListList">
+				</ul>
 			</div>
 		</div>
-	</div>
 	
-	<div id="tocDashboardsContainer" class="container-fluid databaseTOCContainer">
-		<div class="row" >
-			<label>Dashboards</label>
-			<div class="list-group maxWidth600" id="tocDashboardList">
+		<div id="tocDashboardsContainer" class="container-fluid databaseTOCContainer marginTop10">
+			<div class="row" >
+				<label>Dashboards</label>
+				<ul class="nav nav-pills nav-stacked" id="tocDashboardList">
+				</ul>
 			</div>
 		</div>
+	
 	</div>
 {{end}}
 

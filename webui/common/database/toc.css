@@ -19,3 +19,14 @@
 .formLinkButton {
 	width: 100%;
 }
+
+/* Tighten up the padding */
+#tocWrapper a {
+	padding-top:7px;
+	padding-bottom:7px;
+}
+
+.databaseTOCContainer > .row > .nav-pills > .active > a, 
+.databaseTOCContainer > .row > .nav-pills > .active > a:hover {
+    background-color: #A9A9A9 !important;
+}
