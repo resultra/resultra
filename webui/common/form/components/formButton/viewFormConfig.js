@@ -1,5 +1,7 @@
 var FormButtonPopupBehaviorModal = "modal"
 
+var viewFormInViewportEventName = "view-form-in-viewport"
+
 function loadRecordIntoButton(buttonElem, recordRef) {	
 	// no-op
 }
@@ -70,7 +72,7 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 				
 				var defaultVals = buttonObjectRef.properties.popupBehavior.defaultValues
 				
-				if (defaultVals.length > 0) {
+				if (defaultVals !== undefined && defaultVals.length > 0) {
 					// Apply the default values before loading the form.
 					var defaultValRecord = getPopupFormRecordFunc()
 					var defaultValParams = {
@@ -156,7 +158,16 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 	}
 	
 	function showRecordInPage() {
-		navigateToURL(viewFormURL())
+		// TODO - Use main window view-port to show the form, instead of 
+		// navigating to the URL.
+		var currRecord = parentRecordProxy.getRecordFunc()
+		var viewFormParams = {
+			formID: buttonObjectRef.properties.linkedFormID,
+			recordID: currRecord.recordID
+		}
+		console.log("Form button pressed: navigating to view form: " + JSON.stringify(viewFormParams))
+		$buttonContainer.trigger(viewFormInViewportEventName,viewFormParams)
+	//	navigateToURL(viewFormURL())
 	}
 			
 	initButtonControlClickHandler($formButton, function() {
