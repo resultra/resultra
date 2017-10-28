@@ -21,3 +21,7 @@
 #mainWindowContentFooterUILayout,#mainWindowPageHeader,#mainWindowContentHeaderUILayout {
 	background-color: #EEEEEE;
 }
+
+#alertPageLayoutCanvas {
+	padding:15px;
+}
