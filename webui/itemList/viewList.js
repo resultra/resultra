@@ -24,12 +24,14 @@ function initItemListView(itemListLayout, listInfo) {
 	}
 	
 	function resizeListView() {
-		console.log("Resizing list view")
 		if (tableViewController !== undefined) {
+			console.log("Resizing list view")
 			tableViewController.refresh()
 		}
 	}
-//	var itemListLayout = new ItemListLayout(resizeListView)
+	$(window).on("resize-main-window-panes",function(){
+		resizeListView()
+	})
 	
 	
 	var listItemController = new ListItemController($formViewContainer)
@@ -127,18 +129,13 @@ function initItemListView(itemListLayout, listInfo) {
 			itemListLayout.showFooterLayout()
 			listItemController.setFormAndPageSize(viewOptions.formID,viewOptions.pageSize)
 			$formLayoutContainer.show()
-//			$tableViewLayoutContainer.hide()
 			$tableViewLayoutContainer.css("display","none")
 		} else {
-//			$tableViewLayoutContainer.show()
 			$tableViewLayoutContainer.css("display","")
 			$formLayoutContainer.hide()
-	// TODO - Clear the form layout container
-	//		$formLayoutContainer.empty()
 			var sortRules = getSortPaneSortRules()
 			tableViewController.setTable(viewOptions.tableID,sortRules)
-			itemListLayout.hideFooterLayout()
-			
+			itemListLayout.hideFooterLayout()	
 		}
 	}
 

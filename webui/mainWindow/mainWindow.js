@@ -1,14 +1,6 @@
 $(document).ready(function() {	
 	 
-				
-	
-	function resizeMainWindow() {
-		console.log("Resizing list view")
-/*		if (tableViewController !== undefined) {
-			tableViewController.refresh()
-		} */
-	}
-	var mainWinLayout = new MainWindowLayout(resizeMainWindow)
+	var mainWinLayout = new MainWindowLayout()
 	
 	var loadLastViewCallback = null
 	

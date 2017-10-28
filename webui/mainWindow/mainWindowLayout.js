@@ -1,16 +1,23 @@
-function MainWindowLayout(resizeCallback)
+function MainWindowLayout()
 {
 	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
+	
+	
+	var resizeMainWindowPanesEventName = "resize-main-window-panes"
+	function resizeMainWindow() {
+		console.log("Resizing main window")
+		$(window).trigger(resizeMainWindowPanesEventName)
+	}
 	
 	// Initialize the page layout
 	var mainLayout = $('#layoutPage').layout({
 		inset: zeroPaddingInset,
 		north: fixedUILayoutPaneParams(40),
 		onopen_end: function(pane, $pane, paneState, paneOptions) {
-			resizeCallback()				
+			resizeMainWindow()				
 		},
 		onclose_end: function(pane, $pane, paneState, paneOptions) {
-			resizeCallback()
+			resizeMainWindow()
 		},
 		east: {
 			size: 300,
@@ -33,17 +40,11 @@ function MainWindowLayout(resizeCallback)
 
 	
 	var contentLayout = $('#mainWindowContentPane').layout({
-		onopen_end: function(pane, $pane, paneState, paneOptions) {
-			resizeCallback()				
-		},
-		onclose_end: function(pane, $pane, paneState, paneOptions) {
-			resizeCallback()
-		},
 		onresize_end: function(pane, $pane, paneState, paneOptions) {
 			if(pane === 'center'){
 				// only propagate the resize event for the center/content pane
 				console.log("resize triggered")
-				resizeCallback()
+				resizeMainWindow()
 			}
 		},
 		north: fixedUILayoutPaneAutoSizeToFitContentsParams(),
@@ -100,7 +101,10 @@ function MainWindowLayout(resizeCallback)
 		contentLayout.open("east")
 	}
 	
+	
 	function clearCenterContentArea() {
+		// Clear any event handlers which are attached to the layout-specific events.
+		$(window).off(resizeMainWindowPanesEventName)
 		$('#contentLayoutContainer').find(".clearableViewContent").empty()
 	}
 	
