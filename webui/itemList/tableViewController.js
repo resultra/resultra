@@ -18,6 +18,9 @@ function ItemListTableViewController($parentContainer,databaseID,resortCallback)
 		function initTableDoneCallback(tableContext) {
 			tableViewContext = tableContext
 			updateDataTableData(sortRules)
+			
+			// The table needs to be refreshed/resized after initialization is complete.
+			tableViewContext.resizeTable()
 		}
 		
 		var tableViewParams = {
