@@ -2,7 +2,7 @@ $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#collabPropsPage'))	
 	initUserDropdownMenu()
-	initAdminSettingsTOC(collabPropsContext.databaseID)
+	initAdminSettingsTOC(collabPropsContext.databaseID,"settingsTOCUsers")
 	
 	
 	function addRoleToRoleCheckboxList(roleInfo, isMemberOfRole) {

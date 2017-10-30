@@ -15,7 +15,7 @@ $(document).ready(function() {
 		
 		initAdminSettingsPageLayout($('#colPropsAdminPage'))	
 		initUserDropdownMenu()
-		initAdminSettingsTOC(colPropsAdminContext.databaseID)
+		initAdminSettingsTOC(colPropsAdminContext.databaseID,"settingsTOCTables")
 		
 		switch (colPropsAdminContext.colType) {
 		case 'numberInput':

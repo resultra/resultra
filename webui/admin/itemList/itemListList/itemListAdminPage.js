@@ -2,7 +2,7 @@ $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#itemListAdminPage'))	
 	initUserDropdownMenu()
-	initAdminSettingsTOC(itemListAdminContext.databaseID)
+	initAdminSettingsTOC(itemListAdminContext.databaseID,"settingsTOCLists")
 			
 	initAdminListSettings(itemListAdminContext.databaseID)
 	

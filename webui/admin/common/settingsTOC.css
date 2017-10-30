@@ -1,0 +1,10 @@
+/* Tighten up the padding */
+#settingsTOC a {
+	padding-top:7px;
+	padding-bottom:7px;
+}
+
+#settingsTOC > .active > a, 
+#settingsTOC > .active > a:hover {
+    background-color: #A9A9A9 !important;
+}

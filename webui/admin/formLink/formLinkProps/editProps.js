@@ -141,7 +141,7 @@ $(document).ready(function() {
 			}
 		})
 		
-	initAdminSettingsTOC(formLinkPropsContext.databaseID)
+	initAdminSettingsTOC(formLinkPropsContext.databaseID,"settingsTOCFormLinks")
 		
 		
 	initUserDropdownMenu()

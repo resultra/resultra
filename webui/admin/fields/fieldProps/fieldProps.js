@@ -104,7 +104,7 @@ $(document).ready(function() {
 			}
 		})
 		
-	initAdminSettingsTOC(fieldPropsContext.databaseID)
+	initAdminSettingsTOC(fieldPropsContext.databaseID,"settingsTOCFields")
 		
 	initUserDropdownMenu()
 		

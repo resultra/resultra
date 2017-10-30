@@ -2,7 +2,7 @@ $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#tablePropsAdminPage'))	
 	initUserDropdownMenu()
-	initAdminSettingsTOC(tablePropsAdminContext.databaseID)
+	initAdminSettingsTOC(tablePropsAdminContext.databaseID,"settingsTOCTables")
 	
 	function initNameProperties(tableRef) {
 

@@ -62,7 +62,7 @@ $(document).ready(function() {
 			}
 		})
 		
-	initAdminSettingsTOC(valueListPropsContext.databaseID)
+	initAdminSettingsTOC(valueListPropsContext.databaseID,"settingsTOCValueLists")
 		
 	initUserDropdownMenu()
 		

@@ -2,7 +2,7 @@ $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#formLinkAdminPage'))	
 	initUserDropdownMenu()
-	initAdminSettingsTOC(formLinkAdminContext.databaseID)
+	initAdminSettingsTOC(formLinkAdminContext.databaseID,"settingsTOCFormLinks")
 			
 	initAdminFormLinkSettings(formLinkAdminContext.databaseID)
 	

@@ -4,7 +4,7 @@ $(document).ready(function() {
 	
 	initUserDropdownMenu()
 	
-	initAdminSettingsTOC(alertListAdminContext.databaseID)
+	initAdminSettingsTOC(alertListAdminContext.databaseID,"settingsTOCAlerts")
 			
 	initAdminAlertSettings(alertListAdminContext.databaseID)
 	

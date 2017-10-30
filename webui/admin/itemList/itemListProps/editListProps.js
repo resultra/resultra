@@ -85,7 +85,7 @@ $(document).ready(function() {
 			}
 		})
 
-	initAdminSettingsTOC(itemListPropsContext.databaseID)
+	initAdminSettingsTOC(itemListPropsContext.databaseID,"settingsTOCLists")
 
 	initUserDropdownMenu()
 

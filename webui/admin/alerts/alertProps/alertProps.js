@@ -4,7 +4,7 @@ $(document).ready(function() {
 	
 	initUserDropdownMenu()
 	
-	initAdminSettingsTOC(alertPropsContext.databaseID)
+	initAdminSettingsTOC(alertPropsContext.databaseID,"settingsTOCAlerts")
 	
 	function initAlertFormProperties(alertInfo) {
 		var selectFormParams = {

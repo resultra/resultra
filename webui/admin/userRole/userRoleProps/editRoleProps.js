@@ -63,7 +63,7 @@ $(document).ready(function() {
 			}
 		})
 		
-	initAdminSettingsTOC(rolePropsContext.databaseID)
+	initAdminSettingsTOC(rolePropsContext.databaseID,"settingsTOCRoles")
 		
 	initUserDropdownMenu()
 		
