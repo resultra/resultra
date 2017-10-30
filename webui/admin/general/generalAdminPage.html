@@ -1,34 +1,4 @@
 
-        	
-{{define "generalAdminBreadcrumbHeader"}}
-	<div class="marginTop2">
-	  {{template "homePageBreadcrumb"}}
-	  {{template "breadCrumbSeparator"}}
-	  {{template "trackerPageBreadcrumb" .}}
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">Settings</span>
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">General</span>
-	</div> <!-- breadcrumb header -->
-{{end}}
-
-{{define "generalAdminPageHeader"}}
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-sm-8">
-				{{template "generalAdminBreadcrumbHeader" .}}
-			</div>
-			<div class="col-sm-4">
-				<div class="pull-right">
-					{{template "userDropdownMenu"}}
-					{{template "adminSettingsButton" .}}
-				</div>
-			</div>
-		</div>
-	</div>
-{{end}}
-
-
 {{define "generalAdminPage"}}
 <!DOCTYPE html>
 <html>
@@ -57,8 +27,8 @@
 
 	<div id="generalAdminPage" class="layoutPageDiv">
 		
-		<div class="pane ui-layout-north">
-			{{template "generalAdminPageHeader" .}}
+		<div class="pane ui-layout-north adminPageHeader">
+			{{template "adminPageHeader" .}}
 		</div> <!-- ui layout north -->
 		
 		<div class="pane ui-layout-west">

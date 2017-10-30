@@ -1,38 +1,5 @@
 
 
-
-
-
-        	
-{{define "userAdminBreadcrumbHeader"}}
-	<div class="marginTop2">
-	  {{template "homePageBreadcrumb"}}
-	  {{template "breadCrumbSeparator"}}
-	  {{template "trackerPageBreadcrumb" .}}
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">Settings</span>
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">Collaborators</span>
-	</div> <!-- breadcrumb header -->
-{{end}}
-
-{{define "userAdminPageHeader"}}
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-sm-8">
-				{{template "userAdminBreadcrumbHeader" .}}
-			</div>
-			<div class="col-sm-4">
-				<div class="pull-right">
-					{{template "userDropdownMenu"}}
-					{{template "adminSettingsButton" .}}
-				</div>
-			</div>
-		</div>
-	</div>
-{{end}}
-
-
 {{define "userAdminPage"}}
 <!DOCTYPE html>
 <html>
@@ -61,8 +28,8 @@
 
 	<div id="userAdminPage" class="layoutPageDiv">
 		
-		<div class="pane ui-layout-north">
-			{{template "userAdminPageHeader" .}}
+		<div class="pane ui-layout-north adminPageHeader">
+			{{template "adminPageHeader" .}}
 		</div> <!-- ui layout north -->
 		
 		<div class="pane ui-layout-west">

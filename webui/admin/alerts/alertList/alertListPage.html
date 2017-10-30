@@ -1,32 +1,4 @@
         	
-{{define "alertListAdminBreadcrumbHeader"}}
-	<div class="marginTop2">
-	  {{template "homePageBreadcrumb"}}
-	  {{template "breadCrumbSeparator"}}
-	  {{template "trackerPageBreadcrumb" .}}
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">Settings</span>
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">Alerts</span>
-	</div> <!-- breadcrumb header -->
-{{end}}
-
-{{define "alertListAdminPageHeader"}}
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-sm-8">
-				{{template "alertListAdminBreadcrumbHeader" .}}
-			</div>
-			<div class="col-sm-4">
-				<div class="pull-right">
-					{{template "userDropdownMenu"}}
-					{{template "adminSettingsButton" .}}
-				</div>
-			</div>
-		</div>
-	</div>
-{{end}}
-
 
 {{define "alertListAdminPage"}}
 <!DOCTYPE html>
@@ -55,8 +27,8 @@
 
 	<div id="alertListAdminPage" class="layoutPageDiv">
 		
-		<div class="pane ui-layout-north">
-			{{template "alertListAdminPageHeader" .}}
+		<div class="pane ui-layout-north adminPageHeader">
+			{{template "adminPageHeader" .}}
 		</div> <!-- ui layout north -->
 		
 		<div class="pane ui-layout-west">

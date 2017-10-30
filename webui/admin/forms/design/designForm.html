@@ -1,34 +1,4 @@
 
-{{define "designFormBreadCrumbHeader"}}
-	<div class="marginTop2">
-		{{template "homePageBreadcrumb"}}
-		{{template "breadCrumbSeparator"}}
-	  	{{template "trackerPageBreadcrumb" .}}
-		{{template "breadCrumbSeparator"}}
-		<a class="h4 breadCrumbText" href="/admin/{{.DatabaseID}}">Settings</a>
-		{{template "breadCrumbSeparator"}}
-		<span class="h4 breadCrumbText">Form Settings</span>
-		{{template "breadCrumbSeparator"}}
-		<span class="h4 breadCrumbText">{{.FormName}}</span>
-	</div>
-{{end}}
-
-{{define "designFormHeader"}}
-	<div class="container-fluid" id="designFormHeader">
-		<div class="row">
-			<div class="col-sm-8">
-				{{template "designFormBreadCrumbHeader" .}}
-			</div>
-			<div class="col-sm-4">
-				<div class="pull-right">
-					{{template "userDropdownMenu"}}
-					{{template "adminSettingsButton" .}}
-				</div>
-			</div>
-		</div>
-	</div>
-{{end}}
-
 
 {{define "designFormPaletteItems" }}
 
@@ -279,8 +249,8 @@
   <body>
 		<div id="layoutPage" class="layoutPageDiv">
 			
-			<div class="pane ui-layout-north">
-				{{template "designFormHeader" .}}
+			<div class="pane ui-layout-north adminPageHeader">
+				{{template "adminPageHeader" .}}
 			</div> <!-- north ui layout -->
 			
 			<div id="paletteSidebar" class="pane ui-layout-west paletteSidebar">

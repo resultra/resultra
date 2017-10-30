@@ -1,32 +1,4 @@
         	
-{{define "formLinkAdminBreadcrumbHeader"}}
-	<div class="marginTop2">
-	  {{template "homePageBreadcrumb"}}
-	  {{template "breadCrumbSeparator"}}
-	  {{template "trackerPageBreadcrumb" .}}
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">Settings</span>
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">Form Links</span>
-	</div> <!-- breadcrumb header -->
-{{end}}
-
-{{define "formLinkAdminPageHeader"}}
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-sm-8">
-				{{template "formLinkAdminBreadcrumbHeader" .}}
-			</div>
-			<div class="col-sm-4">
-				<div class="pull-right">
-					{{template "userDropdownMenu"}}
-					{{template "adminSettingsButton" .}}
-				</div>
-			</div>
-		</div>
-	</div>
-{{end}}
-
 
 {{define "formLinkAdminPage"}}
 <!DOCTYPE html>
@@ -56,8 +28,8 @@
 
 	<div id="formLinkAdminPage" class="layoutPageDiv">
 		
-		<div class="pane ui-layout-north">
-			{{template "formLinkAdminPageHeader" .}}
+		<div class="pane ui-layout-north adminPageHeader">
+			{{template "adminPageHeader" .}}
 		</div> <!-- ui layout north -->
 		
 		<div class="pane ui-layout-west">

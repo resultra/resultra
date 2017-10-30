@@ -1,0 +1,25 @@
+{{define "adminSettingsBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  {{template "trackerPageBreadcrumb" .}}
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Settings</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "adminPageHeader"}}
+	<div class="container-fluid  paddingRight5 paddingLeft5">
+		<div class="row">
+			<div class="col-sm-6 paddingLeft5 ">
+				{{template "adminSettingsBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-6 paddingRight5">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+					{{template "adminSettingsButton" .}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
