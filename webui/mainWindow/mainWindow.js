@@ -25,7 +25,14 @@ $(document).ready(function() {
 	
 	function newItemClicked(linkID) {
 		console.log("Main window: new item clicked: " + linkID)
-		loadNewItemView(mainWinLayout,mainWindowContext.databaseID,linkID)
+		var newItemParams = {
+			pageLayout: mainWinLayout,
+			databaseID: mainWindowContext.databaseID,
+			formLinkID: linkID,
+			loadLastViewCallback: loadLastViewCallback
+		}
+		
+		loadNewItemView(newItemParams)
 	}
 	
 	function seeAllAlertsClicked() {

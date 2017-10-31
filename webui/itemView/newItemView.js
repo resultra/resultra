@@ -1,26 +1,27 @@
 
 
-function loadNewItemView(pageLayout,databaseID,formLinkID) {
+function loadNewItemView(params) {
 		
 	GlobalFormPagePrivs = "edit"
 	
-	pageLayout.clearCenterContentArea()
+	params.pageLayout.clearCenterContentArea()
 	hideSiblingsShowOne("#newItemViewFooterControls")
 	hideSiblingsShowOne("#newItemFormPageLayoutCanvas")
-	pageLayout.showFooterLayout()
-	pageLayout.disablePropertySidebar()
+	params.pageLayout.showFooterLayout()
+	params.pageLayout.disablePropertySidebar()
 	
-	var getNewItemInfoParams = { formLinkID: formLinkID }	
+	var getNewItemInfoParams = { formLinkID: params.formLinkID }	
 
 	jsonAPIRequest("formLink/getNewItemInfo",getNewItemInfoParams,function(newItemInfo) {
 		
-		pageLayout.setCenterContentHeader(newItemInfo.linkName)		
+		params.pageLayout.setCenterContentHeader(newItemInfo.linkName)		
 			
 		var submitFormParams = {
-			databaseID: databaseID,
+			databaseID: params.databaseID,
 			$parentFormCanvas: $('#newItemFormPageLayoutCanvas'),
-			formLinkID: formLinkID,
-			formID: newItemInfo.formID
+			formLinkID: params.formLinkID,
+			formID: newItemInfo.formID,
+			loadLastViewCallback: params.loadLastViewCallback
 		}
 	
 		var $addAnotherButton = $('#newItemPageAddAnotherButton')
@@ -30,5 +31,6 @@ function loadNewItemView(pageLayout,databaseID,formLinkID) {
 	
 		initFormPageSubmitForm(submitFormParams)
 	}) 
+	
 	
 }

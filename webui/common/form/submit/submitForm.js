@@ -77,6 +77,17 @@ function initFormPageSubmitForm(params) {
 
 		})
 		
+		var $backButton = $('#submitFormPageBackButton')
+		if((params.loadLastViewCallback !== undefined) && (params.loadLastViewCallback !== null)) {
+			$backButton.show()
+			initButtonControlClickHandler($backButton, function() {
+				params.loadLastViewCallback()
+			})
+		} else {
+			$backButton.hide()
+		}
+		
+		
 		var formLinkParams = { formLinkID: params.formLinkID }
 		jsonAPIRequest("formLink/get",formLinkParams,function(formLink) {
 			var defaultVals = formLink.properties.defaultValues
