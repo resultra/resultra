@@ -20,7 +20,7 @@ function addDashboardLinkToTOCList(tocConfig,dashboardInfo) {
 		$dashboardListItem.addClass("active")
 
 		if(tocConfig.dashboardClickedCallback !== undefined) {
-			tocConfig.dashboardClickedCallback(dashboardInfo.dashboardID)
+			tocConfig.dashboardClickedCallback(dashboardInfo.dashboardID,$dashboardListItem)
 		}
 	})
 	
@@ -48,7 +48,7 @@ function addItemListLinkToTOCList(tocConfig, listInfo) {
 		$itemListItem.addClass("active")
 		
 		if(tocConfig.itemListClickedCallback !== undefined) {
-			tocConfig.itemListClickedCallback(listInfo.listID)
+			tocConfig.itemListClickedCallback(listInfo.listID,$itemListItem)
 		}
 	})
 	
@@ -91,7 +91,7 @@ function addFormLinkToTOCList(tocConfig, linkInfo) {
 		$formLinkListItem.addClass("active")
 	
 		if(tocConfig.newItemLinkClickedCallback !== undefined) {
-			tocConfig.newItemLinkClickedCallback(linkInfo.linkID)
+			tocConfig.newItemLinkClickedCallback(linkInfo.linkID,$formLinkListItem)
 		}
 	})
 	

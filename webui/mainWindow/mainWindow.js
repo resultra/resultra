@@ -5,25 +5,29 @@ $(document).ready(function() {
 	var loadLastViewCallback = null
 	
 	
-	function itemListClicked(listID) {
+	function itemListClicked(listID,$tocItem) {
 		function loadView() {
 			loadItemListView(mainWinLayout,mainWindowContext.databaseID,listID)
+			mainWinLayout.clearSidebarNavigationSelection()
+			$tocItem.addClass("active")
 		}
 		console.log("Main window: item list clicked: " + listID)
 		loadView()
 		loadLastViewCallback = loadView
 	}
 	
-	function dashboardClicked(dashboardID) {
+	function dashboardClicked(dashboardID,$tocItem) {
 		console.log("Main window: dashboard navigation clicked: " + dashboardID)
 		function loadView() {
 			loadDashboardView(mainWinLayout,mainWindowContext.databaseID, dashboardID)	
+			mainWinLayout.clearSidebarNavigationSelection()
+			$tocItem.addClass("active")
 		}
 		loadView()
 		loadLastViewCallback = loadView
 	}
 	
-	function newItemClicked(linkID) {
+	function newItemClicked(linkID,$tocItem) {
 		console.log("Main window: new item clicked: " + linkID)
 		var newItemParams = {
 			pageLayout: mainWinLayout,
@@ -33,6 +37,8 @@ $(document).ready(function() {
 		}
 		
 		loadNewItemView(newItemParams)
+		mainWinLayout.clearSidebarNavigationSelection()
+		$tocItem.addClass("active")
 	}
 	
 	function seeAllAlertsClicked() {
