@@ -1,34 +1,3 @@
-{{define "designDashboardBreadcrumbHeader"}}
-	<div class="marginTop2">
-	  {{template "homePageBreadcrumb"}}
-	  {{template "breadCrumbSeparator"}}
-	  {{template "trackerPageBreadcrumb" .}}
-	  {{template "breadCrumbSeparator"}}
-	  <a class="h4 breadCrumbText" href="/admin/{{.DatabaseID}}">Settings</a>
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">Dashboard Settings</span>
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">{{.DashboardName}}</span>
-	 </div>
-{{end}}
-
-{{define "designDashboardHeader"}}
-	<div class="container-fluid" id="designDashboardHeader">
-		<div class="row">
-			<div class="col-sm-8">
-				{{template "designDashboardBreadcrumbHeader" .}}
-			</div>
-			<div class="col-sm-4">
-				<div class="pull-right">
-					{{template "userDropdownMenu"}}
-					{{template "adminSettingsButton" .}}
-				</div>
-			</div>
-		</div>
-	</div>
-{{end}}
-
-
 
 {{define "dashboardDesignPropertiesSidebar"}}
 
@@ -83,8 +52,8 @@
   <body>
 		<div id="designDashboardPage" class="layoutPageDiv">
 			
-			<div class="pane ui-layout-north" id="designDashboardPageHeaderUILayout">
-				{{template "designDashboardHeader" .}}
+			<div class="pane ui-layout-north adminPageHeader" id="designDashboardPageHeaderUILayout">
+				{{template "adminPageHeader" .}}
 			</div> <!-- north ui layout -->
 			
 			<div id="dashboardPaletteSidebar" class="pane ui-layout-west paletteSidebar">
