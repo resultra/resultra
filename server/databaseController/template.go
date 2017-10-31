@@ -16,6 +16,7 @@ import (
 	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/itemList"
 	"resultra/datasheet/server/trackerDatabase"
+	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/server/valueList"
 )
 
@@ -125,6 +126,10 @@ func cloneIntoNewTrackerDatabase(cloneParams *trackerDatabase.CloneDatabaseParam
 	}
 
 	if err := alert.CloneAlerts(cloneParams); err != nil {
+		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
+	}
+
+	if err := userRole.CloneRoles(cloneParams); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
 

@@ -1,12 +1,14 @@
 package userRole
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 func AddDatabaseAdmin(databaseID string, userID string) error {
@@ -147,7 +149,19 @@ type DatabaseRole struct {
 	RoleName   string `json:"roleName"`
 }
 
-func addDatabaseRole(databaseID string, roleName string) (*DatabaseRole, error) {
+func saveDatabaseRole(destDBHandle *sql.DB, role DatabaseRole) (*DatabaseRole, error) {
+
+	if _, insertErr := destDBHandle.Exec(
+		`INSERT INTO database_roles (database_id,role_id,name) VALUES ($1,$2,$3)`,
+		role.DatabaseID, role.RoleID, role.RoleName); insertErr != nil {
+		return nil, fmt.Errorf("addDatabaseRole: Can't add database role to database with ID = %v: error = %v",
+			role.DatabaseID, insertErr)
+	}
+	return &role, nil
+
+}
+
+func addDatabaseRole(destDBHandle *sql.DB, databaseID string, roleName string) (*DatabaseRole, error) {
 
 	// TODO verify the current user has admin permissions to modify roles
 
@@ -158,19 +172,12 @@ func addDatabaseRole(databaseID string, roleName string) (*DatabaseRole, error) 
 
 	roleID := uniqueID.GenerateSnowflakeID()
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO database_roles (database_id,role_id,name) VALUES ($1,$2,$3)`,
-		databaseID, roleID, sanitizedRoleName); insertErr != nil {
-		return nil, fmt.Errorf("addDatabaseRole: Can't add database role to database with ID = %v: error = %v",
-			databaseID, insertErr)
-	}
-
 	dbRole := DatabaseRole{
 		DatabaseID: databaseID,
 		RoleID:     roleID,
 		RoleName:   sanitizedRoleName}
 
-	return &dbRole, nil
+	return saveDatabaseRole(databaseWrapper.DBHandle(), dbRole)
 
 }
 
@@ -184,9 +191,9 @@ type DatabaseRolesParams struct {
 	DatabaseID string `json:"databaseID"`
 }
 
-func GetDatabaseRoles(databaseID string) ([]DatabaseRoleInfo, error) {
+func getDatabaseRolesFromSrc(srcDBHandle *sql.DB, databaseID string) ([]DatabaseRoleInfo, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := srcDBHandle.Query(
 		`SELECT role_id, name FROM database_roles
 				WHERE database_id=$1`, databaseID)
 	if queryErr != nil {
@@ -205,6 +212,41 @@ func GetDatabaseRoles(databaseID string) ([]DatabaseRoleInfo, error) {
 	}
 
 	return rolesInfo, nil
+
+}
+
+func GetDatabaseRoles(databaseID string) ([]DatabaseRoleInfo, error) {
+	return getDatabaseRolesFromSrc(databaseWrapper.DBHandle(), databaseID)
+}
+
+func CloneRoles(cloneParams *trackerDatabase.CloneDatabaseParams) error {
+
+	destDatabaseID, err := cloneParams.IDRemapper.GetExistingRemappedID(cloneParams.SourceDatabaseID)
+	if err != nil {
+		return fmt.Errorf("CloneGlobals: Unable to get mapped ID for source database: %v", err)
+	}
+
+	roles, err := getDatabaseRolesFromSrc(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)
+	if err != nil {
+		return fmt.Errorf("CloneRoles: Unable to retrieve roles: databaseID=%v, error=%v ",
+			cloneParams.SourceDatabaseID, err)
+	}
+	for _, currRole := range roles {
+
+		remappedID := uniqueID.GenerateSnowflakeID()
+		cloneParams.IDRemapper[currRole.RoleID] = remappedID
+
+		destRole := DatabaseRole{
+			DatabaseID: destDatabaseID,
+			RoleID:     remappedID,
+			RoleName:   currRole.RoleName}
+
+		if _, err := saveDatabaseRole(cloneParams.DestDBHandle, destRole); err != nil {
+			return fmt.Errorf("CloneRoles: Can't clone role: error = %v", err)
+		}
+	}
+
+	return nil
 
 }
 
@@ -245,7 +287,7 @@ func NewDatabaseRole(params NewDatabaseRoleParams) (*DatabaseRole, error) {
 
 	// TODO Wrap all the database writes from this function into a transaction.
 
-	newRole, newRoleErr := addDatabaseRole(params.DatabaseID, params.RoleName)
+	newRole, newRoleErr := addDatabaseRole(databaseWrapper.DBHandle(), params.DatabaseID, params.RoleName)
 	if newRoleErr != nil {
 		return nil, fmt.Errorf("NewDatabaseRole: %v", newRoleErr)
 	}
