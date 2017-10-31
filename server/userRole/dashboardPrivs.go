@@ -1,10 +1,12 @@
 package userRole
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const DashboardRolePrivsNone string = "none"
@@ -30,22 +32,87 @@ type SetDashboardRolePrivsParams struct {
 	Privs       string `json:"privs"`
 }
 
-func SetDashboardRolePrivs(params SetDashboardRolePrivsParams) error {
+func setDashboardRolePrivsToDest(destDBHandle *sql.DB, params SetDashboardRolePrivsParams) error {
 
 	if privsErr := verifyDashboardRolePrivs(params.Privs); privsErr != nil {
 		return fmt.Errorf("SetDashboardRolePrivs: error = %v", privsErr)
 	}
 
-	if _, deleteErr := databaseWrapper.DBHandle().Exec(
+	if _, deleteErr := destDBHandle.Exec(
 		`DELETE FROM dashboard_role_privs where role_id=$1 and dashboard_id=$2`,
 		params.RoleID, params.DashboardID); deleteErr != nil {
 		return fmt.Errorf("SetDashboardRolePrivs: Can't delete old privs: error = %v", deleteErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(
+	if _, insertErr := destDBHandle.Exec(
 		`INSERT INTO dashboard_role_privs (role_id,dashboard_id,privs) VALUES ($1,$2,$3)`,
 		params.RoleID, params.DashboardID, params.Privs); insertErr != nil {
 		return fmt.Errorf("SetDashboardRolePrivs: Can't set form privileges: error = %v", insertErr)
+	}
+
+	return nil
+
+}
+
+func SetDashboardRolePrivs(params SetDashboardRolePrivsParams) error {
+	return setDashboardRolePrivsToDest(databaseWrapper.DBHandle(), params)
+}
+
+func getAllDashboardRolesFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]SetDashboardRolePrivsParams, error) {
+
+	rows, queryErr := srcDBHandle.Query(
+		`SELECT dashboard_role_privs.role_id,dashboard_role_privs.dashboard_id,dashboard_role_privs.privs
+			FROM dashboard_role_privs,database_roles
+			WHERE database_roles.database_id=$1
+				AND database_roles.role_id=dashboard_role_privs.role_id`, parentDatabaseID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("getAllDashboardRolesFromSrc: failure querying database: %v", queryErr)
+	}
+
+	dashboardPrivs := []SetDashboardRolePrivsParams{}
+	for rows.Next() {
+
+		currPrivInfo := SetDashboardRolePrivsParams{}
+
+		if scanErr := rows.Scan(&currPrivInfo.RoleID, &currPrivInfo.DashboardID, &currPrivInfo.Privs); scanErr != nil {
+			return nil, fmt.Errorf("getAllDashboardRolesFromSrc: failure querying database: %v", scanErr)
+		}
+
+		dashboardPrivs = append(dashboardPrivs, currPrivInfo)
+
+	}
+
+	return dashboardPrivs, nil
+
+}
+
+func CloneDashboardPrivs(cloneParams *trackerDatabase.CloneDatabaseParams) error {
+
+	dashPrivs, err := getAllDashboardRolesFromSrc(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)
+	if err != nil {
+		return fmt.Errorf("CloneDashboardPrivs: Unable to retrieve roles: databaseID=%v, error=%v ",
+			cloneParams.SourceDatabaseID, err)
+	}
+	for _, currPriv := range dashPrivs {
+
+		destDashID, err := cloneParams.IDRemapper.GetExistingRemappedID(currPriv.DashboardID)
+		if err != nil {
+			return fmt.Errorf("CloneDashboardPrivs: Unable to get mapped ID for source database: %v", err)
+		}
+
+		destRoleID, err := cloneParams.IDRemapper.GetExistingRemappedID(currPriv.RoleID)
+		if err != nil {
+			return fmt.Errorf("CloneDashboardPrivs: Unable to get mapped ID for source database: %v", err)
+		}
+
+		destPrivs := SetDashboardRolePrivsParams{
+			DashboardID: destDashID,
+			RoleID:      destRoleID,
+			Privs:       currPriv.Privs}
+
+		if err := setDashboardRolePrivsToDest(cloneParams.DestDBHandle, destPrivs); err != nil {
+			return fmt.Errorf("CloneDashboardPrivs: Can't clone list privilege: error = %v", err)
+		}
 	}
 
 	return nil
