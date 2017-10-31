@@ -1,10 +1,12 @@
 package userRole
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type SetNewItemFormLinkRolePrivsParams struct {
@@ -13,16 +15,16 @@ type SetNewItemFormLinkRolePrivsParams struct {
 	LinkEnabled bool   `json:"linkEnabled"`
 }
 
-func SetNewItemFormLinkRolePrivs(params SetNewItemFormLinkRolePrivsParams) error {
+func setNewItemFormLinkRolePrivsToDest(destDBHandle *sql.DB, params SetNewItemFormLinkRolePrivsParams) error {
 
-	if _, deleteErr := databaseWrapper.DBHandle().Exec(
+	if _, deleteErr := destDBHandle.Exec(
 		`DELETE FROM new_item_form_link_role_privs where role_id=$1 and link_id=$2`,
 		params.RoleID, params.LinkID); deleteErr != nil {
 		return fmt.Errorf("SetNewItemFormLinkRolePrivs: Can't delete old privs: error = %v", deleteErr)
 	}
 
 	if params.LinkEnabled {
-		if _, insertErr := databaseWrapper.DBHandle().Exec(
+		if _, insertErr := destDBHandle.Exec(
 			`INSERT INTO new_item_form_link_role_privs (role_id,link_id) VALUES ($1,$2)`,
 			params.RoleID, params.LinkID); insertErr != nil {
 			return fmt.Errorf("SetNewItemFormLinkRolePrivs: Can't set list privileges: error = %v", insertErr)
@@ -31,6 +33,70 @@ func SetNewItemFormLinkRolePrivs(params SetNewItemFormLinkRolePrivsParams) error
 
 	return nil
 
+}
+
+func getAllItemLinkPrivsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]SetNewItemFormLinkRolePrivsParams, error) {
+
+	rows, queryErr := srcDBHandle.Query(
+		`SELECT new_item_form_link_role_privs.link_id,new_item_form_link_role_privs.role_id
+			FROM new_item_form_link_role_privs,form_links,forms
+			WHERE forms.database_id=$1
+				AND new_item_form_link_role_privs.link_id = form_links.link_id 
+				AND form_links.form_id=forms.form_id`, parentDatabaseID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetRoleListPrivs: Failure querying database: %v", queryErr)
+	}
+
+	privs := []SetNewItemFormLinkRolePrivsParams{}
+
+	for rows.Next() {
+		currPrivs := SetNewItemFormLinkRolePrivsParams{}
+		currPrivs.LinkEnabled = true // presence in the database means the link is enabled
+
+		if scanErr := rows.Scan(&currPrivs.LinkID, &currPrivs.RoleID); scanErr != nil {
+			return nil, fmt.Errorf("getAllItemLinkPrivsFromSrc: Failure querying database: %v", scanErr)
+		}
+		privs = append(privs, currPrivs)
+	}
+	return privs, nil
+
+}
+
+func CloneNewItemLinkPrivs(cloneParams *trackerDatabase.CloneDatabaseParams) error {
+
+	linkPrivs, err := getAllItemLinkPrivsFromSrc(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)
+	if err != nil {
+		return fmt.Errorf("CloneNewItemLinkPrivs: Unable to retrieve roles: databaseID=%v, error=%v ",
+			cloneParams.SourceDatabaseID, err)
+	}
+	for _, currPriv := range linkPrivs {
+
+		destLinkID, err := cloneParams.IDRemapper.GetExistingRemappedID(currPriv.LinkID)
+		if err != nil {
+			return fmt.Errorf("CloneNewItemLinkPrivs: Unable to get mapped ID for source database: %v", err)
+		}
+
+		destRoleID, err := cloneParams.IDRemapper.GetExistingRemappedID(currPriv.RoleID)
+		if err != nil {
+			return fmt.Errorf("CloneNewItemLinkPrivs: Unable to get mapped ID for source database: %v", err)
+		}
+
+		destPrivs := SetNewItemFormLinkRolePrivsParams{
+			LinkID:      destLinkID,
+			RoleID:      destRoleID,
+			LinkEnabled: true}
+
+		if err := setNewItemFormLinkRolePrivsToDest(cloneParams.DestDBHandle, destPrivs); err != nil {
+			return fmt.Errorf("CloneNewItemLinkPrivs: Can't clone list privilege: error = %v", err)
+		}
+	}
+
+	return nil
+
+}
+
+func SetNewItemFormLinkRolePrivs(params SetNewItemFormLinkRolePrivsParams) error {
+	return setNewItemFormLinkRolePrivsToDest(databaseWrapper.DBHandle(), params)
 }
 
 type GetNewItemPrivParams struct {

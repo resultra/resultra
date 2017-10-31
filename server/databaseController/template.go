@@ -138,6 +138,9 @@ func cloneIntoNewTrackerDatabase(cloneParams *trackerDatabase.CloneDatabaseParam
 	if err := userRole.CloneDashboardPrivs(cloneParams); err != nil {
 		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
 	}
+	if err := userRole.CloneNewItemLinkPrivs(cloneParams); err != nil {
+		return nil, fmt.Errorf("copyDatabaseToTemplate: %v", err)
+	}
 
 	return clonedDB, nil
 
