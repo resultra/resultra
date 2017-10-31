@@ -1,10 +1,12 @@
 package userRole
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 const ListRolePrivsNone string = "none"
@@ -32,22 +34,88 @@ type SetListRolePrivsParams struct {
 	Privs  string `json:"privs"`
 }
 
-func SetListRolePrivs(params SetListRolePrivsParams) error {
+// databaseWrapper.DBHandle()
+
+func setListRolePrivsToDest(destDBHandle *sql.DB, params SetListRolePrivsParams) error {
 
 	if privsErr := verifyListRolePrivs(params.Privs); privsErr != nil {
 		return fmt.Errorf("SetListRolePrivs: error = %v", privsErr)
 	}
 
-	if _, deleteErr := databaseWrapper.DBHandle().Exec(
+	// TODO - Enclose code below in mutex
+
+	if _, deleteErr := destDBHandle.Exec(
 		`DELETE FROM list_role_privs where role_id=$1 and list_id=$2`,
 		params.RoleID, params.ListID); deleteErr != nil {
 		return fmt.Errorf("SetListRolePrivs: Can't delete old privs: error = %v", deleteErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(
+	if _, insertErr := destDBHandle.Exec(
 		`INSERT INTO list_role_privs (role_id,list_id,privs) VALUES ($1,$2,$3)`,
 		params.RoleID, params.ListID, params.Privs); insertErr != nil {
 		return fmt.Errorf("SetListRolePrivs: Can't set list privileges: error = %v", insertErr)
+	}
+
+	return nil
+
+}
+
+func SetListRolePrivs(params SetListRolePrivsParams) error {
+	return setListRolePrivsToDest(databaseWrapper.DBHandle(), params)
+}
+
+func getAllListRolePrivsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]SetListRolePrivsParams, error) {
+	// Overwrite the defaults for those roles with an explicit role setting for the list.
+	rows, queryErr := srcDBHandle.Query(
+		`SELECT list_role_privs.role_id,list_role_privs.list_id,list_role_privs.privs
+			FROM list_role_privs,database_roles
+			WHERE database_roles.role_id=list_role_privs.role_id
+				AND database_roles.database_id=$1`, parentDatabaseID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("getListRolePrivs: Failure querying database: %v", queryErr)
+	}
+
+	privs := []SetListRolePrivsParams{}
+	for rows.Next() {
+		currPrivInfo := SetListRolePrivsParams{}
+
+		if scanErr := rows.Scan(&currPrivInfo.RoleID, &currPrivInfo.ListID, &currPrivInfo.Privs); scanErr != nil {
+			return nil, fmt.Errorf("getFormRolePrivs: Failure querying database: %v", scanErr)
+		}
+		privs = append(privs, currPrivInfo)
+	}
+
+	return privs, nil
+
+}
+
+func CloneListPrivs(cloneParams *trackerDatabase.CloneDatabaseParams) error {
+
+	listPrivs, err := getAllListRolePrivsFromSrc(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)
+	if err != nil {
+		return fmt.Errorf("CloneRoles: Unable to retrieve roles: databaseID=%v, error=%v ",
+			cloneParams.SourceDatabaseID, err)
+	}
+	for _, currListPriv := range listPrivs {
+
+		destListID, err := cloneParams.IDRemapper.GetExistingRemappedID(currListPriv.ListID)
+		if err != nil {
+			return fmt.Errorf("CloneListPrivs: Unable to get mapped ID for source database: %v", err)
+		}
+
+		destRoleID, err := cloneParams.IDRemapper.GetExistingRemappedID(currListPriv.RoleID)
+		if err != nil {
+			return fmt.Errorf("CloneListPrivs: Unable to get mapped ID for source database: %v", err)
+		}
+
+		destPrivs := SetListRolePrivsParams{
+			ListID: destListID,
+			RoleID: destRoleID,
+			Privs:  currListPriv.Privs}
+
+		if err := setListRolePrivsToDest(cloneParams.DestDBHandle, destPrivs); err != nil {
+			return fmt.Errorf("CloneListPrivs: Can't clone list privilege: error = %v", err)
+		}
 	}
 
 	return nil
