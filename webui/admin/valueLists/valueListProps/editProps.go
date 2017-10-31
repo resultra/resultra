@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"resultra/datasheet/server/databaseController"
+	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/server/valueList"
 	"resultra/datasheet/webui/thirdParty"
 
@@ -33,13 +34,14 @@ func init() {
 }
 
 type FormLinkTemplParams struct {
-	ElemPrefix    string
-	Title         string
-	DatabaseID    string
-	DatabaseName  string
-	ValueListID   string
-	ValueListName string
-	SiteBaseURL   string
+	ElemPrefix      string
+	Title           string
+	DatabaseID      string
+	DatabaseName    string
+	ValueListID     string
+	ValueListName   string
+	SiteBaseURL     string
+	CurrUserIsAdmin bool
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -61,16 +63,19 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
+	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
+
 	elemPrefix := "valueList_"
 
 	templParams := FormLinkTemplParams{
-		ElemPrefix:    elemPrefix,
-		Title:         "Value List Settings",
-		DatabaseID:    dbInfo.DatabaseID,
-		DatabaseName:  dbInfo.DatabaseName,
-		ValueListID:   valueListID,
-		ValueListName: valueListInfo.Name,
-		SiteBaseURL:   runtimeConfig.GetSiteBaseURL()}
+		ElemPrefix:      elemPrefix,
+		Title:           "Value List Settings",
+		DatabaseID:      dbInfo.DatabaseID,
+		DatabaseName:    dbInfo.DatabaseName,
+		ValueListID:     valueListID,
+		ValueListName:   valueListInfo.Name,
+		SiteBaseURL:     runtimeConfig.GetSiteBaseURL(),
+		CurrUserIsAdmin: isAdmin}
 
 	if err := formLinkTemplates.ExecuteTemplate(w, "editValueListPropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
