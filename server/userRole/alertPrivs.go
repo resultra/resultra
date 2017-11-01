@@ -1,10 +1,12 @@
 package userRole
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type SetAlertRolePrivsParams struct {
@@ -13,19 +15,82 @@ type SetAlertRolePrivsParams struct {
 	AlertEnabled bool   `json:"alertEnabled"`
 }
 
-func SetAlertRolePrivs(params SetAlertRolePrivsParams) error {
+func setAlertRolePrivsToDest(destDBHandle *sql.DB, params SetAlertRolePrivsParams) error {
 
-	if _, deleteErr := databaseWrapper.DBHandle().Exec(
+	if _, deleteErr := destDBHandle.Exec(
 		`DELETE FROM alert_role_privs where role_id=$1 and alert_id=$2`,
 		params.RoleID, params.AlertID); deleteErr != nil {
 		return fmt.Errorf("SetAlertRolePrivs: Can't delete old privs: error = %v", deleteErr)
 	}
 
 	if params.AlertEnabled {
-		if _, insertErr := databaseWrapper.DBHandle().Exec(
+		if _, insertErr := destDBHandle.Exec(
 			`INSERT INTO alert_role_privs (role_id,alert_id) VALUES ($1,$2)`,
 			params.RoleID, params.AlertID); insertErr != nil {
 			return fmt.Errorf("SetAlertRolePrivs: Can't set list privileges: error = %v", insertErr)
+		}
+	}
+
+	return nil
+
+}
+
+func SetAlertRolePrivs(params SetAlertRolePrivsParams) error {
+	return setAlertRolePrivsToDest(databaseWrapper.DBHandle(), params)
+}
+
+func getAllAlertPrivsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]SetAlertRolePrivsParams, error) {
+
+	// Retrieve alerts for which the privileges have been explicitely set.
+	rows, queryErr := srcDBHandle.Query(
+		`SELECT alert_role_privs.alert_id,alert_role_privs.role_id
+			FROM alert_role_privs,alerts
+			WHERE alerts.database_id=$1 AND
+				alert_role_privs.alert_id = alerts.alert_id`, parentDatabaseID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("getAllAlertPrivsFromSrc: Failure querying database: %v", queryErr)
+	}
+
+	privs := []SetAlertRolePrivsParams{}
+	for rows.Next() {
+		currPriv := SetAlertRolePrivsParams{}
+		currPriv.AlertEnabled = true // presence in the database means the link is enabled
+
+		if scanErr := rows.Scan(&currPriv.AlertID, &currPriv.RoleID); scanErr != nil {
+			return nil, fmt.Errorf("GetAlertPrivs: Failure querying database: %v", scanErr)
+		}
+		privs = append(privs, currPriv)
+	}
+
+	return privs, nil
+}
+
+func CloneAlertPrivs(cloneParams *trackerDatabase.CloneDatabaseParams) error {
+
+	privs, err := getAllAlertPrivsFromSrc(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)
+	if err != nil {
+		return fmt.Errorf("CloneRoles: Unable to retrieve roles: databaseID=%v, error=%v ",
+			cloneParams.SourceDatabaseID, err)
+	}
+	for _, currPriv := range privs {
+
+		destAlertID, err := cloneParams.IDRemapper.GetExistingRemappedID(currPriv.AlertID)
+		if err != nil {
+			return fmt.Errorf("CloneListPrivs: Unable to get mapped ID for source database: %v", err)
+		}
+
+		destRoleID, err := cloneParams.IDRemapper.GetExistingRemappedID(currPriv.RoleID)
+		if err != nil {
+			return fmt.Errorf("CloneListPrivs: Unable to get mapped ID for source database: %v", err)
+		}
+
+		destPrivs := SetAlertRolePrivsParams{
+			AlertID:      destAlertID,
+			RoleID:       destRoleID,
+			AlertEnabled: true}
+
+		if err := setAlertRolePrivsToDest(cloneParams.DestDBHandle, destPrivs); err != nil {
+			return fmt.Errorf("CloneListPrivs: Can't clone list privilege: error = %v", err)
 		}
 	}
 
