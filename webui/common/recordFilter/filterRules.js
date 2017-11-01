@@ -805,15 +805,18 @@ function updateDefaultFilterRules(panelParams, updateDoneFunc) {
 		var ruleList = panelParams.defaultFilterRules.filterRules
 		var matchLogic = panelParams.defaultFilterRules.matchLogic
 		
-		for(var defaultRuleIndex = 0; 
-				defaultRuleIndex < ruleList.length; defaultRuleIndex++) {
-					
-			var currRuleInfo = ruleList[defaultRuleIndex]
-			
-			var fieldInfo = fieldsByID[currRuleInfo.fieldID]
-					
-			$filterRuleList.append(createFilterRulePanelListItem(panelParams,fieldInfo,currRuleInfo))
+		if (ruleList !== undefined && ruleList !== null) {
+			for(var defaultRuleIndex = 0; 
+					defaultRuleIndex < ruleList.length; defaultRuleIndex++) {
 				
+				var currRuleInfo = ruleList[defaultRuleIndex]
+		
+				var fieldInfo = fieldsByID[currRuleInfo.fieldID]
+				
+				$filterRuleList.append(createFilterRulePanelListItem(panelParams,fieldInfo,currRuleInfo))
+			
+			}
+			
 		}
 		
 		var $matchLogic = $(createPrefixedSelector(panelParams.elemPrefix,
