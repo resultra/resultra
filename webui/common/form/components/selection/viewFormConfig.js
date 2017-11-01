@@ -122,7 +122,7 @@ function initSelectionRecordEditBehavior($selectionContainer,componentContext,re
 	initSelectControlChangeHandler($selectionControl,function(newValue) {
 		if(selectionFieldType == "text") {
 			setTextVal(newValue)
-		} else if (fieldType == "number") {
+		} else if (selectionFieldType == "number") {
 			var numberVal = Number(newValue)
 			if(!isNaN(numberVal)) {
 				setNumberVal(numberVal)
