@@ -12,10 +12,12 @@ import (
 )
 
 func AddDatabaseAdmin(databaseID string, userID string) error {
+
 	// TODO verify the current user has permissions to add the user as an admin.
+	// TODO add verification to only allow a single database_id,user_id pair
 
 	if _, insertErr := databaseWrapper.DBHandle().Exec(
-		`INSERT INTO database_admins (database_id,user_id) VALUES ($1,$2) ON CONFLICT IGNORE`,
+		`INSERT INTO database_admins (database_id,user_id) VALUES ($1,$2)`,
 		databaseID, userID); insertErr != nil {
 		return fmt.Errorf("addDatabaseAdmin: Can't add database admin user ID = %v to database with ID = %v: error = %v",
 			userID, databaseID, insertErr)

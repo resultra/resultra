@@ -165,7 +165,8 @@ CREATE TABLE IF NOT EXISTS field_comments (
 
 CREATE TABLE IF NOT EXISTS  database_admins ( 
 	database_id text REFERENCES databases(database_id), 
-	user_id text REFERENCES users(user_id)
+	user_id text REFERENCES users(user_id),
+	UNIQUE(user_id,database_id)
 );
 
 CREATE TABLE IF NOT EXISTS database_roles (
