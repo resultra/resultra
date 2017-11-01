@@ -30,6 +30,12 @@ $(document).ready(function() {
 	
 	initUserDropdownMenu()
 	
+	var designFormPaletteLayoutConfig =  {
+		parentLayoutSelector: formDesignCanvasSelector,
+		saveLayoutFunc: function(updatedLayout) { } // no-op: layout gets saved after placeholder replaced with real component.
+	}
+	
+	
 	var paletteConfig = {
 		draggableItemHTML: function(placeholderID,paletteItemID) {
 			return paletteItemsEditConfig[paletteItemID].draggableHTMLFunc(placeholderID)
@@ -51,8 +57,7 @@ $(document).ready(function() {
 			var objEditConfig = paletteItemsEditConfig[droppedItemInfo.paletteItemID]
 			
 			setTimeout(function() {
-				// TODO - need to pass "layoutDesignConfig" parameter to initObjectGridEditBehavior
-				initObjectGridEditBehavior(droppedItemInfo.droppedElem,objEditConfig) 
+				initObjectGridEditBehavior(droppedItemInfo.droppedElem,objEditConfig,designFormPaletteLayoutConfig) 
 			}, 50);
 					
 			// "repackage" the dropped item paramaters for creating a new layout element. Also add the formID
@@ -72,10 +77,6 @@ $(document).ready(function() {
 		paletteSelector: "#paletteSidebar",
 	}
 	
-	var designFormPaletteLayoutConfig =  {
-		parentLayoutSelector: formDesignCanvasSelector,
-		saveLayoutFunc: function(updatedLayout) { } // no-op: layout gets saved after placeholder replaced with real component.
-	}
 	
 	
 	initDesignPalette(paletteConfig,designFormPaletteLayoutConfig)			
