@@ -54,36 +54,40 @@ function ListItemController($parentContainer) {
 			return listItemInfo
 		}
 		
-		this.listItemsInfo = []
+		var listItemsInfo = []
 		this.$parentContainer.empty()
 		for(var listIndex = 0; listIndex < currRecordSetWindowSize; listIndex++) {
 			var listItemInfo = populateOneListItem(listIndex)
-			this.listItemsInfo.push(listItemInfo)
+			listItemsInfo.push(listItemInfo)
 		}
-		loadMultipleFormViewContainers(viewListContext,this.listItemsInfo,populationDoneCallback)
+		loadMultipleFormViewContainers(viewListContext,listItemsInfo,populationDoneCallback)
 	
 	}
 	
 	
 	function reloadRecordsIntoContainers() {
-		for(var listItemIndex = 0; listItemIndex < listItemControllerSelf.listItemsInfo.length; listItemIndex++) {
-			var currListItem = listItemControllerSelf.listItemsInfo[listItemIndex]
 		
-			var recordRef = currListItem.recordProxy.getRecordFunc()
-			if(recordRef != null)
+		var listItemIndex = 0
+		
+		listItemControllerSelf.$parentContainer.find(".listItemContainer").each(function() {
+			
+			var $listItemContainer = $(this)		
+			var recordRef = currRecordSet.getRecordRefAtWindowIndex(listItemIndex)
+			if(recordRef !== null)
 			{
-				currListItem.$listItemContainer.show()
-				loadRecordIntoFormLayout(currListItem.$listItemContainer,recordRef)
+				$listItemContainer.show()
+				loadRecordIntoFormLayout($listItemContainer,recordRef)
 	
 				// Update footer to reflect where the current record is in list of currently loaded records
 				$('#recordNumLabel').text(currRecordSet.recPageLabel())
 		
 		
 			} else {
-				currListItem.$listItemContainer.hide()
+				$listItemContainer.hide()
 			}
+			listItemIndex++
+		})
 		
-		}
 		// If the record changed, and one of the form components is already loaded, it needs to be 
 		// re-selected so the sidebar can be re-initialized with any settings specific to this 
 		// record.
