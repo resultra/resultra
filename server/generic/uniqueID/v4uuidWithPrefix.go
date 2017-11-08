@@ -3,6 +3,7 @@ package uniqueID
 import (
 	"fmt"
 	"github.com/twinj/uuid"
+	"strings"
 	"time"
 )
 
@@ -32,4 +33,10 @@ func ValidatedWellFormedID(uniqueID string) error {
 		return fmt.Errorf("ValidatedWellFormedID: Empty id")
 	}
 	return nil
+}
+
+func GenerateV4UUIDNoDashes() string {
+	uuidStr := uuid.NewV4().String()
+	uuidStr = strings.Replace(uuidStr, "-", "", -1)
+	return uuidStr
 }

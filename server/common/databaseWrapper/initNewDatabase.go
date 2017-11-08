@@ -1,6 +1,9 @@
 package databaseWrapper
 
-import "fmt"
+import (
+	"database/sql"
+	"fmt"
+)
 
 var trackerDatabaseSchema = `
 
@@ -213,11 +216,15 @@ CREATE TABLE IF NOT EXISTS alert_role_privs (
 
 ` // END of SCHEMA
 
-func initNewTrackerDatabase() error {
-
-	if _, createErr := DBHandle().Exec(trackerDatabaseSchema); createErr != nil {
+func initNewTrackerDatabaseToDest(trackerDBHandle *sql.DB) error {
+	if _, createErr := trackerDBHandle.Exec(trackerDatabaseSchema); createErr != nil {
 		return fmt.Errorf("can't initialize database: %v", createErr)
 	}
 	return nil
 
+}
+
+func initNewTrackerDatabase() error {
+
+	return initNewTrackerDatabaseToDest(DBHandle())
 }
