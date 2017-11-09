@@ -42,7 +42,7 @@ func saveDashboard(destDBHandle *sql.DB, newDashboard Dashboard) error {
 	return nil
 }
 
-func NewDashboard(params NewDashboardParams) (*Dashboard, error) {
+func NewDashboard(trackerDBHandle *sql.DB, params NewDashboardParams) (*Dashboard, error) {
 
 	sanitizedName, sanitizeErr := stringValidation.SanitizeName(params.Name)
 	if sanitizeErr != nil {
@@ -58,7 +58,7 @@ func NewDashboard(params NewDashboardParams) (*Dashboard, error) {
 		Name:             sanitizedName,
 		Properties:       dashboardProps}
 
-	if err := saveDashboard(databaseWrapper.DBHandle(), newDashboard); err != nil {
+	if err := saveDashboard(trackerDBHandle, newDashboard); err != nil {
 		fmt.Errorf("NewDashboard: Can't create dashboard: unable to create dashboard: error = %v", err)
 	}
 
@@ -70,12 +70,12 @@ type GetDashboardParams struct {
 	DashboardID string `json:"dashboardID"`
 }
 
-func GetDashboard(dashboardID string) (*Dashboard, error) {
+func GetDashboard(trackerDBHandle *sql.DB, dashboardID string) (*Dashboard, error) {
 
 	dashboardName := ""
 	databaseID := ""
 	encodedProps := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT database_id,name,properties
+	getErr := trackerDBHandle.QueryRow(`SELECT database_id,name,properties
 		 FROM dashboards
 		 WHERE dashboard_id=$1 LIMIT 1`, dashboardID).Scan(&databaseID, &dashboardName, &encodedProps)
 	if getErr != nil {
@@ -132,8 +132,8 @@ func getAllDashboardsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Da
 
 }
 
-func GetAllDashboards(parentDatabaseID string) ([]Dashboard, error) {
-	return getAllDashboardsFromSrc(databaseWrapper.DBHandle(), parentDatabaseID)
+func GetAllDashboards(trackerDBHandle *sql.DB, parentDatabaseID string) ([]Dashboard, error) {
+	return getAllDashboardsFromSrc(trackerDBHandle, parentDatabaseID)
 }
 
 type GetUserDashboardListParams struct {
@@ -142,7 +142,12 @@ type GetUserDashboardListParams struct {
 
 func getUserDashboards(req *http.Request, databaseID string) ([]Dashboard, error) {
 
-	allDashboards, err := GetAllDashboards(databaseID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return nil, dbErr
+	}
+
+	allDashboards, err := GetAllDashboards(trackerDBHandle, databaseID)
 	if err != nil {
 		return nil, fmt.Errorf("getUserDashboards: %v", err)
 	}
@@ -156,7 +161,7 @@ func getUserDashboards(req *http.Request, databaseID string) ([]Dashboard, error
 		return nil, fmt.Errorf("getUserDashboards: can't verify user: %v", userErr)
 	}
 
-	viewableDashboards, privsErr := userRole.GetDashboardsWithUserViewPrivs(databaseID, currUserID)
+	viewableDashboards, privsErr := userRole.GetDashboardsWithUserViewPrivs(trackerDBHandle, databaseID, currUserID)
 	if privsErr != nil {
 		return nil, fmt.Errorf("getUserDashboards: can't verify user: %v", privsErr)
 	}
@@ -196,13 +201,14 @@ func orderDashboardsByManualOrder(unorderedDashboards []Dashboard, manualOrder [
 
 }
 
-func GetAllSortedDashboard(parentDatabaseID string) ([]Dashboard, error) {
-	unorderedDashboards, err := GetAllDashboards(parentDatabaseID)
+func GetAllSortedDashboard(trackerDBHandle *sql.DB, parentDatabaseID string) ([]Dashboard, error) {
+
+	unorderedDashboards, err := GetAllDashboards(trackerDBHandle, parentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("GetAllSortedItemLists: %v")
 	}
 
-	db, getErr := trackerDatabase.GetDatabase(parentDatabaseID)
+	db, getErr := trackerDatabase.GetDatabase(trackerDBHandle, parentDatabaseID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
 	}
@@ -257,14 +263,14 @@ func CloneDashboards(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
 }
 
-func updateExistingDashboard(dashboardID string, updatedDB *Dashboard) (*Dashboard, error) {
+func updateExistingDashboard(trackerDBHandle *sql.DB, dashboardID string, updatedDB *Dashboard) (*Dashboard, error) {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(updatedDB.Properties)
 	if encodeErr != nil {
 		return nil, fmt.Errorf("updateExistingDatabase: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE dashboards 
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE dashboards 
 				SET name=$1,properties=$2
 				WHERE dashboard_id=$3`,
 		updatedDB.Name, encodedProps, dashboardID); updateErr != nil {
@@ -276,14 +282,14 @@ func updateExistingDashboard(dashboardID string, updatedDB *Dashboard) (*Dashboa
 
 }
 
-func validateUniqueDashboardName(databaseID string, dashboardID string, dashboardName string) error {
+func validateUniqueDashboardName(trackerDBHandle *sql.DB, databaseID string, dashboardID string, dashboardName string) error {
 	// Query to validate the name is unique:
 	// 1. Select all the dashboards in the same database
 	// 2. Include dashboards with the same name.
 	// 3. Exclude dashboards with the same form ID. In other words
 	//    the name is considered valid if it is the same as its
 	//    existing name.
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT dashboards.dashboard_id 
 			FROM dashboards,databases
 			WHERE databases.database_id=$1 AND
@@ -303,10 +309,10 @@ func validateUniqueDashboardName(databaseID string, dashboardID string, dashboar
 
 }
 
-func getDashboardDatabaseID(dashboardID string) (string, error) {
+func getDashboardDatabaseID(trackerDBHandle *sql.DB, dashboardID string) (string, error) {
 
 	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT databases.database_id 
 			FROM databases,dashboards 
 			WHERE dashboards.dashboard_id=$1 
@@ -322,7 +328,7 @@ func getDashboardDatabaseID(dashboardID string) (string, error) {
 
 }
 
-func validateNewDashboardName(databaseID string, dashboardName string) error {
+func validateNewDashboardName(trackerDBHandle *sql.DB, databaseID string, dashboardName string) error {
 
 	if !stringValidation.WellFormedItemName(dashboardName) {
 		return fmt.Errorf("Invalid dashboard name")
@@ -331,25 +337,25 @@ func validateNewDashboardName(databaseID string, dashboardName string) error {
 	// No dashboard will have an empty dashboardID, so this will cause test for unique
 	// dashboard names to return true if any dashboard already has the given dashboardName.
 	dashboardID := ""
-	if uniqueErr := validateUniqueDashboardName(databaseID, dashboardID, dashboardName); uniqueErr != nil {
+	if uniqueErr := validateUniqueDashboardName(trackerDBHandle, databaseID, dashboardID, dashboardName); uniqueErr != nil {
 		return uniqueErr
 	}
 
 	return nil
 }
 
-func validateDashboardName(dashboardID string, dashboardName string) error {
+func validateDashboardName(trackerDBHandle *sql.DB, dashboardID string, dashboardName string) error {
 
 	if !stringValidation.WellFormedItemName(dashboardName) {
 		return fmt.Errorf("Invalid dashboard name")
 	}
 
-	databaseID, err := getDashboardDatabaseID(dashboardID)
+	databaseID, err := getDashboardDatabaseID(trackerDBHandle, dashboardID)
 	if err != nil {
 		return fmt.Errorf("System error validating name")
 	}
 
-	if uniqueErr := validateUniqueDashboardName(databaseID, dashboardID, dashboardName); uniqueErr != nil {
+	if uniqueErr := validateUniqueDashboardName(trackerDBHandle, databaseID, dashboardID, dashboardName); uniqueErr != nil {
 		return uniqueErr
 	}
 

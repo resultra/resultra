@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -45,9 +44,9 @@ func saveComment(destDBHandle *sql.DB, newComment Comment) error {
 	return nil
 }
 
-func saveNewComment(params NewCommentParams) (*Comment, error) {
+func saveNewComment(trackerDBHandle *sql.DB, params NewCommentParams) (*Comment, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validCommentFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validCommentFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewComment: %v", fieldErr)
 	}
 
@@ -61,7 +60,7 @@ func saveNewComment(params NewCommentParams) (*Comment, error) {
 		ColType:    commentEntityKind,
 		Properties: properties}
 
-	if saveErr := saveComment(databaseWrapper.DBHandle(), newComment); saveErr != nil {
+	if saveErr := saveComment(trackerDBHandle, newComment); saveErr != nil {
 		return nil, fmt.Errorf("saveNewComment: Unable to save comment box with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -71,10 +70,10 @@ func saveNewComment(params NewCommentParams) (*Comment, error) {
 
 }
 
-func getComment(parentTableID string, commentID string) (*Comment, error) {
+func getComment(trackerDBHandle *sql.DB, parentTableID string, commentID string) (*Comment, error) {
 
 	commentProps := newDefaultCommentProperties()
-	if getErr := common.GetTableColumn(commentEntityKind, parentTableID, commentID, &commentProps); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, commentEntityKind, parentTableID, commentID, &commentProps); getErr != nil {
 		return nil, fmt.Errorf("getComment: Unable to retrieve comment box: %v", getErr)
 	}
 
@@ -115,8 +114,8 @@ func getCommentsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Comment, e
 	return comments, nil
 }
 
-func GetComments(parentTableID string) ([]Comment, error) {
-	return getCommentsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetComments(trackerDBHandle *sql.DB, parentTableID string) ([]Comment, error) {
+	return getCommentsFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneComments(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
@@ -150,9 +149,9 @@ func CloneComments(cloneParams *trackerDatabase.CloneDatabaseParams, parentTable
 	return nil
 }
 
-func updateExistingComment(updatedComment *Comment) (*Comment, error) {
+func updateExistingComment(trackerDBHandle *sql.DB, updatedComment *Comment) (*Comment, error) {
 
-	if updateErr := common.UpdateTableColumn(commentEntityKind, updatedComment.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, commentEntityKind, updatedComment.ParentTableID,
 		updatedComment.CommentID, updatedComment.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingComment: failure updating comment: %v", updateErr)
 	}

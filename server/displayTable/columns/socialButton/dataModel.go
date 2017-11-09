@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -45,9 +44,9 @@ func saveSocialButton(destDBHandle *sql.DB, newSocialButton SocialButton) error 
 	return nil
 }
 
-func saveNewSocialButton(params NewSocialButtonParams) (*SocialButton, error) {
+func saveNewSocialButton(trackerDBHandle *sql.DB, params NewSocialButtonParams) (*SocialButton, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validateSocialButtonFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validateSocialButtonFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewSocialButton: %v", fieldErr)
 	}
 
@@ -61,7 +60,7 @@ func saveNewSocialButton(params NewSocialButtonParams) (*SocialButton, error) {
 		ColType:        socialButtonEntityKind,
 		Properties:     properties}
 
-	if saveErr := saveSocialButton(databaseWrapper.DBHandle(), newSocialButton); saveErr != nil {
+	if saveErr := saveSocialButton(trackerDBHandle, newSocialButton); saveErr != nil {
 		return nil, fmt.Errorf("saveNewSocialButton: Unable to save socialButton with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -71,10 +70,10 @@ func saveNewSocialButton(params NewSocialButtonParams) (*SocialButton, error) {
 
 }
 
-func getSocialButton(parentTableID string, socialButtonID string) (*SocialButton, error) {
+func getSocialButton(trackerDBHandle *sql.DB, parentTableID string, socialButtonID string) (*SocialButton, error) {
 
 	socialButtonProps := newDefaultSocialButtonProperties()
-	if getErr := common.GetTableColumn(socialButtonEntityKind, parentTableID, socialButtonID, &socialButtonProps); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, socialButtonEntityKind, parentTableID, socialButtonID, &socialButtonProps); getErr != nil {
 		return nil, fmt.Errorf("getSocialButton: Unable to retrieve socialButton: %v", getErr)
 	}
 
@@ -115,8 +114,8 @@ func getSocialButtonsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Socia
 	return socialButtons, nil
 }
 
-func GetSocialButtons(parentTableID string) ([]SocialButton, error) {
-	return getSocialButtonsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetSocialButtons(trackerDBHandle *sql.DB, parentTableID string) ([]SocialButton, error) {
+	return getSocialButtonsFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneSocialButtons(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
@@ -150,9 +149,9 @@ func CloneSocialButtons(cloneParams *trackerDatabase.CloneDatabaseParams, parent
 	return nil
 }
 
-func updateExistingSocialButton(updatedSocialButton *SocialButton) (*SocialButton, error) {
+func updateExistingSocialButton(trackerDBHandle *sql.DB, updatedSocialButton *SocialButton) (*SocialButton, error) {
 
-	if updateErr := common.UpdateTableColumn(socialButtonEntityKind, updatedSocialButton.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, socialButtonEntityKind, updatedSocialButton.ParentTableID,
 		updatedSocialButton.SocialButtonID, updatedSocialButton.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingSocialButton: failure updating socialButton: %v", updateErr)
 	}

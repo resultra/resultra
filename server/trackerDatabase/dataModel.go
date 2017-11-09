@@ -3,7 +3,6 @@ package trackerDatabase
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -18,14 +17,14 @@ type Database struct {
 	CreatedByUserID string             `json:"createdByUserID"`
 }
 
-func SaveNewDatabase(newDatabase Database) error {
+func SaveNewDatabase(trackerDBHandle *sql.DB, newDatabase Database) error {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(newDatabase.Properties)
 	if encodeErr != nil {
 		return fmt.Errorf("SaveNewDatabase: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(`INSERT INTO databases VALUES ($1,$2,$3,$4,$5,$6)`,
+	if _, insertErr := trackerDBHandle.Exec(`INSERT INTO databases VALUES ($1,$2,$3,$4,$5,$6)`,
 		newDatabase.DatabaseID, newDatabase.Name, encodedProps,
 		newDatabase.Description, newDatabase.IsTemplate, newDatabase.CreatedByUserID); insertErr != nil {
 		return fmt.Errorf("saveNewDatabase: insert failed: error = %v", insertErr)
@@ -47,7 +46,7 @@ type CloneDatabaseParams struct {
 
 func CloneDatabase(cloneParams *CloneDatabaseParams) (*Database, error) {
 
-	srcDatabase, err := GetDatabase(cloneParams.SourceDatabaseID)
+	srcDatabase, err := GetDatabase(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("CloneDatabase: %v", err)
 	}
@@ -69,7 +68,7 @@ func CloneDatabase(cloneParams *CloneDatabaseParams) (*Database, error) {
 	}
 	dest.Properties = *destProps
 
-	if err := SaveNewDatabase(dest); err != nil {
+	if err := SaveNewDatabase(cloneParams.DestDBHandle, dest); err != nil {
 		return nil, fmt.Errorf("Clone database: Can't save database: %v", err)
 	}
 
@@ -84,7 +83,7 @@ type NewDatabaseParams struct {
 	IsTemplate         bool
 }
 
-func SaveNewEmptyDatabase(params NewDatabaseParams) (*Database, error) {
+func SaveNewEmptyDatabase(trackerDBHandle *sql.DB, params NewDatabaseParams) (*Database, error) {
 
 	sanitizedDbName, sanitizeErr := stringValidation.SanitizeName(params.Name)
 	if sanitizeErr != nil {
@@ -102,21 +101,21 @@ func SaveNewEmptyDatabase(params NewDatabaseParams) (*Database, error) {
 		CreatedByUserID: params.CreatedByUserID,
 		Properties:      dbProps}
 
-	if err := SaveNewDatabase(newDatabase); err != nil {
+	if err := SaveNewDatabase(trackerDBHandle, newDatabase); err != nil {
 		return nil, fmt.Errorf("SaveNewEmptyDatabase: %v", err)
 	}
 
 	return &newDatabase, nil
 }
 
-func GetDatabase(databaseID string) (*Database, error) {
+func GetDatabase(trackerDBHandle *sql.DB, databaseID string) (*Database, error) {
 
 	dbName := ""
 	encodedProps := ""
 	var desc *string
 	isTemplate := false
 	createdByUserID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT name,properties,description,is_template,created_by_user_id 
+	getErr := trackerDBHandle.QueryRow(`SELECT name,properties,description,is_template,created_by_user_id 
 		FROM databases
 		 WHERE database_id=$1 LIMIT 1`, databaseID).Scan(&dbName, &encodedProps, &desc, &isTemplate, &createdByUserID)
 	if getErr != nil {
@@ -140,14 +139,14 @@ func GetDatabase(databaseID string) (*Database, error) {
 	return &getDb, nil
 }
 
-func updateExistingDatabase(databaseID string, updatedDB *Database) (*Database, error) {
+func updateExistingDatabase(trackerDBHandle *sql.DB, databaseID string, updatedDB *Database) (*Database, error) {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(updatedDB.Properties)
 	if encodeErr != nil {
 		return nil, fmt.Errorf("updateExistingDatabase: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE databases 
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE databases 
 				SET properties=$1, name=$2, description=$3
 				WHERE database_id=$4`,
 		encodedProps, updatedDB.Name, updatedDB.Description, databaseID); updateErr != nil {

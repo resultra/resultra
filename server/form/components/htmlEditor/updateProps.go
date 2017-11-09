@@ -1,6 +1,7 @@
 package htmlEditor
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
@@ -29,10 +30,10 @@ type HtmlEditorPropUpdater interface {
 	updateProps(htmlEditor *HtmlEditor) error
 }
 
-func updateHtmlEditorProps(propUpdater HtmlEditorPropUpdater) (*HtmlEditor, error) {
+func updateHtmlEditorProps(trackerDBHandle *sql.DB, propUpdater HtmlEditorPropUpdater) (*HtmlEditor, error) {
 
 	// Retrieve the bar chart from the data store
-	htmlEditorForUpdate, getErr := getHtmlEditor(propUpdater.getParentFormID(), propUpdater.getHtmlEditorID())
+	htmlEditorForUpdate, getErr := getHtmlEditor(trackerDBHandle, propUpdater.getParentFormID(), propUpdater.getHtmlEditorID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateHtmlEditorProps: Unable to get existing html editor: %v", getErr)
 	}
@@ -41,7 +42,7 @@ func updateHtmlEditorProps(propUpdater HtmlEditorPropUpdater) (*HtmlEditor, erro
 		return nil, fmt.Errorf("updateHtmlEditorProps: Unable to update existing html editor properties: %v", propUpdateErr)
 	}
 
-	htmlEditor, updateErr := updateExistingHtmlEditor(propUpdater.getHtmlEditorID(), htmlEditorForUpdate)
+	htmlEditor, updateErr := updateExistingHtmlEditor(trackerDBHandle, propUpdater.getHtmlEditorID(), htmlEditorForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateHtmlEditorProps: Unable to update existing html editor properties: datastore update error =  %v", updateErr)
 	}

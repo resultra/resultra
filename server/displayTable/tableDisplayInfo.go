@@ -1,6 +1,7 @@
 package displayTable
 
 import (
+	"database/sql"
 	"fmt"
 )
 
@@ -9,14 +10,14 @@ type TableDisplayInfo struct {
 	Cols  TableColsInfo `json:"cols"`
 }
 
-func getTableDisplayInfo(tableID string) (*TableDisplayInfo, error) {
+func getTableDisplayInfo(trackerDBHandle *sql.DB, tableID string) (*TableDisplayInfo, error) {
 
-	table, err := GetTable(tableID)
+	table, err := GetTable(trackerDBHandle, tableID)
 	if err != nil {
 		return nil, fmt.Errorf("getTableDisplayInfo: %v", err)
 	}
 
-	_, colsByID, err := getTableCols(tableID)
+	_, colsByID, err := getTableCols(trackerDBHandle, tableID)
 	if err != nil {
 		return nil, fmt.Errorf("getTableDisplayInfo: %v", err)
 	}

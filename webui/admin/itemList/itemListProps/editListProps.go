@@ -11,6 +11,7 @@ import (
 
 	overallUserRole "resultra/datasheet/server/userRole"
 
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/webui/admin/itemList/itemListProps/userRole"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/recordFilter"
@@ -53,14 +54,20 @@ func editListPropsPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	listID := vars["listID"]
 
-	listInfo, err := itemListDataModel.GetItemList(listID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	listInfo, err := itemListDataModel.GetItemList(trackerDBHandle, listID)
 	if err != nil {
 		log.Println("Error retrieving item list info:", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(listInfo.ParentDatabaseID)
+	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(trackerDBHandle, listInfo.ParentDatabaseID)
 	if dbInfoErr != nil {
 		log.Println("Error retrieving item list database info:", dbInfoErr)
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)

@@ -1,6 +1,7 @@
 package userSelection
 
 import (
+	"database/sql"
 	"resultra/datasheet/server/generic/inputValidation"
 )
 
@@ -9,9 +10,9 @@ type ValidateInputParams struct {
 	InputVal string `json:"inputVal"`
 }
 
-func validateInput(params ValidateInputParams) inputValidation.ValidationResult {
+func validateInput(trackerDBHandle *sql.DB, params ValidateInputParams) inputValidation.ValidationResult {
 
-	userSel, err := getUserSelection(params.getParentFormID(), params.getUserSelectionID())
+	userSel, err := getUserSelection(trackerDBHandle, params.getParentFormID(), params.getUserSelectionID())
 	if err != nil {
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
 	}

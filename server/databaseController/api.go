@@ -3,6 +3,7 @@ package databaseController
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/trackerDatabase"
 )
@@ -41,7 +42,13 @@ func getDatabaseInfoAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dbInfo, err := getDatabaseInfo(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	dbInfo, err := getDatabaseInfo(trackerDBHandle, params)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
@@ -58,7 +65,13 @@ func newDatabase(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if newDB, err := createNewDatabase(r, dbParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if newDB, err := createNewDatabase(trackerDBHandle, r, dbParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *newDB)
@@ -84,7 +97,13 @@ func saveAsTemplate(w http.ResponseWriter, r *http.Request) {
 
 func getDatabaseListAPI(w http.ResponseWriter, r *http.Request) {
 
-	if dbList, err := getCurrentUserTrackingDatabases(r); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if dbList, err := getCurrentUserTrackingDatabases(trackerDBHandle, r); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, dbList)

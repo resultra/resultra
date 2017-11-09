@@ -1,6 +1,7 @@
 package gauge
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
@@ -31,10 +32,10 @@ type GaugePropUpdater interface {
 	updateProps(gauge *Gauge) error
 }
 
-func updateGaugeProps(propUpdater GaugePropUpdater) (*Gauge, error) {
+func updateGaugeProps(trackerDBHandle *sql.DB, propUpdater GaugePropUpdater) (*Gauge, error) {
 
 	// Retrieve the bar chart from the data store
-	gaugeForUpdate, getErr := getGauge(propUpdater.getParentFormID(), propUpdater.getGaugeID())
+	gaugeForUpdate, getErr := getGauge(trackerDBHandle, propUpdater.getParentFormID(), propUpdater.getGaugeID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateGaugeProps: Unable to get existing gauge indicator: %v", getErr)
 	}
@@ -43,7 +44,7 @@ func updateGaugeProps(propUpdater GaugePropUpdater) (*Gauge, error) {
 		return nil, fmt.Errorf("updateGaugeProps: Unable to update existing gauge indicator properties: %v", propUpdateErr)
 	}
 
-	gauge, updateErr := updateExistingGauge(gaugeForUpdate)
+	gauge, updateErr := updateExistingGauge(trackerDBHandle, gaugeForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateGaugeProps: Unable to update existing gauge indicator properties: datastore update error =  %v", updateErr)
 	}

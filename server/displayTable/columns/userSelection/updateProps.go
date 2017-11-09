@@ -1,6 +1,7 @@
 package userSelection
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 )
@@ -28,10 +29,10 @@ type UserSelectionPropUpdater interface {
 	updateProps(userSelection *UserSelection) error
 }
 
-func updateUserSelectionProps(propUpdater UserSelectionPropUpdater) (*UserSelection, error) {
+func updateUserSelectionProps(trackerDBHandle *sql.DB, propUpdater UserSelectionPropUpdater) (*UserSelection, error) {
 
 	// Retrieve the bar chart from the data store
-	userSelectionForUpdate, getErr := getUserSelection(propUpdater.getParentTableID(), propUpdater.getUserSelectionID())
+	userSelectionForUpdate, getErr := getUserSelection(trackerDBHandle, propUpdater.getParentTableID(), propUpdater.getUserSelectionID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateUserSelectionProps: Unable to get existing userSelection: %v", getErr)
 	}
@@ -40,7 +41,7 @@ func updateUserSelectionProps(propUpdater UserSelectionPropUpdater) (*UserSelect
 		return nil, fmt.Errorf("updateUserSelectionProps: Unable to update existing userSelection properties: %v", propUpdateErr)
 	}
 
-	updatedUserSelection, updateErr := updateExistingUserSelection(userSelectionForUpdate)
+	updatedUserSelection, updateErr := updateExistingUserSelection(trackerDBHandle, userSelectionForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateUserSelectionProps: Unable to update existing userSelection properties: datastore update error =  %v", updateErr)
 	}

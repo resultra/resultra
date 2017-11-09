@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/trackerDatabase"
 )
@@ -34,7 +33,7 @@ type SetListRolePrivsParams struct {
 	Privs  string `json:"privs"`
 }
 
-// databaseWrapper.DBHandle()
+// trackerDBHandle
 
 func setListRolePrivsToDest(destDBHandle *sql.DB, params SetListRolePrivsParams) error {
 
@@ -60,8 +59,8 @@ func setListRolePrivsToDest(destDBHandle *sql.DB, params SetListRolePrivsParams)
 
 }
 
-func SetListRolePrivs(params SetListRolePrivsParams) error {
-	return setListRolePrivsToDest(databaseWrapper.DBHandle(), params)
+func SetListRolePrivs(trackerDBHandle *sql.DB, params SetListRolePrivsParams) error {
+	return setListRolePrivsToDest(trackerDBHandle, params)
 }
 
 func getAllListRolePrivsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]SetListRolePrivsParams, error) {
@@ -128,14 +127,14 @@ type ListRolePriv struct {
 	Privs    string `json:"privs"`
 }
 
-func GetListRolePrivs(listID string) ([]ListRolePriv, error) {
+func GetListRolePrivs(trackerDBHandle *sql.DB, listID string) ([]ListRolePriv, error) {
 
-	databaseID, databaseErr := getItemListDatabaseID(listID)
+	databaseID, databaseErr := getItemListDatabaseID(trackerDBHandle, listID)
 	if databaseErr != nil {
 		return nil, fmt.Errorf("getListRolePrivs: Error retrieving database info for list: %v", listID)
 	}
 
-	roles, rolesErr := GetDatabaseRoles(databaseID)
+	roles, rolesErr := GetDatabaseRoles(trackerDBHandle, databaseID)
 	if rolesErr != nil {
 		return nil, fmt.Errorf("getListRolePrivs: Error getting roles for list: %v", listID)
 	}
@@ -151,7 +150,7 @@ func GetListRolePrivs(listID string) ([]ListRolePriv, error) {
 	}
 
 	// Overwrite the defaults for those roles with an explicit role setting for the list.
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT database_roles.role_id,database_roles.name,list_role_privs.privs
 			FROM list_role_privs,database_roles
 			WHERE list_role_privs.list_id=$1
@@ -188,9 +187,9 @@ type RoleListPriv struct {
 	Privs    string `json:"privs"`
 }
 
-func GetRoleListPrivs(roleID string) ([]RoleListPriv, error) {
+func GetRoleListPrivs(trackerDBHandle *sql.DB, roleID string) ([]RoleListPriv, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT item_lists.list_id,item_lists.name,list_role_privs.privs
 			FROM list_role_privs,item_lists
 			WHERE list_role_privs.role_id=$1 AND
@@ -212,8 +211,8 @@ func GetRoleListPrivs(roleID string) ([]RoleListPriv, error) {
 	return roleListPrivs, nil
 }
 
-func GetItemListsWithUserPrivs(databaseID string, userID string) (map[string]bool, error) {
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+func GetItemListsWithUserPrivs(trackerDBHandle *sql.DB, databaseID string, userID string) (map[string]bool, error) {
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT list_role_privs.list_id, list_role_privs.privs
 				FROM list_role_privs,database_roles,collaborator_roles,collaborators
 				WHERE database_roles.database_id=$1
@@ -240,7 +239,7 @@ func GetItemListsWithUserPrivs(databaseID string, userID string) (map[string]boo
 	return visibleLists, nil
 }
 
-func GetCurrentUserItemListPrivs(req *http.Request,
+func GetCurrentUserItemListPrivs(trackerDBHandle *sql.DB, req *http.Request,
 	databaseID string, listID string) (string, error) {
 
 	privs := ListRolePrivsNone // default
@@ -255,7 +254,7 @@ func GetCurrentUserItemListPrivs(req *http.Request,
 		return "", fmt.Errorf("verifyCurrUserIsDatabaseAdmin: can't verify user: %v", userErr)
 	}
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT list_role_privs.privs
 				FROM list_role_privs,database_roles,collaborator_roles,collaborators
 				WHERE database_roles.database_id=$1

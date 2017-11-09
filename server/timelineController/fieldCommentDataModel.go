@@ -1,9 +1,9 @@
 package timelineController
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"
 	"time"
@@ -25,7 +25,7 @@ type FieldComment struct {
 	CreateTimestamp time.Time `json:"createTimestamp"`
 }
 
-func saveFieldComment(req *http.Request, params SaveFieldCommentParams) (*FieldComment, error) {
+func saveFieldComment(trackerDBHandle *sql.DB, req *http.Request, params SaveFieldCommentParams) (*FieldComment, error) {
 
 	commentTimestamp := time.Now().UTC()
 	commentID := uniqueID.GenerateSnowflakeID()
@@ -43,7 +43,7 @@ func saveFieldComment(req *http.Request, params SaveFieldCommentParams) (*FieldC
 		CreateTimestamp: commentTimestamp,
 		UpdateTimestamp: commentTimestamp}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(
+	if _, insertErr := trackerDBHandle.Exec(
 		`INSERT INTO field_comments (user_id,comment_id,comment,record_id,field_id,create_timestamp_utc,update_timestamp_utc) 
 					VALUES ($1,$2,$3,$4,$5,$6,$7)`,
 		newComment.UserID,
@@ -65,9 +65,9 @@ type GetFieldCommentsParams struct {
 	FieldID  string `json:"fieldID"`
 }
 
-func GetFieldComments(params GetFieldCommentsParams) ([]FieldComment, error) {
+func GetFieldComments(trackerDBHandle *sql.DB, params GetFieldCommentsParams) ([]FieldComment, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT user_id,comment_id,comment,record_id,field_id,create_timestamp_utc,update_timestamp_utc 
 		FROM field_comments 
 		WHERE record_id=$1 AND field_id=$2`, params.RecordID, params.FieldID)

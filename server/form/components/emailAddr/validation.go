@@ -1,6 +1,7 @@
 package emailAddr
 
 import (
+	"database/sql"
 	"resultra/datasheet/server/generic/inputValidation"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/userAuth"
@@ -11,9 +12,9 @@ type EmailAddrValidateInputParams struct {
 	InputVal *string `json:"inputVal"`
 }
 
-func validateInput(params EmailAddrValidateInputParams) inputValidation.ValidationResult {
+func validateInput(trackerDBHandle *sql.DB, params EmailAddrValidateInputParams) inputValidation.ValidationResult {
 
-	emailAddr, err := getEmailAddr(params.getParentFormID(), params.getEmailAddrID())
+	emailAddr, err := getEmailAddr(trackerDBHandle, params.getParentFormID(), params.getEmailAddrID())
 	if err != nil {
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
 	}

@@ -1,6 +1,7 @@
 package calcField
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/field"
@@ -11,13 +12,13 @@ type SetFormulaParams struct {
 	FormulaText string `json:"formulaText"`
 }
 
-func (setFormulaParams SetFormulaParams) UpdateProps(fieldForUpdate *field.Field) error {
+func (setFormulaParams SetFormulaParams) UpdateProps(trackerDBHandle *sql.DB, fieldForUpdate *field.Field) error {
 
 	if !fieldForUpdate.IsCalcField {
 		return fmt.Errorf("SetFormula: Can't set formula on non-calculated field: %v", fieldForUpdate.Name)
 	}
 
-	compileParams, paramErr := assembleCalcFieldCompileParams(setFormulaParams.GetFieldID())
+	compileParams, paramErr := assembleCalcFieldCompileParams(trackerDBHandle, setFormulaParams.GetFieldID())
 	if paramErr != nil {
 		return fmt.Errorf("Error saving formula, can't setup parameters for formula compilation: %v", paramErr)
 	}

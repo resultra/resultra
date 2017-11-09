@@ -1,6 +1,7 @@
 package form
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/recordFilter"
@@ -10,9 +11,9 @@ type FormComponentFilterMap map[string]recordFilter.RecordFilterRuleSet
 
 // Build a map of component IDs to the filtering rules used to determine if the component is visible or not. This simplified
 // structure is used to filter individual records to determine if the components are visible for each individual record.
-func GetDatabaseFormComponentFilterMap(parentDatabaseID string) (FormComponentFilterMap, error) {
+func GetDatabaseFormComponentFilterMap(trackerDBHandle *sql.DB, parentDatabaseID string) (FormComponentFilterMap, error) {
 
-	forms, err := GetAllForms(parentDatabaseID)
+	forms, err := GetAllForms(trackerDBHandle, parentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("GetDatabaseFormComponentFilterMap: Error getting forms for parent database ID = %v: %v",
 			parentDatabaseID, err)
@@ -22,7 +23,7 @@ func GetDatabaseFormComponentFilterMap(parentDatabaseID string) (FormComponentFi
 
 	for _, currForm := range forms {
 
-		formInfo, formInfoErr := GetFormInfo(currForm.FormID)
+		formInfo, formInfoErr := GetFormInfo(trackerDBHandle, currForm.FormID)
 		if formInfoErr != nil {
 			return nil, fmt.Errorf("GetDatabaseFormComponentFilterMap: Error getting form info for form ID = %v: %v",
 				currForm.FormID, formInfoErr)

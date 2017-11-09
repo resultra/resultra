@@ -1,6 +1,7 @@
 package adminController
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/userRole"
 )
@@ -11,20 +12,20 @@ type AddCollaboratorParams struct {
 	RoleIDs    []string `json:"roleIDs"`
 }
 
-func addCollaborator(params AddCollaboratorParams) (*UserRoleInfo, error) {
+func addCollaborator(trackerDBHandle *sql.DB, params AddCollaboratorParams) (*UserRoleInfo, error) {
 
-	collabInfo, err := userRole.AddCollaborator(params.DatabaseID, params.UserID)
+	collabInfo, err := userRole.AddCollaborator(trackerDBHandle, params.DatabaseID, params.UserID)
 	if err != nil {
 		return nil, fmt.Errorf("addCollaborator: %v", err)
 	}
 
 	for _, currRoleID := range params.RoleIDs {
-		if err := userRole.AddCollaboratorRole(currRoleID, collabInfo.CollaboratorID); err != nil {
+		if err := userRole.AddCollaboratorRole(trackerDBHandle, currRoleID, collabInfo.CollaboratorID); err != nil {
 			return nil, fmt.Errorf("addCollaborator: Error adding role for collaborator: %v", err)
 		}
 	}
 
-	collabUserRoleInfo, err := userRole.GetCollaboratorRoleInfo(params.DatabaseID, collabInfo.CollaboratorID)
+	collabUserRoleInfo, err := userRole.GetCollaboratorRoleInfo(trackerDBHandle, params.DatabaseID, collabInfo.CollaboratorID)
 	if err != nil {
 		return nil, fmt.Errorf("addCollaborator: Error adding updated role info for collaborator: %v", err)
 	}

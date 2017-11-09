@@ -1,6 +1,7 @@
 package recordFilter
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/record"
@@ -16,12 +17,12 @@ type FilterRuleContext struct {
 	filterParams FilterFuncParams
 }
 
-func CreateFilterRuleContexts(currUserID string, filterRules []RecordFilterRule) ([]FilterRuleContext, error) {
+func CreateFilterRuleContexts(trackerDBHandle *sql.DB, currUserID string, filterRules []RecordFilterRule) ([]FilterRuleContext, error) {
 
 	contexts := []FilterRuleContext{}
 
 	for _, currFilterRule := range filterRules {
-		ruleField, fieldErr := field.GetField(currFilterRule.FieldID)
+		ruleField, fieldErr := field.GetField(trackerDBHandle, currFilterRule.FieldID)
 		if fieldErr != nil {
 			return nil, fmt.Errorf("createFilterRuleContexts: Can't get field for filter rule = '%v': datastore error=%v",
 				currFilterRule.FieldID, fieldErr)
@@ -101,10 +102,10 @@ func MatchOneRecord(matchLogic string, filterContexts []FilterRuleContext, recVa
 	return MatchOneRecordFromFieldValues(matchLogic, filterContexts, recValResults.FieldValues)
 }
 
-func FilterRecordValues(currUserID string, filterRules RecordFilterRuleSet,
+func FilterRecordValues(trackerDBHandle *sql.DB, currUserID string, filterRules RecordFilterRuleSet,
 	unfilteredRecordValues []recordValue.RecordValueResults) ([]recordValue.RecordValueResults, error) {
 
-	filterContexts, err := CreateFilterRuleContexts(currUserID, filterRules.FilterRules)
+	filterContexts, err := CreateFilterRuleContexts(trackerDBHandle, currUserID, filterRules.FilterRules)
 	if err != nil {
 		return nil, fmt.Errorf("FilterRecordValues: Error setting up for filtering: %v", err)
 	}

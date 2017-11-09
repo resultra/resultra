@@ -1,19 +1,19 @@
 package global
 
 import (
+	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/stringValidation"
 )
 
-func validateUniqueGlobalName(databaseID string, globalID string, globalName string) error {
+func validateUniqueGlobalName(trackerDBHandle *sql.DB, databaseID string, globalID string, globalName string) error {
 	// Query to validate the name is unique:
 	// 1. Select all the globals in the same database
 	// 2. Include globals with the same name.
 	// 3. Exclude globals with the same globals ID. In other words
 	//    the name is considered valid if it is the same as its
 	//    existing name.
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT globals.global_id,globals.name 
 			FROM globals,databases
 			WHERE databases.database_id=$1 AND
@@ -33,25 +33,25 @@ func validateUniqueGlobalName(databaseID string, globalID string, globalName str
 
 }
 
-func validateGlobalName(globalID string, globalName string) error {
+func validateGlobalName(trackerDBHandle *sql.DB, globalID string, globalName string) error {
 
 	if !stringValidation.WellFormedItemName(globalName) {
 		return fmt.Errorf("Invalid name")
 	}
 
-	databaseID, err := getGlobalDatabaseID(globalID)
+	databaseID, err := getGlobalDatabaseID(trackerDBHandle, globalID)
 	if err != nil {
 		return fmt.Errorf("System error validating global name (%v)", err)
 	}
 
-	if uniqueErr := validateUniqueGlobalName(databaseID, globalID, globalName); uniqueErr != nil {
+	if uniqueErr := validateUniqueGlobalName(trackerDBHandle, databaseID, globalID, globalName); uniqueErr != nil {
 		return uniqueErr
 	}
 
 	return nil
 }
 
-func validateNewGlobalName(databaseID string, globalName string) error {
+func validateNewGlobalName(trackerDBHandle *sql.DB, databaseID string, globalName string) error {
 
 	if !stringValidation.WellFormedItemName(globalName) {
 		return fmt.Errorf("Invalid global name")
@@ -60,7 +60,7 @@ func validateNewGlobalName(databaseID string, globalName string) error {
 	// No global will have an empty formID, so this will cause test for unique
 	// global names to return true if any global already has the given globalName.
 	globalID := ""
-	if uniqueErr := validateUniqueGlobalName(databaseID, globalID, globalName); uniqueErr != nil {
+	if uniqueErr := validateUniqueGlobalName(trackerDBHandle, databaseID, globalID, globalName); uniqueErr != nil {
 		return uniqueErr
 	}
 

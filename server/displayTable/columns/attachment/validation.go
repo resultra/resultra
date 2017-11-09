@@ -1,6 +1,7 @@
 package attachment
 
 import (
+	"database/sql"
 	"log"
 	"resultra/datasheet/server/generic/inputValidation"
 )
@@ -10,9 +11,9 @@ type ValidateInputParams struct {
 	Attachments []string `json:"attachments"`
 }
 
-func validateInput(params ValidateInputParams) inputValidation.ValidationResult {
+func validateInput(trackerDBHandle *sql.DB, params ValidateInputParams) inputValidation.ValidationResult {
 
-	attachComp, err := getAttachment(params.getParentTableID(), params.getAttachmentID())
+	attachComp, err := getAttachment(trackerDBHandle, params.getParentTableID(), params.getAttachmentID())
 	if err != nil {
 		log.Printf("Error getting attachment component for form validation: %v", err)
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)

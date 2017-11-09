@@ -3,6 +3,7 @@ package urlLink
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -31,7 +32,13 @@ func newUrlLink(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if urlLinkRef, err := saveNewUrlLink(urlLinkParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if urlLinkRef, err := saveNewUrlLink(trackerDBHandle, urlLinkParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *urlLinkRef)
@@ -47,12 +54,22 @@ func validateInputAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validationResp := validateInput(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	validationResp := validateInput(trackerDBHandle, params)
 	api.WriteJSONResponse(w, validationResp)
 }
 
 func processUrlLinkPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater UrlLinkPropUpdater) {
-	if urlLinkRef, err := updateUrlLinkProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if urlLinkRef, err := updateUrlLinkProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, urlLinkRef)

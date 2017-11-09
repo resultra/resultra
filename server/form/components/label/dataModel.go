@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -43,13 +42,13 @@ func saveLabel(destDBHandle *sql.DB, newLabel Label) error {
 	return nil
 }
 
-func saveNewLabel(params NewLabelParams) (*Label, error) {
+func saveNewLabel(trackerDBHandle *sql.DB, params NewLabelParams) (*Label, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := field.ValidateField(params.FieldID, validLabelFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validLabelFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewLabel: %v", fieldErr)
 	}
 
@@ -61,7 +60,7 @@ func saveNewLabel(params NewLabelParams) (*Label, error) {
 		LabelID:    uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if saveErr := saveLabel(databaseWrapper.DBHandle(), newLabel); saveErr != nil {
+	if saveErr := saveLabel(trackerDBHandle, newLabel); saveErr != nil {
 		return nil, fmt.Errorf("saveNewLabel: Unable to save label with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -71,10 +70,10 @@ func saveNewLabel(params NewLabelParams) (*Label, error) {
 
 }
 
-func getLabel(parentFormID string, labelID string) (*Label, error) {
+func getLabel(trackerDBHandle *sql.DB, parentFormID string, labelID string) (*Label, error) {
 
 	labelProps := newDefaultLabelProperties()
-	if getErr := common.GetFormComponent(labelEntityKind, parentFormID,
+	if getErr := common.GetFormComponent(trackerDBHandle, labelEntityKind, parentFormID,
 		labelID, &labelProps); getErr != nil {
 		return nil, fmt.Errorf("getLabel: Unable to retrieve label: %v", getErr)
 	}
@@ -112,8 +111,8 @@ func getLabelsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Label, error)
 	return labels, nil
 }
 
-func GetLabels(parentFormID string) ([]Label, error) {
-	return getLabelsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetLabels(trackerDBHandle *sql.DB, parentFormID string) ([]Label, error) {
+	return getLabelsFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneLabels(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -145,9 +144,9 @@ func CloneLabels(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID 
 	return nil
 }
 
-func updateExistingLabel(updatedLabel *Label) (*Label, error) {
+func updateExistingLabel(trackerDBHandle *sql.DB, updatedLabel *Label) (*Label, error) {
 
-	if updateErr := common.UpdateFormComponent(labelEntityKind, updatedLabel.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, labelEntityKind, updatedLabel.ParentFormID,
 		updatedLabel.LabelID, updatedLabel.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingLabel: failure updating label: %v", updateErr)
 	}

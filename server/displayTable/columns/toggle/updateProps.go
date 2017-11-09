@@ -1,6 +1,7 @@
 package toggle
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 )
@@ -28,10 +29,10 @@ type TogglePropUpdater interface {
 	updateProps(toggle *Toggle) error
 }
 
-func updateToggleProps(propUpdater TogglePropUpdater) (*Toggle, error) {
+func updateToggleProps(trackerDBHandle *sql.DB, propUpdater TogglePropUpdater) (*Toggle, error) {
 
 	// Retrieve the bar chart from the data store
-	toggleForUpdate, getErr := getToggle(propUpdater.getParentTableID(), propUpdater.getToggleID())
+	toggleForUpdate, getErr := getToggle(trackerDBHandle, propUpdater.getParentTableID(), propUpdater.getToggleID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateToggleProps: Unable to get existing check box: %v", getErr)
 	}
@@ -40,7 +41,7 @@ func updateToggleProps(propUpdater TogglePropUpdater) (*Toggle, error) {
 		return nil, fmt.Errorf("updateToggleProps: Unable to update existing check box properties: %v", propUpdateErr)
 	}
 
-	toggle, updateErr := updateExistingToggle(toggleForUpdate)
+	toggle, updateErr := updateExistingToggle(trackerDBHandle, toggleForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateToggleProps: Unable to update existing check box properties: datastore update error =  %v", updateErr)
 	}

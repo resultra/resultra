@@ -1,6 +1,7 @@
 package dashboardController
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/dashboard"
@@ -15,10 +16,10 @@ type SummaryTableData struct {
 	GroupedSummarizedVals GroupedSummarizedVals     `json:"groupedSummarizedVals"`
 }
 
-func getOneSummaryTableData(currUserID string,
+func getOneSummaryTableData(trackerDBHandle *sql.DB, currUserID string,
 	summaryTable *summaryTable.SummaryTable, filterRules recordFilter.RecordFilterRuleSet) (*SummaryTableData, error) {
 
-	parentDashboard, err := dashboard.GetDashboard(summaryTable.ParentDashboardID)
+	parentDashboard, err := dashboard.GetDashboard(trackerDBHandle, summaryTable.ParentDashboardID)
 	if err != nil {
 		return nil, fmt.Errorf("getOneSummaryTableData: %v", err)
 	}
@@ -29,17 +30,17 @@ func getOneSummaryTableData(currUserID string,
 		PreFilterRules: summaryTable.Properties.PreFilterRules,
 		FilterRules:    filterRules,
 		SortRules:      sortRules}
-	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(currUserID, getRecordParams)
+	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(trackerDBHandle, currUserID, getRecordParams)
 	if getRecErr != nil {
 		return nil, fmt.Errorf("getOneSummaryTableData: Error retrieving records for summary table: %v", getRecErr)
 	}
 
-	valGroupingResult, groupingErr := groupRecords(summaryTable.Properties.RowGroupingVals, recordRefs)
+	valGroupingResult, groupingErr := groupRecords(trackerDBHandle, summaryTable.Properties.RowGroupingVals, recordRefs)
 	if groupingErr != nil {
 		return nil, fmt.Errorf("getOneSummaryTableData: Error grouping records for summary table: %v", groupingErr)
 	}
 
-	groupedSummarizedVals, summarizeErr := summarizeGroupedRecords(valGroupingResult,
+	groupedSummarizedVals, summarizeErr := summarizeGroupedRecords(trackerDBHandle, valGroupingResult,
 		summaryTable.Properties.ColumnValSummaries)
 	if summarizeErr != nil {
 		return nil, fmt.Errorf("getOneSummaryTableData: Error grouping records for summary table: %v", summarizeErr)
@@ -59,7 +60,7 @@ type GetSummaryTableDataParams struct {
 	FilterRules       recordFilter.RecordFilterRuleSet `json:"filterRules"`
 }
 
-func getSummaryTableData(currUserID string, params GetSummaryTableDataParams) (*SummaryTableData, error) {
+func getSummaryTableData(trackerDBHandle *sql.DB, currUserID string, params GetSummaryTableDataParams) (*SummaryTableData, error) {
 
 	if len(params.SummaryTableID) <= 0 {
 		return nil, fmt.Errorf("GetSummaryTableData: missing summary table ID")
@@ -69,13 +70,13 @@ func getSummaryTableData(currUserID string, params GetSummaryTableDataParams) (*
 		return nil, fmt.Errorf("GetSummaryTableData: missing dashboard ID")
 	}
 
-	summaryTable, getSummaryTableErr := summaryTable.GetSummaryTable(params.ParentDashboardID, params.SummaryTableID)
+	summaryTable, getSummaryTableErr := summaryTable.GetSummaryTable(trackerDBHandle, params.ParentDashboardID, params.SummaryTableID)
 	if getSummaryTableErr != nil {
 		return nil, fmt.Errorf("GetSummaryTableData: Error retrieving summary table with params=%+v: error= %v",
 			params, getSummaryTableErr)
 	}
 
-	summaryTableData, dataErr := getOneSummaryTableData(currUserID, summaryTable, params.FilterRules)
+	summaryTableData, dataErr := getOneSummaryTableData(trackerDBHandle, currUserID, summaryTable, params.FilterRules)
 	if dataErr != nil {
 		return nil, fmt.Errorf("GetSummaryTableData: Error retrieving bar chart data: %v", dataErr)
 	}
@@ -84,9 +85,9 @@ func getSummaryTableData(currUserID string, params GetSummaryTableDataParams) (*
 
 }
 
-func getDefaultDashboardSummaryTablesData(currUserID string, parentDashboardID string) ([]SummaryTableData, error) {
+func getDefaultDashboardSummaryTablesData(trackerDBHandle *sql.DB, currUserID string, parentDashboardID string) ([]SummaryTableData, error) {
 
-	summaryTables, err := summaryTable.GetSummaryTables(parentDashboardID)
+	summaryTables, err := summaryTable.GetSummaryTables(trackerDBHandle, parentDashboardID)
 	if err != nil {
 		return nil, fmt.Errorf("GetDashboardBarChartsData: Error retrieving bar charts: %v", err)
 	}
@@ -94,7 +95,7 @@ func getDefaultDashboardSummaryTablesData(currUserID string, parentDashboardID s
 	summaryTablesData := []SummaryTableData{}
 	for _, summaryTable := range summaryTables {
 
-		summaryTableData, dataErr := getOneSummaryTableData(currUserID, &summaryTable,
+		summaryTableData, dataErr := getOneSummaryTableData(trackerDBHandle, currUserID, &summaryTable,
 			summaryTable.Properties.DefaultFilterRules)
 		if dataErr != nil {
 			return nil, fmt.Errorf("GetData: Error retrieving summary table data: %v", dataErr)

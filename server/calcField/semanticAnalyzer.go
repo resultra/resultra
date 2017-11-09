@@ -1,6 +1,7 @@
 package calcField
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/global"
@@ -8,9 +9,10 @@ import (
 )
 
 type semanticAnalysisContext struct {
-	resultFieldID string // for detecting cycles
-	definedFuncs  FuncNameFuncInfoMap
-	globalIndex   global.GlobalIDGlobalIndex
+	trackerDBHandle *sql.DB
+	resultFieldID   string // for detecting cycles
+	definedFuncs    FuncNameFuncInfoMap
+	globalIndex     global.GlobalIDGlobalIndex
 }
 
 type semanticAnalysisResult struct {
@@ -44,7 +46,7 @@ func checkEqnCycles(context *semanticAnalysisContext, eqnNode *EquationNode) (bo
 	// to a value literal, there is no need to check for cycles.
 	// All the other elements in the compiled formulas equation tree refere to
 	if len(eqnNode.FieldID) > 0 {
-		eqnField, fieldErr := field.GetField(eqnNode.FieldID)
+		eqnField, fieldErr := field.GetField(context.trackerDBHandle, eqnNode.FieldID)
 		if fieldErr != nil {
 			return false, fmt.Errorf("Failure retrieving referenced field: %v", fieldErr)
 		} else {
@@ -123,7 +125,7 @@ func analyzeEqnNode(context *semanticAnalysisContext, eqnNode *EquationNode) (*s
 		// TODO - Once the Field type has a parent, don't use an individual database
 		// lookup for each field (database only has strong consistency when
 		// entities have a parent.
-		eqnField, err := field.GetField(eqnNode.FieldID)
+		eqnField, err := field.GetField(context.trackerDBHandle, eqnNode.FieldID)
 		if err != nil {
 			return nil, fmt.Errorf("Failure retrieving referenced field: %v", err)
 		} else {
@@ -192,15 +194,16 @@ func analyzeEqnNode(context *semanticAnalysisContext, eqnNode *EquationNode) (*s
 
 func analyzeSemantics(compileParams formulaCompileParams, rootEqnNode *EquationNode) (*semanticAnalysisResult, error) {
 
-	globalIndex, globalIndexErr := global.GetIndexedGlobals(compileParams.databaseID)
+	globalIndex, globalIndexErr := global.GetIndexedGlobals(compileParams.trackerDBHandle, compileParams.databaseID)
 	if globalIndexErr != nil {
 		return nil, fmt.Errorf("analyzeSemantics: Unable to retrieve indexed globals: error =%v", globalIndexErr)
 	}
 
 	context := semanticAnalysisContext{
-		resultFieldID: compileParams.resultFieldID,
-		globalIndex:   globalIndex,
-		definedFuncs:  CalcFieldDefinedFuncs}
+		trackerDBHandle: compileParams.trackerDBHandle,
+		resultFieldID:   compileParams.resultFieldID,
+		globalIndex:     globalIndex,
+		definedFuncs:    CalcFieldDefinedFuncs}
 
 	// Check the top-level/overall result type to see that it matches the expected type (e.g., bool, number, text)
 	analyzeResult, analyzeErr := analyzeEqnNode(&context, rootEqnNode)

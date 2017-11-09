@@ -1,6 +1,7 @@
 package header
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
@@ -30,10 +31,10 @@ type HeaderPropUpdater interface {
 	updateProps(header *Header) error
 }
 
-func updateHeaderProps(propUpdater HeaderPropUpdater) (*Header, error) {
+func updateHeaderProps(trackerDBHandle *sql.DB, propUpdater HeaderPropUpdater) (*Header, error) {
 
 	// Retrieve the bar chart from the data store
-	headerForUpdate, getErr := getHeader(propUpdater.getParentFormID(), propUpdater.getHeaderID())
+	headerForUpdate, getErr := getHeader(trackerDBHandle, propUpdater.getParentFormID(), propUpdater.getHeaderID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateHeaderProps: Unable to get existing header: %v", getErr)
 	}
@@ -42,7 +43,7 @@ func updateHeaderProps(propUpdater HeaderPropUpdater) (*Header, error) {
 		return nil, fmt.Errorf("updateHeaderProps: Unable to update existing header properties: %v", propUpdateErr)
 	}
 
-	updatedHeader, updateErr := updateExistingHeader(headerForUpdate)
+	updatedHeader, updateErr := updateExistingHeader(trackerDBHandle, headerForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateHeaderProps: Unable to update existing header properties: datastore update error =  %v", updateErr)
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/userAuth"
 )
@@ -38,7 +39,13 @@ func getDefaultDashboardDataAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if dashboardData, err := getDefaultDashboardData(currUserID, dashboardParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if dashboardData, err := getDefaultDashboardData(trackerDBHandle, currUserID, dashboardParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *dashboardData)
@@ -60,7 +67,13 @@ func getSummaryTableDataAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if summaryTableData, err := getSummaryTableData(currUserID, params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if summaryTableData, err := getSummaryTableData(trackerDBHandle, currUserID, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, summaryTableData)
@@ -82,7 +95,13 @@ func getBarChartDataAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if barChartData, err := getBarChartData(currUserID, barChartParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if barChartData, err := getBarChartData(trackerDBHandle, currUserID, barChartParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, barChartData)
@@ -104,7 +123,13 @@ func getGaugeDataAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if gaugeData, err := getGaugeData(currUserID, params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if gaugeData, err := getGaugeData(trackerDBHandle, currUserID, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, gaugeData)
@@ -126,7 +151,13 @@ func getSummaryValDataAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if summaryValData, err := getSummaryValData(currUserID, params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if summaryValData, err := getSummaryValData(trackerDBHandle, currUserID, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, summaryValData)

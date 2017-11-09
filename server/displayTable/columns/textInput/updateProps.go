@@ -1,6 +1,7 @@
 package textInput
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 )
@@ -28,10 +29,10 @@ type TextInputPropUpdater interface {
 	updateProps(textInput *TextInput) error
 }
 
-func updateTextInputProps(propUpdater TextInputPropUpdater) (*TextInput, error) {
+func updateTextInputProps(trackerDBHandle *sql.DB, propUpdater TextInputPropUpdater) (*TextInput, error) {
 
 	// Retrieve the bar chart from the data store
-	textInputForUpdate, getErr := getTextInput(propUpdater.getParentTableID(), propUpdater.getTextInputID())
+	textInputForUpdate, getErr := getTextInput(trackerDBHandle, propUpdater.getParentTableID(), propUpdater.getTextInputID())
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateTextInputProps: Unable to get existing text box: %v", getErr)
 	}
@@ -40,7 +41,7 @@ func updateTextInputProps(propUpdater TextInputPropUpdater) (*TextInput, error) 
 		return nil, fmt.Errorf("UpdateTextInputProps: Unable to update existing text box properties: %v", propUpdateErr)
 	}
 
-	textInput, updateErr := updateExistingTextInput(propUpdater.getTextInputID(), textInputForUpdate)
+	textInput, updateErr := updateExistingTextInput(trackerDBHandle, propUpdater.getTextInputID(), textInputForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateTextInputProps: Unable to update existing text box properties: datastore update error =  %v", updateErr)
 	}

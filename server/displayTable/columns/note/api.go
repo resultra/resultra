@@ -3,6 +3,7 @@ package note
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -31,7 +32,13 @@ func newNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if editorRef, err := saveNewNote(params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if editorRef, err := saveNewNote(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *editorRef)
@@ -52,7 +59,13 @@ func getNoteAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	numberInput, err := getNote(params.ParentTableID, params.NoteID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	numberInput, err := getNote(trackerDBHandle, params.ParentTableID, params.NoteID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -68,12 +81,25 @@ func validateInputAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validationResp := validateInput(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	validationResp := validateInput(trackerDBHandle, params)
 	api.WriteJSONResponse(w, validationResp)
 }
 
 func processNotePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater NotePropUpdater) {
-	if checkBoxRef, err := updateNoteProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if checkBoxRef, err := updateNoteProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, checkBoxRef)

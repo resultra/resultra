@@ -1,6 +1,7 @@
 package record
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -47,11 +48,11 @@ func (recUpdateHeader RecordUpdateHeader) GetChangeSetID() string {
 // It leaves the low-level updating of values to implementers of the RecordUpdater interface. Different RecordUpdaters
 // are needed for different value types, while the code to (1) retrieve the record, (2) validate the field type,
 // (3) re-calculate calculated fields, then (4) save the updated record is made common.
-func UpdateRecordValue(currUserID string, recUpdater RecordUpdater) (*Record, error) {
+func UpdateRecordValue(trackingDBHandle *sql.DB, currUserID string, recUpdater RecordUpdater) (*Record, error) {
 
 	recordID := recUpdater.recordID()
 
-	field, fieldGetErr := field.GetField(recUpdater.fieldID())
+	field, fieldGetErr := field.GetField(trackingDBHandle, recUpdater.fieldID())
 	if fieldGetErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Error retrieving field for updating/setting value: err = %v", fieldGetErr)
 	}
@@ -62,7 +63,7 @@ func UpdateRecordValue(currUserID string, recUpdater RecordUpdater) (*Record, er
 			" Error validating record's field for update: %v", fieldValidateErr)
 	}
 
-	recordForUpdate, getErr := GetRecord(recordID)
+	recordForUpdate, getErr := GetRecord(trackingDBHandle, recordID)
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Can't set value:"+
 			" Error retrieving existing record for update: err = %v", getErr)
@@ -88,7 +89,7 @@ func UpdateRecordValue(currUserID string, recUpdater RecordUpdater) (*Record, er
 		UpdateTimeStamp:  updateTimestamp,
 		ChangeSetID:      recUpdater.GetChangeSetID()}
 
-	if saveErr := SaveCellUpdate(cellUpdate, recUpdater.doCollapseRecentValues()); saveErr != nil {
+	if saveErr := SaveCellUpdate(trackingDBHandle, cellUpdate, recUpdater.doCollapseRecentValues()); saveErr != nil {
 		return nil, fmt.Errorf("UpdateRecordValue: Error saving cell update: %v", saveErr)
 	}
 

@@ -1,6 +1,8 @@
 package form
 
 import (
+	"database/sql"
+
 	"resultra/datasheet/server/form/components/attachment"
 	"resultra/datasheet/server/form/components/caption"
 	"resultra/datasheet/server/form/components/checkBox"
@@ -57,124 +59,124 @@ type GetFormInfoParams struct {
 	FormID string `json:"formID"`
 }
 
-func GetFormInfo(formID string) (*FormInfo, error) {
+func GetFormInfo(trackerDBHandle *sql.DB, formID string) (*FormInfo, error) {
 
-	form, err := GetForm(formID)
+	form, err := GetForm(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	textBoxes, err := textBox.GetTextBoxes(formID)
+	textBoxes, err := textBox.GetTextBoxes(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	numberInputs, err := numberInput.GetNumberInputs(formID)
+	numberInputs, err := numberInput.GetNumberInputs(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	checkBoxes, err := checkBox.GetCheckBoxes(formID)
+	checkBoxes, err := checkBox.GetCheckBoxes(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	toggles, err := toggle.GetToggles(formID)
+	toggles, err := toggle.GetToggles(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	datePickers, err := datePicker.GetDatePickers(formID)
+	datePickers, err := datePicker.GetDatePickers(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	htmlEditors, err := htmlEditor.GetHtmlEditors(formID)
+	htmlEditors, err := htmlEditor.GetHtmlEditors(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	attachments, err := attachment.GetImages(formID)
+	attachments, err := attachment.GetImages(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	headers, err := header.GetHeaders(formID)
+	headers, err := header.GetHeaders(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	formButtons, err := formButton.GetButtons(formID)
+	formButtons, err := formButton.GetButtons(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	ratings, err := rating.GetRatings(formID)
+	ratings, err := rating.GetRatings(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	comments, err := comment.GetComments(formID)
+	comments, err := comment.GetComments(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	selections, err := selection.GetSelections(formID)
+	selections, err := selection.GetSelections(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	userSelections, err := userSelection.GetUserSelections(formID)
+	userSelections, err := userSelection.GetUserSelections(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	userTags, err := userTag.GetUserTags(formID)
+	userTags, err := userTag.GetUserTags(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	progressIndicators, err := progress.GetProgressIndicators(formID)
+	progressIndicators, err := progress.GetProgressIndicators(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	captions, err := caption.GetCaptions(formID)
+	captions, err := caption.GetCaptions(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	gauges, err := gauge.GetGauges(formID)
+	gauges, err := gauge.GetGauges(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	socialButtons, err := socialButton.GetSocialButtons(formID)
+	socialButtons, err := socialButton.GetSocialButtons(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	labels, err := label.GetLabels(formID)
+	labels, err := label.GetLabels(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	emailAddrs, err := emailAddr.GetEmailAddrs(formID)
+	emailAddrs, err := emailAddr.GetEmailAddrs(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	urlLinks, err := urlLink.GetUrlLinks(formID)
+	urlLinks, err := urlLink.GetUrlLinks(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	files, err := file.GetFiles(formID)
+	files, err := file.GetFiles(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}
 
-	images, err := image.GetImages(formID)
+	images, err := image.GetImages(trackerDBHandle, formID)
 	if err != nil {
 		return nil, err
 	}

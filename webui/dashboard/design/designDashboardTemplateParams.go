@@ -3,6 +3,7 @@ package design
 import (
 	"fmt"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/userRole"
@@ -24,7 +25,12 @@ type DashboardTemplateParams struct {
 
 func createDashboardTemplateParams(r *http.Request, dashboardForDesign *dashboard.Dashboard) (*DashboardTemplateParams, error) {
 
-	dashboardDB, err := trackerDatabase.GetDatabase(dashboardForDesign.ParentDatabaseID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		return nil, dbErr
+	}
+
+	dashboardDB, err := trackerDatabase.GetDatabase(trackerDBHandle, dashboardForDesign.ParentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("createDashboardTemplateParams: %v", err)
 	}

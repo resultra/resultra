@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/trackerDatabase"
 )
@@ -54,8 +53,8 @@ func setDashboardRolePrivsToDest(destDBHandle *sql.DB, params SetDashboardRolePr
 
 }
 
-func SetDashboardRolePrivs(params SetDashboardRolePrivsParams) error {
-	return setDashboardRolePrivsToDest(databaseWrapper.DBHandle(), params)
+func SetDashboardRolePrivs(trackerDBHandle *sql.DB, params SetDashboardRolePrivsParams) error {
+	return setDashboardRolePrivsToDest(trackerDBHandle, params)
 }
 
 func getAllDashboardRolesFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]SetDashboardRolePrivsParams, error) {
@@ -125,9 +124,9 @@ type DashboardRolePriv struct {
 	Privs    string `json:"privs"`
 }
 
-func GetDashboardRolePrivs(dashboardID string) ([]DashboardRolePriv, error) {
+func GetDashboardRolePrivs(trackerDBHandle *sql.DB, dashboardID string) ([]DashboardRolePriv, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT database_roles.role_id,database_roles.name,dashboard_role_privs.privs
 			FROM dashboard_role_privs,database_roles
 			WHERE dashboard_role_privs.dashboard_id=$1
@@ -163,9 +162,9 @@ type RoleDashboardPriv struct {
 	Privs         string `json:"privs"`
 }
 
-func GetRoleDashboardPrivs(roleID string) ([]RoleDashboardPriv, error) {
+func GetRoleDashboardPrivs(trackerDBHandle *sql.DB, roleID string) ([]RoleDashboardPriv, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT dashboards.dashboard_id,dashboards.name,dashboard_role_privs.privs
 			FROM dashboard_role_privs,dashboards
 			WHERE dashboard_role_privs.role_id=$1 AND
@@ -189,8 +188,8 @@ func GetRoleDashboardPrivs(roleID string) ([]RoleDashboardPriv, error) {
 
 // Query the database to build a lookup table of dashboardIDs for which the user has
 // view permissions on the dashboard.
-func GetDashboardsWithUserViewPrivs(databaseID string, userID string) (map[string]bool, error) {
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+func GetDashboardsWithUserViewPrivs(trackerDBHandle *sql.DB, databaseID string, userID string) (map[string]bool, error) {
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT dashboard_role_privs.dashboard_id, dashboard_role_privs.privs
 				FROM dashboard_role_privs,database_roles,collaborator_roles,collaborators
 				WHERE database_roles.database_id=$1
@@ -217,7 +216,7 @@ func GetDashboardsWithUserViewPrivs(databaseID string, userID string) (map[strin
 	return visibleDashboards, nil
 }
 
-func CurrentUserHasDashboardViewPrivs(req *http.Request,
+func CurrentUserHasDashboardViewPrivs(trackerDBHandle *sql.DB, req *http.Request,
 	databaseID string, dashboardID string) (bool, error) {
 
 	privs := false
@@ -231,7 +230,7 @@ func CurrentUserHasDashboardViewPrivs(req *http.Request,
 		return false, fmt.Errorf("verifyCurrUserIsDatabaseAdmin: can't verify user: %v", userErr)
 	}
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT dashboard_role_privs.privs
 					FROM dashboard_role_privs,database_roles,collaborator_roles,collaborators
 					WHERE database_roles.database_id=$1

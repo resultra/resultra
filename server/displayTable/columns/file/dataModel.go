@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -44,9 +43,9 @@ func saveFile(destDBHandle *sql.DB, newFile File) error {
 
 }
 
-func saveNewFile(params NewFileParams) (*File, error) {
+func saveNewFile(trackerDBHandle *sql.DB, params NewFileParams) (*File, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validFileFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validFileFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewFile: %v", fieldErr)
 	}
 
@@ -60,7 +59,7 @@ func saveNewFile(params NewFileParams) (*File, error) {
 		Properties: properties,
 		ColType:    fileEntityKind}
 
-	if err := saveFile(databaseWrapper.DBHandle(), newFile); err != nil {
+	if err := saveFile(trackerDBHandle, newFile); err != nil {
 		return nil, fmt.Errorf("saveNewFile: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -70,10 +69,10 @@ func saveNewFile(params NewFileParams) (*File, error) {
 
 }
 
-func getFile(parentTableID string, fileID string) (*File, error) {
+func getFile(trackerDBHandle *sql.DB, parentTableID string, fileID string) (*File, error) {
 
 	fileProps := newDefaultFileProperties()
-	if getErr := common.GetTableColumn(fileEntityKind, parentTableID, fileID, &fileProps); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, fileEntityKind, parentTableID, fileID, &fileProps); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to retrieve text box: %v", getErr)
 	}
 
@@ -115,8 +114,8 @@ func getFilesFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]File, error) 
 
 }
 
-func GetFiles(parentTableID string) ([]File, error) {
-	return getFilesFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetFiles(trackerDBHandle *sql.DB, parentTableID string) ([]File, error) {
+	return getFilesFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneFiles(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -150,9 +149,9 @@ func CloneFiles(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID s
 	return nil
 }
 
-func updateExistingFile(fileID string, updatedFile *File) (*File, error) {
+func updateExistingFile(trackerDBHandle *sql.DB, fileID string, updatedFile *File) (*File, error) {
 
-	if updateErr := common.UpdateTableColumn(fileEntityKind, updatedFile.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, fileEntityKind, updatedFile.ParentTableID,
 		updatedFile.FileID, updatedFile.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingFile: error updating existing text box component: %v", updateErr)
 	}

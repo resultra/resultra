@@ -1,6 +1,7 @@
 package record
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/field"
 	"sort"
@@ -113,10 +114,10 @@ func NewUpdateFieldValueIndexForCellUpdates(recCellUpdates *RecordCellUpdates, f
 
 }
 
-func NewUpdateFieldValueIndex(parentDatabaseID string, fieldsByID map[string]field.Field,
+func NewUpdateFieldValueIndex(trackingDBHandle *sql.DB, parentDatabaseID string, fieldsByID map[string]field.Field,
 	recordID string, changeSetID string) (*CellUpdateFieldValueIndex, error) {
 
-	recCellUpdates, getErr := GetRecordCellUpdates(recordID, changeSetID)
+	recCellUpdates, getErr := GetRecordCellUpdates(trackingDBHandle, recordID, changeSetID)
 	if getErr != nil {
 		return nil, fmt.Errorf("NewFieldValueIndex: failure retrieving cell updates for record = %v: error = %v",
 			recordID, getErr)

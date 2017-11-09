@@ -1,6 +1,7 @@
 package rating
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
@@ -29,10 +30,10 @@ type RatingPropUpdater interface {
 	updateProps(rating *Rating) error
 }
 
-func updateRatingProps(propUpdater RatingPropUpdater) (*Rating, error) {
+func updateRatingProps(trackerDBHandle *sql.DB, propUpdater RatingPropUpdater) (*Rating, error) {
 
 	// Retrieve the bar chart from the data store
-	ratingForUpdate, getErr := getRating(propUpdater.getParentFormID(), propUpdater.getRatingID())
+	ratingForUpdate, getErr := getRating(trackerDBHandle, propUpdater.getParentFormID(), propUpdater.getRatingID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateRatingProps: Unable to get existing rating: %v", getErr)
 	}
@@ -41,7 +42,7 @@ func updateRatingProps(propUpdater RatingPropUpdater) (*Rating, error) {
 		return nil, fmt.Errorf("updateRatingProps: Unable to update existing rating properties: %v", propUpdateErr)
 	}
 
-	updatedRating, updateErr := updateExistingRating(ratingForUpdate)
+	updatedRating, updateErr := updateExistingRating(trackerDBHandle, ratingForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateRatingProps: Unable to update existing rating properties: datastore update error =  %v", updateErr)
 	}

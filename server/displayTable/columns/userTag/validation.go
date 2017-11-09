@@ -1,6 +1,7 @@
 package userTag
 
 import (
+	"database/sql"
 	"log"
 	"resultra/datasheet/server/generic/inputValidation"
 )
@@ -10,9 +11,9 @@ type ValidateInputParams struct {
 	InputVal []string `json:"inputVal"`
 }
 
-func validateInput(params ValidateInputParams) inputValidation.ValidationResult {
+func validateInput(trackerDBHandle *sql.DB, params ValidateInputParams) inputValidation.ValidationResult {
 
-	userSel, err := getUserTag(params.getParentTableID(), params.getUserTagID())
+	userSel, err := getUserTag(trackerDBHandle, params.getParentTableID(), params.getUserTagID())
 	if err != nil {
 		log.Printf("user selection: validate input: %v", err)
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)

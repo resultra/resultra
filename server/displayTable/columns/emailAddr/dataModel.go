@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -44,9 +43,9 @@ func saveEmailAddr(destDBHandle *sql.DB, newEmailAddr EmailAddr) error {
 
 }
 
-func saveNewEmailAddr(params NewEmailAddrParams) (*EmailAddr, error) {
+func saveNewEmailAddr(trackerDBHandle *sql.DB, params NewEmailAddrParams) (*EmailAddr, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validEmailAddrFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validEmailAddrFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewEmailAddr: %v", fieldErr)
 	}
 
@@ -60,7 +59,7 @@ func saveNewEmailAddr(params NewEmailAddrParams) (*EmailAddr, error) {
 		Properties:  properties,
 		ColType:     emailAddrEntityKind}
 
-	if err := saveEmailAddr(databaseWrapper.DBHandle(), newEmailAddr); err != nil {
+	if err := saveEmailAddr(trackerDBHandle, newEmailAddr); err != nil {
 		return nil, fmt.Errorf("saveNewEmailAddr: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -70,10 +69,10 @@ func saveNewEmailAddr(params NewEmailAddrParams) (*EmailAddr, error) {
 
 }
 
-func getEmailAddr(parentTableID string, emailAddrID string) (*EmailAddr, error) {
+func getEmailAddr(trackerDBHandle *sql.DB, parentTableID string, emailAddrID string) (*EmailAddr, error) {
 
 	emailAddrProps := newDefaultEmailAddrProperties()
-	if getErr := common.GetTableColumn(emailAddrEntityKind, parentTableID, emailAddrID, &emailAddrProps); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, emailAddrEntityKind, parentTableID, emailAddrID, &emailAddrProps); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to retrieve text box: %v", getErr)
 	}
 
@@ -115,8 +114,8 @@ func getEmailAddrsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]EmailAdd
 
 }
 
-func GetEmailAddrs(parentTableID string) ([]EmailAddr, error) {
-	return getEmailAddrsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetEmailAddrs(trackerDBHandle *sql.DB, parentTableID string) ([]EmailAddr, error) {
+	return getEmailAddrsFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneEmailAddrs(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -150,9 +149,9 @@ func CloneEmailAddrs(cloneParams *trackerDatabase.CloneDatabaseParams, parentFor
 	return nil
 }
 
-func updateExistingEmailAddr(emailAddrID string, updatedEmailAddr *EmailAddr) (*EmailAddr, error) {
+func updateExistingEmailAddr(trackerDBHandle *sql.DB, emailAddrID string, updatedEmailAddr *EmailAddr) (*EmailAddr, error) {
 
-	if updateErr := common.UpdateTableColumn(emailAddrEntityKind, updatedEmailAddr.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, emailAddrEntityKind, updatedEmailAddr.ParentTableID,
 		updatedEmailAddr.EmailAddrID, updatedEmailAddr.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingEmailAddr: error updating existing text box component: %v", updateErr)
 	}

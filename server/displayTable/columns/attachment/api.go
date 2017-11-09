@@ -3,6 +3,7 @@ package attachment
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -31,7 +32,13 @@ func newAttachment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if attachmentRef, err := saveNewAttachment(attachmentParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if attachmentRef, err := saveNewAttachment(trackerDBHandle, attachmentParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *attachmentRef)
@@ -52,7 +59,13 @@ func getAttachmentAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	numberInput, err := getAttachment(params.ParentTableID, params.AttachmentID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	numberInput, err := getAttachment(trackerDBHandle, params.ParentTableID, params.AttachmentID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -68,12 +81,25 @@ func validateInputAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validationResp := validateInput(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	validationResp := validateInput(trackerDBHandle, params)
 	api.WriteJSONResponse(w, validationResp)
 }
 
 func processAttachmentPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater AttachmentPropUpdater) {
-	if attachmentRef, err := updateAttachmentProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if attachmentRef, err := updateAttachmentProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, attachmentRef)

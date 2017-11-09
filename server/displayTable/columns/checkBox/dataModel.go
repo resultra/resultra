@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -43,9 +42,9 @@ func saveCheckbox(destDBHandle *sql.DB, newCheckBox CheckBox) error {
 	return nil
 }
 
-func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
+func saveNewCheckBox(trackerDBHandle *sql.DB, params NewCheckBoxParams) (*CheckBox, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validCheckBoxFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validCheckBoxFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewCheckBox: %v", fieldErr)
 	}
 
@@ -59,7 +58,7 @@ func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 		Properties: properties,
 		ColType:    checkBoxEntityKind}
 
-	if err := saveCheckbox(databaseWrapper.DBHandle(), newCheckBox); err != nil {
+	if err := saveCheckbox(trackerDBHandle, newCheckBox); err != nil {
 		return nil, fmt.Errorf("saveNewCheckBox: Unable to save bar chart with params=%+v: error = %v", params, err)
 	}
 
@@ -69,10 +68,10 @@ func saveNewCheckBox(params NewCheckBoxParams) (*CheckBox, error) {
 
 }
 
-func getCheckBox(parentTableID string, checkBoxID string) (*CheckBox, error) {
+func getCheckBox(trackerDBHandle *sql.DB, parentTableID string, checkBoxID string) (*CheckBox, error) {
 
 	checkBoxProps := newDefaultCheckBoxProperties()
-	if getErr := common.GetTableColumn(checkBoxEntityKind, parentTableID, checkBoxID, &checkBoxProps); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, checkBoxEntityKind, parentTableID, checkBoxID, &checkBoxProps); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to retrieve check box: %v", getErr)
 	}
 
@@ -113,8 +112,8 @@ func getCheckBoxesFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]CheckBox
 	return checkBoxes, nil
 }
 
-func GetCheckBoxes(parentTableID string) ([]CheckBox, error) {
-	return getCheckBoxesFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetCheckBoxes(trackerDBHandle *sql.DB, parentTableID string) ([]CheckBox, error) {
+	return getCheckBoxesFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneCheckBoxes(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
@@ -148,9 +147,9 @@ func CloneCheckBoxes(cloneParams *trackerDatabase.CloneDatabaseParams, parentTab
 	return nil
 }
 
-func updateExistingCheckBox(updatedCheckBox *CheckBox) (*CheckBox, error) {
+func updateExistingCheckBox(trackerDBHandle *sql.DB, updatedCheckBox *CheckBox) (*CheckBox, error) {
 
-	if updateErr := common.UpdateTableColumn(checkBoxEntityKind, updatedCheckBox.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, checkBoxEntityKind, updatedCheckBox.ParentTableID,
 		updatedCheckBox.CheckBoxID, updatedCheckBox.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingCheckBox: failure updating checkbox: %v", updateErr)
 	}

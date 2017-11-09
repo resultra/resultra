@@ -1,6 +1,7 @@
 package formLink
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/stringValidation"
@@ -22,22 +23,22 @@ func (idHeader FormLinkIDHeader) getFormLinkID() string {
 
 type FormLinkPropUpdater interface {
 	FormLinkIDInterface
-	updateProps(button *FormLink) error
+	updateProps(trackerDBHandle *sql.DB, button *FormLink) error
 }
 
-func updateFormLinkProps(propUpdater FormLinkPropUpdater) (*FormLink, error) {
+func updateFormLinkProps(trackerDBHandle *sql.DB, propUpdater FormLinkPropUpdater) (*FormLink, error) {
 
 	// Retrieve the bar chart from the data store
-	linkForUpdate, getErr := GetFormLink(propUpdater.getFormLinkID())
+	linkForUpdate, getErr := GetFormLink(trackerDBHandle, propUpdater.getFormLinkID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateFormLinkProps: Unable to get existing button: %v", getErr)
 	}
 
-	if propUpdateErr := propUpdater.updateProps(linkForUpdate); propUpdateErr != nil {
+	if propUpdateErr := propUpdater.updateProps(trackerDBHandle, linkForUpdate); propUpdateErr != nil {
 		return nil, fmt.Errorf("updateFormLinkProps: Unable to update existing form link properties: %v", propUpdateErr)
 	}
 
-	updatedLink, updateErr := updateExistingFormLink(linkForUpdate)
+	updatedLink, updateErr := updateExistingFormLink(trackerDBHandle, linkForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf(
 			"updateFormLinkProps: Unable to update existing form link properties: datastore update error =  %v", updateErr)
@@ -51,9 +52,9 @@ type FormLinkDefaultValParams struct {
 	DefaultValues []record.DefaultFieldValue `json:"defaultValues"`
 }
 
-func (updateParams FormLinkDefaultValParams) updateProps(linkForUpdate *FormLink) error {
+func (updateParams FormLinkDefaultValParams) updateProps(trackerDBHandle *sql.DB, linkForUpdate *FormLink) error {
 
-	if validateErr := record.ValidateWellFormedDefaultValues(updateParams.DefaultValues); validateErr != nil {
+	if validateErr := record.ValidateWellFormedDefaultValues(trackerDBHandle, updateParams.DefaultValues); validateErr != nil {
 		return fmt.Errorf("updateProps: invalid default value(s): %v", validateErr)
 	}
 
@@ -67,7 +68,7 @@ type FormLinkNameParams struct {
 	NewName string `json:"newName"`
 }
 
-func (updateParams FormLinkNameParams) updateProps(linkForUpdate *FormLink) error {
+func (updateParams FormLinkNameParams) updateProps(trackerDBHandle *sql.DB, linkForUpdate *FormLink) error {
 
 	if !stringValidation.WellFormedItemLabel(updateParams.NewName) {
 		return fmt.Errorf("Can't update form link name: invalid name: %v", updateParams.NewName)
@@ -83,14 +84,14 @@ type FormLinkFormParams struct {
 	FormID string `json:"formID"`
 }
 
-func (updateParams FormLinkFormParams) updateProps(linkForUpdate *FormLink) error {
+func (updateParams FormLinkFormParams) updateProps(trackerDBHandle *sql.DB, linkForUpdate *FormLink) error {
 
-	newForm, getErr := form.GetForm(updateParams.FormID)
+	newForm, getErr := form.GetForm(trackerDBHandle, updateParams.FormID)
 	if getErr != nil {
 		return fmt.Errorf("Update form properties: Unable to get form specified as new form: %v", getErr)
 	}
 
-	oldForm, getErr := form.GetForm(linkForUpdate.FormID)
+	oldForm, getErr := form.GetForm(trackerDBHandle, linkForUpdate.FormID)
 	if getErr != nil {
 		return fmt.Errorf("FormLinkFormParams.updateProps: Unable to get existing form before setting new form: %v", getErr)
 	}
@@ -109,7 +110,7 @@ type FormLinkIncludeInSidebarParams struct {
 	IncludeInSidebar bool `json:"includeInSidebar"`
 }
 
-func (updateParams FormLinkIncludeInSidebarParams) updateProps(linkForUpdate *FormLink) error {
+func (updateParams FormLinkIncludeInSidebarParams) updateProps(trackerDBHandle *sql.DB, linkForUpdate *FormLink) error {
 
 	linkForUpdate.IncludeInSidebar = updateParams.IncludeInSidebar
 
@@ -120,7 +121,7 @@ type FormLinkEnableSharedLinkParams struct {
 	FormLinkIDHeader
 }
 
-func (updateParams FormLinkEnableSharedLinkParams) updateProps(linkForUpdate *FormLink) error {
+func (updateParams FormLinkEnableSharedLinkParams) updateProps(trackerDBHandle *sql.DB, linkForUpdate *FormLink) error {
 
 	if len(linkForUpdate.SharedLinkID) <= 0 {
 		// Generate a new shared link ID if there insn't one already (from previously enabling the shared link)
@@ -135,7 +136,7 @@ type FormLinkDisableSharedLinkParams struct {
 	FormLinkIDHeader
 }
 
-func (updateParams FormLinkDisableSharedLinkParams) updateProps(linkForUpdate *FormLink) error {
+func (updateParams FormLinkDisableSharedLinkParams) updateProps(trackerDBHandle *sql.DB, linkForUpdate *FormLink) error {
 
 	linkForUpdate.SharedLinkEnabled = false
 

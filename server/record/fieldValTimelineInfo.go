@@ -1,9 +1,11 @@
 package record
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/common/attachment"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/userAuth"
@@ -42,7 +44,7 @@ type FileTimelineValue struct {
 	FileTimelineVals []attachment.AttachmentReference `json:"fileTimelineVals"`
 }
 
-func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal string) (interface{}, error) {
+func DecodeTimelineCellValue(trackingDBHandle *sql.DB, currUserID string, fieldType string, encodedVal string) (interface{}, error) {
 
 	if fieldType == field.FieldTypeUsers {
 		var userVal UsersCellValue
@@ -61,7 +63,7 @@ func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal str
 		} else {
 
 			for _, currUserID := range userVal.UserIDs {
-				userInfo, err := userAuth.GetUserInfoByID(currUserID)
+				userInfo, err := userAuth.GetUserInfoByID(trackingDBHandle, currUserID)
 				if err != nil {
 					return nil, fmt.Errorf("DecodeTimelineCellValue: %v", err)
 				}
@@ -92,7 +94,7 @@ func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal str
 		timelineVals := []attachment.AttachmentReference{}
 		for _, attachmentID := range fileVal.Attachments {
 
-			attachRef, err := attachment.GetAttachmentReference(attachmentID)
+			attachRef, err := attachment.GetAttachmentReference(trackingDBHandle, attachmentID)
 			if err != nil {
 				return nil, fmt.Errorf("DecodeTimelineCellValue: error get attachment info: %v", err)
 			}
@@ -110,20 +112,20 @@ func DecodeTimelineCellValue(currUserID string, fieldType string, encodedVal str
 	}
 }
 
-func GetFieldValUpdateTimelineInfo(currUserID string, recordID string, fieldID string) ([]FieldValTimelineChangeInfo, error) {
+func GetFieldValUpdateTimelineInfo(trackingDBHandle *sql.DB, currUserID string, recordID string, fieldID string) ([]FieldValTimelineChangeInfo, error) {
 
-	timelineRecord, err := GetRecord(recordID)
+	timelineRecord, err := GetRecord(trackingDBHandle, recordID)
 	if err != nil {
 		return nil, fmt.Errorf("GetCellUpdateTimelineInfo: %v", err)
 	}
 
-	fieldCellUpdates, getErr := GetRecordFieldCellUpdates(recordID, fieldID, FullyCommittedCellUpdatesChangeSetID)
+	fieldCellUpdates, getErr := GetRecordFieldCellUpdates(trackingDBHandle, recordID, fieldID, FullyCommittedCellUpdatesChangeSetID)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetCellUpdateTimelineInfo: failure retrieving cell updates for record = %v: error = %v",
 			recordID, getErr)
 	}
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentDatabaseID: timelineRecord.ParentDatabaseID})
+	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(trackingDBHandle, field.GetFieldListParams{ParentDatabaseID: timelineRecord.ParentDatabaseID})
 	if indexErr != nil {
 		return nil, fmt.Errorf("GetCellUpdateTimelineInfo: %v", indexErr)
 	}
@@ -137,14 +139,14 @@ func GetFieldValUpdateTimelineInfo(currUserID string, recordID string, fieldID s
 				"GetCellUpdateTimelineInfo: %v", fieldErr)
 		}
 
-		decodedCellVal, decodeErr := DecodeTimelineCellValue(currUserID, fieldInfo.Type, currUpdate.CellValue)
+		decodedCellVal, decodeErr := DecodeTimelineCellValue(trackingDBHandle, currUserID, fieldInfo.Type, currUpdate.CellValue)
 		if decodeErr != nil {
 			return nil, fmt.Errorf(
 				"NewUpdateFieldValueIndex: %v ", decodeErr)
 
 		}
 
-		updateUserInfo, err := userAuth.GetUserInfoByID(currUpdate.UserID)
+		updateUserInfo, err := userAuth.GetUserInfoByID(trackingDBHandle, currUpdate.UserID)
 		if err != nil {
 			return nil, fmt.Errorf("GetFieldValUpdateTimelineInfo: %v", err)
 		}
@@ -180,7 +182,12 @@ func getFieldValChangeInfo(req *http.Request, params GetFieldValChangeInfoParams
 		return nil, fmt.Errorf("getFieldTimelineInfo: %v", err)
 	}
 
-	fieldValTimelineChanges, err := GetFieldValUpdateTimelineInfo(currUserID,
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return nil, dbErr
+	}
+
+	fieldValTimelineChanges, err := GetFieldValUpdateTimelineInfo(trackerDBHandle, currUserID,
 		params.RecordID, params.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("getFieldValChangeInfo: Error retrieving timeline field value changes: %+v, error = %v", params, err)

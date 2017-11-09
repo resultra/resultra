@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -43,13 +42,13 @@ func saveUserSelection(destDBHandle *sql.DB, newUserSelection UserSelection) err
 	return nil
 }
 
-func saveNewUserSelection(params NewUserSelectionParams) (*UserSelection, error) {
+func saveNewUserSelection(trackerDBHandle *sql.DB, params NewUserSelectionParams) (*UserSelection, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := field.ValidateField(params.FieldID, validUserSelectionFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validUserSelectionFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewUserSelection: %v", fieldErr)
 	}
 
@@ -61,7 +60,7 @@ func saveNewUserSelection(params NewUserSelectionParams) (*UserSelection, error)
 		UserSelectionID: uniqueID.GenerateSnowflakeID(),
 		Properties:      properties}
 
-	if saveErr := saveUserSelection(databaseWrapper.DBHandle(), newUserSelection); saveErr != nil {
+	if saveErr := saveUserSelection(trackerDBHandle, newUserSelection); saveErr != nil {
 		return nil, fmt.Errorf("saveNewUserSelection: Unable to save userSelection with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -71,10 +70,10 @@ func saveNewUserSelection(params NewUserSelectionParams) (*UserSelection, error)
 
 }
 
-func getUserSelection(parentFormID string, userSelectionID string) (*UserSelection, error) {
+func getUserSelection(trackerDBHandle *sql.DB, parentFormID string, userSelectionID string) (*UserSelection, error) {
 
 	userSelectionProps := newDefaultUserSelectionProperties()
-	if getErr := common.GetFormComponent(userSelectionEntityKind, parentFormID,
+	if getErr := common.GetFormComponent(trackerDBHandle, userSelectionEntityKind, parentFormID,
 		userSelectionID, &userSelectionProps); getErr != nil {
 		return nil, fmt.Errorf("getUserSelection: Unable to retrieve userSelection: %v", getErr)
 	}
@@ -112,8 +111,8 @@ func getUserSelectionsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]UserS
 	return userSelections, nil
 }
 
-func GetUserSelections(parentFormID string) ([]UserSelection, error) {
-	return getUserSelectionsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetUserSelections(trackerDBHandle *sql.DB, parentFormID string) ([]UserSelection, error) {
+	return getUserSelectionsFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneUserSelections(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -145,9 +144,9 @@ func CloneUserSelections(cloneParams *trackerDatabase.CloneDatabaseParams, paren
 	return nil
 }
 
-func updateExistingUserSelection(updatedUserSelection *UserSelection) (*UserSelection, error) {
+func updateExistingUserSelection(trackerDBHandle *sql.DB, updatedUserSelection *UserSelection) (*UserSelection, error) {
 
-	if updateErr := common.UpdateFormComponent(userSelectionEntityKind, updatedUserSelection.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, userSelectionEntityKind, updatedUserSelection.ParentFormID,
 		updatedUserSelection.UserSelectionID, updatedUserSelection.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingUserSelection: failure updating userSelection: %v", updateErr)
 	}

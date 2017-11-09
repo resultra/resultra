@@ -1,6 +1,7 @@
 package record
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -44,10 +45,10 @@ func CloneDefaultFieldValues(remappedIDs uniqueID.UniqueIDRemapper, srcDefaultVa
 	return destDefaultVals, nil
 }
 
-type SetDefaultValFunc func(currUserID string, recUpdateHeader RecordUpdateHeader, defaultVal DefaultFieldValue) (*Record, error)
+type SetDefaultValFunc func(trackerDBHandle *sql.DB, currUserID string, recUpdateHeader RecordUpdateHeader, defaultVal DefaultFieldValue) (*Record, error)
 type DefaultValIDDefaultValFuncMap map[string]SetDefaultValFunc
 
-func setBoolTrueDefaultValue(currUserID string, recUpdateHeader RecordUpdateHeader, defaultVal DefaultFieldValue) (*Record, error) {
+func setBoolTrueDefaultValue(trackerDBHandle *sql.DB, currUserID string, recUpdateHeader RecordUpdateHeader, defaultVal DefaultFieldValue) (*Record, error) {
 
 	trueVal := true
 
@@ -55,10 +56,10 @@ func setBoolTrueDefaultValue(currUserID string, recUpdateHeader RecordUpdateHead
 		RecordUpdateHeader: recUpdateHeader,
 		Value:              &trueVal}
 
-	return UpdateRecordValue(currUserID, setValParams)
+	return UpdateRecordValue(trackerDBHandle, currUserID, setValParams)
 }
 
-func setBoolFalseDefaultValue(currUserID string, recUpdateHeader RecordUpdateHeader, defaultVal DefaultFieldValue) (*Record, error) {
+func setBoolFalseDefaultValue(trackerDBHandle *sql.DB, currUserID string, recUpdateHeader RecordUpdateHeader, defaultVal DefaultFieldValue) (*Record, error) {
 
 	falseVal := false
 
@@ -66,7 +67,7 @@ func setBoolFalseDefaultValue(currUserID string, recUpdateHeader RecordUpdateHea
 		RecordUpdateHeader: recUpdateHeader,
 		Value:              &falseVal}
 
-	return UpdateRecordValue(currUserID, setValParams)
+	return UpdateRecordValue(trackerDBHandle, currUserID, setValParams)
 }
 
 var boolFieldDefaultValFuncs = DefaultValIDDefaultValFuncMap{
@@ -75,7 +76,7 @@ var boolFieldDefaultValFuncs = DefaultValIDDefaultValFuncMap{
 
 const defaultValIDCurrTime string = "currentTime"
 
-func setCurrTimeDefaultValue(currUserID string, recUpdateHeader RecordUpdateHeader,
+func setCurrTimeDefaultValue(trackerDBHandle *sql.DB, currUserID string, recUpdateHeader RecordUpdateHeader,
 	defaultVal DefaultFieldValue) (*Record, error) {
 
 	currTime := time.Now().UTC()
@@ -84,7 +85,7 @@ func setCurrTimeDefaultValue(currUserID string, recUpdateHeader RecordUpdateHead
 		RecordUpdateHeader: recUpdateHeader,
 		Value:              &currTime}
 
-	return UpdateRecordValue(currUserID, setValParams)
+	return UpdateRecordValue(trackerDBHandle, currUserID, setValParams)
 }
 
 var timeFieldDefaultValFuncs = DefaultValIDDefaultValFuncMap{
@@ -92,7 +93,7 @@ var timeFieldDefaultValFuncs = DefaultValIDDefaultValFuncMap{
 
 const defaultValIDSpecificVal string = "specificVal"
 
-func setSpecificNumberValDefaultValue(currUserID string, recUpdateHeader RecordUpdateHeader,
+func setSpecificNumberValDefaultValue(trackerDBHandle *sql.DB, currUserID string, recUpdateHeader RecordUpdateHeader,
 	defaultVal DefaultFieldValue) (*Record, error) {
 
 	if defaultVal.NumberVal == nil {
@@ -103,7 +104,7 @@ func setSpecificNumberValDefaultValue(currUserID string, recUpdateHeader RecordU
 		RecordUpdateHeader: recUpdateHeader,
 		Value:              defaultVal.NumberVal}
 
-	return UpdateRecordValue(currUserID, setValParams)
+	return UpdateRecordValue(trackerDBHandle, currUserID, setValParams)
 }
 
 var numFieldDefaultValFuncs = DefaultValIDDefaultValFuncMap{
@@ -158,7 +159,7 @@ type SetDefaultValsParams struct {
 	DefaultVals      []DefaultFieldValue `json:defaultVals`
 }
 
-func SetDefaultValues(currUserID string, params SetDefaultValsParams) error {
+func SetDefaultValues(trackingDBHandle *sql.DB, currUserID string, params SetDefaultValsParams) error {
 	for _, defaultVal := range params.DefaultVals {
 
 		updateHeader := RecordUpdateHeader{
@@ -167,7 +168,7 @@ func SetDefaultValues(currUserID string, params SetDefaultValsParams) error {
 			ChangeSetID:      params.ChangeSetID,
 			FieldID:          defaultVal.FieldID}
 
-		field, err := field.GetField(defaultVal.FieldID)
+		field, err := field.GetField(trackingDBHandle, defaultVal.FieldID)
 		if err != nil {
 			return fmt.Errorf("SetDefaultValues: failure retrieving referenced field: %+v", err)
 		}
@@ -177,7 +178,7 @@ func SetDefaultValues(currUserID string, params SetDefaultValsParams) error {
 			return fmt.Errorf("SetDefaultValues: failure retrieving function to set default val: %+v", funcErr)
 		}
 
-		_, setErr := defaultValFunc(currUserID, updateHeader, defaultVal)
+		_, setErr := defaultValFunc(trackingDBHandle, currUserID, updateHeader, defaultVal)
 		if setErr != nil {
 			return fmt.Errorf("SetDefaultValues: failure setting default val: %+v", funcErr)
 		}
@@ -185,10 +186,10 @@ func SetDefaultValues(currUserID string, params SetDefaultValsParams) error {
 	return nil
 }
 
-func ValidateWellFormedDefaultValues(defaultVals []DefaultFieldValue) error {
+func ValidateWellFormedDefaultValues(trackingDBHandle *sql.DB, defaultVals []DefaultFieldValue) error {
 	for _, defaultVal := range defaultVals {
 
-		field, err := field.GetField(defaultVal.FieldID)
+		field, err := field.GetField(trackingDBHandle, defaultVal.FieldID)
 		if err != nil {
 			return fmt.Errorf("ValidateWellFormedDefaultValues: failure retrieving referenced field: %+v", err)
 		}

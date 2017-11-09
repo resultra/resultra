@@ -1,6 +1,7 @@
 package note
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 )
@@ -28,10 +29,10 @@ type NotePropUpdater interface {
 	updateProps(note *Note) error
 }
 
-func updateNoteProps(propUpdater NotePropUpdater) (*Note, error) {
+func updateNoteProps(trackerDBHandle *sql.DB, propUpdater NotePropUpdater) (*Note, error) {
 
 	// Retrieve the bar chart from the data store
-	noteForUpdate, getErr := getNote(propUpdater.getParentTableID(), propUpdater.getNoteID())
+	noteForUpdate, getErr := getNote(trackerDBHandle, propUpdater.getParentTableID(), propUpdater.getNoteID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateNoteProps: Unable to get existing html editor: %v", getErr)
 	}
@@ -40,7 +41,7 @@ func updateNoteProps(propUpdater NotePropUpdater) (*Note, error) {
 		return nil, fmt.Errorf("updateNoteProps: Unable to update existing html editor properties: %v", propUpdateErr)
 	}
 
-	note, updateErr := updateExistingNote(propUpdater.getNoteID(), noteForUpdate)
+	note, updateErr := updateExistingNote(trackerDBHandle, propUpdater.getNoteID(), noteForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateNoteProps: Unable to update existing html editor properties: datastore update error =  %v", updateErr)
 	}

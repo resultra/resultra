@@ -1,6 +1,7 @@
 package progress
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic/numberFormat"
@@ -29,10 +30,10 @@ type ProgressPropUpdater interface {
 	updateProps(progress *Progress) error
 }
 
-func updateProgressProps(propUpdater ProgressPropUpdater) (*Progress, error) {
+func updateProgressProps(trackerDBHandle *sql.DB, propUpdater ProgressPropUpdater) (*Progress, error) {
 
 	// Retrieve the bar chart from the data store
-	progressForUpdate, getErr := getProgress(propUpdater.getParentTableID(), propUpdater.getProgressID())
+	progressForUpdate, getErr := getProgress(trackerDBHandle, propUpdater.getParentTableID(), propUpdater.getProgressID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateProgressProps: Unable to get existing progress indicator: %v", getErr)
 	}
@@ -41,7 +42,7 @@ func updateProgressProps(propUpdater ProgressPropUpdater) (*Progress, error) {
 		return nil, fmt.Errorf("updateProgressProps: Unable to update existing progress indicator properties: %v", propUpdateErr)
 	}
 
-	progress, updateErr := updateExistingProgress(progressForUpdate)
+	progress, updateErr := updateExistingProgress(trackerDBHandle, progressForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateProgressProps: Unable to update existing progress indicator properties: datastore update error =  %v", updateErr)
 	}

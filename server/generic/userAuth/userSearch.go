@@ -1,8 +1,8 @@
 package userAuth
 
 import (
+	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"strings"
 )
 
@@ -15,11 +15,11 @@ type SearchUsersResults struct {
 	MatchedUserInfo []SearchUserMatch `json:"matchedUserInfo"`
 }
 
-func searchUsers(searchTerm string) (*SearchUsersResults, error) {
+func searchUsers(trackerDBHandle *sql.DB, searchTerm string) (*SearchUsersResults, error) {
 
 	sqlSearchTerm := strings.ToUpper(`%` + searchTerm + `%`)
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT user_id,user_name 
 		FROM users 
 		WHERE UPPER(user_name) LIKE $1`, sqlSearchTerm)

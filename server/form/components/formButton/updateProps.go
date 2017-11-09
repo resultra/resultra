@@ -1,6 +1,7 @@
 package formButton
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
@@ -29,22 +30,22 @@ func (idHeader ButtonIDHeader) getParentFormID() string {
 
 type ButtonPropUpdater interface {
 	ButtonIDInterface
-	updateProps(button *FormButton) error
+	updateProps(trackerDBHandle *sql.DB, button *FormButton) error
 }
 
-func updateButtonProps(propUpdater ButtonPropUpdater) (*FormButton, error) {
+func updateButtonProps(trackerDBHandle *sql.DB, propUpdater ButtonPropUpdater) (*FormButton, error) {
 
 	// Retrieve the bar chart from the data store
-	buttonForUpdate, getErr := getButton(propUpdater.getParentFormID(), propUpdater.getButtonID())
+	buttonForUpdate, getErr := getButton(trackerDBHandle, propUpdater.getParentFormID(), propUpdater.getButtonID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateButtonProps: Unable to get existing button: %v", getErr)
 	}
 
-	if propUpdateErr := propUpdater.updateProps(buttonForUpdate); propUpdateErr != nil {
+	if propUpdateErr := propUpdater.updateProps(trackerDBHandle, buttonForUpdate); propUpdateErr != nil {
 		return nil, fmt.Errorf("updateButtonProps: Unable to update existing button properties: %v", propUpdateErr)
 	}
 
-	updatedButton, updateErr := updateExistingButton(buttonForUpdate)
+	updatedButton, updateErr := updateExistingButton(trackerDBHandle, buttonForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateButtonProps: Unable to update existing button properties: datastore update error =  %v", updateErr)
 	}
@@ -57,7 +58,7 @@ type ButtonResizeParams struct {
 	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
-func (updateParams ButtonResizeParams) updateProps(buttonForUpdate *FormButton) error {
+func (updateParams ButtonResizeParams) updateProps(trackerDBHandle *sql.DB, buttonForUpdate *FormButton) error {
 
 	if !componentLayout.ValidGeometry(updateParams.Geometry) {
 		return fmt.Errorf("set comment box dimensions: Invalid geometry: %+v", updateParams.Geometry)
@@ -73,7 +74,7 @@ type ButtonBehaviorParams struct {
 	PopupBehavior inputProps.ButtonPopupBehavior `json:"popupBehavior"`
 }
 
-func (updateParams ButtonBehaviorParams) updateProps(buttonForUpdate *FormButton) error {
+func (updateParams ButtonBehaviorParams) updateProps(trackerDBHandle *sql.DB, buttonForUpdate *FormButton) error {
 
 	if err := updateParams.PopupBehavior.ValidateWellFormed(); err != nil {
 		return err
@@ -89,9 +90,9 @@ type ButtonDefaultValParams struct {
 	DefaultValues []record.DefaultFieldValue `json:"defaultValues"`
 }
 
-func (updateParams ButtonDefaultValParams) updateProps(buttonForUpdate *FormButton) error {
+func (updateParams ButtonDefaultValParams) updateProps(trackerDBHandle *sql.DB, buttonForUpdate *FormButton) error {
 
-	if validateErr := record.ValidateWellFormedDefaultValues(updateParams.DefaultValues); validateErr != nil {
+	if validateErr := record.ValidateWellFormedDefaultValues(trackerDBHandle, updateParams.DefaultValues); validateErr != nil {
 		return fmt.Errorf("updateProps: invalid default value(s): %v", validateErr)
 	}
 
@@ -107,7 +108,7 @@ type ButtonSizeParams struct {
 	Size string `json:"size"`
 }
 
-func (updateParams ButtonSizeParams) updateProps(buttonForUpdate *FormButton) error {
+func (updateParams ButtonSizeParams) updateProps(trackerDBHandle *sql.DB, buttonForUpdate *FormButton) error {
 
 	// TODO - Validate valid size
 
@@ -121,7 +122,7 @@ type ButtonColorSchemeParams struct {
 	ColorScheme string `json:"colorScheme"`
 }
 
-func (updateParams ButtonColorSchemeParams) updateProps(buttonForUpdate *FormButton) error {
+func (updateParams ButtonColorSchemeParams) updateProps(trackerDBHandle *sql.DB, buttonForUpdate *FormButton) error {
 
 	// TODO - Validate scheme name
 
@@ -135,7 +136,7 @@ type ButtonIconParams struct {
 	Icon string `json:"icon"`
 }
 
-func (updateParams ButtonIconParams) updateProps(buttonForUpdate *FormButton) error {
+func (updateParams ButtonIconParams) updateProps(trackerDBHandle *sql.DB, buttonForUpdate *FormButton) error {
 
 	// TODO - Validate icon name
 
@@ -149,7 +150,7 @@ type ButtonVisibilityParams struct {
 	common.ComponentVisibilityProperties
 }
 
-func (updateParams ButtonVisibilityParams) updateProps(buttonForUpdate *FormButton) error {
+func (updateParams ButtonVisibilityParams) updateProps(trackerDBHandle *sql.DB, buttonForUpdate *FormButton) error {
 
 	// TODO - Validate conditions
 

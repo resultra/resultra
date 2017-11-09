@@ -3,6 +3,7 @@ package formButton
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -31,8 +32,13 @@ func newButton(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
 
-	if headerRef, err := saveNewButton(params); err != nil {
+	if headerRef, err := saveNewButton(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *headerRef)
@@ -51,8 +57,13 @@ func getButtonAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
 
-	if buttonRef, err := getButtonFromButtonID(params.ButtonID); err != nil {
+	if buttonRef, err := getButtonFromButtonID(trackerDBHandle, params.ButtonID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *buttonRef)
@@ -61,7 +72,12 @@ func getButtonAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func processButtonPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater ButtonPropUpdater) {
-	if headerRef, err := updateButtonProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if headerRef, err := updateButtonProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, headerRef)

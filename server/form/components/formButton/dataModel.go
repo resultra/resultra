@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -42,9 +41,9 @@ func saveButton(destDBHandle *sql.DB, newButton FormButton) error {
 // TODO - Move the datamodel specific functions in the form package to a lower level package
 // (which doesn't depend on this package), but
 // keep the controller-level functionality in a higher level package.
-func validateFormExists(formID string) error {
+func validateFormExists(trackerDBHandle *sql.DB, formID string) error {
 	var retrievedFormID string
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT form_id FROM forms
+	getErr := trackerDBHandle.QueryRow(`SELECT form_id FROM forms
 		 WHERE form_id=$1 LIMIT 1`, formID).Scan(&retrievedFormID)
 	if getErr != nil {
 		return fmt.Errorf("validateFormExists: Unabled to get form: form ID = %v: datastore err=%v",
@@ -53,13 +52,13 @@ func validateFormExists(formID string) error {
 	return nil
 }
 
-func saveNewButton(params NewButtonParams) (*FormButton, error) {
+func saveNewButton(trackerDBHandle *sql.DB, params NewButtonParams) (*FormButton, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid form component layout parameters: %+v", params)
 	}
 
-	if validateErr := validateFormExists(params.LinkedFormID); validateErr != nil {
+	if validateErr := validateFormExists(trackerDBHandle, params.LinkedFormID); validateErr != nil {
 		return nil, validateErr
 	}
 
@@ -71,7 +70,7 @@ func saveNewButton(params NewButtonParams) (*FormButton, error) {
 		ButtonID:   uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveButton(databaseWrapper.DBHandle(), newButton); err != nil {
+	if err := saveButton(trackerDBHandle, newButton); err != nil {
 		return nil, fmt.Errorf("saveNewButton: Unable to save button with params=%+v: error = %v", params, err)
 	}
 
@@ -81,19 +80,20 @@ func saveNewButton(params NewButtonParams) (*FormButton, error) {
 
 }
 
-func getButtonFromButtonID(buttonID string) (*FormButton, error) {
+func getButtonFromButtonID(trackerDBHandle *sql.DB, buttonID string) (*FormButton, error) {
 
-	parentFormID, err := common.GetFormComponentFormID(buttonID)
+	parentFormID, err := common.GetFormComponentFormID(trackerDBHandle, buttonID)
 	if err != nil {
 		return nil, fmt.Errorf("getButtonFromButtonID: Unable to retrieve button: %v", err)
 	}
-	return getButton(parentFormID, buttonID)
+	return getButton(trackerDBHandle, parentFormID, buttonID)
 }
 
-func getButton(parentFormID string, buttonID string) (*FormButton, error) {
+func getButton(trackerDBHandle *sql.DB, parentFormID string, buttonID string) (*FormButton, error) {
 
 	buttonProps := newDefaultButtonProperties()
-	if getErr := common.GetFormComponent(buttonEntityKind, parentFormID, buttonID, &buttonProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle, buttonEntityKind,
+		parentFormID, buttonID, &buttonProps); getErr != nil {
 		return nil, fmt.Errorf("getButton: Unable to retrieve button: %v", getErr)
 	}
 
@@ -131,8 +131,8 @@ func getButtonsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]FormButton, 
 
 }
 
-func GetButtons(parentFormID string) ([]FormButton, error) {
-	return getButtonsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetButtons(trackerDBHandle *sql.DB, parentFormID string) ([]FormButton, error) {
+	return getButtonsFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneButtons(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -164,9 +164,9 @@ func CloneButtons(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID
 	return nil
 }
 
-func updateExistingButton(updatedButton *FormButton) (*FormButton, error) {
+func updateExistingButton(trackerDBHandle *sql.DB, updatedButton *FormButton) (*FormButton, error) {
 
-	if updateErr := common.UpdateFormComponent(buttonEntityKind, updatedButton.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, buttonEntityKind, updatedButton.ParentFormID,
 		updatedButton.ButtonID, updatedButton.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingButton: failure updating button: %v", updateErr)
 	}

@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -32,7 +33,13 @@ func registerNewUserAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newUserResp := saveNewUser(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	newUserResp := saveNewUser(trackerDBHandle, params)
 	api.WriteJSONResponse(w, newUserResp)
 
 }
@@ -77,7 +84,13 @@ func getUserInfoAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userInfo, err := GetUserInfoByID(params.UserID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	userInfo, err := GetUserInfoByID(trackerDBHandle, params.UserID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -97,10 +110,16 @@ func getUsersInfoAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	usersInfo := []UserInfo{}
 
 	for _, currUserID := range params.UserIDs {
-		userInfo, err := GetUserInfoByID(currUserID)
+		userInfo, err := GetUserInfoByID(trackerDBHandle, currUserID)
 		if err != nil {
 			api.WriteErrorResponse(w, err)
 			return
@@ -118,7 +137,13 @@ func searchUsersAPI(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Search users: term = %v, page = %v", searchTerm, page)
 
-	results, err := searchUsers(searchTerm)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	results, err := searchUsers(trackerDBHandle, searchTerm)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return

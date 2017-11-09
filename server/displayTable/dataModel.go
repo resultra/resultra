@@ -3,7 +3,6 @@ package displayTable
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -38,7 +37,7 @@ func saveTable(destDBHandle *sql.DB, newTable DisplayTable) error {
 
 }
 
-func newTable(params NewTableParams) (*DisplayTable, error) {
+func newTable(trackerDBHandle *sql.DB, params NewTableParams) (*DisplayTable, error) {
 
 	sanitizedName, sanitizeErr := stringValidation.SanitizeName(params.Name)
 	if sanitizeErr != nil {
@@ -51,19 +50,19 @@ func newTable(params NewTableParams) (*DisplayTable, error) {
 		Name:             sanitizedName,
 		Properties:       newDefaultDisplayTableProperties()}
 
-	if err := saveTable(databaseWrapper.DBHandle(), newTable); err != nil {
+	if err := saveTable(trackerDBHandle, newTable); err != nil {
 		return nil, fmt.Errorf("newTable: error saving table: %v", err)
 	}
 
 	return &newTable, nil
 }
 
-func GetTable(tableID string) (*DisplayTable, error) {
+func GetTable(trackerDBHandle *sql.DB, tableID string) (*DisplayTable, error) {
 
 	tableName := ""
 	encodedProps := ""
 	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT database_id,name,properties FROM table_views
+	getErr := trackerDBHandle.QueryRow(`SELECT database_id,name,properties FROM table_views
 		 WHERE table_id=$1 LIMIT 1`, tableID).Scan(&databaseID, &tableName, &encodedProps)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetTable: Unabled to get table: table ID = %v: datastore err=%v",
@@ -119,8 +118,8 @@ func getAllTablesFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Displa
 
 }
 
-func getAllTables(parentDatabaseID string) ([]DisplayTable, error) {
-	return getAllTablesFromSrc(databaseWrapper.DBHandle(), parentDatabaseID)
+func getAllTables(trackerDBHandle *sql.DB, parentDatabaseID string) ([]DisplayTable, error) {
+	return getAllTablesFromSrc(trackerDBHandle, parentDatabaseID)
 }
 
 func CloneTables(cloneParams *trackerDatabase.CloneDatabaseParams) error {
@@ -167,14 +166,14 @@ func CloneTables(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
 }
 
-func updateExistingTable(tableID string, updatedTable *DisplayTable) (*DisplayTable, error) {
+func updateExistingTable(trackerDBHandle *sql.DB, tableID string, updatedTable *DisplayTable) (*DisplayTable, error) {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(updatedTable.Properties)
 	if encodeErr != nil {
 		return nil, fmt.Errorf("updateExistingTable: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE table_views 
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE table_views 
 				SET properties=$1, name=$2
 				WHERE table_id=$3`,
 		encodedProps, updatedTable.Name, tableID); updateErr != nil {
@@ -186,9 +185,9 @@ func updateExistingTable(tableID string, updatedTable *DisplayTable) (*DisplayTa
 
 }
 
-func getTableDatabaseID(tableID string) (string, error) {
+func getTableDatabaseID(trackerDBHandle *sql.DB, tableID string) (string, error) {
 
-	theTable, err := GetTable(tableID)
+	theTable, err := GetTable(trackerDBHandle, tableID)
 	if err != nil {
 		return "", nil
 	}
@@ -200,14 +199,14 @@ type TableNameValidationInfo struct {
 	ID   string
 }
 
-func validateUniqueTableName(databaseID string, tableID string, tableName string) error {
+func validateUniqueTableName(trackerDBHandle *sql.DB, databaseID string, tableID string, tableName string) error {
 	// Query to validate the name is unique:
 	// 1. Select all the tables in the same database
 	// 2. Include tables with the same name.
 	// 3. Exclude tables with the same table ID. In other words
 	//    the name is considered valid if it is the same as its
 	//    existing name.
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT table_views.table_id,table_views.name 
 			FROM table_views,databases
 			WHERE databases.database_id=$1 AND
@@ -227,25 +226,25 @@ func validateUniqueTableName(databaseID string, tableID string, tableName string
 
 }
 
-func validateTableName(tableID string, tableName string) error {
+func validateTableName(trackerDBHandle *sql.DB, tableID string, tableName string) error {
 
 	if !stringValidation.WellFormedItemName(tableName) {
 		return fmt.Errorf("Invalid table name")
 	}
 
-	databaseID, err := getTableDatabaseID(tableID)
+	databaseID, err := getTableDatabaseID(trackerDBHandle, tableID)
 	if err != nil {
 		return fmt.Errorf("System error validating table name (%v)", err)
 	}
 
-	if uniqueErr := validateUniqueTableName(databaseID, tableID, tableName); uniqueErr != nil {
+	if uniqueErr := validateUniqueTableName(trackerDBHandle, databaseID, tableID, tableName); uniqueErr != nil {
 		return uniqueErr
 	}
 
 	return nil
 }
 
-func validateNewTableName(databaseID string, tableName string) error {
+func validateNewTableName(trackerDBHandle *sql.DB, databaseID string, tableName string) error {
 
 	if !stringValidation.WellFormedItemName(tableName) {
 		return fmt.Errorf("Invalid table name")
@@ -254,7 +253,7 @@ func validateNewTableName(databaseID string, tableName string) error {
 	// No table will have an empty tableID, so this will cause test for unique
 	// table names to return true if any table already has the given tableName.
 	tableID := ""
-	if uniqueErr := validateUniqueTableName(databaseID, tableID, tableName); uniqueErr != nil {
+	if uniqueErr := validateUniqueTableName(trackerDBHandle, databaseID, tableID, tableName); uniqueErr != nil {
 		return uniqueErr
 	}
 

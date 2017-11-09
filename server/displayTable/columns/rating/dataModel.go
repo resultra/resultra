@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -45,9 +44,9 @@ func saveRating(destDBHandle *sql.DB, newRating Rating) error {
 	return nil
 }
 
-func saveNewRating(params NewRatingParams) (*Rating, error) {
+func saveNewRating(trackerDBHandle *sql.DB, params NewRatingParams) (*Rating, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validRatingFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validRatingFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewRating: %v", fieldErr)
 	}
 
@@ -61,7 +60,7 @@ func saveNewRating(params NewRatingParams) (*Rating, error) {
 		ColType:    ratingEntityKind,
 		Properties: properties}
 
-	if saveErr := saveRating(databaseWrapper.DBHandle(), newRating); saveErr != nil {
+	if saveErr := saveRating(trackerDBHandle, newRating); saveErr != nil {
 		return nil, fmt.Errorf("saveNewRating: Unable to save rating with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -71,10 +70,10 @@ func saveNewRating(params NewRatingParams) (*Rating, error) {
 
 }
 
-func getRating(parentTableID string, ratingID string) (*Rating, error) {
+func getRating(trackerDBHandle *sql.DB, parentTableID string, ratingID string) (*Rating, error) {
 
 	ratingProps := newDefaultRatingProperties()
-	if getErr := common.GetTableColumn(ratingEntityKind, parentTableID, ratingID, &ratingProps); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, ratingEntityKind, parentTableID, ratingID, &ratingProps); getErr != nil {
 		return nil, fmt.Errorf("getRating: Unable to retrieve rating: %v", getErr)
 	}
 
@@ -116,8 +115,8 @@ func getRatingsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Rating, err
 	return ratings, nil
 }
 
-func GetRatings(parentTableID string) ([]Rating, error) {
-	return getRatingsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetRatings(trackerDBHandle *sql.DB, parentTableID string) ([]Rating, error) {
+	return getRatingsFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneRatings(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
@@ -151,9 +150,9 @@ func CloneRatings(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableI
 	return nil
 }
 
-func updateExistingRating(updatedRating *Rating) (*Rating, error) {
+func updateExistingRating(trackerDBHandle *sql.DB, updatedRating *Rating) (*Rating, error) {
 
-	if updateErr := common.UpdateTableColumn(ratingEntityKind, updatedRating.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, ratingEntityKind, updatedRating.ParentTableID,
 		updatedRating.RatingID, updatedRating.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingRating: failure updating rating: %v", updateErr)
 	}

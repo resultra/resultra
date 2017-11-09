@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -45,13 +44,13 @@ func saveSocialButton(destDBHandle *sql.DB, newSocialButton SocialButton) error 
 	return nil
 }
 
-func saveNewSocialButton(params NewSocialButtonParams) (*SocialButton, error) {
+func saveNewSocialButton(trackerDBHandle *sql.DB, params NewSocialButtonParams) (*SocialButton, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := field.ValidateField(params.FieldID, validateSocialButtonFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validateSocialButtonFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewSocialButton: %v", fieldErr)
 	}
 
@@ -63,7 +62,7 @@ func saveNewSocialButton(params NewSocialButtonParams) (*SocialButton, error) {
 		SocialButtonID: uniqueID.GenerateSnowflakeID(),
 		Properties:     properties}
 
-	if saveErr := saveSocialButton(databaseWrapper.DBHandle(), newSocialButton); saveErr != nil {
+	if saveErr := saveSocialButton(trackerDBHandle, newSocialButton); saveErr != nil {
 		return nil, fmt.Errorf("saveNewSocialButton: Unable to save socialButton with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -73,10 +72,11 @@ func saveNewSocialButton(params NewSocialButtonParams) (*SocialButton, error) {
 
 }
 
-func getSocialButton(parentFormID string, socialButtonID string) (*SocialButton, error) {
+func getSocialButton(trackerDBHandle *sql.DB, parentFormID string, socialButtonID string) (*SocialButton, error) {
 
 	socialButtonProps := newDefaultSocialButtonProperties()
-	if getErr := common.GetFormComponent(socialButtonEntityKind, parentFormID, socialButtonID, &socialButtonProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle,
+		socialButtonEntityKind, parentFormID, socialButtonID, &socialButtonProps); getErr != nil {
 		return nil, fmt.Errorf("getSocialButton: Unable to retrieve socialButton: %v", getErr)
 	}
 
@@ -114,8 +114,8 @@ func getSocialButtonsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Social
 	return socialButtons, nil
 }
 
-func GetSocialButtons(parentFormID string) ([]SocialButton, error) {
-	return getSocialButtonsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetSocialButtons(trackerDBHandle *sql.DB, parentFormID string) ([]SocialButton, error) {
+	return getSocialButtonsFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneSocialButtons(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -147,9 +147,9 @@ func CloneSocialButtons(cloneParams *trackerDatabase.CloneDatabaseParams, parent
 	return nil
 }
 
-func updateExistingSocialButton(updatedSocialButton *SocialButton) (*SocialButton, error) {
+func updateExistingSocialButton(trackerDBHandle *sql.DB, updatedSocialButton *SocialButton) (*SocialButton, error) {
 
-	if updateErr := common.UpdateFormComponent(socialButtonEntityKind, updatedSocialButton.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, socialButtonEntityKind, updatedSocialButton.ParentFormID,
 		updatedSocialButton.SocialButtonID, updatedSocialButton.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingSocialButton: failure updating socialButton: %v", updateErr)
 	}

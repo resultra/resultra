@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/databaseController"
 	adminCommon "resultra/datasheet/webui/admin/common"
 
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
@@ -47,14 +48,20 @@ func editRolePropsPage(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("editRolePropsPage: viewing/editing admin settings for role ID = ", roleID)
 
-	roleInfo, err := userRole.GetUserRole(roleID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	roleInfo, err := userRole.GetUserRole(trackerDBHandle, roleID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	log.Println("editRolePropsPage: viewing/editing admin settings for role = %+v", roleInfo)
 
-	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(roleInfo.ParentDatabaseID)
+	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(trackerDBHandle, roleInfo.ParentDatabaseID)
 	if dbInfoErr != nil {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
 	}

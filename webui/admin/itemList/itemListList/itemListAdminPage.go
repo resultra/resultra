@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/databaseController"
 
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/userRole"
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/common"
@@ -44,7 +45,13 @@ func itemListAdminPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	databaseID := vars["databaseID"]
 
-	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(databaseID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(trackerDBHandle, databaseID)
 	if dbInfoErr != nil {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
 	}

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -45,13 +44,13 @@ func saveSelection(destDBHandle *sql.DB, newSelection Selection) error {
 	return nil
 }
 
-func saveNewSelection(params NewSelectionParams) (*Selection, error) {
+func saveNewSelection(trackerDBHandle *sql.DB, params NewSelectionParams) (*Selection, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if compLinkErr := field.ValidateField(params.FieldID, validSelectionFieldType); compLinkErr != nil {
+	if compLinkErr := field.ValidateField(trackerDBHandle, params.FieldID, validSelectionFieldType); compLinkErr != nil {
 		return nil, fmt.Errorf("saveNewSelection: %v", compLinkErr)
 	}
 
@@ -63,7 +62,7 @@ func saveNewSelection(params NewSelectionParams) (*Selection, error) {
 		SelectionID: uniqueID.GenerateSnowflakeID(),
 		Properties:  properties}
 
-	if saveErr := saveSelection(databaseWrapper.DBHandle(), newSelection); saveErr != nil {
+	if saveErr := saveSelection(trackerDBHandle, newSelection); saveErr != nil {
 		return nil, fmt.Errorf("saveNewSelection: Unable to save text box with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -73,10 +72,11 @@ func saveNewSelection(params NewSelectionParams) (*Selection, error) {
 
 }
 
-func getSelection(parentFormID string, selectionID string) (*Selection, error) {
+func getSelection(trackerDBHandle *sql.DB, parentFormID string, selectionID string) (*Selection, error) {
 
 	selectionProps := newDefaultSelectionProperties()
-	if getErr := common.GetFormComponent(selectionEntityKind, parentFormID, selectionID, &selectionProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle,
+		selectionEntityKind, parentFormID, selectionID, &selectionProps); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to retrieve text box: %v", getErr)
 	}
 
@@ -114,8 +114,8 @@ func getSelectionsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Selection
 
 }
 
-func GetSelections(parentFormID string) ([]Selection, error) {
-	return getSelectionsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetSelections(trackerDBHandle *sql.DB, parentFormID string) ([]Selection, error) {
+	return getSelectionsFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneSelections(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -147,9 +147,9 @@ func CloneSelections(cloneParams *trackerDatabase.CloneDatabaseParams, parentFor
 	return nil
 }
 
-func updateExistingSelection(selectionID string, updatedSelection *Selection) (*Selection, error) {
+func updateExistingSelection(trackerDBHandle *sql.DB, selectionID string, updatedSelection *Selection) (*Selection, error) {
 
-	if updateErr := common.UpdateFormComponent(selectionEntityKind, updatedSelection.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, selectionEntityKind, updatedSelection.ParentFormID,
 		updatedSelection.SelectionID, updatedSelection.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingSelection: error updating existing selection component: %v", updateErr)
 	}

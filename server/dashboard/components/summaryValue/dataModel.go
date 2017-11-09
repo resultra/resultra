@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/dashboard/components/common"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
@@ -42,7 +41,7 @@ func saveSummaryVal(destDBHandle *sql.DB, newSummaryVal SummaryVal) error {
 
 }
 
-func newSummaryVal(params NewSummaryValParams) (*SummaryVal, error) {
+func newSummaryVal(trackerDBHandle *sql.DB, params NewSummaryValParams) (*SummaryVal, error) {
 
 	if len(params.ParentDashboardID) <= 0 {
 		return nil, fmt.Errorf("newSummaryVal: Error creating summary table: missing parent dashboard ID")
@@ -52,7 +51,7 @@ func newSummaryVal(params NewSummaryValParams) (*SummaryVal, error) {
 		return nil, fmt.Errorf("newSummaryVal: Invalid geometry for bar chart: %+v", params.Geometry)
 	}
 
-	valSummary, valSummaryErr := values.NewValSummary(params.ValSummary)
+	valSummary, valSummaryErr := values.NewValSummary(trackerDBHandle, params.ValSummary)
 	if valSummaryErr != nil {
 		return nil, fmt.Errorf("NewBarChart: Error creating summary values for bar chart: error = %v", valSummaryErr)
 	}
@@ -66,17 +65,18 @@ func newSummaryVal(params NewSummaryValParams) (*SummaryVal, error) {
 		SummaryValID:      uniqueID.GenerateSnowflakeID(),
 		Properties:        summaryValProps}
 
-	if saveErr := saveSummaryVal(databaseWrapper.DBHandle(), newSummaryVal); saveErr != nil {
+	if saveErr := saveSummaryVal(trackerDBHandle, newSummaryVal); saveErr != nil {
 		return nil, fmt.Errorf("newSummaryVal: Unable to save summary component with params=%+v: error = %v", params, saveErr)
 	}
 
 	return &newSummaryVal, nil
 }
 
-func GetSummaryVal(parentDashboardID string, summaryValID string) (*SummaryVal, error) {
+func GetSummaryVal(trackerDBHandle *sql.DB, parentDashboardID string, summaryValID string) (*SummaryVal, error) {
 
 	summaryValProps := newDefaultSummaryValProps()
-	if getErr := common.GetDashboardComponent(summaryValEntityKind, parentDashboardID, summaryValID, &summaryValProps); getErr != nil {
+	if getErr := common.GetDashboardComponent(trackerDBHandle,
+		summaryValEntityKind, parentDashboardID, summaryValID, &summaryValProps); getErr != nil {
 		return nil, fmt.Errorf("getBarChart: Unable to retrieve bar chart component: %v", getErr)
 	}
 
@@ -115,8 +115,8 @@ func getSummaryValsFromSrc(srcDBHandle *sql.DB, parentDashboardID string) ([]Sum
 	return summaryVals, nil
 }
 
-func GetSummaryVals(parentDashboardID string) ([]SummaryVal, error) {
-	return getSummaryValsFromSrc(databaseWrapper.DBHandle(), parentDashboardID)
+func GetSummaryVals(trackerDBHandle *sql.DB, parentDashboardID string) ([]SummaryVal, error) {
+	return getSummaryValsFromSrc(trackerDBHandle, parentDashboardID)
 }
 
 func CloneSummaryVals(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentDashboardID string) error {
@@ -156,9 +156,10 @@ func CloneSummaryVals(cloneParams *trackerDatabase.CloneDatabaseParams, srcParen
 	return nil
 }
 
-func updateExistingSummaryVal(updatedSummaryVal *SummaryVal) (*SummaryVal, error) {
+func updateExistingSummaryVal(trackerDBHandle *sql.DB,
+	updatedSummaryVal *SummaryVal) (*SummaryVal, error) {
 
-	if updateErr := common.UpdateDashboardComponent(summaryValEntityKind, updatedSummaryVal.ParentDashboardID,
+	if updateErr := common.UpdateDashboardComponent(trackerDBHandle, summaryValEntityKind, updatedSummaryVal.ParentDashboardID,
 		updatedSummaryVal.SummaryValID, updatedSummaryVal.Properties); updateErr != nil {
 		return nil, fmt.Errorf("Error updating summary table %+v: %v", updatedSummaryVal, updateErr)
 	}

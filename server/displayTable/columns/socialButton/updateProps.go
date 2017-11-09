@@ -1,6 +1,7 @@
 package socialButton
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 )
@@ -28,10 +29,10 @@ type SocialButtonPropUpdater interface {
 	updateProps(socialButton *SocialButton) error
 }
 
-func updateSocialButtonProps(propUpdater SocialButtonPropUpdater) (*SocialButton, error) {
+func updateSocialButtonProps(trackerDBHandle *sql.DB, propUpdater SocialButtonPropUpdater) (*SocialButton, error) {
 
 	// Retrieve the bar chart from the data store
-	socialButtonForUpdate, getErr := getSocialButton(propUpdater.getParentTableID(), propUpdater.getSocialButtonID())
+	socialButtonForUpdate, getErr := getSocialButton(trackerDBHandle, propUpdater.getParentTableID(), propUpdater.getSocialButtonID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateSocialButtonProps: Unable to get existing socialButton: %v", getErr)
 	}
@@ -40,7 +41,7 @@ func updateSocialButtonProps(propUpdater SocialButtonPropUpdater) (*SocialButton
 		return nil, fmt.Errorf("updateSocialButtonProps: Unable to update existing socialButton properties: %v", propUpdateErr)
 	}
 
-	updatedSocialButton, updateErr := updateExistingSocialButton(socialButtonForUpdate)
+	updatedSocialButton, updateErr := updateExistingSocialButton(trackerDBHandle, socialButtonForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateSocialButtonProps: Unable to update existing socialButton properties: datastore update error =  %v", updateErr)
 	}

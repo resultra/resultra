@@ -3,6 +3,7 @@ package record
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/uniqueID"
 )
@@ -43,7 +44,13 @@ func setDraftStatusAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := setDraftStatus(params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := setDraftStatus(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, true)

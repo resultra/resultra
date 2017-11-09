@@ -1,6 +1,7 @@
 package emailAddr
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 )
@@ -28,10 +29,10 @@ type EmailAddrPropUpdater interface {
 	updateProps(emailAddr *EmailAddr) error
 }
 
-func updateEmailAddrProps(propUpdater EmailAddrPropUpdater) (*EmailAddr, error) {
+func updateEmailAddrProps(trackerDBHandle *sql.DB, propUpdater EmailAddrPropUpdater) (*EmailAddr, error) {
 
 	// Retrieve the bar chart from the data store
-	emailAddrForUpdate, getErr := getEmailAddr(propUpdater.getParentTableID(), propUpdater.getEmailAddrID())
+	emailAddrForUpdate, getErr := getEmailAddr(trackerDBHandle, propUpdater.getParentTableID(), propUpdater.getEmailAddrID())
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateEmailAddrProps: Unable to get existing text box: %v", getErr)
 	}
@@ -40,7 +41,7 @@ func updateEmailAddrProps(propUpdater EmailAddrPropUpdater) (*EmailAddr, error) 
 		return nil, fmt.Errorf("UpdateEmailAddrProps: Unable to update existing text box properties: %v", propUpdateErr)
 	}
 
-	emailAddr, updateErr := updateExistingEmailAddr(propUpdater.getEmailAddrID(), emailAddrForUpdate)
+	emailAddr, updateErr := updateExistingEmailAddr(trackerDBHandle, propUpdater.getEmailAddrID(), emailAddrForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateEmailAddrProps: Unable to update existing text box properties: datastore update error =  %v", updateErr)
 	}

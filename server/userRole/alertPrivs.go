@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/trackerDatabase"
 )
@@ -35,8 +34,8 @@ func setAlertRolePrivsToDest(destDBHandle *sql.DB, params SetAlertRolePrivsParam
 
 }
 
-func SetAlertRolePrivs(params SetAlertRolePrivsParams) error {
-	return setAlertRolePrivsToDest(databaseWrapper.DBHandle(), params)
+func SetAlertRolePrivs(trackerDBHandle *sql.DB, params SetAlertRolePrivsParams) error {
+	return setAlertRolePrivsToDest(trackerDBHandle, params)
 }
 
 func getAllAlertPrivsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]SetAlertRolePrivsParams, error) {
@@ -108,9 +107,9 @@ type RoleAlertPriv struct {
 	AlertEnabled bool   `json:"alertEnabled"`
 }
 
-func getDefaultAlertPrivs(databaseID string) ([]RoleAlertPriv, error) {
+func getDefaultAlertPrivs(trackerDBHandle *sql.DB, databaseID string) ([]RoleAlertPriv, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT alerts.alert_id,alerts.name
 			FROM alerts
 			WHERE alerts.database_id=$1`, databaseID)
@@ -131,14 +130,14 @@ func getDefaultAlertPrivs(databaseID string) ([]RoleAlertPriv, error) {
 }
 
 // For a given role, get the list of roles with privileges
-func GetRoleAlertPrivs(roleID string) ([]RoleAlertPriv, error) {
+func GetRoleAlertPrivs(trackerDBHandle *sql.DB, roleID string) ([]RoleAlertPriv, error) {
 
-	roleDatabaseID, roleDBErr := GetUserRoleDatabaseID(roleID)
+	roleDatabaseID, roleDBErr := GetUserRoleDatabaseID(trackerDBHandle, roleID)
 	if roleDBErr != nil {
 		return nil, fmt.Errorf("GetAlertPrivs: Failure querying database: %v", roleDBErr)
 	}
 
-	defaultAlerts, getAlertErr := getDefaultAlertPrivs(roleDatabaseID)
+	defaultAlerts, getAlertErr := getDefaultAlertPrivs(trackerDBHandle, roleDatabaseID)
 	if getAlertErr != nil {
 		return nil, fmt.Errorf("GetAlertPrivs: Failure querying database: %v", getAlertErr)
 	}
@@ -150,7 +149,7 @@ func GetRoleAlertPrivs(roleID string) ([]RoleAlertPriv, error) {
 	}
 
 	// Retrieve alerts for which the privileges have been explicitely set.
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT alerts.alert_id,alerts.name
 			FROM alert_role_privs,alerts
 			WHERE alert_role_privs.role_id=$1 AND
@@ -188,14 +187,14 @@ type AlertRolePriv struct {
 	AlertEnabled bool   `json:"alertEnabled"`
 }
 
-func GetAlertRolePrivs(alertID string) ([]AlertRolePriv, error) {
+func GetAlertRolePrivs(trackerDBHandle *sql.DB, alertID string) ([]AlertRolePriv, error) {
 
-	alertDatabaseID, alertDBErr := getAlertDatabaseID(alertID)
+	alertDatabaseID, alertDBErr := getAlertDatabaseID(trackerDBHandle, alertID)
 	if alertDBErr != nil {
 		return nil, fmt.Errorf("GetAlertPrivs: Failure querying database: %v", alertDBErr)
 	}
 
-	allRoles, getRoleErr := GetDatabaseRoles(alertDatabaseID)
+	allRoles, getRoleErr := GetDatabaseRoles(trackerDBHandle, alertDatabaseID)
 	if getRoleErr != nil {
 		return nil, fmt.Errorf("GetAlertPrivs: Failure querying database: %v", getRoleErr)
 	}
@@ -211,7 +210,7 @@ func GetAlertRolePrivs(alertID string) ([]AlertRolePriv, error) {
 	}
 
 	// Retrieve alerts for which the privileges have been explicitely set.
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT database_roles.role_id,database_roles.name
 			FROM alert_role_privs,database_roles
 			WHERE alert_role_privs.alert_id=$1 AND
@@ -239,8 +238,8 @@ func GetAlertRolePrivs(alertID string) ([]AlertRolePriv, error) {
 	return alertRolePrivs, nil
 }
 
-func GetAlertsWithUserPrivs(databaseID string, userID string) (map[string]bool, error) {
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+func GetAlertsWithUserPrivs(trackerDBHandle *sql.DB, databaseID string, userID string) (map[string]bool, error) {
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT alert_role_privs.alert_id
 				FROM alert_role_privs,database_roles,collaborator_roles,collaborators
 				WHERE database_roles.database_id=$1
@@ -264,7 +263,7 @@ func GetAlertsWithUserPrivs(databaseID string, userID string) (map[string]bool, 
 	return visibleAlerts, nil
 }
 
-func CurrentUserHasAlertPrivs(req *http.Request,
+func CurrentUserHasAlertPrivs(trackerDBHandle *sql.DB, req *http.Request,
 	databaseID string, alertID string) (bool, error) {
 
 	currUserID, userErr := userAuth.GetCurrentUserID(req)
@@ -272,7 +271,7 @@ func CurrentUserHasAlertPrivs(req *http.Request,
 		return false, fmt.Errorf("verifyCurrUserIsDatabaseAdmin: can't verify user: %v", userErr)
 	}
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT alert_role_privs.alert_id
 					FROM alert_role_privs,database_roles,collaborator_roles,collaborators
 					WHERE database_roles.database_id=$1

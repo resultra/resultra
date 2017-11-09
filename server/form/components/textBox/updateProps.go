@@ -1,6 +1,7 @@
 package textBox
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
@@ -29,10 +30,10 @@ type TextBoxPropUpdater interface {
 	updateProps(textBox *TextBox) error
 }
 
-func updateTextBoxProps(propUpdater TextBoxPropUpdater) (*TextBox, error) {
+func updateTextBoxProps(trackerDBHandle *sql.DB, propUpdater TextBoxPropUpdater) (*TextBox, error) {
 
 	// Retrieve the bar chart from the data store
-	textBoxForUpdate, getErr := getTextBox(propUpdater.getParentFormID(), propUpdater.getTextBoxID())
+	textBoxForUpdate, getErr := getTextBox(trackerDBHandle, propUpdater.getParentFormID(), propUpdater.getTextBoxID())
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateTextBoxProps: Unable to get existing text box: %v", getErr)
 	}
@@ -41,7 +42,7 @@ func updateTextBoxProps(propUpdater TextBoxPropUpdater) (*TextBox, error) {
 		return nil, fmt.Errorf("UpdateTextBoxProps: Unable to update existing text box properties: %v", propUpdateErr)
 	}
 
-	textBox, updateErr := updateExistingTextBox(propUpdater.getTextBoxID(), textBoxForUpdate)
+	textBox, updateErr := updateExistingTextBox(trackerDBHandle, propUpdater.getTextBoxID(), textBoxForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateTextBoxProps: Unable to update existing text box properties: datastore update error =  %v", updateErr)
 	}

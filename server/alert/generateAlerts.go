@@ -1,6 +1,7 @@
 package alert
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/calcField"
@@ -22,6 +23,7 @@ type AlertGenerationContext struct {
 }
 
 type RecordAlertProcessingConfig struct {
+	TrackerDBHandle *sql.DB
 	RecordID        string
 	Record          record.Record
 	CalcFieldConfig *calcField.CalcFieldUpdateConfig
@@ -36,7 +38,8 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 	// Cell updates need to be in chronological order to be processed for alerts
 	sort.Sort(record.CellUpdateByUpdateTime(recProcessingConfig.RecCellUpdates.CellUpdates))
 
-	cellUpdateFieldValIndex, indexErr := record.NewUpdateFieldValueIndexForCellUpdates(recProcessingConfig.RecCellUpdates,
+	cellUpdateFieldValIndex, indexErr := record.NewUpdateFieldValueIndexForCellUpdates(
+		recProcessingConfig.RecCellUpdates,
 		recProcessingConfig.CalcFieldConfig.FieldsByID)
 	if indexErr != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", indexErr)
@@ -129,13 +132,13 @@ type AlertGenerationResult struct {
 	Notifications []AlertNotification `json:"notifications"`
 }
 
-func getAlertsWithUserNotification(databaseID string, userID string) ([]Alert, error) {
+func getAlertsWithUserNotification(trackerDBHandle *sql.DB, databaseID string, userID string) ([]Alert, error) {
 
-	allAlerts, alertErr := getAllAlerts(databaseID)
+	allAlerts, alertErr := getAllAlerts(trackerDBHandle, databaseID)
 	if alertErr != nil {
 		return nil, fmt.Errorf("getAlertsWithUserNotification: Error getting alerts: %v", alertErr)
 	}
-	userAlertByID, privsErr := userRole.GetAlertsWithUserPrivs(databaseID, userID)
+	userAlertByID, privsErr := userRole.GetAlertsWithUserPrivs(trackerDBHandle, databaseID, userID)
 	if privsErr != nil {
 		return nil, fmt.Errorf("getAlertsWithUserNotification: Error getting user alert notifications: %v", privsErr)
 	}
@@ -152,10 +155,11 @@ func getAlertsWithUserNotification(databaseID string, userID string) ([]Alert, e
 
 }
 
-func createAlertGenerationContexts(currUserID string, alerts []Alert) ([]AlertGenerationContext, error) {
+func createAlertGenerationContexts(trackerDBHandle *sql.DB, currUserID string, alerts []Alert) ([]AlertGenerationContext, error) {
 	alertContexts := []AlertGenerationContext{}
 	for _, currAlert := range alerts {
-		triggerCondContext, condErr := recordFilter.CreateFilterRuleContexts(currUserID, currAlert.Properties.TriggerConditions.FilterRules)
+		triggerCondContext, condErr := recordFilter.CreateFilterRuleContexts(trackerDBHandle,
+			currUserID, currAlert.Properties.TriggerConditions.FilterRules)
 		if condErr != nil {
 			return nil, fmt.Errorf("GenerateRecordAlerts: error setting up trigger condition filter contexts: %v", condErr)
 		}
@@ -169,22 +173,22 @@ func createAlertGenerationContexts(currUserID string, alerts []Alert) ([]AlertGe
 
 // GenerateAllAlerts regenerates all alerts for all records. This is the top-level function to re-generate all the
 // alert notifications at once.
-func generateAllAlerts(currUserID string, databaseID string, userID string) (*AlertGenerationResult, error) {
+func generateAllAlerts(trackerDBHandle *sql.DB, currUserID string, databaseID string, userID string) (*AlertGenerationResult, error) {
 
 	// Create a config/context object used for calculating the calculated fields for alert generation. This same
 	// config can be reused by the alert generation for all the records.
-	calcFieldUpdateConfig, err := calcField.CreateCalcFieldUpdateConfig(currUserID, databaseID)
+	calcFieldUpdateConfig, err := calcField.CreateCalcFieldUpdateConfig(trackerDBHandle, currUserID, databaseID)
 	if err != nil {
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
 
 	// Get all cell updates at once for the given tracking databse. This is much faster than doing a database call for each and every record.
-	recordCellUpdateMap, err := record.GetAllNonDraftCellUpdates(databaseID, record.FullyCommittedCellUpdatesChangeSetID)
+	recordCellUpdateMap, err := record.GetAllNonDraftCellUpdates(trackerDBHandle, databaseID, record.FullyCommittedCellUpdatesChangeSetID)
 	if err != nil {
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
 
-	alerts, alertErr := getAlertsWithUserNotification(databaseID, userID)
+	alerts, alertErr := getAlertsWithUserNotification(trackerDBHandle, databaseID, userID)
 	if alertErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: Error getting alerts: %v", alertErr)
 	}
@@ -192,13 +196,13 @@ func generateAllAlerts(currUserID string, databaseID string, userID string) (*Al
 	for _, currAlert := range alerts {
 		alertsByID[currAlert.AlertID] = currAlert
 	}
-	alertContexts, contextErr := createAlertGenerationContexts(currUserID, alerts)
+	alertContexts, contextErr := createAlertGenerationContexts(trackerDBHandle, currUserID, alerts)
 	if contextErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: Error setting up alert contexts: %v", contextErr)
 
 	}
 
-	recordIDRecordMap, err := record.GetNonDraftRecordIDRecordMap(databaseID)
+	recordIDRecordMap, err := record.GetNonDraftRecordIDRecordMap(trackerDBHandle, databaseID)
 	if err != nil {
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
@@ -246,33 +250,35 @@ func generateAllAlerts(currUserID string, databaseID string, userID string) (*Al
 
 // GenerateOneRecordAlerts is a top-level entry point for regenerating the alerts for an entire
 // tracker, but a single recordID
-func GenerateOneRecordAlerts(currUserID string, databaseID string, recordID string, userID string) ([]AlertNotification, error) {
+func GenerateOneRecordAlerts(trackerDBHandle *sql.DB,
+	currUserID string, databaseID string, recordID string, userID string) ([]AlertNotification, error) {
 
 	log.Printf("Regenerating alerts ...")
 
-	calcFieldUpdateConfig, err := calcField.CreateCalcFieldUpdateConfig(currUserID, databaseID)
+	calcFieldUpdateConfig, err := calcField.CreateCalcFieldUpdateConfig(trackerDBHandle, currUserID, databaseID)
 	if err != nil {
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
 
 	// Retrieve a list of sorted record updates.
-	recCellUpdates, getErr := record.GetRecordCellUpdates(recordID, record.FullyCommittedCellUpdatesChangeSetID)
+	recCellUpdates, getErr := record.GetRecordCellUpdates(trackerDBHandle, recordID, record.FullyCommittedCellUpdatesChangeSetID)
 	if getErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: failure retrieving cell updates for record = %v: error = %v",
 			recordID, getErr)
 	}
 
-	alerts, alertErr := getAlertsWithUserNotification(databaseID, userID)
+	alerts, alertErr := getAlertsWithUserNotification(trackerDBHandle, databaseID, userID)
 	if alertErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: Error getting alerts: %v", alertErr)
 	}
-	alertContexts, contextErr := createAlertGenerationContexts(currUserID, alerts)
+	alertContexts, contextErr := createAlertGenerationContexts(trackerDBHandle, currUserID, alerts)
 	if contextErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: Error setting up alert contexts: %v", contextErr)
 
 	}
 
 	alertProcessConfig := RecordAlertProcessingConfig{
+		TrackerDBHandle: trackerDBHandle,
 		RecordID:        recordID,
 		CalcFieldConfig: calcFieldUpdateConfig,
 		RecCellUpdates:  recCellUpdates,

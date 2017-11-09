@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/trackerDatabase"
 	"time"
@@ -38,9 +37,9 @@ func saveNewGlobal(destDBHandle *sql.DB, newGlobal Global) error {
 	return nil
 }
 
-func newGlobal(params NewGlobalParams) (*Global, error) {
+func newGlobal(trackerDBHandle *sql.DB, params NewGlobalParams) (*Global, error) {
 
-	validateErr := validateNewGlobalName(params.ParentDatabaseID, params.Name)
+	validateErr := validateNewGlobalName(trackerDBHandle, params.ParentDatabaseID, params.Name)
 	if validateErr != nil {
 		return nil, validateErr
 	}
@@ -49,7 +48,7 @@ func newGlobal(params NewGlobalParams) (*Global, error) {
 		return nil, fmt.Errorf("newGlobal: Invalid type = %v", params.Type)
 	}
 
-	if refNameErr := validateNewReferenceName(params.ParentDatabaseID, params.RefName); refNameErr != nil {
+	if refNameErr := validateNewReferenceName(trackerDBHandle, params.ParentDatabaseID, params.RefName); refNameErr != nil {
 		return nil, fmt.Errorf("newGlobal: Invalid formula reference name = %v: %v", params.RefName, refNameErr)
 	}
 
@@ -59,7 +58,7 @@ func newGlobal(params NewGlobalParams) (*Global, error) {
 		RefName:  params.RefName,
 		Type:     params.Type}
 
-	if err := saveNewGlobal(databaseWrapper.DBHandle(), newGlobal); err != nil {
+	if err := saveNewGlobal(trackerDBHandle, newGlobal); err != nil {
 		return nil, fmt.Errorf("newGlobal: Can't create global: error = %v", err)
 	}
 
@@ -68,10 +67,10 @@ func newGlobal(params NewGlobalParams) (*Global, error) {
 	return &newGlobal, nil
 }
 
-func getGlobal(globalID string) (*Global, error) {
+func getGlobal(trackerDBHandle *sql.DB, globalID string) (*Global, error) {
 
 	var theGlobal Global
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT database_id,global_id,name,ref_name,type 
 			FROM globals 
 			WHERE globals.global_id=$1 LIMIT 1`,
@@ -118,8 +117,8 @@ func getGlobalsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Global, 
 
 }
 
-func GetGlobals(parentDatabaseID string) ([]Global, error) {
-	return getGlobalsFromSrc(databaseWrapper.DBHandle(), parentDatabaseID)
+func GetGlobals(trackerDBHandle *sql.DB, parentDatabaseID string) ([]Global, error) {
+	return getGlobalsFromSrc(trackerDBHandle, parentDatabaseID)
 }
 
 func CloneGlobals(cloneParams *trackerDatabase.CloneDatabaseParams) error {
@@ -154,9 +153,9 @@ func CloneGlobals(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
 type GlobalIDGlobalIndex map[string]Global
 
-func GetIndexedGlobals(parentDatabaseID string) (GlobalIDGlobalIndex, error) {
+func GetIndexedGlobals(trackerDBHandle *sql.DB, parentDatabaseID string) (GlobalIDGlobalIndex, error) {
 
-	globals, getGlobalErr := GetGlobals(parentDatabaseID)
+	globals, getGlobalErr := GetGlobals(trackerDBHandle, parentDatabaseID)
 	if getGlobalErr != nil {
 		return nil, fmt.Errorf("GetIndexedGlobals: Failure getting globals: %v", getGlobalErr)
 
@@ -171,10 +170,10 @@ func GetIndexedGlobals(parentDatabaseID string) (GlobalIDGlobalIndex, error) {
 	return globalIDGlobalIndex, nil
 }
 
-func getGlobalDatabaseID(globalID string) (string, error) {
+func getGlobalDatabaseID(trackerDBHandle *sql.DB, globalID string) (string, error) {
 
 	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT database_id 
 			FROM globals 
 			WHERE globals.global_id=$1 LIMIT 1`,
@@ -196,7 +195,7 @@ type GlobalValUpdate struct {
 	Value           string `json:value`
 }
 
-func saveValUpdate(globalID string, encodedValue string) (*GlobalValUpdate, error) {
+func saveValUpdate(trackerDBHandle *sql.DB, globalID string, encodedValue string) (*GlobalValUpdate, error) {
 
 	valUpdate := GlobalValUpdate{
 		UpdateID:        uniqueID.GenerateSnowflakeID(),
@@ -204,7 +203,7 @@ func saveValUpdate(globalID string, encodedValue string) (*GlobalValUpdate, erro
 		UpdateTimestamp: time.Now().UTC(),
 		Value:           encodedValue}
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(
+	if _, insertErr := trackerDBHandle.Exec(
 		`INSERT INTO global_updates (update_id,global_id,update_timestamp_utc,value) VALUES ($1,$2,$3,$4)`,
 		valUpdate.UpdateID, valUpdate.GlobalID, valUpdate.UpdateTimestamp, valUpdate.Value); insertErr != nil {
 		return nil, fmt.Errorf("saveValUpdate: Can't save global value: error = %v", insertErr)
@@ -215,9 +214,9 @@ func saveValUpdate(globalID string, encodedValue string) (*GlobalValUpdate, erro
 }
 
 // getValUpdates retrieves a list of value updates for all the globals in the database.
-func getValUpdates(parentDatabaseID string) ([]GlobalValUpdate, error) {
+func getValUpdates(trackerDBHandle *sql.DB, parentDatabaseID string) ([]GlobalValUpdate, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(`SELECT update_id,global_updates.global_id,update_timestamp_utc,value
+	rows, queryErr := trackerDBHandle.Query(`SELECT update_id,global_updates.global_id,update_timestamp_utc,value
 			FROM globals,global_updates
 			WHERE globals.database_id=$1 and globals.global_id=global_updates.global_id
 			ORDER BY globals.global_id,update_timestamp_utc`,

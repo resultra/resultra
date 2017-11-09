@@ -1,16 +1,17 @@
 package recordUpdate
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordValue"
 	"resultra/datasheet/server/recordValueMappingController"
 )
 
-func newRecord(currUserID string, params record.NewRecordParams) (*recordValue.RecordValueResults, error) {
+func newRecord(trackerDBHandle *sql.DB, currUserID string, params record.NewRecordParams) (*recordValue.RecordValueResults, error) {
 
 	// Perform the low-level datastore record creation
-	newRecord, newErr := record.NewRecord(params)
+	newRecord, newErr := record.NewRecord(trackerDBHandle, params)
 	if newErr != nil {
 		return nil, fmt.Errorf("newRecord: Can't create record: err = %v", newErr)
 	}
@@ -22,7 +23,7 @@ func newRecord(currUserID string, params record.NewRecordParams) (*recordValue.R
 	// calculated fields may also have fixed values which don't depend on any values being set
 	// in the record.
 	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
-		currUserID, newRecord.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
+		trackerDBHandle, currUserID, newRecord.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(
 			"newRecord: Error mapping field values: err = %v", mapErr)

@@ -3,7 +3,6 @@ package valueList
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/trackerDatabase"
@@ -42,7 +41,7 @@ func saveNewValueList(destDBHandle *sql.DB, newValueList ValueList) error {
 
 }
 
-func newValueList(params NewValueListParams) (*ValueList, error) {
+func newValueList(trackerDBHandle *sql.DB, params NewValueListParams) (*ValueList, error) {
 
 	newProps := newDefaultValueListProperties()
 
@@ -52,7 +51,7 @@ func newValueList(params NewValueListParams) (*ValueList, error) {
 		ParentDatabaseID: params.ParentDatabaseID,
 		Properties:       newProps}
 
-	if saveErr := saveNewValueList(databaseWrapper.DBHandle(), newValueList); saveErr != nil {
+	if saveErr := saveNewValueList(trackerDBHandle, newValueList); saveErr != nil {
 		return nil, fmt.Errorf("newValueList: %v", saveErr)
 	}
 
@@ -63,11 +62,11 @@ type GetValueListParams struct {
 	ValueListID string `json:"valueListID"`
 }
 
-func GetValueList(valueListID string) (*ValueList, error) {
+func GetValueList(trackerDBHandle *sql.DB, valueListID string) (*ValueList, error) {
 
 	valueList := ValueList{}
 	encodedProps := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT value_list_id,name,database_id,properties
 			FROM value_lists WHERE
 			value_list_id=$1 LIMIT 1`, valueListID).Scan(
@@ -132,18 +131,18 @@ func getAllValueListsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Va
 
 }
 
-func getAllValueLists(parentDatabaseID string) ([]ValueList, error) {
-	return getAllValueListsFromSrc(databaseWrapper.DBHandle(), parentDatabaseID)
+func getAllValueLists(trackerDBHandle *sql.DB, parentDatabaseID string) ([]ValueList, error) {
+	return getAllValueListsFromSrc(trackerDBHandle, parentDatabaseID)
 }
 
-func updateExistingValueList(updatedValueList *ValueList) (*ValueList, error) {
+func updateExistingValueList(trackerDBHandle *sql.DB, updatedValueList *ValueList) (*ValueList, error) {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(updatedValueList.Properties)
 	if encodeErr != nil {
 		return nil, fmt.Errorf("updateExistingValueList: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE value_lists 
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE value_lists 
 				SET properties=$1,name=$2
 				WHERE value_list_id=$3`,
 		encodedProps,

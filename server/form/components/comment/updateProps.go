@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
@@ -29,10 +30,10 @@ type CommentPropUpdater interface {
 	updateProps(comment *Comment) error
 }
 
-func updateCommentProps(propUpdater CommentPropUpdater) (*Comment, error) {
+func updateCommentProps(trackerDBHandle *sql.DB, propUpdater CommentPropUpdater) (*Comment, error) {
 
 	// Retrieve the bar chart from the data store
-	commentForUpdate, getErr := getComment(propUpdater.getParentFormID(), propUpdater.getCommentID())
+	commentForUpdate, getErr := getComment(trackerDBHandle, propUpdater.getParentFormID(), propUpdater.getCommentID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateCommentProps: Unable to get existing comment box: %v", getErr)
 	}
@@ -41,7 +42,7 @@ func updateCommentProps(propUpdater CommentPropUpdater) (*Comment, error) {
 		return nil, fmt.Errorf("updateCommentProps: Unable to update existing comment box properties: %v", propUpdateErr)
 	}
 
-	updatedComment, updateErr := updateExistingComment(commentForUpdate)
+	updatedComment, updateErr := updateExistingComment(trackerDBHandle, commentForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateCommentProps: Unable to update existing comment box properties: datastore update error =  %v", updateErr)
 	}

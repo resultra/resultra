@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"resultra/datasheet/server/common/databaseWrapper"
+	"database/sql"
 	"resultra/datasheet/server/generic/userAuth"
 )
 
@@ -14,14 +14,14 @@ type UserTrackingDatabaseInfo struct {
 	IsAdmin      bool   `json:"isAdmin"`
 }
 
-func getCurrentUserTrackingDatabases(req *http.Request) ([]UserTrackingDatabaseInfo, error) {
+func getCurrentUserTrackingDatabases(trackerDBHandle *sql.DB, req *http.Request) ([]UserTrackingDatabaseInfo, error) {
 
 	currUserID, userErr := userAuth.GetCurrentUserID(req)
 	if userErr != nil {
 		return nil, fmt.Errorf("getCurrentUserTrackingDatabases: can't get current user: %v", userErr)
 	}
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT databases.database_id, databases.name FROM database_admins,databases WHERE 
 			database_admins.user_id=$1 AND 
 			database_admins.database_id = databases.database_id`, currUserID)
@@ -39,7 +39,7 @@ func getCurrentUserTrackingDatabases(req *http.Request) ([]UserTrackingDatabaseI
 		trackingInfoByDatabase[currTrackingDBInfo.DatabaseID] = currTrackingDBInfo
 	}
 
-	collabRows, collabQueryErr := databaseWrapper.DBHandle().Query(
+	collabRows, collabQueryErr := trackerDBHandle.Query(
 		`SELECT databases.database_id, databases.name 
 			FROM databases,collaborators  
 			WHERE databases.database_id = collaborators.database_id

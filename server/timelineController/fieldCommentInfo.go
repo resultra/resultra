@@ -1,8 +1,10 @@
 package timelineController
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
 	"time"
 )
@@ -20,14 +22,15 @@ type GetFieldRecordCommentInfoParams struct {
 	FieldID  string `json:"fieldID"`
 }
 
-func newTimelineCommentInfo(currUserID string, comment FieldComment) (*TimelineCommentInfo, error) {
+func newTimelineCommentInfo(trackerDBHandle *sql.DB,
+	currUserID string, comment FieldComment) (*TimelineCommentInfo, error) {
 
 	isCurrentUser := false
 	if currUserID == comment.UserID {
 		isCurrentUser = true
 	}
 
-	commentUserInfo, err := userAuth.GetUserInfoByID(comment.UserID)
+	commentUserInfo, err := userAuth.GetUserInfoByID(trackerDBHandle, comment.UserID)
 	if err != nil {
 		return nil, fmt.Errorf("getFieldRecordTimelineCommentInfo: %v", err)
 	}
@@ -44,7 +47,13 @@ func newTimelineCommentInfo(currUserID string, comment FieldComment) (*TimelineC
 }
 
 func saveTimelineComment(req *http.Request, params SaveFieldCommentParams) (*TimelineCommentInfo, error) {
-	newComment, err := saveFieldComment(req, params)
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return nil, dbErr
+	}
+
+	newComment, err := saveFieldComment(trackerDBHandle, req, params)
 	if err != nil {
 		return nil, fmt.Errorf("saveTimelineComment: %v", err)
 	}
@@ -53,10 +62,15 @@ func saveTimelineComment(req *http.Request, params SaveFieldCommentParams) (*Tim
 		return nil, fmt.Errorf("saveTimelineComment: %v", err)
 	}
 
-	return newTimelineCommentInfo(currUserID, *newComment)
+	return newTimelineCommentInfo(trackerDBHandle, currUserID, *newComment)
 }
 
 func getFieldRecordTimelineCommentInfo(req *http.Request, params GetFieldRecordCommentInfoParams) ([]TimelineCommentInfo, error) {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return nil, dbErr
+	}
 
 	currUserID, err := userAuth.GetCurrentUserID(req)
 	if err != nil {
@@ -66,7 +80,7 @@ func getFieldRecordTimelineCommentInfo(req *http.Request, params GetFieldRecordC
 	commentParams := GetFieldCommentsParams{
 		RecordID: params.RecordID,
 		FieldID:  params.FieldID}
-	comments, commentErr := GetFieldComments(commentParams)
+	comments, commentErr := GetFieldComments(trackerDBHandle, commentParams)
 	if commentErr != nil {
 		return nil, fmt.Errorf("getFieldRecordTimelineCommentInfo: %v", commentErr)
 	}
@@ -74,7 +88,7 @@ func getFieldRecordTimelineCommentInfo(req *http.Request, params GetFieldRecordC
 	timelineCommentsInfo := []TimelineCommentInfo{}
 	for _, currComment := range comments {
 
-		commentInfo, err := newTimelineCommentInfo(currUserID, currComment)
+		commentInfo, err := newTimelineCommentInfo(trackerDBHandle, currUserID, currComment)
 		if err != nil {
 			return nil, fmt.Errorf("getFieldRecordTimelineCommentInfo: %v", err)
 		}

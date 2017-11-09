@@ -3,6 +3,7 @@ package itemList
 import (
 	"fmt"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/itemList"
 	"resultra/datasheet/server/userRole"
 )
@@ -15,12 +16,17 @@ type ViewListInfo struct {
 
 func getViewListInfo(r *http.Request, listID string) (*ViewListInfo, error) {
 
-	listInfo, err := itemList.GetItemList(listID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		return nil, dbErr
+	}
+
+	listInfo, err := itemList.GetItemList(trackerDBHandle, listID)
 	if err != nil {
 		return nil, err
 	}
 
-	listPrivs, privsErr := userRole.GetCurrentUserItemListPrivs(r, listInfo.ParentDatabaseID, listID)
+	listPrivs, privsErr := userRole.GetCurrentUserItemListPrivs(trackerDBHandle, r, listInfo.ParentDatabaseID, listID)
 	if privsErr != nil {
 		return nil, privsErr
 	}

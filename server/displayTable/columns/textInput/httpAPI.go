@@ -3,6 +3,7 @@ package textInput
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -33,7 +34,13 @@ func newTextInput(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if textInputRef, err := saveNewTextInput(textInputParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if textInputRef, err := saveNewTextInput(trackerDBHandle, textInputParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *textInputRef)
@@ -54,7 +61,13 @@ func getTextInputAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	textInput, err := getTextInput(params.ParentTableID, params.TextInputID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	textInput, err := getTextInput(trackerDBHandle, params.ParentTableID, params.TextInputID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -70,12 +83,25 @@ func validateInputAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validationResp := validateInput(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	validationResp := validateInput(trackerDBHandle, params)
 	api.WriteJSONResponse(w, validationResp)
 }
 
 func processTextInputPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater TextInputPropUpdater) {
-	if textInputRef, err := updateTextInputProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if textInputRef, err := updateTextInputProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, textInputRef)

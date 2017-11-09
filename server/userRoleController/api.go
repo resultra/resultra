@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/userRole"
@@ -73,12 +74,18 @@ func newRoleAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle, r, params.DatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if newRole, newErr := userRole.NewDatabaseRole(params); newErr != nil {
+	if newRole, newErr := userRole.NewDatabaseRole(trackerDBHandle, params); newErr != nil {
 		api.WriteErrorResponse(w, newErr)
 	} else {
 		api.WriteJSONResponse(w, newRole)
@@ -98,12 +105,18 @@ func getRoleAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	/*	if verifyErr := VerifyCurrUserIsDatabaseAdminForRole(r, params.RoleID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	} */
 
-	if roleInfo, getErr := userRole.GetUserRole(params.RoleID); getErr != nil {
+	if roleInfo, getErr := userRole.GetUserRole(trackerDBHandle, params.RoleID); getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 	} else {
 		api.WriteJSONResponse(w, roleInfo)
@@ -132,12 +145,18 @@ func getListRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForItemList(r, params.ListID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if listRolePrivs, err := userRole.GetListRolePrivs(params.ListID); err != nil {
+	if listRolePrivs, err := userRole.GetListRolePrivs(trackerDBHandle, params.ListID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, listRolePrivs)
@@ -154,12 +173,18 @@ func setListRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForItemList(r, params.ListID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if err := userRole.SetListRolePrivs(params); err != nil {
+	if err := userRole.SetListRolePrivs(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		successResponse := true
@@ -175,12 +200,18 @@ func setNewItemRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForNewItemLink(r, params.LinkID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if err := userRole.SetNewItemFormLinkRolePrivs(params); err != nil {
+	if err := userRole.SetNewItemFormLinkRolePrivs(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		successResponse := true
@@ -196,12 +227,18 @@ func getNewItemRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForUserRole(r, params.RoleID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if roleNewItemPrivs, err := userRole.GetNewItemPrivs(params.RoleID); err != nil {
+	if roleNewItemPrivs, err := userRole.GetNewItemPrivs(trackerDBHandle, params.RoleID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, roleNewItemPrivs)
@@ -218,12 +255,18 @@ func setAlertRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForAlert(r, params.AlertID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if err := userRole.SetAlertRolePrivs(params); err != nil {
+	if err := userRole.SetAlertRolePrivs(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		successResponse := true
@@ -239,12 +282,18 @@ func getRoleAlertPrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForUserRole(r, params.RoleID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if roleAlertPrivs, err := userRole.GetRoleAlertPrivs(params.RoleID); err != nil {
+	if roleAlertPrivs, err := userRole.GetRoleAlertPrivs(trackerDBHandle, params.RoleID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, roleAlertPrivs)
@@ -261,12 +310,18 @@ func getAlertRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForAlert(r, params.AlertID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if alertRolePrivs, err := userRole.GetAlertRolePrivs(params.AlertID); err != nil {
+	if alertRolePrivs, err := userRole.GetAlertRolePrivs(trackerDBHandle, params.AlertID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, alertRolePrivs)
@@ -283,12 +338,18 @@ func getRoleListPrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForUserRole(r, params.RoleID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if roleListPrivs, err := getRoleListPrivsWithDefaults(params.RoleID); err != nil {
+	if roleListPrivs, err := getRoleListPrivsWithDefaults(trackerDBHandle, params.RoleID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, roleListPrivs)
@@ -308,12 +369,18 @@ func setDashboardRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForDashboard(r, params.DashboardID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if err := userRole.SetDashboardRolePrivs(params); err != nil {
+	if err := userRole.SetDashboardRolePrivs(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		successResponse := true
@@ -330,12 +397,18 @@ func getDashboardRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForDashboard(r, params.DashboardID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if dashboardRolePrivs, err := userRole.GetDashboardRolePrivs(params.DashboardID); err != nil {
+	if dashboardRolePrivs, err := userRole.GetDashboardRolePrivs(trackerDBHandle, params.DashboardID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, dashboardRolePrivs)
@@ -352,12 +425,18 @@ func getRoleDashboardPrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForUserRole(r, params.RoleID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if roleDashboardPrivs, err := getRoleDashboardPrivsWithDefaults(params.RoleID); err != nil {
+	if roleDashboardPrivs, err := getRoleDashboardPrivsWithDefaults(trackerDBHandle, params.RoleID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, roleDashboardPrivs)
@@ -374,12 +453,18 @@ func getDatabaseRolesAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle, r, params.DatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if roles, err := userRole.GetDatabaseRoles(params.DatabaseID); err != nil {
+	if roles, err := userRole.GetDatabaseRoles(trackerDBHandle, params.DatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, roles)
@@ -396,12 +481,18 @@ func getUsersByRoleAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle, r, params.DatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if usersByRole, err := userRole.GetRoleUserInfoByRoleID(params.DatabaseID); err != nil {
+	if usersByRole, err := userRole.GetRoleUserInfoByRoleID(trackerDBHandle, params.DatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, usersByRole)

@@ -3,6 +3,7 @@ package rating
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -35,7 +36,13 @@ func newRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if ratingRef, err := saveNewRating(ratingParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if ratingRef, err := saveNewRating(trackerDBHandle, ratingParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *ratingRef)
@@ -56,7 +63,13 @@ func getRatingAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rating, err := getRating(params.ParentTableID, params.RatingID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	rating, err := getRating(trackerDBHandle, params.ParentTableID, params.RatingID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -72,12 +85,25 @@ func validateInputAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validationResp := validateInput(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	validationResp := validateInput(trackerDBHandle, params)
 	api.WriteJSONResponse(w, validationResp)
 }
 
 func processRatingPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater RatingPropUpdater) {
-	if ratingRef, err := updateRatingProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if ratingRef, err := updateRatingProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, ratingRef)

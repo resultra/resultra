@@ -1,6 +1,7 @@
 package dashboardController
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/dashboard"
@@ -17,9 +18,10 @@ type GaugeData struct {
 	GroupedSummarizedVals GroupedSummarizedVals `json:"groupedSummarizedVals"`
 }
 
-func getOneGaugeData(currUserID string, gauge *gauge.Gauge, filterRules recordFilter.RecordFilterRuleSet) (*GaugeData, error) {
+func getOneGaugeData(trackerDBHandle *sql.DB,
+	currUserID string, gauge *gauge.Gauge, filterRules recordFilter.RecordFilterRuleSet) (*GaugeData, error) {
 
-	parentDashboard, err := dashboard.GetDashboard(gauge.ParentDashboardID)
+	parentDashboard, err := dashboard.GetDashboard(trackerDBHandle, gauge.ParentDashboardID)
 	if err != nil {
 		return nil, fmt.Errorf("getOneSummaryTableData: %v", err)
 	}
@@ -31,7 +33,7 @@ func getOneGaugeData(currUserID string, gauge *gauge.Gauge, filterRules recordFi
 		PreFilterRules: gauge.Properties.PreFilterRules,
 		FilterRules:    filterRules,
 		SortRules:      sortRules}
-	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(currUserID, getRecordParams)
+	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(trackerDBHandle, currUserID, getRecordParams)
 	if getRecErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
 	}
@@ -40,7 +42,7 @@ func getOneGaugeData(currUserID string, gauge *gauge.Gauge, filterRules recordFi
 
 	summaries := []values.ValSummary{}
 	summaries = append(summaries, gauge.Properties.ValSummary)
-	groupedSummarizedVals, summarizeErr := summarizeGroupedRecords(valGroupingResult, summaries)
+	groupedSummarizedVals, summarizeErr := summarizeGroupedRecords(trackerDBHandle, valGroupingResult, summaries)
 	if summarizeErr != nil {
 		return nil, fmt.Errorf("getOneBarGaugeData: Error grouping records for gauge: %v", summarizeErr)
 	}
@@ -61,15 +63,15 @@ type GetGaugeDataParams struct {
 	FilterRules       recordFilter.RecordFilterRuleSet `json:"filterRules"`
 }
 
-func getGaugeData(currUserID string, params GetGaugeDataParams) (*GaugeData, error) {
+func getGaugeData(trackerDBHandle *sql.DB, currUserID string, params GetGaugeDataParams) (*GaugeData, error) {
 
-	gauge, getErr := gauge.GetGauge(params.ParentDashboardID, params.GaugeID)
+	gauge, getErr := gauge.GetGauge(trackerDBHandle, params.ParentDashboardID, params.GaugeID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getGaugeData: Error retrieving gauge with params = %+v: error= %v",
 			params, getErr)
 	}
 
-	gaugeData, dataErr := getOneGaugeData(currUserID, gauge, params.FilterRules)
+	gaugeData, dataErr := getOneGaugeData(trackerDBHandle, currUserID, gauge, params.FilterRules)
 	if dataErr != nil {
 		return nil, fmt.Errorf("getGaugeData: Error retrieving gauge data: %v", dataErr)
 	}
@@ -78,9 +80,9 @@ func getGaugeData(currUserID string, params GetGaugeDataParams) (*GaugeData, err
 
 }
 
-func getDefaultDashboardGaugesData(currUserID string, parentDashboardID string) ([]GaugeData, error) {
+func getDefaultDashboardGaugesData(trackerDBHandle *sql.DB, currUserID string, parentDashboardID string) ([]GaugeData, error) {
 
-	gauges, err := gauge.GetGauges(parentDashboardID)
+	gauges, err := gauge.GetGauges(trackerDBHandle, parentDashboardID)
 	if err != nil {
 		return nil, fmt.Errorf("getDefaultDashboardGaugesData: Error retrieving gauges: %v", err)
 	}
@@ -88,7 +90,7 @@ func getDefaultDashboardGaugesData(currUserID string, parentDashboardID string) 
 	var gaugesData []GaugeData
 	for _, gauge := range gauges {
 
-		gaugeData, dataErr := getOneGaugeData(currUserID, &gauge, gauge.Properties.DefaultFilterRules)
+		gaugeData, dataErr := getOneGaugeData(trackerDBHandle, currUserID, &gauge, gauge.Properties.DefaultFilterRules)
 		if dataErr != nil {
 			return nil, fmt.Errorf("getDefaultDashboardGaugesData: Error retrieving gauge data: %v", dataErr)
 		}

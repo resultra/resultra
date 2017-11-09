@@ -1,6 +1,7 @@
 package urlLink
 
 import (
+	"database/sql"
 	"github.com/asaskevich/govalidator"
 	"resultra/datasheet/server/generic/inputValidation"
 	"resultra/datasheet/server/generic/stringValidation"
@@ -11,9 +12,9 @@ type UrlLinkValidateInputParams struct {
 	InputVal *string `json:"inputVal"`
 }
 
-func validateInput(params UrlLinkValidateInputParams) inputValidation.ValidationResult {
+func validateInput(trackerDBHandle *sql.DB, params UrlLinkValidateInputParams) inputValidation.ValidationResult {
 
-	urlLink, err := getUrlLink(params.getParentFormID(), params.getUrlLinkID())
+	urlLink, err := getUrlLink(trackerDBHandle, params.getParentFormID(), params.getUrlLinkID())
 	if err != nil {
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
 	}

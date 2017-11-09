@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -43,9 +42,9 @@ func saveProgress(destDBHandle *sql.DB, newProgress Progress) error {
 	return nil
 }
 
-func saveNewProgress(params NewProgressParams) (*Progress, error) {
+func saveNewProgress(trackerDBHandle *sql.DB, params NewProgressParams) (*Progress, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validProgressFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validProgressFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewProgress: %v", fieldErr)
 	}
 
@@ -59,7 +58,7 @@ func saveNewProgress(params NewProgressParams) (*Progress, error) {
 		ColType:    progressEntityKind,
 		Properties: properties}
 
-	if err := saveProgress(databaseWrapper.DBHandle(), newProgress); err != nil {
+	if err := saveProgress(trackerDBHandle, newProgress); err != nil {
 		return nil, fmt.Errorf("saveNewProgress: Unable to save progress indicator with params=%+v: error = %v", params, err)
 	}
 
@@ -69,10 +68,10 @@ func saveNewProgress(params NewProgressParams) (*Progress, error) {
 
 }
 
-func getProgress(parentTableID string, progressID string) (*Progress, error) {
+func getProgress(trackerDBHandle *sql.DB, parentTableID string, progressID string) (*Progress, error) {
 
 	progressProps := newDefaultProgressProperties()
-	if getErr := common.GetTableColumn(progressEntityKind, parentTableID, progressID, &progressProps); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, progressEntityKind, parentTableID, progressID, &progressProps); getErr != nil {
 		return nil, fmt.Errorf("getNumberInput: Unable to retrieve number input: %v", getErr)
 	}
 
@@ -113,8 +112,8 @@ func getProgressIndicatorsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]
 	return progressIndicators, nil
 }
 
-func GetProgressIndicators(parentTableID string) ([]Progress, error) {
-	return getProgressIndicatorsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetProgressIndicators(trackerDBHandle *sql.DB, parentTableID string) ([]Progress, error) {
+	return getProgressIndicatorsFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneProgressIndicators(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
@@ -148,9 +147,9 @@ func CloneProgressIndicators(cloneParams *trackerDatabase.CloneDatabaseParams, p
 	return nil
 }
 
-func updateExistingProgress(updatedProgress *Progress) (*Progress, error) {
+func updateExistingProgress(trackerDBHandle *sql.DB, updatedProgress *Progress) (*Progress, error) {
 
-	if updateErr := common.UpdateTableColumn(progressEntityKind, updatedProgress.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, progressEntityKind, updatedProgress.ParentTableID,
 		updatedProgress.ProgressID, updatedProgress.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingProgress: failure updating progress indicator: %v", updateErr)
 	}

@@ -1,6 +1,7 @@
 package attachment
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 )
@@ -28,10 +29,10 @@ type AttachmentPropUpdater interface {
 	updateProps(attachment *Attachment) error
 }
 
-func updateAttachmentProps(propUpdater AttachmentPropUpdater) (*Attachment, error) {
+func updateAttachmentProps(trackerDBHandle *sql.DB, propUpdater AttachmentPropUpdater) (*Attachment, error) {
 
 	// Retrieve the bar chart from the data store
-	attachmentForUpdate, getErr := getAttachment(propUpdater.getParentTableID(), propUpdater.getAttachmentID())
+	attachmentForUpdate, getErr := getAttachment(trackerDBHandle, propUpdater.getParentTableID(), propUpdater.getAttachmentID())
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateAttachmentProps: Unable to get existing attachment: %v", getErr)
 	}
@@ -40,7 +41,7 @@ func updateAttachmentProps(propUpdater AttachmentPropUpdater) (*Attachment, erro
 		return nil, fmt.Errorf("UpdateAttachmentProps: Unable to update existing attachment properties: %v", propUpdateErr)
 	}
 
-	attachment, updateErr := updateExistingAttachment(propUpdater.getAttachmentID(), attachmentForUpdate)
+	attachment, updateErr := updateExistingAttachment(trackerDBHandle, propUpdater.getAttachmentID(), attachmentForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateAttachmentProps: Unable to update existing attachment properties: datastore update error =  %v", updateErr)
 	}

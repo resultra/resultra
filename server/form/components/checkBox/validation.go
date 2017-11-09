@@ -1,5 +1,9 @@
 package checkBox
 
+import (
+	"database/sql"
+)
+
 type CheckBoxValidateInputParams struct {
 	CheckboxIDHeader
 	InputVal *bool `json:"inputVal"`
@@ -21,9 +25,9 @@ func failValidationResult(errorMsg string) validationResult {
 	return validationResult{false, errorMsg}
 }
 
-func validateInput(params CheckBoxValidateInputParams) validationResult {
+func validateInput(trackerDBHandle *sql.DB, params CheckBoxValidateInputParams) validationResult {
 
-	checkbox, err := getCheckBox(params.getParentFormID(), params.getCheckBoxID())
+	checkbox, err := getCheckBox(trackerDBHandle, params.getParentFormID(), params.getCheckBoxID())
 	if err != nil {
 		return failValidationResult(systemErrValidationMsg)
 	}

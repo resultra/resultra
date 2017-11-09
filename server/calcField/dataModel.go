@@ -1,8 +1,8 @@
 package calcField
 
 import (
+	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/uniqueID"
 )
@@ -19,9 +19,10 @@ type NewCalcFieldParams struct {
 	FormulaText      string `json:"formulaText"`
 }
 
-func newCalcField(calcFieldParams NewCalcFieldParams) (*field.Field, error) {
+func newCalcField(trackerDBHandle *sql.DB, calcFieldParams NewCalcFieldParams) (*field.Field, error) {
 
 	compileParams := formulaCompileParams{
+		trackerDBHandle:    trackerDBHandle,
 		formulaText:        calcFieldParams.FormulaText,
 		databaseID:         calcFieldParams.ParentDatabaseID,
 		expectedResultType: calcFieldParams.Type,
@@ -49,5 +50,5 @@ func newCalcField(calcFieldParams NewCalcFieldParams) (*field.Field, error) {
 		PreprocessedFormulaText: compileResult.preprocessedFormula,
 		IsCalcField:             true}
 
-	return field.CreateNewFieldFromRawInputs(databaseWrapper.DBHandle(), newField)
+	return field.CreateNewFieldFromRawInputs(trackerDBHandle, newField)
 }

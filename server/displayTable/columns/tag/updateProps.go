@@ -1,6 +1,7 @@
 package tag
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 )
@@ -28,10 +29,10 @@ type TagPropUpdater interface {
 	updateProps(tag *Tag) error
 }
 
-func updateTagProps(propUpdater TagPropUpdater) (*Tag, error) {
+func updateTagProps(trackerDBHandle *sql.DB, propUpdater TagPropUpdater) (*Tag, error) {
 
 	// Retrieve the bar chart from the data store
-	tagForUpdate, getErr := getTag(propUpdater.getParentTableID(), propUpdater.getTagID())
+	tagForUpdate, getErr := getTag(trackerDBHandle, propUpdater.getParentTableID(), propUpdater.getTagID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateTagProps: Unable to get existing tag: %v", getErr)
 	}
@@ -40,7 +41,7 @@ func updateTagProps(propUpdater TagPropUpdater) (*Tag, error) {
 		return nil, fmt.Errorf("updateTagProps: Unable to update existing tag properties: %v", propUpdateErr)
 	}
 
-	updatedTag, updateErr := updateExistingTag(tagForUpdate)
+	updatedTag, updateErr := updateExistingTag(trackerDBHandle, tagForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateTagProps: Unable to update existing tag properties: datastore update error =  %v", updateErr)
 	}

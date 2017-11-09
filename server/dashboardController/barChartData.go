@@ -1,6 +1,7 @@
 package dashboardController
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/dashboard"
@@ -22,10 +23,10 @@ type BarChartData struct {
 	GroupedSummarizedVals GroupedSummarizedVals `json:"groupedSummarizedVals"`
 }
 
-func getOneBarChartData(currUserID string, barChart *barChart.BarChart,
+func getOneBarChartData(trackerDBHandle *sql.DB, currUserID string, barChart *barChart.BarChart,
 	filterRules recordFilter.RecordFilterRuleSet) (*BarChartData, error) {
 
-	parentDashboard, err := dashboard.GetDashboard(barChart.ParentDashboardID)
+	parentDashboard, err := dashboard.GetDashboard(trackerDBHandle, barChart.ParentDashboardID)
 	if err != nil {
 		return nil, fmt.Errorf("getOneSummaryTableData: %v", err)
 	}
@@ -37,19 +38,19 @@ func getOneBarChartData(currUserID string, barChart *barChart.BarChart,
 		PreFilterRules: barChart.Properties.PreFilterRules,
 		FilterRules:    filterRules,
 		SortRules:      sortRules}
-	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(currUserID, getRecordParams)
+	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(trackerDBHandle, currUserID, getRecordParams)
 	if getRecErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
 	}
 
-	valGroupingResult, groupingErr := groupRecords(barChart.Properties.XAxisVals, recordRefs)
+	valGroupingResult, groupingErr := groupRecords(trackerDBHandle, barChart.Properties.XAxisVals, recordRefs)
 	if groupingErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error grouping records for bar chart: %v", groupingErr)
 	}
 
 	summaries := []values.ValSummary{}
 	summaries = append(summaries, barChart.Properties.YAxisVals)
-	groupedSummarizedVals, summarizeErr := summarizeGroupedRecords(valGroupingResult, summaries)
+	groupedSummarizedVals, summarizeErr := summarizeGroupedRecords(trackerDBHandle, valGroupingResult, summaries)
 	if summarizeErr != nil {
 		return nil, fmt.Errorf("getOneBarChartData: Error grouping records for bar chart: %v", summarizeErr)
 	}
@@ -70,15 +71,15 @@ type GetBarChartDataParams struct {
 	FilterRules       recordFilter.RecordFilterRuleSet `json:"filterRules"`
 }
 
-func getBarChartData(currUserID string, params GetBarChartDataParams) (*BarChartData, error) {
+func getBarChartData(trackerDBHandle *sql.DB, currUserID string, params GetBarChartDataParams) (*BarChartData, error) {
 
-	barChart, getBarChartErr := barChart.GetBarChart(params.ParentDashboardID, params.BarChartID)
+	barChart, getBarChartErr := barChart.GetBarChart(trackerDBHandle, params.ParentDashboardID, params.BarChartID)
 	if getBarChartErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart with params = %+v: error= %v",
 			params, getBarChartErr)
 	}
 
-	barChartData, dataErr := getOneBarChartData(currUserID, barChart, params.FilterRules)
+	barChartData, dataErr := getOneBarChartData(trackerDBHandle, currUserID, barChart, params.FilterRules)
 	if dataErr != nil {
 		return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart data: %v", dataErr)
 	}
@@ -87,9 +88,9 @@ func getBarChartData(currUserID string, params GetBarChartDataParams) (*BarChart
 
 }
 
-func getDefaultDashboardBarChartsData(currUserID string, parentDashboardID string) ([]BarChartData, error) {
+func getDefaultDashboardBarChartsData(trackerDBHandle *sql.DB, currUserID string, parentDashboardID string) ([]BarChartData, error) {
 
-	barCharts, err := barChart.GetBarCharts(parentDashboardID)
+	barCharts, err := barChart.GetBarCharts(trackerDBHandle, parentDashboardID)
 	if err != nil {
 		return nil, fmt.Errorf("getDefaultDashboardBarChartsData: Error retrieving bar charts: %v", err)
 	}
@@ -97,7 +98,7 @@ func getDefaultDashboardBarChartsData(currUserID string, parentDashboardID strin
 	var barChartsData []BarChartData
 	for _, barChart := range barCharts {
 
-		barChartData, dataErr := getOneBarChartData(currUserID, &barChart, barChart.Properties.DefaultFilterRules)
+		barChartData, dataErr := getOneBarChartData(trackerDBHandle, currUserID, &barChart, barChart.Properties.DefaultFilterRules)
 		if dataErr != nil {
 			return nil, fmt.Errorf("GetBarChartData: Error retrieving bar chart data: %v", dataErr)
 		}

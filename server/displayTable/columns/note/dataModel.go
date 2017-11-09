@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -45,9 +44,9 @@ func saveNote(destDBHandle *sql.DB, newNote Note) error {
 
 }
 
-func saveNewNote(params NewNoteParams) (*Note, error) {
+func saveNewNote(trackerDBHandle *sql.DB, params NewNoteParams) (*Note, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validNoteFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validNoteFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewCheckBox: %v", fieldErr)
 	}
 
@@ -61,7 +60,7 @@ func saveNewNote(params NewNoteParams) (*Note, error) {
 		ColType:    noteEntityKind,
 		Properties: properties}
 
-	if err := saveNote(databaseWrapper.DBHandle(), newNote); err != nil {
+	if err := saveNote(trackerDBHandle, newNote); err != nil {
 		return nil, fmt.Errorf("saveNewNote: Unable to save html editor with params=%+v: error = %v", params, err)
 	}
 
@@ -71,10 +70,10 @@ func saveNewNote(params NewNoteParams) (*Note, error) {
 
 }
 
-func getNote(parentTableID string, noteID string) (*Note, error) {
+func getNote(trackerDBHandle *sql.DB, parentTableID string, noteID string) (*Note, error) {
 
 	editorProps := newDefaultEditorProperties()
-	if getErr := common.GetTableColumn(noteEntityKind, parentTableID, noteID, &editorProps); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, noteEntityKind, parentTableID, noteID, &editorProps); getErr != nil {
 		return nil, fmt.Errorf("getNote: Unable to retrieve html editor: %v", getErr)
 	}
 
@@ -117,8 +116,8 @@ func getNotesFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Note, error) 
 
 }
 
-func GetNotes(parentTableID string) ([]Note, error) {
-	return getNotesFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetNotes(trackerDBHandle *sql.DB, parentTableID string) ([]Note, error) {
+	return getNotesFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneNotes(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
@@ -152,9 +151,9 @@ func CloneNotes(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID 
 	return nil
 }
 
-func updateExistingNote(noteID string, updatedNote *Note) (*Note, error) {
+func updateExistingNote(trackerDBHandle *sql.DB, noteID string, updatedNote *Note) (*Note, error) {
 
-	if updateErr := common.UpdateTableColumn(noteEntityKind, updatedNote.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, noteEntityKind, updatedNote.ParentTableID,
 		updatedNote.NoteID, updatedNote.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingNote: error updating existing date editor: %v", updateErr)
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/userAuth"
 )
@@ -40,8 +41,14 @@ func getFilteredSortedRecordsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	// By default, recompute/refresh the record values before returning.
-	if recordRefs, err := GetFilteredSortedRecords(currUserID, params); err != nil {
+	if recordRefs, err := GetFilteredSortedRecords(trackerDBHandle, currUserID, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, recordRefs)
@@ -63,7 +70,13 @@ func getRecordValueResultAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	recordValResults, err := getRecordValueResults(currUserID, params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	recordValResults, err := getRecordValueResults(trackerDBHandle, currUserID, params)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
@@ -86,7 +99,13 @@ func getFilteredRecordCountAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	countResults, err := getFilteredRecordCount(currUserID, params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	countResults, err := getFilteredRecordCount(trackerDBHandle, currUserID, params)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {

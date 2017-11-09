@@ -1,5 +1,9 @@
 package toggle
 
+import (
+	"database/sql"
+)
+
 type ToggleValidateInputParams struct {
 	ToggleIDHeader
 	InputVal *bool `json:"inputVal"`
@@ -21,9 +25,9 @@ func failValidationResult(errorMsg string) validationResult {
 	return validationResult{false, errorMsg}
 }
 
-func validateInput(params ToggleValidateInputParams) validationResult {
+func validateInput(trackerDBHandle *sql.DB, params ToggleValidateInputParams) validationResult {
 
-	toggle, err := getToggle(params.getParentTableID(), params.getToggleID())
+	toggle, err := getToggle(trackerDBHandle, params.getParentTableID(), params.getToggleID())
 	if err != nil {
 		return failValidationResult(systemErrValidationMsg)
 	}

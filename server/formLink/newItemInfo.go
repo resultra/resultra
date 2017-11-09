@@ -5,6 +5,7 @@ import (
 
 	"net/http"
 
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
@@ -26,17 +27,22 @@ func getNewItemInfo(r *http.Request, formLinkID string) (*NewItemInfo, error) {
 		return nil, authErr
 	} else {
 
-		formLink, getFormLinkErr := GetFormLink(formLinkID)
+		trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+		if dbErr != nil {
+			return nil, dbErr
+		}
+
+		formLink, getFormLinkErr := GetFormLink(trackerDBHandle, formLinkID)
 		if getFormLinkErr != nil {
 			return nil, getFormLinkErr
 		}
 
-		formInfo, getErr := form.GetForm(formLink.FormID)
+		formInfo, getErr := form.GetForm(trackerDBHandle, formLink.FormID)
 		if getErr != nil {
 			return nil, getErr
 		}
 
-		hasPrivs, privsErr := userRole.CurrentUserHasNewItemLinkPrivs(r, formInfo.ParentDatabaseID, formLinkID)
+		hasPrivs, privsErr := userRole.CurrentUserHasNewItemLinkPrivs(trackerDBHandle, r, formInfo.ParentDatabaseID, formLinkID)
 		if privsErr != nil {
 			return nil, privsErr
 		}

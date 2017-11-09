@@ -3,6 +3,7 @@ package socialButton
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -28,8 +29,13 @@ func newSocialButton(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
 
-	if socialButtonRef, err := saveNewSocialButton(params); err != nil {
+	if socialButtonRef, err := saveNewSocialButton(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *socialButtonRef)
@@ -38,7 +44,12 @@ func newSocialButton(w http.ResponseWriter, r *http.Request) {
 }
 
 func processSocialButtonPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater SocialButtonPropUpdater) {
-	if socialButtonRef, err := updateSocialButtonProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if socialButtonRef, err := updateSocialButtonProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, socialButtonRef)

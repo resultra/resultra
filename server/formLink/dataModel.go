@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"
@@ -53,7 +52,7 @@ func saveNewFormLink(destDBHandle *sql.DB, newLink FormLink) error {
 
 }
 
-func newFormLink(params NewFormLinkParams) (*FormLink, error) {
+func newFormLink(trackerDBHandle *sql.DB, params NewFormLinkParams) (*FormLink, error) {
 
 	newProps := newDefaultNewItemProperties()
 
@@ -66,7 +65,7 @@ func newFormLink(params NewFormLinkParams) (*FormLink, error) {
 		SharedLinkID:      FormLinkDisabledSharedLink,
 		Properties:        newProps}
 
-	if saveErr := saveNewFormLink(databaseWrapper.DBHandle(), newLink); saveErr != nil {
+	if saveErr := saveNewFormLink(trackerDBHandle, newLink); saveErr != nil {
 		return nil, fmt.Errorf("newFormLink: %v", saveErr)
 	}
 
@@ -77,11 +76,11 @@ type GetFormLinkParams struct {
 	FormLinkID string `json:"formLinkID"`
 }
 
-func GetFormLink(linkID string) (*FormLink, error) {
+func GetFormLink(trackerDBHandle *sql.DB, linkID string) (*FormLink, error) {
 
 	formLink := FormLink{}
 	encodedProps := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT link_id,name,form_id,include_in_sidebar,shared_link_enabled,shared_link_id,properties
 			FROM form_links WHERE
 			link_id=$1 LIMIT 1`, linkID).Scan(&formLink.LinkID,
@@ -106,11 +105,11 @@ func GetFormLink(linkID string) (*FormLink, error) {
 
 }
 
-func GetFormLinkFromSharedLinkID(sharedLinkID string) (*FormLink, error) {
+func GetFormLinkFromSharedLinkID(trackerDBHandle *sql.DB, sharedLinkID string) (*FormLink, error) {
 
 	formLink := FormLink{}
 	encodedProps := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT link_id,name,form_id,include_in_sidebar,shared_link_enabled,shared_link_id,properties
 			FROM form_links WHERE
 			shared_link_id=$1 LIMIT 1`, sharedLinkID).Scan(&formLink.LinkID,
@@ -182,13 +181,13 @@ func getAllFormLinksFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]For
 
 }
 
-func getAllFormLinks(parentDatabaseID string) ([]FormLink, error) {
-	return getAllFormLinksFromSrc(databaseWrapper.DBHandle(), parentDatabaseID)
+func getAllFormLinks(trackerDBHandle *sql.DB, parentDatabaseID string) ([]FormLink, error) {
+	return getAllFormLinksFromSrc(trackerDBHandle, parentDatabaseID)
 }
 
-func getUserSortedFormLinks(req *http.Request, databaseID string) ([]FormLink, error) {
+func getUserSortedFormLinks(trackerDBHandle *sql.DB, req *http.Request, databaseID string) ([]FormLink, error) {
 
-	allLinks, err := getAllFormLinks(databaseID)
+	allLinks, err := getAllFormLinks(trackerDBHandle, databaseID)
 	if err != nil {
 		return nil, fmt.Errorf("getUserSortedFormLinks: %v", err)
 	}
@@ -202,7 +201,7 @@ func getUserSortedFormLinks(req *http.Request, databaseID string) ([]FormLink, e
 		return nil, fmt.Errorf("getUserSortedFormLinks: %v", userErr)
 	}
 
-	visibleLinks, privsErr := userRole.GetNewItemLinksWithUserPrivs(databaseID, currUserID)
+	visibleLinks, privsErr := userRole.GetNewItemLinksWithUserPrivs(trackerDBHandle, databaseID, currUserID)
 	if privsErr != nil {
 		return nil, fmt.Errorf("getUserSortedFormLinks: %v", privsErr)
 	}
@@ -243,14 +242,14 @@ func sortFormLinksByManualOrder(unorderedLinks []FormLink, manualOrder []string)
 
 }
 
-func getAllSortedFormLinks(parentDatabaseID string) ([]FormLink, error) {
+func getAllSortedFormLinks(trackerDBHandle *sql.DB, parentDatabaseID string) ([]FormLink, error) {
 
-	unsortedLinks, err := getAllFormLinks(parentDatabaseID)
+	unsortedLinks, err := getAllFormLinks(trackerDBHandle, parentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("GetAllSortedFormLinks: %v", err)
 	}
 
-	db, getErr := trackerDatabase.GetDatabase(parentDatabaseID)
+	db, getErr := trackerDatabase.GetDatabase(trackerDBHandle, parentDatabaseID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
 	}
@@ -261,14 +260,14 @@ func getAllSortedFormLinks(parentDatabaseID string) ([]FormLink, error) {
 
 }
 
-func updateExistingFormLink(updatedFormLink *FormLink) (*FormLink, error) {
+func updateExistingFormLink(trackerDBHandle *sql.DB, updatedFormLink *FormLink) (*FormLink, error) {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(updatedFormLink.Properties)
 	if encodeErr != nil {
 		return nil, fmt.Errorf("updateExistingFormLink: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE form_links 
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE form_links 
 				SET properties=$1,name=$2,include_in_sidebar=$3,shared_link_enabled=$4,shared_link_id=$5,form_id=$6
 				WHERE link_id=$7`,
 		encodedProps,

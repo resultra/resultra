@@ -1,6 +1,7 @@
 package image
 
 import (
+	"database/sql"
 	"resultra/datasheet/server/generic/inputValidation"
 	"resultra/datasheet/server/generic/stringValidation"
 )
@@ -10,9 +11,9 @@ type ImageValidateInputParams struct {
 	InputVal *string `json:"inputVal"`
 }
 
-func validateInput(params ImageValidateInputParams) inputValidation.ValidationResult {
+func validateInput(trackerDBHandle *sql.DB, params ImageValidateInputParams) inputValidation.ValidationResult {
 
-	image, err := getImage(params.getParentTableID(), params.getImageID())
+	image, err := getImage(trackerDBHandle, params.getParentTableID(), params.getImageID())
 	if err != nil {
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
 	}

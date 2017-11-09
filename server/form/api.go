@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/userRole"
 )
@@ -40,13 +41,19 @@ func newFormAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle,
 		r, params.ParentDatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if formRef, err := newForm(params); err != nil {
+	if formRef, err := newForm(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *formRef)
@@ -65,8 +72,13 @@ func getFormAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
 
-	if theForm, err := GetForm(params.FormID); err != nil {
+	if theForm, err := GetForm(trackerDBHandle, params.FormID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *theForm)
@@ -82,7 +94,12 @@ func getFormListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if forms, err := GetAllForms(params.ParentDatabaseID); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if forms, err := GetAllForms(trackerDBHandle, params.ParentDatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, forms)
@@ -98,7 +115,13 @@ func getFormByIDAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if forms, err := GetAllForms(params.ParentDatabaseID); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if forms, err := GetAllForms(trackerDBHandle, params.ParentDatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 
@@ -120,7 +143,13 @@ func getFormInfoAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if formInfo, err := GetFormInfo(params.FormID); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if formInfo, err := GetFormInfo(trackerDBHandle, params.FormID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *formInfo)
@@ -136,7 +165,13 @@ func deleteComponentAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := deleteComponent(params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := deleteComponent(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, true)
@@ -145,7 +180,14 @@ func deleteComponentAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func processFormPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater FormPropUpdater) {
-	if updatedForm, err := updateFormProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if updatedForm, err := updateFormProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, updatedForm)
@@ -175,7 +217,13 @@ func validateFormNameAPI(w http.ResponseWriter, r *http.Request) {
 	formName := r.FormValue("formName")
 	formID := r.FormValue("formID")
 
-	if err := validateFormName(formID, formName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := validateFormName(trackerDBHandle, formID, formName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}
@@ -190,7 +238,13 @@ func validateNewFormNameAPI(w http.ResponseWriter, r *http.Request) {
 	formName := r.FormValue("formName")
 	databaseID := r.FormValue("databaseID")
 
-	if err := validateNewFormName(databaseID, formName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := validateNewFormName(trackerDBHandle, databaseID, formName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/userRole"
 )
@@ -45,13 +46,19 @@ func newListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle,
 		r, params.ParentDatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if formRef, err := newItemList(params); err != nil {
+	if formRef, err := newItemList(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *formRef)
@@ -71,7 +78,13 @@ func getListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if theList, err := GetItemList(params.ListID); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if theList, err := GetItemList(trackerDBHandle, params.ListID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *theList)
@@ -91,7 +104,13 @@ func getItemListListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if listList, err := GetAllSortedItemLists(params.DatabaseID); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if listList, err := GetAllSortedItemLists(trackerDBHandle, params.DatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, listList)
@@ -116,7 +135,14 @@ func getUserItemListListAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func processItemListPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater ItemListPropUpdater) {
-	if updatedList, err := updateItemListProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if updatedList, err := updateItemListProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, updatedList)
@@ -200,7 +226,13 @@ func validateListNameAPI(w http.ResponseWriter, r *http.Request) {
 	listName := r.FormValue("listName")
 	listID := r.FormValue("listID")
 
-	if err := validateItemListName(listID, listName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := validateItemListName(trackerDBHandle, listID, listName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}
@@ -215,7 +247,13 @@ func validateNewItemListNameAPI(w http.ResponseWriter, r *http.Request) {
 	listName := r.FormValue("listName")
 	databaseID := r.FormValue("databaseID")
 
-	if err := validateNewItemListName(databaseID, listName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := validateNewItemListName(trackerDBHandle, databaseID, listName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}

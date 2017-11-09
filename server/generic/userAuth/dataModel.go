@@ -1,8 +1,8 @@
 package userAuth
 
 import (
+	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 	"strings"
 )
@@ -42,7 +42,7 @@ func (rawParams NewUserParams) sanitize() NewUserParams {
 	return sanitizedParams
 }
 
-func saveNewUser(rawParams NewUserParams) *AuthResponse {
+func saveNewUser(trackerDBHandle *sql.DB, rawParams NewUserParams) *AuthResponse {
 
 	params := rawParams.sanitize()
 
@@ -77,14 +77,14 @@ func saveNewUser(rawParams NewUserParams) *AuthResponse {
 		return newAuthResponse(false, "System error: failed to create login credentials")
 	}
 
-	_, verifyNotExistingUserResp := getUser(params.EmailAddr)
+	_, verifyNotExistingUserResp := getUser(trackerDBHandle, params.EmailAddr)
 	if verifyNotExistingUserResp.Success {
 		return newAuthResponse(false, "Registration failed: user with same email already exists")
 	}
 
 	userID := uniqueID.GenerateSnowflakeID()
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(
+	if _, insertErr := trackerDBHandle.Exec(
 		`INSERT INTO users (user_id, email_addr, user_name, first_name,last_name, password_hash) 
 				VALUES ($1,$2,$3,$4,$5,$6)`,
 		userID, params.EmailAddr, params.UserName,
@@ -95,11 +95,11 @@ func saveNewUser(rawParams NewUserParams) *AuthResponse {
 	return newAuthResponse(true, "Registration complete")
 }
 
-func getUser(emailAddr string) (*User, *AuthResponse) {
+func getUser(trackerDBHandle *sql.DB, emailAddr string) (*User, *AuthResponse) {
 
 	var user User
 	user.EmailAddr = emailAddr
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT user_id, password_hash 
 			FROM users 
 			WHERE email_addr=$1 LIMIT 1`,
@@ -111,11 +111,11 @@ func getUser(emailAddr string) (*User, *AuthResponse) {
 	return &user, newAuthResponse(true, "Successfully retrieved user information")
 }
 
-func GetUserInfoByID(userID string) (*UserInfo, error) {
+func GetUserInfoByID(trackerDBHandle *sql.DB, userID string) (*UserInfo, error) {
 
 	var userInfo UserInfo
 	userInfo.UserID = userID
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT first_name,last_name,user_name 
 			FROM users 
 			WHERE user_id=$1 LIMIT 1`,

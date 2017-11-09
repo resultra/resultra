@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -44,9 +43,9 @@ func saveTextInput(destDBHandle *sql.DB, newTextInput TextInput) error {
 
 }
 
-func saveNewTextInput(params NewTextInputParams) (*TextInput, error) {
+func saveNewTextInput(trackerDBHandle *sql.DB, params NewTextInputParams) (*TextInput, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validTextInputFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validTextInputFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewTextInput: %v", fieldErr)
 	}
 
@@ -60,7 +59,7 @@ func saveNewTextInput(params NewTextInputParams) (*TextInput, error) {
 		Properties:  properties,
 		ColType:     textInputEntityKind}
 
-	if err := saveTextInput(databaseWrapper.DBHandle(), newTextInput); err != nil {
+	if err := saveTextInput(trackerDBHandle, newTextInput); err != nil {
 		return nil, fmt.Errorf("saveNewTextInput: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -70,10 +69,10 @@ func saveNewTextInput(params NewTextInputParams) (*TextInput, error) {
 
 }
 
-func getTextInput(parentTableID string, textInputID string) (*TextInput, error) {
+func getTextInput(trackerDBHandle *sql.DB, parentTableID string, textInputID string) (*TextInput, error) {
 
 	textInputProps := newDefaultTextInputProperties()
-	if getErr := common.GetTableColumn(textInputEntityKind, parentTableID, textInputID, &textInputProps); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, textInputEntityKind, parentTableID, textInputID, &textInputProps); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to retrieve text box: %v", getErr)
 	}
 
@@ -115,8 +114,8 @@ func getTextInputsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]TextInpu
 
 }
 
-func GetTextInputs(parentTableID string) ([]TextInput, error) {
-	return getTextInputsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetTextInputs(trackerDBHandle *sql.DB, parentTableID string) ([]TextInput, error) {
+	return getTextInputsFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneTextInputs(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -150,9 +149,9 @@ func CloneTextInputs(cloneParams *trackerDatabase.CloneDatabaseParams, parentFor
 	return nil
 }
 
-func updateExistingTextInput(textInputID string, updatedTextInput *TextInput) (*TextInput, error) {
+func updateExistingTextInput(trackerDBHandle *sql.DB, textInputID string, updatedTextInput *TextInput) (*TextInput, error) {
 
-	if updateErr := common.UpdateTableColumn(textInputEntityKind, updatedTextInput.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, textInputEntityKind, updatedTextInput.ParentTableID,
 		updatedTextInput.TextInputID, updatedTextInput.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingTextInput: error updating existing text box component: %v", updateErr)
 	}

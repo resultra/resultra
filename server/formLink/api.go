@@ -3,6 +3,7 @@ package formLink
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -38,7 +39,13 @@ func newFormLinkAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newPreset, err := newFormLink(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	newPreset, err := newFormLink(trackerDBHandle, params)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
@@ -54,8 +61,13 @@ func getFormLinkAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
 
-	presets, err := GetFormLink(params.FormLinkID)
+	presets, err := GetFormLink(trackerDBHandle, params.FormLinkID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
@@ -72,7 +84,13 @@ func getFormLinksAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	presets, err := getAllSortedFormLinks(params.ParentDatabaseID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	presets, err := getAllSortedFormLinks(trackerDBHandle, params.ParentDatabaseID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
@@ -89,7 +107,13 @@ func getUserFormLinksAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	presets, err := getUserSortedFormLinks(r, params.ParentDatabaseID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	presets, err := getUserSortedFormLinks(trackerDBHandle, r, params.ParentDatabaseID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
@@ -99,7 +123,12 @@ func getUserFormLinksAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func processFormLinkPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater FormLinkPropUpdater) {
-	if headerRef, err := updateFormLinkProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if headerRef, err := updateFormLinkProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, headerRef)

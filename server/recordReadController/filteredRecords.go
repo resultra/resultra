@@ -1,6 +1,7 @@
 package recordReadController
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/record"
@@ -23,7 +24,8 @@ func NewDefaultGetFilteredSortedRecordsParams() GetFilteredSortedRecordsParams {
 
 }
 
-func getCachedOrRemappedRecordValues(currUserID string, databaseID string) ([]recordValue.RecordValueResults, error) {
+func getCachedOrRemappedRecordValues(trackerDBHandle *sql.DB,
+	currUserID string, databaseID string) ([]recordValue.RecordValueResults, error) {
 
 	cachedValues, valuesFound := recordValue.ResultsCache.Get(databaseID)
 	if valuesFound {
@@ -35,7 +37,7 @@ func getCachedOrRemappedRecordValues(currUserID string, databaseID string) ([]re
 			return nil, fmt.Errorf("getCachedOrRemappedRecordValues: unexpected type from results cache")
 		}
 	} else {
-		recordValues, mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(currUserID, databaseID)
+		recordValues, mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(trackerDBHandle, currUserID, databaseID)
 		if mapErr != nil {
 			return nil, fmt.Errorf("GetFilteredRecords: Error updating records: %v", mapErr)
 		}
@@ -45,26 +47,27 @@ func getCachedOrRemappedRecordValues(currUserID string, databaseID string) ([]re
 
 }
 
-func GetFilteredSortedRecords(currUserID string, params GetFilteredSortedRecordsParams) ([]recordValue.RecordValueResults, error) {
+func GetFilteredSortedRecords(trackerDBHandle *sql.DB,
+	currUserID string, params GetFilteredSortedRecordsParams) ([]recordValue.RecordValueResults, error) {
 
 	// The code below retrieve *all* the mapped record values. A more scalable approach would be to filter the
 	// record values in batches, then combine and sort them.
-	unfilteredRecordValues, getRecordsErr := getCachedOrRemappedRecordValues(currUserID, params.DatabaseID)
+	unfilteredRecordValues, getRecordsErr := getCachedOrRemappedRecordValues(trackerDBHandle, currUserID, params.DatabaseID)
 	if getRecordsErr != nil {
 		return nil, fmt.Errorf("GetFilteredRecords: Error updating records: %v", getRecordsErr)
 	}
 
-	preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(currUserID, params.PreFilterRules, unfilteredRecordValues)
+	preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(trackerDBHandle, currUserID, params.PreFilterRules, unfilteredRecordValues)
 	if preFilterErr != nil {
 		return nil, fmt.Errorf("GetFilteredRecords: Error pre-filtering records: %v", preFilterErr)
 	}
 
-	filteredRecords, err := recordFilter.FilterRecordValues(currUserID, params.FilterRules, preFilteredRecords)
+	filteredRecords, err := recordFilter.FilterRecordValues(trackerDBHandle, currUserID, params.FilterRules, preFilteredRecords)
 	if err != nil {
 		return nil, fmt.Errorf("GetFilteredRecords: Error filtering records: %v", err)
 	}
 
-	if sortErr := recordSort.SortRecordValues(params.DatabaseID, filteredRecords, params.SortRules); sortErr != nil {
+	if sortErr := recordSort.SortRecordValues(trackerDBHandle, params.DatabaseID, filteredRecords, params.SortRules); sortErr != nil {
 		return nil, fmt.Errorf("GetFilteredSortedRecords: Error sorting records: %v", sortErr)
 	}
 
@@ -76,13 +79,16 @@ type GetFilteredRecordCountParams struct {
 	PreFilterRules recordFilter.RecordFilterRuleSet `json:"preFilterRules"`
 }
 
-func getFilteredRecordCount(currUserID string, params GetFilteredRecordCountParams) (int, error) {
-	unfilteredRecordValues, getRecordsErr := getCachedOrRemappedRecordValues(currUserID, params.DatabaseID)
+func getFilteredRecordCount(trackerDBHandle *sql.DB, currUserID string, params GetFilteredRecordCountParams) (int, error) {
+
+	unfilteredRecordValues, getRecordsErr := getCachedOrRemappedRecordValues(trackerDBHandle,
+		currUserID, params.DatabaseID)
 	if getRecordsErr != nil {
 		return -1, fmt.Errorf("GetFilteredRecords: Error updating records: %v", getRecordsErr)
 	}
 
-	preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(currUserID, params.PreFilterRules, unfilteredRecordValues)
+	preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(trackerDBHandle, currUserID,
+		params.PreFilterRules, unfilteredRecordValues)
 	if preFilterErr != nil {
 		return -1, fmt.Errorf("GetFilteredRecords: Error pre-filtering records: %v", preFilterErr)
 	}
@@ -96,15 +102,15 @@ type GetRecordValResultParams struct {
 	RecordID         string `json:"recordID"`
 }
 
-func getRecordValueResults(currUserID string, params GetRecordValResultParams) (*recordValue.RecordValueResults, error) {
+func getRecordValueResults(trackerDBHandle *sql.DB, currUserID string, params GetRecordValResultParams) (*recordValue.RecordValueResults, error) {
 
-	recCellUpdates, cellUpdatesErr := record.GetRecordCellUpdates(params.RecordID, record.FullyCommittedCellUpdatesChangeSetID)
+	recCellUpdates, cellUpdatesErr := record.GetRecordCellUpdates(trackerDBHandle, params.RecordID, record.FullyCommittedCellUpdatesChangeSetID)
 	if cellUpdatesErr != nil {
 		return nil, fmt.Errorf("updateRecordValue: Can't get cell updates: err = %v", cellUpdatesErr)
 	}
 
 	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
-		currUserID, params.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
+		trackerDBHandle, currUserID, params.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(
 			"updateRecordValue: Error mapping field values: err = %v", mapErr)

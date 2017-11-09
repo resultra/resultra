@@ -3,7 +3,6 @@ package form
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -38,7 +37,7 @@ func saveForm(destDBHandle *sql.DB, newForm Form) error {
 
 }
 
-func newForm(params NewFormParams) (*Form, error) {
+func newForm(trackerDBHandle *sql.DB, params NewFormParams) (*Form, error) {
 
 	sanitizedName, sanitizeErr := stringValidation.SanitizeName(params.Name)
 	if sanitizeErr != nil {
@@ -50,19 +49,19 @@ func newForm(params NewFormParams) (*Form, error) {
 		Name:       sanitizedName,
 		Properties: newDefaultFormProperties()}
 
-	if err := saveForm(databaseWrapper.DBHandle(), newForm); err != nil {
+	if err := saveForm(trackerDBHandle, newForm); err != nil {
 		return nil, fmt.Errorf("newForm: error saving form: %v", err)
 	}
 
 	return &newForm, nil
 }
 
-func GetForm(formID string) (*Form, error) {
+func GetForm(trackerDBHandle *sql.DB, formID string) (*Form, error) {
 
 	formName := ""
 	encodedProps := ""
 	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT database_id,name,properties FROM forms
+	getErr := trackerDBHandle.QueryRow(`SELECT database_id,name,properties FROM forms
 		 WHERE form_id=$1 LIMIT 1`, formID).Scan(&databaseID, &formName, &encodedProps)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetForm: Unabled to get form: form ID = %v: datastore err=%v",
@@ -118,8 +117,8 @@ func getAllFormsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Form, e
 
 }
 
-func GetAllForms(parentDatabaseID string) ([]Form, error) {
-	return getAllFormsFromSrc(databaseWrapper.DBHandle(), parentDatabaseID)
+func GetAllForms(trackerDBHandle *sql.DB, parentDatabaseID string) ([]Form, error) {
+	return getAllFormsFromSrc(trackerDBHandle, parentDatabaseID)
 }
 
 func CloneForms(cloneParams *trackerDatabase.CloneDatabaseParams) error {
@@ -129,7 +128,7 @@ func CloneForms(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 		return fmt.Errorf("CloneTableForms: Error getting remapped table ID: %v", err)
 	}
 
-	forms, err := GetAllForms(cloneParams.SourceDatabaseID)
+	forms, err := GetAllForms(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)
 	if err != nil {
 		return fmt.Errorf("CloneTableForms: Error getting forms for parent database ID = %v: %v",
 			cloneParams.SourceDatabaseID, err)
@@ -166,14 +165,14 @@ func CloneForms(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
 }
 
-func updateExistingForm(formID string, updatedForm *Form) (*Form, error) {
+func updateExistingForm(trackerDBHandle *sql.DB, formID string, updatedForm *Form) (*Form, error) {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(updatedForm.Properties)
 	if encodeErr != nil {
 		return nil, fmt.Errorf("updateExistingForm: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE forms 
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE forms 
 				SET properties=$1, name=$2
 				WHERE form_id=$3`,
 		encodedProps, updatedForm.Name, formID); updateErr != nil {
@@ -185,9 +184,9 @@ func updateExistingForm(formID string, updatedForm *Form) (*Form, error) {
 
 }
 
-func getFormDatabaseID(formID string) (string, error) {
+func getFormDatabaseID(trackerDBHandle *sql.DB, formID string) (string, error) {
 
-	theForm, err := GetForm(formID)
+	theForm, err := GetForm(trackerDBHandle, formID)
 	if err != nil {
 		return "", nil
 	}
@@ -199,14 +198,14 @@ type FormNameValidationInfo struct {
 	ID   string
 }
 
-func validateUniqueFormName(databaseID string, formID string, formName string) error {
+func validateUniqueFormName(trackerDBHandle *sql.DB, databaseID string, formID string, formName string) error {
 	// Query to validate the name is unique:
 	// 1. Select all the forms in the same database
 	// 2. Include forms with the same name.
 	// 3. Exclude forms with the same form ID. In other words
 	//    the name is considered valid if it is the same as its
 	//    existing name.
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT forms.form_id,forms.name 
 			FROM forms,databases
 			WHERE databases.database_id=$1 AND
@@ -226,25 +225,25 @@ func validateUniqueFormName(databaseID string, formID string, formName string) e
 
 }
 
-func validateFormName(formID string, formName string) error {
+func validateFormName(trackerDBHandle *sql.DB, formID string, formName string) error {
 
 	if !stringValidation.WellFormedItemName(formName) {
 		return fmt.Errorf("Invalid form name")
 	}
 
-	databaseID, err := getFormDatabaseID(formID)
+	databaseID, err := getFormDatabaseID(trackerDBHandle, formID)
 	if err != nil {
 		return fmt.Errorf("System error validating form name (%v)", err)
 	}
 
-	if uniqueErr := validateUniqueFormName(databaseID, formID, formName); uniqueErr != nil {
+	if uniqueErr := validateUniqueFormName(trackerDBHandle, databaseID, formID, formName); uniqueErr != nil {
 		return uniqueErr
 	}
 
 	return nil
 }
 
-func validateNewFormName(databaseID string, formName string) error {
+func validateNewFormName(trackerDBHandle *sql.DB, databaseID string, formName string) error {
 
 	if !stringValidation.WellFormedItemName(formName) {
 		return fmt.Errorf("Invalid form name")
@@ -253,7 +252,7 @@ func validateNewFormName(databaseID string, formName string) error {
 	// No form will have an empty formID, so this will cause test for unique
 	// form names to return true if any form already has the given formName.
 	formID := ""
-	if uniqueErr := validateUniqueFormName(databaseID, formID, formName); uniqueErr != nil {
+	if uniqueErr := validateUniqueFormName(trackerDBHandle, databaseID, formID, formName); uniqueErr != nil {
 		return uniqueErr
 	}
 

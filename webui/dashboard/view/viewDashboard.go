@@ -3,6 +3,7 @@ package view
 import (
 	"fmt"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/dashboard/components"
@@ -20,12 +21,17 @@ type ViewDashboardInfo struct {
 
 func getViewDashboardInfo(r *http.Request, dashboardID string) (*ViewDashboardInfo, error) {
 
-	dashboardDbInfo, getErr := databaseController.GetDashboardDatabaseInfo(dashboardID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		return nil, dbErr
+	}
+
+	dashboardDbInfo, getErr := databaseController.GetDashboardDatabaseInfo(trackerDBHandle, dashboardID)
 	if getErr != nil {
 		return nil, getErr
 	}
 
-	hasViewPrivs, privsErr := userRole.CurrentUserHasDashboardViewPrivs(r, dashboardDbInfo.DatabaseID, dashboardID)
+	hasViewPrivs, privsErr := userRole.CurrentUserHasDashboardViewPrivs(trackerDBHandle, r, dashboardDbInfo.DatabaseID, dashboardID)
 	if privsErr != nil {
 		return nil, privsErr
 	}

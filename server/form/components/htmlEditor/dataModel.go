@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -45,13 +44,13 @@ func saveHtmlEditor(destDBHandle *sql.DB, newHtmlEditor HtmlEditor) error {
 
 }
 
-func saveNewHtmlEditor(params NewHtmlEditorParams) (*HtmlEditor, error) {
+func saveNewHtmlEditor(trackerDBHandle *sql.DB, params NewHtmlEditorParams) (*HtmlEditor, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := field.ValidateField(params.FieldID, validHtmlEditorFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validHtmlEditorFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewCheckBox: %v", fieldErr)
 	}
 
@@ -63,7 +62,7 @@ func saveNewHtmlEditor(params NewHtmlEditorParams) (*HtmlEditor, error) {
 		HtmlEditorID: uniqueID.GenerateSnowflakeID(),
 		Properties:   properties}
 
-	if err := saveHtmlEditor(databaseWrapper.DBHandle(), newHtmlEditor); err != nil {
+	if err := saveHtmlEditor(trackerDBHandle, newHtmlEditor); err != nil {
 		return nil, fmt.Errorf("saveNewHtmlEditor: Unable to save html editor with params=%+v: error = %v", params, err)
 	}
 
@@ -73,10 +72,10 @@ func saveNewHtmlEditor(params NewHtmlEditorParams) (*HtmlEditor, error) {
 
 }
 
-func getHtmlEditor(parentFormID string, htmlEditorID string) (*HtmlEditor, error) {
+func getHtmlEditor(trackerDBHandle *sql.DB, parentFormID string, htmlEditorID string) (*HtmlEditor, error) {
 
 	editorProps := newDefaultEditorProperties()
-	if getErr := common.GetFormComponent(htmlEditorEntityKind, parentFormID, htmlEditorID, &editorProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle, htmlEditorEntityKind, parentFormID, htmlEditorID, &editorProps); getErr != nil {
 		return nil, fmt.Errorf("getHtmlEditor: Unable to retrieve html editor: %v", getErr)
 	}
 
@@ -115,8 +114,8 @@ func getHtmlEditorsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]HtmlEdit
 
 }
 
-func GetHtmlEditors(parentFormID string) ([]HtmlEditor, error) {
-	return getHtmlEditorsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetHtmlEditors(trackerDBHandle *sql.DB, parentFormID string) ([]HtmlEditor, error) {
+	return getHtmlEditorsFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneHTMLEditors(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -148,9 +147,9 @@ func CloneHTMLEditors(cloneParams *trackerDatabase.CloneDatabaseParams, parentFo
 	return nil
 }
 
-func updateExistingHtmlEditor(htmlEditorID string, updatedHtmlEditor *HtmlEditor) (*HtmlEditor, error) {
+func updateExistingHtmlEditor(trackerDBHandle *sql.DB, htmlEditorID string, updatedHtmlEditor *HtmlEditor) (*HtmlEditor, error) {
 
-	if updateErr := common.UpdateFormComponent(htmlEditorEntityKind, updatedHtmlEditor.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, htmlEditorEntityKind, updatedHtmlEditor.ParentFormID,
 		updatedHtmlEditor.HtmlEditorID, updatedHtmlEditor.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingHtmlEditor: error updating existing date editor: %v", updateErr)
 	}

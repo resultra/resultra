@@ -1,6 +1,7 @@
 package global
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/generic"
 	"time"
@@ -29,9 +30,9 @@ func (header GlobalValUpdateHeader) globalID() string {
 	return header.GlobalID
 }
 
-func updateGlobalValue(updater GlobalValUpdater) (*GlobalValUpdate, error) {
+func updateGlobalValue(trackerDBHandle *sql.DB, updater GlobalValUpdater) (*GlobalValUpdate, error) {
 
-	global, getErr := getGlobal(updater.globalID())
+	global, getErr := getGlobal(trackerDBHandle, updater.globalID())
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateGlobalValue: Can't retrieve global with given ID: %v", getErr)
 	}
@@ -45,7 +46,7 @@ func updateGlobalValue(updater GlobalValUpdater) (*GlobalValUpdate, error) {
 		return nil, fmt.Errorf("UpdateGlobalValue: Error encoding value: %v", encodeErr)
 	}
 
-	valUpdate, updateErr := saveValUpdate(updater.globalID(), encodedValue)
+	valUpdate, updateErr := saveValUpdate(trackerDBHandle, updater.globalID(), encodedValue)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateGlobalValue: Error saving value: %v", updateErr)
 	}

@@ -41,7 +41,7 @@ type NewItemListParams struct {
 	Name             string                 `json:"name"`
 }
 
-func newItemList(params NewItemListParams) (*ItemList, error) {
+func newItemList(trackerDBHandle *sql.DB, params NewItemListParams) (*ItemList, error) {
 
 	sanitizedName, sanitizeErr := stringValidation.SanitizeName(params.Name)
 	if sanitizeErr != nil {
@@ -56,19 +56,19 @@ func newItemList(params NewItemListParams) (*ItemList, error) {
 		Name:       sanitizedName,
 		Properties: props}
 
-	if err := saveItemList(databaseWrapper.DBHandle(), newList); err != nil {
+	if err := saveItemList(trackerDBHandle, newList); err != nil {
 		return nil, fmt.Errorf("newItemList: error saving list: %v", err)
 	}
 
 	return &newList, nil
 }
 
-func GetItemList(listID string) (*ItemList, error) {
+func GetItemList(trackerDBHandle *sql.DB, listID string) (*ItemList, error) {
 
 	listName := ""
 	encodedProps := ""
 	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT database_id,name,properties FROM item_lists
+	getErr := trackerDBHandle.QueryRow(`SELECT database_id,name,properties FROM item_lists
 		 WHERE list_id=$1 LIMIT 1`, listID).Scan(&databaseID, &listName, &encodedProps)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetItemList: Unabled to get item list: list ID = %v: datastore err=%v",
@@ -91,7 +91,7 @@ func GetItemList(listID string) (*ItemList, error) {
 
 func getAllItemListsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]ItemList, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := srcDBHandle.Query(
 		`SELECT database_id,list_id,name,properties FROM item_lists WHERE database_id = $1`,
 		parentDatabaseID)
 	if queryErr != nil {
@@ -120,8 +120,8 @@ func getAllItemListsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Ite
 
 }
 
-func GetAllItemLists(parentDatabaseID string) ([]ItemList, error) {
-	return getAllItemListsFromSrc(databaseWrapper.DBHandle(), parentDatabaseID)
+func GetAllItemLists(trackerDBHandle *sql.DB, parentDatabaseID string) ([]ItemList, error) {
+	return getAllItemListsFromSrc(trackerDBHandle, parentDatabaseID)
 }
 
 func orderListsByManualListOrder(unorderedListInfo []ItemList, manualOrder []string) []ItemList {
@@ -148,14 +148,14 @@ func orderListsByManualListOrder(unorderedListInfo []ItemList, manualOrder []str
 
 }
 
-func GetAllSortedItemLists(parentDatabaseID string) ([]ItemList, error) {
+func GetAllSortedItemLists(trackerDBHandle *sql.DB, parentDatabaseID string) ([]ItemList, error) {
 
-	unorderedLists, err := GetAllItemLists(parentDatabaseID)
+	unorderedLists, err := GetAllItemLists(trackerDBHandle, parentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("GetAllSortedItemLists: %v")
 	}
 
-	db, getErr := trackerDatabase.GetDatabase(parentDatabaseID)
+	db, getErr := trackerDatabase.GetDatabase(trackerDBHandle, parentDatabaseID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
 	}
@@ -167,7 +167,12 @@ func GetAllSortedItemLists(parentDatabaseID string) ([]ItemList, error) {
 
 func GetAllUserSortedItemLists(req *http.Request, parentDatabaseID string) ([]ItemList, error) {
 
-	allLists, err := GetAllSortedItemLists(parentDatabaseID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return nil, dbErr
+	}
+
+	allLists, err := GetAllSortedItemLists(trackerDBHandle, parentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("GetAllSortedItemLists: can't verify user: %v", err)
 	}
@@ -181,7 +186,7 @@ func GetAllUserSortedItemLists(req *http.Request, parentDatabaseID string) ([]It
 		return nil, fmt.Errorf("getUserDashboards: can't verify user: %v", userErr)
 	}
 
-	userListPrivs, userListErr := userRole.GetItemListsWithUserPrivs(parentDatabaseID, currUserID)
+	userListPrivs, userListErr := userRole.GetItemListsWithUserPrivs(trackerDBHandle, parentDatabaseID, currUserID)
 	if userListErr != nil {
 		return nil, fmt.Errorf("GetAllUserSortedItemLists: %v", userListErr)
 	}
@@ -237,14 +242,14 @@ func CloneItemLists(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
 }
 
-func updateExistingItemList(listID string, updatedItemList *ItemList) (*ItemList, error) {
+func updateExistingItemList(trackerDBHandle *sql.DB, listID string, updatedItemList *ItemList) (*ItemList, error) {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(updatedItemList.Properties)
 	if encodeErr != nil {
 		return nil, fmt.Errorf("updateExistingItemList: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE item_lists 
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE item_lists 
 				SET properties=$1, name=$2
 				WHERE list_id=$3`,
 		encodedProps, updatedItemList.Name, listID); updateErr != nil {
@@ -256,9 +261,9 @@ func updateExistingItemList(listID string, updatedItemList *ItemList) (*ItemList
 
 }
 
-func GetItemListDatabaseID(listID string) (string, error) {
+func GetItemListDatabaseID(trackerDBHandle *sql.DB, listID string) (string, error) {
 
-	theList, err := GetItemList(listID)
+	theList, err := GetItemList(trackerDBHandle, listID)
 	if err != nil {
 		return "", err
 	}

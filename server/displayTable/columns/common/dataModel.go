@@ -3,7 +3,6 @@ package common
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic"
 )
 
@@ -23,10 +22,10 @@ func SaveNewTableColumn(destDBHandle *sql.DB, columnType string, parentTableID s
 	return nil
 }
 
-func GetTableColumn(columnType string, parentTableID string, columnID string, properties interface{}) error {
+func GetTableColumn(trackerDBHandle *sql.DB, columnType string, parentTableID string, columnID string, properties interface{}) error {
 
 	encodedProps := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT properties FROM table_view_columns
+	getErr := trackerDBHandle.QueryRow(`SELECT properties FROM table_view_columns
 		 WHERE table_id=$1 AND column_id=$2 AND type=$3 LIMIT 1`,
 		parentTableID, columnID, columnType).Scan(&encodedProps)
 	if getErr != nil {
@@ -42,10 +41,10 @@ func GetTableColumn(columnType string, parentTableID string, columnID string, pr
 	return nil
 }
 
-func GetTableColumnTableID(columnID string) (string, error) {
+func GetTableColumnTableID(trackerDBHandle *sql.DB, columnID string) (string, error) {
 
 	tableID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT table_id FROM table_view_columns
+	getErr := trackerDBHandle.QueryRow(`SELECT table_id FROM table_view_columns
 		 WHERE column_id=$1 LIMIT 1`,
 		columnID).Scan(&tableID)
 	if getErr != nil {
@@ -56,11 +55,11 @@ func GetTableColumnTableID(columnID string) (string, error) {
 
 }
 
-func GetTableColumnAndTable(columnType string, parentTableID string, columnID string, properties interface{}) error {
+func GetTableColumnAndTable(trackerDBHandle *sql.DB, columnType string, parentTableID string, columnID string, properties interface{}) error {
 
 	encodedProps := ""
 	tableID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT table_id,properties FROM table_view_columns
+	getErr := trackerDBHandle.QueryRow(`SELECT table_id,properties FROM table_view_columns
 		 WHERE column_id=$1 AND type=$2 LIMIT 1`,
 		columnID, columnType).Scan(&tableID, &encodedProps)
 	if getErr != nil {
@@ -102,14 +101,14 @@ func GetTableColumns(srcDBHandle *sql.DB, columnType string, parentTableID strin
 	return nil
 }
 
-func UpdateTableColumn(columnType string, parentTableID string, columnID string, properties interface{}) error {
+func UpdateTableColumn(trackerDBHandle *sql.DB, columnType string, parentTableID string, columnID string, properties interface{}) error {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(properties)
 	if encodeErr != nil {
 		return fmt.Errorf("UpdateTableViewColumn: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE table_view_columns 
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE table_view_columns 
 				SET properties=$1
 				WHERE table_id=$2 AND column_id=$3`,
 		encodedProps, parentTableID, columnID); updateErr != nil {
@@ -121,8 +120,8 @@ func UpdateTableColumn(columnType string, parentTableID string, columnID string,
 
 }
 
-func DeleteTableColumn(parentTableID string, columnID string) error {
-	if _, deleteErr := databaseWrapper.DBHandle().Exec(`DELETE FROM table_view_columns 
+func DeleteTableColumn(trackerDBHandle *sql.DB, parentTableID string, columnID string) error {
+	if _, deleteErr := trackerDBHandle.Exec(`DELETE FROM table_view_columns 
 				WHERE table_id=$1 AND column_id=$2`, parentTableID, columnID); deleteErr != nil {
 		return fmt.Errorf("DeleteTableViewColumn: Can't delete table view column %v: error = %v",
 			columnID, deleteErr)
@@ -136,10 +135,10 @@ type ColumnInfo struct {
 	ColType  string
 }
 
-func GetTableColumnInfo(columnID string) (*ColumnInfo, error) {
+func GetTableColumnInfo(trackerDBHandle *sql.DB, columnID string) (*ColumnInfo, error) {
 	colType := ""
 	tableID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT table_view_columns.type,table_views.table_id FROM table_view_columns,table_views
+	getErr := trackerDBHandle.QueryRow(`SELECT table_view_columns.type,table_views.table_id FROM table_view_columns,table_views
 		 WHERE table_view_columns.column_id=$1 AND table_view_columns.table_id=table_views.table_id LIMIT 1`,
 		columnID).Scan(&colType, &tableID)
 	if getErr != nil {

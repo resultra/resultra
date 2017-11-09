@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/userRole"
 )
@@ -39,13 +40,19 @@ func newField(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
-		r, newFieldParams.ParentDatabaseID); verifyErr != nil {
+		trackerDBHandle, r, newFieldParams.ParentDatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if newField, err := NewNonCalcField(newFieldParams); err != nil {
+	if newField, err := NewNonCalcField(trackerDBHandle, newFieldParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *newField)
@@ -61,7 +68,13 @@ func getFieldsByType(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if fieldsByType, err := GetFieldsByType(fieldListParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if fieldsByType, err := GetFieldsByType(trackerDBHandle, fieldListParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, fieldsByType)
@@ -77,7 +90,13 @@ func getSortedFieldsByTypeAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if fieldsByType, err := getSortedFieldsByType(fieldListParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if fieldsByType, err := getSortedFieldsByType(trackerDBHandle, fieldListParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, fieldsByType)
@@ -93,7 +112,13 @@ func getAllSortedFieldsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if fieldsByType, err := getAllSortedFields(fieldListParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if fieldsByType, err := getAllSortedFields(trackerDBHandle, fieldListParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, fieldsByType)
@@ -113,7 +138,13 @@ func getField(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if fieldInfo, err := GetField(params.FieldID); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if fieldInfo, err := GetField(trackerDBHandle, params.FieldID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, fieldInfo)
@@ -126,7 +157,13 @@ func validateExistingFieldNameAPI(w http.ResponseWriter, r *http.Request) {
 	fieldName := r.FormValue("fieldName")
 	fieldID := r.FormValue("fieldID")
 
-	if err := validateExistingFieldName(fieldID, fieldName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := validateExistingFieldName(trackerDBHandle, fieldID, fieldName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}
@@ -141,7 +178,13 @@ func validateNewFieldNameAPI(w http.ResponseWriter, r *http.Request) {
 	fieldName := r.FormValue("fieldName")
 	databaseID := r.FormValue("databaseID")
 
-	if err := validateNewFieldName(databaseID, fieldName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := validateNewFieldName(trackerDBHandle, databaseID, fieldName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}
@@ -156,7 +199,13 @@ func validateExistingFieldRefNameAPI(w http.ResponseWriter, r *http.Request) {
 	fieldRefName := r.FormValue("fieldRefName")
 	fieldID := r.FormValue("fieldID")
 
-	if err := validateExistingFieldRefName(fieldID, fieldRefName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := validateExistingFieldRefName(trackerDBHandle, fieldID, fieldRefName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}
@@ -171,7 +220,13 @@ func validateNewFieldRefNameAPI(w http.ResponseWriter, r *http.Request) {
 	fieldRefName := r.FormValue("fieldRefName")
 	databaseID := r.FormValue("databaseID")
 
-	if err := validateNewFieldRefName(databaseID, fieldRefName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := validateNewFieldRefName(trackerDBHandle, databaseID, fieldRefName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}

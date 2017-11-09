@@ -10,6 +10,7 @@ import (
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/admin/common/inputProperties"
 
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/common/runtimeConfig"
 
 	"resultra/datasheet/server/userRole"
@@ -96,19 +97,27 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	colID := vars["colID"]
 
-	colInfo, err := colCommon.GetTableColumnInfo(colID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	colInfo, err := colCommon.GetTableColumnInfo(trackerDBHandle, colID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	tableInfo, err := displayTable.GetTable(colInfo.TableID)
+	tableInfo, err := displayTable.GetTable(trackerDBHandle, colInfo.TableID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	dbInfo, err := databaseController.GetDatabaseInfo(tableInfo.ParentDatabaseID)
+	dbInfo, err := databaseController.GetDatabaseInfo(trackerDBHandle, tableInfo.ParentDatabaseID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	elemPrefix := "colProps_"

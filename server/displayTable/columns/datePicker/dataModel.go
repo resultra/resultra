@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -45,9 +44,9 @@ func saveDatePicker(destDBHandle *sql.DB, newDatePicker DatePicker) error {
 
 }
 
-func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
+func saveNewDatePicker(trackerDBHandle *sql.DB, params NewDatePickerParams) (*DatePicker, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validDatePickerFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validDatePickerFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewDatePicker: %v", fieldErr)
 	}
 
@@ -61,7 +60,7 @@ func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 		ColType:      datePickerEntityKind,
 		Properties:   properties}
 
-	if err := saveDatePicker(databaseWrapper.DBHandle(), newDatePicker); err != nil {
+	if err := saveDatePicker(trackerDBHandle, newDatePicker); err != nil {
 		return nil, fmt.Errorf("saveNewDatePicker: %v", err)
 	}
 
@@ -71,10 +70,10 @@ func saveNewDatePicker(params NewDatePickerParams) (*DatePicker, error) {
 
 }
 
-func getDatePicker(parentTableID string, datePickerID string) (*DatePicker, error) {
+func getDatePicker(trackerDBHandle *sql.DB, parentTableID string, datePickerID string) (*DatePicker, error) {
 
 	datePickerProps := newDefaultDatePickerProperties()
-	if getErr := common.GetTableColumn(datePickerEntityKind, parentTableID, datePickerID, &datePickerProps); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, datePickerEntityKind, parentTableID, datePickerID, &datePickerProps); getErr != nil {
 		return nil, fmt.Errorf("getDatePicker: Unable to retrieve date picker: %v", getErr)
 	}
 
@@ -116,8 +115,8 @@ func getDatePickersFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]DatePic
 
 }
 
-func GetDatePickers(parentTableID string) ([]DatePicker, error) {
-	return getDatePickersFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetDatePickers(trackerDBHandle *sql.DB, parentTableID string) ([]DatePicker, error) {
+	return getDatePickersFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneDatePickers(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
@@ -151,9 +150,9 @@ func CloneDatePickers(cloneParams *trackerDatabase.CloneDatabaseParams, parentTa
 	return nil
 }
 
-func updateExistingDatePicker(datePickerID string, updatedDatePicker *DatePicker) (*DatePicker, error) {
+func updateExistingDatePicker(trackerDBHandle *sql.DB, datePickerID string, updatedDatePicker *DatePicker) (*DatePicker, error) {
 
-	if updateErr := common.UpdateTableColumn(datePickerEntityKind, updatedDatePicker.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, datePickerEntityKind, updatedDatePicker.ParentTableID,
 		updatedDatePicker.DatePickerID, updatedDatePicker.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingDatePicker: error updating existing date picker: %v", updateErr)
 	}

@@ -1,6 +1,7 @@
 package rating
 
 import (
+	"database/sql"
 	"resultra/datasheet/server/generic/inputValidation"
 )
 
@@ -9,9 +10,9 @@ type RatingValidateInputParams struct {
 	InputVal *float64 `json:"inputVal"`
 }
 
-func validateInput(params RatingValidateInputParams) inputValidation.ValidationResult {
+func validateInput(trackerDBHandle *sql.DB, params RatingValidateInputParams) inputValidation.ValidationResult {
 
-	rating, err := getRating(params.getParentTableID(), params.getRatingID())
+	rating, err := getRating(trackerDBHandle, params.getParentTableID(), params.getRatingID())
 	if err != nil {
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
 	}

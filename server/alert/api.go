@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
@@ -47,13 +48,19 @@ func newAlertAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle,
 		r, params.ParentDatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if formRef, err := newAlert(params); err != nil {
+	if formRef, err := newAlert(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *formRef)
@@ -73,7 +80,13 @@ func getAlertAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if alert, err := GetAlert(params.AlertID); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if alert, err := GetAlert(trackerDBHandle, params.AlertID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *alert)
@@ -89,7 +102,13 @@ func getAlertListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if alerts, err := getAllAlerts(params.ParentDatabaseID); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if alerts, err := getAllAlerts(trackerDBHandle, params.ParentDatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, alerts)
@@ -111,7 +130,14 @@ func getAlertNotificationListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if notifications, err := generateAllAlerts(currUserID, params.ParentDatabaseID, currUserID); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if notifications, err := generateAllAlerts(trackerDBHandle,
+		currUserID, params.ParentDatabaseID, currUserID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, notifications)
@@ -120,7 +146,14 @@ func getAlertNotificationListAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func processAlertPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater AlertPropUpdater) {
-	if updatedAlert, err := updateAlertProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if updatedAlert, err := updateAlertProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, updatedAlert)
@@ -184,13 +217,19 @@ func getDecodedCaptionMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	alert, err := GetAlert(params.AlertID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	alert, err := GetAlert(trackerDBHandle, params.AlertID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	decodedMsg, err := replaceFieldIDWithFieldRef(alert.Properties.CaptionMessage, alert.ParentDatabaseID)
+	decodedMsg, err := replaceFieldIDWithFieldRef(trackerDBHandle, alert.Properties.CaptionMessage, alert.ParentDatabaseID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -205,7 +244,13 @@ func validateAlertNameAPI(w http.ResponseWriter, r *http.Request) {
 	alertName := r.FormValue("alertName")
 	alertID := r.FormValue("alertID")
 
-	if err := validateAlertName(alertID, alertName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := validateAlertName(trackerDBHandle, alertID, alertName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}
@@ -220,7 +265,13 @@ func validateNewAlertNameAPI(w http.ResponseWriter, r *http.Request) {
 	alertName := r.FormValue("alertName")
 	databaseID := r.FormValue("databaseID")
 
-	if err := validateNewFormName(databaseID, alertName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := validateNewFormName(trackerDBHandle, databaseID, alertName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}

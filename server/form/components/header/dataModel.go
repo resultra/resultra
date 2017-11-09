@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -36,7 +35,7 @@ func saveHeader(destDBHandle *sql.DB, newHeader Header) error {
 
 }
 
-func saveNewHeader(params NewHeaderParams) (*Header, error) {
+func saveNewHeader(trackerDBHandle *sql.DB, params NewHeaderParams) (*Header, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid form component layout parameters: %+v", params)
@@ -50,7 +49,7 @@ func saveNewHeader(params NewHeaderParams) (*Header, error) {
 		HeaderID:   uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveHeader(databaseWrapper.DBHandle(), newHeader); err != nil {
+	if err := saveHeader(trackerDBHandle, newHeader); err != nil {
 		return nil, fmt.Errorf("saveNewHeader: Unable to save header with params=%+v: error = %v", params, err)
 	}
 
@@ -60,10 +59,10 @@ func saveNewHeader(params NewHeaderParams) (*Header, error) {
 
 }
 
-func getHeader(parentFormID string, headerID string) (*Header, error) {
+func getHeader(trackerDBHandle *sql.DB, parentFormID string, headerID string) (*Header, error) {
 
 	headerProps := newDefaultHeaderProperties()
-	if getErr := common.GetFormComponent(headerEntityKind, parentFormID, headerID, &headerProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle, headerEntityKind, parentFormID, headerID, &headerProps); getErr != nil {
 		return nil, fmt.Errorf("getHeader: Unable to retrieve header: %v", getErr)
 	}
 
@@ -101,8 +100,8 @@ func getHeadersFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Header, erro
 
 }
 
-func GetHeaders(parentFormID string) ([]Header, error) {
-	return getHeadersFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetHeaders(trackerDBHandle *sql.DB, parentFormID string) ([]Header, error) {
+	return getHeadersFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneHeaders(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -134,9 +133,9 @@ func CloneHeaders(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID
 	return nil
 }
 
-func updateExistingHeader(updatedHeader *Header) (*Header, error) {
+func updateExistingHeader(trackerDBHandle *sql.DB, updatedHeader *Header) (*Header, error) {
 
-	if updateErr := common.UpdateFormComponent(headerEntityKind, updatedHeader.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, headerEntityKind, updatedHeader.ParentFormID,
 		updatedHeader.HeaderID, updatedHeader.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingHeader: failure updating header: %v", updateErr)
 	}

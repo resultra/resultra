@@ -3,9 +3,9 @@ package adminController
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/userRole"
-	//	"resultra/datasheet/server/generic/userAuth"
 )
 
 type DummyStructForInclude struct {
@@ -39,7 +39,13 @@ func getUserRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if userRoleInfo, err := getUserRolesInfo(params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if userRoleInfo, err := getUserRolesInfo(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, userRoleInfo)
@@ -55,7 +61,13 @@ func getRoleCollaboratorAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if roleCollabInfo, err := userRole.GetRoleCollaborators(params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if roleCollabInfo, err := userRole.GetRoleCollaborators(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, roleCollabInfo)
@@ -70,8 +82,13 @@ func getAllCollaboratorInfoAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
 
-	if collabInfo, err := userRole.GetAllCollaboratorUserInfo(params); err != nil {
+	if collabInfo, err := userRole.GetAllCollaboratorUserInfo(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, collabInfo)
@@ -88,8 +105,13 @@ func getRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
 
-	if roleInfo, err := getRoleInfo(params); err != nil {
+	if roleInfo, err := getRoleInfo(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *roleInfo)
@@ -104,12 +126,17 @@ func addCollaboratorAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle, r, params.DatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if collaboratorUserRoleInfo, err := addCollaborator(params); err != nil {
+	if collaboratorUserRoleInfo, err := addCollaborator(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, collaboratorUserRoleInfo)
@@ -126,12 +153,17 @@ func getSingleUserRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle, r, params.DatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if userRolesInfo, err := userRole.GetCollaboratorRoleInfoAPI(params); err != nil {
+	if userRolesInfo, err := userRole.GetCollaboratorRoleInfoAPI(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, userRolesInfo)
@@ -148,12 +180,17 @@ func setUserRoleInfoAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle, r, params.DatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if err := userRole.SetCollaboratorRoleInfo(params); err != nil {
+	if err := userRole.SetCollaboratorRoleInfo(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		successResult := true
@@ -171,12 +208,17 @@ func deleteCollaboratorAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(r, params.DatabaseID); verifyErr != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle, r, params.DatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if err := userRole.DeleteCollaborator(params); err != nil {
+	if err := userRole.DeleteCollaborator(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		successResult := true

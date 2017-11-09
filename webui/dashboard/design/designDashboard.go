@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/generic/api"
 	adminCommon "resultra/datasheet/webui/admin/common"
@@ -43,7 +44,13 @@ func DesignDashboard(w http.ResponseWriter, r *http.Request) {
 	dashboardID := vars["dashboardID"]
 	log.Println("Design Dashboard: editing for dashboard with params = %+v", vars)
 
-	dashboardForDesign, getErr := dashboard.GetDashboard(dashboardID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	dashboardForDesign, getErr := dashboard.GetDashboard(trackerDBHandle, dashboardID)
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return

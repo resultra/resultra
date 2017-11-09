@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -32,7 +33,13 @@ func newSocialButton(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if socialButtonRef, err := saveNewSocialButton(params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if socialButtonRef, err := saveNewSocialButton(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *socialButtonRef)
@@ -53,7 +60,13 @@ func getSocialButtonAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rating, err := getSocialButton(params.ParentTableID, params.SocialButtonID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	rating, err := getSocialButton(trackerDBHandle, params.ParentTableID, params.SocialButtonID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -62,7 +75,14 @@ func getSocialButtonAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func processSocialButtonPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater SocialButtonPropUpdater) {
-	if socialButtonRef, err := updateSocialButtonProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if socialButtonRef, err := updateSocialButtonProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, socialButtonRef)

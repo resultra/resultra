@@ -3,7 +3,6 @@ package common
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic"
 )
 
@@ -23,10 +22,10 @@ func SaveNewFormComponent(destDBHandle *sql.DB,
 	return nil
 }
 
-func GetFormComponentFormID(componentID string) (string, error) {
+func GetFormComponentFormID(trackerDBHandle *sql.DB, componentID string) (string, error) {
 
 	formID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT form_id FROM form_components
+	getErr := trackerDBHandle.QueryRow(`SELECT form_id FROM form_components
 		 WHERE component_id=$1 LIMIT 1`,
 		componentID).Scan(&formID)
 	if getErr != nil {
@@ -37,10 +36,10 @@ func GetFormComponentFormID(componentID string) (string, error) {
 
 }
 
-func GetFormComponent(componentType string, parentFormID string, componentID string, properties interface{}) error {
+func GetFormComponent(trackerDBHandle *sql.DB, componentType string, parentFormID string, componentID string, properties interface{}) error {
 
 	encodedProps := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT properties FROM form_components
+	getErr := trackerDBHandle.QueryRow(`SELECT properties FROM form_components
 		 WHERE form_id=$1 AND component_id=$2 AND type=$3 LIMIT 1`,
 		parentFormID, componentID, componentType).Scan(&encodedProps)
 	if getErr != nil {
@@ -82,14 +81,14 @@ func GetFormComponents(srcDBHandle *sql.DB, componentType string, parentFormID s
 	return nil
 }
 
-func UpdateFormComponent(componentType string, parentFormID string, componentID string, properties interface{}) error {
+func UpdateFormComponent(trackerDBHandle *sql.DB, componentType string, parentFormID string, componentID string, properties interface{}) error {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(properties)
 	if encodeErr != nil {
 		return fmt.Errorf("UpdateFormComponent: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE form_components 
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE form_components 
 				SET properties=$1
 				WHERE form_id=$2 AND component_id=$3`,
 		encodedProps, parentFormID, componentID); updateErr != nil {
@@ -101,8 +100,8 @@ func UpdateFormComponent(componentType string, parentFormID string, componentID 
 
 }
 
-func DeleteFormComponent(parentFormID string, componentID string) error {
-	if _, deleteErr := databaseWrapper.DBHandle().Exec(`DELETE FROM form_components 
+func DeleteFormComponent(trackerDBHandle *sql.DB, parentFormID string, componentID string) error {
+	if _, deleteErr := trackerDBHandle.Exec(`DELETE FROM form_components 
 				WHERE form_id=$1 AND component_id=$2`, parentFormID, componentID); deleteErr != nil {
 		return fmt.Errorf("DeleteFormComponent: Can't delete form component %v: error = %v",
 			componentID, deleteErr)

@@ -1,6 +1,7 @@
 package values
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -73,9 +74,9 @@ func validateFieldTypeWithSummary(fieldType string, summarizeValsWith string) er
 	return nil
 }
 
-func NewValSummary(params NewValSummaryParams) (*ValSummary, error) {
+func NewValSummary(trackingDBHandle *sql.DB, params NewValSummaryParams) (*ValSummary, error) {
 
-	summaryField, fieldErr := field.GetField(params.FieldID)
+	summaryField, fieldErr := field.GetField(trackingDBHandle, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewValGrouping: Can't get field value grouping: datastore error = %v", fieldErr)
 	}
@@ -93,9 +94,9 @@ func NewValSummary(params NewValSummaryParams) (*ValSummary, error) {
 
 }
 
-func (valSummary ValSummary) SummaryLabel() (string, error) {
+func (valSummary ValSummary) SummaryLabel(trackingDBHandle *sql.DB) (string, error) {
 
-	summaryField, fieldErr := field.GetField(valSummary.SummarizeByFieldID)
+	summaryField, fieldErr := field.GetField(trackingDBHandle, valSummary.SummarizeByFieldID)
 	if fieldErr != nil {
 		return "", fmt.Errorf("SummaryLabel: Can't get field: %v", fieldErr)
 	}

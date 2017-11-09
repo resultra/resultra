@@ -1,6 +1,7 @@
 package alert
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/recordFilter"
 )
@@ -19,22 +20,22 @@ func (idHeader AlertIDHeader) getAlertID() string {
 
 type AlertPropUpdater interface {
 	AlertIDInterface
-	updateProps(alert *Alert) error
+	updateProps(trackerDBHandle *sql.DB, alert *Alert) error
 }
 
-func updateAlertProps(propUpdater AlertPropUpdater) (*Alert, error) {
+func updateAlertProps(trackerDBHandle *sql.DB, propUpdater AlertPropUpdater) (*Alert, error) {
 
 	// Retrieve the bar chart from the data store
-	alertForUpdate, getErr := GetAlert(propUpdater.getAlertID())
+	alertForUpdate, getErr := GetAlert(trackerDBHandle, propUpdater.getAlertID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateAlertProps: Unable to get existing alert: %v", getErr)
 	}
 
-	if propUpdateErr := propUpdater.updateProps(alertForUpdate); propUpdateErr != nil {
+	if propUpdateErr := propUpdater.updateProps(trackerDBHandle, alertForUpdate); propUpdateErr != nil {
 		return nil, fmt.Errorf("updateFormProps: Unable to update existing form properties: %v", propUpdateErr)
 	}
 
-	alert, updateErr := updateExistingAlert(propUpdater.getAlertID(), alertForUpdate)
+	alert, updateErr := updateExistingAlert(trackerDBHandle, propUpdater.getAlertID(), alertForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateAlertProps: Unable to update existing form properties: datastore update error =  %v", updateErr)
 	}
@@ -47,7 +48,7 @@ type SetAlertNameParams struct {
 	AlertName string `json:"alertName"`
 }
 
-func (updateParams SetAlertNameParams) updateProps(alert *Alert) error {
+func (updateParams SetAlertNameParams) updateProps(trackerDBHandle *sql.DB, alert *Alert) error {
 
 	// TODO - Validate name
 
@@ -61,7 +62,7 @@ type SetConditionParams struct {
 	Condition *AlertCondition `json:"conditions"`
 }
 
-func (updateParams SetConditionParams) updateProps(alert *Alert) error {
+func (updateParams SetConditionParams) updateProps(trackerDBHandle *sql.DB, alert *Alert) error {
 
 	// TODO - Validate conditions
 
@@ -75,7 +76,7 @@ type SetFormParams struct {
 	FormID string `json:"formID"`
 }
 
-func (updateParams SetFormParams) updateProps(alert *Alert) error {
+func (updateParams SetFormParams) updateProps(trackerDBHandle *sql.DB, alert *Alert) error {
 
 	// TODO - Validate conditions
 
@@ -89,7 +90,7 @@ type SetTriggerConditionsParams struct {
 	TriggerConditions recordFilter.RecordFilterRuleSet `json:"triggerConditions"`
 }
 
-func (updateParams SetTriggerConditionsParams) updateProps(alert *Alert) error {
+func (updateParams SetTriggerConditionsParams) updateProps(trackerDBHandle *sql.DB, alert *Alert) error {
 
 	// TODO - Validate filter rules before saving
 	alert.Properties.TriggerConditions = updateParams.TriggerConditions
@@ -102,11 +103,11 @@ type SetCaptionMessageParams struct {
 	CaptionMessage string `json:"captionMessage"`
 }
 
-func (updateParams SetCaptionMessageParams) updateProps(alert *Alert) error {
+func (updateParams SetCaptionMessageParams) updateProps(trackerDBHandle *sql.DB, alert *Alert) error {
 
 	// For internal storage, replace occurences of field references with the immutable field ID.
 	// This allows the field reference name to change without affecting the caption template.
-	encodedCaptionMsg, err := replaceFieldRefWithFieldID(updateParams.CaptionMessage, alert.ParentDatabaseID)
+	encodedCaptionMsg, err := replaceFieldRefWithFieldID(trackerDBHandle, updateParams.CaptionMessage, alert.ParentDatabaseID)
 	if err != nil {
 		return fmt.Errorf("SetCaptionMessageParams.updateProps: %v", err)
 	}

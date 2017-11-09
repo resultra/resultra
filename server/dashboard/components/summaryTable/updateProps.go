@@ -1,6 +1,7 @@
 package summaryTable
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
@@ -33,10 +34,10 @@ func (idHeader SummaryTableUniqueIDHeader) uniqueSummaryTableID() string {
 	return idHeader.SummaryTableID
 }
 
-func updateSummaryTableProps(propUpdater SummaryTablePropertyUpdater) (*SummaryTable, error) {
+func updateSummaryTableProps(trackerDBHandle *sql.DB, propUpdater SummaryTablePropertyUpdater) (*SummaryTable, error) {
 
 	// Retrieve the bar chart from the data store
-	summaryTableForUpdate, getErr := GetSummaryTable(propUpdater.parentDashboardID(), propUpdater.uniqueSummaryTableID())
+	summaryTableForUpdate, getErr := GetSummaryTable(trackerDBHandle, propUpdater.parentDashboardID(), propUpdater.uniqueSummaryTableID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateSummaryTableProps: Unable to get existing summary table: %v", getErr)
 	}
@@ -48,7 +49,7 @@ func updateSummaryTableProps(propUpdater SummaryTablePropertyUpdater) (*SummaryT
 	}
 
 	// Save the updated bar chart back to the data store
-	updatedSummaryTable, updateErr := updateExistingSummaryTable(summaryTableForUpdate)
+	updatedSummaryTable, updateErr := updateExistingSummaryTable(trackerDBHandle, summaryTableForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateSummaryTableProps: Unable to update existing bar chart: %v", updateErr)
 	}

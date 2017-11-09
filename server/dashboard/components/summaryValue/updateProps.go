@@ -1,6 +1,7 @@
 package summaryValue
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
@@ -34,10 +35,10 @@ func (idSummaryVal SummaryValUniqueIDSummaryVal) uniqueSummaryValID() string {
 	return idSummaryVal.SummaryValID
 }
 
-func updateSummaryValProps(propUpdater SummaryValPropertyUpdater) (*SummaryVal, error) {
+func updateSummaryValProps(trackerDBHandle *sql.DB, propUpdater SummaryValPropertyUpdater) (*SummaryVal, error) {
 
 	// Retrieve the bar chart from the data store
-	summaryValForUpdate, getErr := GetSummaryVal(propUpdater.parentDashboardID(), propUpdater.uniqueSummaryValID())
+	summaryValForUpdate, getErr := GetSummaryVal(trackerDBHandle, propUpdater.parentDashboardID(), propUpdater.uniqueSummaryValID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateSummaryValProps: Unable to get existing summaryVal: %v", getErr)
 	}
@@ -49,7 +50,7 @@ func updateSummaryValProps(propUpdater SummaryValPropertyUpdater) (*SummaryVal, 
 	}
 
 	// Save the updated bar chart back to the data store
-	updatedSummaryVal, updateErr := updateExistingSummaryVal(summaryValForUpdate)
+	updatedSummaryVal, updateErr := updateExistingSummaryVal(trackerDBHandle, summaryValForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateSummaryValProps: Unable to update existing summaryVal: %v", updateErr)
 	}

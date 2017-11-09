@@ -1,6 +1,7 @@
 package dashboardController
 
 import (
+	"database/sql"
 	"fmt"
 	"math"
 	"resultra/datasheet/server/dashboard/values"
@@ -76,10 +77,10 @@ func groupRecordsIntoSingleGroup(recValResults []recordValue.RecordValueResults)
 
 }
 
-func groupRecords(valGrouping values.ValGrouping,
+func groupRecords(trackerDBHandle *sql.DB, valGrouping values.ValGrouping,
 	recValResults []recordValue.RecordValueResults) (*ValGroupingResult, error) {
 
-	groupingField, fieldErr := field.GetField(valGrouping.GroupValsByFieldID)
+	groupingField, fieldErr := field.GetField(trackerDBHandle, valGrouping.GroupValsByFieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("groupRecords: Can't get field to group records: error = %v", fieldErr)
 	}
@@ -131,7 +132,7 @@ func groupRecords(valGrouping values.ValGrouping,
 		valGroups = append(valGroups, valGroup)
 	}
 
-	groupingLabel, groupingLabelErr := valGrouping.GroupingLabel()
+	groupingLabel, groupingLabelErr := valGrouping.GroupingLabel(trackerDBHandle)
 	if groupingLabelErr != nil {
 		return nil, fmt.Errorf("groupRecords: Error getting grouping label: error = %v", groupingLabelErr)
 	}

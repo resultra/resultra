@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -43,13 +42,13 @@ func saveGauge(destDBHandle *sql.DB, newGauge Gauge) error {
 	return nil
 }
 
-func saveNewGauge(params NewGaugeParams) (*Gauge, error) {
+func saveNewGauge(trackerDBHandle *sql.DB, params NewGaugeParams) (*Gauge, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := field.ValidateField(params.FieldID, validGaugeFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validGaugeFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewGauge: %v", fieldErr)
 	}
 
@@ -61,7 +60,7 @@ func saveNewGauge(params NewGaugeParams) (*Gauge, error) {
 		GaugeID:    uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveGauge(databaseWrapper.DBHandle(), newGauge); err != nil {
+	if err := saveGauge(trackerDBHandle, newGauge); err != nil {
 		return nil, fmt.Errorf("saveNewGauge: Unable to save gauge indicator with params=%+v: error = %v", params, err)
 	}
 
@@ -71,10 +70,10 @@ func saveNewGauge(params NewGaugeParams) (*Gauge, error) {
 
 }
 
-func getGauge(parentFormID string, gaugeID string) (*Gauge, error) {
+func getGauge(trackerDBHandle *sql.DB, parentFormID string, gaugeID string) (*Gauge, error) {
 
 	gaugeProps := newDefaultGaugeProperties()
-	if getErr := common.GetFormComponent(gaugeEntityKind, parentFormID, gaugeID, &gaugeProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle, gaugeEntityKind, parentFormID, gaugeID, &gaugeProps); getErr != nil {
 		return nil, fmt.Errorf("getGauge: Unable to retrieve gauge: %v", getErr)
 	}
 
@@ -111,13 +110,13 @@ func getGaugesFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Gauge, error)
 	return gaugeIndicators, nil
 }
 
-func GetGauges(parentFormID string) ([]Gauge, error) {
-	return getGaugesFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetGauges(trackerDBHandle *sql.DB, parentFormID string) ([]Gauge, error) {
+	return getGaugesFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneGauges(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
 
-	srcGaugeIndicators, err := GetGauges(parentFormID)
+	srcGaugeIndicators, err := GetGauges(cloneParams.SrcDBHandle, parentFormID)
 	if err != nil {
 		return fmt.Errorf("CloneGauges: %v", err)
 	}
@@ -144,9 +143,9 @@ func CloneGauges(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID 
 	return nil
 }
 
-func updateExistingGauge(updatedGauge *Gauge) (*Gauge, error) {
+func updateExistingGauge(trackerDBHandle *sql.DB, updatedGauge *Gauge) (*Gauge, error) {
 
-	if updateErr := common.UpdateFormComponent(gaugeEntityKind, updatedGauge.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, gaugeEntityKind, updatedGauge.ParentFormID,
 		updatedGauge.GaugeID, updatedGauge.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingGauge: failure updating gauge indicator: %v", updateErr)
 	}

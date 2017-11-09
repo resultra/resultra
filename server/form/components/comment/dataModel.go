@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -45,13 +44,13 @@ func saveComment(destDBHandle *sql.DB, newComment Comment) error {
 	return nil
 }
 
-func saveNewComment(params NewCommentParams) (*Comment, error) {
+func saveNewComment(trackerDBHandle *sql.DB, params NewCommentParams) (*Comment, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := field.ValidateField(params.FieldID, validCommentFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validCommentFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewComment: %v", fieldErr)
 	}
 
@@ -63,7 +62,7 @@ func saveNewComment(params NewCommentParams) (*Comment, error) {
 		CommentID:  uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if saveErr := saveComment(databaseWrapper.DBHandle(), newComment); saveErr != nil {
+	if saveErr := saveComment(trackerDBHandle, newComment); saveErr != nil {
 		return nil, fmt.Errorf("saveNewComment: Unable to save comment box with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -73,10 +72,10 @@ func saveNewComment(params NewCommentParams) (*Comment, error) {
 
 }
 
-func getComment(parentFormID string, commentID string) (*Comment, error) {
+func getComment(trackerDBHandle *sql.DB, parentFormID string, commentID string) (*Comment, error) {
 
 	commentProps := newDefaultCommentProperties()
-	if getErr := common.GetFormComponent(commentEntityKind, parentFormID, commentID, &commentProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle, commentEntityKind, parentFormID, commentID, &commentProps); getErr != nil {
 		return nil, fmt.Errorf("getComment: Unable to retrieve comment box: %v", getErr)
 	}
 
@@ -113,8 +112,8 @@ func getCommentsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Comment, er
 	return comments, nil
 }
 
-func GetComments(parentFormID string) ([]Comment, error) {
-	return getCommentsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetComments(trackerDBHandle *sql.DB, parentFormID string) ([]Comment, error) {
+	return getCommentsFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneComments(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -146,9 +145,9 @@ func CloneComments(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormI
 	return nil
 }
 
-func updateExistingComment(updatedComment *Comment) (*Comment, error) {
+func updateExistingComment(trackerDBHandle *sql.DB, updatedComment *Comment) (*Comment, error) {
 
-	if updateErr := common.UpdateFormComponent(commentEntityKind, updatedComment.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, commentEntityKind, updatedComment.ParentFormID,
 		updatedComment.CommentID, updatedComment.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingComment: failure updating comment: %v", updateErr)
 	}

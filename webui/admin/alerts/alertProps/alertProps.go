@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/databaseController"
 	adminCommon "resultra/datasheet/webui/admin/common"
 
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/field"
@@ -50,14 +51,20 @@ func editAlertPropsPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	alertID := vars["alertID"]
 
-	alertInfo, alertErr := alert.GetAlert(alertID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	alertInfo, alertErr := alert.GetAlert(trackerDBHandle, alertID)
 	if alertErr != nil {
 		http.Error(w, alertErr.Error(), http.StatusInternalServerError)
 		return
 
 	}
 
-	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(alertInfo.ParentDatabaseID)
+	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(trackerDBHandle, alertInfo.ParentDatabaseID)
 	if dbInfoErr != nil {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
 		return

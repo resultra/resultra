@@ -3,6 +3,7 @@ package file
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -32,7 +33,13 @@ func newFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if fileRef, err := saveNewFile(fileParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if fileRef, err := saveNewFile(trackerDBHandle, fileParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *fileRef)
@@ -42,7 +49,7 @@ func newFile(w http.ResponseWriter, r *http.Request) {
 
 type GetFileParams struct {
 	ParentTableID string `json:"parentTableID"`
-	FileID   string `json:"fileID"`
+	FileID        string `json:"fileID"`
 }
 
 func getFileAPI(w http.ResponseWriter, r *http.Request) {
@@ -53,7 +60,13 @@ func getFileAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	file, err := getFile(params.ParentTableID, params.FileID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	file, err := getFile(trackerDBHandle, params.ParentTableID, params.FileID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -69,12 +82,25 @@ func validateInputAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validationResp := validateInput(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	validationResp := validateInput(trackerDBHandle, params)
 	api.WriteJSONResponse(w, validationResp)
 }
 
 func processFilePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater FilePropUpdater) {
-	if fileRef, err := updateFileProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if fileRef, err := updateFileProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, fileRef)

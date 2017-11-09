@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -36,7 +35,7 @@ func saveCaption(destDBHandle *sql.DB, newCaption Caption) error {
 
 }
 
-func saveNewCaption(params NewCaptionParams) (*Caption, error) {
+func saveNewCaption(trackerDBHandle *sql.DB, params NewCaptionParams) (*Caption, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid form component layout parameters: %+v", params)
@@ -51,7 +50,7 @@ func saveNewCaption(params NewCaptionParams) (*Caption, error) {
 		CaptionID:  uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveCaption(databaseWrapper.DBHandle(), newCaption); err != nil {
+	if err := saveCaption(trackerDBHandle, newCaption); err != nil {
 		return nil, fmt.Errorf("saveNewCaption: Unable to save caption with params=%+v: error = %v", params, err)
 	}
 
@@ -61,10 +60,10 @@ func saveNewCaption(params NewCaptionParams) (*Caption, error) {
 
 }
 
-func getCaption(parentFormID string, captionID string) (*Caption, error) {
+func getCaption(trackerDBHandle *sql.DB, parentFormID string, captionID string) (*Caption, error) {
 
 	captionProps := newDefaultCaptionProperties()
-	if getErr := common.GetFormComponent(captionEntityKind, parentFormID, captionID, &captionProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle, captionEntityKind, parentFormID, captionID, &captionProps); getErr != nil {
 		return nil, fmt.Errorf("getCaption: Unable to retrieve caption: %v", getErr)
 	}
 
@@ -102,8 +101,8 @@ func getCaptionsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Caption, er
 
 }
 
-func GetCaptions(parentFormID string) ([]Caption, error) {
-	return getCaptionsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetCaptions(trackerDBHandle *sql.DB, parentFormID string) ([]Caption, error) {
+	return getCaptionsFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneCaptions(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -135,9 +134,9 @@ func CloneCaptions(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormI
 	return nil
 }
 
-func updateExistingCaption(updatedCaption *Caption) (*Caption, error) {
+func updateExistingCaption(trackerDBHandle *sql.DB, updatedCaption *Caption) (*Caption, error) {
 
-	if updateErr := common.UpdateFormComponent(captionEntityKind, updatedCaption.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, captionEntityKind, updatedCaption.ParentFormID,
 		updatedCaption.CaptionID, updatedCaption.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingCaption: failure updating caption: %v", updateErr)
 	}

@@ -1,6 +1,7 @@
 package checkBox
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
@@ -29,10 +30,10 @@ type CheckBoxPropUpdater interface {
 	updateProps(checkBox *CheckBox) error
 }
 
-func updateCheckBoxProps(propUpdater CheckBoxPropUpdater) (*CheckBox, error) {
+func updateCheckBoxProps(trackerDBHandle *sql.DB, propUpdater CheckBoxPropUpdater) (*CheckBox, error) {
 
 	// Retrieve the bar chart from the data store
-	checkBoxForUpdate, getErr := getCheckBox(propUpdater.getParentFormID(), propUpdater.getCheckBoxID())
+	checkBoxForUpdate, getErr := getCheckBox(trackerDBHandle, propUpdater.getParentFormID(), propUpdater.getCheckBoxID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateCheckBoxProps: Unable to get existing check box: %v", getErr)
 	}
@@ -41,7 +42,7 @@ func updateCheckBoxProps(propUpdater CheckBoxPropUpdater) (*CheckBox, error) {
 		return nil, fmt.Errorf("updateCheckBoxProps: Unable to update existing check box properties: %v", propUpdateErr)
 	}
 
-	checkBox, updateErr := updateExistingCheckBox(checkBoxForUpdate)
+	checkBox, updateErr := updateExistingCheckBox(trackerDBHandle, checkBoxForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateCheckBoxProps: Unable to update existing check box properties: datastore update error =  %v", updateErr)
 	}

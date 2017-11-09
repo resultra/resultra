@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -43,13 +42,13 @@ func saveToggle(destDBHandle *sql.DB, newToggle Toggle) error {
 	return nil
 }
 
-func saveNewToggle(params NewToggleParams) (*Toggle, error) {
+func saveNewToggle(trackerDBHandle *sql.DB, params NewToggleParams) (*Toggle, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := field.ValidateField(params.FieldID, validToggleFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validToggleFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewToggle: %v", fieldErr)
 	}
 
@@ -61,7 +60,7 @@ func saveNewToggle(params NewToggleParams) (*Toggle, error) {
 		ToggleID:   uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveToggle(databaseWrapper.DBHandle(), newToggle); err != nil {
+	if err := saveToggle(trackerDBHandle, newToggle); err != nil {
 		return nil, fmt.Errorf("saveNewToggle: Unable to save bar chart with params=%+v: error = %v", params, err)
 	}
 
@@ -71,10 +70,10 @@ func saveNewToggle(params NewToggleParams) (*Toggle, error) {
 
 }
 
-func getToggle(parentFormID string, toggleID string) (*Toggle, error) {
+func getToggle(trackerDBHandle *sql.DB, parentFormID string, toggleID string) (*Toggle, error) {
 
 	toggleProps := newDefaultToggleProperties()
-	if getErr := common.GetFormComponent(toggleEntityKind, parentFormID, toggleID, &toggleProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle, toggleEntityKind, parentFormID, toggleID, &toggleProps); getErr != nil {
 		return nil, fmt.Errorf("getToggle: Unable to retrieve check box: %v", getErr)
 	}
 
@@ -111,8 +110,8 @@ func getTogglesFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Toggle, erro
 	return togglees, nil
 }
 
-func GetToggles(parentFormID string) ([]Toggle, error) {
-	return getTogglesFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetToggles(trackerDBHandle *sql.DB, parentFormID string) ([]Toggle, error) {
+	return getTogglesFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneToggles(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -144,9 +143,9 @@ func CloneToggles(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID
 	return nil
 }
 
-func updateExistingToggle(updatedToggle *Toggle) (*Toggle, error) {
+func updateExistingToggle(trackerDBHandle *sql.DB, updatedToggle *Toggle) (*Toggle, error) {
 
-	if updateErr := common.UpdateFormComponent(toggleEntityKind, updatedToggle.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, toggleEntityKind, updatedToggle.ParentFormID,
 		updatedToggle.ToggleID, updatedToggle.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingToggle: failure updating toggle: %v", updateErr)
 	}

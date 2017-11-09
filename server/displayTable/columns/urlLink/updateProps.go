@@ -1,6 +1,7 @@
 package urlLink
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 )
@@ -12,7 +13,7 @@ type UrlLinkIDInterface interface {
 
 type UrlLinkIDHeader struct {
 	ParentTableID string `json:"parentTableID"`
-	UrlLinkID   string `json:"urlLinkID"`
+	UrlLinkID     string `json:"urlLinkID"`
 }
 
 func (idHeader UrlLinkIDHeader) getUrlLinkID() string {
@@ -28,10 +29,10 @@ type UrlLinkPropUpdater interface {
 	updateProps(urlLink *UrlLink) error
 }
 
-func updateUrlLinkProps(propUpdater UrlLinkPropUpdater) (*UrlLink, error) {
+func updateUrlLinkProps(trackerDBHandle *sql.DB, propUpdater UrlLinkPropUpdater) (*UrlLink, error) {
 
 	// Retrieve the bar chart from the data store
-	urlLinkForUpdate, getErr := getUrlLink(propUpdater.getParentTableID(), propUpdater.getUrlLinkID())
+	urlLinkForUpdate, getErr := getUrlLink(trackerDBHandle, propUpdater.getParentTableID(), propUpdater.getUrlLinkID())
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateUrlLinkProps: Unable to get existing text box: %v", getErr)
 	}
@@ -40,7 +41,7 @@ func updateUrlLinkProps(propUpdater UrlLinkPropUpdater) (*UrlLink, error) {
 		return nil, fmt.Errorf("UpdateUrlLinkProps: Unable to update existing text box properties: %v", propUpdateErr)
 	}
 
-	urlLink, updateErr := updateExistingUrlLink(propUpdater.getUrlLinkID(), urlLinkForUpdate)
+	urlLink, updateErr := updateExistingUrlLink(trackerDBHandle, propUpdater.getUrlLinkID(), urlLinkForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateUrlLinkProps: Unable to update existing text box properties: datastore update error =  %v", updateErr)
 	}

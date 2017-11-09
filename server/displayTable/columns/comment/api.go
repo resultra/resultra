@@ -3,6 +3,7 @@ package comment
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -28,7 +29,13 @@ func newComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if commentRef, err := saveNewComment(commentParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if commentRef, err := saveNewComment(trackerDBHandle, commentParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *commentRef)
@@ -49,7 +56,13 @@ func getCommentAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	numberInput, err := getComment(params.ParentTableID, params.CommentID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	numberInput, err := getComment(trackerDBHandle, params.ParentTableID, params.CommentID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -58,7 +71,14 @@ func getCommentAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func processCommentPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater CommentPropUpdater) {
-	if commentRef, err := updateCommentProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if commentRef, err := updateCommentProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, commentRef)

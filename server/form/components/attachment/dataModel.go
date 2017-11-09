@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -46,13 +45,13 @@ func saveImage(destDBHandle *sql.DB, newImage Image) error {
 
 }
 
-func saveNewImage(params NewImageParams) (*Image, error) {
+func saveNewImage(trackerDBHandle *sql.DB, params NewImageParams) (*Image, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := field.ValidateField(params.FieldID, validImageFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validImageFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewTextBox: %v", fieldErr)
 	}
 
@@ -64,7 +63,7 @@ func saveNewImage(params NewImageParams) (*Image, error) {
 		ImageID:    uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if saveErr := saveImage(databaseWrapper.DBHandle(), newImage); saveErr != nil {
+	if saveErr := saveImage(trackerDBHandle, newImage); saveErr != nil {
 		return nil, fmt.Errorf("saveNewImage: Unable to save image form component with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -74,10 +73,10 @@ func saveNewImage(params NewImageParams) (*Image, error) {
 
 }
 
-func getImage(parentFormID string, imageID string) (*Image, error) {
+func getImage(trackerDBHandle *sql.DB, parentFormID string, imageID string) (*Image, error) {
 
 	imageProps := newDefaultAttachmentProperties()
-	if getErr := common.GetFormComponent(imageEntityKind, parentFormID, imageID, &imageProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle, imageEntityKind, parentFormID, imageID, &imageProps); getErr != nil {
 		return nil, fmt.Errorf("getImage: Unable to retrieve image form component: %v", getErr)
 	}
 
@@ -115,8 +114,8 @@ func GetImagesFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Image, error)
 
 }
 
-func GetImages(parentFormID string) ([]Image, error) {
-	return GetImagesFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetImages(trackerDBHandle *sql.DB, parentFormID string) ([]Image, error) {
+	return GetImagesFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneImages(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -148,9 +147,9 @@ func CloneImages(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID 
 	return nil
 }
 
-func updateExistingImage(imageID string, updatedImage *Image) (*Image, error) {
+func updateExistingImage(trackerDBHandle *sql.DB, imageID string, updatedImage *Image) (*Image, error) {
 
-	if updateErr := common.UpdateFormComponent(imageEntityKind, updatedImage.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, imageEntityKind, updatedImage.ParentFormID,
 		updatedImage.ImageID, updatedImage.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingImage: error updating existing image component: %v", updateErr)
 	}

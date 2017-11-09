@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -43,9 +42,9 @@ func saveTag(destDBHandle *sql.DB, newTag Tag) error {
 	return nil
 }
 
-func saveNewTag(params NewTagParams) (*Tag, error) {
+func saveNewTag(trackerDBHandle *sql.DB, params NewTagParams) (*Tag, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validTagFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validTagFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewTag: %v", fieldErr)
 	}
 
@@ -59,7 +58,7 @@ func saveNewTag(params NewTagParams) (*Tag, error) {
 		ColType:    tagEntityKind,
 		Properties: properties}
 
-	if saveErr := saveTag(databaseWrapper.DBHandle(), newTag); saveErr != nil {
+	if saveErr := saveTag(trackerDBHandle, newTag); saveErr != nil {
 		return nil, fmt.Errorf("saveNewTag: Unable to save tag with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -69,10 +68,10 @@ func saveNewTag(params NewTagParams) (*Tag, error) {
 
 }
 
-func getTag(parentTableID string, tagID string) (*Tag, error) {
+func getTag(trackerDBHandle *sql.DB, parentTableID string, tagID string) (*Tag, error) {
 
 	tagProps := newDefaultTagProperties()
-	if getErr := common.GetTableColumn(tagEntityKind, parentTableID,
+	if getErr := common.GetTableColumn(trackerDBHandle, tagEntityKind, parentTableID,
 		tagID, &tagProps); getErr != nil {
 		return nil, fmt.Errorf("getTag: Unable to retrieve tag: %v", getErr)
 	}
@@ -114,8 +113,8 @@ func getTagsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Tag, error) {
 	return tags, nil
 }
 
-func GetTags(parentTableID string) ([]Tag, error) {
-	return getTagsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetTags(trackerDBHandle *sql.DB, parentTableID string) ([]Tag, error) {
+	return getTagsFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneTags(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
@@ -149,9 +148,9 @@ func CloneTags(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID s
 	return nil
 }
 
-func updateExistingTag(updatedTag *Tag) (*Tag, error) {
+func updateExistingTag(trackerDBHandle *sql.DB, updatedTag *Tag) (*Tag, error) {
 
-	if updateErr := common.UpdateTableColumn(tagEntityKind, updatedTag.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, tagEntityKind, updatedTag.ParentTableID,
 		updatedTag.TagID, updatedTag.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingTag: failure updating tag: %v", updateErr)
 	}

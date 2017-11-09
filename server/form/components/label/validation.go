@@ -1,6 +1,7 @@
 package label
 
 import (
+	"database/sql"
 	"resultra/datasheet/server/generic/inputValidation"
 )
 
@@ -9,9 +10,9 @@ type ValidateInputParams struct {
 	InputVal []string `json:"inputVal"`
 }
 
-func validateInput(params ValidateInputParams) inputValidation.ValidationResult {
+func validateInput(trackerDBHandle *sql.DB, params ValidateInputParams) inputValidation.ValidationResult {
 
-	userSel, err := getLabel(params.getParentFormID(), params.getLabelID())
+	userSel, err := getLabel(trackerDBHandle, params.getParentFormID(), params.getLabelID())
 	if err != nil {
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
 	}

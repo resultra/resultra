@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/userRole"
 )
@@ -34,13 +35,19 @@ func newDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyUserErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if verifyUserErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle,
 		r, dashboardParams.DatabaseID); verifyUserErr != nil {
 		api.WriteErrorResponse(w, verifyUserErr)
 		return
 	}
 
-	if dashboardRef, err := NewDashboard(dashboardParams); err != nil {
+	if dashboardRef, err := NewDashboard(trackerDBHandle, dashboardParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, dashboardRef)
@@ -56,7 +63,13 @@ func getDashboardPropsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if dashboardProps, err := GetDashboard(params.DashboardID); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if dashboardProps, err := GetDashboard(trackerDBHandle, params.DashboardID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *dashboardProps)
@@ -69,7 +82,13 @@ func validateNewDashboardNameAPI(w http.ResponseWriter, r *http.Request) {
 	dashboardName := r.FormValue("dashboardName")
 	databaseID := r.FormValue("databaseID")
 
-	if err := validateNewDashboardName(databaseID, dashboardName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := validateNewDashboardName(trackerDBHandle, databaseID, dashboardName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}
@@ -83,7 +102,13 @@ func validateDashboardNameAPI(w http.ResponseWriter, r *http.Request) {
 	dashboardName := r.FormValue("dashboardName")
 	dashboardID := r.FormValue("dashboardID")
 
-	if err := validateDashboardName(dashboardID, dashboardName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := validateDashboardName(trackerDBHandle, dashboardID, dashboardName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}
@@ -108,7 +133,14 @@ func validateComponentTitleAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func processDashboardPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater DashboardPropUpdater) {
-	if updatedDB, err := updateDashboardProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if updatedDB, err := updateDashboardProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, updatedDB)

@@ -10,6 +10,7 @@ import (
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
 
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/webui/alertListView"
 	"resultra/datasheet/webui/common"
 	dashboardCommon "resultra/datasheet/webui/dashboard/common"
@@ -67,7 +68,13 @@ func viewMainWindow(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 
-		dbInfo, getErr := databaseController.GetDatabaseInfo(databaseID)
+		trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+		if dbErr != nil {
+			http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		dbInfo, getErr := databaseController.GetDatabaseInfo(trackerDBHandle, databaseID)
 		if getErr != nil {
 			api.WriteErrorResponse(w, getErr)
 			return

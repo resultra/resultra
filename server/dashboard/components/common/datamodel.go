@@ -3,7 +3,6 @@ package common
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic"
 )
 
@@ -24,11 +23,11 @@ func SaveNewDashboardComponent(destDBHandle *sql.DB, componentType string, paren
 	return nil
 }
 
-func GetDashboardComponent(componentType string, parentDashboardID string,
+func GetDashboardComponent(trackerDBHandle *sql.DB, componentType string, parentDashboardID string,
 	componentID string, properties interface{}) error {
 
 	encodedProps := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(`SELECT properties FROM dashboard_components
+	getErr := trackerDBHandle.QueryRow(`SELECT properties FROM dashboard_components
 		 WHERE dashboard_id=$1 AND component_id=$2 AND type=$3 LIMIT 1`,
 		parentDashboardID, componentID, componentType).Scan(&encodedProps)
 	if getErr != nil {
@@ -70,14 +69,14 @@ func GetDashboardComponents(srcDBHandle *sql.DB, componentType string, parentDas
 	return nil
 }
 
-func UpdateDashboardComponent(componentType string, parentDashboardID string, componentID string, properties interface{}) error {
+func UpdateDashboardComponent(trackerDBHandle *sql.DB, componentType string, parentDashboardID string, componentID string, properties interface{}) error {
 
 	encodedProps, encodeErr := generic.EncodeJSONString(properties)
 	if encodeErr != nil {
 		return fmt.Errorf("UpdateDashboardComponent: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE dashboard_components 
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE dashboard_components 
 				SET properties=$1
 				WHERE dashboard_id=$2 AND component_id=$3`,
 		encodedProps, parentDashboardID, componentID); updateErr != nil {

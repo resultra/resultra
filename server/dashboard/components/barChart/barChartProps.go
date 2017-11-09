@@ -1,6 +1,7 @@
 package barChart
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
@@ -33,10 +34,10 @@ func (idHeader BarChartUniqueIDHeader) uniqueBarChartID() string {
 	return idHeader.BarChartID
 }
 
-func UpdateBarChartProps(propUpdater BarChartPropertyUpdater) (*BarChart, error) {
+func UpdateBarChartProps(trackerDBHandle *sql.DB, propUpdater BarChartPropertyUpdater) (*BarChart, error) {
 
 	// Retrieve the bar chart from the data store
-	barChartForUpdate, getBarChartErr := GetBarChart(propUpdater.parentDashboardID(), propUpdater.uniqueBarChartID())
+	barChartForUpdate, getBarChartErr := GetBarChart(trackerDBHandle, propUpdater.parentDashboardID(), propUpdater.uniqueBarChartID())
 	if getBarChartErr != nil {
 		return nil, fmt.Errorf("updateBarChartProps: Unable to get existing bar chart: %v", getBarChartErr)
 	}
@@ -48,7 +49,7 @@ func UpdateBarChartProps(propUpdater BarChartPropertyUpdater) (*BarChart, error)
 	}
 
 	// Save the updated bar chart back to the data store
-	updatedBarChart, updateErr := updateExistingBarChart(barChartForUpdate)
+	updatedBarChart, updateErr := updateExistingBarChart(trackerDBHandle, barChartForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateBarChartProps: Unable to update existing bar chart: %v", updateErr)
 	}

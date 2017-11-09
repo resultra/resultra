@@ -1,14 +1,15 @@
 package userRoleController
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/userRole"
 )
 
-func getRoleDashboardPrivsWithDefaults(roleID string) ([]userRole.RoleDashboardPriv, error) {
+func getRoleDashboardPrivsWithDefaults(trackerDBHandle *sql.DB, roleID string) ([]userRole.RoleDashboardPriv, error) {
 
-	roleDB, err := userRole.GetUserRoleDatabaseID(roleID)
+	roleDB, err := userRole.GetUserRoleDatabaseID(trackerDBHandle, roleID)
 	if err != nil {
 		return nil, fmt.Errorf("getRoleDashboardPrivsWithDefaults: %v", err)
 	}
@@ -16,7 +17,7 @@ func getRoleDashboardPrivsWithDefaults(roleID string) ([]userRole.RoleDashboardP
 	privsByDashboardID := map[string]userRole.RoleDashboardPriv{}
 
 	// Start off with no privileges as the default for all dashboards
-	allDashboards, err := dashboard.GetAllDashboards(roleDB)
+	allDashboards, err := dashboard.GetAllDashboards(trackerDBHandle, roleDB)
 	if err != nil {
 		return nil, fmt.Errorf("getRoleListPrivsWithDefaults: %v", err)
 	}
@@ -28,7 +29,7 @@ func getRoleDashboardPrivsWithDefaults(roleID string) ([]userRole.RoleDashboardP
 	}
 
 	// Update the privileges for those dashboards with an explicit set of privileges set.
-	explicitDashboardPrivs, err := userRole.GetRoleDashboardPrivs(roleID)
+	explicitDashboardPrivs, err := userRole.GetRoleDashboardPrivs(trackerDBHandle, roleID)
 	if err != nil {
 		return nil, fmt.Errorf("getRoleListPrivsWithDefaults: %v", err)
 	}

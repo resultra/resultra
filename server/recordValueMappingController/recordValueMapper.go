@@ -1,6 +1,7 @@
 package recordValueMappingController
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/calcField"
@@ -11,13 +12,14 @@ import (
 	"time"
 )
 
-func calculateHiddenFormComponents(currUserID string, parentDatabaseID string, componentFilterCondMap form.FormComponentFilterMap,
+func calculateHiddenFormComponents(trackerDBHandle *sql.DB,
+	currUserID string, parentDatabaseID string, componentFilterCondMap form.FormComponentFilterMap,
 	recordVals record.RecFieldValues) ([]string, error) {
 
 	hiddenComponents := []string{}
 
 	for componentID, filterConds := range componentFilterCondMap {
-		filterContext, contextErr := recordFilter.CreateFilterRuleContexts(currUserID, filterConds.FilterRules)
+		filterContext, contextErr := recordFilter.CreateFilterRuleContexts(trackerDBHandle, currUserID, filterConds.FilterRules)
 		if contextErr != nil {
 			return nil, fmt.Errorf("CalculateHiddenFormComponents: %v", contextErr)
 		}
@@ -59,7 +61,7 @@ func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateCon
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: Can't set value: Error calculating fields to reflect update: err = %v", calcErr)
 	}
 
-	hiddenComponents, hiddenCalcErr := calculateHiddenFormComponents(config.CurrUserID, config.ParentDatabaseID,
+	hiddenComponents, hiddenCalcErr := calculateHiddenFormComponents(config.TrackerDBHandle, config.CurrUserID, config.ParentDatabaseID,
 		componentFilterCondMap, *latestFieldValues)
 	if hiddenCalcErr != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", hiddenCalcErr)
@@ -77,19 +79,20 @@ func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateCon
 
 // Re-map the series of value updates to "flattened" current (most recent) values for both calculated
 // and non-calculated fields.
-func MapOneRecordUpdatesToFieldValues(currUserID string, parentDatabaseID string, recCellUpdates *record.RecordCellUpdates,
+func MapOneRecordUpdatesToFieldValues(trackerDBHandle *sql.DB,
+	currUserID string, parentDatabaseID string, recCellUpdates *record.RecordCellUpdates,
 	changeSetID string) (*recordValue.RecordValueResults, error) {
 
-	updateConfig, err := calcField.CreateCalcFieldUpdateConfig(currUserID, parentDatabaseID)
+	updateConfig, err := calcField.CreateCalcFieldUpdateConfig(trackerDBHandle, currUserID, parentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", err)
 	}
-	componentFilterCondMap, err := form.GetDatabaseFormComponentFilterMap(parentDatabaseID)
+	componentFilterCondMap, err := form.GetDatabaseFormComponentFilterMap(trackerDBHandle, parentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", err)
 	}
 
-	currRecord, err := record.GetRecord(recCellUpdates.RecordID)
+	currRecord, err := record.GetRecord(trackerDBHandle, recCellUpdates.RecordID)
 	if err != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", err)
 	}
@@ -118,25 +121,25 @@ func mapOneRecordWorker(resultsChan chan RecordMappingResult,
 
 }
 
-func MapAllRecordUpdatesToFieldValues(currUserID string, parentDatabaseID string) ([]recordValue.RecordValueResults, error) {
+func MapAllRecordUpdatesToFieldValues(trackerDBHandle *sql.DB, currUserID string, parentDatabaseID string) ([]recordValue.RecordValueResults, error) {
 
 	start := time.Now()
 
-	updateConfig, err := calcField.CreateCalcFieldUpdateConfig(currUserID, parentDatabaseID)
+	updateConfig, err := calcField.CreateCalcFieldUpdateConfig(trackerDBHandle, currUserID, parentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
-	componentFilterCondMap, err := form.GetDatabaseFormComponentFilterMap(parentDatabaseID)
-	if err != nil {
-		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
-	}
-
-	recordCellUpdateMap, err := record.GetAllNonDraftCellUpdates(parentDatabaseID, record.FullyCommittedCellUpdatesChangeSetID)
+	componentFilterCondMap, err := form.GetDatabaseFormComponentFilterMap(trackerDBHandle, parentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
 
-	recordIDRecordMap, err := record.GetNonDraftRecordIDRecordMap(parentDatabaseID)
+	recordCellUpdateMap, err := record.GetAllNonDraftCellUpdates(trackerDBHandle, parentDatabaseID, record.FullyCommittedCellUpdatesChangeSetID)
+	if err != nil {
+		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
+	}
+
+	recordIDRecordMap, err := record.GetNonDraftRecordIDRecordMap(trackerDBHandle, parentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}

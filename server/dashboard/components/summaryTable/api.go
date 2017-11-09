@@ -3,6 +3,7 @@ package summaryTable
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -34,7 +35,13 @@ func newSummaryTableAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if summaryTableRef, err := newSummaryTable(params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if summaryTableRef, err := newSummaryTable(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, summaryTableRef)
@@ -44,7 +51,13 @@ func newSummaryTableAPI(w http.ResponseWriter, r *http.Request) {
 
 func processSummaryTablePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater SummaryTablePropertyUpdater) {
 
-	if summaryTableRef, err := updateSummaryTableProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if summaryTableRef, err := updateSummaryTableProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, summaryTableRef)

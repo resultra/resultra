@@ -10,6 +10,7 @@ import (
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
 
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
@@ -63,7 +64,13 @@ func viewFormPage(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 
-		formDBInfo, getErr := databaseController.GetFormDatabaseInfo(formID)
+		trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+		if dbErr != nil {
+			http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		formDBInfo, getErr := databaseController.GetFormDatabaseInfo(trackerDBHandle, formID)
 		if getErr != nil {
 			api.WriteErrorResponse(w, getErr)
 			return

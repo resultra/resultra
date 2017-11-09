@@ -1,6 +1,7 @@
 package itemList
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/recordFilter"
@@ -23,10 +24,10 @@ type ItemListPropUpdater interface {
 	updateProps(itemList *ItemList) error
 }
 
-func updateItemListProps(propUpdater ItemListPropUpdater) (*ItemList, error) {
+func updateItemListProps(trackerDBHandle *sql.DB, propUpdater ItemListPropUpdater) (*ItemList, error) {
 
 	// Retrieve the bar chart from the data store
-	listForUpdate, getErr := GetItemList(propUpdater.getListID())
+	listForUpdate, getErr := GetItemList(trackerDBHandle, propUpdater.getListID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateItemListProps: Unable to get existing list: %v", getErr)
 	}
@@ -35,7 +36,7 @@ func updateItemListProps(propUpdater ItemListPropUpdater) (*ItemList, error) {
 		return nil, fmt.Errorf("updateItemListProps: Unable to update existing form properties: %v", propUpdateErr)
 	}
 
-	updatedItemList, updateErr := updateExistingItemList(propUpdater.getListID(), listForUpdate)
+	updatedItemList, updateErr := updateExistingItemList(trackerDBHandle, propUpdater.getListID(), listForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateItemListProps: Unable to update existing list properties: datastore update error =  %v", updateErr)
 	}

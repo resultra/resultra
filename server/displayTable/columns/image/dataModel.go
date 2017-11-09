@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -44,9 +43,9 @@ func saveImage(destDBHandle *sql.DB, newImage Image) error {
 
 }
 
-func saveNewImage(params NewImageParams) (*Image, error) {
+func saveNewImage(trackerDBHandle *sql.DB, params NewImageParams) (*Image, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validImageFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validImageFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewImage: %v", fieldErr)
 	}
 
@@ -60,7 +59,7 @@ func saveNewImage(params NewImageParams) (*Image, error) {
 		Properties: properties,
 		ColType:    imageEntityKind}
 
-	if err := saveImage(databaseWrapper.DBHandle(), newImage); err != nil {
+	if err := saveImage(trackerDBHandle, newImage); err != nil {
 		return nil, fmt.Errorf("saveNewImage: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -70,10 +69,10 @@ func saveNewImage(params NewImageParams) (*Image, error) {
 
 }
 
-func getImage(parentTableID string, imageID string) (*Image, error) {
+func getImage(trackerDBHandle *sql.DB, parentTableID string, imageID string) (*Image, error) {
 
 	imageProps := newDefaultImageProperties()
-	if getErr := common.GetTableColumn(imageEntityKind, parentTableID, imageID, &imageProps); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, imageEntityKind, parentTableID, imageID, &imageProps); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to retrieve text box: %v", getErr)
 	}
 
@@ -115,8 +114,8 @@ func getImagesFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Image, error
 
 }
 
-func GetImages(parentTableID string) ([]Image, error) {
-	return getImagesFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetImages(trackerDBHandle *sql.DB, parentTableID string) ([]Image, error) {
+	return getImagesFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneImages(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -150,9 +149,9 @@ func CloneImages(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID 
 	return nil
 }
 
-func updateExistingImage(imageID string, updatedImage *Image) (*Image, error) {
+func updateExistingImage(trackerDBHandle *sql.DB, imageID string, updatedImage *Image) (*Image, error) {
 
-	if updateErr := common.UpdateTableColumn(imageEntityKind, updatedImage.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, imageEntityKind, updatedImage.ParentTableID,
 		updatedImage.ImageID, updatedImage.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingImage: error updating existing text box component: %v", updateErr)
 	}

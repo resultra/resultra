@@ -1,6 +1,7 @@
 package file
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 )
@@ -12,7 +13,7 @@ type FileIDInterface interface {
 
 type FileIDHeader struct {
 	ParentTableID string `json:"parentTableID"`
-	FileID   string `json:"fileID"`
+	FileID        string `json:"fileID"`
 }
 
 func (idHeader FileIDHeader) getFileID() string {
@@ -28,10 +29,10 @@ type FilePropUpdater interface {
 	updateProps(file *File) error
 }
 
-func updateFileProps(propUpdater FilePropUpdater) (*File, error) {
+func updateFileProps(trackerDBHandle *sql.DB, propUpdater FilePropUpdater) (*File, error) {
 
 	// Retrieve the bar chart from the data store
-	fileForUpdate, getErr := getFile(propUpdater.getParentTableID(), propUpdater.getFileID())
+	fileForUpdate, getErr := getFile(trackerDBHandle, propUpdater.getParentTableID(), propUpdater.getFileID())
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateFileProps: Unable to get existing text box: %v", getErr)
 	}
@@ -40,7 +41,7 @@ func updateFileProps(propUpdater FilePropUpdater) (*File, error) {
 		return nil, fmt.Errorf("UpdateFileProps: Unable to update existing text box properties: %v", propUpdateErr)
 	}
 
-	file, updateErr := updateExistingFile(propUpdater.getFileID(), fileForUpdate)
+	file, updateErr := updateExistingFile(trackerDBHandle, propUpdater.getFileID(), fileForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateFileProps: Unable to update existing text box properties: datastore update error =  %v", updateErr)
 	}

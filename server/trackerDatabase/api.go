@@ -3,11 +3,19 @@ package trackerDatabase
 import (
 	"fmt"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
 func processDatabasePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater DatabasePropUpdater) {
-	if updatedDB, err := updateDatabaseProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if updatedDB, err := updateDatabaseProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, updatedDB)

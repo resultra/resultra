@@ -1,6 +1,7 @@
 package form
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 )
@@ -22,10 +23,10 @@ type FormPropUpdater interface {
 	updateProps(form *Form) error
 }
 
-func updateFormProps(propUpdater FormPropUpdater) (*Form, error) {
+func updateFormProps(trackerDBHandle *sql.DB, propUpdater FormPropUpdater) (*Form, error) {
 
 	// Retrieve the bar chart from the data store
-	formForUpdate, getErr := GetForm(propUpdater.getFormID())
+	formForUpdate, getErr := GetForm(trackerDBHandle, propUpdater.getFormID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateFormProps: Unable to get existing form: %v", getErr)
 	}
@@ -34,7 +35,7 @@ func updateFormProps(propUpdater FormPropUpdater) (*Form, error) {
 		return nil, fmt.Errorf("updateFormProps: Unable to update existing form properties: %v", propUpdateErr)
 	}
 
-	form, updateErr := updateExistingForm(propUpdater.getFormID(), formForUpdate)
+	form, updateErr := updateExistingForm(trackerDBHandle, propUpdater.getFormID(), formForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateFormProps: Unable to update existing form properties: datastore update error =  %v", updateErr)
 	}

@@ -1,8 +1,10 @@
 package userRole
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/stringValidation"
 )
@@ -24,10 +26,10 @@ type RolePropUpdater interface {
 	updateProps(role *DatabaseRoleInfo) error
 }
 
-func UpdateRoleProps(propUpdater RolePropUpdater) (*DatabaseRoleInfo, error) {
+func UpdateRoleProps(trackerDBHandle *sql.DB, propUpdater RolePropUpdater) (*DatabaseRoleInfo, error) {
 
 	// Retrieve the bar chart from the data store
-	roleForUpdate, getErr := GetUserRole(propUpdater.getRoleID())
+	roleForUpdate, getErr := GetUserRole(trackerDBHandle, propUpdater.getRoleID())
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateRoleProps: Unable to get existing role: %v", getErr)
 	}
@@ -36,7 +38,7 @@ func UpdateRoleProps(propUpdater RolePropUpdater) (*DatabaseRoleInfo, error) {
 		return nil, fmt.Errorf("UpdateRoleProps: Unable to update existing form properties: %v", propUpdateErr)
 	}
 
-	updatedRole, updateErr := updateExistingRole(propUpdater.getRoleID(), roleForUpdate)
+	updatedRole, updateErr := updateExistingRole(trackerDBHandle, propUpdater.getRoleID(), roleForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateRoleProps: Unable to update existing role properties: datastore update error =  %v", updateErr)
 	}
@@ -51,7 +53,13 @@ func ProcessRolePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater R
 		return
 	}
 
-	if updatedRole, err := UpdateRoleProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if updatedRole, err := UpdateRoleProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, updatedRole)

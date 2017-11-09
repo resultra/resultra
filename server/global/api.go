@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/userRole"
 )
@@ -42,13 +43,19 @@ func newGlobalAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
-		r, params.ParentDatabaseID); verifyErr != nil {
+		trackerDBHandle, r, params.ParentDatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if globalRef, err := newGlobal(params); err != nil {
+	if globalRef, err := newGlobal(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *globalRef)
@@ -63,8 +70,13 @@ func getListAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
 
-	if globals, err := GetGlobals(params.ParentDatabaseID); err != nil {
+	if globals, err := GetGlobals(trackerDBHandle, params.ParentDatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, globals)
@@ -77,7 +89,12 @@ func validateNameAPI(w http.ResponseWriter, r *http.Request) {
 	globalName := r.FormValue("globalName")
 	globalID := r.FormValue("globalID")
 
-	if err := validateGlobalName(globalID, globalName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if err := validateGlobalName(trackerDBHandle, globalID, globalName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}
@@ -92,7 +109,12 @@ func validateNewNameAPI(w http.ResponseWriter, r *http.Request) {
 	globalName := r.FormValue("globalName")
 	databaseID := r.FormValue("databaseID")
 
-	if err := validateNewGlobalName(databaseID, globalName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if err := validateNewGlobalName(trackerDBHandle, databaseID, globalName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}
@@ -107,7 +129,12 @@ func validateNewReferenceNameAPI(w http.ResponseWriter, r *http.Request) {
 	refName := r.FormValue("refName")
 	databaseID := r.FormValue("databaseID")
 
-	if err := validateNewReferenceName(databaseID, refName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if err := validateNewReferenceName(trackerDBHandle, databaseID, refName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}
@@ -124,7 +151,12 @@ func setTextValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	globalValUpdate, setErr := updateGlobalValue(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	globalValUpdate, setErr := updateGlobalValue(trackerDBHandle, params)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -141,7 +173,12 @@ func setTimeValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	globalValUpdate, setErr := updateGlobalValue(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	globalValUpdate, setErr := updateGlobalValue(trackerDBHandle, params)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -158,7 +195,12 @@ func setBoolValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	globalValUpdate, setErr := updateGlobalValue(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	globalValUpdate, setErr := updateGlobalValue(trackerDBHandle, params)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -175,7 +217,12 @@ func setNumberValue(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	globalValUpdate, setErr := updateGlobalValue(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	globalValUpdate, setErr := updateGlobalValue(trackerDBHandle, params)
 	if setErr != nil {
 		api.WriteErrorResponse(w, setErr)
 		return
@@ -192,7 +239,12 @@ func getValues(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	globalVals, getErr := GetGlobalValues(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	globalVals, getErr := GetGlobalValues(trackerDBHandle, params)
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return
@@ -220,7 +272,12 @@ func getGlobalValUrlAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if urlResponse, err := getGlobalValUrl(params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if urlResponse, err := getGlobalValUrl(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, urlResponse)

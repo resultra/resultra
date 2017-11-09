@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/trackerDatabase"
 )
@@ -95,8 +94,8 @@ func CloneNewItemLinkPrivs(cloneParams *trackerDatabase.CloneDatabaseParams) err
 
 }
 
-func SetNewItemFormLinkRolePrivs(params SetNewItemFormLinkRolePrivsParams) error {
-	return setNewItemFormLinkRolePrivsToDest(databaseWrapper.DBHandle(), params)
+func SetNewItemFormLinkRolePrivs(trackerDBHandle *sql.DB, params SetNewItemFormLinkRolePrivsParams) error {
+	return setNewItemFormLinkRolePrivsToDest(trackerDBHandle, params)
 }
 
 type GetNewItemPrivParams struct {
@@ -109,9 +108,9 @@ type RoleNewItemPriv struct {
 	LinkEnabled bool   `json:"linkEnabled"`
 }
 
-func getDefaultFormLinks(databaseID string) ([]RoleNewItemPriv, error) {
+func getDefaultFormLinks(trackerDBHandle *sql.DB, databaseID string) ([]RoleNewItemPriv, error) {
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT form_links.link_id,form_links.name
 			FROM form_links,forms
 			WHERE form_links.form_id=forms.form_id AND
@@ -132,14 +131,14 @@ func getDefaultFormLinks(databaseID string) ([]RoleNewItemPriv, error) {
 	return roleNewItemPrivs, nil
 }
 
-func GetNewItemPrivs(roleID string) ([]RoleNewItemPriv, error) {
+func GetNewItemPrivs(trackerDBHandle *sql.DB, roleID string) ([]RoleNewItemPriv, error) {
 
-	roleDatabaseID, roleDBErr := GetUserRoleDatabaseID(roleID)
+	roleDatabaseID, roleDBErr := GetUserRoleDatabaseID(trackerDBHandle, roleID)
 	if roleDBErr != nil {
 		return nil, fmt.Errorf("GetNewItemPrivs: Failure querying database: %v", roleDBErr)
 	}
 
-	defaultFormLinks, getLinkErr := getDefaultFormLinks(roleDatabaseID)
+	defaultFormLinks, getLinkErr := getDefaultFormLinks(trackerDBHandle, roleDatabaseID)
 	if getLinkErr != nil {
 		return nil, fmt.Errorf("GetNewItemPrivs: Failure querying database: %v", getLinkErr)
 	}
@@ -149,7 +148,7 @@ func GetNewItemPrivs(roleID string) ([]RoleNewItemPriv, error) {
 		privsByLinkID[defaultPriv.LinkID] = defaultPriv
 	}
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT form_links.link_id,form_links.name
 			FROM new_item_form_link_role_privs,form_links
 			WHERE new_item_form_link_role_privs.role_id=$1 AND
@@ -177,8 +176,8 @@ func GetNewItemPrivs(roleID string) ([]RoleNewItemPriv, error) {
 	return roleNewItemPrivs, nil
 }
 
-func GetNewItemLinksWithUserPrivs(databaseID string, userID string) (map[string]bool, error) {
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+func GetNewItemLinksWithUserPrivs(trackerDBHandle *sql.DB, databaseID string, userID string) (map[string]bool, error) {
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT new_item_form_link_role_privs.link_id
 				FROM new_item_form_link_role_privs,database_roles,collaborator_roles,collaborators
 				WHERE database_roles.database_id=$1
@@ -202,7 +201,7 @@ func GetNewItemLinksWithUserPrivs(databaseID string, userID string) (map[string]
 	return visibleLinks, nil
 }
 
-func CurrentUserHasNewItemLinkPrivs(req *http.Request,
+func CurrentUserHasNewItemLinkPrivs(trackerDBHandle *sql.DB, req *http.Request,
 	databaseID string, linkID string) (bool, error) {
 
 	if CurrUserIsDatabaseAdmin(req, databaseID) {
@@ -214,7 +213,7 @@ func CurrentUserHasNewItemLinkPrivs(req *http.Request,
 		return false, fmt.Errorf("verifyCurrUserIsDatabaseAdmin: can't verify user: %v", userErr)
 	}
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT new_item_form_link_role_privs.link_id
 					FROM new_item_form_link_role_privs,database_roles,collaborator_roles,collaborators
 					WHERE database_roles.database_id=$1

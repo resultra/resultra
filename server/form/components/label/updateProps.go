@@ -1,6 +1,7 @@
 package label
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
@@ -29,10 +30,10 @@ type LabelPropUpdater interface {
 	updateProps(label *Label) error
 }
 
-func updateLabelProps(propUpdater LabelPropUpdater) (*Label, error) {
+func updateLabelProps(trackerDBHandle *sql.DB, propUpdater LabelPropUpdater) (*Label, error) {
 
 	// Retrieve the bar chart from the data store
-	labelForUpdate, getErr := getLabel(propUpdater.getParentFormID(), propUpdater.getLabelID())
+	labelForUpdate, getErr := getLabel(trackerDBHandle, propUpdater.getParentFormID(), propUpdater.getLabelID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateLabelProps: Unable to get existing label: %v", getErr)
 	}
@@ -41,7 +42,7 @@ func updateLabelProps(propUpdater LabelPropUpdater) (*Label, error) {
 		return nil, fmt.Errorf("updateLabelProps: Unable to update existing label properties: %v", propUpdateErr)
 	}
 
-	updatedLabel, updateErr := updateExistingLabel(labelForUpdate)
+	updatedLabel, updateErr := updateExistingLabel(trackerDBHandle, labelForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateLabelProps: Unable to update existing label properties: datastore update error =  %v", updateErr)
 	}

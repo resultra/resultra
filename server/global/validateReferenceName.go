@@ -1,19 +1,19 @@
 package global
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/common/databaseWrapper"
 )
 
-func validateUniqueReferenceName(databaseID string, globalID string, referenceName string) error {
+func validateUniqueReferenceName(trackerDBHandle *sql.DB, databaseID string, globalID string, referenceName string) error {
 	// Query to validate the reference name is unique:
 	// 1. Select all the globals in the same database
 	// 2. Include globals with the same reference name.
 	// 3. Exclude globals with the same globals ID. In other words
 	//    the name is considered valid if it is the same as its
 	//    existing name.
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT globals.global_id,globals.ref_name 
 			FROM globals,databases
 			WHERE databases.database_id=$1 AND
@@ -33,7 +33,7 @@ func validateUniqueReferenceName(databaseID string, globalID string, referenceNa
 
 }
 
-func validateReferenceName(globalID string, referenceName string) error {
+func validateReferenceName(trackerDBHandle *sql.DB, globalID string, referenceName string) error {
 
 	if !generic.WellFormedFormulaReferenceName(referenceName) {
 		return fmt.Errorf("Invalid formula reference name: '%v' Cannot be empty and must only contain letters, numbers and underscores",
@@ -41,19 +41,19 @@ func validateReferenceName(globalID string, referenceName string) error {
 
 	}
 
-	databaseID, err := getGlobalDatabaseID(globalID)
+	databaseID, err := getGlobalDatabaseID(trackerDBHandle, globalID)
 	if err != nil {
 		return fmt.Errorf("System error validating global name (%v)", err)
 	}
 
-	if uniqueErr := validateUniqueReferenceName(databaseID, globalID, referenceName); uniqueErr != nil {
+	if uniqueErr := validateUniqueReferenceName(trackerDBHandle, databaseID, globalID, referenceName); uniqueErr != nil {
 		return uniqueErr
 	}
 
 	return nil
 }
 
-func validateNewReferenceName(databaseID string, referenceName string) error {
+func validateNewReferenceName(trackerDBHandle *sql.DB, databaseID string, referenceName string) error {
 
 	if !generic.WellFormedFormulaReferenceName(referenceName) {
 		return fmt.Errorf("Invalid formula reference name: '%v' Cannot be empty and must only contain letters, numbers and underscores",
@@ -63,7 +63,7 @@ func validateNewReferenceName(databaseID string, referenceName string) error {
 	// No global will have an empty global ID, so this will cause test for unique
 	// global names to return true if any global already has the given referenceName.
 	globalID := ""
-	if uniqueErr := validateUniqueReferenceName(databaseID, globalID, referenceName); uniqueErr != nil {
+	if uniqueErr := validateUniqueReferenceName(trackerDBHandle, databaseID, globalID, referenceName); uniqueErr != nil {
 		return uniqueErr
 	}
 

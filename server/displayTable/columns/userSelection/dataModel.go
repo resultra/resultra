@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -43,9 +42,9 @@ func saveUserSelection(destDBHandle *sql.DB, newUserSelection UserSelection) err
 	return nil
 }
 
-func saveNewUserSelection(params NewUserSelectionParams) (*UserSelection, error) {
+func saveNewUserSelection(trackerDBHandle *sql.DB, params NewUserSelectionParams) (*UserSelection, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validUserSelectionFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validUserSelectionFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewUserSelection: %v", fieldErr)
 	}
 
@@ -59,7 +58,7 @@ func saveNewUserSelection(params NewUserSelectionParams) (*UserSelection, error)
 		ColType:         userSelectionEntityKind,
 		Properties:      properties}
 
-	if saveErr := saveUserSelection(databaseWrapper.DBHandle(), newUserSelection); saveErr != nil {
+	if saveErr := saveUserSelection(trackerDBHandle, newUserSelection); saveErr != nil {
 		return nil, fmt.Errorf("saveNewUserSelection: Unable to save userSelection with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -69,10 +68,10 @@ func saveNewUserSelection(params NewUserSelectionParams) (*UserSelection, error)
 
 }
 
-func getUserSelection(parentTableID string, userSelectionID string) (*UserSelection, error) {
+func getUserSelection(trackerDBHandle *sql.DB, parentTableID string, userSelectionID string) (*UserSelection, error) {
 
 	userSelectionProps := newDefaultUserSelectionProperties()
-	if getErr := common.GetTableColumn(userSelectionEntityKind, parentTableID,
+	if getErr := common.GetTableColumn(trackerDBHandle, userSelectionEntityKind, parentTableID,
 		userSelectionID, &userSelectionProps); getErr != nil {
 		return nil, fmt.Errorf("getUserSelection: Unable to retrieve userSelection: %v", getErr)
 	}
@@ -114,8 +113,8 @@ func getUserSelectionsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]User
 	return userSelections, nil
 }
 
-func GetUserSelections(parentTableID string) ([]UserSelection, error) {
-	return getUserSelectionsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetUserSelections(trackerDBHandle *sql.DB, parentTableID string) ([]UserSelection, error) {
+	return getUserSelectionsFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneUserSelections(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
@@ -149,9 +148,9 @@ func CloneUserSelections(cloneParams *trackerDatabase.CloneDatabaseParams, paren
 	return nil
 }
 
-func updateExistingUserSelection(updatedUserSelection *UserSelection) (*UserSelection, error) {
+func updateExistingUserSelection(trackerDBHandle *sql.DB, updatedUserSelection *UserSelection) (*UserSelection, error) {
 
-	if updateErr := common.UpdateTableColumn(userSelectionEntityKind, updatedUserSelection.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, userSelectionEntityKind, updatedUserSelection.ParentTableID,
 		updatedUserSelection.UserSelectionID, updatedUserSelection.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingUserSelection: failure updating userSelection: %v", updateErr)
 	}

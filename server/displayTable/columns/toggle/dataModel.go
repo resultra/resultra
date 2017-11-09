@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -43,9 +42,9 @@ func saveToggle(destDBHandle *sql.DB, newToggle Toggle) error {
 	return nil
 }
 
-func saveNewToggle(params NewToggleParams) (*Toggle, error) {
+func saveNewToggle(trackerDBHandle *sql.DB, params NewToggleParams) (*Toggle, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validToggleFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validToggleFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewToggle: %v", fieldErr)
 	}
 
@@ -59,7 +58,7 @@ func saveNewToggle(params NewToggleParams) (*Toggle, error) {
 		ColType:    toggleEntityKind,
 		Properties: properties}
 
-	if err := saveToggle(databaseWrapper.DBHandle(), newToggle); err != nil {
+	if err := saveToggle(trackerDBHandle, newToggle); err != nil {
 		return nil, fmt.Errorf("saveNewToggle: Unable to save bar chart with params=%+v: error = %v", params, err)
 	}
 
@@ -69,10 +68,10 @@ func saveNewToggle(params NewToggleParams) (*Toggle, error) {
 
 }
 
-func getToggle(parentTableID string, toggleID string) (*Toggle, error) {
+func getToggle(trackerDBHandle *sql.DB, parentTableID string, toggleID string) (*Toggle, error) {
 
 	toggleProps := newDefaultToggleProperties()
-	if getErr := common.GetTableColumn(toggleEntityKind, parentTableID, toggleID, &toggleProps); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, toggleEntityKind, parentTableID, toggleID, &toggleProps); getErr != nil {
 		return nil, fmt.Errorf("getToggle: Unable to retrieve check box: %v", getErr)
 	}
 
@@ -113,8 +112,8 @@ func getTogglesFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Toggle, err
 	return toggles, nil
 }
 
-func GetToggles(parentTableID string) ([]Toggle, error) {
-	return getTogglesFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetToggles(trackerDBHandle *sql.DB, parentTableID string) ([]Toggle, error) {
+	return getTogglesFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneToggles(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
@@ -148,9 +147,9 @@ func CloneToggles(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableI
 	return nil
 }
 
-func updateExistingToggle(updatedToggle *Toggle) (*Toggle, error) {
+func updateExistingToggle(trackerDBHandle *sql.DB, updatedToggle *Toggle) (*Toggle, error) {
 
-	if updateErr := common.UpdateTableColumn(toggleEntityKind, updatedToggle.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, toggleEntityKind, updatedToggle.ParentTableID,
 		updatedToggle.ToggleID, updatedToggle.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingToggle: failure updating toggle: %v", updateErr)
 	}

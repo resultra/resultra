@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -44,13 +43,13 @@ func saveFile(destDBHandle *sql.DB, newFile File) error {
 
 }
 
-func saveNewFile(params NewFileParams) (*File, error) {
+func saveNewFile(trackerDBHandle *sql.DB, params NewFileParams) (*File, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := field.ValidateField(params.FieldID, validFileFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validFileFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewFile: %v", fieldErr)
 	}
 
@@ -62,7 +61,7 @@ func saveNewFile(params NewFileParams) (*File, error) {
 		FileID:     uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveFile(databaseWrapper.DBHandle(), newFile); err != nil {
+	if err := saveFile(trackerDBHandle, newFile); err != nil {
 		return nil, fmt.Errorf("saveNewFile: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -72,10 +71,10 @@ func saveNewFile(params NewFileParams) (*File, error) {
 
 }
 
-func getFile(parentFormID string, fileID string) (*File, error) {
+func getFile(trackerDBHandle *sql.DB, parentFormID string, fileID string) (*File, error) {
 
 	fileProps := newDefaultFileProperties()
-	if getErr := common.GetFormComponent(fileEntityKind, parentFormID, fileID, &fileProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle, fileEntityKind, parentFormID, fileID, &fileProps); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to retrieve text box: %v", getErr)
 	}
 
@@ -113,8 +112,8 @@ func getFilesFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]File, error) {
 
 }
 
-func GetFiles(parentFormID string) ([]File, error) {
-	return getFilesFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetFiles(trackerDBHandle *sql.DB, parentFormID string) ([]File, error) {
+	return getFilesFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneFiles(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -146,9 +145,9 @@ func CloneFiles(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID s
 	return nil
 }
 
-func updateExistingFile(fileID string, updatedFile *File) (*File, error) {
+func updateExistingFile(trackerDBHandle *sql.DB, fileID string, updatedFile *File) (*File, error) {
 
-	if updateErr := common.UpdateFormComponent(fileEntityKind, updatedFile.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, fileEntityKind, updatedFile.ParentFormID,
 		updatedFile.FileID, updatedFile.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingFile: error updating existing text box component: %v", updateErr)
 	}

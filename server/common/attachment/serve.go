@@ -1,6 +1,7 @@
 package attachment
 
 import (
+	"database/sql"
 	"fmt"
 	"path"
 	"resultra/datasheet/server/common/runtimeConfig"
@@ -50,9 +51,9 @@ func getAttachmentDataType(attachInfo *AttachmentInfo) string {
 	}
 }
 
-func GetAttachmentReference(attachmentID string) (*AttachmentReference, error) {
+func GetAttachmentReference(trackerDBHandle *sql.DB, attachmentID string) (*AttachmentReference, error) {
 
-	attachInfo, err := GetAttachmentInfo(attachmentID)
+	attachInfo, err := GetAttachmentInfo(trackerDBHandle, attachmentID)
 	if err != nil {
 		return nil, fmt.Errorf("GetAttachmentReference: %v", err)
 	}
@@ -77,11 +78,11 @@ func GetAttachmentReference(attachmentID string) (*AttachmentReference, error) {
 
 }
 
-func getAttachmentReferences(attachmentIDs []string) ([]AttachmentReference, error) {
+func getAttachmentReferences(trackerDBHandle *sql.DB, attachmentIDs []string) ([]AttachmentReference, error) {
 
 	refs := []AttachmentReference{}
 	for _, attachmentID := range attachmentIDs {
-		currRef, err := GetAttachmentReference(attachmentID)
+		currRef, err := GetAttachmentReference(trackerDBHandle, attachmentID)
 		if err != nil {
 			return nil, fmt.Errorf("getAttachmentReferences: error getting reference for attachment with ID = %v: %v", attachmentID, err)
 		}

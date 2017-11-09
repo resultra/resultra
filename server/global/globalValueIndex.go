@@ -1,6 +1,7 @@
 package global
 
 import (
+	"database/sql"
 	"fmt"
 	"sort"
 	"time"
@@ -47,15 +48,15 @@ func (globalValSeriesIndex GlobalValueUpdateSeriesIndex) LatestValues() *GlobalV
 	return &globalValues
 }
 
-func NewGlobalValueIndex(parentDatabaseID string) (*GlobalValueUpdateSeriesIndex, error) {
+func NewGlobalValueIndex(trackerDBHandle *sql.DB, parentDatabaseID string) (*GlobalValueUpdateSeriesIndex, error) {
 
-	valUpdates, getErr := getValUpdates(parentDatabaseID)
+	valUpdates, getErr := getValUpdates(trackerDBHandle, parentDatabaseID)
 	if getErr != nil {
 		return nil, fmt.Errorf("NewGlobalValueIndex: failure retrieving value updates  for database = %v error = %v",
 			parentDatabaseID, getErr)
 	}
 
-	globals, getGlobalsErr := GetGlobals(parentDatabaseID)
+	globals, getGlobalsErr := GetGlobals(trackerDBHandle, parentDatabaseID)
 	if getGlobalsErr != nil {
 		return nil, fmt.Errorf("NewGlobalValueIndex: failure retrieving globals for database = %v error = %v",
 			parentDatabaseID, getGlobalsErr)
@@ -100,8 +101,8 @@ type GetGlobalValuesParams struct {
 	ParentDatabaseID string `json:"parentDatabaseID"`
 }
 
-func GetGlobalValues(params GetGlobalValuesParams) (*GlobalValues, error) {
-	globalValIndex, err := NewGlobalValueIndex(params.ParentDatabaseID)
+func GetGlobalValues(trackerDBHandle *sql.DB, params GetGlobalValuesParams) (*GlobalValues, error) {
+	globalValIndex, err := NewGlobalValueIndex(trackerDBHandle, params.ParentDatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("getGlobalValues: failure retrieving global value index: %v", err)
 	}

@@ -61,7 +61,7 @@ func cloneFields(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 			}
 			clonedField.CalcFieldEqn = clonedEqn
 
-			clonedFormulaText, err := calcField.ClonePreprocessedFormula(cloneParams.SourceDatabaseID,
+			clonedFormulaText, err := calcField.ClonePreprocessedFormula(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID,
 				cloneParams.IDRemapper, currField.PreprocessedFormulaText)
 			if err != nil {
 				return fmt.Errorf("cloneFields: %v", err)
@@ -159,13 +159,19 @@ func saveExistingDatabaseAsTemplate(req *http.Request, params SaveAsTemplatePara
 	if userErr != nil {
 		return nil, userErr
 	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return nil, dbErr
+	}
+
 	cloneParams := trackerDatabase.CloneDatabaseParams{
 		SourceDatabaseID: params.SourceDatabaseID,
 		NewName:          params.NewTemplateName,
 		IsTemplate:       true,
 		CreatedByUserID:  userID,
-		SrcDBHandle:      databaseWrapper.DBHandle(),
-		DestDBHandle:     databaseWrapper.DBHandle(),
+		SrcDBHandle:      trackerDBHandle,
+		DestDBHandle:     trackerDBHandle,
 		IDRemapper:       uniqueID.UniqueIDRemapper{}}
 	return cloneIntoNewTrackerDatabase(&cloneParams)
 

@@ -1,6 +1,7 @@
 package calcField
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/field"
@@ -31,7 +32,7 @@ func compileFormula(inputStr string) (*EquationNode, error) {
 
 func preprocessCalcFieldFormula(compileParams formulaCompileParams) (string, error) {
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(
+	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(compileParams.trackerDBHandle,
 		field.GetFieldListParams{ParentDatabaseID: compileParams.databaseID})
 	if indexErr != nil {
 		return "", fmt.Errorf("preprocessCalcFieldFormula: %v", indexErr)
@@ -42,7 +43,7 @@ func preprocessCalcFieldFormula(compileParams formulaCompileParams) (string, err
 		fieldRefFieldIDMap[fieldRefName] = currField.FieldID
 	}
 
-	globals, getGlobalsErr := global.GetGlobals(compileParams.databaseID)
+	globals, getGlobalsErr := global.GetGlobals(compileParams.trackerDBHandle, compileParams.databaseID)
 	if getGlobalsErr != nil {
 		return "", fmt.Errorf("preprocessCalcFieldFormula: Unable to retrieve globals: databaseID=%v, error=%v ",
 			compileParams.databaseID, getGlobalsErr)
@@ -63,11 +64,11 @@ func preprocessCalcFieldFormula(compileParams formulaCompileParams) (string, err
 
 // ClonePreprocessedFormula is used to duplicate a formula when saving an existing database as a template or when cloning from a
 // template to a new database.
-func ClonePreprocessedFormula(srcDatabaseID string,
+func ClonePreprocessedFormula(trackerDBHandle *sql.DB, srcDatabaseID string,
 	remappedIDs uniqueID.UniqueIDRemapper, preProcessedFormula string) (string, error) {
 
 	getFieldParams := field.GetFieldListParams{ParentDatabaseID: srcDatabaseID}
-	fields, err := field.GetAllFields(getFieldParams)
+	fields, err := field.GetAllFields(trackerDBHandle, getFieldParams)
 	if err != nil {
 		return "", fmt.Errorf("cloneFields: %v", err)
 	}
@@ -81,7 +82,7 @@ func ClonePreprocessedFormula(srcDatabaseID string,
 		fieldIDRemappedIDMap[currField.FieldID] = remappedID
 	}
 
-	globals, err := global.GetGlobals(srcDatabaseID)
+	globals, err := global.GetGlobals(trackerDBHandle, srcDatabaseID)
 	if err != nil {
 		return "", fmt.Errorf("ClonePreprocessedFormula: Unable to retrieve globals: databaseID=%v, error=%v ",
 			srcDatabaseID, err)
@@ -111,7 +112,8 @@ func ClonePreprocessedFormula(srcDatabaseID string,
 // date reference name.
 func reverseProcessCalcFieldFormula(compileParams formulaCompileParams) (string, error) {
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentDatabaseID: compileParams.databaseID})
+	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(compileParams.trackerDBHandle,
+		field.GetFieldListParams{ParentDatabaseID: compileParams.databaseID})
 	if indexErr != nil {
 		return "", fmt.Errorf("preprocessCalcFieldFormula: %v", indexErr)
 	}
@@ -121,7 +123,7 @@ func reverseProcessCalcFieldFormula(compileParams formulaCompileParams) (string,
 		fieldIDFieldRefMap[currField.FieldID] = currField.RefName
 	}
 
-	globals, getGlobalsErr := global.GetGlobals(compileParams.databaseID)
+	globals, getGlobalsErr := global.GetGlobals(compileParams.trackerDBHandle, compileParams.databaseID)
 	if getGlobalsErr != nil {
 		return "", fmt.Errorf("reverseProcessCalcFieldFormula: Unable to retrieve globals: databaseID=%v, error=%v ",
 			compileParams.databaseID, getGlobalsErr)
@@ -155,6 +157,7 @@ type GetRawFormulaResult struct {
 }
 
 type formulaCompileParams struct {
+	trackerDBHandle    *sql.DB
 	formulaText        string
 	databaseID         string
 	expectedResultType string
@@ -167,9 +170,9 @@ type formulaCompileParams struct {
 	resultFieldID string
 }
 
-func assembleCalcFieldCompileParams(fieldID string) (*formulaCompileParams, error) {
+func assembleCalcFieldCompileParams(trackerDBHandle *sql.DB, fieldID string) (*formulaCompileParams, error) {
 
-	calcField, getFieldErr := field.GetField(fieldID)
+	calcField, getFieldErr := field.GetField(trackerDBHandle, fieldID)
 	if getFieldErr != nil {
 		return nil, fmt.Errorf("assembleCalcFieldCompileParams: Unable to get calculated field field: field id =%v, error=%v ",
 			fieldID, getFieldErr)
@@ -180,6 +183,7 @@ func assembleCalcFieldCompileParams(fieldID string) (*formulaCompileParams, erro
 	}
 
 	compileParams := formulaCompileParams{
+		trackerDBHandle:    trackerDBHandle,
 		formulaText:        calcField.PreprocessedFormulaText,
 		databaseID:         calcField.ParentDatabaseID,
 		expectedResultType: calcField.Type,
@@ -188,9 +192,9 @@ func assembleCalcFieldCompileParams(fieldID string) (*formulaCompileParams, erro
 	return &compileParams, nil
 }
 
-func getRawFormulaText(params GetRawFormulaParams) (*GetRawFormulaResult, error) {
+func getRawFormulaText(trackerDBHandle *sql.DB, params GetRawFormulaParams) (*GetRawFormulaResult, error) {
 
-	compileParams, paramErr := assembleCalcFieldCompileParams(params.FieldID)
+	compileParams, paramErr := assembleCalcFieldCompileParams(trackerDBHandle, params.FieldID)
 	if paramErr != nil {
 		return nil, fmt.Errorf("getRawFormulaText: Unable to retrieve compilation parameters: error=%v ", paramErr)
 	}
@@ -266,9 +270,9 @@ type ValidationResponse struct {
 	ErrorMsg       string `json:"errorMsg"`
 }
 
-func validateFormulaText(validationParams ValidateFormulaParams) *ValidationResponse {
+func validateFormulaText(trackerDBHandle *sql.DB, validationParams ValidateFormulaParams) *ValidationResponse {
 
-	compileParams, paramErr := assembleCalcFieldCompileParams(validationParams.FieldID)
+	compileParams, paramErr := assembleCalcFieldCompileParams(trackerDBHandle, validationParams.FieldID)
 	if paramErr != nil {
 		errMsg := fmt.Sprintf("validateFormulaText: Unable to get  retrieve field: error=%v ", paramErr)
 		return &ValidationResponse{IsValidFormula: false, ErrorMsg: errMsg}

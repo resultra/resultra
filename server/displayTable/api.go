@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/userRole"
@@ -44,13 +45,19 @@ func newTableAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle,
 		r, params.ParentDatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if tableRef, err := newTable(params); err != nil {
+	if tableRef, err := newTable(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *tableRef)
@@ -77,8 +84,13 @@ func listTableAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	*/
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
 
-	if tableRefs, err := getAllTables(params.ParentDatabaseID); err != nil {
+	if tableRefs, err := getAllTables(trackerDBHandle, params.ParentDatabaseID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, tableRefs)
@@ -98,12 +110,18 @@ func getTableAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tableRef, err := GetTable(params.TableID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	tableRef, err := GetTable(trackerDBHandle, params.TableID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle,
 		r, tableRef.ParentDatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
@@ -121,18 +139,24 @@ func getTableColsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tableRef, err := GetTable(params.TableID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	tableRef, err := GetTable(trackerDBHandle, params.TableID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle,
 		r, tableRef.ParentDatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	tableColInfo, err := getTableDisplayInfo(params.TableID)
+	tableColInfo, err := getTableDisplayInfo(trackerDBHandle, params.TableID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	}
@@ -154,18 +178,24 @@ func deleteColumnAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tableRef, err := GetTable(params.ParentTableID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	tableRef, err := GetTable(trackerDBHandle, params.ParentTableID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	}
 
-	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdmin(trackerDBHandle,
 		r, tableRef.ParentDatabaseID); verifyErr != nil {
 		api.WriteErrorResponse(w, verifyErr)
 		return
 	}
 
-	if err := common.DeleteTableColumn(params.ParentTableID, params.ColumnID); err != nil {
+	if err := common.DeleteTableColumn(trackerDBHandle, params.ParentTableID, params.ColumnID); err != nil {
 		api.WriteErrorResponse(w, err)
 	}
 
@@ -193,7 +223,13 @@ func getTableDisplayInfoAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	} */
 
-	displayInfo, err := getTableDisplayInfo(params.TableID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	displayInfo, err := getTableDisplayInfo(trackerDBHandle, params.TableID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	}
@@ -207,7 +243,13 @@ func validateTableNameAPI(w http.ResponseWriter, r *http.Request) {
 	tableName := r.FormValue("tableName")
 	formID := r.FormValue("formID")
 
-	if err := validateTableName(formID, tableName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := validateTableName(trackerDBHandle, formID, tableName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}
@@ -222,7 +264,13 @@ func validateNewTableNameAPI(w http.ResponseWriter, r *http.Request) {
 	tableName := r.FormValue("tableName")
 	databaseID := r.FormValue("databaseID")
 
-	if err := validateNewTableName(databaseID, tableName); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := validateNewTableName(trackerDBHandle, databaseID, tableName); err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
 		return
 	}
@@ -233,7 +281,14 @@ func validateNewTableNameAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func processTablePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater TablePropUpdater) {
-	if updatedTable, err := updateTableProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if updatedTable, err := updateTableProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, updatedTable)

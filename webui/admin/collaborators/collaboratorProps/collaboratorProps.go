@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/server/userRole"
 	adminCommon "resultra/datasheet/webui/admin/common"
 
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
@@ -46,20 +47,26 @@ func editCollabPropsPage(w http.ResponseWriter, r *http.Request) {
 	collaboratorID := vars["collaboratorID"]
 	databaseID := vars["databaseID"]
 
-	collabInfo, collabErr := userRole.GetCollaboratorByID(collaboratorID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	collabInfo, collabErr := userRole.GetCollaboratorByID(trackerDBHandle, collaboratorID)
 	if collabErr != nil {
 		http.Error(w, collabErr.Error(), http.StatusInternalServerError)
 		return
 
 	}
 
-	userInfo, err := userAuth.GetUserInfoByID(collabInfo.UserID)
+	userInfo, err := userAuth.GetUserInfoByID(trackerDBHandle, collabInfo.UserID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(databaseID)
+	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(trackerDBHandle, databaseID)
 	if dbInfoErr != nil {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
 		return

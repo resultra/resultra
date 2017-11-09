@@ -1,6 +1,7 @@
 package attachment
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"path/filepath"
@@ -26,9 +27,9 @@ type AttachmentInfo struct {
 	Caption            string    `json:"caption"`
 }
 
-func saveAttachmentInfo(attachInfo AttachmentInfo) error {
+func saveAttachmentInfo(trackerDBHandle *sql.DB, attachInfo AttachmentInfo) error {
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(
+	if _, insertErr := trackerDBHandle.Exec(
 		`INSERT INTO attachments (attachment_id, database_id, user_id, 
 						create_timestamp_utc, type, orig_file_name,cloud_file_name,title,caption) 
 			 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
@@ -72,10 +73,10 @@ func newAttachmentInfo(parentDatabaseID string, userID string, attachmentType st
 
 }
 
-func GetAttachmentInfo(attachmentID string) (*AttachmentInfo, error) {
+func GetAttachmentInfo(trackerDBHandle *sql.DB, attachmentID string) (*AttachmentInfo, error) {
 
 	attachInfo := AttachmentInfo{}
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT attachment_id, database_id, user_id, create_timestamp_utc, type,orig_file_name,cloud_file_name,title,caption
 		 FROM attachments
 		 WHERE attachment_id=$1 LIMIT 1`, attachmentID).Scan(
@@ -95,11 +96,11 @@ func GetAttachmentInfo(attachmentID string) (*AttachmentInfo, error) {
 	return &attachInfo, nil
 }
 
-func getOrigFilenameFromCloudFileName(cloudFileName string) (string, error) {
+func getOrigFilenameFromCloudFileName(trackerDBHandle *sql.DB, cloudFileName string) (string, error) {
 
 	origFileName := ""
 
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT orig_file_name
 		 FROM attachments
 		 WHERE cloud_file_name=$1 LIMIT 1`, cloudFileName).Scan(
@@ -117,9 +118,9 @@ type SetCaptionParams struct {
 	Caption      string `json:"caption"`
 }
 
-func setCaption(params SetCaptionParams) (*AttachmentInfo, error) {
+func setCaption(trackerDBHandle *sql.DB, params SetCaptionParams) (*AttachmentInfo, error) {
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE attachments 
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE attachments 
 			SET caption=$1 
 			WHERE attachment_id=$2`,
 		params.Caption,
@@ -127,7 +128,7 @@ func setCaption(params SetCaptionParams) (*AttachmentInfo, error) {
 		return nil, fmt.Errorf("setCaption: Error updating caption: error = %v", updateErr)
 	}
 
-	return GetAttachmentInfo(params.AttachmentID)
+	return GetAttachmentInfo(trackerDBHandle, params.AttachmentID)
 }
 
 type SetTitleParams struct {
@@ -135,9 +136,9 @@ type SetTitleParams struct {
 	Title        string `json:"title"`
 }
 
-func setTitle(params SetTitleParams) (*AttachmentInfo, error) {
+func setTitle(trackerDBHandle *sql.DB, params SetTitleParams) (*AttachmentInfo, error) {
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE attachments 
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE attachments 
 			SET title=$1 
 			WHERE attachment_id=$2`,
 		params.Title,
@@ -145,7 +146,7 @@ func setTitle(params SetTitleParams) (*AttachmentInfo, error) {
 		return nil, fmt.Errorf("setTitle: Error updating title: error = %v", updateErr)
 	}
 
-	return GetAttachmentInfo(params.AttachmentID)
+	return GetAttachmentInfo(trackerDBHandle, params.AttachmentID)
 }
 
 type SaveURLParams struct {
@@ -162,11 +163,16 @@ func saveURL(req *http.Request, params SaveURLParams) (*AttachmentInfo, error) {
 		return nil, fmt.Errorf("uploadFile: Unable to get current user information: %v", userErr)
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return nil, dbErr
+	}
+
 	attachInfo := newAttachmentInfo(params.ParentDatabaseID, currUserID, attachTypeURL, params.URL, cloudFileNameNone)
 	attachInfo.Title = params.Title
 	attachInfo.Caption = params.Caption
 
-	if saveErr := saveAttachmentInfo(attachInfo); saveErr != nil {
+	if saveErr := saveAttachmentInfo(trackerDBHandle, attachInfo); saveErr != nil {
 		return nil, fmt.Errorf("uploadFile: unable to save attachment information/metadata: %v", saveErr)
 	}
 

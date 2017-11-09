@@ -1,6 +1,7 @@
 package valueList
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/generic/stringValidation"
 )
@@ -22,10 +23,10 @@ type ValueListPropUpdater interface {
 	updateProps(valueList *ValueList) error
 }
 
-func updateValueListProps(propUpdater ValueListPropUpdater) (*ValueList, error) {
+func updateValueListProps(trackerDBHandle *sql.DB, propUpdater ValueListPropUpdater) (*ValueList, error) {
 
 	// Retrieve the bar chart from the data store
-	valueListForUpdate, getErr := GetValueList(propUpdater.getValueListID())
+	valueListForUpdate, getErr := GetValueList(trackerDBHandle, propUpdater.getValueListID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateValueListProps: Unable to get existing button: %v", getErr)
 	}
@@ -34,7 +35,7 @@ func updateValueListProps(propUpdater ValueListPropUpdater) (*ValueList, error) 
 		return nil, fmt.Errorf("updateValueListProps: Unable to update existing form link properties: %v", propUpdateErr)
 	}
 
-	updatedValueList, updateErr := updateExistingValueList(valueListForUpdate)
+	updatedValueList, updateErr := updateExistingValueList(trackerDBHandle, valueListForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf(
 			"updateValueListProps: Unable to update existing value list properties: datastore update error =  %v", updateErr)

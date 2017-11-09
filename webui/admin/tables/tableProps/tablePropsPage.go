@@ -11,6 +11,7 @@ import (
 
 	"resultra/datasheet/server/common/runtimeConfig"
 
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
@@ -58,12 +59,18 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	tableID := vars["tableID"]
 
-	tableInfo, err := displayTable.GetTable(tableID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	tableInfo, err := displayTable.GetTable(trackerDBHandle, tableID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	dbInfo, err := databaseController.GetDatabaseInfo(tableInfo.ParentDatabaseID)
+	dbInfo, err := databaseController.GetDatabaseInfo(trackerDBHandle, tableInfo.ParentDatabaseID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

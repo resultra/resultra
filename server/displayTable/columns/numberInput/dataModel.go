@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -45,9 +44,9 @@ func saveNumberInput(destDBHandle *sql.DB, newNumberInput NumberInput) error {
 
 }
 
-func saveNewNumberInput(params NewNumberInputParams) (*NumberInput, error) {
+func saveNewNumberInput(trackerDBHandle *sql.DB, params NewNumberInputParams) (*NumberInput, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validNumberInputFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validNumberInputFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewNumberInput: %v", fieldErr)
 	}
 
@@ -60,7 +59,7 @@ func saveNewNumberInput(params NewNumberInputParams) (*NumberInput, error) {
 		ColumnID:      numberInputID,
 		Properties:    properties}
 
-	if err := saveNumberInput(databaseWrapper.DBHandle(), newNumberInput); err != nil {
+	if err := saveNumberInput(trackerDBHandle, newNumberInput); err != nil {
 		return nil, fmt.Errorf("saveNewNumberInput: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -70,10 +69,10 @@ func saveNewNumberInput(params NewNumberInputParams) (*NumberInput, error) {
 
 }
 
-func getNumberInput(parentTableID string, numberInputID string) (*NumberInput, error) {
+func getNumberInput(trackerDBHandle *sql.DB, parentTableID string, numberInputID string) (*NumberInput, error) {
 
 	numberInputProps := newDefaultNumberInputProperties()
-	if getErr := common.GetTableColumn(numberInputEntityKind, parentTableID, numberInputID, &numberInputProps); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, numberInputEntityKind, parentTableID, numberInputID, &numberInputProps); getErr != nil {
 		return nil, fmt.Errorf("getNumberInput: Unable to retrieve number input: %v", getErr)
 	}
 
@@ -115,8 +114,8 @@ func getNumberInputsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Number
 
 }
 
-func GetNumberInputs(parentTableID string) ([]NumberInput, error) {
-	return getNumberInputsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetNumberInputs(trackerDBHandle *sql.DB, parentTableID string) ([]NumberInput, error) {
+	return getNumberInputsFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneNumberInputs(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
@@ -150,9 +149,9 @@ func CloneNumberInputs(cloneParams *trackerDatabase.CloneDatabaseParams, parentT
 	return nil
 }
 
-func updateExistingNumberInput(numberInputID string, updatedNumberInput *NumberInput) (*NumberInput, error) {
+func updateExistingNumberInput(trackerDBHandle *sql.DB, numberInputID string, updatedNumberInput *NumberInput) (*NumberInput, error) {
 
-	if updateErr := common.UpdateTableColumn(numberInputEntityKind, updatedNumberInput.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, numberInputEntityKind, updatedNumberInput.ParentTableID,
 		updatedNumberInput.NumberInputID, updatedNumberInput.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingNumberInput: error updating existing number input component: %v", updateErr)
 	}

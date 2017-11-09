@@ -1,10 +1,10 @@
 package databaseController
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/form"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/itemList"
 	"resultra/datasheet/server/trackerDatabase"
 )
@@ -13,9 +13,9 @@ type DatabaseInfoParams struct {
 	DatabaseID string `json:"databaseID"`
 }
 
-func getDatabaseDashboardsInfo(params DatabaseInfoParams) ([]dashboard.Dashboard, error) {
+func getDatabaseDashboardsInfo(trackerDBHandle *sql.DB, params DatabaseInfoParams) ([]dashboard.Dashboard, error) {
 
-	dashboards, err := dashboard.GetAllSortedDashboard(params.DatabaseID)
+	dashboards, err := dashboard.GetAllSortedDashboard(trackerDBHandle, params.DatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("getDatabaseDashboardsInfo: %v", err)
 	}
@@ -24,9 +24,9 @@ func getDatabaseDashboardsInfo(params DatabaseInfoParams) ([]dashboard.Dashboard
 
 }
 
-func getDatabaseFormsInfo(params DatabaseInfoParams) ([]form.Form, error) {
+func getDatabaseFormsInfo(trackerDBHandle *sql.DB, params DatabaseInfoParams) ([]form.Form, error) {
 
-	formsInfo, getFormsErr := form.GetAllForms(params.DatabaseID)
+	formsInfo, getFormsErr := form.GetAllForms(trackerDBHandle, params.DatabaseID)
 	if getFormsErr != nil {
 		return nil, fmt.Errorf("getDatabaseFormsInfo: Failure querying database: %v", getFormsErr)
 	}
@@ -34,9 +34,9 @@ func getDatabaseFormsInfo(params DatabaseInfoParams) ([]form.Form, error) {
 	return formsInfo, nil
 }
 
-func getDatabaseItemListInfo(params DatabaseInfoParams) ([]itemList.ItemList, error) {
+func getDatabaseItemListInfo(trackerDBHandle *sql.DB, params DatabaseInfoParams) ([]itemList.ItemList, error) {
 
-	listInfo, getsListsErr := itemList.GetAllSortedItemLists(params.DatabaseID)
+	listInfo, getsListsErr := itemList.GetAllSortedItemLists(trackerDBHandle, params.DatabaseID)
 	if getsListsErr != nil {
 		return nil, fmt.Errorf("getDatabaseItemListInfo: %v", getsListsErr)
 	}
@@ -50,24 +50,24 @@ type DatabaseContentsInfo struct {
 	DashboardsInfo []dashboard.Dashboard    `json:"dashboardsInfo"`
 }
 
-func getDatabaseInfo(params DatabaseInfoParams) (*DatabaseContentsInfo, error) {
+func getDatabaseInfo(trackerDBHandle *sql.DB, params DatabaseInfoParams) (*DatabaseContentsInfo, error) {
 
-	db, getErr := trackerDatabase.GetDatabase(params.DatabaseID)
+	db, getErr := trackerDatabase.GetDatabase(trackerDBHandle, params.DatabaseID)
 	if getErr != nil {
 		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
 	}
 
-	formsInfo, formsErr := getDatabaseFormsInfo(params)
+	formsInfo, formsErr := getDatabaseFormsInfo(trackerDBHandle, params)
 	if formsErr != nil {
 		return nil, formsErr
 	}
 
-	dashboardsInfo, dashboardsErr := getDatabaseDashboardsInfo(params)
+	dashboardsInfo, dashboardsErr := getDatabaseDashboardsInfo(trackerDBHandle, params)
 	if dashboardsErr != nil {
 		return nil, dashboardsErr
 	}
 
-	listsInfo, err := getDatabaseItemListInfo(params)
+	listsInfo, err := getDatabaseItemListInfo(trackerDBHandle, params)
 	if err != nil {
 		return nil, err
 	}
@@ -88,10 +88,10 @@ type FormDatabaseInfo struct {
 	FormName     string
 }
 
-func GetFormDatabaseInfo(formID string) (*FormDatabaseInfo, error) {
+func GetFormDatabaseInfo(trackerDBHandle *sql.DB, formID string) (*FormDatabaseInfo, error) {
 
 	var formDBInfo FormDatabaseInfo
-	getErr := databaseWrapper.DBHandle().QueryRow(`
+	getErr := trackerDBHandle.QueryRow(`
 			SELECT 
 				databases.database_id, databases.name AS database_name, forms.form_id, forms.name 
 			FROM 
@@ -116,10 +116,10 @@ type DashboardDatabaseInfo struct {
 	DashboardName string
 }
 
-func GetDashboardDatabaseInfo(dashboardID string) (*DashboardDatabaseInfo, error) {
+func GetDashboardDatabaseInfo(trackerDBHandle *sql.DB, dashboardID string) (*DashboardDatabaseInfo, error) {
 
 	var dashDBInfo DashboardDatabaseInfo
-	getErr := databaseWrapper.DBHandle().QueryRow(`
+	getErr := trackerDBHandle.QueryRow(`
 			SELECT 
 				databases.database_id, databases.name, dashboards.dashboard_id,dashboards.name
 			FROM 
@@ -143,10 +143,10 @@ type DatabaseInfo struct {
 	DatabaseName string
 }
 
-func GetDatabaseInfo(databaseID string) (*DatabaseInfo, error) {
+func GetDatabaseInfo(trackerDBHandle *sql.DB, databaseID string) (*DatabaseInfo, error) {
 
 	var dbInfo DatabaseInfo
-	getErr := databaseWrapper.DBHandle().QueryRow(`
+	getErr := trackerDBHandle.QueryRow(`
 			SELECT 
 				database_id, name 
 			FROM 

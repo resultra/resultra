@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -45,9 +44,9 @@ func saveAttachment(destDBHandle *sql.DB, newAttachment Attachment) error {
 
 }
 
-func saveNewAttachment(params NewAttachmentParams) (*Attachment, error) {
+func saveNewAttachment(trackerDBHandle *sql.DB, params NewAttachmentParams) (*Attachment, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validAttachmentFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validAttachmentFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewTextBox: %v", fieldErr)
 	}
 
@@ -61,7 +60,7 @@ func saveNewAttachment(params NewAttachmentParams) (*Attachment, error) {
 		ColType:      attachmentEntityKind,
 		Properties:   properties}
 
-	if saveErr := saveAttachment(databaseWrapper.DBHandle(), newAttachment); saveErr != nil {
+	if saveErr := saveAttachment(trackerDBHandle, newAttachment); saveErr != nil {
 		return nil, fmt.Errorf("saveNewAttachment: Unable to save image form component with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -71,10 +70,10 @@ func saveNewAttachment(params NewAttachmentParams) (*Attachment, error) {
 
 }
 
-func getAttachment(parentTableID string, attachmentID string) (*Attachment, error) {
+func getAttachment(trackerDBHandle *sql.DB, parentTableID string, attachmentID string) (*Attachment, error) {
 
 	props := newDefaultAttachmentProperties()
-	if getErr := common.GetTableColumn(attachmentEntityKind, parentTableID, attachmentID, &props); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, attachmentEntityKind, parentTableID, attachmentID, &props); getErr != nil {
 		return nil, fmt.Errorf("getAttachment: Unable to retrieve image form component: %v", getErr)
 	}
 
@@ -116,8 +115,8 @@ func getAttachmentsFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]Attachm
 
 }
 
-func GetAttachments(parentTableID string) ([]Attachment, error) {
-	return getAttachmentsFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetAttachments(trackerDBHandle *sql.DB, parentTableID string) ([]Attachment, error) {
+	return getAttachmentsFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneAttachments(cloneParams *trackerDatabase.CloneDatabaseParams, parentTableID string) error {
@@ -151,9 +150,9 @@ func CloneAttachments(cloneParams *trackerDatabase.CloneDatabaseParams, parentTa
 	return nil
 }
 
-func updateExistingAttachment(attachmentID string, updatedAttachment *Attachment) (*Attachment, error) {
+func updateExistingAttachment(trackerDBHandle *sql.DB, attachmentID string, updatedAttachment *Attachment) (*Attachment, error) {
 
-	if updateErr := common.UpdateTableColumn(attachmentEntityKind, updatedAttachment.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, attachmentEntityKind, updatedAttachment.ParentTableID,
 		updatedAttachment.AttachmentID, updatedAttachment.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingAttachment: error updating existing image component: %v", updateErr)
 	}

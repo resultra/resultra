@@ -1,8 +1,10 @@
 package timelineController
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/record"
 	"sort"
@@ -33,14 +35,15 @@ func (s ByFieldTimelineInfoUpdateTime) Less(i, j int) bool {
 type FieldValChangeTimelineInfo struct {
 }
 
-func newFieldValChangeTimelineInfo(currUserID string, comment FieldComment) (*TimelineCommentInfo, error) {
+func newFieldValChangeTimelineInfo(trackerDBHandle *sql.DB,
+	currUserID string, comment FieldComment) (*TimelineCommentInfo, error) {
 
 	isCurrentUser := false
 	if currUserID == comment.UserID {
 		isCurrentUser = true
 	}
 
-	commentUserInfo, err := userAuth.GetUserInfoByID(comment.UserID)
+	commentUserInfo, err := userAuth.GetUserInfoByID(trackerDBHandle, comment.UserID)
 	if err != nil {
 		return nil, fmt.Errorf("getFieldRecordTimelineCommentInfo: %v", err)
 	}
@@ -62,6 +65,11 @@ type GetFieldTimelineInfoParams struct {
 }
 
 func getFieldTimelineInfo(req *http.Request, params GetFieldTimelineInfoParams) ([]FieldTimelineInfo, error) {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return nil, dbErr
+	}
 
 	commentParams := GetFieldRecordCommentInfoParams{
 		RecordID: params.RecordID,
@@ -88,7 +96,7 @@ func getFieldTimelineInfo(req *http.Request, params GetFieldTimelineInfoParams) 
 		return nil, fmt.Errorf("getFieldTimelineInfo: %v", err)
 	}
 
-	fieldValTimelineChanges, err := record.GetFieldValUpdateTimelineInfo(currUserID,
+	fieldValTimelineChanges, err := record.GetFieldValUpdateTimelineInfo(trackerDBHandle, currUserID,
 		params.RecordID, params.FieldID)
 	if err != nil {
 		return nil, fmt.Errorf("getFieldTimelineInfo: Error retrieving timeline field value changes: %+v, error = %v", params, err)

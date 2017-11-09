@@ -13,6 +13,7 @@ import (
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
 
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
@@ -45,7 +46,13 @@ func submitFormPage(w http.ResponseWriter, r *http.Request) {
 	} else {
 		log.Println("Submit form: : shared link ID = %v", sharedLinkID)
 
-		formLink, getFormLinkErr := formLink.GetFormLinkFromSharedLinkID(sharedLinkID)
+		trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+		if dbErr != nil {
+			http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		formLink, getFormLinkErr := formLink.GetFormLinkFromSharedLinkID(trackerDBHandle, sharedLinkID)
 		if getFormLinkErr != nil {
 			api.WriteErrorResponse(w, getFormLinkErr)
 			return
@@ -56,7 +63,7 @@ func submitFormPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		formDBInfo, getErr := databaseController.GetFormDatabaseInfo(formLink.FormID)
+		formDBInfo, getErr := databaseController.GetFormDatabaseInfo(trackerDBHandle, formLink.FormID)
 		if getErr != nil {
 			api.WriteErrorResponse(w, getErr)
 			return

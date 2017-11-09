@@ -1,6 +1,7 @@
 package userTag
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
@@ -12,8 +13,8 @@ type UserTagIDInterface interface {
 }
 
 type UserTagIDHeader struct {
-	ParentFormID    string `json:"parentFormID"`
-	UserTagID string `json:"userTagID"`
+	ParentFormID string `json:"parentFormID"`
+	UserTagID    string `json:"userTagID"`
 }
 
 func (idHeader UserTagIDHeader) getUserTagID() string {
@@ -29,10 +30,10 @@ type UserTagPropUpdater interface {
 	updateProps(userTag *UserTag) error
 }
 
-func updateUserTagProps(propUpdater UserTagPropUpdater) (*UserTag, error) {
+func updateUserTagProps(trackerDBHandle *sql.DB, propUpdater UserTagPropUpdater) (*UserTag, error) {
 
 	// Retrieve the bar chart from the data store
-	userTagForUpdate, getErr := getUserTag(propUpdater.getParentFormID(), propUpdater.getUserTagID())
+	userTagForUpdate, getErr := getUserTag(trackerDBHandle, propUpdater.getParentFormID(), propUpdater.getUserTagID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateUserTagProps: Unable to get existing userTag: %v", getErr)
 	}
@@ -41,7 +42,7 @@ func updateUserTagProps(propUpdater UserTagPropUpdater) (*UserTag, error) {
 		return nil, fmt.Errorf("updateUserTagProps: Unable to update existing userTag properties: %v", propUpdateErr)
 	}
 
-	updatedUserTag, updateErr := updateExistingUserTag(userTagForUpdate)
+	updatedUserTag, updateErr := updateExistingUserTag(trackerDBHandle, userTagForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateUserTagProps: Unable to update existing userTag properties: datastore update error =  %v", updateErr)
 	}

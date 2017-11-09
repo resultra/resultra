@@ -1,20 +1,20 @@
 package field
 
 import (
+	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/stringValidation"
 )
 
-func validateUniqueFieldName(databaseID string, fieldID string, fieldName string) error {
+func validateUniqueFieldName(trackerDBHandle *sql.DB, databaseID string, fieldID string, fieldName string) error {
 	// Query to validate the name is unique:
 	// 1. Select all the fields in the same database
 	// 2. Include fields with the same name.
 	// 3. Exclude fields with the same form ID. In other words
 	//    the name is considered valid if it is the same as its
 	//    existing name.
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT fields.field_id,fields.name 
 			FROM fields,databases
 			WHERE databases.database_id=$1 AND
@@ -34,25 +34,25 @@ func validateUniqueFieldName(databaseID string, fieldID string, fieldName string
 
 }
 
-func validateExistingFieldName(fieldID string, fieldName string) error {
+func validateExistingFieldName(trackerDBHandle *sql.DB, fieldID string, fieldName string) error {
 
 	if !stringValidation.WellFormedItemName(fieldName) {
 		return fmt.Errorf("Invalid field name")
 	}
 
-	fieldInfo, err := GetField(fieldID)
+	fieldInfo, err := GetField(trackerDBHandle, fieldID)
 	if err != nil {
 		return fmt.Errorf("System error validating field name (%v)", err)
 	}
 
-	if uniqueErr := validateUniqueFieldName(fieldInfo.ParentDatabaseID, fieldID, fieldName); uniqueErr != nil {
+	if uniqueErr := validateUniqueFieldName(trackerDBHandle, fieldInfo.ParentDatabaseID, fieldID, fieldName); uniqueErr != nil {
 		return uniqueErr
 	}
 
 	return nil
 }
 
-func validateNewFieldName(databaseID string, fieldName string) error {
+func validateNewFieldName(trackerDBHandle *sql.DB, databaseID string, fieldName string) error {
 
 	if !stringValidation.WellFormedItemName(fieldName) {
 		return fmt.Errorf("mal-formed field name: %v", fieldName)
@@ -61,21 +61,21 @@ func validateNewFieldName(databaseID string, fieldName string) error {
 	// No field will have an empty formID, so this will cause test for unique
 	// form names to return true if any form already has the given formName.
 	fieldID := ""
-	if uniqueErr := validateUniqueFieldName(databaseID, fieldID, fieldName); uniqueErr != nil {
+	if uniqueErr := validateUniqueFieldName(trackerDBHandle, databaseID, fieldID, fieldName); uniqueErr != nil {
 		return uniqueErr
 	}
 
 	return nil
 }
 
-func validateUniqueFieldRefName(databaseID string, fieldID string, refName string) error {
+func validateUniqueFieldRefName(trackerDBHandle *sql.DB, databaseID string, fieldID string, refName string) error {
 	// Query to validate the name is unique:
 	// 1. Select all the fields in the same database
 	// 2. Include fields with the same name.
 	// 3. Exclude fields with the same form ID. In other words
 	//    the name is considered valid if it is the same as its
 	//    existing name.
-	rows, queryErr := databaseWrapper.DBHandle().Query(
+	rows, queryErr := trackerDBHandle.Query(
 		`SELECT fields.field_id,fields.ref_name 
 			FROM fields,databases
 			WHERE databases.database_id=$1 AND
@@ -95,25 +95,25 @@ func validateUniqueFieldRefName(databaseID string, fieldID string, refName strin
 
 }
 
-func validateExistingFieldRefName(fieldID string, refName string) error {
+func validateExistingFieldRefName(trackerDBHandle *sql.DB, fieldID string, refName string) error {
 
 	if !generic.WellFormedFormulaReferenceName(refName) {
 		return fmt.Errorf("Invalid field reference name")
 	}
 
-	fieldInfo, err := GetField(fieldID)
+	fieldInfo, err := GetField(trackerDBHandle, fieldID)
 	if err != nil {
 		return fmt.Errorf("System error validating field name (%v)", err)
 	}
 
-	if uniqueErr := validateUniqueFieldName(fieldInfo.ParentDatabaseID, fieldID, refName); uniqueErr != nil {
+	if uniqueErr := validateUniqueFieldName(trackerDBHandle, fieldInfo.ParentDatabaseID, fieldID, refName); uniqueErr != nil {
 		return uniqueErr
 	}
 
 	return nil
 }
 
-func validateNewFieldRefName(databaseID string, refName string) error {
+func validateNewFieldRefName(trackerDBHandle *sql.DB, databaseID string, refName string) error {
 
 	if !generic.WellFormedFormulaReferenceName(refName) {
 		return fmt.Errorf("Invalid field reference name")
@@ -122,7 +122,7 @@ func validateNewFieldRefName(databaseID string, refName string) error {
 	// No field will have an empty fieldID, so this will cause test for unique
 	// form names to return true if any form already has the given formName.
 	fieldID := ""
-	if uniqueErr := validateUniqueFieldRefName(databaseID, fieldID, refName); uniqueErr != nil {
+	if uniqueErr := validateUniqueFieldRefName(trackerDBHandle, databaseID, fieldID, refName); uniqueErr != nil {
 		return uniqueErr
 	}
 
@@ -131,8 +131,8 @@ func validateNewFieldRefName(databaseID string, refName string) error {
 
 type FieldTypeValidationFunc func(string) bool
 
-func ValidateField(fieldID string, fieldTypeValidationFunc FieldTypeValidationFunc) error {
-	field, fieldErr := GetField(fieldID)
+func ValidateField(trackerDBHandle *sql.DB, fieldID string, fieldTypeValidationFunc FieldTypeValidationFunc) error {
+	field, fieldErr := GetField(trackerDBHandle, fieldID)
 	if fieldErr != nil {
 		return fmt.Errorf("ValidateField: Can't get field with field ID = '%v': datastore error=%v",
 			fieldID, fieldErr)

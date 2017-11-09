@@ -1,6 +1,7 @@
 package trackerDatabase
 
 import (
+	"database/sql"
 	"fmt"
 )
 
@@ -21,10 +22,10 @@ type DatabasePropUpdater interface {
 	updateProps(db *Database) error
 }
 
-func updateDatabaseProps(propUpdater DatabasePropUpdater) (*Database, error) {
+func updateDatabaseProps(trackerDBHandle *sql.DB, propUpdater DatabasePropUpdater) (*Database, error) {
 
 	// Retrieve the bar chart from the data store
-	dbForUpdate, getErr := GetDatabase(propUpdater.getDatabaseID())
+	dbForUpdate, getErr := GetDatabase(trackerDBHandle, propUpdater.getDatabaseID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateDatabaseProps: Unable to get existing database: %v", getErr)
 	}
@@ -33,7 +34,7 @@ func updateDatabaseProps(propUpdater DatabasePropUpdater) (*Database, error) {
 		return nil, fmt.Errorf("updateFormProps: Unable to update existing database properties: %v", propUpdateErr)
 	}
 
-	updatedDb, updateErr := updateExistingDatabase(propUpdater.getDatabaseID(), dbForUpdate)
+	updatedDb, updateErr := updateExistingDatabase(trackerDBHandle, propUpdater.getDatabaseID(), dbForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateDatabaseProps: Unable to update existing database properties: datastore update error =  %v", updateErr)
 	}

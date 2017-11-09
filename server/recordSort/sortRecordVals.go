@@ -1,13 +1,14 @@
 package recordSort
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/recordValue"
 )
 
-func SortRecordValues(parentDatabaseID string,
+func SortRecordValues(trackerDBHandle *sql.DB, parentDatabaseID string,
 	recordVals []recordValue.RecordValueResults,
 	sortRules []recordSortDataModel.RecordSortRule) error {
 
@@ -15,7 +16,8 @@ func SortRecordValues(parentDatabaseID string,
 		return nil // no sorting necessary
 	}
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(field.GetFieldListParams{ParentDatabaseID: parentDatabaseID})
+	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(trackerDBHandle,
+		field.GetFieldListParams{ParentDatabaseID: parentDatabaseID})
 	if indexErr != nil {
 		return fmt.Errorf("SortRecordValues: %v", indexErr)
 	}

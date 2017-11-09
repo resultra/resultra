@@ -1,6 +1,7 @@
 package file
 
 import (
+	"database/sql"
 	"resultra/datasheet/server/generic/inputValidation"
 	"resultra/datasheet/server/generic/stringValidation"
 )
@@ -10,9 +11,9 @@ type FileValidateInputParams struct {
 	InputVal *string `json:"inputVal"`
 }
 
-func validateInput(params FileValidateInputParams) inputValidation.ValidationResult {
+func validateInput(trackerDBHandle *sql.DB, params FileValidateInputParams) inputValidation.ValidationResult {
 
-	file, err := getFile(params.getParentTableID(), params.getFileID())
+	file, err := getFile(trackerDBHandle, params.getParentTableID(), params.getFileID())
 	if err != nil {
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
 	}

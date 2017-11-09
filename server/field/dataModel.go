@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 	"sync"
 )
@@ -100,11 +99,11 @@ func CreateNewFieldFromRawInputs(destDBHandle *sql.DB, newField Field) (*Field, 
 		return nil, fmt.Errorf("Can't create new field: invalid field type: '%v'", newField.Type)
 	}
 
-	if err := validateNewFieldRefName(newField.ParentDatabaseID, newField.RefName); err != nil {
+	if err := validateNewFieldRefName(destDBHandle, newField.ParentDatabaseID, newField.RefName); err != nil {
 		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: invalid formula reference name: '%v'", err)
 	}
 
-	if err := validateNewFieldName(newField.ParentDatabaseID, newField.Name); err != nil {
+	if err := validateNewFieldName(destDBHandle, newField.ParentDatabaseID, newField.Name); err != nil {
 		return nil, fmt.Errorf("CreateNewFieldFromRawInputs: invalid field name: '%v'", err)
 	}
 
@@ -136,7 +135,7 @@ type NewNonCalcFieldParams struct {
 	RefName          string `json:"refName"`
 }
 
-func NewNonCalcField(fieldParams NewNonCalcFieldParams) (*Field, error) {
+func NewNonCalcField(trackerDBHandle *sql.DB, fieldParams NewNonCalcFieldParams) (*Field, error) {
 	newField := Field{
 		ParentDatabaseID:        fieldParams.ParentDatabaseID,
 		FieldID:                 uniqueID.GenerateSnowflakeID(),
@@ -147,15 +146,15 @@ func NewNonCalcField(fieldParams NewNonCalcFieldParams) (*Field, error) {
 		PreprocessedFormulaText: "",
 		IsCalcField:             false} // always set calculated field to false
 
-	return CreateNewFieldFromRawInputs(databaseWrapper.DBHandle(), newField)
+	return CreateNewFieldFromRawInputs(trackerDBHandle, newField)
 }
 
 // Getting an individual field doesn't require the table ID, since the field ID is unique.
 // TODO - Refactor existing code to remove dependency on parent table ID to retrieve an individiual field.
-func GetField(fieldID string) (*Field, error) {
+func GetField(trackerDBHandle *sql.DB, fieldID string) (*Field, error) {
 	var fieldGetDest Field
 
-	if getErr := databaseWrapper.DBHandle().QueryRow(`SELECT database_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text 
+	if getErr := trackerDBHandle.QueryRow(`SELECT database_id,field_id,name,type,ref_name,calc_field_eqn,is_calc_field,preprocessed_formula_text 
 			FROM fields WHERE field_id=$1 LIMIT 1`, fieldID).Scan(
 		&fieldGetDest.ParentDatabaseID,
 		&fieldGetDest.FieldID,
@@ -172,9 +171,9 @@ func GetField(fieldID string) (*Field, error) {
 
 }
 
-func UpdateExistingField(updatedField *Field) (*Field, error) {
+func UpdateExistingField(trackerDBHandle *sql.DB, updatedField *Field) (*Field, error) {
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE fields 
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE fields 
 			SET name=$1,type=$2,ref_name=$3,calc_field_eqn=$4,preprocessed_formula_text=$5,is_calc_field=$6 
 			WHERE database_id=$7 AND field_id=$8`,
 		updatedField.Name,
@@ -224,6 +223,6 @@ func GetAllFieldsFromSrc(srcDBHandle *sql.DB, params GetFieldListParams) ([]Fiel
 	return allFields, nil
 }
 
-func GetAllFields(params GetFieldListParams) ([]Field, error) {
-	return GetAllFieldsFromSrc(databaseWrapper.DBHandle(), params)
+func GetAllFields(trackerDBHandle *sql.DB, params GetFieldListParams) ([]Field, error) {
+	return GetAllFieldsFromSrc(trackerDBHandle, params)
 }

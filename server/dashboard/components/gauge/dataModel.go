@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/dashboard/components/common"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
@@ -42,7 +41,7 @@ func saveGauge(destDBHandle *sql.DB, newGauge Gauge) error {
 
 }
 
-func newGauge(params NewGaugeParams) (*Gauge, error) {
+func newGauge(trackerDBHandle *sql.DB, params NewGaugeParams) (*Gauge, error) {
 
 	if len(params.ParentDashboardID) <= 0 {
 		return nil, fmt.Errorf("newGauge: Error creating summary table: missing parent dashboard ID")
@@ -52,7 +51,7 @@ func newGauge(params NewGaugeParams) (*Gauge, error) {
 		return nil, fmt.Errorf("newGauge: Invalid geometry for bar chart: %+v", params.Geometry)
 	}
 
-	valSummary, valSummaryErr := values.NewValSummary(params.ValSummary)
+	valSummary, valSummaryErr := values.NewValSummary(trackerDBHandle, params.ValSummary)
 	if valSummaryErr != nil {
 		return nil, fmt.Errorf("NewBarChart: Error creating summary values for bar chart: error = %v", valSummaryErr)
 	}
@@ -66,17 +65,18 @@ func newGauge(params NewGaugeParams) (*Gauge, error) {
 		GaugeID:           uniqueID.GenerateSnowflakeID(),
 		Properties:        gaugeProps}
 
-	if saveErr := saveGauge(databaseWrapper.DBHandle(), newGauge); saveErr != nil {
+	if saveErr := saveGauge(trackerDBHandle, newGauge); saveErr != nil {
 		return nil, fmt.Errorf("newGauge: Unable to save summary component with params=%+v: error = %v", params, saveErr)
 	}
 
 	return &newGauge, nil
 }
 
-func GetGauge(parentDashboardID string, gaugeID string) (*Gauge, error) {
+func GetGauge(trackerDBHandle *sql.DB, parentDashboardID string, gaugeID string) (*Gauge, error) {
 
 	gaugeProps := newDefaultGaugeProps()
-	if getErr := common.GetDashboardComponent(gaugeEntityKind, parentDashboardID, gaugeID, &gaugeProps); getErr != nil {
+	if getErr := common.GetDashboardComponent(trackerDBHandle,
+		gaugeEntityKind, parentDashboardID, gaugeID, &gaugeProps); getErr != nil {
 		return nil, fmt.Errorf("getBarChart: Unable to retrieve bar chart component: %v", getErr)
 	}
 
@@ -115,8 +115,8 @@ func getGaugesFromSrc(srcDBHandle *sql.DB, parentDashboardID string) ([]Gauge, e
 	return gauges, nil
 }
 
-func GetGauges(parentDashboardID string) ([]Gauge, error) {
-	return getGaugesFromSrc(databaseWrapper.DBHandle(), parentDashboardID)
+func GetGauges(trackerDBHandle *sql.DB, parentDashboardID string) ([]Gauge, error) {
+	return getGaugesFromSrc(trackerDBHandle, parentDashboardID)
 }
 
 func CloneGauges(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentDashboardID string) error {
@@ -156,9 +156,10 @@ func CloneGauges(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentDash
 	return nil
 }
 
-func updateExistingGauge(updatedGauge *Gauge) (*Gauge, error) {
+func updateExistingGauge(trackerDBHandle *sql.DB, updatedGauge *Gauge) (*Gauge, error) {
 
-	if updateErr := common.UpdateDashboardComponent(gaugeEntityKind, updatedGauge.ParentDashboardID,
+	if updateErr := common.UpdateDashboardComponent(trackerDBHandle,
+		gaugeEntityKind, updatedGauge.ParentDashboardID,
 		updatedGauge.GaugeID, updatedGauge.Properties); updateErr != nil {
 		return nil, fmt.Errorf("Error updating summary table %+v: %v", updatedGauge, updateErr)
 	}

@@ -1,6 +1,7 @@
 package caption
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
@@ -30,10 +31,10 @@ type CaptionPropUpdater interface {
 	updateProps(caption *Caption) error
 }
 
-func updateCaptionProps(propUpdater CaptionPropUpdater) (*Caption, error) {
+func updateCaptionProps(trackerDBHandle *sql.DB, propUpdater CaptionPropUpdater) (*Caption, error) {
 
 	// Retrieve the bar chart from the data store
-	captionForUpdate, getErr := getCaption(propUpdater.getParentFormID(), propUpdater.getCaptionID())
+	captionForUpdate, getErr := getCaption(trackerDBHandle, propUpdater.getParentFormID(), propUpdater.getCaptionID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateCaptionProps: Unable to get existing caption: %v", getErr)
 	}
@@ -42,7 +43,7 @@ func updateCaptionProps(propUpdater CaptionPropUpdater) (*Caption, error) {
 		return nil, fmt.Errorf("updateCaptionProps: Unable to update existing caption properties: %v", propUpdateErr)
 	}
 
-	updatedCaption, updateErr := updateExistingCaption(captionForUpdate)
+	updatedCaption, updateErr := updateExistingCaption(trackerDBHandle, captionForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateCaptionProps: Unable to update existing caption properties: datastore update error =  %v", updateErr)
 	}

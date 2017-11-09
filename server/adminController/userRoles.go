@@ -1,10 +1,10 @@
 package adminController
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
-	//	"resultra/datasheet/server/common/databaseWrapper"
 )
 
 type UserRoleInfo struct {
@@ -20,9 +20,9 @@ type GetUserRolesParams struct {
 }
 
 // get a list of users and their roles.
-func getUserRolesInfo(params GetUserRolesParams) ([]UserRoleInfo, error) {
+func getUserRolesInfo(trackerDBHandle *sql.DB, params GetUserRolesParams) ([]UserRoleInfo, error) {
 
-	adminUserInfo, err := userRole.GetDatabaseAdminUserInfo(params.DatabaseID)
+	adminUserInfo, err := userRole.GetDatabaseAdminUserInfo(trackerDBHandle, params.DatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("getUserRolesInfo: %v", err)
 	}
@@ -33,7 +33,7 @@ func getUserRolesInfo(params GetUserRolesParams) ([]UserRoleInfo, error) {
 		userRoles = append(userRoles, currAdminInfo)
 	}
 
-	usersRoleInfo, err := userRole.GetAllUsersRoleInfo(params.DatabaseID)
+	usersRoleInfo, err := userRole.GetAllUsersRoleInfo(trackerDBHandle, params.DatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("getUserRolesInfo: %v", err)
 	}
@@ -56,13 +56,14 @@ type RoleInfo struct {
 
 type GetRoleInfoParams GetUserRolesParams
 
-func getRoleInfo(params GetRoleInfoParams) (*RoleInfo, error) {
-	adminUserInfo, err := userRole.GetDatabaseAdminUserInfo(params.DatabaseID)
+func getRoleInfo(trackerDBHandle *sql.DB, params GetRoleInfoParams) (*RoleInfo, error) {
+
+	adminUserInfo, err := userRole.GetDatabaseAdminUserInfo(trackerDBHandle, params.DatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("getUserRolesInfo: %v", err)
 	}
 
-	customRoleInfo, err := userRole.GetCustomRoleInfo(params.DatabaseID)
+	customRoleInfo, err := userRole.GetCustomRoleInfo(trackerDBHandle, params.DatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("getUserRolesInfo: %v", err)
 	}

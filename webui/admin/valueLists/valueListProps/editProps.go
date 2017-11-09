@@ -12,6 +12,7 @@ import (
 	"resultra/datasheet/server/common/runtimeConfig"
 	adminCommon "resultra/datasheet/webui/admin/common"
 
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 )
@@ -53,12 +54,18 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	valueListID := vars["valueListID"]
 
-	valueListInfo, err := valueList.GetValueList(valueListID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	valueListInfo, err := valueList.GetValueList(trackerDBHandle, valueListID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	dbInfo, err := databaseController.GetDatabaseInfo(valueListInfo.ParentDatabaseID)
+	dbInfo, err := databaseController.GetDatabaseInfo(trackerDBHandle, valueListInfo.ParentDatabaseID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

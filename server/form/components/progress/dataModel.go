@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -43,13 +42,13 @@ func saveProgress(destDBHandle *sql.DB, newProgress Progress) error {
 	return nil
 }
 
-func saveNewProgress(params NewProgressParams) (*Progress, error) {
+func saveNewProgress(trackerDBHandle *sql.DB, params NewProgressParams) (*Progress, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := field.ValidateField(params.FieldID, validProgressFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validProgressFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewProgress: %v", fieldErr)
 	}
 
@@ -61,7 +60,7 @@ func saveNewProgress(params NewProgressParams) (*Progress, error) {
 		ProgressID: uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveProgress(databaseWrapper.DBHandle(), newProgress); err != nil {
+	if err := saveProgress(trackerDBHandle, newProgress); err != nil {
 		return nil, fmt.Errorf("saveNewProgress: Unable to save progress indicator with params=%+v: error = %v", params, err)
 	}
 
@@ -71,10 +70,10 @@ func saveNewProgress(params NewProgressParams) (*Progress, error) {
 
 }
 
-func getProgress(parentFormID string, progressID string) (*Progress, error) {
+func getProgress(trackerDBHandle *sql.DB, parentFormID string, progressID string) (*Progress, error) {
 
 	progressProps := newDefaultProgressProperties()
-	if getErr := common.GetFormComponent(progressEntityKind, parentFormID, progressID, &progressProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle, progressEntityKind, parentFormID, progressID, &progressProps); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to retrieve check box: %v", getErr)
 	}
 
@@ -111,8 +110,8 @@ func getProgressIndicatorsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]P
 	return progressIndicators, nil
 }
 
-func GetProgressIndicators(parentFormID string) ([]Progress, error) {
-	return getProgressIndicatorsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetProgressIndicators(trackerDBHandle *sql.DB, parentFormID string) ([]Progress, error) {
+	return getProgressIndicatorsFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneProgressIndicators(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -144,9 +143,9 @@ func CloneProgressIndicators(cloneParams *trackerDatabase.CloneDatabaseParams, p
 	return nil
 }
 
-func updateExistingProgress(updatedProgress *Progress) (*Progress, error) {
+func updateExistingProgress(trackerDBHandle *sql.DB, updatedProgress *Progress) (*Progress, error) {
 
-	if updateErr := common.UpdateFormComponent(progressEntityKind, updatedProgress.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, progressEntityKind, updatedProgress.ParentFormID,
 		updatedProgress.ProgressID, updatedProgress.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingProgress: failure updating progress indicator: %v", updateErr)
 	}

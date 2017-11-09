@@ -1,6 +1,7 @@
 package selection
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/form/components/common"
@@ -29,10 +30,10 @@ type SelectionPropUpdater interface {
 	updateProps(selection *Selection) error
 }
 
-func updateSelectionProps(propUpdater SelectionPropUpdater) (*Selection, error) {
+func updateSelectionProps(trackerDBHandle *sql.DB, propUpdater SelectionPropUpdater) (*Selection, error) {
 
 	// Retrieve the bar chart from the data store
-	selectionForUpdate, getErr := getSelection(propUpdater.getParentFormID(), propUpdater.getSelectionID())
+	selectionForUpdate, getErr := getSelection(trackerDBHandle, propUpdater.getParentFormID(), propUpdater.getSelectionID())
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateSelectionProps: Unable to get existing text box: %v", getErr)
 	}
@@ -41,7 +42,7 @@ func updateSelectionProps(propUpdater SelectionPropUpdater) (*Selection, error) 
 		return nil, fmt.Errorf("UpdateSelectionProps: Unable to update existing selection properties: %v", propUpdateErr)
 	}
 
-	selection, updateErr := updateExistingSelection(propUpdater.getSelectionID(), selectionForUpdate)
+	selection, updateErr := updateExistingSelection(trackerDBHandle, propUpdater.getSelectionID(), selectionForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateSelectionProps: Unable to update existing selection properties: datastore update error =  %v", updateErr)
 	}

@@ -3,6 +3,7 @@ package numberInput
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -38,7 +39,13 @@ func newNumberInput(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if numberInputRef, err := saveNewNumberInput(numberInputParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if numberInputRef, err := saveNewNumberInput(trackerDBHandle, numberInputParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *numberInputRef)
@@ -59,7 +66,13 @@ func getNumberInputAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	numberInput, err := getNumberInput(params.ParentTableID, params.NumberInputID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	numberInput, err := getNumberInput(trackerDBHandle, params.ParentTableID, params.NumberInputID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -74,13 +87,25 @@ func validateInputAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
 
-	validationResp := validateInput(params)
+	validationResp := validateInput(trackerDBHandle, params)
 	api.WriteJSONResponse(w, validationResp)
 }
 
 func processNumberInputPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater NumberInputPropUpdater) {
-	if numberInputRef, err := updateNumberInputProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if numberInputRef, err := updateNumberInputProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, numberInputRef)

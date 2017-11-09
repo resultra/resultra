@@ -3,6 +3,7 @@ package checkBox
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -34,7 +35,13 @@ func newCheckBox(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if checkBoxRef, err := saveNewCheckBox(checkBoxParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if checkBoxRef, err := saveNewCheckBox(trackerDBHandle, checkBoxParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *checkBoxRef)
@@ -55,7 +62,13 @@ func getCheckBoxAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	checkBox, err := getCheckBox(params.ParentTableID, params.CheckBoxID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	checkBox, err := getCheckBox(trackerDBHandle, params.ParentTableID, params.CheckBoxID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -71,12 +84,25 @@ func validateInputAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validationResp := validateInput(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	validationResp := validateInput(trackerDBHandle, params)
 	api.WriteJSONResponse(w, validationResp)
 }
 
 func processCheckBoxPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater CheckBoxPropUpdater) {
-	if checkBoxRef, err := updateCheckBoxProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if checkBoxRef, err := updateCheckBoxProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, checkBoxRef)

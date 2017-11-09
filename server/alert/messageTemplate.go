@@ -1,6 +1,7 @@
 package alert
 
 import (
+	"database/sql"
 	"fmt"
 	"regexp"
 	"resultra/datasheet/server/field"
@@ -28,9 +29,9 @@ func replaceTemplateMsgIdents(templateMsg string, replMap identReplacementMap) (
 
 }
 
-func replaceFieldRefWithFieldID(templateMsg string, databaseID string) (string, error) {
+func replaceFieldRefWithFieldID(trackerDBHandle *sql.DB, templateMsg string, databaseID string) (string, error) {
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(
+	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(trackerDBHandle,
 		field.GetFieldListParams{ParentDatabaseID: databaseID})
 	if indexErr != nil {
 		return "", fmt.Errorf("replaceFieldRefWithFieldID: %v", indexErr)
@@ -45,9 +46,9 @@ func replaceFieldRefWithFieldID(templateMsg string, databaseID string) (string, 
 
 }
 
-func replaceFieldIDWithFieldRef(templateMsg string, databaseID string) (string, error) {
+func replaceFieldIDWithFieldRef(trackerDBHandle *sql.DB, templateMsg string, databaseID string) (string, error) {
 
-	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(
+	fieldRefIndex, indexErr := field.GetFieldRefIDIndex(trackerDBHandle,
 		field.GetFieldListParams{ParentDatabaseID: databaseID})
 	if indexErr != nil {
 		return "", fmt.Errorf("replaceFieldRefWithFieldID: %v", indexErr)

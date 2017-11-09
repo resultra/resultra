@@ -1,6 +1,7 @@
 package textInput
 
 import (
+	"database/sql"
 	"resultra/datasheet/server/generic/inputValidation"
 	"resultra/datasheet/server/generic/stringValidation"
 )
@@ -10,9 +11,9 @@ type TextInputValidateInputParams struct {
 	InputVal *string `json:"inputVal"`
 }
 
-func validateInput(params TextInputValidateInputParams) inputValidation.ValidationResult {
+func validateInput(trackerDBHandle *sql.DB, params TextInputValidateInputParams) inputValidation.ValidationResult {
 
-	textInput, err := getTextInput(params.getParentTableID(), params.getTextInputID())
+	textInput, err := getTextInput(trackerDBHandle, params.getParentTableID(), params.getTextInputID())
 	if err != nil {
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
 	}

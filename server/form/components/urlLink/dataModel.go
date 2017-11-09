@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -44,13 +43,13 @@ func saveUrlLink(destDBHandle *sql.DB, newUrlLink UrlLink) error {
 
 }
 
-func saveNewUrlLink(params NewUrlLinkParams) (*UrlLink, error) {
+func saveNewUrlLink(trackerDBHandle *sql.DB, params NewUrlLinkParams) (*UrlLink, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := field.ValidateField(params.FieldID, validUrlLinkFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validUrlLinkFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewUrlLink: %v", fieldErr)
 	}
 
@@ -62,7 +61,7 @@ func saveNewUrlLink(params NewUrlLinkParams) (*UrlLink, error) {
 		UrlLinkID:  uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if err := saveUrlLink(databaseWrapper.DBHandle(), newUrlLink); err != nil {
+	if err := saveUrlLink(trackerDBHandle, newUrlLink); err != nil {
 		return nil, fmt.Errorf("saveNewUrlLink: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -72,10 +71,10 @@ func saveNewUrlLink(params NewUrlLinkParams) (*UrlLink, error) {
 
 }
 
-func getUrlLink(parentFormID string, urlLinkID string) (*UrlLink, error) {
+func getUrlLink(trackerDBHandle *sql.DB, parentFormID string, urlLinkID string) (*UrlLink, error) {
 
 	urlLinkProps := newDefaultUrlLinkProperties()
-	if getErr := common.GetFormComponent(urlLinkEntityKind, parentFormID, urlLinkID, &urlLinkProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle, urlLinkEntityKind, parentFormID, urlLinkID, &urlLinkProps); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to retrieve text box: %v", getErr)
 	}
 
@@ -113,8 +112,8 @@ func getUrlLinksFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]UrlLink, er
 
 }
 
-func GetUrlLinks(parentFormID string) ([]UrlLink, error) {
-	return getUrlLinksFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetUrlLinks(trackerDBHandle *sql.DB, parentFormID string) ([]UrlLink, error) {
+	return getUrlLinksFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneUrlLinks(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -146,9 +145,9 @@ func CloneUrlLinks(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormI
 	return nil
 }
 
-func updateExistingUrlLink(urlLinkID string, updatedUrlLink *UrlLink) (*UrlLink, error) {
+func updateExistingUrlLink(trackerDBHandle *sql.DB, urlLinkID string, updatedUrlLink *UrlLink) (*UrlLink, error) {
 
-	if updateErr := common.UpdateFormComponent(urlLinkEntityKind, updatedUrlLink.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, urlLinkEntityKind, updatedUrlLink.ParentFormID,
 		updatedUrlLink.UrlLinkID, updatedUrlLink.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingUrlLink: error updating existing text box component: %v", updateErr)
 	}

@@ -1,6 +1,7 @@
 package dashboardController
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/recordValue"
@@ -158,7 +159,8 @@ func computeOneGroupSummarizedVals(valGroup ValGroup, summaries []values.ValSumm
 
 }
 
-func summarizeGroupedRecords(valGroupingResult *ValGroupingResult, summaries []values.ValSummary) (*GroupedSummarizedVals, error) {
+func summarizeGroupedRecords(trackerDBHandle *sql.DB,
+	valGroupingResult *ValGroupingResult, summaries []values.ValSummary) (*GroupedSummarizedVals, error) {
 
 	groupDataRows := []GroupDataRow{}
 
@@ -179,7 +181,7 @@ func summarizeGroupedRecords(valGroupingResult *ValGroupingResult, summaries []v
 	summaryFormats := []string{}
 	for _, currValSummary := range summaries {
 
-		summaryLabel, err := currValSummary.SummaryLabel()
+		summaryLabel, err := currValSummary.SummaryLabel(trackerDBHandle)
 		if err != nil {
 			return nil, fmt.Errorf("summarizeGroupedRecords: can't generate summary: %v", err)
 		}

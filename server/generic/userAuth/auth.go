@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 )
 
 var authCookieStore *sessions.CookieStore
@@ -35,7 +36,13 @@ type LoginParams NewUserParams
 
 func loginUser(rw http.ResponseWriter, req *http.Request, params LoginParams) *AuthResponse {
 
-	user, getResp := getUser(params.EmailAddr)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		errMsg := fmt.Sprintf("System error: couldn't get tracker database: %v", dbErr)
+		return newAuthResponse(false, errMsg)
+	}
+
+	user, getResp := getUser(trackerDBHandle, params.EmailAddr)
 	if !getResp.Success {
 		return getResp
 	}
@@ -80,7 +87,12 @@ func GetCurrentUserInfo(req *http.Request) (*UserInfo, error) {
 		return nil, fmt.Errorf("GetCurrentUserInfo: Can't get session value for user (user not signed in)")
 	}
 
-	return GetUserInfoByID(userID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return nil, dbErr
+	}
+
+	return GetUserInfoByID(trackerDBHandle, userID)
 
 }
 

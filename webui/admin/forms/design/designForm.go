@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
 	adminCommon "resultra/datasheet/webui/admin/common"
@@ -43,7 +44,13 @@ func DesignForm(w http.ResponseWriter, r *http.Request) {
 	formID := vars["formID"]
 	log.Println("Design Form: editing for form with ID = ", formID)
 
-	formDBInfo, getErr := databaseController.GetFormDatabaseInfo(formID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	formDBInfo, getErr := databaseController.GetFormDatabaseInfo(trackerDBHandle, formID)
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return

@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/databaseController"
 	adminCommon "resultra/datasheet/webui/admin/common"
 
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/common"
@@ -48,12 +49,18 @@ func editFieldPropsPage(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("editFieldPropsPage: viewing/editing admin settings for field ID = ", fieldID)
 
-	fieldInfo, err := field.GetField(fieldID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	fieldInfo, err := field.GetField(trackerDBHandle, fieldID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(fieldInfo.ParentDatabaseID)
+	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(trackerDBHandle, fieldInfo.ParentDatabaseID)
 	if dbInfoErr != nil {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
 	}

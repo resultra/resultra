@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -44,13 +43,13 @@ func saveEmailAddr(destDBHandle *sql.DB, newEmailAddr EmailAddr) error {
 
 }
 
-func saveNewEmailAddr(params NewEmailAddrParams) (*EmailAddr, error) {
+func saveNewEmailAddr(trackerDBHandle *sql.DB, params NewEmailAddrParams) (*EmailAddr, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := field.ValidateField(params.FieldID, validEmailAddrFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validEmailAddrFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewEmailAddr: %v", fieldErr)
 	}
 
@@ -62,7 +61,7 @@ func saveNewEmailAddr(params NewEmailAddrParams) (*EmailAddr, error) {
 		EmailAddrID: uniqueID.GenerateSnowflakeID(),
 		Properties:  properties}
 
-	if err := saveEmailAddr(databaseWrapper.DBHandle(), newEmailAddr); err != nil {
+	if err := saveEmailAddr(trackerDBHandle, newEmailAddr); err != nil {
 		return nil, fmt.Errorf("saveNewEmailAddr: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -72,10 +71,11 @@ func saveNewEmailAddr(params NewEmailAddrParams) (*EmailAddr, error) {
 
 }
 
-func getEmailAddr(parentFormID string, emailAddrID string) (*EmailAddr, error) {
+func getEmailAddr(trackerDBHandle *sql.DB, parentFormID string, emailAddrID string) (*EmailAddr, error) {
 
 	emailAddrProps := newDefaultEmailAddrProperties()
-	if getErr := common.GetFormComponent(emailAddrEntityKind, parentFormID, emailAddrID, &emailAddrProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle, emailAddrEntityKind,
+		parentFormID, emailAddrID, &emailAddrProps); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to retrieve text box: %v", getErr)
 	}
 
@@ -113,8 +113,8 @@ func getEmailAddrsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]EmailAddr
 
 }
 
-func GetEmailAddrs(parentFormID string) ([]EmailAddr, error) {
-	return getEmailAddrsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetEmailAddrs(trackerDBHandle *sql.DB, parentFormID string) ([]EmailAddr, error) {
+	return getEmailAddrsFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneEmailAddrs(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -146,9 +146,9 @@ func CloneEmailAddrs(cloneParams *trackerDatabase.CloneDatabaseParams, parentFor
 	return nil
 }
 
-func updateExistingEmailAddr(emailAddrID string, updatedEmailAddr *EmailAddr) (*EmailAddr, error) {
+func updateExistingEmailAddr(trackerDBHandle *sql.DB, emailAddrID string, updatedEmailAddr *EmailAddr) (*EmailAddr, error) {
 
-	if updateErr := common.UpdateFormComponent(emailAddrEntityKind, updatedEmailAddr.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, emailAddrEntityKind, updatedEmailAddr.ParentFormID,
 		updatedEmailAddr.EmailAddrID, updatedEmailAddr.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingEmailAddr: error updating existing text box component: %v", updateErr)
 	}

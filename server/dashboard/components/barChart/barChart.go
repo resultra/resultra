@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/dashboard/components/common"
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/generic"
@@ -38,9 +37,10 @@ type NewBarChartParams struct {
 	Geometry componentLayout.LayoutGeometry `json:"geometry"`
 }
 
-func updateExistingBarChart(updatedBarChart *BarChart) (*BarChart, error) {
+func updateExistingBarChart(trackerDBHandle *sql.DB, updatedBarChart *BarChart) (*BarChart, error) {
 
-	if updateErr := common.UpdateDashboardComponent(barChartEntityKind, updatedBarChart.ParentDashboardID,
+	if updateErr := common.UpdateDashboardComponent(trackerDBHandle,
+		barChartEntityKind, updatedBarChart.ParentDashboardID,
 		updatedBarChart.BarChartID, updatedBarChart.Properties); updateErr != nil {
 		return nil, fmt.Errorf("Error updating bar chart %+v: %v", updatedBarChart, updateErr)
 
@@ -66,18 +66,18 @@ func saveBarChart(destDBHandle *sql.DB, newBarChart BarChart) error {
 	return nil
 }
 
-func NewBarChart(params NewBarChartParams) (*BarChart, error) {
+func NewBarChart(trackerDBHandle *sql.DB, params NewBarChartParams) (*BarChart, error) {
 
 	if len(params.ParentDashboardID) <= 0 {
 		return nil, fmt.Errorf("newSummaryTable: Error creating bar chart: missing parent dashboard ID")
 	}
 
-	valGrouping, valGroupingErr := values.NewValGrouping(params.XAxisVals)
+	valGrouping, valGroupingErr := values.NewValGrouping(trackerDBHandle, params.XAxisVals)
 	if valGroupingErr != nil {
 		return nil, fmt.Errorf("NewBarChart: Error creating new value grouping for bar chart: error = %v", valGroupingErr)
 	}
 
-	valSummary, valSummaryErr := values.NewValSummary(params.YAxisVals)
+	valSummary, valSummaryErr := values.NewValSummary(trackerDBHandle, params.YAxisVals)
 	if valSummaryErr != nil {
 		return nil, fmt.Errorf("NewBarChart: Error creating summary values for bar chart: error = %v", valSummaryErr)
 	}
@@ -101,7 +101,7 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 		BarChartID:        uniqueID.GenerateSnowflakeID(),
 		Properties:        barChartProps}
 
-	if saveErr := saveBarChart(databaseWrapper.DBHandle(), newBarChart); saveErr != nil {
+	if saveErr := saveBarChart(trackerDBHandle, newBarChart); saveErr != nil {
 		return nil, fmt.Errorf("NewBarChart: Unable to save bar chart component with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -109,10 +109,11 @@ func NewBarChart(params NewBarChartParams) (*BarChart, error) {
 
 }
 
-func GetBarChart(parentDashboardID string, barChartID string) (*BarChart, error) {
+func GetBarChart(trackerDBHandle *sql.DB, parentDashboardID string, barChartID string) (*BarChart, error) {
 
 	barChartProps := newDefaultBarChartProps()
-	if getErr := common.GetDashboardComponent(barChartEntityKind, parentDashboardID, barChartID, &barChartProps); getErr != nil {
+	if getErr := common.GetDashboardComponent(trackerDBHandle,
+		barChartEntityKind, parentDashboardID, barChartID, &barChartProps); getErr != nil {
 		return nil, fmt.Errorf("getBarChart: Unable to retrieve bar chart component: %v", getErr)
 	}
 
@@ -150,8 +151,8 @@ func getBarChartsFromSrc(srcDBHandle *sql.DB, parentDashboardID string) ([]BarCh
 	return barCharts, nil
 }
 
-func GetBarCharts(parentDashboardID string) ([]BarChart, error) {
-	return getBarChartsFromSrc(databaseWrapper.DBHandle(), parentDashboardID)
+func GetBarCharts(trackerDBHandle *sql.DB, parentDashboardID string) ([]BarChart, error) {
+	return getBarChartsFromSrc(trackerDBHandle, parentDashboardID)
 }
 
 func CloneBarCharts(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentDashboardID string) error {

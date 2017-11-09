@@ -3,6 +3,7 @@ package toggle
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -37,7 +38,13 @@ func newToggle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if toggleRef, err := saveNewToggle(toggleParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if toggleRef, err := saveNewToggle(trackerDBHandle, toggleParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *toggleRef)
@@ -58,7 +65,13 @@ func getToggleAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	toggle, err := getToggle(params.ParentTableID, params.ToggleID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	toggle, err := getToggle(trackerDBHandle, params.ParentTableID, params.ToggleID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -69,18 +82,30 @@ func getToggleAPI(w http.ResponseWriter, r *http.Request) {
 
 func validateInputAPI(w http.ResponseWriter, r *http.Request) {
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	var params ToggleValidateInputParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
 	}
 
-	validationResp := validateInput(params)
+	validationResp := validateInput(trackerDBHandle, params)
 	api.WriteJSONResponse(w, validationResp)
 }
 
 func processTogglePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater TogglePropUpdater) {
-	if toggleRef, err := updateToggleProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if toggleRef, err := updateToggleProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, toggleRef)

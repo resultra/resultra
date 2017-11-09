@@ -1,8 +1,8 @@
 package record
 
 import (
+	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"time"
 )
 
@@ -34,9 +34,9 @@ func (s CellUpdateByUpdateTime) Less(i, j int) bool {
 
 const FullyCommittedCellUpdatesChangeSetID string = ""
 
-func SaveCellUpdate(cellUpdate CellUpdate, doCollapseRecentValues bool) error {
+func SaveCellUpdate(trackerDBHandle *sql.DB, cellUpdate CellUpdate, doCollapseRecentValues bool) error {
 
-	if _, insertErr := databaseWrapper.DBHandle().Exec(
+	if _, insertErr := trackerDBHandle.Exec(
 		`INSERT INTO cell_updates (update_id, user_id, database_id, record_id, field_id,update_timestamp_utc,value,change_set_id) 
 			 VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
 		cellUpdate.UpdateID,
@@ -56,7 +56,7 @@ func SaveCellUpdate(cellUpdate CellUpdate, doCollapseRecentValues bool) error {
 		// there is no need to keep all the intermediate values, only the last value.
 		collapseUpdatesStart := cellUpdate.UpdateTimeStamp.Add(-1 * time.Minute)
 
-		if _, deleteRecentErr := databaseWrapper.DBHandle().Exec(
+		if _, deleteRecentErr := trackerDBHandle.Exec(
 			`DELETE FROM cell_updates
 				 WHERE record_id=$1 AND field_id=$2 AND user_id=$3 AND change_set_id=$4
 				 AND update_timestamp_utc<$5 AND update_timestamp_utc>$6 AND update_id<>$7`,
@@ -77,7 +77,7 @@ func SaveCellUpdate(cellUpdate CellUpdate, doCollapseRecentValues bool) error {
 }
 
 // GetCellUpdates retrieves a list of cell updates for all the fields in the given record.
-func GetRecordCellUpdates(recordID string, changeSetID string) (*RecordCellUpdates, error) {
+func GetRecordCellUpdates(trackerDBHandle *sql.DB, recordID string, changeSetID string) (*RecordCellUpdates, error) {
 
 	selectFields := `SELECT update_id,user_id,database_id,record_id,field_id,update_timestamp_utc,value
 							FROM cell_updates`
@@ -96,7 +96,7 @@ func GetRecordCellUpdates(recordID string, changeSetID string) (*RecordCellUpdat
 
 	cellUpdatesQuery := selectFields + ` WHERE ` + matchRecordQuery + ` AND ` + changeIDQuery
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(cellUpdatesQuery, recordID, changeSetIDMatch)
+	rows, queryErr := trackerDBHandle.Query(cellUpdatesQuery, recordID, changeSetIDMatch)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRecordCellUpdates: Failure querying database for record ID = %v: %v", recordID, queryErr)
 	}
@@ -141,11 +141,11 @@ type RecordCellUpdateMap map[string]*RecordCellUpdates
 
 // Get all cell updates for records which have been fully committed. This excludes records for forms which were
 // opened up in a form, but the results were never saved.
-func GetAllNonDraftCellUpdates(databaseID string, changeSetID string) (RecordCellUpdateMap, error) {
+func GetAllNonDraftCellUpdates(trackerDBHandle *sql.DB, databaseID string, changeSetID string) (RecordCellUpdateMap, error) {
 
 	// Pre-populate the map of record ID to the cell updates structure. This ensures the structure
 	// is populated, even for record IDs without any cell updates yet.
-	records, err := GetNonDraftRecords(databaseID)
+	records, err := GetNonDraftRecords(trackerDBHandle, databaseID)
 	if err != nil {
 		return nil, fmt.Errorf("GetAllCellUpdates: %v", err)
 	}
@@ -176,7 +176,7 @@ func GetAllNonDraftCellUpdates(databaseID string, changeSetID string) (RecordCel
 
 	cellUpdatesQuery := selectFields + ` WHERE ` + matchDatabaseQuery + ` AND ` + changeIDQuery
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(cellUpdatesQuery, databaseID, changeSetIDMatch)
+	rows, queryErr := trackerDBHandle.Query(cellUpdatesQuery, databaseID, changeSetIDMatch)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAllCellUpdates: Failure querying database = %v for cell updates: %v", databaseID, queryErr)
 	}
@@ -206,7 +206,7 @@ func GetAllNonDraftCellUpdates(databaseID string, changeSetID string) (RecordCel
 }
 
 // GetCellUpdates retrieves a list of cell updates for all the fields in the given record.
-func GetRecordFieldCellUpdates(recordID string, fieldID string, changeSetID string) ([]CellUpdate, error) {
+func GetRecordFieldCellUpdates(trackerDBHandle *sql.DB, recordID string, fieldID string, changeSetID string) ([]CellUpdate, error) {
 
 	selectFields := `SELECT update_id,user_id,database_id, record_id,field_id, update_timestamp_utc, value
 			FROM cell_updates`
@@ -223,7 +223,7 @@ func GetRecordFieldCellUpdates(recordID string, fieldID string, changeSetID stri
 
 	cellUpdatesQuery := selectFields + ` WHERE ` + matchRecordAndFieldQuery + ` AND ` + changeIDQuery
 
-	rows, queryErr := databaseWrapper.DBHandle().Query(cellUpdatesQuery, recordID, fieldID, changeSetIDMatch)
+	rows, queryErr := trackerDBHandle.Query(cellUpdatesQuery, recordID, fieldID, changeSetIDMatch)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRecordFieldCellUpdates: Failure querying database: %v", queryErr)
 	}
@@ -248,9 +248,9 @@ func GetRecordFieldCellUpdates(recordID string, fieldID string, changeSetID stri
 	return cellUpdates, nil
 }
 
-func CommitChangeSet(recordID string, changeSetID string) error {
+func CommitChangeSet(trackerDBHandle *sql.DB, recordID string, changeSetID string) error {
 
-	if _, updateErr := databaseWrapper.DBHandle().Exec(`UPDATE cell_updates 
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE cell_updates 
 				SET change_set_id=$1
 				WHERE record_id=$2 AND change_set_id=$3`,
 		FullyCommittedCellUpdatesChangeSetID, recordID, changeSetID); updateErr != nil {

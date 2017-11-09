@@ -3,6 +3,7 @@ package attachment
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -55,7 +56,13 @@ func getAttachmentAPI(w http.ResponseWriter, r *http.Request) {
 	databaseID := vars["databaseID"]
 	cloudFileName := vars["cloudFileName"]
 
-	origFileName, err := getOrigFilenameFromCloudFileName(cloudFileName)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	origFileName, err := getOrigFilenameFromCloudFileName(trackerDBHandle, cloudFileName)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -79,8 +86,14 @@ func getAttachmentReferencesAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	// TODO - include database ID in request.
-	if attachRefs, err := getAttachmentReferences(params.AttachmentIDs); err != nil {
+	if attachRefs, err := getAttachmentReferences(trackerDBHandle, params.AttachmentIDs); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, attachRefs)
@@ -100,8 +113,14 @@ func getAttachmentReferenceAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
 	// TODO - include database ID in request.
-	if attachRefs, err := GetAttachmentReference(params.AttachmentID); err != nil {
+	if attachRefs, err := GetAttachmentReference(trackerDBHandle, params.AttachmentID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, attachRefs)
@@ -118,7 +137,14 @@ func setCaptionAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// TODO - include database ID in request.
-	if attachInfo, err := setCaption(params); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if attachInfo, err := setCaption(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, attachInfo)
@@ -134,7 +160,13 @@ func setTitleAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if attachInfo, err := setTitle(params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if attachInfo, err := setTitle(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, attachInfo)

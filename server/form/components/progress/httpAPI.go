@@ -3,6 +3,7 @@ package progress
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -29,7 +30,12 @@ func newProgress(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if progressRef, err := saveNewProgress(params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if progressRef, err := saveNewProgress(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *progressRef)
@@ -38,7 +44,12 @@ func newProgress(w http.ResponseWriter, r *http.Request) {
 }
 
 func processProgressPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater ProgressPropUpdater) {
-	if progressRef, err := updateProgressProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if progressRef, err := updateProgressProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, progressRef)

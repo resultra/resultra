@@ -1,6 +1,7 @@
 package image
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 )
@@ -12,7 +13,7 @@ type ImageIDInterface interface {
 
 type ImageIDHeader struct {
 	ParentTableID string `json:"parentTableID"`
-	ImageID   string `json:"imageID"`
+	ImageID       string `json:"imageID"`
 }
 
 func (idHeader ImageIDHeader) getImageID() string {
@@ -28,10 +29,10 @@ type ImagePropUpdater interface {
 	updateProps(image *Image) error
 }
 
-func updateImageProps(propUpdater ImagePropUpdater) (*Image, error) {
+func updateImageProps(trackerDBHandle *sql.DB, propUpdater ImagePropUpdater) (*Image, error) {
 
 	// Retrieve the bar chart from the data store
-	imageForUpdate, getErr := getImage(propUpdater.getParentTableID(), propUpdater.getImageID())
+	imageForUpdate, getErr := getImage(trackerDBHandle, propUpdater.getParentTableID(), propUpdater.getImageID())
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateImageProps: Unable to get existing text box: %v", getErr)
 	}
@@ -40,7 +41,7 @@ func updateImageProps(propUpdater ImagePropUpdater) (*Image, error) {
 		return nil, fmt.Errorf("UpdateImageProps: Unable to update existing text box properties: %v", propUpdateErr)
 	}
 
-	image, updateErr := updateExistingImage(propUpdater.getImageID(), imageForUpdate)
+	image, updateErr := updateExistingImage(trackerDBHandle, propUpdater.getImageID(), imageForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("UpdateImageProps: Unable to update existing text box properties: datastore update error =  %v", updateErr)
 	}

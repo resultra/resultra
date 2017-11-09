@@ -1,6 +1,7 @@
 package header
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
@@ -31,10 +32,10 @@ func (idHeader HeaderUniqueIDHeader) uniqueHeaderID() string {
 	return idHeader.HeaderID
 }
 
-func updateHeaderProps(propUpdater HeaderPropertyUpdater) (*Header, error) {
+func updateHeaderProps(trackingDBHandle *sql.DB, propUpdater HeaderPropertyUpdater) (*Header, error) {
 
 	// Retrieve the bar chart from the data store
-	headerForUpdate, getErr := GetHeader(propUpdater.parentDashboardID(), propUpdater.uniqueHeaderID())
+	headerForUpdate, getErr := GetHeader(trackingDBHandle, propUpdater.parentDashboardID(), propUpdater.uniqueHeaderID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateHeaderProps: Unable to get existing header: %v", getErr)
 	}
@@ -46,7 +47,7 @@ func updateHeaderProps(propUpdater HeaderPropertyUpdater) (*Header, error) {
 	}
 
 	// Save the updated bar chart back to the data store
-	updatedHeader, updateErr := updateExistingHeader(headerForUpdate)
+	updatedHeader, updateErr := updateExistingHeader(trackingDBHandle, headerForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateHeaderProps: Unable to update existing header: %v", updateErr)
 	}

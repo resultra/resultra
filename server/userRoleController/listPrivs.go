@@ -1,14 +1,15 @@
 package userRoleController
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/itemList"
 	"resultra/datasheet/server/userRole"
 )
 
-func getRoleListPrivsWithDefaults(roleID string) ([]userRole.RoleListPriv, error) {
+func getRoleListPrivsWithDefaults(trackerDBHandle *sql.DB, roleID string) ([]userRole.RoleListPriv, error) {
 
-	roleDB, err := userRole.GetUserRoleDatabaseID(roleID)
+	roleDB, err := userRole.GetUserRoleDatabaseID(trackerDBHandle, roleID)
 	if err != nil {
 		return nil, fmt.Errorf("getRoleListPrivsWithDefaults: %v", err)
 	}
@@ -17,7 +18,7 @@ func getRoleListPrivsWithDefaults(roleID string) ([]userRole.RoleListPriv, error
 
 	// Start off with no privileges as the default for all lists
 
-	allItemLists, err := itemList.GetAllItemLists(roleDB)
+	allItemLists, err := itemList.GetAllItemLists(trackerDBHandle, roleDB)
 	if err != nil {
 		return nil, fmt.Errorf("getRoleListPrivsWithDefaults: %v", err)
 	}
@@ -29,7 +30,7 @@ func getRoleListPrivsWithDefaults(roleID string) ([]userRole.RoleListPriv, error
 	}
 
 	// Update the privileges for those lists with an explicit set of privileges set.
-	explicitListPrivs, err := userRole.GetRoleListPrivs(roleID)
+	explicitListPrivs, err := userRole.GetRoleListPrivs(trackerDBHandle, roleID)
 	if err != nil {
 		return nil, fmt.Errorf("getRoleListPrivsWithDefaults: %v", err)
 	}

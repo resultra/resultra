@@ -1,6 +1,7 @@
 package form
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/form/components/common"
 )
@@ -10,9 +11,9 @@ type DeleteComponentParams struct {
 	ComponentID  string `json:"componentID"`
 }
 
-func deleteComponent(params DeleteComponentParams) error {
+func deleteComponent(trackerDBHandle *sql.DB, params DeleteComponentParams) error {
 
-	if deleteErr := common.DeleteFormComponent(params.ParentFormID, params.ComponentID); deleteErr != nil {
+	if deleteErr := common.DeleteFormComponent(trackerDBHandle, params.ParentFormID, params.ComponentID); deleteErr != nil {
 		return fmt.Errorf("deleteComponent: %v", deleteErr)
 	}
 

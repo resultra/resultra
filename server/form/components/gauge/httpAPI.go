@@ -3,6 +3,7 @@ package gauge
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -28,8 +29,13 @@ func newGauge(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 		return
 	}
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
 
-	if gaugeRef, err := saveNewGauge(params); err != nil {
+	if gaugeRef, err := saveNewGauge(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *gaugeRef)
@@ -38,7 +44,12 @@ func newGauge(w http.ResponseWriter, r *http.Request) {
 }
 
 func processGaugePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater GaugePropUpdater) {
-	if gaugeRef, err := updateGaugeProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if gaugeRef, err := updateGaugeProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, gaugeRef)

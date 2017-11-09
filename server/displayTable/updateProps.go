@@ -1,6 +1,7 @@
 package displayTable
 
 import (
+	"database/sql"
 	"fmt"
 )
 
@@ -21,10 +22,10 @@ type TablePropUpdater interface {
 	updateProps(table *DisplayTable) error
 }
 
-func updateTableProps(propUpdater TablePropUpdater) (*DisplayTable, error) {
+func updateTableProps(trackerDBHandle *sql.DB, propUpdater TablePropUpdater) (*DisplayTable, error) {
 
 	// Retrieve the bar chart from the data store
-	tableForUpdate, getErr := GetTable(propUpdater.getTableID())
+	tableForUpdate, getErr := GetTable(trackerDBHandle, propUpdater.getTableID())
 	if getErr != nil {
 		return nil, fmt.Errorf("updateTableProps: Unable to get existing table: %v", getErr)
 	}
@@ -33,7 +34,7 @@ func updateTableProps(propUpdater TablePropUpdater) (*DisplayTable, error) {
 		return nil, fmt.Errorf("updateTableProps: Unable to update existing table properties: %v", propUpdateErr)
 	}
 
-	table, updateErr := updateExistingTable(propUpdater.getTableID(), tableForUpdate)
+	table, updateErr := updateExistingTable(trackerDBHandle, propUpdater.getTableID(), tableForUpdate)
 	if updateErr != nil {
 		return nil, fmt.Errorf("updateTableProps: Unable to update existing table properties: datastore update error =  %v", updateErr)
 	}

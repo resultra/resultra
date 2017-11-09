@@ -1,13 +1,14 @@
 package userRole
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
 )
 
-func VerifyCurrUserIsDatabaseAdmin(req *http.Request, databaseID string) error {
+func VerifyCurrUserIsDatabaseAdmin(trackerDBHandle *sql.DB, req *http.Request, databaseID string) error {
 
 	currUserID, userErr := userAuth.GetCurrentUserID(req)
 	if userErr != nil {
@@ -15,7 +16,7 @@ func VerifyCurrUserIsDatabaseAdmin(req *http.Request, databaseID string) error {
 	}
 
 	queryUserID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT user_id 
 			FROM database_admins 
 			WHERE database_id=$1 AND user_id=$2 LIMIT 1`,
@@ -30,7 +31,14 @@ func VerifyCurrUserIsDatabaseAdmin(req *http.Request, databaseID string) error {
 }
 
 func CurrUserIsDatabaseAdmin(req *http.Request, databaseID string) bool {
-	verifyCurrUserAdminErr := VerifyCurrUserIsDatabaseAdmin(req, databaseID)
+
+	// TODO - process error instead of just returning false.
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return false
+	}
+
+	verifyCurrUserAdminErr := VerifyCurrUserIsDatabaseAdmin(trackerDBHandle, req, databaseID)
 	if verifyCurrUserAdminErr != nil {
 		return false
 	} else {
@@ -38,10 +46,10 @@ func CurrUserIsDatabaseAdmin(req *http.Request, databaseID string) bool {
 	}
 }
 
-func getFormDatabaseID(formID string) (string, error) {
+func getFormDatabaseID(trackerDBHandle *sql.DB, formID string) (string, error) {
 
 	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT database_id 
 			FROM forms 
 			WHERE forms.form_id=$1 LIMIT 1`,
@@ -58,22 +66,27 @@ func getFormDatabaseID(formID string) (string, error) {
 
 func VerifyCurrUserIsDatabaseAdminForForm(req *http.Request, formID string) error {
 
-	databaseID, err := getFormDatabaseID(formID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return dbErr
+	}
+
+	databaseID, err := getFormDatabaseID(trackerDBHandle, formID)
 	if err != nil {
 		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForForm: %v", err)
 	}
 
-	if err := VerifyCurrUserIsDatabaseAdmin(req, databaseID); err != nil {
+	if err := VerifyCurrUserIsDatabaseAdmin(trackerDBHandle, req, databaseID); err != nil {
 		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForTable: %v", err)
 	}
 
 	return nil
 }
 
-func getDashboardDatabaseID(dashboardID string) (string, error) {
+func getDashboardDatabaseID(trackerDBHandle *sql.DB, dashboardID string) (string, error) {
 
 	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT database_id 
 			FROM dashboards 
 			WHERE dashboards.dashboard_id=$1 LIMIT 1`,
@@ -90,22 +103,27 @@ func getDashboardDatabaseID(dashboardID string) (string, error) {
 
 func VerifyCurrUserIsDatabaseAdminForDashboard(req *http.Request, dashboardID string) error {
 
-	databaseID, err := getDashboardDatabaseID(dashboardID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return dbErr
+	}
+
+	databaseID, err := getDashboardDatabaseID(trackerDBHandle, dashboardID)
 	if err != nil {
 		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForDashboard: %v", err)
 	}
 
-	if err := VerifyCurrUserIsDatabaseAdmin(req, databaseID); err != nil {
+	if err := VerifyCurrUserIsDatabaseAdmin(trackerDBHandle, req, databaseID); err != nil {
 		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForTable: %v", err)
 	}
 
 	return nil
 }
 
-func getItemListDatabaseID(listID string) (string, error) {
+func getItemListDatabaseID(trackerDBHandle *sql.DB, listID string) (string, error) {
 
 	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT database_id 
 			FROM item_lists 
 			WHERE item_lists.list_id=$1 LIMIT 1`,
@@ -122,22 +140,27 @@ func getItemListDatabaseID(listID string) (string, error) {
 
 func VerifyCurrUserIsDatabaseAdminForItemList(req *http.Request, listID string) error {
 
-	databaseID, err := getItemListDatabaseID(listID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return dbErr
+	}
+
+	databaseID, err := getItemListDatabaseID(trackerDBHandle, listID)
 	if err != nil {
 		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForItemList: %v", err)
 	}
 
-	if err := VerifyCurrUserIsDatabaseAdmin(req, databaseID); err != nil {
+	if err := VerifyCurrUserIsDatabaseAdmin(trackerDBHandle, req, databaseID); err != nil {
 		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForItemList: %v", err)
 	}
 
 	return nil
 }
 
-func getNewItemLinkDatabaseID(linkID string) (string, error) {
+func getNewItemLinkDatabaseID(trackerDBHandle *sql.DB, linkID string) (string, error) {
 
 	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT forms.database_id 
 			FROM forms,form_links 
 			WHERE form_links.link_id=$1 
@@ -156,22 +179,27 @@ func getNewItemLinkDatabaseID(linkID string) (string, error) {
 
 func VerifyCurrUserIsDatabaseAdminForNewItemLink(req *http.Request, linkID string) error {
 
-	databaseID, err := getNewItemLinkDatabaseID(linkID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return dbErr
+	}
+
+	databaseID, err := getNewItemLinkDatabaseID(trackerDBHandle, linkID)
 	if err != nil {
 		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForItemList: %v", err)
 	}
 
-	if err := VerifyCurrUserIsDatabaseAdmin(req, databaseID); err != nil {
+	if err := VerifyCurrUserIsDatabaseAdmin(trackerDBHandle, req, databaseID); err != nil {
 		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForItemList: %v", err)
 	}
 
 	return nil
 }
 
-func getAlertDatabaseID(alertID string) (string, error) {
+func getAlertDatabaseID(trackerDBHandle *sql.DB, alertID string) (string, error) {
 
 	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT alerts.database_id 
 			FROM alerts 
 			WHERE alerts.alert_id=$1 
@@ -189,21 +217,26 @@ func getAlertDatabaseID(alertID string) (string, error) {
 
 func VerifyCurrUserIsDatabaseAdminForAlert(req *http.Request, alertID string) error {
 
-	databaseID, err := getAlertDatabaseID(alertID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return dbErr
+	}
+
+	databaseID, err := getAlertDatabaseID(trackerDBHandle, alertID)
 	if err != nil {
 		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForAlert: %v", err)
 	}
 
-	if err := VerifyCurrUserIsDatabaseAdmin(req, databaseID); err != nil {
+	if err := VerifyCurrUserIsDatabaseAdmin(trackerDBHandle, req, databaseID); err != nil {
 		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForAlert: %v", err)
 	}
 
 	return nil
 }
 
-func GetUserRoleDatabaseID(roleID string) (string, error) {
+func GetUserRoleDatabaseID(trackerDBHandle *sql.DB, roleID string) (string, error) {
 	databaseID := ""
-	getErr := databaseWrapper.DBHandle().QueryRow(
+	getErr := trackerDBHandle.QueryRow(
 		`SELECT database_id 
 			FROM database_roles 
 			WHERE database_roles.role_id=$1 LIMIT 1`,
@@ -219,12 +252,17 @@ func GetUserRoleDatabaseID(roleID string) (string, error) {
 
 func VerifyCurrUserIsDatabaseAdminForUserRole(req *http.Request, roleID string) error {
 
-	databaseID, err := GetUserRoleDatabaseID(roleID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return dbErr
+	}
+
+	databaseID, err := GetUserRoleDatabaseID(trackerDBHandle, roleID)
 	if err != nil {
 		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForUserRole: %v", err)
 	}
 
-	if err := VerifyCurrUserIsDatabaseAdmin(req, databaseID); err != nil {
+	if err := VerifyCurrUserIsDatabaseAdmin(trackerDBHandle, req, databaseID); err != nil {
 		return fmt.Errorf("VerifyCurrUserIsDatabaseAdminForItemList: %v", err)
 	}
 

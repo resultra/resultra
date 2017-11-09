@@ -3,6 +3,7 @@ package image
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -32,7 +33,13 @@ func newImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if imageRef, err := saveNewImage(imageParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if imageRef, err := saveNewImage(trackerDBHandle, imageParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *imageRef)
@@ -42,7 +49,7 @@ func newImage(w http.ResponseWriter, r *http.Request) {
 
 type GetImageParams struct {
 	ParentTableID string `json:"parentTableID"`
-	ImageID   string `json:"imageID"`
+	ImageID       string `json:"imageID"`
 }
 
 func getImageAPI(w http.ResponseWriter, r *http.Request) {
@@ -53,7 +60,13 @@ func getImageAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	image, err := getImage(params.ParentTableID, params.ImageID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	image, err := getImage(trackerDBHandle, params.ParentTableID, params.ImageID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -69,12 +82,25 @@ func validateInputAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validationResp := validateInput(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	validationResp := validateInput(trackerDBHandle, params)
 	api.WriteJSONResponse(w, validationResp)
 }
 
 func processImagePropUpdate(w http.ResponseWriter, r *http.Request, propUpdater ImagePropUpdater) {
-	if imageRef, err := updateImageProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if imageRef, err := updateImageProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, imageRef)

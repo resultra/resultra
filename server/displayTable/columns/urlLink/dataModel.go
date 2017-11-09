@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/displayTable/columns/common"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
@@ -44,9 +43,9 @@ func saveUrlLink(destDBHandle *sql.DB, newUrlLink UrlLink) error {
 
 }
 
-func saveNewUrlLink(params NewUrlLinkParams) (*UrlLink, error) {
+func saveNewUrlLink(trackerDBHandle *sql.DB, params NewUrlLinkParams) (*UrlLink, error) {
 
-	if fieldErr := field.ValidateField(params.FieldID, validUrlLinkFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validUrlLinkFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewUrlLink: %v", fieldErr)
 	}
 
@@ -60,7 +59,7 @@ func saveNewUrlLink(params NewUrlLinkParams) (*UrlLink, error) {
 		Properties: properties,
 		ColType:    urlLinkEntityKind}
 
-	if err := saveUrlLink(databaseWrapper.DBHandle(), newUrlLink); err != nil {
+	if err := saveUrlLink(trackerDBHandle, newUrlLink); err != nil {
 		return nil, fmt.Errorf("saveNewUrlLink: Unable to save text box with params=%+v: error = %v", params, err)
 	}
 
@@ -70,10 +69,10 @@ func saveNewUrlLink(params NewUrlLinkParams) (*UrlLink, error) {
 
 }
 
-func getUrlLink(parentTableID string, urlLinkID string) (*UrlLink, error) {
+func getUrlLink(trackerDBHandle *sql.DB, parentTableID string, urlLinkID string) (*UrlLink, error) {
 
 	urlLinkProps := newDefaultUrlLinkProperties()
-	if getErr := common.GetTableColumn(urlLinkEntityKind, parentTableID, urlLinkID, &urlLinkProps); getErr != nil {
+	if getErr := common.GetTableColumn(trackerDBHandle, urlLinkEntityKind, parentTableID, urlLinkID, &urlLinkProps); getErr != nil {
 		return nil, fmt.Errorf("getCheckBox: Unable to retrieve text box: %v", getErr)
 	}
 
@@ -115,8 +114,8 @@ func getUrlLinksFromSrc(srcDBHandle *sql.DB, parentTableID string) ([]UrlLink, e
 
 }
 
-func GetUrlLinks(parentTableID string) ([]UrlLink, error) {
-	return getUrlLinksFromSrc(databaseWrapper.DBHandle(), parentTableID)
+func GetUrlLinks(trackerDBHandle *sql.DB, parentTableID string) ([]UrlLink, error) {
+	return getUrlLinksFromSrc(trackerDBHandle, parentTableID)
 }
 
 func CloneUrlLinks(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -150,9 +149,9 @@ func CloneUrlLinks(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormI
 	return nil
 }
 
-func updateExistingUrlLink(urlLinkID string, updatedUrlLink *UrlLink) (*UrlLink, error) {
+func updateExistingUrlLink(trackerDBHandle *sql.DB, urlLinkID string, updatedUrlLink *UrlLink) (*UrlLink, error) {
 
-	if updateErr := common.UpdateTableColumn(urlLinkEntityKind, updatedUrlLink.ParentTableID,
+	if updateErr := common.UpdateTableColumn(trackerDBHandle, urlLinkEntityKind, updatedUrlLink.ParentTableID,
 		updatedUrlLink.UrlLinkID, updatedUrlLink.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingUrlLink: error updating existing text box component: %v", updateErr)
 	}

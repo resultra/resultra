@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -43,13 +42,13 @@ func saveUserTag(destDBHandle *sql.DB, newUserTag UserTag) error {
 	return nil
 }
 
-func saveNewUserTag(params NewUserTagParams) (*UserTag, error) {
+func saveNewUserTag(trackerDBHandle *sql.DB, params NewUserTagParams) (*UserTag, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := field.ValidateField(params.FieldID, validUserTagFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validUserTagFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewUserTag: %v", fieldErr)
 	}
 
@@ -61,7 +60,7 @@ func saveNewUserTag(params NewUserTagParams) (*UserTag, error) {
 		UserTagID:  uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if saveErr := saveUserTag(databaseWrapper.DBHandle(), newUserTag); saveErr != nil {
+	if saveErr := saveUserTag(trackerDBHandle, newUserTag); saveErr != nil {
 		return nil, fmt.Errorf("saveNewUserTag: Unable to save userTag with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -71,10 +70,10 @@ func saveNewUserTag(params NewUserTagParams) (*UserTag, error) {
 
 }
 
-func getUserTag(parentFormID string, userTagID string) (*UserTag, error) {
+func getUserTag(trackerDBHandle *sql.DB, parentFormID string, userTagID string) (*UserTag, error) {
 
 	userTagProps := newDefaultUserTagProperties()
-	if getErr := common.GetFormComponent(userTagEntityKind, parentFormID,
+	if getErr := common.GetFormComponent(trackerDBHandle, userTagEntityKind, parentFormID,
 		userTagID, &userTagProps); getErr != nil {
 		return nil, fmt.Errorf("getUserTag: Unable to retrieve userTag: %v", getErr)
 	}
@@ -112,8 +111,8 @@ func getUserTagsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]UserTag, er
 	return userTags, nil
 }
 
-func GetUserTags(parentFormID string) ([]UserTag, error) {
-	return getUserTagsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetUserTags(trackerDBHandle *sql.DB, parentFormID string) ([]UserTag, error) {
+	return getUserTagsFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneUserTags(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -145,9 +144,9 @@ func CloneUserTags(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormI
 	return nil
 }
 
-func updateExistingUserTag(updatedUserTag *UserTag) (*UserTag, error) {
+func updateExistingUserTag(trackerDBHandle *sql.DB, updatedUserTag *UserTag) (*UserTag, error) {
 
-	if updateErr := common.UpdateFormComponent(userTagEntityKind, updatedUserTag.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, userTagEntityKind, updatedUserTag.ParentFormID,
 		updatedUserTag.UserTagID, updatedUserTag.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingUserTag: failure updating userTag: %v", updateErr)
 	}

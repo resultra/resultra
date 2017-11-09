@@ -1,6 +1,7 @@
 package datePicker
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/generic/inputValidation"
@@ -12,9 +13,9 @@ type DatePickerValidateInputParams struct {
 	InputVal *time.Time `json:"inputVal"`
 }
 
-func validateInput(params DatePickerValidateInputParams) inputValidation.ValidationResult {
+func validateInput(trackerDBHandle *sql.DB, params DatePickerValidateInputParams) inputValidation.ValidationResult {
 
-	datePicker, err := getDatePicker(params.getParentTableID(), params.getDatePickerID())
+	datePicker, err := getDatePicker(trackerDBHandle, params.getParentTableID(), params.getDatePickerID())
 	if err != nil {
 		log.Printf("System error validating date picker input: %v", err)
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)

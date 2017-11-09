@@ -3,6 +3,7 @@ package selection
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -30,7 +31,12 @@ func newSelection(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if selectionRef, err := saveNewSelection(selectionParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if selectionRef, err := saveNewSelection(trackerDBHandle, selectionParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *selectionRef)
@@ -39,7 +45,12 @@ func newSelection(w http.ResponseWriter, r *http.Request) {
 }
 
 func processSelectionPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater SelectionPropUpdater) {
-	if selectionRef, err := updateSelectionProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if selectionRef, err := updateSelectionProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, selectionRef)

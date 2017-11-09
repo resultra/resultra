@@ -3,6 +3,7 @@ package caption
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -27,7 +28,12 @@ func newCaption(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if captionRef, err := saveNewCaption(params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if captionRef, err := saveNewCaption(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *captionRef)
@@ -36,7 +42,12 @@ func newCaption(w http.ResponseWriter, r *http.Request) {
 }
 
 func processCaptionPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater CaptionPropUpdater) {
-	if captionRef, err := updateCaptionProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if captionRef, err := updateCaptionProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, captionRef)

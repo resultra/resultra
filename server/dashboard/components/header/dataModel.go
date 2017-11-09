@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/dashboard/components/common"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -39,7 +38,7 @@ func saveHeader(destDBHandle *sql.DB, newHeader Header) error {
 
 }
 
-func newHeader(params NewHeaderParams) (*Header, error) {
+func newHeader(trackerDBHandle *sql.DB, params NewHeaderParams) (*Header, error) {
 
 	if len(params.ParentDashboardID) <= 0 {
 		return nil, fmt.Errorf("newHeader: Error creating summary table: missing parent dashboard ID")
@@ -57,17 +56,17 @@ func newHeader(params NewHeaderParams) (*Header, error) {
 		HeaderID:          uniqueID.GenerateSnowflakeID(),
 		Properties:        headerProps}
 
-	if saveErr := saveHeader(databaseWrapper.DBHandle(), newHeader); saveErr != nil {
+	if saveErr := saveHeader(trackerDBHandle, newHeader); saveErr != nil {
 		return nil, fmt.Errorf("newHeader: Unable to save summary component with params=%+v: error = %v", params, saveErr)
 	}
 
 	return &newHeader, nil
 }
 
-func GetHeader(parentDashboardID string, headerID string) (*Header, error) {
+func GetHeader(trackerDBHandle *sql.DB, parentDashboardID string, headerID string) (*Header, error) {
 
 	headerProps := newDefaultHeaderProps()
-	if getErr := common.GetDashboardComponent(headerEntityKind, parentDashboardID, headerID, &headerProps); getErr != nil {
+	if getErr := common.GetDashboardComponent(trackerDBHandle, headerEntityKind, parentDashboardID, headerID, &headerProps); getErr != nil {
 		return nil, fmt.Errorf("getBarChart: Unable to retrieve bar chart component: %v", getErr)
 	}
 
@@ -106,8 +105,8 @@ func getHeadersFromSrc(srcDBHandle *sql.DB, parentDashboardID string) ([]Header,
 	return headers, nil
 }
 
-func GetHeaders(parentDashboardID string) ([]Header, error) {
-	return getHeadersFromSrc(databaseWrapper.DBHandle(), parentDashboardID)
+func GetHeaders(trackerDBHandle *sql.DB, parentDashboardID string) ([]Header, error) {
+	return getHeadersFromSrc(trackerDBHandle, parentDashboardID)
 }
 
 func CloneHeaders(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentDashboardID string) error {
@@ -147,9 +146,9 @@ func CloneHeaders(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentDas
 	return nil
 }
 
-func updateExistingHeader(updatedHeader *Header) (*Header, error) {
+func updateExistingHeader(trackerDBHandle *sql.DB, updatedHeader *Header) (*Header, error) {
 
-	if updateErr := common.UpdateDashboardComponent(headerEntityKind, updatedHeader.ParentDashboardID,
+	if updateErr := common.UpdateDashboardComponent(trackerDBHandle, headerEntityKind, updatedHeader.ParentDashboardID,
 		updatedHeader.HeaderID, updatedHeader.Properties); updateErr != nil {
 		return nil, fmt.Errorf("Error updating summary table %+v: %v", updatedHeader, updateErr)
 	}

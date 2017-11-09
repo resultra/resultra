@@ -3,6 +3,7 @@ package summaryValue
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -33,7 +34,13 @@ func newSummaryValAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if summaryValRef, err := newSummaryVal(params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if summaryValRef, err := newSummaryVal(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, summaryValRef)
@@ -43,7 +50,13 @@ func newSummaryValAPI(w http.ResponseWriter, r *http.Request) {
 
 func processSummaryValPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater SummaryValPropertyUpdater) {
 
-	if summaryValRef, err := updateSummaryValProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if summaryValRef, err := updateSummaryValProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, summaryValRef)

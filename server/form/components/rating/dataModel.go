@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form/components/common"
 	"resultra/datasheet/server/generic"
@@ -45,13 +44,13 @@ func saveRating(destDBHandle *sql.DB, newRating Rating) error {
 	return nil
 }
 
-func saveNewRating(params NewRatingParams) (*Rating, error) {
+func saveNewRating(trackerDBHandle *sql.DB, params NewRatingParams) (*Rating, error) {
 
 	if !componentLayout.ValidGeometry(params.Geometry) {
 		return nil, fmt.Errorf("Invalid layout container parameters: %+v", params)
 	}
 
-	if fieldErr := field.ValidateField(params.FieldID, validRatingFieldType); fieldErr != nil {
+	if fieldErr := field.ValidateField(trackerDBHandle, params.FieldID, validRatingFieldType); fieldErr != nil {
 		return nil, fmt.Errorf("saveNewRating: %v", fieldErr)
 	}
 
@@ -63,7 +62,7 @@ func saveNewRating(params NewRatingParams) (*Rating, error) {
 		RatingID:   uniqueID.GenerateSnowflakeID(),
 		Properties: properties}
 
-	if saveErr := saveRating(databaseWrapper.DBHandle(), newRating); saveErr != nil {
+	if saveErr := saveRating(trackerDBHandle, newRating); saveErr != nil {
 		return nil, fmt.Errorf("saveNewRating: Unable to save rating with params=%+v: error = %v", params, saveErr)
 	}
 
@@ -73,10 +72,10 @@ func saveNewRating(params NewRatingParams) (*Rating, error) {
 
 }
 
-func getRating(parentFormID string, ratingID string) (*Rating, error) {
+func getRating(trackerDBHandle *sql.DB, parentFormID string, ratingID string) (*Rating, error) {
 
 	ratingProps := newDefaultRatingProperties()
-	if getErr := common.GetFormComponent(ratingEntityKind, parentFormID, ratingID, &ratingProps); getErr != nil {
+	if getErr := common.GetFormComponent(trackerDBHandle, ratingEntityKind, parentFormID, ratingID, &ratingProps); getErr != nil {
 		return nil, fmt.Errorf("getRating: Unable to retrieve rating: %v", getErr)
 	}
 
@@ -114,8 +113,8 @@ func getRatingsFromSrc(srcDBHandle *sql.DB, parentFormID string) ([]Rating, erro
 	return ratings, nil
 }
 
-func GetRatings(parentFormID string) ([]Rating, error) {
-	return getRatingsFromSrc(databaseWrapper.DBHandle(), parentFormID)
+func GetRatings(trackerDBHandle *sql.DB, parentFormID string) ([]Rating, error) {
+	return getRatingsFromSrc(trackerDBHandle, parentFormID)
 }
 
 func CloneRatings(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID string) error {
@@ -147,9 +146,9 @@ func CloneRatings(cloneParams *trackerDatabase.CloneDatabaseParams, parentFormID
 	return nil
 }
 
-func updateExistingRating(updatedRating *Rating) (*Rating, error) {
+func updateExistingRating(trackerDBHandle *sql.DB, updatedRating *Rating) (*Rating, error) {
 
-	if updateErr := common.UpdateFormComponent(ratingEntityKind, updatedRating.ParentFormID,
+	if updateErr := common.UpdateFormComponent(trackerDBHandle, ratingEntityKind, updatedRating.ParentFormID,
 		updatedRating.RatingID, updatedRating.Properties); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingRating: failure updating rating: %v", updateErr)
 	}

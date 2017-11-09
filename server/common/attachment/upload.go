@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -98,8 +99,13 @@ func uploadAttachment(req *http.Request) (*UploadedAttachmentResponse, error) {
 		return nil, fmt.Errorf("uploadFile: Unable to get current user information: %v", userErr)
 	}
 
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		return nil, dbErr
+	}
+
 	attachInfo := newAttachmentInfo(parentDatabaseID, currUserID, attachTypeFile, uploadInfo.FileName, cloudFileName)
-	if saveErr := saveAttachmentInfo(attachInfo); saveErr != nil {
+	if saveErr := saveAttachmentInfo(trackerDBHandle, attachInfo); saveErr != nil {
 		return nil, fmt.Errorf("uploadFile: unable to save attachment information/metadata: %v", saveErr)
 	}
 

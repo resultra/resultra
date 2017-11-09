@@ -1,6 +1,7 @@
 package displayTable
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/displayTable/columns/attachment"
 	"resultra/datasheet/server/displayTable/columns/checkBox"
@@ -26,12 +27,12 @@ import (
 type TableColsInfo []interface{}
 type TableColsByID map[string]interface{}
 
-func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
+func getTableCols(trackerDBHandle *sql.DB, parentTableID string) (TableColsInfo, TableColsByID, error) {
 
 	tableColData := TableColsInfo{}
 	tableColsByID := TableColsByID{}
 
-	numberInputCols, err := numberInput.GetNumberInputs(parentTableID)
+	numberInputCols, err := numberInput.GetNumberInputs(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -40,7 +41,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	progressCols, err := progress.GetProgressIndicators(parentTableID)
+	progressCols, err := progress.GetProgressIndicators(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -49,7 +50,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	textInputCols, err := textInput.GetTextInputs(parentTableID)
+	textInputCols, err := textInput.GetTextInputs(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -58,7 +59,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	datePickerCols, err := datePicker.GetDatePickers(parentTableID)
+	datePickerCols, err := datePicker.GetDatePickers(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -67,7 +68,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	checkBoxCols, err := checkBox.GetCheckBoxes(parentTableID)
+	checkBoxCols, err := checkBox.GetCheckBoxes(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -76,7 +77,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	ratingCols, err := rating.GetRatings(parentTableID)
+	ratingCols, err := rating.GetRatings(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -85,7 +86,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	toggleCols, err := toggle.GetToggles(parentTableID)
+	toggleCols, err := toggle.GetToggles(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -94,7 +95,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	userSelectionCols, err := userSelection.GetUserSelections(parentTableID)
+	userSelectionCols, err := userSelection.GetUserSelections(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -103,7 +104,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	userTagCols, err := userTag.GetUserTags(parentTableID)
+	userTagCols, err := userTag.GetUserTags(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -112,7 +113,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	noteCols, err := note.GetNotes(parentTableID)
+	noteCols, err := note.GetNotes(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -121,7 +122,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	commentCols, err := comment.GetComments(parentTableID)
+	commentCols, err := comment.GetComments(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -130,7 +131,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	attachCols, err := attachment.GetAttachments(parentTableID)
+	attachCols, err := attachment.GetAttachments(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -139,7 +140,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	buttonCols, err := formButton.GetButtons(parentTableID)
+	buttonCols, err := formButton.GetButtons(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -148,7 +149,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	socialButtonCols, err := socialButton.GetSocialButtons(parentTableID)
+	socialButtonCols, err := socialButton.GetSocialButtons(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -157,7 +158,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	tagCols, err := tag.GetTags(parentTableID)
+	tagCols, err := tag.GetTags(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -166,7 +167,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	emailAddrCols, err := emailAddr.GetEmailAddrs(parentTableID)
+	emailAddrCols, err := emailAddr.GetEmailAddrs(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -175,7 +176,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	urlLinkCols, err := urlLink.GetUrlLinks(parentTableID)
+	urlLinkCols, err := urlLink.GetUrlLinks(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -184,7 +185,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	fileCols, err := file.GetFiles(parentTableID)
+	fileCols, err := file.GetFiles(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
@@ -193,7 +194,7 @@ func getTableCols(parentTableID string) (TableColsInfo, TableColsByID, error) {
 		tableColsByID[col.ColumnID] = col
 	}
 
-	imageCols, err := image.GetImages(parentTableID)
+	imageCols, err := image.GetImages(trackerDBHandle, parentTableID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}

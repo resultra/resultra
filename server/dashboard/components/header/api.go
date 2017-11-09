@@ -3,6 +3,7 @@ package header
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -28,7 +29,13 @@ func newHeaderAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if headerRef, err := newHeader(params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if headerRef, err := newHeader(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, headerRef)
@@ -38,7 +45,13 @@ func newHeaderAPI(w http.ResponseWriter, r *http.Request) {
 
 func processHeaderPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater HeaderPropertyUpdater) {
 
-	if headerRef, err := updateHeaderProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if headerRef, err := updateHeaderProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, headerRef)

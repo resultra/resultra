@@ -3,6 +3,7 @@ package emailAddr
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -31,7 +32,12 @@ func newEmailAddr(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if emailAddrRef, err := saveNewEmailAddr(emailAddrParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if emailAddrRef, err := saveNewEmailAddr(trackerDBHandle, emailAddrParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *emailAddrRef)
@@ -47,12 +53,22 @@ func validateInputAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validationResp := validateInput(params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	validationResp := validateInput(trackerDBHandle, params)
 	api.WriteJSONResponse(w, validationResp)
 }
 
 func processEmailAddrPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater EmailAddrPropUpdater) {
-	if emailAddrRef, err := updateEmailAddrProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+	if emailAddrRef, err := updateEmailAddrProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, emailAddrRef)

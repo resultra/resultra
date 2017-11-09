@@ -3,6 +3,7 @@ package barChart
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -31,7 +32,13 @@ func newBarChart(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if barChartRef, err := NewBarChart(barChartParams); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if barChartRef, err := NewBarChart(trackerDBHandle, barChartParams); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, barChartRef)
@@ -44,7 +51,13 @@ func newBarChart(w http.ResponseWriter, r *http.Request) {
 // read/decode the parameters, so this is still done explicitely.
 func processBarChartPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater BarChartPropertyUpdater) {
 
-	if barChartRef, err := UpdateBarChartProps(propUpdater); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if barChartRef, err := UpdateBarChartProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, barChartRef)

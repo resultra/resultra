@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/record"
@@ -54,7 +55,13 @@ func newRecordAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newRecordRef, err := newRecord(currUserID, params)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	newRecordRef, err := newRecord(trackerDBHandle, currUserID, params)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
@@ -329,7 +336,13 @@ func commitChangeSetAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if updatedRecordRef, err := commitChangeSet(currUserID, params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if updatedRecordRef, err := commitChangeSet(trackerDBHandle, currUserID, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, updatedRecordRef)

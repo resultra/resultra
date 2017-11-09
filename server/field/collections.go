@@ -1,6 +1,7 @@
 package field
 
 import (
+	"database/sql"
 	"fmt"
 	"sort"
 	"strings"
@@ -23,9 +24,9 @@ type FieldsByType struct {
 	ImageFields      []Field `json:"imageFields"`
 }
 
-func GetFieldsByType(params GetFieldListParams) (*FieldsByType, error) {
+func GetFieldsByType(trackerDBHandle *sql.DB, params GetFieldListParams) (*FieldsByType, error) {
 
-	fields, getErr := GetAllFields(params)
+	fields, getErr := GetAllFields(trackerDBHandle, params)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetFieldsByType: Unable to retrieve fields from datastore: datastore error =%v", getErr)
 	}
@@ -88,9 +89,9 @@ func (fieldIDIndex FieldIDIndex) GetFieldRefByID(fieldID string) (*Field, error)
 
 }
 
-func GetFieldRefIDIndex(params GetFieldListParams) (*FieldIDIndex, error) {
+func GetFieldRefIDIndex(trackerDBHandle *sql.DB, params GetFieldListParams) (*FieldIDIndex, error) {
 
-	fields, getErr := GetAllFields(params)
+	fields, getErr := GetAllFields(trackerDBHandle, params)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetFieldRefIDIndex: Unable to retrieve fields from datastore: datastore error =%v", getErr)
 	}
@@ -142,9 +143,9 @@ type GetSortedFieldListParams struct {
 	FieldTypes       []string `json:"fieldTypes"`
 }
 
-func getSortedFieldsByType(params GetSortedFieldListParams) ([]Field, error) {
+func getSortedFieldsByType(trackerDBHandle *sql.DB, params GetSortedFieldListParams) ([]Field, error) {
 
-	fieldsByType, getErr := GetFieldsByType(GetFieldListParams{ParentDatabaseID: params.ParentDatabaseID})
+	fieldsByType, getErr := GetFieldsByType(trackerDBHandle, GetFieldListParams{ParentDatabaseID: params.ParentDatabaseID})
 	if getErr != nil {
 		return nil, fmt.Errorf("GetSortedFields: Unable to retrieve fields from datastore: datastore error =%v", getErr)
 	}
@@ -193,8 +194,8 @@ func getSortedFieldsByType(params GetSortedFieldListParams) ([]Field, error) {
 
 }
 
-func getAllSortedFields(params GetFieldListParams) ([]Field, error) {
-	fields, getErr := GetAllFields(params)
+func getAllSortedFields(trackerDBHandle *sql.DB, params GetFieldListParams) ([]Field, error) {
+	fields, getErr := GetAllFields(trackerDBHandle, params)
 	if getErr != nil {
 		return nil, fmt.Errorf("GetFieldRefIDIndex: Unable to retrieve fields from datastore: datastore error =%v", getErr)
 	}

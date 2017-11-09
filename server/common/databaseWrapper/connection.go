@@ -7,6 +7,7 @@ import (
 	"os"
 
 	_ "github.com/mattn/go-sqlite3"
+	"net/http"
 	"resultra/datasheet/server/common/runtimeConfig"
 )
 
@@ -61,4 +62,8 @@ func InitDatabaseConnection() error {
 
 func DBHandle() *sql.DB {
 	return dbHandle
+}
+
+func GetTrackerDatabaseHandle(r *http.Request) (*sql.DB, error) {
+	return DBHandle(), nil
 }

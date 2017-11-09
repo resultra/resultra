@@ -3,6 +3,7 @@ package formButton
 import (
 	"github.com/gorilla/mux"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -32,7 +33,13 @@ func newButton(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if headerRef, err := saveNewButton(params); err != nil {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if headerRef, err := saveNewButton(trackerDBHandle, params); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *headerRef)
@@ -53,7 +60,13 @@ func getButtonAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	formButton, err := getButton(params.ParentTableID, params.ButtonID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	formButton, err := getButton(trackerDBHandle, params.ParentTableID, params.ButtonID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -73,7 +86,13 @@ func getButtonFromIDAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	formButton, err := getButtonFromButtonID(params.ButtonID)
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	formButton, err := getButtonFromButtonID(trackerDBHandle, params.ButtonID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return
@@ -82,7 +101,14 @@ func getButtonFromIDAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func processButtonPropUpdate(w http.ResponseWriter, r *http.Request, propUpdater ButtonPropUpdater) {
-	if headerRef, err := updateButtonProps(propUpdater); err != nil {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if headerRef, err := updateButtonProps(trackerDBHandle, propUpdater); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, headerRef)

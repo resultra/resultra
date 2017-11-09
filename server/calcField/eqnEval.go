@@ -1,6 +1,7 @@
 package calcField
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"resultra/datasheet/server/field"
@@ -400,6 +401,7 @@ func updateOneCalcFieldValue(evalContext *EqnEvalContext, evalField field.Field)
 }
 
 type CalcFieldUpdateConfig struct {
+	TrackerDBHandle  *sql.DB
 	ParentDatabaseID string
 	GlobalIndex      global.GlobalIDGlobalIndex
 	GlobalVals       global.GlobalValues
@@ -408,18 +410,22 @@ type CalcFieldUpdateConfig struct {
 	FieldsByID       map[string]field.Field
 }
 
-func CreateCalcFieldUpdateConfig(currUserID string, parentDatabaseID string) (*CalcFieldUpdateConfig, error) {
-	globalVals, globalValErr := global.GetGlobalValues(global.GetGlobalValuesParams{ParentDatabaseID: parentDatabaseID})
+func CreateCalcFieldUpdateConfig(trackerDBHandle *sql.DB,
+	currUserID string, parentDatabaseID string) (*CalcFieldUpdateConfig, error) {
+
+	globalVals, globalValErr := global.GetGlobalValues(trackerDBHandle,
+		global.GetGlobalValuesParams{ParentDatabaseID: parentDatabaseID})
 	if globalValErr != nil {
 		return nil, fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve global values: error =%v", globalValErr)
 	}
 
-	globalIndex, globalIndexErr := global.GetIndexedGlobals(parentDatabaseID)
+	globalIndex, globalIndexErr := global.GetIndexedGlobals(trackerDBHandle, parentDatabaseID)
 	if globalIndexErr != nil {
 		return nil, fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve indexed globals: error =%v", globalIndexErr)
 	}
 
-	fields, getErr := field.GetAllFields(field.GetFieldListParams{ParentDatabaseID: parentDatabaseID})
+	fields, getErr := field.GetAllFields(trackerDBHandle,
+		field.GetFieldListParams{ParentDatabaseID: parentDatabaseID})
 	if getErr != nil {
 		return nil, fmt.Errorf("UpdateCalcFieldValues: Unable to retrieve fields from datastore: datastore error =%v", getErr)
 	}
@@ -430,6 +436,7 @@ func CreateCalcFieldUpdateConfig(currUserID string, parentDatabaseID string) (*C
 	}
 
 	config := CalcFieldUpdateConfig{
+		TrackerDBHandle:  trackerDBHandle,
 		ParentDatabaseID: parentDatabaseID,
 		GlobalVals:       *globalVals,
 		GlobalIndex:      globalIndex,

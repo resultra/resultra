@@ -1,6 +1,7 @@
 package numberInput
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/generic/inputValidation"
 )
@@ -10,9 +11,9 @@ type NumberInputValidateInputParams struct {
 	InputVal *float64 `json:"inputVal"`
 }
 
-func validateInput(params NumberInputValidateInputParams) inputValidation.ValidationResult {
+func validateInput(trackerDBHandle *sql.DB, params NumberInputValidateInputParams) inputValidation.ValidationResult {
 
-	numberInput, err := getNumberInput(params.getParentFormID(), params.getNumberInputID())
+	numberInput, err := getNumberInput(trackerDBHandle, params.getParentFormID(), params.getNumberInputID())
 	if err != nil {
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
 	}

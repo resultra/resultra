@@ -1,6 +1,7 @@
 package values
 
 import (
+	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/uniqueID"
@@ -95,9 +96,9 @@ func validateFieldTypeWithGrouping(fieldType string, groupValsBy string,
 	return nil
 }
 
-func NewValGrouping(params NewValGroupingParams) (*ValGrouping, error) {
+func NewValGrouping(trackingDBHandle *sql.DB, params NewValGroupingParams) (*ValGrouping, error) {
 
-	groupingField, fieldErr := field.GetField(params.FieldID)
+	groupingField, fieldErr := field.GetField(trackingDBHandle, params.FieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("NewValGrouping: Can't create value grouping with field ID = '%v': datastore error=%v",
 			params.FieldID, fieldErr)
@@ -120,9 +121,9 @@ func NewValGrouping(params NewValGroupingParams) (*ValGrouping, error) {
 
 }
 
-func (valGrouping ValGrouping) GroupingLabel() (string, error) {
+func (valGrouping ValGrouping) GroupingLabel(trackingDBHandle *sql.DB) (string, error) {
 
-	groupingField, fieldErr := field.GetField(valGrouping.GroupValsByFieldID)
+	groupingField, fieldErr := field.GetField(trackingDBHandle, valGrouping.GroupValsByFieldID)
 	if fieldErr != nil {
 		return "", fmt.Errorf("GroupingLabel: Can't create grouping label: %v", fieldErr)
 	}

@@ -1,15 +1,15 @@
 package databaseController
 
 import (
+	"database/sql"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/userRole"
 )
 
-func createNewDatabase(req *http.Request, dbParams trackerDatabase.NewDatabaseParams) (*UserTrackingDatabaseInfo, error) {
+func createNewDatabase(trackerDBHandle *sql.DB, req *http.Request, dbParams trackerDatabase.NewDatabaseParams) (*UserTrackingDatabaseInfo, error) {
 
 	userID, userErr := userAuth.GetCurrentUserID(req)
 	if userErr != nil {
@@ -26,8 +26,8 @@ func createNewDatabase(req *http.Request, dbParams trackerDatabase.NewDatabasePa
 			NewName:          dbParams.Name,
 			IsTemplate:       false,
 			CreatedByUserID:  userID,
-			SrcDBHandle:      databaseWrapper.DBHandle(),
-			DestDBHandle:     databaseWrapper.DBHandle(),
+			SrcDBHandle:      trackerDBHandle,
+			DestDBHandle:     trackerDBHandle,
 			IDRemapper:       uniqueID.UniqueIDRemapper{}}
 		newDB, newDBErr = cloneIntoNewTrackerDatabase(&newDBFromTemplateParams)
 		if newDBErr != nil {
@@ -36,13 +36,13 @@ func createNewDatabase(req *http.Request, dbParams trackerDatabase.NewDatabasePa
 	} else {
 		dbParams.CreatedByUserID = userID
 		dbParams.IsTemplate = false
-		newDB, newDBErr = trackerDatabase.SaveNewEmptyDatabase(dbParams)
+		newDB, newDBErr = trackerDatabase.SaveNewEmptyDatabase(trackerDBHandle, dbParams)
 		if newDBErr != nil {
 			return nil, newDBErr
 		}
 	}
 
-	if adminErr := userRole.AddDatabaseAdmin(newDB.DatabaseID, userID); adminErr != nil {
+	if adminErr := userRole.AddDatabaseAdmin(trackerDBHandle, newDB.DatabaseID, userID); adminErr != nil {
 		return nil, adminErr
 	}
 
