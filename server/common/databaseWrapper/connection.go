@@ -3,67 +3,77 @@ package databaseWrapper
 import (
 	"database/sql"
 	"fmt"
-	"log"
-	"os"
-
-	_ "github.com/mattn/go-sqlite3"
 	"net/http"
-	"resultra/datasheet/server/common/runtimeConfig"
 )
 
-var dbHandle *sql.DB
-
-func TrackerDatabaseFileExists(databaseFileName string) bool {
-	if _, err := os.Stat(databaseFileName); err != nil {
-		if os.IsNotExist(err) {
-			return false
-		}
-	}
-	return true
+type SaveAttachmentParams struct {
+	CloudFileName    string
+	ParentDatabaseID string
+	HTTPReq          *http.Request
+	FileData         []byte
 }
 
-func InitDatabaseConnection() error {
-
-	var err error
-
-	databaseFileName := runtimeConfig.CurrRuntimeConfig.TrackerDatabaseFileName()
-
-	dbFileAlreadyExists := TrackerDatabaseFileExists(databaseFileName)
-
-	dbHandle, err = sql.Open("sqlite3", databaseFileName)
-	if err != nil {
-		return fmt.Errorf("can't establish connection to database: %v", err)
-	}
-
-	// Configure the maximum number of open connections.
-	dbHandle.SetMaxOpenConns(75)
-
-	// Open doesn't directly open the database connection. To verify the connection, the Ping() function
-	// is needed.
-	if err := dbHandle.Ping(); err != nil {
-		return fmt.Errorf("can't establish connection to database: %v", err)
-	}
-
-	log.Printf("Database connection established: %v", databaseFileName)
-
-	if !dbFileAlreadyExists {
-		log.Printf("New database found, initializing: %v", databaseFileName)
-		if initErr := initNewTrackerDatabase(); initErr != nil {
-			return fmt.Errorf("failure initializing tracker database: %v", initErr)
-		} else {
-			log.Printf("New database initialization complete: %v", databaseFileName)
-		}
-	} else {
-		log.Printf("Existing tracker database found.")
-	}
-
-	return nil
+type ServeAttachmentParams struct {
+	RespWriter       http.ResponseWriter
+	HTTPReq          *http.Request
+	ParentDatabaseID string
+	CloudFileName    string
 }
 
-func DBHandle() *sql.DB {
-	return dbHandle
+// Interface for handling connections to different types of databases
+type TrackerDatabaseConnection interface {
+	InitConnection() error
+	GetTrackerDBHandle(r *http.Request) (*sql.DB, error)
+	GetAttachmentBasePath(r *http.Request) (string, error)
+	SaveAttachment(saveParams SaveAttachmentParams) error
+	ServeAttachment(serveParams ServeAttachmentParams)
 }
+
+var dbConnection TrackerDatabaseConnection
 
 func GetTrackerDatabaseHandle(r *http.Request) (*sql.DB, error) {
-	return DBHandle(), nil
+
+	if dbConnection == nil {
+		return nil, fmt.Errorf("GetTrackerDatabaseHandle: uninitialized database connection")
+	}
+	return dbConnection.GetTrackerDBHandle(r)
+
+}
+
+func GetTrackerAttachmentBasePath(r *http.Request) (string, error) {
+	if dbConnection == nil {
+		return "", fmt.Errorf("GetTrackerDatabaseHandle: uninitialized database connection")
+	}
+	return dbConnection.GetAttachmentBasePath(r)
+}
+
+func SaveAttachment(saveParams SaveAttachmentParams) error {
+
+	if dbConnection == nil {
+		return fmt.Errorf("GetTrackerDatabaseHandle: uninitialized database connection")
+	}
+
+	return dbConnection.SaveAttachment(saveParams)
+}
+
+func ServeAttachment(serveParams ServeAttachmentParams) {
+
+	if dbConnection == nil {
+		errorMsg := "GetTrackerDatabaseHandle: uninitialized database connection"
+		http.Error(serveParams.RespWriter, errorMsg, http.StatusInternalServerError)
+	}
+
+	dbConnection.ServeAttachment(serveParams)
+}
+
+func InitConnectionConfiguration(conn TrackerDatabaseConnection) error {
+
+	if err := conn.InitConnection(); err != nil {
+		return fmt.Errorf("InitConnectionConfiguration: %v", err)
+	}
+
+	dbConnection = conn
+
+	return nil
+
 }

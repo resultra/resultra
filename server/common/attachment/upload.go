@@ -2,54 +2,13 @@ package attachment
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
-	"os"
 	"path"
 	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"
 )
-
-const permsOwnerReadWriteOnly os.FileMode = 0700
-
-func fullyQualifiedAttachmentFileName(databaseID string, fileName string) string {
-	return runtimeConfig.CurrRuntimeConfig.AttachmentBasePath() + "/" + databaseID + "/" + fileName
-}
-
-func InitAttachmentBasePath() error {
-
-	err := os.MkdirAll(runtimeConfig.CurrRuntimeConfig.AttachmentBasePath(), permsOwnerReadWriteOnly)
-	if err != nil {
-		return fmt.Errorf("Error initializing attachment directory %v: %v",
-			runtimeConfig.CurrRuntimeConfig.AttachmentBasePath(), err)
-	}
-	return nil
-}
-
-func SaveAttachmentFile(databaseID string, fileName string, fileData []byte) error {
-
-	fullyQualifiedPath := runtimeConfig.CurrRuntimeConfig.AttachmentBasePath() + "/" + databaseID + "/"
-
-	err := os.MkdirAll(fullyQualifiedPath, permsOwnerReadWriteOnly)
-	if err != nil {
-		return fmt.Errorf("Error initializing attachment directory %v: %v",
-			fullyQualifiedPath, err)
-	}
-
-	writeErr := ioutil.WriteFile(fullyQualifiedPath+fileName, fileData, permsOwnerReadWriteOnly)
-	if writeErr != nil {
-		return fmt.Errorf("SaveCloudFile: Error writing file: filename = %v, error = %v", fileName, writeErr)
-	}
-
-	log.Printf("uploadFile: ... done uloading file to cloud: file name = %v", fileName)
-
-	return nil
-
-}
 
 func UniqueAttachmentFileNameFromUserFileName(userFileName string) string {
 
@@ -87,7 +46,14 @@ func uploadAttachment(req *http.Request) (*UploadedAttachmentResponse, error) {
 	}
 
 	cloudFileName := UniqueAttachmentFileNameFromUserFileName(uploadInfo.FileName)
-	if saveErr := SaveAttachmentFile(parentDatabaseID, cloudFileName, uploadInfo.FileData); saveErr != nil {
+
+	saveParams := databaseWrapper.SaveAttachmentParams{
+		CloudFileName:    cloudFileName,
+		ParentDatabaseID: parentDatabaseID,
+		HTTPReq:          req,
+		FileData:         uploadInfo.FileData}
+
+	if saveErr := databaseWrapper.SaveAttachment(saveParams); saveErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to save file to cloud storage: %v", saveErr)
 	}
 

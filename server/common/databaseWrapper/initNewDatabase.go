@@ -223,8 +223,3 @@ func initNewTrackerDatabaseToDest(trackerDBHandle *sql.DB) error {
 	return nil
 
 }
-
-func initNewTrackerDatabase() error {
-
-	return initNewTrackerDatabaseToDest(DBHandle())
-}

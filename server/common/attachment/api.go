@@ -70,7 +70,13 @@ func getAttachmentAPI(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Disposition", "attachment;filename="+origFileName)
 
-	http.ServeFile(w, r, fullyQualifiedAttachmentFileName(databaseID, cloudFileName))
+	serveParams := databaseWrapper.ServeAttachmentParams{
+		RespWriter:       w,
+		HTTPReq:          r,
+		ParentDatabaseID: databaseID,
+		CloudFileName:    cloudFileName,
+	}
+	databaseWrapper.ServeAttachment(serveParams)
 
 }
 

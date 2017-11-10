@@ -8,8 +8,6 @@ import (
 	"net/http"
 	"os"
 	"resultra/datasheet/server"
-	"resultra/datasheet/server/common/attachment"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/webui"
 )
@@ -38,18 +36,6 @@ func main() {
 			os.Exit(255)
 		}
 	}
-	if err := attachment.InitAttachmentBasePath(); err != nil {
-		log.Printf("Error initializing attachment directory: %v\n", err)
-		os.Exit(255)
-	}
-
-	if err := databaseWrapper.InitDatabaseConnection(); err != nil {
-		log.Printf("Error initializing database connection: %v\n", err)
-		os.Exit(255)
-
-	}
-
-	runtimeConfig.PrintCurrentConfig()
 
 	if *enableProfiling {
 		log.Println("Profiling enabled (pprof)")

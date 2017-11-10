@@ -49,7 +49,14 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 	}
 
 	cloudFileName := attachment.UniqueAttachmentFileNameFromUserFileName(uploadInfo.FileName)
-	if saveErr := attachment.SaveAttachmentFile(global.ParentDatabaseID, cloudFileName, uploadInfo.FileData); saveErr != nil {
+
+	saveParams := databaseWrapper.SaveAttachmentParams{
+		CloudFileName:    cloudFileName,
+		ParentDatabaseID: global.ParentDatabaseID,
+		HTTPReq:          req,
+		FileData:         uploadInfo.FileData}
+
+	if saveErr := databaseWrapper.SaveAttachment(saveParams); saveErr != nil {
 		return nil, fmt.Errorf("uploadFile: Unable to save file to cloud storage: %v", saveErr)
 	}
 

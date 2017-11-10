@@ -2,7 +2,6 @@ package socialButton
 
 import (
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
@@ -19,8 +18,6 @@ func init() {
 	socialButtonRouter.HandleFunc("/api/tableView/socialButton/setPermissions", setPermissions)
 	socialButtonRouter.HandleFunc("/api/tableView/socialButton/setLabelFormat", setLabelFormat)
 	socialButtonRouter.HandleFunc("/api/tableView/socialButton/setHelpPopupMsg", setHelpPopupMsg)
-
-	log.Printf("Initializing social button API")
 
 	http.Handle("/api/tableView/socialButton/", socialButtonRouter)
 }
