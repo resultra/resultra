@@ -2,7 +2,8 @@ CREATE TABLE account_info (
 	account_id text PRIMARY KEY,
 	owner_first text NOT NULL,
 	owner_last text NOT NULL,
-	owner_email text not NULL
+	owner_email text NOT NULL
+	db_host_name text NOT NULL
 ); 
 
 CREATE TABLE host_mappings (

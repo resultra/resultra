@@ -27,6 +27,7 @@ func main() {
 	owner_last := promptUserInputString("Enter account owner last name: ")
 	owner_email := promptUserInputString("Enter account owner email address: ")
 	account_subdomain := promptUserInputString("Subdomain name: ")
+	database_hostname := promptUserInputString("Tracker database host name: ")
 
 	fmt.Printf("\n")
 	fmt.Printf("Account details:\n")
@@ -35,6 +36,7 @@ func main() {
 	fmt.Printf("Last: [%v]\n", owner_last)
 
 	fmt.Printf("Subdomain: [%v]\n", account_subdomain)
+	fmt.Printf("Database hostname: [%v]\n", database_hostname)
 
 	fmt.Printf("\n")
 
@@ -48,10 +50,11 @@ func main() {
 
 		hostName := account_subdomain + ".resultra.com"
 		newAcctInfo := databaseWrapper.NewAccountInfo{
-			HostName:  hostName,
-			FirstName: owner_first,
-			LastName:  owner_last,
-			Email:     owner_email}
+			HostName:   hostName,
+			FirstName:  owner_first,
+			LastName:   owner_last,
+			Email:      owner_email,
+			DBHostName: database_hostname}
 
 		if err := databaseWrapper.CreateNewAccount(newAcctInfo); err != nil {
 			log.Fatal(err)

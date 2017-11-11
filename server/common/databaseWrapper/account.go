@@ -11,25 +11,37 @@ import (
 
 var accountInfoDBHandle *sql.DB
 
-func InitAccountInfoConnection() error {
+const trackerAccountDBPrefix string = "trackers_"
 
-	var err error
+func connectToAccountInfoDB(hostName string, userName string, password string) (*sql.DB, error) {
 
-	accountInfoDBHandle, err = sql.Open("postgres",
-		"user=devuser dbname=resultra_accounts password=here4dev sslmode=disable")
+	connectStr := fmt.Sprintf("host=%s user=%s password=%s sdbname=%s slmode=disable",
+		hostName, userName, password, "resultra_accounts")
+
+	accountDBHandle, err := sql.Open("postgres", connectStr)
 	if err != nil {
-		return fmt.Errorf("can't establish connection to account info database: %v", err)
+		return nil, fmt.Errorf("connectToAccountInfoDB: can't establish connection to account info database: %v", err)
 	}
 
-	// Configure the maximum number of open connections to be less than the limit supported by Postgres
-	// If postgress supports 100, then 75 allows for a value which is safely below the maximum and also
-	// allow connections from other clients (e.g., for administration)
-	// Configure the maximum number of open connections.
-	accountInfoDBHandle.SetMaxOpenConns(75)
+	// Only a few open connections are needed to the account database.
+	accountDBHandle.SetMaxOpenConns(5)
 
 	// Open doesn't directly open the database connection. To verify the connection, the Ping() function
 	// is needed.
 	if err := accountInfoDBHandle.Ping(); err != nil {
+		return nil, fmt.Errorf("connectToAccountInfoDB: can't establish connection to account info database (ping failed): %v", err)
+	}
+
+	return accountDBHandle, nil
+
+}
+
+func InitAccountInfoConnection() error {
+
+	var err error
+
+	accountInfoDBHandle, err = connectToAccountInfoDB("localhost", "devuser", "here4dev")
+	if err != nil {
 		return fmt.Errorf("can't establish connection to account info database: %v", err)
 	}
 
@@ -38,10 +50,11 @@ func InitAccountInfoConnection() error {
 }
 
 type AccountInfo struct {
-	AccountID string
-	FirstName string
-	LastName  string
-	Email     string
+	AccountID  string
+	FirstName  string
+	LastName   string
+	Email      string
+	DBHostName string
 }
 
 func AddAccount(newAcctInfo AccountInfo) error {
@@ -52,15 +65,45 @@ func AddAccount(newAcctInfo AccountInfo) error {
 		return fmt.Errorf("AddAccount: can't add account - connection to account info database not established")
 	}
 
-	if _, insertErr := dbHandle.Exec(`INSERT INTO account_info (account_id,owner_first,owner_last,owner_email) 
+	if _, insertErr := dbHandle.Exec(`INSERT INTO account_info (account_id,owner_first,owner_last,owner_email,db_host_name) 
 			VALUES ($1,$2,$3,$4)`,
 		newAcctInfo.AccountID,
 		newAcctInfo.FirstName,
 		newAcctInfo.LastName,
-		newAcctInfo.Email); insertErr != nil {
+		newAcctInfo.Email,
+		newAcctInfo.DBHostName); insertErr != nil {
 		return fmt.Errorf("AddAccount: can't add account: error = %v", insertErr)
 	}
 	return nil
+
+}
+
+type AccountTrackerDBInfo struct {
+	DBHostName string
+	DBName     string
+}
+
+func trackerDBNameFromAccountID(accountID string) string {
+	trackerDBName := trackerAccountDBPrefix + accountID
+	return trackerDBName
+}
+
+func getHostAccountTrackerDBInfo(accountDB *sql.DB, accountHostName string) (*AccountTrackerDBInfo, error) {
+
+	accountID := ""
+	dbHostName := ""
+	getErr := accountDB.QueryRow(`SELECT account_info.account_id, account_info.db_host_name,
+		FROM account_info, host_mappings
+		WHERE host_mappings.host_name=$1 AND host_mappings.account_id=account_info.account_id LIMIT 1`, accountHostName).Scan(&accountID, &dbHostName)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetHostAccountTrackerDBInfo: Unabled to get account information for account host name = %s", accountHostName)
+	}
+
+	dbInfo := AccountTrackerDBInfo{
+		DBHostName: dbHostName,
+		DBName:     trackerDBNameFromAccountID(accountID)}
+
+	return &dbInfo, nil
 
 }
 
@@ -86,7 +129,7 @@ func CreateAccountTrackerDatabase(accountID string) error {
 		return fmt.Errorf("CreateAccountTrackerDatabase: can't add host mapping - connection to account info database not established")
 	}
 
-	trackerDBName := "trackers_" + accountID
+	trackerDBName := trackerDBNameFromAccountID(accountID)
 	if _, createtErr := dbHandle.Exec(`CREATE DATABASE ` + trackerDBName); createtErr != nil {
 		return fmt.Errorf("CreateAccountTrackerDatabase: can't create account's tracker database: error = %v", createtErr)
 	}
@@ -105,10 +148,11 @@ func CreateAccountTrackerDatabase(accountID string) error {
 }
 
 type NewAccountInfo struct {
-	HostName  string
-	FirstName string
-	LastName  string
-	Email     string
+	HostName   string
+	FirstName  string
+	LastName   string
+	Email      string
+	DBHostName string
 }
 
 func CreateNewAccount(newAccountInfo NewAccountInfo) error {
@@ -116,10 +160,11 @@ func CreateNewAccount(newAccountInfo NewAccountInfo) error {
 	accountID := uniqueID.GenerateV4UUIDNoDashes()
 
 	accountInfo := AccountInfo{
-		AccountID: accountID,
-		FirstName: newAccountInfo.FirstName,
-		LastName:  newAccountInfo.LastName,
-		Email:     newAccountInfo.Email}
+		AccountID:  accountID,
+		FirstName:  newAccountInfo.FirstName,
+		LastName:   newAccountInfo.LastName,
+		Email:      newAccountInfo.Email,
+		DBHostName: newAccountInfo.DBHostName}
 	if err := AddAccount(accountInfo); err != nil {
 		return fmt.Errorf("CreateNewAccount: %v", err)
 	}
