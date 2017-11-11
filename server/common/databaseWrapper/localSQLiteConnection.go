@@ -95,13 +95,6 @@ func (config *LocalSQLiteTrackerDatabaseConnectionConfig) InitConnection() error
 
 }
 
-func (config LocalSQLiteTrackerDatabaseConnectionConfig) GetAttachmentBasePath(r *http.Request) (string, error) {
-	if err := config.validateWellFormedDatabaseBasePath(); err != nil {
-		panic(fmt.Sprintf("runtime config: tried to retrieve attachment path from invalid config: %v", err))
-	}
-	return (config.DatabaseBasePath) + `/attachments`, nil
-}
-
 func (config LocalSQLiteTrackerDatabaseConnectionConfig) GetTrackerDBHandle(r *http.Request) (*sql.DB, error) {
 
 	if config.DBHandle == nil {
@@ -109,33 +102,5 @@ func (config LocalSQLiteTrackerDatabaseConnectionConfig) GetTrackerDBHandle(r *h
 	}
 
 	return config.DBHandle, nil
-
-}
-
-func (config LocalSQLiteTrackerDatabaseConnectionConfig) SaveAttachment(saveParams SaveAttachmentParams) error {
-
-	attachmentBasePath, err := config.GetAttachmentBasePath(saveParams.HTTPReq)
-	if err != nil {
-		return fmt.Errorf("LocalSQLiteTrackerDatabaseConnectionConfig: can't get base path: %v", err)
-	}
-
-	if err := saveLocalAttachmentFile(attachmentBasePath, saveParams.ParentDatabaseID,
-		saveParams.CloudFileName, saveParams.FileData); err != nil {
-		return fmt.Errorf("LocalSQLiteTrackerDatabaseConnectionConfig: can't save file: %v", err)
-	}
-
-	return nil
-
-}
-
-func (config LocalSQLiteTrackerDatabaseConnectionConfig) ServeAttachment(serveParams ServeAttachmentParams) {
-
-	attachmentBasePath, err := config.GetAttachmentBasePath(serveParams.HTTPReq)
-	if err != nil {
-		http.Error(serveParams.RespWriter, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	serveLocalFileAttachment(attachmentBasePath, serveParams)
 
 }

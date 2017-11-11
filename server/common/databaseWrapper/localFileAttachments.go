@@ -51,6 +51,10 @@ func saveLocalAttachmentFile(attachmentBasePath string, databaseID string, fileN
 
 }
 
+type LocalAttachmentStorageConfig struct {
+	AttachmentBasePath string `json:"attachmentBasePath"`
+}
+
 func serveLocalFileAttachment(attachmentBasePath string, serveParams ServeAttachmentParams) {
 
 	fullyQualifiedFile := fullyQualifiedLocalAttachmentFileName(attachmentBasePath,
@@ -60,5 +64,62 @@ func serveLocalFileAttachment(attachmentBasePath string, serveParams ServeAttach
 	// as described here: https://github.com/minio/minio-go/issues/593
 
 	http.ServeFile(serveParams.RespWriter, serveParams.HTTPReq, fullyQualifiedFile)
+
+}
+
+func (config LocalAttachmentStorageConfig) validateWellFormedAttachmentBasePath() error {
+
+	if len(config.AttachmentBasePath) == 0 {
+		return fmt.Errorf("configuration file missing database path configuration")
+	}
+	return nil
+
+}
+
+func (config LocalAttachmentStorageConfig) Init() error {
+	if err := config.validateWellFormedAttachmentBasePath(); err != nil {
+		return fmt.Errorf("LocalAttachmentStorageConfig.Init: %v", err)
+	}
+
+	if err := initLocalAttachmentBasePath(config.AttachmentBasePath); err != nil {
+		return fmt.Errorf("LocalAttachmentStorageConfig.Init: %v", err)
+	}
+
+	log.Printf("Local directory initialized for attachments: base path = %v", config.AttachmentBasePath)
+	return nil
+}
+
+func (config LocalAttachmentStorageConfig) GetAttachmentBasePath(r *http.Request) (string, error) {
+	if err := config.validateWellFormedAttachmentBasePath(); err != nil {
+		panic(fmt.Sprintf("runtime config: tried to retrieve attachment path from invalid config: %v", err))
+	}
+	return config.AttachmentBasePath, nil
+}
+
+func (config LocalAttachmentStorageConfig) SaveAttachment(saveParams SaveAttachmentParams) error {
+
+	attachmentBasePath, err := config.GetAttachmentBasePath(saveParams.HTTPReq)
+	if err != nil {
+		return fmt.Errorf("LocalSQLiteTrackerDatabaseConnectionConfig: can't get base path: %v", err)
+	}
+
+	if err := saveLocalAttachmentFile(attachmentBasePath, saveParams.ParentDatabaseID,
+		saveParams.CloudFileName, saveParams.FileData); err != nil {
+		return fmt.Errorf("LocalSQLiteTrackerDatabaseConnectionConfig: can't save file: %v", err)
+	}
+
+	return nil
+
+}
+
+func (config LocalAttachmentStorageConfig) ServeAttachment(serveParams ServeAttachmentParams) {
+
+	attachmentBasePath, err := config.GetAttachmentBasePath(serveParams.HTTPReq)
+	if err != nil {
+		http.Error(serveParams.RespWriter, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	serveLocalFileAttachment(attachmentBasePath, serveParams)
 
 }

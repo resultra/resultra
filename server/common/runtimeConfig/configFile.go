@@ -11,7 +11,9 @@ import (
 var defaultPortNum int = 43400
 
 type RuntimeConfig struct {
-	LocalDatabaseConfig *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `json:"localSQLiteDatabaseConfig"`
+	LocalDatabaseConfig *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `json:"localSQLiteDatabase"`
+
+	LocalAttachmentConfig *databaseWrapper.LocalAttachmentStorageConfig `json:"localAttachmentStorage"`
 
 	PortNumber int `json:"portNumber"`
 }
@@ -51,6 +53,15 @@ func InitConfig(configFileName string) error {
 		}
 	} else {
 		return fmt.Errorf("runtime configuration %v missing database connection configuration", configFileName)
+	}
+
+	if config.LocalAttachmentConfig != nil {
+		log.Println("Initializing local attachment storage")
+		if err := databaseWrapper.InitAttachmentStorageConfiguration(config.LocalAttachmentConfig); err != nil {
+			return err
+		}
+	} else {
+		return fmt.Errorf("runtime configuration %v missing attachment storage configuration", configFileName)
 	}
 
 	CurrRuntimeConfig = config
