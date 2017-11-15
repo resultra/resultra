@@ -15,7 +15,7 @@ const trackerAccountDBPrefix string = "trackers_"
 
 func connectToAccountInfoDB(hostName string, userName string, password string) (*sql.DB, error) {
 
-	connectStr := fmt.Sprintf("host=%s user=%s password=%s sdbname=%s slmode=disable",
+	connectStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
 		hostName, userName, password, "resultra_accounts")
 
 	accountDBHandle, err := sql.Open("postgres", connectStr)
@@ -28,7 +28,7 @@ func connectToAccountInfoDB(hostName string, userName string, password string) (
 
 	// Open doesn't directly open the database connection. To verify the connection, the Ping() function
 	// is needed.
-	if err := accountInfoDBHandle.Ping(); err != nil {
+	if err := accountDBHandle.Ping(); err != nil {
 		return nil, fmt.Errorf("connectToAccountInfoDB: can't establish connection to account info database (ping failed): %v", err)
 	}
 
@@ -66,7 +66,7 @@ func AddAccount(newAcctInfo AccountInfo) error {
 	}
 
 	if _, insertErr := dbHandle.Exec(`INSERT INTO account_info (account_id,owner_first,owner_last,owner_email,db_host_name) 
-			VALUES ($1,$2,$3,$4)`,
+			VALUES ($1,$2,$3,$4,$5)`,
 		newAcctInfo.AccountID,
 		newAcctInfo.FirstName,
 		newAcctInfo.LastName,
