@@ -139,11 +139,7 @@ func CloneForms(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 		destForm := currForm
 		destForm.ParentDatabaseID = remappedDatabaseID
 
-		destFormID, err := cloneParams.IDRemapper.AllocNewRemappedID(currForm.FormID)
-		if err != nil {
-			return fmt.Errorf("CloneTableForms: %v", err)
-		}
-		destForm.FormID = destFormID
+		destForm.FormID = cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(currForm.FormID)
 
 		destProps, err := currForm.Properties.Clone(cloneParams)
 		if err != nil {

@@ -145,10 +145,7 @@ func CloneSummaryTables(cloneParams *trackerDatabase.CloneDatabaseParams, srcPar
 
 	for _, srcSummaryTable := range summaryTables {
 
-		remappedSummaryTableID, err := cloneParams.IDRemapper.AllocNewRemappedID(srcSummaryTable.SummaryTableID)
-		if err != nil {
-			return fmt.Errorf("CloneSummaryTables: %v", err)
-		}
+		remappedSummaryTableID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcSummaryTable.SummaryTableID)
 
 		clonedProps, err := srcSummaryTable.Properties.Clone(cloneParams)
 		if err != nil {
