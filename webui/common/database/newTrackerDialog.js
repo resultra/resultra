@@ -67,23 +67,35 @@ function openNewTrackerDialog() {
 		
 		var templateTrackerInfoByID = {}
 		
+		var $accountTemplateOptGroup = $('<optgroup label="Account Templates"></optgroup>')
+		
+		$templateSelection.append(selectOptionHTML("","No template"))
+		
 		for (var trackerIndex=0; trackerIndex<templateList.length; trackerIndex++) {	
 			var trackerInfo = templateList[trackerIndex]
-			$templateSelection.append(selectOptionHTML(trackerInfo.databaseID,trackerInfo.databaseName))
+			$accountTemplateOptGroup.append(selectOptionHTML(trackerInfo.databaseID,trackerInfo.databaseName))
 			templateTrackerInfoByID[trackerInfo.databaseID] = trackerInfo
 		}
+		if ( templateList.length > 0 ) {
+			$templateSelection.append($accountTemplateOptGroup)
+		}
 		
-		initSelectControlChangeHandler($templateSelection,function(selectedDatabaseID) {
-			var trackerInfo = templateTrackerInfoByID[selectedDatabaseID]
-			console.log("new template tracker database selected: " + JSON.stringify(trackerInfo))
+		initSelectControlChangeHandler($templateSelection,function(selectedDatabaseID) {		
+			if (selectedDatabaseID.length > 0) {
+				var trackerInfo = templateTrackerInfoByID[selectedDatabaseID]
+				console.log("new template tracker database selected: " + JSON.stringify(trackerInfo))
 			
-			var $descGroup = $('#newTrackerTemplateDescriptionGroup') 
-			if(trackerInfo.description.length > 0) {
-				var $templateDesc = $('#newTrackerTemplateDescription')
-				$templateDesc.html(trackerInfo.description)
-				$descGroup.show()
+				var $descGroup = $('#newTrackerTemplateDescriptionGroup') 
+				if(trackerInfo.description.length > 0) {
+					var $templateDesc = $('#newTrackerTemplateDescription')
+					$templateDesc.html(trackerInfo.description)
+					$descGroup.show()
+				} else {
+					$descGroup.hide()
+				}
+				
 			} else {
-				$descGroup.hide()
+				$descGroup.hide()			
 			}
 			
 		})
