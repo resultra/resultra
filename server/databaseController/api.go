@@ -19,6 +19,7 @@ func init() {
 	databaseRouter.HandleFunc("/api/database/new", newDatabase)
 
 	databaseRouter.HandleFunc("/api/database/getList", getDatabaseListAPI)
+	databaseRouter.HandleFunc("/api/database/getTemplateList", getTemplateListAPI)
 
 	databaseRouter.HandleFunc("/api/database/setName", trackerDatabase.SetNameAPI)
 	databaseRouter.HandleFunc("/api/database/setDescription", trackerDatabase.SetDescriptionAPI)
@@ -91,6 +92,22 @@ func saveAsTemplate(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, *templateDB)
+	}
+
+}
+
+func getTemplateListAPI(w http.ResponseWriter, r *http.Request) {
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if templateList, err := getCurrentUserTemplateTrackers(trackerDBHandle, r); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, templateList)
 	}
 
 }

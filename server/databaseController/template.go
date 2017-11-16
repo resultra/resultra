@@ -1,8 +1,10 @@
 package databaseController
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
+
 	"resultra/datasheet/server/alert"
 	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/common/databaseWrapper"
@@ -174,5 +176,36 @@ func saveExistingDatabaseAsTemplate(req *http.Request, params SaveAsTemplatePara
 		DestDBHandle:     trackerDBHandle,
 		IDRemapper:       uniqueID.UniqueIDRemapper{}}
 	return cloneIntoNewTrackerDatabase(&cloneParams)
+
+}
+
+type UserTemplateTrackerDatabaseInfo struct {
+	DatabaseID   string `json:"databaseID"`
+	DatabaseName string `json:"databaseName"`
+	Description  string `json:"description"`
+}
+
+func getCurrentUserTemplateTrackers(trackerDBHandle *sql.DB, req *http.Request) ([]UserTemplateTrackerDatabaseInfo, error) {
+
+	templateInfo := []UserTemplateTrackerDatabaseInfo{}
+
+	rows, queryErr := trackerDBHandle.Query(
+		`SELECT databases.database_id, databases.name, databases.description FROM databases WHERE 
+			is_template='1'`)
+	if queryErr != nil {
+		return nil, fmt.Errorf("getCurrentUserTrackingDatabases: Failure querying database: %v", queryErr)
+	}
+
+	for rows.Next() {
+		var currTemplateInfo UserTemplateTrackerDatabaseInfo
+		if scanErr := rows.Scan(&currTemplateInfo.DatabaseID,
+			&currTemplateInfo.DatabaseName,
+			&currTemplateInfo.Description); scanErr != nil {
+			return nil, fmt.Errorf("getCurrentUserTemplateTrackers: Failure querying database: %v", scanErr)
+		}
+		templateInfo = append(templateInfo, currTemplateInfo)
+	}
+
+	return templateInfo, nil
 
 }

@@ -27,12 +27,12 @@ function openNewTrackerDialog() {
 	
 	var getDBListParams = {} // no parameters necessary - gets the tracker list for the currently signed in user
 	
-	jsonAPIRequest("database/getList",getDBListParams,function(trackerList) {
+	jsonAPIRequest("database/getTemplateList",getDBListParams,function(templateList) {
 		
 		$templateSelection.empty()
 		
-		for (var trackerIndex=0; trackerIndex<trackerList.length; trackerIndex++) {	
-			var trackerInfo = trackerList[trackerIndex]
+		for (var trackerIndex=0; trackerIndex<templateList.length; trackerIndex++) {	
+			var trackerInfo = templateList[trackerIndex]
 			$templateSelection.append(selectOptionHTML(trackerInfo.databaseID,trackerInfo.databaseName))
 		}
 			
