@@ -197,12 +197,18 @@ func getCurrentUserTemplateTrackers(trackerDBHandle *sql.DB, req *http.Request) 
 	}
 
 	for rows.Next() {
+
+		var desc sql.NullString
 		var currTemplateInfo UserTemplateTrackerDatabaseInfo
 		if scanErr := rows.Scan(&currTemplateInfo.DatabaseID,
 			&currTemplateInfo.DatabaseName,
-			&currTemplateInfo.Description); scanErr != nil {
+			&desc); scanErr != nil {
 			return nil, fmt.Errorf("getCurrentUserTemplateTrackers: Failure querying database: %v", scanErr)
 		}
+		if desc.Valid {
+			currTemplateInfo.Description = desc.String
+		}
+
 		templateInfo = append(templateInfo, currTemplateInfo)
 	}
 
