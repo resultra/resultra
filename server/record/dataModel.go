@@ -85,7 +85,7 @@ func GetNonDraftRecords(trackerDBHandle *sql.DB, parentDatabaseID string) ([]Rec
 
 	rows, queryErr := trackerDBHandle.Query(
 		`SELECT database_id,record_id,is_draft_record,create_timestamp_utc,sequence_num FROM records 
-		WHERE database_id=$1 AND is_draft_record=0`,
+		WHERE database_id=$1 AND is_draft_record='0'`,
 		parentDatabaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRecords: Failure querying database: %v", queryErr)

@@ -72,6 +72,8 @@ func (config *PostgresMultipleAccountDatabaseConfig) InitConnection() error {
 	if err != nil {
 		return fmt.Errorf("PostgresMultipleAccountDatabaseConfig: failure connecting to accounts database: %v", err)
 	}
+	log.Printf("PostgresMultipleAccountDatabaseConfig.InitConnection: connected to account database: host=%v, user=%v\n",
+		config.AccountHostName, config.AccountUserName)
 	config.AccountInfoDBConnection = accountDB
 
 	return nil
@@ -84,6 +86,8 @@ func (config PostgresMultipleAccountDatabaseConfig) getTrackerDB(r *http.Request
 func (config PostgresMultipleAccountDatabaseConfig) GetTrackerDBHandle(req *http.Request) (*sql.DB, error) {
 
 	accountHostName := AccountHostNameFromReq(req)
+	log.Printf("PostgresMultipleAccountDatabaseConfig.GetTrackerDBHandle: getting account info for account host=%v\n",
+		accountHostName)
 
 	cachedConnection, cachedConnectionFound := config.AccountConnectionCache.Get(accountHostName)
 	if cachedConnectionFound {
@@ -93,13 +97,13 @@ func (config PostgresMultipleAccountDatabaseConfig) GetTrackerDBHandle(req *http
 
 		accountTrackerDBInfo, err := getHostAccountTrackerDBInfo(config.AccountInfoDBConnection, accountHostName)
 		if err != nil {
-			return nil, fmt.Errorf("PostgresMultipleAccountDatabaseConfig: unable to get tracker database info for account host = %v", accountHostName)
+			return nil, fmt.Errorf("PostgresMultipleAccountDatabaseConfig.GetTrackerDBHandle: unable to get tracker database info for account host = %v: error = %v", accountHostName, err)
 		}
 
 		dbConnection, err := config.connectToAccountTrackerDatabase(
 			accountTrackerDBInfo.DBHostName, accountTrackerDBInfo.DBName)
 		if err != nil {
-			return nil, fmt.Errorf("PostgresMultipleAccountDatabaseConfig: can't connect to tracker database info for account host = %v: error = %v",
+			return nil, fmt.Errorf("PostgresMultipleAccountDatabaseConfig.GetTrackerDBHandle: can't connect to tracker database info for account host = %v: error = %v",
 				accountHostName, err)
 
 		}

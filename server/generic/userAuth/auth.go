@@ -89,7 +89,7 @@ func GetCurrentUserInfo(req *http.Request) (*UserInfo, error) {
 
 	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
 	if dbErr != nil {
-		return nil, dbErr
+		return nil, fmt.Errorf("GetCurrentUserInfo: failure accessing tracker database for user: error %v", dbErr)
 	}
 
 	return GetUserInfoByID(trackerDBHandle, userID)

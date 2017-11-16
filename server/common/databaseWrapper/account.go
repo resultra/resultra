@@ -92,11 +92,11 @@ func getHostAccountTrackerDBInfo(accountDB *sql.DB, accountHostName string) (*Ac
 
 	accountID := ""
 	dbHostName := ""
-	getErr := accountDB.QueryRow(`SELECT account_info.account_id, account_info.db_host_name,
+	getErr := accountDB.QueryRow(`SELECT account_info.account_id, account_info.db_host_name
 		FROM account_info, host_mappings
 		WHERE host_mappings.host_name=$1 AND host_mappings.account_id=account_info.account_id LIMIT 1`, accountHostName).Scan(&accountID, &dbHostName)
 	if getErr != nil {
-		return nil, fmt.Errorf("GetHostAccountTrackerDBInfo: Unabled to get account information for account host name = %s", accountHostName)
+		return nil, fmt.Errorf("GetHostAccountTrackerDBInfo: Unabled to get account information for account host name = %s: error = %v", accountHostName, getErr)
 	}
 
 	dbInfo := AccountTrackerDBInfo{

@@ -161,7 +161,7 @@ func GetAllNonDraftCellUpdates(trackerDBHandle *sql.DB, databaseID string, chang
 			cell_updates.record_id,cell_updates.field_id,cell_updates.update_timestamp_utc,
 			cell_updates.value
 		FROM records, cell_updates `
-	matchDatabaseQuery := ` records.is_draft_record=0 AND cell_updates.database_id=$1 AND cell_updates.record_id=records.record_id  `
+	matchDatabaseQuery := ` records.is_draft_record='0' AND cell_updates.database_id=$1 AND cell_updates.record_id=records.record_id  `
 
 	// Build up the query depending on whether or not the changeSetID is empty or not.
 	changeSetIDMatch := ""

@@ -11,7 +11,8 @@ import (
 var defaultPortNum int = 43400
 
 type RuntimeConfig struct {
-	LocalDatabaseConfig *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `json:"localSQLiteDatabase"`
+	LocalDatabaseConfig        *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `json:"localSQLiteDatabase"`
+	PostgresMultiAccountConfig *databaseWrapper.PostgresMultipleAccountDatabaseConfig      `json:"postgresMultiAccountDatabase"`
 
 	LocalAttachmentConfig *databaseWrapper.LocalAttachmentStorageConfig `json:"localAttachmentStorage"`
 
@@ -51,6 +52,12 @@ func InitConfig(configFileName string) error {
 		if err := databaseWrapper.InitConnectionConfiguration(config.LocalDatabaseConfig); err != nil {
 			return err
 		}
+	} else if config.PostgresMultiAccountConfig != nil {
+		log.Println("Initialize Postgres multi-account database connection")
+		if err := databaseWrapper.InitConnectionConfiguration(config.PostgresMultiAccountConfig); err != nil {
+			return err
+		}
+
 	} else {
 		return fmt.Errorf("runtime configuration %v missing database connection configuration", configFileName)
 	}

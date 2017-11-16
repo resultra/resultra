@@ -42,6 +42,7 @@ func home(respWriter http.ResponseWriter, req *http.Request) {
 
 	_, authErr := userAuth.GetCurrentUserInfo(req)
 	if authErr != nil {
+		log.Printf("user not authorized: %v", authErr)
 		templParams := PageInfo{"Home Page - Signed out"}
 		err := homePageTemplates.ExecuteTemplate(respWriter, "homePagePublic", templParams)
 		if err != nil {
