@@ -15,7 +15,12 @@ type UserTrackingDatabaseInfo struct {
 	IsActive     bool   `json:"isActive"`
 }
 
-func getCurrentUserTrackingDatabases(trackerDBHandle *sql.DB, req *http.Request) ([]UserTrackingDatabaseInfo, error) {
+type GetTrackerListParams struct {
+	IncludeInactive bool `json:"includeInactive"`
+}
+
+func getCurrentUserTrackingDatabases(params GetTrackerListParams,
+	trackerDBHandle *sql.DB, req *http.Request) ([]UserTrackingDatabaseInfo, error) {
 
 	currUserID, userErr := userAuth.GetCurrentUserID(req)
 	if userErr != nil {
@@ -64,7 +69,15 @@ func getCurrentUserTrackingDatabases(trackerDBHandle *sql.DB, req *http.Request)
 
 	userTrackingDBInfo := []UserTrackingDatabaseInfo{}
 	for _, currTrackingInfo := range trackingInfoByDatabase {
-		userTrackingDBInfo = append(userTrackingDBInfo, currTrackingInfo)
+
+		if currTrackingInfo.IsActive {
+			userTrackingDBInfo = append(userTrackingDBInfo, currTrackingInfo)
+		} else {
+			// Only include inactive trackers if the current user is also the admin
+			if params.IncludeInactive && currTrackingInfo.IsAdmin {
+				userTrackingDBInfo = append(userTrackingDBInfo, currTrackingInfo)
+			}
+		}
 	}
 
 	return userTrackingDBInfo, nil

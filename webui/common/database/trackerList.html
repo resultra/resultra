@@ -14,17 +14,28 @@
 					<span class="glyphicon glyphicon-cog"></span>
 				</a> 
 			</div>		
+			
 	</div>
 	
 </div>
 
 <h4>My Trackers</h4>
-	<ul id="myTrackerList" class="list-group maxWidth600">
+	<ul id="myTrackerList" class="list-group maxWidth400">
 </ul>
 		
 <button type="button" class="btn btn-default btn-sm" id="newTrackerButton">
 	<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Tracker
 </button>
+
+<form id="showInactiveTrackersForm">
+	  <div class="form-group">
+	      <div class="checkbox">
+	       <input type="checkbox" id="showInactiveTrackers">
+	       <label for="showInactiveTrackers">Show inactive (disabled) trackers</label>
+	      </div>
+	   </div>
+</form>
+
 
 {{template "newTrackerDialog"}}
 

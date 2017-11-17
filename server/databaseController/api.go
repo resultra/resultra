@@ -121,7 +121,13 @@ func getDatabaseListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if dbList, err := getCurrentUserTrackingDatabases(trackerDBHandle, r); err != nil {
+	var params GetTrackerListParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if dbList, err := getCurrentUserTrackingDatabases(params, trackerDBHandle, r); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, dbList)
