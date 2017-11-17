@@ -111,3 +111,15 @@ func (updateParams SetDescriptionParams) updateProps(db *Database) error {
 
 	return nil
 }
+
+type SetDatabaseActiveParams struct {
+	DatabaseIDHeader
+	IsActive bool `json:"isActive"`
+}
+
+func (updateParams SetDatabaseActiveParams) updateProps(db *Database) error {
+
+	db.IsActive = updateParams.IsActive
+
+	return nil
+}

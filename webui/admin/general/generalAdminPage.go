@@ -22,7 +22,8 @@ func init() {
 		"static/admin/general/generalAdminPage.html",
 		"static/admin/general/generalProperties.html",
 		"static/admin/general/saveTemplate.html",
-		"static/admin/general/trackerDescription.html"}
+		"static/admin/general/trackerDescription.html",
+		"static/admin/general/activeTracker.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,

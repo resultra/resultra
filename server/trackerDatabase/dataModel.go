@@ -13,6 +13,7 @@ type Database struct {
 	Name            string             `json:"name"`
 	Properties      DatabaseProperties `json:"properties"`
 	IsTemplate      bool               `json:"isTemplate"`
+	IsActive        bool               `json:"isActive"`
 	Description     string             `json:"description"`
 	CreatedByUserID string             `json:"createdByUserID"`
 }
@@ -24,17 +25,17 @@ func SaveNewDatabase(trackerDBHandle *sql.DB, newDatabase Database) error {
 		return fmt.Errorf("SaveNewDatabase: failure encoding properties: error = %v", encodeErr)
 	}
 
-	isArchived := false
+	isActive := true
 
 	if _, insertErr := trackerDBHandle.Exec(`INSERT INTO databases 
-			(database_id,name,properties,description,is_template,is_archived,created_by_user_id)
+			(database_id,name,properties,description,is_template,is_active,created_by_user_id)
 			 VALUES ($1,$2,$3,$4,$5,$6,$7)`,
 		newDatabase.DatabaseID,
 		newDatabase.Name,
 		encodedProps,
 		newDatabase.Description,
 		newDatabase.IsTemplate,
-		isArchived,
+		isActive,
 		newDatabase.CreatedByUserID); insertErr != nil {
 		return fmt.Errorf("saveNewDatabase: insert failed: error = %v", insertErr)
 	}
@@ -124,9 +125,10 @@ func GetDatabase(trackerDBHandle *sql.DB, databaseID string) (*Database, error) 
 	desc := ""
 	isTemplate := false
 	createdByUserID := ""
-	getErr := trackerDBHandle.QueryRow(`SELECT name,properties,description,is_template,created_by_user_id 
+	isActive := false
+	getErr := trackerDBHandle.QueryRow(`SELECT name,properties,description,is_template,created_by_user_id,is_active
 		FROM databases
-		 WHERE database_id=$1 LIMIT 1`, databaseID).Scan(&dbName, &encodedProps, &desc, &isTemplate, &createdByUserID)
+		 WHERE database_id=$1 LIMIT 1`, databaseID).Scan(&dbName, &encodedProps, &desc, &isTemplate, &createdByUserID, &isActive)
 	if getErr != nil {
 		return nil, fmt.Errorf("getDatabase: Unabled to get database: db ID = %v: datastore err=%v",
 			databaseID, getErr)
@@ -142,6 +144,7 @@ func GetDatabase(trackerDBHandle *sql.DB, databaseID string) (*Database, error) 
 		Name:            dbName,
 		Description:     desc,
 		Properties:      dbProps,
+		IsActive:        isActive,
 		CreatedByUserID: createdByUserID,
 		IsTemplate:      isTemplate}
 
@@ -156,9 +159,9 @@ func updateExistingDatabase(trackerDBHandle *sql.DB, databaseID string, updatedD
 	}
 
 	if _, updateErr := trackerDBHandle.Exec(`UPDATE databases 
-				SET properties=$1, name=$2, description=$3
-				WHERE database_id=$4`,
-		encodedProps, updatedDB.Name, updatedDB.Description, databaseID); updateErr != nil {
+				SET properties=$1, name=$2, description=$3, is_active=$4
+				WHERE database_id=$5`,
+		encodedProps, updatedDB.Name, updatedDB.Description, updatedDB.IsActive, databaseID); updateErr != nil {
 		return nil, fmt.Errorf("updateExistingDatabase: Can't update database properties %v: error = %v",
 			databaseID, updateErr)
 	}

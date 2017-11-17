@@ -22,6 +22,15 @@ func processDatabasePropUpdate(w http.ResponseWriter, r *http.Request, propUpdat
 	}
 }
 
+func SetActiveAPI(w http.ResponseWriter, r *http.Request) {
+	var params SetDatabaseActiveParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processDatabasePropUpdate(w, r, params)
+}
+
 func SetNameAPI(w http.ResponseWriter, r *http.Request) {
 	var params SetDatabaseNameParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {

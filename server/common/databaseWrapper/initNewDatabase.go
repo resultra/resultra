@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS databases (
    properties text NOT NULL,
    description text NOT NULL,
    is_template boolean NOT NULL,
-   is_archived boolean NOT NULL,
+   is_active boolean NOT NULL,
    created_by_user_id text REFERENCES users (user_id)
 );
 
