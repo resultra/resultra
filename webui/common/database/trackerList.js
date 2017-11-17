@@ -9,7 +9,13 @@ function addTrackerListItem(trackerInfo) {
 	var $nameLabel = $listItem.find(".nameLabel")
 	$nameLabel.text(trackerInfo.databaseName)
 	var openTrackerLink = '/main/' + trackerInfo.databaseID
-	$nameLabel.attr('href',openTrackerLink)
+	
+	// Only enable the link to open the tracker if the tracker is  active.
+	if(trackerInfo.isActive) {
+		$nameLabel.attr('href',openTrackerLink)	
+	} else {
+		$nameLabel.addClass("disabledTrackerLink")
+	}
 	
 	var $settingsLink = $listItem.find(".adminEditPropsButton")
 	

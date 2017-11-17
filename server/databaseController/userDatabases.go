@@ -12,6 +12,7 @@ type UserTrackingDatabaseInfo struct {
 	DatabaseID   string `json:"databaseID"`
 	DatabaseName string `json:"databaseName"`
 	IsAdmin      bool   `json:"isAdmin"`
+	IsActive     bool   `json:"isActive"`
 }
 
 func getCurrentUserTrackingDatabases(trackerDBHandle *sql.DB, req *http.Request) ([]UserTrackingDatabaseInfo, error) {
@@ -22,7 +23,7 @@ func getCurrentUserTrackingDatabases(trackerDBHandle *sql.DB, req *http.Request)
 	}
 
 	rows, queryErr := trackerDBHandle.Query(
-		`SELECT databases.database_id, databases.name FROM database_admins,databases WHERE 
+		`SELECT databases.database_id, databases.name,databases.is_active FROM database_admins,databases WHERE 
 			database_admins.user_id=$1 AND 
 			database_admins.database_id = databases.database_id`, currUserID)
 	if queryErr != nil {
@@ -33,7 +34,8 @@ func getCurrentUserTrackingDatabases(trackerDBHandle *sql.DB, req *http.Request)
 	for rows.Next() {
 		var currTrackingDBInfo UserTrackingDatabaseInfo
 		currTrackingDBInfo.IsAdmin = true
-		if scanErr := rows.Scan(&currTrackingDBInfo.DatabaseID, &currTrackingDBInfo.DatabaseName); scanErr != nil {
+		if scanErr := rows.Scan(&currTrackingDBInfo.DatabaseID, &currTrackingDBInfo.DatabaseName,
+			&currTrackingDBInfo.IsActive); scanErr != nil {
 			return nil, fmt.Errorf("getDatabaseDashboardsInfo: Failure querying database: %v", scanErr)
 		}
 		trackingInfoByDatabase[currTrackingDBInfo.DatabaseID] = currTrackingDBInfo
