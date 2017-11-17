@@ -13,7 +13,7 @@ type Database struct {
 	Name            string             `json:"name"`
 	Properties      DatabaseProperties `json:"properties"`
 	IsTemplate      bool               `json:"isTemplate"`
-	Description     *string            `json:"description"`
+	Description     string             `json:"description"`
 	CreatedByUserID string             `json:"createdByUserID"`
 }
 
@@ -24,9 +24,18 @@ func SaveNewDatabase(trackerDBHandle *sql.DB, newDatabase Database) error {
 		return fmt.Errorf("SaveNewDatabase: failure encoding properties: error = %v", encodeErr)
 	}
 
-	if _, insertErr := trackerDBHandle.Exec(`INSERT INTO databases VALUES ($1,$2,$3,$4,$5,$6)`,
-		newDatabase.DatabaseID, newDatabase.Name, encodedProps,
-		newDatabase.Description, newDatabase.IsTemplate, newDatabase.CreatedByUserID); insertErr != nil {
+	isArchived := false
+
+	if _, insertErr := trackerDBHandle.Exec(`INSERT INTO databases 
+			(database_id,name,properties,description,is_template,is_archived,created_by_user_id)
+			 VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+		newDatabase.DatabaseID,
+		newDatabase.Name,
+		encodedProps,
+		newDatabase.Description,
+		newDatabase.IsTemplate,
+		isArchived,
+		newDatabase.CreatedByUserID); insertErr != nil {
 		return fmt.Errorf("saveNewDatabase: insert failed: error = %v", insertErr)
 	}
 
@@ -112,7 +121,7 @@ func GetDatabase(trackerDBHandle *sql.DB, databaseID string) (*Database, error) 
 
 	dbName := ""
 	encodedProps := ""
-	var desc *string
+	desc := ""
 	isTemplate := false
 	createdByUserID := ""
 	getErr := trackerDBHandle.QueryRow(`SELECT name,properties,description,is_template,created_by_user_id 

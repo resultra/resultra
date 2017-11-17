@@ -102,7 +102,7 @@ func (updateParams SetFormLinkOrderParams) updateProps(db *Database) error {
 
 type SetDescriptionParams struct {
 	DatabaseIDHeader
-	Description *string `json:"description"`
+	Description string `json:"description"`
 }
 
 func (updateParams SetDescriptionParams) updateProps(db *Database) error {
