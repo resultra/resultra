@@ -1,0 +1,57 @@
+{{define "templatePageBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "homePageBreadcrumb"}}
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Templates</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "templatePageHeader"}}
+	<div class="container-fluid" id="templatePageHeader">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "templatePageBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
+
+{{define "templatePageSignedIn"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+
+	{{template "electronImportPrefix"}}
+
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- templatePageSignedInAssets:css -->
+	<!-- endinject -->
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- templatePageSignedInAssets:js -->
+	<!-- endinject -->
+			
+  </head>
+  <body>
+	  
+	  {{template "templatePageHeader"}}
+	  
+	  <hr id="templatePageHeaderBodySep">
+	  
+	  <div id="templatePageContent">
+		  TBD
+	  </div>
+	  
+  </body>
+</html>
+{{end}}

@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/webui/homePage"
 	"resultra/datasheet/webui/itemList"
 	"resultra/datasheet/webui/mainWindow"
+	"resultra/datasheet/webui/templatePage"
 )
 
 func init() {
@@ -21,6 +22,7 @@ func init() {
 	admin.RegisterHTTPHandlers(router)
 	formPage.RegisterHTTPHandlers(router)
 	mainWindow.RegisterHTTPHandlers(router)
+	templatePage.RegisterHTTPHandlers(router)
 
 	http.Handle("/", router)
 }

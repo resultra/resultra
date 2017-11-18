@@ -1,0 +1,11 @@
+{
+	"subDirs":["../generic",
+		"../common"],
+	"cssFiles": ["templatePageSignedIn.css"],
+	"imageFiles": [],
+	"jsFiles": ["templatePageSignedIn.js"],
+	"htmlFiles":["templatePageSignedIn.html"],
+	"minCSSFile":"templatePage/templatePageSignedIn.min.css",
+	"minJSFile": "templatePage/templatePageSignedIn.min.js",
+	"injectPlaceholderName":"templatePageSignedInAssets"
+}
