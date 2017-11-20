@@ -1,4 +1,4 @@
-function openTemplatePropertiesDialog(templateInfo) {
+function openTemplatePropertiesDialog(templateInfo, dialogHiddenCallback) {
 	
 	function initActiveTemplateProperty(templateInfo) {
 			
@@ -97,6 +97,7 @@ function openTemplatePropertiesDialog(templateInfo) {
 	}
 	
 	
+		var $dialog = $('#templatePropertiesDialog')
 	var getDBInfoParams = { databaseID: templateInfo.databaseID }
 	jsonAPIRequest("database/getInfo",getDBInfoParams,function(templateInfo) {
 		
@@ -104,9 +105,14 @@ function openTemplatePropertiesDialog(templateInfo) {
 		initNameProperty(templateInfo.databaseInfo)
 		initActiveTemplateProperty(templateInfo.databaseInfo)
 		
-		var $dialog = $('#templatePropertiesDialog')
 		$dialog.modal('show')
 		
+	})
+	
+	$dialog.unbind('hidden.bs.modal')
+	$dialog.on('hidden.bs.modal', function () {
+	    console.log("template properties dialog hidden")
+		dialogHiddenCallback()
 	})
 	
 	

@@ -1,6 +1,21 @@
 function initMyTemplateList() {
 	
 	var $templateList = $("#myTemplateList")
+	var $showInactiveCheckbox = $('#showInactiveTemplates')
+	
+	function reloadTemplateList(includeInactive) {
+		var getTemplateListParams = {
+			includeInactive:includeInactive
+		}
+		jsonAPIRequest("database/getUserTemplateList",getTemplateListParams,function(templateList) {
+			$templateList.empty()
+			for (var templIndex=0; templIndex<templateList.length; templIndex++) {	
+				var templateInfo = templateList[templIndex]
+				addTemplateListItem(templateInfo)
+			}
+		})
+	}
+	
 
 	function addTemplateListItem(templateInfo) {
 
@@ -17,29 +32,23 @@ function initMyTemplateList() {
 		var $settingsLink = $listItem.find(".templateSettingsButton")
 		
 		$settingsLink.click(function() {
-			openTemplatePropertiesDialog(templateInfo)
+			
+			function propertiesDialogHidden() {
+				var includeInactive = $showInactiveCheckbox.prop("checked")
+				reloadTemplateList(includeInactive)
+			}
+			
+			openTemplatePropertiesDialog(templateInfo,propertiesDialogHidden)
 		})
 		
 		$templateList.append($listItem)
 	
 	}
 		
-	function reloadTemplateList(includeInactive) {
-		var getTemplateListParams = {
-			includeInactive:includeInactive
-		}
-		jsonAPIRequest("database/getUserTemplateList",getTemplateListParams,function(templateList) {
-			$templateList.empty()
-			for (var templIndex=0; templIndex<templateList.length; templIndex++) {	
-				var templateInfo = templateList[templIndex]
-				addTemplateListItem(templateInfo)
-			}
-		})
-	}
 	reloadTemplateList(false)
 	
 		
-	initCheckboxChangeHandler('#showInactiveTemplates', false, function(includeInactive) {
+	initCheckboxControlChangeHandler($showInactiveCheckbox, false, function(includeInactive) {
 		reloadTemplateList(includeInactive)
 	})
 
