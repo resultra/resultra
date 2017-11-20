@@ -13,6 +13,7 @@ type TrackerDatabaseConnection interface {
 }
 
 var dbConnection TrackerDatabaseConnection
+var factoryTemplateDBConnection TrackerDatabaseConnection
 
 func GetTrackerDatabaseHandle(r *http.Request) (*sql.DB, error) {
 
@@ -33,4 +34,23 @@ func InitConnectionConfiguration(conn TrackerDatabaseConnection) error {
 
 	return nil
 
+}
+
+func InitFactoryTemplateConnectionConfiguration(conn TrackerDatabaseConnection) error {
+
+	if err := conn.InitConnection(); err != nil {
+		return fmt.Errorf("InitFactoryTemplateConnectionConfiguration: %v", err)
+	}
+
+	factoryTemplateDBConnection = conn
+
+	return nil
+
+}
+
+func FactoryTemplateDatabaseIsConfigured() bool {
+	if factoryTemplateDBConnection != nil {
+		return true
+	}
+	return false
 }
