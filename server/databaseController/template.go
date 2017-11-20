@@ -179,18 +179,30 @@ func saveExistingDatabaseAsTemplate(req *http.Request, params SaveAsTemplatePara
 
 }
 
-type UserTemplateTrackerDatabaseInfo struct {
-	DatabaseID   string `json:"databaseID"`
-	DatabaseName string `json:"databaseName"`
-	Description  string `json:"description"`
+type GetTemplateListParams struct {
+	IncludeInactive bool `json:"includeInactive"`
+	CurrUserOnly    bool `json:"currUserOnly"`
 }
 
-func getCurrentUserTemplateTrackers(trackerDBHandle *sql.DB, req *http.Request) ([]UserTemplateTrackerDatabaseInfo, error) {
+type UserTemplateTrackerDatabaseInfo struct {
+	DatabaseID      string `json:"databaseID"`
+	DatabaseName    string `json:"databaseName"`
+	Description     string `json:"description"`
+	IsActive        bool   `json:"isActive"`
+	CreatedByUserID string `json:"createdByUserID"`
+}
+
+func getCurrentUserTemplateTrackers(params GetTemplateListParams, trackerDBHandle *sql.DB, req *http.Request) ([]UserTemplateTrackerDatabaseInfo, error) {
+
+	currUserID, userErr := userAuth.GetCurrentUserID(req)
+	if userErr != nil {
+		return nil, fmt.Errorf("getCurrentUserTemplateTrackers: can't get current user: %v", userErr)
+	}
 
 	templateInfo := []UserTemplateTrackerDatabaseInfo{}
 
 	rows, queryErr := trackerDBHandle.Query(
-		`SELECT databases.database_id, databases.name, databases.description FROM databases WHERE 
+		`SELECT database_id, name, description, is_active,created_by_user_id FROM databases WHERE 
 			is_template='1'`)
 	if queryErr != nil {
 		return nil, fmt.Errorf("getCurrentUserTrackingDatabases: Failure querying database: %v", queryErr)
@@ -202,14 +214,37 @@ func getCurrentUserTemplateTrackers(trackerDBHandle *sql.DB, req *http.Request) 
 		var currTemplateInfo UserTemplateTrackerDatabaseInfo
 		if scanErr := rows.Scan(&currTemplateInfo.DatabaseID,
 			&currTemplateInfo.DatabaseName,
-			&desc); scanErr != nil {
+			&desc,
+			&currTemplateInfo.IsActive,
+			&currTemplateInfo.CreatedByUserID); scanErr != nil {
 			return nil, fmt.Errorf("getCurrentUserTemplateTrackers: Failure querying database: %v", scanErr)
 		}
 		if desc.Valid {
 			currTemplateInfo.Description = desc.String
 		}
 
-		templateInfo = append(templateInfo, currTemplateInfo)
+		includeActive := false
+		if currTemplateInfo.IsActive == false {
+			if params.IncludeInactive {
+				includeActive = true
+			}
+		} else {
+			includeActive = true
+		}
+
+		includeUser := false
+		if params.CurrUserOnly == true {
+			if currUserID == currTemplateInfo.CreatedByUserID {
+				includeUser = true
+			}
+		} else {
+			includeUser = true
+		}
+
+		if includeActive && includeUser {
+			templateInfo = append(templateInfo, currTemplateInfo)
+		}
+
 	}
 
 	return templateInfo, nil

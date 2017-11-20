@@ -5,7 +5,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
@@ -17,7 +16,8 @@ var homePageTemplates *template.Template
 func init() {
 	//	designFormTemplateFiles := []string{}
 
-	baseTemplateFiles := []string{"static/templatePage/templatePageSignedIn.html"}
+	baseTemplateFiles := []string{"static/templatePage/templatePageSignedIn.html",
+		"static/templatePage/templatePropertiesDialog.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
@@ -36,8 +36,6 @@ type PageInfo struct {
 }
 
 func home(respWriter http.ResponseWriter, req *http.Request) {
-
-	log.Printf("Main page accessed through path: %v", databaseWrapper.AccountHostNameFromReq(req))
 
 	_, authErr := userAuth.GetCurrentUserInfo(req)
 	if authErr != nil {

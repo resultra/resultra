@@ -49,8 +49,43 @@
 	  <hr id="templatePageHeaderBodySep">
 	  
 	  <div id="templatePageContent">
-		  TBD
+		  
+		  <div style="display:none;">
+		  	<div id="templateListItemTemplate" class="list-group-item">
+		
+		  			<span class="nameLabel">Template name Goes Here</span>
+			
+		  			<div class="pull-right trackerListButtons">
+		  				<a class="btn btn-xs btn-default templateSettingsButton" role="button" 
+		  						data-toggle="tooltip" data-placement="left" title="Edit template settings">
+		  					<span class="glyphicon glyphicon-cog"></span>
+		  				</a> 
+		  			</div>		
+			
+		  	</div>
+	
+		  </div>
+		  
+
+			<h4>My Templates</h4>
+				<ul id="myTemplateList" class="list-group maxWidth400">
+			</ul>
+		
+			<a href="/" id="viewTemplatesButton">View my trackers</a>
+
+			<form id="showInactiveTemplatesForm">
+				  <div class="form-group">
+				      <div class="checkbox">
+				       <input type="checkbox" id="showInactiveTemplates">
+				       <label for="showInactiveTemplates">Show inactive (disabled) templates</label>
+				      </div>
+				   </div>
+			</form>
+
+
 	  </div>
+	  
+	  {{template "templatePropertiesDialog"}}
 	  
   </body>
 </html>

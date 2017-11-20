@@ -1,0 +1,46 @@
+
+{{define "templatePropertiesDialogBody"}}
+	<form id="templateNamePropertyForm">
+		<div class="form-group maxWidth400">
+	        <label for="templatePropsNameInput">Template name</label>
+			<input type="text" id="templatePropsNameInput" name="templatePropsNameInput" class="form-control" placeholder="Template name" required="" autofocus="">
+		</div>
+	</form>
+		
+		<div class="form-group maxWidth400">
+	        <label for="templateDescription">Template description</label>
+			<div class="marginBottom5" >
+				<div id="templateDescription" class="lightGreyBorder templateDescriptionInput inlineContent maxWidth400"></div>
+			</div>
+		</div>
+		
+	
+{{end}}
+
+{{define "templatePropertiesDialogButtons"}}
+  	   	<button type="button" class="btn btn-primary" 
+				id="templatePropertiesDoneButton" data-dismiss="modal">Done</button>
+{{end}}
+
+
+{{define "templatePropertiesDialog"}}
+
+<div class="modal fade" id="templatePropertiesDialog" tabindex="-1" role="dialog"
+				aria-labelledby="templatePropertiesLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="templatePropertiesLabel">Template Settings</h4>
+      </div>
+      <div class="modal-body">
+        	{{template "templatePropertiesDialogBody"}}
+      </div>
+      <div class="modal-footer">
+		  {{template "templatePropertiesDialogButtons"}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}
