@@ -12,3 +12,10 @@
 	margin-bottom:5px;
 	border-top: 2px solid darkgray;
 }
+
+span.disabledTemplateName {
+  /* Make the disabled links grayish*/
+  color: gray;
+  /* And disable the pointer events */
+  pointer-events: none;
+}

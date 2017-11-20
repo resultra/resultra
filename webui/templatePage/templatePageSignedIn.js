@@ -9,6 +9,9 @@ function initMyTemplateList() {
 
 		var $nameLabel = $listItem.find(".nameLabel")
 		$nameLabel.text(templateInfo.databaseName)
+		if (!templateInfo.isActive) {
+			$nameLabel.addClass("disabledTemplateName")
+		}
 	
 		// Only enable the link to open the tracker if the tracker is  active.	
 		var $settingsLink = $listItem.find(".templateSettingsButton")

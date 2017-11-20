@@ -118,6 +118,10 @@ func getTemplateListAPI(w http.ResponseWriter, r *http.Request) {
 
 }
 
+type GetUserTemplateParams struct {
+	IncludeInactive bool `json:"includeInactive"`
+}
+
 func getUserTemplateListAPI(w http.ResponseWriter, r *http.Request) {
 
 	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
@@ -126,8 +130,14 @@ func getUserTemplateListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var params GetUserTemplateParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
 	getTemplParams := GetTemplateListParams{
-		IncludeInactive: false,
+		IncludeInactive: params.IncludeInactive,
 		CurrUserOnly:    true}
 
 	if templateList, err := getCurrentUserTemplateTrackers(getTemplParams, trackerDBHandle, r); err != nil {
