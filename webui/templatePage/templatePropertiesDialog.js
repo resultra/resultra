@@ -1,5 +1,20 @@
 function openTemplatePropertiesDialog(templateInfo) {
 	
+	function initActiveTemplateProperty(templateInfo) {
+			
+		initCheckboxChangeHandler('#activeTemplatePropIsActive', 
+			templateInfo.isActive, function(isActive) {
+				var setActiveParams = {
+					databaseID:templateInfo.databaseID,
+					isActive:isActive
+				}
+				jsonAPIRequest("database/setActive",setActiveParams,function(dbInfo) {
+				})
+		})
+	
+		
+			
+	}
 	
 	function initNameProperty(templateInfo) {
 	
@@ -87,6 +102,7 @@ function openTemplatePropertiesDialog(templateInfo) {
 		
 		initTemplateDescriptionProperty(templateInfo.databaseInfo)
 		initNameProperty(templateInfo.databaseInfo)
+		initActiveTemplateProperty(templateInfo.databaseInfo)
 		
 		var $dialog = $('#templatePropertiesDialog')
 		$dialog.modal('show')
