@@ -54,3 +54,12 @@ func FactoryTemplateDatabaseIsConfigured() bool {
 	}
 	return false
 }
+
+func GetFactoryTemplateTrackerDatabaseHandle(r *http.Request) (*sql.DB, error) {
+
+	if !FactoryTemplateDatabaseIsConfigured() {
+		return nil, fmt.Errorf("GetFactoryTemplateTrackerDatabaseHandle: uninitialized database connection")
+	}
+	return factoryTemplateDBConnection.GetTrackerDBHandle(r)
+
+}

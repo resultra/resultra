@@ -15,13 +15,15 @@ type FactoryTemplateDatabaseConfig struct {
 	PostgresSingleAccountConfig *databaseWrapper.PostgresSingleAccountDatabaseConfig        `json:"postgresDatabase"`
 }
 
-type RuntimeConfig struct {
+type TrackerDatabaseConfig struct {
 	LocalDatabaseConfig        *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `json:"localSQLiteDatabase"`
 	PostgresMultiAccountConfig *databaseWrapper.PostgresMultipleAccountDatabaseConfig      `json:"postgresMultiAccountDatabase"`
+	LocalAttachmentConfig      *databaseWrapper.LocalAttachmentStorageConfig               `json:"localAttachmentStorage"`
+}
 
+type RuntimeConfig struct {
 	FactoryTemplateDatabaseConfig *FactoryTemplateDatabaseConfig `json:"factoryTemplateDatabase"`
-
-	LocalAttachmentConfig *databaseWrapper.LocalAttachmentStorageConfig `json:"localAttachmentStorage"`
+	TrackerDatabaseConfig         TrackerDatabaseConfig          `json:"trackerDatabase"`
 
 	PortNumber int `json:"portNumber"`
 }
@@ -54,23 +56,23 @@ func InitConfig(configFileName string) error {
 		return fmt.Errorf("init runtime config: %v, %v", configFileName, err)
 	}
 
-	if config.LocalDatabaseConfig != nil {
+	if config.TrackerDatabaseConfig.LocalDatabaseConfig != nil {
 		log.Println("Initializing local database connection")
-		if err := databaseWrapper.InitConnectionConfiguration(config.LocalDatabaseConfig); err != nil {
+		if err := databaseWrapper.InitConnectionConfiguration(config.TrackerDatabaseConfig.LocalDatabaseConfig); err != nil {
 			return err
 		}
-	} else if config.PostgresMultiAccountConfig != nil {
+	} else if config.TrackerDatabaseConfig.PostgresMultiAccountConfig != nil {
 		log.Println("Initialize Postgres multi-account database connection")
-		if err := databaseWrapper.InitConnectionConfiguration(config.PostgresMultiAccountConfig); err != nil {
+		if err := databaseWrapper.InitConnectionConfiguration(config.TrackerDatabaseConfig.PostgresMultiAccountConfig); err != nil {
 			return err
 		}
 	} else {
 		return fmt.Errorf("runtime configuration %v missing database connection configuration", configFileName)
 	}
 
-	if config.LocalAttachmentConfig != nil {
+	if config.TrackerDatabaseConfig.LocalAttachmentConfig != nil {
 		log.Println("Initializing local attachment storage")
-		if err := databaseWrapper.InitAttachmentStorageConfiguration(config.LocalAttachmentConfig); err != nil {
+		if err := databaseWrapper.InitAttachmentStorageConfiguration(config.TrackerDatabaseConfig.LocalAttachmentConfig); err != nil {
 			return err
 		}
 	} else {
@@ -81,13 +83,15 @@ func InitConfig(configFileName string) error {
 	if config.FactoryTemplateDatabaseConfig != nil {
 		log.Println("Initializing factory templates database connnection")
 		if config.FactoryTemplateDatabaseConfig.LocalDatabaseConfig != nil {
-			log.Println("Initializing local database connection")
-			if err := databaseWrapper.InitFactoryTemplateConnectionConfiguration(config.FactoryTemplateDatabaseConfig.LocalDatabaseConfig); err != nil {
+			log.Println("Initializing local database connection for factory templates")
+			if err := databaseWrapper.InitFactoryTemplateConnectionConfiguration(
+				config.FactoryTemplateDatabaseConfig.LocalDatabaseConfig); err != nil {
 				return err
 			}
 		} else if config.FactoryTemplateDatabaseConfig.PostgresSingleAccountConfig != nil {
-			log.Println("Initialize Postgres multi-account database connection")
-			if err := databaseWrapper.InitFactoryTemplateConnectionConfiguration(config.FactoryTemplateDatabaseConfig.PostgresSingleAccountConfig); err != nil {
+			log.Println("Initialize Postgres multi-account database connection for factory templates")
+			if err := databaseWrapper.InitFactoryTemplateConnectionConfiguration(
+				config.FactoryTemplateDatabaseConfig.PostgresSingleAccountConfig); err != nil {
 				return err
 			}
 		} else {

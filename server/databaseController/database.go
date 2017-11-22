@@ -2,7 +2,9 @@ package databaseController
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
+	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/trackerDatabase"
@@ -21,12 +23,29 @@ func createNewDatabase(trackerDBHandle *sql.DB, req *http.Request, dbParams trac
 
 	if (dbParams.TemplateDatabaseID != nil) && (len(*dbParams.TemplateDatabaseID) > 0) {
 
+		if dbParams.TemplateSource == nil {
+			return nil, fmt.Errorf("createNewDatabase: missing templates source for new database")
+		}
+		templSource := *dbParams.TemplateSource
+		var srcTrackerDBHandle *sql.DB
+		if templSource == trackerDatabase.NewDatabaseTemplateSourceFactory {
+			factoryDBHandle, err := databaseWrapper.GetFactoryTemplateTrackerDatabaseHandle(req)
+			if err != nil {
+				return nil, fmt.Errorf("createNewDatabase: can't get factory template database handle: %v", err)
+			}
+			srcTrackerDBHandle = factoryDBHandle
+		} else if templSource == trackerDatabase.NewDatabaseTemplateSourceAccount {
+			srcTrackerDBHandle = trackerDBHandle
+		} else {
+			return nil, fmt.Errorf("createNewDatabase: can't get factory template database handle: unrecognized template source %v", templSource)
+		}
+
 		newDBFromTemplateParams := trackerDatabase.CloneDatabaseParams{
 			SourceDatabaseID: *dbParams.TemplateDatabaseID,
 			NewName:          dbParams.Name,
 			IsTemplate:       false,
 			CreatedByUserID:  userID,
-			SrcDBHandle:      trackerDBHandle,
+			SrcDBHandle:      srcTrackerDBHandle,
 			DestDBHandle:     trackerDBHandle,
 			IDRemapper:       uniqueID.UniqueIDRemapper{}}
 		newDB, newDBErr = cloneIntoNewTrackerDatabase(&newDBFromTemplateParams)

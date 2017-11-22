@@ -20,6 +20,7 @@ func init() {
 
 	databaseRouter.HandleFunc("/api/database/getList", getDatabaseListAPI)
 	databaseRouter.HandleFunc("/api/database/getTemplateList", getTemplateListAPI)
+	databaseRouter.HandleFunc("/api/database/getFactoryTemplateList", getFactoryTemplateListAPI)
 	databaseRouter.HandleFunc("/api/database/getUserTemplateList", getUserTemplateListAPI)
 
 	databaseRouter.HandleFunc("/api/database/setName", trackerDatabase.SetNameAPI)
@@ -114,6 +115,33 @@ func getTemplateListAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, templateList)
+	}
+
+}
+
+func getFactoryTemplateListAPI(w http.ResponseWriter, r *http.Request) {
+
+	if databaseWrapper.FactoryTemplateDatabaseIsConfigured() {
+		trackerDBHandle, dbErr := databaseWrapper.GetFactoryTemplateTrackerDatabaseHandle(r)
+		if dbErr != nil {
+			api.WriteErrorResponse(w, dbErr)
+			return
+		}
+		getTemplParams := GetTemplateListParams{
+			IncludeInactive: false,
+			CurrUserOnly:    false}
+
+		if templateList, err := getCurrentUserTemplateTrackers(getTemplParams, trackerDBHandle, r); err != nil {
+			api.WriteErrorResponse(w, err)
+			return
+		} else {
+			api.WriteJSONResponse(w, templateList)
+			return
+		}
+
+	} else {
+		emptyTemplateList := []UserTemplateTrackerDatabaseInfo{}
+		api.WriteJSONResponse(w, emptyTemplateList)
 	}
 
 }

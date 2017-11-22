@@ -25,7 +25,6 @@ function openNewTrackerDialog() {
 
 	validator.resetForm()
 	
-	var getDBListParams = {} // no parameters necessary - gets the tracker list for the currently signed in user
 	
 	function initNewTrackerDescriptionEditor(initialDescription) {
 		var $descInput = $props.find(".adminGeneralTrackerDescriptionInput")
@@ -61,23 +60,58 @@ function openNewTrackerDialog() {
 		
 	}
 	
-	jsonAPIRequest("database/getTemplateList",getDBListParams,function(templateList) {
+	function getTemplateLists(templatesCallback) {
+		
+		var templateLists = {}
+		var templateListsRemaining = 2
+		function processOneTemplateList() {
+			templateListsRemaining--
+			if (templateListsRemaining <= 0) {
+				templatesCallback(templateLists)
+			}
+		}
+		
+		var getDBListParams = {} // no parameters necessary - gets the tracker list for the currently signed in user
+		jsonAPIRequest("database/getTemplateList",getDBListParams,function(accountTemplateList) {
+			templateLists.accountTemplates = accountTemplateList
+			processOneTemplateList()
+		})
+		
+		jsonAPIRequest("database/getFactoryTemplateList",getDBListParams,function(factoryTemplateList) {
+			templateLists.factoryTemplates = factoryTemplateList
+			processOneTemplateList()
+		})
+		
+		
+	}
+	
+	var templateTrackerInfoByID = {}
+
+	getTemplateLists(function(templateLists) {
 		
 		$templateSelection.empty()
-		
-		var templateTrackerInfoByID = {}
-		
-		var $accountTemplateOptGroup = $('<optgroup label="Account Templates"></optgroup>')
-		
+
 		$templateSelection.append(selectOptionHTML("","No template"))
 		
-		for (var trackerIndex=0; trackerIndex<templateList.length; trackerIndex++) {	
-			var trackerInfo = templateList[trackerIndex]
-			$accountTemplateOptGroup.append(selectOptionHTML(trackerInfo.databaseID,trackerInfo.databaseName))
-			templateTrackerInfoByID[trackerInfo.databaseID] = trackerInfo
-		}
-		if ( templateList.length > 0 ) {
+		if(templateLists.accountTemplates.length > 0) {
+			var $accountTemplateOptGroup = $('<optgroup label="Account Templates"></optgroup>')
+			for (var trackerIndex=0; trackerIndex<templateLists.accountTemplates.length; trackerIndex++) {	
+				var trackerInfo = templateLists.accountTemplates[trackerIndex]
+				trackerInfo.templateSource = "account"
+				$accountTemplateOptGroup.append(selectOptionHTML(trackerInfo.databaseID,trackerInfo.databaseName))
+				templateTrackerInfoByID[trackerInfo.databaseID] = trackerInfo
+			}
 			$templateSelection.append($accountTemplateOptGroup)
+		}
+		if(templateLists.factoryTemplates.length > 0) {
+			var $factoryTemplateOptGroup = $('<optgroup label="Factory Templates"></optgroup>')
+			for (var trackerIndex=0; trackerIndex<templateLists.factoryTemplates.length; trackerIndex++) {	
+				var trackerInfo = templateLists.factoryTemplates[trackerIndex]
+				trackerInfo.templateSource = "factory"
+				$factoryTemplateOptGroup.append(selectOptionHTML(trackerInfo.databaseID,trackerInfo.databaseName))
+				templateTrackerInfoByID[trackerInfo.databaseID] = trackerInfo
+			}
+			$templateSelection.append($factoryTemplateOptGroup)
 		}
 		
 		initSelectControlChangeHandler($templateSelection,function(selectedDatabaseID) {		
@@ -99,11 +133,7 @@ function openNewTrackerDialog() {
 			}
 			
 		})
-			
 	})
-	
-	
-	
 		
 	$('#newTrackerDialog').modal('show')
 	
@@ -111,9 +141,13 @@ function openNewTrackerDialog() {
 		console.log("New Tracker save button clicked")
 		if($newTrackerDialogForm.valid()) {	
 			
+			var selectedDatabaseID = $templateSelection.val()
+			var trackerInfo = templateTrackerInfoByID[selectedDatabaseID]
+			
 			var newTrackerParams = {  
 				name: $('#newTrackerNameInput').val(),
-				templateDatabaseID: $templateSelection.val()
+				templateSource: trackerInfo.templateSource,
+				templateDatabaseID: selectedDatabaseID
 			}
 			jsonAPIRequest("database/new",newTrackerParams,function(newTrackerInfo) {
 				console.log("Created new tracker: " + JSON.stringify(newTrackerInfo))

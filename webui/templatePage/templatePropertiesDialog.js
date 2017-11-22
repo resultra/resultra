@@ -97,7 +97,7 @@ function openTemplatePropertiesDialog(templateInfo, dialogHiddenCallback) {
 	}
 	
 	
-		var $dialog = $('#templatePropertiesDialog')
+	var $dialog = $('#templatePropertiesDialog')
 	var getDBInfoParams = { databaseID: templateInfo.databaseID }
 	jsonAPIRequest("database/getInfo",getDBInfoParams,function(templateInfo) {
 		

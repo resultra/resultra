@@ -86,9 +86,13 @@ func CloneDatabase(cloneParams *CloneDatabaseParams) (*Database, error) {
 
 }
 
+const NewDatabaseTemplateSourceFactory string = "factory"
+const NewDatabaseTemplateSourceAccount string = "account"
+
 type NewDatabaseParams struct {
 	Name               string  `json:"name"`
 	TemplateDatabaseID *string `json:"templateDatabaseID"`
+	TemplateSource     *string `json:"templateSource"`
 	CreatedByUserID    string  `json:"createdByUserID"`
 	IsTemplate         bool
 }
