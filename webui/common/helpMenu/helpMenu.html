@@ -1,0 +1,18 @@
+{{define "helpMenuListItems"}}
+  <li><a href="#">Help documentation</a></li>
+  <li><a href="#">Community forums</a></li>
+  <li role="separator" class="divider"></li>
+  <li><a href="#" id="userDropdownMenuSignoutMenuItem">About</a></li>
+{{end}}
+
+{{define "helpDropdownMenu"}}
+<div class="btn-group" role="group">
+	<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		  <span class="fa fa-question" aria-hidden="true"> </span>
+	</button>
+	<ul class="dropdown-menu dropdown-menu-right">
+		{{template "helpMenuListItems"}}
+	</ul>
+</div>
+
+{{end}}

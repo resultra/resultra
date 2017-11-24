@@ -14,7 +14,7 @@ $(document).ready(function() {
 	initFieldInfo(colPropsAdminContext.databaseID, function() {
 		
 		initAdminSettingsPageLayout($('#colPropsAdminPage'))	
-		initUserDropdownMenu()
+		initAdminPageHeader()
 		initAdminSettingsTOC(colPropsAdminContext.databaseID,"settingsTOCTables")
 		
 		switch (colPropsAdminContext.colType) {

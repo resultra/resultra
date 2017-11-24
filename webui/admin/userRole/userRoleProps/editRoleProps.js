@@ -65,7 +65,7 @@ $(document).ready(function() {
 		
 	initAdminSettingsTOC(rolePropsContext.databaseID,"settingsTOCRoles")
 		
-	initUserDropdownMenu()
+	initAdminPageHeader()
 		
 	var getRoleParams = { roleID: rolePropsContext.roleID }
 	jsonAPIRequest("userRole/get",getRoleParams,function(roleInfo) {

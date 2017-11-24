@@ -2,7 +2,7 @@ $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#alertListAdminPage'))	
 	
-	initUserDropdownMenu()
+	initAdminPageHeader()
 	
 	initAdminSettingsTOC(alertListAdminContext.databaseID,"settingsTOCAlerts")
 			

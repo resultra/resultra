@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#roleAdminPage'))	
-	initUserDropdownMenu()
+	initAdminPageHeader()
 	initAdminSettingsTOC(roleAdminContext.databaseID,"settingsTOCRoles")
 			
 	initUserRoleSettings(roleAdminContext.databaseID)

@@ -29,6 +29,7 @@ var paletteItemsEditConfig = {
 $(document).ready(function() {
 	
 	initUserDropdownMenu()
+	initHelpDropdownMenu()
 	
 	var designFormPaletteLayoutConfig =  {
 		parentLayoutSelector: formDesignCanvasSelector,

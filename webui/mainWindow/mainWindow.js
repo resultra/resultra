@@ -61,6 +61,7 @@ $(document).ready(function() {
 	initDatabaseTOC(tocConfig)
 	
 	initUserDropdownMenu()
+	initHelpDropdownMenu()
 	initAlertHeader(mainWindowContext.databaseID,seeAllAlertsClicked)
 	
 	// Listen for events to view a specific record/item in a particular form. This happens in response to

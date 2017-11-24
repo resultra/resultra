@@ -1,6 +1,7 @@
 $(document).ready(function() {	
 	
 	initUserDropdownMenu()
+	initHelpDropdownMenu()
 	
 	initTrackerList()
 		

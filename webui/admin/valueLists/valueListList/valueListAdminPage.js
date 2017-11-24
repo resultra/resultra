@@ -2,7 +2,7 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#valueListAdminPage'))	
-	initUserDropdownMenu()
+	initAdminPageHeader()
 	initAdminSettingsTOC(valueListAdminContext.databaseID,"settingsTOCValueLists")
 			
 	initAdminValueListListSettings(valueListAdminContext.databaseID)

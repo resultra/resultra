@@ -87,7 +87,7 @@ $(document).ready(function() {
 
 	initAdminSettingsTOC(itemListPropsContext.databaseID,"settingsTOCLists")
 
-	initUserDropdownMenu()
+	initAdminPageHeader()
 
 		var listElemPrefix = "itemList_"
 

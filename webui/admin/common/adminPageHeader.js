@@ -1,0 +1,5 @@
+function initAdminPageHeader() {
+	initUserDropdownMenu()
+	initHelpDropdownMenu()
+	
+}

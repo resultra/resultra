@@ -10,6 +10,7 @@ import (
 	"resultra/datasheet/webui/common/field"
 	"resultra/datasheet/webui/common/form"
 	"resultra/datasheet/webui/common/formulaEditor"
+	"resultra/datasheet/webui/common/helpMenu"
 	"resultra/datasheet/webui/common/helpPopup"
 	"resultra/datasheet/webui/common/itemList"
 	"resultra/datasheet/webui/common/recordFilter"
@@ -32,6 +33,7 @@ func init() {
 	TemplateFileList = append(TemplateFileList, database.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, recordSort.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, field.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, helpMenu.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, form.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, defaultValues.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, valueThreshold.TemplateFileList...)

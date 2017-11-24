@@ -2,7 +2,7 @@ $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#alertPropsPage'))	
 	
-	initUserDropdownMenu()
+	initAdminPageHeader()
 	
 	initAdminSettingsTOC(alertPropsContext.databaseID,"settingsTOCAlerts")
 	

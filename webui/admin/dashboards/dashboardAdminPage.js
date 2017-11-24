@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#dashboardAdminPage'))	
-	initUserDropdownMenu()
+	initAdminPageHeader()
 	initAdminSettingsTOC(dashboardAdminPageContext.databaseID,"settingsTOCDashboards")
 			
 	initAdminDashboardSettings(dashboardAdminPageContext.databaseID)

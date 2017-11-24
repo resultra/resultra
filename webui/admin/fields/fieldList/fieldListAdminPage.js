@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#fieldAdminPage'))	
-	initUserDropdownMenu()
+	initAdminPageHeader()
 	initAdminSettingsTOC(fieldListAdminContext.databaseID,"settingsTOCFields")
 		
 	initAdminFieldSettings(fieldListAdminContext.databaseID)

@@ -9,7 +9,7 @@ var dashboardPaletteItemsEditConfig = {
 
 $(document).ready(function() {
 	
-	initUserDropdownMenu()
+	initAdminPageHeader()
 	
 							
 	var paletteConfig = {
