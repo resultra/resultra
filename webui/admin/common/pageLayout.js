@@ -5,14 +5,7 @@ function initAdminSettingsPageLayout($pageContainer) {
 	$pageContainer.layout({
 			inset: zeroPaddingInset,
 			north: fixedUILayoutPaneParams(40),
-			west: {
-				size: 250,
-				resizable:false,
-				slidable: false,
-				spacing_open:4,
-				spacing_closed:4,
-				initClosed:false // panel is initially open	
-			}
+			west: fixedUILayoutPaneParams(250)
 		})
 	
 }
