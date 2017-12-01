@@ -66,7 +66,7 @@ func (config *LocalSQLiteTrackerDatabaseConnectionConfig) InitConnection() error
 	}
 
 	// Configure the maximum number of open connections.
-	dbHandle.SetMaxOpenConns(75)
+	dbHandle.SetMaxOpenConns(25)
 
 	// Open doesn't directly open the database connection. To verify the connection, the Ping() function
 	// is needed.

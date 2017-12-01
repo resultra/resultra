@@ -3,6 +3,7 @@ package userAuth
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"resultra/datasheet/server/generic/uniqueID"
 	"strings"
 )
@@ -74,6 +75,7 @@ func saveNewUser(trackerDBHandle *sql.DB, rawParams NewUserParams) *AuthResponse
 
 	pwHash, hashErr := generatePasswordHash(params.Password)
 	if hashErr != nil {
+		log.Printf("saveNewUser: system failure registering user: %v", hashErr)
 		return newAuthResponse(false, "System error: failed to create login credentials")
 	}
 
@@ -89,6 +91,8 @@ func saveNewUser(trackerDBHandle *sql.DB, rawParams NewUserParams) *AuthResponse
 				VALUES ($1,$2,$3,$4,$5,$6)`,
 		userID, params.EmailAddr, params.UserName,
 		params.FirstName, params.LastName, pwHash); insertErr != nil {
+		log.Printf("saveNewUser: system failure registering user: %v", insertErr)
+
 		return newAuthResponse(false, "System error: failed to create login credentials")
 	}
 
@@ -120,6 +124,7 @@ func validateUniqueUserName(trackerDBHandle *sql.DB, userName string) (bool, err
 	if queryErr != nil {
 		return false, fmt.Errorf("validateUniqueUserName: Can't query database for user name: %v", queryErr)
 	}
+	defer rows.Close()
 
 	existingUserNameAlreadyUsed := rows.Next()
 	if existingUserNameAlreadyUsed {
@@ -139,6 +144,7 @@ func validateUniqueEmail(trackerDBHandle *sql.DB, emailAddr string) (bool, error
 	if queryErr != nil {
 		return false, fmt.Errorf("validateUniqueEmail: Can't query database for email address: %v", queryErr)
 	}
+	defer rows.Close()
 
 	existingEmailAlreadyUsed := rows.Next()
 	if existingEmailAlreadyUsed {
