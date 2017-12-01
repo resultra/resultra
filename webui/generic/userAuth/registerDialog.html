@@ -5,25 +5,33 @@
 	   <div class="alert alert-danger" id="registerDialogAlert">
 	     <span id="registerDialogErrorMsg">Error message</span>
 	   </div>
-      <form>
+      <form id="registerNewUserForm">
 		  <div class="form-group">
         	  <label for="registerDialogFirstNameInput">Your Name</label>
-        	  <input type="text" id="registerDialogFirstNameInput" class="form-control" placeholder="First Name" required autofocus>
-        	  <input type="text" id="registerDialogLastNameInput" class="form-control marginTop5" placeholder="Last Name" required autofocus>
+        	  <input type="text" id="registerDialogFirstNameInput" name="registerDialogFirstNameInput"
+			  		class="form-control" placeholder="First Name" required autofocus>
+ 		   </div>
+ 		   <div class="form-group">
+        	  <input type="text" id="registerDialogLastNameInput" name="registerDialogLastNameInput"
+			  	class="form-control marginTop5" placeholder="Last Name" required autofocus>
 		  </div>
 		  <div class="form-group">
         	  <label for="registerDialogUserNameInput">User Name</label>
-        	  <input type="text" id="registerDialogUserNameInput" class="form-control" placeholder="Username" required autofocus>
+        	  <input type="text" id="registerDialogUserNameInput" name="registerDialogUserNameInput"
+			  		class="form-control" placeholder="Username" required autofocus>
 		  </div>
 		  
 		  <div class="form-group">
         	  <label for="registerDialogEmailInput">Email address</label>
-        	  <input type="email" id="registerDialogEmailInput" class="form-control" placeholder="Email address" required autofocus>
+        	  <input type="email" id="registerDialogEmailInput" name="registerDialogEmailInput" 
+			  		class="form-control" placeholder="Email address" required autofocus>
 		  </div>
 		  <div class="form-group">
 			  <label for="registerDialogPasswordInput">Password</label>
-        	  <input type="password" id="registerDialogPasswordInput" class="form-control" placeholder="Password" required>
-        	  <input type="password" id="registerDialogRepeatPasswordInput" class="form-control marginTop5" placeholder="Repeat Password" required>
+        	  <input type="password" id="registerDialogPasswordInput" name="registerDialogPasswordInput"
+			  		class="form-control" placeholder="Password" required>
+        	  <input type="password" id="registerDialogRepeatPasswordInput" name="registerDialogRepeatPasswordInput"
+			  		class="form-control marginTop5" placeholder="Repeat Password" required>
 		  </div>
       </form>
 
@@ -41,7 +49,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="registerLabel">Register</h4>
+        <h4 class="modal-title" id="registerLabel">Register Account</h4>
       </div>
       <div class="modal-body">
         	{{template "userRegisterDialogBody"}}

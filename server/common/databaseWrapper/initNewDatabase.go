@@ -24,7 +24,9 @@ CREATE TABLE IF NOT EXISTS users (
 	first_name text NOT NULL, -- TODO cannot be empty
 	last_name text NOT NULL, -- TODO cannot be empty
 	email_addr text NOT NULL, -- TODO must be non-empty, unique (case-insensitive)
-	password_hash text NOT NULL
+	password_hash text NOT NULL,
+	UNIQUE(user_name),
+	UNIQUE(email_addr)
 );
 
 CREATE TABLE IF NOT EXISTS fields ( 

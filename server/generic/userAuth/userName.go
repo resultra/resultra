@@ -1,6 +1,7 @@
 package userAuth
 
 import (
+	"database/sql"
 	"regexp"
 )
 
@@ -21,7 +22,16 @@ func validateWellFormedUserName(userName string) *AuthResponse {
 	}
 }
 
-func validateNewUserName(userName string) *AuthResponse {
+func validateNewUserName(trackerDBHandle *sql.DB, userName string) *AuthResponse {
+
+	isValid, validateErr := validateUniqueUserName(trackerDBHandle, userName)
+	if validateErr != nil {
+		return newAuthResponse(false, "System error: failed to validate unique user name")
+	}
+	if !isValid {
+		return newAuthResponse(false, "User name is already taken. Choose another user name")
+	}
+
 	// TODO(Important) - Validate uniqueness in the database (case insensitive)
 	// Also validate user name does not contain key reserved words (e.g. company name)
 	return validateWellFormedUserName(userName)

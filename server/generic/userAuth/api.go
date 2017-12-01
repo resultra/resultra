@@ -1,6 +1,7 @@
 package userAuth
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -20,6 +21,11 @@ func init() {
 	authRouter.HandleFunc("/auth/getCurrentUserInfo", getCurrentUserInfoAPI)
 	authRouter.HandleFunc("/auth/getUserInfo", getUserInfoAPI)
 	authRouter.HandleFunc("/auth/getUsersInfo", getUsersInfoAPI)
+
+	authRouter.HandleFunc("/auth/validateName", validateNameAPI)
+	authRouter.HandleFunc("/auth/validateNewUserName", validateNewUserNameAPI)
+	authRouter.HandleFunc("/auth/validateNewUserEmail", validateNewUserEmailAPI)
+	authRouter.HandleFunc("/auth/validatePasswordStrength", validatePasswordStrengthAPI)
 
 	authRouter.HandleFunc("/auth/searchUsers", searchUsersAPI)
 
@@ -150,5 +156,72 @@ func searchUsersAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	api.WriteJSONResponse(w, results)
+
+}
+
+func validateNewUserNameAPI(w http.ResponseWriter, r *http.Request) {
+
+	userName := r.FormValue("userName")
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	isValid, err := validateUniqueUserName(trackerDBHandle, userName)
+
+	if err != nil {
+		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
+		return
+	}
+
+	response := isValid
+	api.WriteJSONResponse(w, response)
+
+}
+
+func validateNewUserEmailAPI(w http.ResponseWriter, r *http.Request) {
+
+	emailAddr := r.FormValue("emailAddr")
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	isValid, err := validateUniqueEmail(trackerDBHandle, emailAddr)
+
+	if err != nil {
+		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
+		return
+	}
+
+	response := isValid
+	api.WriteJSONResponse(w, response)
+
+}
+
+func validateNameAPI(w http.ResponseWriter, r *http.Request) {
+
+	name := r.FormValue("name")
+
+	nameResp := validateWellFormedRealName(name)
+	isValid := nameResp.Success
+
+	response := isValid
+	api.WriteJSONResponse(w, response)
+
+}
+
+func validatePasswordStrengthAPI(w http.ResponseWriter, r *http.Request) {
+
+	password := r.FormValue("password")
+
+	pwResp := validatePasswordStrength(password)
+
+	response := pwResp.ValidPassword
+	api.WriteJSONResponse(w, response)
 
 }

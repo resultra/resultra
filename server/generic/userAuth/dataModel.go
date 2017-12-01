@@ -56,7 +56,7 @@ func saveNewUser(trackerDBHandle *sql.DB, rawParams NewUserParams) *AuthResponse
 		return newAuthResponse(false, "Last name is required")
 	}
 
-	userNameResp := validateNewUserName(params.UserName)
+	userNameResp := validateNewUserName(trackerDBHandle, params.UserName)
 	if !userNameResp.Success {
 		return userNameResp
 	}
@@ -109,6 +109,44 @@ func getUser(trackerDBHandle *sql.DB, emailAddr string) (*User, *AuthResponse) {
 	}
 
 	return &user, newAuthResponse(true, "Successfully retrieved user information")
+}
+
+func validateUniqueUserName(trackerDBHandle *sql.DB, userName string) (bool, error) {
+
+	upperUserName := strings.ToUpper(userName)
+
+	rows, queryErr := trackerDBHandle.Query(
+		`SELECT user_id FROM users WHERE UPPER(user_name)=$1`, upperUserName)
+	if queryErr != nil {
+		return false, fmt.Errorf("validateUniqueUserName: Can't query database for user name: %v", queryErr)
+	}
+
+	existingUserNameAlreadyUsed := rows.Next()
+	if existingUserNameAlreadyUsed {
+		return false, nil
+	}
+
+	return true, nil
+
+}
+
+func validateUniqueEmail(trackerDBHandle *sql.DB, emailAddr string) (bool, error) {
+
+	upperEmail := strings.ToUpper(emailAddr)
+
+	rows, queryErr := trackerDBHandle.Query(
+		`SELECT user_id FROM users WHERE UPPER(email_addr)=$1`, upperEmail)
+	if queryErr != nil {
+		return false, fmt.Errorf("validateUniqueEmail: Can't query database for email address: %v", queryErr)
+	}
+
+	existingEmailAlreadyUsed := rows.Next()
+	if existingEmailAlreadyUsed {
+		return false, nil
+	}
+
+	return true, nil
+
 }
 
 func GetUserInfoByID(trackerDBHandle *sql.DB, userID string) (*UserInfo, error) {
