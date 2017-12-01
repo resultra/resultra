@@ -1,8 +1,8 @@
 {
 	"subDirs":["../generic",
 		"../common"],
-	"cssFiles": [],
-	"imageFiles": [],
+	"cssFiles": ["homePagePublic.css"],
+	"imageFiles": ["resultra-logo-header.png"],
 	"jsFiles": ["homePagePublic.js"],
 	"htmlFiles":["homePagePublic.html"],
 	"minCSSFile":"homePage/homePagePublic.min.css",

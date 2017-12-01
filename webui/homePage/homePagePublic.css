@@ -1,0 +1,9 @@
+#homePagePublicHeader {
+	padding-top:5px;
+}
+
+#homePagePublicHeaderBodySep {
+	margin-top:5px;
+	margin-bottom:5px;
+	border-top: 2px solid darkgray;
+}

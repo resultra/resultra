@@ -29,6 +29,22 @@
 	
 {{end}}
 
+
+{{define "homePagePublicHeader"}}
+	<div class="container-fluid" id="homePagePublicHeader">
+		<div class="row">
+			<div class="col-sm-8">
+				<a href="http://www.resultra.com"><img src="/static/homePage/resultra-logo-header.png" alt="Main Resultra site"></a>
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "helpDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}
+
 {{define "homePagePublic"}}
 <!DOCTYPE html>
 <html>
@@ -49,10 +65,12 @@
 			
   </head>
   <body>
-	  <h1>{{.Title}}</h1>
 	  
+	  {{template "homePagePublicHeader"}}
 	  
-	  <div class="container-fluid">
+	  <hr id="homePagePublicHeaderBodySep">
+	   
+	  <div class="container-fluid marginTop20">
 		  		  
 		  <div class="col-md-3"></div>
 		  

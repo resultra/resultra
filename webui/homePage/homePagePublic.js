@@ -8,6 +8,7 @@ $(document).ready(function() {
 		$(this).blur();
 	    e.preventDefault();// prevent the default anchor functionality
 	});
-
 	
+	initHelpDropdownMenu()
+		
 }); // document ready
