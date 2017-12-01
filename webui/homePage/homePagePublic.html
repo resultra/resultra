@@ -1,4 +1,34 @@
 
+{{define "homePageSigninPanel"}}
+
+
+	  <div>
+		  <h2 class="text-center">Sign in to Resultra</h2>
+	  </div>
+	  
+	  <div class="alert alert-info" role="alert">
+		  Enter your email address and password.
+	  </div>
+  
+	  <div class="container-fluid">
+
+		<div class="row">
+	 	   {{template "userSignInDialogBodyLarge"}}
+	 	</div>
+	
+		<div class="row marginTop20">
+			{{template "userSignInButtonLarge"}}
+	 	</div>
+	
+		<div class="row">
+		  	<button type="button" id="homePageRegisterButton" 
+					class="btn btn-link">Register a new account</button>
+		</div>
+
+  	</div>
+	
+{{end}}
+
 {{define "homePagePublic"}}
 <!DOCTYPE html>
 <html>
@@ -20,10 +50,27 @@
   </head>
   <body>
 	  <h1>{{.Title}}</h1>
-	  <p>Under construction</p>
-	  <button type="button" id="signInButton" class="btn btn-primary">Sign In</button>
-	  <button type="button" id="homePageRegisterButton" class="btn btn-primary">Register</button>
-  </body>
+	  
+	  
+	  <div class="container-fluid">
+		  		  
+		  <div class="col-md-3"></div>
+		  
+		  <div class="col-md-6">
+			  
+			  <div class="well">
+				  {{template "homePageSigninPanel"}}
+			 </div>
+				 
+		 </div>
+			
+		 <div class="col-md-3"></div>
+
+	  </div>
+	  
+	  
+	  
+ </body>
   
   {{template "UserSignInDialog"}}
   {{template "userRegisterDialog"}}
