@@ -24,10 +24,11 @@ CREATE TABLE IF NOT EXISTS users (
 	first_name text NOT NULL, -- TODO cannot be empty
 	last_name text NOT NULL, -- TODO cannot be empty
 	email_addr text NOT NULL, -- TODO must be non-empty, unique (case-insensitive)
-	password_hash text NOT NULL,
-	UNIQUE(user_name),
-	UNIQUE(email_addr)
+	password_hash text NOT NULL
 );
+
+CREATE UNIQUE INDEX email_unique_index on users (LOWER(email_addr));
+CREATE UNIQUE INDEX username_unique_index on users (LOWER(user_name));
 
 CREATE TABLE IF NOT EXISTS fields ( 
 	field_id text PRIMARY KEY, 
@@ -40,6 +41,8 @@ CREATE TABLE IF NOT EXISTS fields (
 	preprocessed_formula_text text
 ); 
 
+CREATE UNIQUE INDEX field_ref_name_unique_index on fields (LOWER(ref_name),database_id);
+
 CREATE TABLE IF NOT EXISTS globals ( 
 	global_id text PRIMARY KEY,
 	database_id text REFERENCES databases (database_id), 
@@ -47,6 +50,8 @@ CREATE TABLE IF NOT EXISTS globals (
 	ref_name text NOT NULL, 
 	type text NOT NULL
 );
+
+CREATE UNIQUE INDEX global_ref_name_unique_index on globals (LOWER(ref_name),database_id);
 
 CREATE TABLE IF NOT EXISTS global_updates (
 	update_id text PRIMARY KEY,
@@ -58,7 +63,7 @@ CREATE TABLE IF NOT EXISTS global_updates (
 CREATE TABLE IF NOT EXISTS attachments (
 	attachment_id text PRIMARY KEY,
 	database_id text REFERENCES databases (database_id),
-	user_id text NOT NULL,
+	user_id text REFERENCES users(user_id),
 	create_timestamp_utc timestamp NOT NULL,
 	orig_file_name text NOT NULL,
 	type text NOT NULL,
