@@ -67,6 +67,7 @@ func getAllDashboardRolesFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) (
 	if queryErr != nil {
 		return nil, fmt.Errorf("getAllDashboardRolesFromSrc: failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	dashboardPrivs := []SetDashboardRolePrivsParams{}
 	for rows.Next() {
@@ -134,6 +135,7 @@ func GetDashboardRolePrivs(trackerDBHandle *sql.DB, dashboardID string) ([]Dashb
 	if queryErr != nil {
 		return nil, fmt.Errorf("getDashboardRolePrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	dashboardRolePrivs := []DashboardRolePriv{}
 	for rows.Next() {
@@ -172,6 +174,7 @@ func GetRoleDashboardPrivs(trackerDBHandle *sql.DB, roleID string) ([]RoleDashbo
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRoleDashboardPrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	roleDashboardPrivs := []RoleDashboardPriv{}
 	for rows.Next() {
@@ -200,6 +203,7 @@ func GetDashboardsWithUserViewPrivs(trackerDBHandle *sql.DB, databaseID string, 
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetCustomRoleInfo: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	visibleDashboards := map[string]bool{}
 	for rows.Next() {
@@ -242,6 +246,7 @@ func CurrentUserHasDashboardViewPrivs(trackerDBHandle *sql.DB, req *http.Request
 	if queryErr != nil {
 		return false, fmt.Errorf("GetCustomRoleInfo: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		rolePrivs := ""

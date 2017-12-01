@@ -90,6 +90,8 @@ func GetNonDraftRecords(trackerDBHandle *sql.DB, parentDatabaseID string) ([]Rec
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRecords: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
+
 	records := []Record{}
 	for rows.Next() {
 		var currRecord Record

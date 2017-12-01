@@ -26,6 +26,7 @@ func searchUsers(trackerDBHandle *sql.DB, searchTerm string) (*SearchUsersResult
 	if queryErr != nil {
 		return nil, fmt.Errorf("searchUserInfo: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	matchingUsers := []SearchUserMatch{}
 	for rows.Next() {

@@ -54,6 +54,7 @@ func GetDashboardComponents(srcDBHandle *sql.DB, componentType string, parentDas
 	if queryErr != nil {
 		return fmt.Errorf("GetDashboardComponents: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		currComponentID := ""

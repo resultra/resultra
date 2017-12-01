@@ -83,6 +83,7 @@ func getAllCollaborators(trackerDBHandle *sql.DB, databaseID string) ([]Collabor
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetDatabaseRoles: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	collabs := []CollaboratorInfo{}
 	for rows.Next() {
@@ -200,6 +201,7 @@ func getDatabaseRolesFromSrc(srcDBHandle *sql.DB, databaseID string) ([]Database
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetDatabaseRoles: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	rolesInfo := []DatabaseRoleInfo{}
 	for rows.Next() {
@@ -320,6 +322,7 @@ func GetDatabaseAdminUserInfo(trackerDBHandle *sql.DB, databaseID string) ([]use
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetDatabaseAdminUserInfo: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	adminsInfo := []userAuth.UserInfo{}
 
@@ -362,6 +365,7 @@ func GetCustomRoleListInfo(trackerDBHandle *sql.DB, databaseID string) ([]Custom
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetCustomRoleListInfo: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	roleInfoMap := map[string]*CustomListRoleInfo{}
 
@@ -425,6 +429,7 @@ func GetCustomRoleDashboardInfo(trackerDBHandle *sql.DB, databaseID string) ([]C
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetCustomRoleInfo: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	roleInfoMap := map[string]*CustomRoleDashboardInfo{}
 
@@ -575,6 +580,7 @@ func GetCollaboratorRoleInfo(trackerDBHandle *sql.DB, databaseID string, collabo
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetCollaboratorRoleInfo: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 
@@ -652,6 +658,7 @@ func GetAllUsersRoleInfo(trackerDBHandle *sql.DB, databaseID string) ([]UserRole
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAllUsersRoleInfo: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 

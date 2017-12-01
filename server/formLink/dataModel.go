@@ -152,6 +152,7 @@ func getAllFormLinksFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]For
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAllPresets: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	links := []FormLink{}
 	for rows.Next() {

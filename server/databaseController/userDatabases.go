@@ -34,6 +34,7 @@ func getCurrentUserTrackingDatabases(params GetTrackerListParams,
 	if queryErr != nil {
 		return nil, fmt.Errorf("getCurrentUserTrackingDatabases: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	trackingInfoByDatabase := map[string]UserTrackingDatabaseInfo{}
 	for rows.Next() {

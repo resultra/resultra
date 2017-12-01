@@ -100,6 +100,7 @@ func getAllAlertsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Alert,
 	if queryErr != nil {
 		return nil, fmt.Errorf("getAllAlerts: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	alerts := []Alert{}
 	for rows.Next() {
@@ -215,6 +216,7 @@ func validateUniqueAlertName(trackerDBHandle *sql.DB, databaseID string, alertID
 	if queryErr != nil {
 		return fmt.Errorf("System error validating alert name (%v)", queryErr)
 	}
+	defer rows.Close()
 
 	existingFormNameUsedByAnotherAlert := rows.Next()
 	if existingFormNameUsedByAnotherAlert {

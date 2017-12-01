@@ -98,6 +98,7 @@ func getGlobalsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Global, 
 	if queryErr != nil {
 		return nil, fmt.Errorf("getGlobals: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	globals := []Global{}
 	for rows.Next() {
@@ -224,6 +225,8 @@ func getValUpdates(trackerDBHandle *sql.DB, parentDatabaseID string) ([]GlobalVa
 	if queryErr != nil {
 		return nil, fmt.Errorf("getValUpdates: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
+
 	valUpdates := []GlobalValUpdate{}
 	for rows.Next() {
 		var currValUpdate GlobalValUpdate

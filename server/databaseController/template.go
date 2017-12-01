@@ -207,6 +207,7 @@ func getCurrentUserTemplateTrackers(params GetTemplateListParams, trackerDBHandl
 	if queryErr != nil {
 		return nil, fmt.Errorf("getCurrentUserTrackingDatabases: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 

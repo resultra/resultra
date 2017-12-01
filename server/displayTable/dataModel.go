@@ -95,6 +95,7 @@ func getAllTablesFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Displa
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAllTables: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	tables := []DisplayTable{}
 	for rows.Next() {
@@ -216,6 +217,7 @@ func validateUniqueTableName(trackerDBHandle *sql.DB, databaseID string, tableID
 	if queryErr != nil {
 		return fmt.Errorf("System error validating table name (%v)", queryErr)
 	}
+	defer rows.Close()
 
 	existingTableNameUsedByAnotherTable := rows.Next()
 	if existingTableNameUsedByAnotherTable {

@@ -74,6 +74,8 @@ func GetFieldComments(trackerDBHandle *sql.DB, params GetFieldCommentsParams) ([
 	if queryErr != nil {
 		return nil, fmt.Errorf("getTableList: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
+
 	allComments := []FieldComment{}
 	for rows.Next() {
 		var currComment FieldComment

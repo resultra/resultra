@@ -73,6 +73,7 @@ func getAllListRolePrivsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([
 	if queryErr != nil {
 		return nil, fmt.Errorf("getListRolePrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	privs := []SetListRolePrivsParams{}
 	for rows.Next() {
@@ -158,6 +159,7 @@ func GetListRolePrivs(trackerDBHandle *sql.DB, listID string) ([]ListRolePriv, e
 	if queryErr != nil {
 		return nil, fmt.Errorf("getListRolePrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		currPrivInfo := ListRolePriv{}
@@ -197,6 +199,7 @@ func GetRoleListPrivs(trackerDBHandle *sql.DB, roleID string) ([]RoleListPriv, e
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRoleListPrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	roleListPrivs := []RoleListPriv{}
 	for rows.Next() {
@@ -223,6 +226,7 @@ func GetItemListsWithUserPrivs(trackerDBHandle *sql.DB, databaseID string, userI
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetItemListsWithUserPrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	visibleLists := map[string]bool{}
 	for rows.Next() {
@@ -266,6 +270,7 @@ func GetCurrentUserItemListPrivs(trackerDBHandle *sql.DB, req *http.Request,
 	if queryErr != nil {
 		return "", fmt.Errorf("GetCurrentUserItemListPrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		rolePrivs := ""

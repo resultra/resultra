@@ -66,6 +66,7 @@ func GetFormComponents(srcDBHandle *sql.DB, componentType string, parentFormID s
 	if queryErr != nil {
 		return fmt.Errorf("GetFormComponents: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		currComponentID := ""

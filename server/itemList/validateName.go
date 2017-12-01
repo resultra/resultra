@@ -21,6 +21,7 @@ func validateUniqueItemListName(trackerDBHandle *sql.DB, databaseID string, list
 	if queryErr != nil {
 		return fmt.Errorf("System error validating list name (%v)", queryErr)
 	}
+	defer rows.Close()
 
 	existingListNameUsedByAnotherList := rows.Next()
 	if existingListNameUsedByAnotherList {

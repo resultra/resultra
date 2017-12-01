@@ -97,6 +97,7 @@ func getAllItemListsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Ite
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAllItemLists: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	itemLists := []ItemList{}
 	for rows.Next() {

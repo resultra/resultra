@@ -94,6 +94,7 @@ func getAllFormsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Form, e
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAllForms: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	forms := []Form{}
 	for rows.Next() {
@@ -211,6 +212,7 @@ func validateUniqueFormName(trackerDBHandle *sql.DB, databaseID string, formID s
 	if queryErr != nil {
 		return fmt.Errorf("System error validating form name (%v)", queryErr)
 	}
+	defer rows.Close()
 
 	existingFormNameUsedByAnotherForm := rows.Next()
 	if existingFormNameUsedByAnotherForm {

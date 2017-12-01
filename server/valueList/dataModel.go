@@ -105,6 +105,7 @@ func getAllValueListsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Va
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAllPresets: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	valueLists := []ValueList{}
 	for rows.Next() {

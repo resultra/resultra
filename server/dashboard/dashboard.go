@@ -107,6 +107,7 @@ func getAllDashboardsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Da
 	if err != nil {
 		return nil, fmt.Errorf("GetAllDashboards: Failure querying database: %v", err)
 	}
+	defer rows.Close()
 
 	dashboards := []Dashboard{}
 	for rows.Next() {
@@ -299,6 +300,7 @@ func validateUniqueDashboardName(trackerDBHandle *sql.DB, databaseID string, das
 	if queryErr != nil {
 		return fmt.Errorf("System error validating dashboard name (%v)", queryErr)
 	}
+	defer rows.Close()
 
 	existingDashboardNameUsedByAnotherDashboard := rows.Next()
 	if existingDashboardNameUsedByAnotherDashboard {

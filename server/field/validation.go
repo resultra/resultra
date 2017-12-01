@@ -24,6 +24,7 @@ func validateUniqueFieldName(trackerDBHandle *sql.DB, databaseID string, fieldID
 	if queryErr != nil {
 		return fmt.Errorf("System error validating field name (%v)", queryErr)
 	}
+	defer rows.Close()
 
 	existingFieldNameUsedByAnotherField := rows.Next()
 	if existingFieldNameUsedByAnotherField {
@@ -85,6 +86,7 @@ func validateUniqueFieldRefName(trackerDBHandle *sql.DB, databaseID string, fiel
 	if queryErr != nil {
 		return fmt.Errorf("System error validating field reference name (%v)", queryErr)
 	}
+	defer rows.Close()
 
 	existingFieldNameUsedByAnotherField := rows.Next()
 	if existingFieldNameUsedByAnotherField {

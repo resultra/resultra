@@ -49,6 +49,7 @@ func getAllAlertPrivsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Se
 	if queryErr != nil {
 		return nil, fmt.Errorf("getAllAlertPrivsFromSrc: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	privs := []SetAlertRolePrivsParams{}
 	for rows.Next() {
@@ -116,6 +117,8 @@ func getDefaultAlertPrivs(trackerDBHandle *sql.DB, databaseID string) ([]RoleAle
 	if queryErr != nil {
 		return nil, fmt.Errorf("getDefaultAlertPrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
+
 	roleAlertPrivs := []RoleAlertPriv{}
 	for rows.Next() {
 		currPrivInfo := RoleAlertPriv{}
@@ -157,6 +160,7 @@ func GetRoleAlertPrivs(trackerDBHandle *sql.DB, roleID string) ([]RoleAlertPriv,
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAlertPrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		currPrivInfo := RoleAlertPriv{}
@@ -218,6 +222,7 @@ func GetAlertRolePrivs(trackerDBHandle *sql.DB, alertID string) ([]AlertRolePriv
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAlertRolePrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		currPrivInfo := AlertRolePriv{}
@@ -250,6 +255,7 @@ func GetAlertsWithUserPrivs(trackerDBHandle *sql.DB, databaseID string, userID s
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetItemListsWithUserPrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	visibleAlerts := map[string]bool{}
 	for rows.Next() {
@@ -283,6 +289,7 @@ func CurrentUserHasAlertPrivs(trackerDBHandle *sql.DB, req *http.Request,
 	if queryErr != nil {
 		return false, fmt.Errorf("CurrentUserHasAlertPrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	// Default to false (no priveleges) unless there's privileges set in the database.
 	privs := false

@@ -203,6 +203,8 @@ func GetAllFieldsFromSrc(srcDBHandle *sql.DB, params GetFieldListParams) ([]Fiel
 	if queryErr != nil {
 		return nil, fmt.Errorf("getTableList: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
+
 	allFields := []Field{}
 	for rows.Next() {
 		var currField Field

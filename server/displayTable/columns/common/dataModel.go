@@ -86,6 +86,7 @@ func GetTableColumns(srcDBHandle *sql.DB, columnType string, parentTableID strin
 	if queryErr != nil {
 		return fmt.Errorf("GetTableViewColumns: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		currColumnID := ""

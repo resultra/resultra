@@ -45,6 +45,7 @@ func getAllItemLinkPrivsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRoleListPrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	privs := []SetNewItemFormLinkRolePrivsParams{}
 
@@ -118,6 +119,8 @@ func getDefaultFormLinks(trackerDBHandle *sql.DB, databaseID string) ([]RoleNewI
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRoleListPrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
+
 	roleNewItemPrivs := []RoleNewItemPriv{}
 	for rows.Next() {
 		currPrivInfo := RoleNewItemPriv{}
@@ -156,6 +159,7 @@ func GetNewItemPrivs(trackerDBHandle *sql.DB, roleID string) ([]RoleNewItemPriv,
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRoleListPrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		currPrivInfo := RoleNewItemPriv{}
@@ -188,6 +192,7 @@ func GetNewItemLinksWithUserPrivs(trackerDBHandle *sql.DB, databaseID string, us
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetItemListsWithUserPrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	visibleLinks := map[string]bool{}
 	for rows.Next() {
@@ -225,6 +230,7 @@ func CurrentUserHasNewItemLinkPrivs(trackerDBHandle *sql.DB, req *http.Request,
 	if queryErr != nil {
 		return false, fmt.Errorf("CurrentUserHasNewItemLinkPrivs: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
 
 	// Default to false (no priveleges) unless there's privileges set in the database.
 	privs := false

@@ -100,6 +100,8 @@ func GetRecordCellUpdates(trackerDBHandle *sql.DB, recordID string, changeSetID 
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRecordCellUpdates: Failure querying database for record ID = %v: %v", recordID, queryErr)
 	}
+	defer rows.Close()
+
 	cellUpdates := []CellUpdate{}
 	for rows.Next() {
 		var currCellUpdate CellUpdate
@@ -180,6 +182,7 @@ func GetAllNonDraftCellUpdates(trackerDBHandle *sql.DB, databaseID string, chang
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAllCellUpdates: Failure querying database = %v for cell updates: %v", databaseID, queryErr)
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		var currCellUpdate CellUpdate
@@ -227,6 +230,8 @@ func GetRecordFieldCellUpdates(trackerDBHandle *sql.DB, recordID string, fieldID
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetRecordFieldCellUpdates: Failure querying database: %v", queryErr)
 	}
+	defer rows.Close()
+
 	cellUpdates := []CellUpdate{}
 	for rows.Next() {
 		var currCellUpdate CellUpdate

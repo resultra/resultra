@@ -23,6 +23,7 @@ func validateUniqueReferenceName(trackerDBHandle *sql.DB, databaseID string, glo
 	if queryErr != nil {
 		return fmt.Errorf("System error validating global name (%v)", queryErr)
 	}
+	defer rows.Close()
 
 	existingNameUsedByAnotherGlobal := rows.Next()
 	if existingNameUsedByAnotherGlobal {
