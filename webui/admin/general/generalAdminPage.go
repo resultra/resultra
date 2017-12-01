@@ -7,6 +7,7 @@ import (
 	"resultra/datasheet/server/databaseController"
 
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/common"
@@ -46,6 +47,12 @@ func generalAdminPage(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	databaseID := vars["databaseID"]
+
+	_, authErr := userAuth.GetCurrentUserInfo(r)
+	if authErr != nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
 
 	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
 	if dbErr != nil {

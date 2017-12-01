@@ -10,6 +10,7 @@ import (
 
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
@@ -48,6 +49,12 @@ func editFieldPropsPage(w http.ResponseWriter, r *http.Request) {
 	fieldID := vars["fieldID"]
 
 	log.Println("editFieldPropsPage: viewing/editing admin settings for field ID = ", fieldID)
+
+	_, authErr := userAuth.GetCurrentUserInfo(r)
+	if authErr != nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
 
 	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
 	if dbErr != nil {

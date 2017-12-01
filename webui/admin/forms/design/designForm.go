@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/generic/userAuth"
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/admin/forms/design/properties"
@@ -43,6 +44,12 @@ func DesignForm(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	formID := vars["formID"]
 	log.Println("Design Form: editing for form with ID = ", formID)
+
+	_, authErr := userAuth.GetCurrentUserInfo(r)
+	if authErr != nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
 
 	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
 	if dbErr != nil {

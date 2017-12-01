@@ -62,10 +62,8 @@ func viewMainWindow(w http.ResponseWriter, r *http.Request) {
 
 	_, authErr := userAuth.GetCurrentUserInfo(r)
 	if authErr != nil {
-		err := mainWindowTemplates.ExecuteTemplate(w, "userSignInPage", nil)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
 	} else {
 
 		trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
