@@ -11,6 +11,7 @@ import (
 	"resultra/datasheet/server/userRole"
 
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/workspace"
 	"resultra/datasheet/webui/alertListView"
 	"resultra/datasheet/webui/common"
 	dashboardCommon "resultra/datasheet/webui/dashboard/common"
@@ -46,6 +47,7 @@ type MainWindowTemplateParams struct {
 	Title           string
 	DatabaseID      string
 	DatabaseName    string
+	WorkspaceName   string
 	CurrUserIsAdmin bool
 	ItemListParams  itemList.ViewListTemplateParams
 	DashboardParams dashboardView.ViewDashboardTemplateParams
@@ -72,6 +74,12 @@ func viewMainWindow(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+		if workspaceErr != nil {
+			http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+			return
+		}
+
 		dbInfo, getErr := databaseController.GetDatabaseInfo(trackerDBHandle, databaseID)
 		if getErr != nil {
 			api.WriteErrorResponse(w, getErr)
@@ -85,6 +93,7 @@ func viewMainWindow(w http.ResponseWriter, r *http.Request) {
 			DatabaseName:    dbInfo.DatabaseName,
 			CurrUserIsAdmin: isAdmin,
 			ItemListParams:  itemList.ViewListTemplParams,
+			WorkspaceName:   workspaceName,
 			DashboardParams: dashboardView.ViewTemplateParams}
 
 		if err := mainWindowTemplates.ExecuteTemplate(w, "mainWindow", templParams); err != nil {
