@@ -11,6 +11,7 @@ import (
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
+	"resultra/datasheet/server/workspace"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
@@ -37,6 +38,7 @@ type UserRoleTemplParams struct {
 	Title           string
 	DatabaseID      string
 	DatabaseName    string
+	WorkspaceName   string
 	RoleID          string
 	RoleName        string
 	CurrUserIsAdmin bool
@@ -61,9 +63,16 @@ func editRolePropsPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	roleInfo, err := userRole.GetUserRole(trackerDBHandle, roleID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	log.Println("editRolePropsPage: viewing/editing admin settings for role = %+v", roleInfo)
@@ -71,6 +80,7 @@ func editRolePropsPage(w http.ResponseWriter, r *http.Request) {
 	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(trackerDBHandle, roleInfo.ParentDatabaseID)
 	if dbInfoErr != nil {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
@@ -80,12 +90,14 @@ func editRolePropsPage(w http.ResponseWriter, r *http.Request) {
 		Title:           "User Role Settings",
 		DatabaseID:      roleInfo.ParentDatabaseID,
 		DatabaseName:    dbInfo.DatabaseName,
+		WorkspaceName:   workspaceName,
 		RoleID:          roleID,
 		RoleName:        roleInfo.RoleName,
 		CurrUserIsAdmin: isAdmin}
 
 	if err := userRoleTemplates.ExecuteTemplate(w, "editUserRolePropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 }

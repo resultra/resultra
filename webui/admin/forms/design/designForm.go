@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/workspace"
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/admin/forms/design/properties"
@@ -57,13 +58,19 @@ func DesignForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	formDBInfo, getErr := databaseController.GetFormDatabaseInfo(trackerDBHandle, formID)
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return
 	}
 
-	templParams := createDesignFormTemplateParams(r, formDBInfo)
+	templParams := createDesignFormTemplateParams(r, formDBInfo, workspaceName)
 
 	err := designFormTemplates.ExecuteTemplate(w, "designForm", templParams)
 	if err != nil {

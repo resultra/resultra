@@ -13,6 +13,7 @@ import (
 
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/workspace"
 	"resultra/datasheet/webui/admin/itemList/itemListProps/userRole"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/recordFilter"
@@ -43,6 +44,7 @@ type ItemListTemplParams struct {
 	Title                    string
 	DatabaseID               string
 	DatabaseName             string
+	WorkspaceName            string
 	ListID                   string
 	ListName                 string
 	CurrUserIsAdmin          bool
@@ -64,6 +66,12 @@ func editListPropsPage(w http.ResponseWriter, r *http.Request) {
 	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
 	if dbErr != nil {
 		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -91,6 +99,7 @@ func editListPropsPage(w http.ResponseWriter, r *http.Request) {
 		Title:                    "Item List Settings",
 		DatabaseID:               listInfo.ParentDatabaseID,
 		DatabaseName:             dbInfo.DatabaseName,
+		WorkspaceName:            workspaceName,
 		ListID:                   listID,
 		ListName:                 listInfo.Name,
 		CurrUserIsAdmin:          currUserIsAdmin,

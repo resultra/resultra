@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
+	"resultra/datasheet/server/workspace"
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
@@ -40,6 +41,7 @@ type FieldTemplParams struct {
 	Title           string
 	DatabaseID      string
 	DatabaseName    string
+	WorkspaceName   string
 	CurrUserIsAdmin bool
 }
 
@@ -60,6 +62,12 @@ func roleAdminPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(trackerDBHandle, databaseID)
 	if dbInfoErr != nil {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
@@ -71,6 +79,7 @@ func roleAdminPage(w http.ResponseWriter, r *http.Request) {
 		Title:           "Role",
 		DatabaseID:      databaseID,
 		DatabaseName:    dbInfo.DatabaseName,
+		WorkspaceName:   workspaceName,
 		CurrUserIsAdmin: isAdmin}
 
 	if err := roleTemplates.ExecuteTemplate(w, "roleAdminPage", templParams); err != nil {

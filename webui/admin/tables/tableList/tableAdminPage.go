@@ -9,6 +9,7 @@ import (
 
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/workspace"
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
@@ -38,6 +39,7 @@ type TemplParams struct {
 	Title           string
 	DatabaseID      string
 	DatabaseName    string
+	WorkspaceName   string
 	CurrUserIsAdmin bool
 }
 
@@ -64,12 +66,19 @@ func tableAdminPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
 	templParams := TemplParams{
 		Title:           "Tables",
 		DatabaseID:      databaseID,
 		DatabaseName:    dbInfo.DatabaseName,
+		WorkspaceName:   workspaceName,
 		CurrUserIsAdmin: isAdmin}
 
 	if err := tableTemplates.ExecuteTemplate(w, "tableAdminPage", templParams); err != nil {

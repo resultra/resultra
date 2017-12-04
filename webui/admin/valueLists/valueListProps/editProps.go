@@ -10,6 +10,7 @@ import (
 	"resultra/datasheet/webui/thirdParty"
 
 	"resultra/datasheet/server/common/runtimeConfig"
+	"resultra/datasheet/server/workspace"
 	adminCommon "resultra/datasheet/webui/admin/common"
 
 	"resultra/datasheet/server/common/databaseWrapper"
@@ -40,6 +41,7 @@ type FormLinkTemplParams struct {
 	Title           string
 	DatabaseID      string
 	DatabaseName    string
+	WorkspaceName   string
 	ValueListID     string
 	ValueListName   string
 	SiteBaseURL     string
@@ -67,6 +69,12 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	valueListInfo, err := valueList.GetValueList(trackerDBHandle, valueListID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -86,6 +94,7 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		Title:           "Value List Settings",
 		DatabaseID:      dbInfo.DatabaseID,
 		DatabaseName:    dbInfo.DatabaseName,
+		WorkspaceName:   workspaceName,
 		ValueListID:     valueListID,
 		ValueListName:   valueListInfo.Name,
 		SiteBaseURL:     runtimeConfig.GetSiteBaseURL(),

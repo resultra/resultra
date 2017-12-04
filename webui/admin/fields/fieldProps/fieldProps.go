@@ -12,6 +12,7 @@ import (
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
+	"resultra/datasheet/server/workspace"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
@@ -38,6 +39,7 @@ type FieldTemplParams struct {
 	Title           string
 	DatabaseID      string
 	DatabaseName    string
+	WorkspaceName   string
 	FieldID         string
 	FieldName       string
 	CurrUserIsAdmin bool
@@ -62,6 +64,12 @@ func editFieldPropsPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	fieldInfo, err := field.GetField(trackerDBHandle, fieldID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -79,6 +87,7 @@ func editFieldPropsPage(w http.ResponseWriter, r *http.Request) {
 		Title:           "Field Settings",
 		DatabaseID:      fieldInfo.ParentDatabaseID,
 		DatabaseName:    dbInfo.DatabaseName,
+		WorkspaceName:   workspaceName,
 		FieldID:         fieldID,
 		FieldName:       fieldInfo.Name,
 		CurrUserIsAdmin: isAdmin}

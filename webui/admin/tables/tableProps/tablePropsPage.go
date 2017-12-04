@@ -10,6 +10,7 @@ import (
 	adminCommon "resultra/datasheet/webui/admin/common"
 
 	"resultra/datasheet/server/common/runtimeConfig"
+	"resultra/datasheet/server/workspace"
 
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
@@ -45,6 +46,7 @@ type TemplParams struct {
 	Title           string
 	DatabaseID      string
 	DatabaseName    string
+	WorkspaceName   string
 	TableID         string
 	TableName       string
 	SiteBaseURL     string
@@ -72,6 +74,12 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	tableInfo, err := displayTable.GetTable(trackerDBHandle, tableID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -90,6 +98,7 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		Title:           "Table view properties",
 		DatabaseID:      dbInfo.DatabaseID,
 		DatabaseName:    dbInfo.DatabaseName,
+		WorkspaceName:   workspaceName,
 		TableID:         tableID,
 		TableName:       tableInfo.Name,
 		SiteBaseURL:     runtimeConfig.GetSiteBaseURL(),

@@ -17,13 +17,15 @@ type DashboardTemplateParams struct {
 	DatabaseID      string
 	DatabaseName    string
 	DashboardName   string
+	WorkspaceName   string
 	CurrUserIsAdmin bool
 	NamePanelParams propertiesSidebar.PanelTemplateParams
 	RolePanelParams propertiesSidebar.PanelTemplateParams
 	ComponentParams components.ComponentDesignTemplateParams
 }
 
-func createDashboardTemplateParams(r *http.Request, dashboardForDesign *dashboard.Dashboard) (*DashboardTemplateParams, error) {
+func createDashboardTemplateParams(r *http.Request, dashboardForDesign *dashboard.Dashboard,
+	workspaceName string) (*DashboardTemplateParams, error) {
 
 	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
 	if dbErr != nil {
@@ -42,6 +44,7 @@ func createDashboardTemplateParams(r *http.Request, dashboardForDesign *dashboar
 		DashboardID:     dashboardForDesign.DashboardID,
 		DatabaseID:      dashboardForDesign.ParentDatabaseID,
 		DatabaseName:    dashboardDB.Name,
+		WorkspaceName:   workspaceName,
 		DashboardName:   dashboardForDesign.Name,
 		CurrUserIsAdmin: isAdmin,
 		NamePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Dashboard Name", PanelID: "dashboardName"},

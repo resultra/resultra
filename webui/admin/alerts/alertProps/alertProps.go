@@ -11,6 +11,7 @@ import (
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
+	"resultra/datasheet/server/workspace"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/field"
 	"resultra/datasheet/webui/common/recordFilter"
@@ -40,6 +41,7 @@ type AlertTemplParams struct {
 	Title                           string
 	DatabaseID                      string
 	DatabaseName                    string
+	WorkspaceName                   string
 	AlertID                         string
 	AlertName                       string
 	CurrUserIsAdmin                 bool
@@ -61,6 +63,12 @@ func editAlertPropsPage(w http.ResponseWriter, r *http.Request) {
 	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
 	if dbErr != nil {
 		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -89,6 +97,7 @@ func editAlertPropsPage(w http.ResponseWriter, r *http.Request) {
 		Title:                           "Alert Settings",
 		DatabaseID:                      dbInfo.DatabaseID,
 		DatabaseName:                    dbInfo.DatabaseName,
+		WorkspaceName:                   workspaceName,
 		AlertID:                         alertInfo.AlertID,
 		AlertName:                       alertInfo.Name,
 		CurrUserIsAdmin:                 isAdmin,

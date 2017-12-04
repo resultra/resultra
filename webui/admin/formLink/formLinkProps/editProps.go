@@ -14,6 +14,7 @@ import (
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
+	"resultra/datasheet/server/workspace"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/common/defaultValues"
 	"resultra/datasheet/webui/generic"
@@ -41,6 +42,7 @@ type FormLinkTemplParams struct {
 	Title                   string
 	DatabaseID              string
 	DatabaseName            string
+	WorkspaceName           string
 	CurrUserIsAdmin         bool
 	LinkID                  string
 	LinkName                string
@@ -69,6 +71,12 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	linkInfo, err := formLink.GetFormLink(trackerDBHandle, linkID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -90,6 +98,7 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		Title:                   "Form Link Settings",
 		DatabaseID:              formDBInfo.DatabaseID,
 		DatabaseName:            formDBInfo.DatabaseName,
+		WorkspaceName:           workspaceName,
 		LinkID:                  linkID,
 		LinkName:                linkInfo.Name,
 		CurrUserIsAdmin:         isAdmin,

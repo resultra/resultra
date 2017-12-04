@@ -46,6 +46,7 @@ type DesignFormTemplateParams struct {
 	Title               string
 	DatabaseID          string
 	DatabaseName        string
+	WorkspaceName       string
 	FormID              string
 	FormName            string
 	CurrUserIsAdmin     bool
@@ -77,7 +78,8 @@ type DesignFormTemplateParams struct {
 
 var designFormTemplateParams DesignFormTemplateParams
 
-func createDesignFormTemplateParams(r *http.Request, formInfo *databaseController.FormDatabaseInfo) DesignFormTemplateParams {
+func createDesignFormTemplateParams(r *http.Request,
+	formInfo *databaseController.FormDatabaseInfo, workspaceName string) DesignFormTemplateParams {
 
 	elemPrefix := "form_"
 
@@ -99,6 +101,7 @@ func createDesignFormTemplateParams(r *http.Request, formInfo *databaseControlle
 		DatabaseName:    formInfo.DatabaseName,
 		FormID:          formInfo.FormID,
 		FormName:        formInfo.FormName,
+		WorkspaceName:   workspaceName,
 		CurrUserIsAdmin: currUserIsAdmin,
 
 		CheckboxParams:      checkBox.DesignTemplateParams,

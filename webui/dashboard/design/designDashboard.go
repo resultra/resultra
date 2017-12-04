@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/generic/api"
+	"resultra/datasheet/server/workspace"
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common"
@@ -50,13 +51,19 @@ func DesignDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	dashboardForDesign, getErr := dashboard.GetDashboard(trackerDBHandle, dashboardID)
 	if getErr != nil {
 		api.WriteErrorResponse(w, getErr)
 		return
 	}
 
-	templParams, templErr := createDashboardTemplateParams(r, dashboardForDesign)
+	templParams, templErr := createDashboardTemplateParams(r, dashboardForDesign, workspaceName)
 	if templErr != nil {
 		api.WriteErrorResponse(w, templErr)
 		return

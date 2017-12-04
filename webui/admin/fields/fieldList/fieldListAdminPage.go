@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/server/userRole"
 
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/workspace"
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
@@ -39,6 +40,7 @@ type FieldTemplParams struct {
 	Title           string
 	DatabaseID      string
 	DatabaseName    string
+	WorkspaceName   string
 	FieldID         string
 	FieldName       string
 	CurrUserIsAdmin bool
@@ -61,6 +63,12 @@ func fieldListAdminPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	dbInfo, dbInfoErr := databaseController.GetDatabaseInfo(trackerDBHandle, databaseID)
 	if dbInfoErr != nil {
 		http.Error(w, dbInfoErr.Error(), http.StatusInternalServerError)
@@ -72,6 +80,7 @@ func fieldListAdminPage(w http.ResponseWriter, r *http.Request) {
 		Title:           "Field Settings",
 		DatabaseID:      databaseID,
 		DatabaseName:    dbInfo.DatabaseName,
+		WorkspaceName:   workspaceName,
 		CurrUserIsAdmin: isAdmin}
 
 	if err := fieldListTemplates.ExecuteTemplate(w, "fieldAdminPage", templParams); err != nil {

@@ -10,6 +10,7 @@ import (
 
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/workspace"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
@@ -35,6 +36,7 @@ type UserRoleTemplParams struct {
 	Title           string
 	DatabaseID      string
 	DatabaseName    string
+	WorkspaceName   string
 	UserID          string
 	CollaboratorID  string
 	UserName        string
@@ -56,6 +58,12 @@ func editCollabPropsPage(w http.ResponseWriter, r *http.Request) {
 	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
 	if dbErr != nil {
 		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -85,6 +93,7 @@ func editCollabPropsPage(w http.ResponseWriter, r *http.Request) {
 		Title:           "Collaborator Settings",
 		DatabaseID:      dbInfo.DatabaseID,
 		DatabaseName:    dbInfo.DatabaseName,
+		WorkspaceName:   workspaceName,
 		UserID:          collabInfo.UserID,
 		CollaboratorID:  collaboratorID,
 		UserName:        userInfo.UserName,

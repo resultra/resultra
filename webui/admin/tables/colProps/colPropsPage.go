@@ -12,6 +12,7 @@ import (
 
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/common/runtimeConfig"
+	"resultra/datasheet/server/workspace"
 
 	"resultra/datasheet/server/generic/userAuth"
 	"resultra/datasheet/server/userRole"
@@ -61,6 +62,7 @@ type TemplParams struct {
 	Title               string
 	DatabaseID          string
 	DatabaseName        string
+	WorkspaceName       string
 	TableID             string
 	TableName           string
 	ColID               string
@@ -110,9 +112,16 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	colInfo, err := colCommon.GetTableColumnInfo(trackerDBHandle, colID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	tableInfo, err := displayTable.GetTable(trackerDBHandle, colInfo.TableID)
@@ -135,6 +144,7 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		Title:               "Column properties",
 		DatabaseID:          dbInfo.DatabaseID,
 		DatabaseName:        dbInfo.DatabaseName,
+		WorkspaceName:       workspaceName,
 		CurrUserIsAdmin:     isAdmin,
 		TableID:             colInfo.TableID,
 		TableName:           tableInfo.Name,
