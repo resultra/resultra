@@ -24,11 +24,21 @@ CREATE TABLE IF NOT EXISTS users (
 	first_name text NOT NULL, -- TODO cannot be empty
 	last_name text NOT NULL, -- TODO cannot be empty
 	email_addr text NOT NULL, -- TODO must be non-empty, unique (case-insensitive)
-	password_hash text NOT NULL
+	password_hash text NOT NULL,
+	is_workspace_admin bool NOT NULL DEFAULT '0'
 );
 
 CREATE UNIQUE INDEX email_unique_index on users (LOWER(email_addr));
 CREATE UNIQUE INDEX username_unique_index on users (LOWER(user_name));
+
+CREATE TABLE IF NOT EXISTS workspace_info (
+	single_row_id int PRIMARY KEY DEFAULT '1',
+	schema_version int NOT NULL,
+	name text NOT NULL
+);
+
+-- Create the default workspace information
+INSERT INTO workspace_info (schema_version,name) VALUES ('1','Trackers');
 
 CREATE TABLE IF NOT EXISTS fields ( 
 	field_id text PRIMARY KEY, 

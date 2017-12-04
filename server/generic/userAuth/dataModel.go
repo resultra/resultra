@@ -18,10 +18,11 @@ type User struct {
 }
 
 type UserInfo struct {
-	UserID    string `json:"userID"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	UserName  string `json:"userName"`
+	UserID           string `json:"userID"`
+	FirstName        string `json:"firstName"`
+	LastName         string `json:"lastName"`
+	UserName         string `json:"userName"`
+	IsWorkspaceAdmin bool   `json:"isWorkspaceAdmin"`
 }
 
 type NewUserParams struct {
@@ -160,10 +161,12 @@ func GetUserInfoByID(trackerDBHandle *sql.DB, userID string) (*UserInfo, error) 
 	var userInfo UserInfo
 	userInfo.UserID = userID
 	getErr := trackerDBHandle.QueryRow(
-		`SELECT first_name,last_name,user_name 
+		`SELECT first_name,last_name,user_name,is_workspace_admin
 			FROM users 
 			WHERE user_id=$1 LIMIT 1`,
-		userID).Scan(&userInfo.FirstName, &userInfo.LastName, &userInfo.UserName)
+		userID).Scan(&userInfo.FirstName,
+		&userInfo.LastName, &userInfo.UserName,
+		&userInfo.IsWorkspaceAdmin)
 	if getErr != nil {
 		return nil, fmt.Errorf("Can't find user with id: %v", userID)
 	}

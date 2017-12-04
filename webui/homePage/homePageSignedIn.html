@@ -1,6 +1,6 @@
 {{define "homePageBreadcrumbHeader"}}
 	<div class="marginTop2">
-	  {{template "homePageBreadcrumb"}}
+	  {{template "workspaceBreadcrumb" .}}
 	</div> <!-- breadcrumb header -->
 {{end}}
 
@@ -25,7 +25,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>{{.Title}}</title>
+    <title>Resultra - {{.WorkspaceName}}</title>
 
 	{{template "electronImportPrefix"}}
 
@@ -43,12 +43,12 @@
   </head>
   <body>
 	  
-	  {{template "homePageHeader"}}
+	  {{template "homePageHeader" .}}
 	  
 	  <hr id="homePageHeaderBodySep">
 	  
 	  <div id="homePageContent">
-		  {{template "trackerList"}}
+		  {{template "trackerList" .}}
 	  </div>
 	  
   </body>

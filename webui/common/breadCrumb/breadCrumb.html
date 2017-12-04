@@ -2,6 +2,11 @@
 <a class="h4" href="/"><i class="fa fa-home" aria-hidden="true">&nbsp;Trackers</i></a>
 {{end}}
 
+{{define "workspaceBreadcrumb"}}
+<a class="h4" href="/"><i class="fa fa-home" aria-hidden="true">&nbsp;{{.WorkspaceName}}</i></a>
+{{end}}
+
+
 {{define "trackerPageBreadcrumb"}}
 <a class="h4" href="/main/{{.DatabaseID}}"><i class="fa fa-tasks"
 		 aria-hidden="true">&nbsp;{{.DatabaseName}}</i></a>

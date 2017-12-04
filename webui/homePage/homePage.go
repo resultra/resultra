@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/workspace"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
@@ -33,26 +34,46 @@ func RegisterHTTPHandlers(mainRouter *mux.Router) {
 }
 
 type PageInfo struct {
-	Title string `json:"title"`
+	Title         string `json:"title"`
+	WorkspaceName string `json:"workspaceName"`
 }
 
 func home(respWriter http.ResponseWriter, req *http.Request) {
 
-	log.Printf("Main page accessed through path: %v", databaseWrapper.AccountHostNameFromReq(req))
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
+	if dbErr != nil {
+		http.Error(respWriter, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(respWriter, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	log.Printf("workspace name: %v", workspaceName)
 
 	_, authErr := userAuth.GetCurrentUserInfo(req)
 	if authErr != nil {
 		log.Printf("user not authorized: %v", authErr)
-		templParams := PageInfo{"Home Page - Signed out"}
+		templParams := PageInfo{
+			Title:         "Resultra Workspace - Signed out",
+			WorkspaceName: workspaceName}
 		err := homePageTemplates.ExecuteTemplate(respWriter, "homePagePublic", templParams)
 		if err != nil {
 			http.Error(respWriter, err.Error(), http.StatusInternalServerError)
+			return
 		}
 	} else {
-		templParams := PageInfo{"Home Page - Signed In"}
+
+		templParams := PageInfo{
+			Title:         "Resultra Workspace - Signed In",
+			WorkspaceName: workspaceName}
 		err := homePageTemplates.ExecuteTemplate(respWriter, "homePageSignedIn", templParams)
 		if err != nil {
 			http.Error(respWriter, err.Error(), http.StatusInternalServerError)
+			return
 		}
 
 	}
