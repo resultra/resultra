@@ -1,0 +1,60 @@
+{{define "workspaceAdminBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "workspaceBreadcrumb" .}}
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Workspace Settings</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "workspaceAdminPageHeader"}}
+	<div class="container-fluid" id="pageHeader">
+		<div class="row">
+			<div class="col-sm-8">
+				{{template "workspaceAdminBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-4">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+					{{template "helpDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+  	
+    <hr id="pageHeaderBodySep">
+	
+	
+{{end}}
+
+
+{{define "workspaceAdminPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.WorkspaceName}} - Workspace settings</title>
+
+	{{template "electronImportPrefix"}}
+
+	{{template "thirdPartyCSS"}}
+	
+	<!-- workspaceAdminAssets:css -->
+	<!-- endinject -->
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- workspaceAdminAssets:js -->
+	<!-- endinject -->
+			
+  </head>
+  <body>
+	  
+	  {{template "workspaceAdminPageHeader" .}}
+	  
+	  
+	  <div id="workspaceAdminPageContent">
+		  TBD
+	  </div>
+	  
+  </body>
+</html>
+{{end}}

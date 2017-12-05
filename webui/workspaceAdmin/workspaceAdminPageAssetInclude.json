@@ -1,0 +1,11 @@
+{
+	"subDirs":["../generic",
+		"../common"],
+	"cssFiles": ["trackerDescription.css"],
+	"jsFiles": ["workspaceAdminPage.js"],
+	"htmlFiles":["workspaceAdminPage.html"],
+	"imageFiles":[],
+	"minCSSFile":"workspace-admin/workspaceAdmin.min.css",
+	"minJSFile": "workspace-admin/workspaceAdmin.min.js",
+	"injectPlaceholderName":"workspaceAdminAssets"
+}
