@@ -14,7 +14,7 @@ $(document).ready(function() {
 		openResetPasswordDialog()
 	})
 	
-	
-	initHelpDropdownMenu()
+	initPublicPageHeader()
+
 		
 }); // document ready
