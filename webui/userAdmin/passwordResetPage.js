@@ -9,6 +9,8 @@ function initPasswordResetForm() {
 	var $resetForm = $("#passwordResetForm")
 	var $passwordInput = $('#resetPasswordInput')
 	
+	var $resetControls = $('.passwordResetControls')
+	
 	var validator = $resetForm.validate({
 		rules: {	
 			resetPasswordInput: {
@@ -51,7 +53,7 @@ function initPasswordResetForm() {
 			$passwordResetButton.prop('disabled',true)
 			jsonRequest("/auth/resetPassword",resetParams,function(resetResp) {
 				if(resetResp.success == true) {
-					
+					$resetControls.hide()
 					$resetConfirm.show()
 					
 				} else {
