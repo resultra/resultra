@@ -2,7 +2,7 @@
 	"subDirs":["../generic",
 		"../common"],
 	"cssFiles": ["homePagePublic.css"],
-	"imageFiles": ["resultra-logo-header.png"],
+	"imageFiles": [],
 	"jsFiles": ["homePagePublic.js"],
 	"htmlFiles":["homePagePublic.html"],
 	"minCSSFile":"homePage/homePagePublic.min.css",
