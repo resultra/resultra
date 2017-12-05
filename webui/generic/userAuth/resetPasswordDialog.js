@@ -39,7 +39,9 @@ function openResetPasswordDialog() {
 				remote:"Please enter the email address used to register with this system."
 			},
 		}
-	})	
+	})
+	
+	var $resetButton = $('#resetPasswordButton')
 	
 	initButtonClickHandler("#resetPasswordButton",function() {
 		if($resetForm.valid()) {
@@ -47,11 +49,14 @@ function openResetPasswordDialog() {
 			var resetParams = {
 				emailAddr: $emailInput.val(),
 			}
+			$resetButton.prop('disabled',true)
 			jsonRequest("/auth/sendResetPasswordLink",resetParams,function(resetResp) {
 				if(resetResp.success == true) {
-					resetDialog.modal('hide')
-					$resetInfo.hide()
 					$resetConfirm.show()
+					$resetInfo.hide()
+					setTimeout(function() {
+						$resetDialog.modal('hide')
+					}, 2000);
 				} else {
 					$resetAlertMsg.text(resetResp.msg)
 					$resetAlert.show()

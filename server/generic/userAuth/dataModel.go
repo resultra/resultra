@@ -182,8 +182,13 @@ type PasswordResetParams struct {
 
 func sendResetPasswordLink(trackerDBHandle *sql.DB, params PasswordResetParams) *AuthResponse {
 
-	return newAuthResponse(false, fmt.Sprintf("Can't find user with email: %v", params.EmailAddr))
+	userInfo, err := GetUserInfoByEmail(trackerDBHandle, params.EmailAddr)
+	if err != nil {
+		return newAuthResponse(false, fmt.Sprintf("Unable to send password link: %v", err))
+	}
 
+	log.Printf("Sending password reset link: email = %v, user ID = %v", params.EmailAddr, userInfo.UserID)
+	return newAuthResponse(true, "Password reset link sent.")
 }
 
 func GetUserInfoByID(trackerDBHandle *sql.DB, userID string) (*UserInfo, error) {
@@ -199,6 +204,29 @@ func GetUserInfoByID(trackerDBHandle *sql.DB, userID string) (*UserInfo, error) 
 		&userInfo.IsWorkspaceAdmin)
 	if getErr != nil {
 		return nil, fmt.Errorf("Can't find user with id: %v", userID)
+	}
+
+	return &userInfo, nil
+}
+
+func GetUserInfoByEmail(trackerDBHandle *sql.DB, emailAddr string) (*UserInfo, error) {
+
+	var userInfo UserInfo
+
+	upperEmail := strings.ToUpper(emailAddr)
+
+	getErr := trackerDBHandle.QueryRow(
+		`SELECT user_id,first_name,last_name,user_name,is_workspace_admin
+			FROM users 
+			WHERE UPPER(email_addr)=$1 LIMIT 1`,
+		upperEmail).Scan(
+		&userInfo.UserID,
+		&userInfo.FirstName,
+		&userInfo.LastName,
+		&userInfo.UserName,
+		&userInfo.IsWorkspaceAdmin)
+	if getErr != nil {
+		return nil, fmt.Errorf("Can't find user with given email address: %v", emailAddr)
 	}
 
 	return &userInfo, nil
