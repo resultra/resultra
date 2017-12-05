@@ -31,6 +31,12 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE UNIQUE INDEX email_unique_index on users (LOWER(email_addr));
 CREATE UNIQUE INDEX username_unique_index on users (LOWER(user_name));
 
+CREATE TABLE IF NOT EXISTS password_reset_links (
+	reset_id text PRIMARY KEY,
+	user_id text REFERENCES users (user_id),
+	reset_timestamp_utc timestamp NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS workspace_info (
 	single_row_id int PRIMARY KEY DEFAULT '1',
 	schema_version int NOT NULL,

@@ -11,10 +11,12 @@ function openResetPasswordDialog() {
 	var $resetAlertMsg = $('#resetAlertMsg')
 	var $resetInfo = $('#resetPasswordInfo')
 	var $resetConfirm = $('#resetPasswordConfirm')
+	var $resetButton = $('#resetPasswordButton')
 	
 	$resetAlert.hide()
 	$resetInfo.show()
 	$resetConfirm.hide()
+	$resetButton.prop('disabled',false)
 	
 	$emailInput.val("")
 	resetFormValidationFeedback($resetForm)
@@ -41,7 +43,6 @@ function openResetPasswordDialog() {
 		}
 	})
 	
-	var $resetButton = $('#resetPasswordButton')
 	
 	initButtonClickHandler("#resetPasswordButton",function() {
 		if($resetForm.valid()) {
@@ -56,7 +57,7 @@ function openResetPasswordDialog() {
 					$resetInfo.hide()
 					setTimeout(function() {
 						$resetDialog.modal('hide')
-					}, 2000);
+					}, 3000);
 				} else {
 					$resetAlertMsg.text(resetResp.msg)
 					$resetAlert.show()
