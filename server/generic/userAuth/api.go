@@ -28,6 +28,7 @@ func init() {
 
 	authRouter.HandleFunc("/auth/validateExistingUserEmail", validateExistingUserEmailAPI)
 	authRouter.HandleFunc("/auth/sendResetPasswordLink", sendResetPasswordLinkAPI)
+	authRouter.HandleFunc("/auth/resetPassword", resetPasswordAPI)
 
 	authRouter.HandleFunc("/auth/validatePasswordStrength", validatePasswordStrengthAPI)
 
@@ -80,6 +81,25 @@ func loginUserAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	authResp := loginUser(w, r, params)
+	api.WriteJSONResponse(w, authResp)
+
+}
+
+func resetPasswordAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params PasswordResetEntryParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	authResp := resetPassword(trackerDBHandle, params)
 	api.WriteJSONResponse(w, authResp)
 
 }

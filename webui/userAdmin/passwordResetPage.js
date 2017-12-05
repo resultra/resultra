@@ -1,8 +1,10 @@
 
 function initPasswordResetForm() {
 	var $resetAlert = $('#resetPasswordAlert')
+	var $resetConfirm = $('#resetPasswordConfirm')
 	
 	$resetAlert.hide()
+	$resetConfirm.hide()
 	
 	var $resetForm = $("#passwordResetForm")
 	var $passwordInput = $('#resetPasswordInput')
@@ -36,20 +38,24 @@ function initPasswordResetForm() {
 			}
 		}
 	})	
+
+	var $passwordResetButton = $('#passwordResetButton')
 	
-	
-	initButtonClickHandler('#passwordResetButton',function() {
+	initButtonControlClickHandler($passwordResetButton,function() {
 		if($resetForm.valid()) {
 				
 			var resetParams = {
 				resetID: resetContext.resetID,
-				password: $passwordInput.val(),
+				newPassword: $passwordInput.val(),
 			}
+			$passwordResetButton.prop('disabled',true)
 			jsonRequest("/auth/resetPassword",resetParams,function(resetResp) {
 				if(resetResp.success == true) {
 					
+					$resetConfirm.show()
+					
 				} else {
-					$resetAlert.text(registerResp.msg)
+					$resetAlert.text(resetResp.msg)
 					$resetAlert.show()
 				}
 			})

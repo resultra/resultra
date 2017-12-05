@@ -76,3 +76,69 @@ func sendResetPasswordLink(trackerDBHandle *sql.DB, params PasswordResetParams) 
 	log.Printf("Sending password reset link: email = %v, user ID = %v", params.EmailAddr, userInfo.UserID)
 	return newAuthResponse(true, "Password reset link sent.")
 }
+
+type PasswordResetInfo struct {
+	ResetID   string
+	UserID    string
+	ResetTime time.Time
+}
+
+func GetPasswordResetInfo(trackerDBHandle *sql.DB, resetID string) (*PasswordResetInfo, error) {
+	var resetInfo PasswordResetInfo
+
+	getErr := trackerDBHandle.QueryRow(
+		`SELECT reset_id, user_id,  reset_timestamp_utc
+			FROM password_reset_links 
+			WHERE reset_id=$1 LIMIT 1`, resetID).Scan(&resetInfo.ResetID, &resetInfo.UserID, &resetInfo.ResetTime)
+	if getErr != nil {
+		return nil, fmt.Errorf("Invalid password reset information")
+	}
+
+	return &resetInfo, nil
+
+}
+
+func setUserPassword(trackerDBHandle *sql.DB, userID string, password string) error {
+
+	passwordValResp := validatePasswordStrength(password)
+	if !passwordValResp.ValidPassword {
+		return fmt.Errorf("setUserPassword: system failure setting password: %v", passwordValResp.Msg)
+	}
+
+	pwHash, hashErr := generatePasswordHash(password)
+	if hashErr != nil {
+		return fmt.Errorf("setUserPassword: system failure setting password: %v", hashErr)
+	}
+
+	if _, updateErr := trackerDBHandle.Exec(
+		`UPDATE users set password_hash=$1 where user_id=$2`, pwHash, userID); updateErr != nil {
+		return fmt.Errorf("setUserPassword: set password failed:  %v", updateErr)
+	}
+
+	trackerDBHandle.Exec(`DELETE from password_reset_links where user_id=$2`, userID)
+
+	return nil
+
+}
+
+type PasswordResetEntryParams struct {
+	ResetID     string `json:"resetID"`
+	NewPassword string `json:"newPassword"`
+}
+
+func resetPassword(trackerDBHandle *sql.DB, params PasswordResetEntryParams) *AuthResponse {
+
+	resetInfo, infoErr := GetPasswordResetInfo(trackerDBHandle, params.ResetID)
+	if infoErr != nil {
+		log.Printf("resetPassword: error: %v", infoErr)
+		return newAuthResponse(false, fmt.Sprintf("Failure setting password. Invalid reset link."))
+	}
+
+	if setErr := setUserPassword(trackerDBHandle, resetInfo.UserID, params.NewPassword); setErr != nil {
+		log.Printf("resetPassword: error: %v", setErr)
+		return newAuthResponse(false, fmt.Sprintf("Failure setting password. system error."))
+	}
+
+	return newAuthResponse(true, fmt.Sprintf("Password changed."))
+
+}
