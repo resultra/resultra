@@ -9,6 +9,12 @@ $(document).ready(function() {
 	    e.preventDefault();// prevent the default anchor functionality
 	});
 	
+	initButtonClickHandler('#homePageForgotPasswordButton',function() {
+		console.log("Reset password clicked")
+		openResetPasswordDialog()
+	})
+	
+	
 	initHelpDropdownMenu()
 		
 }); // document ready

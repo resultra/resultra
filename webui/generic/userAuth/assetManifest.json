@@ -2,6 +2,7 @@
     "cssFiles": [], 
     "htmlFiles": [
 	    "registerDialog.html", 
+		"resetPasswordDialog.html",
 	    "signIn.html",
 		"signInPage.html", 
 	    "signinDialog.html", 
@@ -9,6 +10,7 @@
     ], 
     "jsFiles": [
 	    "registerDialog.js", 
+		"resetPasswordDialog.js",
 	    "signIn.js", 
 	    "signinDialog.js", 
 	    "signOut.js",

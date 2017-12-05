@@ -25,6 +25,10 @@ func init() {
 	authRouter.HandleFunc("/auth/validateName", validateNameAPI)
 	authRouter.HandleFunc("/auth/validateNewUserName", validateNewUserNameAPI)
 	authRouter.HandleFunc("/auth/validateNewUserEmail", validateNewUserEmailAPI)
+
+	authRouter.HandleFunc("/auth/validateExistingUserEmail", validateExistingUserEmailAPI)
+	authRouter.HandleFunc("/auth/sendResetPasswordLink", sendResetPasswordLinkAPI)
+
 	authRouter.HandleFunc("/auth/validatePasswordStrength", validatePasswordStrengthAPI)
 
 	authRouter.HandleFunc("/auth/searchUsers", searchUsersAPI)
@@ -47,6 +51,24 @@ func registerNewUserAPI(w http.ResponseWriter, r *http.Request) {
 
 	newUserResp := saveNewUser(trackerDBHandle, params)
 	api.WriteJSONResponse(w, newUserResp)
+
+}
+
+func sendResetPasswordLinkAPI(w http.ResponseWriter, r *http.Request) {
+	var params PasswordResetParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	resetResp := sendResetPasswordLink(trackerDBHandle, params)
+	api.WriteJSONResponse(w, resetResp)
 
 }
 
@@ -192,6 +214,28 @@ func validateNewUserEmailAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	isValid, err := validateUniqueEmail(trackerDBHandle, emailAddr)
+
+	if err != nil {
+		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))
+		return
+	}
+
+	response := isValid
+	api.WriteJSONResponse(w, response)
+
+}
+
+func validateExistingUserEmailAPI(w http.ResponseWriter, r *http.Request) {
+
+	emailAddr := r.FormValue("emailAddr")
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	isValid, err := validateExistingEmail(trackerDBHandle, emailAddr)
 
 	if err != nil {
 		api.WriteJSONResponse(w, fmt.Sprintf("%v", err))

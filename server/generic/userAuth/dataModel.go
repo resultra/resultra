@@ -156,6 +156,36 @@ func validateUniqueEmail(trackerDBHandle *sql.DB, emailAddr string) (bool, error
 
 }
 
+func validateExistingEmail(trackerDBHandle *sql.DB, emailAddr string) (bool, error) {
+
+	upperEmail := strings.ToUpper(emailAddr)
+
+	rows, queryErr := trackerDBHandle.Query(
+		`SELECT user_id FROM users WHERE UPPER(email_addr)=$1`, upperEmail)
+	if queryErr != nil {
+		return false, fmt.Errorf("validateUniqueEmail: Can't query database for email address: %v", queryErr)
+	}
+	defer rows.Close()
+
+	existingEmailAlreadyUsed := rows.Next()
+	if existingEmailAlreadyUsed {
+		return true, nil
+	}
+
+	return false, nil
+
+}
+
+type PasswordResetParams struct {
+	EmailAddr string `json:"emailAddr"`
+}
+
+func sendResetPasswordLink(trackerDBHandle *sql.DB, params PasswordResetParams) *AuthResponse {
+
+	return newAuthResponse(false, fmt.Sprintf("Can't find user with email: %v", params.EmailAddr))
+
+}
+
 func GetUserInfoByID(trackerDBHandle *sql.DB, userID string) (*UserInfo, error) {
 
 	var userInfo UserInfo
