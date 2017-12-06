@@ -53,6 +53,14 @@ func GetWorkspaceName(trackerDBHandle *sql.DB) (string, error) {
 
 }
 
+func setWorkspaceName(trackerDBHandle *sql.DB, newName string) error {
+	if _, updateErr := trackerDBHandle.Exec(`UPDATE workspace_info SET name=$1`, newName); updateErr != nil {
+		return fmt.Errorf("setWorkspaceName: Error updating name: error = %v", updateErr)
+	}
+
+	return nil
+}
+
 func CurrUserIsWorkspaceAdmin(req *http.Request) bool {
 
 	userInfo, userInfoErr := userAuth.GetCurrentUserInfo(req)

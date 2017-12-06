@@ -17,7 +17,8 @@ var generalTemplates *template.Template
 func init() {
 
 	baseTemplateFiles := []string{
-		"static/workspaceAdmin/workspaceAdminPage.html"}
+		"static/workspaceAdmin/workspaceAdminPage.html",
+		"static/workspaceAdmin/workspaceNameProperty.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
@@ -35,8 +36,8 @@ type TemplParams struct {
 
 func workspaceAdminPage(w http.ResponseWriter, r *http.Request) {
 
-	_, authErr := userAuth.GetCurrentUserInfo(r)
-	if authErr != nil {
+	userInfo, authErr := userAuth.GetCurrentUserInfo(r)
+	if (authErr != nil) || (!userInfo.IsWorkspaceAdmin) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}

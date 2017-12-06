@@ -1,3 +1,14 @@
+
+
+{{define "workspaceProperties"}}
+
+<table class="table">
+	{{template "workspaceNameProperty"}}
+</table>
+
+{{end}}
+
+
 {{define "workspaceAdminBreadcrumbHeader"}}
 	<div class="marginTop2">
 	  {{template "workspaceBreadcrumb" .}}
@@ -23,7 +34,6 @@
   	
     <hr id="pageHeaderBodySep">
 	
-	
 {{end}}
 
 
@@ -40,6 +50,10 @@
 	<!-- workspaceAdminAssets:css -->
 	<!-- endinject -->
 	
+	<script>var workspaceAdminContext = {
+	 	workspaceName: "{{.WorkspaceName}}"} 
+	</script>
+	
 	{{template "thirdPartyJS"}}
 	
 	<!-- workspaceAdminAssets:js -->
@@ -50,9 +64,9 @@
 	  
 	  {{template "workspaceAdminPageHeader" .}}
 	  
-	  
 	  <div id="workspaceAdminPageContent">
-		  TBD
+		  <h4>Workspace Settings - {{.WorkspaceName}}</h4>
+		  {{template "workspaceProperties"}}
 	  </div>
 	  
   </body>
