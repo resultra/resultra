@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS databases (
    properties text NOT NULL,
    description text NOT NULL,
    is_template boolean NOT NULL,
-   is_active boolean NOT NULL,
+   is_active boolean NOT NULL DEFAULT '1',
    created_by_user_id text REFERENCES users (user_id)
 );
 
@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS users (
 	last_name text NOT NULL, -- TODO cannot be empty
 	email_addr text NOT NULL, -- TODO must be non-empty, unique (case-insensitive)
 	password_hash text NOT NULL,
+    is_active boolean NOT NULL DEFAULT '1',
 	is_workspace_admin bool NOT NULL DEFAULT '0'
 );
 
@@ -55,6 +56,7 @@ CREATE TABLE IF NOT EXISTS fields (
 	ref_name text NOT NULL, 
 	calc_field_eqn text, 
 	is_calc_field boolean NOT NULL, 
+    is_active boolean NOT NULL DEFAULT '1',
 	preprocessed_formula_text text
 ); 
 
@@ -65,6 +67,7 @@ CREATE TABLE IF NOT EXISTS globals (
 	database_id text REFERENCES databases (database_id), 
 	name text NOT NULL, 
 	ref_name text NOT NULL, 
+    is_active boolean NOT NULL DEFAULT '1',
 	type text NOT NULL
 );
 
@@ -94,6 +97,7 @@ CREATE TABLE IF NOT EXISTS records (
 	record_id text PRIMARY KEY,
 	is_draft_record boolean NOT NULL,
 	create_timestamp_utc timestamp NOT NULL,
+    is_active boolean NOT NULL DEFAULT '1',
 	sequence_num int NOT NULL
 );
 
@@ -112,6 +116,7 @@ CREATE TABLE IF NOT EXISTS  alerts (
 	database_id text REFERENCES databases(database_id), 
 	alert_id text PRIMARY KEY, 
 	name text NOT NULL,
+    is_active boolean NOT NULL DEFAULT '1',
 	properties text NOT NULL
 ); 
 
@@ -119,6 +124,7 @@ CREATE TABLE IF NOT EXISTS  dashboards (
 	database_id text REFERENCES databases(database_id), 
 	dashboard_id text PRIMARY KEY, 
 	name text NOT NULL,
+    is_active boolean NOT NULL DEFAULT '1',
 	properties text NOT NULL
 ); 
 
@@ -126,6 +132,7 @@ CREATE TABLE IF NOT EXISTS table_views (
 	database_id text REFERENCES databases(database_id), 
 	table_id text PRIMARY KEY, 
 	name text NOT NULL,
+    is_active boolean NOT NULL DEFAULT '1',
 	properties text NOT NULL
 ); 
 
@@ -133,6 +140,7 @@ CREATE TABLE IF NOT EXISTS forms (
 	database_id text REFERENCES databases(database_id), 
 	form_id text PRIMARY KEY, 
 	name text NOT NULL,
+    is_active boolean NOT NULL DEFAULT '1',
 	properties text NOT NULL
 ); 
 
@@ -140,6 +148,7 @@ CREATE TABLE IF NOT EXISTS item_lists (
 	list_id text PRIMARY KEY, 
 	database_id text REFERENCES databases(database_id), 
 	name text NOT NULL,
+    is_active boolean NOT NULL DEFAULT '1',
 	properties text NOT NULL
 ); 
 
@@ -150,6 +159,7 @@ CREATE TABLE IF NOT EXISTS form_links (
 	include_in_sidebar boolean NOT NULL,
 	shared_link_enabled boolean,
 	shared_link_id text,
+    is_active boolean NOT NULL DEFAULT '1',
 	properties text NOT NULL
 ); 
 
@@ -157,6 +167,7 @@ CREATE TABLE IF NOT EXISTS value_lists (
 	value_list_id text PRIMARY KEY,
 	database_id text REFERENCES databases(database_id), 
 	name text NOT NULL,
+    is_active boolean NOT NULL DEFAULT '1',
 	properties text NOT NULL
 ); 
 
