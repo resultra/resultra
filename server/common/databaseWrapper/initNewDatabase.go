@@ -40,11 +40,12 @@ CREATE TABLE IF NOT EXISTS password_reset_links (
 CREATE TABLE IF NOT EXISTS workspace_info (
 	single_row_id int PRIMARY KEY DEFAULT '1',
 	schema_version int NOT NULL,
-	name text NOT NULL
+	name text NOT NULL,
+	properties text NOT NULL
 );
 
 -- Create the default workspace information
-INSERT INTO workspace_info (schema_version,name) VALUES ('1','Trackers');
+INSERT INTO workspace_info (schema_version,name,properties) VALUES ('1','Trackers','{}');
 
 CREATE TABLE IF NOT EXISTS fields ( 
 	field_id text PRIMARY KEY, 

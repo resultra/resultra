@@ -16,8 +16,26 @@ func init() {
 	workspaceRouter := mux.NewRouter()
 
 	workspaceRouter.HandleFunc("/api/workspace/setName", setNameAPI)
+	workspaceRouter.HandleFunc("/api/workspace/setAllowUserRegistration", setAllowUserRegistrationAPI)
+	workspaceRouter.HandleFunc("/api/workspace/getInfo", getInfoAPI)
 
 	http.Handle("/api/workspace/", workspaceRouter)
+}
+
+func getInfoAPI(w http.ResponseWriter, r *http.Request) {
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	workspaceInfo, err := GetWorkspaceInfo(trackerDBHandle)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	api.WriteJSONResponse(w, workspaceInfo)
+
 }
 
 type SetNameParams struct {
@@ -45,5 +63,21 @@ func setNameAPI(w http.ResponseWriter, r *http.Request) {
 
 	response := true
 	api.WriteJSONResponse(w, response)
+
+}
+
+func setAllowUserRegistrationAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params AllowRegistrationParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	if updatedWorkspaceInfo, err := updateWorkspaceProps(r, params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, *updatedWorkspaceInfo)
+	}
 
 }
