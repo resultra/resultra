@@ -34,8 +34,9 @@ func RegisterHTTPHandlers(mainRouter *mux.Router) {
 }
 
 type PageInfo struct {
-	Title         string `json:"title"`
-	WorkspaceName string `json:"workspaceName"`
+	Title                    string `json:"title"`
+	WorkspaceName            string `json:"workspaceName"`
+	CurrUserIsWorkspaceAdmin bool   `json:"currUserIsWorkspaceAdmin"`
 }
 
 func home(respWriter http.ResponseWriter, req *http.Request) {
@@ -54,7 +55,7 @@ func home(respWriter http.ResponseWriter, req *http.Request) {
 
 	log.Printf("workspace name: %v", workspaceName)
 
-	_, authErr := userAuth.GetCurrentUserInfo(req)
+	userInfo, authErr := userAuth.GetCurrentUserInfo(req)
 	if authErr != nil {
 		log.Printf("user not authorized: %v", authErr)
 		templParams := PageInfo{
@@ -68,8 +69,9 @@ func home(respWriter http.ResponseWriter, req *http.Request) {
 	} else {
 
 		templParams := PageInfo{
-			Title:         "Resultra Workspace - Signed In",
-			WorkspaceName: workspaceName}
+			Title:                    "Resultra Workspace - Signed In",
+			WorkspaceName:            workspaceName,
+			CurrUserIsWorkspaceAdmin: userInfo.IsWorkspaceAdmin}
 		err := homePageTemplates.ExecuteTemplate(respWriter, "homePageSignedIn", templParams)
 		if err != nil {
 			http.Error(respWriter, err.Error(), http.StatusInternalServerError)

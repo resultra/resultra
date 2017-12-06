@@ -4,6 +4,14 @@
 	</div> <!-- breadcrumb header -->
 {{end}}
 
+{{define "workspaceAdminSettingsButton"}}
+		{{if .CurrUserIsWorkspaceAdmin}}
+			<a href="/workspace-admin/" type="button" class="btn btn-sm btn-default">
+			  <span class="glyphicon glyphicon-cog"> </span>
+			</a>
+		{{ end}}
+{{end}}
+
 {{define "homePageHeader"}}
 	<div class="container-fluid" id="homePageHeader">
 		<div class="row">
@@ -14,6 +22,9 @@
 				<div class="pull-right">
 					{{template "userDropdownMenu"}}
 					{{template "helpDropdownMenu"}}
+					{{template "workspaceAdminSettingsButton" .}}
+					
+					
 				</div>
 			</div>
 		</div>
