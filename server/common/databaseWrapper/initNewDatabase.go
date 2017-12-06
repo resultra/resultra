@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS users (
 	last_name text NOT NULL, -- TODO cannot be empty
 	email_addr text NOT NULL, -- TODO must be non-empty, unique (case-insensitive)
 	password_hash text NOT NULL,
+	properties text NOT NULL DEFAULT '{}',
     is_active boolean NOT NULL DEFAULT '1',
 	is_workspace_admin bool NOT NULL DEFAULT '0'
 );
@@ -125,7 +126,7 @@ CREATE TABLE IF NOT EXISTS  dashboards (
 	dashboard_id text PRIMARY KEY, 
 	name text NOT NULL,
     is_active boolean NOT NULL DEFAULT '1',
-	properties text NOT NULL
+	properties text NOT NULL DEFAULT '{}'
 ); 
 
 CREATE TABLE IF NOT EXISTS table_views ( 
@@ -133,7 +134,7 @@ CREATE TABLE IF NOT EXISTS table_views (
 	table_id text PRIMARY KEY, 
 	name text NOT NULL,
     is_active boolean NOT NULL DEFAULT '1',
-	properties text NOT NULL
+	properties text NOT NULL DEFAULT '{}'
 ); 
 
 CREATE TABLE IF NOT EXISTS forms ( 
@@ -141,7 +142,7 @@ CREATE TABLE IF NOT EXISTS forms (
 	form_id text PRIMARY KEY, 
 	name text NOT NULL,
     is_active boolean NOT NULL DEFAULT '1',
-	properties text NOT NULL
+	properties text NOT NULL DEFAULT '{}'
 ); 
 
 CREATE TABLE IF NOT EXISTS item_lists ( 
@@ -149,7 +150,7 @@ CREATE TABLE IF NOT EXISTS item_lists (
 	database_id text REFERENCES databases(database_id), 
 	name text NOT NULL,
     is_active boolean NOT NULL DEFAULT '1',
-	properties text NOT NULL
+	properties text NOT NULL DEFAULT '{}'
 ); 
 
 CREATE TABLE IF NOT EXISTS form_links (
@@ -168,27 +169,27 @@ CREATE TABLE IF NOT EXISTS value_lists (
 	database_id text REFERENCES databases(database_id), 
 	name text NOT NULL,
     is_active boolean NOT NULL DEFAULT '1',
-	properties text NOT NULL
+	properties text NOT NULL DEFAULT '{}'
 ); 
 
 CREATE TABLE IF NOT EXISTS dashboard_components (
 	dashboard_id text REFERENCES dashboards(dashboard_id), 
 	component_id text PRIMARY KEY,
-	properties text NOT NULL,
+	properties text NOT NULL DEFAULT '{}',
 	type text NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS form_components (
 	form_id text REFERENCES forms(form_id), 
 	component_id text PRIMARY KEY,
-	properties text NOT NULL,
+	properties text NOT NULL DEFAULT '{}',
 	type text NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS table_view_columns (
 	table_id text REFERENCES table_views(table_id), 
 	column_id text PRIMARY KEY,
-	properties text NOT NULL,
+	properties text NOT NULL DEFAULT '{}',
 	type text NOT NULL
 );
 

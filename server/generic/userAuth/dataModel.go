@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
 	"strings"
 )
@@ -18,11 +19,12 @@ type User struct {
 }
 
 type UserInfo struct {
-	UserID           string `json:"userID"`
-	FirstName        string `json:"firstName"`
-	LastName         string `json:"lastName"`
-	UserName         string `json:"userName"`
-	IsWorkspaceAdmin bool   `json:"isWorkspaceAdmin"`
+	UserID           string         `json:"userID"`
+	FirstName        string         `json:"firstName"`
+	LastName         string         `json:"lastName"`
+	UserName         string         `json:"userName"`
+	IsWorkspaceAdmin bool           `json:"isWorkspaceAdmin"`
+	Properties       UserProperties `json:"properties"`
 }
 
 type NewUserParams struct {
@@ -74,6 +76,12 @@ func saveNewUser(trackerDBHandle *sql.DB, rawParams NewUserParams) *AuthResponse
 		return newAuthResponse(false, passwordValResp.Msg)
 	}
 
+	props := newDefaultUserProperties()
+	encodedProps, encodeErr := generic.EncodeJSONString(props)
+	if encodeErr != nil {
+		return newAuthResponse(false, "System error: failed to create login credentials")
+	}
+
 	pwHash, hashErr := generatePasswordHash(params.Password)
 	if hashErr != nil {
 		log.Printf("saveNewUser: system failure registering user: %v", hashErr)
@@ -88,10 +96,10 @@ func saveNewUser(trackerDBHandle *sql.DB, rawParams NewUserParams) *AuthResponse
 	userID := uniqueID.GenerateSnowflakeID()
 
 	if _, insertErr := trackerDBHandle.Exec(
-		`INSERT INTO users (user_id, email_addr, user_name, first_name,last_name, password_hash) 
-				VALUES ($1,$2,$3,$4,$5,$6)`,
+		`INSERT INTO users (user_id, email_addr, user_name, first_name,last_name, password_hash,properties) 
+				VALUES ($1,$2,$3,$4,$5,$6,$7)`,
 		userID, params.EmailAddr, params.UserName,
-		params.FirstName, params.LastName, pwHash); insertErr != nil {
+		params.FirstName, params.LastName, pwHash, encodedProps); insertErr != nil {
 		log.Printf("saveNewUser: system failure registering user: %v", insertErr)
 
 		return newAuthResponse(false, "System error: failed to create login credentials")
@@ -180,16 +188,26 @@ func GetUserInfoByID(trackerDBHandle *sql.DB, userID string) (*UserInfo, error) 
 
 	var userInfo UserInfo
 	userInfo.UserID = userID
+
+	encodedProps := ""
+
 	getErr := trackerDBHandle.QueryRow(
-		`SELECT first_name,last_name,user_name,is_workspace_admin
+		`SELECT first_name,last_name,user_name,is_workspace_admin,properties
 			FROM users 
 			WHERE user_id=$1 LIMIT 1`,
 		userID).Scan(&userInfo.FirstName,
 		&userInfo.LastName, &userInfo.UserName,
-		&userInfo.IsWorkspaceAdmin)
+		&userInfo.IsWorkspaceAdmin,
+		&encodedProps)
 	if getErr != nil {
 		return nil, fmt.Errorf("Can't find user with id: %v", userID)
 	}
+
+	userProps := newDefaultUserProperties()
+	if decodeErr := generic.DecodeJSONString(encodedProps, &userProps); decodeErr != nil {
+		return nil, fmt.Errorf("getAlert: can't decode properties: %v", encodedProps)
+	}
+	userInfo.Properties = userProps
 
 	return &userInfo, nil
 }
@@ -200,8 +218,10 @@ func GetUserInfoByEmail(trackerDBHandle *sql.DB, emailAddr string) (*UserInfo, e
 
 	upperEmail := strings.ToUpper(emailAddr)
 
+	encodedProps := ""
+
 	getErr := trackerDBHandle.QueryRow(
-		`SELECT user_id,first_name,last_name,user_name,is_workspace_admin
+		`SELECT user_id,first_name,last_name,user_name,is_workspace_admin,properties
 			FROM users 
 			WHERE UPPER(email_addr)=$1 LIMIT 1`,
 		upperEmail).Scan(
@@ -209,10 +229,34 @@ func GetUserInfoByEmail(trackerDBHandle *sql.DB, emailAddr string) (*UserInfo, e
 		&userInfo.FirstName,
 		&userInfo.LastName,
 		&userInfo.UserName,
-		&userInfo.IsWorkspaceAdmin)
+		&userInfo.IsWorkspaceAdmin,
+		&encodedProps)
 	if getErr != nil {
 		return nil, fmt.Errorf("Can't find user with given email address: %v", emailAddr)
 	}
 
+	userProps := newDefaultUserProperties()
+	if decodeErr := generic.DecodeJSONString(encodedProps, &userProps); decodeErr != nil {
+		return nil, fmt.Errorf("getAlert: can't decode properties: %v", encodedProps)
+	}
+	userInfo.Properties = userProps
+
 	return &userInfo, nil
+}
+
+func updateUserProperties(trackerDBHandle *sql.DB, userID string, props UserProperties) error {
+
+	encodedProps, encodeErr := generic.EncodeJSONString(props)
+	if encodeErr != nil {
+		return fmt.Errorf("updateUserProperties: can't update user properties: %v", encodeErr)
+	}
+
+	if _, updateErr := trackerDBHandle.Exec(
+		`UPDATE users set properties=$1 where user_id=$2`,
+		encodedProps, userID); updateErr != nil {
+
+		return fmt.Errorf("updateUserProperties: system failure updating user properties: %v", updateErr)
+	}
+	return nil
+
 }
