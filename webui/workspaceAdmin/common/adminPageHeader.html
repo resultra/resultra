@@ -1,0 +1,23 @@
+{{define "workspaceAdminSettingsBreadcrumbHeader"}}
+	<div class="marginTop2">
+	  {{template "workspaceBreadcrumb" .}}
+	  {{template "breadCrumbSeparator"}}
+	  <span class="h4 breadCrumbText">Workspace Settings</span>
+	</div> <!-- breadcrumb header -->
+{{end}}
+
+{{define "workspaceAdminPageHeader"}}
+	<div class="container-fluid  paddingRight5 paddingLeft5">
+		<div class="row">
+			<div class="col-sm-6 paddingLeft5 ">
+				{{template "workspaceAdminSettingsBreadcrumbHeader" .}}
+			</div>
+			<div class="col-sm-6 paddingRight5">
+				<div class="pull-right">
+					{{template "userDropdownMenu"}}
+					{{template "helpDropdownMenu"}}
+				</div>
+			</div>
+		</div>
+	</div>
+{{end}}

@@ -11,7 +11,9 @@ import (
 	"resultra/datasheet/webui/mainWindow"
 	"resultra/datasheet/webui/templatePage"
 	"resultra/datasheet/webui/userAdmin"
-	"resultra/datasheet/webui/workspaceAdmin"
+
+	"resultra/datasheet/webui/workspaceAdmin/general"
+	"resultra/datasheet/webui/workspaceAdmin/users"
 )
 
 func init() {
@@ -26,7 +28,9 @@ func init() {
 	mainWindow.RegisterHTTPHandlers(router)
 	templatePage.RegisterHTTPHandlers(router)
 	userAdmin.RegisterHTTPHandlers(router)
-	workspaceAdmin.RegisterHTTPHandlers(router)
+
+	general.RegisterHTTPHandlers(router)
+	users.RegisterHTTPHandlers(router)
 
 	http.Handle("/", router)
 }

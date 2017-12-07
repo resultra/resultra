@@ -1,0 +1,58 @@
+
+
+{{define "workspaceProperties"}}
+
+<table class="table">
+	{{template "workspaceNameProperty"}}
+	{{template "workspaceUserAccountProperties"}}
+</table>
+
+{{end}}
+
+
+
+{{define "workspaceAdminPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.WorkspaceName}} - Workspace settings</title>
+
+	{{template "electronImportPrefix"}}
+
+	{{template "thirdPartyCSS"}}
+	
+	<!-- workspaceAdminAssets:css -->
+	<!-- endinject -->
+	
+	<script>var workspaceAdminContext = {
+	 	workspaceName: "{{.WorkspaceName}}"} 
+	</script>
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- workspaceAdminAssets:js -->
+	<!-- endinject -->
+			
+  </head>
+  <body>
+	  
+  	<div id="generalAdminPage" class="layoutPageDiv">
+		
+  		<div class="pane ui-layout-north adminPageHeader">
+  			{{template "workspaceAdminPageHeader" .}}
+  		</div> <!-- ui layout north -->
+		
+  		<div class="pane ui-layout-west">
+  			{{template "workspaceAdminSettingsTOC"}}
+  		</div> <!-- ui layout north -->
+
+  		<div class="pane ui-layout-center">
+		  <h4>Workspace Settings - {{.WorkspaceName}}</h4>
+		  {{template "workspaceProperties"}}
+  		</div> <!-- center pane for entire page -->	
+  	</div> <!-- layout page -->	
+	  
+	  	  
+  </body>
+</html>
+{{end}}

@@ -1,4 +1,4 @@
-package workspaceAdmin
+package general
 
 import (
 	"html/template"
@@ -10,6 +10,7 @@ import (
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
+	adminCommon "resultra/datasheet/webui/workspaceAdmin/common"
 )
 
 var generalTemplates *template.Template
@@ -17,16 +18,16 @@ var generalTemplates *template.Template
 func init() {
 
 	baseTemplateFiles := []string{
-		"static/workspaceAdmin/workspaceAdminPage.html",
-		"static/workspaceAdmin/workspaceNameProperty.html",
-		"static/workspaceAdmin/userAccountProperties.html",
-		"static/workspaceAdmin/userRegistrationProps.html"}
+		"static/workspaceAdmin/general/workspaceAdminPage.html",
+		"static/workspaceAdmin/general/workspaceNameProperty.html",
+		"static/workspaceAdmin/general/userAccountProperties.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
 		generic.TemplateFileList,
 		thirdParty.TemplateFileList,
-		common.TemplateFileList}
+		common.TemplateFileList,
+		adminCommon.TemplateFileList}
 
 	generalTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }

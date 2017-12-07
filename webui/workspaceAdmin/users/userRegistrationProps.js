@@ -1,8 +1,9 @@
-function initUserRegistrationProps(workspaceInfo) {
+function initUserRegistrationProps() {
 	var infoParams = {}
 	jsonRequest("/auth/getAllUsersInfo",infoParams,function(usersInfo) {
 		
 		var $usersTableBody = $('#registeredUserListTableBody')
+		
 		for(var userIndex = 0; userIndex < usersInfo.length; userIndex++) {
 			var currUserInfo = usersInfo[userIndex]
 		

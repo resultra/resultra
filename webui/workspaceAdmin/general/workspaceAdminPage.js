@@ -1,14 +1,18 @@
 $(document).ready(function() {	
 	
-	initUserDropdownMenu()
-	initHelpDropdownMenu()
+	
+	initWorkspaceAdminSettingsPageLayout($('#generalAdminPage'))	
+	
+	initWorkspaceAdminPageHeader()
+	
+	initWorkspaceAdminSettingsTOC("settingsTOCGeneral")
+	
 	
 	initWorkspaceNameProperty(workspaceAdminContext.workspaceName)
 	
 	var infoParams = {}
 	jsonAPIRequest("workspace/getInfo",infoParams,function(workspaceInfo) {
 		initWorkspacePermissionSettings(workspaceInfo)
-		initUserRegistrationProps(workspaceInfo)
 	})
 	
 	

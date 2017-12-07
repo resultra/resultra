@@ -1,0 +1,5 @@
+function initWorkspaceAdminPageHeader() {
+	initUserDropdownMenu()
+	initHelpDropdownMenu()
+	
+}

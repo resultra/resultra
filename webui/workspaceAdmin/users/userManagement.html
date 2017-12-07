@@ -1,0 +1,46 @@
+        	
+
+{{define "userMgmtAdminPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "electronImportPrefix"}}
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- userMgmtAssets:css -->
+	<!-- endinject -->
+		
+	{{template "thirdPartyJS"}}
+	
+	<!-- userMgmtAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="userMgmtAdminPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north adminPageHeader">
+			{{template "workspaceAdminPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west">
+			{{template "workspaceAdminSettingsTOC"}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center">
+			<h4>Registered Users</h4>
+        	{{template "workspaceUserRegistrationList"}}
+		</div> <!-- center pane for entire page -->	
+	</div> <!-- layout page -->	
+		
+  </body>
+  	
+</html>
+
+{{end}}
