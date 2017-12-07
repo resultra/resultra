@@ -21,6 +21,7 @@ func init() {
 	authRouter.HandleFunc("/auth/getCurrentUserInfo", getCurrentUserInfoAPI)
 	authRouter.HandleFunc("/auth/getUserInfo", getUserInfoAPI)
 	authRouter.HandleFunc("/auth/getUsersInfo", getUsersInfoAPI)
+	authRouter.HandleFunc("/auth/getAllUsersInfo", getAllUsersInfoAPI)
 
 	authRouter.HandleFunc("/auth/validateName", validateNameAPI)
 	authRouter.HandleFunc("/auth/validateNewUserName", validateNewUserNameAPI)
@@ -176,6 +177,35 @@ func getUsersInfoAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	api.WriteJSONResponse(w, usersInfo)
+}
+
+type GetAllUsersInfoParams struct {
+	IncludeInactiveUsers bool `json:"includeInactiveUsers"`
+}
+
+func getAllUsersInfoAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetAllUsersInfoParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	allUsersInfo, userErr := getAllUsersInfo(trackerDBHandle)
+
+	if userErr != nil {
+		api.WriteErrorResponse(w, userErr)
+		return
+	}
+
+	api.WriteJSONResponse(w, allUsersInfo)
+
 }
 
 func searchUsersAPI(w http.ResponseWriter, r *http.Request) {

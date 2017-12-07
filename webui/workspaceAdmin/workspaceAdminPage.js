@@ -8,6 +8,7 @@ $(document).ready(function() {
 	var infoParams = {}
 	jsonAPIRequest("workspace/getInfo",infoParams,function(workspaceInfo) {
 		initWorkspacePermissionSettings(workspaceInfo)
+		initUserRegistrationProps(workspaceInfo)
 	})
 	
 	

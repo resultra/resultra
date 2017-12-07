@@ -1,0 +1,38 @@
+
+{{define "workspaceUserRegistrationList"}}
+
+<div style="display:none;">
+	<tr id="registerUserListItemTemplate">
+		<td class="userName"></td>
+		<td class="lastName"></td>
+		<td class="firstName"></td>
+		<td class="emailAddress"></td>
+	</tr>
+</div>
+
+<table class=table>
+		<thead>
+	       <th>User Name</th>
+	       <th>Last Name</th>
+	       <th>First Name</th>
+	       <th>Email Address</th>
+ 		</thead>
+	    <tbody id="registeredUserListTableBody">
+		</tbody>
+</table>
+	
+{{end}}
+
+{{define "workspaceUserRegistrationProperty"}}
+
+	<tr>
+		<td class="width200"><label for="workspacePropsNameInput">User registrations</label>
+			<div><small>Manage the properties of users registered with this system.</small></div>
+		</td>
+
+		<td>
+				{{template "workspaceUserRegistrationList"}}
+		</td>
+	</tr>
+
+{{end}}

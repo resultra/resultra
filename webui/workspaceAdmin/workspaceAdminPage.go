@@ -19,7 +19,8 @@ func init() {
 	baseTemplateFiles := []string{
 		"static/workspaceAdmin/workspaceAdminPage.html",
 		"static/workspaceAdmin/workspaceNameProperty.html",
-		"static/workspaceAdmin/userAccountProperties.html"}
+		"static/workspaceAdmin/userAccountProperties.html",
+		"static/workspaceAdmin/userRegistrationProps.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,

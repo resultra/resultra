@@ -27,6 +27,16 @@ type UserInfo struct {
 	Properties       UserProperties `json:"properties"`
 }
 
+type AdminUserInfo struct {
+	UserID           string         `json:"userID"`
+	FirstName        string         `json:"firstName"`
+	LastName         string         `json:"lastName"`
+	UserName         string         `json:"userName"`
+	EmailAddress     string         `json:"emailAddress"`
+	IsWorkspaceAdmin bool           `json:"isWorkspaceAdmin"`
+	Properties       UserProperties `json:"properties"`
+}
+
 type NewUserParams struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
@@ -200,7 +210,7 @@ func GetUserInfoByID(trackerDBHandle *sql.DB, userID string) (*UserInfo, error) 
 		&userInfo.IsWorkspaceAdmin,
 		&encodedProps)
 	if getErr != nil {
-		return nil, fmt.Errorf("Can't find user with id: %v", userID)
+		return nil, fmt.Errorf("Can't find user with id: %v: error = $v", userID, getErr)
 	}
 
 	userProps := newDefaultUserProperties()
@@ -242,6 +252,46 @@ func GetUserInfoByEmail(trackerDBHandle *sql.DB, emailAddr string) (*UserInfo, e
 	userInfo.Properties = userProps
 
 	return &userInfo, nil
+}
+
+func getAllUsersInfo(trackerDBHandle *sql.DB) ([]AdminUserInfo, error) {
+	rows, queryErr := trackerDBHandle.Query(
+		`SELECT user_id,first_name,last_name,user_name,email_addr,is_workspace_admin,properties FROM users`)
+	if queryErr != nil {
+		return nil, fmt.Errorf("getAllUsersInfo: Can't query database for users: %v", queryErr)
+	}
+	defer rows.Close()
+
+	allUserInfo := []AdminUserInfo{}
+
+	for rows.Next() {
+
+		var userInfo AdminUserInfo
+		encodedProps := ""
+
+		if scanErr := rows.Scan(
+			&userInfo.UserID,
+			&userInfo.FirstName,
+			&userInfo.LastName,
+			&userInfo.UserName,
+			&userInfo.EmailAddress,
+			&userInfo.IsWorkspaceAdmin,
+			&encodedProps); scanErr != nil {
+			return nil, fmt.Errorf("getAllUsersInfo: Failure querying database: %v", scanErr)
+		}
+
+		userProps := newDefaultUserProperties()
+		if decodeErr := generic.DecodeJSONString(encodedProps, &userProps); decodeErr != nil {
+			return nil, fmt.Errorf("getAlert: can't decode properties: %v", encodedProps)
+		}
+		userInfo.Properties = userProps
+
+		allUserInfo = append(allUserInfo, userInfo)
+
+	}
+
+	return allUserInfo, nil
+
 }
 
 func updateUserProperties(trackerDBHandle *sql.DB, userID string, props UserProperties) error {
