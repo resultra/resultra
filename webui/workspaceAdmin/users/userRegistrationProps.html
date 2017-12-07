@@ -8,6 +8,10 @@
 		<td class="lastName"></td>
 		<td class="firstName"></td>
 		<td class="emailAddress"></td>
+		<td><a class="btn btn-xs btn-default editPropsButton" role="button">
+			<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>
+		</a> 
+</td>
 	</tr>
 </table>
 </div>
@@ -18,23 +22,10 @@
 	       <th>Last Name</th>
 	       <th>First Name</th>
 	       <th>Email Address</th>
+ 		  	<th></th>
  		</thead>
 	    <tbody id="registeredUserListTableBody">
 		</tbody>
 </table>
 	
-{{end}}
-
-{{define "workspaceUserRegistrationProperty"}}
-
-	<tr>
-		<td class="width200"><label for="workspacePropsNameInput">User registrations</label>
-			<div><small>Manage the properties of users registered with this system.</small></div>
-		</td>
-
-		<td>
-				{{template "workspaceUserRegistrationList"}}
-		</td>
-	</tr>
-
 {{end}}

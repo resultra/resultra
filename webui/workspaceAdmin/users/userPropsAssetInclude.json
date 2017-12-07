@@ -1,0 +1,12 @@
+{
+	"subDirs":["../../generic",
+		"../../common",
+		"../common"],
+	"cssFiles": [],
+	"jsFiles": ["userProps.js"],
+	"htmlFiles":["userProps.html"],
+	"imageFiles":[],
+	"minCSSFile":"workspaceAdmin/users/userProps.min.css",
+	"minJSFile": "workspaceAdmin/users/userProps.min.js",
+	"injectPlaceholderName":"userPropsAssets"
+}

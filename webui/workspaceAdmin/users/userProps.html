@@ -1,0 +1,45 @@
+        	
+
+{{define "userPropsPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+	
+	{{template "electronImportPrefix"}}
+	
+	{{template "thirdPartyCSS"}}
+	
+	<!-- userPropsAssets:css -->
+	<!-- endinject -->
+		
+	{{template "thirdPartyJS"}}
+	
+	<!-- userPropsAssets:js -->
+	<!-- endinject -->
+				
+  </head>
+	
+ 	
+  <body>
+
+	<div id="userPropsPage" class="layoutPageDiv">
+		
+		<div class="pane ui-layout-north adminPageHeader">
+			{{template "workspaceAdminPageHeader" .}}
+		</div> <!-- ui layout north -->
+		
+		<div class="pane ui-layout-west">
+			{{template "workspaceAdminSettingsTOC"}}
+		</div> <!-- ui layout north -->
+
+		<div class="pane ui-layout-center">
+			<h4>User Account Settings</h4>
+		</div> <!-- center pane for entire page -->	
+	</div> <!-- layout page -->	
+		
+  </body>
+  	
+</html>
+
+{{end}}
