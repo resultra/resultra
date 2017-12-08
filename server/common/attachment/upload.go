@@ -7,7 +7,7 @@ import (
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 )
 
 func UniqueAttachmentFileNameFromUserFileName(userFileName string) string {

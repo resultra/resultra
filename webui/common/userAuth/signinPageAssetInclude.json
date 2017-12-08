@@ -5,7 +5,7 @@
 	"jsFiles": ["signinPage.js"],
 	"htmlFiles":["signinPage.html"],
 	"imageFiles":[],
-	"minCSSFile":"generic/userAuth/signinPage.min.css",
-	"minJSFile": "generic/userAuth/signinPage.min.js",
+	"minCSSFile":"common/userAuth/signinPage.min.css",
+	"minJSFile": "common/userAuth/signinPage.min.js",
 	"injectPlaceholderName":"signinPageAssets"
 }

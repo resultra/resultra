@@ -8,7 +8,7 @@ import (
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 	"sort"
 	"time"
 )

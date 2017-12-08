@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/workspace"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"

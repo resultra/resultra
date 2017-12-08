@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"database/sql"
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 )
 
 type UserTrackingDatabaseInfo struct {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 )
 
 type WorkspaceInfo struct {

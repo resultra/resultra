@@ -7,7 +7,7 @@ import (
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/databaseController"
 
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/server/workspace"
 	adminCommon "resultra/datasheet/webui/admin/common"

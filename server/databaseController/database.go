@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/userRole"
 )

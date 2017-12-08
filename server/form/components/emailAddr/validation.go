@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"resultra/datasheet/server/generic/inputValidation"
 	"resultra/datasheet/server/generic/stringValidation"
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 )
 
 type EmailAddrValidateInputParams struct {

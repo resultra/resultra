@@ -12,7 +12,7 @@ import (
 	overallUserRole "resultra/datasheet/server/userRole"
 
 	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/workspace"
 	"resultra/datasheet/webui/admin/itemList/itemListProps/userRole"
 	"resultra/datasheet/webui/common"

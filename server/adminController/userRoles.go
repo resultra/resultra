@@ -3,7 +3,7 @@ package adminController
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/userRole"
 )
 

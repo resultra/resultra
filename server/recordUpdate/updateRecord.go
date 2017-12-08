@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"resultra/datasheet/server/alert"
 	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordValue"
 	"resultra/datasheet/server/recordValueMappingController"

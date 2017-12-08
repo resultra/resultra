@@ -14,7 +14,7 @@ import (
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/formLink"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/itemList"
 	"resultra/datasheet/server/trackerDatabase"

@@ -12,7 +12,7 @@ import (
 	"resultra/datasheet/server/common/runtimeConfig"
 
 	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/server/workspace"
 	"resultra/datasheet/webui/common"

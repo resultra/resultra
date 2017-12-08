@@ -14,7 +14,7 @@ import (
 	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/workspace"
 
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"

@@ -23,5 +23,6 @@
 		"conditionalFormat",
 		"helpPopup",
 		"alert",
-		"timeline"]
+		"timeline",
+		"userAuth"]
 }

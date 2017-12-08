@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 )
 
 func VerifyCurrUserIsDatabaseAdmin(trackerDBHandle *sql.DB, req *http.Request, databaseID string) error {

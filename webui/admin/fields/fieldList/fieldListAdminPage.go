@@ -8,7 +8,7 @@ import (
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/userRole"
 
-	"resultra/datasheet/server/generic/userAuth"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/workspace"
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/common"

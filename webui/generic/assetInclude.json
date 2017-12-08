@@ -1,6 +1,5 @@
 {
     "subDirs": ["propertiesSidebar",
-		"userAuth",
 		"wizardDialog",
 		"formValidation",
 		"ckEditor",
