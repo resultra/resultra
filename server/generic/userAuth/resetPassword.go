@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"net/smtp"
 	"resultra/datasheet/server/generic/uniqueID"
 	"time"
 )
@@ -22,15 +21,6 @@ func sendPasswordResetEmail(trackerDBHandle *sql.DB, emailAddr string, userID st
 		return fmt.Errorf("sendPasswordResetEmail: database insert failed:  %v", insertErr)
 	}
 
-	from := "admin-email-test@resultra.com"
-	pass := "here4test"
-	mailSrv := "smtp.gmail.com"
-
-	// Set up authentication information.
-	auth := smtp.PlainAuth("", from, pass, mailSrv)
-
-	to := emailAddr
-
 	resetLink := "https://www.resultra.com/resetPassword/" + resetID
 
 	body := "\nA password reset request has been submitted to your Resultra account. \n" +
@@ -39,17 +29,14 @@ func sendPasswordResetEmail(trackerDBHandle *sql.DB, emailAddr string, userID st
 		resetLink + "\n\n" +
 		"If you've received this email in error, please ignore."
 
-	msg := "From: " + from + "\n" +
-		"To: " + to + "\n" +
-		"Subject: Resultra Password Reset Link\n\n" +
-		body
+	emailParams := TransactionEmailParams{
+		ToAddress: emailAddr,
+		Subject:   "Resultra Passsword Reset Link",
+		Body:      body}
 
-	mailErr := smtp.SendMail("smtp.gmail.com:587", auth,
-		from, []string{to}, []byte(msg))
-
-	if mailErr != nil {
-		log.Printf("smtp error: %s", mailErr)
-		return fmt.Errorf("sendPasswordResetEmail: failure sending mail: %v", mailErr)
+	emailErr := SendTransactionEmail(emailParams)
+	if emailErr != nil {
+		return fmt.Errorf("sendPasswordResetEmail: mail send failed:  %v", emailErr)
 	}
 
 	return nil
