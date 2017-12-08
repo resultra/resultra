@@ -31,6 +31,8 @@ func init() {
 
 	authRouter.HandleFunc("/auth/validateExistingUserEmail", validateExistingUserEmailAPI)
 	authRouter.HandleFunc("/auth/sendResetPasswordLink", sendResetPasswordLinkAPI)
+	authRouter.HandleFunc("/auth/sendResetPasswordLinkByUserID", sendResetPasswordLinkByUserIDAPI)
+
 	authRouter.HandleFunc("/auth/resetPassword", resetPasswordAPI)
 	authRouter.HandleFunc("/auth/setUserActive", setUserActiveAPI)
 
@@ -77,6 +79,23 @@ func sendResetPasswordLinkAPI(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func sendResetPasswordLinkByUserIDAPI(w http.ResponseWriter, r *http.Request) {
+	var params PasswordResetByUserIdParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	resetResp := sendResetPasswordLinkByUserID(trackerDBHandle, params)
+	api.WriteJSONResponse(w, resetResp)
+
+}
 func loginUserAPI(w http.ResponseWriter, r *http.Request) {
 	var params LoginParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {

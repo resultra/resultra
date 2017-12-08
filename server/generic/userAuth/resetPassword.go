@@ -77,6 +77,21 @@ func sendResetPasswordLink(trackerDBHandle *sql.DB, params PasswordResetParams) 
 	return newAuthResponse(true, "Password reset link sent.")
 }
 
+type PasswordResetByUserIdParams struct {
+	UserID string `json:"userID"`
+}
+
+func sendResetPasswordLinkByUserID(trackerDBHandle *sql.DB, params PasswordResetByUserIdParams) *AuthResponse {
+	userInfo, err := getAdminUserInfoByID(trackerDBHandle, params.UserID)
+	if err != nil {
+		log.Printf("sendResetPasswordLinkByUserID: failure sending password reset email: %v", err)
+		return newAuthResponse(false, fmt.Sprintf("Unable to send password link: can't retrieve user information"))
+	}
+	sendParams := PasswordResetParams{EmailAddr: userInfo.EmailAddress}
+
+	return sendResetPasswordLink(trackerDBHandle, sendParams)
+}
+
 type PasswordResetInfo struct {
 	ResetID   string
 	UserID    string

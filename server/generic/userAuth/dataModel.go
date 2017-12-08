@@ -231,14 +231,15 @@ func getAdminUserInfoByID(trackerDBHandle *sql.DB, userID string) (*AdminUserInf
 	encodedProps := ""
 
 	getErr := trackerDBHandle.QueryRow(
-		`SELECT first_name,last_name,user_name,is_workspace_admin,properties,is_active
+		`SELECT first_name,last_name,user_name,is_workspace_admin,properties,is_active,email_addr
 			FROM users 
 			WHERE user_id=$1 LIMIT 1`,
 		userID).Scan(&userInfo.FirstName,
 		&userInfo.LastName, &userInfo.UserName,
 		&userInfo.IsWorkspaceAdmin,
 		&encodedProps,
-		&userInfo.IsActive)
+		&userInfo.IsActive,
+		&userInfo.EmailAddress)
 	if getErr != nil {
 		return nil, fmt.Errorf("Can't find user with id: %v: error = $v", userID, getErr)
 	}

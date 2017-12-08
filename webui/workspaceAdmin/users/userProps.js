@@ -15,6 +15,35 @@ $(document).ready(function() {
 	}
 	
 	
+	function initResetPasswordButton(userInfo) {
+		var $resetButton = $('#resetUserPasswordButton')
+		initButtonControlClickHandler($resetButton,function() {
+			
+			var resetParams = { userID: userInfo.userID }
+			$resetButton.prop('disabled',true)
+			jsonRequest("/auth/sendResetPasswordLinkByUserID",resetParams,function(resetResp) {
+				$resetButton.prop('disabled',false)	
+				
+				var $resetSuccessAlert = $('#resetUserPasswordSuccess')	
+				var $resetErrorAlert = $('#resetUserPasswordError')
+				
+				if(resetResp.success == true) {
+					$resetSuccessAlert.show()
+					setTimeout(function() {
+						$resetSuccessAlert.hide()
+					},3000)
+				} else {
+					$resetErrorAlert.text(resetResp.msg)
+					$resetErrorAlert.show()
+				}
+				
+			})
+			
+		})
+	}
+	
+	
+	
 	initWorkspaceAdminSettingsPageLayout($('#userPropsPage'))	
 	
 	initWorkspaceAdminPageHeader()
@@ -24,6 +53,7 @@ $(document).ready(function() {
 	var getUserInfoParams = { userID: userPropsContext.userID }
 	jsonRequest("/auth/getAdminUserInfo",getUserInfoParams,function(userInfoResp) {
 		initAcctActiveProp(userInfoResp)
+		initResetPasswordButton(userInfoResp)
 	})
 	
 })
