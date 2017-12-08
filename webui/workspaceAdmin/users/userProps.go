@@ -1,6 +1,7 @@
 package users
 
 import (
+	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
 
@@ -33,9 +34,13 @@ func init() {
 type UserPropsTemplParams struct {
 	Title         string
 	WorkspaceName string
+	UserID        string
 }
 
 func userPropsPage(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	userID := vars["userID"]
 
 	_, authErr := userAuth.GetCurrentUserInfo(r)
 	if authErr != nil {
@@ -57,7 +62,8 @@ func userPropsPage(w http.ResponseWriter, r *http.Request) {
 
 	templParams := UserPropsTemplParams{
 		Title:         "User Account Settings",
-		WorkspaceName: workspaceName}
+		WorkspaceName: workspaceName,
+		UserID:        userID}
 
 	if err := userTemplates.ExecuteTemplate(w, "userPropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

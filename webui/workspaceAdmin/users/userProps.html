@@ -1,4 +1,52 @@
+ 
+ 
+ {{define "resetUserPasswordProperty"}}
+
+ 	<tr>
+ 		<td class="width200"><label>Reset Password</label>
+ 			<div><small>Reset this user's password. An email will be sent to this user with a link to reset the account's  password.</small></div>
+ 		</td>
+
+ 		<td>
+			<button type="button" class="btn btn-default" id="resetUserPasswordButton">
+			  Send Password Reset Link
+			</button>
+			
+ 		</td>
+ 	</tr>
+
+ {{end}}
+   
+   
+ {{define "activeUserAccountProperty"}}
+
+ 	<tr>
+ 		<td class="width200"><label>Activate or Deactivate Account</label>
+ 			<div><small>Activate or deactivate this user's account.</small></div>
+ 		</td>
+
+		<td>
+		  <div class="form-group">
+	 	      <div class="checkbox">
+		        <input type="checkbox" id="userAccountActive">
+		        <label for="userAccountActive">Account is active</label>
+		      </div>
+		   </div>
+		</td>
+ 	</tr>
+
+ {{end}}
         	
+			
+{{define "userProperties"}}
+
+<table class="table">
+	{{template "resetUserPasswordProperty"}}
+	{{template "activeUserAccountProperty"}}
+</table>
+
+{{end}}
+			
 
 {{define "userPropsPage"}}
 <!DOCTYPE html>
@@ -12,6 +60,11 @@
 	
 	<!-- userPropsAssets:css -->
 	<!-- endinject -->
+	
+	<script>var userPropsContext = {
+	 	userID: "{{.UserID}}"} 
+	</script>
+	
 		
 	{{template "thirdPartyJS"}}
 	
@@ -35,6 +88,7 @@
 
 		<div class="pane ui-layout-center">
 			<h4>User Account Settings</h4>
+			{{template "userProperties"}}
 		</div> <!-- center pane for entire page -->	
 	</div> <!-- layout page -->	
 		

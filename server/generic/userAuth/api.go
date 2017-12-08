@@ -21,7 +21,9 @@ func init() {
 	authRouter.HandleFunc("/auth/getCurrentUserInfo", getCurrentUserInfoAPI)
 	authRouter.HandleFunc("/auth/getUserInfo", getUserInfoAPI)
 	authRouter.HandleFunc("/auth/getUsersInfo", getUsersInfoAPI)
+
 	authRouter.HandleFunc("/auth/getAllUsersInfo", getAllUsersInfoAPI)
+	authRouter.HandleFunc("/auth/getAdminUserInfo", getAdminUserInfoAPI)
 
 	authRouter.HandleFunc("/auth/validateName", validateNameAPI)
 	authRouter.HandleFunc("/auth/validateNewUserName", validateNewUserNameAPI)
@@ -30,6 +32,7 @@ func init() {
 	authRouter.HandleFunc("/auth/validateExistingUserEmail", validateExistingUserEmailAPI)
 	authRouter.HandleFunc("/auth/sendResetPasswordLink", sendResetPasswordLinkAPI)
 	authRouter.HandleFunc("/auth/resetPassword", resetPasswordAPI)
+	authRouter.HandleFunc("/auth/setUserActive", setUserActiveAPI)
 
 	authRouter.HandleFunc("/auth/validatePasswordStrength", validatePasswordStrengthAPI)
 
@@ -105,6 +108,31 @@ func resetPasswordAPI(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func setUserActiveAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params SetUserActiveParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	setErr := setUserActive(trackerDBHandle, params)
+	if setErr != nil {
+		api.WriteErrorResponse(w, setErr)
+		return
+	}
+
+	response := true
+	api.WriteJSONResponse(w, response)
+
+}
+
 func signoutUserAPI(w http.ResponseWriter, r *http.Request) {
 	authResp := signOutUser(w, r)
 	api.WriteJSONResponse(w, authResp)
@@ -140,6 +168,28 @@ func getUserInfoAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userInfo, err := GetUserInfoByID(trackerDBHandle, params.UserID)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	api.WriteJSONResponse(w, userInfo)
+}
+
+func getAdminUserInfoAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params GetUserInfoParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	userInfo, err := getAdminUserInfoByID(trackerDBHandle, params.UserID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 		return

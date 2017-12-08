@@ -34,6 +34,7 @@ type AdminUserInfo struct {
 	UserName         string         `json:"userName"`
 	EmailAddress     string         `json:"emailAddress"`
 	IsWorkspaceAdmin bool           `json:"isWorkspaceAdmin"`
+	IsActive         bool           `json:"isActive"`
 	Properties       UserProperties `json:"properties"`
 }
 
@@ -222,6 +223,35 @@ func GetUserInfoByID(trackerDBHandle *sql.DB, userID string) (*UserInfo, error) 
 	return &userInfo, nil
 }
 
+func getAdminUserInfoByID(trackerDBHandle *sql.DB, userID string) (*AdminUserInfo, error) {
+
+	var userInfo AdminUserInfo
+	userInfo.UserID = userID
+
+	encodedProps := ""
+
+	getErr := trackerDBHandle.QueryRow(
+		`SELECT first_name,last_name,user_name,is_workspace_admin,properties,is_active
+			FROM users 
+			WHERE user_id=$1 LIMIT 1`,
+		userID).Scan(&userInfo.FirstName,
+		&userInfo.LastName, &userInfo.UserName,
+		&userInfo.IsWorkspaceAdmin,
+		&encodedProps,
+		&userInfo.IsActive)
+	if getErr != nil {
+		return nil, fmt.Errorf("Can't find user with id: %v: error = $v", userID, getErr)
+	}
+
+	userProps := newDefaultUserProperties()
+	if decodeErr := generic.DecodeJSONString(encodedProps, &userProps); decodeErr != nil {
+		return nil, fmt.Errorf("getAlert: can't decode properties: %v", encodedProps)
+	}
+	userInfo.Properties = userProps
+
+	return &userInfo, nil
+}
+
 func GetUserInfoByEmail(trackerDBHandle *sql.DB, emailAddr string) (*UserInfo, error) {
 
 	var userInfo UserInfo
@@ -256,7 +286,7 @@ func GetUserInfoByEmail(trackerDBHandle *sql.DB, emailAddr string) (*UserInfo, e
 
 func getAllUsersInfo(trackerDBHandle *sql.DB) ([]AdminUserInfo, error) {
 	rows, queryErr := trackerDBHandle.Query(
-		`SELECT user_id,first_name,last_name,user_name,email_addr,is_workspace_admin,properties FROM users`)
+		`SELECT user_id,first_name,last_name,user_name,email_addr,is_workspace_admin,properties,is_active FROM users`)
 	if queryErr != nil {
 		return nil, fmt.Errorf("getAllUsersInfo: Can't query database for users: %v", queryErr)
 	}
@@ -276,7 +306,8 @@ func getAllUsersInfo(trackerDBHandle *sql.DB) ([]AdminUserInfo, error) {
 			&userInfo.UserName,
 			&userInfo.EmailAddress,
 			&userInfo.IsWorkspaceAdmin,
-			&encodedProps); scanErr != nil {
+			&encodedProps,
+			&userInfo.IsActive); scanErr != nil {
 			return nil, fmt.Errorf("getAllUsersInfo: Failure querying database: %v", scanErr)
 		}
 
@@ -304,6 +335,22 @@ func updateUserProperties(trackerDBHandle *sql.DB, userID string, props UserProp
 	if _, updateErr := trackerDBHandle.Exec(
 		`UPDATE users set properties=$1 where user_id=$2`,
 		encodedProps, userID); updateErr != nil {
+
+		return fmt.Errorf("updateUserProperties: system failure updating user properties: %v", updateErr)
+	}
+	return nil
+
+}
+
+type SetUserActiveParams struct {
+	UserID   string `json:"userID"`
+	IsActive bool   `json:"isActive"`
+}
+
+func setUserActive(trackerDBHandle *sql.DB, params SetUserActiveParams) error {
+	if _, updateErr := trackerDBHandle.Exec(
+		`UPDATE users set is_active=$1 where user_id=$2`,
+		params.IsActive, params.UserID); updateErr != nil {
 
 		return fmt.Errorf("updateUserProperties: system failure updating user properties: %v", updateErr)
 	}
