@@ -1,0 +1,61 @@
+{{define "userInviteDialogBody"}}
+
+   <div id="userRegisterDialogBody">
+
+	   <div class="alert alert-info" id="userInviteInfo">
+	     	Enter the email addresses of people you'd like to invite to join this workspace. 
+	   </div>
+	   <div class="alert alert-danger initiallyHidden" id="userInviteAlert">
+	   		<strong>ERROR:&nbsp;</strong><span id="userInviteAlertMsg"></span>
+	   </div>
+	   <div class="alert alert-success initiallyHidden" id="userInviteConfirm">
+		   Invitations sent.
+	   </div>
+	   
+	   
+	   
+      <form id="resetPasswordForm">
+		  
+		  <div class="form-group">
+         	  <input type="email" id="userInviteEmail1" name="userInviteEmail1" 
+			  		class="form-control" placeholder="Email address" autofocus>
+		  </div>
+		  <div class="form-group marginTop5">
+        	  <input type="email" id="userInviteEmail2" name="userInviteEmail2" 
+			  		class="form-control" placeholder="Email address" autofocus>
+		  </div>
+		  <div class="form-group marginTop5">
+         	  <input type="email" id="userInviteEmail3" name="userInviteEmail3" 
+			  		class="form-control" placeholder="Email address" autofocus>
+		  </div>
+
+      </form>
+
+    </div> <!-- dialog body -->
+{{end}}
+
+{{define "userInviteDialogButtons"}}
+		<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+  	   	<button type="button" class="btn btn-primary" id="sendUserInviteButton" type="submit">Send Invitation(s)</button>
+{{end}}
+
+{{define "userInviteDialog"}}
+
+<div class="modal fade" id="userInviteDialog" tabindex="-1" role="dialog" aria-labelledby="signInLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="userInviteLabel">Send Invitations</h4>
+      </div>
+      <div class="modal-body">
+        	{{template "userInviteDialogBody"}}
+      </div>
+      <div class="modal-footer">
+		  {{template "userInviteDialogButtons"}}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}

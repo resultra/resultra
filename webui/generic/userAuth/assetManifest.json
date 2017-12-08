@@ -6,7 +6,8 @@
 	    "signIn.html",
 		"signInPage.html", 
 	    "signinDialog.html", 
-	    "userDropdownMenu.html"
+	    "userDropdownMenu.html",
+		"userInviteDialog.html"
     ], 
     "jsFiles": [
 	    "registerDialog.js", 
@@ -15,7 +16,8 @@
 	    "signinDialog.js", 
 	    "signOut.js",
 		"signinPage.js", 
-	    "userDropdownMenu.js"
+	    "userDropdownMenu.js",
+		"userInviteDialog.js"
     ],
 	"imageFiles":[]
 }

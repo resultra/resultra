@@ -1,4 +1,8 @@
-        	
+{{define "userMgntInviteUsersButton"}}
+	<button type="button" class="btn btn-default" id="inviteNewUsersButton">
+			  Invite New Users
+	</button>
+{{end}}        	
 
 {{define "userMgmtAdminPage"}}
 <!DOCTYPE html>
@@ -36,8 +40,11 @@
 		<div class="pane ui-layout-center">
 			<h4>Registered Users</h4>
         	{{template "workspaceUserRegistrationList"}}
+			{{template "userMgntInviteUsersButton"}}
 		</div> <!-- center pane for entire page -->	
 	</div> <!-- layout page -->	
+	
+	{{template "userInviteDialog"}}
 		
   </body>
   	
