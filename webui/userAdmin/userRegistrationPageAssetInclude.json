@@ -1,0 +1,11 @@
+{
+	"subDirs":["../generic",
+		"../common"],
+	"cssFiles": [],
+	"imageFiles": [],
+	"jsFiles": ["userRegistrationPage.js"],
+	"htmlFiles":["userRegistrationPage.html"],
+	"minCSSFile":"userAdmin/registrationPage.min.css",
+	"minJSFile": "userAdmin/registrationPage.min.js",
+	"injectPlaceholderName":"registrationPageAssets"
+}
