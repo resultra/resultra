@@ -33,6 +33,8 @@ func init() {
 	authRouter.HandleFunc("/auth/sendResetPasswordLink", sendResetPasswordLinkAPI)
 	authRouter.HandleFunc("/auth/sendResetPasswordLinkByUserID", sendResetPasswordLinkByUserIDAPI)
 
+	authRouter.HandleFunc("/auth/sendUserInvites", sendUserInvitesAPI)
+
 	authRouter.HandleFunc("/auth/resetPassword", resetPasswordAPI)
 	authRouter.HandleFunc("/auth/setUserActive", setUserActiveAPI)
 
@@ -96,6 +98,32 @@ func sendResetPasswordLinkByUserIDAPI(w http.ResponseWriter, r *http.Request) {
 	api.WriteJSONResponse(w, resetResp)
 
 }
+
+func sendUserInvitesAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params UserInviteParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	userInfo, err := GetCurrentUserInfo(r)
+	if err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	inviteResp := sendUserInvites(trackerDBHandle, userInfo.UserID, params)
+	api.WriteJSONResponse(w, inviteResp)
+
+}
+
 func loginUserAPI(w http.ResponseWriter, r *http.Request) {
 	var params LoginParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {

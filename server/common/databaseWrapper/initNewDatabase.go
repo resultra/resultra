@@ -39,6 +39,15 @@ CREATE TABLE IF NOT EXISTS password_reset_links (
 	reset_timestamp_utc timestamp NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS user_invites (
+	invite_id text PRIMARY KEY,
+	from_user_id text REFERENCES users (user_id),
+	invite_timestamp_utc timestamp NOT NULL,
+	invitee_email_addr text NOT NULL,
+	invite_msg text NOT NULL
+);
+
+
 CREATE TABLE IF NOT EXISTS workspace_info (
 	single_row_id int PRIMARY KEY DEFAULT '1',
 	schema_version int NOT NULL,
