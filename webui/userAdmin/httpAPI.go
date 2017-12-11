@@ -6,6 +6,6 @@ import (
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
 	mainRouter.HandleFunc("/resetPassword/{resetID}", resetPassword)
-	mainRouter.HandleFunc("/register/{registrationID}", registerNewUser)
+	mainRouter.HandleFunc("/register/{inviteID}", registerNewUser)
 
 }

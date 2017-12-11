@@ -5,33 +5,51 @@
 	  </div>
 	  
 	  <div class="alert alert-info registerControls" role="alert">
-		  Enter registration information
+		  Please enter your registration information. Your account will be registered to 
+		  <strong>{{.InviteeEmailAddr}}</strong>.
 	  </div>
   
-	  <div class="container-fluid">
+  
+  	  <form id="registerNewUserForm">
+		  <div class="container-fluid">
 
-		<div class="row">
+			<div class="row">
 			
-		 	   <div class="alert alert-danger initiallyHidden" id="registrationAlert"></div>
+			 	   <div class="alert alert-danger initiallyHidden" id="registrationErrorAlert"></div>
 			   
-		 	   <div class="alert alert-success initiallyHidden" id="resetPasswordConfirm">
-		 	   		Registration complete ... <a href="/">Go to worspace home page</a>
-		 	   </div>
+			 	   <div class="alert alert-success initiallyHidden" id="resetPasswordConfirm">
+			 	   		Registration complete ... <a href="/">Go to worspace home page</a>
+			 	   </div>
 			   	   
-			<form id="passwordResetForm">
-			   <div class="form-group registerControls">
-		         <label for="passwordInput" class="sr-only">Password</label>
-		         <input type="password" id="passwordInput" name="passwordInput"
-				 	class="form-control marginTop" placeholder="Password" required>
-			   </div>
-			   <div class="form-group registerControls">
-		         <label for="passwordInputRepeat" class="sr-only">Repeat Password</label>
-		         <input type="password" id="passwordInputRepeat" name="passwordInputRepeat"
-				 		class="form-control marginTop7" placeholder="Repeat Password" required>
-			   </div>
-			</form>
+				<form id="passwordResetForm">
+				  <div class="form-group registerControls">
+		        	  <label for="registerDialogFirstNameInput">Your Name</label>
+		        	  <input type="text" id="registerFirstNameInput" name="registerFirstNameInput"
+					  		class="form-control" placeholder="First Name" required autofocus>
+		 		   </div>
+		 		   <div class="form-group registerControls">
+		        	  <input type="text" id="registerLastNameInput" name="registerLastNameInput"
+					  	class="form-control marginTop5" placeholder="Last Name" required autofocus>
+				  </div>
+				  <div class="form-group registerControls">
+		        	  <label for="registerUserNameInput">User Name</label>
+		        	  <input type="text" id="registerUserNameInput" name="registerUserNameInput"
+					  		class="form-control" placeholder="Username" required autofocus>
+				  </div>
+				   <div class="form-group registerControls">
+			         <label for="registerPasswordInput">Password</label>
+			         <input type="password" id="registerPasswordInput" name="registerPasswordInput"
+					 	class="form-control marginTop" placeholder="Password" required>
+				   </div>
+				   <div class="form-group registerControls">
+			         <label for="registerPasswordInputRepeat" class="sr-only">Repeat Password</label>
+			         <input type="password" id="registerPasswordInputRepeat" name="registerPasswordInputRepeat"
+					 		class="form-control marginTop7" placeholder="Repeat Password" required>
+				   </div>
+				</form>
 				 	   
-	 	</div>
+		 	</div>
+  		</form>
 	
 		<div class="row marginTop10 registerControls">
   	   		<button type="button" class="btn btn-primary fullWidth " id="userRegisterButton" type="submit">Register</button>
@@ -56,7 +74,8 @@
 	<!-- endinject -->
 	
 	<script>var registrationContext = {
-	 	registrationID: "{{.RegistrationID}}"} 
+	 	inviteID: "{{.InviteID}}",
+		inviteeEmailAddr: "{{.InviteeEmailAddr}}" }
 	</script>
 	
 	
@@ -77,7 +96,7 @@
 		  <div class="col-md-4">
 			  
 			  <div class="well">
-				  {{template "userRegistrationPanel"}}
+				  {{template "userRegistrationPanel" .}}
 			 </div>
 				 
 		 </div>

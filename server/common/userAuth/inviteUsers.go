@@ -64,3 +64,24 @@ func sendUserInvites(trackerDBHandle *sql.DB, fromUserID string, params UserInvi
 	return newAuthResponse(true, "Invitations sent.")
 
 }
+
+type UserInviteInfo struct {
+	InviteID     string `json:"inviteID"`
+	InviteeEmail string `json:"inviteeEmail"`
+}
+
+func GetInviteInfo(trackerDBHandle *sql.DB, inviteID string) (*UserInviteInfo, error) {
+	inviteInfo := UserInviteInfo{}
+
+	getErr := trackerDBHandle.QueryRow(`SELECT invite_id, invitee_email_addr
+		 FROM user_invites
+		 WHERE invite_id=$1 LIMIT 1`, inviteID).Scan(
+		&inviteInfo.InviteID,
+		&inviteInfo.InviteeEmail)
+	if getErr != nil {
+		return nil, fmt.Errorf("GetInviteInfo: Unabled to get user invitation info info: invite ID = %v: datastore err=%v",
+			inviteID, getErr)
+	}
+	return &inviteInfo, nil
+
+}
