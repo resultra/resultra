@@ -26,6 +26,8 @@ function initDatabaseNameProperties(databaseInfo) {
 	
 	var validator = $databaseNameForm.validate(validationSettings)
 	
+	
+	$('#databasePropsNameInput').blur() // Prevent auto-focus
 	initInlineInputValidationOnBlur(validator,'#databasePropsNameInput',
 		remoteValidationParams, function(validatedName) {		
 			var setNameParams = {
