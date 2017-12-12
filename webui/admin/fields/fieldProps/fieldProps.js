@@ -4,6 +4,8 @@ $(document).ready(function() {
 	function initFieldNameProperties(fieldInfo) {
 	
 		var $nameInput = $('#fieldPropsNameInput')
+		
+		$nameInput.blur() // don't auto focus
 	
 		var $nameForm = $('#fieldNamePropertyForm')
 		
