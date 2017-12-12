@@ -7,6 +7,8 @@ $(document).ready(function() {
 
 		var $listNameForm = $('#itemListNamePropertyForm')
 
+		$nameInput.blur() // prevent auto-focus
+
 		$nameInput.val(listInfo.name)
 
 
