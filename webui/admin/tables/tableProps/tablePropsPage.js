@@ -9,6 +9,8 @@ $(document).ready(function() {
 		var $tableNameForm = $('#tableNamePropertyForm')
 		var $nameInput =$tableNameForm.find('input[name=tableNameInput]')
 		
+		$nameInput.blur() // prevent auto-focus
+		
 		$nameInput.val(tableRef.name)
 
 
