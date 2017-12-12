@@ -46,6 +46,7 @@ $(document).ready(function() {
 	function initFormLinkNameProperties(linkInfo) {
 	
 		var $nameInput = $('#formLinkPropsNameInput')
+		$nameInput.blur() // prevent auto-focus
 	
 		var $nameForm = $('#formLinkNamePropertyForm')
 		
