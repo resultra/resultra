@@ -3,6 +3,7 @@ $(document).ready(function() {
 	function initValueListNameProperties(valueListInfo) {
 	
 		var $nameInput = $('#valueListPropsNameInput')
+		$nameInput.blur()
 	
 		var $nameForm = $('#valueListNamePropertyForm')
 		
