@@ -8,16 +8,10 @@ function designFormPageHTMLLink(formID) {
 function adminFormListButtonsHTML(formInfo) {
 return '' +
 			'<div class="pull-right adminFormListButtons">' + 
-	
-			'<a class="btn btn-xs btn-default" href="' + designFormPageHTMLLink(formInfo.formID) + '" role="button">' + 
-				'<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>' +
-			'</a>' + 
-  			'<button class="btn btn-xs btn-danger deleteFormButton">' + 
-				// padding-bottom: 2px makes the button image vertically line up better.
-				'<span class="glyphicon glyphicon-remove" style="padding-bottom:2px;"></span>' +
-			'</button>';
-
-			'</div>'
+				'<a class="btn btn-xs btn-default" href="' + designFormPageHTMLLink(formInfo.formID) + '" role="button">' + 
+					'<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>' +
+				'</a>' +
+	'</div>';
 }
 
 
