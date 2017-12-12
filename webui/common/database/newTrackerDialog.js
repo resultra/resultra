@@ -142,11 +142,16 @@ function openNewTrackerDialog() {
 		if($newTrackerDialogForm.valid()) {	
 			
 			var selectedDatabaseID = $templateSelection.val()
-			var trackerInfo = templateTrackerInfoByID[selectedDatabaseID]
+			var templateSource = null
+			if (selectedDatabaseID !== null && selectedDatabaseID.length > 0) {
+				var trackerInfo = templateTrackerInfoByID[selectedDatabaseID]
+				templateSource = trackerInfo.templateSource
+			}
+			
 			
 			var newTrackerParams = {  
 				name: $('#newTrackerNameInput').val(),
-				templateSource: trackerInfo.templateSource,
+				templateSource: templateSource,
 				templateDatabaseID: selectedDatabaseID
 			}
 			jsonAPIRequest("database/new",newTrackerParams,function(newTrackerInfo) {
