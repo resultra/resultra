@@ -11,7 +11,8 @@ $(document).ready(function() {
 	
 	initAdminPageHeader()
 	
-							
+	var layoutDesignConfig = createDashboardLayoutDesignConfig()
+	
 	var paletteConfig = {
 		draggableItemHTML: function(placeholderID,paletteItemID) {			
 			return dashboardPaletteItemsEditConfig[paletteItemID].draggableHTMLFunc(placeholderID)
@@ -29,8 +30,7 @@ $(document).ready(function() {
 			var $componentContainer = droppedItemInfo.droppedElem
 			
 			setTimeout(function() {
-				// TODO - need to pass "layoutDesignConfig" parameter to initObjectGridEditBehavior
-				initObjectGridEditBehavior(droppedItemInfo.droppedElem,componentEditConfig)
+				initObjectGridEditBehavior(droppedItemInfo.droppedElem,componentEditConfig,layoutDesignConfig)
 				componentEditConfig.populatePlaceholderData($componentContainer)
 			}, 50);
 			
@@ -69,7 +69,6 @@ $(document).ready(function() {
 		west__showOverflowOnHover:	true
 	})
 						
-	var layoutDesignConfig = createDashboardLayoutDesignConfig()
 	
 	var loadDashboardConfig = {
 		dashboardContext: designDashboardContext,
