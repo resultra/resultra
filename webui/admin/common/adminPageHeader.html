@@ -3,8 +3,8 @@
 	  {{template "workspaceBreadcrumb" .}}
 	  {{template "breadCrumbSeparator"}}
 	  {{template "trackerPageBreadcrumb" .}}
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">Tracker Settings</span>
+	  {{template "breadCrumbSeparator"}}  
+	  <a class="h4" href="/admin/{{.DatabaseID}}"><i class="fa" aria-hidden="true">Tracker Settings</i></a>
 	</div> <!-- breadcrumb header -->
 {{end}}
 
