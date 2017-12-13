@@ -2,7 +2,8 @@ function initUserDropdownMenu() {
 	
 	var getUserInfoParams = {}
 	jsonRequest("/auth/getCurrentUserInfo",getUserInfoParams,function(userInfo) {
-		$('#userMenuUserName').text(userInfo.userName)
+		var fullName = userInfo.firstName + " " + userInfo.lastName
+		$('#userMenuUserName').text(fullName)
 	})
 	
 	$('#userDropdownMenuSignoutMenuItem').click(function(e) {
