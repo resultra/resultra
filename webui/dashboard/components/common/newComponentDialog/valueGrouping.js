@@ -7,6 +7,7 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix,database
 	var groupedFieldSelection = createPrefixedTemplElemInfo(elemPrefix,"NewComponentGroupedFieldSelection")
 	var groupBySelection = createPrefixedTemplElemInfo(elemPrefix,"NewComponentGroupBySelection")
 	var bucketSizeInput = createPrefixedTemplElemInfo(elemPrefix,"NewComponentBucketSizeInput")
+	var $bucketSizeFormComponents = $(panelSelector).find(".valGroupingBucketSizeFormComponents")
 	
 	var validateWithBucketSize = false
 	
@@ -47,11 +48,11 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix,database
 			    console.log(groupBySelection.id)
 				console.log("Value grouping changed: " + groupBy)
 				if(groupBy == "bucket") {
-					$(bucketSizeInput.selector).removeClass("hidden")
+					$bucketSizeFormComponents.show()
 					validateWithBucketSize = true
 				}
 				else {
-					$(bucketSizeInput.selector).addClass("hidden")
+					$bucketSizeFormComponents.hide()
 					validateWithBucketSize = false
 				}
 			});
@@ -71,7 +72,7 @@ function createNewDashboardComponentValueGroupingPanelConfig(elemPrefix,database
 		
 			// The field for entering a bucket size is initially hidden. It is only shown if
 			// the group by parameter is set to use a bucket.
-			$(bucketSizeInput.selector).addClass("hidden")
+			$bucketSizeFormComponents.hide()
 			validateWithBucketSize = true
 			
 			revalidateNonEmptyFormFieldOnChange(groupedFieldSelection.selector)
