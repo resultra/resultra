@@ -129,7 +129,6 @@ function loadDashboardData(loadDashboardConfig)
 
 		for (var summaryValDataIndex in dashboardData.summaryValsData) {
 			var summaryValData = dashboardData.summaryValsData[summaryValDataIndex]
-			console.log ("Loading summary table: id = " + gaugeData.gaugeID)
 			compenentIDComponentMap[summaryValData.summaryValID] = {
 				componentInfo: summaryValData,
 				initFunc: initSummaryValLayout
