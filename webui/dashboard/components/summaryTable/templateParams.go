@@ -43,7 +43,7 @@ func init() {
 		"Field for grouping values into rows", "Group Values By"}
 
 	valueSummaryParams := valueSummary.ValueSummaryTemplateParams{
-		elemPrefix, "Configure how values are summarized along the Y axis.",
+		elemPrefix, "Configure how values are summarized in the first column (more columns can be added later).",
 		"Field to summarize with", "Summarize values by"}
 
 	DesignTemplateParams = SummaryTableDesignTemplateParams{
