@@ -36,6 +36,9 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 		if(recordRef.fieldValues.hasOwnProperty(toggleFieldID)) {
 
 			var fieldVal = recordRef.fieldValues[toggleFieldID]
+			
+			// When initially loading the record, don't fire the change event.
+			var skipSwitchChangeEventFiring = true
 		
 			if (fieldVal === null) {
 				$toggleControl.bootstrapSwitch('indeterminate',true)
@@ -43,12 +46,12 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 				if(fieldVal == true)
 				{
 					$toggleControl.bootstrapSwitch('indeterminate',false)
-					$toggleControl.bootstrapSwitch('state',true)
+					$toggleControl.bootstrapSwitch('state',true,skipSwitchChangeEventFiring)
 				}
 				else {
 					$toggleLabel.removeClass("toggleStrikethroughCompleted")
 					$toggleControl.bootstrapSwitch('indeterminate',false)
-					$toggleControl.bootstrapSwitch('state',false)
+					$toggleControl.bootstrapSwitch('state',false,skipSwitchChangeEventFiring)
 				}
 			
 			}
