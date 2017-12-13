@@ -8,10 +8,10 @@ function summaryTableComponentHTML(summaryTableID) {
 	var containerHTML = ''+
 	'<div class="layoutContainer dashboardSummaryTableComponent">' +
 		'<div class="row">' +
-			'<div class="col-sm-8">' +
+			'<div class="col-sm-10">' +
 				'<div class="summaryTableTitle"></div>'+
 			'</div>' +
-			'<div class="col-sm-4 summaryTableButtons">' +
+			'<div class="col-sm-2 summaryTableButtons">' +
 				componentHelpPopupButtonHTML() +
 			'</div>' +
 		'</div>' +
