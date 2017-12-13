@@ -4,6 +4,9 @@
 
 function initDatePickerRecordEditBehavior($datePickerContainer, componentContext,recordProxy, datePickerObjectRef,remoteValidationFunc) {
 
+	var $datePickerControl = datePickerInputFromContainer($datePickerContainer)
+	
+
 	var validateDatePickerInput = function(validationCompleteCallback) {
 		
 		if(datePickerComponentIsDisabled($datePickerContainer)) {
@@ -17,13 +20,58 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 		})	
 		
 	}
+	
+	function setDateValue(dateVal) {
+		validateDatePickerInput(function(inputIsValid) {
+			if(inputIsValid) {
+				var currRecordRef = recordProxy.getRecordFunc()
+				var fieldID = datePickerObjectRef.properties.fieldID
+				
+				var setRecordValParams = {
+					parentDatabaseID:currRecordRef.parentDatabaseID,
+					recordID:currRecordRef.recordID, 
+					changeSetID: recordProxy.changeSetID,
+					fieldID:fieldID, 
+					value:dateVal}
+				console.log("Setting date value: " + JSON.stringify(setRecordValParams))
+
+				jsonAPIRequest("recordUpdate/setTimeFieldValue",setRecordValParams,function(updatedRecordRef) {
+	
+					// After updating the record, the local cache of records in currentRecordSet will
+					// be out of date. So after updating the record on the server, the locally cached
+					// version of the record also needs to be updated.
+					recordProxy.updateRecordFunc(updatedRecordRef)
+				}) // set record's text field value		
+				
+			} // inputIsValid
+		})
+	}
+	
+	function enableDatePickerChangeEventHandling() {
+		$datePickerControl.on('dp.change',function (e) {
+		    console.log("date picker changed dates")		
+			// The date passed with the event will be false if the date has been cleared.
+			if(e.date !== false) {
+				var objectRef = getContainerObjectRef($datePickerContainer)
+				var dateParam = e.date.toISOString()
+				setDateValue(dateParam)		
+			} else {
+				setDateValue(null) // clear the date
+			}
+		
+		});	
+	}
+	
+	function disableDatePickerChangeEventHandling() {
+		$datePickerControl.unbind('dp.change')
+	}
+	
 
 
 	function initDatePickerFieldEditBehavior(componentContext,recordProxy, 
 					datePickerObjectRef,$datePickerContainer) {
 	
 
-		var $datePickerControl = datePickerInputFromContainer($datePickerContainer)
 		var $clearValueButton = $datePickerContainer.find(".datePickerComponentClearValueButton")
 		var $calendarIcon = $datePickerContainer.find(".datePickerCalendarButton")
 		var $datePickerInput = $datePickerContainer.find("input")
@@ -50,29 +98,6 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 		})
 		
 	
-		function setDateValue(dateVal) {
-			validateDatePickerInput(function(inputIsValid) {
-				if(inputIsValid) {
-					var currRecordRef = recordProxy.getRecordFunc()
-					var setRecordValParams = {
-						parentDatabaseID:currRecordRef.parentDatabaseID,
-						recordID:currRecordRef.recordID, 
-						changeSetID: recordProxy.changeSetID,
-						fieldID:fieldID, 
-						value:dateVal}
-					console.log("Setting date value: " + JSON.stringify(setRecordValParams))
-	
-					jsonAPIRequest("recordUpdate/setTimeFieldValue",setRecordValParams,function(updatedRecordRef) {
-		
-						// After updating the record, the local cache of records in currentRecordSet will
-						// be out of date. So after updating the record on the server, the locally cached
-						// version of the record also needs to be updated.
-						recordProxy.updateRecordFunc(updatedRecordRef)
-					}) // set record's text field value		
-					
-				} // inputIsValid
-			})
-		}
 	
 		initButtonControlClickHandler($clearValueButton,function() {
 				console.log("Clear value clicked for date picker")
@@ -80,19 +105,7 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 		})
 		
 	
-		
-		$datePickerControl.on('dp.change',function (e) {
-		    console.log("date picker changed dates")		
-			// The date passed with the event will be false if the date has been cleared.
-			if(e.date !== false) {
-				var objectRef = getContainerObjectRef($datePickerContainer)
-				var dateParam = e.date.toISOString()
-				setDateValue(dateParam)		
-			} else {
-				setDateValue(null) // clear the date
-			}
-		
-		});	
+		enableDatePickerChangeEventHandling()
 	
 	}
 
@@ -120,6 +133,9 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 		}
 		setConditionalFormat()
 		
+		// When programmatically setting the date during load, don't trigger the events which cause
+		// the date value to be set.
+		disableDatePickerChangeEventHandling()
 
 		if(recordRef.fieldValues.hasOwnProperty(datePickerFieldID)) {
 
@@ -137,6 +153,8 @@ function initDatePickerRecordEditBehavior($datePickerContainer, componentContext
 			// There's no value in the current record for this field, so clear the value in the container
 			$datePickerInput.data("DateTimePicker").clear()
 		}
+		
+		enableDatePickerChangeEventHandling()
 	
 	}
 
