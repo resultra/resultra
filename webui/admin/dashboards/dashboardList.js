@@ -8,17 +8,11 @@ function dashboardDesignPageHTMLLink(dashboardID) {
 function adminDashboardListButtonsHTML(dashboardInfo) {
 return '' +
 			'<div class="pull-right adminDashboardListButtons">' + 
-	
-			'<a class="btn btn-xs btn-default" href="' + dashboardDesignPageHTMLLink(dashboardInfo.dashboardID) + 
+				'<a class="btn btn-xs btn-default" href="' + dashboardDesignPageHTMLLink(dashboardInfo.dashboardID) + 
 					'" role="button">' + 
-				'<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>' +
-			'</a>' + 
-  			'<button class="btn btn-xs btn-danger deleteDashboardButton">' + 
-				// padding-bottom: 2px makes the button image vertically line up better.
-				'<span class="glyphicon glyphicon-remove" style="padding-bottom:2px;"></span>' +
-			'</button>';
-
-			'</div>'
+					'<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>' +
+				'</a>' + 
+		'</div>';
 }
 
 
