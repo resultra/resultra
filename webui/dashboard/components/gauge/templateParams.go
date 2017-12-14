@@ -4,6 +4,7 @@ import (
 	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/common/valueThreshold"
+	"resultra/datasheet/webui/dashboard/components/common/delete"
 	"resultra/datasheet/webui/dashboard/components/common/valueSummary"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -22,6 +23,7 @@ type GaugeDesignTemplateParams struct {
 	PreFilteringPanelParams  propertiesSidebar.PanelTemplateParams
 	PreFilterPropPanelParams recordFilter.FilterPanelTemplateParams
 	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
+	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
 }
 
 var DesignTemplateParams GaugeDesignTemplateParams
@@ -44,6 +46,7 @@ func init() {
 		RangePanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Range", PanelID: "gaugeRange"},
 		FilteringPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Filtering", PanelID: "gaugeFiltering"},
 		ThresholdPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Thresholds", PanelID: "gaugeThreshold"},
+		DeletePanelParams:        delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "gaugeDelete", "Delete Gauge"),
 		ThresholdValueParams:     valueThreshold.NewThresholdValuesTemplateParams(elemPrefix),
 		ValueSummaryPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Summary", PanelID: "gaugeValSummary"},
 		FilterPropPanelParams:    recordFilter.NewFilterPanelTemplateParams(elemPrefix),

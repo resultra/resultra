@@ -160,6 +160,16 @@ function loadDashboardGaugeProperties(gaugePropsArgs) {
 	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
 	
+	var deleteParams = {
+		elemPrefix: gaugeElemPrefix,
+		parentDashboardID: gaugePropsArgs.dashboardID,
+		componentID: gaugeRef.gaugeID,
+		componentLabel: 'gauge',
+		$componentContainer: $gauge
+	}
+	initDeleteDashboardComponentPropertyPanel(deleteParams)
+	
+	
 
 	// Toggle to the bar chart properties, hiding the other property panels
 	hideSiblingsShowOne('#dashboardGaugeProps')
