@@ -31,6 +31,7 @@ function initItemListViewSelection(config) {
 	function populateViewSelection() {
 		function populateTableViewList(doneCallback) {
 			var $tableOptGroup = $('#itemListTableSelectionOptGroup')
+			$tableOptGroup.empty()
 			var getTableParams = { parentDatabaseID: config.databaseID }
 			jsonAPIRequest("tableView/list",getTableParams,function(tableRefs) {
 				$tableOptGroup.empty()
@@ -53,6 +54,7 @@ function initItemListViewSelection(config) {
 			var listParams =  { parentDatabaseID: config.databaseID }
 			jsonAPIRequest("frm/list",listParams,function(formsInfo) {
 				var $formOptGroup = $('#itemListFormSelectionOptGroup')
+				$formOptGroup.empty()
 				var numFormsShown = 0
 				$.each(formsInfo,function(index,formInfo) {
 					if(showView(formInfo.formID)) {
