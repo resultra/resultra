@@ -108,7 +108,9 @@ function getSummaryColumnValSummaries(elemPrefix) {
 		var summarizeBy = $(this).find(".summarizeBySelection").first().val()
 		var numberFormat = $(this).find(".summarizeByFormat").val()
 				
-		if((summarizeBy.length>0) && (summaryFieldID.length > 0) && (numberFormat.length > 0)) {
+		if((summarizeBy !== undefined) && (summarizeBy !== null) && (summarizeBy.length>0) && 
+			(summaryFieldID !== undefined) && (summaryFieldID !== null) && (summaryFieldID.length > 0) && 
+			(numberFormat !== undefined) && (numberFormat !== null) && (numberFormat.length > 0)) {
 			valSummaries.push({
 				summarizeByFieldID: summaryFieldID,
 				summarizeValsWith: summarizeBy,
