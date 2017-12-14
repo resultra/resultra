@@ -64,6 +64,16 @@ function loadDashboardHeaderProperties($header,headerRef) {
 		}
 	}
 	initDashboardComponentTitlePropertyPanel(headerElemPrefix,titlePropertyPanelParams)
+	
+	var deleteParams = {
+		elemPrefix: headerElemPrefix,
+		parentDashboardID: headerRef.parentDashboardID,
+		componentID: headerRef.headerID,
+		componentLabel: 'header',
+		$componentContainer: $header
+	}
+	initDeleteDashboardComponentPropertyPanel(deleteParams)
+	
 
 
 	// Toggle to the bar chart properties, hiding the other property panels
