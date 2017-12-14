@@ -20,6 +20,8 @@ func init() {
 	dashboardRouter.HandleFunc("/api/dashboard/setLayout", setLayoutAPI)
 	dashboardRouter.HandleFunc("/api/dashboard/getUserDashboardList", getUserDashboardListAPI)
 
+	dashboardRouter.HandleFunc("/api/dashboard/deleteComponent", deleteComponentAPI)
+
 	dashboardRouter.HandleFunc("/api/dashboard/validateNewDashboardName", validateNewDashboardNameAPI)
 	dashboardRouter.HandleFunc("/api/dashboard/validateDashboardName", validateDashboardNameAPI)
 	dashboardRouter.HandleFunc("/api/dashboard/validateComponentTitle", validateComponentTitleAPI)
@@ -176,4 +178,26 @@ func getUserDashboardListAPI(w http.ResponseWriter, r *http.Request) {
 	} else {
 		api.WriteJSONResponse(w, dashboards)
 	}
+}
+
+func deleteComponentAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params DeleteComponentParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := deleteComponent(trackerDBHandle, params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, true)
+	}
+
 }

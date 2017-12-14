@@ -3,5 +3,6 @@
 		"newComponentDialog",
 		"valueGrouping",
 		"valueSummary",
-		"componentEdit"]
+		"componentEdit",
+		"delete"]
 }

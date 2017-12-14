@@ -88,3 +88,12 @@ func UpdateDashboardComponent(trackerDBHandle *sql.DB, componentType string, par
 	return nil
 
 }
+
+func DeleteDashboardComponent(trackerDBHandle *sql.DB, parentDashboardID string, componentID string) error {
+	if _, deleteErr := trackerDBHandle.Exec(`DELETE FROM dashboard_components 
+				WHERE dashboard_id=$1 AND component_id=$2`, parentDashboardID, componentID); deleteErr != nil {
+		return fmt.Errorf("DeleteDashboardComponent: Can't delete form component %v: error = %v",
+			componentID, deleteErr)
+	}
+	return nil
+}

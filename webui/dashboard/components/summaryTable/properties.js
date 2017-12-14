@@ -143,6 +143,16 @@ function loadSummaryTableProperties(propArgs) {
 	}
 	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
+	var deleteParams = {
+		elemPrefix: summaryTableElemPrefix,
+		parentDashboardID: propArgs.dashboardID,
+		componentID: summaryTableRef.summaryTableID,
+		componentLabel: 'summary table',
+		$componentContainer: propArgs.$summaryTable
+	}
+	initDeleteDashboardComponentPropertyPanel(deleteParams)
+	
+	
 
 	// Toggle to the summary properties, hiding the other property panels
 	hideSiblingsShowOne('#summaryTableProps')

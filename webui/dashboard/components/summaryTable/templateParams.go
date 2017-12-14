@@ -3,6 +3,7 @@ package summaryTable
 import (
 	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common/recordFilter"
+	"resultra/datasheet/webui/dashboard/components/common/delete"
 	"resultra/datasheet/webui/dashboard/components/common/newComponentDialog"
 	"resultra/datasheet/webui/dashboard/components/common/valueSummary"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
@@ -21,6 +22,7 @@ type SummaryTableDesignTemplateParams struct {
 	FilterPropPanelParams    recordFilter.FilterPanelTemplateParams
 	PreFilterPropPanelParams recordFilter.FilterPanelTemplateParams
 	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
+	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
 }
 
 // Template parameters when the summary table is in view mode
@@ -56,6 +58,7 @@ func init() {
 		ColPanelParams:           propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Columns", PanelID: "summaryTableCols"},
 		PreFilteringPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Pre-Filtering", PanelID: "summaryTablePreFiltering"},
 		FilteringPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Filtering", PanelID: "summaryTableFiltering"},
+		DeletePanelParams:        delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "summaryTableDelete", "Delete Summary Table"),
 		FilterPropPanelParams:    recordFilter.NewFilterPanelTemplateParams(elemPrefix),
 		PreFilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(preFilterElemPrefix)}
 
