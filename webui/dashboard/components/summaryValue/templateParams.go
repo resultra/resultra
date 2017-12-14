@@ -4,6 +4,7 @@ import (
 	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/common/valueThreshold"
+	"resultra/datasheet/webui/dashboard/components/common/delete"
 	"resultra/datasheet/webui/dashboard/components/common/valueSummary"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
 )
@@ -21,6 +22,7 @@ type SummaryValDesignTemplateParams struct {
 	PreFilteringPanelParams  propertiesSidebar.PanelTemplateParams
 	PreFilterPropPanelParams recordFilter.FilterPanelTemplateParams
 	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
+	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
 }
 
 var DesignTemplateParams SummaryValDesignTemplateParams
@@ -41,6 +43,7 @@ func init() {
 		HelpPopupParams:          inputProperties.NewHelpPopupTemplateParams(elemPrefix, "summaryValHelp"),
 		FormatPanelParams:        propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "summaryValFormat"},
 		FilteringPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Filtering", PanelID: "summaryValFiltering"},
+		DeletePanelParams:        delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "summaryValDelete", "Delete Summary Value"),
 		ThresholdPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Thresholds", PanelID: "summaryValThreshold"},
 		ThresholdValueParams:     valueThreshold.NewThresholdValuesTemplateParams(elemPrefix),
 		ValueSummaryPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Value Summary", PanelID: "summaryValValSummary"},

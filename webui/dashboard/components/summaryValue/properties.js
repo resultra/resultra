@@ -138,6 +138,14 @@ function loadDashboardSummaryValProperties(summaryValPropsArgs) {
 	}
 	initComponentHelpPopupPropertyPanel(helpPopupParams)
 	
+	var deleteParams = {
+		elemPrefix: elemPrefix,
+		parentDashboardID: summaryValPropsArgs.dashboardID,
+		componentID: summaryValRef.summaryValID,
+		componentLabel: 'summary value',
+		$componentContainer: $summaryVal
+	}
+	initDeleteDashboardComponentPropertyPanel(deleteParams)
 	
 	
 	// Toggle to the bar chart properties, hiding the other property panels
