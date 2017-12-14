@@ -136,6 +136,16 @@ function loadBarChartProperties(barChartPropsArgs) {
 		}	
 	}
 	initComponentHelpPopupPropertyPanel(helpPopupParams)
+	
+	var deleteParams = {
+		elemPrefix: barChartElemPrefix,
+		parentDashboardID: barChartPropsArgs.dashboardID,
+		componentID: barChartRef.barChartID,
+		componentLabel: 'bar chart',
+		$componentContainer: barChartPropsArgs.$barChart
+	}
+	initDeleteDashboardComponentPropertyPanel(deleteParams)
+	
 
 
 	// Toggle to the bar chart properties, hiding the other property panels

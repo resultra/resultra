@@ -3,6 +3,7 @@ package barChart
 import (
 	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common/recordFilter"
+	"resultra/datasheet/webui/dashboard/components/common/delete"
 	"resultra/datasheet/webui/dashboard/components/common/newComponentDialog"
 	"resultra/datasheet/webui/dashboard/components/common/valueSummary"
 	"resultra/datasheet/webui/generic/propertiesSidebar"
@@ -20,6 +21,7 @@ type BarChartDesignTemplateParams struct {
 	PreFilteringPanelParams  propertiesSidebar.PanelTemplateParams
 	PreFilterPropPanelParams recordFilter.FilterPanelTemplateParams
 	HelpPopupParams          inputProperties.HelpPopupPropertyTemplateParams
+	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
 }
 
 // Template parameters when the summary table is in view mode
@@ -53,6 +55,7 @@ func init() {
 		HelpPopupParams:          inputProperties.NewHelpPopupTemplateParams(elemPrefix, "barChartHelp"),
 		XAxisPanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "X Axis", PanelID: "barChartXAxis"},
 		YAxisPanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Y Axis", PanelID: "barChartYAxis"},
+		DeletePanelParams:        delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "barChartDelete", "Delete Bar Chart"),
 		FilteringPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Default Filtering", PanelID: "barChartFiltering"},
 		FilterPropPanelParams:    recordFilter.NewFilterPanelTemplateParams(elemPrefix),
 		PreFilteringPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Pre-Filtering", PanelID: "barChartPreFiltering"},
