@@ -69,9 +69,10 @@ function MainWindowLayout()
 	
 	
 	var $viewListOptionsToggleButton = $("#viewListOptionsButton")
+	var $iconSpan = $viewListOptionsToggleButton.find("span")
+	
 	initButtonControlClickHandler($viewListOptionsToggleButton, function() {
 		var layoutState = mainLayout.state
-		var $iconSpan = $viewListOptionsToggleButton.find("span")
 		if (layoutState.east.isClosed) {
 			$iconSpan.removeClass("fa-toggle-left")
 			$iconSpan.addClass("fa-toggle-right")
@@ -98,7 +99,9 @@ function MainWindowLayout()
 	}
 	
 	function openPropertyPanel() {
-		contentLayout.open("east")
+		$iconSpan.removeClass("fa-toggle-left")
+		$iconSpan.addClass("fa-toggle-right")
+		mainLayout.open("east")
 	}
 	
 	
