@@ -122,7 +122,7 @@ function populateSortByFieldMenu(sortPaneParams,elemPrefix,sortRule) {
 	
 	
 	var specificSortableFields = null
-	if(sortPaneParams.limitToFieldList.length > 0) {
+	if(sortPaneParams.limitToFieldList !== undefined && sortPaneParams.limitToFieldList.length > 0) {
 		specificSortableFields = new IDLookupTable(sortPaneParams.limitToFieldList)
 	}
 	
