@@ -162,6 +162,7 @@ function loadItemListView(itemListLayout,databaseID, listID) {
 	hideSiblingsShowOne("#viewListFooterControls")
 	itemListLayout.showFooterLayout()
 	itemListLayout.enablePropertySidebar()
+	itemListLayout.enablePropertyPanelToggleButton()
 	
 	viewListContext = {
 			listID:listID,

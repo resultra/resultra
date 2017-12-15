@@ -84,6 +84,13 @@ function MainWindowLayout()
 		mainLayout.toggle("east")
 	})
 	
+	function disablePropertyPanelToggleButton() {
+		$viewListOptionsToggleButton.prop("disabled",true)
+	}
+	function enablePropertyPanelToggleButton() {
+		$viewListOptionsToggleButton.prop("disabled",false)
+	}
+	
 	
 	
 	function hideFooterLayout() {
@@ -144,6 +151,8 @@ function MainWindowLayout()
 	this.setCenterContentHeader = setCenterContentHeader
 	this.enablePropertySidebar = enablePropertySidebar
 	this.disablePropertySidebar = disablePropertySidebar
+	this.disablePropertyPanelToggleButton = disablePropertyPanelToggleButton
+	this.enablePropertyPanelToggleButton = enablePropertyPanelToggleButton
 	
 	this.clearSidebarNavigationSelection = clearSidebarNavigationSelection
 	

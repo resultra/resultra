@@ -12,6 +12,7 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 	pageLayout.clearCenterContentArea()
 	pageLayout.hideFooterLayout()
 	pageLayout.enablePropertySidebar()
+	pageLayout.disablePropertyPanelToggleButton()
 	
 
 	viewDashboardContext = { 
@@ -35,6 +36,7 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 			console.log("dashboard view object selected: " + selectedComponentID)
 			var selectedObjRef	= getContainerObjectRef($component)
 			viewDashboardConfig.selectionFunc($component,selectedObjRef)
+			pageLayout.enablePropertyPanelToggleButton()
 			pageLayout.openPropertyPanel()
 		})
 	}
@@ -44,6 +46,7 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 		doneLoadingDashboardDataFunc: function() {
 
 			initObjectCanvasSelectionBehavior(viewDashboardCanvasSelector, function() {
+				pageLayout.disablePropertyPanelToggleButton()
 				pageLayout.closePropertyPanel()
 				hideSiblingsShowOne('#dashboardViewProps')
 			})
