@@ -95,7 +95,9 @@ function MainWindowLayout()
 	}
 	
 	function closePropertyPanel() {
-		contentLayout.close("east")
+		$iconSpan.removeClass("fa-toggle-right")
+		$iconSpan.addClass("fa-toggle-left")
+		mainLayout.close("east")
 	}
 	
 	function openPropertyPanel() {
