@@ -42,6 +42,12 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 		
 			if (fieldVal === null) {
 				$toggleControl.bootstrapSwitch('indeterminate',true)
+				
+				// NOTE: There's an issue with bootstrap switch which prevents the change
+				// event from firing if the value is already set to false. The following 
+				// workaround ensures the event is fired.
+				// See: https://github.com/Bttstrp/bootstrap-switch/issues/426
+				$toggleControl.data('bootstrap-switch').options.state = null; 
 			} else {
 				if(fieldVal == true)
 				{
