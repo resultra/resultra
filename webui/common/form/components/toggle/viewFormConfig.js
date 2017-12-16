@@ -30,6 +30,17 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 		var toggleFieldID = toggleObjectRef.properties.fieldID
 
 		console.log("loadRecordIntoToggle: Field ID to load data:" + toggleFieldID)
+		
+		function setToggleIndeterminate() {
+			$toggleControl.bootstrapSwitch('indeterminate',true)
+			
+			// NOTE: There's an issue with bootstrap switch which prevents the change
+			// event from firing if the value is already set to false. The following 
+			// workaround ensures the event is fired.
+			// See: https://github.com/Bttstrp/bootstrap-switch/issues/426
+			$toggleControl.data('bootstrap-switch').options.state = null; 
+
+		}
 	
 		// Populate the "intersection" of field values in the record
 		// with the fields shown by the layout's containers.
@@ -41,13 +52,7 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 			var skipSwitchChangeEventFiring = true
 		
 			if (fieldVal === null) {
-				$toggleControl.bootstrapSwitch('indeterminate',true)
-				
-				// NOTE: There's an issue with bootstrap switch which prevents the change
-				// event from firing if the value is already set to false. The following 
-				// workaround ensures the event is fired.
-				// See: https://github.com/Bttstrp/bootstrap-switch/issues/426
-				$toggleControl.data('bootstrap-switch').options.state = null; 
+				setToggleIndeterminate()
 			} else {
 				if(fieldVal == true)
 				{
@@ -65,7 +70,7 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 		else
 		{
 			// No value exits
-			$toggleControl.bootstrapSwitch('indeterminate',true)
+			setToggleIndeterminate()
 		}	
 	
 	}
