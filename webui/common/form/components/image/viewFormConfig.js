@@ -138,20 +138,21 @@ function initImageRecordEditBehavior($container,componentContext,recordProxy, im
 	
 		var imageFieldID = imageObjRef.properties.fieldID
 		var $clearValueButton = $container.find(".imageComponentClearValueButton")
+		var $imageButton = $container.find(".imageEditLinkButton")
+						
 	
 		var fieldRef = getFieldRef(imageFieldID)
 		if(fieldRef.isCalcField) {
-			$imageInput.prop('disabled',true);
+			$imageButton.css("display","none")
 			return;  // stop initialization, the text box is read only.
 		}
 		
 		initImageClearValueControl($container,imageObjRef)
+		
 	
 		if(formComponentIsReadOnly(imageObjRef.properties.permissions)) {
-			//$imageInput.prop('disabled',true);
-		} else {
-			//$imageInput.prop('disabled',false);
-		}
+			$imageButton.css("display","none")
+		} 
 			
 					
 		initButtonControlClickHandler($clearValueButton,function() {
