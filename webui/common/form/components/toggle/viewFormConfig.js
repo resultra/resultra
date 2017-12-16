@@ -41,6 +41,12 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 			$toggleControl.data('bootstrap-switch').options.state = null; 
 
 		}
+		
+		// To initialize the control the readonly option needs to first be
+		// disabled. Then, after setting the value, the readonly value can be restored (see below)
+		var isReadonly = $toggleControl.bootstrapSwitch("readonly")
+		$toggleControl.bootstrapSwitch("readonly",false)
+		
 	
 		// Populate the "intersection" of field values in the record
 		// with the fields shown by the layout's containers.
@@ -71,7 +77,11 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 		{
 			// No value exits
 			setToggleIndeterminate()
-		}	
+		}
+		
+		// Restore the read-only state of the control.
+		$toggleControl.bootstrapSwitch("readonly",isReadonly)
+			
 	
 	}
 
@@ -83,7 +93,8 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 		var fieldRef = getFieldRef(fieldID)
 		if(fieldRef.isCalcField || formComponentIsReadOnly(toggleObjectRef.properties.permissions)) {
 			var $toggleControl = getToggleControlFromToggleContainer($toggle)
-			$toggleControl.bootstrapSwitch("disabled",true)
+//			$toggleControl.bootstrapSwitch("disabled",true)
+			$toggleControl.bootstrapSwitch("readonly",true)
 			return;  // stop initialization, the toggle is read only.
 		}
 	
