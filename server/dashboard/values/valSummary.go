@@ -67,6 +67,11 @@ func validateFieldTypeWithSummary(fieldType string, summarizeValsWith string) er
 		if fieldType != field.FieldTypeTime {
 			return fmt.Errorf("Invalid summary = %v for field type = %v", summarizeValsWith, fieldType)
 		}
+	case ValSummaryCountTrue, ValSummaryCountFalse, ValSummaryPercTrue, ValSummaryPercFalse:
+		if fieldType != field.FieldTypeBool {
+			return fmt.Errorf("Invalid summary = %v for field type = %v", summarizeValsWith, fieldType)
+		}
+
 	default:
 		return fmt.Errorf("Invalid summary = %v for field type = %v", summarizeValsWith, fieldType)
 	}

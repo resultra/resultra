@@ -18,20 +18,8 @@ function createNewDashboardComponentValueSummaryPanelConfig(elemPrefix,doneCallb
 		return validationResults
 	}
 	
-	function populateSummarizeBySelection(fieldType) {
-		$(summarizeBySelection.selector).empty()
-		$(summarizeBySelection.selector).append(defaultSelectOptionPromptHTML("Choose how to summarize values"))
-		if(fieldType == fieldTypeNumber) {
-			$(summarizeBySelection.selector).append(selectOptionHTML("count","Count of values"))
-			$(summarizeBySelection.selector).append(selectOptionHTML("sum","Sum of values"))
-			$(summarizeBySelection.selector).append(selectOptionHTML("average","Average of values"))
-		}
-		else if (fieldType == fieldTypeText) {
-			$(summarizeBySelection.selector).append(selectOptionHTML("count","Count of values"))
-		}
-		else {
-			console.log("unrecocognized field type: " + fieldType)
-		}
+	function populateNewComponentSummarizeBySelection(fieldType) {
+		populateSummarizeBySelection(summarizeBySelection.selector,fieldType)
 	}
 
 	function getPanelValues() {
@@ -88,7 +76,7 @@ function createNewDashboardComponentValueSummaryPanelConfig(elemPrefix,doneCallb
 						fieldInfo = valueSummaryFieldsByID[fieldID]			
 			        	console.log("select field: field ID = " + fieldID  + " name = " + fieldInfo.name + " type = " + fieldInfo.type)
 				
-						populateSummarizeBySelection(fieldInfo.type)
+						populateNewComponentSummarizeBySelection(fieldInfo.type)
 						$(summarizeBySelection.selector).attr("disabled",false)
 					}
 			    }); // change
