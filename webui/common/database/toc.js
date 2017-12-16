@@ -28,15 +28,13 @@ function addDashboardLinkToTOCList(tocConfig,dashboardInfo) {
 }
 
 function addItemListLinkToTOCList(tocConfig, listInfo) {
-	var itemListItemHTML = '' + 
-		'<li>' + 
-			'<a href="#">' + 
-					listInfo.name + 
-					'<span class="badge pull-right"></span>' +
-			'</a>' +
-		'</li>'
-	var $itemListItem = $(itemListItemHTML)
 	
+	
+	var $itemListItem = $('#itemListTOCItemTemplate').clone()
+	$itemListItem.attr("id","")
+
+	$itemListItem.find(".tocListName").text(listInfo.name)
+		
 	var $itemListLink = $itemListItem.find("a")
 	
 	$itemListLink.click(function(e) {
@@ -58,7 +56,7 @@ function addItemListLinkToTOCList(tocConfig, listInfo) {
 	}
 	
 	jsonAPIRequest("recordRead/getFilteredRecordCount",listCountParams,function(listCount) {
-		var $listCount = $itemListItem.find("span")
+		var $listCount = $itemListItem.find(".badge")
 		if (listCount > 0) {
 			$listCount.text(listCount)
 		} else {
