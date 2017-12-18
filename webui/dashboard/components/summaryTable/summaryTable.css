@@ -1,9 +1,10 @@
 .dashboardSummaryTableComponent {
 	min-width:300px;
-	min-height:150px;
+	min-height:200px;
 	width: 300px;
 	height: auto;
 }
+
 
 .dashboardSummaryTableComponent .tableContainer {
 	position: absolute;
@@ -12,6 +13,7 @@
 	top:30px;
 	bottom:5px;
 }
+
 
 .dashboardSummaryTableComponent td {
 	text-align: right;

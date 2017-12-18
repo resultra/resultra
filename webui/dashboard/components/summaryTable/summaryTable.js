@@ -7,7 +7,7 @@ function summaryTableComponentHTML(summaryTableID) {
 	
 	var containerHTML = ''+
 	'<div class="layoutContainer dashboardSummaryTableComponent">' +
-		'<div class="row">' +
+		'<div class="row summaryTableHeader">' +
 			'<div class="col-sm-10">' +
 				'<div class="summaryTableTitle"></div>'+
 			'</div>' +
@@ -100,6 +100,7 @@ function populateSummaryTableRows($summaryTable,summaryTableData) {
 function initSummaryTableData(dashboardID,$summaryTable, summaryTableData) {
 	
 	var $tableContainer = $summaryTable.find(".tableContainer")
+	var $summaryTableHeader = $summaryTable.find(".summaryTableHeader")
 	
 	$tableContainer.empty()
 	$tableContainer.append(summaryTableTableElem())
@@ -115,6 +116,14 @@ function initSummaryTableData(dashboardID,$summaryTable, summaryTableData) {
 		var $tableTitleLabel = $("<label>" + tableTitle + "</label>")
 		$tableTitleDiv.append($tableTitleLabel)	
 	}
+	
+	// Dynamically compute the summary table component header's height,
+	// then set the top of the table container to be just below this height.
+	// This computation needs to happen after setting the label.
+	var headerHeightPx = $summaryTableHeader.outerHeight(true) + 'px'
+	console.log("Summary table height: " + headerHeightPx)
+	$tableContainer.css("top",headerHeightPx)
+	
 
 	populateSummaryTableHeader($tableElem,summaryTableData)
 	populateSummaryTableFooter($tableElem,summaryTableData)
