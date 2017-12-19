@@ -2,7 +2,8 @@
     "cssFiles": ["container.css"], 
     "htmlFiles": [
         "properties.html",
-		"newGaugeDialog.html"
+		"newGaugeDialog.html",
+		"viewProperties.html"
     ], 
     "jsFiles": [
         "container.js", 

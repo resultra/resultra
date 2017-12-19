@@ -1,0 +1,11 @@
+{{define "dashboardGaugeViewProps"}}
+
+	<div id="dashboardGaugeViewProps" class="propertyPanelToggleContainer">
+		
+		{{template "propertyPanelPrefix" .FilteringPanelParams}}
+			{{template "recordFilterPane" .FilterConfigPanelParams}}
+		{{template "propertyPanelSuffix"}}
+		
+	</div>
+
+{{end}}

@@ -26,7 +26,15 @@ type GaugeDesignTemplateParams struct {
 	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
 }
 
+// Template parameters when in view mode
+type GaugeViewTemplateParams struct {
+	ElemPrefix              string
+	FilteringPanelParams    propertiesSidebar.PanelTemplateParams
+	FilterConfigPanelParams recordFilter.FilterPanelTemplateParams
+}
+
 var DesignTemplateParams GaugeDesignTemplateParams
+var ViewTemplateParams GaugeViewTemplateParams
 
 func init() {
 
@@ -52,5 +60,10 @@ func init() {
 		FilterPropPanelParams:    recordFilter.NewFilterPanelTemplateParams(elemPrefix),
 		PreFilteringPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Pre-Filtering", PanelID: "gaugePreFiltering"},
 		PreFilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(preFilterElemPrefix)}
+
+	ViewTemplateParams = GaugeViewTemplateParams{
+		ElemPrefix:              elemPrefix,
+		FilteringPanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "dashboardGaugeFiltering"},
+		FilterConfigPanelParams: recordFilter.NewFilterPanelTemplateParams(elemPrefix)}
 
 }
