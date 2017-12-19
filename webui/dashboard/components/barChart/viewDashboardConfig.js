@@ -7,9 +7,8 @@ function barChartViewDashboardConfig(barChartRef) {
 	// currFilterRules can be used instead of the default filter rules.
 	var currFilterRules = barChartRef.properties.defaultFilterRules
 	
-	function reloadBarChart() {
+	function reloadBarChart($container) {
 	
-		// TODO - Include filtering parameters when getting data
 		var getDataParams = {
 			parentDashboardID:barChartRef.parentDashboardID,
 			barChartID:barChartRef.barChartID,
@@ -17,7 +16,7 @@ function barChartViewDashboardConfig(barChartRef) {
 		}
 		jsonAPIRequest("dashboardController/getBarChartData",getDataParams,function(updatedBarChartData) {
 			console.log("Redrawing barchart after changing filter selection")
-			drawBarChart(updatedBarChartData) // redraw the chart
+			drawBarChart($container,updatedBarChartData) // redraw the chart
 		})
 		
 	}
@@ -29,15 +28,14 @@ function barChartViewDashboardConfig(barChartRef) {
 			var filterPaneParams = {
 				elemPrefix: barChartElemPrefix,
 				databaseID: viewDashboardContext.databaseID,
-				defaultFilterRules: barChartRef.properties.defaultFilterRules,
+				defaultFilterRules: currFilterRules,
 				initDone: function () {},
 				updateFilterRules: function (updatedFilterRules) {
-					// TODO - Reload table with updated filtering params.
 					currFilterRules = updatedFilterRules
-					reloadBarChart()
+					reloadBarChart($container)
 				},
 				refilterWithCurrentFilterRules: function() {
-					reloadBarChart()
+					reloadBarChart($container)
 				}
 			}
 
