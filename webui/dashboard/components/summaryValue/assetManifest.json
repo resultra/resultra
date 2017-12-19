@@ -2,7 +2,8 @@
     "cssFiles": ["container.css"], 
     "htmlFiles": [
         "properties.html",
-		"newSummaryValDialog.html"
+		"newSummaryValDialog.html",
+		"viewProperties.html"
     ], 
     "jsFiles": [
         "container.js", 

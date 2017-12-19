@@ -25,7 +25,15 @@ type SummaryValDesignTemplateParams struct {
 	DeletePanelParams        delete.DeletePropertyPanelTemplateParams
 }
 
+// Template parameters when in view mode
+type SummaryValViewTemplateParams struct {
+	ElemPrefix              string
+	FilteringPanelParams    propertiesSidebar.PanelTemplateParams
+	FilterConfigPanelParams recordFilter.FilterPanelTemplateParams
+}
+
 var DesignTemplateParams SummaryValDesignTemplateParams
+var ViewTemplateParams SummaryValViewTemplateParams
 
 func init() {
 
@@ -50,5 +58,10 @@ func init() {
 		FilterPropPanelParams:    recordFilter.NewFilterPanelTemplateParams(elemPrefix),
 		PreFilteringPanelParams:  propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Pre-Filtering", PanelID: "summaryValPreFiltering"},
 		PreFilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(preFilterElemPrefix)}
+
+	ViewTemplateParams = SummaryValViewTemplateParams{
+		ElemPrefix:              elemPrefix,
+		FilteringPanelParams:    propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Filtering", PanelID: "summaryValFiltering"},
+		FilterConfigPanelParams: recordFilter.NewFilterPanelTemplateParams(elemPrefix)}
 
 }

@@ -19,6 +19,7 @@ type ComponentDesignTemplateParams struct {
 type ComponentViewTemplateParams struct {
 	SummaryTableParams summaryTable.SummaryTableViewTemplateParams
 	BarChartParams     barChart.BarChartViewTemplateParams
+	SummaryValParams   summaryValue.SummaryValViewTemplateParams
 }
 
 var DesignTemplateParams ComponentDesignTemplateParams
@@ -34,5 +35,6 @@ func init() {
 
 	ViewTemplateParams = ComponentViewTemplateParams{
 		SummaryTableParams: summaryTable.ViewTemplateParams,
-		BarChartParams:     barChart.ViewTemplateParams}
+		BarChartParams:     barChart.ViewTemplateParams,
+		SummaryValParams:   summaryValue.ViewTemplateParams}
 }
