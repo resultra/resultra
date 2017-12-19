@@ -39,7 +39,7 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 			pageLayout.enablePropertyPanelToggleButton()
 			pageLayout.openPropertyPanel()
 		})
-	}
+	}		
 
 	var loadDashboardConfig = {
 		dashboardContext: viewDashboardContext,
@@ -78,9 +78,6 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 
 			console.log("Init header component")
 			
-			initDashboardComponentViewBehavior($header,
-					headerRef.headerID,viewConfig)
-
 		},
 		initGaugeComponent: function($gauge,gaugeRef) {
 
