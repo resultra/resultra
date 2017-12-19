@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/userRole"
 )
@@ -148,7 +148,7 @@ func getUserDashboards(req *http.Request, databaseID string) ([]Dashboard, error
 		return nil, dbErr
 	}
 
-	allDashboards, err := GetAllDashboards(trackerDBHandle, databaseID)
+	allDashboards, err := GetAllSortedDashboard(trackerDBHandle, databaseID)
 	if err != nil {
 		return nil, fmt.Errorf("getUserDashboards: %v", err)
 	}
