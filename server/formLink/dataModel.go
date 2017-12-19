@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/userRole"
 )
@@ -186,6 +186,30 @@ func getAllFormLinks(trackerDBHandle *sql.DB, parentDatabaseID string) ([]FormLi
 	return getAllFormLinksFromSrc(trackerDBHandle, parentDatabaseID)
 }
 
+func orderLinksByManualOrder(unorderedLinkInfo []FormLink, manualOrder []string) []FormLink {
+	// Map the listID -> ListInfo.
+	linkInfoByID := map[string]FormLink{}
+	for _, currLinkInfo := range unorderedLinkInfo {
+		linkInfoByID[currLinkInfo.LinkID] = currLinkInfo
+	}
+	// Iterate throught the manually ordered list of LinkIDs, pull items from linkInfoByID in
+	// the order they are encountered in the ordered list, then re-append the FormLink's into a
+	// new ordered list in the same order they are found.
+	orderedLinkInfo := []FormLink{}
+	for _, currLinkID := range manualOrder {
+		linkInfo, foundLinkInfo := linkInfoByID[currLinkID]
+		if foundLinkInfo {
+			orderedLinkInfo = append(orderedLinkInfo, linkInfo)
+			delete(linkInfoByID, currLinkID)
+		}
+	}
+	for _, currLinkInfo := range linkInfoByID {
+		orderedLinkInfo = append(orderedLinkInfo, currLinkInfo)
+	}
+	return orderedLinkInfo
+
+}
+
 func getUserSortedFormLinks(trackerDBHandle *sql.DB, req *http.Request, databaseID string) ([]FormLink, error) {
 
 	allLinks, err := getAllFormLinks(trackerDBHandle, databaseID)
@@ -193,8 +217,15 @@ func getUserSortedFormLinks(trackerDBHandle *sql.DB, req *http.Request, database
 		return nil, fmt.Errorf("getUserSortedFormLinks: %v", err)
 	}
 
+	db, getErr := trackerDatabase.GetDatabase(trackerDBHandle, databaseID)
+	if getErr != nil {
+		return nil, fmt.Errorf("getDatabaseInfo: Unable to get existing database: %v", getErr)
+	}
+
+	orderedLinks := orderLinksByManualOrder(allLinks, db.Properties.FormLinkOrder)
+
 	if userRole.CurrUserIsDatabaseAdmin(req, databaseID) {
-		return allLinks, nil
+		return orderedLinks, nil
 	}
 
 	currUserID, userErr := userAuth.GetCurrentUserID(req)
@@ -208,7 +239,7 @@ func getUserSortedFormLinks(trackerDBHandle *sql.DB, req *http.Request, database
 	}
 
 	userLinks := []FormLink{}
-	for _, currLink := range allLinks {
+	for _, currLink := range orderedLinks {
 		_, foundVisiblePriv := visibleLinks[currLink.LinkID]
 		if foundVisiblePriv {
 			userLinks = append(userLinks, currLink)

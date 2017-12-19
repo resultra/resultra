@@ -113,11 +113,11 @@ func getUserFormLinksAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	presets, err := getUserSortedFormLinks(trackerDBHandle, r, params.ParentDatabaseID)
+	sortedLinks, err := getUserSortedFormLinks(trackerDBHandle, r, params.ParentDatabaseID)
 	if err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
-		api.WriteJSONResponse(w, presets)
+		api.WriteJSONResponse(w, sortedLinks)
 	}
 
 }
