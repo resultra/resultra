@@ -1,4 +1,34 @@
+function initTableOfContentsRefreshPollingLoop(refreshCallback) {
+    var userActivityTimer;
+	
+	var userIsActive = true
+	
+	$(window).mousemove(resetUserActivityTimer)
+	$(window).click(resetUserActivityTimer)
+	$(window).mousedown(resetUserActivityTimer)
+	$(window).keypress(resetUserActivityTimer)
+	$(window).scroll(resetUserActivityTimer)
 
+    function setUserInactive() {
+		userIsActive = false
+    }
+
+    function resetUserActivityTimer() {
+        clearTimeout(userActivityTimer);
+		userIsActive = true
+		// If the timer completes before user activity is seen, then 
+		// disable the inactivity timer.
+        userActivityTimer = setTimeout(setUserInactive, 10000);  // time is in milliseconds
+    }
+	
+	function refresh() {
+		if(userIsActive) {
+			refreshCallback()
+		} 
+		setTimeout(refresh,5000)
+	}
+	refresh()
+}
 
 function addDashboardLinkToTOCList(tocConfig,dashboardInfo) {
 	// TODO - Link to "dashboard view" page instead of dashboard design page (view page isn't implemented yet)
@@ -55,19 +85,25 @@ function addItemListLinkToTOCList(tocConfig, listInfo) {
 		preFilterRules: listInfo.properties.preFilterRules,
 	}
 	
-	jsonAPIRequest("recordRead/getFilteredRecordCount",listCountParams,function(listCount) {
-		var $listCount = $itemListItem.find(".badge")
-		if (listCount > 0) {
-			$listCount.text(listCount)
-		} else {
-			$listCount.hide()
-		}
-	})
+	function refreshListCount() {
+		jsonAPIRequest("recordRead/getFilteredRecordCount",listCountParams,function(listCount) {
+			var $listCount = $itemListItem.find(".badge")
+			if (listCount > 0) {
+				$listCount.text(listCount)
+			} else {
+				$listCount.hide()
+			}
+		})		
+	}
+	
+	initTableOfContentsRefreshPollingLoop(refreshListCount)
 	
 	
 	$('#tocListList').append($itemListItem)		
 	
 }
+
+
 
 function addFormLinkToTOCList(tocConfig, linkInfo) {
 	
@@ -92,6 +128,8 @@ function addFormLinkToTOCList(tocConfig, linkInfo) {
 			tocConfig.newItemLinkClickedCallback(linkInfo.linkID,$formLinkListItem)
 		}
 	})
+	
+	
 	
 	
 	$('#tocFormList').append($formLinkListItem)
