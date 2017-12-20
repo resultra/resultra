@@ -66,7 +66,7 @@ $(document).ready(function() {
 	
 	// Listen for events to view a specific record/item in a particular form. This happens in response to
 	// clicks to a form button deeper down in the DOM.
-	$('#formViewContainer').on(viewFormInViewportEventName,function(e,params) {
+	$('#formViewContainer,#tableViewContainer').on(viewFormInViewportEventName,function(e,params) {
 		e.stopPropagation()
 		console.log("Got event in main window: " + JSON.stringify(params))
 		
