@@ -269,7 +269,7 @@ function initItemListTableView(params) {
 			setFormButtonSize($cellContainer,colInfo.properties.size)
 			setFormButtonColorScheme($cellContainer,colInfo.properties.colorScheme)
 			setFormButtonLabel($cellContainer,colInfo)
-			
+						
 			// The loadFormViewComponents and loadRecordIntoFormLayout functions
 			// need to be passed to initFormButtonRecordEditBehavior in order
 			// to avoid a cyclical package dependency.
@@ -279,7 +279,7 @@ function initItemListTableView(params) {
 					loadFormViewComponents,loadRecordIntoFormLayout)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				formButtonContainerHTML,initContainer)
+				formButtonTableCellContainerHTML,initContainer)
 	}
 
 

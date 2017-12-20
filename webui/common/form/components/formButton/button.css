@@ -4,6 +4,12 @@
 	height: auto;
 }
 
+.buttonTableCellContainer {
+/*	When shown in a table, allow the button to size automatically */
+	height: auto;
+	overflow:none;
+}
+
 .buttonFormContainer .formHeader {
 	margin-top: 5px;
 	margin-bottom:5px;

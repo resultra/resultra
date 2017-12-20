@@ -15,6 +15,18 @@ function formButtonContainerHTML()
 	return containerHTML
 }
 
+function formButtonTableCellContainerHTML()
+{	
+	var containerHTML = ''+
+		'<div class=" layoutContainer buttonTableCellContainer">' +
+			'<button type="button" class="btn btn-primary formButton">' + 
+			'Open Form' +
+			'</button>' +
+		'</div>';
+						
+	return containerHTML
+}
+
 
 function setFormButtonSize($container,newSize) {
 	
