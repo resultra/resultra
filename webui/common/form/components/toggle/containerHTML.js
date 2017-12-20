@@ -117,7 +117,7 @@ function initToggleComponentControl($toggleContainer,toggleRef,handleWidth) {
 		onText:escapeHTML(toggleRef.properties.onLabel),
 		 offText:escapeHTML(toggleRef.properties.offLabel),
 		labelWidth:'5px',
-		 animate:true,
+		 animate:false,
 		onColor:toggleRef.properties.onColorScheme,
 		offColor:toggleRef.properties.offColorScheme
 	});

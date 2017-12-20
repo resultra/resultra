@@ -46,7 +46,6 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 		// disabled. Then, after setting the value, the readonly value can be restored (see below)
 		var isReadonly = $toggleControl.bootstrapSwitch("readonly")
 		$toggleControl.bootstrapSwitch("readonly",false)
-		
 	
 		// Populate the "intersection" of field values in the record
 		// with the fields shown by the layout's containers.
@@ -78,9 +77,10 @@ function initToggleRecordEditBehavior($toggle,componentContext,recordProxy, togg
 			// No value exits
 			setToggleIndeterminate()
 		}
-		
+				
 		// Restore the read-only state of the control.
 		$toggleControl.bootstrapSwitch("readonly",isReadonly)
+		
 			
 	
 	}
