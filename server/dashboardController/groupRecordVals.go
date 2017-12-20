@@ -211,7 +211,7 @@ func groupTimeFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Fi
 			} // switch groupValsBy
 		}
 	} else {
-		return numberGroupLabelInfo("BLANK", -1.0*math.MaxFloat64), nil
+		return blankGroupLabelInfo(), nil
 	}
 }
 
@@ -288,7 +288,7 @@ func groupNumberFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.
 			} // switch groupValsBy
 		}
 	} else {
-		return numberGroupLabelInfo("BLANK", -1.0), nil
+		return blankGroupLabelInfo(), nil
 	}
 
 }
