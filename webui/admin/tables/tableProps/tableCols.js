@@ -42,7 +42,7 @@ function initTableViewColsProperties(tableRef) {
 				var fieldName = fieldsByID[tableCol.properties.fieldID].name
 				$colListItem.find('label').text(fieldName)
 			} else {
-				$colListItem.find('label').text("Button Label TBD")
+				$colListItem.find('label').text("Button: open form")
 			}
 			
 			var editColLink = '/admin/tablecol/' + tableCol.columnID
