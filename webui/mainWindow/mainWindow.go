@@ -5,9 +5,9 @@ import (
 	"html/template"
 	"net/http"
 
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/userRole"
 
 	"resultra/datasheet/server/common/databaseWrapper"
@@ -88,7 +88,8 @@ func viewMainWindow(w http.ResponseWriter, r *http.Request) {
 
 		isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
-		templParams := MainWindowTemplateParams{Title: "Main Window",
+		templParams := MainWindowTemplateParams{
+			Title:           dbInfo.DatabaseName,
 			DatabaseID:      dbInfo.DatabaseID,
 			DatabaseName:    dbInfo.DatabaseName,
 			CurrUserIsAdmin: isAdmin,
