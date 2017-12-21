@@ -128,6 +128,28 @@ function loadFormButtonProperties($button,buttonRef) {
 		$componentContainer: $button
 	}
 	initDeleteFormComponentPropertyPanel(deleteParams)
+	
+	
+	
+	function saveButtonLabelProps(updatedLabelProps) {
+		console.log("Saving label propeties for form button")
+		var formatParams = {
+			parentFormID: buttonRef.parentFormID,
+			buttonID: buttonRef.buttonID,
+			buttonLabelFormat: updatedLabelProps
+		}
+		jsonAPIRequest("frm/formButton/setButtonLabelFormat", formatParams, function(updatedButton) {
+				setContainerComponentInfo($button,updatedButton,updatedButton.buttonID)	
+				setFormButtonLabel($button,updatedButton)
+		})	
+	}
+	var buttonLabelParams = {
+		elemPrefix: elemPrefix,
+		initialVal: buttonRef.properties.buttonLabelFormat,
+		saveLabelPropsCallback: saveButtonLabelProps
+	}
+	initFormButtonLabelPropertyPanel(buttonLabelParams)
+	
 		
 	// Toggle to the check box properties, hiding the other property panels
 	hideSiblingsShowOne('#formButtonProps')

@@ -81,6 +81,9 @@
 {{define "formButtonProps"}}
 
 	<div id="formButtonProps" class="propertyPanelToggleContainer">
+		
+		{{template "formButtonLabelPropertyPanel" .ButtonLabelPanelParams}}
+		
 				
 		{{template "propertyPanelPrefix" .FormatPanelParams}}
 			{{template "formButtonFormatProps"}}

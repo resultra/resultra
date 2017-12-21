@@ -21,6 +21,7 @@ func init() {
 	buttonRouter.HandleFunc("/api/frm/formButton/setColorScheme", setColorScheme)
 	buttonRouter.HandleFunc("/api/frm/formButton/setIcon", setIcon)
 	buttonRouter.HandleFunc("/api/frm/formButton/setVisibility", setVisibility)
+	buttonRouter.HandleFunc("/api/frm/formButton/setButtonLabelFormat", setButtonLabelFormat)
 
 	http.Handle("/api/frm/formButton/", buttonRouter)
 }
@@ -140,6 +141,15 @@ func setIcon(w http.ResponseWriter, r *http.Request) {
 
 func setVisibility(w http.ResponseWriter, r *http.Request) {
 	var params ButtonVisibilityParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processButtonPropUpdate(w, r, params)
+}
+
+func setButtonLabelFormat(w http.ResponseWriter, r *http.Request) {
+	var params ButtonLabelFormatParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
