@@ -4,6 +4,7 @@ function initDefaultValuesPropertyPanel(panelParams) {
 		elemPrefix: panelParams.elemPrefix,
 		databaseID: panelParams.databaseID,
 		fieldTypes: [fieldTypeBool,fieldTypeNumber,fieldTypeTime,fieldTypeText],
+		includeCalcFields: false,
 		fieldSelectionCallback: function(fieldInfo) {
 			
 			var defaultValuesListSelector = createPrefixedSelector(panelParams.elemPrefix,

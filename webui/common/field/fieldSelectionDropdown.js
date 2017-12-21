@@ -1,4 +1,10 @@
-function initFieldSelectionDropdown(params) {
+function initFieldSelectionDropdown(clientParams) {
+	
+	var defaultParams = {
+		includeCalcFields: true
+	}
+	var params = $.extend({},defaultParams,clientParams)
+	
 	
 	function populateAddFilterDropdownMenu(sortedFields) {
 		
@@ -31,7 +37,15 @@ function initFieldSelectionDropdown(params) {
 		// Populate the selection menu for selecting the field to filter on
 		for (var fieldIndex in sortedFields) {
 			var fieldInfo = sortedFields[fieldIndex]
-		 	$fieldSelect.append(createFieldSelectionItem(fieldInfo))
+			
+			var includeInSelection = true
+			if (fieldInfo.isCalcField && !params.includeCalcFields) {
+				includeInSelection = false
+			}
+			
+			if (includeInSelection) {
+				$fieldSelect.append(createFieldSelectionItem(fieldInfo))
+			}
 		} // for each field	
 		
 				
