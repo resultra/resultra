@@ -22,13 +22,18 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 	var $formButton = buttonFromFormButtonContainer($buttonContainer)
 	
 	
-	function showRecordInPopupView() {
+	
+	
+	function showRecordInPopupView(formInfo) {
 		var currRecord = parentRecordProxy.getRecordFunc()
 
 		var $popupFormViewCanvas = $('#formButtonPopupFormCanvas')
 		$popupFormViewCanvas.empty()
-
 		
+		$popupTitle = $('#formButtonPopupFormDialogLabel')
+		$popupTitle.text(formInfo.form.name)
+		
+
 		function getPopupFormRecordFunc() { return currRecord }
 		function updatePopupFormRecordFunc(updatedRecordRef) {
 			
@@ -190,7 +195,13 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 	initButtonControlClickHandler($formButton, function() {
 		var showFormDest = buttonObjectRef.properties.popupBehavior.whereShowForm
 		if(showFormDest === 'popup') {
-			showRecordInPopupView()	
+			
+			var getFormInfoParams = { formID: buttonObjectRef.properties.linkedFormID }
+		
+			jsonAPIRequest("frm/getFormInfo", getFormInfoParams, function(formInfo) {
+				showRecordInPopupView(formInfo)
+			})
+					
 		} else if (showFormDest === 'page'){
 			showRecordInPage()
 		} else if (showFormDest === 'newPage') {
