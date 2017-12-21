@@ -70,7 +70,7 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 					updateRecordFunc: updatePopupFormRecordFunc
 				}
 				
-				var defaultVals = buttonObjectRef.properties.popupBehavior.defaultValues
+				var defaultVals = buttonObjectRef.properties.defaultValues
 				
 				if (defaultVals !== undefined && defaultVals.length > 0) {
 					// Apply the default values before loading the form.
