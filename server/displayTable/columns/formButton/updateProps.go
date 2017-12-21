@@ -129,3 +129,15 @@ func (updateParams ButtonIconParams) updateProps(trackerDBHandle *sql.DB, button
 
 	return nil
 }
+
+type ButtonLabelFormatParams struct {
+	ButtonIDHeader
+	ButtonLabelFormat inputProps.FormButtonLabelFormatProperties `json:"buttonLabelFormat"`
+}
+
+func (updateParams ButtonLabelFormatParams) updateProps(trackerDBHandle *sql.DB, buttonForUpdate *FormButton) error {
+
+	buttonForUpdate.Properties.ButtonLabelFormat = updateParams.ButtonLabelFormat
+
+	return nil
+}

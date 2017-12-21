@@ -86,15 +86,14 @@ function setFormButtonLabel($container,buttonRef) {
 		"calculator":"fa fa-calculator"
 	}
 	
-	jsonAPIRequest("frm/getFormInfo", { formID: buttonRef.properties.linkedFormID }, function(formInfo) {
-		
+	function setButtonLabel(buttonLabel) {
 		var $button = $container.find(".formButton")
 		
 		var iconClass = iconNameClassMap[buttonRef.properties.icon]
 		$button.empty()
 		
 		var $nameSpan = $('<span></span>')
-		$nameSpan.text(formInfo.form.name)
+		$nameSpan.text(buttonLabel)
 		if(iconClass !== undefined) {
 			var $iconSpan = $('<span aria-hidden="true"></span>')
 			$iconSpan.addClass(iconClass)
@@ -104,7 +103,24 @@ function setFormButtonLabel($container,buttonRef) {
 		} else {
 			$button.append($nameSpan)			
 		}	
-	})
+		
+	}
+	
+	var labelFormat = buttonRef.properties.buttonLabelFormat
+	
+    switch (labelFormat.labelType) {
+    	case "none":
+			setButtonLabel("")
+    		break;
+    	case "custom":
+			setButtonLabel(labelFormat.customLabel)
+    		break;
+    	default:
+			jsonAPIRequest("frm/getFormInfo", { formID: buttonRef.properties.linkedFormID }, function(formInfo) {
+				setButtonLabel(formInfo.form.name)
+			})
+    		break;
+    }
 	
 }
 

@@ -14,13 +14,15 @@ const colorSchemeDefault string = "default"
 const buttonIconNone string = "none"
 
 type ButtonProperties struct {
-	Geometry      componentLayout.LayoutGeometry `json:"geometry"`
-	LinkedFormID  string                         `json:"linkedFormID"`
-	PopupBehavior inputProps.ButtonPopupBehavior `json:"popupBehavior"`
-	Size          string                         `json:"size"`
-	ColorScheme   string                         `json:"colorScheme"`
-	Icon          string                         `json:"icon"`
-	DefaultValues []record.DefaultFieldValue     `json:"defaultValues"`
+	Geometry          componentLayout.LayoutGeometry             `json:"geometry"`
+	LinkedFormID      string                                     `json:"linkedFormID"`
+	PopupBehavior     inputProps.ButtonPopupBehavior             `json:"popupBehavior"`
+	Size              string                                     `json:"size"`
+	ColorScheme       string                                     `json:"colorScheme"`
+	Icon              string                                     `json:"icon"`
+	DefaultValues     []record.DefaultFieldValue                 `json:"defaultValues"`
+	ButtonLabelFormat inputProps.FormButtonLabelFormatProperties `json:"buttonLabelFormat"`
+
 	common.ComponentVisibilityProperties
 }
 
@@ -56,6 +58,7 @@ func newDefaultButtonProperties() ButtonProperties {
 	return ButtonProperties{
 		ComponentVisibilityProperties: common.NewDefaultComponentVisibilityProperties(),
 		PopupBehavior:                 inputProps.NewDefaultPopupBehavior(),
+		ButtonLabelFormat:             inputProps.NewDefaultFormButtonLabelFormatProperties(),
 		Size:                          buttonSizeMedium,
 		ColorScheme:                   colorSchemeDefault,
 		DefaultValues:                 []record.DefaultFieldValue{},

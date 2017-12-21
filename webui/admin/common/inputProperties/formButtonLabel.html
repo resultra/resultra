@@ -1,0 +1,32 @@
+{{define "formButtonLabelProps"}}
+
+     <form id="{{.ElemPrefix}}FormButtonLabelPropsForm">
+	  
+		<div class="form-group">
+		  <label for="{{.ElemPrefix}}FormButtonLabelPropsLabelType">Label type</label>
+		  	<select class="form-control" id="{{.ElemPrefix}}FormButtonLabelPropsLabelType">
+		  		<option disabled selected value="">Label type</option>
+		  		<option value="none">No label</option>
+		 		<option value="form">Form's name</option>
+		 		<option value="custom">Custom label</option>
+			</select>
+		</div>
+
+		<div class="form-group initiallyHidden" id="{{.ElemPrefix}}FormButtonLabelCustomLabelFormGroup">
+		  <label for="{{.ElemPrefix}}ComponentLabelPropsCustomLabel">Custom Label</label>
+		  <input type="text" id="{{.ElemPrefix}}FormButtonLabelPropsCustomLabelInput" 
+		  		name="{{.ElemPrefix}}FormButtonLabelPropsCustomLabelInput" 				
+				class="form-control" placeholder="Enter a label">
+		</div>
+	  
+	 </form>
+
+{{end}}
+
+{{define "formButtonLabelPropertyPanel"}}
+
+	{{template "propertyPanelPrefix" .PanelParams}}
+		{{template "formButtonLabelProps" .}}
+	{{template "propertyPanelSuffix"}}
+
+{{end}}

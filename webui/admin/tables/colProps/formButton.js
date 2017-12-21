@@ -70,8 +70,6 @@ function initFormButtonColPropertiesImpl(formButtonCol) {
 	}
 	initFormButtonBehaviorProperties(formButtonCol,saveBehaviorProperties)
 	
-	
-	
 	var elemPrefix = "button_"
 	
 	var defaultValPropParams = {
@@ -92,6 +90,22 @@ function initFormButtonColPropertiesImpl(formButtonCol) {
 	}
 	initDefaultValuesPropertyPanel(defaultValPropParams)
 	
+	function saveButtonLabelProps(updatedLabelProps) {
+		console.log("Saving label propeties for text box")
+		var formatParams = {
+			parentTableID: formButtonCol.parentTableID,
+			buttonID: formButtonCol.buttonID,
+			buttonLabelFormat: updatedLabelProps
+		}
+		jsonAPIRequest("tableView/formButton/setButtonLabelFormat", formatParams, function(updateRating) {
+		})	
+	}
+	var buttonLabelParams = {
+		elemPrefix: elemPrefix,
+		initialVal: formButtonCol.properties.buttonLabelFormat,
+		saveLabelPropsCallback: saveButtonLabelProps
+	}
+	initFormButtonLabelPropertyPanel(buttonLabelParams)
 	
 }
 

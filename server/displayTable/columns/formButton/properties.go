@@ -14,12 +14,13 @@ const colorSchemeDefault string = "default"
 const buttonIconNone string = "none"
 
 type ButtonProperties struct {
-	LinkedFormID  string                         `json:"linkedFormID"`
-	PopupBehavior inputProps.ButtonPopupBehavior `json:"popupBehavior"`
-	Size          string                         `json:"size"`
-	ColorScheme   string                         `json:"colorScheme"`
-	Icon          string                         `json:"icon"`
-	DefaultValues []record.DefaultFieldValue     `json:"defaultValues"`
+	LinkedFormID      string                                     `json:"linkedFormID"`
+	PopupBehavior     inputProps.ButtonPopupBehavior             `json:"popupBehavior"`
+	ButtonLabelFormat inputProps.FormButtonLabelFormatProperties `json:"buttonLabelFormat"`
+	Size              string                                     `json:"size"`
+	ColorScheme       string                                     `json:"colorScheme"`
+	Icon              string                                     `json:"icon"`
+	DefaultValues     []record.DefaultFieldValue                 `json:"defaultValues"`
 }
 
 func (srcProps ButtonProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*ButtonProperties, error) {
@@ -46,9 +47,10 @@ func (srcProps ButtonProperties) Clone(cloneParams *trackerDatabase.CloneDatabas
 func newDefaultButtonProperties() ButtonProperties {
 
 	return ButtonProperties{
-		PopupBehavior: inputProps.NewDefaultPopupBehavior(),
-		Size:          buttonSizeMedium,
-		ColorScheme:   colorSchemeDefault,
-		Icon:          buttonIconNone,
-		DefaultValues: []record.DefaultFieldValue{}}
+		PopupBehavior:     inputProps.NewDefaultPopupBehavior(),
+		ButtonLabelFormat: inputProps.NewDefaultFormButtonLabelFormatProperties(),
+		Size:              buttonSizeMedium,
+		ColorScheme:       colorSchemeDefault,
+		Icon:              buttonIconNone,
+		DefaultValues:     []record.DefaultFieldValue{}}
 }

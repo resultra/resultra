@@ -21,6 +21,7 @@ func init() {
 	buttonRouter.HandleFunc("/api/tableView/formButton/setSize", setSize)
 	buttonRouter.HandleFunc("/api/tableView/formButton/setColorScheme", setColorScheme)
 	buttonRouter.HandleFunc("/api/tableView/formButton/setIcon", setIcon)
+	buttonRouter.HandleFunc("/api/tableView/formButton/setButtonLabelFormat", setButtonLabelFormat)
 
 	http.Handle("/api/tableView/formButton/", buttonRouter)
 }
@@ -153,6 +154,15 @@ func setColorScheme(w http.ResponseWriter, r *http.Request) {
 
 func setIcon(w http.ResponseWriter, r *http.Request) {
 	var params ButtonIconParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processButtonPropUpdate(w, r, params)
+}
+
+func setButtonLabelFormat(w http.ResponseWriter, r *http.Request) {
+	var params ButtonLabelFormatParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
