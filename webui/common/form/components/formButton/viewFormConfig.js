@@ -98,8 +98,16 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 						 showDialogAfterFormComponentLoaded)
 				}
 				
+				var $modalSaveButton = $('#formButtonPopupFormDialogSaveChangesButton')
+				
+				var saveButtonLabel = "Save"
+				if (buttonObjectRef.properties.popupBehavior.customLabelModalSave.length > 0) {
+					saveButtonLabel = buttonObjectRef.properties.popupBehavior.customLabelModalSave
+				}
+				$modalSaveButton.text(saveButtonLabel)
+				
 					
-				initButtonClickHandler('#formButtonPopupFormDialogSaveChangesButton', function() {
+				initButtonControlClickHandler($modalSaveButton, function() {
 					console.log("Modal Save changes button clicked: " + JSON.stringify(buttonObjectRef))
 					// TODO - Remove the temporary changes set ID for any changes made while editing the record.
 					
