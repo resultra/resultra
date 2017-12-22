@@ -237,6 +237,8 @@ $(document).ready(function() {
 		initDesignFormProperties(formID)
 	})
 	
+	appendPageSpecificBreadcrumbHeader("/admin/forms/"+designFormContext.databaseID,"Forms")
+	appendPageSpecificBreadcrumbHeader("/admin/frm/"+designFormContext.formID,designFormContext.formName)
 	
 	
 });
