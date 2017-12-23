@@ -74,7 +74,7 @@ func valueListAdminPage(w http.ResponseWriter, r *http.Request) {
 	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
 	templParams := FieldTemplParams{
-		Title:           "Forms",
+		Title:           "Value Lists",
 		DatabaseID:      databaseID,
 		DatabaseName:    dbInfo.DatabaseName,
 		WorkspaceName:   workspaceName,

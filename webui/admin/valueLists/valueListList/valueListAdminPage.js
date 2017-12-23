@@ -7,4 +7,7 @@ $(document).ready(function() {
 			
 	initAdminValueListListSettings(valueListAdminContext.databaseID)
 	
+	
+	appendPageSpecificBreadcrumbHeader("/admin/valuelists/"+valueListAdminContext.databaseID,"Value Lists")
+	
 })

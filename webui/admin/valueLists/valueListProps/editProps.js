@@ -76,5 +76,10 @@ $(document).ready(function() {
 			initValueListValueListProperties(valueListInfo)
 	
 		})
+		
+	appendPageSpecificBreadcrumbHeader("/admin/valuelists/"+valueListPropsContext.databaseID,"Value Lists")
+	appendPageSpecificBreadcrumbHeader("/admin/valuelists/"+valueListPropsContext.valueListID,valueListPropsContext.valueListName)
+	
+	
 	
 })
