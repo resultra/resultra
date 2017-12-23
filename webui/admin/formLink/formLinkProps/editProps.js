@@ -147,35 +147,39 @@ $(document).ready(function() {
 		
 	initAdminPageHeader()
 		
-		var formLinkElemPrefix = "formLink_"
+	var formLinkElemPrefix = "formLink_"
+	
+	var getFormLinkParams = { formLinkID: formLinkPropsContext.linkID }
+	jsonAPIRequest("formLink/get",getFormLinkParams,function(linkInfo) {
 		
-		var getFormLinkParams = { formLinkID: formLinkPropsContext.linkID }
-		jsonAPIRequest("formLink/get",getFormLinkParams,function(linkInfo) {
-			
-			initFormLinkNameProperties(linkInfo)
-			initFormLinkFormProperties(linkInfo)
-			initIncludeInSidebarProperty(linkInfo)
-			initSharedLinkProperties(linkInfo)
-	
-			var defaultValPropParams = {
-				databaseID: formLinkPropsContext.databaseID,
-				elemPrefix: "formLink_",
-				defaultDefaultValues: linkInfo.properties.defaultValues,
-				updateDefaultValues: function(updatedDefaultVals) {
-					console.log("Updating default values for form button: " + JSON.stringify(updatedDefaultVals))
-			
-					var setDefaultValsParams = {
-						formLinkID: linkInfo.linkID,
-						defaultValues: updatedDefaultVals }
-			
-					jsonAPIRequest("formLink/setDefaultVals",setDefaultValsParams,function(updatedFormLink) {
-					})
-				}
+		initFormLinkNameProperties(linkInfo)
+		initFormLinkFormProperties(linkInfo)
+		initIncludeInSidebarProperty(linkInfo)
+		initSharedLinkProperties(linkInfo)
+
+		var defaultValPropParams = {
+			databaseID: formLinkPropsContext.databaseID,
+			elemPrefix: "formLink_",
+			defaultDefaultValues: linkInfo.properties.defaultValues,
+			updateDefaultValues: function(updatedDefaultVals) {
+				console.log("Updating default values for form button: " + JSON.stringify(updatedDefaultVals))
+		
+				var setDefaultValsParams = {
+					formLinkID: linkInfo.linkID,
+					defaultValues: updatedDefaultVals }
+		
+				jsonAPIRequest("formLink/setDefaultVals",setDefaultValsParams,function(updatedFormLink) {
+				})
 			}
-			initDefaultValuesPropertyPanel(defaultValPropParams)
+		}
+		initDefaultValuesPropertyPanel(defaultValPropParams)
+
+
+
+	})
 	
+	appendPageSpecificBreadcrumbHeader("/admin/formlink/"+formLinkPropsContext.databaseID,"New Item Links")
+	appendPageSpecificBreadcrumbHeader("/admin/formLink/"+formLinkPropsContext.linkID,formLinkPropsContext.linkName)
 	
-	
-		})
 	
 })

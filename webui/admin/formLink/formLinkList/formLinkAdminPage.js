@@ -6,4 +6,7 @@ $(document).ready(function() {
 			
 	initAdminFormLinkSettings(formLinkAdminContext.databaseID)
 	
+	appendPageSpecificBreadcrumbHeader("/admin/formlink/"+formLinkAdminContext.databaseID,"New Item Links")
+	
+	
 })
