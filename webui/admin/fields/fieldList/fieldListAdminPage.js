@@ -5,4 +5,7 @@ $(document).ready(function() {
 	initAdminSettingsTOC(fieldListAdminContext.databaseID,"settingsTOCFields")
 		
 	initAdminFieldSettings(fieldListAdminContext.databaseID)
+	
+	appendPageSpecificBreadcrumbHeader("/admin/fields/"+fieldListAdminContext.databaseID,"Fields")
+	
 })

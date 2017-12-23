@@ -135,4 +135,8 @@ $(document).ready(function() {
 			
 	}) // set record's number field value
 	
+	appendPageSpecificBreadcrumbHeader("/admin/fields/"+fieldPropsContext.databaseID,"Fields")
+	appendPageSpecificBreadcrumbHeader("/admin/fields/"+fieldPropsContext.fieldID,fieldPropsContext.fieldName)
+	
+	
 })
