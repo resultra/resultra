@@ -44,7 +44,9 @@
 	<!-- endinject -->
 	
 	<script>var tablePropsAdminContext = { databaseID:"{{.DatabaseID}}",
-			tableID: "{{.TableID}}"} </script>
+			tableID: "{{.TableID}}",
+		tableName: "{{.TableName}}"}
+			 </script>
 	
 	{{template "thirdPartyJS"}}
 	

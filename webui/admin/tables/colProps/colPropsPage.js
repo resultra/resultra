@@ -17,6 +17,11 @@ $(document).ready(function() {
 		initAdminPageHeader()
 		initAdminSettingsTOC(colPropsAdminContext.databaseID,"settingsTOCTables")
 		
+		appendPageSpecificBreadcrumbHeader("/admin/tables/"+colPropsAdminContext.databaseID,"Table Views")
+		appendPageSpecificBreadcrumbHeader("/admin/table/"+colPropsAdminContext.tableID,colPropsAdminContext.tableName)
+		appendPageSpecificBreadcrumbHeader("/admin/tablecol/"+colPropsAdminContext.columnID,"Column Settings")
+		
+		
 		switch (colPropsAdminContext.colType) {
 		case 'numberInput':
 			initNumberInputColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)

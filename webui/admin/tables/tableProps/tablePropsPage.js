@@ -4,6 +4,10 @@ $(document).ready(function() {
 	initAdminPageHeader()
 	initAdminSettingsTOC(tablePropsAdminContext.databaseID,"settingsTOCTables")
 	
+	appendPageSpecificBreadcrumbHeader("/admin/tables/"+tablePropsAdminContext.databaseID,"Table Views")
+	appendPageSpecificBreadcrumbHeader("/admin/table/"+tablePropsAdminContext.tableID,tablePropsAdminContext.tableName)
+	
+	
 	function initNameProperties(tableRef) {
 
 		var $tableNameForm = $('#tableNamePropertyForm')
