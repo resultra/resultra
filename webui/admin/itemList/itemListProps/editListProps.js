@@ -201,5 +201,9 @@ $(document).ready(function() {
 
 
 		}) // set record's number field value
+		
+		appendPageSpecificBreadcrumbHeader("/admin/lists/"+itemListPropsContext.databaseID,"Item Lists")
+		appendPageSpecificBreadcrumbHeader("/admin/itemList/"+itemListPropsContext.listID,itemListPropsContext.listName)
+		
 
 })
