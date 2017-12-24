@@ -69,6 +69,7 @@
 
 {{define "alertPropsBody"}}
 
+<h4>Alert</h4>
 <table class="table">
 	{{template "adminAlertNameProperty"}}
 	{{template "adminAlertFormProperty"}}
@@ -98,7 +99,8 @@
 	
 	<script>var alertPropsContext = { 
 		databaseID:"{{.DatabaseID}}",
-		alertID:"{{.AlertID}}"}
+		alertID:"{{.AlertID}}",
+		alertName:"{{.AlertName}}"}
 	</script>
 	
 	{{template "thirdPartyJS"}}

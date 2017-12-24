@@ -180,4 +180,8 @@ $(document).ready(function() {
 		alertID: alertPropsContext.alertID
 	}
 	initAlertConditionProps(conditionPropsParams)
+	
+	appendPageSpecificBreadcrumbHeader("/admin/alerts/"+alertPropsContext.databaseID,"Alerts")
+	appendPageSpecificBreadcrumbHeader("/admin/alert/"+alertPropsContext.alertID,alertPropsContext.alertName)
+	
 })

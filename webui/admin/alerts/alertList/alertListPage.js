@@ -8,4 +8,7 @@ $(document).ready(function() {
 			
 	initAdminAlertSettings(alertListAdminContext.databaseID)
 	
+	appendPageSpecificBreadcrumbHeader("/admin/alerts/"+alertListAdminContext.databaseID,"Alerts")
+	
+	
 })
