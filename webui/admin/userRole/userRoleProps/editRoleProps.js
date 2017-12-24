@@ -67,6 +67,10 @@ $(document).ready(function() {
 		
 	initAdminPageHeader()
 		
+	appendPageSpecificBreadcrumbHeader("/admin/roles/"+rolePropsContext.databaseID,"Roles")
+	appendPageSpecificBreadcrumbHeader("/admin/userRole/"+rolePropsContext.roleID,rolePropsContext.roleName)
+		
+		
 	var getRoleParams = { roleID: rolePropsContext.roleID }
 	jsonAPIRequest("userRole/get",getRoleParams,function(roleInfo) {
 		initUserRoleNameProperties(roleInfo)		

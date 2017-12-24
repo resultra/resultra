@@ -8,5 +8,7 @@ $(document).ready(function() {
 
 	initUserListSettings(userAdminPageContext.databaseID)
 
+	appendPageSpecificBreadcrumbHeader("/admin/collaborators/"+userAdminPageContext.databaseID,"Collaborators")
+
 				
 })

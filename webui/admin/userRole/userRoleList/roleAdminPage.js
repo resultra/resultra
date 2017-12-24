@@ -6,4 +6,7 @@ $(document).ready(function() {
 			
 	initUserRoleSettings(roleAdminContext.databaseID)
 	
+	appendPageSpecificBreadcrumbHeader("/admin/roles/"+roleAdminContext.databaseID,"Roles")
+	
+	
 })
