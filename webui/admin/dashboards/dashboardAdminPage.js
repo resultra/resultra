@@ -6,4 +6,7 @@ $(document).ready(function() {
 			
 	initAdminDashboardSettings(dashboardAdminPageContext.databaseID)
 	
+	appendPageSpecificBreadcrumbHeader("/admin/dashboards/"+dashboardAdminPageContext.databaseID,"Dashboards")
+	
+	
 })

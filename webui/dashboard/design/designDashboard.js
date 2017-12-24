@@ -11,6 +11,11 @@ $(document).ready(function() {
 	
 	initAdminPageHeader()
 	
+	appendPageSpecificBreadcrumbHeader("/admin/dashboards/"+designDashboardContext.databaseID,"Dashboards")
+	appendPageSpecificBreadcrumbHeader("/admin/dashboard/"+designDashboardContext.dashboardID,
+					designDashboardContext.dashboardName)
+	
+	
 	var layoutDesignConfig = createDashboardLayoutDesignConfig()
 	
 	var paletteConfig = {
@@ -106,6 +111,8 @@ $(document).ready(function() {
 	}
 	
 	loadDashboardData(loadDashboardConfig)
+	
+	
 	
 	// When first loading the dashboard in design mode, show the properties for the dashboard as a whole.
 	initDesignDashboardProperties(designDashboardContext.dashboardID)
