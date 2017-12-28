@@ -1,6 +1,9 @@
 var FormButtonPopupBehaviorModal = "modal"
 
 var viewFormInViewportEventName = "view-form-in-viewport"
+var formButtonPopupDialogSelector = '#formButtonPopupFormDialog'
+var formButtonPopupFormDoneEditingEventName = 'form-popup-done-editing-event'
+
 
 function loadRecordIntoButton(buttonElem, recordRef) {	
 	// no-op
@@ -15,17 +18,28 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 		loadRecord: loadRecordIntoButton
 	})
 	
-	var $popupFormDialog = $('#formButtonPopupFormDialog')
+	var $popupFormDialog = $(formButtonPopupDialogSelector)
 			
 	var popupMode = buttonObjectRef.properties.popupBehavior.popupMode
 	
 	var $formButton = buttonFromFormButtonContainer($buttonContainer)
 	
-	
+	function triggerFormPopupEditingDoneEvent() {
+		
+		var currRecord = parentRecordProxy.getRecordFunc()
+		
+		var eventParams = {
+			recordID: currRecord.recordID,
+		}
+		console.log("Form button editing done: triggering event: " + JSON.stringify(eventParams))
+		 $popupFormDialog .trigger(formButtonPopupFormDoneEditingEventName,eventParams)
+		
+	}
 	
 	
 	function showRecordInPopupView(formInfo) {
 		var currRecord = parentRecordProxy.getRecordFunc()
+
 
 		var $popupFormViewCanvas = $('#formButtonPopupFormCanvas')
 		$popupFormViewCanvas.empty()
@@ -124,6 +138,7 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 						// is pressed.
 						parentRecordProxy.updateRecordFunc(updatedRecordRef)
 						$popupFormDialog.modal('hide')
+						triggerFormPopupEditingDoneEvent()
 					})
 				})
 				initButtonClickHandler('#formButtonPopupFormDialogCancelChangesButton', function() {
@@ -144,6 +159,7 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 			initButtonClickHandler('#formButtonPopupFormDialogDoneButton', function() {
 				console.log("Form button clicked: " + JSON.stringify(buttonObjectRef))
 				$popupFormDialog.modal('hide')
+				triggerFormPopupEditingDoneEvent()
 			})
 			
 			var immediatelyCommitChangesChangeSetID = ""

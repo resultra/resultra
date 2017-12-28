@@ -150,6 +150,15 @@ function initItemListView(itemListLayout, listInfo) {
 	// Perform an initial update of the view, based upon the default view.
 	updateViewConfig(listInfo.properties.defaultView)
 	
+	
+	var $popupFormDialog = $(formButtonPopupDialogSelector)
+	
+	$popupFormDialog.unbind(formButtonPopupFormDoneEditingEventName)
+	$popupFormDialog.on(formButtonPopupFormDoneEditingEventName,function(e,params) {
+		e.stopPropagation()
+		console.log("Item list: processing form popup done event: " + JSON.stringify(params))		
+	})
+	
 
 }
 
