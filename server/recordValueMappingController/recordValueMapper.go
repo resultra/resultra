@@ -172,3 +172,23 @@ func MapAllRecordUpdatesToFieldValues(trackerDBHandle *sql.DB, currUserID string
 	return recValResults, nil
 
 }
+
+func MapSingleRecordValueResult(trackerDBHandle *sql.DB, currUserID string, parentDatabaseID string, recordID string) (*recordValue.RecordValueResults, error) {
+
+	recCellUpdates, cellUpdatesErr := record.GetRecordCellUpdates(trackerDBHandle, recordID, record.FullyCommittedCellUpdatesChangeSetID)
+	if cellUpdatesErr != nil {
+		return nil, fmt.Errorf("MapSingleRecordValueResult: Can't get cell updates for record=%v: err = %v", recordID, cellUpdatesErr)
+	}
+
+	// Since a change has occored to one of the record's values, a new set of mapped record
+	// values needs to be created.
+	recordValResult, mapErr := MapOneRecordUpdatesToFieldValues(
+		trackerDBHandle, currUserID, parentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
+	if mapErr != nil {
+		return nil, fmt.Errorf(
+			"updateRecordValue: Error mapping field values: err = %v", mapErr)
+	}
+
+	return recordValResult, nil
+
+}

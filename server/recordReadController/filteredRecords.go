@@ -140,26 +140,27 @@ func NewDefaultTestRecordIsFilteredParams() TestRecordIsFilteredParams {
 func testRecordIsFiltered(trackerDBHandle *sql.DB,
 	currUserID string, params TestRecordIsFilteredParams) (bool, error) {
 
-	unfilteredRecordValues, getRecordsErr := getCachedOrRemappedRecordValues(trackerDBHandle, currUserID, params.DatabaseID)
-	if getRecordsErr != nil {
-		return false, fmt.Errorf("GetFilteredRecords: Error updating records: %v", getRecordsErr)
+	recValResult, resultErr := recordValueMappingController.MapSingleRecordValueResult(
+		trackerDBHandle, currUserID, params.DatabaseID, params.RecordID)
+	unfilteredRecordValues := []recordValue.RecordValueResults{}
+	if resultErr != nil {
+		return false, fmt.Errorf("testRecordIsFiltered: Error getting record value: %v", resultErr)
 	}
+	unfilteredRecordValues = append(unfilteredRecordValues, *recValResult)
 
 	preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(trackerDBHandle,
 		currUserID, params.PreFilterRules, unfilteredRecordValues)
 	if preFilterErr != nil {
-		return false, fmt.Errorf("GetFilteredRecords: Error pre-filtering records: %v", preFilterErr)
+		return false, fmt.Errorf("testRecordIsFiltered: Error pre-filtering records: %v", preFilterErr)
 	}
 
 	filteredRecords, err := recordFilter.FilterRecordValues(trackerDBHandle, currUserID, params.FilterRules, preFilteredRecords)
 	if err != nil {
-		return false, fmt.Errorf("GetFilteredRecords: Error filtering records: %v", err)
+		return false, fmt.Errorf("testRecordIsFiltered: Error filtering records: %v", err)
 	}
 
-	for _, currRecord := range filteredRecords {
-		if currRecord.RecordID == params.RecordID {
-			return true, nil
-		}
+	if len(filteredRecords) > 0 {
+		return true, nil
 	}
 
 	return false, nil
