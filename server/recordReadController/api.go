@@ -5,8 +5,8 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/common/userAuth"
+	"resultra/datasheet/server/generic/api"
 )
 
 type DummyStructForInclude struct {
@@ -17,6 +17,7 @@ func init() {
 	recordReadRouter := mux.NewRouter()
 
 	recordReadRouter.HandleFunc("/api/recordRead/getFilteredSortedRecordValues", getFilteredSortedRecordsAPI)
+	recordReadRouter.HandleFunc("/api/recordRead/testRecordIsFiltered", testRecordIsFilteredAPI)
 
 	recordReadRouter.HandleFunc("/api/recordRead/getFilteredRecordCount", getFilteredRecordCountAPI)
 
@@ -27,8 +28,6 @@ func init() {
 
 func getFilteredSortedRecordsAPI(w http.ResponseWriter, r *http.Request) {
 
-	// TODO - Once filtering is implemented on a per form/dashboard basis,
-	// pass in the parent filter.
 	params := NewDefaultGetFilteredSortedRecordsParams()
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
@@ -52,6 +51,35 @@ func getFilteredSortedRecordsAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, recordRefs)
+	}
+
+}
+
+func testRecordIsFilteredAPI(w http.ResponseWriter, r *http.Request) {
+
+	params := NewDefaultTestRecordIsFilteredParams()
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteJSONResponse(w, fmt.Errorf("Can't verify user authentication"))
+		return
+	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	// By default, recompute/refresh the record values before returning.
+	if recordIsFiltered, err := testRecordIsFiltered(trackerDBHandle, currUserID, params); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, recordIsFiltered)
 	}
 
 }

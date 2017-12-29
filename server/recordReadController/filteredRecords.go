@@ -20,7 +20,9 @@ type GetFilteredSortedRecordsParams struct {
 
 func NewDefaultGetFilteredSortedRecordsParams() GetFilteredSortedRecordsParams {
 	return GetFilteredSortedRecordsParams{
-		"", recordFilter.NewDefaultRecordFilterRuleSet(), recordFilter.NewDefaultRecordFilterRuleSet(), []recordSortDataModel.RecordSortRule{}}
+		"", recordFilter.NewDefaultRecordFilterRuleSet(),
+		recordFilter.NewDefaultRecordFilterRuleSet(),
+		[]recordSortDataModel.RecordSortRule{}}
 
 }
 
@@ -117,5 +119,49 @@ func getRecordValueResults(trackerDBHandle *sql.DB, currUserID string, params Ge
 	}
 
 	return updateRecordValResult, nil
+
+}
+
+type TestRecordIsFilteredParams struct {
+	DatabaseID     string                           `json:"databaseID"`
+	PreFilterRules recordFilter.RecordFilterRuleSet `json:"preFilterRules"`
+	FilterRules    recordFilter.RecordFilterRuleSet `json:"filterRules"`
+	RecordID       string                           `json:"recordID"`
+}
+
+func NewDefaultTestRecordIsFilteredParams() TestRecordIsFilteredParams {
+	return TestRecordIsFilteredParams{
+		"", recordFilter.NewDefaultRecordFilterRuleSet(),
+		recordFilter.NewDefaultRecordFilterRuleSet(),
+		""}
+
+}
+
+func testRecordIsFiltered(trackerDBHandle *sql.DB,
+	currUserID string, params TestRecordIsFilteredParams) (bool, error) {
+
+	unfilteredRecordValues, getRecordsErr := getCachedOrRemappedRecordValues(trackerDBHandle, currUserID, params.DatabaseID)
+	if getRecordsErr != nil {
+		return false, fmt.Errorf("GetFilteredRecords: Error updating records: %v", getRecordsErr)
+	}
+
+	preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(trackerDBHandle,
+		currUserID, params.PreFilterRules, unfilteredRecordValues)
+	if preFilterErr != nil {
+		return false, fmt.Errorf("GetFilteredRecords: Error pre-filtering records: %v", preFilterErr)
+	}
+
+	filteredRecords, err := recordFilter.FilterRecordValues(trackerDBHandle, currUserID, params.FilterRules, preFilteredRecords)
+	if err != nil {
+		return false, fmt.Errorf("GetFilteredRecords: Error filtering records: %v", err)
+	}
+
+	for _, currRecord := range filteredRecords {
+		if currRecord.RecordID == params.RecordID {
+			return true, nil
+		}
+	}
+
+	return false, nil
 
 }

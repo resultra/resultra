@@ -41,7 +41,8 @@ function initItemListView(itemListLayout, listInfo) {
 	
 	var $tableViewLayoutContainer = $('#tableViewContainer')
 	$tableViewLayoutContainer.hide()
-	
+		
+			
 	function loadFormData(reloadRecordParams, formDataCallback) {
 		var numDataSetsRemainingToLoad = 2
 	
@@ -66,8 +67,6 @@ function initItemListView(itemListLayout, listInfo) {
 		})
 	
 	}
-	
-	
 				
 	function reloadSortedAndFilterRecords()
 	{
@@ -86,6 +85,24 @@ function initItemListView(itemListLayout, listInfo) {
 			listItemController.setRecordData(formData.recordData)
 		})
 
+	}
+	
+	function reloadSortedFilterRecordsIfRecordSetChanged(recordID) {
+		
+		var filterRules = getRecordFilterRuleListRules(filterPanelElemPrefix)		
+
+		var testRecordFilteredParams = { 
+			databaseID: viewListContext.databaseID,
+			preFilterRules: listInfo.properties.preFilterRules,
+			filterRules: filterRules,		
+			recordID: recordID}
+		jsonAPIRequest("recordRead/testRecordIsFiltered",testRecordFilteredParams,function(isFiltered) {
+			if (!isFiltered) {
+				// Only reload the records in the list if the given record/item is no longer part of the list.
+				reloadSortedAndFilterRecords()
+			}
+		})
+			
 	}
 	
 	var panelInitRemaining = 2
@@ -156,7 +173,8 @@ function initItemListView(itemListLayout, listInfo) {
 	$popupFormDialog.unbind(formButtonPopupFormDoneEditingEventName)
 	$popupFormDialog.on(formButtonPopupFormDoneEditingEventName,function(e,params) {
 		e.stopPropagation()
-		console.log("Item list: processing form popup done event: " + JSON.stringify(params))		
+		console.log("Item list: processing form popup done event: " + JSON.stringify(params))
+		reloadSortedFilterRecordsIfRecordSetChanged(params.recordID)	
 	})
 	
 
