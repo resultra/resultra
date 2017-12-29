@@ -7,6 +7,7 @@ function loadExistingItemView(pageLayout,databaseID,viewItemConfig) {
 	hideSiblingsShowOne("#viewFormPageLayoutCanvas")
 	pageLayout.showFooterLayout()
 	pageLayout.disablePropertySidebar()
+	pageLayout.disableRefreshButton()
 	
 	pageLayout.setCenterContentHeader(viewItemConfig.title)
 	

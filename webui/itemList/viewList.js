@@ -176,6 +176,7 @@ function initItemListView(itemListLayout, listInfo) {
 		console.log("Item list: processing form popup done event: " + JSON.stringify(params))
 		reloadSortedFilterRecordsIfRecordSetChanged(params.recordID)	
 	})
+	itemListLayout.enableRefreshButton(reloadSortedAndFilterRecords)
 	
 
 }

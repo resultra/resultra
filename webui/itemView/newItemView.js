@@ -9,6 +9,7 @@ function loadNewItemView(params) {
 	hideSiblingsShowOne("#newItemFormPageLayoutCanvas")
 	params.pageLayout.showFooterLayout()
 	params.pageLayout.disablePropertySidebar()
+	params.pageLayout.disableRefreshButton()
 	
 	var getNewItemInfoParams = { formLinkID: params.formLinkID }	
 

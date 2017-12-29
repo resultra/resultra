@@ -14,6 +14,9 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 	pageLayout.enablePropertySidebar()
 	pageLayout.disablePropertyPanelToggleButton()
 	
+	// TBD - Support refresh for dashboards?
+	pageLayout.disableRefreshButton()
+	
 
 	viewDashboardContext = { 
 				dashboardID:dashboardID,

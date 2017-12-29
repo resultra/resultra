@@ -101,6 +101,18 @@ function MainWindowLayout()
 		contentLayout.open("south")
 	}
 	
+	var $refreshButton = $('#mainWindowViewRefreshButton')
+	
+	function disableRefreshButton() {
+		$refreshButton.hide()
+	}
+	
+	function enableRefreshButton(refreshCallback) {
+		initButtonControlClickHandler($refreshButton,refreshCallback)
+		$refreshButton.show()
+	}
+	
+	
 	function closePropertyPanel() {
 		$iconSpan.removeClass("fa-toggle-right")
 		$iconSpan.addClass("fa-toggle-left")
@@ -153,6 +165,8 @@ function MainWindowLayout()
 	this.disablePropertySidebar = disablePropertySidebar
 	this.disablePropertyPanelToggleButton = disablePropertyPanelToggleButton
 	this.enablePropertyPanelToggleButton = enablePropertyPanelToggleButton
+	this.enableRefreshButton = enableRefreshButton
+	this.disableRefreshButton = disableRefreshButton
 	
 	this.clearSidebarNavigationSelection = clearSidebarNavigationSelection
 	
