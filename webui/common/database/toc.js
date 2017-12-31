@@ -1,3 +1,14 @@
+
+function setDefaultTOCItem(databaseID, itemID) {
+	var itemKey = "resultra-default-toc-item:" + databaseID
+	localStorage.setItem(itemKey,itemID)
+}
+
+function getDefaultTOCItem(databaseID) {
+	var itemKey = "resultra-default-toc-item:" + databaseID
+	return localStorage.getItem(itemKey)
+}
+
 function initTableOfContentsRefreshPollingLoop(refreshCallback) {
     var userActivityTimer;
 	
@@ -52,7 +63,15 @@ function addDashboardLinkToTOCList(tocConfig,dashboardInfo) {
 		if(tocConfig.dashboardClickedCallback !== undefined) {
 			tocConfig.dashboardClickedCallback(dashboardInfo.dashboardID,$dashboardListItem)
 		}
+		
+		setDefaultTOCItem(tocConfig.databaseID,dashboardInfo.dashboardID)
 	})
+	
+	if(getDefaultTOCItem(tocConfig.databaseID)===dashboardInfo.dashboardID && 
+		tocConfig.dashboardClickedCallback !== undefined) {
+			tocConfig.dashboardClickedCallback(dashboardInfo.dashboardID,$dashboardListItem)
+	}
+	
 	
 	$('#tocDashboardList').append($dashboardListItem)		
 }
@@ -78,6 +97,8 @@ function addItemListLinkToTOCList(tocConfig, listInfo) {
 		if(tocConfig.itemListClickedCallback !== undefined) {
 			tocConfig.itemListClickedCallback(listInfo.listID,$itemListItem)
 		}
+		setDefaultTOCItem(tocConfig.databaseID,listInfo.listID)
+		
 	})
 	
 	var listCountParams = {
@@ -98,6 +119,11 @@ function addItemListLinkToTOCList(tocConfig, listInfo) {
 	
 	initTableOfContentsRefreshPollingLoop(refreshListCount)
 	
+	// Load this list as the default list if it is set as a default.
+	if(getDefaultTOCItem(tocConfig.databaseID)===listInfo.listID && 
+		tocConfig.itemListClickedCallback !== undefined) {
+			tocConfig.itemListClickedCallback(listInfo.listID,$itemListItem)			
+	}
 	
 	$('#tocListList').append($itemListItem)		
 	
@@ -137,8 +163,6 @@ function addFormLinkToTOCList(tocConfig, linkInfo) {
 
 
 function initDatabaseTOC(tocConfig) {
-	
-	
 	
 	
 	$('#tocFormList').empty()
@@ -182,6 +206,19 @@ function initDatabaseTOC(tocConfig) {
 	}
 	
 	getTOCInfo(function(tocInfo) {
+		
+		// Set the default TOC item if it is undefined
+		var defaultTOCItem = getDefaultTOCItem(tocConfig.databaseID)
+		if(defaultTOCItem === null || defaultTOCItem === undefined) {
+			if (tocInfo.listsInfo.length > 0) {
+				var firstListInfo = tocInfo.listsInfo[0]
+				setDefaultTOCItem(tocConfig.databaseID,firstListInfo.listID)
+			} else if (tocInfo.dashboardsInfo.length > 0) {
+				var firstDashboardInfo = tocInfo.dashboardsInfo[0]
+				setDefaultTOCItem(tocConfig.databaseID,firstDashboardInfo.dashboardID)
+			}
+		}
+		
 		
 		var listsInfo = tocInfo.listsInfo
 		$('#tocListList').empty()
