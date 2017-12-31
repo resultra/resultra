@@ -139,6 +139,8 @@ function addFormLinkToTOCList(tocConfig, linkInfo) {
 function initDatabaseTOC(tocConfig) {
 	
 	
+	
+	
 	$('#tocFormList').empty()
 	var linkParams = { parentDatabaseID: tocConfig.databaseID }
 	jsonAPIRequest("formLink/getUserList",linkParams,function(linkList) {
@@ -155,23 +157,33 @@ function initDatabaseTOC(tocConfig) {
 		}
 	})
 	
-	
-	var getDBInfoParams = { databaseID: tocConfig.databaseID }
-	jsonAPIRequest("dashboard/getUserDashboardList",getDBInfoParams,function(dashboardsInfo) {
-		console.log("Got dashboard info: " + JSON.stringify(dashboardsInfo))		
-		$('#tocDashboardList').empty()
-		for (var dashboardInfoIndex = 0; dashboardInfoIndex < dashboardsInfo.length; dashboardInfoIndex++) {
-			var dashboardInfo = dashboardsInfo[dashboardInfoIndex]
-			addDashboardLinkToTOCList(tocConfig,dashboardInfo)
-		}
-		if(dashboardsInfo.length === 0) {
-			$('#tocDashboardsContainer').hide()
-		}
-	})
-	
-	jsonAPIRequest("itemList/getUserItemListList",getDBInfoParams,function(listsInfo) {
-		console.log("Got database info: " + JSON.stringify(listsInfo))		
+	function getTOCInfo(infoCallback) {
+		var infoRemaining = 2
+		var tocInfo = {}
 		
+		function processOneTOCInfo() {
+			infoRemaining--
+			if(infoRemaining <= 0) {
+				infoCallback(tocInfo)
+			}
+		}
+		
+		var getDBInfoParams = { databaseID: tocConfig.databaseID }
+		jsonAPIRequest("dashboard/getUserDashboardList",getDBInfoParams,function(dashboardsInfo) {
+			tocInfo.dashboardsInfo = dashboardsInfo
+			processOneTOCInfo()
+		})
+		
+		jsonAPIRequest("itemList/getUserItemListList",getDBInfoParams,function(listsInfo) {
+			tocInfo.listsInfo = listsInfo
+			processOneTOCInfo()
+		})
+		
+	}
+	
+	getTOCInfo(function(tocInfo) {
+		
+		var listsInfo = tocInfo.listsInfo
 		$('#tocListList').empty()
 		for(var listInfoIndex = 0; listInfoIndex < listsInfo.length; listInfoIndex++) {
 			var listInfo = listsInfo[listInfoIndex]
@@ -181,6 +193,17 @@ function initDatabaseTOC(tocConfig) {
 			$('#tocListsContainer').hide()
 		}
 		
-	}) // getRecord
+		var dashboardsInfo = tocInfo.dashboardsInfo
+		$('#tocDashboardList').empty()
+		for (var dashboardInfoIndex = 0; dashboardInfoIndex < dashboardsInfo.length; dashboardInfoIndex++) {
+			var dashboardInfo = dashboardsInfo[dashboardInfoIndex]
+			addDashboardLinkToTOCList(tocConfig,dashboardInfo)
+		}
+		if(dashboardsInfo.length === 0) {
+			$('#tocDashboardsContainer').hide()
+		}
+		
+	})
+	
 	
 }
