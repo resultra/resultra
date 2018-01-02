@@ -159,14 +159,23 @@ function ListItemController($parentContainer) {
 	// enabled once the records are loaded.
 	enableRecordButtons(false)
 	
-	$('#nextRecordButton').click(function(e){
+	var $nextRecordButton = $('#nextRecordButton')
+	
+	// ListItemController is a singleton, so only 1 controller can be bound to the
+	// the next or previous buttons. The ListItemController will be re-allocated when
+	// navigating to the list, so only the latest ListItemController can respond
+	// to the list navigation events.
+	$nextRecordButton.unbind("click")
+	$nextRecordButton.click(function(e){
 	         e.preventDefault();
 			 if(currRecordSet.advanceToNextPage()) {
 			 	reloadRecordsIntoContainers()
 			 }
 	});
 	
-	$('#prevRecordButton').click(function(e){
+	var $prevRecordButton = $('#prevRecordButton')
+	$prevRecordButton.unbind("click")
+	$prevRecordButton.click(function(e){
 	         e.preventDefault();
 			 if(currRecordSet.advanceToPrevPage()) {
 				 console.log("Advance to next record")
