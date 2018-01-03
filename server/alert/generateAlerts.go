@@ -132,12 +132,17 @@ type AlertGenerationResult struct {
 	Notifications []AlertNotification `json:"notifications"`
 }
 
-func getAlertsWithUserNotification(trackerDBHandle *sql.DB, databaseID string, userID string) ([]Alert, error) {
+func getAlertsWithUserNotification(trackerDBHandle *sql.DB, databaseID string, userID string, userIsAdmin bool) ([]Alert, error) {
 
 	allAlerts, alertErr := getAllAlerts(trackerDBHandle, databaseID)
 	if alertErr != nil {
 		return nil, fmt.Errorf("getAlertsWithUserNotification: Error getting alerts: %v", alertErr)
 	}
+
+	if userIsAdmin {
+		return allAlerts, nil
+	}
+
 	userAlertByID, privsErr := userRole.GetAlertsWithUserPrivs(trackerDBHandle, databaseID, userID)
 	if privsErr != nil {
 		return nil, fmt.Errorf("getAlertsWithUserNotification: Error getting user alert notifications: %v", privsErr)
@@ -173,7 +178,7 @@ func createAlertGenerationContexts(trackerDBHandle *sql.DB, currUserID string, a
 
 // GenerateAllAlerts regenerates all alerts for all records. This is the top-level function to re-generate all the
 // alert notifications at once.
-func generateAllAlerts(trackerDBHandle *sql.DB, currUserID string, databaseID string, userID string) (*AlertGenerationResult, error) {
+func generateAllAlerts(trackerDBHandle *sql.DB, currUserID string, databaseID string, userID string, userIsAdmin bool) (*AlertGenerationResult, error) {
 
 	// Create a config/context object used for calculating the calculated fields for alert generation. This same
 	// config can be reused by the alert generation for all the records.
@@ -188,7 +193,7 @@ func generateAllAlerts(trackerDBHandle *sql.DB, currUserID string, databaseID st
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
 
-	alerts, alertErr := getAlertsWithUserNotification(trackerDBHandle, databaseID, userID)
+	alerts, alertErr := getAlertsWithUserNotification(trackerDBHandle, databaseID, userID, userIsAdmin)
 	if alertErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: Error getting alerts: %v", alertErr)
 	}
@@ -251,7 +256,7 @@ func generateAllAlerts(trackerDBHandle *sql.DB, currUserID string, databaseID st
 // GenerateOneRecordAlerts is a top-level entry point for regenerating the alerts for an entire
 // tracker, but a single recordID
 func GenerateOneRecordAlerts(trackerDBHandle *sql.DB,
-	currUserID string, databaseID string, recordID string, userID string) ([]AlertNotification, error) {
+	currUserID string, databaseID string, recordID string, userID string, userIsAdmin bool) ([]AlertNotification, error) {
 
 	log.Printf("Regenerating alerts ...")
 
@@ -267,7 +272,7 @@ func GenerateOneRecordAlerts(trackerDBHandle *sql.DB,
 			recordID, getErr)
 	}
 
-	alerts, alertErr := getAlertsWithUserNotification(trackerDBHandle, databaseID, userID)
+	alerts, alertErr := getAlertsWithUserNotification(trackerDBHandle, databaseID, userID, userIsAdmin)
 	if alertErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: Error getting alerts: %v", alertErr)
 	}

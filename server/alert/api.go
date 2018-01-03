@@ -5,8 +5,8 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/common/userAuth"
+	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/userRole"
 )
 
@@ -130,6 +130,8 @@ func getAlertNotificationListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	userIsAdmin := userRole.CurrUserIsDatabaseAdmin(r, params.ParentDatabaseID)
+
 	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
 	if dbErr != nil {
 		api.WriteErrorResponse(w, dbErr)
@@ -137,7 +139,7 @@ func getAlertNotificationListAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if notifications, err := generateAllAlerts(trackerDBHandle,
-		currUserID, params.ParentDatabaseID, currUserID); err != nil {
+		currUserID, params.ParentDatabaseID, currUserID, userIsAdmin); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, notifications)

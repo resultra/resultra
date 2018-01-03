@@ -10,6 +10,7 @@ import (
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordValue"
 	"resultra/datasheet/server/recordValueMappingController"
+	"resultra/datasheet/server/userRole"
 )
 
 func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*recordValue.RecordValueResults, error) {
@@ -44,8 +45,10 @@ func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*rec
 			"updateRecordValue: Error mapping field values: err = %v", mapErr)
 	}
 
+	userIsAdmin := userRole.CurrUserIsDatabaseAdmin(req, recordForUpdate.ParentDatabaseID)
 	// (re)generate any alerts which may have been triggered by the current update
-	alert.GenerateOneRecordAlerts(trackerDBHandle, currUserID, recordForUpdate.ParentDatabaseID, recordForUpdate.RecordID, currUserID)
+	alert.GenerateOneRecordAlerts(trackerDBHandle, currUserID, recordForUpdate.ParentDatabaseID,
+		recordForUpdate.RecordID, currUserID, userIsAdmin)
 
 	// Force a recalculation of results the next time results are loaded.
 	recordValue.ResultsCache.Remove(recordForUpdate.ParentDatabaseID)
