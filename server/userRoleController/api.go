@@ -25,7 +25,9 @@ func init() {
 	roleRouter.HandleFunc("/api/userRole/getListRolePrivs", getListRolePrivsAPI)
 	roleRouter.HandleFunc("/api/userRole/setListRolePrivs", setListRolePrivsAPI)
 
+	roleRouter.HandleFunc("/api/userRole/getRoleNewItemPrivs", getRoleNewItemPrivsAPI)
 	roleRouter.HandleFunc("/api/userRole/getNewItemRolePrivs", getNewItemRolePrivsAPI)
+
 	roleRouter.HandleFunc("/api/userRole/setNewItemRolePrivs", setNewItemRolePrivsAPI)
 
 	roleRouter.HandleFunc("/api/userRole/getRoleAlertPrivs", getRoleAlertPrivsAPI)
@@ -219,7 +221,7 @@ func setNewItemRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getNewItemRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
+func getRoleNewItemPrivsAPI(w http.ResponseWriter, r *http.Request) {
 
 	var params userRole.GetNewItemPrivParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
@@ -238,7 +240,35 @@ func getNewItemRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if roleNewItemPrivs, err := userRole.GetNewItemPrivs(trackerDBHandle, params.RoleID); err != nil {
+	if roleNewItemPrivs, err := userRole.GetRoleNewItemPrivs(trackerDBHandle, params.RoleID); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, roleNewItemPrivs)
+
+	}
+
+}
+
+func getNewItemRolePrivsAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params userRole.GetNewItemRolePrivParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if verifyErr := userRole.VerifyCurrUserIsDatabaseAdminForNewItemLink(r, params.LinkID); verifyErr != nil {
+		api.WriteErrorResponse(w, verifyErr)
+		return
+	}
+
+	if roleNewItemPrivs, err := userRole.GetNewItemRolePrivs(trackerDBHandle, params.LinkID); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, roleNewItemPrivs)

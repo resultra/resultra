@@ -134,7 +134,7 @@ func getDefaultFormLinks(trackerDBHandle *sql.DB, databaseID string) ([]RoleNewI
 	return roleNewItemPrivs, nil
 }
 
-func GetNewItemPrivs(trackerDBHandle *sql.DB, roleID string) ([]RoleNewItemPriv, error) {
+func GetRoleNewItemPrivs(trackerDBHandle *sql.DB, roleID string) ([]RoleNewItemPriv, error) {
 
 	roleDatabaseID, roleDBErr := GetUserRoleDatabaseID(trackerDBHandle, roleID)
 	if roleDBErr != nil {
@@ -174,6 +174,68 @@ func GetNewItemPrivs(trackerDBHandle *sql.DB, roleID string) ([]RoleNewItemPriv,
 	// Flatten the privileges back down to a list.
 	roleNewItemPrivs := []RoleNewItemPriv{}
 	for _, currPrivInfo := range privsByLinkID {
+		roleNewItemPrivs = append(roleNewItemPrivs, currPrivInfo)
+	}
+
+	return roleNewItemPrivs, nil
+}
+
+type NewItemRolePriv struct {
+	RoleID      string `json:"roleID"`
+	RoleName    string `json:"roleName"`
+	LinkEnabled bool   `json:"linkEnabled"`
+}
+
+type GetNewItemRolePrivParams struct {
+	LinkID string `json:"linkID"`
+}
+
+func GetNewItemRolePrivs(trackerDBHandle *sql.DB, linkID string) ([]NewItemRolePriv, error) {
+
+	linkDatabaseID, linkDBErr := getNewItemLinkDatabaseID(trackerDBHandle, linkID)
+	if linkDBErr != nil {
+		return nil, fmt.Errorf("GetNewItemPrivs: Failure querying database: %v", linkDBErr)
+	}
+
+	// If there are no explicit privileges for a given role, the default is no privileges. So,
+	// to popuplate an array of the dashboard's privileges for all roles, a map must first be populated
+	// with a set of defaults.
+	privsByRoleID := map[string]NewItemRolePriv{}
+	allRoles, rolesErr := getDatabaseRolesFromSrc(trackerDBHandle, linkDatabaseID)
+	if rolesErr != nil {
+		return nil, fmt.Errorf("getAllDashboardRolesFromSrc: failure querying database: %v", rolesErr)
+	}
+	for _, currRoleInfo := range allRoles {
+		defaultPrivInfo := NewItemRolePriv{
+			RoleID:      currRoleInfo.RoleID,
+			RoleName:    currRoleInfo.RoleName,
+			LinkEnabled: false}
+		privsByRoleID[currRoleInfo.RoleID] = defaultPrivInfo
+	}
+
+	rows, queryErr := trackerDBHandle.Query(
+		`SELECT database_roles.role_id,database_roles.name
+			FROM new_item_form_link_role_privs,database_roles
+			WHERE new_item_form_link_role_privs.role_id=database_roles.role_id AND
+				new_item_form_link_role_privs.link_id = $1`, linkID)
+	if queryErr != nil {
+		return nil, fmt.Errorf("GetRoleListPrivs: Failure querying database: %v", queryErr)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		currPrivInfo := NewItemRolePriv{}
+		currPrivInfo.LinkEnabled = true // presence in the database means the link is enabled
+
+		if scanErr := rows.Scan(&currPrivInfo.RoleID, &currPrivInfo.RoleName); scanErr != nil {
+			return nil, fmt.Errorf("GetNewItemRolePrivs: Failure querying database: %v", scanErr)
+		}
+		privsByRoleID[currPrivInfo.RoleID] = currPrivInfo
+	}
+
+	// Flatten the privileges back down to a list.
+	roleNewItemPrivs := []NewItemRolePriv{}
+	for _, currPrivInfo := range privsByRoleID {
 		roleNewItemPrivs = append(roleNewItemPrivs, currPrivInfo)
 	}
 

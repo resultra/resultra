@@ -1,5 +1,51 @@
 $(document).ready(function() {
 	
+	
+	function initRoleNewItemPrivs(linkInfo) {
+	
+		function roleNewItemPrivilegeListItem(newItemPriv) {
+			var privCheckboxHTML = '' +
+				'<div class="list-group-item">' +
+					'<div class="checkbox">' +
+						'<input type="checkbox" id="' + newItemPriv.roleID + '"></input>'+
+						'<label for="' + newItemPriv.roleID +  '"><span class="noselect roleNameLabel"></span></label>' +
+					'</div>' + 
+				'</div>'
+		
+			var $privCheckbox = $(privCheckboxHTML)
+			$privCheckbox.find('.roleNameLabel').text(newItemPriv.roleName)
+		
+			var $checkboxInput = $privCheckbox.find("input")
+		
+			initCheckboxControlChangeHandler($checkboxInput,newItemPriv.linkEnabled,function(linkEnabled) {
+			
+				var params = {
+					roleID: newItemPriv.roleID,
+					linkID: linkInfo.linkID,
+					linkEnabled: linkEnabled
+				}			
+				jsonAPIRequest("userRole/setNewItemRolePrivs",params,function(setPrivsStatus) {
+				})
+			})
+		
+			return $privCheckbox
+		
+		}
+	
+		jsonAPIRequest("userRole/getNewItemRolePrivs", { linkID: linkInfo.linkID }, function(roleNewItemPrivs) {
+		
+			var $privList = $('#adminNewItemLinkRolesPrivsList')
+		
+			$privList.empty()
+		
+			for(var privIndex=0; privIndex < roleNewItemPrivs.length; privIndex++) {
+				var newItemPriv = roleNewItemPrivs[privIndex]
+				$privList.append(roleNewItemPrivilegeListItem(newItemPriv))
+			}
+		})
+	
+	}
+	
 	function initSharedLinkProperties(linkInfo) {
 		
 		function initSharedLinkPropertyControls(linkInfo) {
@@ -155,6 +201,7 @@ $(document).ready(function() {
 		initFormLinkNameProperties(linkInfo)
 		initFormLinkFormProperties(linkInfo)
 		initIncludeInSidebarProperty(linkInfo)
+		initRoleNewItemPrivs(linkInfo)
 		initSharedLinkProperties(linkInfo)
 
 		var defaultValPropParams = {

@@ -29,7 +29,7 @@ function initRoleNewItemPrivs(roleID) {
 		
 	}
 	
-	jsonAPIRequest("userRole/getNewItemRolePrivs", { roleID: roleID }, function(roleNewItemPrivs) {
+	jsonAPIRequest("userRole/getRoleNewItemPrivs", { roleID: roleID }, function(roleNewItemPrivs) {
 		
 		var $privList = $('#adminNewItemLinkRolesPrivilegesList')
 		

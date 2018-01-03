@@ -87,6 +87,21 @@
 
 {{end}}
 
+
+{{define "adminNewItemLinkRolePrivsProperty"}}
+	<tr>
+		<td class="width200"><label>New item link privileges</label>
+			<div><small>Configure which roles can use this link to create new items.</small></div>
+		</td>
+
+		<td>
+			<div class="list-group" id="adminNewItemLinkRolesPrivsList">
+			</div>		
+		</td>
+	</tr>
+{{end}}
+
+
 {{define "formLinkPropsBody"}}
 
 <h4>New Item Link</h4>
@@ -97,6 +112,7 @@
 	{{template "adminFormLinkIncludeInSidebarProperty" .}}
 	{{template "adminFormLinkShareLinkProperty" .}}
 	{{template "adminFormLinkDefaultValuesProperty" .}}
+	{{template "adminNewItemLinkRolePrivsProperty"}}
 	
 </table>
 		
