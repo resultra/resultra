@@ -127,6 +127,27 @@ type DashboardRolePriv struct {
 
 func GetDashboardRolePrivs(trackerDBHandle *sql.DB, dashboardID string) ([]DashboardRolePriv, error) {
 
+	databaseID, databaseIDErr := getDashboardDatabaseID(trackerDBHandle, dashboardID)
+	if databaseIDErr != nil {
+		return nil, fmt.Errorf("getAllDashboardRolesFromSrc: failure querying database: %v", databaseIDErr)
+	}
+
+	// If there are no explicit privileges for a given role, the default is no privileges. So,
+	// to popuplate an array of the dashboard's privileges for all roles, a map must first be populated
+	// with a set of defaults.
+	privsByRoleID := map[string]DashboardRolePriv{}
+	allRoles, rolesErr := getDatabaseRolesFromSrc(trackerDBHandle, databaseID)
+	if rolesErr != nil {
+		return nil, fmt.Errorf("getAllDashboardRolesFromSrc: failure querying database: %v", rolesErr)
+	}
+	for _, currRoleInfo := range allRoles {
+		defaultPrivInfo := DashboardRolePriv{
+			RoleID:   currRoleInfo.RoleID,
+			RoleName: currRoleInfo.RoleName,
+			Privs:    DashboardRolePrivsNone}
+		privsByRoleID[currRoleInfo.RoleID] = defaultPrivInfo
+	}
+
 	rows, queryErr := trackerDBHandle.Query(
 		`SELECT database_roles.role_id,database_roles.name,dashboard_role_privs.privs
 			FROM dashboard_role_privs,database_roles
@@ -137,7 +158,6 @@ func GetDashboardRolePrivs(trackerDBHandle *sql.DB, dashboardID string) ([]Dashb
 	}
 	defer rows.Close()
 
-	dashboardRolePrivs := []DashboardRolePriv{}
 	for rows.Next() {
 
 		currPrivInfo := DashboardRolePriv{}
@@ -145,9 +165,13 @@ func GetDashboardRolePrivs(trackerDBHandle *sql.DB, dashboardID string) ([]Dashb
 		if scanErr := rows.Scan(&currPrivInfo.RoleID, &currPrivInfo.RoleName, &currPrivInfo.Privs); scanErr != nil {
 			return nil, fmt.Errorf("getDashboardRolePrivs: Failure querying database: %v", scanErr)
 		}
+		privsByRoleID[currPrivInfo.RoleID] = currPrivInfo
 
+	}
+
+	dashboardRolePrivs := []DashboardRolePriv{}
+	for _, currPrivInfo := range privsByRoleID {
 		dashboardRolePrivs = append(dashboardRolePrivs, currPrivInfo)
-
 	}
 
 	return dashboardRolePrivs, nil
