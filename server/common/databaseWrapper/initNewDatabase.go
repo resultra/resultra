@@ -128,7 +128,9 @@ CREATE TABLE IF NOT EXISTS  alerts (
 	name text NOT NULL,
     is_active boolean NOT NULL DEFAULT '1',
 	properties text NOT NULL
-); 
+);
+
+CREATE UNIQUE INDEX role_name_unique_index on alerts (LOWER(name),database_id);
 
 CREATE TABLE IF NOT EXISTS  dashboards ( 
 	database_id text REFERENCES databases(database_id), 
@@ -136,7 +138,10 @@ CREATE TABLE IF NOT EXISTS  dashboards (
 	name text NOT NULL,
     is_active boolean NOT NULL DEFAULT '1',
 	properties text NOT NULL DEFAULT '{}'
-); 
+);
+
+CREATE UNIQUE INDEX dashboard_name_unique_index on dashboards (LOWER(name),database_id);
+
 
 CREATE TABLE IF NOT EXISTS table_views ( 
 	database_id text REFERENCES databases(database_id), 
@@ -154,6 +159,9 @@ CREATE TABLE IF NOT EXISTS forms (
 	properties text NOT NULL DEFAULT '{}'
 ); 
 
+CREATE UNIQUE INDEX form_name_unique_index on forms (LOWER(name),database_id);
+
+
 CREATE TABLE IF NOT EXISTS item_lists ( 
 	list_id text PRIMARY KEY, 
 	database_id text REFERENCES databases(database_id), 
@@ -161,6 +169,8 @@ CREATE TABLE IF NOT EXISTS item_lists (
     is_active boolean NOT NULL DEFAULT '1',
 	properties text NOT NULL DEFAULT '{}'
 ); 
+
+CREATE UNIQUE INDEX list_name_unique_index on item_lists (LOWER(name),database_id);
 
 CREATE TABLE IF NOT EXISTS form_links (
 	link_id text PRIMARY KEY,
@@ -180,6 +190,9 @@ CREATE TABLE IF NOT EXISTS value_lists (
     is_active boolean NOT NULL DEFAULT '1',
 	properties text NOT NULL DEFAULT '{}'
 ); 
+
+CREATE UNIQUE INDEX value_list_name_unique_index on value_lists (LOWER(name),database_id);
+
 
 CREATE TABLE IF NOT EXISTS dashboard_components (
 	dashboard_id text REFERENCES dashboards(dashboard_id), 
