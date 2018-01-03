@@ -22,17 +22,7 @@ type GetUserRolesParams struct {
 // get a list of users and their roles.
 func getUserRolesInfo(trackerDBHandle *sql.DB, params GetUserRolesParams) ([]UserRoleInfo, error) {
 
-	adminUserInfo, err := userRole.GetDatabaseAdminUserInfo(trackerDBHandle, params.DatabaseID)
-	if err != nil {
-		return nil, fmt.Errorf("getUserRolesInfo: %v", err)
-	}
-
 	userRoles := []UserRoleInfo{}
-	for _, currUserInfo := range adminUserInfo {
-		currAdminInfo := UserRoleInfo{UserInfo: currUserInfo, IsAdmin: true}
-		userRoles = append(userRoles, currAdminInfo)
-	}
-
 	usersRoleInfo, err := userRole.GetAllUsersRoleInfo(trackerDBHandle, params.DatabaseID)
 	if err != nil {
 		return nil, fmt.Errorf("getUserRolesInfo: %v", err)
@@ -40,7 +30,7 @@ func getUserRolesInfo(trackerDBHandle *sql.DB, params GetUserRolesParams) ([]Use
 	for _, currRoleInfo := range usersRoleInfo {
 		currInfo := UserRoleInfo{
 			UserInfo:       currRoleInfo.UserInfo,
-			IsAdmin:        false,
+			IsAdmin:        currRoleInfo.IsAdmin,
 			CollaboratorID: currRoleInfo.CollaboratorID,
 			CustomRoles:    currRoleInfo.RoleInfo}
 		userRoles = append(userRoles, currInfo)

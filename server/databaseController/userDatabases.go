@@ -28,9 +28,9 @@ func getCurrentUserTrackingDatabases(params GetTrackerListParams,
 	}
 
 	rows, queryErr := trackerDBHandle.Query(
-		`SELECT databases.database_id, databases.name,databases.is_active FROM database_admins,databases WHERE 
-			database_admins.user_id=$1 AND 
-			database_admins.database_id = databases.database_id`, currUserID)
+		`SELECT databases.database_id, databases.name,databases.is_active FROM collaborators,databases WHERE 
+			collaborators.user_id=$1 AND 
+			collaborators.database_id = databases.database_id`, currUserID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("getCurrentUserTrackingDatabases: Failure querying database: %v", queryErr)
 	}

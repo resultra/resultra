@@ -225,11 +225,6 @@ CREATE TABLE IF NOT EXISTS field_comments (
 	comment text NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS  database_admins ( 
-	database_id text REFERENCES databases(database_id), 
-	user_id text REFERENCES users(user_id),
-	UNIQUE(user_id,database_id)
-);
 
 CREATE TABLE IF NOT EXISTS database_roles (
 	database_id text REFERENCES databases(database_id), 
@@ -239,7 +234,8 @@ CREATE TABLE IF NOT EXISTS database_roles (
 
 CREATE TABLE IF NOT EXISTS collaborators (
 	collaborator_id text PRIMARY KEY,
-	user_id text REFERENCES users(user_id), 
+	user_id text REFERENCES users(user_id),
+	is_admin boolean NOT NULL DEFAULT '0',
 	database_id text REFERENCES databases(database_id),
 	UNIQUE(user_id,database_id)
 );

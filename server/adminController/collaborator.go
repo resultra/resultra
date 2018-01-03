@@ -14,7 +14,7 @@ type AddCollaboratorParams struct {
 
 func addCollaborator(trackerDBHandle *sql.DB, params AddCollaboratorParams) (*UserRoleInfo, error) {
 
-	collabInfo, err := userRole.AddCollaborator(trackerDBHandle, params.DatabaseID, params.UserID)
+	collabInfo, err := userRole.AddNonAdminCollaborator(trackerDBHandle, params.DatabaseID, params.UserID)
 	if err != nil {
 		return nil, fmt.Errorf("addCollaborator: %v", err)
 	}

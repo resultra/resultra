@@ -18,8 +18,8 @@ func VerifyCurrUserIsDatabaseAdmin(trackerDBHandle *sql.DB, req *http.Request, d
 	queryUserID := ""
 	getErr := trackerDBHandle.QueryRow(
 		`SELECT user_id 
-			FROM database_admins 
-			WHERE database_id=$1 AND user_id=$2 LIMIT 1`,
+			FROM collaborators 
+			WHERE database_id=$1 AND user_id=$2 AND is_admin='1' LIMIT 1`,
 		databaseID, currUserID).Scan(&queryUserID)
 	if getErr != nil {
 		return fmt.Errorf(

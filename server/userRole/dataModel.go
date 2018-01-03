@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/trackerDatabase"
 )
 
@@ -15,18 +15,17 @@ func AddDatabaseAdmin(trackerDBHandle *sql.DB, databaseID string, userID string)
 	// TODO verify the current user has permissions to add the user as an admin.
 	// TODO add verification to only allow a single database_id,user_id pair
 
-	if _, insertErr := trackerDBHandle.Exec(
-		`INSERT INTO database_admins (database_id,user_id) VALUES ($1,$2)`,
-		databaseID, userID); insertErr != nil {
+	_, err := AddCollaborator(trackerDBHandle, databaseID, userID, true)
+	if err != nil {
 		return fmt.Errorf("addDatabaseAdmin: Can't add database admin user ID = %v to database with ID = %v: error = %v",
-			userID, databaseID, insertErr)
+			userID, databaseID, err)
 	}
 
 	return nil
 
 }
 
-func AddCollaborator(trackerDBHandle *sql.DB, databaseID string, userID string) (*CollaboratorInfo, error) {
+func AddCollaborator(trackerDBHandle *sql.DB, databaseID string, userID string, isAdmin bool) (*CollaboratorInfo, error) {
 
 	if existingCollab, err := GetCollaborator(trackerDBHandle, databaseID, userID); err == nil {
 		return existingCollab, nil
@@ -35,8 +34,8 @@ func AddCollaborator(trackerDBHandle *sql.DB, databaseID string, userID string) 
 	collabID := uniqueID.GenerateSnowflakeID()
 
 	if _, insertErr := trackerDBHandle.Exec(
-		`INSERT INTO collaborators (collaborator_id,database_id,user_id) VALUES ($1,$2,$3)`,
-		collabID, databaseID, userID); insertErr != nil {
+		`INSERT INTO collaborators (collaborator_id,database_id,user_id,is_admin) VALUES ($1,$2,$3,$4)`,
+		collabID, databaseID, userID, isAdmin); insertErr != nil {
 		return nil, fmt.Errorf("AddCollaborator: Can't add collaborator with user ID = %v to database with ID = %v: error = %v",
 			userID, databaseID, insertErr)
 	}
@@ -44,23 +43,30 @@ func AddCollaborator(trackerDBHandle *sql.DB, databaseID string, userID string) 
 	newCollabInfo := &CollaboratorInfo{
 		CollaboratorID: collabID,
 		UserID:         userID,
-		DatabaseID:     databaseID}
+		DatabaseID:     databaseID,
+		IsAdmin:        isAdmin}
 
 	return newCollabInfo, nil
 
+}
+
+func AddNonAdminCollaborator(trackerDBHandle *sql.DB, databaseID string, userID string) (*CollaboratorInfo, error) {
+	return AddCollaborator(trackerDBHandle, databaseID, userID, false)
 }
 
 type CollaboratorInfo struct {
 	CollaboratorID string
 	UserID         string
 	DatabaseID     string
+	IsAdmin        bool
 }
 
 func GetCollaborator(trackerDBHandle *sql.DB, databaseID string, userID string) (*CollaboratorInfo, error) {
 
 	collabID := ""
-	getErr := trackerDBHandle.QueryRow(`SELECT collaborator_id FROM collaborators
-		 WHERE user_id=$1 AND database_id=$2 LIMIT 1`, databaseID, userID).Scan(&collabID)
+	isAdmin := false
+	getErr := trackerDBHandle.QueryRow(`SELECT collaborator_id,is_admin FROM collaborators
+		 WHERE user_id=$1 AND database_id=$2 LIMIT 1`, databaseID, userID).Scan(&collabID, &isAdmin)
 	if getErr != nil {
 		return nil, fmt.Errorf("getCollaborator: Unabled to get collaborator with databaseID = %v, userID = %v: datastore err=%v",
 			databaseID, userID, getErr)
@@ -69,7 +75,8 @@ func GetCollaborator(trackerDBHandle *sql.DB, databaseID string, userID string) 
 	collabInfo := CollaboratorInfo{
 		CollaboratorID: collabID,
 		UserID:         userID,
-		DatabaseID:     databaseID}
+		DatabaseID:     databaseID,
+		IsAdmin:        isAdmin}
 
 	return &collabInfo, nil
 
@@ -78,7 +85,7 @@ func GetCollaborator(trackerDBHandle *sql.DB, databaseID string, userID string) 
 func getAllCollaborators(trackerDBHandle *sql.DB, databaseID string) ([]CollaboratorInfo, error) {
 
 	rows, queryErr := trackerDBHandle.Query(
-		`SELECT collaborator_id, user_id FROM collaborators
+		`SELECT collaborator_id, user_id,is_admin FROM collaborators
 				WHERE database_id=$1`, databaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetDatabaseRoles: Failure querying database: %v", queryErr)
@@ -89,10 +96,12 @@ func getAllCollaborators(trackerDBHandle *sql.DB, databaseID string) ([]Collabor
 	for rows.Next() {
 
 		currCollabInfo := CollaboratorInfo{}
-		if scanErr := rows.Scan(&currCollabInfo.CollaboratorID, &currCollabInfo.UserID); scanErr != nil {
+		isAdmin := false
+		if scanErr := rows.Scan(&currCollabInfo.CollaboratorID, &currCollabInfo.UserID, &isAdmin); scanErr != nil {
 			return nil, fmt.Errorf("GetDatabaseRoles: Failure querying database: %v", scanErr)
 		}
 		currCollabInfo.DatabaseID = databaseID
+		currCollabInfo.IsAdmin = isAdmin
 		collabs = append(collabs, currCollabInfo)
 	}
 
@@ -129,8 +138,9 @@ func GetCollaboratorByID(trackerDBHandle *sql.DB, collaboratorID string) (*Colla
 
 	userID := ""
 	databaseID := ""
-	getErr := trackerDBHandle.QueryRow(`SELECT user_id,database_id FROM collaborators
-		 WHERE collaborator_id=$1 LIMIT 1`, collaboratorID).Scan(&userID, &databaseID)
+	isAdmin := false
+	getErr := trackerDBHandle.QueryRow(`SELECT user_id,database_id,is_admin FROM collaborators
+		 WHERE collaborator_id=$1 LIMIT 1`, collaboratorID).Scan(&userID, &databaseID, &isAdmin)
 	if getErr != nil {
 		return nil, fmt.Errorf("getCollaboratorByID: Unabled to get collaborator with ID = %v: datastore err=%v",
 			collaboratorID, getErr)
@@ -139,7 +149,8 @@ func GetCollaboratorByID(trackerDBHandle *sql.DB, collaboratorID string) (*Colla
 	collabInfo := CollaboratorInfo{
 		CollaboratorID: collaboratorID,
 		UserID:         userID,
-		DatabaseID:     databaseID}
+		DatabaseID:     databaseID,
+		IsAdmin:        isAdmin}
 
 	return &collabInfo, nil
 
@@ -316,9 +327,10 @@ func GetDatabaseAdminUserInfo(trackerDBHandle *sql.DB, databaseID string) ([]use
 
 	rows, queryErr := trackerDBHandle.Query(
 		`SELECT users.user_id,users.user_name,users.first_name,users.last_name 
-				FROM database_admins,users
-				WHERE database_admins.database_id=$1
-				   AND database_admins.user_id=users.user_id`, databaseID)
+				FROM collaborators,users
+				WHERE collaborators.database_id=$1
+				   AND collaborators.user_id=users.user_id
+				   AND collaborators.is_admin='1'`, databaseID)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetDatabaseAdminUserInfo: Failure querying database: %v", queryErr)
 	}
@@ -553,6 +565,7 @@ func GetCustomRoleInfo(trackerDBHandle *sql.DB, databaseID string) ([]CustomRole
 type UserRoleInfo struct {
 	UserInfo       userAuth.UserInfo  `json:"userInfo"`
 	CollaboratorID string             `json:"collaboratorID"`
+	IsAdmin        bool               `json:"isAdmin"`
 	RoleInfo       []DatabaseRoleInfo `json:"roleInfo"`
 }
 
@@ -568,7 +581,8 @@ func GetCollaboratorRoleInfo(trackerDBHandle *sql.DB, databaseID string, collabo
 	}
 	userRoleInfo := UserRoleInfo{UserInfo: *userInfo,
 		CollaboratorID: collabInfo.CollaboratorID,
-		RoleInfo:       []DatabaseRoleInfo{}}
+		RoleInfo:       []DatabaseRoleInfo{},
+		IsAdmin:        collabInfo.IsAdmin}
 
 	rows, queryErr := trackerDBHandle.Query(
 		`SELECT collaborators.user_id, database_roles.role_id,database_roles.name
@@ -645,7 +659,8 @@ func GetAllUsersRoleInfo(trackerDBHandle *sql.DB, databaseID string) ([]UserRole
 
 		userRoleInfo := &UserRoleInfo{UserInfo: *userInfo,
 			CollaboratorID: currCollab.CollaboratorID,
-			RoleInfo:       []DatabaseRoleInfo{}}
+			RoleInfo:       []DatabaseRoleInfo{},
+			IsAdmin:        currCollab.IsAdmin}
 		roleInfoByUserID[currCollab.UserID] = userRoleInfo
 	}
 
