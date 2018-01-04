@@ -345,6 +345,30 @@ func sequenceNumFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Eq
 	return numberEqnResult(float64(evalContext.Record.SequenceNum)), nil
 }
 
+const FuncNameIsTrue = "ISTRUE"
+
+func isTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	if len(funcArgs) != 1 {
+		return nil, fmt.Errorf("ISTRUE() - Expecting 1 argument, got %v", len(funcArgs))
+	}
+
+	condEqn := funcArgs[0]
+	condResult, condErr := condEqn.EvalEqn(evalContext)
+	if condErr != nil {
+		return nil, fmt.Errorf("IF(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, condErr)
+	}
+	if condResult.IsUndefined() {
+		return boolEqnResult(false), nil
+	}
+	condBoolResult, validateErr := condResult.GetBoolResult()
+	if validateErr != nil {
+		return nil, fmt.Errorf("IF(): Invalid result found while evaluating argument 1: arg=%+v, error = %v", condEqn, validateErr)
+	}
+	return boolEqnResult(condBoolResult), nil
+
+}
+
 var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 
 	FuncNameSequenceNum: FunctionInfo{FuncNameSequenceNum, sequenceNumFunc, zeroNumberArgs},
@@ -366,4 +390,5 @@ var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 	FuncNameDaysBetween: FunctionInfo{FuncNameDaysBetween, daysBetweenEvalFunc, twoTimeArgsNumberResult},
 	FuncNameGreaterThan: FunctionInfo{FuncNameGreaterThan, greaterThanEvalFunc, twoNumberArgsBooleanResult},
 	FuncNameIf:          FunctionInfo{FuncNameIf, ifEvalFunc, validIfArgs},
+	FuncNameIsTrue:      FunctionInfo{FuncNameIsTrue, isTrueEvalFunc, oneBoolArg},
 }

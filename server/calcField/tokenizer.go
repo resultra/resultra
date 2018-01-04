@@ -77,9 +77,23 @@ func (matchSeq TokenMatchSequence) tokenIDs() []int {
 	return matchIDs
 }
 
+func (matchSeq TokenMatchSequence) tokenStrings() []string {
+	matches := []string{}
+	for _, match := range matchSeq {
+		matches = append(matches, match.matchedStr)
+	}
+	return matches
+}
+
 func matchToken(inputStr string, tokenRegexp *regexp.Regexp, tokenID int) (*TokenMatch, string, bool) {
 	matchIndices := tokenRegexp.FindStringIndex(inputStr)
 	if matchIndices != nil {
+
+		// Match must start at the beginning of the given string
+		if matchIndices[0] != 0 {
+			return nil, inputStr, false
+		}
+
 		remaining := inputStr[matchIndices[1]:len(inputStr)]
 		matchStr := inputStr[matchIndices[0]:matchIndices[1]]
 		return &TokenMatch{tokenID, matchStr}, remaining, true

@@ -2,13 +2,14 @@ package calcField
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 	"testing"
 )
 
 func tokenIDsToList(ids []int) string {
 	tokenList := []string{}
-	for id := range ids {
+	for _, id := range ids {
 		tokenList = append(tokenList, fmt.Sprintf("%v", id))
 	}
 	return strings.Join(tokenList, ",")
@@ -19,10 +20,15 @@ func testOneTokenize(t *testing.T, tokenizeWhiteComment bool, inputStr string, e
 	if matchSeq, err := tokenizeInput(inputStr, tokenizeWhiteComment); err != nil {
 		t.Fatal(err)
 	} else {
+
+		t.Logf("testOneTokenize: matched seq: %+v", matchSeq)
 		tokenIDs := tokenIDsToList(matchSeq.tokenIDs())
 		expectedIDs := tokenIDsToList(expectedTokenIDs)
-		if tokenIDs != expectedIDs {
-			t.Errorf("testOneTokenString: Unexpected token sequence: %v: got=[%v], expected=[%v]", whatTest, tokenIDs, expectedIDs)
+		if !reflect.DeepEqual(tokenIDs, expectedIDs) {
+			t.Errorf("testOneTokenString(fail): Unexpected token sequence: %v: got=[%+v], expected=[%+v]", whatTest, tokenIDs, expectedIDs)
+		} else {
+			t.Logf("testOneTokenString(pass): Got expected token sequence: %+v: got=[%+v]", whatTest, tokenIDs)
+
 		}
 	}
 }
@@ -48,6 +54,30 @@ func TestTokens(t *testing.T) {
 
 	testOneTokenize(t, tokenizeWhiteOrComment, ` funcName(" hello \" world ]") `,
 		[]int{tokenIdent.ID, tokenLParen.ID, tokenText.ID, tokenRParen.ID}, "escaped quote inside text")
+
+}
+
+func TestBoolTokens(t *testing.T) {
+
+	tokenizeWhiteOrComment := false
+
+	/*	testOneTokenize(t, tokenizeWhiteOrComment, `  true false `, []int{
+			tokenTrue.ID, tokenFalse.ID}, "boolean tokens")
+
+		testOneTokenize(t, tokenizeWhiteOrComment, `  ISTRUE false false`, []int{
+			tokenIdent.ID, tokenFalse.ID}, "boolean tokens")
+	*/
+	testOneTokenize(t, tokenizeWhiteOrComment, `  true false `, []int{
+		tokenTrue.ID, tokenFalse.ID}, "boolean tokens")
+
+}
+
+func TestBoolFuncTokens(t *testing.T) {
+
+	tokenizeWhiteOrComment := false
+
+	testOneTokenize(t, tokenizeWhiteOrComment, `  ISTRUE true false`, []int{
+		tokenIdent.ID, tokenTrue.ID, tokenFalse.ID}, "boolean tokens")
 
 }
 
