@@ -5,7 +5,7 @@
 // of the dialog is pressed to fully commit the changes.
 var MainLineFullyCommittedChangeSetID = ""
 
-function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext, recordProxy,componentContext) {
+function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext, recordProxy,componentContext, formPopulationDoneCallback) {
 	
 	function initFormComponentViewBehavior($component,componentID, selectionFunc) {	
 	}
@@ -144,7 +144,9 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 		}		
 	}
 	
-	populateOneFormLayoutWithComponents(loadFormConfig,componentContext);
+	populateOneFormLayoutWithComponents(loadFormConfig,componentContext,function() {
+		formPopulationDoneCallback()
+	});
 	
 }
 
@@ -152,9 +154,9 @@ function loadFormViewComponents($parentFormLayout, viewFormContext, recordProxy,
 	
 	getFormComponentContext(viewFormContext, function(componentContext) {
 												
-		loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext, recordProxy,componentContext)	
-			
-		doneLoadingComponentsFunc()
+		loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext, recordProxy,componentContext,function() {
+			doneLoadingComponentsFunc()			
+		})	
 	})
 	
 		
@@ -162,6 +164,15 @@ function loadFormViewComponents($parentFormLayout, viewFormContext, recordProxy,
 
 
 function loadMultipleFormViewContainers(viewFormContext,containersInfo, doneLoadingContainersFunc) {
+	
+	var formComponentsRemaining = containersInfo.length
+	function oneFormLayoutComplete() {
+		formComponentsRemaining--
+		if(formComponentsRemaining <= 0) {
+			doneLoadingContainersFunc()
+		}
+	}
+	
 	getFormComponentContext(viewFormContext, function(componentContext) {
 		
 		for (var containerIndex=0; containerIndex < containersInfo.length; containerIndex++) {
@@ -169,9 +180,10 @@ function loadMultipleFormViewContainers(viewFormContext,containersInfo, doneLoad
 			var currContainerInfo = containersInfo[containerIndex]
 			
 			loadFormViewComponentsIntoOneLayout(currContainerInfo.$listItemContainer, viewFormContext, 
-					currContainerInfo.recordProxy,componentContext)	
+					currContainerInfo.recordProxy,componentContext,function() {
+						oneFormLayoutComplete()
+					})	
 			
 		}
-		doneLoadingContainersFunc()	
 	})
 }

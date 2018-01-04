@@ -119,9 +119,22 @@ function createComponentCol($parentLayout,$parentRow) {
 
 
 
-function populateComponentLayout(componentLayout, $parentLayout, compenentIDComponentMap) {
+function populateComponentLayout(componentLayout, $parentLayout, compenentIDComponentMap, layoutCompleteCallback) {
 
 	var completedLayoutComponentIDs = {}
+	
+	// The indidividual componentLayouts can be asynchronous (e.g., requiring a query to the server
+	// to get information to finish the layout. For this reason, notification for completion of the population of the 
+	// layout needs to happen with a callback.
+		
+		
+	var layoutCompletionsRemaining = Object.keys(compenentIDComponentMap).length
+	function completeOneComponentLayout() {
+		layoutCompletionsRemaining--
+		if (layoutCompletionsRemaining <= 0) {
+			layoutCompleteCallback()
+		}
+	}
 		
 	for(var rowIndex = 0; rowIndex < componentLayout.length; rowIndex++) {
 		
@@ -146,8 +159,10 @@ function populateComponentLayout(componentLayout, $parentLayout, compenentIDComp
 					if(componentID in compenentIDComponentMap) {
 						var initInfo = compenentIDComponentMap[componentID]
 						console.log("Component layout: component info=" + JSON.stringify(initInfo.componentInfo))
-						initInfo.initFunc($componentCol,initInfo.componentInfo)
 						completedLayoutComponentIDs[componentID] = true			
+						initInfo.initFunc($componentCol,initInfo.componentInfo,function() {
+							completeOneComponentLayout()
+						})
 					}
 				} // for each component
 				
@@ -171,7 +186,9 @@ function populateComponentLayout(componentLayout, $parentLayout, compenentIDComp
 			if(completedLayoutComponentIDs[componentID] != true) {
 				var initInfo = compenentIDComponentMap[componentID]
 				console.log("populateComponentLayout: Layout orphan component: " + componentID)
-				initInfo.initFunc($orphanLayoutCol,initInfo.componentInfo)	
+				initInfo.initFunc($orphanLayoutCol,initInfo.componentInfo,function() {
+					completeOneComponentLayout()
+				})	
 			}
 		}	
 	}

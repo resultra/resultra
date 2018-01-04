@@ -40,11 +40,11 @@ function getFormComponentContext(formContext, contextLoadCompleteCallback) {
 	
 }
 
-function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
+function populateOneFormLayoutWithComponents(loadFormConfig, componentContext,formDonePopulatingCallback) {
 	
 	var compenentIDComponentMap = {}	
 
-	function initHeaderLayout($componentRow,header) {
+	function initHeaderLayout($componentRow,header,initDoneCallback) {
 		// Create an HTML block for the container
 		console.log("loadFormComponents: initializing header: " + JSON.stringify(header))
 	
@@ -64,11 +64,12 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 	
 		// Callback for any specific initialization for either the form design or view mode
 		loadFormConfig.initHeaderFunc($containerObj,componentContext,header)
+		initDoneCallback()
 		
 	}
 
 
-	function initCaptionLayout($componentRow,caption) {
+	function initCaptionLayout($componentRow,caption,initDoneCallback) {
 		// Create an HTML block for the container
 		console.log("loadFormComponents: initializing caption: " + JSON.stringify(caption))
 	
@@ -87,11 +88,12 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 	
 		// Callback for any specific initialization for either the form design or view mode
 		loadFormConfig.initCaptionFunc($containerObj,componentContext,caption)
+		initDoneCallback()
 		
 	}
 
 
-	function initFormButtonLayout($componentRow,formButton) {
+	function initFormButtonLayout($componentRow,formButton,initDoneCallback) {
 		// Create an HTML block for the container
 		console.log("loadFormComponents: initializing form button: " + JSON.stringify(formButton))
 	
@@ -112,11 +114,12 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 	
 		// Callback for any specific initialization for either the form design or view mode
 		loadFormConfig.initFormButtonFunc(componentContext,$containerObj,formButton)
+		initDoneCallback()
 		
 	}
 
 
-	function initTextBoxLayout($componentRow,textBox) {
+	function initTextBoxLayout($componentRow,textBox,initDoneCallback) {
 		// Create an HTML block for the container
 		console.log("loadFormComponents: initializing text box: " + JSON.stringify(textBox))
 	
@@ -136,10 +139,11 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 	
 		// Callback for any specific initialization for either the form design or view mode
 		loadFormConfig.initTextBoxFunc(componentContext,containerObj,textBox)
+		initDoneCallback()
 		
 	}
 
-	function initEmailAddrLayout($componentRow,emailAddr) {
+	function initEmailAddrLayout($componentRow,emailAddr,initDoneCallback) {
 		// Create an HTML block for the container
 	
 		var containerHTML = emailAddrContainerHTML(emailAddr.emailAddrID);
@@ -158,10 +162,11 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 	
 		// Callback for any specific initialization for either the form design or view mode
 		loadFormConfig.initEmailAddrFunc(componentContext,containerObj,emailAddr)
+		initDoneCallback()
 		
 	}
 	
-	function initFileLayout($componentRow,fileRef) {
+	function initFileLayout($componentRow,fileRef,initDoneCallback) {
 		// Create an HTML block for the container
 	
 		var containerHTML = fileContainerHTML(fileRef.fileID);
@@ -180,10 +185,11 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 	
 		// Callback for any specific initialization for either the form design or view mode
 		loadFormConfig.initFileFunc(componentContext,containerObj,fileRef)
+		initDoneCallback()
 		
 	}
 
-	function initImageLayout($componentRow,imageRef) {
+	function initImageLayout($componentRow,imageRef,initDoneCallback) {
 		// Create an HTML block for the container
 	
 		var containerHTML = imageContainerHTML(imageRef.imageID);
@@ -205,11 +211,12 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 	
 		// Callback for any specific initialization for either the form design or view mode
 		loadFormConfig.initImageFunc(componentContext,$containerObj,imageRef)
+		initDoneCallback()
 		
 	}
 	
 	
-	function initUrlLinkLayout($componentRow,urlLink) {
+	function initUrlLinkLayout($componentRow,urlLink,initDoneCallback) {
 		// Create an HTML block for the container
 	
 		var containerHTML = urlLinkContainerHTML(urlLink.urlLinkID);
@@ -228,11 +235,12 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 	
 		// Callback for any specific initialization for either the form design or view mode
 		loadFormConfig.initUrlLinkFunc(componentContext,containerObj,urlLink)
+		initDoneCallback()
 		
 	}
 
 	
-	function initNumberInputLayout($componentRow,numberInput) {
+	function initNumberInputLayout($componentRow,numberInput,initDoneCallback) {
 		// Create an HTML block for the container
 		console.log("loadFormComponents: initializing number input: " + JSON.stringify(numberInput))
 	
@@ -252,10 +260,11 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 	
 		// Callback for any specific initialization for either the form design or view mode
 		loadFormConfig.initNumberInputFunc(componentContext,containerObj,numberInput)
+		initDoneCallback()
 		
 	}
 
-	function initSelectionLayout($componentRow,selection) {
+	function initSelectionLayout($componentRow,selection,initDoneCallback) {
 		// Create an HTML block for the container
 		console.log("loadFormComponents: initializing selection: " + JSON.stringify(selection))
 	
@@ -277,11 +286,12 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 	
 		// Callback for any specific initialization for either the form design or view mode
 		loadFormConfig.initSelectionFunc(componentContext,containerObj,selection)
+		initDoneCallback()
 		
 	}
 
 
-	function initCommentLayout($componentRow,comment) {
+	function initCommentLayout($componentRow,comment,initDoneCallback) {
 		// Create an HTML block for the container
 		
 		var containerHTML = commentContainerHTML(comment.commentID);
@@ -301,11 +311,12 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initCommentFunc(componentContext,containerObj,comment)
+		initDoneCallback()
 	}
 
 
 
-	function initProgressLayout($componentRow,progress) {
+	function initProgressLayout($componentRow,progress,initDoneCallback) {
 		// Create an HTML block for the container
 		
 		var containerHTML = progressContainerHTML();
@@ -324,10 +335,11 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initProgressFunc(componentContext,$progressContainer,progress)
+		initDoneCallback()
 	}
 
 
-	function initGaugeLayout($componentRow,gaugeRef) {
+	function initGaugeLayout($componentRow,gaugeRef,initDoneCallback) {
 		// Create an HTML block for the container
 		
 		var containerHTML = gaugeContainerHTML();
@@ -348,10 +360,11 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initGaugeFunc(componentContext,$gaugeContainer,gaugeRef)
+		initDoneCallback()
 	}
 
 
-	function initCheckBoxLayout($componentRow,checkBox) {
+	function initCheckBoxLayout($componentRow,checkBox,initDoneCallback) {
 		// Create an HTML block for the container
 		
 		var containerHTML = checkBoxContainerHTML(checkBox.checkBoxID);
@@ -373,9 +386,10 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initCheckBoxFunc(componentContext,$checkboxContainer,checkBox)
+		initDoneCallback()
 	}
 	
-	function initToggleLayout($componentRow,toggle) {
+	function initToggleLayout($componentRow,toggle,initDoneCallback) {
 		// Create an HTML block for the container
 		
 		var containerHTML = toggleContainerHTML(toggle.toggleID);
@@ -397,10 +411,11 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initToggleFunc(componentContext,$toggleContainer,toggle)
+		initDoneCallback()
 	}
 
 
-	function initRatingLayout($componentRow,rating) {
+	function initRatingLayout($componentRow,rating,initDoneCallback) {
 		// Create an HTML block for the container
 		
 		var containerHTML = ratingContainerHTML(rating.ratingID);	
@@ -417,9 +432,10 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initRatingFunc(componentContext,$ratingContainer,rating)
+		initDoneCallback()
 	}
 
-	function initSocialButtonLayout($componentRow,socialButton) {
+	function initSocialButtonLayout($componentRow,socialButton,initDoneCallback) {
 		
 		var containerHTML = socialButtonContainerHTML(socialButton.socialButtonID);	
 		var $socialButtonContainer = $(containerHTML)
@@ -435,9 +451,10 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initSocialButtonFunc(componentContext,$socialButtonContainer,socialButton)
+		initDoneCallback()
 	}
 	
-	function initLabelLayout($componentRow,label) {
+	function initLabelLayout($componentRow,label,initDoneCallback) {
 		
 		var containerHTML = labelContainerHTML(label.labelID);	
 		var $labelContainer = $(containerHTML)
@@ -457,9 +474,10 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initLabelFunc(componentContext,$labelContainer,label)
+		initDoneCallback()
 	}
 
-	function initUserSelectionLayout($componentRow,userSelection) {
+	function initUserSelectionLayout($componentRow,userSelection,initDoneCallback) {
 		// Create an HTML block for the container
 		
 		var containerHTML = userSelectionContainerHTML(userSelection.userSelectionID);
@@ -480,9 +498,10 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initUserSelectionFunc(componentContext,$containerObj,userSelection)
+		initDoneCallback()
 	}
 	
-	function initUserTagLayout($componentRow,userTag) {
+	function initUserTagLayout($componentRow,userTag,initDoneCallback) {
 		// Create an HTML block for the container
 		
 		var containerHTML = userTagContainerHTML(userTag.userTagID);
@@ -503,10 +522,11 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initUserTagFunc(componentContext,$containerObj,userTag)
+		initDoneCallback()
 	}
 
 	
-	function initDatePickerLayout($componentRow,datePicker) {
+	function initDatePickerLayout($componentRow,datePicker,initDoneCallback) {
 		// Create an HTML block for the container			
 		var containerHTML = datePickerContainerHTML(datePicker.datePickerID);
 		var containerObj = $(containerHTML)
@@ -523,10 +543,11 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 					
 		// Callback for any specific initialization for either the form design or view mode
 		loadFormConfig.initDatePickerFunc(componentContext,containerObj,datePicker)
+		initDoneCallback()
 		
 	}
 
-	function initHtmlEditorLayout($componentRow,htmlEditor) {
+	function initHtmlEditorLayout($componentRow,htmlEditor,initDoneCallback) {
 		
 		var containerHTML = htmlEditorContainerHTML(htmlEditor.htmlEditorID);
 		var containerObj = $(containerHTML)
@@ -547,9 +568,10 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Callback for any specific initialization for either the form design or view mode
 		loadFormConfig.initHtmlEditorFunc(componentContext,containerObj,htmlEditor)
+		initDoneCallback()
 	}
 	
-	function initAttachmentEditorLayout($componentRow,image) {
+	function initAttachmentEditorLayout($componentRow,image,initDoneCallback) {
 		var containerHTML = attachmentContainerHTML(image.imageID);
 		var containerObj = $(containerHTML)
 		
@@ -566,6 +588,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 		
 		// Callback for any specific initialization for either the form design or view mode
 		loadFormConfig.initAttachmentFunc(componentContext,containerObj,image)
+		initDoneCallback()
 		
 	}
 
@@ -810,7 +833,9 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 
 	
 	var formLayout = formInfo.form.properties.layout
-	populateComponentLayout(formLayout,loadFormConfig.$parentFormLayout,compenentIDComponentMap)
+	populateComponentLayout(formLayout,loadFormConfig.$parentFormLayout,compenentIDComponentMap,function() {
+		formDonePopulatingCallback()
+	})
 	
 }
 
@@ -818,8 +843,10 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext) {
 function loadFormComponentsIntoSingleLayout(loadFormConfig, doneLoadingFormDataFunc) {
 	
 	getFormComponentContext(loadFormConfig.formContext, function(componentContext) {											
-		populateOneFormLayoutWithComponents(loadFormConfig,componentContext)		
-		doneLoadingFormDataFunc()
+		populateOneFormLayoutWithComponents(loadFormConfig,componentContext,function() {
+					doneLoadingFormDataFunc()
+		})		
+
 	})
 	
 }

@@ -5,7 +5,7 @@ function loadDashboardData(loadDashboardConfig)
 	
 	var dashboardLayoutSelector = '#dashboardCanvas'
 	
-	function initBarChartLayout($componentRow,barChartData) {
+	function initBarChartLayout($componentRow,barChartData,initDoneCallback) {
 		
 		
 		var barChartHTML = barChartContainerHTML();
@@ -19,10 +19,11 @@ function loadDashboardData(loadDashboardConfig)
 		
 		initBarChartData(dashboardID,$barChartElem, barChartData);	
 		
-		loadDashboardConfig.initBarChartComponent($barChartElem,barChartData.barChart)	
+		loadDashboardConfig.initBarChartComponent($barChartElem,barChartData.barChart)
+		initDoneCallback()
 	}
 
-	function initSummaryTableLayout($componentRow,summaryTableData) {
+	function initSummaryTableLayout($componentRow,summaryTableData,initDoneCallback) {
 		
 		var summaryTableHTML = summaryTableComponentHTML(summaryTableData.summaryTableID);
 		var $summaryTableElem = $(summaryTableHTML)
@@ -36,10 +37,11 @@ function loadDashboardData(loadDashboardConfig)
 		initComponentHelpPopupButton($summaryTableElem, summaryTableData.summaryTable)	
 		
 		loadDashboardConfig.initSummaryTableComponent($summaryTableElem,summaryTableData.summaryTable)
+		initDoneCallback()
 	}
 
 
-	function initHeaderLayout($componentRow,header) {
+	function initHeaderLayout($componentRow,header,initDoneCallback) {
 		
 		var headerHTML = dashboardHeaderContainerHTML(header.headerID);
 		var $header = $(headerHTML)
@@ -52,10 +54,11 @@ function loadDashboardData(loadDashboardConfig)
 		setElemFixedWidthFlexibleHeight($header,header.properties.geometry.sizeWidth)
 				
 		loadDashboardConfig.initHeaderComponent($header,header)
+		initDoneCallback()
 	}
 
 
-	function initGaugeLayout($componentRow,gaugeData) {
+	function initGaugeLayout($componentRow,gaugeData,initDoneCallback) {
 		
 		var gaugeHTML = dashboardGaugeContainerHTML(gaugeData.gaugeID);
 		var $gauge = $(gaugeHTML)
@@ -73,9 +76,10 @@ function loadDashboardData(loadDashboardConfig)
 		setElemFixedWidthFlexibleHeight($gauge,gaugeRef.properties.geometry.sizeWidth)
 				
 		loadDashboardConfig.initGaugeComponent($gauge,gaugeRef)
+		initDoneCallback()
 	}
 
-	function initSummaryValLayout($componentRow,summaryValData) {
+	function initSummaryValLayout($componentRow,summaryValData,initDoneCallback) {
 		
 		var summaryValHTML = dashboardSummaryValContainerHTML(summaryValData.summaryValID);
 		var $summaryVal = $(summaryValHTML)
@@ -92,6 +96,7 @@ function loadDashboardData(loadDashboardConfig)
 		setElemFixedWidthFlexibleHeight($summaryVal,summaryValRef.properties.geometry.sizeWidth)
 				
 		loadDashboardConfig.initSummaryValComponent($summaryVal,summaryValRef)
+		initDoneCallback()
 	}
 	
 	// Load the dashboard data
@@ -149,9 +154,11 @@ function loadDashboardData(loadDashboardConfig)
 		var dashboardLayout = dashboardData.dashboard.properties.layout
 		var $parentLayout = $(dashboardLayoutSelector)
 		
-		populateComponentLayout(dashboardLayout,$parentLayout,compenentIDComponentMap)
+		populateComponentLayout(dashboardLayout,$parentLayout,compenentIDComponentMap,function() {
+				loadDashboardConfig.doneLoadingDashboardDataFunc()
+		})
 		
-		loadDashboardConfig.doneLoadingDashboardDataFunc()
+
 						
 	}) // getData
 	
