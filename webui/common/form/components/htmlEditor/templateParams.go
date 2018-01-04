@@ -12,7 +12,6 @@ import (
 
 type HTMLEditorDesignTemplateParams struct {
 	ElemPrefix               string
-	FormatPanelParams        propertiesSidebar.PanelTemplateParams
 	ValidationPanelParams    propertiesSidebar.PanelTemplateParams
 	NewComponentDialogParams newFormElemDialog.TemplateParams
 	LabelPanelParams         label.LabelPropertyTemplateParams
@@ -40,7 +39,6 @@ func init() {
 			PanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Label", PanelID: "htmlEditorLabel"}},
 		DeletePanelParams:     delete.NewDeletePropertyPanelTemplateParams(elemPrefix, "editorDelete", "Delete Editor"),
 		HelpPopupParams:       inputProperties.NewHelpPopupTemplateParams(elemPrefix, "htmlEditorHelp"),
-		FormatPanelParams:     propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Format", PanelID: "htmlEditorFormat"},
 		ValidationPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Input Validation", PanelID: "htmlEditorValidation"},
 		VisibilityPanelParams: visibility.NewComponentVisibilityTempalteParams(elemPrefix, "editorVisibility"),
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "editorPerms"),
