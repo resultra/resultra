@@ -37,7 +37,7 @@ function loadRecordIntoSelection(selectionElem, recordRef) {
 	
 }
 
-function initSelectionRecordEditBehavior($selectionContainer,componentContext,recordProxy, selectionObjectRef) {
+function initSelectionRecordEditBehavior($selectionContainer,componentContext,recordProxy, selectionObjectRef,initDoneCallback) {
 	
 	$selectionContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoSelection
@@ -46,20 +46,6 @@ function initSelectionRecordEditBehavior($selectionContainer,componentContext,re
 	var $selectionControl = selectionFormControlFromSelectionFormComponent($selectionContainer)
 	
 		
-	// Populate the selection with values from the value list.
-	$selectionControl.empty()
-	$selectionControl.append(defaultSelectOptionPromptHTML("Select a Value"))
-	var valueListID = selectionObjectRef.properties.valueListID
-	if (valueListID !== undefined && valueListID !== null) {
-		var getValListParams = { valueListID: valueListID }
-		jsonAPIRequest("valueList/get",getValListParams,function(valListInfo) {
-			var values = valListInfo.properties.values
-			for(var valIndex = 0; valIndex < values.length; valIndex++) {
-				var val = values[valIndex]
-				$selectionControl.append(selectOptionHTML(val.textValue,val.textValue))
-			}					
-		})
-	}
 	
 	// When the user clicks on the control, prevent the click from propagating higher.
 	// This allows the user to change the rating without selecting the form component itself.
@@ -129,6 +115,26 @@ function initSelectionRecordEditBehavior($selectionContainer,componentContext,re
 			}		
 		}	
 	})
+	
+	// Populate the selection with values from the value list. Initialization of the selection when 
+	// in view mode happens asynchronously, since the value list is retrieved from the server. 
+	// This value list must be in place before any records are loaded into the control. 
+	$selectionControl.empty()
+	$selectionControl.append(defaultSelectOptionPromptHTML("Select a Value"))
+	var valueListID = selectionObjectRef.properties.valueListID
+	if (valueListID !== undefined && valueListID !== null) {
+		var getValListParams = { valueListID: valueListID }
+		jsonAPIRequest("valueList/get",getValListParams,function(valListInfo) {
+			var values = valListInfo.properties.values
+			for(var valIndex = 0; valIndex < values.length; valIndex++) {
+				var val = values[valIndex]
+				$selectionControl.append(selectOptionHTML(val.textValue,val.textValue))
+			}
+			initDoneCallback()					
+		})
+	} else {
+		initDoneCallback()
+	}
 	
 	
 }

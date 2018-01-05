@@ -43,8 +43,10 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 			initFormComponentViewBehavior($numberInput,
 					numberInputObjectRef.numberInputID,initNumberInputViewProperties)
 		},
-		initSelectionFunc: function(componentContext,$selection,selectionObjectRef) {			
-			initSelectionRecordEditBehavior($selection,componentContext,recordProxy,selectionObjectRef)
+		initSelectionFunc: function(componentContext,$selection,selectionObjectRef,initDoneCallback) {			
+			initSelectionRecordEditBehavior($selection,componentContext,recordProxy,selectionObjectRef,function() {
+				initDoneCallback()
+			})
 			initFormComponentViewBehavior($selection,
 					selectionObjectRef.selectionID,initSelectionViewProperties)
 		},

@@ -285,8 +285,10 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext,fo
 		setContainerComponentInfo(containerObj,selection,selection.selectionID)
 	
 		// Callback for any specific initialization for either the form design or view mode
-		loadFormConfig.initSelectionFunc(componentContext,containerObj,selection)
-		initDoneCallback()
+		loadFormConfig.initSelectionFunc(componentContext,containerObj,selection,function() {
+				initDoneCallback()
+		})
+
 		
 	}
 

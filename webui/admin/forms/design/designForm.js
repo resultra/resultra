@@ -138,9 +138,11 @@ $(document).ready(function() {
 			var componentIDs = { formID: formID, componentID: numberInputObjectRef.numberInputID }
 			initFormComponentDesignBehavior($numberInput,componentIDs,numberInputObjectRef,numberInputDesignFormConfig,designFormLayoutConfig)
 		},
-		initSelectionFunc: function(componentContext,$selection,selectionObjectRef) {
+		initSelectionFunc: function(componentContext,$selection,selectionObjectRef,initDoneCallback) {
 			var componentIDs = { formID: formID, componentID: selectionObjectRef.selectionID }
-			initFormComponentDesignBehavior($selection,componentIDs,selectionObjectRef,selectionDesignFormConfig,designFormLayoutConfig)
+			initFormComponentDesignBehavior($selection,componentIDs,
+						selectionObjectRef,selectionDesignFormConfig,designFormLayoutConfig)
+			initDoneCallback()
 		},
 		initCheckBoxFunc: function(componentContext,$checkBox,checkBoxObjectRef) {
 			var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
