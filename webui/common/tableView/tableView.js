@@ -84,7 +84,7 @@ function initItemListTableView(params) {
 					currUserInfo: tableContext.currUserInfo
 				}
 				
-				initContainerFunc(colInfo, $cellContainer, tableContext,recordProxy,componentContext)
+				initContainerFunc(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData)
 								
 				var viewConfig = $cellContainer.data("viewFormConfig")
 				viewConfig.loadRecord($cellContainer,recordProxy.getRecordFunc())
@@ -105,7 +105,7 @@ function initItemListTableView(params) {
 	
 	function createNumberInputColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.numberInputID)
 			initNumberInputTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
@@ -116,7 +116,7 @@ function initItemListTableView(params) {
 
 	function createUserSelectionColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.userSelectionID)
 			initUserSelectionTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
@@ -127,7 +127,7 @@ function initItemListTableView(params) {
 	
 	function createUserTagColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.userTagID)
 			initUserTagTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
@@ -138,7 +138,7 @@ function initItemListTableView(params) {
 
 	function createTagColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.tagID)
 			initLabelTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
@@ -150,7 +150,7 @@ function initItemListTableView(params) {
 
 	function createSocialButtonColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.socialButtonID)
 			initSocialButtonTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
@@ -160,8 +160,27 @@ function initItemListTableView(params) {
 
 	function createTextInputColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
-				setContainerComponentInfo($cellContainer,colInfo,colInfo.textInputID)
+		// Function to dynamically return the width of the text: per the following:
+		// https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript
+		function getTextWidth(text, font) {
+		    // re-use canvas object for better performance
+		    var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+		    var context = canvas.getContext("2d");
+		    context.font = font;
+		    var metrics = context.measureText(text);
+		    return metrics.width;
+		}
+		
+		
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
+				// DataTables will work around the min-width property of the text input column when automatically sizing
+				// the columns. Where cellData is the text of each individual column, the min-width is set to the length
+				// of the text. This works fairly well. However, this heuristic may need some fine tuning.
+				setContainerComponentInfo($cellContainer,colInfo,colInfo.textInputID)			
+				var minWidth = getTextWidth(cellData, "12pt arial")
+				if (minWidth > 450) { minWidth = 450 } // Constrain minimum width to a maximum value
+				var minWidthPx = minWidth + "px"
+				$cellContainer.css("min-width",minWidthPx)
 				initTextBoxRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
@@ -171,7 +190,7 @@ function initItemListTableView(params) {
 
 	function createEmailAddrColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 				setContainerComponentInfo($cellContainer,colInfo,colInfo.emailAddrID)
 				initEmailAddrTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
@@ -181,7 +200,7 @@ function initItemListTableView(params) {
 	
 	function createFileColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $file, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $file, tableContext,recordProxy,componentContext,cellData) {
 				setContainerComponentInfo($file,colInfo,colInfo.fileID)
 				initFileTableRecordEditBehavior($file,componentContext,recordProxy, colInfo)
 		}
@@ -191,7 +210,7 @@ function initItemListTableView(params) {
 	
 	function createImageColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $image, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $image, tableContext,recordProxy,componentContext,cellData) {
 				setContainerComponentInfo($image,colInfo,colInfo.imageID)
 				initImageTableRecordEditBehavior($image,componentContext,recordProxy, colInfo)
 		}
@@ -201,7 +220,7 @@ function initItemListTableView(params) {
 	
 	function createUrlLinkColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 				setContainerComponentInfo($cellContainer,colInfo,colInfo.urlLinkID)
 				initUrlLinkTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
@@ -212,7 +231,7 @@ function initItemListTableView(params) {
 
 	function createNoteColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 				setContainerComponentInfo($cellContainer,colInfo,colInfo.noteID)
 				initNoteEditorTableCellEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
@@ -222,7 +241,7 @@ function initItemListTableView(params) {
 
 	function createCommentColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 				setContainerComponentInfo($cellContainer,colInfo,colInfo.noteID)
 				initCommentBoxTableViewRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
@@ -233,7 +252,7 @@ function initItemListTableView(params) {
 
 	function createAttachmentColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 				setContainerComponentInfo($cellContainer,colInfo,colInfo.noteID)
 				initAttachmentTableViewRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
@@ -243,7 +262,7 @@ function initItemListTableView(params) {
 	
 	function createDateInputColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
 			initTableViewDatePickerEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
@@ -253,7 +272,7 @@ function initItemListTableView(params) {
 
 	function createCheckboxColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
 			initTableViewCheckboxEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
@@ -263,7 +282,7 @@ function initItemListTableView(params) {
 
 	function createFormButtonColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
 			
 			setFormButtonSize($cellContainer,colInfo.properties.size)
@@ -286,7 +305,7 @@ function initItemListTableView(params) {
 
 	function createToggleColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.toggleID)
 			
 			initToggleTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
@@ -298,7 +317,7 @@ function initItemListTableView(params) {
 
 	function createRatingColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.ratingID)
 			initRatingTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
@@ -309,7 +328,7 @@ function initItemListTableView(params) {
 	
 	function createProgressColDef(colInfo,tableContext) {
 		
-		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext) {
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.progressID)
 			initProgressRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
@@ -449,6 +468,7 @@ function initItemListTableView(params) {
 			searching:false, // Hide the search box
 			paging:true, // pagination must be enabled for pageResize plug-in
 			pageLength:1,
+			autoWidth:true, // needed to dynamically resize columns around the CSS of the individual cells
 			lengthChange:true,  // needed for pageResize plug-in
 			deferRender:true, // only create elements when required (needed with paging)
 			columns:dataCols
