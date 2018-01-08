@@ -46,8 +46,8 @@
 }
 
 .ratingTableCellContainer {
-	min-width:165px;
-	width: 165px;
+	min-width:100px;
+	width: 100%;
 	height: auto
 }
 

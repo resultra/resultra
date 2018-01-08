@@ -134,6 +134,12 @@ function initRatingFormComponentControl($container,ratingObjectRef) {
 	
 }
 
+function ratingControlMinWidth(ratingObjectRef) {
+	var numStars = ratingObjectRef.properties.maxVal - ratingObjectRef.properties.minVal
+	var minWidth = 30 * numStars + 20
+	return minWidth
+}
+
 
 /* There isn't a method (that I know of) to re-initialize a rating container. So, to re-initialize,
    the rating control, the DOM elements need to be cleared out and re-initialized. */

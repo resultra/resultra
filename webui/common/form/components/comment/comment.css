@@ -62,3 +62,8 @@
 	min-width:250px;
 	min-height: 250px;
 }
+
+.commentEditTableCell a {
+	padding-left: 6px;
+	padding-right:6px;
+}

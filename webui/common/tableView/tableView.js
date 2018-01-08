@@ -31,8 +31,26 @@ function initItemListTableView(params) {
 		this.updateRecordFunc = updateCurrentRecord
 	}
 	
+	function calcMinHeaderWidth(minColWidth) {
+		var minHeaderWidth = minColWidth - 2 * 10 + 2 // subtract off margins and padding (22px overall)
+		return minHeaderWidth
+	}
+	
+	function setColMinWidth(columnID, minColWidth) {
+		var $colHeader = params.$tableContainer.find("[data-columnid='" + columnID + "']");
+		var currWidth = $colHeader.attr('data-col-width')
+		
+		var minHeaderWidth = calcMinHeaderWidth(minColWidth)
+		if (minHeaderWidth > currWidth) {
+			var minWidthPx = minHeaderWidth + "px"
+			$colHeader.css('width',minWidthPx)
+			$colHeader.attr('data-col-width',minHeaderWidth)				
+		}
+		
+	}
+	
 	function createTableViewColDef(colInfo,tableContext,
-				renderCellHTMLFunc,initContainerFunc) {
+				renderCellHTMLFunc,initContainerFunc,widthPx) {
 					
 		function columnSortType(colInfo,fieldsByID) {	
 			function dataColSortType(colInfo,fieldsByID) {
@@ -99,6 +117,11 @@ function initItemListTableView(params) {
 			}
 		}
 		
+		if (widthPx !== undefined) {
+			var headerWidth = calcMinHeaderWidth(widthPx)
+			colDef.width = headerWidth + 'px'
+		}
+		
 		return colDef
 	}
 	
@@ -110,7 +133,7 @@ function initItemListTableView(params) {
 			initNumberInputTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				numberInputTableCellContainerHTML,initContainer)
+				numberInputTableCellContainerHTML,initContainer,100)
 	}
 
 
@@ -121,7 +144,7 @@ function initItemListTableView(params) {
 			initUserSelectionTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				userSelectionTableCellContainerHTML,initContainer)
+				userSelectionTableCellContainerHTML,initContainer,150)
 	}
 	
 	
@@ -132,7 +155,7 @@ function initItemListTableView(params) {
 			initUserTagTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				userTagTableCellContainerHTML,initContainer)
+				userTagTableCellContainerHTML,initContainer,150)
 	}
 
 
@@ -143,7 +166,7 @@ function initItemListTableView(params) {
 			initLabelTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				labelTableCellContainerHTML,initContainer)
+				labelTableCellContainerHTML,initContainer,150)
 	}
 	
 	
@@ -155,7 +178,7 @@ function initItemListTableView(params) {
 			initSocialButtonTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				socialButtonTableCellContainerHTML,initContainer)
+				socialButtonTableCellContainerHTML,initContainer,150)
 	}
 
 	function createTextInputColDef(colInfo,tableContext) {
@@ -172,19 +195,22 @@ function initItemListTableView(params) {
 		}
 		
 		
+		
 		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 				// DataTables will work around the min-width property of the text input column when automatically sizing
 				// the columns. Where cellData is the text of each individual column, the min-width is set to the length
 				// of the text. This works fairly well. However, this heuristic may need some fine tuning.
-				setContainerComponentInfo($cellContainer,colInfo,colInfo.textInputID)			
+				setContainerComponentInfo($cellContainer,colInfo,colInfo.textInputID)
+						
 				var minWidth = getTextWidth(cellData, "12pt arial")
+				minWidth = minWidth + 20 // for cell padding	
 				if (minWidth > 450) { minWidth = 450 } // Constrain minimum width to a maximum value
-				var minWidthPx = minWidth + "px"
-				$cellContainer.css("min-width",minWidthPx)
+				setColMinWidth(colInfo.columnID,minWidth)
+				
 				initTextBoxRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				textBoxTableViewContainerHTML,initContainer)
+				textBoxTableViewContainerHTML,initContainer,100)
 	}
 
 
@@ -195,7 +221,7 @@ function initItemListTableView(params) {
 				initEmailAddrTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				emailAddrTableViewContainerHTML,initContainer)
+				emailAddrTableViewContainerHTML,initContainer,150)
 	}
 	
 	function createFileColDef(colInfo,tableContext) {
@@ -205,7 +231,7 @@ function initItemListTableView(params) {
 				initFileTableRecordEditBehavior($file,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				fileTableViewContainerHTML,initContainer)
+				fileTableViewContainerHTML,initContainer,150)
 	}
 	
 	function createImageColDef(colInfo,tableContext) {
@@ -215,7 +241,7 @@ function initItemListTableView(params) {
 				initImageTableRecordEditBehavior($image,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				imageTableViewContainerHTML,initContainer)
+				imageTableViewContainerHTML,initContainer,150)
 	}
 	
 	function createUrlLinkColDef(colInfo,tableContext) {
@@ -225,7 +251,7 @@ function initItemListTableView(params) {
 				initUrlLinkTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				urlLinkTableViewContainerHTML,initContainer)
+				urlLinkTableViewContainerHTML,initContainer,150)
 	}
 
 
@@ -236,7 +262,7 @@ function initItemListTableView(params) {
 				initNoteEditorTableCellEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				noteEditorTableViewCellContainerHTML,initContainer)
+				noteEditorTableViewCellContainerHTML,initContainer,150)
 	}
 
 	function createCommentColDef(colInfo,tableContext) {
@@ -246,7 +272,7 @@ function initItemListTableView(params) {
 				initCommentBoxTableViewRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				commentBoxTableViewContainerHTML,initContainer)
+				commentBoxTableViewContainerHTML,initContainer,125)
 	}
 
 
@@ -257,17 +283,17 @@ function initItemListTableView(params) {
 				initAttachmentTableViewRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				attachmentTableViewContainerHTML,initContainer)
+				attachmentTableViewContainerHTML,initContainer,150)
 	}
 	
 	function createDateInputColDef(colInfo,tableContext) {
 		
 		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.datePickerID)
-			initTableViewDatePickerEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+			initTableViewDatePickerEditBehavior($cellContainer,componentContext,recordProxy, colInfo)			
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				datePickerTableViewCellContainerHTML,initContainer)
+				datePickerTableViewCellContainerHTML,initContainer,100)
 	}
 
 	function createCheckboxColDef(colInfo,tableContext) {
@@ -277,7 +303,7 @@ function initItemListTableView(params) {
 			initTableViewCheckboxEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				checkBoxTableViewCellContainerHTML,initContainer)
+				checkBoxTableViewCellContainerHTML,initContainer,100)
 	}
 
 	function createFormButtonColDef(colInfo,tableContext) {
@@ -295,10 +321,10 @@ function initItemListTableView(params) {
 			var defaultValSrc = "col="+colInfo.columnID
 			
 			initFormButtonRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo,defaultValSrc,
-					loadFormViewComponents,loadRecordIntoFormLayout)
+					loadFormViewComponents,loadRecordIntoFormLayout,100)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				formButtonTableCellContainerHTML,initContainer)
+				formButtonTableCellContainerHTML,initContainer,100)
 	}
 
 
@@ -311,7 +337,7 @@ function initItemListTableView(params) {
 			initToggleTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				toggleTableCellContainerHTML,initContainer)
+				toggleTableCellContainerHTML,initContainer,100)
 	}
 
 
@@ -321,8 +347,11 @@ function initItemListTableView(params) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.ratingID)
 			initRatingTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
+		
+		var minWidth = ratingControlMinWidth(colInfo)
+		
 		return createTableViewColDef(colInfo,tableContext,
-				ratingTableCellContainerHTML,initContainer)
+				ratingTableCellContainerHTML,initContainer,minWidth)
 	}
 	
 	
@@ -332,7 +361,7 @@ function initItemListTableView(params) {
 			setContainerComponentInfo($cellContainer,colInfo,colInfo.progressID)
 			initProgressRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
-		return createTableViewColDef(colInfo,tableContext,progressTableCellContainerHTML,initContainer)
+		return createTableViewColDef(colInfo,tableContext,progressTableCellContainerHTML,initContainer,100)
 	}
 
 	
@@ -440,7 +469,11 @@ function initItemListTableView(params) {
 				if(colInfo.properties.helpPopupMsg !== undefined) {
 					$header.append(componentHelpPopupButtonHTML())
 					initComponentHelpPopupButton($header,colInfo,"auto bottom")
-				}					
+				}
+				
+				$header.attr('data-columnid',colInfo.columnID)	
+				$header.attr('data-col-width',100)
+								
 				
 				$headerRow.append($header)
 			})
@@ -454,6 +487,7 @@ function initItemListTableView(params) {
 		params.$tableContainer.empty()
 		
 		var $tableElem = $('<table class="table table-hover table-bordered display tableView"></table>')
+		$tableElem.css("table-layout","fixed")
 		$tableElem.append(tableHeader())
 		params.$tableContainer.append($tableElem)
 		
@@ -468,7 +502,8 @@ function initItemListTableView(params) {
 			searching:false, // Hide the search box
 			paging:true, // pagination must be enabled for pageResize plug-in
 			pageLength:1,
-			autoWidth:true, // needed to dynamically resize columns around the CSS of the individual cells
+//			autoWidth:true, // needed to dynamically resize columns around the CSS of the individual cells
+			autoWidth:false,
 			lengthChange:true,  // needed for pageResize plug-in
 			deferRender:true, // only create elements when required (needed with paging)
 			columns:dataCols
@@ -546,7 +581,7 @@ function initItemListTableView(params) {
 			if (rowsRemainder <= 10) { pageLen-- }
 			dataTable.page.len(pageLen)
 			
-			
+			dataTable.columns.adjust()
 			dataTable.draw() // force redraw
 		}
 		
@@ -580,7 +615,9 @@ function initItemListTableView(params) {
 			drawInProgress = true
 			dataTable.clear()
 			setSortOrder(sortRules)
+			// TODO - Since the table is redrawn with the new data, iterate through the data to dymanically resize the columns.
 			dataTable.rows.add(recordData)
+			dataTable.columns.adjust()
 			dataTable.draw()
 		}
 		

@@ -17,6 +17,11 @@
 	display:none;
 }
 
+#tableViewContainer th {
+	padding-left:10px;
+	padding-right:10px;
+}
+
 /* #tableViewContainer needs to fill the entire center div. This has to do with the DataTables resize plugin
    which in-turn resizes the table fit it's entire prent div.  */  
 #tableViewContainer {
