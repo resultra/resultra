@@ -262,7 +262,7 @@ function initItemListTableView(params) {
 				initNoteEditorTableCellEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				noteEditorTableViewCellContainerHTML,initContainer,150)
+				noteEditorTableViewCellContainerHTML,initContainer,100)
 	}
 
 	function createCommentColDef(colInfo,tableContext) {
