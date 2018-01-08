@@ -1,7 +1,7 @@
 function urlLinkContainerInputControl() {
 		
 	return '<div class="input-group">'+
-				'<div class="form-control-static urlLinkDisplayContainer">' +
+				'<div class="formInputStaticInputContainer urlLinkDisplayContainer">' +
 					'<a class="urlLinkDisplay"></a>' +
 				'</div>' + 
 				'<span class="input-group-addon urlLinkEditLinkButton">' +
@@ -63,3 +63,23 @@ function initUrlLinkFormComponentContainer($container,urlLinkRef) {
 	initUrlLinkClearValueControl($container, urlLinkRef)
 	initComponentHelpPopupButton($container, urlLinkRef)
 }
+
+
+function calcURLMinTableCellColWidth(urlLinkRef,urlText) {
+	
+	var addrWidth = calcTextWidth(urlText)
+	var paddingWidth = 10
+	
+	var addonWidth = 26
+	if(formComponentIsReadOnly(urlLinkRef.properties.permissions)) { addonWidth +=26  }
+	
+	if (clearValueControlIsEnabled(urlLinkRef)) {
+		addonWidth += 17
+	}
+	
+	var unconstrainedWidth = addrWidth + paddingWidth + addonWidth
+	
+	return calcContrainedPxVal(unconstrainedWidth,300,400)
+}
+
+

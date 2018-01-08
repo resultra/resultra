@@ -212,7 +212,7 @@ function initItemListTableView(params) {
 				initEmailAddrTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				emailAddrTableViewContainerHTML,initContainer,150)
+				emailAddrTableViewContainerHTML,initContainer,200)
 	}
 	
 	function createFileColDef(colInfo,tableContext) {
@@ -239,10 +239,14 @@ function initItemListTableView(params) {
 		
 		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 				setContainerComponentInfo($cellContainer,colInfo,colInfo.urlLinkID)
+			
+				var minColWidth = calcURLMinTableCellColWidth(colInfo,cellData)
+				setColMinWidth(colInfo.columnID,minColWidth)
+			
 				initUrlLinkTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				urlLinkTableViewContainerHTML,initContainer,150)
+				urlLinkTableViewContainerHTML,initContainer,300)
 	}
 
 

@@ -36,33 +36,7 @@
 
 .emailAddrDisplayContainer {
 	max-width:325px;
-	overflow:hidden;
-	border: 1px solid lightGrey;
-	background-color: white;
 }
-
-/* Limit URL text to one line and hide the overflow.
-   This is needed for table view columns which must be a fixed height.
-   Uses this solution: https://stackoverflow.com/questions/1318108/css-limit-element-to-1-line
- */ 
-.emailAddrDisplayContainer a {
-	padding-left:5px;
-	padding-right:5px;
-	white-space:nowrap;
-	display:block;
-	overflow:hidden;
-	text-overflow: ellipsis;
-}
-
-.emailAddrTableCellComponent .emailAddrDisplayContainer {
-	/* When the email address is displayed in a table view, limit the overall width of 
-	 the display container to 350px for the text itself (see container.js), 10px for padding,
-	 then 2 pixels for border.
-	TODO - This width needs to be set dynamically for each column - if an edited email address exceeds the width of the parent container, it
-	will cause the display to extend beyond the table cell. */
-	max-width:355px;
-}
-
 
 .emailAddrPopupContainer {
 	width:100%;

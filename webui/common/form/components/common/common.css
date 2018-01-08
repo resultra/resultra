@@ -9,5 +9,20 @@
 	padding-top: 7px;
 	padding-bottom: 7px;
 	margin-bottom:0;
-	min-height: 34px;
+	background-color: white;
+	min-height: 34px !important;
+}
+
+/* Limit URL text to one line and hide the overflow.
+   This is needed for table view columns which must be a fixed height.
+   Uses this solution: https://stackoverflow.com/questions/1318108/css-limit-element-to-1-line
+ */ 
+
+.formInputStaticInputContainer a {
+	padding-left:5px;
+	padding-right:5px;
+	white-space:nowrap;
+	display:block;
+	overflow:hidden;
+	text-overflow: ellipsis;
 }

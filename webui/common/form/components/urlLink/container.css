@@ -9,7 +9,6 @@
 .urlLinkTableCellComponent
 {
 	min-width: 150px;
-	max-width:400px;
 	width:100%;
 }
 
@@ -42,21 +41,6 @@
 .urlLinkDisplayContainer {
 	max-width:325px;
 	overflow:hidden;
-	border: 1px solid lightGrey;
-	background-color: white;
-}
-
-/* Limit URL text to one line and hide the overflow.
-   This is needed for table view columns which must be a fixed height.
-   Uses this solution: https://stackoverflow.com/questions/1318108/css-limit-element-to-1-line
- */ 
-.urlLinkDisplayContainer a {
-	padding-left:5px;
-	padding-right:5px;
-	white-space:nowrap;
-	display:block;
-	overflow:hidden;
-	text-overflow: ellipsis;
 }
 
 .urlLinkPopupContainer {
