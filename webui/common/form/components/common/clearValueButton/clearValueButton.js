@@ -39,36 +39,29 @@ function smallClearComponentValHeaderButton(className) {
 	return buttonHTML
 }
 
-
+function clearValueControlIsEnabled(controlRef) {
+	var fieldID = controlRef.properties.fieldID
+	var fieldRef = getFieldRef(fieldID)
+	if(fieldRef.isCalcField) {
+		return false
+	}
+	if(formComponentIsReadOnly(controlRef.properties.permissions)) {
+		return false
+	}
+	if(controlRef.properties.clearValueSupported) {
+		return true
+	}
+	return false
+	
+}
 
 
 function initClearValueControl($container,controlRef,buttonClassName) {
 	var $clearValueButton = $container.find(buttonClassName)
-	var fieldID = controlRef.properties.fieldID
 	
-	function hideClearValueButton() {
-		$clearValueButton.css("display","none")
-	}
-	
-	function showClearValueButton() {
+	if (clearValueControlIsEnabled(controlRef)) {
 		$clearValueButton.css("display","")
-	}
-	
-	
-	var fieldRef = getFieldRef(fieldID)
-	if(fieldRef.isCalcField) {
-		hideClearValueButton()
-		return
-	}
-	
-	if(formComponentIsReadOnly(controlRef.properties.permissions)) {
-		hideClearValueButton()
 	} else {
-		if(controlRef.properties.clearValueSupported) {
-			showClearValueButton()
-		} else {
-			hideClearValueButton()
-		}
-	}
-	
+		$clearValueButton.css("display","none")
+	}	
 }

@@ -336,8 +336,11 @@ function initItemListTableView(params) {
 			
 			initToggleTableCellRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
+		
+		var minColWidth = calcToggleFormControlMinTableCellWidth(colInfo)
+		
 		return createTableViewColDef(colInfo,tableContext,
-				toggleTableCellContainerHTML,initContainer,100)
+				toggleTableCellContainerHTML,initContainer,minColWidth)
 	}
 
 
