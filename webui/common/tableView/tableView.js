@@ -180,21 +180,8 @@ function initItemListTableView(params) {
 		return createTableViewColDef(colInfo,tableContext,
 				socialButtonTableCellContainerHTML,initContainer,150)
 	}
-
+	
 	function createTextInputColDef(colInfo,tableContext) {
-		
-		// Function to dynamically return the width of the text: per the following:
-		// https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript
-		function getTextWidth(text, font) {
-		    // re-use canvas object for better performance
-		    var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-		    var context = canvas.getContext("2d");
-		    context.font = font;
-		    var metrics = context.measureText(text);
-		    return metrics.width;
-		}
-		
-		
 		
 		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 				// DataTables will work around the min-width property of the text input column when automatically sizing
@@ -202,7 +189,7 @@ function initItemListTableView(params) {
 				// of the text. This works fairly well. However, this heuristic may need some fine tuning.
 				setContainerComponentInfo($cellContainer,colInfo,colInfo.textInputID)
 						
-				var minWidth = getTextWidth(cellData, "12pt arial")
+				var minWidth = calcTextWidth(cellData)
 				minWidth = minWidth + 20 // for cell padding	
 				if (minWidth > 450) { minWidth = 450 } // Constrain minimum width to a maximum value
 				setColMinWidth(colInfo.columnID,minWidth)
@@ -218,6 +205,10 @@ function initItemListTableView(params) {
 		
 		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
 				setContainerComponentInfo($cellContainer,colInfo,colInfo.emailAddrID)
+			
+				var minColWidth = calcEmailAddrMinTableCellColWidth(colInfo,cellData)
+				setColMinWidth(colInfo.columnID,minColWidth)
+			
 				initEmailAddrTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,

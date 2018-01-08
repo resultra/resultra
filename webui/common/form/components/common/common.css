@@ -1,0 +1,13 @@
+
+
+/* Mix-in class for URLs, email addresses and other types of information which need to be displayed
+   inside a box with a form-like appearance that works with Bootstrap input groups */
+.formInputStaticInputContainer {
+	display:table-cell;
+	width:100%;
+	border: 1px solid lightGray;
+	padding-top: 7px;
+	padding-bottom: 7px;
+	margin-bottom:0;
+	min-height: 34px;
+}

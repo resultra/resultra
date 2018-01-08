@@ -158,8 +158,32 @@ function initCheckboxChangeHandler(checkboxSelector, initialVal, handlerFunc) {
 	initCheckboxControlChangeHandler($checkbox,initialVal, handlerFunc)
 }
 
+function calcContrainedPxVal(val, minVal,maxVal) {
+	var roundedVal = Math.round(val)
+	if(roundedVal > maxVal) {
+		return maxVal
+	} else if (roundedVal < minVal) {
+		return minVal
+	} else {
+		return roundedVal
+	}
+}
 
+// Function to dynamically return the width of the text: per the following:
+// https://stackoverflow.com/questions/118241/calculate-text-width-with-javascript
+function calcTextWidth(text) {
+    var canvas = calcTextWidth.canvas || (calcTextWidth.canvas = document.createElement("canvas"));
+    var context = canvas.getContext("2d");
+	var font = "12pt arial"
+    context.font = font;
+    var metrics = context.measureText(text);
+    return metrics.width;
+}
 
+function calcConstrainedTextWidth(text,minWidth, maxWidth) {
+	var unconstrainedWidth = calcTextWidth(text)
+	return calcContrainedPxVal(unconstrainedWidth,minWidth,maxWidth)
+}
 
 
 function insertTextAreaAtCursor(elem, newText) {

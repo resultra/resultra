@@ -1,7 +1,7 @@
 function emailAddrContainerInputControl() {
 
 	return '<div class="input-group">'+
-				'<div class="form-control-static emailAddrDisplayContainer">' +
+				'<div class="formInputStaticInputContainer emailAddrDisplayContainer">' +
 					'<a class="emailAddrDisplay"></a>' +
 				'</div>' + 
 				'<span class="input-group-addon emailAddrEditLinkButton">' +
@@ -71,6 +71,23 @@ function initEmailAddrEditAddrControl($emailAddrContainer, emailAddrRef) {
 		$editAddrButton.css("display","")
 	}
 	
+}
+
+function calcEmailAddrMinTableCellColWidth(emailAddrRef,emailAddrText) {
+	
+	var addrWidth = calcTextWidth(emailAddrText)
+	var paddingWidth = 10
+	
+	var addonWidth = 26
+	if(formComponentIsReadOnly(emailAddrRef.properties.permissions)) { addonWidth +=26  }
+	
+	if (clearValueControlIsEnabled(emailAddrRef)) {
+		addonWidth += 17
+	}
+	
+	var unconstrainedWidth = addrWidth + paddingWidth + addonWidth
+	
+	return calcContrainedPxVal(unconstrainedWidth,250,400)
 }
 
 function initEmailAddrFormComponentContainer($container,emailAddrRef) {
