@@ -53,7 +53,7 @@ function imageTableViewContainerHTML() {
 	var containerHTML = ''+
 		'<div class="layoutContainer imageComponent imageTableCellComponent">' +
 			'<div class="input-group">'+
-				'<div class="form-control-static imageDisplayContainer">' +
+				'<div class="formInputStaticInputContainer">' +
 					'<a class="imageDisplay"></a>' +
 				'</div>' +
 				imageButton + 
