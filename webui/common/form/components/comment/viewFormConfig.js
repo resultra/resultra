@@ -298,7 +298,8 @@ function initCommentBoxTableViewRecordEditBehavior($commentContainer, componentC
 		html: 'true',
 		content: function() { return commentBoxTableViewEditContainerHTML() },
 		trigger: 'manual',
-		placement: 'auto left'
+		placement: 'auto left',
+		container:'body'
 	})
 	
 	$commentPopupLink.click(function(e) {

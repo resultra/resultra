@@ -215,7 +215,8 @@ function initNoteEditorTableCellEditBehavior($container,componentContext,recordP
 		html: 'true',
 		content: function() { return noteEditorTableViewContainerHTML() },
 		trigger: 'manual',
-		placement: 'auto left'
+		placement: 'auto left',
+		container:'body'
 	})
 	
 	$notePopupLink.click(function(e) {
