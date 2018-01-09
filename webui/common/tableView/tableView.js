@@ -194,7 +194,7 @@ function initItemListTableView(params) {
 				if (minWidth > 450) { minWidth = 450 } // Constrain minimum width to a maximum value
 				setColMinWidth(colInfo.columnID,minWidth)
 				
-				initTextBoxRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
+				initTextBoxRecordEditTableBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		
 		

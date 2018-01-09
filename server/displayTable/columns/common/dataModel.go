@@ -29,12 +29,12 @@ func GetTableColumn(trackerDBHandle *sql.DB, columnType string, parentTableID st
 		 WHERE table_id=$1 AND column_id=$2 AND type=$3 LIMIT 1`,
 		parentTableID, columnID, columnType).Scan(&encodedProps)
 	if getErr != nil {
-		return fmt.Errorf("GetTableViewColumn: Unabled to get table column %v: id = %v: datastore err=%v",
+		return fmt.Errorf("GetTableColumn: Unabled to get table column %v: id = %v: datastore err=%v",
 			columnType, columnID, getErr)
 	}
 
 	if decodeErr := generic.DecodeJSONString(encodedProps, properties); decodeErr != nil {
-		return fmt.Errorf("GetTableViewColumn: Unabled to decode properties: encoded properties = %v: datastore err=%v",
+		return fmt.Errorf("GetTableColumn: Unabled to decode properties: encoded properties = %v: datastore err=%v",
 			encodedProps, decodeErr)
 	}
 

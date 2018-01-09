@@ -73,7 +73,7 @@ func getTextInput(trackerDBHandle *sql.DB, parentTableID string, textInputID str
 
 	textInputProps := newDefaultTextInputProperties()
 	if getErr := common.GetTableColumn(trackerDBHandle, textInputEntityKind, parentTableID, textInputID, &textInputProps); getErr != nil {
-		return nil, fmt.Errorf("getCheckBox: Unable to retrieve text box: %v", getErr)
+		return nil, fmt.Errorf("getTextInput: Unable to retrieve text box: %v", getErr)
 	}
 
 	textInput := TextInput{

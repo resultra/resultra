@@ -1,29 +1,9 @@
 
 
 
-function initTextBoxRecordEditBehavior($container,componentContext,recordProxy, textFieldObjectRef) {
+function initTextBoxRecordEditBehavior($container,componentContext,recordProxy, textFieldObjectRef,validateTextBoxInput) {
 	
 	
-	var validateTextBoxInput = function(validationCompleteCallback) {
-		
-		if(checkboxComponentIsDisabled($container)) {
-			validationCompleteCallback(true)
-			return
-		}
-		
-		var $textBoxInput = $container.find('input')
-		
-		var currVal = $textBoxInput.val()
-		var validationParams = {
-			parentFormID: textFieldObjectRef.parentFormID,
-			textBoxID: textFieldObjectRef.textBoxID,
-			inputVal: currVal
-		}
-		jsonAPIRequest("frm/textBox/validateInput", validationParams, function(validationResult) {
-			setupFormComponentValidationPrompt($container,validationResult,validationCompleteCallback)			
-		})	
-		
-	}
 
 	function loadRecordIntoTextBox($textBoxContainer, recordRef) {
 	
@@ -172,5 +152,59 @@ function initTextBoxRecordEditBehavior($container,componentContext,recordProxy, 
 	});
 	initTextBoxFieldEditBehavior(componentContext, $container,$textBoxInput,
 			recordProxy, textFieldObjectRef)
+	
+}
+
+
+function initTextBoxRecordEditFormBehavior($container,componentContext,recordProxy, textFieldObjectRef) {
+	
+	var validateTextBoxInput = function(validationCompleteCallback) {
+		
+		if(checkboxComponentIsDisabled($container)) {
+			validationCompleteCallback(true)
+			return
+		}
+		
+		var $textBoxInput = $container.find('input')
+		
+		var currVal = $textBoxInput.val()
+		var validationParams = {
+			parentFormID: textFieldObjectRef.parentFormID,
+			textBoxID: textFieldObjectRef.textBoxID,
+			inputVal: currVal
+		}
+		jsonAPIRequest("frm/textBox/validateInput", validationParams, function(validationResult) {
+			setupFormComponentValidationPrompt($container,validationResult,validationCompleteCallback)			
+		})	
+		
+	}
+	initTextBoxRecordEditBehavior($container,componentContext,recordProxy, textFieldObjectRef,validateTextBoxInput)
+	
+}
+
+
+function initTextBoxRecordEditTableBehavior($container,componentContext,recordProxy, textFieldObjectRef) {
+	
+	var validateTextBoxInput = function(validationCompleteCallback) {
+		
+		if(checkboxComponentIsDisabled($container)) {
+			validationCompleteCallback(true)
+			return
+		}
+		
+		var $textBoxInput = $container.find('input')
+		
+		var currVal = $textBoxInput.val()
+		var validationParams = {
+			parentTableID: textFieldObjectRef.parentTableID,
+			textInputID: textFieldObjectRef.columnID,
+			inputVal: currVal
+		}
+		jsonAPIRequest("tableView/textInput/validateInput", validationParams, function(validationResult) {
+			setupFormComponentValidationPrompt($container,validationResult,validationCompleteCallback)			
+		})	
+		
+	}
+	initTextBoxRecordEditBehavior($container,componentContext,recordProxy, textFieldObjectRef,validateTextBoxInput)
 	
 }

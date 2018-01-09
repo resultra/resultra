@@ -2,6 +2,7 @@ package textInput
 
 import (
 	"database/sql"
+	"log"
 	"resultra/datasheet/server/generic/inputValidation"
 	"resultra/datasheet/server/generic/stringValidation"
 )
@@ -15,6 +16,7 @@ func validateInput(trackerDBHandle *sql.DB, params TextInputValidateInputParams)
 
 	textInput, err := getTextInput(trackerDBHandle, params.getParentTableID(), params.getTextInputID())
 	if err != nil {
+		log.Printf("Error validating text box input: error = %v", err)
 		return inputValidation.FailValidationResult(inputValidation.SystemErrValidationMsg)
 	}
 

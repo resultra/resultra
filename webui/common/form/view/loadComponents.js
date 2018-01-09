@@ -14,7 +14,7 @@ function loadFormViewComponentsIntoOneLayout($parentFormLayout, viewFormContext,
 		$parentFormLayout: $parentFormLayout,
 		formContext: viewFormContext,
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {			
-			initTextBoxRecordEditBehavior($textBox,componentContext,recordProxy,textBoxObjectRef)
+			initTextBoxRecordEditFormBehavior($textBox,componentContext,recordProxy,textBoxObjectRef)
 			initFormComponentViewBehavior($textBox,
 					textBoxObjectRef.textBoxID,initTextBoxViewProperties)
 		},
