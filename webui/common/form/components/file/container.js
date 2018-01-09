@@ -1,7 +1,7 @@
 function fileContainerInputControl() {
 
 	return '<div class="input-group">'+
-				'<div class="form-control-static fileDisplayContainer">' +
+				'<div class="formInputStaticInputContainer">' +
 					'<a class="fileDisplay"></a>' +
 				'</div>' + 
 				'<span class="btn btn-default input-group-addon fileinput-button fileEditLinkButton">' +

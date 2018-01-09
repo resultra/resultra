@@ -4,7 +4,16 @@
    inside a box with a form-like appearance that works with Bootstrap input groups */
 .formInputStaticInputContainer {
 	display:table-cell;
+
+	/* There is a strange CSS behavior if max-width isn't set along with width ...
+	   if the length of the enclosed content in the <a> tag is long, then the
+	   .formInputStaticInputContainer container will extend beyond it's parent.
+	   With max-width set, it is constrained to 100%.
+	   TODO - Investigate and determine the definitive rules for this */ 
 	width:100%;
+	max-width:200px;
+
+
 	border: 1px solid lightGray;
 	padding-top: 7px;
 	padding-bottom: 7px;
@@ -25,4 +34,5 @@
 	display:block;
 	overflow:hidden;
 	text-overflow: ellipsis;
+	
 }

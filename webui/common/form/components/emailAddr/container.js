@@ -1,7 +1,7 @@
 function emailAddrContainerInputControl() {
 
 	return '<div class="input-group">'+
-				'<div class="formInputStaticInputContainer emailAddrDisplayContainer">' +
+				'<div class="formInputStaticInputContainer">' +
 					'<a class="emailAddrDisplay"></a>' +
 				'</div>' + 
 				'<span class="input-group-addon emailAddrEditLinkButton">' +

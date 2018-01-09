@@ -222,7 +222,7 @@ function initItemListTableView(params) {
 				initFileTableRecordEditBehavior($file,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				fileTableViewContainerHTML,initContainer,150)
+				fileTableViewContainerHTML,initContainer,300)
 	}
 	
 	function createImageColDef(colInfo,tableContext) {
@@ -232,7 +232,7 @@ function initItemListTableView(params) {
 				initImageTableRecordEditBehavior($image,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				imageTableViewContainerHTML,initContainer,150)
+				imageTableViewContainerHTML,initContainer,300)
 	}
 	
 	function createUrlLinkColDef(colInfo,tableContext) {
