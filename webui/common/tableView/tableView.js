@@ -196,6 +196,8 @@ function initItemListTableView(params) {
 				
 				initTextBoxRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
+		
+		
 		return createTableViewColDef(colInfo,tableContext,
 				textBoxTableViewContainerHTML,initContainer,100)
 	}
@@ -308,6 +310,8 @@ function initItemListTableView(params) {
 			
 			setFormButtonSize($cellContainer,colInfo.properties.size)
 			setFormButtonColorScheme($cellContainer,colInfo.properties.colorScheme)
+			
+			
 			setFormButtonLabel($cellContainer,colInfo)
 						
 			// The loadFormViewComponents and loadRecordIntoFormLayout functions
@@ -318,8 +322,12 @@ function initItemListTableView(params) {
 			initFormButtonRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo,defaultValSrc,
 					loadFormViewComponents,loadRecordIntoFormLayout,100)
 		}
+		
+		
+		var minColWidth = calcFormButtonMinTableCellWidth(colInfo,tableContext.formsByID)
+		
 		return createTableViewColDef(colInfo,tableContext,
-				formButtonTableCellContainerHTML,initContainer,100)
+				formButtonTableCellContainerHTML,initContainer,minColWidth)
 	}
 
 
@@ -414,7 +422,7 @@ function initItemListTableView(params) {
 	
 	function getTableInfo(tableInfoCallback) {
 		
-		var numTableInfoRemaining = 3
+		var numTableInfoRemaining = 4
 		
 		var tableContext = {}
 				
@@ -441,6 +449,13 @@ function initItemListTableView(params) {
 			tableContext.currUserInfo = currUserInfoResp
 			tableInfoReceived()
 		})	
+		
+		var getFormsParams = { parentDatabaseID: params.databaseID }
+		jsonAPIRequest("frm/formsByID",getFormsParams,function(formsByIDReply) {
+			tableContext.formsByID = formsByIDReply
+			tableInfoReceived()
+		})
+		
 		
 		
 	}

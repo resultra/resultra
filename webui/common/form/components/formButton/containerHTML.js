@@ -124,6 +124,36 @@ function setFormButtonLabel($container,buttonRef) {
 	
 }
 
+function calcFormButtonMinTableCellWidth(buttonRef, formsByID) {
+	var labelFormat = buttonRef.properties.buttonLabelFormat
+	
+	var label = ""
+    switch (labelFormat.labelType) {
+    	case "none":
+    		break;
+    	case "custom":
+			label = labelFormat.customLabel
+    		break;
+    	default:
+			var formInfo = formsByID[buttonRef.properties.linkedFormID]
+			label = formInfo.name
+    		break;
+    }
+	
+	var overallWidth = calcTextWidth(label)
+	
+	if (buttonRef.properties.icon !== undefined && buttonRef.properties.icon !== 'none') {
+		overallWidth += 30
+	}
+	if (overallWidth < 75) {
+		overallWidth = 75
+	}
+	
+	return overallWidth
+	
+	
+}
+
 function setFormButtonHeader($container,buttonRef) {
 	jsonAPIRequest("frm/getFormInfo", { formID: buttonRef.properties.linkedFormID }, function(formInfo) {
 		var $nameSpan = $('<span></span>')
