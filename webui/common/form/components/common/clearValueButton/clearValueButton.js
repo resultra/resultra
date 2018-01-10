@@ -59,9 +59,16 @@ function clearValueControlIsEnabled(controlRef) {
 function initClearValueControl($container,controlRef,buttonClassName) {
 	var $clearValueButton = $container.find(buttonClassName)
 	
+	// Also hide the buttons button group, since this can add unwanted
+	// space to the DOM layout, even when the button is hidden. In other
+	// words, completely hide everything in the DOM related to the clear value button.
+	var $inputGroupParent = $clearValueButton.parent('.input-group-btn')
+	
 	if (clearValueControlIsEnabled(controlRef)) {
 		$clearValueButton.css("display","")
+		$inputGroupParent.css("display","")
 	} else {
 		$clearValueButton.css("display","none")
+		$inputGroupParent.css("display","none")
 	}	
 }
