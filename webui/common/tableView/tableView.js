@@ -144,7 +144,7 @@ function initItemListTableView(params) {
 			initUserSelectionTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				userSelectionTableCellContainerHTML,initContainer,150)
+				userSelectionTableCellContainerHTML,initContainer,250)
 	}
 	
 	

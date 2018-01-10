@@ -135,13 +135,6 @@ function initCollaboratorUserSelection(params) {
 		databaseID: params.databaseID
 	}
 	
-	params.$selectionInput.select2({
-		placeholder: "Select a collaborator", // TODO - Allow a property to configure the placeholder.
-		width: configParams.width,
-//		data:selectionOptions
-	});
-	
-	
 	jsonAPIRequest("admin/getAllCollaboratorInfo",getCollaboratorsParams,function(collabUserInfo) {
 					
 		var selectionOptions = []
@@ -159,11 +152,13 @@ function initCollaboratorUserSelection(params) {
 				text: userSelectionNameDisplay(userInfo)
 			}
 			selectionOptions.push(currOption) 
-	//		addUserInfoSelectionOptionIfNotExists(params.$selectionInput,userInfo)
 		})
 		
-//		params.$selectionInput.select2('data',selectionOptions)
-				
+		params.$selectionInput.select2({
+			placeholder: "Select a collaborator", // TODO - Allow a property to configure the placeholder.
+			width: configParams.width,
+			data:selectionOptions
+		});		
 		
 	})
 	

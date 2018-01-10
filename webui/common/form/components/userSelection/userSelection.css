@@ -7,10 +7,11 @@
 }
 
 .userSelectionTableCellContainer {
-	min-width:220px;
+	min-width:200px;
 	min-height:10px;
 	max-width:300px;
-	width: 300px;
+/*	width: 300px; */
+	width:100%;
 	height: auto;
 }
 
@@ -60,6 +61,10 @@
 	min-height: 34px;
 	height: auto;
 	
+}
+
+.userSelectionTableCellContainer .input-group {
+	width:100%;
 }
 
 .userSelectionTableCellContainer .input-group-addon
