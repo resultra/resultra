@@ -3,6 +3,7 @@ function initAttachmentContainerPopupGallery($attachContainer) {
 			delegate: 'a',
 			type: 'image',
 			gallery: { enabled: true },
+			mainClass: 'attachmentPopupGallery',
 			image: {
 				tError: 'The image could not be loaded.',
 				titleSrc: function(item) {
@@ -47,7 +48,18 @@ function initAttachmentContainerPopupGallery($attachContainer) {
 				    },
 				}
 		});
-	
+		
+		setTimeout(function() {
+			// IMPORTANT NOTE: There is a conflict between document event handling for 
+			// magnific popup and Bootstrap. When setting the z-index of the Magnific
+			// popup container, a stack overflow is caused in Javascript. The problem and 
+			// potential workarounds are described here:
+			// 
+			// https://github.com/dimsemenov/Magnific-Popup/issues/796
+			//
+			
+			$(document).off('focusin');
+		},200)
 
 }
 
