@@ -136,7 +136,12 @@ function initRatingFormComponentControl($container,ratingObjectRef) {
 
 function ratingControlMinWidth(ratingObjectRef) {
 	var numStars = ratingObjectRef.properties.maxVal - ratingObjectRef.properties.minVal
-	var minWidth = 30 * numStars + 20
+	var minWidth = 30 * numStars
+	
+	if(clearValueControlIsEnabled(ratingObjectRef)) {
+		minWidth += 20
+	}
+	
 	return minWidth
 }
 

@@ -160,6 +160,8 @@ function initRatingTableCellRecordEditBehavior($ratingContainer,componentContext
 	}
 	
 	initRatingFormComponentControl($ratingContainer,ratingObjectRef)
+	initClearValueControl($ratingContainer,ratingObjectRef,".ratingComponentClearValueButton")
+	
 	
 	initRatingRecordEditBehavior($ratingContainer,componentContext,recordProxy, ratingObjectRef,validateInput)
 }
