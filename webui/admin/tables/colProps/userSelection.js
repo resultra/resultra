@@ -42,7 +42,7 @@ function initUserSelectionColPropertiesImpl(userSelectionInputCol) {
 	
 	
 	var validationParams = {
-		initialValidationProps: userSelectionInputCol.properties.validation,
+		valueRequired: userSelectionInputCol.properties.validation.valueRequired,
 		setValidation: function(validationProps) {
 			var validationParams = {
 				parentTableID: userSelectionInputCol.parentTableID,
