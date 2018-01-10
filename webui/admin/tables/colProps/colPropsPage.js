@@ -62,7 +62,7 @@ $(document).ready(function() {
 		case 'socialButton':
 			initSocialButtonColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
 			break
-		case 'tag':
+		case 'tags':
 			initTagColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
 			break
 		case 'emailAddr':

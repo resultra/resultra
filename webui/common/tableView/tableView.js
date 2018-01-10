@@ -166,7 +166,7 @@ function initItemListTableView(params) {
 			initLabelTableRecordEditBehavior($cellContainer,componentContext,recordProxy, colInfo)
 		}
 		return createTableViewColDef(colInfo,tableContext,
-				labelTableCellContainerHTML,initContainer,150)
+				labelTableCellContainerHTML,initContainer,100)
 	}
 	
 	
@@ -389,7 +389,7 @@ function initItemListTableView(params) {
 			return createUserSelectionColDef(colInfo,tableContext)
 		case 'userTag':
 			return createUserTagColDef(colInfo,tableContext)
-		case 'tag':
+		case 'tags':
 			return createTagColDef(colInfo,tableContext)
 		case 'note':
 			return createNoteColDef(colInfo,tableContext)
