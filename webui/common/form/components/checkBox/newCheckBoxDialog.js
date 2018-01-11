@@ -8,9 +8,6 @@ function openNewCheckboxDialog(databaseID,formID,containerParams) {
 		jsonAPIRequest("frm/checkBox/new",newComponentParams,function(newCheckBoxObjectRef) {
 	          console.log("createNewCheckbox: Done getting new ID:response=" + JSON.stringify(newCheckBoxObjectRef));
 	  	  			  
-			  var componentLabel = getFieldRef(newCheckBoxObjectRef.properties.fieldID).name			  
-			  containerParams.containerObj.find('span').text(componentLabel)
-
 	  		  var newComponentSetupParams = {
 				  parentFormID: formID,
 	  		  	  $container: containerParams.containerObj,
@@ -19,7 +16,9 @@ function openNewCheckboxDialog(databaseID,formID,containerParams) {
 				  designFormConfig: checkBoxDesignFormConfig
 	  		  }
 			  setupNewlyCreatedFormComponentInfo(newComponentSetupParams)
-		  			  
+			  
+			  initCheckboxComponentFormContainer(containerParams.containerObj,newCheckBoxObjectRef)
+			    			  
 			  $parentDialog.modal("hide")
 
 	       }) // newLayoutContainer API request
