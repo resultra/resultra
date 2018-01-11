@@ -8,9 +8,6 @@ function openNewToggleDialog(databaseID,formID,containerParams) {
 		jsonAPIRequest("frm/toggle/new",newComponentParams,function(newToggleObjectRef) {
 	          console.log("createNewToggle: Done getting new ID:response=" + JSON.stringify(newToggleObjectRef));
 	  	  			  
-			  var componentLabel = getFieldRef(newToggleObjectRef.properties.fieldID).name			  
-			  containerParams.containerObj.find('span').text(componentLabel)
-
 	  		  var newComponentSetupParams = {
 				  parentFormID: formID,
 	  		  	  $container: containerParams.containerObj,
@@ -19,6 +16,9 @@ function openNewToggleDialog(databaseID,formID,containerParams) {
 				  designFormConfig: toggleDesignFormConfig
 	  		  }
 			  setupNewlyCreatedFormComponentInfo(newComponentSetupParams)
+			  
+			  initToggleComponentFormComponentContainer(containerParams.containerObj,newToggleObjectRef)
+			  reInitToggleComponentControl(containerParams.containerObj,newToggleObjectRef)
 		  			  
 			  $parentDialog.modal("hide")
 
