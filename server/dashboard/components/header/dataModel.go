@@ -123,11 +123,7 @@ func CloneHeaders(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentDas
 
 	for _, srcHeader := range headers {
 
-		remappedHeaderID, err := cloneParams.IDRemapper.AllocNewRemappedID(srcHeader.HeaderID)
-		if err != nil {
-			return fmt.Errorf("CloneHeaders: %v", err)
-		}
-
+		remappedHeaderID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcHeader.HeaderID)
 		clonedProps, err := srcHeader.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneHeaders: %v", err)

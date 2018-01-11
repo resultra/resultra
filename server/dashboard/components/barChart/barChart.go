@@ -169,11 +169,7 @@ func CloneBarCharts(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentD
 
 	for _, srcBarChart := range barCharts {
 
-		remappedBarChartID, err := cloneParams.IDRemapper.AllocNewRemappedID(srcBarChart.BarChartID)
-		if err != nil {
-			return fmt.Errorf("CloneBarCharts: %v", err)
-		}
-
+		remappedBarChartID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcBarChart.BarChartID)
 		clonedProps, err := srcBarChart.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneBarCharts: %v", err)

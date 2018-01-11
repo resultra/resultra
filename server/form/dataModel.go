@@ -126,12 +126,12 @@ func CloneForms(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
 	remappedDatabaseID, err := cloneParams.IDRemapper.GetExistingRemappedID(cloneParams.SourceDatabaseID)
 	if err != nil {
-		return fmt.Errorf("CloneTableForms: Error getting remapped table ID: %v", err)
+		return fmt.Errorf("CloneForms: Error getting remapped table ID: %v", err)
 	}
 
 	forms, err := GetAllForms(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)
 	if err != nil {
-		return fmt.Errorf("CloneTableForms: Error getting forms for parent database ID = %v: %v",
+		return fmt.Errorf("CloneForms: Error getting forms for parent database ID = %v: %v",
 			cloneParams.SourceDatabaseID, err)
 	}
 
@@ -144,16 +144,16 @@ func CloneForms(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
 		destProps, err := currForm.Properties.Clone(cloneParams)
 		if err != nil {
-			return fmt.Errorf("CloneTableForms: %v", err)
+			return fmt.Errorf("CloneForms: %v", err)
 		}
 		destForm.Properties = *destProps
 
 		if err := saveForm(cloneParams.DestDBHandle, destForm); err != nil {
-			return fmt.Errorf("CloneTableForms: %v", err)
+			return fmt.Errorf("CloneForms: %v", err)
 		}
 
 		if err := cloneFormComponents(cloneParams, currForm.FormID); err != nil {
-			return fmt.Errorf("CloneTableForms: %v", err)
+			return fmt.Errorf("CloneForms: %v", err)
 		}
 
 	}

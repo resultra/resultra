@@ -132,7 +132,7 @@ func CloneAlerts(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
 	remappedDatabaseID, err := cloneParams.IDRemapper.GetExistingRemappedID(cloneParams.SourceDatabaseID)
 	if err != nil {
-		return fmt.Errorf("CloneTableForms: Error getting remapped table ID: %v", err)
+		return fmt.Errorf("CloneAlerts: Error getting remapped table ID: %v", err)
 	}
 
 	alerts, err := getAllAlertsFromSrc(cloneParams.SrcDBHandle, cloneParams.SourceDatabaseID)

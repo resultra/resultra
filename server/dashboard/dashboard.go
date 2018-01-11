@@ -238,10 +238,7 @@ func CloneDashboards(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 		destDashboard := currDashboard
 		destDashboard.ParentDatabaseID = remappedDatabaseID
 
-		destDashboardID, err := cloneParams.IDRemapper.AllocNewRemappedID(currDashboard.DashboardID)
-		if err != nil {
-			return fmt.Errorf("CloneDashboards: %v", err)
-		}
+		destDashboardID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(currDashboard.DashboardID)
 		destDashboard.DashboardID = destDashboardID
 
 		destProps, err := currDashboard.Properties.Clone(cloneParams)
@@ -251,7 +248,7 @@ func CloneDashboards(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 		destDashboard.Properties = *destProps
 
 		if err := saveDashboard(cloneParams.DestDBHandle, destDashboard); err != nil {
-			return fmt.Errorf("CloneTableForms: %v", err)
+			return fmt.Errorf("CloneDashboards: %v", err)
 		}
 
 		if err := cloneDashboardComponents(cloneParams, currDashboard.DashboardID); err != nil {

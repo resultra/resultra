@@ -329,15 +329,12 @@ func CloneFormLinks(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
 		destLink := currLink
 
-		destLinkID, err := cloneParams.IDRemapper.AllocNewRemappedID(currLink.LinkID)
-		if err != nil {
-			return fmt.Errorf("CloneTableForms: %v", err)
-		}
+		destLinkID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(currLink.LinkID)
 		destLink.LinkID = destLinkID
 
 		destFormID, err := cloneParams.IDRemapper.GetExistingRemappedID(currLink.FormID)
 		if err != nil {
-			return fmt.Errorf("CloneTableForms: %v", err)
+			return fmt.Errorf("CloneFormLinks: %v", err)
 		}
 		destLink.FormID = destFormID
 

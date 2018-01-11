@@ -133,11 +133,7 @@ func CloneGauges(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentDash
 
 	for _, srcGauge := range gauges {
 
-		remappedGaugeID, err := cloneParams.IDRemapper.AllocNewRemappedID(srcGauge.GaugeID)
-		if err != nil {
-			return fmt.Errorf("CloneGauges: %v", err)
-		}
-
+		remappedGaugeID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcGauge.GaugeID)
 		clonedProps, err := srcGauge.Properties.Clone(cloneParams)
 		if err != nil {
 			return fmt.Errorf("CloneGauges: %v", err)

@@ -169,10 +169,7 @@ func CloneValueLists(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
 		destValueList := currValueList
 
-		destValueListID, err := cloneParams.IDRemapper.AllocNewRemappedID(currValueList.ValueListID)
-		if err != nil {
-			return fmt.Errorf("CloneValueLists: %v", err)
-		}
+		destValueListID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(currValueList.ValueListID)
 		destValueList.ValueListID = destValueListID
 
 		destDatabaseID, err := cloneParams.IDRemapper.GetExistingRemappedID(currValueList.ParentDatabaseID)

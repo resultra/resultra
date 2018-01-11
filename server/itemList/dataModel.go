@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/userRole"
 )
@@ -221,10 +221,7 @@ func CloneItemLists(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 		destList := currList
 		destList.ParentDatabaseID = remappedDatabaseID
 
-		destListID, err := cloneParams.IDRemapper.AllocNewRemappedID(currList.ListID)
-		if err != nil {
-			return fmt.Errorf("CloneTableForms: %v", err)
-		}
+		destListID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(currList.ListID)
 		destList.ListID = destListID
 
 		destProps, err := currList.Properties.Clone(cloneParams)
