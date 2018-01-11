@@ -167,20 +167,15 @@ function getDatePickerFormComponentUTCDate($datePicker) {
 function initDatePickerAddonControls($datePickerContainer,datePickerRef) {
 	
 	var $datePickerInput = datePickerInputFromContainer($datePickerContainer)
-	var $clearValueButton = $datePickerContainer.find(".datePickerComponentClearValueButton")
 	var $calendarIcon = $datePickerContainer.find(".datePickerCalendarButton")
+	
+	initClearValueControl($datePickerContainer,datePickerRef,".datePickerComponentClearValueButton")
 	
 	if(formComponentIsReadOnly(datePickerRef.properties.permissions)) {
 		$datePickerInput.prop('disabled',true);
-		$clearValueButton.css("display","none")
 		$calendarIcon.css("display","none")
 	} else {
 		$datePickerInput.prop('disabled',false);
-		if(datePickerRef.properties.clearValueSupported) {
-			$clearValueButton.css("display","")
-		} else {
-			$clearValueButton.css("display","none")		
-		}
 		$calendarIcon.css("display","")
 	}
 	
