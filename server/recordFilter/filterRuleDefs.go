@@ -538,6 +538,11 @@ var imageFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDNotBlank: filterNonBlankField,
 	filterRuleIDBlank:    filterBlankField}
 
+var fileFieldFilterRuleDefs = RuleIDFilterFuncMap{
+	filterRuleIDAny:      filterAny,
+	filterRuleIDNotBlank: filterNonBlankField,
+	filterRuleIDBlank:    filterBlankField}
+
 // Get the rule definition based upon the field type
 func getFilterFuncByFieldType(fieldType string, ruleID string) (FilterRuleFunc, error) {
 	switch fieldType {
@@ -605,6 +610,16 @@ func getFilterFuncByFieldType(fieldType string, ruleID string) (FilterRuleFunc, 
 			return filterFunc, nil
 		}
 	case field.FieldTypeImage:
+		filterFunc, funcFound := imageFieldFilterRuleDefs[ruleID]
+		if !funcFound {
+			return nil, fmt.Errorf(
+				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
+				fieldType, ruleID)
+		} else {
+			return filterFunc, nil
+		}
+
+	case field.FieldTypeFile:
 		filterFunc, funcFound := imageFieldFilterRuleDefs[ruleID]
 		if !funcFound {
 			return nil, fmt.Errorf(

@@ -585,6 +585,24 @@ function imageFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	
 }
 
+function fileFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
+	var filterRules = {
+		"any": {
+			label: "Any value (no filtering)",
+		},
+		"isBlank": {
+			label: "No file",
+			hasParam: false,
+		},
+		"notBlank": {
+			label: "File is set",
+			hasParam: false,
+		}
+	}
+	return singleParamFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo,filterRules)
+}
+
+
 
 function tagFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	
@@ -836,6 +854,8 @@ function createFilterRulePanelListItem(panelParams, fieldInfo,defaultRuleInfo) {
 		return userFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo)
 	case fieldTypeImage:
 		return imageFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo)
+	case fieldTypeFile:
+		return fileFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo)
 	case fieldTypeLongText:
 		return noteFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo)
 	default:
