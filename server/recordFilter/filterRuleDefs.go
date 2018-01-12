@@ -485,6 +485,7 @@ func filterCurrentUser(filterParams FilterFuncParams, recFieldVals record.RecFie
 type RuleIDFilterFuncMap map[string]FilterRuleFunc
 
 var textFieldFilterRuleDefs = RuleIDFilterFuncMap{
+	filterRuleIDAny:      filterAny,
 	filterRuleIDNotBlank: filterNonBlankField,
 	filterRuleIDBlank:    filterBlankField,
 	filterRuleIDContains: filterTextContains}
@@ -528,6 +529,18 @@ var userFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDBlank:         filterBlankUserField}
 
 var noteFieldFilterRuleDefs = RuleIDFilterFuncMap{
+	filterRuleIDAny:      filterAny,
+	filterRuleIDNotBlank: filterNonBlankField,
+	filterRuleIDBlank:    filterBlankField,
+	filterRuleIDContains: filterTextContains}
+
+var emailFieldFilterRuleDefs = RuleIDFilterFuncMap{
+	filterRuleIDAny:      filterAny,
+	filterRuleIDNotBlank: filterNonBlankField,
+	filterRuleIDBlank:    filterBlankField,
+	filterRuleIDContains: filterTextContains}
+
+var urlFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDAny:      filterAny,
 	filterRuleIDNotBlank: filterNonBlankField,
 	filterRuleIDBlank:    filterBlankField,
@@ -621,6 +634,24 @@ func getFilterFuncByFieldType(fieldType string, ruleID string) (FilterRuleFunc, 
 
 	case field.FieldTypeFile:
 		filterFunc, funcFound := imageFieldFilterRuleDefs[ruleID]
+		if !funcFound {
+			return nil, fmt.Errorf(
+				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
+				fieldType, ruleID)
+		} else {
+			return filterFunc, nil
+		}
+	case field.FieldTypeEmail:
+		filterFunc, funcFound := emailFieldFilterRuleDefs[ruleID]
+		if !funcFound {
+			return nil, fmt.Errorf(
+				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
+				fieldType, ruleID)
+		} else {
+			return filterFunc, nil
+		}
+	case field.FieldTypeURL:
+		filterFunc, funcFound := urlFieldFilterRuleDefs[ruleID]
 		if !funcFound {
 			return nil, fmt.Errorf(
 				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",

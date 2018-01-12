@@ -567,6 +567,53 @@ function noteFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	
 }
 
+function emailFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
+	var filterRules = {
+		"any": {
+			label: "Any value (no filtering)",
+		},
+		"isBlank": {
+			label: "Email address empty",
+			hasParam: false,
+		},
+		"notBlank": {
+			label: "Email address is set",
+			hasParam: false,
+		},
+		"contains": {
+			label: "Email address contains",
+			hasParam: true,
+		}
+	}
+	return singleParamFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo,filterRules)
+	
+}
+
+function urlFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
+	var filterRules = {
+		"any": {
+			label: "Any value (no filtering)",
+		},
+		"isBlank": {
+			label: "URL link empty",
+			hasParam: false,
+		},
+		"notBlank": {
+			label: "URL link is set",
+			hasParam: false,
+		},
+		"contains": {
+			label: "URL link contains",
+			hasParam: true,
+		}
+	}
+	return singleParamFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo,filterRules)
+	
+}
+
+
+
+
 function imageFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo) {
 	var filterRules = {
 		"any": {
@@ -858,6 +905,10 @@ function createFilterRulePanelListItem(panelParams, fieldInfo,defaultRuleInfo) {
 		return fileFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo)
 	case fieldTypeLongText:
 		return noteFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo)
+	case fieldTypeEmail:
+		return emailFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo)	
+	case fieldTypeURL:
+		return urlFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo)	
 	default:
 		console.log("createFilterRulePanelListItem: Unsupported field type:  " + fieldInfo.type)
 		return $("")
