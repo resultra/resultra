@@ -33,6 +33,8 @@ func (srcProps AlertProperties) Clone(cloneParams *trackerDatabase.CloneDatabase
 
 	// TODO - Remap the any field references within the caption message.
 
+	destProps.CaptionMessage = cloneAlertCaptionMsg(cloneParams, srcProps.CaptionMessage)
+
 	srcCondition := srcProps.Condition
 	if srcCondition != nil {
 		remappedFieldID, err := cloneParams.IDRemapper.GetExistingRemappedID(srcCondition.FieldID)

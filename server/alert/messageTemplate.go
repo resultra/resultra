@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/trackerDatabase"
 )
 
 type identReplacementMap map[string]string
@@ -60,5 +61,18 @@ func replaceFieldIDWithFieldRef(trackerDBHandle *sql.DB, templateMsg string, dat
 	}
 
 	return replaceTemplateMsgIdents(templateMsg, fieldIDFieldRefMap)
+
+}
+
+func cloneAlertCaptionMsg(cloneParams *trackerDatabase.CloneDatabaseParams, captionMsg string) string {
+
+	mapFieldIDVal := func(s []byte) []byte {
+		srcFieldID := string(s[1 : len(s)-1])
+		remappedFieldID := cloneParams.IDRemapper.AllocNewOrGetExistingRemappedID(srcFieldID)
+		return []byte(`[` + remappedFieldID + `]`)
+	}
+
+	remappedCaptionMsg := msgTemplateFieldRefPattern.ReplaceAllFunc([]byte(captionMsg), mapFieldIDVal)
+	return string(remappedCaptionMsg)
 
 }
