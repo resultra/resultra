@@ -144,6 +144,10 @@ function nonEmptyStringVal(val) {
 	
 }
 
+function emptyStringVal(val) {
+	return !nonEmptyStringVal(val)
+}
+
 function stripLeadingAndTrailingSpace(val) {
 	var valWithoutLeadingSpace = val.replace(/^\s+/,'')
 	var valWithoutTrailingSpace = valWithoutLeadingSpace.replace(/\s+$/,'')

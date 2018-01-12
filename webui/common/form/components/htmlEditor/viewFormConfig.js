@@ -103,6 +103,10 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 		
 				editor.on('blur', function(event) {
 					var inputVal = editor.getData();
+					// If the input is empty, clear the note field (with a NULL value)
+					emptyStringVal(inputVal) {
+						inputVal == null
+					}
 					setEditorValue(inputVal)				
 					disableInlineCKEditor($htmlEditorInput,editor)	
 				})

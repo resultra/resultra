@@ -527,6 +527,12 @@ var userFieldFilterRuleDefs = RuleIDFilterFuncMap{
 	filterRuleIDNotBlank:      filterNonBlankUserField,
 	filterRuleIDBlank:         filterBlankUserField}
 
+var noteFieldFilterRuleDefs = RuleIDFilterFuncMap{
+	filterRuleIDAny:      filterAny,
+	filterRuleIDNotBlank: filterNonBlankField,
+	filterRuleIDBlank:    filterBlankField,
+	filterRuleIDContains: filterTextContains}
+
 // Get the rule definition based upon the field type
 func getFilterFuncByFieldType(fieldType string, ruleID string) (FilterRuleFunc, error) {
 	switch fieldType {
@@ -577,6 +583,15 @@ func getFilterFuncByFieldType(fieldType string, ruleID string) (FilterRuleFunc, 
 		}
 	case field.FieldTypeUser:
 		filterFunc, funcFound := userFieldFilterRuleDefs[ruleID]
+		if !funcFound {
+			return nil, fmt.Errorf(
+				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
+				fieldType, ruleID)
+		} else {
+			return filterFunc, nil
+		}
+	case field.FieldTypeLongText:
+		filterFunc, funcFound := noteFieldFilterRuleDefs[ruleID]
 		if !funcFound {
 			return nil, fmt.Errorf(
 				"getRuleDefByFieldType: Failed to retrieve filter rule definition for field type = %v, unrecognized rule ID = %v",
