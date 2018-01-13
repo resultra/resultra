@@ -34,6 +34,17 @@ function fieldTypeLabel(fieldType) {
 	}
 }
 
+function fieldTypeSupportsCalcField(fieldType) {
+	switch (fieldType) {
+	case fieldTypeNumber: return true
+	case fieldTypeText: return true
+	case fieldTypeTime: return true
+	case fieldTypeBool: return true
+	default: return false
+	}
+	
+}
+
 
 
 var fieldInfoFieldsByID

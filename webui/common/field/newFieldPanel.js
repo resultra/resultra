@@ -4,6 +4,7 @@ function NewFieldPanel(databaseID,$newFieldForm) {
 	var $fieldName = $newFieldForm.find("input[name=newFieldNameInput]")
 	var $fieldRefName = $newFieldForm.find("input[name=fieldRefName]")
 	var $fieldType = $newFieldForm.find("select[name=newFieldTypeSelection]")
+	var $calcFieldFormGroup = $('#newFieldCalcFieldFormGroup')
 	
 	var validator = $newFieldForm.validate({
 		rules: {
@@ -49,6 +50,7 @@ function NewFieldPanel(databaseID,$newFieldForm) {
 	$fieldName.val("")
 	$fieldRefName.val("")
 	$isCalcField.prop("checked",false)
+	$calcFieldFormGroup.hide()
 	validator.resetForm()
 	
 	function validateNewFieldParams() {
@@ -74,13 +76,30 @@ function NewFieldPanel(databaseID,$newFieldForm) {
 		fieldRefNameManuallyEdited = true
 	})
 	
+	initSelectControlChangeHandler($fieldType,function(fieldType) {
+		if(fieldTypeSupportsCalcField(fieldType)) {
+			$calcFieldFormGroup.show()			
+		} else {
+			$calcFieldFormGroup.hide()
+		}
+	})
+	
+	
 	var newFieldParams =  function() {
+		
+		var fieldType =  $fieldType.val()
+		
+		var isCalcField = false
+		if(fieldTypeSupportsCalcField(fieldType)) {
+			isCalcField = $isCalcField.prop("checked")
+		}
+		
 		var newFieldParams = {
 			parentDatabaseID: databaseID,
 			name: $fieldName.val(),
 			refName: $fieldRefName.val(),
-			isCalcField: $isCalcField.prop("checked"),
-			type: $fieldType.val()
+			isCalcField: isCalcField,
+			type: fieldType
 		}
 		return newFieldParams
 	}

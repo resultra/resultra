@@ -10,15 +10,25 @@
 				<option value="">Select a field type</option>
 				<option value="number">Number</option>
 				<option value="text">Text</option>
+				<option value="time">Date and/or time</option>
+				<option value="user">Single collaborator (user)</option>
+				<option value="users">Multiple collaborators (users)</option>
 				<option value="bool">Boolean (logical)</option>
-				<option value="user">User</option>
+				<option value="file">Single file</option>
+				<option value="image">Single image</option>
+				<option value="url">URL link</option>
+				<option value="label">Tags (labels)</option>
+				<option value="email">Email address</option>
+				<option value="comment">Comments</option>
+				<option value="longText">Notes</option>
+				<option value="attachment">Attachment(s)</option>
 			</select> 
 	</div> <!-- Value type field -->
 	  
-	<div class="form-group">
+	<div class="form-group initiallyHidden" id="newFieldCalcFieldFormGroup">
 		  <div class="checkbox" id="">
 			  <input type="checkbox" id="newFieldIsCalcField">
-			  <label for="newFieldIsCalcField">Values for this field are calculated from other fields.</label>
+			  <label for="newFieldIsCalcField">Values for this field are calculated from other fields (i.e., field is a calculated field).</label>
     		</div>
 	</div> <!-- Field name field -->
 
