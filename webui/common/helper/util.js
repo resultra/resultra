@@ -1,5 +1,23 @@
 function jsonRequest(requestUrl, requestData,replyFunc) {
 	var jsonReqData = JSON.stringify(requestData)
+	
+	function formatUserErrorMsg(jqXHR, exception) {
+	    if (jqXHR.status === 0) {
+	         return ('Not connected.\nPlease verify your network connection.');
+	     } else if (jqXHR.status == 404) {
+	         return ('The requested page was not found. [404]');
+	     } else if (jqXHR.status == 500) {
+	         return ('Internal Server Error [500].');
+	     } else if (exception === 'parsererror') {
+	         return ('Requested JSON parse failed.');
+	     } else if (exception === 'timeout') {
+	         return ('Time out error.');
+	     } else if (exception === 'abort') {
+	         return ('request aborted.');
+	     } else {
+	         return ('Uncaught Error.\n' + jqXHR.responseText);
+	     }
+	}
 			
 	// TODO - In debug builds, the API logging could be enabled, but disabled in production
 	console.log("JSON Request: Sending Request: url = " + requestUrl + " requestData =" + jsonReqData)
@@ -8,10 +26,14 @@ function jsonRequest(requestUrl, requestData,replyFunc) {
        url: requestUrl,
 		contentType : 'application/json',
        data: jsonReqData,
-       error: function() {
-		  var errMsg = "ERROR: Request failed: url = " + requestUrl + " requestData =" + jsonReqData
-		  console.log(errMsg)
-          alert(errMsg)
+       error: function(xhr, status, error) {
+		  var userErrMsg = formatUserErrorMsg(xhr,status)
+
+		  alert(userErrMsg)
+
+		  var logMsg = "ERROR: Request failed: url = " + requestUrl + " requestData =" + jsonReqData +
+		  		" user error msg = " + userErrMsg
+		  console.log(logMsg)
        },
        dataType: 'json',
        success: function(replyData) {
