@@ -30,6 +30,8 @@ func init() {
 	alertRouter.HandleFunc("/api/alert/setCaptionMessage", setCaptionMessage)
 	alertRouter.HandleFunc("/api/alert/getDecodedCaptionMessage", getDecodedCaptionMessage)
 
+	alertRouter.HandleFunc("/api/alert/advanceNotificationTime", advanceNotificationTimeAPI)
+
 	alertRouter.HandleFunc("/api/alert/setCondition", setCondition)
 
 	alertRouter.HandleFunc("/api/alert/validateFormName", validateAlertNameAPI)
@@ -143,6 +145,34 @@ func getAlertNotificationListAPI(w http.ResponseWriter, r *http.Request) {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, notifications)
+	}
+
+}
+
+func advanceNotificationTimeAPI(w http.ResponseWriter, r *http.Request) {
+
+	var params AdvanceNotificationParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	currUserID, userErr := userAuth.GetCurrentUserID(r)
+	if userErr != nil {
+		api.WriteJSONResponse(w, fmt.Errorf("Can't verify user authentication"))
+		return
+	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	if err := advanceNotificationTime(trackerDBHandle, currUserID, params.ParentDatabaseID); err != nil {
+		api.WriteErrorResponse(w, err)
+	} else {
+		api.WriteJSONResponse(w, true)
 	}
 
 }

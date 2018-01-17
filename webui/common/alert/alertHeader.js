@@ -1,13 +1,23 @@
 function initAlertHeader(databaseID,seeAllAlertsCallback) {
 	
 	var $header = $('#alertPageHeaderMenu')
+	var $alertCountBadge = $header.find(".badge")
+	
+	function clearAlertCount() {
+		$alertCountBadge.text(0)
+		$alertCountBadge.hide()
+		
+		var advanceAlertParams = { parentDatabaseID: databaseID }
+		jsonAPIRequest("alert/advanceNotificationTime",advanceAlertParams,function(reply) {})
+		
+	}
+	
 	
 	loadNotificationListInfo(databaseID, function(notificationList,formsByID,fieldsByID) {
 		
 		function initAlertCountBadge() {
-			var $alertCountBadge = $header.find(".badge")
 		
-			var alertCount = notificationList.notifications.length
+			var alertCount = notificationList.numAlertsNotSeen
 			if(alertCount > 0) {
 				$alertCountBadge.show()
 				$alertCountBadge.text(alertCount)
@@ -21,15 +31,13 @@ function initAlertHeader(databaseID,seeAllAlertsCallback) {
 			
 			var currNotification = notificationList.notifications[rawDataIndex]
 			var currAlert = notificationList.alertsByID[currNotification.alertID]
-			
-			
+				
 			var $alertListItem = $('<li><a class="alertFormLink notificationListItem"></a></li>')
-						
-			
-			
+							
 			var $alertLink = $alertListItem.find("a")
 			
 			$alertLink.click(function(e) {
+				clearAlertCount()
 				e.preventDefault()
 				var viewFormLink = '/viewItem/' + currAlert.properties.formID + '/' + currNotification.recordID
 				 win = window.open(viewFormLink,"_blank")
@@ -71,6 +79,7 @@ function initAlertHeader(databaseID,seeAllAlertsCallback) {
 		
 		$seeAllLink.click(function(e) {
 			e.preventDefault()
+			clearAlertCount()
 			if(seeAllAlertsCallback !== undefined) {
 				seeAllAlertsCallback()
 			}

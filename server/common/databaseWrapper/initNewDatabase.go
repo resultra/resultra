@@ -130,6 +130,12 @@ CREATE TABLE IF NOT EXISTS  alerts (
 	properties text NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS alert_notification_times (
+	database_id text REFERENCES databases(database_id), 
+	user_id text REFERENCES users(user_id),
+	latest_alert_timestamp_utc timestamp NOT NULL
+);
+
 CREATE UNIQUE INDEX role_name_unique_index on alerts (LOWER(name),database_id);
 
 CREATE TABLE IF NOT EXISTS  dashboards ( 

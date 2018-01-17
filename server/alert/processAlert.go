@@ -2,7 +2,6 @@ package alert
 
 import (
 	"fmt"
-	"log"
 	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/record"
@@ -97,8 +96,6 @@ func generateAlertNotificationCaption(context AlertProcessingContext) (string, e
 
 func processTimeFieldAlert(context AlertProcessingContext, cond AlertCondition) (*AlertNotification, error) {
 
-	log.Printf("Processing time field alert: %+v", cond)
-
 	valBefore, foundValBefore := context.PrevFieldVals.GetTimeFieldValue(cond.FieldID)
 	valAfter, foundValAfter := context.CurrFieldVals.GetTimeFieldValue(cond.FieldID)
 
@@ -162,8 +159,6 @@ func processTimeFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 }
 
 func processBoolFieldAlert(context AlertProcessingContext, cond AlertCondition) (*AlertNotification, error) {
-
-	log.Printf("Processing bool field alert: %+v", cond)
 
 	valBefore, foundValBefore := context.PrevFieldVals.GetBoolFieldValue(cond.FieldID)
 	valAfter, foundValAfter := context.CurrFieldVals.GetBoolFieldValue(cond.FieldID)
@@ -229,8 +224,6 @@ func processBoolFieldAlert(context AlertProcessingContext, cond AlertCondition) 
 
 func processNumberFieldAlert(context AlertProcessingContext, cond AlertCondition) (*AlertNotification, error) {
 
-	log.Printf("Processing number field alert: %+v", cond)
-
 	valBefore, foundValBefore := context.PrevFieldVals.GetNumberFieldValue(cond.FieldID)
 	valAfter, foundValAfter := context.CurrFieldVals.GetNumberFieldValue(cond.FieldID)
 
@@ -295,13 +288,8 @@ func processNumberFieldAlert(context AlertProcessingContext, cond AlertCondition
 
 func processCommentFieldAlert(context AlertProcessingContext, cond AlertCondition) (*AlertNotification, error) {
 
-	log.Printf("Processing comment field alert: %+v", cond)
-
 	valBefore, foundValBefore := context.PrevFieldVals.GetCommentFieldValue(cond.FieldID)
 	valAfter, foundValAfter := context.CurrFieldVals.GetCommentFieldValue(cond.FieldID)
-
-	log.Printf("Processing comment field alert: found before=%v before=%+v found after=%v after=%+v",
-		foundValBefore, valBefore, foundValAfter, valAfter)
 
 	valAdded := func() bool {
 		if (foundValBefore == false) && (foundValAfter == false) {
@@ -388,12 +376,8 @@ func valMemberOfValSet(val string, vals []string) bool {
 
 func processUsersFieldAlert(context AlertProcessingContext, cond AlertCondition) (*AlertNotification, error) {
 
-	log.Printf("Processing user field alert: %+v", cond)
-
 	valBefore, foundValBefore := context.PrevFieldVals.GetUsersFieldValue(cond.FieldID)
 	valAfter, foundValAfter := context.CurrFieldVals.GetUsersFieldValue(cond.FieldID)
-	log.Printf("Processing user field alert: found before=%v before=%+v found after=%v after=%+v",
-		foundValBefore, valBefore, foundValAfter, valAfter)
 
 	valChanged := func() bool {
 		if (foundValBefore == false) && (foundValAfter == false) {
@@ -463,12 +447,8 @@ func processUsersFieldAlert(context AlertProcessingContext, cond AlertCondition)
 
 func processUserFieldAlert(context AlertProcessingContext, cond AlertCondition) (*AlertNotification, error) {
 
-	log.Printf("Processing user field alert: %+v", cond)
-
 	valBefore, foundValBefore := context.PrevFieldVals.GetUserFieldValue(cond.FieldID)
 	valAfter, foundValAfter := context.CurrFieldVals.GetUserFieldValue(cond.FieldID)
-	log.Printf("Processing user field alert: found before=%v before=%+v found after=%v after=%+v",
-		foundValBefore, valBefore, foundValAfter, valAfter)
 
 	valChanged := func() bool {
 		if (foundValBefore == false) && (foundValAfter == false) {
@@ -543,8 +523,6 @@ func processAlert(context AlertProcessingContext) (*AlertNotification, error) {
 		if genErr != nil {
 			return nil, fmt.Errorf("processAlert:  %v", genErr)
 		} else if alertNotification != nil {
-			log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
-				context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
 			return alertNotification, nil // No need to process after matching the first condition
 		}
 	case field.FieldTypeNumber:
@@ -552,8 +530,6 @@ func processAlert(context AlertProcessingContext) (*AlertNotification, error) {
 		if genErr != nil {
 			return nil, fmt.Errorf("processAlert:  %v", genErr)
 		} else if alertNotification != nil {
-			log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
-				context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
 			return alertNotification, nil // No need to process after matching the first condition
 		}
 	case field.FieldTypeBool:
@@ -561,8 +537,6 @@ func processAlert(context AlertProcessingContext) (*AlertNotification, error) {
 		if genErr != nil {
 			return nil, fmt.Errorf("processAlert:  %v", genErr)
 		} else if alertNotification != nil {
-			log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
-				context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
 			return alertNotification, nil // No need to process after matching the first condition
 		}
 	case field.FieldTypeComment:
@@ -570,8 +544,6 @@ func processAlert(context AlertProcessingContext) (*AlertNotification, error) {
 		if genErr != nil {
 			return nil, fmt.Errorf("processAlert:  %v", genErr)
 		} else if alertNotification != nil {
-			log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
-				context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
 			return alertNotification, nil // No need to process after matching the first condition
 		}
 	case field.FieldTypeUser:
@@ -579,8 +551,6 @@ func processAlert(context AlertProcessingContext) (*AlertNotification, error) {
 		if genErr != nil {
 			return nil, fmt.Errorf("processAlert:  %v", genErr)
 		} else if alertNotification != nil {
-			log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
-				context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
 			return alertNotification, nil // No need to process after matching the first condition
 		}
 	case field.FieldTypeUsers:
@@ -588,8 +558,6 @@ func processAlert(context AlertProcessingContext) (*AlertNotification, error) {
 		if genErr != nil {
 			return nil, fmt.Errorf("processAlert:  %v", genErr)
 		} else if alertNotification != nil {
-			log.Printf("Alert generated: alert = %v, field = %v, condition = %v",
-				context.ProcessedAlert.Name, fieldInfo.Name, currAlertCond.ConditionID)
 			return alertNotification, nil // No need to process after matching the first condition
 		}
 	default:

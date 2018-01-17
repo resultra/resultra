@@ -3,10 +3,12 @@ package alert
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/stringValidation"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/trackerDatabase"
+	"time"
 )
 
 const formEntityKind string = "Form"
@@ -121,6 +123,43 @@ func getAllAlertsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Alert,
 	}
 
 	return alerts, nil
+
+}
+
+type AdvanceNotificationParams struct {
+	ParentDatabaseID string `json:"parentDatabaseID"`
+}
+
+func advanceNotificationTime(trackerDBHandle *sql.DB, userID string, parentDatabaseID string) error {
+
+	currTimestampUTC := time.Now().UTC()
+
+	_, insertErr := trackerDBHandle.Exec(`INSERT into alert_notification_times 
+		(database_id,user_id,latest_alert_timestamp_utc) VALUES ($1,$2,$3)`, parentDatabaseID, userID, currTimestampUTC)
+	if insertErr != nil {
+		return fmt.Errorf("advanceNotificationTime: %v", insertErr)
+	}
+
+	_, deleteErr := trackerDBHandle.Exec(`DELETE from alert_notification_times 
+		where database_id=$1 AND user_id=$2 AND latest_alert_timestamp_utc<$3`, parentDatabaseID, userID, currTimestampUTC)
+	if deleteErr != nil {
+		return fmt.Errorf("advanceNotificationTime: %v", deleteErr)
+	}
+
+	return nil
+}
+
+func getLatestNotificationTime(trackerDBHandle *sql.DB, userID string, parentDatabaseID string) time.Time {
+
+	latestTime := time.Time{}
+
+	getErr := trackerDBHandle.QueryRow(`SELECT latest_alert_timestamp_utc FROM alert_notification_times
+		 WHERE database_id=$1 AND user_id=$2 LIMIT 1`, parentDatabaseID, userID).Scan(&latestTime)
+	if getErr != nil {
+		log.Printf("getLatestNotificationTime: error: %v", getErr)
+		return latestTime
+	}
+	return latestTime
 
 }
 

@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/userRole"
 	"sort"
+	"time"
 )
 
 type AlertProcessingResult struct {
@@ -128,8 +129,10 @@ func processOneRecordAlertsWorker(resultsChan chan AlertProcessingResult,
 }
 
 type AlertGenerationResult struct {
-	AlertsByID    map[string]Alert    `json:"alertsByID"`
-	Notifications []AlertNotification `json:"notifications"`
+	AlertsByID       map[string]Alert    `json:"alertsByID"`
+	Notifications    []AlertNotification `json:"notifications"`
+	LatestAlertTime  time.Time           `json:"latestAlertTime"`
+	NumAlertsNotSeen int                 `json:"numAlertsNotSeen"`
 }
 
 func getAlertsWithUserNotification(trackerDBHandle *sql.DB, databaseID string, userID string, userIsAdmin bool) ([]Alert, error) {
@@ -278,9 +281,19 @@ func generateAllAlerts(trackerDBHandle *sql.DB, currUserID string, databaseID st
 	// Sort in reverse chronological order
 	sort.Sort(NotificationByTime(prunedNotifications))
 
+	latestAlertTime := getLatestNotificationTime(trackerDBHandle, userID, databaseID)
+	alertsNotSeen := 0
+	for _, currNotification := range prunedNotifications {
+		if latestAlertTime.Before(currNotification.Timestamp) {
+			alertsNotSeen++
+		}
+	}
+
 	alertGenResults := AlertGenerationResult{
-		AlertsByID:    alertsByID,
-		Notifications: prunedNotifications}
+		AlertsByID:       alertsByID,
+		Notifications:    prunedNotifications,
+		LatestAlertTime:  latestAlertTime,
+		NumAlertsNotSeen: alertsNotSeen}
 
 	return &alertGenResults, nil
 
