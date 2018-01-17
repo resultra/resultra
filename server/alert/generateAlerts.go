@@ -176,6 +176,37 @@ func createAlertGenerationContexts(trackerDBHandle *sql.DB, currUserID string, a
 	return alertContexts, nil
 }
 
+// If multiple alerts are generated for the same record under the same alert definition, only the latest alert notification is of interest.
+// Otherwise, the user will be looking at "stale" information if they pull up the form linked to the alert definition. For example,
+// an alert could be setup to trigger when a task is marked done.  The task could be marked done more than once, but only the latest
+// is of interest to the user.
+func pruneLatestUniqueAlertsByRecordAndAlert(unprunedNotifications []AlertNotification) []AlertNotification {
+
+	pruningMap := map[string]AlertNotification{}
+	for _, currNotification := range unprunedNotifications {
+
+		alertRecKey := currNotification.AlertID + `-` + currNotification.RecordID
+
+		existingNotification, foundNotification := pruningMap[alertRecKey]
+		if foundNotification {
+			if currNotification.Timestamp.After(existingNotification.Timestamp) {
+				pruningMap[alertRecKey] = currNotification
+			}
+		} else {
+			pruningMap[alertRecKey] = currNotification
+		}
+
+	}
+
+	prunedNotifications := []AlertNotification{}
+	for _, currNotification := range pruningMap {
+		prunedNotifications = append(prunedNotifications, currNotification)
+	}
+
+	return prunedNotifications
+
+}
+
 // GenerateAllAlerts regenerates all alerts for all records. This is the top-level function to re-generate all the
 // alert notifications at once.
 func generateAllAlerts(trackerDBHandle *sql.DB, currUserID string, databaseID string, userID string, userIsAdmin bool) (*AlertGenerationResult, error) {
@@ -242,12 +273,14 @@ func generateAllAlerts(trackerDBHandle *sql.DB, currUserID string, databaseID st
 		}
 	}
 
+	prunedNotifications := pruneLatestUniqueAlertsByRecordAndAlert(alertNotifications)
+
 	// Sort in reverse chronological order
-	sort.Sort(NotificationByTime(alertNotifications))
+	sort.Sort(NotificationByTime(prunedNotifications))
 
 	alertGenResults := AlertGenerationResult{
 		AlertsByID:    alertsByID,
-		Notifications: alertNotifications}
+		Notifications: prunedNotifications}
 
 	return &alertGenResults, nil
 
