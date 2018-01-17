@@ -2,7 +2,6 @@ package recordFilter
 
 import (
 	"fmt"
-	"log"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/record"
 	"strings"
@@ -85,13 +84,10 @@ func filterGreater(filterParams FilterFuncParams, recFieldVals record.RecFieldVa
 		return false, nil
 	}
 
-	log.Printf("filterGreater: comparison value = %v", *greaterComparisonVal)
-
 	numberVal, valFound := recFieldVals.GetNumberFieldValue(filterParams.FieldID)
 	if !valFound {
 		return false, nil
 	}
-	log.Printf("filterGreater: value = %v", numberVal)
 
 	if numberVal > *greaterComparisonVal {
 		return true, nil
@@ -108,13 +104,10 @@ func filterGreaterEqual(filterParams FilterFuncParams, recFieldVals record.RecFi
 		return false, nil
 	}
 
-	log.Printf("filterGreater: comparison value = %v", *greaterComparisonVal)
-
 	numberVal, valFound := recFieldVals.GetNumberFieldValue(filterParams.FieldID)
 	if !valFound {
 		return false, nil
 	}
-	log.Printf("filterGreater: value = %v", numberVal)
 
 	if numberVal >= *greaterComparisonVal {
 		return true, nil
@@ -130,13 +123,10 @@ func filterLess(filterParams FilterFuncParams, recFieldVals record.RecFieldValue
 		return false, nil
 	}
 
-	log.Printf("filterLess: comparison value = %v", *lessComparisonVal)
-
 	numberVal, valFound := recFieldVals.GetNumberFieldValue(filterParams.FieldID)
 	if !valFound {
 		return false, nil
 	}
-	log.Printf("filterLess: value = %v", numberVal)
 
 	if numberVal < *lessComparisonVal {
 		return true, nil
@@ -151,13 +141,10 @@ func filterLessEqual(filterParams FilterFuncParams, recFieldVals record.RecField
 		return false, nil
 	}
 
-	log.Printf("filterLess: comparison value = %v", *lessComparisonVal)
-
 	numberVal, valFound := recFieldVals.GetNumberFieldValue(filterParams.FieldID)
 	if !valFound {
 		return false, nil
 	}
-	log.Printf("filterLess: value = %v", numberVal)
 
 	if numberVal <= *lessComparisonVal {
 		return true, nil
@@ -195,14 +182,11 @@ func filterCustomDateRange(filterParams FilterFuncParams, recFieldVals record.Re
 	if startDate == nil || endDate == nil {
 		return false, nil
 	}
-	log.Printf("date range filter: start date = %v, end date = %v", *startDate, *endDate)
 
 	timeVal, valFound := recFieldVals.GetTimeFieldValue(filterParams.FieldID)
 	if !valFound {
 		return false, nil
 	}
-
-	log.Printf("date range filter: date val = %v", timeVal)
 
 	if timeVal.After(*startDate) && timeVal.Before(*endDate) {
 		return true, nil
@@ -225,8 +209,6 @@ func filterBefore(filterParams FilterFuncParams, recFieldVals record.RecFieldVal
 		return false, nil
 	}
 
-	log.Printf("date range filter: date val = %v", timeVal)
-
 	if timeVal.Before(*endDate) {
 		return true, nil
 	} else {
@@ -247,8 +229,6 @@ func filterAfter(filterParams FilterFuncParams, recFieldVals record.RecFieldValu
 	if !valFound {
 		return false, nil
 	}
-
-	log.Printf("date range filter: date val = %v", timeVal)
 
 	if timeVal.After(*startDate) {
 		return true, nil

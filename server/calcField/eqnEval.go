@@ -3,7 +3,6 @@ package calcField
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/record"
@@ -92,11 +91,9 @@ func getBoolRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*Equat
 		// the similar function for other value types). This is because record values for non-calculated
 		// fields is the only place where an undefined (or blank) value could originate, because a
 		// user hasn't entered a value yet for the field.
-		log.Printf("getBoolRecordEqnResult: Undefined equation result for field: %v", fieldID)
 		return undefinedEqnResult(), nil
 
 	} else if val == nil {
-		log.Printf("getBoolRecordEqnResult: Undefined equation result for field: %v", fieldID)
 		// If the value is defined, but set to a nil value, this means the value has been cleared. For purposes
 		// of equation evaluation, this is the same as an undefined value.
 		return undefinedEqnResult(), nil
@@ -128,7 +125,6 @@ func getTextRecordEqnResult(evalContext *EqnEvalContext, fieldID string) (*Equat
 		// the similar function for other value types). This is because record values for non-calculated
 		// fields is the only place where an undefined (or blank) value could originate, because a
 		// user hasn't entered a value yet for the field.
-		log.Printf("GetTextRecordEqnResult: Undefined equation result for field: %v", fieldID)
 		return undefinedEqnResult(), nil
 	} else if val == nil {
 		// If the value is defined, but set to a nil value, this means the value has been cleared. For purposes
@@ -190,7 +186,6 @@ func getGlobalValResult(evalContext *EqnEvalContext, globalID string) (*Equation
 		// the similar function for other value types). This is because record values for non-calculated
 		// fields is the only place where an undefined (or blank) value could originate, because a
 		// user hasn't entered a value yet for the field.
-		log.Printf("getGlobalValResult: Undefined equation result for globalID: %v", globalID)
 		return undefinedEqnResult(), nil
 	} else {
 		switch globalInfo.Type {
