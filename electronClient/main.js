@@ -42,25 +42,25 @@ function launchBackend() {
 	}
 
 	const spawn = require('child_process').spawn;
-	const backend = spawn(backendExe, backendArgs,backendOpts);
+	const backendChildProc = spawn(backendExe, backendArgs,backendOpts);
 
 
 	// Handle normal output
-	backend.stdout.on('data', (data) => {
+	backendChildProc.stdout.on('data', (data) => {
 	    // As said before, convert the Uint8Array to a readable string.
 	    var str = String.fromCharCode.apply(null, data);
 	    console.info(str);
 	});
 
 	// Handle error output
-	backend.stderr.on('data', (data) => {
+	backendChildProc.stderr.on('data', (data) => {
 	    // As said before, convert the Uint8Array to a readable string.
 	    var str = String.fromCharCode.apply(null, data);
 	    console.error(str);
 	});
 
 	// Handle on exit event
-	backend.on('exit', (code) => {
+	backendChildProc.on('exit', (code) => {
 	    var preText = `Child exited with code ${code} : `;
 
 	    switch(code){
@@ -79,9 +79,11 @@ function launchBackend() {
 	    }
 	});
 	
-	backend.on('error', (err) => {
+	backendChildProc.on('error', (err) => {
 	  console.log('Failed to start subprocess.');
 	});
+	
+	return backendChildProc
 }
 
 function pingToConfirmBackendStartup(pingCompleteCallback) {
@@ -123,41 +125,47 @@ function pingToConfirmBackendStartup(pingCompleteCallback) {
 
 function launchBackendThenCreateWindow() {
 	
-	launchBackend()
+	var backendChildProc = launchBackend()
 	
-	// TBD - It takes a few seconds for the backend to startup, connect to the database, etc. 
-	// Is there a better way to confirm startup? What happens if the startup fails? ... how do I get the
-	// message back to the client?
-	// A better way might be to connect to a "keep alive" API through a REST request.
-	// e.g.: https://stackoverflow.com/questions/5643321/how-to-make-remote-rest-call-inside-node-js-any-curl
 	pingToConfirmBackendStartup(function(success) {
 		if(success) {
 			createWindow()
+		} else {
+			// TODO - Show some kinf of startup error and quit
 		}
 	})
+	
+	app.on('quit',function() {
+	  // Send SIGINT, which is equivalent to Cntrl-C and will always terminate
+	  // the child process, as opposed to the default SIGTERM
+	  backendChildProc.kill('SIGINT')
+	})
+	
+	// Quit when all windows are closed.
+	app.on('window-all-closed', function () {
+	  // On OS X it is common for applications and their menu bar
+	  // to stay active until the user quits explicitly with Cmd + Q
+		
+	  if (process.platform !== 'darwin') {
+	    app.quit()
+	  }
+	})
+
+	app.on('activate', function () {
+	  // On OS X it's common to re-create a window in the app when the
+	  // dock icon is clicked and there are no other windows open.
+	  if (mainWindow === null) {
+	    createWindow()
+	  }
+	})
+
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', launchBackendThenCreateWindow)
+app.on('ready', launchBackendThenCreateWindow )
 
-// Quit when all windows are closed.
-app.on('window-all-closed', function () {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
-app.on('activate', function () {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow()
-  }
-})
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
