@@ -1,7 +1,7 @@
 {
   "name": "Resultra",
   "version": "1.0.0",
-  "description": "Resultra personal edition",
+  "description": "Resultra desktop edition",
   "main": "main.js",
   "scripts": {
 	  "post-install":"install-app-deps",
@@ -12,9 +12,23 @@
   "keywords": [
     "Resultra"
   ],
+  "build": {
+	  "mac": {
+		  "extraFiles": [
+			  {
+			    "from": "../build/dest/static",
+			    "to": "resultraBackend/static"
+			  },
+			  {
+			    "from": "../build/dest/bin/datasheetServer",
+			    "to": "resultraBackend/bin/datasheetServer"
+			  }
+		  ]
+	  } 	
+  },
   "author": "Resultra,LLC <info@resultra.com>",
   "license": "Commercial",
-  "dependencies": {
+   "dependencies": {
       "request": "^2.83.0" 	
   },
   "devDependencies": {
