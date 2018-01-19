@@ -16,7 +16,7 @@ function createWindow () {
   mainWindow = new BrowserWindow({width: 800, height: 600})
 
   // and load the index.html of the app.  
-  mainWindow.loadURL('http://localhost:43400/')
+  mainWindow.loadURL('http://localhost:43401/')
 
   // Open the DevTools.
 //  mainWindow.webContents.openDevTools()
@@ -30,10 +30,78 @@ function createWindow () {
   })
 }
 
+function launchBackend() {
+	
+	var backendExe = "/Users/sroehling/Development/go/src/resultra/datasheet/build/dest/bin/datasheetServer";
+	var backendArgs = ["--config","/Users/sroehling/Development/devTrackerDatabases/steveTrackerConfig.json"]
+	var backendOpts = {
+		detached: false,
+		// The backend looks uses the CWD as a base path to look for static assets such as Javascript files and 
+		// images.
+		cwd: "/Users/sroehling/Development/go/src/resultra/datasheet/build/dest"
+	}
+
+	const spawn = require('child_process').spawn;
+	const backend = spawn(backendExe, backendArgs,backendOpts);
+
+
+	// Handle normal output
+	backend.stdout.on('data', (data) => {
+	    // As said before, convert the Uint8Array to a readable string.
+	    var str = String.fromCharCode.apply(null, data);
+	    console.info(str);
+	});
+
+	// Handle error output
+	backend.stderr.on('data', (data) => {
+	    // As said before, convert the Uint8Array to a readable string.
+	    var str = String.fromCharCode.apply(null, data);
+	    console.error(str);
+	});
+
+	// Handle on exit event
+	backend.on('exit', (code) => {
+	    var preText = `Child exited with code ${code} : `;
+
+	    switch(code){
+	        case 0:
+	            console.info(preText+"Something unknown happened executing the batch.");
+	            break;
+	        case 1:
+	            console.info(preText+"The file already exists");
+	            break;
+	        case 2:
+	            console.info(preText+"The file doesn't exists and now is created");
+	            break;
+	        case 3:
+	            console.info(preText+"An error ocurred while creating the file");
+	            break;
+	    }
+	});
+	
+	backend.on('error', (err) => {
+	  console.log('Failed to start subprocess.');
+	});
+}
+
+function launchBackendThenCreateWindow() {
+	
+	launchBackend()
+	
+	// TBD - It takes a few seconds for the backend to startup, connect to the database, etc. 
+	// Is there a better way to confirm startup? What happens if the startup fails? ... how do I get the
+	// message back to the client?
+	// A better way might be to connect to a "keep alive" API through a REST request.
+	// e.g.: https://stackoverflow.com/questions/5643321/how-to-make-remote-rest-call-inside-node-js-any-curl
+	setTimeout(function() {
+		createWindow()
+	},3000)
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', launchBackendThenCreateWindow)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
