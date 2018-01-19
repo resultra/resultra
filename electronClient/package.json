@@ -4,15 +4,21 @@
   "description": "Resultra personal edition",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+	  "post-install":"install-app-deps",
+    "start": "electron .",
+    "dist": "build"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://www.resultra.com",
   "keywords": [
     "Resultra"
   ],
-  "author": "GitHub",
+  "author": "Resultra,LLC <info@resultra.com>",
   "license": "Commercial",
+  "dependencies": {
+      "request": "^2.83.0" 	
+  },
   "devDependencies": {
-    "electron": "~1.7.8"
+    "electron": "~1.7.8",
+    "electron-builder": "^19.54.0"
   }
 }

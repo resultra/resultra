@@ -32,6 +32,9 @@ function createWindow () {
 
 function launchBackend() {
 	
+	var appBasePath = app.getAppPath()
+	console.log("App base path: " + appBasePath)
+	
 	var backendExe = "/Users/sroehling/Development/go/src/resultra/datasheet/build/dest/bin/datasheetServer";
 	var backendArgs = ["--config","/Users/sroehling/Development/devTrackerDatabases/steveTrackerConfig.json"]
 	var backendOpts = {

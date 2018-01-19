@@ -9,3 +9,7 @@ This will install all the modules needed to build the app and then launch it.
 
 This client will connect to a tracking database server running locally. More development
 is needed to launch the tracking database server from the Electron app itself.
+
+The app is setup to use electron-builder to package the binary (first installed via `npm install electron-builder --save-dev`). To package the distrubition, run the following:
+
+	$ npm run dist

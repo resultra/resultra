@@ -14,6 +14,7 @@ build/dest/*
 webui/build/node_modules/*
 webui/thirdParty/node_modules/*
 electronClient/node_modules/*
+electronClient/dist/*
 
 # Executable file
 serverMain/datasheetServer
