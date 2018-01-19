@@ -26,6 +26,8 @@ func init() {
 	adminRouter.HandleFunc("/api/admin/setUserRoleInfo", setUserRoleInfoAPI)
 	adminRouter.HandleFunc("/api/admin/deleteCollaborator", deleteCollaboratorAPI)
 
+	adminRouter.HandleFunc("/api/admin/ping", pingAPI)
+
 	http.Handle("/api/admin/", adminRouter)
 }
 
@@ -226,4 +228,9 @@ func deleteCollaboratorAPI(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+}
+
+func pingAPI(w http.ResponseWriter, r *http.Request) {
+
+	api.WriteJSONResponse(w, true)
 }

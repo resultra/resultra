@@ -84,6 +84,43 @@ function launchBackend() {
 	});
 }
 
+function pingToConfirmBackendStartup(pingCompleteCallback) {
+	
+   	var request = require("request")
+	
+	var numRetriesRemaining = 30
+	
+	function sendOnePingRequest() {
+		
+		function handlePingResponse(err,response,body) {
+						
+			if (response === undefined || response.statusCode !== 200) {
+				console.log("handlePingResponse: error: " + err + " response=" + JSON.stringify(response))
+				
+				numRetriesRemaining--
+				if(numRetriesRemaining <= 0) {
+					pingCompleteCallback(false)
+				} else {
+					setTimeout(function() {
+						sendOnePingRequest()
+					},500)
+				}
+			} else {
+					console.log("handlePingResponse: SUCCESS: body: " + JSON.stringify(body))
+					pingCompleteCallback(true)
+			}			
+		}
+		
+		var pingArgs = {}
+		request.post({ url:'http://localhost:43401/api/admin/ping', json: pingArgs }, handlePingResponse)
+		
+		
+	}
+	
+	setTimeout(sendOnePingRequest,500)
+		
+}
+
 function launchBackendThenCreateWindow() {
 	
 	launchBackend()
@@ -93,9 +130,11 @@ function launchBackendThenCreateWindow() {
 	// message back to the client?
 	// A better way might be to connect to a "keep alive" API through a REST request.
 	// e.g.: https://stackoverflow.com/questions/5643321/how-to-make-remote-rest-call-inside-node-js-any-curl
-	setTimeout(function() {
-		createWindow()
-	},3000)
+	pingToConfirmBackendStartup(function(success) {
+		if(success) {
+			createWindow()
+		}
+	})
 }
 
 // This method will be called when Electron has finished
