@@ -4,7 +4,7 @@
   "description": "Resultra desktop edition",
   "main": "main.js",
   "scripts": {
-	  "post-install":"install-app-deps",
+    "post-install": "install-app-deps",
     "start": "electron .",
     "dist": "build"
   },
@@ -13,23 +13,24 @@
     "Resultra"
   ],
   "build": {
-	  "mac": {
-		  "extraFiles": [
-			  {
-			    "from": "../build/dest/static",
-			    "to": "resultraBackend/static"
-			  },
-			  {
-			    "from": "../build/dest/bin/datasheetServer",
-			    "to": "resultraBackend/bin/datasheetServer"
-			  }
-		  ]
-	  } 	
+    "mac": {
+      "extraFiles": [
+        {
+          "from": "../build/dest/static",
+          "to": "resultraBackend/static"
+        },
+        {
+          "from": "../build/dest/bin/datasheetServer",
+          "to": "resultraBackend/bin/datasheetServer"
+        }
+      ]
+    }
   },
   "author": "Resultra,LLC <info@resultra.com>",
   "license": "Commercial",
-   "dependencies": {
-      "request": "^2.83.0" 	
+  "dependencies": {
+    "electron-log": "^2.2.14",
+    "request": "^2.83.0"
   },
   "devDependencies": {
     "electron": "~1.7.8",

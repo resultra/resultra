@@ -1,11 +1,19 @@
 const electron = require('electron')
+const path =  require('path');
+
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
-const path = require('path')
 const url = require('url')
+var log = require('electron-log')
+var request = require("request")
+
+
+// Log level
+log.transports.file.level = 'info';
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -30,10 +38,26 @@ function createWindow () {
   })
 }
 
+function electronRunningInDevEnvironment() {
+  return process.mainModule.filename.indexOf('app.asar') === -1;
+}
+
 function launchBackend() {
 	
-	var appBasePath = app.getAppPath()
-	console.log("App base path: " + appBasePath)
+	
+	function getAppBasePath() {
+		// Solution from the following: 
+		// https://github.com/chentsulin/electron-react-boilerplate/issues/1047
+		const appBasePath = electronRunningInDevEnvironment() 
+		? process.cwd()
+		: path.resolve(app.getAppPath(), '../../');
+		
+		return appBasePath
+	}
+	
+	var appBasePath = getAppBasePath()
+	
+	log.info("Starting up backend: app path = " + appBasePath)
 	
 	var backendExe = "/Users/sroehling/Development/go/src/resultra/datasheet/build/dest/bin/datasheetServer";
 	var backendArgs = ["--config","/Users/sroehling/Development/devTrackerDatabases/steveTrackerConfig.json"]
@@ -52,14 +76,14 @@ function launchBackend() {
 	backendChildProc.stdout.on('data', (data) => {
 	    // As said before, convert the Uint8Array to a readable string.
 	    var str = String.fromCharCode.apply(null, data);
-	    console.info(str);
+		log.info("backend: " + str)
 	});
 
 	// Handle error output
 	backendChildProc.stderr.on('data', (data) => {
 	    // As said before, convert the Uint8Array to a readable string.
 	    var str = String.fromCharCode.apply(null, data);
-	    console.error(str);
+		log.debug("backend: " + str)
 	});
 
 	// Handle on exit event
@@ -83,7 +107,7 @@ function launchBackend() {
 	});
 	
 	backendChildProc.on('error', (err) => {
-	  console.log('Failed to start subprocess.');
+	  log.error('Failed to start backend sub-process: ' + backendExe)
 	});
 	
 	return backendChildProc
@@ -91,17 +115,14 @@ function launchBackend() {
 
 function pingToConfirmBackendStartup(pingCompleteCallback) {
 	
-   	var request = require("request")
-	
+ 	
 	var numRetriesRemaining = 30
 	
 	function sendOnePingRequest() {
 		
 		function handlePingResponse(err,response,body) {
 						
-			if (response === undefined || response.statusCode !== 200) {
-				console.log("handlePingResponse: error: " + err + " response=" + JSON.stringify(response))
-				
+			if (response === undefined || response.statusCode !== 200) {				
 				numRetriesRemaining--
 				if(numRetriesRemaining <= 0) {
 					pingCompleteCallback(false)
@@ -111,7 +132,7 @@ function pingToConfirmBackendStartup(pingCompleteCallback) {
 					},500)
 				}
 			} else {
-					console.log("handlePingResponse: SUCCESS: body: " + JSON.stringify(body))
+					log.info("handlePingResponse: SUCCESS: body: " + JSON.stringify(body))
 					pingCompleteCallback(true)
 			}			
 		}
