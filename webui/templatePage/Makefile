@@ -2,7 +2,7 @@ DEPTH = ../..
 include $(DEPTH)/build/common.mk
 include $(DEPTH)/webui/build/webui.mk
 
-all: prebuild package
+all: prebuild export
 	
 clean: 
 	$(RM) *_gen.json
@@ -11,7 +11,7 @@ prebuild:
 	$(AUTO_GEN_ASSET_MANIFEST)
 	
 		
-package:
+export:
 	$(EXPORT_ASSETS)
 	$(BUILD_ASSET_INJECTION_LIST) templatePageSignedInAssetInclude.json $(ASSET_BASE_PATH) > templatePageSignedInAssetInclude_gen.json
 	$(EXPORT_HTML_WITH_INJECTED_ASSETS) $(abspath ./templatePageSignedInAssetInclude_gen.json)

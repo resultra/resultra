@@ -55,9 +55,20 @@ function launchBackend() {
 		return appBasePath
 	}
 	
+	function getBackendBasePath() {
+		if (electronRunningInDevEnvironment()) {
+			return path.resolve(process.cwd(),'../build/dest/')
+		} else {
+			var basePath = getAppBasePath()
+			return path.resolve(basePath,'resultraBackend')
+		}
+	}
+	
 	var appBasePath = getAppBasePath()
+	var backendBasePath = getBackendBasePath()
 	
 	log.info("Starting up backend: app path = " + appBasePath)
+	log.info("Backend base path: " + backendBasePath)
 	
 	var backendExe = "/Users/sroehling/Development/go/src/resultra/datasheet/build/dest/bin/datasheetServer";
 	var backendArgs = ["--config","/Users/sroehling/Development/devTrackerDatabases/steveTrackerConfig.json"]

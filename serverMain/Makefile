@@ -4,7 +4,7 @@ include $(DEPTH)/build/common.mk
 
 .PHONY: datasheetServer
 
-all: build package
+all: build export
 
 build: datasheetServer
 
@@ -14,5 +14,5 @@ clean:
 datasheetServer: 
 	$(GOBUILD) datasheetServer.go
 	
-package:
+export:
 	$(INSTALL_FILE) datasheetServer $(PKG_BIN_DIR)

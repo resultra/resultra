@@ -3,6 +3,7 @@
 DEBUG ?= 1
 
 RM = rm -f
+RM_DIR = rm -Rf 
 INSTALL_FILE = $(DEPTH)/build/installFile.sh
 INSTALL_RENAMED_FILE = $(DEPTH)/build/installRenameFile.sh
 PKG_BIN_DIR = $(DEPTH)/build/dest/bin
@@ -19,5 +20,7 @@ clean:
 prebuild:
 
 build:
+
+export:
 
 package:

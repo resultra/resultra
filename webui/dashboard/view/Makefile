@@ -2,7 +2,7 @@ DEPTH = ../../..
 include $(DEPTH)/build/common.mk
 include $(DEPTH)/webui/build/webui.mk
 
-all: prebuild package
+all: prebuild export
 	
 clean: 
 	$(RM) *_gen.json
@@ -11,5 +11,5 @@ prebuild:
 	$(GEN_ASSET_MANIFEST)
 	
 		
-package:
+export:
 	$(EXPORT_ASSETS)

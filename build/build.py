@@ -76,6 +76,7 @@ startTime = time.time()
             
 runMakePhase("prebuild")
 runMakePhase("build")
+runMakePhase("export")
 runMakePhase("package")
 
 endTime = time.time()

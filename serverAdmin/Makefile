@@ -4,7 +4,7 @@ include $(DEPTH)/build/common.mk
 
 .PHONY: addResultraAccount
 
-all: build package
+all: build export
 
 build: addResultraAccount
 
@@ -14,5 +14,5 @@ clean:
 addResultraAccount: 
 	$(GOBUILD) addResultraAccount.go
 	
-package:
+export:
 	$(INSTALL_FILE) addResultraAccount $(PKG_BIN_DIR)
