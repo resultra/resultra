@@ -69,14 +69,14 @@ function launchBackend() {
 	
 	log.info("Starting up backend: app path = " + appBasePath)
 	log.info("Backend base path: " + backendBasePath)
-	
-	var backendExe = "/Users/sroehling/Development/go/src/resultra/datasheet/build/dest/bin/datasheetServer";
+		
+	var backendExe = path.resolve(backendBasePath,'bin/datasheetServer')
 	var backendArgs = ["--config","/Users/sroehling/Development/devTrackerDatabases/steveTrackerConfig.json"]
 	var backendOpts = {
 		detached: false,
 		// The backend looks uses the CWD as a base path to look for static assets such as Javascript files and 
 		// images.
-		cwd: "/Users/sroehling/Development/go/src/resultra/datasheet/build/dest"
+		cwd: backendBasePath
 	}
 
 	const spawn = require('child_process').spawn;
