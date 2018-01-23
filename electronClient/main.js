@@ -24,7 +24,7 @@ function createWindow () {
   mainWindow = new BrowserWindow({width: 1000, height: 600})
 
   // and load the index.html of the app.  
-  mainWindow.loadURL('http://localhost:43401/')
+  mainWindow.loadURL('http://localhost:43409/')
 
   // Open the DevTools.
 //  mainWindow.webContents.openDevTools()
@@ -70,8 +70,13 @@ function launchBackend() {
 	log.info("Starting up backend: app path = " + appBasePath)
 	log.info("Backend base path: " + backendBasePath)
 		
-	var backendExe = path.resolve(backendBasePath,'bin/datasheetServer')
-	var backendArgs = ["--config","/Users/sroehling/Development/devTrackerDatabases/steveTrackerConfig.json"]
+	// TODO - Reference standard OS directory locations for application data and templates
+	var trackerDBBasePath = "/Users/sroehling/Development/devTrackerDatabases/steveTrackers"
+	var factoryTemplatesBasePath = "/Users/sroehling/Development/steveTrackersTest/factoryTemplates"
+		
+	var backendExe = path.resolve(backendBasePath,'bin/resultraLocalBackend')
+	var backendArgs = ["--tracker-path",trackerDBBasePath,
+						"--templates-path",factoryTemplatesBasePath]
 	var backendOpts = {
 		detached: false,
 		// The backend looks uses the CWD as a base path to look for static assets such as Javascript files and 
@@ -149,7 +154,7 @@ function pingToConfirmBackendStartup(pingCompleteCallback) {
 		}
 		
 		var pingArgs = {}
-		request.post({ url:'http://localhost:43401/api/admin/ping', json: pingArgs }, handlePingResponse)
+		request.post({ url:'http://localhost:43409/api/admin/ping', json: pingArgs }, handlePingResponse)
 		
 		
 	}

@@ -31,7 +31,7 @@ func main() {
 	flag.Parse()
 
 	if (configFile != nil) && (len(*configFile) > 0) {
-		if err := runtimeConfig.InitConfig(*configFile); err != nil {
+		if err := runtimeConfig.InitConfigFromConfigFile(*configFile); err != nil {
 			log.Printf("Error setting configuration: %v\n", err)
 			os.Exit(255)
 		}

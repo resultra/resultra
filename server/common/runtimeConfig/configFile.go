@@ -30,7 +30,7 @@ type RuntimeConfig struct {
 
 const permsOwnerReadWriteOnly os.FileMode = 0700
 
-func newDefaultRuntimeConfig() RuntimeConfig {
+func NewDefaultRuntimeConfig() RuntimeConfig {
 	config := RuntimeConfig{
 		PortNumber: defaultPortNum}
 	return config
@@ -39,22 +39,10 @@ func newDefaultRuntimeConfig() RuntimeConfig {
 var CurrRuntimeConfig RuntimeConfig
 
 func init() {
-	CurrRuntimeConfig = newDefaultRuntimeConfig()
+	CurrRuntimeConfig = NewDefaultRuntimeConfig()
 }
 
-func InitConfig(configFileName string) error {
-
-	configFile, openErr := os.Open(configFileName)
-	if openErr != nil {
-		return fmt.Errorf("init runtime config: can't open config file %v: %v", configFileName, openErr)
-	}
-
-	decoder := json.NewDecoder(configFile)
-
-	config := newDefaultRuntimeConfig()
-	if err := decoder.Decode(&config); err != nil {
-		return fmt.Errorf("init runtime config: %v, %v", configFileName, err)
-	}
+func InitRuntimeConfig(config RuntimeConfig) error {
 
 	if config.TrackerDatabaseConfig.LocalDatabaseConfig != nil {
 		log.Println("Initializing local database connection")
@@ -67,7 +55,7 @@ func InitConfig(configFileName string) error {
 			return err
 		}
 	} else {
-		return fmt.Errorf("runtime configuration %v missing database connection configuration", configFileName)
+		return fmt.Errorf("runtime configuration missing database connection configuration")
 	}
 
 	if config.TrackerDatabaseConfig.LocalAttachmentConfig != nil {
@@ -76,7 +64,7 @@ func InitConfig(configFileName string) error {
 			return err
 		}
 	} else {
-		return fmt.Errorf("runtime configuration %v missing attachment storage configuration", configFileName)
+		return fmt.Errorf("runtime configuration missing attachment storage configuration")
 	}
 
 	// Optional database configuration for templates
@@ -95,11 +83,34 @@ func InitConfig(configFileName string) error {
 				return err
 			}
 		} else {
-			return fmt.Errorf("runtime configuration %v missing database connection configuration for factory templates", configFileName)
+			return fmt.Errorf("runtime configuration missing database connection configuration for factory templates")
 		}
 	}
 
 	CurrRuntimeConfig = config
+
+	return nil
+
+}
+
+func InitConfigFromConfigFile(configFileName string) error {
+
+	configFile, openErr := os.Open(configFileName)
+	if openErr != nil {
+		return fmt.Errorf("init runtime config: can't open config file %v: %v", configFileName, openErr)
+	}
+
+	decoder := json.NewDecoder(configFile)
+
+	config := NewDefaultRuntimeConfig()
+	if err := decoder.Decode(&config); err != nil {
+		return fmt.Errorf("init runtime config: %v, %v", configFileName, err)
+	}
+
+	err := InitRuntimeConfig(config)
+	if err != nil {
+		return fmt.Errorf("ERROR: Can't initialize configuration: error = %v: config file = %v", configFileName)
+	}
 
 	return nil
 }
