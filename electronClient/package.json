@@ -22,6 +22,10 @@
         {
           "from": "../build/dest/bin/resultraLocalBackend",
           "to": "resultraBackend/bin/resultraLocalBackend"
+        },
+        {
+          "from": "../build/dest/factoryTemplates",
+          "to": "resultraBackend/factoryTemplates"
         }
       ]
     }

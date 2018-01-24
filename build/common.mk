@@ -7,6 +7,7 @@ RM_DIR = rm -Rf
 INSTALL_FILE = $(DEPTH)/build/installFile.sh
 INSTALL_RENAMED_FILE = $(DEPTH)/build/installRenameFile.sh
 PKG_BIN_DIR = $(DEPTH)/build/dest/bin
+PKG_TEMPLATES_DIR = $(DEPTH)/build/dest/factoryTemplates
 PKG_SCHEMA_DIR = $(DEPTH)/build/dest/schema
 
 GO = go

@@ -26,4 +26,5 @@ The app is setup to use electron-builder to package the binary (first installed 
 	
 The application icon for Mac OS X was generated from a 512x512 .png file of Resultra's logo. The Mac Program called Image2icon is used to generate the icon.icns file in the build directory.
 	
+The factory templates inside the factoryTemplates/ directory are copied to the build directory and included in the packaged application. Update the file trackers.db to include any additional templates.
 	
