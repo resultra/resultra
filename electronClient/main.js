@@ -71,8 +71,9 @@ function launchBackend() {
 	log.info("Backend base path: " + backendBasePath)
 		
 	// TODO - Reference standard OS directory locations for application data and templates
-	var trackerDBBasePath = "/Users/sroehling/Development/devTrackerDatabases/steveTrackers"
-	var factoryTemplatesBasePath = "/Users/sroehling/Development/steveTrackersTest/factoryTemplates"
+//	var trackerDBBasePath = "/Users/sroehling/Development/devTrackerDatabases/steveTrackers"
+	var trackerDBBasePath = path.resolve(app.getPath('userData'),"trackers")
+	var factoryTemplatesBasePath = "/Users/sroehling/Development/devTrackerDatabases/factoryTemplates"
 		
 	var backendExe = path.resolve(backendBasePath,'bin/resultraLocalBackend')
 	var backendArgs = ["--tracker-path",trackerDBBasePath,
