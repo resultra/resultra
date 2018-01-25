@@ -12,5 +12,5 @@ clean:
 prebuild:
 	$(GEN_ASSET_MANIFEST)
 			
-package:
+export:
 	$(EXPORT_ASSETS)

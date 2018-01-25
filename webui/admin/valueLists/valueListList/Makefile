@@ -1,8 +1,4 @@
 DEPTH = ../../../..
-include $(DEPTH)/webui/build/autoExportAssets.mk
-
-
-DEPTH = ../../../..
 include $(DEPTH)/build/common.mk
 include $(DEPTH)/webui/build/webui.mk
 
