@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/workspace"
 	"resultra/datasheet/webui/common"
@@ -37,6 +38,7 @@ type PageInfo struct {
 	Title                    string `json:"title"`
 	WorkspaceName            string `json:"workspaceName"`
 	CurrUserIsWorkspaceAdmin bool   `json:"currUserIsWorkspaceAdmin"`
+	IsSingleUserWorkspace    bool   `json:"isSingleUserWorkspace"`
 }
 
 func home(respWriter http.ResponseWriter, req *http.Request) {
@@ -53,14 +55,26 @@ func home(respWriter http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	isSingleUser := runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace
+
+	if isSingleUser {
+		authResp := userAuth.LoginSingleUser(respWriter, req)
+
+		if !authResp.Success {
+			log.Printf("Ping: single user not logged int: %v", authResp.Msg)
+		}
+
+	}
+
 	log.Printf("workspace name: %v", workspaceName)
 
 	userInfo, authErr := userAuth.GetCurrentUserInfo(req)
 	if authErr != nil {
 		log.Printf("user not authorized: %v", authErr)
 		templParams := PageInfo{
-			Title:         "Resultra Workspace - Signed out",
-			WorkspaceName: workspaceName}
+			Title:                 "Resultra Workspace - Signed out",
+			WorkspaceName:         workspaceName,
+			IsSingleUserWorkspace: isSingleUser}
 		err := homePageTemplates.ExecuteTemplate(respWriter, "homePagePublic", templParams)
 		if err != nil {
 			http.Error(respWriter, err.Error(), http.StatusInternalServerError)
@@ -71,7 +85,8 @@ func home(respWriter http.ResponseWriter, req *http.Request) {
 		templParams := PageInfo{
 			Title:                    "Resultra Workspace - Signed In",
 			WorkspaceName:            workspaceName,
-			CurrUserIsWorkspaceAdmin: userInfo.IsWorkspaceAdmin}
+			CurrUserIsWorkspaceAdmin: userInfo.IsWorkspaceAdmin,
+			IsSingleUserWorkspace:    isSingleUser}
 		err := homePageTemplates.ExecuteTemplate(respWriter, "homePageSignedIn", templParams)
 		if err != nil {
 			http.Error(respWriter, err.Error(), http.StatusInternalServerError)

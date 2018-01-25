@@ -1,4 +1,6 @@
 
+
+
 {{define "homePageSigninPanel"}}
 
 	  <div>
@@ -47,6 +49,11 @@
 	<!-- homePagePublicAssets:css -->
 	<!-- endinject -->
 	
+	<script>var homePageContext = {
+	 	isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } 
+	</script>
+	
+	
 	{{template "thirdPartyJS"}}
 	
 	<!-- homePagePublicAssets:js -->
@@ -64,7 +71,12 @@
 		  <div class="col-md-4">
 			  
 			  <div class="well">
-				  {{template "homePageSigninPanel"}}
+				  {{if .IsSingleUserWorkspace}}
+			    	{{template "singleUserLocalWorkspaceHomePageRegistrationPanel"}}	  
+				  {{else}}
+				    {{template "homePageSigninPanel"}}
+				  {{end}}
+				
 			 </div>
 				 
 		 </div>

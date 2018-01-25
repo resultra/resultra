@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/generic/api"
 )
 
@@ -15,6 +16,11 @@ func init() {
 	authRouter := mux.NewRouter()
 
 	authRouter.HandleFunc("/auth/register", registerNewUserAPI)
+
+	if runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace {
+		authRouter.HandleFunc("/auth/registerSingleUser", registerSingleUserAPI)
+	}
+
 	authRouter.HandleFunc("/auth/login", loginUserAPI)
 	authRouter.HandleFunc("/auth/signout", signoutUserAPI)
 
@@ -59,6 +65,24 @@ func registerNewUserAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newUserResp := saveNewUser(trackerDBHandle, params)
+	api.WriteJSONResponse(w, newUserResp)
+
+}
+
+func registerSingleUserAPI(w http.ResponseWriter, r *http.Request) {
+	var params RegisterSingleUserParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	newUserResp := saveNewSingleUser(trackerDBHandle, params)
 	api.WriteJSONResponse(w, newUserResp)
 
 }

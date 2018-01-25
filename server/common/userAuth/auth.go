@@ -64,6 +64,13 @@ func loginUser(rw http.ResponseWriter, req *http.Request, params LoginParams) *A
 	return newAuthResponse(true, "Login successful")
 }
 
+func LoginSingleUser(rw http.ResponseWriter, req *http.Request) *AuthResponse {
+	loginParams := LoginParams{
+		EmailAddr: singleUserDummyEmailAddr,
+		Password:  singleUserDummyPassword}
+	return loginUser(rw, req, loginParams)
+}
+
 func GetCurrentUserID(req *http.Request) (string, error) {
 
 	authSession, sessErr := authCookieStore.Get(req, "auth")

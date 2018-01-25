@@ -53,6 +53,7 @@ func main() {
 	config.TrackerDatabaseConfig.LocalDatabaseConfig = &trackerDBConfig
 	config.TrackerDatabaseConfig.LocalAttachmentConfig = &attachmentConfig
 	config.FactoryTemplateDatabaseConfig = &factoryTemplateConfig
+	config.IsSingleUserWorkspace = true
 
 	config.PortNumber = defaultLocalPortNumber
 

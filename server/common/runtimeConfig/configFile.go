@@ -25,14 +25,16 @@ type RuntimeConfig struct {
 	FactoryTemplateDatabaseConfig *FactoryTemplateDatabaseConfig `json:"factoryTemplateDatabase"`
 	TrackerDatabaseConfig         TrackerDatabaseConfig          `json:"trackerDatabase"`
 
-	PortNumber int `json:"portNumber"`
+	PortNumber            int  `json:"portNumber"`
+	IsSingleUserWorkspace bool `json:"isSingleUserWorkspace"`
 }
 
 const permsOwnerReadWriteOnly os.FileMode = 0700
 
 func NewDefaultRuntimeConfig() RuntimeConfig {
 	config := RuntimeConfig{
-		PortNumber: defaultPortNum}
+		PortNumber:            defaultPortNum,
+		IsSingleUserWorkspace: false}
 	return config
 }
 

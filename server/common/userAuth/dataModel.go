@@ -119,6 +119,25 @@ func saveNewUser(trackerDBHandle *sql.DB, rawParams NewUserParams) *AuthResponse
 	return newAuthResponse(true, "Registration complete")
 }
 
+type RegisterSingleUserParams struct {
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	UserName  string `json:"userName"`
+}
+
+const singleUserDummyEmailAddr string = `single.user.email.not.applicable@example.com`
+const singleUserDummyPassword string = `singleUserpwNotApplicable$!$`
+
+func saveNewSingleUser(trackerDBHandle *sql.DB, params RegisterSingleUserParams) *AuthResponse {
+	saveUserParams := NewUserParams{
+		FirstName: params.FirstName,
+		LastName:  params.LastName,
+		UserName:  params.UserName,
+		EmailAddr: singleUserDummyEmailAddr,
+		Password:  singleUserDummyPassword}
+	return saveNewUser(trackerDBHandle, saveUserParams)
+}
+
 func getUser(trackerDBHandle *sql.DB, emailAddr string) (*User, *AuthResponse) {
 
 	var user User
