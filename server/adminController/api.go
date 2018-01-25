@@ -4,7 +4,6 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/userRole"
 )
@@ -27,9 +26,7 @@ func init() {
 	adminRouter.HandleFunc("/api/admin/setUserRoleInfo", setUserRoleInfoAPI)
 	adminRouter.HandleFunc("/api/admin/deleteCollaborator", deleteCollaboratorAPI)
 
-	if runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace {
-		adminRouter.HandleFunc("/api/admin/ping", pingAPI)
-	}
+	adminRouter.HandleFunc("/api/admin/ping", pingAPI)
 
 	http.Handle("/api/admin/", adminRouter)
 }

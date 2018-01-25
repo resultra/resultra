@@ -17,9 +17,7 @@ func init() {
 
 	authRouter.HandleFunc("/auth/register", registerNewUserAPI)
 
-	if runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace {
-		authRouter.HandleFunc("/auth/registerSingleUser", registerSingleUserAPI)
-	}
+	authRouter.HandleFunc("/auth/registerSingleUser", registerSingleUserAPI)
 
 	authRouter.HandleFunc("/auth/login", loginUserAPI)
 	authRouter.HandleFunc("/auth/signout", signoutUserAPI)
@@ -70,6 +68,13 @@ func registerNewUserAPI(w http.ResponseWriter, r *http.Request) {
 }
 
 func registerSingleUserAPI(w http.ResponseWriter, r *http.Request) {
+
+	if !runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace {
+		err := fmt.Errorf("registerSingleUserAPI: API not supported in multi-user mode")
+		api.WriteErrorResponse(w, err)
+		return
+	}
+
 	var params RegisterSingleUserParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
