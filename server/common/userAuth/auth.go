@@ -6,6 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/common/runtimeConfig"
 )
 
 var authCookieStore *sessions.CookieStore
@@ -17,7 +18,21 @@ func init() {
 	// http://www.gorillatoolkit.org/pkg/sessions#NewCookieStore
 	authCookieStore = sessions.NewCookieStore([]byte("nRrHLlHcHH0u7fUxyzHje9m7uJ5SnJzP"),
 		[]byte("CAp1KsJncuMzARfookqSFLqsBi5ag2bE"))
-	authCookieStore.MaxAge(3600 * 8) // 8 hours
+
+	authCookieStore.MaxAge(3600 * 8) //  default to 8 hours
+}
+
+func updateCookieStoreAge() {
+	numHoursSession := 8
+	// If the login is for a single-user workspace (on the desktop), extend the login
+	// time considerably. Since the user is logged in automatically, there is no need
+	// to log them out automatically.
+	if runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace {
+		numHoursSession = 24 * 365 * 10 // 10 years!
+	}
+
+	authCookieStore.MaxAge(3600 * numHoursSession)
+
 }
 
 func generatePasswordHash(password string) (string, error) {
@@ -51,6 +66,8 @@ func loginUser(rw http.ResponseWriter, req *http.Request, params LoginParams) *A
 	if pwVerify != nil {
 		return newAuthResponse(false, "Incorrect password")
 	}
+
+	updateCookieStoreAge()
 
 	authSession, sessErr := authCookieStore.Get(req, "auth")
 	if sessErr != nil {
