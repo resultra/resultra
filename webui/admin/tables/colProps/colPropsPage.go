@@ -58,37 +58,38 @@ func init() {
 }
 
 type TemplParams struct {
-	ElemPrefix          string
-	Title               string
-	DatabaseID          string
-	DatabaseName        string
-	WorkspaceName       string
-	TableID             string
-	TableName           string
-	ColID               string
-	ColType             string
-	ColName             string
-	SiteBaseURL         string
-	CurrUserIsAdmin     bool
-	NumberInputParams   NumberInputColPropsTemplateParams
-	TextInputParams     TextInputColPropsTemplateParams
-	DatePickerParams    DatePickerColPropsTemplateParams
-	CheckBoxParams      CheckBoxColPropsTemplateParams
-	RatingParams        RatingColPropsTemplateParams
-	ToggleParams        ToggleColPropsTemplateParams
-	UserSelectionParams UserSelectionColPropsTemplateParams
-	UserTagParams       UserTagColPropsTemplateParams
-	FormButtonParams    FormButtonColPropsTemplateParams
-	AttachmentParams    AttachmentColPropsTemplateParams
-	NoteParams          NoteColPropsTemplateParams
-	CommentParams       CommentColPropsTemplateParams
-	ProgressParams      ProgressColPropsTemplateParams
-	SocialButtonParams  SocialButtonColPropsTemplateParams
-	TagParams           TagColPropsTemplateParams
-	EmailAddrParams     EmailAddrColPropsTemplateParams
-	UrlLinkParams       UrlLinkColPropsTemplateParams
-	FileParams          FileColPropsTemplateParams
-	ImageParams         ImageColPropsTemplateParams
+	ElemPrefix            string
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	WorkspaceName         string
+	TableID               string
+	TableName             string
+	ColID                 string
+	ColType               string
+	ColName               string
+	SiteBaseURL           string
+	CurrUserIsAdmin       bool
+	IsSingleUserWorkspace bool
+	NumberInputParams     NumberInputColPropsTemplateParams
+	TextInputParams       TextInputColPropsTemplateParams
+	DatePickerParams      DatePickerColPropsTemplateParams
+	CheckBoxParams        CheckBoxColPropsTemplateParams
+	RatingParams          RatingColPropsTemplateParams
+	ToggleParams          ToggleColPropsTemplateParams
+	UserSelectionParams   UserSelectionColPropsTemplateParams
+	UserTagParams         UserTagColPropsTemplateParams
+	FormButtonParams      FormButtonColPropsTemplateParams
+	AttachmentParams      AttachmentColPropsTemplateParams
+	NoteParams            NoteColPropsTemplateParams
+	CommentParams         CommentColPropsTemplateParams
+	ProgressParams        ProgressColPropsTemplateParams
+	SocialButtonParams    SocialButtonColPropsTemplateParams
+	TagParams             TagColPropsTemplateParams
+	EmailAddrParams       EmailAddrColPropsTemplateParams
+	UrlLinkParams         UrlLinkColPropsTemplateParams
+	FileParams            FileColPropsTemplateParams
+	ImageParams           ImageColPropsTemplateParams
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -140,37 +141,38 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
 	templParams := TemplParams{
-		ElemPrefix:          elemPrefix,
-		Title:               "Column properties",
-		DatabaseID:          dbInfo.DatabaseID,
-		DatabaseName:        dbInfo.DatabaseName,
-		WorkspaceName:       workspaceName,
-		CurrUserIsAdmin:     isAdmin,
-		TableID:             colInfo.TableID,
-		TableName:           tableInfo.Name,
-		ColID:               colID,
-		ColType:             colInfo.ColType,
-		ColName:             "TBD",
-		SiteBaseURL:         runtimeConfig.GetSiteBaseURL(),
-		NumberInputParams:   newNumberInputTemplateParams(),
-		TextInputParams:     newTextInputTemplateParams(),
-		DatePickerParams:    newDatePickerTemplateParams(),
-		CheckBoxParams:      newCheckBoxTemplateParams(),
-		RatingParams:        newRatingTemplateParams(),
-		ToggleParams:        newToggleTemplateParams(),
-		UserSelectionParams: newUserSelectionTemplateParams(),
-		UserTagParams:       newUserTagTemplateParams(),
-		FormButtonParams:    newFormButtonTemplateParams(),
-		AttachmentParams:    newAttachmentTemplateParams(),
-		NoteParams:          newNoteTemplateParams(),
-		CommentParams:       newCommentTemplateParams(),
-		ProgressParams:      newProgressTemplateParams(),
-		SocialButtonParams:  newSocialButtonTemplateParams(),
-		TagParams:           newTagTemplateParams(),
-		EmailAddrParams:     newEmailAddrTemplateParams(),
-		UrlLinkParams:       newUrlLinkTemplateParams(),
-		FileParams:          newFileTemplateParams(),
-		ImageParams:         newImageTemplateParams()}
+		ElemPrefix:            elemPrefix,
+		Title:                 "Column properties",
+		DatabaseID:            dbInfo.DatabaseID,
+		DatabaseName:          dbInfo.DatabaseName,
+		WorkspaceName:         workspaceName,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		CurrUserIsAdmin:       isAdmin,
+		TableID:               colInfo.TableID,
+		TableName:             tableInfo.Name,
+		ColID:                 colID,
+		ColType:               colInfo.ColType,
+		ColName:               "TBD",
+		SiteBaseURL:           runtimeConfig.GetSiteBaseURL(),
+		NumberInputParams:     newNumberInputTemplateParams(),
+		TextInputParams:       newTextInputTemplateParams(),
+		DatePickerParams:      newDatePickerTemplateParams(),
+		CheckBoxParams:        newCheckBoxTemplateParams(),
+		RatingParams:          newRatingTemplateParams(),
+		ToggleParams:          newToggleTemplateParams(),
+		UserSelectionParams:   newUserSelectionTemplateParams(),
+		UserTagParams:         newUserTagTemplateParams(),
+		FormButtonParams:      newFormButtonTemplateParams(),
+		AttachmentParams:      newAttachmentTemplateParams(),
+		NoteParams:            newNoteTemplateParams(),
+		CommentParams:         newCommentTemplateParams(),
+		ProgressParams:        newProgressTemplateParams(),
+		SocialButtonParams:    newSocialButtonTemplateParams(),
+		TagParams:             newTagTemplateParams(),
+		EmailAddrParams:       newEmailAddrTemplateParams(),
+		UrlLinkParams:         newUrlLinkTemplateParams(),
+		FileParams:            newFileTemplateParams(),
+		ImageParams:           newImageTemplateParams()}
 
 	if err := tablePropTemplates.ExecuteTemplate(w, "colPropsAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

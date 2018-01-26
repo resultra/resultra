@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
@@ -32,7 +33,8 @@ func RegisterHTTPHandlers(mainRouter *mux.Router) {
 }
 
 type PageInfo struct {
-	Title string `json:"title"`
+	Title                 string `json:"title"`
+	IsSingleUserWorkspace bool
 }
 
 func home(respWriter http.ResponseWriter, req *http.Request) {
@@ -40,13 +42,15 @@ func home(respWriter http.ResponseWriter, req *http.Request) {
 	_, authErr := userAuth.GetCurrentUserInfo(req)
 	if authErr != nil {
 		log.Printf("user not authorized: %v", authErr)
-		templParams := PageInfo{"Template Page - Signed out"}
+		templParams := PageInfo{Title: "Template Page - Signed out",
+			IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace}
 		err := homePageTemplates.ExecuteTemplate(respWriter, "templatePagePublic", templParams)
 		if err != nil {
 			http.Error(respWriter, err.Error(), http.StatusInternalServerError)
 		}
 	} else {
-		templParams := PageInfo{"Template Page - Signed In"}
+		templParams := PageInfo{Title: "Template Page - Signed In",
+			IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace}
 		err := homePageTemplates.ExecuteTemplate(respWriter, "templatePageSignedIn", templParams)
 		if err != nil {
 			http.Error(respWriter, err.Error(), http.StatusInternalServerError)

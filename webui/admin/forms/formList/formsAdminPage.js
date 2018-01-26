@@ -2,7 +2,7 @@ $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#formAdminPage'))	
 	
-	initAdminPageHeader()
+	initAdminPageHeader(formsAdminContext.isSingleUserWorkspace)
 	
 	initAdminSettingsTOC(formsAdminContext.databaseID,"settingsTOCForms")
 			

@@ -20,7 +20,7 @@
 			</div>
 			<div class="col-sm-4">
 				<div class="pull-right">
-					{{template "userDropdownMenu"}}
+					{{template "userDropdownMenu" .}}
 					{{template "helpDropdownMenu"}}
 					{{template "workspaceAdminSettingsButton" .}}
 					
@@ -45,6 +45,11 @@
 	
 	<!-- homePageSignedInAssets:css -->
 	<!-- endinject -->
+	
+	<script>var homePageContext = {
+		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } 
+	</script>
+	
 	
 	{{template "thirdPartyJS"}}
 	

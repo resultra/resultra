@@ -90,7 +90,7 @@ $(document).ready(function() {
 	initAdminSettingsTOC(itemListPropsContext.databaseID,"settingsTOCLists",
 			itemListPropsContext.isSingleUserWorkspace)
 
-	initAdminPageHeader()
+	initAdminPageHeader(itemListPropsContext.isSingleUserWorkspace)
 
 		var listElemPrefix = "itemList_"
 

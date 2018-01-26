@@ -9,7 +9,7 @@ var dashboardPaletteItemsEditConfig = {
 
 $(document).ready(function() {
 	
-	initAdminPageHeader()
+	initAdminPageHeader(designDashboardContext.isSingleUserWorkspace)
 	
 	appendPageSpecificBreadcrumbHeader("/admin/dashboards/"+designDashboardContext.databaseID,"Dashboards")
 	appendPageSpecificBreadcrumbHeader("/admin/dashboard/"+designDashboardContext.dashboardID,

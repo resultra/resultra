@@ -108,7 +108,7 @@ $(document).ready(function() {
 		
 	initAdminSettingsTOC(fieldPropsContext.databaseID,"settingsTOCFields",fieldPropsContext.isSingleUserWorkspace)
 		
-	initAdminPageHeader()
+	initAdminPageHeader(fieldPropsContext.isSingleUserWorkspace)
 		
 	var getFieldParams = { fieldID: fieldPropsContext.fieldID }
 	jsonAPIRequest("field/get",getFieldParams,function(fieldInfo) {

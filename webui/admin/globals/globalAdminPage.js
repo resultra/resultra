@@ -2,7 +2,7 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#globalAdminPage'))	
-	initAdminPageHeader()
+	initAdminPageHeader(globalAdminPageContext.isSingleUserWorkspace)
 	initAdminSettingsTOC(globalAdminPageContext.databaseID,"settingsTOCGlobals", globalAdminPageContext.isSingleUserWorkspace)
 			
 	initAdminGlobals(globalAdminPageContext.databaseID)

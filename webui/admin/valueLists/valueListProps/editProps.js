@@ -65,7 +65,7 @@ $(document).ready(function() {
 		
 	initAdminSettingsTOC(valueListPropsContext.databaseID,"settingsTOCValueLists",valueListPropsContext.isSingleUserWorkspace)
 		
-	initAdminPageHeader()
+	initAdminPageHeader(valueListPropsContext.isSingleUserWorkspace)
 		
 		var formLinkElemPrefix = "valueList_"
 		

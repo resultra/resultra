@@ -1,6 +1,6 @@
 $(document).ready(function() {	
 	
-	initUserDropdownMenu()
+	initUserDropdownMenu(homePageContext.isSingleUserWorkspace)
 	initHelpDropdownMenu()
 	
 	initTrackerList()

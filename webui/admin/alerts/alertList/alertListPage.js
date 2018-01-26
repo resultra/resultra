@@ -2,7 +2,7 @@ $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#alertListAdminPage'))	
 	
-	initAdminPageHeader()
+	initAdminPageHeader(alertListAdminContext.isSingleUserWorkspace)
 	
 	initAdminSettingsTOC(alertListAdminContext.databaseID,"settingsTOCAlerts",alertListAdminContext.isSingleUserWorkspace)
 			

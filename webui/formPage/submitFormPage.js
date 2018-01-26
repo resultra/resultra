@@ -4,7 +4,7 @@ $(document).ready(function() {
 	 
 	initSubmitFormUILayoutPanes()
 				
-	initUserDropdownMenu()
+	initUserDropdownMenu(false)
 	
 	var submitFormParams = {
 		databaseID: submitFormPageContext.databaseID,

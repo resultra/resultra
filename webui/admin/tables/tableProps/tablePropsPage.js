@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#tablePropsAdminPage'))	
-	initAdminPageHeader()
+	initAdminPageHeader(tablePropsAdminContext.isSingleUserWorkspace)
 	initAdminSettingsTOC(tablePropsAdminContext.databaseID,"settingsTOCTables",tablePropsAdminContext.isSingleUserWorkspace)
 	
 	appendPageSpecificBreadcrumbHeader("/admin/tables/"+tablePropsAdminContext.databaseID,"Table Views")

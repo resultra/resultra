@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#tableAdminPage'))	
-	initAdminPageHeader()
+	initAdminPageHeader(tableAdminContext.isSingleUserWorkspace)
 	initAdminSettingsTOC(tableAdminContext.databaseID,"settingsTOCTables")
 			
 	initAdminTableListSettings(tableAdminContext.databaseID)

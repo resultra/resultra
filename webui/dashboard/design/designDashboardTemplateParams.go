@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/userRole"
@@ -12,16 +13,17 @@ import (
 )
 
 type DashboardTemplateParams struct {
-	Title           string
-	DashboardID     string
-	DatabaseID      string
-	DatabaseName    string
-	DashboardName   string
-	WorkspaceName   string
-	CurrUserIsAdmin bool
-	NamePanelParams propertiesSidebar.PanelTemplateParams
-	RolePanelParams propertiesSidebar.PanelTemplateParams
-	ComponentParams components.ComponentDesignTemplateParams
+	Title                 string
+	DashboardID           string
+	DatabaseID            string
+	DatabaseName          string
+	DashboardName         string
+	WorkspaceName         string
+	CurrUserIsAdmin       bool
+	IsSingleUserWorkspace bool
+	NamePanelParams       propertiesSidebar.PanelTemplateParams
+	RolePanelParams       propertiesSidebar.PanelTemplateParams
+	ComponentParams       components.ComponentDesignTemplateParams
 }
 
 func createDashboardTemplateParams(r *http.Request, dashboardForDesign *dashboard.Dashboard,
@@ -40,16 +42,17 @@ func createDashboardTemplateParams(r *http.Request, dashboardForDesign *dashboar
 	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dashboardForDesign.ParentDatabaseID)
 
 	templParams := DashboardTemplateParams{
-		Title:           "Design Dashboard",
-		DashboardID:     dashboardForDesign.DashboardID,
-		DatabaseID:      dashboardForDesign.ParentDatabaseID,
-		DatabaseName:    dashboardDB.Name,
-		WorkspaceName:   workspaceName,
-		DashboardName:   dashboardForDesign.Name,
-		CurrUserIsAdmin: isAdmin,
-		NamePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Dashboard Name", PanelID: "dashboardName"},
-		RolePanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Roles & Privileges", PanelID: "dashboardRoles"},
-		ComponentParams: components.DesignTemplateParams}
+		Title:                 "Design Dashboard",
+		DashboardID:           dashboardForDesign.DashboardID,
+		DatabaseID:            dashboardForDesign.ParentDatabaseID,
+		DatabaseName:          dashboardDB.Name,
+		WorkspaceName:         workspaceName,
+		DashboardName:         dashboardForDesign.Name,
+		CurrUserIsAdmin:       isAdmin,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		NamePanelParams:       propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Dashboard Name", PanelID: "dashboardName"},
+		RolePanelParams:       propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Roles & Privileges", PanelID: "dashboardRoles"},
+		ComponentParams:       components.DesignTemplateParams}
 
 	return &templParams, nil
 }

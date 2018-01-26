@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#roleAdminPage'))	
-	initAdminPageHeader()
+	initAdminPageHeader(roleAdminContext.isSingleUserWorkspace)
 	initAdminSettingsTOC(roleAdminContext.databaseID,"settingsTOCRoles",
 		roleAdminContext.isSingleUserWorkspace)
 			

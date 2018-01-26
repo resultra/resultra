@@ -66,7 +66,7 @@ $(document).ready(function() {
 	initAdminSettingsTOC(rolePropsContext.databaseID,"settingsTOCRoles",
 			rolePropsContext.isSingleUserWorkspace)
 		
-	initAdminPageHeader()
+	initAdminPageHeader(rolePropsContext.isSingleUserWorkspace)
 		
 	appendPageSpecificBreadcrumbHeader("/admin/roles/"+rolePropsContext.databaseID,"Roles")
 	appendPageSpecificBreadcrumbHeader("/admin/userRole/"+rolePropsContext.roleID,rolePropsContext.roleName)

@@ -191,7 +191,7 @@ $(document).ready(function() {
 	initAdminSettingsTOC(formLinkPropsContext.databaseID,"settingsTOCFormLinks",formLinkPropsContext.isSingleUserWorkspace)
 		
 		
-	initAdminPageHeader()
+	initAdminPageHeader(formLinkPropsContext.isSingleUserWorkspace)
 		
 	var formLinkElemPrefix = "formLink_"
 	

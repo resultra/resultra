@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#fieldAdminPage'))	
-	initAdminPageHeader()
+	initAdminPageHeader(fieldListAdminContext.isSingleUserWorkspace)
 	initAdminSettingsTOC(fieldListAdminContext.databaseID,"settingsTOCFields")
 		
 	initAdminFieldSettings(fieldListAdminContext.databaseID)

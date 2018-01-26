@@ -14,8 +14,8 @@ $(document).ready(function() {
 	initFieldInfo(colPropsAdminContext.databaseID, function() {
 		
 		initAdminSettingsPageLayout($('#colPropsAdminPage'))	
-		initAdminPageHeader()
-		initAdminSettingsTOC(colPropsAdminContext.databaseID,"settingsTOCTables")
+		initAdminPageHeader(colPropsAdminContext.isSingleUserWorkspace)
+		initAdminSettingsTOC(colPropsAdminContext.databaseID,"settingsTOCTables",colPropsAdminContext.isSingleUserWorkspace)
 		
 		appendPageSpecificBreadcrumbHeader("/admin/tables/"+colPropsAdminContext.databaseID,"Table Views")
 		appendPageSpecificBreadcrumbHeader("/admin/table/"+colPropsAdminContext.tableID,colPropsAdminContext.tableName)

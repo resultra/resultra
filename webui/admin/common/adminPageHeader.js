@@ -1,5 +1,5 @@
-function initAdminPageHeader() {
-	initUserDropdownMenu()
+function initAdminPageHeader(isSingleUserWorkspace) {
+	initUserDropdownMenu(isSingleUserWorkspace)
 	initHelpDropdownMenu()
 	
 }

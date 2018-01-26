@@ -28,7 +28,7 @@ var paletteItemsEditConfig = {
 
 $(document).ready(function() {
 	
-	initUserDropdownMenu()
+	initUserDropdownMenu(designFormContext.isSingleUserWorkspace)
 	initHelpDropdownMenu()
 	
 	var designFormPaletteLayoutConfig =  {

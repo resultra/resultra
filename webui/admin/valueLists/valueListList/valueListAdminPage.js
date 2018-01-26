@@ -2,7 +2,7 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#valueListAdminPage'))	
-	initAdminPageHeader()
+	initAdminPageHeader(valueListAdminContext.isSingleUserWorkspace)
 	initAdminSettingsTOC(valueListAdminContext.databaseID,"settingsTOCValueLists",valueListAdminContext.isSingleUserWorkspace)
 			
 	initAdminValueListListSettings(valueListAdminContext.databaseID)

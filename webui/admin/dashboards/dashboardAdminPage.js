@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#dashboardAdminPage'))	
-	initAdminPageHeader()
+	initAdminPageHeader(dashboardAdminPageContext.isSingleUserWorkspace)
 	initAdminSettingsTOC(dashboardAdminPageContext.databaseID,"settingsTOCDashboards",dashboardAdminPageContext.isSingleUserWorkspace)
 			
 	initAdminDashboardSettings(dashboardAdminPageContext.databaseID)

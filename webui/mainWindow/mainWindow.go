@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
@@ -44,13 +45,14 @@ func init() {
 }
 
 type MainWindowTemplateParams struct {
-	Title           string
-	DatabaseID      string
-	DatabaseName    string
-	WorkspaceName   string
-	CurrUserIsAdmin bool
-	ItemListParams  itemList.ViewListTemplateParams
-	DashboardParams dashboardView.ViewDashboardTemplateParams
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	WorkspaceName         string
+	CurrUserIsAdmin       bool
+	IsSingleUserWorkspace bool
+	ItemListParams        itemList.ViewListTemplateParams
+	DashboardParams       dashboardView.ViewDashboardTemplateParams
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -89,13 +91,14 @@ func viewMainWindow(w http.ResponseWriter, r *http.Request) {
 		isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
 		templParams := MainWindowTemplateParams{
-			Title:           dbInfo.DatabaseName,
-			DatabaseID:      dbInfo.DatabaseID,
-			DatabaseName:    dbInfo.DatabaseName,
-			CurrUserIsAdmin: isAdmin,
-			ItemListParams:  itemList.ViewListTemplParams,
-			WorkspaceName:   workspaceName,
-			DashboardParams: dashboardView.ViewTemplateParams}
+			Title:                 dbInfo.DatabaseName,
+			DatabaseID:            dbInfo.DatabaseID,
+			DatabaseName:          dbInfo.DatabaseName,
+			CurrUserIsAdmin:       isAdmin,
+			IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+			ItemListParams:        itemList.ViewListTemplParams,
+			WorkspaceName:         workspaceName,
+			DashboardParams:       dashboardView.ViewTemplateParams}
 
 		if err := mainWindowTemplates.ExecuteTemplate(w, "mainWindow", templParams); err != nil {
 			api.WriteErrorResponse(w, err)

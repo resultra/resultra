@@ -60,7 +60,7 @@ $(document).ready(function() {
 	}	
 	initDatabaseTOC(tocConfig)
 	
-	initUserDropdownMenu()
+	initUserDropdownMenu(mainWindowContext.isSingleUserWorkspace)
 	initHelpDropdownMenu()
 	initAlertHeader(mainWindowContext.databaseID,seeAllAlertsClicked)
 	

@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#itemListAdminPage'))	
-	initAdminPageHeader()
+	initAdminPageHeader(itemListAdminContext.isSingleUserWorkspace)
 	initAdminSettingsTOC(itemListAdminContext.databaseID,"settingsTOCLists")
 			
 	initAdminListSettings(itemListAdminContext.databaseID)

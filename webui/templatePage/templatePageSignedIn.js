@@ -57,7 +57,7 @@ function initMyTemplateList() {
 
 $(document).ready(function() {	
 	
-	initUserDropdownMenu()
+	initUserDropdownMenu(templatePageContext.isSingleUserWorkspace)
 	
 	initMyTemplateList()
 		

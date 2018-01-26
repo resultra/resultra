@@ -36,6 +36,11 @@
 	<!-- templatePageSignedInAssets:css -->
 	<!-- endinject -->
 	
+	<script>var templatePageContext = {
+		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } 
+	</script>
+	
+	
 	{{template "thirdPartyJS"}}
 	
 	<!-- templatePageSignedInAssets:js -->

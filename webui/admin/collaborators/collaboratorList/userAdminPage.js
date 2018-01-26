@@ -2,7 +2,7 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#userAdminPage'))	
-	initAdminPageHeader()
+	initAdminPageHeader(false)
 	initAdminSettingsTOC(userAdminPageContext.databaseID,"settingsTOCUsers")
 	
 

@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#collabPropsPage'))	
-	initAdminPageHeader()
+	initAdminPageHeader(false)
 	initAdminSettingsTOC(collabPropsContext.databaseID,"settingsTOCUsers")
 	
 	
