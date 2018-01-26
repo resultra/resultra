@@ -202,7 +202,11 @@ $(document).ready(function() {
 		initFormLinkFormProperties(linkInfo)
 		initIncludeInSidebarProperty(linkInfo)
 		initRoleNewItemPrivs(linkInfo)
-		initSharedLinkProperties(linkInfo)
+		
+		if (!formLinkPropsContext.isSingleUserWorkspace) {
+			initSharedLinkProperties(linkInfo)	
+		}
+		
 
 		var defaultValPropParams = {
 			databaseID: formLinkPropsContext.databaseID,

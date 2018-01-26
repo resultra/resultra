@@ -47,28 +47,33 @@
 
 {{define "adminFormLinkShareLinkProperty"}}
 
-<tr>
-	<td class="width200">
-		<label>Shareable link</label>
-		<div><small>Allow creation of new items with a shareable URL link to the form.</small></div>
-	</td>
+	{{if not .IsSingleUserWorkspace}}
+
+		<tr>
+			<td class="width200">
+				<label>Shareable link</label>
+				<div><small>Allow creation of new items with a shareable URL link to the form.</small></div>
+			</td>
 		
-	<td>
-		<form id="formLinkPropShareLinkForm">
-			  <div class="form-group">
-			      <div class="checkbox">
-			        <input type="checkbox" id="adminFormLinkShareLink">
-					<label for="adminFormLinkShareLink">Enabled shared link</label>
-			      </div>
-			   </div>
-				<div class="form-group" id="adminFormLinkShareLinkLinkFormGroup">
-					<label>Shareable link</label>
-					<input type="text" id="adminFormLinkShareLinkLink" name="adminFormLinkShareLinkLink" 
-							class="form-control maxWidth300" placeholder="Link URL" required="" autofocus="" disabled>
-				</div>
-		</form>
-	</td>
-</tr>
+			<td>
+				<form id="formLinkPropShareLinkForm">
+					  <div class="form-group">
+					      <div class="checkbox">
+					        <input type="checkbox" id="adminFormLinkShareLink">
+							<label for="adminFormLinkShareLink">Enabled shared link</label>
+					      </div>
+					   </div>
+						<div class="form-group" id="adminFormLinkShareLinkLinkFormGroup">
+							<label>Shareable link</label>
+							<input type="text" id="adminFormLinkShareLinkLink" name="adminFormLinkShareLinkLink" 
+									class="form-control maxWidth300" placeholder="Link URL" required="" autofocus="" disabled>
+						</div>
+				</form>
+			</td>
+		</tr>
+
+	{{end}}
+
 {{end}}
 
 
