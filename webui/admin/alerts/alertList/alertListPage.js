@@ -4,7 +4,7 @@ $(document).ready(function() {
 	
 	initAdminPageHeader()
 	
-	initAdminSettingsTOC(alertListAdminContext.databaseID,"settingsTOCAlerts")
+	initAdminSettingsTOC(alertListAdminContext.databaseID,"settingsTOCAlerts",alertListAdminContext.isSingleUserWorkspace)
 			
 	initAdminAlertSettings(alertListAdminContext.databaseID)
 	

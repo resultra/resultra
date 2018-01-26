@@ -18,9 +18,7 @@ return '' +
 
 
 function addGlobalToAdminList(globalInfo) {
-	 
-	var formListFormID = adminFormListElemPrefix + globalInfo.formID
-	
+	 	
 	var listItemHTML = '<li class="list-group-item" id="' + globalInfo.formID + '">' + 
 		globalInfo.name +
 		adminGlobalListButtonsHTML(globalInfo) +

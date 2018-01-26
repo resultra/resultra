@@ -87,7 +87,8 @@ $(document).ready(function() {
 			}
 		})
 
-	initAdminSettingsTOC(itemListPropsContext.databaseID,"settingsTOCLists")
+	initAdminSettingsTOC(itemListPropsContext.databaseID,"settingsTOCLists",
+			itemListPropsContext.isSingleUserWorkspace)
 
 	initAdminPageHeader()
 

@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/databaseController"
 
 	"resultra/datasheet/server/common/databaseWrapper"
@@ -36,11 +37,12 @@ func init() {
 }
 
 type AlertPageTemplParams struct {
-	Title           string
-	DatabaseID      string
-	DatabaseName    string
-	WorkspaceName   string
-	CurrUserIsAdmin bool
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	WorkspaceName         string
+	CurrUserIsAdmin       bool
+	IsSingleUserWorkspace bool
 }
 
 func alertListAdminPage(w http.ResponseWriter, r *http.Request) {
@@ -75,11 +77,12 @@ func alertListAdminPage(w http.ResponseWriter, r *http.Request) {
 	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
 	templParams := AlertPageTemplParams{
-		Title:           "Alerts",
-		DatabaseID:      databaseID,
-		DatabaseName:    dbInfo.DatabaseName,
-		WorkspaceName:   workspaceName,
-		CurrUserIsAdmin: isAdmin}
+		Title:                 "Alerts",
+		DatabaseID:            databaseID,
+		DatabaseName:          dbInfo.DatabaseName,
+		WorkspaceName:         workspaceName,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		CurrUserIsAdmin:       isAdmin}
 
 	if err := formsTemplates.ExecuteTemplate(w, "alertListAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

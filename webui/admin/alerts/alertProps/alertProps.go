@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"resultra/datasheet/server/alert"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/databaseController"
 	adminCommon "resultra/datasheet/webui/admin/common"
 
@@ -45,6 +46,7 @@ type AlertTemplParams struct {
 	AlertID                         string
 	AlertName                       string
 	CurrUserIsAdmin                 bool
+	IsSingleUserWorkspace           bool
 	FieldSelectionParams            field.FieldSelectionDropdownTemplateParams
 	TriggerConditionPropPanelParams recordFilter.FilterPanelTemplateParams
 }
@@ -101,6 +103,7 @@ func editAlertPropsPage(w http.ResponseWriter, r *http.Request) {
 		AlertID:                         alertInfo.AlertID,
 		AlertName:                       alertInfo.Name,
 		CurrUserIsAdmin:                 isAdmin,
+		IsSingleUserWorkspace:           runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
 		FieldSelectionParams:            fieldSelectionParams,
 		TriggerConditionPropPanelParams: recordFilter.NewFilterPanelTemplateParams(triggerConditionElemPrefix_)}
 

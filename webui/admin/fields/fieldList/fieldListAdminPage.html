@@ -15,7 +15,8 @@
 	<!-- fieldAssets:css -->
 	<!-- endinject -->
 	
-	<script>var fieldListAdminContext = { databaseID:"{{.DatabaseID}}" } </script>
+	<script>var fieldListAdminContext = { databaseID:"{{.DatabaseID}}",
+		 isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } </script>
 	
 	{{template "thirdPartyJS"}}
 	
@@ -34,7 +35,7 @@
 		</div> <!-- ui layout north -->
 		
 		<div class="pane ui-layout-west" id="adminPageTocLayout">
-			{{template "adminSettingsTOC"}}
+			{{template "adminSettingsTOC" .}}
 		</div> <!-- ui layout north -->
 
 		<div class="pane ui-layout-center" id="adminPageLayout">

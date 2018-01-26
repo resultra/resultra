@@ -106,7 +106,7 @@ $(document).ready(function() {
 			}
 		})
 		
-	initAdminSettingsTOC(fieldPropsContext.databaseID,"settingsTOCFields")
+	initAdminSettingsTOC(fieldPropsContext.databaseID,"settingsTOCFields",fieldPropsContext.isSingleUserWorkspace)
 		
 	initAdminPageHeader()
 		

@@ -1,4 +1,4 @@
-function initAdminSettingsTOC(databaseID, activeID) {
+function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace) {
 	
 	
 	var $settingsTOC = $('#settingsTOC')
@@ -34,8 +34,10 @@ function initAdminSettingsTOC(databaseID, activeID) {
 	var globalLink = "/admin/globals/" + databaseID
 	$('#settingsTOCGlobals').find("a").attr("href",globalLink)
 	
-	var userLink = "/admin/collaborators/" + databaseID
-	$('#settingsTOCUsers').find("a").attr("href",userLink)
+	if (!isSingleUserWorkspace) {
+		var userLink = "/admin/collaborators/" + databaseID
+		$('#settingsTOCUsers').find("a").attr("href",userLink)		
+	}
 
 	var roleLink = "/admin/roles/" + databaseID
 	$('#settingsTOCRoles').find("a").attr("href",roleLink)

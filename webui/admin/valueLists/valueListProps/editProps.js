@@ -63,7 +63,7 @@ $(document).ready(function() {
 			}
 		})
 		
-	initAdminSettingsTOC(valueListPropsContext.databaseID,"settingsTOCValueLists")
+	initAdminSettingsTOC(valueListPropsContext.databaseID,"settingsTOCValueLists",valueListPropsContext.isSingleUserWorkspace)
 		
 	initAdminPageHeader()
 		

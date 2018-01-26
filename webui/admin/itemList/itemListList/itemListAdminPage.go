@@ -4,10 +4,10 @@ import (
 	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
-	"resultra/datasheet/server/databaseController"
-
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/common/userAuth"
+	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/server/workspace"
 	adminCommon "resultra/datasheet/webui/admin/common"
@@ -36,11 +36,12 @@ func init() {
 }
 
 type FieldTemplParams struct {
-	Title           string
-	DatabaseID      string
-	DatabaseName    string
-	WorkspaceName   string
-	CurrUserIsAdmin bool
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	WorkspaceName         string
+	CurrUserIsAdmin       bool
+	IsSingleUserWorkspace bool
 }
 
 func itemListAdminPage(w http.ResponseWriter, r *http.Request) {
@@ -74,11 +75,12 @@ func itemListAdminPage(w http.ResponseWriter, r *http.Request) {
 	currUserIsAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
 	templParams := FieldTemplParams{
-		Title:           "Forms",
-		DatabaseID:      databaseID,
-		DatabaseName:    dbInfo.DatabaseName,
-		WorkspaceName:   workspaceName,
-		CurrUserIsAdmin: currUserIsAdmin}
+		Title:                 "Item Lists",
+		DatabaseID:            databaseID,
+		DatabaseName:          dbInfo.DatabaseName,
+		WorkspaceName:         workspaceName,
+		CurrUserIsAdmin:       currUserIsAdmin,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace}
 
 	if err := formsTemplates.ExecuteTemplate(w, "itemListAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

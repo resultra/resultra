@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/databaseController"
 
 	"resultra/datasheet/server/common/databaseWrapper"
@@ -37,12 +38,13 @@ func init() {
 	roleTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
-type FieldTemplParams struct {
-	Title           string
-	DatabaseID      string
-	DatabaseName    string
-	WorkspaceName   string
-	CurrUserIsAdmin bool
+type RoleTemplParams struct {
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	WorkspaceName         string
+	IsSingleUserWorkspace bool
+	CurrUserIsAdmin       bool
 }
 
 func roleAdminPage(w http.ResponseWriter, r *http.Request) {
@@ -75,12 +77,13 @@ func roleAdminPage(w http.ResponseWriter, r *http.Request) {
 
 	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
-	templParams := FieldTemplParams{
-		Title:           "Role",
-		DatabaseID:      databaseID,
-		DatabaseName:    dbInfo.DatabaseName,
-		WorkspaceName:   workspaceName,
-		CurrUserIsAdmin: isAdmin}
+	templParams := RoleTemplParams{
+		Title:                 "Role",
+		DatabaseID:            databaseID,
+		DatabaseName:          dbInfo.DatabaseName,
+		WorkspaceName:         workspaceName,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		CurrUserIsAdmin:       isAdmin}
 
 	if err := roleTemplates.ExecuteTemplate(w, "roleAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

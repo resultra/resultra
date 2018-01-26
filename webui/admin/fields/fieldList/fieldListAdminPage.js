@@ -6,6 +6,7 @@ $(document).ready(function() {
 		
 	initAdminFieldSettings(fieldListAdminContext.databaseID)
 	
-	appendPageSpecificBreadcrumbHeader("/admin/fields/"+fieldListAdminContext.databaseID,"Fields")
+	appendPageSpecificBreadcrumbHeader("/admin/fields/"+fieldListAdminContext.databaseID,"Fields",
+		fieldListAdminContext.isSingleUserWorkspace)
 	
 })

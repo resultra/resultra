@@ -6,6 +6,7 @@ $(document).ready(function() {
 			
 	initAdminListSettings(itemListAdminContext.databaseID)
 	
-	appendPageSpecificBreadcrumbHeader("/admin/lists/"+itemListAdminContext.databaseID,"Item Lists")
+	appendPageSpecificBreadcrumbHeader("/admin/lists/"+itemListAdminContext.databaseID,"Item Lists",
+				itemListAdminContext.isSingleUserWorkspace)
 	
 })

@@ -13,7 +13,9 @@
 		<li id="settingsTOCAlerts"><a>Alerts</a></li>	
 		<li id="settingsTOCDashboards"><a>Dashboards</a></li>	
 		<li id="settingsTOCGlobals"><a>Global Values</a></li>
-		<li id="settingsTOCUsers"><a>Collaborators</a></li>
+		{{if not .IsSingleUserWorkspace}}
+			<li id="settingsTOCUsers"><a>Collaborators</a></li>
+		{{end}}
 		<li id="settingsTOCRoles"><a>Roles and Privileges</a></li>
 	</ul>
 		

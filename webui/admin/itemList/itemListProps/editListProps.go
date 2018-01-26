@@ -5,11 +5,11 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/databaseController"
 	itemListDataModel "resultra/datasheet/server/itemList"
-	adminCommon "resultra/datasheet/webui/admin/common"
-
 	overallUserRole "resultra/datasheet/server/userRole"
+	adminCommon "resultra/datasheet/webui/admin/common"
 
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/common/userAuth"
@@ -48,6 +48,7 @@ type ItemListTemplParams struct {
 	ListID                   string
 	ListName                 string
 	CurrUserIsAdmin          bool
+	IsSingleUserWorkspace    bool
 	FilterPropPanelParams    recordFilter.FilterPanelTemplateParams
 	PreFilterPropPanelParams recordFilter.FilterPanelTemplateParams
 }
@@ -103,6 +104,7 @@ func editListPropsPage(w http.ResponseWriter, r *http.Request) {
 		ListID:                   listID,
 		ListName:                 listInfo.Name,
 		CurrUserIsAdmin:          currUserIsAdmin,
+		IsSingleUserWorkspace:    runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
 		FilterPropPanelParams:    recordFilter.NewFilterPanelTemplateParams(elemPrefix),
 		PreFilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(preFilterElemPrefix),
 	}

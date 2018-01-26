@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/databaseController"
 
 	"resultra/datasheet/server/common/databaseWrapper"
@@ -38,11 +39,12 @@ func init() {
 }
 
 type TemplParams struct {
-	Title           string
-	DatabaseID      string
-	DatabaseName    string
-	WorkspaceName   string
-	CurrUserIsAdmin bool
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	WorkspaceName         string
+	CurrUserIsAdmin       bool
+	IsSingleUserWorkspace bool
 }
 
 func generalAdminPage(w http.ResponseWriter, r *http.Request) {
@@ -76,11 +78,12 @@ func generalAdminPage(w http.ResponseWriter, r *http.Request) {
 	currUserIsAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
 	templParams := TemplParams{
-		Title:           "General Settings",
-		DatabaseID:      databaseID,
-		DatabaseName:    dbInfo.DatabaseName,
-		WorkspaceName:   workspaceName,
-		CurrUserIsAdmin: currUserIsAdmin}
+		Title:                 "General Settings",
+		DatabaseID:            databaseID,
+		DatabaseName:          dbInfo.DatabaseName,
+		WorkspaceName:         workspaceName,
+		CurrUserIsAdmin:       currUserIsAdmin,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace}
 
 	if err := generalTemplates.ExecuteTemplate(w, "generalAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

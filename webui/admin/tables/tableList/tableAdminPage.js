@@ -6,7 +6,8 @@ $(document).ready(function() {
 			
 	initAdminTableListSettings(tableAdminContext.databaseID)
 	
-	appendPageSpecificBreadcrumbHeader("/admin/tables/"+tableAdminContext.databaseID,"Table Views")
+	appendPageSpecificBreadcrumbHeader("/admin/tables/"+tableAdminContext.databaseID,"Table Views",
+		tableAdminContext.isSingleUserWorkspace)
 	
 	
 })

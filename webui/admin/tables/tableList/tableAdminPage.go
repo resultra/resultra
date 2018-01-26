@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/userRole"
 
@@ -36,11 +37,12 @@ func init() {
 }
 
 type TemplParams struct {
-	Title           string
-	DatabaseID      string
-	DatabaseName    string
-	WorkspaceName   string
-	CurrUserIsAdmin bool
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	WorkspaceName         string
+	CurrUserIsAdmin       bool
+	IsSingleUserWorkspace bool
 }
 
 func tableAdminPage(w http.ResponseWriter, r *http.Request) {
@@ -75,11 +77,12 @@ func tableAdminPage(w http.ResponseWriter, r *http.Request) {
 	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
 	templParams := TemplParams{
-		Title:           "Tables",
-		DatabaseID:      databaseID,
-		DatabaseName:    dbInfo.DatabaseName,
-		WorkspaceName:   workspaceName,
-		CurrUserIsAdmin: isAdmin}
+		Title:                 "Tables",
+		DatabaseID:            databaseID,
+		DatabaseName:          dbInfo.DatabaseName,
+		WorkspaceName:         workspaceName,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		CurrUserIsAdmin:       isAdmin}
 
 	if err := tableTemplates.ExecuteTemplate(w, "tableAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -2,7 +2,7 @@ $(document).ready(function() {
 	
 	initAdminSettingsPageLayout($('#formLinkAdminPage'))	
 	initAdminPageHeader()
-	initAdminSettingsTOC(formLinkAdminContext.databaseID,"settingsTOCFormLinks")
+	initAdminSettingsTOC(formLinkAdminContext.databaseID,"settingsTOCFormLinks",formLinkAdminContext.isSingleUserWorkspace)
 			
 	initAdminFormLinkSettings(formLinkAdminContext.databaseID)
 	

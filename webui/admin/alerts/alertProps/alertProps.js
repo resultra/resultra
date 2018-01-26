@@ -4,7 +4,7 @@ $(document).ready(function() {
 	
 	initAdminPageHeader()
 	
-	initAdminSettingsTOC(alertPropsContext.databaseID,"settingsTOCAlerts")
+	initAdminSettingsTOC(alertPropsContext.databaseID,"settingsTOCAlerts", alertPropsContext.isSingleUserWorkspace)
 	
 	function initAlertFormProperties(alertInfo) {
 		var selectFormParams = {

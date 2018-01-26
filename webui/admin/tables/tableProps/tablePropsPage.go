@@ -4,12 +4,12 @@ import (
 	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/displayTable"
 	"resultra/datasheet/server/userRole"
 	adminCommon "resultra/datasheet/webui/admin/common"
 
-	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/workspace"
 
 	"resultra/datasheet/server/common/databaseWrapper"
@@ -42,15 +42,16 @@ func init() {
 }
 
 type TemplParams struct {
-	ElemPrefix      string
-	Title           string
-	DatabaseID      string
-	DatabaseName    string
-	WorkspaceName   string
-	TableID         string
-	TableName       string
-	SiteBaseURL     string
-	CurrUserIsAdmin bool
+	ElemPrefix            string
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	WorkspaceName         string
+	TableID               string
+	TableName             string
+	SiteBaseURL           string
+	CurrUserIsAdmin       bool
+	IsSingleUserWorkspace bool
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -94,15 +95,16 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
 	templParams := TemplParams{
-		ElemPrefix:      elemPrefix,
-		Title:           "Table view properties",
-		DatabaseID:      dbInfo.DatabaseID,
-		DatabaseName:    dbInfo.DatabaseName,
-		WorkspaceName:   workspaceName,
-		TableID:         tableID,
-		TableName:       tableInfo.Name,
-		SiteBaseURL:     runtimeConfig.GetSiteBaseURL(),
-		CurrUserIsAdmin: isAdmin}
+		ElemPrefix:            elemPrefix,
+		Title:                 "Table view properties",
+		DatabaseID:            dbInfo.DatabaseID,
+		DatabaseName:          dbInfo.DatabaseName,
+		WorkspaceName:         workspaceName,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		TableID:               tableID,
+		TableName:             tableInfo.Name,
+		SiteBaseURL:           runtimeConfig.GetSiteBaseURL(),
+		CurrUserIsAdmin:       isAdmin}
 
 	if err := tablePropTemplates.ExecuteTemplate(w, "tablePropsAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

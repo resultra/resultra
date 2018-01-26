@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/databaseController"
 	adminCommon "resultra/datasheet/webui/admin/common"
 
@@ -35,13 +36,14 @@ func init() {
 }
 
 type UserRoleTemplParams struct {
-	Title           string
-	DatabaseID      string
-	DatabaseName    string
-	WorkspaceName   string
-	RoleID          string
-	RoleName        string
-	CurrUserIsAdmin bool
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	WorkspaceName         string
+	RoleID                string
+	RoleName              string
+	CurrUserIsAdmin       bool
+	IsSingleUserWorkspace bool
 }
 
 func editRolePropsPage(w http.ResponseWriter, r *http.Request) {
@@ -87,13 +89,14 @@ func editRolePropsPage(w http.ResponseWriter, r *http.Request) {
 
 	//	elemPrefix := "userRole_"
 	templParams := UserRoleTemplParams{
-		Title:           "User Role Settings",
-		DatabaseID:      roleInfo.ParentDatabaseID,
-		DatabaseName:    dbInfo.DatabaseName,
-		WorkspaceName:   workspaceName,
-		RoleID:          roleID,
-		RoleName:        roleInfo.RoleName,
-		CurrUserIsAdmin: isAdmin}
+		Title:                 "User Role Settings",
+		DatabaseID:            roleInfo.ParentDatabaseID,
+		DatabaseName:          dbInfo.DatabaseName,
+		WorkspaceName:         workspaceName,
+		RoleID:                roleID,
+		RoleName:              roleInfo.RoleName,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		CurrUserIsAdmin:       isAdmin}
 
 	if err := userRoleTemplates.ExecuteTemplate(w, "editUserRolePropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

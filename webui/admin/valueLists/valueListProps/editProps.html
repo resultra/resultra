@@ -57,7 +57,8 @@
 		valueListID:"{{.ValueListID}}",
 		valueListName:"{{.ValueListName}}",
 		 databaseID:"{{.DatabaseID}}",
-		siteBaseURL:"{{.SiteBaseURL}}"} 
+		siteBaseURL:"{{.SiteBaseURL}}",
+		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } 
 	</script>
 	
 	{{template "thirdPartyJS"}}
@@ -77,7 +78,7 @@
 		</div> <!-- ui layout north -->
 		
 		<div class="pane ui-layout-west" id="valueListPageTocLayout">
-			{{template "adminSettingsTOC"}}
+			{{template "adminSettingsTOC" .}}
 		</div> <!-- ui layout north -->
 
 		<div class="pane ui-layout-center" id="valueListPageLayout">

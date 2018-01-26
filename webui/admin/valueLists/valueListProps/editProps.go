@@ -37,15 +37,16 @@ func init() {
 }
 
 type FormLinkTemplParams struct {
-	ElemPrefix      string
-	Title           string
-	DatabaseID      string
-	DatabaseName    string
-	WorkspaceName   string
-	ValueListID     string
-	ValueListName   string
-	SiteBaseURL     string
-	CurrUserIsAdmin bool
+	ElemPrefix            string
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	WorkspaceName         string
+	ValueListID           string
+	ValueListName         string
+	SiteBaseURL           string
+	CurrUserIsAdmin       bool
+	IsSingleUserWorkspace bool
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
@@ -90,15 +91,16 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 	elemPrefix := "valueList_"
 
 	templParams := FormLinkTemplParams{
-		ElemPrefix:      elemPrefix,
-		Title:           "Value List Settings",
-		DatabaseID:      dbInfo.DatabaseID,
-		DatabaseName:    dbInfo.DatabaseName,
-		WorkspaceName:   workspaceName,
-		ValueListID:     valueListID,
-		ValueListName:   valueListInfo.Name,
-		SiteBaseURL:     runtimeConfig.GetSiteBaseURL(),
-		CurrUserIsAdmin: isAdmin}
+		ElemPrefix:            elemPrefix,
+		Title:                 "Value List Settings",
+		DatabaseID:            dbInfo.DatabaseID,
+		DatabaseName:          dbInfo.DatabaseName,
+		WorkspaceName:         workspaceName,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		ValueListID:           valueListID,
+		ValueListName:         valueListInfo.Name,
+		SiteBaseURL:           runtimeConfig.GetSiteBaseURL(),
+		CurrUserIsAdmin:       isAdmin}
 
 	if err := formLinkTemplates.ExecuteTemplate(w, "editValueListPropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

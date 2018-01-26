@@ -2,6 +2,7 @@ package design
 
 import (
 	"net/http"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/webui/common/form/components/attachment"
@@ -43,37 +44,38 @@ type FormPropertyTemplateParams struct {
 // Aggregate the template parameters from all the form components, then
 // combine them with the paramers for the form itself.
 type DesignFormTemplateParams struct {
-	Title               string
-	DatabaseID          string
-	DatabaseName        string
-	WorkspaceName       string
-	FormID              string
-	FormName            string
-	CurrUserIsAdmin     bool
-	CheckboxParams      checkBox.CheckboxDesignTemplateParams
-	ToggleParams        toggle.ToggleDesignTemplateParams
-	DatePickerParams    datePicker.DatePickerDesignTemplateParams
-	TextBoxParams       textBox.TextboxDesignTemplateParams
-	NumberInputParams   numberInput.NumberInputDesignTemplateParams
-	SelectionParams     selection.SelectionDesignTemplateParams
-	HtmlEditorParams    htmlEditor.HTMLEditorDesignTemplateParams
-	AttachmentParams    attachment.ImageDesignTemplateParams
-	ImageParams         image.ImageDesignTemplateParams
-	CommentParams       comment.CommentDesignTemplateParams
-	RatingParams        rating.RatingDesignTemplateParams
-	UserSelectionParams userSelection.UserSelectionDesignTemplateParams
-	UserTagParams       userTag.UserTagDesignTemplateParams
-	ProgressParams      progress.ProgressDesignTemplateParams
-	GaugeParams         gauge.GaugeDesignTemplateParams
-	HeaderParams        header.HeaderTemplateParams
-	CaptionParams       caption.CaptionTemplateParams
-	ButtonParams        formButton.ButtonTemplateParams
-	SocialButtonParams  socialButton.SocialButtonDesignTemplateParams
-	LabelParams         label.LabelDesignTemplateParams
-	EmailAddrParams     emailAddr.EmailAddrDesignTemplateParams
-	UrlLinkParams       urlLink.UrlLinkDesignTemplateParams
-	FileParams          file.FileDesignTemplateParams
-	FormPropertyParams  FormPropertyTemplateParams
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	WorkspaceName         string
+	FormID                string
+	FormName              string
+	CurrUserIsAdmin       bool
+	IsSingleUserWorkspace bool
+	CheckboxParams        checkBox.CheckboxDesignTemplateParams
+	ToggleParams          toggle.ToggleDesignTemplateParams
+	DatePickerParams      datePicker.DatePickerDesignTemplateParams
+	TextBoxParams         textBox.TextboxDesignTemplateParams
+	NumberInputParams     numberInput.NumberInputDesignTemplateParams
+	SelectionParams       selection.SelectionDesignTemplateParams
+	HtmlEditorParams      htmlEditor.HTMLEditorDesignTemplateParams
+	AttachmentParams      attachment.ImageDesignTemplateParams
+	ImageParams           image.ImageDesignTemplateParams
+	CommentParams         comment.CommentDesignTemplateParams
+	RatingParams          rating.RatingDesignTemplateParams
+	UserSelectionParams   userSelection.UserSelectionDesignTemplateParams
+	UserTagParams         userTag.UserTagDesignTemplateParams
+	ProgressParams        progress.ProgressDesignTemplateParams
+	GaugeParams           gauge.GaugeDesignTemplateParams
+	HeaderParams          header.HeaderTemplateParams
+	CaptionParams         caption.CaptionTemplateParams
+	ButtonParams          formButton.ButtonTemplateParams
+	SocialButtonParams    socialButton.SocialButtonDesignTemplateParams
+	LabelParams           label.LabelDesignTemplateParams
+	EmailAddrParams       emailAddr.EmailAddrDesignTemplateParams
+	UrlLinkParams         urlLink.UrlLinkDesignTemplateParams
+	FileParams            file.FileDesignTemplateParams
+	FormPropertyParams    FormPropertyTemplateParams
 }
 
 var designFormTemplateParams DesignFormTemplateParams
@@ -96,13 +98,14 @@ func createDesignFormTemplateParams(r *http.Request,
 	currUserIsAdmin := userRole.CurrUserIsDatabaseAdmin(r, formInfo.DatabaseID)
 
 	templParams := DesignFormTemplateParams{
-		Title:           "Design Form",
-		DatabaseID:      formInfo.DatabaseID,
-		DatabaseName:    formInfo.DatabaseName,
-		FormID:          formInfo.FormID,
-		FormName:        formInfo.FormName,
-		WorkspaceName:   workspaceName,
-		CurrUserIsAdmin: currUserIsAdmin,
+		Title:                 "Design Form",
+		DatabaseID:            formInfo.DatabaseID,
+		DatabaseName:          formInfo.DatabaseName,
+		FormID:                formInfo.FormID,
+		FormName:              formInfo.FormName,
+		WorkspaceName:         workspaceName,
+		CurrUserIsAdmin:       currUserIsAdmin,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
 
 		CheckboxParams:      checkBox.DesignTemplateParams,
 		ToggleParams:        toggle.DesignTemplateParams,

@@ -8,6 +8,6 @@ $(document).ready(function() {
 			
 	initAdminFormSettings(formsAdminContext.databaseID)
 	
-	appendPageSpecificBreadcrumbHeader("/admin/forms/"+formsAdminContext.databaseID,"Forms")
+	appendPageSpecificBreadcrumbHeader("/admin/forms/"+formsAdminContext.databaseID,"Forms",formsAdminContext.isSingleUserWorkspace)
 	
 })

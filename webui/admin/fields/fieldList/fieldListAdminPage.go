@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/userRole"
 
@@ -37,13 +38,14 @@ func init() {
 }
 
 type FieldTemplParams struct {
-	Title           string
-	DatabaseID      string
-	DatabaseName    string
-	WorkspaceName   string
-	FieldID         string
-	FieldName       string
-	CurrUserIsAdmin bool
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	WorkspaceName         string
+	FieldID               string
+	FieldName             string
+	CurrUserIsAdmin       bool
+	IsSingleUserWorkspace bool
 }
 
 func fieldListAdminPage(w http.ResponseWriter, r *http.Request) {
@@ -77,11 +79,12 @@ func fieldListAdminPage(w http.ResponseWriter, r *http.Request) {
 	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
 	templParams := FieldTemplParams{
-		Title:           "Field Settings",
-		DatabaseID:      databaseID,
-		DatabaseName:    dbInfo.DatabaseName,
-		WorkspaceName:   workspaceName,
-		CurrUserIsAdmin: isAdmin}
+		Title:                 "Field Settings",
+		DatabaseID:            databaseID,
+		DatabaseName:          dbInfo.DatabaseName,
+		WorkspaceName:         workspaceName,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		CurrUserIsAdmin:       isAdmin}
 
 	if err := fieldListTemplates.ExecuteTemplate(w, "fieldAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

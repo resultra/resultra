@@ -188,7 +188,7 @@ $(document).ready(function() {
 			}
 		})
 		
-	initAdminSettingsTOC(formLinkPropsContext.databaseID,"settingsTOCFormLinks")
+	initAdminSettingsTOC(formLinkPropsContext.databaseID,"settingsTOCFormLinks",formLinkPropsContext.isSingleUserWorkspace)
 		
 		
 	initAdminPageHeader()

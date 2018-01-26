@@ -5,14 +5,14 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"resultra/datasheet/server/databaseController"
-	adminCommon "resultra/datasheet/webui/admin/common"
-
 	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/common/userAuth"
+	"resultra/datasheet/server/databaseController"
+	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/userRole"
 	"resultra/datasheet/server/workspace"
+	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
@@ -36,13 +36,14 @@ func init() {
 }
 
 type FieldTemplParams struct {
-	Title           string
-	DatabaseID      string
-	DatabaseName    string
-	WorkspaceName   string
-	FieldID         string
-	FieldName       string
-	CurrUserIsAdmin bool
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	WorkspaceName         string
+	FieldID               string
+	FieldName             string
+	CurrUserIsAdmin       bool
+	IsSingleUserWorkspace bool
 }
 
 func editFieldPropsPage(w http.ResponseWriter, r *http.Request) {
@@ -84,13 +85,14 @@ func editFieldPropsPage(w http.ResponseWriter, r *http.Request) {
 
 	//	elemPrefix := "userRole_"
 	templParams := FieldTemplParams{
-		Title:           "Field Settings",
-		DatabaseID:      fieldInfo.ParentDatabaseID,
-		DatabaseName:    dbInfo.DatabaseName,
-		WorkspaceName:   workspaceName,
-		FieldID:         fieldID,
-		FieldName:       fieldInfo.Name,
-		CurrUserIsAdmin: isAdmin}
+		Title:                 "Field Settings",
+		DatabaseID:            fieldInfo.ParentDatabaseID,
+		DatabaseName:          dbInfo.DatabaseName,
+		WorkspaceName:         workspaceName,
+		FieldID:               fieldID,
+		FieldName:             fieldInfo.Name,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		CurrUserIsAdmin:       isAdmin}
 
 	if err := fieldTemplates.ExecuteTemplate(w, "editFieldPropsPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

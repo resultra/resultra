@@ -63,7 +63,8 @@ $(document).ready(function() {
 			}
 		})
 		
-	initAdminSettingsTOC(rolePropsContext.databaseID,"settingsTOCRoles")
+	initAdminSettingsTOC(rolePropsContext.databaseID,"settingsTOCRoles",
+			rolePropsContext.isSingleUserWorkspace)
 		
 	initAdminPageHeader()
 		

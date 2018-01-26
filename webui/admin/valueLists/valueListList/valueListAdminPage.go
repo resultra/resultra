@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/databaseController"
 
 	"resultra/datasheet/server/common/databaseWrapper"
@@ -36,11 +37,12 @@ func init() {
 }
 
 type FieldTemplParams struct {
-	Title           string
-	DatabaseID      string
-	DatabaseName    string
-	WorkspaceName   string
-	CurrUserIsAdmin bool
+	Title                 string
+	DatabaseID            string
+	DatabaseName          string
+	WorkspaceName         string
+	CurrUserIsAdmin       bool
+	IsSingleUserWorkspace bool
 }
 
 func valueListAdminPage(w http.ResponseWriter, r *http.Request) {
@@ -74,11 +76,12 @@ func valueListAdminPage(w http.ResponseWriter, r *http.Request) {
 	isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
 
 	templParams := FieldTemplParams{
-		Title:           "Value Lists",
-		DatabaseID:      databaseID,
-		DatabaseName:    dbInfo.DatabaseName,
-		WorkspaceName:   workspaceName,
-		CurrUserIsAdmin: isAdmin}
+		Title:                 "Value Lists",
+		DatabaseID:            databaseID,
+		DatabaseName:          dbInfo.DatabaseName,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		WorkspaceName:         workspaceName,
+		CurrUserIsAdmin:       isAdmin}
 
 	if err := valueListTemplates.ExecuteTemplate(w, "valueListAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

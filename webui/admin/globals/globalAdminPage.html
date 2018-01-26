@@ -13,7 +13,8 @@
 	<!-- globalAssets:css -->
 	<!-- endinject -->
 	
-	<script>var globalAdminPageContext = { databaseID:"{{.DatabaseID}}" } </script>
+	<script>var globalAdminPageContext = { databaseID:"{{.DatabaseID}}",
+		 isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } </script>
 	
 	{{template "thirdPartyJS"}}
 	
@@ -32,7 +33,7 @@
 		</div> <!-- ui layout north -->
 		
 		<div class="pane ui-layout-west">
-			{{template "adminSettingsTOC"}}
+			{{template "adminSettingsTOC" .}}
 		</div> <!-- ui layout north -->
 
 		<div class="pane ui-layout-center">

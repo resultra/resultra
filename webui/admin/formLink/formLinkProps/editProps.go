@@ -5,11 +5,10 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/formLink"
 	adminCommon "resultra/datasheet/webui/admin/common"
-
-	"resultra/datasheet/server/common/runtimeConfig"
 
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/common/userAuth"
@@ -44,6 +43,7 @@ type FormLinkTemplParams struct {
 	DatabaseName            string
 	WorkspaceName           string
 	CurrUserIsAdmin         bool
+	IsSingleUserWorkspace   bool
 	LinkID                  string
 	LinkName                string
 	SiteBaseURL             string
@@ -102,6 +102,7 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		LinkID:                  linkID,
 		LinkName:                linkInfo.Name,
 		CurrUserIsAdmin:         isAdmin,
+		IsSingleUserWorkspace:   runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
 		SiteBaseURL:             runtimeConfig.GetSiteBaseURL(),
 		DefaultValuePanelParams: defaultValues.NewDefaultValuesTemplateParams(elemPrefix)}
 
