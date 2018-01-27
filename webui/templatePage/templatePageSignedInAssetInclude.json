@@ -6,7 +6,8 @@
 	"imageFiles": [],
 	"jsFiles": ["templatePageSignedIn.js",
 		"templatePropertiesDialog.js"],
-	"htmlFiles":["templatePageSignedIn.html"],
+	"htmlFiles":["templatePageSignedIn.html",
+		"templatePropertiesDialog.html"],
 	"minCSSFile":"templatePage/templatePageSignedIn.min.css",
 	"minJSFile": "templatePage/templatePageSignedIn.min.js",
 	"injectPlaceholderName":"templatePageSignedInAssets"
