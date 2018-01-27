@@ -7,7 +7,7 @@ prebuild:
 clean:
 	$(RM_DIR) dist
 	
-realclean: clean
+realclean:
 	$(RM_DIR) node_modules
 	
 	

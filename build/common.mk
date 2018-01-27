@@ -16,6 +16,9 @@ GOTEST = $(GO) test -v .
 
 # Default, no-op/empty rules for different build phases. Makefiles can override these
 # to implement build rules for different phases.
+
+realclean:
+
 clean:
 
 prebuild:

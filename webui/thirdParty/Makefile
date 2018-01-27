@@ -2,11 +2,11 @@ DEPTH = ../..
 include $(DEPTH)/build/common.mk
 include $(DEPTH)/webui/build/webui.mk
 
-prebuild:
+realclean:
+	$(RM) -Rf node_modules/
 
 clean: 
 	$(RM) *_gen.json
-	$(RM) -Rf node_modules/
 
 prebuild:
 	npm install

@@ -9,7 +9,7 @@ all: build export
 build: datasheetServer resultraLocalBackend
 
 clean:
-	$(RM) datasheetServer
+	$(RM) datasheetServer resultraLocalBackend
 	
 datasheetServer: 
 	$(GOBUILD) datasheetServer.go

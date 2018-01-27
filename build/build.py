@@ -18,6 +18,8 @@ from multiprocessing import Pool
 parser = argparse.ArgumentParser(description='Main build script.')
 parser.add_argument('--release',default=False,action='store_true',
                     help='perform a release build')
+parser.add_argument('--realcleanonly',default=False,action='store_true',
+                    help='only run the clean and realclean targets across the build')
 parser.add_argument('--procs',default=4,type=int,
                     help='number of processors(cores) to run parallel build on (default = 4)')
 args = parser.parse_args()
@@ -60,7 +62,7 @@ def runMakePhase(makeTargetName):
     makeDirs = []
     for root, dirs, files in os.walk(".."):
         for file in files:
-            if (file == 'Makefile') and (not root.startswith("../webui/build") and (not "node_modules" in root)):
+            if (file == 'Makefile') and (not "node_modules" in root):
                 makeDirs.append(buildDirSpec(root,makeTargetName,debugBuild))
     buildPool = Pool(processes=args.procs)
     results = buildPool.map(buildOneDir,makeDirs)
@@ -72,12 +74,16 @@ def runMakePhase(makeTargetName):
             failedDirs.append(makeTargetName + ":" + res.dirName)
     
     
-startTime = time.time()    
-            
-runMakePhase("prebuild")
-runMakePhase("build")
-runMakePhase("export")
-runMakePhase("package")
+startTime = time.time() 
+
+if args.realcleanonly:
+    runMakePhase("clean")
+    runMakePhase("realclean")
+else:        
+    runMakePhase("prebuild")
+    runMakePhase("build")
+    runMakePhase("export")
+    runMakePhase("package")
 
 endTime = time.time()
 
