@@ -372,6 +372,29 @@ func isTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equ
 const FuncNameWhenTrue = "WHENTRUE"
 
 func whenTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	if len(funcArgs) != 1 {
+		return nil, fmt.Errorf("WHENTRUE() - Expecting 1 argument, got %v", len(funcArgs))
+	}
+	condEqn := funcArgs[0]
+
+	condResult, condErr := condEqn.EvalEqn(evalContext)
+	if condErr != nil {
+		return nil, fmt.Errorf("WHENTRUE(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, condErr)
+	}
+	if condResult.IsUndefined() {
+		return undefinedEqnResult(), nil
+	}
+	condBoolResult, validateErr := condResult.GetBoolResult()
+	if validateErr != nil {
+		return nil, fmt.Errorf("WHENTRUE(): Invalid result found while evaluating argument 1: arg=%+v, error = %v", condEqn, validateErr)
+	}
+	if condBoolResult == true {
+		return timeEqnResult(evalContext.EvalEqnAsOfTimestamp), nil
+	} else {
+		return undefinedEqnResult(), nil
+	}
+
 	trueSince := time.Now().UTC()
 	return timeEqnResult(trueSince), nil
 }
