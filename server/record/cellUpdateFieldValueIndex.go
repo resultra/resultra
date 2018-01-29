@@ -1,7 +1,6 @@
 package record
 
 import (
-	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/field"
 	"sort"
@@ -49,7 +48,12 @@ func (s ByUpdateTime) Less(i, j int) bool {
 	return s[i].UpdateTimeStamp.After(s[j].UpdateTimeStamp)
 }
 
-type CellUpdateFieldValueIndex map[string]FieldValueUpdateSeries
+type FieldUpdateFieldValueIndex map[string]FieldValueUpdateSeries
+
+type CellUpdateFieldValueIndex struct {
+	fieldUpdateFieldValueIndex FieldUpdateFieldValueIndex
+	CellUpdates                []CellUpdate
+}
 
 // There will only be cell updates in the datastore for non-calculated fields. For these fields,
 // this function returns the latest (most recent) values.
@@ -57,7 +61,7 @@ func (cellUpdateFieldValIndex CellUpdateFieldValueIndex) LatestNonCalcFieldValue
 
 	recFieldValues := RecFieldValues{}
 
-	for fieldID, updateSeries := range cellUpdateFieldValIndex {
+	for fieldID, updateSeries := range cellUpdateFieldValIndex.fieldUpdateFieldValueIndex {
 		if len(updateSeries) > 0 {
 			recFieldValues[fieldID] = updateSeries[0].CellValue
 		}
@@ -70,7 +74,7 @@ func (cellUpdateFieldValIndex CellUpdateFieldValueIndex) NonCalcFieldValuesAsOf(
 
 	recFieldValues := RecFieldValues{}
 
-	for fieldID, updateSeries := range cellUpdateFieldValIndex {
+	for fieldID, updateSeries := range cellUpdateFieldValIndex.fieldUpdateFieldValueIndex {
 		if len(updateSeries) > 0 {
 			asOfVal := updateSeries.valueAsOf(asOfTime)
 			if asOfVal != nil {
@@ -84,7 +88,8 @@ func (cellUpdateFieldValIndex CellUpdateFieldValueIndex) NonCalcFieldValuesAsOf(
 
 func NewUpdateFieldValueIndexForCellUpdates(recCellUpdates *RecordCellUpdates, fieldsByID map[string]field.Field) (*CellUpdateFieldValueIndex, error) {
 	// Populate the index with all the updates for the given recordID, broken down by FieldID.
-	fieldValSeriesMap := CellUpdateFieldValueIndex{}
+	fieldValSeriesMap := FieldUpdateFieldValueIndex{}
+	cellUpdates := []CellUpdate{}
 	for _, currUpdate := range recCellUpdates.CellUpdates {
 
 		fieldInfo, foundField := fieldsByID[currUpdate.FieldID]
@@ -103,6 +108,7 @@ func NewUpdateFieldValueIndexForCellUpdates(recCellUpdates *RecordCellUpdates, f
 			CellValue:       decodedCellVal}
 
 		fieldValSeriesMap[currUpdate.FieldID] = append(fieldValSeriesMap[currUpdate.FieldID], fieldValUpdate)
+		cellUpdates = append(cellUpdates, currUpdate)
 	}
 
 	// Sort the value updates for each fieldID in reverse chronological order.
@@ -110,19 +116,13 @@ func NewUpdateFieldValueIndexForCellUpdates(recCellUpdates *RecordCellUpdates, f
 		sort.Sort(ByUpdateTime(fieldValSeriesMap[currFieldID]))
 	}
 
-	return &fieldValSeriesMap, nil
+	// Cell updates need to be in chronological order to be processed
+	sort.Sort(CellUpdateByUpdateTime(cellUpdates))
 
-}
+	cellUpdateIndex := CellUpdateFieldValueIndex{
+		fieldUpdateFieldValueIndex: fieldValSeriesMap,
+		CellUpdates:                cellUpdates}
 
-func NewUpdateFieldValueIndex(trackingDBHandle *sql.DB, parentDatabaseID string, fieldsByID map[string]field.Field,
-	recordID string, changeSetID string) (*CellUpdateFieldValueIndex, error) {
-
-	recCellUpdates, getErr := GetRecordCellUpdates(trackingDBHandle, recordID, changeSetID)
-	if getErr != nil {
-		return nil, fmt.Errorf("NewFieldValueIndex: failure retrieving cell updates for record = %v: error = %v",
-			recordID, getErr)
-	}
-
-	return NewUpdateFieldValueIndexForCellUpdates(recCellUpdates, fieldsByID)
+	return &cellUpdateIndex, nil
 
 }
