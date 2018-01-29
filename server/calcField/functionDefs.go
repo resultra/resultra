@@ -369,6 +369,13 @@ func isTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equ
 
 }
 
+const FuncNameWhenTrue = "WHENTRUE"
+
+func whenTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+	trueSince := time.Now().UTC()
+	return timeEqnResult(trueSince), nil
+}
+
 var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 
 	FuncNameSequenceNum: FunctionInfo{FuncNameSequenceNum, sequenceNumFunc, zeroNumberArgs},
@@ -391,4 +398,5 @@ var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 	FuncNameGreaterThan: FunctionInfo{FuncNameGreaterThan, greaterThanEvalFunc, twoNumberArgsBooleanResult},
 	FuncNameIf:          FunctionInfo{FuncNameIf, ifEvalFunc, validIfArgs},
 	FuncNameIsTrue:      FunctionInfo{FuncNameIsTrue, isTrueEvalFunc, oneBoolArg},
+	FuncNameWhenTrue:    FunctionInfo{FuncNameWhenTrue, whenTrueEvalFunc, oneBoolTimeResultArg},
 }

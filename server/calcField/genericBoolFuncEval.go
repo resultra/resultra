@@ -36,6 +36,28 @@ func oneBoolArg(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
 
 }
 
+func oneBoolTimeResultArg(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
+	if len(params.funcArgs) != 1 {
+		errMsgs := []string{fmt.Sprintf("Expecting 1 boolean arguments to function %v", params.funcName)}
+		return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeBool}, nil
+	}
+
+	argErrors := []string{}
+
+	arg1EqnNode := params.funcArgs[0]
+	arg1AnalyzeResult, analyzeErr := analyzeEqnNode(params.context, arg1EqnNode)
+	if analyzeErr != nil {
+		return nil, analyzeErr
+	}
+	if arg1AnalyzeResult.resultType != field.FieldTypeBool {
+		argErrors = append(
+			argErrors, fmt.Sprintf("Invalid argument type for argument 1 of function %v. Expecting boolean (logical)", params.funcName))
+	}
+
+	return &semanticAnalysisResult{analyzeErrors: argErrors, resultType: field.FieldTypeTime}, nil
+
+}
+
 func validIfArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
 
 	if len(params.funcArgs) != 3 {
