@@ -52,12 +52,14 @@ func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateCon
 	}
 
 	// For non-calculated fields, get the latest (most recent) field values.
+	calcFieldAsOfTime := time.Now().UTC()
 	latestFieldValues := cellUpdateFieldValIndex.LatestNonCalcFieldValues()
 
 	// Now that all the non-calculated fields have been populated into latestFieldValues, all the calculated
 	// fields also need to be populated. The formulas for calculated field by refer to the latest value of non-calculated
 	// fields, so this set of values needs to be passed into UpdateCalcFieldValues as a starting point.
-	if calcErr := calcField.UpdateCalcFieldValues(config, mappedRecord, latestFieldValues); calcErr != nil {
+	if calcErr := calcField.UpdateCalcFieldValues(config, mappedRecord,
+		cellUpdateFieldValIndex, calcFieldAsOfTime, latestFieldValues); calcErr != nil {
 		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: Can't set value: Error calculating fields to reflect update: err = %v", calcErr)
 	}
 

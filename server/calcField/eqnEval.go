@@ -26,6 +26,9 @@ type EqnEvalContext struct {
 	GlobalIndex global.GlobalIDGlobalIndex
 
 	FieldsByID map[string]field.Field
+
+	CellUpdateFieldValIndex *record.CellUpdateFieldValueIndex
+	EvalEqnAsOfTimestamp    time.Time
 }
 
 func validateEqnFieldForRecordValue(evalContext *EqnEvalContext, fieldID string,
@@ -446,16 +449,19 @@ func CreateCalcFieldUpdateConfig(trackerDBHandle *sql.DB,
 // UpdateCalcFieldValues is (currently) the top-most entry point into the calculated field
 // equation evaluation functionality. This is called after record updates (see recordUpdate package)
 // to refresh calculated values.
-func UpdateCalcFieldValues(config *CalcFieldUpdateConfig, calcRecord record.Record, resultFieldVals *record.RecFieldValues) error {
+func UpdateCalcFieldValues(config *CalcFieldUpdateConfig, calcRecord record.Record, cellUpdateFieldValIndex *record.CellUpdateFieldValueIndex,
+	calcAsOfTimestamp time.Time, resultFieldVals *record.RecFieldValues) error {
 
 	eqnEvalContext := EqnEvalContext{
-		ParentDatabaseID: config.ParentDatabaseID,
-		Record:           calcRecord,
-		ResultFieldVals:  resultFieldVals,
-		DefinedFuncs:     CalcFieldDefinedFuncs,
-		GlobalVals:       config.GlobalVals,
-		GlobalIndex:      config.GlobalIndex,
-		FieldsByID:       config.FieldsByID}
+		ParentDatabaseID:        config.ParentDatabaseID,
+		Record:                  calcRecord,
+		ResultFieldVals:         resultFieldVals,
+		CellUpdateFieldValIndex: cellUpdateFieldValIndex,
+		EvalEqnAsOfTimestamp:    calcAsOfTimestamp,
+		DefinedFuncs:            CalcFieldDefinedFuncs,
+		GlobalVals:              config.GlobalVals,
+		GlobalIndex:             config.GlobalIndex,
+		FieldsByID:              config.FieldsByID}
 
 	for _, currField := range config.Fields {
 

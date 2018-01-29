@@ -55,9 +55,10 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 	// item/record information which is presented alongside the alert notification. In particular,
 	// each alert has an associated summary field which is selected to identify a record/item
 	// in the context of an alert notification.
+	calcFieldAsOfTime := time.Now().UTC()
 	latestFieldValues := cellUpdateFieldValIndex.LatestNonCalcFieldValues()
 	if calcErr := calcField.UpdateCalcFieldValues(recProcessingConfig.CalcFieldConfig,
-		recProcessingConfig.Record, latestFieldValues); calcErr != nil {
+		recProcessingConfig.Record, cellUpdateFieldValIndex, calcFieldAsOfTime, latestFieldValues); calcErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: : err = %v", calcErr)
 	}
 
@@ -72,7 +73,8 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 		// This allows alerts which trigger from calculated field values to be processed just like
 		// non calculated fields.
 		if calcErr := calcField.UpdateCalcFieldValues(recProcessingConfig.CalcFieldConfig,
-			recProcessingConfig.Record, &currFieldValues); calcErr != nil {
+			recProcessingConfig.Record, cellUpdateFieldValIndex,
+			currCellUpdate.UpdateTimeStamp, &currFieldValues); calcErr != nil {
 			return nil, fmt.Errorf("GenerateRecordAlerts: : err = %v", calcErr)
 		}
 
