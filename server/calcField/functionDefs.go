@@ -378,25 +378,55 @@ func whenTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*E
 	}
 	condEqn := funcArgs[0]
 
-	condResult, condErr := condEqn.EvalEqn(evalContext)
-	if condErr != nil {
-		return nil, fmt.Errorf("WHENTRUE(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, condErr)
-	}
-	if condResult.IsUndefined() {
-		return undefinedEqnResult(), nil
-	}
-	condBoolResult, validateErr := condResult.GetBoolResult()
-	if validateErr != nil {
-		return nil, fmt.Errorf("WHENTRUE(): Invalid result found while evaluating argument 1: arg=%+v, error = %v", condEqn, validateErr)
-	}
-	if condBoolResult == true {
-		return timeEqnResult(evalContext.EvalEqnAsOfTimestamp), nil
-	} else {
-		return undefinedEqnResult(), nil
+	evalIfTrueAtTime := func(asOfTime time.Time) (bool, error) {
+
+		currFieldVals := evalContext.CellUpdateFieldValIndex.NonCalcFieldValuesAsOf(asOfTime)
+		currEvalContext := *evalContext
+		currEvalContext.ResultFieldVals = &currFieldVals
+		currEvalContext.EvalEqnAsOfTimestamp = asOfTime
+
+		condResult, condErr := condEqn.EvalEqn(&currEvalContext)
+		if condErr != nil {
+			return false, fmt.Errorf("WHENTRUE(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, condErr)
+		}
+		return condResult.IsTrueResult(), nil
 	}
 
-	trueSince := time.Now().UTC()
-	return timeEqnResult(trueSince), nil
+	// Below is the implementation of callback for an iteration over the cell-updates to determine the earliest
+	// time in which the result of the given formula has turned true.
+	eqnResult := undefinedEqnResult()
+	mostRecentTimeEvaled := false
+	evalIfTrueAtTimeIter := func(asOfTime time.Time) (bool, error) {
+		if !mostRecentTimeEvaled {
+			mostRecentTimeEvaled = true
+			evalIsTrue, evalErr := evalIfTrueAtTime(asOfTime)
+			if evalErr != nil {
+				return false, fmt.Errorf("WHENTRUE(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, evalErr)
+			} else if !evalIsTrue {
+				return false, nil // stop iteration and leave the return val undefined if the first value isn't set to true
+			} else {
+				eqnResult = timeEqnResult(asOfTime)
+				return true, nil // continue iterating if the result is true
+			}
+		} else {
+			evalIsTrue, evalErr := evalIfTrueAtTime(asOfTime)
+			if evalErr != nil {
+				return false, fmt.Errorf("WHENTRUE(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, evalErr)
+			} else if evalIsTrue {
+				eqnResult = timeEqnResult(asOfTime)
+				return true, nil // continue iterating and advance the 'asOfTime' if the result evaluates to true.
+			} else {
+				return false, nil // stop the iteration if the value no longer evaluates to true
+			}
+		}
+	}
+	evalErr := evalContext.CellUpdateFieldValIndex.IterateCellUpdateTimesInReverseChronologicalOrder(evalContext.EvalEqnAsOfTimestamp,
+		evalIfTrueAtTimeIter)
+	if evalErr != nil {
+		return nil, fmt.Errorf("WHENTRUE() - %v", evalErr)
+	}
+
+	return eqnResult, nil
 }
 
 var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{

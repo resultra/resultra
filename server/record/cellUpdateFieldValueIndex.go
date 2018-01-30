@@ -55,6 +55,30 @@ type CellUpdateFieldValueIndex struct {
 	CellUpdates                []CellUpdate
 }
 
+type CellUpdateTimeIterFunc func(asOfTime time.Time) (bool, error)
+
+// Iterate over the cell updates which occur before startMaxTime and invoke a call-back with the given
+// cell update's time. The iteration occurs in reverse chronological order. This iteration is needed
+// for calculated field formulas/equations with time-sensitive results.
+func (cellUpdateFieldValIndex CellUpdateFieldValueIndex) IterateCellUpdateTimesInReverseChronologicalOrder(startMaxTime time.Time,
+	iterCallback CellUpdateTimeIterFunc) error {
+
+	// Visit each update in reverse chronological order. The cell updates are sorted in chronological order below.
+	for i := len(cellUpdateFieldValIndex.CellUpdates) - 1; i >= 0; i-- {
+		currCellUpdate := cellUpdateFieldValIndex.CellUpdates[i]
+		if currCellUpdate.UpdateTimeStamp.Before(startMaxTime) || currCellUpdate.UpdateTimeStamp.Equal(startMaxTime) {
+			continueIter, err := iterCallback(currCellUpdate.UpdateTimeStamp)
+			if err != nil {
+				return err
+			} else if !continueIter {
+				return nil
+			}
+		}
+	}
+
+	return nil
+}
+
 // There will only be cell updates in the datastore for non-calculated fields. For these fields,
 // this function returns the latest (most recent) values.
 func (cellUpdateFieldValIndex CellUpdateFieldValueIndex) LatestNonCalcFieldValues() *RecFieldValues {

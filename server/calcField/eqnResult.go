@@ -103,6 +103,22 @@ func (eqnResult EquationResult) GetBoolResult() (bool, error) {
 	}
 }
 
+func (eqnResult EquationResult) IsTrueResult() bool {
+	if eqnResult.IsUndefined() {
+		return false
+	}
+	condBoolResult, validateErr := eqnResult.GetBoolResult()
+	if validateErr != nil {
+		return false
+	}
+	if condBoolResult == true {
+		return true
+	} else {
+		return false
+	}
+
+}
+
 func undefinedEqnResult() *EquationResult {
 	return &EquationResult{ResultType: eqnResultTypeUndefined}
 }
