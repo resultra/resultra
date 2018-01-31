@@ -133,6 +133,15 @@ function populateFieldSelectionControlMenu(fieldsByID, $menuSelector) {
 	}
 }
 
+function populateSortedFieldSelectionOptGroup($optGroup,sortedFields) {
+	$optGroup.empty()
+	for(var fieldIndex in sortedFields) {
+		var fieldInfo = sortedFields[fieldIndex]
+		$optGroup.append(selectFieldHTML(fieldInfo.fieldID, fieldInfo.name))		
+	}
+	
+}
+
 function populateSortedFieldSelectionMenu($menuSelector,sortedFields) {
 	$menuSelector.empty()
 	$menuSelector.append(defaultSelectOptionPromptHTML("Select a Field"))

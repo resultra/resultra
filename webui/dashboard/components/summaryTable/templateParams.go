@@ -41,8 +41,8 @@ func init() {
 	preFilterElemPrefix := "summaryTablePreFilter_"
 
 	rowGroupingParams := newComponentDialog.ValueGroupingTemplateParams{
-		elemPrefix, "Configure which field is used to group values into rows",
-		"Field for grouping values into rows", "Group Values By"}
+		elemPrefix, "Configure how to group values into rows",
+		"Field value or time increment for grouping values into rows", "Group Values By"}
 
 	valueSummaryParams := valueSummary.ValueSummaryTemplateParams{
 		elemPrefix, "Configure how values are summarized in the first column (more columns can be added later).",

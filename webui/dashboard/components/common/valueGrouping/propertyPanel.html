@@ -3,19 +3,23 @@
 		<form role="form" id="{{.ElemPrefix}}ValueGroupingPropertiesForm">
 			<div class="form-group">
 				<label>{{.ValueFieldLabel}}</label> 
-				<select class="form-control groupBySelectionInput" name="groupedFieldSelection">
-					<option value="">
-						Select a field
-					</option>
+				<select class="form-control groupBySelectionInput" name="groupedFieldOrTimeIntervalSelection">		
+					<option disabled selected value="">Select a field or time interval</option>
+					<optgroup class="fieldSelectionOptGroup" label="Fields"></optgroup>
+					<optgroup class="timeIncrementSelectionOptGroup" label="Time increments">
+						<option class="timeIncrementSelection" value="days">Days</option>
+						<option class="timeIncrementSelection" value="weeks">Weeks</option>
+						<option class="timeIncrementSelection" value="months">Months</option>
+					</optgroup>					
 				</select>
 			</div>
-			<div class="form-group numberFieldFormatGroup">
+			<div class="form-group numberFieldFormatGroup fieldGroupingInput">
 				<label>Number format for labels</label>
 				<select class="form-control" name="numberFormat">
 					{{template "formatNumberNumberSelectionOptions"}}
 				</select>
 			</div>
-			<div class="form-group">
+			<div class="form-group fieldGroupingInput">
 				<label>{{.ValueGroupingLabel}}</label>
 				<select class="form-control groupBySelectionInput" name="groupBySelection">
 					<option value="">
@@ -23,15 +27,28 @@
 					</option>
 				</select>
 			</div>
-			<div class="form-group groupBucketInputs">
+			<div class="form-group timeGroupingInput">
+				<label>Time range to show results</label>
+				<select class="form-control timeRangeSelectionInput" name="timeRangeSelection">
+					<option disabled selected value="">Select a time range</option>
+					<option value="lastWeek">Last week</option>
+					<option value="last2Weeks">Last 2 weeks</option>
+					<option value="YTD">Year to date</option>
+					<option value="lastYear">Last year</option>
+					<option value="lastMonth">Last month</option>
+					<option value="last3Months">Last 3 months</option>
+					<option value="last6Months">Last 6 months</option>
+				</select>
+			</div>
+			<div class="form-group groupBucketInputs fieldGroupingInput">
 			      <label>Bucket size</label>
 			      <input type="text" class="bucketInput numberInput maxWidth50 " name="bucketSize" placeholder="">
 			</div> <!-- Bucket size -->
-			<div class="form-group groupBucketInputs">
+			<div class="form-group groupBucketInputs fieldGroupingInput">
 			      <label>Starting value</label>
 			      <input type="text" class="bucketInput numberInput maxWidth50" name="bucketStart" placeholder="">
 			</div> <!-- Bucket size -->
-			<div class="form-group groupBucketInputs">
+			<div class="form-group groupBucketInputs fieldGroupingInput">
 			      <label>Ending value</label>
 			      <input type="text" class="bucketInput maxWidth50" name="bucketEnd" placeholder="">
 			</div> <!-- Bucket size -->
