@@ -18,6 +18,22 @@ func (series FieldValueUpdateSeries) valueAsOf(asOfTime time.Time) interface{} {
 
 	var theVal interface{}
 	theVal = nil
+
+	if len(series) <= 0 {
+		return theVal
+	}
+
+	// Most of the time this function is called, asOfTime will retrieve the latest value, rather than one
+	// of the previous values. So, handle this as a special case to prevent unnecessary computation.
+	if series[0].UpdateTimeStamp.Before(asOfTime) {
+		theVal = series[0].CellValue
+		return theVal
+	}
+
+	// The values are sorted in reverse chronological order. However,
+	// to retrieve the value as of a given time, the values need to be
+	// traversed in chronological order, finding the last value whose
+	// timestamp is <= asOfTime.
 	for i := len(series) - 1; i >= 0; i-- {
 		valUpdateTime := series[i].UpdateTimeStamp
 		if valUpdateTime.Before(asOfTime) {

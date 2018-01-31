@@ -43,7 +43,7 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 		recProcessingConfig.RecCellUpdates,
 		recProcessingConfig.CalcFieldConfig.FieldsByID)
 	if indexErr != nil {
-		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", indexErr)
+		return nil, fmt.Errorf("MapOneRecordUpdatesToLatestFieldValues: %v", indexErr)
 	}
 
 	// For non-calculated fields, get the latest (most recent) field values.

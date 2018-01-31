@@ -22,7 +22,7 @@ func newRecord(trackerDBHandle *sql.DB, currUserID string, params record.NewReco
 	// needed by clients to record creation. Although no values have been set yet, some of the
 	// calculated fields may also have fixed values which don't depend on any values being set
 	// in the record.
-	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
+	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToLatestFieldValues(
 		trackerDBHandle, currUserID, newRecord.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(

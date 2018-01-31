@@ -86,7 +86,7 @@ class TestNumberRecordValues(unittest.TestCase,TestHelperMixin):
         # Test what happens when clearing the value. This is done by setting the value to 'null'
         self.setNumberRecordValue(self.databaseID,recordID,self.numberFieldID,None)
         recordRef = self.getRecord(self.databaseID,recordID)
-        self.assertEquals(self.getRecordFieldVal(recordRef,self.numberFieldID),None,"retrieved record has null value")
+        self.verifyUndefinedFieldVal(recordRef,self.numberFieldID)
         self.verifyUndefinedFieldVal(recordRef,self.calcFieldID)
                       
 

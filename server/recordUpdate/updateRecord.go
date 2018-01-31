@@ -38,7 +38,7 @@ func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*rec
 
 	// Since a change has occored to one of the record's values, a new set of mapped record
 	// values needs to be created.
-	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
+	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToLatestFieldValues(
 		trackerDBHandle, currUserID, recordForUpdate.ParentDatabaseID, recCellUpdates, recUpdater.GetChangeSetID())
 	if mapErr != nil {
 		return nil, fmt.Errorf(
@@ -80,7 +80,7 @@ func commitChangeSet(trackerDBHandle *sql.DB, currUserID string, params CommitCh
 
 	// Temporary changes made under the given changeSetID have been made permanent, so
 	// a new set of mapped record values needs to be created.
-	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
+	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToLatestFieldValues(
 		trackerDBHandle, currUserID, commitRecord.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(
@@ -115,7 +115,7 @@ func setDefaultValues(req *http.Request, params record.SetDefaultValsParams) (*r
 		return nil, fmt.Errorf("updateRecordValue: Can't get cell updates: err = %v", cellUpdatesErr)
 	}
 
-	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
+	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToLatestFieldValues(
 		trackerDBHandle, currUserID, params.ParentDatabaseID, recCellUpdates, params.ChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(

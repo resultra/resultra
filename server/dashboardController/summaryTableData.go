@@ -3,11 +3,11 @@ package dashboardController
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/recordSortDataModel"
+	//	"resultra/datasheet/server/common/recordSortDataModel"
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/dashboard/components/summaryTable"
 	"resultra/datasheet/server/recordFilter"
-	"resultra/datasheet/server/recordReadController"
+	//	"resultra/datasheet/server/recordReadController"
 )
 
 type SummaryTableData struct {
@@ -24,18 +24,32 @@ func getOneSummaryTableData(trackerDBHandle *sql.DB, currUserID string,
 		return nil, fmt.Errorf("getOneSummaryTableData: %v", err)
 	}
 
-	sortRules := []recordSortDataModel.RecordSortRule{}
-	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
-		DatabaseID:     parentDashboard.ParentDatabaseID,
-		PreFilterRules: summaryTable.Properties.PreFilterRules,
-		FilterRules:    filterRules,
-		SortRules:      sortRules}
-	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(trackerDBHandle, currUserID, getRecordParams)
-	if getRecErr != nil {
-		return nil, fmt.Errorf("getOneSummaryTableData: Error retrieving records for summary table: %v", getRecErr)
-	}
+	/*
+		sortRules := []recordSortDataModel.RecordSortRule{}
+		getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
+			DatabaseID:     parentDashboard.ParentDatabaseID,
+			PreFilterRules: summaryTable.Properties.PreFilterRules,
+			FilterRules:    filterRules,
+			SortRules:      sortRules}
+		recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(trackerDBHandle, currUserID, getRecordParams)
+		if getRecErr != nil {
+			return nil, fmt.Errorf("getOneSummaryTableData: Error retrieving records for summary table: %v", getRecErr)
+		}
 
-	valGroupingResult, groupingErr := groupRecords(trackerDBHandle, summaryTable.Properties.RowGroupingVals, recordRefs)
+		valGroupingResult, groupingErr := groupRecords(trackerDBHandle, summaryTable.Properties.RowGroupingVals, recordRefs)
+		if groupingErr != nil {
+			return nil, fmt.Errorf("getOneSummaryTableData: Error grouping records for summary table: %v", groupingErr)
+		}
+	*/
+
+	timeIncrementGroupingParams := GroupByTimeIntervalParams{
+		trackerDBHandle: trackerDBHandle,
+		databaseID:      parentDashboard.ParentDatabaseID,
+		currUserID:      currUserID,
+		preFilterRules:  summaryTable.Properties.PreFilterRules,
+		filterRules:     filterRules,
+		valGrouping:     summaryTable.Properties.RowGroupingVals}
+	valGroupingResult, groupingErr := groupRecordsByTimeInterval(timeIncrementGroupingParams)
 	if groupingErr != nil {
 		return nil, fmt.Errorf("getOneSummaryTableData: Error grouping records for summary table: %v", groupingErr)
 	}

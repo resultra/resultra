@@ -7,7 +7,9 @@ import (
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/numberFormat"
+	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/recordValue"
+	"resultra/datasheet/server/recordValueMappingController"
 	"sort"
 	"strings"
 	"time"
@@ -74,6 +76,78 @@ func groupRecordsIntoSingleGroup(recValResults []recordValue.RecordValueResults)
 		ValGroups:     valGroups,
 		GroupingLabel: "Overall",
 		OverallGroup:  overallGroup}
+
+}
+
+type GroupByTimeIntervalParams struct {
+	trackerDBHandle *sql.DB
+	databaseID      string
+	currUserID      string
+	preFilterRules  recordFilter.RecordFilterRuleSet
+	filterRules     recordFilter.RecordFilterRuleSet
+	valGrouping     values.ValGrouping
+}
+
+func groupRecordsByTimeInterval(params GroupByTimeIntervalParams) (*ValGroupingResult, error) {
+
+	computeOneTimeIntervalVals := func(asOfTime time.Time) (*ValGroup, error) {
+
+		unfilteredRecordValues, mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(
+			params.trackerDBHandle, params.currUserID, params.databaseID, asOfTime)
+		if mapErr != nil {
+			return nil, fmt.Errorf("GetFilteredRecords: Error updating records: %v", mapErr)
+		}
+
+		preFilteredRecords, preFilterErr := recordFilter.FilterRecordValues(
+			params.trackerDBHandle, params.currUserID, params.preFilterRules, unfilteredRecordValues)
+		if preFilterErr != nil {
+			return nil, fmt.Errorf("GetFilteredRecords: Error pre-filtering records: %v", preFilterErr)
+		}
+
+		filteredRecords, err := recordFilter.FilterRecordValues(
+			params.trackerDBHandle, params.currUserID, params.filterRules, preFilteredRecords)
+		if err != nil {
+			return nil, fmt.Errorf("GetFilteredRecords: Error filtering records: %v", err)
+		}
+
+		groupLabel := asOfTime.Format("2006-01-02")
+
+		valGroup := ValGroup{
+			GroupLabel:     groupLabel,
+			RecordsInGroup: filteredRecords}
+
+		return &valGroup, nil
+
+	}
+
+	currDate := time.Now().UTC()
+	currValGroup, err := computeOneTimeIntervalVals(currDate)
+	if err != nil {
+		return nil, fmt.Errorf("groupRecordsByTimeInterval: %v", err)
+	}
+
+	currGroup := ValGroup{
+		GroupLabel:     "Current",
+		RecordsInGroup: currValGroup.RecordsInGroup}
+
+	valGroups := []ValGroup{}
+	for interval := 0; interval < 6; interval++ {
+
+		oneWeek := 24 * time.Hour * 7
+		currDate = currDate.Add(-1 * oneWeek)
+		intervalValGroup, err := computeOneTimeIntervalVals(currDate)
+		if err != nil {
+			return nil, fmt.Errorf("groupRecordsByTimeInterval: %v", err)
+		}
+		valGroups = append(valGroups, *intervalValGroup)
+	}
+
+	valGroupingResult := ValGroupingResult{
+		ValGroups:     valGroups,
+		OverallGroup:  currGroup,
+		GroupingLabel: "Date"}
+
+	return &valGroupingResult, nil
 
 }
 

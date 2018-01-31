@@ -9,6 +9,7 @@ import (
 	"resultra/datasheet/server/recordSort"
 	"resultra/datasheet/server/recordValue"
 	"resultra/datasheet/server/recordValueMappingController"
+	"time"
 )
 
 type GetFilteredSortedRecordsParams struct {
@@ -39,7 +40,11 @@ func getCachedOrRemappedRecordValues(trackerDBHandle *sql.DB,
 			return nil, fmt.Errorf("getCachedOrRemappedRecordValues: unexpected type from results cache")
 		}
 	} else {
-		recordValues, mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(trackerDBHandle, currUserID, databaseID)
+
+		calcFieldAsOfTime := time.Now().UTC()
+
+		recordValues, mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(
+			trackerDBHandle, currUserID, databaseID, calcFieldAsOfTime)
 		if mapErr != nil {
 			return nil, fmt.Errorf("GetFilteredRecords: Error updating records: %v", mapErr)
 		}
@@ -111,7 +116,7 @@ func getRecordValueResults(trackerDBHandle *sql.DB, currUserID string, params Ge
 		return nil, fmt.Errorf("updateRecordValue: Can't get cell updates: err = %v", cellUpdatesErr)
 	}
 
-	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToFieldValues(
+	updateRecordValResult, mapErr := recordValueMappingController.MapOneRecordUpdatesToLatestFieldValues(
 		trackerDBHandle, currUserID, params.ParentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(
@@ -140,7 +145,7 @@ func NewDefaultTestRecordIsFilteredParams() TestRecordIsFilteredParams {
 func testRecordIsFiltered(trackerDBHandle *sql.DB,
 	currUserID string, params TestRecordIsFilteredParams) (bool, error) {
 
-	recValResult, resultErr := recordValueMappingController.MapSingleRecordValueResult(
+	recValResult, resultErr := recordValueMappingController.MapSingleRecordLatestValueResult(
 		trackerDBHandle, currUserID, params.DatabaseID, params.RecordID)
 	unfilteredRecordValues := []recordValue.RecordValueResults{}
 	if resultErr != nil {

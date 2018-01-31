@@ -44,35 +44,36 @@ func calculateHiddenFormComponents(trackerDBHandle *sql.DB,
 func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateConfig,
 	componentFilterCondMap form.FormComponentFilterMap,
 	mappedRecord record.Record,
-	recCellUpdates *record.RecordCellUpdates, changeSetID string) (*recordValue.RecordValueResults, error) {
+	recCellUpdates *record.RecordCellUpdates,
+	changeSetID string, calcFieldAsOfTime time.Time) (*recordValue.RecordValueResults, error) {
 
 	cellUpdateFieldValIndex, indexErr := record.NewUpdateFieldValueIndexForCellUpdates(recCellUpdates, config.FieldsByID)
 	if indexErr != nil {
-		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", indexErr)
+		return nil, fmt.Errorf("MapOneRecordUpdatesToLatestFieldValues: %v", indexErr)
 	}
 
 	// For non-calculated fields, get the latest (most recent) field values.
-	calcFieldAsOfTime := time.Now().UTC()
-	latestFieldValues := cellUpdateFieldValIndex.LatestNonCalcFieldValues()
+	//	calcFieldAsOfTime := time.Now().UTC()
+	fieldValues := cellUpdateFieldValIndex.NonCalcFieldValuesAsOf(calcFieldAsOfTime)
 
 	// Now that all the non-calculated fields have been populated into latestFieldValues, all the calculated
 	// fields also need to be populated. The formulas for calculated field by refer to the latest value of non-calculated
 	// fields, so this set of values needs to be passed into UpdateCalcFieldValues as a starting point.
 	if calcErr := calcField.UpdateCalcFieldValues(config, mappedRecord,
-		cellUpdateFieldValIndex, calcFieldAsOfTime, latestFieldValues); calcErr != nil {
-		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: Can't set value: Error calculating fields to reflect update: err = %v", calcErr)
+		cellUpdateFieldValIndex, calcFieldAsOfTime, &fieldValues); calcErr != nil {
+		return nil, fmt.Errorf("MapOneRecordUpdatesToLatestFieldValues: Can't set value: Error calculating fields to reflect update: err = %v", calcErr)
 	}
 
 	hiddenComponents, hiddenCalcErr := calculateHiddenFormComponents(config.TrackerDBHandle, config.CurrUserID, config.ParentDatabaseID,
-		componentFilterCondMap, *latestFieldValues)
+		componentFilterCondMap, fieldValues)
 	if hiddenCalcErr != nil {
-		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", hiddenCalcErr)
+		return nil, fmt.Errorf("MapOneRecordUpdatesToLatestFieldValues: %v", hiddenCalcErr)
 	}
 
 	recValResults := recordValue.RecordValueResults{
 		ParentDatabaseID:     config.ParentDatabaseID,
 		RecordID:             recCellUpdates.RecordID,
-		FieldValues:          *latestFieldValues,
+		FieldValues:          fieldValues,
 		HiddenFormComponents: hiddenComponents}
 
 	return &recValResults, nil
@@ -81,25 +82,28 @@ func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateCon
 
 // Re-map the series of value updates to "flattened" current (most recent) values for both calculated
 // and non-calculated fields.
-func MapOneRecordUpdatesToFieldValues(trackerDBHandle *sql.DB,
+func MapOneRecordUpdatesToLatestFieldValues(trackerDBHandle *sql.DB,
 	currUserID string, parentDatabaseID string, recCellUpdates *record.RecordCellUpdates,
 	changeSetID string) (*recordValue.RecordValueResults, error) {
 
 	updateConfig, err := calcField.CreateCalcFieldUpdateConfig(trackerDBHandle, currUserID, parentDatabaseID)
 	if err != nil {
-		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", err)
+		return nil, fmt.Errorf("MapOneRecordUpdatesToLatestFieldValues: %v", err)
 	}
 	componentFilterCondMap, err := form.GetDatabaseFormComponentFilterMap(trackerDBHandle, parentDatabaseID)
 	if err != nil {
-		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", err)
+		return nil, fmt.Errorf("MapOneRecordUpdatesToLatestFieldValues: %v", err)
 	}
 
 	currRecord, err := record.GetRecord(trackerDBHandle, recCellUpdates.RecordID)
 	if err != nil {
-		return nil, fmt.Errorf("MapOneRecordUpdatesToFieldValues: %v", err)
+		return nil, fmt.Errorf("MapOneRecordUpdatesToLatestFieldValues: %v", err)
 	}
 
-	return mapOneRecordUpdatesWithCalcFieldConfig(updateConfig, componentFilterCondMap, *currRecord, recCellUpdates, changeSetID)
+	calcFieldAsOfTime := time.Now().UTC()
+
+	return mapOneRecordUpdatesWithCalcFieldConfig(updateConfig, componentFilterCondMap,
+		*currRecord, recCellUpdates, changeSetID, calcFieldAsOfTime)
 }
 
 type RecordMappingResult struct {
@@ -110,10 +114,11 @@ type RecordMappingResult struct {
 func mapOneRecordWorker(resultsChan chan RecordMappingResult,
 	config *calcField.CalcFieldUpdateConfig, componentFilterCondMap form.FormComponentFilterMap,
 	mappedRecord record.Record,
-	recCellUpdates *record.RecordCellUpdates) {
+	recCellUpdates *record.RecordCellUpdates,
+	calcFieldAsOfTime time.Time) {
 
 	recValResults, err := mapOneRecordUpdatesWithCalcFieldConfig(config, componentFilterCondMap,
-		mappedRecord, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
+		mappedRecord, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID, calcFieldAsOfTime)
 
 	result := RecordMappingResult{
 		Error:         err,
@@ -123,7 +128,8 @@ func mapOneRecordWorker(resultsChan chan RecordMappingResult,
 
 }
 
-func MapAllRecordUpdatesToFieldValues(trackerDBHandle *sql.DB, currUserID string, parentDatabaseID string) ([]recordValue.RecordValueResults, error) {
+func MapAllRecordUpdatesToFieldValues(trackerDBHandle *sql.DB,
+	currUserID string, parentDatabaseID string, calcFieldAsOfTime time.Time) ([]recordValue.RecordValueResults, error) {
 
 	start := time.Now()
 
@@ -146,6 +152,8 @@ func MapAllRecordUpdatesToFieldValues(trackerDBHandle *sql.DB, currUserID string
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
 
+	mappingStart := time.Now()
+
 	resultsChan := make(chan RecordMappingResult)
 
 	// Scatter: Map the results in goroutines
@@ -154,7 +162,7 @@ func MapAllRecordUpdatesToFieldValues(trackerDBHandle *sql.DB, currUserID string
 		if !recFound {
 			return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 		}
-		go mapOneRecordWorker(resultsChan, updateConfig, componentFilterCondMap, currRec, currRecCellUpdates)
+		go mapOneRecordWorker(resultsChan, updateConfig, componentFilterCondMap, currRec, currRecCellUpdates, calcFieldAsOfTime)
 	}
 
 	recValResults := []recordValue.RecordValueResults{}
@@ -169,22 +177,23 @@ func MapAllRecordUpdatesToFieldValues(trackerDBHandle *sql.DB, currUserID string
 	}
 
 	elapsed := time.Since(start)
-	log.Printf("MapAllRecordUpdatesToFieldValues: elapsed time for %v records =  %s", len(recordCellUpdateMap), elapsed)
+	elapsedMapping := time.Since(mappingStart)
+	log.Printf("MapAllRecordUpdatesToFieldValues: elapsed time for %v records =  %s (mapping only = %s)",
+		len(recordCellUpdateMap), elapsed, elapsedMapping)
 
 	return recValResults, nil
 
 }
 
-func MapSingleRecordValueResult(trackerDBHandle *sql.DB, currUserID string, parentDatabaseID string, recordID string) (*recordValue.RecordValueResults, error) {
+func MapSingleRecordLatestValueResult(trackerDBHandle *sql.DB, currUserID string, parentDatabaseID string, recordID string) (*recordValue.RecordValueResults, error) {
 
 	recCellUpdates, cellUpdatesErr := record.GetRecordCellUpdates(trackerDBHandle, recordID, record.FullyCommittedCellUpdatesChangeSetID)
 	if cellUpdatesErr != nil {
-		return nil, fmt.Errorf("MapSingleRecordValueResult: Can't get cell updates for record=%v: err = %v", recordID, cellUpdatesErr)
+		return nil, fmt.Errorf("MapSingleRecordLatestValueResult: Can't get cell updates for record=%v: err = %v", recordID, cellUpdatesErr)
 	}
 
-	// Since a change has occored to one of the record's values, a new set of mapped record
-	// values needs to be created.
-	recordValResult, mapErr := MapOneRecordUpdatesToFieldValues(
+	// Since a change has occored to one of the record's values, a new set of mapped recordMapOneRecordUpdatesToLatestFieldValues
+	recordValResult, mapErr := MapOneRecordUpdatesToLatestFieldValues(
 		trackerDBHandle, currUserID, parentDatabaseID, recCellUpdates, record.FullyCommittedCellUpdatesChangeSetID)
 	if mapErr != nil {
 		return nil, fmt.Errorf(
