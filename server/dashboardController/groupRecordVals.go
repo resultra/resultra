@@ -131,15 +131,14 @@ func groupRecordsByTimeInterval(params GroupByTimeIntervalParams) (*ValGroupingR
 		RecordsInGroup: currValGroup.RecordsInGroup}
 
 	valGroups := []ValGroup{}
-	for interval := 0; interval < 6; interval++ {
-
-		oneWeek := 24 * time.Hour * 7
-		currDate = currDate.Add(-1 * oneWeek)
-		intervalValGroup, err := computeOneTimeIntervalVals(currDate)
+	timeInrements := generateTimeIncrementsForValGrouping(params.valGrouping)
+	for _, currIncrTime := range timeInrements {
+		intervalValGroup, err := computeOneTimeIntervalVals(currIncrTime)
 		if err != nil {
 			return nil, fmt.Errorf("groupRecordsByTimeInterval: %v", err)
 		}
 		valGroups = append(valGroups, *intervalValGroup)
+
 	}
 
 	valGroupingResult := ValGroupingResult{
