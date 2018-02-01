@@ -151,10 +151,14 @@ func groupRecordsByTimeInterval(params GroupByTimeIntervalParams) (*ValGroupingR
 
 }
 
-func groupRecords(trackerDBHandle *sql.DB, valGrouping values.ValGrouping,
+func groupRecordsByFieldValue(trackerDBHandle *sql.DB, valGrouping values.ValGrouping,
 	recValResults []recordValue.RecordValueResults) (*ValGroupingResult, error) {
 
-	groupingField, fieldErr := field.GetField(trackerDBHandle, valGrouping.GroupValsByFieldID)
+	if (valGrouping.GroupValsByFieldID == nil) || (valGrouping.GroupValsBy == nil) {
+		return nil, fmt.Errorf("Malformed grouping - missing field ID or grouping")
+	}
+
+	groupingField, fieldErr := field.GetField(trackerDBHandle, *valGrouping.GroupValsByFieldID)
 	if fieldErr != nil {
 		return nil, fmt.Errorf("groupRecords: Can't get field to group records: error = %v", fieldErr)
 	}
@@ -268,12 +272,17 @@ func timeGroupLabelInfo(label string, timeVal time.Time) *valGroupLabelInfo {
 func groupTimeFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Field,
 	recValResults recordValue.RecordValueResults) (*valGroupLabelInfo, error) {
 
+	if valGrouping.GroupValsBy == nil {
+		return nil, fmt.Errorf("Malformed value grouping: missing grouping by value")
+	}
+	groupValsBy := *valGrouping.GroupValsBy
+
 	if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
 		timeVal, valFound := recValResults.FieldValues.GetTimeFieldValue(fieldGroup.FieldID)
 		if !valFound {
 			return blankGroupLabelInfo(), nil
 		} else {
-			switch valGrouping.GroupValsBy {
+			switch groupValsBy {
 			case values.ValGroupByNone:
 				return numberGroupLabelInfo("All Dates", 0.0), nil
 			case values.ValGroupByDay:
@@ -346,12 +355,18 @@ func bucketedNumberGroupLabelInfo(numberVal float64, valGrouping values.ValGroup
 
 func groupNumberFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Field,
 	recValResults recordValue.RecordValueResults) (*valGroupLabelInfo, error) {
+
+	if valGrouping.GroupValsBy == nil {
+		return nil, fmt.Errorf("Malformed value grouping: missing grouping by value")
+	}
+	groupValsBy := *valGrouping.GroupValsBy
+
 	if recValResults.FieldValues.ValueIsSet(fieldGroup.FieldID) {
 		numberVal, valFound := recValResults.FieldValues.GetNumberFieldValue(fieldGroup.FieldID)
 		if !valFound {
 			return nil, fmt.Errorf("groupNumberFieldRecordVal: Unabled to retrieve value for grouping label")
 		} else {
-			switch valGrouping.GroupValsBy {
+			switch groupValsBy {
 			case values.ValGroupByNone:
 				formattedVal := formattedValGroupNumber(numberVal, valGrouping)
 				return numberGroupLabelInfo(formattedVal, numberVal), nil

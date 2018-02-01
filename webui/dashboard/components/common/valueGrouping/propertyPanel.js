@@ -2,6 +2,9 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 		
 	var $propertyForm = $(createPrefixedSelector(panelParams.elemPrefix,"ValueGroupingPropertiesForm"))
 	
+		var valGrouping = panelParams.valGroupingProps
+	
+	
 	// Main drop-down for either time increments or fields
 	var $groupByFieldOrTimeIncrementSelection = $propertyForm.find("select[name=groupedFieldOrTimeIntervalSelection]")
 	
@@ -56,13 +59,43 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 	}
 	var validationSettings = createInlineFormValidationSettings({rules: validationRules })	
 	var validator = $propertyForm.validate(validationSettings)
+			
+	function initControlsForValGrouping(valueGroupingFieldsByID) {
 		
-	var valGrouping = panelParams.valGroupingProps
+		$bucketSize.val(valGrouping.groupValsByBucketWidth)	
+		$bucketStart.val(valGrouping.bucketStart)	
+		$bucketEnd.val(valGrouping.bucketEnd)
+		$numberFormatSelection.val(valGrouping.numberFormat)
+		$timeRangeSelection.val(valGrouping.timeRange)
 		
-	$bucketSize.val(valGrouping.groupValsByBucketWidth)	
-	$bucketStart.val(valGrouping.bucketStart)	
-	$bucketEnd.val(valGrouping.bucketEnd)
-	$numberFormatSelection.val(valGrouping.numberFormat)
+		if (valGrouping.groupValsByFieldID !== undefined) {
+			
+			$groupByFieldOrTimeIncrementSelection.val(valGrouping.groupValsByFieldID)
+			var existingFieldInfo = valueGroupingFieldsByID[valGrouping.groupValsByFieldID]
+			
+			populateDashboardValueGroupingSelection($groupBySelection,existingFieldInfo.type)
+			$groupBySelection.val(valGrouping.groupValsBy)
+			
+			toggleNumberFormatForFieldType(existingFieldInfo.type)
+			toggleBucketSizeForGrouping(valGrouping.groupValsBy)
+			
+			$timeGroupingInputs.hide()
+			$fieldGroupingInputs.show()
+			
+			
+		} else {
+			
+			$timeGroupingInputs.show()
+			$fieldGroupingInputs.hide()
+			
+			$groupByFieldOrTimeIncrementSelection.val(valGrouping.groupValsByTimeIncrement)
+			$timeRangeSelection.val(valGrouping.timeRange)
+			
+		}	
+		
+	}
+		
+	
 	validator.resetForm()	
 
 	
@@ -100,27 +133,19 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 		var $fieldOptGroup = $groupByFieldOrTimeIncrementSelection.find(".fieldSelectionOptGroup")
 		populateSortedFieldSelectionOptGroup($fieldOptGroup,sortedFields)
 	
-		// Initialize the controls to the existing values
-		$groupByFieldOrTimeIncrementSelection.val(panelParams.valGroupingProps.groupValsByFieldID)
-		
-		var existingFieldInfo = valueGroupingFieldsByID[panelParams.valGroupingProps.groupValsByFieldID]
-		toggleNumberFormatForFieldType(existingFieldInfo.type)
-		
-		populateDashboardValueGroupingSelection($groupBySelection,existingFieldInfo.type)
-		
-		$groupBySelection.val(panelParams.valGroupingProps.groupValsBy)
-		toggleBucketSizeForGrouping(panelParams.valGroupingProps.groupValsBy)
+		initControlsForValGrouping(valueGroupingFieldsByID)
 		
 		function saveGroupingIfValid() {
 			
 			if($propertyForm.valid()) {
 				if(timeIncrementIsSelected()) {
 					var newValGroupingParams = {
-						groupValsByTime: $groupByFieldOrTimeIncrementSelection.val(),
+						groupValsByTimeIncrement: $groupByFieldOrTimeIncrementSelection.val(),
 						timeRange: $timeRangeSelection.val(),
 						includeBlank: $includeBlankCheckbox.prop("checked")
 					}
 					console.log("Saving new time increment grouping: " + JSON.stringify(newValGroupingParams))
+					panelParams.saveValueGroupingFunc(newValGroupingParams)
 				
 				} else {
 					var newValGroupingParams = {
@@ -133,8 +158,7 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 						includeBlank: $includeBlankCheckbox.prop("checked")
 					}
 					console.log("Saving new field value grouping: " + JSON.stringify(newValGroupingParams))
-		// TODO - Re-enable after finishing this form.
-		//			panelParams.saveValueGroupingFunc(newValGroupingParams)
+					panelParams.saveValueGroupingFunc(newValGroupingParams)
 				
 				} // field selected
 			} // if form valid

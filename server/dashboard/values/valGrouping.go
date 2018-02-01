@@ -16,8 +16,13 @@ const ValGroupByBucket string = "bucket"
 // in bar charts, lines charts, pie charts, and summary tables.
 type ValGrouping struct {
 
-	// XAxisField is the field used to group values along the x axis of the bar chart.
-	GroupValsByFieldID string `json:"groupValsByFieldID"`
+	// The field or time incremnent used to group values.
+	// One of the following needs to be set.
+	GroupValsByFieldID       *string `json:"groupValsByFieldID,omitempty"`
+	GroupValsByTimeIncrement *string `json:"groupValsByTimeIncrement,omitempty"`
+
+	// Time range when the GroupValsByTimeIncrement is set.
+	TimeRange *string `json:"timeRange,omitempty"`
 
 	// GroupValsBy configures how values from GroupValsByField are grouped.
 	// Especially for date and number fields, the values will typically be grouped (bucketed), rather
@@ -30,7 +35,7 @@ type ValGrouping struct {
 	// Date: none, hour, day, week, month, quarter, year
 	// Text: none
 	// Bool: none
-	GroupValsBy string `json:"groupValsBy"`
+	GroupValsBy *string `json:"groupValsBy,omitempty"`
 
 	// GroupByValBucketWidth is used with the GroupValsBy "bucket" property to configure a threshold for
 	// grouping values.
@@ -47,18 +52,20 @@ type ValGrouping struct {
 func (srcGrouping ValGrouping) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*ValGrouping, error) {
 	destGrouping := srcGrouping
 
-	remappedFieldID, err := remappedIDs.GetExistingRemappedID(srcGrouping.GroupValsByFieldID)
-	if err != nil {
-		return nil, fmt.Errorf("ValGrouping.Clone: %v", err)
+	if srcGrouping.GroupValsByFieldID != nil {
+		remappedFieldID, err := remappedIDs.GetExistingRemappedID(*srcGrouping.GroupValsByFieldID)
+		if err != nil {
+			return nil, fmt.Errorf("ValGrouping.Clone: %v", err)
+		}
+		destGrouping.GroupValsByFieldID = &remappedFieldID
 	}
-	destGrouping.GroupValsByFieldID = remappedFieldID
 
 	return &destGrouping, nil
 }
 
 type NewValGroupingParams struct {
-	FieldID               string   `json:"fieldID"`
-	GroupValsBy           string   `json:"groupValsBy"`
+	FieldID               *string  `json:"fieldID"`
+	GroupValsBy           *string  `json:"groupValsBy"`
 	GroupByValBucketWidth *float64 `json:"groupByValBucketWidth,omitempty"`
 	BucketStart           *float64 `json:"bucketStart,omitempty"`
 	BucketEnd             *float64 `json:"bucketEnd,omitempty"`
@@ -98,15 +105,22 @@ func validateFieldTypeWithGrouping(fieldType string, groupValsBy string,
 
 func NewValGrouping(trackingDBHandle *sql.DB, params NewValGroupingParams) (*ValGrouping, error) {
 
-	groupingField, fieldErr := field.GetField(trackingDBHandle, params.FieldID)
-	if fieldErr != nil {
-		return nil, fmt.Errorf("NewValGrouping: Can't create value grouping with field ID = '%v': datastore error=%v",
-			params.FieldID, fieldErr)
-	}
+	if params.FieldID != nil {
+		groupingField, fieldErr := field.GetField(trackingDBHandle, *params.FieldID)
+		if fieldErr != nil {
+			return nil, fmt.Errorf("NewValGrouping: Can't create value grouping with field ID = '%v': datastore error=%v",
+				*params.FieldID, fieldErr)
+		}
 
-	if groupByErr := validateFieldTypeWithGrouping(groupingField.Type, params.GroupValsBy,
-		params.GroupByValBucketWidth, params.BucketStart, params.BucketEnd); groupByErr != nil {
-		return nil, fmt.Errorf("NewValGrouping: Invalid value grouping: %v", groupByErr)
+		if params.GroupValsBy == nil {
+			return nil, fmt.Errorf("NewValGrouping: Can't create value grouping with field ID = '%v', missing grouping",
+				*params.FieldID)
+		}
+
+		if groupByErr := validateFieldTypeWithGrouping(groupingField.Type, *params.GroupValsBy,
+			params.GroupByValBucketWidth, params.BucketStart, params.BucketEnd); groupByErr != nil {
+			return nil, fmt.Errorf("NewValGrouping: Invalid value grouping: %v", groupByErr)
+		}
 	}
 
 	valGrouping := ValGrouping{
@@ -123,22 +137,32 @@ func NewValGrouping(trackingDBHandle *sql.DB, params NewValGroupingParams) (*Val
 
 func (valGrouping ValGrouping) GroupingLabel(trackingDBHandle *sql.DB) (string, error) {
 
-	groupingField, fieldErr := field.GetField(trackingDBHandle, valGrouping.GroupValsByFieldID)
-	if fieldErr != nil {
-		return "", fmt.Errorf("GroupingLabel: Can't create grouping label: %v", fieldErr)
+	if valGrouping.GroupValsByFieldID != nil {
+
+		groupingField, fieldErr := field.GetField(trackingDBHandle, *valGrouping.GroupValsByFieldID)
+		if fieldErr != nil {
+			return "", fmt.Errorf("GroupingLabel: Can't create grouping label: %v", fieldErr)
+		}
+
+		if valGrouping.GroupValsBy == nil {
+			return "", fmt.Errorf("GroupingLabel: Can't create grouping label: missing grouping")
+		}
+		groupValsBy := *valGrouping.GroupValsBy
+
+		switch groupValsBy {
+		case ValGroupByNone:
+			return groupingField.Name, nil
+		case ValGroupByBucket:
+			return groupingField.Name, nil
+		case ValGroupByDay:
+			return "Date", nil
+		case ValGroupByMonthYear:
+			return "Month and Year", nil
+		default:
+			return "", fmt.Errorf("GroupingLabel: unsupported grouping type: %v", valGrouping.GroupValsBy)
+		} // switch groupValsBy
 	}
 
-	switch valGrouping.GroupValsBy {
-	case ValGroupByNone:
-		return groupingField.Name, nil
-	case ValGroupByBucket:
-		return groupingField.Name, nil
-	case ValGroupByDay:
-		return "Date", nil
-	case ValGroupByMonthYear:
-		return "Month and Year", nil
-	default:
-		return "", fmt.Errorf("GroupingLabel: unsupported grouping type: %v", valGrouping.GroupValsBy)
-	} // switch groupValsBy
+	return "TBD for time increment", nil
 
 }
