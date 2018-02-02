@@ -31,21 +31,37 @@ func getOneBarChartData(trackerDBHandle *sql.DB, currUserID string, barChart *ba
 		return nil, fmt.Errorf("getOneSummaryTableData: %v", err)
 	}
 
-	// TODO - Store the list of filters with the bar chart and include it in the query.
-	sortRules := []recordSortDataModel.RecordSortRule{}
-	getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
-		DatabaseID:     parentDashboard.ParentDatabaseID,
-		PreFilterRules: barChart.Properties.PreFilterRules,
-		FilterRules:    filterRules,
-		SortRules:      sortRules}
-	recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(trackerDBHandle, currUserID, getRecordParams)
-	if getRecErr != nil {
-		return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
-	}
+	var valGroupingResult *ValGroupingResult
+	if barChart.Properties.XAxisVals.GroupValsByFieldID != nil {
+		sortRules := []recordSortDataModel.RecordSortRule{}
+		getRecordParams := recordReadController.GetFilteredSortedRecordsParams{
+			DatabaseID:     parentDashboard.ParentDatabaseID,
+			PreFilterRules: barChart.Properties.PreFilterRules,
+			FilterRules:    filterRules,
+			SortRules:      sortRules}
+		recordRefs, getRecErr := recordReadController.GetFilteredSortedRecords(trackerDBHandle, currUserID, getRecordParams)
+		if getRecErr != nil {
+			return nil, fmt.Errorf("GetBarChartData: Error retrieving records for bar chart: %v", getRecErr)
+		}
 
-	valGroupingResult, groupingErr := groupRecordsByFieldValue(trackerDBHandle, barChart.Properties.XAxisVals, recordRefs)
-	if groupingErr != nil {
-		return nil, fmt.Errorf("GetBarChartData: Error grouping records for bar chart: %v", groupingErr)
+		groupingResult, groupingErr := groupRecordsByFieldValue(trackerDBHandle, barChart.Properties.XAxisVals, recordRefs)
+		if groupingErr != nil {
+			return nil, fmt.Errorf("GetBarChartData: Error grouping records for bar chart: %v", groupingErr)
+		}
+		valGroupingResult = groupingResult
+	} else {
+		timeIncrementGroupingParams := GroupByTimeIntervalParams{
+			trackerDBHandle: trackerDBHandle,
+			databaseID:      parentDashboard.ParentDatabaseID,
+			currUserID:      currUserID,
+			preFilterRules:  barChart.Properties.PreFilterRules,
+			filterRules:     filterRules,
+			valGrouping:     barChart.Properties.XAxisVals}
+		groupingResult, groupingErr := groupRecordsByTimeInterval(timeIncrementGroupingParams)
+		if groupingErr != nil {
+			return nil, fmt.Errorf("getOneSummaryTableData: Error grouping records for summary table: %v", groupingErr)
+		}
+		valGroupingResult = groupingResult
 	}
 
 	summaries := []values.ValSummary{}

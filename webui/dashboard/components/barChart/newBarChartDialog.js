@@ -66,7 +66,8 @@ function openNewBarChartDialog(barChartParams) {
 	
 	var databaseID = barChartParams.dashboardContext.databaseID
 	
-	var barChartXAxisPanelConfig = createNewDashboardComponentValueGroupingPanelConfig(barChartElemPrefix,databaseID)
+	var newBarChartElemPrefix = "newBarChart_"
+	var barChartXAxisPanelConfig = createNewDashboardComponentValueGroupingPanelConfig(newBarChartElemPrefix,databaseID)
 	var barChartYAxisPanelConfig = createNewDashboardComponentValueSummaryPanelConfig(barChartElemPrefix,saveNewBarChart,databaseID)
 	
 

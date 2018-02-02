@@ -12,6 +12,7 @@ import (
 type BarChartDesignTemplateParams struct {
 	ElemPrefix               string
 	ValueGroupingParams      newComponentDialog.ValueGroupingTemplateParams
+	NewValueGroupingParams   newComponentDialog.ValueGroupingTemplateParams
 	ValueSummaryParams       valueSummary.ValueSummaryTemplateParams
 	TitlePanelParams         propertiesSidebar.PanelTemplateParams
 	XAxisPanelParams         propertiesSidebar.PanelTemplateParams
@@ -41,7 +42,12 @@ func init() {
 
 	valueGroupingParams := newComponentDialog.ValueGroupingTemplateParams{
 		elemPrefix, "Configure which values are shown along the X axis and how these values are grouped",
-		"Field for X axis' values", "Group Values By"}
+		"Field or time increment for X axis' values", "Group Values By"}
+
+	newBarChartElemPrefix := "newBarChart_"
+	newValueGroupingParams := newComponentDialog.ValueGroupingTemplateParams{
+		newBarChartElemPrefix, "Configure which values are shown along the X axis and how these values are grouped",
+		"Field or time increment for X axis' values", "Group Values By"}
 
 	valueSummaryParams := valueSummary.ValueSummaryTemplateParams{
 		elemPrefix, "Configure how values are summarized along the Y axis.",
@@ -50,6 +56,7 @@ func init() {
 	DesignTemplateParams = BarChartDesignTemplateParams{
 		ElemPrefix:               elemPrefix,
 		ValueGroupingParams:      valueGroupingParams,
+		NewValueGroupingParams:   newValueGroupingParams,
 		ValueSummaryParams:       valueSummaryParams,
 		TitlePanelParams:         propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Title", PanelID: "barChartTitle"},
 		HelpPopupParams:          inputProperties.NewHelpPopupTemplateParams(elemPrefix, "barChartHelp"),

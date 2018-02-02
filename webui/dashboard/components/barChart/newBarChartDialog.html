@@ -3,7 +3,7 @@
 
 	{{template "wizardDialogProgress" . }}
 	
-	{{template "dashboardComponentValueGroupingPanel" .ValueGroupingParams}}
+	{{template "dashboardComponentValueGroupingPanel" .NewValueGroupingParams}}
 	{{template "dashboardComponentValueSummaryPanel" .ValueSummaryParams}}
 	
 {{end}}
@@ -11,7 +11,7 @@
 
 {{define "newBarChartDialogButtons"}}
 	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-	{{template "dashboardComponentValueGroupingPanelButtons"  .ValueGroupingParams}}
+	{{template "dashboardComponentValueGroupingPanelButtons"  .NewValueGroupingParams}}
 	{{template "dashboardComponentValueSummaryPanelButtons" .ValueSummaryParams}}
 {{end}}
 

@@ -93,13 +93,37 @@ function drawBarChart($barChart, barChartData) {
 function drawDesignModeDummyBarChart($barChart) {
 		
 	var dummyBarChartData = {
-		barChartID: placeholderID,
-		xAxisTitle:"Grouped Field",
-		yAxisTitle:"Summarized Field",
-		dataRows:[
-			{label:"A",value:1},
-			{label:"B",value:2}]
+		"groupedSummarizedVals": {
+			"groupedDataRows": [
+				{
+					"groupLabel": "A",
+					"summaryVals": [
+						3
+					]
+				},
+				{
+					"groupLabel": "B",
+					"summaryVals": [
+						2
+					]
+				}
+			],
+			"overallDataRow": {
+				"groupLabel": "Overall",
+				"summaryVals": [
+					2
+				]
+			},
+			"groupingLabel": "X Axis",
+			"summaryLabels": [
+				"Y Axis"
+			],
+			"summaryNumberFormats": [
+				"general"
+			]
+		}
 	}
+		
 
 	// Draw just the same as a real bar chart, but feedit dummy data
    	drawBarChart($barChart,dummyBarChartData)
