@@ -3,6 +3,7 @@
 function openNewSummaryTableDialog(summaryTableParams) {
 	
 	var summaryTableElemPrefix = "summaryTable_"
+	var newSummaryTableElemPrefix = "newSummaryTable_"
 	
 	var newSummaryTableParams = {}
 	newSummaryTableParams.dashboardID = summaryTableParams.dashboardContext.dashboardID
@@ -59,7 +60,11 @@ function openNewSummaryTableDialog(summaryTableParams) {
 	
 	var databaseID = summaryTableParams.dashboardContext.databaseID
 	
-	var summaryTableRowGroupingPanelConfig = createNewDashboardComponentValueGroupingPanelConfig(summaryTableElemPrefix,databaseID)
+	
+	
+	var summaryTableRowGroupingPanelConfig = createNewDashboardComponentValueGroupingPanelConfig(newSummaryTableElemPrefix,databaseID)
+	
+	
 	var summaryTableColPanelConfig = createNewDashboardComponentValueSummaryPanelConfig(summaryTableElemPrefix,saveNewSummaryTable,databaseID)
 	
 	openWizardDialog({

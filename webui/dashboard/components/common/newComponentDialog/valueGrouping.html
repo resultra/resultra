@@ -1,5 +1,4 @@
 {{define "dashboardComponentValueGroupingPanelButtons"}}
-	<button type="button" class="btn btn-primary wizardPanelButton newDashboardComponentValueGroupingButtons" id="{{.ElemPrefix}}NewDashboardComponentValueGroupingPrevButton" type="submit">Previous</button>
 	<button type="button" class="btn btn-primary wizardPanelButton newDashboardComponentValueGroupingButtons" id="{{.ElemPrefix}}NewDashboardComponentValueGroupingNextButton" type="submit">Next</button>
 {{end}}
 
@@ -7,31 +6,9 @@
 {{define "dashboardComponentValueGroupingPanel"}}
 
 	<div id="{{.ElemPrefix}}DashboardComponentValueGroupingPanel" class="wizardPanel">
-		<form role="form">
-			<div class="alert alert-info" >
-				{{.PromptInfoMsg}}
-			</div>
-			<div class="form-group">
-				<label>{{.ValueFieldLabel}}</label> 
-				<select class="form-control" id="{{.ElemPrefix}}NewComponentGroupedFieldSelection">
-					<option value="">
-						Select a field
-					</option>
-				</select>
-			</div>
-			<div class="form-group">
-				<label>{{.ValueGroupingLabel}}</label>
-				<select class="form-control" id="{{.ElemPrefix}}NewComponentGroupBySelection">
-					<option value="">
-						Select a grouping
-					</option>
-				</select>
-			</div>
-			<div class="form-group valGroupingBucketSizeFormComponents" >
-			      <label>Grouping Bucket Size</label>
-			      <input type="text" id="{{.ElemPrefix}}NewComponentBucketSizeInput" placeholder="">
-			</div> <!-- Bucket size -->
-		</form> <!-- form for panel -->
-	</div> <!-- panel for selecting new field or choosing to create a new one -->
+
+		{{template "dashboardComponentValueGroupingPropertyPanel" . }}
+
+	</div> <!-- panel to configure the row/bar grouping -->
 	
 {{end}}

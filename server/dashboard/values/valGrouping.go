@@ -63,14 +63,6 @@ func (srcGrouping ValGrouping) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*Va
 	return &destGrouping, nil
 }
 
-type NewValGroupingParams struct {
-	FieldID               *string  `json:"fieldID"`
-	GroupValsBy           *string  `json:"groupValsBy"`
-	GroupByValBucketWidth *float64 `json:"groupByValBucketWidth,omitempty"`
-	BucketStart           *float64 `json:"bucketStart,omitempty"`
-	BucketEnd             *float64 `json:"bucketEnd,omitempty"`
-}
-
 func validateFieldTypeWithGrouping(fieldType string, groupValsBy string,
 	bucketWidth *float64, bucketStart *float64, bucketEnd *float64) error {
 	switch groupValsBy {
@@ -103,35 +95,27 @@ func validateFieldTypeWithGrouping(fieldType string, groupValsBy string,
 	return nil
 }
 
-func NewValGrouping(trackingDBHandle *sql.DB, params NewValGroupingParams) (*ValGrouping, error) {
+func ValidateValGrouping(trackingDBHandle *sql.DB, valGrouping ValGrouping) error {
 
-	if params.FieldID != nil {
-		groupingField, fieldErr := field.GetField(trackingDBHandle, *params.FieldID)
+	if valGrouping.GroupValsByFieldID != nil {
+		groupingField, fieldErr := field.GetField(trackingDBHandle, *valGrouping.GroupValsByFieldID)
 		if fieldErr != nil {
-			return nil, fmt.Errorf("NewValGrouping: Can't create value grouping with field ID = '%v': datastore error=%v",
-				*params.FieldID, fieldErr)
+			return fmt.Errorf("NewValGrouping: Can't create value grouping with field ID = '%v': datastore error=%v",
+				*valGrouping.GroupValsByFieldID, fieldErr)
 		}
 
-		if params.GroupValsBy == nil {
-			return nil, fmt.Errorf("NewValGrouping: Can't create value grouping with field ID = '%v', missing grouping",
-				*params.FieldID)
+		if valGrouping.GroupValsBy == nil {
+			return fmt.Errorf("NewValGrouping: Can't create value grouping with field ID = '%v', missing grouping",
+				*valGrouping.GroupValsByFieldID)
 		}
 
-		if groupByErr := validateFieldTypeWithGrouping(groupingField.Type, *params.GroupValsBy,
-			params.GroupByValBucketWidth, params.BucketStart, params.BucketEnd); groupByErr != nil {
-			return nil, fmt.Errorf("NewValGrouping: Invalid value grouping: %v", groupByErr)
+		if groupByErr := validateFieldTypeWithGrouping(groupingField.Type, *valGrouping.GroupValsBy,
+			valGrouping.GroupByValBucketWidth, valGrouping.BucketStart, valGrouping.BucketEnd); groupByErr != nil {
+			return fmt.Errorf("NewValGrouping: Invalid value grouping: %v", groupByErr)
 		}
 	}
 
-	valGrouping := ValGrouping{
-		GroupValsByFieldID:    params.FieldID,
-		GroupValsBy:           params.GroupValsBy,
-		GroupByValBucketWidth: params.GroupByValBucketWidth,
-		BucketStart:           params.BucketStart,
-		BucketEnd:             params.BucketEnd,
-		IncludeBlank:          false}
-
-	return &valGrouping, nil
+	return nil
 
 }
 

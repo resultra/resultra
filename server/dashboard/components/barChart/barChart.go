@@ -29,8 +29,8 @@ const barChartParentDashboardIDFieldName string = "ParentDashboardID"
 type NewBarChartParams struct {
 	ParentDashboardID string `json:"parentDashboardID"`
 
-	XAxisVals       values.NewValGroupingParams `json:"xAxisVals"`
-	XAxisSortValues string                      `json:"xAxisSortValues"`
+	XAxisVals       values.ValGrouping `json:"xAxisVals"`
+	XAxisSortValues string             `json:"xAxisSortValues"`
 
 	YAxisVals values.NewValSummaryParams `json:"yAxisVals"`
 
@@ -72,7 +72,7 @@ func NewBarChart(trackerDBHandle *sql.DB, params NewBarChartParams) (*BarChart, 
 		return nil, fmt.Errorf("newSummaryTable: Error creating bar chart: missing parent dashboard ID")
 	}
 
-	valGrouping, valGroupingErr := values.NewValGrouping(trackerDBHandle, params.XAxisVals)
+	valGroupingErr := values.ValidateValGrouping(trackerDBHandle, params.XAxisVals)
 	if valGroupingErr != nil {
 		return nil, fmt.Errorf("NewBarChart: Error creating new value grouping for bar chart: error = %v", valGroupingErr)
 	}
@@ -91,7 +91,7 @@ func NewBarChart(trackerDBHandle *sql.DB, params NewBarChartParams) (*BarChart, 
 	}
 
 	barChartProps := newDefaultBarChartProps()
-	barChartProps.XAxisVals = *valGrouping
+	barChartProps.XAxisVals = params.XAxisVals
 	barChartProps.XAxisSortValues = params.XAxisSortValues
 	barChartProps.YAxisVals = *valSummary
 	barChartProps.Geometry = params.Geometry

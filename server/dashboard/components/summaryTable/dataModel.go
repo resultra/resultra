@@ -26,7 +26,7 @@ type SummaryTable struct {
 type NewSummaryTableParams struct {
 	ParentDashboardID string `json:"parentDashboardID"`
 
-	RowGroupingVals values.NewValGroupingParams `json:"rowGroupingVals"`
+	RowGroupingVals values.ValGrouping `json:"rowGroupingVals"`
 
 	ColumnValSummaries []values.NewValSummaryParams `json:"columnValSummaries"`
 
@@ -49,7 +49,7 @@ func newSummaryTable(trackerDBHandle *sql.DB, params NewSummaryTableParams) (*Su
 		return nil, fmt.Errorf("newSummaryTable: Error creating summary table: missing parent dashboard ID")
 	}
 
-	rowGrouping, rowGroupingErr := values.NewValGrouping(trackerDBHandle, params.RowGroupingVals)
+	rowGroupingErr := values.ValidateValGrouping(trackerDBHandle, params.RowGroupingVals)
 	if rowGroupingErr != nil {
 		return nil, fmt.Errorf("newSummaryTable: Error creating new value grouping for bar chart: error = %v", rowGroupingErr)
 	}
@@ -68,7 +68,7 @@ func newSummaryTable(trackerDBHandle *sql.DB, params NewSummaryTableParams) (*Su
 	}
 
 	summaryTableProps := newDefaultSummaryTableProps()
-	summaryTableProps.RowGroupingVals = *rowGrouping
+	summaryTableProps.RowGroupingVals = params.RowGroupingVals
 	summaryTableProps.ColumnValSummaries = colSummaries
 	summaryTableProps.Geometry = params.Geometry
 
