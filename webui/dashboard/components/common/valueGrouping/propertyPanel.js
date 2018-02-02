@@ -77,11 +77,11 @@ function initDashboardValueGroupingPropertyPanel(panelParams) {
 				populateDashboardValueGroupingSelection($groupBySelection,existingFieldInfo.type)
 				$groupBySelection.val(valGrouping.groupValsBy)
 			
+				$timeGroupingInputs.hide()
+				$fieldGroupingInputs.show()
 				toggleNumberFormatForFieldType(existingFieldInfo.type)
 				toggleBucketSizeForGrouping(valGrouping.groupValsBy)
 			
-				$timeGroupingInputs.hide()
-				$fieldGroupingInputs.show()
 			
 			
 			} else {
