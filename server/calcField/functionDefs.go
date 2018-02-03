@@ -369,6 +369,30 @@ func isTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equ
 
 }
 
+const FuncNameNot = "NOT"
+
+func notEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	if len(funcArgs) != 1 {
+		return nil, fmt.Errorf("NOT() - Expecting 1 argument, got %v", len(funcArgs))
+	}
+
+	condEqn := funcArgs[0]
+	condResult, condErr := condEqn.EvalEqn(evalContext)
+	if condErr != nil {
+		return nil, fmt.Errorf("NOT(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, condErr)
+	}
+	if condResult.IsUndefined() {
+		return undefinedEqnResult(), nil
+	}
+	condBoolResult, validateErr := condResult.GetBoolResult()
+	if validateErr != nil {
+		return nil, fmt.Errorf("IF(): Invalid result found while evaluating argument 1: arg=%+v, error = %v", condEqn, validateErr)
+	}
+	return boolEqnResult(!condBoolResult), nil
+
+}
+
 const FuncNameWhenTrue = "WHENTRUE"
 
 func whenTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
@@ -449,7 +473,9 @@ var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 	FuncNameDateAdd:     FunctionInfo{FuncNameDateAdd, dateAddEvalFunc, validDateAddArgs},
 	FuncNameDaysBetween: FunctionInfo{FuncNameDaysBetween, daysBetweenEvalFunc, twoTimeArgsNumberResult},
 	FuncNameGreaterThan: FunctionInfo{FuncNameGreaterThan, greaterThanEvalFunc, twoNumberArgsBooleanResult},
-	FuncNameIf:          FunctionInfo{FuncNameIf, ifEvalFunc, validIfArgs},
-	FuncNameIsTrue:      FunctionInfo{FuncNameIsTrue, isTrueEvalFunc, oneBoolArg},
-	FuncNameWhenTrue:    FunctionInfo{FuncNameWhenTrue, whenTrueEvalFunc, oneBoolTimeResultArg},
+
+	FuncNameIf:       FunctionInfo{FuncNameIf, ifEvalFunc, validIfArgs},
+	FuncNameIsTrue:   FunctionInfo{FuncNameIsTrue, isTrueEvalFunc, oneBoolArg},
+	FuncNameNot:      FunctionInfo{FuncNameNot, notEvalFunc, oneBoolArg},
+	FuncNameWhenTrue: FunctionInfo{FuncNameWhenTrue, whenTrueEvalFunc, oneBoolTimeResultArg},
 }
