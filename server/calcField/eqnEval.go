@@ -452,6 +452,11 @@ func CreateCalcFieldUpdateConfig(trackerDBHandle *sql.DB,
 func UpdateCalcFieldValues(config *CalcFieldUpdateConfig, calcRecord record.Record, cellUpdateFieldValIndex *record.CellUpdateFieldValueIndex,
 	calcAsOfTimestamp time.Time, resultFieldVals *record.RecFieldValues) error {
 
+	// By definition, calculated field results are undefined before a record even comes into existance.
+	if calcAsOfTimestamp.Before(calcRecord.CreateTimestampUTC) {
+		return nil
+	}
+
 	eqnEvalContext := EqnEvalContext{
 		ParentDatabaseID:        config.ParentDatabaseID,
 		Record:                  calcRecord,
