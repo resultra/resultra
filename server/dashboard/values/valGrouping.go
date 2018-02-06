@@ -9,6 +9,7 @@ import (
 
 const ValGroupByNone string = "none"
 const ValGroupByDay string = "day"
+const ValGroupByWeek string = "week"
 const ValGroupByMonthYear string = "monthYear"
 const ValGroupByBucket string = "bucket"
 
@@ -85,7 +86,7 @@ func validateFieldTypeWithGrouping(fieldType string, groupValsBy string,
 
 			}
 		}
-	case ValGroupByDay, ValGroupByMonthYear:
+	case ValGroupByDay, ValGroupByMonthYear, ValGroupByWeek:
 		if fieldType != field.FieldTypeTime {
 			return fmt.Errorf("Invalid grouping = %v for field type = %v", groupValsBy, fieldType)
 		}
@@ -142,6 +143,8 @@ func (valGrouping ValGrouping) GroupingLabel(trackingDBHandle *sql.DB) (string, 
 			return "Date", nil
 		case ValGroupByMonthYear:
 			return "Month and Year", nil
+		case ValGroupByWeek:
+			return "Week starting", nil
 		default:
 			return "", fmt.Errorf("GroupingLabel: unsupported grouping type: %v", valGrouping.GroupValsBy)
 		} // switch groupValsBy

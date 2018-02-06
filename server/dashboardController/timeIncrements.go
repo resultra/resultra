@@ -46,6 +46,21 @@ func prevWeekEnd(currMonthTime time.Time) time.Time {
 
 }
 
+func beginningOfWeek(currTime time.Time) time.Time {
+	startOfDay := time.Date(currTime.Year(), currTime.Month(), currTime.Day(),
+		0, 0, 0, 0, currTime.Location())
+
+	// Back up to the most recent Sunday
+	currDay := startOfDay
+
+	for currDay.Weekday() != time.Sunday {
+		currDay = currDay.AddDate(0, 0, -1)
+	}
+
+	return currDay
+
+}
+
 const timeIntervalDays string = "days"
 const timeIntervalWeeks string = "weeks"
 const timeIntervalMonths string = "months"

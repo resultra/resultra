@@ -14,6 +14,7 @@ function populateDashboardValueGroupingSelection($selection,fieldType) {
 	else if (fieldType === fieldTypeTime) {
 		$selection.append(selectOptionHTML("none","Don't group values"))
 		$selection.append(selectOptionHTML("day","Day"))	
+		$selection.append(selectOptionHTML("week","Week"))	
 		$selection.append(selectOptionHTML("monthYear","Month and year"))	
 	}
 	else {

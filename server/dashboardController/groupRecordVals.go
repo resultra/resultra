@@ -286,6 +286,9 @@ func groupTimeFieldRecordVal(valGrouping values.ValGrouping, fieldGroup field.Fi
 				return numberGroupLabelInfo("All Dates", 0.0), nil
 			case values.ValGroupByDay:
 				return timeGroupLabelInfo(timeVal.Format("2006-01-02"), timeVal), nil
+			case values.ValGroupByWeek:
+				weekStart := beginningOfWeek(timeVal)
+				return timeGroupLabelInfo(weekStart.Format("2006-01-02"), weekStart), nil
 			case values.ValGroupByMonthYear:
 				return timeGroupLabelInfo(timeVal.Format("Jan 2006"), timeVal), nil
 			default:
