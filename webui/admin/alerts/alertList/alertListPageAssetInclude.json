@@ -8,7 +8,7 @@
 		"newAlertDialog.js"],
 	"htmlFiles":["alertListPage.html",
 				"alertList.html",
-				"newalertDialog.html"],
+				"newAlertDialog.html"],
 	"imageFiles":[],
 	"minCSSFile":"admin/alerts/alertsAdmin.min.css",
 	"minJSFile": "admin/alerts/alertsAdmin.min.js",
