@@ -28,7 +28,13 @@ function populateSummaryTableHeader($summaryTable,summaryTableData) {
 	var $headerRow = $("<tr></tr>")
 	
 	
-	$headerRow.append("<th>" + summaryTableData.groupedSummarizedVals.groupingLabel + "</th>")
+	// A minimum width is needed on the header. This will be respected by the DataTables
+	// plugin to ensure the formating of the summary table looks sensible and doesn't wrap
+	// the grouping label unnecessarily.
+	var $groupingHeader = $("<th>" + summaryTableData.groupedSummarizedVals.groupingLabel + "</th>")
+	$groupingHeader.css("min-width","100px")
+	
+	$headerRow.append($groupingHeader)
 	
 	var summaryLabels = summaryTableData.groupedSummarizedVals.summaryLabels
 	
