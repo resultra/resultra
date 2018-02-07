@@ -5,7 +5,7 @@
     "awesome-bootstrap-checkbox": "0.3.7",
     "blueimp-file-upload": "^9.18.0",
     "bootstrap": "3.3.6",
-    "bootstrap-rating": "https://github.com/dreyescat/bootstrap-rating.git",
+    "bootstrap-rating": "https://github.com/dreyescat/bootstrap-rating.git#af10cba7c9e27ae891ae4e517b8e828f2eb23c10",
     "bootstrap-switch": "^3.3.4",
     "ckeditor": "4.5.8",
     "d3": "4.7.4",
