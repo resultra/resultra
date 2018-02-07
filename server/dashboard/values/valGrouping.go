@@ -13,6 +13,10 @@ const ValGroupByWeek string = "week"
 const ValGroupByMonthYear string = "monthYear"
 const ValGroupByBucket string = "bucket"
 
+const ValGroupIntervalEndOfDay string = "days"
+const ValGroupIntervalIntervalEndOfWeek string = "weeks"
+const ValGroupIntervalEndOfMonth string = "months"
+
 // ValGrouping represents a grouping of field values for purposes of summarizing
 // in bar charts, lines charts, pie charts, and summary tables.
 type ValGrouping struct {
@@ -148,8 +152,23 @@ func (valGrouping ValGrouping) GroupingLabel(trackingDBHandle *sql.DB) (string, 
 		default:
 			return "", fmt.Errorf("GroupingLabel: unsupported grouping type: %v", valGrouping.GroupValsBy)
 		} // switch groupValsBy
-	}
+	} else {
 
-	return "TBD for time increment", nil
+		if valGrouping.GroupValsByTimeIncrement == nil {
+			return "", fmt.Errorf("GroupingLabel: missing time increment")
+		}
+		timeInterval := *valGrouping.GroupValsByTimeIncrement
+
+		switch timeInterval {
+		case ValGroupIntervalEndOfDay:
+			return "End of Day", nil
+		case ValGroupIntervalIntervalEndOfWeek:
+			return "End of Week", nil
+		case ValGroupIntervalEndOfMonth:
+			return "End of Month", nil
+		default:
+			return "", fmt.Errorf("GroupingLabel: unsupported time increment: %v", timeInterval)
+		}
+	}
 
 }

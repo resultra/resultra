@@ -141,10 +141,15 @@ func groupRecordsByTimeInterval(params GroupByTimeIntervalParams) (*ValGroupingR
 
 	}
 
+	groupingLabel, labelErr := params.valGrouping.GroupingLabel(params.trackerDBHandle)
+	if labelErr != nil {
+		return nil, fmt.Errorf("groupRecordsByTimeInterval: %v", labelErr)
+	}
+
 	valGroupingResult := ValGroupingResult{
 		ValGroups:     valGroups,
 		OverallGroup:  currGroup,
-		GroupingLabel: "Date"}
+		GroupingLabel: groupingLabel}
 
 	return &valGroupingResult, nil
 

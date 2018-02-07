@@ -61,14 +61,10 @@ func beginningOfWeek(currTime time.Time) time.Time {
 
 }
 
-const timeIntervalDays string = "days"
-const timeIntervalWeeks string = "weeks"
-const timeIntervalMonths string = "months"
-
 var timeIntervalIncrementFuncs = map[string]timeIncrementIterFunc{
-	timeIntervalDays:   prevDayEnd,
-	timeIntervalWeeks:  prevWeekEnd,
-	timeIntervalMonths: prevMonthEnd}
+	values.ValGroupIntervalEndOfDay:          prevDayEnd,
+	values.ValGroupIntervalIntervalEndOfWeek: prevWeekEnd,
+	values.ValGroupIntervalEndOfMonth:        prevMonthEnd}
 
 func generateTimeIncrements(startTime time.Time, beginningTime time.Time, incrementIterFunc timeIncrementIterFunc) []time.Time {
 
@@ -137,7 +133,7 @@ func generateTimeIncrementsForValGrouping(valGrouping values.ValGrouping) []time
 	currTime := time.Now().UTC()
 	startRangeTime := generateTimeRange(timeRange, currTime)
 
-	timeInterval := timeIntervalWeeks
+	timeInterval := values.ValGroupIntervalIntervalEndOfWeek
 	if valGrouping.GroupValsByTimeIncrement != nil {
 		timeInterval = *valGrouping.GroupValsByTimeIncrement
 	}
