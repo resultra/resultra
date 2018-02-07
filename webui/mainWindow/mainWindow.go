@@ -15,7 +15,6 @@ import (
 	"resultra/datasheet/server/workspace"
 	"resultra/datasheet/webui/alertListView"
 	"resultra/datasheet/webui/common"
-	dashboardCommon "resultra/datasheet/webui/dashboard/common"
 	dashboardComponents "resultra/datasheet/webui/dashboard/components"
 	dashboardView "resultra/datasheet/webui/dashboard/view"
 	"resultra/datasheet/webui/generic"
@@ -36,7 +35,6 @@ func init() {
 		common.TemplateFileList,
 		itemList.TemplateFileList,
 		dashboardComponents.TemplateFileList,
-		dashboardCommon.TemplateFileList,
 		dashboardView.TemplateFileList,
 		alertListView.TemplateFileList,
 		itemView.TemplateFileList}

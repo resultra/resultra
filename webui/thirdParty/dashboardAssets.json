@@ -1,0 +1,10 @@
+{
+	"packages" : {
+		"chartjs": {
+			"pkgPrefix": "node_modules/chart.js",
+			"jsFiles": [ "dist/Chart.min.js" ]
+		}
+	},
+	"htmlFiles": ["dashboard.html"],
+	"injectPlaceholderName": "dashboardThirdPartyAssets"
+}

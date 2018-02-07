@@ -14,6 +14,7 @@ prebuild:
 export:
 	$(EXPORT_THIRD_PARTY_ASSETS) $(abspath ./thirdPartyAssets.json)
 	$(EXPORT_THIRD_PARTY_ASSETS) $(abspath ./aceAssets.json)
+	$(EXPORT_THIRD_PARTY_ASSETS) $(abspath ./dashboardAssets.json)
 	
 all: prebuild export
 	

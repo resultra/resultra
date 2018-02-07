@@ -12,7 +12,6 @@ import (
 	adminCommon "resultra/datasheet/webui/admin/common"
 	"resultra/datasheet/webui/admin/common/inputProperties"
 	"resultra/datasheet/webui/common"
-	dashboardCommon "resultra/datasheet/webui/dashboard/common"
 	"resultra/datasheet/webui/dashboard/components"
 	"resultra/datasheet/webui/dashboard/design/properties"
 	"resultra/datasheet/webui/generic"
@@ -31,7 +30,6 @@ func init() {
 		generic.TemplateFileList,
 		thirdParty.TemplateFileList,
 		common.TemplateFileList,
-		dashboardCommon.TemplateFileList,
 		inputProperties.TemplateFileList,
 		adminCommon.TemplateFileList,
 		components.TemplateFileList,
