@@ -45,6 +45,7 @@ function initRecordFormView(pageConfig,recordRef,changeSetID) {
 		loadRecordWithDefaultVals(pageConfig.defaultVals)
 		
 		var $saveButton = $("#viewFormPageSaveButton")
+		var $saveAndCloseButton = $('#viewFormPageSaveCloseButton')
 		if(pageConfig.saveMode === FormViewModeSave) {
 			$saveButton.show()
 			initButtonControlClickHandler($saveButton, function() {					
@@ -57,8 +58,23 @@ function initRecordFormView(pageConfig,recordRef,changeSetID) {
 					updateFormRecordFunc(updatedRecordRef)
 				})
 			})
+			
+			$saveAndCloseButton.show()
+			initButtonControlClickHandler($saveAndCloseButton, function() {					
+				var commitChangeParams = {
+					recordID: getFormRecordFunc().recordID,
+					changeSetID: changeSetID }
+				jsonAPIRequest("recordUpdate/commitChangeSet",commitChangeParams,function(updatedRecordRef) {
+					// If the popup form is modal, the parent form's record is not updated until the "Save Changes" button
+					// is pressed.
+				//	updateFormRecordFunc(updatedRecordRef)
+					window.close()
+				})
+			})
+			
 		} else {
 			$saveButton.hide()
+			$saveAndCloseButton.hide()
 		}
 		
 		// If a call-back is passed in for going back to the previous view, then call it when the back
