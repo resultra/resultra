@@ -56,7 +56,10 @@ function initCommentBoxRecordEditBehavior($commentContainer, componentContext,re
 		
 		var changeInfoParams = {
 			recordID: recordRef.recordID,
-			fieldID: commentObjectRef.properties.fieldID
+			fieldID: commentObjectRef.properties.fieldID,
+			// changeSetID is an optional parameter ... it tells the server to retrieve the 
+			// comments, including any which are only saved under the current changeSetID.
+			changeSetID: recordProxy.changeSetID
 		}
 	
 		jsonAPIRequest("record/getFieldValChangeInfo",changeInfoParams,function(valChanges) {

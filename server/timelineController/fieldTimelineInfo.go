@@ -97,7 +97,7 @@ func getFieldTimelineInfo(req *http.Request, params GetFieldTimelineInfoParams) 
 	}
 
 	fieldValTimelineChanges, err := record.GetFieldValUpdateTimelineInfo(trackerDBHandle, currUserID,
-		params.RecordID, params.FieldID)
+		params.RecordID, params.FieldID, record.FullyCommittedCellUpdatesChangeSetID)
 	if err != nil {
 		return nil, fmt.Errorf("getFieldTimelineInfo: Error retrieving timeline field value changes: %+v, error = %v", params, err)
 	}
