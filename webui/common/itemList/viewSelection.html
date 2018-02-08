@@ -11,7 +11,7 @@
 
 	<div class="form-group">
 	  	<label for="itemListViewSelection">How to view list</label>
-		<select class="form-control maxWidth300" id="itemListViewSelection" name="itemListViewSelection">
+		<select class="form-control input-sm maxWidth300" id="itemListViewSelection" name="itemListViewSelection">
 			<option disabled selected value="">Select a form or table view</option>
 			<optgroup id="itemListFormSelectionOptGroup" label="Forms"></optgroup>
 			<optgroup id="itemListTableSelectionOptGroup" label="Table Views"></optgroup>
@@ -20,7 +20,7 @@
 
 	<div class="form-group initiallyHidden" id="formPageSizeSelectionFormGroup">
 	  	<label for="itemListPageSizeSelection">Items per page</label>
-	  	<select class="form-control maxWidth50" id="itemListPageSizeSelection" name="itemListPageSizeSelection">
+	  	<select class="form-control input-sm maxWidth50" id="itemListPageSizeSelection" name="itemListPageSizeSelection">
 			{{template "itemListViewFormPageSizeOptions"}}
 		</select>
 	</div>
