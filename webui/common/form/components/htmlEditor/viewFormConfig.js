@@ -4,6 +4,12 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 	
 	var $htmlEditorInput = htmlInputFromHTMLEditorContainer($htmlEditor)
 	
+	// The editInProgress flag is needed for scenarios in which another control on the form starts editing 
+	// a value before editing is stopped on the HTML editor and the blur event is processed. 
+	// This flag is used to prevent the editor's internal value from being overwritten with the old record
+	// value when editing is in progress.
+	var editInProgress = false
+	
 	var validateInput = function(validationCompleteCallback) {
 		
 		if(formComponentIsReadOnly(htmlEditorObjectRef.properties.permissions)) {
@@ -36,6 +42,11 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 		} else {
 			$editButton.prop('disabled',false);
 			$editButton.show()
+		}
+		
+		// Don't load the value if editing is in progress.
+		if (editInProgress) {
+			return
 		}
 	
 		var htmlEditorFieldID = htmlEditorObjectRef.properties.fieldID
@@ -99,6 +110,7 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 			    CKEDITOR.disableAutoInline = true;
 	
 				var editor = enableInlineCKEditor($htmlEditorInput)
+				editInProgress = true
 				editor.focus()
 		
 				editor.on('blur', function(event) {
@@ -107,7 +119,8 @@ function initHtmlEditorRecordEditBehavior($htmlEditor,componentContext,recordPro
 					if (emptyStringVal(inputVal)) {
 						inputVal = null
 					}
-					setEditorValue(inputVal)				
+					setEditorValue(inputVal)	
+					editInProgress = false			
 					disableInlineCKEditor($htmlEditorInput,editor)	
 				})
 		
