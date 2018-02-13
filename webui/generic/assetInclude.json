@@ -2,6 +2,7 @@
     "subDirs": ["propertiesSidebar",
 		"wizardDialog",
 		"formValidation",
+		"util",
 		"ckEditor",
 		"gauge",
 		"valueFormat",

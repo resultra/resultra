@@ -2,7 +2,6 @@
     "subDirs": ["pageHeader",
 		"database",
 		"formulaEditor",
-		"helper",
 		"componentLayout",
 		"objectSelection",
 		"recordFilter",
