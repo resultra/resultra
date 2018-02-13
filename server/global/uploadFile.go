@@ -21,8 +21,18 @@ type UploadFileResponse struct {
 	Files []UploadFile `json:"files"`
 }
 
-func uploadFile(req *http.Request) (*UploadFileResponse, error) {
+func uploadFile(w http.ResponseWriter, req *http.Request) (*UploadFileResponse, error) {
 
+	// The string "uploadFile" matches the parameter name used in clients.
+	uploadInfo, uploadErr := api.ReadUploadFile(w, req, "uploadFile")
+	if uploadErr != nil {
+		return nil, fmt.Errorf("uploadFile: Unable to read file contents: %v", uploadErr)
+	}
+
+	// These calls to req.FormValue needs to come after the reading the uploaded file, since
+	// req.FormValue will in turn call http.ParseMultipartForm. However, api.ReadUploadFile
+	// needs to do error checking on the size of the requested upload through a call
+	// to http.ParseMultipartForm.
 	globalID := req.FormValue("globalID")
 	parentDatabaseID := req.FormValue("parentDatabaseID")
 
@@ -40,12 +50,6 @@ func uploadFile(req *http.Request) (*UploadFileResponse, error) {
 		return nil, fmt.Errorf("uploadFile: database and global info mismatch (database IDs don't match) info = %+v: database ID %v",
 			global, parentDatabaseID)
 
-	}
-
-	// The string "uploadFile" matches the parameter name used in clients.
-	uploadInfo, uploadErr := api.ReadUploadFile(req, "uploadFile")
-	if uploadErr != nil {
-		return nil, fmt.Errorf("uploadFile: Unable to read file contents: %v", uploadErr)
 	}
 
 	cloudFileName := attachment.UniqueAttachmentFileNameFromUserFileName(uploadInfo.FileName)

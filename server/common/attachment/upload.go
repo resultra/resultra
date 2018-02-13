@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"path"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/generic/api"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/common/userAuth"
 )
 
 func UniqueAttachmentFileNameFromUserFileName(userFileName string) string {
@@ -35,16 +35,19 @@ type UploadedAttachmentResponse struct {
 	Files []UploadedAttachment `json:"files"`
 }
 
-func uploadAttachment(req *http.Request) (*UploadedAttachmentResponse, error) {
-
-	parentDatabaseID := req.FormValue("parentDatabaseID")
+func uploadAttachment(w http.ResponseWriter, req *http.Request) (*UploadedAttachmentResponse, error) {
 
 	// The string "uploadFile" matches the parameter name used in clients.
-	uploadInfo, uploadErr := api.ReadUploadFile(req, "uploadFile")
+	uploadInfo, uploadErr := api.ReadUploadFile(w, req, "uploadFile")
 	if uploadErr != nil {
 		return nil, fmt.Errorf("uploadAttachment: Unable to read file contents: %v", uploadErr)
 	}
 
+	// This call to req.FormValue needs to come after the reading the upload file, since
+	// req.FormValue will in turn call http.ParseMultipartForm. However, api.ReadUploadFile
+	// needs to do error checking on the size of the requested upload through a call
+	// to http.ParseMultipartForm.
+	parentDatabaseID := req.FormValue("parentDatabaseID")
 	cloudFileName := UniqueAttachmentFileNameFromUserFileName(uploadInfo.FileName)
 
 	saveParams := databaseWrapper.SaveAttachmentParams{

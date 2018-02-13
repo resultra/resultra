@@ -27,7 +27,7 @@ func init() {
 
 func uploadAttachmentAPI(w http.ResponseWriter, req *http.Request) {
 
-	if uploadResponse, uploadErr := uploadAttachment(req); uploadErr != nil {
+	if uploadResponse, uploadErr := uploadAttachment(w, req); uploadErr != nil {
 		api.WriteErrorResponse(w, uploadErr)
 	} else {
 		api.WriteJSONResponse(w, *uploadResponse)

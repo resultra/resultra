@@ -256,7 +256,7 @@ func getValues(w http.ResponseWriter, r *http.Request) {
 
 func uploadFileAPI(w http.ResponseWriter, req *http.Request) {
 
-	if uploadResponse, uploadErr := uploadFile(req); uploadErr != nil {
+	if uploadResponse, uploadErr := uploadFile(w, req); uploadErr != nil {
 		api.WriteErrorResponse(w, uploadErr)
 	} else {
 		api.WriteJSONResponse(w, *uploadResponse)
