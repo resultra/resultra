@@ -212,9 +212,13 @@ func pruneLatestUniqueAlertsByRecordAndAlert(unprunedNotifications []AlertNotifi
 
 }
 
-// GenerateAllAlerts regenerates all alerts for all records. This is the top-level function to re-generate all the
-// alert notifications at once.
-func generateAllAlerts(trackerDBHandle *sql.DB, currUserID string, databaseID string, userID string, userIsAdmin bool) (*AlertGenerationResult, error) {
+type AlertNotificationsResultsVal struct {
+	AlertsByID    map[string]Alert    `json:"alertsByID"`
+	Notifications []AlertNotification `json:"notifications"`
+}
+
+func generatePrunedAlertNotifications(trackerDBHandle *sql.DB,
+	databaseID string, currUserID string, userIsAdmin bool) (*AlertNotificationsResultsVal, error) {
 
 	// Create a config/context object used for calculating the calculated fields for alert generation. This same
 	// config can be reused by the alert generation for all the records.
@@ -229,7 +233,7 @@ func generateAllAlerts(trackerDBHandle *sql.DB, currUserID string, databaseID st
 		return nil, fmt.Errorf("MapAllRecordUpdatesToFieldValues: %v", err)
 	}
 
-	alerts, alertErr := getAlertsWithUserNotification(trackerDBHandle, databaseID, userID, userIsAdmin)
+	alerts, alertErr := getAlertsWithUserNotification(trackerDBHandle, databaseID, currUserID, userIsAdmin)
 	if alertErr != nil {
 		return nil, fmt.Errorf("GenerateRecordAlerts: Error getting alerts: %v", alertErr)
 	}
@@ -283,17 +287,62 @@ func generateAllAlerts(trackerDBHandle *sql.DB, currUserID string, databaseID st
 	// Sort in reverse chronological order
 	sort.Sort(NotificationByTime(prunedNotifications))
 
-	latestAlertTime := getLatestNotificationTime(trackerDBHandle, userID, databaseID)
+	results := AlertNotificationsResultsVal{
+		AlertsByID:    alertsByID,
+		Notifications: prunedNotifications}
+
+	return &results, nil
+
+}
+
+func getCachedOrRegeneratedAlertNotifications(trackerDBHandle *sql.DB,
+	databaseID string, currUserID string, userIsAdmin bool) (*AlertNotificationsResultsVal, error) {
+
+	cacheKey := alertCacheKey(databaseID, currUserID, userIsAdmin)
+
+	cachedValues, valuesFound := AlertsCache.Get(cacheKey)
+	if valuesFound {
+		var validType bool
+		cachedNotifications, validType := cachedValues.(*AlertNotificationsResultsVal)
+		if validType {
+			log.Printf("Retrieved cached alerts")
+			return cachedNotifications, nil
+		} else {
+			return nil, fmt.Errorf("getCachedOrRegeneratedAlertNotifications: unexpected type from alerts cache")
+		}
+	}
+
+	regeneratedAlertResults, generateErr := generatePrunedAlertNotifications(trackerDBHandle, databaseID, currUserID, userIsAdmin)
+	if generateErr != nil {
+		return nil, fmt.Errorf("getCachedOrRegeneratedAlertNotifications: %v", generateErr)
+	}
+	AlertsCache.Add(cacheKey, regeneratedAlertResults)
+
+	return regeneratedAlertResults, nil
+
+}
+
+// GenerateAllAlerts regenerates all alerts for all records. This is the top-level function to re-generate all the
+// alert notifications at once.
+func getCachedOrGeneratedAlerts(trackerDBHandle *sql.DB, currUserID string, databaseID string,
+	userIsAdmin bool) (*AlertGenerationResult, error) {
+
+	alertResults, err := getCachedOrRegeneratedAlertNotifications(trackerDBHandle, databaseID, currUserID, userIsAdmin)
+	if err != nil {
+		return nil, fmt.Errorf("getCachedOrGeneratedAlerts: %v", err)
+	}
+
+	latestAlertTime := getLatestNotificationTime(trackerDBHandle, currUserID, databaseID)
 	alertsNotSeen := 0
-	for _, currNotification := range prunedNotifications {
+	for _, currNotification := range alertResults.Notifications {
 		if latestAlertTime.Before(currNotification.Timestamp) {
 			alertsNotSeen++
 		}
 	}
 
 	alertGenResults := AlertGenerationResult{
-		AlertsByID:       alertsByID,
-		Notifications:    prunedNotifications,
+		AlertsByID:       alertResults.AlertsByID,
+		Notifications:    alertResults.Notifications,
 		LatestAlertTime:  latestAlertTime,
 		NumAlertsNotSeen: alertsNotSeen}
 

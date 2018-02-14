@@ -140,8 +140,8 @@ func getAlertNotificationListAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if notifications, err := generateAllAlerts(trackerDBHandle,
-		currUserID, params.ParentDatabaseID, currUserID, userIsAdmin); err != nil {
+	if notifications, err := getCachedOrGeneratedAlerts(trackerDBHandle,
+		currUserID, params.ParentDatabaseID, userIsAdmin); err != nil {
 		api.WriteErrorResponse(w, err)
 	} else {
 		api.WriteJSONResponse(w, notifications)

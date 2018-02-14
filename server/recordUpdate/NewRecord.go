@@ -3,6 +3,7 @@ package recordUpdate
 import (
 	"database/sql"
 	"fmt"
+	"resultra/datasheet/server/alert"
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordValue"
 	"resultra/datasheet/server/recordValueMappingController"
@@ -31,6 +32,7 @@ func newRecord(trackerDBHandle *sql.DB, currUserID string, params record.NewReco
 
 	// Force a recalculation of results the next time results are loaded.
 	recordValue.ResultsCache.Remove(params.ParentDatabaseID)
+	alert.RemoveTrackerDatabaseCacheEntries(params.ParentDatabaseID)
 
 	return updateRecordValResult, nil
 

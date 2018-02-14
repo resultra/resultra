@@ -52,6 +52,7 @@ func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*rec
 
 	// Force a recalculation of results the next time results are loaded.
 	recordValue.ResultsCache.Remove(recordForUpdate.ParentDatabaseID)
+	alert.RemoveTrackerDatabaseCacheEntries(recordForUpdate.ParentDatabaseID)
 
 	return updateRecordValResult, nil
 
@@ -89,6 +90,7 @@ func commitChangeSet(trackerDBHandle *sql.DB, currUserID string, params CommitCh
 
 	// Force a recalculation of results the next time results are loaded.
 	recordValue.ResultsCache.Remove(commitRecord.ParentDatabaseID)
+	alert.RemoveTrackerDatabaseCacheEntries(commitRecord.ParentDatabaseID)
 
 	return updateRecordValResult, nil
 
@@ -124,6 +126,7 @@ func setDefaultValues(req *http.Request, params record.SetDefaultValsParams) (*r
 
 	// Force a recalculation of results the next time results are loaded.
 	recordValue.ResultsCache.Remove(params.ParentDatabaseID)
+	alert.RemoveTrackerDatabaseCacheEntries(params.ParentDatabaseID)
 
 	return updateRecordValResult, nil
 
