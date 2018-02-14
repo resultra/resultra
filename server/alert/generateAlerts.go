@@ -305,7 +305,6 @@ func getCachedOrRegeneratedAlertNotifications(trackerDBHandle *sql.DB,
 		var validType bool
 		cachedNotifications, validType := cachedValues.(*AlertNotificationsResultsVal)
 		if validType {
-			log.Printf("Retrieved cached alerts")
 			return cachedNotifications, nil
 		} else {
 			return nil, fmt.Errorf("getCachedOrRegeneratedAlertNotifications: unexpected type from alerts cache")
