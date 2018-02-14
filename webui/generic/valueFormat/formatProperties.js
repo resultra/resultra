@@ -2,7 +2,8 @@ function populateNumberFormatSelection($selection) {
 	$selection.empty()
 	$selection.append(defaultSelectOptionPromptHTML("Select a number format"))
 	
-	$selection.append(selectOptionHTML("generic","General 1022.00"))
+	$selection.append(selectOptionHTML("number2","Number 1022.00"))
+	$selection.append(selectOptionHTML("number1","Number 1022.2"))
 	$selection.append(selectOptionHTML("integer","Rounded Integer 1022"))
 	$selection.append(selectOptionHTML("percent","Percent 5.55%"))
 	$selection.append(selectOptionHTML("percent0","Percent 5%"))

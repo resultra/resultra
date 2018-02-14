@@ -29,13 +29,10 @@ function formatNumberValue(format, rawVal) {
 			return (numberVal*100.0).toFixed(0) + "%"
 		case "percent1":
 			return (numberVal*100.0).toFixed(1) + "%"
-		case "general":
-			if(isInt(rawVal)) {
-				return numberVal
-				
-			} else {
-				return accounting.toFixed(numberVal,2)	
-			}
+		case "number2":
+			return numberVal.toFixed(2)	
+		case "number1":
+			return numberVal.toFixed(1)	
 		case "integer":
 			return Math.round(numberVal)	
 		case "currency":
