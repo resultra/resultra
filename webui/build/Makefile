@@ -1,7 +1,7 @@
 DEPTH = ../..
 include $(DEPTH)/build/common.mk
 
-prebuild:
+install:
 	npm install
 
 clean:

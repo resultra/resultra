@@ -8,7 +8,7 @@ realclean:
 clean: 
 	$(RM) *_gen.json
 
-prebuild:
+install:
 	npm install
 			
 export:

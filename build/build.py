@@ -60,6 +60,7 @@ def runMakePhase(makeTargetName):
         
     print "Build: Starting phase = ", makeTargetName
     makeDirs = []
+        
     for root, dirs, files in os.walk(".."):
         for file in files:
             if (file == 'Makefile') and (not "node_modules" in root):
@@ -80,6 +81,7 @@ if args.realcleanonly:
     runMakePhase("clean")
     runMakePhase("realclean")
 else:        
+    runMakePhase("install")
     runMakePhase("prebuild")
     runMakePhase("build")
     runMakePhase("export")
