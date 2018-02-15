@@ -1,7 +1,7 @@
 DEPTH = ..
 include $(DEPTH)/build/common.mk
 
-prebuild:
+install:
 	npm install
 
 clean:
@@ -22,4 +22,4 @@ export:
 package:
 	npm run dist
 	
-all: prebuild package
+all: install package
