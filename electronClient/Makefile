@@ -21,5 +21,8 @@ export:
 	
 package:
 	npm run dist
+
+windows:
+	npm run dist -- --windows
 	
 all: install package
