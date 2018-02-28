@@ -27,7 +27,7 @@ func (srcProps AlertProperties) Clone(cloneParams *trackerDatabase.CloneDatabase
 
 	destTriggerConditions, err := srcProps.TriggerConditions.Clone(cloneParams)
 	if err != nil {
-		return nil, fmt.Errorf("AlertProperties.Clone: %v")
+		return nil, fmt.Errorf("AlertProperties.Clone: %v", err)
 	}
 	destProps.TriggerConditions = *destTriggerConditions
 
