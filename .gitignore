@@ -19,6 +19,7 @@ electronClient/dist/*
 # Executable files
 serverMain/datasheetServer
 serverMain/resultraLocalBackend
+serverMain/resultraLocalBackend.exe
 
 # Golang’s vendor directory 
 vendor/*
