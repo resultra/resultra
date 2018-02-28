@@ -22,6 +22,20 @@
             "ia32"
           ]
         }
+      ],
+      "extraFiles": [
+        {
+          "from": "../build/dest/static",
+          "to": "resultraBackend/static"
+        },
+        {
+          "from": "../build/dest/bin/resultraLocalBackend.exe",
+          "to": "resultraBackend/bin/resultraLocalBackend.exe"
+        },
+        {
+          "from": "../build/dest/factoryTemplates",
+          "to": "resultraBackend/factoryTemplates"
+        }
       ]
     },
     "mac": {

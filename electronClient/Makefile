@@ -22,7 +22,7 @@ export:
 package:
 	npm run dist
 
-windows:
+winpkg:
 	npm run dist -- --windows
 	
 all: install package

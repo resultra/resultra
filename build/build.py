@@ -20,6 +20,8 @@ parser.add_argument('--release',default=False,action='store_true',
                     help='perform a release build')
 parser.add_argument('--realcleanonly',default=False,action='store_true',
                     help='only run the clean and realclean targets across the build')
+parser.add_argument('--windows',default=False,action='store_true',
+                    help='cross-compile the Windows Electron client.')
 parser.add_argument('--procs',default=4,type=int,
                     help='number of processors(cores) to run parallel build on (default = 4)')
 args = parser.parse_args()
@@ -86,6 +88,9 @@ else:
     runMakePhase("build")
     runMakePhase("export")
     runMakePhase("package")
+    if args.windows:
+        runMakePhase("windows")
+        runMakePhase("winpkg")
 
 endTime = time.time()
 
