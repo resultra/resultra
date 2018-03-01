@@ -1,55 +1,9 @@
         	
 
 {{define "formLinkAdminPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
 
-
-	{{template "electronImportPrefix"}}
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- formLinkAssets:css -->
-	<!-- endinject -->
-	
-	<script>var formLinkAdminContext = { databaseID:"{{.DatabaseID}}",
-		 isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } </script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- formLinkAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="formLinkAdminPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center">
 			<h4>New Item Links</h4>
 			<div class="alert alert-info maxWidth400">Links to create new items with a specific form.</div>
         	{{template "adminFormLinkList"}}
-        	
-		</div> <!-- center pane for entire page -->	
-	</div> <!-- layout page -->	
-	
-	{{template "adminNewFormLinkDialog"}}
-		
-	
-  </body>
-  	
-</html>
 
 {{end}}

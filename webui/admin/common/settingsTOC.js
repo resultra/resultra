@@ -37,6 +37,7 @@ function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeL
 	
 	initSettingsLinkListItem("#settingsTOCGeneral","general")
 	initSettingsLinkListItem("#settingsTOCForms","forms")
+	initSettingsLinkListItem("#settingsTOCFormLinks","formLinks")
 
 /*
 	var generalLink = '/admin/general/' + databaseID

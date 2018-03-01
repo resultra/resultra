@@ -5,7 +5,7 @@ $(document).ready(function() {
 		const contentURL = '/admin/general/' + mainAdminPageContext.databaseID
 	
 		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
-		        jQuery('#contentPageSection').html(pageContentData);
+		        $('#contentPageSection').html(pageContentData);
 				initGeneralAdminPageContent(mainAdminPageContext.databaseID)
 		});
 		
@@ -15,11 +15,22 @@ $(document).ready(function() {
 		const contentURL = '/admin/forms/' + mainAdminPageContext.databaseID
 	
 		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
-		        jQuery('#contentPageSection').html(pageContentData);
+		        $('#contentPageSection').html(pageContentData);
 				initFormListAdminPage(mainAdminPageContext)
 		});
 		
 	}
+
+	function setFormLinksSettingsPage() {
+		const contentURL = '/admin/formlink/' + mainAdminPageContext.databaseID
+	
+		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
+		        $('#contentPageSection').html(pageContentData);
+				initFormLinkSettingsPage(mainAdminPageContext)
+		});
+		
+	}
+
 	
 	// Call-back for dynamically setting the settings page, depending on the link pressed in the settings TOC.
 	function setSettingsPage(linkID) {
@@ -28,6 +39,8 @@ $(document).ready(function() {
 			setGeneralSettingsPage()
 		} else if(linkID == "forms") {
 			setFormsSettingsPage()
+		} else if(linkID == "formLinks") {
+			setFormLinksSettingsPage()
 		} else {
 			setGeneralSettingsPage()			
 		}
