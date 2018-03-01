@@ -15,6 +15,8 @@ import (
 	"resultra/datasheet/webui/common"
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
+
+	"resultra/datasheet/webui/admin/general"
 )
 
 var mainAdminPageTemplates *template.Template
@@ -28,7 +30,8 @@ func init() {
 		generic.TemplateFileList,
 		thirdParty.TemplateFileList,
 		adminCommon.TemplateFileList,
-		common.TemplateFileList}
+		common.TemplateFileList,
+		general.TemplateFileList}
 
 	mainAdminPageTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }

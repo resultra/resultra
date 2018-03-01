@@ -1,7 +1,8 @@
 {
 	"subDirs":["../../generic",
 		"../../common",
-		"../common"],
+		"../common",
+		"../general"],
 	"cssFiles": [],
 	"jsFiles": ["mainAdminPage.js"],
 	"htmlFiles":["mainAdminPage.html"],

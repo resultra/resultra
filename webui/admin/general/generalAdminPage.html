@@ -1,51 +1,7 @@
 
 {{define "generalAdminPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
 
-	{{template "electronImportPrefix"}}
-
+	<h4>General Tracker Settings</h4>
+	{{template "adminGeneralProperties"}}
 	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- generalAssets:css -->
-	<!-- endinject -->
-	
-	<script>var generalAdminPageContext = { databaseID:"{{.DatabaseID}}",
-		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } </script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- generalAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="generalAdminPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center">
-			<h4>General Tracker Settings</h4>
-			{{template "adminGeneralProperties"}}
-		</div> <!-- center pane for entire page -->	
-	</div> <!-- layout page -->	
-	
-	{{template "saveTemplateDialog"}}	
-	
-  </body>
-  	
-</html>
-
 {{end}}
