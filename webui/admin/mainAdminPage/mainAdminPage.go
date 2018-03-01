@@ -16,6 +16,7 @@ import (
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
 
+	"resultra/datasheet/webui/admin/forms/formList"
 	"resultra/datasheet/webui/admin/general"
 )
 
@@ -31,7 +32,8 @@ func init() {
 		thirdParty.TemplateFileList,
 		adminCommon.TemplateFileList,
 		common.TemplateFileList,
-		general.TemplateFileList}
+		general.TemplateFileList,
+		formList.TemplateFileList}
 
 	mainAdminPageTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }

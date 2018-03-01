@@ -1,12 +1,44 @@
-function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace) {
+function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeLinkCallback) {
 	
 	
 	var $settingsTOC = $('#settingsTOC')
 	$settingsTOC.find("li").removeClass("active")
+	
 	var $activeItem = $('#' + activeID)
 	$activeItem.addClass("active")
 	
 
+	function initSettingsLinkListItem(listItemSelector, linkID) {
+		
+		var $listItem = $(listItemSelector)
+		
+		var $link = $listItem.find("a")
+	
+		$link.click(function(e) {
+			e.preventDefault()
+
+			$link.blur()
+		
+			$settingsTOC.find("li").removeClass("active")
+			$listItem.addClass("active")
+			
+			changeLinkCallback(linkID)
+			/*
+		
+			if(tocConfig.itemListClickedCallback !== undefined) {
+				tocConfig.itemListClickedCallback(listInfo.listID,$itemListItem)
+			}
+			setDefaultTOCItem(tocConfig.databaseID,listInfo.listID)
+		
+			*/
+		})
+		
+	}
+	
+	initSettingsLinkListItem("#settingsTOCGeneral","general")
+	initSettingsLinkListItem("#settingsTOCForms","forms")
+
+/*
 	var generalLink = '/admin/general/' + databaseID
 	$('#settingsTOCGeneral').find("a").attr("href",generalLink)
 
@@ -45,5 +77,5 @@ function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace) {
 	var alertLink = "/admin/alerts/" + databaseID
 	$('#settingsTOCAlerts').find("a").attr("href",alertLink)
 	
-	
+*/
 }

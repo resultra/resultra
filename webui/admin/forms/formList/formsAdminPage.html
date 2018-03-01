@@ -1,54 +1,8 @@
         
 
 {{define "formsAdminPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-	
-	{{template "electronImportPrefix"}}
-
-
-	{{template "thirdPartyCSS"}}
-	
-	<!-- formsAssets:css -->
-	<!-- endinject -->
-	
-	<script>var formsAdminContext = { databaseID:"{{.DatabaseID}}",
-		 isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } </script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- formsAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="formAdminPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center">
 			<h4>Forms</h4>
 			<div class="alert alert-info maxWidth400">Forms provide a page-based view of items. Forms are used when creating new items or viewing and editing existing items in item lists.</div>
         	{{template "adminFormList"}}
-		</div> <!-- center pane for entire page -->	
-	</div> <!-- layout page -->	
 	
-	{{template "newFormDialog"}}
-		
-	
-  </body>
-  	
-</html>
-
 {{end}}

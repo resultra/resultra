@@ -1,13 +1,5 @@
-$(document).ready(function() {
+function initFormListAdminPage(pageContext) {
 	
-	initAdminSettingsPageLayout($('#formAdminPage'))	
-	
-	initAdminPageHeader(formsAdminContext.isSingleUserWorkspace)
-	
-	initAdminSettingsTOC(formsAdminContext.databaseID,"settingsTOCForms")
-			
-	initAdminFormSettings(formsAdminContext.databaseID)
-	
-	appendPageSpecificBreadcrumbHeader("/admin/forms/"+formsAdminContext.databaseID,"Forms",formsAdminContext.isSingleUserWorkspace)
-	
-})
+	initAdminFormSettings(pageContext.databaseID)
+		
+}
