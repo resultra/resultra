@@ -3,6 +3,8 @@ package admin
 import (
 	"github.com/gorilla/mux"
 
+	"resultra/datasheet/webui/admin/mainAdminPage"
+
 	"resultra/datasheet/webui/admin/general"
 
 	"resultra/datasheet/webui/admin/fields/fieldList"
@@ -39,6 +41,8 @@ import (
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
+
+	mainAdminPage.RegisterHTTPHandlers(mainRouter)
 
 	general.RegisterHTTPHandlers(mainRouter)
 

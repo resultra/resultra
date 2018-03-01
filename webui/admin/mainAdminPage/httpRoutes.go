@@ -1,10 +1,9 @@
-package general
+package mainAdminPage
 
 import (
 	"github.com/gorilla/mux"
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
-
-	mainRouter.HandleFunc("/admin/general/{databaseID}", generalAdminPage)
+	mainRouter.HandleFunc("/admin/{databaseID}", mainAdminPage)
 }
