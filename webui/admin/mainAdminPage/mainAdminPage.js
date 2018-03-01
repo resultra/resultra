@@ -31,6 +31,17 @@ $(document).ready(function() {
 		
 	}
 
+
+	function setTableListSettingsPage() {
+		const contentURL = '/admin/tables/' + mainAdminPageContext.databaseID
+	
+		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
+		        $('#contentPageSection').html(pageContentData);
+				initTableListAdminPageContent(mainAdminPageContext)
+		});
+		
+	}
+
 	
 	// Call-back for dynamically setting the settings page, depending on the link pressed in the settings TOC.
 	function setSettingsPage(linkID) {
@@ -41,6 +52,8 @@ $(document).ready(function() {
 			setFormsSettingsPage()
 		} else if(linkID == "formLinks") {
 			setFormLinksSettingsPage()
+		} else if(linkID == "tables") {
+			setTableListSettingsPage()
 		} else {
 			setGeneralSettingsPage()			
 		}

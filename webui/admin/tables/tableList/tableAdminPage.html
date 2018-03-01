@@ -1,53 +1,6 @@
         	
 {{define "tableAdminPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-
-	{{template "electronImportPrefix"}}
-
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- tableAssets:css -->
-	<!-- endinject -->
-	
-	<script>var tableAdminContext = { databaseID:"{{.DatabaseID}}",
-		 isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } </script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- tableAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="tableAdminPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center">
-			<h4>Table Views</h4>
-			<div class="alert alert-info maxWidth400">Table views provide a column-based view of items and are shown in item lists.</div>
-        	{{template "adminTableList"}}
-		</div> <!-- center pane for entire page -->	
-	</div> <!-- layout page -->	
-	
-	{{template "newTableDialog"}}
-		
-	
-  </body>
-  	
-</html>
-
+	<h4>Table Views</h4>
+	<div class="alert alert-info maxWidth400">Table views provide a column-based view of items and are shown in item lists.</div>
+	{{template "adminTableList"}}
 {{end}}
