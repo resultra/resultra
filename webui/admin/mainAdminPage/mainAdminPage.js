@@ -74,6 +74,16 @@ $(document).ready(function() {
 		
 	}
 	
+	function setDashboardsSettingsPage() {
+		const contentURL = '/admin/dashboards/' + mainAdminPageContext.databaseID
+	
+		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
+		        $('#contentPageSection').html(pageContentData);
+				initDashboardsAdminSettingsPageContent(mainAdminPageContext)
+		});
+		
+	}
+	
 
 	
 	// Call-back for dynamically setting the settings page, depending on the link pressed in the settings TOC.
@@ -93,6 +103,8 @@ $(document).ready(function() {
 			setFieldListSettingsPage()
 		} else if(linkID == "valueLists") {
 			setValueListsSettingsPage()
+		} else if(linkID == "dashboards") {
+			setDashboardsSettingsPage()
 		} else {
 			setGeneralSettingsPage()			
 		}

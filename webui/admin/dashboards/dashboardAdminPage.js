@@ -1,12 +1,5 @@
-$(document).ready(function() {
+function initDashboardsAdminSettingsPageContent(pageContext) {
 	
-	initAdminSettingsPageLayout($('#dashboardAdminPage'))	
-	initAdminPageHeader(dashboardAdminPageContext.isSingleUserWorkspace)
-	initAdminSettingsTOC(dashboardAdminPageContext.databaseID,"settingsTOCDashboards",dashboardAdminPageContext.isSingleUserWorkspace)
-			
-	initAdminDashboardSettings(dashboardAdminPageContext.databaseID)
+	initAdminDashboardSettings(pageContext.databaseID)
 	
-	appendPageSpecificBreadcrumbHeader("/admin/dashboards/"+dashboardAdminPageContext.databaseID,"Dashboards")
-	
-	
-})
+}

@@ -34,15 +34,13 @@ function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeL
 	initSettingsLinkListItem("#settingsTOCLists","lists")
 	initSettingsLinkListItem("#settingsTOCFields","fields")
 	initSettingsLinkListItem("#settingsTOCValueLists","valueLists")
+	initSettingsLinkListItem("#settingsTOCDashboards","dashboards")
 
 /*
 	
 	var formsLink = "/admin/forms/" + databaseID
 	$('#settingsTOCForms').find("a").attr("href",formsLink)
-		
-	var dashboardLink = "/admin/dashboards/" + databaseID
-	$('#settingsTOCDashboards').find("a").attr("href",dashboardLink)
-	
+			
 	var globalLink = "/admin/globals/" + databaseID
 	$('#settingsTOCGlobals').find("a").attr("href",globalLink)
 	
