@@ -37,16 +37,16 @@ function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeL
 	initSettingsLinkListItem("#settingsTOCDashboards","dashboards")
 	initSettingsLinkListItem("#settingsTOCAlerts","alerts")
 	initSettingsLinkListItem("#settingsTOCRoles","roles")
+	
+	if (!isSingleUserWorkspace) {
+		initSettingsLinkListItem("#settingsTOCUsers","collaborators")	
+	}
 
 /*
 	
 	var globalLink = "/admin/globals/" + databaseID
 	$('#settingsTOCGlobals').find("a").attr("href",globalLink)
 	
-	if (!isSingleUserWorkspace) {
-		var userLink = "/admin/collaborators/" + databaseID
-		$('#settingsTOCUsers').find("a").attr("href",userLink)		
-	}
 		
 */
 }

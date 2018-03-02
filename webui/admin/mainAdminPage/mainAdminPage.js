@@ -104,7 +104,17 @@ $(document).ready(function() {
 		});
 		
 	}
-
+	
+	function setCollaboratorsSettingsPage() {
+		const contentURL = '/admin/collaborators/' + mainAdminPageContext.databaseID
+	
+		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
+		        $('#contentPageSection').html(pageContentData);
+				initCollaboratorsSettingsPageContent(mainAdminPageContext)
+		});
+		
+	}
+	
 
 	// Call-back for dynamically setting the settings page, depending on the link pressed in the settings TOC.
 	function setSettingsPage(linkID) {
@@ -129,6 +139,8 @@ $(document).ready(function() {
 			setAlertsSettingsPage()
 		} else if(linkID == "roles") {
 			setRolesSettingsPage()
+		} else if(linkID == "collaborators") {
+			setCollaboratorsSettingsPage()
 		} else {
 			setGeneralSettingsPage()			
 		}

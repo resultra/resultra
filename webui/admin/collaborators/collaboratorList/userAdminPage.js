@@ -1,14 +1,6 @@
 
-$(document).ready(function() {
-	
-	initAdminSettingsPageLayout($('#userAdminPage'))	
-	initAdminPageHeader(false)
-	initAdminSettingsTOC(userAdminPageContext.databaseID,"settingsTOCUsers")
-	
+function initCollaboratorsSettingsPageContent(pageContext) {	
 
-	initUserListSettings(userAdminPageContext.databaseID)
-
-	appendPageSpecificBreadcrumbHeader("/admin/collaborators/"+userAdminPageContext.databaseID,"Collaborators")
-
+	initUserListSettings(pageContext.databaseID)
 				
-})
+}

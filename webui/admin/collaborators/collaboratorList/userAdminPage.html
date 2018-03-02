@@ -1,53 +1,6 @@
 
 
 {{define "userAdminPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-
-	{{template "electronImportPrefix"}}
-
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- userAssets:css -->
-	<!-- endinject -->
-	
-	<script>var userAdminPageContext = { databaseID:"{{.DatabaseID}}" } </script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- userAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="userAdminPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west">
-			{{template "adminSettingsTOC"}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center">
 			<h4>Collaborators</h4>
-       		{{template "userList"}}
-		</div> <!-- center pane for entire page -->	
-	</div> <!-- layout page -->			
-	
-	{{template "adminNewUserDialog"}}
-	{{template "confirmDeleteDialog"}}
- 	
-	
-  </body>
-  	
-</html>
-
+       		{{template "userList"}} 
 {{end}}
