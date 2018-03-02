@@ -1,53 +1,10 @@
 
 
 {{define "valueListAdminPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-	
-	{{template "electronImportPrefix"}}
 
-
-	{{template "thirdPartyCSS"}}
-	
-	<!-- valueListAssets:css -->
-	<!-- endinject -->
-	
-	<script>var valueListAdminContext = { databaseID:"{{.DatabaseID}}",
-		 isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } </script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- valueListAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="valueListAdminPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center">
 			<h4>Value Lists</h4>
 			<div class="alert alert-info maxWidth400">Values lists support the selection of specific values for information entered into forms or table views.</div>
         	{{template "adminValueListList"}}
-		</div> <!-- center pane for entire page -->	
-	</div> <!-- layout page -->	
 	
-	{{template "adminNewValueListDialog"}}		
 	
-  </body>
-  	
-</html>
-
 {{end}}

@@ -63,6 +63,16 @@ $(document).ready(function() {
 		});
 		
 	}
+
+	function setValueListsSettingsPage() {
+		const contentURL = '/admin/valuelists/' + mainAdminPageContext.databaseID
+	
+		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
+		        $('#contentPageSection').html(pageContentData);
+				initValueListAdminSettingsPageContent(mainAdminPageContext)
+		});
+		
+	}
 	
 
 	
@@ -81,6 +91,8 @@ $(document).ready(function() {
 			setItemListSettingsPage()
 		} else if(linkID == "fields") {
 			setFieldListSettingsPage()
+		} else if(linkID == "valueLists") {
+			setValueListsSettingsPage()
 		} else {
 			setGeneralSettingsPage()			
 		}
