@@ -84,7 +84,16 @@ $(document).ready(function() {
 		
 	}
 	
-
+	
+	function setAlertsSettingsPage() {
+		const contentURL = '/admin/alerts/' + mainAdminPageContext.databaseID
+	
+		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
+		        $('#contentPageSection').html(pageContentData);
+				initAlertListAdminSettingsPageContent(mainAdminPageContext)
+		});
+		
+	}
 	
 	// Call-back for dynamically setting the settings page, depending on the link pressed in the settings TOC.
 	function setSettingsPage(linkID) {
@@ -105,6 +114,8 @@ $(document).ready(function() {
 			setValueListsSettingsPage()
 		} else if(linkID == "dashboards") {
 			setDashboardsSettingsPage()
+		} else if(linkID == "alerts") {
+			setAlertsSettingsPage()
 		} else {
 			setGeneralSettingsPage()			
 		}

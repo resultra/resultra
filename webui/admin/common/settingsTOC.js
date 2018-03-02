@@ -35,12 +35,10 @@ function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeL
 	initSettingsLinkListItem("#settingsTOCFields","fields")
 	initSettingsLinkListItem("#settingsTOCValueLists","valueLists")
 	initSettingsLinkListItem("#settingsTOCDashboards","dashboards")
+	initSettingsLinkListItem("#settingsTOCAlerts","alerts")
 
 /*
 	
-	var formsLink = "/admin/forms/" + databaseID
-	$('#settingsTOCForms').find("a").attr("href",formsLink)
-			
 	var globalLink = "/admin/globals/" + databaseID
 	$('#settingsTOCGlobals').find("a").attr("href",globalLink)
 	
@@ -51,9 +49,6 @@ function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeL
 
 	var roleLink = "/admin/roles/" + databaseID
 	$('#settingsTOCRoles').find("a").attr("href",roleLink)
-	
-	var alertLink = "/admin/alerts/" + databaseID
-	$('#settingsTOCAlerts').find("a").attr("href",alertLink)
-	
+		
 */
 }

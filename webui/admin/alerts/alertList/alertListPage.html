@@ -1,52 +1,6 @@
         	
 
 {{define "alertListAdminPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-	
-	{{template "electronImportPrefix"}}
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- alertListAssets:css -->
-	<!-- endinject -->
-	
-	<script>var alertListAdminContext = { databaseID:"{{.DatabaseID}}",
-		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } </script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- alertListAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="alertListAdminPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center">
-			<h4>Alerts</h4>
-        	{{template "adminAlertList"}}
-		</div> <!-- center pane for entire page -->	
-	</div> <!-- layout page -->	
-	
-	{{template "newAlertDialog"}}
-		
-	
-  </body>
-  	
-</html>
-
+	<h4>Alerts</h4>
+    {{template "adminAlertList"}}
 {{end}}
