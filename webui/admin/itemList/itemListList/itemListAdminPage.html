@@ -1,54 +1,7 @@
         
 {{define "itemListAdminPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-	
-	{{template "electronImportPrefix"}}
-	
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- itemListAssets:css -->
-	<!-- endinject -->
-	
-	<script>var itemListAdminContext = { databaseID:"{{.DatabaseID}}",
-		 isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } </script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- itemListAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="itemListAdminPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center">
 			<h4>Item Lists Settings</h4>
 			<div class="alert alert-info maxWidth400">Item lists display items using either forms or table views.</div>
 			
         	{{template "adminListList"}}
-		</div> <!-- center pane for entire page -->	
-	</div> <!-- layout page -->	
-	
-	{{template "newListDialog"}}
-		
-	
-  </body>
-  	
-</html>
-
 {{end}}

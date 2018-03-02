@@ -41,6 +41,17 @@ $(document).ready(function() {
 		});
 		
 	}
+	
+	function setItemListSettingsPage() {
+		const contentURL = '/admin/lists/' + mainAdminPageContext.databaseID
+	
+		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
+		        $('#contentPageSection').html(pageContentData);
+				initItemListAdminSettingsPage(mainAdminPageContext)
+		});
+		
+	}
+	
 
 	
 	// Call-back for dynamically setting the settings page, depending on the link pressed in the settings TOC.
@@ -54,6 +65,8 @@ $(document).ready(function() {
 			setFormLinksSettingsPage()
 		} else if(linkID == "tables") {
 			setTableListSettingsPage()
+		} else if(linkID == "lists") {
+			setItemListSettingsPage()
 		} else {
 			setGeneralSettingsPage()			
 		}
