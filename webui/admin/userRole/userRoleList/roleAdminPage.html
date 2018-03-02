@@ -1,53 +1,6 @@
 
 
 {{define "roleAdminPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-	
-	{{template "electronImportPrefix"}}
-
-
-	{{template "thirdPartyCSS"}}
-	
-	<!-- roleAssets:css -->
-	<!-- endinject -->
-	
-	<script>var roleAdminContext = { databaseID:"{{.DatabaseID}}",
-		 isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } </script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- roleAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="roleAdminPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west">
-			{{template "adminSettingsTOC" . }}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center">
-			<h4>Roles</h4>
-			{{template "userRoleList"}}
- 		</div> <!-- center pane for entire page -->	
-	</div> <!-- layout page -->	
-	
-	{{template "newUserRoleDialog"}}
-		
-	
-  </body>
-  	
-</html>
-
+	<h4>Roles</h4>
+	{{template "userRoleList"}}	
 {{end}}

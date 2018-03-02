@@ -94,7 +94,18 @@ $(document).ready(function() {
 		});
 		
 	}
+
+	function setRolesSettingsPage() {
+		const contentURL = '/admin/roles/' + mainAdminPageContext.databaseID
 	
+		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
+		        $('#contentPageSection').html(pageContentData);
+				initUserRoleAdminSettingsPageContent(mainAdminPageContext)
+		});
+		
+	}
+
+
 	// Call-back for dynamically setting the settings page, depending on the link pressed in the settings TOC.
 	function setSettingsPage(linkID) {
 		
@@ -116,6 +127,8 @@ $(document).ready(function() {
 			setDashboardsSettingsPage()
 		} else if(linkID == "alerts") {
 			setAlertsSettingsPage()
+		} else if(linkID == "roles") {
+			setRolesSettingsPage()
 		} else {
 			setGeneralSettingsPage()			
 		}

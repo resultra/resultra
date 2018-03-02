@@ -36,6 +36,7 @@ function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeL
 	initSettingsLinkListItem("#settingsTOCValueLists","valueLists")
 	initSettingsLinkListItem("#settingsTOCDashboards","dashboards")
 	initSettingsLinkListItem("#settingsTOCAlerts","alerts")
+	initSettingsLinkListItem("#settingsTOCRoles","roles")
 
 /*
 	
@@ -46,9 +47,6 @@ function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeL
 		var userLink = "/admin/collaborators/" + databaseID
 		$('#settingsTOCUsers').find("a").attr("href",userLink)		
 	}
-
-	var roleLink = "/admin/roles/" + databaseID
-	$('#settingsTOCRoles').find("a").attr("href",roleLink)
 		
 */
 }
