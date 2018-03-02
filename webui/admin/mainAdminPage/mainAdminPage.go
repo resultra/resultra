@@ -23,6 +23,7 @@ import (
 	"resultra/datasheet/webui/admin/formLink/formLinkList"
 	"resultra/datasheet/webui/admin/forms/formList"
 	"resultra/datasheet/webui/admin/general"
+	"resultra/datasheet/webui/admin/globals"
 	"resultra/datasheet/webui/admin/itemList/itemListList"
 	"resultra/datasheet/webui/admin/tables/tableList"
 	"resultra/datasheet/webui/admin/userRole/userRoleList"
@@ -51,7 +52,8 @@ func init() {
 		dashboards.TemplateFileList,
 		alertList.TemplateFileList,
 		userRoleList.TemplateFileList,
-		collaboratorList.TemplateFileList}
+		collaboratorList.TemplateFileList,
+		globals.TemplateFileList}
 
 	mainAdminPageTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }

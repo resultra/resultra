@@ -1,52 +1,5 @@
 
 {{define "globalAdminPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-
-	{{template "electronImportPrefix"}}
-
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- globalAssets:css -->
-	<!-- endinject -->
-	
-	<script>var globalAdminPageContext = { databaseID:"{{.DatabaseID}}",
-		 isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } </script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- globalAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="globalAdminPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center">
 			<h4>Global Values</h4>
         	{{template "adminGlobalsList"}}
-		</div> <!-- center pane for entire page -->	
-	</div> <!-- layout page -->			
-	
-	{{template "adminNewGlobalDialog"}}
-	
-	
-  </body>
-  	
-</html>
-
 {{end}}

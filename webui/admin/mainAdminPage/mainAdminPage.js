@@ -115,6 +115,17 @@ $(document).ready(function() {
 		
 	}
 	
+	
+	function setGlobalsSettingsPage() {
+		const contentURL = '/admin/globals/' + mainAdminPageContext.databaseID
+	
+		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
+		        $('#contentPageSection').html(pageContentData);
+				initGlobalSettingsPageContent(mainAdminPageContext)
+		});
+		
+	}
+	
 
 	// Call-back for dynamically setting the settings page, depending on the link pressed in the settings TOC.
 	function setSettingsPage(linkID) {
@@ -141,6 +152,8 @@ $(document).ready(function() {
 			setRolesSettingsPage()
 		} else if(linkID == "collaborators") {
 			setCollaboratorsSettingsPage()
+		} else if(linkID == "globals") {
+			setGlobalsSettingsPage()
 		} else {
 			setGeneralSettingsPage()			
 		}
