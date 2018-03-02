@@ -52,6 +52,18 @@ $(document).ready(function() {
 		
 	}
 	
+	
+	
+	function setFieldListSettingsPage() {
+		const contentURL = '/admin/fields/' + mainAdminPageContext.databaseID
+	
+		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
+		        $('#contentPageSection').html(pageContentData);
+				initFieldsSettingsPageContent(mainAdminPageContext)
+		});
+		
+	}
+	
 
 	
 	// Call-back for dynamically setting the settings page, depending on the link pressed in the settings TOC.
@@ -67,6 +79,8 @@ $(document).ready(function() {
 			setTableListSettingsPage()
 		} else if(linkID == "lists") {
 			setItemListSettingsPage()
+		} else if(linkID == "fields") {
+			setFieldListSettingsPage()
 		} else {
 			setGeneralSettingsPage()			
 		}

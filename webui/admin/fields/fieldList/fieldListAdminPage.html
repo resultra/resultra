@@ -2,53 +2,8 @@
 
 
 {{define "fieldAdminPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-
-	{{template "electronImportPrefix"}}
-
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- fieldAssets:css -->
-	<!-- endinject -->
-	
-	<script>var fieldListAdminContext = { databaseID:"{{.DatabaseID}}",
-		 isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } </script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- fieldAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="fieldAdminPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west" id="adminPageTocLayout">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center" id="adminPageLayout">
 			<h4>Fields</h4>
 			<div class="alert alert-info maxWidth600">Fields are used to store information for individual items. Information from fields is displayed and edited in forms or table views.</div>
         	{{template "adminFieldList"}}
-		</div> <!-- center pane for entire page -->	
-	</div> <!-- layout page -->	
-	
-	{{template "adminNewFieldDialog"}}	
-	
-  </body>
-  	
-</html>
 
 {{end}}

@@ -23,14 +23,6 @@ function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeL
 			$listItem.addClass("active")
 			
 			changeLinkCallback(linkID)
-			/*
-		
-			if(tocConfig.itemListClickedCallback !== undefined) {
-				tocConfig.itemListClickedCallback(listInfo.listID,$itemListItem)
-			}
-			setDefaultTOCItem(tocConfig.databaseID,listInfo.listID)
-		
-			*/
 		})
 		
 	}
@@ -40,11 +32,9 @@ function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeL
 	initSettingsLinkListItem("#settingsTOCFormLinks","formLinks")
 	initSettingsLinkListItem("#settingsTOCTables","tables")
 	initSettingsLinkListItem("#settingsTOCLists","lists")
+	initSettingsLinkListItem("#settingsTOCFields","fields")
 
 /*
-
-	var fieldsLink = '/admin/fields/' + databaseID
-	$('#settingsTOCFields').find("a").attr("href",fieldsLink)
 	
 	var formsLink = "/admin/forms/" + databaseID
 	$('#settingsTOCForms').find("a").attr("href",formsLink)
