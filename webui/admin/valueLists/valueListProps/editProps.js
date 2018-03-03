@@ -49,11 +49,11 @@ function initValueListSettingsPageContent(valueListInfo) {
 	initValueListNameProperties(valueListInfo)
 	initValueListValueListProperties(valueListInfo)
 	
-	
-
-//	appendPageSpecificBreadcrumbHeader("/admin/valuelists/"+valueListPropsContext.databaseID,"Value Lists")
-//	appendPageSpecificBreadcrumbHeader("/admin/valuelists/"+valueListPropsContext.valueListID,valueListPropsContext.valueListName)
-	
-	
+	var $valueListLink = $('#valueListPropsBackToValueListLink')
+	$valueListLink.click(function(e) {
+		e.preventDefault()
+		$valueListLink.blur()
+		navigateToSettingsPageContent("valueLists")	
+	})	
 	
 }

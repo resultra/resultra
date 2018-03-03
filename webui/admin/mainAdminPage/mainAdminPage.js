@@ -74,6 +74,10 @@ $(document).ready(function() {
 		
 	}
 	
+	registerPageContentLoader("valueLists",'/admin/valuelists/' + mainAdminPageContext.databaseID,function() {
+		initValueListAdminSettingsPageContent(mainAdminPageContext)
+	})
+	
 	function setDashboardsSettingsPage() {
 		const contentURL = '/admin/dashboards/' + mainAdminPageContext.databaseID
 	
