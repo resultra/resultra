@@ -1,15 +1,9 @@
-$(document).ready(function() {
-	
-	initAdminSettingsPageLayout($('#alertPropsPage'))	
-	
-	initAdminPageHeader(alertPropsContext.isSingleUserWorkspace)
-	
-	initAdminSettingsTOC(alertPropsContext.databaseID,"settingsTOCAlerts", alertPropsContext.isSingleUserWorkspace)
-	
+function initAlertSettingsAdminPageContent(databaseID,alertInfo) {
+		
 	function initAlertFormProperties(alertInfo) {
 		var selectFormParams = {
 			menuSelector: "#alertPropFormSelection",
-			parentDatabaseID: alertPropsContext.databaseID,
+			parentDatabaseID: databaseID,
 			initialFormID: alertInfo.properties.formID
 		}	
 		populateFormSelectionMenu(selectFormParams)
@@ -17,7 +11,7 @@ $(document).ready(function() {
 		initSelectControlChangeHandler($formSelection, function(selectedFormID) {
 
 			var setFormParams = {
-				alertID: alertPropsContext.alertID,
+				alertID: alertInfo.alertID,
 				formID: selectedFormID
 			}	
 
@@ -34,7 +28,7 @@ $(document).ready(function() {
 		var alertConditionPrefix = "alertTriggerCondition_"
 		var alertConditionPropertyPanelParams = {
 			elemPrefix: alertConditionPrefix,
-			databaseID: alertPropsContext.databaseID,
+			databaseID: databaseID,
 			defaultFilterRules: alertInfo.properties.triggerConditions,
 			initDone: function () {},
 			updateFilterRules: function (updatedFilterRules) {
@@ -84,7 +78,7 @@ $(document).ready(function() {
 		initInlineInputValidationOnBlur(validator,'#alertPropsNameInput',
 			remoteValidationParams, function(validatedName) {		
 				var setNameParams = {
-					alertID: alertPropsContext.alertID,
+					alertID: alertInfo.alertID,
 					alertName:validatedName
 				}
 				jsonAPIRequest("alert/setName",setNameParams,function(updatedAlertInfo) {
@@ -153,7 +147,7 @@ $(document).ready(function() {
 			var newCaptionMsg = editor.getValue()
 			console.log("Caption message changed: " + newCaptionMsg)
 			var setCaptionParams = {
-				alertID: alertPropsContext.alertID,
+				alertID: alertInfo.alertID,
 				captionMessage:newCaptionMsg
 			}
 			jsonAPIRequest("alert/setCaptionMessage",setCaptionParams,function(updatedAlertInfo) {
@@ -163,9 +157,8 @@ $(document).ready(function() {
 		
 	}
 	
-	
 	var getAlertParams = { 
-		alertID: alertPropsContext.alertID
+		alertID: alertInfo.alertID
 	}
 	jsonAPIRequest("alert/get",getAlertParams,function(alertInfo) {
 		initAlertFormProperties(alertInfo)
@@ -176,12 +169,15 @@ $(document).ready(function() {
 	}) 
 	
 	var conditionPropsParams = {
-		databaseID: alertPropsContext.databaseID,
-		alertID: alertPropsContext.alertID
+		databaseID: databaseID,
+		alertID: alertInfo.alertID
 	}
 	initAlertConditionProps(conditionPropsParams)
 	
-	appendPageSpecificBreadcrumbHeader("/admin/alerts/"+alertPropsContext.databaseID,"Alerts")
-	appendPageSpecificBreadcrumbHeader("/admin/alert/"+alertPropsContext.alertID,alertPropsContext.alertName)
 	
-})
+	initSettingsPageButtonLink('#alertPropsBackToAlertListLink',"alerts")
+	
+	
+	
+	
+}

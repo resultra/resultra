@@ -17,6 +17,7 @@ import (
 	"resultra/datasheet/webui/thirdParty"
 
 	"resultra/datasheet/webui/admin/alerts/alertList"
+	"resultra/datasheet/webui/admin/alerts/alertProps"
 	"resultra/datasheet/webui/admin/collaborators/collaboratorList"
 	"resultra/datasheet/webui/admin/dashboards"
 	"resultra/datasheet/webui/admin/fields/fieldList"
@@ -55,6 +56,7 @@ func init() {
 		valueListProps.TemplateFileList,
 		dashboards.TemplateFileList,
 		alertList.TemplateFileList,
+		alertProps.TemplateFileList,
 		userRoleList.TemplateFileList,
 		collaboratorList.TemplateFileList,
 		globals.TemplateFileList}

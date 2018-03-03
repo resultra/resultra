@@ -11,8 +11,16 @@ function initAdminAlertSettings(databaseID) {
 		$alertName.text(alertRef.name)
 		
 		var $editAlertButton = $alertListItem.find(".editAlertPropsButton")
-		var editAlertLink = '/admin/alert/' + alertRef.alertID
-		$editAlertButton.attr("href",editAlertLink)
+		$editAlertButton.click(function(e) {
+			e.preventDefault()
+			$editAlertButton.blur()
+			
+			var editPropsContentURL = '/admin/alert/' + alertRef.alertID
+			setSettingsPageContent(editPropsContentURL,function() {
+				initAlertSettingsAdminPageContent(databaseID,alertRef)
+			})
+		})
+		
 		
 		$adminAlertList.append($alertListItem)
 	}

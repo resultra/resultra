@@ -21,3 +21,12 @@ function navigateToSettingsPageContent(linkID) {
 		setSettingsPageContent(contentInfo.contentURL,contentInfo.initContentFunc)
 	}
 }
+
+function initSettingsPageButtonLink(buttonSelector,pageContentID) {
+	var $button = $(buttonSelector)
+	$button.click(function(e) {
+		e.preventDefault()
+		$button.blur()
+		navigateToSettingsPageContent(pageContentID)	
+	})	
+}

@@ -104,6 +104,11 @@ $(document).ready(function() {
 		
 	}
 
+	registerPageContentLoader("alerts",'/admin/alerts/' + mainAdminPageContext.databaseID,function() {
+		initAlertListAdminSettingsPageContent(mainAdminPageContext)
+	})
+
+
 	function setRolesSettingsPage() {
 		const contentURL = '/admin/roles/' + mainAdminPageContext.databaseID
 	

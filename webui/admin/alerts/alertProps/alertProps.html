@@ -69,6 +69,10 @@
 
 {{define "alertPropsBody"}}
 
+<button type="button" class="btn btn-default btn-sm" id="alertPropsBackToAlertListLink">
+  <span class="fa fa-arrow-left" aria-hidden="true"></span> Back to alerts
+</button>
+
 <h4>Alert</h4>
 <table class="table">
 	{{template "adminAlertNameProperty"}}
@@ -83,57 +87,5 @@
 {{end}}
 
 {{define "alertPropsPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-	
-	{{template "electronImportPrefix"}}
-	
-	
-	{{template "thirdPartyCSS"}}
-	
-	
-	<!-- alertPropsAssets:css -->
-	<!-- endinject -->
-	
-	<script>var alertPropsContext = { 
-		databaseID:"{{.DatabaseID}}",
-		alertID:"{{.AlertID}}",
-		alertName:"{{.AlertName}}",
-		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} }
-	</script>
-	
-	{{template "thirdPartyJS"}}
-	{{template "aceThirdPartyJS"}}
-	
-	<!-- alertPropsAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="alertPropsPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west" id="rolePageTocLayout">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center" id="rolePageLayout">
-			{{template "alertPropsBody" .}}
-		</div> <!-- center pane for entire page -->	
-		
-	</div> <!-- layout page -->	
-
-				
-  </body>
-  	
-</html>
-
+	{{template "alertPropsBody" .}}
 {{end}}

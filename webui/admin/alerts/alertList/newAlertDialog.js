@@ -56,8 +56,12 @@ function openNewAlertDialog(databaseID) {
 			jsonAPIRequest("alert/new",newAlertParams,function(newAlertInfo) {
 				console.log("Created new alert: " + JSON.stringify(newAlertInfo))
 				$newAlertDialog.modal('hide')
-				// TODO - Include database ID in link
-				navigateToURL('/admin/alert/' + newAlertInfo.alertID)
+				
+				var editPropsContentURL = '/admin/alert/' + newAlertInfo.alertID
+				setSettingsPageContent(editPropsContentURL,function() {
+					initAlertSettingsAdminPageContent(databaseID,newAlertInfo)
+				})
+				
 			})
 			
 

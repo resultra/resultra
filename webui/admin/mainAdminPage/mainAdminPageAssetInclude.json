@@ -13,6 +13,7 @@
 		"../valueLists/valueListProps",
 		"../dashboards",
 		"../alerts/alertList",
+		"../alerts/alertProps",
 		"../userRole/userRoleList",
 		"../collaborators/collaboratorList",
 		"../globals"],
