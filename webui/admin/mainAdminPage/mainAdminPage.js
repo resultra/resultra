@@ -158,19 +158,33 @@ $(document).ready(function() {
 			setGeneralSettingsPage()			
 		}
 		
+		// Update the location in the browser. This is needed
+		// to support the browser's back button in the case the user
+		// navigates further down into the settings. Similarly if the 
+		// user presses the refresh button, the most recent page content will
+		// also be shown.
+		window.location = window.location.origin + window.location.pathname + "#" + linkID
+		
 	}
 	
-	
-	
 	initAdminSettingsPageLayout($('#mainAdminPage'))
+	
+	function getLinkIDAnchorName() {
+		var linkID = window.location.hash.substr(1);
+		if (linkID === null || linkID.length === 0) {
+			return "general"
+		}
+		return linkID
+	}
 		
 	initAdminPageHeader(mainAdminPageContext.isSingleUserWorkspace)
 	
+	const currAnchorLinkID = getLinkIDAnchorName()
+	
 	initAdminSettingsTOC(mainAdminPageContext.databaseID,
-		"settingsTOCGeneral",mainAdminPageContext.isSingleUserWorkspace,setSettingsPage)
-		
-		
-	setGeneralSettingsPage()
+		currAnchorLinkID,mainAdminPageContext.isSingleUserWorkspace,setSettingsPage)
+			
+	setSettingsPage(currAnchorLinkID)
 		
 				
 })

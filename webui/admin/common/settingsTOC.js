@@ -4,13 +4,19 @@ function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeL
 	var $settingsTOC = $('#settingsTOC')
 	$settingsTOC.find("li").removeClass("active")
 	
-	var $activeItem = $('#' + activeID)
+	
+	function linkListItemSelector(linkID) {
+		return '#settingsTOC_' + linkID
+	}
+	
+	const activeItemSelector = linkListItemSelector(activeID)
+	var $activeItem = $(activeItemSelector)
 	$activeItem.addClass("active")
 	
 
-	function initSettingsLinkListItem(listItemSelector, linkID) {
-		
-		var $listItem = $(listItemSelector)
+	function initSettingsLinkListItem(linkID) {
+				
+		var $listItem = $(linkListItemSelector(linkID))
 		
 		var $link = $listItem.find("a")
 	
@@ -27,20 +33,20 @@ function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeL
 		
 	}
 	
-	initSettingsLinkListItem("#settingsTOCGeneral","general")
-	initSettingsLinkListItem("#settingsTOCForms","forms")
-	initSettingsLinkListItem("#settingsTOCFormLinks","formLinks")
-	initSettingsLinkListItem("#settingsTOCTables","tables")
-	initSettingsLinkListItem("#settingsTOCLists","lists")
-	initSettingsLinkListItem("#settingsTOCFields","fields")
-	initSettingsLinkListItem("#settingsTOCValueLists","valueLists")
-	initSettingsLinkListItem("#settingsTOCDashboards","dashboards")
-	initSettingsLinkListItem("#settingsTOCAlerts","alerts")
-	initSettingsLinkListItem("#settingsTOCRoles","roles")
-	initSettingsLinkListItem("#settingsTOCGlobals","globals")
+	initSettingsLinkListItem("general")
+	initSettingsLinkListItem("forms")
+	initSettingsLinkListItem("formLinks")
+	initSettingsLinkListItem("tables")
+	initSettingsLinkListItem("lists")
+	initSettingsLinkListItem("fields")
+	initSettingsLinkListItem("valueLists")
+	initSettingsLinkListItem("dashboards")
+	initSettingsLinkListItem("alerts")
+	initSettingsLinkListItem("roles")
+	initSettingsLinkListItem("globals")
 	
 	if (!isSingleUserWorkspace) {
-		initSettingsLinkListItem("#settingsTOCUsers","collaborators")	
+		initSettingsLinkListItem("collaborators")	
 	}
 
 }
