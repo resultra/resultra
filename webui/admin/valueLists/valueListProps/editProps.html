@@ -40,55 +40,5 @@
 {{end}}
 
 {{define "editValueListPropsPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-
-	{{template "electronImportPrefix"}}
-
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- valueListAssets:css -->
-	<!-- endinject -->
-	
-	<script>var valueListPropsContext = { 
-		valueListID:"{{.ValueListID}}",
-		valueListName:"{{.ValueListName}}",
-		 databaseID:"{{.DatabaseID}}",
-		siteBaseURL:"{{.SiteBaseURL}}",
-		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } 
-	</script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- valueListAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="editValueListPropsPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west" id="valueListPageTocLayout">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center" id="valueListPageLayout">
-			{{template "valueListPropsBody" .}}
-		</div> <!-- center pane for entire page -->	
-		
-	</div> <!-- layout page -->	
-				
-  </body>
-  	
-</html>
-
+	{{template "valueListPropsBody" .}}
 {{end}}

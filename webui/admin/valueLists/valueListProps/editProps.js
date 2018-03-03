@@ -1,4 +1,4 @@
-$(document).ready(function() {
+function initValueListSettingsPageContent(valueListInfo) {
 		
 	function initValueListNameProperties(valueListInfo) {
 	
@@ -46,40 +46,14 @@ $(document).ready(function() {
 	} // initFormLinkNameProperties
 	
 	
+	initValueListNameProperties(valueListInfo)
+	initValueListValueListProperties(valueListInfo)
 	
 	
-	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
 
-	$('#editValueListPropsPage').layout({
-			inset: zeroPaddingInset,
-			north: fixedUILayoutPaneParams(40),
-			west: {
-				size: 250,
-				resizable:false,
-				slidable: false,
-				spacing_open:4,
-				spacing_closed:4,
-				initClosed:false // panel is initially open	
-			}
-		})
-		
-	initAdminSettingsTOC(valueListPropsContext.databaseID,"settingsTOCValueLists",valueListPropsContext.isSingleUserWorkspace)
-		
-	initAdminPageHeader(valueListPropsContext.isSingleUserWorkspace)
-		
-		var formLinkElemPrefix = "valueList_"
-		
-		var getValueListParams = { valueListID: valueListPropsContext.valueListID }
-		jsonAPIRequest("valueList/get",getValueListParams,function(valueListInfo) {
-			
-			initValueListNameProperties(valueListInfo)
-			initValueListValueListProperties(valueListInfo)
-	
-		})
-		
-	appendPageSpecificBreadcrumbHeader("/admin/valuelists/"+valueListPropsContext.databaseID,"Value Lists")
-	appendPageSpecificBreadcrumbHeader("/admin/valuelists/"+valueListPropsContext.valueListID,valueListPropsContext.valueListName)
+//	appendPageSpecificBreadcrumbHeader("/admin/valuelists/"+valueListPropsContext.databaseID,"Value Lists")
+//	appendPageSpecificBreadcrumbHeader("/admin/valuelists/"+valueListPropsContext.valueListID,valueListPropsContext.valueListName)
 	
 	
 	
-})
+}

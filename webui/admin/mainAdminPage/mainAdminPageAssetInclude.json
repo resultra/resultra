@@ -9,6 +9,7 @@
 		"../itemList/itemListList",
 		"../fields/fieldList",
 		"../valueLists/valueListList",
+		"../valueLists/valueListProps",
 		"../dashboards",
 		"../alerts/alertList",
 		"../userRole/userRoleList",

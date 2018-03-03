@@ -48,7 +48,11 @@ function openNewValueListDialog(databaseID) {
 			jsonAPIRequest("valueList/new",newValueListParams,function(newValueListInfo) {
 				console.log("Created new value list: " + JSON.stringify(newValueListInfo))
 				$newValueListDialog.modal('hide')
-				navigateToURL('/admin/valueList/' + newValueListInfo.valueListID)
+				
+				var editPropsContentURL = '/admin/valueList/' + newValueListInfo.valueListID
+				setSettingsPageContent(editPropsContentURL,function() {
+					initValueListSettingsPageContent(newValueListInfo)
+				})
 			})
 			
 

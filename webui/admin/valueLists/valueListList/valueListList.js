@@ -11,9 +11,17 @@ function initAdminValueListListSettings(databaseID) {
 		$listItem.attr("data-listID",valueListInfo.valueListID)
 	
 		var $editPropsButton = $listItem.find(".editValueListPropsButton")
-		var editPropsLink = '/admin/valueList/' + valueListInfo.valueListID
-		$editPropsButton.attr('href',editPropsLink)
 		
+		$editPropsButton.click(function(e) {
+			e.preventDefault()
+			$editPropsButton.blur()
+			
+			var editPropsContentURL = '/admin/valueList/' + valueListInfo.valueListID
+			setSettingsPageContent(editPropsContentURL,function() {
+				initValueListSettingsPageContent(valueListInfo)
+			})
+		})
+				
 		var $nameLabel = $listItem.find(".adminValueListNameLabel")
 		$nameLabel.text(valueListInfo.name)
 		 	

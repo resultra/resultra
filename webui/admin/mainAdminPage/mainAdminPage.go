@@ -28,6 +28,7 @@ import (
 	"resultra/datasheet/webui/admin/tables/tableList"
 	"resultra/datasheet/webui/admin/userRole/userRoleList"
 	"resultra/datasheet/webui/admin/valueLists/valueListList"
+	"resultra/datasheet/webui/admin/valueLists/valueListProps"
 )
 
 var mainAdminPageTemplates *template.Template
@@ -49,6 +50,7 @@ func init() {
 		itemListList.TemplateFileList,
 		fieldList.TemplateFileList,
 		valueListList.TemplateFileList,
+		valueListProps.TemplateFileList,
 		dashboards.TemplateFileList,
 		alertList.TemplateFileList,
 		userRoleList.TemplateFileList,
