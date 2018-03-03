@@ -10,6 +10,13 @@ function openNewFieldDialog(databaseID) {
 			newFieldPanel.createNewField(function(newField) {
 				if (newField !== null) {
 					$newFieldDialog.modal('hide')
+					
+					var editPropsContentURL = '/admin/field/'+newField.fieldID
+					setSettingsPageContent(editPropsContentURL,function() {
+						initFieldPropsSettingsPageContent(newField.fieldID)
+					})
+					
+					
 					navigateToURL('/admin/field/'+newField.fieldID)				
 				}
 			})			

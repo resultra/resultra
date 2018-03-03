@@ -8,6 +8,7 @@
 		"../tables/tableList",
 		"../itemList/itemListList",
 		"../fields/fieldList",
+		"../fields/fieldProps",
 		"../valueLists/valueListList",
 		"../valueLists/valueListProps",
 		"../dashboards",

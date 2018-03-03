@@ -20,6 +20,7 @@ import (
 	"resultra/datasheet/webui/admin/collaborators/collaboratorList"
 	"resultra/datasheet/webui/admin/dashboards"
 	"resultra/datasheet/webui/admin/fields/fieldList"
+	"resultra/datasheet/webui/admin/fields/fieldProps"
 	"resultra/datasheet/webui/admin/formLink/formLinkList"
 	"resultra/datasheet/webui/admin/forms/formList"
 	"resultra/datasheet/webui/admin/general"
@@ -49,6 +50,7 @@ func init() {
 		tableList.TemplateFileList,
 		itemListList.TemplateFileList,
 		fieldList.TemplateFileList,
+		fieldProps.TemplateFileList,
 		valueListList.TemplateFileList,
 		valueListProps.TemplateFileList,
 		dashboards.TemplateFileList,

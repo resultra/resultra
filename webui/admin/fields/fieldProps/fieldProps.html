@@ -58,6 +58,9 @@
 
 
 {{define "fieldPropsBody"}}
+<button type="button" class="btn btn-default btn-sm" id="fieldPropsBackToFieldListLink">
+  <span class="fa fa-arrow-left" aria-hidden="true"></span> Back to fields
+</button>
 
 <h4>Field Settings</h4>
 <table class="table">
@@ -70,58 +73,5 @@
 {{end}}
 
 {{define "editFieldPropsPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-
-	{{template "electronImportPrefix"}}
-
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- fieldPropsAssets:css -->
-	<!-- endinject -->
-	
-	<script>var fieldPropsContext = { 
-		fieldID:"{{.FieldID}}",
-		fieldName: "{{.FieldName}}",
-		databaseID:"{{.DatabaseID}}",
-		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } 
-	</script>
-	
-	{{template "thirdPartyJS"}}
-	{{template "aceThirdPartyJS"}}
-	
-	<!-- fieldPropsAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="editFieldPropsPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west" id="fieldPageTocLayout">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center" id="fieldPageLayout">
-			{{template "fieldPropsBody" .}}
-		</div> <!-- center pane for entire page -->	
-		
-	</div> <!-- layout page -->	
-		
-		
-	{{template "submitFormDialog"}}
-		
-  </body>
-  	
-</html>
-
+	{{template "fieldPropsBody" .}}
 {{end}}

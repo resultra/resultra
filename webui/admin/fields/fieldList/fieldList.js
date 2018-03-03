@@ -9,8 +9,16 @@ function initAdminFieldSettings(databaseID) {
 		$fieldListRow.attr("data-fieldID",fieldInfo.fieldID)
 		
 		var $editFieldPropsButton = $fieldListRow.find(".editFieldPropsButton")
-		var editPropsLink = '/admin/field/' + fieldInfo.fieldID
-		$editFieldPropsButton.attr("href",editPropsLink)
+		$editFieldPropsButton.click(function(e) {
+			e.preventDefault()
+			$editFieldPropsButton.blur()
+			
+			var editPropsContentURL = '/admin/field/' + fieldInfo.fieldID
+			setSettingsPageContent(editPropsContentURL,function() {
+				initFieldPropsSettingsPageContent(fieldInfo.fieldID)
+			})
+		})
+		
 
 		var $fieldNameCol = $fieldListRow.find(".fieldNameCol")
 		$fieldNameCol.text(fieldInfo.name)

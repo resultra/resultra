@@ -63,6 +63,11 @@ $(document).ready(function() {
 		});
 		
 	}
+	registerPageContentLoader("fields", '/admin/fields/' + mainAdminPageContext.databaseID,function() {
+		initFieldsSettingsPageContent(mainAdminPageContext)
+	})
+
+
 
 	function setValueListsSettingsPage() {
 		const contentURL = '/admin/valuelists/' + mainAdminPageContext.databaseID

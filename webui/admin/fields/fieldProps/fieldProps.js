@@ -1,4 +1,4 @@
-$(document).ready(function() {
+function initFieldPropsSettingsPageContent(fieldID) {
 	
 	
 	function initFieldNameProperties(fieldInfo) {
@@ -79,7 +79,7 @@ $(document).ready(function() {
 		initInlineInputValidationOnBlur(validator,'#fieldPropsRefNameInput',
 			remoteValidationParams, function(validatedName) {		
 				var setNameParams = {
-					fieldID:fieldInfo.fieldID,
+					fieldID:fieldID,
 					newFieldRefName:validatedName
 				}
 				jsonAPIRequest("field/setRefName",setNameParams,function(updatedFieldInfo) {
@@ -92,25 +92,8 @@ $(document).ready(function() {
 	}
 	
 	
-	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
-	$('#editFieldPropsPage').layout({
-			inset: zeroPaddingInset,
-			north: fixedUILayoutPaneParams(40),
-			west: {
-				size: 250,
-				resizable:false,
-				slidable: false,
-				spacing_open:4,
-				spacing_closed:4,
-				initClosed:false // panel is initially open	
-			}
-		})
 		
-	initAdminSettingsTOC(fieldPropsContext.databaseID,"settingsTOCFields",fieldPropsContext.isSingleUserWorkspace)
-		
-	initAdminPageHeader(fieldPropsContext.isSingleUserWorkspace)
-		
-	var getFieldParams = { fieldID: fieldPropsContext.fieldID }
+	var getFieldParams = { fieldID: fieldID }
 	jsonAPIRequest("field/get",getFieldParams,function(fieldInfo) {
 		initFieldNameProperties(fieldInfo)
 		initFieldRefNameProperties(fieldInfo)
@@ -135,8 +118,14 @@ $(document).ready(function() {
 			
 	}) // set record's number field value
 	
-	appendPageSpecificBreadcrumbHeader("/admin/fields/"+fieldPropsContext.databaseID,"Fields")
-	appendPageSpecificBreadcrumbHeader("/admin/fields/"+fieldPropsContext.fieldID,fieldPropsContext.fieldName)
+	var $valueListLink = $('#fieldPropsBackToFieldListLink')
+	$valueListLink.click(function(e) {
+		e.preventDefault()
+		$valueListLink.blur()
+		navigateToSettingsPageContent("fields")	
+	})	
+		
+		
+		
 	
-	
-})
+}
