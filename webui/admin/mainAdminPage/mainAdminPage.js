@@ -44,6 +44,11 @@ $(document).ready(function() {
 		});
 		
 	}
+	registerPageContentLoader("tables",'/admin/tables/' + mainAdminPageContext.databaseID,function() {
+		initTableListAdminPageContent(mainAdminPageContext)
+	})
+
+
 	
 	function setItemListSettingsPage() {
 		const contentURL = '/admin/lists/' + mainAdminPageContext.databaseID

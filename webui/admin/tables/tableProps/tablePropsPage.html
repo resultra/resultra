@@ -20,6 +20,11 @@
 
 {{define "tablePropsBody"}}
 
+<button type="button" class="btn btn-default btn-sm" id="tablePropsBackToTableListLink">
+  <span class="fa fa-arrow-left" aria-hidden="true"></span> Back to tables
+</button>
+
+
 <h4>Table View Settings</h4>
 <table class="table">
 	{{template "adminTableNameProperty"}}	
@@ -30,57 +35,9 @@
 
 
 {{define "tablePropsAdminPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-
-	{{template "electronImportPrefix"}}
-
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- tablePropsAssets:css -->
-	<!-- endinject -->
-	
-	<script>var tablePropsAdminContext = { databaseID:"{{.DatabaseID}}",
-			tableID: "{{.TableID}}",
-		tableName: "{{.TableName}}",
-		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} }
-			 </script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- tablePropsAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="tablePropsAdminPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center">
 			{{template "tablePropsBody" .}}
-		</div> <!-- center pane for entire page -->	
-	</div> <!-- layout page -->	
 	
-	{{template "adminTableColsTemplates"}}
-	{{template "newTableColDialog" .}}
-	{{template "adminNewFormButtonColDialog"}}
 	{{template "confirmDeleteDialog"}}
 		
-  </body>
-  	
-</html>
 
 {{end}}

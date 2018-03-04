@@ -30,3 +30,12 @@ function initSettingsPageButtonLink(buttonSelector,pageContentID) {
 		navigateToSettingsPageContent(pageContentID)	
 	})	
 }
+
+
+function setPageContentButtonClickHandler($button,contentURL,initContentFunc) {
+	$button.click(function(e) {
+		e.preventDefault()
+		$button.blur()
+		setSettingsPageContent(contentURL,initContentFunc)			
+	})
+}

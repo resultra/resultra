@@ -11,9 +11,13 @@ function initAdminTableListSettings(databaseID) {
 		var $tableName = $tableListItem.find("label")
 		$tableName.text(tableRef.name)
 		
+		
 		var $editTableButton = $tableListItem.find(".editTablePropsButton")
-		var editTableLink = '/admin/table/' + tableRef.tableID
-		$editTableButton.attr("href",editTableLink)
+		setPageContentButtonClickHandler($editTableButton,
+			'/admin/table/' + tableRef.tableID, function() {
+				initTablePropsAdminSettingsPageContent(tableRef)
+		})
+		
 		
 		$tableList.append($tableListItem)
 	}

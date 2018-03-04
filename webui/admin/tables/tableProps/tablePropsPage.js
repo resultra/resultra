@@ -1,12 +1,5 @@
-$(document).ready(function() {
-	
-	initAdminSettingsPageLayout($('#tablePropsAdminPage'))	
-	initAdminPageHeader(tablePropsAdminContext.isSingleUserWorkspace)
-	initAdminSettingsTOC(tablePropsAdminContext.databaseID,"settingsTOCTables",tablePropsAdminContext.isSingleUserWorkspace)
-	
-	appendPageSpecificBreadcrumbHeader("/admin/tables/"+tablePropsAdminContext.databaseID,"Table Views")
-	appendPageSpecificBreadcrumbHeader("/admin/table/"+tablePropsAdminContext.tableID,tablePropsAdminContext.tableName)
-	
+function initTablePropsAdminSettingsPageContent(tableInfo) {
+		
 	
 	function initNameProperties(tableRef) {
 
@@ -54,8 +47,8 @@ $(document).ready(function() {
 
 	} // initItemListNameProperties
 	
-	initFieldInfo(tablePropsAdminContext.databaseID, function() {
-		var getTableParams = { tableID: tablePropsAdminContext.tableID }
+	initFieldInfo(tableInfo.parentDatabaseID, function() {
+		var getTableParams = { tableID: tableInfo.tableID }
 		jsonAPIRequest("tableView/get",getTableParams,function(tableRef) {
 			initNameProperties(tableRef)
 			initTableViewColsProperties(tableRef)
@@ -63,4 +56,7 @@ $(document).ready(function() {
 		
 	})
 	
-})
+	
+	initSettingsPageButtonLink('#tablePropsBackToTableListLink',"tables")
+	
+}

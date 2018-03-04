@@ -40,8 +40,15 @@ function openNewTableDialog(databaseID) {
 			jsonAPIRequest("tableView/new",newTableParams,function(newTableInfo) {
 				console.log("Created new table: " + JSON.stringify(newTableInfo))
 				$newTableDialog.modal('hide')
-				// TODO - Include database ID in link
-				navigateToURL('/admin/table/' + newTableInfo.tableID)
+
+				var editPropsContentURL = '/admin/table/' + newTableInfo.tableID
+				setSettingsPageContent(editPropsContentURL,function() {
+					initTablePropsAdminSettingsPageContent(newTableInfo)
+				})
+				
+				
+				
+				navigateToURL()
 			})
 			
 
