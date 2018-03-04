@@ -1,4 +1,4 @@
-function initAdminFormLinkSettings(databaseID) {
+function initAdminFormLinkSettings(pageContext) {
 		
 	var $formLinkList = $('#adminFormLinkList')
 		
@@ -10,8 +10,14 @@ function initAdminFormLinkSettings(databaseID) {
 		$presetListItem.attr("data-linkID",presetInfo.linkID)
 	
 		var $editPropsButton = $presetListItem.find(".editFormLinkPropsButton")
-		var editPropsLink = '/admin/formLink/' + presetInfo.linkID
-		$editPropsButton.attr('href',editPropsLink)
+		$editPropsButton.click(function(e) {
+			e.preventDefault()
+			$editPropsButton.blur()			
+			var editPropsContentURL = '/admin/formLink/' + presetInfo.linkID
+			setSettingsPageContent(editPropsContentURL,function() {
+				initNewItemLinkPropsSettingsPageContent(pageContext,presetInfo)
+			})
+		})
 		
 		var $nameLabel = $presetListItem.find(".adminFormLinkItemLabel")
 		$nameLabel.text(presetInfo.name)
@@ -30,7 +36,7 @@ function initAdminFormLinkSettings(databaseID) {
 				linkOrder.push(linkID)
 			})
 			var setOrderParams = {
-				databaseID:databaseID,
+				databaseID:pageContext.databaseID,
 				formLinkOrder: linkOrder
 			}
 			console.log("New form link sort order:" + JSON.stringify(linkOrder))
@@ -42,7 +48,7 @@ function initAdminFormLinkSettings(databaseID) {
     });
 
 	// Retrieve presets from the server, populate the list of presets.
-	var presetParams = { parentDatabaseID: databaseID }
+	var presetParams = { parentDatabaseID: pageContext.databaseID }
 	jsonAPIRequest("formLink/getList",presetParams,function(presetList) {
 		for(var presetIndex = 0; presetIndex < presetList.length; presetIndex++) {
 			var currPreset = presetList[presetIndex]
@@ -53,7 +59,7 @@ function initAdminFormLinkSettings(databaseID) {
 	
 	initButtonClickHandler('#adminNewFormLinkButton',function() {
 		console.log("New field button clicked")
-		openNewNewItemPresetDialog(databaseID)
+		openNewNewItemPresetDialog(pageContext)
 	})
 	
 	

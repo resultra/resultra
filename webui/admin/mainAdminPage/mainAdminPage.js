@@ -30,6 +30,9 @@ $(document).ready(function() {
 		});
 		
 	}
+	registerPageContentLoader("formLinks",'/admin/formlink/' + mainAdminPageContext.databaseID,function() {
+		initFormLinkSettingsPage(mainAdminPageContext)
+	})
 
 
 	function setTableListSettingsPage() {

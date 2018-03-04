@@ -1,4 +1,4 @@
-$(document).ready(function() {
+function initNewItemLinkPropsSettingsPageContent(pageContext,linkInfo) {
 	
 	
 	function initRoleNewItemPrivs(linkInfo) {
@@ -139,7 +139,7 @@ $(document).ready(function() {
 	function initFormLinkFormProperties(linkInfo) {
 		var selectFormParams = {
 			menuSelector: "#formLinkPropFormSelection",
-			parentDatabaseID: formLinkPropsContext.databaseID,
+			parentDatabaseID: pageContext.databaseID,
 			initialFormID: linkInfo.formID
 		}	
 		populateFormSelectionMenu(selectFormParams)
@@ -173,29 +173,10 @@ $(document).ready(function() {
 		
 	}
 	
-	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
-
-	$('#editFormLinkPropsPage').layout({
-			inset: zeroPaddingInset,
-			north: fixedUILayoutPaneParams(40),
-			west: {
-				size: 250,
-				resizable:false,
-				slidable: false,
-				spacing_open:4,
-				spacing_closed:4,
-				initClosed:false // panel is initially open	
-			}
-		})
-		
-	initAdminSettingsTOC(formLinkPropsContext.databaseID,"settingsTOCFormLinks",formLinkPropsContext.isSingleUserWorkspace)
-		
-		
-	initAdminPageHeader(formLinkPropsContext.isSingleUserWorkspace)
 		
 	var formLinkElemPrefix = "formLink_"
 	
-	var getFormLinkParams = { formLinkID: formLinkPropsContext.linkID }
+	var getFormLinkParams = { formLinkID: linkInfo.linkID }
 	jsonAPIRequest("formLink/get",getFormLinkParams,function(linkInfo) {
 		
 		initFormLinkNameProperties(linkInfo)
@@ -203,13 +184,13 @@ $(document).ready(function() {
 		initIncludeInSidebarProperty(linkInfo)
 		initRoleNewItemPrivs(linkInfo)
 		
-		if (!formLinkPropsContext.isSingleUserWorkspace) {
+		if (!pageContext.isSingleUserWorkspace) {
 			initSharedLinkProperties(linkInfo)	
 		}
 		
 
 		var defaultValPropParams = {
-			databaseID: formLinkPropsContext.databaseID,
+			databaseID: pageContext.databaseID,
 			elemPrefix: "formLink_",
 			defaultDefaultValues: linkInfo.properties.defaultValues,
 			updateDefaultValues: function(updatedDefaultVals) {
@@ -225,12 +206,8 @@ $(document).ready(function() {
 		}
 		initDefaultValuesPropertyPanel(defaultValPropParams)
 
-
-
 	})
+		
+	initSettingsPageButtonLink('#newItemLinkPropsBackToLinkListLink',"formLinks")
 	
-	appendPageSpecificBreadcrumbHeader("/admin/formlink/"+formLinkPropsContext.databaseID,"New Item Links")
-	appendPageSpecificBreadcrumbHeader("/admin/formLink/"+formLinkPropsContext.linkID,formLinkPropsContext.linkName)
-	
-	
-})
+}

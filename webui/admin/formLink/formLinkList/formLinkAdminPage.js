@@ -1,5 +1,5 @@
 function initFormLinkSettingsPage(pageContext) {
 				
-	initAdminFormLinkSettings(pageContext.databaseID)
+	initAdminFormLinkSettings(pageContext)
 	
 }

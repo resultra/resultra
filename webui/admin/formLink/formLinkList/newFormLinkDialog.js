@@ -1,4 +1,4 @@
-function openNewNewItemPresetDialog(databaseID) {
+function openNewNewItemPresetDialog(pageContext) {
 	
 	var $newPresetDialogForm = $('#adminFormLinkDialogForm')	
 	var $presetNameInput = $('#newFormLinkNameInput')
@@ -37,7 +37,7 @@ function openNewNewItemPresetDialog(databaseID) {
 	
 	var selectFormParams = {
 		menuSelector: formSelectionSelector,
-		parentDatabaseID: databaseID
+		parentDatabaseID: pageContext.databaseID
 	}	
 	populateFormSelectionMenu(selectFormParams)
 	
@@ -49,7 +49,7 @@ function openNewNewItemPresetDialog(databaseID) {
 		if($newPresetDialogForm.valid()) {	
 			
 			var newFormLinkParams = { 
-				parentDatabaseID: databaseID, 
+				parentDatabaseID: pageContext.databaseID, 
 				name: $presetNameInput.val(),
 				formID: $formSelection.val(),
 				includeInSidebar:$includeInSidebarCheckbox.prop("checked") }
@@ -57,7 +57,12 @@ function openNewNewItemPresetDialog(databaseID) {
 			jsonAPIRequest("formLink/new",newFormLinkParams,function(newFormLinkInfo) {
 				console.log("Created new form link: " + JSON.stringify(newFormLinkInfo))
 				$newPresetDialog.modal('hide')
-				navigateToURL('/admin/formLink/' + newFormLinkInfo.linkID)
+				
+				var editPropsContentURL = '/admin/formLink/' + newFormLinkInfo.linkID
+				setSettingsPageContent(editPropsContentURL,function() {
+					initNewItemLinkPropsSettingsPageContent(pageContext,newFormLinkInfo)
+				})
+				
 			})
 			
 

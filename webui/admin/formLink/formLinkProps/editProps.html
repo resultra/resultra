@@ -109,6 +109,11 @@
 
 {{define "formLinkPropsBody"}}
 
+<button type="button" class="btn btn-default btn-sm" id="newItemLinkPropsBackToLinkListLink">
+  <span class="fa fa-arrow-left" aria-hidden="true"></span> Back to all new item links
+</button>
+
+
 <h4>New Item Link</h4>
 <table class="table">
 
@@ -124,55 +129,5 @@
 {{end}}
 
 {{define "editFormLinkPropsPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-
-	{{template "electronImportPrefix"}}
-
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- formLinkAssets:css -->
-	<!-- endinject -->
-	
-	<script>var formLinkPropsContext = { 
-		linkID:"{{.LinkID}}",
-		linkName:"{{.LinkName}}",
-		 databaseID:"{{.DatabaseID}}",
-		siteBaseURL:"{{.SiteBaseURL}}",
-		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } 
-	</script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- formLinkAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="editFormLinkPropsPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west" id="formLinkPageTocLayout">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center" id="formLinkPageLayout">
-			{{template "formLinkPropsBody" .}}
-		</div> <!-- center pane for entire page -->	
-		
-	</div> <!-- layout page -->	
-				
-  </body>
-  	
-</html>
-
+	{{template "formLinkPropsBody" .}}
 {{end}}

@@ -23,6 +23,7 @@ import (
 	"resultra/datasheet/webui/admin/fields/fieldList"
 	"resultra/datasheet/webui/admin/fields/fieldProps"
 	"resultra/datasheet/webui/admin/formLink/formLinkList"
+	"resultra/datasheet/webui/admin/formLink/formLinkProps"
 	"resultra/datasheet/webui/admin/forms/formList"
 	"resultra/datasheet/webui/admin/general"
 	"resultra/datasheet/webui/admin/globals"
@@ -51,6 +52,7 @@ func init() {
 		general.TemplateFileList,
 		formList.TemplateFileList,
 		formLinkList.TemplateFileList,
+		formLinkProps.TemplateFileList,
 		tableList.TemplateFileList,
 		itemListList.TemplateFileList,
 		itemListProps.TemplateFileList,

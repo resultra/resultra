@@ -5,6 +5,7 @@
 		"../general",
 		"../forms/formList",
 		"../formLink/formLinkList",
+		"../formLink/formLinkProps",
 		"../tables/tableList",
 		"../itemList/itemListList",
 		"../itemList/itemListProps",
