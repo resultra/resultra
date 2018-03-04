@@ -7,6 +7,8 @@
 		"../formLink/formLinkList",
 		"../tables/tableList",
 		"../itemList/itemListList",
+		"../itemList/itemListProps",
+		"../itemList/itemListProps/userRole",
 		"../fields/fieldList",
 		"../fields/fieldProps",
 		"../valueLists/valueListList",

@@ -1,4 +1,4 @@
-$(document).ready(function() {
+function initItemListPropsSettingsPageContent(databaseID, listInfo) {
 
 
 	function initItemListNameProperties(listInfo) {
@@ -63,7 +63,7 @@ $(document).ready(function() {
 		}
 		var defaultViewConfig = {
 			setViewCallback: setDefaultView,
-			databaseID: itemListPropsContext.databaseID,
+			databaseID: databaseID,
 			initialView: listInfo.properties.defaultView
 		}
 		initItemListViewSelection(defaultViewConfig)
@@ -71,35 +71,14 @@ $(document).ready(function() {
 	} // initItemListFormProperties
 
 
-	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
-
-
-	$('#editItemListPropsPage').layout({
-			inset: zeroPaddingInset,
-			north: fixedUILayoutPaneParams(40),
-			west: {
-				size: 250,
-				resizable:false,
-				slidable: false,
-				spacing_open:4,
-				spacing_closed:4,
-				initClosed:false // panel is initially open
-			}
-		})
-
-	initAdminSettingsTOC(itemListPropsContext.databaseID,"settingsTOCLists",
-			itemListPropsContext.isSingleUserWorkspace)
-
-	initAdminPageHeader(itemListPropsContext.isSingleUserWorkspace)
-
 		var listElemPrefix = "itemList_"
 
-		var getItemListParams = { listID: itemListPropsContext.listID }
+		var getItemListParams = { listID: listInfo.listID }
 		jsonAPIRequest("itemList/get",getItemListParams,function(listInfo) {
 			
 			var filterPropertyPanelParams = {
 				elemPrefix: listElemPrefix,
-				databaseID: itemListPropsContext.databaseID,
+				databaseID: databaseID,
 				defaultFilterRules: listInfo.properties.defaultFilterRules,
 				initDone: function () {},
 				updateFilterRules: function (updatedFilterRules) {
@@ -118,7 +97,7 @@ $(document).ready(function() {
 			
 			var filterFieldParams = {
 				elemPrefix: listElemPrefix,
-				databaseID: itemListPropsContext.databaseID,
+				databaseID: databaseID,
 				defaultFilterFields: listInfo.properties.defaultFilterFields,
 				setFilterFieldsCallback: function(fields) {
 					var setFieldsParams = {
@@ -137,7 +116,7 @@ $(document).ready(function() {
 			var preFilterElemPrefix = "itemListPreFilter_"
 			var preFilterPropertyPanelParams = {
 				elemPrefix: preFilterElemPrefix,
-				databaseID: itemListPropsContext.databaseID,
+				databaseID: databaseID,
 				defaultFilterRules: listInfo.properties.preFilterRules,
 				initDone: function () {},
 				updateFilterRules: function (updatedFilterRules) {
@@ -169,7 +148,7 @@ $(document).ready(function() {
 
 			var sortPaneParams = {
 				defaultSortRules: listInfo.properties.defaultRecordSortRules,
-				databaseID: itemListPropsContext.databaseID,
+				databaseID: databaseID,
 				resortFunc: function() {}, // no-op
 				initDoneFunc: function() {}, // no-op
 				saveUpdatedSortRulesFunc: saveDefaultListSortRules}
@@ -178,7 +157,7 @@ $(document).ready(function() {
 			var sortFieldParams = {
 				elemPrefix: "itemListSortFields_",
 				label: "Limit sorting to selected fields",
-				databaseID: itemListPropsContext.databaseID,
+				databaseID: databaseID,
 				defaultFields: listInfo.properties.defaultSortFields,
 				setFieldsCallback: function(fields) {
 					var setFieldsParams = {
@@ -202,9 +181,8 @@ $(document).ready(function() {
 
 
 		}) // set record's number field value
-		
-		appendPageSpecificBreadcrumbHeader("/admin/lists/"+itemListPropsContext.databaseID,"Item Lists")
-		appendPageSpecificBreadcrumbHeader("/admin/itemList/"+itemListPropsContext.listID,itemListPropsContext.listName)
-		
+				
 
-})
+		initSettingsPageButtonLink('#listPropsBackToListListLink',"lists")
+		
+}

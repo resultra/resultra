@@ -27,6 +27,9 @@ import (
 	"resultra/datasheet/webui/admin/general"
 	"resultra/datasheet/webui/admin/globals"
 	"resultra/datasheet/webui/admin/itemList/itemListList"
+	"resultra/datasheet/webui/admin/itemList/itemListProps"
+	itemListUserRole "resultra/datasheet/webui/admin/itemList/itemListProps/userRole"
+
 	"resultra/datasheet/webui/admin/tables/tableList"
 	"resultra/datasheet/webui/admin/userRole/userRoleList"
 	"resultra/datasheet/webui/admin/valueLists/valueListList"
@@ -50,6 +53,8 @@ func init() {
 		formLinkList.TemplateFileList,
 		tableList.TemplateFileList,
 		itemListList.TemplateFileList,
+		itemListProps.TemplateFileList,
+		itemListUserRole.TemplateFileList,
 		fieldList.TemplateFileList,
 		fieldProps.TemplateFileList,
 		valueListList.TemplateFileList,

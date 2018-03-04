@@ -52,6 +52,9 @@ $(document).ready(function() {
 		
 	}
 	
+	registerPageContentLoader("lists",'/admin/lists/' + mainAdminPageContext.databaseID,function() {
+		initItemListAdminSettingsPage(mainAdminPageContext)
+	})
 	
 	
 	function setFieldListSettingsPage() {

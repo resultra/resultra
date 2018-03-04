@@ -1,4 +1,4 @@
-function addListToAdminItemListList(listInfo) {
+function addListToAdminItemListList(databaseID,listInfo) {
  
 	var $itemListListItem = $('#adminListListItemTemplate').clone()
 	$itemListListItem.attr("id","")
@@ -6,8 +6,14 @@ function addListToAdminItemListList(listInfo) {
 	$itemListListItem.attr("data-listID",listInfo.listID)
 	
 	var $editListPropsButton = $itemListListItem.find(".editListPropsButton")
-	var editListLink = '/admin/itemList/' + listInfo.listID
-	$editListPropsButton.attr('href',editListLink)
+	$editListPropsButton.click(function(e) {
+		e.preventDefault()
+		$editListPropsButton.blur()
+		var editPropsContentURL = '/admin/itemList/' + listInfo.listID
+		setSettingsPageContent(editPropsContentURL,function() {
+			initItemListPropsSettingsPageContent(databaseID,listInfo)
+		})
+	})
 
 	var $nameLabel = $itemListListItem.find(".listNameLabel")
 	$nameLabel.text(listInfo.name)
@@ -51,7 +57,7 @@ function initAdminListSettings(databaseID) {
 		$adminListList.empty()
 		for (var listInfoIndex = 0; listInfoIndex < listsInfo.length; listInfoIndex++) {
 			var listInfo = listsInfo[listInfoIndex]
-			addListToAdminItemListList(listInfo)
+			addListToAdminItemListList(databaseID,listInfo)
 		}
 		
 	})

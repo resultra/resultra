@@ -95,6 +95,10 @@
 
 {{template "adminItemListFormDisplayPropertyTemplates"}}
 
+<button type="button" class="btn btn-default btn-sm" id="listPropsBackToListListLink">
+  <span class="fa fa-arrow-left" aria-hidden="true"></span> Back to lists
+</button>
+
 <h4>Item List Settings</h4>
 <table class="table">
 	{{template "adminItemListNameProperty"}}	
@@ -110,57 +114,5 @@
 {{end}}
 
 {{define "editItemListPropsPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-
-	{{template "electronImportPrefix"}}
-
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- itemListAssets:css -->
-	<!-- endinject -->
-	
-	<script>var itemListPropsContext = { 
-		listID:"{{.ListID}}",
-		listName:"{{.ListName}}",
-		 databaseID:"{{.DatabaseID}}",
-		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } 
-	</script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- itemListAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="editItemListPropsPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west" id="itemListPageTocLayout">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center" id="itemListPageLayout">
-			{{template "itemListPropsBody" .}}
-		</div> <!-- center pane for entire page -->	
-		
-	</div> <!-- layout page -->	
-		
-		
-	{{template "submitFormDialog"}}
-		
-  </body>
-  	
-</html>
-
+	{{template "itemListPropsBody" .}}
 {{end}}
