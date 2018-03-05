@@ -41,12 +41,7 @@ function openNewTableDialog(databaseID) {
 				console.log("Created new table: " + JSON.stringify(newTableInfo))
 				$newTableDialog.modal('hide')
 
-				var editPropsContentURL = '/admin/table/' + newTableInfo.tableID
-				setSettingsPageContent(editPropsContentURL,function() {
-					initTablePropsAdminSettingsPageContent(newTableInfo)
-				})
-				
-				
+				navigateToTablePropsPage(newTableInfo)
 				
 				navigateToURL()
 			})

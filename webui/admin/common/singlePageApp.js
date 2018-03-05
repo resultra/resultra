@@ -5,6 +5,14 @@ function setSettingsPageContent(contentURL, initContentCallback) {
 	});	
 }
 
+function setSettingsPageOffPageContent(contentURL,initCallback) {
+	jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
+	        $('#offPageContentSection').html(pageContentData);
+			initCallback()
+	});	
+	
+}
+
 var registeredSettingsPageContentLoaders = {}
 
 function registerPageContentLoader(linkID, contentURL, initCallbackFunc) {

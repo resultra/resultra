@@ -56,6 +56,7 @@ type TemplParams struct {
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
 	mainRouter.HandleFunc("/admin/table/{tableID}", editPropsPage)
+	mainRouter.HandleFunc("/admin/table/tableProps/offPageContent", tablePropsOffPageContent)
 }
 
 func editPropsPage(w http.ResponseWriter, r *http.Request) {
@@ -107,6 +108,29 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		CurrUserIsAdmin:       isAdmin}
 
 	if err := tablePropTemplates.ExecuteTemplate(w, "tablePropsAdminPage", templParams); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+}
+
+type DialogTemplParams struct {
+	ElemPrefix string
+}
+
+func tablePropsOffPageContent(w http.ResponseWriter, r *http.Request) {
+
+	_, authErr := userAuth.GetCurrentUserInfo(r)
+	if authErr != nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	elemPrefix := "tableProps_"
+
+	templParams := DialogTemplParams{
+		ElemPrefix: elemPrefix}
+
+	if err := tablePropTemplates.ExecuteTemplate(w, "tablePropsOffPageContent", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 

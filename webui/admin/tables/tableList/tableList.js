@@ -1,5 +1,15 @@
 
 
+function navigateToTablePropsPage(tableRef) {
+	var contentURL = '/admin/table/' + tableRef.tableID
+	setSettingsPageContent(contentURL,function() {
+		initTablePropsAdminSettingsPageContent(tableRef)	
+	})
+	var offPageURL = "/admin/table/tableProps/offPageContent"
+	setSettingsPageOffPageContent(offPageURL,function() {})
+	
+}
+
 function initAdminTableListSettings(databaseID) {
 	
 	var $tableList = $('#adminTableList')
@@ -13,12 +23,11 @@ function initAdminTableListSettings(databaseID) {
 		
 		
 		var $editTableButton = $tableListItem.find(".editTablePropsButton")
-		setPageContentButtonClickHandler($editTableButton,
-			'/admin/table/' + tableRef.tableID, function() {
-				initTablePropsAdminSettingsPageContent(tableRef)
-		})
-		
-		
+		$editTableButton.click(function(e) {
+			e.preventDefault()
+			$editTableButton.blur()
+			navigateToTablePropsPage(tableRef)
+		})		
 		$tableList.append($tableListItem)
 	}
 	
