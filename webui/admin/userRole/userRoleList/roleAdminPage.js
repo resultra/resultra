@@ -1,3 +1,6 @@
-function initUserRoleAdminSettingsPageContent(pageContext) {				
-	initUserRoleSettings(pageContext.databaseID)
+function initUserRoleAdminSettingsPageContent(pageContext) {
+					
+	initUserRoleSettings(pageContext)
+	
+
 }

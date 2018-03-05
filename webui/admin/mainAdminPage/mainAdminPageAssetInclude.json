@@ -21,6 +21,7 @@
 		"../alerts/alertList",
 		"../alerts/alertProps",
 		"../userRole/userRoleList",
+		"../userRole/userRoleProps",
 		"../collaborators/collaboratorList",
 		"../globals"],
 	"cssFiles": [],

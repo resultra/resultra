@@ -1,5 +1,5 @@
 
-function openNewUserRoleDialog(databaseID) {
+function openNewUserRoleDialog(pageContext) {
 
 	var $roleNameInput = $('#newRoleNameInput')
 	var $newRoleDialog = $('#newUserRoleDialog')
@@ -27,7 +27,7 @@ function openNewUserRoleDialog(databaseID) {
 		console.log("Save button clicked")
 		if($newRoleRoleNamePanelForm.valid()) {
 			var newRoleParams = {
-				databaseID: databaseID,
+				databaseID: pageContext.databaseID,
 				roleName: $roleNameInput.val()
 			}
 			console.log("Saving new user role: params=" + JSON.stringify(newRoleParams))
@@ -35,7 +35,11 @@ function openNewUserRoleDialog(databaseID) {
 			jsonAPIRequest("userRole/newRole",newRoleParams,function(newRoleInfo) {
 		
 				$newRoleDialog.modal('hide')	
-				navigateToURL('/admin/userRole/' + newRoleInfo.roleID)
+				
+				var userRoleContentURL = '/admin/userRole/' + newRoleInfo.roleID
+				setSettingsPageContent(userRoleContentURL, function() {
+					initUserRolePropsAdminSettingsPageContent(pageContext,newRoleInfo)
+				})
 		
 			})
 		}

@@ -1,43 +1,5 @@
 // Javascript for user roles
 
-function userRoleItemButtonsHTML(roleID) {
-	
-	var editRoleLink = '/admin/userRole/' + roleID
-	
-	
-return '' +
-			'<div class="pull-right userListItemButtons">' + 
-	
-			'<a class="btn btn-xs btn-default editUserRoleButton" role="button" href="'+ editRoleLink + '">' + 
-					'<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>' +
-				'</a>' + 
-  			'<button class="btn btn-xs btn-danger deleteUserRoleButton">' + 
-				// padding-bottom: 2px makes the button image vertically line up better.
-				'<span class="glyphicon glyphicon-remove" style="padding-bottom:2px;"></span>' +
-			'</button>';
-
-			'</div>'
-
-	
-}
-
-function userRoleTableRowHTML(roleID) {
-	
-	var roles = "TBD"
-	var privs = "TBD"
-	
-	var buttonsHTML = userRoleItemButtonsHTML(roleID)
-	
-	return '' +
-		'<tr class="userListRow">' +
-	         '<td>' + roleID +  '</td>' +
-	         '<td>' + roles +  '</td>' +
-	         '<td>' + privs +  '</td>' +
-	         '<td>' + privs +  '</td>' +
-	         '<td class="userListButtonCell">' + buttonsHTML + '</td>' +
-	     '</tr>'
-	
-}
 
 function addAdminRoleTableRow(adminUsers) {
 	
@@ -63,7 +25,7 @@ function addAdminRoleTableRow(adminUsers) {
 	$('#userRoleTableBody').append(rowHTML)
 }
 
-function addCustomRoleTableRow(customRoleInfo) {
+function addCustomRoleTableRow(pageContext,customRoleInfo) {
 	
 	
 	var roleUsersDisplay = []
@@ -73,26 +35,32 @@ function addCustomRoleTableRow(customRoleInfo) {
 		roleUsersDisplay.push(userDisplay)
 	}
 	
-
-	var buttonsHTML = userRoleItemButtonsHTML(customRoleInfo.roleID)
-
-	var privs = "Full Access"
 	
-	var rowHTML = '' +
-		'<tr class="userListRow">' +
-	         '<td>' + customRoleInfo.roleName +  '</td>' +
-	         '<td>' + roleUsersDisplay.join(", ") +  '</td>' +
-	         '<td class="roleListButtonCell">' + buttonsHTML + '</td>' +
-	     '</tr>'
+	var $roleRow = $("#userListRowTemplate").clone()
+	$roleRow.attr("id","")
 	
-	$('#userRoleTableBody').append(rowHTML)
+	var $nameCell = $roleRow.find(".userRoleName")
+	$nameCell.text(customRoleInfo.roleName)
+	
+	var $collabsCell = $roleRow.find(".userRoleCollaborators")
+	$collabsCell.text(roleUsersDisplay.join(", "))
+	
+	var editRoleContentURL = '/admin/userRole/' + customRoleInfo.roleID
+	
+	var $editRoleButton = $roleRow.find(".editUserRoleButton")
+	setPageContentButtonClickHandler($editRoleButton,editRoleContentURL,function() {
+		initUserRolePropsAdminSettingsPageContent(pageContext,customRoleInfo)
+	})
+	
+		
+	$('#userRoleTableBody').append($roleRow)
 }
 
 
 
-function initUserRoleSettings(databaseID) {
+function initUserRoleSettings(pageContext) {
 	
-	var getRoleInfoParams = { databaseID: databaseID }
+	var getRoleInfoParams = { databaseID: pageContext.databaseID }
 	jsonAPIRequest("admin/getRoleInfo",getRoleInfoParams,function(roleInfo) {
 		
 		console.log("Got role info: " + JSON.stringify(roleInfo))
@@ -102,14 +70,14 @@ function initUserRoleSettings(databaseID) {
 		
 		for(var customRoleIndex = 0; customRoleIndex < roleInfo.customRoles.length; customRoleIndex++) {
 			var customRoleInfo = roleInfo.customRoles[customRoleIndex]
-			addCustomRoleTableRow(customRoleInfo)
+			addCustomRoleTableRow(pageContext,customRoleInfo)
 		}
 		
 	})
 	
 	initButtonClickHandler('#userRoleNewRoleButton',function() {
 		console.log("New Role button clicked")
-		openNewUserRoleDialog(databaseID)
+		openNewUserRoleDialog(pageContext)
 	})
 	
 }

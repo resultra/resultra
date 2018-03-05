@@ -95,6 +95,10 @@
 
 {{define "rolePropsBody"}}
 
+<button type="button" class="btn btn-default btn-sm" id="rolePropsBackToRoleListLink">
+  <span class="fa fa-arrow-left" aria-hidden="true"></span> Back to role list
+</button>
+
 <h4>Role</h4>
 <table class="table">
 	{{template "adminRoleNameProperty"}}
@@ -110,57 +114,5 @@
 {{end}}
 
 {{define "editUserRolePropsPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-
-	{{template "electronImportPrefix"}}
-
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- rolePropsAssets:css -->
-	<!-- endinject -->
-	
-	<script>var rolePropsContext = { 
-		roleID:"{{.RoleID}}",
-		roleName:"{{.RoleName}}",
-		 databaseID:"{{.DatabaseID}}",
-		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } 
-	</script>
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- rolePropsAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="editRolePropsPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west" id="rolePageTocLayout">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center" id="rolePageLayout">
-			{{template "rolePropsBody" .}}
-		</div> <!-- center pane for entire page -->	
-		
-	</div> <!-- layout page -->	
-		
-		
-	{{template "submitFormDialog"}}
-		
-  </body>
-  	
-</html>
-
+	{{template "rolePropsBody" .}}
 {{end}}

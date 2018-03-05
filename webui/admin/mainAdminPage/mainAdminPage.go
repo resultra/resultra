@@ -37,6 +37,7 @@ import (
 	"resultra/datasheet/webui/admin/tables/tableList"
 	"resultra/datasheet/webui/admin/tables/tableProps"
 	"resultra/datasheet/webui/admin/userRole/userRoleList"
+	"resultra/datasheet/webui/admin/userRole/userRoleProps"
 	"resultra/datasheet/webui/admin/valueLists/valueListList"
 	"resultra/datasheet/webui/admin/valueLists/valueListProps"
 )
@@ -72,6 +73,7 @@ func init() {
 		alertList.TemplateFileList,
 		alertProps.TemplateFileList,
 		userRoleList.TemplateFileList,
+		userRoleProps.TemplateFileList,
 		collaboratorList.TemplateFileList,
 		globals.TemplateFileList}
 

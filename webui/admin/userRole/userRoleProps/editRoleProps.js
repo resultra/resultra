@@ -1,4 +1,4 @@
-$(document).ready(function() {
+function initUserRolePropsAdminSettingsPageContent(pageContext,roleInfo) {
 	
 	
 	function initUserRoleNameProperties(roleInfo) {
@@ -43,44 +43,20 @@ $(document).ready(function() {
 
 		validator.resetForm()
 	
-	} // initItemListNameProperties
-	
-	
-	
-	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
-
-
-	$('#editRolePropsPage').layout({
-			inset: zeroPaddingInset,
-			north: fixedUILayoutPaneParams(40),
-			west: {
-				size: 250,
-				resizable:false,
-				slidable: false,
-				spacing_open:4,
-				spacing_closed:4,
-				initClosed:false // panel is initially open	
-			}
-		})
+	} // initItemListNameProperties				
 		
-	initAdminSettingsTOC(rolePropsContext.databaseID,"settingsTOCRoles",
-			rolePropsContext.isSingleUserWorkspace)
-		
-	initAdminPageHeader(rolePropsContext.isSingleUserWorkspace)
-		
-	appendPageSpecificBreadcrumbHeader("/admin/roles/"+rolePropsContext.databaseID,"Roles")
-	appendPageSpecificBreadcrumbHeader("/admin/userRole/"+rolePropsContext.roleID,rolePropsContext.roleName)
-		
-		
-	var getRoleParams = { roleID: rolePropsContext.roleID }
+	var getRoleParams = { roleID: roleInfo.roleID }
 	jsonAPIRequest("userRole/get",getRoleParams,function(roleInfo) {
 		initUserRoleNameProperties(roleInfo)		
 	}) // set record's number field value
 	
-	initRoleListPrivProperties(rolePropsContext.roleID)
-	initRoleDashboardPrivProperties(rolePropsContext.roleID)
-	initRoleNewItemPrivs(rolePropsContext.roleID)
-	initRoleAlertPrivs(rolePropsContext.roleID)
-	initRoleCollaborators(rolePropsContext.databaseID,rolePropsContext.roleID)
+	initRoleListPrivProperties(roleInfo.roleID)
+	initRoleDashboardPrivProperties(roleInfo.roleID)
+	initRoleNewItemPrivs(roleInfo.roleID)
+	initRoleAlertPrivs(roleInfo.roleID)
+	initRoleCollaborators(pageContext.databaseID,roleInfo.roleID)
 	
-})
+	initSettingsPageButtonLink('#rolePropsBackToRoleListLink',"roles")
+	
+	
+}

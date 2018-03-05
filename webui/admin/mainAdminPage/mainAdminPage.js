@@ -59,7 +59,6 @@ $(document).ready(function() {
 		});
 		
 	}
-	
 	registerPageContentLoader("lists",'/admin/lists/' + mainAdminPageContext.databaseID,function() {
 		initItemListAdminSettingsPage(mainAdminPageContext)
 	})
@@ -89,7 +88,6 @@ $(document).ready(function() {
 		});
 		
 	}
-	
 	registerPageContentLoader("valueLists",'/admin/valuelists/' + mainAdminPageContext.databaseID,function() {
 		initValueListAdminSettingsPageContent(mainAdminPageContext)
 	})
@@ -114,7 +112,6 @@ $(document).ready(function() {
 		});
 		
 	}
-
 	registerPageContentLoader("alerts",'/admin/alerts/' + mainAdminPageContext.databaseID,function() {
 		initAlertListAdminSettingsPageContent(mainAdminPageContext)
 	})
@@ -129,6 +126,10 @@ $(document).ready(function() {
 		});
 		
 	}
+	registerPageContentLoader("roles",'/admin/roles/' + mainAdminPageContext.databaseID,function() {
+		initUserRoleAdminSettingsPageContent(mainAdminPageContext)
+	})
+	
 	
 	function setCollaboratorsSettingsPage() {
 		const contentURL = '/admin/collaborators/' + mainAdminPageContext.databaseID
