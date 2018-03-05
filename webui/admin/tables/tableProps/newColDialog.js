@@ -1,4 +1,4 @@
-function openNewTableColDialog(tableRef) {
+function openNewTableColDialog(pageContext,tableRef) {
 		
 	var panelConfig = {
 		databaseID: tableRef.parentDatabaseID,
@@ -8,7 +8,7 @@ function openNewTableColDialog(tableRef) {
 	
 	var newOrExistingPanel = createNewTableColNewOrExistingDialogPanelConfig(panelConfig)
 	var newFieldPanel = createNewTableColNewFieldDialogPanelConfig(panelConfig)
-	var colTypePanel = createNewTableColColTypeDialogPanelConfig(panelConfig)
+	var colTypePanel = createNewTableColColTypeDialogPanelConfig(pageContext,panelConfig)
 		
 	openWizardDialog({
 		closeFunc: function() {},

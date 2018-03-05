@@ -8,80 +8,71 @@ function setColPropsHeader(colInfo) {
 }
 
 
-$(document).ready(function() {
+function initTableColPropsPageConent(pageContext,columnInfo) {
 	
 	
-	initFieldInfo(colPropsAdminContext.databaseID, function() {
-		
-		initAdminSettingsPageLayout($('#colPropsAdminPage'))	
-		initAdminPageHeader(colPropsAdminContext.isSingleUserWorkspace)
-		initAdminSettingsTOC(colPropsAdminContext.databaseID,"settingsTOCTables",colPropsAdminContext.isSingleUserWorkspace)
-		
-		appendPageSpecificBreadcrumbHeader("/admin/tables/"+colPropsAdminContext.databaseID,"Table Views")
-		appendPageSpecificBreadcrumbHeader("/admin/table/"+colPropsAdminContext.tableID,colPropsAdminContext.tableName)
-		appendPageSpecificBreadcrumbHeader("/admin/tablecol/"+colPropsAdminContext.columnID,"Column Settings")
-		
-		
-		switch (colPropsAdminContext.colType) {
+	initFieldInfo(pageContext.databaseID, function() {
+				
+		switch (columnInfo.colType) {
 		case 'numberInput':
-			initNumberInputColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initNumberInputColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'rating':
-			initRatingColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initRatingColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'textInput':
-			initTextInputColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initTextInputColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'datePicker':
-			initDatePickerColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initDatePickerColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'userSelection':
-			initUserSelectionColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initUserSelectionColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'checkbox':
-			initCheckBoxColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initCheckBoxColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'toggle':
-			initToggleColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initToggleColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'button':
-			initFormButtonColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initFormButtonColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'attachment':
-			initAttachmentColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initAttachmentColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'note':
-			initNoteColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initNoteColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'comment':
-			initCommentColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initCommentColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'progress':
-			initProgressColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initProgressColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'socialButton':
-			initSocialButtonColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initSocialButtonColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'tags':
-			initTagColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initTagColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'emailAddr':
-			initEmailAddrColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initEmailAddrColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'urlLink':
-			initUrlLinkColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initUrlLinkColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'file':
-			initFileColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initFileColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'image':
-			initImageColProperties(colPropsAdminContext.tableID, colPropsAdminContext.columnID)
+			initImageColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		default:
-			console.log("Unknown column type: " + colPropsAdminContext.colType)
+			console.log("Unknown column type: " + columnInfo.colType)
 		}
 		
 	})
 	
 	
-})
+}

@@ -1,4 +1,4 @@
-function openNewTableDialog(databaseID) {
+function openNewTableDialog(pageContext) {
 	
 	var $newTableDialogForm = $('#newTableDialogForm')
 	var $newTableDialog = $('#newTableDialog')	
@@ -12,7 +12,7 @@ function openNewTableDialog(databaseID) {
 				remote: {
 					url: '/api/tableView/validateNewTableName',
 					data: {
-						databaseID: databaseID,
+						databaseID: pageContext.databaseID,
 						tableName: function() { return $tableNameInput.val(); }
 					}
 				} // remote
@@ -41,7 +41,7 @@ function openNewTableDialog(databaseID) {
 				console.log("Created new table: " + JSON.stringify(newTableInfo))
 				$newTableDialog.modal('hide')
 
-				navigateToTablePropsPage(newTableInfo)
+				navigateToTablePropsPage(pageContext,newTableInfo)
 				
 				navigateToURL()
 			})

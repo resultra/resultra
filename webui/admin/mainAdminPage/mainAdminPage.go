@@ -16,6 +16,8 @@ import (
 	"resultra/datasheet/webui/generic"
 	"resultra/datasheet/webui/thirdParty"
 
+	"resultra/datasheet/webui/admin/common/inputProperties"
+
 	"resultra/datasheet/webui/admin/alerts/alertList"
 	"resultra/datasheet/webui/admin/alerts/alertProps"
 	"resultra/datasheet/webui/admin/collaborators/collaboratorList"
@@ -31,6 +33,7 @@ import (
 	"resultra/datasheet/webui/admin/itemList/itemListProps"
 	itemListUserRole "resultra/datasheet/webui/admin/itemList/itemListProps/userRole"
 
+	"resultra/datasheet/webui/admin/tables/colProps"
 	"resultra/datasheet/webui/admin/tables/tableList"
 	"resultra/datasheet/webui/admin/tables/tableProps"
 	"resultra/datasheet/webui/admin/userRole/userRoleList"
@@ -49,12 +52,14 @@ func init() {
 		generic.TemplateFileList,
 		thirdParty.TemplateFileList,
 		adminCommon.TemplateFileList,
+		inputProperties.TemplateFileList,
 		common.TemplateFileList,
 		general.TemplateFileList,
 		formList.TemplateFileList,
 		formLinkList.TemplateFileList,
 		formLinkProps.TemplateFileList,
 		tableList.TemplateFileList,
+		colProps.TemplateFileList,
 		tableProps.TemplateFileList,
 		itemListList.TemplateFileList,
 		itemListProps.TemplateFileList,

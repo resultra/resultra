@@ -1,5 +1,5 @@
 function initTableListAdminPageContent(pageContext) {
 				
-	initAdminTableListSettings(pageContext.databaseID)
+	initAdminTableListSettings(pageContext)
 	
 }

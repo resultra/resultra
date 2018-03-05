@@ -1,6 +1,6 @@
 var newTableColColTypeDialogPanelID = "colType"
 
-function createNewTableColColTypeDialogPanelConfig(panelParams) {
+function createNewTableColColTypeDialogPanelConfig(pageContext,panelParams) {
 	
 	var $panelForm = $('#newColColTypePanelForm')
 	var $colTypeSelection = $panelForm.find('select[name=colTypeSelection]')
@@ -34,7 +34,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/numberInput/new",params,function(numberInput) {
 						console.log("Number input column created: " + JSON.stringify(numberInput))
-						columnCreatedCallback(numberInput.columnID)
+						columnCreatedCallback(numberInput)
 					})
 					
 				}
@@ -46,7 +46,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/rating/new",params,function(rating) {
 						console.log("Number rating column created: " + JSON.stringify(rating))
-						columnCreatedCallback(rating.columnID)
+						columnCreatedCallback(rating)
 					})
 					
 				}
@@ -58,7 +58,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/progress/new",params,function(progress) {
 						console.log("Progress indicator column created: " + JSON.stringify(progress))
-						columnCreatedCallback(progress.columnID)
+						columnCreatedCallback(progress)
 					})
 					
 				}
@@ -70,7 +70,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/textInput/new",params,function(textInput) {
 						console.log("Text input column created: " + JSON.stringify(textInput))
-						columnCreatedCallback(textInput.columnID)
+						columnCreatedCallback(textInput)
 					})
 					
 				}
@@ -82,7 +82,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/emailAddr/new",params,function(emailAddr) {
 						console.log("Email address column created: " + JSON.stringify(emailAddr))
-						columnCreatedCallback(emailAddr.columnID)
+						columnCreatedCallback(emailAddr)
 					})
 					
 				}
@@ -94,7 +94,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/file/new",params,function(fileColInfo) {
 						console.log("File column created: " + JSON.stringify(fileColInfo))
-						columnCreatedCallback(fileColInfo.columnID)
+						columnCreatedCallback(fileColInfo)
 					})
 					
 				}
@@ -106,7 +106,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/urlLink/new",params,function(urlLink) {
 						console.log("Email URL link created: " + JSON.stringify(urlLink))
-						columnCreatedCallback(urlLink.columnID)
+						columnCreatedCallback(urlLink)
 					})	
 				}
 
@@ -117,7 +117,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/comment/new",params,function(commentInput) {
 						console.log("Comment input column created: " + JSON.stringify(commentInput))
-						columnCreatedCallback(commentInput.columnID)
+						columnCreatedCallback(commentInput)
 					})
 					
 				}
@@ -129,7 +129,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/note/new",params,function(noteEditor) {
 						console.log("Note editor input column created: " + JSON.stringify(noteEditor))
-						columnCreatedCallback(noteEditor.columnID)
+						columnCreatedCallback(noteEditor)
 					})
 					
 				}
@@ -141,7 +141,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/attachment/new",params,function(attachmentRef) {
 						console.log("Attachment column created: " + JSON.stringify(attachmentRef))
-						columnCreatedCallback(attachmentRef.columnID)
+						columnCreatedCallback(attachmentRef)
 					})
 					
 				}
@@ -153,7 +153,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/userSelection/new",params,function(userSelection) {
 						console.log("User selection input column created: " + JSON.stringify(userSelection))
-						columnCreatedCallback(userSelection.columnID)
+						columnCreatedCallback(userSelection)
 					})
 					
 				}
@@ -165,7 +165,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/socialButton/new",params,function(socialButton) {
 						console.log("Social button column created: " + JSON.stringify(socialButton))
-						columnCreatedCallback(socialButton.columnID)
+						columnCreatedCallback(socialButton)
 					})
 					
 				}
@@ -177,7 +177,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/userTag/new",params,function(userTag) {
 						console.log("User tag column created: " + JSON.stringify(userTag))
-						columnCreatedCallback(userTag.columnID)
+						columnCreatedCallback(userTag)
 					})
 					
 				}
@@ -189,7 +189,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/tag/new",params,function(tag) {
 						console.log("Tag column created: " + JSON.stringify(tag))
-						columnCreatedCallback(tag.columnID)
+						columnCreatedCallback(tag)
 					})
 					
 				}
@@ -201,7 +201,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/file/new",params,function(fileCol) {
 						console.log("File column created: " + JSON.stringify(fileCol))
-						columnCreatedCallback(fileCol.columnID)
+						columnCreatedCallback(fileCol)
 					})
 					
 				}
@@ -213,7 +213,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/image/new",params,function(imageCol) {
 						console.log("Image column created: " + JSON.stringify(imageCol))
-						columnCreatedCallback(imageCol.columnID)
+						columnCreatedCallback(imageCol)
 					})
 					
 				}
@@ -225,7 +225,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/datePicker/new",params,function(datePicker) {
 						console.log("Date picker column created: " + JSON.stringify(datePicker))
-						columnCreatedCallback(datePicker.columnID)
+						columnCreatedCallback(datePicker)
 					})
 					
 				}
@@ -237,7 +237,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/checkBox/new",params,function(checkBox) {
 						console.log("Check box column created: " + JSON.stringify(checkBox))
-						columnCreatedCallback(checkBox.columnID)
+						columnCreatedCallback(checkBox)
 					})
 				}
 				
@@ -248,7 +248,7 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 					}
 					jsonAPIRequest("tableView/toggle/new",params,function(toggle) {
 						console.log("Toggle column created: " + JSON.stringify(toggle))
-						columnCreatedCallback(toggle.columnID)
+						columnCreatedCallback(toggle)
 					})
 				}
 
@@ -332,6 +332,15 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 			}
 			
 			if ($panelForm.valid()) {
+				
+				
+				function navigateToNewColumnSettingsPage(columnInfo) {
+					var contentURL = '/admin/tablecol/'+columnInfocolumnID
+					setSettingsPageContent(contentURL, function() {
+						initTableColPropsPageConent(pageContext,columnInfo)
+					})
+				}
+				
 				var newOrSelectedFieldPanelVals = getWizardDialogPanelVals(
 						$parentDialog,newTableColCreateNewOrExistingFieldDialogPanelID)
 					if(newOrSelectedFieldPanelVals.isNewField) {
@@ -339,8 +348,8 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 							$parentDialog,newTableColNewFieldDialogPanelID)
 						newFieldPanelVals.newFieldPanel.createNewField(function(newFieldInfo) {
 							if(newFieldInfo !== null) {
-								createNewColumn(newFieldInfo,function(columnID) {
-									navigateToURL('/admin/tablecol/'+columnID)
+								createNewColumn(newFieldInfo,function(columnInfo) {
+									navigateToNewColumnSettingsPage((columnInfo))						
 								})			
 							}
 						})
@@ -348,8 +357,8 @@ function createNewTableColColTypeDialogPanelConfig(panelParams) {
 						var selectedFieldID = newOrSelectedFieldPanelVals.selectedField				
 						var getFieldParams = { fieldID: selectedFieldID }
 						jsonAPIRequest("field/get",getFieldParams,function(existingFieldInfo) {
-							createNewColumn(existingFieldInfo,function(columnID) {
-									navigateToURL('/admin/tablecol/'+columnID)							
+							createNewColumn(existingFieldInfo,function(columnInfo) {
+								navigateToNewColumnSettingsPage(columnInfo)						
 							})
 						})
 					}

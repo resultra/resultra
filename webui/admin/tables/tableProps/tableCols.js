@@ -1,4 +1,4 @@
-function initTableViewColsProperties(tableRef) {
+function initTableViewColsProperties(pageContext,tableRef) {
 	
 	var $columnList = $('#tableColPropsColList')
 	
@@ -45,8 +45,11 @@ function initTableViewColsProperties(tableRef) {
 				$colListItem.find('label').text("Button: open form")
 			}
 			
-			var editColLink = '/admin/tablecol/' + tableCol.columnID
-			$colListItem.find('.editTableColButton').attr("href",editColLink)
+			var editColContentURL = '/admin/tablecol/' + tableCol.columnID
+			var $tableColButton = $colListItem.find('.editTableColButton')
+			setPageContentButtonClickHandler($tableColButton,editColContentURL,function() {
+					initTableColPropsPageConent(pageContext,tableCol)
+			})			
 			
 			$colListItem.attr('data-column-id',tableCol.columnID)
 			
@@ -87,7 +90,7 @@ function initTableViewColsProperties(tableRef) {
 	
 	initButtonClickHandler('#adminNewTableColButton',function() {
 		console.log("New table column button clicked")
-		openNewTableColDialog(tableRef)
+		openNewTableColDialog(pageContext,tableRef)
 	})
 	
 	initButtonClickHandler('#adminNewFormButtonColButton',function() {

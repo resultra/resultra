@@ -1,4 +1,4 @@
-function initTablePropsAdminSettingsPageContent(tableInfo) {
+function initTablePropsAdminSettingsPageContent(pageContext,tableInfo) {
 		
 	
 	function initNameProperties(tableRef) {
@@ -51,7 +51,7 @@ function initTablePropsAdminSettingsPageContent(tableInfo) {
 		var getTableParams = { tableID: tableInfo.tableID }
 		jsonAPIRequest("tableView/get",getTableParams,function(tableRef) {
 			initNameProperties(tableRef)
-			initTableViewColsProperties(tableRef)
+			initTableViewColsProperties(pageContext,tableRef)
 		})
 		
 	})

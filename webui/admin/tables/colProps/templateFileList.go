@@ -1,0 +1,22 @@
+package colProps
+
+var TemplateFileList = []string{"static/admin/tables/colProps/attachment.html",
+	"static/admin/tables/colProps/checkBox.html",
+	"static/admin/tables/colProps/colPropsPage.html",
+	"static/admin/tables/colProps/comment.html",
+	"static/admin/tables/colProps/datePicker.html",
+	"static/admin/tables/colProps/emailAddr.html",
+	"static/admin/tables/colProps/file.html",
+	"static/admin/tables/colProps/formButton.html",
+	"static/admin/tables/colProps/image.html",
+	"static/admin/tables/colProps/note.html",
+	"static/admin/tables/colProps/numberInput.html",
+	"static/admin/tables/colProps/progress.html",
+	"static/admin/tables/colProps/rating.html",
+	"static/admin/tables/colProps/socialButton.html",
+	"static/admin/tables/colProps/tag.html",
+	"static/admin/tables/colProps/textInput.html",
+	"static/admin/tables/colProps/toggle.html",
+	"static/admin/tables/colProps/urlLink.html",
+	"static/admin/tables/colProps/userSelection.html",
+	"static/admin/tables/colProps/userTag.html"}

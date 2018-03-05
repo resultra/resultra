@@ -1,16 +1,16 @@
 
 
-function navigateToTablePropsPage(tableRef) {
+function navigateToTablePropsPage(pageContext,tableRef) {
 	var contentURL = '/admin/table/' + tableRef.tableID
 	setSettingsPageContent(contentURL,function() {
-		initTablePropsAdminSettingsPageContent(tableRef)	
+		initTablePropsAdminSettingsPageContent(pageContext,tableRef)	
 	})
 	var offPageURL = "/admin/table/tableProps/offPageContent"
 	setSettingsPageOffPageContent(offPageURL,function() {})
 	
 }
 
-function initAdminTableListSettings(databaseID) {
+function initAdminTableListSettings(pageContext) {
 	
 	var $tableList = $('#adminTableList')
 	
@@ -26,14 +26,14 @@ function initAdminTableListSettings(databaseID) {
 		$editTableButton.click(function(e) {
 			e.preventDefault()
 			$editTableButton.blur()
-			navigateToTablePropsPage(tableRef)
+			navigateToTablePropsPage(pageContext,tableRef)
 		})		
 		$tableList.append($tableListItem)
 	}
 	
 	
 	var getTableParams = { 
-		parentDatabaseID: databaseID 
+		parentDatabaseID: pageContext.databaseID 
 	}
 	jsonAPIRequest("tableView/list",getTableParams,function(tableRefs) {
 		
@@ -48,7 +48,7 @@ function initAdminTableListSettings(databaseID) {
 	initButtonClickHandler('#adminNewTableButton',function() {
 		console.log("New table button clicked")
 			
-		openNewTableDialog(databaseID)
+		openNewTableDialog(pageContext)
 	})
 	
 	
