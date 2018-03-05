@@ -75,4 +75,8 @@ function initTableColPropsPageConent(pageContext,columnInfo) {
 	})
 	
 	
+	const tableSettingsLinkID = 'table-' + columnInfo.parentTableID
+	initSettingsPageButtonLink('#colPropsBackToTableSettingsLink',tableSettingsLinkID)
+	
+	
 }

@@ -1,3 +1,15 @@
+function registerTablePropsLoader(pageContext,tableRef) {
+	const tableSettingsLinkID = 'table-' + tableRef.tableID
+	var contentURL = '/admin/table/' + tableRef.tableID
+	registerPageContentLoader(tableSettingsLinkID, contentURL, function() {
+		initTablePropsAdminSettingsPageContent(pageContext,tableRef)	
+		var offPageURL = "/admin/table/tableProps/offPageContent"
+		setSettingsPageOffPageContent(offPageURL,function() {})
+	})
+}
+
+
+
 function initTableViewColsProperties(pageContext,tableRef) {
 	
 	var $columnList = $('#tableColPropsColList')
@@ -31,7 +43,6 @@ function initTableViewColsProperties(pageContext,tableRef) {
 		}
     });
 	
-	
 	loadFieldInfo(tableRef.parentDatabaseID,[fieldTypeAll],function(fieldsByID) {
 		
 		function populateOneTableColInTableColList(tableCol) {
@@ -45,10 +56,12 @@ function initTableViewColsProperties(pageContext,tableRef) {
 				$colListItem.find('label').text("Button: open form")
 			}
 			
+			
 			var editColContentURL = '/admin/tablecol/' + tableCol.columnID
 			var $tableColButton = $colListItem.find('.editTableColButton')
 			setPageContentButtonClickHandler($tableColButton,editColContentURL,function() {
 					initTableColPropsPageConent(pageContext,tableCol)
+					registerTablePropsLoader(pageContext,tableRef)
 			})			
 			
 			$colListItem.attr('data-column-id',tableCol.columnID)

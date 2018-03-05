@@ -8,7 +8,7 @@ function openNewTableColDialog(pageContext,tableRef) {
 	
 	var newOrExistingPanel = createNewTableColNewOrExistingDialogPanelConfig(panelConfig)
 	var newFieldPanel = createNewTableColNewFieldDialogPanelConfig(panelConfig)
-	var colTypePanel = createNewTableColColTypeDialogPanelConfig(pageContext,panelConfig)
+	var colTypePanel = createNewTableColColTypeDialogPanelConfig(pageContext,tableRef,panelConfig)
 		
 	openWizardDialog({
 		closeFunc: function() {},

@@ -1,6 +1,6 @@
 var newTableColColTypeDialogPanelID = "colType"
 
-function createNewTableColColTypeDialogPanelConfig(pageContext,panelParams) {
+function createNewTableColColTypeDialogPanelConfig(pageContext,tableRef,panelParams) {
 	
 	var $panelForm = $('#newColColTypePanelForm')
 	var $colTypeSelection = $panelForm.find('select[name=colTypeSelection]')
@@ -349,7 +349,8 @@ function createNewTableColColTypeDialogPanelConfig(pageContext,panelParams) {
 						newFieldPanelVals.newFieldPanel.createNewField(function(newFieldInfo) {
 							if(newFieldInfo !== null) {
 								createNewColumn(newFieldInfo,function(columnInfo) {
-									navigateToNewColumnSettingsPage((columnInfo))						
+									navigateToNewColumnSettingsPage(columnInfo)						
+									registerTablePropsLoader(pageContext,tableRef)						
 								})			
 							}
 						})
@@ -358,7 +359,8 @@ function createNewTableColColTypeDialogPanelConfig(pageContext,panelParams) {
 						var getFieldParams = { fieldID: selectedFieldID }
 						jsonAPIRequest("field/get",getFieldParams,function(existingFieldInfo) {
 							createNewColumn(existingFieldInfo,function(columnInfo) {
-								navigateToNewColumnSettingsPage(columnInfo)						
+								navigateToNewColumnSettingsPage(columnInfo)
+								registerTablePropsLoader(pageContext,tableRef)						
 							})
 						})
 					}
