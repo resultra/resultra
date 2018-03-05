@@ -21,13 +21,13 @@ function initTableColPropsPageConent(pageContext,columnInfo) {
 			initRatingColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'textInput':
-			initTextInputColProperties(columnInfo.parentTableID, columnInfo.columnID)
+			initTextInputColProperties(pageContext,columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'datePicker':
 			initDatePickerColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'userSelection':
-			initUserSelectionColProperties(columnInfo.parentTableID, columnInfo.columnID)
+			initUserSelectionColProperties(pageContext,columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'checkbox':
 			initCheckBoxColProperties(columnInfo.parentTableID, columnInfo.columnID)
@@ -36,7 +36,7 @@ function initTableColPropsPageConent(pageContext,columnInfo) {
 			initToggleColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'button':
-			initFormButtonColProperties(columnInfo.parentTableID, columnInfo.columnID)
+			initFormButtonColProperties(pageContext,columnInfo.parentTableID, columnInfo.columnID)
 			break
 		case 'attachment':
 			initAttachmentColProperties(columnInfo.parentTableID, columnInfo.columnID)

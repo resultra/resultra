@@ -1,4 +1,4 @@
-function initTextInputColPropertiesImpl(textInputCol) {
+function initTextInputColPropertiesImpl(pageContext,textInputCol) {
 	
 	setColPropsHeader(textInputCol)
 	hideSiblingsShowOne("#textInputColProps")
@@ -50,7 +50,7 @@ function initTextInputColPropertiesImpl(textInputCol) {
 		})			
 	}
 	var valueListPropertyParams = {
-		databaseID: colPropsAdminContext.databaseID,
+		databaseID: pageContext.databaseID,
 		saveValueListCallback: saveValueList,
 		defaultValueListID: textInputCol.properties.valueListID
 	}
@@ -107,14 +107,14 @@ function initTextInputColPropertiesImpl(textInputCol) {
 	
 }
 
-function initTextInputColProperties(tableID,columnID) {
+function initTextInputColProperties(pageContext,tableID,columnID) {
 	
 	var getColParams = {
 		parentTableID: tableID,
 		textInputID: columnID
 	}
 	jsonAPIRequest("tableView/textInput/get", getColParams, function(textInputCol) { 
-		initTextInputColPropertiesImpl(textInputCol)
+		initTextInputColPropertiesImpl(pageContext,textInputCol)
 	})
 	
 	

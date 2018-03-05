@@ -1,4 +1,4 @@
-function initUserTagColPropertiesImpl(userTagInputCol) {
+function initUserTagColPropertiesImpl(pageContext,userTagInputCol) {
 	
 	setColPropsHeader(userTagInputCol)
 	hideSiblingsShowOne("#userTagColProps")
@@ -108,7 +108,7 @@ function initUserTagColPropertiesImpl(userTagInputCol) {
 	
 	var selectRoleProps = {
 		elemPrefix: elemPrefix,	
-		databaseID: colPropsAdminContext.databaseID,
+		databaseID: pageContext.databaseID,
 		initialRoles: userTagInputCol.properties.selectableRoles,
 		setRolesCallback: function(selectableRoles) {
 			var params = {
@@ -125,14 +125,14 @@ function initUserTagColPropertiesImpl(userTagInputCol) {
 	
 }
 
-function initUserTagColProperties(tableID,columnID) {
+function initUserTagColProperties(pageContext,tableID,columnID) {
 	
 	var getColParams = {
 		parentTableID: tableID,
 		userTagID: columnID
 	}
 	jsonAPIRequest("tableView/userTag/get", getColParams, function(userTagInputCol) { 
-		initUserTagColPropertiesImpl(userTagInputCol)
+		initUserTagColPropertiesImpl(pageContext,userTagInputCol)
 	})
 	
 	

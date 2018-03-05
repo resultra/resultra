@@ -1,4 +1,4 @@
-function initFormButtonColPropertiesImpl(formButtonCol) {
+function initFormButtonColPropertiesImpl(pageContext,formButtonCol) {
 	
 //	setColPropsHeader(formButtonCol)
 	
@@ -73,7 +73,7 @@ function initFormButtonColPropertiesImpl(formButtonCol) {
 	var elemPrefix = "button_"
 	
 	var defaultValPropParams = {
-		databaseID: colPropsAdminContext.databaseID,
+		databaseID: pageContext.databaseID,
 		elemPrefix: elemPrefix,
 		defaultDefaultValues: formButtonCol.properties.defaultValues,
 		updateDefaultValues: function(updatedDefaultVals) {
@@ -110,13 +110,13 @@ function initFormButtonColPropertiesImpl(formButtonCol) {
 }
 
 
-function initFormButtonColProperties(tableID,columnID) {
+function initFormButtonColProperties(pageContext,tableID,columnID) {
 	
 	var getColParams = {
 		parentTableID: tableID,
 		buttonID: columnID
 	}
 	jsonAPIRequest("tableView/formButton/get", getColParams, function(formButtonCol) { 
-		initFormButtonColPropertiesImpl(formButtonCol)
+		initFormButtonColPropertiesImpl(pageContext,formButtonCol)
 	})
 }

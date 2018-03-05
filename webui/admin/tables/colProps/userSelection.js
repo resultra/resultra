@@ -1,4 +1,4 @@
-function initUserSelectionColPropertiesImpl(userSelectionInputCol) {
+function initUserSelectionColPropertiesImpl(pageContext,userSelectionInputCol) {
 	
 	setColPropsHeader(userSelectionInputCol)
 	hideSiblingsShowOne("#userSelectionColProps")
@@ -108,7 +108,7 @@ function initUserSelectionColPropertiesImpl(userSelectionInputCol) {
 	
 	var selectRoleProps = {
 		elemPrefix: elemPrefix,	
-		databaseID: colPropsAdminContext.databaseID,
+		databaseID: pageContext.databaseID,
 		initialRoles: userSelectionInputCol.properties.selectableRoles,
 		setRolesCallback: function(selectableRoles) {
 			var params = {
@@ -125,14 +125,14 @@ function initUserSelectionColPropertiesImpl(userSelectionInputCol) {
 	
 }
 
-function initUserSelectionColProperties(tableID,columnID) {
+function initUserSelectionColProperties(pageContext,tableID,columnID) {
 	
 	var getColParams = {
 		parentTableID: tableID,
 		userSelectionID: columnID
 	}
 	jsonAPIRequest("tableView/userSelection/get", getColParams, function(userSelectionInputCol) { 
-		initUserSelectionColPropertiesImpl(userSelectionInputCol)
+		initUserSelectionColPropertiesImpl(pageContext,userSelectionInputCol)
 	})
 	
 	
