@@ -23,5 +23,6 @@
 		"helpPopup",
 		"alert",
 		"timeline",
-		"userAuth"]
+		"userAuth",
+		"singlePageApp"]
 }

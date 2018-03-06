@@ -15,6 +15,7 @@ import (
 	"resultra/datasheet/webui/common/pageHeader"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/common/recordSort"
+	"resultra/datasheet/webui/common/singlePageApp"
 	"resultra/datasheet/webui/common/timeline"
 	"resultra/datasheet/webui/common/userAuth"
 	"resultra/datasheet/webui/common/valueList"
@@ -45,5 +46,6 @@ func init() {
 	TemplateFileList = append(TemplateFileList, alert.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, timeline.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, userAuth.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, singlePageApp.TemplateFileList...)
 
 }
