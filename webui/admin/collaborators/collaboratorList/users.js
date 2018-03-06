@@ -39,7 +39,7 @@ function userListTableRow(pageContext,userRoleInfo) {
 					databaseID: pageContext.databaseID
 				}
 				jsonAPIRequest("admin/deleteCollaborator",deleteParams,function(replyStatus) {
-					$buttons.closest("tr").remove()
+					$deleteButton.closest("tr").remove()
 					console.log("Delete confirmed")
 				})
 				

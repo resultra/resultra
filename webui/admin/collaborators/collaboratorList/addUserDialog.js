@@ -82,7 +82,7 @@ function openNewUserDialog(pageContext) {
 			console.log("Adding new collaborator: " + JSON.stringify(addCollabParams))
 			jsonAPIRequest("admin/addCollaborator",addCollabParams,function(collabUserRoleInfo) {
 					console.log("Added new collaborator: " + JSON.stringify(collabUserRoleInfo))
-				$('#userListTableBody').append(userListTableRow(collabUserRoleInfo))
+				$('#userListTableBody').append(userListTableRow(pageContext,collabUserRoleInfo))
 				$newUserDialog.modal('hide')				
 				
 			})
