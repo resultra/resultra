@@ -23,6 +23,7 @@
 		"../userRole/userRoleList",
 		"../userRole/userRoleProps",
 		"../collaborators/collaboratorList",
+		"../collaborators/collaboratorProps",
 		"../globals"],
 	"cssFiles": [],
 	"jsFiles": ["mainAdminPage.js"],

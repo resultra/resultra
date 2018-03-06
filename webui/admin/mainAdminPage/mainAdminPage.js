@@ -140,6 +140,9 @@ $(document).ready(function() {
 		});
 		
 	}
+	registerPageContentLoader("collaborators",'/admin/collaborators/' + mainAdminPageContext.databaseID,function() {
+		initCollaboratorsSettingsPageContent(mainAdminPageContext)
+	})
 	
 	
 	function setGlobalsSettingsPage() {

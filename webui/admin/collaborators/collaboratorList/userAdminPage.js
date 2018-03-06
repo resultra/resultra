@@ -1,6 +1,6 @@
 
 function initCollaboratorsSettingsPageContent(pageContext) {	
 
-	initUserListSettings(pageContext.databaseID)
+	initUserListSettings(pageContext)
 				
 }

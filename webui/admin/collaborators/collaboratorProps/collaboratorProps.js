@@ -1,9 +1,5 @@
-$(document).ready(function() {
-	
-	initAdminSettingsPageLayout($('#collabPropsPage'))	
-	initAdminPageHeader(false)
-	initAdminSettingsTOC(collabPropsContext.databaseID,"settingsTOCUsers")
-	
+function initCollaboratorPropsAdminSettingsPageContent(pageContext,collaboratorInfo) {
+		
 	
 	function addRoleToRoleCheckboxList(roleInfo, isMemberOfRole) {
 			
@@ -22,9 +18,9 @@ $(document).ready(function() {
 		initCheckboxControlChangeHandler($checkboxInput,isMemberOfRole,function(newVal) {
 			
 			var roleParams = {
-				userID: collabPropsContext.userID,
-				databaseID: collabPropsContext.databaseID,
-				collaboratorID: collabPropsContext.collaboratorID,
+				userID: collaboratorInfo.userID,
+				databaseID: pageContext.databaseID,
+				collaboratorID: collaboratorInfo.collaboratorID,
 				roleID: roleInfo.roleID,
 				memberOfRole: $checkboxInput.prop("checked")
 			}			
@@ -52,7 +48,7 @@ $(document).ready(function() {
 		}
 		
 		var dbRolesParams = {
-			databaseID: collabPropsContext.databaseID
+			databaseID: pageContext.databaseID
 		}
 		jsonAPIRequest("userRole/getDatabaseRoles",dbRolesParams,function(rolesInfo) {
 			allRolesInfo = rolesInfo
@@ -60,9 +56,9 @@ $(document).ready(function() {
 		})
 		
 		var userRolesParams = {
-			userID: collabPropsContext.userID,
-			collaboratorID: collabPropsContext.collaboratorID,
-			databaseID: collabPropsContext.databaseID
+			userID: collaboratorInfo.userID,
+			collaboratorID: collaboratorInfo.collaboratorID,
+			databaseID: pageContext.databaseID
 		}
 		jsonAPIRequest("admin/getSingleUserRoleInfo",userRolesParams,function(userRoles) {
 			userRoleInfo = userRoles
@@ -93,7 +89,6 @@ $(document).ready(function() {
 		
 	})	
 	
-	
-	
+	initSettingsPageButtonLink('#collaboratorPropsBackToCollaboratorListLink',"collaborators")
 				
-})
+}

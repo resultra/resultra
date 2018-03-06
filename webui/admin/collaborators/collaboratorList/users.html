@@ -1,5 +1,23 @@
 {{define "userList"}}
-	
+
+	<div style="display:none;">
+		
+		<table>
+			<tr id="collaboratorListRowTemplate" class="userListRow">
+		         <td class="userName"></td>
+		         <td class="userRoles"></td>
+		         <td class="userButtons">
+					<a class="btn btn-xs btn-default editUserButton" role="button"> 
+							<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>
+					</a> 
+		  			<button class="btn btn-xs btn-danger deleteCollaboratorButton">
+						<span class="glyphicon glyphicon-remove" style="padding-bottom:2px;"></span>
+					</button>
+		         </td>
+		     </tr>
+	 	</table>	
+	</div>
+
 	<div class="marginTop10 maxWidth600">
 		<table class="table">
 			<thead>

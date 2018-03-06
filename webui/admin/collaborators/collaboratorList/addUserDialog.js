@@ -1,4 +1,4 @@
-function openNewUserDialog(databaseID) {
+function openNewUserDialog(pageContext) {
 	
 	var $newUserForm = $('#adminNewUserForm')
 	var $newUserDialog = $('#adminNewUserDialog')
@@ -75,7 +75,7 @@ function openNewUserDialog(databaseID) {
 			var selectedRoleIDs = getRoleListSelectedRoleIDs()
 			
 			var addCollabParams = {
-				databaseID: databaseID,
+				databaseID: pageContext.databaseID,
 				userID: selectedUserID,
 				roleIDs: selectedRoleIDs
 			}
@@ -83,6 +83,8 @@ function openNewUserDialog(databaseID) {
 			jsonAPIRequest("admin/addCollaborator",addCollabParams,function(collabUserRoleInfo) {
 					console.log("Added new collaborator: " + JSON.stringify(collabUserRoleInfo))
 				$('#userListTableBody').append(userListTableRow(collabUserRoleInfo))
+				$newUserDialog.modal('hide')				
+				
 			})
 			$newUserDialog.modal('hide')
 		}
@@ -90,7 +92,7 @@ function openNewUserDialog(databaseID) {
 	
 	
 	var dbRolesParams = {
-		databaseID: databaseID
+		databaseID: pageContext.databaseID
 	}
 	jsonAPIRequest("userRole/getDatabaseRoles",dbRolesParams,function(rolesInfo) {
 		

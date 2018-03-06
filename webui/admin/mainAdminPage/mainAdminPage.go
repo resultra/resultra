@@ -21,6 +21,7 @@ import (
 	"resultra/datasheet/webui/admin/alerts/alertList"
 	"resultra/datasheet/webui/admin/alerts/alertProps"
 	"resultra/datasheet/webui/admin/collaborators/collaboratorList"
+	"resultra/datasheet/webui/admin/collaborators/collaboratorProps"
 	"resultra/datasheet/webui/admin/dashboards"
 	"resultra/datasheet/webui/admin/fields/fieldList"
 	"resultra/datasheet/webui/admin/fields/fieldProps"
@@ -75,6 +76,7 @@ func init() {
 		userRoleList.TemplateFileList,
 		userRoleProps.TemplateFileList,
 		collaboratorList.TemplateFileList,
+		collaboratorProps.TemplateFileList,
 		globals.TemplateFileList}
 
 	mainAdminPageTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
