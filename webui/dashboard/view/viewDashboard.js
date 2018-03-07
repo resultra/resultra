@@ -9,14 +9,9 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 
 	var viewDashboardCanvasSelector = '#dashboardCanvas'
 	
-	pageLayout.clearCenterContentArea()
-	pageLayout.hideFooterLayout()
-	pageLayout.enablePropertySidebar()
-	pageLayout.disablePropertyPanelToggleButton()
-	
-	// TBD - Support refresh for dashboards?
-	pageLayout.disableRefreshButton()
-	
+//	pageLayout.enablePropertySidebar()
+//	pageLayout.disablePropertyPanelToggleButton()
+		
 
 	viewDashboardContext = { 
 				dashboardID:dashboardID,
@@ -39,8 +34,8 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 			console.log("dashboard view object selected: " + selectedComponentID)
 			var selectedObjRef	= getContainerObjectRef($component)
 			viewDashboardConfig.selectionFunc($component,selectedObjRef)
-			pageLayout.enablePropertyPanelToggleButton()
-			pageLayout.openPropertyPanel()
+	//		pageLayout.enablePropertyPanelToggleButton()
+	//		pageLayout.openPropertyPanel()
 		})
 	}		
 
@@ -49,9 +44,8 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 		doneLoadingDashboardDataFunc: function() {
 
 			initObjectCanvasSelectionBehavior(viewDashboardCanvasSelector, function() {
-				pageLayout.disablePropertyPanelToggleButton()
-				pageLayout.closePropertyPanel()
-				hideSiblingsShowOne('#dashboardViewProps')
+		//		pageLayout.disablePropertyPanelToggleButton()
+		//		pageLayout.closePropertyPanel()
 			})
 
 

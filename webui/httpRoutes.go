@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"resultra/datasheet/webui/admin"
 	"resultra/datasheet/webui/dashboard"
+	dashboardView "resultra/datasheet/webui/dashboard/view"
 	"resultra/datasheet/webui/formPage"
 	"resultra/datasheet/webui/homePage"
 	"resultra/datasheet/webui/itemList"
@@ -32,6 +33,7 @@ func init() {
 	mainWindow.RegisterHTTPHandlers(router)
 	templatePage.RegisterHTTPHandlers(router)
 	userAdmin.RegisterHTTPHandlers(router)
+	dashboardView.RegisterHTTPHandlers(router)
 
 	trackerTOC.RegisterHTTPHandlers(router)
 

@@ -35,7 +35,16 @@ function navigateToTracker(databaseID) {
 	}
 	
 	function dashboardClicked(dashboardID,$tocItem) {
-		console.log("Main window: dashboard navigation clicked: " + dashboardID)
+		
+		var contentConfig = {
+			mainContentURL: "/dashboard/view/contentLayout"
+		}
+		setMainWindowPageContent(contentConfig,function() {
+			var contentLayout = new DashboardContentLayout()
+			loadDashboardView(contentLayout,databaseID, dashboardID)	
+			$tocItem.addClass("active")		
+		})
+		
 		/*
 		function loadView() {
 			loadDashboardView(mainWinLayout,mainWindowContext.databaseID, dashboardID)	
