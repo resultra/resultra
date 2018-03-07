@@ -1,13 +1,5 @@
-#mainWindowCenterContentHeaderCol {
-	 text-align:center;
-}
 
-#mainWindowCenterContentHeader {
-	margin-top:5px;
-	margin-bottom:5px;
-}
-
-#mainWindowContentPane
+#mainWindowContent
 {
 	padding: 0px;
 }

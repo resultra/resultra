@@ -1,8 +1,8 @@
-$(document).ready(function() {	
+function initHomePageSignedInPageContent(pageContext) {	
 	
-	initUserDropdownMenu(homePageContext.isSingleUserWorkspace)
-	initHelpDropdownMenu()
+/*	initUserDropdownMenu(homePageContext.isSingleUserWorkspace)
+	initHelpDropdownMenu() */
 	
 	initTrackerList()
 		
-}); // document ready
+}

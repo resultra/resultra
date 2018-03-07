@@ -1,45 +1,3 @@
-
-
-
-{{define "mainWindowHeaderControls"}}
-<div class="container-fluid" id="recordHeaderGrid">
-	<div class="row">
-		<div class= "col-sm-2 paddingLeft5">
-			<button type="button" class="btn btn-default btn-sm" id="viewTableOfContentsMenuButton">
-			  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
-			</button>
-			<button type="button" class="btn btn-default btn-sm" id="mainWindowViewRefreshButton">
-			  <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-			</button>
-		</div> <!-- column -->
-		<div class= "col-sm-8"  id="mainWindowCenterContentHeaderCol">
-			<h4 id="mainWindowCenterContentHeader"></h4>
-		</div> <!-- column -->
-		<div class= "col-sm-2 paddingRight5">
-			<div class="pull-right">
-				<button type="button" class="btn btn-default btn-sm" id="viewListOptionsButton">
-				  <span class="fa fa-toggle-left fa-lg" aria-hidden="true"></span>
-				</button>
-			</div>
-		</div> <!-- column -->
-	</div> <!-- row -->
-</div> <!-- #recordHeaderGrid  -->
-{{end}}
-
-
-{{define "mainWindowFooterControls"}}
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-sm-12">
-			<!-- TODO include footer controls for content -->
-		</div>
-	</div>
-</div> <!-- record footer grid -->
-{{end}}
-
-
-
-
 {{define "mainWindow"}}
 <!DOCTYPE html>
 <html>
@@ -54,7 +12,6 @@
 	<!-- endinject -->
 	
 	<script>var mainWindowContext = {
-	 	databaseID: "{{.DatabaseID}}",
 		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } 
 	</script>
 	
@@ -75,65 +32,18 @@
 			{{template "mainWindowPageHeader" .}}
 		</div> <!-- ui layout north -->
 		
-		<div class="pane ui-layout-west" id="viewFormTocLayout">
-			{{template "databaseTOC" .}}
-		</div> <!-- ui layout north -->
+		<div class="pane ui-layout-west" id="mainWindowLHSSidebar">
+		</div>
 
-		<div class="pane ui-layout-east noPadding">
-			{{template "listViewProps" .ItemListParams}}
-			{{template "dashboardViewSidebar" .DashboardParams}}
-		</div> <!-- east filter & sort pane for entire page -->
+		<div class="pane ui-layout-east noPadding" id="mainWindowRHSSidebar">
+		</div> 
 
-
-		<div class="pane ui-layout-center" id="mainWindowContentPane">
-
-			<div class="ui-layout-center" id="recordViewPane">
-				
-				<form class="ui form" id="editLayoutForm" name="editLayoutForm">
-					<div class="layoutPageDiv" id="contentLayoutContainer">
-						<div id="formViewContainer" class="clearableViewContent"></div>
-						<div id="tableViewContainer" class="clearableViewContent"></div>
-						<div id="dashboardCanvas" class="clearableViewContent"></div>				
-						<div id="newItemFormPageLayoutCanvas"></div>
-						<div id="viewFormPageLayoutCanvas"></div>
-						<div id="alertPageLayoutCanvas" class="clearableViewContent">
-						</div>
-						
-						{{template "submitFormSaveConfirmation"}}
-					</div>	
-				</form>
-				
-			</div> <!-- ui-layout-center #recordHeader -->
-	
-			<div class=" ui-layout-south" id="mainWindowContentFooterUILayout" >
-				{{ template "mainWindowFooterControls"}}
-				{{ template "viewListFooterControls"}}
-				{{ template "newItemPageFooterControls"}}
-				{{ template "existingItemPageFooterControls"}}
-			</div>  <!-- #recordFooterUILayout ui-layout-south -->
-			
-			<!-- The style is overridden on the #recordHeader and semantic UI
-			     grid divs to minimize the padding, so the buttons and selection
-				 will be relatively compact within the header.
-				
-				It's also important for the ui-layout-north pane to come *last*
-				in the HTML. This ensures the Z-order is setup so the menues in 
-				the header can overflow the panes below it. See the jQuery UI
-				layout documentation for more discussion on this.
-				
-				http://layout.jquery-dev.com/documentation.cfm#Drop-Downs	
-			-->
-			<div class="ui-layout-north" id="mainWindowContentHeaderUILayout">
-				{{template "mainWindowHeaderControls"}}
-			</div> <!-- ui-layout-north #recordHeaderUILayout -->
-
+		<div class="pane ui-layout-center" id="mainWindowContent">
 		</div> <!-- center pane for entire page -->	
 	</div> <!-- layout page -->
 	
-	{{template "submitFormDialog"}}
-	{{template "attachmentTemplates"}}
-	{{template "formButtonPopupFormDialog"}}
-	{{template "alertNotificationListTemplates"}}
+	
+	<div id="mainWindowOffPageContent"></div>
 
 	
   </body>

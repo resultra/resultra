@@ -12,6 +12,8 @@ import (
 	"resultra/datasheet/webui/templatePage"
 	"resultra/datasheet/webui/userAdmin"
 
+	"resultra/datasheet/webui/common/trackerTOC"
+
 	"resultra/datasheet/webui/workspaceAdmin/general"
 	"resultra/datasheet/webui/workspaceAdmin/users"
 )
@@ -28,6 +30,8 @@ func init() {
 	mainWindow.RegisterHTTPHandlers(router)
 	templatePage.RegisterHTTPHandlers(router)
 	userAdmin.RegisterHTTPHandlers(router)
+
+	trackerTOC.RegisterHTTPHandlers(router)
 
 	general.RegisterHTTPHandlers(router)
 	users.RegisterHTTPHandlers(router)

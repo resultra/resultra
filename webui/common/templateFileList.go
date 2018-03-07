@@ -4,7 +4,6 @@ import (
 	"resultra/datasheet/webui/common/alert"
 	"resultra/datasheet/webui/common/attachment"
 	"resultra/datasheet/webui/common/conditionalFormat"
-	"resultra/datasheet/webui/common/database"
 	"resultra/datasheet/webui/common/defaultValues"
 	"resultra/datasheet/webui/common/field"
 	"resultra/datasheet/webui/common/form"
@@ -12,11 +11,11 @@ import (
 	"resultra/datasheet/webui/common/helpMenu"
 	"resultra/datasheet/webui/common/helpPopup"
 	"resultra/datasheet/webui/common/itemList"
-	"resultra/datasheet/webui/common/pageHeader"
 	"resultra/datasheet/webui/common/recordFilter"
 	"resultra/datasheet/webui/common/recordSort"
 	"resultra/datasheet/webui/common/singlePageApp"
 	"resultra/datasheet/webui/common/timeline"
+	"resultra/datasheet/webui/common/trackerTOC"
 	"resultra/datasheet/webui/common/userAuth"
 	"resultra/datasheet/webui/common/valueList"
 	"resultra/datasheet/webui/common/valueThreshold"
@@ -30,9 +29,8 @@ func init() {
 
 	TemplateFileList = append(TemplateFileList, attachment.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, formulaEditor.TemplateFileList...)
-	TemplateFileList = append(TemplateFileList, pageHeader.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, recordFilter.TemplateFileList...)
-	TemplateFileList = append(TemplateFileList, database.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, trackerTOC.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, recordSort.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, field.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, helpMenu.TemplateFileList...)

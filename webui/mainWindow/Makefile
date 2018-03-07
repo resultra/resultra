@@ -15,3 +15,5 @@ export:
 	$(EXPORT_ASSETS)
 	$(BUILD_ASSET_INJECTION_LIST) mainWindowAssetInclude.json $(ASSET_BASE_PATH) > mainWindowAssets_gen.json
 	$(EXPORT_HTML_WITH_INJECTED_ASSETS) $(abspath ./mainWindowAssets_gen.json)
+	$(BUILD_ASSET_INJECTION_LIST) mainWindowSignedOutAssetInclude.json $(ASSET_BASE_PATH) > mainWindowSignedOutAssets_gen.json
+	$(EXPORT_HTML_WITH_INJECTED_ASSETS) $(abspath ./mainWindowSignedOutAssets_gen.json)

@@ -23,8 +23,6 @@
 					{{template "userDropdownMenu" .}}
 					{{template "helpDropdownMenu"}}
 					{{template "workspaceAdminSettingsButton" .}}
-					
-					
 				</div>
 			</div>
 		</div>
@@ -33,40 +31,5 @@
 
 
 {{define "homePageSignedIn"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Resultra - {{.WorkspaceName}}</title>
-
-	{{template "electronImportPrefix"}}
-
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- homePageSignedInAssets:css -->
-	<!-- endinject -->
-	
-	<script>var homePageContext = {
-		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } 
-	</script>
-	
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- homePageSignedInAssets:js -->
-	<!-- endinject -->
-			
-  </head>
-  <body>
-	  
-	  {{template "homePageHeader" .}}
-	  
-	  <hr id="homePageHeaderBodySep">
-	  
-	  <div id="homePageContent">
-		  {{template "trackerList" .}}
-	  </div>
-	  
-  </body>
-</html>
+	 {{template "trackerList" .}}
 {{end}}

@@ -3,13 +3,14 @@ package mainWindow
 import (
 	"github.com/gorilla/mux"
 	"html/template"
+	"log"
 	"net/http"
 
 	"resultra/datasheet/server/common/runtimeConfig"
 	"resultra/datasheet/server/common/userAuth"
-	"resultra/datasheet/server/databaseController"
+	//	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/server/userRole"
+	//	"resultra/datasheet/server/userRole"
 
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/workspace"
@@ -26,7 +27,8 @@ import (
 var mainWindowTemplates *template.Template
 
 func init() {
-	baseTemplateFiles := []string{"static/mainWindow/mainWindow.html"}
+	baseTemplateFiles := []string{"static/mainWindow/mainWindow.html",
+		"static/mainWindow/mainWindowSignedOut.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
@@ -43,60 +45,69 @@ func init() {
 }
 
 type MainWindowTemplateParams struct {
-	Title                 string
-	DatabaseID            string
-	DatabaseName          string
-	WorkspaceName         string
-	CurrUserIsAdmin       bool
+	Title string
+	//	DatabaseID            string
+	//	DatabaseName          string
+	WorkspaceName string
+	//CurrUserIsAdmin       bool
 	IsSingleUserWorkspace bool
-	ItemListParams        itemList.ViewListTemplateParams
-	DashboardParams       dashboardView.ViewDashboardTemplateParams
+	//	ItemListParams        itemList.ViewListTemplateParams
+	//	DashboardParams       dashboardView.ViewDashboardTemplateParams
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
-	mainRouter.HandleFunc("/main/{databaseID}", viewMainWindow)
+	mainRouter.HandleFunc("/", viewMainWindow)
 }
 
 func viewMainWindow(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
 
-	databaseID := vars["databaseID"]
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	isSingleUser := runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace
+
+	if isSingleUser {
+		authResp := userAuth.LoginSingleUser(w, r)
+
+		if !authResp.Success {
+			log.Printf("Ping: single user not logged int: %v", authResp.Msg)
+		}
+
+	}
 
 	_, authErr := userAuth.GetCurrentUserInfo(r)
 	if authErr != nil {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		templParams := MainWindowTemplateParams{
+			Title:                 "Resultra Workspace - Signed out",
+			WorkspaceName:         workspaceName,
+			IsSingleUserWorkspace: isSingleUser}
+		err := mainWindowTemplates.ExecuteTemplate(w, "mainWindowSignedOut", templParams)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		return
 	} else {
 
-		trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
-		if dbErr != nil {
-			http.Error(w, dbErr.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
-		if workspaceErr != nil {
-			http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		dbInfo, getErr := databaseController.GetDatabaseInfo(trackerDBHandle, databaseID)
-		if getErr != nil {
-			api.WriteErrorResponse(w, getErr)
-			return
-		}
-
-		isAdmin := userRole.CurrUserIsDatabaseAdmin(r, dbInfo.DatabaseID)
-
 		templParams := MainWindowTemplateParams{
-			Title:                 dbInfo.DatabaseName,
-			DatabaseID:            dbInfo.DatabaseID,
-			DatabaseName:          dbInfo.DatabaseName,
-			CurrUserIsAdmin:       isAdmin,
+			Title: workspaceName,
+			//			DatabaseID:            dbInfo.DatabaseID,
+			//			DatabaseName:          dbInfo.DatabaseName,
+			//CurrUserIsAdmin:       isAdmin,
 			IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
-			ItemListParams:        itemList.ViewListTemplParams,
-			WorkspaceName:         workspaceName,
-			DashboardParams:       dashboardView.ViewTemplateParams}
+			/*ItemListParams:        itemList.ViewListTemplParams,*/
+			WorkspaceName: workspaceName,
+			/*DashboardParams:       dashboardView.ViewTemplateParams*/
+		}
 
 		if err := mainWindowTemplates.ExecuteTemplate(w, "mainWindow", templParams); err != nil {
 			api.WriteErrorResponse(w, err)

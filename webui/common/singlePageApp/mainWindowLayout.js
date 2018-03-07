@@ -1,3 +1,9 @@
+var theMainWindowLayout
+
+function initMainWindowLayout() {
+	theMainWindowLayout = new MainWindowLayout()
+}
+
 function MainWindowLayout()
 {
 	var zeroPaddingInset = { top:0, bottom:0, left:0, right:0 }
@@ -34,32 +40,12 @@ function MainWindowLayout()
 			slidable: false,
 			spacing_open:4,
 			spacing_closed:4,
-			initClosed:false // TOC sidebar initially open	
+			initClosed:true
 		}
 	})
 
 	
-	var contentLayout = $('#mainWindowContentPane').layout({
-		onresize_end: function(pane, $pane, paneState, paneOptions) {
-			if(pane === 'center'){
-				// only propagate the resize event for the center/content pane
-				console.log("resize triggered")
-				resizeMainWindow()
-			}
-		},
-		north: fixedUILayoutPaneAutoSizeToFitContentsParams(),
-		south: {
-			size: 44,
-			resizable:false,
-			slidable: false,
-			spacing_open:0,
-			spacing_closed:0,
-			initClosed:true // panel is initially closed	
-		},
-		north__showOverflowOnHover:	true,
-		south__showOverflowOnHover:	true
-	})
-			
+/*			
 	initButtonClickHandler("#viewTableOfContentsMenuButton", function() {
 		console.log("TOC button clicked")
 		mainLayout.toggle("west")
@@ -93,39 +79,55 @@ function MainWindowLayout()
 	
 	
 	
-	function hideFooterLayout() {
-		contentLayout.close("south")
-	}
 	
-	function showFooterLayout() {
-		contentLayout.open("south")
-	}
+	*/
 	
-	var $refreshButton = $('#mainWindowViewRefreshButton')
-	
-	function disableRefreshButton() {
-		$refreshButton.hide()
-	}
-	
-	function enableRefreshButton(refreshCallback) {
-		initButtonControlClickHandler($refreshButton,refreshCallback)
-		$refreshButton.show()
-	}
-	
-	
-	function closePropertyPanel() {
-		$iconSpan.removeClass("fa-toggle-right")
-		$iconSpan.addClass("fa-toggle-left")
+	function closeRHSSidebar() {
+//		$iconSpan.removeClass("fa-toggle-right")
+//		$iconSpan.addClass("fa-toggle-left")
 		mainLayout.close("east")
 	}
 	
-	function openPropertyPanel() {
-		$iconSpan.removeClass("fa-toggle-left")
-		$iconSpan.addClass("fa-toggle-right")
+	function openRHSSidebar() {
+//		$iconSpan.removeClass("fa-toggle-left")
+//		$iconSpan.addClass("fa-toggle-right")
 		mainLayout.open("east")
 	}
+
+	function hideRHSSidebar() {
+		mainLayout.hide("east")
+//		$viewListOptionsToggleButton.hide()
+	}
+
+	function showRHSSidebar() {
+		mainLayout.show("east",false)
+//		$viewListOptionsToggleButton.show()
+	}
 	
+	function hideLHSSidebar() {
+		mainLayout.hide("west")
+	}
+	function showLHSSidebar() {
+		mainLayout.show("west")
+	}
 	
+	function closeLHSSidebar() {
+		mainLayout.close("west")
+	}
+	
+	function openLHSSidebar() {
+		mainLayout.open("west")
+	}
+	
+	function toggleLHSSidebar() {
+		mainLayout.toggle("west")
+	}
+	
+	// Initial configuration of the layout
+	hideRHSSidebar()
+	hideLHSSidebar()
+
+/*	
 	function clearCenterContentArea() {
 		// Clear any event handlers which are attached to the layout-specific events.
 		$(window).off(resizeMainWindowPanesEventName)
@@ -136,38 +138,31 @@ function MainWindowLayout()
 		$('#viewFormTocLayout').find('li').removeClass("active")
 	}
 	
-	function setCenterContentHeader(header) {
-		var $header = $('#mainWindowCenterContentHeader')
-		$header.text(header)
-		var $breadcrumb = $('#trackerLocationBreadcrumb')
-		$breadcrumb.text(header)
-	}
 	
-	function disablePropertySidebar() {
-		mainLayout.hide("east")
-		$viewListOptionsToggleButton.hide()
-	}
-
-	function enablePropertySidebar() {
-		mainLayout.show("east",false)
-		$viewListOptionsToggleButton.show()
-	}
+*/
+	
 
 	
-	this.hideFooterLayout = hideFooterLayout
-	this.showFooterLayout = showFooterLayout
+//	this.hideFooterLayout = hideFooterLayout
+//	this.showFooterLayout = showFooterLayout
 	
-	this.closePropertyPanel = closePropertyPanel
-	this.openPropertyPanel = openPropertyPanel	
-	this.clearCenterContentArea = clearCenterContentArea
-	this.setCenterContentHeader = setCenterContentHeader
-	this.enablePropertySidebar = enablePropertySidebar
-	this.disablePropertySidebar = disablePropertySidebar
-	this.disablePropertyPanelToggleButton = disablePropertyPanelToggleButton
-	this.enablePropertyPanelToggleButton = enablePropertyPanelToggleButton
-	this.enableRefreshButton = enableRefreshButton
-	this.disableRefreshButton = disableRefreshButton
+	this.closeRHSSidebar = closeRHSSidebar
+	this.openRHSSidebar = openRHSSidebar	
+	this.showRHSSidebar = showRHSSidebar
+	this.hideRHSSidebar = hideRHSSidebar
+	this.closeLHSSidebar = closeLHSSidebar
+	this.openLHSSidebar = openLHSSidebar	
+	this.showLHSSidebar = showLHSSidebar
+	this.hideLHSSidebar = hideLHSSidebar
+	this.toggleLHSSidebar = toggleLHSSidebar
 	
-	this.clearSidebarNavigationSelection = clearSidebarNavigationSelection
+//	this.clearCenterContentArea = clearCenterContentArea
+//	this.setCenterContentHeader = setCenterContentHeader
+//	this.disablePropertyPanelToggleButton = disablePropertyPanelToggleButton
+//	this.enablePropertyPanelToggleButton = enablePropertyPanelToggleButton
+//	this.enableRefreshButton = enableRefreshButton
+//	this.disableRefreshButton = disableRefreshButton
+	
+//	this.clearSidebarNavigationSelection = clearSidebarNavigationSelection
 	
 }

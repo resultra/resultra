@@ -1,6 +1,6 @@
 {
-    "subDirs": ["pageHeader",
-		"database",
+    "subDirs": [
+		"trackerTOC",
 		"formulaEditor",
 		"componentLayout",
 		"objectSelection",

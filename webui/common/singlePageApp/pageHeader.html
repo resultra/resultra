@@ -1,9 +1,6 @@
 {{define "mainWindowBreadcrumbHeader"}}
 	<div class="marginTop2">
 	  {{template "workspaceBreadcrumb" .}}
-	  {{template "breadCrumbSeparator"}}
-	  {{template "trackerPageBreadcrumb" .}}
-	  {{template "breadCrumbSeparator"}}
 	  <span id="trackerLocationBreadcrumb" class="h4 breadCrumbText"></span>
 	</div> <!-- breadcrumb header -->
 {{end}}
@@ -16,9 +13,6 @@
 			</div>
 			<div class="col-sm-6 paddingRight5">
 				<div class="pull-right">
-					{{template "alertHeader" .}}
-					{{template "userDropdownMenu" .}}
-					{{template "adminSettingsButton" .}}
 					{{template "helpDropdownMenu"}}
 				</div>
 			</div>

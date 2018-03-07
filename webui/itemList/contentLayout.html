@@ -1,0 +1,69 @@
+{{define "listViewHeaderControls"}}
+<div class="container-fluid" id="recordHeaderGrid">
+	<div class="row">
+		<div class= "col-sm-2 paddingLeft5">
+			<button type="button" class="btn btn-default btn-sm" id="viewTableOfContentsMenuButton">
+			  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+			</button>
+			<button type="button" class="btn btn-default btn-sm" id="listViewRefreshButton">
+			  <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+			</button>
+		</div> <!-- column -->
+		<div class= "col-sm-8"  id="itemListCenterContentHeaderCol">
+			<h4 id="itemListCenterContentHeader"></h4>
+		</div> <!-- column -->
+		<div class= "col-sm-2 paddingRight5">
+			<div class="pull-right">
+				<button type="button" class="btn btn-default btn-sm" id="viewListOptionsButton">
+				  <span class="fa fa-toggle-left fa-lg" aria-hidden="true"></span>
+				</button>
+			</div>
+		</div> <!-- column -->
+	</div> <!-- row -->
+</div> <!-- #recordHeaderGrid  -->
+{{end}}
+
+
+{{define "listViewContentLayout"}}
+
+	<div id="listViewContentLayout" style="height:100%;">
+			<div class="ui-layout-center" id="recordViewPane">
+								
+				<form class="ui form" id="editLayoutForm" name="editLayoutForm">
+					<div class="layoutPageDiv" id="contentLayoutContainer">
+						<div id="formViewContainer" class="clearableViewContent"></div>
+						<div id="tableViewContainer" class="clearableViewContent"></div>
+						<div id="viewFormPageLayoutCanvas"></div>		
+						{{template "submitFormSaveConfirmation"}}
+					</div>	
+				</form>
+		
+			</div> <!-- ui-layout-center #recordHeader -->
+	
+			<div class=" ui-layout-south" id="mainWindowContentFooterUILayout" >
+			</div>  <!-- #recordFooterUILayout ui-layout-south -->
+			
+			<!-- The style is overridden on the #recordHeader and semantic UI
+			     grid divs to minimize the padding, so the buttons and selection
+				 will be relatively compact within the header.
+				
+				It's also important for the ui-layout-north pane to come *last*
+				in the HTML. This ensures the Z-order is setup so the menues in 
+				the header can overflow the panes below it. See the jQuery UI
+				layout documentation for more discussion on this.
+				
+				http://layout.jquery-dev.com/documentation.cfm#Drop-Downs	
+			-->
+			<div class="ui-layout-north" id="mainWindowContentHeaderUILayout">
+				{{template "listViewHeaderControls"}}
+			</div> <!-- ui-layout-north #recordHeaderUILayout -->
+	</div>
+
+
+{{end}}
+
+{{define "listViewOffPageContent"}}
+	{{template "submitFormDialog"}}
+	{{template "attachmentTemplates"}}
+	{{template "formButtonPopupFormDialog"}}
+{{end}}

@@ -1,0 +1,18 @@
+{
+	"subDirs":["../generic",
+		"../common",
+		"../itemList",
+		"../dashboard/common",
+		"../dashboard/components",
+		"../dashboard/view",
+		"../itemView",
+		"../alertListView",
+		"../homePage"],
+	"cssFiles": ["mainWindow.css"],
+	"jsFiles": ["mainWindowSignedOut.js"],
+	"htmlFiles":["mainWindowSignedOut.html"],
+	"imageFiles":[],
+	"minCSSFile":"mainWindow/mainWindowSignedOut.min.css",
+	"minJSFile": "mainWindow/mainWindowSignedOut.min.js",
+	"injectPlaceholderName":"mainWindowSignedOutAssets"
+}

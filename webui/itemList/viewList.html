@@ -1,6 +1,5 @@
 
 
-
 {{define "viewListFooterControls"}}
 <div class="container-fluid initiallyHidden" id="viewListFooterControls">
 	<div class="row">
@@ -11,48 +10,6 @@
 </div> <!-- record footer grid -->
 {{end}}
 
-{{define "listViewMainProps"}}
-	<div id="listViewProps" class="propertyPanelToggleContainer">
-		
-		{{template "propertyPanelPrefix" .DisplayPanelParams}}
-			{{template "itemListViewSelection"}}
-		{{template "propertyPanelSuffix"}}
-		
-		{{template "propertyPanelPrefix" .FilteringPanelParams}}
-			{{template "recordFilterPane" .FilterConfigPanelParams}}
-		{{template "propertyPanelSuffix"}}
 
-		{{template "propertyPanelPrefix" .SortPanelParams}}
-			{{template "recordSortPane"}}
-		{{template "propertyPanelSuffix"}}
-		
-		
-	</div>
-{{end}}
-
-{{define "listViewProps"}}
-
-	<div id="listViewPropsSidebar">
-		{{template "sidebarHeader" "List Options"}}
-		
-		<div class="ui-layout-content noPadding">
-				{{template "propertyPanelGroupPrefix"}}
-					{{template "listViewMainProps" .}}
-					{{template "checkBoxViewProps" .ComponentParams.CheckBoxParams}}
-					{{template "gaugeViewProps" .ComponentParams.GaugeParams}}
-					{{template "ratingViewProps" .ComponentParams.RatingParams}}
-					{{template "userSelectionViewProps" .ComponentParams.UserSelectionParams}}
-					{{template "datePickerViewProps" .ComponentParams.DatePickerParams}}
-					{{template "commentViewProps" .ComponentParams.CommentParams}}
-					{{template "textBoxViewProps" .ComponentParams.TextBoxParams}}
-					{{template "selectionViewProps" .ComponentParams.SelectionParams}}
-					{{template "attachmentViewProps" .ComponentParams.AttachmentParams}}
-					{{template "htmlEditorViewProps" .ComponentParams.HTMLEditorParams}}
-				{{template "propertyPanelGroupSuffix"}}	
-		</div>
-	</div>
-
-
-{{end}}
 
 

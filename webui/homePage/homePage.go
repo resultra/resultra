@@ -19,8 +19,9 @@ var homePageTemplates *template.Template
 func init() {
 	//	designFormTemplateFiles := []string{}
 
-	baseTemplateFiles := []string{"static/homePage/homePagePublic.html",
-		"static/homePage/homePageSignedIn.html"}
+	baseTemplateFiles := []string{"static/homePage/homePageSignedIn.html",
+		"static/homePage/trackerList.html",
+		"static/homePage/newTrackerDialog.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,
@@ -31,7 +32,8 @@ func init() {
 }
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
-	mainRouter.HandleFunc("/", home)
+	mainRouter.HandleFunc("/homePage", home)
+	mainRouter.HandleFunc("/homePageSignedOut", home)
 }
 
 type PageInfo struct {
@@ -70,16 +72,8 @@ func home(respWriter http.ResponseWriter, req *http.Request) {
 
 	userInfo, authErr := userAuth.GetCurrentUserInfo(req)
 	if authErr != nil {
-		log.Printf("user not authorized: %v", authErr)
-		templParams := PageInfo{
-			Title:                 "Resultra Workspace - Signed out",
-			WorkspaceName:         workspaceName,
-			IsSingleUserWorkspace: isSingleUser}
-		err := homePageTemplates.ExecuteTemplate(respWriter, "homePagePublic", templParams)
-		if err != nil {
-			http.Error(respWriter, err.Error(), http.StatusInternalServerError)
-			return
-		}
+		http.Error(respWriter, authErr.Error(), http.StatusInternalServerError)
+		return
 	} else {
 
 		templParams := PageInfo{
