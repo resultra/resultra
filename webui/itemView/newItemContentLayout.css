@@ -8,7 +8,7 @@
 }
 
 
-#newItemContentFooterUILayout {
-	padding-top:5px;
-	padding-bottom:5px;
+#newItemContentFooterUILayout, #newItemContentHeaderUILayout {
+	padding: 4px; /* override jQuery UI Layout padding */
+	background-color: #EEEEEE;
 }
