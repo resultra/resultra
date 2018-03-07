@@ -49,17 +49,33 @@ function navigateToTracker(databaseID) {
 	function newItemClicked(linkID,$tocItem) {
 		console.log("Main window: new item clicked: " + linkID)
 		
-		/*
-		var newItemParams = {
-			pageLayout: mainWinLayout,
-			databaseID: mainWindowContext.databaseID,
-			formLinkID: linkID,
-			loadLastViewCallback: loadLastViewCallback
+		var contentConfig = {
+			mainContentURL: "/itemView/newItemContentLayout",
+			offPageContentURL: "/itemView/newItemOffPageContent"
 		}
+		setMainWindowPageContent(contentConfig,function() {
+			var newItemLayout = new NewItemContentLayout()
+			function loadLastViewCallback() {
+				// TBD
+			}
 		
-		loadNewItemView(newItemParams)
+			var newItemParams = {
+				pageLayout: newItemLayout,
+				databaseID: databaseID,
+				formLinkID: linkID,
+				loadLastViewCallback: loadLastViewCallback
+			}
+			loadNewItemView(newItemParams)
+			$tocItem.addClass("active")
+			
+		})
+		
+		
+		/*
+		
+		
 		mainWinLayout.clearSidebarNavigationSelection()
-		$tocItem.addClass("active")
+
 		*/
 	}
 	

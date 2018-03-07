@@ -8,6 +8,7 @@ import (
 	"resultra/datasheet/webui/formPage"
 	"resultra/datasheet/webui/homePage"
 	"resultra/datasheet/webui/itemList"
+	"resultra/datasheet/webui/itemView"
 	"resultra/datasheet/webui/mainWindow"
 	"resultra/datasheet/webui/templatePage"
 	"resultra/datasheet/webui/userAdmin"
@@ -23,6 +24,7 @@ func init() {
 	router := mux.NewRouter()
 
 	itemList.RegisterHTTPHandlers(router)
+	itemView.RegisterHTTPHandlers(router)
 	dashboard.RegisterHTTPHandlers(router)
 	homePage.RegisterHTTPHandlers(router)
 	admin.RegisterHTTPHandlers(router)

@@ -1,4 +1,3 @@
 package itemView
 
-var TemplateFileList = []string{"static/itemView/newItemView.html",
-	"static/itemView/existingItemView.html"}
+var TemplateFileList = []string{"static/itemView/existingItemView.html"}

@@ -4,12 +4,8 @@ function loadNewItemView(params) {
 		
 	GlobalFormPagePrivs = "edit"
 	
-	params.pageLayout.clearCenterContentArea()
-	hideSiblingsShowOne("#newItemViewFooterControls")
-	hideSiblingsShowOne("#newItemFormPageLayoutCanvas")
-	params.pageLayout.showFooterLayout()
-	params.pageLayout.disablePropertySidebar()
-	params.pageLayout.disableRefreshButton()
+//	hideSiblingsShowOne("#newItemViewFooterControls")
+//	params.pageLayout.disablePropertySidebar()
 	
 	var getNewItemInfoParams = { formLinkID: params.formLinkID }	
 
