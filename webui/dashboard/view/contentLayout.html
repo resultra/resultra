@@ -47,5 +47,39 @@
 
 {{end}}
 
-{{define "dashboardOffPageContent"}}
+
+{{define "dashboardViewProps"}}
+
+	<div id="dashboardViewProps" class="propertyPanelToggleContainer">
+	</div>
+
+{{end}}
+
+
+{{define "dashboardViewSidebar"}}
+
+	<div id="dashboardViewSidebarProps">
+		{{template "sidebarHeader" "Dashboard Options"}}
+	
+		<div class="ui-layout-content" id="viewDashboardSidebarContent">
+		
+			{{template "propertyPanelGroupPrefix"}}
+				{{template "summaryTableViewProps" .ComponentParams.SummaryTableParams}}
+				{{template "barChartViewProps" .ComponentParams.BarChartParams}}	
+				{{template "summaryValueViewProps" .ComponentParams.SummaryValParams}}	
+				{{template "dashboardGaugeViewProps" .ComponentParams.GaugeParams}}	
+				{{template "dashboardViewProps" .}}
+		
+			{{template "propertyPanelGroupSuffix"}}
+		
+		</div>
+	</div>
+
+{{end}}
+
+{{define "dashboardSidebarContent"}}
+
+{{template "dashboardViewSidebar" .}}
+
+
 {{end}}

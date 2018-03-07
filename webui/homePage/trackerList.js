@@ -37,10 +37,12 @@ function navigateToTracker(databaseID) {
 	function dashboardClicked(dashboardID,$tocItem) {
 		
 		var contentConfig = {
-			mainContentURL: "/dashboard/view/contentLayout"
+			mainContentURL: "/dashboard/view/contentLayout",
+			rhsSidebarContentURL: "/dashboard/view/sidebarLayout"
 		}
 		setMainWindowPageContent(contentConfig,function() {
 			var contentLayout = new DashboardContentLayout()
+			theMainWindowLayout.showRHSSidebar()
 			loadDashboardView(contentLayout,databaseID, dashboardID)	
 			$tocItem.addClass("active")		
 		})
