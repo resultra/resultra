@@ -37,6 +37,8 @@ function navigateToTracker(databaseID) {
 	function newItemClicked(linkID,$tocItem) {
 		console.log("Main window: new item clicked: " + linkID)
 		
+		theMainWindowLayout.hideRHSSidebar()
+		
 		var contentConfig = {
 			mainContentURL: "/itemView/newItemContentLayout",
 			offPageContentURL: "/itemView/newItemOffPageContent"
