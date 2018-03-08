@@ -4,3 +4,7 @@ a.disabledTrackerLink {
   /* And disable the pointer events */
   pointer-events: none;
 }
+
+#workspaceHomePageMainWindowContent {
+	padding:20px;
+}
