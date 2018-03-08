@@ -5,8 +5,8 @@ $(document).ready(function() {
 	initMainWindowLayout()
 	
 	function loadWorkspaceHomePageContent() {
-		theMainWindowLayout.hideRHSSidebar()
-		theMainWindowLayout.hideLHSSidebar()
+		theMainWindowLayout.disableRHSSidebar()
+		theMainWindowLayout.disableLHSSidebar()
 		clearMainWindowHeaderButtonsContent()
 		resetWorkspaceBreadcrumbHeader()
 		setMainWindowContent('/homePage',function() {

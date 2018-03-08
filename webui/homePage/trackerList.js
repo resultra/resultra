@@ -39,7 +39,7 @@ function navigateToTracker(trackerInfo) {
 	function newItemClicked(linkID,$tocItem) {
 		console.log("Main window: new item clicked: " + linkID)
 		
-		theMainWindowLayout.hideRHSSidebar()
+		theMainWindowLayout.disableRHSSidebar()
 		
 		var contentConfig = {
 			mainContentURL: "/itemView/newItemContentLayout",
@@ -88,7 +88,7 @@ function navigateToTracker(trackerInfo) {
 			}
 			setMainWindowPageContent(contentConfig,function() {
 				var contentLayout = new AlertListContentLayout()
-				theMainWindowLayout.hideRHSSidebar()
+				theMainWindowLayout.disableRHSSidebar()
 				initAlertNotificationList(contentLayout,databaseID)	
 			})	
 		}

@@ -98,10 +98,20 @@ function MainWindowLayout()
 		mainLayout.hide("east")
 //		$viewListOptionsToggleButton.hide()
 	}
+	
+	function disableRHSSidebar() {
+		mainLayout.hide("east")
+		clearMainWindowRHSSidebarContent()
+	}
 
 	function showRHSSidebar() {
 		mainLayout.show("east",false)
 //		$viewListOptionsToggleButton.show()
+	}
+	
+	function disableLHSSidebar() {
+		mainLayout.hide("west")
+		clearMainWindowLHSSidebarContent()
 	}
 	
 	function hideLHSSidebar() {
@@ -155,6 +165,8 @@ function MainWindowLayout()
 	this.showLHSSidebar = showLHSSidebar
 	this.hideLHSSidebar = hideLHSSidebar
 	this.toggleLHSSidebar = toggleLHSSidebar
+	this.disableLHSSidebar = disableLHSSidebar
+	this.disableRHSSidebar = disableRHSSidebar
 	
 //	this.clearCenterContentArea = clearCenterContentArea
 //	this.setCenterContentHeader = setCenterContentHeader
