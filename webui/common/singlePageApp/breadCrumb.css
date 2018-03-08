@@ -2,3 +2,7 @@
 .breadCrumbText {
 	font-family:FontAwesome;
 }
+
+#workspaceHomeBreadcrumbLink {
+	cursor: pointer;
+}
