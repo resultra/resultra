@@ -23,7 +23,8 @@ $(document).ready(function() {
 	const linkID = getMainWindowLinkIDAnchorName()
 	
 	loadWorkspaceHomePageContent()
-		
+	
+	initMainWindowBreadcrumbHeader()
 	initUserDropdownMenu(mainWindowContext.isSingleUserWorkspace)
 	initHelpDropdownMenu()
 	
