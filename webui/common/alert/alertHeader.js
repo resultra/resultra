@@ -90,7 +90,7 @@ function initAlertHeader(databaseID,seeAllAlertsCallback) {
 		})		
 	}
 	
-	initRefreshPollingLoop(10,reloadAlerts)
+	initRefreshPollingLoop($header,10,reloadAlerts)
 	
 	
 

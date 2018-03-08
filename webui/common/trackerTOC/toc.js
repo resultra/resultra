@@ -9,10 +9,6 @@ function getDefaultTOCItem(databaseID) {
 	return localStorage.getItem(itemKey)
 }
 
-function initTableOfContentsRefreshPollingLoop(refreshCallback) {
-	initRefreshPollingLoop(5,refreshCallback)
-}
-
 function addDashboardLinkToTOCList(tocConfig,dashboardInfo) {
 	// TODO - Link to "dashboard view" page instead of dashboard design page (view page isn't implemented yet)
 	var dashboardListItemHTML = '' +
@@ -89,8 +85,9 @@ function addItemListLinkToTOCList(tocConfig, listInfo) {
 		})		
 	}
 	
-	initTableOfContentsRefreshPollingLoop(refreshListCount)
 	
+	initRefreshPollingLoop($itemListLink,5,refreshListCount)
+		
 	// Load this list as the default list if it is set as a default.
 	if(getDefaultTOCItem(tocConfig.databaseID)===listInfo.listID && 
 		tocConfig.itemListClickedCallback !== undefined) {
