@@ -6,3 +6,9 @@
 	margin-top:5px;
 	margin-bottom:5px;
 }
+
+#itemListContentHeaderUILayout
+{
+	padding: 4px; /* override jQuery UI Layout padding */
+	background-color: #EEEEEE;
+}
