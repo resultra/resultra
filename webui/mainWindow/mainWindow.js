@@ -23,16 +23,7 @@ $(document).ready(function() {
 	const linkID = getMainWindowLinkIDAnchorName()
 	
 	loadWorkspaceHomePageContent()
-	
-	
-	
-/*	var loadLastViewCallback = null */
-	
-	
-	/*
-	
-	*/
-	
+		
 	initUserDropdownMenu(mainWindowContext.isSingleUserWorkspace)
 	initHelpDropdownMenu()
 	
