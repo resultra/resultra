@@ -12,9 +12,11 @@
 				{{template "mainWindowBreadcrumbHeader" .}}
 			</div>
 			<div class="col-sm-6 paddingRight5">
-				<div class="pull-right">
+				<div class="pull-right" id="mainWindowHeaderButtons">
 					<div id="mainWindowHeaderMenuButtons"></div>
-					{{template "helpDropdownMenu"}}
+					<div id="fixedHeaderMenuButtons">
+						{{template "helpDropdownMenu"}}
+					</div>
 				</div>
 			</div>
 		</div>

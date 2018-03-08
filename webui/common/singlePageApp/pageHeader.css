@@ -1,0 +1,3 @@
+#mainWindowHeaderButtons > div {
+	display:inline-block; /* horizontally align header buttons */
+}

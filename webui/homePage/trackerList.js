@@ -14,24 +14,9 @@ function navigateToTracker(databaseID) {
 			var contentLayout = new ItemListContentLayout()
 		
 			loadItemListView(contentLayout,databaseID,listID)
-//			mainWinLayout.clearSidebarNavigationSelection()
 			$tocItem.addClass("active")
 			
 		})
-				
-		
-		/*
-		
-		function loadView() {
-			loadItemListView(mainWinLayout,mainWindowContext.databaseID,listID)
-			mainWinLayout.clearSidebarNavigationSelection()
-			$tocItem.addClass("active")
-		}
-		console.log("Main window: item list clicked: " + listID)
-		loadView()
-		loadLastViewCallback = loadView
-		*/
-		
 	}
 	
 	function dashboardClicked(dashboardID,$tocItem) {
@@ -47,14 +32,6 @@ function navigateToTracker(databaseID) {
 			$tocItem.addClass("active")		
 		})
 		
-		/*
-		function loadView() {
-			loadDashboardView(mainWinLayout,mainWindowContext.databaseID, dashboardID)	
-			mainWinLayout.clearSidebarNavigationSelection()
-			$tocItem.addClass("active")
-		}
-		loadView()
-		loadLastViewCallback = loadView */
 	}
 	
 	function newItemClicked(linkID,$tocItem) {
@@ -77,17 +54,9 @@ function navigateToTracker(databaseID) {
 				loadLastViewCallback: loadLastViewCallback
 			}
 			loadNewItemView(newItemParams)
-			$tocItem.addClass("active")
-			
+			$tocItem.addClass("active")	
 		})
 		
-		
-		/*
-		
-		
-		mainWinLayout.clearSidebarNavigationSelection()
-
-		*/
 	}
 	
 	
@@ -102,8 +71,7 @@ function navigateToTracker(databaseID) {
 		}	
 		initDatabaseTOC(tocConfig)
 		theMainWindowLayout.showLHSSidebar()
-		theMainWindowLayout.openLHSSidebar()
-		
+		theMainWindowLayout.openLHSSidebar()	
 	})
 	
 	setMainWindowHeaderButtonsContent("/common/trackerTOC/headerButtons",function() {
@@ -140,15 +108,10 @@ function addTrackerListItem(trackerInfo) {
 	// Only enable the link to open the tracker if the tracker is  active.
 	if(trackerInfo.isActive) {
 		
-		// var openTrackerLink = '/main/' + trackerInfo.databaseID
-		
-		// $nameLabel.attr('href',openTrackerLink)	
 		$nameLabel.click(function() {
 		 	   console.log("tracker link clicked")
 			navigateToTracker(trackerInfo.databaseID)
 		})
-		
-		
 		
 	} else {
 		$nameLabel.addClass("disabledTrackerLink")
