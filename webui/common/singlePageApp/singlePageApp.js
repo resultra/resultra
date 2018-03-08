@@ -20,7 +20,10 @@ function setLHSSidebarContent(contentURL, initContentCallback) {
 			initContentCallback()
 	});	
 }
- 
+
+function clearMainWindowLHSSidebarContent() {
+	$('#mainWindowLHSSidebar').empty()
+}
  
 function setRHSSidebarContent(contentURL, initContentCallback) {
 	jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
@@ -28,7 +31,10 @@ function setRHSSidebarContent(contentURL, initContentCallback) {
 			initContentCallback()
 	});	
 }
- 
+
+function clearMainWindowRHSSidebarContent() {
+	$('#mainWindowRHSSidebar').empty()
+}
 
 function setMainWindowOffPageContent(contentURL,initCallback) {
 	jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
@@ -45,6 +51,11 @@ function setMainWindowHeaderButtonsContent(contentURL,initCallback) {
 	});	
 	
 }
+
+function clearMainWindowHeaderButtonsContent() {
+	$('#mainWindowHeaderMenuButtons').empty()
+}
+
 
 var registeredMainWindowContentLoaders = {}
 

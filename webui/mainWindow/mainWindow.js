@@ -7,6 +7,7 @@ $(document).ready(function() {
 	function loadWorkspaceHomePageContent() {
 		theMainWindowLayout.hideRHSSidebar()
 		theMainWindowLayout.hideLHSSidebar()
+		clearMainWindowHeaderButtonsContent()
 		
 		setMainWindowContent('/homePage',function() {
 			initHomePageSignedInPageContent(mainWindowContext)
