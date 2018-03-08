@@ -8,7 +8,7 @@ $(document).ready(function() {
 		theMainWindowLayout.hideRHSSidebar()
 		theMainWindowLayout.hideLHSSidebar()
 		clearMainWindowHeaderButtonsContent()
-		
+		resetWorkspaceBreadcrumbHeader()
 		setMainWindowContent('/homePage',function() {
 			initHomePageSignedInPageContent(mainWindowContext)
 		})

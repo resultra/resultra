@@ -1,5 +1,7 @@
 
-function navigateToTracker(databaseID) {
+function navigateToTracker(trackerInfo) {
+	
+	const databaseID = trackerInfo.databaseID
 	
 	function itemListClicked(listID,$tocItem) {
 		
@@ -93,6 +95,11 @@ function navigateToTracker(databaseID) {
 		initAlertHeader(databaseID,seeAllAlertsClicked)
 		
 	})
+	
+	resetWorkspaceBreadcrumbHeader()
+	appendMainWindowContentSpecificBreadcrumbHeader(trackerInfo.databaseName,function() {
+		navigateToTracker(trackerInfo)
+	})
 		
 }
 
@@ -113,7 +120,7 @@ function addTrackerListItem(trackerInfo) {
 		
 		$nameLabel.click(function() {
 		 	   console.log("tracker link clicked")
-			navigateToTracker(trackerInfo.databaseID)
+			navigateToTracker(trackerInfo)
 		})
 		
 	} else {
