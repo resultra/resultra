@@ -35,7 +35,6 @@ $(document).ready(function() {
 	
 	initUserDropdownMenu(mainWindowContext.isSingleUserWorkspace)
 	initHelpDropdownMenu()
-//	initAlertHeader(mainWindowContext.databaseID,seeAllAlertsClicked)
 	
 	// Listen for events to view a specific record/item in a particular form. This happens in response to
 	// clicks to a form button deeper down in the DOM.

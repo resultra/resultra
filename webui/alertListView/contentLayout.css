@@ -1,0 +1,14 @@
+#alertListCenterContentHeaderCol {
+	 text-align:center;
+}
+
+#alertListCenterContentHeader {
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+
+#alertListContentHeaderUILayout {
+	padding: 4px; /* override jQuery UI Layout padding */
+	background-color: #EEEEEE;
+}

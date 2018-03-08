@@ -90,16 +90,6 @@ function navigateToTracker(databaseID) {
 		*/
 	}
 	
-	function seeAllAlertsClicked() {
-		/*
-		function loadView() {
-			mainWinLayout.clearSidebarNavigationSelection()
-			initAlertNotificationList(mainWinLayout,mainWindowContext.databaseID)			
-		}
-		loadView()
-		loadLastViewCallback = loadView
-		*/
-	}
 	
 	
 	setLHSSidebarContent("/common/trackerTOC/toc",function() {
@@ -113,6 +103,23 @@ function navigateToTracker(databaseID) {
 		initDatabaseTOC(tocConfig)
 		theMainWindowLayout.showLHSSidebar()
 		theMainWindowLayout.openLHSSidebar()
+		
+	})
+	
+	setMainWindowHeaderButtonsContent("/common/trackerTOC/headerButtons",function() {
+		
+		function seeAllAlertsClicked() {
+			
+			var contentConfig = {
+				mainContentURL: "/alertListView/contentLayout"
+			}
+			setMainWindowPageContent(contentConfig,function() {
+				var contentLayout = new AlertListContentLayout()
+				theMainWindowLayout.hideRHSSidebar()
+				initAlertNotificationList(contentLayout,databaseID)	
+			})	
+		}
+		initAlertHeader(databaseID,seeAllAlertsClicked)
 		
 	})
 		

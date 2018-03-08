@@ -3,7 +3,7 @@
   <li><a href="#">Alert 1</a></li>
   <li><a href="#">Alert 2</a></li>
   <li role="separator" class="divider"></li>
-  <li><a href="/alerts/{{.DatabaseID}}" id="alertMenuSeeAllLink">See all alerts</a></li>
+  <li><a id="alertMenuSeeAllLink">See all alerts</a></li>
     
 {{end}}
 
@@ -17,7 +17,7 @@
 		  <span class="caret"></span>
 	</button>
 	<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu4">
-		{{template "alertListMenuItems" .}}
+		{{template "alertListMenuItems"}}
 	</ul>
 </div>
 

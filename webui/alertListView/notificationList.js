@@ -1,9 +1,6 @@
 function initAlertNotificationList(pageLayout, databaseID) {
 	
-	pageLayout.clearCenterContentArea()
-	hideSiblingsShowOne("#alertPageLayoutCanvas")
-	pageLayout.hideFooterLayout()
-	pageLayout.disablePropertySidebar()
+//	pageLayout.disablePropertySidebar()
 	pageLayout.setCenterContentHeader("Alerts")		
 	
 	var $alertLayoutCanvas = $('#alertPageLayoutCanvas')

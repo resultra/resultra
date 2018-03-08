@@ -1,15 +1,10 @@
 package trackerTOC
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
 	"resultra/datasheet/webui/generic"
 )
-
-func RegisterHTTPHandlers(mainRouter *mux.Router) {
-	mainRouter.HandleFunc("/common/trackerTOC/toc", tocPageContent)
-}
 
 var tocTemplates *template.Template
 

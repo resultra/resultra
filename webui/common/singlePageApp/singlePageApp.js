@@ -38,6 +38,14 @@ function setMainWindowOffPageContent(contentURL,initCallback) {
 	
 }
 
+function setMainWindowHeaderButtonsContent(contentURL,initCallback) {
+	jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
+	        $('#mainWindowHeaderMenuButtons').html(pageContentData);
+			initCallback()
+	});	
+	
+}
+
 var registeredMainWindowContentLoaders = {}
 
 function registerMainWindowContentLoader(linkID, loaderFunc) {

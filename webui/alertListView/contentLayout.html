@@ -1,0 +1,54 @@
+{{define "alertListHeaderControls"}}
+<div class="container-fluid" id="recordHeaderGrid">
+	<div class="row">
+		<div class= "col-sm-2 paddingLeft5">
+			<button type="button" class="btn btn-default btn-sm" id="viewTableOfContentsMenuButton">
+			  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+			</button>
+		</div> <!-- column -->
+		<div class= "col-sm-8"  id="alertListCenterContentHeaderCol">
+			<h4 id="alertListCenterContentHeader"></h4>
+		</div> <!-- column -->
+		<div class= "col-sm-2 paddingRight5">
+			<div class="pull-right">
+			</div>
+		</div> <!-- column -->
+	</div> <!-- row -->
+</div> <!-- #recordHeaderGrid  -->
+{{end}}
+
+
+
+{{define "alertListContentLayout"}}
+
+	<div id="alertListContentLayout" style="height:100%;">
+		
+			<div class="ui-layout-center" id="recordViewPane">
+				
+				{{template "alertNotificationListTemplates"}}
+				
+				<div id="alertPageLayoutCanvas"></div>			
+			</div> 
+				
+			<!-- The style is overridden on the #recordHeader and semantic UI
+			     grid divs to minimize the padding, so the buttons and selection
+				 will be relatively compact within the header.
+				
+				It's also important for the ui-layout-north pane to come *last*
+				in the HTML. This ensures the Z-order is setup so the menues in 
+				the header can overflow the panes below it. See the jQuery UI
+				layout documentation for more discussion on this.
+				
+				http://layout.jquery-dev.com/documentation.cfm#Drop-Downs	
+			-->
+			<div class="ui-layout-north" id="alertListContentHeaderUILayout">
+				{{template "alertListHeaderControls"}}
+			</div> <!-- ui-layout-north #recordHeaderUILayout -->
+				
+	</div>
+
+
+{{end}}
+
+
+
