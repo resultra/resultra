@@ -6,5 +6,5 @@ import (
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
 	mainRouter.HandleFunc("/common/trackerTOC/toc", tocPageContent)
-	mainRouter.HandleFunc("/common/trackerTOC/headerButtons", headerButtonsContent)
+	mainRouter.HandleFunc("/common/trackerTOC/headerButtons/{databaseID}", headerButtonsContent)
 }

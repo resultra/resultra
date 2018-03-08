@@ -64,12 +64,3 @@
 </div>
 
 {{end}}
-
-{{define "adminSettingsButton"}}
-		{{if .CurrUserIsAdmin}}
-			<a href="/admin/{{.DatabaseID}}" type="button" class="btn btn-sm btn-default" 
-				data-toggle="tooltip" data-placement="left" title="Edit tracker settings">
-			  <span class="glyphicon glyphicon-cog"> </span>
-			</a>
-		{{ end}}
-{{end}}

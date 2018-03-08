@@ -74,7 +74,8 @@ function navigateToTracker(databaseID) {
 		theMainWindowLayout.openLHSSidebar()	
 	})
 	
-	setMainWindowHeaderButtonsContent("/common/trackerTOC/headerButtons",function() {
+	var headerButtonsContentURL = "/common/trackerTOC/headerButtons/" + databaseID
+	setMainWindowHeaderButtonsContent(headerButtonsContentURL,function() {
 		
 		function seeAllAlertsClicked() {
 			
