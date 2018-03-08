@@ -104,7 +104,7 @@ function addTrackerListItem(trackerInfo) {
 	var $listItem = $('#trackerListItemTemplate').clone()
 	$listItem.attr("id","")
 
-	var $nameLabel = $listItem.find(".nameLabel")
+	var $nameLabel = $listItem.find(".trackerLinkNameLabel")
 	$nameLabel.text(trackerInfo.databaseName)
 	
 	

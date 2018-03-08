@@ -8,3 +8,7 @@ a.disabledTrackerLink {
 #workspaceHomePageMainWindowContent {
 	padding-left:30px;
 }
+
+#workspaceHomePageMainWindowContent .trackerLinkNameLabel {
+	padding:0px;
+}
