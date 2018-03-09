@@ -1,0 +1,28 @@
+{
+	"subDirs":[
+		"common",
+		"common/inputProperties",
+		"general",
+		"mainAdminPage",
+		"forms/formList",
+		"formLink/formLinkList",
+		"formLink/formLinkProps",
+		"tables/tableList",
+		"tables/tableProps",
+		"tables/colProps",
+		"itemList/itemListList",
+		"itemList/itemListProps",
+		"itemList/itemListProps/userRole",
+		"fields/fieldList",
+		"fields/fieldProps",
+		"valueLists/valueListList",
+		"valueLists/valueListProps",
+		"dashboards",
+		"alerts/alertList",
+		"alerts/alertProps",
+		"userRole/userRoleList",
+		"userRole/userRoleProps",
+		"collaborators/collaboratorList",
+		"collaborators/collaboratorProps",
+		"globals"]
+}

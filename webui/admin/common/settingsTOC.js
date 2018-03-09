@@ -1,4 +1,4 @@
-function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeLinkCallback) {
+function initAdminSettingsTOC(databaseID, activeID,changeLinkCallback) {
 	
 	
 	var $settingsTOC = $('#settingsTOC')
@@ -19,17 +19,19 @@ function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeL
 		var $listItem = $(linkListItemSelector(linkID))
 		
 		var $link = $listItem.find("a")
-	
-		$link.click(function(e) {
-			e.preventDefault()
+		if($link.length) {
+			$link.click(function(e) {
+				e.preventDefault()
 
-			$link.blur()
+				$link.blur()
 		
-			$settingsTOC.find("li").removeClass("active")
-			$listItem.addClass("active")
+				$settingsTOC.find("li").removeClass("active")
+				$listItem.addClass("active")
 			
-			changeLinkCallback(linkID)
-		})
+				changeLinkCallback(linkID)
+			})			
+		}
+	
 		
 	}
 	
@@ -44,9 +46,6 @@ function initAdminSettingsTOC(databaseID, activeID,isSingleUserWorkspace,changeL
 	initSettingsLinkListItem("alerts")
 	initSettingsLinkListItem("roles")
 	initSettingsLinkListItem("globals")
+	initSettingsLinkListItem("collaborators")	
 	
-	if (!isSingleUserWorkspace) {
-		initSettingsLinkListItem("collaborators")	
-	}
-
 }

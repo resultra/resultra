@@ -6,4 +6,5 @@ import (
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
 	mainRouter.HandleFunc("/admin/{databaseID}", mainAdminPage)
+	mainRouter.HandleFunc("/admin/offPageContent", mainAdminPageOffPageContent)
 }

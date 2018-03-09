@@ -1,47 +1,4 @@
-
-{{define "mainAdminPage"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-
-	{{template "electronImportPrefix"}}
-
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- mainAdminPageAssets:css -->
-	<!-- endinject -->
-	
-	<script>var mainAdminPageContext = { databaseID:"{{.DatabaseID}}",
-		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } </script>
-	
-	{{template "thirdPartyJS"}}
-	{{template "aceThirdPartyJS"}} <!-- for editing formulas -->
-	
-	<!-- mainAdminPageAssets:js -->
-	<!-- endinject -->
-				
-  </head>
-	
- 	
-  <body>
-
-	<div id="mainAdminPage" class="layoutPageDiv">
-		
-		<div class="pane ui-layout-north adminPageHeader">
-			{{template "adminPageHeader" .}}
-		</div> <!-- ui layout north -->
-		
-		<div class="pane ui-layout-west">
-			{{template "adminSettingsTOC" .}}
-		</div> <!-- ui layout north -->
-
-		<div class="pane ui-layout-center" id="contentPageSection">
-		</div> <!-- center pane for entire page -->	
-		
-	</div> <!-- layout page -->
-	
+{{define "mainAdminPageOffpageContent"}}
 	<div id="offPageContent">
 		{{template "saveTemplateDialog"}} <!-- general settings page -->
 		{{template "newFormDialog"}} <!-- form list settings page -->
@@ -60,10 +17,8 @@
 		
 	<div id="offPageContentSection">
 	</div>
+{{end}}
 
-	
-  </body>
-  	
-</html>
-
+{{define "mainAdminPageContent"}}
+	<div id="contentPageSection"></div>
 {{end}}

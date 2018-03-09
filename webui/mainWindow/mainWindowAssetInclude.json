@@ -1,6 +1,7 @@
 {
 	"subDirs":["../generic",
 		"../common",
+		"../admin",
 		"../itemList",
 		"../dashboard/common",
 		"../dashboard/components",

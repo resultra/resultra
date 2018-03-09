@@ -7,7 +7,17 @@
 		{{ end}}
 {{end}}
 
+{{define "adminSettingsSPAButton"}}
+		{{if .CurrUserIsAdmin}}
+			<a id="adminSettingsHeaderButton" type="button" class="btn btn-sm btn-default" 
+				data-toggle="tooltip" data-placement="left" title="Edit tracker settings">
+			  <span class="glyphicon glyphicon-cog"> </span>
+			</a>
+		{{ end}}
+{{end}}
+
+
 {{define "trackerHeaderButtons"}}
     {{template "alertHeader"}}
-	{{template "adminSettingsButton" .}}
+	{{template "adminSettingsSPAButton" .}}
 {{end}}

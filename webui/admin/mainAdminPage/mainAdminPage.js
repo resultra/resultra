@@ -1,156 +1,156 @@
 
-$(document).ready(function() {
+function initTrackerAdminPageContent(pageContext) {
 	
 	function setGeneralSettingsPage() {
-		const contentURL = '/admin/general/' + mainAdminPageContext.databaseID
+		const contentURL = '/admin/general/' + pageContext.databaseID
 	
 		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 		        $('#contentPageSection').html(pageContentData);
-				initGeneralAdminPageContent(mainAdminPageContext.databaseID)
+				initGeneralAdminPageContent(pageContext.databaseID)
 		});
 		
 	}
 	
 	function setFormsSettingsPage() {
-		const contentURL = '/admin/forms/' + mainAdminPageContext.databaseID
+		const contentURL = '/admin/forms/' + pageContext.databaseID
 	
 		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 		        $('#contentPageSection').html(pageContentData);
-				initFormListAdminPage(mainAdminPageContext)
+				initFormListAdminPage(pageContext)
 		});
 		
 	}
 
 	function setFormLinksSettingsPage() {
-		const contentURL = '/admin/formlink/' + mainAdminPageContext.databaseID
+		const contentURL = '/admin/formlink/' + pageContext.databaseID
 	
 		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 		        $('#contentPageSection').html(pageContentData);
-				initFormLinkSettingsPage(mainAdminPageContext)
+				initFormLinkSettingsPage(pageContext)
 		});
 		
 	}
-	registerPageContentLoader("formLinks",'/admin/formlink/' + mainAdminPageContext.databaseID,function() {
-		initFormLinkSettingsPage(mainAdminPageContext)
+	registerPageContentLoader("formLinks",'/admin/formlink/' + pageContext.databaseID,function() {
+		initFormLinkSettingsPage(pageContext)
 	})
 
 
 	function setTableListSettingsPage() {
-		const contentURL = '/admin/tables/' + mainAdminPageContext.databaseID
+		const contentURL = '/admin/tables/' + pageContext.databaseID
 	
 		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 		        $('#contentPageSection').html(pageContentData);
-				initTableListAdminPageContent(mainAdminPageContext)
+				initTableListAdminPageContent(pageContext)
 		});
 		
 	}
-	registerPageContentLoader("tables",'/admin/tables/' + mainAdminPageContext.databaseID,function() {
-		initTableListAdminPageContent(mainAdminPageContext)
+	registerPageContentLoader("tables",'/admin/tables/' + pageContext.databaseID,function() {
+		initTableListAdminPageContent(pageContext)
 	})
 
 
 	
 	function setItemListSettingsPage() {
-		const contentURL = '/admin/lists/' + mainAdminPageContext.databaseID
+		const contentURL = '/admin/lists/' + pageContext.databaseID
 	
 		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 		        $('#contentPageSection').html(pageContentData);
-				initItemListAdminSettingsPage(mainAdminPageContext)
+				initItemListAdminSettingsPage(pageContext)
 		});
 		
 	}
-	registerPageContentLoader("lists",'/admin/lists/' + mainAdminPageContext.databaseID,function() {
-		initItemListAdminSettingsPage(mainAdminPageContext)
+	registerPageContentLoader("lists",'/admin/lists/' + pageContext.databaseID,function() {
+		initItemListAdminSettingsPage(pageContext)
 	})
 	
 	
 	function setFieldListSettingsPage() {
-		const contentURL = '/admin/fields/' + mainAdminPageContext.databaseID
+		const contentURL = '/admin/fields/' + pageContext.databaseID
 	
 		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 		        $('#contentPageSection').html(pageContentData);
-				initFieldsSettingsPageContent(mainAdminPageContext)
+				initFieldsSettingsPageContent(pageContext)
 		});
 		
 	}
-	registerPageContentLoader("fields", '/admin/fields/' + mainAdminPageContext.databaseID,function() {
-		initFieldsSettingsPageContent(mainAdminPageContext)
+	registerPageContentLoader("fields", '/admin/fields/' + pageContext.databaseID,function() {
+		initFieldsSettingsPageContent(pageContext)
 	})
 
 
 
 	function setValueListsSettingsPage() {
-		const contentURL = '/admin/valuelists/' + mainAdminPageContext.databaseID
+		const contentURL = '/admin/valuelists/' + pageContext.databaseID
 	
 		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 		        $('#contentPageSection').html(pageContentData);
-				initValueListAdminSettingsPageContent(mainAdminPageContext)
+				initValueListAdminSettingsPageContent(pageContext)
 		});
 		
 	}
-	registerPageContentLoader("valueLists",'/admin/valuelists/' + mainAdminPageContext.databaseID,function() {
-		initValueListAdminSettingsPageContent(mainAdminPageContext)
+	registerPageContentLoader("valueLists",'/admin/valuelists/' + pageContext.databaseID,function() {
+		initValueListAdminSettingsPageContent(pageContext)
 	})
 	
 	function setDashboardsSettingsPage() {
-		const contentURL = '/admin/dashboards/' + mainAdminPageContext.databaseID
+		const contentURL = '/admin/dashboards/' + pageContext.databaseID
 	
 		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 		        $('#contentPageSection').html(pageContentData);
-				initDashboardsAdminSettingsPageContent(mainAdminPageContext)
+				initDashboardsAdminSettingsPageContent(pageContext)
 		});
 		
 	}
 	
 	
 	function setAlertsSettingsPage() {
-		const contentURL = '/admin/alerts/' + mainAdminPageContext.databaseID
+		const contentURL = '/admin/alerts/' + pageContext.databaseID
 	
 		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 		        $('#contentPageSection').html(pageContentData);
-				initAlertListAdminSettingsPageContent(mainAdminPageContext)
+				initAlertListAdminSettingsPageContent(pageContext)
 		});
 		
 	}
-	registerPageContentLoader("alerts",'/admin/alerts/' + mainAdminPageContext.databaseID,function() {
-		initAlertListAdminSettingsPageContent(mainAdminPageContext)
+	registerPageContentLoader("alerts",'/admin/alerts/' + pageContext.databaseID,function() {
+		initAlertListAdminSettingsPageContent(pageContext)
 	})
 
 
 	function setRolesSettingsPage() {
-		const contentURL = '/admin/roles/' + mainAdminPageContext.databaseID
+		const contentURL = '/admin/roles/' + pageContext.databaseID
 	
 		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 		        $('#contentPageSection').html(pageContentData);
-				initUserRoleAdminSettingsPageContent(mainAdminPageContext)
+				initUserRoleAdminSettingsPageContent(pageContext)
 		});
 		
 	}
-	registerPageContentLoader("roles",'/admin/roles/' + mainAdminPageContext.databaseID,function() {
-		initUserRoleAdminSettingsPageContent(mainAdminPageContext)
+	registerPageContentLoader("roles",'/admin/roles/' + pageContext.databaseID,function() {
+		initUserRoleAdminSettingsPageContent(pageContext)
 	})
 	
 	
 	function setCollaboratorsSettingsPage() {
-		const contentURL = '/admin/collaborators/' + mainAdminPageContext.databaseID
+		const contentURL = '/admin/collaborators/' + pageContext.databaseID
 	
 		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 		        $('#contentPageSection').html(pageContentData);
-				initCollaboratorsSettingsPageContent(mainAdminPageContext)
+				initCollaboratorsSettingsPageContent(pageContext)
 		});
 		
 	}
-	registerPageContentLoader("collaborators",'/admin/collaborators/' + mainAdminPageContext.databaseID,function() {
-		initCollaboratorsSettingsPageContent(mainAdminPageContext)
+	registerPageContentLoader("collaborators",'/admin/collaborators/' + pageContext.databaseID,function() {
+		initCollaboratorsSettingsPageContent(pageContext)
 	})
 	
 	
 	function setGlobalsSettingsPage() {
-		const contentURL = '/admin/globals/' + mainAdminPageContext.databaseID
+		const contentURL = '/admin/globals/' + pageContext.databaseID
 	
 		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 		        $('#contentPageSection').html(pageContentData);
-				initGlobalSettingsPageContent(mainAdminPageContext)
+				initGlobalSettingsPageContent(pageContext)
 		});
 		
 	}
@@ -196,8 +196,6 @@ $(document).ready(function() {
 		
 	}
 	
-	initAdminSettingsPageLayout($('#mainAdminPage'))
-	
 	function getLinkIDAnchorName() {
 		var linkID = window.location.hash.substr(1);
 		if (linkID === null || linkID.length === 0) {
@@ -206,14 +204,14 @@ $(document).ready(function() {
 		return linkID
 	}
 		
-	initAdminPageHeader(mainAdminPageContext.isSingleUserWorkspace)
+	initAdminPageHeader(pageContext.isSingleUserWorkspace)
 	
 	const currAnchorLinkID = getLinkIDAnchorName()
 	
-	initAdminSettingsTOC(mainAdminPageContext.databaseID,
-		currAnchorLinkID,mainAdminPageContext.isSingleUserWorkspace,setSettingsPage)
+	initAdminSettingsTOC(pageContext.databaseID,
+		currAnchorLinkID,setSettingsPage)
 			
 	setSettingsPage(currAnchorLinkID)
 		
 				
-})
+}

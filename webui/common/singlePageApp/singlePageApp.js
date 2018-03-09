@@ -91,6 +91,15 @@ function setMainWindowPageContent(contentConfig,initDoneCallback) {
 			contentFunc: setRHSSidebarContent
 		})
 	}
+	
+	if (contentConfig.hasOwnProperty("lhsSidebarContentURL")) {
+		numContentSections++
+		contentSections.push({
+			contentURL: contentConfig.lhsSidebarContentURL,
+			contentFunc: setLHSSidebarContent
+		})
+	}
+	
 
 	if (contentConfig.hasOwnProperty("offPageContentURL")) {
 		numContentSections++

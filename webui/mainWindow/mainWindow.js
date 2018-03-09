@@ -14,6 +14,13 @@ $(document).ready(function() {
 		})
 	}
 	
+	function loadSettingsPageContent() {
+		theMainWindowLayout.disableRHSSidebar()		
+		setMainWindowContent('/homePage',function() {
+			initHomePageSignedInPageContent(mainWindowContext)
+		})
+	}
+	
 	function loadHomePageSignedOut() {
 		initHomePagePublicPageContent(mainWindowContext)
 	}
@@ -43,8 +50,6 @@ $(document).ready(function() {
 		loadExistingItemView(mainWinLayout,mainWindowContext.databaseID,params)
 		
 	})
-*/	
-	
-//	hideSiblingsShowOne('#listViewProps')
+*/
 					
 }); // document ready

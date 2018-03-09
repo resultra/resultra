@@ -81,8 +81,7 @@ function navigateToTracker(trackerInfo) {
 	var headerButtonsContentURL = "/common/trackerTOC/headerButtons/" + databaseID
 	setMainWindowHeaderButtonsContent(headerButtonsContentURL,function() {
 		
-		function seeAllAlertsClicked() {
-			
+		function seeAllAlertsClicked() {	
 			var contentConfig = {
 				mainContentURL: "/alertListView/contentLayout"
 			}
@@ -93,6 +92,30 @@ function navigateToTracker(trackerInfo) {
 			})	
 		}
 		initAlertHeader(databaseID,seeAllAlertsClicked)
+		
+		function loadSettingsPageContent() {
+			theMainWindowLayout.disableRHSSidebar()	
+			
+			var contentConfig = {
+				mainContentURL: '/admin/'+databaseID,
+				lhsSidebarContentURL: "/admin/common/settingsTOC",
+				offPageContentURL: "/admin/offPageContent"
+			}
+		
+			setMainWindowPageContent(contentConfig,function() {
+				var pageContext = {
+					databaseID: databaseID
+				} // TODO - pass as parameter
+				initTrackerAdminPageContent(pageContext)
+			})				
+		}
+		var $adminButton = $("#adminSettingsHeaderButton")
+		$adminButton.click(function(e) {
+			e.preventDefault()
+			$adminButton.blur()
+			loadSettingsPageContent()
+		})
+		
 		
 	})
 	
