@@ -24,6 +24,27 @@
 {{end}}
 
 
+{{define "itemListPagingControls"}}
+<form class="form-inline">
+		
+	<button class="btn btn-default btn-sm" id="prevRecordButton">Previous</button>
+	<span id="recordNumLabel">&nbsp;</span>
+	<button class="btn btn-default btn-sm" id="nextRecordButton">Next </button>
+	
+</form>
+	
+{{end}}
+
+{{define "viewListFooterControls"}}
+<div class="container-fluid" id="viewListFooterControls">
+	<div class="row">
+		<div class="col-sm-12">
+			{{template "itemListPagingControls"}}
+		</div>
+	</div>
+</div> <!-- record footer grid -->
+{{end}}
+
 {{define "listViewContentLayout"}}
 
 	<div id="listViewContentLayout" style="height:100%;">
@@ -40,7 +61,8 @@
 		
 			</div> <!-- ui-layout-center #recordHeader -->
 	
-			<div class=" ui-layout-south" id="mainWindowContentFooterUILayout" >
+			<div class=" ui-layout-south" id="itemListContentFooterUILayout" >
+				{{template "viewListFooterControls"}}
 			</div>  <!-- #recordFooterUILayout ui-layout-south -->
 			
 			<!-- The style is overridden on the #recordHeader and semantic UI

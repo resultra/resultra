@@ -10,23 +10,24 @@ function ItemListContentLayout() {
 		},
 		north: fixedUILayoutPaneAutoSizeToFitContentsParams(),
 		south: {
-			size: 44,
+			size: 40,
 			resizable:false,
 			slidable: false,
 			spacing_open:0,
 			spacing_closed:0,
-			initClosed:true // panel is initially closed	
+			initClosed:false,
+			fxName:"none"	
 		},
 		north__showOverflowOnHover:	true,
 		south__showOverflowOnHover:	true
 	})
 	
 	function hideFooterLayout() {
-		contentLayout.close("south")
+		contentLayout.hide("south")
 	}
 	
 	function showFooterLayout() {
-		contentLayout.open("south")
+		contentLayout.show("south")
 	}
 	
 	
@@ -44,8 +45,6 @@ function ItemListContentLayout() {
 	function setCenterContentHeader(header) {
 		var $header = $('#itemListCenterContentHeader')
 		$header.text(header)
-	//	var $breadcrumb = $('#trackerLocationBreadcrumb')
-	//	$breadcrumb.text(header)
 	}
 	
 	initButtonClickHandler("#viewTableOfContentsMenuButton", function() {

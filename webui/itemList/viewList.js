@@ -143,7 +143,7 @@ function initItemListView(itemListLayout, listInfo) {
 	function updateViewConfig(viewOptions) {
 		console.log("Updating item list view configuration: " + JSON.stringify(viewOptions))
 		if(viewOptions.formID !== undefined) {
-//			itemListLayout.showFooterLayout()
+			itemListLayout.showFooterLayout()
 			listItemController.setFormAndPageSize(viewOptions.formID,viewOptions.pageSize)
 			$formLayoutContainer.show()
 			$tableViewLayoutContainer.css("display","none")
@@ -152,7 +152,7 @@ function initItemListView(itemListLayout, listInfo) {
 			$formLayoutContainer.hide()
 			var sortRules = getSortPaneSortRules()
 			tableViewController.setTable(viewOptions.tableID,sortRules)
-	//		itemListLayout.hideFooterLayout()	
+			itemListLayout.hideFooterLayout()	
 		}
 	}
 
@@ -185,11 +185,7 @@ function loadItemListView(itemListLayout,databaseID, listID) {
 	
 	hideSiblingsShowOne('#listViewPropsSidebar')
 	hideSiblingsShowOne('#listViewProps')
-	hideSiblingsShowOne('#formViewContainer')
-	hideSiblingsShowOne("#viewListFooterControls")
-//	itemListLayout.showFooterLayout()
-//	itemListLayout.enablePropertySidebar()
-//	itemListLayout.enablePropertyPanelToggleButton()
+	itemListLayout.showFooterLayout()
 	
 	viewListContext = {
 			listID:listID,

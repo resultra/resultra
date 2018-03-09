@@ -7,7 +7,7 @@
 	margin-bottom:5px;
 }
 
-#itemListContentHeaderUILayout
+#itemListContentHeaderUILayout, #itemListContentFooterUILayout
 {
 	padding: 4px; /* override jQuery UI Layout padding */
 	background-color: #EEEEEE;
