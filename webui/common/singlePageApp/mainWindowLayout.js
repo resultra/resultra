@@ -137,20 +137,10 @@ function MainWindowLayout()
 	hideRHSSidebar()
 	hideLHSSidebar()
 
-/*	
-	function clearCenterContentArea() {
-		// Clear any event handlers which are attached to the layout-specific events.
-		$(window).off(resizeMainWindowPanesEventName)
-		$('#contentLayoutContainer').find(".clearableViewContent").empty()
+	
+	function rhsSidebarIsOpen() {
+		return (!mainLayout.state.east.isClosed)
 	}
-	
-	function clearSidebarNavigationSelection() {
-		$('#viewFormTocLayout').find('li').removeClass("active")
-	}
-	
-	
-*/
-	
 
 	
 //	this.hideFooterLayout = hideFooterLayout
@@ -167,6 +157,7 @@ function MainWindowLayout()
 	this.toggleLHSSidebar = toggleLHSSidebar
 	this.disableLHSSidebar = disableLHSSidebar
 	this.disableRHSSidebar = disableRHSSidebar
+	this.rhsSidebarIsOpen = rhsSidebarIsOpen
 	
 //	this.clearCenterContentArea = clearCenterContentArea
 //	this.setCenterContentHeader = setCenterContentHeader

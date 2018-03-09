@@ -53,6 +53,22 @@ function ItemListContentLayout() {
 		theMainWindowLayout.toggleLHSSidebar()
 	})
 	
+	initButtonClickHandler("#viewListOptionsButton", function() {
+		
+		var $iconSpan = $('#viewListOptionsButton > span')
+		if(theMainWindowLayout.rhsSidebarIsOpen()) {
+			$iconSpan.removeClass("fa-toggle-right")
+			$iconSpan.addClass("fa-toggle-left")
+			theMainWindowLayout.closeRHSSidebar()
+		} else {
+			$iconSpan.removeClass("fa-toggle-left")
+			$iconSpan.addClass("fa-toggle-right")
+			theMainWindowLayout.openRHSSidebar()	
+		}
+	})
+	
+	
+	
 	
 	this.showFooterLayout = showFooterLayout
 	this.hideFooterLayout = hideFooterLayout
