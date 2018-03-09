@@ -185,7 +185,7 @@ function loadItemListView(itemListLayout,databaseID, listID) {
 	
 	hideSiblingsShowOne('#listViewPropsSidebar')
 	hideSiblingsShowOne('#listViewProps')
-	itemListLayout.showFooterLayout()
+	itemListLayout.refreshToggleButtonIcon()
 	
 	viewListContext = {
 			listID:listID,

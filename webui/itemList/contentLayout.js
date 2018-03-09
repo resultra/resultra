@@ -52,9 +52,11 @@ function ItemListContentLayout() {
 		theMainWindowLayout.toggleLHSSidebar()
 	})
 	
+	
+	
 	initButtonClickHandler("#viewListOptionsButton", function() {
-		
 		var $iconSpan = $('#viewListOptionsButton > span')
+		
 		if(theMainWindowLayout.rhsSidebarIsOpen()) {
 			$iconSpan.removeClass("fa-toggle-right")
 			$iconSpan.addClass("fa-toggle-left")
@@ -66,6 +68,21 @@ function ItemListContentLayout() {
 		}
 	})
 	
+	// This method will refresh the icon on the sidebar toggle button
+	// to match the current state of the RHS sidebar. This is needed
+	// when switching between lists and the icon may need initializing.
+	function refreshToggleButtonIcon() {
+		var $iconSpan = $('#viewListOptionsButton > span')
+		
+		if(theMainWindowLayout.rhsSidebarIsOpen()) {
+			$iconSpan.removeClass("fa-toggle-left")
+			$iconSpan.addClass("fa-toggle-right")
+		} else {
+			$iconSpan.removeClass("fa-toggle-right")
+			$iconSpan.addClass("fa-toggle-left")
+		}
+	}
+	
 	
 	
 	
@@ -73,5 +90,6 @@ function ItemListContentLayout() {
 	this.hideFooterLayout = hideFooterLayout
 	this.enableRefreshButton = enableRefreshButton
 	this.setCenterContentHeader = setCenterContentHeader
+	this.refreshToggleButtonIcon = refreshToggleButtonIcon
 	
 }
