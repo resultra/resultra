@@ -29,8 +29,8 @@ function MainWindowLayout()
 			size: 300,
 			resizable:false,
 			slidable: false,
-			spacing_open:4,
-			spacing_closed:4,
+			spacing_open:0,
+			spacing_closed:0,
 			initClosed:true
 			
 		},
@@ -38,8 +38,8 @@ function MainWindowLayout()
 			size: 250,
 			resizable:false,
 			slidable: false,
-			spacing_open:4,
-			spacing_closed:4,
+			spacing_open:0,
+			spacing_closed:0,
 			initClosed:true,
 			fxName: "none"
 		}
