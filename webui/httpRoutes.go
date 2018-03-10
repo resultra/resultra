@@ -15,7 +15,7 @@ import (
 	"resultra/datasheet/webui/templatePage"
 	"resultra/datasheet/webui/userAdmin"
 
-	"resultra/datasheet/webui/common/trackerTOC"
+	"resultra/datasheet/webui/common/trackerPageContent"
 
 	"resultra/datasheet/webui/workspaceAdmin/general"
 	"resultra/datasheet/webui/workspaceAdmin/users"
@@ -37,7 +37,7 @@ func init() {
 	dashboardView.RegisterHTTPHandlers(router)
 	alertListView.RegisterHTTPHandlers(router)
 
-	trackerTOC.RegisterHTTPHandlers(router)
+	trackerPageContent.RegisterHTTPHandlers(router)
 
 	general.RegisterHTTPHandlers(router)
 	users.RegisterHTTPHandlers(router)

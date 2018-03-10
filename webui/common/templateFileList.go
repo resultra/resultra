@@ -15,7 +15,7 @@ import (
 	"resultra/datasheet/webui/common/recordSort"
 	"resultra/datasheet/webui/common/singlePageApp"
 	"resultra/datasheet/webui/common/timeline"
-	"resultra/datasheet/webui/common/trackerTOC"
+	"resultra/datasheet/webui/common/trackerPageContent"
 	"resultra/datasheet/webui/common/userAuth"
 	"resultra/datasheet/webui/common/valueList"
 	"resultra/datasheet/webui/common/valueThreshold"
@@ -30,7 +30,7 @@ func init() {
 	TemplateFileList = append(TemplateFileList, attachment.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, formulaEditor.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, recordFilter.TemplateFileList...)
-	TemplateFileList = append(TemplateFileList, trackerTOC.TemplateFileList...)
+	TemplateFileList = append(TemplateFileList, trackerPageContent.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, recordSort.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, field.TemplateFileList...)
 	TemplateFileList = append(TemplateFileList, helpMenu.TemplateFileList...)

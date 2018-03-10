@@ -1,6 +1,6 @@
 {
     "subDirs": [
-		"trackerTOC",
+		"trackerPageContent",
 		"formulaEditor",
 		"componentLayout",
 		"objectSelection",

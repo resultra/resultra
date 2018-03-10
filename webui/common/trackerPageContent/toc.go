@@ -1,4 +1,4 @@
-package trackerTOC
+package trackerPageContent
 
 import (
 	"html/template"
@@ -10,7 +10,7 @@ var tocTemplates *template.Template
 
 func init() {
 
-	baseTemplateFiles := []string{"static/common/trackerTOC/toc.html"}
+	baseTemplateFiles := []string{"static/common/trackerPageContent/toc.html"}
 
 	templateFileLists := [][]string{baseTemplateFiles}
 

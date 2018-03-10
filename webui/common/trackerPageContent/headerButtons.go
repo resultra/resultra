@@ -1,4 +1,4 @@
-package trackerTOC
+package trackerPageContent
 
 import (
 	"github.com/gorilla/mux"
@@ -15,7 +15,7 @@ var headerTemplates *template.Template
 
 func init() {
 
-	baseTemplateFiles := []string{"static/common/trackerTOC/headerButtons.html"}
+	baseTemplateFiles := []string{"static/common/trackerPageContent/headerButtons.html"}
 
 	templateFileLists := [][]string{baseTemplateFiles,
 		alert.TemplateFileList}
