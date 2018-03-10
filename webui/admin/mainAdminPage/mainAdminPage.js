@@ -1,5 +1,5 @@
 
-function initTrackerAdminPageContent(pageContext) {
+function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	
 	function setGeneralSettingsPage() {
 		const contentURL = '/admin/general/' + pageContext.databaseID
@@ -213,5 +213,33 @@ function initTrackerAdminPageContent(pageContext) {
 			
 	setSettingsPage(currAnchorLinkID)
 		
+	resetWorkspaceBreadcrumbHeader()
+	appendMainWindowContentSpecificBreadcrumbHeader(trackerInfo.databaseName,function() {
+			navigateToTracker(pageContext,trackerInfo)
+	})
+	appendMainWindowContentSpecificBreadcrumbHeader("Settings",function() {
+			navigateToAdminSettingsPageContent(pageContext,trackerInfo)
+	})
+	
 				
+}
+
+
+function navigateToAdminSettingsPageContent(pageContext,trackerInfo) {
+	
+	theMainWindowLayout.disableRHSSidebar()	
+	
+	var contentConfig = {
+		mainContentURL: '/admin/'+pageContext.databaseID,
+		lhsSidebarContentURL: "/admin/common/settingsTOC",
+		offPageContentURL: "/admin/offPageContent"
+	}
+
+	setMainWindowPageContent(contentConfig,function() {
+		var trackerPageContext = {
+			databaseID: trackerInfo.databaseID,
+			isSingleUserWorkspace:pageContext.isSingleUserWorkspace
+		} 
+		initTrackerAdminPageContent(trackerPageContext,trackerInfo)
+	})				
 }

@@ -1,4 +1,4 @@
-function navigateToTracker(trackerInfo) {
+function navigateToTracker(pageContext,trackerInfo) {
 	
 	const databaseID = trackerInfo.databaseID
 	
@@ -92,27 +92,11 @@ function navigateToTracker(trackerInfo) {
 		}
 		initAlertHeader(databaseID,seeAllAlertsClicked)
 		
-		function loadSettingsPageContent() {
-			theMainWindowLayout.disableRHSSidebar()	
-			
-			var contentConfig = {
-				mainContentURL: '/admin/'+databaseID,
-				lhsSidebarContentURL: "/admin/common/settingsTOC",
-				offPageContentURL: "/admin/offPageContent"
-			}
-		
-			setMainWindowPageContent(contentConfig,function() {
-				var pageContext = {
-					databaseID: databaseID
-				} // TODO - pass as parameter
-				initTrackerAdminPageContent(pageContext)
-			})				
-		}
 		var $adminButton = $("#adminSettingsHeaderButton")
 		$adminButton.click(function(e) {
 			e.preventDefault()
 			$adminButton.blur()
-			loadSettingsPageContent()
+			navigateToAdminSettingsPageContent(pageContext,trackerInfo)
 		})
 		
 		
@@ -120,7 +104,7 @@ function navigateToTracker(trackerInfo) {
 	
 	resetWorkspaceBreadcrumbHeader()
 	appendMainWindowContentSpecificBreadcrumbHeader(trackerInfo.databaseName,function() {
-		navigateToTracker(trackerInfo)
+		navigateToTracker(pageContext,trackerInfo)
 	})
 		
 }

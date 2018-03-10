@@ -1,5 +1,5 @@
 function initHomePageSignedInPageContent(pageContext) {	
 	
-	initTrackerList()
+	initTrackerList(pageContext)
 		
 }

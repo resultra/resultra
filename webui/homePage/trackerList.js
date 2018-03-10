@@ -1,7 +1,7 @@
 
 
 
-function addTrackerListItem(trackerInfo) {
+function addTrackerListItem(pageContext,trackerInfo) {
 
 	var $trackerList = $("#myTrackerList")
 
@@ -17,7 +17,7 @@ function addTrackerListItem(trackerInfo) {
 		
 		$nameLabel.click(function() {
 		 	   console.log("tracker link clicked")
-			navigateToTracker(trackerInfo)
+			navigateToTracker(pageContext,trackerInfo)
 		})
 		
 	} else {
@@ -40,7 +40,7 @@ function addTrackerListItem(trackerInfo) {
 
 
 
-function initTrackerList() {
+function initTrackerList(pageContext) {
 	
 	var $trackerList = $("#myTrackerList")
 
@@ -53,7 +53,7 @@ function initTrackerList() {
 			$trackerList.empty()
 			for (var trackerIndex=0; trackerIndex<trackerList.length; trackerIndex++) {	
 				var trackerInfo = trackerList[trackerIndex]
-				addTrackerListItem(trackerInfo)
+				addTrackerListItem(pageContext,trackerInfo)
 			}
 		})
 	}
