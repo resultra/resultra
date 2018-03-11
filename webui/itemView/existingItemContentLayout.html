@@ -1,0 +1,82 @@
+{{define "existingItemHeaderControls"}}
+<div class="container-fluid" id="recordHeaderGrid">
+	<div class="row">
+		<div class= "col-sm-2 paddingLeft5">
+			<button type="button" class="btn btn-default btn-sm" id="viewTableOfContentsMenuButton">
+			  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+			</button>
+		</div> <!-- column -->
+		<div class= "col-sm-8"  id="existingItemCenterContentHeaderCol">
+			<h4 id="existingItemCenterContentHeader"></h4>
+		</div> <!-- column -->
+		<div class= "col-sm-2 paddingRight5">
+			<div class="pull-right">
+			</div>
+		</div> <!-- column -->
+	</div> <!-- row -->
+</div> <!-- #recordHeaderGrid  -->
+{{end}}
+
+
+{{define "existingItemPageFooterControls"}}
+<div class="container-fluid" id="existingItemViewFooterControls">
+	<div class="row">
+		<div class= "col-sm-2">
+			<div>
+				<button type="button" class="btn btn-default btn-sm marginRight10" 
+						id="viewFormPageBackButton">Back</button>
+				<button type="button" class="btn btn-primary btn-sm" 
+						id="viewFormPageSaveButton">Save</button>
+			</div>
+		</div> <!-- column -->
+		<div class= "col-sm-8">
+		</div> <!-- column -->
+		<div class= "col-sm-2">
+		</div> <!-- column -->
+	</div> <!-- row -->
+</div> <!-- #recordHeaderGrid  -->
+{{end}}
+
+{{define "existingItemContentLayout"}}
+
+	<div id="existingItemContentLayout" style="height:100%;">
+			<div class="ui-layout-center" id="recordViewPane">
+								
+				<form class="ui form" id="editLayoutForm" name="editLayoutForm">
+					<div class="layoutPageDiv" id="contentLayoutContainer">
+						<div id="viewFormPageLayoutCanvas"></div>	
+					</div>	
+				</form>
+				<div id="viewFormPageLayoutCanvas"></div>
+		
+			</div> <!-- ui-layout-center #recordHeader -->
+	
+			<div class=" ui-layout-south" id="existingItemContentFooterUILayout" >
+				{{ template "existingItemPageFooterControls"}}
+			</div>  <!-- #recordFooterUILayout ui-layout-south -->
+			
+			<!-- The style is overridden on the #recordHeader and semantic UI
+			     grid divs to minimize the padding, so the buttons and selection
+				 will be relatively compact within the header.
+				
+				It's also important for the ui-layout-north pane to come *last*
+				in the HTML. This ensures the Z-order is setup so the menues in 
+				the header can overflow the panes below it. See the jQuery UI
+				layout documentation for more discussion on this.
+				
+				http://layout.jquery-dev.com/documentation.cfm#Drop-Downs	
+			-->
+			<div class="ui-layout-north" id="existingItemContentHeaderUILayout">
+				{{template "existingItemHeaderControls"}}
+			</div> <!-- ui-layout-north #recordHeaderUILayout -->
+	</div>
+
+
+{{end}}
+
+{{define "existingItemOffPageContent"}}
+	{{template "submitFormSaveConfirmation"}}
+	{{template "submitFormDialog"}}
+	{{template "attachmentTemplates"}}
+	{{template "formButtonPopupFormDialog"}}
+{{end}}

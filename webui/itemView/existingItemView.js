@@ -1,17 +1,18 @@
-function loadExistingItemView(pageLayout,databaseID,viewItemConfig) {
+function loadExistingItemViewPageContent(viewItemConfig) {
 		
 	GlobalFormPagePrivs = "edit"
 	
-	pageLayout.clearCenterContentArea()
-	hideSiblingsShowOne("#existingItemViewFooterControls")
-	hideSiblingsShowOne("#viewFormPageLayoutCanvas")
-	pageLayout.showFooterLayout()
-	pageLayout.disablePropertySidebar()
-	pageLayout.disableRefreshButton()
+	theMainWindowLayout.disableRHSSidebar()
 	
-	pageLayout.setCenterContentHeader(viewItemConfig.title)
-	
-	getRecordRefAndChangeSetID(viewItemConfig,initRecordFormView)
+	var contentConfig = {
+		mainContentURL: "/itemView/existingItemContentLayout",
+		offPageContentURL: "/itemView/existingItemOffPageContent"
+	}
+	setMainWindowPageContent(contentConfig,function() {
+		var contentLayout = new ExistingItemContentLayout()
+		contentLayout.setCenterContentHeader(viewItemConfig.title)
+		getRecordRefAndChangeSetID(viewItemConfig,initRecordFormView)
+	})
 	
 	
 }

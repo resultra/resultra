@@ -17,6 +17,15 @@ function navigateToTracker(pageContext,trackerInfo) {
 			loadItemListView(contentLayout,databaseID,listID)
 			$tocItem.addClass("active")
 			
+			// Listen for events to view a specific record/item in a particular form. This happens in response to
+			// clicks to a form button deeper down in the DOM.
+			$('#listViewContentLayout').on(viewFormInViewportEventName,function(e,params) {
+				e.stopPropagation()
+				console.log("Got formButton load form event: " + JSON.stringify(params))		
+				loadExistingItemViewPageContent(params)
+			})
+			
+			
 		})
 	}
 	
