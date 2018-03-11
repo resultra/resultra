@@ -24,16 +24,6 @@ function addTrackerListItem(pageContext,trackerInfo) {
 		$nameLabel.addClass("disabledTrackerLink")
 	}
 
-	var $settingsLink = $listItem.find(".adminEditPropsButton")
-
-	if (trackerInfo.isAdmin) {
-		var editPropsLink = '/admin/' + trackerInfo.databaseID
-		$settingsLink.attr('href',editPropsLink)
-		$settingsLink.tooltip()
-	} else {
-		$settingsLink.hide()
-	}
-
 	$trackerList.append($listItem)
 
 }
