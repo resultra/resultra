@@ -1,3 +1,20 @@
+{{define "designDashboardHeaderControls"}}
+<div class="container-fluid" id="recordHeaderGrid">
+	<div class="row">
+		<div class= "col-sm-2 paddingLeft5">
+			<button type="button" class="btn btn-default btn-sm" id="viewTableOfContentsMenuButton">
+			  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+			</button>
+		</div> <!-- column -->
+		<div class= "col-sm-8"  id="designDashboardCenterContentHeaderCol">
+			<h4 id="designDashboardCenterContentHeader">Dashboard Designer</h4>
+		</div> <!-- column -->
+		<div class= "col-sm-2 paddingRight5">
+		</div> <!-- column -->
+	</div> <!-- row -->
+</div> <!-- #recordHeaderGrid  -->
+{{end}}
+
 
 {{define "dashboardDesignPropertiesSidebar"}}
 
@@ -17,67 +34,29 @@
 	</div>
 {{end}}
 
-{{define "designDashboard"}}
-<!DOCTYPE html>
-<html>
-
-  <head>
-    <title>{{.Title}}</title>
-	
-	{{template "electronImportPrefix"}}
-	
-	
-	{{template "thirdPartyCSS"}}
-	{{template "dashboardCommonIncludeCSS"}}
-
-	<!-- designDashboardAssets:css -->
-	<!-- endinject -->
-
-	{{template "thirdPartyJS"}}
-	
-	{{template "dashboardCommonIncludeJS"}}
-		
-	<script>var dashboardID={{.DashboardID}};</script>
-	<script>var databaseID={{.DatabaseID}};</script>
-	<script>var designDashboardContext = { 
-		dashboardID: "{{.DashboardID}}",
-		dashboardName: "{{.DashboardName}}",
-		databaseID: "{{.DatabaseID}}",
-		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} }</script>
-	
-	<!-- designDashboardAssets:js -->
-	<!-- endinject -->
-	
-	
-  </head>
-  
-  <body>
-		<div id="designDashboardPage" class="layoutPageDiv">
+{{define "designDashboardMainContent"}}
+		<div id="designDashboardLayoutContent">
 			
-			<div class="pane ui-layout-north adminPageHeader" id="designDashboardPageHeaderUILayout">
-				{{template "adminPageHeader" .}}
+			<div class="pane ui-layout-north" id="designDashboardPageHeaderUILayout">
+				{{template "designDashboardHeaderControls"}}
 			</div> <!-- north ui layout -->
+					
+			<div id="dashboardCanvas" class="pane ui-layout-center droppable">
+			</div>
 			
-			<div id="dashboardPaletteSidebar" class="pane ui-layout-west paletteSidebar">
+			<div id="designDashboardPageFooterUILayout" class="pane ui-layout-south" style="z-index:99 !important;">
 				{{template "dashboardDesignPalette"}}
 			</div>
-		
-			<div id="dashboardCanvas" class="pane ui-layout-center droppable"></div>
-					
-			<div class="pane ui-layout-east noPadding">
-				{{template "dashboardDesignPropertiesSidebar" .}}
-			</div>
 			
+								
 		</div>
-	   
+{{end}}
+
+{{define "designDashboardOffpageContent"}}
 	{{template "newBarChartDialog" .ComponentParams.BarChartParams}}      
 	{{template "newSummaryTableDialog" .ComponentParams.SummaryTableParams}}
 	{{template "newGaugeDialog" .ComponentParams.GaugeParams}}
 	{{template "newSummaryValDialog" .ComponentParams.SummaryValParams}}
 	{{template "confirmDeleteDialog"}}
-	   
-  </body>
-  
-</html>
 
 {{end}}

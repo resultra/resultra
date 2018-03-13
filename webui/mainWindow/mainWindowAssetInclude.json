@@ -5,6 +5,8 @@
 		"../itemList",
 		"../dashboard/common",
 		"../dashboard/components",
+		"../dashboard/design",
+		"../dashboard/design/properties",
 		"../dashboard/view",
 		"../itemView",
 		"../alertListView",

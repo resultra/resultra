@@ -1,37 +1,29 @@
 var adminDashboardListElemPrefix = "adminDashboardList_"
 
 
-function dashboardDesignPageHTMLLink(dashboardID) {
-	return '/admin/dashboard/' + dashboardID
-}
 
-function adminDashboardListButtonsHTML(dashboardInfo) {
-return '' +
-			'<div class="pull-right adminDashboardListButtons">' + 
-				'<a class="btn btn-xs btn-default" href="' + dashboardDesignPageHTMLLink(dashboardInfo.dashboardID) + 
-					'" role="button">' + 
-					'<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>' +
-				'</a>' + 
-		'</div>';
-}
-
-
-function addDashboardToAdminDashboardList(dashboardInfo) {
+function addDashboardToAdminDashboardList(pageContext,dashboardInfo) {
 	 
 	var dashboardListDashboardID = adminDashboardListElemPrefix + dashboardInfo.dashboardID
+		
+	var $listItem = $('#adminDashboardListItemTemplate').clone()
+	$listItem.attr("id",dashboardListDashboardID)
+	$listItem.attr('data-dashboardID',dashboardInfo.dashboardID)
 	
-	var dashboardListItemHTML = '<li class="list-group-item dashboardListItem" id="' + dashboardListDashboardID + '">' + 
-		dashboardInfo.name +
-		adminDashboardListButtonsHTML(dashboardInfo) +
-	 '</li>'
+	$listItem.find(".adminDashboardListDashboardName").text(dashboardInfo.name)
 	
-	var $dashboardListItem = $(dashboardListItemHTML)
-	$dashboardListItem.attr('data-dashboardID',dashboardInfo.dashboardID)
-	
-	$('#adminDashboardList').append($dashboardListItem)		
+	var $editButton = $listItem.find(".adminDashboardListEditDashboardButton")
+	$editButton.click(function(e) {
+		e.preventDefault()
+		$editButton.blur()
+		navigateToDashboardDesignerPageContent(pageContext,dashboardInfo)
+	})
+	// TODO - initialize button
+		
+	$('#adminDashboardList').append($listItem)		
 }
 
-function initAdminDashboardSettings(databaseID) {
+function initAdminDashboardSettings(pageContext) {
 	
 	var $dashboardList =  $("#adminDashboardList")
 	
@@ -46,7 +38,7 @@ function initAdminDashboardSettings(databaseID) {
 				dashboardOrder.push(dashboardID)
 			})
 			var setOrderParams = {
-				databaseID:databaseID,
+				databaseID:pageContext.databaseID,
 				dashboardOrder: dashboardOrder
 			}
 			console.log("New dashboard sort order:" + JSON.stringify(dashboardOrder))
@@ -58,14 +50,14 @@ function initAdminDashboardSettings(databaseID) {
     });
 	
 	
-	var getDBInfoParams = { databaseID: databaseID }
+	var getDBInfoParams = { databaseID: pageContext.databaseID }
 	jsonAPIRequest("database/getInfo",getDBInfoParams,function(dbInfo) {
 		console.log("Got database info: " + JSON.stringify(dbInfo))
 		
 		$dashboardList.empty()
 		for (var dashboardInfoIndex = 0; dashboardInfoIndex < dbInfo.dashboardsInfo.length; dashboardInfoIndex++) {
 			var dashboardInfo = dbInfo.dashboardsInfo[dashboardInfoIndex]
-			addDashboardToAdminDashboardList(dashboardInfo)
+			addDashboardToAdminDashboardList(pageContext,dashboardInfo)
 		}
 		
 	})
@@ -73,7 +65,7 @@ function initAdminDashboardSettings(databaseID) {
 	
 	initButtonClickHandler('#adminNewDashboardButton',function() {
 		console.log("New form button clicked")
-		openNewDashboardDialog(databaseID)
+		openNewDashboardDialog(pageContext.databaseID)
 	})
 	
 	

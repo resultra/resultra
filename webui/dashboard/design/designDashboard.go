@@ -37,7 +37,7 @@ func init() {
 	designDashboardTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
-func DesignDashboard(w http.ResponseWriter, r *http.Request) {
+func designDashboardMainContent(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	dashboardID := vars["dashboardID"]
@@ -67,7 +67,81 @@ func DesignDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := designDashboardTemplates.ExecuteTemplate(w, "designDashboard", *templParams)
+	err := designDashboardTemplates.ExecuteTemplate(w, "designDashboardMainContent", *templParams)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+}
+
+func designDashboardOffpageContent(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	dashboardID := vars["dashboardID"]
+	log.Println("Design Dashboard: editing for dashboard with params = %+v", vars)
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	dashboardForDesign, getErr := dashboard.GetDashboard(trackerDBHandle, dashboardID)
+	if getErr != nil {
+		api.WriteErrorResponse(w, getErr)
+		return
+	}
+
+	templParams, templErr := createDashboardTemplateParams(r, dashboardForDesign, workspaceName)
+	if templErr != nil {
+		api.WriteErrorResponse(w, templErr)
+		return
+	}
+
+	err := designDashboardTemplates.ExecuteTemplate(w, "designDashboardOffpageContent", *templParams)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+}
+
+func designDashboardSidebarContent(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	dashboardID := vars["dashboardID"]
+	log.Println("Design Dashboard: editing for dashboard with params = %+v", vars)
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		api.WriteErrorResponse(w, dbErr)
+		return
+	}
+
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	dashboardForDesign, getErr := dashboard.GetDashboard(trackerDBHandle, dashboardID)
+	if getErr != nil {
+		api.WriteErrorResponse(w, getErr)
+		return
+	}
+
+	templParams, templErr := createDashboardTemplateParams(r, dashboardForDesign, workspaceName)
+	if templErr != nil {
+		api.WriteErrorResponse(w, templErr)
+		return
+	}
+
+	err := designDashboardTemplates.ExecuteTemplate(w, "dashboardDesignPropertiesSidebar", *templParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

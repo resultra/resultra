@@ -1,6 +1,48 @@
 
+#designDashboardCenterContentHeaderCol {
+	 text-align:center;
+}
 
-/* Override jQuery UI Layout's default padding */
+#designDashboardCenterContentHeader {
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+#designDashboardPageHeaderUILayout
+{
+	padding: 4px; /* override jQuery UI Layout padding */
+	background-color: #EEEEEE;
+}
+
+#designDashboardPageFooterUILayout {
+	padding: 4px; /* override jQuery UI Layout padding */
+}
+
+
+#designDashboardPaletteItems {
+	display: inline-block;
+	width:100%;
+	white-space:nowrap;
+	overflow-x:auto;
+	overflow-y:hidden;
+	padding:0px;
+/*	height:100px; */
+}
+
+#designDashboardPaletteItems .paletteItem {
+	width:100px;
+	display:inline-block;
+	vertical-align:top;
+}
+
+#designDashboardLayoutContent {
+	position: absolute;
+	top: 0;
+	bottom:0;
+	left:0;
+	right:0;
+}
+
 #designDashboardPropertiesSidebarContent {
-	padding:0;
+	padding:0px;
 }

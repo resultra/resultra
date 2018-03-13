@@ -1,5 +1,5 @@
 function initDashboardsAdminSettingsPageContent(pageContext) {
 	
-	initAdminDashboardSettings(pageContext.databaseID)
+	initAdminDashboardSettings(pageContext)
 	
 }

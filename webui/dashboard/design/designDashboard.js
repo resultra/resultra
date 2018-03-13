@@ -7,15 +7,19 @@ var dashboardPaletteItemsEditConfig = {
 }
 
 
-$(document).ready(function() {
+// TODO - designDashboardContext is used as a global by dashboard components in the dashboard designer.
+// The code needs to be enhanced to eliminate dependencies on this global.
+var designDashboardContext
+
+function initDesignDashboardPageContent(pageContext,dashboardInfo) {
+		
+	designDashboardContext = { 
+		dashboardID: dashboardInfo.dashboardID,
+		dashboardName: dashboardInfo.name,
+		databaseID: dashboardInfo.parentDatabaseID,
+		isSingleUserWorkspace: pageContext.isSingleUserWorkspace }
 	
-	initAdminPageHeader(designDashboardContext.isSingleUserWorkspace)
-	
-	appendPageSpecificBreadcrumbHeader("/admin/dashboards/"+designDashboardContext.databaseID,"Dashboards")
-	appendPageSpecificBreadcrumbHeader("/admin/dashboard/"+designDashboardContext.dashboardID,
-					designDashboardContext.dashboardName)
-	
-	
+		
 	var layoutDesignConfig = createDashboardLayoutDesignConfig()
 	
 	var paletteConfig = {
@@ -67,11 +71,15 @@ $(document).ready(function() {
 	initNewBarChartDialog(designDashboardContext)
 						
 	// Initialize the page layout
-	$('#designDashboardPage').layout({
-		north: fixedUILayoutPaneParams(40),
-		east: fixedUILayoutPaneParams(300),
-		west: fixedUILayoutPaneParams(200),
-		west__showOverflowOnHover:	true
+	$('#designDashboardLayoutContent').layout({
+		north: fixedUILayoutPaneAutoSizeToFitContentsParams(),
+		south: fixedUILayoutPaneAutoSizeToFitContentsParams(),
+		// Important: The 'showOverflowOnHover' options give a higher
+		// z-index to sidebars and other panels with controls, etc. Otherwise
+		// popups and other controlls will not be shown on top of the rest
+		// of the layout.
+		north__showOverflowOnHover:	true,
+		south__showOverflowOnHover:	true 
 	})
 						
 	
@@ -116,6 +124,47 @@ $(document).ready(function() {
 	
 	// When first loading the dashboard in design mode, show the properties for the dashboard as a whole.
 	initDesignDashboardProperties(designDashboardContext.dashboardID)
-	hideSiblingsShowOne('#dashboardProps')
 	  
-});
+}
+
+
+
+function navigateToDashboardDesignerPageContent(pageContext,dashboardInfo) {
+	console.log("navigating to form designer")
+	
+	function initDashboardDesignerContent(initDoneCallback) {
+		
+		var contentSectionsRemaining = 3
+		function processOneSection() {
+			contentSectionsRemaining--
+			if (contentSectionsRemaining <=0) {
+				initDoneCallback()
+			}
+		}
+		
+		const sidebarContentURL = '/admin/dashboard/designDashboardSidebarContent/' + dashboardInfo.dashboardID
+		setRHSSidebarContent(sidebarContentURL, function() {
+			processOneSection()
+		})
+
+		const settingsPageURL = '/admin/dashboard/designDashboardMainContent/' + dashboardInfo.dashboardID
+		setSettingsPageContent(settingsPageURL,function() {
+			processOneSection()
+		})
+		
+		const offPageContentURL = '/admin/dashboard/designDashboardOffpageContent/' + dashboardInfo.dashboardID
+		setMainWindowOffPageContent(offPageContentURL,function() {
+			processOneSection()
+		})
+		
+	}
+	
+	initDashboardDesignerContent(function() {
+		theMainWindowLayout.showRHSSidebar()
+		theMainWindowLayout.openRHSSidebar()
+		initDesignDashboardPageContent(pageContext,dashboardInfo)
+	})		
+	
+	
+}
+
