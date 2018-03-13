@@ -18,6 +18,13 @@ function initDesignDashboardPageContent(pageContext,dashboardInfo) {
 		dashboardName: dashboardInfo.name,
 		databaseID: dashboardInfo.parentDatabaseID,
 		isSingleUserWorkspace: pageContext.isSingleUserWorkspace }
+		
+	function showDashboardProperties() {
+		// When first loading the dashboard in design mode, show the properties for the dashboard as a whole.
+		initDesignDashboardProperties(designDashboardContext.dashboardID)
+		hideSiblingsShowOne('#dashboardProps')
+	}
+		
 	
 		
 	var layoutDesignConfig = createDashboardLayoutDesignConfig()
@@ -87,8 +94,7 @@ function initDesignDashboardPageContent(pageContext,dashboardInfo) {
 		dashboardContext: designDashboardContext,
 		doneLoadingDashboardDataFunc: function() {
 			initObjectCanvasSelectionBehavior(dashboardDesignCanvasSelector, function() {
-				initDesignDashboardProperties(designDashboardContext.dashboardID)
-				hideSiblingsShowOne('#dashboardProps')
+				showDashboardProperties()
 			})
 		},
 		initBarChartComponent: function($barChart,barChartRef) {
@@ -121,9 +127,8 @@ function initDesignDashboardPageContent(pageContext,dashboardInfo) {
 	loadDashboardData(loadDashboardConfig)
 	
 	
+	showDashboardProperties()
 	
-	// When first loading the dashboard in design mode, show the properties for the dashboard as a whole.
-	initDesignDashboardProperties(designDashboardContext.dashboardID)
 	  
 }
 
