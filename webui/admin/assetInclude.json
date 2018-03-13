@@ -5,6 +5,8 @@
 		"general",
 		"mainAdminPage",
 		"forms/formList",
+		"forms/design",
+		"forms/design/properties",
 		"formLink/formLinkList",
 		"formLink/formLinkProps",
 		"tables/tableList",

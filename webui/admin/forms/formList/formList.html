@@ -1,5 +1,17 @@
 {{define "adminFormList"}}
 
+	<div style="display:none;">
+		
+		<li id="adminFormListItemTemplate" class="list-group-item">
+			<span class="adminFormListFormName"></span>
+			<div class="pull-right adminFormListButtons">
+				<a class="btn btn-xs btn-default adminFormListEditFormButton" role="button">
+					<span class="glyphicon glyphicon-pencil" style="padding-bottom:2px;"></span>
+				</a>
+			</div>
+		</li>
+	</div>
+
 	<div class="marginTop20">
 		<ul id="adminFormList" class="list-group maxWidth400">
 		</ul>

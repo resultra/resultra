@@ -1,206 +1,151 @@
-
+{{define "designFormHeaderControls"}}
+<div class="container-fluid" id="recordHeaderGrid">
+	<div class="row">
+		<div class= "col-sm-2 paddingLeft5">
+			<button type="button" class="btn btn-default btn-sm" id="viewTableOfContentsMenuButton">
+			  <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+			</button>
+		</div> <!-- column -->
+		<div class= "col-sm-8"  id="designFormCenterContentHeaderCol">
+			<h4 id="designFormCenterContentHeader">Form Designer</h4>
+		</div> <!-- column -->
+		<div class= "col-sm-2 paddingRight5">
+		</div> <!-- column -->
+	</div> <!-- row -->
+</div> <!-- #recordHeaderGrid  -->
+{{end}}
 
 {{define "designFormPaletteItems" }}
 
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemHeader">
-					<i class="glyphicon glyphicon-header"></i>
-					<div>Header</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemCaption">
-					<i class="glyphicon glyphicon-font"></i>
-					<div>Caption</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
 
-	<div class="row">
-		<div class= "col-md-6"  style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemTextBox">
-					<input class="form-control paletteItemControl" type="text" disabled placeholder="ABC">
-					<div>Text Box</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6"  style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemNumberInput">
-					<input class="form-control paletteItemControl" type="number" disabled placeholder="123">
-					<div>Number Input</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
+<div id="designFormPaletteItems">
+	<div class="draggable noselect paletteItem"  id="paletteItemHeader">
+			<i class="glyphicon glyphicon-header"></i>
+			<div>Header</div>
+	</div>
+			
+	<div class="draggable noselect paletteItem" id="paletteItemCaption">
+			<i class="glyphicon glyphicon-font"></i>
+			<div>Caption</div>
+	</div>		
+	<div class="draggable noselect paletteItem" id="paletteItemTextBox">
+			<input class="form-control paletteItemControl" type="text" disabled placeholder="ABC">
+			<div>Text Box</div>
+	</div>		
+	
+	<div class="draggable noselect paletteItem" id="paletteItemNumberInput">
+			<input class="form-control paletteItemControl" type="number" disabled placeholder="123">
+			<div>Number Input</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem " id="paletteItemDatePicker">
+			<i class="glyphicon glyphicon-calendar"></i>
+			<div>Date Picker</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem" id="paletteItemCheckBox">
+			<i class="glyphicon glyphicon-check"></i>
+			<div>Check Box</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem" id="paletteItemRating">
+			<i class="glyphicon glyphicon-star"></i>
+			<div>Rating</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem" id="paletteItemSelection">
+			<select class="form-control paletteItemControl" disabled></select>
+			<div>Selection</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem" id="paletteItemHtmlEditor">
+			<i class="glyphicon glyphicon-align-justify"></i>
+			<div>Note Editor</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem" id="paletteItemComment">
+			<i class="glyphicon glyphicon-comment"></i>
+			<div>Comments</div>
+	</div>
 
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem " id="paletteItemDatePicker">
-					<i class="glyphicon glyphicon-calendar"></i>
-					<div>Date Picker</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemCheckBox">
-					<i class="glyphicon glyphicon-check"></i>
-					<div>Check Box</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemRating">
-					<i class="glyphicon glyphicon-star"></i>
-					<div>Rating</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemSelection">
-					<select class="form-control paletteItemControl" disabled></select>
-					<div>Selection</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemHtmlEditor">
-					<i class="glyphicon glyphicon-align-justify"></i>
-					<div>Note Editor</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemComment">
-					<i class="glyphicon glyphicon-comment"></i>
-					<div>Comments</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-
-
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemAttachment">
-					<i class="glyphicon glyphicon-paperclip"></i>
-					<div class="marginTop10"><small>Attachments</small></div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemImage">
-					<i class="glyphicon glyphicon-picture"></i>
-					<div>Image</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemUserSelection">
-					<i class="glyphicon glyphicon-user"></i>
-					<div>Select User</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemSocialButton">
-					<i class="glyphicon glyphicon-thumbs-up"></i>
-					<div>Tag User Button</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemUserTag">
-					<i class="fa fa-users fa-2x"></i>
-					<div>Tag Users</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemLabel">
-					<i class="glyphicon glyphicon-tags"></i>
-					<div>Tags</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemProgress">
-					<div class="progress">
-					  <div class="progress-bar" role="progressbar" 
-					  		aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-					    <span class="sr-only">60% Complete</span>
-					  </div>
-					</div>
-					<div>Progress</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemGauge">
-					<i class="glyphicon glyphicon-dashboard"></i>
-					<div>Gauge</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemToggle">
-					<i class="fa fa-toggle-on"></i>
-					<div>Toggle</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem" id="paletteItemButton">
-				<button type="button" class="btn btn-primary paletteItemControl" disabled>Open</button>
-				<div>Open Form</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemEmailAddr">
-					<i class="glyphicon glyphicon-envelope"></i>
-					<div>Email Address</div>
-			</div>			
-		</div> <!-- column -->
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemUrlLink">
-					<i class="glyphicon glyphicon-link"></i>
-					<div>URL Link</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-
-
-	<div class="row">
-		<div class= "col-md-6" style="padding:5px">
-			<div class="draggable noselect paletteItem"  id="paletteItemFile">
-					<i class="glyphicon glyphicon-file"></i>
-					<div>File</div>
-			</div>			
-		</div> <!-- column -->
-	</div> <!-- row -->
-
+	<div class="draggable noselect paletteItem"  id="paletteItemAttachment">
+			<i class="glyphicon glyphicon-paperclip"></i>
+			<div class="marginTop10"><small>Attachments</small></div>
+	</div>		
+	
+	<div class="draggable noselect paletteItem"  id="paletteItemImage">
+			<i class="glyphicon glyphicon-picture"></i>
+			<div>Image</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem" id="paletteItemUserSelection">
+			<i class="glyphicon glyphicon-user"></i>
+			<div>Select User</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem"  id="paletteItemSocialButton">
+			<i class="glyphicon glyphicon-thumbs-up"></i>
+			<div>Tag User Button</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem"  id="paletteItemUserTag">
+			<i class="fa fa-users fa-2x"></i>
+			<div>Tag Users</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem"  id="paletteItemLabel">
+			<i class="glyphicon glyphicon-tags"></i>
+			<div>Tags</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem" id="paletteItemProgress">
+			<div class="progress">
+			  <div class="progress-bar" role="progressbar" 
+			  		aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+			    <span class="sr-only">60% Complete</span>
+			  </div>
+			</div>
+			<div>Progress</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem" id="paletteItemGauge">
+			<i class="glyphicon glyphicon-dashboard"></i>
+			<div>Gauge</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem" id="paletteItemToggle">
+			<i class="fa fa-toggle-on"></i>
+			<div>Toggle</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem" id="paletteItemButton">
+		<button type="button" class="btn btn-primary paletteItemControl" disabled>Open</button>
+		<div>Open Form</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem"  id="paletteItemEmailAddr">
+			<i class="glyphicon glyphicon-envelope"></i>
+			<div>Email Address</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem"  id="paletteItemUrlLink">
+			<i class="glyphicon glyphicon-link"></i>
+			<div>URL Link</div>
+	</div>	
+		
+	<div class="draggable noselect paletteItem"  id="paletteItemFile">
+			<i class="glyphicon glyphicon-file"></i>
+			<div>File</div>
+	</div>	
+	
+</div>			
 
 
 {{end}}
 
 {{define "formDesignPalette"}}
 
-	<div class="ui-layout-content">
-		
-		<div class="row paletteHeader">
-			<div class= "col-md-12 text-center h5">
-				Design Palette
-			</div>
-		</div>
-		<div class="paletteItems">
-			{{template "designFormPaletteItems"}}
-		</div>
-				
-	</div> <!-- ui-layout-content -->
+	{{template "designFormPaletteItems"}}
 
 {{end}}
 
@@ -217,67 +162,30 @@
 	</div>
 {{end}}
 
-{{define "designForm"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-
-	{{template "electronImportPrefix"}}
-
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- designFormAssets:css -->
-	<!-- endinject -->
-	
-
-	<script>var formID={{.FormID}};</script>
-	<script>var designFormContext = { databaseID:"{{.DatabaseID}}",
-			formID:"{{.FormID}}",
-			formName: "{{.FormName}}",
-			isSingleUserWorkspace: {{.IsSingleUserWorkspace}} }
-		var GlobalFormPagePrivs = "edit" 
-	</script>
-	
-	{{template "thirdPartyJS"}}
-	{{template "aceThirdPartyJS"}}
-	
-	<!-- designFormAssets:js -->
-	<!-- endinject -->
-	
-  </head>
-  
-  <body>
-		<div id="layoutPage" class="layoutPageDiv">
-			
-			<div class="pane ui-layout-north adminPageHeader">
-				{{template "adminPageHeader" .}}
-			</div> <!-- north ui layout -->
-			
-			<div id="paletteSidebar" class="pane ui-layout-west paletteSidebar">
-				{{template "formDesignPalette"}}
-			</div>
+{{define "designFormContent"}}
+	<div id="designFormLayoutContent">
 		
-			<div class="pane ui-layout-center">
-				<div id="layoutCanvas"></div>
-			</div> 
+		<div id="designFormContentHeaderUILayout" class="pane ui-layout-north">
+			{{template "designFormHeaderControls"}}
+		</div> <!-- north ui layout -->
+		
+		<div class="pane ui-layout-center">
+			<div id="layoutCanvas"></div>
+		</div> 
 
-			<div class="pane ui-layout-east" id="propertiesPanelUILayout">
-				{{template "formDesignPropertiesSidebar" .}}
-			</div>
-			
-			<!-- The formula editor pane must come after the other panes to give it a higher z index -->
-			<div id="formulaEditorPane" class="pane ui-layout-south" style="z-index:99 !important;">
-				{{template "formulaEditor"}}
-			</div>
-			
+		<!-- The formula editor pane must come after the other panes to give it a higher z index -->
+		<div id="formulaEditorPane" class="pane ui-layout-south" style="z-index:99 !important;">
+			{{template "formDesignPalette"}}
+			{{template "formulaEditor"}}
 		</div>
-	
-	{{template "newComponentDialogs" .}}
-	   	   
-  </body>
-  
-</html>
+		
+	</div>
+{{end}}
 
+{{define "designFormSidebarContent"}} 
+	{{template "formDesignPropertiesSidebar" .}}
+{{end}}
+
+{{define "designFormOffpageContent"}}
+	{{template "newComponentDialogs" .}}
 {{end}}

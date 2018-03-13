@@ -15,19 +15,27 @@ return '' +
 }
 
 
-function addFormToAdminFormList(formInfo) {
+function addFormToAdminFormList(pageContext,formInfo) {
 	 
 	var formListFormID = adminFormListElemPrefix + formInfo.formID
 	
-	var formListItemHTML = '<li class="list-group-item" id="' + formListFormID + '">' + 
-		formInfo.name +
-		adminFormListButtonsHTML(formInfo) +
-	 '</li>'
+	var $formListItem = $('#adminFormListItemTemplate').clone()
+	$formListItem.attr("id",formListFormID)
 	
-	$('#adminFormList').append(formListItemHTML)		
+	$formListItem.find(".adminFormListFormName").text(formInfo.name)
+	
+	var $editFormButton = $formListItem.find(".adminFormListEditFormButton")
+	$editFormButton.click(function(e) {
+		e.preventDefault()
+		$editFormButton.blur()
+		navigateToFormDesignerPageContent(pageContext,formInfo)
+	})
+	// TODO - initialize button
+	
+	$('#adminFormList').append($formListItem)		
 }
 
-function initAdminFormSettings(databaseID) {
+function initAdminFormSettings(pageContext) {
 	
 	var $adminFormList = $("#adminFormList")
 	
@@ -45,14 +53,14 @@ function initAdminFormSettings(databaseID) {
     });
 	
 	
-	var getDBInfoParams = { databaseID: databaseID }
+	var getDBInfoParams = { databaseID: pageContext.databaseID }
 	jsonAPIRequest("database/getInfo",getDBInfoParams,function(dbInfo) {
 		console.log("Got database info: " + JSON.stringify(dbInfo))
 		
 		$adminFormList.empty()
 		for (var formInfoIndex = 0; formInfoIndex < dbInfo.formsInfo.length; formInfoIndex++) {
 			var formInfo = dbInfo.formsInfo[formInfoIndex]
-			addFormToAdminFormList(formInfo)
+			addFormToAdminFormList(pageContext,formInfo)
 		}
 		
 	})
@@ -60,7 +68,7 @@ function initAdminFormSettings(databaseID) {
 	
 	initButtonClickHandler('#adminNewFormButton',function() {
 		console.log("New form button clicked")
-		openNewFormDialog(databaseID)
+		openNewFormDialog(pageContext.databaseID)
 	})
 	
 	

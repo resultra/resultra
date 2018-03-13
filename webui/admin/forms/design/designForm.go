@@ -41,7 +41,7 @@ func init() {
 	designFormTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
-func DesignForm(w http.ResponseWriter, r *http.Request) {
+func designFormPageContent(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	formID := vars["formID"]
@@ -73,7 +73,85 @@ func DesignForm(w http.ResponseWriter, r *http.Request) {
 
 	templParams := createDesignFormTemplateParams(r, formDBInfo, workspaceName)
 
-	err := designFormTemplates.ExecuteTemplate(w, "designForm", templParams)
+	err := designFormTemplates.ExecuteTemplate(w, "designFormContent", templParams)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+}
+
+func designFormOffpageContent(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	formID := vars["formID"]
+	log.Println("Design Form: editing for form with ID = ", formID)
+
+	_, authErr := userAuth.GetCurrentUserInfo(r)
+	if authErr != nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	formDBInfo, getErr := databaseController.GetFormDatabaseInfo(trackerDBHandle, formID)
+	if getErr != nil {
+		api.WriteErrorResponse(w, getErr)
+		return
+	}
+
+	templParams := createDesignFormTemplateParams(r, formDBInfo, workspaceName)
+
+	err := designFormTemplates.ExecuteTemplate(w, "designFormOffpageContent", templParams)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+}
+
+func designFormSidebarContent(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	formID := vars["formID"]
+	log.Println("Design Form: editing for form with ID = ", formID)
+
+	_, authErr := userAuth.GetCurrentUserInfo(r)
+	if authErr != nil {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(r)
+	if dbErr != nil {
+		http.Error(w, dbErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	workspaceName, workspaceErr := workspace.GetWorkspaceName(trackerDBHandle)
+	if workspaceErr != nil {
+		http.Error(w, workspaceErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	formDBInfo, getErr := databaseController.GetFormDatabaseInfo(trackerDBHandle, formID)
+	if getErr != nil {
+		api.WriteErrorResponse(w, getErr)
+		return
+	}
+
+	templParams := createDesignFormTemplateParams(r, formDBInfo, workspaceName)
+
+	err := designFormTemplates.ExecuteTemplate(w, "formDesignPropertiesSidebar", templParams)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

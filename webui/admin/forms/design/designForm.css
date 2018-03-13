@@ -1,3 +1,21 @@
+#designFormCenterContentHeaderCol {
+	 text-align:center;
+}
+
+#designFormCenterContentHeader {
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+#designFormContentHeaderUILayout
+{
+	padding: 4px; /* override jQuery UI Layout padding */
+	background-color: #EEEEEE;
+}
+
+
+
+
 #formulaEditorPane {
 	padding:0px;
 	height: 125px;
@@ -13,4 +31,31 @@
 
 #designFormHeader {
 	padding-top: 0px;
+}
+
+
+/* Design page content needs to fill the entire page */
+#designFormLayoutContent {
+	position: absolute;
+	top: 0;
+	bottom:0;
+	left:0;
+	right:0;
+}
+
+#designFormPaletteItems {
+	display: inline-block;
+	width:100%;
+	white-space:nowrap;
+	overflow-x:scroll;
+	overflow-y:hidden;
+	padding:5px;
+/*	height:100px; */
+}
+
+
+#designFormPaletteItems .paletteItem {
+	width:100px;
+	display:inline-block;
+	vertical-align:top;
 }

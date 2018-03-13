@@ -1,5 +1,5 @@
 function initFormListAdminPage(pageContext) {
 	
-	initAdminFormSettings(pageContext.databaseID)
+	initAdminFormSettings(pageContext)
 		
 }

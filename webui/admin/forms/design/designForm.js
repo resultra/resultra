@@ -25,12 +25,19 @@ var paletteItemsEditConfig = {
 	paletteItemFile: fileDesignFormConfig
 }
 
+var designFormContext
 
-$(document).ready(function() {
+function initDesignFormAdminPageContent(pageContext,formInfo) {
 	
-	initUserDropdownMenu(designFormContext.isSingleUserWorkspace)
-	initHelpDropdownMenu()
 	
+	designFormContext = { databaseID:formInfo.parentDatabaseID,
+		formID:formInfo.formID,
+		formName: formInfo.formName,
+		isSingleUserWorkspace: pageContext.isSingleWorkspace }
+	GlobalFormPagePrivs = "edit" 
+	
+	
+		
 	var designFormPaletteLayoutConfig =  {
 		parentLayoutSelector: formDesignCanvasSelector,
 		saveLayoutFunc: function(updatedLayout) { } // no-op: layout gets saved after placeholder replaced with real component.
@@ -64,14 +71,14 @@ $(document).ready(function() {
 			// "repackage" the dropped item paramaters for creating a new layout element. Also add the formID
 			// to the parameters.
 			var containerParams = {
-				parentFormID: formID,
+				parentFormID: formInfo.formID,
 				geometry: droppedItemInfo.geometry,
 				containerID: droppedItemInfo.placeholderID,
 				containerObj: droppedItemInfo.droppedElem,
 				finalizeLayoutIncludingNewComponentFunc: droppedItemInfo.finalizeLayoutIncludingNewComponentFunc
 				};
 				
-			objEditConfig.createNewItemAfterDropFunc(designFormContext.databaseID,formID,containerParams)
+			objEditConfig.createNewItemAfterDropFunc(formInfo.parentDatabaseID,formInfo.formID,containerParams)
 		},
 		
 		dropDestSelector: formDesignCanvasSelector,
@@ -90,133 +97,129 @@ $(document).ready(function() {
 	console.log("designForm: Done initializing form design plug-ins/configurations.")
 			
 	// Initialize the page layout
-	var formDesignLayout = $('#layoutPage').layout({
-		north: fixedUILayoutPaneParams(40),
-		east: fixedUILayoutPaneParams(300),
-		// Normally the width is 200 for the design palette, However, since there are many 
-		// items to choose from, necessitating scrolling, an extra 20px is used to make room for the scrollbar.
-		west: fixedUILayoutPaneParams(220),
-		south: fixedInitiallyHiddenUILayoutPaneAutoSizeToFitContentsParams(),
+	var formDesignLayout = $('#designFormLayoutContent').layout({
+		north: fixedUILayoutPaneAutoSizeToFitContentsParams(),
+		south: fixedUILayoutPaneAutoSizeToFitContentsParams(),
 		// Important: The 'showOverflowOnHover' options give a higher
 		// z-index to sidebars and other panels with controls, etc. Otherwise
 		// popups and other controlls will not be shown on top of the rest
 		// of the layout.
-		west__showOverflowOnHover:	true,
+		north__showOverflowOnHover:	true,
 		south__showOverflowOnHover:	true 
 	})
 	function showFormulaEditPane() { formDesignLayout.open("south") }
 	function hideFormulaEditPanel() { formDesignLayout.close("south")}
 	var formulaEditorParams = {
-		databaseID: designFormContext.databaseID,
+		databaseID: formInfo.parentDatabaseID,
 		showEditorFunc:showFormulaEditPane,
 		hideEditorFunc:hideFormulaEditPanel
 	}
 		
-	var designFormLayoutConfig =  createFormLayoutDesignConfig(designFormContext.formID)
+	var designFormLayoutConfig =  createFormLayoutDesignConfig(formInfo.formID)
 	var $parentFormLayout = $(formDesignCanvasSelector)
 	
 	var loadFormConfig = {
 		$parentFormLayout: $parentFormLayout,
 		formContext: designFormContext,
 		initTextBoxFunc: function(componentContext,$textBox,textBoxObjectRef) {
-			var componentIDs = { formID: formID, componentID: textBoxObjectRef.textBoxID }
+			var componentIDs = { formID: formInfo.formID, componentID: textBoxObjectRef.textBoxID }
 			initFormComponentDesignBehavior($textBox,componentIDs,textBoxObjectRef,textBoxDesignFormConfig,designFormLayoutConfig)
 		},
 		initEmailAddrFunc: function(componentContext,$emailAddr,emailAddrObjectRef) {
-			var componentIDs = { formID: formID, componentID: emailAddrObjectRef.emailAddrID }
+			var componentIDs = { formID: formInfo.formID, componentID: emailAddrObjectRef.emailAddrID }
 			initFormComponentDesignBehavior($emailAddr,componentIDs,emailAddrObjectRef,emailAddrDesignFormConfig,designFormLayoutConfig)
 		},
 		initFileFunc: function(componentContext,$file,fileObjectRef) {
-			var componentIDs = { formID: formID, componentID: fileObjectRef.fileID }
+			var componentIDs = { formID: formInfo.formID, componentID: fileObjectRef.fileID }
 			initFormComponentDesignBehavior($file,componentIDs,fileObjectRef,fileDesignFormConfig,designFormLayoutConfig)
 		},
 		initUrlLinkFunc: function(componentContext,$urlLink,urlLinkObjectRef) {
-			var componentIDs = { formID: formID, componentID: urlLinkObjectRef.urlLinkID }
+			var componentIDs = { formID: formInfo.formID, componentID: urlLinkObjectRef.urlLinkID }
 			initFormComponentDesignBehavior($urlLink,componentIDs,urlLinkObjectRef,urlLinkDesignFormConfig,designFormLayoutConfig)
 		},
 		initNumberInputFunc: function(componentContext,$numberInput,numberInputObjectRef) {
-			var componentIDs = { formID: formID, componentID: numberInputObjectRef.numberInputID }
+			var componentIDs = { formID: formInfo.formID, componentID: numberInputObjectRef.numberInputID }
 			initFormComponentDesignBehavior($numberInput,componentIDs,numberInputObjectRef,numberInputDesignFormConfig,designFormLayoutConfig)
 		},
 		initSelectionFunc: function(componentContext,$selection,selectionObjectRef,initDoneCallback) {
-			var componentIDs = { formID: formID, componentID: selectionObjectRef.selectionID }
+			var componentIDs = { formID: formInfo.formID, componentID: selectionObjectRef.selectionID }
 			initFormComponentDesignBehavior($selection,componentIDs,
 						selectionObjectRef,selectionDesignFormConfig,designFormLayoutConfig)
 			initDoneCallback()
 		},
 		initCheckBoxFunc: function(componentContext,$checkBox,checkBoxObjectRef) {
-			var componentIDs = { formID: formID, componentID: checkBoxObjectRef.checkBoxID }
+			var componentIDs = { formID: formInfo.formID, componentID: checkBoxObjectRef.checkBoxID }
 			initFormComponentDesignBehavior($checkBox,componentIDs,checkBoxObjectRef,checkBoxDesignFormConfig,designFormLayoutConfig)
 		},
 		initToggleFunc: function(componentContext,$toggle,toggleObjectRef) {
-			var componentIDs = { formID: formID, componentID: toggleObjectRef.toggleID }
+			var componentIDs = { formID: formInfo.formID, componentID: toggleObjectRef.toggleID }
 			initFormComponentDesignBehavior($toggle,componentIDs,
 					toggleObjectRef,toggleDesignFormConfig,designFormLayoutConfig)
 		},
 		initProgressFunc: function(componentContext,$progress,progressObjectRef) {
-			var componentIDs = { formID: formID, componentID: progressObjectRef.progressID }
+			var componentIDs = { formID: formInfo.formID, componentID: progressObjectRef.progressID }
 			initFormComponentDesignBehavior($progress,componentIDs,progressObjectRef,progressDesignFormConfig,designFormLayoutConfig)
 		},	
 		initGaugeFunc: function(componentContext,$gauge,gaugeObjectRef) {
-			var componentIDs = { formID: formID, componentID: gaugeObjectRef.gaugeID }
+			var componentIDs = { formID: formInfo.formID, componentID: gaugeObjectRef.gaugeID }
 			initFormComponentDesignBehavior($gauge,componentIDs,gaugeObjectRef,gaugeDesignFormConfig,designFormLayoutConfig)
 		},	
 		initCommentFunc: function(componentContext,$comment,commentObjectRef) {
-			var componentIDs = { formID: formID, componentID: commentObjectRef.commentID }
+			var componentIDs = { formID: formInfo.formID, componentID: commentObjectRef.commentID }
 			initFormComponentDesignBehavior($comment,componentIDs,commentObjectRef,commentDesignFormConfig,designFormLayoutConfig)
 		},
 		initRatingFunc: function(componentContext,$rating,ratingObjectRef) {
 			initRatingDesignControlBehavior($rating,ratingObjectRef)
-			var componentIDs = { formID: formID, componentID: ratingObjectRef.ratingID }
+			var componentIDs = { formID: formInfo.formID, componentID: ratingObjectRef.ratingID }
 			initFormComponentDesignBehavior($rating,componentIDs,ratingObjectRef,ratingDesignFormConfig,designFormLayoutConfig)
 		},
 		initSocialButtonFunc: function(componentContext,$socialButton,socialButtonObjectRef) {
 			initSocialButtonDesignControlBehavior($socialButton,socialButtonObjectRef)
-			var componentIDs = { formID: formID, componentID: socialButtonObjectRef.socialButtonID }
+			var componentIDs = { formID: formInfo.formID, componentID: socialButtonObjectRef.socialButtonID }
 			initFormComponentDesignBehavior($socialButton,componentIDs,socialButtonObjectRef,socialButtonDesignFormConfig,designFormLayoutConfig)
 		},
 		initLabelFunc: function(componentContext,$label,labelRef) {
 			initLabelDesignControlBehavior($label,labelRef)
-			var componentIDs = { formID: formID, componentID: labelRef.labelID }
+			var componentIDs = { formID: formInfo.formID, componentID: labelRef.labelID }
 			initFormComponentDesignBehavior($label,componentIDs,labelRef,labelDesignFormConfig,designFormLayoutConfig)
 		},
 		initUserSelectionFunc: function(componentContext,$userSelection,userSelectionObjectRef) {
 			initUserSelectionDesignControlBehavior(userSelectionObjectRef)
-			var componentIDs = { formID: formID, componentID: userSelectionObjectRef.userSelectionID }
+			var componentIDs = { formID: formInfo.formID, componentID: userSelectionObjectRef.userSelectionID }
 			initFormComponentDesignBehavior($userSelection,componentIDs,userSelectionObjectRef,
 						userSelectionDesignFormConfig,designFormLayoutConfig)
 		},
 		initUserTagFunc: function(componentContext,$userTag,userTagObjectRef) {
 			initUserTagDesignControlBehavior(userTagObjectRef)
-			var componentIDs = { formID: formID, componentID: userTagObjectRef.userTagID }
+			var componentIDs = { formID: formInfo.formID, componentID: userTagObjectRef.userTagID }
 			initFormComponentDesignBehavior($userTag,componentIDs,userTagObjectRef,
 						userTagDesignFormConfig,designFormLayoutConfig)
 		},
 		initDatePickerFunc: function(componentContext,$datePicker,datePickerObjectRef) {
-			var componentIDs = { formID: formID, componentID: datePickerObjectRef.datePickerID }
+			var componentIDs = { formID: formInfo.formID, componentID: datePickerObjectRef.datePickerID }
 			initFormComponentDesignBehavior($datePicker,componentIDs,datePickerObjectRef,datePickerDesignFormConfig,designFormLayoutConfig)
 		},
 		initHtmlEditorFunc: function(componentContext,$htmlEditor,htmlEditorObjectRef) {
-			var componentIDs = { formID: formID, componentID: htmlEditorObjectRef.htmlEditorID }
+			var componentIDs = { formID: formInfo.formID, componentID: htmlEditorObjectRef.htmlEditorID }
 			initFormComponentDesignBehavior($htmlEditor,componentIDs,htmlEditorObjectRef,htmlEditorDesignFormConfig,designFormLayoutConfig)
 		},
 		initAttachmentFunc: function(componentContext,$image,imageObjectRef) {
-			var componentIDs = { formID: formID, componentID: imageObjectRef.imageID }
+			var componentIDs = { formID: formInfo.formID, componentID: imageObjectRef.imageID }
 			initFormComponentDesignBehavior($image,componentIDs,imageObjectRef,attachmentDesignFormConfig,designFormLayoutConfig)
 		},
 		initImageFunc: function(componentContext,$image,imageObjectRef) {
-			var componentIDs = { formID: formID, componentID: imageObjectRef.imageID }
+			var componentIDs = { formID: formInfo.formID, componentID: imageObjectRef.imageID }
 			initFormComponentDesignBehavior($image,componentIDs,imageObjectRef,imageDesignFormConfig,designFormLayoutConfig)
 		},
 		initHeaderFunc: function($header,componentContext,headerObjectRef) {
-			var componentIDs = { formID: formID, componentID: headerObjectRef.headerID }
+			var componentIDs = { formID: formInfo.formID, componentID: headerObjectRef.headerID }
 			initFormComponentDesignBehavior($header,componentIDs,headerObjectRef,formHeaderDesignFormConfig,designFormLayoutConfig)
 		},
 		initCaptionFunc: function($caption,componentContext,captionObjectRef) {
 			initCaptionDesignControlBehavior($caption,captionObjectRef)			
 		},
 		initFormButtonFunc: function(componentContext,$button,buttonObjectRef) {
-			var componentIDs = { formID: formID, componentID: buttonObjectRef.buttonID }
+			var componentIDs = { formID: formInfo.formID, componentID: buttonObjectRef.buttonID }
 			initFormComponentDesignBehavior($button,componentIDs,buttonObjectRef,formButtonDesignFormConfig,designFormLayoutConfig)
 		}
 	}
@@ -227,20 +230,53 @@ $(document).ready(function() {
 		
 	}
 	
-	loadFormComponentsIntoSingleLayout(loadFormConfig,doneLoadingFormData); 
-		
-		
+	loadFormComponentsIntoSingleLayout(loadFormConfig,doneLoadingFormData); 	
 	
 	console.log("Initializing form design plug-ins/configurations ...")
 	initObjectCanvasSelectionBehavior(formDesignCanvasSelector, function() {
 		console.log("Select form canvas")
 		hideSiblingsShowOne('#formProps')
 		closeFormulaEditor()
-		initDesignFormProperties(formID)
+		initDesignFormProperties(formInfo.formID)
 	})
+		
+}
+
+function navigateToFormDesignerPageContent(pageContext,formInfo) {
+	console.log("navigating to form designer")
 	
-	appendPageSpecificBreadcrumbHeader("/admin/forms/"+designFormContext.databaseID,"Forms")
-	appendPageSpecificBreadcrumbHeader("/admin/frm/"+designFormContext.formID,designFormContext.formName)
+	function initFormDesignerContent(initDoneCallback) {
+		
+		var contentSectionsRemaining = 3
+		function processOneSection() {
+			contentSectionsRemaining--
+			if (contentSectionsRemaining <=0) {
+				initDoneCallback()
+			}
+		}
+		
+		const sidebarContentURL = '/admin/frm/sidebarContent/' + formInfo.formID
+		setRHSSidebarContent(sidebarContentURL, function() {
+			processOneSection()
+		})
+
+		const settingsPageURL = '/admin/frm/designPageContent/' + formInfo.formID
+		setSettingsPageContent(settingsPageURL,function() {
+			processOneSection()
+		})
+		
+		const offPageContentURL = '/admin/frm/offPageContent/' + formInfo.formID
+		setMainWindowOffPageContent(offPageContentURL,function() {
+			processOneSection()
+		})
+		
+	}
+	
+	initFormDesignerContent(function() {
+		theMainWindowLayout.showRHSSidebar()
+		theMainWindowLayout.openRHSSidebar()
+		initDesignFormAdminPageContent(pageContext,formInfo)
+	})		
 	
 	
-});
+}
