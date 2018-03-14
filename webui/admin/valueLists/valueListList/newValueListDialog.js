@@ -36,6 +36,8 @@ function openNewValueListDialog(databaseID) {
 		
 	$newValueListDialog.modal('show')
 	
+	var listCreated = false
+	
 	initButtonClickHandler('#newValueListSaveButton',function() {
 		console.log("New value list save button clicked")
 		if($newValueListForm.valid()) {	
@@ -45,15 +47,20 @@ function openNewValueListDialog(databaseID) {
 				name: $valueListNameInput.val(),
 				valueType: $valueTypeSelection.val() }
 						
-			jsonAPIRequest("valueList/new",newValueListParams,function(newValueListInfo) {
-				console.log("Created new value list: " + JSON.stringify(newValueListInfo))
-				$newValueListDialog.modal('hide')
-				
-				var editPropsContentURL = '/admin/valueList/' + newValueListInfo.valueListID
-				setSettingsPageContent(editPropsContentURL,function() {
-					initValueListSettingsPageContent(newValueListInfo)
+			// Only support the creation of a single value list from the dialog.
+			if (listCreated === false) {
+				listCreated = true
+				jsonAPIRequest("valueList/new",newValueListParams,function(newValueListInfo) {
+					console.log("Created new value list: " + JSON.stringify(newValueListInfo))
+					$newValueListDialog.modal('hide')
+			
+					var editPropsContentURL = '/admin/valueList/' + newValueListInfo.valueListID
+					setSettingsPageContent(editPropsContentURL,function() {
+						initValueListSettingsPageContent(newValueListInfo)
+					})
 				})
-			})
+				
+			}
 			
 
 		}
