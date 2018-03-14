@@ -131,7 +131,6 @@ function initDesignDashboardPageContent(pageContext,dashboardInfo) {
 	
 	initSettingsPageButtonLink('#dashboardPropsBackToDashboardListButton',"dashboards")
 
-	theMainWindowLayout.closeLHSSidebar()
 	initButtonClickHandler("#viewTableOfContentsMenuButton", function() {
 		theMainWindowLayout.toggleLHSSidebar()
 	})

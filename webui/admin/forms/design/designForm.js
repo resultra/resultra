@@ -266,7 +266,6 @@ function initDesignFormAdminPageContent(pageContext,formInfo) {
 	
 	initSettingsPageButtonLink('#formPropsBackToFormListButton',"forms")
 
-	theMainWindowLayout.closeLHSSidebar()
 	initButtonClickHandler("#viewTableOfContentsMenuButton", function() {
 		theMainWindowLayout.toggleLHSSidebar()
 	})
