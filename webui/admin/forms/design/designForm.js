@@ -107,13 +107,29 @@ function initDesignFormAdminPageContent(pageContext,formInfo) {
 		north__showOverflowOnHover:	true,
 		south__showOverflowOnHover:	true 
 	})
-	function showFormulaEditPane() { formDesignLayout.open("south") }
-	function hideFormulaEditPanel() { formDesignLayout.close("south")}
+	
+	function showFormulaEditPane() { 
+		hideSiblingsShowOne('#formDesignerFormulaEditor')
+		formDesignLayout.resizeAll()
+		formDesignLayout.open("south") 
+	}
+	
+	function showDesignFormPalette() {
+		hideSiblingsShowOne('#designFormPaletteItems')
+		formDesignLayout.resizeAll()
+		formDesignLayout.open("south")
+	}
+	
+	function hideFormulaEditPanel() { 
+		formDesignLayout.close("south")
+	}
+	
 	var formulaEditorParams = {
 		databaseID: formInfo.parentDatabaseID,
 		showEditorFunc:showFormulaEditPane,
 		hideEditorFunc:hideFormulaEditPanel
 	}
+	
 		
 	var designFormLayoutConfig =  createFormLayoutDesignConfig(formInfo.formID)
 	var $parentFormLayout = $(formDesignCanvasSelector)
@@ -234,7 +250,9 @@ function initDesignFormAdminPageContent(pageContext,formInfo) {
 	function doneLoadingFormData() {
 			// The formula editor depends on the field information first being initialized.
 			initFormulaEditor(formulaEditorParams)
+		
 			showFormPropertySidebar() // initially show the overall form properties.
+			showDesignFormPalette()
 	}
 	
 	loadFormComponentsIntoSingleLayout(loadFormConfig,doneLoadingFormData); 
@@ -242,6 +260,7 @@ function initDesignFormAdminPageContent(pageContext,formInfo) {
 	
 	initObjectCanvasSelectionBehavior(formDesignCanvasSelector, function() {
 		showFormPropertySidebar()
+		showDesignFormPalette()
 	})
 	
 	

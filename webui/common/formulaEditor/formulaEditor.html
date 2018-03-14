@@ -77,16 +77,18 @@
 
 {{define "formulaEditor"}}
 
- <div class="row">
-   <div class="col-md-3" id="leftFormulaEditColumn"> 
-	   {{template "formulaEditPaneHeaderLayout"}}
-   </div>
- 	<div class="col-md-6" id="centerFormulaEditColumn" style="min-width:250px;">
-		{{template "formulaEditorCodeEditor"}}
- 	</div>
- 	<div class="col-md-3">
-		{{template "formulaFieldRefSelector"}}
- 	</div>
- </div> <!-- row -->
+<div id="formDesignerFormulaEditor" class="container-fluid initiallyHidden">
+	 <div class="row">
+	   <div class="col-md-3" id="leftFormulaEditColumn"> 
+		   {{template "formulaEditPaneHeaderLayout"}}
+	   </div>
+	 	<div class="col-md-6" id="centerFormulaEditColumn" style="min-width:250px;">
+			{{template "formulaEditorCodeEditor"}}
+	 	</div>
+	 	<div class="col-md-3">
+			{{template "formulaFieldRefSelector"}}
+	 	</div>
+	 </div> <!-- row -->
+</div>
 
 {{end}}
