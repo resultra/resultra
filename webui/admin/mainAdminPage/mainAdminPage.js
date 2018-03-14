@@ -20,6 +20,9 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 		});
 		
 	}
+	registerPageContentLoader("forms",'/admin/forms/' + pageContext.databaseID,function() {
+		initFormListAdminPage(pageContext)
+	})
 
 	function setFormLinksSettingsPage() {
 		const contentURL = '/admin/formlink/' + pageContext.databaseID

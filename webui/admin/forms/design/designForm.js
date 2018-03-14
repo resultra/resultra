@@ -224,21 +224,34 @@ function initDesignFormAdminPageContent(pageContext,formInfo) {
 		}
 	}
 	
-	function doneLoadingFormData() {
-			// The formula editor depends on the field information first being initialized.
-			initFormulaEditor(formulaEditorParams)
-		
-	}
-	
-	loadFormComponentsIntoSingleLayout(loadFormConfig,doneLoadingFormData); 	
-	
-	console.log("Initializing form design plug-ins/configurations ...")
-	initObjectCanvasSelectionBehavior(formDesignCanvasSelector, function() {
-		console.log("Select form canvas")
+	function showFormPropertySidebar() {
 		hideSiblingsShowOne('#formProps')
 		closeFormulaEditor()
 		initDesignFormProperties(formInfo.formID)
+	}	
+	
+	
+	function doneLoadingFormData() {
+			// The formula editor depends on the field information first being initialized.
+			initFormulaEditor(formulaEditorParams)
+			showFormPropertySidebar() // initially show the overall form properties.
+	}
+	
+	loadFormComponentsIntoSingleLayout(loadFormConfig,doneLoadingFormData); 
+	
+	
+	initObjectCanvasSelectionBehavior(formDesignCanvasSelector, function() {
+		showFormPropertySidebar()
 	})
+	
+	
+	initSettingsPageButtonLink('#formPropsBackToFormListButton',"forms")
+
+	theMainWindowLayout.closeLHSSidebar()
+	initButtonClickHandler("#viewTableOfContentsMenuButton", function() {
+		theMainWindowLayout.toggleLHSSidebar()
+	})
+	
 		
 }
 
