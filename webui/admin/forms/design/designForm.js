@@ -297,7 +297,7 @@ function navigateToFormDesignerPageContent(pageContext,formInfo) {
 		})
 		
 		const offPageContentURL = '/admin/frm/offPageContent/' + formInfo.formID
-		setMainWindowOffPageContent(offPageContentURL,function() {
+		setSettingsPageOffPageContent(offPageContentURL,function() {
 			processOneSection()
 		})
 		

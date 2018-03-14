@@ -13,6 +13,10 @@ function setSettingsPageOffPageContent(contentURL,initCallback) {
 	
 }
 
+function clearSettingsPageOffPageContent() {
+	$('#offPageContentSection').empty()
+}
+
 var registeredSettingsPageContentLoaders = {}
 
 function registerPageContentLoader(linkID, contentURL, initCallbackFunc) {
@@ -30,7 +34,7 @@ function resetSettingsPageLayoutForStandardSettingsPages() {
 		// and the offpage content needs to be cleared out.
 		theMainWindowLayout.openLHSSidebar()
 		theMainWindowLayout.disableRHSSidebar()
-		clearMainWindowOffPageContent()
+		clearSettingsPageOffPageContent()
 }
 
 function navigateToSettingsPageContent(linkID) {

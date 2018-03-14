@@ -165,7 +165,7 @@ function navigateToDashboardDesignerPageContent(pageContext,dashboardInfo) {
 		})
 		
 		const offPageContentURL = '/admin/dashboard/designDashboardOffpageContent/' + dashboardInfo.dashboardID
-		setMainWindowOffPageContent(offPageContentURL,function() {
+		setSettingsPageOffPageContent(offPageContentURL,function() {
 			processOneSection()
 		})
 		

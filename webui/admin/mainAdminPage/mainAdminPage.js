@@ -238,9 +238,9 @@ function navigateToAdminSettingsPageContent(pageContext,trackerInfo) {
 	theMainWindowLayout.disableRHSSidebar()	
 	
 	var contentConfig = {
-		mainContentURL: '/admin/'+pageContext.databaseID,
+		mainContentURL: '/admin/mainAdminPage/mainPageContent/'+pageContext.databaseID,
 		lhsSidebarContentURL: "/admin/common/settingsTOC",
-		offPageContentURL: "/admin/offPageContent"
+		offPageContentURL: "/admin/mainAdminPage/offPageContent"
 	}
 
 	setMainWindowPageContent(contentConfig,function() {
