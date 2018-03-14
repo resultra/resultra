@@ -129,6 +129,14 @@ function initDesignDashboardPageContent(pageContext,dashboardInfo) {
 	
 	showDashboardProperties()
 	
+	initSettingsPageButtonLink('#dashboardPropsBackToDashboardListButton',"dashboards")
+
+	theMainWindowLayout.closeLHSSidebar()
+	initButtonClickHandler("#viewTableOfContentsMenuButton", function() {
+		theMainWindowLayout.toggleLHSSidebar()
+	})
+	
+	
 	  
 }
 

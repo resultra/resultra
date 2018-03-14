@@ -101,6 +101,9 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 		});
 		
 	}
+	registerPageContentLoader("dashboards",'/admin/dashboards/' + pageContext.databaseID,function() {
+		initDashboardsAdminSettingsPageContent(pageContext)
+	})
 	
 	
 	function setAlertsSettingsPage() {
@@ -158,6 +161,8 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 
 	// Call-back for dynamically setting the settings page, depending on the link pressed in the settings TOC.
 	function setSettingsPage(linkID) {
+		
+		resetSettingsPageLayoutForStandardSettingsPages()
 		
 		if (linkID === "general") {
 			setGeneralSettingsPage()

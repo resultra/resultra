@@ -23,10 +23,22 @@ function registerPageContentLoader(linkID, contentURL, initCallbackFunc) {
 	registeredSettingsPageContentLoaders[linkID] = contentInfo
 }
 
+function resetSettingsPageLayoutForStandardSettingsPages() {
+		// For regular settings pages, the default behavior is the show the LHS
+		// table of contents for top-level settings pages. If the pages are being navigated
+		// to from the dashboard or form designer, the RHS sidebar also needs to be disabled,
+		// and the offpage content needs to be cleared out.
+		theMainWindowLayout.openLHSSidebar()
+		theMainWindowLayout.disableRHSSidebar()
+		clearMainWindowOffPageContent()
+}
+
 function navigateToSettingsPageContent(linkID) {
 	var contentInfo = registeredSettingsPageContentLoaders[linkID]
 	if (contentInfo !== undefined) {
 		setSettingsPageContent(contentInfo.contentURL,contentInfo.initContentFunc)
+		resetSettingsPageLayoutForStandardSettingsPages()
+		
 	}
 }
 

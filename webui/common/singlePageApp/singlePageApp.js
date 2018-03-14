@@ -44,6 +44,10 @@ function setMainWindowOffPageContent(contentURL,initCallback) {
 	
 }
 
+function clearMainWindowOffPageContent() {
+	$('#mainWindowOffPageContent').empty()
+}
+
 function setMainWindowHeaderButtonsContent(contentURL,initCallback) {
 	jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 	        $('#mainWindowHeaderMenuButtons').html(pageContentData);
