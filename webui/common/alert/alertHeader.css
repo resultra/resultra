@@ -26,3 +26,7 @@ a.alertFormLink {
 .notificationListItem {
 	border-bottom: 1px solid lightGrey;
 }
+
+#alertPageHeaderMenu ul {
+	min-width:250px;
+}
