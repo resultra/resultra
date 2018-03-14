@@ -33,7 +33,7 @@ function openNewNewItemPresetDialog(pageContext) {
 	$presetNameInput.val("")
 	$formSelection.val("")
 	validator.resetForm()
-	$includeInSidebarCheckbox.prop("checked",false)
+	$includeInSidebarCheckbox.prop("checked",true)
 	
 	var selectFormParams = {
 		menuSelector: formSelectionSelector,
@@ -44,6 +44,8 @@ function openNewNewItemPresetDialog(pageContext) {
 		
 	$newPresetDialog.modal('show')
 	
+	var linkCreated = false
+	
 	initButtonClickHandler('#newFormLinkSaveButton',function() {
 		console.log("New form link save button clicked")
 		if($newPresetDialogForm.valid()) {	
@@ -53,17 +55,24 @@ function openNewNewItemPresetDialog(pageContext) {
 				name: $presetNameInput.val(),
 				formID: $formSelection.val(),
 				includeInSidebar:$includeInSidebarCheckbox.prop("checked") }
+						
+				// Only create a single link when the new link button is pressed. Otherwise,
+				// there's a possibility of creating more than one link with the same
+				// properties from the same dialog.		
+				if (linkCreated === false) {
+					linkCreated = true
+					jsonAPIRequest("formLink/new",newFormLinkParams,function(newFormLinkInfo) {
+						console.log("Created new form link: " + JSON.stringify(newFormLinkInfo))
+						$newPresetDialog.modal('hide')
+				
+						var editPropsContentURL = '/admin/formLink/' + newFormLinkInfo.linkID
+						setSettingsPageContent(editPropsContentURL,function() {
+							initNewItemLinkPropsSettingsPageContent(pageContext,newFormLinkInfo)
+						})
+				
+					})
+				}					
 								
-			jsonAPIRequest("formLink/new",newFormLinkParams,function(newFormLinkInfo) {
-				console.log("Created new form link: " + JSON.stringify(newFormLinkInfo))
-				$newPresetDialog.modal('hide')
-				
-				var editPropsContentURL = '/admin/formLink/' + newFormLinkInfo.linkID
-				setSettingsPageContent(editPropsContentURL,function() {
-					initNewItemLinkPropsSettingsPageContent(pageContext,newFormLinkInfo)
-				})
-				
-			})
 			
 
 		}
