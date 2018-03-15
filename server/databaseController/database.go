@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/common/userAuth"
+	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/trackerDatabase"
 	"resultra/datasheet/server/userRole"
 )
@@ -72,6 +72,7 @@ func createNewDatabase(trackerDBHandle *sql.DB, req *http.Request, dbParams trac
 	newDBInfo := UserTrackingDatabaseInfo{
 		DatabaseID:   newDB.DatabaseID,
 		DatabaseName: newDB.Name,
+		IsActive:     true,
 		IsAdmin:      true}
 
 	return &newDBInfo, nil
