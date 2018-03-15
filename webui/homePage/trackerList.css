@@ -1,4 +1,4 @@
-a.disabledTrackerLink {
+#myTrackerList .disabledTrackerLink {
   /* Make the disabled links grayish*/
   color: gray;
   /* And disable the pointer events */
