@@ -49,7 +49,7 @@ class TestDashboard(unittest.TestCase,TestHelperMixin):
         barChartParams = {
             'parentDashboardID':dashboardID,
             'xAxisVals': {
-                'fieldID': self.textFieldID,
+                'groupValsByFieldID':self.textFieldID,
                 'groupValsBy':"none",
                 'groupByValBucketWidth':0
             },
