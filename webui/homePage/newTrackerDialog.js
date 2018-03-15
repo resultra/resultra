@@ -1,4 +1,4 @@
-function openNewTrackerDialog() {
+function openNewTrackerDialog(pageContext) {
 	
 	var $newTrackerDialogForm = $('#newTrackerDialogForm')
 	var $templateSelection = $('#newTrackerTemplateSelection')
@@ -156,7 +156,7 @@ function openNewTrackerDialog() {
 			}
 			jsonAPIRequest("database/new",newTrackerParams,function(newTrackerInfo) {
 				console.log("Created new tracker: " + JSON.stringify(newTrackerInfo))
-				addTrackerListItem(newTrackerInfo)	
+				addTrackerListItem(pageContext,newTrackerInfo)	
 				$('#newTrackerDialog').modal('hide')
 			})
 			

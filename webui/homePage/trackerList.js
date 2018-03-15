@@ -52,7 +52,7 @@ function initTrackerList(pageContext) {
 	
 	initButtonClickHandler('#newTrackerButton',function() {
 		console.log("New form button clicked")
-		openNewTrackerDialog()
+		openNewTrackerDialog(pageContext)
 	})
 	
 	initCheckboxChangeHandler('#showInactiveTrackers', false, function(includeInactive) {
