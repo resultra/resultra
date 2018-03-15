@@ -34,6 +34,7 @@ func init() {
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
 	mainRouter.HandleFunc("/homePage", home)
 	mainRouter.HandleFunc("/homePageSignedOut", home)
+	mainRouter.HandleFunc("/homePage/offPageContent", homePageOffPageContent)
 }
 
 type PageInfo struct {
@@ -87,6 +88,19 @@ func home(respWriter http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+	}
+
+}
+
+type OffPageContentTemplParams struct{}
+
+func homePageOffPageContent(respWriter http.ResponseWriter, req *http.Request) {
+
+	templParams := OffPageContentTemplParams{}
+	err := homePageTemplates.ExecuteTemplate(respWriter, "homePageOffPageContent", templParams)
+	if err != nil {
+		http.Error(respWriter, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 }

@@ -9,8 +9,12 @@ $(document).ready(function() {
 		theMainWindowLayout.disableLHSSidebar()
 		clearMainWindowHeaderButtonsContent()
 		resetWorkspaceBreadcrumbHeader()
+		
 		setMainWindowContent('/homePage',function() {
 			initHomePageSignedInPageContent(mainWindowContext)
+		})
+		
+		setMainWindowOffPageContent('/homePage/offPageContent',function() {
 		})
 	}
 	
