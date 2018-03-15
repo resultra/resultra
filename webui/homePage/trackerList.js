@@ -23,6 +23,17 @@ function addTrackerListItem(pageContext,trackerInfo) {
 	} else {
 		$nameLabel.addClass("disabledTrackerLink")
 	}
+	
+	var $settingsButton = $listItem.find(".editTrackerPropsButton")
+	if(trackerInfo.isAdmin) {
+		$settingsButton.click(function(e) {
+			e.preventDefault()
+			$settingsButton.blur()
+			navigateToAdminSettingsPageContent(pageContext,trackerInfo)
+		})
+	} else {
+		$settingsButton.hide()
+	}
 
 	$trackerList.append($listItem)
 
