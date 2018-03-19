@@ -140,7 +140,7 @@ func CreateAccountTrackerDatabase(accountID string) error {
 		return fmt.Errorf("CreateAccountTrackerDatabase: can't establish connection to newly created tracker database: %v", err)
 	}
 
-	if initErr := initNewTrackerDatabaseToDest(trackerDBHandle); initErr != nil {
+	if initErr := InitNewTrackerDatabaseToDest(trackerDBHandle); initErr != nil {
 		return fmt.Errorf("CreateAccountTrackerDatabase: can't initialize newly created tracker database: %v", initErr)
 	}
 

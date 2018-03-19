@@ -128,7 +128,7 @@ type RegisterSingleUserParams struct {
 const singleUserDummyEmailAddr string = `single.user.email.not.applicable@example.com`
 const singleUserDummyPassword string = `singleUserpwNotApplicable$!$`
 
-func saveNewSingleUser(trackerDBHandle *sql.DB, params RegisterSingleUserParams) *AuthResponse {
+func SaveNewSingleUser(trackerDBHandle *sql.DB, params RegisterSingleUserParams) *AuthResponse {
 	saveUserParams := NewUserParams{
 		FirstName: params.FirstName,
 		LastName:  params.LastName,

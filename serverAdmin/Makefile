@@ -1,4 +1,3 @@
-
 DEPTH = ..
 include $(DEPTH)/build/common.mk
 
@@ -6,13 +5,17 @@ include $(DEPTH)/build/common.mk
 
 all: build export
 
-build: addResultraAccount
+build: addResultraAccount exportTrackerTemplate
 
 clean:
-	$(RM) addResultraAccount
+	$(RM) addResultraAccount exportTrackerTemplate
 	
 addResultraAccount: 
 	$(GOBUILD) addResultraAccount.go
+	
+exportTrackerTemplate: exportTrackerTemplate.go
+	$(GOBUILD) exportTrackerTemplate.go
+	
 	
 export:
 	$(INSTALL_FILE) addResultraAccount $(PKG_BIN_DIR)

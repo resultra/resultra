@@ -8,13 +8,13 @@ import (
 	"resultra/datasheet/server/alert"
 	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/common/databaseWrapper"
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/dashboard"
 	"resultra/datasheet/server/displayTable"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/form"
 	"resultra/datasheet/server/formLink"
 	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/global"
 	"resultra/datasheet/server/itemList"
 	"resultra/datasheet/server/trackerDatabase"
@@ -86,7 +86,7 @@ func cloneFields(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 
 }
 
-func cloneIntoNewTrackerDatabase(cloneParams *trackerDatabase.CloneDatabaseParams) (*trackerDatabase.Database, error) {
+func CloneIntoNewTrackerDatabase(cloneParams *trackerDatabase.CloneDatabaseParams) (*trackerDatabase.Database, error) {
 
 	clonedDB, err := trackerDatabase.CloneDatabase(cloneParams)
 	if err != nil {
@@ -175,7 +175,7 @@ func saveExistingDatabaseAsTemplate(req *http.Request, params SaveAsTemplatePara
 		SrcDBHandle:      trackerDBHandle,
 		DestDBHandle:     trackerDBHandle,
 		IDRemapper:       uniqueID.UniqueIDRemapper{}}
-	return cloneIntoNewTrackerDatabase(&cloneParams)
+	return CloneIntoNewTrackerDatabase(&cloneParams)
 
 }
 

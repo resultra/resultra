@@ -277,7 +277,7 @@ CREATE TABLE IF NOT EXISTS alert_role_privs (
 
 ` // END of SCHEMA
 
-func initNewTrackerDatabaseToDest(trackerDBHandle *sql.DB) error {
+func InitNewTrackerDatabaseToDest(trackerDBHandle *sql.DB) error {
 	if _, createErr := trackerDBHandle.Exec(trackerDatabaseSchema); createErr != nil {
 		return fmt.Errorf("can't initialize database: %v", createErr)
 	}

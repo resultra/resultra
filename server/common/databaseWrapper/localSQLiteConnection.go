@@ -78,7 +78,7 @@ func (config *LocalSQLiteTrackerDatabaseConnectionConfig) InitConnection() error
 
 	if !dbFileAlreadyExists {
 		log.Printf("New database found, initializing: %v", databaseFileName)
-		if initErr := initNewTrackerDatabaseToDest(dbHandle); initErr != nil {
+		if initErr := InitNewTrackerDatabaseToDest(dbHandle); initErr != nil {
 			return fmt.Errorf("failure initializing tracker database: %v", initErr)
 		} else {
 			log.Printf("New database initialization complete: %v", databaseFileName)

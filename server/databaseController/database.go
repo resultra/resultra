@@ -48,7 +48,7 @@ func createNewDatabase(trackerDBHandle *sql.DB, req *http.Request, dbParams trac
 			SrcDBHandle:      srcTrackerDBHandle,
 			DestDBHandle:     trackerDBHandle,
 			IDRemapper:       uniqueID.UniqueIDRemapper{}}
-		newDB, newDBErr = cloneIntoNewTrackerDatabase(&newDBFromTemplateParams)
+		newDB, newDBErr = CloneIntoNewTrackerDatabase(&newDBFromTemplateParams)
 		if newDBErr != nil {
 			return nil, newDBErr
 		}

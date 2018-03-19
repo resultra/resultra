@@ -87,7 +87,7 @@ func registerSingleUserAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newUserResp := saveNewSingleUser(trackerDBHandle, params)
+	newUserResp := SaveNewSingleUser(trackerDBHandle, params)
 	api.WriteJSONResponse(w, newUserResp)
 
 }
