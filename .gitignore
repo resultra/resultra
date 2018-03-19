@@ -33,4 +33,5 @@ vendor/*
 *.output
 *.swp
 *.pyc
+*_dump.txt
 

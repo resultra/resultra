@@ -19,3 +19,4 @@ exportTrackerTemplate: exportTrackerTemplate.go
 	
 export:
 	$(INSTALL_FILE) addResultraAccount $(PKG_BIN_DIR)
+	$(INSTALL_FILE) exportTrackerTemplate $(PKG_BIN_DIR)
