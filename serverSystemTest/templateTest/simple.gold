@@ -2,6 +2,8 @@ TRACKER----->|Tracker A
 FORM-------->|Form 1
 TABLE VIEW-->|Table A
 TABLE COL--->|Table A|checkbox
+TABLE COL--->|Table A|datePicker
+TABLE COL--->|Table A|numberInput
 DASHBOARD--->|Dashboard A
 LIST-------->|List A
 NEW ITEM LINK---->|New Item Link A
