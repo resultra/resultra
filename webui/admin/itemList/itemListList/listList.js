@@ -1,3 +1,4 @@
+
 function addListToAdminItemListList(databaseID,listInfo) {
  
 	var $itemListListItem = $('#adminListListItemTemplate').clone()
@@ -9,10 +10,7 @@ function addListToAdminItemListList(databaseID,listInfo) {
 	$editListPropsButton.click(function(e) {
 		e.preventDefault()
 		$editListPropsButton.blur()
-		var editPropsContentURL = '/admin/itemList/' + listInfo.listID
-		setSettingsPageContent(editPropsContentURL,function() {
-			initItemListPropsSettingsPageContent(databaseID,listInfo)
-		})
+		navigateToItemListProps(databaseID,listInfo)
 	})
 
 	var $nameLabel = $itemListListItem.find(".listNameLabel")

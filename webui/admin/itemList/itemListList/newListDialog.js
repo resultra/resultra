@@ -62,13 +62,9 @@ function openNewListDialog(databaseID) {
 				name: $nameInput.val() }
 			jsonAPIRequest("itemList/new",newListParams,function(newListInfo) {
 				console.log("Created new list: " + JSON.stringify(newListInfo))
-				addListToAdminItemListList(newListInfo)
 				$('#newListDialog').modal('hide')
 				
-				var editPropsContentURL = '/admin/itemList/' + newListInfo.listID
-				setSettingsPageContent(editPropsContentURL,function() {
-					initItemListPropsSettingsPageContent(databaseID,listInfo)
-				})
+				navigateToItemListProps(databaseID,newListInfo)
 			})
 			
 

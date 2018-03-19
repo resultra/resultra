@@ -186,3 +186,13 @@ function initItemListPropsSettingsPageContent(databaseID, listInfo) {
 		initSettingsPageButtonLink('#listPropsBackToListListLink',"lists")
 		
 }
+
+
+
+function navigateToItemListProps(databaseID,listInfo) {
+	var editPropsContentURL = '/admin/itemList/' + listInfo.listID
+	setSettingsPageContent(editPropsContentURL,function() {
+		initItemListPropsSettingsPageContent(databaseID,listInfo)
+	})
+}
+
