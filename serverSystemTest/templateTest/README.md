@@ -2,7 +2,7 @@
 
 ## Creating Templates to Test With
 
-From the project root directory, go to ./build/dest and launch the single user version of the system: e.g.:
+From the project root directory, go to ./build/dest and launch the single user version of the system to open the tracker database which serves as the origin of the template: e.g.:
 
 % ./bin/resultraLocalBackend --templates-path ./factoryTemplates --tracker-path ../../serverSystemTest/templateTest/simple/trackers
 
