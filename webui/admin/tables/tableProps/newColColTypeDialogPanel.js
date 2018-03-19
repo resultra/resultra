@@ -335,7 +335,7 @@ function createNewTableColColTypeDialogPanelConfig(pageContext,tableRef,panelPar
 				
 				
 				function navigateToNewColumnSettingsPage(columnInfo) {
-					var contentURL = '/admin/tablecol/'+columnInfocolumnID
+					var contentURL = '/admin/tablecol/'+columnInfo.columnID
 					setSettingsPageContent(contentURL, function() {
 						initTableColPropsPageConent(pageContext,columnInfo)
 					})

@@ -1,7 +1,10 @@
 TRACKER----->|Tracker A
 FORM-------->|Form 1
+TABLE VIEW-->|Table A
+TABLE COL--->|Table A|checkbox
 DASHBOARD--->|Dashboard A
 LIST-------->|List A
+NEW ITEM LINK---->|New Item Link A
 FIELD------->|Bool Field|bool|BoolField|0
 FIELD------->|Date Field|time|DateField|0
 FIELD------->|Note Field|longText|NoteField|0
