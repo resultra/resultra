@@ -1,4 +1,4 @@
-function openNewFormDialog(databaseID) {
+function openNewFormDialog(pageContext) {
 	
 	var $newFormDialogForm = $('#newFormDialogForm')
 	var $formNameInput = $('#newFormNameInput')
@@ -11,7 +11,7 @@ function openNewFormDialog(databaseID) {
 				remote: {
 					url: '/api/frm/validateNewFormName',
 					data: {
-						databaseID: databaseID,
+						databaseID: pageContext.databaseID,
 						formName: function() { return $('#newFormNameInput').val(); }
 					}
 				} // remote
@@ -38,13 +38,13 @@ function openNewFormDialog(databaseID) {
 			console.log("table selection: " + $('#newFormTableSelection').val() )
 			
 			var newFormParams = { 
-				parentDatabaseID: databaseID, 
+				parentDatabaseID: pageContext.databaseID, 
 				name: $formNameInput.val() }
 			jsonAPIRequest("frm/new",newFormParams,function(newFormInfo) {
 				console.log("Created new form: " + JSON.stringify(newFormInfo))
 				$newFormDialog.modal('hide')
-				// TODO - Include database ID in link
-				navigateToURL('/admin/frm/' + newFormInfo.formID)
+				navigateToFormDesignerPageContent(pageContext,newFormInfo)
+				
 			})
 			
 

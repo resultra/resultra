@@ -68,7 +68,7 @@ function initAdminFormSettings(pageContext) {
 	
 	initButtonClickHandler('#adminNewFormButton',function() {
 		console.log("New form button clicked")
-		openNewFormDialog(pageContext.databaseID)
+		openNewFormDialog(pageContext)
 	})
 	
 	
