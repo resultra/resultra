@@ -35,15 +35,13 @@ function openNewTableDialog(pageContext) {
 		console.log("New table save button clicked")
 		if($newTableDialogForm.valid()) {				
 			var newTableParams = { 
-				parentDatabaseID: databaseID, 
+				parentDatabaseID: pageContext.databaseID, 
 				name: $tableNameInput.val() }
 			jsonAPIRequest("tableView/new",newTableParams,function(newTableInfo) {
 				console.log("Created new table: " + JSON.stringify(newTableInfo))
 				$newTableDialog.modal('hide')
 
 				navigateToTablePropsPage(pageContext,newTableInfo)
-				
-				navigateToURL()
 			})
 			
 
