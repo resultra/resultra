@@ -1,10 +1,11 @@
 DEPTH=../..
+include $(DEPTH)/build/common.mk
 
 .PHONY:simple
 
-all: test
+all: systest
 
-test: simple
+systest: simple
 	
 clean:
 	$(RM) *_gen.db *_dump.txt
