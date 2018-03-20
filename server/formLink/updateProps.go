@@ -125,7 +125,7 @@ func (updateParams FormLinkEnableSharedLinkParams) updateProps(trackerDBHandle *
 
 	if len(linkForUpdate.SharedLinkID) <= 0 {
 		// Generate a new shared link ID if there insn't one already (from previously enabling the shared link)
-		linkForUpdate.SharedLinkID = uniqueID.GenerateSnowflakeID()
+		linkForUpdate.SharedLinkID = uniqueID.GenerateUniqueID()
 	}
 	linkForUpdate.SharedLinkEnabled = true
 

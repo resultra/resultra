@@ -53,7 +53,7 @@ func saveNewSocialButton(trackerDBHandle *sql.DB, params NewSocialButtonParams) 
 	properties := newDefaultSocialButtonProperties()
 	properties.FieldID = params.FieldID
 
-	columnID := uniqueID.GenerateSnowflakeID()
+	columnID := uniqueID.GenerateUniqueID()
 	newSocialButton := SocialButton{ParentTableID: params.ParentTableID,
 		SocialButtonID: columnID,
 		ColumnID:       columnID,

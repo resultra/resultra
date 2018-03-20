@@ -46,7 +46,7 @@ func newValueList(trackerDBHandle *sql.DB, params NewValueListParams) (*ValueLis
 	newProps := newDefaultValueListProperties()
 
 	newValueList := ValueList{
-		ValueListID:      uniqueID.GenerateSnowflakeID(),
+		ValueListID:      uniqueID.GenerateUniqueID(),
 		Name:             params.Name,
 		ParentDatabaseID: params.ParentDatabaseID,
 		Properties:       newProps}

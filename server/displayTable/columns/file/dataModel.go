@@ -52,7 +52,7 @@ func saveNewFile(trackerDBHandle *sql.DB, params NewFileParams) (*File, error) {
 	properties := newDefaultFileProperties()
 	properties.FieldID = params.FieldID
 
-	fileID := uniqueID.GenerateSnowflakeID()
+	fileID := uniqueID.GenerateUniqueID()
 	newFile := File{ParentTableID: params.ParentTableID,
 		FileID:     fileID,
 		ColumnID:   fileID,

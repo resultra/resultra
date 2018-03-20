@@ -62,7 +62,7 @@ func newSummaryVal(trackerDBHandle *sql.DB, params NewSummaryValParams) (*Summar
 
 	newSummaryVal := SummaryVal{
 		ParentDashboardID: params.ParentDashboardID,
-		SummaryValID:      uniqueID.GenerateSnowflakeID(),
+		SummaryValID:      uniqueID.GenerateUniqueID(),
 		Properties:        summaryValProps}
 
 	if saveErr := saveSummaryVal(trackerDBHandle, newSummaryVal); saveErr != nil {

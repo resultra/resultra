@@ -236,6 +236,10 @@ func init() {
 	}
 }
 
-func GenerateSnowflakeID() string {
+func generateSnowflakeID() string {
 	return globalIDGen.generateID().encodeBase64()
+}
+
+func GenerateUniqueID() string {
+	return generateSnowflakeID()
 }

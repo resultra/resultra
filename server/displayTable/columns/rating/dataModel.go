@@ -53,7 +53,7 @@ func saveNewRating(trackerDBHandle *sql.DB, params NewRatingParams) (*Rating, er
 	properties := newDefaultRatingProperties()
 	properties.FieldID = params.FieldID
 
-	ratingID := uniqueID.GenerateSnowflakeID()
+	ratingID := uniqueID.GenerateUniqueID()
 	newRating := Rating{ParentTableID: params.ParentTableID,
 		RatingID:   ratingID,
 		ColumnID:   ratingID,

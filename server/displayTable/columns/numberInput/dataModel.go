@@ -53,7 +53,7 @@ func saveNewNumberInput(trackerDBHandle *sql.DB, params NewNumberInputParams) (*
 	properties := newDefaultNumberInputProperties()
 	properties.FieldID = params.FieldID
 
-	numberInputID := uniqueID.GenerateSnowflakeID()
+	numberInputID := uniqueID.GenerateUniqueID()
 	newNumberInput := NumberInput{ParentTableID: params.ParentTableID,
 		NumberInputID: numberInputID,
 		ColumnID:      numberInputID,

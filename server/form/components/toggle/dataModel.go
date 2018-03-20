@@ -57,7 +57,7 @@ func saveNewToggle(trackerDBHandle *sql.DB, params NewToggleParams) (*Toggle, er
 	properties.Geometry = params.Geometry
 
 	newToggle := Toggle{ParentFormID: params.ParentFormID,
-		ToggleID:   uniqueID.GenerateSnowflakeID(),
+		ToggleID:   uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if err := saveToggle(trackerDBHandle, newToggle); err != nil {

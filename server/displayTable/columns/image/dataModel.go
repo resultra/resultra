@@ -52,7 +52,7 @@ func saveNewImage(trackerDBHandle *sql.DB, params NewImageParams) (*Image, error
 	properties := newDefaultImageProperties()
 	properties.FieldID = params.FieldID
 
-	imageID := uniqueID.GenerateSnowflakeID()
+	imageID := uniqueID.GenerateUniqueID()
 	newImage := Image{ParentTableID: params.ParentTableID,
 		ImageID:    imageID,
 		ColumnID:   imageID,

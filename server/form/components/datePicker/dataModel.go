@@ -59,7 +59,7 @@ func saveNewDatePicker(trackerDBHandle *sql.DB, params NewDatePickerParams) (*Da
 	properties.FieldID = params.FieldID
 
 	newDatePicker := DatePicker{ParentFormID: params.ParentFormID,
-		DatePickerID: uniqueID.GenerateSnowflakeID(),
+		DatePickerID: uniqueID.GenerateUniqueID(),
 		Properties:   properties}
 
 	if err := saveDatePicker(trackerDBHandle, newDatePicker); err != nil {

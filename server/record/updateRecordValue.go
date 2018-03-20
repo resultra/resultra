@@ -76,7 +76,7 @@ func UpdateRecordValue(trackingDBHandle *sql.DB, currUserID string, recUpdater R
 		return nil, fmt.Errorf("UpdateRecordValue: Error generating value for cell update: %v", cellErr)
 	}
 
-	uniqueUpdateID := uniqueID.GenerateSnowflakeID()
+	uniqueUpdateID := uniqueID.GenerateUniqueID()
 	updateTimestamp := timestamp.CurrentTimestampUTC()
 
 	cellUpdate := CellUpdate{

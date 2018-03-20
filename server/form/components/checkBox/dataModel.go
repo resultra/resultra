@@ -57,7 +57,7 @@ func saveNewCheckBox(trackerDBHandle *sql.DB, params NewCheckBoxParams) (*CheckB
 	properties.Geometry = params.Geometry
 
 	newCheckBox := CheckBox{ParentFormID: params.ParentFormID,
-		CheckBoxID: uniqueID.GenerateSnowflakeID(),
+		CheckBoxID: uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if err := saveCheckbox(trackerDBHandle, newCheckBox); err != nil {

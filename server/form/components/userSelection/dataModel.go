@@ -57,7 +57,7 @@ func saveNewUserSelection(trackerDBHandle *sql.DB, params NewUserSelectionParams
 	properties.Geometry = params.Geometry
 
 	newUserSelection := UserSelection{ParentFormID: params.ParentFormID,
-		UserSelectionID: uniqueID.GenerateSnowflakeID(),
+		UserSelectionID: uniqueID.GenerateUniqueID(),
 		Properties:      properties}
 
 	if saveErr := saveUserSelection(trackerDBHandle, newUserSelection); saveErr != nil {

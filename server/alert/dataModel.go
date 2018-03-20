@@ -54,7 +54,7 @@ func newAlert(trackerDBHandle *sql.DB, params NewAlertParams) (*Alert, error) {
 	newAlertProps.FormID = params.FormID
 
 	newAlert := Alert{ParentDatabaseID: params.ParentDatabaseID,
-		AlertID:    uniqueID.GenerateSnowflakeID(),
+		AlertID:    uniqueID.GenerateUniqueID(),
 		Name:       sanitizedName,
 		Properties: newAlertProps}
 

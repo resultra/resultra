@@ -60,7 +60,7 @@ func saveNewNumberInput(trackerDBHandle *sql.DB, params NewNumberInputParams) (*
 	properties.FieldID = params.FieldID
 
 	newNumberInput := NumberInput{ParentFormID: params.ParentFormID,
-		NumberInputID: uniqueID.GenerateSnowflakeID(),
+		NumberInputID: uniqueID.GenerateUniqueID(),
 		Properties:    properties}
 
 	if err := saveNumberInput(trackerDBHandle, newNumberInput); err != nil {

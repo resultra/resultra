@@ -59,7 +59,7 @@ func saveNewHtmlEditor(trackerDBHandle *sql.DB, params NewHtmlEditorParams) (*Ht
 	properties.FieldID = params.FieldID
 
 	newHtmlEditor := HtmlEditor{ParentFormID: params.ParentFormID,
-		HtmlEditorID: uniqueID.GenerateSnowflakeID(),
+		HtmlEditorID: uniqueID.GenerateUniqueID(),
 		Properties:   properties}
 
 	if err := saveHtmlEditor(trackerDBHandle, newHtmlEditor); err != nil {

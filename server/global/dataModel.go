@@ -54,7 +54,7 @@ func newGlobal(trackerDBHandle *sql.DB, params NewGlobalParams) (*Global, error)
 	}
 
 	newGlobal := Global{ParentDatabaseID: params.ParentDatabaseID,
-		GlobalID: uniqueID.GenerateSnowflakeID(),
+		GlobalID: uniqueID.GenerateUniqueID(),
 		Name:     params.Name,
 		RefName:  params.RefName,
 		Type:     params.Type}
@@ -137,7 +137,7 @@ func CloneGlobals(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 	}
 	for _, currGlobal := range globals {
 
-		remappedID := uniqueID.GenerateSnowflakeID()
+		remappedID := uniqueID.GenerateUniqueID()
 		cloneParams.IDRemapper[currGlobal.GlobalID] = remappedID
 
 		destGlobal := currGlobal
@@ -200,7 +200,7 @@ type GlobalValUpdate struct {
 func saveValUpdate(trackerDBHandle *sql.DB, globalID string, encodedValue string) (*GlobalValUpdate, error) {
 
 	valUpdate := GlobalValUpdate{
-		UpdateID:        uniqueID.GenerateSnowflakeID(),
+		UpdateID:        uniqueID.GenerateUniqueID(),
 		GlobalID:        globalID,
 		UpdateTimestamp: timestamp.CurrentTimestampUTC(),
 		Value:           encodedValue}

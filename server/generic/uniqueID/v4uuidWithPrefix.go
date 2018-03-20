@@ -24,7 +24,7 @@ func GenerateUniqueIDWithPrefix(prefix string) string {
 }
 
 /* Return a UID which also includes the current time down to the millisecond */
-func GenerateUniqueID() string {
+func GenerateUniqueIDWithTime() string {
 	return GenerateUniqueIDWithPrefix("")
 }
 

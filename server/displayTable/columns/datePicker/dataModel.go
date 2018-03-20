@@ -53,7 +53,7 @@ func saveNewDatePicker(trackerDBHandle *sql.DB, params NewDatePickerParams) (*Da
 	properties := newDefaultDatePickerProperties()
 	properties.FieldID = params.FieldID
 
-	datePickerID := uniqueID.GenerateSnowflakeID()
+	datePickerID := uniqueID.GenerateUniqueID()
 	newDatePicker := DatePicker{ParentTableID: params.ParentTableID,
 		DatePickerID: datePickerID,
 		ColumnID:     datePickerID,

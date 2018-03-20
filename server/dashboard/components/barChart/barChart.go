@@ -98,7 +98,7 @@ func NewBarChart(trackerDBHandle *sql.DB, params NewBarChartParams) (*BarChart, 
 
 	newBarChart := BarChart{
 		ParentDashboardID: params.ParentDashboardID,
-		BarChartID:        uniqueID.GenerateSnowflakeID(),
+		BarChartID:        uniqueID.GenerateUniqueID(),
 		Properties:        barChartProps}
 
 	if saveErr := saveBarChart(trackerDBHandle, newBarChart); saveErr != nil {

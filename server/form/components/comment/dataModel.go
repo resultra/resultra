@@ -59,7 +59,7 @@ func saveNewComment(trackerDBHandle *sql.DB, params NewCommentParams) (*Comment,
 	properties.Geometry = params.Geometry
 
 	newComment := Comment{ParentFormID: params.ParentFormID,
-		CommentID:  uniqueID.GenerateSnowflakeID(),
+		CommentID:  uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if saveErr := saveComment(trackerDBHandle, newComment); saveErr != nil {

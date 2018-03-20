@@ -59,7 +59,7 @@ func saveNewSelection(trackerDBHandle *sql.DB, params NewSelectionParams) (*Sele
 	properties.FieldID = params.FieldID
 
 	newSelection := Selection{ParentFormID: params.ParentFormID,
-		SelectionID: uniqueID.GenerateSnowflakeID(),
+		SelectionID: uniqueID.GenerateUniqueID(),
 		Properties:  properties}
 
 	if saveErr := saveSelection(trackerDBHandle, newSelection); saveErr != nil {

@@ -57,7 +57,7 @@ func saveNewLabel(trackerDBHandle *sql.DB, params NewLabelParams) (*Label, error
 	properties.Geometry = params.Geometry
 
 	newLabel := Label{ParentFormID: params.ParentFormID,
-		LabelID:    uniqueID.GenerateSnowflakeID(),
+		LabelID:    uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if saveErr := saveLabel(trackerDBHandle, newLabel); saveErr != nil {

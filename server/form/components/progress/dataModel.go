@@ -57,7 +57,7 @@ func saveNewProgress(trackerDBHandle *sql.DB, params NewProgressParams) (*Progre
 	properties.Geometry = params.Geometry
 
 	newProgress := Progress{ParentFormID: params.ParentFormID,
-		ProgressID: uniqueID.GenerateSnowflakeID(),
+		ProgressID: uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if err := saveProgress(trackerDBHandle, newProgress); err != nil {

@@ -104,7 +104,7 @@ func saveNewUser(trackerDBHandle *sql.DB, rawParams NewUserParams) *AuthResponse
 		return newAuthResponse(false, "Registration failed: user with same email already exists")
 	}
 
-	userID := uniqueID.GenerateSnowflakeID()
+	userID := uniqueID.GenerateUniqueID()
 
 	if _, insertErr := trackerDBHandle.Exec(
 		`INSERT INTO users (user_id, email_addr, user_name, first_name,last_name, password_hash,properties) 

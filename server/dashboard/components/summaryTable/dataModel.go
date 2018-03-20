@@ -74,7 +74,7 @@ func newSummaryTable(trackerDBHandle *sql.DB, params NewSummaryTableParams) (*Su
 
 	newSummaryTable := SummaryTable{
 		ParentDashboardID: params.ParentDashboardID,
-		SummaryTableID:    uniqueID.GenerateSnowflakeID(),
+		SummaryTableID:    uniqueID.GenerateUniqueID(),
 		Properties:        summaryTableProps}
 
 	if saveErr := saveSummaryTable(trackerDBHandle, newSummaryTable); saveErr != nil {

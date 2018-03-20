@@ -63,7 +63,7 @@ type changeSetIDAllocationResponse struct {
 
 func allocateChangeSetIDAPI(w http.ResponseWriter, r *http.Request) {
 
-	changeSetID := uniqueID.GenerateSnowflakeID()
+	changeSetID := uniqueID.GenerateUniqueID()
 
 	response := changeSetIDAllocationResponse{changeSetID}
 

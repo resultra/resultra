@@ -46,7 +46,7 @@ func newTable(trackerDBHandle *sql.DB, params NewTableParams) (*DisplayTable, er
 
 	newTable := DisplayTable{
 		ParentDatabaseID: params.ParentDatabaseID,
-		TableID:          uniqueID.GenerateSnowflakeID(),
+		TableID:          uniqueID.GenerateUniqueID(),
 		Name:             sanitizedName,
 		Properties:       newDefaultDisplayTableProperties()}
 

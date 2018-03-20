@@ -52,7 +52,7 @@ func newItemList(trackerDBHandle *sql.DB, params NewItemListParams) (*ItemList, 
 	props.DefaultView = params.DefaultView
 
 	newList := ItemList{ParentDatabaseID: params.ParentDatabaseID,
-		ListID:     uniqueID.GenerateSnowflakeID(),
+		ListID:     uniqueID.GenerateUniqueID(),
 		Name:       sanitizedName,
 		Properties: props}
 

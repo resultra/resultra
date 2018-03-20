@@ -60,7 +60,7 @@ func saveNewTextBox(trackerDBHandle *sql.DB, params NewTextBoxParams) (*TextBox,
 	properties.FieldID = params.FieldID
 
 	newTextBox := TextBox{ParentFormID: params.ParentFormID,
-		TextBoxID:  uniqueID.GenerateSnowflakeID(),
+		TextBoxID:  uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if err := saveTextBox(trackerDBHandle, newTextBox); err != nil {

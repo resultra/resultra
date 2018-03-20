@@ -58,7 +58,7 @@ func saveNewEmailAddr(trackerDBHandle *sql.DB, params NewEmailAddrParams) (*Emai
 	properties.FieldID = params.FieldID
 
 	newEmailAddr := EmailAddr{ParentFormID: params.ParentFormID,
-		EmailAddrID: uniqueID.GenerateSnowflakeID(),
+		EmailAddrID: uniqueID.GenerateUniqueID(),
 		Properties:  properties}
 
 	if err := saveEmailAddr(trackerDBHandle, newEmailAddr); err != nil {

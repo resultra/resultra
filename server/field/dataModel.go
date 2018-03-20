@@ -138,7 +138,7 @@ type NewNonCalcFieldParams struct {
 func NewNonCalcField(trackerDBHandle *sql.DB, fieldParams NewNonCalcFieldParams) (*Field, error) {
 	newField := Field{
 		ParentDatabaseID:        fieldParams.ParentDatabaseID,
-		FieldID:                 uniqueID.GenerateSnowflakeID(),
+		FieldID:                 uniqueID.GenerateUniqueID(),
 		Name:                    fieldParams.Name,
 		Type:                    fieldParams.Type,
 		RefName:                 fieldParams.RefName,

@@ -67,7 +67,7 @@ func saveNewButton(trackerDBHandle *sql.DB, params NewButtonParams) (*FormButton
 	properties.LinkedFormID = params.LinkedFormID
 
 	newButton := FormButton{ParentFormID: params.ParentFormID,
-		ButtonID:   uniqueID.GenerateSnowflakeID(),
+		ButtonID:   uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if err := saveButton(trackerDBHandle, newButton); err != nil {

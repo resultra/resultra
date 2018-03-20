@@ -51,7 +51,7 @@ func saveNewProgress(trackerDBHandle *sql.DB, params NewProgressParams) (*Progre
 	properties := newDefaultProgressProperties()
 	properties.FieldID = params.FieldID
 
-	progressID := uniqueID.GenerateSnowflakeID()
+	progressID := uniqueID.GenerateUniqueID()
 	newProgress := Progress{ParentTableID: params.ParentTableID,
 		ProgressID: progressID,
 		ColumnID:   progressID,

@@ -47,7 +47,7 @@ func saveNewCaption(trackerDBHandle *sql.DB, params NewCaptionParams) (*Caption,
 		ColorScheme: colorSchemeDefault}
 
 	newCaption := Caption{ParentFormID: params.ParentFormID,
-		CaptionID:  uniqueID.GenerateSnowflakeID(),
+		CaptionID:  uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if err := saveCaption(trackerDBHandle, newCaption); err != nil {

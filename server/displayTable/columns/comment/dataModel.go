@@ -53,7 +53,7 @@ func saveNewComment(trackerDBHandle *sql.DB, params NewCommentParams) (*Comment,
 	properties := newDefaultCommentProperties()
 	properties.FieldID = params.FieldID
 
-	commentID := uniqueID.GenerateSnowflakeID()
+	commentID := uniqueID.GenerateUniqueID()
 	newComment := Comment{ParentTableID: params.ParentTableID,
 		CommentID:  commentID,
 		ColumnID:   commentID,

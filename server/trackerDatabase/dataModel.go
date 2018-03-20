@@ -104,7 +104,7 @@ func SaveNewEmptyDatabase(trackerDBHandle *sql.DB, params NewDatabaseParams) (*D
 		return nil, sanitizeErr
 	}
 
-	databaseID := uniqueID.GenerateSnowflakeID()
+	databaseID := uniqueID.GenerateUniqueID()
 
 	dbProps := newDefaultDatabaseProperties()
 

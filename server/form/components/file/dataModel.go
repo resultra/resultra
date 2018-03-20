@@ -58,7 +58,7 @@ func saveNewFile(trackerDBHandle *sql.DB, params NewFileParams) (*File, error) {
 	properties.FieldID = params.FieldID
 
 	newFile := File{ParentFormID: params.ParentFormID,
-		FileID:     uniqueID.GenerateSnowflakeID(),
+		FileID:     uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if err := saveFile(trackerDBHandle, newFile); err != nil {

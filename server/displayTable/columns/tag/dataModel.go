@@ -51,7 +51,7 @@ func saveNewTag(trackerDBHandle *sql.DB, params NewTagParams) (*Tag, error) {
 	properties := newDefaultTagProperties()
 	properties.FieldID = params.FieldID
 
-	tagID := uniqueID.GenerateSnowflakeID()
+	tagID := uniqueID.GenerateUniqueID()
 	newTag := Tag{ParentTableID: params.ParentTableID,
 		TagID:      tagID,
 		ColumnID:   tagID,

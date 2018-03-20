@@ -59,7 +59,7 @@ func saveNewRating(trackerDBHandle *sql.DB, params NewRatingParams) (*Rating, er
 	properties.Geometry = params.Geometry
 
 	newRating := Rating{ParentFormID: params.ParentFormID,
-		RatingID:   uniqueID.GenerateSnowflakeID(),
+		RatingID:   uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if saveErr := saveRating(trackerDBHandle, newRating); saveErr != nil {

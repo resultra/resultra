@@ -53,7 +53,7 @@ func saveNewNote(trackerDBHandle *sql.DB, params NewNoteParams) (*Note, error) {
 	properties := newDefaultEditorProperties()
 	properties.FieldID = params.FieldID
 
-	noteID := uniqueID.GenerateSnowflakeID()
+	noteID := uniqueID.GenerateUniqueID()
 	newNote := Note{ParentTableID: params.ParentTableID,
 		NoteID:     noteID,
 		ColumnID:   noteID,

@@ -52,7 +52,7 @@ func saveNewTextInput(trackerDBHandle *sql.DB, params NewTextInputParams) (*Text
 	properties := newDefaultTextInputProperties()
 	properties.FieldID = params.FieldID
 
-	textInputID := uniqueID.GenerateSnowflakeID()
+	textInputID := uniqueID.GenerateUniqueID()
 	newTextInput := TextInput{ParentTableID: params.ParentTableID,
 		TextInputID: textInputID,
 		ColumnID:    textInputID,

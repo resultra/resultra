@@ -58,7 +58,7 @@ func saveNewUrlLink(trackerDBHandle *sql.DB, params NewUrlLinkParams) (*UrlLink,
 	properties.FieldID = params.FieldID
 
 	newUrlLink := UrlLink{ParentFormID: params.ParentFormID,
-		UrlLinkID:  uniqueID.GenerateSnowflakeID(),
+		UrlLinkID:  uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if err := saveUrlLink(trackerDBHandle, newUrlLink); err != nil {

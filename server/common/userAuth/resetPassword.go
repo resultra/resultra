@@ -11,7 +11,7 @@ import (
 
 func sendPasswordResetEmail(trackerDBHandle *sql.DB, emailAddr string, userID string) error {
 
-	resetID := uniqueID.GenerateSnowflakeID()
+	resetID := uniqueID.GenerateUniqueID()
 	resetTimestamp := timestamp.CurrentTimestampUTC()
 
 	if _, insertErr := trackerDBHandle.Exec(

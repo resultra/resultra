@@ -53,7 +53,7 @@ func newHeader(trackerDBHandle *sql.DB, params NewHeaderParams) (*Header, error)
 
 	newHeader := Header{
 		ParentDashboardID: params.ParentDashboardID,
-		HeaderID:          uniqueID.GenerateSnowflakeID(),
+		HeaderID:          uniqueID.GenerateUniqueID(),
 		Properties:        headerProps}
 
 	if saveErr := saveHeader(trackerDBHandle, newHeader); saveErr != nil {

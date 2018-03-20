@@ -52,7 +52,7 @@ func saveNewUrlLink(trackerDBHandle *sql.DB, params NewUrlLinkParams) (*UrlLink,
 	properties := newDefaultUrlLinkProperties()
 	properties.FieldID = params.FieldID
 
-	urlLinkID := uniqueID.GenerateSnowflakeID()
+	urlLinkID := uniqueID.GenerateUniqueID()
 	newUrlLink := UrlLink{ParentTableID: params.ParentTableID,
 		UrlLinkID:  urlLinkID,
 		ColumnID:   urlLinkID,

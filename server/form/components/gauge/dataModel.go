@@ -57,7 +57,7 @@ func saveNewGauge(trackerDBHandle *sql.DB, params NewGaugeParams) (*Gauge, error
 	properties.Geometry = params.Geometry
 
 	newGauge := Gauge{ParentFormID: params.ParentFormID,
-		GaugeID:    uniqueID.GenerateSnowflakeID(),
+		GaugeID:    uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if err := saveGauge(trackerDBHandle, newGauge); err != nil {

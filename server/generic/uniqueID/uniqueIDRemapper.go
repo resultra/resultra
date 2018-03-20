@@ -9,7 +9,7 @@ func (mapper UniqueIDRemapper) AllocNewRemappedID(unmappedID string) (string, er
 	if foundExisting {
 		return "", fmt.Errorf("AllocNewRemappedID: remapped ID already exists for ID=%v", unmappedID)
 	}
-	remappedID = GenerateSnowflakeID()
+	remappedID = GenerateUniqueID()
 	mapper[unmappedID] = remappedID
 	return remappedID, nil
 }
@@ -17,7 +17,7 @@ func (mapper UniqueIDRemapper) AllocNewRemappedID(unmappedID string) (string, er
 func (mapper UniqueIDRemapper) AllocNewOrGetExistingRemappedID(unmappedID string) string {
 	remappedID, foundExisting := mapper[unmappedID]
 	if !foundExisting {
-		remappedID = GenerateSnowflakeID()
+		remappedID = GenerateUniqueID()
 		mapper[unmappedID] = remappedID
 	}
 	return remappedID

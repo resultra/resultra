@@ -35,7 +35,7 @@ func NewRecord(trackerDBHandle *sql.DB, params NewRecordParams) (*Record, error)
 	createTimestamp := timestamp.CurrentTimestampUTC()
 
 	newRecord := Record{ParentDatabaseID: params.ParentDatabaseID,
-		RecordID:           uniqueID.GenerateSnowflakeID(),
+		RecordID:           uniqueID.GenerateUniqueID(),
 		IsDraftRecord:      params.IsDraftRecord,
 		CreateTimestampUTC: createTimestamp}
 

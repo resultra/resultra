@@ -52,7 +52,7 @@ func saveNewEmailAddr(trackerDBHandle *sql.DB, params NewEmailAddrParams) (*Emai
 	properties := newDefaultEmailAddrProperties()
 	properties.FieldID = params.FieldID
 
-	emailAddrID := uniqueID.GenerateSnowflakeID()
+	emailAddrID := uniqueID.GenerateUniqueID()
 	newEmailAddr := EmailAddr{ParentTableID: params.ParentTableID,
 		EmailAddrID: emailAddrID,
 		ColumnID:    emailAddrID,

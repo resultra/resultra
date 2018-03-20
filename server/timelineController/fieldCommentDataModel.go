@@ -29,7 +29,7 @@ type FieldComment struct {
 func saveFieldComment(trackerDBHandle *sql.DB, req *http.Request, params SaveFieldCommentParams) (*FieldComment, error) {
 
 	commentTimestamp := timestamp.CurrentTimestampUTC()
-	commentID := uniqueID.GenerateSnowflakeID()
+	commentID := uniqueID.GenerateUniqueID()
 	currUserID, userErr := userAuth.GetCurrentUserID(req)
 	if userErr != nil {
 		return nil, fmt.Errorf("saveFieldComment: can't get current user user: %v", userErr)

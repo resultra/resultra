@@ -12,7 +12,7 @@ import (
 
 func UniqueAttachmentFileNameFromUserFileName(userFileName string) string {
 
-	uniqueIDStr := uniqueID.GenerateUniqueID()
+	uniqueIDStr := uniqueID.GenerateUniqueIDWithTime()
 
 	fileExt := path.Ext(userFileName)
 

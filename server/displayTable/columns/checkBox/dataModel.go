@@ -51,7 +51,7 @@ func saveNewCheckBox(trackerDBHandle *sql.DB, params NewCheckBoxParams) (*CheckB
 	properties := newDefaultCheckBoxProperties()
 	properties.FieldID = params.FieldID
 
-	checkBoxID := uniqueID.GenerateSnowflakeID()
+	checkBoxID := uniqueID.GenerateUniqueID()
 	newCheckBox := CheckBox{ParentTableID: params.ParentTableID,
 		CheckBoxID: checkBoxID,
 		ColumnID:   checkBoxID,

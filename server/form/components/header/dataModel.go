@@ -46,7 +46,7 @@ func saveNewHeader(trackerDBHandle *sql.DB, params NewHeaderParams) (*Header, er
 	properties.Label = params.Label
 
 	newHeader := Header{ParentFormID: params.ParentFormID,
-		HeaderID:   uniqueID.GenerateSnowflakeID(),
+		HeaderID:   uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if err := saveHeader(trackerDBHandle, newHeader); err != nil {

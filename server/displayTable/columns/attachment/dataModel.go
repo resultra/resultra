@@ -53,7 +53,7 @@ func saveNewAttachment(trackerDBHandle *sql.DB, params NewAttachmentParams) (*At
 	properties := newDefaultAttachmentProperties()
 	properties.FieldID = params.FieldID
 
-	attachmentID := uniqueID.GenerateSnowflakeID()
+	attachmentID := uniqueID.GenerateUniqueID()
 	newAttachment := Attachment{ParentTableID: params.ParentTableID,
 		AttachmentID: attachmentID,
 		ColumnID:     attachmentID,

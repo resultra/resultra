@@ -60,7 +60,7 @@ func saveNewImage(trackerDBHandle *sql.DB, params NewImageParams) (*Image, error
 	properties.FieldID = params.FieldID
 
 	newImage := Image{ParentFormID: params.ParentFormID,
-		ImageID:    uniqueID.GenerateSnowflakeID(),
+		ImageID:    uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if saveErr := saveImage(trackerDBHandle, newImage); saveErr != nil {

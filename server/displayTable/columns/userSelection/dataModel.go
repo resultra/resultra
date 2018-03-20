@@ -51,7 +51,7 @@ func saveNewUserSelection(trackerDBHandle *sql.DB, params NewUserSelectionParams
 	properties := newDefaultUserSelectionProperties()
 	properties.FieldID = params.FieldID
 
-	userSelectionID := uniqueID.GenerateSnowflakeID()
+	userSelectionID := uniqueID.GenerateUniqueID()
 	newUserSelection := UserSelection{ParentTableID: params.ParentTableID,
 		UserSelectionID: userSelectionID,
 		ColumnID:        userSelectionID,

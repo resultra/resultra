@@ -60,7 +60,7 @@ func defaultTitle(origFileName string) string {
 func newAttachmentInfo(parentDatabaseID string, userID string, attachmentType string, origFileName string, cloudFileName string) AttachmentInfo {
 
 	attachInfo := AttachmentInfo{
-		AttachmentID:       uniqueID.GenerateSnowflakeID(),
+		AttachmentID:       uniqueID.GenerateUniqueID(),
 		ParentDatabaseID:   parentDatabaseID,
 		UserID:             userID,
 		Type:               attachmentType,

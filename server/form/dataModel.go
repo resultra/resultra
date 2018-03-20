@@ -45,7 +45,7 @@ func newForm(trackerDBHandle *sql.DB, params NewFormParams) (*Form, error) {
 	}
 
 	newForm := Form{ParentDatabaseID: params.ParentDatabaseID,
-		FormID:     uniqueID.GenerateSnowflakeID(),
+		FormID:     uniqueID.GenerateUniqueID(),
 		Name:       sanitizedName,
 		Properties: newDefaultFormProperties()}
 

@@ -42,7 +42,7 @@ func newCalcField(trackerDBHandle *sql.DB, calcFieldParams NewCalcFieldParams) (
 	// the equation which is encoded in JSON.
 	newField := field.Field{
 		ParentDatabaseID:        calcFieldParams.ParentDatabaseID,
-		FieldID:                 uniqueID.GenerateSnowflakeID(),
+		FieldID:                 uniqueID.GenerateUniqueID(),
 		Name:                    calcFieldParams.Name,
 		Type:                    calcFieldParams.Type,
 		RefName:                 calcFieldParams.RefName,

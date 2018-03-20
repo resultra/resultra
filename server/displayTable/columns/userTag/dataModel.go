@@ -51,7 +51,7 @@ func saveNewUserTag(trackerDBHandle *sql.DB, params NewUserTagParams) (*UserTag,
 	properties := newDefaultUserTagProperties()
 	properties.FieldID = params.FieldID
 
-	userTagID := uniqueID.GenerateSnowflakeID()
+	userTagID := uniqueID.GenerateUniqueID()
 	newUserTag := UserTag{ParentTableID: params.ParentTableID,
 		UserTagID:  userTagID,
 		ColumnID:   userTagID,

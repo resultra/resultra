@@ -59,7 +59,7 @@ func saveNewSocialButton(trackerDBHandle *sql.DB, params NewSocialButtonParams) 
 	properties.Geometry = params.Geometry
 
 	newSocialButton := SocialButton{ParentFormID: params.ParentFormID,
-		SocialButtonID: uniqueID.GenerateSnowflakeID(),
+		SocialButtonID: uniqueID.GenerateUniqueID(),
 		Properties:     properties}
 
 	if saveErr := saveSocialButton(trackerDBHandle, newSocialButton); saveErr != nil {

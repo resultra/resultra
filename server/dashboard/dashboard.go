@@ -53,7 +53,7 @@ func NewDashboard(trackerDBHandle *sql.DB, params NewDashboardParams) (*Dashboar
 		Layout: componentLayout.ComponentLayout{}}
 
 	var newDashboard = Dashboard{
-		DashboardID:      uniqueID.GenerateSnowflakeID(),
+		DashboardID:      uniqueID.GenerateUniqueID(),
 		ParentDatabaseID: params.DatabaseID,
 		Name:             sanitizedName,
 		Properties:       dashboardProps}

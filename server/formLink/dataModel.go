@@ -57,7 +57,7 @@ func newFormLink(trackerDBHandle *sql.DB, params NewFormLinkParams) (*FormLink, 
 	newProps := newDefaultNewItemProperties()
 
 	newLink := FormLink{
-		LinkID:            uniqueID.GenerateSnowflakeID(),
+		LinkID:            uniqueID.GenerateUniqueID(),
 		Name:              params.Name,
 		FormID:            params.FormID,
 		IncludeInSidebar:  params.IncludeInSidebar,
@@ -341,7 +341,7 @@ func CloneFormLinks(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 		// If there is a shared link, it must be replaced with a new ID around which to uniquely
 		// link to the form. In other words, each clone must have unique links to its forms.
 		if len(destLink.SharedLinkID) > 0 {
-			destLink.SharedLinkID = uniqueID.GenerateSnowflakeID()
+			destLink.SharedLinkID = uniqueID.GenerateUniqueID()
 		}
 
 		destProps, err := currLink.Properties.Clone(cloneParams)

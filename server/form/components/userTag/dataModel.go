@@ -57,7 +57,7 @@ func saveNewUserTag(trackerDBHandle *sql.DB, params NewUserTagParams) (*UserTag,
 	properties.Geometry = params.Geometry
 
 	newUserTag := UserTag{ParentFormID: params.ParentFormID,
-		UserTagID:  uniqueID.GenerateSnowflakeID(),
+		UserTagID:  uniqueID.GenerateUniqueID(),
 		Properties: properties}
 
 	if saveErr := saveUserTag(trackerDBHandle, newUserTag); saveErr != nil {

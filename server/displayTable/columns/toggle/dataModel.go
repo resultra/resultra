@@ -51,7 +51,7 @@ func saveNewToggle(trackerDBHandle *sql.DB, params NewToggleParams) (*Toggle, er
 	properties := newDefaultToggleProperties()
 	properties.FieldID = params.FieldID
 
-	toggleID := uniqueID.GenerateSnowflakeID()
+	toggleID := uniqueID.GenerateUniqueID()
 	newToggle := Toggle{ParentTableID: params.ParentTableID,
 		ToggleID:   toggleID,
 		ColumnID:   toggleID,

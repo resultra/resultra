@@ -10,7 +10,7 @@ import (
 
 func sendUserInviteEmail(trackerDBHandle *sql.DB, fromUserID string, inviteeEmailAddr string) error {
 
-	inviteID := uniqueID.GenerateSnowflakeID()
+	inviteID := uniqueID.GenerateUniqueID()
 	inviteTimestamp := timestamp.CurrentTimestampUTC()
 	inviteMsg := "" // placeholder for future custom invite message
 

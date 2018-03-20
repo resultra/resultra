@@ -31,7 +31,7 @@ func AddCollaborator(trackerDBHandle *sql.DB, databaseID string, userID string, 
 		return existingCollab, nil
 	}
 
-	collabID := uniqueID.GenerateSnowflakeID()
+	collabID := uniqueID.GenerateUniqueID()
 
 	if _, insertErr := trackerDBHandle.Exec(
 		`INSERT INTO collaborators (collaborator_id,database_id,user_id,is_admin) VALUES ($1,$2,$3,$4)`,
@@ -183,7 +183,7 @@ func addDatabaseRole(destDBHandle *sql.DB, databaseID string, roleName string) (
 		return nil, sanitizeErr
 	}
 
-	roleID := uniqueID.GenerateSnowflakeID()
+	roleID := uniqueID.GenerateUniqueID()
 
 	dbRole := DatabaseRole{
 		DatabaseID: databaseID,
@@ -247,7 +247,7 @@ func CloneRoles(cloneParams *trackerDatabase.CloneDatabaseParams) error {
 	}
 	for _, currRole := range roles {
 
-		remappedID := uniqueID.GenerateSnowflakeID()
+		remappedID := uniqueID.GenerateUniqueID()
 		cloneParams.IDRemapper[currRole.RoleID] = remappedID
 
 		destRole := DatabaseRole{
