@@ -1,0 +1,23 @@
+TRACKER->|UNIQUEID0001|Tracker A|{"listOrder":[],"dashboardOrder":[],"formLinkOrder":[]}||1|1|templateAdmin
+-----------------------------------------
+FORM->|UNIQUEID0001|UNIQUEID0007|Form 1|1|{"layout":[{"columns":[{"componentIDs":["UNIQUEID0008"]}]},{"columns":[{"componentIDs":["UNIQUEID0009"]}]},{"columns":[{"componentIDs":["UNIQUEID0010"]}]},{"columns":[{"componentIDs":["UNIQUEID0011"]}]},{"columns":[{"componentIDs":["UNIQUEID0012"]}]}]}
+-----------------------------------------
+FIELD->|UNIQUEID0005|UNIQUEID0001|Bool Field|bool|BoolField||0|1|
+FIELD->|UNIQUEID0004|UNIQUEID0001|Date Field|time|DateField||0|1|
+FIELD->|UNIQUEID0006|UNIQUEID0001|Note Field|longText|NoteField||0|1|
+FIELD->|UNIQUEID0002|UNIQUEID0001|Number Field|number|NumberField||0|1|
+FIELD->|UNIQUEID0003|UNIQUEID0001|Text Field|text|TextField||0|1|
+-----------------------------------------
+TABLE VIEW->|UNIQUEID0001|UNIQUEID0015|Table A|1|{"orderedColumns":[]}
+-----------------------------------------
+TABLE COL->|UNIQUEID0015|UNIQUEID0016|{"fieldID":"UNIQUEID0002","valueFormat":{"format":"general"},"labelFormat":{"labelType":"field","customLabel":""},"permissions":{"permissionMode":"readWrite"},"showValueSpinner":true,"valueSpinnerStepSize":1,"validation":{"rule":"required"},"clearValueSupported":false,"helpPopupMsg":"","conditionalFormats":[]}|numberInput
+TABLE COL->|UNIQUEID0015|UNIQUEID0017|{"fieldID":"UNIQUEID0004","dateFormat":"date","labelFormat":{"labelType":"field","customLabel":""},"permissions":{"permissionMode":"readWrite"},"validation":{"rule":"required"},"clearValueSupported":false,"helpPopupMsg":"","conditionalFormats":[]}|datePicker
+TABLE COL->|UNIQUEID0015|UNIQUEID0018|{"fieldID":"UNIQUEID0005","colorScheme":"default","strikethroughCompleted":false,"labelFormat":{"labelType":"field","customLabel":""},"permissions":{"permissionMode":"readWrite"},"validation":{"valueRequired":true},"clearValueSupported":false,"helpPopupMsg":""}|checkbox
+-----------------------------------------
+DASHBOARD->|UNIQUEID0001|UNIQUEID0013|Dashboard A|1|{"layout":[{"columns":[{"componentIDs":["UNIQUEID0014"]}]}]}
+-----------------------------------------
+LIST->|UNIQUEID0019|UNIQUEID0001|List A|1|{"defaultRecordSortRules":[],"defaultFilterRules":{"matchLogic":"all","filterRules":[]},"defaultFilterFields":[],"defaultSortFields":[],"preFilterRules":{"matchLogic":"all","filterRules":[]},"defaultView":{"formID":"UNIQUEID0007","pageSize":5},"alternateViews":[]}
+-----------------------------------------
+NEW ITEM LINK---->|UNIQUEID0020|UNIQUEID0007|New Item Link A|1|0||1|{"defaultValues":[]}
+-----------------------------------------
+VALUE LIST-->|UNIQUEID0021|UNIQUEID0001|Value List A|1|{"values":[{"textValue":"Value List A - Val 1"},{"textValue":"Value List A - Val 2"}]}

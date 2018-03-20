@@ -18,4 +18,7 @@ simple:
 		--source-tracker-db-id gMCApJHm1aYG --destdb simple_export_gen.db
 	sqlite3 simple_export_gen.db < dumpTrackerDBInfo.sql > simple_export_dump.txt
 	diff simple_export_dump.txt simple.gold
+	sqlite3 simple_export_gen.db < dumpRawDBInfo.sql > simple_raw_dump.txt
+	diff simple_raw_dump.txt simple_raw.gold
+	
 	
