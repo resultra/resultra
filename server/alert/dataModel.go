@@ -6,6 +6,7 @@ import (
 	"log"
 	"resultra/datasheet/server/generic"
 	"resultra/datasheet/server/generic/stringValidation"
+	"resultra/datasheet/server/generic/timestamp"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/trackerDatabase"
 	"time"
@@ -132,7 +133,7 @@ type AdvanceNotificationParams struct {
 
 func advanceNotificationTime(trackerDBHandle *sql.DB, userID string, parentDatabaseID string) error {
 
-	currTimestampUTC := time.Now().UTC()
+	currTimestampUTC := timestamp.CurrentTimestampUTC()
 
 	_, insertErr := trackerDBHandle.Exec(`INSERT into alert_notification_times 
 		(database_id,user_id,latest_alert_timestamp_utc) VALUES ($1,$2,$3)`, parentDatabaseID, userID, currTimestampUTC)

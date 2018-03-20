@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/generic/inputValidation"
+	"resultra/datasheet/server/generic/timestamp"
 	"time"
 )
 
@@ -39,7 +40,7 @@ func validateInput(trackerDBHandle *sql.DB, params DatePickerValidateInputParams
 		if params.InputVal == nil {
 			return inputValidation.FailValidationResult("Date is required")
 		} else {
-			now := time.Now().UTC()
+			now := timestamp.CurrentTimestampUTC()
 			if (*params.InputVal).After(now) {
 				return inputValidation.SuccessValidationResult()
 			} else {
@@ -50,7 +51,7 @@ func validateInput(trackerDBHandle *sql.DB, params DatePickerValidateInputParams
 		if params.InputVal == nil {
 			return inputValidation.FailValidationResult("Date is required")
 		} else {
-			now := time.Now().UTC()
+			now := timestamp.CurrentTimestampUTC()
 			if (*params.InputVal).Before(now) {
 				return inputValidation.SuccessValidationResult()
 			} else {

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/timestamp"
 	"resultra/datasheet/server/generic/uniqueID"
 	"sync"
 	"time"
@@ -31,7 +32,7 @@ func NewRecord(trackerDBHandle *sql.DB, params NewRecordParams) (*Record, error)
 	newRecordMutex.Lock()
 	defer newRecordMutex.Unlock()
 
-	createTimestamp := time.Now().UTC()
+	createTimestamp := timestamp.CurrentTimestampUTC()
 
 	newRecord := Record{ParentDatabaseID: params.ParentDatabaseID,
 		RecordID:           uniqueID.GenerateSnowflakeID(),

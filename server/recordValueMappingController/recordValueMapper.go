@@ -6,6 +6,7 @@ import (
 	"log"
 	"resultra/datasheet/server/calcField"
 	"resultra/datasheet/server/form"
+	"resultra/datasheet/server/generic/timestamp"
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/recordValue"
@@ -53,7 +54,7 @@ func mapOneRecordUpdatesWithCalcFieldConfig(config *calcField.CalcFieldUpdateCon
 	}
 
 	// For non-calculated fields, get the latest (most recent) field values.
-	//	calcFieldAsOfTime := time.Now().UTC()
+	//	calcFieldAsOfTime := timestamp.CurrentTimestampUTC()
 	fieldValues := cellUpdateFieldValIndex.NonCalcFieldValuesAsOf(calcFieldAsOfTime)
 
 	// Now that all the non-calculated fields have been populated into latestFieldValues, all the calculated
@@ -100,7 +101,7 @@ func MapOneRecordUpdatesToLatestFieldValues(trackerDBHandle *sql.DB,
 		return nil, fmt.Errorf("MapOneRecordUpdatesToLatestFieldValues: %v", err)
 	}
 
-	calcFieldAsOfTime := time.Now().UTC()
+	calcFieldAsOfTime := timestamp.CurrentTimestampUTC()
 
 	return mapOneRecordUpdatesWithCalcFieldConfig(updateConfig, componentFilterCondMap,
 		*currRecord, recCellUpdates, changeSetID, calcFieldAsOfTime)

@@ -3,12 +3,12 @@ package uniqueID
 import (
 	"fmt"
 	"github.com/twinj/uuid"
+	"resultra/datasheet/server/generic/timestamp"
 	"strings"
-	"time"
 )
 
 func GenerateUniqueIDWithPrefix(prefix string) string {
-	timestamp := time.Now().UTC()
+	timestamp := timestamp.CurrentTimestampUTC()
 	millisecondsPerNanosecond := 1000000
 	timestampMilliseconds := timestamp.Nanosecond() / millisecondsPerNanosecond
 	timestampStr := fmt.Sprintf("%04d%02d%02d%02d%02d%02d%03d",

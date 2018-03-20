@@ -2,6 +2,7 @@ package dashboardController
 
 import (
 	"resultra/datasheet/server/dashboard/values"
+	"resultra/datasheet/server/generic/timestamp"
 	"time"
 )
 
@@ -130,7 +131,7 @@ func generateTimeIncrementsForValGrouping(valGrouping values.ValGrouping) []time
 		timeRange = *valGrouping.TimeRange
 	}
 
-	currTime := time.Now().UTC()
+	currTime := timestamp.CurrentTimestampUTC()
 	startRangeTime := generateTimeRange(timeRange, currTime)
 
 	timeInterval := values.ValGroupIntervalIntervalEndOfWeek

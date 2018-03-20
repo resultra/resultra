@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/timestamp"
 	"time"
 )
 
@@ -86,7 +87,7 @@ func (eqnResult EquationResult) GetNumberResult() (float64, error) {
 
 func (eqnResult EquationResult) GetTimeResult() (time.Time, error) {
 	if validateErr := eqnResult.validateTimeResult(); validateErr != nil {
-		return time.Now().UTC(), validateErr
+		return timestamp.CurrentTimestampUTC(), validateErr
 	} else {
 		timeVal := *eqnResult.TimeVal
 		return timeVal, nil

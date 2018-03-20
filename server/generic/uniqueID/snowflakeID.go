@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/generic/timestamp"
 	"sync"
 	"time"
 )
@@ -82,7 +83,7 @@ func timeToMillisecondsSinceEpoch(t time.Time) int64 {
 }
 
 func timeNowMillisSinceEpoch() int64 {
-	currTime := time.Now().UTC()
+	currTime := timestamp.CurrentTimestampUTC()
 	return timeToMillisecondsSinceEpoch(currTime)
 }
 

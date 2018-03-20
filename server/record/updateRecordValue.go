@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/timestamp"
 	"resultra/datasheet/server/generic/uniqueID"
-	"time"
 )
 
 type RecordUpdater interface {
@@ -77,7 +77,7 @@ func UpdateRecordValue(trackingDBHandle *sql.DB, currUserID string, recUpdater R
 	}
 
 	uniqueUpdateID := uniqueID.GenerateSnowflakeID()
-	updateTimestamp := time.Now().UTC()
+	updateTimestamp := timestamp.CurrentTimestampUTC()
 
 	cellUpdate := CellUpdate{
 		UpdateID:         uniqueUpdateID,

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"resultra/datasheet/server/calcField"
+	"resultra/datasheet/server/generic/timestamp"
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/userRole"
@@ -55,7 +56,7 @@ func generateOneRecordAlertsFromConfig(recProcessingConfig RecordAlertProcessing
 	// item/record information which is presented alongside the alert notification. In particular,
 	// each alert has an associated summary field which is selected to identify a record/item
 	// in the context of an alert notification.
-	calcFieldAsOfTime := time.Now().UTC()
+	calcFieldAsOfTime := timestamp.CurrentTimestampUTC()
 	latestFieldValues := cellUpdateFieldValIndex.LatestNonCalcFieldValues()
 	if calcErr := calcField.UpdateCalcFieldValues(recProcessingConfig.CalcFieldConfig,
 		recProcessingConfig.Record, cellUpdateFieldValIndex, calcFieldAsOfTime, latestFieldValues); calcErr != nil {

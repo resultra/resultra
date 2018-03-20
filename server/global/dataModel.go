@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/generic/timestamp"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/trackerDatabase"
 	"time"
@@ -201,7 +202,7 @@ func saveValUpdate(trackerDBHandle *sql.DB, globalID string, encodedValue string
 	valUpdate := GlobalValUpdate{
 		UpdateID:        uniqueID.GenerateSnowflakeID(),
 		GlobalID:        globalID,
-		UpdateTimestamp: time.Now().UTC(),
+		UpdateTimestamp: timestamp.CurrentTimestampUTC(),
 		Value:           encodedValue}
 
 	if _, insertErr := trackerDBHandle.Exec(

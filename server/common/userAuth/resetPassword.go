@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/generic/timestamp"
 	"resultra/datasheet/server/generic/uniqueID"
 	"time"
 )
@@ -11,7 +12,7 @@ import (
 func sendPasswordResetEmail(trackerDBHandle *sql.DB, emailAddr string, userID string) error {
 
 	resetID := uniqueID.GenerateSnowflakeID()
-	resetTimestamp := time.Now().UTC()
+	resetTimestamp := timestamp.CurrentTimestampUTC()
 
 	if _, insertErr := trackerDBHandle.Exec(
 		`INSERT INTO password_reset_links (reset_id, reset_timestamp_utc, user_id) VALUES ($1,$2,$3)`,

@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/common/userAuth"
+	"resultra/datasheet/server/generic/timestamp"
+	"resultra/datasheet/server/generic/uniqueID"
 	"time"
 )
 
@@ -27,7 +28,7 @@ type FieldComment struct {
 
 func saveFieldComment(trackerDBHandle *sql.DB, req *http.Request, params SaveFieldCommentParams) (*FieldComment, error) {
 
-	commentTimestamp := time.Now().UTC()
+	commentTimestamp := timestamp.CurrentTimestampUTC()
 	commentID := uniqueID.GenerateSnowflakeID()
 	currUserID, userErr := userAuth.GetCurrentUserID(req)
 	if userErr != nil {

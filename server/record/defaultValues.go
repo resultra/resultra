@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/timestamp"
 	"resultra/datasheet/server/generic/uniqueID"
-	"time"
 )
 
 const defaultValIDTrue string = "true"
@@ -79,7 +79,7 @@ const defaultValIDCurrTime string = "currentTime"
 func setCurrTimeDefaultValue(trackerDBHandle *sql.DB, currUserID string, recUpdateHeader RecordUpdateHeader,
 	defaultVal DefaultFieldValue) (*Record, error) {
 
-	currTime := time.Now().UTC()
+	currTime := timestamp.CurrentTimestampUTC()
 
 	setValParams := SetRecordTimeValueParams{
 		RecordUpdateHeader: recUpdateHeader,

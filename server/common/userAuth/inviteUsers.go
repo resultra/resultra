@@ -4,14 +4,14 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"resultra/datasheet/server/generic/timestamp"
 	"resultra/datasheet/server/generic/uniqueID"
-	"time"
 )
 
 func sendUserInviteEmail(trackerDBHandle *sql.DB, fromUserID string, inviteeEmailAddr string) error {
 
 	inviteID := uniqueID.GenerateSnowflakeID()
-	inviteTimestamp := time.Now().UTC()
+	inviteTimestamp := timestamp.CurrentTimestampUTC()
 	inviteMsg := "" // placeholder for future custom invite message
 
 	if _, insertErr := trackerDBHandle.Exec(

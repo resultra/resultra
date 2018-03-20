@@ -4,12 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 	"resultra/datasheet/server/common/recordSortDataModel"
+	"resultra/datasheet/server/generic/timestamp"
 	"resultra/datasheet/server/record"
 	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/recordSort"
 	"resultra/datasheet/server/recordValue"
 	"resultra/datasheet/server/recordValueMappingController"
-	"time"
 )
 
 type GetFilteredSortedRecordsParams struct {
@@ -41,7 +41,7 @@ func getCachedOrRemappedRecordValues(trackerDBHandle *sql.DB,
 		}
 	} else {
 
-		calcFieldAsOfTime := time.Now().UTC()
+		calcFieldAsOfTime := timestamp.CurrentTimestampUTC()
 
 		recordValues, mapErr := recordValueMappingController.MapAllRecordUpdatesToFieldValues(
 			trackerDBHandle, currUserID, databaseID, calcFieldAsOfTime)

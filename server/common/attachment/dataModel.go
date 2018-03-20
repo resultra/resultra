@@ -6,8 +6,9 @@ import (
 	"net/http"
 	"path/filepath"
 	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/common/userAuth"
+	"resultra/datasheet/server/generic/timestamp"
+	"resultra/datasheet/server/generic/uniqueID"
 	"time"
 )
 
@@ -65,7 +66,7 @@ func newAttachmentInfo(parentDatabaseID string, userID string, attachmentType st
 		Type:               attachmentType,
 		CloudFileName:      cloudFileName,
 		OrigFileName:       origFileName,
-		CreateTimestampUTC: time.Now().UTC(),
+		CreateTimestampUTC: timestamp.CurrentTimestampUTC(),
 		Title:              defaultTitle(origFileName),
 		Caption:            ""}
 

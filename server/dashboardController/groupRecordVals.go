@@ -7,6 +7,7 @@ import (
 	"resultra/datasheet/server/dashboard/values"
 	"resultra/datasheet/server/field"
 	"resultra/datasheet/server/generic/numberFormat"
+	"resultra/datasheet/server/generic/timestamp"
 	"resultra/datasheet/server/recordFilter"
 	"resultra/datasheet/server/recordValue"
 	"resultra/datasheet/server/recordValueMappingController"
@@ -120,7 +121,7 @@ func groupRecordsByTimeInterval(params GroupByTimeIntervalParams) (*ValGroupingR
 
 	}
 
-	currDate := time.Now().UTC()
+	currDate := timestamp.CurrentTimestampUTC()
 	currValGroup, err := computeOneTimeIntervalVals(currDate)
 	if err != nil {
 		return nil, fmt.Errorf("groupRecordsByTimeInterval: %v", err)
