@@ -227,6 +227,10 @@ func NewSnowflakeIDGenerator(nodeID int64) (*SnowflakeIDGenerator, error) {
 
 var globalIDGen *SnowflakeIDGenerator
 
+type UniqueIDGenFunc func() string
+
+var globalUniqueIDFunc UniqueIDGenFunc
+
 func init() {
 
 	var err error
@@ -234,12 +238,19 @@ func init() {
 	if err != nil {
 		log.Fatalf("Failure initializing ID generation for database objects: %v", err)
 	}
+
+	globalUniqueIDFunc = generateSnowflakeID
 }
 
 func generateSnowflakeID() string {
 	return globalIDGen.generateID().encodeBase64()
 }
 
+func OverrideProductionUniqueIDFuncWithTestFunc(uniqueIDFunc UniqueIDGenFunc) {
+	log.Printf("WARNING: Overriding global (snowflake) ID generator. Use *only* for development testing purposes")
+	globalUniqueIDFunc = uniqueIDFunc
+}
+
 func GenerateUniqueID() string {
-	return generateSnowflakeID()
+	return globalUniqueIDFunc()
 }

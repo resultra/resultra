@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
+
 	"resultra/datasheet/server"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/databaseController"
+	"resultra/datasheet/server/generic/timestamp"
 	"resultra/datasheet/server/generic/uniqueID"
 	"resultra/datasheet/server/trackerDatabase"
 
@@ -99,6 +102,7 @@ func main() {
 	sourceDBFile := flag.String("sourcedb", "", "Source tracker database file for templates")
 	sourcdDBID := flag.String("source-tracker-db-id", "", "Unique tracker database ID in sourcedb")
 	destDBFile := flag.String("destdb", "", "Destination tracker database file for templates")
+	testIDs := flag.Bool("test-ids", false, "Generate template with test versions of unique ID and time stamp generators.")
 	flag.Parse()
 
 	if (sourceDBFile != nil) && (len(*sourceDBFile) > 0) {
@@ -143,6 +147,22 @@ func main() {
 		os.Exit(255)
 	}
 
+	if *testIDs {
+		currTestUniqueID := 0
+		testIDFunc := func() string {
+			currTestUniqueID++
+			return fmt.Sprintf("UNIQUEID%04d", currTestUniqueID)
+		}
+		uniqueID.OverrideProductionUniqueIDFuncWithTestFunc(testIDFunc)
+
+		currTimestamp := time.Date(2010, time.January, 1, 0, 0, 0, 0, time.UTC)
+		testTimestampFunc := func() time.Time {
+			currTimestamp = currTimestamp.Add(1 * time.Second)
+			return currTimestamp
+		}
+		timestamp.OverrideProductionTimestampGeneratorWithTestFunc(testTimestampFunc)
+	}
+
 	cloneParams := trackerDatabase.CloneDatabaseParams{
 		SourceDatabaseID: sourceDBID,
 		NewName:          dbInfo.DatabaseName,
@@ -155,7 +175,6 @@ func main() {
 	if cloneErr != nil {
 		log.Printf("ERROR: Error cloning tracker database: %v", cloneErr)
 		os.Exit(255)
-
 	}
 
 	os.Exit(0)
