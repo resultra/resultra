@@ -369,6 +369,26 @@ func isTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equ
 
 }
 
+const FuncNameIsSet = "ISSET"
+
+func isSetEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	if len(funcArgs) != 1 {
+		return nil, fmt.Errorf("ISSET() - Expecting 1 argument, got %v", len(funcArgs))
+	}
+
+	condEqn := funcArgs[0]
+	condResult, condErr := condEqn.EvalEqn(evalContext)
+	if condErr != nil {
+		return nil, fmt.Errorf("IF(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, condErr)
+	}
+	if condResult.IsUndefined() {
+		return boolEqnResult(false), nil
+	} else {
+		return boolEqnResult(true), nil
+	}
+}
+
 const FuncNameNot = "NOT"
 
 func notEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
@@ -476,6 +496,7 @@ var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 
 	FuncNameIf:       FunctionInfo{FuncNameIf, ifEvalFunc, validIfArgs},
 	FuncNameIsTrue:   FunctionInfo{FuncNameIsTrue, isTrueEvalFunc, oneBoolArg},
+	FuncNameIsSet:    FunctionInfo{FuncNameIsSet, isSetEvalFunc, anySingleArgBoolResult},
 	FuncNameNot:      FunctionInfo{FuncNameNot, notEvalFunc, oneBoolArg},
 	FuncNameWhenTrue: FunctionInfo{FuncNameWhenTrue, whenTrueEvalFunc, oneBoolTimeResultArg},
 }

@@ -58,6 +58,16 @@ func oneBoolTimeResultArg(params FuncSemAnalysisParams) (*semanticAnalysisResult
 
 }
 
+func anySingleArgBoolResult(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
+	if len(params.funcArgs) != 1 {
+		errMsgs := []string{fmt.Sprintf("Expecting 1 argument to function %v", params.funcName)}
+		return &semanticAnalysisResult{analyzeErrors: errMsgs, resultType: field.FieldTypeBool}, nil
+	}
+
+	argErrors := []string{}
+	return &semanticAnalysisResult{analyzeErrors: argErrors, resultType: field.FieldTypeBool}, nil
+}
+
 func validIfArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
 
 	if len(params.funcArgs) != 3 {
