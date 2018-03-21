@@ -47,7 +47,7 @@ func init() {
 		PermissionPanelParams: permissions.NewPermissionTemplateParams(elemPrefix, "filePerms"),
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:         elemPrefix,
-			DialogTitle:        "New Email Address Input",
+			DialogTitle:        "New File Attachment",
 			FieldInfoPrompt:    `File attachments are stored in fields. Either a new field can be created, or an existing field can be used.`,
 			NewFieldInfoPrompt: `Enter the parameters for the new field to store the file.'`}}
 
