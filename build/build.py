@@ -88,6 +88,7 @@ else:
     runMakePhase("build")
     runMakePhase("export")
     runMakePhase("package")
+    runMakePhase("test")
     runMakePhase("systest")
     if args.windows:
         runMakePhase("windows")

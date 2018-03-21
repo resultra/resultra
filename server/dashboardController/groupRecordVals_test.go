@@ -29,9 +29,12 @@ func TestNumberGroupings(t *testing.T) {
 	start := -2.0
 	end := 2.0
 
+	groupByFieldID := "testFieldID"
+	groupValsBy := values.ValGroupByBucket
+
 	valGrouping := values.ValGrouping{
-		GroupValsByFieldID:    "testFieldID",
-		GroupValsBy:           values.ValGroupByBucket,
+		GroupValsByFieldID:    &groupByFieldID,
+		GroupValsBy:           &groupValsBy,
 		GroupByValBucketWidth: &bucketWidth,
 		BucketStart:           &start,
 		BucketEnd:             &end}

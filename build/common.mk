@@ -35,5 +35,7 @@ windows:
 
 winpkg:
 
+test:
+
 systest:
 
