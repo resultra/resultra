@@ -34,6 +34,7 @@ function initDummyGaugeControlForPaletteDrag($paletteItemContainer) {
 		min: 0,
 		max: 100,
 		minorTicks: 5,
+		thresholdVals: []
 	}
 	initGaugeComponentControl($paletteItemContainer,gaugeConfig)
 }

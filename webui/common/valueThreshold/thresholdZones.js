@@ -26,7 +26,7 @@ function convertStartingThresholdsToZones(thresholdVals, minVal, maxVal) {
 		}
 	}
 	
-	if(thresholdVals.length == 0) {
+	if(thresholdVals === undefined || thresholdVals.length === 0) {
 		var zone = { min:minVal,max:maxVal,colorScheme:"none" }
 		zones.push(zone)
 	} else {
