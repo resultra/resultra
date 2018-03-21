@@ -41,8 +41,8 @@ func init() {
 		ValidationPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Validation", PanelID: "attachmentValidation"},
 		NewComponentDialogParams: newFormElemDialog.TemplateParams{
 			ElemPrefix:  elemPrefix,
-			DialogTitle: "New Image Area",
-			FieldInfoPrompt: `Images are stored in fields. Either a new field can be created to store the images, 
+			DialogTitle: "New Attachment Area",
+			FieldInfoPrompt: `Attachments are stored in fields. Either a new field can be created to store the attachments, 
 					or an existing field can be used.`,
 			NewFieldInfoPrompt: `Enter the parameters for the new field to store the attachments.`}}
 

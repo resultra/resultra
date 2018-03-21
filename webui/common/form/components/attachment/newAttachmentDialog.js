@@ -24,7 +24,7 @@ function openNewAttachmentDialog(databaseID,formID,containerParams)
 	}
 	
 	var newFormComponentDialogParams = {
-		elemPrefix: "image_",
+		elemPrefix: "attachment_",
 		databaseID: databaseID,
 		formID: formID,
 		hideCreateCalcFieldCheckbox: true,
