@@ -8,6 +8,8 @@ From the project root directory, go to ./build/dest and launch the single user v
 
 Then, launch the client in the web browser at localhost:43409. This will bring up the client to populate the template. 
 
+## Creating a Regression Test of the Template Export Functionality
+
 After using the client to populate the client, the Makefile is setup to perform a test:
 
 	1. Dump a summary of the tracker database in the original file.

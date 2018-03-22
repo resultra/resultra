@@ -1,0 +1,43 @@
+TRACKER->|UNIQUEID0001|Blog Topic Development|{"listOrder":["UNIQUEID0002","UNIQUEID0003"],"dashboardOrder":[],"formLinkOrder":[]}|<p>This tracker supports the tracking of blog topics from inception to the point of publishing.</p>
+|1|1|templateAdmin
+-----------------------------------------
+FORM->|UNIQUEID0001|UNIQUEID0019|New Topic|1|{"layout":[{"columns":[{"componentIDs":["UNIQUEID0020"]}]},{"columns":[{"componentIDs":["UNIQUEID0021"]}]},{"columns":[{"componentIDs":["UNIQUEID0022"]},{"componentIDs":["UNIQUEID0023"]}]},{"columns":[{"componentIDs":["UNIQUEID0024"]}]},{"columns":[{"componentIDs":["UNIQUEID0025"]}]}]}
+FORM->|UNIQUEID0001|UNIQUEID0026|Topic Development|1|{"layout":[{"columns":[{"componentIDs":["UNIQUEID0027"]}]},{"columns":[{"componentIDs":["UNIQUEID0028"]}]},{"columns":[{"componentIDs":["UNIQUEID0029"]}]},{"columns":[{"componentIDs":["UNIQUEID0030"]}]},{"columns":[{"componentIDs":["UNIQUEID0031"]}]},{"columns":[{"componentIDs":["UNIQUEID0032"]}]},{"columns":[{"componentIDs":["UNIQUEID0033"]},{"componentIDs":["UNIQUEID0034"]}]},{"columns":[{"componentIDs":["UNIQUEID0035"]},{"componentIDs":["UNIQUEID0036"]}]},{"columns":[{"componentIDs":["UNIQUEID0037"]}]},{"columns":[{"componentIDs":["UNIQUEID0038"]},{"componentIDs":["UNIQUEID0039"]}]},{"columns":[{"componentIDs":["UNIQUEID0040"]}]},{"columns":[{"componentIDs":["UNIQUEID0041"]}]},{"columns":[{"componentIDs":["UNIQUEID0042"]}]},{"columns":[{"componentIDs":["UNIQUEID0043"]}]}]}
+-----------------------------------------
+FIELD->|UNIQUEID0011|UNIQUEID0001|Article Resources|attachment|ArticleResources||0|1|
+FIELD->|UNIQUEID0012|UNIQUEID0001|Article published?|bool|ArticlePublished||0|1|
+FIELD->|UNIQUEID0015|UNIQUEID0001|Assessment Score|number|AssessmentScore|{"funcName":"ADD","funcArgs":[{"funcName":"ADD","funcArgs":[{"funcName":"ADD","funcArgs":[{"funcName":"IF","funcArgs":[{"funcName":"ISSET","funcArgs":[{"fieldID":"UNIQUEID0008"}]},{"funcName":"MULTIPLY","funcArgs":[{"fieldID":"UNIQUEID0008"},{"numberVal":10}]},{"numberVal":0}]},{"funcName":"IF","funcArgs":[{"funcName":"ISSET","funcArgs":[{"fieldID":"UNIQUEID0010"}]},{"funcName":"MULTIPLY","funcArgs":[{"fieldID":"UNIQUEID0010"},{"numberVal":10}]},{"numberVal":0}]}]},{"funcName":"IF","funcArgs":[{"funcName":"ISSET","funcArgs":[{"fieldID":"UNIQUEID0007"}]},{"funcName":"MULTIPLY","funcArgs":[{"fieldID":"UNIQUEID0007"},{"numberVal":10}]},{"numberVal":0}]}]},{"funcName":"IF","funcArgs":[{"funcName":"ISTRUE","funcArgs":[{"fieldID":"UNIQUEID0009"}]},{"numberVal":10},{"numberVal":0}]}]}|1|1|IF(ISSET([UNIQUEID0008]),[UNIQUEID0008]*10,0)+
+IF(ISSET([UNIQUEID0010]),[UNIQUEID0010]*10,0)+
+IF(ISSET([UNIQUEID0007]),[UNIQUEID0007]*10,0)+
+IF(ISTRUE([UNIQUEID0009]),10,0)
+FIELD->|UNIQUEID0014|UNIQUEID0001|Development Comments|comment|DevelopmentComments||0|1|
+FIELD->|UNIQUEID0007|UNIQUEID0001|Originality|number|Originality||0|1|
+FIELD->|UNIQUEID0006|UNIQUEID0001|Outline|longText|Outline||0|1|
+FIELD->|UNIQUEID0018|UNIQUEID0001|Post-publication Comments|comment|PostPubComments||0|1|
+FIELD->|UNIQUEID0017|UNIQUEID0001|Publication Date|time|PublicationDate||0|1|
+FIELD->|UNIQUEID0016|UNIQUEID0001|Publication Link|url|PublicationLink||0|1|
+FIELD->|UNIQUEID0008|UNIQUEID0001|Relevant to Target Audience|number|RelevantTargetAudience||0|1|
+FIELD->|UNIQUEID0010|UNIQUEID0001|Size of Audience|number|SizeofAudience||0|1|
+FIELD->|UNIQUEID0009|UNIQUEID0001|Suitable for Re-posting (Syndication)?|bool|SuitableforRepostingSyndication||0|1|
+FIELD->|UNIQUEID0005|UNIQUEID0001|Tags|label|Tags||0|1|
+FIELD->|UNIQUEID0004|UNIQUEID0001|Topic|text|Topic||0|1|
+FIELD->|UNIQUEID0013|UNIQUEID0001|Topic shelved?|bool|TopicShelved||0|1|
+-----------------------------------------
+TABLE VIEW->|UNIQUEID0001|UNIQUEID0049|Published Topic Summary|1|{"orderedColumns":["UNIQUEID0050","UNIQUEID0051","UNIQUEID0052","UNIQUEID0053"]}
+TABLE VIEW->|UNIQUEID0001|UNIQUEID0044|Topic Summary|1|{"orderedColumns":["UNIQUEID0045","UNIQUEID0046","UNIQUEID0047","UNIQUEID0048"]}
+-----------------------------------------
+TABLE COL->|UNIQUEID0044|UNIQUEID0045|{"fieldID":"UNIQUEID0004","labelFormat":{"labelType":"field","customLabel":""},"permissions":{"permissionMode":"readOnly"},"validation":{"valueRequired":false},"clearValueSupported":false,"helpPopupMsg":""}|textInput
+TABLE COL->|UNIQUEID0044|UNIQUEID0046|{"fieldID":"UNIQUEID0014","labelFormat":{"labelType":"field","customLabel":""},"permissions":{"permissionMode":"readWrite"},"helpPopupMsg":""}|comment
+TABLE COL->|UNIQUEID0044|UNIQUEID0047|{"fieldID":"UNIQUEID0015","minVal":0,"maxVal":100,"thresholdVals":[{"startingVal":50,"colorScheme":"success"}],"labelFormat":{"labelType":"field","customLabel":""},"valueFormat":{"format":"integer"},"helpPopupMsg":""}|progress
+TABLE COL->|UNIQUEID0044|UNIQUEID0048|{"linkedFormID":"UNIQUEID0026","popupBehavior":{"popupMode":"modal","customLabelModalSave":"","whereShowForm":"newPage"},"buttonLabelFormat":{"labelType":"none","customLabel":""},"size":"medium","colorScheme":"default","icon":"zoom","defaultValues":[]}|button
+TABLE COL->|UNIQUEID0049|UNIQUEID0050|{"fieldID":"UNIQUEID0017","dateFormat":"date","labelFormat":{"labelType":"field","customLabel":""},"permissions":{"permissionMode":"readOnly"},"validation":{"rule":"required"},"clearValueSupported":false,"helpPopupMsg":"","conditionalFormats":[]}|datePicker
+TABLE COL->|UNIQUEID0049|UNIQUEID0051|{"fieldID":"UNIQUEID0004","labelFormat":{"labelType":"field","customLabel":""},"permissions":{"permissionMode":"readOnly"},"validation":{"valueRequired":false},"clearValueSupported":false,"helpPopupMsg":""}|textInput
+TABLE COL->|UNIQUEID0049|UNIQUEID0052|{"fieldID":"UNIQUEID0016","labelFormat":{"labelType":"field","customLabel":""},"permissions":{"permissionMode":"readOnly"},"validation":{"valueRequired":false},"clearValueSupported":false,"helpPopupMsg":""}|urlLink
+TABLE COL->|UNIQUEID0049|UNIQUEID0053|{"fieldID":"UNIQUEID0018","labelFormat":{"labelType":"field","customLabel":""},"permissions":{"permissionMode":"readWrite"},"helpPopupMsg":""}|comment
+-----------------------------------------
+-----------------------------------------
+LIST->|UNIQUEID0003|UNIQUEID0001|Published Topics|1|{"defaultRecordSortRules":[{"fieldID":"UNIQUEID0017","direction":"desc"}],"defaultFilterRules":{"matchLogic":"all","filterRules":[]},"defaultFilterFields":[],"defaultSortFields":[],"preFilterRules":{"matchLogic":"all","filterRules":[{"fieldID":"UNIQUEID0012","ruleID":"true","conditions":[{"operatorID":"true"}]}]},"defaultView":{"tableID":"UNIQUEID0049","pageSize":0},"alternateViews":[]}
+LIST->|UNIQUEID0002|UNIQUEID0001|Topics Under Development|1|{"defaultRecordSortRules":[{"fieldID":"UNIQUEID0015","direction":"desc"}],"defaultFilterRules":{"matchLogic":"all","filterRules":[]},"defaultFilterFields":[],"defaultSortFields":[],"preFilterRules":{"matchLogic":"all","filterRules":[{"fieldID":"UNIQUEID0012","ruleID":"notTrue","conditions":[{"operatorID":"notTrue"}]},{"fieldID":"UNIQUEID0013","ruleID":"notTrue","conditions":[{"operatorID":"notTrue"}]}]},"defaultView":{"tableID":"UNIQUEID0044","pageSize":0},"alternateViews":[{"formID":"UNIQUEID0026","pageSize":1}]}
+-----------------------------------------
+NEW ITEM LINK---->|UNIQUEID0054|UNIQUEID0019|New Topic|1|0||1|{"defaultValues":[]}
+-----------------------------------------

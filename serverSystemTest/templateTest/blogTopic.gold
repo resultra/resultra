@@ -1,0 +1,54 @@
+TRACKER----->|Blog Topic Development
+FORM-------->|New Topic
+FORM-------->|Topic Development
+TABLE VIEW-->|Published Topic Summary
+TABLE VIEW-->|Topic Summary
+TABLE COL--->|Topic Summary|button
+TABLE COL--->|Topic Summary|comment
+TABLE COL--->|Published Topic Summary|comment
+TABLE COL--->|Published Topic Summary|datePicker
+TABLE COL--->|Topic Summary|progress
+TABLE COL--->|Topic Summary|textInput
+TABLE COL--->|Published Topic Summary|textInput
+TABLE COL--->|Published Topic Summary|urlLink
+LIST-------->|Published Topics
+LIST-------->|Topics Under Development
+NEW ITEM LINK---->|New Topic
+FIELD------->|Article Resources|attachment|ArticleResources|0
+FIELD------->|Article published?|bool|ArticlePublished|0
+FIELD------->|Assessment Score|number|AssessmentScore|1
+FIELD------->|Development Comments|comment|DevelopmentComments|0
+FIELD------->|Originality|number|Originality|0
+FIELD------->|Outline|longText|Outline|0
+FIELD------->|Post-publication Comments|comment|PostPubComments|0
+FIELD------->|Publication Date|time|PublicationDate|0
+FIELD------->|Publication Link|url|PublicationLink|0
+FIELD------->|Relevant to Target Audience|number|RelevantTargetAudience|0
+FIELD------->|Size of Audience|number|SizeofAudience|0
+FIELD------->|Suitable for Re-posting (Syndication)?|bool|SuitableforRepostingSyndication|0
+FIELD------->|Tags|label|Tags|0
+FIELD------->|Topic|text|Topic|0
+FIELD------->|Topic shelved?|bool|TopicShelved|0
+FORM COMP--->|New Topic|checkbox
+FORM COMP--->|New Topic|header
+FORM COMP--->|New Topic|rating
+FORM COMP--->|New Topic|rating
+FORM COMP--->|New Topic|rating
+FORM COMP--->|New Topic|textbox
+FORM COMP--->|Topic Development|attachment
+FORM COMP--->|Topic Development|checkbox
+FORM COMP--->|Topic Development|checkbox
+FORM COMP--->|Topic Development|checkbox
+FORM COMP--->|Topic Development|comment
+FORM COMP--->|Topic Development|datepicker
+FORM COMP--->|Topic Development|gauge
+FORM COMP--->|Topic Development|header
+FORM COMP--->|Topic Development|header
+FORM COMP--->|Topic Development|header
+FORM COMP--->|Topic Development|html_editor
+FORM COMP--->|Topic Development|rating
+FORM COMP--->|Topic Development|rating
+FORM COMP--->|Topic Development|rating
+FORM COMP--->|Topic Development|tags
+FORM COMP--->|Topic Development|textbox
+FORM COMP--->|Topic Development|urlLink
