@@ -242,7 +242,6 @@ function initDesignFormAdminPageContent(pageContext,formInfo) {
 	
 	function showFormPropertySidebar() {
 		hideSiblingsShowOne('#formProps')
-		closeFormulaEditor()
 		initDesignFormProperties(formInfo.formID)
 	}	
 	
