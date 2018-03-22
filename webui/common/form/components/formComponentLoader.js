@@ -358,7 +358,7 @@ function populateOneFormLayoutWithComponents(loadFormConfig, componentContext,fo
 		
 		 // Store the newly created object reference in the DOM element. This is needed for follow-on
 		 // property setting, resizing, etc.
-		setContainerComponentInfo($gaugeContainer,gaugeRef,$gaugeContainer.gaugeID)
+		setContainerComponentInfo($gaugeContainer,gaugeRef,gaugeRef.gaugeID)
 		
 		// Callback for any specific initialization for either the form design or view mode 
 		loadFormConfig.initGaugeFunc(componentContext,$gaugeContainer,gaugeRef)
