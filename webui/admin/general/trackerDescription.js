@@ -2,7 +2,7 @@ function initTrackerDescriptionPropertyPanel(trackerDatabaseInfo) {
 	
 	var $props = $('#adminGeneralTrackerDescription')
 	
-	var $descInput = $props.find(".adminGeneralTrackerDescriptionInput")
+	var $descInput = $props
 	
 	function setTrackerDescription(description) {
 		var setDescParams = {
