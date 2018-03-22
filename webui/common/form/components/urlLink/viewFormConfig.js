@@ -141,14 +141,17 @@ function initUrlLinkRecordEditBehavior($container,componentContext,recordProxy, 
 		}
 		initEditLinkPopup()
 		
+		var $editLinkButton = $container.find(".urlLinkEditLinkButton")
+		var $editLinkDisplay = $container.find(".formInputStaticInputContainer")
 		if(formComponentIsReadOnly(urlLinkObjRef.properties.permissions)) {
-	//		$urlLinkInput.prop('disabled',true);
+			$editLinkButton.hide()
+			$editLinkDisplay.css("background-color","rgb(238,238,238)")
 		} else {
-	//		$urlLinkInput.prop('disabled',false);
+			$editLinkButton.show()
+			$editLinkDisplay.css("background-color","")
 		}
 	
-			
-				
+						
 		initButtonControlClickHandler($clearValueButton,function() {
 				console.log("Clear value clicked for text box")
 			setUrlLinkVal(null)	

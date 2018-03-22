@@ -2,7 +2,7 @@ function urlLinkContainerInputControl() {
 		
 	return '<div class="input-group">'+
 				'<div class="formInputStaticInputContainer">' +
-					'<a class="urlLinkDisplay"></a>' +
+					'<a class="urlLinkDisplay" target="new"></a>' +
 				'</div>' + 
 				'<span class="input-group-addon urlLinkEditLinkButton">' +
              	   '<span class="glyphicon glyphicon-link"></span>' +
