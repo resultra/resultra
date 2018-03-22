@@ -2,46 +2,62 @@ function navigateToTracker(pageContext,trackerInfo) {
 	
 	const databaseID = trackerInfo.databaseID
 	
+	// When creating new items a callback is passed in that allows the page to be reverted back to
+	// the currently selected item list or dashboard.
+	var loadLastViewCallback = null
+	
 	function itemListClicked(listID,$tocItem) {
 		
-		var contentConfig = {
-			mainContentURL: "/itemList/contentLayout",
-			rhsSidebarContentURL: "/itemList/propertySidebarContent",
-			offPageContentURL: "/itemList/offPageContent"
-		}
+		function loadItemList() {
+			var contentConfig = {
+				mainContentURL: "/itemList/contentLayout",
+				rhsSidebarContentURL: "/itemList/propertySidebarContent",
+				offPageContentURL: "/itemList/offPageContent"
+			}
 		
-		setMainWindowPageContent(contentConfig,function() {
-			theMainWindowLayout.showRHSSidebar()
-			var contentLayout = new ItemListContentLayout()
+			setMainWindowPageContent(contentConfig,function() {
+				theMainWindowLayout.showRHSSidebar()
+				var contentLayout = new ItemListContentLayout()
 		
-			loadItemListView(contentLayout,databaseID,listID)
-			$tocItem.addClass("active")
+				loadItemListView(contentLayout,databaseID,listID)
+				
+				$('#tocWrapper').find("li").removeClass("active")
+				$tocItem.addClass("active")
 			
-			// Listen for events to view a specific record/item in a particular form. This happens in response to
-			// clicks to a form button deeper down in the DOM.
-			$('#listViewContentLayout').on(viewFormInViewportEventName,function(e,params) {
-				e.stopPropagation()
-				console.log("Got formButton load form event: " + JSON.stringify(params))		
-				loadExistingItemViewPageContent(params)
+				// Listen for events to view a specific record/item in a particular form. This happens in response to
+				// clicks to a form button deeper down in the DOM.
+				$('#listViewContentLayout').on(viewFormInViewportEventName,function(e,params) {
+					e.stopPropagation()
+					console.log("Got formButton load form event: " + JSON.stringify(params))		
+					loadExistingItemViewPageContent(params)
+				})
+			
+			
 			})
 			
-			
-		})
+		}
+		loadItemList()
+		loadLastViewCallback = loadItemList
 	}
 	
 	function dashboardClicked(dashboardID,$tocItem) {
 		
-		var contentConfig = {
-			mainContentURL: "/dashboard/view/contentLayout",
-			rhsSidebarContentURL: "/dashboard/view/sidebarLayout"
+		function loadDashboard() {
+			var contentConfig = {
+				mainContentURL: "/dashboard/view/contentLayout",
+				rhsSidebarContentURL: "/dashboard/view/sidebarLayout"
+			}
+			setMainWindowPageContent(contentConfig,function() {
+				var contentLayout = new DashboardContentLayout()
+				theMainWindowLayout.showRHSSidebar()
+				loadDashboardView(contentLayout,databaseID, dashboardID)
+				
+				$('#tocWrapper').find("li").removeClass("active")	
+				$tocItem.addClass("active")		
+			})
 		}
-		setMainWindowPageContent(contentConfig,function() {
-			var contentLayout = new DashboardContentLayout()
-			theMainWindowLayout.showRHSSidebar()
-			loadDashboardView(contentLayout,databaseID, dashboardID)	
-			$tocItem.addClass("active")		
-		})
-		
+		loadDashboard()
+		loadLastViewCallback = loadDashboard
 	}
 	
 	function newItemClicked(linkID,$tocItem) {
@@ -55,9 +71,6 @@ function navigateToTracker(pageContext,trackerInfo) {
 		}
 		setMainWindowPageContent(contentConfig,function() {
 			var newItemLayout = new NewItemContentLayout()
-			function loadLastViewCallback() {
-				// TBD
-			}
 		
 			var newItemParams = {
 				pageLayout: newItemLayout,
