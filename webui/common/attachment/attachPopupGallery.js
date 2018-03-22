@@ -16,7 +16,7 @@ function initAttachmentContainerPopupGallery($attachContainer) {
 				markup: '<div class="attachmentListInlineItem well">'+
 				            '<div class="mfp-close"></div>'+
 							'<div>'+
-								'<a class="attachDownloadLink">'+
+								'<a class="attachDownloadLink" target="new">'+
 									'<i class="attachmentThumbnailIcon glyphicon glyphicon-file"></i> '+
 									'<span class="attachmentListLinkText">TBD</span>'+
 								'</a>' + 
@@ -37,6 +37,7 @@ function initAttachmentContainerPopupGallery($attachContainer) {
 						  
 						  	var $attachLink = $template.find(".attachDownloadLink")
 						  	$attachLink.attr("href",attachRef.url)
+						    $attachLink.attr("target","new")
 						  
 						 	var $attachCaption = $template.find(".attachCaption")
 						  	$attachCaption.empty()
