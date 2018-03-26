@@ -212,6 +212,19 @@ func greaterThanEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) 
 	return evalTwoNumberArgFunc(evalContext, funcArgs, evalFunc)
 }
 
+const FuncNameLessThanEqual string = "LESSTHANEQUAL"
+
+func lessThanEqualEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+	evalFunc := func(num1, num2 float64) (*EquationResult, error) {
+		if num1 <= num2 {
+			return boolEqnResult(true), nil
+		} else {
+			return boolEqnResult(false), nil
+		}
+	}
+	return evalTwoNumberArgFunc(evalContext, funcArgs, evalFunc)
+}
+
 const FuncNameDateAdd string = "DATEADD"
 
 func validDateAddArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
@@ -492,7 +505,9 @@ var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 	FuncNameConcat:      FunctionInfo{FuncNameConcat, concatEvalFunc, oneOrMoreTextArgs},
 	FuncNameDateAdd:     FunctionInfo{FuncNameDateAdd, dateAddEvalFunc, validDateAddArgs},
 	FuncNameDaysBetween: FunctionInfo{FuncNameDaysBetween, daysBetweenEvalFunc, twoTimeArgsNumberResult},
-	FuncNameGreaterThan: FunctionInfo{FuncNameGreaterThan, greaterThanEvalFunc, twoNumberArgsBooleanResult},
+
+	FuncNameGreaterThan:   FunctionInfo{FuncNameGreaterThan, greaterThanEvalFunc, twoNumberArgsBooleanResult},
+	FuncNameLessThanEqual: FunctionInfo{FuncNameLessThanEqual, lessThanEqualEvalFunc, twoNumberArgsBooleanResult},
 
 	FuncNameIf:       FunctionInfo{FuncNameIf, ifEvalFunc, validIfArgs},
 	FuncNameIsTrue:   FunctionInfo{FuncNameIsTrue, isTrueEvalFunc, oneBoolArg},
