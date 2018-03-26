@@ -5,9 +5,9 @@ import (
 	"html/template"
 	"net/http"
 
+	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/databaseController"
 	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/userRole"
 
 	"resultra/datasheet/server/common/databaseWrapper"
@@ -47,14 +47,9 @@ func viewFormPage(w http.ResponseWriter, r *http.Request) {
 	formID := vars["formID"]
 	recordID := vars["recordID"]
 
-	srcColID, colFound := vars["col"]
-	if !colFound {
-		srcColID = ""
-	}
-	srcFrmButtonID, buttonFound := vars["frm"]
-	if !buttonFound {
-		srcFrmButtonID = ""
-	}
+	// Retrieve optional values
+	srcColID := r.FormValue("col")
+	srcFrmButtonID := r.FormValue("frm")
 
 	_, authErr := userAuth.GetCurrentUserInfo(r)
 	if authErr != nil {
