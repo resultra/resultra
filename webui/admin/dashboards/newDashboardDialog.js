@@ -1,4 +1,4 @@
-function openNewDashboardDialog(databaseID) {
+function openNewDashboardDialog(pageContext) {
 	
 	var $newDashboardDialogForm = $('#newDashboardDialogForm')
 	var $nameInput = $('#newDashboardNameInput')
@@ -12,7 +12,7 @@ function openNewDashboardDialog(databaseID) {
 				remote: {
 					url: '/api/dashboard/validateNewDashboardName',
 					data: {
-						databaseID: databaseID,
+						databaseID: pageContext.databaseID,
 						dashboardName: function() { return $nameInput.val(); }
 					}
 				} // remote
@@ -36,12 +36,12 @@ function openNewDashboardDialog(databaseID) {
 		if($newDashboardDialogForm.valid()) {	
 			
 			var newDashboardParams = { 
-				databaseID: databaseID,
+				databaseID: pageContext.databaseID,
 				name: $nameInput.val()}
 				
 			jsonAPIRequest("dashboard/new",newDashboardParams,function(newDashboardInfo) {
 				console.log("Created new dashboard: " + JSON.stringify(newDashboardInfo))
-				navigateToURL('/admin/dashboard/' + newDashboardInfo.dashboardID)
+				navigateToDashboardDesignerPageContent(pageContext,newDashboardInfo)
 				$newDashboardDialog.modal('hide')
 			})
 			

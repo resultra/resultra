@@ -65,7 +65,7 @@ function initAdminDashboardSettings(pageContext) {
 	
 	initButtonClickHandler('#adminNewDashboardButton',function() {
 		console.log("New form button clicked")
-		openNewDashboardDialog(pageContext.databaseID)
+		openNewDashboardDialog(pageContext)
 	})
 	
 	
