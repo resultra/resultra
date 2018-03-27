@@ -37,7 +37,8 @@ function loadRecordIntoSelection(selectionElem, recordRef) {
 	
 }
 
-function initSelectionRecordEditBehavior($selectionContainer,componentContext,recordProxy, selectionObjectRef,initDoneCallback) {
+function initSelectionRecordEditBehavior($selectionContainer,
+			componentContext,recordProxy, selectionObjectRef,initDoneCallback) {
 	
 	$selectionContainer.data("viewFormConfig", {
 		loadRecord: loadRecordIntoSelection
@@ -136,5 +137,16 @@ function initSelectionRecordEditBehavior($selectionContainer,componentContext,re
 		initDoneCallback()
 	}
 	
+	
+}
+
+function initTextSelectionRecordEditTableBehavior($container,componentContext,recordProxy, textSelectionObjectRef) {
+	
+	function initDoneCallback() {
+		// TBD
+	}
+	
+	initSelectionRecordEditBehavior($container,
+				componentContext,recordProxy, textSelectionObjectRef,initDoneCallback)
 	
 }

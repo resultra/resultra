@@ -4,21 +4,34 @@ function selectionFormControlFromSelectionFormComponent($selectionComponent) {
 	return $selectionComponent.find(".selectionFormComponentSelection")
 }
 
+function selectionContainerSelectionControl() {
+	return 	'<div class="input-group">'+
+					'<div class="selectionFormControl">' + 
+						'<select class="form-control selectionFormComponentSelection"></select>' +
+					'</div>' +
+					clearValueButtonHTML("selectComponentClearValueButton") +
+	'</div>';
+
+}
+
 function selectionContainerHTML(elementID)
 {	
 	var containerHTML = ''+
 		'<div class=" layoutContainer selectionFormComponent" id="'+elementID+'">' +
 			'<div class="form-group marginBottom0">'+
 				'<label>Selection</label>'+
-				'<div class="input-group">'+
-					'<div class="selectionFormControl">' + 
-						'<select class="form-control selectionFormComponentSelection"></select>' +
-					'</div>' +
-					clearValueButtonHTML("selectComponentClearValueButton") +
-				'</div>'+
+				selectionContainerSelectionControl() +
 			'</div>'+
 		'</div>';
 	return containerHTML
+}
+
+function textSelectionTableViewContainerHTML() {
+	var containerHTML = ''+
+	'<div class="layoutContainer selectionTableViewComponent">' +
+			selectionContainerSelectionControl() +
+	'</div>';
+	return containerHTML	
 }
 
 function initSelectionComponentClearValueButton($selection,selectionRef) {

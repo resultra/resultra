@@ -202,6 +202,28 @@ function initItemListTableView(params) {
 				textBoxTableViewContainerHTML,initContainer,100)
 	}
 
+	function createTextSelectionColDef(colInfo,tableContext) {
+		
+		function initContainer(colInfo, $cellContainer, tableContext,recordProxy,componentContext,cellData) {
+				// DataTables will work around the min-width property of the text input column when automatically sizing
+				// the columns. Where cellData is the text of each individual column, the min-width is set to the length
+				// of the text. This works fairly well. However, this heuristic may need some fine tuning.
+				setContainerComponentInfo($cellContainer,colInfo,colInfo.textInputID)
+						
+				var minWidth = calcTextWidth(cellData)
+				minWidth = minWidth + 20 // for cell padding	
+				if (minWidth > 450) { minWidth = 450 } // Constrain minimum width to a maximum value
+				setColMinWidth(colInfo.columnID,minWidth)
+				
+				initTextSelectionRecordEditTableBehavior($cellContainer,componentContext,recordProxy, colInfo)
+		}
+		
+		
+		return createTableViewColDef(colInfo,tableContext,
+				textSelectionTableViewContainerHTML,initContainer,100)
+	}
+
+
 
 	function createEmailAddrColDef(colInfo,tableContext) {
 		
@@ -377,6 +399,8 @@ function initItemListTableView(params) {
 			return createNumberInputColDef(colInfo,tableContext)
 		case 'textInput':
 			return createTextInputColDef(colInfo,tableContext)
+		case 'textSelection':
+			return createTextSelectionColDef(colInfo,tableContext)
 		case 'datePicker':
 			return createDateInputColDef(colInfo,tableContext)
 		case 'checkbox':
