@@ -50,6 +50,7 @@ function initTextSelectionColPropertiesImpl(pageContext,textSelectionCol) {
 		})			
 	}
 	var valueListPropertyParams = {
+		elemPrefix: elemPrefix,	
 		databaseID: pageContext.databaseID,
 		saveValueListCallback: saveValueList,
 		defaultValueListID: textSelectionCol.properties.valueListID

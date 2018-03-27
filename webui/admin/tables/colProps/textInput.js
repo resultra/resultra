@@ -50,6 +50,7 @@ function initTextInputColPropertiesImpl(pageContext,textInputCol) {
 		})			
 	}
 	var valueListPropertyParams = {
+		elemPrefix: elemPrefix,	
 		databaseID: pageContext.databaseID,
 		saveValueListCallback: saveValueList,
 		defaultValueListID: textInputCol.properties.valueListID
