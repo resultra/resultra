@@ -32,20 +32,26 @@ function openNewFormDialog(pageContext) {
 		
 	$newFormDialog.modal('show')
 	
+	var newFormCreated = false
 	initButtonClickHandler('#newFormSaveButton',function() {
 		console.log("New form save button clicked")
 		if($newFormDialogForm.valid()) {	
 			console.log("table selection: " + $('#newFormTableSelection').val() )
 			
-			var newFormParams = { 
-				parentDatabaseID: pageContext.databaseID, 
-				name: $formNameInput.val() }
-			jsonAPIRequest("frm/new",newFormParams,function(newFormInfo) {
-				console.log("Created new form: " + JSON.stringify(newFormInfo))
-				$newFormDialog.modal('hide')
-				navigateToFormDesignerPageContent(pageContext,newFormInfo)
+			if(newFormCreated === false) {
+				newFormCreated = true
 				
-			})
+				var newFormParams = { 
+					parentDatabaseID: pageContext.databaseID, 
+					name: $formNameInput.val() }
+				jsonAPIRequest("frm/new",newFormParams,function(newFormInfo) {
+					console.log("Created new form: " + JSON.stringify(newFormInfo))
+					$newFormDialog.modal('hide')
+					navigateToFormDesignerPageContent(pageContext,newFormInfo)
+				
+				})
+				
+			}
 			
 
 		}
