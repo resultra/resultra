@@ -23,6 +23,9 @@ function initTableColPropsPageConent(pageContext,columnInfo) {
 		case 'textInput':
 			initTextInputColProperties(pageContext,columnInfo.parentTableID, columnInfo.columnID)
 			break
+		case 'textSelection':
+			initTextSelectionColProperties(pageContext,columnInfo.parentTableID, columnInfo.columnID)
+			break
 		case 'datePicker':
 			initDatePickerColProperties(columnInfo.parentTableID, columnInfo.columnID)
 			break

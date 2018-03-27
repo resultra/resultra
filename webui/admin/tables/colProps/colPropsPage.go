@@ -28,6 +28,7 @@ func init() {
 	baseTemplateFiles := []string{"static/admin/tables/colProps/colPropsPage.html",
 		"static/admin/tables/colProps/numberInput.html",
 		"static/admin/tables/colProps/textInput.html",
+		"static/admin/tables/colProps/textSelection.html",
 		"static/admin/tables/colProps/datePicker.html",
 		"static/admin/tables/colProps/checkBox.html",
 		"static/admin/tables/colProps/rating.html",
@@ -73,6 +74,7 @@ type TemplParams struct {
 	IsSingleUserWorkspace bool
 	NumberInputParams     NumberInputColPropsTemplateParams
 	TextInputParams       TextInputColPropsTemplateParams
+	TextSelectionParams   TextSelectionColPropsTemplateParams
 	DatePickerParams      DatePickerColPropsTemplateParams
 	CheckBoxParams        CheckBoxColPropsTemplateParams
 	RatingParams          RatingColPropsTemplateParams
@@ -156,6 +158,7 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		SiteBaseURL:           runtimeConfig.GetSiteBaseURL(),
 		NumberInputParams:     newNumberInputTemplateParams(),
 		TextInputParams:       newTextInputTemplateParams(),
+		TextSelectionParams:   newTextSelectionTemplateParams(),
 		DatePickerParams:      newDatePickerTemplateParams(),
 		CheckBoxParams:        newCheckBoxTemplateParams(),
 		RatingParams:          newRatingTemplateParams(),
