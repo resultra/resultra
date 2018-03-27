@@ -4,22 +4,27 @@ function openNewFieldDialog(databaseID) {
 	var newFieldPanel = new NewFieldPanel(databaseID,$newFieldDialogForm)
 	var $newFieldDialog = $('#newFieldDialog')	
 	
+	var fieldCreated = false
 	initButtonClickHandler('#newFieldSaveButton',function() {
 		console.log("New field save button clicked")
 		if(newFieldPanel.validateNewFieldParams()) {
-			newFieldPanel.createNewField(function(newField) {
-				if (newField !== null) {
-					$newFieldDialog.modal('hide')
+			
+			// Prevent the creation of multiple fields at once.
+			if (fieldCreated === false) {
+				fieldCreated = true
+				newFieldPanel.createNewField(function(newField) {
+					if (newField !== null) {
+						$newFieldDialog.modal('hide')
 					
-					var editPropsContentURL = '/admin/field/'+newField.fieldID
-					setSettingsPageContent(editPropsContentURL,function() {
-						initFieldPropsSettingsPageContent(newField.fieldID)
-					})
-					
-					
-					navigateToURL('/admin/field/'+newField.fieldID)				
-				}
-			})			
+						var editPropsContentURL = '/admin/field/'+newField.fieldID
+						setSettingsPageContent(editPropsContentURL,function() {
+							initFieldPropsSettingsPageContent(newField.fieldID)
+						})			
+					}
+				})			
+				
+			}
+			
 
 		}
 	})
