@@ -75,6 +75,18 @@ function createNewTableColColTypeDialogPanelConfig(pageContext,tableRef,panelPar
 					
 				}
 				
+				function createTextSelection(fieldInfo) {
+					var params = {
+						parentTableID: panelParams.tableID,
+						fieldID: fieldInfo.fieldID 
+					}
+					jsonAPIRequest("tableView/textSelection/new",params,function(selection) {
+						console.log("Text selection column created: " + JSON.stringify(selection))
+						columnCreatedCallback(selection)
+					})
+					
+				}
+				
 				function createEmailAddrInput(fieldInfo) {
 					var params = {
 						parentTableID: panelParams.tableID,
@@ -287,7 +299,12 @@ function createNewTableColColTypeDialogPanelConfig(pageContext,tableRef,panelPar
 					}
 					break
 				case fieldTypeText:
-					createTextInput(fieldInfo)
+					if(colType==='selection') {
+						createTextSelection(fieldInfo)
+					} else {
+						createTextInput(fieldInfo)
+					}
+					
 					break
 				case fieldTypeTag:
 					createTagInput(fieldInfo)
@@ -404,6 +421,7 @@ function createNewTableColColTypeDialogPanelConfig(pageContext,tableRef,panelPar
 				break
 			case fieldTypeText:
 				$colTypeSelection.append(selectOptionHTML('textInput','Text input'))
+				$colTypeSelection.append(selectOptionHTML('selection','Selection'))
 				break
 			case fieldTypeComment:
 				$colTypeSelection.append(selectOptionHTML('comment','Comment box'))

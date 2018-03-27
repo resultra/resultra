@@ -17,6 +17,7 @@ import (
 	"resultra/datasheet/server/displayTable/columns/socialButton"
 	"resultra/datasheet/server/displayTable/columns/tag"
 	"resultra/datasheet/server/displayTable/columns/textInput"
+	"resultra/datasheet/server/displayTable/columns/textSelection"
 	"resultra/datasheet/server/displayTable/columns/toggle"
 	"resultra/datasheet/server/displayTable/columns/urlLink"
 	"resultra/datasheet/server/displayTable/columns/userSelection"
@@ -31,6 +32,9 @@ func cloneTableCols(cloneParams *trackerDatabase.CloneDatabaseParams, parentTabl
 	}
 
 	if err := textInput.CloneTextInputs(cloneParams, parentTableID); err != nil {
+		return fmt.Errorf("cloneTableCols: %v", err)
+	}
+	if err := textSelection.CloneTextSelections(cloneParams, parentTableID); err != nil {
 		return fmt.Errorf("cloneTableCols: %v", err)
 	}
 

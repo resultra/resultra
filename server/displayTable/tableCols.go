@@ -18,6 +18,7 @@ import (
 	"resultra/datasheet/server/displayTable/columns/socialButton"
 	"resultra/datasheet/server/displayTable/columns/tag"
 	"resultra/datasheet/server/displayTable/columns/textInput"
+	"resultra/datasheet/server/displayTable/columns/textSelection"
 	"resultra/datasheet/server/displayTable/columns/toggle"
 	"resultra/datasheet/server/displayTable/columns/urlLink"
 	"resultra/datasheet/server/displayTable/columns/userSelection"
@@ -55,6 +56,15 @@ func getTableCols(trackerDBHandle *sql.DB, parentTableID string) (TableColsInfo,
 		return nil, nil, fmt.Errorf("getTableCols: %v", err)
 	}
 	for _, col := range textInputCols {
+		tableColData = append(tableColData, col)
+		tableColsByID[col.ColumnID] = col
+	}
+
+	textSelectionCols, err := textSelection.GetTextSelections(trackerDBHandle, parentTableID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("getTableCols: %v", err)
+	}
+	for _, col := range textSelectionCols {
 		tableColData = append(tableColData, col)
 		tableColsByID[col.ColumnID] = col
 	}
