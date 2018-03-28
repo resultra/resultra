@@ -55,6 +55,7 @@ func saveNewNumberInput(trackerDBHandle *sql.DB, params NewNumberInputParams) (*
 
 	numberInputID := uniqueID.GenerateUniqueID()
 	newNumberInput := NumberInput{ParentTableID: params.ParentTableID,
+		ColType:       numberInputEntityKind,
 		NumberInputID: numberInputID,
 		ColumnID:      numberInputID,
 		Properties:    properties}
