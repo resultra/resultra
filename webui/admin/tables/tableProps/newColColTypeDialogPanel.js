@@ -354,12 +354,6 @@ function createNewTableColColTypeDialogPanelConfig(pageContext,tableRef,panelPar
 				
 				
 				
-				function navigateToNewColumnSettingsPage(columnInfo) {
-					var contentURL = '/admin/tablecol/'+columnInfo.columnID
-					setSettingsPageContent(contentURL, function() {
-						initTableColPropsPageConent(pageContext,columnInfo)
-					})
-				}
 				
 				if (colCreated === false) {
 					colCreated=true // only create the column once for this dialog
@@ -371,7 +365,7 @@ function createNewTableColColTypeDialogPanelConfig(pageContext,tableRef,panelPar
 							newFieldPanelVals.newFieldPanel.createNewField(function(newFieldInfo) {
 								if(newFieldInfo !== null) {
 									createNewColumn(newFieldInfo,function(columnInfo) {
-										navigateToNewColumnSettingsPage(columnInfo)						
+										navigateToNewColumnSettingsPage(pageContext,columnInfo)						
 										registerTablePropsLoader(pageContext,tableRef)						
 									})			
 								}
@@ -381,7 +375,7 @@ function createNewTableColColTypeDialogPanelConfig(pageContext,tableRef,panelPar
 							var getFieldParams = { fieldID: selectedFieldID }
 							jsonAPIRequest("field/get",getFieldParams,function(existingFieldInfo) {
 								createNewColumn(existingFieldInfo,function(columnInfo) {
-									navigateToNewColumnSettingsPage(columnInfo)
+									navigateToNewColumnSettingsPage(pageContext,columnInfo)
 									registerTablePropsLoader(pageContext,tableRef)						
 								})
 							})

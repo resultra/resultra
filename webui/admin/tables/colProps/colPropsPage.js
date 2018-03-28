@@ -83,3 +83,10 @@ function initTableColPropsPageConent(pageContext,columnInfo) {
 	
 	
 }
+
+function navigateToNewColumnSettingsPage(pageContext,columnInfo) {
+	var contentURL = '/admin/tablecol/'+columnInfo.columnID
+	setSettingsPageContent(contentURL, function() {
+		initTableColPropsPageConent(pageContext,columnInfo)
+	})
+}

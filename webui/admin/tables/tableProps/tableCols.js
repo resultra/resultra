@@ -108,7 +108,7 @@ function initTableViewColsProperties(pageContext,tableRef) {
 	
 	initButtonClickHandler('#adminNewFormButtonColButton',function() {
 		console.log("New table column button clicked")
-		openNewButtonTableColDialog(tableRef)
+		openNewButtonTableColDialog(pageContext,tableRef)
 	})
 	
 	

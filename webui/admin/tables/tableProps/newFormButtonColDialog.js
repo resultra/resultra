@@ -1,4 +1,4 @@
-function openNewButtonTableColDialog(tableRef) {
+function openNewButtonTableColDialog(pageContext,tableRef) {
 	
 	var $newButtonDialogForm = $('#newButtonTableColForm')
 	var $newButtonColDialog = $('#newButtonTableColDialog')	
@@ -37,7 +37,8 @@ function openNewButtonTableColDialog(tableRef) {
 			}
 			
 			jsonAPIRequest("tableView/formButton/new",newButtonParams,function(newButtonObjectRef) {
-					  $newButtonColDialog.modal('hide')
+				navigateToNewColumnSettingsPage(pageContext,newButtonObjectRef)			
+				$newButtonColDialog.modal('hide')
 			})		
 		}
 	})
