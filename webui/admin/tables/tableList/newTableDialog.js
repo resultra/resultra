@@ -31,18 +31,22 @@ function openNewTableDialog(pageContext) {
 	
 	$newTableDialog.modal("show")
 	
+	var tableCreated = false
 	initButtonClickHandler('#newTableSaveButton',function() {
 		console.log("New table save button clicked")
-		if($newTableDialogForm.valid()) {				
-			var newTableParams = { 
-				parentDatabaseID: pageContext.databaseID, 
-				name: $tableNameInput.val() }
-			jsonAPIRequest("tableView/new",newTableParams,function(newTableInfo) {
-				console.log("Created new table: " + JSON.stringify(newTableInfo))
-				$newTableDialog.modal('hide')
+		if($newTableDialogForm.valid()) {	
+			if (tableCreated === false) {
+				tableCreated = true // only allow the creation of one table from the table dialog
+				var newTableParams = { 
+					parentDatabaseID: pageContext.databaseID, 
+					name: $tableNameInput.val() }
+				jsonAPIRequest("tableView/new",newTableParams,function(newTableInfo) {
+					console.log("Created new table: " + JSON.stringify(newTableInfo))
+					$newTableDialog.modal('hide')
 
-				navigateToTablePropsPage(pageContext,newTableInfo)
-			})
+					navigateToTablePropsPage(pageContext,newTableInfo)
+				})
+			}			
 			
 
 		}
