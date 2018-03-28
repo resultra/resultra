@@ -23,6 +23,8 @@ function createNewTableColColTypeDialogPanelConfig(pageContext,tableRef,panelPar
 		
 		
 		
+		var colCreated = false
+		
 		initButtonClickHandler('#newTableColColTypeSaveButton',function() {
 			
 			function createNewColumn(fieldInfo,columnCreatedCallback) {
@@ -351,6 +353,7 @@ function createNewTableColColTypeDialogPanelConfig(pageContext,tableRef,panelPar
 			if ($panelForm.valid()) {
 				
 				
+				
 				function navigateToNewColumnSettingsPage(columnInfo) {
 					var contentURL = '/admin/tablecol/'+columnInfo.columnID
 					setSettingsPageContent(contentURL, function() {
@@ -358,29 +361,33 @@ function createNewTableColColTypeDialogPanelConfig(pageContext,tableRef,panelPar
 					})
 				}
 				
-				var newOrSelectedFieldPanelVals = getWizardDialogPanelVals(
-						$parentDialog,newTableColCreateNewOrExistingFieldDialogPanelID)
-					if(newOrSelectedFieldPanelVals.isNewField) {
-						var newFieldPanelVals = getWizardDialogPanelVals(
-							$parentDialog,newTableColNewFieldDialogPanelID)
-						newFieldPanelVals.newFieldPanel.createNewField(function(newFieldInfo) {
-							if(newFieldInfo !== null) {
-								createNewColumn(newFieldInfo,function(columnInfo) {
-									navigateToNewColumnSettingsPage(columnInfo)						
-									registerTablePropsLoader(pageContext,tableRef)						
-								})			
-							}
-						})
-					} else {
-						var selectedFieldID = newOrSelectedFieldPanelVals.selectedField				
-						var getFieldParams = { fieldID: selectedFieldID }
-						jsonAPIRequest("field/get",getFieldParams,function(existingFieldInfo) {
-							createNewColumn(existingFieldInfo,function(columnInfo) {
-								navigateToNewColumnSettingsPage(columnInfo)
-								registerTablePropsLoader(pageContext,tableRef)						
+				if (colCreated === false) {
+					colCreated=true // only create the column once for this dialog
+					var newOrSelectedFieldPanelVals = getWizardDialogPanelVals(
+							$parentDialog,newTableColCreateNewOrExistingFieldDialogPanelID)
+						if(newOrSelectedFieldPanelVals.isNewField) {
+							var newFieldPanelVals = getWizardDialogPanelVals(
+								$parentDialog,newTableColNewFieldDialogPanelID)
+							newFieldPanelVals.newFieldPanel.createNewField(function(newFieldInfo) {
+								if(newFieldInfo !== null) {
+									createNewColumn(newFieldInfo,function(columnInfo) {
+										navigateToNewColumnSettingsPage(columnInfo)						
+										registerTablePropsLoader(pageContext,tableRef)						
+									})			
+								}
 							})
-						})
-					}
+						} else {
+							var selectedFieldID = newOrSelectedFieldPanelVals.selectedField				
+							var getFieldParams = { fieldID: selectedFieldID }
+							jsonAPIRequest("field/get",getFieldParams,function(existingFieldInfo) {
+								createNewColumn(existingFieldInfo,function(columnInfo) {
+									navigateToNewColumnSettingsPage(columnInfo)
+									registerTablePropsLoader(pageContext,tableRef)						
+								})
+							})
+						}
+				}
+	
 				
 				
 				
