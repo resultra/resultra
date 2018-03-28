@@ -12,7 +12,14 @@ function openNewDashboardSummaryValDialog(summaryValParams) {
 	newSummaryValParams.summaryValCreated = false
 	newSummaryValParams.dialog = $('#newSummaryValDialog')
 	
+	var summaryValCreated = false
+	
 	function saveNewSummaryVal($dialog) {
+		
+		if (summaryValCreated === true) {
+			return
+		}
+		summaryValCreated = true // only allow creation of a single summaryVal from the dialog
 					
 		var saveNewSummaryValParams = {
 			parentDashboardID: newSummaryValParams.dashboardID,
