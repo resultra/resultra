@@ -24,7 +24,7 @@ function fieldTypeLabel(fieldType) {
 	case fieldTypeBool: return "True or False (Boolean)"
 	case fieldTypeAttachment: return "Attachment(s)"
 	case fieldTypeFile: return "File"
-	case fieldTypeLongText: return "Long Text"
+	case fieldTypeLongText: return "Note (Rich Text)"
 	case fieldTypeComment: return "Comment"
 	case fieldTypeTag: return "Tag"
 	case fieldTypeEmail: return "Email Address"
