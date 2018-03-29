@@ -72,7 +72,8 @@ func main() {
 		http.FileServer(http.Dir("./static"))))
 
 	log.Printf("Server started: listening on port: %v", runtimeConfig.CurrRuntimeConfig.PortNumber)
-	portNumString := fmt.Sprintf(":%v", runtimeConfig.CurrRuntimeConfig.PortNumber)
+	// Only listen on the localhost/loopback port. T
+	portNumString := fmt.Sprintf("127.0.0.1:%v", runtimeConfig.CurrRuntimeConfig.PortNumber)
 	http.ListenAndServe(portNumString, nil)
 
 }
