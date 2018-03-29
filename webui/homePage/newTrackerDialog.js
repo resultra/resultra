@@ -94,7 +94,7 @@ function openNewTrackerDialog(pageContext) {
 		$templateSelection.append(selectOptionHTML("","No template"))
 		
 		if(templateLists.accountTemplates.length > 0) {
-			var $accountTemplateOptGroup = $('<optgroup label="Account Templates"></optgroup>')
+			var $accountTemplateOptGroup = $('<optgroup label="Workspace Templates"></optgroup>')
 			for (var trackerIndex=0; trackerIndex<templateLists.accountTemplates.length; trackerIndex++) {	
 				var trackerInfo = templateLists.accountTemplates[trackerIndex]
 				trackerInfo.templateSource = "account"
