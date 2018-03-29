@@ -33,7 +33,7 @@ function initAdminDashboardSettings(pageContext) {
 		update: function( event, ui ) {
 			
 			var dashboardOrder = []
-			$dashboardList.find(".dashboardListItem").each( function() {
+			$dashboardList.find(".list-group-item").each( function() {
 				var dashboardID = $(this).attr('data-dashboardID')
 				dashboardOrder.push(dashboardID)
 			})
