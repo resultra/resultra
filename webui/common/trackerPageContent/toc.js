@@ -78,6 +78,7 @@ function addItemListLinkToTOCList(tocConfig, listInfo) {
 		jsonAPIRequest("recordRead/getFilteredRecordCount",listCountParams,function(listCount) {
 			var $listCount = $itemListItem.find(".badge")
 			if (listCount > 0) {
+				$listCount.show()
 				$listCount.text(listCount)
 			} else {
 				$listCount.hide()
