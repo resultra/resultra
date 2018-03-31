@@ -106,6 +106,29 @@ function initNumberInputColPropertiesImpl(numberInputCol) {
 	}
 	initNumberConditionalFormatPropertyPanel(conditionalFormatParams)
 	
+	var spinnerParams = {
+		initialShowSpinner: numberInputCol.properties.showValueSpinner,
+		initialStepSize: numberInputCol.properties.valueSpinnerStepSize,
+		setStepSize: function(stepSize) {
+			var params = {
+				parentTableID: numberInputCol.parentTableID,
+				numberInputID: numberInputCol.numberInputID,
+				valueSpinnerStepSize: stepSize
+			}
+			jsonAPIRequest("tableView/numberInput/setSpinnerStepSize",params,function(updatedCol) {
+			})
+		},
+		setShowSpinner: function(showSpinner) {
+			var params = {
+				parentTableID: numberInputCol.parentTableID,
+				numberInputID: numberInputCol.numberInputID,
+				showValueSpinner: showSpinner
+			}
+			jsonAPIRequest("tableView/numberInput/setShowSpinner",params,function(updatedCol) {
+			})
+		}
+	}
+	initSpinnerButtonProps(spinnerParams)
 	
 	
 }
