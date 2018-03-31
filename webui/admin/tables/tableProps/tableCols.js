@@ -8,38 +8,56 @@ function registerTablePropsLoader(pageContext,tableRef) {
 	})
 }
 
+function getDisplayedTableColumnOrder() {
+	var $columnList = $('#tableColPropsColList')
+	var columns = []
+	
+	$columnList.find('.list-group-item').each(function() {
+		var columnID = $(this).attr('data-column-id')
+		columns.push(columnID)
+	})
+	console.log("savedUpdatedColumnOrder: " + JSON.stringify(columns))
+	return columns
+}
+
+function saveUpdatedTableColumnOrder(tableRef) {
+	console.log("Saving updated columns: " + tableRef.tableID)
+	
+	var columns = getDisplayedTableColumnOrder()
+	
+	
+	var setColsParams = {
+		tableID: tableRef.tableID,
+		orderedColumns: columns
+	}
+	jsonAPIRequest("tableView/setOrderedCols",setColsParams,function(replyStatus) {
+		
+	})
+	
+}
+
+function appendNewTableColToTableColumnOrder(tableRef,newColumnID) {
+	var columns = getDisplayedTableColumnOrder()
+	columns.push(newColumnID)
+	var setColsParams = {
+		tableID: tableRef.tableID,
+		orderedColumns: columns
+	}
+	jsonAPIRequest("tableView/setOrderedCols",setColsParams,function(replyStatus) {
+	})
+	
+}
 
 
 function initTableViewColsProperties(pageContext,tableRef) {
 	
 	var $columnList = $('#tableColPropsColList')
-	
-	function saveUpdatedColumnOrder() {
-		console.log("Saving updated columns: " + tableRef.tableID)
 		
-		var columns = []
-		
-		$columnList.find('.list-group-item').each(function() {
-			var columnID = $(this).attr('data-column-id')
-			columns.push(columnID)
-		})
-		
-		console.log("savedUpdatedColumnOrder: " + JSON.stringify(columns))
-		
-		var setColsParams = {
-			tableID: tableRef.tableID,
-			orderedColumns: columns
-		}
-		jsonAPIRequest("tableView/setOrderedCols",setColsParams,function(replyStatus) {
-			
-		})
-	}
-	
     $columnList.sortable({
 		placeholder: "ui-state-highlight",
 		cursor:"move",
 		update: function( event, ui ) {
-			saveUpdatedColumnOrder(tableRef.tableID)
+			saveUpdatedTableColumnOrder(tableRef)
 		}
     });
 	
@@ -78,7 +96,7 @@ function initTableViewColsProperties(pageContext,tableRef) {
 					jsonAPIRequest("tableView/deleteColumn",deleteParams,function(replyStatus) {
 						$colListItem.remove()
 						console.log("Delete confirmed")
-						saveUpdatedColumnOrder()
+						saveUpdatedTableColumnOrder(tableRef)
 					})
 					
 				})				

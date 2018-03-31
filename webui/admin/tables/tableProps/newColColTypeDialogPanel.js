@@ -365,6 +365,7 @@ function createNewTableColColTypeDialogPanelConfig(pageContext,tableRef,panelPar
 							newFieldPanelVals.newFieldPanel.createNewField(function(newFieldInfo) {
 								if(newFieldInfo !== null) {
 									createNewColumn(newFieldInfo,function(columnInfo) {
+										appendNewTableColToTableColumnOrder(tableRef,columnInfo.columnID)
 										navigateToNewColumnSettingsPage(pageContext,columnInfo)						
 										registerTablePropsLoader(pageContext,tableRef)						
 									})			
@@ -375,6 +376,7 @@ function createNewTableColColTypeDialogPanelConfig(pageContext,tableRef,panelPar
 							var getFieldParams = { fieldID: selectedFieldID }
 							jsonAPIRequest("field/get",getFieldParams,function(existingFieldInfo) {
 								createNewColumn(existingFieldInfo,function(columnInfo) {
+									appendNewTableColToTableColumnOrder(tableRef,columnInfo.columnID)
 									navigateToNewColumnSettingsPage(pageContext,columnInfo)
 									registerTablePropsLoader(pageContext,tableRef)						
 								})
