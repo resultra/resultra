@@ -492,7 +492,8 @@ function initItemListTableView(params) {
 			var $tableHeader = $("<thead></thead>")
 			var $headerRow = $("<tr></tr>")
 	
-			$.each(tableContext.tableInfo.cols,function(index,colInfo) {
+			for(var colIndex = 0; colIndex < tableContext.tableInfo.cols.length; colIndex++) {
+				var colInfo = tableContext.tableInfo.cols[colIndex]
 				var $header = $('<th></th>')
 								
 				if (colInfo.colType !== 'button') {
@@ -513,7 +514,8 @@ function initItemListTableView(params) {
 								
 				
 				$headerRow.append($header)
-			})
+				
+			}
 		
 			$tableHeader.append($headerRow)
 			$tableHeader.find("th").css("background-color","lightGrey")
@@ -529,10 +531,11 @@ function initItemListTableView(params) {
 		params.$tableContainer.append($tableElem)
 		
 		var dataCols = []
-		$.each(tableContext.tableInfo.cols,function(index,colInfo) {
+		for(var colIndex = 0; colIndex < tableContext.tableInfo.cols.length; colIndex++) {
+			var colInfo = tableContext.tableInfo.cols[colIndex]
 			var colDataDef = createColDef(colInfo,tableContext)
 			dataCols.push(colDataDef)
-		})
+		}
 		
 		var dataTable = $tableElem.DataTable({
 			destroy:true, // Destroy existing table before applying the options
