@@ -30,12 +30,22 @@ function initNumberConditionalFormatPropertyPanel(config) {
 			positive: {
 				hasParam:false
 			},
+			equal: {
+				hasParam:true
+			},
 			greater: {
+				hasParam:true
+			},
+			greaterequal: {
 				hasParam:true
 			},
 			less: {
 				hasParam:true
-			}
+			},
+			lessequal: {
+				hasParam:true
+			},
+			
 		}
 		
 		
@@ -143,14 +153,32 @@ function getNumberConditionalFormatBackgroundColorClassForValue(conditionalForma
 			}
 			return null
 		},
+		equal: function(format, val) {
+			if((val !==null) && (val == format.param)) {
+				return format.colorScheme
+			}
+			return null
+		},
 		greater: function(format, val) {
 			if((val !==null) && (val > format.param)) {
 				return format.colorScheme
 			}
 			return null
 		},
+		greaterequal: function(format, val) {
+			if((val !==null) && (val >= format.param)) {
+				return format.colorScheme
+			}
+			return null
+		},
 		less: function(format, val) {
 			if((val !==null) && (val < format.param)) {
+				return format.colorScheme
+			}
+			return null
+		},
+		lessequal: function(format, val) {
+			if((val !==null) && (val <= format.param)) {
 				return format.colorScheme
 			}
 			return null
