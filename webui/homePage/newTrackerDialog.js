@@ -91,7 +91,11 @@ function openNewTrackerDialog(pageContext) {
 		
 		$templateSelection.empty()
 
-		$templateSelection.append(selectOptionHTML("","No template"))
+		// Only include the "no template" option if there are no factory templates. The factory templates
+		// should include a minimal template for setting up a starter tracker.
+		if(templateLists.factoryTemplates.length <= 0) {
+			$templateSelection.append(selectOptionHTML("","No template"))	
+		}
 		
 		if(templateLists.accountTemplates.length > 0) {
 			var $accountTemplateOptGroup = $('<optgroup label="Workspace Templates"></optgroup>')
@@ -114,15 +118,18 @@ function openNewTrackerDialog(pageContext) {
 			$templateSelection.append($factoryTemplateOptGroup)
 		}
 		
-		initSelectControlChangeHandler($templateSelection,function(selectedDatabaseID) {		
+		initSelectControlChangeHandler($templateSelection,function(selectedDatabaseID) {	
+			
+			var $descGroup = $('#newTrackerTemplateDescriptionGroup') 
+				
 			if (selectedDatabaseID.length > 0) {
 				var trackerInfo = templateTrackerInfoByID[selectedDatabaseID]
 				console.log("new template tracker database selected: " + JSON.stringify(trackerInfo))
 			
-				var $descGroup = $('#newTrackerTemplateDescriptionGroup') 
+				
 				if(trackerInfo.description.length > 0) {
 					var $templateDesc = $('#newTrackerTemplateDescription')
-					$templateDesc.html(trackerInfo.description)
+					$templateDesc.html(formatInlineContentHTMLDisplay(trackerInfo.description))
 					$descGroup.show()
 				} else {
 					$descGroup.hide()
