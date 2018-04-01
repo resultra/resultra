@@ -69,6 +69,23 @@ function initItemListPropsSettingsPageContent(databaseID, listInfo) {
 		initItemListViewSelection(defaultViewConfig)
 		
 	} // initItemListFormProperties
+	
+	
+	function initIncludeInSidebarProperty(listInfo) {
+		
+		initCheckboxChangeHandler('#adminItemListIncludeInSidebar', 
+					listInfo.properties.includeInSidebar, function(newVal) {
+			var setIncludeSidebarParams = {
+				listID: listInfo.listID,
+				includeInSidebar: newVal
+			}
+			jsonAPIRequest("itemList/setIncludeInSidebar",setIncludeSidebarParams,function(updatedLinkInfo) {
+			})			
+			
+		})
+		
+	}
+	
 
 
 		var listElemPrefix = "itemList_"
@@ -178,6 +195,8 @@ function initItemListPropsSettingsPageContent(databaseID, listInfo) {
 			initItemListFormProperties(listInfo)
 
 			initAlternateFormsProperties(listInfo)
+			
+			initIncludeInSidebarProperty(listInfo)
 
 
 		}) // set record's number field value

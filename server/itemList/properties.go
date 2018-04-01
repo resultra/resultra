@@ -46,6 +46,7 @@ type ItemListProperties struct {
 	PreFilterRules         recordFilter.RecordFilterRuleSet     `json:"preFilterRules"`
 	DefaultView            ItemListViewProperties               `json:"defaultView"`
 	AlternateViews         []ItemListViewProperties             `json:"alternateViews"`
+	IncludeInSidebar       bool                                 `json:"includeInSidebar"`
 }
 
 func (srcProps ItemListProperties) Clone(cloneParams *trackerDatabase.CloneDatabaseParams) (*ItemListProperties, error) {
@@ -91,7 +92,8 @@ func (srcProps ItemListProperties) Clone(cloneParams *trackerDatabase.CloneDatab
 		DefaultFilterFields:    destFilterFields,
 		DefaultSortFields:      destSortFields,
 		PreFilterRules:         *destPreFilterRules,
-		AlternateViews:         destAltViews}
+		AlternateViews:         destAltViews,
+		IncludeInSidebar:       srcProps.IncludeInSidebar}
 
 	return &destProps, nil
 }
@@ -103,7 +105,8 @@ func newDefaultItemListProperties() ItemListProperties {
 		DefaultFilterFields:    []string{},
 		PreFilterRules:         recordFilter.NewDefaultRecordFilterRuleSet(),
 		AlternateViews:         []ItemListViewProperties{},
-		DefaultSortFields:      []string{}}
+		DefaultSortFields:      []string{},
+		IncludeInSidebar:       true}
 
 	return defaultProps
 }

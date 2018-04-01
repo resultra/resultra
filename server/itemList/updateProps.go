@@ -160,3 +160,17 @@ func (updateParams SetDefaultSortFieldsParams) updateProps(itemList *ItemList) e
 
 	return nil
 }
+
+type SetIncludeInSidebarParams struct {
+	ItemListIDHeader
+	IncludeInSidebar bool `json:"includeInSidebar"`
+}
+
+func (updateParams SetIncludeInSidebarParams) updateProps(itemList *ItemList) error {
+
+	// TODO - Validate fields
+
+	itemList.Properties.IncludeInSidebar = updateParams.IncludeInSidebar
+
+	return nil
+}

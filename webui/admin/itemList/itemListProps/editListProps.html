@@ -90,6 +90,23 @@
 	</tr>
 {{end}}
 
+{{define "adminItemListIncludeInSidebarProperty"}}
+
+<tr>
+	<td class="width200"><label></label></td>
+	<td>
+		<form id="itemListPropIncludeInSidebarForm">
+			  <div class="form-group">
+			      <div class="checkbox">
+			       <input type="checkbox" id="adminItemListIncludeInSidebar">
+			        <label for="adminItemListIncludeInSidebar">Include this list in the sidebar.</label>
+			      </div>
+			   </div>
+		</form>
+	</td>
+</tr>
+{{end}}
+
 
 {{define "itemListPropsBody"}}
 
@@ -106,7 +123,8 @@
 	{{template "adminItemListFormDisplayProperty"}}
 	{{template "adminItemListPreFilterProperty" .PreFilterPropPanelParams}}
 	{{template "adminItemListDefaultFilterProperty" .FilterPropPanelParams}}
-	{{template "adminItemListSortingProperty"}}		
+	{{template "adminItemListSortingProperty"}}
+	{{template "adminItemListIncludeInSidebarProperty"}}	
 	{{template "adminItemListRolesProperty"}}	
 </table>
 

@@ -168,6 +168,11 @@ func GetAllSortedItemLists(trackerDBHandle *sql.DB, parentDatabaseID string) ([]
 
 func GetAllUserSortedItemLists(req *http.Request, parentDatabaseID string) ([]ItemList, error) {
 
+	currUserID, userErr := userAuth.GetCurrentUserID(req)
+	if userErr != nil {
+		return nil, fmt.Errorf("getUserDashboards: can't verify user: %v", userErr)
+	}
+
 	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
 	if dbErr != nil {
 		return nil, dbErr
@@ -179,12 +184,14 @@ func GetAllUserSortedItemLists(req *http.Request, parentDatabaseID string) ([]It
 	}
 
 	if userRole.CurrUserIsDatabaseAdmin(req, parentDatabaseID) {
-		return allLists, nil
-	}
 
-	currUserID, userErr := userAuth.GetCurrentUserID(req)
-	if userErr != nil {
-		return nil, fmt.Errorf("getUserDashboards: can't verify user: %v", userErr)
+		sidebarLists := []ItemList{}
+		for _, currList := range allLists {
+			if currList.Properties.IncludeInSidebar {
+				sidebarLists = append(sidebarLists, currList)
+			}
+		}
+		return sidebarLists, nil
 	}
 
 	userListPrivs, userListErr := userRole.GetItemListsWithUserPrivs(trackerDBHandle, parentDatabaseID, currUserID)
@@ -195,7 +202,7 @@ func GetAllUserSortedItemLists(req *http.Request, parentDatabaseID string) ([]It
 	userLists := []ItemList{}
 	for _, currList := range allLists {
 		_, foundPriv := userListPrivs[currList.ListID]
-		if foundPriv {
+		if foundPriv && currList.Properties.IncludeInSidebar {
 			userLists = append(userLists, currList)
 		}
 	}
