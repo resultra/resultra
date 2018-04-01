@@ -16,7 +16,7 @@ TABLE COL->|UNIQUEID0015|UNIQUEID0018|{"fieldID":"UNIQUEID0005","colorScheme":"d
 -----------------------------------------
 DASHBOARD->|UNIQUEID0001|UNIQUEID0013|Dashboard A|1|{"layout":[{"columns":[{"componentIDs":["UNIQUEID0014"]}]}]}
 -----------------------------------------
-LIST->|UNIQUEID0019|UNIQUEID0001|List A|1|{"defaultRecordSortRules":[],"defaultFilterRules":{"matchLogic":"all","filterRules":[]},"defaultFilterFields":[],"defaultSortFields":[],"preFilterRules":{"matchLogic":"all","filterRules":[]},"defaultView":{"formID":"UNIQUEID0007","pageSize":5},"alternateViews":[]}
+LIST->|UNIQUEID0019|UNIQUEID0001|List A|1|{"defaultRecordSortRules":[],"defaultFilterRules":{"matchLogic":"all","filterRules":[]},"defaultFilterFields":[],"defaultSortFields":[],"preFilterRules":{"matchLogic":"all","filterRules":[]},"defaultView":{"formID":"UNIQUEID0007","pageSize":5},"alternateViews":[],"includeInSidebar":true}
 -----------------------------------------
 NEW ITEM LINK---->|UNIQUEID0020|UNIQUEID0007|New Item Link A|1|0||1|{"defaultValues":[]}
 -----------------------------------------
