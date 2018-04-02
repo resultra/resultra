@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/common/componentLayout"
 	"resultra/datasheet/server/common/databaseWrapper"
 	"resultra/datasheet/server/common/userAuth"
 	"resultra/datasheet/server/generic"
@@ -49,8 +48,7 @@ func NewDashboard(trackerDBHandle *sql.DB, params NewDashboardParams) (*Dashboar
 		return nil, sanitizeErr
 	}
 
-	dashboardProps := DashboardProperties{
-		Layout: componentLayout.ComponentLayout{}}
+	dashboardProps := newDefaultDashboardProperties()
 
 	var newDashboard = Dashboard{
 		DashboardID:      uniqueID.GenerateUniqueID(),
@@ -82,7 +80,7 @@ func GetDashboard(trackerDBHandle *sql.DB, dashboardID string) (*Dashboard, erro
 		return nil, fmt.Errorf("GetDashboard: Unabled to get dashboard with ID = %v: datastore err=%v", dashboardID, getErr)
 	}
 
-	var dashboardProps DashboardProperties
+	dashboardProps := newDefaultDashboardProperties()
 	if decodeErr := generic.DecodeJSONString(encodedProps, &dashboardProps); decodeErr != nil {
 		return nil, fmt.Errorf("GetDashboard: can't decode properties: %v", encodedProps)
 	}
@@ -120,7 +118,7 @@ func getAllDashboardsFromSrc(srcDBHandle *sql.DB, parentDatabaseID string) ([]Da
 			return nil, fmt.Errorf("GetAllDashboards: Failure querying database: %v", err)
 		}
 
-		var dashboardProps DashboardProperties
+		dashboardProps := newDefaultDashboardProperties()
 		if err := generic.DecodeJSONString(encodedProps, &dashboardProps); err != nil {
 			return nil, fmt.Errorf("GetAllDashboards: can't decode properties: %v,error=%v", encodedProps, err)
 		}
@@ -143,6 +141,11 @@ type GetUserDashboardListParams struct {
 
 func getUserDashboards(req *http.Request, databaseID string) ([]Dashboard, error) {
 
+	currUserID, userErr := userAuth.GetCurrentUserID(req)
+	if userErr != nil {
+		return nil, fmt.Errorf("getUserDashboards: can't verify user: %v", userErr)
+	}
+
 	trackerDBHandle, dbErr := databaseWrapper.GetTrackerDatabaseHandle(req)
 	if dbErr != nil {
 		return nil, dbErr
@@ -154,12 +157,13 @@ func getUserDashboards(req *http.Request, databaseID string) ([]Dashboard, error
 	}
 
 	if userRole.CurrUserIsDatabaseAdmin(req, databaseID) {
-		return allDashboards, nil
-	}
-
-	currUserID, userErr := userAuth.GetCurrentUserID(req)
-	if userErr != nil {
-		return nil, fmt.Errorf("getUserDashboards: can't verify user: %v", userErr)
+		sidebarDashboards := []Dashboard{}
+		for _, currDashboard := range allDashboards {
+			if currDashboard.Properties.IncludeInSidebar {
+				sidebarDashboards = append(sidebarDashboards, currDashboard)
+			}
+		}
+		return sidebarDashboards, nil
 	}
 
 	viewableDashboards, privsErr := userRole.GetDashboardsWithUserViewPrivs(trackerDBHandle, databaseID, currUserID)
@@ -170,7 +174,7 @@ func getUserDashboards(req *http.Request, databaseID string) ([]Dashboard, error
 	userDashboards := []Dashboard{}
 	for _, currDashboard := range allDashboards {
 		_, foundPriv := viewableDashboards[currDashboard.DashboardID]
-		if foundPriv {
+		if foundPriv && currDashboard.Properties.IncludeInSidebar {
 			userDashboards = append(userDashboards, currDashboard)
 		}
 	}

@@ -7,6 +7,10 @@
 	  		{{template "dashboardNamePropertyPanel"}}
 	  {{template "propertyPanelSuffix"}}
 
+	  {{template "propertyPanelPrefix" .IncludeInSidebarPanelParams}}
+	  		{{template "adminDashboardIncludeInSidebarProperty"}}
+	  {{template "propertyPanelSuffix"}}
+
 	  {{template "propertyPanelPrefix" .RolePanelParams}}
 	  		{{template "dashboardRolesPropertyPanel"}}
 	  {{template "propertyPanelSuffix"}}

@@ -71,3 +71,15 @@ func (updateParams SetDashboardLayoutParams) updateProps(trackerDBHandle *sql.DB
 
 	return nil
 }
+
+type SetIncludeInSidebarParams struct {
+	DashboardIDHeader
+	IncludeInSidebar bool `json:"includeInSidebar"`
+}
+
+func (updateParams SetIncludeInSidebarParams) updateProps(trackerDBHandle *sql.DB, db *Dashboard) error {
+
+	db.Properties.IncludeInSidebar = updateParams.IncludeInSidebar
+
+	return nil
+}

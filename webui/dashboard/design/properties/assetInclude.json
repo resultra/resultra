@@ -1,3 +1,5 @@
 {
-    "subDirs": ["dashboardName","userRole"]
+    "subDirs": ["dashboardName",
+		"userRole",
+		"includeInSidebar"]
 }

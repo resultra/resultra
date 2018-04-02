@@ -22,6 +22,8 @@ func init() {
 
 	dashboardRouter.HandleFunc("/api/dashboard/deleteComponent", deleteComponentAPI)
 
+	dashboardRouter.HandleFunc("/api/dashboard/setIncludeInSidebar", setIncludeInSidebar)
+
 	dashboardRouter.HandleFunc("/api/dashboard/validateNewDashboardName", validateNewDashboardNameAPI)
 	dashboardRouter.HandleFunc("/api/dashboard/validateDashboardName", validateDashboardNameAPI)
 	dashboardRouter.HandleFunc("/api/dashboard/validateComponentTitle", validateComponentTitleAPI)
@@ -160,6 +162,15 @@ func setNameAPI(w http.ResponseWriter, r *http.Request) {
 
 func setLayoutAPI(w http.ResponseWriter, r *http.Request) {
 	var params SetDashboardLayoutParams
+	if err := api.DecodeJSONRequest(r, &params); err != nil {
+		api.WriteErrorResponse(w, err)
+		return
+	}
+	processDashboardPropUpdate(w, r, params)
+}
+
+func setIncludeInSidebar(w http.ResponseWriter, r *http.Request) {
+	var params SetIncludeInSidebarParams
 	if err := api.DecodeJSONRequest(r, &params); err != nil {
 		api.WriteErrorResponse(w, err)
 		return
