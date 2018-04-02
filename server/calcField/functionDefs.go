@@ -225,6 +225,50 @@ func lessThanEqualEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode
 	return evalTwoNumberArgFunc(evalContext, funcArgs, evalFunc)
 }
 
+const FuncNameAllTrue string = "ALLTRUE"
+
+func allTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	evalFunc := func(args []bool) (*EquationResult, error) {
+
+		if len(args) <= 0 {
+			return boolEqnResult(false), nil
+		}
+
+		for _, arg := range args {
+			if arg == false {
+				return boolEqnResult(false), nil
+			}
+		}
+		return boolEqnResult(true), nil
+	}
+	requireAllDefined := true
+	return evalOneOrMoreBoolArgFunc(evalContext, funcArgs, evalFunc, requireAllDefined)
+
+}
+
+const FuncNameAnyTrue string = "ANYTRUE"
+
+func anyTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	evalFunc := func(args []bool) (*EquationResult, error) {
+
+		if len(args) <= 0 {
+			return boolEqnResult(false), nil
+		}
+
+		for _, arg := range args {
+			if arg == true {
+				return boolEqnResult(true), nil
+			}
+		}
+		return boolEqnResult(false), nil
+	}
+	requireAllDefined := false
+	return evalOneOrMoreBoolArgFunc(evalContext, funcArgs, evalFunc, requireAllDefined)
+
+}
+
 const FuncNameDateAdd string = "DATEADD"
 
 func validDateAddArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {
@@ -513,5 +557,7 @@ var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 	FuncNameIsTrue:   FunctionInfo{FuncNameIsTrue, isTrueEvalFunc, oneBoolArg},
 	FuncNameIsSet:    FunctionInfo{FuncNameIsSet, isSetEvalFunc, anySingleArgBoolResult},
 	FuncNameNot:      FunctionInfo{FuncNameNot, notEvalFunc, oneBoolArg},
+	FuncNameAllTrue:  FunctionInfo{FuncNameAllTrue, allTrueEvalFunc, oneOrMoreBoolArgs},
+	FuncNameAnyTrue:  FunctionInfo{FuncNameAnyTrue, anyTrueEvalFunc, oneOrMoreBoolArgs},
 	FuncNameWhenTrue: FunctionInfo{FuncNameWhenTrue, whenTrueEvalFunc, oneBoolTimeResultArg},
 }
