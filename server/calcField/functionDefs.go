@@ -212,11 +212,50 @@ func greaterThanEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) 
 	return evalTwoNumberArgFunc(evalContext, funcArgs, evalFunc)
 }
 
+const FuncNameGreaterThanEqual string = "GREATERTHANEQUAL"
+
+func greaterThanEqualEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+	evalFunc := func(num1, num2 float64) (*EquationResult, error) {
+		if num1 >= num2 {
+			return boolEqnResult(true), nil
+		} else {
+			return boolEqnResult(false), nil
+		}
+	}
+	return evalTwoNumberArgFunc(evalContext, funcArgs, evalFunc)
+}
+
 const FuncNameLessThanEqual string = "LESSTHANEQUAL"
 
 func lessThanEqualEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
 	evalFunc := func(num1, num2 float64) (*EquationResult, error) {
 		if num1 <= num2 {
+			return boolEqnResult(true), nil
+		} else {
+			return boolEqnResult(false), nil
+		}
+	}
+	return evalTwoNumberArgFunc(evalContext, funcArgs, evalFunc)
+}
+
+const FuncNameLessThan string = "LESSTHAN"
+
+func lessThanEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+	evalFunc := func(num1, num2 float64) (*EquationResult, error) {
+		if num1 < num2 {
+			return boolEqnResult(true), nil
+		} else {
+			return boolEqnResult(false), nil
+		}
+	}
+	return evalTwoNumberArgFunc(evalContext, funcArgs, evalFunc)
+}
+
+const FuncNameEqual string = "EQUAL"
+
+func equalEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+	evalFunc := func(num1, num2 float64) (*EquationResult, error) {
+		if num1 == num2 {
 			return boolEqnResult(true), nil
 		} else {
 			return boolEqnResult(false), nil
@@ -550,8 +589,11 @@ var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 	FuncNameDateAdd:     FunctionInfo{FuncNameDateAdd, dateAddEvalFunc, validDateAddArgs},
 	FuncNameDaysBetween: FunctionInfo{FuncNameDaysBetween, daysBetweenEvalFunc, twoTimeArgsNumberResult},
 
-	FuncNameGreaterThan:   FunctionInfo{FuncNameGreaterThan, greaterThanEvalFunc, twoNumberArgsBooleanResult},
-	FuncNameLessThanEqual: FunctionInfo{FuncNameLessThanEqual, lessThanEqualEvalFunc, twoNumberArgsBooleanResult},
+	FuncNameGreaterThan:      FunctionInfo{FuncNameGreaterThan, greaterThanEvalFunc, twoNumberArgsBooleanResult},
+	FuncNameGreaterThanEqual: FunctionInfo{FuncNameGreaterThanEqual, greaterThanEqualEvalFunc, twoNumberArgsBooleanResult},
+	FuncNameLessThan:         FunctionInfo{FuncNameLessThan, lessThanEvalFunc, twoNumberArgsBooleanResult},
+	FuncNameLessThanEqual:    FunctionInfo{FuncNameLessThanEqual, lessThanEqualEvalFunc, twoNumberArgsBooleanResult},
+	FuncNameEqual:            FunctionInfo{FuncNameEqual, equalEvalFunc, twoNumberArgsBooleanResult},
 
 	FuncNameIf:       FunctionInfo{FuncNameIf, ifEvalFunc, validIfArgs},
 	FuncNameIsTrue:   FunctionInfo{FuncNameIsTrue, isTrueEvalFunc, oneBoolArg},

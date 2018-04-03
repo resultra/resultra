@@ -154,7 +154,10 @@ func evalOneOrMoreBoolArgFunc(evalContext *EqnEvalContext, funcArgs []*EquationN
 		} else if argResult.IsUndefined() {
 			// No-op - undefined results aren't passed along to the function for evaluation
 			if requireAllArgsDefined {
-				return undefinedEqnResult(), nil
+				// TBD - this behavior is expected by the ALLTRUE() function; i.e. if all the arguments
+				// are not defined and return true, then a false value is returned. There might be a cleaner
+				// way to handle this generically for ALLTRUE() and ANYTRUE()
+				return boolEqnResult(false), nil
 			}
 		} else if boolResult, validateErr := argResult.GetBoolResult(); validateErr != nil {
 			return nil, fmt.Errorf("Invalid result found while evaluating argument # %v: arg=%+v, error = %v",
