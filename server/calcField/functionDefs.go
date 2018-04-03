@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"resultra/datasheet/server/field"
+	"resultra/datasheet/server/generic/timestamp"
 	"time"
 )
 
@@ -409,6 +410,15 @@ func createdFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equati
 	return timeEqnResult(evalContext.Record.CreateTimestampUTC), nil
 }
 
+const FuncNameNow = "NOW"
+
+func nowFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
+
+	nowTimestamp := timestamp.CurrentTimestampUTC()
+
+	return timeEqnResult(nowTimestamp), nil
+}
+
 const FuncNameConcat string = "CONCATENATE"
 
 func concatEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*EquationResult, error) {
@@ -573,6 +583,7 @@ var CalcFieldDefinedFuncs = FuncNameFuncInfoMap{
 
 	FuncNameSequenceNum: FunctionInfo{FuncNameSequenceNum, sequenceNumFunc, zeroNumberArgs},
 	FuncNameCreated:     FunctionInfo{FuncNameCreated, createdFunc, zeroTimeArgsTimeResult},
+	FuncNameNow:         FunctionInfo{FuncNameNow, nowFunc, zeroTimeArgsTimeResult},
 
 	FuncNameSum: FunctionInfo{FuncNameSum, sumEvalFunc, oneOrMoreNumberArgs},
 	FuncNameAdd: FunctionInfo{FuncNameAdd, addEvalFunc, twoNumberArgs},
