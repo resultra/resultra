@@ -114,6 +114,9 @@ function timeDefaultValueItem(panelParams,fieldInfo,defaultDefaultValInfo) {
 	var defaultValuesTime = {
 		"currentTime": {
 			label: "Current date and time",
+		}, 
+		"clearValue": {
+			label: "Clear value"
 		}
 	}
 	
@@ -159,11 +162,54 @@ function numberDefaultValueItem(panelParams,fieldInfo,defaultDefaultValInfo) {
 	
 	var $defaultValControls = $('#defaultValueNumberFieldListItem').clone()
 	$defaultValControls.attr("id","")
-
+	
+	var $defaultValNumberValInput = $defaultValControls.find(".defaultValueInput")
+	
+	
+	var defaultValuesNumber = {
+		"specificVal": {
+			label: "Specific value",
+			hasVal: true
+		}, 
+		"clearValue": {
+			label: "Clear value",
+			hasVal:false
+		}
+	}
+	var $defaultValSelection = $defaultValControls.find("select")
+	$defaultValSelection.empty()
+	$defaultValSelection.append(defaultSelectOptionPromptHTML("Select a default value"))
+	for(var defaultValID in defaultValuesNumber) {
+	 	var selectDefaultValHTML = selectOptionHTML(defaultValID, defaultValuesNumber[defaultValID].label)
+	 	$defaultValSelection.append(selectDefaultValHTML)				
+	}
+	
+	function toggleNumberInputForDefaultVal(defaultValID) {
+		var defaultValInfo = defaultValuesNumber[defaultValID]
+		if (defaultValInfo.hasVal) {
+			$defaultValNumberValInput.show()
+		} else {
+			$defaultValNumberValInput.hide()
+		}
+	}	
+	
+	initSelectControlChangeHandler($defaultValSelection,function(defaultValID) {
+		toggleNumberInputForDefaultVal(defaultValID)
+		console.log("Default value selection change: " + defaultValID)
+		updateDefaultValues(panelParams)
+	})
+	
+	
+	// If the control is being configured with an existing/default value,
+	// then initialize the controls accordingly.
 	var $defaultValInput = $defaultValControls.find(".defaultValueInput")
 	if(defaultDefaultValInfo !== null) {
+		$defaultValSelection.val(defaultDefaultValInfo.defaultValueID)
 		$defaultValInput.val(defaultDefaultValInfo.numberVal)
-	}	
+		toggleNumberInputForDefaultVal(defaultDefaultValInfo.defaultValueID)
+	} else {
+		$defaultValInput.hide()
+	}
 	
 		
 	$defaultValInput.blur(function() {
@@ -176,17 +222,126 @@ function numberDefaultValueItem(panelParams,fieldInfo,defaultDefaultValInfo) {
 	var $defaultValListItem = createDefaultValueListItem(panelParams,fieldInfo.name)
 		
 	$defaultValListItem.data("defaultValConfigFunc",function() {
-		var defaultValID = "specificVal"
-		var defaultVal = Number($defaultValInput.val())
-		if(!isNaN(defaultVal)) {
-			var defaultValConfig = { 
-				fieldID: fieldInfo.fieldID,
-				defaultValueID: "specificVal",
-				numberVal: defaultVal }
-			return defaultValConfig	
+		
+		
+		var defaultValID = $defaultValSelection.val()
+		if(defaultValID !== null && defaultValID.length > 0) {
+			var conditions = []
+			
+			var defaultValConfig = { fieldID: fieldInfo.fieldID,
+				defaultValueID: defaultValID }	
+				
+			var defaultValInfo = defaultValuesNumber[defaultValID]
+				if (defaultValInfo.hasVal) {
+					var defaultVal = Number($defaultValInput.val())
+					if(!isNaN(defaultVal)) {
+						defaultValConfig.numberVal = defaultVal
+						return defaultValConfig
+					} else {
+						return null
+					}
+				} else {
+					return defaultValConfig
+				}
 		} else {
 			return null
-		}		
+		}
+	})
+		
+	$defaultValListItem.append($defaultValControls)
+		
+	return $defaultValListItem
+	
+}
+
+function textDefaultValueItem(panelParams,fieldInfo,defaultDefaultValInfo) {
+	
+	var $defaultValControls = $('#defaultValueTextFieldListItem').clone()
+	$defaultValControls.attr("id","")
+	
+	var $defaultValTextValInput = $defaultValControls.find(".defaultValueInput")
+	
+	
+	var defaultValuesText = {
+		"specificVal": {
+			label: "Specific value",
+			hasVal: true
+		}, 
+		"clearValue": {
+			label: "Clear value",
+			hasVal:false
+		}
+	}
+	var $defaultValSelection = $defaultValControls.find("select")
+	$defaultValSelection.empty()
+	$defaultValSelection.append(defaultSelectOptionPromptHTML("Select a default value"))
+	for(var defaultValID in defaultValuesText) {
+	 	var selectDefaultValHTML = selectOptionHTML(defaultValID, defaultValuesText[defaultValID].label)
+	 	$defaultValSelection.append(selectDefaultValHTML)				
+	}
+	
+	function toggleTextInputForDefaultVal(defaultValID) {
+		var defaultValInfo = defaultValuesText[defaultValID]
+		if (defaultValInfo.hasVal) {
+			$defaultValTextValInput.show()
+		} else {
+			$defaultValTextValInput.hide()
+		}
+	}	
+	
+	initSelectControlChangeHandler($defaultValSelection,function(defaultValID) {
+		toggleTextInputForDefaultVal(defaultValID)
+		console.log("Default value selection change: " + defaultValID)
+		updateDefaultValues(panelParams)
+	})
+	
+	
+	// If the control is being configured with an existing/default value,
+	// then initialize the controls accordingly.
+	var $defaultValInput = $defaultValControls.find(".defaultValueInput")
+	if(defaultDefaultValInfo !== null) {
+		$defaultValSelection.val(defaultDefaultValInfo.defaultValueID)
+		$defaultValInput.val(defaultDefaultValInfo.textVal)
+		toggleTextInputForDefaultVal(defaultDefaultValInfo.defaultValueID)
+	} else {
+		$defaultValInput.hide()
+	}
+	
+		
+	$defaultValInput.blur(function() {
+		var defaultVal = $defaultValInput.val()
+		if (defaultVal !== null) {
+			updateDefaultValues(panelParams)
+		}
+	})
+				
+	var $defaultValListItem = createDefaultValueListItem(panelParams,fieldInfo.name)
+		
+	$defaultValListItem.data("defaultValConfigFunc",function() {
+		
+		
+		var defaultValID = $defaultValSelection.val()
+		if(defaultValID !== null && defaultValID.length > 0) {
+			var conditions = []
+			
+			var defaultValConfig = { fieldID: fieldInfo.fieldID,
+				defaultValueID: defaultValID }	
+				
+			var defaultValInfo = defaultValuesText[defaultValID]
+				if (defaultValInfo.hasVal) {
+					var defaultVal = $defaultValInput.val()
+					if(defaultVal !== null) {
+						defaultValConfig.textVal = defaultVal
+						return defaultValConfig
+					} else {
+						return null
+					}
+				} else {
+					return defaultValConfig
+				}
+		} else {
+			return null
+		}
 	})
 		
 	$defaultValListItem.append($defaultValControls)
@@ -202,6 +357,8 @@ function createDefaultValuePanelListItem(panelParams, fieldInfo,defaultValueInfo
 	switch (fieldInfo.type) {
 	case fieldTypeNumber:
 		return numberDefaultValueItem(panelParams, fieldInfo, defaultValueInfo)
+	case fieldTypeText:
+		return textDefaultValueItem(panelParams, fieldInfo, defaultValueInfo)
 	case fieldTypeTime: 
 		return timeDefaultValueItem(panelParams, fieldInfo, defaultValueInfo)
 	case fieldTypeBool: 

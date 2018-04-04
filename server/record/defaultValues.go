@@ -11,10 +11,13 @@ import (
 const defaultValIDTrue string = "true"
 const defaultValIDFalse string = "false"
 
+const defaultValClearValue string = "clearValue"
+
 type DefaultFieldValue struct {
 	FieldID        string   `json:"fieldID"`
 	DefaultValueID string   `json:"defaultValueID"`
 	NumberVal      *float64 `json:"numberVal,omitempty"`
+	TextVal        *string  `json:"textVal,omitempty"`
 }
 
 func (srcDefaultVal DefaultFieldValue) Clone(remappedIDs uniqueID.UniqueIDRemapper) (*DefaultFieldValue, error) {
@@ -88,8 +91,20 @@ func setCurrTimeDefaultValue(trackerDBHandle *sql.DB, currUserID string, recUpda
 	return UpdateRecordValue(trackerDBHandle, currUserID, setValParams)
 }
 
+func clearValueCurrTimeDefaultValue(trackerDBHandle *sql.DB, currUserID string, recUpdateHeader RecordUpdateHeader,
+	defaultVal DefaultFieldValue) (*Record, error) {
+
+	setValParams := SetRecordTimeValueParams{
+		RecordUpdateHeader: recUpdateHeader,
+		Value:              nil}
+
+	return UpdateRecordValue(trackerDBHandle, currUserID, setValParams)
+
+}
+
 var timeFieldDefaultValFuncs = DefaultValIDDefaultValFuncMap{
-	defaultValIDCurrTime: setCurrTimeDefaultValue}
+	defaultValIDCurrTime: setCurrTimeDefaultValue,
+	defaultValClearValue: clearValueCurrTimeDefaultValue}
 
 const defaultValIDSpecificVal string = "specificVal"
 
@@ -107,14 +122,51 @@ func setSpecificNumberValDefaultValue(trackerDBHandle *sql.DB, currUserID string
 	return UpdateRecordValue(trackerDBHandle, currUserID, setValParams)
 }
 
+func clearNumberValDefaultValue(trackerDBHandle *sql.DB, currUserID string, recUpdateHeader RecordUpdateHeader,
+	defaultVal DefaultFieldValue) (*Record, error) {
+
+	setValParams := SetRecordNumberValueParams{
+		RecordUpdateHeader: recUpdateHeader,
+		Value:              nil}
+
+	return UpdateRecordValue(trackerDBHandle, currUserID, setValParams)
+}
+
 var numFieldDefaultValFuncs = DefaultValIDDefaultValFuncMap{
-	defaultValIDSpecificVal: setSpecificNumberValDefaultValue}
+	defaultValIDSpecificVal: setSpecificNumberValDefaultValue,
+	defaultValClearValue:    clearNumberValDefaultValue}
+
+func clearTextValDefaultValue(trackerDBHandle *sql.DB, currUserID string, recUpdateHeader RecordUpdateHeader,
+	defaultVal DefaultFieldValue) (*Record, error) {
+
+	setValParams := SetRecordTextValueParams{
+		RecordUpdateHeader: recUpdateHeader,
+		Value:              nil}
+
+	return UpdateRecordValue(trackerDBHandle, currUserID, setValParams)
+}
+
+func setSpecificTextValDefaultValue(trackerDBHandle *sql.DB, currUserID string, recUpdateHeader RecordUpdateHeader,
+	defaultVal DefaultFieldValue) (*Record, error) {
+
+	if defaultVal.TextVal == nil {
+		return nil, fmt.Errorf("setSpecificNumberValDefaultValue: missing default value")
+	}
+
+	setValParams := SetRecordTextValueParams{
+		RecordUpdateHeader: recUpdateHeader,
+		Value:              defaultVal.TextVal}
+
+	return UpdateRecordValue(trackerDBHandle, currUserID, setValParams)
+}
+
+var textFieldDefaultValFuncs = DefaultValIDDefaultValFuncMap{
+	defaultValIDSpecificVal: setSpecificTextValDefaultValue,
+	defaultValClearValue:    clearTextValDefaultValue}
 
 // Get the rule definition based upon the field type
 func getDefaultValFuncByFieldType(fieldType string, defaultVal DefaultFieldValue) (SetDefaultValFunc, error) {
 	switch fieldType {
-	// TODO	case field.FieldTypeText:
-	// TODO		case field.FieldTypeNumber:
 	case field.FieldTypeBool:
 		defaultValFunc, funcFound := boolFieldDefaultValFuncs[defaultVal.DefaultValueID]
 		if !funcFound {
@@ -137,6 +189,16 @@ func getDefaultValFuncByFieldType(fieldType string, defaultVal DefaultFieldValue
 		}
 	case field.FieldTypeNumber:
 		defaultValFunc, funcFound := numFieldDefaultValFuncs[defaultVal.DefaultValueID]
+		if !funcFound {
+			return nil, fmt.Errorf(
+				`getRuleDefByFieldType: Failed to retrieve function to set default value function for field type = %v, 
+					unrecognized default value ID = %v`,
+				fieldType, defaultVal.DefaultValueID)
+		} else {
+			return defaultValFunc, nil
+		}
+	case field.FieldTypeText:
+		defaultValFunc, funcFound := textFieldDefaultValFuncs[defaultVal.DefaultValueID]
 		if !funcFound {
 			return nil, fmt.Errorf(
 				`getRuleDefByFieldType: Failed to retrieve function to set default value function for field type = %v, 
