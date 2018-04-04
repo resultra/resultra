@@ -106,7 +106,9 @@ func evalOneOrMoreNumberArgFunc(evalContext *EqnEvalContext, funcArgs []*Equatio
 			return nil, fmt.Errorf("Error evaluating argument # %v: arg=%+v, error %v",
 				argIndex, argEqn, argErr)
 		} else if argResult.IsUndefined() {
-			// No-op - undefined results aren't passed along to the function for evaluation
+			// If any of the arguments are undefined, then the entire result is undefined.
+			// If another behavior is needed, then an explicit default value is needed.
+			return undefinedEqnResult(), nil
 		} else if numberResult, validateErr := argResult.GetNumberResult(); validateErr != nil {
 			return nil, fmt.Errorf("Invalid result found while evaluating argument # %v: arg=%+v, error = %v",
 				argIndex, argEqn, validateErr)
