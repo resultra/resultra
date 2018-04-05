@@ -83,7 +83,10 @@ function setFormButtonLabel($container,buttonRef) {
 		"zoom":"glyphicon glyphicon-zoom-in",
 		"time":"glyphicon glyphicon-time",
 		"cog":"glyphicon glyphicon-cog",
-		"calculator":"fa fa-calculator"
+		"calculator":"fa fa-calculator",
+		"calendar":"glyphicon glyphicon-calendar",
+		"flag":"glyphicon glyphicon-flag",
+		"user":"glyphicon glyphicon-user"
 	}
 	
 	function setButtonLabel(buttonLabel) {
