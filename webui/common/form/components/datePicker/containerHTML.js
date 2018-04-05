@@ -74,7 +74,7 @@ function initDatePickerFormComponentInput($datePickerContainer, datePickerRef) {
 		format: momentFormat, // moment format - time will be displayed if the format includes a time component
 		showTodayButton: true, // show the today button as a default
 		keepOpen: false, // keep the popup open after selecting a date
-	    daysOfWeekDisabled: [0,6], // Disable weekends
+	    daysOfWeekDisabled: [], // TODO - Support disabling of certain days in the properties [0,6] Disable weekends
 		showClear:true, // Show the button to clear the date (trash icon)
 		sideBySide: false, // When editing both date and time, show the time side-by-side with the date.
 		inline: false, // Display the date & time picker inline without the need to of an input field
