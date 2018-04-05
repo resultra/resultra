@@ -10,6 +10,9 @@ function inlineCKEditorEnabled($editorContainer) {
 
 function disableInlineCKEditor($editorContainer,editor) {
 	editor.destroy()
+	var rawHTML = $editorContainer.html()
+	var formattedHTML = formatInlineContentHTMLDisplay(rawHTML)
+	$editorContainer.html(formattedHTML)
 	$editorContainer.attr("contenteditable","false")
 }
 

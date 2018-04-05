@@ -14,7 +14,7 @@ function initTrackerDescriptionPropertyPanel(trackerDatabaseInfo) {
 		
 	}
 	
-	$descInput.html(trackerDatabaseInfo.description)
+	$descInput.html(formatInlineContentHTMLDisplay(trackerDatabaseInfo.description))
 	
 	$descInput.dblclick(function() {
 		if (!inlineCKEditorEnabled($descInput)) {
