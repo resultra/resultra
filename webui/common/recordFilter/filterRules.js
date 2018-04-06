@@ -464,6 +464,9 @@ function singleParamFilterPanelRuleItem(panelParams,fieldInfo,defaultRuleInfo,fi
 		var ruleInfo = filterRules[defaultRuleInfo.ruleID]
 		$ruleSelection.val(defaultRuleInfo.ruleID)
 		if (ruleInfo.hasParam) {
+			var ruleConditions = mapRuleConditionsByOperatorID(defaultRuleInfo)
+			var textParam = ruleConditions[defaultRuleInfo.ruleID].textParam
+			$ruleParam.val(textParam)
 			$ruleParam.show()
 		} else {
 			$ruleParam.hide()
