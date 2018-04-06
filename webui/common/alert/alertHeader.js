@@ -65,25 +65,33 @@ function initAlertHeader(databaseID,seeAllAlertsCallback) {
 		
 			var $alertList = $header.find("ul")
 			$alertList.empty()
-			var maxNotificationDisplay = 5
-			for(var notificationIndex = 0; 
-				(notificationIndex < notificationList.notifications.length) && (notificationIndex < maxNotificationDisplay);
-				notificationIndex++) {
-				$alertList.append(createAlertListItem(notificationIndex))
+			
+			if(notificationList.notifications !== undefined && notificationList.notifications.length > 0) {
+				var maxNotificationDisplay = 5
+				for(var notificationIndex = 0; 
+					(notificationIndex < notificationList.notifications.length) && (notificationIndex < maxNotificationDisplay);
+					notificationIndex++) {
+					$alertList.append(createAlertListItem(notificationIndex))
+				}
+			
+				var $sellAllListItem = $('<li><a>See all alerts</a></li>')
+				var seeAllUrl = "/alerts/" + databaseID
+				var $seeAllLink = $sellAllListItem.find("a")
+				$alertList.append($sellAllListItem)
+		
+				$seeAllLink.click(function(e) {
+					e.preventDefault()
+					clearAlertCount()
+					if(seeAllAlertsCallback !== undefined) {
+						seeAllAlertsCallback()
+					}
+				})
+				
+			} else {
+				const $noAlertsListItem = $('<li><a>No alerts</a></li>')
+				$alertList.append($noAlertsListItem)
 			}
 			
-			var $sellAllListItem = $('<li><a>See all alerts</a></li>')
-			var seeAllUrl = "/alerts/" + databaseID
-			var $seeAllLink = $sellAllListItem.find("a")
-			$alertList.append($sellAllListItem)
-		
-			$seeAllLink.click(function(e) {
-				e.preventDefault()
-				clearAlertCount()
-				if(seeAllAlertsCallback !== undefined) {
-					seeAllAlertsCallback()
-				}
-			})
 		
 			initAlertCountBadge()
 		
