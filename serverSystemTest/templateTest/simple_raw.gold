@@ -14,7 +14,7 @@ TABLE COL->|UNIQUEID0015|UNIQUEID0016|{"fieldID":"UNIQUEID0002","valueFormat":{"
 TABLE COL->|UNIQUEID0015|UNIQUEID0017|{"fieldID":"UNIQUEID0004","dateFormat":"date","labelFormat":{"labelType":"field","customLabel":""},"permissions":{"permissionMode":"readWrite"},"validation":{"rule":"required"},"clearValueSupported":false,"helpPopupMsg":"","conditionalFormats":[]}|datePicker
 TABLE COL->|UNIQUEID0015|UNIQUEID0018|{"fieldID":"UNIQUEID0005","colorScheme":"default","strikethroughCompleted":false,"labelFormat":{"labelType":"field","customLabel":""},"permissions":{"permissionMode":"readWrite"},"validation":{"valueRequired":true},"clearValueSupported":false,"helpPopupMsg":""}|checkbox
 -----------------------------------------
-DASHBOARD->|UNIQUEID0001|UNIQUEID0013|Dashboard A|1|{"layout":[{"columns":[{"componentIDs":["UNIQUEID0014"]}]}]}
+DASHBOARD->|UNIQUEID0001|UNIQUEID0013|Dashboard A|1|{"layout":[{"columns":[{"componentIDs":["UNIQUEID0014"]}]}],"includeInSidebar":true}
 -----------------------------------------
 LIST->|UNIQUEID0019|UNIQUEID0001|List A|1|{"defaultRecordSortRules":[],"defaultFilterRules":{"matchLogic":"all","filterRules":[]},"defaultFilterFields":[],"defaultSortFields":[],"preFilterRules":{"matchLogic":"all","filterRules":[]},"defaultView":{"formID":"UNIQUEID0007","pageSize":5},"alternateViews":[],"includeInSidebar":true}
 -----------------------------------------
