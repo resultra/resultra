@@ -16,6 +16,9 @@ webui/thirdParty/node_modules/*
 electronClient/node_modules/*
 electronClient/dist/*
 
+# Factory templates which are built from individual templates
+electronClient/factoryTemplates/trackers.db
+
 # Executable files
 serverMain/datasheetServer
 serverMain/resultraLocalBackend
