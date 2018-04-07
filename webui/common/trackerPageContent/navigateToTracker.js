@@ -49,7 +49,7 @@ function navigateToTracker(pageContext,trackerInfo) {
 			}
 			setMainWindowPageContent(contentConfig,function() {
 				var contentLayout = new DashboardContentLayout()
-				theMainWindowLayout.showRHSSidebar()
+					
 				loadDashboardView(contentLayout,databaseID, dashboardID)
 				
 				$('#tocWrapper').find("li").removeClass("active")	

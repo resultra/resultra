@@ -6,18 +6,15 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 	hideSiblingsShowOne('#dashboardViewSidebarProps')
 	hideSiblingsShowOne('#dashboardCanvas')
 	
+	// Initially hide the RHS sidebar. The sidebar is only shown when individual components are selected.
+	theMainWindowLayout.hideRHSSidebar()
+	
 
 	var viewDashboardCanvasSelector = '#dashboardCanvas'
-	
-//	pageLayout.enablePropertySidebar()
-//	pageLayout.disablePropertyPanelToggleButton()
 		
-
 	viewDashboardContext = { 
 				dashboardID:dashboardID,
-		 		databaseID: databaseID} 
-				
-				
+		 		databaseID: databaseID} 			
 	
 	var getDashboardParams = { dashboardID: dashboardID }	
 
@@ -34,8 +31,7 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 			console.log("dashboard view object selected: " + selectedComponentID)
 			var selectedObjRef	= getContainerObjectRef($component)
 			viewDashboardConfig.selectionFunc($component,selectedObjRef)
-	//		pageLayout.enablePropertyPanelToggleButton()
-	//		pageLayout.openPropertyPanel()
+			theMainWindowLayout.openRHSSidebar()
 		})
 	}		
 
@@ -44,8 +40,8 @@ function loadDashboardView(pageLayout,databaseID, dashboardID) {
 		doneLoadingDashboardDataFunc: function() {
 
 			initObjectCanvasSelectionBehavior(viewDashboardCanvasSelector, function() {
-		//		pageLayout.disablePropertyPanelToggleButton()
-		//		pageLayout.closePropertyPanel()
+				// Hide the RHS sidebar when the main canvas of the dashboard is selected.
+				theMainWindowLayout.hideRHSSidebar()
 			})
 
 
