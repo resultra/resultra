@@ -3,16 +3,13 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	
 	function setGeneralSettingsPage() {
 		const contentURL = '/admin/general/' + pageContext.databaseID
-	
 		setSettingsPageContent(contentURL,function() {
 				initGeneralAdminPageContent(pageContext.databaseID)
 		});
-		
 	}
 	
 	function setFormsSettingsPage() {
 		const contentURL = '/admin/forms/' + pageContext.databaseID
-	
 		setSettingsPageContent(contentURL,function() {
 				initFormListAdminPage(pageContext)
 		});
@@ -24,11 +21,9 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 
 	function setFormLinksSettingsPage() {
 		const contentURL = '/admin/formlink/' + pageContext.databaseID
-	
 		setSettingsPageContent(contentURL,function() {
 				initFormLinkSettingsPage(pageContext)
 		});
-		
 	}
 	registerPageContentLoader("formLinks",'/admin/formlink/' + pageContext.databaseID,function() {
 		initFormLinkSettingsPage(pageContext)
@@ -37,11 +32,9 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 
 	function setTableListSettingsPage() {
 		const contentURL = '/admin/tables/' + pageContext.databaseID
-	
 		setSettingsPageContent(contentURL,function() {
 				initTableListAdminPageContent(pageContext)
 		});
-		
 	}
 	registerPageContentLoader("tables",'/admin/tables/' + pageContext.databaseID,function() {
 		initTableListAdminPageContent(pageContext)
@@ -51,11 +44,9 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	
 	function setItemListSettingsPage() {
 		const contentURL = '/admin/lists/' + pageContext.databaseID
-	
 		setSettingsPageContent(contentURL,function() {
 				initItemListAdminSettingsPage(pageContext)			
 		})
-			
 	}
 	registerPageContentLoader("lists",'/admin/lists/' + pageContext.databaseID,function() {
 		initItemListAdminSettingsPage(pageContext)
@@ -67,23 +58,19 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	}
 	registerPageContentLoader("fields", '/admin/fields/mainContent/' + pageContext.databaseID,function() {
 		initFieldsSettingsPageContent(pageContext)
-		
 		// TODO - Migrate registration code to use the same navigateToFieldListSettingsPage() function.
 		const offPageContentURL = '/admin/fields/offPageContent'
 		setSettingsPageOffPageContent(offPageContentURL,function() {
 		})
-		
 	})
 
 
 
 	function setValueListsSettingsPage() {
 		const contentURL = '/admin/valuelists/' + pageContext.databaseID
-	
 		setSettingsPageContent(contentURL,function() {
 				initValueListAdminSettingsPageContent(pageContext)
 		});
-		
 	}
 	registerPageContentLoader("valueLists",'/admin/valuelists/' + pageContext.databaseID,function() {
 		initValueListAdminSettingsPageContent(pageContext)
@@ -91,11 +78,9 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	
 	function setDashboardsSettingsPage() {
 		const contentURL = '/admin/dashboards/' + pageContext.databaseID
-	
 		setSettingsPageContent(contentURL,function() {
 				initDashboardsAdminSettingsPageContent(pageContext)
 		});
-		
 	}
 	registerPageContentLoader("dashboards",'/admin/dashboards/' + pageContext.databaseID,function() {
 		initDashboardsAdminSettingsPageContent(pageContext)
@@ -104,11 +89,9 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	
 	function setAlertsSettingsPage() {
 		const contentURL = '/admin/alerts/' + pageContext.databaseID
-	
 		setSettingsPageContent(contentURL,function() {
 				initAlertListAdminSettingsPageContent(pageContext)
 		});
-		
 	}
 	registerPageContentLoader("alerts",'/admin/alerts/' + pageContext.databaseID,function() {
 		initAlertListAdminSettingsPageContent(pageContext)
@@ -117,11 +100,9 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 
 	function setRolesSettingsPage() {
 		const contentURL = '/admin/roles/' + pageContext.databaseID
-	
 		setSettingsPageContent(contentURL,function() {
 				initUserRoleAdminSettingsPageContent(pageContext)
 		});
-		
 	}
 	registerPageContentLoader("roles",'/admin/roles/' + pageContext.databaseID,function() {
 		initUserRoleAdminSettingsPageContent(pageContext)
@@ -130,11 +111,9 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	
 	function setCollaboratorsSettingsPage() {
 		const contentURL = '/admin/collaborators/' + pageContext.databaseID
-	
 		setSettingsPageContent(contentURL,function() {
 				initCollaboratorsSettingsPageContent(pageContext)
 		});
-		
 	}
 	registerPageContentLoader("collaborators",'/admin/collaborators/' + pageContext.databaseID,function() {
 		initCollaboratorsSettingsPageContent(pageContext)
@@ -143,11 +122,9 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	
 	function setGlobalsSettingsPage() {
 		const contentURL = '/admin/globals/' + pageContext.databaseID
-	
 		setSettingsPageContent(contentURL,function() {
 				initGlobalSettingsPageContent(pageContext)
 		});
-		
 	}
 	
 
