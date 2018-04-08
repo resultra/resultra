@@ -99,6 +99,17 @@ function MainWindowLayout()
 	function rhsSidebarIsOpen() {
 		return (!mainLayout.state.east.isClosed)
 	}
+	
+	// There's an issue with the form & dashboard designers, whereby using
+	// drag & drop with the form designer will explicitely set the z-index
+	// of items in the layout. Therefore, it is necessary to clear any explicit
+	// z-index values from the layout when transitioning page content from
+	// the form or dashboard designer.
+	function resetZIndices() {
+		var $layout = $('#layoutPage')
+		$layout.css("z-index","")
+		$layout.find("div").css("z-index","")
+	}
 
 		
 	this.closeRHSSidebar = closeRHSSidebar
@@ -113,5 +124,6 @@ function MainWindowLayout()
 	this.disableLHSSidebar = disableLHSSidebar
 	this.disableRHSSidebar = disableRHSSidebar
 	this.rhsSidebarIsOpen = rhsSidebarIsOpen
+	this.resetZIndices = resetZIndices
 		
 }

@@ -8,6 +8,9 @@ function getMainWindowLinkIDAnchorName() {
 
 
 function setMainWindowContent(contentURL, initContentCallback) {
+	
+	theMainWindowLayout.resetZIndices()
+	
 	jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 	        $('#mainWindowContent').html(pageContentData);
 			initContentCallback()
@@ -77,6 +80,8 @@ function navigateToMainWindowContent(linkID) {
 function setMainWindowPageContent(contentConfig,initDoneCallback) {
 	
 	var contentSections = []
+	
+	
 	
 	var numContentSections = 0
 	

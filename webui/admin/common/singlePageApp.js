@@ -1,4 +1,7 @@
 function setSettingsPageContent(contentURL, initContentCallback) {
+	
+	theMainWindowLayout.resetZIndices()
+	
 	jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
 	        $('#contentPageSection').html(pageContentData);
 			initContentCallback()
