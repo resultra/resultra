@@ -4,8 +4,7 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	function setGeneralSettingsPage() {
 		const contentURL = '/admin/general/' + pageContext.databaseID
 	
-		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
-		        $('#contentPageSection').html(pageContentData);
+		setSettingsPageContent(contentURL,function() {
 				initGeneralAdminPageContent(pageContext.databaseID)
 		});
 		
@@ -14,8 +13,7 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	function setFormsSettingsPage() {
 		const contentURL = '/admin/forms/' + pageContext.databaseID
 	
-		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
-		        $('#contentPageSection').html(pageContentData);
+		setSettingsPageContent(contentURL,function() {
 				initFormListAdminPage(pageContext)
 		});
 		
@@ -27,8 +25,7 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	function setFormLinksSettingsPage() {
 		const contentURL = '/admin/formlink/' + pageContext.databaseID
 	
-		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
-		        $('#contentPageSection').html(pageContentData);
+		setSettingsPageContent(contentURL,function() {
 				initFormLinkSettingsPage(pageContext)
 		});
 		
@@ -41,8 +38,7 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	function setTableListSettingsPage() {
 		const contentURL = '/admin/tables/' + pageContext.databaseID
 	
-		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
-		        $('#contentPageSection').html(pageContentData);
+		setSettingsPageContent(contentURL,function() {
 				initTableListAdminPageContent(pageContext)
 		});
 		
@@ -56,11 +52,10 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	function setItemListSettingsPage() {
 		const contentURL = '/admin/lists/' + pageContext.databaseID
 	
-		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
-		        $('#contentPageSection').html(pageContentData);
-				initItemListAdminSettingsPage(pageContext)
-		});
-		
+		setSettingsPageContent(contentURL,function() {
+				initItemListAdminSettingsPage(pageContext)			
+		})
+			
 	}
 	registerPageContentLoader("lists",'/admin/lists/' + pageContext.databaseID,function() {
 		initItemListAdminSettingsPage(pageContext)
@@ -85,8 +80,7 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	function setValueListsSettingsPage() {
 		const contentURL = '/admin/valuelists/' + pageContext.databaseID
 	
-		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
-		        $('#contentPageSection').html(pageContentData);
+		setSettingsPageContent(contentURL,function() {
 				initValueListAdminSettingsPageContent(pageContext)
 		});
 		
@@ -98,8 +92,7 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	function setDashboardsSettingsPage() {
 		const contentURL = '/admin/dashboards/' + pageContext.databaseID
 	
-		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
-		        $('#contentPageSection').html(pageContentData);
+		setSettingsPageContent(contentURL,function() {
 				initDashboardsAdminSettingsPageContent(pageContext)
 		});
 		
@@ -112,8 +105,7 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	function setAlertsSettingsPage() {
 		const contentURL = '/admin/alerts/' + pageContext.databaseID
 	
-		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
-		        $('#contentPageSection').html(pageContentData);
+		setSettingsPageContent(contentURL,function() {
 				initAlertListAdminSettingsPageContent(pageContext)
 		});
 		
@@ -126,8 +118,7 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	function setRolesSettingsPage() {
 		const contentURL = '/admin/roles/' + pageContext.databaseID
 	
-		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
-		        $('#contentPageSection').html(pageContentData);
+		setSettingsPageContent(contentURL,function() {
 				initUserRoleAdminSettingsPageContent(pageContext)
 		});
 		
@@ -140,8 +131,7 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	function setCollaboratorsSettingsPage() {
 		const contentURL = '/admin/collaborators/' + pageContext.databaseID
 	
-		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
-		        $('#contentPageSection').html(pageContentData);
+		setSettingsPageContent(contentURL,function() {
 				initCollaboratorsSettingsPageContent(pageContext)
 		});
 		
@@ -154,8 +144,7 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	function setGlobalsSettingsPage() {
 		const contentURL = '/admin/globals/' + pageContext.databaseID
 	
-		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
-		        $('#contentPageSection').html(pageContentData);
+		setSettingsPageContent(contentURL,function() {
 				initGlobalSettingsPageContent(pageContext)
 		});
 		
