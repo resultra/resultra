@@ -91,3 +91,17 @@ func fieldListAdminPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func fieldListOffpageContent(w http.ResponseWriter, r *http.Request) {
+
+	_, authErr := userAuth.GetCurrentUserInfo(r)
+	if authErr != nil {
+		http.Error(w, authErr.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := fieldListTemplates.ExecuteTemplate(w, "fieldAdminPageOffpageContent", nil); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+}

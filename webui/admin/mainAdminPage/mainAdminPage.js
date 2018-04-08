@@ -68,16 +68,16 @@ function initTrackerAdminPageContent(pageContext,trackerInfo) {
 	
 	
 	function setFieldListSettingsPage() {
-		const contentURL = '/admin/fields/' + pageContext.databaseID
-	
-		jQuery.get(contentURL, function(pageContentData) { // Perform AJAX GET request
-		        $('#contentPageSection').html(pageContentData);
-				initFieldsSettingsPageContent(pageContext)
-		});
-		
+		navigateToFieldListSettingsPage(pageContext)	
 	}
-	registerPageContentLoader("fields", '/admin/fields/' + pageContext.databaseID,function() {
+	registerPageContentLoader("fields", '/admin/fields/mainContent/' + pageContext.databaseID,function() {
 		initFieldsSettingsPageContent(pageContext)
+		
+		// TODO - Migrate registration code to use the same navigateToFieldListSettingsPage() function.
+		const offPageContentURL = '/admin/fields/offPageContent'
+		setSettingsPageOffPageContent(offPageContentURL,function() {
+		})
+		
 	})
 
 

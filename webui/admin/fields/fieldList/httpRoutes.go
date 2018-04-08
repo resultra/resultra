@@ -5,5 +5,7 @@ import (
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {
-	mainRouter.HandleFunc("/admin/fields/{databaseID}", fieldListAdminPage)
+	mainRouter.HandleFunc("/admin/fields/mainContent/{databaseID}", fieldListAdminPage)
+	mainRouter.HandleFunc("/admin/fields/offPageContent", fieldListOffpageContent)
+
 }
