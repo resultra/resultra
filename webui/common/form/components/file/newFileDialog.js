@@ -33,6 +33,7 @@ function openNewFileDialog(databaseID,formID,containerParams)
 		databaseID: databaseID,
 		formID: formID,
 		fieldTypes: [fieldTypeFile],
+		hideCreateCalcFieldCheckbox: true,
 		containerParams: containerParams,
 		createNewFormComponent: createNewFile
 	}

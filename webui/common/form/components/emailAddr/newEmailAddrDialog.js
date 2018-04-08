@@ -32,6 +32,7 @@ function openNewEmailAddrDialog(databaseID,formID,containerParams)
 		elemPrefix: "emailAddr_",
 		databaseID: databaseID,
 		formID: formID,
+		hideCreateCalcFieldCheckbox: true,
 		fieldTypes: [fieldTypeEmail],
 		containerParams: containerParams,
 		createNewFormComponent: createNewEmailAddr
