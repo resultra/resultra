@@ -15,7 +15,7 @@ clean:
 # added, it can be merged/assembled into the factory template database using the commands below. 
 assembleFactoryTemplateDB:
 	$(RM) $(DEST_FACTORY_TEMPLATE_DB)
-	$(EXPORT_TEMPLATE) --sourcedb ./lightWeightCRM.db --source-tracker-db-id gMCAnMPex7wG --destdb $(DEST_FACTORY_TEMPLATE_DB)
+	$(EXPORT_TEMPLATE) --sourcedb ./lightweightCRM.db --source-tracker-db-id gMCAnMPex7wG --destdb $(DEST_FACTORY_TEMPLATE_DB)
 	$(EXPORT_TEMPLATE) --sourcedb ./contentMarketing.db --source-tracker-db-id gMCA7MDYybwG --destdb $(DEST_FACTORY_TEMPLATE_DB)
 	$(EXPORT_TEMPLATE) --sourcedb ./scrum.db --source-tracker-db-id gMCAwJrW0LwG --destdb $(DEST_FACTORY_TEMPLATE_DB)
 	$(EXPORT_TEMPLATE) --sourcedb ./starter.db --source-tracker-db-id gMCA5Lrm07wG --destdb $(DEST_FACTORY_TEMPLATE_DB)
