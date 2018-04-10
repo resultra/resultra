@@ -42,7 +42,8 @@ function MainWindowLayout()
 			spacing_closed:0,
 			initClosed:true,
 			fxName: "none"
-		}
+		},
+		north_showOverflowOnHover: true
 	})
 
 		
@@ -109,6 +110,8 @@ function MainWindowLayout()
 		var $layout = $('#layoutPage')
 		$layout.css("z-index","")
 		$layout.find("div").css("z-index","")
+		mainLayout.allowOverflow("north")
+		$layout.find(".ui-layout-north").css("z-index","50")
 	}
 
 		
