@@ -51,14 +51,32 @@ function initMyTemplateList() {
 	initCheckboxControlChangeHandler($showInactiveCheckbox, false, function(includeInactive) {
 		reloadTemplateList(includeInactive)
 	})
-
+	
+	var $backToTrackersButton = $('#backToTrackersButton')
+	$backToTrackersButton.click(function() {
+		navigateToMainWindowContent("workspaceHome")
+	})
 	
 }
 
-$(document).ready(function() {	
-	
-	initUserDropdownMenu(templatePageContext.isSingleUserWorkspace)
-	
+function initTemplatePageSignedInPageContent() {	
 	initMyTemplateList()
+}
+
+function navigateToTemplatesPage() {
+	
+	theMainWindowLayout.disableRHSSidebar()
+	theMainWindowLayout.disableLHSSidebar()
+	clearMainWindowHeaderButtonsContent()
+	resetWorkspaceBreadcrumbHeader()
 		
-}); // document ready
+	setMainWindowContent('/templatePage/mainContent',function() {
+		initTemplatePageSignedInPageContent()
+	})
+		
+	setMainWindowOffPageContent('/templatePage/offPageContent',function() {
+	})
+	
+	
+	
+}

@@ -29,6 +29,7 @@ func init() {
 	itemView.RegisterHTTPHandlers(router)
 	designDashboard.RegisterHTTPHandlers(router)
 	homePage.RegisterHTTPHandlers(router)
+	templatePage.RegisterHTTPHandlers(router)
 	admin.RegisterHTTPHandlers(router)
 	formPage.RegisterHTTPHandlers(router)
 	mainWindow.RegisterHTTPHandlers(router)

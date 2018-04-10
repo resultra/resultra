@@ -1,16 +1,7 @@
-#templatePageHeader {
-	padding-top:5px;
-}
 
 #templatePageContent {
-	padding-left: 10px;
+	padding-left: 30px;
 	padding-right:10px;
-}
-
-#templatePageHeaderBodySep {
-	margin-top:5px;
-	margin-bottom:5px;
-	border-top: 2px solid darkgray;
 }
 
 span.disabledTemplateName {

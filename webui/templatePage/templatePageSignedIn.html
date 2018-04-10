@@ -1,58 +1,6 @@
-{{define "templatePageBreadcrumbHeader"}}
-	<div class="marginTop2">
-	  {{template "homePageBreadcrumb"}}
-	  {{template "breadCrumbSeparator"}}
-	  <span class="h4 breadCrumbText">Templates</span>
-	</div> <!-- breadcrumb header -->
-{{end}}
-
-{{define "templatePageHeader"}}
-	<div class="container-fluid" id="templatePageHeader">
-		<div class="row">
-			<div class="col-sm-8">
-				{{template "templatePageBreadcrumbHeader" .}}
-			</div>
-			<div class="col-sm-4">
-				<div class="pull-right">
-					{{template "userDropdownMenu"}}
-				</div>
-			</div>
-		</div>
-	</div>
-{{end}}
-
 
 {{define "templatePageSignedIn"}}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{.Title}}</title>
-
-	{{template "electronImportPrefix"}}
-
-	
-	{{template "thirdPartyCSS"}}
-	
-	<!-- templatePageSignedInAssets:css -->
-	<!-- endinject -->
-	
-	<script>var templatePageContext = {
-		isSingleUserWorkspace: {{.IsSingleUserWorkspace}} } 
-	</script>
-	
-	
-	{{template "thirdPartyJS"}}
-	
-	<!-- templatePageSignedInAssets:js -->
-	<!-- endinject -->
-			
-  </head>
-  <body>
-	  
-	  {{template "templatePageHeader"}}
-	  
-	  <hr id="templatePageHeaderBodySep">
-	  
+  
 	  <div id="templatePageContent">
 		  
 		  <div style="display:none;">
@@ -71,13 +19,11 @@
 	
 		  </div>
 		  
-
-			<h4>My Templates</h4>
+		  
+			<h3>My Templates</h3>
 				<ul id="myTemplateList" class="list-group maxWidth400">
 			</ul>
 		
-			<a href="/" id="viewTemplatesButton">View my trackers</a>
-
 			<form id="showInactiveTemplatesForm">
 				  <div class="form-group">
 				      <div class="checkbox">
@@ -86,12 +32,18 @@
 				      </div>
 				   </div>
 			</form>
+			
+  		  <button type="button" class="btn btn-default btn-sm marginTop10" id="backToTrackersButton">
+  		    <span class="fa fa-arrow-left" aria-hidden="true"></span> Back to trackers
+  		  </button>
+			
 
 
 	  </div>
 	  
-	  {{template "templatePropertiesDialog"}}
 	  
-  </body>
-</html>
+{{end}}
+
+{{define "templatePageOffPageContent"}}
+	  {{template "templatePropertiesDialog"}}
 {{end}}

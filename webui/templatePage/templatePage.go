@@ -28,16 +28,17 @@ func init() {
 	homePageTemplates = generic.ParseTemplatesFromFileLists(templateFileLists)
 }
 
-func RegisterHTTPHandlers(mainRouter *mux.Router) {
-	mainRouter.HandleFunc("/templates", home)
-}
-
 type PageInfo struct {
 	Title                 string `json:"title"`
 	IsSingleUserWorkspace bool
 }
 
-func home(respWriter http.ResponseWriter, req *http.Request) {
+func RegisterHTTPHandlers(mainRouter *mux.Router) {
+	mainRouter.HandleFunc("/templatePage/mainContent", templatePageMainContent)
+	mainRouter.HandleFunc("/templatePage/offPageContent", templatePageOffPageContent)
+}
+
+func templatePageMainContent(respWriter http.ResponseWriter, req *http.Request) {
 
 	_, authErr := userAuth.GetCurrentUserInfo(req)
 	if authErr != nil {
@@ -56,6 +57,19 @@ func home(respWriter http.ResponseWriter, req *http.Request) {
 			http.Error(respWriter, err.Error(), http.StatusInternalServerError)
 		}
 
+	}
+
+}
+
+type OffPageContentTemplParams struct{}
+
+func templatePageOffPageContent(respWriter http.ResponseWriter, req *http.Request) {
+
+	templParams := OffPageContentTemplParams{}
+	err := homePageTemplates.ExecuteTemplate(respWriter, "templatePageOffPageContent", templParams)
+	if err != nil {
+		http.Error(respWriter, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 }

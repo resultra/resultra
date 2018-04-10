@@ -4,19 +4,6 @@ $(document).ready(function() {
 	 
 	initMainWindowLayout()
 	
-	function loadWorkspaceHomePageContent() {
-		theMainWindowLayout.disableRHSSidebar()
-		theMainWindowLayout.disableLHSSidebar()
-		clearMainWindowHeaderButtonsContent()
-		resetWorkspaceBreadcrumbHeader()
-		
-		setMainWindowContent('/homePage',function() {
-			initHomePageSignedInPageContent(mainWindowContext)
-		})
-		
-		setMainWindowOffPageContent('/homePage/offPageContent',function() {
-		})
-	}
 	
 	function loadSettingsPageContent() {
 		theMainWindowLayout.disableRHSSidebar()		
@@ -29,12 +16,15 @@ $(document).ready(function() {
 		initHomePagePublicPageContent(mainWindowContext)
 	}
 	
-	registerMainWindowContentLoader("workspaceHome",loadWorkspaceHomePageContent)
-	registerMainWindowContentLoader("",loadWorkspaceHomePageContent)
+	registerMainWindowContentLoader("workspaceHome",navigateToWorkspaceHomePageContent)
+	registerMainWindowContentLoader("",navigateToWorkspaceHomePageContent)
+	registerMainWindowContentLoader("workspaceTemplates",navigateToTemplatesPage)
+	
+	
 	
 	const linkID = getMainWindowLinkIDAnchorName()
 	
-	loadWorkspaceHomePageContent()
+	navigateToWorkspaceHomePageContent()
 	
 	initMainWindowBreadcrumbHeader()
 	initUserDropdownMenu(mainWindowContext.isSingleUserWorkspace)

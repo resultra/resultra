@@ -69,6 +69,13 @@ function initTrackerList(pageContext) {
 	initCheckboxChangeHandler('#showInactiveTrackers', false, function(includeInactive) {
 		reloadTrackerList(includeInactive)
 	})
+	
+	var $viewTemplatesLink = $('#viewTemplatesButton')
+	$viewTemplatesLink.click(function() {
+		
+		navigateToMainWindowContent("workspaceTemplates")
+	})
+	
 
 	
 }
