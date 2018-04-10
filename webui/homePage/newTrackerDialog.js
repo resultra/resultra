@@ -144,29 +144,37 @@ function openNewTrackerDialog(pageContext) {
 		
 	$('#newTrackerDialog').modal('show')
 	
+	// Prevent more than one tracker from being created in the same dialog.
+	var trackerAlreadyCreated = false
+	
 	initButtonClickHandler('#newTrackerSaveButton',function() {
 		console.log("New Tracker save button clicked")
 		if($newTrackerDialogForm.valid()) {	
 			
-			var selectedDatabaseID = $templateSelection.val()
-			var templateSource = null
-			if (selectedDatabaseID !== null && selectedDatabaseID.length > 0) {
-				var trackerInfo = templateTrackerInfoByID[selectedDatabaseID]
-				templateSource = trackerInfo.templateSource
+			if (trackerAlreadyCreated === false) {
+				trackerAlreadyCreated = true
+				
+				var selectedDatabaseID = $templateSelection.val()
+				var templateSource = null
+				if (selectedDatabaseID !== null && selectedDatabaseID.length > 0) {
+					var trackerInfo = templateTrackerInfoByID[selectedDatabaseID]
+					templateSource = trackerInfo.templateSource
+				}
+			
+			
+				var newTrackerParams = {  
+					name: $('#newTrackerNameInput').val(),
+					templateSource: templateSource,
+					templateDatabaseID: selectedDatabaseID
+				}
+				jsonAPIRequest("database/new",newTrackerParams,function(newTrackerInfo) {
+					console.log("Created new tracker: " + JSON.stringify(newTrackerInfo))
+					addTrackerListItem(pageContext,newTrackerInfo)	
+					$('#newTrackerDialog').modal('hide')
+				})
+				
+				
 			}
-			
-			
-			var newTrackerParams = {  
-				name: $('#newTrackerNameInput').val(),
-				templateSource: templateSource,
-				templateDatabaseID: selectedDatabaseID
-			}
-			jsonAPIRequest("database/new",newTrackerParams,function(newTrackerInfo) {
-				console.log("Created new tracker: " + JSON.stringify(newTrackerInfo))
-				addTrackerListItem(pageContext,newTrackerInfo)	
-				$('#newTrackerDialog').modal('hide')
-			})
-			
 
 		}
 	})
