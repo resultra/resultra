@@ -27,4 +27,6 @@ The app is setup to use electron-builder to package the binary (first installed 
 The application icon for Mac OS X was generated from a 512x512 .png file of Resultra's logo. The Mac Program called Image2icon is used to generate the icon.icns file in the build directory.
 	
 The factory templates inside the factoryTemplates/ directory are copied to the build directory and included in the packaged application. Update the file trackers.db to include any additional templates.
+
+The license file is an RTF export from ResultraDesktopLicense.docx. So, to make any changes to the license, open ResultraDesktopLicense.docx in MS Word, then save it into the build folder as an RTF name license_en.rtf.
 	
