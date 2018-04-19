@@ -1,0 +1,20 @@
+body {
+	background-color:lightGrey;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#splashContainer {
+	padding:10px;
+	border: 2px solid black;
+}
+
+
+#initMsg,#splashLogo {
+	clear:both;
+}
+
+#initMsg {
+	text-align:center;
+}

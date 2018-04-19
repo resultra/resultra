@@ -42,18 +42,20 @@ function electronRunningInDevEnvironment() {
   return process.mainModule.filename.indexOf('app.asar') === -1;
 }
 
+function getAppBasePath() {
+	// Solution from the following: 
+	// https://github.com/chentsulin/electron-react-boilerplate/issues/1047
+	const appBasePath = electronRunningInDevEnvironment() 
+	? process.cwd()
+	: path.resolve(app.getAppPath(), '../../');
+	
+	return appBasePath
+}
+
+
 function launchBackend() {
 	
 	
-	function getAppBasePath() {
-		// Solution from the following: 
-		// https://github.com/chentsulin/electron-react-boilerplate/issues/1047
-		const appBasePath = electronRunningInDevEnvironment() 
-		? process.cwd()
-		: path.resolve(app.getAppPath(), '../../');
-		
-		return appBasePath
-	}
 	
 	function getBackendBasePath() {
 		if (electronRunningInDevEnvironment()) {
@@ -163,11 +165,39 @@ function pingToConfirmBackendStartup(pingCompleteCallback) {
 		
 }
 
-function launchBackendThenCreateWindow() {
+function createSplashScreen() {
 	
+	// Solution based upon the following: https://discuss.atom.io/t/help-creating-a-splash-screen-on-electron/19089/8
+	
+	var splashScreen = new BrowserWindow({width: 360, height: 190, transparent: true, frame: false, alwaysOnTop: true});
+	
+	function getSplashscreenBasePath() {
+		if (electronRunningInDevEnvironment()) {
+			return path.resolve(process.cwd(),'./splashScreen/')
+		} else {
+			var basePath = getAppBasePath()
+			return path.resolve(basePath,'splashScreen')
+		}
+	}
+	
+	
+	var splashScreenURL = "file://" + getSplashscreenBasePath() + "/loading.html"
+//	log.info("splashscreen: " + splashScreenURL)
+	splashScreen.loadURL(splashScreenURL)
+	
+	return splashScreen
+}
+
+function launchBackendThenCreateWindow() {
+
+	var splashScreen = createSplashScreen()
+
+
 	var backendChildProc = launchBackend()
 	
+	
 	pingToConfirmBackendStartup(function(success) {
+		splashScreen.destroy()
 		if(success) {
 			createWindow()
 		} else {

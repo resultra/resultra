@@ -35,6 +35,10 @@
         {
           "from": "../build/dest/factoryTemplates",
           "to": "resultraBackend/factoryTemplates"
+        },
+        {
+          "from": "./splashScreen",
+          "to": "splashScreen"
         }
       ]
     },
@@ -51,6 +55,10 @@
         {
           "from": "../build/dest/factoryTemplates",
           "to": "resultraBackend/factoryTemplates"
+        },
+        {
+          "from": "./splashScreen",
+          "to": "splashScreen"
         }
       ]
     }
