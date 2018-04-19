@@ -1,7 +1,9 @@
 function openNewTrackerDialog(pageContext) {
 	
 	var $newTrackerDialogForm = $('#newTrackerDialogForm')
+	
 	var $templateSelection = $('#newTrackerTemplateSelection')
+	const noTemplateSelection = "notemplate"
 	
 	var validator = $newTrackerDialogForm.validate({
 		rules: {
@@ -15,10 +17,16 @@ function openNewTrackerDialog(pageContext) {
 					}
 				} // remote
 			}, // newFormNameInput
+			newTrackerTemplateSelection: {
+				required:true
+			}
 		},
 		messages: {
 			newTrackerNameInput: {
 				required: "Tracker name is required"
+			},
+			newTrackerTemplateSelection: {
+				required: "Please select a template"
 			}
 		}
 	})
@@ -90,11 +98,13 @@ function openNewTrackerDialog(pageContext) {
 	getTemplateLists(function(templateLists) {
 		
 		$templateSelection.empty()
+		
+		$templateSelection.append(defaultSelectOptionPromptHTML("Select a template"))
 
 		// Only include the "no template" option if there are no factory templates. The factory templates
 		// should include a minimal template for setting up a starter tracker.
 		if(templateLists.factoryTemplates.length <= 0) {
-			$templateSelection.append(selectOptionHTML("","No template"))	
+			$templateSelection.append(selectOptionHTML("notemplate","No template"))	
 		}
 		
 		if(templateLists.accountTemplates.length > 0) {
@@ -123,17 +133,24 @@ function openNewTrackerDialog(pageContext) {
 			var $descGroup = $('#newTrackerTemplateDescriptionGroup') 
 				
 			if (selectedDatabaseID.length > 0) {
-				var trackerInfo = templateTrackerInfoByID[selectedDatabaseID]
-				console.log("new template tracker database selected: " + JSON.stringify(trackerInfo))
+				
+				if (selectedDatabaseID === noTemplateSelection) {
+					$descGroup.hide()
+				} else {
+					var trackerInfo = templateTrackerInfoByID[selectedDatabaseID]
+					console.log("new template tracker database selected: " + JSON.stringify(trackerInfo))
 			
 				
-				if(trackerInfo.description.length > 0) {
-					var $templateDesc = $('#newTrackerTemplateDescription')
-					$templateDesc.html(formatInlineContentHTMLDisplay(trackerInfo.description))
-					$descGroup.show()
-				} else {
-					$descGroup.hide()
+					if(trackerInfo.description.length > 0) {
+						var $templateDesc = $('#newTrackerTemplateDescription')
+						$templateDesc.html(formatInlineContentHTMLDisplay(trackerInfo.description))
+						$descGroup.show()
+					} else {
+						$descGroup.hide()
+					}
+					
 				}
+				
 				
 			} else {
 				$descGroup.hide()			
@@ -156,16 +173,22 @@ function openNewTrackerDialog(pageContext) {
 				
 				var selectedDatabaseID = $templateSelection.val()
 				var templateSource = null
+				var templateTrackerDatabaseID = null
 				if (selectedDatabaseID !== null && selectedDatabaseID.length > 0) {
-					var trackerInfo = templateTrackerInfoByID[selectedDatabaseID]
-					templateSource = trackerInfo.templateSource
+					
+					if(selectedDatabaseID !== noTemplateSelection) {
+						var trackerInfo = templateTrackerInfoByID[selectedDatabaseID]
+						templateSource = trackerInfo.templateSource
+						templateTrackerDatabaseID = selectedDatabaseID
+					}
+					
 				}
 			
 			
 				var newTrackerParams = {  
 					name: $('#newTrackerNameInput').val(),
 					templateSource: templateSource,
-					templateDatabaseID: selectedDatabaseID
+					templateDatabaseID: templateTrackerDatabaseID
 				}
 				jsonAPIRequest("database/new",newTrackerParams,function(newTrackerInfo) {
 					console.log("Created new tracker: " + JSON.stringify(newTrackerInfo))
