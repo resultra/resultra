@@ -18,13 +18,23 @@ log.transports.file.level = 'info';
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+let splashScreen
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1000, height: 600})
+  mainWindow = new BrowserWindow({
+	width: 1000, 
+	height: 600,
+	show:false
+	})
 
   // and load the index.html of the app.  
   mainWindow.loadURL('http://localhost:43409/')
+
+	mainWindow.once('ready-to-show',()=>{
+		splashScreen.destroy()
+		mainWindow.show()
+	})
 
   // Open the DevTools.
 //  mainWindow.webContents.openDevTools()
@@ -169,7 +179,7 @@ function createSplashScreen() {
 	
 	// Solution based upon the following: https://discuss.atom.io/t/help-creating-a-splash-screen-on-electron/19089/8
 	
-	var splashScreen = new BrowserWindow({width: 360, height: 190, transparent: true, frame: false, alwaysOnTop: true});
+	splashScreen = new BrowserWindow({width: 360, height: 190, transparent: true, frame: false, alwaysOnTop: true});
 	
 	function getSplashscreenBasePath() {
 		if (electronRunningInDevEnvironment()) {
@@ -185,19 +195,15 @@ function createSplashScreen() {
 //	log.info("splashscreen: " + splashScreenURL)
 	splashScreen.loadURL(splashScreenURL)
 	
-	return splashScreen
 }
 
 function launchBackendThenCreateWindow() {
 
-	var splashScreen = createSplashScreen()
-
+	createSplashScreen()
 
 	var backendChildProc = launchBackend()
 	
-	
 	pingToConfirmBackendStartup(function(success) {
-		splashScreen.destroy()
 		if(success) {
 			createWindow()
 		} else {
