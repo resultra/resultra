@@ -182,8 +182,7 @@ function initFormButtonRecordEditBehavior($buttonContainer,componentContext,
 	}
 	
 	function showRecordInNewPage() {
-		var win = window.open(viewFormURL(),"_blank")
-		win.focus()
+		openNewWindowWithElectronOptions(viewFormURL())
 	}
 	
 	function showRecordInPage() {

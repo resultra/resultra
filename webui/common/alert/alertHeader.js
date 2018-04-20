@@ -40,8 +40,7 @@ function initAlertHeader(databaseID,seeAllAlertsCallback) {
 					clearAlertCount()
 					e.preventDefault()
 					var viewFormLink = '/viewItem/' + currAlert.properties.formID + '/' + currNotification.recordID
-					 win = window.open(viewFormLink,"_blank")
-					win.focus()
+					openNewWindowWithElectronOptions(viewFormLink)
 				
 				})
 			

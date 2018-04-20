@@ -216,3 +216,26 @@ function escapeHTML(string) {
     return escapeHTMLEntityMap[s];
   });
 }
+
+function openNewWindowWithElectronOptions(url) {
+	// When the app is run within Electron, window.open() actually returns
+	// a BrowserWindowPropxy() object instead of the standard Javascript object.
+	// This object will inherit the window properties of the main window.
+	//
+	// 		(see https://electronjs.org/docs/api/window-open)
+	//
+	// By default, the way the main window in Electron works with the splashcreen,
+    // and to avoid flashing upon open, is to have it's initial options set to 
+	// not be visible, then show it once the content is initialized.
+	//
+	// To make the window actually appear, the "show=true" argument has
+	// to be passed to the window.open() function. This overrides the parent
+	// windows options appropriately.
+	//
+	// TBD - In the browser version, this function is always opening a new window, rather than a
+	// tab. This may be problematic if popups are blocked.
+	// 
+	var win = window.open(url,"_blank","show=true")
+	win.focus()
+	
+}

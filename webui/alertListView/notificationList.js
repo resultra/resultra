@@ -51,9 +51,7 @@ function initAlertNotificationList(pageLayout, databaseID) {
 				$formLink.click(function(e) {
 					e.preventDefault()
 					var viewFormLink = '/viewItem/' + rowData.formID() + '/' + rowData.recordID()
-					 win = window.open(viewFormLink,"_blank")
-					win.focus()
-					
+					openNewWindowWithElectronOptions(viewFormLink)					
 				})
 			},
 			render: function(data, type, row, meta) {
