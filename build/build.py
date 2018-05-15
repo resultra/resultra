@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 # This script implements a phased build based upon the makefiles in the development tree.
 # Within each build phase, make is run on each directory in no particular order. So,
 # the build process from each directory is expected to not depend on other directories 
@@ -7,12 +6,10 @@
 #
 # By default a debug build is performed. However to perform a release build, pass the --release
 # option on the command line.
-
 import os
 import sys
 import argparse
 import time
-
 from multiprocessing import Pool
 
 parser = argparse.ArgumentParser(description='Main build script.')
@@ -23,7 +20,7 @@ parser.add_argument('--realcleanonly',default=False,action='store_true',
 parser.add_argument('--windows',default=False,action='store_true',
                     help='cross-compile the Windows Electron client.')
 parser.add_argument('--procs',default=4,type=int,
-                    help='number of processors(cores) to run parallel build on (default = 4)')
+                    help='number of build tasks to run in parallel build on (default = 4)')
 args = parser.parse_args()
 
 failedDirs = []
@@ -31,8 +28,7 @@ failedDirs = []
 debugBuild = 1
 if(args.release):
     debugBuild = 0
-    
-    
+        
 class buildDirResult:
     def __repr__(self):
         return "(dir = %s, err = %d) " % (self.dirName,self.errCode)
@@ -40,18 +36,16 @@ class buildDirResult:
     def __init__(self, dirName,errCode):
         self.dirName = dirName
         self.errCode = errCode
-    
-    
+
 class buildDirSpec:
     def __init__(self, dirName,targetName,debugBuild):
         self.dirName = dirName
         self.targetName = targetName
         self.debugBuild = debugBuild
-    
-    
+     
 def buildOneDir(buildSpec):
     print "Building: dir=", buildSpec.dirName, " phase=", buildSpec.targetName, " debug=", buildSpec.debugBuild
-    bldCmd = "make -C %s DEBUG=%s %s" % (buildSpec.dirName, buildSpec.debugBuild, buildSpec.targetName)
+    bldCmd = "make -C %s --jobs=2 DEBUG=%s %s" % (buildSpec.dirName, buildSpec.debugBuild, buildSpec.targetName)
     print "Build cmd: %s " % (bldCmd)
     retCode = os.system(bldCmd)
     if retCode != 0:
@@ -76,7 +70,6 @@ def runMakePhase(makeTargetName):
         if res.errCode != 0:
             failedDirs.append(makeTargetName + ":" + res.dirName)
     
-    
 startTime = time.time() 
 
 if args.realcleanonly:
@@ -97,10 +90,7 @@ else:
 endTime = time.time()
 
 print "\n\n--------------------------------------------------------"
-
-
-print "Build complete: parallel procs = %d, elapse time = %d secs " % (args.procs, endTime-startTime)
-                
+print "Build complete: parallel build tasks = %d, elapse time = %d secs " % (args.procs, endTime-startTime)
 print "\nBuild Results:\n"
 
 if len(failedDirs) > 0:
