@@ -34,7 +34,7 @@ var checkBoxDesignFormConfig = {
 	draggableHTMLFunc:	checkBoxContainerHTML,
 	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewCheckboxDialog,
-	resizeConstraints: elemResizeConstraints(100,640,30,30),
+	resizeConstraints: elemResizeConstraintsWidthOnly(100,640),
 	resizeFunc: resizeCheckBox,
 	initFunc: initDesignFormCheckBox,
 	selectionFunc: selectFormCheckbox

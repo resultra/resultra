@@ -36,7 +36,7 @@ var socialButtonDesignFormConfig = {
 	draggableHTMLFunc:	socialButtonContainerHTML,
 	initDummyDragAndDropComponentContainer: startSocialButtonPaletteDrag,
 	createNewItemAfterDropFunc: openNewSocialButtonDialog,
-	resizeConstraints: elemResizeConstraints(100,640,30,30),
+	resizeConstraints: elemResizeConstraintsWidthOnly(100,640),
 	resizeFunc: resizeSocialButton,
 	initFunc: initDesignFormSocialButton,
 	selectionFunc: selectFormSocialButton

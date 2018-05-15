@@ -43,7 +43,7 @@ var ratingDesignFormConfig = {
 	draggableHTMLFunc:	ratingContainerHTML,
 	initDummyDragAndDropComponentContainer: startRatingPaletteDrag,
 	createNewItemAfterDropFunc: openNewRatingDialog,
-	resizeConstraints: elemResizeConstraints(100,640,30,30),
+	resizeConstraints: elemResizeConstraintsWidthOnly(100,640),
 	resizeFunc: resizeRating,
 	initFunc: initDesignFormRating,
 	selectionFunc: selectFormRating

@@ -34,7 +34,7 @@ var selectionDesignFormConfig = {
 	draggableHTMLFunc:	selectionContainerHTML,
 	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewSelectionDialog,
-	resizeConstraints: elemResizeConstraints(100,600,400,400),
+	resizeConstraints: elemResizeConstraintsWidthOnly(100,600),
 	resizeFunc: resizeSelection,
 	initFunc: initDesignFormSelection,
 	selectionFunc: selectFormSelection

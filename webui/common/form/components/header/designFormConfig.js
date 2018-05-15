@@ -28,7 +28,7 @@ var formHeaderDesignFormConfig = {
 	draggableHTMLFunc:	formHeaderContainerHTML,
 	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewFormHeaderDialog,
-	resizeConstraints: elemResizeConstraints(80,720,50,50),
+	resizeConstraints: elemResizeConstraintsWidthOnly(80,720),
 	resizeFunc: resizeFormHeader,
 	initFunc: initDesignFormHeader,
 	selectionFunc: selectFormHeader

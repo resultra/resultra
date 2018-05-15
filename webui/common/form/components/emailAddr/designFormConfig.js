@@ -32,7 +32,7 @@ var emailAddrDesignFormConfig = {
 	draggableHTMLFunc:	emailAddrContainerHTML,
 	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewEmailAddrDialog,
-	resizeConstraints: elemResizeConstraints(75,600,400,400),
+	resizeConstraints: elemResizeConstraintsWidthOnly(75,600),
 	resizeFunc: resizeEmailAddr,
 	initFunc: initDesignFormEmailAddr,
 	selectionFunc: selectFormEmailAddr

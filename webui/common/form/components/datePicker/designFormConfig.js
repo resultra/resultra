@@ -34,7 +34,7 @@ var datePickerDesignFormConfig = {
 	draggableHTMLFunc:	datePickerContainerHTML,
 	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewDatePickerDialog,
-	resizeConstraints: elemResizeConstraints(75,640,30,30),
+	resizeConstraints: elemResizeConstraintsWidthOnly(125,640),
 	resizeFunc: resizeDatePicker,
 	initFunc: initDesignFormDatePicker,
 	selectionFunc: selectFormDatePicker

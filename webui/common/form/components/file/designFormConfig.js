@@ -32,7 +32,7 @@ var fileDesignFormConfig = {
 	draggableHTMLFunc:	fileContainerHTML,
 	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewFileDialog,
-	resizeConstraints: elemResizeConstraints(75,600,400,400),
+	resizeConstraints: elemResizeConstraintsWidthOnly(75,600),
 	resizeFunc: resizeFileComponent,
 	initFunc: initDesignFormFile,
 	selectionFunc: selectFormFile

@@ -27,7 +27,7 @@ var formButtonDesignFormConfig = {
 	draggableHTMLFunc:	formButtonContainerHTML,
 	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewFormButtonDialog,
-	resizeConstraints: elemResizeConstraints(50,640,50,50),
+	resizeConstraints: elemResizeConstraintsWidthOnly(50,640),
 	resizeFunc: resizeFormButton,
 	initFunc: initDesignFormButton,
 	selectionFunc: selectFormButton

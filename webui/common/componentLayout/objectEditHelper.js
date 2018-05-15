@@ -11,6 +11,18 @@ function elemResizeConstraints(minWidth, maxWidth, minHeight, maxHeight) {
 	}
 }
 
+function elemResizeConstraintsWidthOnly(minWidth,maxWidth) {
+	assert(minWidth > 0)
+	assert(maxWidth >= minWidth)
+	return {
+		minWidth: minWidth,
+		minHeight: null,
+		maxWidth: maxWidth,
+		maxHeight: null,
+	}
+	
+}
+
 function setContainerObjectRef($container,objectRef) {
 	$container.data("objectRef",objectRef)
 }

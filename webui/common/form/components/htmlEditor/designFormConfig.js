@@ -26,7 +26,12 @@ function resizeHtmlEditor($container,geometry) {
 	
 	jsonAPIRequest("frm/htmlEditor/resize", resizeParams, function(updatedObjRef) {
 		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.htmlEditorID)
+		initEditorFormComponentViewModeGeometry($container,updatedObjRef)
 	})	
+}
+
+function resizeInProgressHTMLContainer($container,geometry) {
+	initHTMLEditorComponentViewModeGeometry($container,geometry.sizeWidth,geometry.sizeHeight)
 }
 
 
@@ -37,6 +42,7 @@ var htmlEditorDesignFormConfig = {
 	resizeConstraints: elemResizeConstraints(125,1280,125,1280),
 	resizeHandles: 'e,s,se',
 	resizeFunc: resizeHtmlEditor,
+	resizeInProgressFunc: resizeInProgressHTMLContainer,
 	initFunc: initDesignFormHtmlEditor,
 	selectionFunc: selectFormHtmlEditor
 }

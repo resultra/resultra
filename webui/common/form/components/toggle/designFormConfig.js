@@ -37,7 +37,7 @@ var toggleDesignFormConfig = {
 		initDummyToggleControlForDragAndDrop($paletteItemContainer)
 	},
 	createNewItemAfterDropFunc: openNewToggleDialog,
-	resizeConstraints: elemResizeConstraints(100,640,30,30),
+	resizeConstraints: elemResizeConstraintsWidthOnly(100,640),
 	resizeFunc: resizeToggle,
 	initFunc: initDesignFormToggle,
 	selectionFunc: selectFormToggle

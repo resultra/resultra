@@ -39,8 +39,25 @@ function initObjectGridEditBehavior($container, editConfig,layoutDesignConfig) {
 		handles: resizeHandles,
 		maxWidth: editConfig.resizeConstraints.maxWidth,
 		minWidth: editConfig.resizeConstraints.minWidth,
+		maxHeight: editConfig.resizeConstraints.maxHeight,
+		minHeight: editConfig.resizeConstraints.minHeight,
 		grid: [ horizGridSize, vertGridSize ], // snap to grid during resize
 		resize: function(event,ui) {
+			
+			// If there is a resizeInProgressFunc, the "unsnapped" ui size is used.
+			if(editConfig.resizeInProgressFunc !== undefined) {
+				// With the resize in 
+				var resizeGeometry = {
+					positionTop: 0,
+					positionLeft: 0,
+					sizeWidth: ui.size.width, 
+					sizeHeight: ui.size.height 
+				}
+				editConfig.resizeInProgressFunc($container,resizeGeometry)	
+			}
+			
+			
+			
 			// For some reason the resizable plugin doesn't snap to the grid
 			// based upon the grid size. The logic below will snap the width
 			// to the nearest width which is an exact multiple of the gridSize.
@@ -53,6 +70,8 @@ function initObjectGridEditBehavior($container, editConfig,layoutDesignConfig) {
 //			var snapHeight = Math.round(ui.size.height/gridSize)*gridSize
 			ui.size.width = snapWidth
 //			ui.size.height = snapHeight
+			
+			
 		},
 		stop: function(event, ui) {
 			var resizeGeometry = {

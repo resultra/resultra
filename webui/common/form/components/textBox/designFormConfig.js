@@ -34,7 +34,7 @@ var textBoxDesignFormConfig = {
 	draggableHTMLFunc:	textBoxContainerHTML,
 	initDummyDragAndDropComponentContainer: function($paletteItemContainer) {},
 	createNewItemAfterDropFunc: openNewTextBoxDialog,
-	resizeConstraints: elemResizeConstraints(75,600,400,400),
+	resizeConstraints: elemResizeConstraintsWidthOnly(75,600),
 	resizeFunc: resizeTextBox,
 	initFunc: initDesignFormTextBox,
 	selectionFunc: selectFormTextBox
