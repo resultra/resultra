@@ -22,6 +22,7 @@ function resizeGauge($container,geometry) {
 	
 	jsonAPIRequest("frm/gauge/resize", resizeParams, function(updatedObjRef) {
 		setContainerComponentInfo($container,updatedObjRef,updatedObjRef.gaugeID)
+		initGaugeFormComponentContainer($container,updatedObjRef)
 	})	
 }
 
@@ -44,7 +45,7 @@ var gaugeDesignFormConfig = {
 	draggableHTMLFunc:	gaugeContainerHTML,
 	initDummyDragAndDropComponentContainer: initDummyGaugeControlForPaletteDrag,
 	createNewItemAfterDropFunc: openNewGaugeDialog,
-	resizeConstraints: elemResizeConstraints(75,640,30,30),
+	resizeConstraints: elemResizeConstraintsWidthOnly(75,640),
 	resizeFunc: resizeGauge,
 	initFunc: initDesignFormGauge,
 	selectionFunc: selectFormGauge
