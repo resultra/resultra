@@ -7,6 +7,8 @@ function initNumberInputRecordEditBehavior($container,componentContext,recordPro
 	var $numberInputInput = $container.find('input')
 	var numberInputFieldID = numberInputObjectRef.properties.fieldID
 	
+	var numberInputFieldCurrentlyHasFocus = false
+	
 	// When the user focuses in/out of the control, the value displayed needs to be toggled
 	// between the "raw input value" and the formatted value based upon the number input's properties.
 	function getRawInputNumberVal() {	
@@ -65,6 +67,12 @@ function initNumberInputRecordEditBehavior($container,componentContext,recordPro
 					numberInputObjectRef.properties.conditionalFormats,rawFieldVal)
 		}
 		setConditionalFormat()
+		
+		// If the field is already in focus, don't "set the value from underneath them". In
+		// other words, let the value which they enter into the field take precedence.
+		if (numberInputFieldCurrentlyHasFocus) {
+			return
+		}
 
 		// In other words, we are populating the "intersection" of field values in the record
 		// with the fields shown by the layout's containers.
@@ -180,6 +188,8 @@ function initNumberInputRecordEditBehavior($container,componentContext,recordPro
 		$numberInputInput.focusin(function() {
 			// When focusing on the text input box, replaced the formatted value with 
 			// the raw input value.
+			numberInputFieldCurrentlyHasFocus = true
+			
 			var rawInputVal = getRawInputVal()
 			console.log("Focus in for number field: raw value for editing: " + rawInputVal)
 			$numberInputInput.val(rawInputVal)
@@ -187,6 +197,8 @@ function initNumberInputRecordEditBehavior($container,componentContext,recordPro
 	
 
 		$numberInputInput.focusout(function () {
+			
+			numberInputFieldCurrentlyHasFocus = false
 
 			// Retrieve the "raw input" value entered by the user and 
 			// update the "rawVal" data setting on the text box.
