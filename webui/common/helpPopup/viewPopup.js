@@ -5,7 +5,7 @@ function componentHelpPopupButtonHTML() {
 
 	var buttonHTML = '<button tabindex="-1" class="btn btn-default btn-sm clearButton ' + 
 			'componentHelpPopupButton pull-right' + 
-			'"><span class="glyphicon glyphicon-question-sign"></span></button>'
+			'" style="display:none;"><span class="glyphicon glyphicon-question-sign"></span></button>'
 
 	return buttonHTML
 }
@@ -20,9 +20,9 @@ function updateComponentHelpPopupMsg($container, componentRef) {
 			'<div class="inlineContent helpPopupContent">' + 
 				formatInlineContentHTMLDisplay(componentRef.properties.helpPopupMsg) +
 			'</div>'
-		$popupButton.show()
+		$popupButton.css("display","") // show
 	} else {
-		$popupButton.hide()
+		$popupButton.css("display","none") // hide
 	}
 	
 	
