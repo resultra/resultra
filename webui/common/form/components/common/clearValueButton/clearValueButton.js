@@ -22,8 +22,8 @@ function clearValueButtonHTML(className) {
 	// such that it can be found with jQuery's find() function.
 	
 	var buttonHTML = '' +
-		'<span class="input-group-btn">' +
-			'<button type="button" tabindex="-1" class="btn btn-default btn-sm clearValueButton ' + className + '">' + 
+		'<span class="input-group-btn" style="display:none;">' +
+			'<button type="button" tabindex="-1" class="btn btn-default btn-sm clearValueButton ' + className + '" style="display:none;">' + 
 				'<small><i class="glyphicon glyphicon-remove"></i></small>' +
 			'</button>' +
 	    '</span'
@@ -34,7 +34,7 @@ function clearValueButtonHTML(className) {
 function smallClearComponentValHeaderButton(className) {
 	
 	var buttonHTML = '<button tabindex="-1" class="btn btn-default btn-sm clearButton pull-right ' + 
-			className + '"><span class="glyphicon glyphicon-remove"></span></button>'
+			className + '" style="display:none;""><span class="glyphicon glyphicon-remove"></span></button>'
 
 	return buttonHTML
 }

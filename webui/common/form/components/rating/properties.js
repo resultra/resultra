@@ -137,6 +137,7 @@ function loadRatingProperties($rating,ratingRef) {
 			}
 			jsonAPIRequest("frm/rating/setPermissions",params,function(updatedRating) {
 				setContainerComponentInfo($rating,updatedRating,updatedRating.ratingID)
+				initRatingClearValueControl($rating,updatedRating)
 			})
 		}
 	}
@@ -154,6 +155,7 @@ function loadRatingProperties($rating,ratingRef) {
 			}
 			jsonAPIRequest("frm/rating/setClearValueSupported",formatParams,function(updatedRating) {
 				setContainerComponentInfo($rating,updatedRating,updatedRating.ratingID)
+				initRatingClearValueControl($rating,updatedRating)
 			})
 		}
 	}
