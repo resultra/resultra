@@ -7,7 +7,7 @@ function formHeaderContainerHTML(elementID)
 {	
 	var containerHTML = ''+
 		'<div class="layoutContainer headerFormContainer" id="'+elementID+'">' +
-			'<span class="h3 formHeader">' +
+			'<span class="h4 formHeader">' +
 			'New Header' +
 			'</span>' +
 		'</div><';
