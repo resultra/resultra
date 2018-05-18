@@ -59,10 +59,8 @@ function initSingleUserRegistrationPagePage() {
 	
 	var $registerButton = $('#singleUserPersonalizeButton')
 		
-	var $confirmAlert = $('#singleUserRegisterConfirm')
 	var $errorAlert = $('#singleUserRegisterErrorAlert')
 	
-	$confirmAlert.hide()
 	$errorAlert.hide()
 	$registerControls.show()
 		
@@ -78,7 +76,9 @@ function initSingleUserRegistrationPagePage() {
 			jsonRequest("/auth/registerSingleUser",registerParams,function(registerResp) {
 				if(registerResp.success == true) {
 					$registerControls.hide()
-					$confirmAlert.show()
+					// Navigate to the main page. Now that the registration is complete, the 
+					// list of empty trackers will be shown.
+					navigateToURL("/")
 				} else {
 					$errorAlert.text(registerResp.msg)
 					$errorAlert.show()
