@@ -34,7 +34,33 @@
 {{end}}
 
 
+{{define "mainWindowSingleUserSignedOut"}}
+	  <div class="col-md-2"></div>
+	  
+	  <div class="col-md-8">
+		  
+		  <div class="well">
+		    {{template "singleUserLocalWorkspaceHomePageRegistrationPanel"}}			
+		 </div>
+			 
+	 </div>
+		
+	 <div class="col-md-2"></div>
+{{end}}
 
+{{define "mainWindowMultiUserSignedOut"}}
+	  <div class="col-md-4"></div>
+	  
+	  <div class="col-md-4">
+		  
+		  <div class="well">
+		    {{template "homePageSigninPanel"}}			
+		 </div>
+			 
+	 </div>
+		
+	 <div class="col-md-4"></div>
+{{end}}
 
 {{define "mainWindowSignedOut"}}
 <!DOCTYPE html>
@@ -66,23 +92,12 @@
 	  	   
 	  <div class="container-fluid marginTop20">
 		  		  
-		  <div class="col-md-4"></div>
-		  
-		  <div class="col-md-4">
-			  
-			  <div class="well">
-				  {{if .IsSingleUserWorkspace}}
-			    	{{template "singleUserLocalWorkspaceHomePageRegistrationPanel"}}	  
-				  {{else}}
-				    {{template "homePageSigninPanel"}}
-				  {{end}}
-				
-			 </div>
-				 
-		 </div>
-			
-		 <div class="col-md-4"></div>
-
+		  {{if .IsSingleUserWorkspace}}
+	    	{{template "mainWindowSingleUserSignedOut"}}	  
+		  {{else}}
+		    {{template "mainWindowMultiUserSignedOut"}}
+		  {{end}}
+	
 	  </div>
 	  
 	  

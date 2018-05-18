@@ -1,28 +1,44 @@
-{{define "singleUserLocalWorkspaceRegistrationPanel"}}
-	<div class="row">
-		
- 	   <div class="alert alert-danger initiallyHidden" id="singleUserRegisterErrorAlert"></div>
-  		
-				   	   
+
+{{define "singleUserLocalWorkspaceRegistrationPanelFormElems"}}
 		<form id="singleUserRegistrationForm">
 		  <div class="form-group registerControls">
         	  <label for="singlerUserFirstNameInput">Your Name</label>
         	  <input type="text" id="singlerUserFirstNameInput" name="singlerUserFirstNameInput"
-			  		class="form-control" placeholder="First Name" required autofocus>
+			  		class="form-control maxWidth300" placeholder="First Name" required autofocus>
  		   </div>
  		   <div class="form-group registerControls">
         	  <input type="text" id="singlerUserLastNameInput" name="singlerUserLastNameInput"
-			  	class="form-control marginTop5" placeholder="Last Name" required autofocus>
+			  	class="form-control marginTop5 maxWidth300" placeholder="Last Name" required autofocus>
 		  </div>
 		  <div class="form-group registerControls">
         	  <label for="singlerUserUserNameInput">User Name</label>
         	  <input type="text" id="singlerUserUserNameInput" name="singlerUserUserNameInput"
-			  		class="form-control" placeholder="Username" required autofocus>
+			  		class="form-control maxWidth300" placeholder="Username" required autofocus>
 		  </div>
 		</form>
-		 	   
- 	</div>
+{{end}}
 
+{{define "singleUserLocalWorkspaceRegistrationPanel"}}
+		
+ 	   <div class="alert alert-danger initiallyHidden" id="singleUserRegisterErrorAlert"></div>
+	   
+   	  <div class="container-fluid">
+
+   		<div class="row">
+ 
+			<div class="col-md-2"></div>
+  
+			<div class="col-md-8">
+				{{template "singleUserLocalWorkspaceRegistrationPanelFormElems"}}
+			</div>
+	
+			<div class="col-md-2"></div>
+ 
+    	</div>
+		
+     </div>
+				   	   
+		 	   
 {{end}}
 
 {{define "singleUserLocalWorkspacePersonalizeButton"}}
@@ -35,7 +51,7 @@
 {{define "singleUserLocalWorkspaceHomePageRegistrationPanel"}}
 
 	  <div>
-		  <h2 class="text-center">Personalize Resultra</h2>
+		  <h3 class="text-center">Personalize Resultra</h3>
 	  </div>
 	  
 	  <div class="alert alert-info" role="alert">
