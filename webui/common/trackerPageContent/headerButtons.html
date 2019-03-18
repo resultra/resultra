@@ -1,4 +1,9 @@
-{{define "adminSettingsButton"}}
+{{/* This file is part of the Resultra project.
+   *
+   * This Source Code Form is subject to the terms of the Mozilla Public
+   * License, v. 2.0. If a copy of the MPL was not distributed with this
+   * file, You can obtain one at https://mozilla.org/MPL/2.0/. */}}
+ {{define "adminSettingsButton"}}
 		{{if .CurrUserIsAdmin}}
 			<a href="/admin/{{.DatabaseID}}" type="button" class="btn btn-sm btn-default" 
 				data-toggle="tooltip" data-placement="left" title="Edit tracker settings">
