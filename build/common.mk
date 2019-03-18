@@ -1,3 +1,8 @@
+# This file is part of the Resultra project.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 # Default is a debug build. This can be set explicitely on the command line with DEBUG=0 or DEBUG=1
 DEBUG ?= 1
