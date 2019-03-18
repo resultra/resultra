@@ -1,3 +1,8 @@
+// This file is part of the Resultra project.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
 // This code originated from https://gist.github.com/tomerd/1499279, which the author released into public
 // domain for commercial/personal use ("no special license. feel free to use it however you like."). This
 // code served as a starting point, which was subsequently heavily modified for the project.
