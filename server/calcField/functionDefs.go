@@ -183,7 +183,7 @@ func ifEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equatio
 	condEqn := funcArgs[0]
 	condResult, condErr := condEqn.EvalEqn(evalContext)
 	if condErr != nil {
-		return nil, fmt.Errorf("IF(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, condErr)
+		return nil, fmt.Errorf("IF(): Error evaluating argument # 1: arg=%+v, error %v", condEqn, condErr)
 	} else if condResult.IsUndefined() {
 		// If an undefined result is returned, return immediately and propogate the undefined
 		// result value up through the equation evaluation.
@@ -366,7 +366,7 @@ func dateAddEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Eq
 	arg1Eqn := funcArgs[0]
 	arg1Result, arg1Err := arg1Eqn.EvalEqn(evalContext)
 	if arg1Err != nil {
-		return nil, fmt.Errorf("DATEADD(): Error evaluating argument # %v: arg=%+v, error %v", arg1Eqn, arg1Err)
+		return nil, fmt.Errorf("DATEADD(): Error evaluating argument # 0: arg=%+v, error %v", arg1Eqn, arg1Err)
 	} else if arg1Result.IsUndefined() {
 		// If an undefined result is returned, return immediately and propogate the undefined
 		// result value up through the equation evaluation.
@@ -462,7 +462,7 @@ func isTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equ
 	condEqn := funcArgs[0]
 	condResult, condErr := condEqn.EvalEqn(evalContext)
 	if condErr != nil {
-		return nil, fmt.Errorf("IF(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, condErr)
+		return nil, fmt.Errorf("IF(): Error evaluating argument # 1: arg=%+v, error %v", condEqn, condErr)
 	}
 	if condResult.IsUndefined() {
 		return boolEqnResult(false), nil
@@ -486,7 +486,7 @@ func isSetEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equa
 	condEqn := funcArgs[0]
 	condResult, condErr := condEqn.EvalEqn(evalContext)
 	if condErr != nil {
-		return nil, fmt.Errorf("IF(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, condErr)
+		return nil, fmt.Errorf("IF(): Error evaluating argument # 1: arg=%+v, error %v", condEqn, condErr)
 	}
 	if condResult.IsUndefined() {
 		return boolEqnResult(false), nil
@@ -506,7 +506,7 @@ func notEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*Equati
 	condEqn := funcArgs[0]
 	condResult, condErr := condEqn.EvalEqn(evalContext)
 	if condErr != nil {
-		return nil, fmt.Errorf("NOT(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, condErr)
+		return nil, fmt.Errorf("NOT(): Error evaluating argument # 1: arg=%+v, error %v", condEqn, condErr)
 	}
 	if condResult.IsUndefined() {
 		return undefinedEqnResult(), nil
@@ -537,7 +537,7 @@ func whenTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*E
 
 		condResult, condErr := condEqn.EvalEqn(&currEvalContext)
 		if condErr != nil {
-			return false, fmt.Errorf("WHENTRUE(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, condErr)
+			return false, fmt.Errorf("WHENTRUE(): Error evaluating argument # 1: arg=%+v, error %v", condEqn, condErr)
 		}
 		return condResult.IsTrueResult(), nil
 	}
@@ -551,7 +551,7 @@ func whenTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*E
 			mostRecentTimeEvaled = true
 			evalIsTrue, evalErr := evalIfTrueAtTime(asOfTime)
 			if evalErr != nil {
-				return false, fmt.Errorf("WHENTRUE(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, evalErr)
+				return false, fmt.Errorf("WHENTRUE(): Error evaluating argument # 1: arg=%+v, error %v", condEqn, evalErr)
 			} else if !evalIsTrue {
 				return false, nil // stop iteration and leave the return val undefined if the first value isn't set to true
 			} else {
@@ -561,7 +561,7 @@ func whenTrueEvalFunc(evalContext *EqnEvalContext, funcArgs []*EquationNode) (*E
 		} else {
 			evalIsTrue, evalErr := evalIfTrueAtTime(asOfTime)
 			if evalErr != nil {
-				return false, fmt.Errorf("WHENTRUE(): Error evaluating argument # %v: arg=%+v, error %v", condEqn, evalErr)
+				return false, fmt.Errorf("WHENTRUE(): Error evaluating argument # 1: arg=%+v, error %v", condEqn, evalErr)
 			} else if evalIsTrue {
 				eqnResult = timeEqnResult(asOfTime)
 				return true, nil // continue iterating and advance the 'asOfTime' if the result evaluates to true.

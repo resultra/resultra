@@ -391,8 +391,8 @@ func updateOneCalcFieldValue(evalContext *EqnEvalContext, evalField field.Field)
 		return nil
 
 	default:
-		return fmt.Errorf("Unexpected error evaluating equation for field=%+v: eqn=%+v: unsupported field type %v",
-			evalField, rootFieldEqnNode, evalErr, evalField.Type)
+		return fmt.Errorf("Unexpected error evaluating equation for field=%+v: eqn=%+v: unsupported field type %v: error = %v",
+			evalField, rootFieldEqnNode, evalField.Type, evalErr)
 	} // switch field type
 
 	return nil
