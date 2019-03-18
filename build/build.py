@@ -1,4 +1,13 @@
 #!/usr/bin/env python
+#
+# This file is part of the Resultra project.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+
+
 # This script implements a phased build based upon the makefiles in the development tree.
 # Within each build phase, make is run on each directory in no particular order. So,
 # the build process from each directory is expected to not depend on other directories 
