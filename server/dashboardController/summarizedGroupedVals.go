@@ -3,8 +3,8 @@ package dashboardController
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/dashboard/values"
-	"resultra/datasheet/server/recordValue"
+	"resultra/tracker/server/dashboard/values"
+	"resultra/tracker/server/recordValue"
 )
 
 type GroupDataRow struct {

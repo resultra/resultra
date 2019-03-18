@@ -2,8 +2,8 @@ package recordFilter
 
 import (
 	"fmt"
-	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/record"
+	"resultra/tracker/server/field"
+	"resultra/tracker/server/record"
 	"strings"
 )
 

@@ -2,10 +2,10 @@ package summaryTable
 
 import (
 	"fmt"
-	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/dashboard/values"
-	"resultra/datasheet/server/recordFilter"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/common/componentLayout"
+	"resultra/tracker/server/dashboard/values"
+	"resultra/tracker/server/recordFilter"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 type SummaryTableProps struct {

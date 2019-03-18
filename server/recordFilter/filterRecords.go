@@ -3,9 +3,9 @@ package recordFilter
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/record"
-	"resultra/datasheet/server/recordValue"
+	"resultra/tracker/server/field"
+	"resultra/tracker/server/record"
+	"resultra/tracker/server/recordValue"
 )
 
 // A filterRuleContext includes all the runtime information which is common for each filter and

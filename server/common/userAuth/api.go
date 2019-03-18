@@ -5,9 +5,9 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/common/runtimeConfig"
-	"resultra/datasheet/server/generic/api"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/common/runtimeConfig"
+	"resultra/tracker/server/generic/api"
 )
 
 type DummyStructForPkgImport struct{ DummyVal int64 }

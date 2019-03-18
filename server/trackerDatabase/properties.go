@@ -1,7 +1,7 @@
 package trackerDatabase
 
 import (
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/tracker/server/generic/uniqueID"
 )
 
 type DatabaseProperties struct {

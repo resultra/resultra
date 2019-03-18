@@ -3,7 +3,7 @@ package dashboard
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/dashboard/components/common"
+	"resultra/tracker/server/dashboard/components/common"
 )
 
 type DeleteComponentParams struct {

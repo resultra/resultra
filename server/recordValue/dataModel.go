@@ -1,7 +1,7 @@
 package recordValue
 
 import (
-	"resultra/datasheet/server/record"
+	"resultra/tracker/server/record"
 	"time"
 )
 

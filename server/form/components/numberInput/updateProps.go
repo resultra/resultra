@@ -3,10 +3,10 @@ package numberInput
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/common/inputProps"
-	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/numberFormat"
+	"resultra/tracker/server/common/componentLayout"
+	"resultra/tracker/server/common/inputProps"
+	"resultra/tracker/server/form/components/common"
+	"resultra/tracker/server/generic/numberFormat"
 )
 
 type NumberInputIDInterface interface {

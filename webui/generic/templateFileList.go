@@ -1,11 +1,11 @@
 package generic
 
 import (
-	"resultra/datasheet/webui/generic/confirmDelete"
-	"resultra/datasheet/webui/generic/gauge"
-	"resultra/datasheet/webui/generic/propertiesSidebar"
-	"resultra/datasheet/webui/generic/valueFormat"
-	"resultra/datasheet/webui/generic/wizardDialog"
+	"resultra/tracker/webui/generic/confirmDelete"
+	"resultra/tracker/webui/generic/gauge"
+	"resultra/tracker/webui/generic/propertiesSidebar"
+	"resultra/tracker/webui/generic/valueFormat"
+	"resultra/tracker/webui/generic/wizardDialog"
 )
 
 var TemplateFileList []string

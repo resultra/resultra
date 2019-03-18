@@ -3,43 +3,43 @@ package admin
 import (
 	"github.com/gorilla/mux"
 
-	"resultra/datasheet/webui/admin/common"
+	"resultra/tracker/webui/admin/common"
 
-	"resultra/datasheet/webui/admin/mainAdminPage"
+	"resultra/tracker/webui/admin/mainAdminPage"
 
-	"resultra/datasheet/webui/admin/general"
+	"resultra/tracker/webui/admin/general"
 
-	"resultra/datasheet/webui/admin/fields/fieldList"
-	"resultra/datasheet/webui/admin/fields/fieldProps"
+	"resultra/tracker/webui/admin/fields/fieldList"
+	"resultra/tracker/webui/admin/fields/fieldProps"
 
-	"resultra/datasheet/webui/admin/formLink/formLinkList"
-	"resultra/datasheet/webui/admin/formLink/formLinkProps"
+	"resultra/tracker/webui/admin/formLink/formLinkList"
+	"resultra/tracker/webui/admin/formLink/formLinkProps"
 
-	"resultra/datasheet/webui/admin/tables/colProps"
-	"resultra/datasheet/webui/admin/tables/tableList"
-	"resultra/datasheet/webui/admin/tables/tableProps"
+	"resultra/tracker/webui/admin/tables/colProps"
+	"resultra/tracker/webui/admin/tables/tableList"
+	"resultra/tracker/webui/admin/tables/tableProps"
 
-	"resultra/datasheet/webui/admin/forms/design"
-	"resultra/datasheet/webui/admin/forms/formList"
+	"resultra/tracker/webui/admin/forms/design"
+	"resultra/tracker/webui/admin/forms/formList"
 
-	"resultra/datasheet/webui/admin/itemList/itemListList"
-	"resultra/datasheet/webui/admin/itemList/itemListProps"
+	"resultra/tracker/webui/admin/itemList/itemListList"
+	"resultra/tracker/webui/admin/itemList/itemListProps"
 
-	"resultra/datasheet/webui/admin/userRole/userRoleList"
-	"resultra/datasheet/webui/admin/userRole/userRoleProps"
+	"resultra/tracker/webui/admin/userRole/userRoleList"
+	"resultra/tracker/webui/admin/userRole/userRoleProps"
 
-	"resultra/datasheet/webui/admin/valueLists/valueListList"
-	"resultra/datasheet/webui/admin/valueLists/valueListProps"
+	"resultra/tracker/webui/admin/valueLists/valueListList"
+	"resultra/tracker/webui/admin/valueLists/valueListProps"
 
-	"resultra/datasheet/webui/admin/dashboards"
+	"resultra/tracker/webui/admin/dashboards"
 
-	"resultra/datasheet/webui/admin/globals"
+	"resultra/tracker/webui/admin/globals"
 
-	"resultra/datasheet/webui/admin/collaborators/collaboratorList"
-	"resultra/datasheet/webui/admin/collaborators/collaboratorProps"
+	"resultra/tracker/webui/admin/collaborators/collaboratorList"
+	"resultra/tracker/webui/admin/collaborators/collaboratorProps"
 
-	"resultra/datasheet/webui/admin/alerts/alertList"
-	"resultra/datasheet/webui/admin/alerts/alertProps"
+	"resultra/tracker/webui/admin/alerts/alertList"
+	"resultra/tracker/webui/admin/alerts/alertProps"
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {

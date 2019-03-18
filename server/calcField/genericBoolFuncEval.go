@@ -2,7 +2,7 @@ package calcField
 
 import (
 	"fmt"
-	"resultra/datasheet/server/field"
+	"resultra/tracker/server/field"
 )
 
 func twoNumberArgsBooleanResult(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {

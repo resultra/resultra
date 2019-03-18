@@ -3,9 +3,9 @@ package alertListView
 import (
 	"html/template"
 	"net/http"
-	"resultra/datasheet/webui/common"
-	"resultra/datasheet/webui/dashboard/components"
-	"resultra/datasheet/webui/generic"
+	"resultra/tracker/webui/common"
+	"resultra/tracker/webui/dashboard/components"
+	"resultra/tracker/webui/generic"
 )
 
 var contentTemplates *template.Template

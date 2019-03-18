@@ -5,13 +5,13 @@ import (
 	"html/template"
 	"net/http"
 
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/common/userAuth"
-	"resultra/datasheet/server/workspace"
-	"resultra/datasheet/webui/common"
-	"resultra/datasheet/webui/generic"
-	"resultra/datasheet/webui/thirdParty"
-	adminCommon "resultra/datasheet/webui/workspaceAdmin/common"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/common/userAuth"
+	"resultra/tracker/server/workspace"
+	"resultra/tracker/webui/common"
+	"resultra/tracker/webui/generic"
+	"resultra/tracker/webui/thirdParty"
+	adminCommon "resultra/tracker/webui/workspaceAdmin/common"
 )
 
 var userTemplates *template.Template

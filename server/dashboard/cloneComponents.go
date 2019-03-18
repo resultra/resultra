@@ -2,12 +2,12 @@ package dashboard
 
 import (
 	"fmt"
-	"resultra/datasheet/server/dashboard/components/barChart"
-	"resultra/datasheet/server/dashboard/components/gauge"
-	"resultra/datasheet/server/dashboard/components/header"
-	"resultra/datasheet/server/dashboard/components/summaryTable"
-	"resultra/datasheet/server/dashboard/components/summaryValue"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/dashboard/components/barChart"
+	"resultra/tracker/server/dashboard/components/gauge"
+	"resultra/tracker/server/dashboard/components/header"
+	"resultra/tracker/server/dashboard/components/summaryTable"
+	"resultra/tracker/server/dashboard/components/summaryValue"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 func cloneDashboardComponents(cloneParams *trackerDatabase.CloneDatabaseParams, srcParentDashboard string) error {

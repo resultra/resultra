@@ -2,10 +2,10 @@ package itemList
 
 import (
 	"fmt"
-	"resultra/datasheet/server/common/recordSortDataModel"
-	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/recordFilter"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/common/recordSortDataModel"
+	"resultra/tracker/server/generic/uniqueID"
+	"resultra/tracker/server/recordFilter"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 type ItemListViewProperties struct {

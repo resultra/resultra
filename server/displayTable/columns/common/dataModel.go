@@ -3,7 +3,7 @@ package common
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic"
+	"resultra/tracker/server/generic"
 )
 
 func SaveNewTableColumn(destDBHandle *sql.DB, columnType string, parentTableID string, columnID string, properties interface{}) error {

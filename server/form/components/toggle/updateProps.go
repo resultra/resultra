@@ -3,8 +3,8 @@ package toggle
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/form/components/common"
+	"resultra/tracker/server/common/componentLayout"
+	"resultra/tracker/server/form/components/common"
 )
 
 type ToggleIDInterface interface {

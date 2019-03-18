@@ -2,10 +2,10 @@ package numberInput
 
 import (
 	"fmt"
-	"resultra/datasheet/server/common/inputProps"
-	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/numberFormat"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/common/inputProps"
+	"resultra/tracker/server/form/components/common"
+	"resultra/tracker/server/generic/numberFormat"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 type NumberInputValidationProperties struct {

@@ -3,10 +3,10 @@ package databaseController
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/dashboard"
-	"resultra/datasheet/server/form"
-	"resultra/datasheet/server/itemList"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/dashboard"
+	"resultra/tracker/server/form"
+	"resultra/tracker/server/itemList"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 type DatabaseInfoParams struct {

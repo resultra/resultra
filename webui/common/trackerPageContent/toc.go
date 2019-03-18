@@ -3,7 +3,7 @@ package trackerPageContent
 import (
 	"html/template"
 	"net/http"
-	"resultra/datasheet/webui/generic"
+	"resultra/tracker/webui/generic"
 )
 
 var tocTemplates *template.Template

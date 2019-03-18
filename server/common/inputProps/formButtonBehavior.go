@@ -2,8 +2,8 @@ package inputProps
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic/stringValidation"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/tracker/server/generic/stringValidation"
+	"resultra/tracker/server/generic/uniqueID"
 )
 
 const popupBehaviorModeless string = "modeless"

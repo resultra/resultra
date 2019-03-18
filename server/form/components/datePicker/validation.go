@@ -3,8 +3,8 @@ package datePicker
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic/inputValidation"
-	"resultra/datasheet/server/generic/timestamp"
+	"resultra/tracker/server/generic/inputValidation"
+	"resultra/tracker/server/generic/timestamp"
 	"time"
 )
 

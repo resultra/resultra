@@ -3,8 +3,8 @@ package adminController
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/userAuth"
-	"resultra/datasheet/server/userRole"
+	"resultra/tracker/server/common/userAuth"
+	"resultra/tracker/server/userRole"
 )
 
 type UserRoleInfo struct {

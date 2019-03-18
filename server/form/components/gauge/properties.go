@@ -2,11 +2,11 @@ package gauge
 
 import (
 	"fmt"
-	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/numberFormat"
-	"resultra/datasheet/server/generic/threshold"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/common/componentLayout"
+	"resultra/tracker/server/form/components/common"
+	"resultra/tracker/server/generic/numberFormat"
+	"resultra/tracker/server/generic/threshold"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 type GaugeProperties struct {

@@ -3,8 +3,8 @@ package textSelection
 import (
 	"database/sql"
 	"log"
-	"resultra/datasheet/server/generic/inputValidation"
-	"resultra/datasheet/server/generic/stringValidation"
+	"resultra/tracker/server/generic/inputValidation"
+	"resultra/tracker/server/generic/stringValidation"
 )
 
 type TextSelectionValidateInputParams struct {

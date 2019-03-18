@@ -3,8 +3,8 @@ package progress
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/numberFormat"
+	"resultra/tracker/server/form/components/common"
+	"resultra/tracker/server/generic/numberFormat"
 )
 
 type ProgressIDInterface interface {

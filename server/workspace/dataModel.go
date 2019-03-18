@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/common/userAuth"
+	"resultra/tracker/server/generic"
+	"resultra/tracker/server/common/userAuth"
 )
 
 type WorkspaceInfo struct {

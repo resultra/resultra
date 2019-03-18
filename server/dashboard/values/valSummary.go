@@ -3,8 +3,8 @@ package values
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/tracker/server/field"
+	"resultra/tracker/server/generic/uniqueID"
 )
 
 const ValSummaryCount string = "count"

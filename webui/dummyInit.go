@@ -1,7 +1,7 @@
 package webui
 
 import (
-	"resultra/datasheet/server/common/userAuth"
+	"resultra/tracker/server/common/userAuth"
 )
 
 // Dummy variables to force inclusion of the packages (and not trigger an error from the Golang compiler).

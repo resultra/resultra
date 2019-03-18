@@ -3,11 +3,11 @@ package dashboardController
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/recordSortDataModel"
-	"resultra/datasheet/server/dashboard"
-	"resultra/datasheet/server/dashboard/components/summaryTable"
-	"resultra/datasheet/server/recordFilter"
-	"resultra/datasheet/server/recordReadController"
+	"resultra/tracker/server/common/recordSortDataModel"
+	"resultra/tracker/server/dashboard"
+	"resultra/tracker/server/dashboard/components/summaryTable"
+	"resultra/tracker/server/recordFilter"
+	"resultra/tracker/server/recordReadController"
 )
 
 type SummaryTableData struct {

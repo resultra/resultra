@@ -7,10 +7,10 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"resultra/datasheet/server"
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/common/runtimeConfig"
-	"resultra/datasheet/webui"
+	"resultra/tracker/server"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/common/runtimeConfig"
+	"resultra/tracker/webui"
 )
 
 const staticSiteResourcesPrefix string = `/static/`

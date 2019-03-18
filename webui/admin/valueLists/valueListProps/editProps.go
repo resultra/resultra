@@ -4,19 +4,19 @@ import (
 	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
-	"resultra/datasheet/server/databaseController"
-	"resultra/datasheet/server/userRole"
-	"resultra/datasheet/server/valueList"
-	"resultra/datasheet/webui/thirdParty"
+	"resultra/tracker/server/databaseController"
+	"resultra/tracker/server/userRole"
+	"resultra/tracker/server/valueList"
+	"resultra/tracker/webui/thirdParty"
 
-	"resultra/datasheet/server/common/runtimeConfig"
-	"resultra/datasheet/server/workspace"
-	adminCommon "resultra/datasheet/webui/admin/common"
+	"resultra/tracker/server/common/runtimeConfig"
+	"resultra/tracker/server/workspace"
+	adminCommon "resultra/tracker/webui/admin/common"
 
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/common/userAuth"
-	"resultra/datasheet/webui/common"
-	"resultra/datasheet/webui/generic"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/common/userAuth"
+	"resultra/tracker/webui/common"
+	"resultra/tracker/webui/generic"
 )
 
 var formLinkTemplates *template.Template

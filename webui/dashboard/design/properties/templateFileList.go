@@ -1,9 +1,9 @@
 package properties
 
 import (
-	"resultra/datasheet/webui/dashboard/design/properties/dashboardName"
-	"resultra/datasheet/webui/dashboard/design/properties/includeInSidebar"
-	"resultra/datasheet/webui/dashboard/design/properties/userRole"
+	"resultra/tracker/webui/dashboard/design/properties/dashboardName"
+	"resultra/tracker/webui/dashboard/design/properties/includeInSidebar"
+	"resultra/tracker/webui/dashboard/design/properties/userRole"
 )
 
 var TemplateFileList []string

@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/generic/api"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/generic/api"
 )
 
 type FieldIDInterface interface {

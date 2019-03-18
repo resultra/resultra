@@ -1,7 +1,7 @@
 package properties
 
 import (
-	"resultra/datasheet/webui/admin/forms/design/properties/formName"
+	"resultra/tracker/webui/admin/forms/design/properties/formName"
 )
 
 var TemplateFileList []string

@@ -3,9 +3,9 @@ package trackerDatabase
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/stringValidation"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/tracker/server/generic"
+	"resultra/tracker/server/generic/stringValidation"
+	"resultra/tracker/server/generic/uniqueID"
 )
 
 type Database struct {

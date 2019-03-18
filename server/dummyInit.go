@@ -1,20 +1,20 @@
 package server
 
 import (
-	"resultra/datasheet/server/adminController"
-	"resultra/datasheet/server/common/attachment"
-	"resultra/datasheet/server/dashboardController"
-	"resultra/datasheet/server/databaseController"
-	"resultra/datasheet/server/displayTable"
-	"resultra/datasheet/server/form"
-	"resultra/datasheet/server/formLink"
-	"resultra/datasheet/server/global"
-	"resultra/datasheet/server/recordReadController"
-	"resultra/datasheet/server/recordUpdate"
-	"resultra/datasheet/server/timelineController"
-	"resultra/datasheet/server/trackerDatabase"
-	"resultra/datasheet/server/userRoleController"
-	"resultra/datasheet/server/valueList"
+	"resultra/tracker/server/adminController"
+	"resultra/tracker/server/common/attachment"
+	"resultra/tracker/server/dashboardController"
+	"resultra/tracker/server/databaseController"
+	"resultra/tracker/server/displayTable"
+	"resultra/tracker/server/form"
+	"resultra/tracker/server/formLink"
+	"resultra/tracker/server/global"
+	"resultra/tracker/server/recordReadController"
+	"resultra/tracker/server/recordUpdate"
+	"resultra/tracker/server/timelineController"
+	"resultra/tracker/server/trackerDatabase"
+	"resultra/tracker/server/userRoleController"
+	"resultra/tracker/server/valueList"
 )
 
 // Dummy variables to force inclusion of the packages (and not trigger an error from the Golang compiler).

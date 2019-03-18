@@ -1,8 +1,8 @@
 package recordSort
 
 import (
-	"resultra/datasheet/server/common/recordSortDataModel"
-	"resultra/datasheet/server/recordValue"
+	"resultra/tracker/server/common/recordSortDataModel"
+	"resultra/tracker/server/recordValue"
 	"sort"
 )
 

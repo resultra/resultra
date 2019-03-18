@@ -3,8 +3,8 @@ package calcField
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/global"
+	"resultra/tracker/server/field"
+	"resultra/tracker/server/global"
 	"strings"
 )
 

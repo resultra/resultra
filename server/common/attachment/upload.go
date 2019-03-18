@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 	"path"
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/common/userAuth"
-	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/common/userAuth"
+	"resultra/tracker/server/generic/api"
+	"resultra/tracker/server/generic/uniqueID"
 )
 
 func UniqueAttachmentFileNameFromUserFileName(userFileName string) string {

@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/generic/inputValidation"
-	"resultra/datasheet/server/generic/timestamp"
+	"resultra/tracker/server/generic/inputValidation"
+	"resultra/tracker/server/generic/timestamp"
 	"time"
 )
 

@@ -2,8 +2,8 @@ package note
 
 import (
 	"fmt"
-	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/form/components/common"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 type ValidationProperties struct {

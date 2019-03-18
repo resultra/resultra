@@ -3,9 +3,9 @@ package adminController
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/server/userRole"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/generic/api"
+	"resultra/tracker/server/userRole"
 )
 
 type DummyStructForInclude struct {

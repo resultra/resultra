@@ -1,11 +1,11 @@
 package components
 
 import (
-	"resultra/datasheet/webui/dashboard/components/barChart"
-	"resultra/datasheet/webui/dashboard/components/gauge"
-	"resultra/datasheet/webui/dashboard/components/header"
-	"resultra/datasheet/webui/dashboard/components/summaryTable"
-	"resultra/datasheet/webui/dashboard/components/summaryValue"
+	"resultra/tracker/webui/dashboard/components/barChart"
+	"resultra/tracker/webui/dashboard/components/gauge"
+	"resultra/tracker/webui/dashboard/components/header"
+	"resultra/tracker/webui/dashboard/components/summaryTable"
+	"resultra/tracker/webui/dashboard/components/summaryValue"
 )
 
 type ComponentDesignTemplateParams struct {

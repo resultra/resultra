@@ -3,7 +3,7 @@ package calcField
 import (
 	"fmt"
 	"log"
-	"resultra/datasheet/server/field"
+	"resultra/tracker/server/field"
 )
 
 func zeroNumberArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {

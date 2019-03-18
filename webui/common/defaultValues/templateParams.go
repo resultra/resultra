@@ -1,7 +1,7 @@
 package defaultValues
 
 import (
-	"resultra/datasheet/webui/common/field"
+	"resultra/tracker/webui/common/field"
 )
 
 type DefaultValuesPanelTemplateParams struct {

@@ -2,9 +2,9 @@ package userTag
 
 import (
 	"fmt"
-	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/form/components/common"
+	"resultra/tracker/server/generic/uniqueID"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 type ValidationProperties struct {

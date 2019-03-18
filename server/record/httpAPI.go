@@ -3,9 +3,9 @@ package record
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/generic/api"
+	"resultra/tracker/server/generic/uniqueID"
 )
 
 func init() {

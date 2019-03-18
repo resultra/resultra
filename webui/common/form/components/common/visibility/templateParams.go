@@ -1,8 +1,8 @@
 package visibility
 
 import (
-	"resultra/datasheet/webui/common/recordFilter"
-	"resultra/datasheet/webui/generic/propertiesSidebar"
+	"resultra/tracker/webui/common/recordFilter"
+	"resultra/tracker/webui/generic/propertiesSidebar"
 )
 
 type VisibilityPropertyTemplateParams struct {

@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/recordFilter"
+	"resultra/tracker/server/recordFilter"
 )
 
 type FormComponentFilterMap map[string]recordFilter.RecordFilterRuleSet

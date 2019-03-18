@@ -3,8 +3,8 @@ package itemView
 import (
 	"html/template"
 	"net/http"
-	"resultra/datasheet/webui/common"
-	"resultra/datasheet/webui/generic"
+	"resultra/tracker/webui/common"
+	"resultra/tracker/webui/generic"
 )
 
 var contentTemplates *template.Template

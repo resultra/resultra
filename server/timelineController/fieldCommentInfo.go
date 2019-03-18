@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/common/userAuth"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/common/userAuth"
 	"time"
 )
 

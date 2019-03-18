@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"regexp"
-	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/field"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 type identReplacementMap map[string]string

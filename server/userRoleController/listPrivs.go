@@ -3,8 +3,8 @@ package userRoleController
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/itemList"
-	"resultra/datasheet/server/userRole"
+	"resultra/tracker/server/itemList"
+	"resultra/tracker/server/userRole"
 )
 
 func getRoleListPrivsWithDefaults(trackerDBHandle *sql.DB, roleID string) ([]userRole.RoleListPriv, error) {

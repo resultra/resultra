@@ -1,10 +1,10 @@
 package colProps
 
 import (
-	"resultra/datasheet/webui/admin/common/inputProperties"
-	"resultra/datasheet/webui/common/form/components/common/label"
-	"resultra/datasheet/webui/common/valueThreshold"
-	"resultra/datasheet/webui/generic/propertiesSidebar"
+	"resultra/tracker/webui/admin/common/inputProperties"
+	"resultra/tracker/webui/common/form/components/common/label"
+	"resultra/tracker/webui/common/valueThreshold"
+	"resultra/tracker/webui/generic/propertiesSidebar"
 )
 
 type ProgressColPropsTemplateParams struct {

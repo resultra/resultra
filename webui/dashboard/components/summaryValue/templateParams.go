@@ -1,12 +1,12 @@
 package summaryValue
 
 import (
-	"resultra/datasheet/webui/admin/common/inputProperties"
-	"resultra/datasheet/webui/common/recordFilter"
-	"resultra/datasheet/webui/common/valueThreshold"
-	"resultra/datasheet/webui/dashboard/components/common/delete"
-	"resultra/datasheet/webui/dashboard/components/common/valueSummary"
-	"resultra/datasheet/webui/generic/propertiesSidebar"
+	"resultra/tracker/webui/admin/common/inputProperties"
+	"resultra/tracker/webui/common/recordFilter"
+	"resultra/tracker/webui/common/valueThreshold"
+	"resultra/tracker/webui/dashboard/components/common/delete"
+	"resultra/tracker/webui/dashboard/components/common/valueSummary"
+	"resultra/tracker/webui/generic/propertiesSidebar"
 )
 
 type SummaryValDesignTemplateParams struct {

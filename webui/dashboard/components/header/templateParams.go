@@ -1,8 +1,8 @@
 package header
 
 import (
-	"resultra/datasheet/webui/dashboard/components/common/delete"
-	"resultra/datasheet/webui/generic/propertiesSidebar"
+	"resultra/tracker/webui/dashboard/components/common/delete"
+	"resultra/tracker/webui/generic/propertiesSidebar"
 )
 
 type HeaderDesignTemplateParams struct {

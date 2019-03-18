@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/tracker/server/generic"
+	"resultra/tracker/server/generic/uniqueID"
 	"time"
 )
 

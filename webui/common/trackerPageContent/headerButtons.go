@@ -5,10 +5,10 @@ import (
 
 	"html/template"
 	"net/http"
-	"resultra/datasheet/server/common/userAuth"
-	"resultra/datasheet/server/userRole"
-	"resultra/datasheet/webui/common/alert"
-	"resultra/datasheet/webui/generic"
+	"resultra/tracker/server/common/userAuth"
+	"resultra/tracker/server/userRole"
+	"resultra/tracker/webui/common/alert"
+	"resultra/tracker/webui/generic"
 )
 
 var headerTemplates *template.Template

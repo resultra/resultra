@@ -3,8 +3,8 @@ package calcField
 import (
 	"fmt"
 	"math"
-	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/generic/timestamp"
+	"resultra/tracker/server/field"
+	"resultra/tracker/server/generic/timestamp"
 	"time"
 )
 

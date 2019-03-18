@@ -1,7 +1,7 @@
 package view
 
 import (
-	"resultra/datasheet/webui/dashboard/components"
+	"resultra/tracker/webui/dashboard/components"
 )
 
 type ViewDashboardTemplateParams struct {

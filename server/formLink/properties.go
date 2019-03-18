@@ -2,8 +2,8 @@ package formLink
 
 import (
 	"fmt"
-	"resultra/datasheet/server/record"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/record"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 type FormLinkProperties struct {

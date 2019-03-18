@@ -2,8 +2,8 @@ package alert
 
 import (
 	"fmt"
-	"resultra/datasheet/server/recordFilter"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/recordFilter"
+	"resultra/tracker/server/trackerDatabase"
 	"time"
 )
 

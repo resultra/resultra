@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/server/common/userAuth"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/generic/api"
+	"resultra/tracker/server/common/userAuth"
 )
 
 type DummyStructForInclude struct{ Val int64 }

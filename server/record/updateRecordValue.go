@@ -3,9 +3,9 @@ package record
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/generic/timestamp"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/tracker/server/field"
+	"resultra/tracker/server/generic/timestamp"
+	"resultra/tracker/server/generic/uniqueID"
 )
 
 type RecordUpdater interface {

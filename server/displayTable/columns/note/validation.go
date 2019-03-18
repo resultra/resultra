@@ -2,8 +2,8 @@ package note
 
 import (
 	"database/sql"
-	"resultra/datasheet/server/generic/inputValidation"
-	"resultra/datasheet/server/generic/stringValidation"
+	"resultra/tracker/server/generic/inputValidation"
+	"resultra/tracker/server/generic/stringValidation"
 )
 
 type ValidateInputParams struct {

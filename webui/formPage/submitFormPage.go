@@ -7,16 +7,16 @@ import (
 	"log"
 	"net/http"
 
-	"resultra/datasheet/server/databaseController"
-	"resultra/datasheet/server/formLink"
-	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/server/common/userAuth"
-	"resultra/datasheet/server/userRole"
+	"resultra/tracker/server/databaseController"
+	"resultra/tracker/server/formLink"
+	"resultra/tracker/server/generic/api"
+	"resultra/tracker/server/common/userAuth"
+	"resultra/tracker/server/userRole"
 
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/webui/common"
-	"resultra/datasheet/webui/generic"
-	"resultra/datasheet/webui/thirdParty"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/webui/common"
+	"resultra/tracker/webui/generic"
+	"resultra/tracker/webui/thirdParty"
 )
 
 var submitFormTemplates *template.Template

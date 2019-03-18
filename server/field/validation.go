@@ -3,8 +3,8 @@ package field
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/stringValidation"
+	"resultra/tracker/server/generic"
+	"resultra/tracker/server/generic/stringValidation"
 )
 
 func validateUniqueFieldName(trackerDBHandle *sql.DB, databaseID string, fieldID string, fieldName string) error {

@@ -3,8 +3,8 @@ package dashboardController
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/dashboard"
-	"resultra/datasheet/server/dashboard/components/header"
+	"resultra/tracker/server/dashboard"
+	"resultra/tracker/server/dashboard/components/header"
 )
 
 type GetDashboardDataParams struct {

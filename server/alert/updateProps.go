@@ -3,7 +3,7 @@ package alert
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/recordFilter"
+	"resultra/tracker/server/recordFilter"
 )
 
 type AlertIDInterface interface {

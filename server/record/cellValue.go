@@ -2,8 +2,8 @@ package record
 
 import (
 	"fmt"
-	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/generic"
+	"resultra/tracker/server/field"
+	"resultra/tracker/server/generic"
 	"time"
 )
 

@@ -3,9 +3,9 @@ package recordSort
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/recordSortDataModel"
-	"resultra/datasheet/server/field"
-	"resultra/datasheet/server/recordValue"
+	"resultra/tracker/server/common/recordSortDataModel"
+	"resultra/tracker/server/field"
+	"resultra/tracker/server/recordValue"
 )
 
 func SortRecordValues(trackerDBHandle *sql.DB, parentDatabaseID string,

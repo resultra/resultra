@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/userAuth"
-	"resultra/datasheet/server/generic/stringValidation"
-	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/common/userAuth"
+	"resultra/tracker/server/generic/stringValidation"
+	"resultra/tracker/server/generic/uniqueID"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 func AddDatabaseAdmin(trackerDBHandle *sql.DB, databaseID string, userID string) error {

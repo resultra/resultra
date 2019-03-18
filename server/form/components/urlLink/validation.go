@@ -3,8 +3,8 @@ package urlLink
 import (
 	"database/sql"
 	"github.com/asaskevich/govalidator"
-	"resultra/datasheet/server/generic/inputValidation"
-	"resultra/datasheet/server/generic/stringValidation"
+	"resultra/tracker/server/generic/inputValidation"
+	"resultra/tracker/server/generic/stringValidation"
 )
 
 type UrlLinkValidateInputParams struct {

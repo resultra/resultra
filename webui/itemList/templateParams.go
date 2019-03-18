@@ -1,9 +1,9 @@
 package itemList
 
 import (
-	"resultra/datasheet/webui/common/form/components"
-	"resultra/datasheet/webui/common/recordFilter"
-	"resultra/datasheet/webui/generic/propertiesSidebar"
+	"resultra/tracker/webui/common/form/components"
+	"resultra/tracker/webui/common/recordFilter"
+	"resultra/tracker/webui/generic/propertiesSidebar"
 )
 
 type ViewListTemplateParams struct {

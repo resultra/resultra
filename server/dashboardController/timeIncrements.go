@@ -1,8 +1,8 @@
 package dashboardController
 
 import (
-	"resultra/datasheet/server/dashboard/values"
-	"resultra/datasheet/server/generic/timestamp"
+	"resultra/tracker/server/dashboard/values"
+	"resultra/tracker/server/generic/timestamp"
 	"time"
 )
 

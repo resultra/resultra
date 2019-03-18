@@ -4,10 +4,10 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/generic/api"
-	"resultra/datasheet/server/generic/stringValidation"
-	"resultra/datasheet/server/userRole"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/generic/api"
+	"resultra/tracker/server/generic/stringValidation"
+	"resultra/tracker/server/userRole"
 )
 
 type DummyStructForInclude struct {

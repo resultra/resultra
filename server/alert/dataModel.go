@@ -4,11 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/stringValidation"
-	"resultra/datasheet/server/generic/timestamp"
-	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/generic"
+	"resultra/tracker/server/generic/stringValidation"
+	"resultra/tracker/server/generic/timestamp"
+	"resultra/tracker/server/generic/uniqueID"
+	"resultra/tracker/server/trackerDatabase"
 	"time"
 )
 

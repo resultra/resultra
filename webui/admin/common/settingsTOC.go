@@ -3,9 +3,9 @@ package common
 import (
 	"html/template"
 	"net/http"
-	"resultra/datasheet/server/common/runtimeConfig"
-	"resultra/datasheet/webui/common"
-	"resultra/datasheet/webui/generic"
+	"resultra/tracker/server/common/runtimeConfig"
+	"resultra/tracker/webui/common"
+	"resultra/tracker/webui/generic"
 )
 
 var contentTemplates *template.Template

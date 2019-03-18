@@ -1,7 +1,7 @@
 package common
 
 import (
-	"resultra/datasheet/server/recordFilter"
+	"resultra/tracker/server/recordFilter"
 )
 
 type ComponentVisibilityProperties struct {

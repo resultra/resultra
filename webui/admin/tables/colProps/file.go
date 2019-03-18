@@ -1,9 +1,9 @@
 package colProps
 
 import (
-	"resultra/datasheet/webui/common/form/components/common/label"
-	"resultra/datasheet/webui/common/form/components/common/permissions"
-	"resultra/datasheet/webui/generic/propertiesSidebar"
+	"resultra/tracker/webui/common/form/components/common/label"
+	"resultra/tracker/webui/common/form/components/common/permissions"
+	"resultra/tracker/webui/generic/propertiesSidebar"
 )
 
 type FileColPropsTemplateParams struct {

@@ -1,11 +1,11 @@
 package common
 
 import (
-	"resultra/datasheet/webui/dashboard/components/common/componentTitle"
-	"resultra/datasheet/webui/dashboard/components/common/delete"
-	"resultra/datasheet/webui/dashboard/components/common/newComponentDialog"
-	"resultra/datasheet/webui/dashboard/components/common/valueGrouping"
-	"resultra/datasheet/webui/dashboard/components/common/valueSummary"
+	"resultra/tracker/webui/dashboard/components/common/componentTitle"
+	"resultra/tracker/webui/dashboard/components/common/delete"
+	"resultra/tracker/webui/dashboard/components/common/newComponentDialog"
+	"resultra/tracker/webui/dashboard/components/common/valueGrouping"
+	"resultra/tracker/webui/dashboard/components/common/valueSummary"
 )
 
 var TemplateFileList []string

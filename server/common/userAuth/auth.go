@@ -5,8 +5,8 @@ import (
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/common/runtimeConfig"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/common/runtimeConfig"
 )
 
 var authCookieStore *sessions.CookieStore

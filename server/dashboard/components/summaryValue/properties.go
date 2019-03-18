@@ -2,11 +2,11 @@ package summaryValue
 
 import (
 	"fmt"
-	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/dashboard/values"
-	"resultra/datasheet/server/generic/threshold"
-	"resultra/datasheet/server/recordFilter"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/common/componentLayout"
+	"resultra/tracker/server/dashboard/values"
+	"resultra/tracker/server/generic/threshold"
+	"resultra/tracker/server/recordFilter"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 type SummaryValProps struct {

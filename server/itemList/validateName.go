@@ -3,7 +3,7 @@ package itemList
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic/stringValidation"
+	"resultra/tracker/server/generic/stringValidation"
 )
 
 func validateUniqueItemListName(trackerDBHandle *sql.DB, databaseID string, listID string, listName string) error {

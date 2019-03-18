@@ -2,9 +2,9 @@ package progress
 
 import (
 	"fmt"
-	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/generic/numberFormat"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/form/components/common"
+	"resultra/tracker/server/generic/numberFormat"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 type ThresholdValues struct {

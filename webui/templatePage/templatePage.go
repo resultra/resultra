@@ -5,11 +5,11 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"resultra/datasheet/server/common/runtimeConfig"
-	"resultra/datasheet/server/common/userAuth"
-	"resultra/datasheet/webui/common"
-	"resultra/datasheet/webui/generic"
-	"resultra/datasheet/webui/thirdParty"
+	"resultra/tracker/server/common/runtimeConfig"
+	"resultra/tracker/server/common/userAuth"
+	"resultra/tracker/webui/common"
+	"resultra/tracker/webui/generic"
+	"resultra/tracker/webui/thirdParty"
 )
 
 var homePageTemplates *template.Template

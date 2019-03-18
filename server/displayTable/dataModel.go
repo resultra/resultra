@@ -3,10 +3,10 @@ package displayTable
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/stringValidation"
-	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/generic"
+	"resultra/tracker/server/generic/stringValidation"
+	"resultra/tracker/server/generic/uniqueID"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 type NewTableParams struct {

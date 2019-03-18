@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/common/inputProps"
-	"resultra/datasheet/server/record"
+	"resultra/tracker/server/common/inputProps"
+	"resultra/tracker/server/record"
 )
 
 type ButtonIDInterface interface {

@@ -1,7 +1,7 @@
 package recordFilter
 
 import (
-	"resultra/datasheet/webui/common/field"
+	"resultra/tracker/webui/common/field"
 )
 
 type FilterPanelTemplateParams struct {

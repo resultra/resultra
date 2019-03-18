@@ -3,13 +3,13 @@ package design
 import (
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/common/runtimeConfig"
-	"resultra/datasheet/server/dashboard"
-	"resultra/datasheet/server/trackerDatabase"
-	"resultra/datasheet/server/userRole"
-	"resultra/datasheet/webui/dashboard/components"
-	"resultra/datasheet/webui/generic/propertiesSidebar"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/common/runtimeConfig"
+	"resultra/tracker/server/dashboard"
+	"resultra/tracker/server/trackerDatabase"
+	"resultra/tracker/server/userRole"
+	"resultra/tracker/webui/dashboard/components"
+	"resultra/tracker/webui/generic/propertiesSidebar"
 )
 
 type DashboardTemplateParams struct {

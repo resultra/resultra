@@ -3,7 +3,7 @@ package common
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic"
+	"resultra/tracker/server/generic"
 )
 
 func SaveNewDashboardComponent(destDBHandle *sql.DB, componentType string, parentDashboard string,

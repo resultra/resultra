@@ -2,9 +2,9 @@ package emailAddr
 
 import (
 	"database/sql"
-	"resultra/datasheet/server/generic/inputValidation"
-	"resultra/datasheet/server/generic/stringValidation"
-	"resultra/datasheet/server/common/userAuth"
+	"resultra/tracker/server/generic/inputValidation"
+	"resultra/tracker/server/generic/stringValidation"
+	"resultra/tracker/server/common/userAuth"
 )
 
 type EmailAddrValidateInputParams struct {

@@ -3,7 +3,7 @@ package global
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic"
+	"resultra/tracker/server/generic"
 	"time"
 )
 

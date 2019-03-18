@@ -3,10 +3,10 @@ package view
 import (
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/databaseController"
-	"resultra/datasheet/server/userRole"
-	"resultra/datasheet/webui/dashboard/components"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/databaseController"
+	"resultra/tracker/server/userRole"
+	"resultra/tracker/webui/dashboard/components"
 )
 
 type ViewDashboardInfo struct {

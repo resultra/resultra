@@ -1,7 +1,7 @@
 package delete
 
 import (
-	"resultra/datasheet/webui/generic/propertiesSidebar"
+	"resultra/tracker/webui/generic/propertiesSidebar"
 )
 
 type DeletePropertyPanelTemplateParams struct {

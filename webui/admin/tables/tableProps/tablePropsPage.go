@@ -4,19 +4,19 @@ import (
 	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
-	"resultra/datasheet/server/common/runtimeConfig"
-	"resultra/datasheet/server/databaseController"
-	"resultra/datasheet/server/displayTable"
-	"resultra/datasheet/server/userRole"
-	adminCommon "resultra/datasheet/webui/admin/common"
+	"resultra/tracker/server/common/runtimeConfig"
+	"resultra/tracker/server/databaseController"
+	"resultra/tracker/server/displayTable"
+	"resultra/tracker/server/userRole"
+	adminCommon "resultra/tracker/webui/admin/common"
 
-	"resultra/datasheet/server/workspace"
+	"resultra/tracker/server/workspace"
 
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/common/userAuth"
-	"resultra/datasheet/webui/common"
-	"resultra/datasheet/webui/generic"
-	"resultra/datasheet/webui/thirdParty"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/common/userAuth"
+	"resultra/tracker/webui/common"
+	"resultra/tracker/webui/generic"
+	"resultra/tracker/webui/thirdParty"
 )
 
 var tablePropTemplates *template.Template

@@ -3,22 +3,22 @@ package webui
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"resultra/datasheet/webui/admin"
-	"resultra/datasheet/webui/alertListView"
-	designDashboard "resultra/datasheet/webui/dashboard/design"
-	dashboardView "resultra/datasheet/webui/dashboard/view"
-	"resultra/datasheet/webui/formPage"
-	"resultra/datasheet/webui/homePage"
-	"resultra/datasheet/webui/itemList"
-	"resultra/datasheet/webui/itemView"
-	"resultra/datasheet/webui/mainWindow"
-	"resultra/datasheet/webui/templatePage"
-	"resultra/datasheet/webui/userAdmin"
+	"resultra/tracker/webui/admin"
+	"resultra/tracker/webui/alertListView"
+	designDashboard "resultra/tracker/webui/dashboard/design"
+	dashboardView "resultra/tracker/webui/dashboard/view"
+	"resultra/tracker/webui/formPage"
+	"resultra/tracker/webui/homePage"
+	"resultra/tracker/webui/itemList"
+	"resultra/tracker/webui/itemView"
+	"resultra/tracker/webui/mainWindow"
+	"resultra/tracker/webui/templatePage"
+	"resultra/tracker/webui/userAdmin"
 
-	"resultra/datasheet/webui/common/trackerPageContent"
+	"resultra/tracker/webui/common/trackerPageContent"
 
-	"resultra/datasheet/webui/workspaceAdmin/general"
-	"resultra/datasheet/webui/workspaceAdmin/users"
+	"resultra/tracker/webui/workspaceAdmin/general"
+	"resultra/tracker/webui/workspaceAdmin/users"
 )
 
 func init() {

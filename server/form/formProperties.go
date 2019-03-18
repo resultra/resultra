@@ -1,8 +1,8 @@
 package form
 
 import (
-	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/common/componentLayout"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 type FormProperties struct {

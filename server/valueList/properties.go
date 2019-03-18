@@ -1,7 +1,7 @@
 package valueList
 
 import (
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 type ValueListValue struct {

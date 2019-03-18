@@ -2,7 +2,7 @@ package global
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic"
+	"resultra/tracker/server/generic"
 	"time"
 )
 

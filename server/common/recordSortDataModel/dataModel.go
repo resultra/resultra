@@ -2,7 +2,7 @@ package recordSortDataModel
 
 import (
 	"fmt"
-	"resultra/datasheet/server/generic/uniqueID"
+	"resultra/tracker/server/generic/uniqueID"
 )
 
 const SortDirectionAsc string = "asc"

@@ -3,12 +3,12 @@ package summaryValue
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/dashboard/components/common"
-	"resultra/datasheet/server/dashboard/values"
-	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/common/componentLayout"
+	"resultra/tracker/server/dashboard/components/common"
+	"resultra/tracker/server/dashboard/values"
+	"resultra/tracker/server/generic"
+	"resultra/tracker/server/generic/uniqueID"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 const summaryValEntityKind string = "summaryVal"

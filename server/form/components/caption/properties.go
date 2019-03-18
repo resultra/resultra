@@ -2,9 +2,9 @@ package caption
 
 import (
 	"fmt"
-	"resultra/datasheet/server/common/componentLayout"
-	"resultra/datasheet/server/form/components/common"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/common/componentLayout"
+	"resultra/tracker/server/form/components/common"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 const colorSchemeDefault string = "default"

@@ -3,9 +3,9 @@ package itemList
 import (
 	"fmt"
 	"net/http"
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/itemList"
-	"resultra/datasheet/server/userRole"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/itemList"
+	"resultra/tracker/server/userRole"
 )
 
 type ViewListInfo struct {

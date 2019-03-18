@@ -6,20 +6,20 @@ import (
 	"log"
 	"net/http"
 
-	"resultra/datasheet/server/common/runtimeConfig"
-	"resultra/datasheet/server/common/userAuth"
-	"resultra/datasheet/server/generic/api"
+	"resultra/tracker/server/common/runtimeConfig"
+	"resultra/tracker/server/common/userAuth"
+	"resultra/tracker/server/generic/api"
 
-	"resultra/datasheet/server/common/databaseWrapper"
-	"resultra/datasheet/server/workspace"
-	"resultra/datasheet/webui/alertListView"
-	"resultra/datasheet/webui/common"
-	dashboardComponents "resultra/datasheet/webui/dashboard/components"
-	dashboardView "resultra/datasheet/webui/dashboard/view"
-	"resultra/datasheet/webui/generic"
-	"resultra/datasheet/webui/itemList"
-	"resultra/datasheet/webui/itemView"
-	"resultra/datasheet/webui/thirdParty"
+	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/workspace"
+	"resultra/tracker/webui/alertListView"
+	"resultra/tracker/webui/common"
+	dashboardComponents "resultra/tracker/webui/dashboard/components"
+	dashboardView "resultra/tracker/webui/dashboard/view"
+	"resultra/tracker/webui/generic"
+	"resultra/tracker/webui/itemList"
+	"resultra/tracker/webui/itemView"
+	"resultra/tracker/webui/thirdParty"
 )
 
 var mainWindowTemplates *template.Template

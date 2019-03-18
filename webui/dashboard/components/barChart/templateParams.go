@@ -1,12 +1,12 @@
 package barChart
 
 import (
-	"resultra/datasheet/webui/admin/common/inputProperties"
-	"resultra/datasheet/webui/common/recordFilter"
-	"resultra/datasheet/webui/dashboard/components/common/delete"
-	"resultra/datasheet/webui/dashboard/components/common/newComponentDialog"
-	"resultra/datasheet/webui/dashboard/components/common/valueSummary"
-	"resultra/datasheet/webui/generic/propertiesSidebar"
+	"resultra/tracker/webui/admin/common/inputProperties"
+	"resultra/tracker/webui/common/recordFilter"
+	"resultra/tracker/webui/dashboard/components/common/delete"
+	"resultra/tracker/webui/dashboard/components/common/newComponentDialog"
+	"resultra/tracker/webui/dashboard/components/common/valueSummary"
+	"resultra/tracker/webui/generic/propertiesSidebar"
 )
 
 type BarChartDesignTemplateParams struct {

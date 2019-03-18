@@ -3,7 +3,7 @@ package numberInput
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic/inputValidation"
+	"resultra/tracker/server/generic/inputValidation"
 )
 
 type NumberInputValidateInputParams struct {

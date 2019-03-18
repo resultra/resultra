@@ -1,6 +1,6 @@
 package displayTable
 
-import "resultra/datasheet/server/generic/uniqueID"
+import "resultra/tracker/server/generic/uniqueID"
 
 type DisplayTableProperties struct {
 	OrderedColumns []string `json:"orderedColumns"`

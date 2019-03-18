@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/datasheet/server/displayTable/columns/common"
-	"resultra/datasheet/server/generic"
-	"resultra/datasheet/server/generic/uniqueID"
-	"resultra/datasheet/server/trackerDatabase"
+	"resultra/tracker/server/displayTable/columns/common"
+	"resultra/tracker/server/generic"
+	"resultra/tracker/server/generic/uniqueID"
+	"resultra/tracker/server/trackerDatabase"
 )
 
 const buttonEntityKind string = "button"

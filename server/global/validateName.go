@@ -3,7 +3,7 @@ package global
 import (
 	"database/sql"
 	"fmt"
-	"resultra/datasheet/server/generic/stringValidation"
+	"resultra/tracker/server/generic/stringValidation"
 )
 
 func validateUniqueGlobalName(trackerDBHandle *sql.DB, databaseID string, globalID string, globalName string) error {
