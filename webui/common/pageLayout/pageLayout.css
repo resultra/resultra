@@ -1,4 +1,9 @@
-/* Set the toggle buttons used for toggling the filter & sort pane on and off */
+/* This file is part of the Resultra project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+ /* Set the toggle buttons used for toggling the filter & sort pane on and off */
 
 .toggler-east-closed { 
 		 background-image:url(/static/common/pageLayout/fa-chevron-left_12_0_000000_none.png);

@@ -1,4 +1,9 @@
-.attachmentPopupGallery {
+/* This file is part of the Resultra project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+ .attachmentPopupGallery {
 	/* The attachment gallery needs a higher z-index than normal Bootstrap dialogs (1050) and attachment dialogs (1060). 
 	   This is the case because attachment galleries may be shown on top of Bootstrap dialogs used
 	   to show popup forms.

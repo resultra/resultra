@@ -1,4 +1,9 @@
-
+/* This file is part of the Resultra project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+ 
 /* Override bootstrap formatting of labels inside checkboxes and radio buttons. After starting to use 
    the awesome bootstrap checkboxes the left padding was 20px when it needs to be 5px */
 .checkbox label {

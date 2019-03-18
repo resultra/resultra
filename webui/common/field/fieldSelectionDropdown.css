@@ -1,4 +1,9 @@
-/* The following CSS will constrain the height of the field selection dropdown to 200px
+/* This file is part of the Resultra project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+ /* The following CSS will constrain the height of the field selection dropdown to 200px
    and allow for scrolling of the dropdown menu, so it doesn't run off the page when
    there are many fields. */
 

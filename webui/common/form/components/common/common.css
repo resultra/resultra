@@ -1,4 +1,9 @@
-
+/* This file is part of the Resultra project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+ 
 
 /* Mix-in class for URLs, email addresses and other types of information which need to be displayed
    inside a box with a form-like appearance that works with Bootstrap input groups */

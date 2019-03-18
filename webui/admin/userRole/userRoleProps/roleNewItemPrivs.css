@@ -1,4 +1,9 @@
-#adminNewItemLinkRolesPrivilegesList .list-group-item {
+/* This file is part of the Resultra project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+ #adminNewItemLinkRolesPrivilegesList .list-group-item {
 	padding-bottom: 2px;
 	padding-top:2px;
 	border:0px;

@@ -1,4 +1,9 @@
-/* The standard bootstrap bg-* color classes don't work with form controls
+/* This file is part of the Resultra project.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+ /* The standard bootstrap bg-* color classes don't work with form controls
    (see https://stackoverflow.com/questions/37863405/how-to-add-bootstrap-bg-x-e-g-bg-danger-classes-to-input-textboxes)
    So, what is needed is a set of formatting classes which accomplish the same/similar thing. The color codes are 
    duplicated from the bootstrap.css file from the bg-* css classes. */
