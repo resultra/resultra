@@ -7,17 +7,17 @@
 DEPTH = ..
 include $(DEPTH)/build/common.mk
 
-.PHONY: datasheetServer resultraLocalBackend
+.PHONY: resultraServer resultraLocalBackend
 
 all: build export
 
-build: datasheetServer resultraLocalBackend
+build: resultraServer resultraLocalBackend
 
 clean:
-	$(RM) datasheetServer resultraLocalBackend
+	$(RM) resultraServer resultraLocalBackend
 	
-datasheetServer: 
-	$(GOBUILD) datasheetServer.go
+resultraServer: 
+	$(GOBUILD) resultraServer.go
 	
 resultraLocalBackend:
 	$(GOBUILD) resultraLocalBackend.go
@@ -28,5 +28,5 @@ windows:
 	
 	
 export:
-	$(INSTALL_FILE) datasheetServer $(PKG_BIN_DIR)
+	$(INSTALL_FILE) resultraServer $(PKG_BIN_DIR)
 	$(INSTALL_FILE) resultraLocalBackend $(PKG_BIN_DIR)
