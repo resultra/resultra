@@ -20,7 +20,7 @@ electronClient/dist/*
 electronClient/factoryTemplates/trackers.db
 
 # Executable files
-serverMain/datasheetServer
+serverMain/resultraServer
 serverMain/resultraLocalBackend
 serverMain/resultraLocalBackend.exe
 serverAdmin/exportTrackerTemplate
@@ -37,4 +37,5 @@ vendor/*
 *.swp
 *.pyc
 *_dump.txt
+
 
