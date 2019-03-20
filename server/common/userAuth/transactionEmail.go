@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"net/smtp"
+	"resultra/tracker/server/common/runtimeConfig"
 )
 
 type TransactionEmailParams struct {
@@ -18,19 +19,30 @@ type TransactionEmailParams struct {
 }
 
 func SendTransactionEmail(params TransactionEmailParams) error {
-	from := "admin-email-test@resultra.com"
-	pass := "here4test"
-	mailSrv := "smtp.gmail.com"
+
+	config := runtimeConfig.CurrRuntimeConfig.TransactionalEmailConfig
+
+	if config == nil {
+		log.Println("WARNING: Transactional email not configured: Email not sent: to = %v, subject = %v, body = %v",
+			params.ToAddress, params.Subject, params.Body)
+		return nil
+	}
+
+	from := config.FromEmailAddr
+	pass := config.SMTPPassword
+	mailSrv := config.SMTPServerAddress
+	sendMailSrv := fmt.Sprintf("%s:%d", config.SMTPServerAddress, *config.SMTPPort)
+	sendMailUser := config.SMTPUserName
 
 	// Set up authentication information.
-	auth := smtp.PlainAuth("", from, pass, mailSrv)
+	auth := smtp.PlainAuth("", sendMailUser, pass, mailSrv)
 
 	msg := "From: " + from + "\n" +
 		"To: " + params.ToAddress + "\n" +
 		"Subject:" + params.Subject + "\n\n" +
 		params.Body
 
-	mailErr := smtp.SendMail("smtp.gmail.com:587", auth,
+	mailErr := smtp.SendMail(sendMailSrv, auth,
 		from, []string{params.ToAddress}, []byte(msg))
 
 	if mailErr != nil {

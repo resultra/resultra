@@ -26,9 +26,20 @@ type TrackerDatabaseConfig struct {
 	LocalAttachmentConfig      *databaseWrapper.LocalAttachmentStorageConfig               `json:"localAttachmentStorage"`
 }
 
+type TransactionalEmailConfig struct {
+	FromEmailAddr     string `json:"fromEmailAddress"`
+	SMTPServerAddress string `json:"smtpServerAddress"`
+	SMTPUserName      string `json:"smtpUserName"`
+	SMTPPort          *int   `json:"smtpPort"`
+	SMTPPassword      string `json:"smtpPassword"`
+}
+
+const defaultSMTPPort int = 587
+
 type RuntimeConfig struct {
 	FactoryTemplateDatabaseConfig *FactoryTemplateDatabaseConfig `json:"factoryTemplateDatabase"`
 	TrackerDatabaseConfig         TrackerDatabaseConfig          `json:"trackerDatabase"`
+	TransactionalEmailConfig      *TransactionalEmailConfig      `json:"transactionalEmail"`
 
 	PortNumber            int  `json:"portNumber"`
 	IsSingleUserWorkspace bool `json:"isSingleUserWorkspace"`
@@ -38,8 +49,9 @@ const permsOwnerReadWriteOnly os.FileMode = 0700
 
 func NewDefaultRuntimeConfig() RuntimeConfig {
 	config := RuntimeConfig{
-		PortNumber:            defaultPortNum,
-		IsSingleUserWorkspace: false}
+		PortNumber:               defaultPortNum,
+		IsSingleUserWorkspace:    false,
+		TransactionalEmailConfig: nil}
 	return config
 }
 
@@ -92,6 +104,31 @@ func InitRuntimeConfig(config RuntimeConfig) error {
 		} else {
 			return fmt.Errorf("runtime configuration missing database connection configuration for factory templates")
 		}
+	}
+
+	if config.TransactionalEmailConfig == nil {
+		log.Println("WARNING: No configuration provided for transactional email. No email will be sent. Use for development only.")
+	} else {
+		emailConfig := config.TransactionalEmailConfig
+		if len(emailConfig.FromEmailAddr) == 0 {
+			// TODO - Do a full-blown validation of the email address format
+			return fmt.Errorf("configuration missing return address for transactional emails")
+		}
+		if len(emailConfig.SMTPServerAddress) == 0 {
+			return fmt.Errorf("configuration missing SMTP server address for transactionsl emails")
+		}
+		if len(emailConfig.SMTPPassword) == 0 {
+			return fmt.Errorf("configuration missing SMTP password for transactionsl emails")
+		}
+		if len(emailConfig.SMTPUserName) == 0 {
+			return fmt.Errorf("configuration missing SMTP user name for transactionsl emails")
+		}
+
+		if emailConfig.SMTPPort == nil {
+			defaultPort := defaultSMTPPort
+			config.TransactionalEmailConfig.SMTPPort = &defaultPort
+		}
+
 	}
 
 	CurrRuntimeConfig = config
