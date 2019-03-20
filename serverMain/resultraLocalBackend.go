@@ -60,7 +60,9 @@ func main() {
 	config.FactoryTemplateDatabaseConfig = &factoryTemplateConfig
 	config.IsSingleUserWorkspace = true
 
-	config.PortNumber = defaultLocalPortNumber
+	config.ServerConfig.ListenPortNumber = defaultLocalPortNumber
+	siteURL := runtimeConfig.LocalHostBaseURL()
+	config.ServerConfig.SiteBaseURL = &siteURL
 
 	if err := runtimeConfig.InitRuntimeConfig(config); err != nil {
 		log.Printf("Error setting configuration: %v\n", err)
@@ -76,9 +78,9 @@ func main() {
 	http.Handle(staticSiteResourcesPrefix, http.StripPrefix(staticSiteResourcesPrefix,
 		http.FileServer(http.Dir("./static"))))
 
-	log.Printf("Server started: listening on port: %v", runtimeConfig.CurrRuntimeConfig.PortNumber)
+	log.Printf("Server started: listening on port: %v", runtimeConfig.CurrRuntimeConfig.ServerConfig.ListenPortNumber)
 	// Only listen on the localhost/loopback port. T
-	portNumString := fmt.Sprintf("127.0.0.1:%v", runtimeConfig.CurrRuntimeConfig.PortNumber)
+	portNumString := fmt.Sprintf("127.0.0.1:%v", runtimeConfig.CurrRuntimeConfig.ServerConfig.ListenPortNumber)
 	http.ListenAndServe(portNumString, nil)
 
 }

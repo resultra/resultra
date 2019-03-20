@@ -6,11 +6,24 @@
 package runtimeConfig
 
 import "fmt"
+import "strings"
+
+func LocalHostBaseURL() string {
+	return fmt.Sprintf("http://localhost:%v/", CurrRuntimeConfig.ServerConfig.ListenPortNumber)
+}
 
 func GetSiteBaseURL() string {
-	return fmt.Sprintf("http://localhost:%v/", CurrRuntimeConfig.PortNumber)
+	return *CurrRuntimeConfig.ServerConfig.SiteBaseURL
 }
 
 func GetSiteResourceURL(resourceSuffix string) string {
-	return GetSiteBaseURL() + resourceSuffix
+
+	siteBaseURL := GetSiteBaseURL()
+
+	sep := ""
+	if !strings.HasSuffix(siteBaseURL, "/") {
+		sep = "/"
+	}
+
+	return GetSiteBaseURL() + sep + resourceSuffix
 }

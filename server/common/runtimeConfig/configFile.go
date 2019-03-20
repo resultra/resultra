@@ -41,15 +41,23 @@ type RuntimeConfig struct {
 	TrackerDatabaseConfig         TrackerDatabaseConfig          `json:"trackerDatabase"`
 	TransactionalEmailConfig      *TransactionalEmailConfig      `json:"transactionalEmail"`
 
-	PortNumber            int  `json:"portNumber"`
+	ServerConfig          `json:"server"`
 	IsSingleUserWorkspace bool `json:"isSingleUserWorkspace"`
 }
 
 const permsOwnerReadWriteOnly os.FileMode = 0700
 
+type ServerConfig struct {
+	ListenPortNumber int     `json:"listenPortNumber"`
+	SiteBaseURL      *string `json:"baseSiteURL"`
+}
+
 func NewDefaultRuntimeConfig() RuntimeConfig {
+
+	defaultServerConfig := ServerConfig{ListenPortNumber: defaultPortNum}
+
 	config := RuntimeConfig{
-		PortNumber:               defaultPortNum,
+		ServerConfig:             defaultServerConfig,
 		IsSingleUserWorkspace:    false,
 		TransactionalEmailConfig: nil}
 	return config
@@ -106,8 +114,14 @@ func InitRuntimeConfig(config RuntimeConfig) error {
 		}
 	}
 
+	if config.ServerConfig.SiteBaseURL == nil {
+		localHostURL := fmt.Sprintf("http://localhost:%v/", config.ServerConfig.ListenPortNumber)
+		log.Printf("WARNING: No configuration provided for the base URL for the server, defaulting to %v. Use for development and testing only", localHostURL)
+		config.ServerConfig.SiteBaseURL = &localHostURL
+	}
+
 	if config.TransactionalEmailConfig == nil {
-		log.Println("WARNING: No configuration provided for transactional email. No email will be sent. Use for development only.")
+		log.Println("WARNING: No configuration provided for transactional email. No email will be sent. Use for development and testing only.")
 	} else {
 		emailConfig := config.TransactionalEmailConfig
 		if len(emailConfig.FromEmailAddr) == 0 {

@@ -51,8 +51,11 @@ func main() {
 	http.Handle(staticSiteResourcesPrefix, http.StripPrefix(staticSiteResourcesPrefix,
 		http.FileServer(http.Dir("./static"))))
 
-	log.Printf("Server started: listening on port: %v", runtimeConfig.CurrRuntimeConfig.PortNumber)
-	portNumString := fmt.Sprintf(":%v", runtimeConfig.CurrRuntimeConfig.PortNumber)
-	http.ListenAndServe(portNumString, nil)
+	log.Printf("Server started: listening on port: %v", runtimeConfig.CurrRuntimeConfig.ServerConfig.ListenPortNumber)
+	portNumString := fmt.Sprintf(":%v", runtimeConfig.CurrRuntimeConfig.ServerConfig.ListenPortNumber)
+
+	listenErr := http.ListenAndServe(portNumString, nil)
+
+	log.Fatal(fmt.Errorf("Error starting up server on given port: %v", listenErr))
 
 }
