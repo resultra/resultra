@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"net/http"
 	"resultra/tracker/server/common/databaseWrapper"
 	"resultra/tracker/server/common/runtimeConfig"
@@ -16,15 +17,25 @@ import (
 
 var authCookieStore *sessions.CookieStore
 
+func getCookieStore() *sessions.CookieStore {
+
+	// Initialize the cookie store once, when first referenced. This initialization needs to wait until the first
+	// request, since the runtime configuration isn't setup yet when the init() function is called.
+	if authCookieStore == nil {
+
+		authKey := []byte(runtimeConfig.CurrRuntimeConfig.ServerConfig.CookieAuthKey)
+		encryptionKey := []byte(runtimeConfig.CurrRuntimeConfig.ServerConfig.CookieEncryptionKey)
+
+		authCookieStore = sessions.NewCookieStore(authKey, encryptionKey)
+
+		authCookieStore.MaxAge(3600 * 8) //  default to 8 hours
+
+	}
+	return authCookieStore
+}
+
 func init() {
 
-	// TODO (Important) replace the session key with a key from a config file.
-	// Both the authentication and encryption keys are 32 bytes for AES-256
-	// http://www.gorillatoolkit.org/pkg/sessions#NewCookieStore
-	authCookieStore = sessions.NewCookieStore([]byte("nRrHLlHcHH0u7fUxyzHje9m7uJ5SnJzP"),
-		[]byte("CAp1KsJncuMzARfookqSFLqsBi5ag2bE"))
-
-	authCookieStore.MaxAge(3600 * 8) //  default to 8 hours
 }
 
 func updateCookieStoreAge() {
@@ -36,7 +47,7 @@ func updateCookieStoreAge() {
 		numHoursSession = 24 * 365 * 10 // 10 years!
 	}
 
-	authCookieStore.MaxAge(3600 * numHoursSession)
+	getCookieStore().MaxAge(3600 * numHoursSession)
 
 }
 
@@ -74,8 +85,9 @@ func loginUser(rw http.ResponseWriter, req *http.Request, params LoginParams) *A
 
 	updateCookieStoreAge()
 
-	authSession, sessErr := authCookieStore.Get(req, "auth")
+	authSession, sessErr := getCookieStore().Get(req, "auth")
 	if sessErr != nil {
+		log.Printf("Failure creating session: %v", sessErr)
 		return newAuthResponse(false, "System error: couldn't create session")
 	}
 	authSession.Values["user_id"] = user.UserID
@@ -95,7 +107,7 @@ func LoginSingleUser(rw http.ResponseWriter, req *http.Request) *AuthResponse {
 
 func GetCurrentUserID(req *http.Request) (string, error) {
 
-	authSession, sessErr := authCookieStore.Get(req, "auth")
+	authSession, sessErr := getCookieStore().Get(req, "auth")
 	if sessErr != nil {
 		return "", fmt.Errorf("GetCurrentUserID: Couldn't get session to authenticate user")
 	}
@@ -127,7 +139,7 @@ func GetCurrentUserInfo(req *http.Request) (*UserInfo, error) {
 
 func signOutUser(rw http.ResponseWriter, req *http.Request) *AuthResponse {
 
-	authSession, sessErr := authCookieStore.Get(req, "auth")
+	authSession, sessErr := getCookieStore().Get(req, "auth")
 	if sessErr != nil {
 		return newAuthResponse(false, "Couldn't get session information to sign out")
 	}

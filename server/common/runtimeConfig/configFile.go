@@ -48,8 +48,10 @@ type RuntimeConfig struct {
 const permsOwnerReadWriteOnly os.FileMode = 0700
 
 type ServerConfig struct {
-	ListenPortNumber int     `json:"listenPortNumber"`
-	SiteBaseURL      *string `json:"baseSiteURL"`
+	ListenPortNumber    int     `json:"listenPortNumber"`
+	SiteBaseURL         *string `json:"baseSiteURL"`
+	CookieAuthKey       string  `json:"cookieAuthenticationKey"`
+	CookieEncryptionKey string  `json:"cookieEncryptionKey"`
 }
 
 func NewDefaultRuntimeConfig() RuntimeConfig {
@@ -118,6 +120,14 @@ func InitRuntimeConfig(config RuntimeConfig) error {
 		localHostURL := fmt.Sprintf("http://localhost:%v/", config.ServerConfig.ListenPortNumber)
 		log.Printf("WARNING: No configuration provided for the base URL for the server, defaulting to %v. Use for development and testing only", localHostURL)
 		config.ServerConfig.SiteBaseURL = &localHostURL
+	}
+
+	requiredCookieKeyLen := 32
+	if len(config.ServerConfig.CookieAuthKey) != requiredCookieKeyLen {
+		return fmt.Errorf("Missing/incorrect cookie authentication authentication key: %v: key must be 32 bytes")
+	}
+	if len(config.ServerConfig.CookieEncryptionKey) != requiredCookieKeyLen {
+		return fmt.Errorf("Missing/incorrect cookie authentication encryption key: %v: key must be 32 bytes")
 	}
 
 	if config.TransactionalEmailConfig == nil {

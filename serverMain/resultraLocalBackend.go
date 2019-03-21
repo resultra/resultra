@@ -63,6 +63,10 @@ func main() {
 	config.ServerConfig.ListenPortNumber = defaultLocalPortNumber
 	siteURL := runtimeConfig.LocalHostBaseURL()
 	config.ServerConfig.SiteBaseURL = &siteURL
+	// Hard-code the cookie keys. Since the service is only used locally and the user is
+	// not authencicated, this should sufice.
+	config.ServerConfig.CookieAuthKey = "nRrHLlHcHH0u7fUxyzHje9m7uJ5SnJzP"
+	config.ServerConfig.CookieEncryptionKey = "CAp1KsJncuMzARfookqSFLqsBi5ag2bE"
 
 	if err := runtimeConfig.InitRuntimeConfig(config); err != nil {
 		log.Printf("Error setting configuration: %v\n", err)
