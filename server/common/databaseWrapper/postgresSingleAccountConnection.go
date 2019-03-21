@@ -14,10 +14,10 @@ import (
 )
 
 type PostgresSingleAccountDatabaseConfig struct {
-	TrackerDBHostName string `json:"trackerDBHostName"`
-	TrackerUserName   string `json:"trackerUserName"`
-	TrackerPassword   string `json:"trackerPassword"`
-	TrackerDBName     string `json:"trackerDBName"`
+	TrackerDBHostName string `json:"databaseHostName"`
+	TrackerUserName   string `json:"databaseUserName"`
+	TrackerPassword   string `json:"databasePassword"`
+	TrackerDBName     string `json:"trackerDatabaseName"`
 	TrackerDBHandle   *sql.DB
 }
 
@@ -40,7 +40,7 @@ func (config *PostgresSingleAccountDatabaseConfig) connectToTrackerDatabase() (*
 	// is needed.
 	if err := trackerDBHandle.Ping(); err != nil {
 		return nil, fmt.Errorf(
-			"PostgresMultipleAccountDatabaseConfig.connectToAccountTrackerDatabase:: can't establish connection to account info database (ping failed): %v", err)
+			"PostgresSingleAccountDatabaseConfig.connectToAccountTrackerDatabase: can't establish connection to account info database (ping failed): %v", err)
 	}
 
 	return trackerDBHandle, nil

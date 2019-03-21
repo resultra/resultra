@@ -21,9 +21,10 @@ type FactoryTemplateDatabaseConfig struct {
 }
 
 type TrackerDatabaseConfig struct {
-	LocalDatabaseConfig        *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `json:"localSQLiteDatabase"`
-	PostgresMultiAccountConfig *databaseWrapper.PostgresMultipleAccountDatabaseConfig      `json:"postgresMultiAccountDatabase"`
-	LocalAttachmentConfig      *databaseWrapper.LocalAttachmentStorageConfig               `json:"localAttachmentStorage"`
+	LocalDatabaseConfig         *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `json:"localSQLiteDatabase"`
+	PostgresMultiAccountConfig  *databaseWrapper.PostgresMultipleAccountDatabaseConfig      `json:"postgresMultiAccountDatabase"`
+	PostgresSingleAccountConfig *databaseWrapper.PostgresSingleAccountDatabaseConfig        `json:"postgresDatabase"`
+	LocalAttachmentConfig       *databaseWrapper.LocalAttachmentStorageConfig               `json:"localAttachmentStorage"`
 }
 
 type TransactionalEmailConfig struct {
@@ -81,6 +82,11 @@ func InitRuntimeConfig(config RuntimeConfig) error {
 	} else if config.TrackerDatabaseConfig.PostgresMultiAccountConfig != nil {
 		log.Println("Initialize Postgres multi-account database connection")
 		if err := databaseWrapper.InitConnectionConfiguration(config.TrackerDatabaseConfig.PostgresMultiAccountConfig); err != nil {
+			return err
+		}
+	} else if config.TrackerDatabaseConfig.PostgresSingleAccountConfig != nil {
+		log.Println("Initialize Postgres single database connection")
+		if err := databaseWrapper.InitConnectionConfiguration(config.TrackerDatabaseConfig.PostgresSingleAccountConfig); err != nil {
 			return err
 		}
 	} else {
@@ -177,7 +183,7 @@ func InitConfigFromConfigFile(configFileName string) error {
 
 	err := InitRuntimeConfig(config)
 	if err != nil {
-		return fmt.Errorf("ERROR: Can't initialize configuration: error = %v: config file = %v", configFileName)
+		return fmt.Errorf("ERROR: Can't initialize configuration: error = %v: config file = %v", err, configFileName)
 	}
 
 	return nil
