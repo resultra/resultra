@@ -12,15 +12,6 @@ import (
 
 var trackerDatabaseSchema = `
 
-CREATE TABLE IF NOT EXISTS databases (
-   database_id text PRIMARY KEY,
-   name text NOT NULL,
-   properties text NOT NULL,
-   description text NOT NULL,
-   is_template boolean NOT NULL,
-   is_active boolean NOT NULL DEFAULT '1',
-   created_by_user_id text REFERENCES users (user_id)
-);
 
 
 CREATE TABLE IF NOT EXISTS users ( 
@@ -50,6 +41,16 @@ CREATE TABLE IF NOT EXISTS user_invites (
 	invite_timestamp_utc timestamp NOT NULL,
 	invitee_email_addr text NOT NULL,
 	invite_msg text NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS databases (
+   database_id text PRIMARY KEY,
+   name text NOT NULL,
+   properties text NOT NULL,
+   description text NOT NULL,
+   is_template boolean NOT NULL,
+   is_active boolean NOT NULL DEFAULT '1',
+   created_by_user_id text REFERENCES users (user_id)
 );
 
 
