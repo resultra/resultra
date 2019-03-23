@@ -59,7 +59,7 @@ func main() {
 	fmt.Printf("Database password: %v\n", databasePassword)
 	fmt.Printf("\n")
 
-	createDatabase := func() error {
+	createDatabaseAndWebUser := func() error {
 		connectStr := fmt.Sprintf("host=%s user=%s password=%s sslmode=disable",
 			databaseHost, databaseUserName, databasePassword)
 
@@ -73,29 +73,48 @@ func main() {
 		if createDBErr != nil {
 			return fmt.Errorf("can't create main resultra database: %v", createDBErr)
 		}
-		return nil
 
-		_, createUserErr := dbHandle.Exec(`CREATE USER resultra`)
+		// TODO - don't hard-code the password
+		_, createUserErr := dbHandle.Exec(`CREATE USER resultra_web_user WITH NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD 'resultrawebpw'`)
 		if createUserErr != nil {
 			return fmt.Errorf("can't create main resultra database: %v", createUserErr)
 		}
 		return nil
 	}
 
-	initDatabaseTables := func() error {
-
+	connectToResultraDB := func() (*sql.DB, error) {
 		connectStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
 			databaseHost, databaseUserName, databasePassword, "resultra")
 
 		dbHandle, openErr := sql.Open("postgres", connectStr)
 		if openErr != nil {
-			return fmt.Errorf("can't establish connection to database: %v", openErr)
+			return nil, fmt.Errorf("can't establish connection to database: %v", openErr)
 		}
-		defer dbHandle.Close()
+		return dbHandle, nil
+	}
+
+	initDatabaseTables := func(dbHandle *sql.DB) error {
 
 		initErr := databaseWrapper.InitNewTrackerDatabaseToDest(dbHandle)
 		if initErr != nil {
 			return fmt.Errorf("can't initialize tracker database: %v", initErr)
+		}
+
+		return nil
+	}
+
+	grantWebUserPerms := func(dbHandle *sql.DB) error {
+
+		permsSchema := `REVOKE ALL ON DATABASE resultra FROM public;` +
+			`GRANT CONNECT ON DATABASE resultra TO resultra_web_user;` +
+			`REVOKE ALL ON SCHEMA public FROM public;` +
+			`GRANT USAGE ON SCHEMA public TO resultra_web_user;` +
+			`REVOKE ALL ON ALL TABLES IN SCHEMA public FROM PUBLIC;` +
+			`GRANT SELECT,UPDATE,INSERT,DELETE ON ALL TABLES in SCHEMA public to resultra_web_user;` +
+			`ALTER DEFAULT PRIVILEGES FOR ROLE resultra_web_user IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO resultra_web_user;`
+
+		if _, permsErr := dbHandle.Exec(permsSchema); permsErr != nil {
+			return fmt.Errorf("can't initialize tracker database permissions: %v", permsErr)
 		}
 
 		return nil
@@ -106,14 +125,25 @@ func main() {
 
 		fmt.Printf("Setting up database ...")
 
-		createErr := createDatabase()
+		createErr := createDatabaseAndWebUser()
 		if createErr != nil {
 			log.Fatalf("Error setting up tracker database: %v", createErr)
 		}
 
-		initErr := initDatabaseTables()
+		resultraDBHandle, dbErr := connectToResultraDB()
+		if dbErr != nil {
+			log.Fatalf("Error setting up tracker database: %v", createErr)
+		}
+		defer resultraDBHandle.Close()
+
+		initErr := initDatabaseTables(resultraDBHandle)
 		if createErr != nil {
 			log.Fatalf("Error initializing tracker database tables: %v", initErr)
+		}
+
+		grantErr := grantWebUserPerms(resultraDBHandle)
+		if grantErr != nil {
+			log.Fatalf("Error initializing tracker database tables: %v", grantErr)
 		}
 
 		fmt.Printf(" done.\n")

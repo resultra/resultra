@@ -10,7 +10,7 @@ include $(DEPTH)/build/common.mk
 
 all: build
 
-build: addResultraAccount exportTrackerTemplate
+build: addResultraAccount exportTrackerTemplate setupResultraServerDatabase
 
 clean:
 	$(RM) addResultraAccount exportTrackerTemplate
