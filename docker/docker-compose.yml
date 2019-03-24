@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: resultra-postgres
+    volumes:
+      - /var/www/resultra/data:/var/lib/postgresql/data
+    restart: always
+  web:
+    depends_on:
+      - db
+    image: resultra-server:latest
+    build:
+      context: .
+    container_name: resultra-server
+    volumes:
+      - /var/www/resultra:/var/www/resultra
+    ports:
+      - "43400:43400"
+    restart: always
