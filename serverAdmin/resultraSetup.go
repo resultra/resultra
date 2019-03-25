@@ -2,8 +2,14 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
+
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/client"
+	"golang.org/x/net/context"
 )
 
 func makeInstallDir(dirLabel string, dirName string, perm os.FileMode) error {
@@ -57,9 +63,63 @@ func createInstallDirs() error {
 	return nil
 }
 
+func configureDatabase() error {
+	ctx := context.Background()
+
+	//	cli, err := client.NewEnvClient()
+	// TBD: Without "pinning" the API client version, the daemon might return
+	// an error message like: client version 1.40 is too new. Maximum supported API version is 1.39
+	cli, err := client.NewClientWithOpts(client.WithVersion("1.39"))
+	if err != nil {
+		panic(err)
+	}
+
+	reader, err := cli.ImagePull(ctx, "docker.io/library/alpine", types.ImagePullOptions{})
+	if err != nil {
+		panic(err)
+	}
+	io.Copy(os.Stdout, reader)
+
+	resp, err := cli.ContainerCreate(ctx, &container.Config{
+		Image: "alpine",
+		Cmd:   []string{"echo", "hello world"},
+		Tty:   true,
+	}, nil, nil, "")
+	if err != nil {
+		panic(err)
+	}
+
+	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+		panic(err)
+	}
+
+	statusCh, errCh := cli.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
+	select {
+	case err := <-errCh:
+		if err != nil {
+			panic(err)
+		}
+	case <-statusCh:
+	}
+
+	out, err := cli.ContainerLogs(ctx, resp.ID, types.ContainerLogsOptions{ShowStdout: true})
+	if err != nil {
+		panic(err)
+	}
+
+	io.Copy(os.Stdout, out)
+
+	return nil
+}
+
 func main() {
 	dirsErr := createInstallDirs()
 	if dirsErr != nil {
 		log.Fatalf("ERROR: Setup failed: %v", dirsErr)
+	}
+
+	dbConfigErr := configureDatabase()
+	if dbConfigErr != nil {
+		log.Fatalf("ERROR: Setup failed: %v", dbConfigErr)
 	}
 }
