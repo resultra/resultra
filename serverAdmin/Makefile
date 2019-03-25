@@ -6,11 +6,11 @@
 DEPTH = ..
 include $(DEPTH)/build/common.mk
 
-.PHONY: addResultraAccount exportTrackerTemplate setupResultraServerDatabase
+.PHONY: addResultraAccount exportTrackerTemplate setupResultraServerDatabase resultraSetup
 
 all: build
 
-build: addResultraAccount exportTrackerTemplate setupResultraServerDatabase
+build: addResultraAccount exportTrackerTemplate setupResultraServerDatabase resultraSetup
 
 clean:
 	$(RM) addResultraAccount exportTrackerTemplate
@@ -26,3 +26,8 @@ exportTrackerTemplate:
 setupResultraServerDatabase:
 	$(GOBUILD) setupResultraServerDatabase.go
 	$(INSTALL_FILE) setupResultraServerDatabase $(PKG_BIN_DIR)
+
+
+resultraSetup:
+	$(GOBUILD) resultraSetup.go
+	$(INSTALL_FILE) resultraSetup $(PKG_BIN_DIR)
