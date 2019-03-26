@@ -13,6 +13,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
+	"github.com/docker/go-connections/nat"
 	"golang.org/x/net/context"
 )
 
@@ -96,7 +97,7 @@ func initDatabase() error {
 		return nil
 	}
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(3 * time.Second)
 
 	createErr := createDatabaseAndWebUser()
 	if createErr != nil {
@@ -117,18 +118,27 @@ func configureDatabase() error {
 		panic(err)
 	}
 
-	reader, err := cli.ImagePull(ctx, "docker.io/library/postgres", types.ImagePullOptions{})
+	reader, err := cli.ImagePull(ctx, "postgres:latest", types.ImagePullOptions{})
 	if err != nil {
 		panic(err)
 	}
 	io.Copy(os.Stdout, reader)
 
+	exposedPorts := nat.PortSet{ "5432/tcp": struct{}{} }
 	containerConfig := container.Config{
 		Image: "postgres",
-		//	Cmd:   []string{"echo", "hello world"},
-		Tty: true}
+		ExposedPorts: exposedPorts,
+		Tty: true,
+		AttachStdout: true,
+		AttachStderr: true }
+
 	volumeBind := databaseDir + ":" + "/var/lib/postgresql/data" + ":rw"
-	hostConfig := container.HostConfig{Binds: []string{volumeBind}}
+	containerPort := nat.Port("5432/tcp")
+	hostPortBinding := 	[]nat.PortBinding{ { HostIP: "0.0.0.0", HostPort: "5432" } }
+	portMap := nat.PortMap{ containerPort: hostPortBinding }
+	hostConfig := container.HostConfig{
+		Binds: []string{volumeBind},
+		PortBindings: portMap }
 	resp, err := cli.ContainerCreate(ctx, &containerConfig, &hostConfig, nil, "")
 	if err != nil {
 		panic(err)
@@ -154,15 +164,6 @@ func configureDatabase() error {
 		panic(err)
 	}
 
-	/*	statusCh, errCh := cli.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
-		select {
-		case err := <-errCh:
-			if err != nil {
-				panic(err)
-			}
-		case <-statusCh:
-		}
-	*/
 	log.Printf("Postgres Container: ID = %v: stopped\n", resp.ID)
 
 	return nil
