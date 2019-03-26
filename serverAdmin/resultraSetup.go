@@ -5,6 +5,10 @@ import (
 	"io"
 	"log"
 	"os"
+	"time"
+
+	"database/sql"
+	_ "github.com/lib/pq"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -35,6 +39,7 @@ const databaseDir string = "/var/resultra/appdata/database"
 const configDir string = "/var/resultra/config"
 
 func createInstallDirs() error {
+
 	topLevelDirErr := makeInstallDir("top level directory", topLevelInstallDir, 0755)
 	if topLevelDirErr != nil {
 		return topLevelDirErr
@@ -63,10 +68,48 @@ func createInstallDirs() error {
 	return nil
 }
 
+func initDatabase() error {
+	databaseHost := "localhost"
+	databaseUserName := "postgres"
+	databasePassword := "docker"
+
+	createDatabaseAndWebUser := func() error {
+		connectStr := fmt.Sprintf("host=%s user=%s password=%s sslmode=disable",
+			databaseHost, databaseUserName, databasePassword)
+
+		dbHandle, openErr := sql.Open("postgres", connectStr)
+		if openErr != nil {
+			return fmt.Errorf("can't establish connection to database: %v", openErr)
+		}
+		defer dbHandle.Close()
+
+		_, createDBErr := dbHandle.Exec(`CREATE DATABASE resultra`)
+		if createDBErr != nil {
+			return fmt.Errorf("can't create main resultra database: %v", createDBErr)
+		}
+
+		// TODO - don't hard-code the password
+		_, createUserErr := dbHandle.Exec(`CREATE USER resultra_web_user WITH NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD 'resultrawebpw'`)
+		if createUserErr != nil {
+			return fmt.Errorf("can't create main resultra database: %v", createUserErr)
+		}
+		return nil
+	}
+
+	time.Sleep(2 * time.Second)
+
+	createErr := createDatabaseAndWebUser()
+	if createErr != nil {
+		return fmt.Errorf("Error setting up tracker database: %v", createErr)
+	}
+	return nil
+
+}
+
 func configureDatabase() error {
 	ctx := context.Background()
 
-	//	cli, err := client.NewEnvClient()
+	//cli, err := client.NewEnvClient()
 	// TBD: Without "pinning" the API client version, the daemon might return
 	// an error message like: client version 1.40 is too new. Maximum supported API version is 1.39
 	cli, err := client.NewClientWithOpts(client.WithVersion("1.39"))
@@ -74,33 +117,29 @@ func configureDatabase() error {
 		panic(err)
 	}
 
-	reader, err := cli.ImagePull(ctx, "docker.io/library/alpine", types.ImagePullOptions{})
+	reader, err := cli.ImagePull(ctx, "docker.io/library/postgres", types.ImagePullOptions{})
 	if err != nil {
 		panic(err)
 	}
 	io.Copy(os.Stdout, reader)
 
-	resp, err := cli.ContainerCreate(ctx, &container.Config{
-		Image: "alpine",
-		Cmd:   []string{"echo", "hello world"},
-		Tty:   true,
-	}, nil, nil, "")
+	containerConfig := container.Config{
+		Image: "postgres",
+		//	Cmd:   []string{"echo", "hello world"},
+		Tty: true}
+	volumeBind := databaseDir + ":" + "/var/lib/postgresql/data" + ":rw"
+	hostConfig := container.HostConfig{Binds: []string{volumeBind}}
+	resp, err := cli.ContainerCreate(ctx, &containerConfig, &hostConfig, nil, "")
 	if err != nil {
 		panic(err)
 	}
+	log.Printf("Created container with ID = %v\n", resp.ID)
 
 	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
 		panic(err)
 	}
 
-	statusCh, errCh := cli.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
-	select {
-	case err := <-errCh:
-		if err != nil {
-			panic(err)
-		}
-	case <-statusCh:
-	}
+	log.Printf("Container started: ID = %v: waiting for database initialization\n", resp.ID)
 
 	out, err := cli.ContainerLogs(ctx, resp.ID, types.ContainerLogsOptions{ShowStdout: true})
 	if err != nil {
@@ -108,6 +147,23 @@ func configureDatabase() error {
 	}
 
 	io.Copy(os.Stdout, out)
+
+	initDatabase()
+
+	if err := cli.ContainerStop(ctx, resp.ID, nil); err != nil {
+		panic(err)
+	}
+
+	/*	statusCh, errCh := cli.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
+		select {
+		case err := <-errCh:
+			if err != nil {
+				panic(err)
+			}
+		case <-statusCh:
+		}
+	*/
+	log.Printf("Postgres Container: ID = %v: stopped\n", resp.ID)
 
 	return nil
 }
