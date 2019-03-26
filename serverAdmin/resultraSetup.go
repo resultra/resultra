@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
 	"os"
 	"resultra/tracker/server/common/databaseWrapper"
 	"time"
@@ -84,6 +85,13 @@ func connectToResultraDB() (*sql.DB, error) {
 	if openErr != nil {
 		return nil, fmt.Errorf("can't establish connection to database: %v", openErr)
 	}
+
+	// Open doesn't directly open the database connection. To verify the connection, the Ping() function
+	// is needed.
+	if pingErr := dbHandle.Ping(); pingErr != nil {
+		return nil, fmt.Errorf("can't establish connection to database (ping failed): %v", pingErr)
+	}
+
 	return dbHandle, nil
 }
 
@@ -114,6 +122,29 @@ func grantWebUserPerms(dbHandle *sql.DB) error {
 	return nil
 }
 
+func connectAdminPostgresUser() (*sql.DB, error) {
+	databaseHost := "localhost"
+	databaseUserName := "postgres"
+	databasePassword := "docker"
+
+	connectStr := fmt.Sprintf("host=%s user=%s password=%s sslmode=disable",
+		databaseHost, databaseUserName, databasePassword)
+
+	dbHandle, openErr := sql.Open("postgres", connectStr)
+	if openErr != nil {
+		return nil, fmt.Errorf("can't establish connection to database: %v", openErr)
+	}
+
+	// Open doesn't directly open the database connection. To verify the connection, the Ping() function
+	// is needed.
+	if pingErr := dbHandle.Ping(); pingErr != nil {
+		return nil, fmt.Errorf("can't establish connection to database (ping failed): %v", pingErr)
+	}
+
+	return dbHandle, nil
+
+}
+
 func createDatabaseAndWebUser() error {
 
 	databaseHost := "localhost"
@@ -142,9 +173,35 @@ func createDatabaseAndWebUser() error {
 	return nil
 }
 
+func waitPostgresPortReady() error {
+
+	// When starting up the Postgres container, Docker will also try to connect to the Postgres
+	// port for port mapping. To ensure there is not a conflict with the Postgres continer
+	// start-up, wait a fixed period before trying to connect to the port.
+	time.Sleep(10 * time.Second)
+
+	timeout := time.Duration(60 * time.Second)
+	conn, err := net.DialTimeout("tcp", "localhost:5432", timeout)
+	if err != nil {
+		return fmt.Errorf("error connecting to Postgres docker image for initialization: %v", err)
+	}
+
+	if conn != nil {
+		conn.Close()
+		log.Printf("Connection to Postgres docker image successfully established")
+		return nil
+	} else {
+		return fmt.Errorf("error connecting to Postgres docker image for initialization: connection could not be establishd")
+	}
+}
+
 func initDatabase() error {
 
-	time.Sleep(3 * time.Second)
+	if waitErr := waitPostgresPortReady(); waitErr != nil {
+		return waitErr
+	}
+
+	log.Println("Starting database initialization ...")
 
 	createErr := createDatabaseAndWebUser()
 	if createErr != nil {
@@ -166,6 +223,8 @@ func initDatabase() error {
 	if grantErr != nil {
 		log.Fatalf("Error initializing tracker database tables: %v", grantErr)
 	}
+
+	log.Println("Done with database initialization.")
 
 	return nil
 
