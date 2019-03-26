@@ -1,12 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"log"
 	"net"
 	"os"
 	"resultra/tracker/server/common/databaseWrapper"
+	"strings"
 	"time"
 
 	"database/sql"
@@ -19,6 +21,36 @@ import (
 	"github.com/docker/go-connections/nat"
 	"golang.org/x/net/context"
 )
+
+func promptUserInputString(prompt string, defaultInput string) string {
+
+	readUserInput := func() string {
+
+		if len(defaultInput) > 0 {
+			fmt.Printf("%v [%v]:", prompt, defaultInput)
+		} else {
+			fmt.Printf("%v:", prompt)
+		}
+
+		reader := bufio.NewReader(os.Stdin)
+		userInput, _ := reader.ReadString('\n')
+		userInput = strings.TrimRight(userInput, "\n")
+
+		if len(userInput) == 0 && len(defaultInput) > 0 {
+			return defaultInput
+		} else if len(userInput) > 0 {
+			return userInput
+		} else {
+			return ""
+		}
+	}
+
+	userInput := ""
+	for userInput = readUserInput(); userInput == ""; userInput = readUserInput() {
+	}
+
+	return userInput
+}
 
 func makeInstallDir(dirLabel string, dirName string, perm os.FileMode) error {
 	_, statErr := os.Stat(dirName)
