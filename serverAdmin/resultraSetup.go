@@ -5,9 +5,11 @@ import (
 	"io"
 	"log"
 	"os"
+	"resultra/tracker/server/common/databaseWrapper"
 	"time"
 
 	"database/sql"
+
 	_ "github.com/lib/pq"
 
 	"github.com/docker/docker/api/types"
@@ -69,33 +71,78 @@ func createInstallDirs() error {
 	return nil
 }
 
-func initDatabase() error {
+func connectToResultraDB() (*sql.DB, error) {
+
 	databaseHost := "localhost"
 	databaseUserName := "postgres"
 	databasePassword := "docker"
 
-	createDatabaseAndWebUser := func() error {
-		connectStr := fmt.Sprintf("host=%s user=%s password=%s sslmode=disable",
-			databaseHost, databaseUserName, databasePassword)
+	connectStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
+		databaseHost, databaseUserName, databasePassword, "resultra")
 
-		dbHandle, openErr := sql.Open("postgres", connectStr)
-		if openErr != nil {
-			return fmt.Errorf("can't establish connection to database: %v", openErr)
-		}
-		defer dbHandle.Close()
-
-		_, createDBErr := dbHandle.Exec(`CREATE DATABASE resultra`)
-		if createDBErr != nil {
-			return fmt.Errorf("can't create main resultra database: %v", createDBErr)
-		}
-
-		// TODO - don't hard-code the password
-		_, createUserErr := dbHandle.Exec(`CREATE USER resultra_web_user WITH NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD 'resultrawebpw'`)
-		if createUserErr != nil {
-			return fmt.Errorf("can't create main resultra database: %v", createUserErr)
-		}
-		return nil
+	dbHandle, openErr := sql.Open("postgres", connectStr)
+	if openErr != nil {
+		return nil, fmt.Errorf("can't establish connection to database: %v", openErr)
 	}
+	return dbHandle, nil
+}
+
+func initDatabaseTables(dbHandle *sql.DB) error {
+
+	initErr := databaseWrapper.InitNewTrackerDatabaseToDest(dbHandle)
+	if initErr != nil {
+		return fmt.Errorf("can't initialize tracker database: %v", initErr)
+	}
+
+	return nil
+}
+
+func grantWebUserPerms(dbHandle *sql.DB) error {
+
+	permsSchema := `REVOKE ALL ON DATABASE resultra FROM public;` +
+		`GRANT CONNECT ON DATABASE resultra TO resultra_web_user;` +
+		`REVOKE ALL ON SCHEMA public FROM public;` +
+		`GRANT USAGE ON SCHEMA public TO resultra_web_user;` +
+		`REVOKE ALL ON ALL TABLES IN SCHEMA public FROM PUBLIC;` +
+		`GRANT SELECT,UPDATE,INSERT,DELETE ON ALL TABLES in SCHEMA public to resultra_web_user;` +
+		`ALTER DEFAULT PRIVILEGES FOR ROLE resultra_web_user IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO resultra_web_user;`
+
+	if _, permsErr := dbHandle.Exec(permsSchema); permsErr != nil {
+		return fmt.Errorf("can't initialize tracker database permissions: %v", permsErr)
+	}
+
+	return nil
+}
+
+func createDatabaseAndWebUser() error {
+
+	databaseHost := "localhost"
+	databaseUserName := "postgres"
+	databasePassword := "docker"
+
+	connectStr := fmt.Sprintf("host=%s user=%s password=%s sslmode=disable",
+		databaseHost, databaseUserName, databasePassword)
+
+	dbHandle, openErr := sql.Open("postgres", connectStr)
+	if openErr != nil {
+		return fmt.Errorf("can't establish connection to database: %v", openErr)
+	}
+	defer dbHandle.Close()
+
+	_, createDBErr := dbHandle.Exec(`CREATE DATABASE resultra`)
+	if createDBErr != nil {
+		return fmt.Errorf("can't create main resultra database: %v", createDBErr)
+	}
+
+	// TODO - don't hard-code the password
+	_, createUserErr := dbHandle.Exec(`CREATE USER resultra_web_user WITH NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD 'resultrawebpw'`)
+	if createUserErr != nil {
+		return fmt.Errorf("can't create main resultra database: %v", createUserErr)
+	}
+	return nil
+}
+
+func initDatabase() error {
 
 	time.Sleep(3 * time.Second)
 
@@ -103,6 +150,23 @@ func initDatabase() error {
 	if createErr != nil {
 		return fmt.Errorf("Error setting up tracker database: %v", createErr)
 	}
+
+	resultraDBHandle, dbErr := connectToResultraDB()
+	if dbErr != nil {
+		log.Fatalf("Error setting up tracker database: %v", createErr)
+	}
+	defer resultraDBHandle.Close()
+
+	initErr := initDatabaseTables(resultraDBHandle)
+	if createErr != nil {
+		log.Fatalf("Error initializing tracker database tables: %v", initErr)
+	}
+
+	grantErr := grantWebUserPerms(resultraDBHandle)
+	if grantErr != nil {
+		log.Fatalf("Error initializing tracker database tables: %v", grantErr)
+	}
+
 	return nil
 
 }
@@ -124,21 +188,21 @@ func configureDatabase() error {
 	}
 	io.Copy(os.Stdout, reader)
 
-	exposedPorts := nat.PortSet{ "5432/tcp": struct{}{} }
+	exposedPorts := nat.PortSet{"5432/tcp": struct{}{}}
 	containerConfig := container.Config{
-		Image: "postgres",
+		Image:        "postgres",
 		ExposedPorts: exposedPorts,
-		Tty: true,
+		Tty:          true,
 		AttachStdout: true,
-		AttachStderr: true }
+		AttachStderr: true}
 
 	volumeBind := databaseDir + ":" + "/var/lib/postgresql/data" + ":rw"
 	containerPort := nat.Port("5432/tcp")
-	hostPortBinding := 	[]nat.PortBinding{ { HostIP: "0.0.0.0", HostPort: "5432" } }
-	portMap := nat.PortMap{ containerPort: hostPortBinding }
+	hostPortBinding := []nat.PortBinding{{HostIP: "0.0.0.0", HostPort: "5432"}}
+	portMap := nat.PortMap{containerPort: hostPortBinding}
 	hostConfig := container.HostConfig{
-		Binds: []string{volumeBind},
-		PortBindings: portMap }
+		Binds:        []string{volumeBind},
+		PortBindings: portMap}
 	resp, err := cli.ContainerCreate(ctx, &containerConfig, &hostConfig, nil, "")
 	if err != nil {
 		panic(err)
