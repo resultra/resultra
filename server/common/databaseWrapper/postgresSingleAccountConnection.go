@@ -8,17 +8,18 @@ package databaseWrapper
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/lib/pq"
 	"log"
 	"net/http"
+
+	_ "github.com/lib/pq"
 )
 
 type PostgresSingleAccountDatabaseConfig struct {
-	TrackerDBHostName string `json:"databaseHostName"`
-	TrackerUserName   string `json:"databaseUserName"`
-	TrackerPassword   string `json:"databasePassword"`
-	TrackerDBName     string `json:"trackerDatabaseName"`
-	TrackerDBHandle   *sql.DB
+	TrackerDBHostName string  `json:"databaseHostName"`
+	TrackerUserName   string  `json:"databaseUserName"`
+	TrackerPassword   string  `json:"databasePassword"`
+	TrackerDBName     string  `json:"trackerDatabaseName"`
+	TrackerDBHandle   *sql.DB `json:"-"`
 }
 
 const maxSingleAccountConnections int = 10

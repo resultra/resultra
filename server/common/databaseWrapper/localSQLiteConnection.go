@@ -16,8 +16,8 @@ import (
 )
 
 type LocalSQLiteTrackerDatabaseConnectionConfig struct {
-	DatabaseBasePath string `json:"databaseBasePath"`
-	DBHandle         *sql.DB
+	DatabaseBasePath string  `json:"databaseBasePath"`
+	DBHandle         *sql.DB `json:"-"`
 }
 
 const permsOwnerReadWriteOnly os.FileMode = 0700

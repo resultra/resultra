@@ -2,12 +2,16 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
+	"math/rand"
 	"net"
 	"os"
 	"resultra/tracker/server/common/databaseWrapper"
+	"resultra/tracker/server/common/runtimeConfig"
 	"strings"
 	"time"
 
@@ -327,10 +331,90 @@ func configureDatabase() error {
 	return nil
 }
 
+func setupEmailConfig(emailConfig *runtimeConfig.TransactionalEmailConfig) {
+
+	emailConfig.FromEmailAddr = promptUserInputString("Return email address (e.g. noreply@yourdomain.com", "")
+	emailConfig.SMTPServerAddress = promptUserInputString("SMTP email server address (e.g. smtp.mailgun.org)", "")
+	emailConfig.SMTPUserName = promptUserInputString("SMTP user name (for login to SMTP server)", "")
+	emailConfig.SMTPPassword = promptUserInputString("Email password (for SMTP server)", "")
+}
+
+func generateCookieKey() string {
+	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+	randStrRunes := func(n int) string {
+		b := make([]rune, n)
+		for i := range b {
+			b[i] = letterRunes[rand.Intn(len(letterRunes))]
+		}
+		return string(b)
+	}
+	return randStrRunes(32)
+}
+
+const defaultServerListenPort int = 43400
+
+func setupServerConfig(serverConfig *runtimeConfig.ServerConfig) {
+	serverConfig.CookieAuthKey = generateCookieKey()
+	serverConfig.CookieEncryptionKey = generateCookieKey()
+	serverConfig.ListenPortNumber = defaultServerListenPort
+}
+
+func setupTrackerConfig(trackerConfig *runtimeConfig.TrackerDatabaseConfig) {
+
+	trackerConfig.PostgresSingleAccountConfig = &databaseWrapper.PostgresSingleAccountDatabaseConfig{
+		TrackerDBHostName: "localhost",
+		TrackerUserName:   "resultra_web_user",
+		TrackerPassword:   "resultrawebpw",
+		TrackerDBName:     "resultra"}
+	trackerConfig.LocalAttachmentConfig = &databaseWrapper.LocalAttachmentStorageConfig{
+		AttachmentBasePath: "/var/resultra/appdata/attachments"}
+
+}
+
+func setupConfig() error {
+
+	config := runtimeConfig.RuntimeConfig{}
+	emailConfig := runtimeConfig.TransactionalEmailConfig{}
+	config.TransactionalEmailConfig = &emailConfig
+	setupEmailConfig(config.TransactionalEmailConfig)
+
+	// The factory templates are referenced from a fixed location inside the
+	// docker image for the server.
+	localFactoryTemplates := databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig{
+		DatabaseBasePath: "/usr/local/resultra/factoryTemplates"}
+	factoryTemplateConfig := runtimeConfig.FactoryTemplateDatabaseConfig{LocalDatabaseConfig: &localFactoryTemplates}
+	config.FactoryTemplateDatabaseConfig = &factoryTemplateConfig
+
+	setupServerConfig(&config.ServerConfig)
+
+	setupTrackerConfig(&config.TrackerDatabaseConfig)
+
+	configFileName := configDir + "/" + "resultraConfig.json"
+	configData, marshalErr := json.MarshalIndent(config, "  ", "  ")
+
+	if marshalErr != nil {
+		return marshalErr
+	}
+
+	writeConfigErr := ioutil.WriteFile(configFileName, configData, 0600)
+	if writeConfigErr != nil {
+		return writeConfigErr
+	}
+
+	return nil
+
+}
+
 func main() {
 	dirsErr := createInstallDirs()
 	if dirsErr != nil {
 		log.Fatalf("ERROR: Setup failed: %v", dirsErr)
+	}
+
+	configErr := setupConfig()
+	if configErr != nil {
+		log.Fatalf("ERROR: Setup of configuration failed: %v", configErr)
 	}
 
 	dbConfigErr := configureDatabase()

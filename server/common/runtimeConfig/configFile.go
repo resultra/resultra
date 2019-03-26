@@ -16,31 +16,31 @@ import (
 var defaultPortNum int = 43400
 
 type FactoryTemplateDatabaseConfig struct {
-	LocalDatabaseConfig         *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `json:"localSQLiteDatabase"`
-	PostgresSingleAccountConfig *databaseWrapper.PostgresSingleAccountDatabaseConfig        `json:"postgresDatabase"`
+	LocalDatabaseConfig         *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `json:"localSQLiteDatabase,omitempty"`
+	PostgresSingleAccountConfig *databaseWrapper.PostgresSingleAccountDatabaseConfig        `json:"postgresDatabase,omitempty"`
 }
 
 type TrackerDatabaseConfig struct {
-	LocalDatabaseConfig         *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `json:"localSQLiteDatabase"`
-	PostgresMultiAccountConfig  *databaseWrapper.PostgresMultipleAccountDatabaseConfig      `json:"postgresMultiAccountDatabase"`
-	PostgresSingleAccountConfig *databaseWrapper.PostgresSingleAccountDatabaseConfig        `json:"postgresDatabase"`
-	LocalAttachmentConfig       *databaseWrapper.LocalAttachmentStorageConfig               `json:"localAttachmentStorage"`
+	LocalDatabaseConfig         *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `json:"localSQLiteDatabase,omitempty"`
+	PostgresMultiAccountConfig  *databaseWrapper.PostgresMultipleAccountDatabaseConfig      `json:"postgresMultiAccountDatabase,omitempty"`
+	PostgresSingleAccountConfig *databaseWrapper.PostgresSingleAccountDatabaseConfig        `json:"postgresDatabase,omitempty"`
+	LocalAttachmentConfig       *databaseWrapper.LocalAttachmentStorageConfig               `json:"localAttachmentStorage,omitempty"`
 }
 
 type TransactionalEmailConfig struct {
 	FromEmailAddr     string `json:"fromEmailAddress"`
 	SMTPServerAddress string `json:"smtpServerAddress"`
 	SMTPUserName      string `json:"smtpUserName"`
-	SMTPPort          *int   `json:"smtpPort"`
+	SMTPPort          *int   `json:"smtpPort,omitempty"`
 	SMTPPassword      string `json:"smtpPassword"`
 }
 
 const defaultSMTPPort int = 587
 
 type RuntimeConfig struct {
-	FactoryTemplateDatabaseConfig *FactoryTemplateDatabaseConfig `json:"factoryTemplateDatabase"`
+	FactoryTemplateDatabaseConfig *FactoryTemplateDatabaseConfig `json:"factoryTemplateDatabase,omitempty"`
 	TrackerDatabaseConfig         TrackerDatabaseConfig          `json:"trackerDatabase"`
-	TransactionalEmailConfig      *TransactionalEmailConfig      `json:"transactionalEmail"`
+	TransactionalEmailConfig      *TransactionalEmailConfig      `json:"transactionalEmail,omitempty"`
 
 	ServerConfig          `json:"server"`
 	IsSingleUserWorkspace bool `json:"isSingleUserWorkspace"`
@@ -50,7 +50,7 @@ const permsOwnerReadWriteOnly os.FileMode = 0700
 
 type ServerConfig struct {
 	ListenPortNumber    int     `json:"listenPortNumber"`
-	SiteBaseURL         *string `json:"baseSiteURL"`
+	SiteBaseURL         *string `json:"baseSiteURL,omitempty"`
 	CookieAuthKey       string  `json:"cookieAuthenticationKey"`
 	CookieEncryptionKey string  `json:"cookieEncryptionKey"`
 }
