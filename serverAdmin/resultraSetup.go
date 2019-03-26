@@ -92,6 +92,9 @@ func connectToResultraDB() (*sql.DB, error) {
 		return nil, fmt.Errorf("can't establish connection to database (ping failed): %v", pingErr)
 	}
 
+	// TODO - Add more robustness to this function. Ping will establish the connection, but doesn't actually
+	// test it. To test it, running an end-to-end query like "SELECT 1 as testcol" would be helpful.
+
 	return dbHandle, nil
 }
 
