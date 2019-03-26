@@ -68,7 +68,7 @@ def runMakePhase(makeTargetName):
         
     for root, dirs, files in os.walk(".."):
         for file in files:
-            if (file == 'Makefile') and (not "node_modules" in root):
+            if (file == 'Makefile') and (not "node_modules" in root) and (not "vendor" in root):
                 makeDirs.append(buildDirSpec(root,makeTargetName,debugBuild))
     buildPool = Pool(processes=args.procs)
     results = buildPool.map(buildOneDir,makeDirs)
