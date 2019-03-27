@@ -1,6 +1,6 @@
 
 localContextDockerSrcFiles:
-	tar -czvf dest.tar.gz -C ../build/dest .
+	tar -czf dest.tar.gz -C ../build/dest .
 
 dockerImage: localContextDockerSrcFiles
 	sudo docker build -t resultra-server:latest .
