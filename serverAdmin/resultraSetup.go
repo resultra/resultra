@@ -363,7 +363,7 @@ func setupServerConfig(serverConfig *runtimeConfig.ServerConfig) {
 func setupTrackerConfig(trackerConfig *runtimeConfig.TrackerDatabaseConfig) {
 
 	trackerConfig.PostgresSingleAccountConfig = &databaseWrapper.PostgresSingleAccountDatabaseConfig{
-		TrackerDBHostName: "localhost",
+		TrackerDBHostName: "resultra-postgres", // resultra-postgres is the network name given to the Docker database container.
 		TrackerUserName:   "resultra_web_user",
 		TrackerPassword:   "resultrawebpw",
 		TrackerDBName:     "resultra"}
