@@ -28,6 +28,8 @@ parser.add_argument('--realcleanonly',default=False,action='store_true',
                     help='only run the clean and realclean targets across the build')
 parser.add_argument('--windows',default=False,action='store_true',
                     help='cross-compile the Windows Electron client.')
+parser.add_argument('--dockerdist',default=False,action='store_true',
+                    help='build the docker-based distribution for Linux (Ubuntu) servers.')
 parser.add_argument('--procs',default=4,type=int,
                     help='number of build tasks to run in parallel build on (default = 4)')
 args = parser.parse_args()
@@ -68,7 +70,7 @@ def runMakePhase(makeTargetName):
         
     for root, dirs, files in os.walk(".."):
         for file in files:
-            if (file == 'Makefile') and (not "node_modules" in root):
+            if (file == 'Makefile') and (not "node_modules" in root) and (not "vendor" in root):
                 makeDirs.append(buildDirSpec(root,makeTargetName,debugBuild))
     buildPool = Pool(processes=args.procs)
     results = buildPool.map(buildOneDir,makeDirs)
@@ -95,6 +97,8 @@ else:
     if args.windows:
         runMakePhase("windows")
         runMakePhase("winpkg")
+    if args.dockerdist:
+        runMakePhase("dockerdist")
 
 endTime = time.time()
 

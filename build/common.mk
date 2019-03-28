@@ -15,6 +15,10 @@ PKG_BIN_DIR = $(DEPTH)/build/dest/bin
 PKG_TEMPLATES_DIR = $(DEPTH)/build/dest/factoryTemplates
 PKG_SCHEMA_DIR = $(DEPTH)/build/dest/schema
 
+DOCKER_DIST_DIR = $(DEPTH)/build/dest/dockerDist
+DOCKER_BIN_DIR = $(DOCKER_DIST_DIR)/bin
+DOCKER_IMAGE_DIR = $(DOCKER_DIST_DIR)/dockerImage
+
 GO = go
 GOBUILD = $(GO) build 
 GOTEST = $(GO) test -v .
@@ -39,6 +43,8 @@ package:
 windows:
 
 winpkg:
+
+dockerdist:
 
 test:
 

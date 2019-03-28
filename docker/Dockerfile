@@ -1,3 +1,9 @@
+# This file is part of the Resultra project.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 FROM ubuntu:latest
 MAINTAINER Resultra Contributors
 EXPOSE 43400
@@ -16,7 +22,9 @@ RUN apt-get install -y iputils-ping
 # errors like the following: smtp error: x509: certificate signed by unknown authority
 RUN apt-get install -y ca-certificates
 
-ADD dest.tar.gz /usr/local/resultra/
+ADD static.tar.gz /usr/local/resultra/static
+ADD factoryTemplates.tar.gz /usr/local/resultra/factoryTemplates
+ADD resultraServer /usr/local/resultra/bin/
 
 WORKDIR /usr/local/resultra
 ENTRYPOINT ./bin/resultraServer --config /var/resultra/config/resultraConfig.json
