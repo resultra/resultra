@@ -27,6 +27,7 @@ serverAdmin/exportTrackerTemplate
 serverAdmin/setupResultraServerDatabase
 serverAdmin/resultraSetup
 serverAdmin/addResultraAccount
+docker/resultraServer
 
 # Golang’s vendor directory 
 vendor/*
@@ -41,6 +42,7 @@ vendor/*
 *.pyc
 *_dump.txt
 *.gz
+
 
 
 

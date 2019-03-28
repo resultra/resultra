@@ -27,3 +27,6 @@ exportTrackerTemplate:
 resultraSetup:
 	$(GOBUILD) resultraSetup.go
 	$(INSTALL_FILE) resultraSetup $(PKG_BIN_DIR)
+
+dockerdist:
+	$(INSTALL_FILE) resultraSetup $(DOCKER_BIN_DIR)

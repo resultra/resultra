@@ -5,7 +5,7 @@ services:
     image: postgres:latest
     container_name: resultra-postgres
     volumes:
-      - /var/www/resultra/data:/var/lib/postgresql/data
+      - /var/resultra/appdata/database:/var/lib/postgresql/data
     restart: always
   web:
     depends_on:
@@ -15,7 +15,7 @@ services:
       context: .
     container_name: resultra-server
     volumes:
-      - /var/www/resultra:/var/www/resultra
+      - /var/resultra:/var/resultra
     ports:
       - "43400:43400"
     restart: always
