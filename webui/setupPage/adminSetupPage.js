@@ -13,6 +13,7 @@ function initAdminRegistrationPage() {
 	var $lastNameInput = $('#adminLastNameInput')
 	var $registerControls = $('.registerControls')
 	var $passwordInput = $('#adminPasswordInput')
+	var $emailInput = $('#adminEmailInput')
 
 	
 	var validator = $registerForm.validate({
@@ -46,6 +47,16 @@ function initAdminRegistrationPage() {
 					}
 				} // remote
 			},
+			adminEmailInput: {
+				minlength: 3,
+				required: true,
+				remote: {
+					url: '/auth/validateNewUserEmail',
+					data: {
+						emailAddr: function() { return  $emailInput.val(); }
+					}
+				} // remote
+			},
 			adminPasswordInput: {
 				minlength: 8,
 				required: true,
@@ -75,6 +86,10 @@ function initAdminRegistrationPage() {
 				required: "User name is required",
 				remote:"This user name is already taken. Please choose another user name."
 			},
+			adminEmailInput: {
+				required: "Email address is required",
+				remote:"This email address is already registered."
+			},
 			adminPasswordInput: {
 				required: "Password is required.",
 				remote:"Passwords must be at least 8 characters, and include some numbers, upper and lower case lettters and/or symbols."
@@ -102,6 +117,8 @@ function initAdminRegistrationPage() {
 				firstName: $firstNameInput.val(),
 				lastName: $lastNameInput.val(),
 				userName: $userNameInput.val(),
+				emailAddr: $emailInput.val(),
+				password: $passwordInput.val()
 			}
 			/* TBD
 			jsonRequest("/auth/registerSingleUser",registerParams,function(registerResp) {
