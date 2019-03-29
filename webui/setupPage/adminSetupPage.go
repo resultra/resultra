@@ -20,7 +20,7 @@ var setupPageTemplates *template.Template
 func init() {
 	//	designFormTemplateFiles := []string{}
 
-	baseTemplateFiles := []string{"static/userAdmin/adminSetupPage.html"}
+	baseTemplateFiles := []string{"static/setupPage/adminSetupPage.html"}
 
 	templateFileLists := [][]string{
 		baseTemplateFiles,

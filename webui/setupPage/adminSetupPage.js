@@ -12,6 +12,8 @@ function initAdminRegistrationPage() {
 	var $firstNameInput = $('#adminFirstNameInput')
 	var $lastNameInput = $('#adminLastNameInput')
 	var $registerControls = $('.registerControls')
+	var $passwordInput = $('#adminPasswordInput')
+
 	
 	var validator = $registerForm.validate({
 		rules: {
@@ -43,6 +45,20 @@ function initAdminRegistrationPage() {
 						userName: function() { return $userNameInput.val(); }
 					}
 				} // remote
+			},
+			adminPasswordInput: {
+				minlength: 8,
+				required: true,
+				remote: {
+					url: '/auth/validatePasswordStrength',
+					data: {
+						password: function() { return $passwordInput.val(); }
+					}
+				} // remote
+			 },
+			adminPasswordInputRepeat: {
+				required: true,
+				equalTo: "#adminPasswordInput"
 			}
 						
 		},
@@ -58,6 +74,14 @@ function initAdminRegistrationPage() {
 			adminUserNameInput: {
 				required: "User name is required",
 				remote:"This user name is already taken. Please choose another user name."
+			},
+			adminPasswordInput: {
+				required: "Password is required.",
+				remote:"Passwords must be at least 8 characters, and include some numbers, upper and lower case lettters and/or symbols."
+			},
+			adminPasswordInputRepeat: {
+				required: "Password is required.",
+				equalTo:"Passwords must match."
 			}
 		}
 	})	
