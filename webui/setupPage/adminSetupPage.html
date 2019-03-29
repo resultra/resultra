@@ -1,0 +1,126 @@
+{{/* This file is part of the Resultra project.
+   *
+   * This Source Code Form is subject to the terms of the Mozilla Public
+   * License, v. 2.0. If a copy of the MPL was not distributed with this
+   * file, You can obtain one at https://mozilla.org/MPL/2.0/. */}}
+ 
+ 
+ {{define "adminRegistrationPanelFormElems"}}
+ 		<form id="adminRegistrationForm">
+ 		  <div class="form-group registerControls">
+         	  <label for="adminFirstNameInput">Your Name</label>
+         	  <input type="text" id="adminFirstNameInput" name="adminFirstNameInput"
+ 			  		class="form-control maxWidth300" placeholder="First Name" required autofocus>
+  		   </div>
+  		   <div class="form-group registerControls">
+         	  <input type="text" id="adminLastNameInput" name="adminLastNameInput"
+ 			  	class="form-control marginTop5 maxWidth300" placeholder="Last Name" required autofocus>
+ 		  </div>
+ 		  <div class="form-group registerControls">
+         	  <label for="adminUserNameInput">User Name</label>
+         	  <input type="text" id="adminUserNameInput" name="adminUserNameInput"
+ 			  		class="form-control maxWidth300" placeholder="Username" required autofocus>
+ 		  </div>
+ 		</form>
+ {{end}}
+
+ {{define "adminRegistrationPanelForm"}}
+		
+  	   <div class="alert alert-danger initiallyHidden" id="adminRegisterErrorAlert"></div>
+	   
+    	  <div class="container-fluid">
+
+    		<div class="row">
+ 
+ 			<div class="col-md-2"></div>
+  
+ 			<div class="col-md-8">
+ 				{{template "adminRegistrationPanelFormElems"}}
+ 			</div>
+	
+ 			<div class="col-md-2"></div>
+ 
+     	</div>
+		
+      </div>
+				   	   
+		 	   
+ {{end}}
+
+ {{define "adminPersonalizeButton"}}
+
+   	   	<button type="button" class="btn btn-primary btn-lg fullWidth" id="adminPersonalizeButton" type="submit">Register</button>
+		
+ {{end}}
+
+
+ {{define "adminRegistrationPanel"}}
+
+ 	  <div>
+ 		  <h3 class="text-center">Setup Resultra</h3>
+ 	  </div>
+	  
+ 	  <div class="alert alert-info" role="alert">
+ 		  Enter the information below to finish the setup and initialization of Resultra. 
+		  
+ 		  <BR><BR>By registering below, you'll become the administrative user for this installation of Resultra.
+ 	  </div>
+  
+ 	  <div class="container-fluid">
+
+ 		<div class="row">
+ 	 	   {{template "adminRegistrationPanelForm"}}
+ 	 	</div>
+	
+ 		<div class="row marginTop20">
+ 			{{template "adminPersonalizeButton"}}
+ 	 	</div>
+	
+   	</div>
+	
+ {{end}}
+   
+ 
+
+{{define "adminSetupPage"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{.Title}}</title>
+		
+	{{template "thirdPartyCSS"}}
+		
+	<!-- adminSetupPageAssets:css -->
+	<!-- endinject -->
+		
+	
+	{{template "thirdPartyJS"}}
+	
+	<!-- adminSetupPageAssets:js -->
+	<!-- endinject -->
+			
+  </head>
+  <body>
+	  
+	  {{template "publicPageHeader"}}
+	  	   
+	  <div class="container-fluid marginTop20">
+		  		  
+		  <div class="col-md-3"></div>
+		  
+		  <div class="col-md-6">
+			  
+			  <div class="well">
+				  {{template "adminRegistrationPanel"}}
+			 </div>
+				 
+		 </div>
+			
+		 <div class="col-md-3"></div>
+
+	  </div>
+	  
+ </body>
+    
+</html>
+{{end}}

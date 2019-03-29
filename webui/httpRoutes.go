@@ -17,6 +17,7 @@ import (
 	"resultra/tracker/webui/itemList"
 	"resultra/tracker/webui/itemView"
 	"resultra/tracker/webui/mainWindow"
+	"resultra/tracker/webui/setupPage"
 	"resultra/tracker/webui/templatePage"
 	"resultra/tracker/webui/userAdmin"
 
@@ -40,6 +41,7 @@ func init() {
 	mainWindow.RegisterHTTPHandlers(router)
 	templatePage.RegisterHTTPHandlers(router)
 	userAdmin.RegisterHTTPHandlers(router)
+	setupPage.RegisterHTTPHandlers(router)
 	dashboardView.RegisterHTTPHandlers(router)
 	alertListView.RegisterHTTPHandlers(router)
 

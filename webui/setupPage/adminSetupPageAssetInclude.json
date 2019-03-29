@@ -1,0 +1,11 @@
+{
+	"subDirs":["../generic",
+		"../common"],
+	"cssFiles": [],
+	"imageFiles": [],
+	"jsFiles": ["adminSetupPage.js"],
+	"htmlFiles":["adminSetupPage.html"],
+	"minCSSFile":"setup/adminSetupPage.min.css",
+	"minJSFile": "setup/adminSetupPage.min.js",
+	"injectPlaceholderName":"adminSetupPageAssets"
+}
