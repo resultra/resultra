@@ -50,7 +50,7 @@ func setupAdminUser(respWriter http.ResponseWriter, req *http.Request) {
 	}
 
 	templParams := SetupPageInfo{
-		Title:         "Resultra Workspace - Reset Password",
+		Title:         "Setup Resultra",
 		WorkspaceName: workspaceName}
 	err := setupPageTemplates.ExecuteTemplate(respWriter, "adminSetupPage", templParams)
 	if err != nil {

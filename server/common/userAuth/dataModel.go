@@ -62,9 +62,20 @@ func (rawParams NewUserParams) sanitize() NewUserParams {
 	return sanitizedParams
 }
 
-func saveNewUser(trackerDBHandle *sql.DB, rawParams NewUserParams) *AuthResponse {
+func saveNewUser(trackerDBHandle *sql.DB, rawParams NewUserParams, isAdminUser bool) *AuthResponse {
 
 	params := rawParams.sanitize()
+
+	if isAdminUser {
+		currAdminUsers, adminUserErr := getAdminUsersInfo(trackerDBHandle)
+		if adminUserErr != nil {
+			resp := fmt.Sprintf("System error: failed to create login credentials: %v", adminUserErr)
+			return newAuthResponse(false, resp)
+		} else if len(currAdminUsers) > 0 {
+			resp := fmt.Sprintf("Failure to register as site administrator. Someone else has already registered as administrator")
+			return newAuthResponse(false, resp)
+		}
+	}
 
 	firstNameResp := validateWellFormedRealName(params.FirstName)
 	if !firstNameResp.Success {
@@ -112,10 +123,10 @@ func saveNewUser(trackerDBHandle *sql.DB, rawParams NewUserParams) *AuthResponse
 	userID := uniqueID.GenerateUniqueID()
 
 	if _, insertErr := trackerDBHandle.Exec(
-		`INSERT INTO users (user_id, email_addr, user_name, first_name,last_name, password_hash,properties) 
-				VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+		`INSERT INTO users (user_id, email_addr, user_name, first_name,last_name, password_hash,properties,is_workspace_admin) 
+				VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
 		userID, params.EmailAddr, params.UserName,
-		params.FirstName, params.LastName, pwHash, encodedProps); insertErr != nil {
+		params.FirstName, params.LastName, pwHash, encodedProps, isAdminUser); insertErr != nil {
 		log.Printf("saveNewUser: system failure registering user: %v", insertErr)
 
 		return newAuthResponse(false, "System error: failed to create login credentials")
@@ -140,7 +151,7 @@ func SaveNewSingleUser(trackerDBHandle *sql.DB, params RegisterSingleUserParams)
 		UserName:  params.UserName,
 		EmailAddr: singleUserDummyEmailAddr,
 		Password:  singleUserDummyPassword}
-	return saveNewUser(trackerDBHandle, saveUserParams)
+	return saveNewUser(trackerDBHandle, saveUserParams, true)
 }
 
 func getUser(trackerDBHandle *sql.DB, emailAddr string) (*User, *AuthResponse) {
@@ -312,6 +323,48 @@ func GetUserInfoByEmail(trackerDBHandle *sql.DB, emailAddr string) (*UserInfo, e
 func getAllUsersInfo(trackerDBHandle *sql.DB) ([]AdminUserInfo, error) {
 	rows, queryErr := trackerDBHandle.Query(
 		`SELECT user_id,first_name,last_name,user_name,email_addr,is_workspace_admin,properties,is_active FROM users`)
+	if queryErr != nil {
+		return nil, fmt.Errorf("getAllUsersInfo: Can't query database for users: %v", queryErr)
+	}
+	defer rows.Close()
+
+	allUserInfo := []AdminUserInfo{}
+
+	for rows.Next() {
+
+		var userInfo AdminUserInfo
+		encodedProps := ""
+
+		if scanErr := rows.Scan(
+			&userInfo.UserID,
+			&userInfo.FirstName,
+			&userInfo.LastName,
+			&userInfo.UserName,
+			&userInfo.EmailAddress,
+			&userInfo.IsWorkspaceAdmin,
+			&encodedProps,
+			&userInfo.IsActive); scanErr != nil {
+			return nil, fmt.Errorf("getAllUsersInfo: Failure querying database: %v", scanErr)
+		}
+
+		userProps := newDefaultUserProperties()
+		if decodeErr := generic.DecodeJSONString(encodedProps, &userProps); decodeErr != nil {
+			return nil, fmt.Errorf("getAlert: can't decode properties: %v", encodedProps)
+		}
+		userInfo.Properties = userProps
+
+		allUserInfo = append(allUserInfo, userInfo)
+
+	}
+
+	return allUserInfo, nil
+
+}
+
+func getAdminUsersInfo(trackerDBHandle *sql.DB) ([]AdminUserInfo, error) {
+	rows, queryErr := trackerDBHandle.Query(
+		`SELECT user_id,first_name,last_name,user_name,email_addr,is_workspace_admin,properties,is_active FROM users
+			WHERE is_workspace_admin='1'`)
 	if queryErr != nil {
 		return nil, fmt.Errorf("getAllUsersInfo: Can't query database for users: %v", queryErr)
 	}

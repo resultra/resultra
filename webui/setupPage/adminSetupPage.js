@@ -120,8 +120,8 @@ function initAdminRegistrationPage() {
 				emailAddr: $emailInput.val(),
 				password: $passwordInput.val()
 			}
-			/* TBD
-			jsonRequest("/auth/registerSingleUser",registerParams,function(registerResp) {
+
+			jsonRequest("/auth/registerAdminUser",registerParams,function(registerResp) {
 				if(registerResp.success == true) {
 					$registerControls.hide()
 					// Navigate to the main page. Now that the registration is complete, the 
@@ -132,7 +132,7 @@ function initAdminRegistrationPage() {
 					$errorAlert.show()
 				}
 			})
-			*/
+
 		}
 		
 	})
