@@ -28,7 +28,7 @@ parser.add_argument('--realcleanonly',default=False,action='store_true',
                     help='only run the clean and realclean targets across the build')
 parser.add_argument('--windows',default=False,action='store_true',
                     help='cross-compile the Windows Electron client.')
-parser.add_argument('--dockerdist',default=False,action='store_true',
+parser.add_argument('--docker',default=False,action='store_true',
                     help='build the docker-based distribution for Linux (Ubuntu) servers.')
 parser.add_argument('--procs',default=4,type=int,
                     help='number of build tasks to run in parallel build on (default = 4)')
@@ -97,8 +97,9 @@ else:
     if args.windows:
         runMakePhase("windows")
         runMakePhase("winpkg")
-    if args.dockerdist:
+    if args.docker:
         runMakePhase("dockerdist")
+        runMakePhase("dockerpkg")
 
 endTime = time.time()
 

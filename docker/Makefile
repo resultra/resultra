@@ -23,6 +23,20 @@ dockerdist: localContextDockerSrcFiles
 	$(INSTALL_FILE) Dockerfile $(DOCKER_IMAGE_DIR)
 	$(INSTALL_FILE) docker-compose.yml $(DOCKER_IMAGE_DIR)
 
+# TODO - Incorporate the latest version number into the file name, based upon
+# the semantic version number stored in git. This can possibly be done using
+# the `git describe` CLI. 
+DOCKER_DIST_TAR_FILE = $(DOCKER_DIST_ROOT_DIR)/resultra.linux-amd64.tar.gz
+
+# We want a tar file which includes all the files in the resultra
+# top-level directory inside $(DOCKER_DIST_ROOT_DIR). This allows the
+# whole tar file to be expanded into /usr/local for an installation,
+# with the resultra top-level directory appended. This is the same
+# scheme by which Golang is distributed.
+dockerpkg:
+	$(RM) $(DOCKER_DIST_TAR_FILE)
+	tar -czvf $(DOCKER_DIST_TAR_FILE) -C $(DOCKER_DIST_ROOT_DIR) resultra
+
 all:
 	
 

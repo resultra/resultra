@@ -15,7 +15,8 @@ PKG_BIN_DIR = $(DEPTH)/build/dest/bin
 PKG_TEMPLATES_DIR = $(DEPTH)/build/dest/factoryTemplates
 PKG_SCHEMA_DIR = $(DEPTH)/build/dest/schema
 
-DOCKER_DIST_DIR = $(DEPTH)/build/dest/dockerDist
+DOCKER_DIST_ROOT_DIR = $(DEPTH)/build/dest/docker
+DOCKER_DIST_DIR = $(DOCKER_DIST_ROOT_DIR)/resultra
 DOCKER_BIN_DIR = $(DOCKER_DIST_DIR)/bin
 DOCKER_IMAGE_DIR = $(DOCKER_DIST_DIR)/dockerImage
 
@@ -45,6 +46,8 @@ windows:
 winpkg:
 
 dockerdist:
+
+dockerpkg:
 
 test:
 
