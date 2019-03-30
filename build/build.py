@@ -19,6 +19,8 @@ import os
 import sys
 import argparse
 import time
+import sys
+
 from multiprocessing import Pool
 
 parser = argparse.ArgumentParser(description='Main build script.')
@@ -26,10 +28,16 @@ parser.add_argument('--release',default=False,action='store_true',
                     help='perform a release build')
 parser.add_argument('--realcleanonly',default=False,action='store_true',
                     help='only run the clean and realclean targets across the build')
-parser.add_argument('--windows',default=False,action='store_true',
+
+# Building a Docker distribution and cross-compiling the Windows
+# Electron client can only be done on a Linux build machine.
+isLinuxBuild = sys.platform.startswith('linux')
+if isLinuxBuild:  
+    parser.add_argument('--windows',default=False,action='store_true',
                     help='cross-compile the Windows Electron client.')
-parser.add_argument('--docker',default=False,action='store_true',
+    parser.add_argument('--docker',default=False,action='store_true',
                     help='build the docker-based distribution for Linux (Ubuntu) servers.')
+
 parser.add_argument('--procs',default=4,type=int,
                     help='number of build tasks to run in parallel build on (default = 4)')
 args = parser.parse_args()
@@ -94,12 +102,13 @@ else:
     runMakePhase("package")
     runMakePhase("test")
     runMakePhase("systest")
-    if args.windows:
-        runMakePhase("windows")
-        runMakePhase("winpkg")
-    if args.docker:
-        runMakePhase("dockerdist")
-        runMakePhase("dockerpkg")
+    if isLinuxBuild:
+        if args.windows:
+            runMakePhase("windows")
+            runMakePhase("winpkg")
+        if args.docker:
+            runMakePhase("dockerdist")
+            runMakePhase("dockerpkg")
 
 endTime = time.time()
 
