@@ -111,14 +111,19 @@ func createInstallDirs() error {
 	return nil
 }
 
+// By default, Postgres runs on port 5432. If this setup program is running on a system where
+// Postgres is already running, then we need to map the default Postgres port to a higher
+// numbered port for the setup itself.
+const setupDBPort int = 43401
+
 func connectToResultraDB() (*sql.DB, error) {
 
 	databaseHost := "localhost"
 	databaseUserName := "postgres"
 	databasePassword := "docker"
 
-	connectStr := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
-		databaseHost, databaseUserName, databasePassword, "resultra")
+	connectStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		databaseHost, setupDBPort, databaseUserName, databasePassword, "resultra")
 
 	dbHandle, openErr := sql.Open("postgres", connectStr)
 	if openErr != nil {
@@ -169,8 +174,8 @@ func connectAdminPostgresUser() (*sql.DB, error) {
 	databaseUserName := "postgres"
 	databasePassword := "docker"
 
-	connectStr := fmt.Sprintf("host=%s user=%s password=%s sslmode=disable",
-		databaseHost, databaseUserName, databasePassword)
+	connectStr := fmt.Sprintf("host=%s port=%d user=%s password=%s sslmode=disable",
+		databaseHost, setupDBPort, databaseUserName, databasePassword)
 
 	dbHandle, openErr := sql.Open("postgres", connectStr)
 	if openErr != nil {
@@ -193,8 +198,8 @@ func createDatabaseAndWebUser() error {
 	databaseUserName := "postgres"
 	databasePassword := "docker"
 
-	connectStr := fmt.Sprintf("host=%s user=%s password=%s sslmode=disable",
-		databaseHost, databaseUserName, databasePassword)
+	connectStr := fmt.Sprintf("host=%s port=%d user=%s password=%s sslmode=disable",
+		databaseHost, setupDBPort, databaseUserName, databasePassword)
 
 	dbHandle, openErr := sql.Open("postgres", connectStr)
 	if openErr != nil {
@@ -223,7 +228,8 @@ func waitPostgresPortReady() error {
 	time.Sleep(10 * time.Second)
 
 	timeout := time.Duration(60 * time.Second)
-	conn, err := net.DialTimeout("tcp", "localhost:5432", timeout)
+	waitPosgresSetupPortStr := fmt.Sprintf("localhost:%d", setupDBPort)
+	conn, err := net.DialTimeout("tcp", waitPosgresSetupPortStr, timeout)
 	if err != nil {
 		return fmt.Errorf("error connecting to Postgres docker image for initialization: %v", err)
 	}
@@ -299,7 +305,8 @@ func configureDatabase() error {
 
 	volumeBind := databaseDir + ":" + "/var/lib/postgresql/data" + ":rw"
 	containerPort := nat.Port("5432/tcp")
-	hostPortBinding := []nat.PortBinding{{HostIP: "0.0.0.0", HostPort: "5432"}}
+	hostSetupPortStr := fmt.Sprintf("%d", setupDBPort)
+	hostPortBinding := []nat.PortBinding{{HostIP: "0.0.0.0", HostPort: hostSetupPortStr}}
 	portMap := nat.PortMap{containerPort: hostPortBinding}
 	hostConfig := container.HostConfig{
 		Binds:        []string{volumeBind},
@@ -328,7 +335,6 @@ func configureDatabase() error {
 	if err := cli.ContainerStop(ctx, resp.ID, nil); err != nil {
 		panic(err)
 	}
-
 	log.Printf("Postgres Container: ID = %v: stopped\n", resp.ID)
 
 	return nil
