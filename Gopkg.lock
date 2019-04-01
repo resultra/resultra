@@ -77,6 +77,14 @@
   version = "v0.3.3"
 
 [[projects]]
+  digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
+  name = "github.com/go-yaml/yaml"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
+  version = "v2.2.2"
+
+[[projects]]
   digest = "1:48092bf6632f55839850666c33469f546f6d45fdbd59a66759ec12e84d853dc2"
   name = "github.com/gogo/protobuf"
   packages = ["proto"]
@@ -282,6 +290,7 @@
     "github.com/docker/docker/api/types/container",
     "github.com/docker/docker/client",
     "github.com/docker/go-connections/nat",
+    "github.com/go-yaml/yaml",
     "github.com/gorilla/mux",
     "github.com/gorilla/sessions",
     "github.com/hashicorp/golang-lru",

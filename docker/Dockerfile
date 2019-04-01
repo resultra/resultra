@@ -27,4 +27,4 @@ ADD factoryTemplates.tar.gz /usr/local/resultra/factoryTemplates
 ADD resultraServer /usr/local/resultra/bin/
 
 WORKDIR /usr/local/resultra
-ENTRYPOINT ./bin/resultraServer --config /var/resultra/config/resultraConfig.json
+ENTRYPOINT ./bin/resultraServer --config /var/resultra/config/resultraConfig.yaml
