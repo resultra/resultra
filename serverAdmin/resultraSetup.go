@@ -7,10 +7,8 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"net"
@@ -380,6 +378,7 @@ func setupTrackerConfig(trackerConfig *runtimeConfig.TrackerDatabaseConfig) {
 func setupConfig() error {
 
 	config := runtimeConfig.RuntimeConfig{}
+
 	emailConfig := runtimeConfig.TransactionalEmailConfig{}
 	config.TransactionalEmailConfig = &emailConfig
 	setupEmailConfig(config.TransactionalEmailConfig)
@@ -395,16 +394,11 @@ func setupConfig() error {
 
 	setupTrackerConfig(&config.TrackerDatabaseConfig)
 
-	configFileName := configDir + "/" + "resultraConfig.json"
-	configData, marshalErr := json.MarshalIndent(config, "  ", "  ")
+	configFileName := configDir + "/" + "resultraConfig.yaml"
 
-	if marshalErr != nil {
-		return marshalErr
-	}
-
-	writeConfigErr := ioutil.WriteFile(configFileName, configData, 0600)
-	if writeConfigErr != nil {
-		return writeConfigErr
+	saveErr := config.SaveConfigFile(configFileName)
+	if saveErr != nil {
+		return fmt.Errorf("Error saving config file: %v", saveErr)
 	}
 
 	return nil

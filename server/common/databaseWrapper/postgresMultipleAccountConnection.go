@@ -15,11 +15,11 @@ import (
 )
 
 type PostgresMultipleAccountDatabaseConfig struct {
-	TrackerUserName         string `json:"trackerUserName"`
-	TrackerPassword         string `json:"trackerPassword"`
-	AccountHostName         string `json:"accountHostName"`
-	AccountUserName         string `json:"accountUserName"`
-	AccountPassword         string `json:"accountPassword"`
+	TrackerUserName         string `yaml:"trackerUserName"`
+	TrackerPassword         string `yaml:"trackerPassword"`
+	AccountHostName         string `yaml:"accountHostName"`
+	AccountUserName         string `yaml:"accountUserName"`
+	AccountPassword         string `yaml:"accountPassword"`
 	AccountConnectionCache  *lru.Cache
 	AccountInfoDBConnection *sql.DB
 }

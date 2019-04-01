@@ -6,8 +6,9 @@
 package runtimeConfig
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/go-yaml/yaml"
+	"io/ioutil"
 	"log"
 	"os"
 	"resultra/tracker/server/common/databaseWrapper"
@@ -16,43 +17,43 @@ import (
 var defaultPortNum int = 43400
 
 type FactoryTemplateDatabaseConfig struct {
-	LocalDatabaseConfig         *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `json:"localSQLiteDatabase,omitempty"`
-	PostgresSingleAccountConfig *databaseWrapper.PostgresSingleAccountDatabaseConfig        `json:"postgresDatabase,omitempty"`
+	LocalDatabaseConfig         *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `yaml:"localSQLiteDatabase,omitempty"`
+	PostgresSingleAccountConfig *databaseWrapper.PostgresSingleAccountDatabaseConfig        `yaml:"postgresDatabase,omitempty"`
 }
 
 type TrackerDatabaseConfig struct {
-	LocalDatabaseConfig         *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `json:"localSQLiteDatabase,omitempty"`
-	PostgresMultiAccountConfig  *databaseWrapper.PostgresMultipleAccountDatabaseConfig      `json:"postgresMultiAccountDatabase,omitempty"`
-	PostgresSingleAccountConfig *databaseWrapper.PostgresSingleAccountDatabaseConfig        `json:"postgresDatabase,omitempty"`
-	LocalAttachmentConfig       *databaseWrapper.LocalAttachmentStorageConfig               `json:"localAttachmentStorage,omitempty"`
+	LocalDatabaseConfig         *databaseWrapper.LocalSQLiteTrackerDatabaseConnectionConfig `yaml:"localSQLiteDatabase,omitempty"`
+	PostgresMultiAccountConfig  *databaseWrapper.PostgresMultipleAccountDatabaseConfig      `yaml:"postgresMultiAccountDatabase,omitempty"`
+	PostgresSingleAccountConfig *databaseWrapper.PostgresSingleAccountDatabaseConfig        `yaml:"postgresDatabase,omitempty"`
+	LocalAttachmentConfig       *databaseWrapper.LocalAttachmentStorageConfig               `yaml:"localAttachmentStorage,omitempty"`
 }
 
 type TransactionalEmailConfig struct {
-	FromEmailAddr     string `json:"fromEmailAddress"`
-	SMTPServerAddress string `json:"smtpServerAddress"`
-	SMTPUserName      string `json:"smtpUserName"`
-	SMTPPort          *int   `json:"smtpPort,omitempty"`
-	SMTPPassword      string `json:"smtpPassword"`
+	FromEmailAddr     string `yaml:"fromEmailAddress"`
+	SMTPServerAddress string `yaml:"smtpServerAddress"`
+	SMTPUserName      string `yaml:"smtpUserName"`
+	SMTPPort          *int   `yaml:"smtpPort,omitempty"`
+	SMTPPassword      string `yaml:"smtpPassword"`
 }
 
 const defaultSMTPPort int = 587
 
 type RuntimeConfig struct {
-	FactoryTemplateDatabaseConfig *FactoryTemplateDatabaseConfig `json:"factoryTemplateDatabase,omitempty"`
-	TrackerDatabaseConfig         TrackerDatabaseConfig          `json:"trackerDatabase"`
-	TransactionalEmailConfig      *TransactionalEmailConfig      `json:"transactionalEmail,omitempty"`
+	FactoryTemplateDatabaseConfig *FactoryTemplateDatabaseConfig `yaml:"factoryTemplateDatabase,omitempty"`
+	TrackerDatabaseConfig         TrackerDatabaseConfig          `yaml:"trackerDatabase"`
+	TransactionalEmailConfig      *TransactionalEmailConfig      `yaml:"transactionalEmail,omitempty"`
 
-	ServerConfig          `json:"server"`
-	IsSingleUserWorkspace bool `json:"isSingleUserWorkspace"`
+	ServerConfig          `yaml:"server"`
+	IsSingleUserWorkspace bool `yaml:"isSingleUserWorkspace"`
 }
 
 const permsOwnerReadWriteOnly os.FileMode = 0700
 
 type ServerConfig struct {
-	ListenPortNumber    int     `json:"listenPortNumber"`
-	SiteBaseURL         *string `json:"baseSiteURL,omitempty"`
-	CookieAuthKey       string  `json:"cookieAuthenticationKey"`
-	CookieEncryptionKey string  `json:"cookieEncryptionKey"`
+	ListenPortNumber    int     `yaml:"listenPortNumber"`
+	SiteBaseURL         *string `yaml:"baseSiteURL,omitempty"`
+	CookieAuthKey       string  `yaml:"cookieAuthenticationKey"`
+	CookieEncryptionKey string  `yaml:"cookieEncryptionKey"`
 }
 
 func NewDefaultRuntimeConfig() RuntimeConfig {
@@ -67,6 +68,21 @@ func NewDefaultRuntimeConfig() RuntimeConfig {
 }
 
 var CurrRuntimeConfig RuntimeConfig
+
+func (config *RuntimeConfig) SaveConfigFile(configFileName string) error {
+
+	configData, marshalErr := yaml.Marshal(config)
+	if marshalErr != nil {
+		return fmt.Errorf("error saving config file %v: cannot marshal configuration: %v", configFileName, marshalErr)
+	}
+
+	writeConfigErr := ioutil.WriteFile(configFileName, configData, 0600)
+	if writeConfigErr != nil {
+		return fmt.Errorf("error saving config file %v: cannot save file: %v", configFileName, writeConfigErr)
+	}
+	return nil
+
+}
 
 func init() {
 	CurrRuntimeConfig = NewDefaultRuntimeConfig()
@@ -169,16 +185,15 @@ func InitRuntimeConfig(config RuntimeConfig) error {
 
 func InitConfigFromConfigFile(configFileName string) error {
 
-	configFile, openErr := os.Open(configFileName)
-	if openErr != nil {
-		return fmt.Errorf("init runtime config: can't open config file %v: %v", configFileName, openErr)
+	configFile, readErr := ioutil.ReadFile(configFileName)
+	if readErr != nil {
+		return fmt.Errorf("unable to read configuration file %v: %v ", configFileName, readErr)
 	}
 
-	decoder := json.NewDecoder(configFile)
-
 	config := NewDefaultRuntimeConfig()
-	if err := decoder.Decode(&config); err != nil {
-		return fmt.Errorf("init runtime config: %v, %v", configFileName, err)
+	unmarshalErr := yaml.Unmarshal(configFile, &config)
+	if unmarshalErr != nil {
+		return fmt.Errorf("error parsing config file %v: %v", configFileName, unmarshalErr)
 	}
 
 	err := InitRuntimeConfig(config)

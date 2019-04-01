@@ -15,11 +15,11 @@ import (
 )
 
 type PostgresSingleAccountDatabaseConfig struct {
-	TrackerDBHostName string  `json:"databaseHostName"`
-	TrackerUserName   string  `json:"databaseUserName"`
-	TrackerPassword   string  `json:"databasePassword"`
-	TrackerDBName     string  `json:"trackerDatabaseName"`
-	TrackerDBHandle   *sql.DB `json:"-"`
+	TrackerDBHostName string  `yaml:"databaseHostName"`
+	TrackerUserName   string  `yaml:"databaseUserName"`
+	TrackerPassword   string  `yaml:"databasePassword"`
+	TrackerDBName     string  `yaml:"trackerDatabaseName"`
+	TrackerDBHandle   *sql.DB `yaml:",omitempty"`
 }
 
 const maxSingleAccountConnections int = 10

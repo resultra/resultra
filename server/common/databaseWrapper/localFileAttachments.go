@@ -57,7 +57,7 @@ func saveLocalAttachmentFile(attachmentBasePath string, databaseID string, fileN
 }
 
 type LocalAttachmentStorageConfig struct {
-	AttachmentBasePath string `json:"attachmentBasePath"`
+	AttachmentBasePath string `yaml:"attachmentBasePath"`
 }
 
 func serveLocalFileAttachment(attachmentBasePath string, serveParams ServeAttachmentParams) {
