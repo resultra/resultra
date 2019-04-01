@@ -6,7 +6,7 @@
 
 FROM ubuntu:latest
 MAINTAINER Resultra Contributors
-EXPOSE 43400
+EXPOSE 80
 
 
 RUN apt-get update

@@ -17,5 +17,5 @@ services:
     volumes:
       - /var/resultra:/var/resultra
     ports:
-      - "43400:43400"
+      - "80:80"
     restart: always

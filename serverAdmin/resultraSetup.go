@@ -355,7 +355,10 @@ func generateCookieKey() string {
 	return randStrRunes(32)
 }
 
-const defaultServerListenPort int = 43400
+// In a production environment, the server defaults to running on the standard HTTP
+// port. This can be mapped to a different using a reverse proxy setup, and Docker
+// port mapping.
+const defaultServerListenPort int = 80
 
 func setupServerConfig(serverConfig *runtimeConfig.ServerConfig) {
 	serverConfig.CookieAuthKey = generateCookieKey()
