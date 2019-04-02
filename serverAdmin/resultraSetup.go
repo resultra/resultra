@@ -192,7 +192,7 @@ func connectAdminPostgresUser() (*sql.DB, error) {
 
 }
 
-func createDatabaseAndWebUser() error {
+func createDatabaseAndWebUser(dbPassword string) error {
 
 	databaseHost := "localhost"
 	databaseUserName := "postgres"
@@ -212,8 +212,8 @@ func createDatabaseAndWebUser() error {
 		return fmt.Errorf("can't create main resultra database: %v", createDBErr)
 	}
 
-	// TODO - don't hard-code the password
-	_, createUserErr := dbHandle.Exec(`CREATE USER resultra_web_user WITH NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD 'resultrawebpw'`)
+	createUserQuery := fmt.Sprintf("CREATE USER resultra_web_user WITH NOSUPERUSER NOCREATEDB NOCREATEROLE PASSWORD '%v'", dbPassword)
+	_, createUserErr := dbHandle.Exec(createUserQuery)
 	if createUserErr != nil {
 		return fmt.Errorf("can't create main resultra database: %v", createUserErr)
 	}
@@ -243,7 +243,7 @@ func waitPostgresPortReady() error {
 	}
 }
 
-func initDatabase() error {
+func initDatabase(dbPassword string) error {
 
 	if waitErr := waitPostgresPortReady(); waitErr != nil {
 		return waitErr
@@ -251,7 +251,7 @@ func initDatabase() error {
 
 	log.Println("Starting database initialization ...")
 
-	createErr := createDatabaseAndWebUser()
+	createErr := createDatabaseAndWebUser(dbPassword)
 	if createErr != nil {
 		return fmt.Errorf("Error setting up tracker database: %v", createErr)
 	}
@@ -278,7 +278,7 @@ func initDatabase() error {
 
 }
 
-func configureDatabase() error {
+func configureDatabase(dbPassword string) error {
 	ctx := context.Background()
 
 	//cli, err := client.NewEnvClient()
@@ -330,7 +330,7 @@ func configureDatabase() error {
 
 	io.Copy(os.Stdout, out)
 
-	initDatabase()
+	initDatabase(dbPassword)
 
 	if err := cli.ContainerStop(ctx, resp.ID, nil); err != nil {
 		panic(err)
@@ -348,7 +348,7 @@ func setupEmailConfig(emailConfig *runtimeConfig.TransactionalEmailConfig) {
 	emailConfig.SMTPPassword = promptUserInputString("Email password (for SMTP server)", "")
 }
 
-func generateCookieKey() string {
+func generateRandomKey(keyLen int) string {
 	var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 	randStrRunes := func(n int) string {
@@ -358,7 +358,7 @@ func generateCookieKey() string {
 		}
 		return string(b)
 	}
-	return randStrRunes(32)
+	return randStrRunes(keyLen)
 }
 
 // In a production environment, the server defaults to running on the standard HTTP
@@ -367,24 +367,25 @@ func generateCookieKey() string {
 const defaultServerListenPort int = 80
 
 func setupServerConfig(serverConfig *runtimeConfig.ServerConfig) {
-	serverConfig.CookieAuthKey = generateCookieKey()
-	serverConfig.CookieEncryptionKey = generateCookieKey()
+	cookieKeyLen := 32
+	serverConfig.CookieAuthKey = generateRandomKey(cookieKeyLen)
+	serverConfig.CookieEncryptionKey = generateRandomKey(cookieKeyLen)
 	serverConfig.ListenPortNumber = defaultServerListenPort
 }
 
-func setupTrackerConfig(trackerConfig *runtimeConfig.TrackerDatabaseConfig) {
+func setupTrackerConfig(trackerConfig *runtimeConfig.TrackerDatabaseConfig, dbPassword string) {
 
 	trackerConfig.PostgresSingleAccountConfig = &databaseWrapper.PostgresSingleAccountDatabaseConfig{
 		TrackerDBHostName: "resultra-postgres", // resultra-postgres is the network name given to the Docker database container.
 		TrackerUserName:   "resultra_web_user",
-		TrackerPassword:   "resultrawebpw",
+		TrackerPassword:   dbPassword,
 		TrackerDBName:     "resultra"}
 	trackerConfig.LocalAttachmentConfig = &databaseWrapper.LocalAttachmentStorageConfig{
 		AttachmentBasePath: "/var/resultra/appdata/attachments"}
 
 }
 
-func setupConfig() error {
+func setupConfig(dbPassword string) error {
 
 	config := runtimeConfig.RuntimeConfig{}
 
@@ -401,7 +402,7 @@ func setupConfig() error {
 
 	setupServerConfig(&config.ServerConfig)
 
-	setupTrackerConfig(&config.TrackerDatabaseConfig)
+	setupTrackerConfig(&config.TrackerDatabaseConfig, dbPassword)
 
 	configFileName := configDir + "/" + "resultraConfig.yaml"
 
@@ -420,12 +421,13 @@ func main() {
 		log.Fatalf("ERROR: Setup failed: %v", dirsErr)
 	}
 
-	configErr := setupConfig()
+	dbPassword := generateRandomKey(16)
+	configErr := setupConfig(dbPassword)
 	if configErr != nil {
 		log.Fatalf("ERROR: Setup of configuration failed: %v", configErr)
 	}
 
-	dbConfigErr := configureDatabase()
+	dbConfigErr := configureDatabase(dbPassword)
 	if dbConfigErr != nil {
 		log.Fatalf("ERROR: Setup failed: %v", dbConfigErr)
 	}
