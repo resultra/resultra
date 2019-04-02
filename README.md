@@ -1,13 +1,5 @@
-Vendor packages depended upon from this project are managed through Go's dep tool.
-To install the dep tool, do the following:
+# Resultra
 
-$ go get -u github.com/golang/dep/cmd/dep
+Resultra is an open-source project tracking system. Resultra notably includes customized workflows, a form designer to customize how information is viewed and edited, and a dashboard designer for summary results.
 
-After this was installed the first time, the following was used to initialized the 
-dependencies:
-
-$ dep init
-
-Thereafter, the following can be performed to check the dependencies:
-
-$ dep ensure
+More detailed information is available on the project's main website at [https://www.resultra.org]
