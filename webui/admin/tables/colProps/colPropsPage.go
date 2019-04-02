@@ -8,23 +8,23 @@ package colProps
 import (
 	"html/template"
 	"net/http"
-	"resultra/tracker/server/databaseController"
-	"resultra/tracker/server/displayTable"
-	colCommon "resultra/tracker/server/displayTable/columns/common"
-	adminCommon "resultra/tracker/webui/admin/common"
-	"resultra/tracker/webui/admin/common/inputProperties"
+	"github.com/resultra/resultra/server/databaseController"
+	"github.com/resultra/resultra/server/displayTable"
+	colCommon "github.com/resultra/resultra/server/displayTable/columns/common"
+	adminCommon "github.com/resultra/resultra/webui/admin/common"
+	"github.com/resultra/resultra/webui/admin/common/inputProperties"
 
 	"github.com/gorilla/mux"
 
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/common/runtimeConfig"
-	"resultra/tracker/server/workspace"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/runtimeConfig"
+	"github.com/resultra/resultra/server/workspace"
 
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/server/userRole"
-	"resultra/tracker/webui/common"
-	"resultra/tracker/webui/generic"
-	"resultra/tracker/webui/thirdParty"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/userRole"
+	"github.com/resultra/resultra/webui/common"
+	"github.com/resultra/resultra/webui/generic"
+	"github.com/resultra/resultra/webui/thirdParty"
 )
 
 var tablePropTemplates *template.Template

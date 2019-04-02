@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"resultra/tracker/server/common/attachment"
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/generic/api"
+	"github.com/resultra/resultra/server/common/attachment"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/generic/api"
 )
 
 type UploadFile struct {

@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/common/runtimeConfig"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/runtimeConfig"
 
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"

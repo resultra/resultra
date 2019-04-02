@@ -9,9 +9,9 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/generic/api"
-	"resultra/tracker/server/generic/stringValidation"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/generic/api"
+	"github.com/resultra/resultra/server/generic/stringValidation"
 )
 
 type RoleIDInterface interface {

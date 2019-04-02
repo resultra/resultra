@@ -6,8 +6,8 @@
 package record
 
 import (
-	"resultra/tracker/server/field"
-	"resultra/tracker/server/generic"
+	"github.com/resultra/resultra/server/field"
+	"github.com/resultra/resultra/server/generic"
 	"time"
 )
 

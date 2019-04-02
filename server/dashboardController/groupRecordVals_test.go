@@ -6,7 +6,7 @@
 package dashboardController
 
 import (
-	"resultra/tracker/server/dashboard/values"
+	"github.com/resultra/resultra/server/dashboard/values"
 	"testing"
 )
 

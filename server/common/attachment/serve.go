@@ -9,7 +9,7 @@ import (
 	"database/sql"
 	"fmt"
 	"path"
-	"resultra/tracker/server/common/runtimeConfig"
+	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"strings"
 )
 

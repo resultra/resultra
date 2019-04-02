@@ -8,10 +8,10 @@ package recordUpdate
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/alert"
-	"resultra/tracker/server/record"
-	"resultra/tracker/server/recordValue"
-	"resultra/tracker/server/recordValueMappingController"
+	"github.com/resultra/resultra/server/alert"
+	"github.com/resultra/resultra/server/record"
+	"github.com/resultra/resultra/server/recordValue"
+	"github.com/resultra/resultra/server/recordValueMappingController"
 )
 
 func newRecord(trackerDBHandle *sql.DB, currUserID string, params record.NewRecordParams) (*recordValue.RecordValueResults, error) {

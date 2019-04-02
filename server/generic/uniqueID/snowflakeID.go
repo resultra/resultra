@@ -11,7 +11,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"log"
-	"resultra/tracker/server/generic/timestamp"
+	"github.com/resultra/resultra/server/generic/timestamp"
 	"sync"
 	"time"
 )

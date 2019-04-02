@@ -10,10 +10,10 @@ import (
 
 	"net/http"
 
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/form"
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/server/userRole"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/form"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/userRole"
 )
 
 type NewItemInfo struct {

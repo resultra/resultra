@@ -8,7 +8,7 @@ package dashboard
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/dashboard/components/common"
+	"github.com/resultra/resultra/server/dashboard/components/common"
 )
 
 type DeleteComponentParams struct {

@@ -8,7 +8,7 @@ package itemList
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/generic/stringValidation"
+	"github.com/resultra/resultra/server/generic/stringValidation"
 )
 
 func validateUniqueItemListName(trackerDBHandle *sql.DB, databaseID string, listID string, listName string) error {

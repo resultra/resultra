@@ -8,23 +8,23 @@ package webui
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"resultra/tracker/webui/admin"
-	"resultra/tracker/webui/alertListView"
-	designDashboard "resultra/tracker/webui/dashboard/design"
-	dashboardView "resultra/tracker/webui/dashboard/view"
-	"resultra/tracker/webui/formPage"
-	"resultra/tracker/webui/homePage"
-	"resultra/tracker/webui/itemList"
-	"resultra/tracker/webui/itemView"
-	"resultra/tracker/webui/mainWindow"
-	"resultra/tracker/webui/setupPage"
-	"resultra/tracker/webui/templatePage"
-	"resultra/tracker/webui/userAdmin"
+	"github.com/resultra/resultra/webui/admin"
+	"github.com/resultra/resultra/webui/alertListView"
+	designDashboard "github.com/resultra/resultra/webui/dashboard/design"
+	dashboardView "github.com/resultra/resultra/webui/dashboard/view"
+	"github.com/resultra/resultra/webui/formPage"
+	"github.com/resultra/resultra/webui/homePage"
+	"github.com/resultra/resultra/webui/itemList"
+	"github.com/resultra/resultra/webui/itemView"
+	"github.com/resultra/resultra/webui/mainWindow"
+	"github.com/resultra/resultra/webui/setupPage"
+	"github.com/resultra/resultra/webui/templatePage"
+	"github.com/resultra/resultra/webui/userAdmin"
 
-	"resultra/tracker/webui/common/trackerPageContent"
+	"github.com/resultra/resultra/webui/common/trackerPageContent"
 
-	"resultra/tracker/webui/workspaceAdmin/general"
-	"resultra/tracker/webui/workspaceAdmin/users"
+	"github.com/resultra/resultra/webui/workspaceAdmin/general"
+	"github.com/resultra/resultra/webui/workspaceAdmin/users"
 )
 
 func init() {

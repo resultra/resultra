@@ -8,12 +8,12 @@ package gauge
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/common/componentLayout"
-	"resultra/tracker/server/dashboard/components/common"
-	"resultra/tracker/server/dashboard/values"
-	"resultra/tracker/server/generic"
-	"resultra/tracker/server/generic/uniqueID"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/common/componentLayout"
+	"github.com/resultra/resultra/server/dashboard/components/common"
+	"github.com/resultra/resultra/server/dashboard/values"
+	"github.com/resultra/resultra/server/generic"
+	"github.com/resultra/resultra/server/generic/uniqueID"
+	"github.com/resultra/resultra/server/trackerDatabase"
 )
 
 const gaugeEntityKind string = "gauge"

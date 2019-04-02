@@ -9,11 +9,11 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/tracker/server/generic"
-	"resultra/tracker/server/generic/stringValidation"
-	"resultra/tracker/server/generic/timestamp"
-	"resultra/tracker/server/generic/uniqueID"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/generic"
+	"github.com/resultra/resultra/server/generic/stringValidation"
+	"github.com/resultra/resultra/server/generic/timestamp"
+	"github.com/resultra/resultra/server/generic/uniqueID"
+	"github.com/resultra/resultra/server/trackerDatabase"
 	"time"
 )
 

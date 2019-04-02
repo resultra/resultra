@@ -8,7 +8,7 @@ package dashboard
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/common/componentLayout"
+	"github.com/resultra/resultra/server/common/componentLayout"
 )
 
 type DashboardIDInterface interface {

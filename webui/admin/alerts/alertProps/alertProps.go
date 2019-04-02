@@ -8,22 +8,22 @@ package alertProps
 import (
 	"html/template"
 	"net/http"
-	"resultra/tracker/server/alert"
-	"resultra/tracker/server/common/runtimeConfig"
-	"resultra/tracker/server/databaseController"
-	adminCommon "resultra/tracker/webui/admin/common"
+	"github.com/resultra/resultra/server/alert"
+	"github.com/resultra/resultra/server/common/runtimeConfig"
+	"github.com/resultra/resultra/server/databaseController"
+	adminCommon "github.com/resultra/resultra/webui/admin/common"
 
 	"github.com/gorilla/mux"
 
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/server/userRole"
-	"resultra/tracker/server/workspace"
-	"resultra/tracker/webui/common"
-	"resultra/tracker/webui/common/field"
-	"resultra/tracker/webui/common/recordFilter"
-	"resultra/tracker/webui/generic"
-	"resultra/tracker/webui/thirdParty"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/userRole"
+	"github.com/resultra/resultra/server/workspace"
+	"github.com/resultra/resultra/webui/common"
+	"github.com/resultra/resultra/webui/common/field"
+	"github.com/resultra/resultra/webui/common/recordFilter"
+	"github.com/resultra/resultra/webui/generic"
+	"github.com/resultra/resultra/webui/thirdParty"
 )
 
 var alertTemplates *template.Template

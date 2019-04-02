@@ -9,8 +9,8 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/tracker/server/generic"
-	"resultra/tracker/server/common/userAuth"
+	"github.com/resultra/resultra/server/generic"
+	"github.com/resultra/resultra/server/common/userAuth"
 )
 
 type WorkspaceInfo struct {

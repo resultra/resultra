@@ -10,7 +10,7 @@ import (
 	"net/http"
 
 	"database/sql"
-	"resultra/tracker/server/common/userAuth"
+	"github.com/resultra/resultra/server/common/userAuth"
 )
 
 type UserTrackingDatabaseInfo struct {

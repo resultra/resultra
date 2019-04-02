@@ -10,15 +10,15 @@ import (
 	"html/template"
 	"net/http"
 
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/server/databaseController"
-	"resultra/tracker/server/generic/api"
-	"resultra/tracker/server/userRole"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/databaseController"
+	"github.com/resultra/resultra/server/generic/api"
+	"github.com/resultra/resultra/server/userRole"
 
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/webui/common"
-	"resultra/tracker/webui/generic"
-	"resultra/tracker/webui/thirdParty"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/webui/common"
+	"github.com/resultra/resultra/webui/generic"
+	"github.com/resultra/resultra/webui/thirdParty"
 )
 
 type ViewFormPageTemplateParams struct {

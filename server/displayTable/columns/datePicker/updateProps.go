@@ -8,8 +8,8 @@ package datePicker
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/common/inputProps"
-	"resultra/tracker/server/form/components/common"
+	"github.com/resultra/resultra/server/common/inputProps"
+	"github.com/resultra/resultra/server/form/components/common"
 )
 
 type DatePickerIDInterface interface {

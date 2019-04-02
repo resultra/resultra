@@ -6,12 +6,12 @@
 package components
 
 import (
-	"resultra/tracker/webui/dashboard/components/barChart"
-	"resultra/tracker/webui/dashboard/components/common"
-	"resultra/tracker/webui/dashboard/components/gauge"
-	"resultra/tracker/webui/dashboard/components/header"
-	"resultra/tracker/webui/dashboard/components/summaryTable"
-	"resultra/tracker/webui/dashboard/components/summaryValue"
+	"github.com/resultra/resultra/webui/dashboard/components/barChart"
+	"github.com/resultra/resultra/webui/dashboard/components/common"
+	"github.com/resultra/resultra/webui/dashboard/components/gauge"
+	"github.com/resultra/resultra/webui/dashboard/components/header"
+	"github.com/resultra/resultra/webui/dashboard/components/summaryTable"
+	"github.com/resultra/resultra/webui/dashboard/components/summaryValue"
 )
 
 var TemplateFileList []string

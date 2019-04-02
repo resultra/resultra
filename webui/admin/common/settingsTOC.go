@@ -8,9 +8,9 @@ package common
 import (
 	"html/template"
 	"net/http"
-	"resultra/tracker/server/common/runtimeConfig"
-	"resultra/tracker/webui/common"
-	"resultra/tracker/webui/generic"
+	"github.com/resultra/resultra/server/common/runtimeConfig"
+	"github.com/resultra/resultra/webui/common"
+	"github.com/resultra/resultra/webui/generic"
 )
 
 var contentTemplates *template.Template

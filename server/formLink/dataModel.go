@@ -9,11 +9,11 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/server/generic"
-	"resultra/tracker/server/generic/uniqueID"
-	"resultra/tracker/server/trackerDatabase"
-	"resultra/tracker/server/userRole"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/generic"
+	"github.com/resultra/resultra/server/generic/uniqueID"
+	"github.com/resultra/resultra/server/trackerDatabase"
+	"github.com/resultra/resultra/server/userRole"
 )
 
 type NewFormLinkParams struct {

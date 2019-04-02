@@ -9,11 +9,11 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"resultra/tracker/server/common/runtimeConfig"
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/webui/common"
-	"resultra/tracker/webui/generic"
-	"resultra/tracker/webui/thirdParty"
+	"github.com/resultra/resultra/server/common/runtimeConfig"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/webui/common"
+	"github.com/resultra/resultra/webui/generic"
+	"github.com/resultra/resultra/webui/thirdParty"
 
 	"github.com/gorilla/mux"
 )

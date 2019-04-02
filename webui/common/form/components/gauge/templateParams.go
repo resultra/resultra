@@ -6,13 +6,13 @@
 package gauge
 
 import (
-	"resultra/tracker/webui/admin/common/inputProperties"
-	"resultra/tracker/webui/common/form/components/common/delete"
-	"resultra/tracker/webui/common/form/components/common/label"
-	"resultra/tracker/webui/common/form/components/common/newFormElemDialog"
-	"resultra/tracker/webui/common/form/components/common/visibility"
-	"resultra/tracker/webui/common/valueThreshold"
-	"resultra/tracker/webui/generic/propertiesSidebar"
+	"github.com/resultra/resultra/webui/admin/common/inputProperties"
+	"github.com/resultra/resultra/webui/common/form/components/common/delete"
+	"github.com/resultra/resultra/webui/common/form/components/common/label"
+	"github.com/resultra/resultra/webui/common/form/components/common/newFormElemDialog"
+	"github.com/resultra/resultra/webui/common/form/components/common/visibility"
+	"github.com/resultra/resultra/webui/common/valueThreshold"
+	"github.com/resultra/resultra/webui/generic/propertiesSidebar"
 )
 
 type GaugeDesignTemplateParams struct {

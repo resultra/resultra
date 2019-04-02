@@ -9,8 +9,8 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/common/userAuth"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/userAuth"
 )
 
 func VerifyCurrUserIsDatabaseAdmin(trackerDBHandle *sql.DB, req *http.Request, databaseID string) error {

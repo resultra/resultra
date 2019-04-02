@@ -7,7 +7,7 @@ package global
 
 import (
 	"fmt"
-	"resultra/tracker/server/generic"
+	"github.com/resultra/resultra/server/generic"
 	"time"
 )
 

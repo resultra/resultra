@@ -13,8 +13,8 @@ import (
 	"math/rand"
 	"net"
 	"os"
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/common/runtimeConfig"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"strings"
 	"time"
 

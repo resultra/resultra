@@ -7,7 +7,7 @@ package trackerDatabase
 
 import (
 	"fmt"
-	"resultra/tracker/server/generic/stringValidation"
+	"github.com/resultra/resultra/server/generic/stringValidation"
 )
 
 func validateNewTrackerName(trackerName string) error {

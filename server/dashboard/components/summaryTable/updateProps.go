@@ -9,9 +9,9 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/tracker/server/common/componentLayout"
-	"resultra/tracker/server/dashboard/values"
-	"resultra/tracker/server/recordFilter"
+	"github.com/resultra/resultra/server/common/componentLayout"
+	"github.com/resultra/resultra/server/dashboard/values"
+	"github.com/resultra/resultra/server/recordFilter"
 )
 
 // The BarChartPropertyUpdater interface along with UpdateBarChartProps() implement a harness for

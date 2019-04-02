@@ -9,7 +9,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/tracker/server/field"
+	"github.com/resultra/resultra/server/field"
 )
 
 type SetFormulaParams struct {

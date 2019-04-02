@@ -8,8 +8,8 @@ package calcField
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/field"
-	"resultra/tracker/server/generic/uniqueID"
+	"github.com/resultra/resultra/server/field"
+	"github.com/resultra/resultra/server/generic/uniqueID"
 )
 
 // Parameters for creating a new calculated field. FieldEqn needs to be converted to

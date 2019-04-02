@@ -9,7 +9,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/tracker/server/recordFilter"
+	"github.com/resultra/resultra/server/recordFilter"
 )
 
 type FormComponentFilterMap map[string]recordFilter.RecordFilterRuleSet

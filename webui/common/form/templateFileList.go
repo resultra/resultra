@@ -6,8 +6,8 @@
 package form
 
 import (
-	"resultra/tracker/webui/common/form/components"
-	"resultra/tracker/webui/common/form/submit"
+	"github.com/resultra/resultra/webui/common/form/components"
+	"github.com/resultra/resultra/webui/common/form/submit"
 )
 
 var TemplateFileList []string

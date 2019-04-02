@@ -9,13 +9,13 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/tracker/server/alert"
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/server/record"
-	"resultra/tracker/server/recordValue"
-	"resultra/tracker/server/recordValueMappingController"
-	"resultra/tracker/server/userRole"
+	"github.com/resultra/resultra/server/alert"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/record"
+	"github.com/resultra/resultra/server/recordValue"
+	"github.com/resultra/resultra/server/recordValueMappingController"
+	"github.com/resultra/resultra/server/userRole"
 )
 
 func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*recordValue.RecordValueResults, error) {

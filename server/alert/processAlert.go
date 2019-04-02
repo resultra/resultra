@@ -7,9 +7,9 @@ package alert
 
 import (
 	"fmt"
-	"resultra/tracker/server/calcField"
-	"resultra/tracker/server/field"
-	"resultra/tracker/server/record"
+	"github.com/resultra/resultra/server/calcField"
+	"github.com/resultra/resultra/server/field"
+	"github.com/resultra/resultra/server/record"
 	"sort"
 	"time"
 )

@@ -8,7 +8,7 @@ package adminController
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/userRole"
+	"github.com/resultra/resultra/server/userRole"
 )
 
 type AddCollaboratorParams struct {

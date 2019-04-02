@@ -6,20 +6,20 @@
 package server
 
 import (
-	"resultra/tracker/server/adminController"
-	"resultra/tracker/server/common/attachment"
-	"resultra/tracker/server/dashboardController"
-	"resultra/tracker/server/databaseController"
-	"resultra/tracker/server/displayTable"
-	"resultra/tracker/server/form"
-	"resultra/tracker/server/formLink"
-	"resultra/tracker/server/global"
-	"resultra/tracker/server/recordReadController"
-	"resultra/tracker/server/recordUpdate"
-	"resultra/tracker/server/timelineController"
-	"resultra/tracker/server/trackerDatabase"
-	"resultra/tracker/server/userRoleController"
-	"resultra/tracker/server/valueList"
+	"github.com/resultra/resultra/server/adminController"
+	"github.com/resultra/resultra/server/common/attachment"
+	"github.com/resultra/resultra/server/dashboardController"
+	"github.com/resultra/resultra/server/databaseController"
+	"github.com/resultra/resultra/server/displayTable"
+	"github.com/resultra/resultra/server/form"
+	"github.com/resultra/resultra/server/formLink"
+	"github.com/resultra/resultra/server/global"
+	"github.com/resultra/resultra/server/recordReadController"
+	"github.com/resultra/resultra/server/recordUpdate"
+	"github.com/resultra/resultra/server/timelineController"
+	"github.com/resultra/resultra/server/trackerDatabase"
+	"github.com/resultra/resultra/server/userRoleController"
+	"github.com/resultra/resultra/server/valueList"
 )
 
 // Dummy variables to force inclusion of the packages (and not trigger an error from the Golang compiler).

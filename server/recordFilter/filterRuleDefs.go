@@ -7,8 +7,8 @@ package recordFilter
 
 import (
 	"fmt"
-	"resultra/tracker/server/field"
-	"resultra/tracker/server/record"
+	"github.com/resultra/resultra/server/field"
+	"github.com/resultra/resultra/server/record"
 	"strings"
 )
 

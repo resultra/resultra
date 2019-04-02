@@ -8,43 +8,43 @@ package admin
 import (
 	"github.com/gorilla/mux"
 
-	"resultra/tracker/webui/admin/common"
+	"github.com/resultra/resultra/webui/admin/common"
 
-	"resultra/tracker/webui/admin/mainAdminPage"
+	"github.com/resultra/resultra/webui/admin/mainAdminPage"
 
-	"resultra/tracker/webui/admin/general"
+	"github.com/resultra/resultra/webui/admin/general"
 
-	"resultra/tracker/webui/admin/fields/fieldList"
-	"resultra/tracker/webui/admin/fields/fieldProps"
+	"github.com/resultra/resultra/webui/admin/fields/fieldList"
+	"github.com/resultra/resultra/webui/admin/fields/fieldProps"
 
-	"resultra/tracker/webui/admin/formLink/formLinkList"
-	"resultra/tracker/webui/admin/formLink/formLinkProps"
+	"github.com/resultra/resultra/webui/admin/formLink/formLinkList"
+	"github.com/resultra/resultra/webui/admin/formLink/formLinkProps"
 
-	"resultra/tracker/webui/admin/tables/colProps"
-	"resultra/tracker/webui/admin/tables/tableList"
-	"resultra/tracker/webui/admin/tables/tableProps"
+	"github.com/resultra/resultra/webui/admin/tables/colProps"
+	"github.com/resultra/resultra/webui/admin/tables/tableList"
+	"github.com/resultra/resultra/webui/admin/tables/tableProps"
 
-	"resultra/tracker/webui/admin/forms/design"
-	"resultra/tracker/webui/admin/forms/formList"
+	"github.com/resultra/resultra/webui/admin/forms/design"
+	"github.com/resultra/resultra/webui/admin/forms/formList"
 
-	"resultra/tracker/webui/admin/itemList/itemListList"
-	"resultra/tracker/webui/admin/itemList/itemListProps"
+	"github.com/resultra/resultra/webui/admin/itemList/itemListList"
+	"github.com/resultra/resultra/webui/admin/itemList/itemListProps"
 
-	"resultra/tracker/webui/admin/userRole/userRoleList"
-	"resultra/tracker/webui/admin/userRole/userRoleProps"
+	"github.com/resultra/resultra/webui/admin/userRole/userRoleList"
+	"github.com/resultra/resultra/webui/admin/userRole/userRoleProps"
 
-	"resultra/tracker/webui/admin/valueLists/valueListList"
-	"resultra/tracker/webui/admin/valueLists/valueListProps"
+	"github.com/resultra/resultra/webui/admin/valueLists/valueListList"
+	"github.com/resultra/resultra/webui/admin/valueLists/valueListProps"
 
-	"resultra/tracker/webui/admin/dashboards"
+	"github.com/resultra/resultra/webui/admin/dashboards"
 
-	"resultra/tracker/webui/admin/globals"
+	"github.com/resultra/resultra/webui/admin/globals"
 
-	"resultra/tracker/webui/admin/collaborators/collaboratorList"
-	"resultra/tracker/webui/admin/collaborators/collaboratorProps"
+	"github.com/resultra/resultra/webui/admin/collaborators/collaboratorList"
+	"github.com/resultra/resultra/webui/admin/collaborators/collaboratorProps"
 
-	"resultra/tracker/webui/admin/alerts/alertList"
-	"resultra/tracker/webui/admin/alerts/alertProps"
+	"github.com/resultra/resultra/webui/admin/alerts/alertList"
+	"github.com/resultra/resultra/webui/admin/alerts/alertProps"
 )
 
 func RegisterHTTPHandlers(mainRouter *mux.Router) {

@@ -8,10 +8,10 @@ package view
 import (
 	"fmt"
 	"net/http"
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/databaseController"
-	"resultra/tracker/server/userRole"
-	"resultra/tracker/webui/dashboard/components"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/databaseController"
+	"github.com/resultra/resultra/server/userRole"
+	"github.com/resultra/resultra/webui/dashboard/components"
 )
 
 type ViewDashboardInfo struct {

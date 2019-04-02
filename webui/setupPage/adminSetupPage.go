@@ -8,11 +8,11 @@ package setupPage
 import (
 	"html/template"
 	"net/http"
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/workspace"
-	"resultra/tracker/webui/common"
-	"resultra/tracker/webui/generic"
-	"resultra/tracker/webui/thirdParty"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/workspace"
+	"github.com/resultra/resultra/webui/common"
+	"github.com/resultra/resultra/webui/generic"
+	"github.com/resultra/resultra/webui/thirdParty"
 )
 
 var setupPageTemplates *template.Template

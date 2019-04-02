@@ -6,10 +6,10 @@
 package recordSort
 
 import (
-	"resultra/tracker/server/common/recordSortDataModel"
-	"resultra/tracker/server/common/testUtil"
-	"resultra/tracker/server/record"
-	"resultra/tracker/server/recordValue"
+	"github.com/resultra/resultra/server/common/recordSortDataModel"
+	"github.com/resultra/resultra/server/common/testUtil"
+	"github.com/resultra/resultra/server/record"
+	"github.com/resultra/resultra/server/recordValue"
 	"testing"
 	"time"
 )

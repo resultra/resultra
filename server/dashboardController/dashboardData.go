@@ -8,8 +8,8 @@ package dashboardController
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/dashboard"
-	"resultra/tracker/server/dashboard/components/header"
+	"github.com/resultra/resultra/server/dashboard"
+	"github.com/resultra/resultra/server/dashboard/components/header"
 )
 
 type GetDashboardDataParams struct {

@@ -7,7 +7,7 @@ package label
 
 import (
 	"database/sql"
-	"resultra/tracker/server/generic/inputValidation"
+	"github.com/resultra/resultra/server/generic/inputValidation"
 )
 
 type ValidateInputParams struct {

@@ -8,9 +8,9 @@ package recordFilter
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/field"
-	"resultra/tracker/server/record"
-	"resultra/tracker/server/recordValue"
+	"github.com/resultra/resultra/server/field"
+	"github.com/resultra/resultra/server/record"
+	"github.com/resultra/resultra/server/recordValue"
 )
 
 // A filterRuleContext includes all the runtime information which is common for each filter and

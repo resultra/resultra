@@ -8,7 +8,7 @@ package numberInput
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/generic/inputValidation"
+	"github.com/resultra/resultra/server/generic/inputValidation"
 )
 
 type NumberInputValidateInputParams struct {

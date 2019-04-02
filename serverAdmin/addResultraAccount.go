@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"resultra/tracker/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"strings"
 )
 

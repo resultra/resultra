@@ -8,7 +8,7 @@ package global
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/generic"
+	"github.com/resultra/resultra/server/generic"
 	"time"
 )
 

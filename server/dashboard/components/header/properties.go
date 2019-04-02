@@ -6,8 +6,8 @@
 package header
 
 import (
-	"resultra/tracker/server/common/componentLayout"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/common/componentLayout"
+	"github.com/resultra/resultra/server/trackerDatabase"
 )
 
 type HeaderProps struct {

@@ -7,7 +7,7 @@ package record
 
 import (
 	"fmt"
-	"resultra/tracker/server/field"
+	"github.com/resultra/resultra/server/field"
 	"sort"
 	"time"
 )

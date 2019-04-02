@@ -9,11 +9,11 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/server/generic/uniqueID"
-	"resultra/tracker/server/trackerDatabase"
-	"resultra/tracker/server/userRole"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/generic/uniqueID"
+	"github.com/resultra/resultra/server/trackerDatabase"
+	"github.com/resultra/resultra/server/userRole"
 )
 
 func createNewDatabase(trackerDBHandle *sql.DB, req *http.Request, dbParams trackerDatabase.NewDatabaseParams) (*UserTrackingDatabaseInfo, error) {

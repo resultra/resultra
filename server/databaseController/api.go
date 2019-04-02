@@ -8,9 +8,9 @@ package databaseController
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/generic/api"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/generic/api"
+	"github.com/resultra/resultra/server/trackerDatabase"
 )
 
 type DummyStructForInclude struct {

@@ -8,7 +8,7 @@ package alert
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/recordFilter"
+	"github.com/resultra/resultra/server/recordFilter"
 )
 
 type AlertIDInterface interface {

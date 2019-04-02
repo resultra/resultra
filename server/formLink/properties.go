@@ -7,8 +7,8 @@ package formLink
 
 import (
 	"fmt"
-	"resultra/tracker/server/record"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/record"
+	"github.com/resultra/resultra/server/trackerDatabase"
 )
 
 type FormLinkProperties struct {

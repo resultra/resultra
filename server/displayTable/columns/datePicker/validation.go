@@ -9,8 +9,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/tracker/server/generic/inputValidation"
-	"resultra/tracker/server/generic/timestamp"
+	"github.com/resultra/resultra/server/generic/inputValidation"
+	"github.com/resultra/resultra/server/generic/timestamp"
 	"time"
 )
 

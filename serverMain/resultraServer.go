@@ -12,9 +12,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"resultra/tracker/server"
-	"resultra/tracker/server/common/runtimeConfig"
-	"resultra/tracker/webui"
+	"github.com/resultra/resultra/server"
+	"github.com/resultra/resultra/server/common/runtimeConfig"
+	"github.com/resultra/resultra/webui"
 )
 
 const staticSiteResourcesPrefix string = `/static/`

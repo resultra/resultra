@@ -6,7 +6,7 @@
 package webui
 
 import (
-	"resultra/tracker/server/common/userAuth"
+	"github.com/resultra/resultra/server/common/userAuth"
 )
 
 // Dummy variables to force inclusion of the packages (and not trigger an error from the Golang compiler).

@@ -8,7 +8,7 @@ package common
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/generic"
+	"github.com/resultra/resultra/server/generic"
 )
 
 func SaveNewDashboardComponent(destDBHandle *sql.DB, componentType string, parentDashboard string,

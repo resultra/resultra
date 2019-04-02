@@ -7,11 +7,11 @@ package formButton
 
 import (
 	"fmt"
-	"resultra/tracker/server/common/componentLayout"
-	"resultra/tracker/server/common/inputProps"
-	"resultra/tracker/server/form/components/common"
-	"resultra/tracker/server/record"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/common/componentLayout"
+	"github.com/resultra/resultra/server/common/inputProps"
+	"github.com/resultra/resultra/server/form/components/common"
+	"github.com/resultra/resultra/server/record"
+	"github.com/resultra/resultra/server/trackerDatabase"
 )
 
 const buttonSizeMedium string = "medium"

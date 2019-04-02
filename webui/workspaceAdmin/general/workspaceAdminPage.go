@@ -9,13 +9,13 @@ import (
 	"html/template"
 	"net/http"
 
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/server/workspace"
-	"resultra/tracker/webui/common"
-	"resultra/tracker/webui/generic"
-	"resultra/tracker/webui/thirdParty"
-	adminCommon "resultra/tracker/webui/workspaceAdmin/common"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/workspace"
+	"github.com/resultra/resultra/webui/common"
+	"github.com/resultra/resultra/webui/generic"
+	"github.com/resultra/resultra/webui/thirdParty"
+	adminCommon "github.com/resultra/resultra/webui/workspaceAdmin/common"
 )
 
 var generalTemplates *template.Template

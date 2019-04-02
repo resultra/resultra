@@ -8,9 +8,9 @@ package calcField
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/field"
-	"resultra/tracker/server/generic/api"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/field"
+	"github.com/resultra/resultra/server/generic/api"
 )
 
 func init() {

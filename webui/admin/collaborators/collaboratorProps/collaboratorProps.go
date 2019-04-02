@@ -9,16 +9,16 @@ import (
 	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
-	"resultra/tracker/server/databaseController"
-	"resultra/tracker/server/userRole"
-	adminCommon "resultra/tracker/webui/admin/common"
+	"github.com/resultra/resultra/server/databaseController"
+	"github.com/resultra/resultra/server/userRole"
+	adminCommon "github.com/resultra/resultra/webui/admin/common"
 
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/server/workspace"
-	"resultra/tracker/webui/common"
-	"resultra/tracker/webui/generic"
-	"resultra/tracker/webui/thirdParty"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/workspace"
+	"github.com/resultra/resultra/webui/common"
+	"github.com/resultra/resultra/webui/generic"
+	"github.com/resultra/resultra/webui/thirdParty"
 )
 
 var userRoleTemplates *template.Template

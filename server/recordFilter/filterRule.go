@@ -7,7 +7,7 @@ package recordFilter
 
 import (
 	"fmt"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/trackerDatabase"
 )
 
 type RecordFilterRule struct {

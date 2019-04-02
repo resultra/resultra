@@ -9,8 +9,8 @@ import (
 	"database/sql"
 	"fmt"
 	"regexp"
-	"resultra/tracker/server/field"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/field"
+	"github.com/resultra/resultra/server/trackerDatabase"
 )
 
 type identReplacementMap map[string]string

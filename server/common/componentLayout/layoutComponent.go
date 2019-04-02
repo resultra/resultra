@@ -5,7 +5,7 @@
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 package componentLayout
 
-import "resultra/tracker/server/generic/uniqueID"
+import "github.com/resultra/resultra/server/generic/uniqueID"
 
 type LayoutComponentCol struct {
 	ComponentIDs []string `json:"componentIDs"`

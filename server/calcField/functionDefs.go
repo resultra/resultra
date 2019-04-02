@@ -9,8 +9,8 @@ import (
 	"bytes"
 	"fmt"
 	"math"
-	"resultra/tracker/server/field"
-	"resultra/tracker/server/generic/timestamp"
+	"github.com/resultra/resultra/server/field"
+	"github.com/resultra/resultra/server/generic/timestamp"
 	"time"
 )
 

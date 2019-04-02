@@ -6,7 +6,7 @@
 package calcField
 
 import (
-	"resultra/tracker/server/common/testUtil"
+	"github.com/resultra/resultra/server/common/testUtil"
 	"testing"
 )
 

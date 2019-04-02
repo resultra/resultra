@@ -9,8 +9,8 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/trackerDatabase"
 )
 
 type SetNewItemFormLinkRolePrivsParams struct {

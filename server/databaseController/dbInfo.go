@@ -8,10 +8,10 @@ package databaseController
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/dashboard"
-	"resultra/tracker/server/form"
-	"resultra/tracker/server/itemList"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/dashboard"
+	"github.com/resultra/resultra/server/form"
+	"github.com/resultra/resultra/server/itemList"
+	"github.com/resultra/resultra/server/trackerDatabase"
 )
 
 type DatabaseInfoParams struct {

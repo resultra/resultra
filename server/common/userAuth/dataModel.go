@@ -9,8 +9,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/tracker/server/generic"
-	"resultra/tracker/server/generic/uniqueID"
+	"github.com/resultra/resultra/server/generic"
+	"github.com/resultra/resultra/server/generic/uniqueID"
 	"strings"
 )
 

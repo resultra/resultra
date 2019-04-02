@@ -8,13 +8,13 @@ package design
 import (
 	"fmt"
 	"net/http"
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/common/runtimeConfig"
-	"resultra/tracker/server/dashboard"
-	"resultra/tracker/server/trackerDatabase"
-	"resultra/tracker/server/userRole"
-	"resultra/tracker/webui/dashboard/components"
-	"resultra/tracker/webui/generic/propertiesSidebar"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/runtimeConfig"
+	"github.com/resultra/resultra/server/dashboard"
+	"github.com/resultra/resultra/server/trackerDatabase"
+	"github.com/resultra/resultra/server/userRole"
+	"github.com/resultra/resultra/webui/dashboard/components"
+	"github.com/resultra/resultra/webui/generic/propertiesSidebar"
 )
 
 type DashboardTemplateParams struct {

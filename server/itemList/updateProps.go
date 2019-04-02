@@ -8,8 +8,8 @@ package itemList
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/common/recordSortDataModel"
-	"resultra/tracker/server/recordFilter"
+	"github.com/resultra/resultra/server/common/recordSortDataModel"
+	"github.com/resultra/resultra/server/recordFilter"
 )
 
 type ItemListIDInterface interface {

@@ -7,8 +7,8 @@ package file
 
 import (
 	"fmt"
-	"resultra/tracker/server/form/components/common"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/form/components/common"
+	"github.com/resultra/resultra/server/trackerDatabase"
 )
 
 type FileValidationProperties struct {

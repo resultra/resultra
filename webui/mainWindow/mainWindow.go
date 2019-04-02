@@ -12,20 +12,20 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"resultra/tracker/server/common/runtimeConfig"
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/server/generic/api"
+	"github.com/resultra/resultra/server/common/runtimeConfig"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/generic/api"
 
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/workspace"
-	"resultra/tracker/webui/alertListView"
-	"resultra/tracker/webui/common"
-	dashboardComponents "resultra/tracker/webui/dashboard/components"
-	dashboardView "resultra/tracker/webui/dashboard/view"
-	"resultra/tracker/webui/generic"
-	"resultra/tracker/webui/itemList"
-	"resultra/tracker/webui/itemView"
-	"resultra/tracker/webui/thirdParty"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/workspace"
+	"github.com/resultra/resultra/webui/alertListView"
+	"github.com/resultra/resultra/webui/common"
+	dashboardComponents "github.com/resultra/resultra/webui/dashboard/components"
+	dashboardView "github.com/resultra/resultra/webui/dashboard/view"
+	"github.com/resultra/resultra/webui/generic"
+	"github.com/resultra/resultra/webui/itemList"
+	"github.com/resultra/resultra/webui/itemView"
+	"github.com/resultra/resultra/webui/thirdParty"
 )
 
 var mainWindowTemplates *template.Template

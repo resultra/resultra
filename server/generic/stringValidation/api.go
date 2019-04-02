@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
-	"resultra/tracker/server/generic/api"
+	"github.com/resultra/resultra/server/generic/api"
 )
 
 type DummyStructForInclude struct {

@@ -10,7 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"resultra/tracker/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
 
 	"github.com/go-yaml/yaml"
 )

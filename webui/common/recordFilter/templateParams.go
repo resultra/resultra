@@ -6,7 +6,7 @@
 package recordFilter
 
 import (
-	"resultra/tracker/webui/common/field"
+	"github.com/resultra/resultra/webui/common/field"
 )
 
 type FilterPanelTemplateParams struct {

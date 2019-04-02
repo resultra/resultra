@@ -8,9 +8,9 @@ package record
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/field"
-	"resultra/tracker/server/generic/timestamp"
-	"resultra/tracker/server/generic/uniqueID"
+	"github.com/resultra/resultra/server/field"
+	"github.com/resultra/resultra/server/generic/timestamp"
+	"github.com/resultra/resultra/server/generic/uniqueID"
 )
 
 const defaultValIDTrue string = "true"

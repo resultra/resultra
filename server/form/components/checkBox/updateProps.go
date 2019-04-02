@@ -8,8 +8,8 @@ package checkBox
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/common/componentLayout"
-	"resultra/tracker/server/form/components/common"
+	"github.com/resultra/resultra/server/common/componentLayout"
+	"github.com/resultra/resultra/server/form/components/common"
 )
 
 type CheckboxIDInterface interface {

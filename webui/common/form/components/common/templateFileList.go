@@ -6,11 +6,11 @@
 package common
 
 import (
-	"resultra/tracker/webui/common/form/components/common/delete"
-	"resultra/tracker/webui/common/form/components/common/label"
-	"resultra/tracker/webui/common/form/components/common/newFormElemDialog"
-	"resultra/tracker/webui/common/form/components/common/permissions"
-	"resultra/tracker/webui/common/form/components/common/visibility"
+	"github.com/resultra/resultra/webui/common/form/components/common/delete"
+	"github.com/resultra/resultra/webui/common/form/components/common/label"
+	"github.com/resultra/resultra/webui/common/form/components/common/newFormElemDialog"
+	"github.com/resultra/resultra/webui/common/form/components/common/permissions"
+	"github.com/resultra/resultra/webui/common/form/components/common/visibility"
 )
 
 var TemplateFileList []string

@@ -6,9 +6,9 @@
 package header
 
 import (
-	"resultra/tracker/webui/common/form/components/common/delete"
-	"resultra/tracker/webui/common/form/components/common/visibility"
-	"resultra/tracker/webui/generic/propertiesSidebar"
+	"github.com/resultra/resultra/webui/common/form/components/common/delete"
+	"github.com/resultra/resultra/webui/common/form/components/common/visibility"
+	"github.com/resultra/resultra/webui/generic/propertiesSidebar"
 )
 
 type HeaderTemplateParams struct {

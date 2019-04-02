@@ -6,7 +6,7 @@
 package recordValue
 
 import (
-	"resultra/tracker/server/record"
+	"github.com/resultra/resultra/server/record"
 	"time"
 )
 

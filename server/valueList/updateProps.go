@@ -8,7 +8,7 @@ package valueList
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/generic/stringValidation"
+	"github.com/resultra/resultra/server/generic/stringValidation"
 )
 
 type ValueListIDInterface interface {

@@ -10,10 +10,10 @@ import (
 	"fmt"
 	"net/http"
 	"path/filepath"
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/server/generic/timestamp"
-	"resultra/tracker/server/generic/uniqueID"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/generic/timestamp"
+	"github.com/resultra/resultra/server/generic/uniqueID"
 	"time"
 )
 

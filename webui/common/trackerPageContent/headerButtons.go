@@ -10,10 +10,10 @@ import (
 
 	"html/template"
 	"net/http"
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/server/userRole"
-	"resultra/tracker/webui/common/alert"
-	"resultra/tracker/webui/generic"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/userRole"
+	"github.com/resultra/resultra/webui/common/alert"
+	"github.com/resultra/resultra/webui/generic"
 )
 
 var headerTemplates *template.Template

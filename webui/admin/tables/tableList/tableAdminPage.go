@@ -8,19 +8,19 @@ package tableList
 import (
 	"html/template"
 	"net/http"
-	"resultra/tracker/server/common/runtimeConfig"
-	"resultra/tracker/server/databaseController"
-	"resultra/tracker/server/userRole"
+	"github.com/resultra/resultra/server/common/runtimeConfig"
+	"github.com/resultra/resultra/server/databaseController"
+	"github.com/resultra/resultra/server/userRole"
 
 	"github.com/gorilla/mux"
 
-	"resultra/tracker/server/common/databaseWrapper"
-	"resultra/tracker/server/common/userAuth"
-	"resultra/tracker/server/workspace"
-	adminCommon "resultra/tracker/webui/admin/common"
-	"resultra/tracker/webui/common"
-	"resultra/tracker/webui/generic"
-	"resultra/tracker/webui/thirdParty"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/workspace"
+	adminCommon "github.com/resultra/resultra/webui/admin/common"
+	"github.com/resultra/resultra/webui/common"
+	"github.com/resultra/resultra/webui/generic"
+	"github.com/resultra/resultra/webui/thirdParty"
 )
 
 var tableTemplates *template.Template

@@ -8,8 +8,8 @@ package progress
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/form/components/common"
-	"resultra/tracker/server/generic/numberFormat"
+	"github.com/resultra/resultra/server/form/components/common"
+	"github.com/resultra/resultra/server/generic/numberFormat"
 )
 
 type ProgressIDInterface interface {

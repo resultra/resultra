@@ -7,8 +7,8 @@ package alert
 
 import (
 	"fmt"
-	"resultra/tracker/server/recordFilter"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/recordFilter"
+	"github.com/resultra/resultra/server/trackerDatabase"
 	"time"
 )
 

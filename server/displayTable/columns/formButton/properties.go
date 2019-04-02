@@ -7,9 +7,9 @@ package formButton
 
 import (
 	"fmt"
-	"resultra/tracker/server/common/inputProps"
-	"resultra/tracker/server/record"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/common/inputProps"
+	"github.com/resultra/resultra/server/record"
+	"github.com/resultra/resultra/server/trackerDatabase"
 )
 
 const popupBehaviorModeless string = "modeless"

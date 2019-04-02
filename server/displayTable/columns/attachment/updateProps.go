@@ -8,7 +8,7 @@ package attachment
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/form/components/common"
+	"github.com/resultra/resultra/server/form/components/common"
 )
 
 type AttachmentIDInterface interface {

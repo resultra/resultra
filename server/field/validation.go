@@ -8,8 +8,8 @@ package field
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/generic"
-	"resultra/tracker/server/generic/stringValidation"
+	"github.com/resultra/resultra/server/generic"
+	"github.com/resultra/resultra/server/generic/stringValidation"
 )
 
 func validateUniqueFieldName(trackerDBHandle *sql.DB, databaseID string, fieldID string, fieldName string) error {

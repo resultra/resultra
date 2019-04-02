@@ -8,8 +8,8 @@ package userRoleController
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/dashboard"
-	"resultra/tracker/server/userRole"
+	"github.com/resultra/resultra/server/dashboard"
+	"github.com/resultra/resultra/server/userRole"
 )
 
 func getRoleDashboardPrivsWithDefaults(trackerDBHandle *sql.DB, roleID string) ([]userRole.RoleDashboardPriv, error) {

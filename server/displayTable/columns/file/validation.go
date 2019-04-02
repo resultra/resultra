@@ -7,8 +7,8 @@ package file
 
 import (
 	"database/sql"
-	"resultra/tracker/server/generic/inputValidation"
-	"resultra/tracker/server/generic/stringValidation"
+	"github.com/resultra/resultra/server/generic/inputValidation"
+	"github.com/resultra/resultra/server/generic/stringValidation"
 )
 
 type FileValidateInputParams struct {

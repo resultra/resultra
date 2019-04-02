@@ -10,7 +10,7 @@ import (
 	"fmt"
 	_ "github.com/lib/pq"
 	"net/http"
-	"resultra/tracker/server/generic/uniqueID"
+	"github.com/resultra/resultra/server/generic/uniqueID"
 	"strings"
 )
 

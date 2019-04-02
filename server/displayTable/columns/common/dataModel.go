@@ -8,7 +8,7 @@ package common
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/generic"
+	"github.com/resultra/resultra/server/generic"
 )
 
 func SaveNewTableColumn(destDBHandle *sql.DB, columnType string, parentTableID string, columnID string, properties interface{}) error {

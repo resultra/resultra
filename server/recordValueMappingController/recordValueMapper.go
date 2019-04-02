@@ -9,12 +9,12 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/tracker/server/calcField"
-	"resultra/tracker/server/form"
-	"resultra/tracker/server/generic/timestamp"
-	"resultra/tracker/server/record"
-	"resultra/tracker/server/recordFilter"
-	"resultra/tracker/server/recordValue"
+	"github.com/resultra/resultra/server/calcField"
+	"github.com/resultra/resultra/server/form"
+	"github.com/resultra/resultra/server/generic/timestamp"
+	"github.com/resultra/resultra/server/record"
+	"github.com/resultra/resultra/server/recordFilter"
+	"github.com/resultra/resultra/server/recordValue"
 	"time"
 )
 

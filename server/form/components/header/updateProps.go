@@ -8,9 +8,9 @@ package header
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/common/componentLayout"
-	"resultra/tracker/server/form/components/common"
-	"resultra/tracker/server/generic/stringValidation"
+	"github.com/resultra/resultra/server/common/componentLayout"
+	"github.com/resultra/resultra/server/form/components/common"
+	"github.com/resultra/resultra/server/generic/stringValidation"
 )
 
 type HeaderIDInterface interface {

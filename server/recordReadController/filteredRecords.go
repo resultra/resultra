@@ -8,13 +8,13 @@ package recordReadController
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/common/recordSortDataModel"
-	"resultra/tracker/server/generic/timestamp"
-	"resultra/tracker/server/record"
-	"resultra/tracker/server/recordFilter"
-	"resultra/tracker/server/recordSort"
-	"resultra/tracker/server/recordValue"
-	"resultra/tracker/server/recordValueMappingController"
+	"github.com/resultra/resultra/server/common/recordSortDataModel"
+	"github.com/resultra/resultra/server/generic/timestamp"
+	"github.com/resultra/resultra/server/record"
+	"github.com/resultra/resultra/server/recordFilter"
+	"github.com/resultra/resultra/server/recordSort"
+	"github.com/resultra/resultra/server/recordValue"
+	"github.com/resultra/resultra/server/recordValueMappingController"
 )
 
 type GetFilteredSortedRecordsParams struct {

@@ -7,10 +7,10 @@ package barChart
 
 import (
 	"fmt"
-	"resultra/tracker/server/common/componentLayout"
-	"resultra/tracker/server/dashboard/values"
-	"resultra/tracker/server/recordFilter"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/common/componentLayout"
+	"github.com/resultra/resultra/server/dashboard/values"
+	"github.com/resultra/resultra/server/recordFilter"
+	"github.com/resultra/resultra/server/trackerDatabase"
 )
 
 const xAxisSortAsc string = "asc"

@@ -8,8 +8,8 @@ package itemList
 import (
 	"html/template"
 	"net/http"
-	"resultra/tracker/webui/common"
-	"resultra/tracker/webui/generic"
+	"github.com/resultra/resultra/webui/common"
+	"github.com/resultra/resultra/webui/generic"
 )
 
 var propertyTemplates *template.Template

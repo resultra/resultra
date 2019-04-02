@@ -6,7 +6,7 @@
 package permissions
 
 import (
-	"resultra/tracker/webui/generic/propertiesSidebar"
+	"github.com/resultra/resultra/webui/generic/propertiesSidebar"
 )
 
 type PermissionsPropertyTemplateParams struct {

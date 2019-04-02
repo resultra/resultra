@@ -6,11 +6,11 @@
 package formButton
 
 import (
-	"resultra/tracker/webui/admin/common/inputProperties"
-	"resultra/tracker/webui/common/defaultValues"
-	"resultra/tracker/webui/common/form/components/common/delete"
-	"resultra/tracker/webui/common/form/components/common/visibility"
-	"resultra/tracker/webui/generic/propertiesSidebar"
+	"github.com/resultra/resultra/webui/admin/common/inputProperties"
+	"github.com/resultra/resultra/webui/common/defaultValues"
+	"github.com/resultra/resultra/webui/common/form/components/common/delete"
+	"github.com/resultra/resultra/webui/common/form/components/common/visibility"
+	"github.com/resultra/resultra/webui/generic/propertiesSidebar"
 )
 
 type PopupBehaviorPropParams struct {

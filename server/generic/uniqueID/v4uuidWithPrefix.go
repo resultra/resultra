@@ -8,7 +8,7 @@ package uniqueID
 import (
 	"fmt"
 	"github.com/twinj/uuid"
-	"resultra/tracker/server/generic/timestamp"
+	"github.com/resultra/resultra/server/generic/timestamp"
 	"strings"
 )
 

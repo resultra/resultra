@@ -7,7 +7,7 @@ package rating
 
 import (
 	"database/sql"
-	"resultra/tracker/server/generic/inputValidation"
+	"github.com/resultra/resultra/server/generic/inputValidation"
 )
 
 type RatingValidateInputParams struct {

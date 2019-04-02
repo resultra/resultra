@@ -7,9 +7,9 @@ package progress
 
 import (
 	"fmt"
-	"resultra/tracker/server/form/components/common"
-	"resultra/tracker/server/generic/numberFormat"
-	"resultra/tracker/server/trackerDatabase"
+	"github.com/resultra/resultra/server/form/components/common"
+	"github.com/resultra/resultra/server/generic/numberFormat"
+	"github.com/resultra/resultra/server/trackerDatabase"
 )
 
 type ThresholdValues struct {

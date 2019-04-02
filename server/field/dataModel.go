@@ -9,7 +9,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"resultra/tracker/server/generic/uniqueID"
+	"github.com/resultra/resultra/server/generic/uniqueID"
 	"sync"
 )
 

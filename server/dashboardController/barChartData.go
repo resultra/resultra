@@ -8,12 +8,12 @@ package dashboardController
 import (
 	"database/sql"
 	"fmt"
-	"resultra/tracker/server/common/recordSortDataModel"
-	"resultra/tracker/server/dashboard"
-	"resultra/tracker/server/dashboard/components/barChart"
-	"resultra/tracker/server/dashboard/values"
-	"resultra/tracker/server/recordFilter"
-	"resultra/tracker/server/recordReadController"
+	"github.com/resultra/resultra/server/common/recordSortDataModel"
+	"github.com/resultra/resultra/server/dashboard"
+	"github.com/resultra/resultra/server/dashboard/components/barChart"
+	"github.com/resultra/resultra/server/dashboard/values"
+	"github.com/resultra/resultra/server/recordFilter"
+	"github.com/resultra/resultra/server/recordReadController"
 )
 
 type BarChartDataRow struct {
