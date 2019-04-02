@@ -110,7 +110,7 @@ func createDesignFormTemplateParams(r *http.Request,
 		FormName:              formInfo.FormName,
 		WorkspaceName:         workspaceName,
 		CurrUserIsAdmin:       currUserIsAdmin,
-		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace(),
 
 		CheckboxParams:      checkBox.DesignTemplateParams,
 		ToggleParams:        toggle.DesignTemplateParams,

@@ -6,7 +6,6 @@
 package tableProps
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
 	"resultra/tracker/server/common/runtimeConfig"
@@ -14,6 +13,8 @@ import (
 	"resultra/tracker/server/displayTable"
 	"resultra/tracker/server/userRole"
 	adminCommon "resultra/tracker/webui/admin/common"
+
+	"github.com/gorilla/mux"
 
 	"resultra/tracker/server/workspace"
 
@@ -106,7 +107,7 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		DatabaseID:            dbInfo.DatabaseID,
 		DatabaseName:          dbInfo.DatabaseName,
 		WorkspaceName:         workspaceName,
-		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace(),
 		TableID:               tableID,
 		TableName:             tableInfo.Name,
 		SiteBaseURL:           runtimeConfig.GetSiteBaseURL(),

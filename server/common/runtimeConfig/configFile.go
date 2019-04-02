@@ -7,11 +7,12 @@ package runtimeConfig
 
 import (
 	"fmt"
-	"github.com/go-yaml/yaml"
 	"io/ioutil"
 	"log"
 	"os"
 	"resultra/tracker/server/common/databaseWrapper"
+
+	"github.com/go-yaml/yaml"
 )
 
 var defaultPortNum int = 43400
@@ -44,7 +45,7 @@ type RuntimeConfig struct {
 	TransactionalEmailConfig      *TransactionalEmailConfig      `yaml:"transactionalEmail,omitempty"`
 
 	ServerConfig          `yaml:"server"`
-	IsSingleUserWorkspace bool `yaml:"isSingleUserWorkspace"`
+	IsSingleUserWorkspace *bool `yaml:"isSingleUserWorkspace,omitempty"`
 }
 
 const permsOwnerReadWriteOnly os.FileMode = 0700
@@ -62,9 +63,17 @@ func NewDefaultRuntimeConfig() RuntimeConfig {
 
 	config := RuntimeConfig{
 		ServerConfig:             defaultServerConfig,
-		IsSingleUserWorkspace:    false,
+		IsSingleUserWorkspace:    nil, // If not set, default to not being a single-user workspace.
 		TransactionalEmailConfig: nil}
 	return config
+}
+
+func (config RuntimeConfig) SingleUserWorkspace() bool {
+	if config.IsSingleUserWorkspace == nil {
+		return false
+	} else {
+		return *config.IsSingleUserWorkspace
+	}
 }
 
 var CurrRuntimeConfig RuntimeConfig

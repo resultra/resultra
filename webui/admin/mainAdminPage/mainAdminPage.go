@@ -6,9 +6,10 @@
 package mainAdminPage
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
+
+	"github.com/gorilla/mux"
 
 	"resultra/tracker/server/common/runtimeConfig"
 
@@ -107,7 +108,7 @@ func mainAdminPage(w http.ResponseWriter, r *http.Request) {
 	templParams := TemplParams{
 		DatabaseID:            databaseID,
 		CurrUserIsAdmin:       currUserIsAdmin,
-		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace}
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace()}
 
 	if err := mainAdminPageTemplates.ExecuteTemplate(w, "mainAdminPageContent", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

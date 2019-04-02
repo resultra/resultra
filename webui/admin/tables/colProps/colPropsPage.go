@@ -6,7 +6,6 @@
 package colProps
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
 	"resultra/tracker/server/databaseController"
@@ -14,6 +13,8 @@ import (
 	colCommon "resultra/tracker/server/displayTable/columns/common"
 	adminCommon "resultra/tracker/webui/admin/common"
 	"resultra/tracker/webui/admin/common/inputProperties"
+
+	"github.com/gorilla/mux"
 
 	"resultra/tracker/server/common/databaseWrapper"
 	"resultra/tracker/server/common/runtimeConfig"
@@ -153,7 +154,7 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		DatabaseID:            dbInfo.DatabaseID,
 		DatabaseName:          dbInfo.DatabaseName,
 		WorkspaceName:         workspaceName,
-		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace(),
 		CurrUserIsAdmin:       isAdmin,
 		TableID:               colInfo.TableID,
 		TableName:             tableInfo.Name,

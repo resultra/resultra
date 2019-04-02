@@ -6,7 +6,6 @@
 package itemListList
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
 	"resultra/tracker/server/common/databaseWrapper"
@@ -19,6 +18,8 @@ import (
 	"resultra/tracker/webui/common"
 	"resultra/tracker/webui/generic"
 	"resultra/tracker/webui/thirdParty"
+
+	"github.com/gorilla/mux"
 )
 
 var formsTemplates *template.Template
@@ -85,7 +86,7 @@ func itemListAdminPage(w http.ResponseWriter, r *http.Request) {
 		DatabaseName:          dbInfo.DatabaseName,
 		WorkspaceName:         workspaceName,
 		CurrUserIsAdmin:       currUserIsAdmin,
-		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace}
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace()}
 
 	if err := formsTemplates.ExecuteTemplate(w, "itemListAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

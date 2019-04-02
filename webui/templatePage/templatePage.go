@@ -6,7 +6,6 @@
 package templatePage
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"log"
 	"net/http"
@@ -15,6 +14,8 @@ import (
 	"resultra/tracker/webui/common"
 	"resultra/tracker/webui/generic"
 	"resultra/tracker/webui/thirdParty"
+
+	"github.com/gorilla/mux"
 )
 
 var homePageTemplates *template.Template
@@ -49,14 +50,14 @@ func templatePageMainContent(respWriter http.ResponseWriter, req *http.Request) 
 	if authErr != nil {
 		log.Printf("user not authorized: %v", authErr)
 		templParams := PageInfo{Title: "Template Page - Signed out",
-			IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace}
+			IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace()}
 		err := homePageTemplates.ExecuteTemplate(respWriter, "templatePagePublic", templParams)
 		if err != nil {
 			http.Error(respWriter, err.Error(), http.StatusInternalServerError)
 		}
 	} else {
 		templParams := PageInfo{Title: "Template Page - Signed In",
-			IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace}
+			IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace()}
 		err := homePageTemplates.ExecuteTemplate(respWriter, "templatePageSignedIn", templParams)
 		if err != nil {
 			http.Error(respWriter, err.Error(), http.StatusInternalServerError)

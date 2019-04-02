@@ -6,7 +6,6 @@
 package homePage
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"log"
 	"net/http"
@@ -17,6 +16,8 @@ import (
 	"resultra/tracker/webui/common"
 	"resultra/tracker/webui/generic"
 	"resultra/tracker/webui/thirdParty"
+
+	"github.com/gorilla/mux"
 )
 
 var homePageTemplates *template.Template
@@ -63,7 +64,7 @@ func home(respWriter http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	isSingleUser := runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace
+	isSingleUser := runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace()
 
 	if isSingleUser {
 		authResp := userAuth.LoginSingleUser(respWriter, req)

@@ -6,7 +6,6 @@
 package itemListProps
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"log"
 	"net/http"
@@ -15,6 +14,8 @@ import (
 	itemListDataModel "resultra/tracker/server/itemList"
 	overallUserRole "resultra/tracker/server/userRole"
 	adminCommon "resultra/tracker/webui/admin/common"
+
+	"github.com/gorilla/mux"
 
 	"resultra/tracker/server/common/databaseWrapper"
 	"resultra/tracker/server/common/userAuth"
@@ -109,7 +110,7 @@ func editListPropsPage(w http.ResponseWriter, r *http.Request) {
 		ListID:                   listID,
 		ListName:                 listInfo.Name,
 		CurrUserIsAdmin:          currUserIsAdmin,
-		IsSingleUserWorkspace:    runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		IsSingleUserWorkspace:    runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace(),
 		FilterPropPanelParams:    recordFilter.NewFilterPanelTemplateParams(elemPrefix),
 		PreFilterPropPanelParams: recordFilter.NewFilterPanelTemplateParams(preFilterElemPrefix),
 	}

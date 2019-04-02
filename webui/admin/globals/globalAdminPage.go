@@ -6,11 +6,12 @@
 package globals
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
 	"resultra/tracker/server/common/runtimeConfig"
 	"resultra/tracker/server/databaseController"
+
+	"github.com/gorilla/mux"
 
 	"resultra/tracker/server/common/databaseWrapper"
 	"resultra/tracker/server/common/userAuth"
@@ -86,7 +87,7 @@ func globalAdminPage(w http.ResponseWriter, r *http.Request) {
 		DatabaseID:            databaseID,
 		DatabaseName:          dbInfo.DatabaseName,
 		WorkspaceName:         workspaceName,
-		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace(),
 		CurrUserIsAdmin:       isAdmin}
 
 	if err := globalTemplates.ExecuteTemplate(w, "globalAdminPage", templParams); err != nil {

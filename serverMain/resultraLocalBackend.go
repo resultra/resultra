@@ -8,7 +8,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/pkg/profile"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +15,8 @@ import (
 	"resultra/tracker/server/common/databaseWrapper"
 	"resultra/tracker/server/common/runtimeConfig"
 	"resultra/tracker/webui"
+
+	"github.com/pkg/profile"
 )
 
 const staticSiteResourcesPrefix string = `/static/`
@@ -58,7 +59,8 @@ func main() {
 	config.TrackerDatabaseConfig.LocalDatabaseConfig = &trackerDBConfig
 	config.TrackerDatabaseConfig.LocalAttachmentConfig = &attachmentConfig
 	config.FactoryTemplateDatabaseConfig = &factoryTemplateConfig
-	config.IsSingleUserWorkspace = true
+	isSingleWorkspace := true
+	config.IsSingleUserWorkspace = &isSingleWorkspace
 
 	config.ServerConfig.ListenPortNumber = defaultLocalPortNumber
 	siteURL := runtimeConfig.LocalHostBaseURL()

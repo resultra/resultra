@@ -6,10 +6,11 @@
 package mainWindow
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 
 	"resultra/tracker/server/common/runtimeConfig"
 	"resultra/tracker/server/common/userAuth"
@@ -76,7 +77,7 @@ func viewMainWindow(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isSingleUser := runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace
+	isSingleUser := runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace()
 
 	if isSingleUser {
 		authResp := userAuth.LoginSingleUser(w, r)
@@ -106,7 +107,7 @@ func viewMainWindow(w http.ResponseWriter, r *http.Request) {
 			//			DatabaseID:            dbInfo.DatabaseID,
 			//			DatabaseName:          dbInfo.DatabaseName,
 			//CurrUserIsAdmin:       isAdmin,
-			IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+			IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace(),
 			/*ItemListParams:        itemList.ViewListTemplParams,*/
 			WorkspaceName: workspaceName,
 			/*DashboardParams:       dashboardView.ViewTemplateParams*/

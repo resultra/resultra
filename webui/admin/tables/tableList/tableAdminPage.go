@@ -6,12 +6,13 @@
 package tableList
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
 	"resultra/tracker/server/common/runtimeConfig"
 	"resultra/tracker/server/databaseController"
 	"resultra/tracker/server/userRole"
+
+	"github.com/gorilla/mux"
 
 	"resultra/tracker/server/common/databaseWrapper"
 	"resultra/tracker/server/common/userAuth"
@@ -86,7 +87,7 @@ func tableAdminPage(w http.ResponseWriter, r *http.Request) {
 		DatabaseID:            databaseID,
 		DatabaseName:          dbInfo.DatabaseName,
 		WorkspaceName:         workspaceName,
-		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace(),
 		CurrUserIsAdmin:       isAdmin}
 
 	if err := tableTemplates.ExecuteTemplate(w, "tableAdminPage", templParams); err != nil {

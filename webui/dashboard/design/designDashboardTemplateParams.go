@@ -55,7 +55,7 @@ func createDashboardTemplateParams(r *http.Request, dashboardForDesign *dashboar
 		WorkspaceName:               workspaceName,
 		DashboardName:               dashboardForDesign.Name,
 		CurrUserIsAdmin:             isAdmin,
-		IsSingleUserWorkspace:       runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		IsSingleUserWorkspace:       runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace(),
 		NamePanelParams:             propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Dashboard Name", PanelID: "dashboardName"},
 		IncludeInSidebarPanelParams: propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Include in Sidebar", PanelID: "includeInSidebar"},
 		RolePanelParams:             propertiesSidebar.PanelTemplateParams{PanelHeaderLabel: "Roles & Privileges", PanelID: "dashboardRoles"},

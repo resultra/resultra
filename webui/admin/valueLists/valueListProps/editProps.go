@@ -6,13 +6,14 @@
 package valueListProps
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
 	"resultra/tracker/server/databaseController"
 	"resultra/tracker/server/userRole"
 	"resultra/tracker/server/valueList"
 	"resultra/tracker/webui/thirdParty"
+
+	"github.com/gorilla/mux"
 
 	"resultra/tracker/server/common/runtimeConfig"
 	"resultra/tracker/server/workspace"
@@ -101,7 +102,7 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		DatabaseID:            dbInfo.DatabaseID,
 		DatabaseName:          dbInfo.DatabaseName,
 		WorkspaceName:         workspaceName,
-		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace(),
 		ValueListID:           valueListID,
 		ValueListName:         valueListInfo.Name,
 		SiteBaseURL:           runtimeConfig.GetSiteBaseURL(),

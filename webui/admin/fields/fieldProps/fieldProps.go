@@ -6,7 +6,6 @@
 package fieldProps
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"log"
 	"net/http"
@@ -21,6 +20,8 @@ import (
 	"resultra/tracker/webui/common"
 	"resultra/tracker/webui/generic"
 	"resultra/tracker/webui/thirdParty"
+
+	"github.com/gorilla/mux"
 )
 
 var fieldTemplates *template.Template
@@ -96,7 +97,7 @@ func editFieldPropsPage(w http.ResponseWriter, r *http.Request) {
 		WorkspaceName:         workspaceName,
 		FieldID:               fieldID,
 		FieldName:             fieldInfo.Name,
-		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace(),
 		CurrUserIsAdmin:       isAdmin}
 
 	if err := fieldTemplates.ExecuteTemplate(w, "editFieldPropsPage", templParams); err != nil {

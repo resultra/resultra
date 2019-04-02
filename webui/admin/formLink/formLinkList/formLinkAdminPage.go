@@ -6,11 +6,12 @@
 package formLinkList
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
 	"resultra/tracker/server/common/runtimeConfig"
 	"resultra/tracker/server/databaseController"
+
+	"github.com/gorilla/mux"
 
 	"resultra/tracker/server/common/databaseWrapper"
 	"resultra/tracker/server/common/userAuth"
@@ -86,7 +87,7 @@ func formLinkAdminPage(w http.ResponseWriter, r *http.Request) {
 		DatabaseName:          dbInfo.DatabaseName,
 		WorkspaceName:         workspaceName,
 		CurrUserIsAdmin:       isAdmin,
-		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace}
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace()}
 
 	if err := formLinkTemplates.ExecuteTemplate(w, "formLinkAdminPage", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

@@ -6,13 +6,14 @@
 package alertProps
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
 	"resultra/tracker/server/alert"
 	"resultra/tracker/server/common/runtimeConfig"
 	"resultra/tracker/server/databaseController"
 	adminCommon "resultra/tracker/webui/admin/common"
+
+	"github.com/gorilla/mux"
 
 	"resultra/tracker/server/common/databaseWrapper"
 	"resultra/tracker/server/common/userAuth"
@@ -108,7 +109,7 @@ func editAlertPropsPage(w http.ResponseWriter, r *http.Request) {
 		AlertID:                         alertInfo.AlertID,
 		AlertName:                       alertInfo.Name,
 		CurrUserIsAdmin:                 isAdmin,
-		IsSingleUserWorkspace:           runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		IsSingleUserWorkspace:           runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace(),
 		FieldSelectionParams:            fieldSelectionParams,
 		TriggerConditionPropPanelParams: recordFilter.NewFilterPanelTemplateParams(triggerConditionElemPrefix_)}
 

@@ -6,11 +6,12 @@
 package alertList
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
 	"resultra/tracker/server/common/runtimeConfig"
 	"resultra/tracker/server/databaseController"
+
+	"github.com/gorilla/mux"
 
 	"resultra/tracker/server/common/databaseWrapper"
 	"resultra/tracker/server/common/userAuth"
@@ -86,7 +87,7 @@ func alertListAdminPage(w http.ResponseWriter, r *http.Request) {
 		DatabaseID:            databaseID,
 		DatabaseName:          dbInfo.DatabaseName,
 		WorkspaceName:         workspaceName,
-		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace(),
 		CurrUserIsAdmin:       isAdmin}
 
 	if err := formsTemplates.ExecuteTemplate(w, "alertListAdminPage", templParams); err != nil {

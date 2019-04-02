@@ -6,13 +6,14 @@
 package userRoleProps
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"log"
 	"net/http"
 	"resultra/tracker/server/common/runtimeConfig"
 	"resultra/tracker/server/databaseController"
 	adminCommon "resultra/tracker/webui/admin/common"
+
+	"github.com/gorilla/mux"
 
 	"resultra/tracker/server/common/databaseWrapper"
 	"resultra/tracker/server/common/userAuth"
@@ -100,7 +101,7 @@ func editRolePropsPage(w http.ResponseWriter, r *http.Request) {
 		WorkspaceName:         workspaceName,
 		RoleID:                roleID,
 		RoleName:              roleInfo.RoleName,
-		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace(),
 		CurrUserIsAdmin:       isAdmin}
 
 	if err := userRoleTemplates.ExecuteTemplate(w, "editUserRolePropsPage", templParams); err != nil {

@@ -33,7 +33,7 @@ type TOCContentTemplParams struct {
 func tocContentLayout(w http.ResponseWriter, r *http.Request) {
 
 	templParams := TOCContentTemplParams{
-		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace}
+		IsSingleUserWorkspace: runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace()}
 
 	if err := contentTemplates.ExecuteTemplate(w, "adminSettingsTOC", templParams); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

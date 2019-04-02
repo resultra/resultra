@@ -94,7 +94,7 @@ func registerNewAdminUserAPI(w http.ResponseWriter, r *http.Request) {
 
 func registerSingleUserAPI(w http.ResponseWriter, r *http.Request) {
 
-	if !runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace {
+	if !runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace() {
 		err := fmt.Errorf("registerSingleUserAPI: API not supported in multi-user mode")
 		api.WriteErrorResponse(w, err)
 		return

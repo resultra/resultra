@@ -7,12 +7,13 @@ package userAuth
 
 import (
 	"fmt"
-	"github.com/gorilla/sessions"
-	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 	"resultra/tracker/server/common/databaseWrapper"
 	"resultra/tracker/server/common/runtimeConfig"
+
+	"github.com/gorilla/sessions"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var authCookieStore *sessions.CookieStore
@@ -43,7 +44,7 @@ func updateCookieStoreAge() {
 	// If the login is for a single-user workspace (on the desktop), extend the login
 	// time considerably. Since the user is logged in automatically, there is no need
 	// to log them out automatically.
-	if runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace {
+	if runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace() {
 		numHoursSession = 24 * 365 * 10 // 10 years!
 	}
 

@@ -6,7 +6,6 @@
 package formLinkProps
 
 import (
-	"github.com/gorilla/mux"
 	"html/template"
 	"log"
 	"net/http"
@@ -14,6 +13,8 @@ import (
 	"resultra/tracker/server/databaseController"
 	"resultra/tracker/server/formLink"
 	adminCommon "resultra/tracker/webui/admin/common"
+
+	"github.com/gorilla/mux"
 
 	"resultra/tracker/server/common/databaseWrapper"
 	"resultra/tracker/server/common/userAuth"
@@ -107,7 +108,7 @@ func editPropsPage(w http.ResponseWriter, r *http.Request) {
 		LinkID:                  linkID,
 		LinkName:                linkInfo.Name,
 		CurrUserIsAdmin:         isAdmin,
-		IsSingleUserWorkspace:   runtimeConfig.CurrRuntimeConfig.IsSingleUserWorkspace,
+		IsSingleUserWorkspace:   runtimeConfig.CurrRuntimeConfig.SingleUserWorkspace(),
 		SiteBaseURL:             runtimeConfig.GetSiteBaseURL(),
 		DefaultValuePanelParams: defaultValues.NewDefaultValuesTemplateParams(elemPrefix)}
 
