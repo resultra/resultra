@@ -18,8 +18,10 @@ test:
 # The calcField package needs Go's yacc to build the parser. This parser is obtained using the following
 installyacc:
 	go get -u golang.org/x/tools/cmd/goyacc
+
+install: installyacc
 	
-prebuild: installyacc formulaParser_gen.go
+prebuild: formulaParser_gen.go
 
 formulaParser_gen.go: formulaParser.y
 	goyacc -o formulaParser_gen.go -p formula formulaParser.y

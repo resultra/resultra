@@ -11,6 +11,8 @@ realclean:
 	
 install:
 	go get -u github.com/golang/dep/cmd/dep
+
+prebuild:
 	dep ensure 
 	
 all: prebuild
