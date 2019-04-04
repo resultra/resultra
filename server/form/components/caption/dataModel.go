@@ -8,12 +8,12 @@ package caption
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/common/componentLayout"
 	"github.com/resultra/resultra/server/form/components/common"
 	"github.com/resultra/resultra/server/generic"
 	"github.com/resultra/resultra/server/generic/uniqueID"
 	"github.com/resultra/resultra/server/trackerDatabase"
+	"log"
 )
 
 const captionEntityKind string = "caption"

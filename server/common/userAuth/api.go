@@ -7,11 +7,11 @@ package userAuth
 
 import (
 	"fmt"
-	"log"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"github.com/resultra/resultra/server/generic/api"
+	"log"
+	"net/http"
 
 	"github.com/gorilla/mux"
 )

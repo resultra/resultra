@@ -8,10 +8,10 @@ package recordReadController
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/userAuth"
 	"github.com/resultra/resultra/server/generic/api"
+	"net/http"
 )
 
 type DummyStructForInclude struct {

@@ -7,9 +7,6 @@ package design
 
 import (
 	"github.com/gorilla/mux"
-	"html/template"
-	"log"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/dashboard"
 	"github.com/resultra/resultra/server/generic/api"
@@ -21,6 +18,9 @@ import (
 	"github.com/resultra/resultra/webui/dashboard/design/properties"
 	"github.com/resultra/resultra/webui/generic"
 	"github.com/resultra/resultra/webui/thirdParty"
+	"html/template"
+	"log"
+	"net/http"
 )
 
 var designDashboardTemplates *template.Template

@@ -6,12 +6,12 @@
 package alertProps
 
 import (
-	"html/template"
-	"net/http"
 	"github.com/resultra/resultra/server/alert"
 	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"github.com/resultra/resultra/server/databaseController"
 	adminCommon "github.com/resultra/resultra/webui/admin/common"
+	"html/template"
+	"net/http"
 
 	"github.com/gorilla/mux"
 

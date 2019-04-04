@@ -8,13 +8,13 @@ package htmlEditor
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/common/componentLayout"
 	"github.com/resultra/resultra/server/field"
 	"github.com/resultra/resultra/server/form/components/common"
 	"github.com/resultra/resultra/server/generic"
 	"github.com/resultra/resultra/server/generic/uniqueID"
 	"github.com/resultra/resultra/server/trackerDatabase"
+	"log"
 )
 
 const htmlEditorEntityKind string = "html_editor"

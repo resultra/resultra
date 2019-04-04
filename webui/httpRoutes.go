@@ -7,7 +7,6 @@ package webui
 
 import (
 	"github.com/gorilla/mux"
-	"net/http"
 	"github.com/resultra/resultra/webui/admin"
 	"github.com/resultra/resultra/webui/alertListView"
 	designDashboard "github.com/resultra/resultra/webui/dashboard/design"
@@ -20,6 +19,7 @@ import (
 	"github.com/resultra/resultra/webui/setupPage"
 	"github.com/resultra/resultra/webui/templatePage"
 	"github.com/resultra/resultra/webui/userAdmin"
+	"net/http"
 
 	"github.com/resultra/resultra/webui/common/trackerPageContent"
 

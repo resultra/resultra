@@ -8,12 +8,12 @@ package record
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
 	"github.com/resultra/resultra/server/common/attachment"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/userAuth"
 	"github.com/resultra/resultra/server/field"
 	"github.com/resultra/resultra/server/generic"
+	"net/http"
 	"sort"
 	"time"
 )

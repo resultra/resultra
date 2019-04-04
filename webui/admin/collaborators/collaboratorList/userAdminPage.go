@@ -7,9 +7,9 @@ package collaboratorList
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/resultra/resultra/server/databaseController"
 	"html/template"
 	"net/http"
-	"github.com/resultra/resultra/server/databaseController"
 
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/userAuth"

@@ -7,10 +7,10 @@ package runtimeConfig
 
 import (
 	"fmt"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"io/ioutil"
 	"log"
 	"os"
-	"github.com/resultra/resultra/server/common/databaseWrapper"
 
 	"github.com/go-yaml/yaml"
 )

@@ -8,7 +8,6 @@ package dashboardController
 import (
 	"database/sql"
 	"fmt"
-	"math"
 	"github.com/resultra/resultra/server/dashboard/values"
 	"github.com/resultra/resultra/server/field"
 	"github.com/resultra/resultra/server/generic/numberFormat"
@@ -16,6 +15,7 @@ import (
 	"github.com/resultra/resultra/server/recordFilter"
 	"github.com/resultra/resultra/server/recordValue"
 	"github.com/resultra/resultra/server/recordValueMappingController"
+	"math"
 	"sort"
 	"strings"
 	"time"

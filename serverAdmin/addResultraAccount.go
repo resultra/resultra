@@ -8,9 +8,9 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"log"
 	"os"
-	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"strings"
 )
 

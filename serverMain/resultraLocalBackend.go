@@ -8,13 +8,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
-	"net/http"
-	"os"
 	"github.com/resultra/resultra/server"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"github.com/resultra/resultra/webui"
+	"log"
+	"net/http"
+	"os"
 
 	"github.com/pkg/profile"
 )

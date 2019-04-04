@@ -8,9 +8,9 @@ package calcField
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/generic"
 	"github.com/resultra/resultra/server/generic/uniqueID"
+	"log"
 	"time"
 )
 

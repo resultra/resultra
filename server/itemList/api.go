@@ -8,10 +8,10 @@ package itemList
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/generic/api"
 	"github.com/resultra/resultra/server/userRole"
+	"net/http"
 )
 
 func init() {

@@ -8,9 +8,9 @@ package userRole
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/userAuth"
+	"net/http"
 )
 
 func VerifyCurrUserIsDatabaseAdmin(trackerDBHandle *sql.DB, req *http.Request, databaseID string) error {

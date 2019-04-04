@@ -7,7 +7,6 @@ package design
 
 import (
 	"fmt"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"github.com/resultra/resultra/server/dashboard"
@@ -15,6 +14,7 @@ import (
 	"github.com/resultra/resultra/server/userRole"
 	"github.com/resultra/resultra/webui/dashboard/components"
 	"github.com/resultra/resultra/webui/generic/propertiesSidebar"
+	"net/http"
 )
 
 type DashboardTemplateParams struct {

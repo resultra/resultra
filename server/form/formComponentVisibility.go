@@ -8,8 +8,8 @@ package form
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/recordFilter"
+	"log"
 )
 
 type FormComponentFilterMap map[string]recordFilter.RecordFilterRuleSet

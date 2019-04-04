@@ -8,12 +8,12 @@ package alert
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/calcField"
 	"github.com/resultra/resultra/server/generic/timestamp"
 	"github.com/resultra/resultra/server/record"
 	"github.com/resultra/resultra/server/recordFilter"
 	"github.com/resultra/resultra/server/userRole"
+	"log"
 	"sort"
 	"time"
 )
@@ -180,7 +180,7 @@ func createAlertGenerationContexts(trackerDBHandle *sql.DB, currUserID string, a
 			return nil, fmt.Errorf("GenerateRecordAlerts: error setting up trigger condition filter contexts: %v", condErr)
 		}
 		alertContext := AlertGenerationContext{
-			Alert: currAlert,
+			Alert:                         currAlert,
 			TriggerConditionFilterContext: triggerCondContext}
 		alertContexts = append(alertContexts, alertContext)
 	}

@@ -6,11 +6,11 @@
 package dashboards
 
 import (
-	"html/template"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"github.com/resultra/resultra/server/databaseController"
+	"html/template"
+	"net/http"
 
 	"github.com/gorilla/mux"
 

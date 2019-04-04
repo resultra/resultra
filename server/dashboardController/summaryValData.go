@@ -53,9 +53,9 @@ func getOneSummaryValData(trackerDBHandle *sql.DB, currUserID string, summaryVal
 	}
 
 	summaryValData := SummaryValData{
-		SummaryValID: summaryVal.SummaryValID,
-		SummaryVal:   *summaryVal,
-		Title:        summaryVal.Properties.Title,
+		SummaryValID:          summaryVal.SummaryValID,
+		SummaryVal:            *summaryVal,
+		Title:                 summaryVal.Properties.Title,
 		GroupedSummarizedVals: *groupedSummarizedVals}
 
 	return &summaryValData, nil

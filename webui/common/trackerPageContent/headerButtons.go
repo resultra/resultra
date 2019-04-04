@@ -8,12 +8,12 @@ package trackerPageContent
 import (
 	"github.com/gorilla/mux"
 
-	"html/template"
-	"net/http"
 	"github.com/resultra/resultra/server/common/userAuth"
 	"github.com/resultra/resultra/server/userRole"
 	"github.com/resultra/resultra/webui/common/alert"
 	"github.com/resultra/resultra/webui/generic"
+	"html/template"
+	"net/http"
 )
 
 var headerTemplates *template.Template

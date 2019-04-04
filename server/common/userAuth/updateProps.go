@@ -7,8 +7,8 @@ package userAuth
 
 import (
 	"fmt"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"net/http"
 )
 
 type UserIDInterface interface {

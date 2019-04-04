@@ -6,14 +6,14 @@
 package itemListProps
 
 import (
-	"html/template"
-	"log"
-	"net/http"
 	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"github.com/resultra/resultra/server/databaseController"
 	itemListDataModel "github.com/resultra/resultra/server/itemList"
 	overallUserRole "github.com/resultra/resultra/server/userRole"
 	adminCommon "github.com/resultra/resultra/webui/admin/common"
+	"html/template"
+	"log"
+	"net/http"
 
 	"github.com/gorilla/mux"
 

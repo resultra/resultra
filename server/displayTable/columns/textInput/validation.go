@@ -7,9 +7,9 @@ package textInput
 
 import (
 	"database/sql"
-	"log"
 	"github.com/resultra/resultra/server/generic/inputValidation"
 	"github.com/resultra/resultra/server/generic/stringValidation"
+	"log"
 )
 
 type TextInputValidateInputParams struct {

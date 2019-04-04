@@ -7,10 +7,10 @@ package itemList
 
 import (
 	"fmt"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/itemList"
 	"github.com/resultra/resultra/server/userRole"
+	"net/http"
 )
 
 type ViewListInfo struct {

@@ -8,11 +8,11 @@ package formButton
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/common/componentLayout"
 	"github.com/resultra/resultra/server/common/inputProps"
 	"github.com/resultra/resultra/server/form/components/common"
 	"github.com/resultra/resultra/server/record"
+	"log"
 )
 
 type ButtonIDInterface interface {

@@ -7,11 +7,11 @@ package view
 
 import (
 	"fmt"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/databaseController"
 	"github.com/resultra/resultra/server/userRole"
 	"github.com/resultra/resultra/webui/dashboard/components"
+	"net/http"
 )
 
 type ViewDashboardInfo struct {

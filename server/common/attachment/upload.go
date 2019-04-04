@@ -7,12 +7,12 @@ package attachment
 
 import (
 	"fmt"
-	"net/http"
-	"path"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/userAuth"
 	"github.com/resultra/resultra/server/generic/api"
 	"github.com/resultra/resultra/server/generic/uniqueID"
+	"net/http"
+	"path"
 )
 
 func UniqueAttachmentFileNameFromUserFileName(userFileName string) string {

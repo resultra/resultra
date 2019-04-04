@@ -7,10 +7,10 @@ package calcField
 
 import (
 	"github.com/gorilla/mux"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/field"
 	"github.com/resultra/resultra/server/generic/api"
+	"net/http"
 )
 
 func init() {

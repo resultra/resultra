@@ -9,8 +9,8 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
-	"net/http"
 	"github.com/resultra/resultra/server/generic/uniqueID"
+	"net/http"
 	"strings"
 )
 

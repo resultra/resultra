@@ -8,9 +8,9 @@ package workspace
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
-	"github.com/resultra/resultra/server/generic"
 	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/generic"
+	"net/http"
 )
 
 type WorkspaceInfo struct {

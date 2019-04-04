@@ -8,8 +8,8 @@ package header
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/common/componentLayout"
+	"log"
 )
 
 // The BarChartPropertyUpdater interface along with UpdateBarChartProps() implement a harness for

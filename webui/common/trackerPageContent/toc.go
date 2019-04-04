@@ -6,9 +6,9 @@
 package trackerPageContent
 
 import (
+	"github.com/resultra/resultra/webui/generic"
 	"html/template"
 	"net/http"
-	"github.com/resultra/resultra/webui/generic"
 )
 
 var tocTemplates *template.Template

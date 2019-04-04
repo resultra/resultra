@@ -8,12 +8,12 @@ package formLink
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
 	"github.com/resultra/resultra/server/common/userAuth"
 	"github.com/resultra/resultra/server/generic"
 	"github.com/resultra/resultra/server/generic/uniqueID"
 	"github.com/resultra/resultra/server/trackerDatabase"
 	"github.com/resultra/resultra/server/userRole"
+	"net/http"
 )
 
 type NewFormLinkParams struct {

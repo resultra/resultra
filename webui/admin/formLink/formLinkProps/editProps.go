@@ -6,13 +6,13 @@
 package formLinkProps
 
 import (
-	"html/template"
-	"log"
-	"net/http"
 	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"github.com/resultra/resultra/server/databaseController"
 	"github.com/resultra/resultra/server/formLink"
 	adminCommon "github.com/resultra/resultra/webui/admin/common"
+	"html/template"
+	"log"
+	"net/http"
 
 	"github.com/gorilla/mux"
 

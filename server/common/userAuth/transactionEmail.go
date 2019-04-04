@@ -7,9 +7,9 @@ package userAuth
 
 import (
 	"fmt"
+	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"log"
 	"net/smtp"
-	"github.com/resultra/resultra/server/common/runtimeConfig"
 )
 
 type TransactionEmailParams struct {

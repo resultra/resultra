@@ -6,11 +6,11 @@
 package view
 
 import (
-	"html/template"
-	"net/http"
 	"github.com/resultra/resultra/webui/common"
 	"github.com/resultra/resultra/webui/dashboard/components"
 	"github.com/resultra/resultra/webui/generic"
+	"html/template"
+	"net/http"
 )
 
 var contentTemplates *template.Template

@@ -7,8 +7,8 @@ package userTag
 
 import (
 	"database/sql"
-	"log"
 	"github.com/resultra/resultra/server/generic/inputValidation"
+	"log"
 )
 
 type ValidateInputParams struct {

@@ -10,8 +10,8 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/generic/timestamp"
+	"log"
 	"sync"
 	"time"
 )

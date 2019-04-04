@@ -7,11 +7,11 @@ package design
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/userAuth"
 	"html/template"
 	"log"
 	"net/http"
-	"github.com/resultra/resultra/server/common/databaseWrapper"
-	"github.com/resultra/resultra/server/common/userAuth"
 
 	"github.com/resultra/resultra/server/databaseController"
 	"github.com/resultra/resultra/server/generic/api"

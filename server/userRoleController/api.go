@@ -7,12 +7,12 @@ package userRoleController
 
 import (
 	"github.com/gorilla/mux"
-	"log"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/generic/api"
 	"github.com/resultra/resultra/server/generic/stringValidation"
 	"github.com/resultra/resultra/server/userRole"
+	"log"
+	"net/http"
 )
 
 type DummyStructForInclude struct {

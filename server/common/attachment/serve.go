@@ -8,8 +8,8 @@ package attachment
 import (
 	"database/sql"
 	"fmt"
-	"path"
 	"github.com/resultra/resultra/server/common/runtimeConfig"
+	"path"
 	"strings"
 )
 

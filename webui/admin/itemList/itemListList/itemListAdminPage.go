@@ -6,8 +6,6 @@
 package itemListList
 
 import (
-	"html/template"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"github.com/resultra/resultra/server/common/userAuth"
@@ -18,6 +16,8 @@ import (
 	"github.com/resultra/resultra/webui/common"
 	"github.com/resultra/resultra/webui/generic"
 	"github.com/resultra/resultra/webui/thirdParty"
+	"html/template"
+	"net/http"
 
 	"github.com/gorilla/mux"
 )

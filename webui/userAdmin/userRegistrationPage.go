@@ -7,14 +7,14 @@ package userAdmin
 
 import (
 	"github.com/gorilla/mux"
-	"html/template"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/userAuth"
 	"github.com/resultra/resultra/server/workspace"
 	"github.com/resultra/resultra/webui/common"
 	"github.com/resultra/resultra/webui/generic"
 	"github.com/resultra/resultra/webui/thirdParty"
+	"html/template"
+	"net/http"
 )
 
 var registrationPageTemplates *template.Template

@@ -8,9 +8,9 @@ package alert
 import (
 	"database/sql"
 	"fmt"
-	"regexp"
 	"github.com/resultra/resultra/server/field"
 	"github.com/resultra/resultra/server/trackerDatabase"
+	"regexp"
 )
 
 type identReplacementMap map[string]string

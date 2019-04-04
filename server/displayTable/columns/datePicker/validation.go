@@ -8,9 +8,9 @@ package datePicker
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/generic/inputValidation"
 	"github.com/resultra/resultra/server/generic/timestamp"
+	"log"
 	"time"
 )
 

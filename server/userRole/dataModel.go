@@ -8,11 +8,11 @@ package userRole
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/common/userAuth"
 	"github.com/resultra/resultra/server/generic/stringValidation"
 	"github.com/resultra/resultra/server/generic/uniqueID"
 	"github.com/resultra/resultra/server/trackerDatabase"
+	"log"
 )
 
 func AddDatabaseAdmin(trackerDBHandle *sql.DB, databaseID string, userID string) error {

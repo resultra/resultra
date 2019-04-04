@@ -77,9 +77,9 @@ func getOneBarChartData(trackerDBHandle *sql.DB, currUserID string, barChart *ba
 	}
 
 	barChartData := BarChartData{
-		BarChartID: barChart.BarChartID,
-		BarChart:   *barChart,
-		Title:      barChart.Properties.Title,
+		BarChartID:            barChart.BarChartID,
+		BarChart:              *barChart,
+		Title:                 barChart.Properties.Title,
 		GroupedSummarizedVals: *groupedSummarizedVals}
 
 	return &barChartData, nil

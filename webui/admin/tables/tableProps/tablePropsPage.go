@@ -6,13 +6,13 @@
 package tableProps
 
 import (
-	"html/template"
-	"net/http"
 	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"github.com/resultra/resultra/server/databaseController"
 	"github.com/resultra/resultra/server/displayTable"
 	"github.com/resultra/resultra/server/userRole"
 	adminCommon "github.com/resultra/resultra/webui/admin/common"
+	"html/template"
+	"net/http"
 
 	"github.com/gorilla/mux"
 

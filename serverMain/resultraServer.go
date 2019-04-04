@@ -9,12 +9,12 @@ import (
 	"flag"
 	"fmt"
 	"github.com/pkg/profile"
-	"log"
-	"net/http"
-	"os"
 	"github.com/resultra/resultra/server"
 	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"github.com/resultra/resultra/webui"
+	"log"
+	"net/http"
+	"os"
 )
 
 const staticSiteResourcesPrefix string = `/static/`

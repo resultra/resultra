@@ -8,9 +8,9 @@ package calcField
 import (
 	"bytes"
 	"fmt"
-	"math"
 	"github.com/resultra/resultra/server/field"
 	"github.com/resultra/resultra/server/generic/timestamp"
+	"math"
 	"time"
 )
 

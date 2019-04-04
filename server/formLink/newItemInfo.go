@@ -11,8 +11,8 @@ import (
 	"net/http"
 
 	"github.com/resultra/resultra/server/common/databaseWrapper"
-	"github.com/resultra/resultra/server/form"
 	"github.com/resultra/resultra/server/common/userAuth"
+	"github.com/resultra/resultra/server/form"
 	"github.com/resultra/resultra/server/userRole"
 )
 

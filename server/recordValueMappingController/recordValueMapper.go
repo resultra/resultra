@@ -8,13 +8,13 @@ package recordValueMappingController
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/calcField"
 	"github.com/resultra/resultra/server/form"
 	"github.com/resultra/resultra/server/generic/timestamp"
 	"github.com/resultra/resultra/server/record"
 	"github.com/resultra/resultra/server/recordFilter"
 	"github.com/resultra/resultra/server/recordValue"
+	"log"
 	"time"
 )
 

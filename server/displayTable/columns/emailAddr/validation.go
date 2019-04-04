@@ -7,9 +7,9 @@ package emailAddr
 
 import (
 	"database/sql"
+	"github.com/resultra/resultra/server/common/userAuth"
 	"github.com/resultra/resultra/server/generic/inputValidation"
 	"github.com/resultra/resultra/server/generic/stringValidation"
-	"github.com/resultra/resultra/server/common/userAuth"
 )
 
 type EmailAddrValidateInputParams struct {

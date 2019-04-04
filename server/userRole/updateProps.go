@@ -8,10 +8,10 @@ package userRole
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/generic/api"
 	"github.com/resultra/resultra/server/generic/stringValidation"
+	"net/http"
 )
 
 type RoleIDInterface interface {

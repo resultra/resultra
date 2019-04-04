@@ -8,13 +8,13 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/resultra/resultra/server/common/databaseWrapper"
+	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"io"
 	"log"
 	"math/rand"
 	"net"
 	"os"
-	"github.com/resultra/resultra/server/common/databaseWrapper"
-	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"strings"
 	"time"
 

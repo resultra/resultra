@@ -7,8 +7,8 @@ package calcField
 
 import (
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/field"
+	"log"
 )
 
 func zeroNumberArgs(params FuncSemAnalysisParams) (*semanticAnalysisResult, error) {

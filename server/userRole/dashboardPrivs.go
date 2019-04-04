@@ -8,9 +8,9 @@ package userRole
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
 	"github.com/resultra/resultra/server/common/userAuth"
 	"github.com/resultra/resultra/server/trackerDatabase"
+	"net/http"
 )
 
 const DashboardRolePrivsNone string = "none"

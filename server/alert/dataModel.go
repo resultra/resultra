@@ -8,12 +8,12 @@ package alert
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/generic"
 	"github.com/resultra/resultra/server/generic/stringValidation"
 	"github.com/resultra/resultra/server/generic/timestamp"
 	"github.com/resultra/resultra/server/generic/uniqueID"
 	"github.com/resultra/resultra/server/trackerDatabase"
+	"log"
 	"time"
 )
 

@@ -99,7 +99,7 @@ func matchToken(inputStr string, tokenRegexp *regexp.Regexp, tokenID int) (*Toke
 			return nil, inputStr, false
 		}
 
-		remaining := inputStr[matchIndices[1]:len(inputStr)]
+		remaining := inputStr[matchIndices[1]:]
 		matchStr := inputStr[matchIndices[0]:matchIndices[1]]
 		return &TokenMatch{tokenID, matchStr}, remaining, true
 	} else {
@@ -119,7 +119,7 @@ func matchNextToken(inputStr string) (*TokenMatch, string, error) {
 func skipLeadingWhite(inputStr string) string {
 	matchIndices := regexpLeadingWhite.FindStringIndex(inputStr)
 	if matchIndices != nil {
-		remaining := inputStr[matchIndices[1]:len(inputStr)]
+		remaining := inputStr[matchIndices[1]:]
 		return remaining
 	} else {
 		return inputStr

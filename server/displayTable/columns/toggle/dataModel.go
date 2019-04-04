@@ -8,12 +8,12 @@ package toggle
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/displayTable/columns/common"
 	"github.com/resultra/resultra/server/field"
 	"github.com/resultra/resultra/server/generic"
 	"github.com/resultra/resultra/server/generic/uniqueID"
 	"github.com/resultra/resultra/server/trackerDatabase"
+	"log"
 )
 
 const toggleEntityKind string = "toggle"

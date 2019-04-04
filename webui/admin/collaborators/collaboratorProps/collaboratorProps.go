@@ -7,11 +7,11 @@ package collaboratorProps
 
 import (
 	"github.com/gorilla/mux"
-	"html/template"
-	"net/http"
 	"github.com/resultra/resultra/server/databaseController"
 	"github.com/resultra/resultra/server/userRole"
 	adminCommon "github.com/resultra/resultra/webui/admin/common"
+	"html/template"
+	"net/http"
 
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/userAuth"

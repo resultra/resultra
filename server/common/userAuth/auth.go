@@ -7,10 +7,10 @@ package userAuth
 
 import (
 	"fmt"
-	"log"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/runtimeConfig"
+	"log"
+	"net/http"
 
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"

@@ -8,8 +8,8 @@ package calcField
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/field"
+	"log"
 )
 
 type SetFormulaParams struct {

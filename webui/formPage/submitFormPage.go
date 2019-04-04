@@ -12,10 +12,10 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/resultra/resultra/server/common/userAuth"
 	"github.com/resultra/resultra/server/databaseController"
 	"github.com/resultra/resultra/server/formLink"
 	"github.com/resultra/resultra/server/generic/api"
-	"github.com/resultra/resultra/server/common/userAuth"
 	"github.com/resultra/resultra/server/userRole"
 
 	"github.com/resultra/resultra/server/common/databaseWrapper"

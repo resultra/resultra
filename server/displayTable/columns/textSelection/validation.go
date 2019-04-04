@@ -7,9 +7,9 @@ package textSelection
 
 import (
 	"database/sql"
-	"log"
 	"github.com/resultra/resultra/server/generic/inputValidation"
 	"github.com/resultra/resultra/server/generic/stringValidation"
+	"log"
 )
 
 type TextSelectionValidateInputParams struct {

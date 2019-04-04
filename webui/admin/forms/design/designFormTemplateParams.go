@@ -6,7 +6,6 @@
 package design
 
 import (
-	"net/http"
 	"github.com/resultra/resultra/server/common/runtimeConfig"
 	"github.com/resultra/resultra/server/databaseController"
 	"github.com/resultra/resultra/server/userRole"
@@ -35,6 +34,7 @@ import (
 	"github.com/resultra/resultra/webui/common/form/components/userTag"
 	"github.com/resultra/resultra/webui/common/recordFilter"
 	"github.com/resultra/resultra/webui/generic/propertiesSidebar"
+	"net/http"
 )
 
 type FormPropertyTemplateParams struct {

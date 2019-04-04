@@ -6,13 +6,13 @@
 package colProps
 
 import (
-	"html/template"
-	"net/http"
 	"github.com/resultra/resultra/server/databaseController"
 	"github.com/resultra/resultra/server/displayTable"
 	colCommon "github.com/resultra/resultra/server/displayTable/columns/common"
 	adminCommon "github.com/resultra/resultra/webui/admin/common"
 	"github.com/resultra/resultra/webui/admin/common/inputProperties"
+	"html/template"
+	"net/http"
 
 	"github.com/gorilla/mux"
 

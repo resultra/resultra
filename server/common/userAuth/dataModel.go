@@ -8,9 +8,9 @@ package userAuth
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/generic"
 	"github.com/resultra/resultra/server/generic/uniqueID"
+	"log"
 	"strings"
 )
 

@@ -8,12 +8,12 @@ package attachment
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
-	"path/filepath"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/userAuth"
 	"github.com/resultra/resultra/server/generic/timestamp"
 	"github.com/resultra/resultra/server/generic/uniqueID"
+	"net/http"
+	"path/filepath"
 	"time"
 )
 

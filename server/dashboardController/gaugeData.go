@@ -53,9 +53,9 @@ func getOneGaugeData(trackerDBHandle *sql.DB,
 	}
 
 	gaugeData := GaugeData{
-		GaugeID: gauge.GaugeID,
-		Gauge:   *gauge,
-		Title:   gauge.Properties.Title,
+		GaugeID:               gauge.GaugeID,
+		Gauge:                 *gauge,
+		Title:                 gauge.Properties.Title,
 		GroupedSummarizedVals: *groupedSummarizedVals}
 
 	return &gaugeData, nil

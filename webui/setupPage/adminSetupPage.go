@@ -6,13 +6,13 @@
 package setupPage
 
 import (
-	"html/template"
-	"net/http"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/workspace"
 	"github.com/resultra/resultra/webui/common"
 	"github.com/resultra/resultra/webui/generic"
 	"github.com/resultra/resultra/webui/thirdParty"
+	"html/template"
+	"net/http"
 )
 
 var setupPageTemplates *template.Template

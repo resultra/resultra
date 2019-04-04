@@ -8,7 +8,6 @@ package recordUpdate
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
 	"github.com/resultra/resultra/server/alert"
 	"github.com/resultra/resultra/server/common/databaseWrapper"
 	"github.com/resultra/resultra/server/common/userAuth"
@@ -16,6 +15,7 @@ import (
 	"github.com/resultra/resultra/server/recordValue"
 	"github.com/resultra/resultra/server/recordValueMappingController"
 	"github.com/resultra/resultra/server/userRole"
+	"net/http"
 )
 
 func updateRecordValue(req *http.Request, recUpdater record.RecordUpdater) (*recordValue.RecordValueResults, error) {

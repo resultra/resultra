@@ -7,8 +7,8 @@ package timelineController
 
 import (
 	"github.com/gorilla/mux"
-	"net/http"
 	"github.com/resultra/resultra/server/generic/api"
+	"net/http"
 )
 
 type DummyStructForInclude struct {

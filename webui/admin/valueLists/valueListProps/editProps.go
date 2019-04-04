@@ -6,12 +6,12 @@
 package valueListProps
 
 import (
-	"html/template"
-	"net/http"
 	"github.com/resultra/resultra/server/databaseController"
 	"github.com/resultra/resultra/server/userRole"
 	"github.com/resultra/resultra/server/valueList"
 	"github.com/resultra/resultra/webui/thirdParty"
+	"html/template"
+	"net/http"
 
 	"github.com/gorilla/mux"
 

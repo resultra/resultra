@@ -8,10 +8,10 @@ package summaryTable
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"github.com/resultra/resultra/server/common/componentLayout"
 	"github.com/resultra/resultra/server/dashboard/values"
 	"github.com/resultra/resultra/server/recordFilter"
+	"log"
 )
 
 // The BarChartPropertyUpdater interface along with UpdateBarChartProps() implement a harness for
