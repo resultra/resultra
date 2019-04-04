@@ -6,7 +6,7 @@ The following is a guide for setting up and building Resultra on a system runnin
 
 The development system (or virtual machine), should have at least:
 
-* Ubuntu 18.04 LTS
+* Ubuntu 16.04.6 LTS (Xenial)
 * 4GB Memory
 * 2-4 Processors - builds will run on a single processor, but the build runs in parallel and will complete faster with more processors.
 * 20GB disk space
