@@ -19,25 +19,35 @@ var distDir = '../../build/dest/static'
 
 var cwdAbsPath = __dirname
 
-gutil.log("Loading asset list from file: " + args.assets)
+logAssetDebugBuildMsg("Loading asset list from file: " + args.assets)
 var assets = require(args.assets);
+
+function logAssetDebugBuildMsg(msg) {
+
+	// Debug build messages are turned off by default. They result in build output which is very, very verbose.
+	// These messages are useful for debugging during development, but definitely not when running regular/production builds.
+	// These verbose messages can be re-enabled by setting the RESULTRA_VERBOSE_BUILD environment variable.
+	if (process.env.VERBOSE_BUILD !== undefined && process.env.RESULTRA_VERBOSE_BUILD !== "0") {
+		gutil.log(msg)
+	}
+}
 
 
 gulp.task('exportIndividualAssets', function() {
 
-	gutil.log("Exporting individual javascript files from asset list: # files = " + assets.jsFiles.length)
+	logAssetDebugBuildMsg("Exporting individual javascript files from asset list: # files = " + assets.jsFiles.length)
 	gulp.src(assets.jsFiles,{base:assets.basePath})
       .pipe(gulp.dest(distDir))
 	
-	gutil.log("Exporting individual css files from asset list: # files = " + assets.cssFiles.length)
+	logAssetDebugBuildMsg("Exporting individual css files from asset list: # files = " + assets.cssFiles.length)
 	gulp.src(assets.cssFiles,{base:assets.basePath})
       .pipe(gulp.dest(distDir))
 
-	gutil.log("Exporting individual html template files from asset list: # files = " + assets.htmlFiles.length)
+	logAssetDebugBuildMsg("Exporting individual html template files from asset list: # files = " + assets.htmlFiles.length)
 	gulp.src(assets.htmlFiles,{base:assets.basePath})
       .pipe(gulp.dest(distDir))
 
-	gutil.log("Exporting individual image files from asset list: # files = " + assets.imageFiles.length)
+	logAssetDebugBuildMsg("Exporting individual image files from asset list: # files = " + assets.imageFiles.length)
 	gulp.src(assets.imageFiles,{base:assets.basePath})
       .pipe(gulp.dest(distDir))
 
@@ -46,7 +56,7 @@ gulp.task('exportIndividualAssets', function() {
 
 gulp.task('exportMinifiedAssets', function() {
 	
-	gutil.log("Building minified javascript file from asset list: files = " + assets.jsFiles.length 
+	logAssetDebugBuildMsg("Building minified javascript file from asset list: files = " + assets.jsFiles.length 
 		+ ", target file = " + assets.minJSFile)
 	
 	gulp.src(assets.jsFiles,{base:assets.basePath})
@@ -58,18 +68,18 @@ gulp.task('exportMinifiedAssets', function() {
       .pipe(gulp.dest(distDir))
 
   // A single CSS file for release builds
-	gutil.log("Building minified CSS file from asset list: files = " + assets.cssFiles.length 
+	logAssetDebugBuildMsg("Building minified CSS file from asset list: files = " + assets.cssFiles.length 
 		+ ", target file = " + assets.minCSSFile)
 	gulp.src(assets.cssFiles,{base:assets.basePath})
 	  .pipe(concat(assets.minCSSFile))
 	  .pipe(gulp.dest(distDir))
 
 	// TODO - Export concatenated html templates when in release build.
-	gutil.log("Exporting individual html template files from asset list: # files = " + assets.htmlFiles.length)
+	logAssetDebugBuildMsg("Exporting individual html template files from asset list: # files = " + assets.htmlFiles.length)
 	gulp.src(assets.htmlFiles,{base:assets.basePath})
       .pipe(gulp.dest(distDir))
 
-	gutil.log("Exporting individual image files from asset list: # files = " + assets.imageFiles.length)
+	logAssetDebugBuildMsg("Exporting individual image files from asset list: # files = " + assets.imageFiles.length)
 	gulp.src(assets.imageFiles,{base:assets.basePath})
       .pipe(gulp.dest(distDir))
 
@@ -82,17 +92,17 @@ gulp.task('exportMinifiedAssets', function() {
 // to the JS file name.	
 function transformJSFileForInjection(filepath, file, index, length, targetFile) {
 	var newJSPath = '/static' + file.path.replace(assets.basePath,"")
-	gutil.log("transformJSFileForInjection: JS filepath: " + JSON.stringify(file.path) 
+	logAssetDebugBuildMsg("transformJSFileForInjection: JS filepath: " + JSON.stringify(file.path) 
 			+ " target HTML file: " + JSON.stringify(targetFile.path))
-	gutil.log("transformJSFileForInjection: transformed path: " + newJSPath)
+	logAssetDebugBuildMsg("transformJSFileForInjection: transformed path: " + newJSPath)
 	return '<script src="' + newJSPath  + '"></script>'
 }
 
 function transformCSSFileForInjection(filepath, file, index, length, targetFile) {
 	var newCSSPath = '/static' + file.path.replace(assets.basePath,"")
-	gutil.log("transformCSSFileForInjection: CSS filepath: " + JSON.stringify(file.path) 
+	logAssetDebugBuildMsg("transformCSSFileForInjection: CSS filepath: " + JSON.stringify(file.path) 
 			+ " target HTML file: " + JSON.stringify(targetFile.path))
-	gutil.log("transformCSSFileForInjection: transformed path: " + newCSSPath)
+	logAssetDebugBuildMsg("transformCSSFileForInjection: transformed path: " + newCSSPath)
 	return '<link rel="stylesheet" href="' + newCSSPath  + '">'
 }
 
@@ -106,7 +116,7 @@ gulp.task('injectHTMLFilesWithIndividualAssets', function() {
 	var jsSources = gulp.src(assets.jsFiles, {read: false})
 	var cssSources = gulp.src(assets.cssFiles,{read:false})
 
-	gutil.log("Injecting HTML files with JS and CSS references: html files = " + assets.htmlFiles.length 
+	logAssetDebugBuildMsg("Injecting HTML files with JS and CSS references: html files = " + assets.htmlFiles.length 
 		+ ", inject name = " + assets.injectPlaceholderName)
 	
 	htmlTarget.pipe(inject(jsSources,{name: assets.injectPlaceholderName, transform: transformJSFileForInjection}))
@@ -118,7 +128,7 @@ gulp.task('injectHTMLFilesWithMinifiedAssets', function() {
 
 	var htmlTarget = gulp.src(assets.htmlFiles,{base:assets.basePath})
 
-	gutil.log("Injecting HTML files with minified JS and CSS references: html files = " + assets.htmlFiles.length 
+	logAssetDebugBuildMsg("Injecting HTML files with minified JS and CSS references: html files = " + assets.htmlFiles.length 
 		+ ", inject placholder name = " + assets.injectPlaceholderName)
 
 	var jsSource = gulp.src(assets.jsFiles,{base:assets.basePath})

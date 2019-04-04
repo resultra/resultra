@@ -28,6 +28,8 @@ parser.add_argument('--release',default=False,action='store_true',
                     help='perform a release build')
 parser.add_argument('--realcleanonly',default=False,action='store_true',
                     help='only run the clean and realclean targets across the build')
+parser.add_argument('--verbose',default=False,action='store_true',
+                    help='more verbose build output')
 
 # Building a Docker distribution and cross-compiling the Windows
 # Electron client can only be done on a Linux build machine.
@@ -47,6 +49,10 @@ failedDirs = []
 debugBuild = 1
 if(args.release):
     debugBuild = 0
+    
+verboseBuild = 0
+if(args.verbose):
+    verboseBuild =1
         
 class buildDirResult:
     def __repr__(self):
@@ -62,10 +68,15 @@ class buildDirSpec:
         self.targetName = targetName
         self.debugBuild = debugBuild
      
+# TODO - One option to consider is to redirect the output from each individual directory's build to a file, then 
+# only output the verbose output from the build back out to STDOUT if building that directory fails. This would
+# further reduce the size of the build logs.
 def buildOneDir(buildSpec):
-    print "Building: dir=", buildSpec.dirName, " phase=", buildSpec.targetName, " debug=", buildSpec.debugBuild
-    bldCmd = "make -C %s --jobs=2 DEBUG=%s %s" % (buildSpec.dirName, buildSpec.debugBuild, buildSpec.targetName)
-    print "Build cmd: %s " % (bldCmd)
+    if verboseBuild:
+        print "Building: dir=", buildSpec.dirName, " phase=", buildSpec.targetName, " debug=", buildSpec.debugBuild
+    bldCmd = "make --silent -C %s --jobs=2 DEBUG=%s %s" % (buildSpec.dirName, buildSpec.debugBuild, buildSpec.targetName)
+    if verboseBuild:
+        print "Build cmd: %s " % (bldCmd)
     retCode = os.system(bldCmd)
     if retCode != 0:
         print "FAIL: failure building dir = %s, target= %s, err = %d" % (buildSpec.dirName,buildSpec.targetName,retCode)

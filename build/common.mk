@@ -22,7 +22,7 @@ DOCKER_IMAGE_DIR = $(DOCKER_DIST_DIR)/dockerImage
 
 GO = go
 GOBUILD = $(GO) build 
-GOTEST = $(GO) test -v .
+GOTEST = $(GO) test .
 
 # Default, no-op/empty rules for different build phases. Makefiles can override these
 # to implement build rules for different phases.

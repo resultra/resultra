@@ -18,8 +18,8 @@ AUTO_GEN_ASSET_MANIFEST = $(DEPTH)/webui/build/autoGenAssetManifest.py $(ASSET_B
 
 GEN_ASSET_MANIFEST = $(GEN_ASSET_MANFIEST) ./assetManifest.json $(ASSET_BASE_PATH) > ./assetManifest_gen.json
 
-GULP = gulp --gulpfile $(DEPTH)/webui/build/gulpfile.js
-THIRD_PARTY_GULP = gulp --gulpfile $(DEPTH)/webui/build/thirdPartyGulpFile.js
+GULP = gulp --silent --gulpfile $(DEPTH)/webui/build/gulpfile.js
+THIRD_PARTY_GULP = gulp --silent --gulpfile $(DEPTH)/webui/build/thirdPartyGulpFile.js
 
 # TODO - the EXPORT_ASSETS rule will export *all* the assets found in assetManifest_gen.json
 # However, many times an included asset from another package/directory will be exported multiple times
