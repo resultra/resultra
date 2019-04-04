@@ -6,4 +6,6 @@ More detailed information is available on the project's main website at https://
 
 ## Development
 
+[![Build Status](https://travis-ci.com/resultra/resultra.svg?branch=master)](https://travis-ci.com/resultra/resultra)
+
 Resultra is compatible with Linux and Mac OS X based software development environments. An [Ubuntu Linux development guide](docs/UbuntuDevelopmentGuide.md) is currently available. A similar guide for Mac OS X is planned.
