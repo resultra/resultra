@@ -37,8 +37,6 @@ isLinuxBuild = sys.platform.startswith('linux')
 if isLinuxBuild:  
     parser.add_argument('--windows',default=False,action='store_true',
                     help='cross-compile the Windows Electron client.')
-    parser.add_argument('--docker',default=False,action='store_true',
-                    help='build the docker-based distribution for Linux (Ubuntu) servers.')
 
 parser.add_argument('--procs',default=4,type=int,
                     help='number of build tasks to run in parallel build on (default = 4)')
@@ -114,12 +112,11 @@ else:
     runMakePhase("test")
     runMakePhase("systest")
     if isLinuxBuild:
+        runMakePhase("dockerdist")
+        runMakePhase("dockerpkg")
         if args.windows:
             runMakePhase("windows")
             runMakePhase("winpkg")
-        if args.docker:
-            runMakePhase("dockerdist")
-            runMakePhase("dockerpkg")
 
 endTime = time.time()
 
