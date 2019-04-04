@@ -7,6 +7,9 @@ before_install:
   - sudo pip install requests
   - sudo npm install -g gulp
   - sudo npm install -g gulp-cli
+  - go version
 go:
-- 1.12.x
-- master
+  - "1.12.1"
+  - master
+script:
+  - $TRAVIS_BUILD_DIR/build/build.py --procs=2
