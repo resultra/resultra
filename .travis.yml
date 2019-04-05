@@ -1,16 +1,24 @@
 language: go
 dist: xenial
 before_install:
-  - sudo apt-get install -y build-essential git python-pip sqlite3
-  - sudo apt-get install -y curl
-  - curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-  - sudo apt-get install -y nodejs
-  - sudo pip install requests
-  - sudo npm install -g gulp
-  - sudo npm install -g gulp-cli
-  - go version
+- sudo apt-get install -y build-essential git python-pip sqlite3
+- sudo apt-get install -y curl
+- curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+- sudo apt-get install -y nodejs
+- sudo pip install requests
+- sudo npm install -g gulp
+- sudo npm install -g gulp-cli
+- go version
 go:
-  - 1.12.x
-  - master
+- 1.12.x
 script:
-  - $TRAVIS_BUILD_DIR/build/build.py --procs=2 --release
+- "$TRAVIS_BUILD_DIR/build/build.py --procs=2 --release"
+deploy:
+  provider: releases
+  api_key:
+    secure: N3IOLAPHS9Iu6I8rM9kJzhyHMpeMzExgBnlt2BmQ9oOS+cG7Uih4ugKP65dYd4/1TS4unFOQ7Eybyqjn3clD2NxLDwbFnS6C7ms+iSpJrN+/SLIU0A+mRqDl/hDbfJ3ncU2P3liUpH6NRwOMIHxwD5siGZiUUKsy7hX8edd4VeeBwUizUxvfwedXDU929UIFJyIDtvPNxfPCj5i6a7WYY9srTbv159dCdSPeqmXXw6xUJHrdKf0uHJatTgbzyPllWMSK1awf+91Ow6HQKkHFWn2AdMf7SDWXn1jEVwiFaoxnmdYWDVsQLDP2Stktq1qeqOUOYQCFXTSAsdWwkLVS4PG4i/hndtXxMwPzCLRoJcHIDKLK1G2p0gu7yBCW+ls1Ud3WsGOpCmsLL01gR73SB8QObiDWAK8jbD9GMxBVZfP3duMjPVcwFEtJW58WifqS4RQ/G4xKDa3TLp95wKt2RrFiuXl1NvKGQhShSfDWq5+i5oH8rF/A6FXg0uqvJreH54nKOLLfSeEuThKvyNRpd+Q8VqVduvCxSOi3dXrbAiOqdSHgofMJ1plLNF7ZAvGRfS7bhsAy6hRTTYNvzuERkDoT/B1bAumjs4mdR5OtWCZv+3q3P5HdPHS4rfQqVMWkTnpg0aRRExzYnmdt5WxADKuZsRQ5R9lmSyFQzLFHVS8=
+  file: "./build/dest/docker/resultra.linux-amd64.tar.gz"
+  skip_cleanup: true
+  draft: true
+  on:
+    repo: resultra/resultra
