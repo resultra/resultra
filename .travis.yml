@@ -27,3 +27,4 @@ deploy:
   draft: true
   on:
     repo: resultra/resultra
+    tags: true
