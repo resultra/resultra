@@ -8,8 +8,8 @@ before_install:
 - sudo pip install requests
 - sudo npm install -g gulp
 - sudo npm install -g gulp-cli
-- curl https://dl.google.com/go/go1.12.1.linux-amd64.tar.gz --output ~/Downloads/go1.12.1.linux-amd64.tar.gz
-- sudo tar -C /usr/local -zxf ~/Downloads/go1.12.1.linux-amd64.tar.gz
+- curl https://dl.google.com/go/go1.12.1.linux-amd64.tar.gz --output /tmp/go1.12.1.linux-amd64.tar.gz
+- sudo tar -C /usr/local -zxf /tmp/go1.12.1.linux-amd64.tar.gz
 - go version
 go:
 - 1.12.x
