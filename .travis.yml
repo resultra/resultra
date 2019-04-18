@@ -11,6 +11,8 @@ before_install:
 - go version
 go:
 - 1.12.x
+env:
+- GO111MODULE=on
 script:
 - "$TRAVIS_BUILD_DIR/build/build.py --procs=2 --release"
 before_deploy:
