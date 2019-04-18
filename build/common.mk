@@ -24,6 +24,11 @@ GO = go
 GOBUILD = $(GO) build 
 GOTEST = $(GO) test .
 
+# Tell Go to use modules, even when the repo is inside the GOPATH.
+# This is needed until Go's modeule support is turned on in Go 1.13.
+# See https://blog.golang.org/modules2019 for more info.
+export GO111MODULE = on
+
 # Default, no-op/empty rules for different build phases. Makefiles can override these
 # to implement build rules for different phases.
 
