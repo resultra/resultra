@@ -6,8 +6,15 @@
 DEPTH = ../..
 include $(DEPTH)/build/common.mk
 
+
+# There's a conflict between lower versions of gulp and node version 10
+# See: https://teamtreehouse.com/community/assertion-args1isstring-failed-gulp
+# This is why a new version of gulp needs to be installed locally to support
+# the build.
+
 install:
 	npm install
+	npm install gulp@3.9.1 --save-dev
 
 clean:
 	
