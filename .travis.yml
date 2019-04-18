@@ -1,4 +1,4 @@
-language: go
+language: minimal
 dist: xenial
 before_install:
 - sudo apt-get install -y build-essential git python-pip sqlite3
@@ -8,11 +8,16 @@ before_install:
 - sudo pip install requests
 - sudo npm install -g gulp
 - sudo npm install -g gulp-cli
+- curl https://dl.google.com/go/go1.12.1.linux-amd64.tar.gz --output ~/Downloads/go1.12.1.linux-amd64.tar.gz
+- sudo tar -C /usr/local -zxf ~/Downloads/go1.12.1.linux-amd64.tar.gz
 - go version
 go:
 - 1.12.x
 env:
 - GO111MODULE=on
+- GOROOT=/usr/local/go
+- GOPATH=$HOME/go
+- PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 script:
 - "$TRAVIS_BUILD_DIR/build/build.py --procs=2 --release"
 before_deploy:
