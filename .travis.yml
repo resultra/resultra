@@ -10,12 +10,12 @@ before_install:
 - sudo npm install -g gulp-cli
 - curl https://dl.google.com/go/go1.12.1.linux-amd64.tar.gz --output /tmp/go1.12.1.linux-amd64.tar.gz
 - sudo tar -C /usr/local -zxf /tmp/go1.12.1.linux-amd64.tar.gz
-- go version
-- which go
 script:
 - export GOROOT=/usr/local/go
 - export GOPATH=$HOME/go
-- export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+- export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
+- go version
+- which go
 - "$TRAVIS_BUILD_DIR/build/build.py --procs=2 --release"
 before_deploy:
 - export TRAVIS_TAG=${TRAVIS_TAG:-snapshot-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
