@@ -11,13 +11,7 @@ before_install:
 - curl https://dl.google.com/go/go1.12.1.linux-amd64.tar.gz --output /tmp/go1.12.1.linux-amd64.tar.gz
 - sudo tar -C /usr/local -zxf /tmp/go1.12.1.linux-amd64.tar.gz
 - go version
-go:
-- 1.12.x
-env:
-- GO111MODULE=on
-- GOROOT=/usr/local/go
-- GOPATH=$HOME/go
-- PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+- which go
 script:
 - "$TRAVIS_BUILD_DIR/build/build.py --procs=2 --release"
 before_deploy:
